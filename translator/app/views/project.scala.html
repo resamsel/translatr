@@ -1,0 +1,37 @@
+@(project: models.Project, locales: List[models.Locale])
+
+@main(Messages("project", project.name)) {
+	<li>
+		<a href="@routes.ApplicationController.project(project.id)">
+			<span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+			@Messages("project", project.name)
+		</a>
+	</li>
+} {
+<div class="col-md-12">
+	@for(locale <- locales) {
+		@tags.card(styleClass="locale") {
+			<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+			@tags.locale(locale)
+		} {
+			<div class="progress">
+				<div class="progress-bar progress-bar-success" style="width: @{project.progress(locale)*100}%;"></div>
+			</div>
+		} {
+			<a href="@routes.ApplicationController.locale(locale.id)">
+				<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+				@Messages("button.goto", Messages("locale"))
+			</a>
+			<a href="@routes.ApplicationController.localeExport(locale.id)">
+				<span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+				@Messages("button.export")
+			</a>
+		}
+	}
+</div>
+<!-- /.col-md-12 -->
+
+<button type="button" id="create" class="btn btn-circle btn-raised btn-primary">
+	<span class="glyphicon glyphicon-plus"></span>
+</button>
+}

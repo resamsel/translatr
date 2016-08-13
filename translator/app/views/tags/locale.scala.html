@@ -1,0 +1,9 @@
+@(locale: models.Locale)
+
+@defining(java.util.Locale.forLanguageTag(locale.name)) { l =>
+	@if(l.getDisplayName() == locale.name) {
+		@locale.name
+	} else {
+		@Messages("locale.format", l.getDisplayName(), locale.name)
+	}
+}

@@ -1,0 +1,27 @@
+@(projects: List[models.Project])
+
+@main(Messages("projects")) { } {
+<div class="col-md-12">
+	@for(project <- projects) {
+		@tags.card(styleClass="project") {
+			<span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+			@project.name
+		} {
+			@Messages("project.info")
+			@Messages("locales.size", project.locales.size()),
+			@Messages("keys.size", project.keys.size()),
+			@Messages("messages.size", project.messagesSize())
+		} {
+			<a href="@routes.ApplicationController.project(project.id)">
+				<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+				@Messages("button.goto", Messages("project"))
+			</a>
+		}
+	}
+</div>
+<!-- /.col-md-4 -->
+
+<button type="button" id="create" class="btn btn-circle btn-raised btn-primary">
+	<span class="glyphicon glyphicon-plus"></span>
+</button>
+}

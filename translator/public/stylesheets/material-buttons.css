@@ -1,0 +1,56 @@
+/* -- Buttons types -------------------------------- */
+.btn-raised {
+  -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+}
+.btn-raised:active,
+.btn-raised.active,
+.btn-raised:active:focus,
+.btn-raised.active:focus {
+  -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+.btn-raised:focus {
+  -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+.btn.btn-circle {
+  padding: 0;
+  border-radius: 50%;
+}
+
+.btn-circle {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+}
+.btn-circle span {
+  line-height: 56px;
+}
+.btn-circle.btn-lg {
+  width: 78px;
+  height: 78px;
+  min-width: 78px;
+}
+.btn-circle.btn-lg span {
+  line-height: 78px;
+}
+.btn-circle.btn-sm {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+}
+.btn-circle.btn-sm span {
+  line-height: 40px;
+}
+.btn-circle.btn-xs {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+}
+.btn-circle.btn-xs span {
+  line-height: 30px;
+}

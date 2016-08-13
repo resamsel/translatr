@@ -1,0 +1,13 @@
+.recommenders
+logs
+target
+.target
+.idea
+.idea_modules
+.classpath
+.project
+.settings
+RUNNING_PID
+*/.sbtserver
+translator/bower_components
+translator/node_modules

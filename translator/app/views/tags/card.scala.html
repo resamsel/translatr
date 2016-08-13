@@ -1,0 +1,13 @@
+@(styleClass: String = "")(title: Html)(content: Html)(action: Html=Html(""))
+
+<div class="card @styleClass">
+	<div class="card-image">
+		<span class="card-title">@title</span>
+	</div>
+	<div class="card-content">
+		@content
+	</div>
+	<div class="card-action">
+		@action
+	</div>
+</div>

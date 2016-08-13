@@ -1,0 +1,16 @@
+@main(Messages("title")) { } {
+<div class="col-md-12">
+	<div class="jumbotron" style="margin: 48px;">
+		<h1>Jumbotron</h1>
+		<p>This is a simple hero unit, a simple jumbotron-style component
+			for calling extra attention to featured content or information.</p>
+		<p class="text-center">
+			<a href="@routes.ApplicationController.dashboard()" class="btn btn-primary btn-lg">
+				<span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+				@Messages("dashboard")
+			</a>
+		</p>
+	</div>
+</div>
+<!-- /.row -->
+}
