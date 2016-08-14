@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +19,9 @@ import models.Key;
 import models.Locale;
 import models.Message;
 import models.Project;
-import play.api.routing.JavaScriptReverseRoute;
+import play.data.Form;
+import play.data.FormFactory;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.routing.JavaScriptReverseRouter;
@@ -29,6 +33,12 @@ import scala.collection.JavaConversions;
  */
 public class ApplicationController extends Controller {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationController.class);
+	private final FormFactory formFactory;
+
+	@Inject
+	public ApplicationController(FormFactory formFactory) {
+		this.formFactory = formFactory;
+	}
 
 	public Result index() {
 		return ok(views.html.index.render());
@@ -47,6 +57,16 @@ public class ApplicationController extends Controller {
 		return ok(views.html.project.render(project, Locale.find.where().eq("project", project).findList()));
 	}
 
+	public Result projectCreate() {
+		Project project = formFactory.form(Project.class).bindFromRequest().get();
+
+		LOGGER.debug("Project: {}", Json.toJson(project));
+
+		Ebean.save(project);
+
+		return redirect(routes.ApplicationController.project(project.id));
+	}
+
 	public Result locale(UUID id) {
 		Locale locale = Locale.find.byId(id);
 
@@ -54,12 +74,12 @@ public class ApplicationController extends Controller {
 			return redirect(controllers.routes.ApplicationController.index());
 
 		Project project = Project.find.byId(locale.project.id);
-		
+
 		Collections.sort(project.keys, (a, b) -> a.name.compareTo(b.name));
-		
+
 		return ok(views.html.locale.render(project, locale, Locale.find.all()));
 	}
-	
+
 	public Result localeExport(UUID id) {
 		Locale locale = Locale.find.byId(id);
 
@@ -67,10 +87,61 @@ public class ApplicationController extends Controller {
 			return redirect(controllers.routes.ApplicationController.index());
 
 		Exporter exporter = new PlayExporter();
-		
+
 		exporter.addHeaders(response(), locale);
-		
+
 		return ok(new ByteArrayInputStream(exporter.export(locale)));
+	}
+
+	public Result localeCreate(UUID projectId) {
+		Project project = Project.find.byId(projectId);
+
+		if (project == null)
+			return redirect(routes.ApplicationController.index());
+
+		Locale locale = formFactory.form(Locale.class).bindFromRequest().get();
+
+		locale.project = project;
+
+		LOGGER.debug("Locale: {}", Json.toJson(locale));
+
+		Ebean.save(locale);
+
+		return redirect(routes.ApplicationController.locale(locale.id));
+	}
+
+	public Result keyCreate(UUID localeId) {
+		Key key = formFactory.form(Key.class).bindFromRequest().get();
+
+		Locale locale = Locale.find.byId(localeId);
+		key.project = locale.project;
+
+		LOGGER.debug("Key: {}", Json.toJson(key));
+
+		Ebean.save(key);
+
+		return redirect(routes.ApplicationController.locale(locale.id).withFragment("#key=" + key.name));
+	}
+
+	public Result keyRemove(UUID keyId, UUID localeId) {
+		Key key = Key.find.byId(keyId);
+
+		LOGGER.debug("Key: {}", Json.toJson(key));
+
+		if (key == null)
+			return redirect(routes.ApplicationController.index());
+
+		Ebean.delete(key);
+
+		LOGGER.debug("Deleted key: {}", Json.toJson(key));
+
+		Locale locale = Locale.find.byId(localeId);
+		if (locale != null)
+			return redirect(routes.ApplicationController.locale(locale.id));
+
+		LOGGER.debug("Go to project: {}", Json.toJson(key));
+
+		return redirect(routes.ApplicationController.project(key.project.id));
 	}
 
 	public Result load() {
@@ -110,6 +181,7 @@ public class ApplicationController extends Controller {
 
 	public Result javascriptRoutes() {
 		return ok(JavaScriptReverseRouter.create("jsRoutes", routes.javascript.ApplicationController.locale(),
-				routes.javascript.ApiController.getMessage(), routes.javascript.ApiController.putMessage()));
+				routes.javascript.ApplicationController.keyRemove(), routes.javascript.ApiController.getMessage(),
+				routes.javascript.ApiController.putMessage()));
 	}
 }

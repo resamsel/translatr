@@ -15,30 +15,30 @@ import com.avaje.ebean.Model.Find;
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "project_id", "name" }) })
 public class Key {
-	public Key() {
-	}
-
-	public Key(Project project, String name) {
-		this.project = project;
-		this.name = name;
-	}
-
 	@Id
 	public UUID id;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	public Project project;
 
 	@Column(length = 255)
 	public String name;
 
+	public Key() {
+	}
+	
+	public Key(Project project, String name) {
+		this.project = project;
+		this.name = name;
+	}
+	
 	public static final Find<UUID, Key> find = new Find<UUID, Key>() {
 	};
 
 	public String messageValue(Locale locale) {
 		Message message = Message.find.where().eq("key", this).eq("locale", locale).findUnique();
 		if (message == null)
-			return "";
+			return null;
 		return message.value;
 	}
 }

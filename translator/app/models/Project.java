@@ -3,25 +3,23 @@ package models;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.avaje.ebean.Model.Find;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
 public class Project {
-	public Project() {
-	}
-
-	public Project(String name) {
-		this.name = name;
-	}
-
 	@Id
 	public UUID id;
 
+	@Column(nullable = false)
 	public String name;
 
 	@JsonIgnore
@@ -32,6 +30,13 @@ public class Project {
 	@OneToMany
 	public List<Key> keys;
 
+	public Project() {
+	}
+	
+	public Project(String name) {
+		this.name = name;
+	}
+	
 	public static final Find<UUID, Project> find = new Find<UUID, Project>() {
 	};
 

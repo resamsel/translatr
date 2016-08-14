@@ -5,7 +5,7 @@
 
 create table key (
   id                        varchar(40) not null,
-  project_id                varchar(40),
+  project_id                varchar(40) not null,
   name                      varchar(255),
   constraint uq_key_1 unique (project_id,name),
   constraint pk_key primary key (id))
@@ -13,22 +13,25 @@ create table key (
 
 create table locale (
   id                        varchar(40) not null,
-  project_id                varchar(40),
-  name                      varchar(15),
+  project_id                varchar(40) not null,
+  name                      varchar(15) not null,
+  constraint uq_locale_1 unique (project_id,name),
   constraint pk_locale primary key (id))
 ;
 
 create table message (
   id                        varchar(40) not null,
-  locale_id                 varchar(40),
-  key_id                    varchar(40),
-  value                     varchar(20480),
+  locale_id                 varchar(40) not null,
+  key_id                    varchar(40) not null,
+  value                     varchar(20480) not null,
+  constraint uq_message_1 unique (locale_id,key_id),
   constraint pk_message primary key (id))
 ;
 
 create table project (
   id                        varchar(40) not null,
-  name                      varchar(255),
+  name                      varchar(255) not null,
+  constraint uq_project_1 unique (name),
   constraint pk_project primary key (id))
 ;
 

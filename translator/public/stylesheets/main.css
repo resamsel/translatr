@@ -3,7 +3,8 @@
 @import 'material-buttons.css';
 
 html, body {
-   height: 100%; 
+	height: 100%;
+	background: #f2f2f2; 
 }
 .container-fluid.content {
     padding-top: 64px;
@@ -14,14 +15,17 @@ html, body {
 }    
 .mainview, .navview, .subview {
 	height: 100%;
-	overflow: auto;        
+	overflow: auto;
 }
-.navview, .subview {
-	background-color: #eee;        
-}         
+
+.panel-heading button.close {
+	color: white;
+    font-size: 24px;
+    line-height: 18px;
+}
 
 .navview {
-	padding: 0;
+	padding: 12px 8px;
 }
 .mainview {
 	padding-top: 15px;
@@ -29,22 +33,47 @@ html, body {
 .list-group-item {
 	padding: 10px;
 	background-color: transparent;
+	border: 0;
 }
-.list-group-item.active,
-.list-group-item.active:hover,
-.list-group-item.active:focus {
-    background-color: #00BCD4;
-    border-color: #00BCD4;
+a.list-group-item,
+a.list-group-item.active,
+a.list-group-item.active:focus {
+    border-radius: 2px;
+}
+a.list-group-item:hover {
+	background-color: rgba(0,0,0,.03);
+    border-radius: 2px;
 }
 .list-group-item:first-child,
 .list-group-item:last-child {
 	border-radius: 0;
 }
+.list-group-item-text.value {
+    font-size: 11px;
+}
+.btn-remove {
+	visibility: hidden;
+}
+.btn-remove,
+.btn-remove:hover {
+	color: white;
+}
+.list-group-item:hover .btn-remove {
+	visibility: visible;
+}
+.btn-link.btn-remove:hover,
+.btn-link.btn-remove:active:hover {
+	background-color: transparent;
+}
+.no-message .btn-remove {
+	padding: 0 16px;
+}
+#no-selection {
+	padding-bottom: 15px;
+}
+
 .navview h4 {
 	font-size: 14px;
-}
-.navview .list-group-item.sidebar-search {
-	background-color: white;
 }
 
 .center-container {
@@ -173,4 +202,19 @@ button#create {
 .card .card-action a:hover {
   color: #1565C0;
   text-decoration: none;
+}
+/* --- */
+
+.custom-search-form {
+	background-color: rgba(255,255,255,.15);
+    border-radius: 2px;
+    min-width: 450px;
+}
+.custom-search-form input.form-control {
+	padding: 0 20px;
+	color: white;
+}
+.custom-search-form input[type=text].form-control,
+.custom-search-form input[type=text].form-control:focus {
+	box-shadow: none;
 }

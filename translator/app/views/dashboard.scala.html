@@ -21,7 +21,24 @@
 </div>
 <!-- /.col-md-4 -->
 
-<button type="button" id="create" class="btn btn-circle btn-raised btn-primary">
+
+<button type="button" id="create" class="btn btn-circle btn-raised btn-primary" data-toggle="modal" data-target="#modal-create">
 	<span class="glyphicon glyphicon-plus"></span>
 </button>
+
+@tags.modal(Messages("project.new"), "modal-create") {
+<form id="form-project" method="post" action="@routes.ApplicationController.projectCreate()">
+	<div class="form-group">
+		<input id="field-project-name" name="name" class="form-control" placeholder="@Messages("project.label")"></input>
+	</div>
+</form>
+}
+
+<script>
+$(document).ready(function() {
+	$('.button-save').click(function() {
+		$('#form-project').submit();
+	});
+});
+</script>
 }
