@@ -1,204 +1,193 @@
 @(project: models.Project, locale: models.Locale, locales: List[models.Locale])
 
 @main(Messages("locale", project.name, tags.locale(locale))) {
-	<li>
-		<a href="@routes.ApplicationController.project(locale.project.id)">
-			<span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
-			<span class="sr-only">@Messages("project", project.name)</span>
-		</a>
-	</li>
-	<li class="dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-			<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
-			<span>@tags.locale(locale)</span>
-			<i class="fa fa-caret-down"></i>
-		</a>
-		<ul class="dropdown-menu dropdown-messages">
-			@for(l <- locales) {
-	            <li>
-	                <a href="@routes.ApplicationController.locale(l.id)">
-						@tags.locale(l)
-	                </a>
-	            </li>
-			}
-        </ul>
-	</li>
-	<li>
-		<div class="list-group-item sidebar-search">
-			<form id="form-search">
-				<div class="custom-search-form">
-					<input id="field-search" type="text" class="form-control" placeholder="@Messages("search")">
-				</div> <!-- /input-group -->
-				<input type="submit" class="hidden" />
-			</form>
-		</div>
-	</li>
+	<form id="form-search" class="navbar-form" role="search">
+		<div class="form-group">
+			<input id="field-search" type="text" class="form-control" placeholder="@Messages("search")">
+		</div> <!-- /input-group -->
+		<input type="submit" class="hidden" />
+	</form>
 } {
-@tags.threeColumns {
-	<div class="list-group">
-		@for(key <- project.keys) {
-			<a href="#key=@key.name" class="list-group-item key @if(key.messageValue(locale) == null) { no-message }" id="@key.id" name="@key.name">
-				<button class="btn btn-link btn-remove pull-right">
-					<span class="glyphicon glyphicon-trash"></span>
-					<span class="sr-only">@Messages("key.remove")</span>
-				</button>
-				<h4 class="list-group-item-heading name">@key.name</h4>
-				<p class="list-group-item-text value">@key.messageValue(locale)</p>
+	<ul class="breadcrumb">
+		<li>
+			<a href="@routes.ApplicationController.dashboard()">
+				@Messages("dashboard")
 			</a>
-		}
-	</div>
-} {
-<div id="no-selection" class="center-container">
-	<span class="center">@Messages("key.selection.none")</span>
-</div>
-<div id="panel-message" class="panel panel-primary">
-	<div class="panel-heading">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3 class="panel-title">@Messages("locale.to.label")</h3>
-	</div>
-	<div class="panel-body">
-		<form id="form-message">
-			<input id="field-id" type="hidden" />
-			<input id="field-keyId" type="hidden" />
-			<div class="form-group">
-				<select id="field-locale-to" class="form-control">
-					@for(l <- locales) {
-						<option value="@l.id">@tags.locale(l)</option>
-					}
-				</select>
-			</div>
-			<div class="form-group">
-				<label>@Messages("locale.preview")</label>
-				<div id="preview"></div>
-			</div>
-			<div class="form-group hidden">
-				<label for="field-key">@Messages("locale.key.label")</label>
-				<input id="field-key" class="form-control" type="text" disabled="disabled" />
-			</div>
-			<div class="form-group">
-				<textarea id="field-value" class="form-control" rows="3" placeholder="@Messages("locale.value.label")"></textarea>
-			</div>
-			<button id="submit" class="btn btn-primary">@Messages("button.save")</button>
-		</form>
-	</div>
-</div>
-} {
-}
+		</li>
+		<li>
+			<a href="@routes.ApplicationController.project(locale.project.id)">
+				@project.name
+			</a>
+		</li>
+		<li class="active">@tags.locale(locale)</li>
+	</ul>
 
-<button type="button" id="create" class="btn btn-circle btn-raised btn-primary"data-toggle="modal" data-target="#modal-create">
-	<span class="glyphicon glyphicon-plus"></span>
-</button>
-
-@tags.modal(Messages("key.new"), "modal-create") {
-<form id="form-key" method="post" action="@routes.ApplicationController.keyCreate(locale.id)">
-	<div class="form-group">
-		<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
-	</div>
-</form>
-}
-
-<script>
-function updateForm(keyId, keyName) {
-	$("#no-selection").hide();
-	$("#panel-message").show();
-    $('#field-id').val('');
-	$('#field-key').val(keyName).attr('keyId', keyId);
-    $('#field-value').val('');
-    $('#preview').html('');
-	$.ajax(
-		jsRoutes.controllers.ApiController.getMessage($('#field-locale-to').val(), keyName)
-	).done(function(data) {
-	    if (console && console.log) {
-			console.log('Message: ', data);
-		}
-	    $('#field-id').val(data.id);
-	    $('#field-key').val(data.key.name).attr('keyId', data.key.id);
-	    $('#field-value').val(data.value);
-	    $('#preview').html(data.value);
-	});
-}
-function search(value) {
-    if(value !== '') {
-		$('a.key').hide();
-		$('a.key[name*="' + value +'"]').show();
-    } else {
-    	$('a.key').show();
-    }
-}
-$(document).ready(function() {
-	$("#panel-message").hide();
-	$('#field-search').on('change keyup paste', function() {
-		search($('#field-search').val());
-	});
-	$('#form-search').submit(function(e) {
-		console.log('Hide...');
-        e.preventDefault();
-        search($('#field-search').val());
-	});
-	$("#form-message").submit(function(e){
-        e.preventDefault();
-		$.ajax(
-			$.extend(
-				jsRoutes.controllers.ApiController.putMessage(),
-				{
-					contentType: 'application/json',
-					dataType: 'json',
-					data: JSON.stringify({
-						"id": $('#field-id').val() !== '' ? $('#field-id').val() : null,
-						"locale": {
-						  "id": $('#field-locale-to').val()
-						},
-						"key": {
-							"id": $('#field-key').attr('keyId')
-						},
-						"value": $('#field-value').val()
-					})
-				}
-			)
-		).done(function(data) {
-		    if (console && console.log) {
-				console.log('Updated: ', data);
+	@tags.threeColumns {
+		<div class="list-group">
+			@for(key <- project.keys) {
+				<a href="#key=@key.name" class="list-group-item key @if(key.messageValue(locale) == null) { no-message }" id="@key.id" name="@key.name.toLowerCase">
+					<button class="btn btn-link btn-remove pull-right">
+						<span class="glyphicon glyphicon-trash"></span>
+						<span class="sr-only">@Messages("key.remove")</span>
+					</button>
+					<h4 class="list-group-item-heading name">@key.name</h4>
+					<p class="list-group-item-text value">@key.messageValue(locale)</p>
+				</a>
 			}
-		    if(data.locale.id === '@locale.id') {
-		    	$('#' + data.key.id + ' .value').html(data.value);
-		    }
-		});
-    });
-	$('a.key').click(function() {
-		$('a.key').removeClass('active');
-		$(this).addClass('active')
-		updateForm($(this).attr('id'), $(this).attr('name'));
-	})
-	$('a.key .btn-remove').click(function(e) {
-		e.stopPropagation();
-		window.location.href=jsRoutes.controllers.ApplicationController.keyRemove($(this).parent().attr('id'), '@locale.id').url;
-	});
-	$('#field-locale-from').change(function() {
-		window.location.href=jsRoutes.controllers.ApplicationController.locale($('#field-locale-from').val()).url + '#key=' + $('#field-key').val();
-	});
-	$('#field-locale-to').change(function() {
-		updateForm($('#field-key').attr('keyId'), $('#field-key').val());
-	});
-	$('#field-value').on('change keyup paste', function() {
-	    $('#preview').html($('#field-value').val());
-	});
-	$('button.close').click(function() {
-		$('a.key').removeClass('active');
-		$("#panel-message").hide();		
-		$("#no-selection").show();
-		window.location.hash = '#';
-	});
-	$('.button-save').click(function() {
-		$('#form-key').attr('action', $('#form-key').attr('action') + '#key=' + $('#field-key-name').val());
-		$('#form-key').submit();
-	});
-
-	var hash = window.location.hash;
-	if(hash !== '') {
-		console.log('Hash: ', hash);
-		var keyName = hash.replace('#key=', '');
-		$('a.key[name="'+keyName+'"]').click();
+		</div>
+	} {
+		<div id="no-selection" class="container-center">
+			<span class="center">@Messages("key.selection.none")</span>
+		</div>
+		<div id="panel-message" class="panel panel-primary">
+			<div class="panel-heading">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 class="panel-title">@Messages("locale.to.label")</h3>
+			</div>
+			<div class="panel-body">
+				<form id="form-message">
+					<input id="field-id" type="hidden" />
+					<input id="field-keyId" type="hidden" />
+					<div class="form-group">
+						<select id="field-locale-to" class="form-control">
+							@for(l <- locales) {
+								<option value="@l.id">@tags.locale(l)</option>
+							}
+						</select>
+					</div>
+					<div class="form-group">
+						<label>@Messages("locale.preview")</label>
+						<div id="preview"></div>
+					</div>
+					<div class="form-group hidden">
+						<label for="field-key">@Messages("locale.key.label")</label>
+						<input id="field-key" class="form-control" type="text" disabled="disabled" />
+					</div>
+					<div class="form-group">
+						<textarea id="field-value" class="form-control" rows="3" placeholder="@Messages("locale.value.label")"></textarea>
+					</div>
+					<button id="submit" class="btn btn-primary">@Messages("button.save")</button>
+				</form>
+			</div>
+		</div>
+	} {
 	}
-});
-</script>
+
+	<button type="button" id="create" class="btn btn-circle btn-raised btn-primary"data-toggle="modal" data-target="#modal-create">
+		<span class="glyphicon glyphicon-plus"></span>
+	</button>
+
+	@tags.modal(Messages("key.new"), "modal-create") {
+	<form id="form-key" method="post" action="@routes.ApplicationController.keyCreate(locale.id)">
+		<div class="form-group">
+			<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
+		</div>
+	</form>
+	}
+
+	<script>
+		function updateForm(keyId, keyName) {
+			$("#no-selection").hide();
+			$("#panel-message").show();
+		    $('#field-id').val('');
+			$('#field-key').val(keyName).attr('keyId', keyId);
+		    $('#field-value').val('');
+		    $('#preview').html('');
+			$.ajax(
+				jsRoutes.controllers.ApiController.getMessage($('#field-locale-to').val(), keyName)
+			).done(function(data) {
+			    if (console && console.log) {
+					console.log('Message: ', data);
+				}
+			    $('#field-id').val(data.id);
+			    $('#field-key').val(data.key.name).attr('keyId', data.key.id);
+			    $('#field-value').val(data.value);
+			    $('#preview').html(data.value);
+			});
+		}
+		function search(value) {
+		    if(value !== '') {
+				$('a.key').hide();
+				$('a.key[name*="' + value.toLowerCase() +'"]').show();
+		    } else {
+		    	$('a.key').show();
+		    }
+		}
+		$(document).ready(function() {
+			$("#panel-message").hide();
+			$('#field-search').on('change keyup paste', function() {
+				search($('#field-search').val());
+			});
+			$('#form-search').submit(function(e) {
+				console.log('Hide...');
+		        e.preventDefault();
+		        search($('#field-search').val());
+			});
+			$("#form-message").submit(function(e){
+		        e.preventDefault();
+				$.ajax(
+					$.extend(
+						jsRoutes.controllers.ApiController.putMessage(),
+						{
+							contentType: 'application/json',
+							dataType: 'json',
+							data: JSON.stringify({
+								"id": $('#field-id').val() !== '' ? $('#field-id').val() : null,
+								"locale": {
+								  "id": $('#field-locale-to').val()
+								},
+								"key": {
+									"id": $('#field-key').attr('keyId')
+								},
+								"value": $('#field-value').val()
+							})
+						}
+					)
+				).done(function(data) {
+				    if (console && console.log) {
+						console.log('Updated: ', data);
+					}
+				    if(data.locale.id === '@locale.id') {
+				    	$('#' + data.key.id).removeClass('no-message');
+				    	$('#' + data.key.id + ' .value').html(data.value);
+				    }
+				});
+		    });
+			$('a.key').click(function() {
+				$('a.key').removeClass('active');
+				$(this).addClass('active')
+				updateForm($(this).attr('id'), $(this).attr('name'));
+			})
+			$('a.key .btn-remove').click(function(e) {
+				e.stopPropagation();
+				window.location.href=jsRoutes.controllers.ApplicationController.keyRemove($(this).parent().attr('id'), '@locale.id').url;
+			});
+			$('#field-locale-from').change(function() {
+				window.location.href=jsRoutes.controllers.ApplicationController.locale($('#field-locale-from').val()).url + '#key=' + $('#field-key').val();
+			});
+			$('#field-locale-to').change(function() {
+				updateForm($('#field-key').attr('keyId'), $('#field-key').val());
+			});
+			$('#field-value').on('change keyup paste', function() {
+			    $('#preview').html($('#field-value').val());
+			});
+			$('button.close').click(function() {
+				$('a.key').removeClass('active');
+				$("#panel-message").hide();		
+				$("#no-selection").show();
+				window.location.hash = '#';
+			});
+			$('.button-save').click(function() {
+				$('#form-key').attr('action', $('#form-key').attr('action') + '#key=' + $('#field-key-name').val());
+				$('#form-key').submit();
+			});
+		
+			var hash = window.location.hash;
+			if(hash !== '') {
+				console.log('Hash: ', hash);
+				var keyName = hash.replace('#key=', '');
+				$('a.key[name="'+keyName+'"]').click();
+			}
+		});
+	</script>
 }

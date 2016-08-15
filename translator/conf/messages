@@ -1,4 +1,5 @@
 button.close = Close
+button.import = Import
 button.export = Export
 button.goto = Go to {0}
 button.save = Save
@@ -11,6 +12,8 @@ locale = Locale
 locale.label = Locale
 locale.format = {0} ({1})
 locale.from.label = <- Locale
+locale.import = Import Locale
+locale.import.file = Import from file
 locale.to.label = Translate to locale
 locale.new = Create new Locale
 locale.preview = Preview

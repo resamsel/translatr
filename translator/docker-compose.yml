@@ -1,0 +1,25 @@
+version: "2"
+volumes:
+    translatr-data:
+    translatr-ivy2:
+    translatr-sbt:
+    activator-repository:
+services:
+    service-translatr:
+        build: .
+        ports:
+            - "9000:9000"
+        volumes:
+            - activator-repository:/opt/typesafe/activator-1.3.7/repository
+            - translatr-ivy2:/root/.ivy2
+            - translatr-sbt:/root/.sbt
+            - .:/usr/local/translatr
+        links:
+            - service-db-translatr
+    service-db-translatr:
+        image: postgres
+        ports:
+            - "5432:5432"
+        volumes:
+            - translatr-data:/var/lib/postgresql/data
+            - ./docker/entrypoint-initdb.d:/docker-entrypoint-initdb.d

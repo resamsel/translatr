@@ -8,16 +8,19 @@ GET     /dashboard	             		controllers.ApplicationController.dashboard
 
 # Projects
 GET     /project/:id             		controllers.ApplicationController.project(id: java.util.UUID)
-POST	/create/project					controllers.ApplicationController.projectCreate
+POST	/project						controllers.ApplicationController.projectCreate
 
 # Locales
 GET     /locale/:id			       		controllers.ApplicationController.locale(id: java.util.UUID)
+GET		/locale/:id/import				controllers.ApplicationController.localeImport(id: java.util.UUID)
+POST	/locale/:id/import				controllers.ApplicationController.localeImport(id: java.util.UUID)
 GET     /locale/:id/export	       		controllers.ApplicationController.localeExport(id: java.util.UUID)
-POST	/create/locale/:projectId		controllers.ApplicationController.localeCreate(projectId: java.util.UUID)
+POST	/locale/:projectId				controllers.ApplicationController.localeCreate(projectId: java.util.UUID)
+GET     /locale/:id/remove	       		controllers.ApplicationController.localeRemove(id: java.util.UUID)
 
 # Keys
-GET		/remove/key/:keyId/:localeId	controllers.ApplicationController.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID)
-POST	/create/key/:localeId			controllers.ApplicationController.keyCreate(localeId: java.util.UUID)
+GET		/key/:keyId/:localeId/remove	controllers.ApplicationController.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID)
+POST	/key/:localeId					controllers.ApplicationController.keyCreate(localeId: java.util.UUID)
 
 #GET     /message/:id             		controllers.ApplicationController.message(id: java.util.UUID)
 

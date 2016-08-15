@@ -1,8 +1,8 @@
 package controllers;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -15,14 +15,17 @@ import com.avaje.ebean.Ebean;
 
 import exporters.Exporter;
 import exporters.PlayExporter;
+import importers.Importer;
+import importers.PlayImporter;
 import models.Key;
 import models.Locale;
 import models.Message;
 import models.Project;
-import play.data.Form;
 import play.data.FormFactory;
 import play.libs.Json;
 import play.mvc.Controller;
+import play.mvc.Http.MultipartFormData;
+import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import play.routing.JavaScriptReverseRouter;
 import scala.collection.JavaConversions;
@@ -41,7 +44,8 @@ public class ApplicationController extends Controller {
 	}
 
 	public Result index() {
-		return ok(views.html.index.render());
+		// return ok(views.html.index.render());
+		return redirect(controllers.routes.ApplicationController.dashboard());
 	}
 
 	public Result dashboard() {
@@ -80,17 +84,44 @@ public class ApplicationController extends Controller {
 		return ok(views.html.locale.render(project, locale, Locale.find.all()));
 	}
 
+	public Result localeImport(UUID id) {
+		Locale locale = Locale.find.byId(id);
+
+		if (locale == null)
+			return redirect(routes.ApplicationController.index());
+
+		if ("POST".equals(request().method())) {
+			MultipartFormData<File> body = request().body().asMultipartFormData();
+			FilePart<File> messages = body.getFile("messages");
+
+			if (messages == null)
+				return redirect(routes.ApplicationController.locale(id));
+
+			Importer importer = new PlayImporter();
+
+			try {
+				importer.apply(messages.getFile(), locale);
+			} catch (Exception e) {
+				LOGGER.error("Error while importing messages", e);
+			}
+
+			return redirect(routes.ApplicationController.locale(id));
+		} else {
+			return ok(views.html.localeImport.render(locale));
+		}
+	}
+
 	public Result localeExport(UUID id) {
 		Locale locale = Locale.find.byId(id);
 
 		if (locale == null)
-			return redirect(controllers.routes.ApplicationController.index());
+			return redirect(routes.ApplicationController.index());
 
 		Exporter exporter = new PlayExporter();
 
 		exporter.addHeaders(response(), locale);
 
-		return ok(new ByteArrayInputStream(exporter.export(locale)));
+		return ok(new ByteArrayInputStream(exporter.apply(locale)));
 	}
 
 	public Result localeCreate(UUID projectId) {
@@ -108,6 +139,17 @@ public class ApplicationController extends Controller {
 		Ebean.save(locale);
 
 		return redirect(routes.ApplicationController.locale(locale.id));
+	}
+
+	public Result localeRemove(UUID localeId) {
+		Locale locale = Locale.find.byId(localeId);
+
+		if (locale == null)
+			return redirect(routes.ApplicationController.index());
+
+		Ebean.delete(locale);
+
+		return redirect(routes.ApplicationController.project(locale.project.id));
 	}
 
 	public Result keyCreate(UUID localeId) {
@@ -173,10 +215,9 @@ public class ApplicationController extends Controller {
 					Ebean.save(message);
 				}
 			}
-
 		}
 
-		return redirect(controllers.routes.ApplicationController.index());
+		return redirect(controllers.routes.ApplicationController.project(project.id));
 	}
 
 	public Result javascriptRoutes() {

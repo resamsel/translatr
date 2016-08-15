@@ -1,53 +1,85 @@
 @(project: models.Project, locales: List[models.Locale])
 
 @main(Messages("project", project.name)) {
-	<li>
-		<a href="@routes.ApplicationController.project(project.id)">
-			<span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
-			@Messages("project", project.name)
-		</a>
-	</li>
+	<form id="form-search" class="navbar-form" role="search">
+		<div class="form-group">
+			<input id="field-search" type="text" class="form-control" placeholder="@Messages("search")">
+		</div> <!-- /input-group -->
+		<input type="submit" class="hidden" />
+	</form>
 } {
-<div class="col-md-12">
-	@for(locale <- locales) {
-		@tags.card(styleClass="locale") {
-			<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
-			@tags.locale(locale)
-		} {
-			<div class="progress">
-				<div class="progress-bar progress-bar-success" style="width: @{project.progress(locale)*100}%;"></div>
-			</div>
-		} {
-			<a href="@routes.ApplicationController.locale(locale.id)">
-				<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
-				@Messages("button.goto", Messages("locale"))
+	<ul class="breadcrumb">
+		<li>
+			<a href="@routes.ApplicationController.dashboard()">
+				@Messages("dashboard")
 			</a>
-			<a href="@routes.ApplicationController.localeExport(locale.id)">
-				<span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-				@Messages("button.export")
-			</a>
-		}
-	}
-</div>
-<!-- /.col-md-12 -->
-
-<button type="button" id="create" class="btn btn-circle btn-raised btn-primary" data-toggle="modal" data-target="#modal-create">
-	<span class="glyphicon glyphicon-plus"></span>
-</button>
-
-@tags.modal(Messages("locale.new"), "modal-create") {
-<form id="form-locale" method="post" action="@routes.ApplicationController.localeCreate(project.id)">
-	<div class="form-group">
-		<input id="field-locale-name" name="name" class="form-control" placeholder="@Messages("locale.label")"></input>
+		</li>
+		<li class="active">@project.name</li>
+	</ul>
+	
+	<div class="col-md-12">
+		<div class="container locale">
+		<table class="table card">
+			<tbody>
+				@for(locale <- locales) {
+					<tr id="@locale.id" class="locale" name="@tags.locale(locale) locale.name.toLowerCase">
+						<td class="name">
+							<a class="locale" href="@routes.ApplicationController.locale(locale.id)">
+								@tags.locale(locale)
+							</a>
+						</td>
+						<td class="locale-progress">
+							<div class="progress">
+								<div class="progress-bar progress-bar-success" style="width: @{project.progress(locale)*100}%;"></div>
+							</div>
+						</td>
+						<td class="actions text-right">
+							<a href="@routes.ApplicationController.localeImport(locale.id)" class="btn btn-link" title="@Messages("button.import")">
+								<span class="glyphicon glyphicon-open" aria-hidden="true"></span>
+							</a>
+							<a href="@routes.ApplicationController.localeExport(locale.id)" class="btn btn-link" title="@Messages("button.export")">
+								<span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+							</a>
+							<a href="@routes.ApplicationController.localeRemove(locale.id)" class="btn btn-link" title="@Messages("button.remove")">
+								<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+							</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		</div>
 	</div>
-</form>
-}
+	<!-- /.col-md-12 -->
 
-<script>
-$(document).ready(function() {
-	$('.button-save').click(function() {
-		$('#form-locale').submit();
-	});
-});
-</script>
+	<button type="button" id="create" class="btn btn-circle btn-raised btn-primary" data-toggle="modal" data-target="#modal-create">
+		<span class="glyphicon glyphicon-plus"></span>
+	</button>
+	
+	@tags.modal(Messages("locale.new"), "modal-create") {
+		<form id="form-locale" method="post" action="@routes.ApplicationController.localeCreate(project.id)">
+			<div class="form-group">
+				<input id="field-locale-name" name="name" class="form-control" placeholder="@Messages("locale.label")"></input>
+			</div>
+		</form>
+	}
+
+	<script>
+		function search(value) {
+		    if(value !== '') {
+				$('tr.locale').hide();
+				$('tr.locale[name*="' + value.toLowerCase() +'"]').show();
+		    } else {
+		    	$('tr.locale').show();
+		    }
+		}
+		$(document).ready(function() {
+			$('#field-search').on('change keyup paste', function() {
+				search($('#field-search').val());
+			});
+			$('.button-save').click(function() {
+				$('#form-locale').submit();
+			});
+		});
+	</script>
 }

@@ -1,44 +1,69 @@
 @(projects: List[models.Project])
 
-@main(Messages("projects")) { } {
-<div class="col-md-12">
-	@for(project <- projects) {
-		@tags.card(styleClass="project") {
-			<span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
-			@project.name
-		} {
-			@Messages("project.info")
-			@Messages("locales.size", project.locales.size()),
-			@Messages("keys.size", project.keys.size()),
-			@Messages("messages.size", project.messagesSize())
-		} {
-			<a href="@routes.ApplicationController.project(project.id)">
-				<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
-				@Messages("button.goto", Messages("project"))
-			</a>
+@main(Messages("projects")) {
+	<form id="form-search" class="navbar-form" role="search">
+		<div class="form-group">
+			<input id="field-search" type="text" class="form-control" placeholder="@Messages("search")">
+		</div> <!-- /input-group -->
+		<input type="submit" class="hidden" />
+	</form>
+} {
+	<div class="col-md-12">
+		@for(project <- projects) {
+			@tags.card(styleClass="project", name=project.name.toLowerCase) {
+				<span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+				@project.name
+			} {
+				@Messages("project.info")
+				@Messages("locales.size", project.locales.size()),
+				@Messages("keys.size", project.keys.size()),
+				@Messages("messages.size", project.messagesSize())
+			} {
+				<a href="@routes.ApplicationController.project(project.id)">
+					<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+					@Messages("button.goto", Messages("project"))
+				</a>
+			}
 		}
-	}
-</div>
-<!-- /.col-md-4 -->
-
-
-<button type="button" id="create" class="btn btn-circle btn-raised btn-primary" data-toggle="modal" data-target="#modal-create">
-	<span class="glyphicon glyphicon-plus"></span>
-</button>
-
-@tags.modal(Messages("project.new"), "modal-create") {
-<form id="form-project" method="post" action="@routes.ApplicationController.projectCreate()">
-	<div class="form-group">
-		<input id="field-project-name" name="name" class="form-control" placeholder="@Messages("project.label")"></input>
 	</div>
-</form>
-}
+	<!-- /.col-md-4 -->
 
-<script>
-$(document).ready(function() {
-	$('.button-save').click(function() {
-		$('#form-project').submit();
-	});
-});
-</script>
+	<button type="button" id="create" class="btn btn-circle btn-raised btn-primary" data-toggle="modal" data-target="#modal-create">
+		<span class="glyphicon glyphicon-plus"></span>
+	</button>
+
+	@tags.modal(Messages("project.new"), "modal-create") {
+		<form id="form-project" method="post" action="@routes.ApplicationController.projectCreate()">
+			<div class="form-group">
+				<input id="field-project-name" name="name" class="form-control" placeholder="@Messages("project.label")"></input>
+			</div>
+		</form>
+	}
+
+	<script>
+		$(document).ready(function() {
+			$('.button-save').click(function() {
+				$('#form-locale').submit();
+			});
+		});
+	</script>
+
+	<script>
+		function search(value) {
+		    if(value !== '') {
+				$('.card.project').hide();
+				$('.card.project[name*="' + value.toLowerCase() +'"]').show();
+		    } else {
+		    	$('.card.project').show();
+		    }
+		}
+		$(document).ready(function() {
+			$('#field-search').on('change keyup paste', function() {
+				search($('#field-search').val());
+			});
+			$('.button-save').click(function() {
+				$('#form-project').submit();
+			});
+		});
+	</script>
 }

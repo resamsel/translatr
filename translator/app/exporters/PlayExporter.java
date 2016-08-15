@@ -12,7 +12,7 @@ public class PlayExporter implements Exporter {
 	private static final String FILENAME_FORMAT = "messages.%s";
 
 	@Override
-	public byte[] export(Locale locale) {
+	public byte[] apply(Locale locale) {
 		Collections.sort(locale.messages, (a, b) -> a.key.name.compareTo(b.key.name));
 
 		StringBuilder sb = new StringBuilder();
