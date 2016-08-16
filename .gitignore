@@ -8,6 +8,6 @@ target
 .project
 .settings
 RUNNING_PID
-*/.sbtserver
-translator/bower_components
-translator/node_modules
+.sbtserver
+bower_components
+node_modules
