@@ -3,6 +3,7 @@
 @import 'material-buttons.css';
 @import 'material-table.css';
 @import 'material-cards.css';
+@import 'material-colors.css';
 
 html, body {
 	height: 100%;
@@ -26,9 +27,6 @@ html, body {
     line-height: 18px;
 }
 
-.navview {
-	padding: 12px 8px;
-}
 .list-group-item {
 	padding: 13px;
 	background-color: transparent;
@@ -50,27 +48,31 @@ a.list-group-item:hover {
 .list-group-item-text.value {
     font-size: 11px;
 }
-.btn-remove {
+.list-group-item .btn {
 	visibility: hidden;
 }
-.list-group-item.active .btn-remove,
-.list-group-item.active .btn-remove:hover {
+.list-group-item.active .btn,
+.list-group-item.active .btn:hover {
 	color: white;
 }
-.list-group-item:hover .btn-remove {
+.list-group-item:hover .btn {
 	visibility: visible;
 }
-.btn-link.btn-remove:hover,
-.btn-link.btn-remove:active:hover {
+.list-group-item .btn:hover,
+.list-group-item .btn:active:hover {
 	background-color: transparent;
 }
-.no-message .btn-remove {
+.no-message .btn {
 	padding: 0 16px;
 }
 #no-selection {
 }
 
-.navview h4 {
+.navview {
+	padding: 12px 8px;
+}
+.navview h4,
+.subview h4 {
 	font-size: 14px;
 }
 
@@ -163,8 +165,8 @@ table.table .locale-progress {
 	color: white;
 	width: 100%;
 }
-.navbar-form input[type=text].form-control,
-.navbar-form input[type=text].form-control:focus {
+.navbar-form input[type=search].form-control,
+.navbar-form input[type=search].form-control:focus {
 	box-shadow: none;
 }
 
@@ -186,4 +188,20 @@ table.table .locale-progress {
 .navbar-form .form-control:-moz-placeholder { /* Firefox 4 - 18 */
   color: white;
   opacity: 1;
+}
+
+.tab-body {
+	margin-top: 10px;
+}
+
+.template {
+	display: none;
+}
+
+/* Keys */
+.key.list-group-item.active,
+.key.list-group-item.active:hover,
+.key.list-group-item.active:focus {
+    background-color: #8BC34A;
+    border-color: #8BC34A;
 }

@@ -1,9 +1,9 @@
-@(locale: models.Locale)
+@(localeName: String)
 
-@defining(java.util.Locale.forLanguageTag(locale.name.replaceAll("_", "-"))) { l =>
-	@if(l.getDisplayName() == locale.name) {
-		@locale.name
+@defining(java.util.Locale.forLanguageTag(localeName.replaceAll("_", "-"))) { l =>
+	@if(l.getDisplayName() == localeName) {
+		@localeName
 	} else {
-		@Messages("locale.format", l.getDisplayName(), locale.name)
+		@Messages("locale.format", l.getDisplayName(), localeName)
 	}
 }

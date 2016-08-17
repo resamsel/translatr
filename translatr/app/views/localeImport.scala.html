@@ -1,6 +1,6 @@
 @(locale: models.Locale)
 
-@main(Messages("locale", locale.project.name, tags.locale(locale))) {
+@main(Messages("locale", locale.project.name, tags.locale(locale.name))) {
 } {
 	<div class="col-md-6 col-md-offset-3">
 		<div id="panel-message" class="panel panel-primary">
@@ -9,7 +9,7 @@
 				<h3 class="panel-title">@Messages("locale.import")</h3>
 			</div>
 			<div class="panel-body">
-				<form action="@routes.ApplicationController.localeImport(locale.id)" method="post" enctype="multipart/form-data">
+				<form action="@routes.Application.localeImport(locale.id)" method="post" enctype="multipart/form-data">
 					<div class="form-group">
 						<label for="field-messages">@Messages("locale.import.file")</label>
 						<input id="field-messages" name="messages" class="form-control" type="file" />

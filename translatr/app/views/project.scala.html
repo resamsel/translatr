@@ -1,16 +1,12 @@
-@(project: models.Project, locales: List[models.Locale])
+@(project: models.Project)
+
+@import utils.FormatUtils._
 
 @main(Messages("project", project.name)) {
-	<form id="form-search" class="navbar-form" role="search">
-		<div class="form-group">
-			<input id="field-search" type="text" class="form-control" placeholder="@Messages("search")">
-		</div> <!-- /input-group -->
-		<input type="submit" class="hidden" />
-	</form>
 } {
 	<ul class="breadcrumb">
 		<li>
-			<a href="@routes.ApplicationController.dashboard()">
+			<a href="@routes.Application.dashboard()">
 				@Messages("dashboard")
 			</a>
 		</li>
@@ -18,68 +14,54 @@
 	</ul>
 	
 	<div class="col-md-12">
-		<div class="container locale">
-		<table class="table card">
-			<tbody>
-				@for(locale <- locales) {
-					<tr id="@locale.id" class="locale" name="@tags.locale(locale) locale.name.toLowerCase">
-						<td class="name">
-							<a class="locale" href="@routes.ApplicationController.locale(locale.id)">
-								@tags.locale(locale)
-							</a>
-						</td>
-						<td class="locale-progress">
+		@tags.projectTabs(project, "info") {
+			<div class="row tab-body">
+				<!-- Locales -->
+				<div class="col-md-4">
+					<div class="card">
+						<div class="card-header bg-blue">
+							<h4>@Messages("locales")</h4>
+						</div>
+						<div class="card-content">
+							<p>
+								@Messages("locales.size", project.locales.size())
+							</p>
 							<div class="progress">
-								<div class="progress-bar progress-bar-success" style="width: @{project.progress(locale)*100}%;"></div>
+								<div class="progress-bar progress-bar-success" style="width: @{project.progress()*100}%;"></div>
 							</div>
-						</td>
-						<td class="actions text-right">
-							<a href="@routes.ApplicationController.localeImport(locale.id)" class="btn btn-link" title="@Messages("button.import")">
-								<span class="glyphicon glyphicon-open" aria-hidden="true"></span>
-							</a>
-							<a href="@routes.ApplicationController.localeExport(locale.id)" class="btn btn-link" title="@Messages("button.export")">
-								<span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-							</a>
-							<a href="@routes.ApplicationController.localeRemove(locale.id)" class="btn btn-link" title="@Messages("button.remove")">
-								<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-							</a>
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-		</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Keys -->
+				<div class="col-md-4">
+					<div class="card">
+						<div class="card-header bg-light-green">
+							<h4>@Messages("keys")</h4>
+						</div>
+						<div class="card-content">
+							<p>
+								@Messages("keys.size", project.keys.size())
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Project Info -->
+				<div class="col-md-4">
+					<div class="card">
+						<div class="card-header bg-orange">
+							<h4>@Messages("project"): @project.name</h4>
+						</div>
+						<div class="card-content">
+							<p>
+								@Messages("timestamps.info", pretty(project.whenCreated), pretty(project.whenUpdated))
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
 	</div>
 	<!-- /.col-md-12 -->
-
-	<button type="button" id="create" class="btn btn-circle btn-raised btn-primary" data-toggle="modal" data-target="#modal-create">
-		<span class="glyphicon glyphicon-plus"></span>
-	</button>
-	
-	@tags.modal(Messages("locale.new"), "modal-create") {
-		<form id="form-locale" method="post" action="@routes.ApplicationController.localeCreate(project.id)">
-			<div class="form-group">
-				<input id="field-locale-name" name="name" class="form-control" placeholder="@Messages("locale.label")"></input>
-			</div>
-		</form>
-	}
-
-	<script>
-		function search(value) {
-		    if(value !== '') {
-				$('tr.locale').hide();
-				$('tr.locale[name*="' + value.toLowerCase() +'"]').show();
-		    } else {
-		    	$('tr.locale').show();
-		    }
-		}
-		$(document).ready(function() {
-			$('#field-search').on('change keyup paste', function() {
-				search($('#field-search').val());
-			});
-			$('.button-save').click(function() {
-				$('#form-locale').submit();
-			});
-		});
-	</script>
 }

@@ -2,7 +2,6 @@ package models;
 
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,17 +21,17 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 public class Message {
 	@Id
 	public UUID id;
-	
+
 	@CreatedTimestamp
 	public DateTime whenCreated;
-	
+
 	@UpdatedTimestamp
 	public DateTime whenUpdated;
 
-	@ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	public Locale locale;
 
-	@ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	public Key key;
 
 	@Column(nullable = false, length = 20 * 1024)

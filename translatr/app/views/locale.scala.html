@@ -1,25 +1,20 @@
 @(project: models.Project, locale: models.Locale, locales: List[models.Locale])
 
-@main(Messages("locale", project.name, tags.locale(locale))) {
-	<form id="form-search" class="navbar-form" role="search">
-		<div class="form-group">
-			<input id="field-search" type="text" class="form-control" placeholder="@Messages("search")">
-		</div> <!-- /input-group -->
-		<input type="submit" class="hidden" />
-	</form>
+@main(Messages("locale", project.name, tags.locale(locale.name))) {
+	@tags.search()
 } {
 	<ul class="breadcrumb">
 		<li>
-			<a href="@routes.ApplicationController.dashboard()">
+			<a href="@routes.Application.dashboard()">
 				@Messages("dashboard")
 			</a>
 		</li>
 		<li>
-			<a href="@routes.ApplicationController.project(locale.project.id)">
+			<a href="@routes.Application.project(locale.project.id)">
 				@project.name
 			</a>
 		</li>
-		<li class="active">@tags.locale(locale)</li>
+		<li class="active">@tags.locale(locale.name)</li>
 	</ul>
 
 	@tags.threeColumns {
@@ -42,23 +37,12 @@
 		<div id="panel-message" class="panel panel-primary">
 			<div class="panel-heading">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 class="panel-title">@Messages("locale.to.label")</h3>
+				<h3 class="panel-title">@Messages("locale.to.label") @tags.locale(locale.name)</h3>
 			</div>
 			<div class="panel-body">
 				<form id="form-message">
 					<input id="field-id" type="hidden" />
 					<input id="field-keyId" type="hidden" />
-					<div class="form-group">
-						<select id="field-locale-to" class="form-control">
-							@for(l <- locales) {
-								<option value="@l.id">@tags.locale(l)</option>
-							}
-						</select>
-					</div>
-					<div class="form-group">
-						<label>@Messages("locale.preview")</label>
-						<div id="preview"></div>
-					</div>
 					<div class="form-group hidden">
 						<label for="field-key">@Messages("locale.key.label")</label>
 						<input id="field-key" class="form-control" type="text" disabled="disabled" />
@@ -66,11 +50,26 @@
 					<div class="form-group">
 						<textarea id="field-value" class="form-control" rows="3" placeholder="@Messages("locale.value.label")"></textarea>
 					</div>
-					<button id="submit" class="btn btn-primary">@Messages("button.save")</button>
+					<div class="form-group text-right">
+						<button id="submit" class="btn btn-primary">@Messages("button.save")</button>
+					</div>
+					<div class="form-group">
+						<label>@Messages("locale.preview")</label>
+						<div id="preview"></div>
+					</div>
 				</form>
 			</div>
 		</div>
 	} {
+		<div id="panel-messages" class="list-group">
+			<div class="list-group-item message template">
+				<button class="btn btn-link btn-copy pull-right" title="@Messages("value.copy")">
+					<span class="glyphicon glyphicon-copy"></span>
+				</button>
+				<h4 class="list-group-item-heading localeName">Name</h4>
+				<p class="list-group-item-text value">Value</p>
+			</div>
+		</div>
 	}
 
 	<button type="button" id="create" class="btn btn-circle btn-raised btn-primary"data-toggle="modal" data-target="#modal-create">
@@ -78,7 +77,7 @@
 	</button>
 
 	@tags.modal(Messages("key.new"), "modal-create") {
-	<form id="form-key" method="post" action="@routes.ApplicationController.keyCreate(locale.id)">
+	<form id="form-key" method="post" action="@routes.Application.keyCreate(locale.id)">
 		<div class="form-group">
 			<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
 		</div>
@@ -86,23 +85,55 @@
 	}
 
 	<script>
+		var locales = {
+			@for(locale <- locales) {
+				'@locale.id': '@utils.FormatUtils.formatLocale(locale)',
+			}	
+		};
+		function handleMessage(message) {
+		    $('#field-id').val(message.id);
+		    $('#field-key').val(message.key.name).attr('keyId', message.key.id);
+		    $('#field-value').val(message.value);
+		    $('#preview').html(message.value);
+		}
+		function handleMessageList(keyName, messages) {
+		    var $messages = $('#panel-messages');
+		    $messages.find('.message:not(.template)').remove();
+		    var $template = $('.message.template');
+		    messages.forEach(function(entry) {
+		    	console.log('Message: ', entry);
+		    	var $msg = $template.clone().removeClass('template');
+		    	$msg.find('.localeName').text(locales[entry.localeId]);
+		    	$msg.find('.value').html(entry.value);
+		    	$msg.find('.btn-copy').click(handleCopyMessageValue);
+		    	$messages.append($msg);
+		    });
+		}
+		function handleCopyMessageValue() {
+			$('#field-value').val($(this).parent().find('.value').text());
+		}
+		function handleSaveMessage(message) {
+		    if(message.locale.id === '@locale.id') {
+		    	$('#' + message.key.id).removeClass('no-message');
+		    	$('#' + message.key.id + ' .value').html(message.value);
+		    }
+		}
 		function updateForm(keyId, keyName) {
 			$("#no-selection").hide();
 			$("#panel-message").show();
+			$("#panel-messages").show();
 		    $('#field-id').val('');
 			$('#field-key').val(keyName).attr('keyId', keyId);
 		    $('#field-value').val('');
 		    $('#preview').html('');
 			$.ajax(
-				jsRoutes.controllers.ApiController.getMessage($('#field-locale-to').val(), keyName)
-			).done(function(data) {
-			    if (console && console.log) {
-					console.log('Message: ', data);
-				}
-			    $('#field-id').val(data.id);
-			    $('#field-key').val(data.key.name).attr('keyId', data.key.id);
-			    $('#field-value').val(data.value);
-			    $('#preview').html(data.value);
+				jsRoutes.controllers.Api.getMessage('@locale.id', keyName)
+			).done(handleMessage);
+			$.ajax($.extend(
+				jsRoutes.controllers.Api.findMessages('@project.id'),
+				{data: {keyName: keyName}}
+			)).done(function(data) {
+			    handleMessageList(keyName, data);
 			});
 		}
 		function search(value) {
@@ -115,6 +146,7 @@
 		}
 		$(document).ready(function() {
 			$("#panel-message").hide();
+			$("#panel-messages").hide();
 			$('#field-search').on('change keyup paste', function() {
 				search($('#field-search').val());
 			});
@@ -127,14 +159,14 @@
 		        e.preventDefault();
 				$.ajax(
 					$.extend(
-						jsRoutes.controllers.ApiController.putMessage(),
+						jsRoutes.controllers.Api.putMessage(),
 						{
 							contentType: 'application/json',
 							dataType: 'json',
 							data: JSON.stringify({
 								"id": $('#field-id').val() !== '' ? $('#field-id').val() : null,
 								"locale": {
-								  "id": $('#field-locale-to').val()
+								  "id": '@locale.id'
 								},
 								"key": {
 									"id": $('#field-key').attr('keyId')
@@ -144,13 +176,7 @@
 						}
 					)
 				).done(function(data) {
-				    if (console && console.log) {
-						console.log('Updated: ', data);
-					}
-				    if(data.locale.id === '@locale.id') {
-				    	$('#' + data.key.id).removeClass('no-message');
-				    	$('#' + data.key.id + ' .value').html(data.value);
-				    }
+					handleSaveMessage(data);
 				});
 		    });
 			$('a.key').click(function() {
@@ -160,13 +186,7 @@
 			})
 			$('a.key .btn-remove').click(function(e) {
 				e.stopPropagation();
-				window.location.href=jsRoutes.controllers.ApplicationController.keyRemove($(this).parent().attr('id'), '@locale.id').url;
-			});
-			$('#field-locale-from').change(function() {
-				window.location.href=jsRoutes.controllers.ApplicationController.locale($('#field-locale-from').val()).url + '#key=' + $('#field-key').val();
-			});
-			$('#field-locale-to').change(function() {
-				updateForm($('#field-key').attr('keyId'), $('#field-key').val());
+				window.location.href=jsRoutes.controllers.Application.keyRemove($(this).parent().attr('id'), '@locale.id').url;
 			});
 			$('#field-value').on('change keyup paste', function() {
 			    $('#preview').html($('#field-value').val());
@@ -174,6 +194,7 @@
 			$('button.close').click(function() {
 				$('a.key').removeClass('active');
 				$("#panel-message").hide();		
+				$("#panel-messages").hide();		
 				$("#no-selection").show();
 				window.location.hash = '#';
 			});

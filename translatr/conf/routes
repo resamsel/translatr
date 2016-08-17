@@ -3,39 +3,49 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           	controllers.ApplicationController.index
-GET     /dashboard	             		controllers.ApplicationController.dashboard
+GET     /                           	controllers.Application.index
+GET     /dashboard	             		controllers.Application.dashboard
 
 # Projects
-GET     /project/:id             		controllers.ApplicationController.project(id: java.util.UUID)
-POST	/project						controllers.ApplicationController.projectCreate
+GET     /project/:id             		controllers.Application.project(id: java.util.UUID)
+POST	/project						controllers.Application.projectCreate
+GET     /project/:id/locales       		controllers.Application.projectLocales(id: java.util.UUID)
 
 # Locales
-GET     /locale/:id			       		controllers.ApplicationController.locale(id: java.util.UUID)
-GET		/locale/:id/import				controllers.ApplicationController.localeImport(id: java.util.UUID)
-POST	/locale/:id/import				controllers.ApplicationController.localeImport(id: java.util.UUID)
-GET     /locale/:id/export	       		controllers.ApplicationController.localeExport(id: java.util.UUID)
-POST	/locale/:projectId				controllers.ApplicationController.localeCreate(projectId: java.util.UUID)
-GET     /locale/:id/remove	       		controllers.ApplicationController.localeRemove(id: java.util.UUID)
+GET     /locale/:id			       		controllers.Application.locale(id: java.util.UUID)
+GET		/locale/:id/import				controllers.Application.localeImport(id: java.util.UUID)
+POST	/locale/:id/import				controllers.Application.localeImport(id: java.util.UUID)
+GET     /locale/:id/export	       		controllers.Application.localeExport(id: java.util.UUID)
+POST	/locale/:projectId				controllers.Application.localeCreate(projectId: java.util.UUID)
+GET     /locale/:id/remove	       		controllers.Application.localeRemove(id: java.util.UUID)
+GET		/locale/:id/translate			controllers.Application.localeTranslate(id: java.util.UUID)
 
 # Keys
-GET		/key/:keyId/:localeId/remove	controllers.ApplicationController.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID)
-POST	/key/:localeId					controllers.ApplicationController.keyCreate(localeId: java.util.UUID)
+GET		/key/:keyId/:localeId/remove	controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID)
+POST	/key/:localeId					controllers.Application.keyCreate(localeId: java.util.UUID)
 
-#GET     /message/:id             		controllers.ApplicationController.message(id: java.util.UUID)
+# Messages
+#GET     /message/:id             		controllers.Application.message(id: java.util.UUID)
 
-GET		/load							controllers.ApplicationController.load
+# Load demo data
+GET		/load							controllers.Application.load
 
-#GET		/api/project/:projectId		controllers.ApiController.getProject(projectId: String)
-PUT		/api/project					controllers.ApiController.putProject
+GET     /command/:id/execute			controllers.Application.commandExecute(id: java.util.UUID)
 
-#GET		/api/locale/:localeId		controllers.ApiController.getLocale(localeId: java.util.UUID)
-PUT		/api/locale						controllers.ApiController.putLocale
+#
+# API
+#
+#GET		/api/project/:projectId		controllers.Api.getProject(projectId: String)
+PUT		/api/project					controllers.Api.putProject
 
-GET		/api/message/:localeId/:key		controllers.ApiController.getMessage(localeId: java.util.UUID, key: String)
-PUT		/api/message					controllers.ApiController.putMessage
+#GET		/api/locale/:localeId		controllers.Api.getLocale(localeId: java.util.UUID)
+PUT		/api/locale						controllers.Api.putLocale
+
+GET		/api/messages/:projectId		controllers.Api.findMessages(projectId: java.util.UUID)
+GET		/api/message/:localeId/:key		controllers.Api.getMessage(localeId: java.util.UUID, key: String)
+PUT		/api/message					controllers.Api.putMessage
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-GET     /javascriptRoutes      			controllers.ApplicationController.javascriptRoutes
+GET     /javascriptRoutes      			controllers.Application.javascriptRoutes

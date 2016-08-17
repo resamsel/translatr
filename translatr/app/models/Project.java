@@ -2,9 +2,8 @@ package models;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import javax.annotation.WillCloseWhenClosed;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -24,10 +23,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Project {
 	@Id
 	public UUID id;
-	
+
 	@CreatedTimestamp
 	public DateTime whenCreated;
-	
+
 	@UpdatedTimestamp
 	public DateTime whenUpdated;
 
@@ -44,18 +43,24 @@ public class Project {
 
 	public Project() {
 	}
-	
+
 	public Project(String name) {
 		this.name = name;
 	}
-	
+
 	public static final Find<UUID, Project> find = new Find<UUID, Project>() {
 	};
 
+	public float progress() {
+		if (keys.size() < 1 || locales.size() < 1)
+			return 0f;
+		return (float) locales.stream().collect(Collectors.summingInt(l -> l.messages.size())) / (float) (keys.size() * locales.size());
+	}
+
 	public float progress(Locale locale) {
-		if (keys.size() > 0)
-			return (float) locale.messages.size() / (float) keys.size();
-		return 0f;
+		if (keys.size() < 1)
+			return 0f;
+		return (float) locale.messages.size() / (float) keys.size();
 	}
 
 	public int messagesSize() {

@@ -1,12 +1,7 @@
 @(projects: List[models.Project])
 
 @main(Messages("projects")) {
-	<form id="form-search" class="navbar-form" role="search">
-		<div class="form-group">
-			<input id="field-search" type="text" class="form-control" placeholder="@Messages("search")">
-		</div> <!-- /input-group -->
-		<input type="submit" class="hidden" />
-	</form>
+	@tags.search()
 } {
 	<div class="col-md-12">
 		@for(project <- projects) {
@@ -19,7 +14,7 @@
 				@Messages("keys.size", project.keys.size()),
 				@Messages("messages.size", project.messagesSize())
 			} {
-				<a href="@routes.ApplicationController.project(project.id)">
+				<a href="@routes.Application.project(project.id)">
 					<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
 					@Messages("button.goto", Messages("project"))
 				</a>
@@ -33,7 +28,7 @@
 	</button>
 
 	@tags.modal(Messages("project.new"), "modal-create") {
-		<form id="form-project" method="post" action="@routes.ApplicationController.projectCreate()">
+		<form id="form-project" method="post" action="@routes.Application.projectCreate()">
 			<div class="form-group">
 				<input id="field-project-name" name="name" class="form-control" placeholder="@Messages("project.label")"></input>
 			</div>

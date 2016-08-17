@@ -15,7 +15,9 @@ libraryDependencies ++= Seq(
 	"postgresql" % "postgresql" % "9.1-901-1.jdbc4",
 
 	// Apache Commons IO
-	"commons-io" % "commons-io" % "2.4"
+	"commons-io" % "commons-io" % "2.4",
+
+	"org.ocpsoft.prettytime" % "prettytime" % "3.2.7.Final"
 )
 
 // From: https://github.com/playframework/playframework/issues/3818

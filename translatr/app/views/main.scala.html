@@ -1,25 +1,18 @@
-@* * See:
-https://blackrockdigital.github.io/startbootstrap-sb-admin-2/pages/index.html
-*@ @(title: String)(nav: Html)(content: Html)
+@*
+ * See: https://blackrockdigital.github.io/startbootstrap-sb-admin-2/pages/index.html
+ *@
+@(title: String)(nav: Html)(content: Html)
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-@* Here's where we render the page title `String`. *@
 <title>@title</title>
 
 <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")">
-
-@*
-<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/sb-admin-2.css")">
-*@
-
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/font-awesome.css")">
+<link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
 
-<link rel="shortcut icon" type="image/png"
-	href="@routes.Assets.versioned("images/favicon.png")">
 </head>
 <body>
 	<!-- Navigation -->
@@ -33,12 +26,15 @@ https://blackrockdigital.github.io/startbootstrap-sb-admin-2/pages/index.html
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="@routes.ApplicationController.index()">
-					Translatr
+				<a class="navbar-brand" href="@routes.Application.index()">
+					@Messages("brand")
 				</a>
 			</div>
 			<!-- /.navbar-header -->
 			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav navbar-right">
+				</ul>
+
 				@nav
 			</div>
 			<!-- /.navbar-collapse -->
@@ -47,8 +43,7 @@ https://blackrockdigital.github.io/startbootstrap-sb-admin-2/pages/index.html
 
 	<script src="@routes.Assets.versioned("javascripts/jquery.min.js")"></script>
 
-	<script type="text/javascript"
-		src="@routes.ApplicationController.javascriptRoutes"></script>
+	<script src="@routes.Application.javascriptRoutes"></script>
 
 	<div class="container-fluid content">
 		<div class="row">

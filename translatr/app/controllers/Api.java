@@ -1,11 +1,13 @@
 package controllers;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.ExpressionList;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.Locale;
@@ -16,8 +18,8 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class ApiController extends Controller {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ApiController.class);
+public class Api extends Controller {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Api.class);
 
 	@BodyParser.Of(BodyParser.Json.class)
 	public Result putProject() {
@@ -54,7 +56,7 @@ public class ApiController extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	public Result putMessage() {
 		JsonNode json = request().body().asJson();
-		
+
 		Message message = null;
 		if (json.hasNonNull("id")) {
 			message = Message.find.byId(UUID.fromString(json.get("id").asText()));
@@ -68,9 +70,21 @@ public class ApiController extends Controller {
 		return ok(Json.toJson(message));
 	}
 
+	public Result findMessages(UUID projectId) {
+		ExpressionList<Message> query = Message.find.where();
+
+		query.eq("key.project.id", projectId);
+		
+		String keyName = request().getQueryString("keyName");
+		if (keyName != null)
+			query.eq("key.name", keyName);
+
+		return ok(Json.toJson(query.findList().stream().map(m -> new dto.Message(m)).collect(Collectors.toList())));
+	}
+
 	public Result getMessage(UUID localeId, String key) {
 		Message message = Message.find.where().eq("locale.id", localeId).eq("key.name", key).findUnique();
-		if(message == null)
+		if (message == null)
 			return notFound(Json.toJson(new Exception("Message not found")));
 		return ok(Json.toJson(message));
 	}
