@@ -1,5 +1,7 @@
 package controllers;
 
+import static utils.FormatUtils.formatLocale;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Collections;
@@ -112,7 +114,9 @@ public class Application extends Controller
 
 		select(project);
 
-		return ok(views.html.projectLocales.render(project, Locale.find.where().eq("project", project).findList()));
+		Collections.sort(project.locales, (a, b) -> formatLocale(a).compareTo(formatLocale(b)));
+
+		return ok(views.html.projectLocales.render(project, project.locales));
 	}
 
 	public Result locale(UUID id)

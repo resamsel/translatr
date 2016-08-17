@@ -1,9 +1,1 @@
-@(localeName: String)
-
-@defining(java.util.Locale.forLanguageTag(localeName.replaceAll("_", "-"))) { l =>
-	@if(l.getDisplayName() == localeName) {
-		@localeName
-	} else {
-		@Messages("locale.format", l.getDisplayName(), localeName)
-	}
-}
+@(localeName: String) @utils.FormatUtils.formatLocale(localeName)

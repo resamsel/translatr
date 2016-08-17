@@ -14,11 +14,16 @@ public class FormatUtils
 
 	public static final String formatLocale(Locale locale)
 	{
-		java.util.Locale l = java.util.Locale.forLanguageTag(locale.name.replaceAll("_", "-"));
+		return formatLocale(locale.name);
+	}
 
-		if(l.getDisplayName().equals(locale.name))
-			return locale.name;
+	public static final String formatLocale(String localeName)
+	{
+		java.util.Locale l = java.util.Locale.forLanguageTag(localeName.replaceAll("_", "-"));
 
-		return String.format("%s (%s)", l.getDisplayName(), locale.name);
+		if(l.getDisplayName().equalsIgnoreCase(localeName))
+			return localeName;
+
+		return String.format("%s (%s)", l.getDisplayName(), localeName);
 	}
 }
