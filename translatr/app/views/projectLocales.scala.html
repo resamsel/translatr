@@ -55,9 +55,14 @@
 	</button>
 	
 	@tags.modal(Messages("locale.new"), "modal-create") {
-		<form id="form-locale" method="post" action="@routes.Application.localeCreate(project.id)">
+		<form id="form-locale" method="post" action="@routes.Application.localeCreate(project.id)" enctype="multipart/form-data">
 			<div class="form-group">
+				<label for="field-locale-name">@Messages("locale.name")</label>
 				<input id="field-locale-name" name="name" class="form-control" placeholder="@Messages("locale.label")"></input>
+			</div>
+			<div class="form-group">
+				<label for="field-messages">@Messages("locale.import.file") (@Messages("validation.optional"))</label>
+				<input id="field-messages" name="messages" class="form-control" type="file" />
 			</div>
 		</form>
 	}

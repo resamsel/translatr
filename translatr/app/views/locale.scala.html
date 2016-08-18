@@ -21,7 +21,12 @@
 		<h3 class="section-heading">@Messages("keys")</h3>
 		<div class="list-group">
 			@for(key <- project.keys) {
-				<a href="#key=@key.name" class="list-group-item key @if(key.messageValue(locale) == null) { no-message }" id="@key.id" name="@key.name.toLowerCase">
+				<a
+					id="@key.id"
+					href="#key=@key.name"
+					class="list-group-item key @if(key.messageValue(locale) == null) { no-message }"
+					name="@key.name.toLowerCase"
+					title="@key.name">
 					<button class="btn btn-link btn-remove pull-right">
 						<span class="glyphicon glyphicon-trash"></span>
 						<span class="sr-only">@Messages("key.remove")</span>

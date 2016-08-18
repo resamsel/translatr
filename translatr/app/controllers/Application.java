@@ -34,6 +34,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.With;
 import play.routing.JavaScriptReverseRouter;
@@ -149,28 +150,13 @@ public class Application extends Controller
 
 		if("POST".equals(request().method()))
 		{
-			MultipartFormData<File> body = request().body().asMultipartFormData();
-			FilePart<File> messages = body.getFile("messages");
-
-			if(messages == null)
-				return redirect(routes.Application.locale(id));
-
-			Importer importer = new PlayImporter();
-
-			try
-			{
-				importer.apply(messages.getFile(), locale);
-			}
-			catch(Exception e)
-			{
-				LOGGER.error("Error while importing messages", e);
-			}
+			importLocale(locale, request());
 
 			return redirect(routes.Application.locale(id));
 		}
 		else
 		{
-			return ok(views.html.localeImport.render(locale));
+			return ok(views.html.localeImport.render(locale.project, locale));
 		}
 	}
 
@@ -202,6 +188,8 @@ public class Application extends Controller
 		LOGGER.debug("Locale: {}", Json.toJson(locale));
 
 		Ebean.save(locale);
+
+		importLocale(locale, request());
 
 		return redirect(routes.Application.locale(locale.id));
 	}
@@ -346,5 +334,32 @@ public class Application extends Controller
 				routes.javascript.Api.getMessage(),
 				routes.javascript.Api.putMessage(),
 				routes.javascript.Api.findMessages()));
+	}
+
+	/**
+	 * @param locale
+	 * @param request
+	 * @return
+	 */
+	private static String importLocale(Locale locale, Request request)
+	{
+		MultipartFormData<File> body = request.body().asMultipartFormData();
+		FilePart<File> messages = body.getFile("messages");
+
+		if(messages == null)
+			return null;
+
+		Importer importer = new PlayImporter();
+
+		try
+		{
+			importer.apply(messages.getFile(), locale);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Error while importing messages", e);
+		}
+
+		return "OK";
 	}
 }
