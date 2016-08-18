@@ -153,6 +153,7 @@ button#create {
 }
 .table .name,
 .table .created,
+.table .updated,
 .table .locale-progress {
 	vertical-align: middle;
 }
@@ -173,13 +174,29 @@ button#create {
     min-width: 100%;
 }
 .navbar-form input.form-control {
-	padding: 0 20px;
+	padding: 0 10px;
 	color: white;
 	width: 100%;
 }
+.navbar-form input.form-control:first-child {
+	padding: 0 20px;
+}
 .navbar-form input[type=search].form-control,
-.navbar-form input[type=search].form-control:focus {
+.navbar-form input[type=search].form-control:focus,
+.navbar-form .search-panel .btn {
 	box-shadow: none;
+}
+.navbar-form .input-group-btn.search-panel {
+	width: 50px;
+}
+.navbar-form .search-panel .btn {
+	background-color: transparent;
+	color: white;
+}
+.search-panel.open > .dropdown-toggle.btn-default {
+	background-color: rgba(255,255,255,.20);
+	border-color: rgba(255,255,255,.20);
+	color: white;
 }
 
 .breadcrumb {
@@ -215,6 +232,13 @@ button#create {
 	font-size: 13px;
 	line-height: 24px;
 	margin: 0;
+}
+
+.dropdown-menu>li>.input-group {
+	padding: 3px 20px;
+}
+.dropdown-menu>li>.input-group label {
+	margin-bottom: 0;
 }
 
 /* Keys */

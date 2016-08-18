@@ -1,7 +1,24 @@
 @(project: models.Project, locale: models.Locale, locales: List[models.Locale])
 
 @main(Messages("locale", project.name, tags.locale(locale.name))) {
-	@tags.search()
+	@tags.search {
+		<div class="input-group-btn search-panel">
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				<span id="search_concept">@Messages("search.filter")</span>
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu">
+				<li>
+					<div class="input-group">
+						<input id="field-untranslated" type="checkbox" />
+						<label for="field-untranslated">
+							@Messages("message.untranslated")
+						</label>
+					</div>
+				</li>
+			</ul>
+		</div>
+	}
 } {
 	<ul class="breadcrumb">
 		<li>
@@ -12,6 +29,11 @@
 		<li>
 			<a href="@routes.Application.project(locale.project.id)">
 				@project.name
+			</a>
+		</li>
+		<li>
+			<a href="@routes.Application.projectLocales(locale.project.id)">
+				@Messages("locales")
 			</a>
 		</li>
 		<li class="active">@tags.locale(locale.name)</li>
@@ -144,17 +166,34 @@
 			});
 		}
 		function search(value) {
+			var filterUntranslated = $('#field-untranslated').is(':checked');
 		    if(value !== '') {
 				$('a.key').hide();
-				$('a.key[name*="' + value.toLowerCase() +'"]').show();
+				if(filterUntranslated) {
+					console.log('Untranslated checked');
+					$('a.key.no-message[name*="' + value.toLowerCase() +'"]').show();
+				} else {
+					console.log('Untranslated unchecked');
+					$('a.key[name*="' + value.toLowerCase() +'"]').show();
+				}
 		    } else {
-		    	$('a.key').show();
+				if(filterUntranslated) {
+					console.log('Untranslated checked');
+					$('a.key').hide();
+			    	$('a.key.no-message').show();
+				} else {
+					console.log('Untranslated unchecked');
+			    	$('a.key').show();
+				}
 		    }
 		}
 		$(document).ready(function() {
 			$("#panel-message").hide();
 			$("#panel-messages").hide();
 			$('#field-search').on('change keyup paste', function() {
+				search($('#field-search').val());
+			});
+			$('#field-untranslated').change(function() {
 				search($('#field-search').val());
 			});
 			$('#form-search').submit(function(e) {

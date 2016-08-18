@@ -9,7 +9,12 @@
 				@Messages("dashboard")
 			</a>
 		</li>
-		<li class="active">@project.name</li>
+		<li>
+			<a href="@routes.Application.project(project.id)">
+				@project.name
+			</a>
+		</li>
+		<li class="active">@Messages("locales")</li>
 	</ul>
 	
 	<div class="col-md-12">
@@ -23,8 +28,8 @@
 									@tags.locale(locale.name)
 								</a>
 							</td>
-							<td class="created">
-								@utils.FormatUtils.pretty(ctx.lang().locale, locale.whenCreated)
+							<td class="updated">
+								@utils.FormatUtils.pretty(ctx.lang().locale, locale.whenUpdated)
 							</td>
 							<td class="locale-progress">
 								<div class="progress">
