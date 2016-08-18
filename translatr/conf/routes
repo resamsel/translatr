@@ -38,6 +38,7 @@ GET     /command/:id/execute			controllers.Application.commandExecute(id: java.u
 #GET		/api/project/:projectId		controllers.Api.getProject(projectId: String)
 PUT		/api/project					controllers.Api.putProject
 
+GET		/api/locales/:projectId		controllers.Api.findLocales(projectId: java.util.UUID)
 #GET		/api/locale/:localeId		controllers.Api.getLocale(localeId: java.util.UUID)
 PUT		/api/locale						controllers.Api.putLocale
 

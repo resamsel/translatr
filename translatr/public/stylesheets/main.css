@@ -15,16 +15,10 @@ html, body {
 }
 .container-fluid.content>.row {
 	height: 100%;
-}    
+}
 .mainview, .navview, .subview {
 	height: calc(100% - 40px); /* subtracts the height of the breadcrumb bar */
 	overflow: auto;
-}
-
-.panel-heading button.close {
-	color: white;
-    font-size: 24px;
-    line-height: 18px;
 }
 
 .list-group-item {

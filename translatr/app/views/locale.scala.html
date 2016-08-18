@@ -34,12 +34,11 @@
 		<div id="no-selection" class="container-center">
 			<span class="center">@Messages("key.selection.none")</span>
 		</div>
-		<div id="panel-message" class="panel panel-primary">
-			<div class="panel-heading">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 class="panel-title">@Messages("locale.to.label") @tags.locale(locale.name)</h3>
+		<div id="panel-message" class="card">
+			<div class="card-header bg-blue">
+				<h4>@Messages("locale.to.label") @tags.locale(locale.name)</h4>
 			</div>
-			<div class="panel-body">
+			<div class="card-content">
 				<form id="form-message">
 					<input id="field-id" type="hidden" />
 					<input id="field-keyId" type="hidden" />
@@ -51,6 +50,7 @@
 						<textarea id="field-value" class="form-control" rows="3" placeholder="@Messages("locale.value.label")"></textarea>
 					</div>
 					<div class="form-group text-right">
+						<button class="btn btn-default btn-cancel">@Messages("button.cancel")</button>
 						<button id="submit" class="btn btn-primary">@Messages("button.save")</button>
 					</div>
 					<div class="form-group">
@@ -191,10 +191,10 @@
 			$('#field-value').on('change keyup paste', function() {
 			    $('#preview').html($('#field-value').val());
 			});
-			$('button.close').click(function() {
+			$('.btn-cancel').click(function() {
 				$('a.key').removeClass('active');
-				$("#panel-message").hide();		
-				$("#panel-messages").hide();		
+				$("#panel-message").hide();
+				$("#panel-messages").hide();
 				$("#no-selection").show();
 				window.location.hash = '#';
 			});
@@ -202,7 +202,7 @@
 				$('#form-key').attr('action', $('#form-key').attr('action') + '#key=' + $('#field-key-name').val());
 				$('#form-key').submit();
 			});
-		
+
 			var hash = window.location.hash;
 			if(hash !== '') {
 				console.log('Hash: ', hash);

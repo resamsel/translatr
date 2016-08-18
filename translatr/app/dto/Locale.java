@@ -6,22 +6,29 @@ import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import models.Project;
 
-public class Locale {
+public class Locale
+{
 	public UUID id;
 
+	@JsonIgnore
 	public DateTime whenCreated;
 
+	@JsonIgnore
 	public DateTime whenUpdated;
 
 	public UUID projectId;
 
 	public String name;
 
+	@JsonIgnore
 	public List<Message> messages;
 
-	public Locale(models.Locale locale) {
+	public Locale(models.Locale locale)
+	{
 		this.id = locale.id;
 		this.whenCreated = locale.whenCreated;
 		this.whenUpdated = locale.whenUpdated;
@@ -30,7 +37,8 @@ public class Locale {
 		this.messages = locale.messages.stream().map(m -> new Message(m)).collect(Collectors.toList());
 	}
 
-	public models.Locale toModel() {
+	public models.Locale toModel()
+	{
 		models.Locale model = new models.Locale();
 
 		model.id = id;

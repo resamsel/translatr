@@ -212,13 +212,15 @@ public class Application extends Controller
 		if(locale == null)
 			return redirect(routes.Application.index());
 
+		for(Message message : locale.messages)
+			Ebean.delete(message);
 		Ebean.delete(locale);
 
 		UUID commandId = UUID.randomUUID();
 		cache.set(String.format(COMMAND_FORMAT, commandId), new RevertDeleteLocaleCommand(locale), 120);
 
 		return redirect(
-			routes.Application.project(locale.project.id).withFragment(String.format("command=%s", commandId)));
+			routes.Application.projectLocales(locale.project.id).withFragment(String.format("command=%s", commandId)));
 	}
 
 	public Result localeTranslate(UUID localeId)
