@@ -69,6 +69,9 @@ a.list-group-item:hover {
 .subview h4 {
 	font-size: 14px;
 }
+.mainview h3 {
+	margin-top: 23px;
+}
 
 .container-center {
 	height: 100%;
@@ -136,13 +139,16 @@ button#create {
 .locale .progress {
 	margin-bottom: 0;
 }
-table.table .locale-progress {
+.table .name,
+.table .created,
+.table .locale-progress {
 	vertical-align: middle;
-	width: 250px;
+}
+.table .locale-progress {
+	width: 25%;
 }
 .table .name {
-	vertical-align: middle;
-    width: 250px;
+    width: 33%;
 }
 
 .navbar-form {
@@ -190,6 +196,13 @@ table.table .locale-progress {
 
 .template {
 	display: none;
+}
+
+.section-heading {
+	color: #616161;
+	font-size: 13px;
+	line-height: 24px;
+	margin: 0;
 }
 
 /* Keys */

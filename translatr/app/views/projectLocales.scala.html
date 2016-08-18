@@ -23,6 +23,9 @@
 									@tags.locale(locale.name)
 								</a>
 							</td>
+							<td class="created">
+								@utils.FormatUtils.pretty(ctx.lang().locale, locale.whenCreated)
+							</td>
 							<td class="locale-progress">
 								<div class="progress">
 									<div class="progress-bar progress-bar-success" style="width: @{project.progress(locale)*100}%;"></div>

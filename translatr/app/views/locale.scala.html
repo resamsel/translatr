@@ -18,6 +18,7 @@
 	</ul>
 
 	@tags.threeColumns {
+		<h3 class="section-heading">@Messages("keys")</h3>
 		<div class="list-group">
 			@for(key <- project.keys) {
 				<a href="#key=@key.name" class="list-group-item key @if(key.messageValue(locale) == null) { no-message }" id="@key.id" name="@key.name.toLowerCase">
@@ -34,12 +35,12 @@
 		<div id="no-selection" class="container-center">
 			<span class="center">@Messages("key.selection.none")</span>
 		</div>
-		<div id="panel-message" class="card">
-			<div class="card-header bg-blue">
-				<h4>@Messages("locale.to.label") @tags.locale(locale.name)</h4>
-			</div>
-			<div class="card-content">
-				<form id="form-message">
+		<form id="form-message">
+			<div id="panel-message" class="card">
+				<div class="card-header bg-blue">
+					<h4>@Messages("locale.to.label") @tags.locale(locale.name)</h4>
+				</div>
+				<div class="card-content">
 					<input id="field-id" type="hidden" />
 					<input id="field-keyId" type="hidden" />
 					<div class="form-group hidden">
@@ -49,26 +50,24 @@
 					<div class="form-group">
 						<textarea id="field-value" class="form-control" rows="3" placeholder="@Messages("locale.value.label")"></textarea>
 					</div>
-					<div class="form-group text-right">
-						<button class="btn btn-default btn-cancel">@Messages("button.cancel")</button>
-						<button id="submit" class="btn btn-primary">@Messages("button.save")</button>
-					</div>
-					<div class="form-group">
-						<label>@Messages("locale.preview")</label>
-						<div id="preview"></div>
-					</div>
-				</form>
+				</div>
+				<div class="card-action">
+					<button type="submit" class="btn btn-link btn-save">@Messages("button.save")</button>
+					<button type="button" class="btn btn-link btn-cancel">@Messages("button.cancel")</button>
+				</div>
 			</div>
-		</div>
+		</form>
+
+		<!-- Preview -->
+		<h3 class="section-heading">@Messages("locale.preview")</h3>
+		<div id="preview"></div>
 	} {
+		<h3 class="section-heading">@Messages("messages")</h3>
 		<div id="panel-messages" class="list-group">
-			<div class="list-group-item message template">
-				<button class="btn btn-link btn-copy pull-right" title="@Messages("value.copy")">
-					<span class="glyphicon glyphicon-copy"></span>
-				</button>
+			<a class="list-group-item message template" title="@Messages("value.copy")">
 				<h4 class="list-group-item-heading localeName">Name</h4>
 				<p class="list-group-item-text value">Value</p>
-			</div>
+			</a>
 		</div>
 	}
 
@@ -87,7 +86,7 @@
 	<script>
 		var locales = {
 			@for(locale <- locales) {
-				'@locale.id': '@utils.FormatUtils.formatLocale(locale)',
+				'@locale.id': '@tags.locale(locale.name)',
 			}	
 		};
 		function handleMessage(message) {
@@ -103,19 +102,22 @@
 		    messages.forEach(function(entry) {
 		    	console.log('Message: ', entry);
 		    	var $msg = $template.clone().removeClass('template');
+		    	$msg.attr('href', window.location.hash).click(handleCopyMessageValue);
 		    	$msg.find('.localeName').text(locales[entry.localeId]);
 		    	$msg.find('.value').html(entry.value);
-		    	$msg.find('.btn-copy').click(handleCopyMessageValue);
 		    	$messages.append($msg);
 		    });
 		}
 		function handleCopyMessageValue() {
-			$('#field-value').val($(this).parent().find('.value').text());
+			var value = $(this).find('.value').text();
+			$('#field-value').val(value);
+			$('#preview').html(value);
 		}
 		function handleSaveMessage(message) {
 		    if(message.locale.id === '@locale.id') {
 		    	$('#' + message.key.id).removeClass('no-message');
 		    	$('#' + message.key.id + ' .value').html(message.value);
+		    	updateForm(message.key.id, $('#field-key').val());
 		    }
 		}
 		function updateForm(keyId, keyName) {
@@ -207,7 +209,9 @@
 			if(hash !== '') {
 				console.log('Hash: ', hash);
 				var keyName = hash.replace('#key=', '');
-				$('a.key[name="'+keyName+'"]').click();
+				var $a = $('a.key[name="'+keyName+'"]');
+				$a[0].scrollIntoView();
+				$a.click();
 			}
 		});
 	</script>

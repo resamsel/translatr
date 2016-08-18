@@ -7,23 +7,23 @@ import models.Locale;
 
 public class FormatUtils
 {
-	public static final String pretty(DateTime dateTime)
+	public static final String pretty(java.util.Locale locale, DateTime dateTime)
 	{
-		return new PrettyTime().format(dateTime.toDate());
+		return new PrettyTime(locale).format(dateTime.toDate());
 	}
 
-	public static final String formatLocale(Locale locale)
+	public static final String formatLocale(java.util.Locale userLocale, Locale locale)
 	{
-		return formatLocale(locale.name);
+		return formatLocale(userLocale, locale.name);
 	}
 
-	public static final String formatLocale(String localeName)
+	public static final String formatLocale(java.util.Locale userLocale, String localeName)
 	{
-		java.util.Locale l = java.util.Locale.forLanguageTag(localeName.replaceAll("_", "-"));
+		java.util.Locale locale = java.util.Locale.forLanguageTag(localeName.replaceAll("_", "-"));
 
-		if(l.getDisplayName().equalsIgnoreCase(localeName))
+		if(locale.getDisplayName(userLocale).equalsIgnoreCase(localeName))
 			return localeName;
 
-		return String.format("%s (%s)", l.getDisplayName(), localeName);
+		return String.format("%s (%s)", locale.getDisplayName(userLocale), localeName);
 	}
 }

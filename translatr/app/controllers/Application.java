@@ -114,7 +114,8 @@ public class Application extends Controller
 
 		select(project);
 
-		Collections.sort(project.locales, (a, b) -> formatLocale(a).compareTo(formatLocale(b)));
+		java.util.Locale locale = ctx().lang().locale();
+		Collections.sort(project.locales, (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
 
 		return ok(views.html.projectLocales.render(project, project.locales));
 	}

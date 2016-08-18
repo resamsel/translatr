@@ -55,7 +55,7 @@
 						</div>
 						<div class="card-content">
 							<p>
-								@Messages("timestamps.info", pretty(project.whenCreated), pretty(project.whenUpdated))
+								@Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))
 							</p>
 						</div>
 					</div>
