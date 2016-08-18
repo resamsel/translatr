@@ -41,6 +41,13 @@ a.list-group-item:hover {
 }
 .list-group-item-text.value {
     font-size: 11px;
+    max-height: 29px; /* 2 * line-height */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* webkit only */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+	-webkit-box-orient: vertical;
 }
 .list-group-item .btn {
 	visibility: hidden;

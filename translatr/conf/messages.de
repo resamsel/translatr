@@ -33,4 +33,4 @@ project.new=Neues Projekt anlegen
 projects=Projekte
 search=Suchen...
 timestamps.info=Angelegt {0}, zuletzt aktualisiert {1}
-value.copy=Wert kopieren
+value.copy=Wert übernehmen
