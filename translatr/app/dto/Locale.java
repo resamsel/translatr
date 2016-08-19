@@ -37,15 +37,13 @@ public class Locale
 		this.messages = locale.messages.stream().map(m -> new Message(m)).collect(Collectors.toList());
 	}
 
-	public models.Locale toModel()
+	public models.Locale toModel(Project project)
 	{
 		models.Locale model = new models.Locale();
 
-		model.id = id;
 		model.whenCreated = whenCreated;
 		model.whenUpdated = whenUpdated;
-		model.project = new Project();
-		model.project.id = projectId;
+		model.project = project;
 		model.name = name;
 
 		return model;

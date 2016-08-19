@@ -9,6 +9,9 @@ GET		/dashboard						controllers.Application.dashboard
 # Projects
 GET		/project/:id					controllers.Application.project(id: java.util.UUID)
 POST	/project						controllers.Application.projectCreate
+GET		/project/:id/edit				controllers.Application.projectEdit(id: java.util.UUID)
+POST	/project/:id/edit				controllers.Application.projectEdit(id: java.util.UUID)
+GET		/project/:id/remove			controllers.Application.projectRemove(id: java.util.UUID)
 GET		/project/:id/locales			controllers.Application.projectLocales(id: java.util.UUID)
 GET		/project/:id/keys				controllers.Application.projectKeys(id: java.util.UUID)
 
@@ -16,11 +19,11 @@ GET		/project/:id/keys				controllers.Application.projectKeys(id: java.util.UUID
 GET		/locale/:id						controllers.Application.locale(id: java.util.UUID)
 GET		/locale/:id/edit				controllers.Application.localeEdit(id: java.util.UUID)
 POST	/locale/:id/edit				controllers.Application.localeEdit(id: java.util.UUID)
+GET		/locale/:id/remove				controllers.Application.localeRemove(id: java.util.UUID)
 GET		/locale/:id/import				controllers.Application.localeImport(id: java.util.UUID)
 POST	/locale/:id/import				controllers.Application.localeImport(id: java.util.UUID)
 GET		/locale/:id/export				controllers.Application.localeExport(id: java.util.UUID)
 POST	/locale/:projectId				controllers.Application.localeCreate(projectId: java.util.UUID)
-GET		/locale/:id/remove				controllers.Application.localeRemove(id: java.util.UUID)
 GET		/locale/:id/translate			controllers.Application.localeTranslate(id: java.util.UUID)
 
 # Keys
@@ -38,7 +41,7 @@ POST	/key/:projectId/:localeId/create	controllers.Application.keyCreate(projectI
 # Load demo data
 GET		/load							controllers.Application.load
 
-GET		/command/:id/execute			controllers.Application.commandExecute(id: java.util.UUID)
+GET		/command/:key/execute	controllers.Application.commandExecute(key: String)
 
 #
 # API

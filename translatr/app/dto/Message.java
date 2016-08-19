@@ -3,12 +3,20 @@ package dto;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import models.Key;
 import models.Locale;
+import models.Project;
+import play.libs.Json;
 
-public class Message {
+public class Message
+{
+	private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
+
 	public UUID id;
 
 	@JsonIgnore
@@ -17,32 +25,33 @@ public class Message {
 	@JsonIgnore
 	public DateTime whenUpdated;
 
-	public UUID localeId;
+	public String localeName;
 
-	public UUID keyId;
+	public String keyName;
 
 	public String value;
 
-	public Message(models.Message message) {
+	public Message(models.Message message)
+	{
 		this.id = message.id;
 		this.whenCreated = message.whenCreated;
 		this.whenUpdated = message.whenUpdated;
-		this.localeId = message.locale.id;
-		this.keyId = message.key.id;
+		this.localeName = message.locale.name;
+		this.keyName = message.key.name;
 		this.value = message.value;
 	}
 
-	public models.Message toModel() {
+	public models.Message toModel(Project project)
+	{
 		models.Message model = new models.Message();
 
-		model.id = id;
 		model.whenCreated = whenCreated;
 		model.whenUpdated = whenUpdated;
-		model.locale = new Locale();
-		model.locale.id = localeId;
-		model.key = new models.Key();
-		model.key.id = keyId;
+		model.locale = Locale.byProjectAndName(project, localeName);
+		model.key = Key.byProjectAndName(project, keyName);
 		model.value = value;
+
+		LOGGER.info("DTO Message toModel: {}", Json.toJson(model));
 
 		return model;
 	}

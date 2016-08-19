@@ -4,7 +4,11 @@ import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 
+import javax.inject.Inject;
+
+import commands.Command;
 import models.Project;
+import play.cache.CacheApi;
 import play.mvc.Action;
 import play.mvc.Http.Context;
 import play.mvc.Result;
@@ -18,12 +22,30 @@ import play.mvc.Result;
  */
 public class ContextAction extends Action.Simple
 {
+	private final CacheApi cache;
+
+	/**
+	 * 
+	 */
+	@Inject
+	public ContextAction(CacheApi cache)
+	{
+		this.cache = cache;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public CompletionStage<Result> call(Context ctx)
 	{
+		if(ctx.flash().containsKey("undo"))
+		{
+			String key = ctx.flash().get("undo");
+			ctx.args.put("undoMessage", ((Command)cache.get(key)).getMessage());
+			ctx.args.put("undoCommand", key);
+		}
+
 		if(ctx.session().containsKey("projectId"))
 		{
 			Project project = Project.byId(UUID.fromString(ctx.session().get("projectId")));

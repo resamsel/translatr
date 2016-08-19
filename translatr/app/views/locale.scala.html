@@ -1,6 +1,6 @@
 @(project: models.Project, locale: models.Locale, locales: List[models.Locale])
 
-@main(Messages("locale", project.name, tags.locale(locale.name))) {
+@main(Messages("locale.title", project.name, tags.locale(locale.name))) {
 	@tags.search {
 		<div class="input-group-btn search-panel">
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">

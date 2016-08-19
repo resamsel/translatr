@@ -20,6 +20,7 @@ import actions.ContextAction;
 import commands.Command;
 import commands.RevertDeleteKeyCommand;
 import commands.RevertDeleteLocaleCommand;
+import commands.RevertDeleteProjectCommand;
 import exporters.Exporter;
 import exporters.PlayExporter;
 import importers.Importer;
@@ -104,6 +105,45 @@ public class Application extends Controller
 		Ebean.save(project);
 
 		return redirect(routes.Application.project(project.id));
+	}
+
+	public Result projectEdit(UUID projectId)
+	{
+		Project project = Project.byId(projectId);
+
+		if(project == null)
+			return redirect(routes.Application.index());
+
+		if("POST".equals(request().method()))
+		{
+			Project changed = formFactory.form(Project.class).bindFromRequest().get();
+
+			project.name = changed.name;
+
+			Ebean.save(project);
+
+			return redirect(routes.Application.project(project.id));
+		}
+
+		return ok(views.html.projectEdit.render(project));
+	}
+
+	public Result projectRemove(UUID projectId)
+	{
+		Project project = Project.byId(projectId);
+
+		LOGGER.debug("Key: {}", Json.toJson(project));
+
+		if(project == null)
+			return redirect(routes.Application.index());
+
+		undoCommand(new RevertDeleteProjectCommand(project));
+
+		Project.delete(project);
+
+		LOGGER.debug("Deleted project: {}", Json.toJson(project));
+
+		return redirect(routes.Application.dashboard());
 	}
 
 	public Result projectLocales(UUID id)
@@ -234,15 +274,11 @@ public class Application extends Controller
 		if(locale == null)
 			return redirect(routes.Application.index());
 
-		for(Message message : locale.messages)
-			Ebean.delete(message);
-		Ebean.delete(locale);
+		undoCommand(new RevertDeleteLocaleCommand(locale));
 
-		UUID commandId = UUID.randomUUID();
-		cache.set(String.format(COMMAND_FORMAT, commandId), new RevertDeleteLocaleCommand(locale), 120);
+		Locale.delete(locale);
 
-		return redirect(
-			routes.Application.projectLocales(locale.project.id).withFragment(String.format("command=%s", commandId)));
+		return redirect(routes.Application.projectLocales(locale.project.id));
 	}
 
 	public Result localeTranslate(UUID localeId)
@@ -295,7 +331,7 @@ public class Application extends Controller
 			return redirect(routes.Application.locale(locale.id).withFragment("#key=" + key.name));
 		}
 
-		return redirect(routes.Application.projectKeys(projectId).withFragment("#search=" + key.name));
+		return redirect(routes.Application.key(key.id));
 	}
 
 	public Result keyEdit(UUID keyId)
@@ -328,20 +364,17 @@ public class Application extends Controller
 		if(key == null)
 			return redirect(routes.Application.index());
 
-		for(Message message : key.messages)
-			Ebean.delete(message);
-		Ebean.delete(key);
+		undoCommand(new RevertDeleteKeyCommand(key));
+
+		Key.delete(key);
 
 		LOGGER.debug("Deleted key: {}", Json.toJson(key));
-
-		UUID commandId = UUID.randomUUID();
-		cache.set(String.format(COMMAND_FORMAT, commandId), new RevertDeleteKeyCommand(key), 120);
 
 		if(localeId != null)
 		{
 			Locale locale = Locale.byId(localeId);
 			if(locale != null)
-				return redirect(routes.Application.locale(locale.id).withFragment(String.format("#command=%s", commandId)));
+				return redirect(routes.Application.locale(locale.id));
 		}
 
 		LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
@@ -391,16 +424,21 @@ public class Application extends Controller
 		return redirect(controllers.routes.Application.project(project.id));
 	}
 
-	public Result commandExecute(UUID id)
+	public Result commandExecute(String commandKey)
 	{
-		Command command = cache.get(String.format(COMMAND_FORMAT, id));
+		Command command = cache.get(commandKey);
 
 		if(command == null)
 			notFound(Json.toJson("Command not found"));
 
 		command.execute();
 
-		return ok(Json.toJson("OK"));
+		String referer = request().getHeader("Referer");
+
+		if(referer == null)
+			return redirect(routes.Application.index());
+
+		return redirect(referer);
 	}
 
 	public Result javascriptRoutes()
@@ -440,5 +478,19 @@ public class Application extends Controller
 		}
 
 		return "OK";
+	}
+
+	/**
+	 * @param command
+	 */
+	private String undoCommand(Command command)
+	{
+		String undoKey = String.format(COMMAND_FORMAT, UUID.randomUUID());
+
+		cache.set(undoKey, command, 120);
+
+		flash("undo", undoKey);
+
+		return undoKey;
 	}
 }

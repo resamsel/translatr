@@ -45,6 +45,11 @@ public class Message
 	{
 	}
 
+	public Message(models.Message message)
+	{
+		this(message.locale, message.key, message.value);
+	}
+
 	public Message(Locale locale, Key key, String value)
 	{
 		this.locale = locale;
@@ -95,7 +100,7 @@ public class Message
 	 */
 	public static List<Message> findBy(MessageCriteria criteria)
 	{
-		ExpressionList<Message> query = Message.find.where();
+		ExpressionList<Message> query = Message.find.fetch("key").fetch("locale").where();
 
 		if(criteria.getProjectId() != null)
 			query.eq("key.project.id", criteria.getProjectId());
@@ -104,6 +109,24 @@ public class Message
 			query.eq("key.name", criteria.getKeyName());
 
 		return query.findList();
+	}
+
+	/**
+	 * @param localeId
+	 * @return
+	 */
+	public static List<Message> byLocale(UUID localeId)
+	{
+		return find.where().eq("locale.id", localeId).findList();
+	}
+
+	/**
+	 * @param key
+	 * @return
+	 */
+	public static List<Message> byKey(Key key)
+	{
+		return find.where().eq("key", key).findList();
 	}
 
 	/**

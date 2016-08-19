@@ -13,6 +13,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.joda.time.DateTime;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
@@ -25,9 +26,11 @@ public class Project
 	@Id
 	public UUID id;
 
+	@JsonIgnore
 	@CreatedTimestamp
 	public DateTime whenCreated;
 
+	@JsonIgnore
 	@UpdatedTimestamp
 	public DateTime whenUpdated;
 
@@ -65,7 +68,7 @@ public class Project
 	 */
 	public static List<Project> all()
 	{
-		return find.all();
+		return find.order("name").findList();
 	}
 
 	public float progress()
@@ -90,6 +93,11 @@ public class Project
 		return (float)key.messages.size() / (float)locales.size();
 	}
 
+	public int missing(Locale locale)
+	{
+		return keys.size() - locale.messages.size();
+	}
+
 	public int messagesSize()
 	{
 		return Message.countByProject(this);
@@ -102,5 +110,17 @@ public class Project
 	public static Project byName(String name)
 	{
 		return find.where().eq("name", name).findUnique();
+	}
+
+	/**
+	 * @param project
+	 */
+	public static void delete(Project project)
+	{
+		for(Key key : project.keys)
+			Key.delete(key);
+		for(Locale locale : project.locales)
+			Locale.delete(locale);
+		Ebean.delete(project);
 	}
 }

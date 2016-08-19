@@ -1,25 +1,35 @@
 @(projects: List[models.Project])
 
-@main(Messages("projects")) {
+@main(Messages("dashboard.title")) {
 	@tags.search()
 } {
+	<ul class="breadcrumb">
+		<li>
+			@Messages("dashboard")
+		</li>
+	</ul>
+
 	<div class="col-md-12">
-		@for(project <- projects) {
-			@tags.card(styleClass="project", name=project.name.toLowerCase) {
-				<span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
-				@project.name
-			} {
-				@Messages("project.info")
-				@Messages("locales.size", project.locales.size()),
-				@Messages("keys.size", project.keys.size()),
-				@Messages("messages.size", project.messagesSize())
-			} {
-				<a href="@routes.Application.project(project.id)">
-					<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
-					@Messages("button.goto", Messages("project"))
-				</a>
+		<div class="container">
+			@for(project <- projects) {
+				<div class="card project" name="@project.name.toLowerCase">
+					<div class="card-header bg-orange">
+						<h4>@project.name</h4>
+					</div>
+					<div class="card-content">
+						@Messages("project.info")
+						@Messages("locales.size", project.locales.size()),
+						@Messages("keys.size", project.keys.size()),
+						@Messages("messages.size", project.messagesSize())
+					</div>
+					<div class="card-action">
+						<a href="@routes.Application.project(project.id)">
+							@Messages("button.open")
+						</a>
+					</div>
+				</div>
 			}
-		}
+		</div>
 	</div>
 	<!-- /.col-md-4 -->
 

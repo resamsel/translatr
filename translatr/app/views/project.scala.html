@@ -3,7 +3,7 @@
 @import utils.FormatUtils._
 @import scala.collection.JavaConversions._
 
-@main(Messages("project", project.name)) {
+@main(Messages("project.title", project.name)) {
 } {
 	<ul class="breadcrumb">
 		<li>
@@ -21,12 +21,20 @@
 				<div class="col-md-4">
 					<div class="card">
 						<div class="card-header bg-orange">
-							<h4>@Messages("project"): @project.name</h4>
+							<h4>@Messages("project.title", project.name)</h4>
 						</div>
 						<div class="card-content">
 							<p>
 								@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
 							</p>
+						</div>
+						<div class="card-action">
+							<a href="@routes.Application.projectEdit(project.id)">
+								@Messages("button.edit")
+							</a>
+							<a href="@routes.Application.projectRemove(project.id)">
+								@Messages("button.remove")
+							</a>
 						</div>
 					</div>
 				</div>

@@ -134,7 +134,7 @@ $(document).ready(function() {
 		$("#no-selection").show();
 		window.location.hash = '#';
 	});
-	$('.button-save').click(function() {
+	$('.btn-save').click(function() {
 		$('#form-key').attr('action', $('#form-key').attr('action') + '#key=' + $('#field-key-name').val());
 		$('#form-key').submit();
 	});

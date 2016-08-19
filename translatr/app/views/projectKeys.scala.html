@@ -1,6 +1,6 @@
 @(project: models.Project, keys: List[models.Key])
 
-@main(Messages("project", project.name)) {
+@main(Messages("keys.title", project.name)) {
 	@tags.search()
 } {
 	<ul class="breadcrumb">
@@ -55,7 +55,7 @@
 	<button
 		type="button"
 		id="create"
-		class="btn btn-circle btn-raised btn-primary"
+		class="btn btn-circle btn-raised btn-primary btn-create"
 		data-toggle="modal"
 		data-target="#modal-create">
 		<span class="glyphicon glyphicon-plus"></span>

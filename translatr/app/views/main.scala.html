@@ -3,6 +3,8 @@
  *@
 @(title: String)(nav: Html)(content: Html)
 
+@import play.cache.CacheApi
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,10 +49,24 @@
 
 	<div class="container-fluid content">
 		<div class="row">
+			@if(ctx().args.containsKey("undoCommand")) {
+				<div class="undo">
+					<a href="#" class="btn btn-link btn-sm btn-close">×</a>
+					<a
+						href="@routes.Application.commandExecute(ctx().args("undoCommand").toString)"
+						class="btn btn-link btn-sm">
+						@Messages("button.undo")
+					</a>
+					@Html(ctx().args("undoMessage").toString)
+				</div>
+			}
+
 			@content
 		</div>
 	</div>
 
+
+	<script src="@routes.Assets.versioned("javascripts/main.js")"></script>
 	<script src="@routes.Assets.versioned("javascripts/bootstrap.min.js")"></script>
 </body>
 </html>

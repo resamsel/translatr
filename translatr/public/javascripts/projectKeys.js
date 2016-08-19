@@ -10,6 +10,9 @@ $(document).ready(function() {
 	$('#field-search').on('change keyup paste', function() {
 		search($('#field-search').val());
 	});
+	$('.btn-save').click(function() {
+		$('#form-key').submit();
+	});
 
 	var hash = window.location.hash;
 	if(hash !== '') {

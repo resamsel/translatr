@@ -8,7 +8,8 @@ import org.joda.time.DateTime;
 
 import models.Project;
 
-public class Key {
+public class Key
+{
 	public UUID id;
 
 	public DateTime whenCreated;
@@ -21,7 +22,8 @@ public class Key {
 
 	public List<Message> messages;
 
-	public Key(models.Key key) {
+	public Key(models.Key key)
+	{
 		this.id = key.id;
 		this.whenCreated = key.whenCreated;
 		this.whenUpdated = key.whenUpdated;
@@ -30,14 +32,13 @@ public class Key {
 		this.messages = key.messages.stream().map(m -> new Message(m)).collect(Collectors.toList());
 	}
 
-	public models.Key toModel() {
+	public models.Key toModel(Project project)
+	{
 		models.Key model = new models.Key();
 
-		model.id = id;
 		model.whenCreated = whenCreated;
 		model.whenUpdated = whenUpdated;
-		model.project = new Project();
-		model.project.id = projectId;
+		model.project = project;
 		model.name = name;
 
 		return model;

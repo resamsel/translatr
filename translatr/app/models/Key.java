@@ -13,6 +13,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.joda.time.DateTime;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
@@ -93,5 +94,15 @@ public class Key
 			.order("whenUpdated desc")
 			.setMaxRows(limit)
 			.findList();
+	}
+
+	/**
+	 * @param key
+	 */
+	public static void delete(Key key)
+	{
+		for(Message message : Message.byKey(key))
+			Ebean.delete(message);
+		Ebean.delete(key);
 	}
 }

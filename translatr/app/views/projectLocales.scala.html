@@ -1,6 +1,6 @@
 @(project: models.Project, locales: List[models.Locale])
 
-@main(Messages("project", project.name)) {
+@main(Messages("locales.title", project.name)) {
 	@tags.search()
 } {
 	<ul class="breadcrumb">
@@ -28,8 +28,14 @@
 									@tags.locale(locale.name)
 								</a>
 							</td>
-							<td class="updated">
-								@utils.FormatUtils.pretty(ctx.lang().locale, locale.whenUpdated)
+							<td class="missing">
+								@defining(project.missing(locale)) { missing =>
+									@if(missing == 0) {
+										@Messages("locale.complete")
+									} else {
+										@Messages("messages.missing", missing)
+									}
+								}
 							</td>
 							<td class="locale-progress">
 								<div class="progress">

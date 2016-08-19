@@ -14,15 +14,15 @@ function handleMessage(message) {
     $('#preview').html(message.value);
 }
 function handleSaveMessage(message) {
-	$('#' + message.key.id).removeClass('no-message');
-	$('#' + message.key.id + ' .value').html(message.value);
+	$('#' + message.locale.id).removeClass('no-message');
+	$('#' + message.locale.id + ' .value').html(message.value);
 	updateForm(message.locale.id);
 }
 function updateForm(localeId) {
 	$("#no-selection").hide();
 	$("#panel-message").show();
     $('#field-id').val('');
-	$('#field-locale').val(keyName).attr('keyId', keyId);
+	$('#field-locale').val(keyName).attr('localeId', localeId);
     $('#field-value').val('');
     $('#preview').html('');
     $('#locale-name').html($('#' + localeId + ' .name').html());
@@ -92,7 +92,7 @@ $(document).ready(function() {
 	$('a.locale').click(function() {
 		$('a.locale').removeClass('active');
 		$(this).addClass('active')
-		updateForm($(this).attr('id'), $(this).attr('name'));
+		updateForm($(this).attr('id'));
 	})
 	$('#field-value').on('change keyup paste', function() {
 	    $('#preview').html($('#field-value').val());

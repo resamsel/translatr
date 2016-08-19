@@ -10,7 +10,7 @@ $(document).ready(function() {
 	$('#field-search').on('change keyup paste', function() {
 		search($('#field-search').val());
 	});
-	$('.button-save').click(function() {
+	$('.btn-save').click(function() {
 		$('#form-locale').submit();
 	});
 });

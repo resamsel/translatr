@@ -125,8 +125,7 @@ button#create {
     bottom: 23px;
 }
 
-.card.project,
-.card.locale {
+.card.project {
 	position: relative;
     min-height: 1px;
     margin-left: 15px;
@@ -134,26 +133,13 @@ button#create {
     float: left;
     width: 30%;
 }
-.project .card-image,
-.locale .card-image {
-	min-height: 100px;
-}
-.project .card-image {
-	background-color: #FF9800;
-}
-.locale .card-image {
-	background-color: #2196f3;
-}
-.card.locale .card-action a,
-.card.locale .card-action a:hover {
-	color: #3F51B5;
-}
 td .progress {
 	margin-bottom: 0;
 }
 .table .name,
 .table .created,
 .table .updated,
+.table .missing,
 .table .locale-progress {
 	vertical-align: middle;
 }
@@ -252,4 +238,14 @@ td .progress {
 .card-content .progress {
 	margin-top: 11.5px;
 	margin-bottom: 11.5px;
+}
+
+.undo {
+    padding: 8px 15px;
+	background-color: #ff9800;
+	color: #fff;
+	text-align: center;
+}
+.undo a {
+	float: right;
 }
