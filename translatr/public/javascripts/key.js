@@ -21,11 +21,11 @@ function handleSaveMessage(message) {
 function updateForm(localeId) {
 	$("#no-selection").hide();
 	$("#panel-message").show();
-	$("#panel-messages").show();
     $('#field-id').val('');
 	$('#field-locale').val(keyName).attr('keyId', keyId);
     $('#field-value').val('');
     $('#preview').html('');
+    $('#locale-name').html($('#' + localeId + ' .name').html());
 	$.ajax(
 		jsRoutes.controllers.Api.getMessage(localeId, keyName)
 	).done(handleMessage);
@@ -112,6 +112,8 @@ $(document).ready(function() {
 		//$a[0].scrollIntoView();
 		$a.click();
 	} else {
-		$('a.locale:first-child').click();
+		var $locale = $('a.locale:first-child');
+		window.location.hash = $locale.attr('href').replace('.*#', '#');
+		$locale.click();
 	}
 });

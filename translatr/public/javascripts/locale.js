@@ -146,5 +146,9 @@ $(document).ready(function() {
 		var $a = $('a.key[name="'+keyName+'"]');
 		$a[0].scrollIntoView();
 		$a.click();
+	} else {
+		var $key = $('a.key:first-child');
+		window.location.hash = $key.attr('href').replace('.*#', '#');
+		$key.click();
 	}
 });
