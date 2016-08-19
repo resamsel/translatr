@@ -80,12 +80,12 @@ public class Application extends Controller
 
 	public Result dashboard()
 	{
-		return ok(views.html.dashboard.render(Project.find.all()));
+		return ok(views.html.dashboard.render(Project.all()));
 	}
 
 	public Result project(UUID id)
 	{
-		Project project = Project.find.byId(id);
+		Project project = Project.byId(id);
 
 		if(project == null)
 			return redirect(routes.Application.index());
@@ -108,7 +108,7 @@ public class Application extends Controller
 
 	public Result projectLocales(UUID id)
 	{
-		Project project = Project.find.byId(id);
+		Project project = Project.byId(id);
 
 		if(project == null)
 			return redirect(routes.Application.index());
@@ -123,25 +123,25 @@ public class Application extends Controller
 
 	public Result locale(UUID id)
 	{
-		Locale locale = Locale.find.byId(id);
+		Locale locale = Locale.byId(id);
 
 		if(locale == null)
 			return redirect(routes.Application.index());
 
-		Project project = Project.find.byId(locale.project.id);
+		Project project = Project.byId(locale.project.id);
 
 		select(project);
 
 		Collections.sort(project.keys, (a, b) -> a.name.compareTo(b.name));
 
-		List<Locale> locales = Locale.find.where().eq("project", project).findList();
+		List<Locale> locales = Locale.byProject(project);
 
 		return ok(views.html.locale.render(project, locale, locales));
 	}
 
 	public Result localeImport(UUID id)
 	{
-		Locale locale = Locale.find.byId(id);
+		Locale locale = Locale.byId(id);
 
 		if(locale == null)
 			return redirect(routes.Application.index());
@@ -162,7 +162,7 @@ public class Application extends Controller
 
 	public Result localeExport(UUID id)
 	{
-		Locale locale = Locale.find.byId(id);
+		Locale locale = Locale.byId(id);
 
 		if(locale == null)
 			return redirect(routes.Application.index());
@@ -176,7 +176,7 @@ public class Application extends Controller
 
 	public Result localeCreate(UUID projectId)
 	{
-		Project project = Project.find.byId(projectId);
+		Project project = Project.byId(projectId);
 
 		if(project == null)
 			return redirect(routes.Application.index());
@@ -194,9 +194,30 @@ public class Application extends Controller
 		return redirect(routes.Application.locale(locale.id));
 	}
 
+	public Result localeEdit(UUID localeId)
+	{
+		Locale locale = Locale.byId(localeId);
+
+		if(locale == null)
+			return redirect(routes.Application.index());
+
+		if("POST".equals(request().method()))
+		{
+			Locale changed = formFactory.form(Locale.class).bindFromRequest().get();
+
+			locale.name = changed.name;
+
+			Ebean.save(locale);
+
+			return redirect(routes.Application.projectLocales(locale.project.id));
+		}
+
+		return ok(views.html.localeEdit.render(locale));
+	}
+
 	public Result localeRemove(UUID localeId)
 	{
-		Locale locale = Locale.find.byId(localeId);
+		Locale locale = Locale.byId(localeId);
 
 		if(locale == null)
 			return redirect(routes.Application.index());
@@ -214,7 +235,7 @@ public class Application extends Controller
 
 	public Result localeTranslate(UUID localeId)
 	{
-		Locale locale = Locale.find.byId(localeId);
+		Locale locale = Locale.byId(localeId);
 
 		if(locale == null)
 			return redirect(routes.Application.index());
@@ -233,7 +254,7 @@ public class Application extends Controller
 	{
 		Key key = formFactory.form(Key.class).bindFromRequest().get();
 
-		Locale locale = Locale.find.byId(localeId);
+		Locale locale = Locale.byId(localeId);
 		key.project = locale.project;
 
 		LOGGER.debug("Key: {}", Json.toJson(key));
@@ -245,7 +266,7 @@ public class Application extends Controller
 
 	public Result keyRemove(UUID keyId, UUID localeId)
 	{
-		Key key = Key.find.byId(keyId);
+		Key key = Key.byId(keyId);
 
 		LOGGER.debug("Key: {}", Json.toJson(key));
 
@@ -261,7 +282,7 @@ public class Application extends Controller
 		UUID commandId = UUID.randomUUID();
 		cache.set(String.format(COMMAND_FORMAT, commandId), new RevertDeleteKeyCommand(key), 120);
 
-		Locale locale = Locale.find.byId(localeId);
+		Locale locale = Locale.byId(localeId);
 		if(locale != null)
 			return redirect(routes.Application.locale(locale.id).withFragment(String.format("#command=%s", commandId)));
 
@@ -272,7 +293,7 @@ public class Application extends Controller
 
 	public Result load()
 	{
-		Project project = Project.find.where().eq("name", "Internal").findUnique();
+		Project project = Project.byName("Internal");
 		if(project == null)
 		{
 			project = new Project("Internal");
@@ -286,7 +307,7 @@ public class Application extends Controller
 			LOGGER.debug("Key: {}", bundle.getKey());
 			if("default.play".equals(bundle.getKey()))
 				break;
-			Locale locale = Locale.find.where().eq("project", project).eq("name", bundle.getKey()).findUnique();
+			Locale locale = Locale.byProjectAndName(project, bundle.getKey());
 			if(locale == null)
 			{
 				locale = new Locale(project, bundle.getKey());
@@ -294,13 +315,13 @@ public class Application extends Controller
 			}
 			for(Entry<String, String> msg : JavaConversions.mapAsJavaMap(bundle.getValue()).entrySet())
 			{
-				Key key = Key.find.where().eq("project", project).eq("name", msg.getKey()).findUnique();
+				Key key = Key.byProjectAndName(project, msg.getKey());
 				if(key == null)
 				{
 					key = new Key(project, msg.getKey());
 					Ebean.save(key);
 				}
-				Message message = Message.find.where().eq("locale", locale).eq("key", key).findUnique();
+				Message message = Message.byKeyAndLocale(key, locale);
 				if(message == null)
 				{
 					message = new Message(locale, key, msg.getValue());

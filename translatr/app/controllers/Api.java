@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -7,9 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
-import com.avaje.ebean.ExpressionList;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import criterias.LocaleCriteria;
+import criterias.MessageCriteria;
 import models.Locale;
 import models.Message;
 import models.Project;
@@ -30,7 +32,7 @@ public class Api extends Controller
 		Project project = null;
 		if(json.has("id"))
 		{
-			project = Project.find.byId(UUID.fromString(json.get("id").asText()));
+			project = Project.byId(UUID.fromString(json.get("id").asText()));
 		}
 		else
 		{
@@ -44,15 +46,10 @@ public class Api extends Controller
 
 	public Result findLocales(UUID projectId)
 	{
-		ExpressionList<Locale> query = Locale.find.where();
+		List<Locale> locales = Locale
+			.findBy(new LocaleCriteria().withProjectId(projectId).withLocaleName(request().getQueryString("localeName")));
 
-		query.eq("project.id", projectId);
-
-		String localeName = request().getQueryString("localeName");
-		if(localeName != null)
-			query.eq("name", localeName);
-
-		return ok(Json.toJson(query.findList().stream().map(l -> new dto.Locale(l)).collect(Collectors.toList())));
+		return ok(Json.toJson(locales.stream().map(l -> new dto.Locale(l)).collect(Collectors.toList())));
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -63,7 +60,7 @@ public class Api extends Controller
 		Locale locale = null;
 		if(json.has("id"))
 		{
-			locale = Locale.find.byId(UUID.fromString(json.get("id").asText()));
+			locale = Locale.byId(UUID.fromString(json.get("id").asText()));
 		}
 		else
 		{
@@ -83,7 +80,7 @@ public class Api extends Controller
 		Message message = null;
 		if(json.hasNonNull("id"))
 		{
-			message = Message.find.byId(UUID.fromString(json.get("id").asText()));
+			message = Message.byId(UUID.fromString(json.get("id").asText()));
 			message.updateFrom(Json.fromJson(json, Message.class));
 		}
 		else
@@ -98,22 +95,19 @@ public class Api extends Controller
 
 	public Result findMessages(UUID projectId)
 	{
-		ExpressionList<Message> query = Message.find.where();
+		List<Message> messages = Message
+			.findBy(new MessageCriteria().withProjectId(projectId).withKeyName(request().getQueryString("keyName")));
 
-		query.eq("key.project.id", projectId);
-
-		String keyName = request().getQueryString("keyName");
-		if(keyName != null)
-			query.eq("key.name", keyName);
-
-		return ok(Json.toJson(query.findList().stream().map(m -> new dto.Message(m)).collect(Collectors.toList())));
+		return ok(Json.toJson(messages.stream().map(m -> new dto.Message(m)).collect(Collectors.toList())));
 	}
 
 	public Result getMessage(UUID localeId, String key)
 	{
-		Message message = Message.find.where().eq("locale.id", localeId).eq("key.name", key).findUnique();
+		Message message = Message.byLocaleAndKeyName(localeId, key);
+
 		if(message == null)
 			return notFound(Json.toJson(new Exception("Message not found")));
+
 		return ok(Json.toJson(message));
 	}
 }

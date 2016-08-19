@@ -26,7 +26,7 @@ public class ContextAction extends Action.Simple
 	{
 		if(ctx.session().containsKey("projectId"))
 		{
-			Project project = Project.find.byId(UUID.fromString(ctx.session().get("projectId")));
+			Project project = Project.byId(UUID.fromString(ctx.session().get("projectId")));
 
 			if(project != null)
 				ctx.args.put("locales", project.locales);

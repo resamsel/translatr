@@ -19,8 +19,9 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
-public class Project {
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
+public class Project
+{
 	@Id
 	public UUID id;
 
@@ -41,29 +42,58 @@ public class Project {
 	@OneToMany
 	public List<Key> keys;
 
-	public Project() {
+	public Project()
+	{
 	}
 
-	public Project(String name) {
+	public Project(String name)
+	{
 		this.name = name;
 	}
 
-	public static final Find<UUID, Project> find = new Find<UUID, Project>() {
+	private static final Find<UUID, Project> find = new Find<UUID, Project>()
+	{
 	};
 
-	public float progress() {
-		if (keys.size() < 1 || locales.size() < 1)
-			return 0f;
-		return (float) locales.stream().collect(Collectors.summingInt(l -> l.messages.size())) / (float) (keys.size() * locales.size());
+	public static Project byId(UUID id)
+	{
+		return find.byId(id);
 	}
 
-	public float progress(Locale locale) {
-		if (keys.size() < 1)
-			return 0f;
-		return (float) locale.messages.size() / (float) keys.size();
+	/**
+	 * @return
+	 */
+	public static List<Project> all()
+	{
+		return find.all();
 	}
 
-	public int messagesSize() {
-		return Message.find.where().eq("key.project", this).findRowCount();
+	public float progress()
+	{
+		if(keys.size() < 1 || locales.size() < 1)
+			return 0f;
+		return (float)locales.stream().collect(Collectors.summingInt(l -> l.messages.size()))
+			/ (float)(keys.size() * locales.size());
+	}
+
+	public float progress(Locale locale)
+	{
+		if(keys.size() < 1)
+			return 0f;
+		return (float)locale.messages.size() / (float)keys.size();
+	}
+
+	public int messagesSize()
+	{
+		return Message.countByProject(this);
+	}
+
+	/**
+	 * @param name
+	 * @return
+	 */
+	public static Project byName(String name)
+	{
+		return find.where().eq("name", name).findUnique();
 	}
 }

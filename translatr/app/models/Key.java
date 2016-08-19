@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -20,8 +19,9 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "project_id", "name" }) })
-public class Key {
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
+public class Key
+{
 	@Id
 	public UUID id;
 
@@ -31,7 +31,7 @@ public class Key {
 	@UpdatedTimestamp
 	public DateTime whenUpdated;
 
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+	@ManyToOne(optional = false)
 	public Project project;
 
 	@Column(length = 255)
@@ -41,21 +41,46 @@ public class Key {
 	@OneToMany
 	public List<Message> messages;
 
-	public Key() {
+	public Key()
+	{
 	}
 
-	public Key(Project project, String name) {
+	public Key(Project project, String name)
+	{
 		this.project = project;
 		this.name = name;
 	}
 
-	public static final Find<UUID, Key> find = new Find<UUID, Key>() {
+	private static final Find<UUID, Key> find = new Find<UUID, Key>()
+	{
 	};
 
-	public String messageValue(Locale locale) {
-		Message message = Message.find.where().eq("key", this).eq("locale", locale).findUnique();
-		if (message == null)
+	public String messageValue(Locale locale)
+	{
+		Message message = Message.byKeyAndLocale(this, locale);
+
+		if(message == null)
 			return null;
+
 		return message.value;
+	}
+
+	/**
+	 * @param keyId
+	 * @return
+	 */
+	public static Key byId(UUID id)
+	{
+		return find.setId(id).fetch("project").findUnique();
+	}
+
+	/**
+	 * @param project
+	 * @param name
+	 * @return
+	 */
+	public static Key byProjectAndName(Project project, String name)
+	{
+		return find.fetch("project").where().eq("project", project).eq("name", name).findUnique();
 	}
 }

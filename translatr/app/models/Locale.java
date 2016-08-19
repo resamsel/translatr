@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -14,24 +13,28 @@ import javax.persistence.UniqueConstraint;
 
 import org.joda.time.DateTime;
 
+import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import criterias.LocaleCriteria;
+
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "project_id", "name" }) })
-public class Locale {
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
+public class Locale
+{
 	@Id
 	public UUID id;
-	
+
 	@CreatedTimestamp
 	public DateTime whenCreated;
-	
+
 	@UpdatedTimestamp
 	public DateTime whenUpdated;
 
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+	@ManyToOne(optional = false)
 	public Project project;
 
 	@Column(nullable = false, length = 15)
@@ -41,14 +44,62 @@ public class Locale {
 	@OneToMany
 	public List<Message> messages;
 
-	public Locale() {
+	public Locale()
+	{
 	}
-	
-	public Locale(Project project, String name) {
+
+	public Locale(Project project, String name)
+	{
 		this.project = project;
 		this.name = name;
 	}
-	
-	public static final Find<UUID, Locale> find = new Find<UUID, Locale>() {
+
+	private static final Find<UUID, Locale> find = new Find<UUID, Locale>()
+	{
 	};
+
+	/**
+	 * @param fromString
+	 * @return
+	 */
+	public static Locale byId(UUID id)
+	{
+		return find.setId(id).fetch("project").findUnique();
+	}
+
+	/**
+	 * @param project
+	 * @return
+	 */
+	public static List<Locale> byProject(Project project)
+	{
+		return find.fetch("project").where().eq("project", project).findList();
+	}
+
+	/**
+	 * @param project
+	 * @param name
+	 * @return
+	 */
+	public static Locale byProjectAndName(Project project, String name)
+	{
+		return find.fetch("project").where().eq("project", project).eq("name", name).findUnique();
+	}
+
+	/**
+	 * @param criteria
+	 * @return
+	 */
+	public static List<Locale> findBy(LocaleCriteria criteria)
+	{
+		ExpressionList<Locale> query = find.fetch("project").where();
+
+		if(criteria.getProjectId() != null)
+			query.eq("project.id", criteria.getProjectId());
+
+		if(criteria.getLocaleName() != null)
+			query.eq("name", criteria.getLocaleName());
+
+		return query.findList();
+	}
 }

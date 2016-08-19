@@ -1,6 +1,7 @@
 brand = Translatr
 button.cancel = Cancel
 button.close = Close
+button.edit = Edit
 button.export = Export
 button.goto = Go to {0}
 button.import = Import
@@ -14,6 +15,7 @@ key.selection.none = No key selected
 keys = Keys
 keys.size = {0,choice,0#no keys yet|1#one key|1<{0} keys}
 locale = Locale
+locale.edit = Edit locale
 locale.format = {0} ({1})
 locale.import = Import Locale
 locale.import.file = Import from file
