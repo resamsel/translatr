@@ -83,4 +83,15 @@ public class Key
 	{
 		return find.fetch("project").where().eq("project", project).eq("name", name).findUnique();
 	}
+
+	public static List<Key> last(Project project, int limit)
+	{
+		return find
+			.fetch("project")
+			.where()
+			.eq("project", project)
+			.order("whenUpdated desc")
+			.setMaxRows(limit)
+			.findList();
+	}
 }

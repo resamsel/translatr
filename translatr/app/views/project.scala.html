@@ -1,6 +1,7 @@
 @(project: models.Project)
 
 @import utils.FormatUtils._
+@import scala.collection.JavaConversions._
 
 @main(Messages("project", project.name)) {
 } {
@@ -24,7 +25,9 @@
 						</div>
 						<div class="card-content">
 							<p>
-								@Messages("locales.size", project.locales.size())
+								@Messages("locales.size", project.locales.size()),
+								@Messages("latest"):
+								@{Html(models.Locale.last(project, 3).map(k => "<strong>%s</strong>".format(k.name)).mkString(", "))}.
 							</p>
 							<div class="progress">
 								<div class="progress-bar progress-bar-success" style="width: @{project.progress()*100}%;"></div>
@@ -41,7 +44,9 @@
 						</div>
 						<div class="card-content">
 							<p>
-								@Messages("keys.size", project.keys.size())
+								@Messages("keys.size", project.keys.size()),
+								@Messages("latest"):
+								@{Html(models.Key.last(project, 3).map(k => "<strong>%s</strong>".format(k.name)).mkString(", "))}.
 							</p>
 						</div>
 					</div>
@@ -55,7 +60,7 @@
 						</div>
 						<div class="card-content">
 							<p>
-								@Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))
+								@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
 							</p>
 						</div>
 					</div>

@@ -14,6 +14,7 @@ key.new = Create new Key
 key.selection.none = No key selected
 keys = Keys
 keys.size = {0,choice,0#no keys yet|1#one key|1<{0} keys}
+latest = latest
 locale = Locale
 locale.edit = Edit locale
 locale.format = {0} ({1})

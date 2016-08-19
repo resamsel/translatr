@@ -248,3 +248,7 @@ button#create {
     background-color: #8BC34A;
     border-color: #8BC34A;
 }
+
+.card-content .progress {
+	margin-bottom: 5px;
+}

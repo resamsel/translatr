@@ -102,4 +102,15 @@ public class Locale
 
 		return query.findList();
 	}
+
+	public static List<Locale> last(Project project, int limit)
+	{
+		return find
+			.fetch("project")
+			.where()
+			.eq("project", project)
+			.order("whenUpdated desc")
+			.setMaxRows(limit)
+			.findList();
+	}
 }

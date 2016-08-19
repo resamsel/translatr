@@ -14,6 +14,7 @@ key.new = Neuen Schlüssel anlegen
 key.selection.none = Kein Schlüssel ausgewählt
 keys = Schlüssel
 keys.size = {0,choice,0#noch keine Schlüssel|1#ein Schlüssel|1<{0} Schlüssel}
+latest = zuletzt
 locale = Sprache
 locale.edit = Sprache bearbeiten
 locale.format = {0} ({1})
