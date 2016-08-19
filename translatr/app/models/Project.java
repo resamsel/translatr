@@ -83,6 +83,13 @@ public class Project
 		return (float)locale.messages.size() / (float)keys.size();
 	}
 
+	public float progress(Key key)
+	{
+		if(locales.size() < 1)
+			return 0f;
+		return (float)key.messages.size() / (float)locales.size();
+	}
+
 	public int messagesSize()
 	{
 		return Message.countByProject(this);

@@ -12,6 +12,11 @@
 			@if(active == "locales") { class="active" }>
 			<a href="@routes.Application.projectLocales(project.id)">@Messages("locales")</a>
 		</li>
+		<li
+			role="presentation"
+			@if(active == "keys") { class="active" }>
+			<a href="@routes.Application.projectKeys(project.id)">@Messages("keys")</a>
+		</li>
 	</ul>
 
 	@content

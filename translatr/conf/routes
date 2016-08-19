@@ -10,6 +10,7 @@ GET     /dashboard						controllers.Application.dashboard
 GET     /project/:id					controllers.Application.project(id: java.util.UUID)
 POST	/project						controllers.Application.projectCreate
 GET     /project/:id/locales			controllers.Application.projectLocales(id: java.util.UUID)
+GET     /project/:id/keys				controllers.Application.projectKeys(id: java.util.UUID)
 
 # Locales
 GET     /locale/:id					controllers.Application.locale(id: java.util.UUID)
@@ -23,6 +24,9 @@ GET     /locale/:id/remove	 		controllers.Application.localeRemove(id: java.util
 GET		/locale/:id/translate			controllers.Application.localeTranslate(id: java.util.UUID)
 
 # Keys
+GET		/key/:id/edit					controllers.Application.keyEdit(id: java.util.UUID)
+POST	/key/:id/edit					controllers.Application.keyEdit(id: java.util.UUID)
+GET		/key/:keyId/remove			controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID = null)
 GET		/key/:keyId/:localeId/remove	controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID)
 POST	/key/:localeId					controllers.Application.keyCreate(localeId: java.util.UUID)
 

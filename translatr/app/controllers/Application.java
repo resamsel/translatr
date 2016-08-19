@@ -121,6 +121,20 @@ public class Application extends Controller
 		return ok(views.html.projectLocales.render(project, project.locales));
 	}
 
+	public Result projectKeys(UUID id)
+	{
+		Project project = Project.byId(id);
+
+		if(project == null)
+			return redirect(routes.Application.index());
+
+		select(project);
+
+		Collections.sort(project.keys, (a, b) -> a.name.compareTo(b.name));
+
+		return ok(views.html.projectKeys.render(project, project.keys));
+	}
+
 	public Result locale(UUID id)
 	{
 		Locale locale = Locale.byId(id);
@@ -262,6 +276,27 @@ public class Application extends Controller
 		Ebean.save(key);
 
 		return redirect(routes.Application.locale(locale.id).withFragment("#key=" + key.name));
+	}
+
+	public Result keyEdit(UUID keyId)
+	{
+		Key key = Key.byId(keyId);
+
+		if(key == null)
+			return redirect(routes.Application.index());
+
+		if("POST".equals(request().method()))
+		{
+			Key changed = formFactory.form(Key.class).bindFromRequest().get();
+
+			key.name = changed.name;
+
+			Ebean.save(key);
+
+			return redirect(routes.Application.projectKeys(key.project.id));
+		}
+
+		return ok(views.html.keyEdit.render(key));
 	}
 
 	public Result keyRemove(UUID keyId, UUID localeId)

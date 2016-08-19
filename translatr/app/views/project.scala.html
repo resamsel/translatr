@@ -59,7 +59,7 @@
 							<p>
 								@Messages("keys.size", project.keys.size()),
 								@Messages("latest"):
-								@{Html(models.Key.last(project, 3).map(k => "<strong>%s</strong>".format(k.name)).mkString(", "))}.
+								@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
 							</p>
 						</div>
 					</div>

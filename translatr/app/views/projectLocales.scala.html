@@ -22,7 +22,7 @@
 			<table class="table card tab-body">
 				<tbody>
 					@for(locale <- locales) {
-						<tr id="@locale.id" class="locale" name="@tags.locale(locale.name) locale.name.toLowerCase">
+						<tr id="@locale.id" class="locale" name="@tags.locale(locale.name) @locale.name.toLowerCase">
 							<td class="name">
 								<a class="locale" href="@routes.Application.locale(locale.id)">
 									@tags.locale(locale.name)

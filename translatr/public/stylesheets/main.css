@@ -148,7 +148,7 @@ button#create {
 .card.locale .card-action a:hover {
 	color: #3F51B5;
 }
-.locale .progress {
+td .progress {
 	margin-bottom: 0;
 }
 .table .name,
