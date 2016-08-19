@@ -3,48 +3,50 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /								controllers.Application.index
-GET     /dashboard						controllers.Application.dashboard
+GET		/								controllers.Application.index
+GET		/dashboard						controllers.Application.dashboard
 
 # Projects
-GET     /project/:id					controllers.Application.project(id: java.util.UUID)
+GET		/project/:id					controllers.Application.project(id: java.util.UUID)
 POST	/project						controllers.Application.projectCreate
-GET     /project/:id/locales			controllers.Application.projectLocales(id: java.util.UUID)
-GET     /project/:id/keys				controllers.Application.projectKeys(id: java.util.UUID)
+GET		/project/:id/locales			controllers.Application.projectLocales(id: java.util.UUID)
+GET		/project/:id/keys				controllers.Application.projectKeys(id: java.util.UUID)
 
 # Locales
-GET     /locale/:id					controllers.Application.locale(id: java.util.UUID)
+GET		/locale/:id						controllers.Application.locale(id: java.util.UUID)
 GET		/locale/:id/edit				controllers.Application.localeEdit(id: java.util.UUID)
 POST	/locale/:id/edit				controllers.Application.localeEdit(id: java.util.UUID)
 GET		/locale/:id/import				controllers.Application.localeImport(id: java.util.UUID)
 POST	/locale/:id/import				controllers.Application.localeImport(id: java.util.UUID)
-GET     /locale/:id/export	   			controllers.Application.localeExport(id: java.util.UUID)
+GET		/locale/:id/export				controllers.Application.localeExport(id: java.util.UUID)
 POST	/locale/:projectId				controllers.Application.localeCreate(projectId: java.util.UUID)
-GET     /locale/:id/remove	 		controllers.Application.localeRemove(id: java.util.UUID)
+GET		/locale/:id/remove				controllers.Application.localeRemove(id: java.util.UUID)
 GET		/locale/:id/translate			controllers.Application.localeTranslate(id: java.util.UUID)
 
 # Keys
+GET		/key/:id						controllers.Application.key(id: java.util.UUID)
 GET		/key/:id/edit					controllers.Application.keyEdit(id: java.util.UUID)
 POST	/key/:id/edit					controllers.Application.keyEdit(id: java.util.UUID)
-GET		/key/:keyId/remove			controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID = null)
+GET		/key/:keyId/remove				controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID = null)
 GET		/key/:keyId/:localeId/remove	controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID)
-POST	/key/:localeId					controllers.Application.keyCreate(localeId: java.util.UUID)
+POST	/key/:projectId/create			controllers.Application.keyCreate(projectId: java.util.UUID, localeId: java.util.UUID = null)
+POST	/key/:projectId/:localeId/create	controllers.Application.keyCreate(projectId: java.util.UUID, localeId: java.util.UUID)
 
 # Messages
-#GET     /message/:id					controllers.Application.message(id: java.util.UUID)
+#GET	/message/:id					controllers.Application.message(id: java.util.UUID)
 
 # Load demo data
 GET		/load							controllers.Application.load
 
-GET     /command/:id/execute			controllers.Application.commandExecute(id: java.util.UUID)
+GET		/command/:id/execute			controllers.Application.commandExecute(id: java.util.UUID)
 
 #
 # API
 #
-#GET		/api/project/:projectId		controllers.Api.getProject(projectId: String)
+#GET	/api/project/:projectId			controllers.Api.getProject(projectId: String)
 PUT		/api/project					controllers.Api.putProject
 
-GET		/api/locales/:projectId		controllers.Api.findLocales(projectId: java.util.UUID)
+GET		/api/locales/:projectId			controllers.Api.findLocales(projectId: java.util.UUID)
 #GET		/api/locale/:localeId		controllers.Api.getLocale(localeId: java.util.UUID)
 PUT		/api/locale						controllers.Api.putLocale
 
@@ -53,6 +55,6 @@ GET		/api/message/:localeId/:key		controllers.Api.getMessage(localeId: java.util
 PUT		/api/message					controllers.Api.putMessage
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET		/assets/*file					controllers.Assets.versioned(path="/public", file: Asset)
 
-GET     /javascriptRoutes      			controllers.Application.javascriptRoutes
+GET		/javascriptRoutes				controllers.Application.javascriptRoutes

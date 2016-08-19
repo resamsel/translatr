@@ -142,15 +142,13 @@ public class Application extends Controller
 		if(locale == null)
 			return redirect(routes.Application.index());
 
-		Project project = Project.byId(locale.project.id);
+		select(locale.project);
 
-		select(project);
+		Collections.sort(locale.project.keys, (a, b) -> a.name.compareTo(b.name));
 
-		Collections.sort(project.keys, (a, b) -> a.name.compareTo(b.name));
+		List<Locale> locales = Locale.byProject(locale.project);
 
-		List<Locale> locales = Locale.byProject(project);
-
-		return ok(views.html.locale.render(project, locale, locales));
+		return ok(views.html.locale.render(locale.project, locale, locales));
 	}
 
 	public Result localeImport(UUID id)
@@ -264,18 +262,40 @@ public class Application extends Controller
 		return redirect(referer);
 	}
 
-	public Result keyCreate(UUID localeId)
+	public Result key(UUID id)
+	{
+		Key key = Key.byId(id);
+
+		if(key == null)
+			return redirect(routes.Application.index());
+
+		select(key.project);
+
+		Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
+
+		List<Locale> locales = Locale.byProject(key.project);
+
+		return ok(views.html.key.render(key, locales));
+	}
+
+	public Result keyCreate(UUID projectId, UUID localeId)
 	{
 		Key key = formFactory.form(Key.class).bindFromRequest().get();
 
-		Locale locale = Locale.byId(localeId);
-		key.project = locale.project;
+		key.project = Project.byId(projectId);
 
 		LOGGER.debug("Key: {}", Json.toJson(key));
 
 		Ebean.save(key);
 
-		return redirect(routes.Application.locale(locale.id).withFragment("#key=" + key.name));
+		if(localeId != null)
+		{
+			Locale locale = Locale.byId(localeId);
+
+			return redirect(routes.Application.locale(locale.id).withFragment("#key=" + key.name));
+		}
+
+		return redirect(routes.Application.projectKeys(projectId).withFragment("#search=" + key.name));
 	}
 
 	public Result keyEdit(UUID keyId)
@@ -317,13 +337,16 @@ public class Application extends Controller
 		UUID commandId = UUID.randomUUID();
 		cache.set(String.format(COMMAND_FORMAT, commandId), new RevertDeleteKeyCommand(key), 120);
 
-		Locale locale = Locale.byId(localeId);
-		if(locale != null)
-			return redirect(routes.Application.locale(locale.id).withFragment(String.format("#command=%s", commandId)));
+		if(localeId != null)
+		{
+			Locale locale = Locale.byId(localeId);
+			if(locale != null)
+				return redirect(routes.Application.locale(locale.id).withFragment(String.format("#command=%s", commandId)));
+		}
 
-		LOGGER.debug("Go to project: {}", Json.toJson(key));
+		LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
 
-		return redirect(routes.Application.project(key.project.id));
+		return redirect(routes.Application.projectKeys(key.project.id));
 	}
 
 	public Result load()

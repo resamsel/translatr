@@ -17,6 +17,20 @@
 	<div class="col-md-12">
 		@tags.projectTabs(project, "info") {
 			<div class="row tab-body">
+				<!-- Project Info -->
+				<div class="col-md-4">
+					<div class="card">
+						<div class="card-header bg-orange">
+							<h4>@Messages("project"): @project.name</h4>
+						</div>
+						<div class="card-content">
+							<p>
+								@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
+							</p>
+						</div>
+					</div>
+				</div>
+
 				<!-- Locales -->
 				<div class="col-md-4">
 					<div class="card">
@@ -32,19 +46,6 @@
 							<div class="progress">
 								<div class="progress-bar progress-bar-success" style="width: @{project.progress()*100}%;"></div>
 							</div>
-						</div>
-					</div>
-
-					<div class="card">
-						<div class="card-header bg-red">
-							<h4>@Messages("messages")</h4>
-						</div>
-						<div class="card-content">
-							<p>
-								@Messages("messages.size", project.messagesSize()),
-								@Messages("latest"):
-								@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
-							</p>
 						</div>
 					</div>
 				</div>
@@ -65,15 +66,17 @@
 					</div>
 				</div>
 
-				<!-- Project Info -->
+				<!-- Messages -->
 				<div class="col-md-4">
 					<div class="card">
-						<div class="card-header bg-orange">
-							<h4>@Messages("project"): @project.name</h4>
+						<div class="card-header bg-red">
+							<h4>@Messages("messages")</h4>
 						</div>
 						<div class="card-content">
 							<p>
-								@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
+								@Messages("messages.size", project.messagesSize()),
+								@Messages("latest"):
+								@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
 							</p>
 						</div>
 					</div>

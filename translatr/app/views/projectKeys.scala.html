@@ -24,7 +24,9 @@
 					@for(key <- keys) {
 						<tr id="@key.id" class="key" name="@key.name.toLowerCase">
 							<td class="name">
-								@key.name
+								<a href="@routes.Application.key(key.id)">
+									@key.name
+								</a>
 							</td>
 							<td class="updated">
 								@utils.FormatUtils.pretty(ctx.lang().locale, key.whenUpdated)
@@ -49,6 +51,23 @@
 		}
 	</div>
 	<!-- /.col-md-12 -->
+
+	<button
+		type="button"
+		id="create"
+		class="btn btn-circle btn-raised btn-primary"
+		data-toggle="modal"
+		data-target="#modal-create">
+		<span class="glyphicon glyphicon-plus"></span>
+	</button>
+
+	@tags.modal(Messages("key.new"), "modal-create") {
+		<form id="form-key" method="post" action="@routes.Application.keyCreate(project.id, null)">
+			<div class="form-group">
+				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
+			</div>
+		</form>
+	}
 
 	<script src="@routes.Assets.versioned("javascripts/projectKeys.js")"></script>
 }

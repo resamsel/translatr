@@ -66,7 +66,7 @@
 		</div>
 		<form id="form-message">
 			<div id="panel-message" class="card">
-				<div class="card-header bg-blue">
+				<div class="card-header bg-red">
 					<h4>@Messages("locale.to.label") @tags.locale(locale.name)</h4>
 				</div>
 				<div class="card-content">
@@ -110,11 +110,11 @@
 	</button>
 
 	@tags.modal(Messages("key.new"), "modal-create") {
-	<form id="form-key" method="post" action="@routes.Application.keyCreate(locale.id)">
-		<div class="form-group">
-			<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
-		</div>
-	</form>
+		<form id="form-key" method="post" action="@routes.Application.keyCreate(project.id, locale.id)">
+			<div class="form-group">
+				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
+			</div>
+		</form>
 	}
 
 	<script>

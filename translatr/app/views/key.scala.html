@@ -1,0 +1,94 @@
+@(key: models.Key, locales: List[models.Locale])
+
+@main(Messages("key.title", key.project.name, key.name)) {
+	@tags.search {
+		<div class="input-group-btn search-panel">
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				<span id="search_concept">@Messages("search.filter")</span>
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu">
+				<li>
+					<div class="input-group">
+						<input id="field-untranslated" type="checkbox" />
+						<label for="field-untranslated">
+							@Messages("message.untranslated")
+						</label>
+					</div>
+				</li>
+			</ul>
+		</div>
+	}
+} {
+	<ul class="breadcrumb">
+		<li>
+			<a href="@routes.Application.dashboard()">
+				@Messages("dashboard")
+			</a>
+		</li>
+		<li>
+			<a href="@routes.Application.project(key.project.id)">
+				@key.project.name
+			</a>
+		</li>
+		<li>
+			<a href="@routes.Application.projectKeys(key.project.id)">
+				@Messages("keys")
+			</a>
+		</li>
+		<li class="active">
+			@key.name
+		</li>
+	</ul>
+
+	@tags.threeColumns {
+		<h3 class="section-heading">@Messages("locales")</h3>
+		<div class="list-group">
+			@for(locale <- locales) {
+				<a
+					id="@locale.id"
+					href="#locale=@locale.name"
+					class="list-group-item locale @if(key.messageValue(locale) == null) { no-message }"
+					name="@locale.name.toLowerCase"
+					title="@tags.locale(locale.name)">
+					<h4 class="list-group-item-heading name">@tags.locale(locale.name)</h4>
+					<p class="list-group-item-text value">@key.messageValue(locale)</p>
+				</a>
+			}
+		</div>
+	} {
+		<div id="no-selection" class="container-center">
+			<span class="center">@Messages("locale.selection.none")</span>
+		</div>
+		<form id="form-message">
+			<div id="panel-message" class="card">
+				<div class="card-header bg-red">
+					<h4>@Messages("locale.to.label") ...</h4>
+				</div>
+				<div class="card-content">
+					<input id="field-id" type="hidden" />
+					<input id="field-keyId" type="hidden" />
+					<div class="form-group">
+						<textarea id="field-value" class="form-control" rows="3" placeholder="@Messages("locale.value.label")"></textarea>
+					</div>
+				</div>
+				<div class="card-action">
+					<button type="submit" class="btn btn-link btn-save">@Messages("button.save")</button>
+					<button type="button" class="btn btn-link btn-cancel">@Messages("button.cancel")</button>
+				</div>
+			</div>
+		</form>
+
+		<!-- Preview -->
+		<h3 class="section-heading">@Messages("locale.preview")</h3>
+		<div id="preview"></div>
+	} {
+	}
+
+	<script>
+		var projectId = '@key.project.id';
+		var keyId = '@key.id';
+		var keyName = '@key.name';
+	</script>
+	<script src="@routes.Assets.versioned("javascripts/key.js")"></script>
+}
