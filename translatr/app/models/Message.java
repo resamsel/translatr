@@ -115,4 +115,16 @@ public class Message
 	{
 		return find.where().eq("locale.id", localeId).eq("key.name", key).findUnique();
 	}
+
+	public static List<Message> last(Project project, int limit)
+	{
+		return find
+			.fetch("key")
+			.fetch("locale")
+			.where()
+			.eq("key.project", project)
+			.order("whenUpdated desc")
+			.setMaxRows(limit)
+			.findList();
+	}
 }

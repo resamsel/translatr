@@ -1,0 +1,3 @@
+@(message: models.Message)
+
+<a href="@routes.Application.locale(message.locale.id)#key=@message.key.name">@message.key.name (@message.locale.name)</a>

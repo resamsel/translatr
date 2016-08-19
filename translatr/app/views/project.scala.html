@@ -27,11 +27,24 @@
 							<p>
 								@Messages("locales.size", project.locales.size()),
 								@Messages("latest"):
-								@{Html(models.Locale.last(project, 3).map(k => "<strong>%s</strong>".format(k.name)).mkString(", "))}.
+								@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
 							</p>
 							<div class="progress">
 								<div class="progress-bar progress-bar-success" style="width: @{project.progress()*100}%;"></div>
 							</div>
+						</div>
+					</div>
+
+					<div class="card">
+						<div class="card-header bg-red">
+							<h4>@Messages("messages")</h4>
+						</div>
+						<div class="card-content">
+							<p>
+								@Messages("messages.size", project.messagesSize()),
+								@Messages("latest"):
+								@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
+							</p>
 						</div>
 					</div>
 				</div>
