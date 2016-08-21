@@ -36,10 +36,10 @@ function search(value) {
 		$('a.locale').hide();
 		if(filterUntranslated) {
 			console.log('Untranslated checked');
-			$('a.locale.no-message[name*="' + value.toLowerCase() +'"]').show();
+			$('a.locale.no-message .name:contains("' + value + '"), a.locale.no-message .value:contains("' + value + '")').parent().show();
 		} else {
 			console.log('Untranslated unchecked');
-			$('a.locale[name*="' + value.toLowerCase() +'"]').show();
+			$('a.locale .name:contains("' + value + '"), a.locale .value:contains("' + value + '")').parent().show();
 		}
     } else {
 		if(filterUntranslated) {

@@ -60,10 +60,10 @@ function search(value) {
 		$('a.key').hide();
 		if(filterUntranslated) {
 			console.log('Untranslated checked');
-			$('a.key.no-message[name*="' + value.toLowerCase() +'"]').show();
+			$('a.key.no-message .name:contains("' + value + '"), a.key.no-message .value:contains("' + value + '")').parent().show();
 		} else {
 			console.log('Untranslated unchecked');
-			$('a.key[name*="' + value.toLowerCase() +'"]').show();
+			$('a.key .name:contains("' + value + '"), a.key .value:contains("' + value + '")').parent().show();
 		}
     } else {
 		if(filterUntranslated) {
