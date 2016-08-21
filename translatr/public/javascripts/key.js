@@ -9,14 +9,14 @@
 
 function handleMessage(message) {
     $('#field-id').val(message.id);
-    $('#field-locale').val(message.locale.name).attr('localeId', message.locale.id);
+    $('#field-locale').val(message.localeName).attr('localeId', message.localeId);
     $('#field-value').val(message.value);
     $('#preview').html(message.value);
 }
 function handleSaveMessage(message) {
-	$('#' + message.locale.id).removeClass('no-message');
-	$('#' + message.locale.id + ' .value').html(message.value);
-	updateForm(message.locale.id);
+	$('#' + message.localeId).removeClass('no-message');
+	$('#' + message.localeId + ' .value').html(message.value);
+	updateForm(message.localeId);
 }
 function updateForm(localeId) {
 	$("#no-selection").hide();
@@ -85,9 +85,7 @@ $(document).ready(function() {
 					})
 				}
 			)
-		).done(function(data) {
-			handleSaveMessage(data);
-		});
+		).done(handleSaveMessage);
     });
 	$('a.locale').click(function() {
 		$('a.locale').removeClass('active');

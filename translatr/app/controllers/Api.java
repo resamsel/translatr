@@ -41,7 +41,7 @@ public class Api extends Controller
 			Ebean.save(project);
 		}
 
-		return ok(Json.toJson(project));
+		return ok(Json.toJson(new dto.Project(project)));
 	}
 
 	public Result findLocales(UUID projectId)
@@ -69,7 +69,7 @@ public class Api extends Controller
 			Ebean.save(locale);
 		}
 
-		return ok(Json.toJson(locale));
+		return ok(Json.toJson(new dto.Locale(locale)));
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -90,7 +90,7 @@ public class Api extends Controller
 		}
 		Ebean.save(message);
 
-		return ok(Json.toJson(message));
+		return ok(Json.toJson(new dto.Message(message)));
 	}
 
 	public Result findMessages(UUID projectId)
@@ -108,6 +108,6 @@ public class Api extends Controller
 		if(message == null)
 			return notFound(Json.toJson(new Exception("Message not found")));
 
-		return ok(Json.toJson(message));
+		return ok(Json.toJson(new dto.Message(message)));
 	}
 }

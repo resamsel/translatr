@@ -25,7 +25,11 @@ public class Message
 	@JsonIgnore
 	public DateTime whenUpdated;
 
+	public UUID localeId;
+
 	public String localeName;
+
+	public UUID keyId;
 
 	public String keyName;
 
@@ -36,7 +40,9 @@ public class Message
 		this.id = message.id;
 		this.whenCreated = message.whenCreated;
 		this.whenUpdated = message.whenUpdated;
+		this.localeId = message.locale.id;
 		this.localeName = message.locale.name;
+		this.keyId = message.key.id;
 		this.keyName = message.key.name;
 		this.value = message.value;
 	}

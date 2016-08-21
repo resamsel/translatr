@@ -8,7 +8,7 @@
 
 function handleMessage(message) {
     $('#field-id').val(message.id);
-    $('#field-key').val(message.key.name).attr('keyId', message.key.id);
+    $('#field-key').val(message.keyName).attr('keyId', message.keyId);
     $('#field-value').val(message.value);
     $('#preview').html(message.value);
 }
@@ -31,11 +31,10 @@ function handleCopyMessageValue() {
 	$('#preview').html(value);
 }
 function handleSaveMessage(message) {
-    if(message.locale.id === localeId) {
-    	$('#' + message.key.id).removeClass('no-message');
-    	$('#' + message.key.id + ' .value').html(message.value);
-    	updateForm(message.key.id, $('#field-key').val());
-    }
+	console.log('Message: ', message);
+	$('#' + message.keyId).removeClass('no-message');
+	$('#' + message.keyId + ' .value').html(message.value);
+	updateForm(message.keyId, $('#field-key').val());
 }
 function updateForm(keyId, keyName) {
 	$("#no-selection").hide();
@@ -111,9 +110,7 @@ $(document).ready(function() {
 					})
 				}
 			)
-		).done(function(data) {
-			handleSaveMessage(data);
-		});
+		).done(handleSaveMessage);
     });
 	$('a.key').click(function() {
 		$('a.key').removeClass('active');
@@ -134,7 +131,7 @@ $(document).ready(function() {
 		$("#no-selection").show();
 		window.location.hash = '#';
 	});
-	$('.btn-save').click(function() {
+	$('.modal .btn-save').click(function() {
 		$('#form-key').attr('action', $('#form-key').attr('action') + '#key=' + $('#field-key-name').val());
 		$('#form-key').submit();
 	});

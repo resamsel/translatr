@@ -4,10 +4,14 @@
 import argparse
 import yaml
 import requests
+import glob
+import logging
 
 from collections import namedtuple
 
 Locale = namedtuple('Locale', 'id name projectId')
+
+logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser(description='Command line interface for play-translatr.')
 parser.add_argument(
@@ -30,7 +34,12 @@ def download(url, target):
 				f.write(chunk)
 	return
 
-if args.command == 'pull':
+
+def help():
+	print 'help'
+
+
+def pull():
 	response = requests.get(
 		'{endpoint}/api/locales/{project_id}'.format(**config))
 	locales = response.json()
@@ -45,3 +54,54 @@ if args.command == 'pull':
 			target
 		)
 		print 'Downloaded {0} to {1}'.format(locale.name, target)
+
+def push():
+	response = requests.get(
+		'{endpoint}/api/locales/{project_id}'.format(**config))
+	locales = dict([(loc['name'], Locale(**loc)) for loc in response.json()])
+
+	target = '{push[target]}'.format(**config)
+	prefix = target.replace('.{locale.name}', '')
+	for filename in glob.iglob(prefix + '*'):
+		localeName = filename.replace(prefix, '')
+		if localeName == '':
+			localeName = 'default'
+		else:
+			localeName = localeName[1:]
+
+		created = False
+		if localeName not in locales:
+			# Create locale
+			response = requests.put(
+				'{endpoint}/api/locale'.format(**config),
+				json={
+					'project': {
+						'id': config['project_id']
+					},
+					'name': localeName
+				})
+			# Put response locale in locales
+			try:
+				locales[localeName] = Locale(**response.json())
+				created = True
+			except BaseException as e:
+				logger.exception(e)
+
+		if localeName in locales:
+			requests.post(
+				'{endpoint}/locale/{locale.id}/import'.format(
+					locale=locales[localeName],
+					**config),
+				files={
+					'messages': open(filename, 'r')
+				})
+			print 'Uploaded {0} to {1}{2}'.format(
+				filename,
+				localeName,
+				{ True: ' (new)', False: ''}.get(created)
+			)
+
+{
+	'pull': pull,
+	'push': push
+}.get(args.command, help)()
