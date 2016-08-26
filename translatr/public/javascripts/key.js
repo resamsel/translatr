@@ -21,6 +21,7 @@ function handleSaveMessage(message) {
 function updateForm(localeId) {
 	$("#no-selection").hide();
 	$("#panel-message").show();
+	$("#panel-preview").show();
     $('#field-id').val('');
 	$('#field-locale').val(keyName).attr('localeId', localeId);
     $('#field-value').val('');
@@ -98,6 +99,7 @@ $(document).ready(function() {
 	$('.btn-cancel').click(function() {
 		$('a.locale').removeClass('active');
 		$("#panel-message").hide();
+		$("#panel-preview").hide();
 		$("#no-selection").show();
 		window.location.hash = '#';
 	});

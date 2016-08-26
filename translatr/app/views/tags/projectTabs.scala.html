@@ -1,21 +1,30 @@
 @(project: models.Project, active: String)(content: Html)
 
 <div class="container project-@active">
-	<ul class="nav nav-tabs">
-		<li
-			role="presentation"
-			@if(active == "info") { class="active" }>
-			<a href="@routes.Application.project(project.id)">@Messages("info")</a>
+	<ul class="tabs">
+		<li class="tab">
+			<a
+				target="_self"
+				@if(active == "info") { class="active" }
+				href="@routes.Application.project(project.id)">
+				@Messages("info")
+			</a>
 		</li>
-		<li
-			role="presentation"
-			@if(active == "locales") { class="active" }>
-			<a href="@routes.Application.projectLocales(project.id)">@Messages("locales")</a>
+		<li class="tab">
+			<a
+				target="_self"
+				@if(active == "locales") { class="active" }
+				href="@routes.Application.projectLocales(project.id)">
+				@Messages("locales")
+			</a>
 		</li>
-		<li
-			role="presentation"
-			@if(active == "keys") { class="active" }>
-			<a href="@routes.Application.projectKeys(project.id)">@Messages("keys")</a>
+		<li class="tab">
+			<a
+				target="_self"
+				@if(active == "keys") { class="active" }
+				href="@routes.Application.projectKeys(project.id)">
+				@Messages("keys")
+			</a>
 		</li>
 	</ul>
 

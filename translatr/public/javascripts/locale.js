@@ -19,7 +19,7 @@ function handleMessageList(keyName, messages) {
     messages.forEach(function(entry) {
     	console.log('Message: ', entry);
     	var $msg = $template.clone().removeClass('template');
-    	$msg.attr('href', window.location.hash).click(handleCopyMessageValue);
+    	$msg.find('a').attr('href', window.location.hash).click(handleCopyMessageValue);
     	$msg.find('.localeName').text(locales[entry.localeId]);
     	$msg.find('.value').html(entry.value);
     	$messages.append($msg);
@@ -40,6 +40,7 @@ function updateForm(keyId, keyName) {
 	$("#no-selection").hide();
 	$("#panel-message").show();
 	$("#panel-messages").show();
+	$("#panel-preview").show();
     $('#field-id').val('');
 	$('#field-key').val(keyName).attr('keyId', keyId);
     $('#field-value').val('');
@@ -113,8 +114,8 @@ $(document).ready(function() {
 		).done(handleSaveMessage);
     });
 	$('a.key').click(function() {
-		$('a.key').removeClass('active');
-		$(this).addClass('active')
+		$('a.key').parent().removeClass('active');
+		$(this).parent().addClass('active')
 		updateForm($(this).attr('id'), $(this).attr('name'));
 	})
 	$('a.key .btn-remove').click(function(e) {
@@ -128,6 +129,7 @@ $(document).ready(function() {
 		$('a.key').removeClass('active');
 		$("#panel-message").hide();
 		$("#panel-messages").hide();
+		$("#panel-preview").hide();
 		$("#no-selection").show();
 		window.location.hash = '#';
 	});

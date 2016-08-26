@@ -2,34 +2,26 @@
 
 @main(Messages("locale.edit.title", locale.project.name, tags.locale(locale.name))) {
 } {
-	<ul class="breadcrumb">
-		<li>
-			<a href="@routes.Application.dashboard()">
-				@Messages("dashboard")
-			</a>
-		</li>
-		<li>
-			<a href="@routes.Application.project(locale.project.id)">
-				@locale.project.name
-			</a>
-		</li>
-		<li>
-			<a href="@routes.Application.projectLocales(locale.project.id)">
-				@Messages("locales")
-			</a>
-		</li>
-		<li class="active">
-			<a href="@routes.Application.locale(locale.id)">
-				@tags.locale(locale.name)
-			</a>
-		</li>
-	</ul>
+	<div class="col m12">
+		<a class="breadcrumb" href="@routes.Application.dashboard()">
+			@Messages("dashboard")
+		</a>
+		<a class="breadcrumb" href="@routes.Application.project(locale.project.id)">
+			@locale.project.name
+		</a>
+		<a class="breadcrumb" href="@routes.Application.projectLocales(locale.project.id)">
+			@Messages("locales")
+		</a>
+		<a class="breadcrumb" href="@routes.Application.locale(locale.id)">
+			@tags.locale(locale.name)
+		</a>
+	</div>
 
-	<div class="col-md-6 col-md-offset-3">
+	<div class="col m6 offset-m3">
 		<form action="@routes.Application.localeEdit(locale.id)" method="post">
 			<div id="panel-message" class="card">
-				<div class="card-header bg-blue">
-					<h4>@Messages("locale.edit")</h4>
+				<div class="card-image blue">
+					<span class="card-title">@Messages("locale.edit")</span>
 				</div>
 				<div class="card-content">
 					<div class="form-group">
@@ -38,7 +30,12 @@
 					</div>
 				</div>
 				<div class="card-action">
-					<button type="submit" class="btn btn-link btn-save">@Messages("button.save")</button>
+					<button
+						type="submit"
+						class="btn waves-effect waves-light btn-save">
+						@Messages("button.save")
+						<i class="material-icons right">send</i>
+					</button>
 				</div>
 			</div>
 		</form>

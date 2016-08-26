@@ -3,24 +3,24 @@
 @main(Messages("dashboard.title")) {
 	@tags.search()
 } {
-	<ul class="breadcrumb">
-		<li>
+	<div class="col m12">
+		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
-		</li>
-	</ul>
+		</a>
+	</div>
 
-	<div class="col-md-12">
+	<div class="col m12">
 		<div class="container">
 			@for(project <- projects) {
 				<div class="card project" name="@project.name.toLowerCase">
-					<div class="card-header bg-orange">
-						<h4>@project.name</h4>
-					</div>
 					<div class="card-content">
-						@Messages("project.info")
-						@Messages("locales.size", project.locales.size()),
-						@Messages("keys.size", project.keys.size()),
-						@Messages("messages.size", project.messagesSize())
+						<span class="card-title">@project.name</span>
+						<p>
+							@Messages("project.info")
+							@Messages("locales.size", project.locales.size()),
+							@Messages("keys.size", project.keys.size()),
+							@Messages("messages.size", project.messagesSize())
+						</p>
 					</div>
 					<div class="card-action">
 						<a href="@routes.Application.project(project.id)">
@@ -31,19 +31,12 @@
 			}
 		</div>
 	</div>
-	<!-- /.col-md-4 -->
+	<!-- /.col .m12 -->
 
-	<button
-		type="button"
-		id="create"
-		class="btn btn-circle btn-raised btn-primary"
-		data-toggle="modal"
-		data-target="#modal-create">
-		<span class="glyphicon glyphicon-plus"></span>
-	</button>
+	@tags.modalTrigger("create", "create")
 
 	@tags.modal(Messages("project.new"), "modal-create") {
-	<form id="form-project" method="post" action="@routes.Application.projectCreate()">
+		<form id="form-project" method="post" action="@routes.Application.projectCreate()">
 			<div class="form-group">
 				<input
 					id="field-project-name"

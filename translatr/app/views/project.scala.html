@@ -5,23 +5,23 @@
 
 @main(Messages("project.title", project.name)) {
 } {
-	<ul class="breadcrumb">
-		<li>
-			<a href="@routes.Application.dashboard()">
-				@Messages("dashboard")
-			</a>
-		</li>
-		<li class="active">@project.name</li>
-	</ul>
-	
-	<div class="col-md-12">
+	<div class="col m12">
+		<a class="breadcrumb" href="@routes.Application.dashboard()">
+			@Messages("dashboard")
+		</a>
+		<a class="breadcrumb active" href="@routes.Application.project(project.id)">
+			@project.name
+		</a>
+	</div>
+
+	<div class="project col m12">
 		@tags.projectTabs(project, "info") {
 			<div class="row tab-body">
 				<!-- Project Info -->
-				<div class="col-md-4">
+				<div class="col m4">
 					<div class="card">
-						<div class="card-header bg-orange">
-							<h4>@Messages("project.title", project.name)</h4>
+						<div class="card-image orange">
+							<span class="card-title">@Messages("project.title", project.name)</span>
 						</div>
 						<div class="card-content">
 							<p>
@@ -40,10 +40,10 @@
 				</div>
 
 				<!-- Locales -->
-				<div class="col-md-4">
+				<div class="col m4">
 					<div class="card">
-						<div class="card-header bg-blue">
-							<h4>@Messages("locales")</h4>
+						<div class="card-image blue">
+							<span class="card-title">@Messages("locales")</span>
 						</div>
 						<div class="card-content">
 							<p>
@@ -59,10 +59,10 @@
 				</div>
 
 				<!-- Keys -->
-				<div class="col-md-4">
+				<div class="col m4">
 					<div class="card">
-						<div class="card-header bg-light-green">
-							<h4>@Messages("keys")</h4>
+						<div class="card-image light-green">
+							<span class="card-title">@Messages("keys")</span>
 						</div>
 						<div class="card-content">
 							<p>
@@ -75,10 +75,10 @@
 				</div>
 
 				<!-- Messages -->
-				<div class="col-md-4">
+				<div class="col m4">
 					<div class="card">
-						<div class="card-header bg-red">
-							<h4>@Messages("messages")</h4>
+						<div class="card-image red">
+							<span class="card-title">@Messages("messages")</span>
 						</div>
 						<div class="card-content">
 							<p>
