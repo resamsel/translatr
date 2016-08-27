@@ -17,6 +17,20 @@
     box-shadow: none;
     color: #444;
 }
+.navbar-form .form-control::-webkit-input-placeholder { /* Chrome */
+  color: white;
+}
+.navbar-form .form-control:-ms-input-placeholder { /* IE 10+ */
+  color: white;
+}
+.navbar-form .form-control::-moz-placeholder { /* Firefox 19+ */
+  color: white;
+  opacity: 1;
+}
+.navbar-form .form-control:-moz-placeholder { /* Firefox 4 - 18 */
+  color: white;
+  opacity: 1;
+}
 
 /** Project **/
 .card.project {

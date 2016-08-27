@@ -146,7 +146,7 @@ $(document).ready(function() {
 		console.log('Hash: ', hash);
 		var keyName = hash.replace('#key=', '');
 		var $a = $('a.key[name="'+keyName+'"]');
-		$a[0].scrollIntoView();
+		$a.parent()[0].scrollIntoView();
 		$a.click();
 	} else {
 		var $key = $('a.key:first-child');
