@@ -3,7 +3,7 @@
 @main(Messages("keys.title", project.name)) {
 	@tags.search()
 } {
-	<div class="col m12">
+	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
@@ -13,7 +13,7 @@
 		<a class="breadcrumb active" href="@routes.Application.projectKeys(project.id)">
 			@Messages("keys")
 		</a>
-	</div>
+	}
 
 	<div class="col m12">
 		@tags.projectTabs(project, "keys") {

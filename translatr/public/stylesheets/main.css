@@ -1,3 +1,15 @@
+html, body {
+	height: 100%;
+}
+.container-fluid.content {
+	height: calc(100% - 64px);
+}
+.container-fluid.content>.row {
+	height: 100%;
+	margin-bottom: 0;
+}
+
+/* Navbar */
 .navbar-form {
 	margin: 13.5px 25%;
 	margin: 0 25%;
@@ -47,15 +59,11 @@
 }
 
 /* Breadcrumb */
+.breadcrumbs {
+	margin-bottom: 8px;
+}
 .breadcrumb {
-    color: rgba(0,0,0,0.5);
     line-height: 32px;
-}
-.breadcrumb:last-child {
-	color: rgba(0,0,0,0.7);
-}
-.breadcrumb:before {
-    color: rgba(0,0,0,0.5);
 }
 
 /* Table */
@@ -97,15 +105,13 @@
 .mainview,
 .navview,
 .subview {
-	height: calc(100% - 100px); /* subtracts the height of the breadcrumb bar */
+	height: 100%; /* subtracts the height of the breadcrumb bar */
 	overflow: auto;
 }
-.navview {
-	position: fixed;
-	top: 100px;
-}
-.navview {
-	padding: 12px 8px;
+.row .col.mainview,
+.row .col.navview,
+.row .col.subview {
+	padding: 0.5rem 0.75rem;
 }
 .navview h3,
 .mainview h3,
@@ -144,7 +150,7 @@
 }
 .collection .collection-item.avatar {
     min-height: auto;
-    padding-left: 5px;
+    padding-left: 0.6rem;
 }
 .collection-item a {
 	display: block;

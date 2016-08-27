@@ -20,7 +20,7 @@
 		</div>
 	}
 } {
-	<div class="col m12">
+	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
@@ -33,7 +33,7 @@
 		<a class="breadcrumb active" href="@routes.Application.key(key.id)">
 			@key.name
 		</a>
-	</div>
+	}
 
 	@tags.threeColumns {
 		<h3 class="section-heading">@Messages("locales")</h3>

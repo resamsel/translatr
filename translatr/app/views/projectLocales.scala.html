@@ -3,7 +3,7 @@
 @main(Messages("locales.title", project.name)) {
 	@tags.search()
 } {
-	<div class="col m12">
+	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
@@ -13,7 +13,7 @@
 		<a class="breadcrumb active" href="@routes.Application.projectLocales(project.id)">
 			@Messages("locales")
 		</a>
-	</div>
+	}
 
 	<div class="col m12">
 		@tags.projectTabs(project, "locales") {

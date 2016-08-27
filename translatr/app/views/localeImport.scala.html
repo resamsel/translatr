@@ -2,7 +2,7 @@
 
 @main(Messages("locale.import.title", locale.project.name, tags.locale(locale.name))) {
 } {
-	<div class="col m12">
+	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
@@ -15,7 +15,7 @@
 		<a class="breadcrumb" href="@routes.Application.locale(locale.id)">
 			@tags.locale(locale.name)
 		</a>
-	</div>
+	}
 
 	<div class="col m6 offset-m3">
 		<form action="@routes.Application.localeImport(locale.id)" method="post" enctype="multipart/form-data">

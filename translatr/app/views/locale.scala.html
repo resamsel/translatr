@@ -20,7 +20,7 @@
 		</div>
 	}
 } {
-	<div class="col m12">
+	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
@@ -33,7 +33,7 @@
 		<a class="breadcrumb active" href="@routes.Application.locale(locale.id)">
 			@tags.locale(locale.name)
 		</a>
-	</div>
+	}
 
 	@tags.threeColumns {
 		<h3 class="section-heading">@Messages("keys")</h3>
@@ -58,9 +58,6 @@
 			}
 		</ul>
 	} {
-		<div id="no-selection" class="valign-wrapper">
-			<span class="valign">@Messages("key.selection.none")</span>
-		</div>
 		<form id="form-message">
 			<div id="panel-message" class="card">
 				<div class="card-image red">
@@ -101,6 +98,10 @@
 		<div id="panel-preview">
 			<h3 class="section-heading">@Messages("locale.preview")</h3>
 			<div id="preview"></div>
+		</div>
+
+		<div id="no-selection" class="valign-wrapper">
+			<span class="valign">@Messages("key.selection.none")</span>
 		</div>
 	} {
 		<h3 class="section-heading">@Messages("messages")</h3>

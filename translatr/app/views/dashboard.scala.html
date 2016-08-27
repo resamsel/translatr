@@ -3,11 +3,11 @@
 @main(Messages("dashboard.title")) {
 	@tags.search()
 } {
-	<div class="col m12">
+	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
-	</div>
+	}
 
 	<div class="col m12">
 		<div class="container">
