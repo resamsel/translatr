@@ -10,7 +10,7 @@
 function handleMessage(message) {
     $('#field-id').val(message.id);
     $('#field-locale').val(message.localeName).attr('localeId', message.localeId);
-    $('#field-value').val(message.value);
+    $('#field-value').val(message.value).trigger('autoresize');
     $('#preview').html(message.value);
 }
 function handleSaveMessage(message) {
@@ -34,22 +34,24 @@ function updateForm(localeId) {
 function search(value) {
 	var filterUntranslated = $('#field-untranslated').is(':checked');
     if(value !== '') {
-		$('a.locale').hide();
+		$('a.locale').parent().hide();
 		if(filterUntranslated) {
 			console.log('Untranslated checked');
-			$('a.locale.no-message .name:contains("' + value + '"), a.locale.no-message .value:contains("' + value + '")').parent().show();
+			$('a.locale.no-message .name:contains("' + value + '"), a.locale.no-message .value:contains("' + value + '")')
+				.parent().parent().show();
 		} else {
 			console.log('Untranslated unchecked');
-			$('a.locale .name:contains("' + value + '"), a.locale .value:contains("' + value + '")').parent().show();
+			$('a.locale .name:contains("' + value + '"), a.locale .value:contains("' + value + '")')
+				.parent().parent().show();
 		}
     } else {
 		if(filterUntranslated) {
 			console.log('Untranslated checked');
-			$('a.locale').hide();
-	    	$('a.locale.no-message').show();
+			$('a.locale').parent().hide();
+	    	$('a.locale.no-message').parent().show();
 		} else {
 			console.log('Untranslated unchecked');
-	    	$('a.locale').show();
+	    	$('a.locale').parent().show();
 		}
     }
 }
@@ -89,15 +91,15 @@ $(document).ready(function() {
 		).done(handleSaveMessage);
     });
 	$('a.locale').click(function() {
-		$('a.locale').removeClass('active');
-		$(this).addClass('active')
+		$('a.locale').parent().removeClass('active');
+		$(this).parent().addClass('active')
 		updateForm($(this).attr('id'));
 	})
 	$('#field-value').on('change keyup paste', function() {
 	    $('#preview').html($('#field-value').val());
 	});
 	$('.btn-cancel').click(function() {
-		$('a.locale').removeClass('active');
+		$('a.locale').parent().removeClass('active');
 		$("#panel-message").hide();
 		$("#panel-preview").hide();
 		$("#no-selection").show();

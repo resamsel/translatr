@@ -9,7 +9,7 @@
 function handleMessage(message) {
     $('#field-id').val(message.id);
     $('#field-key').val(message.keyName).attr('keyId', message.keyId);
-    $('#field-value').val(message.value);
+    $('#field-value').val(message.value).trigger('autoresize');
     $('#preview').html(message.value);
 }
 function handleMessageList(keyName, messages) {
@@ -26,8 +26,8 @@ function handleMessageList(keyName, messages) {
     });
 }
 function handleCopyMessageValue() {
-	var value = $(this).find('.value').text();
-	$('#field-value').val(value);
+	var value = $(this).find('.value').html();
+	$('#field-value').val(value).trigger('autoresize');
 	$('#preview').html(value);
 }
 function handleSaveMessage(message) {
@@ -58,26 +58,29 @@ function updateForm(keyId, keyName) {
 function search(value) {
 	var filterUntranslated = $('#field-untranslated').is(':checked');
     if(value !== '') {
-		$('a.key').hide();
+		$('a.key').parent().hide();
 		if(filterUntranslated) {
 			console.log('Untranslated checked');
-			$('a.key.no-message .name:contains("' + value + '"), a.key.no-message .value:contains("' + value + '")').parent().show();
+			$('a.key.no-message .name:contains("' + value + '"), a.key.no-message .value:contains("' + value + '")')
+				.parent().parent().show();
 		} else {
 			console.log('Untranslated unchecked');
-			$('a.key .name:contains("' + value + '"), a.key .value:contains("' + value + '")').parent().show();
+			$('a.key .name:contains("' + value + '"), a.key .value:contains("' + value + '")')
+				.parent().parent().show();
 		}
     } else {
 		if(filterUntranslated) {
 			console.log('Untranslated checked');
-			$('a.key').hide();
-	    	$('a.key.no-message').show();
+			$('a.key').parent().hide();
+	    	$('a.key.no-message').parent().show();
 		} else {
 			console.log('Untranslated unchecked');
-	    	$('a.key').show();
+	    	$('a.key').parent().show();
 		}
     }
 }
 $(document).ready(function() {
+	$("#no-selection").hide();
 	$("#panel-message").hide();
 	$("#panel-messages").hide();
 	$('#field-search').on('change keyup paste', function() {

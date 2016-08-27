@@ -40,15 +40,20 @@
 	<div class="container-fluid content">
 		<div class="row">
 			@if(ctx().args.containsKey("undoCommand")) {
-				<div class="undo">
-					<a href="#" class="btn btn-link btn-sm btn-close">×</a>
+				<div class="undo template">
+					@Html(ctx().args("undoMessage").toString)
 					<a
 						href="@routes.Application.commandExecute(ctx().args("undoCommand").toString)"
-						class="btn btn-link btn-sm">
+						class="btn amber">
 						@Messages("button.undo")
 					</a>
-					@Html(ctx().args("undoMessage").toString)
 				</div>
+				<script>
+					$(document).ready(function() {
+						var $toastContent = $('.undo.template').clone().removeClass('template');
+						Materialize.toast($toastContent, 10000);
+					})
+				</script>
 			}
 
 			@content

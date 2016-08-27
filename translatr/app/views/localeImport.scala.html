@@ -2,38 +2,51 @@
 
 @main(Messages("locale.import.title", locale.project.name, tags.locale(locale.name))) {
 } {
-	<ul class="breadcrumb">
-		<li>
-			<a href="@routes.Application.dashboard()">
-				@Messages("dashboard")
-			</a>
-		</li>
-		<li>
-			<a href="@routes.Application.project(project.id)">
-				@project.name
-			</a>
-		</li>
-		<li class="active">
-			<a href="@routes.Application.locale(locale.id)">
-				@tags.locale(locale.name)
-			</a>
-		</li>
-	</ul>
+	<div class="col m12">
+		<a class="breadcrumb" href="@routes.Application.dashboard()">
+			@Messages("dashboard")
+		</a>
+		<a class="breadcrumb" href="@routes.Application.project(project.id)">
+			@project.name
+		</a>
+		<a class="breadcrumb" href="@routes.Application.projectLocales(project.id)">
+			@Messages("locales")
+		</a>
+		<a class="breadcrumb" href="@routes.Application.locale(locale.id)">
+			@tags.locale(locale.name)
+		</a>
+	</div>
 
-	<div class="col-md-6 col-md-offset-3">
+	<div class="col m6 offset-m3">
 		<form action="@routes.Application.localeImport(locale.id)" method="post" enctype="multipart/form-data">
 			<div id="panel-message" class="card">
-				<div class="card-header bg-blue">
-					<h4>@Messages("locale.import")</h4>
+				<div class="card-image blue">
+					<span class="card-title">@Messages("locale.import")</span>
 				</div>
 				<div class="card-content">
-					<div class="form-group">
-						<label for="field-messages">@Messages("locale.import.file")</label>
-						<input id="field-messages" name="messages" class="form-control" type="file" />
+					<div class="file-field input-field">
+						<div class="btn">
+							<span>@Messages("import.file")</span>
+							<input
+								id="field-messages"
+								type="file"
+								name="messages" />
+						</div>
+						<div class="file-path-wrapper">
+							<input
+								class="file-path validate"
+								type="text"
+								placeholder="@Messages("locale.import.file")">
+						</div>
 					</div>
 				</div>
 				<div class="card-action">
-					<button type="submit" class="btn btn-link btn-save">@Messages("button.import")</button>
+					<button
+						type="submit"
+						class="btn btn-link btn-save">
+						@Messages("button.import")
+						<i class="material-icons right">send</i>
+					</button>
 				</div>
 			</div>
 		</form>

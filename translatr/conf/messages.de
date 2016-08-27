@@ -11,6 +11,7 @@ button.save = Speichern
 button.undo = Rückgängig
 dashboard = Dashboard
 dashboard.title = Dashboard
+import.file = Datei wählen
 info = Info
 key.deleted = Schlüssel <strong>{0}</strong> wurde gelöscht
 key.edit = Schlüssel bearbeiten

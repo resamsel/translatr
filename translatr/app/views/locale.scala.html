@@ -39,20 +39,20 @@
 		<h3 class="section-heading">@Messages("keys")</h3>
 		<ul class="collection btn-hide">
 			@for(key <- project.keys) {
-				<li class="collection-item">
+				<li class="collection-item avatar">
 					<a
 						id="@key.id"
 						href="#key=@key.name"
 						class="key @if(key.messageValue(locale) == null) { no-message }"
 						name="@key.name.toLowerCase"
 						title="@key.name">
+						<span class="title name">@key.name</span>
+						<div class="value">@key.messageValue(locale)</div>
 						<button
 							class="waves-effect waves-light btn-flat btn-remove secondary-content"
 							title="@Messages("key.remove")">
 							<i class="material-icons">delete_forever</i>
 						</button>
-						<span class="title name">@key.name</span>
-						<div class="value">@key.messageValue(locale)</div>
 					</a>
 				</li>
 			}
