@@ -76,7 +76,7 @@
 		<!-- /.col-md-12 -->
 	}
 
-	@tags.modalTrigger("create", "create")
+	@tags.modalTrigger("create", "create", Messages("locale.create.tooltip"))
 
 	@tags.modal(Messages("locale.new"), "modal-create") {
 		<form id="form-locale" method="post" action="@routes.Application.localeCreate(project.id)" enctype="multipart/form-data">

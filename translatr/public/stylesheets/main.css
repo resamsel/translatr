@@ -10,6 +10,15 @@ html, body {
 	padding-top: 1rem;
 }
 
+/* Buttons */
+.btn-save {
+	background-color: #2196F3;
+}
+.btn-save:hover,
+.btn-save:focus {
+	background-color: #1e88e5;
+}
+
 /* Navbar */
 nav .nav-wrapper {
     padding: 0 1rem;
@@ -169,12 +178,6 @@ nav .nav-wrapper {
 .collection-item:hover {
 	background-color: rgba(0,0,0,.03);
 }
-.collection .collection-item.active,
-.collection .collection-item.active:hover,
-.collection .collection-item.active:focus {
-    background-color: #8BC34A;
-    border-color: #8BC34A;
-}
 .collection-item .name {
 	max-width: calc(100% - 50px);
     overflow: hidden;
@@ -198,6 +201,19 @@ nav .nav-wrapper {
 }
 .collection-item.active .value {
     color: rgba(255,255,255,0.7);
+}
+
+.collection.locales .collection-item.active,
+.collection.locales .collection-item.active:hover,
+.collection.locales .collection-item.active:focus {
+    background-color: #2196F3;
+    border-color: #2196F3;
+}
+.collection.keys .collection-item.active,
+.collection.keys .collection-item.active:hover,
+.collection.keys .collection-item.active:focus {
+    background-color: #8BC34A;
+    border-color: #8BC34A;
 }
 
 /* Templates */

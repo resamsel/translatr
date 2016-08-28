@@ -35,7 +35,7 @@
 		<!-- /.col .m12 -->
 	}
 
-	@tags.modalTrigger("create", "create")
+	@tags.modalTrigger("create", "create", Messages("project.create.tooltip"))
 
 	@tags.modal(Messages("project.new"), "modal-create") {
 		<form id="form-project" method="post" action="@routes.Application.projectCreate()">

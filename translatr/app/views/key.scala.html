@@ -100,6 +100,16 @@
 		}
 	}
 
+	@tags.modalTrigger("create", "create", Messages("key.create.tooltip"))
+
+	@tags.modal(Messages("key.new"), "modal-create") {
+		<form id="form-key" method="post" action="@routes.Application.keyCreate(key.project.id, null)">
+			<div class="form-group">
+				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
+			</div>
+		</form>
+	}
+
 	<script>
 		var projectId = '@key.project.id';
 		var keyId = '@key.id';

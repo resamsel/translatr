@@ -110,6 +110,9 @@ $(document).ready(function() {
 		$("#no-selection").show();
 		window.location.hash = '#';
 	});
+	$('.modal .btn-save').click(function() {
+		$('#form-key').submit();
+	});
 
 	var hash = window.location.hash;
 	if(hash !== '') {
