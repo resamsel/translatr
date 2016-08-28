@@ -3,6 +3,8 @@ package utils;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.joda.time.DateTime;
+
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
@@ -25,8 +27,7 @@ public class StatUtils
 		return Message
 			.findBy(new MessageCriteria().withProjectId(project.id))
 			.stream()
-			.collect(
-				Collectors.groupingBy(m -> m.whenUpdated.withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)))
+			.collect(Collectors.groupingBy(m -> withMinuteSecondMillisReset(m.whenUpdated)))
 			.entrySet()
 			.stream()
 			.map(e -> new Stat(e.getKey().getMillis(), e.getValue().size()))
@@ -38,8 +39,7 @@ public class StatUtils
 		return Key
 			.findBy(new KeyCriteria().withProjectId(project.id))
 			.stream()
-			.collect(
-				Collectors.groupingBy(k -> k.whenUpdated.withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)))
+			.collect(Collectors.groupingBy(k -> withMinuteSecondMillisReset(k.whenUpdated)))
 			.entrySet()
 			.stream()
 			.map(e -> new Stat(e.getKey().getMillis(), e.getValue().size()))
@@ -51,11 +51,20 @@ public class StatUtils
 		return Locale
 			.findBy(new LocaleCriteria().withProjectId(project.id))
 			.stream()
-			.collect(
-				Collectors.groupingBy(l -> l.whenUpdated.withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)))
+			.collect(Collectors.groupingBy(l -> withMinuteSecondMillisReset(l.whenUpdated)))
 			.entrySet()
 			.stream()
 			.map(e -> new Stat(e.getKey().getMillis(), e.getValue().size()))
 			.collect(Collectors.toList());
+	}
+
+	public static long toMillisOfHour(DateTime dateTime)
+	{
+		return withMinuteSecondMillisReset(dateTime).getMillis();
+	}
+
+	public static DateTime withMinuteSecondMillisReset(DateTime dateTime)
+	{
+		return dateTime.withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
 	}
 }

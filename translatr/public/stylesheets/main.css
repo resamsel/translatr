@@ -261,20 +261,24 @@ nav .nav-wrapper {
 
 /* Charts */
 .ct-chart.ct-double-octave:before {
-    padding-bottom: 10%;
+    padding-bottom: 12.5%;
 }
 .ct-series-a .ct-bar,
 .ct-series-b .ct-bar,
-.ct-series-c .ct-bar {
-	stroke-width: 8px;
+.ct-series-c .ct-bar,
+.ct-series-d .ct-bar {
+	stroke-width: 5px;
 }
 .ct-chart .ct-series-a .ct-bar {
-	stroke: #F44336;
+	stroke: #ff9800;
 }
 .ct-chart .ct-series-b .ct-bar {
-	stroke: #8bc34a;
+	stroke: #F44336;
 }
 .ct-chart .ct-series-c .ct-bar {
+	stroke: #8bc34a;
+}
+.ct-chart .ct-series-d .ct-bar {
 	stroke: #2196F3;
 }
 .ct-chart .ct-grid {

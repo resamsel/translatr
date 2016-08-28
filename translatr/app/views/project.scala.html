@@ -114,6 +114,12 @@
 	<script>
 		var data = {
 			series: [{
+				name: 'project',
+				data: [
+					{x: new Date(@utils.StatUtils.toMillisOfHour(project.whenCreated)), y: 1},
+					{x: new Date(@utils.StatUtils.toMillisOfHour(project.whenUpdated)), y: 1}
+				]
+			}, {
 				name: 'messages',
 				data: [
 					@for(stat <- utils.StatUtils.getMessageStats(project)) {
