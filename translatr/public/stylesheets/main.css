@@ -56,7 +56,7 @@ nav .nav-wrapper {
   opacity: 1;
 }
 
-/** Project **/
+/** Cards **/
 .card.project {
 	position: relative;
     min-height: 1px;
@@ -68,6 +68,34 @@ nav .nav-wrapper {
 
 .card .card-image {
 	height: 75px;
+}
+
+.project .info {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	flex-flow: row wrap;
+	margin-bottom: 0;
+}
+.project .info > * {
+	flex: 1 0;
+	display: flex;
+}
+.project .info > * > .card {
+	flex: 1 100%;
+}
+.project .info > .timeline,
+.project .info > .messages {
+	flex: 3 100%;
+}
+@media (max-width: 767px) {
+	.project .info > *,
+	.project .info > .timeline,
+	.project .info > .messages {
+		flex: 1 100%;
+	}
 }
 
 /* Breadcrumb */
@@ -229,4 +257,27 @@ nav .nav-wrapper {
 /* Tabs */
 .tabs .tab a:hover {
     color: #d32f2f;
+}
+
+/* Charts */
+.ct-chart.ct-double-octave:before {
+    padding-bottom: 10%;
+}
+.ct-series-a .ct-bar,
+.ct-series-b .ct-bar,
+.ct-series-c .ct-bar {
+	stroke-width: 8px;
+}
+.ct-chart .ct-series-a .ct-bar {
+	stroke: #F44336;
+}
+.ct-chart .ct-series-b .ct-bar {
+	stroke: #8bc34a;
+}
+.ct-chart .ct-series-c .ct-bar {
+	stroke: #2196F3;
+}
+.ct-chart .ct-grid {
+    stroke: rgba(0,0,0,.1);
+	stroke-dasharray: 0;
 }

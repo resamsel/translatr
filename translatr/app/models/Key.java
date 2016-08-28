@@ -14,10 +14,13 @@ import javax.persistence.UniqueConstraint;
 import org.joda.time.DateTime;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import criterias.KeyCriteria;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
@@ -73,6 +76,20 @@ public class Key
 	public static Key byId(UUID id)
 	{
 		return find.setId(id).fetch("project").findUnique();
+	}
+
+	/**
+	 * @param messageCriteria
+	 * @return
+	 */
+	public static List<Key> findBy(KeyCriteria criteria)
+	{
+		ExpressionList<Key> query = Key.find.fetch("project").where();
+
+		if(criteria.getProjectId() != null)
+			query.eq("project.id", criteria.getProjectId());
+
+		return query.findList();
 	}
 
 	/**
