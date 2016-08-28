@@ -14,83 +14,85 @@
 		</a>
 	}
 
-	<div class="project col m12">
-		@tags.projectTabs(project, "info") {
-			<div class="row tab-body">
-				<!-- Project Info -->
-				<div class="col m4">
-					<div class="card">
-						<div class="card-image orange">
-							<span class="card-title">@Messages("project.title", project.name)</span>
-						</div>
-						<div class="card-content">
-							<p>
-								@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
-							</p>
-						</div>
-						<div class="card-action">
-							<a href="@routes.Application.projectEdit(project.id)">
-								@Messages("button.edit")
-							</a>
-							<a href="@routes.Application.projectRemove(project.id)">
-								@Messages("button.remove")
-							</a>
+	@tags.content {
+		<div class="project col m12">
+			@tags.projectTabs(project, "info") {
+				<div class="row tab-body">
+					<!-- Project Info -->
+					<div class="col m4">
+						<div class="card">
+							<div class="card-image orange">
+								<span class="card-title">@Messages("project.title", project.name)</span>
+							</div>
+							<div class="card-content">
+								<p>
+									@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
+								</p>
+							</div>
+							<div class="card-action">
+								<a href="@routes.Application.projectEdit(project.id)">
+									@Messages("button.edit")
+								</a>
+								<a href="@routes.Application.projectRemove(project.id)">
+									@Messages("button.remove")
+								</a>
+							</div>
 						</div>
 					</div>
-				</div>
-
-				<!-- Locales -->
-				<div class="col m4">
-					<div class="card">
-						<div class="card-image blue">
-							<span class="card-title">@Messages("locales")</span>
+	
+					<!-- Locales -->
+					<div class="col m4">
+						<div class="card">
+							<div class="card-image blue">
+								<span class="card-title">@Messages("locales")</span>
+							</div>
+							<div class="card-content">
+								<p>
+									@Messages("locales.size", project.locales.size()),
+									@Messages("latest"):
+									@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
+								</p>
+								<div class="progress">
+									<div class="progress-bar progress-bar-success" style="width: @{project.progress()*100}%;"></div>
+								</div>
+							</div>
 						</div>
-						<div class="card-content">
-							<p>
-								@Messages("locales.size", project.locales.size()),
-								@Messages("latest"):
-								@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
-							</p>
-							<div class="progress">
-								<div class="progress-bar progress-bar-success" style="width: @{project.progress()*100}%;"></div>
+					</div>
+	
+					<!-- Keys -->
+					<div class="col m4">
+						<div class="card">
+							<div class="card-image light-green">
+								<span class="card-title">@Messages("keys")</span>
+							</div>
+							<div class="card-content">
+								<p>
+									@Messages("keys.size", project.keys.size()),
+									@Messages("latest"):
+									@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
+								</p>
+							</div>
+						</div>
+					</div>
+	
+					<!-- Messages -->
+					<div class="col m4">
+						<div class="card">
+							<div class="card-image red">
+								<span class="card-title">@Messages("messages")</span>
+							</div>
+							<div class="card-content">
+								<p>
+									@Messages("messages.size", project.messagesSize()),
+									@Messages("latest"):
+									@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
+								</p>
 							</div>
 						</div>
 					</div>
 				</div>
-
-				<!-- Keys -->
-				<div class="col m4">
-					<div class="card">
-						<div class="card-image light-green">
-							<span class="card-title">@Messages("keys")</span>
-						</div>
-						<div class="card-content">
-							<p>
-								@Messages("keys.size", project.keys.size()),
-								@Messages("latest"):
-								@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
-							</p>
-						</div>
-					</div>
-				</div>
-
-				<!-- Messages -->
-				<div class="col m4">
-					<div class="card">
-						<div class="card-image red">
-							<span class="card-title">@Messages("messages")</span>
-						</div>
-						<div class="card-content">
-							<p>
-								@Messages("messages.size", project.messagesSize()),
-								@Messages("latest"):
-								@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		}
-	</div>
-	<!-- /.col-md-12 -->
+			}
+		</div>
+		<!-- /.col-md-12 -->
+	}
 }

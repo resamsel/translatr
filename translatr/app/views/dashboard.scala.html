@@ -9,29 +9,31 @@
 		</a>
 	}
 
-	<div class="col m12">
-		<div class="container">
-			@for(project <- projects) {
-				<div class="card project" name="@project.name.toLowerCase">
-					<div class="card-content">
-						<span class="card-title">@project.name</span>
-						<p>
-							@Messages("project.info")
-							@Messages("locales.size", project.locales.size()),
-							@Messages("keys.size", project.keys.size()),
-							@Messages("messages.size", project.messagesSize())
-						</p>
+	@tags.content {
+		<div class="col m12">
+			<div class="container">
+				@for(project <- projects) {
+					<div class="card project" name="@project.name.toLowerCase">
+						<div class="card-content">
+							<span class="card-title">@project.name</span>
+							<p>
+								@Messages("project.info")
+								@Messages("locales.size", project.locales.size()),
+								@Messages("keys.size", project.keys.size()),
+								@Messages("messages.size", project.messagesSize())
+							</p>
+						</div>
+						<div class="card-action">
+							<a href="@routes.Application.project(project.id)">
+								@Messages("button.open")
+							</a>
+						</div>
 					</div>
-					<div class="card-action">
-						<a href="@routes.Application.project(project.id)">
-							@Messages("button.open")
-						</a>
-					</div>
-				</div>
-			}
+				}
+			</div>
 		</div>
-	</div>
-	<!-- /.col .m12 -->
+		<!-- /.col .m12 -->
+	}
 
 	@tags.modalTrigger("create", "create")
 

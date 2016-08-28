@@ -15,46 +15,48 @@
 		</a>
 	}
 
-	<div class="col m12">
-		@tags.projectTabs(project, "keys") {
-			<table class="table bordered card tab-body btn-hide">
-				<tbody>
-					@for(key <- keys) {
-						<tr id="@key.id" class="key" name="@key.name.toLowerCase">
-							<td class="name">
-								<a href="@routes.Application.key(key.id)">
-									@key.name
-								</a>
-							</td>
-							<td class="updated">
-								@utils.FormatUtils.pretty(ctx.lang().locale, key.whenUpdated)
-							</td>
-							<td class="locale-progress">
-								<div class="progress">
-									<div class="progress-bar progress-bar-success" style="width: @{project.progress(key)*100}%;"></div>
-								</div>
-							</td>
-							<td class="actions right-align">
-								<a
-									href="@routes.Application.keyEdit(key.id)"
-									class="btn-flat waves-effect waves-light"
-									title="@Messages("button.edit")">
-									<i class="material-icons">mode_edit</i>
-								</a>
-								<a
-									href="@routes.Application.keyRemove(key.id, null)"
-									class="btn-flat waves-effect waves-light"
-									title="@Messages("button.remove")">
-									<i class="material-icons">delete_forever</i>
-								</a>
-							</td>
-						</tr>
-					}
-				</tbody>
-			</table>
-		}
-	</div>
-	<!-- /.col-md-12 -->
+	@tags.content {
+		<div class="col m12">
+			@tags.projectTabs(project, "keys") {
+				<table class="table bordered card tab-body btn-hide">
+					<tbody>
+						@for(key <- keys) {
+							<tr id="@key.id" class="key" name="@key.name.toLowerCase">
+								<td class="name">
+									<a href="@routes.Application.key(key.id)">
+										@key.name
+									</a>
+								</td>
+								<td class="updated">
+									@utils.FormatUtils.pretty(ctx.lang().locale, key.whenUpdated)
+								</td>
+								<td class="locale-progress">
+									<div class="progress">
+										<div class="progress-bar progress-bar-success" style="width: @{project.progress(key)*100}%;"></div>
+									</div>
+								</td>
+								<td class="actions right-align">
+									<a
+										href="@routes.Application.keyEdit(key.id)"
+										class="btn-flat waves-effect waves-light"
+										title="@Messages("button.edit")">
+										<i class="material-icons">mode_edit</i>
+									</a>
+									<a
+										href="@routes.Application.keyRemove(key.id, null)"
+										class="btn-flat waves-effect waves-light"
+										title="@Messages("button.remove")">
+										<i class="material-icons">delete_forever</i>
+									</a>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+		<!-- /.col-md-12 -->
+	}
 
 	@tags.modalTrigger("create", "create")
 

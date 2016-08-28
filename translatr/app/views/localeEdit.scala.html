@@ -17,27 +17,29 @@
 		</a>
 	}
 
-	<div class="col m6 offset-m3">
-		<form action="@routes.Application.localeEdit(locale.id)" method="post">
-			<div id="panel-message" class="card">
-				<div class="card-image blue">
-					<span class="card-title">@Messages("locale.edit")</span>
-				</div>
-				<div class="card-content">
-					<div class="form-group">
-						<label for="field-locale-name">@Messages("locale.name")</label>
-						<input id="field-locale-name" name="name" class="form-control" placeholder="@Messages("locale.label")" value="@locale.name"></input>
+	@tags.content {
+		<div class="col m6 offset-m3">
+			<form action="@routes.Application.localeEdit(locale.id)" method="post">
+				<div id="panel-message" class="card">
+					<div class="card-image blue">
+						<span class="card-title">@Messages("locale.edit")</span>
+					</div>
+					<div class="card-content">
+						<div class="form-group">
+							<label for="field-locale-name">@Messages("locale.name")</label>
+							<input id="field-locale-name" name="name" class="form-control" placeholder="@Messages("locale.label")" value="@locale.name"></input>
+						</div>
+					</div>
+					<div class="card-action">
+						<button
+							type="submit"
+							class="btn waves-effect waves-light btn-save">
+							@Messages("button.save")
+							<i class="material-icons right">send</i>
+						</button>
 					</div>
 				</div>
-				<div class="card-action">
-					<button
-						type="submit"
-						class="btn waves-effect waves-light btn-save">
-						@Messages("button.save")
-						<i class="material-icons right">send</i>
-					</button>
-				</div>
-			</div>
-		</form>
-	</div>
+			</form>
+		</div>
+	}
 }

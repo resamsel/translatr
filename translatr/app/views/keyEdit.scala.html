@@ -17,27 +17,29 @@
 		</a>
 	}
 
-	<div class="col m6 offset-m3">
-		<form action="@routes.Application.keyEdit(key.id)" method="post">
-			<div class="card">
-				<div class="card-image light-green">
-					<span class="card-title">@Messages("key.edit")</span>
-				</div>
-				<div class="card-content">
-					<div class="form-group">
-						<label for="field-key-name">@Messages("key.name")</label>
-						<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")" value="@key.name"></input>
+	@tags.content {
+		<div class="col m6 offset-m3">
+			<form action="@routes.Application.keyEdit(key.id)" method="post">
+				<div class="card">
+					<div class="card-image light-green">
+						<span class="card-title">@Messages("key.edit")</span>
+					</div>
+					<div class="card-content">
+						<div class="form-group">
+							<label for="field-key-name">@Messages("key.name")</label>
+							<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")" value="@key.name"></input>
+						</div>
+					</div>
+					<div class="card-action">
+						<button
+							type="submit"
+							class="btn waves-effect waves-light btn-save">
+							@Messages("button.save")
+							<i class="material-icons right">send</i>
+						</button>
 					</div>
 				</div>
-				<div class="card-action">
-					<button
-						type="submit"
-						class="btn waves-effect waves-light btn-save">
-						@Messages("button.save")
-						<i class="material-icons right">send</i>
-					</button>
-				</div>
-			</div>
-		</form>
-	</div>
+			</form>
+		</div>
+	}
 }

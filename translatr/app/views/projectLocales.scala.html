@@ -15,64 +15,66 @@
 		</a>
 	}
 
-	<div class="col m12">
-		@tags.projectTabs(project, "locales") {
-			<table class="table bordered card tab-body btn-hide">
-				<tbody>
-					@for(locale <- locales) {
-						<tr id="@locale.id" class="locale" name="@tags.locale(locale.name) @locale.name.toLowerCase">
-							<td class="name">
-								<a class="locale" href="@routes.Application.locale(locale.id)">
-									@tags.locale(locale.name)
-								</a>
-							</td>
-							<td class="missing">
-								@defining(project.missing(locale)) { missing =>
-									@if(missing == 0) {
-										@Messages("locale.complete")
-									} else {
-										@Messages("messages.missing", missing)
+	@tags.content {
+		<div class="col m12">
+			@tags.projectTabs(project, "locales") {
+				<table class="table bordered card tab-body btn-hide">
+					<tbody>
+						@for(locale <- locales) {
+							<tr id="@locale.id" class="locale" name="@tags.locale(locale.name) @locale.name.toLowerCase">
+								<td class="name">
+									<a class="locale" href="@routes.Application.locale(locale.id)">
+										@tags.locale(locale.name)
+									</a>
+								</td>
+								<td class="missing">
+									@defining(project.missing(locale)) { missing =>
+										@if(missing == 0) {
+											@Messages("locale.complete")
+										} else {
+											@Messages("messages.missing", missing)
+										}
 									}
-								}
-							</td>
-							<td class="locale-progress">
-								<div class="progress">
-									<div class="progress-bar progress-bar-success" style="width: @{project.progress(locale)*100}%;"></div>
-								</div>
-							</td>
-							<td class="actions right-align">
-								<a
-									href="@routes.Application.localeEdit(locale.id)"
-									class="btn-flat waves-effect waves-light"
-									title="@Messages("button.edit")">
-									<i class="material-icons">mode_edit</i>
-								</a>
-								<a
-									href="@routes.Application.localeImport(locale.id)"
-									class="btn-flat waves-effect waves-light"
-									title="@Messages("button.import")">
-									<i class="material-icons">file_upload</i>
-								</a>
-								<a
-									href="@routes.Application.localeExport(locale.id)"
-									class="btn-flat waves-effect waves-light"
-									title="@Messages("button.export")">
-									<i class="material-icons">file_download</i>
-								</a>
-								<a
-									href="@routes.Application.localeRemove(locale.id)"
-									class="btn-flat waves-effect waves-light"
-									title="@Messages("button.remove")">
-									<i class="material-icons">delete_forever</i>
-								</a>
-							</td>
-						</tr>
-					}
-				</tbody>
-			</table>
-		}
-	</div>
-	<!-- /.col-md-12 -->
+								</td>
+								<td class="locale-progress">
+									<div class="progress">
+										<div class="progress-bar progress-bar-success" style="width: @{project.progress(locale)*100}%;"></div>
+									</div>
+								</td>
+								<td class="actions right-align">
+									<a
+										href="@routes.Application.localeEdit(locale.id)"
+										class="btn-flat waves-effect waves-light"
+										title="@Messages("button.edit")">
+										<i class="material-icons">mode_edit</i>
+									</a>
+									<a
+										href="@routes.Application.localeImport(locale.id)"
+										class="btn-flat waves-effect waves-light"
+										title="@Messages("button.import")">
+										<i class="material-icons">file_upload</i>
+									</a>
+									<a
+										href="@routes.Application.localeExport(locale.id)"
+										class="btn-flat waves-effect waves-light"
+										title="@Messages("button.export")">
+										<i class="material-icons">file_download</i>
+									</a>
+									<a
+										href="@routes.Application.localeRemove(locale.id)"
+										class="btn-flat waves-effect waves-light"
+										title="@Messages("button.remove")">
+										<i class="material-icons">delete_forever</i>
+									</a>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+		<!-- /.col-md-12 -->
+	}
 
 	@tags.modalTrigger("create", "create")
 

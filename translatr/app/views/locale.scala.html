@@ -35,84 +35,88 @@
 		</a>
 	}
 
-	@tags.threeColumns {
-		<h3 class="section-heading">@Messages("keys")</h3>
-		<ul class="collection btn-hide">
-			@for(key <- project.keys) {
-				<li class="collection-item avatar">
-					<a
-						id="@key.id"
-						href="#key=@key.name"
-						class="key @if(key.messageValue(locale) == null) { no-message }"
-						name="@key.name.toLowerCase"
-						title="@key.name">
-						<span class="title name">@key.name</span>
-						<div class="value">@key.messageValue(locale)</div>
+	@tags.content {
+		@tags.threeColumns {
+			<h3 class="section-heading">@Messages("keys")</h3>
+			<ul class="collection btn-hide keys">
+				@for(key <- project.keys) {
+					<li class="collection-item avatar">
+						<a
+							id="@key.id"
+							href="#key=@key.name"
+							class="key @if(key.messageValue(locale) == null) { no-message }"
+							name="@key.name.toLowerCase"
+							title="@key.name">
+							<span class="title name">@key.name</span>
+							<div class="value">@key.messageValue(locale)</div>
+							<button
+								class="waves-effect waves-light btn-flat btn-remove secondary-content"
+								title="@Messages("key.remove")">
+								<i class="material-icons">delete_forever</i>
+							</button>
+						</a>
+					</li>
+				}
+			</ul>
+		} {
+			<form id="form-message">
+				<div id="panel-message" class="card">
+					<div class="card-image red">
+						<span class="card-title">@Messages("locale.to.label") @tags.locale(locale.name)</span>
+					</div>
+					<div class="card-content">
+						<input id="field-id" type="hidden" />
+						<input id="field-keyId" type="hidden" />
+						<div class="form-group hide">
+							<label for="field-key">@Messages("locale.key.label")</label>
+							<input id="field-key" class="form-control" type="text" disabled="disabled" />
+						</div>
+						<div class="input-field">
+							<textarea
+								id="field-value"
+								class="materialize-textarea"></textarea>
+							<label for="field-value">@Messages("locale.value.label")</label>
+						</div>
+						<div class="progress" style="margin: 0; visibility: hidden">
+							<div class="indeterminate"></div>
+						</div>
+					</div>
+					<div class="card-action">
 						<button
-							class="waves-effect waves-light btn-flat btn-remove secondary-content"
-							title="@Messages("key.remove")">
-							<i class="material-icons">delete_forever</i>
+							type="submit"
+							class="btn waves-effect waves-light btn-save">
+							@Messages("button.save")
+							<i class="material-icons right">send</i>
 						</button>
+						<button
+							type="button"
+							class="btn-flat waves-effect waves-light btn-cancel">
+							@Messages("button.cancel")
+						</button>
+					</div>
+				</div>
+			</form>
+	
+			<!-- Preview -->
+			<div id="panel-preview">
+				<h3 class="section-heading">@Messages("locale.preview")</h3>
+				<div id="preview"></div>
+			</div>
+	
+			<div id="no-selection" class="valign-wrapper">
+				<span class="valign">@Messages("key.selection.none")</span>
+			</div>
+		} {
+			<h3 class="section-heading">@Messages("messages")</h3>
+			<ul id="panel-messages" class="collection">
+				<li class="collection-item message template">
+					<a title="@Messages("value.copy")">
+						<span class="title localeName">Name</span>
+						<div class="value">Value</div>
 					</a>
 				</li>
-			}
-		</ul>
-	} {
-		<form id="form-message">
-			<div id="panel-message" class="card">
-				<div class="card-image red">
-					<span class="card-title">@Messages("locale.to.label") @tags.locale(locale.name)</span>
-				</div>
-				<div class="card-content">
-					<input id="field-id" type="hidden" />
-					<input id="field-keyId" type="hidden" />
-					<div class="form-group hide">
-						<label for="field-key">@Messages("locale.key.label")</label>
-						<input id="field-key" class="form-control" type="text" disabled="disabled" />
-					</div>
-					<div class="form-group">
-						<textarea
-							id="field-value"
-							class="materialize-textarea"
-							rows="3"
-							placeholder="@Messages("locale.value.label")"></textarea>
-					</div>
-				</div>
-				<div class="card-action">
-					<button
-						type="submit"
-						class="btn waves-effect waves-light btn-save">
-						@Messages("button.save")
-						<i class="material-icons right">send</i>
-					</button>
-					<button
-						type="button"
-						class="btn-flat waves-effect waves-light btn-cancel">
-						@Messages("button.cancel")
-					</button>
-				</div>
-			</div>
-		</form>
-
-		<!-- Preview -->
-		<div id="panel-preview">
-			<h3 class="section-heading">@Messages("locale.preview")</h3>
-			<div id="preview"></div>
-		</div>
-
-		<div id="no-selection" class="valign-wrapper">
-			<span class="valign">@Messages("key.selection.none")</span>
-		</div>
-	} {
-		<h3 class="section-heading">@Messages("messages")</h3>
-		<ul id="panel-messages" class="collection">
-			<li class="collection-item message template">
-				<a title="@Messages("value.copy")">
-					<span class="title localeName">Name</span>
-					<div class="value">Value</div>
-				</a>
-			</li>
-		</ul>
+			</ul>
+		}
 	}
 
 	@tags.modalTrigger("create", "create")
@@ -132,6 +136,9 @@
 			@for(locale <- locales) {
 				'@locale.id': '@tags.locale(locale.name)',
 			}
+		};
+		var messages = {
+			'message.updated': '@Messages("message.updated")'
 		};
 	</script>
 	<script src="@routes.Assets.versioned("javascripts/locale.js")"></script>

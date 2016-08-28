@@ -11,12 +11,15 @@ function handleMessage(message) {
     $('#field-id').val(message.id);
     $('#field-locale').val(message.localeName).attr('localeId', message.localeId);
     $('#field-value').val(message.value).trigger('autoresize');
+    Materialize.updateTextFields();
     $('#preview').html(message.value);
 }
 function handleSaveMessage(message) {
+	$('#form-message .progress').css('visibility', 'hidden');
 	$('#' + message.localeId).removeClass('no-message');
 	$('#' + message.localeId + ' .value').html(message.value);
 	updateForm(message.localeId);
+	Materialize.toast(messages['message.updated'], 5000);
 }
 function updateForm(localeId) {
 	$("#no-selection").hide();
@@ -25,6 +28,7 @@ function updateForm(localeId) {
     $('#field-id').val('');
 	$('#field-locale').val(keyName).attr('localeId', localeId);
     $('#field-value').val('');
+    Materialize.updateTextFields();
     $('#preview').html('');
     $('#locale-name').html($('#' + localeId + ' .name').html());
 	$.ajax(
@@ -70,6 +74,7 @@ $(document).ready(function() {
 	});
 	$("#form-message").submit(function(e){
         e.preventDefault();
+    	$('#form-message .progress').css('visibility', 'visible');
 		$.ajax(
 			$.extend(
 				jsRoutes.controllers.Api.putMessage(),
@@ -111,10 +116,9 @@ $(document).ready(function() {
 		console.log('Hash: ', hash);
 		var localeName = hash.replace('#locale=', '');
 		var $a = $('a.locale[name="'+localeName+'"]');
-		//$a[0].scrollIntoView();
 		$a.click();
 	} else {
-		var $locale = $('a.locale:first-child');
+		var $locale = $('.locales .collection-item:first-child a.locale');
 		window.location.hash = $locale.attr('href').replace('.*#', '#');
 		$locale.click();
 	}

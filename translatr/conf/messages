@@ -48,6 +48,7 @@ locales.size = {0,choice,0#no locales yet|1#one locale|1<{0} locales}
 locales.title = Locales - Project {0}
 message.any = Anything
 message.untranslated = Translation missing
+message.updated = Translation has been updated
 messages = Translations
 messages.missing = {0,choice,0#no missing translations|1#one translation missing|1<{0} translations missing}
 messages.size = {0,choice,0#no messages yet|1#one message|1<{0} messages}

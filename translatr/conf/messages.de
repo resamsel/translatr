@@ -48,6 +48,7 @@ locales.size = {0,choice,0#noch keine Sprache|1#eine Sprache|1<{0} Sprachen}
 locales.title = Sprachen - Projekt {0}
 message.any = Alle zeigen
 message.untranslated = Übersetzung fehlt
+message.updated = Übersetzung wurde aktualisiert
 messages = Übersetzungen
 messages.missing = {0,choice,0#keine fehlenden Übersetzungen|1#eine Übersetzung fehlt|1<{0} Übersetzungen fehlen}
 messages.size = {0,choice,0#noch keine Nachrichten|1#eine Nachricht|1<{0} Nachrichten}

@@ -10,6 +10,7 @@ function handleMessage(message) {
     $('#field-id').val(message.id);
     $('#field-key').val(message.keyName).attr('keyId', message.keyId);
     $('#field-value').val(message.value).trigger('autoresize');
+    Materialize.updateTextFields();
     $('#preview').html(message.value);
 }
 function handleMessageList(keyName, messages) {
@@ -24,26 +25,31 @@ function handleMessageList(keyName, messages) {
     	$msg.find('.value').html(entry.value);
     	$messages.append($msg);
     });
+	$("#panel-messages").show();
 }
 function handleCopyMessageValue() {
 	var value = $(this).find('.value').html();
 	$('#field-value').val(value).trigger('autoresize');
+	Materialize.updateTextFields();
 	$('#preview').html(value);
 }
 function handleSaveMessage(message) {
 	console.log('Message: ', message);
+	$('#form-message .progress').css('visibility', 'hidden');
 	$('#' + message.keyId).removeClass('no-message');
 	$('#' + message.keyId + ' .value').html(message.value);
 	updateForm(message.keyId, $('#field-key').val());
+	Materialize.toast(messages['message.updated'], 5000);
 }
 function updateForm(keyId, keyName) {
 	$("#no-selection").hide();
 	$("#panel-message").show();
-	$("#panel-messages").show();
+	$("#panel-messages").hide();
 	$("#panel-preview").show();
     $('#field-id').val('');
 	$('#field-key').val(keyName).attr('keyId', keyId);
     $('#field-value').val('');
+    Materialize.updateTextFields();
     $('#preview').html('');
 	$.ajax(
 		jsRoutes.controllers.Api.getMessage(localeId, keyName)
@@ -96,6 +102,7 @@ $(document).ready(function() {
 	});
 	$("#form-message").submit(function(e){
         e.preventDefault();
+    	$('#form-message .progress').css('visibility', 'visible');
 		$.ajax(
 			$.extend(
 				jsRoutes.controllers.Api.putMessage(),
@@ -149,7 +156,7 @@ $(document).ready(function() {
 		$a.parent()[0].scrollIntoView();
 		$a.click();
 	} else {
-		var $key = $('a.key:first-child');
+		var $key = $('.keys .collection-item:first-child a.key');
 		window.location.hash = $key.attr('href').replace('.*#', '#');
 		$key.click();
 	}

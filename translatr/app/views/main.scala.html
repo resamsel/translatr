@@ -34,34 +34,28 @@
 	</div>
 
 	<script src="@routes.Assets.versioned("javascripts/jquery.min.js")"></script>
+	<script src="@routes.Assets.versioned("javascripts/materialize.min.js")"></script>
 
 	<script src="@routes.Application.javascriptRoutes"></script>
 
-	<div class="container-fluid content">
-		<div class="row">
-			@if(ctx().args.containsKey("undoCommand")) {
-				<div class="undo template">
-					@Html(ctx().args("undoMessage").toString)
-					<a
-						href="@routes.Application.commandExecute(ctx().args("undoCommand").toString)"
-						class="btn amber">
-						@Messages("button.undo")
-					</a>
-				</div>
-				<script>
-					$(document).ready(function() {
-						var $toastContent = $('.undo.template').clone().removeClass('template');
-						Materialize.toast($toastContent, 10000);
-					})
-				</script>
-			}
+	@content
 
-			@content
-		</div>
-	</div>
-
-
-	<script src="@routes.Assets.versioned("javascripts/materialize.min.js")"></script>
 	<script src="@routes.Assets.versioned("javascripts/main.js")"></script>
+	@if(ctx().args.containsKey("undoCommand")) {
+		<div class="undo template">
+			@Html(ctx().args("undoMessage").toString)
+			<a
+				href="@routes.Application.commandExecute(ctx().args("undoCommand").toString)"
+				class="btn amber">
+				@Messages("button.undo")
+			</a>
+		</div>
+		<script>
+			$(document).ready(function() {
+				var $toastContent = $('.undo.template').clone().removeClass('template');
+				Materialize.toast($toastContent, 10000);
+			})
+		</script>
+	}
 </body>
 </html>

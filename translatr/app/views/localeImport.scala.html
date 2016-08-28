@@ -17,38 +17,40 @@
 		</a>
 	}
 
-	<div class="col m6 offset-m3">
-		<form action="@routes.Application.localeImport(locale.id)" method="post" enctype="multipart/form-data">
-			<div id="panel-message" class="card">
-				<div class="card-image blue">
-					<span class="card-title">@Messages("locale.import")</span>
-				</div>
-				<div class="card-content">
-					<div class="file-field input-field">
-						<div class="btn">
-							<span>@Messages("import.file")</span>
-							<input
-								id="field-messages"
-								type="file"
-								name="messages" />
-						</div>
-						<div class="file-path-wrapper">
-							<input
-								class="file-path validate"
-								type="text"
-								placeholder="@Messages("locale.import.file")">
+	@tags.content {
+		<div class="col m6 offset-m3">
+			<form action="@routes.Application.localeImport(locale.id)" method="post" enctype="multipart/form-data">
+				<div id="panel-message" class="card">
+					<div class="card-image blue">
+						<span class="card-title">@Messages("locale.import")</span>
+					</div>
+					<div class="card-content">
+						<div class="file-field input-field">
+							<div class="btn">
+								<span>@Messages("import.file")</span>
+								<input
+									id="field-messages"
+									type="file"
+									name="messages" />
+							</div>
+							<div class="file-path-wrapper">
+								<input
+									class="file-path validate"
+									type="text"
+									placeholder="@Messages("locale.import.file")">
+							</div>
 						</div>
 					</div>
+					<div class="card-action">
+						<button
+							type="submit"
+							class="btn btn-link btn-save">
+							@Messages("button.import")
+							<i class="material-icons right">send</i>
+						</button>
+					</div>
 				</div>
-				<div class="card-action">
-					<button
-						type="submit"
-						class="btn btn-link btn-save">
-						@Messages("button.import")
-						<i class="material-icons right">send</i>
-					</button>
-				</div>
-			</div>
-		</form>
-	</div>
+			</form>
+		</div>
+	}
 }
