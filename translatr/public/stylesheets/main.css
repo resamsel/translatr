@@ -11,6 +11,9 @@ html, body {
 }
 
 /* Navbar */
+nav .nav-wrapper {
+    padding: 0 1rem;
+}
 .navbar-form {
 	margin: 13.5px 25%;
 	margin: 0 25%;
@@ -18,17 +21,16 @@ html, body {
 }
 .navbar-form .input-field {
 	padding: 10px;
-	color: white;
 }
 .navbar-form .input-field input[type=search] {
 	background-color: rgba(255,255,255,.15);
     border-radius: 2px;
+	color: white;
 }
 .navbar-form .input-field input[type=search]:focus {
     background-color: rgba(255,255,255,.30);
     border: 0;
     box-shadow: none;
-    color: #444;
 }
 .navbar-form .form-control::-webkit-input-placeholder { /* Chrome */
   color: white;
@@ -62,6 +64,7 @@ html, body {
 /* Breadcrumb */
 .breadcrumbs {
 	margin-bottom: 8px;
+	padding: 0 1rem;
 }
 .breadcrumb {
     line-height: 32px;
@@ -72,8 +75,10 @@ html, body {
 .table .created,
 .table .updated,
 .table .missing,
-.table .locale-progress {
+.table .locale-progress,
+.table .actions {
 	vertical-align: middle;
+	white-space: nowrap;
 }
 .table td {
 	padding: 5px;
@@ -198,4 +203,14 @@ html, body {
 /* Templates */
 .template {
 	display: none;
+}
+
+/* Vertical Alignment */
+.valign-wrapper {
+	height: 100%;
+}
+
+/* Tabs */
+.tabs .tab a:hover {
+    color: #d32f2f;
 }

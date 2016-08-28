@@ -21,7 +21,7 @@
 				<table class="table bordered card tab-body btn-hide">
 					<tbody>
 						@for(locale <- locales) {
-							<tr id="@locale.id" class="locale" name="@tags.locale(locale.name) @locale.name.toLowerCase">
+							<tr id="@locale.id" class="locale" name="@utils.FormatUtils.formatLocale(ctx.lang().locale, locale.name).toLowerCase @locale.name.toLowerCase">
 								<td class="name">
 									<a class="locale" href="@routes.Application.locale(locale.id)">
 										@tags.locale(locale.name)
