@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -121,12 +122,30 @@ public class Message
 	}
 
 	/**
+	 * @param localeId
+	 * @return
+	 */
+	public static List<Message> byLocales(Collection<UUID> ids)
+	{
+		return find.where().in("locale.id", ids).findList();
+	}
+
+	/**
 	 * @param key
 	 * @return
 	 */
 	public static List<Message> byKey(Key key)
 	{
 		return find.where().eq("key", key).findList();
+	}
+
+	/**
+	 * @param key
+	 * @return
+	 */
+	public static List<Message> byKeys(Collection<UUID> ids)
+	{
+		return find.where().in("key.id", ids).findList();
 	}
 
 	/**

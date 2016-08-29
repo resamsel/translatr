@@ -14,8 +14,6 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.avaje.ebean.Ebean;
-
 import actions.ContextAction;
 import commands.Command;
 import commands.RevertDeleteKeyCommand;
@@ -31,7 +29,9 @@ import models.Message;
 import models.Project;
 import play.cache.CacheApi;
 import play.data.FormFactory;
+import play.inject.Injector;
 import play.libs.Json;
+import play.mvc.Call;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
@@ -40,6 +40,10 @@ import play.mvc.Result;
 import play.mvc.With;
 import play.routing.JavaScriptReverseRouter;
 import scala.collection.JavaConversions;
+import services.KeyService;
+import services.LocaleService;
+import services.MessageService;
+import services.ProjectService;
 
 /**
  * This controller contains an action to handle HTTP requests to the application's home page.
@@ -51,15 +55,31 @@ public class Application extends Controller
 
 	private static final String COMMAND_FORMAT = "command:%s";
 
+	private final Injector injector;
+
 	private final FormFactory formFactory;
 
 	private final CacheApi cache;
 
+	private final ProjectService projectService;
+
+	private final LocaleService localeService;
+
+	private final KeyService keyService;
+
+	private final MessageService messageService;
+
 	@Inject
-	public Application(FormFactory formFactory, CacheApi cache)
+	public Application(Injector injector, FormFactory formFactory, CacheApi cache, ProjectService projectService,
+				LocaleService localeService, KeyService keyService, MessageService messageService)
 	{
+		this.injector = injector;
 		this.formFactory = formFactory;
 		this.cache = cache;
+		this.projectService = projectService;
+		this.localeService = localeService;
+		this.keyService = keyService;
+		this.messageService = messageService;
 	}
 
 	private void select(Project project)
@@ -102,7 +122,7 @@ public class Application extends Controller
 
 		LOGGER.debug("Project: {}", Json.toJson(project));
 
-		Ebean.save(project);
+		projectService.save(project);
 
 		return redirect(routes.Application.project(project.id));
 	}
@@ -120,7 +140,7 @@ public class Application extends Controller
 
 			project.name = changed.name;
 
-			Ebean.save(project);
+			projectService.save(project);
 
 			return redirect(routes.Application.project(project.id));
 		}
@@ -139,9 +159,7 @@ public class Application extends Controller
 
 		undoCommand(new RevertDeleteProjectCommand(project));
 
-		Project.delete(project);
-
-		LOGGER.debug("Deleted project: {}", Json.toJson(project));
+		projectService.delete(project);
 
 		return redirect(routes.Application.dashboard());
 	}
@@ -237,9 +255,7 @@ public class Application extends Controller
 
 		locale.project = project;
 
-		LOGGER.debug("Locale: {}", Json.toJson(locale));
-
-		Ebean.save(locale);
+		localeService.save(locale);
 
 		importLocale(locale, request());
 
@@ -259,7 +275,7 @@ public class Application extends Controller
 
 			locale.name = changed.name;
 
-			Ebean.save(locale);
+			localeService.save(locale);
 
 			return redirect(routes.Application.projectLocales(locale.project.id));
 		}
@@ -276,7 +292,7 @@ public class Application extends Controller
 
 		undoCommand(new RevertDeleteLocaleCommand(locale));
 
-		Locale.delete(locale);
+		localeService.delete(locale);
 
 		return redirect(routes.Application.projectLocales(locale.project.id));
 	}
@@ -322,7 +338,7 @@ public class Application extends Controller
 
 		LOGGER.debug("Key: {}", Json.toJson(key));
 
-		Ebean.save(key);
+		keyService.save(key);
 
 		if(localeId != null)
 		{
@@ -347,7 +363,7 @@ public class Application extends Controller
 
 			key.name = changed.name;
 
-			Ebean.save(key);
+			keyService.save(key);
 
 			return redirect(routes.Application.projectKeys(key.project.id));
 		}
@@ -366,9 +382,7 @@ public class Application extends Controller
 
 		undoCommand(new RevertDeleteKeyCommand(key));
 
-		Key.delete(key);
-
-		LOGGER.debug("Deleted key: {}", Json.toJson(key));
+		keyService.delete(key);
 
 		if(localeId != null)
 		{
@@ -387,8 +401,12 @@ public class Application extends Controller
 		Project project = Project.byName("Internal");
 		if(project == null)
 		{
-			project = new Project("Internal");
-			Ebean.save(project);
+			project = projectService.save(new Project("Internal"));
+		}
+		else if(project.deleted)
+		{
+			project.deleted = false;
+			projectService.save(project);
 		}
 
 		for(Entry<String, scala.collection.immutable.Map<String, String>> bundle : JavaConversions
@@ -400,24 +418,15 @@ public class Application extends Controller
 				break;
 			Locale locale = Locale.byProjectAndName(project, bundle.getKey());
 			if(locale == null)
-			{
-				locale = new Locale(project, bundle.getKey());
-				Ebean.save(locale);
-			}
+				locale = localeService.save(new Locale(project, bundle.getKey()));
 			for(Entry<String, String> msg : JavaConversions.mapAsJavaMap(bundle.getValue()).entrySet())
 			{
 				Key key = Key.byProjectAndName(project, msg.getKey());
 				if(key == null)
-				{
-					key = new Key(project, msg.getKey());
-					Ebean.save(key);
-				}
+					key = keyService.save(new Key(project, msg.getKey()));
 				Message message = Message.byKeyAndLocale(key, locale);
 				if(message == null)
-				{
-					message = new Message(locale, key, msg.getValue());
-					Ebean.save(message);
-				}
+					messageService.save(new Message(locale, key, msg.getValue()));
 			}
 		}
 
@@ -432,6 +441,11 @@ public class Application extends Controller
 			notFound(Json.toJson("Command not found"));
 
 		command.execute();
+
+		Call call = command.redirect();
+
+		if(call != null)
+			return redirect(call);
 
 		String referer = request().getHeader("Referer");
 
@@ -458,7 +472,7 @@ public class Application extends Controller
 	 * @param request
 	 * @return
 	 */
-	private static String importLocale(Locale locale, Request request)
+	private String importLocale(Locale locale, Request request)
 	{
 		MultipartFormData<File> body = request.body().asMultipartFormData();
 		FilePart<File> messages = body.getFile("messages");
@@ -466,7 +480,7 @@ public class Application extends Controller
 		if(messages == null)
 			return null;
 
-		Importer importer = new PlayImporter();
+		Importer importer = injector.instanceOf(PlayImporter.class);
 
 		try
 		{

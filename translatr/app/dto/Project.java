@@ -8,9 +8,11 @@ import org.joda.time.DateTime;
 
 import criterias.MessageCriteria;
 
-public class Project
+public class Project extends Dto
 {
 	public UUID id;
+
+	public Long version;
 
 	public DateTime whenCreated;
 
@@ -24,18 +26,19 @@ public class Project
 
 	public List<Message> messages;
 
-	public Project(models.Project project)
+	private Project(models.Project project)
 	{
 		this.id = project.id;
+		this.version = project.version;
 		this.whenCreated = project.whenCreated;
 		this.whenUpdated = project.whenUpdated;
 		this.name = project.name;
-		this.keys = project.keys.stream().map(k -> new Key(k)).collect(Collectors.toList());
-		this.locales = project.locales.stream().map(l -> new Locale(l)).collect(Collectors.toList());
+		this.keys = project.keys.stream().map(k -> Key.from(k)).collect(Collectors.toList());
+		this.locales = project.locales.stream().map(l -> Locale.from(l)).collect(Collectors.toList());
 		this.messages = models.Message
 			.findBy(new MessageCriteria().withProjectId(project.id))
 			.stream()
-			.map(m -> new Message(m))
+			.map(m -> Message.from(m))
 			.collect(Collectors.toList());
 	}
 
@@ -48,5 +51,14 @@ public class Project
 		model.name = name;
 
 		return model;
+	}
+
+	/**
+	 * @param project
+	 * @return
+	 */
+	public static Project from(models.Project project)
+	{
+		return new Project(project);
 	}
 }

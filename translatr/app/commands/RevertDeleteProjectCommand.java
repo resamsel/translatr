@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
 
+import controllers.routes;
 import dto.Project;
+import play.mvc.Call;
 import play.mvc.Http.Context;
 
 /**
@@ -28,7 +30,7 @@ public class RevertDeleteProjectCommand implements Command
 	 */
 	public RevertDeleteProjectCommand(models.Project project)
 	{
-		this.project = new Project(project);
+		this.project = Project.from(project);
 	}
 
 	/**
@@ -39,11 +41,14 @@ public class RevertDeleteProjectCommand implements Command
 	{
 		LOGGER.info("DTO Project #messages: {}", project.messages.size());
 
-		models.Project model = project.toModel();
-		Ebean.save(model);
+		models.Project model = models.Project.byId(project.id);
 		Ebean.save(project.keys.stream().map(k -> k.toModel(model)).collect(Collectors.toList()));
 		Ebean.save(project.locales.stream().map(l -> l.toModel(model)).collect(Collectors.toList()));
 		Ebean.save(project.messages.stream().map(m -> m.toModel(model)).collect(Collectors.toList()));
+
+		LOGGER.info("Before save project: deleted = {}", model.deleted);
+		Ebean.save(model.withDeleted(false));
+		LOGGER.info("After save project: deleted = {}", model.deleted);
 	}
 
 	/**
@@ -53,5 +58,14 @@ public class RevertDeleteProjectCommand implements Command
 	public String getMessage()
 	{
 		return Context.current().messages().at("project.deleted", project.name);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Call redirect()
+	{
+		return routes.Application.project(project.id);
 	}
 }

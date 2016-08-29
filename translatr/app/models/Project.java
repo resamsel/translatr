@@ -10,10 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Version;
 
 import org.joda.time.DateTime;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
@@ -25,6 +25,11 @@ public class Project
 {
 	@Id
 	public UUID id;
+
+	@Version
+	public Long version;
+
+	public boolean deleted;
 
 	@JsonIgnore
 	@CreatedTimestamp
@@ -68,7 +73,7 @@ public class Project
 	 */
 	public static List<Project> all()
 	{
-		return find.order("name").findList();
+		return find.where().eq("deleted", false).order("name").findList();
 	}
 
 	public float progress()
@@ -103,6 +108,12 @@ public class Project
 		return Message.countByProject(this);
 	}
 
+	public Project withDeleted(boolean deleted)
+	{
+		this.deleted = deleted;
+		return this;
+	}
+
 	/**
 	 * @param name
 	 * @return
@@ -110,17 +121,5 @@ public class Project
 	public static Project byName(String name)
 	{
 		return find.where().eq("name", name).findUnique();
-	}
-
-	/**
-	 * @param project
-	 */
-	public static void delete(Project project)
-	{
-		for(Key key : project.keys)
-			Key.delete(key);
-		for(Locale locale : project.locales)
-			Locale.delete(locale);
-		Ebean.delete(project);
 	}
 }

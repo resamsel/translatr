@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 
 import models.Project;
 
-public class Key
+public class Key extends Dto
 {
 	public UUID id;
 
@@ -22,14 +22,14 @@ public class Key
 
 	public List<Message> messages;
 
-	public Key(models.Key key)
+	private Key(models.Key key)
 	{
 		this.id = key.id;
 		this.whenCreated = key.whenCreated;
 		this.whenUpdated = key.whenUpdated;
 		this.projectId = key.project.id;
 		this.name = key.name;
-		this.messages = key.messages.stream().map(m -> new Message(m)).collect(Collectors.toList());
+		this.messages = key.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
 	}
 
 	public models.Key toModel(Project project)
@@ -42,5 +42,10 @@ public class Key
 		model.name = name;
 
 		return model;
+	}
+
+	public static Key from(models.Key key)
+	{
+		return new Key(key);
 	}
 }

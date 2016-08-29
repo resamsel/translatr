@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import models.Project;
 
-public class Locale
+public class Locale extends Dto
 {
 	public UUID id;
 
@@ -27,14 +27,14 @@ public class Locale
 	@JsonIgnore
 	public List<Message> messages;
 
-	public Locale(models.Locale locale)
+	private Locale(models.Locale locale)
 	{
 		this.id = locale.id;
 		this.whenCreated = locale.whenCreated;
 		this.whenUpdated = locale.whenUpdated;
 		this.projectId = locale.project.id;
 		this.name = locale.name;
-		this.messages = locale.messages.stream().map(m -> new Message(m)).collect(Collectors.toList());
+		this.messages = locale.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
 	}
 
 	public models.Locale toModel(Project project)
@@ -47,5 +47,14 @@ public class Locale
 		model.name = name;
 
 		return model;
+	}
+
+	/**
+	 * @param locale
+	 * @return
+	 */
+	public static Locale from(models.Locale locale)
+	{
+		return new Locale(locale);
 	}
 }

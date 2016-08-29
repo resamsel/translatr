@@ -4,25 +4,39 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.Charset;
 
+import javax.inject.Inject;
+
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.avaje.ebean.Ebean;
-
 import models.Key;
 import models.Locale;
 import models.Message;
-import play.libs.Json;
+import services.KeyService;
+import services.MessageService;
 
 public class PlayImporter implements Importer
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PlayImporter.class);
 
+	private final KeyService keyService;
+
+	private final MessageService messageService;
+
+	/**
+	 * 
+	 */
+	@Inject
+	public PlayImporter(KeyService keyService, MessageService messageService)
+	{
+		this.keyService = keyService;
+		this.messageService = messageService;
+	}
+
 	@Override
 	public void apply(File file, Locale locale) throws Exception
 	{
-		// TODO Auto-generated method stub
 		LOGGER.debug("Importing from file {}", file.getName());
 		for(String line : IOUtils.readLines(new FileInputStream(file), Charset.forName("utf-8")))
 		{
@@ -42,24 +56,13 @@ public class PlayImporter implements Importer
 
 		Key key = Key.byProjectAndName(locale.project, line.key);
 		if(key == null)
-		{
-			key = new Key(locale.project, line.key);
-
-			LOGGER.debug("Key: {}", Json.toJson(key));
-
-			Ebean.save(key);
-		}
+			keyService.save(new Key(locale.project, line.key));
 
 		Message message = Message.byKeyAndLocale(key, locale);
 		if(message == null)
-		{
-			message = new Message(locale, key, line.value);
-			Ebean.save(message);
-		}
+			messageService.save(new Message(locale, key, line.value));
 		else
-		{
 			message.value = line.value;
-		}
 
 		return message;
 	}

@@ -13,7 +13,6 @@ import javax.persistence.UniqueConstraint;
 
 import org.joda.time.DateTime;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
@@ -113,15 +112,5 @@ public class Locale
 			.order("whenUpdated desc")
 			.setMaxRows(limit)
 			.findList();
-	}
-
-	/**
-	 * @param locale
-	 */
-	public static void delete(Locale locale)
-	{
-		for(Message message : Message.byLocale(locale.id))
-			Ebean.delete(message);
-		Ebean.delete(locale);
 	}
 }

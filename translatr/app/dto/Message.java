@@ -13,7 +13,7 @@ import models.Locale;
 import models.Project;
 import play.libs.Json;
 
-public class Message
+public class Message extends Dto
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
@@ -35,15 +35,21 @@ public class Message
 
 	public String value;
 
-	public Message(models.Message message)
+	private Message(models.Message message)
 	{
 		this.id = message.id;
 		this.whenCreated = message.whenCreated;
 		this.whenUpdated = message.whenUpdated;
-		this.localeId = message.locale.id;
-		this.localeName = message.locale.name;
-		this.keyId = message.key.id;
-		this.keyName = message.key.name;
+		if(message.locale != null)
+		{
+			this.localeId = message.locale.id;
+			this.localeName = message.locale.name;
+		}
+		if(message.key != null)
+		{
+			this.keyId = message.key.id;
+			this.keyName = message.key.name;
+		}
 		this.value = message.value;
 	}
 
@@ -60,5 +66,10 @@ public class Message
 		LOGGER.info("DTO Message toModel: {}", Json.toJson(model));
 
 		return model;
+	}
+
+	public static Message from(models.Message message)
+	{
+		return new Message(message);
 	}
 }
