@@ -1,15 +1,10 @@
-@(id: String, icon: String, tooltip: String)
+@(id: String, icon: String, tooltip: String, styleClass: String = "", actions: Html = Html(""))
 
 <div
 	class="fixed-action-btn"
 	style="bottom: 23px; right: 23px;">
-	<a
-		id="@id"
-		class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped"
-		data-target="modal-@id"
-		data-position="left"
-		data-delay="50"
-		data-tooltip="@tooltip">
-		<i class="large material-icons">@icon</i>
-	</a>
+	@tags.modalTriggerLink(id, icon, tooltip, "btn-large " + styleClass)
+	<ul>
+		@actions
+	</ul>
 </div>

@@ -1,3 +1,5 @@
+import com.typesafe.sbt.packager.docker._
+
 name := """play-translatr"""
 
 version := "1.0-SNAPSHOT"
@@ -8,6 +10,7 @@ scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq(
 	javaJdbc,
+	jdbc,
 	cache,
 //	javaWs,
   
@@ -34,3 +37,14 @@ EclipseKeys.projectFlavor := EclipseProjectFlavor.Java
 EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClasses, EclipseCreateSrc.ManagedResources)  // Use .class files instead of generated .scala files for views and routes
 
 EclipseKeys.withSource := true
+
+// Docker
+maintainer := "René Samselnig"
+
+dockerRepository := Some("resamsel")
+
+dockerBaseImage := "java:8-jre"
+
+dockerExposedPorts in Docker := Seq(9000)
+
+dockerExposedVolumes := Seq("/opt/docker/logs", "/opt/docker/data")

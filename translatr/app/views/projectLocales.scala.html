@@ -38,7 +38,7 @@
 								</td>
 								<td class="locale-progress">
 									<div class="progress">
-										<div class="progress-bar progress-bar-success" style="width: @{project.progress(locale)*100}%;"></div>
+										<div class="determinate" style="width: @{project.progress(locale)*100}%;"></div>
 									</div>
 								</td>
 								<td class="actions right-align">
@@ -76,7 +76,7 @@
 		<!-- /.col-md-12 -->
 	}
 
-	@tags.modalTrigger("create", "create", Messages("locale.create.tooltip"))
+	@tags.modalTrigger("create", "create", Messages("locale.create.tooltip"), "blue")
 
 	@tags.modal(Messages("locale.new"), "modal-create") {
 		<form id="form-locale" method="post" action="@routes.Application.localeCreate(project.id)" enctype="multipart/form-data">

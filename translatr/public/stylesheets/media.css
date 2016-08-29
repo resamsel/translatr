@@ -1,0 +1,16 @@
+/* Small */
+@media (max-width: 600px) {
+	body .navbar-form {
+		margin: 0;
+	}
+	body .project .info > *,
+	body .project .info > .timeline,
+	body .project .info > .messages {
+		flex: 1 100%;
+	}
+	body .mainview,
+	body .navview,
+	body .subview {
+		height: auto;
+    }
+}

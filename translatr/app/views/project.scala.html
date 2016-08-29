@@ -53,7 +53,7 @@
 									@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
 								</p>
 								<div class="progress">
-									<div class="progress-bar progress-bar-success" style="width: @{project.progress()*100}%;"></div>
+									<div class="determinate" style="width: @{project.progress()*100}%;"></div>
 								</div>
 							</div>
 						</div>
@@ -106,6 +106,36 @@
 			}
 		</div>
 		<!-- /.col-md-12 -->
+	}
+
+	@tags.modalTrigger("create-locale", "create", Messages("locale.create.tooltip"), "blue", Html("""
+		<li>
+			""" + tags.modalTriggerLink("create-key", "create", Messages("key.create.tooltip"), "light-green") + """
+		</li>
+	"""))
+
+	@tags.modal(Messages("locale.new"), "modal-create-locale") {
+		<form id="form-locale" method="post" action="@routes.Application.localeCreate(project.id)" enctype="multipart/form-data">
+			<div class="form-group">
+				<label for="field-locale-name">@Messages("locale.name")</label>
+				<input id="field-locale-name" name="name" class="form-control" placeholder="@Messages("locale.label")"></input>
+			</div>
+			<div class="file-field input-field">
+				<div class="btn">
+					<span>@Messages("import.file")</span>
+					<input
+						id="field-messages"
+						type="file"
+						name="messages" />
+				</div>
+				<div class="file-path-wrapper">
+					<input
+						class="file-path validate"
+						type="text"
+						placeholder="@Messages("locale.import.file")">
+				</div>
+			</div>
+		</form>
 	}
 
 	<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/chartist.min.css")">

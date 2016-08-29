@@ -14,8 +14,10 @@
 			<div class="container">
 				@for(project <- projects) {
 					<div class="card project" name="@project.name.toLowerCase">
-						<div class="card-content">
+						<div class="card-image orange">
 							<span class="card-title">@project.name</span>
+						</div>
+						<div class="card-content">
 							<p>
 								@Messages("project.info")
 								@Messages("locales.size", project.locales.size()),
@@ -35,7 +37,7 @@
 		<!-- /.col .m12 -->
 	}
 
-	@tags.modalTrigger("create", "create", Messages("project.create.tooltip"))
+	@tags.modalTrigger("create", "create", Messages("project.create.tooltip"), "orange")
 
 	@tags.modal(Messages("project.new"), "modal-create") {
 		<form id="form-project" method="post" action="@routes.Application.projectCreate()">

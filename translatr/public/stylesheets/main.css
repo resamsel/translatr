@@ -1,3 +1,5 @@
+@import url("media.css");
+
 html, body {
 	height: 100%;
 }
@@ -19,12 +21,21 @@ html, body {
 	background-color: #1e88e5;
 }
 
+/* Modal */
+.modal .modal-footer {
+    padding: 4px 24px;
+}
+.modal .modal-footer .btn,
+.modal .modal-footer .btn-large,
+.modal .modal-footer .btn-flat {
+	float: none;
+}
+
 /* Navbar */
 nav .nav-wrapper {
     padding: 0 1rem;
 }
 .navbar-form {
-	margin: 13.5px 25%;
 	margin: 0 25%;
 	text-align: center;
 }
@@ -89,13 +100,6 @@ nav .nav-wrapper {
 .project .info > .timeline,
 .project .info > .messages {
 	flex: 3 100%;
-}
-@media (max-width: 767px) {
-	.project .info > *,
-	.project .info > .timeline,
-	.project .info > .messages {
-		flex: 1 100%;
-	}
 }
 
 /* Breadcrumb */
@@ -166,11 +170,6 @@ nav .nav-wrapper {
 }
 .mainview h3 {
 	margin-top: 23px;
-}
-@media (max-width: 767px) {
-	.mainview, .navview, .subview {
-		height: auto;
-    }
 }
 
 /* Collections */
