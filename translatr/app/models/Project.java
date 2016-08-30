@@ -122,4 +122,14 @@ public class Project
 	{
 		return find.where().eq("name", name).findUnique();
 	}
+
+	/**
+	 * @param project
+	 */
+	public Project updateFrom(Project in)
+	{
+		name = in.name;
+
+		return this;
+	}
 }

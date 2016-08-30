@@ -2,11 +2,11 @@ package exporters;
 
 import models.Locale;
 
-public class PlayMessagesExporter extends PropertiesExporter
+public class JavaPropertiesExporter extends PropertiesExporter
 {
-	private static final String FILENAME_DEFAULT = "messages";
+	private static final String FILENAME_DEFAULT = "messages.properties";
 
-	private static final String FILENAME_FORMAT = "messages.%s";
+	private static final String FILENAME_FORMAT = "messages_%s.properties";
 
 	@Override
 	public String getFilename(Locale locale)

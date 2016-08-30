@@ -20,9 +20,13 @@ import commands.RevertDeleteKeyCommand;
 import commands.RevertDeleteLocaleCommand;
 import commands.RevertDeleteProjectCommand;
 import exporters.Exporter;
-import exporters.PlayExporter;
+import exporters.JavaPropertiesExporter;
+import exporters.PlayMessagesExporter;
+import forms.ImportLocaleForm;
 import importers.Importer;
-import importers.PlayImporter;
+import importers.JavaPropertiesImporter;
+import importers.PlayMessagesImporter;
+import models.FileType;
 import models.Key;
 import models.Locale;
 import models.Message;
@@ -118,10 +122,15 @@ public class Application extends Controller
 
 	public Result projectCreate()
 	{
-		Project project = formFactory.form(Project.class).bindFromRequest().get();
+		Project form = formFactory.form(Project.class).bindFromRequest().get();
 
-		LOGGER.debug("Project: {}", Json.toJson(project));
+		LOGGER.debug("Project: {}", Json.toJson(form));
 
+		Project project = Project.byName(form.name);
+		if(project != null)
+			project.updateFrom(form).withDeleted(false);
+		else
+			project = form;
 		projectService.save(project);
 
 		return redirect(routes.Application.project(project.id));
@@ -230,14 +239,25 @@ public class Application extends Controller
 		}
 	}
 
-	public Result localeExport(UUID id)
+	public Result localeExport(UUID id, String fileType)
 	{
 		Locale locale = Locale.byId(id);
 
 		if(locale == null)
 			return redirect(routes.Application.index());
 
-		Exporter exporter = new PlayExporter();
+		Exporter exporter;
+		switch(FileType.fromKey(fileType))
+		{
+			case PlayMessages:
+				exporter = new PlayMessagesExporter();
+			break;
+			case JavaProperties:
+				exporter = new JavaPropertiesExporter();
+			break;
+			default:
+				return badRequest("File type " + fileType + " not supported yet");
+		}
 
 		exporter.addHeaders(response(), locale);
 
@@ -480,7 +500,22 @@ public class Application extends Controller
 		if(messages == null)
 			return null;
 
-		Importer importer = injector.instanceOf(PlayImporter.class);
+		ImportLocaleForm form = formFactory.form(ImportLocaleForm.class).bindFromRequest().get();
+
+		LOGGER.debug("Type: {}", form.type);
+
+		Importer importer;
+		switch(FileType.fromKey(form.type))
+		{
+			case PlayMessages:
+				importer = injector.instanceOf(PlayMessagesImporter.class);
+			break;
+			case JavaProperties:
+				importer = injector.instanceOf(JavaPropertiesImporter.class);
+			break;
+			default:
+				throw new IllegalArgumentException("File type " + form.type + " not supported yet");
+		}
 
 		try
 		{

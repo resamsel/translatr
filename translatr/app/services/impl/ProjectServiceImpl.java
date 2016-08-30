@@ -1,6 +1,7 @@
 package services.impl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -51,19 +52,14 @@ public class ProjectServiceImpl implements ProjectService
 	{
 		boolean update = !Ebean.getBeanState(t).isNew();
 		if(update)
-			logEntryService.save(
-				LogEntry.from(
-					ActionType.Update,
-					t,
-					dto.Project.class,
-					dto.Project.from(Project.byId(t.id)),
-					dto.Project.from(t)));
+			logEntryService
+				.save(LogEntry.from(ActionType.Update, t, dto.Project.class, toDto(Project.byId(t.id)), toDto(t)));
 
 		Ebean.save(t);
 		Ebean.refresh(t);
 
 		if(!update)
-			logEntryService.save(LogEntry.from(ActionType.Create, t, dto.Project.class, null, dto.Project.from(t)));
+			logEntryService.save(LogEntry.from(ActionType.Create, t, dto.Project.class, null, toDto(t)));
 
 		return t;
 	}
@@ -74,7 +70,7 @@ public class ProjectServiceImpl implements ProjectService
 	@Override
 	public void delete(Project t)
 	{
-		logEntryService.save(LogEntry.from(ActionType.Delete, t, dto.Project.class, dto.Project.from(t), null));
+		logEntryService.save(LogEntry.from(ActionType.Delete, t, dto.Project.class, toDto(t), null));
 
 		keyService.delete(t.keys);
 		localeService.delete(t.locales);
@@ -92,8 +88,19 @@ public class ProjectServiceImpl implements ProjectService
 		localeService.delete(t.stream().map(p -> p.locales).flatMap(l -> l.stream()).collect(Collectors.toList()));
 
 		t.stream().forEach(
-			p -> logEntryService.save(LogEntry.from(ActionType.Delete, p, dto.Project.class, dto.Project.from(p), null)));
+			p -> logEntryService.save(LogEntry.from(ActionType.Delete, p, dto.Project.class, toDto(p), null)));
 
 		Ebean.delete(t);
+	}
+
+	protected dto.Project toDto(Project t)
+	{
+		dto.Project out = dto.Project.from(t);
+
+		out.keys = Collections.emptyList();
+		out.locales = Collections.emptyList();
+		out.messages = Collections.emptyList();
+
+		return out;
 	}
 }
