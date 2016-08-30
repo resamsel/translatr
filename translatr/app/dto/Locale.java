@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.Version;
+
 import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -13,6 +15,9 @@ import models.Project;
 public class Locale extends Dto
 {
 	public UUID id;
+
+	@Version
+	public Long version;
 
 	@JsonIgnore
 	public DateTime whenCreated;
@@ -27,26 +32,28 @@ public class Locale extends Dto
 	@JsonIgnore
 	public List<Message> messages;
 
-	private Locale(models.Locale locale)
+	private Locale(models.Locale in)
 	{
-		this.id = locale.id;
-		this.whenCreated = locale.whenCreated;
-		this.whenUpdated = locale.whenUpdated;
-		this.projectId = locale.project.id;
-		this.name = locale.name;
-		this.messages = locale.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
+		this.id = in.id;
+		this.version = in.version;
+		this.whenCreated = in.whenCreated;
+		this.whenUpdated = in.whenUpdated;
+		this.projectId = in.project.id;
+		this.name = in.name;
+		this.messages = in.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
 	}
 
 	public models.Locale toModel(Project project)
 	{
-		models.Locale model = new models.Locale();
+		models.Locale out = new models.Locale();
 
-		model.whenCreated = whenCreated;
-		model.whenUpdated = whenUpdated;
-		model.project = project;
-		model.name = name;
+		out.version = version;
+		out.whenCreated = whenCreated;
+		out.whenUpdated = whenUpdated;
+		out.project = project;
+		out.name = name;
 
-		return model;
+		return out;
 	}
 
 	/**

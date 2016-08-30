@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Version;
 
 import org.joda.time.DateTime;
 
@@ -27,6 +28,9 @@ public class Locale
 {
 	@Id
 	public UUID id;
+
+	@Version
+	public Long version;
 
 	@CreatedTimestamp
 	public DateTime whenCreated;

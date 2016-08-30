@@ -138,6 +138,14 @@
 		</form>
 	}
 
+	@tags.modal(Messages("key.new"), "modal-create-key") {
+		<form id="form-key" method="post" action="@routes.Application.keyCreate(project.id, null)">
+			<div class="form-group">
+				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
+			</div>
+		</form>
+	}
+
 	<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/chartist.min.css")">
 	<script src="@routes.Assets.versioned("javascripts/chartist.min.js")"></script>
 	<script src="@routes.Assets.versioned("javascripts/moment.min.js")"></script>
@@ -172,27 +180,6 @@
 				]
 			}]
 		};
-
-		var options = {
-			chartPadding: {
-				left: -10,
-				bottom: -10
-			},
-			stackBars: true,
-			axisX: {
-				type: Chartist.FixedScaleAxis,
-				divisor: 8,
-				labelInterpolationFnc: function(value) {
-					return moment(value).format('MMM D, HH:00');
-				},
-				showGrid: false
-			},
-			axisY: {
-				onlyInteger: true,
-				showGrid: false
-			}
-		};
-
-		new Chartist.Bar('#chart-timeline', data, options);
 	</script>
+	<script src="@routes.Assets.versioned("javascripts/project.js")"></script>
 }

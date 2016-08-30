@@ -19,6 +19,8 @@ public class Message extends Dto
 
 	public UUID id;
 
+	public Long version;
+
 	@JsonIgnore
 	public DateTime whenCreated;
 
@@ -35,37 +37,33 @@ public class Message extends Dto
 
 	public String value;
 
-	private Message(models.Message message)
+	private Message(models.Message in)
 	{
-		this.id = message.id;
-		this.whenCreated = message.whenCreated;
-		this.whenUpdated = message.whenUpdated;
-		if(message.locale != null)
-		{
-			this.localeId = message.locale.id;
-			this.localeName = message.locale.name;
-		}
-		if(message.key != null)
-		{
-			this.keyId = message.key.id;
-			this.keyName = message.key.name;
-		}
-		this.value = message.value;
+		this.id = in.id;
+		this.version = in.version;
+		this.whenCreated = in.whenCreated;
+		this.whenUpdated = in.whenUpdated;
+		this.localeId = in.locale.id;
+		this.localeName = in.locale.name;
+		this.keyId = in.key.id;
+		this.keyName = in.key.name;
+		this.value = in.value;
 	}
 
 	public models.Message toModel(Project project)
 	{
-		models.Message model = new models.Message();
+		models.Message out = new models.Message();
 
-		model.whenCreated = whenCreated;
-		model.whenUpdated = whenUpdated;
-		model.locale = Locale.byProjectAndName(project, localeName);
-		model.key = Key.byProjectAndName(project, keyName);
-		model.value = value;
+		out.version = version;
+		out.whenCreated = whenCreated;
+		out.whenUpdated = whenUpdated;
+		out.locale = Locale.byProjectAndName(project, localeName);
+		out.key = Key.byProjectAndName(project, keyName);
+		out.value = value;
 
-		LOGGER.info("DTO Message toModel: {}", Json.toJson(model));
+		LOGGER.trace("DTO Message toModel: {}", Json.toJson(out));
 
-		return model;
+		return out;
 	}
 
 	public static Message from(models.Message message)

@@ -118,7 +118,7 @@ $(document).ready(function() {
 	if(hash !== '') {
 		console.log('Hash: ', hash);
 		var localeName = hash.replace('#locale=', '');
-		var $a = $('a.locale[name="'+localeName+'"]');
+		var $a = $('a.locale[localeName="'+localeName+'"]');
 		$a.click();
 	} else {
 		var $locale = $('.locales .collection-item:first-child a.locale');

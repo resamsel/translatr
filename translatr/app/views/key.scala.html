@@ -46,6 +46,7 @@
 							href="#locale=@locale.name"
 							class="locale @if(key.messageValue(locale) == null) { no-message }"
 							name="@locale.name.toLowerCase"
+							localeName="@locale.name"
 							title="@tags.locale(locale.name)">
 							<span class="title name">@tags.locale(locale.name)</span>
 							<div class="value">@key.messageValue(locale)</div>

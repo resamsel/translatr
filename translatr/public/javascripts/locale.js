@@ -42,6 +42,7 @@ function handleSaveMessage(message) {
 	Materialize.toast(messages['message.updated'], 5000);
 }
 function updateForm(keyId, keyName) {
+	console.log('updateForm(keyId:', keyId, ', keyName:', keyName);
 	$("#no-selection").hide();
 	$("#panel-message").show();
 	$("#panel-messages").hide();
@@ -126,7 +127,7 @@ $(document).ready(function() {
 	$('a.key').click(function() {
 		$('a.key').parent().removeClass('active');
 		$(this).parent().addClass('active')
-		updateForm($(this).attr('id'), $(this).attr('name'));
+		updateForm($(this).attr('id'), $(this).attr('keyName'));
 	})
 	$('a.key .btn-remove').click(function(e) {
 		e.stopPropagation();
@@ -152,7 +153,7 @@ $(document).ready(function() {
 	if(hash !== '') {
 		console.log('Hash: ', hash);
 		var keyName = hash.replace('#key=', '');
-		var $a = $('a.key[name="'+keyName+'"]');
+		var $a = $('a.key[keyName="'+keyName+'"]');
 		$a.parent()[0].scrollIntoView();
 		$a.click();
 	} else {

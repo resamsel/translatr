@@ -26,17 +26,17 @@ public class Project extends Dto
 
 	public List<Message> messages;
 
-	private Project(models.Project project)
+	private Project(models.Project in)
 	{
-		this.id = project.id;
-		this.version = project.version;
-		this.whenCreated = project.whenCreated;
-		this.whenUpdated = project.whenUpdated;
-		this.name = project.name;
-		this.keys = project.keys.stream().map(k -> Key.from(k)).collect(Collectors.toList());
-		this.locales = project.locales.stream().map(l -> Locale.from(l)).collect(Collectors.toList());
+		this.id = in.id;
+		this.version = in.version;
+		this.whenCreated = in.whenCreated;
+		this.whenUpdated = in.whenUpdated;
+		this.name = in.name;
+		this.keys = in.keys.stream().map(k -> Key.from(k)).collect(Collectors.toList());
+		this.locales = in.locales.stream().map(l -> Locale.from(l)).collect(Collectors.toList());
 		this.messages = models.Message
-			.findBy(new MessageCriteria().withProjectId(project.id))
+			.findBy(new MessageCriteria().withProjectId(in.id))
 			.stream()
 			.map(m -> Message.from(m))
 			.collect(Collectors.toList());
@@ -44,13 +44,14 @@ public class Project extends Dto
 
 	public models.Project toModel()
 	{
-		models.Project model = new models.Project();
+		models.Project out = new models.Project();
 
-		model.whenCreated = whenCreated;
-		model.whenUpdated = whenUpdated;
-		model.name = name;
+		out.version = version;
+		out.whenCreated = whenCreated;
+		out.whenUpdated = whenUpdated;
+		out.name = name;
 
-		return model;
+		return out;
 	}
 
 	/**
