@@ -418,10 +418,11 @@ public class Application extends Controller
 
 	public Result load()
 	{
-		Project project = Project.byName("Internal");
+		String brand = ctx().messages().at("brand");
+		Project project = Project.byName(brand);
 		if(project == null)
 		{
-			project = projectService.save(new Project("Internal"));
+			project = projectService.save(new Project(brand));
 		}
 		else if(project.deleted)
 		{
