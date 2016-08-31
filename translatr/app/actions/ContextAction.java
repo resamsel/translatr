@@ -39,6 +39,10 @@ public class ContextAction extends Action.Simple
 	@Override
 	public CompletionStage<Result> call(Context ctx)
 	{
+		Project brandProject = Project.byName(ctx.messages().at("brand"));
+		if(brandProject != null)
+			ctx.args.put("brandProjectId", brandProject.id);
+
 		if(ctx.flash().containsKey("undo"))
 		{
 			String key = ctx.flash().get("undo");

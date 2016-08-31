@@ -89,6 +89,7 @@ public class Application extends Controller
 	private void select(Project project)
 	{
 		// session("projectId", project.id.toString());
+		ctx().args.put("projectId", project.id);
 	}
 
 	private void select(Locale locale)
@@ -370,6 +371,17 @@ public class Application extends Controller
 		return redirect(routes.Application.key(key.id));
 	}
 
+	public Result keyCreateImmediately(UUID projectId, String keyName)
+	{
+		Key key = new Key(Project.byId(projectId), keyName);
+
+		LOGGER.debug("Key: {}", Json.toJson(key));
+
+		keyService.save(key);
+
+		return redirect(routes.Application.key(key.id));
+	}
+
 	public Result keyEdit(UUID keyId)
 	{
 		Key key = Key.byId(keyId);
@@ -482,6 +494,7 @@ public class Application extends Controller
 			JavaScriptReverseRouter.create(
 				"jsRoutes",
 				routes.javascript.Application.locale(),
+				routes.javascript.Application.keyCreateImmediately(),
 				routes.javascript.Application.keyRemove(),
 				routes.javascript.Api.getMessage(),
 				routes.javascript.Api.putMessage(),
