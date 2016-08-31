@@ -1,11 +1,12 @@
 @(project: models.Project, active: String)(content: Html)
 
 <div class="container project-@active">
+	<div class="tabs-container">
 	<ul class="tabs">
 		<li class="tab">
 			<a
 				target="_self"
-				@if(active == "info") { class="active" }
+				class="@if(active == "info") { active }"
 				href="@routes.Application.project(project.id)">
 				@Messages("info")
 			</a>
@@ -13,7 +14,7 @@
 		<li class="tab">
 			<a
 				target="_self"
-				@if(active == "locales") { class="active" }
+				class="@if(active == "locales") { active }"
 				href="@routes.Application.projectLocales(project.id)">
 				@Messages("locales")
 			</a>
@@ -21,12 +22,13 @@
 		<li class="tab">
 			<a
 				target="_self"
-				@if(active == "keys") { class="active" }
+				class="@if(active == "keys") { active }"
 				href="@routes.Application.projectKeys(project.id)">
 				@Messages("keys")
 			</a>
 		</li>
 	</ul>
+	</div>
 
 	@content
 </div>

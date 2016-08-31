@@ -22,12 +22,17 @@
 			<form action="@routes.Application.keyEdit(key.id)" method="post">
 				<div class="card">
 					<div class="card-image light-green">
-						<span class="card-title">@Messages("key.edit")</span>
+						<span class="card-title">@Messages("key.edit", key.name)</span>
 					</div>
 					<div class="card-content">
-						<div class="form-group">
+						<div class="input-field">
+							<input
+								id="field-key-name"
+								name="name"
+								type="text"
+								class="validate"
+								value="@key.name" />
 							<label for="field-key-name">@Messages("key.name")</label>
-							<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")" value="@key.name"></input>
 						</div>
 					</div>
 					<div class="card-action">

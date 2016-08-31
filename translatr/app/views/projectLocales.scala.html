@@ -18,7 +18,15 @@
 	@tags.content {
 		<div class="col m12">
 			@tags.projectTabs(project, "locales") {
-				<table class="table bordered card tab-body btn-hide">
+				<table class="table card tab-body btn-hide">
+					<thead>
+						<tr>
+							<th class="name">Name</th>
+							<th class="missing">Status</th>
+							<th class="locale-progress">Progress</th>
+							<th class="actions">Actions</th>
+						</tr>
+					</thead>
 					<tbody>
 						@for(locale <- locales) {
 							<tr id="@locale.id" class="locale" name="@utils.FormatUtils.formatLocale(ctx.lang().locale, locale.name).toLowerCase @locale.name.toLowerCase">
@@ -55,11 +63,24 @@
 										<i class="material-icons">file_upload</i>
 									</a>
 									<a
-										href="@routes.Application.localeExport(locale.id, "play_messages")"
-										class="btn-flat waves-effect waves-light"
-										title="@Messages("button.export")">
+										href="#"
+										class="dropdown-button btn-flat waves-effect waves-light"
+										title="@Messages("button.export")"
+										data-activates="dropdown-@locale.id"
+										data-constrainwidth="false"
+										data-alignment="right">
 										<i class="material-icons">file_download</i>
 									</a>
+									<ul id="dropdown-@locale.id" class="dropdown-content">
+										@for(t <- models.FileType.values) {
+											<li>
+												<a
+													href="@routes.Application.localeExport(locale.id, t.key)">
+													@Messages("filetype." + t.key)
+												</a>
+											</li>
+										}
+									</ul>
 									<a
 										href="@routes.Application.localeRemove(locale.id)"
 										class="btn-flat waves-effect waves-light"
@@ -79,27 +100,7 @@
 	@tags.modalTrigger("create", "create", Messages("locale.create.tooltip"), "blue")
 
 	@tags.modal(Messages("locale.new"), "modal-create") {
-		<form id="form-locale" method="post" action="@routes.Application.localeCreate(project.id)" enctype="multipart/form-data">
-			<div class="form-group">
-				<label for="field-locale-name">@Messages("locale.name")</label>
-				<input id="field-locale-name" name="name" class="form-control" placeholder="@Messages("locale.label")"></input>
-			</div>
-			<div class="file-field input-field">
-				<div class="btn">
-					<span>@Messages("import.file")</span>
-					<input
-						id="field-messages"
-						type="file"
-						name="messages" />
-				</div>
-				<div class="file-path-wrapper">
-					<input
-						class="file-path validate"
-						type="text"
-						placeholder="@Messages("locale.import.file")">
-				</div>
-			</div>
-		</form>
+		@forms.localeCreate(project)
 	}
 
 	<script src="@routes.Assets.versioned("javascripts/projectLocales.js")"></script>

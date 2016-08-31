@@ -20,12 +20,14 @@
 	@tags.content {
 		<div class="col m6 offset-m3">
 			<form action="@routes.Application.localeImport(locale.id)" method="post" enctype="multipart/form-data">
-				<input type="hidden" name="type" value="play_messages" />
 				<div id="panel-message" class="card">
 					<div class="card-image blue">
 						<span class="card-title">@Messages("locale.import")</span>
 					</div>
 					<div class="card-content">
+						<div class="input-field">
+							@tags.fileTypes()
+						</div>
 						<div class="file-field input-field">
 							<div class="btn">
 								<span>@Messages("import.file")</span>
@@ -59,4 +61,6 @@
 			</form>
 		</div>
 	}
+
+	<script src="@routes.Assets.versioned("javascripts/localeImport.js")"></script>
 }

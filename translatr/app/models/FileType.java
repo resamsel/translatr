@@ -31,10 +31,18 @@ public enum FileType
 		this.key = key;
 	}
 
+	/**
+	 * @return the key
+	 */
+	public String key()
+	{
+		return key;
+	}
+
 	public static FileType fromKey(String key)
 	{
 		if(!KEYMAP.containsKey(key))
-			throw new IllegalArgumentException(key);
+			throw new IllegalArgumentException(key + "(" + KEYMAP + ")");
 
 		return KEYMAP.get(key);
 	}

@@ -1,7 +1,6 @@
 @(project: models.Project)
 
 @import utils.FormatUtils._
-@import scala.collection.JavaConversions._
 
 @main(Messages("project.title", project.name)) {
 } {
@@ -115,35 +114,11 @@
 	"""))
 
 	@tags.modal(Messages("locale.new"), "modal-create-locale") {
-		<form id="form-locale" method="post" action="@routes.Application.localeCreate(project.id)" enctype="multipart/form-data">
-			<div class="form-group">
-				<label for="field-locale-name">@Messages("locale.name")</label>
-				<input id="field-locale-name" name="name" class="form-control" placeholder="@Messages("locale.label")"></input>
-			</div>
-			<div class="file-field input-field">
-				<div class="btn">
-					<span>@Messages("import.file")</span>
-					<input
-						id="field-messages"
-						type="file"
-						name="messages" />
-				</div>
-				<div class="file-path-wrapper">
-					<input
-						class="file-path validate"
-						type="text"
-						placeholder="@Messages("locale.import.file")">
-				</div>
-			</div>
-		</form>
+		@forms.localeCreate(project)
 	}
 
 	@tags.modal(Messages("key.new"), "modal-create-key") {
-		<form id="form-key" method="post" action="@routes.Application.keyCreate(project.id, null)">
-			<div class="form-group">
-				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
-			</div>
-		</form>
+		@forms.keyCreate(project)
 	}
 
 	<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/chartist.min.css")">

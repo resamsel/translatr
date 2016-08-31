@@ -19,6 +19,7 @@ var options = {
 };
 
 $(document).ready(function() {
+	$('select').material_select();
 	$('#modal-create-locale .btn-save').click(function() {
 		$('#form-locale').attr('action', $('#form-locale').attr('action') + '#locale=' + $('#field-locale-name').val());
 		$('#form-locale').submit();

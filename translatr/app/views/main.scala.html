@@ -25,8 +25,6 @@
 				<a class="brand-logo left hide-on-small-only" href="@routes.Application.index()">
 					@Messages("brand")
 				</a>
-				<ul class="nav navbar-nav navbar-right">
-				</ul>
 
 				@nav
 			</div>
@@ -46,7 +44,7 @@
 			@Html(ctx().args("undoMessage").toString)
 			<a
 				href="@routes.Application.commandExecute(ctx().args("undoCommand").toString)"
-				class="btn amber">
+				class="btn-flat amber-text">
 				@Messages("button.undo")
 			</a>
 		</div>

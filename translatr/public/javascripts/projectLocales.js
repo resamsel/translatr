@@ -7,6 +7,7 @@ function search(value) {
     }
 }
 $(document).ready(function() {
+	$('select').material_select();
 	$('#field-search').on('change keyup paste', function() {
 		search($('#field-search').val());
 	});

@@ -18,7 +18,15 @@
 	@tags.content {
 		<div class="col m12">
 			@tags.projectTabs(project, "keys") {
-				<table class="table bordered card tab-body btn-hide">
+				<table class="table card tab-body btn-hide">
+					<thead>
+						<tr>
+							<th class="name">Name</th>
+							<th class="updated">Updated</th>
+							<th class="locale-progress">Progress</th>
+							<th class="actions">Actions</th>
+						</tr>
+					</thead>
 					<tbody>
 						@for(key <- keys) {
 							<tr id="@key.id" class="key" name="@key.name.toLowerCase">
@@ -61,11 +69,7 @@
 	@tags.modalTrigger("create", "create", Messages("key.create.tooltip"), "light-green")
 
 	@tags.modal(Messages("key.new"), "modal-create") {
-		<form id="form-key" method="post" action="@routes.Application.keyCreate(project.id, null)">
-			<div class="form-group">
-				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
-			</div>
-		</form>
+		@forms.keyCreate(project)
 	}
 
 	<script src="@routes.Assets.versioned("javascripts/projectKeys.js")"></script>

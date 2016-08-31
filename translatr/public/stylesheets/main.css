@@ -2,6 +2,7 @@
 
 html, body {
 	height: 100%;
+	background-color: #f2f2f2;
 }
 .container-fluid.content {
 	height: calc(100% - 104px);
@@ -22,6 +23,9 @@ html, body {
 }
 
 /* Modal */
+.modal form {
+	margin-top: 2rem;
+}
 .modal .modal-footer {
     padding: 4px 24px;
 }
@@ -112,23 +116,43 @@ nav .nav-wrapper {
 }
 
 /* Table */
-.table .name,
-.table .created,
-.table .updated,
-.table .missing,
-.table .locale-progress,
-.table .actions {
+.table {
+	border-collapse: collapse;
+    white-space: nowrap;
+    font-size: 13px;
+}
+.table th {
+	position: relative;
+    vertical-align: bottom;
+    text-overflow: ellipsis;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0;
+    height: 48px;
+    font-size: 12px;
+    color: rgba(0,0,0,.54);
+    padding: 0 18px 8px 18px;
+    box-sizing: border-box;
+}
+.table td {
+    position: relative;
+    height: 48px;
+    border-top: 1px solid rgba(0,0,0,.12);
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    padding: 12px 18px;
+    box-sizing: border-box;
+}
+.table td.name,
+.table td.created,
+.table td.updated,
+.table td.missing,
+.table td.locale-progress,
+.table td.actions {
 	vertical-align: middle;
 	white-space: nowrap;
 }
-.table td {
-	padding: 5px;
-}
-.table tr td:first-child {
-	padding-left: 15px;
-}
-.table tr td:last-child {
-	padding-right: 15px;
+.table th.actions {
+	text-align: right;
 }
 .table td .progress {
 	margin-bottom: 0;
@@ -177,12 +201,9 @@ nav .nav-wrapper {
 	border: 0;
 }
 .collection .collection-item {
-	padding: 5px 10px;
+	padding: 0.5rem 1rem;
 	border: 0;
-}
-.collection-item {
-	padding: 13px;
-	background-color: transparent;
+    background-color: transparent;
 	border: 0;
 }
 .collection-item,
@@ -254,8 +275,23 @@ nav .nav-wrapper {
 }
 
 /* Tabs */
-.tabs .tab a:hover {
-    color: #d32f2f;
+.tabs-container {
+	padding: 0 15%;
+	background: transparent;
+}
+.tabs {
+	background-color: transparent;
+}
+.tabs .tab a {
+	color: #757575;
+}
+.tabs .indicator {
+    background-color: #4CAF50;
+}
+.tabs .tab a.active,
+.tabs .tab a:hover,
+.tabs .tab a:focus {
+    color: #4CAF50;
 }
 
 /* Charts */
