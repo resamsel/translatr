@@ -75,7 +75,7 @@ def pull():
 		else:
 			target = target.replace('?', '')
 		download(
-			'{endpoint}/locale/{0}/export/{pull[type]}'.format(
+			'{endpoint}/locale/{0}/export/{pull[file_type]}'.format(
 				locale.id,
 				**config
 			),

@@ -10,12 +10,15 @@
 	}
 
 	@tags.content {
-		<div class="col m12">
+		<div class="col m12 dashboard">
 			<div class="container">
 				@for(project <- projects) {
-					<div class="card project" name="@project.name.toLowerCase">
+					<div class="card project hoverable" name="@project.name.toLowerCase">
 						<div class="card-image orange">
 							<span class="card-title">@project.name</span>
+						</div>
+						<div class="progress">
+							<div class="determinate" style="width: @{project.progress()*100}%;"></div>
 						</div>
 						<div class="card-content">
 							<p>

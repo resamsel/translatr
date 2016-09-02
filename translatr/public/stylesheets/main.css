@@ -78,6 +78,8 @@ nav .nav-wrapper {
     margin-bottom: -4px;
 }
 .card.project {
+	display: flex;
+    flex-direction: column;
 	position: relative;
     min-height: 1px;
     margin-left: 15px;
@@ -85,11 +87,22 @@ nav .nav-wrapper {
     float: left;
     width: 30%;
 }
+.card .card-content {
+	flex-grow: 1;
+}
 
 .card .card-image {
 	height: 75px;
 }
+.card .card-image .card-title {
+	position: static;
+	display: block;
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
+.dashboard .container,
 .project .info {
 	display: -webkit-box;
 	display: -moz-box;
@@ -174,14 +187,11 @@ nav .nav-wrapper {
 
 /* Three Columns */
 .mainview,
-.navview,
-.subview {
+.navview {
 	height: 100%; /* subtracts the height of the breadcrumb bar */
 	overflow: auto;
 }
-.row .col.mainview,
-.row .col.navview,
-.row .col.subview {
+.row .col.navview {
 	padding: 0.5rem 0.75rem;
 }
 .navview h3,

@@ -25,6 +25,7 @@ key.edit.title = {1} bearbeiten - Projekt {0}
 key.label = Schlüssel
 key.name = Schlüsselname
 key.new = Neuen Schlüssel anlegen
+key.remove = Schlüssel entfernen
 key.selection.none = Kein Schlüssel ausgewählt
 key.title = {1} - Projekt {0}
 key.undefined = Schlüssel unbekannt:
