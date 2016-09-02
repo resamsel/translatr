@@ -1,5 +1,6 @@
 package models;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -11,8 +12,11 @@ import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
 
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 
+import criterias.LogEntryCriteria;
 import dto.Dto;
 import play.libs.Json;
 
@@ -49,6 +53,10 @@ public class LogEntry
 	@Column(length = 1024 * 1024)
 	public String after;
 
+	private static final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>()
+	{
+	};
+
 	/**
 	 * @param type
 	 * @param clazz
@@ -67,5 +75,19 @@ public class LogEntry
 		out.after = Json.stringify(Json.toJson(after));
 
 		return out;
+	}
+
+	/**
+	 * @param criteria
+	 * @return
+	 */
+	public static List<LogEntry> findBy(LogEntryCriteria criteria)
+	{
+		ExpressionList<LogEntry> query = find.fetch("project").where();
+
+		if(criteria.getProjectId() != null)
+			query.eq("project.id", criteria.getProjectId());
+
+		return query.order("whenCreated").findList();
 	}
 }

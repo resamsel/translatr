@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.avaje.ebean.Ebean;
 
 import models.ActionType;
@@ -13,6 +16,7 @@ import models.LogEntry;
 import models.Message;
 import services.LogEntryService;
 import services.MessageService;
+import utils.TransactionUtils;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -24,6 +28,8 @@ import services.MessageService;
 @Singleton
 public class MessageServiceImpl implements MessageService
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceImpl.class);
+
 	private final LogEntryService logEntryService;
 
 	/**
@@ -84,6 +90,15 @@ public class MessageServiceImpl implements MessageService
 			.map(m -> LogEntry.from(ActionType.Delete, m.key.project, dto.Message.class, dto.Message.from(m), null))
 			.collect(Collectors.toList()));
 
-		Ebean.delete(t);
+		try
+		{
+			TransactionUtils.batchExecute((tx) -> {
+				Ebean.delete(t);
+			});
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Error while batch deleting messages", e);
+		}
 	}
 }

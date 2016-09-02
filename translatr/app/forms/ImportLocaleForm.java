@@ -12,5 +12,21 @@ import play.data.validation.Constraints.Required;
 public class ImportLocaleForm
 {
 	@Required
-	public String type;
+	private String fileType;
+
+	/**
+	 * @return the fileType
+	 */
+	public String getFileType()
+	{
+		return fileType;
+	}
+
+	/**
+	 * @param fileType the fileType to set
+	 */
+	public void setFileType(String fileType)
+	{
+		this.fileType = fileType;
+	}
 }

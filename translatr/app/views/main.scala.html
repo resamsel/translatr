@@ -52,10 +52,6 @@
 			$(document).ready(function() {
 				var $toastContent = $('.undo.template').clone().removeClass('template');
 				Materialize.toast($toastContent, 10000);
-
-				@for(k <- ctx().args("undefined").asInstanceOf[List[String]]) {
-					Materialize.toast('Undefined: @k', 10000);
-				}
 			})
 		</script>
 	}

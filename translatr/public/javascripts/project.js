@@ -3,6 +3,9 @@ var options = {
 		left: -10,
 		bottom: -10
 	},
+	showArea: true,
+	showLine: false,
+	showPoint: false,
 	stackBars: true,
 	axisX: {
 		type: Chartist.FixedScaleAxis,
@@ -29,5 +32,5 @@ $(document).ready(function() {
 		$('#form-key').submit();
 	});
 
-	new Chartist.Bar('#chart-timeline', data, options);
+	new Chartist.Line('#chart-timeline', data, options);
 });

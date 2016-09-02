@@ -60,32 +60,28 @@ create table project (
   constraint pk_project primary key (id))
 ;
 
-alter table key add constraint fk_key_project_1 foreign key (project_id) references project (id) on delete restrict on update restrict;
+alter table key add constraint fk_key_project_1 foreign key (project_id) references project (id);
 create index ix_key_project_1 on key (project_id);
-alter table locale add constraint fk_locale_project_2 foreign key (project_id) references project (id) on delete restrict on update restrict;
+alter table locale add constraint fk_locale_project_2 foreign key (project_id) references project (id);
 create index ix_locale_project_2 on locale (project_id);
-alter table log_entry add constraint fk_log_entry_project_3 foreign key (project_id) references project (id) on delete restrict on update restrict;
+alter table log_entry add constraint fk_log_entry_project_3 foreign key (project_id) references project (id);
 create index ix_log_entry_project_3 on log_entry (project_id);
-alter table message add constraint fk_message_locale_4 foreign key (locale_id) references locale (id) on delete restrict on update restrict;
+alter table message add constraint fk_message_locale_4 foreign key (locale_id) references locale (id);
 create index ix_message_locale_4 on message (locale_id);
-alter table message add constraint fk_message_key_5 foreign key (key_id) references key (id) on delete restrict on update restrict;
+alter table message add constraint fk_message_key_5 foreign key (key_id) references key (id);
 create index ix_message_key_5 on message (key_id);
 
 
 
 # --- !Downs
 
-SET REFERENTIAL_INTEGRITY FALSE;
+drop table if exists key cascade;
 
-drop table if exists key;
+drop table if exists locale cascade;
 
-drop table if exists locale;
+drop table if exists log_entry cascade;
 
-drop table if exists log_entry;
+drop table if exists message cascade;
 
-drop table if exists message;
-
-drop table if exists project;
-
-SET REFERENTIAL_INTEGRITY TRUE;
+drop table if exists project cascade;
 

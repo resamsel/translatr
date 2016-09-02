@@ -9,37 +9,11 @@ import java.util.UUID;
  * @author resamsel
  * @version 19 Aug 2016
  */
-public class MessageCriteria implements SearchCriteria
+public class MessageCriteria extends AbstractSearchCriteria<MessageCriteria>
 {
-	private UUID projectId;
+	private UUID localeId;
 
 	private String keyName;
-
-	/**
-	 * @return the projectId
-	 */
-	public UUID getProjectId()
-	{
-		return projectId;
-	}
-
-	/**
-	 * @param projectId the projectId to set
-	 */
-	public void setProjectId(UUID projectId)
-	{
-		this.projectId = projectId;
-	}
-
-	/**
-	 * @param projectId the projectId to set
-	 * @return this
-	 */
-	public MessageCriteria withProjectId(UUID projectId)
-	{
-		setProjectId(projectId);
-		return this;
-	}
 
 	/**
 	 * @return the keyName
@@ -64,6 +38,32 @@ public class MessageCriteria implements SearchCriteria
 	public MessageCriteria withKeyName(String keyName)
 	{
 		setKeyName(keyName);
+		return this;
+	}
+
+	/**
+	 * @return the localeId
+	 */
+	public UUID getLocaleId()
+	{
+		return localeId;
+	}
+
+	/**
+	 * @param localeId the localeId to set
+	 */
+	public void setLocaleId(UUID localeId)
+	{
+		this.localeId = localeId;
+	}
+
+	/**
+	 * @param localeId
+	 * @return
+	 */
+	public MessageCriteria withLocaleId(UUID localeId)
+	{
+		setLocaleId(localeId);
 		return this;
 	}
 }

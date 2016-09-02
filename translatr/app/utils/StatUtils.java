@@ -7,9 +7,11 @@ import org.joda.time.DateTime;
 
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
+import criterias.LogEntryCriteria;
 import criterias.MessageCriteria;
 import models.Key;
 import models.Locale;
+import models.LogEntry;
 import models.Message;
 import models.Project;
 
@@ -52,6 +54,18 @@ public class StatUtils
 			.findBy(new LocaleCriteria().withProjectId(project.id))
 			.stream()
 			.collect(Collectors.groupingBy(l -> withMinuteSecondMillisReset(l.whenUpdated)))
+			.entrySet()
+			.stream()
+			.map(e -> new Stat(e.getKey().getMillis(), e.getValue().size()))
+			.collect(Collectors.toList());
+	}
+
+	public static List<Stat> getLogEntryStats(Project project)
+	{
+		return LogEntry
+			.findBy(new LogEntryCriteria().withProjectId(project.id))
+			.stream()
+			.collect(Collectors.groupingBy(e -> withMinuteSecondMillisReset(e.whenCreated)))
 			.entrySet()
 			.stream()
 			.map(e -> new Stat(e.getKey().getMillis(), e.getValue().size()))

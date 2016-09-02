@@ -1,4 +1,4 @@
-@(project: models.Project, keys: List[models.Key])
+@(project: models.Project, keys: List[models.Key], progress: Map[java.util.UUID, Double])
 
 @main(Messages("keys.title", project.name)) {
 	@tags.search()
@@ -18,7 +18,7 @@
 	@tags.content {
 		<div class="col m12">
 			@tags.projectTabs(project, "keys") {
-				<table class="table card tab-body btn-hide">
+				<table class="table responsive-table card btn-hide">
 					<thead>
 						<tr>
 							<th class="name">@Messages("key.name")</th>
@@ -40,7 +40,7 @@
 								</td>
 								<td class="locale-progress">
 									<div class="progress">
-										<div class="determinate" style="width: @{project.progress(key)*100}%;"></div>
+										<div class="determinate" style="width: @{progress.getOrDefault(key.id, 0)*100}%;"></div>
 									</div>
 								</td>
 								<td class="actions right-align">

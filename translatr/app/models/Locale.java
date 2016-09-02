@@ -1,5 +1,7 @@
 package models;
 
+import static utils.Stopwatch.log;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +15,8 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
@@ -26,6 +30,8 @@ import criterias.LocaleCriteria;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
 public class Locale
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Locale.class);
+
 	@Id
 	public UUID id;
 
@@ -104,17 +110,33 @@ public class Locale
 		if(criteria.getLocaleName() != null)
 			query.eq("name", criteria.getLocaleName());
 
-		return query.findList();
+		if(criteria.getLimit() != null)
+			query.setMaxRows(criteria.getLimit());
+
+		return log(() -> query.findList(), LOGGER, "findBy");
 	}
 
 	public static List<Locale> last(Project project, int limit)
 	{
-		return find
-			.fetch("project")
-			.where()
-			.eq("project", project)
-			.order("whenUpdated desc")
-			.setMaxRows(limit)
-			.findList();
+		return log(
+			() -> find
+				.fetch("project")
+				.where()
+				.eq("project", project)
+				.order("whenUpdated desc")
+				.setMaxRows(limit)
+				.findList(),
+			LOGGER,
+			"last(%d)",
+			limit);
+	}
+
+	/**
+	 * @param project
+	 * @return
+	 */
+	public static long countBy(Project project)
+	{
+		return find.where().eq("project", project).findRowCount();
 	}
 }

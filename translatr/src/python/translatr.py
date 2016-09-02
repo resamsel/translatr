@@ -152,7 +152,7 @@ def push():
 					locale=locales[localeName],
 					**config),
 				data={
-					'type': config['push']['type']
+					'fileType': config['push']['file_type']
 				},
 				files={
 					'messages': open(filename, 'r')

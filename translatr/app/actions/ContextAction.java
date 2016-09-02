@@ -1,7 +1,5 @@
 package actions;
 
-import java.util.Collections;
-import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
@@ -48,20 +46,6 @@ public class ContextAction extends Action.Simple
 			String key = ctx.flash().get("undo");
 			ctx.args.put("undoMessage", ((Command)cache.get(key)).getMessage());
 			ctx.args.put("undoCommand", key);
-		}
-
-		if(ctx.session().containsKey("projectId"))
-		{
-			Project project = Project.byId(UUID.fromString(ctx.session().get("projectId")));
-
-			if(project != null)
-				ctx.args.put("locales", project.locales);
-			else
-				ctx.args.put("locales", Collections.emptyList());
-		}
-		else
-		{
-			ctx.args.put("locales", Collections.emptyList());
 		}
 
 		return delegate.call(ctx);

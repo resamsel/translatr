@@ -1,5 +1,9 @@
 package services;
 
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import com.google.inject.ImplementedBy;
 
 import models.Locale;
@@ -15,4 +19,11 @@ import services.impl.LocaleServiceImpl;
 @ImplementedBy(LocaleServiceImpl.class)
 public interface LocaleService extends ModelService<Locale>
 {
+
+	/**
+	 * @param localeIds
+	 * @param keysSize
+	 * @return
+	 */
+	Map<UUID, Double> progress(List<UUID> localeIds, long keysSize);
 }

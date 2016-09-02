@@ -1,4 +1,4 @@
-@(key: models.Key, locales: List[models.Locale])
+@(key: models.Key, locales: List[models.Locale], messages: Map[java.util.UUID, models.Message])
 
 @main(Messages("key.title", key.project.name, key.name)) {
 	@tags.search {
@@ -44,12 +44,12 @@
 						<a
 							id="@locale.id"
 							href="#locale=@locale.name"
-							class="locale @if(key.messageValue(locale) == null) { no-message }"
+							class="locale @if(!messages.containsKey(locale.id)) { no-message }"
 							name="@locale.name.toLowerCase"
 							localeName="@locale.name"
 							title="@tags.locale(locale.name)">
 							<span class="title name">@tags.locale(locale.name)</span>
-							<div class="value">@key.messageValue(locale)</div>
+							<div class="value">@if(messages.containsKey(locale.id)) {@messages(locale.id).value}</div>
 						</a>
 					</li>
 				}
@@ -63,6 +63,9 @@
 					<div class="card-image red">
 						<span class="card-title">@Messages("locale.to.label") <span id="locale-name">...</span></span>
 					</div>
+					<div class="progress" style="margin: 0; visibility: hidden">
+						<div class="indeterminate"></div>
+					</div>
 					<div class="card-content">
 						<input id="field-id" type="hidden" />
 						<input id="field-locale" type="hidden" />
@@ -71,9 +74,6 @@
 								id="field-value"
 								class="materialize-textarea"></textarea>
 							<label for="field-value">@Messages("locale.value.label")</label>
-						</div>
-						<div class="progress" style="margin: 0; visibility: hidden">
-							<div class="indeterminate"></div>
 						</div>
 					</div>
 					<div class="card-action">

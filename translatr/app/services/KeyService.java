@@ -1,5 +1,9 @@
 package services;
 
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import com.google.inject.ImplementedBy;
 
 import models.Key;
@@ -15,4 +19,10 @@ import services.impl.KeyServiceImpl;
 @ImplementedBy(KeyServiceImpl.class)
 public interface KeyService extends ModelService<Key>
 {
+	/**
+	 * @param keyIds
+	 * @param localesSize
+	 * @return
+	 */
+	Map<UUID, Double> progress(List<UUID> keyIds, long localesSize);
 }

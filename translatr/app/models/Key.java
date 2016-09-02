@@ -1,5 +1,7 @@
 package models;
 
+import static utils.Stopwatch.log;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +15,8 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
@@ -26,6 +30,8 @@ import criterias.KeyCriteria;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
 public class Key
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Key.class);
+
 	@Id
 	public UUID id;
 
@@ -62,16 +68,6 @@ public class Key
 	{
 	};
 
-	public String messageValue(Locale locale)
-	{
-		Message message = Message.byKeyAndLocale(this, locale);
-
-		if(message == null)
-			return null;
-
-		return message.value;
-	}
-
 	/**
 	 * @param keyId
 	 * @return
@@ -92,7 +88,13 @@ public class Key
 		if(criteria.getProjectId() != null)
 			query.eq("project.id", criteria.getProjectId());
 
-		return query.findList();
+		if(criteria.getLimit() != null)
+			query.setMaxRows(criteria.getLimit());
+
+		if(criteria.getOrder() != null)
+			query.setOrderBy(criteria.getOrder());
+
+		return log(() -> query.findList(), LOGGER, "Retrieving keys");
 	}
 
 	/**
@@ -114,5 +116,14 @@ public class Key
 			.order("whenUpdated desc")
 			.setMaxRows(limit)
 			.findList();
+	}
+
+	/**
+	 * @param project
+	 * @return
+	 */
+	public static long countBy(Project project)
+	{
+		return log(() -> find.where().eq("project", project).findRowCount(), LOGGER, "countBy");
 	}
 }

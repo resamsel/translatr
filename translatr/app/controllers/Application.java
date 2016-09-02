@@ -1,13 +1,16 @@
 package controllers;
 
 import static utils.FormatUtils.formatLocale;
+import static utils.Stopwatch.log;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -19,10 +22,16 @@ import commands.Command;
 import commands.RevertDeleteKeyCommand;
 import commands.RevertDeleteLocaleCommand;
 import commands.RevertDeleteProjectCommand;
+import criterias.KeyCriteria;
+import criterias.LocaleCriteria;
+import criterias.MessageCriteria;
 import exporters.Exporter;
 import exporters.JavaPropertiesExporter;
 import exporters.PlayMessagesExporter;
 import forms.ImportLocaleForm;
+import forms.KeyForm;
+import forms.LocaleForm;
+import forms.ProjectForm;
 import importers.Importer;
 import importers.JavaPropertiesImporter;
 import importers.PlayMessagesImporter;
@@ -48,6 +57,7 @@ import services.KeyService;
 import services.LocaleService;
 import services.MessageService;
 import services.ProjectService;
+import utils.TransactionUtils;
 
 /**
  * This controller contains an action to handle HTTP requests to the application's home page.
@@ -118,21 +128,23 @@ public class Application extends Controller
 
 		select(project);
 
-		return ok(views.html.project.render(project));
+		return ok(log(() -> views.html.project.render(project), LOGGER, "Rendering project"));
 	}
 
 	public Result projectCreate()
 	{
-		Project form = formFactory.form(Project.class).bindFromRequest().get();
+		ProjectForm form = formFactory.form(ProjectForm.class).bindFromRequest().get();
 
 		LOGGER.debug("Project: {}", Json.toJson(form));
 
-		Project project = Project.byName(form.name);
+		Project project = Project.byName(form.getName());
 		if(project != null)
-			project.updateFrom(form).withDeleted(false);
+			form.fill(project).withDeleted(false);
 		else
-			project = form;
+			project = form.fill(new Project());
 		projectService.save(project);
+
+		select(project);
 
 		return redirect(routes.Application.project(project.id));
 	}
@@ -144,13 +156,13 @@ public class Application extends Controller
 		if(project == null)
 			return redirect(routes.Application.index());
 
+		select(project);
+
 		if("POST".equals(request().method()))
 		{
-			Project changed = formFactory.form(Project.class).bindFromRequest().get();
+			ProjectForm form = formFactory.form(ProjectForm.class).bindFromRequest().get();
 
-			project.name = changed.name;
-
-			projectService.save(project);
+			projectService.save(form.fill(project));
 
 			return redirect(routes.Application.project(project.id));
 		}
@@ -166,6 +178,8 @@ public class Application extends Controller
 
 		if(project == null)
 			return redirect(routes.Application.index());
+
+		select(project);
 
 		undoCommand(new RevertDeleteProjectCommand(project));
 
@@ -184,9 +198,18 @@ public class Application extends Controller
 		select(project);
 
 		java.util.Locale locale = ctx().lang().locale();
-		Collections.sort(project.locales, (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
+		List<Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(project.id));
+		Collections.sort(locales, (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
 
-		return ok(views.html.projectLocales.render(project, project.locales));
+		return ok(
+			log(
+				() -> views.html.projectLocales.render(
+					project,
+					locales,
+					localeService
+						.progress(locales.stream().map(l -> l.id).collect(Collectors.toList()), Key.countBy(project))),
+				LOGGER,
+				"Rendering projectLocales"));
 	}
 
 	public Result projectKeys(UUID id)
@@ -198,13 +221,18 @@ public class Application extends Controller
 
 		select(project);
 
-		Collections.sort(project.keys, (a, b) -> a.name.compareTo(b.name));
+		List<Key> keys = Key.findBy(new KeyCriteria().withProjectId(project.id).withLimit(100).withOrder("name"));
 
-		return ok(views.html.projectKeys.render(project, project.keys));
+		Map<UUID, Double> progress =
+					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
+
+		return ok(views.html.projectKeys.render(project, keys, progress));
 	}
 
 	public Result locale(UUID id)
 	{
+		LOGGER.debug("locale(id={})", id);
+
 		Locale locale = Locale.byId(id);
 
 		if(locale == null)
@@ -212,11 +240,12 @@ public class Application extends Controller
 
 		select(locale.project);
 
-		Collections.sort(locale.project.keys, (a, b) -> a.name.compareTo(b.name));
+		List<Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(locale.project.id).withLimit(100));
+		List<Key> keys = Key.findBy(new KeyCriteria().withProjectId(locale.project.id).withLimit(100));
+		Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(
+			Collectors.groupingBy((m) -> m.key.name, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
 
-		List<Locale> locales = Locale.byProject(locale.project);
-
-		return ok(views.html.locale.render(locale.project, locale, locales));
+		return ok(views.html.locale.render(locale.project, locale, keys, locales, messages));
 	}
 
 	public Result localeImport(UUID id)
@@ -247,6 +276,8 @@ public class Application extends Controller
 		if(locale == null)
 			return redirect(routes.Application.index());
 
+		select(locale.project);
+
 		Exporter exporter;
 		switch(FileType.fromKey(fileType))
 		{
@@ -272,7 +303,13 @@ public class Application extends Controller
 		if(project == null)
 			return redirect(routes.Application.index());
 
-		Locale locale = formFactory.form(Locale.class).bindFromRequest().get();
+		select(project);
+
+		LocaleForm form = formFactory.form(LocaleForm.class).bindFromRequest().get();
+
+		LOGGER.debug("Locale: {}", Json.toJson(form));
+
+		Locale locale = form.fill(new Locale());
 
 		locale.project = project;
 
@@ -290,13 +327,13 @@ public class Application extends Controller
 		if(locale == null)
 			return redirect(routes.Application.index());
 
+		select(locale.project);
+
 		if("POST".equals(request().method()))
 		{
-			Locale changed = formFactory.form(Locale.class).bindFromRequest().get();
+			LocaleForm form = formFactory.form(LocaleForm.class).bindFromRequest().get();
 
-			locale.name = changed.name;
-
-			localeService.save(locale);
+			localeService.save(form.fill(locale));
 
 			return redirect(routes.Application.projectLocales(locale.project.id));
 		}
@@ -311,9 +348,26 @@ public class Application extends Controller
 		if(locale == null)
 			return redirect(routes.Application.index());
 
+		select(locale);
+
+		LOGGER.debug("Creating undo command");
+
 		undoCommand(new RevertDeleteLocaleCommand(locale));
 
-		localeService.delete(locale);
+		LOGGER.debug("Excuting batch delete");
+
+		try
+		{
+			TransactionUtils.batchExecute((tx) -> {
+				localeService.delete(locale);
+			});
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Error while batch deleting locale", e);
+		}
+
+		LOGGER.debug("Redirecting");
 
 		return redirect(routes.Application.projectLocales(locale.project.id));
 	}
@@ -347,15 +401,26 @@ public class Application extends Controller
 		Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
 
 		List<Locale> locales = Locale.byProject(key.project);
+		Map<UUID, Message> messages = Message.findBy(new MessageCriteria().withKeyName(key.name)).stream().collect(
+			Collectors.groupingBy((m) -> m.locale.id, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
 
-		return ok(views.html.key.render(key, locales));
+		return ok(views.html.key.render(key, locales, messages));
 	}
 
 	public Result keyCreate(UUID projectId, UUID localeId)
 	{
-		Key key = formFactory.form(Key.class).bindFromRequest().get();
+		Project project = Project.byId(projectId);
 
-		key.project = Project.byId(projectId);
+		if(project == null)
+			return redirect(routes.Application.index());
+
+		select(project);
+
+		KeyForm form = formFactory.form(KeyForm.class).bindFromRequest().get();
+
+		Key key = form.fill(new Key());
+
+		key.project = project;
 
 		LOGGER.debug("Key: {}", Json.toJson(key));
 
@@ -373,11 +438,23 @@ public class Application extends Controller
 
 	public Result keyCreateImmediately(UUID projectId, String keyName)
 	{
-		Key key = new Key(Project.byId(projectId), keyName);
+		Project project = Project.byId(projectId);
 
-		LOGGER.debug("Key: {}", Json.toJson(key));
+		if(project == null)
+			return redirect(routes.Application.index());
 
-		keyService.save(key);
+		select(project);
+
+		Key key = Key.byProjectAndName(project, keyName);
+
+		if(key == null)
+		{
+			key = new Key(project, keyName);
+
+			LOGGER.debug("Key: {}", Json.toJson(key));
+
+			keyService.save(key);
+		}
 
 		return redirect(routes.Application.key(key.id));
 	}
@@ -389,13 +466,13 @@ public class Application extends Controller
 		if(key == null)
 			return redirect(routes.Application.index());
 
+		select(key.project);
+
 		if("POST".equals(request().method()))
 		{
-			Key changed = formFactory.form(Key.class).bindFromRequest().get();
+			KeyForm form = formFactory.form(KeyForm.class).bindFromRequest().get();
 
-			key.name = changed.name;
-
-			keyService.save(key);
+			keyService.save(form.fill(key));
 
 			return redirect(routes.Application.projectKeys(key.project.id));
 		}
@@ -411,6 +488,8 @@ public class Application extends Controller
 
 		if(key == null)
 			return redirect(routes.Application.index());
+
+		select(key.project);
 
 		undoCommand(new RevertDeleteKeyCommand(key));
 
@@ -441,6 +520,8 @@ public class Application extends Controller
 			project.deleted = false;
 			projectService.save(project);
 		}
+
+		select(project);
 
 		for(Entry<String, scala.collection.immutable.Map<String, String>> bundle : JavaConversions
 			.mapAsJavaMap(ctx().messages().messagesApi().scalaApi().messages())
@@ -516,10 +597,10 @@ public class Application extends Controller
 
 		ImportLocaleForm form = formFactory.form(ImportLocaleForm.class).bindFromRequest().get();
 
-		LOGGER.debug("Type: {}", form.type);
+		LOGGER.debug("Type: {}", form.getFileType());
 
 		Importer importer;
-		switch(FileType.fromKey(form.type))
+		switch(FileType.fromKey(form.getFileType()))
 		{
 			case PlayMessages:
 				importer = injector.instanceOf(PlayMessagesImporter.class);
@@ -528,7 +609,7 @@ public class Application extends Controller
 				importer = injector.instanceOf(JavaPropertiesImporter.class);
 			break;
 			default:
-				throw new IllegalArgumentException("File type " + form.type + " not supported yet");
+				throw new IllegalArgumentException("File type " + form.getFileType() + " not supported yet");
 		}
 
 		try
@@ -539,6 +620,8 @@ public class Application extends Controller
 		{
 			LOGGER.error("Error while importing messages", e);
 		}
+
+		LOGGER.debug("End of import");
 
 		return "OK";
 	}

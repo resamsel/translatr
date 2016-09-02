@@ -1,6 +1,6 @@
 package criterias;
 
-import java.util.UUID;
+import java.util.Collection;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -9,33 +9,33 @@ import java.util.UUID;
  * @author resamsel
  * @version 19 Aug 2016
  */
-public class KeyCriteria implements SearchCriteria
+public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria>
 {
-	private UUID projectId;
+	private Collection<String> names;
 
 	/**
-	 * @return the projectId
+	 * @return the names
 	 */
-	public UUID getProjectId()
+	public Collection<String> getNames()
 	{
-		return projectId;
+		return names;
 	}
 
 	/**
-	 * @param projectId the projectId to set
+	 * @param names the names to set
 	 */
-	public void setProjectId(UUID projectId)
+	public void setNames(Collection<String> names)
 	{
-		this.projectId = projectId;
+		this.names = names;
 	}
 
 	/**
-	 * @param projectId the projectId to set
-	 * @return this
+	 * @param names
+	 * @return
 	 */
-	public KeyCriteria withProjectId(UUID projectId)
+	public KeyCriteria withNames(Collection<String> names)
 	{
-		setProjectId(projectId);
+		setNames(names);
 		return this;
 	}
 }

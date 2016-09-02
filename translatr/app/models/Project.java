@@ -1,28 +1,38 @@
 package models;
 
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import criterias.MessageCriteria;
+
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 public class Project
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
+
 	@Id
 	public UUID id;
 
@@ -49,6 +59,15 @@ public class Project
 	@JsonIgnore
 	@OneToMany
 	public List<Key> keys;
+
+	@Transient
+	private Long keysSize;
+
+	@Transient
+	private Long localesSize;
+
+	@Transient
+	private Map<UUID, Long> keysSizeMap;
 
 	public Project()
 	{
@@ -78,34 +97,44 @@ public class Project
 
 	public float progress()
 	{
-		if(keys.size() < 1 || locales.size() < 1)
+		long keysSize = keysSize();
+		long localesSize = localesSize();
+		if(keysSize < 1 || localesSize < 1)
 			return 0f;
-		return (float)locales.stream().collect(Collectors.summingInt(l -> l.messages.size()))
-			/ (float)(keys.size() * locales.size());
+		return (float)Message.countBy(this) / (float)(keysSize * localesSize);
 	}
 
-	public float progress(Locale locale)
+	public long missing(UUID localeId)
 	{
-		if(keys.size() < 1)
-			return 0f;
-		return (float)locale.messages.size() / (float)keys.size();
+		return keysSize() - keysSizeMap(localeId);
 	}
 
-	public float progress(Key key)
+	public long keysSizeMap(UUID localeId)
 	{
-		if(locales.size() < 1)
-			return 0f;
-		return (float)key.messages.size() / (float)locales.size();
+		if(keysSizeMap == null)
+			keysSizeMap = Message.findBy(new MessageCriteria().withProjectId(this.id)).stream().collect(
+				groupingBy(m -> m.locale.id, counting()));
+
+		return keysSizeMap.getOrDefault(localeId, 0l);
 	}
 
-	public int missing(Locale locale)
+	public long localesSize()
 	{
-		return keys.size() - locale.messages.size();
+		if(localesSize == null)
+			localesSize = Locale.countBy(this);
+		return localesSize;
 	}
 
-	public int messagesSize()
+	public long keysSize()
 	{
-		return Message.countByProject(this);
+		if(keysSize == null)
+			keysSize = Key.countBy(this);
+		return keysSize;
+	}
+
+	public long messagesSize()
+	{
+		return Message.countBy(this);
 	}
 
 	public Project withDeleted(boolean deleted)

@@ -1,4 +1,4 @@
-@(project: models.Project, locales: List[models.Locale])
+@(project: models.Project, locales: List[models.Locale], progress: Map[java.util.UUID, Double])
 
 @main(Messages("locales.title", project.name)) {
 	@tags.search()
@@ -18,7 +18,7 @@
 	@tags.content {
 		<div class="col m12">
 			@tags.projectTabs(project, "locales") {
-				<table class="table card tab-body btn-hide">
+				<table class="table responsive-table card btn-hide">
 					<thead>
 						<tr>
 							<th class="name">@Messages("locale.name")</th>
@@ -36,7 +36,7 @@
 									</a>
 								</td>
 								<td class="missing">
-									@defining(project.missing(locale)) { missing =>
+									@defining(project.missing(locale.id)) { missing =>
 										@if(missing == 0) {
 											@Messages("locale.complete")
 										} else {
@@ -46,7 +46,7 @@
 								</td>
 								<td class="locale-progress">
 									<div class="progress">
-										<div class="determinate" style="width: @{project.progress(locale)*100}%;"></div>
+										<div class="determinate" style="width: @{progress.getOrDefault(locale.id, 0)*100}%;"></div>
 									</div>
 								</td>
 								<td class="actions right-align">

@@ -1,5 +1,7 @@
 package models;
 
+import static utils.Stopwatch.log;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +15,8 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
@@ -25,6 +29,8 @@ import criterias.MessageCriteria;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"locale_id", "key_id"})})
 public class Message
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
+
 	@Id
 	public UUID id;
 
@@ -94,9 +100,27 @@ public class Message
 	 * @param project
 	 * @return
 	 */
-	public static int countByProject(Project project)
+	public static int countBy(Project project)
 	{
-		return find.fetch("key").fetch("locale").where().eq("key.project", project).findRowCount();
+		return find.where().eq("key.project", project).findRowCount();
+	}
+
+	/**
+	 * @param key
+	 * @return
+	 */
+	public static int countBy(Key key)
+	{
+		return find.where().eq("key", key).findRowCount();
+	}
+
+	/**
+	 * @param locale
+	 * @return
+	 */
+	public static int countBy(Locale locale)
+	{
+		return find.where().eq("locale", locale).findRowCount();
 	}
 
 	/**
@@ -110,10 +134,16 @@ public class Message
 		if(criteria.getProjectId() != null)
 			query.eq("key.project.id", criteria.getProjectId());
 
+		if(criteria.getLocaleId() != null)
+			query.eq("locale.id", criteria.getLocaleId());
+
 		if(criteria.getKeyName() != null)
 			query.eq("key.name", criteria.getKeyName());
 
-		return query.findList();
+		if(criteria.getLimit() != null)
+			query.setMaxRows(criteria.getLimit());
+
+		return log(() -> query.findList(), LOGGER, "findBy");
 	}
 
 	/**
@@ -122,7 +152,7 @@ public class Message
 	 */
 	public static List<Message> byLocale(UUID localeId)
 	{
-		return find.where().eq("locale.id", localeId).findList();
+		return find.fetch("key").fetch("locale").where().eq("locale.id", localeId).findList();
 	}
 
 	/**

@@ -1,20 +1,31 @@
 package services.impl;
 
+import static utils.Stopwatch.log;
+
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.RawSqlBuilder;
 
 import models.ActionType;
 import models.Locale;
 import models.LogEntry;
 import models.Message;
+import models.Stat;
 import services.LocaleService;
 import services.LogEntryService;
 import services.MessageService;
+import utils.TransactionUtils;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -26,6 +37,8 @@ import services.MessageService;
 @Singleton
 public class LocaleServiceImpl implements LocaleService
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
+
 	private final LogEntryService logEntryService;
 
 	private final MessageService messageService;
@@ -38,6 +51,31 @@ public class LocaleServiceImpl implements LocaleService
 	{
 		this.messageService = messageService;
 		this.logEntryService = logEntryService;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<UUID, Double> progress(List<UUID> localeIds, long keysSize)
+	{
+		List<Stat> stats = log(
+			() -> Ebean
+				.find(Stat.class)
+				.setRawSql(
+					RawSqlBuilder
+						.parse("SELECT m.locale_id, count(m.id) FROM message m GROUP BY m.locale_id")
+						.columnMapping("m.locale_id", "id")
+						.columnMapping("count(m.id)", "count")
+						.create())
+				.where()
+				.in("m.locale_id", localeIds)
+				.findList(),
+			LOGGER,
+			"Retrieving locale progress");
+
+		return stats.stream().collect(
+			Collectors.groupingBy(k -> k.id, Collectors.averagingDouble(t -> (double)t.count / (double)keysSize)));
 	}
 
 	/**
@@ -74,6 +112,7 @@ public class LocaleServiceImpl implements LocaleService
 		logEntryService.save(LogEntry.from(ActionType.Delete, t.project, dto.Locale.class, dto.Locale.from(t), null));
 
 		messageService.delete(Message.byLocale(t.id));
+
 		Ebean.delete(t);
 	}
 
@@ -84,6 +123,16 @@ public class LocaleServiceImpl implements LocaleService
 	public void delete(Collection<Locale> t)
 	{
 		messageService.delete(Message.byLocales(t.stream().map(m -> m.id).collect(Collectors.toList())));
-		Ebean.delete(t);
+
+		try
+		{
+			TransactionUtils.batchExecute((tx) -> {
+				Ebean.delete(t);
+			});
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Error while batch deleting locales", e);
+		}
 	}
 }

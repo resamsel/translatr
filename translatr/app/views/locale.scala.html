@@ -1,4 +1,4 @@
-@(project: models.Project, locale: models.Locale, locales: List[models.Locale])
+@(project: models.Project, locale: models.Locale, keys: List[models.Key], locales: List[models.Locale], messages: Map[String, models.Message])
 
 @main(Messages("locale.title", project.name, tags.locale(locale.name))) {
 	@tags.search {
@@ -39,17 +39,17 @@
 		@tags.threeColumns {
 			<h3 class="section-heading">@Messages("keys")</h3>
 			<ul class="collection btn-hide keys">
-				@for(key <- project.keys) {
+				@for(key <- keys) {
 					<li class="collection-item avatar">
 						<a
 							id="@key.id"
 							href="#key=@key.name"
-							class="key @if(key.messageValue(locale) == null) { no-message }"
+							class="key if(!messages.containsKey(locale)) { no-message }"
 							name="@key.name.toLowerCase"
 							keyName="@key.name"
 							title="@key.name">
 							<span class="title name">@key.name</span>
-							<div class="value">@key.messageValue(locale)</div>
+							<div class="value">@if(messages.containsKey(key.name)) {@messages(key.name).value}</div>
 							<button
 								class="waves-effect waves-light btn-flat btn-remove secondary-content"
 								title="@Messages("key.remove")">
@@ -65,6 +65,9 @@
 					<div class="card-image red">
 						<span class="card-title">@Messages("locale.to.label") @tags.locale(locale.name)</span>
 					</div>
+					<div class="progress" style="margin: 0; visibility: hidden">
+						<div class="indeterminate"></div>
+					</div>
 					<div class="card-content">
 						<input id="field-id" type="hidden" />
 						<input id="field-keyId" type="hidden" />
@@ -77,9 +80,6 @@
 								id="field-value"
 								class="materialize-textarea"></textarea>
 							<label for="field-value">@Messages("locale.value.label")</label>
-						</div>
-						<div class="progress" style="margin: 0; visibility: hidden">
-							<div class="indeterminate"></div>
 						</div>
 					</div>
 					<div class="card-action">

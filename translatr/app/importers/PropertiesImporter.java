@@ -3,16 +3,20 @@ package importers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import criterias.KeyCriteria;
 import models.Key;
 import models.Locale;
 import models.Message;
 import services.KeyService;
 import services.MessageService;
+import utils.TransactionUtils;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -30,6 +34,16 @@ public abstract class PropertiesImporter implements Importer
 	private final MessageService messageService;
 
 	/**
+	 * Map of key.name -> key
+	 */
+	private Map<String, Key> keys;
+
+	/**
+	 * Map of key.name -> message
+	 */
+	private Map<String, Message> messages;
+
+	/**
 	 * 
 	 */
 	protected PropertiesImporter(KeyService keyService, MessageService messageService)
@@ -45,8 +59,17 @@ public abstract class PropertiesImporter implements Importer
 
 		Properties properties = new Properties();
 		properties.load(new InputStreamReader(new FileInputStream(file), "UTF-8"));
-		for(String property : properties.stringPropertyNames())
-			saveMessage(locale, property, (String)properties.get(property));
+		keys = Key
+			.findBy(new KeyCriteria().withProjectId(locale.project.id).withNames(properties.stringPropertyNames()))
+			.stream()
+			.collect(Collectors.groupingBy(k -> k.name, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
+		messages = Message.byLocale(locale.id).stream().collect(
+			Collectors.groupingBy(m -> m.key.name, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
+
+		TransactionUtils.batchExecute((tx) -> {
+			for(String property : properties.stringPropertyNames())
+				saveMessage(locale, property, (String)properties.get(property));
+		});
 
 		LOGGER.debug("Imported from file {}", file.getName());
 	}
@@ -58,16 +81,21 @@ public abstract class PropertiesImporter implements Importer
 		if(keyName == null || value == null || "".equals(value))
 			return null;
 
-		Key key = Key.byProjectAndName(locale.project, keyName);
-		if(key == null)
-			key = keyService.save(new Key(locale.project, keyName));
+		if(!keys.containsKey(keyName))
+			keys.put(keyName, keyService.save(new Key(locale.project, keyName)));
+		Key key = keys.get(keyName);
 
-		Message message = Message.byKeyAndLocale(key, locale);
-		if(message == null)
-			message = new Message(locale, key, value);
-		else
+		if(!messages.containsKey(keyName))
+			messages.put(keyName, new Message(locale, key, null));
+		Message message = messages.get(keyName);
+
+		if(!value.equals(message.value))
+		{
+			// Only update value when it has changed
 			message.value = value;
+			messageService.save(message);
+		}
 
-		return messageService.save(message);
+		return message;
 	}
 }
