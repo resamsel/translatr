@@ -14,9 +14,11 @@ POST	/project/:id/edit				controllers.Application.projectEdit(id: java.util.UUID
 GET		/project/:id/remove				controllers.Application.projectRemove(id: java.util.UUID)
 GET		/project/:id/locales			controllers.Application.projectLocales(id: java.util.UUID)
 GET		/project/:id/keys				controllers.Application.projectKeys(id: java.util.UUID)
+GET		/project/:id/keys/search		controllers.Application.projectKeysSearch(id: java.util.UUID)
 
 # Locales
 GET		/locale/:id						controllers.Application.locale(id: java.util.UUID)
+GET		/locale/:id/keys/search			controllers.Application.localeKeysSearch(id: java.util.UUID)
 GET		/locale/:id/edit				controllers.Application.localeEdit(id: java.util.UUID)
 POST	/locale/:id/edit				controllers.Application.localeEdit(id: java.util.UUID)
 GET		/locale/:id/remove				controllers.Application.localeRemove(id: java.util.UUID)

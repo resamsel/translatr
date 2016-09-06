@@ -110,6 +110,9 @@ public class Locale
 		if(criteria.getLocaleName() != null)
 			query.eq("name", criteria.getLocaleName());
 
+		if(criteria.getSearch() != null)
+			query.ilike("name", "%" + criteria.getSearch() + "%");
+
 		if(criteria.getLimit() != null)
 			query.setMaxRows(criteria.getLimit());
 

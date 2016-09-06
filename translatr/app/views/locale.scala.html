@@ -38,26 +38,8 @@
 	@tags.content {
 		@tags.threeColumns {
 			<h3 class="section-heading">@Messages("keys")</h3>
-			<ul class="collection btn-hide keys">
-				@for(key <- keys) {
-					<li class="collection-item avatar">
-						<a
-							id="@key.id"
-							href="#key=@key.name"
-							class="key if(!messages.containsKey(locale)) { no-message }"
-							name="@key.name.toLowerCase"
-							keyName="@key.name"
-							title="@key.name">
-							<span class="title name">@key.name</span>
-							<div class="value">@if(messages.containsKey(key.name)) {@messages(key.name).value}</div>
-							<button
-								class="waves-effect waves-light btn-flat btn-remove secondary-content"
-								title="@Messages("key.remove")">
-								<i class="material-icons">delete_forever</i>
-							</button>
-						</a>
-					</li>
-				}
+			<ul class="collection keys">
+				@tags.keyItems(keys, messages, false)
 			</ul>
 		} {
 			<form id="form-message">
@@ -70,6 +52,7 @@
 					</div>
 					<div class="card-content">
 						<input id="field-id" type="hidden" />
+						<input id="field-key" type="hidden" />
 						<input id="field-keyId" type="hidden" />
 						<div class="input-field">
 							<textarea
@@ -106,9 +89,9 @@
 		} {
 			<h3 class="section-heading">@Messages("messages")</h3>
 			<ul id="panel-messages" class="collection">
-				<li class="collection-item message template">
+				<li class="collection-item waves-effect waves-red message template">
 					<a title="@Messages("value.copy")">
-						<span class="title localeName">Name</span>
+						<span class="title localeName truncate">Name</span>
 						<div class="value">Value</div>
 					</a>
 				</li>

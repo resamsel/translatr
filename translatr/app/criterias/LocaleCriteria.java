@@ -11,6 +11,8 @@ public class LocaleCriteria extends AbstractSearchCriteria<LocaleCriteria>
 {
 	private String localeName;
 
+	private String search;
+
 	public String getLocaleName()
 	{
 		return localeName;
@@ -28,6 +30,32 @@ public class LocaleCriteria extends AbstractSearchCriteria<LocaleCriteria>
 	public LocaleCriteria withLocaleName(String localeName)
 	{
 		setLocaleName(localeName);
+		return this;
+	}
+
+	/**
+	 * @return the search
+	 */
+	public String getSearch()
+	{
+		return search;
+	}
+
+	/**
+	 * @param search the search to set
+	 */
+	public void setSearch(String search)
+	{
+		this.search = search;
+	}
+
+	/**
+	 * @param search
+	 * @return
+	 */
+	public LocaleCriteria withSearch(String search)
+	{
+		setSearch(search);
 		return this;
 	}
 }

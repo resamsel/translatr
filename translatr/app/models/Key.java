@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
@@ -83,13 +84,25 @@ public class Key
 	 */
 	public static List<Key> findBy(KeyCriteria criteria)
 	{
-		ExpressionList<Key> query = Key.find.fetch("project").where();
+		ExpressionList<Key> query = Key.find.fetch("project").alias("k").where();
 
 		if(criteria.getProjectId() != null)
 			query.eq("project.id", criteria.getProjectId());
 
+		if(criteria.getSearch() != null)
+			query.ilike("name", "%" + criteria.getSearch() + "%");
+
+		if(criteria.getUntranslated() != null)
+			query.notExists(
+				Ebean.createQuery(Message.class).where("locale.id = :localeId and key.id = k.id").setParameter(
+					"localeId",
+					criteria.getUntranslated()));
+
+		if(criteria.getOffset() != null)
+			query.setFirstRow(criteria.getOffset());
+
 		if(criteria.getLimit() != null)
-			query.setMaxRows(criteria.getLimit());
+			query.setMaxRows(criteria.getLimit() + 1);
 
 		if(criteria.getOrder() != null)
 			query.setOrderBy(criteria.getOrder());

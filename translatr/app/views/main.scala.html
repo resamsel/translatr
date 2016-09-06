@@ -32,13 +32,14 @@
 	</div>
 
 	<script src="@routes.Assets.versioned("javascripts/jquery.min.js")"></script>
+	<script src="@routes.Assets.versioned("javascripts/jquery.ba-bbq.min.js")"></script>
 	<script src="@routes.Assets.versioned("javascripts/materialize.min.js")"></script>
-
+	<script src="@routes.Assets.versioned("javascripts/app.js")"></script>
 	<script src="@routes.Application.javascriptRoutes"></script>
+	<script src="@routes.Assets.versioned("javascripts/main.js")"></script>
 
 	@content
 
-	<script src="@routes.Assets.versioned("javascripts/main.js")"></script>
 	@if(ctx().args.containsKey("undoCommand")) {
 		<div class="undo template">
 			@Html(ctx().args("undoMessage").toString)
@@ -79,5 +80,8 @@
 			})
 		</script>
 	}
+	<script type="text/javascript">
+		App.Core.startAll();
+	</script>
 </body>
 </html>

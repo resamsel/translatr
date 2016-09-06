@@ -1,4 +1,4 @@
-@(project: models.Project, keys: List[models.Key], progress: Map[java.util.UUID, Double])
+@(project: models.Project, keys: List[models.Key], progress: Map[java.util.UUID, Double], more: Boolean)
 
 @main(Messages("keys.title", project.name)) {
 	@tags.search()
@@ -18,7 +18,7 @@
 	@tags.content {
 		<div class="col m12">
 			@tags.projectTabs(project, "keys") {
-				<table class="table responsive-table card btn-hide">
+				<table id="keys" class="table responsive-table card">
 					<thead>
 						<tr>
 							<th class="name">@Messages("key.name")</th>
@@ -28,37 +28,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						@for(key <- keys) {
-							<tr id="@key.id" class="key" name="@key.name.toLowerCase">
-								<td class="name">
-									<a href="@routes.Application.key(key.id)">
-										@key.name
-									</a>
-								</td>
-								<td class="updated">
-									@utils.FormatUtils.pretty(ctx.lang().locale, key.whenUpdated)
-								</td>
-								<td class="locale-progress">
-									<div class="progress">
-										<div class="determinate" style="width: @{progress.getOrDefault(key.id, 0)*100}%;"></div>
-									</div>
-								</td>
-								<td class="actions right-align">
-									<a
-										href="@routes.Application.keyEdit(key.id)"
-										class="btn-flat waves-effect waves-light"
-										title="@Messages("button.edit")">
-										<i class="material-icons">mode_edit</i>
-									</a>
-									<a
-										href="@routes.Application.keyRemove(key.id, null)"
-										class="btn-flat waves-effect waves-light"
-										title="@Messages("button.remove")">
-										<i class="material-icons">delete_forever</i>
-									</a>
-								</td>
-							</tr>
-						}
+						@tags.keyRows(keys, progress, false) @*more*@
 					</tbody>
 				</table>
 			}
@@ -72,5 +42,8 @@
 		@forms.keyCreate(project)
 	}
 
+	<script type="text/javascript">
+		var projectId = '@project.id';
+	</script>
 	<script src="@routes.Assets.versioned("javascripts/projectKeys.js")"></script>
 }

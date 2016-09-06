@@ -1,5 +1,7 @@
 package controllers;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.reducing;
 import static utils.FormatUtils.formatLocale;
 import static utils.Stopwatch.log;
 
@@ -32,6 +34,7 @@ import forms.ImportLocaleForm;
 import forms.KeyForm;
 import forms.LocaleForm;
 import forms.ProjectForm;
+import forms.SearchForm;
 import importers.Importer;
 import importers.JavaPropertiesImporter;
 import importers.PlayMessagesImporter;
@@ -197,8 +200,15 @@ public class Application extends Controller
 
 		select(project);
 
+		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+
+		List<Locale> locales = Locale.findBy(
+			new LocaleCriteria()
+				.withProjectId(project.id)
+				.withSearch(form.search)
+				.withOffset(form.offset)
+				.withLimit(form.limit));
 		java.util.Locale locale = ctx().lang().locale();
-		List<Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(project.id));
 		Collections.sort(locales, (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
 
 		return ok(
@@ -221,12 +231,52 @@ public class Application extends Controller
 
 		select(project);
 
-		List<Key> keys = Key.findBy(new KeyCriteria().withProjectId(project.id).withLimit(100).withOrder("name"));
+		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+
+		List<Key> keys = Key.findBy(
+			new KeyCriteria()
+				.withProjectId(project.id)
+				.withSearch(form.search)
+				.withOffset(form.offset)
+				.withLimit(form.limit)
+				.withOrder("name"));
 
 		Map<UUID, Double> progress =
 					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
 
-		return ok(views.html.projectKeys.render(project, keys, progress));
+		return ok(
+			views.html.projectKeys.render(
+				project,
+				keys.size() > form.limit ? keys.subList(0, form.limit) : keys,
+				progress,
+				keys.size() > form.limit));
+	}
+
+	public Result projectKeysSearch(UUID id)
+	{
+		Project project = Project.byId(id);
+
+		if(project == null)
+			return redirect(routes.Application.index());
+
+		select(project);
+
+		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+
+		List<Key> keys = Key.findBy(
+			new KeyCriteria()
+				.withProjectId(project.id)
+				.withSearch(form.search)
+				.withOffset(form.offset)
+				.withLimit(form.limit)
+				.withOrder("name"));
+
+		Map<UUID, Double> progress =
+					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
+
+		return ok(
+			views.html.tags.keyRows
+				.render(keys.size() > form.limit ? keys.subList(0, form.limit) : keys, progress, keys.size() > form.limit));
 	}
 
 	public Result locale(UUID id)
@@ -240,12 +290,60 @@ public class Application extends Controller
 
 		select(locale.project);
 
+		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+
+		List<Key> keys = Key.findBy(
+			new KeyCriteria()
+				.withProjectId(locale.project.id)
+				.withSearch(form.search)
+				.withUntranslated(form.untranslated)
+				.withOffset(form.offset)
+				.withLimit(form.limit)
+				.withOrder("name"));
 		List<Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(locale.project.id).withLimit(100));
-		List<Key> keys = Key.findBy(new KeyCriteria().withProjectId(locale.project.id).withLimit(100));
 		Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(
 			Collectors.groupingBy((m) -> m.key.name, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
 
-		return ok(views.html.locale.render(locale.project, locale, keys, locales, messages));
+		return ok(
+			views.html.locale.render(
+				locale.project,
+				locale,
+				keys.size() > form.limit ? keys.subList(0, form.limit) : keys,
+				locales,
+				messages));
+	}
+
+	public Result localeKeysSearch(UUID localeId)
+	{
+		Locale locale = Locale.byId(localeId);
+
+		if(locale == null)
+			return redirect(routes.Application.index());
+
+		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+
+		List<Key> keys = Key.findBy(
+			new KeyCriteria()
+				.withProjectId(locale.project.id)
+				.withSearch(form.search)
+				.withUntranslated(form.untranslated)
+				.withOffset(form.offset)
+				.withLimit(form.limit)
+				.withOrder("name"));
+
+		Map<String, Message> messages = Message
+			.findBy(
+				new MessageCriteria()
+					.withLocaleId(locale.id)
+					.withKeyIds(keys.stream().map(k -> k.id).collect(Collectors.toList())))
+			.stream()
+			.collect(groupingBy(m -> m.key.name, reducing(null, (a) -> a, (a, b) -> b)));
+
+		LOGGER.debug("Keys found {} for {}", keys.size(), form);
+
+		return ok(
+			views.html.tags.keyItems
+				.render(keys.size() > form.limit ? keys.subList(0, form.limit) : keys, messages, keys.size() > form.limit));
 	}
 
 	public Result localeImport(UUID id)
@@ -315,7 +413,14 @@ public class Application extends Controller
 
 		localeService.save(locale);
 
-		importLocale(locale, request());
+		try
+		{
+			importLocale(locale, request());
+		}
+		catch(IllegalStateException e)
+		{
+			// This is OK, the fileType doesn't need to be filled
+		}
 
 		return redirect(routes.Application.locale(locale.id));
 	}
@@ -402,7 +507,7 @@ public class Application extends Controller
 
 		List<Locale> locales = Locale.byProject(key.project);
 		Map<UUID, Message> messages = Message.findBy(new MessageCriteria().withKeyName(key.name)).stream().collect(
-			Collectors.groupingBy((m) -> m.locale.id, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
+			Collectors.groupingBy(m -> m.locale.id, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
 
 		return ok(views.html.key.render(key, locales, messages));
 	}
@@ -574,6 +679,8 @@ public class Application extends Controller
 		return ok(
 			JavaScriptReverseRouter.create(
 				"jsRoutes",
+				routes.javascript.Application.projectKeysSearch(),
+				routes.javascript.Application.localeKeysSearch(),
 				routes.javascript.Application.locale(),
 				routes.javascript.Application.keyCreateImmediately(),
 				routes.javascript.Application.keyRemove(),

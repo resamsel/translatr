@@ -140,6 +140,12 @@ public class Message
 		if(criteria.getKeyName() != null)
 			query.eq("key.name", criteria.getKeyName());
 
+		if(criteria.getKeyIds() != null)
+			query.in("key.id", criteria.getKeyIds());
+
+		if(criteria.getOrder() != null)
+			query.setOrderBy(criteria.getOrder());
+
 		if(criteria.getLimit() != null)
 			query.setMaxRows(criteria.getLimit());
 

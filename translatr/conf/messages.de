@@ -6,6 +6,7 @@ button.edit = Bearbeiten
 button.export = Exportieren
 button.goto = {0} öffnen
 button.import = Importieren
+button.more = Mehr anzeigen
 button.open = Öffnen
 button.remove = Entfernen
 button.save = Speichern

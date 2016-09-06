@@ -13,6 +13,8 @@ public abstract class AbstractSearchCriteria<T extends SearchCriteria> implement
 {
 	private T self;
 
+	private Integer offset;
+
 	private Integer limit;
 
 	private String order;
@@ -103,6 +105,32 @@ public abstract class AbstractSearchCriteria<T extends SearchCriteria> implement
 	public T withOrder(String order)
 	{
 		setOrder(order);
+		return self;
+	}
+
+	/**
+	 * @return the offset
+	 */
+	public Integer getOffset()
+	{
+		return offset;
+	}
+
+	/**
+	 * @param offset the offset to set
+	 */
+	public void setOffset(Integer offset)
+	{
+		this.offset = offset;
+	}
+
+	/**
+	 * @param offset
+	 * @return
+	 */
+	public T withOffset(Integer offset)
+	{
+		setOffset(offset);
 		return self;
 	}
 }

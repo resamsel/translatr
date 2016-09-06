@@ -176,12 +176,12 @@ nav .nav-wrapper {
 .table .name {
     width: 33%;
 }
-.btn-hide .btn-flat {
+.btn-hover {
 	padding: 0 1rem;
 	visibility: hidden;
 }
-.btn-hide .collection-item:hover .btn-flat,
-.btn-hide tr:hover .btn-flat {
+.collection-item:hover .btn-hover,
+tr:hover .btn-hover {
 	visibility: visible;
 }
 
@@ -224,6 +224,9 @@ nav .nav-wrapper {
 .collection .collection-item.avatar {
     min-height: auto;
     padding-left: 0.6rem;
+}
+.collection .collection-item.waves-effect {
+	display: block;
 }
 .collection-item a {
 	display: block;
@@ -276,7 +279,7 @@ nav .nav-wrapper {
 
 /* Templates */
 .template {
-	display: none;
+	display: none !important;
 }
 
 /* Vertical Alignment */

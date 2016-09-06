@@ -18,7 +18,7 @@
 	@tags.content {
 		<div class="col m12">
 			@tags.projectTabs(project, "locales") {
-				<table class="table responsive-table card btn-hide">
+				<table class="table responsive-table card">
 					<thead>
 						<tr>
 							<th class="name">@Messages("locale.name")</th>
@@ -52,19 +52,19 @@
 								<td class="actions right-align">
 									<a
 										href="@routes.Application.localeEdit(locale.id)"
-										class="btn-flat waves-effect waves-light"
+										class="btn-flat btn-hover waves-effect waves-light"
 										title="@Messages("button.edit")">
 										<i class="material-icons">mode_edit</i>
 									</a>
 									<a
 										href="@routes.Application.localeImport(locale.id)"
-										class="btn-flat waves-effect waves-light"
+										class="btn-flat btn-hover waves-effect waves-light"
 										title="@Messages("button.import")">
 										<i class="material-icons">file_upload</i>
 									</a>
 									<a
 										href="#"
-										class="dropdown-button btn-flat waves-effect waves-light"
+										class="dropdown-button btn-flat btn-hover waves-effect waves-light"
 										title="@Messages("button.export")"
 										data-activates="dropdown-@locale.id"
 										data-constrainwidth="false"
@@ -83,7 +83,7 @@
 									</ul>
 									<a
 										href="@routes.Application.localeRemove(locale.id)"
-										class="btn-flat waves-effect waves-light"
+										class="btn-flat btn-hover waves-effect waves-light"
 										title="@Messages("button.remove")">
 										<i class="material-icons">delete_forever</i>
 									</a>
