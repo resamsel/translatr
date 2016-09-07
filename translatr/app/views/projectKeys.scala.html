@@ -1,9 +1,8 @@
 @(project: models.Project, keys: List[models.Key], progress: Map[java.util.UUID, Double], more: Boolean)
 
-@main(Messages("keys.title", project.name)) {
+@main(utils.TemplateInfo.from(Messages("keys.title", project.name))) {
 	@tags.search()
 } {
-	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
@@ -13,8 +12,7 @@
 		<a class="breadcrumb active" href="@routes.Application.projectKeys(project.id)">
 			@Messages("keys")
 		</a>
-	}
-
+} {
 	@tags.content {
 		<div class="col m12">
 			@tags.projectTabs(project, "keys") {

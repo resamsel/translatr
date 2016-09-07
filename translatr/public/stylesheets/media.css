@@ -31,6 +31,9 @@
 
 /* Medium+ */
 @media only screen and (min-width: 601px) {
+	.navbar-fixed {
+		height: 96px;
+	}
 	#toast-container {
 		top: auto !important;
 		right: auto !important;

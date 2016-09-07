@@ -1,8 +1,7 @@
 @(project: models.Project, locale: models.Locale)
 
-@main(Messages("locale.import.title", locale.project.name, tags.locale(locale.name))) {
+@main(utils.TemplateInfo.from(Messages("locale.import.title", locale.project.name, tags.locale(locale.name)))) {
 } {
-	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
@@ -15,8 +14,7 @@
 		<a class="breadcrumb" href="@routes.Application.locale(locale.id)">
 			@tags.locale(locale.name)
 		</a>
-	}
-
+} {
 	@tags.content {
 		<div class="col m6 offset-m3">
 			<form action="@routes.Application.localeImport(locale.id)" method="post" enctype="multipart/form-data">

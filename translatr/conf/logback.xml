@@ -34,6 +34,7 @@
   <logger name="models" level="DEBUG" />
   <logger name="dto" level="DEBUG" />
   <logger name="commands" level="DEBUG" />
+  <logger name="i18n" level="DEBUG" />
   <logger name="org.jdbcdslog.StatementLogger"  level="INFO" /> <!-- Will log all statements -->
   
   <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->

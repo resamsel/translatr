@@ -1,14 +1,12 @@
 @*
  * See: https://blackrockdigital.github.io/startbootstrap-sb-admin-2/pages/index.html
  *@
-@(title: String)(nav: Html)(content: Html)
-
-@import play.cache.CacheApi
+@(info: utils.TemplateInfo)(nav: Html)(breadcrumbs: Html)(content: Html)
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>@title</title>
+<title>@info.title</title>
 
 <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/materialize.min.css")">
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
@@ -17,71 +15,67 @@
 <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
 
 </head>
-<body>
-	<!-- Navigation -->
-	<div class="navbar-fixed">
-		<nav role="navigation" class="green white-text">
-			<div class="nav-wrapper">
-				<a class="brand-logo left hide-on-small-only" href="@routes.Application.index()">
-					@Messages("brand")
-				</a>
+<body class="template-@info.template">
+	<header>
+		<!-- Navigation -->
+		<div class="navbar-fixed">
+			<nav role="navigation" class="green">
+				<div class="nav-wrapper">
+					<a class="brand-logo left hide-on-small-only" href="@routes.Application.index()">
+						@Messages("brand")
+					</a>
+	
+					@nav
+				</div>
+			</nav>
+			@tags.breadcrumbs {
+				@breadcrumbs
+			}
+		</div>
+	</header>
 
-				@nav
+	<main>
+		<script src="@routes.Assets.versioned("javascripts/jquery.min.js")"></script>
+		<script src="@routes.Assets.versioned("javascripts/jquery.ba-bbq.min.js")"></script>
+		<script src="@routes.Assets.versioned("javascripts/materialize.min.js")"></script>
+		<script src="@routes.Assets.versioned("javascripts/app.js")"></script>
+		<script src="@routes.Application.javascriptRoutes"></script>
+		<script src="@routes.Assets.versioned("javascripts/main.js")"></script>
+
+		@content
+
+		<script type="text/javascript">
+			App.Core.startAll();
+		</script>
+	</main>
+
+	<footer class="page-footer grey lighten-2 grey-text">
+		<div class="container">
+			<div class="row">
+				<div class="col l6 s12">
+					<h5>@Messages("footer.header")</h5>
+					<p>
+						@Html(Messages("footer.about"))
+					</p>
+				</div>
+				<div class="col l4 offset-l2 s12">
+					<h5>@Messages("footer.links")</h5>
+					<ul>
+						<li><a href="https://twitter.com/resamsel" target="_blank">Twitter</a></li>
+						<li><a href="https://github.com/resamsel/play-translatr" target="_blank">GitHub</a></li>
+						<li><a href="https://github.com/resamsel/play-translatr/issues" target="_blank">Feedback</a></li>
+					</ul>
+				</div>
 			</div>
-		</nav>
-	</div>
-
-	<script src="@routes.Assets.versioned("javascripts/jquery.min.js")"></script>
-	<script src="@routes.Assets.versioned("javascripts/jquery.ba-bbq.min.js")"></script>
-	<script src="@routes.Assets.versioned("javascripts/materialize.min.js")"></script>
-	<script src="@routes.Assets.versioned("javascripts/app.js")"></script>
-	<script src="@routes.Application.javascriptRoutes"></script>
-	<script src="@routes.Assets.versioned("javascripts/main.js")"></script>
-
-	@content
-
-	@if(ctx().args.containsKey("undoCommand")) {
-		<div class="undo template">
-			@Html(ctx().args("undoMessage").toString)
-			<a
-				href="@routes.Application.commandExecute(ctx().args("undoCommand").toString)"
-				class="btn-flat amber-text">
-				@Messages("button.undo")
-			</a>
 		</div>
-		<script>
-			$(document).ready(function() {
-				var $toastContent = $('.undo.template').clone().removeClass('template');
-				Materialize.toast($toastContent, 10000);
-			})
-		</script>
-	}
-	@if(ctx().args.containsKey("brandProjectId") && ctx().args.containsKey("undefined")) {
-		<div class="undefined template">
-			@Html(Messages("key.undefined"))
-			<strong class="keyName"></strong>
-			<a
-				href="#"
-				class="btn-flat amber-text">
-				@Messages("button.create")
-			</a>
+		<div class="footer-copyright grey-text text-darken-1">
+			<div class="container">
+				© 2016 René Samselnig
+			</div>
 		</div>
-		<script>
-			$(document).ready(function() {
-				var $toastContent, $a;
+	</footer>
 
-				@for(k <- ctx().args("undefined").asInstanceOf[List[String]]) {
-					$toastContent = $('.undefined.template').clone().removeClass('template');
-					$toastContent.find('.keyName').text('@k');
-					$a = $toastContent.find('a');
-					$a.attr('href', jsRoutes.controllers.Application.keyCreateImmediately('@ctx().args("brandProjectId")', '@k').url);
-					Materialize.toast($toastContent, 10000);
-				}
-			})
-		</script>
-	}
-	<script type="text/javascript">
-		App.Core.startAll();
-	</script>
+	@tags.undo()
+	@tags.undefined()
 </body>
 </html>

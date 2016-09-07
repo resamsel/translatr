@@ -1,8 +1,7 @@
 @(key: models.Key)
 
-@main(Messages("key.edit.title", key.project.name, key.name)) {
+@main(utils.TemplateInfo.from(Messages("key.edit.title", key.project.name, key.name))) {
 } {
-	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
@@ -15,8 +14,7 @@
 		<a class="breadcrumb" href="@routes.Application.key(key.id)">
 			@key.name
 		</a>
-	}
-
+} {
 	@tags.content {
 		<div class="col m6 offset-m3">
 			<form action="@routes.Application.keyEdit(key.id)" method="post">

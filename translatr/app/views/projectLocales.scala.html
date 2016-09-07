@@ -1,9 +1,8 @@
 @(project: models.Project, locales: List[models.Locale], progress: Map[java.util.UUID, Double])
 
-@main(Messages("locales.title", project.name)) {
+@main(utils.TemplateInfo.from(Messages("locales.title", project.name))) {
 	@tags.search()
 } {
-	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
@@ -13,8 +12,7 @@
 		<a class="breadcrumb active" href="@routes.Application.projectLocales(project.id)">
 			@Messages("locales")
 		</a>
-	}
-
+} {
 	@tags.content {
 		<div class="col m12">
 			@tags.projectTabs(project, "locales") {

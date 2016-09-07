@@ -1,14 +1,12 @@
 @(projects: List[models.Project])
 
-@main(Messages("dashboard.title")) {
+@main(utils.TemplateInfo.from(Messages("dashboard.title"))) {
 	@tags.search()
 } {
-	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
-	}
-
+} {
 	@tags.content {
 		<div class="col m12 dashboard">
 			<div class="container">

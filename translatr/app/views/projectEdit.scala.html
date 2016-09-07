@@ -1,16 +1,14 @@
 @(project: models.Project)
 
-@main(Messages("project.edit.title", project.name)) {
+@main(utils.TemplateInfo.from(Messages("project.edit.title", project.name))) {
 } {
-	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
 		<a class="breadcrumb active" href="@routes.Application.project(project.id)">
 			@project.name
 		</a>
-	}
-
+} {
 	@tags.content {
 		<div class="col m6 offset-m3 project">
 			<form action="@routes.Application.projectEdit(project.id)" method="post">

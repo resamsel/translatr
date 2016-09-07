@@ -1,6 +1,8 @@
 @(key: models.Key, locales: List[models.Locale], messages: Map[java.util.UUID, models.Message])
 
-@main(Messages("key.title", key.project.name, key.name)) {
+@import utils.TemplateInfo.from
+
+@main(from(Messages("key.title", key.project.name, key.name), "key")) {
 	@tags.search {
 		<div class="input-group-btn search-panel hide">
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -20,7 +22,6 @@
 		</div>
 	}
 } {
-	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
@@ -33,72 +34,69 @@
 		<a class="breadcrumb active" href="@routes.Application.key(key.id)">
 			@key.name
 		</a>
-	}
-
-	@tags.content {
-		@tags.threeColumns {
-			<h3 class="section-heading">@Messages("locales")</h3>
-			<ul class="collection locales">
-				@for(locale <- locales) {
-					<li class="collection-item">
-						<a
-							id="@locale.id"
-							href="#locale=@locale.name"
-							class="locale @if(!messages.containsKey(locale.id)) { no-message }"
-							name="@locale.name.toLowerCase"
-							localeName="@locale.name"
-							title="@tags.locale(locale.name)">
-							<span class="title name">@tags.locale(locale.name)</span>
-							<div class="value">@if(messages.containsKey(locale.id)) {@messages(locale.id).value}</div>
-						</a>
-					</li>
-				}
-			</ul>
-		} {
-			<div id="no-selection" class="valign-wrapper">
-				<span class="valign">@Messages("locale.selection.none")</span>
-			</div>
-			<form id="form-message">
-				<div id="panel-message" class="card">
-					<div class="card-image red">
-						<span class="card-title">@Messages("locale.to.label") <span id="locale-name">...</span></span>
-					</div>
-					<div class="progress" style="margin: 0; visibility: hidden">
-						<div class="indeterminate"></div>
-					</div>
-					<div class="card-content">
-						<input id="field-id" type="hidden" />
-						<input id="field-locale" type="hidden" />
-						<div class="input-field">
-							<textarea
-								id="field-value"
-								class="materialize-textarea"></textarea>
-							<label for="field-value">@Messages("locale.value.label")</label>
-						</div>
-					</div>
-					<div class="card-action">
-						<button
-							type="submit"
-							class="btn waves-effect waves-light btn-save">
-							@Messages("button.save")
-							<i class="material-icons right">send</i>
-						</button>
-						<button
-							type="button"
-							class="btn-flat waves-effect waves-light btn-cancel">
-							@Messages("button.cancel")
-						</button>
+} {
+	@tags.editor {
+		<h3 class="section-heading">@Messages("locales")</h3>
+		<ul class="collection locales">
+			@for(locale <- locales) {
+				<li class="collection-item">
+					<a
+						id="@locale.id"
+						href="#locale=@locale.name"
+						class="locale @if(!messages.containsKey(locale.id)) { no-message }"
+						name="@locale.name.toLowerCase"
+						localeName="@locale.name"
+						title="@tags.locale(locale.name)">
+						<span class="title name">@tags.locale(locale.name)</span>
+						<div class="value">@if(messages.containsKey(locale.id)) {@messages(locale.id).value}</div>
+					</a>
+				</li>
+			}
+		</ul>
+	} {
+		<form id="form-message">
+			<div id="panel-message" class="card">
+				<div class="card-image red">
+					<span class="card-title">@Messages("locale.to.label") <span id="locale-name">...</span></span>
+				</div>
+				<div class="progress" style="margin: 0; visibility: hidden">
+					<div class="indeterminate"></div>
+				</div>
+				<div class="card-content">
+					<input id="field-id" type="hidden" />
+					<input id="field-locale" type="hidden" />
+					<div class="input-field">
+						<textarea
+							id="field-value"
+							class="materialize-textarea"></textarea>
+						<label for="field-value">@Messages("locale.value.label")</label>
 					</div>
 				</div>
-			</form>
-	
-			<!-- Preview -->
-			<div id="panel-preview">
-				<h3 class="section-heading">@Messages("locale.preview")</h3>
-				<div id="preview"></div>
+				<div class="card-action">
+					<button
+						type="submit"
+						class="btn waves-effect waves-light btn-save">
+						@Messages("button.save")
+						<i class="material-icons right">send</i>
+					</button>
+					<button
+						type="button"
+						class="btn-flat waves-effect waves-light btn-cancel">
+						@Messages("button.cancel")
+					</button>
+				</div>
 			</div>
-		} {
-		}
+		</form>
+		<div id="no-selection" class="valign-wrapper">
+			<span class="valign">@Messages("locale.selection.none")</span>
+		</div>
+
+		<!-- Preview -->
+		<div id="panel-preview">
+			<h3 class="section-heading">@Messages("locale.preview")</h3>
+			<div id="preview"></div>
+		</div>
+	} {
 	}
 
 	@tags.modalTrigger("create", "create", Messages("key.create.tooltip"), "light-green")

@@ -21,6 +21,12 @@ html, body {
 .btn-save:focus {
 	background-color: #1e88e5;
 }
+.fixed-action-btn {
+	top: 68px;
+}
+.fixed-action-btn.horizontal ul li {
+    margin: 7.5px;
+}
 
 /* Modal */
 .modal form {
@@ -36,6 +42,10 @@ html, body {
 }
 
 /* Navbar */
+nav {
+	box-shadow: none;
+	background-color: transparent;
+}
 nav .nav-wrapper {
     padding: 0 1rem;
 }
@@ -85,7 +95,7 @@ nav .nav-wrapper {
     margin-left: 15px;
     margin-right: 15px;
     float: left;
-    width: 30%;
+    width: 28%;
 }
 .card .card-content {
 	flex-grow: 1;
@@ -126,8 +136,13 @@ nav .nav-wrapper {
 
 /* Breadcrumb */
 .breadcrumbs {
+	position: fixed;
+    top: 64px; /* TODO: adapt to media queries of nav element */
+    left: 0;
+    right: 0;
 	margin-bottom: 8px;
 	padding: 0 1rem;
+    z-index: -1;
 }
 .breadcrumb {
     line-height: 32px;
@@ -185,25 +200,29 @@ tr:hover .btn-hover {
 	visibility: visible;
 }
 
-/* Three Columns */
-.mainview,
+/* Editor */
 .navview {
-	height: 100%; /* subtracts the height of the breadcrumb bar */
-	overflow: auto;
-}
-.row .col.navview {
+	height: calc(100% - 96px); /* subtracts the height of the breadcrumb bar */
+    width: 25%;
+    position: fixed;
 	padding: 0.5rem 0.75rem;
+	background-color: #fff;
+	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
 }
-.navview h3,
-.mainview h3,
-.subview h3 {
-	font-size: 14px;
-	color: #616161;
-    line-height: 24px;
-    margin: 0;
+.mainview {
+	margin-left: 25%;
+	padding: 0.5rem 0;
 }
-.mainview h3 {
-	margin-top: 23px;
+.section-heading {
+	font-size: 1.1rem;
+    margin: 0.56rem 0 0.45rem 0;
+}
+.mainview .main .section-heading {
+	margin-top: 1.6rem;
+}
+.navview .collection {
+    height: calc(100% - 24px);
+    overflow: auto;
 }
 
 /* Collections */
@@ -280,6 +299,10 @@ tr:hover .btn-hover {
 /* Templates */
 .template {
 	display: none !important;
+}
+.template-locale footer,
+.template-key footer {
+	margin-left: 25%;
 }
 
 /* Vertical Alignment */

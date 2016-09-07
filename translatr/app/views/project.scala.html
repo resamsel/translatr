@@ -2,17 +2,15 @@
 
 @import utils.FormatUtils._
 
-@main(Messages("project.title", project.name)) {
+@main(utils.TemplateInfo.from(Messages("project.title", project.name))) {
 } {
-	@tags.breadcrumbs {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
 		<a class="breadcrumb active" href="@routes.Application.project(project.id)">
 			@project.name
 		</a>
-	}
-
+} {
 	@tags.content {
 		<div class="project col m12">
 			@tags.projectTabs(project, "info") {
