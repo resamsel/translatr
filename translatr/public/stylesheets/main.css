@@ -1,8 +1,13 @@
 @import url("media.css");
 
 html, body {
-	height: 100%;
 	background-color: #f2f2f2;
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+}
+main {
+	flex: 1 0 auto;
 }
 .container-fluid.content {
 	height: calc(100% - 104px);
@@ -23,6 +28,7 @@ html, body {
 }
 .fixed-action-btn {
 	top: 68px;
+	bottom: auto;
 }
 .fixed-action-btn.horizontal ul li {
     margin: 7.5px;
@@ -201,16 +207,18 @@ tr:hover .btn-hover {
 }
 
 /* Editor */
+.editor,
+.editor>.row,
 .navview {
-	height: calc(100% - 96px); /* subtracts the height of the breadcrumb bar */
-    width: 25%;
-    position: fixed;
-	padding: 0.5rem 0.75rem;
-	background-color: #fff;
-	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+	height: 100%;
 }
-.mainview {
-	margin-left: 25%;
+.editor>.row {
+    margin-bottom: 0;
+}
+.row .col.navview {
+	padding-left: 0.75rem;
+}
+.row .col.mainview {
 	padding: 0.5rem 0;
 }
 .section-heading {
@@ -223,6 +231,8 @@ tr:hover .btn-hover {
 .navview .collection {
     height: calc(100% - 24px);
     overflow: auto;
+    padding-right: 0.75rem;
+    position: relative;
 }
 
 /* Collections */
@@ -300,9 +310,17 @@ tr:hover .btn-hover {
 .template {
 	display: none !important;
 }
-.template-locale footer,
-.template-key footer {
-	margin-left: 25%;
+html.template-locale,
+html.template-key,
+.template-locale body,
+.template-key body {
+		height: 100%;
+	    display: block;
+	    min-height: 1px;
+}
+.template-locale main,
+.template-key main {
+    height: calc(100% - 96px);
 }
 
 /* Vertical Alignment */

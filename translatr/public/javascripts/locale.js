@@ -49,7 +49,7 @@ App.Modules.KeysSearchModule = function(sb) {
 			}
 		}).done(function(data) {
 			keysContainer.html(data);
-			keysContainer.parent()[0].scrollIntoView();
+//			keysContainer.parent()[0].scrollIntoView();
 			sb.publish('keysChanged');
 		});
 	}
@@ -235,7 +235,12 @@ $(document).ready(function() {
 	var params = $.deparam.fragment();
 	if('key' in params) {
 		var $a = $('a.key[keyName="'+params.key+'"]');
-		$a.parent()[0].scrollIntoView();
+		$('.collection.keys').animate(
+			{
+				scrollTop: -$('.collection.keys').position().top -$('.collection.keys').css('margin-top').replace('px', '') + $a.parent().offset().top
+			},
+			'500'
+		);
 		$a.click();
 	} else {
 		var $key = $('.keys .collection-item:first-child a.key');
