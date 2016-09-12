@@ -6,19 +6,19 @@ version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 libraryDependencies ++= Seq(
 	javaJdbc,
 	cache,
 
 	// Database
-	"postgresql" % "postgresql" % "9.1-901-1.jdbc4",
+	"org.postgresql" % "postgresql" % "9.4.1210",
 
 	// Apache Commons IO
-	"commons-io" % "commons-io" % "2.4",
+	"commons-io" % "commons-io" % "2.5",
 
-	"org.ocpsoft.prettytime" % "prettytime" % "3.2.7.Final"
+	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final"
 )
 
 // From: https://github.com/playframework/playframework/issues/3818
@@ -46,3 +46,9 @@ dockerBaseImage := "java:8-jre"
 dockerExposedPorts in Docker := Seq(9000)
 
 dockerExposedVolumes := Seq("/opt/docker/logs", "/opt/docker/data")
+
+// Conflict Classes
+conflictClassExcludes ++= Seq(
+  "LICENSE",
+  "reference.conf"
+)
