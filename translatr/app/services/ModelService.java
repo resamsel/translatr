@@ -13,6 +13,8 @@ public interface ModelService<T>
 {
 	T save(T t);
 
+	Collection<T> save(Collection<T> t);
+
 	void delete(T t);
 
 	void delete(Collection<T> t);

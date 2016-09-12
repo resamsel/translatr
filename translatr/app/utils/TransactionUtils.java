@@ -43,7 +43,7 @@ public class TransactionUtils
 		try
 		{
 			tx.setBatchMode(true);
-			tx.setBatchSize(200);
+			tx.setBatchSize(batchSize);
 			tx.setBatchGetGeneratedKeys(false);
 
 			consumer.accept(tx);

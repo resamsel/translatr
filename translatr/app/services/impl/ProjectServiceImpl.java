@@ -25,7 +25,7 @@ import services.ProjectService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class ProjectServiceImpl implements ProjectService
+public class ProjectServiceImpl extends AbstractModelService<Project> implements ProjectService
 {
 	private final LocaleService localeService;
 

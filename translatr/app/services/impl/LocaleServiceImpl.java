@@ -35,7 +35,7 @@ import utils.TransactionUtils;
  * @version 29 Aug 2016
  */
 @Singleton
-public class LocaleServiceImpl implements LocaleService
+public class LocaleServiceImpl extends AbstractModelService<Locale> implements LocaleService
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
 

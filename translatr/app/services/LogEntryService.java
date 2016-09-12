@@ -1,7 +1,5 @@
 package services;
 
-import java.util.Collection;
-
 import com.google.inject.ImplementedBy;
 
 import models.LogEntry;
@@ -17,5 +15,4 @@ import services.impl.LogEntryServiceImpl;
 @ImplementedBy(LogEntryServiceImpl.class)
 public interface LogEntryService extends ModelService<LogEntry>
 {
-	void save(Collection<LogEntry> t);
 }

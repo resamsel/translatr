@@ -24,7 +24,7 @@ import utils.TransactionUtils;
  * @version 29 Aug 2016
  */
 @Singleton
-public class LogEntryServiceImpl implements LogEntryService
+public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implements LogEntryService
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryServiceImpl.class);
 
@@ -50,24 +50,6 @@ public class LogEntryServiceImpl implements LogEntryService
 
 		Ebean.save(logEntry);
 		return logEntry;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void save(Collection<LogEntry> t)
-	{
-		try
-		{
-			TransactionUtils.batchExecute((tx) -> {
-				Ebean.save(t);
-			});
-		}
-		catch(Exception e)
-		{
-			LOGGER.error("Error while batch saving log entries", e);
-		}
 	}
 
 	/**

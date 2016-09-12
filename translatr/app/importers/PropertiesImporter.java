@@ -3,6 +3,8 @@ package importers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -16,7 +18,6 @@ import models.Locale;
 import models.Message;
 import services.KeyService;
 import services.MessageService;
-import utils.TransactionUtils;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -66,36 +67,62 @@ public abstract class PropertiesImporter implements Importer
 		messages = Message.byLocale(locale.id).stream().collect(
 			Collectors.groupingBy(m -> m.key.name, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
 
-		TransactionUtils.batchExecute((tx) -> {
-			for(String property : properties.stringPropertyNames())
-				saveMessage(locale, property, (String)properties.get(property));
-		});
+		saveKeys(locale, properties);
+		saveMessages(locale, properties);
 
 		LOGGER.debug("Imported from file {}", file.getName());
 	}
 
-	private Message saveMessage(Locale locale, String keyName, String value)
+	private void saveKeys(Locale locale, Properties properties)
 	{
-		LOGGER.debug("Key name: {}, value: {}", keyName, value);
-
-		if(keyName == null || value == null || "".equals(value))
-			return null;
-
-		if(!keys.containsKey(keyName))
-			keys.put(keyName, keyService.save(new Key(locale.project, keyName)));
-		Key key = keys.get(keyName);
-
-		if(!messages.containsKey(keyName))
-			messages.put(keyName, new Message(locale, key, null));
-		Message message = messages.get(keyName);
-
-		if(!value.equals(message.value))
+		List<Key> newKeys = new ArrayList<>();
+		for(String keyName : properties.stringPropertyNames())
 		{
-			// Only update value when it has changed
-			message.value = value;
-			messageService.save(message);
+			String value = (String)properties.get(keyName);
+
+			if(keyName == null || value == null || "".equals(value))
+				continue;
+
+			if(!keys.containsKey(keyName))
+				newKeys.add(new Key(locale.project, keyName));
 		}
 
-		return message;
+		// Update keys cache
+		for(Key key : keyService.save(newKeys))
+			keys.put(key.name, key);
+	}
+
+	private void saveMessages(Locale locale, Properties properties)
+	{
+		List<Message> newMessages = new ArrayList<>();
+		for(String keyName : properties.stringPropertyNames())
+		{
+			String value = (String)properties.get(keyName);
+
+			if(keyName == null || value == null || "".equals(value))
+				continue;
+
+			if(!keys.containsKey(keyName))
+				// Must not happen, keys have been created earlier
+				continue;
+
+			Key key = keys.get(keyName);
+
+			if(!messages.containsKey(keyName))
+			{
+				newMessages.add(new Message(locale, key, value));
+				continue;
+			}
+
+			Message message = messages.get(keyName);
+			if(!value.equals(message.value))
+			{
+				// Only update value when it has changed
+				message.value = value;
+				newMessages.add(message);
+			}
+		}
+
+		messageService.save(newMessages);
 	}
 }

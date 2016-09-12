@@ -33,7 +33,7 @@ import utils.TransactionUtils;
  * @author resamsel
  * @version 29 Aug 2016
  */
-public class KeyServiceImpl implements KeyService
+public class KeyServiceImpl extends AbstractModelService<Key> implements KeyService
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(KeyServiceImpl.class);
 

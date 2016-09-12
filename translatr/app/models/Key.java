@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.Query;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -84,13 +85,24 @@ public class Key
 	 */
 	public static List<Key> findBy(KeyCriteria criteria)
 	{
-		ExpressionList<Key> query = Key.find.fetch("project").alias("k").where();
+		Query<Key> q = Key.find.fetch("project").alias("k");
+		ExpressionList<Key> query = q.where();
 
 		if(criteria.getProjectId() != null)
 			query.eq("project.id", criteria.getProjectId());
 
 		if(criteria.getSearch() != null)
-			query.ilike("name", "%" + criteria.getSearch() + "%");
+			query
+				.disjunction()
+				.ilike("name", "%" + criteria.getSearch() + "%")
+				.exists(
+					Ebean
+						.createQuery(Message.class)
+						.where()
+						.raw("key.id = k.id")
+						.ilike("value", "%" + criteria.getSearch() + "%")
+						.query())
+				.endJunction();
 
 		if(criteria.getUntranslated() != null)
 			query.notExists(

@@ -26,7 +26,7 @@ import utils.TransactionUtils;
  * @version 29 Aug 2016
  */
 @Singleton
-public class MessageServiceImpl implements MessageService
+public class MessageServiceImpl extends AbstractModelService<Message> implements MessageService
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceImpl.class);
 
