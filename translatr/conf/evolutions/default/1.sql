@@ -1,6 +1,3 @@
-# --- Created by Ebean DDL
-# To stop Ebean DDL generation, remove this comment and start using Evolutions
-
 # --- !Ups
 
 create table key (
@@ -41,7 +38,7 @@ create table message (
   id                            uuid not null,
   locale_id                     uuid not null,
   key_id                        uuid not null,
-  value                         varchar(20480) not null,
+  value                         varchar(1048576) not null,
   version                       bigint not null,
   when_created                  timestamp not null,
   when_updated                  timestamp not null,
@@ -74,7 +71,6 @@ create index ix_message_locale_id on message (locale_id);
 
 alter table message add constraint fk_message_key_id foreign key (key_id) references key (id) on delete restrict on update restrict;
 create index ix_message_key_id on message (key_id);
-
 
 # --- !Downs
 

@@ -75,7 +75,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 		keyService.delete(t.keys);
 		localeService.delete(t.locales);
 
-		Ebean.save(t.withDeleted(true));
+		Ebean.save(t.withName(String.format("%s-%s", t.id, t.name)).withDeleted(true));
 	}
 
 	/**

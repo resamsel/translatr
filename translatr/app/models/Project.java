@@ -137,6 +137,12 @@ public class Project
 		return Message.countBy(this);
 	}
 
+	public Project withName(String name)
+	{
+		this.name = name;
+		return this;
+	}
+
 	public Project withDeleted(boolean deleted)
 	{
 		this.deleted = deleted;

@@ -49,7 +49,7 @@ public class Message
 	@ManyToOne(optional = false)
 	public Key key;
 
-	@Column(nullable = false, length = 20 * 1024)
+	@Column(nullable = false, length = 1024 * 1024)
 	public String value;
 
 	public Message()
