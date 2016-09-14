@@ -13,7 +13,7 @@ public class SearchForm
 {
 	public String search;
 
-	public UUID untranslated;
+	public UUID missingLocaleId;
 
 	public Integer limit = 100;
 
@@ -29,14 +29,14 @@ public class SearchForm
 		this.search = search;
 	}
 
-	public UUID getUntranslated()
+	public UUID getMissingLocaleId()
 	{
-		return untranslated;
+		return missingLocaleId;
 	}
 
-	public void setUntranslated(UUID untranslated)
+	public void setMissingLocaleId(UUID missingLocaleId)
 	{
-		this.untranslated = untranslated;
+		this.missingLocaleId = missingLocaleId;
 	}
 
 	public Integer getLimit()

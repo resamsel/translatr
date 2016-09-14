@@ -16,7 +16,7 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria>
 
 	private String search;
 
-	private UUID untranslated;
+	private UUID missingLocaleId;
 
 	/**
 	 * @return the names
@@ -73,26 +73,26 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria>
 	/**
 	 * @return the untranslated
 	 */
-	public UUID getUntranslated()
+	public UUID getMissingLocaleId()
 	{
-		return untranslated;
+		return missingLocaleId;
 	}
 
 	/**
-	 * @param untranslated the untranslated to set
+	 * @param missingLocaleId the untranslated to set
 	 */
-	public void setUntranslated(UUID untranslated)
+	public void setMissingLocaleId(UUID missingLocaleId)
 	{
-		this.untranslated = untranslated;
+		this.missingLocaleId = missingLocaleId;
 	}
 
 	/**
-	 * @param untranslated
+	 * @param missingLocaleId
 	 * @return
 	 */
-	public KeyCriteria withUntranslated(UUID untranslated)
+	public KeyCriteria withMissingLocaleId(UUID missingLocaleId)
 	{
-		setUntranslated(untranslated);
+		setMissingLocaleId(missingLocaleId);
 		return this;
 	}
 }

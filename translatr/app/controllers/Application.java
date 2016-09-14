@@ -296,7 +296,7 @@ public class Application extends Controller
 			new KeyCriteria()
 				.withProjectId(locale.project.id)
 				.withSearch(form.search)
-				.withUntranslated(form.untranslated)
+				.withMissingLocaleId(form.missingLocaleId)
 				.withOffset(form.offset)
 				.withLimit(form.limit)
 				.withOrder("name"));
@@ -326,7 +326,7 @@ public class Application extends Controller
 			new KeyCriteria()
 				.withProjectId(locale.project.id)
 				.withSearch(form.search)
-				.withUntranslated(form.untranslated)
+				.withMissingLocaleId(form.missingLocaleId)
 				.withOffset(form.offset)
 				.withLimit(form.limit)
 				.withOrder("name"));

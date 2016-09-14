@@ -104,11 +104,14 @@ public class Key
 						.query())
 				.endJunction();
 
-		if(criteria.getUntranslated() != null)
+		if(criteria.getMissingLocaleId() != null)
 			query.notExists(
-				Ebean.createQuery(Message.class).where("locale.id = :localeId and key.id = k.id").setParameter(
-					"localeId",
-					criteria.getUntranslated()));
+				Ebean
+					.createQuery(Message.class)
+					.where()
+					.raw("key.id = k.id")
+					.eq("locale.id", criteria.getMissingLocaleId())
+					.query());
 
 		if(criteria.getOffset() != null)
 			query.setFirstRow(criteria.getOffset());
