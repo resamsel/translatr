@@ -1,4 +1,4 @@
-@(filter: Html=Html(""))
+@(form: forms.SearchForm)(filter: Html=Html(""))
 
 <form
 	id="form-search"
@@ -11,9 +11,10 @@
 			name="search"
 			type="search"
 			class="form-control"
-			placeholder="@Messages("search")">
+			placeholder="@Messages("search")"
+			value="@form.search">
 	</div>
-	<!-- /input-group -->
+	<!-- /input-field -->
 	<input
 		type="submit"
 		class="hide" />

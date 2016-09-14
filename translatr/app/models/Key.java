@@ -104,13 +104,13 @@ public class Key
 						.query())
 				.endJunction();
 
-		if(criteria.getMissingLocaleId() != null)
+		if(criteria.getMissing() == Boolean.TRUE && criteria.getLocaleId() != null)
 			query.notExists(
 				Ebean
 					.createQuery(Message.class)
 					.where()
 					.raw("key.id = k.id")
-					.eq("locale.id", criteria.getMissingLocaleId())
+					.eq("locale.id", criteria.getLocaleId())
 					.query());
 
 		if(criteria.getOffset() != null)

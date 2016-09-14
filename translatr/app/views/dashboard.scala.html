@@ -1,7 +1,7 @@
-@(projects: List[models.Project])
+@(projects: List[models.Project], form: forms.SearchForm)
 
 @main(utils.TemplateInfo.from(Messages("dashboard.title"))) {
-	@tags.search()
+	@tags.search(form)()
 } {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")

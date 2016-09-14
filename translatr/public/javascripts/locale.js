@@ -25,7 +25,7 @@ App.Modules.KeyCreateModule = function(sb) {
 
 App.Modules.KeysSearchModule = function(sb) {
 	var fieldSearch = sb.dom.find('#field-search');
-	var fieldUntranslated = sb.dom.find('#field-untranslated');
+	var fieldMissing = sb.dom.find('#field-missing');
 	var keysContainer = sb.dom.find('.collection.keys');
 	// timer identifier
 	var typingTimer;
@@ -45,7 +45,7 @@ App.Modules.KeysSearchModule = function(sb) {
 			url: jsRoutes.controllers.Application.localeKeysSearch(localeId).url,
 			data: {
 				'search': value,
-				'untranslated': fieldUntranslated.is(':checked') ? localeId : null
+				'missing': fieldMissing.is(':checked') ? 'on' : 'off'
 			}
 		}).done(function(data) {
 			keysContainer.html(data);
@@ -65,8 +65,9 @@ App.Modules.KeysSearchModule = function(sb) {
 				_handleSearch(params.search);
 			}
 
-			fieldUntranslated.change(function() {
-				// _handleSearch(fieldSearch.val());
+			fieldMissing.change(function() {
+				console.log('Change event for missing...');
+				_handleSearch(fieldSearch.val());
 			});
 
 			fieldSearch.on('keyup', function() {
@@ -231,13 +232,17 @@ App.Core.register('KeysSearchModule', App.Modules.KeysSearchModule);
 App.Core.register('KeysListModule', App.Modules.KeysListModule);
 App.Core.register('MessageModule', App.Modules.MessageModule);
 
+function scrollTopOffset(container, item) {
+	return - container.position().top - container.css('margin-top').replace('px', '') + item.parent().offset() ? item.parent().offset().top : 0
+}
+
 $(document).ready(function() {
 	var params = $.deparam.fragment();
 	if('key' in params) {
 		var $a = $('a.key[keyName="'+params.key+'"]');
 		$('.collection.keys').animate(
 			{
-				scrollTop: -$('.collection.keys').position().top -$('.collection.keys').css('margin-top').replace('px', '') + $a.parent().offset().top
+				scrollTop: scrollTopOffset($('.collection.keys'), $a)
 			},
 			'500'
 		);

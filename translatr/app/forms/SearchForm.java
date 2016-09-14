@@ -1,7 +1,5 @@
 package forms;
 
-import java.util.UUID;
-
 /**
  * (c) 2016 Skiline Media GmbH
  * <p>
@@ -13,7 +11,7 @@ public class SearchForm
 {
 	public String search;
 
-	public UUID missingLocaleId;
+	public boolean missing = false;
 
 	public Integer limit = 100;
 
@@ -29,14 +27,20 @@ public class SearchForm
 		this.search = search;
 	}
 
-	public UUID getMissingLocaleId()
+	/**
+	 * @return the missing
+	 */
+	public boolean isMissing()
 	{
-		return missingLocaleId;
+		return missing;
 	}
 
-	public void setMissingLocaleId(UUID missingLocaleId)
+	/**
+	 * @param missing the missing to set
+	 */
+	public void setMissing(boolean missing)
 	{
-		this.missingLocaleId = missingLocaleId;
+		this.missing = missing;
 	}
 
 	public Integer getLimit()

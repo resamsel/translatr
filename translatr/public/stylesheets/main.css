@@ -56,21 +56,35 @@ nav .nav-wrapper {
     padding: 0 1rem;
 }
 .navbar-form {
+	padding: 10px;
 	margin: 0 25%;
 	text-align: center;
 }
 .navbar-form .input-field {
-	padding: 10px;
-}
-.navbar-form .input-field input[type=search] {
 	background-color: rgba(255,255,255,.15);
     border-radius: 2px;
+}
+.navbar-form .input-field input[type=search] {
+	float: left;
+	width: calc(100% - 10rem);
 	color: white;
 }
 .navbar-form .input-field input[type=search]:focus {
-    background-color: rgba(255,255,255,.30);
+    background-color: transparent;
     border: 0;
     box-shadow: none;
+}
+.navbar-form .input-field .dropdown-button {
+	float: right;
+	height: 100%;
+	color: white;
+}
+.navbar-form .input-field .dropdown-button i.material-icons {
+	height: 100%;
+	line-height: 44px;
+}
+.navbar-form .input-field .dropdown-content label {
+	margin: 1rem;
 }
 .navbar-form .form-control::-webkit-input-placeholder { /* Chrome */
   color: white;

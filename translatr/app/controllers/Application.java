@@ -119,7 +119,9 @@ public class Application extends Controller
 
 	public Result dashboard()
 	{
-		return ok(views.html.dashboard.render(Project.all()));
+		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+
+		return ok(views.html.dashboard.render(Project.all(), form));
 	}
 
 	public Result project(UUID id)
@@ -217,7 +219,8 @@ public class Application extends Controller
 					project,
 					locales,
 					localeService
-						.progress(locales.stream().map(l -> l.id).collect(Collectors.toList()), Key.countBy(project))),
+						.progress(locales.stream().map(l -> l.id).collect(Collectors.toList()), Key.countBy(project)),
+					form),
 				LOGGER,
 				"Rendering projectLocales"));
 	}
@@ -249,7 +252,8 @@ public class Application extends Controller
 				project,
 				keys.size() > form.limit ? keys.subList(0, form.limit) : keys,
 				progress,
-				keys.size() > form.limit));
+				keys.size() > form.limit,
+				form));
 	}
 
 	public Result projectKeysSearch(UUID id)
@@ -267,6 +271,7 @@ public class Application extends Controller
 			new KeyCriteria()
 				.withProjectId(project.id)
 				.withSearch(form.search)
+				.withMissing(form.missing)
 				.withOffset(form.offset)
 				.withLimit(form.limit)
 				.withOrder("name"));
@@ -296,7 +301,8 @@ public class Application extends Controller
 			new KeyCriteria()
 				.withProjectId(locale.project.id)
 				.withSearch(form.search)
-				.withMissingLocaleId(form.missingLocaleId)
+				.withMissing(form.missing)
+				.withLocaleId(locale.id)
 				.withOffset(form.offset)
 				.withLimit(form.limit)
 				.withOrder("name"));
@@ -310,7 +316,8 @@ public class Application extends Controller
 				locale,
 				keys.size() > form.limit ? keys.subList(0, form.limit) : keys,
 				locales,
-				messages));
+				messages,
+				form));
 	}
 
 	public Result localeKeysSearch(UUID localeId)
@@ -326,7 +333,8 @@ public class Application extends Controller
 			new KeyCriteria()
 				.withProjectId(locale.project.id)
 				.withSearch(form.search)
-				.withMissingLocaleId(form.missingLocaleId)
+				.withMissing(form.missing)
+				.withLocaleId(locale.id)
 				.withOffset(form.offset)
 				.withLimit(form.limit)
 				.withOrder("name"));
@@ -503,13 +511,15 @@ public class Application extends Controller
 
 		select(key.project);
 
+		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+
 		Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
 
 		List<Locale> locales = Locale.byProject(key.project);
 		Map<UUID, Message> messages = Message.findBy(new MessageCriteria().withKeyName(key.name)).stream().collect(
-			Collectors.groupingBy(m -> m.locale.id, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
+			groupingBy(m -> m.locale.id, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
 
-		return ok(views.html.key.render(key, locales, messages));
+		return ok(views.html.key.render(key, locales, messages, form));
 	}
 
 	public Result keyCreate(UUID projectId, UUID localeId)

@@ -1,7 +1,7 @@
-@(project: models.Project, locales: List[models.Locale], progress: Map[java.util.UUID, Double])
+@(project: models.Project, locales: List[models.Locale], progress: Map[java.util.UUID, Double], form: forms.SearchForm)
 
 @main(utils.TemplateInfo.from(Messages("locales.title", project.name))) {
-	@tags.search()
+	@tags.search(form)()
 } {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
@@ -98,7 +98,7 @@
 	@tags.modalTrigger("create", "add", Messages("locale.create.tooltip"), "blue")
 
 	@tags.modal(Messages("locale.new"), "modal-create") {
-		@forms.localeCreate(project)
+		@tags.localeCreate(project)
 	}
 
 	<script src="@routes.Assets.versioned("javascripts/projectLocales.js")"></script>

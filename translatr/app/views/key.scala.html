@@ -1,25 +1,26 @@
-@(key: models.Key, locales: List[models.Locale], messages: Map[java.util.UUID, models.Message])
+@(key: models.Key, locales: List[models.Locale], messages: Map[java.util.UUID, models.Message], form: forms.SearchForm)
 
 @import utils.TemplateInfo.from
 
 @main(from(Messages("key.title", key.project.name, key.name), "key")) {
-	@tags.search {
-		<div class="input-group-btn search-panel hide">
-			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-				<span id="search_concept">@Messages("search.filter")</span>
-				<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<li>
-					<div class="input-group">
-						<input id="field-untranslated" type="checkbox" />
-						<label for="field-untranslated">
-							@Messages("message.untranslated")
-						</label>
-					</div>
-				</li>
-			</ul>
-		</div>
+	@tags.search(form) {
+		<button
+			type="button"
+			class="btn btn-flat dropdown-button"
+			data-activates="filter-options"
+			data-beloworigin="true"
+			data-alignment="right"
+			data-constrainwidth="false">
+			<i class="material-icons">arrow_drop_down</i>
+		</button>
+		<ul id="filter-options" class="dropdown-content">
+			<li>
+				<input id="field-untranslated" type="checkbox" />
+				<label for="field-untranslated">
+					@Messages("message.untranslated")
+				</label>
+			</li>
+		</ul>
 	}
 } {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
