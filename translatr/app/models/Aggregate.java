@@ -1,4 +1,8 @@
-package utils;
+package models;
+
+import javax.persistence.Entity;
+
+import com.avaje.ebean.annotation.Sql;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -7,15 +11,16 @@ package utils;
  * @author resamsel
  * @version 28 Aug 2016
  */
-public class Stat
+@Entity
+@Sql
+public class Aggregate
 {
 	public long millis;
 
 	public int value;
 
-	public Stat(long millis, int value)
+	public Aggregate(long millis, int value)
 	{
-		super();
 		this.millis = millis;
 		this.value = value;
 	}

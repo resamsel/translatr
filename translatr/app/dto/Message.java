@@ -19,8 +19,6 @@ public class Message extends Dto
 
 	public UUID id;
 
-	public Long version;
-
 	@JsonIgnore
 	public DateTime whenCreated;
 
@@ -40,7 +38,6 @@ public class Message extends Dto
 	private Message(models.Message in)
 	{
 		this.id = in.id;
-		this.version = in.version;
 		this.whenCreated = in.whenCreated;
 		this.whenUpdated = in.whenUpdated;
 		this.localeId = in.locale.id;
@@ -50,15 +47,14 @@ public class Message extends Dto
 		this.value = in.value;
 	}
 
-	public models.Message toModel(Project project)
+	public models.Message toModel(Locale locale, Key key)
 	{
 		models.Message out = new models.Message();
 
-		out.version = version;
 		out.whenCreated = whenCreated;
 		out.whenUpdated = whenUpdated;
-		out.locale = Locale.byProjectAndName(project, localeName);
-		out.key = Key.byProjectAndName(project, keyName);
+		out.locale = locale;
+		out.key = key;
 		out.value = value;
 
 		LOGGER.trace("DTO Message toModel: {}", Json.toJson(out));

@@ -17,8 +17,6 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
@@ -31,7 +29,7 @@ import criterias.MessageCriteria;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 public class Project
 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
+	// private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
 	@Id
 	public UUID id;

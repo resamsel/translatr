@@ -1,4 +1,4 @@
-@(project: models.Project)
+@(project: models.Project, stats: List[Aggregate])
 
 @import utils.FormatUtils._
 
@@ -127,7 +127,7 @@
 			series: [{
 				name: 'locales',
 				data: [
-					@for(stat <- utils.StatUtils.getLogEntryStats(project)) {
+					@for(stat <- stats) {
 						{x: new Date(@stat.millis), y: @stat.value},
 					}
 				]

@@ -26,6 +26,7 @@ import commands.RevertDeleteLocaleCommand;
 import commands.RevertDeleteProjectCommand;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
+import criterias.LogEntryCriteria;
 import criterias.MessageCriteria;
 import exporters.Exporter;
 import exporters.JavaPropertiesExporter;
@@ -58,6 +59,7 @@ import play.routing.JavaScriptReverseRouter;
 import scala.collection.JavaConversions;
 import services.KeyService;
 import services.LocaleService;
+import services.LogEntryService;
 import services.MessageService;
 import services.ProjectService;
 import utils.TransactionUtils;
@@ -86,9 +88,12 @@ public class Application extends Controller
 
 	private final MessageService messageService;
 
+	private final LogEntryService logEntryService;
+
 	@Inject
 	public Application(Injector injector, FormFactory formFactory, CacheApi cache, ProjectService projectService,
-				LocaleService localeService, KeyService keyService, MessageService messageService)
+				LocaleService localeService, KeyService keyService, MessageService messageService,
+				LogEntryService logEntryService)
 	{
 		this.injector = injector;
 		this.formFactory = formFactory;
@@ -97,6 +102,7 @@ public class Application extends Controller
 		this.localeService = localeService;
 		this.keyService = keyService;
 		this.messageService = messageService;
+		this.logEntryService = logEntryService;
 	}
 
 	private void select(Project project)
@@ -133,7 +139,12 @@ public class Application extends Controller
 
 		select(project);
 
-		return ok(log(() -> views.html.project.render(project), LOGGER, "Rendering project"));
+		return ok(
+			log(
+				() -> views.html.project
+					.render(project, logEntryService.getStats(new LogEntryCriteria().withProjectId(project.id))),
+				LOGGER,
+				"Rendering project"));
 	}
 
 	public Result projectCreate()
@@ -186,7 +197,7 @@ public class Application extends Controller
 
 		select(project);
 
-		undoCommand(new RevertDeleteProjectCommand(project));
+		undoCommand(injector.instanceOf(RevertDeleteProjectCommand.class).with(project));
 
 		projectService.delete(project);
 
@@ -308,7 +319,7 @@ public class Application extends Controller
 				.withOrder("name"));
 		List<Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(locale.project.id).withLimit(100));
 		Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(
-			Collectors.groupingBy((m) -> m.key.name, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
+			Collectors.groupingBy((m) -> m.key.name, Collectors.reducing(null, a -> a, (a, b) -> b)));
 
 		return ok(
 			views.html.locale.render(
@@ -345,7 +356,7 @@ public class Application extends Controller
 					.withLocaleId(locale.id)
 					.withKeyIds(keys.stream().map(k -> k.id).collect(Collectors.toList())))
 			.stream()
-			.collect(groupingBy(m -> m.key.name, reducing(null, (a) -> a, (a, b) -> b)));
+			.collect(groupingBy(m -> m.key.name, reducing(null, a -> a, (a, b) -> b)));
 
 		LOGGER.debug("Keys found {} for {}", keys.size(), form);
 
@@ -465,7 +476,7 @@ public class Application extends Controller
 
 		LOGGER.debug("Creating undo command");
 
-		undoCommand(new RevertDeleteLocaleCommand(locale));
+		undoCommand(injector.instanceOf(RevertDeleteLocaleCommand.class).with(locale));
 
 		LOGGER.debug("Excuting batch delete");
 
@@ -517,7 +528,7 @@ public class Application extends Controller
 
 		List<Locale> locales = Locale.byProject(key.project);
 		Map<UUID, Message> messages = Message.findBy(new MessageCriteria().withKeyName(key.name)).stream().collect(
-			groupingBy(m -> m.locale.id, Collectors.reducing(null, (a) -> a, (a, b) -> b)));
+			groupingBy(m -> m.locale.id, Collectors.reducing(null, a -> a, (a, b) -> b)));
 
 		return ok(views.html.key.render(key, locales, messages, form));
 	}
@@ -606,7 +617,7 @@ public class Application extends Controller
 
 		select(key.project);
 
-		undoCommand(new RevertDeleteKeyCommand(key));
+		undoCommand(injector.instanceOf(RevertDeleteKeyCommand.class).with(key));
 
 		keyService.delete(key);
 

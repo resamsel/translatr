@@ -16,9 +16,6 @@ public class Locale extends Dto
 {
 	public UUID id;
 
-	@Version
-	public Long version;
-
 	@JsonIgnore
 	public DateTime whenCreated;
 
@@ -35,7 +32,6 @@ public class Locale extends Dto
 	private Locale(models.Locale in)
 	{
 		this.id = in.id;
-		this.version = in.version;
 		this.whenCreated = in.whenCreated;
 		this.whenUpdated = in.whenUpdated;
 		this.projectId = in.project.id;
@@ -47,7 +43,6 @@ public class Locale extends Dto
 	{
 		models.Locale out = new models.Locale();
 
-		out.version = version;
 		out.whenCreated = whenCreated;
 		out.whenUpdated = whenUpdated;
 		out.project = project;

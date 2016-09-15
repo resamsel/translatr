@@ -28,8 +28,6 @@ import utils.TransactionUtils;
 @Singleton
 public class MessageServiceImpl extends AbstractModelService<Message> implements MessageService
 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceImpl.class);
-
 	private final LogEntryService logEntryService;
 
 	/**
@@ -45,9 +43,8 @@ public class MessageServiceImpl extends AbstractModelService<Message> implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Message save(Message t)
+	public void preSave(Message t, boolean update)
 	{
-		boolean update = !Ebean.getBeanState(t).isNew();
 		if(update)
 			logEntryService.save(
 				LogEntry.from(
@@ -56,49 +53,38 @@ public class MessageServiceImpl extends AbstractModelService<Message> implements
 					dto.Message.class,
 					dto.Message.from(Message.byId(t.id)),
 					dto.Message.from(t)));
+	}
 
-		Ebean.save(t);
-		Ebean.refresh(t);
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void postSave(Message t, boolean update)
+	{
 		if(!update)
 			logEntryService
 				.save(LogEntry.from(ActionType.Create, t.key.project, dto.Message.class, null, dto.Message.from(t)));
-
-		return t;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void delete(Message t)
+	public void preDelete(Message t)
 	{
 		logEntryService
 			.save(LogEntry.from(ActionType.Delete, t.key.project, dto.Message.class, dto.Message.from(t), null));
-
-		Ebean.delete(t);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void delete(Collection<Message> t)
+	protected void preDelete(Collection<Message> t)
 	{
 		logEntryService.save(t
 			.stream()
 			.map(m -> LogEntry.from(ActionType.Delete, m.key.project, dto.Message.class, dto.Message.from(m), null))
 			.collect(Collectors.toList()));
-
-		try
-		{
-			TransactionUtils.batchExecute((tx) -> {
-				Ebean.delete(t);
-			});
-		}
-		catch(Exception e)
-		{
-			LOGGER.error("Error while batch deleting messages", e);
-		}
 	}
 }

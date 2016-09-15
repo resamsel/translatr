@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.avaje.ebean.Ebean;
-
 import models.ActionType;
 import models.LogEntry;
 import models.Project;
@@ -48,20 +46,21 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Project save(Project t)
+	protected void preSave(Project t, boolean update)
 	{
-		boolean update = !Ebean.getBeanState(t).isNew();
 		if(update)
 			logEntryService
 				.save(LogEntry.from(ActionType.Update, t, dto.Project.class, toDto(Project.byId(t.id)), toDto(t)));
+	}
 
-		Ebean.save(t);
-		Ebean.refresh(t);
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void postSave(Project t, boolean update)
+	{
 		if(!update)
 			logEntryService.save(LogEntry.from(ActionType.Create, t, dto.Project.class, null, toDto(t)));
-
-		return t;
 	}
 
 	/**
@@ -70,12 +69,12 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 	@Override
 	public void delete(Project t)
 	{
-		logEntryService.save(LogEntry.from(ActionType.Delete, t, dto.Project.class, toDto(t), null));
-
 		keyService.delete(t.keys);
 		localeService.delete(t.locales);
 
-		Ebean.save(t.withName(String.format("%s-%s", t.id, t.name)).withDeleted(true));
+		logEntryService.save(LogEntry.from(ActionType.Delete, t, dto.Project.class, toDto(t), null));
+
+		super.save(t.withName(String.format("%s-%s", t.id, t.name)).withDeleted(true));
 	}
 
 	/**
@@ -87,10 +86,13 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 		keyService.delete(t.stream().map(p -> p.keys).flatMap(k -> k.stream()).collect(Collectors.toList()));
 		localeService.delete(t.stream().map(p -> p.locales).flatMap(l -> l.stream()).collect(Collectors.toList()));
 
-		t.stream().forEach(
-			p -> logEntryService.save(LogEntry.from(ActionType.Delete, p, dto.Project.class, toDto(p), null)));
+		logEntryService.save(
+			t.stream().map(p -> LogEntry.from(ActionType.Delete, p, dto.Project.class, toDto(p), null)).collect(
+				Collectors.toList()));
 
-		Ebean.delete(t);
+		super.save(
+			t.stream().map(p -> p.withName(String.format("%s-%s", p.id, p.name)).withDeleted(true)).collect(
+				Collectors.toList()));
 	}
 
 	protected dto.Project toDto(Project t)

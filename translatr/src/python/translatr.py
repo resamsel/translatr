@@ -10,7 +10,7 @@ import re
 
 from collections import namedtuple
 
-Locale = namedtuple('Locale', 'id version name projectId')
+Locale = namedtuple('Locale', 'id name projectId')
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,13 @@
 package services;
 
+import java.util.List;
+
 import com.google.inject.ImplementedBy;
 
+import criterias.LogEntryCriteria;
+import models.Aggregate;
 import models.LogEntry;
+import models.Stat;
 import services.impl.LogEntryServiceImpl;
 
 /**
@@ -15,4 +20,5 @@ import services.impl.LogEntryServiceImpl;
 @ImplementedBy(LogEntryServiceImpl.class)
 public interface LogEntryService extends ModelService<LogEntry>
 {
+	List<Aggregate> getStats(LogEntryCriteria criteria);
 }

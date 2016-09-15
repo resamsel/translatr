@@ -6,30 +6,34 @@ import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import criterias.MessageCriteria;
 
 public class Project extends Dto
 {
 	public UUID id;
 
-	public Long version;
-
+	@JsonIgnore
 	public DateTime whenCreated;
 
+	@JsonIgnore
 	public DateTime whenUpdated;
 
 	public String name;
 
+	@JsonIgnore
 	public List<Key> keys;
 
+	@JsonIgnore
 	public List<Locale> locales;
 
+	@JsonIgnore
 	public List<Message> messages;
 
 	private Project(models.Project in)
 	{
 		this.id = in.id;
-		this.version = in.version;
 		this.whenCreated = in.whenCreated;
 		this.whenUpdated = in.whenUpdated;
 		this.name = in.name;
@@ -46,7 +50,6 @@ public class Project extends Dto
 	{
 		models.Project out = new models.Project();
 
-		out.version = version;
 		out.whenCreated = whenCreated;
 		out.whenUpdated = whenUpdated;
 		out.name = name;

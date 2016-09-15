@@ -7,11 +7,10 @@ import org.joda.time.DateTime;
 
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
-import criterias.LogEntryCriteria;
 import criterias.MessageCriteria;
+import models.Aggregate;
 import models.Key;
 import models.Locale;
-import models.LogEntry;
 import models.Message;
 import models.Project;
 
@@ -24,7 +23,7 @@ import models.Project;
  */
 public class StatUtils
 {
-	public static List<Stat> getMessageStats(Project project)
+	public static List<Aggregate> getMessageStats(Project project)
 	{
 		return Message
 			.findBy(new MessageCriteria().withProjectId(project.id))
@@ -32,11 +31,11 @@ public class StatUtils
 			.collect(Collectors.groupingBy(m -> withMinuteSecondMillisReset(m.whenUpdated)))
 			.entrySet()
 			.stream()
-			.map(e -> new Stat(e.getKey().getMillis(), e.getValue().size()))
+			.map(e -> new Aggregate(e.getKey().getMillis(), e.getValue().size()))
 			.collect(Collectors.toList());
 	}
 
-	public static List<Stat> getKeyStats(Project project)
+	public static List<Aggregate> getKeyStats(Project project)
 	{
 		return Key
 			.findBy(new KeyCriteria().withProjectId(project.id))
@@ -44,11 +43,11 @@ public class StatUtils
 			.collect(Collectors.groupingBy(k -> withMinuteSecondMillisReset(k.whenUpdated)))
 			.entrySet()
 			.stream()
-			.map(e -> new Stat(e.getKey().getMillis(), e.getValue().size()))
+			.map(e -> new Aggregate(e.getKey().getMillis(), e.getValue().size()))
 			.collect(Collectors.toList());
 	}
 
-	public static List<Stat> getLocaleStats(Project project)
+	public static List<Aggregate> getLocaleStats(Project project)
 	{
 		return Locale
 			.findBy(new LocaleCriteria().withProjectId(project.id))
@@ -56,19 +55,7 @@ public class StatUtils
 			.collect(Collectors.groupingBy(l -> withMinuteSecondMillisReset(l.whenUpdated)))
 			.entrySet()
 			.stream()
-			.map(e -> new Stat(e.getKey().getMillis(), e.getValue().size()))
-			.collect(Collectors.toList());
-	}
-
-	public static List<Stat> getLogEntryStats(Project project)
-	{
-		return LogEntry
-			.findBy(new LogEntryCriteria().withProjectId(project.id))
-			.stream()
-			.collect(Collectors.groupingBy(e -> withMinuteSecondMillisReset(e.whenCreated)))
-			.entrySet()
-			.stream()
-			.map(e -> new Stat(e.getKey().getMillis(), e.getValue().size()))
+			.map(e -> new Aggregate(e.getKey().getMillis(), e.getValue().size()))
 			.collect(Collectors.toList());
 	}
 

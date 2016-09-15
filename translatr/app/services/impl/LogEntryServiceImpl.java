@@ -1,6 +1,8 @@
 package services.impl;
 
-import java.util.Collection;
+import static utils.Stopwatch.log;
+
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Singleton;
@@ -9,12 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.RawSqlBuilder;
 
+import criterias.LogEntryCriteria;
+import models.Aggregate;
 import models.LogEntry;
 import models.Project;
 import play.mvc.Http.Context;
 import services.LogEntryService;
-import utils.TransactionUtils;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -32,7 +36,30 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
 	 * {@inheritDoc}
 	 */
 	@Override
-	public LogEntry save(LogEntry logEntry)
+	public List<Aggregate> getStats(LogEntryCriteria criteria)
+	{
+		return log(
+			() -> Ebean
+				.find(Aggregate.class)
+				.setRawSql(
+					RawSqlBuilder
+						.parse(
+							"select extract(epoch from date_trunc('hour', when_created))*1000 as millis, count(*) as cnt from log_entry group by 1 order by 1")
+						.columnMapping("extract(epoch from date_trunc('hour', when_created))*1000", "millis")
+						.columnMapping("count(*)", "value")
+						.create())
+				.where()
+				.eq("project_id", criteria.getProjectId())
+				.findList(),
+			LOGGER,
+			"Retrieving log entry stats");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void preSave(LogEntry logEntry, boolean update)
 	{
 		if(logEntry.project == null)
 		{
@@ -44,38 +71,7 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
 			else
 			{
 				LOGGER.warn("Project has not been set and was not found in context");
-				return null;
 			}
-		}
-
-		Ebean.save(logEntry);
-		return logEntry;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void delete(LogEntry t)
-	{
-		Ebean.delete(t);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void delete(Collection<LogEntry> t)
-	{
-		try
-		{
-			TransactionUtils.batchExecute((tx) -> {
-				Ebean.delete(t);
-			});
-		}
-		catch(Exception e)
-		{
-			LOGGER.error("Error while batch deleting log entries", e);
 		}
 	}
 }

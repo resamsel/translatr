@@ -24,7 +24,6 @@ import models.Stat;
 import services.KeyService;
 import services.LogEntryService;
 import services.MessageService;
-import utils.TransactionUtils;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -80,51 +79,45 @@ public class KeyServiceImpl extends AbstractModelService<Key> implements KeyServ
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Key save(Key t)
+	protected void preSave(Key t, boolean update)
 	{
-		boolean update = !Ebean.getBeanState(t).isNew();
 		if(update)
 			logEntryService.save(
 				LogEntry.from(ActionType.Update, t.project, dto.Key.class, dto.Key.from(Key.byId(t.id)), dto.Key.from(t)));
-
-		Ebean.save(t);
-		Ebean.refresh(t);
-
-		if(!update)
-			logEntryService.save(LogEntry.from(ActionType.Create, t.project, dto.Key.class, null, dto.Key.from(t)));
-
-		return t;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void delete(Key t)
+	protected void postSave(Key t, boolean update)
+	{
+		if(!update)
+			logEntryService.save(LogEntry.from(ActionType.Create, t.project, dto.Key.class, null, dto.Key.from(t)));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void preDelete(Key t)
 	{
 		logEntryService.save(LogEntry.from(ActionType.Delete, t.project, dto.Key.class, dto.Key.from(t), null));
 
 		messageService.delete(Message.byKey(t));
-		Ebean.delete(t);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void delete(Collection<Key> t)
+	protected void preDelete(Collection<Key> t)
 	{
-		messageService.delete(Message.byKeys(t.stream().map(k -> k.id).collect(Collectors.toList())));
+		logEntryService.save(t
+			.stream()
+			.map(k -> LogEntry.from(ActionType.Delete, k.project, dto.Key.class, dto.Key.from(k), null))
+			.collect(Collectors.toList()));
 
-		try
-		{
-			TransactionUtils.batchExecute((tx) -> {
-				Ebean.delete(t);
-			});
-		}
-		catch(Exception e)
-		{
-			LOGGER.error("Error while batch deleting keys", e);
-		}
+		messageService.delete(Message.byKeys(t.stream().map(k -> k.id).collect(Collectors.toList())));
 	}
 }

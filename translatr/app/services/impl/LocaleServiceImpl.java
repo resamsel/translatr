@@ -25,7 +25,6 @@ import models.Stat;
 import services.LocaleService;
 import services.LogEntryService;
 import services.MessageService;
-import utils.TransactionUtils;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -82,9 +81,8 @@ public class LocaleServiceImpl extends AbstractModelService<Locale> implements L
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Locale save(Locale t)
+	protected void preSave(Locale t, boolean update)
 	{
-		boolean update = !Ebean.getBeanState(t).isNew();
 		if(update)
 			logEntryService.save(
 				LogEntry.from(
@@ -93,46 +91,40 @@ public class LocaleServiceImpl extends AbstractModelService<Locale> implements L
 					dto.Locale.class,
 					dto.Locale.from(Locale.byId(t.id)),
 					dto.Locale.from(t)));
-
-		Ebean.save(t);
-		Ebean.refresh(t);
-
-		if(!update)
-			logEntryService.save(LogEntry.from(ActionType.Create, t.project, dto.Locale.class, null, dto.Locale.from(t)));
-
-		return t;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void delete(Locale t)
+	protected void postSave(Locale t, boolean update)
+	{
+		if(!update)
+			logEntryService.save(LogEntry.from(ActionType.Create, t.project, dto.Locale.class, null, dto.Locale.from(t)));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void preDelete(Locale t)
 	{
 		logEntryService.save(LogEntry.from(ActionType.Delete, t.project, dto.Locale.class, dto.Locale.from(t), null));
 
 		messageService.delete(Message.byLocale(t.id));
-
-		Ebean.delete(t);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void delete(Collection<Locale> t)
+	public void preDelete(Collection<Locale> t)
 	{
-		messageService.delete(Message.byLocales(t.stream().map(m -> m.id).collect(Collectors.toList())));
+		logEntryService.save(t
+			.stream()
+			.map(l -> LogEntry.from(ActionType.Delete, l.project, dto.Locale.class, dto.Locale.from(l), null))
+			.collect(Collectors.toList()));
 
-		try
-		{
-			TransactionUtils.batchExecute((tx) -> {
-				Ebean.delete(t);
-			});
-		}
-		catch(Exception e)
-		{
-			LOGGER.error("Error while batch deleting locales", e);
-		}
+		messageService.delete(Message.byLocales(t.stream().map(m -> m.id).collect(Collectors.toList())));
 	}
 }
