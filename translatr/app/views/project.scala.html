@@ -1,13 +1,14 @@
-@(project: models.Project, stats: List[Aggregate])
+@(project: models.Project, stats: List[Aggregate], form: Form[forms.SearchForm])
 
 @import utils.FormatUtils._
 
 @main(utils.TemplateInfo.from(Messages("project.title", project.name))) {
+	@tags.search(form)()
 } {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
-		<a class="breadcrumb active" href="@routes.Application.project(project.id)">
+		<a class="breadcrumb active" href="@routes.Projects.project(project.id)">
 			@project.name
 		</a>
 } {

@@ -1,4 +1,4 @@
-@(project: models.Project, locale: models.Locale, keys: List[models.Key], locales: List[models.Locale], messages: Map[String, models.Message], form: forms.SearchForm)
+@(project: models.Project, locale: models.Locale, keys: List[models.Key], locales: List[models.Locale], messages: Map[String, models.Message], form: Form[forms.SearchForm])
 
 @import utils.TemplateInfo.from
 
@@ -15,7 +15,7 @@
 		</button>
 		<ul id="filter-options" class="dropdown-content">
 			<li>
-				<input id="field-missing" name="missing" type="checkbox" @if(form.missing) {checked="checked"} />
+				<input id="field-missing" name="missing" type="checkbox" @if(form.get.missing) {checked="checked"} />
 				<label for="field-missing">
 					@Messages("message.untranslated")
 				</label>
@@ -26,7 +26,7 @@
 	<a class="breadcrumb" href="@routes.Application.dashboard()">
 		@Messages("dashboard")
 	</a>
-	<a class="breadcrumb" href="@routes.Application.project(project.id)">
+	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
 		@project.name
 	</a>
 	<a class="breadcrumb" href="@routes.Application.projectLocales(project.id)">

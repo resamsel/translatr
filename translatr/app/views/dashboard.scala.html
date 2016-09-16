@@ -1,4 +1,4 @@
-@(projects: List[models.Project], form: forms.SearchForm)
+@(projects: List[models.Project], form: Form[forms.SearchForm])
 
 @main(utils.TemplateInfo.from(Messages("dashboard.title"))) {
 	@tags.search(form)()
@@ -27,7 +27,7 @@
 							</p>
 						</div>
 						<div class="card-action">
-							<a href="@routes.Application.project(project.id)">
+							<a href="@routes.Projects.project(project.id)">
 								@Messages("button.open")
 							</a>
 						</div>

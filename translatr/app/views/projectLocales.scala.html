@@ -1,4 +1,4 @@
-@(project: models.Project, locales: List[models.Locale], progress: Map[java.util.UUID, Double], form: forms.SearchForm)
+@(project: models.Project, locales: List[models.Locale], progress: Map[java.util.UUID, Double], form: Form[forms.SearchForm])
 
 @main(utils.TemplateInfo.from(Messages("locales.title", project.name))) {
 	@tags.search(form)()
@@ -6,7 +6,7 @@
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
-		<a class="breadcrumb" href="@routes.Application.project(project.id)">
+		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
 			@project.name
 		</a>
 		<a class="breadcrumb active" href="@routes.Application.projectLocales(project.id)">

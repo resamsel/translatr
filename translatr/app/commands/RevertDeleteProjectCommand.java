@@ -115,6 +115,6 @@ public class RevertDeleteProjectCommand implements Command<models.Project>
 	@Override
 	public Call redirect()
 	{
-		return routes.Application.project(project.id);
+		return routes.Projects.project(project.id);
 	}
 }

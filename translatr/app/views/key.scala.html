@@ -1,4 +1,4 @@
-@(key: models.Key, locales: List[models.Locale], messages: Map[java.util.UUID, models.Message], form: forms.SearchForm)
+@(key: models.Key, locales: List[models.Locale], messages: Map[java.util.UUID, models.Message], form: Form[forms.SearchForm])
 
 @import utils.TemplateInfo.from
 
@@ -26,7 +26,7 @@
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
 			@Messages("dashboard")
 		</a>
-		<a class="breadcrumb" href="@routes.Application.project(key.project.id)">
+		<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
 			@key.project.name
 		</a>
 		<a class="breadcrumb" href="@routes.Application.projectKeys(key.project.id)">

@@ -45,6 +45,7 @@ import models.Locale;
 import models.Message;
 import models.Project;
 import play.cache.CacheApi;
+import play.data.Form;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.libs.Json;
@@ -68,7 +69,7 @@ import utils.TransactionUtils;
  * This controller contains an action to handle HTTP requests to the application's home page.
  */
 @With(ContextAction.class)
-public class Application extends Controller
+public class Application extends AbstractController
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
@@ -88,12 +89,9 @@ public class Application extends Controller
 
 	private final MessageService messageService;
 
-	private final LogEntryService logEntryService;
-
 	@Inject
 	public Application(Injector injector, FormFactory formFactory, CacheApi cache, ProjectService projectService,
-				LocaleService localeService, KeyService keyService, MessageService messageService,
-				LogEntryService logEntryService)
+				LocaleService localeService, KeyService keyService, MessageService messageService)
 	{
 		this.injector = injector;
 		this.formFactory = formFactory;
@@ -102,19 +100,6 @@ public class Application extends Controller
 		this.localeService = localeService;
 		this.keyService = keyService;
 		this.messageService = messageService;
-		this.logEntryService = logEntryService;
-	}
-
-	private void select(Project project)
-	{
-		// session("projectId", project.id.toString());
-		ctx().args.put("projectId", project.id);
-	}
-
-	private void select(Locale locale)
-	{
-		// session("localeId", locale.id.toString());
-		// session("localeName", locale.name);
 	}
 
 	public Result index()
@@ -125,26 +110,9 @@ public class Application extends Controller
 
 	public Result dashboard()
 	{
-		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
 
 		return ok(views.html.dashboard.render(Project.all(), form));
-	}
-
-	public Result project(UUID id)
-	{
-		Project project = Project.byId(id);
-
-		if(project == null)
-			return redirect(routes.Application.index());
-
-		select(project);
-
-		return ok(
-			log(
-				() -> views.html.project
-					.render(project, logEntryService.getStats(new LogEntryCriteria().withProjectId(project.id))),
-				LOGGER,
-				"Rendering project"));
 	}
 
 	public Result projectCreate()
@@ -162,7 +130,7 @@ public class Application extends Controller
 
 		select(project);
 
-		return redirect(routes.Application.project(project.id));
+		return redirect(routes.Projects.project(project.id));
 	}
 
 	public Result projectEdit(UUID projectId)
@@ -180,7 +148,7 @@ public class Application extends Controller
 
 			projectService.save(form.fill(project));
 
-			return redirect(routes.Application.project(project.id));
+			return redirect(routes.Projects.project(project.id));
 		}
 
 		return ok(views.html.projectEdit.render(project));
@@ -213,14 +181,15 @@ public class Application extends Controller
 
 		select(project);
 
-		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
+		SearchForm search = form.get();
 
 		List<Locale> locales = Locale.findBy(
 			new LocaleCriteria()
 				.withProjectId(project.id)
-				.withSearch(form.search)
-				.withOffset(form.offset)
-				.withLimit(form.limit));
+				.withSearch(search.search)
+				.withOffset(search.offset)
+				.withLimit(search.limit));
 		java.util.Locale locale = ctx().lang().locale();
 		Collections.sort(locales, (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
 
@@ -245,14 +214,15 @@ public class Application extends Controller
 
 		select(project);
 
-		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
+		SearchForm search = form.get();
 
 		List<Key> keys = Key.findBy(
 			new KeyCriteria()
 				.withProjectId(project.id)
-				.withSearch(form.search)
-				.withOffset(form.offset)
-				.withLimit(form.limit)
+				.withSearch(search.search)
+				.withOffset(search.offset)
+				.withLimit(search.limit)
 				.withOrder("name"));
 
 		Map<UUID, Double> progress =
@@ -261,9 +231,9 @@ public class Application extends Controller
 		return ok(
 			views.html.projectKeys.render(
 				project,
-				keys.size() > form.limit ? keys.subList(0, form.limit) : keys,
+				keys.size() > search.limit ? keys.subList(0, search.limit) : keys,
 				progress,
-				keys.size() > form.limit,
+				keys.size() > search.limit,
 				form));
 	}
 
@@ -306,16 +276,17 @@ public class Application extends Controller
 
 		select(locale.project);
 
-		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
+		SearchForm search = form.get();
 
 		List<Key> keys = Key.findBy(
 			new KeyCriteria()
 				.withProjectId(locale.project.id)
-				.withSearch(form.search)
-				.withMissing(form.missing)
+				.withSearch(search.search)
+				.withMissing(search.missing)
 				.withLocaleId(locale.id)
-				.withOffset(form.offset)
-				.withLimit(form.limit)
+				.withOffset(search.offset)
+				.withLimit(search.limit)
 				.withOrder("name"));
 		List<Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(locale.project.id).withLimit(100));
 		Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(
@@ -325,7 +296,7 @@ public class Application extends Controller
 			views.html.locale.render(
 				locale.project,
 				locale,
-				keys.size() > form.limit ? keys.subList(0, form.limit) : keys,
+				keys.size() > search.limit ? keys.subList(0, search.limit) : keys,
 				locales,
 				messages,
 				form));
@@ -522,7 +493,7 @@ public class Application extends Controller
 
 		select(key.project);
 
-		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
 
 		Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
 
@@ -670,12 +641,12 @@ public class Application extends Controller
 			}
 		}
 
-		return redirect(controllers.routes.Application.project(project.id));
+		return redirect(routes.Projects.project(project.id));
 	}
 
 	public Result commandExecute(String commandKey)
 	{
-		Command command = cache.get(commandKey);
+		Command<?> command = cache.get(commandKey);
 
 		if(command == null)
 			notFound(Json.toJson("Command not found"));
@@ -757,7 +728,7 @@ public class Application extends Controller
 	/**
 	 * @param command
 	 */
-	private String undoCommand(Command command)
+	private String undoCommand(Command<?> command)
 	{
 		String undoKey = String.format(COMMAND_FORMAT, UUID.randomUUID());
 
