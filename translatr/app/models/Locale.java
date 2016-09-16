@@ -1,5 +1,6 @@
 package models;
 
+import static utils.FormatUtils.formatLocale;
 import static utils.Stopwatch.log;
 
 import java.util.List;
@@ -24,11 +25,13 @@ import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import controllers.routes;
 import criterias.LocaleCriteria;
+import play.mvc.Http.Context;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
-public class Locale
+public class Locale implements Suggestable
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Locale.class);
 
@@ -62,6 +65,19 @@ public class Locale
 	{
 		this.project = project;
 		this.name = name;
+	}
+
+	@Override
+	public String value()
+	{
+		Context ctx = Context.current();
+		return ctx.messages().at("locale.autocomplete", formatLocale(ctx.lang().locale(), this));
+	}
+
+	@Override
+	public String data()
+	{
+		return routes.Application.locale(id).absoluteURL(Context.current().request());
 	}
 
 	private static final Find<UUID, Locale> find = new Find<UUID, Locale>()

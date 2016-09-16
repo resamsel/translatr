@@ -671,6 +671,7 @@ public class Application extends AbstractController
 		return ok(
 			JavaScriptReverseRouter.create(
 				"jsRoutes",
+				routes.javascript.Projects.projectSearch(),
 				routes.javascript.Application.projectKeysSearch(),
 				routes.javascript.Application.localeKeysSearch(),
 				routes.javascript.Application.locale(),

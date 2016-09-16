@@ -122,7 +122,6 @@ $(document).ready(function() {
 		$a.click();
 	} else {
 		var $locale = $('.locales .collection-item:first-child a.locale');
-		window.location.hash = $locale.attr('href').replace('.*#', '#');
 		$locale.click();
 	}
 });

@@ -23,14 +23,14 @@ import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import controllers.routes;
 import criterias.MessageCriteria;
+import play.mvc.Http.Context;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
-public class Project
+public class Project implements Suggestable
 {
-	// private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
-
 	@Id
 	public UUID id;
 
@@ -74,6 +74,18 @@ public class Project
 	public Project(String name)
 	{
 		this.name = name;
+	}
+
+	@Override
+	public String value()
+	{
+		return name;
+	}
+
+	@Override
+	public String data()
+	{
+		return routes.Projects.project(id).absoluteURL(Context.current().request());
 	}
 
 	private static final Find<UUID, Project> find = new Find<UUID, Project>()

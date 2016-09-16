@@ -34,3 +34,27 @@ $(document).ready(function() {
 
 	new Chartist.Line('#chart-timeline', data, options);
 });
+
+App.Modules.ProjectSearchModule = function(sb) {
+	var fieldSearch = sb.dom.find('#field-search');
+
+	function _handleResultSelection(suggestion) {
+		console.log('Result selected: ', suggestion);
+		window.location.href = suggestion.data;
+	}
+
+	return {
+		create : function() {
+			fieldSearch.autocomplete({
+				serviceUrl: jsRoutes.controllers.Projects.projectSearch(projectId).url,
+				onSelect: _handleResultSelection,
+				deferRequestBy: 200,
+				paramName: 'search'
+			});
+		},
+		destroy : function() {
+		}
+	};
+};
+
+App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);

@@ -123,7 +123,9 @@
 	<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/chartist.min.css")">
 	<script src="@routes.Assets.versioned("javascripts/chartist.min.js")"></script>
 	<script src="@routes.Assets.versioned("javascripts/moment.min.js")"></script>
+	<script src="@routes.Assets.versioned("javascripts/jquery.autocomplete.min.js")"></script>
 	<script>
+		var projectId = '@project.id';
 		var data = {
 			series: [{
 				name: 'locales',

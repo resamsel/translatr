@@ -26,11 +26,13 @@ import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import controllers.routes;
 import criterias.KeyCriteria;
+import play.mvc.Http.Context;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
-public class Key
+public class Key implements Suggestable
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Key.class);
 
@@ -64,6 +66,24 @@ public class Key
 	{
 		this.project = project;
 		this.name = name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String value()
+	{
+		return Context.current().messages().at("key.autocomplete", name);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String data()
+	{
+		return routes.Application.key(id).absoluteURL(Context.current().request());
 	}
 
 	private static final Find<UUID, Key> find = new Find<UUID, Key>()

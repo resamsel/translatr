@@ -250,7 +250,6 @@ $(document).ready(function() {
 	} else {
 		var $key = $('.keys .collection-item:first-child a.key');
 		params.key = $key.attr('keyName');
-		window.location.href = $.param.fragment(window.location.href, params);
 		$key.click();
 	}
 });
