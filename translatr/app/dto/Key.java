@@ -2,8 +2,6 @@ package dto;
 
 import java.util.UUID;
 
-import javax.persistence.Version;
-
 import org.joda.time.DateTime;
 
 import models.Project;

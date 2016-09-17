@@ -23,63 +23,6 @@ App.Modules.KeyCreateModule = function(sb) {
 	};
 };
 
-App.Modules.KeysSearchModule = function(sb) {
-	var fieldSearch = sb.dom.find('#field-search');
-	var fieldMissing = sb.dom.find('#field-missing');
-	var keysContainer = sb.dom.find('.collection.keys');
-	// timer identifier
-	var typingTimer;
-	// time in ms
-	var doneTypingInterval = 500;
-
-	function _handleInitSearch(value) {
-		fieldSearch.val(value);
-	}
-
-	function _handleDoneTyping() {
-		sb.publish('searchKeys', fieldSearch.val());
-	}
-
-	function _handleSearch(value) {
-		$.ajax({
-			url: jsRoutes.controllers.Application.localeKeysSearch(localeId).url,
-			data: {
-				'search': value,
-				'missing': fieldMissing.is(':checked') ? 'on' : 'off'
-			}
-		}).done(function(data) {
-			keysContainer.html(data);
-//			keysContainer.parent()[0].scrollIntoView();
-			sb.publish('keysChanged');
-		});
-	}
-
-	return {
-		create: function() {
-			sb.subscribe('initSearchKeys', _handleInitSearch);
-			sb.subscribe('searchKeys', _handleSearch);
-
-			var params = $.deparam.fragment();
-			console.log('Params:', params);
-			if('search' in params) {
-				_handleSearch(params.search);
-			}
-
-			fieldMissing.change(function() {
-				console.log('Change event for missing...');
-				_handleSearch(fieldSearch.val());
-			});
-
-			fieldSearch.on('keyup', function() {
-			    clearTimeout(typingTimer);
-		        typingTimer = setTimeout(_handleDoneTyping, doneTypingInterval);
-			});
-		},
-		destroy: function() {
-		}
-	};
-};
-
 App.Modules.KeysListModule = function(sb) {
 	function _handleKeysChanged() {
 		var $keys = sb.dom.find('a.key');
@@ -227,8 +170,43 @@ App.Modules.MessageModule = function(sb) {
 	};
 };
 
+App.Modules.SuggestionModule = function(sb) {
+	var form = sb.dom.find('#form-search');
+
+	function _handleSearch(value) {
+		$.ajax({
+			url: jsRoutes.controllers.Application.localeKeysSearch(localeId).url,
+			data: {
+				'search': value,
+				'missing': fieldMissing.is(':checked') ? 'on' : 'off'
+			}
+		}).done(function(data) {
+			keysContainer.html(data);
+//			keysContainer.parent()[0].scrollIntoView();
+			sb.publish('keysChanged');
+		});
+	}
+
+	function _handleSuggestionSelected(suggestion) {
+		if(suggestion.data.type == 'key') {
+			form.submit();
+		} else {
+			window.location.href = suggestion.data.url;
+		}
+	}
+
+	return {
+		create: function() {
+			sb.subscribe('suggestionSelected', _handleSuggestionSelected);
+		},
+		destroy: function() {
+		}
+	};
+};
+
+App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
+App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
 App.Core.register('KeyCreateModule', App.Modules.KeyCreateModule);
-App.Core.register('KeysSearchModule', App.Modules.KeysSearchModule);
 App.Core.register('KeysListModule', App.Modules.KeysListModule);
 App.Core.register('MessageModule', App.Modules.MessageModule);
 

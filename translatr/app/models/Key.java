@@ -81,9 +81,9 @@ public class Key implements Suggestable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String data()
+	public Data data()
 	{
-		return routes.Application.key(id).absoluteURL(Context.current().request());
+		return Data.from(Key.class, name, routes.Application.key(id).absoluteURL(Context.current().request()));
 	}
 
 	private static final Find<UUID, Key> find = new Find<UUID, Key>()

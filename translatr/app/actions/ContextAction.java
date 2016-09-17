@@ -44,7 +44,7 @@ public class ContextAction extends Action.Simple
 		if(ctx.flash().containsKey("undo"))
 		{
 			String key = ctx.flash().get("undo");
-			ctx.args.put("undoMessage", ((Command)cache.get(key)).getMessage());
+			ctx.args.put("undoMessage", ((Command<?>)cache.get(key)).getMessage());
 			ctx.args.put("undoCommand", key);
 		}
 

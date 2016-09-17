@@ -61,17 +61,17 @@ function search(value) {
 }
 $(document).ready(function() {
 	$("#panel-message").hide();
-	$('#field-search').on('change keyup paste', function() {
-		search($('#field-search').val());
-	});
+//	$('#field-search').on('change keyup paste', function() {
+//		search($('#field-search').val());
+//	});
 	$('#field-untranslated').change(function() {
 		search($('#field-search').val());
 	});
-	$('#form-search').submit(function(e) {
-		console.log('Hide...');
-        e.preventDefault();
-        search($('#field-search').val());
-	});
+//	$('#form-search').submit(function(e) {
+//		console.log('Hide...');
+//        e.preventDefault();
+//        search($('#field-search').val());
+//	});
 	$("#form-message").submit(function(e){
         e.preventDefault();
     	$('#form-message .progress').css('visibility', 'visible');
@@ -125,3 +125,24 @@ $(document).ready(function() {
 		$locale.click();
 	}
 });
+
+App.Modules.SuggestionModule = function(sb) {
+	function _handleSuggestionSelected(suggestion) {
+		if(suggestion.data.type == 'locale') {
+			search(suggestion.data.name);
+		} else {
+			window.location.href = suggestion.data.url;
+		}
+	}
+
+	return {
+		create: function() {
+			sb.subscribe('suggestionSelected', _handleSuggestionSelected);
+		},
+		destroy: function() {
+		}
+	};
+};
+
+App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
+App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);

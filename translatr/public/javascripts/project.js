@@ -35,26 +35,19 @@ $(document).ready(function() {
 	new Chartist.Line('#chart-timeline', data, options);
 });
 
-App.Modules.ProjectSearchModule = function(sb) {
-	var fieldSearch = sb.dom.find('#field-search');
-
-	function _handleResultSelection(suggestion) {
-		console.log('Result selected: ', suggestion);
-		window.location.href = suggestion.data;
+App.Modules.SuggestionModule = function(sb) {
+	function _handleSuggestionSelected(suggestion) {
+		window.location.href = suggestion.data.url;
 	}
 
 	return {
-		create : function() {
-			fieldSearch.autocomplete({
-				serviceUrl: jsRoutes.controllers.Projects.projectSearch(projectId).url,
-				onSelect: _handleResultSelection,
-				deferRequestBy: 200,
-				paramName: 'search'
-			});
+		create: function() {
+			sb.subscribe('suggestionSelected', _handleSuggestionSelected);
 		},
-		destroy : function() {
+		destroy: function() {
 		}
 	};
 };
 
+App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);

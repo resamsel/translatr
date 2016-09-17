@@ -75,9 +75,12 @@ public class Locale implements Suggestable
 	}
 
 	@Override
-	public String data()
+	public Data data()
 	{
-		return routes.Application.locale(id).absoluteURL(Context.current().request());
+		return Data.from(
+			Locale.class,
+			formatLocale(Context.current().lang().locale(), this),
+			routes.Application.locale(id).absoluteURL(Context.current().request()));
 	}
 
 	private static final Find<UUID, Locale> find = new Find<UUID, Locale>()

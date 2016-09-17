@@ -6,17 +6,11 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.Ebean;
-
 import models.ActionType;
 import models.LogEntry;
 import models.Message;
 import services.LogEntryService;
 import services.MessageService;
-import utils.TransactionUtils;
 
 /**
  * (c) 2016 Skiline Media GmbH

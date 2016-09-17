@@ -65,7 +65,6 @@ nav .nav-wrapper {
     border-radius: 2px;
 }
 .navbar-form .input-field input[type=search] {
-	float: left;
 	width: calc(100% - 4rem);
 	color: white;
 }
@@ -75,13 +74,18 @@ nav .nav-wrapper {
     box-shadow: none;
 }
 .navbar-form .input-field .dropdown-button {
-	float: right;
+	position: absolute;
+    right: 0;
 	height: 100%;
 	color: white;
 }
-.navbar-form .input-field .dropdown-button i.material-icons {
+.navbar-form .input-field i.material-icons {
 	height: 100%;
 	line-height: 44px;
+}
+.navbar-form .input-field i.material-icons.search {
+    position: absolute;
+    left: 1.2rem;
 }
 .navbar-form .input-field .dropdown-content label {
 	margin: 1rem;
@@ -105,18 +109,34 @@ nav .nav-wrapper {
 .autocomplete-suggestions {
 	background-color: white;
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
-    overflow: hidden;
+	overflow: auto;
+    position: fixed !important;
 }
 .autocomplete-suggestion {
-	height: 44px;
-	line-height: 44px;
-	padding-left: 4rem;
+	font-size: 16px;
+	color: #26a69a;
+	min-height: 50px;
+	line-height: 1.5rem;
+	padding: 14px 16px 14px 4rem;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
+.autocomplete-suggestion strong {
+	color: #000;
+	font-weight: normal;
+}
 .autocomplete-selected {
-	background-color: #4CAF50;
-	color: white;
+	background-color: #eee;
+}
+.autocomplete-group {
+	margin: 10px 0 4px;
+    padding: 0 24px;
+    text-align: right;
+}
+.autocomplete-group strong {
+	display: block;
+	color: #616161;
+    font-weight: normal;
 }
 
 /** Cards **/
@@ -353,10 +373,6 @@ html.template-key,
 .template-locale main,
 .template-key main {
     height: calc(100% - 96px);
-}
-.template-locale .navbar-form .input-field input[type=search],
-.template-key .navbar-form .input-field input[type=search] {
-	width: calc(100% - 10rem);
 }
 
 /* Vertical Alignment */

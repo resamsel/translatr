@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import models.Key;
 import models.Locale;
-import models.Project;
 import play.libs.Json;
 
 public class Message extends Dto

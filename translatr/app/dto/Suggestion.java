@@ -16,7 +16,7 @@ public class Suggestion
 {
 	public String value;
 
-	public String data;
+	public Suggestable.Data data;
 
 	public static Suggestion from(Suggestable suggestable)
 	{

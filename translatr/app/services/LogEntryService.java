@@ -7,7 +7,6 @@ import com.google.inject.ImplementedBy;
 import criterias.LogEntryCriteria;
 import models.Aggregate;
 import models.LogEntry;
-import models.Stat;
 import services.impl.LogEntryServiceImpl;
 
 /**

@@ -83,9 +83,9 @@ public class Project implements Suggestable
 	}
 
 	@Override
-	public String data()
+	public Data data()
 	{
-		return routes.Projects.project(id).absoluteURL(Context.current().request());
+		return Data.from(Project.class, name, routes.Projects.project(id).absoluteURL(Context.current().request()));
 	}
 
 	private static final Find<UUID, Project> find = new Find<UUID, Project>()
