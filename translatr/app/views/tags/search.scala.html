@@ -4,6 +4,8 @@
 	id="form-search"
 	class="navbar-form"
 	role="search">
+	<input type="hidden" name="@form("limit").name" value="@form("limit").value" />
+	<input type="hidden" name="@form("offset").name" value="@form("offset").value" />
 	<div class="input-field">
 		@filter
 		<i class="material-icons search">search</i>

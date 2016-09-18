@@ -22,6 +22,7 @@ import models.Key;
 import models.Locale;
 import models.Project;
 import models.Suggestable;
+import play.Configuration;
 import play.data.Form;
 import play.data.FormFactory;
 import play.libs.Json;
@@ -45,14 +46,17 @@ public class Projects extends AbstractController
 
 	private final FormFactory formFactory;
 
+	private final Configuration configuration;
+
 	/**
 	 * 
 	 */
 	@Inject
-	public Projects(FormFactory formFactory, LogEntryService logEntryService)
+	public Projects(FormFactory formFactory, LogEntryService logEntryService, Configuration configuration)
 	{
 		this.formFactory = formFactory;
 		this.logEntryService = logEntryService;
+		this.configuration = configuration;
 	}
 
 	public Result project(UUID id)
@@ -64,7 +68,7 @@ public class Projects extends AbstractController
 
 		select(project);
 
-		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
+		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 
 		return ok(
 			log(
@@ -83,7 +87,7 @@ public class Projects extends AbstractController
 
 		select(project);
 
-		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
+		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 		SearchForm search = form.get();
 
 		List<Suggestable> suggestions = new ArrayList<>();

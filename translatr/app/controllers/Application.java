@@ -43,6 +43,7 @@ import models.Key;
 import models.Locale;
 import models.Message;
 import models.Project;
+import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
@@ -86,9 +87,12 @@ public class Application extends AbstractController
 
 	private final MessageService messageService;
 
+	private final Configuration configuration;
+
 	@Inject
 	public Application(Injector injector, FormFactory formFactory, CacheApi cache, ProjectService projectService,
-				LocaleService localeService, KeyService keyService, MessageService messageService)
+				LocaleService localeService, KeyService keyService, MessageService messageService,
+				Configuration configuration)
 	{
 		this.injector = injector;
 		this.formFactory = formFactory;
@@ -97,6 +101,7 @@ public class Application extends AbstractController
 		this.localeService = localeService;
 		this.keyService = keyService;
 		this.messageService = messageService;
+		this.configuration = configuration;
 	}
 
 	public Result index()
@@ -107,9 +112,7 @@ public class Application extends AbstractController
 
 	public Result dashboard()
 	{
-		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
-
-		return ok(views.html.dashboard.render(Project.all(), form));
+		return ok(views.html.dashboard.render(Project.all(), SearchForm.bindFromRequest(formFactory, configuration)));
 	}
 
 	public Result projectCreate()
@@ -178,7 +181,7 @@ public class Application extends AbstractController
 
 		select(project);
 
-		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
+		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 		SearchForm search = form.get();
 
 		List<Locale> locales = Locale.findBy(
@@ -211,7 +214,7 @@ public class Application extends AbstractController
 
 		select(project);
 
-		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
+		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 		SearchForm search = form.get();
 
 		List<Key> keys = Key.findBy(
@@ -243,7 +246,7 @@ public class Application extends AbstractController
 
 		select(project);
 
-		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+		SearchForm form = SearchForm.bindFromRequest(formFactory, configuration).get();
 
 		List<Key> keys = Key.findBy(
 			new KeyCriteria()
@@ -273,7 +276,7 @@ public class Application extends AbstractController
 
 		select(locale.project);
 
-		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
+		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 		SearchForm search = form.get();
 
 		List<Key> keys = Key.findBy(
@@ -306,7 +309,7 @@ public class Application extends AbstractController
 		if(locale == null)
 			return redirect(routes.Application.index());
 
-		SearchForm form = formFactory.form(SearchForm.class).bindFromRequest().get();
+		SearchForm form = SearchForm.bindFromRequest(formFactory, configuration).get();
 
 		List<Key> keys = Key.findBy(
 			new KeyCriteria()
@@ -490,7 +493,7 @@ public class Application extends AbstractController
 
 		select(key.project);
 
-		Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest();
+		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 
 		Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
 

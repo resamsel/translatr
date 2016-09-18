@@ -1,5 +1,9 @@
 package forms;
 
+import play.Configuration;
+import play.data.Form;
+import play.data.FormFactory;
+
 /**
  * (c) 2016 Skiline Media GmbH
  * <p>
@@ -11,9 +15,9 @@ public class SearchForm
 {
 	public String search;
 
-	public boolean missing = false;
+	public Boolean missing;
 
-	public Integer limit = 100;
+	public Integer limit;
 
 	public Integer offset = 0;
 
@@ -67,5 +71,19 @@ public class SearchForm
 	public String toString()
 	{
 		return String.format("SearchForm [search=%s, limit=%s, offset=%s]", search, limit, offset);
+	}
+
+	public static Form<SearchForm> bindFromRequest(FormFactory formFactory, Configuration configuration)
+	{
+		Form<SearchForm> out = formFactory.form(SearchForm.class).bindFromRequest();
+
+		SearchForm defaults = out.get();
+
+		if(defaults.missing == null)
+			defaults.missing = configuration.getBoolean("translatr.search.missing", false);
+		if(defaults.limit == null)
+			defaults.limit = configuration.getInt("translatr.search.limit", 20);
+
+		return out;
 	}
 }
