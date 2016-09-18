@@ -1,3 +1,49 @@
+App.Modules.MaterialModule = function(sb) {
+	var select = sb.dom.find('select');
+
+	return {
+		create: function() {
+			select.material_select();
+		},
+		destroy: function() {
+		}
+	};
+};
+
+App.Modules.LocaleCreateModule = function(sb) {
+	var form = sb.dom.find('#form-locale');
+	var fieldLocaleName = sb.dom.find('#field-locale-name');
+	var buttonSave = sb.dom.find('#modal-create-locale .btn-save');
+
+	return {
+		create: function() {
+			buttonSave.click(function() {
+				form.attr('action', form.attr('action') + '#locale=' + fieldLocaleName.val());
+				form.submit();
+			});
+		},
+		destroy: function() {
+		}
+	};
+};
+
+App.Modules.KeyCreateModule = function(sb) {
+	var form = sb.dom.find('#form-key');
+	var fieldKeyName = sb.dom.find('#field-key-name');
+	var buttonSave = sb.dom.find('#modal-create-key .btn-save');
+
+	return {
+		create: function() {
+			buttonSave.click(function() {
+				form.attr('action', form.attr('action') + '#key=' + fieldKeyName.val());
+				form.submit();
+			});
+		},
+		destroy: function() {
+		}
+	};
+};
+
 App.Modules.TimelineModule = function(sb) {
 	var options = {
 		chartPadding: {
@@ -44,18 +90,9 @@ App.Modules.SuggestionModule = function(sb) {
 	};
 };
 
+App.Core.register('MaterialModule', App.Modules.MaterialModule);
+App.Core.register('LocaleCreateModule', App.Modules.LocaleCreateModule);
+App.Core.register('KeyCreateModule', App.Modules.KeyCreateModule);
 App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
 App.Core.register('TimelineModule', App.Modules.TimelineModule);
-
-$(document).ready(function() {
-	$('select').material_select();
-	$('#modal-create-locale .btn-save').click(function() {
-		$('#form-locale').attr('action', $('#form-locale').attr('action') + '#locale=' + $('#field-locale-name').val());
-		$('#form-locale').submit();
-	});
-	$('#modal-create-key .btn-save').click(function() {
-		$('#form-key').attr('action', $('#form-key').attr('action') + '#key=' + $('#field-key-name').val());
-		$('#form-key').submit();
-	});
-});
