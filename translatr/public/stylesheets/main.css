@@ -1,5 +1,3 @@
-@import url("media.css");
-
 html, body {
 	background-color: #f2f2f2;
 	display: flex;
@@ -26,13 +24,6 @@ main {
 .btn-save:focus {
 	background-color: #1e88e5;
 }
-.fixed-action-btn {
-	top: 68px;
-	bottom: auto;
-}
-.fixed-action-btn.horizontal ul li {
-    margin: 7.5px;
-}
 
 /* Modal */
 .modal form {
@@ -54,6 +45,9 @@ nav {
 }
 nav .nav-wrapper {
     padding: 0 1rem;
+}
+.navbar-fixed {
+	height: 88px;
 }
 .navbar-form {
 	padding: 10px;
@@ -81,7 +75,7 @@ nav .nav-wrapper {
 }
 .navbar-form .input-field i.material-icons {
 	height: 100%;
-	line-height: 44px;
+	line-height: 36px;
 }
 .navbar-form .input-field i.material-icons.search {
     position: absolute;
@@ -195,7 +189,9 @@ nav .nav-wrapper {
 /* Breadcrumb */
 .breadcrumbs {
 	position: fixed;
-    top: 64px; /* TODO: adapt to media queries of nav element */
+	height: 32px;
+    overflow: hidden;
+    top: 56px;
     left: 0;
     right: 0;
 	margin-bottom: 8px;
@@ -250,20 +246,20 @@ nav .nav-wrapper {
     width: 33%;
 }
 .btn-hover {
-	padding: 0 1rem;
+	padding: 0 0.6rem;
 	visibility: hidden;
 }
 .collection-item:hover .btn-hover,
 tr:hover .btn-hover {
 	visibility: visible;
+	color: #616161;
+}
+.collection-item:hover .btn-flat:hover {
+	background-color: transparent;
+	color: #343434;
 }
 
 /* Editor */
-.editor,
-.editor>.row,
-.navview {
-	height: 100%;
-}
 .editor>.row {
     margin-bottom: 0;
 }
@@ -321,7 +317,8 @@ tr:hover .btn-hover {
 	background-color: rgba(0,0,0,.03);
 }
 .collection-item .name {
-	max-width: calc(100% - 50px);
+	display: inline-block;
+	max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -330,6 +327,7 @@ tr:hover .btn-hover {
 	font-size: 11px;
     max-width: calc(100% - 50px);
     line-height: 1.1rem;
+    min-height: 1.1rem; /* avoids strange alignment error in mobile */
     max-height: 2.2rem; /* 2 * line-height */
     overflow: hidden;
     text-overflow: ellipsis;
@@ -345,6 +343,18 @@ tr:hover .btn-hover {
     color: rgba(255,255,255,0.7);
 }
 
+.collection.locales,
+.collection.keys,
+.collection.messages {
+	white-space: nowrap;
+	overflow: auto;
+}
+.collection.locales .collection-item,
+.collection.keys .collection-item,
+.collection.messages .collection-item {
+    display: inline-block;
+    width: 200px;
+}
 .collection.locales .collection-item.active,
 .collection.locales .collection-item.active:hover,
 .collection.locales .collection-item.active:focus {
@@ -366,9 +376,8 @@ html.template-locale,
 html.template-key,
 .template-locale body,
 .template-key body {
-		height: 100%;
-	    display: block;
-	    min-height: 1px;
+	display: block;
+	min-height: 1px;
 }
 .template-locale main,
 .template-key main {
