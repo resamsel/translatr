@@ -1,6 +1,6 @@
 import com.typesafe.sbt.packager.docker._
 
-name := """play-translatr"""
+name := """translatr"""
 
 version := "1.0-SNAPSHOT"
 
