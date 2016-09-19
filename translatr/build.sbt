@@ -4,7 +4,11 @@ name := """translatr"""
 
 version := "0.1.2"
 
-lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
+lazy val root = (project in file(".")).
+	enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin).
+	settings(
+		buildInfoKeys := Seq[BuildInfoKey](name, version)
+	)
 
 scalaVersion := "2.11.8"
 
