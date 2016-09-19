@@ -60,6 +60,7 @@
 		bottom: 10%;
 		left:7%;
 	}
+	.collection.locales .collection-item,
 	.collection.keys .collection-item,
 	.collection.messages .collection-item {
 		display: block;
