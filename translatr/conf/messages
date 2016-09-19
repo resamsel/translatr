@@ -11,6 +11,7 @@ button.open = Open
 button.remove = Remove
 button.save = Save
 button.undo = Undo
+copyright = © 2016 René Samselnig (Version {0})
 dashboard = Dashboard
 dashboard.title = Dashboard
 filetype.choose = Choose file type
