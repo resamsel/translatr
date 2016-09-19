@@ -77,12 +77,12 @@ public class SearchForm
 	{
 		Form<SearchForm> out = formFactory.form(SearchForm.class).bindFromRequest();
 
-		SearchForm defaults = out.get();
+		SearchForm form = out.get();
 
-		if(defaults.missing == null)
-			defaults.missing = configuration.getBoolean("translatr.search.missing", false);
-		if(defaults.limit == null)
-			defaults.limit = configuration.getInt("translatr.search.limit", 20);
+		if(form.missing == null)
+			form.missing = configuration.getBoolean("translatr.search.missing", false);
+		if(form.limit == null)
+			form.limit = configuration.getInt("translatr.search.limit", 20);
 
 		return out;
 	}
