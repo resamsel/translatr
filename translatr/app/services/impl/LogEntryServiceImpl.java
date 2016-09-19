@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
 
 import criterias.LogEntryCriteria;
@@ -32,6 +33,11 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryServiceImpl.class);
 
+	private static final String H2_COLUMN_MILLIS =
+				"datediff('millisecond', timestamp '1970-01-01 00:00:00', parsedatetime(formatdatetime(when_created, 'yyyy-MM-dd HH:00:00'), 'yyyy-MM-dd HH:mm:ss'))*1000";
+
+	private static final String POSTGRESQL_COLUMN_MILLIS = "extract(epoch from date_trunc('hour', when_created))*1000";
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -41,18 +47,38 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
 		return log(
 			() -> Ebean
 				.find(Aggregate.class)
-				.setRawSql(
-					RawSqlBuilder
-						.parse(
-							"select extract(epoch from date_trunc('hour', when_created))*1000 as millis, count(*) as cnt from log_entry group by 1 order by 1")
-						.columnMapping("extract(epoch from date_trunc('hour', when_created))*1000", "millis")
-						.columnMapping("count(*)", "value")
-						.create())
+				.setRawSql(getStatsRawSql())
 				.where()
 				.eq("project_id", criteria.getProjectId())
 				.findList(),
 			LOGGER,
 			"Retrieving log entry stats");
+	}
+
+	/**
+	 * @return
+	 */
+	private RawSql getStatsRawSql()
+	{
+		String dbpName = Ebean.getDefaultServer().getPluginApi().getDatabasePlatform().getName();
+		if("h2".equals(dbpName))
+			return RawSqlBuilder
+				.parse(
+					String.format(
+						"select %1$s as millis, count(*) as cnt from log_entry group by %1$s order by 1",
+						H2_COLUMN_MILLIS))
+				.columnMapping(H2_COLUMN_MILLIS, "millis")
+				.columnMapping("count(*)", "value")
+				.create();
+
+		return RawSqlBuilder
+			.parse(
+				String.format(
+					"select %1$s as millis, count(*) as cnt from log_entry group by 1 order by 1",
+					POSTGRESQL_COLUMN_MILLIS))
+			.columnMapping(POSTGRESQL_COLUMN_MILLIS, "millis")
+			.columnMapping("count(*)", "value")
+			.create();
 	}
 
 	/**
