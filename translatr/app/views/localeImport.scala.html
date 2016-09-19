@@ -1,22 +1,64 @@
-@(locale: models.Locale)
+@(project: models.Project, locale: models.Locale)
 
-@main(Messages("locale", locale.project.name, tags.locale(locale))) {
+@main(utils.TemplateInfo.from(Messages("locale.import.title", locale.project.name, tags.locale(locale.name)))) {
 } {
-	<div class="col-md-6 col-md-offset-3">
-		<div id="panel-message" class="panel panel-primary">
-			<div class="panel-heading">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 class="panel-title">@Messages("locale.import")</h3>
-			</div>
-			<div class="panel-body">
-				<form action="@routes.ApplicationController.localeImport(locale.id)" method="post" enctype="multipart/form-data">
-					<div class="form-group">
-						<label for="field-messages">@Messages("locale.import.file")</label>
-						<input id="field-messages" name="messages" class="form-control" type="file" />
+		<a class="breadcrumb" href="@routes.Application.dashboard()">
+			@Messages("dashboard")
+		</a>
+		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
+			@project.name
+		</a>
+		<a class="breadcrumb" href="@routes.Application.projectLocales(project.id)">
+			@Messages("locales")
+		</a>
+		<a class="breadcrumb" href="@routes.Application.locale(locale.id)">
+			@tags.locale(locale.name)
+		</a>
+} {
+	@tags.content {
+		<div class="col m6 offset-m3">
+			<form action="@routes.Application.localeImport(locale.id)" method="post" enctype="multipart/form-data">
+				<div id="panel-message" class="card">
+					<div class="card-image blue">
+						<span class="card-title">@Messages("locale.import")</span>
 					</div>
-					<button id="submit" class="btn btn-primary">@Messages("button.save")</button>
-				</form>
-			</div>
+					<div class="card-content">
+						<div class="input-field">
+							@tags.fileTypes()
+						</div>
+						<div class="file-field input-field">
+							<div class="btn">
+								<span>@Messages("import.file")</span>
+								<input
+									id="field-messages"
+									type="file"
+									name="messages" />
+							</div>
+							<div class="file-path-wrapper">
+								<input
+									class="file-path validate"
+									type="text"
+									placeholder="@Messages("locale.import.file")">
+							</div>
+						</div>
+					</div>
+					<div class="card-action">
+						<button
+							type="submit"
+							class="btn btn-link btn-save">
+							@Messages("button.import")
+							<i class="material-icons right">send</i>
+						</button>
+						<a
+							class="btn-flat btn-cancel black-text"
+							href="@routes.Application.projectLocales(locale.project.id)">
+							@Messages("button.cancel")
+						</a>
+					</div>
+				</div>
+			</form>
 		</div>
-	</div>
+	}
+
+	<script src="@routes.Assets.versioned("javascripts/localeImport.js")"></script>
 }

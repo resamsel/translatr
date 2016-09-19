@@ -1,193 +1,125 @@
-@(project: models.Project, locale: models.Locale, locales: List[models.Locale])
+@(project: models.Project, locale: models.Locale, keys: List[models.Key], locales: List[models.Locale], messages: Map[String, models.Message], form: Form[forms.SearchForm])
 
-@main(Messages("locale", project.name, tags.locale(locale))) {
-	<form id="form-search" class="navbar-form" role="search">
-		<div class="form-group">
-			<input id="field-search" type="text" class="form-control" placeholder="@Messages("search")">
-		</div> <!-- /input-group -->
-		<input type="submit" class="hidden" />
-	</form>
+@import utils.TemplateInfo.from
+
+@main(from(Messages("locale.title", project.name, tags.locale(locale.name)), "locale")) {
+	@tags.search(form) {
+		<button
+			type="button"
+			class="btn btn-flat dropdown-button"
+			data-activates="filter-options"
+			data-beloworigin="true"
+			data-alignment="right"
+			data-constrainwidth="false">
+			<i class="material-icons">arrow_drop_down</i>
+		</button>
+		<ul id="filter-options" class="dropdown-content">
+			<li>
+				<input id="field-missing" name="missing" type="checkbox" @if(form.get.missing) {checked="checked"} />
+				<label for="field-missing">
+					@Messages("message.untranslated")
+				</label>
+			</li>
+		</ul>
+	}
 } {
-	<ul class="breadcrumb">
-		<li>
-			<a href="@routes.ApplicationController.dashboard()">
-				@Messages("dashboard")
-			</a>
-		</li>
-		<li>
-			<a href="@routes.ApplicationController.project(locale.project.id)">
-				@project.name
-			</a>
-		</li>
-		<li class="active">@tags.locale(locale)</li>
-	</ul>
-
-	@tags.threeColumns {
-		<div class="list-group">
-			@for(key <- project.keys) {
-				<a href="#key=@key.name" class="list-group-item key @if(key.messageValue(locale) == null) { no-message }" id="@key.id" name="@key.name.toLowerCase">
-					<button class="btn btn-link btn-remove pull-right">
-						<span class="glyphicon glyphicon-trash"></span>
-						<span class="sr-only">@Messages("key.remove")</span>
-					</button>
-					<h4 class="list-group-item-heading name">@key.name</h4>
-					<p class="list-group-item-text value">@key.messageValue(locale)</p>
-				</a>
-			}
-		</div>
+	<a class="breadcrumb" href="@routes.Application.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
+		@project.name
+	</a>
+	<a class="breadcrumb" href="@routes.Application.projectLocales(project.id)">
+		@Messages("locales")
+	</a>
+	<a class="breadcrumb active" href="@routes.Application.locale(locale.id)">
+		@tags.locale(locale.name)
+	</a>
+} {
+	@tags.editor {
+		<h3 class="section-heading">@Messages("keys")</h3>
+		<ul class="collection keys">
+			@tags.keyItems(keys, messages, false)
+		</ul>
 	} {
-		<div id="no-selection" class="container-center">
-			<span class="center">@Messages("key.selection.none")</span>
-		</div>
-		<div id="panel-message" class="panel panel-primary">
-			<div class="panel-heading">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 class="panel-title">@Messages("locale.to.label")</h3>
-			</div>
-			<div class="panel-body">
-				<form id="form-message">
+		<form id="form-message">
+			<div id="panel-message" class="card">
+				<div class="card-image red">
+					<span class="card-title">@Messages("locale.to.label") @tags.locale(locale.name)</span>
+				</div>
+				<div class="progress" style="margin: 0; visibility: hidden">
+					<div class="indeterminate"></div>
+				</div>
+				<div class="card-content">
 					<input id="field-id" type="hidden" />
+					<input id="field-key" type="hidden" />
 					<input id="field-keyId" type="hidden" />
-					<div class="form-group">
-						<select id="field-locale-to" class="form-control">
-							@for(l <- locales) {
-								<option value="@l.id">@tags.locale(l)</option>
-							}
-						</select>
+					<div class="input-field">
+						<textarea
+							id="field-value"
+							class="materialize-textarea"></textarea>
+						<label for="field-value">@Messages("locale.value.label")</label>
 					</div>
-					<div class="form-group">
-						<label>@Messages("locale.preview")</label>
-						<div id="preview"></div>
-					</div>
-					<div class="form-group hidden">
-						<label for="field-key">@Messages("locale.key.label")</label>
-						<input id="field-key" class="form-control" type="text" disabled="disabled" />
-					</div>
-					<div class="form-group">
-						<textarea id="field-value" class="form-control" rows="3" placeholder="@Messages("locale.value.label")"></textarea>
-					</div>
-					<button id="submit" class="btn btn-primary">@Messages("button.save")</button>
-				</form>
+				</div>
+				<div class="card-action">
+					<button
+						type="submit"
+						class="btn waves-effect waves-light btn-save">
+						@Messages("button.save")
+						<i class="material-icons right">send</i>
+					</button>
+					<button
+						type="button"
+						class="btn-flat waves-effect waves-light btn-cancel">
+						@Messages("button.cancel")
+					</button>
+				</div>
 			</div>
+		</form>
+
+		<!-- Preview -->
+		<div id="panel-preview">
+			<h3 class="section-heading">@Messages("locale.preview")</h3>
+			<div id="preview"></div>
+		</div>
+
+		<div id="no-selection" class="valign-wrapper">
+			<span class="valign">@Messages("key.selection.none")</span>
 		</div>
 	} {
+		<h3 class="section-heading">@Messages("messages")</h3>
+		<ul id="panel-messages" class="collection messages">
+			<li class="collection-item waves-effect waves-red message template">
+				<a title="@Messages("value.copy")">
+					<span class="title localeName truncate">Name</span>
+					<div class="value">Value</div>
+				</a>
+			</li>
+		</ul>
 	}
 
-	<button type="button" id="create" class="btn btn-circle btn-raised btn-primary"data-toggle="modal" data-target="#modal-create">
-		<span class="glyphicon glyphicon-plus"></span>
-	</button>
+	@tags.modalTrigger("create", "add", Messages("key.create.tooltip"), "light-green")
 
 	@tags.modal(Messages("key.new"), "modal-create") {
-	<form id="form-key" method="post" action="@routes.ApplicationController.keyCreate(locale.id)">
-		<div class="form-group">
-			<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
-		</div>
-	</form>
+		<form id="form-key" method="post" action="@routes.Application.keyCreate(project.id, locale.id)">
+			<div class="form-group">
+				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
+			</div>
+		</form>
 	}
 
+	<script src="@routes.Assets.versioned("javascripts/jquery.autocomplete.min.js")"></script>
 	<script>
-		function updateForm(keyId, keyName) {
-			$("#no-selection").hide();
-			$("#panel-message").show();
-		    $('#field-id').val('');
-			$('#field-key').val(keyName).attr('keyId', keyId);
-		    $('#field-value').val('');
-		    $('#preview').html('');
-			$.ajax(
-				jsRoutes.controllers.ApiController.getMessage($('#field-locale-to').val(), keyName)
-			).done(function(data) {
-			    if (console && console.log) {
-					console.log('Message: ', data);
-				}
-			    $('#field-id').val(data.id);
-			    $('#field-key').val(data.key.name).attr('keyId', data.key.id);
-			    $('#field-value').val(data.value);
-			    $('#preview').html(data.value);
-			});
-		}
-		function search(value) {
-		    if(value !== '') {
-				$('a.key').hide();
-				$('a.key[name*="' + value.toLowerCase() +'"]').show();
-		    } else {
-		    	$('a.key').show();
-		    }
-		}
-		$(document).ready(function() {
-			$("#panel-message").hide();
-			$('#field-search').on('change keyup paste', function() {
-				search($('#field-search').val());
-			});
-			$('#form-search').submit(function(e) {
-				console.log('Hide...');
-		        e.preventDefault();
-		        search($('#field-search').val());
-			});
-			$("#form-message").submit(function(e){
-		        e.preventDefault();
-				$.ajax(
-					$.extend(
-						jsRoutes.controllers.ApiController.putMessage(),
-						{
-							contentType: 'application/json',
-							dataType: 'json',
-							data: JSON.stringify({
-								"id": $('#field-id').val() !== '' ? $('#field-id').val() : null,
-								"locale": {
-								  "id": $('#field-locale-to').val()
-								},
-								"key": {
-									"id": $('#field-key').attr('keyId')
-								},
-								"value": $('#field-value').val()
-							})
-						}
-					)
-				).done(function(data) {
-				    if (console && console.log) {
-						console.log('Updated: ', data);
-					}
-				    if(data.locale.id === '@locale.id') {
-				    	$('#' + data.key.id).removeClass('no-message');
-				    	$('#' + data.key.id + ' .value').html(data.value);
-				    }
-				});
-		    });
-			$('a.key').click(function() {
-				$('a.key').removeClass('active');
-				$(this).addClass('active')
-				updateForm($(this).attr('id'), $(this).attr('name'));
-			})
-			$('a.key .btn-remove').click(function(e) {
-				e.stopPropagation();
-				window.location.href=jsRoutes.controllers.ApplicationController.keyRemove($(this).parent().attr('id'), '@locale.id').url;
-			});
-			$('#field-locale-from').change(function() {
-				window.location.href=jsRoutes.controllers.ApplicationController.locale($('#field-locale-from').val()).url + '#key=' + $('#field-key').val();
-			});
-			$('#field-locale-to').change(function() {
-				updateForm($('#field-key').attr('keyId'), $('#field-key').val());
-			});
-			$('#field-value').on('change keyup paste', function() {
-			    $('#preview').html($('#field-value').val());
-			});
-			$('button.close').click(function() {
-				$('a.key').removeClass('active');
-				$("#panel-message").hide();		
-				$("#no-selection").show();
-				window.location.hash = '#';
-			});
-			$('.button-save').click(function() {
-				$('#form-key').attr('action', $('#form-key').attr('action') + '#key=' + $('#field-key-name').val());
-				$('#form-key').submit();
-			});
-		
-			var hash = window.location.hash;
-			if(hash !== '') {
-				console.log('Hash: ', hash);
-				var keyName = hash.replace('#key=', '');
-				$('a.key[name="'+keyName+'"]').click();
+		var projectId = '@project.id';
+		var localeId = '@locale.id';
+		var locales = {
+			@for(locale <- locales) {
+				'@locale.id': '@tags.locale(locale.name)',
 			}
-		});
+		};
+		var messages = {
+			'message.updated': '@Messages("message.updated")'
+		};
 	</script>
+	<script src="@routes.Assets.versioned("javascripts/locale.js")"></script>
 }

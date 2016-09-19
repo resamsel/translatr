@@ -1,0 +1,24 @@
+@if(ctx().args.containsKey("brandProjectId") && ctx().args.containsKey("undefined")) {
+	<div class="undefined template">
+		@Html(Messages("key.undefined"))
+		<strong class="keyName"></strong>
+		<a
+			href="#"
+			class="btn-flat amber-text">
+			@Messages("button.create")
+		</a>
+	</div>
+	<script>
+		$(document).ready(function() {
+			var $toastContent, $a;
+
+			@for(k <- ctx().args("undefined").asInstanceOf[List[String]]) {
+				$toastContent = $('.undefined.template').clone().removeClass('template');
+				$toastContent.find('.keyName').text('@k');
+				$a = $toastContent.find('a');
+				$a.attr('href', jsRoutes.controllers.Application.keyCreateImmediately('@ctx().args("brandProjectId")', '@k').url);
+				Materialize.toast($toastContent, 10000);
+			}
+		})
+	</script>
+}

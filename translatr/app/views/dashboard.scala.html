@@ -1,69 +1,56 @@
-@(projects: List[models.Project])
+@(projects: List[models.Project], form: Form[forms.SearchForm])
 
-@main(Messages("projects")) {
-	<form id="form-search" class="navbar-form" role="search">
-		<div class="form-group">
-			<input id="field-search" type="text" class="form-control" placeholder="@Messages("search")">
-		</div> <!-- /input-group -->
-		<input type="submit" class="hidden" />
-	</form>
+@main(utils.TemplateInfo.from(Messages("dashboard.title"))) {
+	@tags.search(form)()
 } {
-	<div class="col-md-12">
-		@for(project <- projects) {
-			@tags.card(styleClass="project", name=project.name.toLowerCase) {
-				<span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
-				@project.name
-			} {
-				@Messages("project.info")
-				@Messages("locales.size", project.locales.size()),
-				@Messages("keys.size", project.keys.size()),
-				@Messages("messages.size", project.messagesSize())
-			} {
-				<a href="@routes.ApplicationController.project(project.id)">
-					<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
-					@Messages("button.goto", Messages("project"))
-				</a>
-			}
-		}
-	</div>
-	<!-- /.col-md-4 -->
+		<a class="breadcrumb" href="@routes.Application.dashboard()">
+			@Messages("dashboard")
+		</a>
+} {
+	@tags.content {
+		<div class="col m12 dashboard">
+			<div class="container">
+				@for(project <- projects) {
+					<div class="card project hoverable" name="@project.name.toLowerCase">
+						<div class="card-image orange">
+							<span class="card-title">@project.name</span>
+						</div>
+						<div class="progress">
+							<div class="determinate" style="width: @{project.progress()*100}%;"></div>
+						</div>
+						<div class="card-content">
+							<p>
+								@Messages("project.info")
+								@Messages("locales.size", project.localesSize()),
+								@Messages("keys.size", project.keysSize()),
+								@Messages("messages.size", project.messagesSize())
+							</p>
+						</div>
+						<div class="card-action">
+							<a href="@routes.Projects.project(project.id)">
+								@Messages("button.open")
+							</a>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+		<!-- /.col .m12 -->
+	}
 
-	<button type="button" id="create" class="btn btn-circle btn-raised btn-primary" data-toggle="modal" data-target="#modal-create">
-		<span class="glyphicon glyphicon-plus"></span>
-	</button>
+	@tags.modalTrigger("create", "add", Messages("project.create.tooltip"), "orange")
 
 	@tags.modal(Messages("project.new"), "modal-create") {
-		<form id="form-project" method="post" action="@routes.ApplicationController.projectCreate()">
+		<form id="form-project" method="post" action="@routes.Application.projectCreate()">
 			<div class="form-group">
-				<input id="field-project-name" name="name" class="form-control" placeholder="@Messages("project.label")"></input>
+				<input
+					id="field-project-name"
+					name="name"
+					class="form-control"
+					placeholder="@Messages("project.label")"></input>
 			</div>
 		</form>
 	}
 
-	<script>
-		$(document).ready(function() {
-			$('.button-save').click(function() {
-				$('#form-locale').submit();
-			});
-		});
-	</script>
-
-	<script>
-		function search(value) {
-		    if(value !== '') {
-				$('.card.project').hide();
-				$('.card.project[name*="' + value.toLowerCase() +'"]').show();
-		    } else {
-		    	$('.card.project').show();
-		    }
-		}
-		$(document).ready(function() {
-			$('#field-search').on('change keyup paste', function() {
-				search($('#field-search').val());
-			});
-			$('.button-save').click(function() {
-				$('#form-project').submit();
-			});
-		});
-	</script>
+	<script src="@routes.Assets.versioned("javascripts/dashboard.js")"></script>
 }

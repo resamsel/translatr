@@ -26,10 +26,17 @@
 
   <logger name="play" level="INFO" />
   <logger name="application" level="DEBUG" />
+  <logger name="filters" level="DEBUG" />
   <logger name="controllers" level="DEBUG" />
+  <logger name="services" level="DEBUG" />
   <logger name="importers" level="DEBUG" />
   <logger name="exporters" level="DEBUG" />
-
+  <logger name="models" level="DEBUG" />
+  <logger name="dto" level="DEBUG" />
+  <logger name="commands" level="DEBUG" />
+  <logger name="i18n" level="DEBUG" />
+  <logger name="org.jdbcdslog.StatementLogger"  level="INFO" /> <!-- Will log all statements -->
+  
   <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->
   <logger name="com.avaje.ebean.config.PropertyMapLoader" level="OFF" />
   <logger name="com.avaje.ebeaninternal.server.core.XmlConfigLoader" level="OFF" />

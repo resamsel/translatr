@@ -1,0 +1,7 @@
+@(key: models.Key)
+
+@import org.apache.commons.lang3.StringUtils._
+
+<a
+	href="@routes.Application.key(key.id)"
+	title="@key.name">@abbreviate(key.name, 20)</a>

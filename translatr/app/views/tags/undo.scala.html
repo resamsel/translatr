@@ -1,0 +1,16 @@
+@if(ctx().args.containsKey("undoCommand")) {
+	<div class="undo template">
+		@Html(ctx().args("undoMessage").toString)
+		<a
+			href="@routes.Application.commandExecute(ctx().args("undoCommand").toString)"
+			class="btn-flat amber-text">
+			@Messages("button.undo")
+		</a>
+	</div>
+	<script>
+		$(document).ready(function() {
+			var $toastContent = $('.undo.template').clone().removeClass('template');
+			Materialize.toast($toastContent, 10000);
+		})
+	</script>
+}

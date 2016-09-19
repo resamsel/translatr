@@ -11,3 +11,5 @@ RUNNING_PID
 .sbtserver
 bower_components
 node_modules
+.translatr.yml
+translatr/data
