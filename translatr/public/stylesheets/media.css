@@ -48,11 +48,19 @@
 	    margin: 7.5px;
 	}
 
-	html.template-locale,
-	html.template-key,
+	.template-locale,
+	.template-key,
 	.template-locale body,
 	.template-key body {
 		height: 100%;
+	}
+	.template-locale footer,
+	.template-key footer {
+		display: none;
+	}
+	.template-locale main,
+	.template-key main {
+		height: calc(100% - 120px);
 	}
 	#toast-container {
 		top: auto !important;
