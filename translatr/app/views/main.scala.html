@@ -1,11 +1,13 @@
-@*
- * See: https://blackrockdigital.github.io/startbootstrap-sb-admin-2/pages/index.html
- *@
 @(info: utils.TemplateInfo)(nav: Html)(breadcrumbs: Html)(content: Html)
 
 <!DOCTYPE html>
-<html lang="en" class="template-@info.template">
+<html lang="@ctx.lang().locale" class="template-@info.template">
 <head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Language" content="@ctx.lang().locale">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>@info.title</title>
 
 <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/materialize.min.css")">
