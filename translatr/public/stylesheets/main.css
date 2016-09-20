@@ -424,13 +424,13 @@ html.template-key,
 	stroke: #ff9800;
 }
 .ct-chart .ct-series-b .ct-bar {
-	stroke: #F44336;
+	stroke: #2196F3;
 }
 .ct-chart .ct-series-c .ct-bar {
 	stroke: #8bc34a;
 }
 .ct-chart .ct-series-d .ct-bar {
-	stroke: #2196F3;
+	stroke: #F44336;
 }
 .ct-chart .ct-grid {
     stroke: rgba(0,0,0,.1);

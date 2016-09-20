@@ -69,7 +69,7 @@ App.Modules.TimelineModule = function(sb) {
 
 	return {
 		create: function() {
-			new Chartist.Line('#chart-timeline', data, options);
+			new Chartist.Bar('#chart-timeline', data, options);
 		},
 		destroy: function() {
 		}

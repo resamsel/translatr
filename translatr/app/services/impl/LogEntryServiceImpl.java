@@ -65,18 +65,20 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
 			return RawSqlBuilder
 				.parse(
 					String.format(
-						"select %1$s as millis, count(*) as cnt from log_entry group by %1$s order by 1",
+						"select %1$s as millis, content_type as key, count(*) as cnt from log_entry group by %1$s, content_type order by 1",
 						H2_COLUMN_MILLIS))
 				.columnMapping(H2_COLUMN_MILLIS, "millis")
+				.columnMapping("content_type", "key")
 				.columnMapping("count(*)", "value")
 				.create();
 
 		return RawSqlBuilder
 			.parse(
 				String.format(
-					"select %1$s as millis, count(*) as cnt from log_entry group by 1 order by 1",
+					"select %1$s as millis, content_type as key, count(*) as cnt from log_entry group by 1, 2 order by 1",
 					POSTGRESQL_COLUMN_MILLIS))
 			.columnMapping(POSTGRESQL_COLUMN_MILLIS, "millis")
+			.columnMapping("content_type", "key")
 			.columnMapping("count(*)", "value")
 			.create();
 	}

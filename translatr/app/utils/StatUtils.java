@@ -31,7 +31,7 @@ public class StatUtils
 			.collect(Collectors.groupingBy(m -> withMinuteSecondMillisReset(m.whenUpdated)))
 			.entrySet()
 			.stream()
-			.map(e -> new Aggregate(e.getKey().getMillis(), e.getValue().size()))
+			.map(e -> new Aggregate(e.getKey().getMillis(), null, e.getValue().size()))
 			.collect(Collectors.toList());
 	}
 
@@ -43,7 +43,7 @@ public class StatUtils
 			.collect(Collectors.groupingBy(k -> withMinuteSecondMillisReset(k.whenUpdated)))
 			.entrySet()
 			.stream()
-			.map(e -> new Aggregate(e.getKey().getMillis(), e.getValue().size()))
+			.map(e -> new Aggregate(e.getKey().getMillis(), null, e.getValue().size()))
 			.collect(Collectors.toList());
 	}
 
@@ -55,7 +55,7 @@ public class StatUtils
 			.collect(Collectors.groupingBy(l -> withMinuteSecondMillisReset(l.whenUpdated)))
 			.entrySet()
 			.stream()
-			.map(e -> new Aggregate(e.getKey().getMillis(), e.getValue().size()))
+			.map(e -> new Aggregate(e.getKey().getMillis(), null, e.getValue().size()))
 			.collect(Collectors.toList());
 	}
 
