@@ -1,15 +1,3 @@
-App.Modules.MaterialModule = function(sb) {
-	var select = sb.dom.find('select');
-
-	return {
-		create: function() {
-			select.material_select();
-		},
-		destroy: function() {
-		}
-	};
-};
-
 App.Modules.LocaleCreateModule = function(sb) {
 	var form = sb.dom.find('#form-locale');
 	var fieldLocaleName = sb.dom.find('#field-locale-name');

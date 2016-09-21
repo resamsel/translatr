@@ -120,16 +120,28 @@ App.Modules.MessageModule = function(sb) {
 	};
 };
 
-$(document).ready(function() {
+App.Modules.KeyHashModule = function(sb) {
 	var params = $.deparam.fragment();
-	if('locale' in params) {
-		var $a = $('a.locale[localeName="'+params.locale+'"]');
-		$a.click();
-	} else {
-		var $locale = $('.locales .collection-item:first-child a.locale');
-		$locale.click();
+	var doc = sb.dom.wrap(document);
+
+	function _initFromHash() {
+		if('locale' in params) {
+			var $a = sb.dom.find('a.locale[localeName="'+params.locale+'"]');
+			$a.click();
+		} else {
+			var $locale = sb.dom.find('.locales .collection-item:first-child a.locale');
+			$locale.click();
+		}
 	}
-});
+	
+	return {
+		create: function() {
+			doc.ready(_initFromHash);
+		},
+		destroy: function() {
+		}
+	};
+}
 
 App.Modules.SuggestionModule = function(sb) {
 	var filterUntranslated = sb.dom.find('#field-untranslated');
@@ -175,3 +187,4 @@ App.Core.register('KeyCreateModule', App.Modules.KeyCreateModule);
 App.Core.register('MessageModule', App.Modules.MessageModule);
 App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
+App.Core.register('KeyHashModule', App.Modules.KeyHashModule);

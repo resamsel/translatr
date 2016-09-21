@@ -11,6 +11,16 @@ App.Modules.ModalModule = function(sb) {
 	};
 };
 
+App.Modules.MaterialModule = function(sb) {
+	return {
+		create: function() {
+			sb.dom.find('select').material_select();
+		},
+		destroy: function() {
+		}
+	};
+};
+
 App.Modules.NProgressModule = function(sb) {
 	var doc = sb.dom.wrap(document);
 	var win = sb.dom.wrap(window);

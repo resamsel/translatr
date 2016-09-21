@@ -5,7 +5,6 @@ App.Modules.LocalesCreateModule = function(sb) {
 
 	return {
 		create : function() {
-			select.material_select();
 			saveButton.click(function() {
 				form.submit();
 			});
@@ -68,6 +67,7 @@ App.Modules.LocalesHashModule = function(sb) {
 	};
 };
 
+App.Core.register('MaterialModule', App.Modules.MaterialModule);
 App.Core.register('LocalesCreateModule', App.Modules.LocalesCreateModule);
 App.Core.register('LocalesSearchModule', App.Modules.LocalesSearchModule);
 App.Core.register('LocalesHashModule', App.Modules.LocalesHashModule);
