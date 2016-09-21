@@ -155,7 +155,7 @@ App.Modules.SuggestionModule = function(sb) {
 	}
 
 	function _handleSuggestionSelected(suggestion) {
-		if(suggestion.data.type == 'locale') {
+		if(suggestion.data.type == 'locale' && suggestion.data.name != '+++') {
 			_handleSearch(suggestion.data.name);
 		} else {
 			window.location.href = suggestion.data.url;

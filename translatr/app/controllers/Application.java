@@ -415,6 +415,29 @@ public class Application extends AbstractController
 		return redirect(routes.Application.locale(locale.id));
 	}
 
+	public Result localeCreateImmediately(UUID projectId, String localeName)
+	{
+		Project project = Project.byId(projectId);
+
+		if(project == null)
+			return redirect(routes.Application.index());
+
+		select(project);
+
+		Locale locale = Locale.byProjectAndName(project, localeName);
+
+		if(locale == null)
+		{
+			locale = new Locale(project, localeName);
+
+			LOGGER.debug("Locale: {}", Json.toJson(locale));
+
+			localeService.save(locale);
+		}
+
+		return redirect(routes.Application.locale(locale.id));
+	}
+
 	public Result localeEdit(UUID localeId)
 	{
 		Locale locale = Locale.byId(localeId);

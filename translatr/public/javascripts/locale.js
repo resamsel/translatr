@@ -209,7 +209,7 @@ App.Modules.SuggestionModule = function(sb) {
 	}
 
 	function _handleSuggestionSelected(suggestion) {
-		if(suggestion.data.type == 'key') {
+		if(suggestion.data.type == 'key' && suggestion.data.name != '+++') {
 			form.submit();
 		} else {
 			window.location.href = suggestion.data.url;
