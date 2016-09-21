@@ -60,6 +60,11 @@
 		padding: 0 15%;
 	}
 
+	.template-dashboard .card {
+		width: 28%;
+		margin: 0.5rem 1rem 1rem 1rem;
+		float: left;
+	}
 	.template-locale,
 	.template-key,
 	.template-locale body,

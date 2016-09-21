@@ -1,6 +1,6 @@
 @(projects: List[models.Project], form: Form[forms.SearchForm])
 
-@main(utils.TemplateInfo.from(Messages("dashboard.title"))) {
+@main(utils.TemplateInfo.from(Messages("dashboard.title"), "dashboard")) {
 	@tags.search(form)()
 } {
 		<a class="breadcrumb" href="@routes.Application.dashboard()">
@@ -8,10 +8,10 @@
 		</a>
 } {
 	@tags.content {
-		<div class="col m12 dashboard">
+		<div class="col m12">
 			<div class="container">
 				@for(project <- projects) {
-					<div class="card project hoverable" name="@project.name.toLowerCase">
+					<div class="card hoverable" name="@project.name.toLowerCase">
 						<div class="card-image orange">
 							<span class="card-title">@project.name</span>
 						</div>
