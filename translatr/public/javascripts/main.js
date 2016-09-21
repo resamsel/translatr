@@ -1,11 +1,30 @@
 var App = App || {};
 App.Modules = App.Modules || {};
 
-$(document).ready(function() {
-	// the "href" attribute of .modal-trigger must specify the modal ID that
-	// wants to be triggered
-	$('.modal-trigger').leanModal();
-});
+App.Modules.ModalModule = function(sb) {
+	return {
+		create: function() {
+			// the "href" attribute of .modal-trigger must specify the modal ID that
+			// wants to be triggered
+			sb.dom.find('.modal-trigger').leanModal();
+		}
+	};
+};
+
+App.Modules.NProgressModule = function(sb) {
+	var doc = sb.dom.wrap(document);
+
+	return {
+		create: function() {
+			doc.ajaxStart(function() {
+				NProgress.start();
+			});
+			doc.ajaxStop(function() {
+				NProgress.done();
+			});
+		}
+	}
+}
 
 App.Modules.ProjectSearchModule = function(sb) {
 	var fieldSearch = sb.dom.find('#field-search');
@@ -39,3 +58,6 @@ App.Modules.ProjectSearchModule = function(sb) {
 		}
 	};
 };
+
+App.Core.register('ModalModule', App.Modules.ModalModule);
+App.Core.register('NProgressModule', App.Modules.NProgressModule);
