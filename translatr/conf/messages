@@ -18,7 +18,7 @@ filetype.choose = Choose file type
 filetype.java_properties = Java Properties (messages_?'{locale.name}'.properties)
 filetype.label = File type
 filetype.play_messages = Play Messages (messages.?'{locale.name}')
-footer.about = Designed and built by <a href="https://twitter.com/resamsel" target="_blank">@resamsel</a>. Code licensed <a rel="license" href="https://github.com/resamsel/translatr/blob/master/LICENSE" target="_blank">GPLv2</a>.
+footer.about = Designed and built by <a href="https://twitter.com/resamsel" target="_blank">@resamsel</a>. Code licensed <a rel="license" href="https://github.com/resamsel/translatr/blob/master/LICENSE" target="_blank">GPLv3</a>.
 footer.header = About
 footer.links = Links
 import.file = Choose file

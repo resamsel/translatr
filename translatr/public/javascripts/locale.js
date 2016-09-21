@@ -228,8 +228,24 @@ App.Modules.SuggestionModule = function(sb) {
 App.Modules.LocaleHashModule = function(sb) {
 	var params = $.deparam.fragment();
 	var location = window.location;
+	var doc = sb.dom.wrap(document);
 	var keys = sb.dom.find('.collection.keys');
 
+	function _initFromHash() {
+		if('key' in params) {
+			var $a = sb.dom.find('a.key[keyName="'+params.key+'"]');
+			keys.animate(
+				{ scrollTop: _scrollTopOffset(keys, $a) },
+				'500'
+			);
+			$a.click();
+		} else {
+			var $key = sb.dom.find('.keys .collection-item:first-child a.key');
+			params.key = $key.attr('keyName');
+			$key.click();
+		}
+	}
+	
 	function _scrollTopOffset(container, item) {
 		return - container.position().top - container.css('margin-top').replace('px', '') + item.parent().offset() ? item.parent().offset().top : 0
 	}
@@ -241,18 +257,7 @@ App.Modules.LocaleHashModule = function(sb) {
 
 	return {
 		create : function() {
-			if('key' in params) {
-				var $a = sb.dom.find('a.key[keyName="'+params.key+'"]');
-				keys.animate(
-					{ scrollTop: _scrollTopOffset(keys, $a) },
-					'500'
-				);
-				$a.click();
-			} else {
-				var $key = sb.dom.find('.keys .collection-item:first-child a.key');
-				params.key = $key.attr('keyName');
-				$key.click();
-			}
+			doc.ready(_initFromHash);
 
 //			sb.subscribe('searchLocales', _handleSearch);
 //

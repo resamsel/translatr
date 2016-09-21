@@ -13,6 +13,7 @@ App.Modules.ModalModule = function(sb) {
 
 App.Modules.NProgressModule = function(sb) {
 	var doc = sb.dom.wrap(document);
+	var win = sb.dom.wrap(window);
 
 	return {
 		create: function() {
@@ -21,6 +22,9 @@ App.Modules.NProgressModule = function(sb) {
 			});
 			doc.ajaxStop(function() {
 				NProgress.done();
+			});
+			win.on('beforeunload', function() {
+				NProgress.start();
 			});
 		}
 	}
