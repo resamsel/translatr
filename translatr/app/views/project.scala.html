@@ -127,14 +127,18 @@
 	<script>
 		var projectId = '@project.id';
 		var data = {
-			series: [{
-				name: 'locales',
-				data: [
-					@for(stat <- stats) {
-						{x: new Date(@stat.millis), y: @stat.value},
-					}
-				]
-			}]
+			series: [
+				@for((name, key) <- scala.collection.Map("project" -> "dto.Project", "locales" -> "dto.Locale", "keys" -> "dto.Key", "messages" -> "dto.Message")) {
+					{
+						name: '@name',
+						data: [
+							@for(stat <- stats.filter(_.key == key)) {
+								{x: new Date(@stat.millis), y: @stat.value},
+							}
+						]
+					},
+				}
+			]
 		};
 	</script>
 	<script src="@routes.Assets.versioned("javascripts/project.js")"></script>

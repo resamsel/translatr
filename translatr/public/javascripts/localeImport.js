@@ -1,3 +1,1 @@
-$(document).ready(function() {
-	$('select').material_select();
-});
+App.Core.register('MaterialModule', App.Modules.MaterialModule);

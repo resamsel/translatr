@@ -13,6 +13,9 @@
 	.subview {
 		height: auto;
     }
+    .row .col {
+    	float: none;
+    }
 }
 
 /* -Medium */
@@ -24,13 +27,19 @@
 	.table.responsive-table td {
 		width: auto;
 	}
-	.table.responsive-table.btn-hide .btn-flat {
-	    visibility: visible;
+	table.responsive-table thead tr {
+	    padding: 0;
+	}
+	.table th {
+		padding: 12px 9px;
 	}
 }
 
 /* Medium+ */
 @media only screen and (min-width: 601px) {
+	nav .nav-wrapper {
+		padding: 0 1rem;
+	}
 	.navbar-fixed {
 		height: 96px;
 	}
@@ -47,12 +56,28 @@
 	.fixed-action-btn.horizontal ul li {
 	    margin: 7.5px;
 	}
+	.tabs-container {
+		padding: 0 15%;
+	}
 
-	html.template-locale,
-	html.template-key,
+	.template-dashboard .card {
+		width: 28%;
+		margin: 0.5rem 1rem 1rem 1rem;
+		float: left;
+	}
+	.template-locale,
+	.template-key,
 	.template-locale body,
 	.template-key body {
 		height: 100%;
+	}
+	.template-locale footer,
+	.template-key footer {
+		display: none;
+	}
+	.template-locale main,
+	.template-key main {
+		height: calc(100% - 120px);
 	}
 	#toast-container {
 		top: auto !important;
@@ -60,6 +85,7 @@
 		bottom: 10%;
 		left:7%;
 	}
+	.collection.locales .collection-item,
 	.collection.keys .collection-item,
 	.collection.messages .collection-item {
 		display: block;
@@ -72,5 +98,15 @@
 	.editor>.row,
 	.navview {
 		height: 100%;
+	}
+	.ct-chart.ct-double-octave:before {
+		padding-bottom: 12.5%;
+	}
+}
+
+/* Large+ */
+@media only screen and (min-width: 993px) {
+	.btn-hover {
+		visibility: hidden;
 	}
 }

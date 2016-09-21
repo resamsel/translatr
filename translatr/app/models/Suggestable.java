@@ -1,5 +1,7 @@
 package models;
 
+import models.Suggestable.Data;
+
 /**
  * (c) 2016 Skiline Media GmbH
  * <p>
@@ -12,6 +14,40 @@ public interface Suggestable
 	String value();
 
 	Data data();
+
+	public static class DefaultSuggestable implements Suggestable
+	{
+		private String value;
+
+		private Data data;
+
+		/**
+		 * @param value
+		 * @param data
+		 */
+		public DefaultSuggestable(String value, Data data)
+		{
+			this.value = value;
+			this.data = data;
+		}
+
+		@Override
+		public String value()
+		{
+			return value;
+		}
+
+		@Override
+		public Data data()
+		{
+			return data;
+		}
+
+		public static Suggestable from(String value, Data data)
+		{
+			return new DefaultSuggestable(value, data);
+		}
+	}
 
 	public static class Data
 	{

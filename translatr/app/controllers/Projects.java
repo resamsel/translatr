@@ -3,6 +3,7 @@ package controllers;
 import static utils.Stopwatch.log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import models.Key;
 import models.Locale;
 import models.Project;
 import models.Suggestable;
+import models.Suggestable.Data;
 import play.Configuration;
 import play.data.Form;
 import play.data.FormFactory;
@@ -92,20 +94,38 @@ public class Projects extends AbstractController
 
 		List<Suggestable> suggestions = new ArrayList<>();
 
-		suggestions.addAll(
-			Locale.findBy(
-				new LocaleCriteria()
-					.withProjectId(project.id)
-					.withSearch(search.search)
-					.withLimit(4)
-					.withOrder("whenUpdated desc")));
-		suggestions.addAll(
-			Key.findBy(
-				new KeyCriteria()
-					.withProjectId(project.id)
-					.withSearch(search.search)
-					.withLimit(4)
-					.withOrder("whenUpdated desc")));
+		Collection<? extends Suggestable> locales = Locale.findBy(
+			new LocaleCriteria()
+				.withProjectId(project.id)
+				.withSearch(search.search)
+				.withLimit(4)
+				.withOrder("whenUpdated desc"));
+		if(!locales.isEmpty())
+			suggestions.addAll(locales);
+		else
+			suggestions.add(
+				Suggestable.DefaultSuggestable.from(
+					ctx().messages().at("locale.create", search.search),
+					Data.from(
+						Locale.class,
+						"+++",
+						controllers.routes.Application.localeCreateImmediately(project.id, search.search).url())));
+
+		Collection<? extends Suggestable> keys = Key.findBy(
+			new KeyCriteria()
+				.withProjectId(project.id)
+				.withSearch(search.search)
+				.withLimit(4)
+				.withOrder("whenUpdated desc"));
+		if(!keys.isEmpty())
+			suggestions.addAll(keys);
+		suggestions.add(
+			Suggestable.DefaultSuggestable.from(
+				ctx().messages().at("key.create", search.search),
+				Data.from(
+					Key.class,
+					"+++",
+					controllers.routes.Application.keyCreateImmediately(project.id, search.search).url())));
 
 		return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
 	}

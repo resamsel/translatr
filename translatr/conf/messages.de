@@ -18,12 +18,13 @@ filetype.choose = Dateityp auswählen
 filetype.java_properties = Java Properties (messages_?'{locale.name}'.properties)
 filetype.label = Dateityp
 filetype.play_messages = Play Messages (messages.?'{locale.name}')
-footer.about = Entworfen und entwickelt von <a href="https://twitter.com/resamsel" target="_blank">@resamsel</a>. Code lizensiert unter <a rel="license" href="https://github.com/resamsel/play-translatr/blob/master/LICENSE" target="_blank">GPLv2</a>.
+footer.about = Entworfen und entwickelt von <a href="https://twitter.com/resamsel" target="_blank">@resamsel</a>. Code lizensiert unter <a rel="license" href="https://github.com/resamsel/translatr/blob/master/LICENSE" target="_blank">GPLv3</a>.
 footer.header = Über
 footer.links = Links
 import.file = Datei wählen
 info = Info
 key.autocomplete = {0}
+key.create = Schlüssel "{0}" anlegen
 key.create.tooltip = Neuen Schlüssel anlegen
 key.deleted = Schlüssel <strong>{0}</strong> wurde gelöscht
 key.edit = Schlüssel bearbeiten
@@ -42,6 +43,7 @@ latest = zuletzt
 locale = Sprache
 locale.autocomplete = {0}
 locale.complete = vollständig
+locale.create = Sprache "{0}" anlegen
 locale.create.tooltip = Neue Sprache anlegen
 locale.deleted = Sprache <strong>{0}</strong> wurde gelöscht
 locale.edit = Sprache bearbeiten

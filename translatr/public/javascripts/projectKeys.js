@@ -5,7 +5,6 @@ App.Modules.KeysCreateModule = function(sb) {
 
 	return {
 		create : function() {
-			select.material_select();
 			saveButton.click(function() {
 				form.submit();
 			});
@@ -55,5 +54,6 @@ App.Modules.KeysSearchModule = function(sb) {
 	};
 };
 
+App.Core.register('MaterialModule', App.Modules.MaterialModule);
 App.Core.register('KeysCreateModule', App.Modules.KeysCreateModule);
 App.Core.register('KeysSearchModule', App.Modules.KeysSearchModule);

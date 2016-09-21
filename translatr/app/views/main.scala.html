@@ -1,14 +1,17 @@
-@*
- * See: https://blackrockdigital.github.io/startbootstrap-sb-admin-2/pages/index.html
- *@
 @(info: utils.TemplateInfo)(nav: Html)(breadcrumbs: Html)(content: Html)
 
 <!DOCTYPE html>
-<html lang="en" class="template-@info.template">
+<html lang="@ctx.lang().locale" class="template-@info.template">
 <head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Language" content="@ctx.lang().locale">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>@info.title</title>
 
 <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/materialize.min.css")">
+<link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/nprogress.css")">
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/media.css")">
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/font-awesome.min.css")">
@@ -39,6 +42,7 @@
 		<script src="@routes.Assets.versioned("javascripts/jquery.min.js")"></script>
 		<script src="@routes.Assets.versioned("javascripts/jquery.ba-bbq.min.js")"></script>
 		<script src="@routes.Assets.versioned("javascripts/materialize.min.js")"></script>
+		<script src="@routes.Assets.versioned("javascripts/nprogress.js")"></script>
 		<script src="@routes.Assets.versioned("javascripts/app.js")"></script>
 		<script src="@routes.Application.javascriptRoutes"></script>
 		<script src="@routes.Assets.versioned("javascripts/main.js")"></script>
@@ -63,8 +67,8 @@
 					<h5>@Messages("footer.links")</h5>
 					<ul>
 						<li><a href="https://twitter.com/resamsel" target="_blank">Twitter</a></li>
-						<li><a href="https://github.com/resamsel/play-translatr" target="_blank">GitHub</a></li>
-						<li><a href="https://github.com/resamsel/play-translatr/issues" target="_blank">Feedback</a></li>
+						<li><a href="https://github.com/resamsel/translatr" target="_blank">GitHub</a></li>
+						<li><a href="https://github.com/resamsel/translatr/issues" target="_blank">Feedback</a></li>
 					</ul>
 				</div>
 			</div>

@@ -1,15 +1,3 @@
-App.Modules.MaterialModule = function(sb) {
-	var select = sb.dom.find('select');
-
-	return {
-		create: function() {
-			select.material_select();
-		},
-		destroy: function() {
-		}
-	};
-};
-
 App.Modules.LocaleCreateModule = function(sb) {
 	var form = sb.dom.find('#form-locale');
 	var fieldLocaleName = sb.dom.find('#field-locale-name');
@@ -69,7 +57,7 @@ App.Modules.TimelineModule = function(sb) {
 
 	return {
 		create: function() {
-			new Chartist.Line('#chart-timeline', data, options);
+			new Chartist.Bar('#chart-timeline', data, options);
 		},
 		destroy: function() {
 		}

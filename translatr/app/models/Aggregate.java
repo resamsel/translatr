@@ -17,11 +17,14 @@ public class Aggregate
 {
 	public long millis;
 
+	public String key;
+
 	public int value;
 
-	public Aggregate(long millis, int value)
+	public Aggregate(long millis, String key, int value)
 	{
 		this.millis = millis;
+		this.key = key;
 		this.value = value;
 	}
 }

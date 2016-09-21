@@ -8,3 +8,11 @@ Translation of Play properties files made easy. Uses the [Play Framework](http:/
 
 * Translate messages with nice editor
 * Manage projects, locales, and keys
+
+# Deployment
+
+In root repository directory:
+
+```
+git subtree push --prefix translatr heroku master
+```

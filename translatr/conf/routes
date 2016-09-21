@@ -26,6 +26,7 @@ GET		/locale/:id/remove				controllers.Application.localeRemove(id: java.util.UU
 GET		/locale/:id/import				controllers.Application.localeImport(id: java.util.UUID)
 POST	/locale/:id/import				controllers.Application.localeImport(id: java.util.UUID)
 GET		/locale/:id/export/:type		controllers.Application.localeExport(id: java.util.UUID, type: String)
+GET		/locale/:projectId/:localeName/create	controllers.Application.localeCreateImmediately(projectId: java.util.UUID, localeName: String)
 POST	/locale/:projectId				controllers.Application.localeCreate(projectId: java.util.UUID)
 GET		/locale/:id/translate			controllers.Application.localeTranslate(id: java.util.UUID)
 
