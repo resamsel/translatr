@@ -45,7 +45,6 @@ App.Modules.MessageModule = function(sb) {
     }
 
     function _updateForm(localeId) {
-    	console.log('_updateForm( localeId:', localeId, ')');
     	noSelection.hide();
     	message.show();
     	preview.show();
@@ -61,7 +60,6 @@ App.Modules.MessageModule = function(sb) {
     }
 
     function _handleMessage(message) {
-    	console.log('_handleMessage( message:', message, ')');
     	fieldId.val(message.id);
     	fieldLocale.val(message.localeName).attr('localeId', message.localeId);
     	fieldValue.val(message.value).trigger('autoresize');
