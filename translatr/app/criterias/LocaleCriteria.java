@@ -1,5 +1,7 @@
 package criterias;
 
+import forms.SearchForm;
+
 /**
  * (c) 2016 Skiline Media GmbH
  * <p>
@@ -10,8 +12,6 @@ package criterias;
 public class LocaleCriteria extends AbstractSearchCriteria<LocaleCriteria>
 {
 	private String localeName;
-
-	private String search;
 
 	public String getLocaleName()
 	{
@@ -33,29 +33,13 @@ public class LocaleCriteria extends AbstractSearchCriteria<LocaleCriteria>
 		return this;
 	}
 
-	/**
-	 * @return the search
-	 */
-	public String getSearch()
+	public static LocaleCriteria from(SearchForm search)
 	{
-		return search;
-	}
-
-	/**
-	 * @param search the search to set
-	 */
-	public void setSearch(String search)
-	{
-		this.search = search;
-	}
-
-	/**
-	 * @param search
-	 * @return
-	 */
-	public LocaleCriteria withSearch(String search)
-	{
-		setSearch(search);
-		return this;
+		return new LocaleCriteria()
+			.withSearch(search.search)
+			.withMissing(search.missing)
+			.withOffset(search.offset)
+			.withLimit(search.limit)
+			.withOrder(search.order);
 	}
 }

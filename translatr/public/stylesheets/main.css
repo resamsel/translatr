@@ -364,6 +364,11 @@ tr:hover .btn-hover {
     border-color: #8BC34A;
 }
 
+/* Pagination */
+.pagination {
+	text-align: center;
+}
+
 /* Templates */
 .template {
 	display: none !important;

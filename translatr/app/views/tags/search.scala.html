@@ -6,12 +6,13 @@
 	role="search">
 	<input type="hidden" name="@form("limit").name" value="@form("limit").value" />
 	<input type="hidden" name="@form("offset").name" value="@form("offset").value" />
+	<input type="hidden" name="@form("order").name" value="@form("order").value" />
 	<div class="input-field">
 		@filter
 		<i class="material-icons search">search</i>
 		<input
 			id="field-search"
-			name="search"
+			name="@form("search").name"
 			type="search"
 			class="form-control"
 			placeholder="@Messages("search")"

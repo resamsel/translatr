@@ -22,6 +22,9 @@ libraryDependencies ++= Seq(
 	// Apache Commons IO
 	"commons-io" % "commons-io" % "2.5",
 
+	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+	"org.apache.httpcomponents" % "httpclient" % "4.5.2",
+
 	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final"
 )
 

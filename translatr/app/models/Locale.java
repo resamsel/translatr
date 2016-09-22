@@ -133,7 +133,10 @@ public class Locale implements Suggestable
 			query.ilike("name", "%" + criteria.getSearch() + "%");
 
 		if(criteria.getLimit() != null)
-			query.setMaxRows(criteria.getLimit());
+			query.setMaxRows(criteria.getLimit() + 1);
+
+		if(criteria.getOffset() != null)
+			query.setFirstRow(criteria.getOffset());
 
 		return log(() -> query.findList(), LOGGER, "findBy");
 	}

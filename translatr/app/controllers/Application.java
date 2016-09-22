@@ -184,12 +184,10 @@ public class Application extends AbstractController
 		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 		SearchForm search = form.get();
 
-		List<Locale> locales = Locale.findBy(
-			new LocaleCriteria()
-				.withProjectId(project.id)
-				.withSearch(search.search)
-				.withOffset(search.offset)
-				.withLimit(search.limit));
+		List<Locale> locales = Locale.findBy(LocaleCriteria.from(search).withProjectId(project.id));
+
+		search.pager(locales);
+
 		java.util.Locale locale = ctx().lang().locale();
 		Collections.sort(locales, (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
 
@@ -203,66 +201,6 @@ public class Application extends AbstractController
 					form),
 				LOGGER,
 				"Rendering projectLocales"));
-	}
-
-	public Result projectKeys(UUID id)
-	{
-		Project project = Project.byId(id);
-
-		if(project == null)
-			return redirect(routes.Application.index());
-
-		select(project);
-
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
-
-		List<Key> keys = Key.findBy(
-			new KeyCriteria()
-				.withProjectId(project.id)
-				.withSearch(search.search)
-				.withOffset(search.offset)
-				.withLimit(search.limit)
-				.withOrder("name"));
-
-		Map<UUID, Double> progress =
-					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
-
-		return ok(
-			views.html.projectKeys.render(
-				project,
-				keys.size() > search.limit ? keys.subList(0, search.limit) : keys,
-				progress,
-				keys.size() > search.limit,
-				form));
-	}
-
-	public Result projectKeysSearch(UUID id)
-	{
-		Project project = Project.byId(id);
-
-		if(project == null)
-			return redirect(routes.Application.index());
-
-		select(project);
-
-		SearchForm form = SearchForm.bindFromRequest(formFactory, configuration).get();
-
-		List<Key> keys = Key.findBy(
-			new KeyCriteria()
-				.withProjectId(project.id)
-				.withSearch(form.search)
-				.withMissing(form.missing)
-				.withOffset(form.offset)
-				.withLimit(form.limit)
-				.withOrder("name"));
-
-		Map<UUID, Double> progress =
-					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
-
-		return ok(
-			views.html.tags.keyRows
-				.render(keys.size() > form.limit ? keys.subList(0, form.limit) : keys, progress, keys.size() > form.limit));
 	}
 
 	public Result locale(UUID id)
@@ -279,27 +217,13 @@ public class Application extends AbstractController
 		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 		SearchForm search = form.get();
 
-		List<Key> keys = Key.findBy(
-			new KeyCriteria()
-				.withProjectId(locale.project.id)
-				.withSearch(search.search)
-				.withMissing(search.missing)
-				.withLocaleId(locale.id)
-				.withOffset(search.offset)
-				.withLimit(search.limit)
-				.withOrder("name"));
+		List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(locale.project.id).withLocaleId(locale.id));
+		search.pager(keys);
 		List<Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(locale.project.id).withLimit(100));
 		Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(
 			Collectors.groupingBy((m) -> m.key.name, Collectors.reducing(null, a -> a, (a, b) -> b)));
 
-		return ok(
-			views.html.locale.render(
-				locale.project,
-				locale,
-				keys.size() > search.limit ? keys.subList(0, search.limit) : keys,
-				locales,
-				messages,
-				form));
+		return ok(views.html.locale.render(locale.project, locale, keys, locales, messages, form));
 	}
 
 	public Result localeKeysSearch(UUID localeId)
@@ -309,17 +233,10 @@ public class Application extends AbstractController
 		if(locale == null)
 			return redirect(routes.Application.index());
 
-		SearchForm form = SearchForm.bindFromRequest(formFactory, configuration).get();
+		SearchForm search = SearchForm.bindFromRequest(formFactory, configuration).get();
 
-		List<Key> keys = Key.findBy(
-			new KeyCriteria()
-				.withProjectId(locale.project.id)
-				.withSearch(form.search)
-				.withMissing(form.missing)
-				.withLocaleId(locale.id)
-				.withOffset(form.offset)
-				.withLimit(form.limit)
-				.withOrder("name"));
+		List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(locale.project.id).withLocaleId(locale.id));
+		search.pager(keys);
 
 		Map<String, Message> messages = Message
 			.findBy(
@@ -329,11 +246,9 @@ public class Application extends AbstractController
 			.stream()
 			.collect(groupingBy(m -> m.key.name, reducing(null, a -> a, (a, b) -> b)));
 
-		LOGGER.debug("Keys found {} for {}", keys.size(), form);
+		LOGGER.debug("Keys found {} for {}", keys.size(), search);
 
-		return ok(
-			views.html.tags.keyItems
-				.render(keys.size() > form.limit ? keys.subList(0, form.limit) : keys, messages, keys.size() > form.limit));
+		return ok(views.html.tags.keyItems.render(keys, messages, search.hasMore));
 	}
 
 	public Result localeImport(UUID id)
@@ -594,7 +509,7 @@ public class Application extends AbstractController
 
 			keyService.save(form.fill(key));
 
-			return redirect(routes.Application.projectKeys(key.project.id));
+			return redirect(routes.Projects.projectKeys(key.project.id));
 		}
 
 		return ok(views.html.keyEdit.render(key));
@@ -624,7 +539,7 @@ public class Application extends AbstractController
 
 		LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
 
-		return redirect(routes.Application.projectKeys(key.project.id));
+		return redirect(routes.Projects.projectKeys(key.project.id));
 	}
 
 	public Result load()
@@ -695,7 +610,7 @@ public class Application extends AbstractController
 			JavaScriptReverseRouter.create(
 				"jsRoutes",
 				routes.javascript.Projects.projectSearch(),
-				routes.javascript.Application.projectKeysSearch(),
+				routes.javascript.Projects.projectKeysSearch(),
 				routes.javascript.Application.localeKeysSearch(),
 				routes.javascript.Application.locale(),
 				routes.javascript.Application.keyCreateImmediately(),

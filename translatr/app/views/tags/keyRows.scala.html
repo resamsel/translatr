@@ -1,4 +1,4 @@
-@(keys: List[models.Key], progress: Map[java.util.UUID, Double], more: Boolean)
+@(keys: List[models.Key], progress: Map[java.util.UUID, Double], form: Form[forms.SearchForm])
 
 @for(key <- keys) {
 	<tr id="@key.id" class="key" name="@key.name.toLowerCase">
@@ -28,15 +28,6 @@
 				title="@Messages("button.remove")">
 				<i class="material-icons">delete_forever</i>
 			</a>
-		</td>
-	</tr>
-}
-@if(more) {
-	<tr class="key more">
-		<td colspan="4" class="center-align">
-			<button class="btn-flat waves-effect waves-light">
-				@Messages("button.more")
-			</button>
 		</td>
 	</tr>
 }

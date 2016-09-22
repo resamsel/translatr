@@ -14,8 +14,8 @@ GET		/project/:id/edit				controllers.Application.projectEdit(id: java.util.UUID
 POST	/project/:id/edit				controllers.Application.projectEdit(id: java.util.UUID)
 GET		/project/:id/remove				controllers.Application.projectRemove(id: java.util.UUID)
 GET		/project/:id/locales			controllers.Application.projectLocales(id: java.util.UUID)
-GET		/project/:id/keys				controllers.Application.projectKeys(id: java.util.UUID)
-GET		/project/:id/keys/search		controllers.Application.projectKeysSearch(id: java.util.UUID)
+GET		/project/:id/keys				controllers.Projects.projectKeys(id: java.util.UUID)
+GET		/project/:id/keys/search		controllers.Projects.projectKeysSearch(id: java.util.UUID)
 
 # Locales
 GET		/locale/:id						controllers.Application.locale(id: java.util.UUID)
