@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 parser = argparse.ArgumentParser(description='Command line interface for play-translatr.')
 parser.add_argument(
 	'command',
-	help='the command to invoke; options: pull'
+	help='the command to invoke; options: pull, push'
 )
 parser.add_argument(
 	'-L',
