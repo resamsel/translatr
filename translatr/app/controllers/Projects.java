@@ -5,7 +5,9 @@ import static utils.Stopwatch.log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -30,6 +32,7 @@ import play.data.FormFactory;
 import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.With;
+import services.KeyService;
 import services.LogEntryService;
 
 /**
@@ -44,6 +47,8 @@ public class Projects extends AbstractController
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Projects.class);
 
+	private final KeyService keyService;
+
 	private final LogEntryService logEntryService;
 
 	private final FormFactory formFactory;
@@ -54,9 +59,11 @@ public class Projects extends AbstractController
 	 * 
 	 */
 	@Inject
-	public Projects(FormFactory formFactory, LogEntryService logEntryService, Configuration configuration)
+	public Projects(FormFactory formFactory, KeyService keyService, LogEntryService logEntryService,
+				Configuration configuration)
 	{
 		this.formFactory = formFactory;
+		this.keyService = keyService;
 		this.logEntryService = logEntryService;
 		this.configuration = configuration;
 	}
@@ -111,12 +118,8 @@ public class Projects extends AbstractController
 						"+++",
 						controllers.routes.Application.localeCreateImmediately(project.id, search.search).url())));
 
-		Collection<? extends Suggestable> keys = Key.findBy(
-			new KeyCriteria()
-				.withProjectId(project.id)
-				.withSearch(search.search)
-				.withLimit(4)
-				.withOrder("whenUpdated desc"));
+		Collection<? extends Suggestable> keys = Key
+			.findBy(KeyCriteria.from(search).withProjectId(project.id).withLimit(4).withOrder("whenUpdated desc"));
 		if(!keys.isEmpty())
 			suggestions.addAll(keys);
 		suggestions.add(
@@ -128,5 +131,49 @@ public class Projects extends AbstractController
 					controllers.routes.Application.keyCreateImmediately(project.id, search.search).url())));
 
 		return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
+	}
+
+	public Result projectKeys(UUID id)
+	{
+		Project project = Project.byId(id);
+
+		if(project == null)
+			return redirect(routes.Application.index());
+
+		select(project);
+
+		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+		SearchForm search = form.get();
+
+		List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
+
+		search.pager(keys);
+
+		Map<UUID, Double> progress =
+					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
+
+		return ok(views.html.projectKeys.render(project, keys, progress, form));
+	}
+
+	public Result projectKeysSearch(UUID id)
+	{
+		Project project = Project.byId(id);
+
+		if(project == null)
+			return redirect(routes.Application.index());
+
+		select(project);
+
+		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+		SearchForm search = form.get();
+
+		List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
+
+		search.pager(keys);
+
+		Map<UUID, Double> progress =
+					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
+
+		return ok(views.html.tags.keyRows.render(keys, progress, form));
 	}
 }

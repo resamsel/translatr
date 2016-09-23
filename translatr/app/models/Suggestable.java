@@ -1,7 +1,5 @@
 package models;
 
-import models.Suggestable.Data;
-
 /**
  * (c) 2016 Skiline Media GmbH
  * <p>

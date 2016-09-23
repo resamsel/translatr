@@ -24,7 +24,7 @@ public abstract class PropertiesExporter implements Exporter
 
 		StringBuilder sb = new StringBuilder();
 		for(Message message : locale.messages)
-			sb.append(message.key.name).append(" = ").append(message.value).append("\n");
+			sb.append(message.key.name).append(" = ").append(message.value.replace("\n", "\\n")).append("\n");
 
 		return sb.toString().getBytes();
 	}

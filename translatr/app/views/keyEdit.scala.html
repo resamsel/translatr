@@ -8,7 +8,7 @@
 		<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
 			@key.project.name
 		</a>
-		<a class="breadcrumb" href="@routes.Application.projectKeys(key.project.id)">
+		<a class="breadcrumb" href="@routes.Projects.projectKeys(key.project.id)">
 			@Messages("keys")
 		</a>
 		<a class="breadcrumb" href="@routes.Application.key(key.id)">
@@ -42,7 +42,7 @@
 						</button>
 						<a
 							class="btn-flat btn-cancel black-text"
-							href="@routes.Application.projectKeys(key.project.id)">
+							href="@routes.Projects.projectKeys(key.project.id)">
 							@Messages("button.cancel")
 						</a>
 					</div>

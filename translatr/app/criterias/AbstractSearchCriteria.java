@@ -19,6 +19,10 @@ public abstract class AbstractSearchCriteria<T extends SearchCriteria> implement
 
 	private String order;
 
+	private Boolean missing;
+
+	private String search;
+
 	private UUID projectId;
 
 	/**
@@ -131,6 +135,48 @@ public abstract class AbstractSearchCriteria<T extends SearchCriteria> implement
 	public T withOffset(Integer offset)
 	{
 		setOffset(offset);
+		return self;
+	}
+
+	/**
+	 * @return the search
+	 */
+	public String getSearch()
+	{
+		return search;
+	}
+
+	/**
+	 * @param search the search to set
+	 */
+	public void setSearch(String search)
+	{
+		this.search = search;
+	}
+
+	/**
+	 * @param search
+	 * @return
+	 */
+	public T withSearch(String search)
+	{
+		setSearch(search);
+		return self;
+	}
+
+	public Boolean getMissing()
+	{
+		return missing;
+	}
+
+	public void setMissing(Boolean missing)
+	{
+		this.missing = missing;
+	}
+
+	public T withMissing(Boolean missing)
+	{
+		setMissing(missing);
 		return self;
 	}
 }

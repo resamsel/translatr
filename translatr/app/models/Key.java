@@ -124,14 +124,15 @@ public class Key implements Suggestable
 						.query())
 				.endJunction();
 
-		if(criteria.getMissing() == Boolean.TRUE && criteria.getLocaleId() != null)
-			query.notExists(
-				Ebean
-					.createQuery(Message.class)
-					.where()
-					.raw("key.id = k.id")
-					.eq("locale.id", criteria.getLocaleId())
-					.query());
+		if(criteria.getMissing() == Boolean.TRUE)
+		{
+			ExpressionList<Message> messageQuery = Ebean.createQuery(Message.class).where().raw("key.id = k.id");
+
+			if(criteria.getLocaleId() != null)
+				messageQuery.eq("locale.id", criteria.getLocaleId());
+
+			query.notExists(messageQuery.query());
+		}
 
 		if(criteria.getOffset() != null)
 			query.setFirstRow(criteria.getOffset());

@@ -3,6 +3,8 @@ package criterias;
 import java.util.Collection;
 import java.util.UUID;
 
+import forms.SearchForm;
+
 /**
  * (c) 2016 Skiline Media GmbH
  * <p>
@@ -14,11 +16,7 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria>
 {
 	private Collection<String> names;
 
-	private String search;
-
 	private UUID localeId;
-
-	private Boolean missing;
 
 	/**
 	 * @return the names
@@ -43,32 +41,6 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria>
 	public KeyCriteria withNames(Collection<String> names)
 	{
 		setNames(names);
-		return this;
-	}
-
-	/**
-	 * @return the search
-	 */
-	public String getSearch()
-	{
-		return search;
-	}
-
-	/**
-	 * @param search the search to set
-	 */
-	public void setSearch(String search)
-	{
-		this.search = search;
-	}
-
-	/**
-	 * @param search
-	 * @return
-	 */
-	public KeyCriteria withSearch(String search)
-	{
-		setSearch(search);
 		return this;
 	}
 
@@ -98,19 +70,17 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria>
 		return this;
 	}
 
-	public Boolean getMissing()
+	/**
+	 * @param search2
+	 * @return
+	 */
+	public static KeyCriteria from(SearchForm search)
 	{
-		return missing;
-	}
-
-	public void setMissing(Boolean missing)
-	{
-		this.missing = missing;
-	}
-
-	public KeyCriteria withMissing(Boolean missing)
-	{
-		setMissing(missing);
-		return this;
+		return new KeyCriteria()
+			.withSearch(search.search)
+			.withMissing(search.missing)
+			.withOffset(search.offset)
+			.withLimit(search.limit)
+			.withOrder(search.order);
 	}
 }
