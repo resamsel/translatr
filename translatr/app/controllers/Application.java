@@ -106,8 +106,7 @@ public class Application extends AbstractController
 
 	public Result index()
 	{
-		// return ok(views.html.index.render());
-		return redirect(routes.Application.dashboard());
+		return ok(views.html.index.render());
 	}
 
 	public Result dashboard()

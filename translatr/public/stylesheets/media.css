@@ -43,6 +43,9 @@
 	.navbar-fixed {
 		height: 96px;
 	}
+	.template-index .navbar-fixed {
+		height: 64px;
+	}
 	.navbar-form .input-field i.material-icons {
 		line-height: 44px;
 	}
