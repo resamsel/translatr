@@ -173,3 +173,9 @@ def push():
 	'push': push
 }.get(args.command, help)()
 EOF
+
+echo $TRANSLATR_PREFIX/bin/translatr created
+
+chmod +x $TRANSLATR_PREFIX/bin/translatr
+
+echo $TRANSLATR_PREFIX/bin/translatr made executable
