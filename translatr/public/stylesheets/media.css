@@ -1,8 +1,5 @@
 /* -Small */
 @media (max-width: 600px) {
-	.navbar-form {
-		margin: 0;
-	}
 	.project .info > *,
 	.project .info > .timeline,
 	.project .info > .messages {
@@ -42,6 +39,9 @@
 	}
 	.navbar-fixed {
 		height: 96px;
+	}
+	.navbar-form {
+		margin: 0 25%;
 	}
 	.template-index .navbar-fixed {
 		height: 64px;

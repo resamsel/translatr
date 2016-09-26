@@ -7,6 +7,11 @@ html, body {
 main {
 	flex: 1 0 auto;
 }
+h1 .material-icons {
+	line-height: 110%;
+    font-size: 4.2rem;
+    margin-right: 3px;
+}
 p {
 	-webkit-font-smoothing: antialiased;
 }
@@ -89,6 +94,9 @@ nav {
 	box-shadow: none;
 	background-color: transparent;
 }
+nav .brand-logo i.material-icons {
+	margin-right: 3px;
+}
 .navbar-fixed {
 	height: 88px;
 }
@@ -107,7 +115,7 @@ nav {
 }
 .navbar-form {
 	padding: 10px;
-	margin: 0 25%;
+	margin: 0 0 0 2.5rem;
 	text-align: center;
 }
 .navbar-form .input-field {
