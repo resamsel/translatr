@@ -74,7 +74,7 @@ App.Modules.MessageListModule = function(sb) {
 	    		.attr('href', window.location.hash)
 	    		.click(_handleCopyMessageValue);
 	    	$msg.find('.localeName').text(locales[entry.localeId]);
-	    	$msg.find('.value').html(entry.value);
+	    	$msg.find('.value').text(entry.value);
 	    	messages.append($msg);
 	    });
 		messages.show();
@@ -82,7 +82,7 @@ App.Modules.MessageListModule = function(sb) {
 
 	function _handleCopyMessageValue(e) {
 		e.preventDefault();
-		var value = sb.dom.wrap(this).find('.value').html();
+		var value = sb.dom.wrap(this).find('.value').text();
 		fieldValue.val(value).trigger('autoresize');
 		Materialize.updateTextFields();
 		sb.publish('valueChanged', value);
@@ -115,7 +115,7 @@ App.Modules.MessageModule = function(sb) {
 	function _handleSaveMessage(message) {
 		progress.css('visibility', 'hidden');
 		sb.dom.find('#' + message.keyId).removeClass('no-message');
-		sb.dom.find('#' + message.keyId + ' .value').html(message.value);
+		sb.dom.find('#' + message.keyId + ' .value').text(message.value);
 		sb.publish('keySelected', [message.keyId, fieldKey.val()]);
 		Materialize.toast(messages['message.updated'], 5000);
 	}
