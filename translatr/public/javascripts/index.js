@@ -4,7 +4,8 @@ App.Modules.FloatingButtonModule = function(sb) {
 	return {
 		create : function() {
 			button.pushpin({
-				top : button.offset().top
+				top : button.offset().top,
+				offset: 23
 			});
 		},
 		destroy : function() {
