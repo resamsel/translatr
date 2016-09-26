@@ -23,7 +23,7 @@
 		</ul>
 	}
 } {
-	<a class="breadcrumb" href="@routes.Application.dashboard()">
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 		@Messages("dashboard")
 	</a>
 	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
@@ -108,7 +108,6 @@
 		</form>
 	}
 
-	<script src="@routes.Assets.versioned("javascripts/jquery.autocomplete.min.js")"></script>
 	<script>
 		var projectId = '@project.id';
 		var localeId = '@locale.id';

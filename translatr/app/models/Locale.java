@@ -79,6 +79,7 @@ public class Locale implements Suggestable
 	{
 		return Data.from(
 			Locale.class,
+			id,
 			formatLocale(Context.current().lang().locale(), this),
 			routes.Application.locale(id).absoluteURL(Context.current().request()));
 	}

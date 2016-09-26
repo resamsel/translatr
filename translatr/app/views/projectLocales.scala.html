@@ -3,7 +3,7 @@
 @main(utils.TemplateInfo.from(Messages("locales.title", project.name))) {
 	@tags.search(form)()
 } {
-		<a class="breadcrumb" href="@routes.Application.dashboard()">
+		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")
 		</a>
 		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
@@ -102,5 +102,8 @@
 		@tags.localeCreate(project)
 	}
 
+	<script>
+		var projectId = '@project.id';
+	</script>
 	<script src="@routes.Assets.versioned("javascripts/projectLocales.js")"></script>
 }

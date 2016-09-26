@@ -3,7 +3,7 @@
 @main(utils.TemplateInfo.from(Messages("keys.title", project.name))) {
 	@tags.search(form)()
 } {
-		<a class="breadcrumb" href="@routes.Application.dashboard()">
+		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")
 		</a>
 		<a class="breadcrumb" href="@routes.Projects.project(project.id)">

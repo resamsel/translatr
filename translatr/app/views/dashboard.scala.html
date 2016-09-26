@@ -3,7 +3,7 @@
 @main(utils.TemplateInfo.from(Messages("dashboard.title"), "dashboard")) {
 	@tags.search(form)()
 } {
-		<a class="breadcrumb" href="@routes.Application.dashboard()">
+		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")
 		</a>
 } {
@@ -38,7 +38,7 @@
 		<!-- /.col .m12 -->
 	}
 
-	@tags.modalTrigger("create", "add", Messages("project.create.tooltip"), "orange")
+	@tags.modalTrigger("create", "add", Messages("project.create.tooltip"), styleClass = "orange")
 
 	@tags.modal(Messages("project.new"), "modal-create") {
 		<form id="form-project" method="post" action="@routes.Application.projectCreate()">

@@ -1,8 +1,8 @@
-@(id: String, icon: String, tooltip: String, styleClass: String = "", actions: Html = Html(""))
+@(id: String, icon: String, tooltip: String, href: String = "#!", styleClass: String = "", actions: Html = Html(""))
 
 <div
 	class="fixed-action-btn horizontal">
-	@tags.modalTriggerLink(id, icon, tooltip, "btn-large " + styleClass)
+	@tags.modalTriggerLink(id, icon, tooltip, href = href, styleClass = "btn-large " + styleClass)
 	<ul>
 		@actions
 	</ul>

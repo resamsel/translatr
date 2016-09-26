@@ -1,5 +1,7 @@
 package models;
 
+import java.util.UUID;
+
 /**
  * (c) 2016 Skiline Media GmbH
  * <p>
@@ -51,15 +53,19 @@ public interface Suggestable
 	{
 		public String type;
 
+		public String id;
+
 		public String name;
 
 		public String url;
 
-		public static Data from(Class<?> clazz, String name, String url)
+		public static Data from(Class<?> clazz, UUID id, String name, String url)
 		{
 			Data out = new Data();
 
 			out.type = clazz.getSimpleName().toLowerCase();
+			if(id != null)
+				out.id = id.toString();
 			out.name = name;
 			out.url = url;
 

@@ -7,6 +7,11 @@ html, body {
 main {
 	flex: 1 0 auto;
 }
+h1 .material-icons {
+	line-height: 110%;
+    font-size: 4.2rem;
+    margin-right: 3px;
+}
 p {
 	-webkit-font-smoothing: antialiased;
 }
@@ -70,11 +75,27 @@ pre[class*="language-"]:before {
 .modal .modal-footer .btn-flat {
 	float: none;
 }
+.floating-action-btn {
+    float: right;
+    margin-top: -27px;
+    margin-right: 23px;
+	z-index: 1;
+}
+.floating-action-btn.pinned {
+	margin: 0;
+	right: 23px;
+	bottom: 23px;
+	top: auto !important;
+	left: auto;
+}
 
 /* Navbar */
 nav {
 	box-shadow: none;
 	background-color: transparent;
+}
+nav .brand-logo i.material-icons {
+	margin-right: 3px;
 }
 .navbar-fixed {
 	height: 88px;
@@ -94,7 +115,7 @@ nav {
 }
 .navbar-form {
 	padding: 10px;
-	margin: 0 25%;
+	margin: 0 0 0 2.5rem;
 	text-align: center;
 }
 .navbar-form .input-field {
@@ -231,6 +252,8 @@ nav {
 }
 .project .info > * > .card {
 	flex: 1 100%;
+    display: flex;
+    flex-direction: column;
 }
 .project .info > .timeline,
 .project .info > .messages {

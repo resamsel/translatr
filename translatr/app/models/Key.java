@@ -83,7 +83,7 @@ public class Key implements Suggestable
 	@Override
 	public Data data()
 	{
-		return Data.from(Key.class, name, routes.Application.key(id).absoluteURL(Context.current().request()));
+		return Data.from(Key.class, id, name, routes.Application.key(id).absoluteURL(Context.current().request()));
 	}
 
 	private static final Find<UUID, Key> find = new Find<UUID, Key>()

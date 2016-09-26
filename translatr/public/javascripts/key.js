@@ -39,7 +39,7 @@ App.Modules.MessageModule = function(sb) {
     function _handleSaveMessage(message) {
     	progress.css('visibility', 'hidden');
     	sb.dom.find('#' + message.localeId).removeClass('no-message');
-    	sb.dom.find('#' + message.localeId + ' .value').html(message.value);
+    	sb.dom.find('#' + message.localeId + ' .value').text(message.value);
     	sb.publish('localeSelected', message.localeId);
     	Materialize.toast(messages['message.updated'], 5000);
     }
@@ -53,7 +53,7 @@ App.Modules.MessageModule = function(sb) {
     	fieldValue.val('');
     	Materialize.updateTextFields();
     	preview.html('');
-    	localeName.html(sb.dom.find('#' + localeId + ' .name').html());
+    	localeName.text(sb.dom.find('#' + localeId + ' .name').text());
     	sb.utilities.ajax(
     		jsRoutes.controllers.Api.getMessage(localeId, keyName)
     	).done(_handleMessage);

@@ -1,7 +1,8 @@
-@(id: String, icon: String, tooltip: String, styleClass: String = "btn-large")
+@(id: String, icon: String, tooltip: String, href: String = "#!", styleClass: String = "btn-large")
 
 <a
 	id="@id"
+	href="@href"
 	class="btn-floating @styleClass waves-effect waves-light blue modal-trigger tooltipped"
 	data-target="modal-@id"
 	data-position="bottom"

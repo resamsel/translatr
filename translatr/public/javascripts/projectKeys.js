@@ -14,46 +14,25 @@ App.Modules.KeysCreateModule = function(sb) {
 	};
 };
 
-App.Modules.KeysSearchModule = function(sb) {
-	var fieldSearch = sb.dom.find('#field-search');
-	var tbody = sb.dom.find('#keys tbody');
-	// timer identifier
-	var typingTimer;
-	// time in ms
-	var doneTypingInterval = 500;
-
-	function _handleInitSearch(value) {
-		fieldSearch.val(value);
-	}
-
-	function _handleDoneTyping() {
-		sb.publish('searchKeys', fieldSearch.val());
-	}
-
-	function _handleSearch(value) {
-		$.ajax({
-			url: jsRoutes.controllers.Application.projectKeysSearch(projectId).url,
-			data: {'search': value}
-		}).done(function(data) {
-			tbody.html(data);
-		});
+App.Modules.SuggestionModule = function(sb) {
+	function _handleSuggestionSelected(suggestion) {
+		if(suggestion.data.type == 'key' && suggestion.data.name != '+++') {
+			window.location.href = jsRoutes.controllers.Application.key(suggestion.data.id).url;
+		} else {
+			window.location.href = suggestion.data.url;
+		}
 	}
 
 	return {
-		create : function() {
-			sb.subscribe('initSearchKeys', _handleInitSearch);
-			sb.subscribe('searchKeys', _handleSearch);
-
-			fieldSearch.on('change keyup paste', function() {
-			    clearTimeout(typingTimer);
-		        typingTimer = setTimeout(_handleDoneTyping, doneTypingInterval);
-			});
+		create: function() {
+			sb.subscribe('suggestionSelected', _handleSuggestionSelected);
 		},
-		destroy : function() {
+		destroy: function() {
 		}
 	};
 };
 
 App.Core.register('MaterialModule', App.Modules.MaterialModule);
 App.Core.register('KeysCreateModule', App.Modules.KeysCreateModule);
-App.Core.register('KeysSearchModule', App.Modules.KeysSearchModule);
+App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
+App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);

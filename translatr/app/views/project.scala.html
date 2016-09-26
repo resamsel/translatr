@@ -5,7 +5,7 @@
 @main(utils.TemplateInfo.from(Messages("project.title", project.name))) {
 	@tags.search(form)()
 } {
-		<a class="breadcrumb" href="@routes.Application.dashboard()">
+		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")
 		</a>
 		<a class="breadcrumb active" href="@routes.Projects.project(project.id)">
@@ -54,6 +54,11 @@
 									@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
 								</p>
 							</div>
+							<div class="card-action">
+								<a href="@routes.Application.projectLocales(project.id)">
+									@Messages("button.open")
+								</a>
+							</div>
 						</div>
 					</div>
 	
@@ -69,6 +74,11 @@
 									@Messages("latest"):
 									@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
 								</p>
+							</div>
+							<div class="card-action">
+								<a href="@routes.Projects.projectKeys(project.id)">
+									@Messages("button.open")
+								</a>
 							</div>
 						</div>
 					</div>
@@ -106,9 +116,9 @@
 		<!-- /.col-md-12 -->
 	}
 
-	@tags.modalTrigger("create-locale", "add", Messages("locale.create.tooltip"), "blue", Html("""
+	@tags.modalTrigger("create-locale", "add", Messages("locale.create.tooltip"), styleClass = "blue", actions = Html("""
 		<li>
-			""" + tags.modalTriggerLink("create-key", "add", Messages("key.create.tooltip"), "light-green") + """
+			""" + tags.modalTriggerLink("create-key", "add", Messages("key.create.tooltip"), styleClass = "light-green") + """
 		</li>
 	"""))
 
@@ -123,7 +133,6 @@
 	<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/chartist.min.css")">
 	<script src="@routes.Assets.versioned("javascripts/chartist.min.js")"></script>
 	<script src="@routes.Assets.versioned("javascripts/moment.min.js")"></script>
-	<script src="@routes.Assets.versioned("javascripts/jquery.autocomplete.min.js")"></script>
 	<script>
 		var projectId = '@project.id';
 		var data = {

@@ -2,7 +2,7 @@
 
 @main(utils.TemplateInfo.from(Messages("project.edit.title", project.name))) {
 } {
-		<a class="breadcrumb" href="@routes.Application.dashboard()">
+		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")
 		</a>
 		<a class="breadcrumb active" href="@routes.Projects.project(project.id)">

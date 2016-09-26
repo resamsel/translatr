@@ -2,6 +2,7 @@ package models;
 
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
+import static utils.Stopwatch.log;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,10 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
@@ -25,12 +29,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import controllers.routes;
 import criterias.MessageCriteria;
+import criterias.ProjectCriteria;
 import play.mvc.Http.Context;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 public class Project implements Suggestable
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
+
 	@Id
 	public UUID id;
 
@@ -85,7 +92,7 @@ public class Project implements Suggestable
 	@Override
 	public Data data()
 	{
-		return Data.from(Project.class, name, routes.Projects.project(id).absoluteURL(Context.current().request()));
+		return Data.from(Project.class, id, name, routes.Projects.project(id).absoluteURL(Context.current().request()));
 	}
 
 	private static final Find<UUID, Project> find = new Find<UUID, Project>()
@@ -95,6 +102,34 @@ public class Project implements Suggestable
 	public static Project byId(UUID id)
 	{
 		return find.byId(id);
+	}
+
+	/**
+	 * @param criteria
+	 * @return
+	 */
+	public static List<Project> findBy(ProjectCriteria criteria)
+	{
+		ExpressionList<Project> query = find.where();
+
+		query.eq("deleted", false);
+
+		if(criteria.getProjectId() != null)
+			query.eq("id", criteria.getProjectId());
+
+		if(criteria.getSearch() != null)
+			query.ilike("name", "%" + criteria.getSearch() + "%");
+
+		if(criteria.getLimit() != null)
+			query.setMaxRows(criteria.getLimit() + 1);
+
+		if(criteria.getOffset() != null)
+			query.setFirstRow(criteria.getOffset());
+
+		if(criteria.getOrder() != null)
+			query.order(criteria.getOrder());
+
+		return log(() -> query.findList(), LOGGER, "findBy");
 	}
 
 	/**
