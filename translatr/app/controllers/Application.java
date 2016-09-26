@@ -109,11 +109,6 @@ public class Application extends AbstractController
 		return ok(views.html.index.render());
 	}
 
-	public Result dashboard()
-	{
-		return ok(views.html.dashboard.render(Project.all(), SearchForm.bindFromRequest(formFactory, configuration)));
-	}
-
 	public Result projectCreate()
 	{
 		ProjectForm form = formFactory.form(ProjectForm.class).bindFromRequest().get();
@@ -168,7 +163,7 @@ public class Application extends AbstractController
 
 		projectService.delete(project);
 
-		return redirect(routes.Application.dashboard());
+		return redirect(routes.Dashboards.dashboard());
 	}
 
 	public Result projectLocales(UUID id)
@@ -608,10 +603,12 @@ public class Application extends AbstractController
 		return ok(
 			JavaScriptReverseRouter.create(
 				"jsRoutes",
-				routes.javascript.Projects.projectSearch(),
+				routes.javascript.Dashboards.search(),
+				routes.javascript.Projects.search(),
 				routes.javascript.Projects.projectKeysSearch(),
 				routes.javascript.Application.localeKeysSearch(),
 				routes.javascript.Application.locale(),
+				routes.javascript.Application.key(),
 				routes.javascript.Application.keyCreateImmediately(),
 				routes.javascript.Application.keyRemove(),
 				routes.javascript.Api.getMessage(),

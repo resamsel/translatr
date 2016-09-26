@@ -4,12 +4,15 @@
 
 # An example controller showing a sample home page
 GET		/								controllers.Application.index
-GET		/dashboard						controllers.Application.dashboard
+
+# Dashboards
+GET		/dashboard						controllers.Dashboards.dashboard
+GET		/dashboard/search				controllers.Dashboards.search
 
 # Projects
 GET		/project/:id					controllers.Projects.project(id: java.util.UUID)
 POST	/project						controllers.Application.projectCreate
-GET		/project/:id/search				controllers.Projects.projectSearch(id: java.util.UUID)
+GET		/project/:id/search				controllers.Projects.search(id: java.util.UUID)
 GET		/project/:id/edit				controllers.Application.projectEdit(id: java.util.UUID)
 POST	/project/:id/edit				controllers.Application.projectEdit(id: java.util.UUID)
 GET		/project/:id/remove				controllers.Application.projectRemove(id: java.util.UUID)

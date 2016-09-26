@@ -1,3 +1,17 @@
+App.Modules.SuggestionModule = function(sb) {
+	function _handleSuggestionSelected(suggestion) {
+		window.location.href = suggestion.data.url;
+	}
+
+	return {
+		create: function() {
+			sb.subscribe('suggestionSelected', _handleSuggestionSelected);
+		},
+		destroy: function() {
+		}
+	};
+};
+
 App.Modules.DashboardSearchModule = function(sb) {
 	var fieldSearch = sb.dom.find('#field-search');
 	var win = sb.dom.wrap(window);
@@ -13,33 +27,18 @@ App.Modules.DashboardSearchModule = function(sb) {
 	    }
 	}
 
-	// TODO: Replace with AJAX search
-	function _handleSearch(value) {
-	    if(value !== '') {
-			$('.card.project').hide();
-			$('.card.project[name*="' + value.toLowerCase() +'"]').show();
-	    } else {
-	    	$('.card.project').show();
-	    }
-	}
-
 	return {
 		create: function() {
 			win.keydown(_handleKeyPress);
 
-			// TODO: Replace with AJAX search
-			fieldSearch.on('change keyup paste', function() {
-				_handleSearch(fieldSearch.val());
+			fieldSearch.autocomplete({
+				serviceUrl: jsRoutes.controllers.Dashboards.search().url,
+				onSelect: _handleSelect,
+				triggerSelectOnValidInput: false,
+				deferRequestBy: 200,
+				paramName: 'search',
+				groupBy: 'type'
 			});
-
-//			fieldSearch.autocomplete({
-//				serviceUrl: jsRoutes.controllers.Application.dashboardSearch(projectId).url,
-//				onSelect: _handleSelect,
-//				triggerSelectOnValidInput: false,
-//				deferRequestBy: 200,
-//				paramName: 'search',
-//				groupBy: 'type'
-//			});
 		},
 		destroy: function() {
 		}
@@ -61,5 +60,6 @@ App.Modules.ProjectCreateModule = function(sb) {
 	};
 };
 
+App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('DashboardSearchModule', App.Modules.DashboardSearchModule);
 App.Core.register('ProjectCreateModule', App.Modules.ProjectCreateModule);

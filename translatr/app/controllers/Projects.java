@@ -87,7 +87,7 @@ public class Projects extends AbstractController
 				"Rendering project"));
 	}
 
-	public Result projectSearch(UUID id)
+	public Result search(UUID id)
 	{
 		Project project = Project.byId(id);
 
@@ -115,6 +115,7 @@ public class Projects extends AbstractController
 					ctx().messages().at("locale.create", search.search),
 					Data.from(
 						Locale.class,
+						null,
 						"+++",
 						controllers.routes.Application.localeCreateImmediately(project.id, search.search).url())));
 
@@ -127,6 +128,7 @@ public class Projects extends AbstractController
 				ctx().messages().at("key.create", search.search),
 				Data.from(
 					Key.class,
+					null,
 					"+++",
 					controllers.routes.Application.keyCreateImmediately(project.id, search.search).url())));
 

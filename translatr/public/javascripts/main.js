@@ -60,7 +60,7 @@ App.Modules.ProjectSearchModule = function(sb) {
 			win.keydown(_handleKeyPress);
 
 			fieldSearch.autocomplete({
-				serviceUrl: jsRoutes.controllers.Projects.projectSearch(projectId).url,
+				serviceUrl: jsRoutes.controllers.Projects.search(projectId).url,
 				onSelect: _handleSelect,
 				triggerSelectOnValidInput: false,
 				deferRequestBy: 200,

@@ -14,32 +14,20 @@ App.Modules.LocalesCreateModule = function(sb) {
 	};
 };
 
-App.Modules.LocalesSearchModule = function(sb) {
-	var fieldSearch = sb.dom.find('#field-search');
-
-	function _handleInitSearch(value) {
-		fieldSearch.val(value);
-	}
-
-	function _handleSearch(value) {
-		if (value !== '') {
-			sb.dom.find('tr.locale').hide();
-			sb.dom.find('tr.locale[name*="' + value.toLowerCase() + '"]').show();
+App.Modules.SuggestionModule = function(sb) {
+	function _handleSuggestionSelected(suggestion) {
+		if(suggestion.data.type == 'locale' && suggestion.data.name != '+++') {
+			window.location.href = jsRoutes.controllers.Application.locale(suggestion.data.id).url;
 		} else {
-			sb.dom.find('tr.locale').show();
+			window.location.href = suggestion.data.url;
 		}
 	}
 
 	return {
-		create : function() {
-			sb.subscribe('initSearchLocales', _handleInitSearch);
-			sb.subscribe('searchLocales', _handleSearch);
-
-			fieldSearch.on('change keyup paste', function() {
-				sb.publish('searchLocales', fieldSearch.val());
-			});
+		create: function() {
+			sb.subscribe('suggestionSelected', _handleSuggestionSelected);
 		},
-		destroy : function() {
+		destroy: function() {
 		}
 	};
 };
@@ -69,5 +57,6 @@ App.Modules.LocalesHashModule = function(sb) {
 
 App.Core.register('MaterialModule', App.Modules.MaterialModule);
 App.Core.register('LocalesCreateModule', App.Modules.LocalesCreateModule);
-App.Core.register('LocalesSearchModule', App.Modules.LocalesSearchModule);
+App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
+App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
 App.Core.register('LocalesHashModule', App.Modules.LocalesHashModule);

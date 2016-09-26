@@ -2,7 +2,7 @@
 
 @main(utils.TemplateInfo.from(Messages("locale.edit.title", locale.project.name, tags.locale(locale.name)))) {
 } {
-		<a class="breadcrumb" href="@routes.Application.dashboard()">
+		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")
 		</a>
 		<a class="breadcrumb" href="@routes.Projects.project(locale.project.id)">
