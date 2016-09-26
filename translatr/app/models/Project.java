@@ -27,7 +27,6 @@ import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import controllers.Projects;
 import controllers.routes;
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
