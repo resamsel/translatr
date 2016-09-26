@@ -70,6 +70,19 @@ pre[class*="language-"]:before {
 .modal .modal-footer .btn-flat {
 	float: none;
 }
+.floating-action-btn {
+    float: right;
+    margin-top: -27px;
+    margin-right: 23px;
+	z-index: 1;
+}
+.floating-action-btn.pinned {
+	margin: 0;
+	right: 23px;
+	bottom: 23px;
+	top: auto !important;
+	left: auto;
+}
 
 /* Navbar */
 nav {

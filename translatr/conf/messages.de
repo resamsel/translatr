@@ -20,6 +20,7 @@ cli.usage.title = Nutzung
 copyright = © 2016 René Samselnig (Version {0})\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
 dashboard = Dashboard
 dashboard.title = Dashboard
+dashboard.tooltip = Dashboard öffnen
 filetype.choose = Dateityp auswählen
 filetype.java_properties = Java Properties (messages_?'{locale.name}'.properties)
 filetype.label = Dateityp
@@ -73,7 +74,7 @@ locale.value.label = Wert
 locales = Sprachen
 locales.size = {0,choice,0#noch keine Sprache|1#eine Sprache|1<{0} Sprachen}
 locales.title = Sprachen - Projekt {0}
-main.subtitle = Das I18n-Werkzeug für Entwickler und Übersetzer
+main.subtitle = Ein modernes und intuitives I18n-Werkzeug
 main.title = Translatr
 message.any = Alle zeigen
 message.untranslated = Übersetzung fehlt

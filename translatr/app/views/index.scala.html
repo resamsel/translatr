@@ -1,12 +1,4 @@
-@main(utils.TemplateInfo.from(Messages("brand"), "index")) {
-	<ul class="right">
-		<li>
-			<a class="btn-flat" href="@routes.Application.dashboard()">
-				@Messages("dashboard")
-			</a>
-		</li>
-	</ul>
-} { } {
+@main(utils.TemplateInfo.from(Messages("brand"), "index")) { } { } {
 	<div class="section green">
 		<div class="container">
 			<div class="row">
@@ -16,6 +8,9 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	<div class="floating-action-btn">
+		@tags.modalTriggerLink("dashboard", "dashboard", Messages("dashboard.tooltip"), href = routes.Application.dashboard().url, styleClass = "btn-large light-blue")
 	</div>
 	<div class="container">
 		<div class="section intro">
@@ -67,4 +62,6 @@
 			</div>
 		</div>
 	</div>
+
+	<script src="@routes.Assets.versioned("javascripts/index.js")"></script>
 }

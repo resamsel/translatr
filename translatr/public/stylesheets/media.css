@@ -59,6 +59,9 @@
 	.fixed-action-btn.horizontal ul li {
 	    margin: 7.5px;
 	}
+	.floating-action-btn.pinned {
+		top: 23px !important;
+	}
 	.tabs-container {
 		padding: 0 15%;
 	}
