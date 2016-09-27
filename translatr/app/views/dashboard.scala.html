@@ -41,7 +41,7 @@
 	@tags.modalTrigger("create", "add", tooltip = Messages("project.create.tooltip"), styleClass = "orange")
 
 	@tags.modal(Messages("project.new"), "modal-create") {
-		<form id="form-project" method="post" action="@routes.Application.projectCreate()">
+		<form id="form-project" method="post" action="@routes.Projects.create()">
 			<div class="form-group">
 				<input
 					id="field-project-name"

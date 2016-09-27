@@ -9,7 +9,7 @@
 		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
 			@project.name
 		</a>
-		<a class="breadcrumb active" href="@routes.Application.projectLocales(project.id)">
+		<a class="breadcrumb active" href="@routes.Projects.locales(project.id)">
 			@Messages("locales")
 		</a>
 } {
@@ -91,7 +91,7 @@
 					</tbody>
 				</table>
 			}
-			@tags.pager(routes.Application.projectLocales(project.id), form.get)
+			@tags.pager(routes.Projects.locales(project.id), form.get)
 		</div>
 		<!-- /.col-md-12 -->
 	}

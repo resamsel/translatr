@@ -87,6 +87,7 @@ messages = Translations
 messages.missing = {0,choice,0#no missing translations|1#one translation missing|1<{0} translations missing}
 messages.size = {0,choice,0#no translations yet|1#one translation|1<{0} translations}
 project = Project
+project.create = Create project "{0}"
 project.create.tooltip = Create new project
 project.deleted = Project <strong>{0}</strong> was deleted
 project.edit = Edit Project

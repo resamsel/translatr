@@ -31,10 +31,10 @@
 								</p>
 							</div>
 							<div class="card-action">
-								<a href="@routes.Application.projectEdit(project.id)">
+								<a href="@routes.Projects.edit(project.id)">
 									@Messages("button.edit")
 								</a>
-								<a href="@routes.Application.projectRemove(project.id)">
+								<a href="@routes.Projects.remove(project.id)">
 									@Messages("button.remove")
 								</a>
 							</div>
@@ -55,7 +55,7 @@
 								</p>
 							</div>
 							<div class="card-action">
-								<a href="@routes.Application.projectLocales(project.id)">
+								<a href="@routes.Projects.locales(project.id)">
 									@Messages("button.open")
 								</a>
 							</div>
@@ -76,7 +76,7 @@
 								</p>
 							</div>
 							<div class="card-action">
-								<a href="@routes.Projects.projectKeys(project.id)">
+								<a href="@routes.Projects.keys(project.id)">
 									@Messages("button.open")
 								</a>
 							</div>

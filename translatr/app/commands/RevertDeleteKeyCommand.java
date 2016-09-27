@@ -83,6 +83,6 @@ public class RevertDeleteKeyCommand implements Command<models.Key>
 	@Override
 	public Call redirect()
 	{
-		return routes.Projects.projectKeys(key.projectId);
+		return routes.Projects.keys(key.projectId);
 	}
 }
