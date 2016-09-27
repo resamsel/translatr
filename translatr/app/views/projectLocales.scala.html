@@ -96,7 +96,7 @@
 		<!-- /.col-md-12 -->
 	}
 
-	@tags.modalTrigger("create", "add", Messages("locale.create.tooltip"), "blue")
+	@tags.modalTrigger("create", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue")
 
 	@tags.modal(Messages("locale.new"), "modal-create") {
 		@tags.localeCreate(project)

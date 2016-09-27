@@ -98,7 +98,7 @@
 		</ul>
 	}
 
-	@tags.modalTrigger("create", "add", Messages("key.create.tooltip"), "light-green")
+	@tags.modalTrigger("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
 
 	@tags.modal(Messages("key.new"), "modal-create") {
 		<form id="form-key" method="post" action="@routes.Application.keyCreate(project.id, locale.id)">

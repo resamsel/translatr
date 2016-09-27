@@ -116,9 +116,9 @@
 		<!-- /.col-md-12 -->
 	}
 
-	@tags.modalTrigger("create-locale", "add", Messages("locale.create.tooltip"), styleClass = "blue", actions = Html("""
+	@tags.modalTrigger("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue", actions = Html("""
 		<li>
-			""" + tags.modalTriggerLink("create-key", "add", Messages("key.create.tooltip"), styleClass = "light-green") + """
+			""" + tags.modalTriggerLink("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green") + """
 		</li>
 	"""))
 
