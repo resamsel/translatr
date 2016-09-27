@@ -8,4 +8,14 @@ chmod +x ${TRANSLATR}
 
 echo ${TRANSLATR} created and made executable
 
+if [ "$(which pip)" = "" ]; then
+	echo "sudo required for installing PIP..."
+	sudo easy_install pip
+fi
+
+if [ "$(pip list | grep pyaml)" = "" -o "$(pip list | grep requests)" = "" ]; then
+	echo "sudo required for installing python requirements..."
+	sudo pip install pyaml requests
+fi
+
 ${TRANSLATR} -h

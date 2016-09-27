@@ -22,7 +22,7 @@ parser.add_argument(
 parser.add_argument(
 	'-L',
 	'--logfile',
-	type=argparse.FileType('ab'),
+	type=argparse.FileType('a'),
 	default='/tmp/translatr.log',
 	help='the file to log to'
 )
@@ -35,7 +35,8 @@ parser.add_argument(
 	help='set loglevel to debug'
 )
 
-config = yaml.load(file('.translatr.yml'))['translatr']
+with open('.translatr.yml') as f:
+	config = yaml.load(f)['translatr']
 
 args = parser.parse_args()
 
@@ -59,7 +60,7 @@ def download(url, target):
 
 
 def help():
-	print 'help'
+	print('help')
 
 
 def pull():
@@ -81,7 +82,7 @@ def pull():
 			),
 			target
 		)
-		print 'Downloaded {0} to {1}'.format(locale.name, target)
+		print('Downloaded {0} to {1}'.format(locale.name, target))
 
 
 def target_repl(m):
@@ -99,8 +100,13 @@ def target_pattern(target):
 
 
 def push():
-	response = requests.get(
-		'{endpoint}/api/locales/{project_id}'.format(**config))
+	try:
+		response = requests.get(
+			'{endpoint}/api/locales/{project_id}'.format(**config))
+	except BaseException as e:
+		print('Could not connect to endpoint, is it configured correctly?')
+		return
+
 	project = response.json()
 
 	locales = dict([(loc['name'], Locale(**loc)) for loc in project])
@@ -113,7 +119,7 @@ def push():
 		m = pattern.match(filename)
 		if not m:
 			# Skip this entry
-			print 'Filename {0} does not match target: {1}'.format(filename, target)
+			print('Filename {0} does not match target: {1}'.format(filename, target))
 			continue
 		groups = m.groupdict()
 		logger.debug('Groups: %s', groups)
@@ -157,14 +163,21 @@ def push():
 				files={
 					'messages': open(filename, 'r')
 				})
-			print 'Uploaded {0} to {1}{2}'.format(
-				filename,
-				localeName,
-				{ True: ' (new)', False: ''}.get(created)
+			print(
+				'Uploaded {0} to {1}{2}'.format(
+					filename,
+					localeName,
+					{ True: ' (new)', False: ''}.get(created)
+				)
 			)
 		else:
-			print 'Could neither find nor create locale {0}'.format(localeName)
-{
-	'pull': pull,
-	'push': push
-}.get(args.command, help)()
+			print('Could neither find nor create locale {0}'.format(localeName))
+
+try:
+	{
+		'pull': pull,
+		'push': push
+	}.get(args.command, help)()
+except BaseException as e:
+	logger.exception(e)
+	print(str(e))
