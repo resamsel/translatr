@@ -2,6 +2,15 @@
 
 @import utils.TemplateInfo.from
 
+@createActions = {
+	<li>
+		@tags.modalTriggerLink("remove-key", "delete_forever", href = routes.Application.keyRemove(key.id, null).url, tooltip = Messages("key.remove.tooltip"), styleClass = "red")
+	</li>
+	<li>
+		@tags.modalTriggerLink("edit-key", "edit", href = routes.Application.keyEdit(key.id).url, tooltip = Messages("key.edit.tooltip"), styleClass = "light-green")
+	</li>
+}
+
 @main(from(Messages("key.title", key.project.name, key.name), "key")) {
 	@tags.search(form) {
 		<button
@@ -100,7 +109,7 @@
 	} {
 	}
 
-	@tags.modalTrigger("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
+	@tags.modalTrigger("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = createActions)
 
 	@tags.modal(Messages("key.new"), "modal-create") {
 		<form id="form-key" method="post" action="@routes.Application.keyCreate(key.project.id, null)">
