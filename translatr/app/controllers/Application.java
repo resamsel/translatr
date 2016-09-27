@@ -2,8 +2,6 @@ package controllers;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
-import static utils.FormatUtils.formatLocale;
-import static utils.Stopwatch.log;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -32,7 +30,6 @@ import exporters.PlayMessagesExporter;
 import forms.ImportLocaleForm;
 import forms.KeyForm;
 import forms.LocaleForm;
-import forms.ProjectForm;
 import forms.SearchForm;
 import importers.Importer;
 import importers.JavaPropertiesImporter;

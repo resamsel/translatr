@@ -4,7 +4,6 @@ import static utils.FormatUtils.formatLocale;
 import static utils.Stopwatch.log;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -191,31 +190,42 @@ public class Projects extends AbstractController
 
 		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 		SearchForm search = form.get();
+		search.setLimit(configuration.getInt("translatr.search.autocomplete.limit", 3));
 
 		List<Suggestable> suggestions = new ArrayList<>();
 
-		Collection<? extends Suggestable> locales = Locale.findBy(
-			new LocaleCriteria()
-				.withProjectId(project.id)
-				.withSearch(search.search)
-				.withLimit(4)
-				.withOrder("whenUpdated desc"));
+		List<? extends Suggestable> locales = Locale.findBy(
+			new LocaleCriteria().withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
+
+		search.pager(locales);
 		if(!locales.isEmpty())
 			suggestions.addAll(locales);
-		else
+		if(search.hasMore)
 			suggestions.add(
 				Suggestable.DefaultSuggestable.from(
-					ctx().messages().at("locale.create", search.search),
-					Data.from(
-						Locale.class,
-						null,
-						"+++",
-						controllers.routes.Application.localeCreateImmediately(project.id, search.search).url())));
+					ctx().messages().at("locale.search", search.search),
+					Data.from(Locale.class, null, "???", search.urlWithOffset(routes.Projects.locales(project.id), 0))));
+		suggestions.add(
+			Suggestable.DefaultSuggestable.from(
+				ctx().messages().at("locale.create", search.search),
+				Data.from(
+					Locale.class,
+					null,
+					"+++",
+					controllers.routes.Application.localeCreateImmediately(project.id, search.search).url())));
 
-		Collection<? extends Suggestable> keys = Key
-			.findBy(KeyCriteria.from(search).withProjectId(project.id).withLimit(4).withOrder("whenUpdated desc"));
+		List<? extends Suggestable> keys =
+					Key.findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
+
+		search.pager(keys);
+
 		if(!keys.isEmpty())
 			suggestions.addAll(keys);
+		if(search.hasMore)
+			suggestions.add(
+				Suggestable.DefaultSuggestable.from(
+					ctx().messages().at("key.search", search.search),
+					Data.from(Key.class, null, "???", search.urlWithOffset(routes.Projects.keys(project.id), 0))));
 		suggestions.add(
 			Suggestable.DefaultSuggestable.from(
 				ctx().messages().at("key.create", search.search),
@@ -223,7 +233,7 @@ public class Projects extends AbstractController
 					Key.class,
 					null,
 					"+++",
-					controllers.routes.Application.keyCreateImmediately(project.id, search.search).url())));
+					routes.Application.keyCreateImmediately(project.id, search.search).url())));
 
 		return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
 	}
