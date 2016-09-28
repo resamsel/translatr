@@ -8,7 +8,7 @@
 		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
 			@project.name
 		</a>
-		<a class="breadcrumb" href="@routes.Application.projectLocales(project.id)">
+		<a class="breadcrumb" href="@routes.Projects.locales(project.id)">
 			@Messages("locales")
 		</a>
 		<a class="breadcrumb" href="@routes.Application.locale(locale.id)">
@@ -51,7 +51,7 @@
 						</button>
 						<a
 							class="btn-flat btn-cancel black-text"
-							href="@routes.Application.projectLocales(locale.project.id)">
+							href="@routes.Projects.locales(locale.project.id)">
 							@Messages("button.cancel")
 						</a>
 					</div>

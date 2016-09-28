@@ -2,7 +2,7 @@ import com.typesafe.sbt.packager.docker._
 
 name := """translatr"""
 
-version := "1.0.1"
+version := "1.0.2"
 
 lazy val root = (project in file(".")).
 	enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin).
@@ -59,3 +59,34 @@ conflictClassExcludes ++= Seq(
   "LICENSE",
   "reference.conf"
 )
+
+// Concat
+Concat.groups := Seq(
+	"styles.css" -> group(Seq(
+		"stylesheets/materialize.min.css",
+		"stylesheets/nprogress.css",
+		"stylesheets/font-awesome.min.css",
+		"stylesheets/chartist.min.css",
+		"stylesheets/main.css",
+		"stylesheets/media.css"
+	)),
+	"scripts.js" -> group(Seq(
+		"javascripts/jquery.min.js",
+		"javascripts/jquery.ba-bbq.min.js",
+		"javascripts/materialize.min.js",
+		"javascripts/jquery.autocomplete.min.js",
+		"javascripts/chartist.min.js",
+		"javascripts/moment.min.js",
+		"javascripts/nprogress.js",
+		"javascripts/app.js",
+		"javascripts/main.js"
+	))
+)
+
+// Put everything into the concat dir
+Concat.parentDir := "concat"
+
+// Allows concatenated resources to be used in dev mode
+pipelineStages in Assets := Seq(concat)
+
+pipelineStages := Seq(concat)

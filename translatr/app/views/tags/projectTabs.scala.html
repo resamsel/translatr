@@ -15,7 +15,7 @@
 			<a
 				target="_self"
 				class="@if(active == "locales") { active }"
-				href="@routes.Application.projectLocales(project.id)">
+				href="@routes.Projects.locales(project.id)">
 				@Messages("locales")
 			</a>
 		</li>
@@ -23,7 +23,7 @@
 			<a
 				target="_self"
 				class="@if(active == "keys") { active }"
-				href="@routes.Projects.projectKeys(project.id)">
+				href="@routes.Projects.keys(project.id)">
 				@Messages("keys")
 			</a>
 		</li>

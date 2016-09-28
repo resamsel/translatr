@@ -10,10 +10,13 @@ import actions.ContextAction;
 import criterias.ProjectCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
+import forms.ProjectForm;
 import forms.SearchForm;
 import models.Project;
 import models.Suggestable;
+import models.Suggestable.Data;
 import play.Configuration;
+import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
 import play.libs.Json;
@@ -38,15 +41,21 @@ public class Dashboards extends AbstractController
 	 * 
 	 */
 	@Inject
-	public Dashboards(FormFactory formFactory, Configuration configuration)
+	public Dashboards(CacheApi cache, FormFactory formFactory, Configuration configuration)
 	{
+		super(cache);
+
 		this.formFactory = formFactory;
 		this.configuration = configuration;
 	}
 
 	public Result dashboard()
 	{
-		return ok(views.html.dashboard.render(Project.all(), SearchForm.bindFromRequest(formFactory, configuration)));
+		return ok(
+			views.html.dashboard.render(
+				Project.all(),
+				SearchForm.bindFromRequest(formFactory, configuration),
+				ProjectForm.form(formFactory)));
 	}
 
 	public Result search()
@@ -59,15 +68,15 @@ public class Dashboards extends AbstractController
 		Collection<? extends Suggestable> projects = Project.findBy(ProjectCriteria.from(search));
 		if(!projects.isEmpty())
 			suggestions.addAll(projects);
-		// else
-		// suggestions.add(
-		// Suggestable.DefaultSuggestable.from(
-		// ctx().messages().at("project.create", search.search),
-		// Data.from(
-		// Project.class,
-		// null,
-		// "+++",
-		// controllers.routes.Application.projectCreateImmediately(search.search).url())));
+		else
+			suggestions.add(
+				Suggestable.DefaultSuggestable.from(
+					ctx().messages().at("project.create", search.search),
+					Data.from(
+						Project.class,
+						null,
+						"+++",
+						controllers.routes.Projects.createImmediately(search.search).url())));
 
 		return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
 	}

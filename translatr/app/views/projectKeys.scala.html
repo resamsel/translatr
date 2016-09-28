@@ -9,7 +9,7 @@
 		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
 			@project.name
 		</a>
-		<a class="breadcrumb active" href="@routes.Projects.projectKeys(project.id)">
+		<a class="breadcrumb active" href="@routes.Projects.keys(project.id)">
 			@Messages("keys")
 		</a>
 } {
@@ -30,12 +30,12 @@
 					</tbody>
 				</table>
 			}
-			@tags.pager(routes.Projects.projectKeys(project.id), form.get)
+			@tags.pager(routes.Projects.keys(project.id), form.get)
 		</div>
 		<!-- /.col-md-12 -->
 	}
 
-	@tags.modalTrigger("create", "add", Messages("key.create.tooltip"), "light-green")
+	@tags.modalTrigger("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
 
 	@tags.modal(Messages("key.new"), "modal-create") {
 		@tags.keyCreate(project)

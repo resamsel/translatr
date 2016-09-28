@@ -16,7 +16,7 @@ App.Modules.LocalesCreateModule = function(sb) {
 
 App.Modules.SuggestionModule = function(sb) {
 	function _handleSuggestionSelected(suggestion) {
-		if(suggestion.data.type == 'locale' && suggestion.data.name != '+++') {
+		if(suggestion.data.name != '+++' && suggestion.data.name != '???' && suggestion.data.type == 'locale') {
 			window.location.href = jsRoutes.controllers.Application.locale(suggestion.data.id).url;
 		} else {
 			window.location.href = suggestion.data.url;

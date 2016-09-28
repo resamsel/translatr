@@ -2,6 +2,18 @@
 
 @import utils.FormatUtils._
 
+@projectActions = {
+	<li>
+		@tags.modalTriggerLink("remove-project", "delete_forever", href = routes.Projects.remove(project.id).url, tooltip = Messages("project.remove.tooltip"), styleClass = "red")
+	</li>
+	<li>
+		@tags.modalTriggerLink("edit-project", "edit", href = routes.Projects.edit(project.id).url, tooltip = Messages("project.edit.tooltip"), styleClass = "orange")
+	</li>
+	<li>
+		@tags.modalTriggerLink("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
+	</li>
+}
+
 @main(utils.TemplateInfo.from(Messages("project.title", project.name))) {
 	@tags.search(form)()
 } {
@@ -30,14 +42,6 @@
 									@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
 								</p>
 							</div>
-							<div class="card-action">
-								<a href="@routes.Application.projectEdit(project.id)">
-									@Messages("button.edit")
-								</a>
-								<a href="@routes.Application.projectRemove(project.id)">
-									@Messages("button.remove")
-								</a>
-							</div>
 						</div>
 					</div>
 	
@@ -54,11 +58,6 @@
 									@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
 								</p>
 							</div>
-							<div class="card-action">
-								<a href="@routes.Application.projectLocales(project.id)">
-									@Messages("button.open")
-								</a>
-							</div>
 						</div>
 					</div>
 	
@@ -74,11 +73,6 @@
 									@Messages("latest"):
 									@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
 								</p>
-							</div>
-							<div class="card-action">
-								<a href="@routes.Projects.projectKeys(project.id)">
-									@Messages("button.open")
-								</a>
 							</div>
 						</div>
 					</div>
@@ -116,11 +110,7 @@
 		<!-- /.col-md-12 -->
 	}
 
-	@tags.modalTrigger("create-locale", "add", Messages("locale.create.tooltip"), styleClass = "blue", actions = Html("""
-		<li>
-			""" + tags.modalTriggerLink("create-key", "add", Messages("key.create.tooltip"), styleClass = "light-green") + """
-		</li>
-	"""))
+	@tags.modalTrigger("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue", actions = projectActions)
 
 	@tags.modal(Messages("locale.new"), "modal-create-locale") {
 		@tags.localeCreate(project)
@@ -130,9 +120,6 @@
 		@tags.keyCreate(project)
 	}
 
-	<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/chartist.min.css")">
-	<script src="@routes.Assets.versioned("javascripts/chartist.min.js")"></script>
-	<script src="@routes.Assets.versioned("javascripts/moment.min.js")"></script>
 	<script>
 		var projectId = '@project.id';
 		var data = {

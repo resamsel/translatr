@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -36,6 +37,8 @@ public class Key implements Suggestable
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Key.class);
 
+	public static final int NAME_LENGTH = 255;
+
 	@Id
 	public UUID id;
 
@@ -51,7 +54,7 @@ public class Key implements Suggestable
 	@ManyToOne(optional = false)
 	public Project project;
 
-	@Column(length = 255)
+	@Column(nullable = false, length = NAME_LENGTH)
 	public String name;
 
 	@JsonIgnore

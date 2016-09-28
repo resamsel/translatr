@@ -1,4 +1,4 @@
-@(projects: List[models.Project], form: Form[forms.SearchForm])
+@(projectList: List[models.Project], form: Form[forms.SearchForm], projectForm: Form[forms.ProjectForm])
 
 @main(utils.TemplateInfo.from(Messages("dashboard.title"), "dashboard")) {
 	@tags.search(form)()
@@ -10,7 +10,7 @@
 	@tags.content {
 		<div class="col m12">
 			<div class="container">
-				@for(project <- projects) {
+				@for(project <- projectList) {
 					<div class="card hoverable" name="@project.name.toLowerCase">
 						<div class="card-image orange">
 							<span class="card-title">@project.name</span>
@@ -38,17 +38,11 @@
 		<!-- /.col .m12 -->
 	}
 
-	@tags.modalTrigger("create", "add", Messages("project.create.tooltip"), styleClass = "orange")
+	@tags.modalTrigger("create-project", "add", tooltip = Messages("project.create.tooltip"), styleClass = "orange")
 
-	@tags.modal(Messages("project.new"), "modal-create") {
-		<form id="form-project" method="post" action="@routes.Application.projectCreate()">
-			<div class="form-group">
-				<input
-					id="field-project-name"
-					name="name"
-					class="form-control"
-					placeholder="@Messages("project.label")"></input>
-			</div>
+	@tags.modal(Messages("project.new"), "modal-create-project") {
+		<form id="form-project" method="post" action="@routes.Projects.create()">
+			@projects.formContent(projectForm)
 		</form>
 	}
 

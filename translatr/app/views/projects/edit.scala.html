@@ -1,4 +1,4 @@
-@(project: models.Project)
+@(project: models.Project, form: Form[forms.ProjectForm])
 
 @main(utils.TemplateInfo.from(Messages("project.edit.title", project.name))) {
 } {
@@ -11,21 +11,13 @@
 } {
 	@tags.content {
 		<div class="col m6 offset-m3 project">
-			<form action="@routes.Application.projectEdit(project.id)" method="post">
+			<form action="@routes.Projects.edit(project.id)" method="post">
 				<div class="card">
 					<div class="card-image orange">
 						<span class="card-title">@Messages("project.edit")</span>
 					</div>
 					<div class="card-content">
-						<div class="form-group">
-							<label for="field-key-name">@Messages("project.name")</label>
-							<input
-								id="field-key-name"
-								name="name"
-								class="form-control"
-								placeholder="@Messages("project.label")"
-								value="@project.name"></input>
-						</div>
+						@projects.formContent(form)
 					</div>
 					<div class="card-action">
 						<button

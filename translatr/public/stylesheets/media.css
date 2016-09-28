@@ -1,5 +1,16 @@
 /* -Small */
 @media (max-width: 600px) {
+	h1 .material-icons {
+	    display: block;
+	    float: none !important;
+	    font-size: 8.8rem;
+	}
+	.floating-action-btn.pin-top {
+	    position: fixed;
+	    top: auto !important;
+	    right: 0;
+	    bottom: 23px;
+	}
 	.project .info > *,
 	.project .info > .timeline,
 	.project .info > .messages {

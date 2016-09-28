@@ -2,8 +2,6 @@ package controllers;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
-import static utils.FormatUtils.formatLocale;
-import static utils.Stopwatch.log;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -19,11 +17,12 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
+
 import actions.ContextAction;
 import commands.Command;
 import commands.RevertDeleteKeyCommand;
 import commands.RevertDeleteLocaleCommand;
-import commands.RevertDeleteProjectCommand;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
@@ -33,7 +32,6 @@ import exporters.PlayMessagesExporter;
 import forms.ImportLocaleForm;
 import forms.KeyForm;
 import forms.LocaleForm;
-import forms.ProjectForm;
 import forms.SearchForm;
 import importers.Importer;
 import importers.JavaPropertiesImporter;
@@ -47,6 +45,7 @@ import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
+import play.data.validation.ValidationError;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Call;
@@ -71,13 +70,9 @@ public class Application extends AbstractController
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-	private static final String COMMAND_FORMAT = "command:%s";
-
 	private final Injector injector;
 
 	private final FormFactory formFactory;
-
-	private final CacheApi cache;
 
 	private final ProjectService projectService;
 
@@ -90,13 +85,14 @@ public class Application extends AbstractController
 	private final Configuration configuration;
 
 	@Inject
-	public Application(Injector injector, FormFactory formFactory, CacheApi cache, ProjectService projectService,
+	public Application(CacheApi cache, Injector injector, FormFactory formFactory, ProjectService projectService,
 				LocaleService localeService, KeyService keyService, MessageService messageService,
 				Configuration configuration)
 	{
+		super(cache);
+
 		this.injector = injector;
 		this.formFactory = formFactory;
-		this.cache = cache;
 		this.projectService = projectService;
 		this.localeService = localeService;
 		this.keyService = keyService;
@@ -107,94 +103,6 @@ public class Application extends AbstractController
 	public Result index()
 	{
 		return ok(views.html.index.render());
-	}
-
-	public Result projectCreate()
-	{
-		ProjectForm form = formFactory.form(ProjectForm.class).bindFromRequest().get();
-
-		LOGGER.debug("Project: {}", Json.toJson(form));
-
-		Project project = Project.byName(form.getName());
-		if(project != null)
-			form.fill(project).withDeleted(false);
-		else
-			project = form.fill(new Project());
-		projectService.save(project);
-
-		select(project);
-
-		return redirect(routes.Projects.project(project.id));
-	}
-
-	public Result projectEdit(UUID projectId)
-	{
-		Project project = Project.byId(projectId);
-
-		if(project == null)
-			return redirect(routes.Application.index());
-
-		select(project);
-
-		if("POST".equals(request().method()))
-		{
-			ProjectForm form = formFactory.form(ProjectForm.class).bindFromRequest().get();
-
-			projectService.save(form.fill(project));
-
-			return redirect(routes.Projects.project(project.id));
-		}
-
-		return ok(views.html.projectEdit.render(project));
-	}
-
-	public Result projectRemove(UUID projectId)
-	{
-		Project project = Project.byId(projectId);
-
-		LOGGER.debug("Key: {}", Json.toJson(project));
-
-		if(project == null)
-			return redirect(routes.Application.index());
-
-		select(project);
-
-		undoCommand(injector.instanceOf(RevertDeleteProjectCommand.class).with(project));
-
-		projectService.delete(project);
-
-		return redirect(routes.Dashboards.dashboard());
-	}
-
-	public Result projectLocales(UUID id)
-	{
-		Project project = Project.byId(id);
-
-		if(project == null)
-			return redirect(routes.Application.index());
-
-		select(project);
-
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
-
-		List<Locale> locales = Locale.findBy(LocaleCriteria.from(search).withProjectId(project.id));
-
-		search.pager(locales);
-
-		java.util.Locale locale = ctx().lang().locale();
-		Collections.sort(locales, (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
-
-		return ok(
-			log(
-				() -> views.html.projectLocales.render(
-					project,
-					locales,
-					localeService
-						.progress(locales.stream().map(l -> l.id).collect(Collectors.toList()), Key.countBy(project)),
-					form),
-				LOGGER,
-				"Rendering projectLocales"));
 	}
 
 	public Result locale(UUID id)
@@ -217,7 +125,7 @@ public class Application extends AbstractController
 		Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(
 			Collectors.groupingBy((m) -> m.key.name, Collectors.reducing(null, a -> a, (a, b) -> b)));
 
-		return ok(views.html.locale.render(locale.project, locale, keys, locales, messages, form));
+		return ok(views.html.locales.locale.render(locale.project, locale, keys, locales, messages, form));
 	}
 
 	public Result localeKeysSearch(UUID localeId)
@@ -302,11 +210,14 @@ public class Application extends AbstractController
 
 		select(project);
 
-		LocaleForm form = formFactory.form(LocaleForm.class).bindFromRequest().get();
+		Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
+
+		if(form.hasErrors())
+			return badRequest(views.html.locales.create.render(project, form));
 
 		LOGGER.debug("Locale: {}", Json.toJson(form));
 
-		Locale locale = form.fill(new Locale());
+		Locale locale = form.get().into(new Locale());
 
 		locale.project = project;
 
@@ -333,6 +244,11 @@ public class Application extends AbstractController
 
 		select(project);
 
+		if(localeName.length() > Locale.NAME_LENGTH)
+			return badRequest(
+				views.html.locales.create
+					.render(project, formFactory.form(LocaleForm.class).bind(ImmutableMap.of("name", localeName))));
+
 		Locale locale = Locale.byProjectAndName(project, localeName);
 
 		if(locale == null)
@@ -358,14 +274,18 @@ public class Application extends AbstractController
 
 		if("POST".equals(request().method()))
 		{
-			LocaleForm form = formFactory.form(LocaleForm.class).bindFromRequest().get();
+			Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
 
-			localeService.save(form.fill(locale));
+			if(form.hasErrors())
+				return badRequest(views.html.locales.edit.render(locale, form));
 
-			return redirect(routes.Application.projectLocales(locale.project.id));
+			localeService.save(form.get().into(locale));
+
+			return redirect(routes.Projects.locales(locale.project.id));
 		}
 
-		return ok(views.html.localeEdit.render(locale));
+		return ok(
+			views.html.locales.edit.render(locale, formFactory.form(LocaleForm.class).fill(LocaleForm.from(locale))));
 	}
 
 	public Result localeRemove(UUID localeId)
@@ -396,7 +316,7 @@ public class Application extends AbstractController
 
 		LOGGER.debug("Redirecting");
 
-		return redirect(routes.Application.projectLocales(locale.project.id));
+		return redirect(routes.Projects.locales(locale.project.id));
 	}
 
 	public Result localeTranslate(UUID localeId)
@@ -433,7 +353,7 @@ public class Application extends AbstractController
 		Map<UUID, Message> messages = Message.findBy(new MessageCriteria().withKeyName(key.name)).stream().collect(
 			groupingBy(m -> m.locale.id, Collectors.reducing(null, a -> a, (a, b) -> b)));
 
-		return ok(views.html.key.render(key, locales, messages, form));
+		return ok(views.html.keys.key.render(key, locales, messages, form));
 	}
 
 	public Result keyCreate(UUID projectId, UUID localeId)
@@ -445,9 +365,12 @@ public class Application extends AbstractController
 
 		select(project);
 
-		KeyForm form = formFactory.form(KeyForm.class).bindFromRequest().get();
+		Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
 
-		Key key = form.fill(new Key());
+		if(form.hasErrors())
+			return badRequest(views.html.keys.create.render(project, form));
+
+		Key key = form.get().into(new Key());
 
 		key.project = project;
 
@@ -474,6 +397,11 @@ public class Application extends AbstractController
 
 		select(project);
 
+		if(keyName.length() > Key.NAME_LENGTH)
+			return badRequest(
+				views.html.keys.create
+					.render(project, formFactory.form(KeyForm.class).bind(ImmutableMap.of("name", keyName))));
+
 		Key key = Key.byProjectAndName(project, keyName);
 
 		if(key == null)
@@ -499,14 +427,17 @@ public class Application extends AbstractController
 
 		if("POST".equals(request().method()))
 		{
-			KeyForm form = formFactory.form(KeyForm.class).bindFromRequest().get();
+			Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
 
-			keyService.save(form.fill(key));
+			if(form.hasErrors())
+				return badRequest(views.html.keys.edit.render(key, form));
 
-			return redirect(routes.Projects.projectKeys(key.project.id));
+			keyService.save(form.get().into(key));
+
+			return redirect(routes.Projects.keys(key.project.id));
 		}
 
-		return ok(views.html.keyEdit.render(key));
+		return ok(views.html.keys.edit.render(key, formFactory.form(KeyForm.class).fill(KeyForm.from(key))));
 	}
 
 	public Result keyRemove(UUID keyId, UUID localeId)
@@ -533,7 +464,7 @@ public class Application extends AbstractController
 
 		LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
 
-		return redirect(routes.Projects.projectKeys(key.project.id));
+		return redirect(routes.Projects.keys(key.project.id));
 	}
 
 	public Result load()
@@ -578,7 +509,7 @@ public class Application extends AbstractController
 
 	public Result commandExecute(String commandKey)
 	{
-		Command<?> command = cache.get(commandKey);
+		Command<?> command = getCommand(commandKey);
 
 		if(command == null)
 			notFound(Json.toJson("Command not found"));
@@ -605,7 +536,7 @@ public class Application extends AbstractController
 				"jsRoutes",
 				routes.javascript.Dashboards.search(),
 				routes.javascript.Projects.search(),
-				routes.javascript.Projects.projectKeysSearch(),
+				routes.javascript.Projects.keysSearch(),
 				routes.javascript.Application.localeKeysSearch(),
 				routes.javascript.Application.locale(),
 				routes.javascript.Application.key(),
@@ -658,19 +589,5 @@ public class Application extends AbstractController
 		LOGGER.debug("End of import");
 
 		return "OK";
-	}
-
-	/**
-	 * @param command
-	 */
-	private String undoCommand(Command<?> command)
-	{
-		String undoKey = String.format(COMMAND_FORMAT, UUID.randomUUID());
-
-		cache.set(undoKey, command, 120);
-
-		flash("undo", undoKey);
-
-		return undoKey;
 	}
 }

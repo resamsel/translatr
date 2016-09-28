@@ -11,14 +11,15 @@ GET		/dashboard/search				controllers.Dashboards.search
 
 # Projects
 GET		/project/:id					controllers.Projects.project(id: java.util.UUID)
-POST	/project						controllers.Application.projectCreate
+POST	/project						controllers.Projects.create
+GET		/project/:projectName/create	controllers.Projects.createImmediately(projectName: String)
 GET		/project/:id/search				controllers.Projects.search(id: java.util.UUID)
-GET		/project/:id/edit				controllers.Application.projectEdit(id: java.util.UUID)
-POST	/project/:id/edit				controllers.Application.projectEdit(id: java.util.UUID)
-GET		/project/:id/remove				controllers.Application.projectRemove(id: java.util.UUID)
-GET		/project/:id/locales			controllers.Application.projectLocales(id: java.util.UUID)
-GET		/project/:id/keys				controllers.Projects.projectKeys(id: java.util.UUID)
-GET		/project/:id/keys/search		controllers.Projects.projectKeysSearch(id: java.util.UUID)
+GET		/project/:id/edit				controllers.Projects.edit(id: java.util.UUID)
+POST	/project/:id/edit				controllers.Projects.edit(id: java.util.UUID)
+GET		/project/:id/remove				controllers.Projects.remove(id: java.util.UUID)
+GET		/project/:id/locales			controllers.Projects.locales(id: java.util.UUID)
+GET		/project/:id/keys				controllers.Projects.keys(id: java.util.UUID)
+GET		/project/:id/keys/search		controllers.Projects.keysSearch(id: java.util.UUID)
 
 # Locales
 GET		/locale/:id						controllers.Application.locale(id: java.util.UUID)
@@ -40,6 +41,7 @@ POST	/key/:id/edit					controllers.Application.keyEdit(id: java.util.UUID)
 GET		/key/:keyId/remove				controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID = null)
 GET		/key/:keyId/:localeId/remove	controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID)
 GET		/key/:projectId/:keyName/create	controllers.Application.keyCreateImmediately(projectId: java.util.UUID, keyName: String)
+GET		/key/:projectId/create			controllers.Application.keyCreate(projectId: java.util.UUID, localeId: java.util.UUID = null)
 POST	/key/:projectId/create			controllers.Application.keyCreate(projectId: java.util.UUID, localeId: java.util.UUID = null)
 POST	/key/:projectId/:localeId/create	controllers.Application.keyCreate(projectId: java.util.UUID, localeId: java.util.UUID)
 

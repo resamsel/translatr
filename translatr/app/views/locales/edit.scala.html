@@ -1,4 +1,4 @@
-@(locale: models.Locale)
+@(locale: models.Locale, form: Form[forms.LocaleForm])
 
 @main(utils.TemplateInfo.from(Messages("locale.edit.title", locale.project.name, tags.locale(locale.name)))) {
 } {
@@ -8,7 +8,7 @@
 		<a class="breadcrumb" href="@routes.Projects.project(locale.project.id)">
 			@locale.project.name
 		</a>
-		<a class="breadcrumb" href="@routes.Application.projectLocales(locale.project.id)">
+		<a class="breadcrumb" href="@routes.Projects.locales(locale.project.id)">
 			@Messages("locales")
 		</a>
 		<a class="breadcrumb" href="@routes.Application.locale(locale.id)">
@@ -23,10 +23,7 @@
 						<span class="card-title">@Messages("locale.edit")</span>
 					</div>
 					<div class="card-content">
-						<div class="form-group">
-							<label for="field-locale-name">@Messages("locale.name")</label>
-							<input id="field-locale-name" name="name" class="form-control" placeholder="@Messages("locale.label")" value="@locale.name"></input>
-						</div>
+						@locales.formContent(form)
 					</div>
 					<div class="card-action">
 						<button
@@ -37,7 +34,7 @@
 						</button>
 						<a
 							class="btn-flat btn-cancel black-text"
-							href="@routes.Application.projectLocales(locale.project.id)">
+							href="@routes.Projects.locales(locale.project.id)">
 							@Messages("button.cancel")
 						</a>
 					</div>
