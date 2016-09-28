@@ -38,6 +38,8 @@ public class Project implements Suggestable
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
+	public static final int NAME_LENGTH = 255;
+
 	@Id
 	public UUID id;
 
@@ -54,7 +56,7 @@ public class Project implements Suggestable
 	@UpdatedTimestamp
 	public DateTime whenUpdated;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = NAME_LENGTH)
 	public String name;
 
 	@JsonIgnore

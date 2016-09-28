@@ -41,6 +41,7 @@ POST	/key/:id/edit					controllers.Application.keyEdit(id: java.util.UUID)
 GET		/key/:keyId/remove				controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID = null)
 GET		/key/:keyId/:localeId/remove	controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID)
 GET		/key/:projectId/:keyName/create	controllers.Application.keyCreateImmediately(projectId: java.util.UUID, keyName: String)
+GET		/key/:projectId/create			controllers.Application.keyCreate(projectId: java.util.UUID, localeId: java.util.UUID = null)
 POST	/key/:projectId/create			controllers.Application.keyCreate(projectId: java.util.UUID, localeId: java.util.UUID = null)
 POST	/key/:projectId/:localeId/create	controllers.Application.keyCreate(projectId: java.util.UUID, localeId: java.util.UUID)
 

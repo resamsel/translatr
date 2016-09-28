@@ -15,6 +15,8 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
+
 import actions.ContextAction;
 import commands.RevertDeleteProjectCommand;
 import criterias.KeyCriteria;
@@ -22,6 +24,7 @@ import criterias.LocaleCriteria;
 import criterias.LogEntryCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
+import forms.KeyForm;
 import forms.ProjectForm;
 import forms.SearchForm;
 import models.Key;
@@ -100,7 +103,7 @@ public class Projects extends AbstractController
 
 		return ok(
 			log(
-				() -> views.html.project
+				() -> views.html.projects.project
 					.render(project, logEntryService.getStats(new LogEntryCriteria().withProjectId(project.id)), form),
 				LOGGER,
 				"Rendering project"));
@@ -108,15 +111,18 @@ public class Projects extends AbstractController
 
 	public Result create()
 	{
-		ProjectForm form = formFactory.form(ProjectForm.class).bindFromRequest().get();
+		Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
+
+		if(form.hasErrors())
+			return badRequest(views.html.projects.create.render(form));
 
 		LOGGER.debug("Project: {}", Json.toJson(form));
 
-		Project project = Project.byName(form.getName());
+		Project project = Project.byName(form.get().getName());
 		if(project != null)
-			form.fill(project).withDeleted(false);
+			form.get().fill(project).withDeleted(false);
 		else
-			project = form.fill(new Project());
+			project = form.get().fill(new Project());
 		projectService.save(project);
 
 		select(project);
@@ -127,6 +133,11 @@ public class Projects extends AbstractController
 	public Result createImmediately(String projectName)
 	{
 		Project project = Project.byName(projectName);
+
+		if(projectName.length() > Project.NAME_LENGTH)
+			return badRequest(
+				views.html.projects.create
+					.render(ProjectForm.form(formFactory).bind(ImmutableMap.of("name", projectName))));
 
 		if(project == null)
 		{
@@ -151,14 +162,18 @@ public class Projects extends AbstractController
 
 		if("POST".equals(request().method()))
 		{
-			ProjectForm form = formFactory.form(ProjectForm.class).bindFromRequest().get();
+			Form<ProjectForm> form = formFactory.form(ProjectForm.class).bindFromRequest();
 
-			projectService.save(form.fill(project));
+			if(form.hasErrors())
+				return badRequest(views.html.projects.edit.render(project, form));
+
+			projectService.save(form.get().fill(project));
 
 			return redirect(routes.Projects.project(project.id));
 		}
 
-		return ok(views.html.projectEdit.render(project));
+		return ok(
+			views.html.projects.edit.render(project, formFactory.form(ProjectForm.class).fill(ProjectForm.from(project))));
 	}
 
 	public Result remove(UUID projectId)
@@ -212,7 +227,7 @@ public class Projects extends AbstractController
 					Locale.class,
 					null,
 					"+++",
-					controllers.routes.Application.localeCreateImmediately(project.id, search.search).url())));
+					routes.Application.localeCreateImmediately(project.id, search.search).url())));
 
 		List<? extends Suggestable> keys =
 					Key.findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));

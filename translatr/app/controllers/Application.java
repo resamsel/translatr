@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
+
 import actions.ContextAction;
 import commands.Command;
 import commands.RevertDeleteKeyCommand;
@@ -43,6 +45,7 @@ import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
+import play.data.validation.ValidationError;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Call;
@@ -122,7 +125,7 @@ public class Application extends AbstractController
 		Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(
 			Collectors.groupingBy((m) -> m.key.name, Collectors.reducing(null, a -> a, (a, b) -> b)));
 
-		return ok(views.html.locale.render(locale.project, locale, keys, locales, messages, form));
+		return ok(views.html.locales.locale.render(locale.project, locale, keys, locales, messages, form));
 	}
 
 	public Result localeKeysSearch(UUID localeId)
@@ -207,11 +210,14 @@ public class Application extends AbstractController
 
 		select(project);
 
-		LocaleForm form = formFactory.form(LocaleForm.class).bindFromRequest().get();
+		Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
+
+		if(form.hasErrors())
+			return badRequest(views.html.locales.create.render(project, form));
 
 		LOGGER.debug("Locale: {}", Json.toJson(form));
 
-		Locale locale = form.fill(new Locale());
+		Locale locale = form.get().into(new Locale());
 
 		locale.project = project;
 
@@ -238,6 +244,11 @@ public class Application extends AbstractController
 
 		select(project);
 
+		if(localeName.length() > Locale.NAME_LENGTH)
+			return badRequest(
+				views.html.locales.create
+					.render(project, formFactory.form(LocaleForm.class).bind(ImmutableMap.of("name", localeName))));
+
 		Locale locale = Locale.byProjectAndName(project, localeName);
 
 		if(locale == null)
@@ -263,14 +274,18 @@ public class Application extends AbstractController
 
 		if("POST".equals(request().method()))
 		{
-			LocaleForm form = formFactory.form(LocaleForm.class).bindFromRequest().get();
+			Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
 
-			localeService.save(form.fill(locale));
+			if(form.hasErrors())
+				return badRequest(views.html.locales.edit.render(locale, form));
+
+			localeService.save(form.get().into(locale));
 
 			return redirect(routes.Projects.locales(locale.project.id));
 		}
 
-		return ok(views.html.localeEdit.render(locale));
+		return ok(
+			views.html.locales.edit.render(locale, formFactory.form(LocaleForm.class).fill(LocaleForm.from(locale))));
 	}
 
 	public Result localeRemove(UUID localeId)
@@ -338,7 +353,7 @@ public class Application extends AbstractController
 		Map<UUID, Message> messages = Message.findBy(new MessageCriteria().withKeyName(key.name)).stream().collect(
 			groupingBy(m -> m.locale.id, Collectors.reducing(null, a -> a, (a, b) -> b)));
 
-		return ok(views.html.key.render(key, locales, messages, form));
+		return ok(views.html.keys.key.render(key, locales, messages, form));
 	}
 
 	public Result keyCreate(UUID projectId, UUID localeId)
@@ -350,9 +365,12 @@ public class Application extends AbstractController
 
 		select(project);
 
-		KeyForm form = formFactory.form(KeyForm.class).bindFromRequest().get();
+		Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
 
-		Key key = form.fill(new Key());
+		if(form.hasErrors())
+			return badRequest(views.html.keys.create.render(project, form));
+
+		Key key = form.get().into(new Key());
 
 		key.project = project;
 
@@ -379,6 +397,11 @@ public class Application extends AbstractController
 
 		select(project);
 
+		if(keyName.length() > Key.NAME_LENGTH)
+			return badRequest(
+				views.html.keys.create
+					.render(project, formFactory.form(KeyForm.class).bind(ImmutableMap.of("name", keyName))));
+
 		Key key = Key.byProjectAndName(project, keyName);
 
 		if(key == null)
@@ -404,14 +427,17 @@ public class Application extends AbstractController
 
 		if("POST".equals(request().method()))
 		{
-			KeyForm form = formFactory.form(KeyForm.class).bindFromRequest().get();
+			Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
 
-			keyService.save(form.fill(key));
+			if(form.hasErrors())
+				return badRequest(views.html.keys.edit.render(key, form));
+
+			keyService.save(form.get().into(key));
 
 			return redirect(routes.Projects.keys(key.project.id));
 		}
 
-		return ok(views.html.keyEdit.render(key));
+		return ok(views.html.keys.edit.render(key, formFactory.form(KeyForm.class).fill(KeyForm.from(key))));
 	}
 
 	public Result keyRemove(UUID keyId, UUID localeId)

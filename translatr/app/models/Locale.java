@@ -35,6 +35,8 @@ public class Locale implements Suggestable
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Locale.class);
 
+	public static final int NAME_LENGTH = 15;
+
 	@Id
 	public UUID id;
 
@@ -50,7 +52,7 @@ public class Locale implements Suggestable
 	@ManyToOne(optional = false)
 	public Project project;
 
-	@Column(nullable = false, length = 15)
+	@Column(nullable = false, length = NAME_LENGTH)
 	public String name;
 
 	@JsonIgnore

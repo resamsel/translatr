@@ -10,6 +10,7 @@ import actions.ContextAction;
 import criterias.ProjectCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
+import forms.ProjectForm;
 import forms.SearchForm;
 import models.Project;
 import models.Suggestable;
@@ -50,7 +51,11 @@ public class Dashboards extends AbstractController
 
 	public Result dashboard()
 	{
-		return ok(views.html.dashboard.render(Project.all(), SearchForm.bindFromRequest(formFactory, configuration)));
+		return ok(
+			views.html.dashboard.render(
+				Project.all(),
+				SearchForm.bindFromRequest(formFactory, configuration),
+				ProjectForm.form(formFactory)));
 	}
 
 	public Result search()

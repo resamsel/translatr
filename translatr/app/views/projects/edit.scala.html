@@ -1,4 +1,4 @@
-@(project: models.Project)
+@(project: models.Project, form: Form[forms.ProjectForm])
 
 @main(utils.TemplateInfo.from(Messages("project.edit.title", project.name))) {
 } {
@@ -17,15 +17,7 @@
 						<span class="card-title">@Messages("project.edit")</span>
 					</div>
 					<div class="card-content">
-						<div class="form-group">
-							<label for="field-key-name">@Messages("project.name")</label>
-							<input
-								id="field-key-name"
-								name="name"
-								class="form-control"
-								placeholder="@Messages("project.label")"
-								value="@project.name"></input>
-						</div>
+						@projects.formContent(form)
 					</div>
 					<div class="card-action">
 						<button

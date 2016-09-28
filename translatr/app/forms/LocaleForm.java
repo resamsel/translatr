@@ -1,6 +1,7 @@
 package forms;
 
 import models.Locale;
+import play.data.validation.Constraints;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -11,6 +12,8 @@ import models.Locale;
  */
 public class LocaleForm
 {
+	@Constraints.Required
+	@Constraints.MaxLength(Locale.NAME_LENGTH)
 	private String name;
 
 	/**
@@ -33,10 +36,23 @@ public class LocaleForm
 	 * @param in
 	 * @return
 	 */
-	public Locale fill(Locale in)
+	public Locale into(Locale in)
 	{
 		in.name = name;
 
 		return in;
+	}
+
+	/**
+	 * @param localeName
+	 * @return
+	 */
+	public static LocaleForm from(Locale in)
+	{
+		LocaleForm out = new LocaleForm();
+
+		out.name = in.name;
+
+		return out;
 	}
 }

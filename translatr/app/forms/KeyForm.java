@@ -1,6 +1,7 @@
 package forms;
 
 import models.Key;
+import play.data.validation.Constraints;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -11,6 +12,8 @@ import models.Key;
  */
 public class KeyForm
 {
+	@Constraints.Required
+	@Constraints.MaxLength(Key.NAME_LENGTH)
 	private String name;
 
 	/**
@@ -33,10 +36,23 @@ public class KeyForm
 	 * @param in
 	 * @return
 	 */
-	public Key fill(Key in)
+	public Key into(Key in)
 	{
 		in.name = name;
 
 		return in;
+	}
+
+	/**
+	 * @param key
+	 * @return
+	 */
+	public static KeyForm from(Key in)
+	{
+		KeyForm out = new KeyForm();
+
+		out.name = in.name;
+
+		return out;
 	}
 }

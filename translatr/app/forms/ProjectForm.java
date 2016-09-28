@@ -1,6 +1,9 @@
 package forms;
 
 import models.Project;
+import play.data.Form;
+import play.data.FormFactory;
+import play.data.validation.Constraints;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -11,6 +14,8 @@ import models.Project;
  */
 public class ProjectForm
 {
+	@Constraints.Required
+	@Constraints.MaxLength(Project.NAME_LENGTH)
 	private String name;
 
 	/**
@@ -37,5 +42,27 @@ public class ProjectForm
 		in.name = name;
 
 		return in;
+	}
+
+	/**
+	 * @param project
+	 * @return
+	 */
+	public static ProjectForm from(Project in)
+	{
+		ProjectForm out = new ProjectForm();
+
+		out.name = in.name;
+
+		return out;
+	}
+
+	/**
+	 * @param formFactory
+	 * @return
+	 */
+	public static Form<ProjectForm> form(FormFactory formFactory)
+	{
+		return formFactory.form(ProjectForm.class);
 	}
 }

@@ -1,4 +1,4 @@
-@(locale: models.Locale)
+@(locale: models.Locale, form: Form[forms.LocaleForm])
 
 @main(utils.TemplateInfo.from(Messages("locale.edit.title", locale.project.name, tags.locale(locale.name)))) {
 } {
@@ -23,10 +23,7 @@
 						<span class="card-title">@Messages("locale.edit")</span>
 					</div>
 					<div class="card-content">
-						<div class="form-group">
-							<label for="field-locale-name">@Messages("locale.name")</label>
-							<input id="field-locale-name" name="name" class="form-control" placeholder="@Messages("locale.label")" value="@locale.name"></input>
-						</div>
+						@locales.formContent(form)
 					</div>
 					<div class="card-action">
 						<button

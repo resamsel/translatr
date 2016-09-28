@@ -1,4 +1,4 @@
-@(key: models.Key)
+@(key: models.Key, form: Form[forms.KeyForm])
 
 @main(utils.TemplateInfo.from(Messages("key.edit.title", key.project.name, key.name))) {
 } {
@@ -23,15 +23,7 @@
 						<span class="card-title">@Messages("key.edit", key.name)</span>
 					</div>
 					<div class="card-content">
-						<div class="input-field">
-							<input
-								id="field-key-name"
-								name="name"
-								type="text"
-								class="validate"
-								value="@key.name" />
-							<label for="field-key-name">@Messages("key.name")</label>
-						</div>
+						@keys.formContent(form)
 					</div>
 					<div class="card-action">
 						<button
