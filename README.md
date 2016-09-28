@@ -2,6 +2,8 @@
 
 A modern and intuitive i18n tool. Translatr simplifies i18n for developers and translators. It uses the [Play Framework](http://www.playframework.com) to translate other projects using the Play Framework. Importing conf/messages.locale files allows easy locale creation.
 
+[Demo Installation](https://resamsel-translatr.herokuapp.com/)
+
 ![Project Overview Example](docs/images/project.png "Project Overview Example")
 
 ## Speeds up development
