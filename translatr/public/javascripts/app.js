@@ -1,4 +1,4 @@
-﻿/*
+/*
   Class, version 2.7
   Copyright (c) 2006, 2007, 2008, Alex Arnell <alex@twologic.com>
   Licensed under the new BSD License. See end of file for full license terms.
@@ -50,7 +50,11 @@ var Class = (function() {
         descendent = function() {
           var ref = this.parent; this.parent = ancestor;
           var result = method.apply(this, arguments);
-          ref ? this.parent = ref : delete this.parent;
+          if(ref) {
+        	  this.parent = ref;
+          } else {
+        	  delete this.parent;
+          }
           return result;
         };
         // mask the underlying method
@@ -218,7 +222,7 @@ App.Core = function(_$) {
 							args = [args];
 						}
 						cache[message][i].apply(this, args);
-					};
+					}
 			} catch (err) {
 				console.log(err);
 			}

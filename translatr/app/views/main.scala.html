@@ -10,11 +10,7 @@
 
 <title>@info.title</title>
 
-<link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/materialize.min.css")">
-<link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/nprogress.css")">
-<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/media.css")">
-<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/font-awesome.min.css")">
+<link rel="stylesheet" href="@routes.Assets.versioned("concat/styles.css")">
 <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
 
@@ -40,14 +36,8 @@
 	</header>
 
 	<main>
-		<script src="@routes.Assets.versioned("javascripts/jquery.min.js")"></script>
-		<script src="@routes.Assets.versioned("javascripts/jquery.ba-bbq.min.js")"></script>
-		<script src="@routes.Assets.versioned("javascripts/materialize.min.js")"></script>
-		<script src="@routes.Assets.versioned("javascripts/jquery.autocomplete.min.js")"></script>
-		<script src="@routes.Assets.versioned("javascripts/nprogress.js")"></script>
-		<script src="@routes.Assets.versioned("javascripts/app.js")"></script>
 		<script src="@routes.Application.javascriptRoutes"></script>
-		<script src="@routes.Assets.versioned("javascripts/main.js")"></script>
+		<script src="@routes.Assets.versioned("concat/scripts.js")"></script>
 
 		@content
 
