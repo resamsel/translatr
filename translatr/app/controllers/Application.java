@@ -45,7 +45,6 @@ import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
-import play.data.validation.ValidationError;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Call;

@@ -30,7 +30,7 @@
 				<div class="row info">
 					<!-- Project Info -->
 					<div class="col m4 overview">
-						<div class="card hoverable">
+						<div class="card no-image hoverable">
 							<div class="card-image orange">
 								<span class="card-title">@Messages("project.title", project.name)</span>
 							</div>
@@ -41,13 +41,22 @@
 								<p>
 									@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
 								</p>
+								<div class="chip user">
+									<img
+										src="@project.owner.avatarUrl"
+										alt="Owner">
+									@Html(Messages("project.owner", project.owner.name))
+									<a href="@routes.Users.user(project.owner.id)">
+										@project.owner.name
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
 	
 					<!-- Locales -->
 					<div class="col m4 locales">
-						<div class="card hoverable">
+						<div class="card no-image hoverable">
 							<div class="card-image blue">
 								<span class="card-title">@Messages("locales")</span>
 							</div>
@@ -63,7 +72,7 @@
 	
 					<!-- Keys -->
 					<div class="col m4 keys">
-						<div class="card hoverable">
+						<div class="card no-image hoverable">
 							<div class="card-image light-green">
 								<span class="card-title">@Messages("keys")</span>
 							</div>
@@ -79,7 +88,7 @@
 
 					<!-- Messages -->
 					<div class="col m12 messages">
-						<div class="card hoverable">
+						<div class="card no-image hoverable">
 							<div class="card-image red">
 								<span class="card-title">@Messages("messages")</span>
 							</div>
@@ -95,7 +104,7 @@
 
 					<!-- Timeline -->
 					<div class="col m12 timeline">
-						<div class="card hoverable">
+						<div class="card no-image hoverable">
 							<div class="card-image grey">
 								<span class="card-title">@Messages("timeline")</span>
 							</div>

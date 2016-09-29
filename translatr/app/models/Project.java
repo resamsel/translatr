@@ -11,6 +11,8 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -33,7 +35,7 @@ import criterias.ProjectCriteria;
 import play.mvc.Http.Context;
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
 public class Project implements Suggestable
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
@@ -58,6 +60,10 @@ public class Project implements Suggestable
 
 	@Column(nullable = false, length = NAME_LENGTH)
 	public String name;
+
+	@ManyToOne
+	@JoinColumn(name = "owner_id")
+	public User owner;
 
 	@JsonIgnore
 	@OneToMany
@@ -112,7 +118,7 @@ public class Project implements Suggestable
 	 */
 	public static List<Project> findBy(ProjectCriteria criteria)
 	{
-		ExpressionList<Project> query = find.where();
+		ExpressionList<Project> query = find.fetch("owner").where();
 
 		query.eq("deleted", false);
 

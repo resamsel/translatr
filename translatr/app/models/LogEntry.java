@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
@@ -45,6 +46,10 @@ public class LogEntry
 	public DateTime whenCreated;
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "user_id")
+	public User user;
+
+	@ManyToOne
 	public Project project;
 
 	@Column(length = 1024 * 1024)
@@ -69,6 +74,8 @@ public class LogEntry
 		LogEntry out = new LogEntry();
 
 		out.type = type;
+		out.user = new User();
+		out.user.id = UUID.fromString("1258D7C1-A1B5-40B0-A79B-0E8B64C7560A");
 		out.project = project;
 		out.contentType = clazz.getName();
 		out.before = Json.stringify(Json.toJson(before));

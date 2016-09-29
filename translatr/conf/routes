@@ -48,6 +48,9 @@ POST	/key/:projectId/:localeId/create	controllers.Application.keyCreate(projectI
 # Messages
 #GET	/message/:id					controllers.Application.message(id: java.util.UUID)
 
+# Users
+GET	/user/:id					controllers.Users.user(id: java.util.UUID)
+
 # Load demo data
 GET		/load							controllers.Application.load
 
