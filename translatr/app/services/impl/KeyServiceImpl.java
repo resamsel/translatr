@@ -21,6 +21,7 @@ import models.Key;
 import models.LogEntry;
 import models.Message;
 import models.Stat;
+import play.Configuration;
 import services.KeyService;
 import services.LogEntryService;
 import services.MessageService;
@@ -44,8 +45,9 @@ public class KeyServiceImpl extends AbstractModelService<Key> implements KeyServ
 	 * 
 	 */
 	@Inject
-	public KeyServiceImpl(MessageService messageService, LogEntryService logEntryService)
+	public KeyServiceImpl(Configuration configuration, MessageService messageService, LogEntryService logEntryService)
 	{
+		super(configuration);
 		this.messageService = messageService;
 		this.logEntryService = logEntryService;
 	}

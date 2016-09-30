@@ -33,8 +33,6 @@ public class User
 
 	public static final int EMAIL_LENGTH = 255;
 
-	private static final int AVATAR_URL_LENGTH = 255;
-
 	@Id
 	public UUID id;
 
@@ -60,12 +58,15 @@ public class User
 	@Column(nullable = false, length = EMAIL_LENGTH)
 	public String email;
 
-	@Column(length = AVATAR_URL_LENGTH)
-	public String avatarUrl;
-
 	private static final Find<UUID, User> find = new Find<UUID, User>()
 	{
 	};
+
+	public User withId(UUID id)
+	{
+		this.id = id;
+		return this;
+	}
 
 	public static User byId(UUID id)
 	{

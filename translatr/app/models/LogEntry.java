@@ -58,6 +58,14 @@ public class LogEntry
 	@Column(length = 1024 * 1024)
 	public String after;
 
+	/**
+	 * @return the type
+	 */
+	public ActionType getType()
+	{
+		return type;
+	}
+
 	private static final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>()
 	{
 	};
@@ -74,8 +82,6 @@ public class LogEntry
 		LogEntry out = new LogEntry();
 
 		out.type = type;
-		out.user = new User();
-		out.user.id = UUID.fromString("1258D7C1-A1B5-40B0-A79B-0E8B64C7560A");
 		out.project = project;
 		out.contentType = clazz.getName();
 		out.before = Json.stringify(Json.toJson(before));
@@ -92,9 +98,23 @@ public class LogEntry
 	{
 		ExpressionList<LogEntry> query = find.fetch("project").where();
 
+		if(criteria.getUserId() != null)
+			query.eq("user.id", criteria.getUserId());
+
 		if(criteria.getProjectId() != null)
 			query.eq("project.id", criteria.getProjectId());
 
-		return query.order("whenCreated").findList();
+		if(criteria.getLimit() != null)
+			query.setMaxRows(criteria.getLimit() + 1);
+
+		if(criteria.getOffset() != null)
+			query.setFirstRow(criteria.getOffset());
+
+		if(criteria.getOrder() != null)
+			query.order(criteria.getOrder());
+		else
+			query.order("whenCreated");
+
+		return query.findList();
 	}
 }

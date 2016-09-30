@@ -122,6 +122,9 @@ public class Project implements Suggestable
 
 		query.eq("deleted", false);
 
+		if(criteria.getOwnerId() != null)
+			query.eq("owner.id", criteria.getOwnerId());
+
 		if(criteria.getProjectId() != null)
 			query.eq("id", criteria.getProjectId());
 

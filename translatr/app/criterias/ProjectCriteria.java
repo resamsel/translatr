@@ -1,5 +1,7 @@
 package criterias;
 
+import java.util.UUID;
+
 import forms.SearchForm;
 
 /**
@@ -11,6 +13,24 @@ import forms.SearchForm;
  */
 public class ProjectCriteria extends AbstractSearchCriteria<ProjectCriteria>
 {
+	private UUID ownerId;
+
+	public UUID getOwnerId()
+	{
+		return ownerId;
+	}
+
+	public void setOwnerId(UUID ownerId)
+	{
+		this.ownerId = ownerId;
+	}
+
+	public ProjectCriteria withOwnerId(UUID ownerId)
+	{
+		this.ownerId = ownerId;
+		return this;
+	}
+
 	public static ProjectCriteria from(SearchForm search)
 	{
 		return new ProjectCriteria()

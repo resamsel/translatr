@@ -9,16 +9,15 @@ create table user_ (
   username                      varchar(32) not null,
   name                          varchar(32) not null,
   email                         varchar(255) not null,
-  avatar_url                    varchar(255),
   constraint uq_user_username unique (username),
   constraint uq_user_email unique (email),
   constraint pk_user primary key (id)
 );
 
 insert into user_
-	(id, when_created, when_updated, username, name, email, avatar_url)
+	(id, when_created, when_updated, username, name, email)
 	values
-	('1258D7C1-A1B5-40B0-A79B-0E8B64C7560A', now(), now(), 'resamsel', 'René Samselnig', 'rene.samselnig@gmail.com', 'https://avatars3.githubusercontent.com/u/3007332');
+	('1258D7C1-A1B5-40B0-A79B-0E8B64C7560A', now(), now(), 'translatr', 'Translatr', 'translatr@resamsel.com');
 
 alter table project
 	add column owner_id uuid;
