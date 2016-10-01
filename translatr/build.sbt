@@ -2,7 +2,7 @@ import com.typesafe.sbt.packager.docker._
 
 name := """translatr"""
 
-version := "1.0.2"
+version := "2.0.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).
 	enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin).
@@ -12,12 +12,17 @@ lazy val root = (project in file(".")).
 
 scalaVersion := "2.11.8"
 
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
 libraryDependencies ++= Seq(
 	javaJdbc,
 	cache,
 
 	// Database
 	"org.postgresql" % "postgresql" % "9.4.1210",
+
+	// OAuth for Play
+	"com.feth" %% "play-authenticate" % "0.8.1-SNAPSHOT",
 
 	// Apache Commons IO
 	"commons-io" % "commons-io" % "2.5",

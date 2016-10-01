@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.collect.ImmutableMap;
 
 import actions.ContextAction;
@@ -43,6 +44,8 @@ import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
 import services.ProjectService;
+import services.UserService;
+import utils.Template;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -57,6 +60,10 @@ public class Projects extends AbstractController
 	private static final Logger LOGGER = LoggerFactory.getLogger(Projects.class);
 
 	private final Injector injector;
+
+	private final PlayAuthenticate auth;
+
+	private final UserService userService;
 
 	private final ProjectService projectService;
 
@@ -74,14 +81,16 @@ public class Projects extends AbstractController
 	 * 
 	 */
 	@Inject
-	public Projects(CacheApi cache, Injector injector, FormFactory formFactory, ProjectService projectService,
-				LocaleService localeService, KeyService keyService, LogEntryService logEntryService,
-				Configuration configuration)
+	public Projects(CacheApi cache, Injector injector, FormFactory formFactory, PlayAuthenticate auth,
+				UserService userService, ProjectService projectService, LocaleService localeService, KeyService keyService,
+				LogEntryService logEntryService, Configuration configuration)
 	{
 		super(cache);
 
 		this.injector = injector;
 		this.formFactory = formFactory;
+		this.auth = auth;
+		this.userService = userService;
 		this.projectService = projectService;
 		this.localeService = localeService;
 		this.keyService = keyService;
@@ -102,8 +111,11 @@ public class Projects extends AbstractController
 
 		return ok(
 			log(
-				() -> views.html.projects.project
-					.render(project, logEntryService.getStats(new LogEntryCriteria().withProjectId(project.id)), form),
+				() -> views.html.projects.project.render(
+					Template.create(auth, userService),
+					project,
+					logEntryService.getStats(new LogEntryCriteria().withProjectId(project.id)),
+					form),
 				LOGGER,
 				"Rendering project"));
 	}
@@ -113,7 +125,7 @@ public class Projects extends AbstractController
 		Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
 
 		if(form.hasErrors())
-			return badRequest(views.html.projects.create.render(form));
+			return badRequest(views.html.projects.create.render(Template.create(auth, userService), form));
 
 		LOGGER.debug("Project: {}", Json.toJson(form));
 
@@ -135,8 +147,9 @@ public class Projects extends AbstractController
 
 		if(projectName.length() > Project.NAME_LENGTH)
 			return badRequest(
-				views.html.projects.create
-					.render(ProjectForm.form(formFactory).bind(ImmutableMap.of("name", projectName))));
+				views.html.projects.create.render(
+					Template.create(auth, userService),
+					ProjectForm.form(formFactory).bind(ImmutableMap.of("name", projectName))));
 
 		if(project == null)
 		{
@@ -164,7 +177,7 @@ public class Projects extends AbstractController
 			Form<ProjectForm> form = formFactory.form(ProjectForm.class).bindFromRequest();
 
 			if(form.hasErrors())
-				return badRequest(views.html.projects.edit.render(project, form));
+				return badRequest(views.html.projects.edit.render(Template.create(auth, userService), project, form));
 
 			projectService.save(form.get().fill(project));
 
@@ -172,7 +185,10 @@ public class Projects extends AbstractController
 		}
 
 		return ok(
-			views.html.projects.edit.render(project, formFactory.form(ProjectForm.class).fill(ProjectForm.from(project))));
+			views.html.projects.edit.render(
+				Template.create(auth, userService),
+				project,
+				formFactory.form(ProjectForm.class).fill(ProjectForm.from(project))));
 	}
 
 	public Result remove(UUID projectId)
@@ -273,14 +289,15 @@ public class Projects extends AbstractController
 
 		return ok(
 			log(
-				() -> views.html.projectLocales.render(
+				() -> views.html.projects.locales.render(
+					Template.create(auth, userService),
 					project,
 					locales,
 					localeService
 						.progress(locales.stream().map(l -> l.id).collect(Collectors.toList()), Key.countBy(project)),
 					form),
 				LOGGER,
-				"Rendering projectLocales"));
+				"Rendering projects.locales"));
 	}
 
 	public Result keys(UUID id)
@@ -302,7 +319,7 @@ public class Projects extends AbstractController
 		Map<UUID, Double> progress =
 					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
 
-		return ok(views.html.projectKeys.render(project, keys, progress, form));
+		return ok(views.html.projects.keys.render(Template.create(auth, userService), project, keys, progress, form));
 	}
 
 	public Result keysSearch(UUID id)

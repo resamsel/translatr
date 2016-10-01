@@ -19,12 +19,9 @@ import criterias.LogEntryCriteria;
 import models.Aggregate;
 import models.LogEntry;
 import models.Project;
-import models.User;
 import play.Configuration;
 import play.mvc.Http.Context;
 import services.LogEntryService;
-import utils.ConfigKey;
-import utils.SessionKey;
 
 /**
  * (c) 2016 Skiline Media GmbH

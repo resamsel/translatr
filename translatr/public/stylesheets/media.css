@@ -63,10 +63,10 @@
 	.breadcrumbs {
 		top: 64px;
 	}
-	.fixed-action-btn {
+/*	.fixed-action-btn {
 		top: 68px;
 		bottom: auto;
-	}
+	}*/
 	.fixed-action-btn.horizontal ul li {
 	    margin: 7.5px;
 	}
@@ -75,6 +75,10 @@
 	}
 	.tabs-container {
 		padding: 0 15%;
+	}
+	.auth-provider {
+		max-width: 150px;
+		margin: 2rem auto 1rem auto;
 	}
 
 	.template-dashboard .card {

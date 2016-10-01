@@ -5,6 +5,12 @@
 # An example controller showing a sample home page
 GET		/								controllers.Application.index
 
+# Authentication
+GET		/login							controllers.Application.login
+GET		/logout							com.feth.play.module.pa.controllers.Authenticate.logout
+GET		/authenticate/:provider			com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
+GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider: String)
+
 # Dashboards
 GET		/dashboard						controllers.Dashboards.dashboard
 GET		/dashboard/search				controllers.Dashboards.search

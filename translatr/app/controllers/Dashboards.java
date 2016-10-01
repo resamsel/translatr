@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.feth.play.module.pa.PlayAuthenticate;
+
 import actions.ContextAction;
 import criterias.ProjectCriteria;
 import dto.SearchResponse;
@@ -22,6 +24,8 @@ import play.data.FormFactory;
 import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.With;
+import services.UserService;
+import utils.Template;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -37,22 +41,30 @@ public class Dashboards extends AbstractController
 
 	private final Configuration configuration;
 
+	private final PlayAuthenticate auth;
+
+	private final UserService userService;
+
 	/**
 	 * 
 	 */
 	@Inject
-	public Dashboards(CacheApi cache, FormFactory formFactory, Configuration configuration)
+	public Dashboards(CacheApi cache, FormFactory formFactory, Configuration configuration, PlayAuthenticate auth,
+				UserService userService)
 	{
 		super(cache);
 
 		this.formFactory = formFactory;
 		this.configuration = configuration;
+		this.auth = auth;
+		this.userService = userService;
 	}
 
 	public Result dashboard()
 	{
 		return ok(
 			views.html.dashboard.render(
+				Template.create(auth, userService),
 				Project.all(),
 				SearchForm.bindFromRequest(formFactory, configuration),
 				ProjectForm.form(formFactory)));

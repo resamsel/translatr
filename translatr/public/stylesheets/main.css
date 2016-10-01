@@ -536,3 +536,49 @@ html.template-key,
     stroke: rgba(0,0,0,.1);
 	stroke-dasharray: 0;
 }
+
+/* Authentication */
+.template-login .login {
+	display: none;
+}
+.dropdown-content.active {
+	z-index: 999;
+}
+.collection.auth-provider .collection-item {
+	padding: 0;
+	height: auto;
+	margin-bottom: 0.5rem;
+}
+.collection.auth-provider .collection-item a {
+	height: 38px;
+	min-height: auto;
+	border-radius: 2px;
+}
+.collection.auth-provider .collection-item .icon-container {
+    border-right: 1px solid rgba(0,0,0,0.2);
+    box-sizing: border-box;
+    width: 38px;
+    height: 100%;
+    line-height: 1;
+    padding: 11px;
+    float: left;
+}
+.collection.auth-provider .collection-item .title {
+    line-height: 38px;
+    height: 100%;
+    display: block;
+    text-align: center;
+}
+/* Get the colours from: https://lipis.github.io/bootstrap-social/ */
+.collection-item.provider-facebook a {
+    color: #fff;
+    background-color: #3b5998;
+}
+.collection-item.provider-google a {
+    color: #fff;
+    background-color: #dd4b39;
+}
+.collection-item.provider-github a {
+	color: #fff;
+    background-color: #444;
+}

@@ -1,18 +1,36 @@
 # --- !Ups
 
+create table linked_account (
+  id                            bigserial not null,
+  version                       bigint not null default 0,
+  when_created                  timestamp not null,
+  when_updated                  timestamp not null,
+  user_id                       uuid,
+  provider_user_id              varchar(255),
+  provider_key                  varchar(255),
+  constraint pk_linked_account primary key (id)
+);
+
 create table user_ (
   id                            uuid not null,
   version                       bigint not null default 0,
-  deleted                       boolean not null default false,
   when_created                  timestamp not null,
   when_updated                  timestamp not null,
-  username                      varchar(32) not null,
+  username                      varchar(32),
   name                          varchar(32) not null,
   email                         varchar(255) not null,
-  constraint uq_user_username unique (username),
-  constraint uq_user_email unique (email),
+  email_validated               boolean not null default false,
+  active                        boolean not null default true,
   constraint pk_user primary key (id)
 );
+
+alter table linked_account
+	add constraint fk_linked_account_user_id
+		foreign key (user_id)
+		references user_ (id)
+		on delete restrict
+		on update restrict;
+create index ix_linked_account_user_id on linked_account (user_id);
 
 insert into user_
 	(id, when_created, when_updated, username, name, email)
@@ -61,4 +79,5 @@ delete from log_entry where project_id is null;
 alter table log_entry
 	alter column project_id set not null;
 alter table project drop column owner_id;
+drop table linked_account;
 drop table user_;

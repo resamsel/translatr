@@ -1,14 +1,16 @@
-@(info: utils.TemplateInfo)(nav: Html)(breadcrumbs: Html)(content: Html)
+@(template: utils.Template)(nav: Html)(breadcrumbs: Html)(content: Html)
+
+@import com.feth.play.module.pa.views.html._
 
 <!DOCTYPE html>
-<html lang="@ctx.lang().locale" class="template-@info.template">
+<html lang="@ctx.lang().locale" class="template-@template.name">
 <head>
 
 <meta charset="utf-8">
 <meta http-equiv="Content-Language" content="@ctx.lang().locale">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<title>@info.title</title>
+<title>@template.title</title>
 
 <link rel="stylesheet" href="@routes.Assets.versioned("concat/styles.css")">
 <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
@@ -25,7 +27,47 @@
 						<i class="material-icons prefix">language</i>
 						<span class="hide-on-small-only">@Messages("brand")</span>
 					</a>
-	
+
+					<ul id="dropdown-logged-in" class="dropdown-content">
+						@if(template.loggedInUser != null) {
+							<li>
+								<a href="@routes.Users.user(template.loggedInUser.id)">@Messages("user.profile")</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="@com.feth.play.module.pa.controllers.routes.Authenticate.logout">@Messages("auth.logout")</a>
+							</li>
+						}
+					</ul>
+					<ul class="right">
+						@if(template.auth != null) {
+							@if(template.loggedInUser != null) {
+								<li>
+									<a
+										class="dropdown-button"
+										href="#!"
+										data-activates="dropdown-logged-in"
+										data-constrainwidth="false"
+										data-beloworigin="true"
+										data-alignment="right">
+										@template.loggedInUser.name
+										<i class="material-icons right">arrow_drop_down</i>
+									</a>
+								</li>
+							}
+							@currentAuth(template.auth) { auth =>
+								@if(auth != null) {
+									<li class="logout">
+									</li>
+								} else {
+									<li class="login">
+										<a href="@routes.Application.login">@Messages("auth.login")</a>
+									</li>
+								}
+							}
+						}
+					</ul>
+
 					@nav
 				</div>
 			</nav>

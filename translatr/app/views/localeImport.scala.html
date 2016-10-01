@@ -1,6 +1,6 @@
 @(project: models.Project, locale: models.Locale)
 
-@main(utils.TemplateInfo.from(Messages("locale.import.title", locale.project.name, tags.locale(locale.name)))) {
+@main(utils.Template.from(Messages("locale.import.title", locale.project.name, tags.locale(locale.name)))) {
 } {
 		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")

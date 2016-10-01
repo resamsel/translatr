@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.collect.ImmutableMap;
 
 import actions.ContextAction;
@@ -59,6 +60,8 @@ import services.KeyService;
 import services.LocaleService;
 import services.MessageService;
 import services.ProjectService;
+import services.UserService;
+import utils.Template;
 import utils.TransactionUtils;
 
 /**
@@ -69,9 +72,17 @@ public class Application extends AbstractController
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
+	public static final String FLASH_MESSAGE_KEY = "message";
+
+	public static final String FLASH_ERROR_KEY = "error";
+
 	private final Injector injector;
 
 	private final FormFactory formFactory;
+
+	private final PlayAuthenticate auth;
+
+	private final UserService userService;
 
 	private final ProjectService projectService;
 
@@ -84,14 +95,16 @@ public class Application extends AbstractController
 	private final Configuration configuration;
 
 	@Inject
-	public Application(CacheApi cache, Injector injector, FormFactory formFactory, ProjectService projectService,
-				LocaleService localeService, KeyService keyService, MessageService messageService,
-				Configuration configuration)
+	public Application(CacheApi cache, Injector injector, FormFactory formFactory, PlayAuthenticate auth,
+				UserService userService, ProjectService projectService, LocaleService localeService, KeyService keyService,
+				MessageService messageService, Configuration configuration)
 	{
 		super(cache);
 
 		this.injector = injector;
 		this.formFactory = formFactory;
+		this.auth = auth;
+		this.userService = userService;
 		this.projectService = projectService;
 		this.localeService = localeService;
 		this.keyService = keyService;
@@ -101,7 +114,19 @@ public class Application extends AbstractController
 
 	public Result index()
 	{
-		return ok(views.html.index.render());
+		return ok(views.html.index.render(Template.create(auth, userService)));
+	}
+
+	public Result login()
+	{
+		return ok(views.html.login.render(Template.create(auth, userService)));
+	}
+
+	public Result oAuthDenied(final String providerKey)
+	{
+		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
+		flash(FLASH_ERROR_KEY, "You need to accept the OAuth connection in order to use this website!");
+		return redirect(routes.Application.index());
 	}
 
 	public Result locale(UUID id)

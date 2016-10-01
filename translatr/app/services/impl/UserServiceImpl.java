@@ -1,0 +1,102 @@
+package services.impl;
+
+import java.util.Collections;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import com.feth.play.module.pa.user.AuthUser;
+import com.feth.play.module.pa.user.EmailIdentity;
+import com.feth.play.module.pa.user.NameIdentity;
+
+import models.ActionType;
+import models.LinkedAccount;
+import models.LogEntry;
+import models.User;
+import play.Configuration;
+import services.LogEntryService;
+import services.UserService;
+
+/**
+ * (c) 2016 Skiline Media GmbH
+ * <p>
+ *
+ * @author resamsel
+ * @version 1 Oct 2016
+ */
+@Singleton
+public class UserServiceImpl extends AbstractModelService<User> implements UserService
+{
+	private final LogEntryService logEntryService;
+
+	/**
+	 * @param configuration
+	 */
+	@Inject
+	public UserServiceImpl(Configuration configuration, LogEntryService logEntryService)
+	{
+		super(configuration);
+		this.logEntryService = logEntryService;
+	}
+
+	@Override
+	public User create(final AuthUser authUser)
+	{
+		final User user = new User();
+		user.active = true;
+		user.linkedAccounts = Collections.singletonList(LinkedAccount.create(authUser));
+
+		if(authUser instanceof EmailIdentity)
+		{
+			final EmailIdentity identity = (EmailIdentity)authUser;
+			// Remember, even when getting them from FB & Co., emails should be
+			// verified within the application as a security breach there might
+			// break your security as well!
+			user.email = identity.getEmail();
+			user.emailValidated = false;
+		}
+
+		if(authUser instanceof NameIdentity)
+		{
+			final NameIdentity identity = (NameIdentity)authUser;
+			final String name = identity.getName();
+			if(name != null)
+			{
+				user.name = name;
+			}
+		}
+
+		return save(user);
+	}
+
+	@Override
+	public User addLinkedAccount(final AuthUser oldUser, final AuthUser newUser)
+	{
+		final User u = User.findByAuthUserIdentity(oldUser);
+		u.linkedAccounts.add(LinkedAccount.create(newUser));
+		return save(u);
+	}
+
+	@Override
+	public User getLocalUser(final AuthUser authUser)
+	{
+		return User.findByAuthUserIdentity(authUser);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void preSave(User t, boolean update)
+	{
+		if(update)
+			logEntryService.save(LogEntry.from(ActionType.Update, null, dto.User.class, toDto(User.byId(t.id)), toDto(t)));
+	}
+
+	protected dto.User toDto(User t)
+	{
+		dto.User out = dto.User.from(t);
+
+		return out;
+	}
+}

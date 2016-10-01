@@ -1,4 +1,6 @@
-@main(utils.TemplateInfo.from(Messages("brand"), "index")) { } { } {
+@(template: utils.Template)
+
+@main(template.withTitle(Messages("brand")).withName("index")) { } { } {
 	<div class="section green">
 		<div class="container">
 			<div class="row">

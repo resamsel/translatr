@@ -1,6 +1,6 @@
 @(project: models.Project, locale: models.Locale, keys: List[models.Key], locales: List[models.Locale], messages: Map[String, models.Message], form: Form[forms.SearchForm])
 
-@import utils.TemplateInfo.from
+@import utils.Template
 
 @localeActions = {
 	<li>
@@ -11,7 +11,7 @@
 	</li>
 }
 
-@main(from(Messages("locale.title", project.name, tags.locale(locale.name)), "locale")) {
+@main(Template.from(Messages("locale.title", project.name, tags.locale(locale.name)), "locale")) {
 	@tags.search(form) {
 		<button
 			type="button"
