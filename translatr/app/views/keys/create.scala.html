@@ -1,6 +1,6 @@
-@(project: Project, form: Form[forms.KeyForm])
+@(template: utils.Template, project: Project, form: Form[forms.KeyForm])
 
-@main(utils.Template.from(Messages("key.create.title", project.name))) {
+@main(template.withTitle(Messages("key.create.title", project.name))) {
 } {
 		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")

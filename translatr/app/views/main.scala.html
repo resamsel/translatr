@@ -30,6 +30,10 @@
 
 					<ul id="dropdown-logged-in" class="dropdown-content">
 						@if(template.loggedInUser != null) {
+							<li class="disabled">
+								<a class="disabled">@Html(Messages("auth.as", template.loggedInUser.name))</a>
+							</li>
+							<li class="divider"></li>
 							<li>
 								<a href="@routes.Users.user(template.loggedInUser.id)">@Messages("user.profile")</a>
 							</li>
@@ -44,26 +48,20 @@
 							@if(template.loggedInUser != null) {
 								<li>
 									<a
-										class="dropdown-button"
+										class="dropdown-button auth"
 										href="#!"
 										data-activates="dropdown-logged-in"
 										data-constrainwidth="false"
 										data-beloworigin="true"
 										data-alignment="right">
-										@template.loggedInUser.name
+										@tags.gravatar(template.loggedInUser, 32, "circle")
 										<i class="material-icons right">arrow_drop_down</i>
 									</a>
 								</li>
-							}
-							@currentAuth(template.auth) { auth =>
-								@if(auth != null) {
-									<li class="logout">
-									</li>
-								} else {
-									<li class="login">
-										<a href="@routes.Application.login">@Messages("auth.login")</a>
-									</li>
-								}
+							} else {
+								<li class="auth login">
+									<a href="@routes.Application.login">@Messages("auth.login")</a>
+								</li>
 							}
 						}
 					</ul>

@@ -2,11 +2,17 @@ package controllers;
 
 import java.util.UUID;
 
+import com.feth.play.module.pa.PlayAuthenticate;
+
 import commands.Command;
 import models.Locale;
 import models.Project;
+import models.User;
 import play.cache.CacheApi;
+import play.inject.Injector;
 import play.mvc.Controller;
+import services.UserService;
+import utils.Template;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -19,14 +25,34 @@ public abstract class AbstractController extends Controller
 {
 	private static final String COMMAND_FORMAT = "command:%s";
 
-	private final CacheApi cache;
+	protected final Injector injector;
+
+	protected final CacheApi cache;
+
+	protected final PlayAuthenticate auth;
+
+	protected final UserService userService;
 
 	/**
+	 * @param injector
+	 * @param userService
+	 * @param auth
 	 * 
 	 */
-	protected AbstractController(CacheApi cache)
+	protected AbstractController(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService)
 	{
+		this.injector = injector;
 		this.cache = cache;
+		this.auth = auth;
+		this.userService = userService;
+	}
+
+	/**
+	 * @return
+	 */
+	protected Template createTemplate()
+	{
+		return Template.create(auth, User.loggedInUser());
 	}
 
 	protected void select(Project project)

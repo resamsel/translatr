@@ -1,0 +1,27 @@
+@(template: utils.Template, user: models.User, activityList: List[LogEntry], form: Form[forms.SearchForm])
+
+@import utils.FormatUtils._
+
+@main(template.withTitle(Messages("user.title", user.name)).withName("user")) {
+} {
+		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+			@Messages("dashboard")
+		</a>
+} {
+	@content(user, "activity") {
+		<div class="collection">
+			@for(activity <- activityList) {
+				<a href="@utils.JsonUtils.linkTo(activity)" class="collection-item avatar black-text">
+					<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
+					<span class="title">
+						@utils.JsonUtils.nameOf(activity)
+					</span>
+					<p>
+						@Messages("activity." + activity.getType + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
+					</p>
+				</a>
+			}
+			@tags.pager(routes.Users.activity(user.id), form.get)
+		</div>
+	}
+}

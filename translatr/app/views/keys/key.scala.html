@@ -1,6 +1,4 @@
-@(key: models.Key, locales: List[models.Locale], messages: Map[java.util.UUID, models.Message], form: Form[forms.SearchForm])
-
-@import utils.Template
+@(template: utils.Template, key: models.Key, locales: List[models.Locale], messages: Map[java.util.UUID, models.Message], form: Form[forms.SearchForm])
 
 @createActions = {
 	<li>
@@ -11,7 +9,7 @@
 	</li>
 }
 
-@main(Template.from(Messages("key.title", key.project.name, key.name), "key")) {
+@main(template.withTitle(Messages("key.title", key.project.name, key.name)).withName("key")) {
 	@tags.search(form) {
 		<button
 			type="button"

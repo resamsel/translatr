@@ -3,6 +3,7 @@ package services.impl;
 import static utils.Stopwatch.log;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ import criterias.LogEntryCriteria;
 import models.Aggregate;
 import models.LogEntry;
 import models.Project;
+import models.User;
 import play.Configuration;
 import play.mvc.Http.Context;
 import services.LogEntryService;
@@ -101,19 +103,15 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
 	public void preSave(LogEntry t, boolean update)
 	{
 		if(t.user == null)
-			t.user = loggedInUser();
+			t.user = User.loggedInUser();
 
 		if(t.project == null)
 		{
-			if(Context.current().args.containsKey("projectId"))
-			{
-				t.project = new Project();
-				t.project.id = (UUID)Context.current().args.get("projectId");
-			}
+			Map<String, Object> args = Context.current().args;
+			if(args.containsKey("projectId"))
+				t.project = new Project().withId((UUID)args.get("projectId"));
 			else
-			{
 				LOGGER.warn("Project has not been set and was not found in context");
-			}
 		}
 	}
 }

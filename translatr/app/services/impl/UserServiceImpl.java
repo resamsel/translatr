@@ -1,5 +1,6 @@
 package services.impl;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.inject.Inject;
@@ -89,8 +90,31 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
 	@Override
 	protected void preSave(User t, boolean update)
 	{
+		if(t.email != null)
+			t.email = t.email.toLowerCase();
 		if(update)
 			logEntryService.save(LogEntry.from(ActionType.Update, null, dto.User.class, toDto(User.byId(t.id)), toDto(t)));
+	}
+
+	@Override
+	public User merge(final AuthUser oldUser, final AuthUser newUser)
+	{
+		return merge(User.findByAuthUserIdentity(oldUser), User.findByAuthUserIdentity(newUser));
+	}
+
+	public User merge(final User user, final User otherUser)
+	{
+		for(final LinkedAccount acc : otherUser.linkedAccounts)
+		{
+			user.linkedAccounts.add(LinkedAccount.create(acc));
+		}
+		// do all other merging stuff here - like resources, etc.
+
+		// deactivate the merged user that got added to this one
+		otherUser.active = false;
+		save(Arrays.asList(new User[]{otherUser, user}));
+
+		return user;
 	}
 
 	protected dto.User toDto(User t)

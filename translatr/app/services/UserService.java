@@ -33,4 +33,10 @@ public interface UserService
 	 * @param user
 	 */
 	User getLocalUser(AuthUser user);
+
+	/**
+	 * @param oldUser
+	 * @param newUser
+	 */
+	User merge(AuthUser oldUser, AuthUser newUser);
 }

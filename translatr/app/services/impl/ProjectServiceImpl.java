@@ -10,6 +10,7 @@ import javax.inject.Singleton;
 import models.ActionType;
 import models.LogEntry;
 import models.Project;
+import models.User;
 import play.Configuration;
 import services.KeyService;
 import services.LocaleService;
@@ -55,7 +56,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 			logEntryService
 				.save(LogEntry.from(ActionType.Update, t, dto.Project.class, toDto(Project.byId(t.id)), toDto(t)));
 		if(t.owner == null)
-			t.owner = loggedInUser();
+			t.owner = User.loggedInUser();
 	}
 
 	/**

@@ -52,6 +52,8 @@ create index ix_project_owner_id on project (owner_id);
 
 alter table project
 	alter column owner_id set not null;
+alter table project
+	drop constraint uq_project_name;
 
 alter table log_entry
 	add column user_id uuid;
@@ -79,5 +81,7 @@ delete from log_entry where project_id is null;
 alter table log_entry
 	alter column project_id set not null;
 alter table project drop column owner_id;
+alter table project
+	add constraint uq_project_name unique(name);
 drop table linked_account;
 drop table user_;

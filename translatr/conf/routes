@@ -11,6 +11,12 @@ GET		/logout							com.feth.play.module.pa.controllers.Authenticate.logout
 GET		/authenticate/:provider			com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
 GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider: String)
 
+# Users
+GET	/user/:id					controllers.Users.user(id: java.util.UUID)
+GET	/user/:id/activity			controllers.Users.activity(id: java.util.UUID)
+GET	/user/:id/linkedAccounts	controllers.Users.linkedAccounts(id: java.util.UUID)
+GET	/user/:id/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(id: java.util.UUID, linkedAccountId: Long)
+
 # Dashboards
 GET		/dashboard						controllers.Dashboards.dashboard
 GET		/dashboard/search				controllers.Dashboards.search
@@ -53,10 +59,6 @@ POST	/key/:projectId/:localeId/create	controllers.Application.keyCreate(projectI
 
 # Messages
 #GET	/message/:id					controllers.Application.message(id: java.util.UUID)
-
-# Users
-GET	/user/:id					controllers.Users.user(id: java.util.UUID)
-GET	/user/:id/activity			controllers.Users.userActivity(id: java.util.UUID)
 
 # Load demo data
 GET		/load							controllers.Application.load

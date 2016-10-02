@@ -32,6 +32,7 @@ import models.Locale;
 import models.Project;
 import models.Suggestable;
 import models.Suggestable.Data;
+import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
@@ -45,7 +46,6 @@ import services.LocaleService;
 import services.LogEntryService;
 import services.ProjectService;
 import services.UserService;
-import utils.Template;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -58,12 +58,6 @@ import utils.Template;
 public class Projects extends AbstractController
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Projects.class);
-
-	private final Injector injector;
-
-	private final PlayAuthenticate auth;
-
-	private final UserService userService;
 
 	private final ProjectService projectService;
 
@@ -81,16 +75,13 @@ public class Projects extends AbstractController
 	 * 
 	 */
 	@Inject
-	public Projects(CacheApi cache, Injector injector, FormFactory formFactory, PlayAuthenticate auth,
+	public Projects(Injector injector, CacheApi cache, FormFactory formFactory, PlayAuthenticate auth,
 				UserService userService, ProjectService projectService, LocaleService localeService, KeyService keyService,
 				LogEntryService logEntryService, Configuration configuration)
 	{
-		super(cache);
+		super(injector, cache, auth, userService);
 
-		this.injector = injector;
 		this.formFactory = formFactory;
-		this.auth = auth;
-		this.userService = userService;
 		this.projectService = projectService;
 		this.localeService = localeService;
 		this.keyService = keyService;
@@ -112,7 +103,7 @@ public class Projects extends AbstractController
 		return ok(
 			log(
 				() -> views.html.projects.project.render(
-					Template.create(auth, userService),
+					createTemplate(),
 					project,
 					logEntryService.getStats(new LogEntryCriteria().withProjectId(project.id)),
 					form),
@@ -125,15 +116,16 @@ public class Projects extends AbstractController
 		Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
 
 		if(form.hasErrors())
-			return badRequest(views.html.projects.create.render(Template.create(auth, userService), form));
+			return badRequest(views.html.projects.create.render(createTemplate(), form));
 
 		LOGGER.debug("Project: {}", Json.toJson(form));
 
-		Project project = Project.byName(form.get().getName());
+		User owner = User.loggedInUser();
+		Project project = Project.byOwnerAndName(owner, form.get().getName());
 		if(project != null)
 			form.get().fill(project).withDeleted(false);
 		else
-			project = form.get().fill(new Project());
+			project = form.get().fill(new Project()).withOwner(owner);
 		projectService.save(project);
 
 		select(project);
@@ -143,17 +135,16 @@ public class Projects extends AbstractController
 
 	public Result createImmediately(String projectName)
 	{
-		Project project = Project.byName(projectName);
-
 		if(projectName.length() > Project.NAME_LENGTH)
 			return badRequest(
-				views.html.projects.create.render(
-					Template.create(auth, userService),
-					ProjectForm.form(formFactory).bind(ImmutableMap.of("name", projectName))));
+				views.html.projects.create
+					.render(createTemplate(), ProjectForm.form(formFactory).bind(ImmutableMap.of("name", projectName))));
 
+		User owner = User.loggedInUser();
+		Project project = Project.byOwnerAndName(owner, projectName);
 		if(project == null)
 		{
-			project = new Project(projectName);
+			project = new Project(projectName).withOwner(owner);
 
 			LOGGER.debug("Project: {}", Json.toJson(project));
 
@@ -177,7 +168,7 @@ public class Projects extends AbstractController
 			Form<ProjectForm> form = formFactory.form(ProjectForm.class).bindFromRequest();
 
 			if(form.hasErrors())
-				return badRequest(views.html.projects.edit.render(Template.create(auth, userService), project, form));
+				return badRequest(views.html.projects.edit.render(createTemplate(), project, form));
 
 			projectService.save(form.get().fill(project));
 
@@ -185,10 +176,8 @@ public class Projects extends AbstractController
 		}
 
 		return ok(
-			views.html.projects.edit.render(
-				Template.create(auth, userService),
-				project,
-				formFactory.form(ProjectForm.class).fill(ProjectForm.from(project))));
+			views.html.projects.edit
+				.render(createTemplate(), project, formFactory.form(ProjectForm.class).fill(ProjectForm.from(project))));
 	}
 
 	public Result remove(UUID projectId)
@@ -290,7 +279,7 @@ public class Projects extends AbstractController
 		return ok(
 			log(
 				() -> views.html.projects.locales.render(
-					Template.create(auth, userService),
+					createTemplate(),
 					project,
 					locales,
 					localeService
@@ -319,7 +308,7 @@ public class Projects extends AbstractController
 		Map<UUID, Double> progress =
 					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
 
-		return ok(views.html.projects.keys.render(Template.create(auth, userService), project, keys, progress, form));
+		return ok(views.html.projects.keys.render(createTemplate(), project, keys, progress, form));
 	}
 
 	public Result keysSearch(UUID id)

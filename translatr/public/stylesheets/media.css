@@ -46,7 +46,7 @@
 /* Medium+ */
 @media only screen and (min-width: 601px) {
 	nav .nav-wrapper {
-		padding: 0 1rem;
+		padding: 0 0 0 1rem;
 	}
 	.navbar-fixed {
 		height: 96px;
@@ -54,7 +54,8 @@
 	.navbar-form {
 		margin: 0 25%;
 	}
-	.template-index .navbar-fixed {
+	.template-index .navbar-fixed,
+	nav ul a.dropdown-button {
 		height: 64px;
 	}
 	.navbar-form .input-field i.material-icons {
@@ -63,10 +64,6 @@
 	.breadcrumbs {
 		top: 64px;
 	}
-/*	.fixed-action-btn {
-		top: 68px;
-		bottom: auto;
-	}*/
 	.fixed-action-btn.horizontal ul li {
 	    margin: 7.5px;
 	}
@@ -76,11 +73,13 @@
 	.tabs-container {
 		padding: 0 15%;
 	}
-	.auth-provider {
-		max-width: 150px;
-		margin: 2rem auto 1rem auto;
+	.provider {
+		width: 200px;
 	}
 
+	.template-index .navbar-fixed nav {
+		position: relative;
+	}
 	.template-dashboard .card {
 		width: 28%;
 		margin: 0.5rem 1rem 1rem 1rem;

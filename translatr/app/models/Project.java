@@ -29,7 +29,6 @@ import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import controllers.routes;
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
 import play.mvc.Http.Context;
@@ -100,7 +99,17 @@ public class Project implements Suggestable
 	@Override
 	public Data data()
 	{
-		return Data.from(Project.class, id, name, routes.Projects.project(id).absoluteURL(Context.current().request()));
+		return Data.from(
+			Project.class,
+			id,
+			name,
+			controllers.routes.Projects.project(id).absoluteURL(Context.current().request()));
+	}
+
+	public Project withId(UUID id)
+	{
+		this.id = id;
+		return this;
 	}
 
 	private static final Find<UUID, Project> find = new Find<UUID, Project>()
@@ -199,6 +208,12 @@ public class Project implements Suggestable
 		return this;
 	}
 
+	public Project withOwner(User owner)
+	{
+		this.owner = owner;
+		return this;
+	}
+
 	public Project withDeleted(boolean deleted)
 	{
 		this.deleted = deleted;
@@ -209,9 +224,9 @@ public class Project implements Suggestable
 	 * @param name
 	 * @return
 	 */
-	public static Project byName(String name)
+	public static Project byOwnerAndName(User user, String name)
 	{
-		return find.where().eq("name", name).findUnique();
+		return find.where().eq("owner", user).eq("name", name).findUnique();
 	}
 
 	/**

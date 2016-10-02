@@ -1,8 +1,8 @@
 package models;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,13 +16,18 @@ import javax.persistence.Version;
 
 import org.joda.time.DateTime;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
+
+import play.api.inject.Injector;
+import play.mvc.Http.Context;
+import services.UserService;
 
 @Entity
 @Table(name = "user_")
@@ -48,7 +53,7 @@ public class User
 
 	public boolean active;
 
-	@Column(nullable = false, length = USERNAME_LENGTH)
+	@Column(nullable = false, length = USERNAME_LENGTH, unique = true)
 	public String username;
 
 	@Column(nullable = false, length = NAME_LENGTH)
@@ -59,6 +64,7 @@ public class User
 
 	public boolean emailValidated;
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<LinkedAccount> linkedAccounts;
 
@@ -87,31 +93,12 @@ public class User
 		return getAuthUserFind(identity).findUnique();
 	}
 
-	public void merge(final User otherUser)
-	{
-		for(final LinkedAccount acc : otherUser.linkedAccounts)
-		{
-			this.linkedAccounts.add(LinkedAccount.create(acc));
-		}
-		// do all other merging stuff here - like resources, etc.
-
-		// deactivate the merged user that got added to this one
-		otherUser.active = false;
-		Ebean.save(Arrays.asList(new User[]{otherUser, this}));
-	}
-
-	public static void merge(final AuthUser oldUser, final AuthUser newUser)
-	{
-		User.findByAuthUserIdentity(oldUser).merge(User.findByAuthUserIdentity(newUser));
-	}
-
 	public Set<String> getProviders()
 	{
 		final Set<String> providerKeys = new HashSet<String>(linkedAccounts.size());
 		for(final LinkedAccount acc : linkedAccounts)
-		{
 			providerKeys.add(acc.providerKey);
-		}
+
 		return providerKeys;
 	}
 
@@ -139,5 +126,44 @@ public class User
 	public static User byId(UUID id)
 	{
 		return find.byId(id);
+	}
+
+	/**
+	 * @param username
+	 * @return
+	 */
+	public static User byUsername(String username)
+	{
+		return find.where().eq("username", username).findUnique();
+	}
+
+	public static User loggedInUser()
+	{
+		Injector injector = play.api.Play.current().injector();
+
+		PlayAuthenticate auth = injector.instanceOf(PlayAuthenticate.class);
+		AuthUser authUser = auth.getUser(Context.current().session());
+		if(authUser == null)
+			return null;
+
+		UserService userService = injector.instanceOf(UserService.class);
+		Map<String, Object> args = Context.current().args;
+		if(!args.containsKey(authUser.toString()))
+			args.put(authUser.toString(), userService.getLocalUser(authUser));
+
+		return (User)args.get(authUser.toString());
+	}
+
+	/**
+	 * @return
+	 */
+	public static UUID loggedInUserId()
+	{
+		User loggedInUser = loggedInUser();
+
+		if(loggedInUser == null)
+			return null;
+
+		return loggedInUser.id;
 	}
 }

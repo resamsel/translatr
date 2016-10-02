@@ -1,14 +1,14 @@
-@(user: models.User, projectList: List[models.Project])
+@(template: utils.Template, user: models.User, projectList: List[models.Project])
 
 @import utils.FormatUtils._
 
-@main(utils.Template.from(Messages("user.title"), "user")) {
+@main(template.withTitle(Messages("user.title", user.name)).withName("user")) {
 } {
 		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")
 		</a>
 } {
-	@users.content(user, "projects") {
+	@content(user, "projects") {
 		<div class="collection">
 			@for(project <- projectList) {
 				<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">

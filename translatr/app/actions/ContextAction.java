@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import commands.Command;
 import models.Project;
+import models.User;
 import play.cache.CacheApi;
 import play.mvc.Action;
 import play.mvc.Http.Context;
@@ -37,7 +38,7 @@ public class ContextAction extends Action.Simple
 	@Override
 	public CompletionStage<Result> call(Context ctx)
 	{
-		Project brandProject = Project.byName(ctx.messages().at("brand"));
+		Project brandProject = Project.byOwnerAndName(User.byUsername("translatr"), ctx.messages().at("brand"));
 		if(brandProject != null)
 			ctx.args.put("brandProjectId", brandProject.id);
 

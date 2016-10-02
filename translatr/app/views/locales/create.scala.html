@@ -1,6 +1,6 @@
-@(project: Project, form: Form[forms.LocaleForm])
+@(template: utils.Template, project: Project, form: Form[forms.LocaleForm])
 
-@main(utils.Template.from(Messages("locale.create.title", project.name))) {
+@main(template.withTitle(Messages("locale.create.title", project.name))) {
 } {
 		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")

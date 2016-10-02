@@ -3,8 +3,6 @@ package utils;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import models.User;
-import play.mvc.Http.Context;
-import services.UserService;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -44,9 +42,9 @@ public class Template
 		return this;
 	}
 
-	public static Template create(PlayAuthenticate auth, UserService userService)
+	public static Template create(PlayAuthenticate auth, User user)
 	{
-		return new Template(auth, userService.getLocalUser(auth.getUser(Context.current().session())));
+		return new Template(auth, user);
 	}
 
 	public static Template from(String title, String name)

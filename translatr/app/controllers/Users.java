@@ -5,10 +5,15 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import com.feth.play.module.pa.PlayAuthenticate;
+
 import actions.ContextAction;
+import commands.RevertDeleteLinkedAccountCommand;
+import criterias.LinkedAccountCriteria;
 import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import forms.SearchForm;
+import models.LinkedAccount;
 import models.LogEntry;
 import models.Project;
 import models.User;
@@ -16,8 +21,11 @@ import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
+import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.LinkedAccountService;
+import services.UserService;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -33,27 +41,40 @@ public class Users extends AbstractController
 
 	private final Configuration configuration;
 
+	private final LinkedAccountService linkedAccountService;
+
 	/**
+	 * @param auth
 	 * 
 	 */
 	@Inject
-	public Users(CacheApi cache, FormFactory formFactory, Configuration configuration)
+	public Users(Injector injector, CacheApi cache, FormFactory formFactory, Configuration configuration,
+				PlayAuthenticate auth, UserService userService, LinkedAccountService linkedAccountService)
 	{
-		super(cache);
+		super(injector, cache, auth, userService);
 
 		this.formFactory = formFactory;
 		this.configuration = configuration;
+		this.linkedAccountService = linkedAccountService;
 	}
 
 	public Result user(UUID id)
 	{
+		User user = User.byId(id);
+		if(user == null)
+			return redirect(routes.Application.index());
+
 		return ok(
 			views.html.users.user
-				.render(User.byId(id), Project.findBy(new ProjectCriteria().withOwnerId(id).withOrder("name"))));
+				.render(createTemplate(), user, Project.findBy(new ProjectCriteria().withOwnerId(id).withOrder("name"))));
 	}
 
-	public Result userActivity(UUID id)
+	public Result activity(UUID id)
 	{
+		User user = User.byId(id);
+		if(user == null)
+			return redirect(routes.Application.index());
+
 		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 		SearchForm search = form.get();
 
@@ -62,6 +83,37 @@ public class Users extends AbstractController
 
 		search.pager(activities);
 
-		return ok(views.html.users.userActivity.render(User.byId(id), activities, form));
+		return ok(views.html.users.activity.render(createTemplate(), user, activities, form));
+	}
+
+	public Result linkedAccounts(UUID id)
+	{
+		User user = User.byId(id);
+		if(user == null)
+			return redirect(routes.Application.index());
+
+		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+		SearchForm search = form.get();
+
+		List<LinkedAccount> accounts =
+					LinkedAccount.findBy(LinkedAccountCriteria.from(search).withUserId(id).withOrder("providerKey"));
+
+		search.pager(accounts);
+
+		return ok(views.html.users.linkedAccounts.render(createTemplate(), user, accounts, form));
+	}
+
+	public Result linkedAccountRemove(UUID userId, Long linkedAccountId)
+	{
+		LinkedAccount linkedAccount = LinkedAccount.byId(linkedAccountId);
+
+		if(linkedAccount == null || !userId.equals(linkedAccount.user.id))
+			return redirect(routes.Users.linkedAccounts(userId));
+
+		undoCommand(injector.instanceOf(RevertDeleteLinkedAccountCommand.class).with(linkedAccount));
+
+		linkedAccountService.delete(linkedAccount);
+
+		return redirect(routes.Users.linkedAccounts(userId));
 	}
 }

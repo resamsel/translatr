@@ -9,8 +9,8 @@
 			<ul class="collection auth-provider">
 			@if(template.auth != null) {
 				@forProviders(template.auth) { p =>
-					<li class="collection-item provider-@p.getKey()">
-						<a href="@p.getUrl()">
+					<li class="collection-item">
+						<a href="@p.getUrl()" class="hoverable provider provider-@p.getKey()">
 							<span class="icon-container">
 								<i class="fa fa-@p.getKey()" aria-hidden="true"></i>
 							</span>

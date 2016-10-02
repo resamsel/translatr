@@ -1,0 +1,19 @@
+@(project: models.Project, active: String)
+
+<div class="collection depth">
+	<a
+		class="collection-item @if(active == "info") { active }"
+		href="@routes.Projects.project(project.id)">
+		@Messages("info")
+	</a>
+	<a
+		class="collection-item @if(active == "locales") { active }"
+		href="@routes.Projects.locales(project.id)">
+		@Messages("locales")
+	</a>
+	<a
+		class="collection-item @if(active == "keys") { active }"
+		href="@routes.Projects.keys(project.id)">
+		@Messages("keys")
+	</a>
+</div>

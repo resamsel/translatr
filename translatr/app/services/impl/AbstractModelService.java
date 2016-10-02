@@ -1,20 +1,16 @@
 package services.impl;
 
 import java.util.Collection;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
 
-import models.User;
 import play.Configuration;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
 import services.ModelService;
-import utils.ConfigKey;
-import utils.SessionKey;
 import utils.TransactionUtils;
 
 /**
@@ -169,14 +165,5 @@ public abstract class AbstractModelService<T> implements ModelService<T>
 	 */
 	protected void postDelete(Collection<T> t)
 	{
-	}
-
-	/**
-	 * @return
-	 */
-	protected User loggedInUser()
-	{
-		return new User().withId(
-			UUID.fromString(session().getOrDefault(SessionKey.UserId, configuration.getString(ConfigKey.UserId.key()))));
 	}
 }

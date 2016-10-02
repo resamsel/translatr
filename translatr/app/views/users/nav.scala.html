@@ -1,0 +1,16 @@
+@(user: User, active: String)
+
+<div class="collection depth">
+	<a class="collection-item @if(active == "projects") { active }"
+		href="@routes.Users.user(user.id)">
+		@Messages("projects")
+	</a>
+	<a class="collection-item @if(active == "activity") { active }"
+		href="@routes.Users.activity(user.id)">
+		@Messages("activity")
+	</a>
+	<a class="collection-item @if(active == "linkedAccounts") { active }"
+		href="@routes.Users.linkedAccounts(user.id)">
+		@Messages("linkedAccounts")
+	</a>
+</div>

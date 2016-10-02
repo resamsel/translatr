@@ -17,15 +17,16 @@ import forms.SearchForm;
 import models.Project;
 import models.Suggestable;
 import models.Suggestable.Data;
+import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
+import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.With;
 import services.UserService;
-import utils.Template;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -41,31 +42,28 @@ public class Dashboards extends AbstractController
 
 	private final Configuration configuration;
 
-	private final PlayAuthenticate auth;
-
-	private final UserService userService;
-
 	/**
 	 * 
 	 */
 	@Inject
-	public Dashboards(CacheApi cache, FormFactory formFactory, Configuration configuration, PlayAuthenticate auth,
-				UserService userService)
+	public Dashboards(Injector injector, CacheApi cache, FormFactory formFactory, Configuration configuration,
+				PlayAuthenticate auth, UserService userService)
 	{
-		super(cache);
+		super(injector, cache, auth, userService);
 
 		this.formFactory = formFactory;
 		this.configuration = configuration;
-		this.auth = auth;
-		this.userService = userService;
 	}
 
 	public Result dashboard()
 	{
+		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+		SearchForm search = form.get();
+
 		return ok(
 			views.html.dashboard.render(
-				Template.create(auth, userService),
-				Project.all(),
+				createTemplate(),
+				Project.findBy(ProjectCriteria.from(search).withOwnerId(User.loggedInUserId())),
 				SearchForm.bindFromRequest(formFactory, configuration),
 				ProjectForm.form(formFactory)));
 	}

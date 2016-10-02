@@ -1,5 +1,7 @@
 @(user: models.User, size: Int = 80, styleClass: String = "", help: String = "Gravatar")
-<img
-	src="https://www.gravatar.com/avatar/@utils.MD5Util.md5Hex(user.email.toLowerCase)?s=@size"
-	class="@styleClass"
-	alt="@help" />
+@if(user != null) {
+	<img
+		src="https://www.gravatar.com/avatar/@utils.MD5Util.md5Hex(user.email)?s=@size"
+		class="@styleClass"
+		alt="@help" />
+}

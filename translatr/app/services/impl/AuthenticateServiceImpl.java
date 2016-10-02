@@ -28,14 +28,10 @@ public class AuthenticateServiceImpl extends AbstractUserService
 	{
 		final boolean isLinked = User.existsByAuthUserIdentity(authUser);
 		if(!isLinked)
-		{
 			return userService.create(authUser).id;
-		}
 		else
-		{
 			// we have this user already, so return null
 			return null;
-		}
 	}
 
 	@Override
@@ -45,20 +41,16 @@ public class AuthenticateServiceImpl extends AbstractUserService
 		// ...and dont forget to sync the cache when users get deactivated/deleted
 		final User u = User.findByAuthUserIdentity(identity);
 		if(u != null)
-		{
 			return u.id;
-		}
 		else
-		{
 			return null;
-		}
 	}
 
 	@Override
 	public AuthUser merge(final AuthUser newUser, final AuthUser oldUser)
 	{
 		if(!oldUser.equals(newUser))
-			User.merge(oldUser, newUser);
+			userService.merge(oldUser, newUser);
 
 		return oldUser;
 	}
@@ -67,6 +59,6 @@ public class AuthenticateServiceImpl extends AbstractUserService
 	public AuthUser link(final AuthUser oldUser, final AuthUser newUser)
 	{
 		userService.addLinkedAccount(oldUser, newUser);
-		return oldUser;
+		return null;
 	}
 }

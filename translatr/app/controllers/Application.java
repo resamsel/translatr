@@ -42,6 +42,7 @@ import models.Key;
 import models.Locale;
 import models.Message;
 import models.Project;
+import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
@@ -61,7 +62,6 @@ import services.LocaleService;
 import services.MessageService;
 import services.ProjectService;
 import services.UserService;
-import utils.Template;
 import utils.TransactionUtils;
 
 /**
@@ -76,13 +76,7 @@ public class Application extends AbstractController
 
 	public static final String FLASH_ERROR_KEY = "error";
 
-	private final Injector injector;
-
 	private final FormFactory formFactory;
-
-	private final PlayAuthenticate auth;
-
-	private final UserService userService;
 
 	private final ProjectService projectService;
 
@@ -95,16 +89,13 @@ public class Application extends AbstractController
 	private final Configuration configuration;
 
 	@Inject
-	public Application(CacheApi cache, Injector injector, FormFactory formFactory, PlayAuthenticate auth,
+	public Application(Injector injector, CacheApi cache, FormFactory formFactory, PlayAuthenticate auth,
 				UserService userService, ProjectService projectService, LocaleService localeService, KeyService keyService,
 				MessageService messageService, Configuration configuration)
 	{
-		super(cache);
+		super(injector, cache, auth, userService);
 
-		this.injector = injector;
 		this.formFactory = formFactory;
-		this.auth = auth;
-		this.userService = userService;
 		this.projectService = projectService;
 		this.localeService = localeService;
 		this.keyService = keyService;
@@ -114,12 +105,12 @@ public class Application extends AbstractController
 
 	public Result index()
 	{
-		return ok(views.html.index.render(Template.create(auth, userService)));
+		return ok(views.html.index.render(createTemplate()));
 	}
 
 	public Result login()
 	{
-		return ok(views.html.login.render(Template.create(auth, userService)));
+		return ok(views.html.login.render(createTemplate()));
 	}
 
 	public Result oAuthDenied(final String providerKey)
@@ -149,7 +140,8 @@ public class Application extends AbstractController
 		Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(
 			Collectors.groupingBy((m) -> m.key.name, Collectors.reducing(null, a -> a, (a, b) -> b)));
 
-		return ok(views.html.locales.locale.render(locale.project, locale, keys, locales, messages, form));
+		return ok(
+			views.html.locales.locale.render(createTemplate(), locale.project, locale, keys, locales, messages, form));
 	}
 
 	public Result localeKeysSearch(UUID localeId)
@@ -194,7 +186,7 @@ public class Application extends AbstractController
 		}
 		else
 		{
-			return ok(views.html.localeImport.render(locale.project, locale));
+			return ok(views.html.locales.upload.render(createTemplate(), locale.project, locale));
 		}
 	}
 
@@ -237,7 +229,7 @@ public class Application extends AbstractController
 		Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
 
 		if(form.hasErrors())
-			return badRequest(views.html.locales.create.render(project, form));
+			return badRequest(views.html.locales.create.render(createTemplate(), project, form));
 
 		LOGGER.debug("Locale: {}", Json.toJson(form));
 
@@ -270,8 +262,10 @@ public class Application extends AbstractController
 
 		if(localeName.length() > Locale.NAME_LENGTH)
 			return badRequest(
-				views.html.locales.create
-					.render(project, formFactory.form(LocaleForm.class).bind(ImmutableMap.of("name", localeName))));
+				views.html.locales.create.render(
+					createTemplate(),
+					project,
+					formFactory.form(LocaleForm.class).bind(ImmutableMap.of("name", localeName))));
 
 		Locale locale = Locale.byProjectAndName(project, localeName);
 
@@ -301,7 +295,7 @@ public class Application extends AbstractController
 			Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
 
 			if(form.hasErrors())
-				return badRequest(views.html.locales.edit.render(locale, form));
+				return badRequest(views.html.locales.edit.render(createTemplate(), locale, form));
 
 			localeService.save(form.get().into(locale));
 
@@ -309,7 +303,8 @@ public class Application extends AbstractController
 		}
 
 		return ok(
-			views.html.locales.edit.render(locale, formFactory.form(LocaleForm.class).fill(LocaleForm.from(locale))));
+			views.html.locales.edit
+				.render(createTemplate(), locale, formFactory.form(LocaleForm.class).fill(LocaleForm.from(locale))));
 	}
 
 	public Result localeRemove(UUID localeId)
@@ -377,7 +372,7 @@ public class Application extends AbstractController
 		Map<UUID, Message> messages = Message.findBy(new MessageCriteria().withKeyName(key.name)).stream().collect(
 			groupingBy(m -> m.locale.id, Collectors.reducing(null, a -> a, (a, b) -> b)));
 
-		return ok(views.html.keys.key.render(key, locales, messages, form));
+		return ok(views.html.keys.key.render(createTemplate(), key, locales, messages, form));
 	}
 
 	public Result keyCreate(UUID projectId, UUID localeId)
@@ -392,7 +387,7 @@ public class Application extends AbstractController
 		Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
 
 		if(form.hasErrors())
-			return badRequest(views.html.keys.create.render(project, form));
+			return badRequest(views.html.keys.create.render(createTemplate(), project, form));
 
 		Key key = form.get().into(new Key());
 
@@ -423,8 +418,10 @@ public class Application extends AbstractController
 
 		if(keyName.length() > Key.NAME_LENGTH)
 			return badRequest(
-				views.html.keys.create
-					.render(project, formFactory.form(KeyForm.class).bind(ImmutableMap.of("name", keyName))));
+				views.html.keys.create.render(
+					createTemplate(),
+					project,
+					formFactory.form(KeyForm.class).bind(ImmutableMap.of("name", keyName))));
 
 		Key key = Key.byProjectAndName(project, keyName);
 
@@ -454,14 +451,15 @@ public class Application extends AbstractController
 			Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
 
 			if(form.hasErrors())
-				return badRequest(views.html.keys.edit.render(key, form));
+				return badRequest(views.html.keys.edit.render(createTemplate(), key, form));
 
 			keyService.save(form.get().into(key));
 
 			return redirect(routes.Projects.keys(key.project.id));
 		}
 
-		return ok(views.html.keys.edit.render(key, formFactory.form(KeyForm.class).fill(KeyForm.from(key))));
+		return ok(
+			views.html.keys.edit.render(createTemplate(), key, formFactory.form(KeyForm.class).fill(KeyForm.from(key))));
 	}
 
 	public Result keyRemove(UUID keyId, UUID localeId)
@@ -494,7 +492,7 @@ public class Application extends AbstractController
 	public Result load()
 	{
 		String brand = ctx().messages().at("brand");
-		Project project = Project.byName(brand);
+		Project project = Project.byOwnerAndName(User.byUsername("translatr"), brand);
 		if(project == null)
 		{
 			project = projectService.save(new Project(brand));

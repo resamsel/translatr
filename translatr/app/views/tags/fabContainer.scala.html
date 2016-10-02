@@ -1,7 +1,7 @@
 @(id: String, icon: String, tooltip: String, href: String = null, styleClass: String = "", actions: Html = null)
 
 <div
-	class="fixed-action-btn horizontal click-to-toggle">
+	class="fixed-action-btn click-to-toggle">
 	@if(actions == null) {
 		@tags.fab(id, icon, tooltip, href = href, styleClass = "btn-large " + styleClass)
 	} else {
