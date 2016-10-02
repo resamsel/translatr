@@ -55,12 +55,13 @@
 										data-beloworigin="true"
 										data-alignment="right">
 										@tags.gravatar(template.loggedInUser, 32, "circle")
-										<i class="material-icons right">arrow_drop_down</i>
 									</a>
 								</li>
 							} else {
 								<li class="auth login">
-									<a href="@routes.Application.login">@Messages("auth.login")</a>
+									<a href="@routes.Application.login" title="@Messages("auth.login")">
+										<i class="material-icons">account_circle</i>
+									</a>
 								</li>
 							}
 						}

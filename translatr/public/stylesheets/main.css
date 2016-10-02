@@ -95,7 +95,6 @@ pre[class*="language-"]:before {
 	padding: 16px 0;
 }
 nav ul a.dropdown-button {
-	padding: 0 5px 0 15px;
 	height: 56px;
 }
 .dropdown-content a.disabled {
