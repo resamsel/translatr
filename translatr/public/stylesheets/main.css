@@ -621,3 +621,7 @@ html.template-key,
 	color: #fff;
     background-color: #444;
 }
+.provider.provider-twitter {
+	color: #fff;
+    background-color: #55acee;
+}

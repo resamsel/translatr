@@ -11,6 +11,7 @@ auth.login = Login
 auth.login.content = Login with the given services
 auth.login.title = Login
 auth.logout = Logout
+auth.twitter = Twitter
 brand = Translatr
 button.cancel = Cancel
 button.close = Close

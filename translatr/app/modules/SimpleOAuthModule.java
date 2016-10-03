@@ -1,6 +1,7 @@
 package modules;
 
 import com.feth.play.module.pa.Resolver;
+import com.feth.play.module.pa.providers.oauth1.twitter.TwitterAuthProvider;
 import com.feth.play.module.pa.providers.oauth2.facebook.FacebookAuthProvider;
 import com.feth.play.module.pa.providers.oauth2.github.GithubAuthProvider;
 import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthProvider;
@@ -26,6 +27,7 @@ public class SimpleOAuthModule extends Module
 			bind(AuthenticateServiceImpl.class).toSelf().eagerly(),
 			bind(GoogleAuthProvider.class).toSelf().eagerly(),
 			bind(GithubAuthProvider.class).toSelf().eagerly(),
-			bind(FacebookAuthProvider.class).toSelf().eagerly());
+			bind(FacebookAuthProvider.class).toSelf().eagerly(),
+			bind(TwitterAuthProvider.class).toSelf().eagerly());
 	}
 }

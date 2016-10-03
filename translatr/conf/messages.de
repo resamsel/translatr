@@ -11,6 +11,7 @@ auth.login = Anmelden
 auth.login.content = Melde dich mit einem der folgenden Services an
 auth.login.title = Anmeldung
 auth.logout = Abmelden
+auth.twitter = Twitter
 brand = Translatr
 button.cancel = Abbrechen
 button.close = Schließen
