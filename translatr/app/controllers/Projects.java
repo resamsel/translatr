@@ -246,11 +246,7 @@ public class Projects extends AbstractController
 		suggestions.add(
 			Suggestable.DefaultSuggestable.from(
 				ctx().messages().at("key.create", search.search),
-				Data.from(
-					Key.class,
-					null,
-					"+++",
-					routes.Application.keyCreateImmediately(project.id, search.search).url())));
+				Data.from(Key.class, null, "+++", routes.Keys.createImmediately(project.id, search.search).url())));
 
 		return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
 	}

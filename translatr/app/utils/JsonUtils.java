@@ -57,12 +57,12 @@ public class JsonUtils
 			break;
 			case "dto.Key":
 				if(uuid != null)
-					return routes.Application.key(getUuid(node));
+					return routes.Keys.key(getUuid(node));
 			break;
 			case "dto.Message":
 				UUID keyId = getUuid(node, "keyId");
 				if(keyId != null)
-					return routes.Application.key(keyId);
+					return routes.Keys.key(keyId);
 			break;
 			default:
 			break;

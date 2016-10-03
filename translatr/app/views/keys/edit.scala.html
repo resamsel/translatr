@@ -11,13 +11,13 @@
 		<a class="breadcrumb" href="@routes.Projects.keys(key.project.id)">
 			@Messages("keys")
 		</a>
-		<a class="breadcrumb" href="@routes.Application.key(key.id)">
+		<a class="breadcrumb" href="@routes.Keys.key(key.id)">
 			@key.name
 		</a>
 } {
 	@tags.content {
 		<div class="col m6 offset-m3">
-			<form action="@routes.Application.keyEdit(key.id)" method="post">
+			<form action="@routes.Keys.edit(key.id)" method="post">
 				<div class="card no-image">
 					<div class="card-image light-green">
 						<span class="card-title">@Messages("key.edit", key.name)</span>

@@ -108,7 +108,7 @@
 	@tags.fabContainer("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = localeActions)
 
 	@tags.modal(Messages("key.new"), "modal-create") {
-		<form id="form-key" method="post" action="@routes.Application.keyCreate(project.id, locale.id)">
+		<form id="form-key" method="post" action="@routes.Keys.create(project.id, locale.id)">
 			<div class="form-group">
 				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
 			</div>

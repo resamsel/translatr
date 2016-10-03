@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.collect.ImmutableMap;
 
+import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteLocaleCommand;
 import criterias.KeyCriteria;
@@ -44,6 +45,7 @@ import play.data.FormFactory;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
+import play.mvc.With;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.Request;
 import play.mvc.Http.MultipartFormData.FilePart;
@@ -58,6 +60,7 @@ import utils.TransactionUtils;
  * @author resamsel
  * @version 3 Oct 2016
  */
+@With(ContextAction.class)
 @SubjectPresent(forceBeforeAuthCheck = true)
 public class Locales extends AbstractController
 {
