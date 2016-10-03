@@ -2,10 +2,10 @@
 
 @localeActions = {
 	<li>
-		@tags.fab("remove-locale", "delete_forever", href = routes.Application.localeRemove(locale.id).url, tooltip = Messages("locale.remove.tooltip"), styleClass = "red")
+		@tags.fab("remove-locale", "delete_forever", href = routes.Locales.remove(locale.id).url, tooltip = Messages("locale.remove.tooltip"), styleClass = "red")
 	</li>
 	<li>
-		@tags.fab("edit-locale", "edit", href = routes.Application.localeEdit(locale.id).url, tooltip = Messages("locale.edit.tooltip"), styleClass = "blue")
+		@tags.fab("edit-locale", "edit", href = routes.Locales.edit(locale.id).url, tooltip = Messages("locale.edit.tooltip"), styleClass = "blue")
 	</li>
 }
 
@@ -39,7 +39,7 @@
 	<a class="breadcrumb" href="@routes.Projects.locales(project.id)">
 		@Messages("locales")
 	</a>
-	<a class="breadcrumb active" href="@routes.Application.locale(locale.id)">
+	<a class="breadcrumb active" href="@routes.Locales.locale(locale.id)">
 		@tags.locale(locale.name)
 	</a>
 } {

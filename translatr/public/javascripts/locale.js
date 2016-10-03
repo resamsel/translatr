@@ -196,7 +196,7 @@ App.Modules.SuggestionModule = function(sb) {
 
 	function _handleSearch(value) {
 		$.ajax({
-			url: jsRoutes.controllers.Application.localeKeysSearch(localeId).url,
+			url: jsRoutes.controllers.Locales.keysSearch(localeId).url,
 			data: {
 				'search': value,
 				'missing': fieldMissing.is(':checked') ? 'on' : 'off'

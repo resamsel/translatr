@@ -62,9 +62,7 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
 			final NameIdentity identity = (NameIdentity)authUser;
 			final String name = identity.getName();
 			if(name != null)
-			{
 				user.name = name;
-			}
 		}
 
 		return save(user);

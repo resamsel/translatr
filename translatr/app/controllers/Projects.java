@@ -19,6 +19,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.collect.ImmutableMap;
 
 import actions.ContextAction;
+import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteProjectCommand;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
@@ -55,6 +56,7 @@ import services.UserService;
  * @version 16 Sep 2016
  */
 @With(ContextAction.class)
+@SubjectPresent(forceBeforeAuthCheck = true)
 public class Projects extends AbstractController
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Projects.class);
@@ -227,11 +229,7 @@ public class Projects extends AbstractController
 		suggestions.add(
 			Suggestable.DefaultSuggestable.from(
 				ctx().messages().at("locale.create", search.search),
-				Data.from(
-					Locale.class,
-					null,
-					"+++",
-					routes.Application.localeCreateImmediately(project.id, search.search).url())));
+				Data.from(Locale.class, null, "+++", routes.Locales.createImmediately(project.id, search.search).url())));
 
 		List<? extends Suggestable> keys =
 					Key.findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));

@@ -1,5 +1,8 @@
 package controllers;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.reducing;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -8,6 +11,7 @@ import javax.inject.Inject;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ContextAction;
+import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteLinkedAccountCommand;
 import criterias.LinkedAccountCriteria;
 import criterias.LogEntryCriteria;
@@ -35,6 +39,7 @@ import services.UserService;
  * @version 26 Sep 2016
  */
 @With(ContextAction.class)
+@SubjectPresent(forceBeforeAuthCheck = true)
 public class Users extends AbstractController
 {
 	private final FormFactory formFactory;
@@ -100,7 +105,12 @@ public class Users extends AbstractController
 
 		search.pager(accounts);
 
-		return ok(views.html.users.linkedAccounts.render(createTemplate(), user, accounts, form));
+		return ok(
+			views.html.users.linkedAccounts.render(
+				createTemplate(),
+				user,
+				accounts.stream().collect(groupingBy(a -> a.providerKey, reducing(null, a -> a, (a, b) -> b))),
+				form));
 	}
 
 	public Result linkedAccountRemove(UUID userId, Long linkedAccountId)

@@ -1,4 +1,4 @@
-@(template: utils.Template, user: models.User, linkedAccountList: List[LinkedAccount], form: Form[forms.SearchForm])
+@(template: utils.Template, user: models.User, linkedAccountMap: Map[String, LinkedAccount], form: Form[forms.SearchForm])
 
 @import utils.FormatUtils._
 
@@ -10,7 +10,7 @@
 } {
 	@content(user, "linkedAccounts") {
 		<ul class="collection auth-provider">
-			@for(linkedAccount <- linkedAccountList) {
+			@for((key, linkedAccount) <- linkedAccountMap) {
 				<li class="collection-item avatar">
 					<div class="provider provider-@linkedAccount.providerKey">
 						<span class="icon-container">

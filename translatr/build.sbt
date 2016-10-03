@@ -23,6 +23,7 @@ libraryDependencies ++= Seq(
 
 	// OAuth for Play
 	"com.feth" %% "play-authenticate" % "0.8.1-SNAPSHOT",
+	"be.objectify" %% "deadbolt-java" % "2.5.0",
 
 	// Apache Commons IO
 	"commons-io" % "commons-io" % "2.5",

@@ -28,7 +28,7 @@
 					@for(locale <- locales) {
 						<tr id="@locale.id" class="locale" name="@utils.FormatUtils.formatLocale(ctx.lang().locale, locale.name).toLowerCase @locale.name.toLowerCase">
 							<td class="name">
-								<a class="locale" href="@routes.Application.locale(locale.id)">
+								<a class="locale" href="@routes.Locales.locale(locale.id)">
 									@tags.locale(locale.name)
 								</a>
 							</td>
@@ -48,13 +48,13 @@
 							</td>
 							<td class="actions right-align">
 								<a
-									href="@routes.Application.localeEdit(locale.id)"
+									href="@routes.Locales.edit(locale.id)"
 									class="btn-flat btn-hover waves-effect waves-light"
 									title="@Messages("button.edit")">
 									<i class="material-icons">mode_edit</i>
 								</a>
 								<a
-									href="@routes.Application.localeImport(locale.id)"
+									href="@routes.Locales.upload(locale.id)"
 									class="btn-flat btn-hover waves-effect waves-light"
 									title="@Messages("button.import")">
 									<i class="material-icons">file_upload</i>
@@ -72,14 +72,14 @@
 									@for(t <- models.FileType.values) {
 										<li>
 											<a
-												href="@routes.Application.localeExport(locale.id, t.key)">
+												href="@routes.Locales.download(locale.id, t.key)">
 												@Messages("filetype." + t.key)
 											</a>
 										</li>
 									}
 								</ul>
 								<a
-									href="@routes.Application.localeRemove(locale.id)"
+									href="@routes.Locales.remove(locale.id)"
 									class="btn-flat btn-hover waves-effect waves-light"
 									title="@Messages("button.remove")">
 									<i class="material-icons">delete_forever</i>

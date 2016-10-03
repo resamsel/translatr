@@ -18,7 +18,7 @@ public class OAuthResolver extends Resolver
 	public Call login()
 	{
 		// Your login page
-		return routes.Application.index();
+		return routes.Application.login();
 	}
 
 	@Override

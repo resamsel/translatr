@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +27,17 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 
+import be.objectify.deadbolt.java.models.Permission;
+import be.objectify.deadbolt.java.models.Role;
+import be.objectify.deadbolt.java.models.Subject;
+import controllers.Application;
 import play.api.inject.Injector;
 import play.mvc.Http.Context;
 import services.UserService;
 
 @Entity
 @Table(name = "user_")
-public class User
+public class User implements Subject
 {
 	public static final int USERNAME_LENGTH = 32;
 
@@ -165,5 +171,32 @@ public class User
 			return null;
 
 		return loggedInUser.id;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<? extends Role> getRoles()
+	{
+		return Arrays.asList(UserRole.from(Application.USER_ROLE));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<? extends Permission> getPermissions()
+	{
+		return Collections.emptyList();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getIdentifier()
+	{
+		return id != null ? id.toString() : null;
 	}
 }

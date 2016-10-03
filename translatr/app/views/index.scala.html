@@ -14,7 +14,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="floating-action-btn">
+	<div class="floating-action-btn @if(template.loggedInUser == null) { hide }">
 		@tags.fab("dashboard", "dashboard", tooltip = Messages("dashboard.tooltip"), href = routes.Dashboards.dashboard().url, styleClass = "btn-large light-blue")
 	</div>
 	<div class="container">

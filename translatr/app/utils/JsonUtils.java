@@ -53,7 +53,7 @@ public class JsonUtils
 			break;
 			case "dto.Locale":
 				if(uuid != null)
-					return routes.Application.locale(getUuid(node));
+					return routes.Locales.locale(getUuid(node));
 			break;
 			case "dto.Key":
 				if(uuid != null)

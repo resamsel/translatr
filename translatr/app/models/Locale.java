@@ -83,7 +83,7 @@ public class Locale implements Suggestable
 			Locale.class,
 			id,
 			formatLocale(Context.current().lang().locale(), this),
-			routes.Application.locale(id).absoluteURL(Context.current().request()));
+			routes.Locales.locale(id).absoluteURL(Context.current().request()));
 	}
 
 	private static final Find<UUID, Locale> find = new Find<UUID, Locale>()

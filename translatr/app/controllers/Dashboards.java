@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ContextAction;
+import be.objectify.deadbolt.java.actions.SubjectPresent;
 import criterias.ProjectCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
@@ -55,6 +56,7 @@ public class Dashboards extends AbstractController
 		this.configuration = configuration;
 	}
 
+	@SubjectPresent(forceBeforeAuthCheck = true)
 	public Result dashboard()
 	{
 		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
@@ -68,6 +70,7 @@ public class Dashboards extends AbstractController
 				ProjectForm.form(formFactory)));
 	}
 
+	@SubjectPresent
 	public Result search()
 	{
 		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
