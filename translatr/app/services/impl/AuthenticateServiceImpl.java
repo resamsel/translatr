@@ -59,6 +59,6 @@ public class AuthenticateServiceImpl extends AbstractUserService
 	public AuthUser link(final AuthUser oldUser, final AuthUser newUser)
 	{
 		userService.addLinkedAccount(oldUser, newUser);
-		return null;
+		return oldUser;
 	}
 }
