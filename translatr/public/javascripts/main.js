@@ -27,6 +27,7 @@ App.Modules.NProgressModule = function(sb) {
 
 	return {
 		create: function() {
+			NProgress.configure({ showSpinner: false });
 			doc.ajaxStart(function() {
 				NProgress.start();
 			});

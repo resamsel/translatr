@@ -2,8 +2,10 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# An example controller showing a sample home page
+# Basic functions
 GET		/								controllers.Application.index
+# Should probably go into Locales, but does not need authentication for the time being
+GET		/locale/:id/export/:type		controllers.Application.download(id: java.util.UUID, type: String)
 
 # Authentication
 GET		/login							controllers.Application.login
@@ -39,12 +41,11 @@ GET		/locale/:id/keys/search			controllers.Locales.keysSearch(id: java.util.UUID
 GET		/locale/:id/edit				controllers.Locales.edit(id: java.util.UUID)
 POST	/locale/:id/edit				controllers.Locales.edit(id: java.util.UUID)
 GET		/locale/:id/remove				controllers.Locales.remove(id: java.util.UUID)
-GET		/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
-POST	/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
-GET		/locale/:id/export/:type		controllers.Locales.download(id: java.util.UUID, type: String)
 GET		/locale/:projectId/:localeName/create	controllers.Locales.createImmediately(projectId: java.util.UUID, localeName: String)
 POST	/locale/:projectId				controllers.Locales.create(projectId: java.util.UUID)
 GET		/locale/:id/translate			controllers.Locales.translate(id: java.util.UUID)
+GET		/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
+POST	/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
 
 # Keys
 GET		/key/:id						controllers.Keys.key(id: java.util.UUID)

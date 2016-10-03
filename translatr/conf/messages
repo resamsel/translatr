@@ -35,6 +35,7 @@ contentType.dto.Key = Key
 contentType.dto.Locale = Locale
 contentType.dto.Message = Translation
 contentType.dto.Project = Project
+contentType.dto.User = User
 copyright = © 2016 René Samselnig (version {0})\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
 dashboard = Dashboard
 dashboard.title = Dashboard

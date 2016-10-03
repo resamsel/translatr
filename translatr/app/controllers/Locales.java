@@ -3,7 +3,6 @@ package controllers;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +23,6 @@ import commands.RevertDeleteLocaleCommand;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
-import exporters.Exporter;
-import exporters.JavaPropertiesExporter;
-import exporters.PlayMessagesExporter;
 import forms.ImportLocaleForm;
 import forms.LocaleForm;
 import forms.SearchForm;
@@ -44,11 +40,11 @@ import play.data.Form;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.libs.Json;
+import play.mvc.Http.MultipartFormData;
+import play.mvc.Http.MultipartFormData.FilePart;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.With;
-import play.mvc.Http.MultipartFormData;
-import play.mvc.Http.Request;
-import play.mvc.Http.MultipartFormData.FilePart;
 import services.LocaleService;
 import services.UserService;
 import utils.TransactionUtils;
@@ -200,33 +196,6 @@ public class Locales extends AbstractController
 		return ok(
 			views.html.locales.edit
 				.render(createTemplate(), locale, formFactory.form(LocaleForm.class).fill(LocaleForm.from(locale))));
-	}
-
-	public Result download(UUID id, String fileType)
-	{
-		Locale locale = Locale.byId(id);
-
-		if(locale == null)
-			return redirect(routes.Application.index());
-
-		select(locale.project);
-
-		Exporter exporter;
-		switch(FileType.fromKey(fileType))
-		{
-			case PlayMessages:
-				exporter = new PlayMessagesExporter();
-			break;
-			case JavaProperties:
-				exporter = new JavaPropertiesExporter();
-			break;
-			default:
-				return badRequest("File type " + fileType + " not supported yet");
-		}
-
-		exporter.addHeaders(response(), locale);
-
-		return ok(new ByteArrayInputStream(exporter.apply(locale)));
 	}
 
 	public Result upload(UUID id)

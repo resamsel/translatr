@@ -1,5 +1,7 @@
 package controllers;
 
+import java.io.ByteArrayInputStream;
+import java.util.UUID;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
@@ -11,6 +13,10 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ContextAction;
 import commands.Command;
+import exporters.Exporter;
+import exporters.JavaPropertiesExporter;
+import exporters.PlayMessagesExporter;
+import models.FileType;
 import models.Key;
 import models.Locale;
 import models.Message;
@@ -80,6 +86,33 @@ public class Application extends AbstractController
 		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
 		flash(FLASH_ERROR_KEY, "You need to accept the OAuth connection in order to use this website!");
 		return redirect(routes.Application.index());
+	}
+
+	public Result download(UUID id, String fileType)
+	{
+		Locale locale = Locale.byId(id);
+
+		if(locale == null)
+			return redirect(routes.Application.index());
+
+		select(locale.project);
+
+		Exporter exporter;
+		switch(FileType.fromKey(fileType))
+		{
+			case PlayMessages:
+				exporter = new PlayMessagesExporter();
+			break;
+			case JavaProperties:
+				exporter = new JavaPropertiesExporter();
+			break;
+			default:
+				return badRequest("File type " + fileType + " not supported yet");
+		}
+
+		exporter.addHeaders(response(), locale);
+
+		return ok(new ByteArrayInputStream(exporter.apply(locale)));
 	}
 
 	public Result load()
