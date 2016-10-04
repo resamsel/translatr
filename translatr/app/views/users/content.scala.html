@@ -1,4 +1,4 @@
-@(user: User, active: String)(content: Html)
+@(template: utils.Template, user: User, active: String = null)(content: Html)
 
 <div class="container-fluid content">
 	<div class="row">
@@ -6,13 +6,17 @@
 			<div class="container">
 				<div class="row">
 					<div class="col s12 m4">
-						@card(user)
+						@card(template, user)
 
-						@nav(user, active)
+						@if(active != null) {
+							@nav(template, user, active)
+						}
 					</div>
 
 					<div class="col s12 m8">
-						<h4 class="header">@Messages(active)</h4>
+						@if(active != null) {
+							<h4 class="header">@Messages(active)</h4>
+						}
 
 						@content
 					</div>
@@ -22,3 +26,7 @@
 		<!-- /.col .m12 -->
 	</div>
 </div>
+
+@if(template.loggedInUser.id == user.id) {
+	@tags.fabContainer("edit", "edit", href = routes.Users.edit(user.id).url, tooltip = Messages("user.edit.tooltip"), styleClass = "teal")
+}

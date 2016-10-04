@@ -222,6 +222,9 @@ nav ul .disabled:hover {
 }
 
 /** Cards **/
+.card .card-content .card-title {
+    line-height: 32px;
+}
 .card > .progress {
     margin: 0;
     border-radius: 0;
@@ -253,6 +256,17 @@ nav ul .disabled:hover {
 	white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.profile-info li {
+	margin-bottom: 0.4rem;
+}
+.profile-info li.divider {
+	margin: 1rem 0;
+}
+.profile-info .material-icons.left {
+	color: #999;
+	margin-right: 0.2rem;
+    font-size: 18px;
 }
 
 /* Chip */
@@ -582,10 +596,13 @@ html.template-key,
 .collection.auth-provider .collection-item:not(.active):hover {
 	background-color: transparent;
 }
+.collection.linked-accounts .collection-item {
+	min-height: 56px;
+}
 .collection-item a.provider {
 	min-height: auto;
 }
-.provider {
+.auth-provider .provider {
 	padding: 0;
 	height: auto;
 	height: 38px;
@@ -611,17 +628,17 @@ html.template-key,
 /* Get the colours from: https://lipis.github.io/bootstrap-social/ */
 .provider.provider-facebook {
     color: #fff;
-    background-color: #3b5998;
+    background-color: #3b5998 !important;
 }
 .provider.provider-google {
     color: #fff;
-    background-color: #dd4b39;
+    background-color: #dd4b39 !important;
 }
 .provider.provider-github {
 	color: #fff;
-    background-color: #444;
+    background-color: #444 !important;
 }
 .provider.provider-twitter {
 	color: #fff;
-    background-color: #55acee;
+    background-color: #55acee !important;
 }

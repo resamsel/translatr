@@ -8,23 +8,17 @@
 			@Messages("dashboard")
 		</a>
 } {
-	@content(user, "linkedAccounts") {
-		<ul class="collection auth-provider">
+	@content(template, user, "linkedAccounts") {
+		<ul class="collection linked-accounts">
 			@for((key, linkedAccount) <- linkedAccountMap) {
 				<li class="collection-item avatar">
-					<div class="provider provider-@linkedAccount.providerKey">
-						<span class="icon-container">
-							<i class="fa fa-@linkedAccount.providerKey" aria-hidden="true"></i>
-						</span>
-						<span class="title">
-							@Messages("auth." + linkedAccount.providerKey)
-						</span>
-						<p>
-						</p>
-					</div>
+					<i class="fa fa-@linkedAccount.providerKey provider provider-@linkedAccount.providerKey circle"></i>
+					<span class="title">
+						@Messages("auth." + linkedAccount.providerKey)
+					</span>
 					<a
 						href="@routes.Users.linkedAccountRemove(user.id, linkedAccount.id)"
-						class="secondary-content btn-flat btn-hover"
+						class="secondary-content btn-hover"
 						title="@Messages("button.unlink")">
 						<i class="material-icons">delete_forever</i>
 					</a>

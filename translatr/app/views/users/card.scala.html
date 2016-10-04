@@ -1,11 +1,28 @@
-@(user: User)
+@(template: utils.Template, user: User)
 
-<div class="card">
-	<div class="card-image purple">
+@import utils.FormatUtils._
+
+<div class="card card-user">
+	<div class="card-image teal">
 		@tags.gravatar(user, 400)
 	</div>
 	<div class="card-content">
-		<span>@user.name</span>
-		<p>@user.email</p>
+		<span class="card-title truncate">@user.name</span>
+		<p>@user.username</p>
 	</div>
 </div>
+<ul class="profile-info">
+	<li class="divider"></li>
+	@if(template.loggedInUser.id == user.id) {
+		<li class="truncate">
+			<a href="mailto:@user.email">
+				<i class="material-icons left">email</i>
+				@user.email
+			</a>
+		</li>
+	}
+	<li class="truncate">
+		<i class="material-icons left">access_time</i>
+		@Messages("user.created", user.whenCreated.toDate)
+	</li>
+</ul>

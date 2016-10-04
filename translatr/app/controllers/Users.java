@@ -17,6 +17,7 @@ import criterias.LinkedAccountCriteria;
 import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import forms.SearchForm;
+import forms.UserForm;
 import models.LinkedAccount;
 import models.LogEntry;
 import models.Project;
@@ -111,6 +112,30 @@ public class Users extends AbstractController
 				user,
 				accounts.stream().collect(groupingBy(a -> a.providerKey, reducing(null, a -> a, (a, b) -> b))),
 				form));
+	}
+
+	public Result edit(UUID userId)
+	{
+		User user = User.byId(userId);
+
+		if(user == null)
+			return redirect(routes.Application.index());
+
+		if("POST".equals(request().method()))
+		{
+			Form<UserForm> form = formFactory.form(UserForm.class).bindFromRequest();
+
+			if(form.hasErrors())
+				return badRequest(views.html.users.edit.render(createTemplate(), user, form));
+
+			userService.save(form.get().into(user));
+
+			return redirect(routes.Users.user(user.id));
+		}
+
+		return ok(
+			views.html.users.edit
+				.render(createTemplate(), user, formFactory.form(UserForm.class).fill(UserForm.from(user))));
 	}
 
 	public Result linkedAccountRemove(UUID userId, Long linkedAccountId)

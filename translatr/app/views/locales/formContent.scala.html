@@ -1,18 +1,3 @@
 @(form: Form[forms.LocaleForm])
 
-<div class="input-field">
-	<input
-		id="field-locale-name"
-		type="text"
-		name="@form("name").name"
-		class="validate @if(!form("name").errors.isEmpty) { invalid }"
-		value="@form("name").value" />
-	<label
-		for="field-locale-name"
-		@if(!form("name").errors.isEmpty) {
-			data-error="@for(error <- form("name").errors) {
-				@Messages(error.messages, error.arguments.toArray: _*)
-			}"
-		}
-		>@Messages("locale.name")</label>
-</div>
+@tags.textField(form("name"), "locale-name", "locale.name")

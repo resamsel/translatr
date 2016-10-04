@@ -25,4 +25,18 @@ public class LinkedAccountServiceImpl extends AbstractModelService<LinkedAccount
 	{
 		super(configuration);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public LinkedAccount create(LinkedAccount linkedAccount)
+	{
+		final LinkedAccount ret = new LinkedAccount();
+
+		ret.providerKey = linkedAccount.providerKey;
+		ret.providerUserId = linkedAccount.providerUserId;
+
+		return ret;
+	}
 }

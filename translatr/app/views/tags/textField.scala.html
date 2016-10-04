@@ -1,0 +1,18 @@
+@(field: Form.Field, id: String, labelKey: String)
+
+<div class="input-field">
+	<input
+		id="field-@id"
+		type="text"
+		name="@field.name"
+		class="validate @if(!field.errors.isEmpty) { invalid }"
+		value="@field.value" />
+	<label
+		for="field-@id"
+		@if(!field.errors.isEmpty) {
+			data-error="@for(error <- field.errors) {
+				@Messages(error.messages, error.arguments.toArray: _*)
+			}"
+		}
+		>@Messages(labelKey)</label>
+</div>

@@ -8,7 +8,7 @@
 			@Messages("dashboard")
 		</a>
 } {
-	@content(user, "projects") {
+	@content(template, user, "projects") {
 		<div class="collection">
 			@for(project <- projectList) {
 				<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">

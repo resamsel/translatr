@@ -8,7 +8,7 @@
 			@Messages("dashboard")
 		</a>
 } {
-	@content(user, "activity") {
+	@content(template, user, "activity") {
 		<div class="collection">
 			@for(activity <- activityList) {
 				<a href="@utils.JsonUtils.linkTo(activity)" class="collection-item avatar black-text">

@@ -122,11 +122,17 @@
 	.ct-chart.ct-double-octave:before {
 		padding-bottom: 12.5%;
 	}
+	.btn-hover {
+		visibility: hidden;
+	}
+	.responsive-table .btn-hover {
+		visibility: visible;
+	}
 }
 
 /* Large+ */
 @media only screen and (min-width: 993px) {
-	.btn-hover {
+	.responsive-table .btn-hover {
 		visibility: hidden;
 	}
 }

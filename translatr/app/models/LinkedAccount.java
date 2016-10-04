@@ -46,6 +46,17 @@ public class LinkedAccount
 	};
 
 	/**
+	 * @param user
+	 * @return
+	 */
+	public LinkedAccount update(final AuthUser user)
+	{
+		this.providerKey = user.getProvider();
+		this.providerUserId = user.getId();
+		return this;
+	}
+
+	/**
 	 * @param id
 	 * @return
 	 */
@@ -54,31 +65,14 @@ public class LinkedAccount
 		return find.setId(id).findUnique();
 	}
 
+	/**
+	 * @param user
+	 * @param key
+	 * @return
+	 */
 	public static LinkedAccount findByProviderKey(final User user, String key)
 	{
 		return find.where().eq("user", user).eq("providerKey", key).findUnique();
-	}
-
-	public static LinkedAccount create(final AuthUser authUser)
-	{
-		final LinkedAccount ret = new LinkedAccount();
-		ret.update(authUser);
-		return ret;
-	}
-
-	public void update(final AuthUser authUser)
-	{
-		this.providerKey = authUser.getProvider();
-		this.providerUserId = authUser.getId();
-	}
-
-	public static LinkedAccount create(final LinkedAccount acc)
-	{
-		final LinkedAccount ret = new LinkedAccount();
-		ret.providerKey = acc.providerKey;
-		ret.providerUserId = acc.providerUserId;
-
-		return ret;
 	}
 
 	/**
@@ -104,5 +98,10 @@ public class LinkedAccount
 			query.order("whenCreated");
 
 		return query.findList();
+	}
+
+	public static LinkedAccount createFrom(final AuthUser user)
+	{
+		return new LinkedAccount().update(user);
 	}
 }

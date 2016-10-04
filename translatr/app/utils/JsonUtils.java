@@ -103,7 +103,7 @@ public class JsonUtils
 			case "dto.Message":
 				return "red";
 			case "dto.User":
-				return "purple";
+				return "teal";
 			default:
 				return "";
 		}

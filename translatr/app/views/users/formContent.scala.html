@@ -1,0 +1,5 @@
+@(form: Form[forms.UserForm])
+
+@tags.textField(form("name"), "user-name", "user.name")
+@tags.textField(form("username"), "user-username", "user.username")
+@tags.textField(form("email"), "user-email", "user.email")

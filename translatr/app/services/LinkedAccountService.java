@@ -15,4 +15,9 @@ import services.impl.LinkedAccountServiceImpl;
 @ImplementedBy(LinkedAccountServiceImpl.class)
 public interface LinkedAccountService extends ModelService<LinkedAccount>
 {
+	/**
+	 * @param linkedAccount
+	 * @return
+	 */
+	LinkedAccount create(LinkedAccount linkedAccount);
 }

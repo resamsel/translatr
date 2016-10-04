@@ -152,10 +152,9 @@ public class User implements Subject
 		if(authUser == null)
 			return null;
 
-		UserService userService = injector.instanceOf(UserService.class);
 		Map<String, Object> args = Context.current().args;
 		if(!args.containsKey(authUser.toString()))
-			args.put(authUser.toString(), userService.getLocalUser(authUser));
+			args.put(authUser.toString(), injector.instanceOf(UserService.class).getLocalUser(authUser));
 
 		return (User)args.get(authUser.toString());
 	}

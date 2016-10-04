@@ -15,6 +15,7 @@ import models.LinkedAccount;
 import models.LogEntry;
 import models.User;
 import play.Configuration;
+import services.LinkedAccountService;
 import services.LogEntryService;
 import services.UserService;
 
@@ -30,13 +31,17 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
 {
 	private final LogEntryService logEntryService;
 
+	private final LinkedAccountService linkedAccountService;
+
 	/**
 	 * @param configuration
 	 */
 	@Inject
-	public UserServiceImpl(Configuration configuration, LogEntryService logEntryService)
+	public UserServiceImpl(Configuration configuration, LinkedAccountService linkedAccountService,
+				LogEntryService logEntryService)
 	{
 		super(configuration);
+		this.linkedAccountService = linkedAccountService;
 		this.logEntryService = logEntryService;
 	}
 
@@ -45,7 +50,7 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
 	{
 		final User user = new User();
 		user.active = true;
-		user.linkedAccounts = Collections.singletonList(LinkedAccount.create(authUser));
+		user.linkedAccounts = Collections.singletonList(LinkedAccount.createFrom(authUser));
 
 		if(authUser instanceof EmailIdentity)
 		{
@@ -72,7 +77,7 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
 	public User addLinkedAccount(final AuthUser oldUser, final AuthUser newUser)
 	{
 		final User u = User.findByAuthUserIdentity(oldUser);
-		u.linkedAccounts.add(LinkedAccount.create(newUser));
+		u.linkedAccounts.add(LinkedAccount.createFrom(newUser));
 		return save(u);
 	}
 
@@ -100,12 +105,11 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
 		return merge(User.findByAuthUserIdentity(oldUser), User.findByAuthUserIdentity(newUser));
 	}
 
+	@Override
 	public User merge(final User user, final User otherUser)
 	{
 		for(final LinkedAccount acc : otherUser.linkedAccounts)
-		{
-			user.linkedAccounts.add(LinkedAccount.create(acc));
-		}
+			user.linkedAccounts.add(linkedAccountService.create(acc));
 		// do all other merging stuff here - like resources, etc.
 
 		// deactivate the merged user that got added to this one

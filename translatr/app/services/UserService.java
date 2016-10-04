@@ -14,20 +14,20 @@ import services.impl.UserServiceImpl;
  * @version 1 Oct 2016
  */
 @ImplementedBy(UserServiceImpl.class)
-public interface UserService
+public interface UserService extends ModelService<User>
 {
 	/**
-	 * @param oldUser
-	 * @param newUser
+	 * @param user
 	 * @return
 	 */
-	User addLinkedAccount(AuthUser oldUser, AuthUser newUser);
+	User create(AuthUser user);
 
 	/**
-	 * @param authUser
+	 * @param user
+	 * @param otherUser
 	 * @return
 	 */
-	User create(AuthUser authUser);
+	User addLinkedAccount(AuthUser user, AuthUser otherUser);
 
 	/**
 	 * @param user
@@ -35,8 +35,15 @@ public interface UserService
 	User getLocalUser(AuthUser user);
 
 	/**
-	 * @param oldUser
-	 * @param newUser
+	 * @param user
+	 * @param otherUser
 	 */
-	User merge(AuthUser oldUser, AuthUser newUser);
+	User merge(AuthUser user, AuthUser otherUser);
+
+	/**
+	 * @param user
+	 * @param otherUser
+	 * @return
+	 */
+	User merge(User user, User otherUser);
 }

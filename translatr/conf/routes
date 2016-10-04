@@ -14,10 +14,12 @@ GET		/authenticate/:provider			com.feth.play.module.pa.controllers.Authenticate.
 GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider: String)
 
 # Users
-GET	/user/:id					controllers.Users.user(id: java.util.UUID)
-GET	/user/:id/activity			controllers.Users.activity(id: java.util.UUID)
-GET	/user/:id/linkedAccounts	controllers.Users.linkedAccounts(id: java.util.UUID)
-GET	/user/:id/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(id: java.util.UUID, linkedAccountId: Long)
+GET		/user/:id					controllers.Users.user(id: java.util.UUID)
+GET		/user/:id/edit				controllers.Users.edit(id: java.util.UUID)
+POST	/user/:id/edit				controllers.Users.edit(id: java.util.UUID)
+GET		/user/:id/activity			controllers.Users.activity(id: java.util.UUID)
+GET		/user/:id/linkedAccounts	controllers.Users.linkedAccounts(id: java.util.UUID)
+GET		/user/:id/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(id: java.util.UUID, linkedAccountId: Long)
 
 # Dashboards
 GET		/dashboard						controllers.Dashboards.dashboard
