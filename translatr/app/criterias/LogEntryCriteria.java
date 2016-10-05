@@ -31,13 +31,8 @@ public class LogEntryCriteria extends AbstractSearchCriteria<LogEntryCriteria>
 		return this;
 	}
 
-	public static LogEntryCriteria from(SearchForm search)
+	public static LogEntryCriteria from(SearchForm form)
 	{
-		return new LogEntryCriteria()
-			.withSearch(search.search)
-			.withMissing(search.missing)
-			.withOffset(search.offset)
-			.withLimit(search.limit)
-			.withOrder(search.order);
+		return new LogEntryCriteria().with(form);
 	}
 }

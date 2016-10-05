@@ -1,5 +1,6 @@
 package services.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -10,12 +11,15 @@ import javax.inject.Singleton;
 import models.ActionType;
 import models.LogEntry;
 import models.Project;
+import models.ProjectRole;
+import models.ProjectUser;
 import models.User;
 import play.Configuration;
 import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
 import services.ProjectService;
+import services.ProjectUserService;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -33,17 +37,20 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 
 	private final LogEntryService logEntryService;
 
+	private final ProjectUserService projectUserService;
+
 	/**
 	 * 
 	 */
 	@Inject
 	public ProjectServiceImpl(Configuration configuration, LocaleService localeService, KeyService keyService,
-				LogEntryService logEntryService)
+				LogEntryService logEntryService, ProjectUserService projectUserService)
 	{
 		super(configuration);
 		this.localeService = localeService;
 		this.keyService = keyService;
 		this.logEntryService = logEntryService;
+		this.projectUserService = projectUserService;
 	}
 
 	/**
@@ -57,6 +64,10 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 				.save(LogEntry.from(ActionType.Update, t, dto.Project.class, toDto(Project.byId(t.id)), toDto(t)));
 		if(t.owner == null)
 			t.owner = User.loggedInUser();
+		if(t.members == null)
+			t.members = new ArrayList<>();
+		if(t.members.isEmpty())
+			t.members.add(new ProjectUser(ProjectRole.Owner).withProject(t).withUser(t.owner));
 	}
 
 	/**

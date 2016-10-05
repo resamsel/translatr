@@ -2,6 +2,10 @@ package criterias;
 
 import java.util.UUID;
 
+import com.avaje.ebean.ExpressionList;
+
+import forms.SearchForm;
+
 /**
  * (c) 2016 Skiline Media GmbH
  * <p>
@@ -9,7 +13,7 @@ import java.util.UUID;
  * @author resamsel
  * @version 31 Aug 2016
  */
-public abstract class AbstractSearchCriteria<T extends SearchCriteria> implements SearchCriteria
+public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>> implements SearchCriteria
 {
 	private T self;
 
@@ -178,5 +182,32 @@ public abstract class AbstractSearchCriteria<T extends SearchCriteria> implement
 	{
 		setMissing(missing);
 		return self;
+	}
+
+	public T with(SearchForm form)
+	{
+		return self
+			.withSearch(form.search)
+			.withMissing(form.missing)
+			.withOffset(form.offset)
+			.withLimit(form.limit)
+			.withOrder(form.order);
+	}
+
+	/**
+	 * @param query
+	 */
+	public <U> ExpressionList<U> paging(ExpressionList<U> query)
+	{
+		if(getLimit() != null)
+			query.setMaxRows(getLimit() + 1);
+
+		if(getOffset() != null)
+			query.setFirstRow(getOffset());
+
+		if(getOrder() != null)
+			query.order(getOrder());
+
+		return query;
 	}
 }

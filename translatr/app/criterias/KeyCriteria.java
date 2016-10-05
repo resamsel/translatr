@@ -74,13 +74,8 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria>
 	 * @param search2
 	 * @return
 	 */
-	public static KeyCriteria from(SearchForm search)
+	public static KeyCriteria from(SearchForm form)
 	{
-		return new KeyCriteria()
-			.withSearch(search.search)
-			.withMissing(search.missing)
-			.withOffset(search.offset)
-			.withLimit(search.limit)
-			.withOrder(search.order);
+		return new KeyCriteria().with(form);
 	}
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -72,6 +73,10 @@ public class Project implements Suggestable
 	@OneToMany
 	public List<Key> keys;
 
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.PERSIST)
+	public List<ProjectUser> members;
+
 	@Transient
 	private Long keysSize;
 
@@ -134,20 +139,16 @@ public class Project implements Suggestable
 		if(criteria.getOwnerId() != null)
 			query.eq("owner.id", criteria.getOwnerId());
 
+		if(criteria.getMemberId() != null)
+			query.eq("members.user.id", criteria.getMemberId());
+
 		if(criteria.getProjectId() != null)
 			query.eq("id", criteria.getProjectId());
 
 		if(criteria.getSearch() != null)
 			query.ilike("name", "%" + criteria.getSearch() + "%");
 
-		if(criteria.getLimit() != null)
-			query.setMaxRows(criteria.getLimit() + 1);
-
-		if(criteria.getOffset() != null)
-			query.setFirstRow(criteria.getOffset());
-
-		if(criteria.getOrder() != null)
-			query.order(criteria.getOrder());
+		criteria.paging(query);
 
 		return log(() -> query.findList(), LOGGER, "findBy");
 	}

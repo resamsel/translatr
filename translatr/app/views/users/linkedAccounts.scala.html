@@ -16,6 +16,9 @@
 					<span class="title">
 						@Messages("auth." + linkedAccount.providerKey)
 					</span>
+					<p>
+						@Messages("when.created", pretty(ctx.lang().locale, linkedAccount.whenCreated))
+					</p>
 					<a
 						href="@routes.Users.linkedAccountRemove(user.id, linkedAccount.id)"
 						class="secondary-content btn-hover"
@@ -24,7 +27,7 @@
 					</a>
 				</li>
 			}
-			@tags.pager(routes.Users.linkedAccounts(user.id), form.get)
 		</ul>
+		@tags.pager(routes.Users.linkedAccounts(user.id), form.get)
 	}
 }

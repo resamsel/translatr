@@ -15,6 +15,8 @@ public class ProjectCriteria extends AbstractSearchCriteria<ProjectCriteria>
 {
 	private UUID ownerId;
 
+	private UUID memberId;
+
 	public UUID getOwnerId()
 	{
 		return ownerId;
@@ -31,13 +33,24 @@ public class ProjectCriteria extends AbstractSearchCriteria<ProjectCriteria>
 		return this;
 	}
 
-	public static ProjectCriteria from(SearchForm search)
+	public UUID getMemberId()
 	{
-		return new ProjectCriteria()
-			.withSearch(search.search)
-			.withMissing(search.missing)
-			.withOffset(search.offset)
-			.withLimit(search.limit)
-			.withOrder(search.order);
+		return memberId;
+	}
+
+	public void setMemberId(UUID memberId)
+	{
+		this.memberId = memberId;
+	}
+
+	public ProjectCriteria withMemberId(UUID memberId)
+	{
+		this.memberId = memberId;
+		return this;
+	}
+
+	public static ProjectCriteria from(SearchForm form)
+	{
+		return new ProjectCriteria().with(form);
 	}
 }

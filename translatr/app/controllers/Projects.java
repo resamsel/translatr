@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -24,13 +26,16 @@ import commands.RevertDeleteProjectCommand;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.LogEntryCriteria;
+import criterias.ProjectUserCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
 import forms.ProjectForm;
+import forms.ProjectUserForm;
 import forms.SearchForm;
 import models.Key;
 import models.Locale;
 import models.Project;
+import models.ProjectUser;
 import models.Suggestable;
 import models.Suggestable.Data;
 import models.User;
@@ -46,6 +51,7 @@ import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
 import services.ProjectService;
+import services.ProjectUserService;
 import services.UserService;
 
 /**
@@ -71,6 +77,8 @@ public class Projects extends AbstractController
 
 	private final FormFactory formFactory;
 
+	private final ProjectUserService projectUserService;
+
 	private final Configuration configuration;
 
 	/**
@@ -79,7 +87,7 @@ public class Projects extends AbstractController
 	@Inject
 	public Projects(Injector injector, CacheApi cache, FormFactory formFactory, PlayAuthenticate auth,
 				UserService userService, ProjectService projectService, LocaleService localeService, KeyService keyService,
-				LogEntryService logEntryService, Configuration configuration)
+				LogEntryService logEntryService, ProjectUserService projectUserService, Configuration configuration)
 	{
 		super(injector, cache, auth, userService);
 
@@ -88,29 +96,23 @@ public class Projects extends AbstractController
 		this.localeService = localeService;
 		this.keyService = keyService;
 		this.logEntryService = logEntryService;
+		this.projectUserService = projectUserService;
 		this.configuration = configuration;
 	}
 
-	public Result project(UUID id)
+	public Result project(UUID projectId)
 	{
-		Project project = Project.byId(id);
-
-		if(project == null)
-			return redirect(routes.Application.index());
-
-		select(project);
-
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-
-		return ok(
-			log(
-				() -> views.html.projects.project.render(
-					createTemplate(),
-					project,
-					logEntryService.getStats(new LogEntryCriteria().withProjectId(project.id)),
-					form),
-				LOGGER,
-				"Rendering project"));
+		return searchForm(projectId, (project, form) -> {
+			return ok(
+				log(
+					() -> views.html.projects.project.render(
+						createTemplate(),
+						project,
+						logEntryService.getStats(new LogEntryCriteria().withProjectId(project.id)),
+						form),
+					LOGGER,
+					"Rendering project"));
+		});
 	}
 
 	public Result create()
@@ -202,128 +204,154 @@ public class Projects extends AbstractController
 
 	public Result search(UUID id)
 	{
-		Project project = Project.byId(id);
+		return searchForm(id, (project, form) -> {
+			SearchForm search = form.get();
+			search.setLimit(configuration.getInt("translatr.search.autocomplete.limit", 3));
 
-		if(project == null)
-			return redirect(routes.Application.index());
+			List<Suggestable> suggestions = new ArrayList<>();
 
-		select(project);
+			List<? extends Suggestable> locales = Locale.findBy(
+				new LocaleCriteria().withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
 
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
-		search.setLimit(configuration.getInt("translatr.search.autocomplete.limit", 3));
-
-		List<Suggestable> suggestions = new ArrayList<>();
-
-		List<? extends Suggestable> locales = Locale.findBy(
-			new LocaleCriteria().withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
-
-		search.pager(locales);
-		if(!locales.isEmpty())
-			suggestions.addAll(locales);
-		if(search.hasMore)
+			search.pager(locales);
+			if(!locales.isEmpty())
+				suggestions.addAll(locales);
+			if(search.hasMore)
+				suggestions.add(
+					Suggestable.DefaultSuggestable.from(
+						ctx().messages().at("locale.search", search.search),
+						Data.from(Locale.class, null, "???", search.urlWithOffset(routes.Projects.locales(project.id), 0))));
 			suggestions.add(
 				Suggestable.DefaultSuggestable.from(
-					ctx().messages().at("locale.search", search.search),
-					Data.from(Locale.class, null, "???", search.urlWithOffset(routes.Projects.locales(project.id), 0))));
-		suggestions.add(
-			Suggestable.DefaultSuggestable.from(
-				ctx().messages().at("locale.create", search.search),
-				Data.from(Locale.class, null, "+++", routes.Locales.createImmediately(project.id, search.search).url())));
+					ctx().messages().at("locale.create", search.search),
+					Data
+						.from(Locale.class, null, "+++", routes.Locales.createImmediately(project.id, search.search).url())));
 
-		List<? extends Suggestable> keys =
-					Key.findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
+			List<? extends Suggestable> keys =
+						Key.findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
 
-		search.pager(keys);
+			search.pager(keys);
 
-		if(!keys.isEmpty())
-			suggestions.addAll(keys);
-		if(search.hasMore)
+			if(!keys.isEmpty())
+				suggestions.addAll(keys);
+			if(search.hasMore)
+				suggestions.add(
+					Suggestable.DefaultSuggestable.from(
+						ctx().messages().at("key.search", search.search),
+						Data.from(Key.class, null, "???", search.urlWithOffset(routes.Projects.keys(project.id), 0))));
 			suggestions.add(
 				Suggestable.DefaultSuggestable.from(
-					ctx().messages().at("key.search", search.search),
-					Data.from(Key.class, null, "???", search.urlWithOffset(routes.Projects.keys(project.id), 0))));
-		suggestions.add(
-			Suggestable.DefaultSuggestable.from(
-				ctx().messages().at("key.create", search.search),
-				Data.from(Key.class, null, "+++", routes.Keys.createImmediately(project.id, search.search).url())));
+					ctx().messages().at("key.create", search.search),
+					Data.from(Key.class, null, "+++", routes.Keys.createImmediately(project.id, search.search).url())));
 
-		return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
+			return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
+		});
 	}
 
 	public Result locales(UUID id)
 	{
-		Project project = Project.byId(id);
+		return searchForm(id, (project, form) -> {
+			SearchForm search = form.get();
 
-		if(project == null)
-			return redirect(routes.Application.index());
+			List<Locale> locales = Locale.findBy(LocaleCriteria.from(search).withProjectId(project.id));
 
-		select(project);
+			search.pager(locales);
 
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
+			java.util.Locale locale = ctx().lang().locale();
+			Collections.sort(locales, (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
 
-		List<Locale> locales = Locale.findBy(LocaleCriteria.from(search).withProjectId(project.id));
-
-		search.pager(locales);
-
-		java.util.Locale locale = ctx().lang().locale();
-		Collections.sort(locales, (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
-
-		return ok(
-			log(
-				() -> views.html.projects.locales.render(
-					createTemplate(),
-					project,
-					locales,
-					localeService
-						.progress(locales.stream().map(l -> l.id).collect(Collectors.toList()), Key.countBy(project)),
-					form),
-				LOGGER,
-				"Rendering projects.locales"));
+			return ok(
+				log(
+					() -> views.html.projects.locales.render(
+						createTemplate(),
+						project,
+						locales,
+						localeService
+							.progress(locales.stream().map(l -> l.id).collect(Collectors.toList()), Key.countBy(project)),
+						form),
+					LOGGER,
+					"Rendering projects.locales"));
+		});
 	}
 
 	public Result keys(UUID id)
 	{
-		Project project = Project.byId(id);
+		return searchForm(id, (project, form) -> {
+			SearchForm search = form.get();
 
-		if(project == null)
-			return redirect(routes.Application.index());
+			List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
 
-		select(project);
+			search.pager(keys);
 
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
+			Map<UUID, Double> progress = keyService
+				.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
 
-		List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
-
-		search.pager(keys);
-
-		Map<UUID, Double> progress =
-					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
-
-		return ok(views.html.projects.keys.render(createTemplate(), project, keys, progress, form));
+			return ok(views.html.projects.keys.render(createTemplate(), project, keys, progress, form));
+		});
 	}
 
 	public Result keysSearch(UUID id)
 	{
-		Project project = Project.byId(id);
+		return searchForm(id, (project, form) -> {
+			SearchForm search = form.get();
+
+			List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
+
+			search.pager(keys);
+
+			Map<UUID, Double> progress = keyService
+				.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
+
+			return ok(views.html.tags.keyRows.render(keys, progress, form));
+		});
+	}
+
+	public Result members(UUID projectId)
+	{
+		return searchForm(projectId, (project, form) -> {
+			SearchForm search = form.get();
+
+			List<ProjectUser> list = ProjectUser.findBy(ProjectUserCriteria.from(search).withProjectId(project.id));
+
+			search.pager(list);
+
+			return ok(views.html.projects.members.render(createTemplate(), project, list, form));
+		});
+	}
+
+	public Result memberAdd(UUID projectId)
+	{
+		return project(projectId, project -> {
+			Form<ProjectUserForm> form = ProjectUserForm.form(formFactory).bindFromRequest();
+
+			// if(form.hasErrors())
+			// return badRequest(views.html.projects.memberAdd.render(createTemplate(), form));
+
+			User user = User.byUsername(form.get().getUsername());
+
+			projectUserService.save(form.get().fill(new ProjectUser()).withProject(project).withUser(user));
+
+			return redirect(routes.Projects.members(project.id));
+		});
+	}
+
+	private Result project(UUID projectId, Function<Project, Result> processor)
+	{
+		Project project = Project.byId(projectId);
 
 		if(project == null)
 			return redirect(routes.Application.index());
 
 		select(project);
 
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
+		return processor.apply(project);
+	}
 
-		List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
-
-		search.pager(keys);
-
-		Map<UUID, Double> progress =
-					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
-
-		return ok(views.html.tags.keyRows.render(keys, progress, form));
+	private <T extends Form<SearchForm>> Result searchForm(UUID projectId,
+		BiFunction<Project, Form<SearchForm>, Result> processor)
+	{
+		return project(
+			projectId,
+			project -> processor.apply(project, SearchForm.bindFromRequest(formFactory, configuration)));
 	}
 }

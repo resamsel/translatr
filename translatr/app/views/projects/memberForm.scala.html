@@ -1,0 +1,23 @@
+@(project: models.Project)
+
+<form
+	id="form-member"
+	method="post"
+	action="@routes.Projects.memberAdd(project.id)">
+	<div class="input-field">
+		<input
+			id="field-user-username"
+			type="text"
+			name="username"
+			class="validate" />
+		<label for="field-user-username">@Messages("user.username")</label>
+	</div>
+	<div class="input-field">
+		<select id="field-role" name="role">
+			@for(role <- ProjectRole.values()) {
+				<option value="@role">@role</option>
+			}
+		</select>
+		<label for="field-role">@Messages("member.role")</label>
+	</div>
+</form>

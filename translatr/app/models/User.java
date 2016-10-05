@@ -74,6 +74,10 @@ public class User implements Subject
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<LinkedAccount> linkedAccounts;
 
+	@JsonIgnore
+	@OneToMany
+	public List<ProjectUser> projects;
+
 	private static final Find<UUID, User> find = new Find<UUID, User>()
 	{
 	};

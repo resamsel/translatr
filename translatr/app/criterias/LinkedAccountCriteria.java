@@ -31,13 +31,8 @@ public class LinkedAccountCriteria extends AbstractSearchCriteria<LinkedAccountC
 		return this;
 	}
 
-	public static LinkedAccountCriteria from(SearchForm search)
+	public static LinkedAccountCriteria from(SearchForm form)
 	{
-		return new LinkedAccountCriteria()
-			.withSearch(search.search)
-			.withMissing(search.missing)
-			.withOffset(search.offset)
-			.withLimit(search.limit)
-			.withOrder(search.order);
+		return new LinkedAccountCriteria().with(form);
 	}
 }
