@@ -21,9 +21,10 @@
 				<li class="collection-item avatar">
 					@tags.gravatar(projectUser.user, 48, "circle")
 					<span class="title">
-						@Messages("project.role." + projectUser.role)
+						@projectUser.user.username
 					</span>
 					<p>
+						@Messages("project.role." + projectUser.role),
 						@Messages("when.created", pretty(ctx.lang().locale, projectUser.whenCreated))
 					</p>
 					<a
