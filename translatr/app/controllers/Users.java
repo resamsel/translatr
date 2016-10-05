@@ -72,7 +72,7 @@ public class Users extends AbstractController
 
 		return ok(
 			views.html.users.user
-				.render(createTemplate(), user, Project.findBy(new ProjectCriteria().withOwnerId(id).withOrder("name"))));
+				.render(createTemplate(), user, Project.findBy(new ProjectCriteria().withMemberId(id).withOrder("name"))));
 	}
 
 	public Result activity(UUID id)
