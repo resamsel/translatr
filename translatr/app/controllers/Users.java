@@ -42,6 +42,9 @@ public class Users extends AbstractController
 		if(user == null)
 			return redirect(routes.Application.index());
 
+		if(user.id.equals(User.loggedInUserId()))
+			return redirect(routes.Profiles.profile());
+
 		return ok(
 			views.html.users.user
 				.render(createTemplate(), user, Project.findBy(new ProjectCriteria().withMemberId(id).withOrder("name"))));

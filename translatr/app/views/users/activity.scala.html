@@ -4,9 +4,9 @@
 
 @main(template.withTitle(Messages("user.title", user.name)).withName("user")) {
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
+	<a class="breadcrumb" href="@routes.Users.user(user.id)">
+		@user.name
+	</a>
 } {
 	@content(template, user, "activity") {
 		<div class="collection">

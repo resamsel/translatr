@@ -16,11 +16,13 @@ import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteLinkedAccountCommand;
 import criterias.LinkedAccountCriteria;
 import criterias.LogEntryCriteria;
+import criterias.ProjectCriteria;
 import forms.Accept;
 import forms.SearchForm;
 import forms.UserForm;
 import models.LinkedAccount;
 import models.LogEntry;
+import models.Project;
 import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
@@ -67,7 +69,12 @@ public class Profiles extends AbstractController
 
 	public Result profile()
 	{
-		return user(user -> injector.instanceOf(Users.class).user(user.id));
+		return user(
+			user -> ok(
+				views.html.users.user.render(
+					createTemplate(),
+					user,
+					Project.findBy(new ProjectCriteria().withMemberId(user.id).withOrder("name")))));
 	}
 
 	public Result activity()
