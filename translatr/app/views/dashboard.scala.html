@@ -25,6 +25,7 @@
 								@Messages("keys.size", project.keysSize()),
 								@Messages("messages.size", project.messagesSize())
 							</p>
+							@users.chip(project.owner)
 						</div>
 						<div class="card-action">
 							<a href="@routes.Projects.project(project.id)">

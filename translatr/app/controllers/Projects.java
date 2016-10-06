@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteProjectCommand;
+import commands.RevertDeleteProjectUserCommand;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.LogEntryCriteria;
@@ -315,7 +316,9 @@ public class Projects extends AbstractController
 
 			search.pager(list);
 
-			return ok(views.html.projects.members.render(createTemplate(), project, list, form));
+			return ok(
+				views.html.projects.members
+					.render(createTemplate(), project, list, form, ProjectUserForm.form(formFactory)));
 		});
 	}
 
@@ -324,12 +327,33 @@ public class Projects extends AbstractController
 		return project(projectId, project -> {
 			Form<ProjectUserForm> form = ProjectUserForm.form(formFactory).bindFromRequest();
 
-			// if(form.hasErrors())
-			// return badRequest(views.html.projects.memberAdd.render(createTemplate(), form));
+			// TODO: Enable GET/POST switch
+			if(form.hasErrors())
+				return badRequest(views.html.projects.memberAdd.render(createTemplate(), project, form));
 
 			User user = User.byUsername(form.get().getUsername());
 
 			projectUserService.save(form.get().fill(new ProjectUser()).withProject(project).withUser(user));
+
+			return redirect(routes.Projects.members(project.id));
+		});
+	}
+
+	public Result memberRemove(UUID projectId, Long memberId)
+	{
+		return project(projectId, project -> {
+			ProjectUser member = ProjectUser.byId(memberId);
+
+			if(member == null || !project.id.equals(member.project.id))
+			{
+				flash("error", ctx().messages().at("project.member.notFound"));
+
+				return redirect(routes.Projects.members(project.id));
+			}
+
+			undoCommand(injector.instanceOf(RevertDeleteProjectUserCommand.class).with(member));
+
+			projectUserService.delete(member);
 
 			return redirect(routes.Projects.members(project.id));
 		});

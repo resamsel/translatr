@@ -6,6 +6,7 @@ import models.User;
 import play.data.Form;
 import play.data.FormFactory;
 import play.data.validation.Constraints;
+import validators.UserByUsername;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -18,6 +19,7 @@ public class ProjectUserForm
 {
 	@Constraints.Required
 	@Constraints.MaxLength(User.USERNAME_LENGTH)
+	@UserByUsername
 	private String username;
 
 	@Constraints.Required

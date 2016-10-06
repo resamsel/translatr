@@ -484,6 +484,9 @@ tr:hover .btn-hover {
 .collection-item.active .value {
     color: rgba(255,255,255,0.7);
 }
+.collection .collection-item.avatar .secondary-content.btn-hover {
+    top: 16px;
+}
 
 .collection.locales,
 .collection.keys,

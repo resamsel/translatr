@@ -13,12 +13,6 @@
 		<p>
 			@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
 		</p>
-		<div class="chip user">
-			@tags.gravatar(project.owner, help = Messages("project.owner.info"))
-			@Html(Messages("project.owner", project.owner.name))
-			<a href="@routes.Users.user(project.owner.id)">
-				@project.owner.name
-			</a>
-		</div>
+		@users.chip(project.owner)
 	</div>
 </div>

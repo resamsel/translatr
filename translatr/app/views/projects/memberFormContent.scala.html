@@ -1,0 +1,11 @@
+@(project: Project, form: Form[forms.ProjectUserForm])
+
+@tags.textField(form("username"), "user-username", "user.username")
+<div class="input-field">
+	<select id="field-role" name="role">
+		@for(role <- ProjectRole.values()) {
+			<option value="@role">@role</option>
+		}
+	</select>
+	<label for="field-role">@Messages("member.role")</label>
+</div>

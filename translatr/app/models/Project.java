@@ -2,8 +2,11 @@ package models;
 
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -238,5 +241,18 @@ public class Project implements Suggestable
 		name = in.name;
 
 		return this;
+	}
+
+	public boolean hasRolesAny(User user, ProjectRole... roles)
+	{
+		Map<UUID, List<ProjectRole>> userMap =
+					members.stream().collect(groupingBy(m -> m.user.id, mapping(m -> m.role, toList())));
+		if(!userMap.containsKey(user.id))
+			return false;
+
+		List<ProjectRole> userRoles = userMap.get(user.id);
+		userRoles.retainAll(Arrays.asList(roles));
+
+		return !userRoles.isEmpty();
 	}
 }

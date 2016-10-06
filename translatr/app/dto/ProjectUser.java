@@ -12,7 +12,11 @@ public class ProjectUser extends Dto
 {
 	public UUID projectId;
 
+	public String projectName;
+
 	public UUID userId;
+
+	public String userName;
 
 	public ProjectRole role;
 
@@ -23,7 +27,9 @@ public class ProjectUser extends Dto
 	private ProjectUser(models.ProjectUser in)
 	{
 		this.projectId = in.project.id;
+		this.projectName = in.project.name;
 		this.userId = in.user.id;
+		this.userName = in.user.name;
 		this.role = in.role;
 		this.whenCreated = in.whenCreated;
 		this.whenUpdated = in.whenUpdated;

@@ -19,7 +19,6 @@ import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
 import services.ProjectService;
-import services.ProjectUserService;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -37,20 +36,17 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 
 	private final LogEntryService logEntryService;
 
-	private final ProjectUserService projectUserService;
-
 	/**
 	 * 
 	 */
 	@Inject
 	public ProjectServiceImpl(Configuration configuration, LocaleService localeService, KeyService keyService,
-				LogEntryService logEntryService, ProjectUserService projectUserService)
+				LogEntryService logEntryService)
 	{
 		super(configuration);
 		this.localeService = localeService;
 		this.keyService = keyService;
 		this.logEntryService = logEntryService;
-		this.projectUserService = projectUserService;
 	}
 
 	/**
