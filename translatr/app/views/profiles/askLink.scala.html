@@ -1,0 +1,36 @@
+@(template: utils.Template, form: Form[forms.Accept], newAccount: com.feth.play.module.pa.user.AuthUser)
+
+@label = {
+	<i class="fa fa-@newAccount.getProvider circle"></i>
+	@Messages("playauthenticate.link.account.question", newAccount)
+}
+
+@main(template.withTitle(Messages("profile.askLink.title"))) {
+} {
+		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+			@Messages("dashboard")
+		</a>
+} {
+	@tags.content {
+		<div class="col m6 offset-m3">
+			<form action="@routes.Profiles.askLink()" method="post">
+				<div id="panel-message" class="card no-image">
+					<div class="card-image teal">
+						<span class="card-title">@Messages("profile.askLink.title")</span>
+					</div>
+					<div class="card-content">
+						@inputs.checkbox(form("accept"), "accept", label)
+					</div>
+					<div class="card-action">
+						<button
+							type="submit"
+							class="btn waves-effect waves-light btn-save">
+							@Messages("button.save")
+							<i class="material-icons right">send</i>
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	}
+}

@@ -20,7 +20,7 @@
 						@Messages("when.created", pretty(ctx.lang().locale, linkedAccount.whenCreated))
 					</p>
 					<a
-						href="@routes.Users.linkedAccountRemove(user.id, linkedAccount.id)"
+						href="@routes.Profiles.linkedAccountRemove(linkedAccount.id)"
 						class="secondary-content btn-hover"
 						title="@Messages("button.unlink")">
 						<i class="material-icons">delete_forever</i>
@@ -28,6 +28,6 @@
 				</li>
 			}
 		</ul>
-		@tags.pager(routes.Users.linkedAccounts(user.id), form.get)
+		@tags.pager(routes.Profiles.linkedAccounts(), form.get)
 	}
 }

@@ -56,6 +56,6 @@ public class RevertDeleteLinkedAccountCommand implements Command<models.LinkedAc
 	@Override
 	public Call redirect()
 	{
-		return routes.Users.linkedAccounts(linkedAccount.userId);
+		return routes.Profiles.linkedAccounts();
 	}
 }

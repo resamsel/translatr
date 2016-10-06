@@ -28,5 +28,5 @@
 </div>
 
 @if(template.loggedInUser.id == user.id) {
-	@tags.fabContainer("edit", "edit", href = routes.Users.edit(user.id).url, tooltip = Messages("user.edit.tooltip"), styleClass = "teal")
+	@tags.fabContainer("edit", "edit", href = routes.Profiles.edit().url, tooltip = Messages("user.edit.tooltip"), styleClass = "teal")
 }

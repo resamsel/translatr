@@ -1,8 +1,8 @@
 package i18n;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -51,7 +51,7 @@ public class TranslatrMessagesApi extends DefaultMessagesApi
 	{
 		Map<String, Object> args = Context.current().args;
 		if(!args.containsKey(KEY))
-			args.put(KEY, new ArrayList<>());
-		((List<String>)args.get(KEY)).add(key);
+			args.put(KEY, new HashSet<>());
+		((Set<String>)args.get(KEY)).add(key);
 	}
 }

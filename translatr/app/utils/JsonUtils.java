@@ -28,9 +28,11 @@ public class JsonUtils
 			case "dto.Project":
 			case "dto.Locale":
 			case "dto.Key":
-				return node.get("name").asText();
+				return getAsText(node, "name");
 			case "dto.Message":
-				return String.format("%s (%s)", node.get("keyName").asText(), node.get("localeName").asText());
+				return String.format("%s (%s)", getAsText(node, "keyName"), getAsText(node, "localeName"));
+			case "dto.ProjectUser":
+				return String.format("%s (%s)", getAsText(node, "projectName"), getAsText(node, "userName"));
 			default:
 				return "";
 		}
@@ -49,20 +51,24 @@ public class JsonUtils
 			break;
 			case "dto.Project":
 				if(uuid != null)
-					return routes.Projects.project(getUuid(node));
+					return routes.Projects.project(uuid);
 			break;
 			case "dto.Locale":
 				if(uuid != null)
-					return routes.Locales.locale(getUuid(node));
+					return routes.Locales.locale(uuid);
 			break;
 			case "dto.Key":
 				if(uuid != null)
-					return routes.Keys.key(getUuid(node));
+					return routes.Keys.key(uuid);
 			break;
 			case "dto.Message":
 				UUID keyId = getUuid(node, "keyId");
 				if(keyId != null)
 					return routes.Keys.key(keyId);
+			break;
+			case "dto.ProjectUser":
+				if(uuid != null)
+					return routes.Projects.members(uuid);
 			break;
 			default:
 			break;
@@ -84,6 +90,8 @@ public class JsonUtils
 			case "dto.Message":
 				return "message";
 			case "dto.User":
+				return "account_circle";
+			case "dto.ProjectUser":
 				return "account_circle";
 			default:
 				return "";
@@ -134,5 +142,18 @@ public class JsonUtils
 			default:
 				return Json.parse("{}");
 		}
+	}
+
+	/**
+	 * @param node
+	 * @param string
+	 * @return
+	 */
+	private static String getAsText(JsonNode node, String fieldName)
+	{
+		if(!node.hasNonNull(fieldName))
+			return null;
+
+		return node.get(fieldName).asText();
 	}
 }

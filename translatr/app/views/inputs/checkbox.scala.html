@@ -1,0 +1,17 @@
+@(field: Form.Field, id: String, label: Html)
+
+<div>
+	<input
+		id="field-@id"
+		type="checkbox"
+		name="@field.name"
+		class="validate @if(!field.errors.isEmpty) { invalid }" />
+	<label
+		for="field-@id"
+		@if(!field.errors.isEmpty) {
+			data-error="@for(error <- field.errors) {
+				@Messages(error.messages, error.arguments.toArray: _*)
+			}"
+		}
+		>@label</label>
+</div>

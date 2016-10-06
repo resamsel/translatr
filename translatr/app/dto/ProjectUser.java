@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import models.Project;
 import models.ProjectRole;
 import models.User;
@@ -20,8 +22,10 @@ public class ProjectUser extends Dto
 
 	public ProjectRole role;
 
+	@JsonIgnore
 	public DateTime whenCreated;
 
+	@JsonIgnore
 	public DateTime whenUpdated;
 
 	private ProjectUser(models.ProjectUser in)

@@ -12,7 +12,7 @@
 		$(document).ready(function() {
 			var $toastContent, $a;
 
-			@for(k <- ctx().args("undefined").asInstanceOf[List[String]]) {
+			@for(k <- ctx().args("undefined").asInstanceOf[Set[String]]) {
 				$toastContent = $('.undefined.template').clone().removeClass('template');
 				$toastContent.find('.keyName').text('@k');
 				$a = $toastContent.find('a');

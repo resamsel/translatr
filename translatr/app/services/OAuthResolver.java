@@ -26,7 +26,7 @@ public class OAuthResolver extends Resolver
 	{
 		// The user will be redirected to this page after authentication
 		// if no original URL was saved
-		return routes.Application.index();
+		return routes.Dashboards.dashboard();
 	}
 
 	@Override
@@ -47,9 +47,7 @@ public class OAuthResolver extends Resolver
 	public Call onException(final AuthException e)
 	{
 		if(e instanceof AccessDeniedException)
-		{
 			return routes.Application.oAuthDenied(((AccessDeniedException)e).getProviderKey());
-		}
 
 		// more custom problem handling here...
 
@@ -59,16 +57,12 @@ public class OAuthResolver extends Resolver
 	@Override
 	public Call askLink()
 	{
-		// We don't support moderated account linking in this sample.
-		// See the play-authenticate-usage project for an example
-		return null;
+		return routes.Profiles.askLink();
 	}
 
 	@Override
 	public Call askMerge()
 	{
-		// We don't support moderated account merging in this sample.
-		// See the play-authenticate-usage project for an example
-		return null;
+		return routes.Profiles.askMerge();
 	}
 }

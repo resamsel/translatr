@@ -15,11 +15,18 @@ GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider
 
 # Users
 GET		/user/:id					controllers.Users.user(id: java.util.UUID)
-GET		/user/:id/edit				controllers.Users.edit(id: java.util.UUID)
-POST	/user/:id/edit				controllers.Users.edit(id: java.util.UUID)
-GET		/user/:id/activity			controllers.Users.activity(id: java.util.UUID)
-GET		/user/:id/linkedAccounts	controllers.Users.linkedAccounts(id: java.util.UUID)
-GET		/user/:id/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(id: java.util.UUID, linkedAccountId: Long)
+
+# Profiles
+GET		/profile					controllers.Profiles.profile
+GET		/profile/edit				controllers.Profiles.edit
+POST	/profile/edit				controllers.Profiles.doEdit
+GET		/profile/activity			controllers.Profiles.activity
+GET		/profile/linkedAccounts		controllers.Profiles.linkedAccounts
+GET		/profile/linkedAccount/:linkedAccountId/remove	controllers.Profiles.linkedAccountRemove(linkedAccountId: Long)
+GET		/profile/link				controllers.Profiles.askLink
+POST	/profile/link				controllers.Profiles.doLink
+GET		/accounts/merge				controllers.Profiles.askMerge
+POST	/accounts/merge				controllers.Profiles.doMerge
 
 # Dashboards
 GET		/dashboard						controllers.Dashboards.dashboard
