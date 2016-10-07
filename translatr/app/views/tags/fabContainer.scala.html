@@ -1,0 +1,20 @@
+@(id: String, icon: String, tooltip: String, href: String = null, styleClass: String = "", actions: Html = null)
+
+<div
+	class="fixed-action-btn horizontal click-to-toggle">
+	@if(actions == null) {
+		@tags.fab(id, icon, tooltip, href = href, styleClass = "btn-large " + styleClass)
+	} else {
+		@tags.fab("toggle", "menu", Messages("menu.tooltip"), href = "#!", styleClass = "btn-large red")
+		<ul>
+			@actions
+			<li>
+				@if(href != null) {
+					@tags.fab(id, icon, tooltip, href = href, styleClass = styleClass)
+				} else {
+					@tags.fab(id, icon, tooltip, styleClass = styleClass)
+				}
+			</li>
+		</ul>
+	}
+</div>

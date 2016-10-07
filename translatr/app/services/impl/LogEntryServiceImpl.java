@@ -5,6 +5,7 @@ import static utils.Stopwatch.log;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
@@ -18,8 +19,12 @@ import criterias.LogEntryCriteria;
 import models.Aggregate;
 import models.LogEntry;
 import models.Project;
+import models.User;
+import play.Configuration;
 import play.mvc.Http.Context;
 import services.LogEntryService;
+import utils.ConfigKey;
+import utils.SessionKey;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -37,6 +42,15 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
 				"datediff('millisecond', timestamp '1970-01-01 00:00:00', parsedatetime(formatdatetime(when_created, 'yyyy-MM-dd HH:00:00'), 'yyyy-MM-dd HH:mm:ss'))*1000";
 
 	private static final String POSTGRESQL_COLUMN_MILLIS = "extract(epoch from date_trunc('hour', when_created))*1000";
+
+	/**
+	 * 
+	 */
+	@Inject
+	public LogEntryServiceImpl(Configuration configuration)
+	{
+		super(configuration);
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -87,14 +101,17 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void preSave(LogEntry logEntry, boolean update)
+	public void preSave(LogEntry t, boolean update)
 	{
-		if(logEntry.project == null)
+		if(t.user == null)
+			t.user = loggedInUser();
+
+		if(t.project == null)
 		{
 			if(Context.current().args.containsKey("projectId"))
 			{
-				logEntry.project = new Project();
-				logEntry.project.id = (UUID)Context.current().args.get("projectId");
+				t.project = new Project();
+				t.project.id = (UUID)Context.current().args.get("projectId");
 			}
 			else
 			{

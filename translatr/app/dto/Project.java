@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import criterias.MessageCriteria;
+import models.User;
 
 public class Project extends Dto
 {
@@ -21,6 +22,8 @@ public class Project extends Dto
 	public DateTime whenUpdated;
 
 	public String name;
+
+	public UUID ownerId;
 
 	@JsonIgnore
 	public List<Key> keys;
@@ -37,6 +40,7 @@ public class Project extends Dto
 		this.whenCreated = in.whenCreated;
 		this.whenUpdated = in.whenUpdated;
 		this.name = in.name;
+		this.ownerId = in.owner.id;
 		this.keys = in.keys.stream().map(k -> Key.from(k)).collect(Collectors.toList());
 		this.locales = in.locales.stream().map(l -> Locale.from(l)).collect(Collectors.toList());
 		this.messages = models.Message
@@ -53,6 +57,7 @@ public class Project extends Dto
 		out.whenCreated = whenCreated;
 		out.whenUpdated = whenUpdated;
 		out.name = name;
+		out.owner = new User().withId(ownerId);
 
 		return out;
 	}

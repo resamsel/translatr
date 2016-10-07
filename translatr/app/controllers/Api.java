@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -45,6 +46,15 @@ public class Api extends Controller
 		this.messageService = messageService;
 	}
 
+	private Result project(UUID projectId, Function<Project, Result> processor)
+	{
+		Project project = Project.byId(projectId);
+		if(project == null)
+			return notFound(Json.parse("{}"));
+
+		return processor.apply(project);
+	}
+
 	@BodyParser.Of(BodyParser.Json.class)
 	public Result putProject()
 	{
@@ -67,10 +77,12 @@ public class Api extends Controller
 
 	public Result findLocales(UUID projectId)
 	{
-		List<Locale> locales = Locale
-			.findBy(new LocaleCriteria().withProjectId(projectId).withLocaleName(request().getQueryString("localeName")));
+		return project(projectId, project -> {
+			List<Locale> locales = Locale.findBy(
+				new LocaleCriteria().withProjectId(project.id).withLocaleName(request().getQueryString("localeName")));
 
-		return ok(Json.toJson(locales.stream().map(l -> dto.Locale.from(l)).collect(Collectors.toList())));
+			return ok(Json.toJson(locales.stream().map(l -> dto.Locale.from(l)).collect(Collectors.toList())));
+		});
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)

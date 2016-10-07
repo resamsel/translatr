@@ -2,7 +2,7 @@ import com.typesafe.sbt.packager.docker._
 
 name := """translatr"""
 
-version := "1.0.2"
+version := "1.1.0"
 
 lazy val root = (project in file(".")).
 	enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin).
@@ -44,7 +44,7 @@ EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClass
 EclipseKeys.withSource := true
 
 // Docker
-maintainer := "René Samselnig"
+maintainer := "René Samselnig <rene.samselnig@gmail.com>"
 
 dockerRepository := Some("resamsel")
 

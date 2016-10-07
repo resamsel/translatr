@@ -7,7 +7,7 @@
 	} else {
 		data-target="modal-@id"
 	}
-	class="btn-floating waves-effect waves-light modal-trigger tooltipped @styleClass"
+	class="btn-floating waves-effect waves-light tooltipped @if(href == null) { modal-trigger } @styleClass"
 	data-position="@tooltipPosition"
 	data-delay="50"
 	data-tooltip="@tooltip">

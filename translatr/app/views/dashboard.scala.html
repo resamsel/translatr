@@ -11,7 +11,7 @@
 		<div class="col m12">
 			<div class="container">
 				@for(project <- projectList) {
-					<div class="card hoverable" name="@project.name.toLowerCase">
+					<div class="card no-image" name="@project.name.toLowerCase">
 						<div class="card-image orange">
 							<span class="card-title">@project.name</span>
 						</div>
@@ -38,7 +38,7 @@
 		<!-- /.col .m12 -->
 	}
 
-	@tags.modalTrigger("create-project", "add", tooltip = Messages("project.create.tooltip"), styleClass = "orange")
+	@tags.fabContainer("create-project", "add", tooltip = Messages("project.create.tooltip"), styleClass = "orange")
 
 	@tags.modal(Messages("project.new"), "modal-create-project") {
 		<form id="form-project" method="post" action="@routes.Projects.create()">

@@ -22,6 +22,7 @@ import models.Locale;
 import models.LogEntry;
 import models.Message;
 import models.Stat;
+import play.Configuration;
 import services.LocaleService;
 import services.LogEntryService;
 import services.MessageService;
@@ -46,8 +47,9 @@ public class LocaleServiceImpl extends AbstractModelService<Locale> implements L
 	 * 
 	 */
 	@Inject
-	public LocaleServiceImpl(MessageService messageService, LogEntryService logEntryService)
+	public LocaleServiceImpl(Configuration configuration, MessageService messageService, LogEntryService logEntryService)
 	{
+		super(configuration);
 		this.messageService = messageService;
 		this.logEntryService = logEntryService;
 	}

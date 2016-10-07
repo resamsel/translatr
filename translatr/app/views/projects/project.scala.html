@@ -4,13 +4,13 @@
 
 @projectActions = {
 	<li>
-		@tags.modalTriggerLink("remove-project", "delete_forever", href = routes.Projects.remove(project.id).url, tooltip = Messages("project.remove.tooltip"), styleClass = "red")
+		@tags.fab("remove-project", "delete_forever", href = routes.Projects.remove(project.id).url, tooltip = Messages("project.remove.tooltip"), styleClass = "red")
 	</li>
 	<li>
-		@tags.modalTriggerLink("edit-project", "edit", href = routes.Projects.edit(project.id).url, tooltip = Messages("project.edit.tooltip"), styleClass = "orange")
+		@tags.fab("edit-project", "edit", href = routes.Projects.edit(project.id).url, tooltip = Messages("project.edit.tooltip"), styleClass = "orange")
 	</li>
 	<li>
-		@tags.modalTriggerLink("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
+		@tags.fab("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
 	</li>
 }
 
@@ -30,7 +30,7 @@
 				<div class="row info">
 					<!-- Project Info -->
 					<div class="col m4 overview">
-						<div class="card hoverable">
+						<div class="card no-image">
 							<div class="card-image orange">
 								<span class="card-title">@Messages("project.title", project.name)</span>
 							</div>
@@ -41,13 +41,20 @@
 								<p>
 									@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
 								</p>
+								<div class="chip user">
+									@tags.gravatar(project.owner, help = Messages("project.owner.info"))
+									@Html(Messages("project.owner", project.owner.name))
+									<a href="@routes.Users.user(project.owner.id)">
+										@project.owner.name
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
 	
 					<!-- Locales -->
 					<div class="col m4 locales">
-						<div class="card hoverable">
+						<div class="card no-image">
 							<div class="card-image blue">
 								<span class="card-title">@Messages("locales")</span>
 							</div>
@@ -63,7 +70,7 @@
 	
 					<!-- Keys -->
 					<div class="col m4 keys">
-						<div class="card hoverable">
+						<div class="card no-image">
 							<div class="card-image light-green">
 								<span class="card-title">@Messages("keys")</span>
 							</div>
@@ -79,7 +86,7 @@
 
 					<!-- Messages -->
 					<div class="col m12 messages">
-						<div class="card hoverable">
+						<div class="card no-image">
 							<div class="card-image red">
 								<span class="card-title">@Messages("messages")</span>
 							</div>
@@ -95,7 +102,7 @@
 
 					<!-- Timeline -->
 					<div class="col m12 timeline">
-						<div class="card hoverable">
+						<div class="card no-image">
 							<div class="card-image grey">
 								<span class="card-title">@Messages("timeline")</span>
 							</div>
@@ -110,7 +117,7 @@
 		<!-- /.col-md-12 -->
 	}
 
-	@tags.modalTrigger("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue", actions = projectActions)
+	@tags.fabContainer("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue", actions = projectActions)
 
 	@tags.modal(Messages("locale.new"), "modal-create-locale") {
 		@tags.localeCreate(project)

@@ -1,0 +1,24 @@
+@(user: models.User, projectList: List[models.Project])
+
+@import utils.FormatUtils._
+
+@main(utils.TemplateInfo.from(Messages("user.title"), "user")) {
+} {
+		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+			@Messages("dashboard")
+		</a>
+} {
+	@users.content(user, "projects") {
+		<div class="collection">
+			@for(project <- projectList) {
+				<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
+					<i class="material-icons circle orange">view_quilt</i>
+					<span class="title">@project.name</span>
+					<p>
+						@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
+					</p>
+				</a>
+			}
+		</div>
+	}
+}

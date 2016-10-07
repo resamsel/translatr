@@ -24,7 +24,6 @@ import criterias.LocaleCriteria;
 import criterias.LogEntryCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
-import forms.KeyForm;
 import forms.ProjectForm;
 import forms.SearchForm;
 import models.Key;

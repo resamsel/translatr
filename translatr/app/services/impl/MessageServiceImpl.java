@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 import models.ActionType;
 import models.LogEntry;
 import models.Message;
+import play.Configuration;
 import services.LogEntryService;
 import services.MessageService;
 
@@ -28,8 +29,9 @@ public class MessageServiceImpl extends AbstractModelService<Message> implements
 	 * 
 	 */
 	@Inject
-	public MessageServiceImpl(LogEntryService logEntryService)
+	public MessageServiceImpl(Configuration configuration, LogEntryService logEntryService)
 	{
+		super(configuration);
 		this.logEntryService = logEntryService;
 	}
 
