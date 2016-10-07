@@ -4,7 +4,6 @@ import java.util.Collections;
 
 import models.Locale;
 import models.Message;
-import play.mvc.Http.Response;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -13,7 +12,7 @@ import play.mvc.Http.Response;
  * @author resamsel
  * @version 30 Aug 2016
  */
-public abstract class PropertiesExporter implements Exporter
+public abstract class PropertiesExporter extends AbstractExporter implements Exporter
 {
 	protected static final String DEFAULT = "default";
 
@@ -27,17 +26,5 @@ public abstract class PropertiesExporter implements Exporter
 			sb.append(message.key.name).append(" = ").append(message.value.replace("\n", "\\n")).append("\n");
 
 		return sb.toString().getBytes();
-	}
-
-	@Override
-	public Exporter addHeaders(Response response, Locale locale)
-	{
-		response.setHeader("Cache-Control", "public");
-		response.setHeader("Content-Description", "File Transfer");
-		response.setHeader("Content-Disposition", String.format("attachment; filename=%s", getFilename(locale)));
-		response.setHeader("Content-Type", "mime/type");
-		response.setHeader("Content-Transfer-Encoding", "binary");
-
-		return this;
 	}
 }

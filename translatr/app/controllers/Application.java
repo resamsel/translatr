@@ -14,6 +14,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import actions.ContextAction;
 import commands.Command;
 import exporters.Exporter;
+import exporters.GettextExporter;
 import exporters.JavaPropertiesExporter;
 import exporters.PlayMessagesExporter;
 import models.FileType;
@@ -105,6 +106,9 @@ public class Application extends AbstractController
 			break;
 			case JavaProperties:
 				exporter = new JavaPropertiesExporter();
+			break;
+			case Gettext:
+				exporter = new GettextExporter();
 			break;
 			default:
 				return badRequest("File type " + fileType + " not supported yet");

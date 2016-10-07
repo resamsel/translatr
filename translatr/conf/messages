@@ -46,6 +46,7 @@ error.restricted.content = Access was denied to the requested resource. Signing 
 error.restricted.title = Access restricted
 error.userbyusername = Could not find user by given username
 filetype.choose = Choose file type
+filetype.gettext = Gettext ('{locale.name}'/LC_MESSAGES/message.po)
 filetype.java_properties = Java Properties (messages_?'{locale.name}'.properties)
 filetype.label = File type
 filetype.play_messages = Play Messages (messages.?'{locale.name}')

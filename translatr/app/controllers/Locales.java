@@ -26,6 +26,7 @@ import criterias.MessageCriteria;
 import forms.ImportLocaleForm;
 import forms.LocaleForm;
 import forms.SearchForm;
+import importers.GettextImporter;
 import importers.Importer;
 import importers.JavaPropertiesImporter;
 import importers.PlayMessagesImporter;
@@ -317,6 +318,9 @@ public class Locales extends AbstractController
 			break;
 			case JavaProperties:
 				importer = injector.instanceOf(JavaPropertiesImporter.class);
+			break;
+			case Gettext:
+				importer = injector.instanceOf(GettextImporter.class);
 			break;
 			default:
 				throw new IllegalArgumentException("File type " + form.getFileType() + " not supported yet");

@@ -46,6 +46,7 @@ error.restricted.content = Der Zugriff auf die angeforderte Resource wurde verwe
 error.restricted.title = Zugriff verwehrt
 error.userbyusername = Kein Benutzer mit angegebenen Benutzernamen bekannt
 filetype.choose = Dateityp auswählen
+filetype.gettext = Gettext ('{locale.name}'/LC_MESSAGES/message.po)
 filetype.java_properties = Java Properties (messages_?'{locale.name}'.properties)
 filetype.label = Dateityp
 filetype.play_messages = Play Messages (messages.?'{locale.name}')
