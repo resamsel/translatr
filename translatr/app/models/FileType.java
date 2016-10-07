@@ -14,7 +14,9 @@ public enum FileType
 {
 	JavaProperties("java_properties"),
 
-	PlayMessages("play_messages");
+	PlayMessages("play_messages"),
+
+	Gettext("gettext");
 
 	private static final Map<String, FileType> KEYMAP = new HashMap<>();
 

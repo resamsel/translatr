@@ -112,7 +112,7 @@ def push():
 	locales = dict([(loc['name'], Locale(**loc)) for loc in project])
 
 	target = '{push[target]}'.format(**config)
-	file_filter = re.sub(r'(.\?)\{locale.name\}', r'*', target)
+	file_filter = re.sub(r'(.\?)?\{locale.name\}', r'*', target)
 	logger.debug('Filter: %s', file_filter)
 	pattern = target_pattern(target)
 	for filename in glob.iglob(file_filter):

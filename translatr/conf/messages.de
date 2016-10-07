@@ -31,6 +31,7 @@ dashboard.title = Dashboard
 dashboard.tooltip = Dashboard öffnen
 error.maxLength = Maximallänge beträgt {0} Zeichen
 filetype.choose = Dateityp auswählen
+filetype.gettext = Gettext ('{locale.name}'/LC_MESSAGES/message.po)
 filetype.java_properties = Java Properties (messages_?'{locale.name}'.properties)
 filetype.label = Dateityp
 filetype.play_messages = Play Messages (messages.?'{locale.name}')

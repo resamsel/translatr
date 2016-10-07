@@ -27,12 +27,14 @@ import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
 import exporters.Exporter;
+import exporters.GettextExporter;
 import exporters.JavaPropertiesExporter;
 import exporters.PlayMessagesExporter;
 import forms.ImportLocaleForm;
 import forms.KeyForm;
 import forms.LocaleForm;
 import forms.SearchForm;
+import importers.GettextImporter;
 import importers.Importer;
 import importers.JavaPropertiesImporter;
 import importers.PlayMessagesImporter;
@@ -190,6 +192,9 @@ public class Application extends AbstractController
 			break;
 			case JavaProperties:
 				exporter = new JavaPropertiesExporter();
+			break;
+			case Gettext:
+				exporter = new GettextExporter();
 			break;
 			default:
 				return badRequest("File type " + fileType + " not supported yet");
@@ -571,6 +576,9 @@ public class Application extends AbstractController
 			break;
 			case JavaProperties:
 				importer = injector.instanceOf(JavaPropertiesImporter.class);
+			break;
+			case Gettext:
+				importer = injector.instanceOf(GettextImporter.class);
 			break;
 			default:
 				throw new IllegalArgumentException("File type " + form.getFileType() + " not supported yet");
