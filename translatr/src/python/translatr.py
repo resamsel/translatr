@@ -3,51 +3,84 @@
 
 import argparse
 import yaml
+import pyaml
 import requests
 import glob
 import logging
 import re
+import sys
+import textwrap
 
 from collections import namedtuple
+
+TRANSLATR_YML_NOT_FOUND = textwrap.dedent("""
+	Could not find .translatr.yml: initialise with `translatr init`
+""")
+CONFIG_KEY_MISSING = textwrap.dedent("""
+	Error in .translatr.yml: could not find key "{0}"
+""")
+CONFIG_KEY_EMPTY = textwrap.dedent("""
+	Error in .translatr.yml: key "{0}" is empty
+""")
+CONNECTION_ERROR = textwrap.dedent("""
+	Connection to {endpoint} could not be established, please check
+	your .translatr.yml config (translatr.endpoint)
+""")
+PROJECT_NOT_FOUND = textwrap.dedent("""
+	Project with ID {project_id} could not be found, please check your
+	.translatr.yml config (translatr.project_id)
+""")
 
 Locale = namedtuple('Locale', 'id name projectId')
 
 logger = logging.getLogger(__name__)
 
-parser = argparse.ArgumentParser(description='Command line interface for play-translatr.')
-parser.add_argument(
-	'command',
-	help='the command to invoke; options: pull, push'
-)
-parser.add_argument(
-	'-L',
-	'--logfile',
-	type=argparse.FileType('a'),
-	default='/tmp/translatr.log',
-	help='the file to log to'
-)
-parser.add_argument(
-	'--debug',
-	dest='loglevel',
-	action='store_const',
-	const=logging.DEBUG,
-	default=logging.WARN,
-	help='set loglevel to debug'
-)
 
-with open('.translatr.yml') as f:
-	config = yaml.load(f)['translatr']
+def eprint(msg, width=80):
+	print('\n'.join(textwrap.wrap(msg.strip(), width)))
 
-args = parser.parse_args()
 
-config.update(args.__dict__)
+def init(args):
+	try:
+		with open('.translatr.yml', 'w') as f:
+			f.write(textwrap.dedent("""
+				translatr:
+					endpoint: {endpoint}
+					project_id: {project_id}
+					push:
+						file_type: {push_file_type}
+						target: {push_target}
+					pull:
+						file_type: {pull_file_type}
+						target: {pull_target}
+			""").strip().format(**args.__dict__).replace('\t', '  '))
+		print('Config initialised into .translatr.yml')
+	except IOError as e:
+		logger.exception(e)
+		print(e)
 
-logging.basicConfig(
-	stream=args.logfile,
-	level=args.loglevel,
-	format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-	datefmt="%Y-%m-%d %H:%M:%S"
-)
+
+def read_config():
+	try:
+		with open('.translatr.yml') as f:
+			return yaml.load(f)['translatr']
+	except IOError as e:
+		raise Exception(TRANSLATR_YML_NOT_FOUND)
+
+
+def read_config_merge(args):
+	config = read_config()
+	if config is None:
+		raise Exception(CONFIG_KEY_MISSING.format('translatr'))
+
+	config.update(args.__dict__)
+
+	return config
+
+
+def info(args):
+	pyaml.pprint({'translatr': read_config()})
+
 
 def download(url, target):
 	logger.debug('Download %s to %s', url, target)
@@ -59,13 +92,33 @@ def download(url, target):
 	return
 
 
-def help():
-	print('help')
+def assert_exists(d, key):
+	path = ['translatr']
+	for k in key.split('.'):
+		path.append(k)
+		if k not in d:
+			raise Exception(CONFIG_KEY_MISSING.format('.'.join(path)))
+		d = d[k]
+		if d is None:
+			raise Exception(CONFIG_KEY_EMPTY.format('.'.join(path)))
 
+def pull(args):
+	config = read_config_merge(args)
 
-def pull():
-	response = requests.get(
-		'{endpoint}/api/locales/{project_id}'.format(**config))
+	assert_exists(config, 'endpoint')
+	assert_exists(config, 'project_id')
+	assert_exists(config, 'pull.target')
+	assert_exists(config, 'pull.file_type')
+
+	try:
+		response = requests.get(
+			'{endpoint}/api/locales/{project_id}'.format(**config))
+		response.raise_for_status()
+	except requests.exceptions.ConnectionError as e:
+		raise Exception(CONNECTION_ERROR.format(**config))
+	except requests.exceptions.HTTPError:
+		raise Exception(PROJECT_NOT_FOUND.format(**config))
+
 	locales = response.json()
 
 	for loc in locales:
@@ -99,13 +152,22 @@ def target_pattern(target):
 	return re.compile(regex)
 
 
-def push():
+def push(args):
+	config = read_config_merge(args)
+
+	assert_exists(config, 'endpoint')
+	assert_exists(config, 'project_id')
+	assert_exists(config, 'push.target')
+	assert_exists(config, 'push.file_type')
+
 	try:
 		response = requests.get(
 			'{endpoint}/api/locales/{project_id}'.format(**config))
-	except BaseException as e:
-		print('Could not connect to endpoint, is it configured correctly?')
-		return
+		response.raise_for_status()
+	except requests.exceptions.ConnectionError as e:
+		raise Exception(CONNECTION_ERROR.format(**config))
+	except requests.exceptions.HTTPError:
+		raise Exception(PROJECT_NOT_FOUND.format(**config))
 
 	project = response.json()
 
@@ -147,6 +209,10 @@ def push():
 				# Put response locale in locales
 				locales[localeName] = Locale(**response.json())
 				created = True
+			except requests.exceptions.ConnectionError as e:
+				eprint(CONNECTION_ERROR.format(**config))
+			except requests.exceptions.HTTPError:
+				eprint(PROJECT_NOT_FOUND.format(**config))
 			except ValueError as e:
 				logger.exception(e)
 			except BaseException as e:
@@ -173,11 +239,108 @@ def push():
 		else:
 			print('Could neither find nor create locale {0}'.format(localeName))
 
-try:
-	{
-		'pull': pull,
-		'push': push
-	}.get(args.command, help)()
-except BaseException as e:
-	logger.exception(e)
-	print(str(e))
+
+def create_parser():
+	parser = argparse.ArgumentParser(
+		description='Command line interface for translatr.'
+	)
+	parser.add_argument(
+		'-L',
+		'--logfile',
+		type=argparse.FileType('a'),
+		default='/tmp/translatr.log',
+		help='the file to log to'
+	)
+	parser.add_argument(
+		'--debug',
+		dest='loglevel',
+		action='store_const',
+		const=logging.DEBUG,
+		default=logging.WARN,
+		help='set loglevel to debug'
+	)
+
+	subparsers = parser.add_subparsers(
+		title="commands"
+	)
+
+	parser_init = subparsers.add_parser(
+		'init',
+		help='initialises the directory with a .translatr.yml file'
+	)
+	parser_init.add_argument(
+		'endpoint',
+		help='the URL to the Translatr endpoint'
+	)
+	parser_init.add_argument(
+		'project_id',
+		help='the ID of the Translatr project'
+	)
+	parser_init.add_argument(
+		'--pull-file-type',
+		default='play_messages',
+		help='the format of the files to be downloaded'
+	)
+	parser_init.add_argument(
+		'--pull-target',
+		default='conf/messages.?{locale.name}',
+		help='the location format of the downloaded files'
+	)
+	parser_init.add_argument(
+		'--push-file-type',
+		default='play_messages',
+		help='the format of the files to be uploaded'
+	)
+	parser_init.add_argument(
+		'--push-target',
+		default='conf/messages.?{locale.name}',
+		help='the location format of the uploaded files'
+	)
+	parser_init.set_defaults(func=init)
+
+	parser_info = subparsers.add_parser(
+		'info',
+		help='show info about project'
+	)
+	parser_info.set_defaults(func=info)
+
+	parser_push = subparsers.add_parser(
+		'push',
+		help='pushing sends matching messages files to the given endpoint, creating locales if needed'
+	)
+	parser_push.set_defaults(func=push)
+
+	parser_pull = subparsers.add_parser(
+		'pull',
+		help='pulling downloads all locales into separate files into the configured files'
+	)
+	parser_pull.set_defaults(func=pull)
+
+	return parser
+
+
+def main():
+	parser = create_parser()
+
+	if len(sys.argv) < 2:
+		parser.print_help()
+		sys.exit(1)
+
+	args = parser.parse_args()
+
+	logging.basicConfig(
+		stream=args.logfile,
+		level=args.loglevel,
+		format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+		datefmt="%Y-%m-%d %H:%M:%S"
+	)
+
+	try:
+		args.func(args)
+	except Exception as e:
+		eprint(e.args[0])
+	except BaseException as e:
+		logger.exception(e)
+		eprint(str(e))
+
+main()
