@@ -69,7 +69,7 @@ public class Profiles extends AbstractController
 
 	public Result profile()
 	{
-		return user(
+		return loggedInUser(
 			user -> ok(
 				views.html.users.user.render(
 					createTemplate(),
@@ -79,7 +79,7 @@ public class Profiles extends AbstractController
 
 	public Result activity()
 	{
-		return user(user -> {
+		return loggedInUser(user -> {
 			Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 			SearchForm search = form.get();
 
@@ -94,7 +94,7 @@ public class Profiles extends AbstractController
 
 	public Result edit()
 	{
-		return user(user -> {
+		return loggedInUser(user -> {
 			return ok(
 				views.html.users.edit
 					.render(createTemplate(), user, formFactory.form(UserForm.class).fill(UserForm.from(user))));
@@ -103,7 +103,7 @@ public class Profiles extends AbstractController
 
 	public Result doEdit()
 	{
-		return user(user -> {
+		return loggedInUser(user -> {
 			Form<UserForm> form = formFactory.form(UserForm.class).bindFromRequest();
 
 			if(form.hasErrors())
@@ -117,7 +117,7 @@ public class Profiles extends AbstractController
 
 	public Result linkedAccounts()
 	{
-		return user(user -> {
+		return loggedInUser(user -> {
 			Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 			SearchForm search = form.get();
 
@@ -137,7 +137,7 @@ public class Profiles extends AbstractController
 
 	public Result linkedAccountRemove(Long linkedAccountId)
 	{
-		return user(user -> {
+		return loggedInUser(user -> {
 			LinkedAccount linkedAccount = LinkedAccount.byId(linkedAccountId);
 
 			if(linkedAccount == null || !user.id.equals(linkedAccount.user.id))
@@ -187,7 +187,7 @@ public class Profiles extends AbstractController
 			// User made a choice :)
 			final boolean link = filledForm.get().accept;
 			if(link)
-				flash(Application.FLASH_MESSAGE_KEY, ctx().messages().at("playauthenticate.accounts.link.success"));
+				addMessage(ctx().messages().at("playauthenticate.accounts.link.success"));
 
 			return auth.link(ctx(), link);
 		}
@@ -237,12 +237,13 @@ public class Profiles extends AbstractController
 			// User made a choice :)
 			final boolean merge = filledForm.get().accept;
 			if(merge)
-				flash(Application.FLASH_MESSAGE_KEY, ctx().messages().at("playauthenticate.accounts.merge.success"));
+				addMessage(ctx().messages().at("playauthenticate.accounts.merge.success"));
+
 			return auth.merge(ctx(), merge);
 		}
 	}
 
-	private Result user(Function<User, Result> processor)
+	private Result loggedInUser(Function<User, Result> processor)
 	{
 		return processor.apply(User.loggedInUser());
 	}

@@ -40,7 +40,7 @@ public class Users extends AbstractController
 	{
 		User user = User.byId(id);
 		if(user == null)
-			return redirect(routes.Application.index());
+			return redirectWithError(routes.Application.index(), ctx().messages().at("user.notFound"));
 
 		if(user.id.equals(User.loggedInUserId()))
 			return redirect(routes.Profiles.profile());

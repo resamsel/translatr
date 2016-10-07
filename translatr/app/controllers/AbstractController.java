@@ -10,7 +10,9 @@ import models.Project;
 import models.User;
 import play.cache.CacheApi;
 import play.inject.Injector;
+import play.mvc.Call;
 import play.mvc.Controller;
+import play.mvc.Result;
 import services.UserService;
 import utils.Template;
 
@@ -23,6 +25,10 @@ import utils.Template;
  */
 public abstract class AbstractController extends Controller
 {
+	private static final String FLASH_MESSAGE_KEY = "message";
+
+	private static final String FLASH_ERROR_KEY = "error";
+
 	private static final String COMMAND_FORMAT = "command:%s";
 
 	protected final Injector injector;
@@ -45,6 +51,28 @@ public abstract class AbstractController extends Controller
 		this.cache = cache;
 		this.auth = auth;
 		this.userService = userService;
+	}
+
+	public static Result redirectWithError(Call call, String errorMessage)
+	{
+		addError(errorMessage);
+		return redirect(call);
+	}
+
+	public static Result redirectWithMessage(Call call, String message)
+	{
+		addMessage(message);
+		return redirect(call);
+	}
+
+	public static void addError(String error)
+	{
+		flash(FLASH_ERROR_KEY, error);
+	}
+
+	public static void addMessage(String message)
+	{
+		flash(FLASH_MESSAGE_KEY, message);
 	}
 
 	/**

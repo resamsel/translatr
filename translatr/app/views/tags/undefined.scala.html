@@ -1,4 +1,4 @@
-@if(ctx().args.containsKey("brandProjectId") && ctx().args.containsKey("undefined")) {
+@if(Project.brandProjectId != null && ctx().args.containsKey("undefined")) {
 	<div class="undefined template">
 		@Html(Messages("key.undefined"))
 		<strong class="keyName"></strong>
@@ -16,7 +16,7 @@
 				$toastContent = $('.undefined.template').clone().removeClass('template');
 				$toastContent.find('.keyName').text('@k');
 				$a = $toastContent.find('a');
-				$a.attr('href', jsRoutes.controllers.Keys.createImmediately('@ctx().args("brandProjectId")', '@k').url);
+				$a.attr('href', jsRoutes.controllers.Keys.createImmediately('@Project.brandProjectId', '@k').url);
 				Materialize.toast($toastContent, 10000);
 			}
 		})

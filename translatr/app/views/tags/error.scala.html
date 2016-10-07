@@ -5,3 +5,10 @@
 		})
 	</script>
 }
+@if(flash.containsKey("message")) {
+	<script>
+		$(document).ready(function() {
+			Materialize.toast('@flash.get("message")', 10000);
+		})
+	</script>
+}

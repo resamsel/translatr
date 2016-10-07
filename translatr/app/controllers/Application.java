@@ -47,10 +47,6 @@ public class Application extends AbstractController
 
 	public static final String USER_ROLE = "user";
 
-	public static final String FLASH_MESSAGE_KEY = "message";
-
-	public static final String FLASH_ERROR_KEY = "error";
-
 	private final ProjectService projectService;
 
 	private final LocaleService localeService;
@@ -85,16 +81,17 @@ public class Application extends AbstractController
 	public Result oAuthDenied(final String providerKey)
 	{
 		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
-		flash(FLASH_ERROR_KEY, "You need to accept the OAuth connection in order to use this website!");
-		return redirect(routes.Application.index());
+
+		return redirectWithError(
+			routes.Application.index(),
+			"You need to accept the OAuth connection in order to use this website!");
 	}
 
-	public Result download(UUID id, String fileType)
+	public Result download(UUID localeId, String fileType)
 	{
-		Locale locale = Locale.byId(id);
-
+		Locale locale = Locale.byId(localeId);
 		if(locale == null)
-			return redirect(routes.Application.index());
+			return redirectWithError(routes.Application.index(), ctx().messages().at("locale.notFound", localeId));
 
 		select(locale.project);
 
@@ -122,16 +119,17 @@ public class Application extends AbstractController
 	public Result load()
 	{
 		String brand = ctx().messages().at("brand");
-		Project project = Project.byOwnerAndName(User.byUsername("translatr"), brand);
+		User user = User.loggedInUser();
+		if(user == null)
+			user = User.byUsername("translatr");
+		if(user == null)
+			return redirectWithError(routes.Application.index(), ctx().messages().at("user.notFound"));
+
+		Project project = Project.byOwnerAndName(user, brand);
 		if(project == null)
-		{
-			project = projectService.save(new Project(brand));
-		}
+			project = projectService.save(new Project(brand).withOwner(user));
 		else if(project.deleted)
-		{
-			project.deleted = false;
-			projectService.save(project);
-		}
+			projectService.save(project.withDeleted(false));
 
 		select(project);
 
@@ -156,7 +154,9 @@ public class Application extends AbstractController
 			}
 		}
 
-		return redirect(routes.Projects.project(project.id));
+		return redirectWithMessage(
+			routes.Projects.project(project.id),
+			ctx().messages().at("project.created", project.name));
 	}
 
 	public Result commandExecute(String commandKey)

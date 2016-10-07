@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -85,34 +86,37 @@ public class Locales extends AbstractController
 		this.localeService = localeService;
 	}
 
-	public Result locale(UUID id)
+	private Result locale(UUID localeId, Function<Locale, Result> processor)
 	{
-		LOGGER.debug("locale(id={})", id);
-
-		Locale locale = Locale.byId(id);
-
+		Locale locale = Locale.byId(localeId);
 		if(locale == null)
-			return redirect(routes.Application.index());
+			return redirect(routes.Dashboards.dashboard());
 
 		select(locale.project);
 
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
+		return processor.apply(locale);
+	}
 
-		List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(locale.project.id).withLocaleId(locale.id));
-		search.pager(keys);
-		List<Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(locale.project.id).withLimit(100));
-		Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(
-			Collectors.groupingBy((m) -> m.key.name, Collectors.reducing(null, a -> a, (a, b) -> b)));
+	public Result locale(UUID localeId)
+	{
+		return locale(localeId, locale -> {
+			Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+			SearchForm search = form.get();
 
-		return ok(
-			views.html.locales.locale.render(createTemplate(), locale.project, locale, keys, locales, messages, form));
+			List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(locale.project.id).withLocaleId(locale.id));
+			search.pager(keys);
+			List<Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(locale.project.id).withLimit(100));
+			Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(
+				Collectors.groupingBy((m) -> m.key.name, Collectors.reducing(null, a -> a, (a, b) -> b)));
+
+			return ok(
+				views.html.locales.locale.render(createTemplate(), locale.project, locale, keys, locales, messages, form));
+		});
 	}
 
 	public Result create(UUID projectId)
 	{
 		Project project = Project.byId(projectId);
-
 		if(project == null)
 			return redirect(routes.Application.index());
 
@@ -175,122 +179,93 @@ public class Locales extends AbstractController
 
 	public Result edit(UUID localeId)
 	{
-		Locale locale = Locale.byId(localeId);
+		return locale(localeId, locale -> {
+			if("POST".equals(request().method()))
+			{
+				Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
 
-		if(locale == null)
-			return redirect(routes.Application.index());
+				if(form.hasErrors())
+					return badRequest(views.html.locales.edit.render(createTemplate(), locale, form));
 
-		select(locale.project);
+				localeService.save(form.get().into(locale));
 
-		if("POST".equals(request().method()))
-		{
-			Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
+				return redirect(routes.Projects.locales(locale.project.id));
+			}
 
-			if(form.hasErrors())
-				return badRequest(views.html.locales.edit.render(createTemplate(), locale, form));
-
-			localeService.save(form.get().into(locale));
-
-			return redirect(routes.Projects.locales(locale.project.id));
-		}
-
-		return ok(
-			views.html.locales.edit
-				.render(createTemplate(), locale, formFactory.form(LocaleForm.class).fill(LocaleForm.from(locale))));
+			return ok(
+				views.html.locales.edit
+					.render(createTemplate(), locale, formFactory.form(LocaleForm.class).fill(LocaleForm.from(locale))));
+		});
 	}
 
-	public Result upload(UUID id)
+	public Result upload(UUID localeId)
 	{
-		Locale locale = Locale.byId(id);
+		return locale(localeId, locale -> {
+			if("POST".equals(request().method()))
+			{
+				importLocale(locale, request());
 
-		if(locale == null)
-			return redirect(routes.Application.index());
+				return redirect(routes.Locales.locale(localeId));
+			}
 
-		select(locale.project);
-
-		if("POST".equals(request().method()))
-		{
-			importLocale(locale, request());
-
-			return redirect(routes.Locales.locale(id));
-		}
-		else
-		{
 			return ok(views.html.locales.upload.render(createTemplate(), locale.project, locale));
-		}
+		});
 	}
 
 	public Result keysSearch(UUID localeId)
 	{
-		Locale locale = Locale.byId(localeId);
+		return locale(localeId, locale -> {
+			SearchForm search = SearchForm.bindFromRequest(formFactory, configuration).get();
 
-		if(locale == null)
-			return redirect(routes.Application.index());
+			List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(locale.project.id).withLocaleId(locale.id));
+			search.pager(keys);
 
-		SearchForm search = SearchForm.bindFromRequest(formFactory, configuration).get();
+			Map<String, Message> messages = Message
+				.findBy(
+					new MessageCriteria()
+						.withLocaleId(locale.id)
+						.withKeyIds(keys.stream().map(k -> k.id).collect(Collectors.toList())))
+				.stream()
+				.collect(groupingBy(m -> m.key.name, reducing(null, a -> a, (a, b) -> b)));
 
-		List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(locale.project.id).withLocaleId(locale.id));
-		search.pager(keys);
+			LOGGER.debug("Keys found {} for {}", keys.size(), search);
 
-		Map<String, Message> messages = Message
-			.findBy(
-				new MessageCriteria()
-					.withLocaleId(locale.id)
-					.withKeyIds(keys.stream().map(k -> k.id).collect(Collectors.toList())))
-			.stream()
-			.collect(groupingBy(m -> m.key.name, reducing(null, a -> a, (a, b) -> b)));
-
-		LOGGER.debug("Keys found {} for {}", keys.size(), search);
-
-		return ok(views.html.tags.keyItems.render(keys, messages, search.hasMore));
+			return ok(views.html.tags.keyItems.render(keys, messages, search.hasMore));
+		});
 	}
 
 	public Result remove(UUID localeId)
 	{
-		Locale locale = Locale.byId(localeId);
+		return locale(localeId, locale -> {
+			undoCommand(injector.instanceOf(RevertDeleteLocaleCommand.class).with(locale));
 
-		if(locale == null)
-			return redirect(routes.Application.index());
+			try
+			{
+				TransactionUtils.batchExecute((tx) -> {
+					localeService.delete(locale);
+				});
+			}
+			catch(Exception e)
+			{
+				LOGGER.error("Error while batch deleting locale", e);
+			}
 
-		select(locale);
+			LOGGER.debug("Redirecting");
 
-		LOGGER.debug("Creating undo command");
-
-		undoCommand(injector.instanceOf(RevertDeleteLocaleCommand.class).with(locale));
-
-		LOGGER.debug("Excuting batch delete");
-
-		try
-		{
-			TransactionUtils.batchExecute((tx) -> {
-				localeService.delete(locale);
-			});
-		}
-		catch(Exception e)
-		{
-			LOGGER.error("Error while batch deleting locale", e);
-		}
-
-		LOGGER.debug("Redirecting");
-
-		return redirect(routes.Projects.locales(locale.project.id));
+			return redirect(routes.Projects.locales(locale.project.id));
+		});
 	}
 
 	public Result translate(UUID localeId)
 	{
-		Locale locale = Locale.byId(localeId);
+		return locale(localeId, locale -> {
+			String referer = request().getHeader("Referer");
 
-		if(locale == null)
-			return redirect(routes.Application.index());
+			if(referer == null)
+				return redirect(routes.Locales.locale(localeId));
 
-		select(locale);
-
-		String referer = request().getHeader("Referer");
-
-		if(referer == null)
-			return redirect(routes.Locales.locale(localeId));
-
-		return redirect(referer);
+			return redirect(referer);
+		});
 	}
 
 	/**

@@ -124,6 +124,8 @@ public class Project implements Suggestable
 	{
 	};
 
+	private static final String BRAND_PROJECT_ID = "brandProjectId";
+
 	public static Project byId(UUID id)
 	{
 		return find.byId(id);
@@ -254,5 +256,34 @@ public class Project implements Suggestable
 		userRoles.retainAll(Arrays.asList(roles));
 
 		return !userRoles.isEmpty();
+	}
+
+	public static UUID brandProjectId()
+	{
+		Context ctx = Context.current();
+		Map<String, Object> args = ctx.args;
+		if(args.containsKey(BRAND_PROJECT_ID))
+			return (UUID)args.get(BRAND_PROJECT_ID);
+
+		User user = User.loggedInUser();
+		if(user == null)
+			user = User.byUsername("translatr");
+
+		Project brandProject = null;
+		try
+		{
+			brandProject = Project.byOwnerAndName(user, ctx.messages().at("brand"));
+		}
+		catch(Exception e)
+		{
+			LOGGER.warn("Error while retrieving brand project", e);
+		}
+
+		if(brandProject == null)
+			return null;
+
+		args.put(BRAND_PROJECT_ID, brandProject.id);
+
+		return brandProject.id;
 	}
 }
