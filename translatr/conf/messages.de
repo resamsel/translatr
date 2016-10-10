@@ -175,6 +175,7 @@ user.edit = Profil bearbeiten
 user.edit.title = Profil bearbeiten
 user.edit.tooltip = Profil bearbeiten
 user.email = E-Mail-Adresse
+user.incomplete = Dein Profile ist unvollständig, bitte fülle die fehlenden Felder aus
 user.name = Name
 user.notFound = Benutzer konnte nicht gefunden werden
 user.profile = Profil

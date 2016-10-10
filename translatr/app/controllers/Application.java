@@ -1,8 +1,8 @@
 package controllers;
 
 import java.io.ByteArrayInputStream;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -76,6 +76,12 @@ public class Application extends AbstractController
 	public Result login()
 	{
 		return ok(views.html.login.render(createTemplate()));
+	}
+
+	public Result logout()
+	{
+		userService.logout(auth.getUser(session()));
+		return injector.instanceOf(com.feth.play.module.pa.controllers.Authenticate.class).logout();
 	}
 
 	public Result oAuthDenied(final String providerKey)

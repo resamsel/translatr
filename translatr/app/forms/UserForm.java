@@ -16,9 +16,11 @@ public class UserForm
 	@Constraints.MaxLength(User.NAME_LENGTH)
 	private String name;
 
+	@Constraints.Required
 	@Constraints.MaxLength(User.USERNAME_LENGTH)
 	private String username;
 
+	@Constraints.Required
 	@Constraints.MaxLength(User.EMAIL_LENGTH)
 	private String email;
 

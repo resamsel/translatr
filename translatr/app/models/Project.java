@@ -35,7 +35,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
+import play.api.Play;
 import play.mvc.Http.Context;
+import services.ProjectService;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
@@ -232,6 +234,16 @@ public class Project implements Suggestable
 	 */
 	public static Project byOwnerAndName(User user, String name)
 	{
+		return Play.current().injector().instanceOf(ProjectService.class).getByOwnerAndName(user, name);
+	}
+
+	/**
+	 * @param user
+	 * @param name
+	 * @return
+	 */
+	public static Project byOwnerAndNameFind(User user, String name)
+	{
 		return find.where().eq("owner", user).eq("name", name).findUnique();
 	}
 
@@ -272,7 +284,7 @@ public class Project implements Suggestable
 		Project brandProject = null;
 		try
 		{
-			brandProject = Project.byOwnerAndName(user, ctx.messages().at("brand"));
+			brandProject = byOwnerAndName(user, ctx.messages().at("brand"));
 		}
 		catch(Exception e)
 		{

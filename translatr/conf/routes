@@ -9,7 +9,7 @@ GET		/locale/:id/export/:type		controllers.Application.download(id: java.util.UU
 
 # Authentication
 GET		/login							controllers.Application.login
-GET		/logout							com.feth.play.module.pa.controllers.Authenticate.logout
+GET		/logout							controllers.Application.logout
 GET		/authenticate/:provider			com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
 GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider: String)
 

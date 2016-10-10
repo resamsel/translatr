@@ -1,5 +1,7 @@
 package services.impl;
 
+import static utils.Stopwatch.log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,6 +10,9 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import models.ActionType;
 import models.LogEntry;
 import models.Project;
@@ -15,6 +20,7 @@ import models.ProjectRole;
 import models.ProjectUser;
 import models.User;
 import play.Configuration;
+import play.cache.CacheApi;
 import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
@@ -30,6 +36,10 @@ import services.ProjectService;
 @Singleton
 public class ProjectServiceImpl extends AbstractModelService<Project> implements ProjectService
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(PermissionServiceImpl.class);
+
+	private final CacheApi cache;
+
 	private final LocaleService localeService;
 
 	private final KeyService keyService;
@@ -40,13 +50,28 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 	 * 
 	 */
 	@Inject
-	public ProjectServiceImpl(Configuration configuration, LocaleService localeService, KeyService keyService,
-				LogEntryService logEntryService)
+	public ProjectServiceImpl(Configuration configuration, CacheApi cache, LocaleService localeService,
+				KeyService keyService, LogEntryService logEntryService)
 	{
 		super(configuration);
+		this.cache = cache;
 		this.localeService = localeService;
 		this.keyService = keyService;
 		this.logEntryService = logEntryService;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Project getByOwnerAndName(User user, String name)
+	{
+		String cacheKey = String.format("%s:%s", user.id.toString(), name);
+
+		return log(
+			() -> cache.getOrElse(cacheKey, () -> Project.byOwnerAndNameFind(user, name), 10 * 600),
+			LOGGER,
+			"byOwnerAndName");
 	}
 
 	/**

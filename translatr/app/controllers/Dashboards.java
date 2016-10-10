@@ -1,10 +1,15 @@
 package controllers;
 
+import static utils.Stopwatch.log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.feth.play.module.pa.PlayAuthenticate;
 
@@ -39,6 +44,8 @@ import services.UserService;
 @With(ContextAction.class)
 public class Dashboards extends AbstractController
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Dashboards.class);
+
 	private final FormFactory formFactory;
 
 	private final Configuration configuration;
@@ -62,12 +69,15 @@ public class Dashboards extends AbstractController
 		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 		SearchForm search = form.get();
 
-		return ok(
-			views.html.dashboard.render(
-				createTemplate(),
-				Project.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId())),
-				SearchForm.bindFromRequest(formFactory, configuration),
-				ProjectForm.form(formFactory)));
+		return log(
+			() -> ok(
+				views.html.dashboard.render(
+					createTemplate(),
+					Project.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId())),
+					SearchForm.bindFromRequest(formFactory, configuration),
+					ProjectForm.form(formFactory))),
+			LOGGER,
+			"Rendering dashboard");
 	}
 
 	@SubjectPresent

@@ -1,31 +1,35 @@
 package security;
 
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
+import com.feth.play.module.pa.PlayAuthenticate;
+import com.feth.play.module.pa.user.AuthUserIdentity;
+
 import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Subject;
 import controllers.AbstractController;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-import com.feth.play.module.pa.user.AuthUserIdentity;
-import models.User;
 import play.mvc.Http;
 import play.mvc.Result;
+import services.UserService;
 import utils.Template;
-
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 
 public class MyDeadboltHandler extends AbstractDeadboltHandler
 {
 
 	private final PlayAuthenticate auth;
 
-	public MyDeadboltHandler(final PlayAuthenticate auth, final ExecutionContextProvider exContextProvider)
+	private final UserService userService;
+
+	public MyDeadboltHandler(final PlayAuthenticate auth, final ExecutionContextProvider exContextProvider,
+				final UserService userService)
 	{
 		super(exContextProvider);
 		this.auth = auth;
+		this.userService = userService;
 	}
 
 	@Override
@@ -58,8 +62,8 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
 	public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
 	{
 		final AuthUserIdentity u = auth.getUser(context);
-		// Caching might be a good idea here
-		return CompletableFuture.completedFuture(Optional.ofNullable((Subject)User.findByAuthUserIdentity(u)));
+
+		return CompletableFuture.completedFuture(Optional.ofNullable(userService.getLocalUser(u)));
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package models;
 
+import static utils.Stopwatch.log;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,6 +19,8 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
@@ -39,6 +43,8 @@ import services.UserService;
 @Table(name = "user_")
 public class User implements Subject
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
+
 	public static final int USERNAME_LENGTH = 32;
 
 	public static final int NAME_LENGTH = 32;
@@ -59,13 +65,13 @@ public class User implements Subject
 
 	public boolean active;
 
-	@Column(nullable = false, length = USERNAME_LENGTH, unique = true)
+	@Column(length = USERNAME_LENGTH, unique = true)
 	public String username;
 
 	@Column(nullable = false, length = NAME_LENGTH)
 	public String name;
 
-	@Column(nullable = false, length = EMAIL_LENGTH, unique = false)
+	@Column(length = EMAIL_LENGTH, unique = false)
 	public String email;
 
 	public boolean emailValidated;
@@ -100,7 +106,7 @@ public class User implements Subject
 		if(identity == null)
 			return null;
 
-		return getAuthUserFind(identity).findUnique();
+		return log(() -> getAuthUserFind(identity).findUnique(), LOGGER, "findByAuthUserIdentity");
 	}
 
 	public Set<String> getProviders()
@@ -147,12 +153,21 @@ public class User implements Subject
 		return find.where().eq("username", username).findUnique();
 	}
 
-	public static User loggedInUser()
+	public static AuthUser loggedInAuthUser()
 	{
 		Injector injector = play.api.Play.current().injector();
 
 		PlayAuthenticate auth = injector.instanceOf(PlayAuthenticate.class);
 		AuthUser authUser = auth.getUser(Context.current().session());
+
+		return authUser;
+	}
+
+	public static User loggedInUser()
+	{
+		Injector injector = play.api.Play.current().injector();
+
+		AuthUser authUser = loggedInAuthUser();
 		if(authUser == null)
 			return null;
 
@@ -201,5 +216,13 @@ public class User implements Subject
 	public String getIdentifier()
 	{
 		return id != null ? id.toString() : null;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isComplete()
+	{
+		return username != null && name != null && email != null;
 	}
 }

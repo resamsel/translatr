@@ -14,7 +14,7 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
-import com.feth.play.module.pa.user.AuthUser;
+import com.feth.play.module.pa.user.AuthUserIdentity;
 
 import criterias.LinkedAccountCriteria;
 
@@ -49,7 +49,7 @@ public class LinkedAccount
 	 * @param user
 	 * @return
 	 */
-	public LinkedAccount update(final AuthUser user)
+	public LinkedAccount update(final AuthUserIdentity user)
 	{
 		this.providerKey = user.getProvider();
 		this.providerUserId = user.getId();
@@ -100,8 +100,8 @@ public class LinkedAccount
 		return query.findList();
 	}
 
-	public static LinkedAccount createFrom(final AuthUser user)
+	public static LinkedAccount createFrom(final AuthUserIdentity authUser)
 	{
-		return new LinkedAccount().update(user);
+		return new LinkedAccount().update(authUser);
 	}
 }

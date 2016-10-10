@@ -3,6 +3,7 @@ package services;
 import com.google.inject.ImplementedBy;
 
 import models.Project;
+import models.User;
 import services.impl.ProjectServiceImpl;
 
 /**
@@ -15,4 +16,10 @@ import services.impl.ProjectServiceImpl;
 @ImplementedBy(ProjectServiceImpl.class)
 public interface ProjectService extends ModelService<Project>
 {
+	/**
+	 * @param user
+	 * @param name
+	 * @return
+	 */
+	Project getByOwnerAndName(User user, String name);
 }

@@ -26,12 +26,12 @@ public class AuthenticateServiceImpl extends AbstractUserService
 	@Override
 	public Object save(final AuthUser authUser)
 	{
-		final boolean isLinked = User.existsByAuthUserIdentity(authUser);
+		final boolean isLinked = userService.isLocalUser(authUser);
 		if(!isLinked)
 			return userService.create(authUser).id;
-		else
-			// we have this user already, so return null
-			return null;
+
+		// we have this user already, so return null
+		return null;
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class AuthenticateServiceImpl extends AbstractUserService
 	{
 		// For production: Caching might be a good idea here...
 		// ...and dont forget to sync the cache when users get deactivated/deleted
-		final User u = User.findByAuthUserIdentity(identity);
+		final User u = userService.getLocalUser(identity);
 		if(u != null)
 			return u.id;
 		else

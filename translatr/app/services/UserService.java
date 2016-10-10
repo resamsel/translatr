@@ -1,6 +1,6 @@
 package services;
 
-import com.feth.play.module.pa.user.AuthUser;
+import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.google.inject.ImplementedBy;
 
 import models.User;
@@ -20,25 +20,30 @@ public interface UserService extends ModelService<User>
 	 * @param user
 	 * @return
 	 */
-	User create(AuthUser user);
+	User create(AuthUserIdentity user);
 
 	/**
 	 * @param user
 	 * @param otherUser
 	 * @return
 	 */
-	User addLinkedAccount(AuthUser user, AuthUser otherUser);
+	User addLinkedAccount(AuthUserIdentity user, AuthUserIdentity otherUser);
 
 	/**
 	 * @param user
 	 */
-	User getLocalUser(AuthUser user);
+	User getLocalUser(AuthUserIdentity user);
+
+	/**
+	 * @param user
+	 */
+	boolean isLocalUser(AuthUserIdentity authUser);
 
 	/**
 	 * @param user
 	 * @param otherUser
 	 */
-	User merge(AuthUser user, AuthUser otherUser);
+	User merge(AuthUserIdentity user, AuthUserIdentity otherUser);
 
 	/**
 	 * @param user
@@ -46,4 +51,9 @@ public interface UserService extends ModelService<User>
 	 * @return
 	 */
 	User merge(User user, User otherUser);
+
+	/**
+	 * @param authUser
+	 */
+	void logout(AuthUserIdentity authUser);
 }
