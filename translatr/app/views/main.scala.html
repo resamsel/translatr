@@ -20,8 +20,8 @@
 <body>
 	<header>
 		<!-- Navigation -->
-		<div class="navbar-fixed">
-			<nav role="navigation" class="green">
+		<div class="navbar navbar-fixed-off">
+			<nav role="navigation" class="green z-depth-1">
 				<div class="nav-wrapper">
 					<a class="brand-logo light left" href="@routes.Application.index()">
 						<i class="material-icons prefix">language</i>
@@ -69,16 +69,17 @@
 
 					@nav
 				</div>
+				@tags.breadcrumbs {
+					@breadcrumbs
+				}
 			</nav>
-			@tags.breadcrumbs {
-				@breadcrumbs
-			}
 		</div>
 	</header>
 
 	<main>
 		<script src="@routes.Application.javascriptRoutes"></script>
 		<script src="@routes.Assets.versioned("concat/scripts.js")"></script>
+		@tags.messages()
 
 		@content
 
@@ -113,7 +114,6 @@
 		</div>
 	</footer>
 
-	@tags.error()
 	@tags.undo()
 	@tags.undefined()
 </body>

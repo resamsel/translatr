@@ -1,7 +1,13 @@
 package forms;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import models.User;
 import play.data.validation.Constraints;
+import play.data.validation.ValidationError;
+import play.mvc.Http.Context;
 
 /**
  * (c) 2016 Skiline Media GmbH
@@ -12,6 +18,8 @@ import play.data.validation.Constraints;
  */
 public class UserForm
 {
+	private UUID id;
+
 	@Constraints.Required
 	@Constraints.MaxLength(User.NAME_LENGTH)
 	private String name;
@@ -23,6 +31,16 @@ public class UserForm
 	@Constraints.Required
 	@Constraints.MaxLength(User.EMAIL_LENGTH)
 	private String email;
+
+	public UUID getId()
+	{
+		return id;
+	}
+
+	public void setId(UUID id)
+	{
+		this.id = id;
+	}
 
 	/**
 	 * @return the name
@@ -61,6 +79,20 @@ public class UserForm
 	}
 
 	/**
+	 * 
+	 */
+	public List<ValidationError> validate()
+	{
+		List<ValidationError> errors = new ArrayList<ValidationError>();
+
+		User user = User.byUsername(username);
+		if(user != null && !user.id.equals(id))
+			errors.add(new ValidationError("username", Context.current().messages().at("user.username.duplicate")));
+
+		return errors.isEmpty() ? null : errors;
+	}
+
+	/**
 	 * @param in
 	 * @return
 	 */
@@ -81,6 +113,7 @@ public class UserForm
 	{
 		UserForm out = new UserForm();
 
+		out.id = in.id;
 		out.name = in.name;
 		out.username = in.username;
 		out.email = in.email;

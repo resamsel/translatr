@@ -17,12 +17,12 @@
 @main(template.withTitle(Messages("project.title", project.name))) {
 	@tags.search(form)()
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb active" href="@routes.Projects.project(project.id)">
-			@project.name
-		</a>
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb active" href="@routes.Projects.project(project.id)">
+		@project.name
+	</a>
 } {
 	@content(project, "info") {
 		<div class="row">

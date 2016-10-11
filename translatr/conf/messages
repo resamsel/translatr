@@ -181,6 +181,7 @@ user.notFound = User could not be found
 user.profile = Profile
 user.title = {0}
 user.username = Username
+user.username.duplicate = Username is in use
 validation.optional = optional
 value.copy = Copy value
 when.created = created {0}

@@ -1,5 +1,13 @@
 @(form: Form[forms.UserForm])
 
+@if(form.hasGlobalErrors) {
+	<ul>
+		@for(error <- form.globalErrors) {
+			<li>@Messages(error.messages, error.arguments.toArray: _*)</li>
+		}
+	</ul>
+}
+@inputs.hidden(form("id"), "user-id")
 @inputs.text(form("name"), "user-name", "user.name")
 @inputs.text(form("username"), "user-username", "user.username")
 @inputs.text(form("email"), "user-email", "user.email")

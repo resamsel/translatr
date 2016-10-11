@@ -45,16 +45,17 @@
 
 /* Medium+ */
 @media only screen and (min-width: 601px) {
+	nav,
+	.navbar {
+		height: 96px;
+	}
 	nav .nav-wrapper {
 		padding: 0 0 0 1rem;
-	}
-	.navbar-fixed {
-		height: 96px;
 	}
 	.navbar-form {
 		margin: 0 25%;
 	}
-	.template-index .navbar-fixed,
+	.template-index .navbar,
 	nav ul a.dropdown-button {
 		height: 64px;
 	}

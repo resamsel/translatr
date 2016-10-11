@@ -40,6 +40,9 @@ public class ContextAction extends Action.Simple
 	@Override
 	public CompletionStage<Result> call(Context ctx)
 	{
+		// DEBUG
+		// AbstractController.addMessage(ctx.messages().at("user.incomplete"));
+
 		User user = User.loggedInUser();
 		if(user != null && !user.isComplete() && !ctx.request().path().equals(routes.Profiles.edit().path()))
 		{

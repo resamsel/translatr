@@ -181,6 +181,7 @@ user.notFound = Benutzer konnte nicht gefunden werden
 user.profile = Profil
 user.title = {0}
 user.username = Benutzername
+user.username.duplicate = Benutzername wird bereits verwendet
 validation.optional = optional
 value.copy = Wert übernehmen
 when.created = {0} angelegt
