@@ -26,7 +26,3 @@
 		<!-- /.col .m12 -->
 	</div>
 </div>
-
-@if(template.loggedInUser.id == user.id && template.name != "user-edit") {
-	@tags.fabContainer("edit", "edit", href = routes.Profiles.edit().url, tooltip = Messages("user.edit.tooltip"), styleClass = "teal")
-}

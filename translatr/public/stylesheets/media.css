@@ -50,6 +50,7 @@
 		height: 96px;
 	}
 	nav .nav-wrapper {
+		height: 64px;
 		padding: 0 0 0 1rem;
 	}
 	.navbar-form {
@@ -58,6 +59,9 @@
 	.template-index .navbar,
 	nav ul a.dropdown-button {
 		height: 64px;
+	}
+	nav .dropdown-button img {
+		padding: 16px 0;
 	}
 	.navbar-form .input-field i.material-icons {
 		line-height: 44px;
