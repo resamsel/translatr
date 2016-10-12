@@ -1,4 +1,4 @@
-@(template: utils.Template, user: models.User, projectList: List[models.Project])
+@(template: utils.Template, user: User, stats: List[Aggregate])
 
 @import utils.FormatUtils._
 
@@ -11,17 +11,36 @@
 		@user.name
 	</a>
 } {
-	@content(template, user, "projects") {
-		<div class="collection card-panel">
-			@for(project <- projectList) {
-				<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
-					<i class="material-icons circle orange">view_quilt</i>
-					<span class="title">@project.name</span>
-					<p>
-						@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
-					</p>
-				</a>
-			}
+	@content(template, user, "info") {
+		<div class="row">
+			<div class="col m12 timeline">
+				<div class="card no-image">
+					<div class="card-image grey">
+						<span class="card-title">@Messages("activity")</span>
+					</div>
+					<div class="card-content">
+						<div id="chart-timeline" class="ct-chart ct-double-octave"></div>
+					</div>
+				</div>
+			</div>
 		</div>
 	}
+
+	<script>
+		var data = {
+			series: [
+				@for((name, key) <- scala.collection.Map("user" -> "dto.User", "project" -> "dto.Project", "locales" -> "dto.Locale", "keys" -> "dto.Key", "messages" -> "dto.Message")) {
+					{
+						name: '@name',
+						data: [
+							@for(stat <- stats.filter(_.key == key)) {
+								{x: new Date(@stat.millis), y: @stat.value},
+							}
+						]
+					},
+				}
+			]
+		};
+	</script>
+	<script src="@routes.Assets.versioned("javascripts/user.js")"></script>
 }

@@ -7,29 +7,24 @@
 			@Messages("dashboard")
 		</a>
 } {
-	@content(template, projectList.size) {
-		<div class="row">
-			<div class="col m12">
-				<h4 class="header">@Messages("projects")</h4>
-				<div class="collection card-panel">
-					@for(project <- projectList) {
-						<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
-							<i class="material-icons circle orange">view_quilt</i>
-							<span class="title">
-								@project.name
-							</span>
-							<p>
-								@Messages("project.info")
-								@Messages("locales.size", project.localesSize()),
-								@Messages("keys.size", project.keysSize()),
-								@Messages("messages.size", project.messagesSize())
-							</p>
-						</a>
-					}
-				</div>
-				@tags.pager(routes.Dashboards.dashboard(), form.get)
-			</div>
+	@content(template, "projects", projectList.size) {
+		<div class="collection card-panel">
+			@for(project <- projectList) {
+				<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
+					<i class="material-icons circle orange">view_quilt</i>
+					<span class="title">
+						@project.name
+					</span>
+					<p>
+						@Messages("project.info")
+						@Messages("locales.size", project.localesSize()),
+						@Messages("keys.size", project.keysSize()),
+						@Messages("messages.size", project.messagesSize())
+					</p>
+				</a>
+			}
 		</div>
+		@tags.pager(routes.Dashboards.dashboard(), form.get)
 	}
 
 	@tags.fabContainer("create-project", "add", tooltip = Messages("project.create.tooltip"), styleClass = "orange")

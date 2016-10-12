@@ -74,8 +74,8 @@ App.Modules.MessageModule = function(sb) {
 			var locales = sb.dom.find('a.locale');
 			locales.click(function() {
 				var $this = sb.dom.wrap(this);
-				locales.parent().removeClass('active');
-				$this.parent().addClass('active')
+				locales.removeClass('active');
+				$this.addClass('active')
 				_updateForm($this.attr('id'));
 			})
 
@@ -129,7 +129,7 @@ App.Modules.KeyHashModule = function(sb) {
 			var $a = sb.dom.find('a.locale[localeName="'+params.locale+'"]');
 			$a.click();
 		} else {
-			var $locale = sb.dom.find('.locales .collection-item:first-child a.locale');
+			var $locale = sb.dom.find('.locales .collection-item.locale:first-child');
 			$locale.click();
 		}
 	}

@@ -45,22 +45,20 @@
 } {
 	@tags.editor {
 		<h3 class="section-heading">@Messages("locales")</h3>
-		<ul class="collection locales">
+		<div class="collection locales">
 			@for(locale <- locales) {
-				<li class="collection-item">
-					<a
-						id="@locale.id"
-						href="#locale=@locale.name"
-						class="locale @if(!messages.containsKey(locale.id)) { no-message }"
-						name="@locale.name.toLowerCase"
-						localeName="@locale.name"
-						title="@tags.locale(locale.name)">
-						<span class="title name">@tags.locale(locale.name)</span>
-						<div class="value">@if(messages.containsKey(locale.id)) {@messages(locale.id).value}</div>
-					</a>
-				</li>
+				<a
+					id="@locale.id"
+					href="#locale=@locale.name"
+					class="collection-item locale @if(!messages.containsKey(locale.id)) { no-message }"
+					name="@locale.name.toLowerCase"
+					localeName="@locale.name"
+					title="@tags.locale(locale.name)">
+					<span class="title name">@tags.locale(locale.name)</span>
+					<div class="value">@if(messages.containsKey(locale.id)) {@messages(locale.id).value}</div>
+				</a>
 			}
-		</ul>
+		</div>
 	} {
 		<form id="form-message">
 			<div id="panel-message" class="card no-image">

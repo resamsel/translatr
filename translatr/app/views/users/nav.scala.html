@@ -2,8 +2,12 @@
 
 <div class="collection depth">
 	@if(template.loggedInUser.id == user.id) {
-		<a class="collection-item @if(active == "projects") { active green } else { green-text }"
+		<a class="collection-item @if(active == "info") { active green } else { green-text }"
 			href="@routes.Profiles.profile()">
+			@Messages("info")
+		</a>
+		<a class="collection-item @if(active == "projects") { active green } else { green-text }"
+			href="@routes.Profiles.projects()">
 			@Messages("projects")
 		</a>
 		<a class="collection-item @if(active == "activity") { active green } else { green-text }"
@@ -15,9 +19,9 @@
 			@Messages("linkedAccounts")
 		</a>
 	} else {
-		<a class="collection-item @if(active == "projects") { active green } else { green-text }"
+		<a class="collection-item @if(active == "info") { active green } else { green-text }"
 			href="@routes.Users.user(user.id)">
-			@Messages("projects")
+			@Messages("info")
 		</a>
 	}
 </div>

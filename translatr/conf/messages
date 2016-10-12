@@ -26,6 +26,7 @@ button.remove = Remove
 button.save = Save
 button.undo = Undo
 button.unlink = Unlink
+by = by
 cli.content = <p>The Command Line Interface allows to manage translations through the command line. Operations can be used in build scripts to automatically retrieve the latest translations.</p>
 cli.install.content = <p>Paste this at a terminal prompt:</p>\n\n<pre class="language-bash"><code>curl -fsSL https://raw.githubusercontent.com/resamsel/translatr/master/install.sh | bash</code></pre>
 cli.install.title = Installation
@@ -116,6 +117,7 @@ main.title = Translatr
 member.create.tooltip = Add new member
 member.new = Add new member
 member.role = Project role
+members = Members
 menu.tooltip = Menu
 message.any = Anything
 message.untranslated = Translation missing

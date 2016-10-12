@@ -45,9 +45,9 @@
 } {
 	@tags.editor {
 		<h3 class="section-heading">@Messages("keys")</h3>
-		<ul class="collection keys">
+		<div class="collection keys">
 			@tags.keyItems(keys, messages, false)
-		</ul>
+		</div>
 	} {
 		<form id="form-message">
 			<div id="panel-message" class="card no-image">
@@ -95,14 +95,14 @@
 		</div>
 	} {
 		<h3 class="section-heading">@Messages("messages")</h3>
-		<ul id="panel-messages" class="collection messages">
-			<li class="collection-item waves-effect waves-red message template">
-				<a title="@Messages("value.copy")">
-					<span class="title localeName truncate">Name</span>
-					<div class="value">Value</div>
-				</a>
-			</li>
-		</ul>
+		<div id="panel-messages" class="collection messages">
+			<a
+				class="collection-item waves-effect waves-red message template"
+				title="@Messages("value.copy")">
+				<span class="title localeName truncate">Name</span>
+				<div class="value">Value</div>
+			</a>
+		</div>
 	}
 
 	@tags.fabContainer("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = localeActions)

@@ -20,6 +20,7 @@ GET		/user/:id					controllers.Users.user(id: java.util.UUID)
 GET		/profile					controllers.Profiles.profile
 GET		/profile/edit				controllers.Profiles.edit
 POST	/profile/edit				controllers.Profiles.doEdit
+GET		/profile/projects			controllers.Profiles.projects
 GET		/profile/activity			controllers.Profiles.activity
 GET		/profile/linkedAccounts		controllers.Profiles.linkedAccounts
 GET		/profile/linkedAccount/:linkedAccountId/remove	controllers.Profiles.linkedAccountRemove(linkedAccountId: Long)

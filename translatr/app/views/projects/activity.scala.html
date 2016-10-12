@@ -15,20 +15,27 @@
 	</a>
 } {
 	@content(project, "activity") {
-		<h4 class="header">@Messages("activity")</h4>
-		<div class="collection card-panel">
+		<ul class="collection card-panel">
 			@for(activity <- activityList) {
-				<a href="@utils.JsonUtils.linkTo(activity)" class="collection-item avatar black-text">
+				<li class="collection-item avatar black-text">
 					<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
 					<span class="title">
-						@utils.JsonUtils.nameOf(activity)
+						<a href="@utils.JsonUtils.linkTo(activity)">
+							@utils.JsonUtils.nameOf(activity)
+						</a>
 					</span>
 					<p>
 						@Messages("activity." + activity.getType + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
+						@if(activity.user != null) {
+							@Messages("by")
+							<a href="@routes.Users.user(activity.user.id)">
+								@activity.user.name
+							</a>
+						}
 					</p>
-				</a>
+				</li>
 			}
-		</div>
+		</ul>
 		@tags.pager(routes.Projects.activity(project.id), form.get)
 	}
 }

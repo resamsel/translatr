@@ -1,4 +1,4 @@
-@(template: utils.Template, numberOfProjects: Int)(content: Html)
+@(template: utils.Template, active: String, numberOfProjects: Int)(content: Html)
 
 <div class="container-fluid content">
 	<div class="row">
@@ -10,6 +10,10 @@
 					</div>
 
 					<div class="col s12 m8">
+						@if(active != null) {
+							<h4 class="header">@Messages(active)</h4>
+						}
+
 						@content
 					</div>
 				</div>

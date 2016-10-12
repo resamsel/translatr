@@ -24,10 +24,25 @@
     .row .col {
     	float: none;
     }
+    .card.card-user {
+		display: -webkit-flex;
+		display: -ms-flexbox;
+		display: flex;
+	}
+	.card.card-user .card-image img {
+		width: 100px;
+		min-width: 100px;
+	}
 }
 
 /* -Medium */
 @media (max-width: 992px) {
+	nav .brand-logo.left {
+		left: 0;
+	}
+	nav .brand-logo i.material-icons {
+		padding-left: 15px;
+	}
     .table.responsive-table th {
 		text-align: right !important;
 		width: auto;

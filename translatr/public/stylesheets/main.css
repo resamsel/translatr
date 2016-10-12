@@ -275,6 +275,9 @@ nav ul .disabled:hover {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.profile-info {
+	margin: 1.5em 0;
+}
 .profile-info li {
 	margin-bottom: 0.4rem;
 }
@@ -334,6 +337,7 @@ nav ul .disabled:hover {
 	height: 32px;
 	line-height: 32px;
 	padding: 0 1rem;
+	white-space: nowrap;
 }
 .breadcrumb {
 	font-weight: 300;
@@ -503,9 +507,6 @@ tr:hover .btn-hover {
 }
 .collection-item.active .value {
     color: rgba(255,255,255,0.7);
-}
-.collection .collection-item.avatar .secondary-content.btn-hover {
-    top: 16px;
 }
 
 .collection.locales,

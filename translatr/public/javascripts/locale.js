@@ -28,13 +28,13 @@ App.Modules.KeyListModule = function(sb) {
 		var $keys = sb.dom.find('a.key');
 		$keys.click(function() {
 			var $this = sb.dom.wrap(this);
-			$keys.parent().removeClass('active');
-			$this.parent().addClass('active');
+			$keys.removeClass('active');
+			$this.addClass('active');
 			sb.publish('keySelected', [$this.attr('id'), $this.attr('keyName')]);
 		})
 		sb.dom.find('a.key .btn-remove').click(function(e) {
 			e.stopPropagation();
-			window.location.href = jsRoutes.controllers.Application.keyRemove($(this).parent().attr('id'), localeId).url;
+			window.location.href = jsRoutes.controllers.Keys.remove($(this).parent().attr('id'), localeId).url;
 		});
 	}
 	return {
@@ -69,7 +69,7 @@ App.Modules.MessageListModule = function(sb) {
 	    messages.find('.message:not(.template)').remove();
 	    messageList.forEach(function(entry) {
 	    	var $msg = template.clone().removeClass('template');
-	    	var $a = $msg.find('a');
+	    	var $a = $msg;
 	    	$a.attr('title', $a.attr('title') + ' (' + locales[entry.localeId] + ')')
 	    		.attr('href', window.location.hash)
 	    		.click(_handleCopyMessageValue);
