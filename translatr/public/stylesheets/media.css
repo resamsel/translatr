@@ -85,11 +85,6 @@
 	.template-index .navbar-fixed nav {
 		position: relative;
 	}
-	.template-dashboard .card {
-		width: 44%;
-		margin: 0.5rem 1rem 1rem 1rem;
-		float: left;
-	}
 	.template-locale,
 	.template-key,
 	.template-locale body,

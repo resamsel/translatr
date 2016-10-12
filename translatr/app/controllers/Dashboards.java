@@ -71,7 +71,7 @@ public class Dashboards extends AbstractController
 
 		return log(
 			() -> ok(
-				views.html.dashboard.render(
+				views.html.dashboards.dashboard.render(
 					createTemplate(),
 					Project.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId())),
 					SearchForm.bindFromRequest(formFactory, configuration),

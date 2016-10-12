@@ -7,36 +7,29 @@
 			@Messages("dashboard")
 		</a>
 } {
-	@tags.content {
-		<div class="col m12">
-			<div class="container">
-				@for(project <- projectList) {
-					<div class="card no-image" name="@project.name.toLowerCase">
-						<div class="card-image orange">
-							<span class="card-title">@project.name</span>
-						</div>
-						<div class="progress">
-							<div class="determinate" style="width: @{project.progress()*100}%;"></div>
-						</div>
-						<div class="card-content">
+	@content(template, projectList.size) {
+		<div class="row">
+			<div class="col m12">
+				<h4 class="header">@Messages("projects")</h4>
+				<div class="collection card-panel">
+					@for(project <- projectList) {
+						<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
+							<i class="material-icons circle orange">view_quilt</i>
+							<span class="title">
+								@project.name
+							</span>
 							<p>
 								@Messages("project.info")
 								@Messages("locales.size", project.localesSize()),
 								@Messages("keys.size", project.keysSize()),
 								@Messages("messages.size", project.messagesSize())
 							</p>
-							@users.chip(project.owner)
-						</div>
-						<div class="card-action">
-							<a href="@routes.Projects.project(project.id)">
-								@Messages("button.open")
-							</a>
-						</div>
-					</div>
-				}
+						</a>
+					}
+				</div>
+				@tags.pager(routes.Dashboards.dashboard(), form.get)
 			</div>
 		</div>
-		<!-- /.col .m12 -->
 	}
 
 	@tags.fabContainer("create-project", "add", tooltip = Messages("project.create.tooltip"), styleClass = "orange")

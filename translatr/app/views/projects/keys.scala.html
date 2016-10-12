@@ -14,23 +14,21 @@
 		</a>
 } {
 	@content(project, "keys") {
-		<div class="col m12">
-			<table id="keys" class="table responsive-table card">
-				<thead>
-					<tr>
-						<th class="name">@Messages("key.name")</th>
-						<th class="updated">@Messages("when.updated")</th>
-						<th class="locale-progress">@Messages("locale.progress")</th>
-						<th class="actions">@Messages("row.actions")</th>
-					</tr>
-				</thead>
-				<tbody>
-					@tags.keyRows(keys, progress, form)
-				</tbody>
-			</table>
-			@tags.pager(routes.Projects.keys(project.id), form.get)
-		</div>
-		<!-- /.col-md-12 -->
+		<h4 class="header">@Messages("keys")</h4>
+		<table id="keys" class="table responsive-table card">
+			<thead>
+				<tr>
+					<th class="name">@Messages("key.name")</th>
+					<th class="updated">@Messages("when.updated")</th>
+					<th class="locale-progress">@Messages("locale.progress")</th>
+					<th class="actions">@Messages("row.actions")</th>
+				</tr>
+			</thead>
+			<tbody>
+				@tags.keyRows(keys, progress, form)
+			</tbody>
+		</table>
+		@tags.pager(routes.Projects.keys(project.id), form.get)
 	}
 
 	@tags.fabContainer("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")

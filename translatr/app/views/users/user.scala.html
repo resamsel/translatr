@@ -12,7 +12,7 @@
 	</a>
 } {
 	@content(template, user, "projects") {
-		<div class="collection">
+		<div class="collection card-panel">
 			@for(project <- projectList) {
 				<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
 					<i class="material-icons circle orange">view_quilt</i>

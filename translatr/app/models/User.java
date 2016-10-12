@@ -225,4 +225,13 @@ public class User implements Subject
 	{
 		return username != null && name != null && email != null;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		return name;
+	}
 }

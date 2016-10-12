@@ -35,6 +35,7 @@ import forms.ProjectUserForm;
 import forms.SearchForm;
 import models.Key;
 import models.Locale;
+import models.LogEntry;
 import models.Project;
 import models.ProjectUser;
 import models.Suggestable;
@@ -356,6 +357,21 @@ public class Projects extends AbstractController
 			projectUserService.delete(member);
 
 			return redirect(routes.Projects.members(project.id));
+		});
+	}
+
+	public Result activity(UUID projectId)
+	{
+		return project(projectId, project -> {
+			Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+			SearchForm search = form.get();
+
+			List<LogEntry> activities = LogEntry
+				.findBy(LogEntryCriteria.from(search).withProjectId(project.id).withOrder("whenCreated desc"));
+
+			search.pager(activities);
+
+			return ok(views.html.projects.activity.render(createTemplate(), project, activities, form));
 		});
 	}
 

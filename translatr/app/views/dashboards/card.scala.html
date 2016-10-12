@@ -1,0 +1,15 @@
+@(user: User, numberOfProjects: Int)
+
+@import utils.FormatUtils._
+
+<div class="card no-image">
+	<div class="card-image orange">
+		<span class="card-title">@Messages("dashboard.title", user.name)</span>
+	</div>
+	<div class="card-content">
+		<p>
+			@Messages("dashboard.info", numberOfProjects)
+		</p>
+		@users.chip(user)
+	</div>
+</div>

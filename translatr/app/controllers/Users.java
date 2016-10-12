@@ -7,13 +7,13 @@ import javax.inject.Inject;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ContextAction;
-import criterias.ProjectCriteria;
-import models.Project;
+import criterias.LogEntryCriteria;
 import models.User;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.LogEntryService;
 import services.UserService;
 
 /**
@@ -26,14 +26,18 @@ import services.UserService;
 @With(ContextAction.class)
 public class Users extends AbstractController
 {
+	private final LogEntryService logEntryService;
+
 	/**
 	 * @param auth
 	 * 
 	 */
 	@Inject
-	public Users(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService)
+	public Users(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
+				LogEntryService logEntryService)
 	{
 		super(injector, cache, auth, userService);
+		this.logEntryService = logEntryService;
 	}
 
 	public Result user(UUID id)
@@ -47,6 +51,6 @@ public class Users extends AbstractController
 
 		return ok(
 			views.html.users.user
-				.render(createTemplate(), user, Project.findBy(new ProjectCriteria().withMemberId(id).withOrder("name"))));
+				.render(createTemplate(), user, logEntryService.getStats(new LogEntryCriteria().withUserId(user.id))));
 	}
 }

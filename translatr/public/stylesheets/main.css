@@ -389,12 +389,16 @@ nav ul .disabled:hover {
 .collection-item:hover .btn-hover,
 tr:hover .btn-hover {
 	visibility: visible;
-	color: #616161;
+	color: #757575;
 }
-.collection-item:hover .btn-flat:hover {
+.collection-item .btn-flat:hover {
 	background-color: transparent;
 	color: #343434;
 }
+.collection-item .btn-hover:hover {
+    color: #424242;
+}
+
 
 /* Editor */
 .editor>.row {
@@ -434,6 +438,13 @@ tr:hover .btn-hover {
     background-color: transparent;
 	border: 0;
 }
+.collection.card-panel {
+    padding: 0.5rem 0;
+}
+.collection.card-panel .collection-item:not(.active):hover,
+.collection.card-panel .collection-item:not(.active):focus {
+	background-color: transparent;
+}
 .collection.depth .collection-item {
 	margin-bottom: 0.2rem;
 }
@@ -460,11 +471,6 @@ tr:hover .btn-hover {
 }
 .collection .collection-item.waves-effect {
 	display: block;
-}
-.collection-item a {
-	display: block;
-	color: #343434;
-    min-height: 48px;
 }
 .collection .collection-item.avatar .secondary-content {
     top: 12px;

@@ -32,6 +32,7 @@ import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
 import services.LinkedAccountService;
+import services.LogEntryService;
 import services.UserService;
 
 /**
@@ -51,6 +52,8 @@ public class Profiles extends AbstractController
 
 	private final LinkedAccountService linkedAccountService;
 
+	private final LogEntryService logEntryService;
+
 	/**
 	 * @param injector
 	 * @param cache
@@ -59,19 +62,29 @@ public class Profiles extends AbstractController
 	 */
 	@Inject
 	public Profiles(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-				FormFactory formFactory, Configuration configuration, LinkedAccountService linkedAccountService)
+				FormFactory formFactory, Configuration configuration, LinkedAccountService linkedAccountService,
+				LogEntryService logEntryService)
 	{
 		super(injector, cache, auth, userService);
 		this.formFactory = formFactory;
 		this.configuration = configuration;
 		this.linkedAccountService = linkedAccountService;
+		this.logEntryService = logEntryService;
 	}
 
 	public Result profile()
 	{
 		return loggedInUser(
 			user -> ok(
-				views.html.users.user.render(
+				views.html.users.user
+					.render(createTemplate(), user, logEntryService.getStats(new LogEntryCriteria().withUserId(user.id)))));
+	}
+
+	public Result projects()
+	{
+		return loggedInUser(
+			user -> ok(
+				views.html.users.projects.render(
 					createTemplate(),
 					user,
 					Project.findBy(new ProjectCriteria().withMemberId(user.id).withOrder("name")))));

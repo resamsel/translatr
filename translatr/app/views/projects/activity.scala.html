@@ -1,17 +1,21 @@
-@(template: utils.Template, user: models.User, activityList: List[LogEntry], form: Form[forms.SearchForm])
+@(template: utils.Template, project: Project, activityList: List[LogEntry], form: Form[forms.SearchForm])
 
 @import utils.FormatUtils._
 
-@main(template.withTitle(Messages("user.title", user.name)).withName("user")) {
+@main(template.withTitle(Messages("project.title", project.name)).withName("project-activity")) {
 } {
 	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 		@Messages("dashboard")
 	</a>
-	<a class="breadcrumb" href="@routes.Users.user(user.id)">
-		@user.name
+	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
+		@project.name
+	</a>
+	<a class="breadcrumb active" href="@routes.Projects.activity(project.id)">
+		@Messages("activity")
 	</a>
 } {
-	@content(template, user, "activity") {
+	@content(project, "activity") {
+		<h4 class="header">@Messages("activity")</h4>
 		<div class="collection card-panel">
 			@for(activity <- activityList) {
 				<a href="@utils.JsonUtils.linkTo(activity)" class="collection-item avatar black-text">
@@ -24,7 +28,7 @@
 					</p>
 				</a>
 			}
-			@tags.pager(routes.Profiles.activity(), form.get)
 		</div>
+		@tags.pager(routes.Projects.activity(project.id), form.get)
 	}
 }

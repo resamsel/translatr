@@ -21,4 +21,9 @@
 		href="@routes.Projects.members(project.id)">
 		@Messages("project.members")
 	</a>
+	<a
+		class="collection-item @if(active == "activity") { active green } else { green-text }"
+		href="@routes.Projects.activity(project.id)">
+		@Messages("activity")
+	</a>
 </div>

@@ -13,7 +13,7 @@
 	</a>
 } {
 	@content(template, user, "linkedAccounts") {
-		<ul class="collection linked-accounts">
+		<ul class="collection card-panel linked-accounts">
 			@for((key, linkedAccount) <- linkedAccountMap) {
 				<li class="collection-item avatar">
 					<i class="fa fa-@linkedAccount.providerKey provider provider-@linkedAccount.providerKey circle"></i>
