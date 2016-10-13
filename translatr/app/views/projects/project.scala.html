@@ -1,4 +1,4 @@
-@(template: utils.Template, project: models.Project, stats: List[Aggregate], form: Form[forms.SearchForm])
+@(template: utils.Template, project: models.Project, form: Form[forms.SearchForm])
 
 @import utils.FormatUtils._
 
@@ -101,20 +101,6 @@
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script>
 		var projectId = '@project.id';
-		var data = {
-			series: [
-				@for((name, key) <- scala.collection.Map("project" -> "dto.Project", "locales" -> "dto.Locale", "keys" -> "dto.Key", "messages" -> "dto.Message")) {
-					{
-						name: '@name',
-						data: [
-							@for(stat <- stats.filter(_.key == key)) {
-								{x: new Date(@stat.millis), y: @stat.value},
-							}
-						]
-					},
-				}
-			]
-		};
 	</script>
 	<script src="@routes.Assets.versioned("javascripts/project.js")"></script>
 }

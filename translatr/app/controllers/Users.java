@@ -49,11 +49,7 @@ public class Users extends AbstractController
 			if(user.id.equals(User.loggedInUserId()))
 				return redirect(routes.Profiles.profile());
 
-			return ok(
-				views.html.users.user.render(
-					createTemplate(),
-					user,
-					logEntryService.getAggregates(new LogEntryCriteria().withUserId(user.id))));
+			return ok(views.html.users.user.render(createTemplate(), user));
 		});
 	}
 

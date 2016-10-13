@@ -108,11 +108,7 @@ public class Projects extends AbstractController
 		return searchForm(projectId, (project, form) -> {
 			return ok(
 				log(
-					() -> views.html.projects.project.render(
-						createTemplate(),
-						project,
-						logEntryService.getStats(new LogEntryCriteria().withProjectId(project.id)),
-						form),
+					() -> views.html.projects.project.render(createTemplate(), project, form),
 					LOGGER,
 					"Rendering project"));
 		});
