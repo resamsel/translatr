@@ -11,21 +11,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.feth.play.module.pa.PlayAuthenticate;
 
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
 import models.Locale;
 import models.Message;
 import models.Project;
+import play.cache.CacheApi;
+import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Result;
 import services.LocaleService;
 import services.MessageService;
 import services.ProjectService;
+import services.UserService;
 
-public class Api extends Controller
+public class Api extends AbstractController
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Api.class);
 
@@ -39,8 +42,10 @@ public class Api extends Controller
 	 * 
 	 */
 	@Inject
-	public Api(ProjectService projectService, LocaleService localeService, MessageService messageService)
+	public Api(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
+				ProjectService projectService, LocaleService localeService, MessageService messageService)
 	{
+		super(injector, cache, auth, userService);
 		this.projectService = projectService;
 		this.localeService = localeService;
 		this.messageService = messageService;
@@ -142,5 +147,19 @@ public class Api extends Controller
 			return notFound(Json.toJson(new Exception("Message not found")));
 
 		return ok(Json.toJson(dto.Message.from(message)));
+	}
+
+	public Result uploadLocale(UUID localeId, String fileType)
+	{
+		return locale(localeId, locale -> {
+			injector.instanceOf(Locales.class).importLocale(locale, request());
+
+			return ok("{\"status\":\"OK\"}");
+		});
+	}
+
+	public Result downloadLocale(UUID localeId, String fileType)
+	{
+		return injector.instanceOf(Locales.class).download(localeId, fileType);
 	}
 }

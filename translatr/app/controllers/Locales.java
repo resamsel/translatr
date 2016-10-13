@@ -3,11 +3,11 @@ package controllers;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -24,6 +24,10 @@ import commands.RevertDeleteLocaleCommand;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
+import exporters.Exporter;
+import exporters.GettextExporter;
+import exporters.JavaPropertiesExporter;
+import exporters.PlayMessagesExporter;
 import forms.ImportLocaleForm;
 import forms.LocaleForm;
 import forms.SearchForm;
@@ -84,17 +88,6 @@ public class Locales extends AbstractController
 		this.formFactory = formFactory;
 		this.configuration = configuration;
 		this.localeService = localeService;
-	}
-
-	private Result locale(UUID localeId, Function<Locale, Result> processor)
-	{
-		Locale locale = Locale.byId(localeId);
-		if(locale == null)
-			return redirect(routes.Dashboards.dashboard());
-
-		select(locale.project);
-
-		return processor.apply(locale);
 	}
 
 	public Result locale(UUID localeId)
@@ -201,15 +194,54 @@ public class Locales extends AbstractController
 	public Result upload(UUID localeId)
 	{
 		return locale(localeId, locale -> {
-			if("POST".equals(request().method()))
-			{
-				importLocale(locale, request());
-
-				return redirect(routes.Locales.locale(localeId));
-			}
-
 			return ok(views.html.locales.upload.render(createTemplate(), locale.project, locale));
 		});
+	}
+
+	public Result doUpload(UUID localeId)
+	{
+		return locale(localeId, locale -> {
+			try
+			{
+				importLocale(locale, request());
+			}
+			catch(Exception e)
+			{
+				addError(e.getMessage());
+				return badRequest(views.html.locales.upload.render(createTemplate(), locale.project, locale));
+			}
+
+			return redirect(routes.Locales.locale(localeId));
+		});
+	}
+
+	public Result download(UUID localeId, String fileType)
+	{
+		Locale locale = Locale.byId(localeId);
+		if(locale == null)
+			return redirectWithError(routes.Application.index(), ctx().messages().at("locale.notFound", localeId));
+
+		select(locale.project);
+
+		Exporter exporter;
+		switch(FileType.fromKey(fileType))
+		{
+			case PlayMessages:
+				exporter = new PlayMessagesExporter();
+			break;
+			case JavaProperties:
+				exporter = new JavaPropertiesExporter();
+			break;
+			case Gettext:
+				exporter = new GettextExporter();
+			break;
+			default:
+				return badRequest("File type " + fileType + " not supported yet");
+		}
+
+		exporter.addHeaders(response(), locale);
+
+		return ok(new ByteArrayInputStream(exporter.apply(locale)));
 	}
 
 	public Result keysSearch(UUID localeId)
@@ -273,13 +305,16 @@ public class Locales extends AbstractController
 	 * @param request
 	 * @return
 	 */
-	private String importLocale(Locale locale, Request request)
+	public String importLocale(Locale locale, Request request)
 	{
 		MultipartFormData<File> body = request.body().asMultipartFormData();
+		if(body == null)
+			throw new IllegalArgumentException(ctx().messages().at("import.error.multipartMissing"));
+
 		FilePart<File> messages = body.getFile("messages");
 
 		if(messages == null)
-			return null;
+			throw new IllegalArgumentException("Part 'messages' missing");
 
 		ImportLocaleForm form = formFactory.form(ImportLocaleForm.class).bindFromRequest().get();
 

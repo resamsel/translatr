@@ -129,7 +129,7 @@ def pull(args):
 		else:
 			target = target.replace('?', '')
 		download(
-			'{endpoint}/locale/{0}/export/{pull[file_type]}'.format(
+			'{endpoint}/api/locale/{0}/export/{pull[file_type]}'.format(
 				locale.id,
 				**config
 			),
@@ -206,6 +206,7 @@ def push(args):
 						},
 						'name': localeName
 					})
+				response.raise_for_status()
 				# Put response locale in locales
 				locales[localeName] = Locale(**response.json())
 				created = True
@@ -219,23 +220,29 @@ def push(args):
 				logger.exception(e)
 
 		if localeName in locales:
-			requests.post(
-				'{endpoint}/locale/{locale.id}/import'.format(
-					locale=locales[localeName],
-					**config),
-				data={
-					'fileType': config['push']['file_type']
-				},
-				files={
-					'messages': open(filename, 'r')
-				})
-			print(
-				'Uploaded {0} to {1}{2}'.format(
-					filename,
-					localeName,
-					{ True: ' (new)', False: ''}.get(created)
+			try:
+				response = requests.post(
+					'{endpoint}/api/locale/{locale.id}/import/{push[file_type]}'.format(
+						locale=locales[localeName],
+						**config),
+					data={
+						'fileType': config['push']['file_type']
+					},
+					files={
+						'messages': open(filename, 'r')
+					})
+				response.raise_for_status()
+				print(
+					'Uploaded {0} to {1}{2}'.format(
+						filename,
+						localeName,
+						{ True: ' (new)', False: ''}.get(created)
+					)
 				)
-			)
+			except requests.exceptions.ConnectionError as e:
+				eprint(CONNECTION_ERROR.format(**config))
+			except requests.exceptions.HTTPError:
+				eprint(PROJECT_NOT_FOUND.format(**config))
 		else:
 			print('Could neither find nor create locale {0}'.format(localeName))
 

@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.UUID;
+import java.util.function.Function;
 
 import com.feth.play.module.pa.PlayAuthenticate;
 
@@ -112,5 +113,16 @@ public abstract class AbstractController extends Controller
 		flash("undo", undoKey);
 
 		return undoKey;
+	}
+
+	protected Result locale(UUID localeId, Function<Locale, Result> processor)
+	{
+		Locale locale = Locale.byId(localeId);
+		if(locale == null)
+			return redirect(routes.Dashboards.dashboard());
+
+		select(locale.project);
+
+		return processor.apply(locale);
 	}
 }

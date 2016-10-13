@@ -71,7 +71,7 @@
 								@for(t <- models.FileType.values) {
 									<li>
 										<a
-											href="@routes.Application.download(locale.id, t.key)">
+											href="@routes.Locales.download(locale.id, t.key)">
 											@Messages("filetype." + t.key)
 										</a>
 									</li>

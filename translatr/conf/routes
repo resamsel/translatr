@@ -4,8 +4,6 @@
 
 # Basic functions
 GET		/								controllers.Application.index
-# Should probably go into Locales, but does not need authentication for the time being
-GET		/locale/:id/export/:type		controllers.Application.download(id: java.util.UUID, type: String)
 
 # Authentication
 GET		/login							controllers.Application.login
@@ -60,7 +58,8 @@ GET		/locale/:projectId/:localeName/create	controllers.Locales.createImmediately
 POST	/locale/:projectId				controllers.Locales.create(projectId: java.util.UUID)
 GET		/locale/:id/translate			controllers.Locales.translate(id: java.util.UUID)
 GET		/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
-POST	/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
+POST	/locale/:id/import				controllers.Locales.doUpload(id: java.util.UUID)
+GET		/locale/:id/export/:type		controllers.Locales.download(id: java.util.UUID, type: String)
 
 # Keys
 GET		/key/:id						controllers.Keys.key(id: java.util.UUID)
@@ -90,6 +89,8 @@ PUT		/api/project					controllers.Api.putProject
 GET		/api/locales/:projectId			controllers.Api.findLocales(projectId: java.util.UUID)
 #GET		/api/locale/:localeId		controllers.Api.getLocale(localeId: java.util.UUID)
 PUT		/api/locale						controllers.Api.putLocale
+POST	/api/locale/:localeId/import/:fileType	controllers.Api.uploadLocale(localeId: java.util.UUID, fileType: String)
+GET		/api/locale/:localeId/export/:fileType	controllers.Api.downloadLocale(localeId: java.util.UUID, fileType: String)
 
 GET		/api/messages/:projectId		controllers.Api.findMessages(projectId: java.util.UUID)
 GET		/api/message/:localeId/:key		controllers.Api.getMessage(localeId: java.util.UUID, key: String)
