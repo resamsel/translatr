@@ -76,8 +76,10 @@ public class Profiles extends AbstractController
 	{
 		return loggedInUser(
 			user -> ok(
-				views.html.users.user
-					.render(createTemplate(), user, logEntryService.getStats(new LogEntryCriteria().withUserId(user.id)))));
+				views.html.users.user.render(
+					createTemplate(),
+					user,
+					logEntryService.getAggregates(new LogEntryCriteria().withUserId(user.id)))));
 	}
 
 	public Result projects()

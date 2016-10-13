@@ -20,4 +20,10 @@ import services.impl.LogEntryServiceImpl;
 public interface LogEntryService extends ModelService<LogEntry>
 {
 	List<Aggregate> getStats(LogEntryCriteria criteria);
+
+	/**
+	 * @param criteria
+	 * @return
+	 */
+	List<Aggregate> getAggregates(LogEntryCriteria criteria);
 }

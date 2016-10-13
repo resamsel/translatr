@@ -13,6 +13,7 @@ GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider
 
 # Users
 GET		/user/:id					controllers.Users.user(id: java.util.UUID)
+GET		/user/:id/activity/csv		controllers.Users.activityCsv(id: java.util.UUID)
 
 # Profiles
 GET		/profile					controllers.Profiles.profile
@@ -47,6 +48,7 @@ GET		/project/:id/member/add			controllers.Projects.memberAdd(id: java.util.UUID
 POST	/project/:id/member/add			controllers.Projects.memberAdd(id: java.util.UUID)
 GET		/project/:id/member/:memberId/remove	controllers.Projects.memberRemove(id: java.util.UUID, memberId: Long)
 GET		/project/:id/activity			controllers.Projects.activity(id: java.util.UUID)
+GET		/project/:id/activity/csv		controllers.Projects.activityCsv(id: java.util.UUID)
 
 # Locales
 GET		/locale/:id						controllers.Locales.locale(id: java.util.UUID)

@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
 
@@ -51,21 +52,59 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
 		super(configuration);
 	}
 
+	@Override
+	public List<Aggregate> getAggregates(LogEntryCriteria criteria)
+	{
+		ExpressionList<Aggregate> query = Ebean.find(Aggregate.class).setRawSql(getAggregatesRawSql()).where();
+
+		if(criteria.getProjectId() != null)
+			query.eq("project_id", criteria.getProjectId());
+
+		if(criteria.getUserId() != null)
+			query.eq("user_id", criteria.getUserId());
+
+		return log(() -> query.findList(), LOGGER, "Retrieving log entry aggregates");
+	}
+
+	/**
+	 * @return
+	 */
+	private RawSql getAggregatesRawSql()
+	{
+		String dbpName = Ebean.getDefaultServer().getPluginApi().getDatabasePlatform().getName();
+		if("h2".equals(dbpName))
+			return RawSqlBuilder
+				.parse(
+					String.format(
+						"select %1$s as millis, count(*) as cnt from log_entry group by %1$s order by 1",
+						H2_COLUMN_MILLIS))
+				.columnMapping(H2_COLUMN_MILLIS, "millis")
+				.columnMapping("count(*)", "value")
+				.create();
+
+		String dateColumn = "when_created::date";
+		return RawSqlBuilder
+			.parse(String.format("select %1$s as date, count(*) as cnt from log_entry group by 1 order by 1", dateColumn))
+			.columnMapping(dateColumn, "date")
+			.columnMapping("count(*)", "value")
+			.create();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public List<Aggregate> getStats(LogEntryCriteria criteria)
 	{
-		return log(
-			() -> Ebean
-				.find(Aggregate.class)
-				.setRawSql(getStatsRawSql())
-				.where()
-				.eq("project_id", criteria.getProjectId())
-				.findList(),
-			LOGGER,
-			"Retrieving log entry stats");
+		ExpressionList<Aggregate> query = Ebean.find(Aggregate.class).setRawSql(getStatsRawSql()).where();
+
+		if(criteria.getProjectId() != null)
+			query.eq("project_id", criteria.getProjectId());
+
+		if(criteria.getUserId() != null)
+			query.eq("user_id", criteria.getUserId());
+
+		return log(() -> query.findList(), LOGGER, "Retrieving log entry stats");
 	}
 
 	/**

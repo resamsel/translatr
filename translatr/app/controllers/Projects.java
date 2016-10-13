@@ -33,6 +33,7 @@ import dto.Suggestion;
 import forms.ProjectForm;
 import forms.ProjectUserForm;
 import forms.SearchForm;
+import models.Aggregate;
 import models.Key;
 import models.Locale;
 import models.LogEntry;
@@ -372,6 +373,21 @@ public class Projects extends AbstractController
 			search.pager(activities);
 
 			return ok(views.html.projects.activity.render(createTemplate(), project, activities, form));
+		});
+	}
+
+	public Result activityCsv(UUID projectId)
+	{
+		return project(projectId, project -> {
+			List<Aggregate> activity = logEntryService.getAggregates(new LogEntryCriteria().withProjectId(project.id));
+
+			int max = activity.stream().mapToInt(a -> a.value).reduce(0, Math::max);
+
+			String csv = "Date,Value\n" + activity
+				.stream()
+				.map(a -> String.format("%s,%.2f\n", a.date.toString("yyyy-MM-dd"), Math.sqrt(a.value) / Math.sqrt(max)))
+				.reduce("", (a, b) -> a.concat(b));
+			return ok(csv);
 		});
 	}
 
