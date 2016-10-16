@@ -2,6 +2,7 @@ activity = Aktivität
 activity.Create.title = {0} {1} angelegt
 activity.Delete.title = {0} {1} gelöscht
 activity.Update.title = {0} {1} geändert
+activity.content = <p>Die Aktivität zeigt an, wie aktiv Translatr genutzt wird. Dabei wird die Änderungshistorie genutzt, in der sich Beiträge für Benutzer, Projekte, Sprachen, Schlüssel, und Übersetzungen befinden. So kann die Aktivität eines Projekts bestimmt werden, oder auch die eines Benutzers.</p>
 auth.as = Angemeldet als <strong>{0}</strong>
 auth.facebook = Facebook
 auth.github = Github

@@ -1,5 +1,8 @@
 /* -Small */
 @media (max-width: 600px) {
+	#nprogress {
+		display: none;
+	}
 	h1 .material-icons {
 	    display: block;
 	    float: none !important;
@@ -89,7 +92,13 @@
 	}
 	.floating-action-btn.pinned {
 		top: 23px !important;
+		bottom: auto;
 	}
+	/* Overview Pages */
+	.row .col.sidebar {
+	    width: 240px;
+	}
+
 	.tabs-container {
 		padding: 0 15%;
 	}

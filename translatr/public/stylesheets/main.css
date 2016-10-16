@@ -403,7 +403,6 @@ tr:hover .btn-hover {
     color: #424242;
 }
 
-
 /* Editor */
 .editor>.row {
     margin-bottom: 0;
@@ -609,46 +608,6 @@ html.template-key,
 .ct-area {
     fill-opacity: .6;
 }
-/* D3 */
-.day {
-  stroke: #fff;
-  stroke-width: 3px;
-  fill: #eee;
-}
-
-.month {
-  fill: none;
-  stroke: #000;
-  stroke-width: 3px;
-}
-
-.RdYlGn .q0-11{fill:#1e6823; opacity: 0.05;}
-.RdYlGn .q1-11{fill:#1e6823; opacity: 0.1;}
-.RdYlGn .q2-11{fill:#1e6823; opacity: 0.2;}
-.RdYlGn .q3-11{fill:#1e6823; opacity: 0.3;}
-.RdYlGn .q4-11{fill:#1e6823; opacity: 0.4;}
-.RdYlGn .q5-11{fill:#1e6823; opacity: 0.5;}
-.RdYlGn .q6-11{fill:#1e6823; opacity: 0.6;}
-.RdYlGn .q7-11{fill:#1e6823; opacity: 0.7;}
-.RdYlGn .q8-11{fill:#1e6823; opacity: 0.8;}
-.RdYlGn .q9-11{fill:#1e6823; opacity: 0.9;}
-.RdYlGn .q10-11{fill:#1e6823; opacity: 1;}
-
-.svg-container {
-	display: inline-block;
-	position: relative;
-	width: 100%;
-	padding-bottom: 13%;
-	vertical-align: middle;
-	overflow: hidden;
-}
-.svg-content {
-	display: inline-block;
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-
 
 /* Authentication */
 .template-login .login {

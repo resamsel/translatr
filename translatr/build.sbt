@@ -72,7 +72,7 @@ Concat.groups := Seq(
 		"stylesheets/materialize.min.css",
 		"stylesheets/nprogress.css",
 		"stylesheets/font-awesome.min.css",
-		"stylesheets/chartist.min.css",
+		"stylesheets/d3.v3.css",
 		"stylesheets/main.css",
 		"stylesheets/media.css"
 	)),
@@ -81,7 +81,7 @@ Concat.groups := Seq(
 		"javascripts/jquery.ba-bbq.min.js",
 		"javascripts/materialize.min.js",
 		"javascripts/jquery.autocomplete.min.js",
-		"javascripts/chartist.min.js",
+		"javascripts/d3.v3.min.js",
 		"javascripts/moment.min.js",
 		"javascripts/nprogress.js",
 		"javascripts/app.js",

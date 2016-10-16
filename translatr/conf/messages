@@ -2,6 +2,7 @@ activity = Activity
 activity.Create.title = {0} created {1}
 activity.Delete.title = {0} deleted {1}
 activity.Update.title = {0} changed {1}
+activity.content = <p>The activity graph shows the usage of Translatr. The change history contains contributions to users, projects, locales, keys, and translations. That way the activity of a project can be estimated, as well as the activity of individual users.</p>
 auth.as = Signed in as <strong>{0}</strong>
 auth.facebook = Facebook
 auth.github = Github

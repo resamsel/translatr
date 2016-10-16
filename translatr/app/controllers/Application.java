@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
@@ -11,6 +12,8 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ContextAction;
 import commands.Command;
+import criterias.LogEntryCriteria;
+import models.Aggregate;
 import models.Key;
 import models.Locale;
 import models.Message;
@@ -26,6 +29,7 @@ import play.routing.JavaScriptReverseRouter;
 import scala.collection.JavaConversions;
 import services.KeyService;
 import services.LocaleService;
+import services.LogEntryService;
 import services.MessageService;
 import services.ProjectService;
 import services.UserService;
@@ -48,10 +52,12 @@ public class Application extends AbstractController
 
 	private final MessageService messageService;
 
+	private final LogEntryService logEntryService;
+
 	@Inject
 	public Application(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
 				ProjectService projectService, LocaleService localeService, KeyService keyService,
-				MessageService messageService)
+				MessageService messageService, LogEntryService logEntryService)
 	{
 		super(injector, cache, auth, userService);
 
@@ -59,6 +65,7 @@ public class Application extends AbstractController
 		this.localeService = localeService;
 		this.keyService = keyService;
 		this.messageService = messageService;
+		this.logEntryService = logEntryService;
 	}
 
 	public Result index()
@@ -84,6 +91,19 @@ public class Application extends AbstractController
 		return redirectWithError(
 			routes.Application.index(),
 			"You need to accept the OAuth connection in order to use this website!");
+	}
+
+	public Result activityCsv()
+	{
+		List<Aggregate> activity = logEntryService.getAggregates(new LogEntryCriteria());
+
+		int max = activity.stream().mapToInt(a -> a.value).reduce(0, Math::max);
+
+		String csv = "Date,Value\n" + activity
+			.stream()
+			.map(a -> String.format("%s,%.2f\n", a.date.toString("yyyy-MM-dd"), Math.log(a.value) / Math.log(max)))
+			.reduce("", (a, b) -> a.concat(b));
+		return ok(csv);
 	}
 
 	public Result load()
@@ -156,6 +176,7 @@ public class Application extends AbstractController
 		return ok(
 			JavaScriptReverseRouter.create(
 				"jsRoutes",
+				routes.javascript.Application.activityCsv(),
 				routes.javascript.Users.activityCsv(),
 				routes.javascript.Dashboards.search(),
 				routes.javascript.Projects.search(),

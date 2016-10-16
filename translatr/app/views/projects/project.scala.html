@@ -26,6 +26,18 @@
 } {
 	@content(project, "info") {
 		<div class="row">
+			<!-- Timeline -->
+			<div class="col m12 activity">
+				<div class="card no-image">
+					<div class="card-image green">
+						<span class="card-title">@Messages("activity")</span>
+					</div>
+					<div class="card-content">
+						<div class="svg-container"></div>
+					</div>
+				</div>
+			</div>
+
 			<!-- Locales -->
 			<div class="col m6 locales">
 				<div class="card no-image">
@@ -73,18 +85,6 @@
 					</div>
 				</div>
 			</div>
-
-			<!-- Timeline -->
-			<div class="col m12 activity">
-				<div class="card no-image">
-					<div class="card-image grey">
-						<span class="card-title">@Messages("activity")</span>
-					</div>
-					<div class="card-content">
-						<div class="svg-container"></div>
-					</div>
-				</div>
-			</div>
 		</div>
 	}
 
@@ -98,7 +98,6 @@
 		@tags.keyCreate(project)
 	}
 
-	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script>
 		var projectId = '@project.id';
 	</script>

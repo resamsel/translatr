@@ -381,7 +381,7 @@ public class Projects extends AbstractController
 
 			String csv = "Date,Value\n" + activity
 				.stream()
-				.map(a -> String.format("%s,%.2f\n", a.date.toString("yyyy-MM-dd"), Math.sqrt(a.value) / Math.sqrt(max)))
+				.map(a -> String.format("%s,%.2f\n", a.date.toString("yyyy-MM-dd"), Math.log(a.value) / Math.log(max)))
 				.reduce("", (a, b) -> a.concat(b));
 			return ok(csv);
 		});

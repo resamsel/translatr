@@ -4,6 +4,7 @@
 
 # Basic functions
 GET		/								controllers.Application.index
+GET		/activity/csv					controllers.Application.activityCsv
 
 # Authentication
 GET		/login							controllers.Application.login
