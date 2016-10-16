@@ -16,7 +16,7 @@
 			@for(activity <- activityList) {
 				<a href="@utils.JsonUtils.linkTo(activity)" class="collection-item avatar black-text">
 					<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
-					<span class="title">
+					<span class="title truncate">
 						@utils.JsonUtils.nameOf(activity)
 					</span>
 					<p>
