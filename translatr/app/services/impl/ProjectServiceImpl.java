@@ -5,6 +5,7 @@ import static utils.Stopwatch.log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -64,12 +65,25 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 	 * {@inheritDoc}
 	 */
 	@Override
+	public Project getById(UUID id)
+	{
+		return log(
+			() -> cache.getOrElse(String.format("project:%s", id.toString()), () -> Project.byIdUncached(id), 60),
+			LOGGER,
+			"getById");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public Project getByOwnerAndName(User user, String name)
 	{
-		String cacheKey = String.format("%s:%s", user.id.toString(), name);
-
 		return log(
-			() -> cache.getOrElse(cacheKey, () -> Project.byOwnerAndNameFind(user, name), 10 * 600),
+			() -> cache.getOrElse(
+				String.format("projectByOwnerAndName:%s:%s", user.id.toString(), name),
+				() -> Project.byOwnerAndNameUncached(user, name),
+				10 * 600),
 			LOGGER,
 			"byOwnerAndName");
 	}

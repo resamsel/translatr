@@ -184,7 +184,7 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
 	public User getByUsername(String username)
 	{
 		return log(
-			() -> cache.getOrElse(String.format("username:%s", username), () -> User.byUsernameFind(username), 60),
+			() -> cache.getOrElse(String.format("username:%s", username), () -> User.byUsernameUncached(username), 60),
 			LOGGER,
 			"Retrieving user by username");
 	}

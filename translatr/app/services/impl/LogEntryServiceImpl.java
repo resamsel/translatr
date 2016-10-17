@@ -23,6 +23,7 @@ import models.LogEntry;
 import models.Project;
 import models.User;
 import play.Configuration;
+import play.cache.CacheApi;
 import play.mvc.Http.Context;
 import services.LogEntryService;
 
@@ -43,13 +44,16 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
 
 	private static final String POSTGRESQL_COLUMN_MILLIS = "extract(epoch from date_trunc('hour', when_created))*1000";
 
+	private final CacheApi cache;
+
 	/**
 	 * 
 	 */
 	@Inject
-	public LogEntryServiceImpl(Configuration configuration)
+	public LogEntryServiceImpl(Configuration configuration, CacheApi cache)
 	{
 		super(configuration);
+		this.cache = cache;
 	}
 
 	@Override
@@ -63,7 +67,12 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
 		if(criteria.getUserId() != null)
 			query.eq("user_id", criteria.getUserId());
 
-		return log(() -> query.findList(), LOGGER, "Retrieving log entry aggregates");
+		String cacheKey = String.format("logentry:aggregates:%s:%s", criteria.getUserId(), criteria.getProjectId());
+
+		return log(
+			() -> cache.getOrElse(cacheKey, () -> query.findList(), 60),
+			LOGGER,
+			"Retrieving log entry aggregates");
 	}
 
 	/**

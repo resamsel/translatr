@@ -1,15 +1,22 @@
 package services.impl;
 
+import static utils.Stopwatch.log;
+
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import models.ActionType;
 import models.LogEntry;
 import models.Message;
+import models.Project;
 import play.Configuration;
+import play.cache.CacheApi;
 import services.LogEntryService;
 import services.MessageService;
 
@@ -23,16 +30,36 @@ import services.MessageService;
 @Singleton
 public class MessageServiceImpl extends AbstractModelService<Message> implements MessageService
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceImpl.class);
+
+	private final CacheApi cache;
+
 	private final LogEntryService logEntryService;
 
 	/**
 	 * 
 	 */
 	@Inject
-	public MessageServiceImpl(Configuration configuration, LogEntryService logEntryService)
+	public MessageServiceImpl(Configuration configuration, CacheApi cache, LogEntryService logEntryService)
 	{
 		super(configuration);
+		this.cache = cache;
 		this.logEntryService = logEntryService;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int countBy(Project project)
+	{
+		return log(
+			() -> cache.getOrElse(
+				String.format("message:countByProject:%s", project.id),
+				() -> Message.countByUncached(project),
+				60),
+			LOGGER,
+			"countByProject");
 	}
 
 	/**

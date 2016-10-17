@@ -130,6 +130,11 @@ public class Project implements Suggestable
 
 	public static Project byId(UUID id)
 	{
+		return Play.current().injector().instanceOf(ProjectService.class).getById(id);
+	}
+
+	public static Project byIdUncached(UUID id)
+	{
 		return find.byId(id);
 	}
 
@@ -242,7 +247,7 @@ public class Project implements Suggestable
 	 * @param name
 	 * @return
 	 */
-	public static Project byOwnerAndNameFind(User user, String name)
+	public static Project byOwnerAndNameUncached(User user, String name)
 	{
 		return find.where().eq("owner", user).eq("name", name).findUnique();
 	}

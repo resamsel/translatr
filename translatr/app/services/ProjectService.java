@@ -1,5 +1,7 @@
 package services;
 
+import java.util.UUID;
+
 import com.google.inject.ImplementedBy;
 
 import models.Project;
@@ -22,4 +24,10 @@ public interface ProjectService extends ModelService<Project>
 	 * @return
 	 */
 	Project getByOwnerAndName(User user, String name);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	Project getById(UUID id);
 }

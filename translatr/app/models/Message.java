@@ -24,6 +24,8 @@ import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 
 import criterias.MessageCriteria;
+import play.api.Play;
+import services.MessageService;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"locale_id", "key_id"})})
@@ -101,6 +103,15 @@ public class Message
 	 * @return
 	 */
 	public static int countBy(Project project)
+	{
+		return Play.current().injector().instanceOf(MessageService.class).countBy(project);
+	}
+
+	/**
+	 * @param project
+	 * @return
+	 */
+	public static int countByUncached(Project project)
 	{
 		return find.where().eq("key.project", project).findRowCount();
 	}

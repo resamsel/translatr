@@ -154,7 +154,7 @@ public class User implements Subject
 		return Play.current().injector().instanceOf(UserService.class).getByUsername(username);
 	}
 
-	public static User byUsernameFind(String username)
+	public static User byUsernameUncached(String username)
 	{
 		return find.where().eq("username", username).findUnique();
 	}
