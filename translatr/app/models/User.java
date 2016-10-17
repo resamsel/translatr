@@ -35,6 +35,7 @@ import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
 import controllers.Application;
+import play.api.Play;
 import play.api.inject.Injector;
 import play.mvc.Http.Context;
 import services.UserService;
@@ -149,6 +150,11 @@ public class User implements Subject
 	 * @return
 	 */
 	public static User byUsername(String username)
+	{
+		return Play.current().injector().instanceOf(UserService.class).getByUsername(username);
+	}
+
+	public static User byUsernameFind(String username)
 	{
 		return find.where().eq("username", username).findUnique();
 	}

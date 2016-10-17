@@ -56,4 +56,10 @@ public interface UserService extends ModelService<User>
 	 * @param authUser
 	 */
 	void logout(AuthUserIdentity authUser);
+
+	/**
+	 * @param username
+	 * @return
+	 */
+	User getByUsername(String username);
 }

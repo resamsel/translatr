@@ -177,6 +177,18 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
 		return user;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public User getByUsername(String username)
+	{
+		return log(
+			() -> cache.getOrElse(String.format("username:%s", username), () -> User.byUsernameFind(username), 60),
+			LOGGER,
+			"Retrieving user by username");
+	}
+
 	protected dto.User toDto(User t)
 	{
 		dto.User out = dto.User.from(t);
