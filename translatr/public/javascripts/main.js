@@ -75,9 +75,9 @@ App.Modules.ProjectSearchModule = function(sb) {
 };
 
 App.Modules.ActivityModule = function(sb, options) {
-	var width = 901,
-	    height = 136,
-	    cellSize = 17;
+	var width = options.width || 901,
+	    height = options.height || 136,
+	    cellSize = options.cellSize || 17;
 
 	var numberOfColors = options.numberOfColors || 4;
 
@@ -89,7 +89,6 @@ App.Modules.ActivityModule = function(sb, options) {
 	    .domain([0, 1])
 	    .range(d3.range(numberOfColors).map(function(d) { return "q" + d + "-" + numberOfColors; }));
 
-//	var weekOfYear = d3.time.sundayOfYear;
 	var weekOfYear = d3.time.mondayOfYear;
 
 	return {
@@ -127,13 +126,11 @@ App.Modules.ActivityModule = function(sb, options) {
 			function x(d) {
 				var diffYears = d.getFullYear() - startYear;
 				var woy = weekOfYear(d);
-				//console.log("x(d:", d, ") =", woy - woyOffset + numberOfWeeks * diffYears);
 
 				return (woy - woyOffset + numberOfWeeks * diffYears) * cellSize;
 			}
 
 			function y(d) {
-//				return d.getDay() * cellSize;
 				return (d.getDay() - 1 + 7)%7 * cellSize;
 			}
 
@@ -156,13 +153,13 @@ App.Modules.ActivityModule = function(sb, options) {
 
 				var data = d3.nest()
 					.key(function(d) { return d.Date; })
-					.rollup(function(d) { return d[0].Value; })
+					.rollup(function(d) { return d[0]; })
 					.map(csv);
 
 				rect.filter(function(d) { return d in data; })
-					.attr("class", function(d) { return "day " + color(data[d]); })
+					.attr("class", function(d) { return "day " + color(data[d].RelativeValue); })
 					.select("title")
-					.text(function(d) { return titleFormat(format.parse(d)) + ": " + percent(data[d]); });
+					.text(function(d) { return titleFormat(format.parse(d)) + ": " + data[d].Value; });
 			});
 		},
 		destroy: function() {

@@ -1,6 +1,5 @@
 package controllers;
 
-import java.util.List;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
@@ -12,8 +11,8 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ContextAction;
 import commands.Command;
+import converters.ActivityCsvConverter;
 import criterias.LogEntryCriteria;
-import models.Aggregate;
 import models.Key;
 import models.Locale;
 import models.Message;
@@ -95,15 +94,7 @@ public class Application extends AbstractController
 
 	public Result activityCsv()
 	{
-		List<Aggregate> activity = logEntryService.getAggregates(new LogEntryCriteria());
-
-		int max = activity.stream().mapToInt(a -> a.value).reduce(0, Math::max);
-
-		String csv = "Date,Value\n" + activity
-			.stream()
-			.map(a -> String.format("%s,%.2f\n", a.date.toString("yyyy-MM-dd"), Math.log(a.value) / Math.log(max)))
-			.reduce("", (a, b) -> a.concat(b));
-		return ok(csv);
+		return ok(new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria())));
 	}
 
 	public Result load()
