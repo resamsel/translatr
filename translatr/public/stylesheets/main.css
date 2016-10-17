@@ -626,6 +626,7 @@ html.template-key,
 	min-height: 56px;
 }
 .collection-item a.provider {
+	display: block;
 	min-height: auto;
 }
 .auth-provider .provider {
