@@ -90,6 +90,9 @@ App.Modules.ActivityModule = function(sb, options) {
 	    .range(d3.range(numberOfColors).map(function(d) { return "q" + d + "-" + numberOfColors; }));
 
 	var weekOfYear = d3.time.mondayOfYear;
+	var dayOfWeek = function(d) {
+		return (d.getDay() + 6)%7;
+	}
 
 	return {
 		create: function() {
@@ -100,10 +103,14 @@ App.Modules.ActivityModule = function(sb, options) {
 			var startDate = new Date(),
 				today = new Date();
 
-			today.setDate(today.getDate() + 1);
 			today.setHours(0, 0, 0, 0);
 			startDate.setHours(0, 0, 0, 0);
-			startDate.setFullYear(today.getFullYear() - 1);
+			startDate.setDate(
+				today.getDate() // use today as base
+				- (52*7) // subtract 52 weeks
+				- dayOfWeek(today) // subtract the day of the week
+			);
+			today.setDate(today.getDate() + 1);
 
 			var svg = d3.select(options.container || ".svg-container").selectAll("svg")
 				.data(d3.range(startDate.getFullYear(), today.getFullYear()))
@@ -131,7 +138,7 @@ App.Modules.ActivityModule = function(sb, options) {
 			}
 
 			function y(d) {
-				return (d.getDay() - 1 + 7)%7 * cellSize;
+				return dayOfWeek(d) * cellSize;
 			}
 
 			// Cells
