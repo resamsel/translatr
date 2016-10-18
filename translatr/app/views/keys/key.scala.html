@@ -44,8 +44,8 @@
 	</a>
 } {
 	@tags.editor {
-		<h4 class="header">@Messages("locales")</h4>
-		<div class="collection locales">
+		<h5 class="header">@Messages("locales")</h5>
+		<div class="collection locales card-panel">
 			@for(locale <- locales) {
 				<a
 					id="@locale.id"
@@ -99,7 +99,7 @@
 
 		<!-- Preview -->
 		<div id="panel-preview">
-			<h4 class="header">@Messages("locale.preview")</h4>
+			<h5 class="header">@Messages("locale.preview")</h5>
 			<div id="preview"></div>
 		</div>
 	} {

@@ -44,8 +44,8 @@
 	</a>
 } {
 	@tags.editor {
-		<h4 class="header">@Messages("keys")</h4>
-		<div class="collection keys">
+		<h5 class="header">@Messages("keys")</h5>
+		<div class="collection keys card-panel">
 			@tags.keyItems(keys, messages, false)
 		</div>
 	} {
@@ -86,7 +86,7 @@
 
 		<!-- Preview -->
 		<div id="panel-preview">
-			<h4 class="header">@Messages("locale.preview")</h4>
+			<h5 class="header">@Messages("locale.preview")</h5>
 			<div id="preview"></div>
 		</div>
 
@@ -94,8 +94,8 @@
 			<span class="valign">@Messages("key.selection.none")</span>
 		</div>
 	} {
-		<h4 class="header">@Messages("messages")</h4>
-		<div id="panel-messages" class="collection messages">
+		<h5 class="header">@Messages("messages")</h5>
+		<div id="panel-messages" class="collection messages card-panel">
 			<a
 				class="collection-item waves-effect waves-red message template"
 				title="@Messages("value.copy")">

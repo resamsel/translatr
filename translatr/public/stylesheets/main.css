@@ -413,7 +413,7 @@ tr:hover .btn-hover {
 	padding: 0.5rem 0;
 }
 .navview .collection {
-    height: calc(100% - 24px);
+    height: calc(100% - 38px);
     overflow: auto;
     padding-right: 0.75rem;
     position: relative;
@@ -434,7 +434,7 @@ tr:hover .btn-hover {
 	border: 0;
 }
 .collection.card-panel {
-    padding: 0.5rem 0;
+    padding: 0.5rem;
 }
 .collection.card-panel .collection-item:not(.active):hover,
 .collection.card-panel .collection-item:not(.active):focus {
