@@ -27,6 +27,8 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
 
 	private String search;
 
+	private UUID userId;
+
 	private UUID projectId;
 
 	/**
@@ -36,6 +38,22 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
 	public AbstractSearchCriteria()
 	{
 		this.self = (T)this;
+	}
+
+	public UUID getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(UUID userId)
+	{
+		this.userId = userId;
+	}
+
+	public T withUserId(UUID userId)
+	{
+		setUserId(userId);
+		return self;
 	}
 
 	/**

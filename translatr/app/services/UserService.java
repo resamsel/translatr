@@ -1,9 +1,12 @@
 package services;
 
+import java.util.UUID;
+
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.google.inject.ImplementedBy;
 
 import models.User;
+import models.UserStats;
 import services.impl.UserServiceImpl;
 
 /**
@@ -62,4 +65,10 @@ public interface UserService extends ModelService<User>
 	 * @return
 	 */
 	User getByUsername(String username);
+
+	/**
+	 * @param userId
+	 * @return
+	 */
+	UserStats getUserStats(UUID userId);
 }

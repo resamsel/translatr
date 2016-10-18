@@ -35,6 +35,8 @@ import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
 import controllers.Application;
+import criterias.LogEntryCriteria;
+import criterias.ProjectUserCriteria;
 import play.api.Play;
 import play.api.inject.Injector;
 import play.mvc.Http.Context;
@@ -239,5 +241,16 @@ public class User implements Subject
 	public String toString()
 	{
 		return name;
+	}
+
+	/**
+	 * @param userId
+	 * @return
+	 */
+	public static UserStats userStatsUncached(UUID userId)
+	{
+		return UserStats.create(
+			ProjectUser.countBy(new ProjectUserCriteria().withUserId(userId)),
+			LogEntry.countBy(new LogEntryCriteria().withUserId(userId)));
 	}
 }

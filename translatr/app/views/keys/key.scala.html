@@ -30,21 +30,21 @@
 		</ul>
 	}
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
-			@key.project.name
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.keys(key.project.id)">
-			@Messages("keys")
-		</a>
-		<a class="breadcrumb active" href="@routes.Keys.key(key.id)">
-			@key.name
-		</a>
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
+		@key.project.name
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.keys(key.project.id)">
+		@Messages("keys")
+	</a>
+	<a class="breadcrumb active" href="@routes.Keys.key(key.id)">
+		@key.name
+	</a>
 } {
 	@tags.editor {
-		<h3 class="section-heading">@Messages("locales")</h3>
+		<h4 class="header">@Messages("locales")</h4>
 		<div class="collection locales">
 			@for(locale <- locales) {
 				<a
@@ -99,7 +99,7 @@
 
 		<!-- Preview -->
 		<div id="panel-preview">
-			<h3 class="section-heading">@Messages("locale.preview")</h3>
+			<h4 class="header">@Messages("locale.preview")</h4>
 			<div id="preview"></div>
 		</div>
 	} {

@@ -102,16 +102,32 @@ public class ProjectUser
 	 * @param criteria
 	 * @return
 	 */
-	public static List<ProjectUser> findBy(ProjectUserCriteria criteria)
+	private static ExpressionList<ProjectUser> findQuery(ProjectUserCriteria criteria)
 	{
-		ExpressionList<ProjectUser> query = find.fetch("user").where();
+		ExpressionList<ProjectUser> query = find.where();
 
 		if(criteria.getProjectId() != null)
 			query.eq("project.id", criteria.getProjectId());
 
+		if(criteria.getUserId() != null)
+			query.eq("user.id", criteria.getUserId());
+
 		criteria.paging(query);
 
-		return log(() -> query.findList(), LOGGER, "findBy");
+		return query;
 	}
 
+	/**
+	 * @param criteria
+	 * @return
+	 */
+	public static List<ProjectUser> findBy(ProjectUserCriteria criteria)
+	{
+		return log(() -> findQuery(criteria).query().fetch("user").findList(), LOGGER, "findBy");
+	}
+
+	public static int countBy(ProjectUserCriteria criteria)
+	{
+		return findQuery(criteria).findRowCount();
+	}
 }

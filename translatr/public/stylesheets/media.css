@@ -14,11 +14,6 @@
 	    right: 0;
 	    bottom: 23px;
 	}
-	.project .info > *,
-	.project .info > .timeline,
-	.project .info > .messages {
-		flex: 1 100%;
-	}
 	.mainview,
 	.navview,
 	.subview {
@@ -33,8 +28,8 @@
 		display: flex;
 	}
 	.card.card-user .card-image img {
-		width: 100px;
-		min-width: 100px;
+		width: 120px;
+		min-width: 120px;
 	}
 }
 
@@ -45,6 +40,9 @@
 	}
 	nav .brand-logo i.material-icons {
 		padding-left: 15px;
+	}
+	.template-project .main > * {
+		flex: 1 100%;
 	}
     .table.responsive-table th {
 		text-align: right !important;
@@ -95,8 +93,14 @@
 		bottom: auto;
 	}
 	/* Overview Pages */
-	.row .col.sidebar {
-	    width: 300px;
+	.container {
+	    width: 90%;
+	}
+	.sidebar {
+	    width: 200px;
+	}
+	.container .col.main {
+		width: calc(100% - 200px);
 	}
 
 	.tabs-container {
@@ -156,7 +160,22 @@
 
 /* Large+ */
 @media only screen and (min-width: 993px) {
+	.flex > * {
+		flex: 1 0;
+	}
+	.template-project .main > .locales {
+		margin-right: 0.5rem;
+	}
+	.template-project .main > .keys {
+		margin-left: 0.5rem;
+	}
 	.responsive-table .btn-hover {
 		visibility: hidden;
+	}
+	.sidebar {
+		width: 300px;
+	}
+	.container .col.main {
+		width: calc(100% - 300px);
 	}
 }

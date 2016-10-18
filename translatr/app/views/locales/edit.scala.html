@@ -2,18 +2,18 @@
 
 @main(template.withTitle(Messages("locale.edit.title", locale.project.name, tags.locale(locale.name)))) {
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.project(locale.project.id)">
-			@locale.project.name
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.locales(locale.project.id)">
-			@Messages("locales")
-		</a>
-		<a class="breadcrumb" href="@routes.Locales.locale(locale.id)">
-			@tags.locale(locale.name)
-		</a>
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.project(locale.project.id)">
+		@locale.project.name
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.locales(locale.project.id)">
+		@Messages("locales")
+	</a>
+	<a class="breadcrumb" href="@routes.Locales.locale(locale.id)">
+		@tags.locale(locale.name)
+	</a>
 } {
 	@tags.content {
 		<div class="col m6 offset-m3">

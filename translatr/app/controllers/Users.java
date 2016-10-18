@@ -48,7 +48,7 @@ public class Users extends AbstractController
 			if(user.id.equals(User.loggedInUserId()))
 				return redirect(routes.Profiles.profile());
 
-			return ok(views.html.users.user.render(createTemplate(), user));
+			return ok(views.html.users.user.render(createTemplate(), user, userService.getUserStats(user.id)));
 		});
 	}
 

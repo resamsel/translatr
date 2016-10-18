@@ -40,6 +40,8 @@ contentType.dto.Message = Übersetzung
 contentType.dto.Project = Projekt
 contentType.dto.ProjectUser = Mitgliedschaft
 contentType.dto.User = Benutzer
+contributions = Beiträge
+contributions.amount = {0} Beiträge
 copyright = © 2016 René Samselnig (Version {0})\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
 dashboard = Dashboard
 dashboard.info = Hier gibt es {0,choice,0#noch keine Projekte|1#ein Projekt|1<{0} Projekte}
@@ -164,6 +166,7 @@ project.role.Owner = Besitzer
 project.role.Translator = Übersetzer
 project.title = {0}
 projects = Projekte
+projects.amount = {0} Projekte
 promo1.content = Die Vorschau, der schnelle Wechsel zwischen Sprachen und die Möglichkeit zur Integration in das Build-System ermöglichen eine schnellere Entwicklung.
 promo1.icon = flash_on
 promo1.title = Beschleunigt die Entwicklung

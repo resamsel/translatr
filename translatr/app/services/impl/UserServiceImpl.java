@@ -4,6 +4,7 @@ import static utils.Stopwatch.log;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,6 +20,7 @@ import models.ActionType;
 import models.LinkedAccount;
 import models.LogEntry;
 import models.User;
+import models.UserStats;
 import play.Configuration;
 import play.cache.CacheApi;
 import services.LinkedAccountService;
@@ -187,6 +189,18 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
 			() -> cache.getOrElse(String.format("username:%s", username), () -> User.byUsernameUncached(username), 60),
 			LOGGER,
 			"Retrieving user by username");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public UserStats getUserStats(UUID userId)
+	{
+		return log(
+			() -> cache.getOrElse(String.format("user:stats:%s", userId), () -> User.userStatsUncached(userId), 60),
+			LOGGER,
+			"getUserStats");
 	}
 
 	protected dto.User toDto(User t)

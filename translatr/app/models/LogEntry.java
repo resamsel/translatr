@@ -96,13 +96,7 @@ public class LogEntry
 	 */
 	public static List<LogEntry> findBy(LogEntryCriteria criteria)
 	{
-		ExpressionList<LogEntry> query = find.fetch("project").where();
-
-		if(criteria.getUserId() != null)
-			query.eq("user.id", criteria.getUserId());
-
-		if(criteria.getProjectId() != null)
-			query.eq("project.id", criteria.getProjectId());
+		ExpressionList<LogEntry> query = findQuery(criteria);
 
 		if(criteria.getLimit() != null)
 			query.setMaxRows(criteria.getLimit() + 1);
@@ -115,6 +109,28 @@ public class LogEntry
 		else
 			query.order("whenCreated");
 
-		return query.findList();
+		return query.query().fetch("project").findList();
+	}
+
+	public static int countBy(LogEntryCriteria criteria)
+	{
+		return findQuery(criteria).findRowCount();
+	}
+
+	/**
+	 * @param criteria
+	 * @return
+	 */
+	private static ExpressionList<LogEntry> findQuery(LogEntryCriteria criteria)
+	{
+		ExpressionList<LogEntry> query = find.where();
+
+		if(criteria.getUserId() != null)
+			query.eq("user.id", criteria.getUserId());
+
+		if(criteria.getProjectId() != null)
+			query.eq("project.id", criteria.getProjectId());
+
+		return query;
 	}
 }

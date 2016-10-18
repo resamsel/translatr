@@ -1,6 +1,7 @@
-@(template: utils.Template, user: User)
+@(template: utils.Template, user: User, stats: UserStats)
 
 @import utils.FormatUtils._
+@import views.html.tags.contentCard
 
 @main(template.withTitle(Messages("user.title", user.name)).withName("user")) {
 } {
@@ -11,19 +12,16 @@
 		@user.name
 	</a>
 } {
-	@content(template, user, "info") {
-		<div class="row">
-			<div class="col m12 activity">
-				<div class="card no-image">
-					<div class="card-image green">
-						<span class="card-title">@Messages("activity")</span>
-					</div>
-					<div class="card-content">
-					    <div class="svg-container"></div>
-					</div>
-				</div>
-			</div>
-		</div>
+	@content(template, user, "info", "flex") {
+		@contentCard(Messages("activity"), styleClass = "activity") {
+			<div class="svg-container"></div>
+		}
+		@contentCard(Messages("contributions"), styleClass = "contributions") {
+			<p>
+				@Messages("projects.amount", stats.numberOfProjects),
+				@Messages("contributions.amount", stats.numberOfActivities)
+			</p>
+		}
 	}
 
 	<script>

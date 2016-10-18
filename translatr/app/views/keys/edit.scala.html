@@ -2,18 +2,18 @@
 
 @main(template.withTitle(Messages("key.edit.title", key.project.name, key.name))) {
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
-			@key.project.name
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.keys(key.project.id)">
-			@Messages("keys")
-		</a>
-		<a class="breadcrumb" href="@routes.Keys.key(key.id)">
-			@key.name
-		</a>
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
+		@key.project.name
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.keys(key.project.id)">
+		@Messages("keys")
+	</a>
+	<a class="breadcrumb" href="@routes.Keys.key(key.id)">
+		@key.name
+	</a>
 } {
 	@tags.content {
 		<div class="col m6 offset-m3">

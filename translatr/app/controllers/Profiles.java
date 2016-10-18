@@ -69,7 +69,8 @@ public class Profiles extends AbstractController
 
 	public Result profile()
 	{
-		return loggedInUser(user -> ok(views.html.users.user.render(createTemplate(), user)));
+		return loggedInUser(
+			user -> ok(views.html.users.user.render(createTemplate(), user, userService.getUserStats(user.id))));
 	}
 
 	public Result projects()

@@ -1,6 +1,7 @@
 @(template: utils.Template, project: models.Project, form: Form[forms.SearchForm])
 
 @import utils.FormatUtils._
+@import views.html.tags.contentCard
 
 @projectActions = {
 	<li>
@@ -14,7 +15,7 @@
 	</li>
 }
 
-@main(template.withTitle(Messages("project.title", project.name))) {
+@main(template.withTitle(Messages("project.title", project.name)).withName("project")) {
 	@tags.search(form)()
 } {
 	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
@@ -24,68 +25,34 @@
 		@project.name
 	</a>
 } {
-	@content(project, "info") {
-		<div class="row">
-			<!-- Timeline -->
-			<div class="col m12 activity">
-				<div class="card no-image">
-					<div class="card-image green">
-						<span class="card-title">@Messages("activity")</span>
-					</div>
-					<div class="card-content">
-						<div class="svg-container"></div>
-					</div>
-				</div>
-			</div>
+	@content(project, "info", "flex") {
+		@contentCard(Messages("activity"), styleClass = "activity") {
+			<div class="svg-container"></div>
+		}
 
-			<!-- Locales -->
-			<div class="col m6 locales">
-				<div class="card no-image">
-					<div class="card-image blue">
-						<span class="card-title">@Messages("locales")</span>
-					</div>
-					<div class="card-content">
-						<p>
-							@Messages("locales.size", project.localesSize()),
-							@Messages("latest"):
-							@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
-						</p>
-					</div>
-				</div>
-			</div>
-	
-			<!-- Keys -->
-			<div class="col m6 keys">
-				<div class="card no-image">
-					<div class="card-image light-green">
-						<span class="card-title">@Messages("keys")</span>
-					</div>
-					<div class="card-content">
-						<p>
-							@Messages("keys.size", project.keysSize()),
-							@Messages("latest"):
-							@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
-						</p>
-					</div>
-				</div>
-			</div>
-	
-			<!-- Messages -->
-			<div class="col m12 messages">
-				<div class="card no-image">
-					<div class="card-image red">
-						<span class="card-title">@Messages("messages")</span>
-					</div>
-					<div class="card-content">
-						<p>
-							@Messages("messages.size", project.messagesSize()),
-							@Messages("latest"):
-							@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
+		@contentCard(Messages("locales"), styleClass = "locales") {
+			<p>
+				@Messages("locales.size", project.localesSize()),
+				@Messages("latest"):
+				@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
+			</p>
+		}
+
+		@contentCard(Messages("keys"), styleClass = "keys") {
+			<p>
+				@Messages("keys.size", project.keysSize()),
+				@Messages("latest"):
+				@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
+			</p>
+		}
+
+		@contentCard(Messages("messages"), styleClass = "messages") {
+			<p>
+				@Messages("messages.size", project.messagesSize()),
+				@Messages("latest"):
+				@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
+			</p>
+		}
 	}
 
 	@tags.fabContainer("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue", actions = projectActions)
