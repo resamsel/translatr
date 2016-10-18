@@ -9,8 +9,8 @@ package utils;
  */
 public enum ConfigKey
 {
-	/* The default user ID, will be removed in future releases */
-	UserId("translatr.userId");
+	/* The list of available auth providers */
+	AuthProviders("translatr.auth.providers");
 
 	private String key;
 

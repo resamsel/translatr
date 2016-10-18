@@ -18,6 +18,7 @@ import models.Locale;
 import models.Message;
 import models.Project;
 import models.User;
+import play.Configuration;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.libs.Json;
@@ -32,6 +33,7 @@ import services.LogEntryService;
 import services.MessageService;
 import services.ProjectService;
 import services.UserService;
+import utils.ConfigKey;
 
 /**
  * This controller contains an action to handle HTTP requests to the application's home page.
@@ -42,6 +44,8 @@ public class Application extends AbstractController
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
 	public static final String USER_ROLE = "user";
+
+	private final Configuration configuration;
 
 	private final ProjectService projectService;
 
@@ -54,12 +58,13 @@ public class Application extends AbstractController
 	private final LogEntryService logEntryService;
 
 	@Inject
-	public Application(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-				ProjectService projectService, LocaleService localeService, KeyService keyService,
+	public Application(Injector injector, Configuration configuration, CacheApi cache, PlayAuthenticate auth,
+				UserService userService, ProjectService projectService, LocaleService localeService, KeyService keyService,
 				MessageService messageService, LogEntryService logEntryService)
 	{
 		super(injector, cache, auth, userService);
 
+		this.configuration = configuration;
 		this.projectService = projectService;
 		this.localeService = localeService;
 		this.keyService = keyService;
@@ -74,7 +79,7 @@ public class Application extends AbstractController
 
 	public Result login()
 	{
-		return ok(views.html.login.render(createTemplate()));
+		return ok(views.html.login.render(createTemplate(), configuration.getStringList(ConfigKey.AuthProviders.key())));
 	}
 
 	public Result logout()
