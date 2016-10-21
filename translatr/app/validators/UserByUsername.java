@@ -11,7 +11,7 @@ import javax.validation.Payload;
 import play.data.Form;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

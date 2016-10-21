@@ -4,6 +4,7 @@ import static utils.Stopwatch.log;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -29,195 +30,177 @@ import services.MessageService;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"locale_id", "key_id"})})
-public class Message
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
+public class Message {
+  private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
-	@Id
-	public UUID id;
+  @Id
+  public UUID id;
 
-	@Version
-	public Long version;
+  @Version
+  public Long version;
 
-	@CreatedTimestamp
-	public DateTime whenCreated;
+  @CreatedTimestamp
+  public DateTime whenCreated;
 
-	@UpdatedTimestamp
-	public DateTime whenUpdated;
+  @UpdatedTimestamp
+  public DateTime whenUpdated;
 
-	@ManyToOne(optional = false)
-	public Locale locale;
+  @ManyToOne(optional = false)
+  public Locale locale;
 
-	@ManyToOne(optional = false)
-	public Key key;
+  @ManyToOne(optional = false)
+  public Key key;
 
-	@Column(nullable = false, length = 1024 * 1024)
-	public String value;
+  @Column(nullable = false, length = 1024 * 1024)
+  public String value;
 
-	public Message()
-	{
-	}
+  public Message() {}
 
-	public Message(models.Message message)
-	{
-		this(message.locale, message.key, message.value);
-	}
+  public Message(models.Message message) {
+    this(message.locale, message.key, message.value);
+  }
 
-	public Message(Locale locale, Key key, String value)
-	{
-		this.locale = locale;
-		this.key = key;
-		this.value = value;
-	}
+  public Message(Locale locale, Key key, String value) {
+    this.locale = locale;
+    this.key = key;
+    this.value = value;
+  }
 
-	private static final Find<UUID, Message> find = new Find<UUID, Message>()
-	{
-	};
+  private static final Find<UUID, Message> find = new Find<UUID, Message>() {};
 
-	public void updateFrom(Message in)
-	{
-		value = in.value;
-	}
+  public void updateFrom(Message in) {
+    value = in.value;
+  }
 
-	/**
-	 * @param fromString
-	 * @return
-	 */
-	public static Message byId(UUID id)
-	{
-		return find.setId(id).fetch("key").fetch("locale").findUnique();
-	}
+  /**
+   * @param fromString
+   * @return
+   */
+  public static Message byId(UUID id) {
+    return find.setId(id).fetch("key").fetch("locale").findUnique();
+  }
 
-	/**
-	 * @param key
-	 * @param locale
-	 * @return
-	 */
-	public static Message byKeyAndLocale(Key key, Locale locale)
-	{
-		return find.fetch("key").fetch("locale").where().eq("key", key).eq("locale", locale).findUnique();
-	}
+  /**
+   * @param collect
+   * @return
+   */
+  public static Map<UUID, Message> byIds(List<UUID> ids) {
+    return find.fetch("key").fetch("locale").where().in("id", ids).findMap("id", UUID.class);
+  }
 
-	/**
-	 * @param project
-	 * @return
-	 */
-	public static int countBy(Project project)
-	{
-		return Play.current().injector().instanceOf(MessageService.class).countBy(project);
-	}
+  /**
+   * @param key
+   * @param locale
+   * @return
+   */
+  public static Message byKeyAndLocale(Key key, Locale locale) {
+    return find.fetch("key").fetch("locale").where().eq("key", key).eq("locale", locale)
+        .findUnique();
+  }
 
-	/**
-	 * @param project
-	 * @return
-	 */
-	public static int countByUncached(Project project)
-	{
-		return find.where().eq("key.project", project).findRowCount();
-	}
+  /**
+   * @param project
+   * @return
+   */
+  public static int countBy(Project project) {
+    return Play.current().injector().instanceOf(MessageService.class).countBy(project);
+  }
 
-	/**
-	 * @param key
-	 * @return
-	 */
-	public static int countBy(Key key)
-	{
-		return find.where().eq("key", key).findRowCount();
-	}
+  /**
+   * @param project
+   * @return
+   */
+  public static int countByUncached(Project project) {
+    return find.where().eq("key.project", project).findRowCount();
+  }
 
-	/**
-	 * @param locale
-	 * @return
-	 */
-	public static int countBy(Locale locale)
-	{
-		return find.where().eq("locale", locale).findRowCount();
-	}
+  /**
+   * @param key
+   * @return
+   */
+  public static int countBy(Key key) {
+    return find.where().eq("key", key).findRowCount();
+  }
 
-	/**
-	 * @param messageCriteria
-	 * @return
-	 */
-	public static List<Message> findBy(MessageCriteria criteria)
-	{
-		ExpressionList<Message> query = Message.find.fetch("key").fetch("locale").where();
+  /**
+   * @param locale
+   * @return
+   */
+  public static int countBy(Locale locale) {
+    return find.where().eq("locale", locale).findRowCount();
+  }
 
-		if(criteria.getProjectId() != null)
-			query.eq("key.project.id", criteria.getProjectId());
+  /**
+   * @param messageCriteria
+   * @return
+   */
+  public static List<Message> findBy(MessageCriteria criteria) {
+    ExpressionList<Message> query = Message.find.fetch("key").fetch("locale").where();
 
-		if(criteria.getLocaleId() != null)
-			query.eq("locale.id", criteria.getLocaleId());
+    if (criteria.getProjectId() != null)
+      query.eq("key.project.id", criteria.getProjectId());
 
-		if(criteria.getKeyName() != null)
-			query.eq("key.name", criteria.getKeyName());
+    if (criteria.getLocaleId() != null)
+      query.eq("locale.id", criteria.getLocaleId());
 
-		if(criteria.getKeyIds() != null)
-			query.in("key.id", criteria.getKeyIds());
+    if (criteria.getKeyName() != null)
+      query.eq("key.name", criteria.getKeyName());
 
-		if(criteria.getOrder() != null)
-			query.setOrderBy(criteria.getOrder());
+    if (criteria.getKeyIds() != null)
+      query.in("key.id", criteria.getKeyIds());
 
-		if(criteria.getLimit() != null)
-			query.setMaxRows(criteria.getLimit());
+    if (criteria.getOrder() != null)
+      query.setOrderBy(criteria.getOrder());
 
-		return log(() -> query.findList(), LOGGER, "findBy");
-	}
+    if (criteria.getLimit() != null)
+      query.setMaxRows(criteria.getLimit());
 
-	/**
-	 * @param localeId
-	 * @return
-	 */
-	public static List<Message> byLocale(UUID localeId)
-	{
-		return find.fetch("key").fetch("locale").where().eq("locale.id", localeId).findList();
-	}
+    return log(() -> query.findList(), LOGGER, "findBy");
+  }
 
-	/**
-	 * @param localeId
-	 * @return
-	 */
-	public static List<Message> byLocales(Collection<UUID> ids)
-	{
-		return find.where().in("locale.id", ids).findList();
-	}
+  /**
+   * @param localeId
+   * @return
+   */
+  public static List<Message> byLocale(UUID localeId) {
+    return find.fetch("key").fetch("locale").where().eq("locale.id", localeId).findList();
+  }
 
-	/**
-	 * @param key
-	 * @return
-	 */
-	public static List<Message> byKey(Key key)
-	{
-		return find.where().eq("key", key).findList();
-	}
+  /**
+   * @param localeId
+   * @return
+   */
+  public static List<Message> byLocales(Collection<UUID> ids) {
+    return find.where().in("locale.id", ids).findList();
+  }
 
-	/**
-	 * @param key
-	 * @return
-	 */
-	public static List<Message> byKeys(Collection<UUID> ids)
-	{
-		return find.where().in("key.id", ids).findList();
-	}
+  /**
+   * @param key
+   * @return
+   */
+  public static List<Message> byKey(Key key) {
+    return find.where().eq("key", key).findList();
+  }
 
-	/**
-	 * @param localeId
-	 * @param key
-	 * @return
-	 */
-	public static Message byLocaleAndKeyName(UUID localeId, String key)
-	{
-		return find.where().eq("locale.id", localeId).eq("key.name", key).findUnique();
-	}
+  /**
+   * @param key
+   * @return
+   */
+  public static List<Message> byKeys(Collection<UUID> ids) {
+    return find.where().in("key.id", ids).findList();
+  }
 
-	public static List<Message> last(Project project, int limit)
-	{
-		return find
-			.fetch("key")
-			.fetch("locale")
-			.where()
-			.eq("key.project", project)
-			.order("whenUpdated desc")
-			.setMaxRows(limit)
-			.findList();
-	}
+  /**
+   * @param localeId
+   * @param key
+   * @return
+   */
+  public static Message byLocaleAndKeyName(UUID localeId, String key) {
+    return find.where().eq("locale.id", localeId).eq("key.name", key).findUnique();
+  }
+
+  public static List<Message> last(Project project, int limit) {
+    return find.fetch("key").fetch("locale").where().eq("key.project", project)
+        .order("whenUpdated desc").setMaxRows(limit).findList();
+  }
 }

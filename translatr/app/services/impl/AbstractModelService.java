@@ -10,11 +10,12 @@ import com.avaje.ebean.Ebean;
 import play.Configuration;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
+import services.LogEntryService;
 import services.ModelService;
 import utils.TransactionUtils;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
@@ -26,12 +27,15 @@ public abstract class AbstractModelService<T> implements ModelService<T>
 
 	protected final Configuration configuration;
 
+	protected final LogEntryService logEntryService;
+
 	/**
 	 * @param configuration
 	 */
-	public AbstractModelService(Configuration configuration)
+	public AbstractModelService(Configuration configuration, LogEntryService logEntryService)
 	{
 		this.configuration = configuration;
+		this.logEntryService = logEntryService;
 	}
 
 	/**

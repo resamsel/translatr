@@ -23,7 +23,7 @@ import services.MessageService;
 import services.ProjectService;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

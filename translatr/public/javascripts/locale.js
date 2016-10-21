@@ -158,7 +158,7 @@ App.Modules.MessageModule = function(sb) {
 		        progress.css('visibility', 'visible');
 		    	sb.utilities.ajax(
 		    		sb.utilities.merge(
-						jsRoutes.controllers.Api.putMessage(),
+						jsRoutes.controllers.Translations.create(),
 						{
 							contentType: 'application/json',
 							dataType: 'json',

@@ -56,7 +56,7 @@ import services.UserService;
 import utils.TransactionUtils;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

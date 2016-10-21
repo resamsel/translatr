@@ -13,7 +13,7 @@ import play.data.FormFactory;
 import play.mvc.Call;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

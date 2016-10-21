@@ -14,12 +14,15 @@ import com.feth.play.module.pa.user.AuthUser;
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteLinkedAccountCommand;
+import criterias.AccessTokenCriteria;
 import criterias.LinkedAccountCriteria;
 import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import forms.Accept;
+import forms.AccessTokenForm;
 import forms.SearchForm;
 import forms.UserForm;
+import models.AccessToken;
 import models.LinkedAccount;
 import models.LogEntry;
 import models.Project;
@@ -31,11 +34,12 @@ import play.data.FormFactory;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.AccessTokenService;
 import services.LinkedAccountService;
 import services.UserService;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
@@ -51,6 +55,8 @@ public class Profiles extends AbstractController
 
 	private final LinkedAccountService linkedAccountService;
 
+	private final AccessTokenService accessTokenService;
+
 	/**
 	 * @param injector
 	 * @param cache
@@ -59,12 +65,14 @@ public class Profiles extends AbstractController
 	 */
 	@Inject
 	public Profiles(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-				FormFactory formFactory, Configuration configuration, LinkedAccountService linkedAccountService)
+				FormFactory formFactory, Configuration configuration, LinkedAccountService linkedAccountService,
+				AccessTokenService accessTokenService)
 	{
 		super(injector, cache, auth, userService);
 		this.formFactory = formFactory;
 		this.configuration = configuration;
 		this.linkedAccountService = linkedAccountService;
+		this.accessTokenService = accessTokenService;
 	}
 
 	public Result profile()
@@ -247,6 +255,40 @@ public class Profiles extends AbstractController
 
 			return auth.merge(ctx(), merge);
 		}
+	}
+
+	public Result accessTokens()
+	{
+		return loggedInUser(user -> {
+			return ok(
+				views.html.users.accessTokens.render(
+					createTemplate(),
+					user,
+					AccessToken.findBy(new AccessTokenCriteria().withUserId(user.id)),
+					AccessTokenForm.form(formFactory)));
+		});
+	}
+
+	public Result accessTokenCreate()
+	{
+		return loggedInUser(user -> {
+			return ok(
+				views.html.users.accessTokenCreate.render(createTemplate(), user, AccessTokenForm.form(formFactory)));
+		});
+	}
+
+	public Result doAccessTokenCreate()
+	{
+		return loggedInUser(user -> {
+			Form<AccessTokenForm> form = AccessTokenForm.form(formFactory).bindFromRequest();
+
+			if(form.hasErrors())
+				return badRequest(views.html.users.accessTokenCreate.render(createTemplate(), user, form));
+
+			accessTokenService.save(form.get().fill(new AccessToken()).withUser(user));
+
+			return redirect(routes.Profiles.accessTokens());
+		});
 	}
 
 	private Result loggedInUser(Function<User, Result> processor)

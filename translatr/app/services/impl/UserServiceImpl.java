@@ -28,7 +28,7 @@ import services.LogEntryService;
 import services.UserService;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
@@ -41,8 +41,6 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
 
 	private final CacheApi cache;
 
-	private final LogEntryService logEntryService;
-
 	private final LinkedAccountService linkedAccountService;
 
 	/**
@@ -52,10 +50,9 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
 	public UserServiceImpl(Configuration configuration, CacheApi cache, LinkedAccountService linkedAccountService,
 				LogEntryService logEntryService)
 	{
-		super(configuration);
+		super(configuration, logEntryService);
 		this.cache = cache;
 		this.linkedAccountService = linkedAccountService;
-		this.logEntryService = logEntryService;
 	}
 
 	@Override

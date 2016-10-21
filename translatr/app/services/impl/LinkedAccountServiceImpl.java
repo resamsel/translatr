@@ -6,9 +6,10 @@ import javax.inject.Singleton;
 import models.LinkedAccount;
 import play.Configuration;
 import services.LinkedAccountService;
+import services.LogEntryService;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
@@ -21,9 +22,9 @@ public class LinkedAccountServiceImpl extends AbstractModelService<LinkedAccount
 	 * @param configuration
 	 */
 	@Inject
-	public LinkedAccountServiceImpl(Configuration configuration)
+	public LinkedAccountServiceImpl(Configuration configuration, LogEntryService logEntryService)
 	{
-		super(configuration);
+		super(configuration, logEntryService);
 	}
 
 	/**

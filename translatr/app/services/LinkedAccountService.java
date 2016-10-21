@@ -6,7 +6,7 @@ import models.LinkedAccount;
 import services.impl.LinkedAccountServiceImpl;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

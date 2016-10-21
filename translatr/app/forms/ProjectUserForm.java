@@ -9,7 +9,7 @@ import play.data.validation.Constraints;
 import validators.UserByUsername;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

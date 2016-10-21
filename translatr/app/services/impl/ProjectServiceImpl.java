@@ -28,7 +28,7 @@ import services.LogEntryService;
 import services.ProjectService;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
@@ -45,8 +45,6 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 
 	private final KeyService keyService;
 
-	private final LogEntryService logEntryService;
-
 	/**
 	 * 
 	 */
@@ -54,11 +52,10 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 	public ProjectServiceImpl(Configuration configuration, CacheApi cache, LocaleService localeService,
 				KeyService keyService, LogEntryService logEntryService)
 	{
-		super(configuration);
+		super(configuration, logEntryService);
 		this.cache = cache;
 		this.localeService = localeService;
 		this.keyService = keyService;
-		this.logEntryService = logEntryService;
 	}
 
 	/**

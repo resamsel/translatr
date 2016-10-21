@@ -5,7 +5,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import models.User;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

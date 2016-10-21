@@ -174,16 +174,24 @@ public class User implements Subject
 	public static User loggedInUser()
 	{
 		Injector injector = play.api.Play.current().injector();
-
-		AuthUser authUser = loggedInAuthUser();
-		if(authUser == null)
-			return null;
-
 		Map<String, Object> args = Context.current().args;
-		if(!args.containsKey(authUser.toString()))
-			args.put(authUser.toString(), injector.instanceOf(UserService.class).getLocalUser(authUser));
 
-		return (User)args.get(authUser.toString());
+		// Logged-in via access_token?
+		if(args.containsKey("accessToken"))
+			return ((AccessToken)args.get("accessToken")).user;
+
+		// Logged-in via auth plugin?
+		AuthUser authUser = loggedInAuthUser();
+		if(authUser != null)
+		{
+			if(!args.containsKey(authUser.toString()))
+				args.put(authUser.toString(), injector.instanceOf(UserService.class).getLocalUser(authUser));
+
+			return (User)args.get(authUser.toString());
+		}
+
+		// Not logged-in
+		return null;
 	}
 
 	/**

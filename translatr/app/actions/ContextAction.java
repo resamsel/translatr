@@ -15,48 +15,44 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
  * @version 17 Aug 2016
  */
-public class ContextAction extends Action.Simple
-{
-	private final CacheApi cache;
+public class ContextAction extends Action.Simple {
+  private final CacheApi cache;
 
-	/**
-	 * 
-	 */
-	@Inject
-	public ContextAction(CacheApi cache)
-	{
-		this.cache = cache;
-	}
+  /**
+   * 
+   */
+  @Inject
+  public ContextAction(CacheApi cache) {
+    this.cache = cache;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CompletionStage<Result> call(Context ctx)
-	{
-		// DEBUG
-		// AbstractController.addMessage(ctx.messages().at("user.incomplete"));
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public CompletionStage<Result> call(Context ctx) {
+    // DEBUG
+    // AbstractController.addMessage(ctx.messages().at("user.incomplete"));
 
-		User user = User.loggedInUser();
-		if(user != null && !user.isComplete() && !ctx.request().path().equals(routes.Profiles.edit().path()))
-		{
-			AbstractController.addMessage(ctx.messages().at("user.incomplete"));
-			return CompletableFuture.completedFuture(redirect(routes.Profiles.edit()));
-		}
+    User user = User.loggedInUser();
+    if (user != null && !user.isComplete()
+        && !ctx.request().path().equals(routes.Profiles.edit().path())) {
+      AbstractController.addMessage(ctx.messages().at("user.incomplete"));
+      return CompletableFuture.completedFuture(redirect(routes.Profiles.edit()));
+    }
 
-		if(ctx.flash().containsKey("undo"))
-		{
-			String key = ctx.flash().get("undo");
-			ctx.args.put("undoMessage", ((Command<?>)cache.get(key)).getMessage());
-			ctx.args.put("undoCommand", key);
-		}
+    if (ctx.flash().containsKey("undo")) {
+      String key = ctx.flash().get("undo");
+      ctx.args.put("undoMessage", ((Command<?>) cache.get(key)).getMessage());
+      ctx.args.put("undoCommand", key);
+    }
 
-		return delegate.call(ctx);
-	}
+    return delegate.call(ctx);
+  }
 }

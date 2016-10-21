@@ -1,0 +1,40 @@
+@(template: utils.Template, user: User, form: Form[forms.AccessTokenForm])
+
+@main(template.withTitle(Messages("accessToken.create.title")).withName("access-token-create")) {
+} {
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb active" href="@routes.Profiles.profile()">
+		@user.name
+	</a>
+} {
+	@tags.content {
+		<div class="col m6 offset-m3">
+			<form action="@routes.Profiles.accessTokenCreate()" method="post">
+				<div id="panel-message" class="card no-image">
+					<div class="card-image teal">
+						<span class="card-title">@Messages("accessToken.create.title")</span>
+					</div>
+					<div class="card-content">
+						@accessTokenFormContent(user, form)
+					</div>
+					<div class="card-action">
+						<button
+							type="submit"
+							class="btn waves-effect waves-light btn-save">
+							@Messages("button.save")
+							<i class="material-icons right">send</i>
+						</button>
+						<a
+							class="btn-flat btn-cancel black-text"
+							href="@routes.Profiles.accessTokens()">
+							@Messages("button.cancel")
+						</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	}
+	<script src="@routes.Assets.versioned("javascripts/accessTokenCreate.js")"></script>
+}

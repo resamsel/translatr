@@ -3,7 +3,7 @@ package models;
 import be.objectify.deadbolt.java.models.Role;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

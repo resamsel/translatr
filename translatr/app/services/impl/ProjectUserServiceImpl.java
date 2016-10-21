@@ -13,7 +13,7 @@ import services.LogEntryService;
 import services.ProjectUserService;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
@@ -22,8 +22,6 @@ import services.ProjectUserService;
 @Singleton
 public class ProjectUserServiceImpl extends AbstractModelService<ProjectUser> implements ProjectUserService
 {
-	private final LogEntryService logEntryService;
-
 	/**
 	 * 
 	 */
@@ -31,8 +29,7 @@ public class ProjectUserServiceImpl extends AbstractModelService<ProjectUser> im
 	public ProjectUserServiceImpl(Configuration configuration, LocaleService localeService, KeyService keyService,
 				LogEntryService logEntryService)
 	{
-		super(configuration);
-		this.logEntryService = logEntryService;
+		super(configuration, logEntryService);
 	}
 
 	/**

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

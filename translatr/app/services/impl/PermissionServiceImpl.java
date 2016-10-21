@@ -5,7 +5,7 @@ import javax.inject.Singleton;
 import services.PermissionService;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

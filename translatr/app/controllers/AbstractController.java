@@ -18,7 +18,7 @@ import services.UserService;
 import utils.Template;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

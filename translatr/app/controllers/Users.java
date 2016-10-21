@@ -19,7 +19,7 @@ import services.LogEntryService;
 import services.UserService;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

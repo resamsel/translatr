@@ -9,7 +9,7 @@ import models.User;
 import services.impl.ProjectServiceImpl;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

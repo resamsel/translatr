@@ -39,152 +39,131 @@ import utils.ConfigKey;
  * This controller contains an action to handle HTTP requests to the application's home page.
  */
 @With(ContextAction.class)
-public class Application extends AbstractController
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+public class Application extends AbstractController {
+  private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-	public static final String USER_ROLE = "user";
+  public static final String USER_ROLE = "user";
 
-	private final Configuration configuration;
+  private final Configuration configuration;
 
-	private final ProjectService projectService;
+  private final ProjectService projectService;
 
-	private final LocaleService localeService;
+  private final LocaleService localeService;
 
-	private final KeyService keyService;
+  private final KeyService keyService;
 
-	private final MessageService messageService;
+  private final MessageService messageService;
 
-	private final LogEntryService logEntryService;
+  private final LogEntryService logEntryService;
 
-	@Inject
-	public Application(Injector injector, Configuration configuration, CacheApi cache, PlayAuthenticate auth,
-				UserService userService, ProjectService projectService, LocaleService localeService, KeyService keyService,
-				MessageService messageService, LogEntryService logEntryService)
-	{
-		super(injector, cache, auth, userService);
+  @Inject
+  public Application(Injector injector, Configuration configuration, CacheApi cache,
+      PlayAuthenticate auth, UserService userService, ProjectService projectService,
+      LocaleService localeService, KeyService keyService, MessageService messageService,
+      LogEntryService logEntryService) {
+    super(injector, cache, auth, userService);
 
-		this.configuration = configuration;
-		this.projectService = projectService;
-		this.localeService = localeService;
-		this.keyService = keyService;
-		this.messageService = messageService;
-		this.logEntryService = logEntryService;
-	}
+    this.configuration = configuration;
+    this.projectService = projectService;
+    this.localeService = localeService;
+    this.keyService = keyService;
+    this.messageService = messageService;
+    this.logEntryService = logEntryService;
+  }
 
-	public Result index()
-	{
-		return ok(views.html.index.render(createTemplate()));
-	}
+  public Result index() {
+    return ok(views.html.index.render(createTemplate()));
+  }
 
-	public Result login()
-	{
-		return ok(views.html.login.render(createTemplate(), configuration.getStringList(ConfigKey.AuthProviders.key())));
-	}
+  public Result login() {
+    return ok(views.html.login.render(createTemplate(),
+        configuration.getStringList(ConfigKey.AuthProviders.key())));
+  }
 
-	public Result logout()
-	{
-		userService.logout(auth.getUser(session()));
-		return injector.instanceOf(com.feth.play.module.pa.controllers.Authenticate.class).logout();
-	}
+  public Result logout() {
+    userService.logout(auth.getUser(session()));
+    return injector.instanceOf(com.feth.play.module.pa.controllers.Authenticate.class).logout();
+  }
 
-	public Result oAuthDenied(final String providerKey)
-	{
-		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
+  public Result oAuthDenied(final String providerKey) {
+    com.feth.play.module.pa.controllers.Authenticate.noCache(response());
 
-		return redirectWithError(
-			routes.Application.index(),
-			"You need to accept the OAuth connection in order to use this website!");
-	}
+    return redirectWithError(routes.Application.index(),
+        "You need to accept the OAuth connection in order to use this website!");
+  }
 
-	public Result activityCsv()
-	{
-		return ok(new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria())));
-	}
+  public Result activityCsv() {
+    return ok(
+        new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria())));
+  }
 
-	public Result load()
-	{
-		String brand = ctx().messages().at("brand");
-		User user = User.loggedInUser();
-		if(user == null)
-			user = User.byUsername("translatr");
-		if(user == null)
-			return redirectWithError(routes.Application.index(), ctx().messages().at("user.notFound"));
+  public Result load() {
+    String brand = ctx().messages().at("brand");
+    User user = User.loggedInUser();
+    if (user == null)
+      user = User.byUsername("translatr");
+    if (user == null)
+      return redirectWithError(routes.Application.index(), ctx().messages().at("user.notFound"));
 
-		Project project = Project.byOwnerAndName(user, brand);
-		if(project == null)
-			project = projectService.save(new Project(brand).withOwner(user));
-		else if(project.deleted)
-			projectService.save(project.withDeleted(false));
+    Project project = Project.byOwnerAndName(user, brand);
+    if (project == null)
+      project = projectService.save(new Project(brand).withOwner(user));
+    else if (project.deleted)
+      projectService.save(project.withDeleted(false));
 
-		select(project);
+    select(project);
 
-		for(Entry<String, scala.collection.immutable.Map<String, String>> bundle : JavaConversions
-			.mapAsJavaMap(ctx().messages().messagesApi().scalaApi().messages())
-			.entrySet())
-		{
-			LOGGER.debug("Key: {}", bundle.getKey());
-			if("default.play".equals(bundle.getKey()))
-				break;
-			Locale locale = Locale.byProjectAndName(project, bundle.getKey());
-			if(locale == null)
-				locale = localeService.save(new Locale(project, bundle.getKey()));
-			for(Entry<String, String> msg : JavaConversions.mapAsJavaMap(bundle.getValue()).entrySet())
-			{
-				Key key = Key.byProjectAndName(project, msg.getKey());
-				if(key == null)
-					key = keyService.save(new Key(project, msg.getKey()));
-				Message message = Message.byKeyAndLocale(key, locale);
-				if(message == null)
-					messageService.save(new Message(locale, key, msg.getValue()));
-			}
-		}
+    for (Entry<String, scala.collection.immutable.Map<String, String>> bundle : JavaConversions
+        .mapAsJavaMap(ctx().messages().messagesApi().scalaApi().messages()).entrySet()) {
+      LOGGER.debug("Key: {}", bundle.getKey());
+      if ("default.play".equals(bundle.getKey()))
+        break;
+      Locale locale = Locale.byProjectAndName(project, bundle.getKey());
+      if (locale == null)
+        locale = localeService.save(new Locale(project, bundle.getKey()));
+      for (Entry<String, String> msg : JavaConversions.mapAsJavaMap(bundle.getValue()).entrySet()) {
+        Key key = Key.byProjectAndName(project, msg.getKey());
+        if (key == null)
+          key = keyService.save(new Key(project, msg.getKey()));
+        Message message = Message.byKeyAndLocale(key, locale);
+        if (message == null)
+          messageService.save(new Message(locale, key, msg.getValue()));
+      }
+    }
 
-		return redirectWithMessage(
-			routes.Projects.project(project.id),
-			ctx().messages().at("project.created", project.name));
-	}
+    return redirectWithMessage(routes.Projects.project(project.id),
+        ctx().messages().at("project.created", project.name));
+  }
 
-	public Result commandExecute(String commandKey)
-	{
-		Command<?> command = getCommand(commandKey);
+  public Result commandExecute(String commandKey) {
+    Command<?> command = getCommand(commandKey);
 
-		if(command == null)
-			notFound(Json.toJson("Command not found"));
+    if (command == null)
+      notFound(Json.toJson("Command not found"));
 
-		command.execute();
+    command.execute();
 
-		Call call = command.redirect();
+    Call call = command.redirect();
 
-		if(call != null)
-			return redirect(call);
+    if (call != null)
+      return redirect(call);
 
-		String referer = request().getHeader("Referer");
+    String referer = request().getHeader("Referer");
 
-		if(referer == null)
-			return redirect(routes.Application.index());
+    if (referer == null)
+      return redirect(routes.Application.index());
 
-		return redirect(referer);
-	}
+    return redirect(referer);
+  }
 
-	public Result javascriptRoutes()
-	{
-		return ok(
-			JavaScriptReverseRouter.create(
-				"jsRoutes",
-				routes.javascript.Application.activityCsv(),
-				routes.javascript.Users.activityCsv(),
-				routes.javascript.Dashboards.search(),
-				routes.javascript.Projects.search(),
-				routes.javascript.Projects.keysSearch(),
-				routes.javascript.Projects.activityCsv(),
-				routes.javascript.Locales.keysSearch(),
-				routes.javascript.Locales.locale(),
-				routes.javascript.Keys.key(),
-				routes.javascript.Keys.createImmediately(),
-				routes.javascript.Keys.remove(),
-				routes.javascript.Api.getMessage(),
-				routes.javascript.Api.putMessage(),
-				routes.javascript.Api.findMessages()));
-	}
+  public Result javascriptRoutes() {
+    return ok(JavaScriptReverseRouter.create("jsRoutes",
+        routes.javascript.Application.activityCsv(), routes.javascript.Users.activityCsv(),
+        routes.javascript.Dashboards.search(), routes.javascript.Projects.search(),
+        routes.javascript.Projects.keysSearch(), routes.javascript.Projects.activityCsv(),
+        routes.javascript.Locales.keysSearch(), routes.javascript.Locales.locale(),
+        routes.javascript.Keys.key(), routes.javascript.Keys.createImmediately(),
+        routes.javascript.Keys.remove(), routes.javascript.Api.getMessage(),
+        routes.javascript.Translations.create(), routes.javascript.Api.findMessages()));
+  }
 }

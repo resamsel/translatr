@@ -10,7 +10,7 @@ import play.data.validation.ValidationError;
 import play.mvc.Http.Context;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

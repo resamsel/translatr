@@ -1,3 +1,8 @@
+accessToken.create = Zugangsschlüssel anlegen
+accessToken.create.title = Zugangsschlüssel anlegen
+accessToken.create.tooltip = Neuen Zugangsschlüssel anlegen
+accessToken.name = Name
+accessTokens = Zugangsschlüssel
 activity = Aktivität
 activity.Create.title = {0} {1} angelegt
 activity.Delete.title = {0} {1} gelöscht
@@ -47,6 +52,7 @@ dashboard = Dashboard
 dashboard.info = Hier gibt es {0,choice,0#noch keine Projekte|1#ein Projekt|1<{0} Projekte}
 dashboard.title = Dashboard
 dashboard.tooltip = Dashboard öffnen
+error.accesstokenbyuserandname = Zugangsschlüssel mit angegebenem Namen existiert bereits
 error.maxLength = Maximallänge beträgt {0} Zeichen
 error.restricted.content = Der Zugriff auf die angeforderte Resource wurde verwehrt. Bitte melde dich an, um Zugriff zu erhalten.
 error.restricted.title = Zugriff verwehrt

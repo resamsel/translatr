@@ -10,7 +10,7 @@ import models.UserStats;
 import services.impl.UserServiceImpl;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

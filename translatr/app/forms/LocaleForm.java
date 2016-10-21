@@ -4,7 +4,7 @@ import models.Locale;
 import play.data.validation.Constraints;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

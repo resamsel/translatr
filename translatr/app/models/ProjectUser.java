@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import criterias.ProjectUserCriteria;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

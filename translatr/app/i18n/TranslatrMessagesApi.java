@@ -15,7 +15,7 @@ import play.mvc.Http.Context;
 import scala.collection.Seq;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

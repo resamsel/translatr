@@ -18,6 +18,10 @@
 			href="@routes.Profiles.linkedAccounts()">
 			@Messages("linkedAccounts")
 		</a>
+		<a class="collection-item @if(active == "accessTokens") { active green } else { green-text }"
+			href="@routes.Profiles.accessTokens()">
+			@Messages("accessTokens")
+		</a>
 	} else {
 		<a class="collection-item @if(active == "info") { active green } else { green-text }"
 			href="@routes.Users.user(user.id)">

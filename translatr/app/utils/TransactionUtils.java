@@ -6,7 +6,7 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Transaction;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

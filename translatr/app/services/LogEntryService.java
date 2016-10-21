@@ -10,7 +10,7 @@ import models.LogEntry;
 import services.impl.LogEntryServiceImpl;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

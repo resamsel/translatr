@@ -35,7 +35,7 @@ import play.mvc.With;
 import services.UserService;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

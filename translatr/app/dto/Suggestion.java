@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import models.Suggestable;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

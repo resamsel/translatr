@@ -6,7 +6,7 @@ import java.util.function.Function;
 import models.Aggregate;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
