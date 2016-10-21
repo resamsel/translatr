@@ -5,7 +5,8 @@
 		id="field-@id"
 		type="checkbox"
 		name="@field.name"
-		class="validate @if(!field.errors.isEmpty) { invalid }" />
+		class="validate @if(!field.errors.isEmpty) { invalid }"
+		@if(field.value != null && field.value.contains("true")){ checked="checked" } />
 	<label
 		for="field-@id"
 		@if(!field.errors.isEmpty) {

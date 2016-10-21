@@ -17,7 +17,9 @@
 				<li class="collection-item avatar">
 					<i class="fa circle red"></i>
 					<span class="title">
-						@accessToken.name
+						<a href="@routes.Profiles.accessToken(accessToken.id)">
+							@accessToken.name
+						</a>
 					</span>
 					<p>
 						@Messages("when.created", pretty(ctx.lang().locale, accessToken.whenCreated))

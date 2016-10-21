@@ -1,7 +1,11 @@
 accessToken.create = Zugangsschlüssel anlegen
 accessToken.create.title = Zugangsschlüssel anlegen
 accessToken.create.tooltip = Neuen Zugangsschlüssel anlegen
+accessToken.edit = Zugangsschlüssel bearbeiten
+accessToken.key = Schlüssel
 accessToken.name = Name
+accessToken.scopes = Scopes
+accessToken.title = Zugangsschlüssel
 accessTokens = Zugangsschlüssel
 activity = Aktivität
 activity.Create.title = {0} {1} angelegt

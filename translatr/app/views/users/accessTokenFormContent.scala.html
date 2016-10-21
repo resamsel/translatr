@@ -1,3 +1,16 @@
 @(user: User, form: Form[forms.AccessTokenForm])
 
 @inputs.text(form("name"), "accessToken-name", "accessToken.name")
+
+@if(form("key").value != null) {
+	@inputs.text(form("key"), "accessToken-key", "accessToken.key", disabled = true)
+}
+
+<h5 class="header">@Messages("accessToken.scopes")</h5>
+
+@inputs.checkbox(form("scopeProjectAdmin"), "accessToken-scopeProjectAdmin", Html("project:admin"))
+@inputs.checkbox(form("scopeProjectRead"), "accessToken-scopeProjectRead", Html("project:read"))
+@inputs.checkbox(form("scopeProjectWrite"), "accessToken-scopeProjectWrite", Html("project:write"))
+@inputs.checkbox(form("scopeLocaleAdmin"), "accessToken-scopeLocaleAdmin", Html("locale:admin"))
+@inputs.checkbox(form("scopeLocaleRead"), "accessToken-scopeLocaleRead", Html("locale:read"))
+@inputs.checkbox(form("scopeLocaleWrite"), "accessToken-scopeLocaleWrite", Html("locale:write"))

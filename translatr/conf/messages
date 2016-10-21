@@ -1,7 +1,11 @@
 accessToken.create = Create access token
 accessToken.create.title = Create access token
 accessToken.create.tooltip = Create new access token
+accessToken.edit = Edit access token
+accessToken.key = Token
 accessToken.name = Name
+accessToken.scopes = Scopes
+accessToken.title = Access Token
 accessTokens = Access Tokens
 activity = Activity
 activity.Create.title = {0} created {1}

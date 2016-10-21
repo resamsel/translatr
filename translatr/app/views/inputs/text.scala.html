@@ -1,4 +1,4 @@
-@(field: Form.Field, id: String, labelKey: String)
+@(field: Form.Field, id: String, labelKey: String = null, label: String = null, disabled: Boolean = false)
 
 <div class="input-field">
 	<input
@@ -6,6 +6,7 @@
 		type="text"
 		name="@field.name"
 		class="validate @if(!field.errors.isEmpty) { invalid }"
+		@if(disabled) { disabled }
 		value="@field.value" />
 	<label
 		for="field-@id"
@@ -14,5 +15,11 @@
 				@Messages(error.messages, error.arguments.toArray: _*)
 			}"
 		}
-		>@Messages(labelKey)</label>
+		>
+		@if(labelKey != null) {
+			@Messages(labelKey)
+		} else {
+			@label
+		}
+	</label>
 </div>

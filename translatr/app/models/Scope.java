@@ -8,17 +8,17 @@ import java.util.Map;
  * @version 21 Oct 2016
  */
 public enum Scope {
+  ProjectAdmin(ScopeSection.Project, ScopeType.Admin),
+
   ProjectRead(ScopeSection.Project, ScopeType.Read),
 
   ProjectWrite(ScopeSection.Project, ScopeType.Write),
 
-  ProjectAdmin(ScopeSection.Project, ScopeType.Admin),
+  LocaleAdmin(ScopeSection.Locale, ScopeType.Admin),
 
   LocaleRead(ScopeSection.Locale, ScopeType.Read),
 
-  LocaleWrite(ScopeSection.Locale, ScopeType.Write),
-
-  LocaleAdmin(ScopeSection.Locale, ScopeType.Admin);
+  LocaleWrite(ScopeSection.Locale, ScopeType.Write);
 
   private static final Map<String, Scope> MAP = new HashMap<>();
 
