@@ -1,6 +1,8 @@
 accessToken.create = Zugangsschlüssel anlegen
 accessToken.create.title = Zugangsschlüssel anlegen
 accessToken.create.tooltip = Neuen Zugangsschlüssel anlegen
+accessToken.delete.tooltip = Zugangsschlüssel entfernen
+accessToken.deleted = Zugangsschlüssel <strong>{0}</strong> wurde gelöscht
 accessToken.edit = Zugangsschlüssel bearbeiten
 accessToken.key = Schlüssel
 accessToken.name = Name
@@ -43,6 +45,7 @@ cli.install.title = Installation
 cli.title = Command Line Interface
 cli.usage.content = <p>Lege zuerst ein Projekt über die Weboberfläche an und kopiere die Projekt-ID (40 Zeichen UUID in der URL, z.B. http://localhost:9000/project/6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220 -&gt; Projekt-ID: 6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220).</p>\n\n<p>Dann lege die Datei .translatr.yml im Verzeichnis an, für das Hoch- und Runterladen eingeschalten werden soll. Translatr benutzt diese Datei als Konfiguration.</p>\n\n<h5 class="header">Beispiel .translatr.yml für Play messages</h5>\n\n<pre class="language-yml"><code>translatr:\n  endpoint: http://localhost:9000\n  project_id: 6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220\n  pull:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'\n  push:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'</code></pre>\n\n<h5 class="header">Hochladen</h5>\n\n<p>Mit der <strong>push</strong>-Operation werden die passenden messages-Dateien zum angegebenen Endpunkt hochzuladen. Sprachen werden dabei angelegt, falls notwendig.</p>\n\n<pre class="language-bash"><code>translatr push</code></pre>\n\n<p>Dadurch werden bestehende Nachrichten mit den Werten in den messages-Dateien überschrieben. Existierende Schlüssel und Sprachen bleiben bestehen, diese Operation ist keine Synchronisierung.</p>\n\n<h5 class="header">Herunterladen</h5>\n\n<p>Mit der By <strong>pull</strong>-Operation werden alle Sprachen in die konfigurierten Dateien heruntergeladen (Konfiguration: translatr.pull.target).</p>\n\n<pre class="language-bash"><code>translatr pull</code></pre>\n\n<p>Dadurch werden bestehende lokale Dateien überschrieben. Alle bekannten Sprachen werden heruntergeladen.</p>
 cli.usage.title = Nutzung
+contentType.dto.AccessToken = Zugangsschlüssel
 contentType.dto.Key = Schlüssel
 contentType.dto.Locale = Sprache
 contentType.dto.Message = Übersetzung

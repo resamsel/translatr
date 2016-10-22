@@ -13,12 +13,12 @@ import com.feth.play.module.pa.user.AuthUser;
 
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
+import commands.RevertDeleteAccessTokenCommand;
 import commands.RevertDeleteLinkedAccountCommand;
 import criterias.AccessTokenCriteria;
 import criterias.LinkedAccountCriteria;
 import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
-import dto.NotFoundException;
 import forms.Accept;
 import forms.AccessTokenForm;
 import forms.SearchForm;
@@ -289,6 +289,22 @@ public class Profiles extends AbstractController {
           accessTokenService.save(form.get().fill(new AccessToken()).withUser(user));
 
       return redirect(routes.Profiles.accessToken(accessToken.id));
+    });
+  }
+
+  public Result accessTokenRemove(Long accessTokenId) {
+    return loggedInUser(user -> {
+      AccessToken accessToken = AccessToken.byId(accessTokenId);
+
+      if (accessToken == null || !user.id.equals(accessToken.user.id))
+        return redirectWithError(routes.Profiles.accessTokens(),
+            ctx().messages().at("accessToken.notAllowed"));
+
+      undoCommand(injector.instanceOf(RevertDeleteAccessTokenCommand.class).with(accessToken));
+
+      accessTokenService.delete(accessToken);
+
+      return redirect(routes.Profiles.accessTokens());
     });
   }
 

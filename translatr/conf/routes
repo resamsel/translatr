@@ -31,6 +31,7 @@ POST	/accounts/merge				controllers.Profiles.doMerge
 GET		/profile/accessTokens		controllers.Profiles.accessTokens
 GET		/profile/accessToken/:accessTokenId	controllers.Profiles.accessToken(accessTokenId: Long)
 POST	/profile/accessToken/:accessTokenId/edit	controllers.Profiles.doAccessTokenEdit(accessTokenId: Long)
+GET		/profile/accessToken/:accessTokenId/remove	controllers.Profiles.accessTokenRemove(accessTokenId: Long)
 GET		/profile/accessToken/create	controllers.Profiles.accessTokenCreate
 POST	/profile/accessToken/create	controllers.Profiles.doAccessTokenCreate
 

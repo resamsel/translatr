@@ -1,6 +1,8 @@
 accessToken.create = Create access token
 accessToken.create.title = Create access token
 accessToken.create.tooltip = Create new access token
+accessToken.delete.tooltip = Remove access token
+accessToken.deleted = Access token <strong>{0}</strong> was deleted
 accessToken.edit = Edit access token
 accessToken.key = Token
 accessToken.name = Name
@@ -43,6 +45,7 @@ cli.install.title = Installation
 cli.title = Command Line Interface
 cli.usage.content = <p>First, create a project in the web GUI and copy the project ID (40 character UUID in the URL, i.e. http://localhost:9000/project/6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220 -> project ID: 6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220).</p>\n\n<p>Then put a .translatr.yml file in any directory that you want to enable pulling/pushing. Translatr will then use that file as configuration.</p>\n\n<h5 class="header">Example .translatr.yml for Play messages</h5>\n\n<pre class="language-yml"><code>translatr:\n  endpoint: http://localhost:9000\n  project_id: 6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220\n  pull:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'\n  push:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'</code></pre>\n\n<h5 class="header">Pushing</h5>\n\n<p>By pushing you send the matching messages files to the given endpoint, creating locales if needed.</p>\n\n<pre class="language-bash"><code>translatr push</code></pre>\n\n<p>This will overwrite all existing messages, if any. No existing keys/locales will be removed, this is not a sync operation.</p>\n\n<h5 class="header">Pulling</h5>\n\n<p>By pulling you download all locales into separate files into the configured files (translatr.pull.target key).</p>\n\n<pre class="language-bash"><code>translatr pull</code></pre>\n\n<p>This will overwrite any existing files locally. All known locales will be downloaded.</p>
 cli.usage.title = Usage
+contentType.dto.AccessToken = Access token
 contentType.dto.Key = Key
 contentType.dto.Locale = Locale
 contentType.dto.Message = Translation
