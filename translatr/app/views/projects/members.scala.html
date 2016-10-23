@@ -16,30 +16,32 @@
 	</a>
 } {
 	@content(project, "members") {
-		<ul class="collection card-panel linked-accounts">
-			@for(member <- memberList) {
-				<li class="collection-item avatar">
-					@tags.gravatar(member.user, 48, "circle")
-					<a href="@routes.Users.user(member.user.id)" class="title">
-						@member.user.username
-					</a>
-					<p>
-						@Messages("project.role." + member.role),
-						@Messages("when.created", pretty(ctx.lang().locale, member.whenCreated))
-					</p>
-					@* Permission Check *@
-					@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner) || member.user.id == template.loggedInUser.id) {
-						<a
-							href="@routes.Projects.memberRemove(project.id, member.id)"
-							class="secondary-content btn-hover"
-							title="@Messages("button.remove")">
-							<i class="material-icons">delete_forever</i>
+		@tags.collection(memberList, "members.empty") {
+			<ul class="collection card-panel linked-accounts">
+				@for(member <- memberList) {
+					<li class="collection-item avatar">
+						@tags.gravatar(member.user, 48, "circle")
+						<a href="@routes.Users.user(member.user.id)" class="title">
+							@member.user.username
 						</a>
-					}
-				</li>
-			}
-		</ul>
-		@tags.pager(routes.Projects.members(project.id), form.get)
+						<p>
+							@Messages("project.role." + member.role),
+							@Messages("when.created", pretty(ctx.lang().locale, member.whenCreated))
+						</p>
+						@* Permission Check *@
+						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner) || member.user.id == template.loggedInUser.id) {
+							<a
+								href="@routes.Projects.memberRemove(project.id, member.id)"
+								class="secondary-content btn-hover"
+								title="@Messages("button.remove")">
+								<i class="material-icons">delete_forever</i>
+							</a>
+						}
+					</li>
+				}
+			</ul>
+			@tags.pager(routes.Projects.members(project.id), form.get)
+		}
 	}
 
 	@tags.fabContainer("create-member", "add", tooltip = Messages("member.create.tooltip"), styleClass = "teal")

@@ -12,19 +12,21 @@
 	</a>
 } {
 	@content(template, user, "activity") {
-		<div class="collection card-panel">
-			@for(activity <- activityList) {
-				<a href="@utils.JsonUtils.linkTo(activity)" class="collection-item avatar black-text">
-					<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
-					<span class="title truncate">
-						@utils.JsonUtils.nameOf(activity)
-					</span>
-					<p>
-						@Messages("activity." + activity.getType + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
-					</p>
-				</a>
-			}
-		</div>
-		@tags.pager(routes.Profiles.activity(), form.get)
+		@tags.collection(activityList, "activity.empty") {
+			<div class="collection card-panel">
+				@for(activity <- activityList) {
+					<a href="@utils.JsonUtils.linkTo(activity)" class="collection-item avatar black-text">
+						<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
+						<span class="title truncate">
+							@utils.JsonUtils.nameOf(activity)
+						</span>
+						<p>
+							@Messages("activity." + activity.getType + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
+						</p>
+					</a>
+				}
+			</div>
+			@tags.pager(routes.Profiles.activity(), form.get)
+		}
 	}
 }

@@ -274,7 +274,7 @@ public class Profiles extends AbstractController {
   public Result accessTokenCreate() {
     return loggedInUser(user -> {
       return ok(views.html.users.accessTokenCreate.render(createTemplate(), user,
-          AccessTokenForm.form(formFactory)));
+          AccessTokenForm.form(formFactory).bindFromRequest()));
     });
   }
 

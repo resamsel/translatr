@@ -14,68 +14,70 @@
 		</a>
 } {
 	@content(project, "locales") {
-		<ul class="collection card-panel locales">
-			@for(locale <- locales) {
-				<li class="collection-item avatar">
-					<i class="material-icons circle blue">book</i>
-					<a class="locale title" href="@routes.Locales.locale(locale.id)">
-						@tags.locale(locale.name)
-					<div class="progress">
-						<div class="determinate" style="width: @{progress.getOrDefault(locale.id, 0)*100}%;"></div>
-					</div>
-					</a>
-					<p>
-						@defining(project.missing(locale.id)) { missing =>
-							@if(missing == 0) {
-								@Messages("locale.complete")
-							} else {
-								@Messages("messages.missing", missing)
+		@tags.collection(locales, "locales.empty") {
+			<ul class="collection card-panel locales">
+				@for(locale <- locales) {
+					<li class="collection-item avatar">
+						<i class="material-icons circle blue">book</i>
+						<a class="locale title" href="@routes.Locales.locale(locale.id)">
+							@tags.locale(locale.name)
+						<div class="progress">
+							<div class="determinate" style="width: @{progress.getOrDefault(locale.id, 0)*100}%;"></div>
+						</div>
+						</a>
+						<p>
+							@defining(project.missing(locale.id)) { missing =>
+								@if(missing == 0) {
+									@Messages("locale.complete")
+								} else {
+									@Messages("messages.missing", missing)
+								}
 							}
-						}
-					</p>
-					<div class="secondary-content">
-						<a
-							href="@routes.Locales.edit(locale.id)"
-							class="btn-flat btn-hover waves-effect waves-light"
-							title="@Messages("button.edit")">
-							<i class="material-icons">mode_edit</i>
-						</a>
-						<a
-							href="@routes.Locales.upload(locale.id)"
-							class="btn-flat btn-hover waves-effect waves-light"
-							title="@Messages("button.import")">
-							<i class="material-icons">file_upload</i>
-						</a>
-						<a
-							href="#"
-							class="dropdown-button btn-flat btn-hover waves-effect waves-light"
-							title="@Messages("button.export")"
-							data-activates="dropdown-@locale.id"
-							data-constrainwidth="false"
-							data-alignment="right">
-							<i class="material-icons">file_download</i>
-						</a>
-						<ul id="dropdown-@locale.id" class="dropdown-content">
-							@for(t <- models.FileType.values) {
-								<li>
-									<a
-										href="@routes.Locales.download(locale.id, t.key)">
-										@Messages("filetype." + t.key)
-									</a>
-								</li>
-							}
-						</ul>
-						<a
-							href="@routes.Locales.remove(locale.id)"
-							class="btn-flat btn-hover waves-effect waves-light"
-							title="@Messages("button.remove")">
-							<i class="material-icons">delete_forever</i>
-						</a>
-					</div>
-				</li>
-			}
-		</ul>
-		@tags.pager(routes.Projects.locales(project.id), form.get)
+						</p>
+						<div class="secondary-content">
+							<a
+								href="@routes.Locales.edit(locale.id)"
+								class="btn-flat btn-hover waves-effect waves-light"
+								title="@Messages("button.edit")">
+								<i class="material-icons">mode_edit</i>
+							</a>
+							<a
+								href="@routes.Locales.upload(locale.id)"
+								class="btn-flat btn-hover waves-effect waves-light"
+								title="@Messages("button.import")">
+								<i class="material-icons">file_upload</i>
+							</a>
+							<a
+								href="#"
+								class="dropdown-button btn-flat btn-hover waves-effect waves-light"
+								title="@Messages("button.export")"
+								data-activates="dropdown-@locale.id"
+								data-constrainwidth="false"
+								data-alignment="right">
+								<i class="material-icons">file_download</i>
+							</a>
+							<ul id="dropdown-@locale.id" class="dropdown-content">
+								@for(t <- models.FileType.values) {
+									<li>
+										<a
+											href="@routes.Locales.download(locale.id, t.key)">
+											@Messages("filetype." + t.key)
+										</a>
+									</li>
+								}
+							</ul>
+							<a
+								href="@routes.Locales.remove(locale.id)"
+								class="btn-flat btn-hover waves-effect waves-light"
+								title="@Messages("button.remove")">
+								<i class="material-icons">delete_forever</i>
+							</a>
+						</div>
+					</li>
+				}
+			</ul>
+			@tags.pager(routes.Projects.locales(project.id), form.get)
+		}
 	}
 
 	@tags.fabContainer("create", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue")

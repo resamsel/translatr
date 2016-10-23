@@ -15,16 +15,18 @@
 	</a>
 } {
 	@content(template, user, "projects") {
-		<div class="collection card-panel">
-			@for(project <- projectList) {
-				<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
-					<i class="material-icons circle orange">view_quilt</i>
-					<span class="title">@project.name</span>
-					<p>
-						@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
-					</p>
-				</a>
-			}
-		</div>
+		@tags.collection(projectList, "projects.empty") {
+			<div class="collection card-panel">
+				@for(project <- projectList) {
+					<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
+						<i class="material-icons circle orange">view_quilt</i>
+						<span class="title">@project.name</span>
+						<p>
+							@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
+						</p>
+					</a>
+				}
+			</div>
+		}
 	}
 }

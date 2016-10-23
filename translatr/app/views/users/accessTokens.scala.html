@@ -12,27 +12,29 @@
 	</a>
 } {
 	@content(template, user, "accessTokens") {
-		<ul class="collection card-panel access-tokens">
-			@for(accessToken <- accessTokenList) {
-				<li class="collection-item avatar">
-					<i class="fa circle red"></i>
-					<span class="title">
-						<a href="@routes.Profiles.accessToken(accessToken.id)">
-							@accessToken.name
+		@tags.collection(accessTokenList, "accessTokens.empty") {
+			<ul class="collection card-panel access-tokens">
+				@for(accessToken <- accessTokenList) {
+					<li class="collection-item avatar">
+						<i class="fa circle red"></i>
+						<span class="title">
+							<a href="@routes.Profiles.accessToken(accessToken.id)">
+								@accessToken.name
+							</a>
+						</span>
+						<p>
+							@Messages("when.created", pretty(ctx.lang().locale, accessToken.whenCreated))
+						</p>
+						<a
+							href="@routes.Profiles.accessTokenRemove(accessToken.id)"
+							class="secondary-content btn-hover"
+							title="@Messages("button.remove")">
+							<i class="material-icons">delete_forever</i>
 						</a>
-					</span>
-					<p>
-						@Messages("when.created", pretty(ctx.lang().locale, accessToken.whenCreated))
-					</p>
-					<a
-						href="@routes.Profiles.accessTokenRemove(accessToken.id)"
-						class="secondary-content btn-hover"
-						title="@Messages("button.remove")">
-						<i class="material-icons">delete_forever</i>
-					</a>
-				</li>
-			}
-		</ul>
+					</li>
+				}
+			</ul>
+		}
 	}
 
 	@tags.fabContainer("create-access-token", "add", tooltip = Messages("accessToken.create.tooltip"), styleClass = "green")

@@ -15,27 +15,29 @@
 	</a>
 } {
 	@content(project, "activity") {
-		<ul class="collection card-panel">
-			@for(activity <- activityList) {
-				<li class="collection-item avatar black-text">
-					<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
-					<span class="title truncate">
-						<a href="@utils.JsonUtils.linkTo(activity)">
-							@utils.JsonUtils.nameOf(activity)
-						</a>
-					</span>
-					<p>
-						@Messages("activity." + activity.getType + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
-						@if(activity.user != null) {
-							@Messages("by")
-							<a href="@routes.Users.user(activity.user.id)">
-								@activity.user.name
+		@tags.collection(activityList, "activity.empty") {
+			<ul class="collection card-panel">
+				@for(activity <- activityList) {
+					<li class="collection-item avatar black-text">
+						<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
+						<span class="title truncate">
+							<a href="@utils.JsonUtils.linkTo(activity)">
+								@utils.JsonUtils.nameOf(activity)
 							</a>
-						}
-					</p>
-				</li>
-			}
-		</ul>
-		@tags.pager(routes.Projects.activity(project.id), form.get)
+						</span>
+						<p>
+							@Messages("activity." + activity.getType + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
+							@if(activity.user != null) {
+								@Messages("by")
+								<a href="@routes.Users.user(activity.user.id)">
+									@activity.user.name
+								</a>
+							}
+						</p>
+					</li>
+				}
+			</ul>
+			@tags.pager(routes.Projects.activity(project.id), form.get)
+		}
 	}
 }

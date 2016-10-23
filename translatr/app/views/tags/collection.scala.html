@@ -1,0 +1,7 @@
+@(collection: Collection[_], emptyKey: String)(content: Html)
+
+@if(!collection.isEmpty) {
+	@content
+} else {
+	@Html(Messages(emptyKey))
+}
