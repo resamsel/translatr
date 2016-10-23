@@ -75,15 +75,29 @@ App.Modules.ProjectSearchModule = function(sb) {
 };
 
 App.Modules.ActivityModule = function(sb, options) {
-	var width = options.width || 901,
-	    height = options.height || 136,
-	    cellSize = options.cellSize || 17;
+	var cellSize = options.cellSize || 17,
+	    xAxisHeight = options.xAxisHeight || 20,
+	    xAxisPadding = options.xAxisPadding || 8,
+	    yAxisWidth = options.yAxisWidth || 36,
+	    yAxisPadding = options.yAxisPadding || 8,
+	    legendOffsetWeek = options.legendOffsetWeek || 45;
+
+	var messages = options.messages || {
+		'contributions.legend.tooltip': 'Relative activity: {0}-{1}% (log(n)/log(max))',
+		'contributions.legend.less': 'Less',
+		'contributions.legend.more': 'More'
+	};
+
+	var width = (options.width || 53*cellSize) + yAxisWidth + (yAxisPadding*2),
+		height = (options.height || 9*cellSize) + xAxisHeight;
 
 	var numberOfColors = options.numberOfColors || 4;
 
 	var percent = d3.format(".1%"),
 	    format = d3.time.format("%Y-%m-%d"),
-	    titleFormat = d3.time.format(options.titleFormat || "%A, %B %d, %Y");
+	    titleFormat = d3.time.format(options.titleFormat || "%A, %B %d, %Y"),
+	    xAxisFormat = d3.time.format(options.xAxisFormat || "%b"),
+	    yAxisFormat = d3.time.format(options.yAxisFormat || "%a");
 
 	var color = d3.scale.quantize()
 	    .domain([0, 1])
@@ -92,6 +106,10 @@ App.Modules.ActivityModule = function(sb, options) {
 	var weekOfYear = d3.time.mondayOfYear;
 	var dayOfWeek = function(d) {
 		return (d.getDay() + 6)%7;
+	}
+
+	function y(d) {
+		return xAxisHeight + dayOfWeek(d) * cellSize;
 	}
 
 	return {
@@ -120,12 +138,6 @@ App.Modules.ActivityModule = function(sb, options) {
 				.attr("viewBox", "0 0 " + width + " " + height)
 				.append("g");
 
-			// Y-Axis
-			svg.append("text")
-			    .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
-			    .style("text-anchor", "middle")
-			    .text(function(d) { return d; });
-
 			var woyOffset = weekOfYear(startDate);
 			var startYear = startDate.getFullYear();
 			var numberOfWeeks = weekOfYear(new Date(startYear, 11, 31));
@@ -134,12 +146,29 @@ App.Modules.ActivityModule = function(sb, options) {
 				var diffYears = d.getFullYear() - startYear;
 				var woy = weekOfYear(d);
 
-				return (woy - woyOffset + numberOfWeeks * diffYears) * cellSize;
+				return yAxisWidth + yAxisPadding + (woy - woyOffset + numberOfWeeks * diffYears) * cellSize;
 			}
 
-			function y(d) {
-				return dayOfWeek(d) * cellSize;
-			}
+			// X-Axis
+			var xAxis = svg.selectAll(".month")
+				.data(function(d) { return d3.time.months(startDate, today); })
+				.enter().append("text")
+				.attr("class", "month")
+				.attr("x", x)
+				.attr("y", function(d) { return xAxisHeight - xAxisPadding; })
+				.attr("height", xAxisHeight)
+				.text(function(d) { return xAxisFormat(d); });
+
+			// Y-Axis
+			svg.selectAll(".weekday")
+				.data(function(d) { return [new Date(2014, 0, 7), new Date(2014, 0, 9), new Date(2014, 0, 11)]; })
+				.enter().append("text")
+				.attr("class", "weekday")
+				.attr("x", 0)
+				.attr("y", function(d) { return xAxisHeight - xAxisPadding + y(d); })
+				.attr("width", yAxisWidth)
+				.attr("height", cellSize)
+			    .text(function(d) { return yAxisFormat(d); });
 
 			// Cells
 			var rect = svg.selectAll(".day")
@@ -148,12 +177,44 @@ App.Modules.ActivityModule = function(sb, options) {
 				.attr("class", "day")
 				.attr("width", cellSize)
 				.attr("height", cellSize)
-				//.attr("x", function(d) { return ((d3.time.weekOfYear(d) + (52 - d3.time.weekOfYear(today)))%52 + 52) * cellSize; })
 				.attr("x", x)
 				.attr("y", y)
 				.datum(format);
 
 			rect.append("title").text(function(d) { return titleFormat(format.parse(d)); });
+
+			function legendTooltip(d) {
+				var from = (d-1)*25, until = d*25;
+				if(d == 0) {
+					from = '';
+					until = 0;
+				}
+				return messages['contributions.legend.tooltip'].replace('{0}', from).replace('{1}', until);
+			}
+
+			// Legend
+			svg.selectAll('.legend.day')
+				.data([0, 1, 2, 3, 4])
+				.enter().append("rect")
+				.attr("class", function(d) { return "legend day q" + (d-1) + "-4"; })
+				.attr("width", cellSize)
+				.attr("height", cellSize)
+				.attr("x", function(d) { return yAxisWidth + yAxisPadding + cellSize * (legendOffsetWeek + d); })
+				.attr("y", xAxisPadding + cellSize * 8)
+				.append("title").text(legendTooltip);
+			svg.append("text")
+				.attr("class", "legend")
+				.attr("height", cellSize)
+				.attr("x", yAxisWidth + cellSize * legendOffsetWeek)
+				.attr("y", cellSize * 9 + xAxisPadding/2)
+				.style("text-anchor", "end")
+				.text(messages['contributions.legend.less']);
+			svg.append("text")
+				.attr("class", "legend")
+				.attr("height", cellSize)
+				.attr("x", yAxisWidth + cellSize * (legendOffsetWeek + 6) - yAxisPadding/2)
+				.attr("y", cellSize * 9 + xAxisPadding/2)
+				.text(messages['contributions.legend.more']);
 
 			d3.csv(options.dataUrl, function(error, csv) {
 				if (error) throw error;

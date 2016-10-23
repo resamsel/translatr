@@ -1,3 +1,23 @@
+.svg-container {
+	display: inline-block;
+	position: relative;
+	width: 100%;
+	padding-bottom: 18%;
+	vertical-align: middle;
+	overflow: hidden;
+}
+.svg-content {
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+text.legend,
+.weekday,
+.month {
+	fill: rgba(0, 0, 0, 0.6);
+}
 .day {
 	stroke: #f2f2f2;
 	stroke-width: 2px;
@@ -24,18 +44,3 @@
 .RdYlGn .q1-4{fill:#8cc665;}
 .RdYlGn .q2-4{fill:#44a340;}
 .RdYlGn .q3-4{fill:#1e6823;}
-
-.svg-container {
-	display: inline-block;
-	position: relative;
-	width: 100%;
-	padding-bottom: 13%;
-	vertical-align: middle;
-	overflow: hidden;
-}
-.svg-content {
-	display: inline-block;
-	position: absolute;
-	top: 0;
-	left: 0;
-}
