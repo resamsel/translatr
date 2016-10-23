@@ -141,6 +141,7 @@ member.create.tooltip = Neues Mitglied hinzufügen
 member.new = Neues Mitglied hinzufügen
 member.role = Projektrolle
 members = Mitglieder
+members.empty = Keine Projektmitglieder bisher.
 menu.tooltip = Menü
 message.any = Alle zeigen
 message.untranslated = Übersetzung fehlt
