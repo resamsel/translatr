@@ -163,10 +163,12 @@
 	.flex > * {
 		flex: 1 0;
 	}
-	.template-project .main > .locales {
+	.template-project .main > .locales,
+	.template-user .card.info {
 		margin-right: 0.5rem;
 	}
-	.template-project .main > .keys {
+	.template-project .main > .keys,
+	.template-user .card.contributions {
 		margin-left: 0.5rem;
 	}
 	.responsive-table .btn-hover {

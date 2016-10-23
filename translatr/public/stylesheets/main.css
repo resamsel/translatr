@@ -272,7 +272,7 @@ nav ul .disabled:hover {
     text-overflow: ellipsis;
 }
 .profile-info {
-	margin: 1.5em 0;
+	margin: 0;
 }
 .profile-info li {
 	margin-bottom: 0.4rem;

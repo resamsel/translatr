@@ -11,19 +11,3 @@
 		<p>@user.username</p>
 	</div>
 </div>
-<ul class="profile-info">
-	<li class="divider"></li>
-	@if(template.loggedInUser.id == user.id) {
-		<li class="truncate">
-			<a href="mailto:@user.email">
-				<i class="material-icons left">email</i>
-				@user.email
-			</a>
-		</li>
-	}
-	<li class="truncate">
-		<i class="material-icons left">access_time</i>
-		@Messages("user.created", user.whenCreated.toDate)
-	</li>
-	<li class="divider"></li>
-</ul>
