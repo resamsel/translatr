@@ -268,21 +268,6 @@ public class Projects extends AbstractController {
     });
   }
 
-  public Result keysSearch(UUID id) {
-    return searchForm(id, (project, form) -> {
-      SearchForm search = form.get();
-
-      List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
-
-      search.pager(keys);
-
-      Map<UUID, Double> progress = keyService.progress(
-          keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
-
-      return ok(views.html.tags.keyRows.render(keys, progress, form));
-    });
-  }
-
   public Result members(UUID projectId) {
     return searchForm(projectId, (project, form) -> {
       SearchForm search = form.get();

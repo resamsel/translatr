@@ -194,20 +194,6 @@ App.Modules.MessageModule = function(sb) {
 App.Modules.SuggestionModule = function(sb) {
 	var form = sb.dom.find('#form-search');
 
-	function _handleSearch(value) {
-		$.ajax({
-			url: jsRoutes.controllers.Locales.keysSearch(localeId).url,
-			data: {
-				'search': value,
-				'missing': fieldMissing.is(':checked') ? 'on' : 'off'
-			}
-		}).done(function(data) {
-			keysContainer.html(data);
-//			keysContainer.parent()[0].scrollIntoView();
-			sb.publish('keysChanged');
-		});
-	}
-
 	function _handleSuggestionSelected(suggestion) {
 		if(suggestion.data.type == 'key' && suggestion.data.name != '+++') {
 			form.submit();
@@ -250,23 +236,9 @@ App.Modules.LocaleHashModule = function(sb) {
 		return - container.position().top - container.css('margin-top').replace('px', '') + item.parent().offset() ? item.parent().offset().top : 0
 	}
 
-
-//	function _handleSearch(value) {
-//		location.hash = '#search=' + value;
-//	}
-
 	return {
 		create : function() {
 			doc.ready(_initFromHash);
-
-//			sb.subscribe('searchLocales', _handleSearch);
-//
-//			var hash = location.hash;
-//			if(hash !== '' && hash.startsWith('#search=')) {
-//				var s = hash.replace('#search=', '');
-//				sb.publish('initSearchLocales', s);
-//				sb.publish('searchLocales', s);
-//			}
 		},
 		destroy : function() {
 		}

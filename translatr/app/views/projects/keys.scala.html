@@ -14,19 +14,36 @@
 		</a>
 } {
 	@content(project, "keys") {
-		<table id="keys" class="table responsive-table card">
-			<thead>
-				<tr>
-					<th class="name">@Messages("key.name")</th>
-					<th class="updated">@Messages("when.updated")</th>
-					<th class="locale-progress">@Messages("locale.progress")</th>
-					<th class="actions">@Messages("row.actions")</th>
-				</tr>
-			</thead>
-			<tbody>
-				@tags.keyRows(keys, progress, form)
-			</tbody>
-		</table>
+		<ul class="collection card-panel keys">
+			@for(key <- keys) {
+				<li class="collection-item avatar">
+					<i class="material-icons circle light-green">vpn_key</i>
+					<a class="key title" href="@routes.Keys.key(key.id)">
+						@key.name
+						<div class="progress">
+							<div class="determinate" style="width: @{progress.getOrDefault(key.id, 0)*100}%;"></div>
+						</div>
+					</a>
+					<p>
+						@utils.FormatUtils.pretty(ctx.lang().locale, key.whenUpdated)
+					</p>
+					<div class="secondary-content">
+						<a
+							href="@routes.Keys.edit(key.id)"
+							class="btn-flat btn-hover waves-effect waves-light"
+							title="@Messages("button.edit")">
+							<i class="material-icons">mode_edit</i>
+						</a>
+						<a
+							href="@routes.Keys.remove(key.id, null)"
+							class="btn-flat btn-hover waves-effect waves-light"
+							title="@Messages("button.remove")">
+							<i class="material-icons">delete_forever</i>
+						</a>
+					</div>
+				</li>
+			}
+		</ul>
 		@tags.pager(routes.Projects.keys(project.id), form.get)
 	}
 
