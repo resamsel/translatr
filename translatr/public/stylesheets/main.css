@@ -391,6 +391,7 @@ textarea.materialize-textarea {
 /* Collections */
 .collection {
 	border: 0;
+	overflow: visible;
 }
 .collection.depth {
     margin: 0.5rem -5px 1rem -5px;
@@ -473,7 +474,6 @@ textarea.materialize-textarea {
 .collection.keys,
 .collection.messages {
 	white-space: nowrap;
-	overflow: auto;
 }
 .collection.locales .collection-item,
 .collection.keys .collection-item,
