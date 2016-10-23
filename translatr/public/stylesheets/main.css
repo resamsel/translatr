@@ -419,6 +419,14 @@ tr:hover .btn-hover {
     position: relative;
 }
 
+/* Textarea */
+textarea.materialize-textarea {
+	overflow-y: auto;
+	max-height: 10rem;
+	margin: 0;
+	resize: vertical;
+}
+
 /* Collections */
 .collection {
 	border: 0;
@@ -533,17 +541,6 @@ tr:hover .btn-hover {
 /* Templates */
 .template {
 	display: none !important;
-}
-html.template-locale,
-html.template-key,
-.template-locale body,
-.template-key body {
-	display: block;
-	min-height: 1px;
-}
-.template-locale main,
-.template-key main {
-    height: calc(100% - 96px);
 }
 
 /* Vertical Alignment */

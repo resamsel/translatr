@@ -15,31 +15,27 @@
 		@tags.locale(locale.name)
 	</a>
 } {
-	@tags.content {
-		<div class="col m6 offset-m3">
-			<form action="@routes.Locales.edit(locale.id)" method="post">
-				<div id="panel-message" class="card no-image">
-					<div class="card-image blue">
-						<span class="card-title">@Messages("locale.edit")</span>
-					</div>
-					<div class="card-content">
-						@locales.formContent(form)
-					</div>
-					<div class="card-action">
-						<button
-							type="submit"
-							class="btn waves-effect waves-light btn-save">
-							@Messages("button.save")
-							<i class="material-icons right">send</i>
-						</button>
-						<a
-							class="btn-flat btn-cancel black-text"
-							href="@routes.Projects.locales(locale.project.id)">
-							@Messages("button.cancel")
-						</a>
-					</div>
+	@projects.content(locale.project, "locales", "flex") {
+		<form action="@routes.Locales.edit(locale.id)" method="post">
+			<div id="panel-message" class="card no-image">
+				<div class="card-content">
+					<span class="card-title">@Messages("locale.edit")</span>
+					@locales.formContent(form)
 				</div>
-			</form>
-		</div>
+				<div class="card-action">
+					<button
+						type="submit"
+						class="btn waves-effect waves-light btn-save">
+						@Messages("button.save")
+						<i class="material-icons right">send</i>
+					</button>
+					<a
+						class="btn-flat btn-cancel black-text"
+						href="@routes.Projects.locales(locale.project.id)">
+						@Messages("button.cancel")
+					</a>
+				</div>
+			</div>
+		</form>
 	}
 }

@@ -15,49 +15,45 @@
 			@tags.locale(locale.name)
 		</a>
 } {
-	@tags.content {
-		<div class="col m6 offset-m3">
-			<form action="@routes.Locales.upload(locale.id)" method="post" enctype="multipart/form-data">
-				<div id="panel-message" class="card no-image">
-					<div class="card-image blue">
-						<span class="card-title">@Messages("locale.import")</span>
+	@projects.content(project, "locales") {
+		<form action="@routes.Locales.upload(locale.id)" method="post" enctype="multipart/form-data">
+			<div id="panel-message" class="card no-image">
+				<div class="card-content">
+					<span class="card-title">@Messages("locale.import")</span>
+					<div class="input-field">
+						@tags.fileTypes()
 					</div>
-					<div class="card-content">
-						<div class="input-field">
-							@tags.fileTypes()
+					<div class="file-field input-field">
+						<div class="btn">
+							<span>@Messages("import.file")</span>
+							<input
+								id="field-messages"
+								type="file"
+								name="messages" />
 						</div>
-						<div class="file-field input-field">
-							<div class="btn">
-								<span>@Messages("import.file")</span>
-								<input
-									id="field-messages"
-									type="file"
-									name="messages" />
-							</div>
-							<div class="file-path-wrapper">
-								<input
-									class="file-path validate"
-									type="text"
-									placeholder="@Messages("locale.import.file")">
-							</div>
+						<div class="file-path-wrapper">
+							<input
+								class="file-path validate"
+								type="text"
+								placeholder="@Messages("locale.import.file")">
 						</div>
-					</div>
-					<div class="card-action">
-						<button
-							type="submit"
-							class="btn btn-link btn-save">
-							@Messages("button.import")
-							<i class="material-icons right">send</i>
-						</button>
-						<a
-							class="btn-flat btn-cancel black-text"
-							href="@routes.Projects.locales(locale.project.id)">
-							@Messages("button.cancel")
-						</a>
 					</div>
 				</div>
-			</form>
-		</div>
+				<div class="card-action">
+					<button
+						type="submit"
+						class="btn btn-link btn-save">
+						@Messages("button.import")
+						<i class="material-icons right">send</i>
+					</button>
+					<a
+						class="btn-flat btn-cancel black-text"
+						href="@routes.Projects.locales(locale.project.id)">
+						@Messages("button.cancel")
+					</a>
+				</div>
+			</div>
+		</form>
 	}
 
 	<script src="@routes.Assets.versioned("javascripts/localeImport.js")"></script>

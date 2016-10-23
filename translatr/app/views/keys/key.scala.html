@@ -45,7 +45,7 @@
 } {
 	@tags.editor {
 		<h5 class="header">@Messages("locales")</h5>
-		<div class="collection locales card-panel">
+		<div class="collection locales">
 			@for(locale <- locales) {
 				<a
 					id="@locale.id"
@@ -62,13 +62,8 @@
 	} {
 		<form id="form-message">
 			<div id="panel-message" class="card no-image">
-				<div class="card-image red">
-					<span class="card-title">@Messages("locale.to.label") <span id="locale-name">...</span></span>
-				</div>
-				<div class="progress" style="margin: 0; visibility: hidden">
-					<div class="indeterminate"></div>
-				</div>
 				<div class="card-content">
+					<span class="card-title">@Messages("locale.to.label") <span id="locale-name">...</span></span>
 					<input id="field-id" type="hidden" />
 					<input id="field-locale" type="hidden" />
 					<div class="input-field">

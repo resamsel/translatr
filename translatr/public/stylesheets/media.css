@@ -113,20 +113,6 @@
 	.template-index .navbar-fixed nav {
 		position: relative;
 	}
-	.template-locale,
-	.template-key,
-	.template-locale body,
-	.template-key body {
-		height: 100%;
-	}
-	.template-locale footer,
-	.template-key footer {
-		display: none;
-	}
-	.template-locale main,
-	.template-key main {
-		height: calc(100% - 120px);
-	}
 	#toast-container {
 		top: auto !important;
 		right: auto !important;
@@ -141,11 +127,6 @@
 	}
 	.collection-item:hover .name {
 		max-width: calc(100% - 35px);
-	}
-	.editor,
-	.editor>.row,
-	.navview {
-		height: 100%;
 	}
 	.ct-chart.ct-double-octave:before {
 		padding-bottom: 12.5%;

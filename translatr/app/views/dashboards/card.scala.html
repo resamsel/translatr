@@ -1,4 +1,4 @@
-@(user: User, numberOfProjects: Int)
+@(user: User, numberOfProjects: Integer)
 
 @import utils.FormatUtils._
 
@@ -7,9 +7,11 @@
 		<span class="card-title">@Messages("dashboard.title", user.name)</span>
 	</div>
 	<div class="card-content">
-		<p>
-			@Messages("dashboard.info", numberOfProjects)
-		</p>
+		@if(numberOfProjects != null) {
+			<p>
+				@Messages("dashboard.info", numberOfProjects)
+			</p>
+		}
 		@users.chip(user)
 	</div>
 </div>

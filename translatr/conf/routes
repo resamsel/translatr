@@ -29,20 +29,21 @@ POST	/profile/link				controllers.Profiles.doLink
 GET		/accounts/merge				controllers.Profiles.askMerge
 POST	/accounts/merge				controllers.Profiles.doMerge
 GET		/profile/accessTokens		controllers.Profiles.accessTokens
+GET		/profile/accessToken/create	controllers.Profiles.accessTokenCreate
+POST	/profile/accessToken/create	controllers.Profiles.doAccessTokenCreate
 GET		/profile/accessToken/:accessTokenId	controllers.Profiles.accessToken(accessTokenId: Long)
 POST	/profile/accessToken/:accessTokenId/edit	controllers.Profiles.doAccessTokenEdit(accessTokenId: Long)
 GET		/profile/accessToken/:accessTokenId/remove	controllers.Profiles.accessTokenRemove(accessTokenId: Long)
-GET		/profile/accessToken/create	controllers.Profiles.accessTokenCreate
-POST	/profile/accessToken/create	controllers.Profiles.doAccessTokenCreate
 
 # Dashboards
 GET		/dashboard						controllers.Dashboards.dashboard
 GET		/dashboard/search				controllers.Dashboards.search
 
 # Projects
-GET		/project/:id					controllers.Projects.project(id: java.util.UUID)
-POST	/project						controllers.Projects.create
+GET		/project/create					controllers.Projects.create
+POST	/project/create					controllers.Projects.doCreate
 GET		/project/:projectName/create	controllers.Projects.createImmediately(projectName: String)
+GET		/project/:id					controllers.Projects.project(id: java.util.UUID)
 GET		/project/:id/search				controllers.Projects.search(id: java.util.UUID)
 GET		/project/:id/edit				controllers.Projects.edit(id: java.util.UUID)
 POST	/project/:id/edit				controllers.Projects.edit(id: java.util.UUID)

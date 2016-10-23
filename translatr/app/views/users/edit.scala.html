@@ -9,13 +9,11 @@
 			@user.name
 		</a>
 } {
-	@content(template, user) {
+	@content(template, user, "info") {
 		<form action="@routes.Profiles.doEdit()" method="post">
 			<div class="card no-image">
-				<div class="card-image teal">
-					<span class="card-title">@Messages("user.edit")</span>
-				</div>
 				<div class="card-content">
+					<span class="card-title">@Messages("user.edit")</span>
 					@formContent(form)
 				</div>
 				<div class="card-action">
