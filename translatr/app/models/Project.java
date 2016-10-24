@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
+import criterias.ProjectUserCriteria;
 import play.api.Play;
 import play.mvc.Http.Context;
 import services.ProjectService;
@@ -273,13 +274,14 @@ public class Project implements Suggestable {
 
   /**
    * @param user
+   * @param role
    * @return
    */
   public boolean hasPermission(User user, ProjectRole role) {
     if (user == null || role == null)
       return false;
 
-    for (ProjectUser member : members)
+    for (ProjectUser member : ProjectUser.findBy(new ProjectUserCriteria().withProjectId(id)))
       if (user.id.equals(member.user.id) && member.role.hasPermission(role))
         return true;
 
