@@ -469,15 +469,26 @@ textarea.materialize-textarea {
 .collection-item.active .value {
     color: rgba(255,255,255,0.7);
 }
+.collection.with-header .collection-header {
+	padding-left: 72px;
+	overflow: auto;
+}
+.collection .sort-orders i.right {
+	margin-left: 0;
+}
+.collection .sort-order {
+	float: left;
+	margin-left: 1rem;
+}
 
 .collection.locales,
 .collection.keys,
 .collection.messages {
 	white-space: nowrap;
 }
-.collection.locales .collection-item,
-.collection.keys .collection-item,
-.collection.messages .collection-item {
+.editor .collection.locales .collection-item,
+.editor .collection.keys .collection-item,
+.editor .collection.messages .collection-item {
     display: inline-block;
     width: 200px;
 }

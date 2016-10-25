@@ -1,10 +1,8 @@
 package controllers;
 
-import static utils.FormatUtils.formatLocale;
 import static utils.Stopwatch.log;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -242,9 +240,9 @@ public class Projects extends AbstractController {
 
       search.pager(locales);
 
-      java.util.Locale locale = ctx().lang().locale();
-      Collections.sort(locales,
-          (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
+      // java.util.Locale locale = ctx().lang().locale();
+      // Collections.sort(locales,
+      // (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
 
       return ok(log(() -> views.html.projects.locales.render(createTemplate(), project, locales,
           localeService.progress(locales.stream().map(l -> l.id).collect(Collectors.toList()),

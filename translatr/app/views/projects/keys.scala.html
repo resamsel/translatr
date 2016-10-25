@@ -15,7 +15,14 @@
 } {
 	@content(project, "keys") {
 		@tags.collection(keys, "keys.empty") {
-			<ul class="collection card-panel keys">
+			<ul class="collection card-panel keys with-header">
+				<li class="collection-header">
+					<span class="title">@Messages("key.name")</span>
+					<div class="secondary-content sort-orders">
+						@tags.orderLink(form.get, routes.Projects.keys(project.id), "key.name", "name", "name desc", "name")
+						@tags.orderLink(form.get, routes.Projects.keys(project.id), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+					</div>
+				</li>
 				@for(key <- keys) {
 					<li class="collection-item avatar">
 						<i class="material-icons circle light-green">vpn_key</i>

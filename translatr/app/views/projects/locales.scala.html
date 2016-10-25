@@ -15,7 +15,14 @@
 } {
 	@content(project, "locales") {
 		@tags.collection(locales, "locales.empty") {
-			<ul class="collection card-panel locales">
+			<ul class="collection card-panel locales with-header">
+				<li class="collection-header">
+					<span class="title">@Messages("locale.name")</span>
+					<div class="secondary-content sort-orders">
+						@tags.orderLink(form.get, routes.Projects.locales(project.id), "locale.name", "name", "name desc", "name")
+						@tags.orderLink(form.get, routes.Projects.locales(project.id), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+					</div>
+				</li>
 				@for(locale <- locales) {
 					<li class="collection-item avatar">
 						<i class="material-icons circle blue">book</i>
