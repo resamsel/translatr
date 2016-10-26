@@ -1,4 +1,4 @@
-@(template: utils.Template, user: models.User, projectList: List[models.Project])
+@(template: utils.Template, user: models.User, projectList: List[models.Project], form: Form[forms.SearchForm])
 
 @import utils.FormatUtils._
 
@@ -16,17 +16,24 @@
 } {
 	@content(template, user, "projects") {
 		@tags.collection(projectList, "projects.empty") {
-			<div class="collection card-panel">
-				@for(project <- projectList) {
-					<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
-						<i class="material-icons circle orange">view_quilt</i>
-						<span class="title">@project.name</span>
-						<p>
-							@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
-						</p>
-					</a>
-				}
+			<span class="title">@Messages("project")</span>
+			<div class="secondary-content sort-orders">
+				@tags.orderLink(form.get, routes.Profiles.projects(), "project.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, routes.Profiles.projects(), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			</div>
+		} {
+			@for(project <- projectList) {
+				<li class="collection-item avatar">
+					<i class="material-icons circle orange">view_quilt</i>
+					<a href="@routes.Projects.project(project.id)" class="title">
+						@project.name
+					</a>
+					<p>
+						@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
+					</p>
+				</li>
+			}
+		} {
 		}
 	}
 }

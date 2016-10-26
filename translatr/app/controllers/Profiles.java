@@ -80,8 +80,14 @@ public class Profiles extends AbstractController {
   }
 
   public Result projects() {
-    return loggedInUser(user -> ok(views.html.users.projects.render(createTemplate(), user,
-        Project.findBy(new ProjectCriteria().withMemberId(user.id).withOrder("name")))));
+    return loggedInUser(user -> {
+      Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+      SearchForm search = form.get();
+
+      List<Project> projects = Project.findBy(ProjectCriteria.from(search).withMemberId(user.id));
+
+      return ok(views.html.users.projects.render(createTemplate(), user, projects, form));
+    });
   }
 
   public Result activity() {
@@ -89,8 +95,8 @@ public class Profiles extends AbstractController {
       Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
 
-      List<LogEntry> activities = LogEntry
-          .findBy(LogEntryCriteria.from(search).withUserId(user.id).withOrder("whenCreated desc"));
+      List<LogEntry> activities =
+          LogEntry.findBy(LogEntryCriteria.from(search).withUserId(user.id));
 
       search.pager(activities);
 

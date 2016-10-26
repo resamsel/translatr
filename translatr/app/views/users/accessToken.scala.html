@@ -16,6 +16,7 @@
 		<form action="@routes.Profiles.doAccessTokenEdit(accessToken.id)" method="post">
 			<div class="card no-image">
 				<div class="card-content">
+					<span class="card-title">@Messages("accessToken")</span>
 					@accessTokenFormContent(user, form)
 				</div>
 				<div class="card-action">

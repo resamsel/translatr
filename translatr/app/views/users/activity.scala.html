@@ -10,22 +10,29 @@
 	<a class="breadcrumb" href="@routes.Users.user(user.id)">
 		@user.name
 	</a>
+	<a class="breadcrumb" href="@routes.Profiles.activity()">
+		@Messages("activity")
+	</a>
 } {
 	@content(template, user, "activity") {
 		@tags.collection(activityList, "activity.empty") {
-			<div class="collection card-panel">
-				@for(activity <- activityList) {
-					<a href="@utils.JsonUtils.linkTo(activity)" class="collection-item avatar black-text">
-						<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
-						<span class="title truncate">
-							@utils.JsonUtils.nameOf(activity)
-						</span>
-						<p>
-							@Messages("activity." + activity.getType + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
-						</p>
-					</a>
-				}
+			<span class="title">@Messages("activity")</span>
+			<div class="secondary-content sort-orders">
+				@tags.orderLink(form.get, routes.Profiles.activity(), "when.created", "whenCreated desc", "whenCreated", "whenCreated")
 			</div>
+		} {
+			@for(activity <- activityList) {
+				<li class="collection-item avatar">
+					<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
+					<a href="@utils.JsonUtils.linkTo(activity)" class="title">
+						@utils.JsonUtils.nameOf(activity)
+					</a>
+					<p>
+						@Messages("activity." + activity.getType + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
+					</p>
+				</li>
+			}
+		} {
 			@tags.pager(routes.Profiles.activity(), form.get)
 		}
 	}
