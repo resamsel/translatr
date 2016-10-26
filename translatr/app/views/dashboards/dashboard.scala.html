@@ -8,20 +8,26 @@
 	</a>
 } {
 	@content(template, "projects", projectList.size) {
-		@tags.collection(projectList, "projects.empty")(null) {
+		@tags.collection(projectList, "projects.empty") {
+			<span class="title">@Messages("project.name")</span>
+			<div class="secondary-content sort-orders">
+				@tags.orderLink(form.get, routes.Dashboards.dashboard(), "project.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, routes.Dashboards.dashboard(), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+			</div>
+		} {
 			@for(project <- projectList) {
-				<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
+				<li class="collection-item avatar black-text">
 					<i class="material-icons circle orange">view_quilt</i>
-					<span class="title">
+					<a href="@routes.Projects.project(project.id)" class="title">
 						@project.name
-					</span>
+					</a>
 					<p>
 						@Messages("project.info")
 						@Messages("locales.size", project.localesSize()),
 						@Messages("keys.size", project.keysSize()),
 						@Messages("messages.size", project.messagesSize())
 					</p>
-				</a>
+				</li>
 			}
 		} {
 			@tags.pager(routes.Dashboards.dashboard(), form.get)
