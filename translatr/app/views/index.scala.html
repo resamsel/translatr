@@ -1,4 +1,6 @@
-@main(utils.TemplateInfo.from(Messages("brand"), "index")) { } { } {
+@(template: utils.Template)
+
+@main(template.withTitle(Messages("brand")).withName("index")) { } { } {
 	<div class="section green">
 		<div class="container">
 			<div class="row">
@@ -12,7 +14,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="floating-action-btn">
+	<div class="floating-action-btn @if(template.loggedInUser == null) { hide }">
 		@tags.fab("dashboard", "dashboard", tooltip = Messages("dashboard.tooltip"), href = routes.Dashboards.dashboard().url, styleClass = "btn-large light-blue")
 	</div>
 	<div class="container">
@@ -50,6 +52,18 @@
 		<div class="section cli">
 			<div class="row">
 				<div class="col s12">
+					<h3 class="header center">@Messages("activity")</h3>
+
+				    <div class="svg-container"></div>
+
+					@Html(Messages("activity.content"))
+				</div>
+			</div>
+		</div>
+		<div class="divider"></div>
+		<div class="section cli">
+			<div class="row">
+				<div class="col s12">
 					<h3 class="header center">@Messages("cli.title")</h3>
 
 					@Html(Messages("cli.content"))
@@ -66,5 +80,6 @@
 		</div>
 	</div>
 
+	@tags.contributionScript()
 	<script src="@routes.Assets.versioned("javascripts/index.js")"></script>
 }

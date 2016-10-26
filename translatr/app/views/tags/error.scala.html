@@ -1,7 +1,0 @@
-@if(flash.containsKey("error")) {
-	<script>
-		$(document).ready(function() {
-			Materialize.toast('@flash.get("error")', 10000);
-		})
-	</script>
-}

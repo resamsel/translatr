@@ -1,5 +1,8 @@
 /* -Small */
 @media (max-width: 600px) {
+	#nprogress {
+		display: none;
+	}
 	h1 .material-icons {
 	    display: block;
 	    float: none !important;
@@ -11,11 +14,6 @@
 	    right: 0;
 	    bottom: 23px;
 	}
-	.project .info > *,
-	.project .info > .timeline,
-	.project .info > .messages {
-		flex: 1 100%;
-	}
 	.mainview,
 	.navview,
 	.subview {
@@ -24,10 +22,28 @@
     .row .col {
     	float: none;
     }
+    .card.card-user {
+		display: -webkit-flex;
+		display: -ms-flexbox;
+		display: flex;
+	}
+	.card.card-user .card-image img {
+		width: 120px;
+		min-width: 120px;
+	}
 }
 
 /* -Medium */
 @media (max-width: 992px) {
+	nav .brand-logo.left {
+		left: 0;
+	}
+	nav .brand-logo i.material-icons {
+		padding-left: 15px;
+	}
+	.template-project .main > * {
+		flex: 1 100%;
+	}
     .table.responsive-table th {
 		text-align: right !important;
 		width: auto;
@@ -45,17 +61,25 @@
 
 /* Medium+ */
 @media only screen and (min-width: 601px) {
-	nav .nav-wrapper {
-		padding: 0 1rem;
-	}
-	.navbar-fixed {
+	nav,
+	.navbar {
 		height: 96px;
+	}
+	nav .nav-wrapper {
+		height: 64px;
+	}
+	nav .brand-logo {
+		margin-left: 1rem;
 	}
 	.navbar-form {
 		margin: 0 25%;
 	}
-	.template-index .navbar-fixed {
+	.template-index .navbar,
+	nav ul a.dropdown-button {
 		height: 64px;
+	}
+	nav .dropdown-button img {
+		padding: 16px 0;
 	}
 	.navbar-form .input-field i.material-icons {
 		line-height: 44px;
@@ -63,38 +87,33 @@
 	.breadcrumbs {
 		top: 64px;
 	}
-	.fixed-action-btn {
-		top: 68px;
-		bottom: auto;
-	}
 	.fixed-action-btn.horizontal ul li {
 	    margin: 7.5px;
 	}
 	.floating-action-btn.pinned {
 		top: 23px !important;
+		bottom: auto;
 	}
+	/* Overview Pages */
+	.container {
+	    width: 90%;
+	}
+	.sidebar {
+	    width: 200px;
+	}
+	.container .col.main {
+		width: calc(100% - 200px);
+	}
+
 	.tabs-container {
 		padding: 0 15%;
 	}
+	.provider {
+		width: 200px;
+	}
 
-	.template-dashboard .card {
-		width: 28%;
-		margin: 0.5rem 1rem 1rem 1rem;
-		float: left;
-	}
-	.template-locale,
-	.template-key,
-	.template-locale body,
-	.template-key body {
-		height: 100%;
-	}
-	.template-locale footer,
-	.template-key footer {
-		display: none;
-	}
-	.template-locale main,
-	.template-key main {
-		height: calc(100% - 120px);
+	.template-index .navbar-fixed nav {
+		position: relative;
 	}
 	#toast-container {
 		top: auto !important;
@@ -102,28 +121,46 @@
 		bottom: 10%;
 		left:7%;
 	}
-	.collection.locales .collection-item,
-	.collection.keys .collection-item,
-	.collection.messages .collection-item {
+	.editor .collection.locales .collection-item,
+	.editor .collection.keys .collection-item,
+	.editor .collection.messages .collection-item {
 		display: block;
 		width: auto;
 	}
 	.collection-item:hover .name {
 		max-width: calc(100% - 35px);
 	}
-	.editor,
-	.editor>.row,
-	.navview {
-		height: 100%;
-	}
 	.ct-chart.ct-double-octave:before {
 		padding-bottom: 12.5%;
+	}
+	.btn-hover {
+		visibility: hidden;
+	}
+	.responsive-table .btn-hover {
+		visibility: visible;
 	}
 }
 
 /* Large+ */
 @media only screen and (min-width: 993px) {
-	.btn-hover {
+	.flex > * {
+		flex: 1 0;
+	}
+	.template-project .main > .locales,
+	.template-user .card.info {
+		margin-right: 0.5rem;
+	}
+	.template-project .main > .keys,
+	.template-user .card.contributions {
+		margin-left: 0.5rem;
+	}
+	.responsive-table .btn-hover {
 		visibility: hidden;
+	}
+	.sidebar {
+		width: 300px;
+	}
+	.container .col.main {
+		width: calc(100% - 300px);
 	}
 }

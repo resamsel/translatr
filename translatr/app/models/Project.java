@@ -2,12 +2,16 @@ package models;
 
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -29,198 +33,258 @@ import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import controllers.routes;
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
+import criterias.ProjectUserCriteria;
+import play.api.Play;
 import play.mvc.Http.Context;
+import services.ProjectService;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
-public class Project implements Suggestable
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
+public class Project implements Suggestable {
+  private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
-	public static final int NAME_LENGTH = 255;
+  public static final int NAME_LENGTH = 255;
 
-	@Id
-	public UUID id;
+  @Id
+  public UUID id;
 
-	@Version
-	public Long version;
+  @Version
+  public Long version;
 
-	public boolean deleted;
+  public boolean deleted;
 
-	@JsonIgnore
-	@CreatedTimestamp
-	public DateTime whenCreated;
+  @JsonIgnore
+  @CreatedTimestamp
+  public DateTime whenCreated;
 
-	@JsonIgnore
-	@UpdatedTimestamp
-	public DateTime whenUpdated;
+  @JsonIgnore
+  @UpdatedTimestamp
+  public DateTime whenUpdated;
 
-	@Column(nullable = false, length = NAME_LENGTH)
-	public String name;
+  @Column(nullable = false, length = NAME_LENGTH)
+  public String name;
 
-	@ManyToOne
-	@JoinColumn(name = "owner_id")
-	public User owner;
+  @ManyToOne
+  @JoinColumn(name = "owner_id")
+  public User owner;
 
-	@JsonIgnore
-	@OneToMany
-	public List<Locale> locales;
+  @JsonIgnore
+  @OneToMany
+  public List<Locale> locales;
 
-	@JsonIgnore
-	@OneToMany
-	public List<Key> keys;
+  @JsonIgnore
+  @OneToMany
+  public List<Key> keys;
 
-	@Transient
-	private Long keysSize;
+  @JsonIgnore
+  @OneToMany(cascade = CascadeType.PERSIST)
+  public List<ProjectUser> members;
 
-	@Transient
-	private Long localesSize;
+  @Transient
+  private Long keysSize;
 
-	@Transient
-	private Map<UUID, Long> keysSizeMap;
+  @Transient
+  private Long localesSize;
 
-	public Project()
-	{
-	}
+  @Transient
+  private Map<UUID, Long> keysSizeMap;
 
-	public Project(String name)
-	{
-		this.name = name;
-	}
+  public Project() {}
 
-	@Override
-	public String value()
-	{
-		return name;
-	}
+  public Project(String name) {
+    this.name = name;
+  }
 
-	@Override
-	public Data data()
-	{
-		return Data.from(Project.class, id, name, routes.Projects.project(id).absoluteURL(Context.current().request()));
-	}
+  @Override
+  public String value() {
+    return name;
+  }
 
-	private static final Find<UUID, Project> find = new Find<UUID, Project>()
-	{
-	};
+  @Override
+  public Data data() {
+    return Data.from(Project.class, id, name,
+        controllers.routes.Projects.project(id).absoluteURL(Context.current().request()));
+  }
 
-	public static Project byId(UUID id)
-	{
-		return find.byId(id);
-	}
+  public Project withId(UUID id) {
+    this.id = id;
+    return this;
+  }
 
-	/**
-	 * @param criteria
-	 * @return
-	 */
-	public static List<Project> findBy(ProjectCriteria criteria)
-	{
-		ExpressionList<Project> query = find.fetch("owner").where();
+  private static final Find<UUID, Project> find = new Find<UUID, Project>() {};
 
-		query.eq("deleted", false);
+  private static final String BRAND_PROJECT_ID = "brandProjectId";
 
-		if(criteria.getOwnerId() != null)
-			query.eq("owner.id", criteria.getOwnerId());
+  public static Project byId(UUID id) {
+    return Play.current().injector().instanceOf(ProjectService.class).getById(id);
+  }
 
-		if(criteria.getProjectId() != null)
-			query.eq("id", criteria.getProjectId());
+  public static Project byIdUncached(UUID id) {
+    return find.byId(id);
+  }
 
-		if(criteria.getSearch() != null)
-			query.ilike("name", "%" + criteria.getSearch() + "%");
+  /**
+   * @param criteria
+   * @return
+   */
+  public static List<Project> findBy(ProjectCriteria criteria) {
+    ExpressionList<Project> query = find.fetch("owner").where();
 
-		if(criteria.getLimit() != null)
-			query.setMaxRows(criteria.getLimit() + 1);
+    query.eq("deleted", false);
 
-		if(criteria.getOffset() != null)
-			query.setFirstRow(criteria.getOffset());
+    if (criteria.getOwnerId() != null)
+      query.eq("owner.id", criteria.getOwnerId());
 
-		if(criteria.getOrder() != null)
-			query.order(criteria.getOrder());
+    if (criteria.getMemberId() != null)
+      query.eq("members.user.id", criteria.getMemberId());
 
-		return log(() -> query.findList(), LOGGER, "findBy");
-	}
+    if (criteria.getProjectId() != null)
+      query.eq("id", criteria.getProjectId());
 
-	/**
-	 * @return
-	 */
-	public static List<Project> all()
-	{
-		return find.where().eq("deleted", false).order("name").findList();
-	}
+    if (criteria.getSearch() != null)
+      query.ilike("name", "%" + criteria.getSearch() + "%");
 
-	public float progress()
-	{
-		long keysSize = keysSize();
-		long localesSize = localesSize();
-		if(keysSize < 1 || localesSize < 1)
-			return 0f;
-		return (float)Message.countBy(this) / (float)(keysSize * localesSize);
-	}
+    criteria.paging(query);
 
-	public long missing(UUID localeId)
-	{
-		return keysSize() - keysSizeMap(localeId);
-	}
+    return log(() -> query.findList(), LOGGER, "findBy");
+  }
 
-	public long keysSizeMap(UUID localeId)
-	{
-		if(keysSizeMap == null)
-			keysSizeMap = Message.findBy(new MessageCriteria().withProjectId(this.id)).stream().collect(
-				groupingBy(m -> m.locale.id, counting()));
+  /**
+   * @return
+   */
+  public static List<Project> all() {
+    return find.where().eq("deleted", false).order("name").findList();
+  }
 
-		return keysSizeMap.getOrDefault(localeId, 0l);
-	}
+  public float progress() {
+    long keysSize = keysSize();
+    long localesSize = localesSize();
+    if (keysSize < 1 || localesSize < 1)
+      return 0f;
+    return (float) Message.countBy(this) / (float) (keysSize * localesSize);
+  }
 
-	public long localesSize()
-	{
-		if(localesSize == null)
-			localesSize = Locale.countBy(this);
-		return localesSize;
-	}
+  public long missing(UUID localeId) {
+    return keysSize() - keysSizeMap(localeId);
+  }
 
-	public long keysSize()
-	{
-		if(keysSize == null)
-			keysSize = Key.countBy(this);
-		return keysSize;
-	}
+  public long keysSizeMap(UUID localeId) {
+    if (keysSizeMap == null)
+      keysSizeMap = Message.findBy(new MessageCriteria().withProjectId(this.id)).stream()
+          .collect(groupingBy(m -> m.locale.id, counting()));
 
-	public long messagesSize()
-	{
-		return Message.countBy(this);
-	}
+    return keysSizeMap.getOrDefault(localeId, 0l);
+  }
 
-	public Project withName(String name)
-	{
-		this.name = name;
-		return this;
-	}
+  public long localesSize() {
+    if (localesSize == null)
+      localesSize = Locale.countBy(this);
+    return localesSize;
+  }
 
-	public Project withDeleted(boolean deleted)
-	{
-		this.deleted = deleted;
-		return this;
-	}
+  public long keysSize() {
+    if (keysSize == null)
+      keysSize = Key.countBy(this);
+    return keysSize;
+  }
 
-	/**
-	 * @param name
-	 * @return
-	 */
-	public static Project byName(String name)
-	{
-		return find.where().eq("name", name).findUnique();
-	}
+  public long messagesSize() {
+    return Message.countBy(this);
+  }
 
-	/**
-	 * @param project
-	 */
-	public Project updateFrom(Project in)
-	{
-		name = in.name;
+  public Project withName(String name) {
+    this.name = name;
+    return this;
+  }
 
-		return this;
-	}
+  public Project withOwner(User owner) {
+    this.owner = owner;
+    return this;
+  }
+
+  public Project withDeleted(boolean deleted) {
+    this.deleted = deleted;
+    return this;
+  }
+
+  /**
+   * @param name
+   * @return
+   */
+  public static Project byOwnerAndName(User user, String name) {
+    return Play.current().injector().instanceOf(ProjectService.class).getByOwnerAndName(user, name);
+  }
+
+  /**
+   * @param user
+   * @param name
+   * @return
+   */
+  public static Project byOwnerAndNameUncached(User user, String name) {
+    return find.where().eq("owner", user).eq("name", name).findUnique();
+  }
+
+  /**
+   * @param project
+   */
+  public Project updateFrom(Project in) {
+    name = in.name;
+
+    return this;
+  }
+
+  public boolean hasRolesAny(User user, ProjectRole... roles) {
+    Map<UUID, List<ProjectRole>> userMap =
+        members.stream().collect(groupingBy(m -> m.user.id, mapping(m -> m.role, toList())));
+    if (!userMap.containsKey(user.id))
+      return false;
+
+    List<ProjectRole> userRoles = userMap.get(user.id);
+    userRoles.retainAll(Arrays.asList(roles));
+
+    return !userRoles.isEmpty();
+  }
+
+  public static UUID brandProjectId() {
+    Context ctx = Context.current();
+    Map<String, Object> args = ctx.args;
+    if (args.containsKey(BRAND_PROJECT_ID))
+      return (UUID) args.get(BRAND_PROJECT_ID);
+
+    User user = User.loggedInUser();
+    if (user == null)
+      user = User.byUsername("translatr");
+
+    Project brandProject = null;
+    try {
+      brandProject = byOwnerAndName(user, ctx.messages().at("brand"));
+    } catch (Exception e) {
+      LOGGER.warn("Error while retrieving brand project", e);
+    }
+
+    if (brandProject == null)
+      return null;
+
+    args.put(BRAND_PROJECT_ID, brandProject.id);
+
+    return brandProject.id;
+  }
+
+  /**
+   * @param user
+   * @param role
+   * @return
+   */
+  public boolean hasPermission(User user, ProjectRole role) {
+    if (user == null || role == null)
+      return false;
+
+    for (ProjectUser member : ProjectUser.findBy(new ProjectUserCriteria().withProjectId(id)))
+      if (user.id.equals(member.user.id) && member.role.hasPermission(role))
+        return true;
+
+    return false;
+  }
 }

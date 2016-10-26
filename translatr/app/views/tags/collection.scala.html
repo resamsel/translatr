@@ -1,0 +1,17 @@
+@(collection: Collection[_], emptyKey: String, styleClass: String = "")(header: Html)(content: Html)(footer: Html)
+
+@if(!collection.isEmpty) {
+	<ul class="collection card-panel @styleClass @if(header != null) { with-header }">
+		@if(header != null) {
+			<li class="collection-header">
+				@header
+			</li>
+		}
+		@content
+	</ul>
+	@if(footer != null) {
+		@footer
+	}
+} else {
+	@Html(Messages(emptyKey))
+}

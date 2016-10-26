@@ -6,7 +6,7 @@ import play.data.FormFactory;
 import play.data.validation.Constraints;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

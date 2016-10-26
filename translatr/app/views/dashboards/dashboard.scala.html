@@ -1,0 +1,40 @@
+@(template: utils.Template, projectList: List[models.Project], form: Form[forms.SearchForm], projectForm: Form[forms.ProjectForm])
+
+@main(template.withTitle(Messages("dashboard.title")).withName("dashboard")) {
+	@tags.search(form)()
+} {
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+} {
+	@content(template, "projects", projectList.size) {
+		@tags.collection(projectList, "projects.empty")(null) {
+			@for(project <- projectList) {
+				<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
+					<i class="material-icons circle orange">view_quilt</i>
+					<span class="title">
+						@project.name
+					</span>
+					<p>
+						@Messages("project.info")
+						@Messages("locales.size", project.localesSize()),
+						@Messages("keys.size", project.keysSize()),
+						@Messages("messages.size", project.messagesSize())
+					</p>
+				</a>
+			}
+		} {
+			@tags.pager(routes.Dashboards.dashboard(), form.get)
+		}
+	}
+
+	@tags.fabContainer("create-project", "add", tooltip = Messages("project.create.tooltip"), styleClass = "orange")
+
+	@tags.modal(Messages("project.new"), "modal-create-project") {
+		<form id="form-project" method="post" action="@routes.Projects.create()">
+			@projects.formContent(projectForm)
+		</form>
+	}
+
+	<script src="@routes.Assets.versioned("javascripts/dashboard.js")"></script>
+}

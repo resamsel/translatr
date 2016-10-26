@@ -1,53 +1,58 @@
 package actions;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
 import commands.Command;
-import models.Project;
+import controllers.AbstractController;
+import controllers.routes;
+import models.User;
 import play.cache.CacheApi;
 import play.mvc.Action;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
  * @version 17 Aug 2016
  */
-public class ContextAction extends Action.Simple
-{
-	private final CacheApi cache;
+public class ContextAction extends Action.Simple {
+  private final CacheApi cache;
 
-	/**
-	 * 
-	 */
-	@Inject
-	public ContextAction(CacheApi cache)
-	{
-		this.cache = cache;
-	}
+  /**
+   * 
+   */
+  @Inject
+  public ContextAction(CacheApi cache) {
+    this.cache = cache;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CompletionStage<Result> call(Context ctx)
-	{
-		Project brandProject = Project.byName(ctx.messages().at("brand"));
-		if(brandProject != null)
-			ctx.args.put("brandProjectId", brandProject.id);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public CompletionStage<Result> call(Context ctx) {
+    // DEBUG
+    // AbstractController.addMessage(ctx.messages().at("user.incomplete"));
 
-		if(ctx.flash().containsKey("undo"))
-		{
-			String key = ctx.flash().get("undo");
-			ctx.args.put("undoMessage", ((Command<?>)cache.get(key)).getMessage());
-			ctx.args.put("undoCommand", key);
-		}
+    User user = User.loggedInUser();
+    if (user != null && !user.isComplete()
+        && !ctx.request().path().equals(routes.Profiles.edit().path())) {
+      AbstractController.addMessage(ctx.messages().at("user.incomplete"));
+      return CompletableFuture.completedFuture(redirect(routes.Profiles.edit()));
+    }
 
-		return delegate.call(ctx);
-	}
+    if (ctx.flash().containsKey("undo")) {
+      String key = ctx.flash().get("undo");
+      ctx.args.put("undoMessage", ((Command<?>) cache.get(key)).getMessage());
+      ctx.args.put("undoCommand", key);
+    }
+
+    return delegate.call(ctx);
+  }
 }

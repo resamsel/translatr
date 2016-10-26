@@ -1,12 +1,15 @@
 package services;
 
+import java.util.UUID;
+
 import com.google.inject.ImplementedBy;
 
 import models.Project;
+import models.User;
 import services.impl.ProjectServiceImpl;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
@@ -15,4 +18,16 @@ import services.impl.ProjectServiceImpl;
 @ImplementedBy(ProjectServiceImpl.class)
 public interface ProjectService extends ModelService<Project>
 {
+	/**
+	 * @param user
+	 * @param name
+	 * @return
+	 */
+	Project getByOwnerAndName(User user, String name);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	Project getById(UUID id);
 }

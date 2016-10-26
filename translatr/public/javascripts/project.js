@@ -32,38 +32,6 @@ App.Modules.KeyCreateModule = function(sb) {
 	};
 };
 
-App.Modules.TimelineModule = function(sb) {
-	var options = {
-		chartPadding: {
-			bottom: -10
-		},
-		showArea: true,
-		showLine: false,
-		showPoint: false,
-		stackBars: true,
-		axisX: {
-			type: Chartist.FixedScaleAxis,
-			divisor: 8,
-			labelInterpolationFnc: function(value) {
-				return moment(value).format('MMM D, HH:00');
-			},
-			showGrid: false
-		},
-		axisY: {
-			onlyInteger: true,
-			showGrid: false
-		}
-	};
-
-	return {
-		create: function() {
-			new Chartist.Bar('#chart-timeline', data, options);
-		},
-		destroy: function() {
-		}
-	};
-};
-
 App.Modules.SuggestionModule = function(sb) {
 	function _handleSuggestionSelected(suggestion) {
 		window.location.href = suggestion.data.url;
@@ -83,4 +51,7 @@ App.Core.register('LocaleCreateModule', App.Modules.LocaleCreateModule);
 App.Core.register('KeyCreateModule', App.Modules.KeyCreateModule);
 App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
-App.Core.register('TimelineModule', App.Modules.TimelineModule);
+App.Core.register('ActivityModule', App.Modules.ActivityModule, {
+	dataUrl: jsRoutes.controllers.Projects.activityCsv(projectId).url,
+	messages: contributionMessages
+});

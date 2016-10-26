@@ -28,13 +28,13 @@ App.Modules.KeyListModule = function(sb) {
 		var $keys = sb.dom.find('a.key');
 		$keys.click(function() {
 			var $this = sb.dom.wrap(this);
-			$keys.parent().removeClass('active');
-			$this.parent().addClass('active');
+			$keys.removeClass('active');
+			$this.addClass('active');
 			sb.publish('keySelected', [$this.attr('id'), $this.attr('keyName')]);
 		})
 		sb.dom.find('a.key .btn-remove').click(function(e) {
 			e.stopPropagation();
-			window.location.href = jsRoutes.controllers.Application.keyRemove($(this).parent().attr('id'), localeId).url;
+			window.location.href = jsRoutes.controllers.Keys.remove($(this).parent().attr('id'), localeId).url;
 		});
 	}
 	return {
@@ -69,7 +69,7 @@ App.Modules.MessageListModule = function(sb) {
 	    messages.find('.message:not(.template)').remove();
 	    messageList.forEach(function(entry) {
 	    	var $msg = template.clone().removeClass('template');
-	    	var $a = $msg.find('a');
+	    	var $a = $msg;
 	    	$a.attr('title', $a.attr('title') + ' (' + locales[entry.localeId] + ')')
 	    		.attr('href', window.location.hash)
 	    		.click(_handleCopyMessageValue);
@@ -158,7 +158,7 @@ App.Modules.MessageModule = function(sb) {
 		        progress.css('visibility', 'visible');
 		    	sb.utilities.ajax(
 		    		sb.utilities.merge(
-						jsRoutes.controllers.Api.putMessage(),
+						jsRoutes.controllers.Translations.create(),
 						{
 							contentType: 'application/json',
 							dataType: 'json',
@@ -193,20 +193,6 @@ App.Modules.MessageModule = function(sb) {
 
 App.Modules.SuggestionModule = function(sb) {
 	var form = sb.dom.find('#form-search');
-
-	function _handleSearch(value) {
-		$.ajax({
-			url: jsRoutes.controllers.Application.localeKeysSearch(localeId).url,
-			data: {
-				'search': value,
-				'missing': fieldMissing.is(':checked') ? 'on' : 'off'
-			}
-		}).done(function(data) {
-			keysContainer.html(data);
-//			keysContainer.parent()[0].scrollIntoView();
-			sb.publish('keysChanged');
-		});
-	}
 
 	function _handleSuggestionSelected(suggestion) {
 		if(suggestion.data.type == 'key' && suggestion.data.name != '+++') {
@@ -250,23 +236,9 @@ App.Modules.LocaleHashModule = function(sb) {
 		return - container.position().top - container.css('margin-top').replace('px', '') + item.parent().offset() ? item.parent().offset().top : 0
 	}
 
-
-//	function _handleSearch(value) {
-//		location.hash = '#search=' + value;
-//	}
-
 	return {
 		create : function() {
 			doc.ready(_initFromHash);
-
-//			sb.subscribe('searchLocales', _handleSearch);
-//
-//			var hash = location.hash;
-//			if(hash !== '' && hash.startsWith('#search=')) {
-//				var s = hash.replace('#search=', '');
-//				sb.publish('initSearchLocales', s);
-//				sb.publish('searchLocales', s);
-//			}
 		},
 		destroy : function() {
 		}

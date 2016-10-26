@@ -10,7 +10,7 @@ import models.LogEntry;
 import services.impl.LogEntryServiceImpl;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
@@ -20,4 +20,10 @@ import services.impl.LogEntryServiceImpl;
 public interface LogEntryService extends ModelService<LogEntry>
 {
 	List<Aggregate> getStats(LogEntryCriteria criteria);
+
+	/**
+	 * @param criteria
+	 * @return
+	 */
+	List<Aggregate> getAggregates(LogEntryCriteria criteria);
 }

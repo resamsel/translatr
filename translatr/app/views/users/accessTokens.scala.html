@@ -1,0 +1,49 @@
+@(template: utils.Template, user: models.User, accessTokenList: List[AccessToken], accessTokenForm: Form[forms.AccessTokenForm])
+
+@import utils.FormatUtils.pretty
+
+@main(template.withTitle(Messages("user.title", user.name)).withName("user-access-tokens")) {
+} {
+	<a class="breadcrumb" href="@routes.Users.user(user.id)">
+		@user.name
+	</a>
+	<a class="breadcrumb" href="@routes.Profiles.accessTokens()">
+		@Messages("accessTokens")
+	</a>
+} {
+	@content(template, user, "accessTokens") {
+		@tags.collection(accessTokenList, "accessTokens.empty", "access-tokens") {
+			<span class="title">@Messages("accessToken")</span>
+		} {
+			@for(accessToken <- accessTokenList) {
+				<li class="collection-item avatar">
+					<i class="fa circle red"></i>
+					<span class="title">
+						<a href="@routes.Profiles.accessToken(accessToken.id)">
+							@accessToken.name
+						</a>
+					</span>
+					<p>
+						@Messages("when.created", pretty(ctx.lang().locale, accessToken.whenCreated))
+					</p>
+					<a
+						href="@routes.Profiles.accessTokenRemove(accessToken.id)"
+						class="secondary-content btn-hover"
+						title="@Messages("button.remove")">
+						<i class="material-icons">delete_forever</i>
+					</a>
+				</li>
+			}
+		} { }
+	}
+
+	@tags.fabContainer("create-access-token", "add", tooltip = Messages("accessToken.create.tooltip"), styleClass = "green")
+
+	@tags.modal(Messages("accessToken.create"), "modal-create-access-token") {
+		<form id="form-access-token" method="post" action="@routes.Profiles.doAccessTokenCreate()">
+			@accessTokenFormContent(template.loggedInUser, accessTokenForm)
+		</form>
+	}
+
+	<script src="@routes.Assets.versioned("javascripts/accessTokens.js")"></script>
+}

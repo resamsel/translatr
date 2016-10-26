@@ -2,55 +2,87 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# An example controller showing a sample home page
+# Basic functions
 GET		/								controllers.Application.index
+GET		/activity/csv					controllers.Application.activityCsv
+
+# Authentication
+GET		/login							controllers.Application.login
+GET		/logout							controllers.Application.logout
+GET		/authenticate/:provider			com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
+GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider: String)
+
+# Users
+GET		/user/:id					controllers.Users.user(id: java.util.UUID)
+GET		/user/:id/activity/csv		controllers.Users.activityCsv(id: java.util.UUID)
+
+# Profiles
+GET		/profile					controllers.Profiles.profile
+GET		/profile/edit				controllers.Profiles.edit
+POST	/profile/edit				controllers.Profiles.doEdit
+GET		/profile/projects			controllers.Profiles.projects
+GET		/profile/activity			controllers.Profiles.activity
+GET		/profile/linkedAccounts		controllers.Profiles.linkedAccounts
+GET		/profile/linkedAccount/:linkedAccountId/remove	controllers.Profiles.linkedAccountRemove(linkedAccountId: Long)
+GET		/profile/link				controllers.Profiles.askLink
+POST	/profile/link				controllers.Profiles.doLink
+GET		/accounts/merge				controllers.Profiles.askMerge
+POST	/accounts/merge				controllers.Profiles.doMerge
+GET		/profile/accessTokens		controllers.Profiles.accessTokens
+GET		/profile/accessToken/create	controllers.Profiles.accessTokenCreate
+POST	/profile/accessToken/create	controllers.Profiles.doAccessTokenCreate
+GET		/profile/accessToken/:accessTokenId	controllers.Profiles.accessToken(accessTokenId: Long)
+POST	/profile/accessToken/:accessTokenId/edit	controllers.Profiles.doAccessTokenEdit(accessTokenId: Long)
+GET		/profile/accessToken/:accessTokenId/remove	controllers.Profiles.accessTokenRemove(accessTokenId: Long)
 
 # Dashboards
 GET		/dashboard						controllers.Dashboards.dashboard
 GET		/dashboard/search				controllers.Dashboards.search
 
 # Projects
-GET		/project/:id					controllers.Projects.project(id: java.util.UUID)
-POST	/project						controllers.Projects.create
+GET		/project/create					controllers.Projects.create
+POST	/project/create					controllers.Projects.doCreate
 GET		/project/:projectName/create	controllers.Projects.createImmediately(projectName: String)
+GET		/project/:id					controllers.Projects.project(id: java.util.UUID)
 GET		/project/:id/search				controllers.Projects.search(id: java.util.UUID)
 GET		/project/:id/edit				controllers.Projects.edit(id: java.util.UUID)
 POST	/project/:id/edit				controllers.Projects.edit(id: java.util.UUID)
 GET		/project/:id/remove				controllers.Projects.remove(id: java.util.UUID)
 GET		/project/:id/locales			controllers.Projects.locales(id: java.util.UUID)
 GET		/project/:id/keys				controllers.Projects.keys(id: java.util.UUID)
-GET		/project/:id/keys/search		controllers.Projects.keysSearch(id: java.util.UUID)
+GET		/project/:id/members			controllers.Projects.members(id: java.util.UUID)
+GET		/project/:id/member/add			controllers.Projects.memberAdd(id: java.util.UUID)
+POST	/project/:id/member/add			controllers.Projects.memberAdd(id: java.util.UUID)
+GET		/project/:id/member/:memberId/remove	controllers.Projects.memberRemove(id: java.util.UUID, memberId: Long)
+GET		/project/:id/activity			controllers.Projects.activity(id: java.util.UUID)
+GET		/project/:id/activity/csv		controllers.Projects.activityCsv(id: java.util.UUID)
 
 # Locales
-GET		/locale/:id						controllers.Application.locale(id: java.util.UUID)
-GET		/locale/:id/keys/search			controllers.Application.localeKeysSearch(id: java.util.UUID)
-GET		/locale/:id/edit				controllers.Application.localeEdit(id: java.util.UUID)
-POST	/locale/:id/edit				controllers.Application.localeEdit(id: java.util.UUID)
-GET		/locale/:id/remove				controllers.Application.localeRemove(id: java.util.UUID)
-GET		/locale/:id/import				controllers.Application.localeImport(id: java.util.UUID)
-POST	/locale/:id/import				controllers.Application.localeImport(id: java.util.UUID)
-GET		/locale/:id/export/:type		controllers.Application.localeExport(id: java.util.UUID, type: String)
-GET		/locale/:projectId/:localeName/create	controllers.Application.localeCreateImmediately(projectId: java.util.UUID, localeName: String)
-POST	/locale/:projectId				controllers.Application.localeCreate(projectId: java.util.UUID)
-GET		/locale/:id/translate			controllers.Application.localeTranslate(id: java.util.UUID)
+GET		/locale/:id						controllers.Locales.locale(id: java.util.UUID)
+GET		/locale/:id/edit				controllers.Locales.edit(id: java.util.UUID)
+POST	/locale/:id/edit				controllers.Locales.edit(id: java.util.UUID)
+GET		/locale/:id/remove				controllers.Locales.remove(id: java.util.UUID)
+GET		/locale/:projectId/:localeName/create	controllers.Locales.createImmediately(projectId: java.util.UUID, localeName: String)
+POST	/locale/:projectId				controllers.Locales.create(projectId: java.util.UUID)
+GET		/locale/:id/translate			controllers.Locales.translate(id: java.util.UUID)
+GET		/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
+POST	/locale/:id/import				controllers.Locales.doUpload(id: java.util.UUID)
+GET		/locale/:id/export/:type		controllers.Locales.download(id: java.util.UUID, type: String)
 
 # Keys
-GET		/key/:id						controllers.Application.key(id: java.util.UUID)
-GET		/key/:id/edit					controllers.Application.keyEdit(id: java.util.UUID)
-POST	/key/:id/edit					controllers.Application.keyEdit(id: java.util.UUID)
-GET		/key/:keyId/remove				controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID = null)
-GET		/key/:keyId/:localeId/remove	controllers.Application.keyRemove(keyId: java.util.UUID, localeId: java.util.UUID)
-GET		/key/:projectId/:keyName/create	controllers.Application.keyCreateImmediately(projectId: java.util.UUID, keyName: String)
-GET		/key/:projectId/create			controllers.Application.keyCreate(projectId: java.util.UUID, localeId: java.util.UUID = null)
-POST	/key/:projectId/create			controllers.Application.keyCreate(projectId: java.util.UUID, localeId: java.util.UUID = null)
-POST	/key/:projectId/:localeId/create	controllers.Application.keyCreate(projectId: java.util.UUID, localeId: java.util.UUID)
+GET		/key/:id						controllers.Keys.key(id: java.util.UUID)
+GET		/key/:id/edit					controllers.Keys.edit(id: java.util.UUID)
+POST	/key/:id/edit					controllers.Keys.edit(id: java.util.UUID)
+GET		/key/:keyId/remove				controllers.Keys.remove(keyId: java.util.UUID, localeId: java.util.UUID = null)
+GET		/key/:keyId/:localeId/remove	controllers.Keys.remove(keyId: java.util.UUID, localeId: java.util.UUID)
+GET		/key/:projectId/:keyName/create	controllers.Keys.createImmediately(projectId: java.util.UUID, keyName: String)
+GET		/key/:projectId/create			controllers.Keys.create(projectId: java.util.UUID, localeId: java.util.UUID = null)
+POST	/key/:projectId/create			controllers.Keys.create(projectId: java.util.UUID, localeId: java.util.UUID = null)
+POST	/key/:projectId/:localeId/create	controllers.Keys.create(projectId: java.util.UUID, localeId: java.util.UUID)
 
 # Messages
 #GET	/message/:id					controllers.Application.message(id: java.util.UUID)
-
-# Users
-GET	/user/:id					controllers.Users.user(id: java.util.UUID)
-GET	/user/:id/activity			controllers.Users.userActivity(id: java.util.UUID)
+POST	/message/create					controllers.Translations.create
 
 # Load demo data
 GET		/load							controllers.Application.load
@@ -61,15 +93,17 @@ GET		/command/:key/execute	controllers.Application.commandExecute(key: String)
 # API
 #
 #GET	/api/project/:projectId			controllers.Api.getProject(projectId: String)
-PUT		/api/project					controllers.Api.putProject
+PUT		/api/project					controllers.Api.createProject
 
-GET		/api/locales/:projectId			controllers.Api.findLocales(projectId: java.util.UUID)
+GET		/api/project/:projectId/locales	controllers.Api.findLocales(projectId: java.util.UUID)
 #GET		/api/locale/:localeId		controllers.Api.getLocale(localeId: java.util.UUID)
-PUT		/api/locale						controllers.Api.putLocale
+POST	/api/locale						controllers.Api.createLocale
+POST	/api/locale/:localeId/import/:fileType	controllers.Api.uploadLocale(localeId: java.util.UUID, fileType: String)
+GET		/api/locale/:localeId/export/:fileType	controllers.Api.downloadLocale(localeId: java.util.UUID, fileType: String)
 
-GET		/api/messages/:projectId		controllers.Api.findMessages(projectId: java.util.UUID)
+GET		/api/project/:projectId/messages	controllers.Api.findMessages(projectId: java.util.UUID)
 GET		/api/message/:localeId/:key		controllers.Api.getMessage(localeId: java.util.UUID, key: String)
-PUT		/api/message					controllers.Api.putMessage
+POST	/api/message					controllers.Api.createMessage
 
 # Map static resources from the /public folder to the /assets URL path
 GET		/assets/*file					controllers.Assets.versioned(path="/public", file: Asset)

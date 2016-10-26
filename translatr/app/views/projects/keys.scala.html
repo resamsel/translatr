@@ -1,0 +1,67 @@
+@(template: utils.Template, project: models.Project, keys: List[models.Key], progress: Map[java.util.UUID, Double], form: Form[forms.SearchForm])
+
+@main(template.withTitle(Messages("keys.title", project.name))) {
+	@tags.search(form)()
+} {
+		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+			@Messages("dashboard")
+		</a>
+		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
+			@project.name
+		</a>
+		<a class="breadcrumb active" href="@routes.Projects.keys(project.id)">
+			@Messages("keys")
+		</a>
+} {
+	@content(project, "keys") {
+		@tags.collection(keys, "keys.empty", "keys") {
+			<span class="title">@Messages("key.name")</span>
+			<div class="secondary-content sort-orders">
+				@tags.orderLink(form.get, routes.Projects.keys(project.id), "key.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, routes.Projects.keys(project.id), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+			</div>
+		} {
+			@for(key <- keys) {
+				<li class="collection-item avatar">
+					<i class="material-icons circle light-green">vpn_key</i>
+					<a class="key title" href="@routes.Keys.key(key.id)">
+						@key.name
+						<div class="progress">
+							<div class="determinate" style="width: @{progress.getOrDefault(key.id, 0)*100}%;"></div>
+						</div>
+					</a>
+					<p>
+						@utils.FormatUtils.pretty(ctx.lang().locale, key.whenUpdated)
+					</p>
+					<div class="secondary-content">
+						<a
+							href="@routes.Keys.edit(key.id)"
+							class="btn-flat btn-hover waves-effect waves-light"
+							title="@Messages("button.edit")">
+							<i class="material-icons">mode_edit</i>
+						</a>
+						<a
+							href="@routes.Keys.remove(key.id, null)"
+							class="btn-flat btn-hover waves-effect waves-light"
+							title="@Messages("button.remove")">
+							<i class="material-icons">delete_forever</i>
+						</a>
+					</div>
+				</li>
+			}
+		} {
+			@tags.pager(routes.Projects.keys(project.id), form.get)
+		}
+	}
+
+	@tags.fabContainer("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
+
+	@tags.modal(Messages("key.new"), "modal-create") {
+		@tags.keyCreate(project)
+	}
+
+	<script type="text/javascript">
+		var projectId = '@project.id';
+	</script>
+	<script src="@routes.Assets.versioned("javascripts/projectKeys.js")"></script>
+}

@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import com.avaje.ebean.annotation.Sql;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

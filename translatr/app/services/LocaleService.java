@@ -10,7 +10,7 @@ import models.Locale;
 import services.impl.LocaleServiceImpl;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

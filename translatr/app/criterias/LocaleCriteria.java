@@ -3,7 +3,7 @@ package criterias;
 import forms.SearchForm;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
@@ -33,13 +33,8 @@ public class LocaleCriteria extends AbstractSearchCriteria<LocaleCriteria>
 		return this;
 	}
 
-	public static LocaleCriteria from(SearchForm search)
+	public static LocaleCriteria from(SearchForm form)
 	{
-		return new LocaleCriteria()
-			.withSearch(search.search)
-			.withMissing(search.missing)
-			.withOffset(search.offset)
-			.withLimit(search.limit)
-			.withOrder(search.order);
+		return new LocaleCriteria().with(form);
 	}
 }

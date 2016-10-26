@@ -3,7 +3,7 @@ package dto;
 import java.util.List;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

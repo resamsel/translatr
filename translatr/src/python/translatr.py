@@ -26,9 +26,13 @@ CONNECTION_ERROR = textwrap.dedent("""
 	Connection to {endpoint} could not be established, please check
 	your .translatr.yml config (translatr.endpoint)
 """)
-PROJECT_NOT_FOUND = textwrap.dedent("""
-	Project with ID {project_id} could not be found, please check your
-	.translatr.yml config (translatr.project_id)
+API_ERROR = textwrap.dedent("""
+	{0} - please check your .translatr.yml config
+""")
+API_HTML_ERROR = textwrap.dedent("""
+	An undefined error occurred while talking to the API:
+
+	{0}
 """)
 
 Locale = namedtuple('Locale', 'id name projectId')
@@ -82,9 +86,15 @@ def info(args):
 	pyaml.pprint({'translatr': read_config()})
 
 
-def download(url, target):
-	logger.debug('Download %s to %s', url, target)
-	req = requests.get(url)
+def handle_http_error(response, config):
+	try:
+		raise Exception(API_ERROR.format(response.json()['error'], **config))
+	except ValueError:
+		raise Exception(API_HTML_ERROR.format(response.text))
+
+
+def download(req, target):
+	logger.debug('Download %s to %s', req.url, target)
 	with open(target, 'wb') as f:
 		for chunk in req.iter_content(chunk_size=1024):
 			if chunk: # filter out keep-alive new chunks
@@ -106,18 +116,21 @@ def pull(args):
 	config = read_config_merge(args)
 
 	assert_exists(config, 'endpoint')
+	assert_exists(config, 'access_token')
 	assert_exists(config, 'project_id')
 	assert_exists(config, 'pull.target')
 	assert_exists(config, 'pull.file_type')
 
 	try:
 		response = requests.get(
-			'{endpoint}/api/locales/{project_id}'.format(**config))
+			'{endpoint}/api/project/{project_id}/locales'.format(**config),
+			params={'access_token': config['access_token']}
+		)
 		response.raise_for_status()
 	except requests.exceptions.ConnectionError as e:
 		raise Exception(CONNECTION_ERROR.format(**config))
 	except requests.exceptions.HTTPError:
-		raise Exception(PROJECT_NOT_FOUND.format(**config))
+		handle_http_error(response, config)
 
 	locales = response.json()
 
@@ -129,9 +142,12 @@ def pull(args):
 		else:
 			target = target.replace('?', '')
 		download(
-			'{endpoint}/locale/{0}/export/{pull[file_type]}'.format(
-				locale.id,
-				**config
+			requests.get(
+				'{endpoint}/api/locale/{0}/export/{pull[file_type]}'.format(
+					locale.id,
+					**config
+				),
+				params={'access_token': config['access_token']}
 			),
 			target
 		)
@@ -156,18 +172,21 @@ def push(args):
 	config = read_config_merge(args)
 
 	assert_exists(config, 'endpoint')
+	assert_exists(config, 'access_token')
 	assert_exists(config, 'project_id')
 	assert_exists(config, 'push.target')
 	assert_exists(config, 'push.file_type')
 
 	try:
 		response = requests.get(
-			'{endpoint}/api/locales/{project_id}'.format(**config))
+			'{endpoint}/api/project/{project_id}/locales'.format(**config),
+			params={'access_token': config['access_token']}
+		)
 		response.raise_for_status()
 	except requests.exceptions.ConnectionError as e:
 		raise Exception(CONNECTION_ERROR.format(**config))
 	except requests.exceptions.HTTPError:
-		raise Exception(PROJECT_NOT_FOUND.format(**config))
+		handle_http_error(response, config)
 
 	project = response.json()
 
@@ -198,44 +217,61 @@ def push(args):
 		if localeName not in locales:
 			try:
 				# Create locale
-				response = requests.put(
+				response = requests.post(
 					'{endpoint}/api/locale'.format(**config),
 					json={
+						'access_token': config['access_token'],
 						'project': {
 							'id': config['project_id']
 						},
 						'name': localeName
 					})
+				response.raise_for_status()
 				# Put response locale in locales
 				locales[localeName] = Locale(**response.json())
 				created = True
 			except requests.exceptions.ConnectionError as e:
 				eprint(CONNECTION_ERROR.format(**config))
 			except requests.exceptions.HTTPError:
-				eprint(PROJECT_NOT_FOUND.format(**config))
+				try:
+					handle_http_error(response, config)
+				except BaseException as e:
+					eprint(e.message)
 			except ValueError as e:
 				logger.exception(e)
 			except BaseException as e:
 				logger.exception(e)
 
 		if localeName in locales:
-			requests.post(
-				'{endpoint}/locale/{locale.id}/import'.format(
-					locale=locales[localeName],
-					**config),
-				data={
-					'fileType': config['push']['file_type']
-				},
-				files={
-					'messages': open(filename, 'r')
-				})
-			print(
-				'Uploaded {0} to {1}{2}'.format(
-					filename,
-					localeName,
-					{ True: ' (new)', False: ''}.get(created)
+			try:
+				response = requests.post(
+					'{endpoint}/api/locale/{locale.id}/import/{push[file_type]}'.format(
+						locale=locales[localeName],
+						**config),
+					params={
+						'access_token': config['access_token']
+					},
+					data={
+						'fileType': config['push']['file_type']
+					},
+					files={
+						'messages': open(filename, 'r')
+					})
+				response.raise_for_status()
+				print(
+					'Uploaded {0} to {1}{2}'.format(
+						filename,
+						localeName,
+						{ True: ' (new)', False: ''}.get(created)
+					)
 				)
-			)
+			except requests.exceptions.ConnectionError as e:
+				eprint(CONNECTION_ERROR.format(**config))
+			except requests.exceptions.HTTPError:
+				try:
+					handle_http_error(response, config)
+				except BaseException as e:
+					eprint(e.message)
 		else:
 			print('Could neither find nor create locale {0}'.format(localeName))
 

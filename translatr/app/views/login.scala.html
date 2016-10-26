@@ -1,0 +1,31 @@
+@(template: utils.Template, providerKeys: List[String])
+
+@import tags._
+
+@main(template.withTitle(Messages("auth.login.title")).withName("login")) { } {
+	<a class="breadcrumb" href="@routes.Application.login()">
+		@Messages("auth.login.title")
+	</a>
+} {
+	@tags.content {
+		<div class="col s12 m4 offset-m4">
+			@Html(Messages("auth.login.content"))
+			<ul class="collection auth-provider">
+				@if(template.auth != null) {
+					@forProviders(template.auth, providerKeys) { p =>
+						<li class="collection-item">
+							<a href="@p.getUrl()" class="hoverable provider provider-@p.getKey()">
+								<span class="icon-container">
+									<i class="fa fa-@p.getKey()" aria-hidden="true"></i>
+								</span>
+								<span class="title">
+									@Messages("auth." + p.getKey())
+								</span>
+							</a>
+						</li>
+					}
+				}
+			</ul>
+		</div>
+	}
+}

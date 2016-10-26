@@ -1,0 +1,17 @@
+@(template: utils.Template, active: String, numberOfProjects: Integer = null)(content: Html)
+
+<div class="container-fluid content">
+	<div class="container row">
+		<div class="col sidebar">
+			@card(template.loggedInUser, numberOfProjects)
+		</div>
+
+		<div class="col s12 main">
+			@if(active != null) {
+				<h4 class="header">@Messages(active)</h4>
+			}
+
+			@content
+		</div>
+	</div>
+</div>

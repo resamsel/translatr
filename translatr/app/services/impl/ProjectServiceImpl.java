@@ -1,23 +1,34 @@
 package services.impl;
 
+import static utils.Stopwatch.log;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import models.ActionType;
 import models.LogEntry;
 import models.Project;
+import models.ProjectRole;
+import models.ProjectUser;
+import models.User;
 import play.Configuration;
+import play.cache.CacheApi;
 import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
 import services.ProjectService;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
@@ -26,23 +37,52 @@ import services.ProjectService;
 @Singleton
 public class ProjectServiceImpl extends AbstractModelService<Project> implements ProjectService
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(PermissionServiceImpl.class);
+
+	private final CacheApi cache;
+
 	private final LocaleService localeService;
 
 	private final KeyService keyService;
-
-	private final LogEntryService logEntryService;
 
 	/**
 	 * 
 	 */
 	@Inject
-	public ProjectServiceImpl(Configuration configuration, LocaleService localeService, KeyService keyService,
-				LogEntryService logEntryService)
+	public ProjectServiceImpl(Configuration configuration, CacheApi cache, LocaleService localeService,
+				KeyService keyService, LogEntryService logEntryService)
 	{
-		super(configuration);
+		super(configuration, logEntryService);
+		this.cache = cache;
 		this.localeService = localeService;
 		this.keyService = keyService;
-		this.logEntryService = logEntryService;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Project getById(UUID id)
+	{
+		return log(
+			() -> cache.getOrElse(String.format("project:%s", id.toString()), () -> Project.byIdUncached(id), 60),
+			LOGGER,
+			"getById");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Project getByOwnerAndName(User user, String name)
+	{
+		return log(
+			() -> cache.getOrElse(
+				String.format("projectByOwnerAndName:%s:%s", user.id.toString(), name),
+				() -> Project.byOwnerAndNameUncached(user, name),
+				10 * 600),
+			LOGGER,
+			"byOwnerAndName");
 	}
 
 	/**
@@ -55,7 +95,11 @@ public class ProjectServiceImpl extends AbstractModelService<Project> implements
 			logEntryService
 				.save(LogEntry.from(ActionType.Update, t, dto.Project.class, toDto(Project.byId(t.id)), toDto(t)));
 		if(t.owner == null)
-			t.owner = loggedInUser();
+			t.owner = User.loggedInUser();
+		if(t.members == null)
+			t.members = new ArrayList<>();
+		if(t.members.isEmpty())
+			t.members.add(new ProjectUser(ProjectRole.Owner).withProject(t).withUser(t.owner));
 	}
 
 	/**

@@ -1,0 +1,18 @@
+@(project: Project)
+
+@import utils.FormatUtils._
+
+<div class="card no-image">
+	<div class="card-image orange">
+		<span class="card-title">@Messages("project.title", project.name)</span>
+	</div>
+	<div class="progress">
+		<div class="determinate" style="width: @{project.progress()*100}%;"></div>
+	</div>
+	<div class="card-content">
+		<p>
+			@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
+		</p>
+		@users.chip(project.owner)
+	</div>
+</div>

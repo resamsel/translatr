@@ -1,0 +1,36 @@
+@(template: utils.Template, user: models.User, activityList: List[LogEntry], form: Form[forms.SearchForm])
+
+@import utils.FormatUtils._
+
+@main(template.withTitle(Messages("user.title", user.name)).withName("user")) {
+} {
+	<a class="breadcrumb" href="@routes.Users.user(user.id)">
+		@user.name
+	</a>
+	<a class="breadcrumb" href="@routes.Profiles.activity()">
+		@Messages("activity")
+	</a>
+} {
+	@content(template, user, "activity") {
+		@tags.collection(activityList, "activity.empty") {
+			<span class="title">@Messages("activity")</span>
+			<div class="secondary-content sort-orders">
+				@tags.orderLink(form.get, routes.Profiles.activity(), "when.created", "whenCreated desc", "whenCreated", "whenCreated")
+			</div>
+		} {
+			@for(activity <- activityList) {
+				<li class="collection-item avatar">
+					<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
+					<a href="@utils.JsonUtils.linkTo(activity)" class="title">
+						@utils.JsonUtils.nameOf(activity)
+					</a>
+					<p>
+						@Messages("activity." + activity.getType + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
+					</p>
+				</li>
+			}
+		} {
+			@tags.pager(routes.Profiles.activity(), form.get)
+		}
+	}
+}

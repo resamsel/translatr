@@ -1,0 +1,36 @@
+@(template: utils.Template, user: models.User, projectList: List[models.Project], form: Form[forms.SearchForm])
+
+@import utils.FormatUtils._
+
+@main(template.withTitle(Messages("user.title", user.name)).withName("user")) {
+} {
+	<a class="breadcrumb" href="@routes.Users.user(user.id)">
+		@user.name
+	</a>
+	<a class="breadcrumb" href="@routes.Profiles.projects()">
+		@Messages("projects")
+	</a>
+} {
+	@content(template, user, "projects") {
+		@tags.collection(projectList, "projects.empty") {
+			<span class="title">@Messages("project")</span>
+			<div class="secondary-content sort-orders">
+				@tags.orderLink(form.get, routes.Profiles.projects(), "project.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, routes.Profiles.projects(), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+			</div>
+		} {
+			@for(project <- projectList) {
+				<li class="collection-item avatar">
+					<i class="material-icons circle orange">view_quilt</i>
+					<a href="@routes.Projects.project(project.id)" class="title">
+						@project.name
+					</a>
+					<p>
+						@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
+					</p>
+				</li>
+			}
+		} {
+		}
+	}
+}

@@ -1,24 +1,45 @@
-@(user: models.User, projectList: List[models.Project])
+@(template: utils.Template, user: User, stats: UserStats)
 
 @import utils.FormatUtils._
+@import views.html.tags.contentCard
 
-@main(utils.TemplateInfo.from(Messages("user.title"), "user")) {
+@main(template.withTitle(Messages("user.title", user.name)).withName("user")) {
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
+	<a class="breadcrumb" href="@routes.Users.user(user.id)">
+		@user.name
+	</a>
 } {
-	@users.content(user, "projects") {
-		<div class="collection">
-			@for(project <- projectList) {
-				<a href="@routes.Projects.project(project.id)" class="collection-item avatar black-text">
-					<i class="material-icons circle orange">view_quilt</i>
-					<span class="title">@project.name</span>
-					<p>
-						@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
-					</p>
-				</a>
-			}
-		</div>
+	@content(template, user, "info", "flex") {
+		@contentCard(Messages("activity"), styleClass = "activity") {
+			<div class="svg-container"></div>
+		}
+		@contentCard(Messages("info"), styleClass = "info") {
+			<ul class="profile-info">
+				@if(template.loggedInUser.id == user.id) {
+					<li class="truncate">
+						<a href="mailto:@user.email">
+							<i class="material-icons left">email</i>
+							@user.email
+						</a>
+					</li>
+				}
+				<li class="truncate">
+					<i class="material-icons left">access_time</i>
+					@Messages("user.created", user.whenCreated.toDate)
+				</li>
+			</ul>
+		}
+		@contentCard(Messages("contributions"), styleClass = "contributions") {
+			<p>
+				@Messages("projects.amount", stats.numberOfProjects),
+				@Messages("contributions.amount", stats.numberOfActivities)
+			</p>
+		}
 	}
+
+	<script>
+		var userId = "@user.id";
+	</script>
+	@tags.contributionScript()
+	<script src="@routes.Assets.versioned("javascripts/user.js")"></script>
 }

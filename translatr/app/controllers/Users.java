@@ -1,26 +1,25 @@
 package controllers;
 
-import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
+import com.feth.play.module.pa.PlayAuthenticate;
+
 import actions.ContextAction;
+import converters.ActivityCsvConverter;
 import criterias.LogEntryCriteria;
-import criterias.ProjectCriteria;
-import forms.SearchForm;
-import models.LogEntry;
-import models.Project;
 import models.User;
-import play.Configuration;
 import play.cache.CacheApi;
-import play.data.Form;
-import play.data.FormFactory;
+import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.LogEntryService;
+import services.UserService;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
@@ -29,39 +28,50 @@ import play.mvc.With;
 @With(ContextAction.class)
 public class Users extends AbstractController
 {
-	private final FormFactory formFactory;
-
-	private final Configuration configuration;
+	private final LogEntryService logEntryService;
 
 	/**
+	 * @param auth
 	 * 
 	 */
 	@Inject
-	public Users(CacheApi cache, FormFactory formFactory, Configuration configuration)
+	public Users(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
+				LogEntryService logEntryService)
 	{
-		super(cache);
-
-		this.formFactory = formFactory;
-		this.configuration = configuration;
+		super(injector, cache, auth, userService);
+		this.logEntryService = logEntryService;
 	}
 
 	public Result user(UUID id)
 	{
-		return ok(
-			views.html.users.user
-				.render(User.byId(id), Project.findBy(new ProjectCriteria().withOwnerId(id).withOrder("name"))));
+		return user(id, user -> {
+			if(user.id.equals(User.loggedInUserId()))
+				return redirect(routes.Profiles.profile());
+
+			return ok(views.html.users.user.render(createTemplate(), user, userService.getUserStats(user.id)));
+		});
 	}
 
-	public Result userActivity(UUID id)
+	public Result activityCsv(UUID userId)
 	{
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
+		return user(userId, user -> {
+			return ok(
+				new ActivityCsvConverter()
+					.apply(logEntryService.getAggregates(new LogEntryCriteria().withUserId(user.id))));
+		});
+	}
 
-		List<LogEntry> activities =
-					LogEntry.findBy(LogEntryCriteria.from(search).withUserId(id).withOrder("whenCreated desc"));
+	/**
+	 * @param userId
+	 * @param object
+	 * @return
+	 */
+	private Result user(UUID userId, Function<User, Result> processor)
+	{
+		User user = User.byId(userId);
+		if(user == null)
+			return redirectWithError(routes.Application.index(), ctx().messages().at("user.notFound"));
 
-		search.pager(activities);
-
-		return ok(views.html.users.userActivity.render(User.byId(id), activities, form));
+		return processor.apply(user);
 	}
 }

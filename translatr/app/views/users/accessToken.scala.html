@@ -1,0 +1,37 @@
+@(template: utils.Template, user: User, accessToken: AccessToken, form: Form[forms.AccessTokenForm])
+
+@main(template.withTitle(Messages("accessToken.title")).withName("access-token")) {
+} {
+	<a class="breadcrumb active" href="@routes.Profiles.profile()">
+		@user.name
+	</a>
+	<a class="breadcrumb active" href="@routes.Profiles.accessTokens()">
+		@Messages("accessTokens")
+	</a>
+} {
+	@content(template, user, "accessTokens") {
+		<form action="@routes.Profiles.doAccessTokenEdit(accessToken.id)" method="post">
+			<div class="card no-image">
+				<div class="card-content">
+					<span class="card-title">@Messages("accessToken")</span>
+					@accessTokenFormContent(user, form)
+				</div>
+				<div class="card-action">
+					<button
+						type="submit"
+						class="btn waves-effect waves-light btn-save">
+						@Messages("button.save")
+						<i class="material-icons right">send</i>
+					</button>
+					<a
+						class="btn-flat btn-cancel black-text"
+						href="@routes.Profiles.accessTokens()">
+						@Messages("button.cancel")
+					</a>
+				</div>
+			</div>
+		</form>
+	}
+
+	@tags.fabContainer("delete-access-token", "delete_forever", href = routes.Profiles.accessTokenRemove(accessToken.id).url, tooltip = Messages("accessToken.delete.tooltip"), styleClass = "green")
+}

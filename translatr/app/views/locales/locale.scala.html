@@ -1,17 +1,15 @@
-@(project: models.Project, locale: models.Locale, keys: List[models.Key], locales: List[models.Locale], messages: Map[String, models.Message], form: Form[forms.SearchForm])
-
-@import utils.TemplateInfo.from
+@(template: utils.Template, project: models.Project, locale: models.Locale, keys: List[models.Key], locales: List[models.Locale], messages: Map[String, models.Message], form: Form[forms.SearchForm])
 
 @localeActions = {
 	<li>
-		@tags.fab("remove-locale", "delete_forever", href = routes.Application.localeRemove(locale.id).url, tooltip = Messages("locale.remove.tooltip"), styleClass = "red")
+		@tags.fab("remove-locale", "delete_forever", href = routes.Locales.remove(locale.id).url, tooltip = Messages("locale.remove.tooltip"), styleClass = "red")
 	</li>
 	<li>
-		@tags.fab("edit-locale", "edit", href = routes.Application.localeEdit(locale.id).url, tooltip = Messages("locale.edit.tooltip"), styleClass = "blue")
+		@tags.fab("edit-locale", "edit", href = routes.Locales.edit(locale.id).url, tooltip = Messages("locale.edit.tooltip"), styleClass = "blue")
 	</li>
 }
 
-@main(from(Messages("locale.title", project.name, tags.locale(locale.name)), "locale")) {
+@main(template.withTitle(Messages("locale.title", project.name, tags.locale(locale.name))).withName("locale")) {
 	@tags.search(form) {
 		<button
 			type="button"
@@ -41,25 +39,20 @@
 	<a class="breadcrumb" href="@routes.Projects.locales(project.id)">
 		@Messages("locales")
 	</a>
-	<a class="breadcrumb active" href="@routes.Application.locale(locale.id)">
+	<a class="breadcrumb active" href="@routes.Locales.locale(locale.id)">
 		@tags.locale(locale.name)
 	</a>
 } {
 	@tags.editor {
-		<h3 class="section-heading">@Messages("keys")</h3>
-		<ul class="collection keys">
+		<h5 class="header">@Messages("keys")</h5>
+		<div class="collection keys">
 			@tags.keyItems(keys, messages, false)
-		</ul>
+		</div>
 	} {
 		<form id="form-message">
 			<div id="panel-message" class="card no-image">
-				<div class="card-image red">
-					<span class="card-title">@Messages("locale.to.label") @tags.locale(locale.name)</span>
-				</div>
-				<div class="progress" style="margin: 0; visibility: hidden">
-					<div class="indeterminate"></div>
-				</div>
 				<div class="card-content">
+					<span class="card-title">@Messages("locale.to.label") @tags.locale(locale.name)</span>
 					<input id="field-id" type="hidden" />
 					<input id="field-key" type="hidden" />
 					<input id="field-keyId" type="hidden" />
@@ -88,7 +81,7 @@
 
 		<!-- Preview -->
 		<div id="panel-preview">
-			<h3 class="section-heading">@Messages("locale.preview")</h3>
+			<h5 class="header">@Messages("locale.preview")</h5>
 			<div id="preview"></div>
 		</div>
 
@@ -96,21 +89,21 @@
 			<span class="valign">@Messages("key.selection.none")</span>
 		</div>
 	} {
-		<h3 class="section-heading">@Messages("messages")</h3>
-		<ul id="panel-messages" class="collection messages">
-			<li class="collection-item waves-effect waves-red message template">
-				<a title="@Messages("value.copy")">
-					<span class="title localeName truncate">Name</span>
-					<div class="value">Value</div>
-				</a>
-			</li>
-		</ul>
+		<h5 class="header">@Messages("messages")</h5>
+		<div id="panel-messages" class="collection messages">
+			<a
+				class="collection-item waves-effect waves-red message template"
+				title="@Messages("value.copy")">
+				<span class="title localeName truncate">Name</span>
+				<div class="value">Value</div>
+			</a>
+		</div>
 	}
 
 	@tags.fabContainer("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = localeActions)
 
 	@tags.modal(Messages("key.new"), "modal-create") {
-		<form id="form-key" method="post" action="@routes.Application.keyCreate(project.id, locale.id)">
+		<form id="form-key" method="post" action="@routes.Keys.create(project.id, locale.id)">
 			<div class="form-group">
 				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
 			</div>

@@ -15,7 +15,7 @@ import play.mvc.Result;
 import utils.Stopwatch;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel

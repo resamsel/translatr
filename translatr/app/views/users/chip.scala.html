@@ -1,0 +1,9 @@
+@(user: User, key: String = "project.owner", imgKey: String = "project.owner.info")
+
+<div class="chip user">
+	@tags.gravatar(user, help = Messages(imgKey))
+	@Html(Messages(key, user.name))
+	<a href="@routes.Users.user(user.id)">
+		@user.name
+	</a>
+</div>

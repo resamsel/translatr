@@ -3,7 +3,7 @@ package forms;
 import play.data.validation.Constraints.Required;
 
 /**
- * (c) 2016 Skiline Media GmbH
+ * 
  * <p>
  *
  * @author resamsel
