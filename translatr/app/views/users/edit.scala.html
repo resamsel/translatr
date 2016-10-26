@@ -2,12 +2,9 @@
 
 @main(template.withTitle(Messages("user.edit.title")).withName("user-edit")) {
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb" href="@routes.Users.user(user.id)">
-			@user.name
-		</a>
+	<a class="breadcrumb" href="@routes.Users.user(user.id)">
+		@user.name
+	</a>
 } {
 	@content(template, user, "info") {
 		<form action="@routes.Profiles.doEdit()" method="post">

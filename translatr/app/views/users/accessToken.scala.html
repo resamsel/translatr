@@ -2,9 +2,6 @@
 
 @main(template.withTitle(Messages("accessToken.title")).withName("access-token")) {
 } {
-	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-		@Messages("dashboard")
-	</a>
 	<a class="breadcrumb active" href="@routes.Profiles.profile()">
 		@user.name
 	</a>
