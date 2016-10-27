@@ -18,10 +18,6 @@ public class PermissionUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(PermissionUtils.class);
 
   public static boolean hasPermissionAll(Scope... scopes) {
-    // TODO: allow admin scopes also
-    // !PermissionUtils.hasPermissionAny(Scope.ProjectRead, Scope.ProjectAdmin)
-    // || !PermissionUtils.hasPermissionAny(Scope.LocaleRead, Scope.LocaleAdmin))
-
     return hasPermissionAll((AccessToken) Context.current().args.get("accessToken"), scopes);
   }
 
@@ -31,6 +27,10 @@ public class PermissionUtils {
 
     if (accessToken == null)
       return false;
+
+    // TODO: allow admin scopes also
+    // !PermissionUtils.hasPermissionAny(Scope.ProjectRead, Scope.ProjectAdmin)
+    // || !PermissionUtils.hasPermissionAny(Scope.LocaleRead, Scope.LocaleAdmin))
 
     return accessToken.getScopeList().containsAll(Arrays.asList(scopes));
   }

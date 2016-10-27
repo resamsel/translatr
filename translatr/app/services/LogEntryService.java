@@ -17,13 +17,10 @@ import services.impl.LogEntryServiceImpl;
  * @version 29 Aug 2016
  */
 @ImplementedBy(LogEntryServiceImpl.class)
-public interface LogEntryService extends ModelService<LogEntry>
-{
-	List<Aggregate> getStats(LogEntryCriteria criteria);
-
-	/**
-	 * @param criteria
-	 * @return
-	 */
-	List<Aggregate> getAggregates(LogEntryCriteria criteria);
+public interface LogEntryService extends ModelService<LogEntry> {
+  /**
+   * @param criteria
+   * @return
+   */
+  List<Aggregate> getAggregates(LogEntryCriteria criteria);
 }

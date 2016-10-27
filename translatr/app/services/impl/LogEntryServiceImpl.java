@@ -42,9 +42,6 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
   private static final String H2_COLUMN_MILLIS =
       "datediff('millisecond', timestamp '1970-01-01 00:00:00', parsedatetime(formatdatetime(when_created, 'yyyy-MM-dd HH:00:00'), 'yyyy-MM-dd HH:mm:ss'))*1000";
 
-  private static final String POSTGRESQL_COLUMN_MILLIS =
-      "extract(epoch from date_trunc('hour', when_created))*1000";
-
   private final CacheApi cache;
 
   /**
@@ -92,44 +89,6 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
             "select %1$s as date, count(*) as cnt from log_entry group by 1 order by 1",
             dateColumn))
         .columnMapping(dateColumn, "date").columnMapping("count(*)", "value").create();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<Aggregate> getStats(LogEntryCriteria criteria) {
-    ExpressionList<Aggregate> query =
-        Ebean.find(Aggregate.class).setRawSql(getStatsRawSql()).where();
-
-    if (criteria.getProjectId() != null)
-      query.eq("project_id", criteria.getProjectId());
-
-    if (criteria.getUserId() != null)
-      query.eq("user_id", criteria.getUserId());
-
-    return log(() -> query.findList(), LOGGER, "Retrieving log entry stats");
-  }
-
-  /**
-   * @return
-   */
-  private RawSql getStatsRawSql() {
-    String dbpName = Ebean.getDefaultServer().getPluginApi().getDatabasePlatform().getName();
-    if ("h2".equals(dbpName))
-      return RawSqlBuilder
-          .parse(String.format(
-              "select %1$s as millis, content_type as key, count(*) as cnt from log_entry group by %1$s, content_type order by 1",
-              H2_COLUMN_MILLIS))
-          .columnMapping(H2_COLUMN_MILLIS, "millis").columnMapping("content_type", "key")
-          .columnMapping("count(*)", "value").create();
-
-    return RawSqlBuilder
-        .parse(String.format(
-            "select %1$s as millis, content_type as key, count(*) as cnt from log_entry group by 1, 2 order by 1",
-            POSTGRESQL_COLUMN_MILLIS))
-        .columnMapping(POSTGRESQL_COLUMN_MILLIS, "millis").columnMapping("content_type", "key")
-        .columnMapping("count(*)", "value").create();
   }
 
   /**
