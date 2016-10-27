@@ -31,7 +31,10 @@ libraryDependencies ++= Seq(
 	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
 	"org.apache.httpcomponents" % "httpclient" % "4.5.2",
 
-	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final"
+	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
+
+	// https://mvnrepository.com/artifact/org.easytesting/fest-assert-core
+	"org.easytesting" % "fest-assert-core" % "2.0M10"
 )
 
 // From: https://github.com/playframework/playframework/issues/3818
