@@ -1,5 +1,7 @@
 package actions;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -22,7 +24,11 @@ import play.mvc.Result;
  * @version 17 Aug 2016
  */
 public class ContextAction extends Action.Simple {
+  private static final List<String> ALLOWED_ROUTES =
+      Arrays.asList(routes.Application.logout().path(), routes.Profiles.edit().path());
+
   private final CacheApi cache;
+
 
   /**
    * 
@@ -41,8 +47,7 @@ public class ContextAction extends Action.Simple {
     // AbstractController.addMessage(ctx.messages().at("user.incomplete"));
 
     User user = User.loggedInUser();
-    if (user != null && !user.isComplete()
-        && !ctx.request().path().equals(routes.Profiles.edit().path())) {
+    if (user != null && !user.isComplete() && !routeAllowed(ctx.request().path())) {
       AbstractController.addMessage(ctx.messages().at("user.incomplete"));
       return CompletableFuture.completedFuture(redirect(routes.Profiles.edit()));
     }
@@ -54,5 +59,13 @@ public class ContextAction extends Action.Simple {
     }
 
     return delegate.call(ctx);
+  }
+
+  /**
+   * @param path
+   * @return
+   */
+  private boolean routeAllowed(String path) {
+    return ALLOWED_ROUTES.contains(path);
   }
 }

@@ -43,6 +43,7 @@ alter table log_entry
 drop index ix_user_username;
 alter table user_
 	alter column email set not null;
+delete from project where owner_id is null;
 alter table project
 	alter column owner_id set not null;
 alter table project_user
