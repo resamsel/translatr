@@ -199,20 +199,6 @@ public class Projects extends AbstractController {
 
       List<Suggestable> suggestions = new ArrayList<>();
 
-      List<? extends Suggestable> locales = Locale.findBy(new LocaleCriteria()
-          .withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
-
-      search.pager(locales);
-      if (!locales.isEmpty())
-        suggestions.addAll(locales);
-      if (search.hasMore)
-        suggestions.add(Suggestable.DefaultSuggestable
-            .from(ctx().messages().at("locale.search", search.search), Data.from(Locale.class, null,
-                "???", search.urlWithOffset(routes.Projects.locales(project.id), 0))));
-      suggestions.add(Suggestable.DefaultSuggestable
-          .from(ctx().messages().at("locale.create", search.search), Data.from(Locale.class, null,
-              "+++", routes.Locales.createImmediately(project.id, search.search).url())));
-
       List<? extends Suggestable> keys = Key
           .findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
 
@@ -223,10 +209,24 @@ public class Projects extends AbstractController {
       if (search.hasMore)
         suggestions.add(Suggestable.DefaultSuggestable
             .from(ctx().messages().at("key.search", search.search), Data.from(Key.class, null,
-                "???", search.urlWithOffset(routes.Projects.keys(project.id), 0))));
+                "???", search.urlWithOffset(routes.Projects.keys(project.id), 20, 0))));
       suggestions.add(Suggestable.DefaultSuggestable
           .from(ctx().messages().at("key.create", search.search), Data.from(Key.class, null, "+++",
               routes.Keys.createImmediately(project.id, search.search).url())));
+
+      List<? extends Suggestable> locales = Locale.findBy(new LocaleCriteria()
+          .withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
+
+      search.pager(locales);
+      if (!locales.isEmpty())
+        suggestions.addAll(locales);
+      if (search.hasMore)
+        suggestions.add(Suggestable.DefaultSuggestable
+            .from(ctx().messages().at("locale.search", search.search), Data.from(Locale.class, null,
+                "???", search.urlWithOffset(routes.Projects.locales(project.id), 20, 0))));
+      suggestions.add(Suggestable.DefaultSuggestable
+          .from(ctx().messages().at("locale.create", search.search), Data.from(Locale.class, null,
+              "+++", routes.Locales.createImmediately(project.id, search.search).url())));
 
       return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
     });

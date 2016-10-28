@@ -223,6 +223,7 @@ nav ul .disabled:hover {
 	margin: 10px 0 4px;
     padding: 0 24px;
     text-align: right;
+    float: right;
 }
 .autocomplete-group strong {
 	display: block;

@@ -133,7 +133,7 @@ public class SearchForm {
     }
   }
 
-  public String urlWithOffset(Call call, int offset) {
+  public String urlWithOffset(Call call, int limit, int offset) {
     try {
       return new URIBuilder(call.url())
           .addParameters(Arrays.asList(new BasicNameValuePair("limit", String.valueOf(limit)),
@@ -148,11 +148,11 @@ public class SearchForm {
   }
 
   public String nextPage(Call call) {
-    return urlWithOffset(call, offset + limit);
+    return urlWithOffset(call, limit, offset + limit);
   }
 
   public String previousPage(Call call) {
-    return urlWithOffset(call, Math.max(0, offset - limit));
+    return urlWithOffset(call, limit, Math.max(0, offset - limit));
   }
 
   /**
