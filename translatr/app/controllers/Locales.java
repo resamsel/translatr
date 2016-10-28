@@ -49,12 +49,11 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.With;
 import services.LocaleService;
+import services.LogEntryService;
 import services.UserService;
 import utils.TransactionUtils;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 3 Oct 2016
@@ -78,9 +77,9 @@ public class Locales extends AbstractController {
    */
   @Inject
   protected Locales(Injector injector, CacheApi cache, PlayAuthenticate auth,
-      UserService userService, FormFactory formFactory, Configuration configuration,
-      LocaleService localeService) {
-    super(injector, cache, auth, userService);
+      UserService userService, LogEntryService logEntryService, FormFactory formFactory,
+      Configuration configuration, LocaleService localeService) {
+    super(injector, cache, auth, userService, logEntryService);
     this.formFactory = formFactory;
     this.configuration = configuration;
     this.localeService = localeService;

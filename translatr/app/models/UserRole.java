@@ -3,8 +3,6 @@ package models;
 import be.objectify.deadbolt.java.models.Role;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 3 Oct 2016

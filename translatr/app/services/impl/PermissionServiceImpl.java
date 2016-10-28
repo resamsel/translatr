@@ -5,8 +5,6 @@ import javax.inject.Singleton;
 import services.PermissionService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 3 Oct 2016

@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
 
 import java.util.List;
-import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -27,7 +26,6 @@ import models.AccessToken;
 import models.LinkedAccount;
 import models.LogEntry;
 import models.Project;
-import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
@@ -37,11 +35,10 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.AccessTokenService;
 import services.LinkedAccountService;
+import services.LogEntryService;
 import services.UserService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 6 Oct 2016
@@ -65,9 +62,10 @@ public class Profiles extends AbstractController {
    */
   @Inject
   public Profiles(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      FormFactory formFactory, Configuration configuration,
+      LogEntryService logEntryService, FormFactory formFactory, Configuration configuration,
       LinkedAccountService linkedAccountService, AccessTokenService accessTokenService) {
-    super(injector, cache, auth, userService);
+    super(injector, cache, auth, userService, logEntryService);
+
     this.formFactory = formFactory;
     this.configuration = configuration;
     this.linkedAccountService = linkedAccountService;
@@ -96,7 +94,7 @@ public class Profiles extends AbstractController {
       SearchForm search = form.get();
 
       List<LogEntry> activities =
-          LogEntry.findBy(LogEntryCriteria.from(search).withUserId(user.id));
+          logEntryService.findBy(LogEntryCriteria.from(search).withUserId(user.id));
 
       search.pager(activities);
 
@@ -312,9 +310,5 @@ public class Profiles extends AbstractController {
 
       return redirect(routes.Profiles.accessTokens());
     });
-  }
-
-  private Result loggedInUser(Function<User, Result> processor) {
-    return processor.apply(User.loggedInUser());
   }
 }

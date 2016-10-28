@@ -1,8 +1,6 @@
 package models;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 18 Oct 2016

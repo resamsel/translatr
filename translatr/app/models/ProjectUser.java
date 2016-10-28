@@ -25,8 +25,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import criterias.ProjectUserCriteria;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 5 Oct 2016

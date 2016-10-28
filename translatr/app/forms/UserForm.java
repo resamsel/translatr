@@ -10,8 +10,6 @@ import play.data.validation.ValidationError;
 import play.mvc.Http.Context;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 2 Sep 2016

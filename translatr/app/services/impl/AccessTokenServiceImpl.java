@@ -20,8 +20,6 @@ import services.AccessTokenService;
 import services.LogEntryService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 19 Oct 2016

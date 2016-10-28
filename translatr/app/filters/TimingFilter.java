@@ -15,8 +15,6 @@ import play.mvc.Result;
 import utils.Stopwatch;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 13 Jul 2016

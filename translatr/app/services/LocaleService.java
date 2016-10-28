@@ -10,8 +10,6 @@ import models.Locale;
 import services.impl.LocaleServiceImpl;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 29 Aug 2016

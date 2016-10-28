@@ -1,34 +1,30 @@
 package utils;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 30 Sep 2016
  */
-public enum SessionKey
-{
-	UserId("userId");
+public enum SessionKey {
+  UserId("userId"),
 
-	private String key;
+  LastLogin("lastLogin");
 
-	SessionKey(String key)
-	{
-		this.key = key;
-	}
+  private String key;
 
-	public String key()
-	{
-		return key;
-	}
+  SessionKey(String key) {
+    this.key = key;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString()
-	{
-		return key;
-	}
+  public String key() {
+    return key;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return key;
+  }
 }

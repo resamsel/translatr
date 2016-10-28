@@ -8,8 +8,6 @@ import play.data.validation.Constraints;
 import play.libs.F.Tuple;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 6 Oct 2016

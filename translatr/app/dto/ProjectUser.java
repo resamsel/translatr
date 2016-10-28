@@ -10,50 +10,46 @@ import models.Project;
 import models.ProjectRole;
 import models.User;
 
-public class ProjectUser extends Dto
-{
-	public UUID projectId;
+public class ProjectUser extends Dto {
+  public UUID projectId;
 
-	public String projectName;
+  public String projectName;
 
-	public UUID userId;
+  public UUID userId;
 
-	public String userName;
+  public String userName;
 
-	public ProjectRole role;
+  public ProjectRole role;
 
-	@JsonIgnore
-	public DateTime whenCreated;
+  @JsonIgnore
+  public DateTime whenCreated;
 
-	@JsonIgnore
-	public DateTime whenUpdated;
+  @JsonIgnore
+  public DateTime whenUpdated;
 
-	private ProjectUser(models.ProjectUser in)
-	{
-		this.projectId = in.project.id;
-		this.projectName = in.project.name;
-		this.userId = in.user.id;
-		this.userName = in.user.name;
-		this.role = in.role;
-		this.whenCreated = in.whenCreated;
-		this.whenUpdated = in.whenUpdated;
-	}
+  private ProjectUser(models.ProjectUser in) {
+    this.projectId = in.project.id;
+    this.projectName = in.project.name;
+    this.userId = in.user.id;
+    this.userName = in.user.username;
+    this.role = in.role;
+    this.whenCreated = in.whenCreated;
+    this.whenUpdated = in.whenUpdated;
+  }
 
-	public models.ProjectUser toModel()
-	{
-		models.ProjectUser out = new models.ProjectUser();
+  public models.ProjectUser toModel() {
+    models.ProjectUser out = new models.ProjectUser();
 
-		out.project = new Project().withId(projectId);
-		out.user = new User().withId(userId);
-		out.role = role;
-		out.whenCreated = whenCreated;
-		out.whenUpdated = whenUpdated;
+    out.project = new Project().withId(projectId);
+    out.user = new User().withId(userId);
+    out.role = role;
+    out.whenCreated = whenCreated;
+    out.whenUpdated = whenUpdated;
 
-		return out;
-	}
+    return out;
+  }
 
-	public static ProjectUser from(models.ProjectUser in)
-	{
-		return new ProjectUser(in);
-	}
+  public static ProjectUser from(models.ProjectUser in) {
+    return new ProjectUser(in);
+  }
 }

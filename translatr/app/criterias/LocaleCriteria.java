@@ -3,38 +3,46 @@ package criterias;
 import forms.SearchForm;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 19 Aug 2016
  */
-public class LocaleCriteria extends AbstractSearchCriteria<LocaleCriteria>
-{
-	private String localeName;
+public class LocaleCriteria extends AbstractSearchCriteria<LocaleCriteria> {
+  private Boolean missing;
 
-	public String getLocaleName()
-	{
-		return localeName;
-	}
+  private String localeName;
 
-	public void setLocaleName(String localeName)
-	{
-		this.localeName = localeName;
-	}
+  public Boolean getMissing() {
+    return missing;
+  }
 
-	/**
-	 * @param localeName the localeName to set
-	 * @return this
-	 */
-	public LocaleCriteria withLocaleName(String localeName)
-	{
-		setLocaleName(localeName);
-		return this;
-	}
+  public void setMissing(Boolean missing) {
+    this.missing = missing;
+  }
 
-	public static LocaleCriteria from(SearchForm form)
-	{
-		return new LocaleCriteria().with(form);
-	}
+  public LocaleCriteria withMissing(Boolean missing) {
+    setMissing(missing);
+    return this;
+  }
+
+  public String getLocaleName() {
+    return localeName;
+  }
+
+  public void setLocaleName(String localeName) {
+    this.localeName = localeName;
+  }
+
+  /**
+   * @param localeName the localeName to set
+   * @return this
+   */
+  public LocaleCriteria withLocaleName(String localeName) {
+    setLocaleName(localeName);
+    return this;
+  }
+
+  public static LocaleCriteria from(SearchForm form) {
+    return new LocaleCriteria().with(form).withMissing(form.missing);
+  }
 }

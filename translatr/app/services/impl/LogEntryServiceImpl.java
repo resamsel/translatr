@@ -29,8 +29,6 @@ import play.mvc.Http.Context;
 import services.LogEntryService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 29 Aug 2016
@@ -67,6 +65,7 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
     String cacheKey =
         String.format("logentry:aggregates:%s:%s", criteria.getUserId(), criteria.getProjectId());
 
+    // TODO: config cache duration
     return log(() -> cache.getOrElse(cacheKey, () -> query.findList(), 60), LOGGER,
         "Retrieving log entry aggregates");
   }
@@ -89,6 +88,16 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
             "select %1$s as date, count(*) as cnt from log_entry group by 1 order by 1",
             dateColumn))
         .columnMapping(dateColumn, "date").columnMapping("count(*)", "value").create();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<LogEntry> findBy(LogEntryCriteria criteria) {
+    // TODO: config cache duration
+    return log(() -> cache.getOrElse(criteria.getCacheKey(), () -> LogEntry.findBy(criteria), 60),
+        LOGGER, "findBy");
   }
 
   /**

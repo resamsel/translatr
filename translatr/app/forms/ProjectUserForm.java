@@ -9,8 +9,6 @@ import play.data.validation.Constraints;
 import validators.UserByUsername;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 2 Sep 2016

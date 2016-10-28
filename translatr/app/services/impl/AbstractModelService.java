@@ -15,8 +15,6 @@ import services.ModelService;
 import utils.TransactionUtils;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 9 Sep 2016

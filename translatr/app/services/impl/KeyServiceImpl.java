@@ -27,8 +27,6 @@ import services.LogEntryService;
 import services.MessageService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 29 Aug 2016

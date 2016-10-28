@@ -9,8 +9,6 @@ import services.LinkedAccountService;
 import services.LogEntryService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 2 Oct 2016

@@ -12,8 +12,6 @@ import play.mvc.Http.Context;
 import services.ProjectUserService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 19 Aug 2016

@@ -6,8 +6,6 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Transaction;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 2 Sep 2016

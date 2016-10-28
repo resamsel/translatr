@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 import models.Suggestable;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 16 Sep 2016

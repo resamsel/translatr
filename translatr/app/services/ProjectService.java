@@ -9,8 +9,6 @@ import models.User;
 import services.impl.ProjectServiceImpl;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 29 Aug 2016

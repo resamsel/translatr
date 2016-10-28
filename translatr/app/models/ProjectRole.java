@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 5 Oct 2016

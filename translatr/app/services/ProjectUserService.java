@@ -6,8 +6,6 @@ import models.ProjectUser;
 import services.impl.ProjectUserServiceImpl;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 29 Aug 2016

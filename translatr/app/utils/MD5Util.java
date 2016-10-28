@@ -5,8 +5,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 30 Sep 2016

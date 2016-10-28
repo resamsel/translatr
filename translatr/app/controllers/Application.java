@@ -54,21 +54,18 @@ public class Application extends AbstractController {
 
   private final MessageService messageService;
 
-  private final LogEntryService logEntryService;
-
   @Inject
   public Application(Injector injector, Configuration configuration, CacheApi cache,
-      PlayAuthenticate auth, UserService userService, ProjectService projectService,
-      LocaleService localeService, KeyService keyService, MessageService messageService,
-      LogEntryService logEntryService) {
-    super(injector, cache, auth, userService);
+      PlayAuthenticate auth, UserService userService, LogEntryService logEntryService,
+      ProjectService projectService, LocaleService localeService, KeyService keyService,
+      MessageService messageService) {
+    super(injector, cache, auth, userService, logEntryService);
 
     this.configuration = configuration;
     this.projectService = projectService;
     this.localeService = localeService;
     this.keyService = keyService;
     this.messageService = messageService;
-    this.logEntryService = logEntryService;
   }
 
   public Result index() {

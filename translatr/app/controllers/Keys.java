@@ -35,174 +35,162 @@ import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.With;
 import services.KeyService;
+import services.LogEntryService;
 import services.UserService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 3 Oct 2016
  */
 @With(ContextAction.class)
 @SubjectPresent(forceBeforeAuthCheck = true)
-public class Keys extends AbstractController
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(Keys.class);
+public class Keys extends AbstractController {
+  private static final Logger LOGGER = LoggerFactory.getLogger(Keys.class);
 
-	private final FormFactory formFactory;
+  private final FormFactory formFactory;
 
-	private final Configuration configuration;
+  private final Configuration configuration;
 
-	private final KeyService keyService;
+  private final KeyService keyService;
 
-	/**
-	 * @param injector
-	 * @param cache
-	 * @param auth
-	 * @param userService
-	 */
-	@Inject
-	protected Keys(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-				FormFactory formFactory, Configuration configuration, KeyService keyService)
-	{
-		super(injector, cache, auth, userService);
-		this.formFactory = formFactory;
-		this.configuration = configuration;
-		this.keyService = keyService;
-	}
+  /**
+   * @param injector
+   * @param cache
+   * @param auth
+   * @param userService
+   */
+  @Inject
+  protected Keys(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
+      LogEntryService logEntryService, FormFactory formFactory, Configuration configuration,
+      KeyService keyService) {
+    super(injector, cache, auth, userService, logEntryService);
 
-	public Result key(UUID id)
-	{
-		Key key = Key.byId(id);
+    this.formFactory = formFactory;
+    this.configuration = configuration;
+    this.keyService = keyService;
+  }
 
-		if(key == null)
-			return redirect(routes.Application.index());
+  public Result key(UUID id) {
+    Key key = Key.byId(id);
 
-		select(key.project);
+    if (key == null)
+      return redirect(routes.Application.index());
 
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+    select(key.project);
 
-		Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
+    Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
 
-		List<Locale> locales = Locale.byProject(key.project);
-		Map<UUID, Message> messages = Message.findBy(new MessageCriteria().withKeyName(key.name)).stream().collect(
-			groupingBy(m -> m.locale.id, Collectors.reducing(null, a -> a, (a, b) -> b)));
+    Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
 
-		return ok(views.html.keys.key.render(createTemplate(), key, locales, messages, form));
-	}
+    List<Locale> locales = Locale.byProject(key.project);
+    Map<UUID, Message> messages =
+        Message.findBy(new MessageCriteria().withKeyName(key.name)).stream()
+            .collect(groupingBy(m -> m.locale.id, Collectors.reducing(null, a -> a, (a, b) -> b)));
 
-	public Result create(UUID projectId, UUID localeId)
-	{
-		Project project = Project.byId(projectId);
+    return ok(views.html.keys.key.render(createTemplate(), key, locales, messages, form));
+  }
 
-		if(project == null)
-			return redirect(routes.Application.index());
+  public Result create(UUID projectId, UUID localeId) {
+    Project project = Project.byId(projectId);
 
-		select(project);
+    if (project == null)
+      return redirect(routes.Application.index());
 
-		Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
+    select(project);
 
-		if(form.hasErrors())
-			return badRequest(views.html.keys.create.render(createTemplate(), project, form));
+    Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
 
-		Key key = form.get().into(new Key());
+    if (form.hasErrors())
+      return badRequest(views.html.keys.create.render(createTemplate(), project, form));
 
-		key.project = project;
+    Key key = form.get().into(new Key());
 
-		LOGGER.debug("Key: {}", Json.toJson(key));
+    key.project = project;
 
-		keyService.save(key);
+    LOGGER.debug("Key: {}", Json.toJson(key));
 
-		if(localeId != null)
-		{
-			Locale locale = Locale.byId(localeId);
+    keyService.save(key);
 
-			return redirect(routes.Locales.locale(locale.id).withFragment("#key=" + key.name));
-		}
+    if (localeId != null) {
+      Locale locale = Locale.byId(localeId);
 
-		return redirect(routes.Keys.key(key.id));
-	}
+      return redirect(routes.Locales.locale(locale.id).withFragment("#key=" + key.name));
+    }
 
-	public Result createImmediately(UUID projectId, String keyName)
-	{
-		Project project = Project.byId(projectId);
+    return redirect(routes.Keys.key(key.id));
+  }
 
-		if(project == null)
-			return redirect(routes.Application.index());
+  public Result createImmediately(UUID projectId, String keyName) {
+    Project project = Project.byId(projectId);
 
-		select(project);
+    if (project == null)
+      return redirect(routes.Application.index());
 
-		if(keyName.length() > Key.NAME_LENGTH)
-			return badRequest(
-				views.html.keys.create.render(
-					createTemplate(),
-					project,
-					formFactory.form(KeyForm.class).bind(ImmutableMap.of("name", keyName))));
+    select(project);
 
-		Key key = Key.byProjectAndName(project, keyName);
+    if (keyName.length() > Key.NAME_LENGTH)
+      return badRequest(views.html.keys.create.render(createTemplate(), project,
+          formFactory.form(KeyForm.class).bind(ImmutableMap.of("name", keyName))));
 
-		if(key == null)
-		{
-			key = new Key(project, keyName);
+    Key key = Key.byProjectAndName(project, keyName);
 
-			LOGGER.debug("Key: {}", Json.toJson(key));
+    if (key == null) {
+      key = new Key(project, keyName);
 
-			keyService.save(key);
-		}
+      LOGGER.debug("Key: {}", Json.toJson(key));
 
-		return redirect(routes.Keys.key(key.id));
-	}
+      keyService.save(key);
+    }
 
-	public Result edit(UUID keyId)
-	{
-		Key key = Key.byId(keyId);
+    return redirect(routes.Keys.key(key.id));
+  }
 
-		if(key == null)
-			return redirect(routes.Application.index());
+  public Result edit(UUID keyId) {
+    Key key = Key.byId(keyId);
 
-		select(key.project);
+    if (key == null)
+      return redirect(routes.Application.index());
 
-		if("POST".equals(request().method()))
-		{
-			Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
+    select(key.project);
 
-			if(form.hasErrors())
-				return badRequest(views.html.keys.edit.render(createTemplate(), key, form));
+    if ("POST".equals(request().method())) {
+      Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
 
-			keyService.save(form.get().into(key));
+      if (form.hasErrors())
+        return badRequest(views.html.keys.edit.render(createTemplate(), key, form));
 
-			return redirect(routes.Projects.keys(key.project.id));
-		}
+      keyService.save(form.get().into(key));
 
-		return ok(
-			views.html.keys.edit.render(createTemplate(), key, formFactory.form(KeyForm.class).fill(KeyForm.from(key))));
-	}
+      return redirect(routes.Projects.keys(key.project.id));
+    }
 
-	public Result remove(UUID keyId, UUID localeId)
-	{
-		Key key = Key.byId(keyId);
+    return ok(views.html.keys.edit.render(createTemplate(), key,
+        formFactory.form(KeyForm.class).fill(KeyForm.from(key))));
+  }
 
-		LOGGER.debug("Key: {}", Json.toJson(key));
+  public Result remove(UUID keyId, UUID localeId) {
+    Key key = Key.byId(keyId);
 
-		if(key == null)
-			return redirect(routes.Application.index());
+    LOGGER.debug("Key: {}", Json.toJson(key));
 
-		select(key.project);
+    if (key == null)
+      return redirect(routes.Application.index());
 
-		undoCommand(injector.instanceOf(RevertDeleteKeyCommand.class).with(key));
+    select(key.project);
 
-		keyService.delete(key);
+    undoCommand(injector.instanceOf(RevertDeleteKeyCommand.class).with(key));
 
-		if(localeId != null)
-		{
-			Locale locale = Locale.byId(localeId);
-			if(locale != null)
-				return redirect(routes.Locales.locale(locale.id));
-		}
+    keyService.delete(key);
 
-		LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
+    if (localeId != null) {
+      Locale locale = Locale.byId(localeId);
+      if (locale != null)
+        return redirect(routes.Locales.locale(locale.id));
+    }
 
-		return redirect(routes.Projects.keys(key.project.id));
-	}
+    LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
+
+    return redirect(routes.Projects.keys(key.project.id));
+  }
 }

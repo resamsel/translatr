@@ -22,8 +22,6 @@ import dto.Dto;
 import play.libs.Json;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 29 Aug 2016
@@ -121,8 +119,23 @@ public class LogEntry {
     if (criteria.getUserId() != null)
       query.eq("user.id", criteria.getUserId());
 
+    if (criteria.getUserIdExcluded() != null)
+      query.ne("user.id", criteria.getUserIdExcluded());
+
     if (criteria.getProjectId() != null)
       query.eq("project.id", criteria.getProjectId());
+
+    if (criteria.getProjectIds() != null)
+      query.in("project.id", criteria.getProjectIds());
+
+    if (criteria.getProjectUserId() != null)
+      query.eq("project.members.user.id", criteria.getProjectUserId());
+
+    if (criteria.getWhenCreatedMin() != null)
+      query.ge("whenCreated", criteria.getWhenCreatedMin());
+
+    if (criteria.getWhenCreatedMax() != null)
+      query.le("whenCreated", criteria.getWhenCreatedMax());
 
     return query;
   }

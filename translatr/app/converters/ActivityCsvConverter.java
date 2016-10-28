@@ -6,8 +6,6 @@ import java.util.function.Function;
 import models.Aggregate;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 17 Oct 2016

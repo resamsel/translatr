@@ -3,8 +3,6 @@ package models;
 import java.util.UUID;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 16 Sep 2016

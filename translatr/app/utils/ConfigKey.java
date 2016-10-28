@@ -1,8 +1,6 @@
 package utils;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 30 Sep 2016

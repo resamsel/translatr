@@ -10,8 +10,6 @@ import play.libs.Json;
 import play.mvc.Call;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 2 Oct 2016
@@ -93,7 +91,7 @@ public class JsonUtils {
       case "dto.User":
         return "account_circle";
       case "dto.ProjectUser":
-        return "account_circle";
+        return "group_work";
       default:
         return "";
     }

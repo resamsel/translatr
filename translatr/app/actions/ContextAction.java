@@ -17,8 +17,6 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 17 Aug 2016

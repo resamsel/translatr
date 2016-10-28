@@ -15,8 +15,6 @@ import play.mvc.Http.Context;
 import scala.collection.Seq;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 31 Aug 2016

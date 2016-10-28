@@ -56,8 +56,6 @@ import services.ProjectUserService;
 import services.UserService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 16 Sep 2016
@@ -73,8 +71,6 @@ public class Projects extends AbstractController {
 
   private final KeyService keyService;
 
-  private final LogEntryService logEntryService;
-
   private final FormFactory formFactory;
 
   private final ProjectUserService projectUserService;
@@ -86,16 +82,15 @@ public class Projects extends AbstractController {
    */
   @Inject
   public Projects(Injector injector, CacheApi cache, FormFactory formFactory, PlayAuthenticate auth,
-      UserService userService, ProjectService projectService, LocaleService localeService,
-      KeyService keyService, LogEntryService logEntryService, ProjectUserService projectUserService,
+      UserService userService, LogEntryService logEntryService, ProjectService projectService,
+      LocaleService localeService, KeyService keyService, ProjectUserService projectUserService,
       Configuration configuration) {
-    super(injector, cache, auth, userService);
+    super(injector, cache, auth, userService, logEntryService);
 
     this.formFactory = formFactory;
     this.projectService = projectService;
     this.localeService = localeService;
     this.keyService = keyService;
-    this.logEntryService = logEntryService;
     this.projectUserService = projectUserService;
     this.configuration = configuration;
   }
@@ -320,7 +315,7 @@ public class Projects extends AbstractController {
       Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
 
-      List<LogEntry> activities = LogEntry.findBy(
+      List<LogEntry> activities = logEntryService.findBy(
           LogEntryCriteria.from(search).withProjectId(project.id).withOrder("whenCreated desc"));
 
       search.pager(activities);

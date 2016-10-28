@@ -16,6 +16,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import org.joda.time.DateTime;
@@ -44,221 +46,199 @@ import services.UserService;
 
 @Entity
 @Table(name = "user_")
-public class User implements Subject
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
+public class User implements Subject {
+  private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
 
-	public static final int USERNAME_LENGTH = 32;
+  public static final int USERNAME_LENGTH = 32;
 
-	public static final int NAME_LENGTH = 32;
+  public static final int NAME_LENGTH = 32;
 
-	public static final int EMAIL_LENGTH = 255;
+  public static final int EMAIL_LENGTH = 255;
 
-	@Id
-	public UUID id;
+  @Id
+  public UUID id;
 
-	@Version
-	public Long version;
+  @Version
+  public Long version;
 
-	@CreatedTimestamp
-	public DateTime whenCreated;
+  @CreatedTimestamp
+  public DateTime whenCreated;
 
-	@UpdatedTimestamp
-	public DateTime whenUpdated;
+  @UpdatedTimestamp
+  public DateTime whenUpdated;
 
-	public boolean active;
+  public boolean active;
 
-	@Column(length = USERNAME_LENGTH, unique = true)
-	public String username;
+  @Column(length = USERNAME_LENGTH, unique = true)
+  public String username;
 
-	@Column(nullable = false, length = NAME_LENGTH)
-	public String name;
+  @Column(nullable = false, length = NAME_LENGTH)
+  public String name;
 
-	@Column(length = EMAIL_LENGTH, unique = false)
-	public String email;
+  @Column(length = EMAIL_LENGTH, unique = false)
+  public String email;
 
-	public boolean emailValidated;
+  public boolean emailValidated;
 
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
-	public List<LinkedAccount> linkedAccounts;
+  @Temporal(TemporalType.TIMESTAMP)
+  public DateTime lastLogin;
 
-	@JsonIgnore
-	@OneToMany
-	public List<ProjectUser> projects;
+  @JsonIgnore
+  @OneToMany(cascade = CascadeType.ALL)
+  public List<LinkedAccount> linkedAccounts;
 
-	private static final Find<UUID, User> find = new Find<UUID, User>()
-	{
-	};
+  @JsonIgnore
+  @OneToMany
+  public List<ProjectUser> projects;
 
-	public static boolean existsByAuthUserIdentity(final AuthUserIdentity identity)
-	{
-		final ExpressionList<User> exp = getAuthUserFind(identity);
-		return exp.findRowCount() > 0;
-	}
+  private static final Find<UUID, User> find = new Find<UUID, User>() {};
 
-	private static ExpressionList<User> getAuthUserFind(final AuthUserIdentity identity)
-	{
-		return find.where().eq("active", true).eq("linkedAccounts.providerUserId", identity.getId()).eq(
-			"linkedAccounts.providerKey",
-			identity.getProvider());
-	}
+  public static boolean existsByAuthUserIdentity(final AuthUserIdentity identity) {
+    final ExpressionList<User> exp = getAuthUserFind(identity);
+    return exp.findRowCount() > 0;
+  }
 
-	public static User findByAuthUserIdentity(final AuthUserIdentity identity)
-	{
-		if(identity == null)
-			return null;
+  private static ExpressionList<User> getAuthUserFind(final AuthUserIdentity identity) {
+    return find.where().eq("active", true).eq("linkedAccounts.providerUserId", identity.getId())
+        .eq("linkedAccounts.providerKey", identity.getProvider());
+  }
 
-		return log(() -> getAuthUserFind(identity).findUnique(), LOGGER, "findByAuthUserIdentity");
-	}
+  public static User findByAuthUserIdentity(final AuthUserIdentity identity) {
+    if (identity == null)
+      return null;
 
-	public Set<String> getProviders()
-	{
-		final Set<String> providerKeys = new HashSet<String>(linkedAccounts.size());
-		for(final LinkedAccount acc : linkedAccounts)
-			providerKeys.add(acc.providerKey);
+    return log(() -> getAuthUserFind(identity).findUnique(), LOGGER, "findByAuthUserIdentity");
+  }
 
-		return providerKeys;
-	}
+  public Set<String> getProviders() {
+    final Set<String> providerKeys = new HashSet<String>(linkedAccounts.size());
+    for (final LinkedAccount acc : linkedAccounts)
+      providerKeys.add(acc.providerKey);
 
-	public static User findByEmail(final String email)
-	{
-		return getEmailUserFind(email).findUnique();
-	}
+    return providerKeys;
+  }
 
-	private static ExpressionList<User> getEmailUserFind(final String email)
-	{
-		return find.where().eq("active", true).eq("email", email);
-	}
+  public static User findByEmail(final String email) {
+    return getEmailUserFind(email).findUnique();
+  }
 
-	public LinkedAccount getAccountByProvider(final String providerKey)
-	{
-		return LinkedAccount.findByProviderKey(this, providerKey);
-	}
+  private static ExpressionList<User> getEmailUserFind(final String email) {
+    return find.where().eq("active", true).eq("email", email);
+  }
 
-	public User withId(UUID id)
-	{
-		this.id = id;
-		return this;
-	}
+  public LinkedAccount getAccountByProvider(final String providerKey) {
+    return LinkedAccount.findByProviderKey(this, providerKey);
+  }
 
-	public static User byId(UUID id)
-	{
-		return find.byId(id);
-	}
+  public User withId(UUID id) {
+    this.id = id;
+    return this;
+  }
 
-	/**
-	 * @param username
-	 * @return
-	 */
-	public static User byUsername(String username)
-	{
-		return Play.current().injector().instanceOf(UserService.class).getByUsername(username);
-	}
+  public static User byId(UUID id) {
+    return find.byId(id);
+  }
 
-	public static User byUsernameUncached(String username)
-	{
-		return find.where().eq("username", username).findUnique();
-	}
+  /**
+   * @param username
+   * @return
+   */
+  public static User byUsername(String username) {
+    return Play.current().injector().instanceOf(UserService.class).getByUsername(username);
+  }
 
-	public static AuthUser loggedInAuthUser()
-	{
-		Injector injector = play.api.Play.current().injector();
+  public static User byUsernameUncached(String username) {
+    return find.where().eq("username", username).findUnique();
+  }
 
-		PlayAuthenticate auth = injector.instanceOf(PlayAuthenticate.class);
-		AuthUser authUser = auth.getUser(Context.current().session());
+  public static AuthUser loggedInAuthUser() {
+    Injector injector = play.api.Play.current().injector();
 
-		return authUser;
-	}
+    PlayAuthenticate auth = injector.instanceOf(PlayAuthenticate.class);
+    AuthUser authUser = auth.getUser(Context.current().session());
 
-	public static User loggedInUser()
-	{
-		Injector injector = play.api.Play.current().injector();
-		Map<String, Object> args = Context.current().args;
+    return authUser;
+  }
 
-		// Logged-in via access_token?
-		if(args.containsKey("accessToken"))
-			return ((AccessToken)args.get("accessToken")).user;
+  public static User loggedInUser() {
+    Injector injector = play.api.Play.current().injector();
+    Map<String, Object> args = Context.current().args;
 
-		// Logged-in via auth plugin?
-		AuthUser authUser = loggedInAuthUser();
-		if(authUser != null)
-		{
-			if(!args.containsKey(authUser.toString()))
-				args.put(authUser.toString(), injector.instanceOf(UserService.class).getLocalUser(authUser));
+    // Logged-in via access_token?
+    if (args.containsKey("accessToken"))
+      return ((AccessToken) args.get("accessToken")).user;
 
-			return (User)args.get(authUser.toString());
-		}
+    // Logged-in via auth plugin?
+    AuthUser authUser = loggedInAuthUser();
+    if (authUser != null) {
+      if (!args.containsKey(authUser.toString()))
+        args.put(authUser.toString(),
+            injector.instanceOf(UserService.class).getLocalUser(authUser));
 
-		// Not logged-in
-		return null;
-	}
+      return (User) args.get(authUser.toString());
+    }
 
-	/**
-	 * @return
-	 */
-	public static UUID loggedInUserId()
-	{
-		User loggedInUser = loggedInUser();
+    // Not logged-in
+    return null;
+  }
 
-		if(loggedInUser == null)
-			return null;
+  /**
+   * @return
+   */
+  public static UUID loggedInUserId() {
+    User loggedInUser = loggedInUser();
 
-		return loggedInUser.id;
-	}
+    if (loggedInUser == null)
+      return null;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<? extends Role> getRoles()
-	{
-		return Arrays.asList(UserRole.from(Application.USER_ROLE));
-	}
+    return loggedInUser.id;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<? extends Permission> getPermissions()
-	{
-		return Collections.emptyList();
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<? extends Role> getRoles() {
+    return Arrays.asList(UserRole.from(Application.USER_ROLE));
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getIdentifier()
-	{
-		return id != null ? id.toString() : null;
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<? extends Permission> getPermissions() {
+    return Collections.emptyList();
+  }
 
-	/**
-	 * @return
-	 */
-	public boolean isComplete()
-	{
-		return username != null && name != null && email != null;
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getIdentifier() {
+    return id != null ? id.toString() : null;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString()
-	{
-		return name;
-	}
+  /**
+   * @return
+   */
+  public boolean isComplete() {
+    return username != null && name != null && email != null;
+  }
 
-	/**
-	 * @param userId
-	 * @return
-	 */
-	public static UserStats userStatsUncached(UUID userId)
-	{
-		return UserStats.create(
-			ProjectUser.countBy(new ProjectUserCriteria().withUserId(userId)),
-			LogEntry.countBy(new LogEntryCriteria().withUserId(userId)));
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return name;
+  }
+
+  /**
+   * @param userId
+   * @return
+   */
+  public static UserStats userStatsUncached(UUID userId) {
+    return UserStats.create(ProjectUser.countBy(new ProjectUserCriteria().withUserId(userId)),
+        LogEntry.countBy(new LogEntryCriteria().withUserId(userId)));
+  }
 }

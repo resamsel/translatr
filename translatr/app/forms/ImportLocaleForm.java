@@ -3,8 +3,6 @@ package forms;
 import play.data.validation.Constraints.Required;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 30 Aug 2016

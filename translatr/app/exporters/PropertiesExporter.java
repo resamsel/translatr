@@ -6,8 +6,6 @@ import models.Locale;
 import models.Message;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 30 Aug 2016

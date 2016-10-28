@@ -13,8 +13,6 @@ import services.LogEntryService;
 import services.ProjectUserService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 29 Aug 2016

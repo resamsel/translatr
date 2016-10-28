@@ -7,8 +7,6 @@ import play.api.i18n.Langs;
 import play.api.i18n.MessagesApi;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 31 Aug 2016

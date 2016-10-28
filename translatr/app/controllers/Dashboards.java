@@ -32,75 +32,65 @@ import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.With;
+import services.LogEntryService;
 import services.UserService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 26 Sep 2016
  */
 @With(ContextAction.class)
-public class Dashboards extends AbstractController
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(Dashboards.class);
+public class Dashboards extends AbstractController {
+  private static final Logger LOGGER = LoggerFactory.getLogger(Dashboards.class);
 
-	private final FormFactory formFactory;
+  private final FormFactory formFactory;
 
-	private final Configuration configuration;
+  private final Configuration configuration;
 
-	/**
-	 * 
-	 */
-	@Inject
-	public Dashboards(Injector injector, CacheApi cache, FormFactory formFactory, Configuration configuration,
-				PlayAuthenticate auth, UserService userService)
-	{
-		super(injector, cache, auth, userService);
+  /**
+   * 
+   */
+  @Inject
+  public Dashboards(Injector injector, CacheApi cache, FormFactory formFactory,
+      Configuration configuration, PlayAuthenticate auth, UserService userService,
+      LogEntryService logEntryService) {
+    super(injector, cache, auth, userService, logEntryService);
 
-		this.formFactory = formFactory;
-		this.configuration = configuration;
-	}
+    this.formFactory = formFactory;
+    this.configuration = configuration;
+  }
 
-	@SubjectPresent(forceBeforeAuthCheck = true)
-	public Result dashboard()
-	{
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
+  @SubjectPresent(forceBeforeAuthCheck = true)
+  public Result dashboard() {
+    return loggedInUser(user -> {
+      Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+      SearchForm search = form.get();
 
-		return log(
-			() -> ok(
-				views.html.dashboards.dashboard.render(
-					createTemplate(),
-					Project.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId())),
-					SearchForm.bindFromRequest(formFactory, configuration),
-					ProjectForm.form(formFactory))),
-			LOGGER,
-			"Rendering dashboard");
-	}
+      List<Project> projects =
+          Project.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
 
-	@SubjectPresent
-	public Result search()
-	{
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
+      return log(() -> ok(views.html.dashboards.dashboard.render(createTemplate(), projects,
+          SearchForm.bindFromRequest(formFactory, configuration), ProjectForm.form(formFactory))),
+          LOGGER, "Rendering dashboard");
+    });
+  }
 
-		List<Suggestable> suggestions = new ArrayList<>();
+  @SubjectPresent
+  public Result search() {
+    Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+    SearchForm search = form.get();
 
-		Collection<? extends Suggestable> projects = Project.findBy(ProjectCriteria.from(search));
-		if(!projects.isEmpty())
-			suggestions.addAll(projects);
-		else
-			suggestions.add(
-				Suggestable.DefaultSuggestable.from(
-					ctx().messages().at("project.create", search.search),
-					Data.from(
-						Project.class,
-						null,
-						"+++",
-						controllers.routes.Projects.createImmediately(search.search).url())));
+    List<Suggestable> suggestions = new ArrayList<>();
 
-		return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
-	}
+    Collection<? extends Suggestable> projects = Project.findBy(ProjectCriteria.from(search));
+    if (!projects.isEmpty())
+      suggestions.addAll(projects);
+    else
+      suggestions.add(Suggestable.DefaultSuggestable
+          .from(ctx().messages().at("project.create", search.search), Data.from(Project.class, null,
+              "+++", controllers.routes.Projects.createImmediately(search.search).url())));
+
+    return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
+  }
 }

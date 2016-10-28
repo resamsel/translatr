@@ -23,8 +23,6 @@ import services.MessageService;
 import services.ProjectService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 19 Aug 2016

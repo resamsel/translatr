@@ -29,6 +29,27 @@
 						<span class="hide-on-small-only">@Messages("brand")</span>
 					</a>
 
+					<ul id="dropdown-notifications" class="dropdown-content">
+						@if(template.notifications != null) {
+							@if(!template.notifications.isEmpty) {
+								@for(notification <- template.notifications) {
+									<li>
+										@if(notification.project != null) {
+											<a href="@routes.Projects.activity(notification.project.id)">
+												<i class="material-icons left">@utils.JsonUtils.iconOf(notification)</i>
+												@Messages("activity." + notification.getType + ".notification", Messages("contentType." + notification.contentType), utils.JsonUtils.nameOf(notification), notification.user.username)
+											</a>
+										}
+									</li>
+								}
+							} else {
+								<li>
+									<a class="disabled">@Messages("notifications.empty")</a>
+								</li>
+							}
+						}
+					</ul>
+
 					<ul id="dropdown-logged-in" class="dropdown-content">
 						@if(template.loggedInUser != null) {
 							<li class="disabled">
@@ -53,6 +74,20 @@
 					<ul class="right">
 						@if(template.auth != null) {
 							@if(template.loggedInUser != null) {
+								@if(template.notifications != null) {
+									<li>
+										<a
+											class="dropdown-button auth"
+											href="#!"
+											title="@Messages("notifications")"
+											data-activates="dropdown-notifications"
+											data-constrainwidth="false"
+											data-beloworigin="true"
+											data-alignment="right">
+											<i class="material-icons @if(!template.notifications.isEmpty) { orange-text }">notifications</i>
+										</a>
+									</li>
+								}
 								<li>
 									<a
 										class="dropdown-button auth"

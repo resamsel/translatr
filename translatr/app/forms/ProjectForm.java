@@ -6,8 +6,6 @@ import play.data.FormFactory;
 import play.data.validation.Constraints;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 2 Sep 2016

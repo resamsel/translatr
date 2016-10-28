@@ -4,8 +4,6 @@ import models.Locale;
 import play.data.validation.Constraints;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 2 Sep 2016

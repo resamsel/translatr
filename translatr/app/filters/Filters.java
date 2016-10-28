@@ -6,8 +6,6 @@ import play.http.HttpFilters;
 import play.mvc.EssentialFilter;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 13 Jul 2016

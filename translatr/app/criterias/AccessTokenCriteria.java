@@ -1,8 +1,6 @@
 package criterias;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 19 Oct 2016

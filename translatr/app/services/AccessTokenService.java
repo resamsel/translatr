@@ -6,8 +6,6 @@ import models.AccessToken;
 import services.impl.AccessTokenServiceImpl;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 19 Oct 2016

@@ -7,8 +7,6 @@ import org.joda.time.DateTime;
 import com.avaje.ebean.annotation.Sql;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 28 Aug 2016

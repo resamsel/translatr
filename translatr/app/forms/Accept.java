@@ -4,8 +4,6 @@ import play.data.format.Formats;
 import play.data.validation.Constraints;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 6 Oct 2016

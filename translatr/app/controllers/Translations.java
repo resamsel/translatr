@@ -11,6 +11,7 @@ import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.With;
+import services.LogEntryService;
 import services.MessageService;
 import services.UserService;
 
@@ -31,8 +32,9 @@ public class Translations extends AbstractController {
    */
   @Inject
   protected Translations(Injector injector, CacheApi cache, PlayAuthenticate auth,
-      UserService userService, MessageService messageService) {
-    super(injector, cache, auth, userService);
+      UserService userService, LogEntryService logEntryService, MessageService messageService) {
+    super(injector, cache, auth, userService, logEntryService);
+
     this.messageService = messageService;
   }
 

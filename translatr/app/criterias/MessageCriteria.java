@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 19 Aug 2016

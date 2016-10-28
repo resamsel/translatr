@@ -4,8 +4,6 @@ import models.Locale;
 import play.mvc.Http.Response;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 7 Oct 2016

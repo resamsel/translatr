@@ -1,4 +1,4 @@
-@(template: utils.Template, projectList: List[models.Project], form: Form[forms.SearchForm], projectForm: Form[forms.ProjectForm])
+@(template: utils.Template, projectList: List[Project], form: Form[forms.SearchForm], projectForm: Form[forms.ProjectForm])
 
 @main(template.withTitle(Messages("dashboard.title")).withName("dashboard")) {
 	@tags.search(form)()

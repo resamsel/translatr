@@ -3,8 +3,6 @@ package dto;
 import java.util.List;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 16 Sep 2016

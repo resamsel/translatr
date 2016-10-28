@@ -32,6 +32,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 import services.LocaleService;
+import services.LogEntryService;
 import services.MessageService;
 import services.ProjectService;
 import services.UserService;
@@ -52,8 +53,10 @@ public class Api extends AbstractController {
    */
   @Inject
   public Api(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      ProjectService projectService, LocaleService localeService, MessageService messageService) {
-    super(injector, cache, auth, userService);
+      LogEntryService logEntryService, ProjectService projectService, LocaleService localeService,
+      MessageService messageService) {
+    super(injector, cache, auth, userService, logEntryService);
+
     this.projectService = projectService;
     this.localeService = localeService;
     this.messageService = messageService;

@@ -10,8 +10,6 @@ import models.LogEntry;
 import services.impl.LogEntryServiceImpl;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 29 Aug 2016
@@ -23,4 +21,12 @@ public interface LogEntryService extends ModelService<LogEntry> {
    * @return
    */
   List<Aggregate> getAggregates(LogEntryCriteria criteria);
+
+  /**
+   * Wraps {@link LogEntry#findBy(LogEntryCriteria)} with caching.
+   * 
+   * @param criteria
+   * @return
+   */
+  List<LogEntry> findBy(LogEntryCriteria criteria);
 }

@@ -16,8 +16,6 @@ import services.KeyService;
 import services.MessageService;
 
 /**
- * 
- * <p>
  *
  * @author resamsel
  * @version 7 Oct 2016
