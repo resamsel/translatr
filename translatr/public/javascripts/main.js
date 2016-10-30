@@ -235,5 +235,28 @@ App.Modules.ActivityModule = function(sb, options) {
 	};
 };
 
+App.Modules.NotificationModule = function(sb) {
+	var button = sb.dom.find('#notification-button');
+
+	function _handleNotification() {
+		if(button.hasClass('available')) {
+			sb.utilities.ajax(
+				jsRoutes.controllers.Profiles.resetNotifications()
+			).done(_handleNotificationsChanged);
+		}
+	}
+
+	function _handleNotificationsChanged(data) {
+		button.removeClass('available');
+	}
+
+	return {
+		create: function() {
+			button.click(_handleNotification);
+		}
+	}
+}
+
 App.Core.register('ModalModule', App.Modules.ModalModule);
 App.Core.register('NProgressModule', App.Modules.NProgressModule);
+App.Core.register('NotificationModule', App.Modules.NotificationModule);

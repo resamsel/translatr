@@ -1,6 +1,5 @@
 package criterias;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
@@ -20,8 +19,6 @@ public class LogEntryCriteria extends AbstractSearchCriteria<LogEntryCriteria> {
   private DateTime whenCreatedMin;
 
   private DateTime whenCreatedMax;
-
-  private List<UUID> projectIds;
 
   /**
    * @return the userIdExcluded
@@ -81,29 +78,13 @@ public class LogEntryCriteria extends AbstractSearchCriteria<LogEntryCriteria> {
     return this;
   }
 
-  public List<UUID> getProjectIds() {
-    return projectIds;
-  }
-
-  public void setProjectIds(List<UUID> projectIds) {
-    this.projectIds = projectIds;
-  }
-
-  /**
-   * @param projectIds
-   * @return
-   */
-  public LogEntryCriteria withProjectIds(List<UUID> projectIds) {
-    setProjectIds(projectIds);
-    return this;
-  }
-
   /**
    * {@inheritDoc}
    */
   @Override
   public String getCacheKey() {
-    return String.format("%s", super.getCacheKey());
+    return String.format("%s:%s:%s:%s:%s", super.getCacheKey(), userIdExcluded, projectUserId,
+        whenCreatedMin, whenCreatedMax);
   }
 
   public static LogEntryCriteria from(SearchForm form) {

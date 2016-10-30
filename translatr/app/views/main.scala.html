@@ -77,14 +77,15 @@
 								@if(template.notifications != null) {
 									<li>
 										<a
-											class="dropdown-button auth"
+											id="notification-button"
+											class="dropdown-button @if(!template.notifications.isEmpty) { available }"
 											href="#!"
 											title="@Messages("notifications")"
 											data-activates="dropdown-notifications"
 											data-constrainwidth="false"
 											data-beloworigin="true"
 											data-alignment="right">
-											<i class="material-icons @if(!template.notifications.isEmpty) { orange-text }">notifications</i>
+											<i class="material-icons">notifications</i>
 										</a>
 									</li>
 								}

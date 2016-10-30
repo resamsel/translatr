@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.joda.time.DateTime;
+
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
 
@@ -37,6 +39,7 @@ import services.AccessTokenService;
 import services.LinkedAccountService;
 import services.LogEntryService;
 import services.UserService;
+import utils.SessionKey;
 
 /**
  *
@@ -310,5 +313,10 @@ public class Profiles extends AbstractController {
 
       return redirect(routes.Profiles.accessTokens());
     });
+  }
+
+  public Result resetNotifications() {
+    session(SessionKey.LastAcknowledged.key(), DateTime.now().toString());
+    return ok();
   }
 }

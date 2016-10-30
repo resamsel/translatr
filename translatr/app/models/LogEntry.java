@@ -125,9 +125,6 @@ public class LogEntry {
     if (criteria.getProjectId() != null)
       query.eq("project.id", criteria.getProjectId());
 
-    if (criteria.getProjectIds() != null)
-      query.in("project.id", criteria.getProjectIds());
-
     if (criteria.getProjectUserId() != null)
       query.eq("project.members.user.id", criteria.getProjectUserId());
 

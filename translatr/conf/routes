@@ -34,6 +34,7 @@ POST	/profile/accessToken/create	controllers.Profiles.doAccessTokenCreate
 GET		/profile/accessToken/:accessTokenId	controllers.Profiles.accessToken(accessTokenId: Long)
 POST	/profile/accessToken/:accessTokenId/edit	controllers.Profiles.doAccessTokenEdit(accessTokenId: Long)
 GET		/profile/accessToken/:accessTokenId/remove	controllers.Profiles.accessTokenRemove(accessTokenId: Long)
+GET		/profile/notifications/reset	controllers.Profiles.resetNotifications
 
 # Dashboards
 GET		/dashboard						controllers.Dashboards.dashboard

@@ -8,7 +8,9 @@ package utils;
 public enum SessionKey {
   UserId("userId"),
 
-  LastLogin("lastLogin");
+  LastLogin("lastLogin"),
+
+  LastAcknowledged("lastAck");
 
   private String key;
 

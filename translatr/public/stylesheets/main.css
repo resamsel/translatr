@@ -23,6 +23,11 @@ p {
 	padding-top: 1rem;
 }
 
+/* Notifications */
+#notification-button.available i.material-icons {
+	color: #ffeb3b;
+}
+
 /* System Messages */
 .system-messages .container {
     padding: 1rem 0;

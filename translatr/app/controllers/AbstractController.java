@@ -92,15 +92,18 @@ public abstract class AbstractController extends Controller {
     if (user == null)
       return null;
 
-    DateTime lastLogin = null;
+    DateTime whenCreatedMin = null;
+    String sessionLastAcknowledged = session(SessionKey.LastAcknowledged.key());
     String sessionLastLogin = session(SessionKey.LastLogin.key());
-    if (sessionLastLogin != null)
-      lastLogin = DateTime.parse(sessionLastLogin);
+    if (sessionLastAcknowledged != null)
+      whenCreatedMin = DateTime.parse(sessionLastAcknowledged);
+    else if (sessionLastLogin != null)
+      whenCreatedMin = DateTime.parse(sessionLastLogin);
     else
-      lastLogin = user.whenCreated;
+      whenCreatedMin = user.whenCreated;
 
     return logEntryService.findBy(new LogEntryCriteria().withUserIdExcluded(user.id)
-        .withWhenCreatedMin(lastLogin).withProjectUserId(user.id));
+        .withWhenCreatedMin(whenCreatedMin).withProjectUserId(user.id));
   }
 
   protected void select(Project project) {
