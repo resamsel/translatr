@@ -1,0 +1,31 @@
+@(template: utils.Template, user: User, active: String)
+
+<div class="collection depth">
+	@if(template.loggedInUser.id == user.id) {
+		<a class="collection-item @if(active == "info") { active green } else { green-text }"
+			href="@routes.Profiles.profile()">
+			@Messages("info")
+		</a>
+		<a class="collection-item @if(active == "projects") { active green } else { green-text }"
+			href="@routes.Profiles.projects()">
+			@Messages("projects")
+		</a>
+		<a class="collection-item @if(active == "activity") { active green } else { green-text }"
+			href="@routes.Profiles.activity()">
+			@Messages("activity")
+		</a>
+		<a class="collection-item @if(active == "linkedAccounts") { active green } else { green-text }"
+			href="@routes.Profiles.linkedAccounts()">
+			@Messages("linkedAccounts")
+		</a>
+		<a class="collection-item @if(active == "accessTokens") { active green } else { green-text }"
+			href="@routes.Profiles.accessTokens()">
+			@Messages("accessTokens")
+		</a>
+	} else {
+		<a class="collection-item @if(active == "info") { active green } else { green-text }"
+			href="@routes.Users.user(user.id)">
+			@Messages("info")
+		</a>
+	}
+</div>

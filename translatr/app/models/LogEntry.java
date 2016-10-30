@@ -22,99 +22,118 @@ import dto.Dto;
 import play.libs.Json;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 29 Aug 2016
  */
 @Entity
-public class LogEntry
-{
-	@Id
-	public UUID id;
+public class LogEntry {
+  @Id
+  public UUID id;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	public ActionType type;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  public ActionType type;
 
-	@Column(nullable = false, length = 64)
-	public String contentType;
+  @Column(nullable = false, length = 64)
+  public String contentType;
 
-	@CreatedTimestamp
-	@Column(nullable = false)
-	public DateTime whenCreated;
+  @CreatedTimestamp
+  @Column(nullable = false)
+  public DateTime whenCreated;
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "user_id")
-	public User user;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "user_id")
+  public User user;
 
-	@ManyToOne
-	public Project project;
+  @ManyToOne
+  public Project project;
 
-	@Column(length = 1024 * 1024)
-	public String before;
+  @Column(length = 1024 * 1024)
+  public String before;
 
-	@Column(length = 1024 * 1024)
-	public String after;
+  @Column(length = 1024 * 1024)
+  public String after;
 
-	/**
-	 * @return the type
-	 */
-	public ActionType getType()
-	{
-		return type;
-	}
+  /**
+   * @return the type
+   */
+  public ActionType getType() {
+    return type;
+  }
 
-	private static final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>()
-	{
-	};
+  private static final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>() {};
 
-	/**
-	 * @param type
-	 * @param clazz
-	 * @param after
-	 * @param before
-	 * @return
-	 */
-	public static <T extends Dto> LogEntry from(ActionType type, Project project, Class<T> clazz, T before, T after)
-	{
-		LogEntry out = new LogEntry();
+  /**
+   * @param type
+   * @param clazz
+   * @param after
+   * @param before
+   * @return
+   */
+  public static <T extends Dto> LogEntry from(ActionType type, Project project, Class<T> clazz,
+      T before, T after) {
+    LogEntry out = new LogEntry();
 
-		out.type = type;
-		out.project = project;
-		out.contentType = clazz.getName();
-		out.before = Json.stringify(Json.toJson(before));
-		out.after = Json.stringify(Json.toJson(after));
+    out.type = type;
+    out.project = project;
+    out.contentType = clazz.getName();
+    out.before = Json.stringify(Json.toJson(before));
+    out.after = Json.stringify(Json.toJson(after));
 
-		return out;
-	}
+    return out;
+  }
 
-	/**
-	 * @param criteria
-	 * @return
-	 */
-	public static List<LogEntry> findBy(LogEntryCriteria criteria)
-	{
-		ExpressionList<LogEntry> query = find.fetch("project").where();
+  /**
+   * @param criteria
+   * @return
+   */
+  public static List<LogEntry> findBy(LogEntryCriteria criteria) {
+    ExpressionList<LogEntry> query = findQuery(criteria);
 
-		if(criteria.getUserId() != null)
-			query.eq("user.id", criteria.getUserId());
+    if (criteria.getLimit() != null)
+      query.setMaxRows(criteria.getLimit() + 1);
 
-		if(criteria.getProjectId() != null)
-			query.eq("project.id", criteria.getProjectId());
+    if (criteria.getOffset() != null)
+      query.setFirstRow(criteria.getOffset());
 
-		if(criteria.getLimit() != null)
-			query.setMaxRows(criteria.getLimit() + 1);
+    if (criteria.getOrder() != null)
+      query.order(criteria.getOrder());
+    else
+      query.order("whenCreated desc");
 
-		if(criteria.getOffset() != null)
-			query.setFirstRow(criteria.getOffset());
+    return query.query().fetch("project").findList();
+  }
 
-		if(criteria.getOrder() != null)
-			query.order(criteria.getOrder());
-		else
-			query.order("whenCreated");
+  public static int countBy(LogEntryCriteria criteria) {
+    return findQuery(criteria).findRowCount();
+  }
 
-		return query.findList();
-	}
+  /**
+   * @param criteria
+   * @return
+   */
+  private static ExpressionList<LogEntry> findQuery(LogEntryCriteria criteria) {
+    ExpressionList<LogEntry> query = find.where();
+
+    if (criteria.getUserId() != null)
+      query.eq("user.id", criteria.getUserId());
+
+    if (criteria.getUserIdExcluded() != null)
+      query.ne("user.id", criteria.getUserIdExcluded());
+
+    if (criteria.getProjectId() != null)
+      query.eq("project.id", criteria.getProjectId());
+
+    if (criteria.getProjectUserId() != null)
+      query.eq("project.members.user.id", criteria.getProjectUserId());
+
+    if (criteria.getWhenCreatedMin() != null)
+      query.ge("whenCreated", criteria.getWhenCreatedMin());
+
+    if (criteria.getWhenCreatedMax() != null)
+      query.le("whenCreated", criteria.getWhenCreatedMax());
+
+    return query;
+  }
 }

@@ -1,37 +1,33 @@
-@(form: Form[forms.ProjectForm])
+@(template: utils.Template, form: Form[forms.ProjectForm])
 
-@main(utils.TemplateInfo.from(Messages("project.create.title"))) {
+@main(template.withTitle(Messages("project.create.title"))) {
 } {
 		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")
 		</a>
 } {
-	@tags.content {
-		<div class="col m6 offset-m3">
-			<form action="@routes.Projects.create()" method="post">
-				<div id="panel-message" class="card no-image">
-					<div class="card-image blue">
-						<span class="card-title">@Messages("project.create.title")</span>
-					</div>
-					<div class="card-content">
-						@projects.formContent(form)
-					</div>
-					<div class="card-action">
-						<button
-							type="submit"
-							class="btn waves-effect waves-light btn-save">
-							@Messages("button.save")
-							<i class="material-icons right">send</i>
-						</button>
-						<a
-							class="btn-flat btn-cancel black-text"
-							href="@routes.Dashboards.dashboard()">
-							@Messages("button.cancel")
-						</a>
-					</div>
+	@dashboards.content(template, "projects") {
+		<form action="@routes.Projects.create()" method="post">
+			<div id="panel-message" class="card no-image">
+				<div class="card-content">
+					<span class="card-title">@Messages("project.create.title")</span>
+					@projects.formContent(form)
 				</div>
-			</form>
-		</div>
+				<div class="card-action">
+					<button
+						type="submit"
+						class="btn waves-effect waves-light btn-save">
+						@Messages("button.save")
+						<i class="material-icons right">send</i>
+					</button>
+					<a
+						class="btn-flat btn-cancel black-text"
+						href="@routes.Dashboards.dashboard()">
+						@Messages("button.cancel")
+					</a>
+				</div>
+			</div>
+		</form>
 	}
 	<script>
 		$(document).ready(function() {

@@ -1,13 +1,13 @@
 package controllers;
 
-import static utils.FormatUtils.formatLocale;
 import static utils.Stopwatch.log;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -15,22 +15,31 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.collect.ImmutableMap;
 
 import actions.ContextAction;
+import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteProjectCommand;
+import commands.RevertDeleteProjectUserCommand;
+import converters.ActivityCsvConverter;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.LogEntryCriteria;
+import criterias.ProjectUserCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
 import forms.ProjectForm;
+import forms.ProjectUserForm;
 import forms.SearchForm;
 import models.Key;
 import models.Locale;
+import models.LogEntry;
 import models.Project;
+import models.ProjectUser;
 import models.Suggestable;
 import models.Suggestable.Data;
+import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
@@ -43,287 +52,300 @@ import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
 import services.ProjectService;
+import services.ProjectUserService;
+import services.UserService;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 16 Sep 2016
  */
 @With(ContextAction.class)
-public class Projects extends AbstractController
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(Projects.class);
+@SubjectPresent(forceBeforeAuthCheck = true)
+public class Projects extends AbstractController {
+  private static final Logger LOGGER = LoggerFactory.getLogger(Projects.class);
 
-	private final Injector injector;
+  private final ProjectService projectService;
 
-	private final ProjectService projectService;
+  private final LocaleService localeService;
 
-	private final LocaleService localeService;
+  private final KeyService keyService;
 
-	private final KeyService keyService;
+  private final FormFactory formFactory;
 
-	private final LogEntryService logEntryService;
+  private final ProjectUserService projectUserService;
 
-	private final FormFactory formFactory;
+  private final Configuration configuration;
 
-	private final Configuration configuration;
+  /**
+   * 
+   */
+  @Inject
+  public Projects(Injector injector, CacheApi cache, FormFactory formFactory, PlayAuthenticate auth,
+      UserService userService, LogEntryService logEntryService, ProjectService projectService,
+      LocaleService localeService, KeyService keyService, ProjectUserService projectUserService,
+      Configuration configuration) {
+    super(injector, cache, auth, userService, logEntryService);
 
-	/**
-	 * 
-	 */
-	@Inject
-	public Projects(CacheApi cache, Injector injector, FormFactory formFactory, ProjectService projectService,
-				LocaleService localeService, KeyService keyService, LogEntryService logEntryService,
-				Configuration configuration)
-	{
-		super(cache);
+    this.formFactory = formFactory;
+    this.projectService = projectService;
+    this.localeService = localeService;
+    this.keyService = keyService;
+    this.projectUserService = projectUserService;
+    this.configuration = configuration;
+  }
 
-		this.injector = injector;
-		this.formFactory = formFactory;
-		this.projectService = projectService;
-		this.localeService = localeService;
-		this.keyService = keyService;
-		this.logEntryService = logEntryService;
-		this.configuration = configuration;
-	}
+  public Result project(UUID projectId) {
+    return searchForm(projectId, (project, form) -> {
+      return ok(log(() -> views.html.projects.project.render(createTemplate(), project, form),
+          LOGGER, "Rendering project"));
+    });
+  }
 
-	public Result project(UUID id)
-	{
-		Project project = Project.byId(id);
+  public Result create() {
+    Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
 
-		if(project == null)
-			return redirect(routes.Application.index());
+    return ok(views.html.projects.create.render(createTemplate(), form));
+  }
 
-		select(project);
+  public Result doCreate() {
+    Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
 
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+    if (form.hasErrors())
+      return badRequest(views.html.projects.create.render(createTemplate(), form));
 
-		return ok(
-			log(
-				() -> views.html.projects.project
-					.render(project, logEntryService.getStats(new LogEntryCriteria().withProjectId(project.id)), form),
-				LOGGER,
-				"Rendering project"));
-	}
+    LOGGER.debug("Project: {}", Json.toJson(form));
 
-	public Result create()
-	{
-		Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
+    User owner = User.loggedInUser();
+    Project project = Project.byOwnerAndName(owner, form.get().getName());
+    if (project != null)
+      form.get().fill(project).withDeleted(false);
+    else
+      project = form.get().fill(new Project()).withOwner(owner);
+    projectService.save(project);
 
-		if(form.hasErrors())
-			return badRequest(views.html.projects.create.render(form));
+    select(project);
 
-		LOGGER.debug("Project: {}", Json.toJson(form));
+    return redirect(routes.Projects.project(project.id));
+  }
 
-		Project project = Project.byName(form.get().getName());
-		if(project != null)
-			form.get().fill(project).withDeleted(false);
-		else
-			project = form.get().fill(new Project());
-		projectService.save(project);
+  public Result createImmediately(String projectName) {
+    if (projectName.length() > Project.NAME_LENGTH)
+      return badRequest(views.html.projects.create.render(createTemplate(),
+          ProjectForm.form(formFactory).bind(ImmutableMap.of("name", projectName))));
 
-		select(project);
+    User owner = User.loggedInUser();
+    Project project = Project.byOwnerAndName(owner, projectName);
+    if (project == null) {
+      project = new Project(projectName).withOwner(owner);
 
-		return redirect(routes.Projects.project(project.id));
-	}
+      LOGGER.debug("Project: {}", Json.toJson(project));
 
-	public Result createImmediately(String projectName)
-	{
-		Project project = Project.byName(projectName);
+      projectService.save(project);
+    }
 
-		if(projectName.length() > Project.NAME_LENGTH)
-			return badRequest(
-				views.html.projects.create
-					.render(ProjectForm.form(formFactory).bind(ImmutableMap.of("name", projectName))));
+    return redirect(routes.Projects.project(project.id));
+  }
 
-		if(project == null)
-		{
-			project = new Project(projectName);
+  public Result edit(UUID projectId) {
+    Project project = Project.byId(projectId);
 
-			LOGGER.debug("Project: {}", Json.toJson(project));
+    if (project == null)
+      return redirect(routes.Application.index());
 
-			projectService.save(project);
-		}
+    select(project);
 
-		return redirect(routes.Projects.project(project.id));
-	}
+    if ("POST".equals(request().method())) {
+      Form<ProjectForm> form = formFactory.form(ProjectForm.class).bindFromRequest();
 
-	public Result edit(UUID projectId)
-	{
-		Project project = Project.byId(projectId);
+      if (form.hasErrors())
+        return badRequest(views.html.projects.edit.render(createTemplate(), project, form));
 
-		if(project == null)
-			return redirect(routes.Application.index());
+      projectService.save(form.get().fill(project));
 
-		select(project);
+      return redirect(routes.Projects.project(project.id));
+    }
 
-		if("POST".equals(request().method()))
-		{
-			Form<ProjectForm> form = formFactory.form(ProjectForm.class).bindFromRequest();
+    return ok(views.html.projects.edit.render(createTemplate(), project,
+        formFactory.form(ProjectForm.class).fill(ProjectForm.from(project))));
+  }
 
-			if(form.hasErrors())
-				return badRequest(views.html.projects.edit.render(project, form));
+  public Result remove(UUID projectId) {
+    Project project = Project.byId(projectId);
 
-			projectService.save(form.get().fill(project));
+    LOGGER.debug("Key: {}", Json.toJson(project));
 
-			return redirect(routes.Projects.project(project.id));
-		}
+    if (project == null)
+      return redirect(routes.Application.index());
 
-		return ok(
-			views.html.projects.edit.render(project, formFactory.form(ProjectForm.class).fill(ProjectForm.from(project))));
-	}
+    select(project);
 
-	public Result remove(UUID projectId)
-	{
-		Project project = Project.byId(projectId);
+    undoCommand(injector.instanceOf(RevertDeleteProjectCommand.class).with(project));
 
-		LOGGER.debug("Key: {}", Json.toJson(project));
+    projectService.delete(project);
 
-		if(project == null)
-			return redirect(routes.Application.index());
+    return redirect(routes.Dashboards.dashboard());
+  }
 
-		select(project);
+  public Result search(UUID id) {
+    return searchForm(id, (project, form) -> {
+      SearchForm search = form.get();
+      search.setLimit(configuration.getInt("translatr.search.autocomplete.limit", 3));
 
-		undoCommand(injector.instanceOf(RevertDeleteProjectCommand.class).with(project));
+      List<Suggestable> suggestions = new ArrayList<>();
 
-		projectService.delete(project);
+      List<? extends Suggestable> keys = Key
+          .findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
 
-		return redirect(routes.Dashboards.dashboard());
-	}
+      search.pager(keys);
 
-	public Result search(UUID id)
-	{
-		Project project = Project.byId(id);
+      if (!keys.isEmpty())
+        suggestions.addAll(keys);
+      if (search.hasMore)
+        suggestions.add(Suggestable.DefaultSuggestable
+            .from(ctx().messages().at("key.search", search.search), Data.from(Key.class, null,
+                "???", search.urlWithOffset(routes.Projects.keys(project.id), 20, 0))));
+      suggestions.add(Suggestable.DefaultSuggestable
+          .from(ctx().messages().at("key.create", search.search), Data.from(Key.class, null, "+++",
+              routes.Keys.createImmediately(project.id, search.search).url())));
 
-		if(project == null)
-			return redirect(routes.Application.index());
+      List<? extends Suggestable> locales = Locale.findBy(new LocaleCriteria()
+          .withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
 
-		select(project);
+      search.pager(locales);
+      if (!locales.isEmpty())
+        suggestions.addAll(locales);
+      if (search.hasMore)
+        suggestions.add(Suggestable.DefaultSuggestable
+            .from(ctx().messages().at("locale.search", search.search), Data.from(Locale.class, null,
+                "???", search.urlWithOffset(routes.Projects.locales(project.id), 20, 0))));
+      suggestions.add(Suggestable.DefaultSuggestable
+          .from(ctx().messages().at("locale.create", search.search), Data.from(Locale.class, null,
+              "+++", routes.Locales.createImmediately(project.id, search.search).url())));
 
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
-		search.setLimit(configuration.getInt("translatr.search.autocomplete.limit", 3));
+      return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
+    });
+  }
 
-		List<Suggestable> suggestions = new ArrayList<>();
+  public Result locales(UUID id) {
+    return searchForm(id, (project, form) -> {
+      SearchForm search = form.get();
 
-		List<? extends Suggestable> locales = Locale.findBy(
-			new LocaleCriteria().withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
+      List<Locale> locales = Locale.findBy(LocaleCriteria.from(search).withProjectId(project.id));
 
-		search.pager(locales);
-		if(!locales.isEmpty())
-			suggestions.addAll(locales);
-		if(search.hasMore)
-			suggestions.add(
-				Suggestable.DefaultSuggestable.from(
-					ctx().messages().at("locale.search", search.search),
-					Data.from(Locale.class, null, "???", search.urlWithOffset(routes.Projects.locales(project.id), 0))));
-		suggestions.add(
-			Suggestable.DefaultSuggestable.from(
-				ctx().messages().at("locale.create", search.search),
-				Data.from(
-					Locale.class,
-					null,
-					"+++",
-					routes.Application.localeCreateImmediately(project.id, search.search).url())));
+      search.pager(locales);
 
-		List<? extends Suggestable> keys =
-					Key.findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
+      // java.util.Locale locale = ctx().lang().locale();
+      // Collections.sort(locales,
+      // (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
 
-		search.pager(keys);
+      return ok(log(() -> views.html.projects.locales.render(createTemplate(), project, locales,
+          localeService.progress(locales.stream().map(l -> l.id).collect(Collectors.toList()),
+              Key.countBy(project)),
+          form), LOGGER, "Rendering projects.locales"));
+    });
+  }
 
-		if(!keys.isEmpty())
-			suggestions.addAll(keys);
-		if(search.hasMore)
-			suggestions.add(
-				Suggestable.DefaultSuggestable.from(
-					ctx().messages().at("key.search", search.search),
-					Data.from(Key.class, null, "???", search.urlWithOffset(routes.Projects.keys(project.id), 0))));
-		suggestions.add(
-			Suggestable.DefaultSuggestable.from(
-				ctx().messages().at("key.create", search.search),
-				Data.from(
-					Key.class,
-					null,
-					"+++",
-					routes.Application.keyCreateImmediately(project.id, search.search).url())));
+  public Result keys(UUID id) {
+    return searchForm(id, (project, form) -> {
+      SearchForm search = form.get();
 
-		return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
-	}
+      List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
 
-	public Result locales(UUID id)
-	{
-		Project project = Project.byId(id);
+      search.pager(keys);
 
-		if(project == null)
-			return redirect(routes.Application.index());
+      Map<UUID, Double> progress = keyService.progress(
+          keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
 
-		select(project);
+      return ok(views.html.projects.keys.render(createTemplate(), project, keys, progress, form));
+    });
+  }
 
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
+  public Result members(UUID projectId) {
+    return searchForm(projectId, (project, form) -> {
+      SearchForm search = form.get();
 
-		List<Locale> locales = Locale.findBy(LocaleCriteria.from(search).withProjectId(project.id));
+      List<ProjectUser> list =
+          ProjectUser.findBy(ProjectUserCriteria.from(search).withProjectId(project.id));
 
-		search.pager(locales);
+      search.pager(list);
 
-		java.util.Locale locale = ctx().lang().locale();
-		Collections.sort(locales, (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
+      return ok(views.html.projects.members.render(createTemplate(), project, list, form,
+          ProjectUserForm.form(formFactory)));
+    });
+  }
 
-		return ok(
-			log(
-				() -> views.html.projectLocales.render(
-					project,
-					locales,
-					localeService
-						.progress(locales.stream().map(l -> l.id).collect(Collectors.toList()), Key.countBy(project)),
-					form),
-				LOGGER,
-				"Rendering projectLocales"));
-	}
+  public Result memberAdd(UUID projectId) {
+    return project(projectId, project -> {
+      Form<ProjectUserForm> form = ProjectUserForm.form(formFactory).bindFromRequest();
 
-	public Result keys(UUID id)
-	{
-		Project project = Project.byId(id);
+      // TODO: Enable GET/POST switch
+      if (form.hasErrors())
+        return badRequest(views.html.projects.memberAdd.render(createTemplate(), project, form));
 
-		if(project == null)
-			return redirect(routes.Application.index());
+      User user = User.byUsername(form.get().getUsername());
 
-		select(project);
+      projectUserService
+          .save(form.get().fill(new ProjectUser()).withProject(project).withUser(user));
 
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
+      return redirect(routes.Projects.members(project.id));
+    });
+  }
 
-		List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
+  public Result memberRemove(UUID projectId, Long memberId) {
+    return project(projectId, project -> {
+      ProjectUser member = ProjectUser.byId(memberId);
 
-		search.pager(keys);
+      if (member == null || !project.id.equals(member.project.id)) {
+        flash("error", ctx().messages().at("project.member.notFound"));
 
-		Map<UUID, Double> progress =
-					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
+        return redirect(routes.Projects.members(project.id));
+      }
 
-		return ok(views.html.projectKeys.render(project, keys, progress, form));
-	}
+      undoCommand(injector.instanceOf(RevertDeleteProjectUserCommand.class).with(member));
 
-	public Result keysSearch(UUID id)
-	{
-		Project project = Project.byId(id);
+      projectUserService.delete(member);
 
-		if(project == null)
-			return redirect(routes.Application.index());
+      return redirect(routes.Projects.members(project.id));
+    });
+  }
 
-		select(project);
+  public Result activity(UUID projectId) {
+    return project(projectId, project -> {
+      Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+      SearchForm search = form.get();
 
-		Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-		SearchForm search = form.get();
+      List<LogEntry> activities = logEntryService.findBy(
+          LogEntryCriteria.from(search).withProjectId(project.id).withOrder("whenCreated desc"));
 
-		List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
+      search.pager(activities);
 
-		search.pager(keys);
+      return ok(views.html.projects.activity.render(createTemplate(), project, activities, form));
+    });
+  }
 
-		Map<UUID, Double> progress =
-					keyService.progress(keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
+  public Result activityCsv(UUID projectId) {
+    return project(projectId, project -> {
+      return ok(new ActivityCsvConverter()
+          .apply(logEntryService.getAggregates(new LogEntryCriteria().withProjectId(project.id))));
+    });
+  }
 
-		return ok(views.html.tags.keyRows.render(keys, progress, form));
-	}
+  private Result project(UUID projectId, Function<Project, Result> processor) {
+    Project project = Project.byId(projectId);
+
+    if (project == null)
+      return redirectWithError(routes.Dashboards.dashboard(),
+          ctx().messages().at("project.notFound", projectId));
+
+    select(project);
+
+    return processor.apply(project);
+  }
+
+  private <T extends Form<SearchForm>> Result searchForm(UUID projectId,
+      BiFunction<Project, Form<SearchForm>, Result> processor) {
+    return project(projectId, project -> processor.apply(project,
+        SearchForm.bindFromRequest(formFactory, configuration)));
+  }
 }

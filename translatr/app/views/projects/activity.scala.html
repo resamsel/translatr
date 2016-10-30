@@ -1,0 +1,47 @@
+@(template: utils.Template, project: Project, activityList: List[LogEntry], form: Form[forms.SearchForm])
+
+@import utils.FormatUtils._
+
+@main(template.withTitle(Messages("project.title", project.name)).withName("project-activity")) {
+} {
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
+		@project.name
+	</a>
+	<a class="breadcrumb active" href="@routes.Projects.activity(project.id)">
+		@Messages("activity")
+	</a>
+} {
+	@content(project, "activity") {
+		@tags.collection(activityList, "activity.empty") {
+			<span class="title">@Messages("activity")</span>
+			<div class="secondary-content sort-orders">
+				@tags.orderLink(form.get, routes.Profiles.activity(), "when.created", "whenCreated desc", "whenCreated", "whenCreated")
+			</div>
+		} {
+			@for(activity <- activityList) {
+				<li class="collection-item avatar black-text">
+					<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
+					<span class="title truncate">
+						<a href="@utils.JsonUtils.linkTo(activity)">
+							@utils.JsonUtils.nameOf(activity)
+						</a>
+					</span>
+					<p>
+						@Messages("activity." + activity.getType + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
+						@if(activity.user != null) {
+							@Messages("by")
+							<a href="@routes.Users.user(activity.user.id)">
+								@activity.user.name
+							</a>
+						}
+					</p>
+				</li>
+			}
+		} {
+			@tags.pager(routes.Projects.activity(project.id), form.get)
+		}
+	}
+}

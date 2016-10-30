@@ -1,6 +1,7 @@
-@(project: models.Project, stats: List[Aggregate], form: Form[forms.SearchForm])
+@(template: utils.Template, project: models.Project, form: Form[forms.SearchForm])
 
 @import utils.FormatUtils._
+@import views.html.tags.contentCard
 
 @projectActions = {
 	<li>
@@ -14,107 +15,44 @@
 	</li>
 }
 
-@main(utils.TemplateInfo.from(Messages("project.title", project.name))) {
+@main(template.withTitle(Messages("project.title", project.name)).withName("project")) {
 	@tags.search(form)()
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb active" href="@routes.Projects.project(project.id)">
-			@project.name
-		</a>
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb active" href="@routes.Projects.project(project.id)">
+		@project.name
+	</a>
 } {
-	@tags.content {
-		<div class="project col m12">
-			@tags.projectTabs(project, "info") {
-				<div class="row info">
-					<!-- Project Info -->
-					<div class="col m4 overview">
-						<div class="card no-image">
-							<div class="card-image orange">
-								<span class="card-title">@Messages("project.title", project.name)</span>
-							</div>
-							<div class="progress">
-								<div class="determinate" style="width: @{project.progress()*100}%;"></div>
-							</div>
-							<div class="card-content">
-								<p>
-									@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
-								</p>
-								<div class="chip user">
-									@tags.gravatar(project.owner, help = Messages("project.owner.info"))
-									@Html(Messages("project.owner", project.owner.name))
-									<a href="@routes.Users.user(project.owner.id)">
-										@project.owner.name
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-	
-					<!-- Locales -->
-					<div class="col m4 locales">
-						<div class="card no-image">
-							<div class="card-image blue">
-								<span class="card-title">@Messages("locales")</span>
-							</div>
-							<div class="card-content">
-								<p>
-									@Messages("locales.size", project.localesSize()),
-									@Messages("latest"):
-									@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
-								</p>
-							</div>
-						</div>
-					</div>
-	
-					<!-- Keys -->
-					<div class="col m4 keys">
-						<div class="card no-image">
-							<div class="card-image light-green">
-								<span class="card-title">@Messages("keys")</span>
-							</div>
-							<div class="card-content">
-								<p>
-									@Messages("keys.size", project.keysSize()),
-									@Messages("latest"):
-									@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
-								</p>
-							</div>
-						</div>
-					</div>
+	@content(project, "info", "flex") {
+		@contentCard(Messages("activity"), styleClass = "activity") {
+			<div class="svg-container"></div>
+		}
 
-					<!-- Messages -->
-					<div class="col m12 messages">
-						<div class="card no-image">
-							<div class="card-image red">
-								<span class="card-title">@Messages("messages")</span>
-							</div>
-							<div class="card-content">
-								<p>
-									@Messages("messages.size", project.messagesSize()),
-									@Messages("latest"):
-									@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
-								</p>
-							</div>
-						</div>
-					</div>
+		@contentCard(Messages("locales"), styleClass = "locales") {
+			<p>
+				@Messages("locales.size", project.localesSize()),
+				@Messages("latest"):
+				@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
+			</p>
+		}
 
-					<!-- Timeline -->
-					<div class="col m12 timeline">
-						<div class="card no-image">
-							<div class="card-image grey">
-								<span class="card-title">@Messages("timeline")</span>
-							</div>
-							<div class="card-content">
-								<div id="chart-timeline" class="ct-chart ct-double-octave"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			}
-		</div>
-		<!-- /.col-md-12 -->
+		@contentCard(Messages("keys"), styleClass = "keys") {
+			<p>
+				@Messages("keys.size", project.keysSize()),
+				@Messages("latest"):
+				@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
+			</p>
+		}
+
+		@contentCard(Messages("messages"), styleClass = "messages") {
+			<p>
+				@Messages("messages.size", project.messagesSize()),
+				@Messages("latest"):
+				@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
+			</p>
+		}
 	}
 
 	@tags.fabContainer("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue", actions = projectActions)
@@ -129,20 +67,7 @@
 
 	<script>
 		var projectId = '@project.id';
-		var data = {
-			series: [
-				@for((name, key) <- scala.collection.Map("project" -> "dto.Project", "locales" -> "dto.Locale", "keys" -> "dto.Key", "messages" -> "dto.Message")) {
-					{
-						name: '@name',
-						data: [
-							@for(stat <- stats.filter(_.key == key)) {
-								{x: new Date(@stat.millis), y: @stat.value},
-							}
-						]
-					},
-				}
-			]
-		};
 	</script>
+	@tags.contributionScript()
 	<script src="@routes.Assets.versioned("javascripts/project.js")"></script>
 }

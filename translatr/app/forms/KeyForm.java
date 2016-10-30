@@ -4,8 +4,6 @@ import models.Key;
 import play.data.validation.Constraints;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 2 Sep 2016

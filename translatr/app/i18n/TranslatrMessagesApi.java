@@ -1,8 +1,8 @@
 package i18n;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -15,8 +15,6 @@ import play.mvc.Http.Context;
 import scala.collection.Seq;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 31 Aug 2016
@@ -51,7 +49,7 @@ public class TranslatrMessagesApi extends DefaultMessagesApi
 	{
 		Map<String, Object> args = Context.current().args;
 		if(!args.containsKey(KEY))
-			args.put(KEY, new ArrayList<>());
-		((List<String>)args.get(KEY)).add(key);
+			args.put(KEY, new HashSet<>());
+		((Set<String>)args.get(KEY)).add(key);
 	}
 }

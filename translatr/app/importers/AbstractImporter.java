@@ -19,8 +19,6 @@ import services.KeyService;
 import services.MessageService;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 7 Oct 2016

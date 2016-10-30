@@ -6,8 +6,6 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 9 Aug 2016

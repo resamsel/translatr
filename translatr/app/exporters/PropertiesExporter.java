@@ -6,8 +6,6 @@ import models.Locale;
 import models.Message;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 30 Aug 2016
@@ -23,8 +21,17 @@ public abstract class PropertiesExporter extends AbstractExporter implements Exp
 
 		StringBuilder sb = new StringBuilder();
 		for(Message message : locale.messages)
-			sb.append(message.key.name).append(" = ").append(message.value.replace("\n", "\\n")).append("\n");
+			sb.append(message.key.name).append(" = ").append(escapeValue(message.value)).append("\n");
 
 		return sb.toString().getBytes();
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	private String escapeValue(String value)
+	{
+		return value.replace("\n", "\\n").replace("\r", "");
 	}
 }

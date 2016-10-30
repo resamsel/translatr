@@ -1,17 +1,15 @@
-@(key: models.Key, locales: List[models.Locale], messages: Map[java.util.UUID, models.Message], form: Form[forms.SearchForm])
-
-@import utils.TemplateInfo.from
+@(template: utils.Template, key: models.Key, locales: List[models.Locale], messages: Map[java.util.UUID, models.Message], form: Form[forms.SearchForm])
 
 @createActions = {
 	<li>
-		@tags.fab("remove-key", "delete_forever", href = routes.Application.keyRemove(key.id, null).url, tooltip = Messages("key.remove.tooltip"), styleClass = "red")
+		@tags.fab("remove-key", "delete_forever", href = routes.Keys.remove(key.id, null).url, tooltip = Messages("key.remove.tooltip"), styleClass = "red")
 	</li>
 	<li>
-		@tags.fab("edit-key", "edit", href = routes.Application.keyEdit(key.id).url, tooltip = Messages("key.edit.tooltip"), styleClass = "light-green")
+		@tags.fab("edit-key", "edit", href = routes.Keys.edit(key.id).url, tooltip = Messages("key.edit.tooltip"), styleClass = "light-green")
 	</li>
 }
 
-@main(from(Messages("key.title", key.project.name, key.name), "key")) {
+@main(template.withTitle(Messages("key.title", key.project.name, key.name)).withName("key")) {
 	@tags.search(form) {
 		<button
 			type="button"
@@ -32,47 +30,40 @@
 		</ul>
 	}
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
-			@key.project.name
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.keys(key.project.id)">
-			@Messages("keys")
-		</a>
-		<a class="breadcrumb active" href="@routes.Application.key(key.id)">
-			@key.name
-		</a>
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
+		@key.project.name
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.keys(key.project.id)">
+		@Messages("keys")
+	</a>
+	<a class="breadcrumb active" href="@routes.Keys.key(key.id)">
+		@key.name
+	</a>
 } {
 	@tags.editor {
-		<h3 class="section-heading">@Messages("locales")</h3>
-		<ul class="collection locales">
+		<h5 class="header">@Messages("locales")</h5>
+		<div class="collection locales">
 			@for(locale <- locales) {
-				<li class="collection-item">
-					<a
-						id="@locale.id"
-						href="#locale=@locale.name"
-						class="locale @if(!messages.containsKey(locale.id)) { no-message }"
-						name="@locale.name.toLowerCase"
-						localeName="@locale.name"
-						title="@tags.locale(locale.name)">
-						<span class="title name">@tags.locale(locale.name)</span>
-						<div class="value">@if(messages.containsKey(locale.id)) {@messages(locale.id).value}</div>
-					</a>
-				</li>
+				<a
+					id="@locale.id"
+					href="#locale=@locale.name"
+					class="collection-item locale @if(!messages.containsKey(locale.id)) { no-message }"
+					name="@locale.name.toLowerCase"
+					localeName="@locale.name"
+					title="@tags.locale(locale.name)">
+					<span class="title name">@tags.locale(locale.name)</span>
+					<div class="value">@if(messages.containsKey(locale.id)) {@messages(locale.id).value}</div>
+				</a>
 			}
-		</ul>
+		</div>
 	} {
 		<form id="form-message">
 			<div id="panel-message" class="card no-image">
-				<div class="card-image red">
-					<span class="card-title">@Messages("locale.to.label") <span id="locale-name">...</span></span>
-				</div>
-				<div class="progress" style="margin: 0; visibility: hidden">
-					<div class="indeterminate"></div>
-				</div>
 				<div class="card-content">
+					<span class="card-title">@Messages("locale.to.label") <span id="locale-name">...</span></span>
 					<input id="field-id" type="hidden" />
 					<input id="field-locale" type="hidden" />
 					<div class="input-field">
@@ -103,7 +94,7 @@
 
 		<!-- Preview -->
 		<div id="panel-preview">
-			<h3 class="section-heading">@Messages("locale.preview")</h3>
+			<h5 class="header">@Messages("locale.preview")</h5>
 			<div id="preview"></div>
 		</div>
 	} {
@@ -112,7 +103,7 @@
 	@tags.fabContainer("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = createActions)
 
 	@tags.modal(Messages("key.new"), "modal-create") {
-		<form id="form-key" method="post" action="@routes.Application.keyCreate(key.project.id, null)">
+		<form id="form-key" method="post" action="@routes.Keys.create(key.project.id, null)">
 			<div class="form-group">
 				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
 			</div>

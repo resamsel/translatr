@@ -14,3 +14,7 @@ App.Modules.FloatingButtonModule = function(sb) {
 };
 
 App.Core.register('FloatingButtonModule', App.Modules.FloatingButtonModule);
+App.Core.register('ActivityModule', App.Modules.ActivityModule, {
+	dataUrl: jsRoutes.controllers.Application.activityCsv().url,
+	messages: contributionMessages
+});

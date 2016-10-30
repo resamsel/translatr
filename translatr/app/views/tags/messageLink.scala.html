@@ -1,9 +1,7 @@
 @(message: models.Message)
 
-@import org.apache.commons.lang3.StringUtils._
-
 <a
-	href="@routes.Application.locale(message.locale.id)?search=@message.key.name"
+	href="@routes.Locales.locale(message.locale.id)?search=@message.key.name"
 	title="@message.key.name">
-	@abbreviate(message.key.name, 64) (@message.locale.name)
+	@Html(message.key.name.replaceAll("\\.", ".<wbr/>")) (@message.locale.name)
 </a>

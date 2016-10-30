@@ -3,7 +3,7 @@
 @for(key <- keys) {
 	<tr id="@key.id" class="key" name="@key.name.toLowerCase">
 		<td class="name">
-			<a href="@routes.Application.key(key.id)">
+			<a href="@routes.Keys.key(key.id)">
 				@key.name
 			</a>
 		</td>
@@ -17,13 +17,13 @@
 		</td>
 		<td class="actions right-align">
 			<a
-				href="@routes.Application.keyEdit(key.id)"
+				href="@routes.Keys.edit(key.id)"
 				class="btn-flat btn-hover waves-effect waves-light"
 				title="@Messages("button.edit")">
 				<i class="material-icons">mode_edit</i>
 			</a>
 			<a
-				href="@routes.Application.keyRemove(key.id, null)"
+				href="@routes.Keys.remove(key.id, null)"
 				class="btn-flat btn-hover waves-effect waves-light"
 				title="@Messages("button.remove")">
 				<i class="material-icons">delete_forever</i>

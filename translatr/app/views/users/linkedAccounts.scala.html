@@ -1,0 +1,59 @@
+@(template: utils.Template, user: models.User, linkedAccountMap: Map[String, LinkedAccount], form: Form[forms.SearchForm])
+
+@import utils.FormatUtils._
+@import com.feth.play.module.pa.views.html._
+
+@main(template.withTitle(Messages("user.title", user.name)).withName("user-linked-accounts")) {
+} {
+	<a class="breadcrumb" href="@routes.Users.user(user.id)">
+		@user.name
+	</a>
+	<a class="breadcrumb" href="@routes.Profiles.linkedAccounts()">
+		@Messages("linkedAccounts")
+	</a>
+} {
+	@content(template, user, "linkedAccounts") {
+		@tags.collection(linkedAccountMap.values, "linkedAccounts.empty", "linked-accounts") {
+			<span class="title">@Messages("linkedAccount")</span>
+		} {
+			@for((key, linkedAccount) <- linkedAccountMap) {
+				<li class="collection-item avatar">
+					<i class="fa fa-@linkedAccount.providerKey provider provider-@linkedAccount.providerKey circle"></i>
+					<span class="title">
+						@Messages("auth." + linkedAccount.providerKey)
+					</span>
+					<p>
+						@Messages("user.linked", pretty(ctx.lang().locale, linkedAccount.whenCreated))
+					</p>
+					<a
+						href="@routes.Profiles.linkedAccountRemove(linkedAccount.id)"
+						class="secondary-content btn-hover"
+						title="@Messages("button.unlink")">
+						<i class="material-icons">delete_forever</i>
+					</a>
+				</li>
+			}
+			@forProviders(template.auth) { p =>
+				@if(!linkedAccountMap.containsKey(p.getKey())) {
+					<li class="collection-item avatar">
+						<i class="fa fa-@p.getKey() provider provider-@p.getKey() circle"></i>
+						<span class="title">
+							@Messages("auth." + p.getKey())
+						</span>
+						<p>
+							@Messages("user.notLinked")
+						</p>
+						<a
+							href="@p.getUrl()"
+							class="secondary-content btn-hover"
+							title="@Messages("button.link")">
+							<i class="material-icons">link</i>
+						</a>
+					</li>
+				}
+			}
+		} {
+			@tags.pager(routes.Profiles.linkedAccounts(), form.get)
+		}
+	}
+}

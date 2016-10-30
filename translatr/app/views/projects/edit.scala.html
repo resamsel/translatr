@@ -1,6 +1,6 @@
-@(project: models.Project, form: Form[forms.ProjectForm])
+@(template: utils.Template, project: models.Project, form: Form[forms.ProjectForm])
 
-@main(utils.TemplateInfo.from(Messages("project.edit.title", project.name))) {
+@main(template.withTitle(Messages("project.edit.title", project.name))) {
 } {
 		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 			@Messages("dashboard")
@@ -9,31 +9,27 @@
 			@project.name
 		</a>
 } {
-	@tags.content {
-		<div class="col m6 offset-m3 project">
-			<form action="@routes.Projects.edit(project.id)" method="post">
-				<div class="card no-image">
-					<div class="card-image orange">
-						<span class="card-title">@Messages("project.edit")</span>
-					</div>
-					<div class="card-content">
-						@projects.formContent(form)
-					</div>
-					<div class="card-action">
-						<button
-							type="submit"
-							class="btn waves-effect waves-light btn-save">
-							@Messages("button.save")
-							<i class="material-icons right">send</i>
-						</button>
-						<a
-							class="btn-flat btn-cancel black-text"
-							href="@routes.Projects.project(project.id)">
-							@Messages("button.cancel")
-						</a>
-					</div>
+	@content(project, "info") {
+		<form action="@routes.Projects.edit(project.id)" method="post">
+			<div class="card no-image">
+				<div class="card-content">
+					<span class="card-title">@Messages("project.edit")</span>
+					@projects.formContent(form)
 				</div>
-			</form>
-		</div>
+				<div class="card-action">
+					<button
+						type="submit"
+						class="btn waves-effect waves-light btn-save">
+						@Messages("button.save")
+						<i class="material-icons right">send</i>
+					</button>
+					<a
+						class="btn-flat btn-cancel black-text"
+						href="@routes.Projects.project(project.id)">
+						@Messages("button.cancel")
+					</a>
+				</div>
+			</div>
+		</form>
 	}
 }

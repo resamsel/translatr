@@ -4,8 +4,6 @@ import models.Locale;
 import play.mvc.Http.Response;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 7 Oct 2016

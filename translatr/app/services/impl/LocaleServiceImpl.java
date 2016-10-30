@@ -28,8 +28,6 @@ import services.LogEntryService;
 import services.MessageService;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 29 Aug 2016
@@ -39,8 +37,6 @@ public class LocaleServiceImpl extends AbstractModelService<Locale> implements L
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
 
-	private final LogEntryService logEntryService;
-
 	private final MessageService messageService;
 
 	/**
@@ -49,9 +45,8 @@ public class LocaleServiceImpl extends AbstractModelService<Locale> implements L
 	@Inject
 	public LocaleServiceImpl(Configuration configuration, MessageService messageService, LogEntryService logEntryService)
 	{
-		super(configuration);
+		super(configuration, logEntryService);
 		this.messageService = messageService;
-		this.logEntryService = logEntryService;
 	}
 
 	/**

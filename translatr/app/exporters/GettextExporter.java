@@ -6,8 +6,6 @@ import models.Locale;
 import models.Message;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 7 Oct 2016

@@ -1,45 +1,41 @@
-@(key: models.Key, form: Form[forms.KeyForm])
+@(template: utils.Template, key: models.Key, form: Form[forms.KeyForm])
 
-@main(utils.TemplateInfo.from(Messages("key.edit.title", key.project.name, key.name))) {
+@main(template.withTitle(Messages("key.edit.title", key.project.name, key.name))) {
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
-			@key.project.name
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.keys(key.project.id)">
-			@Messages("keys")
-		</a>
-		<a class="breadcrumb" href="@routes.Application.key(key.id)">
-			@key.name
-		</a>
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
+		@key.project.name
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.keys(key.project.id)">
+		@Messages("keys")
+	</a>
+	<a class="breadcrumb" href="@routes.Keys.key(key.id)">
+		@key.name
+	</a>
 } {
-	@tags.content {
-		<div class="col m6 offset-m3">
-			<form action="@routes.Application.keyEdit(key.id)" method="post">
-				<div class="card no-image">
-					<div class="card-image light-green">
-						<span class="card-title">@Messages("key.edit", key.name)</span>
-					</div>
-					<div class="card-content">
-						@keys.formContent(form)
-					</div>
-					<div class="card-action">
-						<button
-							type="submit"
-							class="btn waves-effect waves-light btn-save">
-							@Messages("button.save")
-							<i class="material-icons right">send</i>
-						</button>
-						<a
-							class="btn-flat btn-cancel black-text"
-							href="@routes.Projects.keys(key.project.id)">
-							@Messages("button.cancel")
-						</a>
-					</div>
+	@projects.content(key.project, "keys", "flex") {
+		<form action="@routes.Keys.edit(key.id)" method="post">
+			<div class="card no-image">
+				<div class="card-content">
+					<span class="card-title">@Messages("key.edit", key.name)</span>
+					@keys.formContent(form)
 				</div>
-			</form>
-		</div>
+				<div class="card-action">
+					<button
+						type="submit"
+						class="btn waves-effect waves-light btn-save">
+						@Messages("button.save")
+						<i class="material-icons right">send</i>
+					</button>
+					<a
+						class="btn-flat btn-cancel black-text"
+						href="@routes.Projects.keys(key.project.id)">
+						@Messages("button.cancel")
+					</a>
+				</div>
+			</div>
+		</form>
 	}
 }

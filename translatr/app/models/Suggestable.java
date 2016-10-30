@@ -3,8 +3,6 @@ package models;
 import java.util.UUID;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 16 Sep 2016

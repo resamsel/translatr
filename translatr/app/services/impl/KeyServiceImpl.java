@@ -27,8 +27,6 @@ import services.LogEntryService;
 import services.MessageService;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 29 Aug 2016
@@ -39,17 +37,14 @@ public class KeyServiceImpl extends AbstractModelService<Key> implements KeyServ
 
 	private final MessageService messageService;
 
-	private final LogEntryService logEntryService;
-
 	/**
 	 * 
 	 */
 	@Inject
 	public KeyServiceImpl(Configuration configuration, MessageService messageService, LogEntryService logEntryService)
 	{
-		super(configuration);
+		super(configuration, logEntryService);
 		this.messageService = messageService;
-		this.logEntryService = logEntryService;
 	}
 
 	/**

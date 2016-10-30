@@ -1,0 +1,24 @@
+@messageClass = {@if(flash.containsKey("message")) { light-blue }}
+@errorClass = {@if(flash.containsKey("error")) { red }}
+
+<div class="system-messages white-text @messageClass @errorClass">
+	@if(flash.containsKey("error")) {
+		<div class="container">
+			<button class="btn btn-flat btn-small btn-close white-text right">x</button>
+			@Html(flash.get("error"))
+		</div>
+	}
+	@if(flash.containsKey("message")) {
+		<div class="container">
+			<button class="btn btn-flat btn-small btn-close white-text right">x</button>
+			@Html(flash.get("message"))
+		</div>
+	}
+	<script>
+		$(document).ready(function() {
+			$('.system-messages .btn-close').click(function() {
+				$(this).parent().fadeOut();
+			});
+		});
+	</script>
+</div>

@@ -1,43 +1,128 @@
-@(info: utils.TemplateInfo)(nav: Html)(breadcrumbs: Html)(content: Html)
+@(template: utils.Template)(nav: Html)(breadcrumbs: Html)(content: Html)
+
+@import com.feth.play.module.pa.views.html._
 
 <!DOCTYPE html>
-<html lang="@ctx.lang().locale" class="template-@info.template">
+<html lang="@ctx.lang().locale" class="template-@template.name">
 <head>
 
 <meta charset="utf-8">
 <meta http-equiv="Content-Language" content="@ctx.lang().locale">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<title>@info.title</title>
+<title>@template.title</title>
 
 <link rel="stylesheet" href="@routes.Assets.versioned("concat/styles.css")">
 <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+<meta name="theme-color" content="#4CAF50">
 
 </head>
 <body>
 	<header>
 		<!-- Navigation -->
-		<div class="navbar-fixed">
-			<nav role="navigation" class="green">
+		<div class="navbar navbar-fixed-off">
+			<nav role="navigation" class="green z-depth-1">
 				<div class="nav-wrapper">
 					<a class="brand-logo light left" href="@routes.Application.index()">
 						<i class="material-icons prefix">language</i>
 						<span class="hide-on-small-only">@Messages("brand")</span>
 					</a>
-	
+
+					<ul id="dropdown-notifications" class="dropdown-content">
+						@if(template.notifications != null) {
+							@if(!template.notifications.isEmpty) {
+								@for(notification <- template.notifications) {
+									<li>
+										@if(notification.project != null) {
+											<a href="@routes.Projects.activity(notification.project.id)">
+												<i class="material-icons left">@utils.JsonUtils.iconOf(notification)</i>
+												@Messages("activity." + notification.getType + ".notification", Messages("contentType." + notification.contentType), utils.JsonUtils.nameOf(notification), notification.user.username)
+											</a>
+										}
+									</li>
+								}
+							} else {
+								<li>
+									<a class="disabled">@Messages("notifications.empty")</a>
+								</li>
+							}
+						}
+					</ul>
+
+					<ul id="dropdown-logged-in" class="dropdown-content">
+						@if(template.loggedInUser != null) {
+							<li class="disabled">
+								<a class="disabled">@Html(Messages("auth.as", template.loggedInUser.name))</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="@routes.Dashboards.dashboard()">@Messages("dashboard")</a>
+							</li>
+							<li>
+								<a href="@routes.Profiles.profile()">@Messages("user.profile")</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="@routes.Profiles.edit()">@Messages("user.edit")</a>
+							</li>
+							<li>
+								<a href="@routes.Application.logout">@Messages("auth.logout")</a>
+							</li>
+						}
+					</ul>
+					<ul class="right">
+						@if(template.auth != null) {
+							@if(template.loggedInUser != null) {
+								@if(template.notifications != null) {
+									<li>
+										<a
+											id="notification-button"
+											class="dropdown-button @if(!template.notifications.isEmpty) { available }"
+											href="#!"
+											title="@Messages("notifications")"
+											data-activates="dropdown-notifications"
+											data-constrainwidth="false"
+											data-beloworigin="true"
+											data-alignment="right">
+											<i class="material-icons">notifications</i>
+										</a>
+									</li>
+								}
+								<li>
+									<a
+										class="dropdown-button auth"
+										href="#!"
+										data-activates="dropdown-logged-in"
+										data-constrainwidth="false"
+										data-beloworigin="true"
+										data-alignment="right">
+										@tags.gravatar(template.loggedInUser, 32, "circle")
+									</a>
+								</li>
+							} else {
+								<li class="auth login">
+									<a href="@routes.Application.login" title="@Messages("auth.login")">
+										<i class="material-icons">account_circle</i>
+									</a>
+								</li>
+							}
+						}
+					</ul>
+
 					@nav
 				</div>
+				@tags.breadcrumbs {
+					@breadcrumbs
+				}
 			</nav>
-			@tags.breadcrumbs {
-				@breadcrumbs
-			}
 		</div>
 	</header>
 
 	<main>
 		<script src="@routes.Application.javascriptRoutes"></script>
 		<script src="@routes.Assets.versioned("concat/scripts.js")"></script>
+		@tags.messages()
 
 		@content
 
@@ -72,7 +157,6 @@
 		</div>
 	</footer>
 
-	@tags.error()
 	@tags.undo()
 	@tags.undefined()
 </body>

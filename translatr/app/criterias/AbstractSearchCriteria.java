@@ -2,181 +2,195 @@ package criterias;
 
 import java.util.UUID;
 
+import com.avaje.ebean.ExpressionList;
+
+import forms.SearchForm;
+
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 31 Aug 2016
  */
-public abstract class AbstractSearchCriteria<T extends SearchCriteria> implements SearchCriteria
-{
-	private T self;
+public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>>
+    implements SearchCriteria {
+  private T self;
 
-	private Integer offset;
+  private Integer offset;
 
-	private Integer limit;
+  private Integer limit;
 
-	private String order;
+  private String order;
 
-	private Boolean missing;
+  private String search;
 
-	private String search;
+  private UUID userId;
 
-	private UUID projectId;
+  private UUID projectId;
 
-	/**
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public AbstractSearchCriteria()
-	{
-		this.self = (T)this;
-	}
+  /**
+   * 
+   */
+  @SuppressWarnings("unchecked")
+  public AbstractSearchCriteria() {
+    this.self = (T) this;
+  }
 
-	/**
-	 * @return the projectId
-	 */
-	public UUID getProjectId()
-	{
-		return projectId;
-	}
+  public UUID getUserId() {
+    return userId;
+  }
 
-	/**
-	 * @param projectId the projectId to set
-	 */
-	public void setProjectId(UUID projectId)
-	{
-		this.projectId = projectId;
-	}
+  public void setUserId(UUID userId) {
+    this.userId = userId;
+  }
 
-	/**
-	 * @param projectId the projectId to set
-	 * @return this
-	 */
-	public T withProjectId(UUID projectId)
-	{
-		setProjectId(projectId);
-		return self;
-	}
+  public T withUserId(UUID userId) {
+    setUserId(userId);
+    return self;
+  }
 
-	/**
-	 * @return the limit
-	 */
-	public Integer getLimit()
-	{
-		return limit;
-	}
+  /**
+   * @return the projectId
+   */
+  public UUID getProjectId() {
+    return projectId;
+  }
 
-	/**
-	 * @param limit the limit to set
-	 */
-	public void setLimit(Integer limit)
-	{
-		this.limit = limit;
-	}
+  /**
+   * @param projectId the projectId to set
+   */
+  public void setProjectId(UUID projectId) {
+    this.projectId = projectId;
+  }
 
-	/**
-	 * @param limit
-	 * @return
-	 */
-	public T withLimit(Integer limit)
-	{
-		setLimit(limit);
-		return self;
-	}
+  /**
+   * @param projectId the projectId to set
+   * @return this
+   */
+  public T withProjectId(UUID projectId) {
+    setProjectId(projectId);
+    return self;
+  }
 
-	/**
-	 * @return the order
-	 */
-	public String getOrder()
-	{
-		return order;
-	}
+  /**
+   * @return the limit
+   */
+  public Integer getLimit() {
+    return limit;
+  }
 
-	/**
-	 * @param order the order to set
-	 */
-	public void setOrder(String order)
-	{
-		this.order = order;
-	}
+  /**
+   * @param limit the limit to set
+   */
+  public void setLimit(Integer limit) {
+    this.limit = limit;
+  }
 
-	/**
-	 * @param order
-	 * @return
-	 */
-	public T withOrder(String order)
-	{
-		setOrder(order);
-		return self;
-	}
+  /**
+   * @param limit
+   * @return
+   */
+  public T withLimit(Integer limit) {
+    setLimit(limit);
+    return self;
+  }
 
-	/**
-	 * @return the offset
-	 */
-	public Integer getOffset()
-	{
-		return offset;
-	}
+  /**
+   * @return the order
+   */
+  public String getOrder() {
+    return order;
+  }
 
-	/**
-	 * @param offset the offset to set
-	 */
-	public void setOffset(Integer offset)
-	{
-		this.offset = offset;
-	}
+  /**
+   * @param order the order to set
+   */
+  public void setOrder(String order) {
+    this.order = order;
+  }
 
-	/**
-	 * @param offset
-	 * @return
-	 */
-	public T withOffset(Integer offset)
-	{
-		setOffset(offset);
-		return self;
-	}
+  /**
+   * @param order
+   * @return
+   */
+  public T withOrder(String order) {
+    setOrder(order);
+    return self;
+  }
 
-	/**
-	 * @return the search
-	 */
-	public String getSearch()
-	{
-		return search;
-	}
+  /**
+   * @return the offset
+   */
+  public Integer getOffset() {
+    return offset;
+  }
 
-	/**
-	 * @param search the search to set
-	 */
-	public void setSearch(String search)
-	{
-		this.search = search;
-	}
+  /**
+   * @param offset the offset to set
+   */
+  public void setOffset(Integer offset) {
+    this.offset = offset;
+  }
 
-	/**
-	 * @param search
-	 * @return
-	 */
-	public T withSearch(String search)
-	{
-		setSearch(search);
-		return self;
-	}
+  /**
+   * @param offset
+   * @return
+   */
+  public T withOffset(Integer offset) {
+    setOffset(offset);
+    return self;
+  }
 
-	public Boolean getMissing()
-	{
-		return missing;
-	}
+  /**
+   * @return the search
+   */
+  public String getSearch() {
+    return search;
+  }
 
-	public void setMissing(Boolean missing)
-	{
-		this.missing = missing;
-	}
+  /**
+   * @param search the search to set
+   */
+  public void setSearch(String search) {
+    this.search = search;
+  }
 
-	public T withMissing(Boolean missing)
-	{
-		setMissing(missing);
-		return self;
-	}
+  /**
+   * @param search
+   * @return
+   */
+  public T withSearch(String search) {
+    setSearch(search);
+    return self;
+  }
+
+  public T with(SearchForm form) {
+    return self.withSearch(form.search).withOffset(form.offset).withLimit(form.limit)
+        .withOrder(form.order);
+  }
+
+  /**
+   * @param query
+   */
+  public <U> ExpressionList<U> paging(ExpressionList<U> query) {
+    if (getLimit() != null)
+      query.setMaxRows(getLimit() + 1);
+
+    if (getOffset() != null)
+      query.setFirstRow(getOffset());
+
+    if (getOrder() != null)
+      query.order(getOrder());
+
+    return query;
+  }
+
+  /**
+   * Must be overridden by subclasses to allow caching.
+   * 
+   * @return
+   */
+  public String getCacheKey() {
+    return String.format("searchCriteria:%s:%s:%s:%d:%d:%s", search, userId, projectId, limit,
+        offset, order);
+  }
 }

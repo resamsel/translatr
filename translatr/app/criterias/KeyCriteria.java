@@ -6,81 +6,81 @@ import java.util.UUID;
 import forms.SearchForm;
 
 /**
- * (c) 2016 Skiline Media GmbH
- * <p>
  *
  * @author resamsel
  * @version 19 Aug 2016
  */
-public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria>
-{
-	private Collection<String> names;
+public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria> {
+  private Boolean missing;
 
-	private UUID localeId;
+  private Collection<String> names;
 
-	/**
-	 * @return the names
-	 */
-	public Collection<String> getNames()
-	{
-		return names;
-	}
+  private UUID localeId;
 
-	/**
-	 * @param names the names to set
-	 */
-	public void setNames(Collection<String> names)
-	{
-		this.names = names;
-	}
+  public Boolean getMissing() {
+    return missing;
+  }
 
-	/**
-	 * @param names
-	 * @return
-	 */
-	public KeyCriteria withNames(Collection<String> names)
-	{
-		setNames(names);
-		return this;
-	}
+  public void setMissing(Boolean missing) {
+    this.missing = missing;
+  }
 
-	/**
-	 * @return the untranslated
-	 */
-	public UUID getLocaleId()
-	{
-		return localeId;
-	}
+  public KeyCriteria withMissing(Boolean missing) {
+    setMissing(missing);
+    return this;
+  }
 
-	/**
-	 * @param localeId the untranslated to set
-	 */
-	public void setLocaleId(UUID localeId)
-	{
-		this.localeId = localeId;
-	}
+  /**
+   * @return the names
+   */
+  public Collection<String> getNames() {
+    return names;
+  }
 
-	/**
-	 * @param localeId
-	 * @return
-	 */
-	public KeyCriteria withLocaleId(UUID localeId)
-	{
-		setLocaleId(localeId);
-		return this;
-	}
+  /**
+   * @param names the names to set
+   */
+  public void setNames(Collection<String> names) {
+    this.names = names;
+  }
 
-	/**
-	 * @param search2
-	 * @return
-	 */
-	public static KeyCriteria from(SearchForm search)
-	{
-		return new KeyCriteria()
-			.withSearch(search.search)
-			.withMissing(search.missing)
-			.withOffset(search.offset)
-			.withLimit(search.limit)
-			.withOrder(search.order);
-	}
+  /**
+   * @param names
+   * @return
+   */
+  public KeyCriteria withNames(Collection<String> names) {
+    setNames(names);
+    return this;
+  }
+
+  /**
+   * @return the untranslated
+   */
+  public UUID getLocaleId() {
+    return localeId;
+  }
+
+  /**
+   * @param localeId the untranslated to set
+   */
+  public void setLocaleId(UUID localeId) {
+    this.localeId = localeId;
+  }
+
+  /**
+   * @param localeId
+   * @return
+   */
+  public KeyCriteria withLocaleId(UUID localeId) {
+    setLocaleId(localeId);
+    return this;
+  }
+
+  /**
+   * @param search2
+   * @return
+   */
+  public static KeyCriteria from(SearchForm form) {
+    return new KeyCriteria().with(form).withMissing(form.missing);
+  }
 }
