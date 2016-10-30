@@ -23,7 +23,7 @@
 						@Messages("auth." + linkedAccount.providerKey)
 					</span>
 					<p>
-						@Messages("when.created", pretty(ctx.lang().locale, linkedAccount.whenCreated))
+						@Messages("user.linked", pretty(ctx.lang().locale, linkedAccount.whenCreated))
 					</p>
 					<a
 						href="@routes.Profiles.linkedAccountRemove(linkedAccount.id)"
