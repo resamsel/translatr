@@ -230,6 +230,8 @@ public class Projects extends AbstractController {
   public Result locales(UUID id) {
     return searchForm(id, (project, form) -> {
       SearchForm search = form.get();
+      if (search.order == null)
+        search.order = "name";
 
       List<Locale> locales = Locale.findBy(LocaleCriteria.from(search).withProjectId(project.id));
 
@@ -249,6 +251,8 @@ public class Projects extends AbstractController {
   public Result keys(UUID id) {
     return searchForm(id, (project, form) -> {
       SearchForm search = form.get();
+      if (search.order == null)
+        search.order = "name";
 
       List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
 

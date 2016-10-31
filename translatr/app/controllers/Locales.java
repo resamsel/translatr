@@ -89,6 +89,8 @@ public class Locales extends AbstractController {
     return locale(localeId, locale -> {
       Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
+      if (search.order == null)
+        search.order = "name";
 
       List<Key> keys = Key.findBy(
           KeyCriteria.from(search).withProjectId(locale.project.id).withLocaleId(locale.id));

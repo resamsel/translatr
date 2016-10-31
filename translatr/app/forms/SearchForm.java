@@ -83,8 +83,6 @@ public class SearchForm {
       form.missing = configuration.getBoolean("translatr.search.missing", false);
     if (form.limit == null)
       form.limit = configuration.getInt("translatr.search.limit", 20);
-    if (form.order == null)
-      form.order = "name";
 
     return out;
   }

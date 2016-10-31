@@ -84,6 +84,8 @@ public class Profiles extends AbstractController {
     return loggedInUser(user -> {
       Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
+      if (search.order == null)
+        search.order = "name";
 
       List<Project> projects = Project.findBy(ProjectCriteria.from(search).withMemberId(user.id));
 
@@ -242,7 +244,7 @@ public class Profiles extends AbstractController {
   public Result accessTokens() {
     return loggedInUser(user -> {
       return ok(views.html.users.accessTokens.render(createTemplate(), user,
-          AccessToken.findBy(new AccessTokenCriteria().withUserId(user.id)),
+          AccessToken.findBy(new AccessTokenCriteria().withUserId(user.id).withOrder("name")),
           AccessTokenForm.form(formFactory)));
     });
   }

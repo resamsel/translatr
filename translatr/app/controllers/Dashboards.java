@@ -5,7 +5,6 @@ import static utils.Stopwatch.log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -69,6 +68,8 @@ public class Dashboards extends AbstractController {
     return loggedInUser(user -> {
       Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
+      if (search.order == null)
+        search.order = "name";
 
       List<Project> projects =
           Project.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
