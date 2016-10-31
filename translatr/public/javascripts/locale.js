@@ -73,7 +73,7 @@ App.Modules.MessageListModule = function(sb) {
 	    	$a.attr('title', $a.attr('title') + ' (' + locales[entry.localeId] + ')')
 	    		.attr('href', window.location.hash)
 	    		.click(_handleCopyMessageValue);
-	    	$msg.find('.localeName').text(locales[entry.localeId]);
+	    	$msg.find('.localeName').html(locales[entry.localeId]);
 	    	$msg.find('.value').text(entry.value);
 	    	messages.append($msg);
 	    });
