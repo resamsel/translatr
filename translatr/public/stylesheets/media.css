@@ -84,6 +84,9 @@
 	.navbar-form .input-field i.material-icons {
 		line-height: 44px;
 	}
+	.notifications {
+		min-width: 360px;
+	}
 	.breadcrumbs {
 		top: 64px;
 	}

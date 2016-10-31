@@ -4,6 +4,10 @@
 	<div class="container row">
 		<div class="col sidebar">
 			@card(template.loggedInUser, numberOfProjects)
+
+			@if(active != null) {
+				@nav(template, active)
+			}
 		</div>
 
 		<div class="col s12 main">

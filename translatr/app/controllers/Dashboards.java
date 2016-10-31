@@ -5,6 +5,7 @@ import static utils.Stopwatch.log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -15,11 +16,13 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
+import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
 import forms.ProjectForm;
 import forms.SearchForm;
+import models.LogEntry;
 import models.Project;
 import models.Suggestable;
 import models.Suggestable.Data;
@@ -73,6 +76,21 @@ public class Dashboards extends AbstractController {
       return log(() -> ok(views.html.dashboards.dashboard.render(createTemplate(), projects,
           SearchForm.bindFromRequest(formFactory, configuration), ProjectForm.form(formFactory))),
           LOGGER, "Rendering dashboard");
+    });
+  }
+
+  @SubjectPresent
+  public Result activity() {
+    return loggedInUser(user -> {
+      Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+      SearchForm search = form.get();
+
+      List<LogEntry> activities = logEntryService.findBy(
+          LogEntryCriteria.from(search).withProjectUserId(user.id).withOrder("whenCreated desc"));
+
+      search.pager(activities);
+
+      return ok(views.html.dashboards.activity.render(createTemplate(), activities, form));
     });
   }
 

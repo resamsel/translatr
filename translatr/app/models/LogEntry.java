@@ -78,8 +78,10 @@ public class LogEntry {
     out.type = type;
     out.project = project;
     out.contentType = clazz.getName();
-    out.before = Json.stringify(Json.toJson(before));
-    out.after = Json.stringify(Json.toJson(after));
+    if (before != null)
+      out.before = Json.stringify(Json.toJson(before));
+    if (after != null)
+      out.after = Json.stringify(Json.toJson(after));
 
     return out;
   }
@@ -102,7 +104,7 @@ public class LogEntry {
     else
       query.order("whenCreated desc");
 
-    return query.query().fetch("project").findList();
+    return query.query().fetch("user").fetch("project").findList();
   }
 
   public static int countBy(LogEntryCriteria criteria) {

@@ -1,0 +1,14 @@
+@(template: utils.Template, active: String)
+
+<div class="collection depth">
+	<a
+		class="collection-item @if(active == "projects") { active green } else { green-text }"
+		href="@routes.Dashboards.dashboard()">
+		@Messages("projects")
+	</a>
+	<a
+		class="collection-item @if(active == "activity") { active green } else { green-text }"
+		href="@routes.Dashboards.activity()">
+		@Messages("activity")
+	</a>
+</div>

@@ -118,6 +118,37 @@ nav ul a.dropdown-button {
 	color: #9F9F9F !important;
     cursor: default;
 }
+.dropdown-content.collection li {
+	cursor: auto;
+}
+.dropdown-content.collection li a,
+.dropdown-content.collection li span {
+	display: inline;
+	padding: 0;
+}
+.dropdown-content.collection li a {
+	color: #26a69a;
+	font-size: 16px;
+}
+.dropdown-content.collection li span {
+	color: #000;
+}
+.dropdown-content.collection li a:hover {
+	background-color: transparent;
+}
+.dropdown-content.collection.with-header .collection-header {
+	min-height: auto;
+	padding-left: 20px;
+}
+.collection.with-header .collection-footer {
+	min-height: auto;
+	border-top: 1px solid #e0e0e0;
+}
+.collection.with-header .collection-footer .title {
+	display: block;
+	padding: 10px 20px;
+	text-align: center;
+}
 
 /* Navbar */
 nav,
@@ -410,11 +441,7 @@ textarea.materialize-textarea {
 	border: 0;
 }
 .collection.card-panel {
-    padding: 0.5rem;
-}
-.collection.card-panel .collection-item:not(.active):hover,
-.collection.card-panel .collection-item:not(.active):focus {
-	background-color: transparent;
+    padding: 0;
 }
 .collection.depth .collection-item {
 	margin-bottom: 0.2rem;

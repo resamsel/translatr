@@ -29,26 +29,7 @@
 						<span class="hide-on-small-only">@Messages("brand")</span>
 					</a>
 
-					<ul id="dropdown-notifications" class="dropdown-content">
-						@if(template.notifications != null) {
-							@if(!template.notifications.isEmpty) {
-								@for(notification <- template.notifications) {
-									<li>
-										@if(notification.project != null) {
-											<a href="@routes.Projects.activity(notification.project.id)">
-												<i class="material-icons left">@utils.JsonUtils.iconOf(notification)</i>
-												@Messages("activity." + notification.getType + ".notification", Messages("contentType." + notification.contentType), utils.JsonUtils.nameOf(notification), notification.user.username)
-											</a>
-										}
-									</li>
-								}
-							} else {
-								<li>
-									<a class="disabled">@Messages("notifications.empty")</a>
-								</li>
-							}
-						}
-					</ul>
+					@tags.notifications(template.notifications)
 
 					<ul id="dropdown-logged-in" class="dropdown-content">
 						@if(template.loggedInUser != null) {

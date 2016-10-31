@@ -1,0 +1,40 @@
+@(notifications: List[LogEntry])
+
+@import utils.FormatUtils._
+
+<ul id="dropdown-notifications" class="notifications dropdown-content collection with-header">
+	@if(notifications != null) {
+		<li class="collection-header">
+			<span class="title">@Messages("notifications")</span>
+		</li>
+		@if(!notifications.isEmpty) {
+			@for(notification <- notifications) {
+				<li class="collection-item avatar">
+					@if(notification.project != null) {
+						<i class="material-icons circle @utils.JsonUtils.colorOf(notification)">@utils.JsonUtils.iconOf(notification)</i>
+						<span class="title">
+							@{Html(
+								Messages("activity." + notification.getType + ".notification",
+									Messages("contentType." + notification.contentType),
+									tags.activityLink(notification),
+									tags.userLink(notification.user))
+							)}
+						</span>
+						<p>
+							@pretty(ctx.lang().locale, notification.whenCreated)
+						</p>
+					}
+				</li>
+			}
+		} else {
+			<li class="collection-item avatar">
+				<i class="material-icons circle light-gray">info</i>
+				<a class="title disabled">@Messages("notifications.empty")</a>
+				<p>&nbsp;</p>
+			</li>
+		}
+		<li class="collection-footer">
+			<a class="title" href="@routes.Dashboards.activity()">@Messages("activity.all")</a>
+		</li>
+	}
+</ul>
