@@ -49,14 +49,14 @@ App.Modules.KeyListModule = function(sb) {
 };
 
 App.Modules.MessageListModule = function(sb) {
-    var messages = sb.dom.find('#panel-messages');
+    var panelMessages = sb.dom.find('#panel-messages .collection');
     var template = sb.dom.find('.message.template');
 	var fieldValue = sb.dom.find('#field-value');
 	var panelPreview = sb.dom.find('#panel-preview');
 	var preview = sb.dom.find('#preview');
 
     function _handleKeyChanged(keyId, keyName) {
-		messages.hide();
+    	panelMessages.hide();
 	    sb.utilities.ajax(sb.utilities.merge(
 			jsRoutes.controllers.Api.findMessages(projectId),
 			{data: {keyName: keyName}}
@@ -66,7 +66,7 @@ App.Modules.MessageListModule = function(sb) {
 	}
 
 	function _handleMessageList(keyName, messageList) {
-	    messages.find('.message:not(.template)').remove();
+		panelMessages.find('.message:not(.template)').remove();
 	    messageList.forEach(function(entry) {
 	    	var $msg = template.clone().removeClass('template');
 	    	var $a = $msg;
@@ -75,9 +75,9 @@ App.Modules.MessageListModule = function(sb) {
 	    		.click(_handleCopyMessageValue);
 	    	$msg.find('.localeName').html(locales[entry.localeId]);
 	    	$msg.find('.value').text(entry.value);
-	    	messages.append($msg);
+	    	panelMessages.append($msg);
 	    });
-		messages.show();
+	    panelMessages.show();
 	}
 
 	function _handleCopyMessageValue(e) {
@@ -93,7 +93,7 @@ App.Modules.MessageListModule = function(sb) {
 		create: function() {
 			sb.subscribe('keySelected', _handleKeyChanged);
 
-			messages.hide();
+			panelMessages.hide();
 		},
 		destroy: function() {
 		}
