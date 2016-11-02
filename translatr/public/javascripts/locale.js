@@ -193,7 +193,6 @@ App.Modules.MessageModule = function(sb) {
 			cancelButton.click(function() {
 				sb.dom.find('a.key').removeClass('active');
 				message.hide();
-				messages.hide();
 				panelPreview.hide();
 				panelMessages.hide();
 				noSelection.show();
