@@ -30,6 +30,7 @@ App.Modules.MessageModule = function(sb) {
 	var fieldLocale = sb.dom.find('#field-locale');
 	var fieldValue = sb.dom.find('#field-value');
 	var localeName = sb.dom.find('#locale-name');
+	var panelPreview = sb.dom.find('#panel-preview');
 	var preview = sb.dom.find('#preview');
 	var message = sb.dom.find("#panel-message");
     var template = sb.dom.find('.message.template');
@@ -54,7 +55,7 @@ App.Modules.MessageModule = function(sb) {
     function _updateForm(localeId) {
     	noSelection.hide();
     	message.show();
-    	preview.show();
+    	panelPreview.show();
     	fieldId.val('');
     	fieldLocale.val(keyName).attr('localeId', localeId);
     	fieldValue.val('');
@@ -79,6 +80,7 @@ App.Modules.MessageModule = function(sb) {
 			sb.subscribe('localeSelected', _updateForm);
 
 			message.hide();
+			panelPreview.hide();
 
 			win.keydown(_handleKeyPress);
 
@@ -95,9 +97,9 @@ App.Modules.MessageModule = function(sb) {
 			});
 
 			cancelButton.click(function() {
-				sb.dom.find('a.locale').parent().removeClass('active');
+				sb.dom.find('.locales a.locale.active').removeClass('active');
 				message.hide();
-				preview.hide();
+				panelPreview.hide();
 				noSelection.show();
 				window.location.hash = '#';
 			});

@@ -45,20 +45,31 @@
 } {
 	@tags.editor {
 		<h5 class="header">@Messages("locales")</h5>
-		<div class="collection locales">
-			@for(locale <- locales) {
-				<a
-					id="@locale.id"
-					href="#locale=@locale.name"
-					class="collection-item locale @if(!messages.containsKey(locale.id)) { no-message }"
-					name="@locale.name.toLowerCase"
-					localeName="@locale.name"
-					title="@tags.locale(locale.name)">
-					<span class="title name">@tags.locale(locale.name)</span>
-					<div class="value">@if(messages.containsKey(locale.id)) {@messages(locale.id).value}</div>
+		@if(!locales.isEmpty) {
+			<div class="collection locales">
+				@for(locale <- locales) {
+					<a
+						id="@locale.id"
+						href="#locale=@locale.name"
+						class="collection-item locale @if(!messages.containsKey(locale.id)) { no-message }"
+						name="@locale.name.toLowerCase"
+						localeName="@locale.name"
+						title="@tags.locale(locale.name)">
+						<span class="title name">@tags.locale(locale.name)</span>
+						<div class="value">@if(messages.containsKey(locale.id)) {@messages(locale.id).value}</div>
+					</a>
+				}
+			</div>
+		} else {
+			<p>
+				@Messages("locales.size", 0)
+			</p>
+			<div class="locales center">
+				<a href="#modal-create" class="modal-trigger btn waves-effect waves-light">
+					@Messages("locale.create.title")
 				</a>
-			}
-		</div>
+			</div>
+		}
 	} {
 		<form id="form-message">
 			<div id="panel-message" class="card no-image">
@@ -88,15 +99,16 @@
 				</div>
 			</div>
 		</form>
-		<div id="no-selection" class="valign-wrapper">
-			<span class="valign">@Messages("locale.selection.none")</span>
-		</div>
 
 		<!-- Preview -->
 		<div id="panel-preview">
 			<h5 class="header">@Messages("locale.preview")</h5>
-			<div id="preview"></div>
+			<p id="preview"></p>
 		</div>
+
+		<p id="no-selection" class="center empty">
+			@Messages("locale.selection.none")
+		</p>
 	} {
 	}
 

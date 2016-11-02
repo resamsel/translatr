@@ -666,3 +666,7 @@ textarea.materialize-textarea {
 	color: #fff;
     background-color: #55acee !important;
 }
+
+.empty {
+    padding: 2rem;
+}

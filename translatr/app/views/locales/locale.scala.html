@@ -45,9 +45,20 @@
 } {
 	@tags.editor {
 		<h5 class="header">@Messages("keys")</h5>
-		<div class="collection keys">
-			@tags.keyItems(keys, messages, false)
-		</div>
+		@if(!keys.isEmpty) {
+			<div class="collection keys">
+				@tags.keyItems(keys, messages, false)
+			</div>
+		} else {
+			<p>
+				@Messages("keys.size", 0)
+			</p>
+			<div class="keys center">
+				<a href="#modal-create" class="modal-trigger btn waves-effect waves-light">
+					@Messages("key.create.title")
+				</a>
+			</div>
+		}
 	} {
 		<form id="form-message">
 			<div id="panel-message" class="card no-image">
@@ -82,21 +93,23 @@
 		<!-- Preview -->
 		<div id="panel-preview">
 			<h5 class="header">@Messages("locale.preview")</h5>
-			<div id="preview"></div>
+			<p id="preview"></p>
 		</div>
 
-		<div id="no-selection" class="valign-wrapper">
-			<span class="valign">@Messages("key.selection.none")</span>
-		</div>
+		<p id="no-selection" class="center empty">
+			@Messages("key.selection.none")
+		</p>
 	} {
-		<h5 class="header">@Messages("messages")</h5>
-		<div id="panel-messages" class="collection messages">
-			<a
-				class="collection-item waves-effect waves-red message template"
-				title="@Messages("value.copy")">
-				<span class="title localeName truncate">Name</span>
-				<div class="value">Value</div>
-			</a>
+		<div id="panel-messages">
+			<h5 class="header">@Messages("messages")</h5>
+			<div class="collection messages">
+				<a
+					class="collection-item waves-effect waves-red message template"
+					title="@Messages("value.copy")">
+					<span class="title localeName truncate">Name</span>
+					<div class="value">Value</div>
+				</a>
+			</div>
 		</div>
 	}
 

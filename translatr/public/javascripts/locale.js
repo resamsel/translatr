@@ -105,6 +105,7 @@ App.Modules.MessageModule = function(sb) {
 	var form = sb.dom.find('#form-message');
 	var message = sb.dom.find('#panel-message');
 	var panelPreview = sb.dom.find('#panel-preview');
+	var panelMessages = sb.dom.find('#panel-messages');
 	var preview = sb.dom.find('#preview');
 	var progress = form.find('.progress');
 	var fieldId = sb.dom.find('#field-id');
@@ -132,6 +133,7 @@ App.Modules.MessageModule = function(sb) {
 		noSelection.hide();
 		message.show();
 		panelPreview.show();
+		panelMessages.show();
 	    fieldId.val('');
 		fieldKey.val(keyName).attr('keyId', keyId);
 	    fieldValue.val('');
@@ -154,8 +156,9 @@ App.Modules.MessageModule = function(sb) {
 		create: function() {
 			sb.subscribe('keySelected', _updateForm);
 
-			noSelection.hide();
 			message.hide();
+			panelPreview.hide();
+			panelMessages.hide();
 
 			win.keydown(_handleKeyPress);
 
@@ -192,6 +195,7 @@ App.Modules.MessageModule = function(sb) {
 				message.hide();
 				messages.hide();
 				panelPreview.hide();
+				panelMessages.hide();
 				noSelection.show();
 				window.location.hash = '#';
 			});
