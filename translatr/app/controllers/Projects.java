@@ -29,6 +29,8 @@ import criterias.LogEntryCriteria;
 import criterias.ProjectUserCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
+import forms.KeySearchForm;
+import forms.LocaleSearchForm;
 import forms.ProjectForm;
 import forms.ProjectUserForm;
 import forms.SearchForm;
@@ -54,6 +56,7 @@ import services.LogEntryService;
 import services.ProjectService;
 import services.ProjectUserService;
 import services.UserService;
+import utils.FormUtils;
 
 /**
  *
@@ -188,8 +191,8 @@ public class Projects extends AbstractController {
   }
 
   public Result search(UUID id) {
-    return searchForm(id, (project, form) -> {
-      SearchForm search = form.get();
+    return keySearchForm(id, (project, form) -> {
+      KeySearchForm search = form.get();
       search.setLimit(configuration.getInt("translatr.search.autocomplete.limit", 3));
 
       List<Suggestable> suggestions = new ArrayList<>();
@@ -228,8 +231,8 @@ public class Projects extends AbstractController {
   }
 
   public Result locales(UUID id) {
-    return searchForm(id, (project, form) -> {
-      SearchForm search = form.get();
+    return localeSearchForm(id, (project, form) -> {
+      LocaleSearchForm search = form.get();
       if (search.order == null)
         search.order = "name";
 
@@ -249,8 +252,8 @@ public class Projects extends AbstractController {
   }
 
   public Result keys(UUID id) {
-    return searchForm(id, (project, form) -> {
-      SearchForm search = form.get();
+    return keySearchForm(id, (project, form) -> {
+      KeySearchForm search = form.get();
       if (search.order == null)
         search.order = "name";
 
@@ -316,7 +319,7 @@ public class Projects extends AbstractController {
 
   public Result activity(UUID projectId) {
     return project(projectId, project -> {
-      Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
 
       List<LogEntry> activities = logEntryService.findBy(
@@ -350,6 +353,18 @@ public class Projects extends AbstractController {
   private <T extends Form<SearchForm>> Result searchForm(UUID projectId,
       BiFunction<Project, Form<SearchForm>, Result> processor) {
     return project(projectId, project -> processor.apply(project,
-        SearchForm.bindFromRequest(formFactory, configuration)));
+        FormUtils.Search.bindFromRequest(formFactory, configuration)));
+  }
+
+  private <T extends Form<LocaleSearchForm>> Result localeSearchForm(UUID projectId,
+      BiFunction<Project, Form<LocaleSearchForm>, Result> processor) {
+    return project(projectId, project -> processor.apply(project,
+        FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration)));
+  }
+
+  private <T extends Form<KeySearchForm>> Result keySearchForm(UUID projectId,
+      BiFunction<Project, Form<KeySearchForm>, Result> processor) {
+    return project(projectId, project -> processor.apply(project,
+        FormUtils.KeySearch.bindFromRequest(formFactory, configuration)));
   }
 }

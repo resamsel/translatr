@@ -140,6 +140,9 @@ nav ul a.dropdown-button {
 	min-height: auto;
 	padding-left: 20px;
 }
+.collection.with-header .collection-header .title {
+	line-height: 24px;
+}
 .collection.with-header .collection-footer {
 	min-height: auto;
 	border-top: 1px solid #e0e0e0;
@@ -351,7 +354,7 @@ nav ul .disabled:hover {
 }
 .flex > * {
 	flex: 1 100%;
-	display: flex;
+	/*display: flex;*/
 }
 .flex > * > .card {
 	flex: 1 100%;

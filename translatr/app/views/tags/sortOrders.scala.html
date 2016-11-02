@@ -1,0 +1,16 @@
+@(content: Html)
+
+<div class="secondary-content sort-orders">
+	<ul id="sort-orders" class="dropdown-content">
+		@content
+	</ul>
+	<a
+		href="#!"
+		class="dropdown-button btn-flat btn-small"
+		data-activates="sort-orders"
+		data-constrainwidth="false"
+		data-beloworigin="true"
+		data-alignment="right">
+		@Messages("sort.by")
+	</a>
+</div>

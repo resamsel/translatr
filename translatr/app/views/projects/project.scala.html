@@ -2,6 +2,7 @@
 
 @import utils.FormatUtils._
 @import views.html.tags.contentCard
+@import views.html.tags.contentCardWithActions
 
 @projectActions = {
 	<li>
@@ -30,21 +31,47 @@
 			<div class="svg-container"></div>
 		}
 
-		@contentCard(Messages("locales"), styleClass = "locales") {
-			<p>
-				@Messages("locales.size", project.localesSize()),
-				@Messages("latest"):
-				@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
-			</p>
+		@if(project.localesSize() > 0) {
+			@contentCard(Messages("locales"), styleClass = "locales") {
+				<p>
+					@Messages("locales.size", project.localesSize()),
+					@Messages("latest"):
+					@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
+				</p>
+			}
+		} else {
+			@contentCardWithActions(Messages("locales"), styleClass = "locales") {
+				<p>
+					@Messages("locales.size", project.localesSize())<br/>
+				</p>
+			} {
+				<a href="#modal-create-locale" class="modal-trigger">
+					@Messages("locale.create.title")
+				</a>
+			}
 		}
 
-		@contentCard(Messages("keys"), styleClass = "keys") {
-			<p>
-				@Messages("keys.size", project.keysSize()),
-				@Messages("latest"):
-				@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
-			</p>
-		}
+		@if(project.keysSize() > 0) {
+			@contentCard(Messages("keys"), styleClass = "keys") {
+				<p>
+					@Messages("keys.size", project.keysSize()),
+					@Messages("latest"):
+					@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
+				</p>
+			}
+ 		} else {
+			@contentCardWithActions(Messages("keys"), styleClass = "keys") {
+				<p>
+					@Messages("keys.size", project.keysSize()),
+					@Messages("latest"):
+					@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
+				</p>
+			} {
+				<a href="#modal-create-key" class="modal-trigger">
+					@Messages("key.create.title")
+				</a>
+			}
+ 		}
 
 		@contentCard(Messages("messages"), styleClass = "messages") {
 			<p>

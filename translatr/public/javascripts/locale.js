@@ -101,6 +101,7 @@ App.Modules.MessageListModule = function(sb) {
 };
 
 App.Modules.MessageModule = function(sb) {
+	var win = sb.dom.wrap(window);
 	var form = sb.dom.find('#form-message');
 	var message = sb.dom.find('#panel-message');
 	var panelPreview = sb.dom.find('#panel-preview');
@@ -111,6 +112,13 @@ App.Modules.MessageModule = function(sb) {
 	var fieldValue = sb.dom.find('#field-value');
     var cancelButton = sb.dom.find('.btn-cancel');
     var noSelection = sb.dom.find("#no-selection");
+
+	function _handleKeyPress(event) {
+		if (event.which == 13 && (event.ctrlKey || event.metaKey)) {
+			event.preventDefault();
+			form.submit();
+	    }
+	}
 
 	function _handleSaveMessage(message) {
 		progress.css('visibility', 'hidden');
@@ -137,7 +145,7 @@ App.Modules.MessageModule = function(sb) {
 	function _handleMessage(message) {
 	    fieldId.val(message.id);
 	    fieldKey.val(message.keyName).attr('keyId', message.keyId);
-	    fieldValue.val(message.value).trigger('autoresize');
+	    fieldValue.val(message.value).trigger('autoresize').focus();
 	    Materialize.updateTextFields();
 	    preview.html(message.value);
 	}
@@ -148,6 +156,8 @@ App.Modules.MessageModule = function(sb) {
 
 			noSelection.hide();
 			message.hide();
+
+			win.keydown(_handleKeyPress);
 
 			fieldValue.on('change keyup paste', function() {
 				preview.html(fieldValue.val());

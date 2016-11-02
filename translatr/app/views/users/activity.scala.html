@@ -14,9 +14,9 @@
 	@content(template, user, "activity") {
 		@tags.collection(activityList, "activity.empty") {
 			<span class="title">@Messages("activity")</span>
-			<div class="secondary-content sort-orders">
+			@tags.sortOrders {
 				@tags.orderLink(form.get, routes.Profiles.activity(), "when.created", "whenCreated desc", "whenCreated", "whenCreated")
-			</div>
+			}
 		} {
 			@for(activity <- activityList) {
 				<li class="collection-item avatar">

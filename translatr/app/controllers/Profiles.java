@@ -39,6 +39,7 @@ import services.AccessTokenService;
 import services.LinkedAccountService;
 import services.LogEntryService;
 import services.UserService;
+import utils.FormUtils;
 import utils.SessionKey;
 
 /**
@@ -82,7 +83,7 @@ public class Profiles extends AbstractController {
 
   public Result projects() {
     return loggedInUser(user -> {
-      Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
       if (search.order == null)
         search.order = "name";
@@ -95,7 +96,7 @@ public class Profiles extends AbstractController {
 
   public Result activity() {
     return loggedInUser(user -> {
-      Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
 
       List<LogEntry> activities =
@@ -129,7 +130,7 @@ public class Profiles extends AbstractController {
 
   public Result linkedAccounts() {
     return loggedInUser(user -> {
-      Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
 
       List<LinkedAccount> accounts = LinkedAccount

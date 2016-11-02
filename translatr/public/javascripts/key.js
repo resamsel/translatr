@@ -23,6 +23,7 @@ App.Modules.KeyCreateModule = function(sb) {
 };
 
 App.Modules.MessageModule = function(sb) {
+	var win = sb.dom.wrap(window);
 	var form = sb.dom.find('#form-message');
 	var progress = form.find('.progress');
 	var fieldId = sb.dom.find('#field-id');
@@ -31,10 +32,16 @@ App.Modules.MessageModule = function(sb) {
 	var localeName = sb.dom.find('#locale-name');
 	var preview = sb.dom.find('#preview');
 	var message = sb.dom.find("#panel-message");
-    var messages = sb.dom.find('#panel-messages');
     var template = sb.dom.find('.message.template');
     var cancelButton = sb.dom.find('.btn-cancel');
     var noSelection = sb.dom.find("#no-selection");
+
+	function _handleKeyPress(event) {
+		if (event.which == 13 && (event.ctrlKey || event.metaKey)) {
+			event.preventDefault();
+			form.submit();
+	    }
+	}
 
     function _handleSaveMessage(message) {
     	progress.css('visibility', 'hidden');
@@ -62,21 +69,25 @@ App.Modules.MessageModule = function(sb) {
     function _handleMessage(message) {
     	fieldId.val(message.id);
     	fieldLocale.val(message.localeName).attr('localeId', message.localeId);
-    	fieldValue.val(message.value).trigger('autoresize');
+    	fieldValue.val(message.value).trigger('autoresize').focus();
     	Materialize.updateTextFields();
     	preview.html(message.value);
     }
 
 	return {
 		create: function() {
+			sb.subscribe('localeSelected', _updateForm);
+
 			message.hide();
+
+			win.keydown(_handleKeyPress);
 
 			var locales = sb.dom.find('a.locale');
 			locales.click(function() {
 				var $this = sb.dom.wrap(this);
 				locales.removeClass('active');
-				$this.addClass('active')
-				_updateForm($this.attr('id'));
+				$this.addClass('active');
+				sb.publish('localeSelected', $this.attr('id'));
 			})
 
 			fieldValue.on('change keyup paste', function() {

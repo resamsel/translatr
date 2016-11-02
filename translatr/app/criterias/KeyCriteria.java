@@ -3,7 +3,7 @@ package criterias;
 import java.util.Collection;
 import java.util.UUID;
 
-import forms.SearchForm;
+import forms.KeySearchForm;
 
 /**
  *
@@ -77,10 +77,10 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria> {
   }
 
   /**
-   * @param search2
+   * @param form
    * @return
    */
-  public static KeyCriteria from(SearchForm form) {
+  public static KeyCriteria from(KeySearchForm form) {
     return new KeyCriteria().with(form).withMissing(form.missing);
   }
 }

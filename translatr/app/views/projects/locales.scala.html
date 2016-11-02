@@ -1,4 +1,4 @@
-@(template: utils.Template, project: models.Project, locales: List[models.Locale], progress: Map[java.util.UUID, Double], form: Form[forms.SearchForm])
+@(template: utils.Template, project: models.Project, locales: List[models.Locale], progress: Map[java.util.UUID, Double], form: Form[forms.LocaleSearchForm])
 
 @main(template.withTitle(Messages("locales.title", project.name))) {
 	@tags.search(form)()
@@ -16,10 +16,10 @@
 	@content(project, "locales") {
 		@tags.collection(locales, "locales.empty", "locales") {
 			<span class="title">@Messages("locale.name")</span>
-			<div class="secondary-content sort-orders">
+			@tags.sortOrders {
 				@tags.orderLink(form.get, routes.Projects.locales(project.id), "locale.name", "name", "name desc", "name")
 				@tags.orderLink(form.get, routes.Projects.locales(project.id), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
-			</div>
+			}
 		} {
 			@for(locale <- locales) {
 				<li class="collection-item avatar">

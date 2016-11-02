@@ -1,19 +1,12 @@
 @(form: forms.SearchForm, call: Call, key: String, ascOrder: String, descOrder: String, defaultOrder: String)
 
-@if(form.order == ascOrder) {
+<li>
 	<a href="@form.urlWithOrder(call, descOrder)" class="sort-order">
-		@Messages(key)
-		<i class="material-icons right">arrow_drop_down</i>
+		@Messages(key + "." + "desc")
 	</a>
-} else {
-	@if(form.order == descOrder) {
-		<a href="@form.urlWithOrder(call, ascOrder)" class="sort-order">
-			@Messages(key)
-			<i class="material-icons right">arrow_drop_up</i>
-		</a>
-	} else {
-		<a href="@form.urlWithOrder(call, defaultOrder)" class="sort-order">
-			@Messages(key)
-		</a>
-	}
-}
+</li>
+<li>
+	<a href="@form.urlWithOrder(call, ascOrder)" class="sort-order">
+		@Messages(key + "." + "asc")
+	</a>
+</li>

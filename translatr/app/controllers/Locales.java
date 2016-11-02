@@ -26,8 +26,8 @@ import exporters.GettextExporter;
 import exporters.JavaPropertiesExporter;
 import exporters.PlayMessagesExporter;
 import forms.ImportLocaleForm;
+import forms.KeySearchForm;
 import forms.LocaleForm;
-import forms.SearchForm;
 import importers.GettextImporter;
 import importers.Importer;
 import importers.JavaPropertiesImporter;
@@ -51,6 +51,7 @@ import play.mvc.With;
 import services.LocaleService;
 import services.LogEntryService;
 import services.UserService;
+import utils.FormUtils;
 import utils.TransactionUtils;
 
 /**
@@ -87,8 +88,8 @@ public class Locales extends AbstractController {
 
   public Result locale(UUID localeId) {
     return locale(localeId, locale -> {
-      Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
-      SearchForm search = form.get();
+      Form<KeySearchForm> form = FormUtils.KeySearch.bindFromRequest(formFactory, configuration);
+      KeySearchForm search = form.get();
       if (search.order == null)
         search.order = "name";
 

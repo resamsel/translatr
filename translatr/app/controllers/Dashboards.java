@@ -36,6 +36,7 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.LogEntryService;
 import services.UserService;
+import utils.FormUtils;
 
 /**
  *
@@ -66,7 +67,7 @@ public class Dashboards extends AbstractController {
   @SubjectPresent(forceBeforeAuthCheck = true)
   public Result dashboard() {
     return loggedInUser(user -> {
-      Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
       if (search.order == null)
         search.order = "name";
@@ -75,15 +76,15 @@ public class Dashboards extends AbstractController {
           Project.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
 
       return log(() -> ok(views.html.dashboards.dashboard.render(createTemplate(), projects,
-          SearchForm.bindFromRequest(formFactory, configuration), ProjectForm.form(formFactory))),
-          LOGGER, "Rendering dashboard");
+          FormUtils.Search.bindFromRequest(formFactory, configuration),
+          ProjectForm.form(formFactory))), LOGGER, "Rendering dashboard");
     });
   }
 
   @SubjectPresent
   public Result activity() {
     return loggedInUser(user -> {
-      Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
 
       List<LogEntry> activities = logEntryService.findBy(
@@ -97,7 +98,7 @@ public class Dashboards extends AbstractController {
 
   @SubjectPresent
   public Result search() {
-    Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+    Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
     SearchForm search = form.get();
 
     List<Suggestable> suggestions = new ArrayList<>();

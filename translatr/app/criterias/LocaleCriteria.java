@@ -1,6 +1,6 @@
 package criterias;
 
-import forms.SearchForm;
+import forms.LocaleSearchForm;
 
 /**
  *
@@ -42,7 +42,7 @@ public class LocaleCriteria extends AbstractSearchCriteria<LocaleCriteria> {
     return this;
   }
 
-  public static LocaleCriteria from(SearchForm form) {
+  public static LocaleCriteria from(LocaleSearchForm form) {
     return new LocaleCriteria().with(form).withMissing(form.missing);
   }
 }

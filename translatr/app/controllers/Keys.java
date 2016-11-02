@@ -37,6 +37,7 @@ import play.mvc.With;
 import services.KeyService;
 import services.LogEntryService;
 import services.UserService;
+import utils.FormUtils;
 
 /**
  *
@@ -79,7 +80,7 @@ public class Keys extends AbstractController {
 
     select(key.project);
 
-    Form<SearchForm> form = SearchForm.bindFromRequest(formFactory, configuration);
+    Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
 
     Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
 

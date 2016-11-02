@@ -14,10 +14,10 @@
 	@content(template, user, "projects") {
 		@tags.collection(projectList, "projects.empty") {
 			<span class="title">@Messages("project")</span>
-			<div class="secondary-content sort-orders">
+			@tags.sortOrders {
 				@tags.orderLink(form.get, routes.Profiles.projects(), "project.name", "name", "name desc", "name")
 				@tags.orderLink(form.get, routes.Profiles.projects(), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
-			</div>
+			}
 		} {
 			@for(project <- projectList) {
 				<li class="collection-item avatar">
