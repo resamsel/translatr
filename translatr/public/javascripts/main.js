@@ -99,6 +99,13 @@ App.Modules.ActivityModule = function(sb, options) {
 	    xAxisFormat = d3.time.format(options.xAxisFormat || "%b"),
 	    yAxisFormat = d3.time.format(options.yAxisFormat || "%a");
 
+	var cellUrl = options.cellUrl || null;
+	var clickable = "";
+	if (cellUrl) {
+		clickable = "clickable";
+	}
+	var active = d3.time.format.iso.parse(options.active);
+
 	var color = d3.scale.quantize()
 	    .domain([0, 1])
 	    .range(d3.range(numberOfColors).map(function(d) { return "q" + d + "-" + numberOfColors; }));
@@ -108,8 +115,26 @@ App.Modules.ActivityModule = function(sb, options) {
 		return (d.getDay() + 6)%7;
 	}
 
+	function activeCell(d, active) {
+		if(d == format(active)) {
+			return "active";
+		}
+		return "";
+	}
+	
 	function y(d) {
 		return xAxisHeight + dayOfWeek(d) * cellSize;
+	}
+
+	function _handleCellClick(d) {
+		if(cellUrl) {
+			var min = format.parse(d);
+			var max = format.parse(d);
+			max.setDate(max.getDate() + 1);
+			var whenCreatedMin = d3.time.format.iso(min);
+			var whenCreatedMax = d3.time.format.iso(max);
+			window.location.href = cellUrl + '?whenCreatedMin=' + whenCreatedMin + '&whenCreatedMax=' + whenCreatedMax;
+		}
 	}
 
 	return {
@@ -134,7 +159,7 @@ App.Modules.ActivityModule = function(sb, options) {
 				.data(d3.range(startDate.getFullYear(), today.getFullYear()))
 				.enter().append("svg")
 				.attr("preserveAspectRatio", "xMinYMin meet")
-				.attr("class", "RdYlGn svg-content")
+				.attr("class", "RdYlGn svg-content " + clickable)
 				.attr("viewBox", "0 0 " + width + " " + height)
 				.append("g");
 
@@ -146,7 +171,7 @@ App.Modules.ActivityModule = function(sb, options) {
 				var diffYears = d.getFullYear() - startYear;
 				var woy = weekOfYear(d);
 
-				return yAxisWidth + yAxisPadding + (woy - woyOffset + numberOfWeeks * diffYears) * cellSize;
+				return yAxisWidth + yAxisPadding + (woy - woyOffset + numberOfWeeks * diffYears) * cellSize + 1;
 			}
 
 			// X-Axis
@@ -175,8 +200,8 @@ App.Modules.ActivityModule = function(sb, options) {
 				.data(function(d) { return d3.time.days(startDate, today); })
 				.enter().append("rect")
 				.attr("class", "day")
-				.attr("width", cellSize)
-				.attr("height", cellSize)
+				.attr("width", cellSize - 2)
+				.attr("height", cellSize - 2)
 				.attr("x", x)
 				.attr("y", y)
 				.datum(format);
@@ -197,8 +222,8 @@ App.Modules.ActivityModule = function(sb, options) {
 				.data([0, 1, 2, 3, 4])
 				.enter().append("rect")
 				.attr("class", function(d) { return "legend day q" + (d-1) + "-4"; })
-				.attr("width", cellSize)
-				.attr("height", cellSize)
+				.attr("width", cellSize - 2)
+				.attr("height", cellSize - 2)
 				.attr("x", function(d) { return yAxisWidth + yAxisPadding + cellSize * (legendOffsetWeek + d); })
 				.attr("y", xAxisPadding + cellSize * 8)
 				.append("title").text(legendTooltip);
@@ -225,9 +250,19 @@ App.Modules.ActivityModule = function(sb, options) {
 					.map(csv);
 
 				rect.filter(function(d) { return d in data; })
-					.attr("class", function(d) { return "day " + color(data[d].RelativeValue); })
+					.attr("class", function(d) { return "day has-data " + color(data[d].RelativeValue); })
+					.on("click", _handleCellClick)
 					.select("title")
 					.text(function(d) { return titleFormat(format.parse(d)) + ": " + data[d].Value; });
+
+				if(active) {
+					svg.append("rect")
+						.attr("class", "day")
+						.attr("width", cellSize)
+						.attr("height", cellSize)
+						.attr("x", x(active))
+						.attr("y", y(active));
+				}
 			});
 		},
 		destroy: function() {

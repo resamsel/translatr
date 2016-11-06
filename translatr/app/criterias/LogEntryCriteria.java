@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.joda.time.DateTime;
 
-import forms.SearchForm;
+import forms.ActivitySearchForm;
 
 /**
  *
@@ -87,7 +87,8 @@ public class LogEntryCriteria extends AbstractSearchCriteria<LogEntryCriteria> {
         whenCreatedMin, whenCreatedMax);
   }
 
-  public static LogEntryCriteria from(SearchForm form) {
-    return new LogEntryCriteria().with(form);
+  public static LogEntryCriteria from(ActivitySearchForm form) {
+    return new LogEntryCriteria().with(form).withWhenCreatedMin(form.whenCreatedMin)
+        .withWhenCreatedMax(form.whenCreatedMax);
   }
 }

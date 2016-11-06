@@ -22,6 +22,7 @@ import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import forms.Accept;
 import forms.AccessTokenForm;
+import forms.ActivitySearchForm;
 import forms.SearchForm;
 import forms.UserForm;
 import models.AccessToken;
@@ -96,8 +97,9 @@ public class Profiles extends AbstractController {
 
   public Result activity() {
     return loggedInUser(user -> {
-      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
-      SearchForm search = form.get();
+      Form<ActivitySearchForm> form =
+          FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
+      ActivitySearchForm search = form.get();
 
       List<LogEntry> activities =
           logEntryService.findBy(LogEntryCriteria.from(search).withUserId(user.id));

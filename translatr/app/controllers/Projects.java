@@ -29,6 +29,7 @@ import criterias.LogEntryCriteria;
 import criterias.ProjectUserCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
+import forms.ActivitySearchForm;
 import forms.KeySearchForm;
 import forms.LocaleSearchForm;
 import forms.ProjectForm;
@@ -319,8 +320,9 @@ public class Projects extends AbstractController {
 
   public Result activity(UUID projectId) {
     return project(projectId, project -> {
-      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
-      SearchForm search = form.get();
+      Form<ActivitySearchForm> form =
+          FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
+      ActivitySearchForm search = form.get();
 
       List<LogEntry> activities = logEntryService.findBy(
           LogEntryCriteria.from(search).withProjectId(project.id).withOrder("whenCreated desc"));

@@ -19,6 +19,7 @@ import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
+import forms.ActivitySearchForm;
 import forms.ProjectForm;
 import forms.SearchForm;
 import models.LogEntry;
@@ -84,8 +85,9 @@ public class Dashboards extends AbstractController {
   @SubjectPresent
   public Result activity() {
     return loggedInUser(user -> {
-      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
-      SearchForm search = form.get();
+      Form<ActivitySearchForm> form =
+          FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
+      ActivitySearchForm search = form.get();
 
       List<LogEntry> activities = logEntryService.findBy(
           LogEntryCriteria.from(search).withProjectUserId(user.id).withOrder("whenCreated desc"));
