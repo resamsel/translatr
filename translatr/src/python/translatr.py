@@ -9,9 +9,13 @@ import glob
 import logging
 import re
 import sys
+import os
 import textwrap
 
 from collections import namedtuple
+
+# define the regex pattern that the parser will use to 'implicitly' tag your node
+ENV_VAR_PATTERN = re.compile(r'^(.*?)\$\{(\?)?([^\}]*)\}(.*?)$')
 
 TRANSLATR_YML_NOT_FOUND = textwrap.dedent("""
 	Could not find .translatr.yml: initialise with `translatr init`
@@ -40,6 +44,23 @@ Locale = namedtuple('Locale', 'id name projectId')
 logger = logging.getLogger(__name__)
 
 
+def replace_envvar(value):
+  match = ENV_VAR_PATTERN.match(value)
+  if match is not None:
+    prefix, optional, env_var, suffix = match.groups()
+    if env_var in os.environ:
+      return prefix + os.environ[env_var] + replace_envvar(suffix)
+    if optional is None:
+      raise Exception('Environment variable {0} is not set'.format(env_var))
+    return prefix + replace_envvar(suffix)
+  return value
+
+
+def envvar_constructor(loader, node):
+  value = loader.construct_scalar(node)
+  return replace_envvar(value)
+
+
 def eprint(msg, width=80):
 	print('\n'.join(textwrap.wrap(msg.strip(), width)))
 
@@ -65,6 +86,10 @@ def init(args):
 
 
 def read_config():
+	# Define a custom tag and associate the regex pattern we defined
+	yaml.add_implicit_resolver("!envvar", ENV_VAR_PATTERN)
+	# 'register' the constructor so that the parser will invoke 'envvar_constructor' for each node '!pathex'
+	yaml.add_constructor('!envvar', envvar_constructor)
 	try:
 		with open('.translatr.yml') as f:
 			return yaml.load(f)['translatr']
