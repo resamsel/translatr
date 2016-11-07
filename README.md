@@ -4,7 +4,7 @@ A modern and intuitive i18n tool. Translatr simplifies i18n for developers and t
 
 [Demo Installation](http://translatr.resamsel.com/)
 
-![Project Overview Example](wiki/images/project.png "Project Overview Example")
+![Project Overview Example](https://github.com/resamsel/translatr/wiki/images/project.png "Project Overview Example")
 
 ## Speeds up development
 
@@ -51,7 +51,7 @@ translatr:
 
 Create a new access token (profile -> access tokens) and enter it in .translatr.yml.
 
-![User Access Token](wiki/images/user-access-token.png "User Access Token")
+![User Access Token](https://github.com/resamsel/translatr/wiki/images/user-access-token.png "User Access Token")
 
 Then, create a project in the web GUI and enter the project ID (40 character UUID in the URL, i.e. http://localhost:9000/project/**6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220** -> project ID: **6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220**) in .translatr.yml.
 
