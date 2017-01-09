@@ -94,6 +94,7 @@ GET		/command/:key/execute	controllers.Application.commandExecute(key: String)
 #
 # API
 #
+GET		/api/projects					controllers.Api.findProjects
 GET		/api/project/:projectId			controllers.Api.getProject(projectId: java.util.UUID)
 POST	/api/project					controllers.Api.createProject
 PUT		/api/project					controllers.Api.updateProject

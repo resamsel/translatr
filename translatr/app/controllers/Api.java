@@ -17,6 +17,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import actions.ApiAction;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
+import criterias.ProjectCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
 import models.Locale;
@@ -85,6 +86,8 @@ public class Api extends AbstractController {
       return forbidden(e.toJson());
     } catch (NotFoundException e) {
       return notFound(e.toJson());
+    } catch (ValidationException e) {
+      return badRequest(ErrorUtils.toJson(e));
     } catch (Exception e) {
       return badRequest(ErrorUtils.toJson(e));
     }
@@ -97,6 +100,17 @@ public class Api extends AbstractController {
         throw new NotFoundException(String.format("Project not found: '%s'", projectId));
 
       return processor.apply(project);
+    });
+  }
+
+  public Result findProjects() {
+    return loggedInUser(user -> {
+      checkPermissionAll("Access token not allowed", Scope.ProjectRead);
+
+      List<Project> projects = Project.findBy(new ProjectCriteria().withMemberId(user.id));
+
+      return ok(Json
+          .toJson(projects.stream().map(p -> dto.Project.from(p)).collect(Collectors.toList())));
     });
   }
 

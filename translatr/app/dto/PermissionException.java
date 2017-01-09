@@ -1,8 +1,8 @@
 package dto;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import play.libs.Json;
 
 /**
  * @author resamsel
@@ -22,6 +22,6 @@ public class PermissionException extends RuntimeException {
    * @return
    */
   public JsonNode toJson() {
-    return new ObjectNode(new JsonNodeFactory(false)).put("error", getMessage());
+    return Json.newObject().put("type", "permission").put("error", getMessage());
   }
 }

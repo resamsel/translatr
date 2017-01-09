@@ -1,7 +1,8 @@
 package utils;
 
+import javax.validation.ValidationException;
+
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.Json;
 
@@ -14,9 +15,15 @@ public class ErrorUtils {
    * @param e
    * @return
    */
+  public static JsonNode toJson(ValidationException e) {
+    return Json.newObject().put("type", "validation").put("error", e.getMessage());
+  }
+
+  /**
+   * @param e
+   * @return
+   */
   public static JsonNode toJson(Exception e) {
-    ObjectNode error = Json.newObject();
-    error.put("error", e.getMessage());
-    return error;
+    return Json.newObject().put("type", "generic").put("error", e.getMessage());
   }
 }
