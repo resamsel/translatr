@@ -101,8 +101,11 @@ PUT		/api/project					controllers.Api.updateProject
 DELETE	/api/project/:projectId			controllers.Api.deleteProject(projectId: java.util.UUID)
 
 GET		/api/project/:projectId/locales	controllers.Api.findLocales(projectId: java.util.UUID)
-#GET		/api/locale/:localeId		controllers.Api.getLocale(localeId: java.util.UUID)
+GET		/api/locale/:localeId			controllers.Api.getLocale(localeId: java.util.UUID)
 POST	/api/locale						controllers.Api.createLocale
+PUT		/api/locale						controllers.Api.updateLocale
+DELETE	/api/locale/:localeId			controllers.Api.deleteLocale(localeId: java.util.UUID)
+
 POST	/api/locale/:localeId/import/:fileType	controllers.Api.uploadLocale(localeId: java.util.UUID, fileType: String)
 GET		/api/locale/:localeId/export/:fileType	controllers.Api.downloadLocale(localeId: java.util.UUID, fileType: String)
 

@@ -144,4 +144,13 @@ public class Locale implements Suggestable {
   public static long countBy(Project project) {
     return find.where().eq("project", project).findRowCount();
   }
+
+  /**
+   * @param model
+   */
+  public Locale updateFrom(Locale in) {
+    name = in.name;
+
+    return this;
+  }
 }

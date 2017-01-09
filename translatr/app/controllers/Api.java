@@ -192,6 +192,15 @@ public class Api extends AbstractController {
     });
   }
 
+  public Result getLocale(UUID localeId) {
+    return locale(localeId, locale -> {
+      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead);
+
+      return ok(Json.toJson(dto.Locale.from(locale)));
+    });
+  }
+
+
   @BodyParser.Of(BodyParser.Json.class)
   public Result createLocale() {
     return catchError(() -> {
@@ -203,7 +212,7 @@ public class Api extends AbstractController {
         throw new ValidationException("Field 'projectId' required");
 
       return project(json.projectId, project -> {
-        checkProjectRole(project, User.loggedInUser(), ProjectRole.Translator);
+        checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator);
 
         if (json.name == null)
           throw new ValidationException("Field 'name' required");
@@ -220,6 +229,42 @@ public class Api extends AbstractController {
       });
     });
   }
+
+  @BodyParser.Of(BodyParser.Json.class)
+  public Result updateLocale() {
+    return loggedInUser(user -> {
+      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleWrite);
+
+      dto.Locale json = Json.fromJson(request().body().asJson(), dto.Locale.class);
+      if (json.id == null)
+        throw new IllegalArgumentException("Field 'id' required");
+
+      return locale(json.id, locale -> {
+        checkProjectRole(locale.project, user, ProjectRole.Owner, ProjectRole.Translator);
+
+        locale.updateFrom(json.toModel(locale.project));
+
+        LOGGER.debug("Locale: {}", Json.toJson(locale));
+        localeService.save(locale);
+
+        return ok(Json.toJson(dto.Locale.from(locale)));
+      });
+    });
+  }
+
+  public Result deleteLocale(UUID localeId) {
+    return locale(localeId, locale -> {
+      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleWrite);
+      checkProjectRole(locale.project, User.loggedInUser(), ProjectRole.Owner,
+          ProjectRole.Translator);
+
+      localeService.delete(locale);
+
+      return ok(Json.newObject().put("message",
+          String.format("Locale with ID '%s' has been deleted", localeId)));
+    });
+  }
+
 
   @BodyParser.Of(BodyParser.Json.class)
   public Result createMessage() {
