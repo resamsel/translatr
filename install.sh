@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Install location may be overridden by using the TRANSLATR_PREFIX env variable
 TRANSLATR_PREFIX=${TRANSLATR_PREFIX:=/usr/local}
 TRANSLATR=${TRANSLATR_PREFIX}/bin/translatr
