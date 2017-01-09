@@ -54,6 +54,7 @@ public class ApiAction extends Action.Simple {
           accessToken = req.getQueryString(ACCESS_TOKEN_PARAM);
         break;
       case "GET":
+      case "DELETE":
         accessToken = req.getQueryString(ACCESS_TOKEN_PARAM);
         break;
       default:
@@ -64,7 +65,7 @@ public class ApiAction extends Action.Simple {
       AccessToken token = accessTokenService.getByKey(accessToken);
       if (token == null)
         return CompletableFuture
-            .completedFuture(forbidden(Json.parse("{\"error\":\"Invalid access_token\"}")));
+            .completedFuture(forbidden(Json.newObject().put("error", "Invalid access_token")));
 
       ctx.args.put("accessToken", token);
     }

@@ -11,63 +11,59 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import criterias.MessageCriteria;
 import models.User;
 
-public class Project extends Dto
-{
-	public UUID id;
+public class Project extends Dto {
+  public UUID id;
 
-	@JsonIgnore
-	public DateTime whenCreated;
+  @JsonIgnore
+  public DateTime whenCreated;
 
-	@JsonIgnore
-	public DateTime whenUpdated;
+  @JsonIgnore
+  public DateTime whenUpdated;
 
-	public String name;
+  public String name;
 
-	public UUID ownerId;
+  public UUID ownerId;
 
-	@JsonIgnore
-	public List<Key> keys;
+  @JsonIgnore
+  public List<Key> keys;
 
-	@JsonIgnore
-	public List<Locale> locales;
+  @JsonIgnore
+  public List<Locale> locales;
 
-	@JsonIgnore
-	public List<Message> messages;
+  @JsonIgnore
+  public List<Message> messages;
 
-	private Project(models.Project in)
-	{
-		this.id = in.id;
-		this.whenCreated = in.whenCreated;
-		this.whenUpdated = in.whenUpdated;
-		this.name = in.name;
-		this.ownerId = in.owner.id;
-		this.keys = in.keys.stream().map(k -> Key.from(k)).collect(Collectors.toList());
-		this.locales = in.locales.stream().map(l -> Locale.from(l)).collect(Collectors.toList());
-		this.messages = models.Message
-			.findBy(new MessageCriteria().withProjectId(in.id))
-			.stream()
-			.map(m -> Message.from(m))
-			.collect(Collectors.toList());
-	}
+  public Project() {}
 
-	public models.Project toModel()
-	{
-		models.Project out = new models.Project();
+  private Project(models.Project in) {
+    this.id = in.id;
+    this.whenCreated = in.whenCreated;
+    this.whenUpdated = in.whenUpdated;
+    this.name = in.name;
+    this.ownerId = in.owner.id;
+    this.keys = in.keys.stream().map(k -> Key.from(k)).collect(Collectors.toList());
+    this.locales = in.locales.stream().map(l -> Locale.from(l)).collect(Collectors.toList());
+    this.messages = models.Message.findBy(new MessageCriteria().withProjectId(in.id)).stream()
+        .map(m -> Message.from(m)).collect(Collectors.toList());
+  }
 
-		out.whenCreated = whenCreated;
-		out.whenUpdated = whenUpdated;
-		out.name = name;
-		out.owner = new User().withId(ownerId);
+  public models.Project toModel() {
+    models.Project out = new models.Project();
 
-		return out;
-	}
+    out.whenCreated = whenCreated;
+    out.whenUpdated = whenUpdated;
+    out.name = name;
+    if (ownerId != null)
+      out.owner = new User().withId(ownerId);
 
-	/**
-	 * @param project
-	 * @return
-	 */
-	public static Project from(models.Project project)
-	{
-		return new Project(project);
-	}
+    return out;
+  }
+
+  /**
+   * @param project
+   * @return
+   */
+  public static Project from(models.Project project) {
+    return new Project(project);
+  }
 }

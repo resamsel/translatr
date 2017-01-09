@@ -10,51 +10,49 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import models.Project;
 
-public class Locale extends Dto
-{
-	public UUID id;
+public class Locale extends Dto {
+  public UUID id;
 
-	@JsonIgnore
-	public DateTime whenCreated;
+  @JsonIgnore
+  public DateTime whenCreated;
 
-	@JsonIgnore
-	public DateTime whenUpdated;
+  @JsonIgnore
+  public DateTime whenUpdated;
 
-	public UUID projectId;
+  public UUID projectId;
 
-	public String name;
+  public String name;
 
-	@JsonIgnore
-	public List<Message> messages;
+  @JsonIgnore
+  public List<Message> messages;
 
-	private Locale(models.Locale in)
-	{
-		this.id = in.id;
-		this.whenCreated = in.whenCreated;
-		this.whenUpdated = in.whenUpdated;
-		this.projectId = in.project.id;
-		this.name = in.name;
-		this.messages = in.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
-	}
+  public Locale() {}
 
-	public models.Locale toModel(Project project)
-	{
-		models.Locale out = new models.Locale();
+  private Locale(models.Locale in) {
+    this.id = in.id;
+    this.whenCreated = in.whenCreated;
+    this.whenUpdated = in.whenUpdated;
+    this.projectId = in.project.id;
+    this.name = in.name;
+    this.messages = in.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
+  }
 
-		out.whenCreated = whenCreated;
-		out.whenUpdated = whenUpdated;
-		out.project = project;
-		out.name = name;
+  public models.Locale toModel(Project project) {
+    models.Locale out = new models.Locale();
 
-		return out;
-	}
+    out.whenCreated = whenCreated;
+    out.whenUpdated = whenUpdated;
+    out.project = project;
+    out.name = name;
 
-	/**
-	 * @param locale
-	 * @return
-	 */
-	public static Locale from(models.Locale locale)
-	{
-		return new Locale(locale);
-	}
+    return out;
+  }
+
+  /**
+   * @param locale
+   * @return
+   */
+  public static Locale from(models.Locale locale) {
+    return new Locale(locale);
+  }
 }

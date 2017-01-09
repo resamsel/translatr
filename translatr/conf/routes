@@ -94,8 +94,10 @@ GET		/command/:key/execute	controllers.Application.commandExecute(key: String)
 #
 # API
 #
-#GET	/api/project/:projectId			controllers.Api.getProject(projectId: String)
-PUT		/api/project					controllers.Api.createProject
+GET		/api/project/:projectId			controllers.Api.getProject(projectId: java.util.UUID)
+POST	/api/project					controllers.Api.createProject
+PUT		/api/project					controllers.Api.updateProject
+DELETE	/api/project/:projectId			controllers.Api.deleteProject(projectId: java.util.UUID)
 
 GET		/api/project/:projectId/locales	controllers.Api.findLocales(projectId: java.util.UUID)
 #GET		/api/locale/:localeId		controllers.Api.getLocale(localeId: java.util.UUID)

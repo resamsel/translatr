@@ -7,11 +7,11 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.validation.ValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
@@ -36,6 +36,7 @@ import services.LogEntryService;
 import services.MessageService;
 import services.ProjectService;
 import services.UserService;
+import utils.ErrorUtils;
 import utils.PermissionUtils;
 
 @With(ApiAction.class)
@@ -76,7 +77,8 @@ public class Api extends AbstractController {
       throw new PermissionException("User not allowed in project");
   }
 
-  private Result catchError(Supplier<Result> supplier) {
+  @Override
+  protected Result catchError(Supplier<Result> supplier) {
     try {
       return supplier.get();
     } catch (PermissionException e) {
@@ -84,7 +86,7 @@ public class Api extends AbstractController {
     } catch (NotFoundException e) {
       return notFound(e.toJson());
     } catch (Exception e) {
-      return badRequest(Json.toJson(e));
+      return badRequest(ErrorUtils.toJson(e));
     }
   }
 
@@ -92,29 +94,71 @@ public class Api extends AbstractController {
     return catchError(() -> {
       Project project = Project.byId(projectId);
       if (project == null)
-        throw new NotFoundException(String.format("Project not found: %s", projectId));
+        throw new NotFoundException(String.format("Project not found: '%s'", projectId));
 
       return processor.apply(project);
     });
   }
 
-  @BodyParser.Of(BodyParser.Json.class)
-  public Result createProject() {
-    return catchError(() -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectWrite);
-
-      JsonNode json = request().body().asJson();
-
-      Project project = null;
-      if (json.has("id")) {
-        project = Project.byId(UUID.fromString(json.get("id").asText()));
-      } else {
-        project = Json.fromJson(json, Project.class);
-        LOGGER.debug("Project: {}", Json.toJson(project));
-        projectService.save(project);
-      }
+  public Result getProject(UUID projectId) {
+    return project(projectId, project -> {
+      checkPermissionAll("Access token not allowed", Scope.ProjectRead);
 
       return ok(Json.toJson(dto.Project.from(project)));
+    });
+  }
+
+  @BodyParser.Of(BodyParser.Json.class)
+  public Result createProject() {
+    return loggedInUser(user -> {
+      checkPermissionAll("Access token not allowed", Scope.ProjectWrite);
+
+      dto.Project json = Json.fromJson(request().body().asJson(), dto.Project.class);
+
+      if (json.name != null)
+        if (Project.byOwnerAndName(user, json.name) != null)
+          throw new IllegalArgumentException(
+              String.format("Project with name '%s' already exists", json.name));
+
+      Project project = json.toModel();
+      project.owner = user;
+
+      LOGGER.debug("Project: {}", Json.toJson(project));
+      projectService.save(project);
+
+      return ok(Json.toJson(dto.Project.from(project)));
+    });
+  }
+
+  @BodyParser.Of(BodyParser.Json.class)
+  public Result updateProject() {
+    return loggedInUser(user -> {
+      checkPermissionAll("Access token not allowed", Scope.ProjectWrite);
+
+      dto.Project json = Json.fromJson(request().body().asJson(), dto.Project.class);
+      if (json.id == null)
+        throw new IllegalArgumentException("Field 'id' required");
+
+      return project(json.id, project -> {
+        project.updateFrom(json.toModel());
+        project.owner = user;
+
+        LOGGER.debug("Project: {}", Json.toJson(project));
+        projectService.save(project);
+
+        return ok(Json.toJson(dto.Project.from(project)));
+      });
+    });
+  }
+
+  public Result deleteProject(UUID projectId) {
+    return project(projectId, project -> {
+      checkPermissionAll("Access token not allowed", Scope.ProjectWrite);
+
+      projectService.delete(project);
+
+      return ok(Json.newObject().put("message",
+          String.format("Project with ID '%s' has been deleted", projectId)));
     });
   }
 
@@ -134,22 +178,29 @@ public class Api extends AbstractController {
   @BodyParser.Of(BodyParser.Json.class)
   public Result createLocale() {
     return catchError(() -> {
-      JsonNode json = request().body().asJson();
+      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleWrite);
 
-      Locale locale = null;
-      if (json.has("id")) {
-        locale = Locale.byId(UUID.fromString(json.get("id").asText()));
-      } else {
-        locale = Json.fromJson(json, Locale.class);
-        LOGGER.debug("Locale: {}", Json.toJson(locale));
+      dto.Locale json = Json.fromJson(request().body().asJson(), dto.Locale.class);
 
-        checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleWrite);
-        checkProjectRole(locale.project, User.loggedInUser(), ProjectRole.Translator);
+      if (json.projectId == null)
+        throw new ValidationException("Field 'projectId' required");
 
+      return project(json.projectId, project -> {
+        checkProjectRole(project, User.loggedInUser(), ProjectRole.Translator);
+
+        if (json.name == null)
+          throw new ValidationException("Field 'name' required");
+        else if (Locale.byProjectAndName(project, json.name) != null)
+          throw new ValidationException(String.format(
+              "Locale with name '%s' already exists in project '%s'", json.name, project.name));
+
+        Locale locale = json.toModel(project);
+
+        LOGGER.debug("Project: {}", Json.toJson(project));
         localeService.save(locale);
-      }
 
-      return ok(Json.toJson(dto.Locale.from(locale)));
+        return ok(Json.toJson(dto.Locale.from(locale)));
+      });
     });
   }
 

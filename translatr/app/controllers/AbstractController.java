@@ -3,6 +3,7 @@ package controllers;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.joda.time.DateTime;
 
@@ -59,6 +60,10 @@ public abstract class AbstractController extends Controller {
     this.auth = auth;
     this.userService = userService;
     this.logEntryService = logEntryService;
+  }
+
+  protected Result catchError(Supplier<Result> supplier) {
+    return supplier.get();
   }
 
   public static Result redirectWithError(Call call, String errorMessage) {
@@ -135,7 +140,7 @@ public abstract class AbstractController extends Controller {
 
 
   protected Result loggedInUser(Function<User, Result> processor) {
-    return processor.apply(User.loggedInUser());
+    return catchError(() -> processor.apply(User.loggedInUser()));
   }
 
   protected Result locale(UUID localeId, Function<Locale, Result> processor) {

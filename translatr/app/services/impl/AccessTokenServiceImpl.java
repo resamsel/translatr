@@ -46,7 +46,7 @@ public class AccessTokenServiceImpl extends AbstractModelService<AccessToken>
    */
   @Override
   public AccessToken getByKey(String accessTokenKey) {
-    return log(() -> cache.getOrElse(String.format("accessToken:%s", accessTokenKey),
+    return log(() -> cache.getOrElse(getCacheKey(accessTokenKey),
         () -> AccessToken.byKeyUncached(accessTokenKey), 60), LOGGER, "getByKey");
   }
 
@@ -71,6 +71,8 @@ public class AccessTokenServiceImpl extends AbstractModelService<AccessToken>
     if (!update)
       logEntryService.save(LogEntry.from(ActionType.Create, null, dto.AccessToken.class, null,
           dto.AccessToken.from(t)));
+
+    cache.remove(getCacheKey(t.key));
   }
 
   /**
@@ -85,5 +87,13 @@ public class AccessTokenServiceImpl extends AbstractModelService<AccessToken>
       raw = raw.substring(0, length);
 
     return raw.replace("+", "/");
+  }
+
+  /**
+   * @param accessTokenKey
+   * @return
+   */
+  private String getCacheKey(String accessTokenKey) {
+    return String.format("accessToken:%s", accessTokenKey);
   }
 }
