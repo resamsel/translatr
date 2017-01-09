@@ -73,8 +73,8 @@ public class Api extends AbstractController {
       throw new PermissionException(errorMessage);
   }
 
-  private void checkProjectRole(Project project, User user, ProjectRole role) {
-    if (!project.hasPermission(user, role))
+  private void checkProjectRole(Project project, User user, ProjectRole... roles) {
+    if (!project.hasPermissionAny(user, roles))
       throw new PermissionException("User not allowed in project");
   }
 
@@ -154,6 +154,8 @@ public class Api extends AbstractController {
         throw new IllegalArgumentException("Field 'id' required");
 
       return project(json.id, project -> {
+        checkProjectRole(project, user, ProjectRole.Owner);
+
         project.updateFrom(json.toModel());
         project.owner = user;
 
@@ -168,6 +170,7 @@ public class Api extends AbstractController {
   public Result deleteProject(UUID projectId) {
     return project(projectId, project -> {
       checkPermissionAll("Access token not allowed", Scope.ProjectWrite);
+      checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner);
 
       projectService.delete(project);
 
@@ -179,7 +182,7 @@ public class Api extends AbstractController {
   public Result findLocales(UUID projectId) {
     return project(projectId, project -> {
       checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead);
-      checkProjectRole(project, User.loggedInUser(), ProjectRole.Translator);
+      checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator);
 
       List<Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(project.id)
           .withLocaleName(request().getQueryString("localeName")));

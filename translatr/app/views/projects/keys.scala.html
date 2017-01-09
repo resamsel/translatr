@@ -3,15 +3,15 @@
 @main(template.withTitle(Messages("keys.title", project.name))) {
 	@tags.search(form)()
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
-			@project.name
-		</a>
-		<a class="breadcrumb active" href="@routes.Projects.keys(project.id)">
-			@Messages("keys")
-		</a>
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
+		@project.name
+	</a>
+	<a class="breadcrumb active" href="@routes.Projects.keys(project.id)">
+		@Messages("keys")
+	</a>
 } {
 	@content(project, "keys") {
 		@tags.collection(keys, "keys.empty", "keys") {
@@ -34,18 +34,20 @@
 						@utils.FormatUtils.pretty(ctx.lang().locale, key.whenUpdated)
 					</p>
 					<div class="secondary-content">
-						<a
-							href="@routes.Keys.edit(key.id)"
-							class="btn-flat btn-hover waves-effect waves-light"
-							title="@Messages("button.edit")">
-							<i class="material-icons">mode_edit</i>
-						</a>
-						<a
-							href="@routes.Keys.remove(key.id, null)"
-							class="btn-flat btn-hover waves-effect waves-light"
-							title="@Messages("button.remove")">
-							<i class="material-icons">delete_forever</i>
-						</a>
+						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Developer)) {
+							<a
+								href="@routes.Keys.edit(key.id)"
+								class="btn-flat btn-hover waves-effect waves-light"
+								title="@Messages("button.edit")">
+								<i class="material-icons">mode_edit</i>
+							</a>
+							<a
+								href="@routes.Keys.remove(key.id, null)"
+								class="btn-flat btn-hover waves-effect waves-light"
+								title="@Messages("button.remove")">
+								<i class="material-icons">delete_forever</i>
+							</a>
+						}
 					</div>
 				</li>
 			}
@@ -54,10 +56,12 @@
 		}
 	}
 
-	@tags.fabContainer("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Developer)) {
+		@tags.fabContainer("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
 
-	@tags.modal(Messages("key.new"), "modal-create") {
-		@tags.keyCreate(project)
+		@tags.modal(Messages("key.new"), "modal-create") {
+			@tags.keyCreate(project)
+		}
 	}
 
 	<script type="text/javascript">

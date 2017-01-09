@@ -277,7 +277,7 @@ public class Project implements Suggestable {
    * @param role
    * @return
    */
-  public boolean hasPermission(User user, ProjectRole role) {
-    return PermissionUtils.hasPermissionAny(this, user, role);
+  public boolean hasPermissionAny(User user, ProjectRole... roles) {
+    return PermissionUtils.hasPermissionAny(this, user, roles);
   }
 }

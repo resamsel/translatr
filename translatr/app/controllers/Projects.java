@@ -159,6 +159,11 @@ public class Projects extends AbstractController {
     if (project == null)
       return redirect(routes.Application.index());
 
+    if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner)) {
+      addError(ctx().messages().at("project.edit.denied", project.name));
+      return redirect(routes.Projects.project(project.id));
+    }
+
     select(project);
 
     if ("POST".equals(request().method())) {

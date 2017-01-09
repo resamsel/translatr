@@ -5,15 +5,17 @@
 @import views.html.tags.contentCardWithActions
 
 @projectActions = {
-	<li>
-		@tags.fab("remove-project", "delete_forever", href = routes.Projects.remove(project.id).url, tooltip = Messages("project.remove.tooltip"), styleClass = "red")
-	</li>
-	<li>
-		@tags.fab("edit-project", "edit", href = routes.Projects.edit(project.id).url, tooltip = Messages("project.edit.tooltip"), styleClass = "orange")
-	</li>
-	<li>
-		@tags.fab("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
-	</li>
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner)) {
+		<li>
+			@tags.fab("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
+		</li>
+		<li>
+			@tags.fab("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue")
+		</li>
+		<li>
+			@tags.fab("remove-project", "delete_forever", href = routes.Projects.remove(project.id).url, tooltip = Messages("project.remove.tooltip"), styleClass = "red")
+		</li>
+	}
 }
 
 @main(template.withTitle(Messages("project.title", project.name)).withName("project")) {
@@ -82,14 +84,24 @@
 		}
 	}
 
-	@tags.fabContainer("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue", actions = projectActions)
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner)) {
+		@tags.fabContainer("edit-project", "edit", href = routes.Projects.edit(project.id).url, tooltip = Messages("project.edit.tooltip"), styleClass = "orange", actions = projectActions)
+	} else { @if(project.hasRolesAny(template.loggedInUser, ProjectRole.Developer)) {
+		@tags.fabContainer("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
+	} else { @if(project.hasRolesAny(template.loggedInUser, ProjectRole.Translator)) {
+		@tags.fabContainer("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue")
+	}}}
 
-	@tags.modal(Messages("locale.new"), "modal-create-locale") {
-		@tags.localeCreate(project)
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Translator)) {
+		@tags.modal(Messages("locale.new"), "modal-create-locale") {
+			@tags.localeCreate(project)
+		}
 	}
 
-	@tags.modal(Messages("key.new"), "modal-create-key") {
-		@tags.keyCreate(project)
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Developer)) {
+		@tags.modal(Messages("key.new"), "modal-create-key") {
+			@tags.keyCreate(project)
+		}
 	}
 
 	<script>
