@@ -22,7 +22,7 @@ libraryDependencies ++= Seq(
 	"org.postgresql" % "postgresql" % "9.4.1210",
 
 	// OAuth for Play
-	"com.feth" %% "play-authenticate" % "0.8.1-SNAPSHOT",
+	"com.feth" %% "play-authenticate" % "0.8.1",
 	"be.objectify" %% "deadbolt-java" % "2.5.0",
 
 	// Apache Commons IO
