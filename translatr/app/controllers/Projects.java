@@ -103,6 +103,11 @@ public class Projects extends AbstractController {
 
   public Result project(UUID projectId) {
     return searchForm(projectId, (project, form) -> {
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values())) {
+        addError(ctx().messages().at("project.access.denied", project.name));
+        return redirect(routes.Dashboards.dashboard());
+      }
+
       return ok(log(() -> views.html.projects.project.render(createTemplate(), project, form),
           LOGGER, "Rendering project"));
     });
