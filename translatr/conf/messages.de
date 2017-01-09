@@ -184,6 +184,7 @@ project.create = Project "{0}" anlegen
 project.create.title = Projekt anlegen
 project.create.tooltip = Neues Projekt anlegen
 project.created = Projekt {0} wurde angelegt
+project.delete.denied = Löschen von Projekt {0} wurde verweigert
 project.deleted = Projekt <strong>{0}</strong> wurde gelöscht
 project.edit = Projekt bearbeiten
 project.edit.denied = Editieren von Projekt {0} wurde verweigert

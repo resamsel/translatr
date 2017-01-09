@@ -184,6 +184,7 @@ project.create = Create project "{0}"
 project.create.title = Create project
 project.create.tooltip = Create new project
 project.created = Project {0} has been created
+project.delete.denied = Deletion of project {0} denied
 project.deleted = Project <strong>{0}</strong> was deleted
 project.edit = Edit Project
 project.edit.denied = Editing of project {0} denied

@@ -189,6 +189,11 @@ public class Projects extends AbstractController {
     if (project == null)
       return redirect(routes.Application.index());
 
+    if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner)) {
+      addError(ctx().messages().at("project.delete.denied", project.name));
+      return redirect(routes.Projects.project(project.id));
+    }
+
     select(project);
 
     undoCommand(injector.instanceOf(RevertDeleteProjectCommand.class).with(project));
