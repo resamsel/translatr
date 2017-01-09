@@ -259,6 +259,11 @@ public class Profiles extends AbstractController {
         return redirectWithError(routes.Profiles.accessTokens(),
             ctx().messages().at("accessToken.notFound"));
 
+      if (!accessToken.user.id.equals(user.id)) {
+        addError(ctx().messages().at("accessToken.edit.denied", accessToken.id));
+        return redirect(routes.Profiles.accessTokens());
+      }
+
       return ok(views.html.users.accessToken.render(createTemplate(), user, accessToken,
           AccessTokenForm.form(formFactory).fill(AccessTokenForm.from(accessToken))));
     });

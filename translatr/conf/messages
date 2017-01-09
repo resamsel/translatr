@@ -5,6 +5,7 @@ accessToken.create.tooltip = Create new access token
 accessToken.delete.tooltip = Remove access token
 accessToken.deleted = Access token <strong>{0}</strong> was deleted
 accessToken.edit = Edit access token
+accessToken.edit.denied = Access to access token {0} was denied
 accessToken.key = Token
 accessToken.name = Name
 accessToken.scopes = Scopes

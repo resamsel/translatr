@@ -5,6 +5,7 @@ accessToken.create.tooltip = Neuen Zugangsschlüssel anlegen
 accessToken.delete.tooltip = Zugangsschlüssel entfernen
 accessToken.deleted = Zugangsschlüssel <strong>{0}</strong> wurde gelöscht
 accessToken.edit = Zugangsschlüssel bearbeiten
+accessToken.edit.denied = Zugriff auf Zugangsschlüssel {0} wurde verweigert
 accessToken.key = Schlüssel
 accessToken.name = Name
 accessToken.scopes = Scopes
