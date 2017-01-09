@@ -21,7 +21,7 @@ App.Modules.DashboardSearchModule = function(sb) {
 	}
 
 	function _handleKeyPress(event) {
-		if (event.which == 70 && (event.ctrlKey || event.metaKey)) {
+		if (event.which === 70 && (event.ctrlKey || event.metaKey)) {
 			event.preventDefault();
 			fieldSearch.focus().select();
 	    }

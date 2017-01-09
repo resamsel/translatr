@@ -1,4 +1,3 @@
-var App = App || {};
 App.Modules = App.Modules || {};
 
 App.Modules.ModalModule = function(sb) {
@@ -50,7 +49,7 @@ App.Modules.ProjectSearchModule = function(sb) {
 	}
 
 	function _handleKeyPress(event) {
-		if (event.which == 70 && (event.ctrlKey || event.metaKey)) {
+		if (event.which === 70 && (event.ctrlKey || event.metaKey)) {
 			event.preventDefault();
 			fieldSearch.focus().select();
 	    }
@@ -116,7 +115,7 @@ App.Modules.ActivityModule = function(sb, options) {
 	}
 
 	function activeCell(d, active) {
-		if(d == format(active)) {
+		if(d === format(active)) {
 			return "active";
 		}
 		return "";
@@ -210,7 +209,7 @@ App.Modules.ActivityModule = function(sb, options) {
 
 			function legendTooltip(d) {
 				var from = (d-1)*25, until = d*25;
-				if(d == 0) {
+				if(d === 0) {
 					from = '';
 					until = 0;
 				}

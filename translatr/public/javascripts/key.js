@@ -52,6 +52,14 @@ App.Modules.MessageModule = function(sb) {
     	Materialize.toast(messages['message.updated'], 5000);
     }
 
+    function _handleMessage(message) {
+    	fieldId.val(message.id);
+    	fieldLocale.val(message.localeName).attr('localeId', message.localeId);
+    	fieldValue.val(message.value).trigger('autoresize').focus();
+    	Materialize.updateTextFields();
+    	preview.html(message.value);
+    }
+
     function _updateForm(localeId) {
     	noSelection.hide();
     	message.show();
@@ -65,14 +73,6 @@ App.Modules.MessageModule = function(sb) {
     	sb.utilities.ajax(
     		jsRoutes.controllers.Api.getMessage(localeId, keyName)
     	).done(_handleMessage);
-    }
-
-    function _handleMessage(message) {
-    	fieldId.val(message.id);
-    	fieldLocale.val(message.localeName).attr('localeId', message.localeId);
-    	fieldValue.val(message.value).trigger('autoresize').focus();
-    	Materialize.updateTextFields();
-    	preview.html(message.value);
     }
 
 	return {

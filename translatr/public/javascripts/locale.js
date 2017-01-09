@@ -55,14 +55,13 @@ App.Modules.MessageListModule = function(sb) {
 	var panelPreview = sb.dom.find('#panel-preview');
 	var preview = sb.dom.find('#preview');
 
-    function _handleKeyChanged(keyId, keyName) {
-    	panelMessages.hide();
-	    sb.utilities.ajax(sb.utilities.merge(
-			jsRoutes.controllers.Api.findMessages(projectId),
-			{data: {keyName: keyName}}
-		)).done(function(data) {
-		    _handleMessageList(keyName, data);
-		});
+	function _handleCopyMessageValue(e) {
+		e.preventDefault();
+		var value = sb.dom.wrap(this).find('.value').text();
+		fieldValue.val(value).trigger('autoresize');
+		Materialize.updateTextFields();
+		sb.publish('valueChanged', value);
+		preview.html(value);
 	}
 
 	function _handleMessageList(keyName, messageList) {
@@ -80,13 +79,14 @@ App.Modules.MessageListModule = function(sb) {
 	    panelMessages.show();
 	}
 
-	function _handleCopyMessageValue(e) {
-		e.preventDefault();
-		var value = sb.dom.wrap(this).find('.value').text();
-		fieldValue.val(value).trigger('autoresize');
-		Materialize.updateTextFields();
-		sb.publish('valueChanged', value);
-		preview.html(value);
+    function _handleKeyChanged(keyId, keyName) {
+    	panelMessages.hide();
+	    sb.utilities.ajax(sb.utilities.merge(
+			jsRoutes.controllers.Api.findMessages(projectId),
+			{data: {keyName: keyName}}
+		)).done(function(data) {
+		    _handleMessageList(keyName, data);
+		});
 	}
 
 	return {
