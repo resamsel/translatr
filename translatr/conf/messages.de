@@ -16,6 +16,7 @@ activity.Create.notification = {2} legte {0} {1} an
 activity.Create.title = {0} {1} angelegt
 activity.Delete.notification = {2} löschte {0} {1}
 activity.Delete.title = {0} {1} gelöscht
+activity.Update.notification = {2} aktualisierte {0} {1}
 activity.Update.title = {0} {1} geändert
 activity.all = Alle Aktivitäten
 activity.amount = {0,choice,0#Keine neuen Beiträge|1#Ein neuer Beitrag|1<{0} neue Beiträge}
