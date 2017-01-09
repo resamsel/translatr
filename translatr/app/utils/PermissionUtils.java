@@ -1,13 +1,19 @@
 package utils;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import criterias.ProjectUserCriteria;
 import models.AccessToken;
+import models.Project;
+import models.ProjectRole;
+import models.ProjectUser;
 import models.Scope;
+import models.User;
 import play.mvc.Http.Context;
 
 /**
@@ -50,5 +56,43 @@ public class PermissionUtils {
     scopeList.retainAll(Arrays.asList(scopes));
 
     return !scopeList.isEmpty();
+  }
+
+  /**
+   * @param project
+   * @param roles
+   * @return
+   */
+  public static boolean hasPermissionAny(Project project, ProjectRole... roles) {
+    return hasPermissionAny(project, User.loggedInUser(), roles);
+  }
+
+  /**
+   * @param project
+   * @param loggedInUser
+   * @param roles
+   * @return
+   */
+  public static boolean hasPermissionAny(Project project, User loggedInUser, ProjectRole... roles) {
+    return hasPermissionAny(project, User.loggedInUser(), Arrays.asList(roles));
+  }
+
+  /**
+   * @param project
+   * @param user
+   * @param roles
+   * @return
+   */
+  public static boolean hasPermissionAny(Project project, User user,
+      Collection<ProjectRole> roles) {
+    LOGGER.debug("Members of project: {}, needed: {}", project != null ? project.members : "-",
+        roles);
+
+    for (ProjectUser member : ProjectUser
+        .findBy(new ProjectUserCriteria().withProjectId(project.id)))
+      if (user.id.equals(member.user.id) && roles.contains(member.role))
+        return true;
+
+    return false;
   }
 }

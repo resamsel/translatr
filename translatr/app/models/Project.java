@@ -35,10 +35,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
-import criterias.ProjectUserCriteria;
 import play.api.Play;
 import play.mvc.Http.Context;
 import services.ProjectService;
+import utils.PermissionUtils;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
@@ -278,13 +278,6 @@ public class Project implements Suggestable {
    * @return
    */
   public boolean hasPermission(User user, ProjectRole role) {
-    if (user == null || role == null)
-      return false;
-
-    for (ProjectUser member : ProjectUser.findBy(new ProjectUserCriteria().withProjectId(id)))
-      if (user.id.equals(member.user.id) && member.role.hasPermission(role))
-        return true;
-
-    return false;
+    return PermissionUtils.hasPermissionAny(this, user, role);
   }
 }

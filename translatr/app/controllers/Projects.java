@@ -39,6 +39,7 @@ import models.Key;
 import models.Locale;
 import models.LogEntry;
 import models.Project;
+import models.ProjectRole;
 import models.ProjectUser;
 import models.Suggestable;
 import models.Suggestable.Data;
@@ -58,6 +59,7 @@ import services.ProjectService;
 import services.ProjectUserService;
 import services.UserService;
 import utils.FormUtils;
+import utils.PermissionUtils;
 
 /**
  *
@@ -209,9 +211,11 @@ public class Projects extends AbstractController {
         suggestions.add(Suggestable.DefaultSuggestable
             .from(ctx().messages().at("key.search", search.search), Data.from(Key.class, null,
                 "???", search.urlWithOffset(routes.Projects.keys(project.id), 20, 0))));
-      suggestions.add(Suggestable.DefaultSuggestable
-          .from(ctx().messages().at("key.create", search.search), Data.from(Key.class, null, "+++",
-              routes.Keys.createImmediately(project.id, search.search).url())));
+
+      if (PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Developer))
+        suggestions.add(Suggestable.DefaultSuggestable
+            .from(ctx().messages().at("key.create", search.search), Data.from(Key.class, null,
+                "+++", routes.Keys.createImmediately(project.id, search.search).url())));
 
       List<? extends Suggestable> locales = Locale.findBy(new LocaleCriteria()
           .withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
@@ -223,9 +227,11 @@ public class Projects extends AbstractController {
         suggestions.add(Suggestable.DefaultSuggestable
             .from(ctx().messages().at("locale.search", search.search), Data.from(Locale.class, null,
                 "???", search.urlWithOffset(routes.Projects.locales(project.id), 20, 0))));
-      suggestions.add(Suggestable.DefaultSuggestable
-          .from(ctx().messages().at("locale.create", search.search), Data.from(Locale.class, null,
-              "+++", routes.Locales.createImmediately(project.id, search.search).url())));
+
+      if (PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Translator))
+        suggestions.add(Suggestable.DefaultSuggestable
+            .from(ctx().messages().at("locale.create", search.search), Data.from(Locale.class, null,
+                "+++", routes.Locales.createImmediately(project.id, search.search).url())));
 
       return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
     });
