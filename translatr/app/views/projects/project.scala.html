@@ -33,15 +33,7 @@
 			<div class="svg-container"></div>
 		}
 
-		@if(project.localesSize() > 0) {
-			@contentCard(Messages("locales"), styleClass = "locales") {
-				<p>
-					@Messages("locales.size", project.localesSize()),
-					@Messages("latest"):
-					@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
-				</p>
-			}
-		} else {
+		@if(project.localesSize() == 0 && project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Translator)) {
 			@contentCardWithActions(Messages("locales"), styleClass = "locales") {
 				<p>
 					@Messages("locales.size", project.localesSize())<br/>
@@ -51,35 +43,47 @@
 					@Messages("locale.create.title")
 				</a>
 			}
-		}
-
-		@if(project.keysSize() > 0) {
-			@contentCard(Messages("keys"), styleClass = "keys") {
+		} else {
+			@contentCard(Messages("locales"), styleClass = "locales") {
 				<p>
-					@Messages("keys.size", project.keysSize()),
-					@Messages("latest"):
-					@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
+					@Messages("locales.size", project.localesSize())
+					@if(project.localesSize() > 0) {
+						&mdash; @Messages("latest"):
+						@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
+					}
 				</p>
 			}
- 		} else {
+		}
+
+		@if(project.keysSize() == 0 && project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Developer)) {
 			@contentCardWithActions(Messages("keys"), styleClass = "keys") {
 				<p>
-					@Messages("keys.size", project.keysSize()),
-					@Messages("latest"):
-					@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
+					@Messages("keys.size", project.keysSize())
 				</p>
 			} {
 				<a href="#modal-create-key" class="modal-trigger">
 					@Messages("key.create.title")
 				</a>
 			}
+ 		} else {
+			@contentCard(Messages("keys"), styleClass = "keys") {
+				<p>
+					@Messages("keys.size", project.keysSize())
+					@if(project.keysSize() > 0) {
+						&mdash; @Messages("latest"):
+						@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
+					}
+				</p>
+			}
  		}
 
 		@contentCard(Messages("messages"), styleClass = "messages") {
 			<p>
-				@Messages("messages.size", project.messagesSize()),
-				@Messages("latest"):
-				@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
+				@Messages("messages.size", project.messagesSize())
+				@if(project.messagesSize() > 0) {
+					&mdash; @Messages("latest"):
+					@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
+				}
 			</p>
 		}
 	}

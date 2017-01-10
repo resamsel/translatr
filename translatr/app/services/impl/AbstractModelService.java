@@ -6,8 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
+import com.fasterxml.jackson.databind.JsonNode;
 
+import dto.Dto;
+import models.Model;
 import play.Configuration;
+import play.libs.Json;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
 import services.LogEntryService;
@@ -19,153 +23,178 @@ import utils.TransactionUtils;
  * @author resamsel
  * @version 9 Sep 2016
  */
-public abstract class AbstractModelService<T> implements ModelService<T>
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelService.class);
+public abstract class AbstractModelService<MODEL extends Model<MODEL>, DTO extends Dto>
+    implements ModelService<MODEL> {
+  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelService.class);
 
-	protected final Configuration configuration;
+  private final Class<DTO> clazz;
 
-	protected final LogEntryService logEntryService;
+  protected final Configuration configuration;
 
-	/**
-	 * @param configuration
-	 */
-	public AbstractModelService(Configuration configuration, LogEntryService logEntryService)
-	{
-		this.configuration = configuration;
-		this.logEntryService = logEntryService;
-	}
+  protected final LogEntryService logEntryService;
 
-	/**
-	 * Shorthand for context.current.session.
-	 * 
-	 * @return
-	 */
-	protected Session session()
-	{
-		return Context.current().session();
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public T save(T t)
-	{
-		boolean update = !Ebean.getBeanState(t).isNew();
-		preSave(t, update);
-		Ebean.save(t);
-		Ebean.refresh(t);
-		postSave(t, update);
-		return t;
-	}
+  /**
+   * @param configuration
+   */
+  public AbstractModelService(Class<DTO> clazz, Configuration configuration,
+      LogEntryService logEntryService) {
+    this.clazz = clazz;
+    this.configuration = configuration;
+    this.logEntryService = logEntryService;
+  }
 
-	/**
-	 * @param t
-	 */
-	protected void preSave(T t, boolean update)
-	{
-	}
+  /**
+   * @return the clazz
+   */
+  public Class<DTO> getClazz() {
+    return clazz;
+  }
 
-	/**
-	 * @param t
-	 */
-	protected void postSave(T t, boolean update)
-	{
-	}
+  /**
+   * Shorthand for context.current.session.
+   * 
+   * @return
+   */
+  protected Session session() {
+    return Context.current().session();
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Collection<T> save(Collection<T> t)
-	{
-		try
-		{
-			preSave(t);
-			TransactionUtils.batchExecute((tx) -> {
-				Ebean.saveAll(t);
-			});
-			postSave(t);
-		}
-		catch(Exception e)
-		{
-			LOGGER.error("Error while batch saving entities", e);
-		}
+  protected abstract MODEL byId(JsonNode id);
 
-		return t;
-	}
+  protected DTO fromJson(JsonNode json) {
+    return Json.fromJson(json, clazz);
+  }
 
-	/**
-	 * @param t
-	 */
-	protected void preSave(Collection<T> t)
-	{
-	}
+  protected abstract MODEL toModel(DTO dto);
 
-	/**
-	 * @param t
-	 */
-	protected void postSave(Collection<T> t)
-	{
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MODEL create(JsonNode json) {
+    DTO dto = fromJson(json);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void delete(T t)
-	{
-		preDelete(t);
-		Ebean.delete(t);
-		postDelete(t);
-	}
+    LOGGER.debug("DTO: {}", Json.toJson(dto));
 
-	/**
-	 * @param t
-	 */
-	protected void preDelete(T t)
-	{
-	}
+    return save(toModel(validate(dto)));
+  }
 
-	/**
-	 * @param t
-	 */
-	protected void postDelete(T t)
-	{
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MODEL update(JsonNode json) {
+    DTO dto = fromJson(json);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void delete(Collection<T> t)
-	{
-		try
-		{
-			preDelete(t);
-			TransactionUtils.batchExecute((tx) -> {
-				Ebean.deleteAll(t);
-			});
-			postDelete(t);
-		}
-		catch(Exception e)
-		{
-			LOGGER.error("Error while batch deleting entities", e);
-		}
-	}
+    MODEL m = byId(json.get("id")).updateFrom(toModel(validate(dto)));
 
-	/**
-	 * @param t
-	 */
-	protected void preDelete(Collection<T> t)
-	{
-	}
+    LOGGER.debug("DTO: {}", Json.toJson(dto));
 
-	/**
-	 * @param t
-	 */
-	protected void postDelete(Collection<T> t)
-	{
-	}
+    return save(m);
+  }
+
+  /**
+   * @param dto
+   */
+  protected DTO validate(DTO dto) {
+    return dto;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MODEL save(MODEL t) {
+    boolean update = !Ebean.getBeanState(t).isNew();
+    preSave(t, update);
+    Ebean.save(t);
+    Ebean.refresh(t);
+    postSave(t, update);
+    return t;
+  }
+
+  /**
+   * @param t
+   */
+  protected void preSave(MODEL t, boolean update) {}
+
+  /**
+   * @param t
+   */
+  protected void postSave(MODEL t, boolean update) {}
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Collection<MODEL> save(Collection<MODEL> t) {
+    try {
+      preSave(t);
+      TransactionUtils.batchExecute((tx) -> {
+        Ebean.saveAll(t);
+      });
+      postSave(t);
+    } catch (Exception e) {
+      LOGGER.error("Error while batch saving entities", e);
+    }
+
+    return t;
+  }
+
+  /**
+   * @param t
+   */
+  protected void preSave(Collection<MODEL> t) {}
+
+  /**
+   * @param t
+   */
+  protected void postSave(Collection<MODEL> t) {}
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void delete(MODEL t) {
+    preDelete(t);
+    Ebean.delete(t);
+    postDelete(t);
+  }
+
+  /**
+   * @param t
+   */
+  protected void preDelete(MODEL t) {}
+
+  /**
+   * @param t
+   */
+  protected void postDelete(MODEL t) {}
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void delete(Collection<MODEL> t) {
+    try {
+      preDelete(t);
+      TransactionUtils.batchExecute((tx) -> {
+        Ebean.deleteAll(t);
+      });
+      postDelete(t);
+    } catch (Exception e) {
+      LOGGER.error("Error while batch deleting entities", e);
+    }
+  }
+
+  /**
+   * @param t
+   */
+  protected void preDelete(Collection<MODEL> t) {}
+
+  /**
+   * @param t
+   */
+  protected void postDelete(Collection<MODEL> t) {}
 }

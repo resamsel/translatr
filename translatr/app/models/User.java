@@ -46,7 +46,7 @@ import services.UserService;
 
 @Entity
 @Table(name = "user_")
-public class User implements Subject {
+public class User implements Model<User>, Subject {
   private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
 
   public static final int USERNAME_LENGTH = 32;
@@ -132,6 +132,21 @@ public class User implements Subject {
 
   public User withId(UUID id) {
     this.id = id;
+    return this;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public User updateFrom(User in) {
+    active = in.active;
+    username = in.username;
+    name = in.name;
+    email = in.email;
+    emailValidated = in.emailValidated;
+    lastLogin = in.lastLogin;
+
     return this;
   }
 

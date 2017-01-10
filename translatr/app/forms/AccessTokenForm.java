@@ -30,6 +30,9 @@ public class AccessTokenForm {
   private Boolean scopeLocaleAdmin = false;
   private Boolean scopeLocaleRead = false;
   private Boolean scopeLocaleWrite = false;
+  private Boolean scopeKeyAdmin = false;
+  private Boolean scopeKeyRead = false;
+  private Boolean scopeKeyWrite = false;
 
   public String getName() {
     return name;
@@ -91,6 +94,30 @@ public class AccessTokenForm {
     this.scopeLocaleWrite = scopeLocaleWrite;
   }
 
+  public Boolean getScopeKeyAdmin() {
+    return scopeKeyAdmin;
+  }
+
+  public void setScopeKeyAdmin(Boolean scopeKeyAdmin) {
+    this.scopeKeyAdmin = scopeKeyAdmin;
+  }
+
+  public Boolean getScopeKeyRead() {
+    return scopeKeyRead;
+  }
+
+  public void setScopeKeyRead(Boolean scopeKeyRead) {
+    this.scopeKeyRead = scopeKeyRead;
+  }
+
+  public Boolean getScopeKeyWrite() {
+    return scopeKeyWrite;
+  }
+
+  public void setScopeKeyWrite(Boolean scopeKeyWrite) {
+    this.scopeKeyWrite = scopeKeyWrite;
+  }
+
   /**
    * @param in
    * @return
@@ -111,6 +138,12 @@ public class AccessTokenForm {
       scopes.add(Scope.LocaleRead.scope());
     if (scopeLocaleWrite)
       scopes.add(Scope.LocaleWrite.scope());
+    if (scopeKeyAdmin)
+      scopes.add(Scope.KeyAdmin.scope());
+    if (scopeKeyRead)
+      scopes.add(Scope.KeyRead.scope());
+    if (scopeKeyWrite)
+      scopes.add(Scope.KeyWrite.scope());
 
     in.scope = StringUtils.join(scopes, ",");
 
@@ -134,6 +167,9 @@ public class AccessTokenForm {
     out.scopeLocaleAdmin = scopes.contains(Scope.LocaleAdmin);
     out.scopeLocaleRead = scopes.contains(Scope.LocaleRead);
     out.scopeLocaleWrite = scopes.contains(Scope.LocaleWrite);
+    out.scopeKeyAdmin = scopes.contains(Scope.KeyAdmin);
+    out.scopeKeyRead = scopes.contains(Scope.KeyRead);
+    out.scopeKeyWrite = scopes.contains(Scope.KeyWrite);
 
     return out;
   }

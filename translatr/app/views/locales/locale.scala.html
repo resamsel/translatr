@@ -50,13 +50,15 @@
 				@tags.keyItems(keys, messages, false)
 			</div>
 		} else {
-			<p>
+			<p class="grey-text">
 				@Messages("keys.size", 0)
 			</p>
 			<div class="keys center">
-				<a href="#modal-create" class="modal-trigger btn waves-effect waves-light">
-					@Messages("key.create.title")
-				</a>
+				@if(locale.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Translator)) {
+					<a href="#modal-create" class="modal-trigger btn waves-effect waves-light">
+						@Messages("key.create.title")
+					</a>
+				}
 			</div>
 		}
 	} {
@@ -96,7 +98,7 @@
 			<p id="preview"></p>
 		</div>
 
-		<p id="no-selection" class="center empty">
+		<p id="no-selection" class="center empty grey-text">
 			@Messages("key.selection.none")
 		</p>
 	} {

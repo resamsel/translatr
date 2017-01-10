@@ -17,12 +17,13 @@ import com.avaje.ebean.Ebean;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.ActionType;
+import models.Key;
+import models.Locale;
 import models.LogEntry;
 import models.Message;
 import models.Project;
 import play.Configuration;
 import play.cache.CacheApi;
-import play.libs.Json;
 import services.LogEntryService;
 import services.MessageService;
 
@@ -32,7 +33,8 @@ import services.MessageService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class MessageServiceImpl extends AbstractModelService<Message> implements MessageService {
+public class MessageServiceImpl extends AbstractModelService<Message, dto.Message>
+    implements MessageService {
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceImpl.class);
 
   private final CacheApi cache;
@@ -43,7 +45,7 @@ public class MessageServiceImpl extends AbstractModelService<Message> implements
   @Inject
   public MessageServiceImpl(Configuration configuration, CacheApi cache,
       LogEntryService logEntryService) {
-    super(configuration, logEntryService);
+    super(dto.Message.class, configuration, logEntryService);
     this.cache = cache;
   }
 
@@ -51,20 +53,16 @@ public class MessageServiceImpl extends AbstractModelService<Message> implements
    * {@inheritDoc}
    */
   @Override
-  public Message create(JsonNode json) {
-    Message message = null;
+  protected Message byId(JsonNode id) {
+    return Message.byId(UUID.fromString(id.asText()));
+  }
 
-    if (json.hasNonNull("id")) {
-      message = Message.byId(UUID.fromString(json.get("id").asText()));
-      message.updateFrom(Json.fromJson(json, Message.class));
-    } else {
-      message = Json.fromJson(json, Message.class);
-      LOGGER.debug("Locale: {}", Json.toJson(message));
-    }
-
-    save(message);
-
-    return message;
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Message toModel(dto.Message dto) {
+    return dto.toModel(Locale.byId(dto.localeId), Key.byId(dto.keyId));
   }
 
   /**

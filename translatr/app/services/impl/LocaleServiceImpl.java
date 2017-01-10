@@ -10,18 +10,24 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.ValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.RawSqlBuilder;
+import com.fasterxml.jackson.databind.JsonNode;
 
+import dto.PermissionException;
 import models.ActionType;
 import models.Locale;
 import models.LogEntry;
 import models.Message;
+import models.Project;
+import models.ProjectRole;
 import models.Stat;
+import models.User;
 import play.Configuration;
 import services.LocaleService;
 import services.LogEntryService;
@@ -33,95 +39,112 @@ import services.MessageService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class LocaleServiceImpl extends AbstractModelService<Locale> implements LocaleService
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
+public class LocaleServiceImpl extends AbstractModelService<Locale, dto.Locale>
+    implements LocaleService {
+  private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
 
-	private final MessageService messageService;
+  private final MessageService messageService;
 
-	/**
-	 * 
-	 */
-	@Inject
-	public LocaleServiceImpl(Configuration configuration, MessageService messageService, LogEntryService logEntryService)
-	{
-		super(configuration, logEntryService);
-		this.messageService = messageService;
-	}
+  /**
+   * 
+   */
+  @Inject
+  public LocaleServiceImpl(Configuration configuration, MessageService messageService,
+      LogEntryService logEntryService) {
+    super(dto.Locale.class, configuration, logEntryService);
+    this.messageService = messageService;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<UUID, Double> progress(List<UUID> localeIds, long keysSize)
-	{
-		List<Stat> stats = log(
-			() -> Ebean
-				.find(Stat.class)
-				.setRawSql(
-					RawSqlBuilder
-						.parse("SELECT m.locale_id, count(m.id) FROM message m GROUP BY m.locale_id")
-						.columnMapping("m.locale_id", "id")
-						.columnMapping("count(m.id)", "count")
-						.create())
-				.where()
-				.in("m.locale_id", localeIds)
-				.findList(),
-			LOGGER,
-			"Retrieving locale progress");
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Locale byId(JsonNode id) {
+    return Locale.byId(UUID.fromString(id.asText()));
+  }
 
-		return stats.stream().collect(
-			Collectors.groupingBy(k -> k.id, Collectors.averagingDouble(t -> (double)t.count / (double)keysSize)));
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Locale toModel(dto.Locale dto) {
+    return dto.toModel(Project.byId(dto.projectId));
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void preSave(Locale t, boolean update)
-	{
-		if(update)
-			logEntryService.save(
-				LogEntry.from(
-					ActionType.Update,
-					t.project,
-					dto.Locale.class,
-					dto.Locale.from(Locale.byId(t.id)),
-					dto.Locale.from(t)));
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected dto.Locale validate(dto.Locale t) {
+    if (t.name == null)
+      throw new ValidationException("Field 'name' required");
+    else if (Locale.byProjectAndName(t.projectId, t.name) != null)
+      throw new ValidationException(String
+          .format("Locale with name '%s' already exists in project '%s'", t.name, t.projectId));
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void postSave(Locale t, boolean update)
-	{
-		if(!update)
-			logEntryService.save(LogEntry.from(ActionType.Create, t.project, dto.Locale.class, null, dto.Locale.from(t)));
-	}
+    return t;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void preDelete(Locale t)
-	{
-		logEntryService.save(LogEntry.from(ActionType.Delete, t.project, dto.Locale.class, dto.Locale.from(t), null));
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Map<UUID, Double> progress(List<UUID> localeIds, long keysSize) {
+    List<Stat> stats = log(
+        () -> Ebean.find(Stat.class)
+            .setRawSql(RawSqlBuilder
+                .parse("SELECT m.locale_id, count(m.id) FROM message m GROUP BY m.locale_id")
+                .columnMapping("m.locale_id", "id").columnMapping("count(m.id)", "count").create())
+            .where().in("m.locale_id", localeIds).findList(),
+        LOGGER, "Retrieving locale progress");
 
-		messageService.delete(Message.byLocale(t.id));
-	}
+    return stats.stream().collect(Collectors.groupingBy(k -> k.id,
+        Collectors.averagingDouble(t -> (double) t.count / (double) keysSize)));
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void preDelete(Collection<Locale> t)
-	{
-		logEntryService.save(t
-			.stream()
-			.map(l -> LogEntry.from(ActionType.Delete, l.project, dto.Locale.class, dto.Locale.from(l), null))
-			.collect(Collectors.toList()));
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void preSave(Locale t, boolean update) {
+    if (update)
+      logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.Locale.class,
+          dto.Locale.from(Locale.byId(t.id)), dto.Locale.from(t)));
+  }
 
-		messageService.delete(Message.byLocales(t.stream().map(m -> m.id).collect(Collectors.toList())));
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postSave(Locale t, boolean update) {
+    if (!update)
+      logEntryService.save(
+          LogEntry.from(ActionType.Create, t.project, dto.Locale.class, null, dto.Locale.from(t)));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void preDelete(Locale t) {
+    if (!t.project.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator))
+      throw new PermissionException("User not allowed in project");
+
+    logEntryService.save(
+        LogEntry.from(ActionType.Delete, t.project, dto.Locale.class, dto.Locale.from(t), null));
+
+    messageService.delete(Message.byLocale(t.id));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void preDelete(Collection<Locale> t) {
+    logEntryService.save(t.stream().map(l -> LogEntry.from(ActionType.Delete, l.project,
+        dto.Locale.class, dto.Locale.from(l), null)).collect(Collectors.toList()));
+
+    messageService
+        .delete(Message.byLocales(t.stream().map(m -> m.id).collect(Collectors.toList())));
+  }
 }

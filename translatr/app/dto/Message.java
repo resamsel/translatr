@@ -12,57 +12,56 @@ import models.Key;
 import models.Locale;
 import play.libs.Json;
 
-public class Message extends Dto
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
+public class Message extends Dto {
+  private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
-	public UUID id;
+  public UUID id;
 
-	@JsonIgnore
-	public DateTime whenCreated;
+  @JsonIgnore
+  public DateTime whenCreated;
 
-	@JsonIgnore
-	public DateTime whenUpdated;
+  @JsonIgnore
+  public DateTime whenUpdated;
 
-	public UUID localeId;
+  public UUID localeId;
 
-	public String localeName;
+  public String localeName;
 
-	public UUID keyId;
+  public UUID keyId;
 
-	public String keyName;
+  public String keyName;
 
-	public String value;
+  public String value;
 
-	private Message(models.Message in)
-	{
-		this.id = in.id;
-		this.whenCreated = in.whenCreated;
-		this.whenUpdated = in.whenUpdated;
-		this.localeId = in.locale.id;
-		this.localeName = in.locale.name;
-		this.keyId = in.key.id;
-		this.keyName = in.key.name;
-		this.value = in.value;
-	}
+  public Message() {}
 
-	public models.Message toModel(Locale locale, Key key)
-	{
-		models.Message out = new models.Message();
+  private Message(models.Message in) {
+    this.id = in.id;
+    this.whenCreated = in.whenCreated;
+    this.whenUpdated = in.whenUpdated;
+    this.localeId = in.locale.id;
+    this.localeName = in.locale.name;
+    this.keyId = in.key.id;
+    this.keyName = in.key.name;
+    this.value = in.value;
+  }
 
-		out.whenCreated = whenCreated;
-		out.whenUpdated = whenUpdated;
-		out.locale = locale;
-		out.key = key;
-		out.value = value;
+  public models.Message toModel(Locale locale, Key key) {
+    models.Message out = new models.Message();
 
-		LOGGER.trace("DTO Message toModel: {}", Json.toJson(out));
+    out.id = id;
+    out.whenCreated = whenCreated;
+    out.whenUpdated = whenUpdated;
+    out.locale = locale;
+    out.key = key;
+    out.value = value;
 
-		return out;
-	}
+    LOGGER.trace("DTO Message toModel: {}", Json.toJson(out));
 
-	public static Message from(models.Message message)
-	{
-		return new Message(message);
-	}
+    return out;
+  }
+
+  public static Message from(models.Message message) {
+    return new Message(message);
+  }
 }

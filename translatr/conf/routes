@@ -83,8 +83,11 @@ POST	/key/:projectId/create			controllers.Keys.create(projectId: java.util.UUID,
 POST	/key/:projectId/:localeId/create	controllers.Keys.create(projectId: java.util.UUID, localeId: java.util.UUID)
 
 # Messages
+GET		/project/:projectId/messages	controllers.Translations.find(projectId: java.util.UUID)
 #GET	/message/:id					controllers.Application.message(id: java.util.UUID)
+GET		/message/:localeId/:key			controllers.Translations.getByLocaleAndKey(localeId: java.util.UUID, key: String)
 POST	/message/create					controllers.Translations.create
+POST	/message/update					controllers.Translations.update
 
 # Load demo data
 GET		/load							controllers.Application.load
@@ -94,24 +97,30 @@ GET		/command/:key/execute	controllers.Application.commandExecute(key: String)
 #
 # API
 #
-GET		/api/projects					controllers.Api.findProjects
-GET		/api/project/:projectId			controllers.Api.getProject(projectId: java.util.UUID)
-POST	/api/project					controllers.Api.createProject
-PUT		/api/project					controllers.Api.updateProject
-DELETE	/api/project/:projectId			controllers.Api.deleteProject(projectId: java.util.UUID)
+GET		/api/projects					controllers.ProjectsApi.find
+GET		/api/project/:projectId			controllers.ProjectsApi.get(projectId: java.util.UUID)
+POST	/api/project					controllers.ProjectsApi.create
+PUT		/api/project					controllers.ProjectsApi.update
+DELETE	/api/project/:projectId			controllers.ProjectsApi.delete(projectId: java.util.UUID)
 
-GET		/api/project/:projectId/locales	controllers.Api.findLocales(projectId: java.util.UUID)
-GET		/api/locale/:localeId			controllers.Api.getLocale(localeId: java.util.UUID)
-POST	/api/locale						controllers.Api.createLocale
-PUT		/api/locale						controllers.Api.updateLocale
-DELETE	/api/locale/:localeId			controllers.Api.deleteLocale(localeId: java.util.UUID)
+GET		/api/project/:projectId/locales	controllers.LocalesApi.find(projectId: java.util.UUID)
+GET		/api/locale/:localeId			controllers.LocalesApi.get(localeId: java.util.UUID)
+POST	/api/locale						controllers.LocalesApi.create
+PUT		/api/locale						controllers.LocalesApi.update
+DELETE	/api/locale/:localeId			controllers.LocalesApi.delete(localeId: java.util.UUID)
 
-POST	/api/locale/:localeId/import/:fileType	controllers.Api.uploadLocale(localeId: java.util.UUID, fileType: String)
-GET		/api/locale/:localeId/export/:fileType	controllers.Api.downloadLocale(localeId: java.util.UUID, fileType: String)
+POST	/api/locale/:localeId/import/:fileType	controllers.LocalesApi.upload(localeId: java.util.UUID, fileType: String)
+GET		/api/locale/:localeId/export/:fileType	controllers.LocalesApi.download(localeId: java.util.UUID, fileType: String)
 
-GET		/api/project/:projectId/messages	controllers.Api.findMessages(projectId: java.util.UUID)
-GET		/api/message/:localeId/:key		controllers.Api.getMessage(localeId: java.util.UUID, key: String)
-POST	/api/message					controllers.Api.createMessage
+GET		/api/project/:projectId/keys	controllers.KeysApi.find(projectId: java.util.UUID)
+GET		/api/key/:keyId					controllers.KeysApi.get(keyId: java.util.UUID)
+POST	/api/key						controllers.KeysApi.create
+PUT		/api/key						controllers.KeysApi.update
+DELETE	/api/key/:keyId					controllers.KeysApi.delete(keyId: java.util.UUID)
+
+GET		/api/project/:projectId/messages	controllers.TranslationsApi.find(projectId: java.util.UUID)
+GET		/api/message/:keyId				controllers.TranslationsApi.get(keyId: java.util.UUID)
+POST	/api/message					controllers.TranslationsApi.create
 
 # Map static resources from the /public folder to the /assets URL path
 GET		/assets/*file					controllers.Assets.versioned(path="/public", file: Asset)

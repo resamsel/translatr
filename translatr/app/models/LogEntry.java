@@ -27,7 +27,7 @@ import play.libs.Json;
  * @version 29 Aug 2016
  */
 @Entity
-public class LogEntry {
+public class LogEntry implements Model<LogEntry> {
   @Id
   public UUID id;
 
@@ -87,6 +87,14 @@ public class LogEntry {
   }
 
   /**
+   * @param id
+   * @return
+   */
+  public static LogEntry byId(UUID id) {
+    return find.setId(id).findUnique();
+  }
+
+  /**
    * @param criteria
    * @return
    */
@@ -137,5 +145,20 @@ public class LogEntry {
       query.le("whenCreated", criteria.getWhenCreatedMax());
 
     return query;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public LogEntry updateFrom(LogEntry in) {
+    type = in.type;
+    contentType = in.contentType;
+    user = in.user;
+    project = in.project;
+    before = in.before;
+    after = in.after;
+
+    return this;
   }
 }

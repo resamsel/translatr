@@ -154,14 +154,14 @@ public class Application extends AbstractController {
   }
 
   public Result javascriptRoutes() {
-    return ok(
-        JavaScriptReverseRouter.create("jsRoutes", routes.javascript.Application.activityCsv(),
-            routes.javascript.Users.activityCsv(), routes.javascript.Profiles.activity(),
-            routes.javascript.Profiles.resetNotifications(), routes.javascript.Dashboards.search(),
-            routes.javascript.Projects.search(), routes.javascript.Projects.activity(),
-            routes.javascript.Projects.activityCsv(), routes.javascript.Locales.locale(),
-            routes.javascript.Keys.key(), routes.javascript.Keys.createImmediately(),
-            routes.javascript.Keys.remove(), routes.javascript.Api.getMessage(),
-            routes.javascript.Translations.create(), routes.javascript.Api.findMessages()));
+    return ok(JavaScriptReverseRouter.create("jsRoutes",
+        routes.javascript.Application.activityCsv(), routes.javascript.Users.activityCsv(),
+        routes.javascript.Profiles.activity(), routes.javascript.Profiles.resetNotifications(),
+        routes.javascript.Dashboards.search(), routes.javascript.Projects.search(),
+        routes.javascript.Projects.activity(), routes.javascript.Projects.activityCsv(),
+        routes.javascript.Locales.locale(), routes.javascript.Keys.key(),
+        routes.javascript.Keys.createImmediately(), routes.javascript.Keys.remove(),
+        routes.javascript.Translations.getByLocaleAndKey(), routes.javascript.Translations.create(),
+        routes.javascript.Translations.update(), routes.javascript.Translations.find()));
   }
 }

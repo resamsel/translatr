@@ -18,7 +18,13 @@ public enum Scope {
 
   LocaleRead(ScopeSection.Locale, ScopeType.Read),
 
-  LocaleWrite(ScopeSection.Locale, ScopeType.Write);
+  LocaleWrite(ScopeSection.Locale, ScopeType.Write),
+
+  KeyAdmin(ScopeSection.Key, ScopeType.Admin),
+
+  KeyRead(ScopeSection.Key, ScopeType.Read),
+
+  KeyWrite(ScopeSection.Key, ScopeType.Write);
 
   private static final Map<String, Scope> MAP = new HashMap<>();
 

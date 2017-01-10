@@ -71,7 +71,7 @@ App.Modules.MessageModule = function(sb) {
     	preview.html('');
     	localeName.text(sb.dom.find('#' + localeId + ' .name').text());
     	sb.utilities.ajax(
-    		jsRoutes.controllers.Api.getMessage(localeId, keyName)
+    		jsRoutes.controllers.Translations.getByLocaleAndKey(localeId, keyName)
     	).done(_handleMessage);
     }
 
@@ -107,22 +107,28 @@ App.Modules.MessageModule = function(sb) {
 			form.submit(function(e){
 		        e.preventDefault();
 		    	progress.css('visibility', 'visible');
+
+		        var op;
+		    	var data = {
+					"localeId": fieldLocale.attr('localeId'),
+					"keyId": keyId,
+					"value": fieldValue.val()
+				};
+
+		        if(fieldId.val() !== '') {
+		        	op = jsRoutes.controllers.Translations.update();
+		        	data["id"] = fieldId.val();
+		        } else {
+		        	op = jsRoutes.controllers.Translations.create();
+		        }
+
 				sb.utilities.ajax(
 					sb.utilities.merge(
-						jsRoutes.controllers.Translations.create(),
+						op,
 						{
 							contentType: 'application/json',
 							dataType: 'json',
-							data: JSON.stringify({
-								"id": fieldId.val() !== '' ? fieldId.val() : null,
-								"locale": {
-								  "id": fieldLocale.attr('localeId')
-								},
-								"key": {
-									"id": keyId
-								},
-								"value": fieldValue.val()
-							})
+							data: JSON.stringify(data)
 						}
 					)
 				).done(_handleSaveMessage);

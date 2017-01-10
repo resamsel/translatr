@@ -32,149 +32,145 @@ import play.mvc.Http.Context;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
-public class Key implements Suggestable
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(Key.class);
+public class Key implements Model<Key>, Suggestable {
+  private static final Logger LOGGER = LoggerFactory.getLogger(Key.class);
 
-	public static final int NAME_LENGTH = 255;
+  public static final int NAME_LENGTH = 255;
 
-	@Id
-	public UUID id;
+  @Id
+  public UUID id;
 
-	@Version
-	public Long version;
+  @Version
+  public Long version;
 
-	@CreatedTimestamp
-	public DateTime whenCreated;
+  @CreatedTimestamp
+  public DateTime whenCreated;
 
-	@UpdatedTimestamp
-	public DateTime whenUpdated;
+  @UpdatedTimestamp
+  public DateTime whenUpdated;
 
-	@ManyToOne(optional = false)
-	public Project project;
+  @ManyToOne(optional = false)
+  public Project project;
 
-	@Column(nullable = false, length = NAME_LENGTH)
-	public String name;
+  @Column(nullable = false, length = NAME_LENGTH)
+  public String name;
 
-	@JsonIgnore
-	@OneToMany
-	public List<Message> messages;
+  @JsonIgnore
+  @OneToMany
+  public List<Message> messages;
 
-	public Key()
-	{
-	}
+  public Key() {}
 
-	public Key(Project project, String name)
-	{
-		this.project = project;
-		this.name = name;
-	}
+  public Key(Project project, String name) {
+    this.project = project;
+    this.name = name;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String value()
-	{
-		return Context.current().messages().at("key.autocomplete", name);
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String value() {
+    return Context.current().messages().at("key.autocomplete", name);
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Data data()
-	{
-		return Data.from(Key.class, id, name, routes.Keys.key(id).absoluteURL(Context.current().request()));
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Data data() {
+    return Data.from(Key.class, id, name,
+        routes.Keys.key(id).absoluteURL(Context.current().request()));
+  }
 
-	private static final Find<UUID, Key> find = new Find<UUID, Key>()
-	{
-	};
+  private static final Find<UUID, Key> find = new Find<UUID, Key>() {};
 
-	/**
-	 * @param keyId
-	 * @return
-	 */
-	public static Key byId(UUID id)
-	{
-		return find.setId(id).fetch("project").findUnique();
-	}
+  /**
+   * @param keyId
+   * @return
+   */
+  public static Key byId(UUID id) {
+    return find.setId(id).fetch("project").findUnique();
+  }
 
-	/**
-	 * @param messageCriteria
-	 * @return
-	 */
-	public static List<Key> findBy(KeyCriteria criteria)
-	{
-		Query<Key> q = Key.find.fetch("project").alias("k");
-		ExpressionList<Key> query = q.where();
+  /**
+   * @param messageCriteria
+   * @return
+   */
+  public static List<Key> findBy(KeyCriteria criteria) {
+    Query<Key> q = Key.find.fetch("project").alias("k");
+    ExpressionList<Key> query = q.where();
 
-		if(criteria.getProjectId() != null)
-			query.eq("project.id", criteria.getProjectId());
+    if (criteria.getProjectId() != null)
+      query.eq("project.id", criteria.getProjectId());
 
-		if(criteria.getSearch() != null)
-			query
-				.disjunction()
-				.ilike("name", "%" + criteria.getSearch() + "%")
-				.exists(
-					Ebean
-						.createQuery(Message.class)
-						.where()
-						.raw("key.id = k.id")
-						.ilike("value", "%" + criteria.getSearch() + "%")
-						.query())
-				.endJunction();
+    if (criteria.getSearch() != null)
+      query.disjunction().ilike("name", "%" + criteria.getSearch() + "%")
+          .exists(Ebean.createQuery(Message.class).where().raw("key.id = k.id")
+              .ilike("value", "%" + criteria.getSearch() + "%").query())
+          .endJunction();
 
-		if(criteria.getMissing() == Boolean.TRUE)
-		{
-			ExpressionList<Message> messageQuery = Ebean.createQuery(Message.class).where().raw("key.id = k.id");
+    if (criteria.getMissing() == Boolean.TRUE) {
+      ExpressionList<Message> messageQuery =
+          Ebean.createQuery(Message.class).where().raw("key.id = k.id");
 
-			if(criteria.getLocaleId() != null)
-				messageQuery.eq("locale.id", criteria.getLocaleId());
+      if (criteria.getLocaleId() != null)
+        messageQuery.eq("locale.id", criteria.getLocaleId());
 
-			query.notExists(messageQuery.query());
-		}
+      query.notExists(messageQuery.query());
+    }
 
-		if(criteria.getOffset() != null)
-			query.setFirstRow(criteria.getOffset());
+    if (criteria.getOffset() != null)
+      query.setFirstRow(criteria.getOffset());
 
-		if(criteria.getLimit() != null)
-			query.setMaxRows(criteria.getLimit() + 1);
+    if (criteria.getLimit() != null)
+      query.setMaxRows(criteria.getLimit() + 1);
 
-		if(criteria.getOrder() != null)
-			query.setOrderBy(criteria.getOrder());
+    if (criteria.getOrder() != null)
+      query.setOrderBy(criteria.getOrder());
 
-		return log(() -> query.findList(), LOGGER, "Retrieving keys");
-	}
+    return log(() -> query.findList(), LOGGER, "Retrieving keys");
+  }
 
-	/**
-	 * @param project
-	 * @param name
-	 * @return
-	 */
-	public static Key byProjectAndName(Project project, String name)
-	{
-		return find.fetch("project").where().eq("project", project).eq("name", name).findUnique();
-	}
+  /**
+   * @param project
+   * @param name
+   * @return
+   */
+  public static Key byProjectAndName(Project project, String name) {
+    return byProjectAndName(project.id, name);
+  }
 
-	public static List<Key> last(Project project, int limit)
-	{
-		return find
-			.fetch("project")
-			.where()
-			.eq("project", project)
-			.order("whenUpdated desc")
-			.setMaxRows(limit)
-			.findList();
-	}
+  /**
+   * @param projectId
+   * @param name
+   * @return
+   */
+  public static Key byProjectAndName(UUID projectId, String name) {
+    return find.fetch("project").where().eq("project.id", projectId).eq("name", name).findUnique();
+  }
 
-	/**
-	 * @param project
-	 * @return
-	 */
-	public static long countBy(Project project)
-	{
-		return log(() -> find.where().eq("project", project).findRowCount(), LOGGER, "countBy");
-	}
+  public static List<Key> last(Project project, int limit) {
+    return find.fetch("project").where().eq("project", project).order("whenUpdated desc")
+        .setMaxRows(limit).findList();
+  }
+
+  /**
+   * @param project
+   * @return
+   */
+  public static long countBy(Project project) {
+    return log(() -> find.where().eq("project", project).findRowCount(), LOGGER, "countBy");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Key updateFrom(Key in) {
+    project = in.project;
+    name = in.name;
+
+    return this;
+  }
 }

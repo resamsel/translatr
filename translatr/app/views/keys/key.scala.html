@@ -61,13 +61,15 @@
 				}
 			</div>
 		} else {
-			<p>
+			<p class="grey-text">
 				@Messages("locales.size", 0)
 			</p>
 			<div class="locales center">
-				<a href="#modal-create" class="modal-trigger btn waves-effect waves-light">
-					@Messages("locale.create.title")
-				</a>
+				@if(key.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Developer)) {
+					<a href="#modal-create" class="modal-trigger btn waves-effect waves-light">
+						@Messages("locale.create.title")
+					</a>
+				}
 			</div>
 		}
 	} {
@@ -106,7 +108,7 @@
 			<p id="preview"></p>
 		</div>
 
-		<p id="no-selection" class="center empty">
+		<p id="no-selection" class="center empty grey-text">
 			@Messages("locale.selection.none")
 		</p>
 	} {

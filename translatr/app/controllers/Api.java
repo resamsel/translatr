@@ -6,22 +6,15 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
 import javax.validation.ValidationException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.feth.play.module.pa.PlayAuthenticate;
 
-import actions.ApiAction;
-import criterias.LocaleCriteria;
-import criterias.MessageCriteria;
-import criterias.ProjectCriteria;
+import criterias.AbstractSearchCriteria;
+import dto.Dto;
 import dto.NotFoundException;
 import dto.PermissionException;
-import models.Locale;
-import models.Message;
+import models.Model;
 import models.Project;
 import models.ProjectRole;
 import models.Scope;
@@ -30,56 +23,41 @@ import play.cache.CacheApi;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
-import play.mvc.With;
-import services.LocaleService;
 import services.LogEntryService;
-import services.MessageService;
-import services.ProjectService;
+import services.ModelService;
 import services.UserService;
 import utils.ErrorUtils;
 import utils.PermissionUtils;
 
-@With(ApiAction.class)
-public class Api extends AbstractController {
-  private static final Logger LOGGER = LoggerFactory.getLogger(Api.class);
+public abstract class Api<MODEL extends Model<MODEL>, DTO extends Dto, ID>
+    extends AbstractController {
+  protected final ModelService<MODEL> service;
 
-  private final ProjectService projectService;
-
-  private final LocaleService localeService;
-
-  private final MessageService messageService;
-
-  /**
-   * 
-   */
-  @Inject
-  public Api(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, ProjectService projectService, LocaleService localeService,
-      MessageService messageService) {
+  protected Api(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
+      LogEntryService logEntryService, ModelService<MODEL> service) {
     super(injector, cache, auth, userService, logEntryService);
 
-    this.projectService = projectService;
-    this.localeService = localeService;
-    this.messageService = messageService;
+    this.service = service;
   }
 
   /**
    * @param errorMessage
    * @param scopes
    */
-  private void checkPermissionAll(String errorMessage, Scope... scopes) {
+  protected void checkPermissionAll(String errorMessage, Scope... scopes) {
     if (!PermissionUtils.hasPermissionAll(scopes))
       throw new PermissionException(errorMessage);
   }
 
-  private void checkProjectRole(Project project, User user, ProjectRole... roles) {
+  protected void checkProjectRole(Project project, User user, ProjectRole... roles) {
     if (!project.hasPermissionAny(user, roles))
       throw new PermissionException("User not allowed in project");
   }
 
   @Override
-  protected Result catchError(Supplier<Result> supplier) {
+  protected Result tryCatch(Supplier<Result> supplier) {
     try {
       return supplier.get();
     } catch (PermissionException e) {
@@ -93,212 +71,88 @@ public class Api extends AbstractController {
     }
   }
 
-  private Result project(UUID projectId, Function<Project, Result> processor) {
-    return catchError(() -> {
-      Project project = Project.byId(projectId);
-      if (project == null)
-        throw new NotFoundException(String.format("Project not found: '%s'", projectId));
-
-      return processor.apply(project);
-    });
+  protected <IN, OUT> Result toJson(Function<IN, OUT> mapper, Supplier<IN> supplier) {
+    return tryCatch(() -> ok(Json.toJson(mapper.apply(supplier.get()))));
   }
 
-  public Result findProjects() {
-    return loggedInUser(user -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectRead);
-
-      List<Project> projects = Project.findBy(new ProjectCriteria().withMemberId(user.id));
-
-      return ok(Json
-          .toJson(projects.stream().map(p -> dto.Project.from(p)).collect(Collectors.toList())));
-    });
+  protected <IN, OUT> Result toJsons(Function<IN, OUT> mapper, Supplier<List<IN>> supplier) {
+    return tryCatch(
+        () -> ok(Json.toJson(supplier.get().stream().map(mapper).collect(Collectors.toList()))));
   }
 
-  public Result getProject(UUID projectId) {
-    return project(projectId, project -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectRead);
+  protected abstract Function<MODEL, DTO> dtoMapper();
 
-      return ok(Json.toJson(dto.Project.from(project)));
-    });
+  protected <T, CRITERIA extends AbstractSearchCriteria<CRITERIA>> Supplier<List<T>> finder(
+      CRITERIA criteria, Function<CRITERIA, List<T>> finder, Scope... scopes) {
+    return () -> finder.apply(criteria);
   }
 
-  @BodyParser.Of(BodyParser.Json.class)
-  public Result createProject() {
-    return loggedInUser(user -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectWrite);
+  protected <T> T project(UUID projectId, Function<Project, T> processort) {
+    Project project = Project.byId(projectId);
+    if (project == null || project.deleted)
+      throw new NotFoundException(String.format("Project not found: '%s'", projectId));
 
-      dto.Project json = Json.fromJson(request().body().asJson(), dto.Project.class);
-
-      if (json.name != null)
-        if (Project.byOwnerAndName(user, json.name) != null)
-          throw new IllegalArgumentException(
-              String.format("Project with name '%s' already exists", json.name));
-
-      Project project = json.toModel();
-      project.owner = user;
-
-      LOGGER.debug("Project: {}", Json.toJson(project));
-      projectService.save(project);
-
-      return ok(Json.toJson(dto.Project.from(project)));
-    });
+    return processort.apply(project);
   }
 
-  @BodyParser.Of(BodyParser.Json.class)
-  public Result updateProject() {
-    return loggedInUser(user -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectWrite);
-
-      dto.Project json = Json.fromJson(request().body().asJson(), dto.Project.class);
-      if (json.id == null)
-        throw new IllegalArgumentException("Field 'id' required");
-
-      return project(json.id, project -> {
-        checkProjectRole(project, user, ProjectRole.Owner);
-
-        project.updateFrom(json.toModel());
-        project.owner = user;
-
-        LOGGER.debug("Project: {}", Json.toJson(project));
-        projectService.save(project);
-
-        return ok(Json.toJson(dto.Project.from(project)));
-      });
-    });
+  protected Result projectCatch(UUID projectId, Function<Project, Result> processor) {
+    return tryCatch(() -> project(projectId, processor));
   }
 
-  public Result deleteProject(UUID projectId) {
-    return project(projectId, project -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectWrite);
-      checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner);
+  protected abstract Function<ID, MODEL> getter();
 
-      projectService.delete(project);
+  protected abstract Scope[] scopesGet();
 
-      return ok(Json.newObject().put("message",
-          String.format("Project with ID '%s' has been deleted", projectId)));
-    });
-  }
+  protected abstract Scope[] scopesCreate();
 
-  public Result findLocales(UUID projectId) {
-    return project(projectId, project -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead);
-      checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator);
+  protected abstract Scope[] scopesDelete();
 
-      List<Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(project.id)
-          .withLocaleName(request().getQueryString("localeName")));
+  public Result get(ID id) {
+    return toJson(dtoMapper(), () -> {
+      checkPermissionAll("Access token not allowed", scopesGet());
 
-      return ok(
-          Json.toJson(locales.stream().map(l -> dto.Locale.from(l)).collect(Collectors.toList())));
-    });
-  }
+      MODEL obj = getter().apply(id);
 
-  public Result getLocale(UUID localeId) {
-    return locale(localeId, locale -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead);
+      if (obj == null)
+        throw new NotFoundException(String.format("Entity not found: '%s'", String.valueOf(id)));
 
-      return ok(Json.toJson(dto.Locale.from(locale)));
-    });
-  }
-
-
-  @BodyParser.Of(BodyParser.Json.class)
-  public Result createLocale() {
-    return catchError(() -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleWrite);
-
-      dto.Locale json = Json.fromJson(request().body().asJson(), dto.Locale.class);
-
-      if (json.projectId == null)
-        throw new ValidationException("Field 'projectId' required");
-
-      return project(json.projectId, project -> {
-        checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator);
-
-        if (json.name == null)
-          throw new ValidationException("Field 'name' required");
-        else if (Locale.byProjectAndName(project, json.name) != null)
-          throw new ValidationException(String.format(
-              "Locale with name '%s' already exists in project '%s'", json.name, project.name));
-
-        Locale locale = json.toModel(project);
-
-        LOGGER.debug("Project: {}", Json.toJson(project));
-        localeService.save(locale);
-
-        return ok(Json.toJson(dto.Locale.from(locale)));
-      });
+      return obj;
     });
   }
 
   @BodyParser.Of(BodyParser.Json.class)
-  public Result updateLocale() {
-    return loggedInUser(user -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleWrite);
-
-      dto.Locale json = Json.fromJson(request().body().asJson(), dto.Locale.class);
-      if (json.id == null)
-        throw new IllegalArgumentException("Field 'id' required");
-
-      return locale(json.id, locale -> {
-        checkProjectRole(locale.project, user, ProjectRole.Owner, ProjectRole.Translator);
-
-        locale.updateFrom(json.toModel(locale.project));
-
-        LOGGER.debug("Locale: {}", Json.toJson(locale));
-        localeService.save(locale);
-
-        return ok(Json.toJson(dto.Locale.from(locale)));
-      });
-    });
+  public Result create() {
+    return toJson(dtoMapper(), creator(request()));
   }
 
-  public Result deleteLocale(UUID localeId) {
-    return locale(localeId, locale -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleWrite);
-      checkProjectRole(locale.project, User.loggedInUser(), ProjectRole.Owner,
-          ProjectRole.Translator);
+  protected void checkDelete(MODEL m) {}
 
-      localeService.delete(locale);
+  public Result delete(ID id) {
+    return tryCatch(() -> {
+      checkPermissionAll("Access token not allowed", scopesDelete());
 
-      return ok(Json.newObject().put("message",
-          String.format("Locale with ID '%s' has been deleted", localeId)));
+      MODEL m = getter().apply(id);
+
+      if (m == null)
+        throw new NotFoundException(String.format("%s with ID '%s' not found",
+            service.getClazz().getSimpleName(), String.valueOf(id)));
+
+      service.delete(m);
+
+      return ok(Json.newObject().put("message", String.format("%s with ID '%s' has been deleted",
+          service.getClazz().getSimpleName(), id)));
     });
   }
 
 
-  @BodyParser.Of(BodyParser.Json.class)
-  public Result createMessage() {
-    return ok(Json.toJson(dto.Message.from(messageService.create(request().body().asJson()))));
-  }
 
-  public Result findMessages(UUID projectId) {
-    List<Message> messages = Message.findBy(new MessageCriteria().withProjectId(projectId)
-        .withKeyName(request().getQueryString("keyName")));
+  /**
+   * @param request
+   * @return
+   */
+  protected Supplier<MODEL> creator(Request request) {
+    checkPermissionAll("Access token not allowed", scopesCreate());
 
-    return ok(
-        Json.toJson(messages.stream().map(m -> dto.Message.from(m)).collect(Collectors.toList())));
-  }
-
-  public Result getMessage(UUID localeId, String key) {
-    return catchError(() -> {
-      Message message = Message.byLocaleAndKeyName(localeId, key);
-
-      if (message == null)
-        throw new PermissionException("Message not found");
-
-      return ok(Json.toJson(dto.Message.from(message)));
-    });
-  }
-
-  public Result uploadLocale(UUID localeId, String fileType) {
-    return catchError(() -> locale(localeId, locale -> {
-      injector.instanceOf(Locales.class).importLocale(locale, request());
-
-      return ok("{\"status\":\"OK\"}");
-    }));
-  }
-
-  public Result downloadLocale(UUID localeId, String fileType) {
-    return injector.instanceOf(Locales.class).download(localeId, fileType);
+    return () -> service.create(request.body().asJson());
   }
 }

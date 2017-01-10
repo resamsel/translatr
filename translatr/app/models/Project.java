@@ -42,7 +42,7 @@ import utils.PermissionUtils;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
-public class Project implements Suggestable {
+public class Project implements Model<Project>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
   public static final int NAME_LENGTH = 255;
@@ -229,8 +229,10 @@ public class Project implements Suggestable {
   /**
    * @param project
    */
+  @Override
   public Project updateFrom(Project in) {
     name = in.name;
+    owner = in.owner;
 
     return this;
   }

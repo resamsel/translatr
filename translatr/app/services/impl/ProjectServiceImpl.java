@@ -10,10 +10,15 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.ValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import dto.NotFoundException;
+import dto.PermissionException;
 import models.ActionType;
 import models.LogEntry;
 import models.Project;
@@ -33,123 +38,155 @@ import services.ProjectService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class ProjectServiceImpl extends AbstractModelService<Project> implements ProjectService
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(PermissionServiceImpl.class);
+public class ProjectServiceImpl extends AbstractModelService<Project, dto.Project>
+    implements ProjectService {
+  private static final Logger LOGGER = LoggerFactory.getLogger(PermissionServiceImpl.class);
 
-	private final CacheApi cache;
+  private final CacheApi cache;
 
-	private final LocaleService localeService;
+  private final LocaleService localeService;
 
-	private final KeyService keyService;
+  private final KeyService keyService;
 
-	/**
-	 * 
-	 */
-	@Inject
-	public ProjectServiceImpl(Configuration configuration, CacheApi cache, LocaleService localeService,
-				KeyService keyService, LogEntryService logEntryService)
-	{
-		super(configuration, logEntryService);
-		this.cache = cache;
-		this.localeService = localeService;
-		this.keyService = keyService;
-	}
+  /**
+   * 
+   */
+  @Inject
+  public ProjectServiceImpl(Configuration configuration, CacheApi cache,
+      LocaleService localeService, KeyService keyService, LogEntryService logEntryService) {
+    super(dto.Project.class, configuration, logEntryService);
+    this.cache = cache;
+    this.localeService = localeService;
+    this.keyService = keyService;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Project getById(UUID id)
-	{
-		return log(
-			() -> cache.getOrElse(String.format("project:%s", id.toString()), () -> Project.byIdUncached(id), 60),
-			LOGGER,
-			"getById");
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Project byId(JsonNode id) {
+    return Project.byId(UUID.fromString(id.asText()));
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Project getByOwnerAndName(User user, String name)
-	{
-		return log(
-			() -> cache.getOrElse(
-				String.format("projectByOwnerAndName:%s:%s", user.id.toString(), name),
-				() -> Project.byOwnerAndNameUncached(user, name),
-				10 * 600),
-			LOGGER,
-			"byOwnerAndName");
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Project toModel(dto.Project dto) {
+    return dto.toModel();
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void preSave(Project t, boolean update)
-	{
-		if(update)
-			logEntryService
-				.save(LogEntry.from(ActionType.Update, t, dto.Project.class, toDto(Project.byId(t.id)), toDto(t)));
-		if(t.owner == null)
-			t.owner = User.loggedInUser();
-		if(t.members == null)
-			t.members = new ArrayList<>();
-		if(t.members.isEmpty())
-			t.members.add(new ProjectUser(ProjectRole.Owner).withProject(t).withUser(t.owner));
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected dto.Project validate(dto.Project t) {
+    if (t.name != null)
+      if (Project.byOwnerAndName(User.loggedInUser(), t.name) != null)
+        throw new ValidationException(
+            String.format("Project with name '%s' already exists", t.name));
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void postSave(Project t, boolean update)
-	{
-		if(!update)
-			logEntryService.save(LogEntry.from(ActionType.Create, t, dto.Project.class, null, toDto(t)));
-	}
+    return t;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void delete(Project t)
-	{
-		keyService.delete(t.keys);
-		localeService.delete(t.locales);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Project getById(UUID id) {
+    return log(() -> cache.getOrElse(String.format("project:%s", id.toString()),
+        () -> Project.byIdUncached(id), 60), LOGGER, "getById");
+  }
 
-		logEntryService.save(LogEntry.from(ActionType.Delete, t, dto.Project.class, toDto(t), null));
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Project getByOwnerAndName(User user, String name) {
+    return log(
+        () -> cache.getOrElse(
+            String.format("projectByOwnerAndName:%s:%s", user.id.toString(), name),
+            () -> Project.byOwnerAndNameUncached(user, name), 10 * 600),
+        LOGGER, "byOwnerAndName");
+  }
 
-		super.save(t.withName(String.format("%s-%s", t.id, t.name)).withDeleted(true));
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void preSave(Project t, boolean update) {
+    if (update)
+      logEntryService.save(LogEntry.from(ActionType.Update, t, dto.Project.class,
+          toDto(Project.byId(t.id)), toDto(t)));
+    if (t.owner == null)
+      t.owner = User.loggedInUser();
+    if (t.members == null)
+      t.members = new ArrayList<>();
+    if (t.members.isEmpty())
+      t.members.add(new ProjectUser(ProjectRole.Owner).withProject(t).withUser(t.owner));
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void delete(Collection<Project> t)
-	{
-		keyService.delete(t.stream().map(p -> p.keys).flatMap(k -> k.stream()).collect(Collectors.toList()));
-		localeService.delete(t.stream().map(p -> p.locales).flatMap(l -> l.stream()).collect(Collectors.toList()));
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postSave(Project t, boolean update) {
+    if (!update)
+      logEntryService.save(LogEntry.from(ActionType.Create, t, dto.Project.class, null, toDto(t)));
+  }
 
-		logEntryService.save(
-			t.stream().map(p -> LogEntry.from(ActionType.Delete, p, dto.Project.class, toDto(p), null)).collect(
-				Collectors.toList()));
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void delete(Project t) {
+    if (t == null || t.deleted)
+      throw new NotFoundException(String.format("Project not found"));
+    if (!t.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner))
+      throw new PermissionException("User not allowed in project");
 
-		super.save(
-			t.stream().map(p -> p.withName(String.format("%s-%s", p.id, p.name)).withDeleted(true)).collect(
-				Collectors.toList()));
-	}
+    keyService.delete(t.keys);
+    localeService.delete(t.locales);
 
-	protected dto.Project toDto(Project t)
-	{
-		dto.Project out = dto.Project.from(t);
+    logEntryService.save(LogEntry.from(ActionType.Delete, t, dto.Project.class, toDto(t), null));
 
-		out.keys = Collections.emptyList();
-		out.locales = Collections.emptyList();
-		out.messages = Collections.emptyList();
+    super.save(t.withName(String.format("%s-%s", t.id, t.name)).withDeleted(true));
+  }
 
-		return out;
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void delete(Collection<Project> t) {
+    User loggedInUser = User.loggedInUser();
+    for (Project p : t) {
+      if (p == null || p.deleted)
+        throw new NotFoundException(String.format("Project not found"));
+      if (!p.hasPermissionAny(loggedInUser, ProjectRole.Owner))
+        throw new PermissionException("User not allowed in project");
+    }
+
+    keyService
+        .delete(t.stream().map(p -> p.keys).flatMap(k -> k.stream()).collect(Collectors.toList()));
+    localeService.delete(
+        t.stream().map(p -> p.locales).flatMap(l -> l.stream()).collect(Collectors.toList()));
+
+    logEntryService.save(
+        t.stream().map(p -> LogEntry.from(ActionType.Delete, p, dto.Project.class, toDto(p), null))
+            .collect(Collectors.toList()));
+
+    super.save(
+        t.stream().map(p -> p.withName(String.format("%s-%s", p.id, p.name)).withDeleted(true))
+            .collect(Collectors.toList()));
+  }
+
+  protected dto.Project toDto(Project t) {
+    dto.Project out = dto.Project.from(t);
+
+    out.keys = Collections.emptyList();
+    out.locales = Collections.emptyList();
+    out.messages = Collections.emptyList();
+
+    return out;
+  }
 }

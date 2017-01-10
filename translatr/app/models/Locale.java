@@ -31,7 +31,7 @@ import play.mvc.Http.Context;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
-public class Locale implements Suggestable {
+public class Locale implements Model<Locale>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Locale.class);
 
   public static final int NAME_LENGTH = 15;
@@ -101,7 +101,16 @@ public class Locale implements Suggestable {
    * @return
    */
   public static Locale byProjectAndName(Project project, String name) {
-    return find.fetch("project").where().eq("project", project).eq("name", name).findUnique();
+    return byProjectAndName(project.id, name);
+  }
+
+  /**
+   * @param projectId
+   * @param name
+   * @return
+   */
+  public static Locale byProjectAndName(UUID projectId, String name) {
+    return find.fetch("project").where().eq("project.id", projectId).eq("name", name).findUnique();
   }
 
   /**
@@ -148,7 +157,9 @@ public class Locale implements Suggestable {
   /**
    * @param model
    */
+  @Override
   public Locale updateFrom(Locale in) {
+    project = in.project;
     name = in.name;
 
     return this;

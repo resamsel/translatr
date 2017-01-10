@@ -11,6 +11,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import commands.Command;
 import criterias.LogEntryCriteria;
+import models.Key;
 import models.Locale;
 import models.LogEntry;
 import models.Project;
@@ -62,7 +63,7 @@ public abstract class AbstractController extends Controller {
     this.logEntryService = logEntryService;
   }
 
-  protected Result catchError(Supplier<Result> supplier) {
+  protected Result tryCatch(Supplier<Result> supplier) {
     return supplier.get();
   }
 
@@ -140,7 +141,7 @@ public abstract class AbstractController extends Controller {
 
 
   protected Result loggedInUser(Function<User, Result> processor) {
-    return catchError(() -> processor.apply(User.loggedInUser()));
+    return tryCatch(() -> processor.apply(User.loggedInUser()));
   }
 
   protected Result locale(UUID localeId, Function<Locale, Result> processor) {
@@ -151,5 +152,15 @@ public abstract class AbstractController extends Controller {
     select(locale.project);
 
     return processor.apply(locale);
+  }
+
+  protected Result key(UUID keyId, Function<Key, Result> processor) {
+    Key key = Key.byId(keyId);
+    if (key == null)
+      return redirect(routes.Dashboards.dashboard());
+
+    select(key.project);
+
+    return processor.apply(key);
   }
 }

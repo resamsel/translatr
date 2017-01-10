@@ -12,6 +12,7 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.feth.play.module.pa.user.EmailIdentity;
 import com.feth.play.module.pa.user.NameIdentity;
@@ -33,7 +34,7 @@ import services.UserService;
  * @version 1 Oct 2016
  */
 @Singleton
-public class UserServiceImpl extends AbstractModelService<User> implements UserService {
+public class UserServiceImpl extends AbstractModelService<User, dto.User> implements UserService {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
   private final CacheApi cache;
@@ -46,9 +47,25 @@ public class UserServiceImpl extends AbstractModelService<User> implements UserS
   @Inject
   public UserServiceImpl(Configuration configuration, CacheApi cache,
       LinkedAccountService linkedAccountService, LogEntryService logEntryService) {
-    super(configuration, logEntryService);
+    super(dto.User.class, configuration, logEntryService);
     this.cache = cache;
     this.linkedAccountService = linkedAccountService;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected User byId(JsonNode id) {
+    return User.byId(UUID.fromString(id.asText()));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected User toModel(dto.User dto) {
+    return dto.toModel();
   }
 
   @Override

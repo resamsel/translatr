@@ -17,8 +17,10 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import criterias.LogEntryCriteria;
+import dto.Dto;
 import models.Aggregate;
 import models.LogEntry;
 import models.Project;
@@ -34,7 +36,8 @@ import services.LogEntryService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implements LogEntryService {
+public class LogEntryServiceImpl extends AbstractModelService<LogEntry, Dto>
+    implements LogEntryService {
   private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryServiceImpl.class);
 
   private static final String H2_COLUMN_MILLIS =
@@ -47,8 +50,25 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry> implemen
    */
   @Inject
   public LogEntryServiceImpl(Configuration configuration, CacheApi cache) {
-    super(configuration, null);
+    super(dto.Dto.class, configuration, null);
     this.cache = cache;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected LogEntry byId(JsonNode id) {
+    return LogEntry.byId(UUID.fromString(id.asText()));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected LogEntry toModel(Dto dto) {
+    // never needed
+    return null;
   }
 
   @Override

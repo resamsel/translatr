@@ -82,7 +82,7 @@ App.Modules.MessageListModule = function(sb) {
     function _handleKeyChanged(keyId, keyName) {
     	panelMessages.hide();
 	    sb.utilities.ajax(sb.utilities.merge(
-			jsRoutes.controllers.Api.findMessages(projectId),
+			jsRoutes.controllers.Translations.find(projectId),
 			{data: {keyName: keyName}}
 		)).done(function(data) {
 		    _handleMessageList(keyName, data);
@@ -140,7 +140,7 @@ App.Modules.MessageModule = function(sb) {
 	    Materialize.updateTextFields();
 	    preview.html('');
 	    sb.utilities.ajax(
-			jsRoutes.controllers.Api.getMessage(localeId, keyName)
+			jsRoutes.controllers.Translations.getByLocaleAndKey(localeId, keyName)
 		).done(_handleMessage);
 	}
 
@@ -169,22 +169,28 @@ App.Modules.MessageModule = function(sb) {
 			form.submit(function(e){
 		        e.preventDefault();
 		        progress.css('visibility', 'visible');
+
+		        var op;
+		        var data = {
+		        		"localeId": localeId,
+		        		"keyId": fieldKey.attr('keyId'),
+		        		"value": fieldValue.val()
+		        };
+
+		        if(fieldId.val() !== '') {
+		        	op = jsRoutes.controllers.Translations.update();
+		        	data["id"] = fieldId.val();
+		        } else {
+		        	op = jsRoutes.controllers.Translations.create();
+		        }
+
 		    	sb.utilities.ajax(
 		    		sb.utilities.merge(
-						jsRoutes.controllers.Translations.create(),
+						op,
 						{
 							contentType: 'application/json',
 							dataType: 'json',
-							data: JSON.stringify({
-								"id": fieldId.val() !== '' ? fieldId.val() : null,
-								"locale": {
-								  "id": localeId
-								},
-								"key": {
-									"id": fieldKey.attr('keyId')
-								},
-								"value": fieldValue.val()
-							})
+							data: JSON.stringify(data)
 						}
 					)
 				).done(_handleSaveMessage);

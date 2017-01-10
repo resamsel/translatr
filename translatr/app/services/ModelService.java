@@ -2,18 +2,25 @@ package services;
 
 import java.util.Collection;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 /**
  *
  * @author resamsel
  * @version 29 Aug 2016
  */
-public interface ModelService<T>
-{
-	T save(T t);
+public interface ModelService<T> {
+  Class<?> getClazz();
 
-	Collection<T> save(Collection<T> t);
+  T create(JsonNode json);
 
-	void delete(T t);
+  T update(JsonNode json);
 
-	void delete(Collection<T> t);
+  T save(T t);
+
+  Collection<T> save(Collection<T> t);
+
+  void delete(T t);
+
+  void delete(Collection<T> t);
 }

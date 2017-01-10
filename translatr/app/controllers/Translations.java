@@ -1,11 +1,19 @@
 package controllers;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
+import criterias.MessageCriteria;
+import dto.NotFoundException;
+import models.Message;
+import models.Project;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.libs.Json;
@@ -40,5 +48,29 @@ public class Translations extends AbstractController {
 
   public Result create() {
     return ok(Json.toJson(dto.Message.from(messageService.create(request().body().asJson()))));
+  }
+
+  public Result update() {
+    return ok(Json.toJson(dto.Message.from(messageService.update(request().body().asJson()))));
+  }
+
+  public Result getByLocaleAndKey(UUID localeId, String keyName) {
+    Message message = Message.byLocaleAndKeyName(localeId, keyName);
+
+    if (message == null)
+      return notFound(Json.newObject().put("message", "Message not found"));
+
+    return ok(Json.toJson(dto.Message.from(message)));
+  }
+
+  public Result find(UUID projectId) {
+    Project project = Project.byId(projectId);
+    if (project == null || project.deleted)
+      throw new NotFoundException(String.format("Project not found: '%s'", projectId));
+
+    List<Message> messages = Message.findBy(new MessageCriteria().withProjectId(project.id)
+        .withKeyName(request().getQueryString("keyName")));
+
+    return ok(Json.toJson(messages.stream().map(dto.Message::from).collect(Collectors.toList())));
   }
 }

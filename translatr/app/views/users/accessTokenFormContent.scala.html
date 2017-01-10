@@ -8,9 +8,23 @@
 
 <h5 class="header">@Messages("accessToken.scopes")</h5>
 
-@inputs.checkbox(form("scopeProjectAdmin"), "accessToken-scopeProjectAdmin", Html("project:admin"))
-@inputs.checkbox(form("scopeProjectRead"), "accessToken-scopeProjectRead", Html("project:read"))
-@inputs.checkbox(form("scopeProjectWrite"), "accessToken-scopeProjectWrite", Html("project:write"))
-@inputs.checkbox(form("scopeLocaleAdmin"), "accessToken-scopeLocaleAdmin", Html("locale:admin"))
-@inputs.checkbox(form("scopeLocaleRead"), "accessToken-scopeLocaleRead", Html("locale:read"))
-@inputs.checkbox(form("scopeLocaleWrite"), "accessToken-scopeLocaleWrite", Html("locale:write"))
+<div class="row">
+	<div class="col s4">
+		<h6 class="header">@Messages("project")</h6>
+		@*inputs.checkbox(form("scopeProjectAdmin"), "accessToken-scopeProjectAdmin", Html(Messages("scope.project.admin")))<br/>*@
+		@inputs.checkbox(form("scopeProjectRead"), "accessToken-scopeProjectRead", Html(Messages("scope.project.read")))<br/>
+		@inputs.checkbox(form("scopeProjectWrite"), "accessToken-scopeProjectWrite", Html(Messages("scope.project.write")))
+	</div>
+	<div class="col s4">
+		<h6 class="header">@Messages("locale")</h6>
+		@*inputs.checkbox(form("scopeLocaleAdmin"), "accessToken-scopeLocaleAdmin", Html(Messages("scope.locale.admin")))<br/>*@
+		@inputs.checkbox(form("scopeLocaleRead"), "accessToken-scopeLocaleRead", Html(Messages("scope.locale.read")))<br/>
+		@inputs.checkbox(form("scopeLocaleWrite"), "accessToken-scopeLocaleWrite", Html(Messages("scope.locale.write")))
+	</div>
+	<div class="col s4">
+		<h6 class="header">@Messages("key")</h6>
+		@*inputs.checkbox(form("scopeKeyAdmin"), "accessToken-scopeKeyAdmin", Html(Messages("scope.key.admin")))<br/>*@
+		@inputs.checkbox(form("scopeKeyRead"), "accessToken-scopeKeyRead", Html(Messages("scope.key.read")))<br/>
+		@inputs.checkbox(form("scopeKeyWrite"), "accessToken-scopeKeyWrite", Html(Messages("scope.key.write")))
+	</div>
+</div>

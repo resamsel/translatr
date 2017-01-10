@@ -4,43 +4,45 @@ import java.util.UUID;
 
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import models.Project;
 
-public class Key extends Dto
-{
-	public UUID id;
+public class Key extends Dto {
+  public UUID id;
 
-	public DateTime whenCreated;
+  @JsonIgnore
+  public DateTime whenCreated;
 
-	public DateTime whenUpdated;
+  @JsonIgnore
+  public DateTime whenUpdated;
 
-	public UUID projectId;
+  public UUID projectId;
 
-	public String name;
+  public String name;
 
-	private Key(models.Key in)
-	{
-		this.id = in.id;
-		this.whenCreated = in.whenCreated;
-		this.whenUpdated = in.whenUpdated;
-		this.projectId = in.project.id;
-		this.name = in.name;
-	}
+  public Key() {}
 
-	public models.Key toModel(Project project)
-	{
-		models.Key out = new models.Key();
+  private Key(models.Key in) {
+    this.id = in.id;
+    this.whenCreated = in.whenCreated;
+    this.whenUpdated = in.whenUpdated;
+    this.projectId = in.project.id;
+    this.name = in.name;
+  }
 
-		out.whenCreated = whenCreated;
-		out.whenUpdated = whenUpdated;
-		out.project = project;
-		out.name = name;
+  public models.Key toModel(Project project) {
+    models.Key out = new models.Key();
 
-		return out;
-	}
+    out.whenCreated = whenCreated;
+    out.whenUpdated = whenUpdated;
+    out.project = project;
+    out.name = name;
 
-	public static Key from(models.Key key)
-	{
-		return new Key(key);
-	}
+    return out;
+  }
+
+  public static Key from(models.Key key) {
+    return new Key(key);
+  }
 }

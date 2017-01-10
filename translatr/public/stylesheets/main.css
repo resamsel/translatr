@@ -342,13 +342,18 @@ nav ul .disabled:hover {
 	height: 40px;
 }
 
-.dashboard .container,
+.dashboard .container-main,
+.template-keys .container-main,
+.template-locales .container-main,
 .flex {
 	display: -webkit-box;
 	display: -moz-box;
 	display: -ms-flexbox;
 	display: -webkit-flex;
 	display: flex;
+}
+.dashboard .container,
+.flex {
 	flex-flow: row wrap;
 	margin-bottom: 0;
 }
@@ -367,6 +372,11 @@ nav ul .disabled:hover {
 .flex > .activity,
 .template-project .flex > .messages {
 	flex: 2 100%;
+}
+.template-keys .container-main > .main,
+.template-locales .container-main > .main {
+	display: flex;
+	flex-flow: column;
 }
 
 /* Breadcrumb */
@@ -540,6 +550,16 @@ textarea.materialize-textarea {
     background-color: #8BC34A;
     border-color: #8BC34A;
 }
+.collection-empty {
+	display: flex;
+	flex-grow: 1;
+	align-items: center;
+}
+.collection-empty > div {
+	flex-grow: 1;
+	text-align: center;
+}
+
 
 /* Pagination */
 .pagination {
@@ -669,4 +689,8 @@ textarea.materialize-textarea {
 
 .empty {
     padding: 2rem;
+}
+
+i.xlarge {
+	font-size: 9em;
 }

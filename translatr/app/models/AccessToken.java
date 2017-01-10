@@ -23,7 +23,7 @@ import criterias.AccessTokenCriteria;
 import play.data.validation.Constraints.MaxLength;
 
 @Entity
-public class AccessToken {
+public class AccessToken implements Model<AccessToken> {
   public static final int NAME_LENGTH = 32;
 
   public static final int KEY_LENGTH = 64;
@@ -68,6 +68,19 @@ public class AccessToken {
 
     return new ArrayList<>(Arrays.asList(scope.split(","))).stream()
         .map(scope -> Scope.fromString(scope)).collect(Collectors.toList());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public AccessToken updateFrom(AccessToken in) {
+    user = in.user;
+    name = in.name;
+    key = in.key;
+    scope = in.scope;
+
+    return this;
   }
 
   /**

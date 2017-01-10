@@ -13,5 +13,9 @@
 		@footer
 	}
 } else {
-	@Html(Messages(emptyKey))
+	<div class="collection-empty">
+		<div class="grey-text">
+			@Html(Messages(emptyKey))
+		</div>
+	</div>
 }

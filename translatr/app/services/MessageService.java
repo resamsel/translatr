@@ -1,6 +1,5 @@
 package services;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.ImplementedBy;
 
 import models.Message;
@@ -19,10 +18,4 @@ public interface MessageService extends ModelService<Message> {
    * @return
    */
   int countBy(Project project);
-
-  /**
-   * @param json
-   * @return
-   */
-  Message create(JsonNode json);
 }

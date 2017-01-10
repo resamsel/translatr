@@ -30,7 +30,7 @@ import services.MessageService;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"locale_id", "key_id"})})
-public class Message {
+public class Message implements Model<Message> {
   private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
   @Id
@@ -68,8 +68,14 @@ public class Message {
 
   private static final Find<UUID, Message> find = new Find<UUID, Message>() {};
 
-  public void updateFrom(Message in) {
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Message updateFrom(Message in) {
     value = in.value;
+
+    return this;
   }
 
   /**

@@ -1,17 +1,17 @@
 @(template: utils.Template, project: models.Project, locales: List[models.Locale], progress: Map[java.util.UUID, Double], form: Form[forms.LocaleSearchForm])
 
-@main(template.withTitle(Messages("locales.title", project.name))) {
+@main(template.withTitle(Messages("locales.title", project.name)).withName("locales")) {
 	@tags.search(form)()
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
-			@project.name
-		</a>
-		<a class="breadcrumb active" href="@routes.Projects.locales(project.id)">
-			@Messages("locales")
-		</a>
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
+		@project.name
+	</a>
+	<a class="breadcrumb active" href="@routes.Projects.locales(project.id)">
+		@Messages("locales")
+	</a>
 } {
 	@content(project, "locales") {
 		@tags.collection(locales, "locales.empty", "locales") {

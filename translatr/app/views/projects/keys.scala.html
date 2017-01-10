@@ -1,6 +1,6 @@
 @(template: utils.Template, project: models.Project, keys: List[models.Key], progress: Map[java.util.UUID, Double], form: Form[forms.KeySearchForm])
 
-@main(template.withTitle(Messages("keys.title", project.name))) {
+@main(template.withTitle(Messages("keys.title", project.name)).withName("keys")) {
 	@tags.search(form)()
 } {
 	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
