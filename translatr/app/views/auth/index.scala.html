@@ -1,0 +1,39 @@
+@(template: utils.Template, config: utils.Auth0Config)
+
+@scripts = {
+	<script src="http://cdn.auth0.com/js/lock/10.6/lock.min.js"></script>
+	<script>
+	  var AUTH0_CLIENT_ID = '@config.clientId';
+	  var AUTH0_DOMAIN = '@config.domain';
+	  var AUTH0_CALLBACK_URL = '@config.callbackURL';
+    </script>
+}
+
+@main(template.withTitle(Messages("brand")).withName("index"))(scripts) { } {
+
+ <div class="container">
+    <div class="login-page clearfix">
+      <div class="login-box auth0-box before">
+        <img src="https://i.cloudup.com/StzWWrY34s.png" />
+        <h3>Auth0 Example</h3>
+        <p>Zero friction identity infrastructure, built for developers</p>
+        <a class="btn btn-primary btn-lg btn-login btn-block">SignIn</a>
+      </div>
+    </div>
+</div>
+
+    <script>
+    $(document).ready(function() {
+        var lock = new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_DOMAIN, {
+          auth: {
+            redirectUrl: AUTH0_CALLBACK_URL
+          }
+        });
+
+        $('.btn-login').click(function(e) {
+          e.preventDefault();
+          lock.show();
+        });
+    });
+    </script>
+}

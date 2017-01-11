@@ -11,6 +11,9 @@ GET		/login							controllers.Application.login
 GET		/logout							controllers.Application.logout
 GET		/authenticate/:provider			com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
 GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider: String)
+GET		/auth/callback					controllers.Callback.callback
+GET		/auth							controllers.Callback.index
+GET		/auth/user						controllers.Callback.user
 
 # Users
 GET		/user/:id					controllers.Users.user(id: java.util.UUID)
