@@ -221,6 +221,7 @@ promo2.title = User experience focused
 promo3.content = All elements - search, content creation, notifications, ... - follow the concepts of Material Design to allow the easiest and most intuitive use possible.
 promo3.icon = settings
 promo3.title = Easy to work with
+providers.empty = No providers found
 row.actions = Actions
 scope.locale.read = locale:read
 scope.locale.write = locale:write

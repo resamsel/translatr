@@ -176,8 +176,15 @@ public class User implements Model<User>, Subject {
   }
 
   public static User loggedInUser() {
+    Map<String, Object> args;
+    try {
+      args = Context.current().args;
+    } catch (RuntimeException e) {
+      // There is no HTTP Context available from here.
+      return null;
+    }
+
     Injector injector = play.api.Play.current().injector();
-    Map<String, Object> args = Context.current().args;
 
     // Logged-in via access_token?
     if (args.containsKey("accessToken"))
