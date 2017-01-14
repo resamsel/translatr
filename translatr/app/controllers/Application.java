@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
@@ -73,8 +74,13 @@ public class Application extends AbstractController {
   }
 
   public Result login() {
-    return ok(views.html.login.render(createTemplate(),
-        configuration.getStringList(ConfigKey.AuthProviders.key())));
+    List<String> providers = configuration.getStringList(ConfigKey.AuthProviders.key());
+
+    if (providers.size() == 1)
+      return redirect(
+          com.feth.play.module.pa.controllers.routes.Authenticate.authenticate(providers.get(0)));
+
+    return ok(views.html.login.render(createTemplate(), providers));
   }
 
   public Result logout() {
