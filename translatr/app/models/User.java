@@ -41,7 +41,9 @@ import criterias.LogEntryCriteria;
 import criterias.ProjectUserCriteria;
 import play.api.Play;
 import play.mvc.Http.Context;
+import play.mvc.Http.Session;
 import services.UserService;
+import utils.ConfigKey;
 
 @Entity
 @Table(name = "user_")
@@ -166,8 +168,15 @@ public class User implements Model<User>, Subject {
   }
 
   public static AuthUser loggedInAuthUser() {
+    Session session = Context.current().session();
+    String provider = session.get("pa.p.id");
+    if (provider != null && !Play.current().injector().instanceOf(play.Application.class)
+        .configuration().getStringList(ConfigKey.AuthProviders.key()).contains(provider))
+      // Prevent NPE when using an unavailable auth provider
+      session.clear();
+
     PlayAuthenticate auth = Play.current().injector().instanceOf(PlayAuthenticate.class);
-    AuthUser authUser = auth.getUser(Context.current().session());
+    AuthUser authUser = auth.getUser(session);
 
     return authUser;
   }
