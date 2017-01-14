@@ -40,7 +40,6 @@ import controllers.Application;
 import criterias.LogEntryCriteria;
 import criterias.ProjectUserCriteria;
 import play.api.Play;
-import play.api.inject.Injector;
 import play.mvc.Http.Context;
 import services.UserService;
 
@@ -167,16 +166,13 @@ public class User implements Model<User>, Subject {
   }
 
   public static AuthUser loggedInAuthUser() {
-    Injector injector = play.api.Play.current().injector();
-
-    PlayAuthenticate auth = injector.instanceOf(PlayAuthenticate.class);
+    PlayAuthenticate auth = Play.current().injector().instanceOf(PlayAuthenticate.class);
     AuthUser authUser = auth.getUser(Context.current().session());
 
     return authUser;
   }
 
   public static User loggedInUser() {
-    Injector injector = play.api.Play.current().injector();
     Map<String, Object> args = Context.current().args;
 
     // Logged-in via access_token?
@@ -188,7 +184,7 @@ public class User implements Model<User>, Subject {
     if (authUser != null) {
       if (!args.containsKey(authUser.toString()))
         args.put(authUser.toString(),
-            injector.instanceOf(UserService.class).getLocalUser(authUser));
+            Play.current().injector().instanceOf(UserService.class).getLocalUser(authUser));
 
       return (User) args.get(authUser.toString());
     }
