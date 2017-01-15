@@ -18,12 +18,14 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import criterias.AccessTokenCriteria;
 import play.data.validation.Constraints.MaxLength;
+import play.libs.Json;
 
 @Entity
-public class AccessToken implements Model<AccessToken> {
+public class AccessToken implements Model<AccessToken, Long> {
   public static final int NAME_LENGTH = 32;
 
   public static final int KEY_LENGTH = 64;
@@ -56,6 +58,14 @@ public class AccessToken implements Model<AccessToken> {
   public String scope;
 
   public static final Find<Long, AccessToken> find = new Find<Long, AccessToken>() {};
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Long getId() {
+    return id;
+  }
 
   public AccessToken withUser(User user) {
     this.user = user;
@@ -131,5 +141,9 @@ public class AccessToken implements Model<AccessToken> {
    */
   public static AccessToken byUserAndName(UUID userId, String name) {
     return find.where().eq("user.id", userId).eq("name", name).findUnique();
+  }
+
+  public static AccessToken from(JsonNode json) {
+    return Json.fromJson(json, AccessToken.class);
   }
 }

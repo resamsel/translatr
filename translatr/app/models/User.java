@@ -13,6 +13,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -47,7 +48,7 @@ import utils.ConfigKey;
 
 @Entity
 @Table(name = "user_")
-public class User implements Model<User>, Subject {
+public class User implements Model<User, UUID>, Subject {
   private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
 
   public static final int USERNAME_LENGTH = 32;
@@ -57,6 +58,7 @@ public class User implements Model<User>, Subject {
   public static final int EMAIL_LENGTH = 255;
 
   @Id
+  @GeneratedValue
   public UUID id;
 
   @Version
@@ -93,6 +95,14 @@ public class User implements Model<User>, Subject {
   public List<ProjectUser> projects;
 
   private static final Find<UUID, User> find = new Find<UUID, User>() {};
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public UUID getId() {
+    return id;
+  }
 
   public static boolean existsByAuthUserIdentity(final AuthUserIdentity identity) {
     final ExpressionList<User> exp = getAuthUserFind(identity);

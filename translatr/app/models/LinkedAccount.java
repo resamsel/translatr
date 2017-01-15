@@ -14,12 +14,14 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 
 import criterias.LinkedAccountCriteria;
+import play.libs.Json;
 
 @Entity
-public class LinkedAccount implements Model<LinkedAccount> {
+public class LinkedAccount implements Model<LinkedAccount, Long> {
   @Id
   @GeneratedValue
   public Long id;
@@ -41,6 +43,14 @@ public class LinkedAccount implements Model<LinkedAccount> {
   public String providerKey;
 
   public static final Find<Long, LinkedAccount> find = new Find<Long, LinkedAccount>() {};
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Long getId() {
+    return id;
+  }
 
   public LinkedAccount withUser(User user) {
     this.user = user;
@@ -112,5 +122,9 @@ public class LinkedAccount implements Model<LinkedAccount> {
 
   public static LinkedAccount createFrom(final AuthUserIdentity authUser) {
     return new LinkedAccount().update(authUser);
+  }
+
+  public static LinkedAccount from(JsonNode json) {
+    return Json.fromJson(json, LinkedAccount.class);
   }
 }

@@ -37,9 +37,14 @@ public class Locale extends Dto {
     this.messages = in.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
   }
 
+  public models.Locale toModel() {
+    return toModel(Project.byId(projectId));
+  }
+
   public models.Locale toModel(Project project) {
     models.Locale out = new models.Locale();
 
+    out.id = id;
     out.whenCreated = whenCreated;
     out.whenUpdated = whenUpdated;
     out.project = project;

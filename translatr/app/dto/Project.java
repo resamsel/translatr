@@ -50,6 +50,7 @@ public class Project extends Dto {
   public models.Project toModel() {
     models.Project out = new models.Project();
 
+    out.id = id;
     out.whenCreated = whenCreated;
     out.whenUpdated = whenUpdated;
     out.name = name;

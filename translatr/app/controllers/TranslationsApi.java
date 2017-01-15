@@ -1,7 +1,6 @@
 package controllers;
 
 import java.util.UUID;
-import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -9,7 +8,6 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
 import criterias.MessageCriteria;
-import dto.NotFoundException;
 import models.Message;
 import models.ProjectRole;
 import models.Scope;
@@ -21,6 +19,7 @@ import play.mvc.With;
 import services.LogEntryService;
 import services.MessageService;
 import services.UserService;
+import utils.JsonUtils;
 
 /**
  * @author resamsel
@@ -38,7 +37,9 @@ public class TranslationsApi extends Api<Message, dto.Message, UUID> {
   @Inject
   public TranslationsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, MessageService messageService) {
-    super(injector, cache, auth, userService, logEntryService, messageService);
+    super(injector, cache, auth, userService, logEntryService, messageService, Message::byId,
+        dto.Message.class, dto.Message::from, Message::from, new Scope[] {Scope.ProjectRead},
+        new Scope[] {Scope.ProjectRead});
   }
 
   public Result find(UUID projectId) {
@@ -46,61 +47,12 @@ public class TranslationsApi extends Api<Message, dto.Message, UUID> {
       checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator,
           ProjectRole.Developer);
 
-      return toJsons(dto.Message::from, finder(new MessageCriteria().withProjectId(project.id)
-          .withKeyName(request().getQueryString("keyName")), Message::findBy, Scope.ProjectRead));
+      return toJsons(dto.Message::from,
+          finder(Message::findBy,
+              new MessageCriteria().withProjectId(project.id)
+                  .withLocaleId(JsonUtils.getUuid(request().getQueryString("localeId")))
+                  .withKeyName(request().getQueryString("keyName")),
+              readScopes));
     });
-  }
-
-  public Result getByLocaleAndKey(UUID localeId, String key) {
-    return toJson(dto.Message::from, () -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectRead);
-
-      Message message = Message.byLocaleAndKeyName(localeId, key);
-
-      if (message == null)
-        throw new NotFoundException("Message not found");
-
-      return message;
-    });
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Function<Message, dto.Message> dtoMapper() {
-    return dto.Message::from;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Function<UUID, Message> getter() {
-    return Message::byId;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Scope[] scopesGet() {
-    return new Scope[] {Scope.ProjectRead};
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Scope[] scopesCreate() {
-    return new Scope[] {Scope.ProjectRead};
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Scope[] scopesDelete() {
-    return new Scope[] {Scope.ProjectRead};
   }
 }

@@ -3,8 +3,6 @@ package services.impl;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import models.ActionType;
 import models.LogEntry;
 import models.ProjectUser;
@@ -20,7 +18,7 @@ import services.ProjectUserService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class ProjectUserServiceImpl extends AbstractModelService<ProjectUser, dto.ProjectUser>
+public class ProjectUserServiceImpl extends AbstractModelService<ProjectUser, Long>
     implements ProjectUserService {
   /**
    * 
@@ -28,23 +26,15 @@ public class ProjectUserServiceImpl extends AbstractModelService<ProjectUser, dt
   @Inject
   public ProjectUserServiceImpl(Configuration configuration, LocaleService localeService,
       KeyService keyService, LogEntryService logEntryService) {
-    super(dto.ProjectUser.class, configuration, logEntryService);
+    super(configuration, logEntryService);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected ProjectUser byId(JsonNode id) {
-    return ProjectUser.byId(id.asLong());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected ProjectUser toModel(dto.ProjectUser dto) {
-    return dto.toModel();
+  protected ProjectUser byId(Long id) {
+    return ProjectUser.byId(id);
   }
 
   /**

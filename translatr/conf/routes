@@ -82,13 +82,6 @@ GET		/key/:projectId/create			controllers.Keys.create(projectId: java.util.UUID,
 POST	/key/:projectId/create			controllers.Keys.create(projectId: java.util.UUID, localeId: java.util.UUID = null)
 POST	/key/:projectId/:localeId/create	controllers.Keys.create(projectId: java.util.UUID, localeId: java.util.UUID)
 
-# Messages
-GET		/project/:projectId/messages	controllers.Translations.find(projectId: java.util.UUID)
-#GET	/message/:id					controllers.Application.message(id: java.util.UUID)
-GET		/message/:localeId/:key			controllers.Translations.getByLocaleAndKey(localeId: java.util.UUID, key: String)
-POST	/message/create					controllers.Translations.create
-POST	/message/update					controllers.Translations.update
-
 # Load demo data
 GET		/load							controllers.Application.load
 
@@ -108,7 +101,6 @@ GET		/api/locale/:localeId			controllers.LocalesApi.get(localeId: java.util.UUID
 POST	/api/locale						controllers.LocalesApi.create
 PUT		/api/locale						controllers.LocalesApi.update
 DELETE	/api/locale/:localeId			controllers.LocalesApi.delete(localeId: java.util.UUID)
-
 POST	/api/locale/:localeId/import/:fileType	controllers.LocalesApi.upload(localeId: java.util.UUID, fileType: String)
 GET		/api/locale/:localeId/export/:fileType	controllers.LocalesApi.download(localeId: java.util.UUID, fileType: String)
 
@@ -119,8 +111,10 @@ PUT		/api/key						controllers.KeysApi.update
 DELETE	/api/key/:keyId					controllers.KeysApi.delete(keyId: java.util.UUID)
 
 GET		/api/project/:projectId/messages	controllers.TranslationsApi.find(projectId: java.util.UUID)
-GET		/api/message/:keyId				controllers.TranslationsApi.get(keyId: java.util.UUID)
+GET		/api/message/:messageId			controllers.TranslationsApi.get(messageId: java.util.UUID)
 POST	/api/message					controllers.TranslationsApi.create
+PUT		/api/message					controllers.TranslationsApi.update
+DELETE	/api/message/:messageId			controllers.TranslationsApi.delete(messageId: java.util.UUID)
 
 # Map static resources from the /public folder to the /assets URL path
 GET		/assets/*file					controllers.Assets.versioned(path="/public", file: Asset)

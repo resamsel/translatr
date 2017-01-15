@@ -17,14 +17,12 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.RawSqlBuilder;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import dto.PermissionException;
 import models.ActionType;
 import models.Locale;
 import models.LogEntry;
 import models.Message;
-import models.Project;
 import models.ProjectRole;
 import models.Stat;
 import models.User;
@@ -39,8 +37,7 @@ import services.MessageService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class LocaleServiceImpl extends AbstractModelService<Locale, dto.Locale>
-    implements LocaleService {
+public class LocaleServiceImpl extends AbstractModelService<Locale, UUID> implements LocaleService {
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
 
   private final MessageService messageService;
@@ -51,7 +48,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, dto.Locale>
   @Inject
   public LocaleServiceImpl(Configuration configuration, MessageService messageService,
       LogEntryService logEntryService) {
-    super(dto.Locale.class, configuration, logEntryService);
+    super(configuration, logEntryService);
     this.messageService = messageService;
   }
 
@@ -59,28 +56,22 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, dto.Locale>
    * {@inheritDoc}
    */
   @Override
-  protected Locale byId(JsonNode id) {
-    return Locale.byId(UUID.fromString(id.asText()));
+  protected Locale byId(UUID id) {
+    return Locale.byId(id);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected Locale toModel(dto.Locale dto) {
-    return dto.toModel(Project.byId(dto.projectId));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected dto.Locale validate(dto.Locale t) {
+  protected Locale validate(Locale t) {
     if (t.name == null)
       throw new ValidationException("Field 'name' required");
-    else if (Locale.byProjectAndName(t.projectId, t.name) != null)
+    if (t.project == null)
+      throw new ValidationException("Field 'project' required");
+    if (Locale.byProjectAndName(t.project.id, t.name) != null)
       throw new ValidationException(String
-          .format("Locale with name '%s' already exists in project '%s'", t.name, t.projectId));
+          .format("Locale with name '%s' already exists in project '%s'", t.name, t.project.id));
 
     return t;
   }

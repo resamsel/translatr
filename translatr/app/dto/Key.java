@@ -31,9 +31,14 @@ public class Key extends Dto {
     this.name = in.name;
   }
 
+  public models.Key toModel() {
+    return toModel(Project.byId(projectId));
+  }
+
   public models.Key toModel(Project project) {
     models.Key out = new models.Key();
 
+    out.id = id;
     out.whenCreated = whenCreated;
     out.whenUpdated = whenUpdated;
     out.project = project;

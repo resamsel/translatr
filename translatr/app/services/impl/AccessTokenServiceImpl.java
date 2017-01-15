@@ -11,8 +11,6 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import models.AccessToken;
 import models.ActionType;
 import models.LogEntry;
@@ -27,7 +25,7 @@ import services.LogEntryService;
  * @version 19 Oct 2016
  */
 @Singleton
-public class AccessTokenServiceImpl extends AbstractModelService<AccessToken, dto.AccessToken>
+public class AccessTokenServiceImpl extends AbstractModelService<AccessToken, Long>
     implements AccessTokenService {
   private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenServiceImpl.class);
 
@@ -39,7 +37,7 @@ public class AccessTokenServiceImpl extends AbstractModelService<AccessToken, dt
   @Inject
   public AccessTokenServiceImpl(Configuration configuration, LogEntryService logEntryService,
       CacheApi cache) {
-    super(dto.AccessToken.class, configuration, logEntryService);
+    super(configuration, logEntryService);
     this.cache = cache;
   }
 
@@ -48,16 +46,8 @@ public class AccessTokenServiceImpl extends AbstractModelService<AccessToken, dt
    * {@inheritDoc}
    */
   @Override
-  protected AccessToken byId(JsonNode id) {
-    return AccessToken.byId(id.asLong());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected AccessToken toModel(dto.AccessToken dto) {
-    return dto.toModel();
+  protected AccessToken byId(Long id) {
+    return AccessToken.byId(id);
   }
 
   /**

@@ -14,6 +14,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,22 +33,25 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
 import play.api.Play;
+import play.libs.Json;
 import play.mvc.Http.Context;
 import services.ProjectService;
 import utils.PermissionUtils;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
-public class Project implements Model<Project>, Suggestable {
+public class Project implements Model<Project, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
   public static final int NAME_LENGTH = 255;
 
   @Id
+  @GeneratedValue
   public UUID id;
 
   @Version
@@ -95,6 +99,14 @@ public class Project implements Model<Project>, Suggestable {
 
   public Project(String name) {
     this.name = name;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public UUID getId() {
+    return id;
   }
 
   @Override
@@ -281,5 +293,9 @@ public class Project implements Model<Project>, Suggestable {
    */
   public boolean hasPermissionAny(User user, ProjectRole... roles) {
     return PermissionUtils.hasPermissionAny(this, user, roles);
+  }
+
+  public static Project from(JsonNode json) {
+    return Json.fromJson(json, dto.Project.class).toModel();
   }
 }

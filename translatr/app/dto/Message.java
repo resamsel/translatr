@@ -46,6 +46,10 @@ public class Message extends Dto {
     this.value = in.value;
   }
 
+  public models.Message toModel() {
+    return toModel(Locale.byId(localeId), Key.byId(keyId));
+  }
+
   public models.Message toModel(Locale locale, Key key) {
     models.Message out = new models.Message();
 
@@ -61,7 +65,11 @@ public class Message extends Dto {
     return out;
   }
 
+  public static Message validate(Message message) {
+    return message;
+  }
+
   public static Message from(models.Message message) {
-    return new Message(message);
+    return validate(new Message(message));
   }
 }

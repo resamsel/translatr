@@ -6,12 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
-import com.fasterxml.jackson.databind.JsonNode;
 
-import dto.Dto;
 import models.Model;
 import play.Configuration;
-import play.libs.Json;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
 import services.LogEntryService;
@@ -23,11 +20,9 @@ import utils.TransactionUtils;
  * @author resamsel
  * @version 9 Sep 2016
  */
-public abstract class AbstractModelService<MODEL extends Model<MODEL>, DTO extends Dto>
+public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
     implements ModelService<MODEL> {
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelService.class);
-
-  private final Class<DTO> clazz;
 
   protected final Configuration configuration;
 
@@ -37,18 +32,9 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL>, DTO exten
   /**
    * @param configuration
    */
-  public AbstractModelService(Class<DTO> clazz, Configuration configuration,
-      LogEntryService logEntryService) {
-    this.clazz = clazz;
+  public AbstractModelService(Configuration configuration, LogEntryService logEntryService) {
     this.configuration = configuration;
     this.logEntryService = logEntryService;
-  }
-
-  /**
-   * @return the clazz
-   */
-  public Class<DTO> getClazz() {
-    return clazz;
   }
 
   /**
@@ -60,36 +46,22 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL>, DTO exten
     return Context.current().session();
   }
 
-  protected abstract MODEL byId(JsonNode id);
-
-  protected DTO fromJson(JsonNode json) {
-    return Json.fromJson(json, clazz);
-  }
-
-  protected abstract MODEL toModel(DTO dto);
+  protected abstract MODEL byId(ID id);
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public MODEL create(JsonNode json) {
-    DTO dto = fromJson(json);
-
-    LOGGER.debug("DTO: {}", Json.toJson(dto));
-
-    return save(toModel(validate(dto)));
+  public MODEL create(MODEL model) {
+    return save(validate(model));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public MODEL update(JsonNode json) {
-    DTO dto = fromJson(json);
-
-    MODEL m = byId(json.get("id")).updateFrom(toModel(validate(dto)));
-
-    LOGGER.debug("DTO: {}", Json.toJson(dto));
+  public MODEL update(MODEL model) {
+    MODEL m = byId(model.getId()).updateFrom(validate(model));
 
     return save(m);
   }
@@ -97,8 +69,8 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL>, DTO exten
   /**
    * @param dto
    */
-  protected DTO validate(DTO dto) {
-    return dto;
+  protected MODEL validate(MODEL model) {
+    return model;
   }
 
   /**

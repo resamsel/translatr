@@ -10,6 +10,7 @@ import javax.validation.ValidationException;
 
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import criterias.AbstractSearchCriteria;
@@ -33,15 +34,35 @@ import services.UserService;
 import utils.ErrorUtils;
 import utils.PermissionUtils;
 
-public abstract class Api<MODEL extends Model<MODEL>, DTO extends Dto, ID>
+public abstract class Api<MODEL extends Model<MODEL, ID>, DTO extends Dto, ID>
     extends AbstractController {
   protected final ModelService<MODEL> service;
 
+  protected final Class<DTO> dtoClass;
+
+  protected final Function<MODEL, DTO> dtoMapper;
+
+  protected final Function<JsonNode, MODEL> modelMapper;
+
+  protected final Scope[] readScopes;
+
+  protected final Scope[] writeScopes;
+
+  protected final Function<ID, MODEL> getter;
+
   protected Api(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, ModelService<MODEL> service) {
+      LogEntryService logEntryService, ModelService<MODEL> service, Function<ID, MODEL> getter,
+      Class<DTO> dtoClass, Function<MODEL, DTO> dtoMapper, Function<JsonNode, MODEL> modelMapper,
+      Scope[] readScopes, Scope[] writeScopes) {
     super(injector, cache, auth, userService, logEntryService);
 
     this.service = service;
+    this.getter = getter;
+    this.dtoClass = dtoClass;
+    this.dtoMapper = dtoMapper;
+    this.modelMapper = modelMapper;
+    this.readScopes = readScopes;
+    this.writeScopes = writeScopes;
   }
 
   /**
@@ -83,10 +104,8 @@ public abstract class Api<MODEL extends Model<MODEL>, DTO extends Dto, ID>
         () -> ok(Json.toJson(supplier.get().stream().map(mapper).collect(Collectors.toList()))));
   }
 
-  protected abstract Function<MODEL, DTO> dtoMapper();
-
   protected <T, CRITERIA extends AbstractSearchCriteria<CRITERIA>> Supplier<List<T>> finder(
-      CRITERIA criteria, Function<CRITERIA, List<T>> finder, Scope... scopes) {
+      Function<CRITERIA, List<T>> finder, CRITERIA criteria, Scope... scopes) {
     return () -> finder.apply(criteria);
   }
 
@@ -102,22 +121,15 @@ public abstract class Api<MODEL extends Model<MODEL>, DTO extends Dto, ID>
     return tryCatch(() -> project(projectId, processor));
   }
 
-  protected abstract Function<ID, MODEL> getter();
-
-  protected abstract Scope[] scopesGet();
-
-  protected abstract Scope[] scopesCreate();
-
-  protected abstract Scope[] scopesDelete();
-
   public Result get(ID id) {
-    return toJson(dtoMapper(), () -> {
-      checkPermissionAll("Access token not allowed", scopesGet());
+    return toJson(dtoMapper, () -> {
+      checkPermissionAll("Access token not allowed", readScopes);
 
-      MODEL obj = getter().apply(id);
+      MODEL obj = getter.apply(id);
 
       if (obj == null)
-        throw new NotFoundException(String.format("Entity not found: '%s'", String.valueOf(id)));
+        throw new NotFoundException(String.format("%s with ID '%s' not found",
+            dtoClass.getSimpleName(), String.valueOf(id)));
 
       return obj;
     });
@@ -125,37 +137,50 @@ public abstract class Api<MODEL extends Model<MODEL>, DTO extends Dto, ID>
 
   @BodyParser.Of(BodyParser.Json.class)
   public Result create() {
-    return toJson(dtoMapper(), creator(request()));
+    return toJson(dtoMapper, creator(request()));
+  }
+
+  @BodyParser.Of(BodyParser.Json.class)
+  public Result update() {
+    return toJson(dtoMapper, updater(request()));
   }
 
   protected void checkDelete(MODEL m) {}
 
   public Result delete(ID id) {
     return tryCatch(() -> {
-      checkPermissionAll("Access token not allowed", scopesDelete());
+      checkPermissionAll("Access token not allowed", writeScopes);
 
-      MODEL m = getter().apply(id);
+      MODEL m = getter.apply(id);
 
       if (m == null)
         throw new NotFoundException(String.format("%s with ID '%s' not found",
-            service.getClazz().getSimpleName(), String.valueOf(id)));
+            dtoClass.getSimpleName(), String.valueOf(id)));
 
       service.delete(m);
 
-      return ok(Json.newObject().put("message", String.format("%s with ID '%s' has been deleted",
-          service.getClazz().getSimpleName(), id)));
+      return ok(Json.newObject().put("message",
+          String.format("%s with ID '%s' has been deleted", dtoClass.getSimpleName(), id)));
     });
   }
-
-
 
   /**
    * @param request
    * @return
    */
   protected Supplier<MODEL> creator(Request request) {
-    checkPermissionAll("Access token not allowed", scopesCreate());
+    checkPermissionAll("Access token not allowed", writeScopes);
 
-    return () -> service.create(request.body().asJson());
+    return () -> service.create(modelMapper.apply(request.body().asJson()));
+  }
+
+  /**
+   * @param request
+   * @return
+   */
+  protected Supplier<MODEL> updater(Request request) {
+    checkPermissionAll("Access token not allowed", writeScopes);
+
+    return () -> service.update(modelMapper.apply(request.body().asJson()));
   }
 }

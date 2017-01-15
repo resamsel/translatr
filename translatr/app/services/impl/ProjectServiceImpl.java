@@ -15,8 +15,6 @@ import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import dto.NotFoundException;
 import dto.PermissionException;
 import models.ActionType;
@@ -38,7 +36,7 @@ import services.ProjectService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class ProjectServiceImpl extends AbstractModelService<Project, dto.Project>
+public class ProjectServiceImpl extends AbstractModelService<Project, UUID>
     implements ProjectService {
   private static final Logger LOGGER = LoggerFactory.getLogger(PermissionServiceImpl.class);
 
@@ -54,7 +52,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, dto.Projec
   @Inject
   public ProjectServiceImpl(Configuration configuration, CacheApi cache,
       LocaleService localeService, KeyService keyService, LogEntryService logEntryService) {
-    super(dto.Project.class, configuration, logEntryService);
+    super(configuration, logEntryService);
     this.cache = cache;
     this.localeService = localeService;
     this.keyService = keyService;
@@ -64,23 +62,15 @@ public class ProjectServiceImpl extends AbstractModelService<Project, dto.Projec
    * {@inheritDoc}
    */
   @Override
-  protected Project byId(JsonNode id) {
-    return Project.byId(UUID.fromString(id.asText()));
+  protected Project byId(UUID id) {
+    return Project.byId(id);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected Project toModel(dto.Project dto) {
-    return dto.toModel();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected dto.Project validate(dto.Project t) {
+  protected Project validate(Project t) {
     if (t.name != null)
       if (Project.byOwnerAndName(User.loggedInUser(), t.name) != null)
         throw new ValidationException(
@@ -115,11 +105,13 @@ public class ProjectServiceImpl extends AbstractModelService<Project, dto.Projec
    */
   @Override
   protected void preSave(Project t, boolean update) {
+    if (t.owner == null)
+      t.owner = User.loggedInUser();
+
     if (update)
       logEntryService.save(LogEntry.from(ActionType.Update, t, dto.Project.class,
           toDto(Project.byId(t.id)), toDto(t)));
-    if (t.owner == null)
-      t.owner = User.loggedInUser();
+
     if (t.members == null)
       t.members = new ArrayList<>();
     if (t.members.isEmpty())

@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -25,19 +26,22 @@ import com.avaje.ebean.Query;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.routes;
 import criterias.KeyCriteria;
+import play.libs.Json;
 import play.mvc.Http.Context;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
-public class Key implements Model<Key>, Suggestable {
+public class Key implements Model<Key, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Key.class);
 
   public static final int NAME_LENGTH = 255;
 
   @Id
+  @GeneratedValue
   public UUID id;
 
   @Version
@@ -64,6 +68,14 @@ public class Key implements Model<Key>, Suggestable {
   public Key(Project project, String name) {
     this.project = project;
     this.name = name;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public UUID getId() {
+    return id;
   }
 
   /**
@@ -172,5 +184,9 @@ public class Key implements Model<Key>, Suggestable {
     name = in.name;
 
     return this;
+  }
+
+  public static Key from(JsonNode json) {
+    return Json.fromJson(json, dto.Key.class).toModel();
   }
 }

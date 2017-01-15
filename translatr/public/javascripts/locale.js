@@ -82,7 +82,7 @@ App.Modules.MessageListModule = function(sb) {
     function _handleKeyChanged(keyId, keyName) {
     	panelMessages.hide();
 	    sb.utilities.ajax(sb.utilities.merge(
-			jsRoutes.controllers.Translations.find(projectId),
+			jsRoutes.controllers.TranslationsApi.find(projectId),
 			{data: {keyName: keyName}}
 		)).done(function(data) {
 		    _handleMessageList(keyName, data);
@@ -129,6 +129,18 @@ App.Modules.MessageModule = function(sb) {
 		Materialize.toast(messages['message.updated'], 5000);
 	}
 
+	function _handleMessage(messageList) {
+    	if(messageList.length === 0)
+    		return;
+
+    	var message = messageList[0];
+	    fieldId.val(message.id);
+	    fieldKey.val(message.keyName).attr('keyId', message.keyId);
+	    fieldValue.val(message.value).trigger('autoresize').focus();
+	    Materialize.updateTextFields();
+	    preview.html(message.value);
+	}
+
 	function _updateForm(keyId, keyName) {
 		noSelection.hide();
 		message.show();
@@ -139,17 +151,10 @@ App.Modules.MessageModule = function(sb) {
 	    fieldValue.val('');
 	    Materialize.updateTextFields();
 	    preview.html('');
-	    sb.utilities.ajax(
-			jsRoutes.controllers.Translations.getByLocaleAndKey(localeId, keyName)
-		).done(_handleMessage);
-	}
-
-	function _handleMessage(message) {
-	    fieldId.val(message.id);
-	    fieldKey.val(message.keyName).attr('keyId', message.keyId);
-	    fieldValue.val(message.value).trigger('autoresize').focus();
-	    Materialize.updateTextFields();
-	    preview.html(message.value);
+	    sb.utilities.ajax(sb.utilities.merge(
+			jsRoutes.controllers.TranslationsApi.find(projectId),
+			{data: {"localeId": localeId, "keyName": keyName}}
+		)).done(_handleMessage);
 	}
 
 	return {
@@ -178,22 +183,20 @@ App.Modules.MessageModule = function(sb) {
 		        };
 
 		        if(fieldId.val() !== '') {
-		        	op = jsRoutes.controllers.Translations.update();
+		        	op = jsRoutes.controllers.TranslationsApi.update();
 		        	data["id"] = fieldId.val();
 		        } else {
-		        	op = jsRoutes.controllers.Translations.create();
+		        	op = jsRoutes.controllers.TranslationsApi.create();
 		        }
 
-		    	sb.utilities.ajax(
-		    		sb.utilities.merge(
-						op,
-						{
-							contentType: 'application/json',
-							dataType: 'json',
-							data: JSON.stringify(data)
-						}
-					)
-				).done(_handleSaveMessage);
+		    	sb.utilities.ajax(sb.utilities.merge(
+					op,
+					{
+						contentType: 'application/json',
+						dataType: 'json',
+						data: JSON.stringify(data)
+					}
+				)).done(_handleSaveMessage);
 		    });
 
 			cancelButton.click(function() {

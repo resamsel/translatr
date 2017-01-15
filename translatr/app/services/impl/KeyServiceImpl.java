@@ -16,14 +16,12 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.RawSqlBuilder;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import dto.PermissionException;
 import models.ActionType;
 import models.Key;
 import models.LogEntry;
 import models.Message;
-import models.Project;
 import models.ProjectRole;
 import models.Stat;
 import models.User;
@@ -37,7 +35,7 @@ import services.MessageService;
  * @author resamsel
  * @version 29 Aug 2016
  */
-public class KeyServiceImpl extends AbstractModelService<Key, dto.Key> implements KeyService {
+public class KeyServiceImpl extends AbstractModelService<Key, UUID> implements KeyService {
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyServiceImpl.class);
 
   private final MessageService messageService;
@@ -48,7 +46,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, dto.Key> implement
   @Inject
   public KeyServiceImpl(Configuration configuration, MessageService messageService,
       LogEntryService logEntryService) {
-    super(dto.Key.class, configuration, logEntryService);
+    super(configuration, logEntryService);
     this.messageService = messageService;
   }
 
@@ -56,28 +54,22 @@ public class KeyServiceImpl extends AbstractModelService<Key, dto.Key> implement
    * {@inheritDoc}
    */
   @Override
-  protected Key byId(JsonNode id) {
-    return Key.byId(UUID.fromString(id.asText()));
+  protected Key byId(UUID id) {
+    return Key.byId(id);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected Key toModel(dto.Key dto) {
-    return dto.toModel(Project.byId(dto.projectId));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected dto.Key validate(dto.Key t) {
+  protected Key validate(Key t) {
     if (t.name == null)
       throw new ValidationException("Field 'name' required");
-    else if (Key.byProjectAndName(t.projectId, t.name) != null)
+    if (t.project == null)
+      throw new ValidationException("Field 'project' required");
+    if (Key.byProjectAndName(t.project.id, t.name) != null)
       throw new ValidationException(
-          String.format("Key with name '%s' already exists in project '%s'", t.name, t.projectId));
+          String.format("Key with name '%s' already exists in project '%s'", t.name, t.project.id));
 
     return t;
   }
