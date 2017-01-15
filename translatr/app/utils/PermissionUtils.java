@@ -32,7 +32,7 @@ public class PermissionUtils {
         accessToken != null ? accessToken.getScopeList() : "-", scopes);
 
     if (accessToken == null)
-      return false;
+      return User.loggedInUser() != null;
 
     // TODO: allow admin scopes also
     // !PermissionUtils.hasPermissionAny(Scope.ProjectRead, Scope.ProjectAdmin)

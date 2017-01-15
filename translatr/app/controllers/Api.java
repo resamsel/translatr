@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.ValidationException;
 
+import org.slf4j.LoggerFactory;
+
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import criterias.AbstractSearchCriteria;
@@ -67,6 +69,7 @@ public abstract class Api<MODEL extends Model<MODEL>, DTO extends Dto, ID>
     } catch (ValidationException e) {
       return badRequest(ErrorUtils.toJson(e));
     } catch (Exception e) {
+      LoggerFactory.getLogger(getClass()).error("Error while processing API request", e);
       return badRequest(ErrorUtils.toJson(e));
     }
   }
