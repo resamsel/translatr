@@ -1,5 +1,6 @@
 package services.impl;
 
+import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
 import java.util.Arrays;
@@ -17,15 +18,26 @@ import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.feth.play.module.pa.user.EmailIdentity;
 import com.feth.play.module.pa.user.NameIdentity;
 
+import criterias.AccessTokenCriteria;
+import criterias.LinkedAccountCriteria;
+import criterias.LogEntryCriteria;
+import criterias.ProjectCriteria;
+import criterias.ProjectUserCriteria;
+import models.AccessToken;
 import models.ActionType;
 import models.LinkedAccount;
 import models.LogEntry;
+import models.Project;
+import models.ProjectUser;
 import models.User;
 import models.UserStats;
 import play.Configuration;
 import play.cache.CacheApi;
+import services.AccessTokenService;
 import services.LinkedAccountService;
 import services.LogEntryService;
+import services.ProjectService;
+import services.ProjectUserService;
 import services.UserService;
 
 /**
@@ -41,15 +53,27 @@ public class UserServiceImpl extends AbstractModelService<User, dto.User> implem
 
   private final LinkedAccountService linkedAccountService;
 
+  private final AccessTokenService accessTokenService;
+
+  private final ProjectService projectService;
+
+  private final ProjectUserService projectUserService;
+
+
   /**
    * @param configuration
    */
   @Inject
   public UserServiceImpl(Configuration configuration, CacheApi cache,
-      LinkedAccountService linkedAccountService, LogEntryService logEntryService) {
+      LinkedAccountService linkedAccountService, AccessTokenService accessTokenService,
+      ProjectService projectService, ProjectUserService projectUserService,
+      LogEntryService logEntryService) {
     super(dto.User.class, configuration, logEntryService);
     this.cache = cache;
     this.linkedAccountService = linkedAccountService;
+    this.accessTokenService = accessTokenService;
+    this.projectService = projectService;
+    this.projectUserService = projectUserService;
   }
 
   /**
@@ -163,11 +187,33 @@ public class UserServiceImpl extends AbstractModelService<User, dto.User> implem
     return merge(getLocalUser(oldUser), getLocalUser(newUser));
   }
 
+  /**
+   * Do merging stuff here - like resources, etc.
+   * 
+   * {@inheritDoc}
+   */
   @Override
   public User merge(final User user, final User otherUser) {
-    for (final LinkedAccount acc : otherUser.linkedAccounts)
-      user.linkedAccounts.add(linkedAccountService.create(acc));
-    // do all other merging stuff here - like resources, etc.
+    linkedAccountService
+        .save(LinkedAccount.findBy(new LinkedAccountCriteria().withUserId(otherUser.id)).stream()
+            .map(linkedAccount -> linkedAccount.withUser(user)).collect(toList()));
+    otherUser.linkedAccounts.clear();
+
+    accessTokenService.save(AccessToken.findBy(new AccessTokenCriteria().withUserId(otherUser.id))
+        .stream().map(accessToken -> accessToken.withUser(user)).collect(toList()));
+
+    logEntryService.save(LogEntry.findBy(new LogEntryCriteria().withUserId(otherUser.id)).stream()
+        .filter(logEntry -> !logEntry.contentType.equals("dto.User"))
+        .map(logEntry -> logEntry.withUser(user)).collect(toList()));
+
+    projectService.save(Project
+        .findBy(new ProjectCriteria().withOwnerId(otherUser.id)).stream().map(project -> project
+            .withOwner(user).withName(String.format("%s (%s)", project.name, user.email)))
+        .collect(toList()));
+
+    projectUserService.save(ProjectUser.findBy(new ProjectUserCriteria().withUserId(otherUser.id))
+        .stream().map(member -> member.withUser(user)).collect(toList()));
+
 
     // deactivate the merged user that got added to this one
     otherUser.active = false;

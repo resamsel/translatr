@@ -62,6 +62,11 @@ public class LogEntry implements Model<LogEntry> {
     return type;
   }
 
+  public LogEntry withUser(User user) {
+    this.user = user;
+    return this;
+  }
+
   private static final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>() {};
 
   /**

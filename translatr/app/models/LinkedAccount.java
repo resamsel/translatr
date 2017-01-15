@@ -42,6 +42,11 @@ public class LinkedAccount implements Model<LinkedAccount> {
 
   public static final Find<Long, LinkedAccount> find = new Find<Long, LinkedAccount>() {};
 
+  public LinkedAccount withUser(User user) {
+    this.user = user;
+    return this;
+  }
+
   /**
    * @param user
    * @return
