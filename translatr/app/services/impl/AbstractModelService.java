@@ -2,6 +2,8 @@ package services.impl;
 
 import java.util.Collection;
 
+import javax.validation.ValidationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +63,9 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
    */
   @Override
   public MODEL update(MODEL model) {
+    if (model.getId() == null)
+      throw new ValidationException("Field 'id' required");
+
     MODEL m = byId(model.getId()).updateFrom(validate(model));
 
     return save(m);
