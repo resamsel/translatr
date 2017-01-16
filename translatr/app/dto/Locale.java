@@ -21,6 +21,8 @@ public class Locale extends Dto {
 
   public UUID projectId;
 
+  public String projectName;
+
   public String name;
 
   @JsonIgnore
@@ -33,6 +35,7 @@ public class Locale extends Dto {
     this.whenCreated = in.whenCreated;
     this.whenUpdated = in.whenUpdated;
     this.projectId = in.project.id;
+    this.projectName = in.project.name;
     this.name = in.name;
     this.messages = in.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
   }

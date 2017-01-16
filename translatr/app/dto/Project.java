@@ -24,6 +24,8 @@ public class Project extends Dto {
 
   public UUID ownerId;
 
+  public String ownerName;
+
   @JsonIgnore
   public List<Key> keys;
 
@@ -41,6 +43,7 @@ public class Project extends Dto {
     this.whenUpdated = in.whenUpdated;
     this.name = in.name;
     this.ownerId = in.owner.id;
+    this.ownerName = in.owner.name;
     this.keys = in.keys.stream().map(k -> Key.from(k)).collect(Collectors.toList());
     this.locales = in.locales.stream().map(l -> Locale.from(l)).collect(Collectors.toList());
     this.messages = models.Message.findBy(new MessageCriteria().withProjectId(in.id)).stream()

@@ -19,6 +19,8 @@ public class Key extends Dto {
 
   public UUID projectId;
 
+  public String projectName;
+
   public String name;
 
   public Key() {}
@@ -28,6 +30,7 @@ public class Key extends Dto {
     this.whenCreated = in.whenCreated;
     this.whenUpdated = in.whenUpdated;
     this.projectId = in.project.id;
+    this.projectName = in.project.name;
     this.name = in.name;
   }
 
