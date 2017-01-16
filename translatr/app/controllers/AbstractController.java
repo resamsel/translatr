@@ -113,13 +113,7 @@ public abstract class AbstractController extends Controller {
   }
 
   protected void select(Project project) {
-    // session("projectId", project.id.toString());
     ctx().args.put("projectId", project.id);
-  }
-
-  protected void select(Locale locale) {
-    // session("localeId", locale.id.toString());
-    // session("localeName", locale.name);
   }
 
   protected Command<?> getCommand(String key) {

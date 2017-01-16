@@ -71,7 +71,7 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, DTO extends Dto, ID>
    */
   protected void checkPermissionAll(String errorMessage, Scope... scopes) {
     if (!PermissionUtils.hasPermissionAll(scopes))
-      throw new PermissionException(errorMessage);
+      throw new PermissionException(errorMessage, scopes);
   }
 
   protected void checkProjectRole(Project project, User user, ProjectRole... roles) {
@@ -105,7 +105,9 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, DTO extends Dto, ID>
   }
 
   protected <T, CRITERIA extends AbstractSearchCriteria<CRITERIA>> Supplier<List<T>> finder(
-      Function<CRITERIA, List<T>> finder, CRITERIA criteria, Scope... scopes) {
+      Function<CRITERIA, List<T>> finder, CRITERIA criteria) {
+    checkPermissionAll("Access token not allowed", readScopes);
+
     return () -> finder.apply(criteria);
   }
 
@@ -169,9 +171,11 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, DTO extends Dto, ID>
    * @return
    */
   protected Supplier<MODEL> creator(Request request) {
-    checkPermissionAll("Access token not allowed", writeScopes);
+    return () -> {
+      checkPermissionAll("Access token not allowed", writeScopes);
 
-    return () -> service.create(modelMapper.apply(request.body().asJson()));
+      return service.create(modelMapper.apply(request.body().asJson()));
+    };
   }
 
   /**
@@ -179,8 +183,10 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, DTO extends Dto, ID>
    * @return
    */
   protected Supplier<MODEL> updater(Request request) {
-    checkPermissionAll("Access token not allowed", writeScopes);
+    return () -> {
+      checkPermissionAll("Access token not allowed", writeScopes);
 
-    return () -> service.update(modelMapper.apply(request.body().asJson()));
+      return service.update(modelMapper.apply(request.body().asJson()));
+    };
   }
 }

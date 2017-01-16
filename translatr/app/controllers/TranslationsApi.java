@@ -38,12 +38,13 @@ public class TranslationsApi extends Api<Message, dto.Message, UUID> {
   public TranslationsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, MessageService messageService) {
     super(injector, cache, auth, userService, logEntryService, messageService, Message::byId,
-        dto.Message.class, dto.Message::from, Message::from, new Scope[] {Scope.ProjectRead},
-        new Scope[] {Scope.ProjectRead});
+        dto.Message.class, dto.Message::from, Message::from,
+        new Scope[] {Scope.ProjectRead, Scope.MessageRead},
+        new Scope[] {Scope.ProjectRead, Scope.MessageWrite});
   }
 
   public Result find(UUID projectId) {
-    return project(projectId, project -> {
+    return projectCatch(projectId, project -> {
       checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator,
           ProjectRole.Developer);
 
@@ -51,8 +52,7 @@ public class TranslationsApi extends Api<Message, dto.Message, UUID> {
           finder(Message::findBy,
               new MessageCriteria().withProjectId(project.id)
                   .withLocaleId(JsonUtils.getUuid(request().getQueryString("localeId")))
-                  .withKeyName(request().getQueryString("keyName")),
-              readScopes));
+                  .withKeyName(request().getQueryString("keyName"))));
     });
   }
 }

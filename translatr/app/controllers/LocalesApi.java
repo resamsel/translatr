@@ -37,8 +37,7 @@ public class LocalesApi extends Api<Locale, dto.Locale, UUID> {
   }
 
   public Result find(UUID projectId) {
-    return project(projectId, project -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead);
+    return projectCatch(projectId, project -> {
       checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator,
           ProjectRole.Developer);
 
@@ -51,6 +50,9 @@ public class LocalesApi extends Api<Locale, dto.Locale, UUID> {
 
   public Result upload(UUID localeId, String fileType) {
     return tryCatch(() -> locale(localeId, locale -> {
+      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
+          Scope.MessageWrite);
+
       injector.instanceOf(Locales.class).importLocale(locale, request());
 
       return ok(Json.newObject().put("status", "OK"));
@@ -58,6 +60,11 @@ public class LocalesApi extends Api<Locale, dto.Locale, UUID> {
   }
 
   public Result download(UUID localeId, String fileType) {
-    return injector.instanceOf(Locales.class).download(localeId, fileType);
+    return tryCatch(() -> {
+      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
+          Scope.MessageRead);
+
+      return injector.instanceOf(Locales.class).download(localeId, fileType);
+    });
   }
 }

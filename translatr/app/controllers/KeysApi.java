@@ -35,12 +35,12 @@ public class KeysApi extends Api<Key, dto.Key, UUID> {
   }
 
   public Result find(UUID projectId) {
-    return project(projectId, project -> {
+    return projectCatch(projectId, project -> {
       checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator,
           ProjectRole.Developer);
 
-      return toJsons(dto.Key::from, finder(Key::findBy, new KeyCriteria().withProjectId(project.id),
-          Scope.ProjectRead, Scope.KeyRead));
+      return toJsons(dto.Key::from,
+          finder(Key::findBy, new KeyCriteria().withProjectId(project.id)));
     });
   }
 }
