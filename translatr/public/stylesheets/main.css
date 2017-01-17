@@ -709,3 +709,9 @@ textarea.materialize-textarea {
 i.xlarge {
 	font-size: 9em;
 }
+
+/* Fixes */
+/* Safari + Firefox */
+.input-field label {
+	left: 0;
+}
