@@ -105,8 +105,12 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID>
    */
   @Override
   protected void postSave(Message t, boolean update) {
-    if (!update)
+    if (!update) {
       logEntryService.save(logEntryCreate(t));
+
+      // When message has been created, the project cache needs to be invalidated
+      cache.remove(Project.getCacheKey(t.key.project.id));
+    }
   }
 
   /**

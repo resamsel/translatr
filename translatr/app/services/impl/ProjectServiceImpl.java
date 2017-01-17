@@ -71,8 +71,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID>
    */
   @Override
   public Project getById(UUID id) {
-    return log(() -> cache.getOrElse(String.format("project:%s", id.toString()),
-        () -> Project.byIdUncached(id), 60), LOGGER, "getById");
+    return log(() -> cache.getOrElse(Project.getCacheKey(id), () -> Project.byIdUncached(id), 60),
+        LOGGER, "getById");
   }
 
   /**

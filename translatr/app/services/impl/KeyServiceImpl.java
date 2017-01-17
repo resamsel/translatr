@@ -23,10 +23,12 @@ import models.ActionType;
 import models.Key;
 import models.LogEntry;
 import models.Message;
+import models.Project;
 import models.ProjectRole;
 import models.Stat;
 import models.User;
 import play.Configuration;
+import play.cache.CacheApi;
 import services.KeyService;
 import services.LogEntryService;
 import services.MessageService;
@@ -41,13 +43,16 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID> implements K
 
   private final MessageService messageService;
 
+  private final CacheApi cache;
+
   /**
    * 
    */
   @Inject
-  public KeyServiceImpl(Configuration configuration, Validator validator,
+  public KeyServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
       MessageService messageService, LogEntryService logEntryService) {
     super(configuration, validator, logEntryService);
+    this.cache = cache;
     this.messageService = messageService;
   }
 
@@ -105,9 +110,12 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID> implements K
    */
   @Override
   protected void postSave(Key t, boolean update) {
-    if (!update)
+    if (!update) {
       logEntryService
           .save(LogEntry.from(ActionType.Create, t.project, dto.Key.class, null, dto.Key.from(t)));
+
+      cache.remove(Project.getCacheKey(t.project.id));
+    }
   }
 
   /**
@@ -122,6 +130,15 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID> implements K
         .save(LogEntry.from(ActionType.Delete, t.project, dto.Key.class, dto.Key.from(t), null));
 
     messageService.delete(Message.byKey(t));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postDelete(Key t) {
+    // When message has been created, the project cache needs to be invalidated
+    cache.remove(Project.getCacheKey(t.project.id));
   }
 
   /**

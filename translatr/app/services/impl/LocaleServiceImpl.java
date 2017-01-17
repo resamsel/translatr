@@ -24,10 +24,12 @@ import models.ActionType;
 import models.Locale;
 import models.LogEntry;
 import models.Message;
+import models.Project;
 import models.ProjectRole;
 import models.Stat;
 import models.User;
 import play.Configuration;
+import play.cache.CacheApi;
 import services.LocaleService;
 import services.LogEntryService;
 import services.MessageService;
@@ -43,13 +45,16 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID> implem
 
   private final MessageService messageService;
 
+  private final CacheApi cache;
+
   /**
    * 
    */
   @Inject
-  public LocaleServiceImpl(Configuration configuration, Validator validator,
+  public LocaleServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
       MessageService messageService, LogEntryService logEntryService) {
     super(configuration, validator, logEntryService);
+    this.cache = cache;
     this.messageService = messageService;
   }
 
@@ -106,9 +111,13 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID> implem
    */
   @Override
   protected void postSave(Locale t, boolean update) {
-    if (!update)
+    if (!update) {
       logEntryService.save(
           LogEntry.from(ActionType.Create, t.project, dto.Locale.class, null, dto.Locale.from(t)));
+
+      // When message has been created, the project cache needs to be invalidated
+      cache.remove(Project.getCacheKey(t.project.id));
+    }
   }
 
   /**
@@ -123,6 +132,15 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID> implem
         LogEntry.from(ActionType.Delete, t.project, dto.Locale.class, dto.Locale.from(t), null));
 
     messageService.delete(Message.byLocale(t.id));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postDelete(Locale t) {
+    // When message has been created, the project cache needs to be invalidated
+    cache.remove(Project.getCacheKey(t.project.id));
   }
 
   /**

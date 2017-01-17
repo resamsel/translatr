@@ -301,4 +301,12 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public static Project from(JsonNode json) {
     return Json.fromJson(json, dto.Project.class).toModel();
   }
+
+  /**
+   * @param projectId
+   * @return
+   */
+  public static String getCacheKey(UUID projectId) {
+    return String.format("project:%s", projectId.toString());
+  }
 }
