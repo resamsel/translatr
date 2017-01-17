@@ -167,6 +167,9 @@ public class Message implements Model<Message, UUID> {
     if (criteria.getKeyIds() != null)
       query.in("key.id", criteria.getKeyIds());
 
+    if (criteria.getSearch() != null)
+      query.ilike("value", "%" + criteria.getSearch() + "%");
+
     if (criteria.getOrder() != null)
       query.setOrderBy(criteria.getOrder());
 

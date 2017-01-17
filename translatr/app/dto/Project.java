@@ -1,13 +1,16 @@
 package dto;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import criterias.KeyCriteria;
+import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
 import models.User;
 
@@ -44,10 +47,17 @@ public class Project extends Dto {
     this.name = in.name;
     this.ownerId = in.owner.id;
     this.ownerName = in.owner.name;
-    this.keys = in.keys.stream().map(k -> Key.from(k)).collect(Collectors.toList());
-    this.locales = in.locales.stream().map(l -> Locale.from(l)).collect(Collectors.toList());
-    this.messages = models.Message.findBy(new MessageCriteria().withProjectId(in.id)).stream()
-        .map(m -> Message.from(m)).collect(Collectors.toList());
+  }
+
+  public Project load() {
+    keys = models.Key.findBy(new KeyCriteria().withProjectId(id)).stream().map(k -> Key.from(k))
+        .collect(toList());
+    locales = models.Locale.findBy(new LocaleCriteria().withProjectId(id)).stream()
+        .map(l -> Locale.from(l)).collect(toList());
+    messages = models.Message.findBy(new MessageCriteria().withProjectId(id)).stream()
+        .map(m -> Message.from(m)).collect(toList());
+
+    return this;
   }
 
   public models.Project toModel() {

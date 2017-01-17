@@ -1,9 +1,16 @@
 package services.impl;
 
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Set;
 
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+import javax.validation.Validator;
 
+import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,14 +35,18 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
 
   protected final Configuration configuration;
 
+  protected final Validator validator;
+
   protected final LogEntryService logEntryService;
 
 
   /**
    * @param configuration
    */
-  public AbstractModelService(Configuration configuration, LogEntryService logEntryService) {
+  public AbstractModelService(Configuration configuration, Validator validator,
+      LogEntryService logEntryService) {
     this.configuration = configuration;
+    this.validator = validator;
     this.logEntryService = logEntryService;
   }
 
@@ -55,7 +66,15 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
    */
   @Override
   public MODEL create(MODEL model) {
-    return save(validate(model));
+    try {
+      return save(model);
+    } catch (PersistenceException e) {
+      if (e.getCause() != null && e.getCause() instanceof SQLException
+          && "23505".equals(((PSQLException) e.getCause()).getSQLState()))
+        throw new ValidationException("Entry already exists (duplicate key)");
+
+      throw new ValidationException(e.getMessage());
+    }
   }
 
   /**
@@ -66,7 +85,7 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
     if (model.getId() == null)
       throw new ValidationException("Field 'id' required");
 
-    MODEL m = byId(model.getId()).updateFrom(validate(model));
+    MODEL m = byId(model.getId()).updateFrom(model);
 
     return save(m);
   }
@@ -75,6 +94,11 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
    * @param dto
    */
   protected MODEL validate(MODEL model) {
+    Set<ConstraintViolation<MODEL>> violations = validator.validate(model);
+
+    if (!violations.isEmpty())
+      throw new ConstraintViolationException("Constraint violations detected", violations);
+
     return model;
   }
 
@@ -84,10 +108,16 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
   @Override
   public MODEL save(MODEL t) {
     boolean update = !Ebean.getBeanState(t).isNew();
+
     preSave(t, update);
+
+    validate(t);
+
     Ebean.save(t);
-    Ebean.refresh(t);
+    // Ebean.refresh(t);
+
     postSave(t, update);
+
     return t;
   }
 

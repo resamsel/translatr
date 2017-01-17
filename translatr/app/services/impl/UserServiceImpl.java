@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,11 +64,11 @@ public class UserServiceImpl extends AbstractModelService<User, UUID> implements
    * @param configuration
    */
   @Inject
-  public UserServiceImpl(Configuration configuration, CacheApi cache,
+  public UserServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
       LinkedAccountService linkedAccountService, AccessTokenService accessTokenService,
       ProjectService projectService, ProjectUserService projectUserService,
       LogEntryService logEntryService) {
-    super(configuration, logEntryService);
+    super(configuration, validator, logEntryService);
     this.cache = cache;
     this.linkedAccountService = linkedAccountService;
     this.accessTokenService = accessTokenService;

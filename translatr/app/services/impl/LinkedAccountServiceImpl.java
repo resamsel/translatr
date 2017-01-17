@@ -2,6 +2,7 @@ package services.impl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.Validator;
 
 import models.LinkedAccount;
 import play.Configuration;
@@ -20,8 +21,9 @@ public class LinkedAccountServiceImpl extends AbstractModelService<LinkedAccount
    * @param configuration
    */
   @Inject
-  public LinkedAccountServiceImpl(Configuration configuration, LogEntryService logEntryService) {
-    super(configuration, logEntryService);
+  public LinkedAccountServiceImpl(Configuration configuration, Validator validator,
+      LogEntryService logEntryService) {
+    super(configuration, validator, logEntryService);
   }
 
 

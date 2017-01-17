@@ -69,7 +69,6 @@ POST	/locale/:projectId				controllers.Locales.create(projectId: java.util.UUID)
 GET		/locale/:id/translate			controllers.Locales.translate(id: java.util.UUID)
 GET		/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
 POST	/locale/:id/import				controllers.Locales.doUpload(id: java.util.UUID)
-GET		/locale/:id/export/:type		controllers.Locales.download(id: java.util.UUID, type: String)
 
 # Keys
 GET		/key/:id						controllers.Keys.key(id: java.util.UUID)

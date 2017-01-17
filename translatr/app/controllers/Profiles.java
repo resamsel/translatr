@@ -91,6 +91,8 @@ public class Profiles extends AbstractController {
 
       List<Project> projects = Project.findBy(ProjectCriteria.from(search).withMemberId(user.id));
 
+      search.pager(projects);
+
       return ok(views.html.users.projects.render(createTemplate(), user, projects, form));
     });
   }

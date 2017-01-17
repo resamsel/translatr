@@ -18,64 +18,58 @@ import play.mvc.Http.Context;
 import services.LocaleService;
 import services.MessageService;
 
-public class RevertDeleteLocaleCommand implements Command<models.Locale>
-{
-	private Locale locale;
+public class RevertDeleteLocaleCommand implements Command<models.Locale> {
+  private Locale locale;
 
-	private final LocaleService localeService;
+  private final LocaleService localeService;
 
-	private final MessageService messageService;
+  private final MessageService messageService;
 
-	/**
-	 * 
-	 */
-	@Inject
-	public RevertDeleteLocaleCommand(LocaleService localeService, MessageService messageService)
-	{
-		this.localeService = localeService;
-		this.messageService = messageService;
-	}
+  /**
+   * 
+   */
+  @Inject
+  public RevertDeleteLocaleCommand(LocaleService localeService, MessageService messageService) {
+    this.localeService = localeService;
+    this.messageService = messageService;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public RevertDeleteLocaleCommand with(models.Locale locale)
-	{
-		this.locale = Locale.from(locale);
-		return this;
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public RevertDeleteLocaleCommand with(models.Locale locale) {
+    this.locale = Locale.from(locale).load();
+    return this;
+  }
 
-	@Override
-	public void execute()
-	{
-		Project project = Project.byId(locale.projectId);
+  @Override
+  public void execute() {
+    Project project = Project.byId(locale.projectId);
 
-		models.Locale model = locale.toModel(project);
-		localeService.save(model);
-		locale.id = model.id;
+    models.Locale model = locale.toModel(project);
+    localeService.save(model);
+    locale.id = model.id;
 
-		Map<String, Key> keys = Key.findBy(new KeyCriteria().withProjectId(project.id)).stream().collect(
-			groupingBy(k -> k.name, reducing(null, a -> a, (a, b) -> b)));
-		messageService
-			.save(locale.messages.stream().map(m -> m.toModel(model, keys.get(m.keyName))).collect(Collectors.toList()));
-	}
+    Map<String, Key> keys = Key.findBy(new KeyCriteria().withProjectId(project.id)).stream()
+        .collect(groupingBy(k -> k.name, reducing(null, a -> a, (a, b) -> b)));
+    messageService.save(locale.messages.stream().map(m -> m.toModel(model, keys.get(m.keyName)))
+        .collect(Collectors.toList()));
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getMessage()
-	{
-		return Context.current().messages().at("locale.deleted", locale.name);
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getMessage() {
+    return Context.current().messages().at("locale.deleted", locale.name);
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Call redirect()
-	{
-		return routes.Projects.locales(locale.projectId);
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Call redirect() {
+    return routes.Projects.locales(locale.projectId);
+  }
 }

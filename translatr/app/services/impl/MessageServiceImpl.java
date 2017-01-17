@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.ValidationException;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +42,9 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID>
    * 
    */
   @Inject
-  public MessageServiceImpl(Configuration configuration, CacheApi cache,
+  public MessageServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
       LogEntryService logEntryService) {
-    super(configuration, logEntryService);
+    super(configuration, validator, logEntryService);
     this.cache = cache;
   }
 

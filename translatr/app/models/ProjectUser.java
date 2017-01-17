@@ -136,6 +136,6 @@ public class ProjectUser implements Model<ProjectUser, Long> {
   }
 
   public static int countBy(ProjectUserCriteria criteria) {
-    return findQuery(criteria).findRowCount();
+    return log(() -> findQuery(criteria).findRowCount(), LOGGER, "countBy");
   }
 }

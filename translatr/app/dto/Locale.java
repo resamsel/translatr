@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import criterias.MessageCriteria;
 import models.Project;
 
 public class Locale extends Dto {
@@ -37,7 +38,13 @@ public class Locale extends Dto {
     this.projectId = in.project.id;
     this.projectName = in.project.name;
     this.name = in.name;
-    this.messages = in.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
+  }
+
+  public Locale load() {
+    messages = models.Message.findBy(new MessageCriteria().withLocaleId(id)).stream()
+        .map(m -> Message.from(m)).collect(Collectors.toList());
+
+    return this;
   }
 
   public models.Locale toModel() {

@@ -1,6 +1,9 @@
 package controllers;
 
+import java.io.ByteArrayInputStream;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
@@ -26,45 +29,42 @@ import services.UserService;
  * @version 10 Jan 2017
  */
 @With(ApiAction.class)
-public class LocalesApi extends Api<Locale, dto.Locale, UUID> {
+public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
   @Inject
   public LocalesApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, LocaleService localeService) {
     super(injector, cache, auth, userService, logEntryService, localeService, Locale::byId,
-        dto.Locale.class, dto.Locale::from, Locale::from,
+        Locale::findBy, dto.Locale.class, dto.Locale::from, Locale::from,
         new Scope[] {Scope.ProjectRead, Scope.LocaleRead},
         new Scope[] {Scope.ProjectRead, Scope.LocaleWrite});
   }
 
-  public Result find(UUID projectId) {
-    return projectCatch(projectId, project -> {
-      checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator,
-          ProjectRole.Developer);
-
-      return toJsons(dtoMapper, () -> {
-        return Locale.findBy(new LocaleCriteria().withProjectId(project.id)
-            .withLocaleName(request().getQueryString("localeName")));
-      });
-    });
+  public CompletionStage<Result> find(UUID projectId) {
+    return findBy(
+        new LocaleCriteria().withProjectId(projectId)
+            .withLocaleName(request().getQueryString("localeName"))
+            .withSearch(request().getQueryString("search")),
+        criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
+            ProjectRole.Translator, ProjectRole.Developer));
   }
 
-  public Result upload(UUID localeId, String fileType) {
-    return tryCatch(() -> locale(localeId, locale -> {
+  public CompletionStage<Result> upload(UUID localeId, String fileType) {
+    return CompletableFuture.supplyAsync(() -> {
       checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
           Scope.MessageWrite);
 
-      injector.instanceOf(Locales.class).importLocale(locale, request());
-
-      return ok(Json.newObject().put("status", "OK"));
-    }));
+      return injector.instanceOf(Locales.class).importLocale(Locale.byId(localeId), request());
+    }, executionContext.current())
+        .thenApply(success -> ok(Json.newObject().put("status", success)));
   }
 
-  public Result download(UUID localeId, String fileType) {
-    return tryCatch(() -> {
+  public CompletionStage<Result> download(UUID localeId, String fileType) {
+    return CompletableFuture.supplyAsync(() -> {
       checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
           Scope.MessageRead);
 
       return injector.instanceOf(Locales.class).download(localeId, fileType);
-    });
+    }, executionContext.current()).thenApply(data -> ok(new ByteArrayInputStream(data)))
+        .exceptionally(Api::handleException);
   }
 }

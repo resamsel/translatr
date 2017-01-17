@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.UUID;
+import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
@@ -26,7 +27,7 @@ import utils.JsonUtils;
  * @version 10 Jan 2017
  */
 @With(ApiAction.class)
-public class TranslationsApi extends Api<Message, dto.Message, UUID> {
+public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Message> {
   /**
    * @param injector
    * @param cache
@@ -38,21 +39,18 @@ public class TranslationsApi extends Api<Message, dto.Message, UUID> {
   public TranslationsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, MessageService messageService) {
     super(injector, cache, auth, userService, logEntryService, messageService, Message::byId,
-        dto.Message.class, dto.Message::from, Message::from,
+        Message::findBy, dto.Message.class, dto.Message::from, Message::from,
         new Scope[] {Scope.ProjectRead, Scope.MessageRead},
         new Scope[] {Scope.ProjectRead, Scope.MessageWrite});
   }
 
-  public Result find(UUID projectId) {
-    return projectCatch(projectId, project -> {
-      checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator,
-          ProjectRole.Developer);
-
-      return toJsons(dto.Message::from,
-          finder(Message::findBy,
-              new MessageCriteria().withProjectId(project.id)
-                  .withLocaleId(JsonUtils.getUuid(request().getQueryString("localeId")))
-                  .withKeyName(request().getQueryString("keyName"))));
-    });
+  public CompletionStage<Result> find(UUID projectId) {
+    return findBy(
+        new MessageCriteria().withProjectId(projectId)
+            .withLocaleId(JsonUtils.getUuid(request().getQueryString("localeId")))
+            .withKeyName(request().getQueryString("keyName"))
+            .withSearch(request().getQueryString("search")),
+        criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
+            ProjectRole.Translator, ProjectRole.Developer));
   }
 }

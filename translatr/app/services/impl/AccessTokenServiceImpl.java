@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +36,9 @@ public class AccessTokenServiceImpl extends AbstractModelService<AccessToken, Lo
    * @param configuration
    */
   @Inject
-  public AccessTokenServiceImpl(Configuration configuration, LogEntryService logEntryService,
-      CacheApi cache) {
-    super(configuration, logEntryService);
+  public AccessTokenServiceImpl(Configuration configuration, Validator validator,
+      LogEntryService logEntryService, CacheApi cache) {
+    super(configuration, validator, logEntryService);
     this.cache = cache;
   }
 

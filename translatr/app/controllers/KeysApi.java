@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.UUID;
+import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
@@ -25,22 +26,19 @@ import services.UserService;
  * @version 10 Jan 2017
  */
 @With(ApiAction.class)
-public class KeysApi extends Api<Key, dto.Key, UUID> {
+public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
   @Inject
   public KeysApi(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
       LogEntryService logEntryService, KeyService keyService) {
-    super(injector, cache, auth, userService, logEntryService, keyService, Key::byId, dto.Key.class,
-        dto.Key::from, Key::from, new Scope[] {Scope.ProjectRead, Scope.KeyRead},
+    super(injector, cache, auth, userService, logEntryService, keyService, Key::byId, Key::findBy,
+        dto.Key.class, dto.Key::from, Key::from, new Scope[] {Scope.ProjectRead, Scope.KeyRead},
         new Scope[] {Scope.ProjectRead, Scope.KeyWrite});
   }
 
-  public Result find(UUID projectId) {
-    return projectCatch(projectId, project -> {
-      checkProjectRole(project, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator,
-          ProjectRole.Developer);
-
-      return toJsons(dto.Key::from,
-          finder(Key::findBy, new KeyCriteria().withProjectId(project.id)));
-    });
+  public CompletionStage<Result> find(UUID projectId) {
+    return findBy(
+        new KeyCriteria().withProjectId(projectId).withSearch(request().getQueryString("search")),
+        criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
+            ProjectRole.Translator, ProjectRole.Developer));
   }
 }

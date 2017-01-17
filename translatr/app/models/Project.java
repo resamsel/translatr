@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
 import play.api.Play;
+import play.data.validation.Constraints.Required;
 import play.libs.Json;
 import play.mvc.Http.Context;
 import services.ProjectService;
@@ -68,10 +69,12 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public DateTime whenUpdated;
 
   @Column(nullable = false, length = NAME_LENGTH)
+  @Required
   public String name;
 
   @ManyToOne
   @JoinColumn(name = "owner_id")
+  @Required
   public User owner;
 
   @JsonIgnore
@@ -134,7 +137,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   public static Project byIdUncached(UUID id) {
-    return find.byId(id);
+    return find.fetch("owner").where().eq("id", id).findUnique();
   }
 
   /**
@@ -292,7 +295,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public boolean hasPermissionAny(User user, ProjectRole... roles) {
-    return PermissionUtils.hasPermissionAny(this, user, roles);
+    return PermissionUtils.hasPermissionAny(id, user, roles);
   }
 
   public static Project from(JsonNode json) {

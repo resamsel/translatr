@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +48,8 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID>
    * 
    */
   @Inject
-  public LogEntryServiceImpl(Configuration configuration, CacheApi cache) {
-    super(configuration, null);
+  public LogEntryServiceImpl(Configuration configuration, Validator validator, CacheApi cache) {
+    super(configuration, validator, null);
     this.cache = cache;
   }
 

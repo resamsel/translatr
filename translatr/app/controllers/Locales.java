@@ -1,6 +1,5 @@
 package controllers;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +7,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.validation.ValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +21,7 @@ import commands.RevertDeleteLocaleCommand;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
+import dto.NotFoundException;
 import exporters.Exporter;
 import exporters.GettextExporter;
 import exporters.JavaPropertiesExporter;
@@ -199,11 +200,10 @@ public class Locales extends AbstractController {
     });
   }
 
-  public Result download(UUID localeId, String fileType) {
+  public byte[] download(UUID localeId, String fileType) {
     Locale locale = Locale.byId(localeId);
     if (locale == null)
-      return redirectWithError(routes.Application.index(),
-          ctx().messages().at("locale.notFound", localeId));
+      throw new NotFoundException(ctx().messages().at("locale.notFound", localeId));
 
     select(locale.project);
 
@@ -219,12 +219,12 @@ public class Locales extends AbstractController {
         exporter = new GettextExporter();
         break;
       default:
-        return badRequest("File type " + fileType + " not supported yet");
+        throw new ValidationException("File type " + fileType + " not supported yet");
     }
 
     exporter.addHeaders(response(), locale);
 
-    return ok(new ByteArrayInputStream(exporter.apply(locale)));
+    return exporter.apply(locale);
   }
 
   public Result remove(UUID localeId) {

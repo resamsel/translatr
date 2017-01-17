@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -53,9 +54,11 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   public DateTime whenUpdated;
 
   @ManyToOne(optional = false)
+  @NotNull
   public Project project;
 
   @Column(nullable = false, length = NAME_LENGTH)
+  @NotNull
   public String name;
 
   @JsonIgnore

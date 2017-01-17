@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.ValidationException;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +47,9 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID> implem
    * 
    */
   @Inject
-  public LocaleServiceImpl(Configuration configuration, MessageService messageService,
-      LogEntryService logEntryService) {
-    super(configuration, logEntryService);
+  public LocaleServiceImpl(Configuration configuration, Validator validator,
+      MessageService messageService, LogEntryService logEntryService) {
+    super(configuration, validator, logEntryService);
     this.messageService = messageService;
   }
 
@@ -69,9 +70,6 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID> implem
       throw new ValidationException("Field 'name' required");
     if (t.project == null)
       throw new ValidationException("Field 'project' required");
-    if (Locale.byProjectAndName(t.project.id, t.name) != null)
-      throw new ValidationException(String
-          .format("Locale with name '%s' already exists in project '%s'", t.name, t.project.id));
 
     return t;
   }

@@ -2,10 +2,14 @@ package controllers;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 
 import org.slf4j.LoggerFactory;
@@ -25,6 +29,7 @@ import models.User;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.libs.Json;
+import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.BodyParser;
 import play.mvc.Http.Request;
 import play.mvc.Result;
@@ -34,8 +39,10 @@ import services.UserService;
 import utils.ErrorUtils;
 import utils.PermissionUtils;
 
-public abstract class Api<MODEL extends Model<MODEL, ID>, DTO extends Dto, ID>
+public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>, DTO extends Dto>
     extends AbstractController {
+  protected final HttpExecutionContext executionContext;
+
   protected final ModelService<MODEL> service;
 
   protected final Class<DTO> dtoClass;
@@ -50,14 +57,18 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, DTO extends Dto, ID>
 
   protected final Function<ID, MODEL> getter;
 
+  protected final Function<CRITERIA, List<MODEL>> finder;
+
   protected Api(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
       LogEntryService logEntryService, ModelService<MODEL> service, Function<ID, MODEL> getter,
-      Class<DTO> dtoClass, Function<MODEL, DTO> dtoMapper, Function<JsonNode, MODEL> modelMapper,
-      Scope[] readScopes, Scope[] writeScopes) {
+      Function<CRITERIA, List<MODEL>> finder, Class<DTO> dtoClass, Function<MODEL, DTO> dtoMapper,
+      Function<JsonNode, MODEL> modelMapper, Scope[] readScopes, Scope[] writeScopes) {
     super(injector, cache, auth, userService, logEntryService);
 
+    this.executionContext = injector.instanceOf(HttpExecutionContext.class);
     this.service = service;
     this.getter = getter;
+    this.finder = finder;
     this.dtoClass = dtoClass;
     this.dtoMapper = dtoMapper;
     this.modelMapper = modelMapper;
@@ -75,7 +86,11 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, DTO extends Dto, ID>
   }
 
   protected void checkProjectRole(Project project, User user, ProjectRole... roles) {
-    if (!project.hasPermissionAny(user, roles))
+    checkProjectRole(project.id, user, roles);
+  }
+
+  protected void checkProjectRole(UUID projectId, User user, ProjectRole... roles) {
+    if (!PermissionUtils.hasPermissionAny(projectId, user, roles))
       throw new PermissionException("User not allowed in project");
   }
 
@@ -83,47 +98,62 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, DTO extends Dto, ID>
   protected Result tryCatch(Supplier<Result> supplier) {
     try {
       return supplier.get();
+    } catch (Throwable t) {
+      return handleException(t);
+    }
+  }
+
+  protected static Result handleException(Throwable t) {
+    try {
+      if (t.getCause() != null)
+        throw t.getCause();
+
+      throw t;
     } catch (PermissionException e) {
       return forbidden(e.toJson());
     } catch (NotFoundException e) {
       return notFound(e.toJson());
+    } catch (ConstraintViolationException e) {
+      return badRequest(ErrorUtils.toJson(e));
     } catch (ValidationException e) {
       return badRequest(ErrorUtils.toJson(e));
-    } catch (Exception e) {
-      LoggerFactory.getLogger(getClass()).error("Error while processing API request", e);
+    } catch (Throwable e) {
+      LoggerFactory.getLogger(Api.class).error("Error while processing API request", e);
       return badRequest(ErrorUtils.toJson(e));
     }
   }
 
-  protected <IN, OUT> Result toJson(Function<IN, OUT> mapper, Supplier<IN> supplier) {
-    return tryCatch(() -> ok(Json.toJson(mapper.apply(supplier.get()))));
+  protected <IN, OUT> CompletionStage<Result> toJson(Function<IN, OUT> mapper,
+      Supplier<IN> supplier) {
+    return CompletableFuture.supplyAsync(supplier, executionContext.current())
+        .thenApply(out -> ok(Json.toJson(mapper.apply(out)))).exceptionally(Api::handleException);
   }
 
-  protected <IN, OUT> Result toJsons(Function<IN, OUT> mapper, Supplier<List<IN>> supplier) {
-    return tryCatch(
-        () -> ok(Json.toJson(supplier.get().stream().map(mapper).collect(Collectors.toList()))));
+  protected <IN, OUT> CompletionStage<Result> toJsons(Function<IN, OUT> mapper,
+      Supplier<List<IN>> supplier) {
+    return CompletableFuture.supplyAsync(supplier, executionContext.current())
+        .thenApply(out -> ok(Json.toJson(out.stream().map(mapper).collect(Collectors.toList()))))
+        .exceptionally(Api::handleException);
   }
 
-  protected <T, CRITERIA extends AbstractSearchCriteria<CRITERIA>> Supplier<List<T>> finder(
-      Function<CRITERIA, List<T>> finder, CRITERIA criteria) {
-    checkPermissionAll("Access token not allowed", readScopes);
-
-    return () -> finder.apply(criteria);
+  public static interface Validator {
+    void validate() throws ValidationException;
   }
 
-  protected <T> T project(UUID projectId, Function<Project, T> processort) {
-    Project project = Project.byId(projectId);
-    if (project == null || project.deleted)
-      throw new NotFoundException(String.format("Project not found: '%s'", projectId));
+  @SafeVarargs
+  protected final CompletionStage<Result> findBy(CRITERIA criteria,
+      Consumer<CRITERIA>... validators) {
+    return toJsons(dtoMapper, () -> {
+      for (Consumer<CRITERIA> validator : validators)
+        validator.accept(criteria);
 
-    return processort.apply(project);
+      checkPermissionAll("Access token not allowed", readScopes);
+
+      return finder.apply(criteria);
+    });
   }
 
-  protected Result projectCatch(UUID projectId, Function<Project, Result> processor) {
-    return tryCatch(() -> project(projectId, processor));
-  }
-
-  public Result get(ID id) {
+  public CompletionStage<Result> get(ID id) {
     return toJson(dtoMapper, () -> {
       checkPermissionAll("Access token not allowed", readScopes);
 
@@ -138,19 +168,19 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, DTO extends Dto, ID>
   }
 
   @BodyParser.Of(BodyParser.Json.class)
-  public Result create() {
+  public CompletionStage<Result> create() {
     return toJson(dtoMapper, creator(request()));
   }
 
   @BodyParser.Of(BodyParser.Json.class)
-  public Result update() {
+  public CompletionStage<Result> update() {
     return toJson(dtoMapper, updater(request()));
   }
 
   protected void checkDelete(MODEL m) {}
 
-  public Result delete(ID id) {
-    return tryCatch(() -> {
+  public CompletionStage<Result> delete(ID id) {
+    return CompletableFuture.supplyAsync(() -> {
       checkPermissionAll("Access token not allowed", writeScopes);
 
       MODEL m = getter.apply(id);
@@ -161,9 +191,11 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, DTO extends Dto, ID>
 
       service.delete(m);
 
-      return ok(Json.newObject().put("message",
-          String.format("%s with ID '%s' has been deleted", dtoClass.getSimpleName(), id)));
-    });
+      return true;
+    }, executionContext.current())
+        .thenApply(success -> ok(Json.newObject().put("message",
+            String.format("%s with ID '%s' has been deleted", dtoClass.getSimpleName(), id))))
+        .exceptionally(Api::handleException);
   }
 
   /**

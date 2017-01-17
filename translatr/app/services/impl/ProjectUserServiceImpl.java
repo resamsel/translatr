@@ -2,6 +2,7 @@ package services.impl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.Validator;
 
 import models.ActionType;
 import models.LogEntry;
@@ -24,9 +25,9 @@ public class ProjectUserServiceImpl extends AbstractModelService<ProjectUser, Lo
    * 
    */
   @Inject
-  public ProjectUserServiceImpl(Configuration configuration, LocaleService localeService,
-      KeyService keyService, LogEntryService logEntryService) {
-    super(configuration, logEntryService);
+  public ProjectUserServiceImpl(Configuration configuration, Validator validator,
+      LocaleService localeService, KeyService keyService, LogEntryService logEntryService) {
+    super(configuration, validator, logEntryService);
   }
 
   /**

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.validation.ValidationException;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +45,9 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID> implements K
    * 
    */
   @Inject
-  public KeyServiceImpl(Configuration configuration, MessageService messageService,
-      LogEntryService logEntryService) {
-    super(configuration, logEntryService);
+  public KeyServiceImpl(Configuration configuration, Validator validator,
+      MessageService messageService, LogEntryService logEntryService) {
+    super(configuration, validator, logEntryService);
     this.messageService = messageService;
   }
 
