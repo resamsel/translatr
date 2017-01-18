@@ -166,7 +166,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static long countBy(Project project) {
-    return find.where().eq("project", project).findRowCount();
+    return find.where().eq("project", project).findCount();
   }
 
   /**

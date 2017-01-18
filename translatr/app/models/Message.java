@@ -103,7 +103,7 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static Map<UUID, Message> byIds(List<UUID> ids) {
-    return find.fetch("key").fetch("locale").where().in("id", ids).findMap("id", UUID.class);
+    return find.fetch("key").fetch("locale").where().in("id", ids).findMap();
   }
 
   /**
@@ -129,7 +129,7 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static int countByUncached(Project project) {
-    return find.where().eq("key.project", project).findRowCount();
+    return find.where().eq("key.project", project).findCount();
   }
 
   /**
@@ -137,7 +137,7 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static int countBy(Key key) {
-    return find.where().eq("key", key).findRowCount();
+    return find.where().eq("key", key).findCount();
   }
 
   /**
@@ -145,7 +145,7 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static int countBy(Locale locale) {
-    return find.where().eq("locale", locale).findRowCount();
+    return find.where().eq("locale", locale).findCount();
   }
 
   /**

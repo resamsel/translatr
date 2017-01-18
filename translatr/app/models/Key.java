@@ -172,7 +172,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public static long countBy(Project project) {
-    return log(() -> find.where().eq("project", project).findRowCount(), LOGGER, "countBy");
+    return log(() -> find.where().eq("project", project).findCount(), LOGGER, "countBy");
   }
 
   /**

@@ -131,7 +131,7 @@ public class LogEntry implements Model<LogEntry, UUID> {
   }
 
   public static int countBy(LogEntryCriteria criteria) {
-    return findQuery(criteria).findRowCount();
+    return findQuery(criteria).findCount();
   }
 
   /**

@@ -19,11 +19,11 @@ libraryDependencies ++= Seq(
 	cache,
 
 	// Database
-	"org.postgresql" % "postgresql" % "9.4.1210",
+	"org.postgresql" % "postgresql" % "9.4.1212",
 
 	// OAuth for Play
 	"com.feth" %% "play-authenticate" % "0.8.1",
-	"be.objectify" %% "deadbolt-java" % "2.5.0",
+	"be.objectify" %% "deadbolt-java" % "2.5.4",
 
 	// Apache Commons IO
 	"commons-io" % "commons-io" % "2.5",
