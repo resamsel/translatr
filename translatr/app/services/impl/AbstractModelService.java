@@ -1,17 +1,23 @@
 package services.impl;
 
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Set;
 
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+import javax.validation.Validator;
+
+import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
-import com.fasterxml.jackson.databind.JsonNode;
 
-import dto.Dto;
 import models.Model;
 import play.Configuration;
-import play.libs.Json;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
 import services.LogEntryService;
@@ -23,13 +29,13 @@ import utils.TransactionUtils;
  * @author resamsel
  * @version 9 Sep 2016
  */
-public abstract class AbstractModelService<MODEL extends Model<MODEL>, DTO extends Dto>
+public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
     implements ModelService<MODEL> {
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelService.class);
 
-  private final Class<DTO> clazz;
-
   protected final Configuration configuration;
+
+  protected final Validator validator;
 
   protected final LogEntryService logEntryService;
 
@@ -37,18 +43,11 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL>, DTO exten
   /**
    * @param configuration
    */
-  public AbstractModelService(Class<DTO> clazz, Configuration configuration,
+  public AbstractModelService(Configuration configuration, Validator validator,
       LogEntryService logEntryService) {
-    this.clazz = clazz;
     this.configuration = configuration;
+    this.validator = validator;
     this.logEntryService = logEntryService;
-  }
-
-  /**
-   * @return the clazz
-   */
-  public Class<DTO> getClazz() {
-    return clazz;
   }
 
   /**
@@ -60,36 +59,33 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL>, DTO exten
     return Context.current().session();
   }
 
-  protected abstract MODEL byId(JsonNode id);
-
-  protected DTO fromJson(JsonNode json) {
-    return Json.fromJson(json, clazz);
-  }
-
-  protected abstract MODEL toModel(DTO dto);
+  protected abstract MODEL byId(ID id);
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public MODEL create(JsonNode json) {
-    DTO dto = fromJson(json);
+  public MODEL create(MODEL model) {
+    try {
+      return save(model);
+    } catch (PersistenceException e) {
+      if (e.getCause() != null && e.getCause() instanceof SQLException
+          && "23505".equals(((PSQLException) e.getCause()).getSQLState()))
+        throw new ValidationException("Entry already exists (duplicate key)");
 
-    LOGGER.debug("DTO: {}", Json.toJson(dto));
-
-    return save(toModel(validate(dto)));
+      throw new ValidationException(e.getMessage());
+    }
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public MODEL update(JsonNode json) {
-    DTO dto = fromJson(json);
+  public MODEL update(MODEL model) {
+    if (model.getId() == null)
+      throw new ValidationException("Field 'id' required");
 
-    MODEL m = byId(json.get("id")).updateFrom(toModel(validate(dto)));
-
-    LOGGER.debug("DTO: {}", Json.toJson(dto));
+    MODEL m = byId(model.getId()).updateFrom(model);
 
     return save(m);
   }
@@ -97,8 +93,13 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL>, DTO exten
   /**
    * @param dto
    */
-  protected DTO validate(DTO dto) {
-    return dto;
+  protected MODEL validate(MODEL model) {
+    Set<ConstraintViolation<MODEL>> violations = validator.validate(model);
+
+    if (!violations.isEmpty())
+      throw new ConstraintViolationException("Constraint violations detected", violations);
+
+    return model;
   }
 
   /**
@@ -107,10 +108,16 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL>, DTO exten
   @Override
   public MODEL save(MODEL t) {
     boolean update = !Ebean.getBeanState(t).isNew();
+
     preSave(t, update);
+
+    validate(t);
+
     Ebean.save(t);
-    Ebean.refresh(t);
+    // Ebean.refresh(t);
+
     postSave(t, update);
+
     return t;
   }
 

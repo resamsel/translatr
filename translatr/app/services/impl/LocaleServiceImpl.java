@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.ValidationException;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.RawSqlBuilder;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import dto.PermissionException;
 import models.ActionType;
@@ -29,6 +29,7 @@ import models.ProjectRole;
 import models.Stat;
 import models.User;
 import play.Configuration;
+import play.cache.CacheApi;
 import services.LocaleService;
 import services.LogEntryService;
 import services.MessageService;
@@ -39,19 +40,21 @@ import services.MessageService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class LocaleServiceImpl extends AbstractModelService<Locale, dto.Locale>
-    implements LocaleService {
+public class LocaleServiceImpl extends AbstractModelService<Locale, UUID> implements LocaleService {
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
 
   private final MessageService messageService;
+
+  private final CacheApi cache;
 
   /**
    * 
    */
   @Inject
-  public LocaleServiceImpl(Configuration configuration, MessageService messageService,
-      LogEntryService logEntryService) {
-    super(dto.Locale.class, configuration, logEntryService);
+  public LocaleServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
+      MessageService messageService, LogEntryService logEntryService) {
+    super(configuration, validator, logEntryService);
+    this.cache = cache;
     this.messageService = messageService;
   }
 
@@ -59,28 +62,19 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, dto.Locale>
    * {@inheritDoc}
    */
   @Override
-  protected Locale byId(JsonNode id) {
-    return Locale.byId(UUID.fromString(id.asText()));
+  protected Locale byId(UUID id) {
+    return Locale.byId(id);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected Locale toModel(dto.Locale dto) {
-    return dto.toModel(Project.byId(dto.projectId));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected dto.Locale validate(dto.Locale t) {
+  protected Locale validate(Locale t) {
     if (t.name == null)
       throw new ValidationException("Field 'name' required");
-    else if (Locale.byProjectAndName(t.projectId, t.name) != null)
-      throw new ValidationException(String
-          .format("Locale with name '%s' already exists in project '%s'", t.name, t.projectId));
+    if (t.project == null)
+      throw new ValidationException("Field 'project' required");
 
     return t;
   }
@@ -117,9 +111,13 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, dto.Locale>
    */
   @Override
   protected void postSave(Locale t, boolean update) {
-    if (!update)
+    if (!update) {
       logEntryService.save(
           LogEntry.from(ActionType.Create, t.project, dto.Locale.class, null, dto.Locale.from(t)));
+
+      // When message has been created, the project cache needs to be invalidated
+      cache.remove(Project.getCacheKey(t.project.id));
+    }
   }
 
   /**
@@ -134,6 +132,15 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, dto.Locale>
         LogEntry.from(ActionType.Delete, t.project, dto.Locale.class, dto.Locale.from(t), null));
 
     messageService.delete(Message.byLocale(t.id));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postDelete(Locale t) {
+    // When message has been created, the project cache needs to be invalidated
+    cache.remove(Project.getCacheKey(t.project.id));
   }
 
   /**

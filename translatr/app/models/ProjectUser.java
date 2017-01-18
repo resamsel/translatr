@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
@@ -30,12 +31,13 @@ import criterias.ProjectUserCriteria;
  * @version 5 Oct 2016
  */
 @Entity
-public class ProjectUser implements Model<ProjectUser> {
+public class ProjectUser implements Model<ProjectUser, Long> {
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectUser.class);
 
   public static final int ROLE_LENGTH = 16;
 
   @Id
+  @GeneratedValue
   public Long id;
 
   @Version
@@ -72,6 +74,14 @@ public class ProjectUser implements Model<ProjectUser> {
   }
 
   private static final Find<Long, ProjectUser> find = new Find<Long, ProjectUser>() {};
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Long getId() {
+    return id;
+  }
 
   public ProjectUser withProject(Project project) {
     this.project = project;
@@ -126,6 +136,6 @@ public class ProjectUser implements Model<ProjectUser> {
   }
 
   public static int countBy(ProjectUserCriteria criteria) {
-    return findQuery(criteria).findRowCount();
+    return log(() -> findQuery(criteria).findCount(), LOGGER, "countBy");
   }
 }

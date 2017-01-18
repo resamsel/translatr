@@ -2,8 +2,7 @@ package services.impl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import javax.validation.Validator;
 
 import models.LinkedAccount;
 import play.Configuration;
@@ -16,14 +15,15 @@ import services.LogEntryService;
  * @version 2 Oct 2016
  */
 @Singleton
-public class LinkedAccountServiceImpl extends AbstractModelService<LinkedAccount, dto.LinkedAccount>
+public class LinkedAccountServiceImpl extends AbstractModelService<LinkedAccount, Long>
     implements LinkedAccountService {
   /**
    * @param configuration
    */
   @Inject
-  public LinkedAccountServiceImpl(Configuration configuration, LogEntryService logEntryService) {
-    super(dto.LinkedAccount.class, configuration, logEntryService);
+  public LinkedAccountServiceImpl(Configuration configuration, Validator validator,
+      LogEntryService logEntryService) {
+    super(configuration, validator, logEntryService);
   }
 
 
@@ -31,16 +31,8 @@ public class LinkedAccountServiceImpl extends AbstractModelService<LinkedAccount
    * {@inheritDoc}
    */
   @Override
-  protected LinkedAccount byId(JsonNode id) {
-    return LinkedAccount.byId(id.asLong());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected LinkedAccount toModel(dto.LinkedAccount dto) {
-    return dto.toModel();
+  protected LinkedAccount byId(Long id) {
+    return LinkedAccount.byId(id);
   }
 
   /**

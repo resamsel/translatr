@@ -9,16 +9,15 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.ValidationException;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import models.ActionType;
-import models.Key;
-import models.Locale;
 import models.LogEntry;
 import models.Message;
 import models.Project;
@@ -33,7 +32,7 @@ import services.MessageService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class MessageServiceImpl extends AbstractModelService<Message, dto.Message>
+public class MessageServiceImpl extends AbstractModelService<Message, UUID>
     implements MessageService {
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceImpl.class);
 
@@ -43,9 +42,9 @@ public class MessageServiceImpl extends AbstractModelService<Message, dto.Messag
    * 
    */
   @Inject
-  public MessageServiceImpl(Configuration configuration, CacheApi cache,
+  public MessageServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
       LogEntryService logEntryService) {
-    super(dto.Message.class, configuration, logEntryService);
+    super(configuration, validator, logEntryService);
     this.cache = cache;
   }
 
@@ -53,16 +52,8 @@ public class MessageServiceImpl extends AbstractModelService<Message, dto.Messag
    * {@inheritDoc}
    */
   @Override
-  protected Message byId(JsonNode id) {
-    return Message.byId(UUID.fromString(id.asText()));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Message toModel(dto.Message dto) {
-    return dto.toModel(Locale.byId(dto.localeId), Key.byId(dto.keyId));
+  protected Message byId(UUID id) {
+    return Message.byId(id);
   }
 
   /**
@@ -72,6 +63,17 @@ public class MessageServiceImpl extends AbstractModelService<Message, dto.Messag
   public int countBy(Project project) {
     return log(() -> cache.getOrElse(String.format("message:countByProject:%s", project.id),
         () -> Message.countByUncached(project), 60), LOGGER, "countByProject");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Message validate(Message model) {
+    if (!model.locale.project.equals(model.key.project))
+      throw new ValidationException("Project of locale and key does not match");
+
+    return super.validate(model);
   }
 
   /**
@@ -103,8 +105,12 @@ public class MessageServiceImpl extends AbstractModelService<Message, dto.Messag
    */
   @Override
   protected void postSave(Message t, boolean update) {
-    if (!update)
+    if (!update) {
       logEntryService.save(logEntryCreate(t));
+
+      // When message has been created, the project cache needs to be invalidated
+      cache.remove(Project.getCacheKey(t.key.project.id));
+    }
   }
 
   /**

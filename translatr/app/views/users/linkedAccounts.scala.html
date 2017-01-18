@@ -13,47 +13,51 @@
 	</a>
 } {
 	@content(template, user, "linkedAccounts") {
-		@tags.collection(linkedAccountMap.values, "linkedAccounts.empty", "linked-accounts") {
-			<span class="title">@Messages("linkedAccount")</span>
-		} {
-			@for((key, linkedAccount) <- linkedAccountMap) {
-				<li class="collection-item avatar">
-					<i class="fa fa-@linkedAccount.providerKey provider provider-@linkedAccount.providerKey circle"></i>
-					<span class="title">
-						@Messages("auth." + linkedAccount.providerKey)
-					</span>
-					<p>
-						@Messages("user.linked", pretty(ctx.lang().locale, linkedAccount.whenCreated))
-					</p>
-					<a
-						href="@routes.Profiles.linkedAccountRemove(linkedAccount.id)"
-						class="secondary-content btn-hover"
-						title="@Messages("button.unlink")">
-						<i class="material-icons">delete_forever</i>
-					</a>
-				</li>
-			}
-			@forProviders(template.auth) { p =>
-				@if(!linkedAccountMap.containsKey(p.getKey())) {
-					<li class="collection-item avatar">
-						<i class="fa fa-@p.getKey() provider provider-@p.getKey() circle"></i>
-						<span class="title">
-							@Messages("auth." + p.getKey())
-						</span>
-						<p>
-							@Messages("user.notLinked")
-						</p>
-						<a
-							href="@p.getUrl()"
-							class="secondary-content btn-hover"
-							title="@Messages("button.link")">
-							<i class="material-icons">link</i>
-						</a>
-					</li>
+		<div class="row">
+			<div class="col s8">
+				@tags.collection(linkedAccountMap.values, "linkedAccounts.empty", "linked-accounts") {
+					<span class="title">@Messages("linkedAccount")</span>
+				} {
+					@for((key, linkedAccount) <- linkedAccountMap) {
+						<li class="collection-item avatar">
+							<i class="fa fa-@linkedAccount.providerKey provider provider-@linkedAccount.providerKey circle"></i>
+							<span class="title">
+								@Messages("auth." + linkedAccount.providerKey)
+							</span>
+							<p>
+								@Messages("user.linked", pretty(ctx.lang().locale, linkedAccount.whenCreated))
+							</p>
+							<a
+								href="@routes.Profiles.linkedAccountRemove(linkedAccount.id)"
+								class="secondary-content btn-hover"
+								title="@Messages("button.unlink")">
+								<i class="material-icons">delete_forever</i>
+							</a>
+						</li>
+					}
+				} {
+					@tags.pager(routes.Profiles.linkedAccounts(), form.get)
 				}
-			}
-		} {
-			@tags.pager(routes.Profiles.linkedAccounts(), form.get)
-		}
+			</div>
+			<div class="col s4">
+				<ul class="collection auth-provider">
+					@if(template.auth != null) {
+						@forProviders(template.auth) { p =>
+							<li class="collection-item">
+								<a href="@p.getUrl()" class="hoverable provider provider-@p.getKey()">
+									<span class="icon-container">
+										<i class="fa fa-@p.getKey()" aria-hidden="true"></i>
+									</span>
+									<span class="title">
+										@Messages("auth." + p.getKey())
+									</span>
+								</a>
+							</li>
+						}
+					}
+				</ul>
+			</div>
+		</div>
 	}
+
 }

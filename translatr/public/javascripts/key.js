@@ -52,7 +52,11 @@ App.Modules.MessageModule = function(sb) {
     	Materialize.toast(messages['message.updated'], 5000);
     }
 
-    function _handleMessage(message) {
+    function _handleMessage(messageList) {
+    	if(messageList.length === 0)
+    		return;
+
+    	var message = messageList[0];
     	fieldId.val(message.id);
     	fieldLocale.val(message.localeName).attr('localeId', message.localeId);
     	fieldValue.val(message.value).trigger('autoresize').focus();
@@ -70,9 +74,10 @@ App.Modules.MessageModule = function(sb) {
     	Materialize.updateTextFields();
     	preview.html('');
     	localeName.text(sb.dom.find('#' + localeId + ' .name').text());
-    	sb.utilities.ajax(
-    		jsRoutes.controllers.Translations.getByLocaleAndKey(localeId, keyName)
-    	).done(_handleMessage);
+    	sb.utilities.ajax(sb.utilities.merge(
+			jsRoutes.controllers.TranslationsApi.find(projectId),
+			{data: {"localeId": localeId, "keyName": keyName}}
+		)).done(_handleMessage);
     }
 
 	return {
@@ -116,22 +121,20 @@ App.Modules.MessageModule = function(sb) {
 				};
 
 		        if(fieldId.val() !== '') {
-		        	op = jsRoutes.controllers.Translations.update();
+		        	op = jsRoutes.controllers.TranslationsApi.update();
 		        	data["id"] = fieldId.val();
 		        } else {
-		        	op = jsRoutes.controllers.Translations.create();
+		        	op = jsRoutes.controllers.TranslationsApi.create();
 		        }
 
-				sb.utilities.ajax(
-					sb.utilities.merge(
-						op,
-						{
-							contentType: 'application/json',
-							dataType: 'json',
-							data: JSON.stringify(data)
-						}
-					)
-				).done(_handleSaveMessage);
+				sb.utilities.ajax(sb.utilities.merge(
+					op,
+					{
+						contentType: 'application/json',
+						dataType: 'json',
+						data: JSON.stringify(data)
+					}
+				)).done(_handleSaveMessage);
 		    });
 		},
 		destroy: function() {

@@ -14,12 +14,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Module;
 
+import models.Project;
 import play.Application;
 import play.ApplicationLoader.Context;
 import play.Environment;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.inject.guice.GuiceApplicationLoader;
-import play.libs.Json;
 import play.test.Helpers;
 import play.test.WithApplication;
 import services.ProjectService;
@@ -38,7 +38,7 @@ public class ProjectServiceTest extends WithApplication {
   @Test
   public void create() {
     running(fakeApplication(), () -> {
-      projectService.create(Json.newObject().put("name", "blubb"));
+      projectService.create(new Project().withName("blubbb"));
       assertThat(1).isEqualTo(1);
     });
   }

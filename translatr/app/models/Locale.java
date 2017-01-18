@@ -8,12 +8,14 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -24,19 +26,22 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.routes;
 import criterias.LocaleCriteria;
+import play.libs.Json;
 import play.mvc.Http.Context;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
-public class Locale implements Model<Locale>, Suggestable {
+public class Locale implements Model<Locale, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Locale.class);
 
   public static final int NAME_LENGTH = 15;
 
   @Id
+  @GeneratedValue
   public UUID id;
 
   @Version
@@ -49,9 +54,11 @@ public class Locale implements Model<Locale>, Suggestable {
   public DateTime whenUpdated;
 
   @ManyToOne(optional = false)
+  @NotNull
   public Project project;
 
   @Column(nullable = false, length = NAME_LENGTH)
+  @NotNull
   public String name;
 
   @JsonIgnore
@@ -63,6 +70,14 @@ public class Locale implements Model<Locale>, Suggestable {
   public Locale(Project project, String name) {
     this.project = project;
     this.name = name;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public UUID getId() {
+    return id;
   }
 
   @Override
@@ -151,7 +166,7 @@ public class Locale implements Model<Locale>, Suggestable {
    * @return
    */
   public static long countBy(Project project) {
-    return find.where().eq("project", project).findRowCount();
+    return find.where().eq("project", project).findCount();
   }
 
   /**
@@ -163,5 +178,9 @@ public class Locale implements Model<Locale>, Suggestable {
     name = in.name;
 
     return this;
+  }
+
+  public static Locale from(JsonNode json) {
+    return Json.fromJson(json, dto.Locale.class).toModel();
   }
 }

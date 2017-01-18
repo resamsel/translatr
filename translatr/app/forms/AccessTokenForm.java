@@ -33,6 +33,9 @@ public class AccessTokenForm {
   private Boolean scopeKeyAdmin = false;
   private Boolean scopeKeyRead = false;
   private Boolean scopeKeyWrite = false;
+  private Boolean scopeMessageAdmin = false;
+  private Boolean scopeMessageRead = false;
+  private Boolean scopeMessageWrite = false;
 
   public String getName() {
     return name;
@@ -118,6 +121,30 @@ public class AccessTokenForm {
     this.scopeKeyWrite = scopeKeyWrite;
   }
 
+  public Boolean getScopeMessageAdmin() {
+    return scopeMessageAdmin;
+  }
+
+  public void setScopeMessageAdmin(Boolean scopeMessageAdmin) {
+    this.scopeMessageAdmin = scopeMessageAdmin;
+  }
+
+  public Boolean getScopeMessageRead() {
+    return scopeMessageRead;
+  }
+
+  public void setScopeMessageRead(Boolean scopeMessageRead) {
+    this.scopeMessageRead = scopeMessageRead;
+  }
+
+  public Boolean getScopeMessageWrite() {
+    return scopeMessageWrite;
+  }
+
+  public void setScopeMessageWrite(Boolean scopeMessageWrite) {
+    this.scopeMessageWrite = scopeMessageWrite;
+  }
+
   /**
    * @param in
    * @return
@@ -144,6 +171,12 @@ public class AccessTokenForm {
       scopes.add(Scope.KeyRead.scope());
     if (scopeKeyWrite)
       scopes.add(Scope.KeyWrite.scope());
+    if (scopeMessageAdmin)
+      scopes.add(Scope.MessageAdmin.scope());
+    if (scopeMessageRead)
+      scopes.add(Scope.MessageRead.scope());
+    if (scopeMessageWrite)
+      scopes.add(Scope.MessageWrite.scope());
 
     in.scope = StringUtils.join(scopes, ",");
 
@@ -170,6 +203,9 @@ public class AccessTokenForm {
     out.scopeKeyAdmin = scopes.contains(Scope.KeyAdmin);
     out.scopeKeyRead = scopes.contains(Scope.KeyRead);
     out.scopeKeyWrite = scopes.contains(Scope.KeyWrite);
+    out.scopeMessageAdmin = scopes.contains(Scope.MessageAdmin);
+    out.scopeMessageRead = scopes.contains(Scope.MessageRead);
+    out.scopeMessageWrite = scopes.contains(Scope.MessageWrite);
 
     return out;
   }

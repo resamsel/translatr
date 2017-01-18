@@ -118,10 +118,11 @@ def handle_http_error(response, config):
 		raise Exception(API_HTML_ERROR.format(response.text))
 
 
-def download(req, target):
-	logger.debug('Download %s to %s', req.url, target)
+def download(res, target):
+	logger.debug('Download %s to %s', res.url, target)
+
 	with open(target, 'wb') as f:
-		for chunk in req.iter_content(chunk_size=1024):
+		for chunk in res.iter_content(chunk_size=1024):
 			if chunk: # filter out keep-alive new chunks
 				f.write(chunk)
 	return
@@ -166,16 +167,23 @@ def pull(args):
 			target = re.sub(r'.\?default', '', target)
 		else:
 			target = target.replace('?', '')
-		download(
-			requests.get(
+
+		try:
+			response = requests.get(
 				'{endpoint}/api/locale/{0}/export/{pull[file_type]}'.format(
 					locale.id,
 					**config
 				),
 				params={'access_token': config['access_token']}
-			),
-			target
-		)
+			)
+			response.raise_for_status()
+		except requests.exceptions.ConnectionError as e:
+			raise Exception(CONNECTION_ERROR.format(**config))
+		except requests.exceptions.HTTPError:
+			handle_http_error(response, config)
+
+		download(response, target)
+
 		print('Downloaded {0} to {1}'.format(locale.name, target))
 
 

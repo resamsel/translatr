@@ -10,12 +10,10 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.validation.ValidationException;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import dto.NotFoundException;
 import dto.PermissionException;
@@ -38,9 +36,9 @@ import services.ProjectService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class ProjectServiceImpl extends AbstractModelService<Project, dto.Project>
+public class ProjectServiceImpl extends AbstractModelService<Project, UUID>
     implements ProjectService {
-  private static final Logger LOGGER = LoggerFactory.getLogger(PermissionServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
   private final CacheApi cache;
 
@@ -52,9 +50,9 @@ public class ProjectServiceImpl extends AbstractModelService<Project, dto.Projec
    * 
    */
   @Inject
-  public ProjectServiceImpl(Configuration configuration, CacheApi cache,
+  public ProjectServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
       LocaleService localeService, KeyService keyService, LogEntryService logEntryService) {
-    super(dto.Project.class, configuration, logEntryService);
+    super(configuration, validator, logEntryService);
     this.cache = cache;
     this.localeService = localeService;
     this.keyService = keyService;
@@ -64,29 +62,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, dto.Projec
    * {@inheritDoc}
    */
   @Override
-  protected Project byId(JsonNode id) {
-    return Project.byId(UUID.fromString(id.asText()));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Project toModel(dto.Project dto) {
-    return dto.toModel();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected dto.Project validate(dto.Project t) {
-    if (t.name != null)
-      if (Project.byOwnerAndName(User.loggedInUser(), t.name) != null)
-        throw new ValidationException(
-            String.format("Project with name '%s' already exists", t.name));
-
-    return t;
+  protected Project byId(UUID id) {
+    return Project.byId(id);
   }
 
   /**
@@ -94,8 +71,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, dto.Projec
    */
   @Override
   public Project getById(UUID id) {
-    return log(() -> cache.getOrElse(String.format("project:%s", id.toString()),
-        () -> Project.byIdUncached(id), 60), LOGGER, "getById");
+    return log(() -> cache.getOrElse(Project.getCacheKey(id), () -> Project.byIdUncached(id), 60),
+        LOGGER, "getById");
   }
 
   /**
@@ -115,15 +92,16 @@ public class ProjectServiceImpl extends AbstractModelService<Project, dto.Projec
    */
   @Override
   protected void preSave(Project t, boolean update) {
-    if (update)
-      logEntryService.save(LogEntry.from(ActionType.Update, t, dto.Project.class,
-          toDto(Project.byId(t.id)), toDto(t)));
     if (t.owner == null)
       t.owner = User.loggedInUser();
     if (t.members == null)
       t.members = new ArrayList<>();
     if (t.members.isEmpty())
       t.members.add(new ProjectUser(ProjectRole.Owner).withProject(t).withUser(t.owner));
+
+    if (update)
+      logEntryService.save(LogEntry.from(ActionType.Update, t, dto.Project.class,
+          toDto(Project.byId(t.id)), toDto(t)));
   }
 
   /**

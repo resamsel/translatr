@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.validation.ValidationException;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.RawSqlBuilder;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import dto.PermissionException;
 import models.ActionType;
@@ -28,6 +28,7 @@ import models.ProjectRole;
 import models.Stat;
 import models.User;
 import play.Configuration;
+import play.cache.CacheApi;
 import services.KeyService;
 import services.LogEntryService;
 import services.MessageService;
@@ -37,18 +38,21 @@ import services.MessageService;
  * @author resamsel
  * @version 29 Aug 2016
  */
-public class KeyServiceImpl extends AbstractModelService<Key, dto.Key> implements KeyService {
+public class KeyServiceImpl extends AbstractModelService<Key, UUID> implements KeyService {
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyServiceImpl.class);
 
   private final MessageService messageService;
+
+  private final CacheApi cache;
 
   /**
    * 
    */
   @Inject
-  public KeyServiceImpl(Configuration configuration, MessageService messageService,
-      LogEntryService logEntryService) {
-    super(dto.Key.class, configuration, logEntryService);
+  public KeyServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
+      MessageService messageService, LogEntryService logEntryService) {
+    super(configuration, validator, logEntryService);
+    this.cache = cache;
     this.messageService = messageService;
   }
 
@@ -56,28 +60,22 @@ public class KeyServiceImpl extends AbstractModelService<Key, dto.Key> implement
    * {@inheritDoc}
    */
   @Override
-  protected Key byId(JsonNode id) {
-    return Key.byId(UUID.fromString(id.asText()));
+  protected Key byId(UUID id) {
+    return Key.byId(id);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected Key toModel(dto.Key dto) {
-    return dto.toModel(Project.byId(dto.projectId));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected dto.Key validate(dto.Key t) {
+  protected Key validate(Key t) {
     if (t.name == null)
       throw new ValidationException("Field 'name' required");
-    else if (Key.byProjectAndName(t.projectId, t.name) != null)
+    if (t.project == null)
+      throw new ValidationException("Field 'project' required");
+    if (Key.byProjectAndName(t.project.id, t.name) != null)
       throw new ValidationException(
-          String.format("Key with name '%s' already exists in project '%s'", t.name, t.projectId));
+          String.format("Key with name '%s' already exists in project '%s'", t.name, t.project.id));
 
     return t;
   }
@@ -112,9 +110,12 @@ public class KeyServiceImpl extends AbstractModelService<Key, dto.Key> implement
    */
   @Override
   protected void postSave(Key t, boolean update) {
-    if (!update)
+    if (!update) {
       logEntryService
           .save(LogEntry.from(ActionType.Create, t.project, dto.Key.class, null, dto.Key.from(t)));
+
+      cache.remove(Project.getCacheKey(t.project.id));
+    }
   }
 
   /**
@@ -129,6 +130,15 @@ public class KeyServiceImpl extends AbstractModelService<Key, dto.Key> implement
         .save(LogEntry.from(ActionType.Delete, t.project, dto.Key.class, dto.Key.from(t), null));
 
     messageService.delete(Message.byKey(t));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postDelete(Key t) {
+    // When message has been created, the project cache needs to be invalidated
+    cache.remove(Project.getCacheKey(t.project.id));
   }
 
   /**

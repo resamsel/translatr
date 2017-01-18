@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -23,17 +24,20 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import criterias.MessageCriteria;
 import play.api.Play;
+import play.libs.Json;
 import services.MessageService;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"locale_id", "key_id"})})
-public class Message implements Model<Message> {
+public class Message implements Model<Message, UUID> {
   private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
   @Id
+  @GeneratedValue
   public UUID id;
 
   @Version
@@ -72,6 +76,14 @@ public class Message implements Model<Message> {
    * {@inheritDoc}
    */
   @Override
+  public UUID getId() {
+    return id;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Message updateFrom(Message in) {
     value = in.value;
 
@@ -91,7 +103,7 @@ public class Message implements Model<Message> {
    * @return
    */
   public static Map<UUID, Message> byIds(List<UUID> ids) {
-    return find.fetch("key").fetch("locale").where().in("id", ids).findMap("id", UUID.class);
+    return find.fetch("key").fetch("locale").where().in("id", ids).findMap();
   }
 
   /**
@@ -117,7 +129,7 @@ public class Message implements Model<Message> {
    * @return
    */
   public static int countByUncached(Project project) {
-    return find.where().eq("key.project", project).findRowCount();
+    return find.where().eq("key.project", project).findCount();
   }
 
   /**
@@ -125,7 +137,7 @@ public class Message implements Model<Message> {
    * @return
    */
   public static int countBy(Key key) {
-    return find.where().eq("key", key).findRowCount();
+    return find.where().eq("key", key).findCount();
   }
 
   /**
@@ -133,7 +145,7 @@ public class Message implements Model<Message> {
    * @return
    */
   public static int countBy(Locale locale) {
-    return find.where().eq("locale", locale).findRowCount();
+    return find.where().eq("locale", locale).findCount();
   }
 
   /**
@@ -154,6 +166,9 @@ public class Message implements Model<Message> {
 
     if (criteria.getKeyIds() != null)
       query.in("key.id", criteria.getKeyIds());
+
+    if (criteria.getSearch() != null)
+      query.ilike("value", "%" + criteria.getSearch() + "%");
 
     if (criteria.getOrder() != null)
       query.setOrderBy(criteria.getOrder());
@@ -208,5 +223,9 @@ public class Message implements Model<Message> {
   public static List<Message> last(Project project, int limit) {
     return find.fetch("key").fetch("locale").where().eq("key.project", project)
         .order("whenUpdated desc").setMaxRows(limit).findList();
+  }
+
+  public static Message from(JsonNode json) {
+    return Json.fromJson(json, dto.Message.class).toModel();
   }
 }

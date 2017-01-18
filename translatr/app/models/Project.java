@@ -14,6 +14,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,22 +33,26 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
 import play.api.Play;
+import play.data.validation.Constraints.Required;
+import play.libs.Json;
 import play.mvc.Http.Context;
 import services.ProjectService;
 import utils.PermissionUtils;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
-public class Project implements Model<Project>, Suggestable {
+public class Project implements Model<Project, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
   public static final int NAME_LENGTH = 255;
 
   @Id
+  @GeneratedValue
   public UUID id;
 
   @Version
@@ -64,10 +69,12 @@ public class Project implements Model<Project>, Suggestable {
   public DateTime whenUpdated;
 
   @Column(nullable = false, length = NAME_LENGTH)
+  @Required
   public String name;
 
   @ManyToOne
   @JoinColumn(name = "owner_id")
+  @Required
   public User owner;
 
   @JsonIgnore
@@ -97,6 +104,14 @@ public class Project implements Model<Project>, Suggestable {
     this.name = name;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public UUID getId() {
+    return id;
+  }
+
   @Override
   public String value() {
     return name;
@@ -122,7 +137,7 @@ public class Project implements Model<Project>, Suggestable {
   }
 
   public static Project byIdUncached(UUID id) {
-    return find.byId(id);
+    return find.fetch("owner").where().eq("id", id).findUnique();
   }
 
   /**
@@ -280,6 +295,18 @@ public class Project implements Model<Project>, Suggestable {
    * @return
    */
   public boolean hasPermissionAny(User user, ProjectRole... roles) {
-    return PermissionUtils.hasPermissionAny(this, user, roles);
+    return PermissionUtils.hasPermissionAny(id, user, roles);
+  }
+
+  public static Project from(JsonNode json) {
+    return Json.fromJson(json, dto.Project.class).toModel();
+  }
+
+  /**
+   * @param projectId
+   * @return
+   */
+  public static String getCacheKey(UUID projectId) {
+    return String.format("project:%s", projectId.toString());
   }
 }

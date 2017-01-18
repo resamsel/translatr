@@ -138,6 +138,13 @@ public class JsonUtils {
     return UUID.fromString(node.get(key).asText());
   }
 
+  public static UUID getUuid(String uuid) {
+    if (uuid == null)
+      return null;
+
+    return UUID.fromString(uuid);
+  }
+
   public static JsonNode parse(LogEntry activity) {
     switch (activity.type) {
       case Create:

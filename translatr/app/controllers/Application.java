@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
@@ -73,8 +74,13 @@ public class Application extends AbstractController {
   }
 
   public Result login() {
-    return ok(views.html.login.render(createTemplate(),
-        configuration.getStringList(ConfigKey.AuthProviders.key())));
+    List<String> providers = configuration.getStringList(ConfigKey.AuthProviders.key());
+
+    if (providers.size() == 1)
+      return redirect(
+          com.feth.play.module.pa.controllers.routes.Authenticate.authenticate(providers.get(0)));
+
+    return ok(views.html.login.render(createTemplate(), providers));
   }
 
   public Result logout() {
@@ -154,14 +160,14 @@ public class Application extends AbstractController {
   }
 
   public Result javascriptRoutes() {
-    return ok(JavaScriptReverseRouter.create("jsRoutes",
-        routes.javascript.Application.activityCsv(), routes.javascript.Users.activityCsv(),
-        routes.javascript.Profiles.activity(), routes.javascript.Profiles.resetNotifications(),
-        routes.javascript.Dashboards.search(), routes.javascript.Projects.search(),
-        routes.javascript.Projects.activity(), routes.javascript.Projects.activityCsv(),
-        routes.javascript.Locales.locale(), routes.javascript.Keys.key(),
-        routes.javascript.Keys.createImmediately(), routes.javascript.Keys.remove(),
-        routes.javascript.Translations.getByLocaleAndKey(), routes.javascript.Translations.create(),
-        routes.javascript.Translations.update(), routes.javascript.Translations.find()));
+    return ok(
+        JavaScriptReverseRouter.create("jsRoutes", routes.javascript.Application.activityCsv(),
+            routes.javascript.Users.activityCsv(), routes.javascript.Profiles.activity(),
+            routes.javascript.Profiles.resetNotifications(), routes.javascript.Dashboards.search(),
+            routes.javascript.Projects.search(), routes.javascript.Projects.activity(),
+            routes.javascript.Projects.activityCsv(), routes.javascript.Locales.locale(),
+            routes.javascript.Keys.key(), routes.javascript.Keys.createImmediately(),
+            routes.javascript.Keys.remove(), routes.javascript.TranslationsApi.create(),
+            routes.javascript.TranslationsApi.update(), routes.javascript.TranslationsApi.find()));
   }
 }

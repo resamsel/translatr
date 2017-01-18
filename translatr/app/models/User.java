@@ -13,6 +13,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -42,11 +43,13 @@ import criterias.ProjectUserCriteria;
 import play.api.Play;
 import play.api.inject.Injector;
 import play.mvc.Http.Context;
+import play.mvc.Http.Session;
 import services.UserService;
+import utils.ConfigKey;
 
 @Entity
 @Table(name = "user_")
-public class User implements Model<User>, Subject {
+public class User implements Model<User, UUID>, Subject {
   private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
 
   public static final int USERNAME_LENGTH = 32;
@@ -56,6 +59,7 @@ public class User implements Model<User>, Subject {
   public static final int EMAIL_LENGTH = 255;
 
   @Id
+  @GeneratedValue
   public UUID id;
 
   @Version
@@ -93,9 +97,17 @@ public class User implements Model<User>, Subject {
 
   private static final Find<UUID, User> find = new Find<UUID, User>() {};
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public UUID getId() {
+    return id;
+  }
+
   public static boolean existsByAuthUserIdentity(final AuthUserIdentity identity) {
     final ExpressionList<User> exp = getAuthUserFind(identity);
-    return exp.findRowCount() > 0;
+    return exp.findCount() > 0;
   }
 
   private static ExpressionList<User> getAuthUserFind(final AuthUserIdentity identity) {
@@ -167,10 +179,16 @@ public class User implements Model<User>, Subject {
   }
 
   public static AuthUser loggedInAuthUser() {
-    Injector injector = play.api.Play.current().injector();
+    Injector injector = Play.current().injector();
+    Session session = Context.current().session();
+    String provider = session.get("pa.p.id");
+    if (provider != null && !injector.instanceOf(play.Application.class).configuration()
+        .getStringList(ConfigKey.AuthProviders.key()).contains(provider))
+      // Prevent NPE when using an unavailable auth provider
+      session.clear();
 
     PlayAuthenticate auth = injector.instanceOf(PlayAuthenticate.class);
-    AuthUser authUser = auth.getUser(Context.current().session());
+    AuthUser authUser = auth.getUser(session);
 
     return authUser;
   }
@@ -184,8 +202,6 @@ public class User implements Model<User>, Subject {
       return null;
     }
 
-    Injector injector = play.api.Play.current().injector();
-
     // Logged-in via access_token?
     if (args.containsKey("accessToken"))
       return ((AccessToken) args.get("accessToken")).user;
@@ -195,7 +211,7 @@ public class User implements Model<User>, Subject {
     if (authUser != null) {
       if (!args.containsKey(authUser.toString()))
         args.put(authUser.toString(),
-            injector.instanceOf(UserService.class).getLocalUser(authUser));
+            Play.current().injector().instanceOf(UserService.class).getLocalUser(authUser));
 
       return (User) args.get(authUser.toString());
     }

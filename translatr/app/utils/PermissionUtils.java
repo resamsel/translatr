@@ -3,6 +3,7 @@ package utils;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class PermissionUtils {
         accessToken != null ? accessToken.getScopeList() : "-", scopes);
 
     if (accessToken == null)
-      return false;
+      return User.loggedInUser() != null;
 
     // TODO: allow admin scopes also
     // !PermissionUtils.hasPermissionAny(Scope.ProjectRead, Scope.ProjectAdmin)
@@ -64,7 +65,16 @@ public class PermissionUtils {
    * @return
    */
   public static boolean hasPermissionAny(Project project, ProjectRole... roles) {
-    return hasPermissionAny(project, User.loggedInUser(), roles);
+    return hasPermissionAny(project.id, User.loggedInUser(), roles);
+  }
+
+  /**
+   * @param projectId
+   * @param roles
+   * @return
+   */
+  public static boolean hasPermissionAny(UUID projectId, ProjectRole... roles) {
+    return hasPermissionAny(projectId, User.loggedInUser(), roles);
   }
 
   /**
@@ -73,8 +83,8 @@ public class PermissionUtils {
    * @param roles
    * @return
    */
-  public static boolean hasPermissionAny(Project project, User loggedInUser, ProjectRole... roles) {
-    return hasPermissionAny(project, User.loggedInUser(), Arrays.asList(roles));
+  public static boolean hasPermissionAny(UUID projectId, User loggedInUser, ProjectRole... roles) {
+    return hasPermissionAny(projectId, User.loggedInUser(), Arrays.asList(roles));
   }
 
   /**
@@ -83,13 +93,11 @@ public class PermissionUtils {
    * @param roles
    * @return
    */
-  public static boolean hasPermissionAny(Project project, User user,
-      Collection<ProjectRole> roles) {
-    LOGGER.debug("Members of project: {}, needed: {}", project != null ? project.members : "-",
-        roles);
+  public static boolean hasPermissionAny(UUID projectId, User user, Collection<ProjectRole> roles) {
+    LOGGER.debug("Members needed: {}", roles);
 
     for (ProjectUser member : ProjectUser
-        .findBy(new ProjectUserCriteria().withProjectId(project.id)))
+        .findBy(new ProjectUserCriteria().withProjectId(projectId)))
       if (user.id.equals(member.user.id) && roles.contains(member.role))
         return true;
 

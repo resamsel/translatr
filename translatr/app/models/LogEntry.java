@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,8 +28,9 @@ import play.libs.Json;
  * @version 29 Aug 2016
  */
 @Entity
-public class LogEntry implements Model<LogEntry> {
+public class LogEntry implements Model<LogEntry, UUID> {
   @Id
+  @GeneratedValue
   public UUID id;
 
   @Enumerated(EnumType.STRING)
@@ -56,10 +58,23 @@ public class LogEntry implements Model<LogEntry> {
   public String after;
 
   /**
+   * {@inheritDoc}
+   */
+  @Override
+  public UUID getId() {
+    return id;
+  }
+
+  /**
    * @return the type
    */
   public ActionType getType() {
     return type;
+  }
+
+  public LogEntry withUser(User user) {
+    this.user = user;
+    return this;
   }
 
   private static final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>() {};
@@ -116,7 +131,7 @@ public class LogEntry implements Model<LogEntry> {
   }
 
   public static int countBy(LogEntryCriteria criteria) {
-    return findQuery(criteria).findRowCount();
+    return findQuery(criteria).findCount();
   }
 
   /**

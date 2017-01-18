@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +18,8 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import criterias.LogEntryCriteria;
-import dto.Dto;
 import models.Aggregate;
 import models.LogEntry;
 import models.Project;
@@ -36,7 +35,7 @@ import services.LogEntryService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class LogEntryServiceImpl extends AbstractModelService<LogEntry, Dto>
+public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID>
     implements LogEntryService {
   private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryServiceImpl.class);
 
@@ -49,8 +48,8 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, Dto>
    * 
    */
   @Inject
-  public LogEntryServiceImpl(Configuration configuration, CacheApi cache) {
-    super(dto.Dto.class, configuration, null);
+  public LogEntryServiceImpl(Configuration configuration, Validator validator, CacheApi cache) {
+    super(configuration, validator, null);
     this.cache = cache;
   }
 
@@ -58,17 +57,8 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, Dto>
    * {@inheritDoc}
    */
   @Override
-  protected LogEntry byId(JsonNode id) {
-    return LogEntry.byId(UUID.fromString(id.asText()));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected LogEntry toModel(Dto dto) {
-    // never needed
-    return null;
+  protected LogEntry byId(UUID id) {
+    return LogEntry.byId(id);
   }
 
   @Override

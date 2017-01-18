@@ -343,6 +343,10 @@ nav ul .disabled:hover {
 }
 
 .dashboard .container-main,
+.template-dashboard .container-main,
+.template-dashboard-activity .container-main,
+.template-user-projects .container-main,
+.template-user-access-tokens .container-main,
 .template-keys .container-main,
 .template-locales .container-main,
 .flex {
@@ -352,7 +356,7 @@ nav ul .disabled:hover {
 	display: -webkit-flex;
 	display: flex;
 }
-.dashboard .container,
+.template-dashboard .container-main,
 .flex {
 	flex-flow: row wrap;
 	margin-bottom: 0;
@@ -373,6 +377,10 @@ nav ul .disabled:hover {
 .template-project .flex > .messages {
 	flex: 2 100%;
 }
+.template-dashboard .container-main > .main,
+.template-dashboard-activity .container-main > .main,
+.template-user-projects .container-main > .main,
+.template-user-access-tokens .container-main > .main,
 .template-keys .container-main > .main,
 .template-locales .container-main > .main {
 	display: flex;
@@ -686,6 +694,13 @@ textarea.materialize-textarea {
 	color: #fff;
     background-color: #55acee !important;
 }
+.provider.provider-keycloak {
+	color: #fff;
+    background-color: #393F44 !important;
+}
+.fa-keycloak:before {
+    content: "\f19b";
+}
 
 .empty {
     padding: 2rem;
@@ -693,4 +708,10 @@ textarea.materialize-textarea {
 
 i.xlarge {
 	font-size: 9em;
+}
+
+/* Fixes */
+/* Safari + Firefox */
+.input-field label {
+	left: 0;
 }

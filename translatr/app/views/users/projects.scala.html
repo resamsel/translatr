@@ -2,7 +2,7 @@
 
 @import utils.FormatUtils._
 
-@main(template.withTitle(Messages("user.title", user.name)).withName("user")) {
+@main(template.withTitle(Messages("user.title", user.name)).withName("user-projects")) {
 } {
 	<a class="breadcrumb" href="@routes.Users.user(user.id)">
 		@user.name
@@ -31,6 +31,7 @@
 				</li>
 			}
 		} {
+			@tags.pager(routes.Profiles.projects(), form.get)
 		}
 	}
 }
