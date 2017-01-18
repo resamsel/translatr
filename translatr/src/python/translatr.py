@@ -149,7 +149,7 @@ def pull(args):
 
 	try:
 		response = requests.get(
-			'{endpoint}/api/project/{project_id}/locales'.format(**config),
+			'{endpoint}/api/locales/{project_id}'.format(**config),
 			params={'access_token': config['access_token']}
 		)
 		response.raise_for_status()
@@ -212,7 +212,7 @@ def push(args):
 
 	try:
 		response = requests.get(
-			'{endpoint}/api/project/{project_id}/locales'.format(**config),
+			'{endpoint}/api/locales/{project_id}'.format(**config),
 			params={'access_token': config['access_token']}
 		)
 		response.raise_for_status()

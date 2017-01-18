@@ -110,9 +110,9 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
 
       throw t;
     } catch (PermissionException e) {
-      return forbidden(e.toJson());
+      return forbidden(ErrorUtils.toJson(e));
     } catch (NotFoundException e) {
-      return notFound(e.toJson());
+      return notFound(ErrorUtils.toJson(e));
     } catch (ConstraintViolationException e) {
       return badRequest(ErrorUtils.toJson(e));
     } catch (ValidationException e) {
@@ -134,10 +134,6 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
         .thenApply(out -> ok(Json.toJson(out.stream().map(mapper).collect(Collectors.toList()))))
         .exceptionally(Api::handleException);
-  }
-
-  public static interface Validator {
-    void validate() throws ValidationException;
   }
 
   @SafeVarargs
