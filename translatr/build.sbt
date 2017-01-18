@@ -34,6 +34,7 @@ libraryDependencies ++= Seq(
 	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
 	
 	"io.swagger" %% "swagger-play2" % "1.5.3",
+	"org.webjars" % "swagger-ui" % "2.2.8",
 
 	// https://mvnrepository.com/artifact/org.easytesting/fest-assert-core
 	"org.easytesting" % "fest-assert-core" % "2.0M10"
