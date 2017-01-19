@@ -62,7 +62,7 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
   @ApiImplicitParams({
       @ApiImplicitParam(name = "access_token", value = "The access token", required = true,
           dataType = "string", paramType = "query"),
-      @ApiImplicitParam(name = "localeId", value = "The locale ID", dataType = "uuid",
+      @ApiImplicitParam(name = "localeId", value = "The locale ID", dataType = "java.util.UUID",
           paramType = "query"),
       @ApiImplicitParam(name = "keyName", value = "The name of the key", dataType = "string",
           paramType = "query"),

@@ -2,10 +2,13 @@ package dto;
 
 import javax.validation.ConstraintViolationException;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * @author resamsel
  * @version 18 Jan 2017
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Error extends Dto {
   public ErrorInfo error;
 
