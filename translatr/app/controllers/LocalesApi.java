@@ -109,7 +109,7 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Create project",
+  @ApiOperation(value = "Update locale",
       authorizations = @Authorization(value = "scopes",
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "locale:write", description = "Write locale")}))

@@ -853,10 +853,11 @@ html {
   margin: 0 0 20px;
 }
 .swagger-section .swagger-ui-wrap ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation div.content h4 {
-  font-size: 1.64rem;
+  font-size: 1.32rem;
   line-height: 110%;
   margin: 0.82rem 0 0.656rem 0;
   padding: 15px 0 5px;
+  font-weight: 300;
 }
 .swagger-section .swagger-ui-wrap ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation div.content div.sandbox_header {
   float: none;

@@ -95,7 +95,7 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Create project", authorizations = @Authorization(value = "scopes",
+  @ApiOperation(value = "Update project", authorizations = @Authorization(value = "scopes",
       scopes = {@AuthorizationScope(scope = "project:write", description = "Write project")}))
   @ApiResponses({
       @ApiResponse(code = 200, message = "Updated project", response = dto.Project.class),

@@ -117,7 +117,7 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Create message",
+  @ApiOperation(value = "Update message",
       authorizations = @Authorization(value = "scopes",
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "message:write", description = "Write message")}))

@@ -101,7 +101,7 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Create key",
+  @ApiOperation(value = "Update key",
       authorizations = @Authorization(value = "scopes",
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "key:write", description = "Write key")}))
