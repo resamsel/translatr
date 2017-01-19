@@ -279,14 +279,6 @@ html {
 .swagger-section .swagger-ui-wrap h6 a {
   text-decoration: none;
 }
-.swagger-section .swagger-ui-wrap h1 a:hover,
-.swagger-section .swagger-ui-wrap h2 a:hover,
-.swagger-section .swagger-ui-wrap h3 a:hover,
-.swagger-section .swagger-ui-wrap h4 a:hover,
-.swagger-section .swagger-ui-wrap h5 a:hover,
-.swagger-section .swagger-ui-wrap h6 a:hover {
-  text-decoration: underline;
-}
 .swagger-section .swagger-ui-wrap h1 span.divider,
 .swagger-section .swagger-ui-wrap h2 span.divider,
 .swagger-section .swagger-ui-wrap h3 span.divider,
@@ -1762,4 +1754,10 @@ input:not([type]):focus:not([readonly]), input[type=text]:focus:not([readonly]),
 }
 input {
     line-height: normal;
+}
+a.toggleEndpointList:before {
+  content: '▸ ';
+}
+.active a.toggleEndpointList:before {
+  content: '▾ ';
 }
