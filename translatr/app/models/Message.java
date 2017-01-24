@@ -22,10 +22,12 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
 import play.api.Play;
 import play.libs.Json;
@@ -155,6 +157,14 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static List<Message> findBy(MessageCriteria criteria) {
+    return pagedBy(criteria).getList();
+  }
+
+  /**
+   * @param criteria
+   * @return
+   */
+  public static PagedList<Message> pagedBy(MessageCriteria criteria) {
     ExpressionList<Message> query = Message.find.fetch("key").fetch("locale").where();
 
     if (criteria.getProjectId() != null)
@@ -172,13 +182,9 @@ public class Message implements Model<Message, UUID> {
     if (criteria.getSearch() != null)
       query.ilike("value", "%" + criteria.getSearch() + "%");
 
-    if (criteria.getOrder() != null)
-      query.setOrderBy(criteria.getOrder());
+    criteria.paged(query);
 
-    if (criteria.getLimit() != null)
-      query.setMaxRows(criteria.getLimit());
-
-    return log(() -> query.findList(), LOGGER, "findBy");
+    return log(() -> new HasNextPagedList<>(query), LOGGER, "pagedBy");
   }
 
   /**

@@ -203,8 +203,8 @@ public class UserServiceImpl extends AbstractModelService<User, UUID> implements
             .withOwner(user).withName(String.format("%s (%s)", project.name, user.email)))
         .collect(toList()));
 
-    projectUserService.save(ProjectUser.findBy(new ProjectUserCriteria().withUserId(otherUser.id))
-        .stream().map(member -> member.withUser(user)).collect(toList()));
+    projectUserService.save(ProjectUser.pagedBy(new ProjectUserCriteria().withUserId(otherUser.id))
+        .getList().stream().map(member -> member.withUser(user)).collect(toList()));
 
 
     // deactivate the merged user that got added to this one

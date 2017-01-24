@@ -53,13 +53,13 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
   private static final String DELETE_RESPONSE = "Deleted user";
 
   private static final String SEARCH = "Part of the name of the user";
-  private static final String NOT_FOUND = "User not found";
+  private static final String NOT_FOUND_ERROR = "User not found";
 
   @Inject
   public UsersApi(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
       LogEntryService logEntryService) {
     super(injector, cache, auth, userService, logEntryService, userService, User::byId,
-        User::findBy, dto.User.class, dto.User::from, User::from, new Scope[] {Scope.UserRead},
+        User::pagedBy, dto.User.class, dto.User::from, User::from, new Scope[] {Scope.UserRead},
         new Scope[] {Scope.UserWrite});
   }
 
@@ -86,7 +86,7 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
       scopes = @AuthorizationScope(scope = USER_READ, description = USER_READ_DESCRIPTION)))
   @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.User.class),
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
-      @ApiResponse(code = 404, message = NOT_FOUND, response = NotFoundError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
       required = true, dataType = "string", paramType = "query")})
@@ -122,7 +122,7 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
   @ApiResponses({@ApiResponse(code = 200, message = UPDATE_RESPONSE, response = dto.User.class),
       @ApiResponse(code = 400, message = INPUT_ERROR, response = ConstraintViolationError.class),
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
-      @ApiResponse(code = 404, message = NOT_FOUND, response = NotFoundError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = UPDATE_REQUEST, required = true, dataType = TYPE,
@@ -141,7 +141,7 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
       scopes = {@AuthorizationScope(scope = USER_WRITE, description = USER_WRITE_DESCRIPTION)}))
   @ApiResponses({@ApiResponse(code = 200, message = DELETE_RESPONSE, response = dto.User.class),
       @ApiResponse(code = 403, message = INPUT_ERROR, response = PermissionError.class),
-      @ApiResponse(code = 404, message = NOT_FOUND, response = NotFoundError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
       required = true, dataType = "string", paramType = "query")})

@@ -43,7 +43,7 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
   @Inject
   public KeysApi(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
       LogEntryService logEntryService, KeyService keyService) {
-    super(injector, cache, auth, userService, logEntryService, keyService, Key::byId, Key::findBy,
+    super(injector, cache, auth, userService, logEntryService, keyService, Key::byId, Key::pagedBy,
         dto.Key.class, dto.Key::from, Key::from, new Scope[] {Scope.ProjectRead, Scope.KeyRead},
         new Scope[] {Scope.ProjectRead, Scope.KeyWrite});
   }

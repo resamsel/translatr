@@ -52,7 +52,7 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
   public TranslationsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, MessageService messageService) {
     super(injector, cache, auth, userService, logEntryService, messageService, Message::byId,
-        Message::findBy, dto.Message.class, dto.Message::from, Message::from,
+        Message::pagedBy, dto.Message.class, dto.Message::from, Message::from,
         new Scope[] {Scope.ProjectRead, Scope.MessageRead},
         new Scope[] {Scope.ProjectRead, Scope.MessageWrite});
   }

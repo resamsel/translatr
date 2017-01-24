@@ -14,6 +14,7 @@ import javax.validation.ValidationException;
 
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 
@@ -53,6 +54,7 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
   protected static final String LIMIT = "The page size of the paged result list";
   protected static final String PARAM_LIMIT = "limit";
   protected static final String PROJECT_ID = "The project ID";
+  protected static final String LOCALE_ID = "The locale ID";
 
   protected static final String AUTHORIZATION = "scopes";
 
@@ -93,12 +95,13 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
 
   protected final Function<ID, MODEL> getter;
 
-  protected final Function<CRITERIA, List<MODEL>> finder;
+  protected final Function<CRITERIA, PagedList<MODEL>> finder;
 
   protected Api(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
       LogEntryService logEntryService, ModelService<MODEL> service, Function<ID, MODEL> getter,
-      Function<CRITERIA, List<MODEL>> finder, Class<DTO> dtoClass, Function<MODEL, DTO> dtoMapper,
-      Function<JsonNode, MODEL> modelMapper, Scope[] readScopes, Scope[] writeScopes) {
+      Function<CRITERIA, PagedList<MODEL>> finder, Class<DTO> dtoClass,
+      Function<MODEL, DTO> dtoMapper, Function<JsonNode, MODEL> modelMapper, Scope[] readScopes,
+      Scope[] writeScopes) {
     super(injector, cache, auth, userService, logEntryService);
 
     this.executionContext = injector.instanceOf(HttpExecutionContext.class);
@@ -181,7 +184,7 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
 
       checkPermissionAll("Access token not allowed", readScopes);
 
-      return finder.apply(criteria);
+      return finder.apply(criteria).getList();
     });
   }
 

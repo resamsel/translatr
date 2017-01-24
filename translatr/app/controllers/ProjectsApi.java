@@ -55,18 +55,21 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
   private static final String DELETE_RESPONSE = "Deleted project";
 
   private static final String SEARCH = "Part of the name of the projects";
-  private static final String NOT_FOUND = "Project not found";
+  private static final String NOT_FOUND_ERROR = "Project not found";
 
   @Inject
   public ProjectsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, ProjectService projectService) {
     super(injector, cache, auth, userService, logEntryService, projectService, Project::byId,
-        Project::findBy, dto.Project.class, dto.Project::from, Project::from,
+        Project::pagedBy, dto.Project.class, dto.Project::from, Project::from,
         new Scope[] {Scope.ProjectRead}, new Scope[] {Scope.ProjectWrite});
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,
-      scopes = @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)))
+      scopes = {@AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)}))
   @ApiResponses({@ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.Project[].class),
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
@@ -83,10 +86,10 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
    * {@inheritDoc}
    */
   @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
-      scopes = @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)))
+      scopes = {@AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)}))
   @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.Project.class),
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
-      @ApiResponse(code = 404, message = NOT_FOUND, response = NotFoundError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
       required = true, dataType = "string", paramType = "query")})
@@ -122,7 +125,7 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
   @ApiResponses({@ApiResponse(code = 200, message = UPDATE_RESPONSE, response = dto.Project.class),
       @ApiResponse(code = 400, message = INPUT_ERROR, response = ConstraintViolationError.class),
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
-      @ApiResponse(code = 404, message = NOT_FOUND, response = NotFoundError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = UPDATE_REQUEST, required = true, dataType = TYPE,
@@ -141,7 +144,7 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
       @AuthorizationScope(scope = PROJECT_WRITE, description = PROJECT_WRITE_DESCRIPTION)}))
   @ApiResponses({@ApiResponse(code = 200, message = DELETE_RESPONSE, response = dto.Project.class),
       @ApiResponse(code = 403, message = INPUT_ERROR, response = PermissionError.class),
-      @ApiResponse(code = 404, message = NOT_FOUND, response = NotFoundError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
       required = true, dataType = "string", paramType = "query")})
