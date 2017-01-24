@@ -32,7 +32,6 @@ import play.inject.Injector;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.BodyParser;
-import play.mvc.Http.Request;
 import play.mvc.Result;
 import services.LogEntryService;
 import services.ModelService;
@@ -46,7 +45,7 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
   protected static final String INTERNAL_SERVER_ERROR = "Internal server error";
   protected static final String INPUT_ERROR = "Bad request";
 
-  protected static final String ACCESS_TOKEN_DESCRIPTION = "The access token";
+  protected static final String ACCESS_TOKEN = "The access token";
   protected static final String PARAM_ACCESS_TOKEN = "access_token";
   protected static final String PARAM_SEARCH = "search";
   protected static final String OFFSET = "The first row of the paged result list";
@@ -55,6 +54,10 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
   protected static final String PARAM_LIMIT = "limit";
   protected static final String PROJECT_ID = "The project ID";
   protected static final String LOCALE_ID = "The locale ID";
+  protected static final String PARAM_LOCALE_ID = "localeId";
+  protected static final String KEY_ID = "The key ID";
+  protected static final String MESSAGE_ID = "The message ID";
+  protected static final String USER_ID = "The user ID";
 
   protected static final String AUTHORIZATION = "scopes";
 
@@ -203,18 +206,24 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
 
   @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> create() {
-    return toJson(dtoMapper, creator(request()));
+    return toJson(dtoMapper, () -> {
+      checkPermissionAll("Access token not allowed", writeScopes);
+
+      return service.create(modelMapper.apply(request().body().asJson()));
+    });
   }
 
   @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> update() {
-    return toJson(dtoMapper, updater(request()));
+    return toJson(dtoMapper, () -> {
+      checkPermissionAll("Access token not allowed", writeScopes);
+
+      return service.update(modelMapper.apply(request().body().asJson()));
+    });
   }
 
-  protected void checkDelete(MODEL m) {}
-
   public CompletionStage<Result> delete(ID id) {
-    return CompletableFuture.supplyAsync(() -> {
+    return toJson(dtoMapper, () -> {
       checkPermissionAll("Access token not allowed", writeScopes);
 
       MODEL m = getter.apply(id);
@@ -224,34 +233,7 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
 
       service.delete(m);
 
-      return true;
-    }, executionContext.current())
-        .thenApply(success -> ok(Json.newObject().put("message",
-            String.format("%s with ID '%s' has been deleted", dtoClass.getSimpleName(), id))))
-        .exceptionally(Api::handleException);
-  }
-
-  /**
-   * @param request
-   * @return
-   */
-  protected Supplier<MODEL> creator(Request request) {
-    return () -> {
-      checkPermissionAll("Access token not allowed", writeScopes);
-
-      return service.create(modelMapper.apply(request.body().asJson()));
-    };
-  }
-
-  /**
-   * @param request
-   * @return
-   */
-  protected Supplier<MODEL> updater(Request request) {
-    return () -> {
-      checkPermissionAll("Access token not allowed", writeScopes);
-
-      return service.update(modelMapper.apply(request.body().asJson()));
-    };
+      return m;
+    });
   }
 }

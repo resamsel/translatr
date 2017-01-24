@@ -69,7 +69,7 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query"),
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
           paramType = "query"),
@@ -88,10 +88,10 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   @Override
-  public CompletionStage<Result> get(@ApiParam(value = PROJECT_ID) UUID id) {
+  public CompletionStage<Result> get(@ApiParam(value = USER_ID) UUID id) {
     return super.get(id);
   }
 
@@ -107,7 +107,7 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = CREATE_REQUEST, required = true, dataType = TYPE,
           paramType = "body"),
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> create() {
@@ -127,7 +127,7 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = UPDATE_REQUEST, required = true, dataType = TYPE,
           paramType = "body"),
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> update() {
@@ -143,7 +143,7 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
       @ApiResponse(code = 403, message = INPUT_ERROR, response = PermissionError.class),
       @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> delete(@ApiParam(value = PROJECT_ID) UUID id) {

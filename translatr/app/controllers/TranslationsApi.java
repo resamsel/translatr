@@ -41,6 +41,26 @@ import utils.JsonUtils;
 @io.swagger.annotations.Api(value = "Messages", produces = "application/json")
 @With(ApiAction.class)
 public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Message> {
+  private static final String TYPE = "dto.Message";
+
+  private static final String FIND = "Find messages";
+  private static final String FIND_RESPONSE = "Found messages";
+  private static final String GET = "Get message by ID";
+  private static final String GET_RESPONSE = "Found message";
+  private static final String CREATE = "Create message";
+  private static final String CREATE_RESPONSE = "Created message";
+  private static final String CREATE_REQUEST = "The message to create";
+  private static final String UPDATE = "Update message";
+  private static final String UPDATE_RESPONSE = "Updated message";
+  private static final String UPDATE_REQUEST = "The message to update";
+  private static final String DELETE = "Delete message";
+  private static final String DELETE_RESPONSE = "Deleted message";
+
+  private static final String SEARCH = "Part of the value of the message";
+  private static final String NOT_FOUND_ERROR = "Message not found";
+  private static final String KEY_NAME = "The name of the key";
+  private static final String PARAM_KEY_NAME = "keyName";
+
   /**
    * @param injector
    * @param cache
@@ -57,27 +77,30 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
         new Scope[] {Scope.ProjectRead, Scope.MessageWrite});
   }
 
-  @ApiOperation(value = "Find messages",
-      authorizations = @Authorization(value = "scopes",
-          scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
-              @AuthorizationScope(scope = "message:read", description = "Read message")}))
-  @ApiResponses({@ApiResponse(code = 200, message = "Found messages", response = dto.Key[].class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
-      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
+  @ApiOperation(value = FIND,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = MESSAGE_READ, description = MESSAGE_READ_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.Message[].class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "access_token", value = "The access token", required = true,
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
           dataType = "string", paramType = "query"),
-      @ApiImplicitParam(name = "localeId", value = "The locale ID", dataType = "java.util.UUID",
+      @ApiImplicitParam(name = PARAM_LOCALE_ID, value = LOCALE_ID, dataType = "java.util.UUID",
           paramType = "query"),
-      @ApiImplicitParam(name = "keyName", value = "The name of the key", dataType = "string",
+      @ApiImplicitParam(name = PARAM_KEY_NAME, value = KEY_NAME, dataType = "string",
           paramType = "query"),
-      @ApiImplicitParam(name = "search", value = "Part of the value of the messages",
-          dataType = "string", paramType = "query")})
-  public CompletionStage<Result> find(@ApiParam(value = "The project ID") UUID projectId) {
+      @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
+  public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
     return findBy(
         MessageCriteria.from(request()).withProjectId(projectId)
             .withLocaleId(JsonUtils.getUuid(request().getQueryString("localeId")))
-            .withKeyName(request().getQueryString("keyName")),
+            .withKeyName(request().getQueryString(PARAM_KEY_NAME)),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
             ProjectRole.Translator, ProjectRole.Developer));
   }
@@ -85,36 +108,38 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Get message by ID",
-      authorizations = @Authorization(value = "scopes",
-          scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
-              @AuthorizationScope(scope = "message:read", description = "Read message")}))
-  @ApiResponses({@ApiResponse(code = 200, message = "Found message", response = dto.Key.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
-      @ApiResponse(code = 404, message = "Message not found", response = NotFoundError.class),
-      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
+  @ApiOperation(value = GET,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = MESSAGE_READ, description = MESSAGE_READ_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.Message.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   @Override
-  public CompletionStage<Result> get(@ApiParam(value = "The message ID") UUID id) {
+  public CompletionStage<Result> get(@ApiParam(value = MESSAGE_ID) UUID id) {
     return super.get(id);
   }
 
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Create message",
-      authorizations = @Authorization(value = "scopes",
-          scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
-              @AuthorizationScope(scope = "message:read", description = "Read message")}))
-  @ApiResponses({@ApiResponse(code = 200, message = "Created message", response = dto.Key.class),
-      @ApiResponse(code = 400, message = "Bad request", response = ConstraintViolationError.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
-      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
+  @ApiOperation(value = CREATE,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = MESSAGE_WRITE, description = MESSAGE_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = CREATE_RESPONSE, response = dto.Message.class),
+      @ApiResponse(code = 400, message = INPUT_ERROR, response = ConstraintViolationError.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "body", value = "The message to create", required = true,
-          dataType = "dto.Project", paramType = "body"),
-      @ApiImplicitParam(name = "access_token", value = "The access token", required = true,
+      @ApiImplicitParam(name = "body", value = CREATE_REQUEST, required = true, dataType = TYPE,
+          paramType = "body"),
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
           dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> create() {
@@ -124,18 +149,20 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Update message",
-      authorizations = @Authorization(value = "scopes",
-          scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
-              @AuthorizationScope(scope = "message:write", description = "Write message")}))
-  @ApiResponses({@ApiResponse(code = 200, message = "Updated message", response = dto.Key.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
-      @ApiResponse(code = 404, message = "Message not found", response = NotFoundError.class),
-      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
+  @ApiOperation(value = UPDATE,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = MESSAGE_WRITE, description = MESSAGE_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = UPDATE_RESPONSE, response = dto.Message.class),
+      @ApiResponse(code = 400, message = INPUT_ERROR, response = ConstraintViolationError.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "body", value = "The message to update", required = true,
-          dataType = "dto.Project", paramType = "body"),
-      @ApiImplicitParam(name = "access_token", value = "The access token", required = true,
+      @ApiImplicitParam(name = "body", value = UPDATE_REQUEST, required = true, dataType = TYPE,
+          paramType = "body"),
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
           dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> update() {
@@ -145,18 +172,19 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Delete message",
-      authorizations = @Authorization(value = "scopes",
-          scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
-              @AuthorizationScope(scope = "message:write", description = "Write message")}))
-  @ApiResponses({@ApiResponse(code = 200, message = "Deleted message", response = dto.Key.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
-      @ApiResponse(code = 404, message = "Message not found", response = NotFoundError.class),
-      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
+  @ApiOperation(value = DELETE,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = MESSAGE_WRITE, description = MESSAGE_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = DELETE_RESPONSE, response = dto.Message.class),
+      @ApiResponse(code = 403, message = INPUT_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   @Override
-  public CompletionStage<Result> delete(@ApiParam(value = "The message ID") UUID id) {
+  public CompletionStage<Result> delete(@ApiParam(value = MESSAGE_ID) UUID id) {
     return super.delete(id);
   }
 }

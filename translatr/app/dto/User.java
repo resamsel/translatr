@@ -19,6 +19,11 @@ public class User extends Dto {
 
   public String username;
 
+  /**
+   * 
+   */
+  public User() {}
+
   private User(models.User in) {
     this.id = in.id;
     this.whenCreated = in.whenCreated;
@@ -28,7 +33,7 @@ public class User extends Dto {
   }
 
   public models.User toModel() {
-    models.User out = new models.User();
+    models.User out = id != null ? models.User.byId(id) : new models.User();
 
     out.whenCreated = whenCreated;
     out.whenUpdated = whenUpdated;

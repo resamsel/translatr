@@ -54,7 +54,7 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
   private static final String DELETE = "Delete project";
   private static final String DELETE_RESPONSE = "Deleted project";
 
-  private static final String SEARCH = "Part of the name of the projects";
+  private static final String SEARCH = "Part of the name of the project";
   private static final String NOT_FOUND_ERROR = "Project not found";
 
   @Inject
@@ -74,10 +74,12 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query"),
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
-          paramType = "query")})
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> find() {
     return findBy(ProjectCriteria.from(request()).withMemberId(User.loggedInUserId()));
   }
@@ -91,7 +93,7 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> get(@ApiParam(value = PROJECT_ID) UUID id) {
@@ -110,7 +112,7 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = CREATE_REQUEST, required = true, dataType = TYPE,
           paramType = "body"),
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> create() {
@@ -130,7 +132,7 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = UPDATE_REQUEST, required = true, dataType = TYPE,
           paramType = "body"),
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> update() {
@@ -146,7 +148,7 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
       @ApiResponse(code = 403, message = INPUT_ERROR, response = PermissionError.class),
       @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> delete(@ApiParam(value = PROJECT_ID) UUID id) {

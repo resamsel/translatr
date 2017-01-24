@@ -112,9 +112,9 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
   public MODEL save(MODEL t) {
     boolean update = !Ebean.getBeanState(t).isNew();
 
-    preSave(t, update);
-
     validate(t);
+
+    preSave(t, update);
 
     Ebean.save(t);
     // Ebean.refresh(t);

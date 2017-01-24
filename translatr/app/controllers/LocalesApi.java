@@ -68,7 +68,6 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
   private static final String LOCALE_NAME = "The name of the locale";
   private static final String FILE_TYPE = "The file type";
 
-
   @Inject
   public LocalesApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, LocaleService localeService) {
@@ -87,12 +86,14 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
-          required = true, dataType = "string", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LOCALE_NAME, value = LOCALE_NAME, dataType = "string",
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
-          paramType = "query")})
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = "The project ID") UUID projectId) {
     return findBy(
         LocaleCriteria.from(request()).withProjectId(projectId)
@@ -113,7 +114,7 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> get(@ApiParam(value = LOCALE_ID) UUID id) {
@@ -135,8 +136,8 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = CREATE_REQUEST, required = true, dataType = TYPE,
           paramType = "body"),
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
-          required = true, dataType = "string", paramType = "query")})
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> create() {
     return super.create();
@@ -158,8 +159,8 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = UPDATE_REQUEST, required = true, dataType = TYPE,
           paramType = "body"),
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
-          required = true, dataType = "string", paramType = "query")})
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> update() {
     return super.update();
@@ -177,7 +178,7 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
       @ApiResponse(code = 403, message = INPUT_ERROR, response = PermissionError.class),
       @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> delete(@ApiParam(value = LOCALE_ID) UUID id) {
@@ -192,7 +193,7 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> upload(@ApiParam(value = LOCALE_ID) UUID localeId,
       @ApiParam(value = FILE_TYPE) String fileType) {
@@ -217,7 +218,7 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> download(UUID localeId, String fileType) {
     return CompletableFuture.supplyAsync(() -> {
