@@ -1,4 +1,4 @@
-@(template: utils.Template, project: models.Project, locale: models.Locale, keys: List[models.Key], locales: List[models.Locale], messages: Map[String, models.Message], form: Form[forms.KeySearchForm])
+@(template: utils.Template, project: models.Project, locale: models.Locale, keys: com.avaje.ebean.PagedList[models.Key], locales: com.avaje.ebean.PagedList[models.Locale], messages: Map[String, models.Message], form: Form[forms.KeySearchForm])
 
 @localeActions = {
 	<li>
@@ -45,9 +45,9 @@
 } {
 	@tags.editor {
 		<h5 class="header">@Messages("keys")</h5>
-		@if(!keys.isEmpty) {
+		@if(!keys.getList.isEmpty) {
 			<div class="collection keys">
-				@tags.keyItems(keys, messages, false)
+				@tags.keyItems(keys.getList, messages, false)
 			</div>
 		} else {
 			<p class="grey-text">
@@ -129,7 +129,7 @@
 		var projectId = '@project.id';
 		var localeId = '@locale.id';
 		var locales = {
-			@for(locale <- locales) {
+			@for(locale <- locales.getList) {
 				'@locale.id': '@tags.locale(locale.name)',
 			}
 		};

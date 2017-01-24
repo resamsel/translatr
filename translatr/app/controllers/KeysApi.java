@@ -9,6 +9,10 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
 import criterias.KeyCriteria;
+import dto.errors.ConstraintViolationError;
+import dto.errors.GenericError;
+import dto.errors.NotFoundError;
+import dto.errors.PermissionError;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +37,7 @@ import services.UserService;
  * @author resamsel
  * @version 10 Jan 2017
  */
-@io.swagger.annotations.Api(value = "key", produces = "application/json")
+@io.swagger.annotations.Api(value = "Keys", produces = "application/json")
 @With(ApiAction.class)
 public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
   @Inject
@@ -49,15 +53,15 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "key:read", description = "Read key")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Found keys", response = dto.Key[].class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({
       @ApiImplicitParam(name = "access_token", value = "The access token", required = true,
           dataType = "string", paramType = "query"),
       @ApiImplicitParam(name = "search", value = "Part of the name of the keys",
           dataType = "string", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = "The project ID") UUID projectId) {
-    return findBy(
-        new KeyCriteria().withProjectId(projectId).withSearch(request().getQueryString("search")),
+    return findBy(KeyCriteria.from(request()).withProjectId(projectId),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
             ProjectRole.Translator, ProjectRole.Developer));
   }
@@ -70,8 +74,9 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "key:read", description = "Read key")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Found key", response = dto.Key.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class),
-      @ApiResponse(code = 404, message = "Project not found", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 404, message = "Key not found", response = NotFoundError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
       required = true, dataType = "string", paramType = "query")})
   @Override
@@ -87,7 +92,9 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "key:read", description = "Read key")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Created key", response = dto.Key.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 400, message = "Bad request", response = ConstraintViolationError.class),
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = "The key to create", required = true,
           dataType = "dto.Project", paramType = "body"),
@@ -106,7 +113,10 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "key:write", description = "Write key")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Updated key", response = dto.Key.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 400, message = "Bad request", response = ConstraintViolationError.class),
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 404, message = "Key not found", response = NotFoundError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = "The key to update", required = true,
           dataType = "dto.Project", paramType = "body"),
@@ -125,7 +135,9 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "key:write", description = "Write key")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Deleted key", response = dto.Key.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 404, message = "Key not found", response = NotFoundError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
       required = true, dataType = "string", paramType = "query")})
   @Override

@@ -85,9 +85,12 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
     if (model.getId() == null)
       throw new ValidationException("Field 'id' required");
 
-    MODEL m = byId(model.getId()).updateFrom(model);
+    MODEL m = byId(model.getId());
 
-    return save(m);
+    if (m == null)
+      throw new ValidationException(String.format("Entity with ID '%s' not found", model.getId()));
+
+    return save(m.updateFrom(model));
   }
 
   /**

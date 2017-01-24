@@ -9,7 +9,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.validation.ValidationException;
 import javax.validation.Validator;
 
 import org.slf4j.Logger;
@@ -62,22 +61,6 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID> implements K
   @Override
   protected Key byId(UUID id) {
     return Key.byId(id);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Key validate(Key t) {
-    if (t.name == null)
-      throw new ValidationException("Field 'name' required");
-    if (t.project == null)
-      throw new ValidationException("Field 'project' required");
-    if (Key.byProjectAndName(t.project.id, t.name) != null)
-      throw new ValidationException(
-          String.format("Key with name '%s' already exists in project '%s'", t.name, t.project.id));
-
-    return t;
   }
 
   /**

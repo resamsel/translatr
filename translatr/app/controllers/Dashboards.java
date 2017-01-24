@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ContextAction;
@@ -89,7 +90,7 @@ public class Dashboards extends AbstractController {
           FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
       ActivitySearchForm search = form.get();
 
-      List<LogEntry> activities = logEntryService.findBy(
+      PagedList<LogEntry> activities = logEntryService.pagedBy(
           LogEntryCriteria.from(search).withProjectUserId(user.id).withOrder("whenCreated desc"));
 
       search.pager(activities);

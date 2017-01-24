@@ -12,11 +12,13 @@ import org.joda.time.DateTime;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 
+import criterias.HasNextPagedList;
 import criterias.LinkedAccountCriteria;
 import play.libs.Json;
 
@@ -89,23 +91,23 @@ public class LinkedAccount implements Model<LinkedAccount, Long> {
    * @return
    */
   public static List<LinkedAccount> findBy(LinkedAccountCriteria criteria) {
+    return pagedBy(criteria).getList();
+  }
+
+  public static PagedList<LinkedAccount> pagedBy(LinkedAccountCriteria criteria) {
     ExpressionList<LinkedAccount> query = find.where();
 
     if (criteria.getUserId() != null)
       query.eq("user.id", criteria.getUserId());
-
-    if (criteria.getLimit() != null)
-      query.setMaxRows(criteria.getLimit() + 1);
-
-    if (criteria.getOffset() != null)
-      query.setFirstRow(criteria.getOffset());
 
     if (criteria.getOrder() != null)
       query.order(criteria.getOrder());
     else
       query.order("whenCreated");
 
-    return query.findList();
+    criteria.paged(query);
+
+    return new HasNextPagedList<>(query);
   }
 
   /**

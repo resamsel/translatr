@@ -11,6 +11,10 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
 import criterias.LocaleCriteria;
+import dto.errors.ConstraintViolationError;
+import dto.errors.GenericError;
+import dto.errors.NotFoundError;
+import dto.errors.PermissionError;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -36,7 +40,7 @@ import services.UserService;
  * @author resamsel
  * @version 10 Jan 2017
  */
-@io.swagger.annotations.Api(value = "locale", produces = "application/json")
+@io.swagger.annotations.Api(value = "Locales", produces = "application/json")
 @With(ApiAction.class)
 public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
   @Inject
@@ -53,7 +57,8 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "locale:read", description = "Read locale")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Found locales", response = dto.Locale[].class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({
       @ApiImplicitParam(name = "access_token", value = "The access token", required = true,
           dataType = "string", paramType = "query"),
@@ -63,9 +68,8 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
           dataType = "string", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = "The project ID") UUID projectId) {
     return findBy(
-        new LocaleCriteria().withProjectId(projectId)
-            .withLocaleName(request().getQueryString("localeName"))
-            .withSearch(request().getQueryString("search")),
+        LocaleCriteria.from(request()).withProjectId(projectId)
+            .withLocaleName(request().getQueryString("localeName")),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
             ProjectRole.Translator, ProjectRole.Developer));
   }
@@ -78,8 +82,9 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "locale:read", description = "Read locale")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Found locale", response = dto.Locale.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class),
-      @ApiResponse(code = 404, message = "Locale not found", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 404, message = "Locale not found", response = NotFoundError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
       required = true, dataType = "string", paramType = "query")})
   @Override
@@ -95,7 +100,9 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "locale:write", description = "Write locale")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Created locale", response = dto.Locale.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 400, message = "Bad request", response = ConstraintViolationError.class),
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = "The locale to create", required = true,
           dataType = "dto.Locale", paramType = "body"),
@@ -114,7 +121,10 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "locale:write", description = "Write locale")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Updated locale", response = dto.Locale.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 400, message = "Bad request", response = ConstraintViolationError.class),
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 404, message = "Locale not found", response = NotFoundError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = "The locale to update", required = true,
           dataType = "dto.Locale", paramType = "body"),
@@ -133,7 +143,9 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "locale:write", description = "Write locale")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Deleted locale", response = dto.Locale.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 404, message = "Locale not found", response = NotFoundError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
       required = true, dataType = "string", paramType = "query")})
   @Override
@@ -147,7 +159,9 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
               @AuthorizationScope(scope = "locale:read", description = "Read locale"),
               @AuthorizationScope(scope = "message:write", description = "Write message")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Uploaded locale", response = dto.Locale.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 404, message = "Locale not found", response = NotFoundError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> upload(@ApiParam(value = "The locale ID") UUID localeId,
@@ -167,7 +181,9 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
               @AuthorizationScope(scope = "locale:read", description = "Read locale"),
               @AuthorizationScope(scope = "message:read", description = "Read message")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Messages of locale"),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 404, message = "Locale not found", response = NotFoundError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> download(UUID localeId, String fileType) {

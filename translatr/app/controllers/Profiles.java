@@ -3,12 +3,11 @@ package controllers;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.joda.time.DateTime;
 
+import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
 
@@ -89,11 +88,12 @@ public class Profiles extends AbstractController {
       if (search.order == null)
         search.order = "name";
 
-      List<Project> projects = Project.findBy(ProjectCriteria.from(search).withMemberId(user.id));
+      PagedList<Project> projects =
+          Project.pagedBy(ProjectCriteria.from(search).withMemberId(user.id));
 
       search.pager(projects);
 
-      return ok(views.html.users.projects.render(createTemplate(), user, projects, form));
+      return ok(views.html.users.projects.render(createTemplate(), user, projects.getList(), form));
     });
   }
 
@@ -103,8 +103,8 @@ public class Profiles extends AbstractController {
           FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
       ActivitySearchForm search = form.get();
 
-      List<LogEntry> activities =
-          logEntryService.findBy(LogEntryCriteria.from(search).withUserId(user.id));
+      PagedList<LogEntry> activities =
+          logEntryService.pagedBy(LogEntryCriteria.from(search).withUserId(user.id));
 
       search.pager(activities);
 
@@ -137,13 +137,14 @@ public class Profiles extends AbstractController {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
 
-      List<LinkedAccount> accounts = LinkedAccount
-          .findBy(LinkedAccountCriteria.from(search).withUserId(user.id).withOrder("providerKey"));
+      PagedList<LinkedAccount> accounts = LinkedAccount
+          .pagedBy(LinkedAccountCriteria.from(search).withUserId(user.id).withOrder("providerKey"));
 
       search.pager(accounts);
 
-      return ok(views.html.users.linkedAccounts.render(createTemplate(), user, accounts.stream()
-          .collect(groupingBy(a -> a.providerKey, reducing(null, a -> a, (a, b) -> b))), form));
+      return ok(
+          views.html.users.linkedAccounts.render(createTemplate(), user, accounts.getList().stream()
+              .collect(groupingBy(a -> a.providerKey, reducing(null, a -> a, (a, b) -> b))), form));
     });
   }
 

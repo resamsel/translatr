@@ -1,4 +1,4 @@
-@(template: utils.Template, project: Project, memberList: List[ProjectUser], form: Form[forms.SearchForm], memberForm: Form[forms.ProjectUserForm])
+@(template: utils.Template, project: Project, memberList: com.avaje.ebean.PagedList[ProjectUser], form: Form[forms.SearchForm], memberForm: Form[forms.ProjectUserForm])
 
 @import utils.FormatUtils._
 
@@ -16,10 +16,10 @@
 	</a>
 } {
 	@content(project, "members") {
-		@tags.collection(memberList, "members.empty") {
+		@tags.collection(memberList.getList, "members.empty") {
 				<span class="title">@Messages("project.member")</span>
 			} {
-			@for(member <- memberList) {
+			@for(member <- memberList.getList) {
 				<li class="collection-item avatar">
 					@tags.gravatar(member.user, 48, "circle")
 					<a href="@routes.Users.user(member.user.id)" class="title">

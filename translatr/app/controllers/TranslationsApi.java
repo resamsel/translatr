@@ -9,6 +9,10 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
 import criterias.MessageCriteria;
+import dto.errors.ConstraintViolationError;
+import dto.errors.GenericError;
+import dto.errors.NotFoundError;
+import dto.errors.PermissionError;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +38,7 @@ import utils.JsonUtils;
  * @author resamsel
  * @version 10 Jan 2017
  */
-@io.swagger.annotations.Api(value = "message", produces = "application/json")
+@io.swagger.annotations.Api(value = "Messages", produces = "application/json")
 @With(ApiAction.class)
 public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Message> {
   /**
@@ -58,7 +62,8 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "message:read", description = "Read message")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Found messages", response = dto.Key[].class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({
       @ApiImplicitParam(name = "access_token", value = "The access token", required = true,
           dataType = "string", paramType = "query"),
@@ -70,10 +75,9 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
           dataType = "string", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = "The project ID") UUID projectId) {
     return findBy(
-        new MessageCriteria().withProjectId(projectId)
+        MessageCriteria.from(request()).withProjectId(projectId)
             .withLocaleId(JsonUtils.getUuid(request().getQueryString("localeId")))
-            .withKeyName(request().getQueryString("keyName"))
-            .withSearch(request().getQueryString("search")),
+            .withKeyName(request().getQueryString("keyName")),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
             ProjectRole.Translator, ProjectRole.Developer));
   }
@@ -86,8 +90,9 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "message:read", description = "Read message")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Found message", response = dto.Key.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class),
-      @ApiResponse(code = 404, message = "Project not found", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 404, message = "Message not found", response = NotFoundError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
       required = true, dataType = "string", paramType = "query")})
   @Override
@@ -103,7 +108,9 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "message:read", description = "Read message")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Created message", response = dto.Key.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 400, message = "Bad request", response = ConstraintViolationError.class),
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = "The message to create", required = true,
           dataType = "dto.Project", paramType = "body"),
@@ -122,7 +129,9 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "message:write", description = "Write message")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Updated message", response = dto.Key.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 404, message = "Message not found", response = NotFoundError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = "The message to update", required = true,
           dataType = "dto.Project", paramType = "body"),
@@ -141,7 +150,9 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
           scopes = {@AuthorizationScope(scope = "project:read", description = "Read project"),
               @AuthorizationScope(scope = "message:write", description = "Write message")}))
   @ApiResponses({@ApiResponse(code = 200, message = "Deleted message", response = dto.Key.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+      @ApiResponse(code = 403, message = "Invalid access token", response = PermissionError.class),
+      @ApiResponse(code = 404, message = "Message not found", response = NotFoundError.class),
+      @ApiResponse(code = 500, message = "Internal server error", response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
       required = true, dataType = "string", paramType = "query")})
   @Override

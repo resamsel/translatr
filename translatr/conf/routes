@@ -117,6 +117,9 @@ POST	/api/message					controllers.TranslationsApi.create
 PUT		/api/message					controllers.TranslationsApi.update
 DELETE	/api/message/:messageId			controllers.TranslationsApi.delete(messageId: java.util.UUID)
 
+GET		/api/users						controllers.UsersApi.find
+GET		/api/user/:userId				controllers.UsersApi.get(userId: java.util.UUID)
+
 # Map static resources from the /public folder to the /assets URL path
 GET		/assets/*file					controllers.Assets.versioned(path="/public", file: Asset)
 GET		/api/docs						controllers.ApiDocs.index()

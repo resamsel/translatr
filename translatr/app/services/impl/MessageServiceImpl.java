@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.validation.ValidationException;
 import javax.validation.Validator;
 
 import org.slf4j.Logger;
@@ -63,17 +62,6 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID>
   public int countBy(Project project) {
     return log(() -> cache.getOrElse(String.format("message:countByProject:%s", project.id),
         () -> Message.countByUncached(project), 60), LOGGER, "countByProject");
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Message validate(Message model) {
-    if (!model.locale.project.equals(model.key.project))
-      throw new ValidationException("Project of locale and key does not match");
-
-    return super.validate(model);
   }
 
   /**

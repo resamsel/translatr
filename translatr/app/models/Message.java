@@ -30,9 +30,11 @@ import criterias.MessageCriteria;
 import play.api.Play;
 import play.libs.Json;
 import services.MessageService;
+import validators.LocaleKeyCheck;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"locale_id", "key_id"})})
+@LocaleKeyCheck
 public class Message implements Model<Message, UUID> {
   private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
@@ -227,5 +229,11 @@ public class Message implements Model<Message, UUID> {
 
   public static Message from(JsonNode json) {
     return Json.fromJson(json, dto.Message.class).toModel();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("{\"locale\": %s, \"key\": %s, \"value\": %s}", locale, key,
+        Json.toJson(value));
   }
 }

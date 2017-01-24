@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import dto.NotFoundException;
 import dto.PermissionException;
+import dto.errors.ConstraintViolationError;
+import dto.errors.NotFoundError;
+import dto.errors.PermissionError;
 import play.libs.Json;
 
 /**
@@ -19,7 +22,7 @@ public class ErrorUtils {
    * @return
    */
   public static JsonNode toJson(PermissionException e) {
-    return Json.toJson(new dto.Error(e.getClass().getSimpleName(), e.getMessage()));
+    return Json.toJson(new PermissionError(e));
   }
 
   /**
@@ -27,7 +30,7 @@ public class ErrorUtils {
    * @return
    */
   public static JsonNode toJson(NotFoundException e) {
-    return Json.toJson(new dto.Error(e.getClass().getSimpleName(), e.getMessage()));
+    return Json.toJson(new NotFoundError(e));
   }
 
   /**
@@ -35,7 +38,7 @@ public class ErrorUtils {
    * @return
    */
   public static JsonNode toJson(ConstraintViolationException e) {
-    return Json.toJson(new dto.Error(e));
+    return Json.toJson(new ConstraintViolationError(e));
   }
 
   /**
@@ -43,7 +46,7 @@ public class ErrorUtils {
    * @return
    */
   public static JsonNode toJson(ValidationException e) {
-    return Json.toJson(new dto.Error(ValidationException.class.getSimpleName(), e.getMessage()));
+    return Json.toJson(new ConstraintViolationError(e));
   }
 
   /**
@@ -51,6 +54,6 @@ public class ErrorUtils {
    * @return
    */
   public static JsonNode toJson(Throwable t) {
-    return Json.toJson(new dto.Error(t.getMessage()));
+    return Json.toJson(new dto.errors.GenericError(t.getMessage()));
   }
 }

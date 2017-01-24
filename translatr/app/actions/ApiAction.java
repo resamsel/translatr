@@ -8,13 +8,14 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import dto.PermissionException;
 import models.AccessToken;
-import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http.Context;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import services.AccessTokenService;
+import utils.ErrorUtils;
 
 /**
  * @author resamsel
@@ -64,8 +65,8 @@ public class ApiAction extends Action.Simple {
     if (accessToken != null) {
       AccessToken token = accessTokenService.getByKey(accessToken);
       if (token == null)
-        return CompletableFuture
-            .completedFuture(forbidden(Json.newObject().put("error", "Invalid access_token")));
+        return CompletableFuture.completedFuture(
+            forbidden(ErrorUtils.toJson(new PermissionException("Invalid access_token"))));
 
       ctx.args.put("accessToken", token);
     }

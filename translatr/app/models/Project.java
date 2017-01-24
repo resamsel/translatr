@@ -30,11 +30,13 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
 import play.api.Play;
@@ -43,9 +45,12 @@ import play.libs.Json;
 import play.mvc.Http.Context;
 import services.ProjectService;
 import utils.PermissionUtils;
+import validators.NameUnique;
+import validators.ProjectNameUniqueChecker;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
+@NameUnique(checker = ProjectNameUniqueChecker.class)
 public class Project implements Model<Project, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
@@ -133,6 +138,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
   private static final String BRAND_PROJECT_ID = "brandProjectId";
 
   public static Project byId(UUID id) {
+    if (id == null)
+      return null;
+
     return Play.current().injector().instanceOf(ProjectService.class).getById(id);
   }
 
@@ -145,6 +153,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public static List<Project> findBy(ProjectCriteria criteria) {
+    return pagedBy(criteria).getList();
+  }
+
+  public static PagedList<Project> pagedBy(ProjectCriteria criteria) {
     ExpressionList<Project> query = find.fetch("owner").where();
 
     query.eq("deleted", false);
@@ -161,9 +173,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
     if (criteria.getSearch() != null)
       query.ilike("name", "%" + criteria.getSearch() + "%");
 
-    criteria.paging(query);
+    criteria.paged(query);
 
-    return log(() -> query.findList(), LOGGER, "findBy");
+    return log(() -> new HasNextPagedList<>(query), LOGGER, "pagedBy");
   }
 
   /**
@@ -308,5 +320,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
    */
   public static String getCacheKey(UUID projectId) {
     return String.format("project:%s", projectId.toString());
+  }
+
+  @Override
+  public String toString() {
+    return String.format("{\"name\": %s, \"owner\": %s}", Json.toJson(name), owner);
   }
 }

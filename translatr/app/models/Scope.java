@@ -8,25 +8,21 @@ import java.util.Map;
  * @version 21 Oct 2016
  */
 public enum Scope {
-  ProjectAdmin(ScopeSection.Project, ScopeType.Admin),
+  UserRead(ScopeSection.User, ScopeType.Read),
+
+  UserWrite(ScopeSection.User, ScopeType.Write),
 
   ProjectRead(ScopeSection.Project, ScopeType.Read),
 
   ProjectWrite(ScopeSection.Project, ScopeType.Write),
 
-  LocaleAdmin(ScopeSection.Locale, ScopeType.Admin),
-
   LocaleRead(ScopeSection.Locale, ScopeType.Read),
 
   LocaleWrite(ScopeSection.Locale, ScopeType.Write),
 
-  KeyAdmin(ScopeSection.Key, ScopeType.Admin),
-
   KeyRead(ScopeSection.Key, ScopeType.Read),
 
   KeyWrite(ScopeSection.Key, ScopeType.Write),
-
-  MessageAdmin(ScopeSection.Message, ScopeType.Admin),
 
   MessageRead(ScopeSection.Message, ScopeType.Read),
 

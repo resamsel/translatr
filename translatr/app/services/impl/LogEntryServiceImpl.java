@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
 
@@ -105,9 +106,17 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID>
    */
   @Override
   public List<LogEntry> findBy(LogEntryCriteria criteria) {
+    return pagedBy(criteria).getList();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public PagedList<LogEntry> pagedBy(LogEntryCriteria criteria) {
     // TODO: config cache duration
-    return log(() -> cache.getOrElse(criteria.getCacheKey(), () -> LogEntry.findBy(criteria), 60),
-        LOGGER, "findBy");
+    return log(() -> cache.getOrElse(criteria.getCacheKey(), () -> LogEntry.pagedBy(criteria), 60),
+        LOGGER, "pagedBy");
   }
 
   /**

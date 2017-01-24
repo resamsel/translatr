@@ -19,10 +19,12 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import criterias.HasNextPagedList;
 import criterias.ProjectUserCriteria;
 
 /**
@@ -122,7 +124,7 @@ public class ProjectUser implements Model<ProjectUser, Long> {
     if (criteria.getUserId() != null)
       query.eq("user.id", criteria.getUserId());
 
-    criteria.paging(query);
+    criteria.paged(query);
 
     return query;
   }
@@ -132,7 +134,12 @@ public class ProjectUser implements Model<ProjectUser, Long> {
    * @return
    */
   public static List<ProjectUser> findBy(ProjectUserCriteria criteria) {
-    return log(() -> findQuery(criteria).query().fetch("user").findList(), LOGGER, "findBy");
+    return pagedBy(criteria).getList();
+  }
+
+  public static PagedList<ProjectUser> pagedBy(ProjectUserCriteria criteria) {
+    return log(() -> new HasNextPagedList<>(findQuery(criteria).query().fetch("user")), LOGGER,
+        "pagedBy");
   }
 
   public static int countBy(ProjectUserCriteria criteria) {

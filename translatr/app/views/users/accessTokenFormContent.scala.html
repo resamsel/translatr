@@ -34,3 +34,11 @@
 		@inputs.checkbox(form("scopeMessageWrite"), "accessToken-scopeMessageWrite", Html(Messages("scope.message.write")))
 	</div>
 </div>
+<div class="row">
+	<div class="col s12 m6 l3">
+		<h6 class="header">@Messages("user")</h6>
+		@*inputs.checkbox(form("scopeUserAdmin"), "accessToken-scopeUserAdmin", Html(Messages("scope.user.admin")))<br/>*@
+		@inputs.checkbox(form("scopeUserRead"), "accessToken-scopeUserRead", Html(Messages("scope.user.read")))<br/>
+		@inputs.checkbox(form("scopeUserWrite"), "accessToken-scopeUserWrite", Html(Messages("scope.user.write")))
+	</div>
+</div>

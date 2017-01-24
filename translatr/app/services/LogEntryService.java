@@ -2,6 +2,7 @@ package services;
 
 import java.util.List;
 
+import com.avaje.ebean.PagedList;
 import com.google.inject.ImplementedBy;
 
 import criterias.LogEntryCriteria;
@@ -29,4 +30,12 @@ public interface LogEntryService extends ModelService<LogEntry> {
    * @return
    */
   List<LogEntry> findBy(LogEntryCriteria criteria);
+
+  /**
+   * Wraps {@link LogEntry#findBy(LogEntryCriteria)} with caching.
+   * 
+   * @param criteria
+   * @return
+   */
+  PagedList<LogEntry> pagedBy(LogEntryCriteria criteria);
 }

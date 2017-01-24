@@ -9,6 +9,10 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
 import criterias.ProjectCriteria;
+import dto.errors.ConstraintViolationError;
+import dto.errors.GenericError;
+import dto.errors.NotFoundError;
+import dto.errors.PermissionError;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -32,9 +36,27 @@ import services.UserService;
  * @author resamsel
  * @version 10 Jan 2017
  */
-@io.swagger.annotations.Api(value = "project", produces = "application/json")
+@io.swagger.annotations.Api(value = "Projects", produces = "application/json")
 @With(ApiAction.class)
 public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project> {
+  private static final String TYPE = "dto.Project";
+
+  private static final String FIND = "Find projects";
+  private static final String FIND_RESPONSE = "Found projects";
+  private static final String GET = "Get project by ID";
+  private static final String GET_RESPONSE = "Found project";
+  private static final String CREATE = "Create project";
+  private static final String CREATE_RESPONSE = "Created project";
+  private static final String CREATE_REQUEST = "The project to create";
+  private static final String UPDATE = "Update project";
+  private static final String UPDATE_RESPONSE = "Updated project";
+  private static final String UPDATE_REQUEST = "The project to update";
+  private static final String DELETE = "Delete project";
+  private static final String DELETE_RESPONSE = "Deleted project";
+
+  private static final String SEARCH = "Part of the name of the projects";
+  private static final String NOT_FOUND = "Project not found";
+
   @Inject
   public ProjectsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, ProjectService projectService) {
@@ -43,50 +65,50 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
         new Scope[] {Scope.ProjectRead}, new Scope[] {Scope.ProjectWrite});
   }
 
-  @ApiOperation(value = "Find projects", authorizations = @Authorization(value = "scopes",
-      scopes = @AuthorizationScope(scope = "project:read", description = "Read project")))
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Found projects", response = dto.Project[].class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+  @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,
+      scopes = @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)))
+  @ApiResponses({@ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.Project[].class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "access_token", value = "The access token", required = true,
-          dataType = "string", paramType = "query"),
-      @ApiImplicitParam(name = "search", value = "Part of the name of the projects",
-          dataType = "string", paramType = "query")})
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+          required = true, dataType = "string", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
+          paramType = "query")})
   public CompletionStage<Result> find() {
-    return findBy(new ProjectCriteria().withMemberId(User.loggedInUserId())
-        .withSearch(request().getQueryString("search")));
+    return findBy(ProjectCriteria.from(request()).withMemberId(User.loggedInUserId()));
   }
 
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Get project by ID", authorizations = @Authorization(value = "scopes",
-      scopes = @AuthorizationScope(scope = "project:read", description = "Read project")))
-  @ApiResponses({@ApiResponse(code = 200, message = "Found project", response = dto.Project.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class),
-      @ApiResponse(code = 404, message = "Project not found", response = dto.Error.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
+  @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
+      scopes = @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)))
+  @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.Project.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
       required = true, dataType = "string", paramType = "query")})
   @Override
-  public CompletionStage<Result> get(@ApiParam(value = "The project ID") UUID id) {
+  public CompletionStage<Result> get(@ApiParam(value = PROJECT_ID) UUID id) {
     return super.get(id);
   }
 
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Create project", authorizations = @Authorization(value = "scopes",
-      scopes = {@AuthorizationScope(scope = "project:write", description = "Write project")}))
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Created project", response = dto.Project.class),
-      @ApiResponse(code = 400, message = "Bad request", response = dto.Error.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+  @ApiOperation(value = CREATE, authorizations = @Authorization(value = AUTHORIZATION, scopes = {
+      @AuthorizationScope(scope = PROJECT_WRITE, description = PROJECT_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = CREATE_RESPONSE, response = dto.Project.class),
+      @ApiResponse(code = 400, message = INPUT_ERROR, response = ConstraintViolationError.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "body", value = "The project to create", required = true,
-          dataType = "dto.Project", paramType = "body"),
-      @ApiImplicitParam(name = "access_token", value = "The access token", required = true,
-          dataType = "string", paramType = "query")})
+      @ApiImplicitParam(name = "body", value = CREATE_REQUEST, required = true, dataType = TYPE,
+          paramType = "body"),
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+          required = true, dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> create() {
     return super.create();
@@ -95,16 +117,18 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Update project", authorizations = @Authorization(value = "scopes",
-      scopes = {@AuthorizationScope(scope = "project:write", description = "Write project")}))
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Updated project", response = dto.Project.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
+  @ApiOperation(value = UPDATE, authorizations = @Authorization(value = AUTHORIZATION, scopes = {
+      @AuthorizationScope(scope = PROJECT_WRITE, description = PROJECT_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = UPDATE_RESPONSE, response = dto.Project.class),
+      @ApiResponse(code = 400, message = INPUT_ERROR, response = ConstraintViolationError.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "body", value = "The project to update", required = true,
-          dataType = "dto.Project", paramType = "body"),
-      @ApiImplicitParam(name = "access_token", value = "The access token", required = true,
-          dataType = "string", paramType = "query")})
+      @ApiImplicitParam(name = "body", value = UPDATE_REQUEST, required = true, dataType = TYPE,
+          paramType = "body"),
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
+          required = true, dataType = "string", paramType = "query")})
   @Override
   public CompletionStage<Result> update() {
     return super.update();
@@ -113,15 +137,16 @@ public class ProjectsApi extends Api<Project, UUID, ProjectCriteria, dto.Project
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = "Delete project", authorizations = @Authorization(value = "scopes",
-      scopes = {@AuthorizationScope(scope = "project:write", description = "Write project")}))
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Deleted project", response = dto.Project.class),
-      @ApiResponse(code = 403, message = "Invalid access token", response = dto.Error.class)})
-  @ApiImplicitParams({@ApiImplicitParam(name = "access_token", value = "The access token",
+  @ApiOperation(value = DELETE, authorizations = @Authorization(value = AUTHORIZATION, scopes = {
+      @AuthorizationScope(scope = PROJECT_WRITE, description = PROJECT_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = DELETE_RESPONSE, response = dto.Project.class),
+      @ApiResponse(code = 403, message = INPUT_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN_DESCRIPTION,
       required = true, dataType = "string", paramType = "query")})
   @Override
-  public CompletionStage<Result> delete(@ApiParam(value = "The project ID") UUID id) {
+  public CompletionStage<Result> delete(@ApiParam(value = PROJECT_ID) UUID id) {
     return super.delete(id);
   }
 }

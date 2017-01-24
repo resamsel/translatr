@@ -39,7 +39,7 @@ API_HTML_ERROR = textwrap.dedent("""
 	{0}
 """)
 
-Locale = namedtuple('Locale', 'id name projectId')
+Locale = namedtuple('Locale', 'id name projectId projectName')
 
 logger = logging.getLogger(__name__)
 

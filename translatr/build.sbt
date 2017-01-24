@@ -56,7 +56,7 @@ EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClass
 EclipseKeys.withSource := true
 
 // Docker
-maintainer := "René Samselnig <rene.samselnig@gmail.com>"
+maintainer := "René Panzar <rene.panzar@gmail.com>"
 
 dockerRepository := Some("resamsel")
 

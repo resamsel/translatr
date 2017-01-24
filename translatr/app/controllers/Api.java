@@ -41,6 +41,42 @@ import utils.PermissionUtils;
 
 public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>, DTO extends Dto>
     extends AbstractController {
+  protected static final String PERMISSION_ERROR = "Invalid access token";
+  protected static final String INTERNAL_SERVER_ERROR = "Internal server error";
+  protected static final String INPUT_ERROR = "Bad request";
+
+  protected static final String ACCESS_TOKEN_DESCRIPTION = "The access token";
+  protected static final String PARAM_ACCESS_TOKEN = "access_token";
+  protected static final String PARAM_SEARCH = "search";
+  protected static final String OFFSET = "The first row of the paged result list";
+  protected static final String PARAM_OFFSET = "offset";
+  protected static final String LIMIT = "The page size of the paged result list";
+  protected static final String PARAM_LIMIT = "limit";
+  protected static final String PROJECT_ID = "The project ID";
+
+  protected static final String AUTHORIZATION = "scopes";
+
+  protected static final String PROJECT_READ = "project:read";
+  protected static final String PROJECT_READ_DESCRIPTION = "Read project";
+  protected static final String PROJECT_WRITE = "project:write";
+  protected static final String PROJECT_WRITE_DESCRIPTION = "Write project";
+  protected static final String LOCALE_READ = "locale:read";
+  protected static final String LOCALE_READ_DESCRIPTION = "Read locale";
+  protected static final String LOCALE_WRITE = "locale:write";
+  protected static final String LOCALE_WRITE_DESCRIPTION = "Write locale";
+  protected static final String KEY_READ = "key:read";
+  protected static final String KEY_READ_DESCRIPTION = "Read key";
+  protected static final String KEY_WRITE = "key:write";
+  protected static final String KEY_WRITE_DESCRIPTION = "Write key";
+  protected static final String MESSAGE_READ = "message:read";
+  protected static final String MESSAGE_READ_DESCRIPTION = "Read message";
+  protected static final String MESSAGE_WRITE = "message:write";
+  protected static final String MESSAGE_WRITE_DESCRIPTION = "Write message";
+  protected static final String USER_READ = "user:read";
+  protected static final String USER_READ_DESCRIPTION = "Read user";
+  protected static final String USER_WRITE = "user:write";
+  protected static final String USER_WRITE_DESCRIPTION = "Write user";
+
   protected final HttpExecutionContext executionContext;
 
   protected final ModelService<MODEL> service;
@@ -119,7 +155,7 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
       return badRequest(ErrorUtils.toJson(e));
     } catch (Throwable e) {
       LoggerFactory.getLogger(Api.class).error("Error while processing API request", e);
-      return badRequest(ErrorUtils.toJson(e));
+      return internalServerError(ErrorUtils.toJson(e));
     }
   }
 
@@ -156,8 +192,7 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
       MODEL obj = getter.apply(id);
 
       if (obj == null)
-        throw new NotFoundException(String.format("%s with ID '%s' not found",
-            dtoClass.getSimpleName(), String.valueOf(id)));
+        throw new NotFoundException(dtoClass.getSimpleName(), id);
 
       return obj;
     });
@@ -182,8 +217,7 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
       MODEL m = getter.apply(id);
 
       if (m == null)
-        throw new NotFoundException(String.format("%s with ID '%s' not found",
-            dtoClass.getSimpleName(), String.valueOf(id)));
+        throw new NotFoundException(dtoClass.getSimpleName(), id);
 
       service.delete(m);
 

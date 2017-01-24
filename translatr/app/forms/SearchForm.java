@@ -9,6 +9,8 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.avaje.ebean.PagedList;
+
 import play.mvc.Call;
 
 /**
@@ -101,12 +103,10 @@ public class SearchForm {
   }
 
   /**
-   * @param items
+   * @param pagedList
    */
-  public void pager(List<?> items) {
-    hasMore = items.size() > limit;
-    if (hasMore)
-      items.subList(limit, items.size()).clear();
+  public void pager(PagedList<?> pagedList) {
+    hasMore = pagedList.hasNext();
   }
 
   protected List<NameValuePair> parameters(int limit, int offset, String order, String search) {

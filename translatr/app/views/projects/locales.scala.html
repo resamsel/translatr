@@ -1,4 +1,4 @@
-@(template: utils.Template, project: models.Project, locales: List[models.Locale], progress: Map[java.util.UUID, Double], form: Form[forms.LocaleSearchForm])
+@(template: utils.Template, project: models.Project, locales: com.avaje.ebean.PagedList[models.Locale], progress: Map[java.util.UUID, Double], form: Form[forms.LocaleSearchForm])
 
 @main(template.withTitle(Messages("locales.title", project.name)).withName("locales")) {
 	@tags.search(form)()
@@ -14,14 +14,14 @@
 	</a>
 } {
 	@content(project, "locales") {
-		@tags.collection(locales, "locales.empty", "locales") {
+		@tags.collection(locales.getList, "locales.empty", "locales") {
 			<span class="title">@Messages("locale.name")</span>
 			@tags.sortOrders {
 				@tags.orderLink(form.get, routes.Projects.locales(project.id), "locale.name", "name", "name desc", "name")
 				@tags.orderLink(form.get, routes.Projects.locales(project.id), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
-			@for(locale <- locales) {
+			@for(locale <- locales.getList) {
 				<li class="collection-item avatar">
 					<i class="material-icons circle blue">book</i>
 					<a class="locale title" href="@routes.Locales.locale(locale.id)">
