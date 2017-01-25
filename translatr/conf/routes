@@ -119,7 +119,8 @@ DELETE	/api/message/:messageId			controllers.TranslationsApi.delete(messageId: j
 
 GET		/api/users						controllers.UsersApi.find
 GET		/api/user/:userId				controllers.UsersApi.get(userId: java.util.UUID)
-PUT		/api/user						controllers.UsersApi.update
+# Disable updating users for the moment
+#PUT		/api/user						controllers.UsersApi.update
 
 # Map static resources from the /public folder to the /assets URL path
 GET		/assets/*file					controllers.Assets.versioned(path="/public", file: Asset)
