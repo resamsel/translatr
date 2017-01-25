@@ -93,12 +93,10 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID>
               H2_COLUMN_MILLIS))
           .columnMapping(H2_COLUMN_MILLIS, "millis").columnMapping("count(*)", "value").create();
 
-    String dateColumn = "when_created::date";
     return RawSqlBuilder
-        .parse(String.format(
-            "select %1$s as date, count(*) as cnt from log_entry group by 1 order by 1",
-            dateColumn))
-        .columnMapping(dateColumn, "date").columnMapping("count(*)", "value").create();
+        .parse(
+            "select when_created::date as date, count(*) as cnt from log_entry group by 1 order by 1")
+        .columnMapping("date", "date").columnMapping("cnt", "value").create();
   }
 
   /**
