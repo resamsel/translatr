@@ -319,6 +319,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public static String getCacheKey(UUID projectId) {
+    if (projectId == null)
+      return null;
+
     return String.format("project:%s", projectId.toString());
   }
 

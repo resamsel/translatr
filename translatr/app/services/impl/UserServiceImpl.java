@@ -169,6 +169,17 @@ public class UserServiceImpl extends AbstractModelService<User, UUID> implements
   }
 
   /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postSave(User t, boolean update) {
+    if (update) {
+      // When user has been updated, the user cache needs to be invalidated
+      cache.remove(User.getCacheKey(t.id));
+    }
+  }
+
+  /**
    * @param email
    * @return
    */

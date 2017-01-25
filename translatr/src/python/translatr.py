@@ -174,7 +174,8 @@ def pull(args):
 					locale.id,
 					**config
 				),
-				params={'access_token': config['access_token']}
+				params={'access_token': config['access_token']},
+				stream=True
 			)
 			response.raise_for_status()
 		except requests.exceptions.ConnectionError as e:
@@ -252,11 +253,11 @@ def push(args):
 				# Create locale
 				response = requests.post(
 					'{endpoint}/api/locale'.format(**config),
+					params={
+						'access_token': config['access_token']
+					},
 					json={
-						'access_token': config['access_token'],
-						'project': {
-							'id': config['project_id']
-						},
+						'projectId': config['project_id'],
 						'name': localeName
 					})
 				response.raise_for_status()

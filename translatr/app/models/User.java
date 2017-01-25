@@ -295,6 +295,14 @@ public class User implements Model<User, UUID>, Subject {
         LogEntry.countBy(new LogEntryCriteria().withUserId(userId)));
   }
 
+  /**
+   * @param userId
+   * @return
+   */
+  public static String getCacheKey(UUID userId) {
+    return String.format("user:%s", userId.toString());
+  }
+
   public static User from(JsonNode json) {
     return Json.fromJson(json, dto.User.class).toModel();
   }
