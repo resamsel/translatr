@@ -20,7 +20,7 @@ fi
 
 if [ "$(pip list | grep pyaml)" = "" -o "$(pip list | grep requests)" = "" ]; then
 	echo "sudo required for installing python requirements..."
-	sudo pip install pyaml requests
+	sudo pip install pyaml requests tabulate
 fi
 
 ${TRANSLATR} -h

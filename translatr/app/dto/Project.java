@@ -69,6 +69,8 @@ public class Project extends Dto {
     out.name = name;
     if (ownerId != null)
       out.owner = new User().withId(ownerId);
+    else
+      out.owner = User.loggedInUser();
 
     return out;
   }
