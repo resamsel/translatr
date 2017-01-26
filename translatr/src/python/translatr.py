@@ -303,7 +303,7 @@ def remove_project(args):
 				project_id = projects[0].id
 			else:
 				raise Exception(
-					"Project with ID '{0}' not found".format(locale_id))
+					"Project with ID '{0}' not found".format(project_id))
 
 		project = api.project_delete(project_id)
 
