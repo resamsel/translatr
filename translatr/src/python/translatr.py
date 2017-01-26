@@ -70,6 +70,61 @@ def eprint(msg, width=80):
 	print('\n'.join(textwrap.wrap(msg.strip(), width)))
 
 
+def target_repl(m):
+	return m.group(0) \
+		.replace('{', r'(?P<') \
+		.replace('}', r'>\w*)') \
+		.replace('.', '_')
+
+
+def target_pattern(target):
+	logger.debug('target_pattern(target=%s)', target)
+	regex = re.sub(r'(\{[^}]*\})', target_repl, target)
+	logger.debug('Regex: %s', regex)
+	return re.compile(regex)
+
+
+def handle_http_error(response, config):
+	logger.debug('Handling API error: %s', response.text)
+
+	try:
+		json = response.json()
+		if response.status_code == 400:
+			raise Exception('{0}: {1}'.format(
+				json['error']['message'],
+				', '.join([
+					'{message} ({field})'.format(**v)
+					for v in json['error']['violations']
+				])
+			))
+		raise Exception(json['error']['message'])
+	except ValueError:
+		raise Exception(API_HTML_ERROR.format(response.text))
+
+
+def download(res, target):
+	logger.debug('Download %s to %s', res.url, target)
+
+	with open(target, 'wb') as f:
+		for chunk in res.iter_content(chunk_size=1024):
+			if chunk: # filter out keep-alive new chunks
+				f.write(chunk)
+	return
+
+
+def assert_exists(config, *keys):
+	for key in keys:
+		d = config
+		path = ['translatr']
+		for k in key.split('.'):
+			path.append(k)
+			if k not in d:
+				raise Exception(CONFIG_KEY_MISSING.format('.'.join(path)))
+			d = d[k]
+			if d is None:
+				raise Exception(CONFIG_KEY_EMPTY.format('.'.join(path)))
+
+
 class Request(object):
 	def __init__(self, config):
 		self.config = config
@@ -159,26 +214,6 @@ class Api(object):
 		)
 
 
-def init(args):
-	try:
-		with open('.translatr.yml', 'w') as f:
-			f.write(textwrap.dedent("""
-				translatr:
-					endpoint: {endpoint}
-					project_id: {project_id}
-					push:
-						file_type: {push_file_type}
-						target: {push_target}
-					pull:
-						file_type: {pull_file_type}
-						target: {pull_target}
-			""").strip().format(**args.__dict__).replace('\t', '  '))
-		print('Config initialised into .translatr.yml')
-	except IOError as e:
-		logger.exception(e)
-		print(e)
-
-
 def read_config():
 	# Define a custom tag and associate the regex pattern we defined
 	yaml.add_implicit_resolver("!envvar", ENV_VAR_PATTERN)
@@ -202,15 +237,35 @@ def read_config_merge(args):
 	return config
 
 
-def info(args):
+def init(args):
+	try:
+		with open('.translatr.yml', 'w') as f:
+			f.write(textwrap.dedent("""
+				translatr:
+					endpoint: {endpoint}
+					access_token: {access_token}
+					project_id: {project_id}
+					push:
+						file_type: {push_file_type}
+						target: {push_target}
+					pull:
+						file_type: {pull_file_type}
+						target: {pull_target}
+			""").strip().format(**args.__dict__).replace('\t', '  '))
+		print('Config initialised into .translatr.yml')
+	except IOError as e:
+		logger.exception(e)
+		print(e)
+
+
+def config_info(args):
 	pyaml.pprint({'translatr': read_config()})
 
 
 def projects(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint')
-	assert_exists(config, 'access_token')
+	assert_exists(config, 'endpoint', 'access_token')
 
 	api = Api(config)
 	projects = api.projects(params={'search': args.search})
@@ -224,8 +279,7 @@ def projects(args):
 def create_project(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint')
-	assert_exists(config, 'access_token')
+	assert_exists(config, 'endpoint', 'access_token')
 
 	api = Api(config)
 	project = api.project_create({'name': args.project_name})
@@ -236,8 +290,7 @@ def create_project(args):
 def remove_project(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint')
-	assert_exists(config, 'access_token')
+	assert_exists(config, 'endpoint', 'access_token')
 
 	api = Api(config)
 	for project_id in args.project_ids:
@@ -256,9 +309,7 @@ def remove_project(args):
 def locales(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint')
-	assert_exists(config, 'access_token')
-	assert_exists(config, 'project_id')
+	assert_exists(config, 'endpoint', 'access_token', 'project_id')
 
 	api = Api(config)
 	locales = api.locales(params={'search': args.search})
@@ -266,11 +317,24 @@ def locales(args):
 	print(tabulate([(l.id, l.name) for l in locales], tablefmt="plain"))
 
 
+def create_locale(args):
+	config = read_config_merge(args)
+
+	assert_exists(config, 'endpoint', 'access_token')
+
+	api = Api(config)
+	locale = api.locale_create({
+		'projectId': config['project_id'],
+		'name': args.locale_name
+	})
+
+	print('Locale {0} has been created'.format(locale.name))
+
+
 def remove_locale(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint')
-	assert_exists(config, 'access_token')
+	assert_exists(config, 'endpoint', 'access_token')
 
 	api = Api(config)
 	for locale_id in args.locale_ids:
@@ -278,7 +342,7 @@ def remove_locale(args):
 
 		print(
 			'Locale {0} has been deleted'.format(
-				project.name.replace(
+				locale.name.replace(
 					'{0}-'.format(locale_id),
 					''
 				)
@@ -286,49 +350,11 @@ def remove_locale(args):
 		)
 
 
-def handle_http_error(response, config):
-	logger.debug('Handling API error: %s', response.text)
-
-	try:
-		json = response.json()
-		if response.status_code == 400:
-			raise Exception('{0}: {1}'.format(
-				json['error']['message'],
-				', '.join([v['message'] for v in json['error']['violations']])
-			))
-		raise Exception(json['error']['message'])
-	except ValueError:
-		raise Exception(API_HTML_ERROR.format(response.text))
-
-
-def download(res, target):
-	logger.debug('Download %s to %s', res.url, target)
-
-	with open(target, 'wb') as f:
-		for chunk in res.iter_content(chunk_size=1024):
-			if chunk: # filter out keep-alive new chunks
-				f.write(chunk)
-	return
-
-
-def assert_exists(d, key):
-	path = ['translatr']
-	for k in key.split('.'):
-		path.append(k)
-		if k not in d:
-			raise Exception(CONFIG_KEY_MISSING.format('.'.join(path)))
-		d = d[k]
-		if d is None:
-			raise Exception(CONFIG_KEY_EMPTY.format('.'.join(path)))
-
 def pull(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint')
-	assert_exists(config, 'access_token')
-	assert_exists(config, 'project_id')
-	assert_exists(config, 'pull.target')
-	assert_exists(config, 'pull.file_type')
+	assert_exists(config, 'endpoint', 'access_token', 'project_id',
+		'pull.target', 'pull.file_type')
 
 	api = Api(config)
 
@@ -347,28 +373,11 @@ def pull(args):
 		print('Downloaded {0} to {1}'.format(locale.name, target))
 
 
-def target_repl(m):
-	return m.group(0) \
-		.replace('{', r'(?P<') \
-		.replace('}', r'>\w*)') \
-		.replace('.', '_')
-
-
-def target_pattern(target):
-	logger.debug('target_pattern(target=%s)', target)
-	regex = re.sub(r'(\{[^}]*\})', target_repl, target)
-	logger.debug('Regex: %s', regex)
-	return re.compile(regex)
-
-
 def push(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint')
-	assert_exists(config, 'access_token')
-	assert_exists(config, 'project_id')
-	assert_exists(config, 'push.target')
-	assert_exists(config, 'push.file_type')
+	assert_exists(config, 'endpoint', 'access_token', 'project_id',
+		'push.target', 'push.file_type')
 
 	api = Api(config)
 	locales = dict([(l.name, l) for l in api.locales()])
@@ -440,28 +449,32 @@ def create_parser_init(subparsers):
 		help='the URL to the Translatr endpoint'
 	)
 	parser_init.add_argument(
+		'access_token',
+		help='the access token for API calls'
+	)
+	parser_init.add_argument(
 		'project_id',
 		help='the ID of the Translatr project'
 	)
 	parser_init.add_argument(
 		'--pull-file-type',
 		default='play_messages',
-		help='the format of the files to be downloaded'
+		help='the format of the files to be downloaded (default: %(default)s)'
 	)
 	parser_init.add_argument(
 		'--pull-target',
 		default='conf/messages.?{locale.name}',
-		help='the location format of the downloaded files'
+		help='the location format of the downloaded files (default: %(default)s)'
 	)
 	parser_init.add_argument(
 		'--push-file-type',
 		default='play_messages',
-		help='the format of the files to be uploaded'
+		help='the format of the files to be uploaded (default: %(default)s)'
 	)
 	parser_init.add_argument(
 		'--push-target',
 		default='conf/messages.?{locale.name}',
-		help='the location format of the uploaded files'
+		help='the location format of the uploaded files (default: %(default)s)'
 	)
 	parser_init.set_defaults(func=init)
 
@@ -530,6 +543,22 @@ def create_parser_locale(subparsers):
 		'--project-id',
 		help='the project ID'
 	)
+
+	parser_locale_create = subparsers_locale.add_parser(
+		'create',
+		help='create locale'
+	)
+	parser_locale_create.set_defaults(func=create_locale)
+	parser_locale_create.add_argument(
+		'locale_name',
+		help='the locale name'
+	)
+	parser_locale_create.add_argument(
+		'-p',
+		'--project-id',
+		help='the project ID'
+	)
+
 	parser_locale_remove = subparsers_locale.add_parser(
 		'rm',
 		help='remove locales'
@@ -570,11 +599,11 @@ def create_parser():
 	create_parser_project(subparsers)
 	create_parser_locale(subparsers)
 
-	parser_info = subparsers.add_parser(
-		'info',
-		help='show info about project'
+	parser_config = subparsers.add_parser(
+		'config',
+		help='show info about configuration'
 	)
-	parser_info.set_defaults(func=info)
+	parser_config.set_defaults(func=config_info)
 
 	parser_push = subparsers.add_parser(
 		'push',
@@ -584,7 +613,7 @@ def create_parser():
 
 	parser_pull = subparsers.add_parser(
 		'pull',
-		help='pulling downloads all locales into separate files into the configured files'
+		help='pulling downloads all locales into configured locations'
 	)
 	parser_pull.set_defaults(func=pull)
 
