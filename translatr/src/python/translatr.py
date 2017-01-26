@@ -14,6 +14,7 @@ import textwrap
 
 from collections import namedtuple
 from tabulate import tabulate
+from uuid import UUID
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -294,6 +295,16 @@ def remove_project(args):
 
 	api = Api(config)
 	for project_id in args.project_ids:
+		try:
+			UUID(project_id, version=4)
+		except ValueError:
+			projects = api.projects(params={'search': project_id})
+			if projects:
+				project_id = projects[0].id
+			else:
+				raise Exception(
+					"Project with ID '{0}' not found".format(locale_id))
+
 		project = api.project_delete(project_id)
 
 		print(
@@ -338,6 +349,16 @@ def remove_locale(args):
 
 	api = Api(config)
 	for locale_id in args.locale_ids:
+		try:
+			UUID(locale_id, version=4)
+		except ValueError:
+			locales = api.locales(params={'search': locale_id})
+			if locales:
+				locale_id = locales[0].id
+			else:
+				raise Exception(
+					"Locale with ID '{0}' not found".format(locale_id))
+
 		locale = api.locale_delete(locale_id)
 
 		print(
