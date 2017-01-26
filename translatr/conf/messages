@@ -69,7 +69,7 @@ contributions.amount = {0} contributions
 contributions.legend.less = Less
 contributions.legend.more = More
 contributions.legend.tooltip = Relative activity: {0}-{1}% (log(n)/log(max))
-copyright = © 2016 René Samselnig (version {0})\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
+copyright = © 2017 René Samselnig (version {0})\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
 dashboard = Dashboard
 dashboard.info = There {0,choice,0#are no projects yet|1#is one project|1<are {0} projects}
 dashboard.title = Dashboard
