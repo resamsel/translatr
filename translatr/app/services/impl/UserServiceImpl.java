@@ -146,6 +146,18 @@ public class UserServiceImpl extends AbstractModelService<User, UUID> implements
    * {@inheritDoc}
    */
   @Override
+  protected User validate(User model) {
+    // Disabling for the moment - merging users is not possible using this method...
+    // if (model.id != null && !model.id.equals(User.loggedInUserId()))
+    // throw new ValidationException("User is not allowed to modify another user");
+
+    return super.validate(model);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   protected void preSave(User t, boolean update) {
     if (t.email != null)
       t.email = t.email.toLowerCase();
@@ -154,6 +166,17 @@ public class UserServiceImpl extends AbstractModelService<User, UUID> implements
     if (update)
       logEntryService.save(
           LogEntry.from(ActionType.Update, null, dto.User.class, toDto(User.byId(t.id)), toDto(t)));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postSave(User t, boolean update) {
+    if (update) {
+      // When user has been updated, the user cache needs to be invalidated
+      cache.remove(User.getCacheKey(t.id));
+    }
   }
 
   /**
@@ -203,8 +226,8 @@ public class UserServiceImpl extends AbstractModelService<User, UUID> implements
             .withOwner(user).withName(String.format("%s (%s)", project.name, user.email)))
         .collect(toList()));
 
-    projectUserService.save(ProjectUser.findBy(new ProjectUserCriteria().withUserId(otherUser.id))
-        .stream().map(member -> member.withUser(user)).collect(toList()));
+    projectUserService.save(ProjectUser.pagedBy(new ProjectUserCriteria().withUserId(otherUser.id))
+        .getList().stream().map(member -> member.withUser(user)).collect(toList()));
 
 
     // deactivate the merged user that got added to this one

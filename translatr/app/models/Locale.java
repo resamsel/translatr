@@ -23,18 +23,23 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.routes;
+import criterias.HasNextPagedList;
 import criterias.LocaleCriteria;
 import play.libs.Json;
 import play.mvc.Http.Context;
+import validators.LocaleNameUniqueChecker;
+import validators.NameUnique;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
+@NameUnique(checker = LocaleNameUniqueChecker.class)
 public class Locale implements Model<Locale, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Locale.class);
 
@@ -116,6 +121,9 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static Locale byProjectAndName(Project project, String name) {
+    if (project == null)
+      return null;
+
     return byProjectAndName(project.id, name);
   }
 
@@ -133,6 +141,14 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static List<Locale> findBy(LocaleCriteria criteria) {
+    return pagedBy(criteria).getList();
+  }
+
+  /**
+   * @param criteria
+   * @return
+   */
+  public static PagedList<Locale> pagedBy(LocaleCriteria criteria) {
     ExpressionList<Locale> query = find.fetch("project").where();
 
     if (criteria.getProjectId() != null)
@@ -144,16 +160,12 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
     if (criteria.getSearch() != null)
       query.ilike("name", "%" + criteria.getSearch() + "%");
 
-    if (criteria.getLimit() != null)
-      query.setMaxRows(criteria.getLimit() + 1);
-
-    if (criteria.getOffset() != null)
-      query.setFirstRow(criteria.getOffset());
-
     if (criteria.getOrder() != null)
       query.setOrderBy(criteria.getOrder());
 
-    return log(() -> query.findList(), LOGGER, "findBy");
+    criteria.paged(query);
+
+    return log(() -> new HasNextPagedList<>(query), LOGGER, "pagedBy");
   }
 
   public static List<Locale> last(Project project, int limit) {
@@ -182,5 +194,10 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
   public static Locale from(JsonNode json) {
     return Json.fromJson(json, dto.Locale.class).toModel();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("{\"project\": %s, \"name\": %s}", project, Json.toJson(name));
   }
 }

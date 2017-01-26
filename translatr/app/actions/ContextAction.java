@@ -27,7 +27,6 @@ public class ContextAction extends Action.Simple {
 
   private final CacheApi cache;
 
-
   /**
    * 
    */

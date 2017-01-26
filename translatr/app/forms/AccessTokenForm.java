@@ -24,16 +24,19 @@ public class AccessTokenForm {
 
   private String key;
 
-  private Boolean scopeProjectAdmin = false;
+  // private Boolean scopeUserAdmin = false;
+  private Boolean scopeUserRead = false;
+  private Boolean scopeUserWrite = false;
+  // private Boolean scopeProjectAdmin = false;
   private Boolean scopeProjectRead = false;
   private Boolean scopeProjectWrite = false;
-  private Boolean scopeLocaleAdmin = false;
+  // private Boolean scopeLocaleAdmin = false;
   private Boolean scopeLocaleRead = false;
   private Boolean scopeLocaleWrite = false;
-  private Boolean scopeKeyAdmin = false;
+  // private Boolean scopeKeyAdmin = false;
   private Boolean scopeKeyRead = false;
   private Boolean scopeKeyWrite = false;
-  private Boolean scopeMessageAdmin = false;
+  // private Boolean scopeMessageAdmin = false;
   private Boolean scopeMessageRead = false;
   private Boolean scopeMessageWrite = false;
 
@@ -49,12 +52,20 @@ public class AccessTokenForm {
     return key;
   }
 
-  public Boolean getScopeProjectAdmin() {
-    return scopeProjectAdmin;
+  public Boolean getScopeUserRead() {
+    return scopeUserRead;
   }
 
-  public void setScopeProjectAdmin(Boolean scopeProjectAdmin) {
-    this.scopeProjectAdmin = scopeProjectAdmin;
+  public void setScopeUserRead(Boolean scopeUserRead) {
+    this.scopeUserRead = scopeUserRead;
+  }
+
+  public Boolean getScopeUserWrite() {
+    return scopeUserWrite;
+  }
+
+  public void setScopeUserWrite(Boolean scopeUserWrite) {
+    this.scopeUserWrite = scopeUserWrite;
   }
 
   public Boolean getScopeProjectRead() {
@@ -73,14 +84,6 @@ public class AccessTokenForm {
     this.scopeProjectWrite = scopeProjectWrite;
   }
 
-  public Boolean getScopeLocaleAdmin() {
-    return scopeLocaleAdmin;
-  }
-
-  public void setScopeLocaleAdmin(Boolean scopeLocaleAdmin) {
-    this.scopeLocaleAdmin = scopeLocaleAdmin;
-  }
-
   public Boolean getScopeLocaleRead() {
     return scopeLocaleRead;
   }
@@ -97,14 +100,6 @@ public class AccessTokenForm {
     this.scopeLocaleWrite = scopeLocaleWrite;
   }
 
-  public Boolean getScopeKeyAdmin() {
-    return scopeKeyAdmin;
-  }
-
-  public void setScopeKeyAdmin(Boolean scopeKeyAdmin) {
-    this.scopeKeyAdmin = scopeKeyAdmin;
-  }
-
   public Boolean getScopeKeyRead() {
     return scopeKeyRead;
   }
@@ -119,14 +114,6 @@ public class AccessTokenForm {
 
   public void setScopeKeyWrite(Boolean scopeKeyWrite) {
     this.scopeKeyWrite = scopeKeyWrite;
-  }
-
-  public Boolean getScopeMessageAdmin() {
-    return scopeMessageAdmin;
-  }
-
-  public void setScopeMessageAdmin(Boolean scopeMessageAdmin) {
-    this.scopeMessageAdmin = scopeMessageAdmin;
   }
 
   public Boolean getScopeMessageRead() {
@@ -153,26 +140,32 @@ public class AccessTokenForm {
     in.name = name;
 
     List<String> scopes = new ArrayList<>();
-    if (scopeProjectAdmin)
-      scopes.add(Scope.ProjectAdmin.scope());
+    // if (scopeUserAdmin)
+    // scopes.add(Scope.UserAdmin.scope());
+    if (scopeUserRead)
+      scopes.add(Scope.UserRead.scope());
+    if (scopeUserWrite)
+      scopes.add(Scope.UserWrite.scope());
+    // if (scopeProjectAdmin)
+    // scopes.add(Scope.ProjectAdmin.scope());
     if (scopeProjectRead)
       scopes.add(Scope.ProjectRead.scope());
     if (scopeProjectWrite)
       scopes.add(Scope.ProjectWrite.scope());
-    if (scopeLocaleAdmin)
-      scopes.add(Scope.LocaleAdmin.scope());
+    // if (scopeLocaleAdmin)
+    // scopes.add(Scope.LocaleAdmin.scope());
     if (scopeLocaleRead)
       scopes.add(Scope.LocaleRead.scope());
     if (scopeLocaleWrite)
       scopes.add(Scope.LocaleWrite.scope());
-    if (scopeKeyAdmin)
-      scopes.add(Scope.KeyAdmin.scope());
+    // if (scopeKeyAdmin)
+    // scopes.add(Scope.KeyAdmin.scope());
     if (scopeKeyRead)
       scopes.add(Scope.KeyRead.scope());
     if (scopeKeyWrite)
       scopes.add(Scope.KeyWrite.scope());
-    if (scopeMessageAdmin)
-      scopes.add(Scope.MessageAdmin.scope());
+    // if (scopeMessageAdmin)
+    // scopes.add(Scope.MessageAdmin.scope());
     if (scopeMessageRead)
       scopes.add(Scope.MessageRead.scope());
     if (scopeMessageWrite)
@@ -194,16 +187,19 @@ public class AccessTokenForm {
     out.key = in.key;
 
     List<Scope> scopes = in.getScopeList();
-    out.scopeProjectAdmin = scopes.contains(Scope.ProjectAdmin);
+    // out.scopeUserAdmin = scopes.contains(Scope.UserAdmin);
+    out.scopeUserRead = scopes.contains(Scope.UserRead);
+    out.scopeUserWrite = scopes.contains(Scope.UserWrite);
+    // out.scopeProjectAdmin = scopes.contains(Scope.ProjectAdmin);
     out.scopeProjectRead = scopes.contains(Scope.ProjectRead);
     out.scopeProjectWrite = scopes.contains(Scope.ProjectWrite);
-    out.scopeLocaleAdmin = scopes.contains(Scope.LocaleAdmin);
+    // out.scopeLocaleAdmin = scopes.contains(Scope.LocaleAdmin);
     out.scopeLocaleRead = scopes.contains(Scope.LocaleRead);
     out.scopeLocaleWrite = scopes.contains(Scope.LocaleWrite);
-    out.scopeKeyAdmin = scopes.contains(Scope.KeyAdmin);
+    // out.scopeKeyAdmin = scopes.contains(Scope.KeyAdmin);
     out.scopeKeyRead = scopes.contains(Scope.KeyRead);
     out.scopeKeyWrite = scopes.contains(Scope.KeyWrite);
-    out.scopeMessageAdmin = scopes.contains(Scope.MessageAdmin);
+    // out.scopeMessageAdmin = scopes.contains(Scope.MessageAdmin);
     out.scopeMessageRead = scopes.contains(Scope.MessageRead);
     out.scopeMessageWrite = scopes.contains(Scope.MessageWrite);
 

@@ -27,9 +27,11 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
@@ -38,10 +40,13 @@ import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
 import controllers.Application;
+import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
 import criterias.ProjectUserCriteria;
+import criterias.UserCriteria;
 import play.api.Play;
 import play.api.inject.Injector;
+import play.libs.Json;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
 import services.UserService;
@@ -132,6 +137,24 @@ public class User implements Model<User, UUID>, Subject {
 
   public static User findByEmail(final String email) {
     return getEmailUserFind(email).findUnique();
+  }
+
+  public static PagedList<User> pagedBy(UserCriteria criteria) {
+    ExpressionList<User> query = find.where();
+
+    query.eq("active", true);
+
+    if (criteria.getSearch() != null)
+      query.disjunction().ilike("name", "%" + criteria.getSearch() + "%")
+          .ilike("username", "%" + criteria.getSearch() + "%").endJunction();
+
+    criteria.paged(query);
+
+    return log(() -> new HasNextPagedList<User>(query), LOGGER, "pagedBy");
+  }
+
+  public static List<User> findBy(UserCriteria criteria) {
+    return pagedBy(criteria).getList();
   }
 
   private static ExpressionList<User> getEmailUserFind(final String email) {
@@ -268,7 +291,7 @@ public class User implements Model<User, UUID>, Subject {
    */
   @Override
   public String toString() {
-    return name;
+    return String.format("{\"name\": %s}", Json.toJson(name));
   }
 
   /**
@@ -278,5 +301,17 @@ public class User implements Model<User, UUID>, Subject {
   public static UserStats userStatsUncached(UUID userId) {
     return UserStats.create(ProjectUser.countBy(new ProjectUserCriteria().withUserId(userId)),
         LogEntry.countBy(new LogEntryCriteria().withUserId(userId)));
+  }
+
+  /**
+   * @param userId
+   * @return
+   */
+  public static String getCacheKey(UUID userId) {
+    return String.format("user:%s", userId.toString());
+  }
+
+  public static User from(JsonNode json) {
+    return Json.fromJson(json, dto.User.class).toModel();
   }
 }

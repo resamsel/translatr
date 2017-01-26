@@ -3,52 +3,49 @@ package criterias;
 import java.util.UUID;
 
 import forms.SearchForm;
+import play.mvc.Http.Request;
 
 /**
  *
  * @author resamsel
  * @version 26 Sep 2016
  */
-public class ProjectCriteria extends AbstractSearchCriteria<ProjectCriteria>
-{
-	private UUID ownerId;
+public class ProjectCriteria extends AbstractSearchCriteria<ProjectCriteria> {
+  private UUID ownerId;
 
-	private UUID memberId;
+  private UUID memberId;
 
-	public UUID getOwnerId()
-	{
-		return ownerId;
-	}
+  public UUID getOwnerId() {
+    return ownerId;
+  }
 
-	public void setOwnerId(UUID ownerId)
-	{
-		this.ownerId = ownerId;
-	}
+  public void setOwnerId(UUID ownerId) {
+    this.ownerId = ownerId;
+  }
 
-	public ProjectCriteria withOwnerId(UUID ownerId)
-	{
-		this.ownerId = ownerId;
-		return this;
-	}
+  public ProjectCriteria withOwnerId(UUID ownerId) {
+    this.ownerId = ownerId;
+    return this;
+  }
 
-	public UUID getMemberId()
-	{
-		return memberId;
-	}
+  public UUID getMemberId() {
+    return memberId;
+  }
 
-	public void setMemberId(UUID memberId)
-	{
-		this.memberId = memberId;
-	}
+  public void setMemberId(UUID memberId) {
+    this.memberId = memberId;
+  }
 
-	public ProjectCriteria withMemberId(UUID memberId)
-	{
-		this.memberId = memberId;
-		return this;
-	}
+  public ProjectCriteria withMemberId(UUID memberId) {
+    this.memberId = memberId;
+    return this;
+  }
 
-	public static ProjectCriteria from(SearchForm form)
-	{
-		return new ProjectCriteria().with(form);
-	}
+  public static ProjectCriteria from(SearchForm form) {
+    return new ProjectCriteria().with(form);
+  }
+
+  public static ProjectCriteria from(Request request) {
+    return new ProjectCriteria().with(request);
+  }
 }

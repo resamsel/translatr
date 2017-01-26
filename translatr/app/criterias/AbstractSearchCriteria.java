@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.avaje.ebean.ExpressionList;
 
 import forms.SearchForm;
+import play.mvc.Http.Request;
+import utils.NumberUtils;
 
 /**
  *
@@ -168,12 +170,37 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
         .withOrder(form.order);
   }
 
+  public T with(Request request) {
+    return self.withSearch(request.getQueryString("search"))
+        .withOffset(NumberUtils.parseInt(request.getQueryString("offset")))
+        .withLimit(NumberUtils.parseInt(request.getQueryString("limit")))
+        .withOrder(request.getQueryString("order"));
+  }
+
   /**
    * @param query
+   * @deprecated Use {@link AbstractSearchCriteria#paged(ExpressionList)}
    */
+  @Deprecated
   public <U> ExpressionList<U> paging(ExpressionList<U> query) {
     if (getLimit() != null)
       query.setMaxRows(getLimit() + 1);
+
+    if (getOffset() != null)
+      query.setFirstRow(getOffset());
+
+    if (getOrder() != null)
+      query.order(getOrder());
+
+    return query;
+  }
+
+  /**
+   * @param query
+   */
+  public <U> ExpressionList<U> paged(ExpressionList<U> query) {
+    if (getLimit() != null)
+      query.setMaxRows(getLimit());
 
     if (getOffset() != null)
       query.setFirstRow(getOffset());

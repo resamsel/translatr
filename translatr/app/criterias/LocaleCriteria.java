@@ -1,6 +1,7 @@
 package criterias;
 
 import forms.LocaleSearchForm;
+import play.mvc.Http.Request;
 
 /**
  *
@@ -44,5 +45,9 @@ public class LocaleCriteria extends AbstractSearchCriteria<LocaleCriteria> {
 
   public static LocaleCriteria from(LocaleSearchForm form) {
     return new LocaleCriteria().with(form).withMissing(form.missing);
+  }
+
+  public static LocaleCriteria from(Request request) {
+    return new LocaleCriteria().with(request);
   }
 }

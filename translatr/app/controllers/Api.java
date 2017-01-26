@@ -14,6 +14,7 @@ import javax.validation.ValidationException;
 
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 
@@ -31,7 +32,6 @@ import play.inject.Injector;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.BodyParser;
-import play.mvc.Http.Request;
 import play.mvc.Result;
 import services.LogEntryService;
 import services.ModelService;
@@ -41,6 +41,47 @@ import utils.PermissionUtils;
 
 public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>, DTO extends Dto>
     extends AbstractController {
+  protected static final String PERMISSION_ERROR = "Invalid access token";
+  protected static final String INTERNAL_SERVER_ERROR = "Internal server error";
+  protected static final String INPUT_ERROR = "Bad request";
+
+  protected static final String ACCESS_TOKEN = "The access token";
+  protected static final String PARAM_ACCESS_TOKEN = "access_token";
+  protected static final String PARAM_SEARCH = "search";
+  protected static final String OFFSET = "The first row of the paged result list";
+  protected static final String PARAM_OFFSET = "offset";
+  protected static final String LIMIT = "The page size of the paged result list";
+  protected static final String PARAM_LIMIT = "limit";
+  protected static final String PROJECT_ID = "The project ID";
+  protected static final String LOCALE_ID = "The locale ID";
+  protected static final String PARAM_LOCALE_ID = "localeId";
+  protected static final String KEY_ID = "The key ID";
+  protected static final String MESSAGE_ID = "The message ID";
+  protected static final String USER_ID = "The user ID";
+
+  protected static final String AUTHORIZATION = "scopes";
+
+  protected static final String PROJECT_READ = "project:read";
+  protected static final String PROJECT_READ_DESCRIPTION = "Read project";
+  protected static final String PROJECT_WRITE = "project:write";
+  protected static final String PROJECT_WRITE_DESCRIPTION = "Write project";
+  protected static final String LOCALE_READ = "locale:read";
+  protected static final String LOCALE_READ_DESCRIPTION = "Read locale";
+  protected static final String LOCALE_WRITE = "locale:write";
+  protected static final String LOCALE_WRITE_DESCRIPTION = "Write locale";
+  protected static final String KEY_READ = "key:read";
+  protected static final String KEY_READ_DESCRIPTION = "Read key";
+  protected static final String KEY_WRITE = "key:write";
+  protected static final String KEY_WRITE_DESCRIPTION = "Write key";
+  protected static final String MESSAGE_READ = "message:read";
+  protected static final String MESSAGE_READ_DESCRIPTION = "Read message";
+  protected static final String MESSAGE_WRITE = "message:write";
+  protected static final String MESSAGE_WRITE_DESCRIPTION = "Write message";
+  protected static final String USER_READ = "user:read";
+  protected static final String USER_READ_DESCRIPTION = "Read user";
+  protected static final String USER_WRITE = "user:write";
+  protected static final String USER_WRITE_DESCRIPTION = "Write user";
+
   protected final HttpExecutionContext executionContext;
 
   protected final ModelService<MODEL> service;
@@ -57,12 +98,13 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
 
   protected final Function<ID, MODEL> getter;
 
-  protected final Function<CRITERIA, List<MODEL>> finder;
+  protected final Function<CRITERIA, PagedList<MODEL>> finder;
 
   protected Api(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
       LogEntryService logEntryService, ModelService<MODEL> service, Function<ID, MODEL> getter,
-      Function<CRITERIA, List<MODEL>> finder, Class<DTO> dtoClass, Function<MODEL, DTO> dtoMapper,
-      Function<JsonNode, MODEL> modelMapper, Scope[] readScopes, Scope[] writeScopes) {
+      Function<CRITERIA, PagedList<MODEL>> finder, Class<DTO> dtoClass,
+      Function<MODEL, DTO> dtoMapper, Function<JsonNode, MODEL> modelMapper, Scope[] readScopes,
+      Scope[] writeScopes) {
     super(injector, cache, auth, userService, logEntryService);
 
     this.executionContext = injector.instanceOf(HttpExecutionContext.class);
@@ -110,16 +152,16 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
 
       throw t;
     } catch (PermissionException e) {
-      return forbidden(e.toJson());
+      return forbidden(ErrorUtils.toJson(e));
     } catch (NotFoundException e) {
-      return notFound(e.toJson());
+      return notFound(ErrorUtils.toJson(e));
     } catch (ConstraintViolationException e) {
       return badRequest(ErrorUtils.toJson(e));
     } catch (ValidationException e) {
       return badRequest(ErrorUtils.toJson(e));
     } catch (Throwable e) {
       LoggerFactory.getLogger(Api.class).error("Error while processing API request", e);
-      return badRequest(ErrorUtils.toJson(e));
+      return internalServerError(ErrorUtils.toJson(e));
     }
   }
 
@@ -136,10 +178,6 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
         .exceptionally(Api::handleException);
   }
 
-  public static interface Validator {
-    void validate() throws ValidationException;
-  }
-
   @SafeVarargs
   protected final CompletionStage<Result> findBy(CRITERIA criteria,
       Consumer<CRITERIA>... validators) {
@@ -149,7 +187,7 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
 
       checkPermissionAll("Access token not allowed", readScopes);
 
-      return finder.apply(criteria);
+      return finder.apply(criteria).getList();
     });
   }
 
@@ -160,8 +198,7 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
       MODEL obj = getter.apply(id);
 
       if (obj == null)
-        throw new NotFoundException(String.format("%s with ID '%s' not found",
-            dtoClass.getSimpleName(), String.valueOf(id)));
+        throw new NotFoundException(dtoClass.getSimpleName(), id);
 
       return obj;
     });
@@ -169,56 +206,34 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
 
   @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> create() {
-    return toJson(dtoMapper, creator(request()));
+    return toJson(dtoMapper, () -> {
+      checkPermissionAll("Access token not allowed", writeScopes);
+
+      return service.create(modelMapper.apply(request().body().asJson()));
+    });
   }
 
   @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> update() {
-    return toJson(dtoMapper, updater(request()));
+    return toJson(dtoMapper, () -> {
+      checkPermissionAll("Access token not allowed", writeScopes);
+
+      return service.update(modelMapper.apply(request().body().asJson()));
+    });
   }
 
-  protected void checkDelete(MODEL m) {}
-
   public CompletionStage<Result> delete(ID id) {
-    return CompletableFuture.supplyAsync(() -> {
+    return toJson(dtoMapper, () -> {
       checkPermissionAll("Access token not allowed", writeScopes);
 
       MODEL m = getter.apply(id);
 
       if (m == null)
-        throw new NotFoundException(String.format("%s with ID '%s' not found",
-            dtoClass.getSimpleName(), String.valueOf(id)));
+        throw new NotFoundException(dtoClass.getSimpleName(), id);
 
       service.delete(m);
 
-      return true;
-    }, executionContext.current())
-        .thenApply(success -> ok(Json.newObject().put("message",
-            String.format("%s with ID '%s' has been deleted", dtoClass.getSimpleName(), id))))
-        .exceptionally(Api::handleException);
-  }
-
-  /**
-   * @param request
-   * @return
-   */
-  protected Supplier<MODEL> creator(Request request) {
-    return () -> {
-      checkPermissionAll("Access token not allowed", writeScopes);
-
-      return service.create(modelMapper.apply(request.body().asJson()));
-    };
-  }
-
-  /**
-   * @param request
-   * @return
-   */
-  protected Supplier<MODEL> updater(Request request) {
-    return () -> {
-      checkPermissionAll("Access token not allowed", writeScopes);
-
-      return service.update(modelMapper.apply(request.body().asJson()));
-    };
+      return m;
+    });
   }
 }

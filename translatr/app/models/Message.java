@@ -22,17 +22,21 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
 import play.api.Play;
 import play.libs.Json;
 import services.MessageService;
+import validators.LocaleKeyCheck;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"locale_id", "key_id"})})
+@LocaleKeyCheck
 public class Message implements Model<Message, UUID> {
   private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
@@ -153,6 +157,14 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static List<Message> findBy(MessageCriteria criteria) {
+    return pagedBy(criteria).getList();
+  }
+
+  /**
+   * @param criteria
+   * @return
+   */
+  public static PagedList<Message> pagedBy(MessageCriteria criteria) {
     ExpressionList<Message> query = Message.find.fetch("key").fetch("locale").where();
 
     if (criteria.getProjectId() != null)
@@ -170,13 +182,9 @@ public class Message implements Model<Message, UUID> {
     if (criteria.getSearch() != null)
       query.ilike("value", "%" + criteria.getSearch() + "%");
 
-    if (criteria.getOrder() != null)
-      query.setOrderBy(criteria.getOrder());
+    criteria.paged(query);
 
-    if (criteria.getLimit() != null)
-      query.setMaxRows(criteria.getLimit());
-
-    return log(() -> query.findList(), LOGGER, "findBy");
+    return log(() -> new HasNextPagedList<>(query), LOGGER, "pagedBy");
   }
 
   /**
@@ -227,5 +235,11 @@ public class Message implements Model<Message, UUID> {
 
   public static Message from(JsonNode json) {
     return Json.fromJson(json, dto.Message.class).toModel();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("{\"locale\": %s, \"key\": %s, \"value\": %s}", locale, key,
+        Json.toJson(value));
   }
 }

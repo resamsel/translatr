@@ -1,7 +1,6 @@
 package controllers;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -12,6 +11,7 @@ import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.collect.ImmutableMap;
 
@@ -94,11 +94,11 @@ public class Locales extends AbstractController {
       if (search.order == null)
         search.order = "name";
 
-      List<Key> keys = Key.findBy(
+      PagedList<Key> keys = Key.pagedBy(
           KeyCriteria.from(search).withProjectId(locale.project.id).withLocaleId(locale.id));
       search.pager(keys);
-      List<Locale> locales =
-          Locale.findBy(new LocaleCriteria().withProjectId(locale.project.id).withLimit(100));
+      PagedList<Locale> locales =
+          Locale.pagedBy(new LocaleCriteria().withProjectId(locale.project.id).withLimit(100));
       Map<String, Message> messages =
           Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(Collectors
               .groupingBy((m) -> m.key.name, Collectors.reducing(null, a -> a, (a, b) -> b)));
@@ -203,7 +203,7 @@ public class Locales extends AbstractController {
   public byte[] download(UUID localeId, String fileType) {
     Locale locale = Locale.byId(localeId);
     if (locale == null)
-      throw new NotFoundException(ctx().messages().at("locale.notFound", localeId));
+      throw new NotFoundException(dto.Locale.class.getSimpleName(), localeId);
 
     select(locale.project);
 

@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.validation.ValidationException;
 import javax.validation.Validator;
 
 import org.slf4j.Logger;
@@ -64,19 +63,6 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID> implem
   @Override
   protected Locale byId(UUID id) {
     return Locale.byId(id);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Locale validate(Locale t) {
-    if (t.name == null)
-      throw new ValidationException("Field 'name' required");
-    if (t.project == null)
-      throw new ValidationException("Field 'project' required");
-
-    return t;
   }
 
   /**

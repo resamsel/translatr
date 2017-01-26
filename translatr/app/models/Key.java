@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
@@ -29,12 +31,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.routes;
+import criterias.HasNextPagedList;
 import criterias.KeyCriteria;
 import play.libs.Json;
 import play.mvc.Http.Context;
+import validators.KeyNameUniqueChecker;
+import validators.NameUnique;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
+@NameUnique(checker = KeyNameUniqueChecker.class)
 public class Key implements Model<Key, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Key.class);
 
@@ -54,9 +60,11 @@ public class Key implements Model<Key, UUID>, Suggestable {
   public DateTime whenUpdated;
 
   @ManyToOne(optional = false)
+  @NotNull
   public Project project;
 
   @Column(nullable = false, length = NAME_LENGTH)
+  @NotNull
   public String name;
 
   @JsonIgnore
@@ -110,6 +118,14 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public static List<Key> findBy(KeyCriteria criteria) {
+    return pagedBy(criteria).getList();
+  }
+
+  /**
+   * @param criteria
+   * @return
+   */
+  public static PagedList<Key> pagedBy(KeyCriteria criteria) {
     Query<Key> q = Key.find.fetch("project").alias("k");
     ExpressionList<Key> query = q.where();
 
@@ -132,16 +148,12 @@ public class Key implements Model<Key, UUID>, Suggestable {
       query.notExists(messageQuery.query());
     }
 
-    if (criteria.getOffset() != null)
-      query.setFirstRow(criteria.getOffset());
-
-    if (criteria.getLimit() != null)
-      query.setMaxRows(criteria.getLimit() + 1);
-
     if (criteria.getOrder() != null)
       query.setOrderBy(criteria.getOrder());
 
-    return log(() -> query.findList(), LOGGER, "Retrieving keys");
+    criteria.paged(query);
+
+    return log(() -> new HasNextPagedList<>(query), LOGGER, "pagedBy");
   }
 
   /**
@@ -150,6 +162,9 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public static Key byProjectAndName(Project project, String name) {
+    if (project == null)
+      return null;
+
     return byProjectAndName(project.id, name);
   }
 
@@ -188,5 +203,10 @@ public class Key implements Model<Key, UUID>, Suggestable {
 
   public static Key from(JsonNode json) {
     return Json.fromJson(json, dto.Key.class).toModel();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("{\"project\": %s, \"name\": %s}", project, Json.toJson(name));
   }
 }

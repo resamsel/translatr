@@ -6,43 +6,48 @@ import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class User extends Dto
-{
-	public UUID id;
+public class User extends Dto {
+  public UUID id;
 
-	@JsonIgnore
-	public DateTime whenCreated;
+  @JsonIgnore
+  public DateTime whenCreated;
 
-	@JsonIgnore
-	public DateTime whenUpdated;
+  @JsonIgnore
+  public DateTime whenUpdated;
 
-	public String name;
+  public String name;
 
-	private User(models.User in)
-	{
-		this.id = in.id;
-		this.whenCreated = in.whenCreated;
-		this.whenUpdated = in.whenUpdated;
-		this.name = in.name;
-	}
+  public String username;
 
-	public models.User toModel()
-	{
-		models.User out = new models.User();
+  /**
+   * 
+   */
+  public User() {}
 
-		out.whenCreated = whenCreated;
-		out.whenUpdated = whenUpdated;
-		out.name = name;
+  private User(models.User in) {
+    this.id = in.id;
+    this.whenCreated = in.whenCreated;
+    this.whenUpdated = in.whenUpdated;
+    this.name = in.name;
+    this.username = in.username;
+  }
 
-		return out;
-	}
+  public models.User toModel() {
+    models.User out = id != null ? models.User.byId(id) : new models.User();
 
-	/**
-	 * @param project
-	 * @return
-	 */
-	public static User from(models.User in)
-	{
-		return new User(in);
-	}
+    out.whenCreated = whenCreated;
+    out.whenUpdated = whenUpdated;
+    out.name = name;
+    out.username = username;
+
+    return out;
+  }
+
+  /**
+   * @param project
+   * @return
+   */
+  public static User from(models.User in) {
+    return new User(in);
+  }
 }

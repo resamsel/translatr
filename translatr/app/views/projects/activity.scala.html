@@ -1,4 +1,4 @@
-@(template: utils.Template, project: Project, activityList: List[LogEntry], form: Form[forms.ActivitySearchForm])
+@(template: utils.Template, project: Project, activityList: com.avaje.ebean.PagedList[LogEntry], form: Form[forms.ActivitySearchForm])
 
 @import utils.FormatUtils._
 
@@ -15,13 +15,13 @@
 	</a>
 } {
 	@content(project, "activity") {
-		@tags.collection(activityList, "activity.empty") {
+		@tags.collection(activityList.getList, "activity.empty") {
 			<span class="title">@Messages("activity")</span>
 			@tags.sortOrders {
 				@tags.orderLink(form.get, routes.Projects.activity(project.id), "when.created", "whenCreated desc", "whenCreated", "whenCreated")
 			}
 		} {
-			@for(activity <- activityList) {
+			@for(activity <- activityList.getList) {
 				<li class="collection-item avatar black-text">
 					<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
 					<span class="title truncate">

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import forms.KeySearchForm;
+import play.mvc.Http.Request;
 
 /**
  *
@@ -82,5 +83,9 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria> {
    */
   public static KeyCriteria from(KeySearchForm form) {
     return new KeyCriteria().with(form).withMissing(form.missing);
+  }
+
+  public static KeyCriteria from(Request request) {
+    return new KeyCriteria().with(request);
   }
 }

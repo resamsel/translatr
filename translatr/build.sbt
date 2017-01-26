@@ -32,6 +32,9 @@ libraryDependencies ++= Seq(
 	"org.apache.httpcomponents" % "httpclient" % "4.5.2",
 
 	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
+	
+	"io.swagger" %% "swagger-play2" % "1.5.3",
+	"org.webjars" % "swagger-ui" % "2.2.8",
 
 	// https://mvnrepository.com/artifact/org.easytesting/fest-assert-core
 	"org.easytesting" % "fest-assert-core" % "2.0M10"
@@ -53,7 +56,7 @@ EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClass
 EclipseKeys.withSource := true
 
 // Docker
-maintainer := "René Samselnig <rene.samselnig@gmail.com>"
+maintainer := "René Panzar <rene.panzar@gmail.com>"
 
 dockerRepository := Some("resamsel")
 

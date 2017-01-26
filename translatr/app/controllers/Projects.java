@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.collect.ImmutableMap;
 
@@ -215,13 +216,13 @@ public class Projects extends AbstractController {
 
       List<Suggestable> suggestions = new ArrayList<>();
 
-      List<? extends Suggestable> keys = Key
-          .findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
+      PagedList<? extends Suggestable> keys = Key.pagedBy(
+          KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
 
       search.pager(keys);
 
-      if (!keys.isEmpty())
-        suggestions.addAll(keys);
+      if (!keys.getList().isEmpty())
+        suggestions.addAll(keys.getList());
       if (search.hasMore)
         suggestions.add(Suggestable.DefaultSuggestable
             .from(ctx().messages().at("key.search", search.search), Data.from(Key.class, null,
@@ -232,12 +233,12 @@ public class Projects extends AbstractController {
             .from(ctx().messages().at("key.create", search.search), Data.from(Key.class, null,
                 "+++", routes.Keys.createImmediately(project.id, search.search).url())));
 
-      List<? extends Suggestable> locales = Locale.findBy(new LocaleCriteria()
+      PagedList<? extends Suggestable> locales = Locale.pagedBy(new LocaleCriteria()
           .withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
 
       search.pager(locales);
-      if (!locales.isEmpty())
-        suggestions.addAll(locales);
+      if (!locales.getList().isEmpty())
+        suggestions.addAll(locales.getList());
       if (search.hasMore)
         suggestions.add(Suggestable.DefaultSuggestable
             .from(ctx().messages().at("locale.search", search.search), Data.from(Locale.class, null,
@@ -258,7 +259,8 @@ public class Projects extends AbstractController {
       if (search.order == null)
         search.order = "name";
 
-      List<Locale> locales = Locale.findBy(LocaleCriteria.from(search).withProjectId(project.id));
+      PagedList<Locale> locales =
+          Locale.pagedBy(LocaleCriteria.from(search).withProjectId(project.id));
 
       search.pager(locales);
 
@@ -267,7 +269,8 @@ public class Projects extends AbstractController {
       // (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
 
       return ok(log(() -> views.html.projects.locales.render(createTemplate(), project, locales,
-          localeService.progress(locales.stream().map(l -> l.id).collect(Collectors.toList()),
+          localeService.progress(
+              locales.getList().stream().map(l -> l.id).collect(Collectors.toList()),
               Key.countBy(project)),
           form), LOGGER, "Rendering projects.locales"));
     });
@@ -279,12 +282,13 @@ public class Projects extends AbstractController {
       if (search.order == null)
         search.order = "name";
 
-      List<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
+      PagedList<Key> keys = Key.pagedBy(KeyCriteria.from(search).withProjectId(project.id));
 
       search.pager(keys);
 
-      Map<UUID, Double> progress = keyService.progress(
-          keys.stream().map(k -> k.id).collect(Collectors.toList()), Locale.countBy(project));
+      Map<UUID, Double> progress =
+          keyService.progress(keys.getList().stream().map(k -> k.id).collect(Collectors.toList()),
+              Locale.countBy(project));
 
       return ok(views.html.projects.keys.render(createTemplate(), project, keys, progress, form));
     });
@@ -294,8 +298,8 @@ public class Projects extends AbstractController {
     return searchForm(projectId, (project, form) -> {
       SearchForm search = form.get();
 
-      List<ProjectUser> list =
-          ProjectUser.findBy(ProjectUserCriteria.from(search).withProjectId(project.id));
+      PagedList<ProjectUser> list =
+          ProjectUser.pagedBy(ProjectUserCriteria.from(search).withProjectId(project.id));
 
       search.pager(list);
 
@@ -345,7 +349,7 @@ public class Projects extends AbstractController {
           FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
       ActivitySearchForm search = form.get();
 
-      List<LogEntry> activities = logEntryService.findBy(
+      PagedList<LogEntry> activities = logEntryService.pagedBy(
           LogEntryCriteria.from(search).withProjectId(project.id).withOrder("whenCreated desc"));
 
       search.pager(activities);

@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
 
@@ -92,12 +93,10 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID>
               H2_COLUMN_MILLIS))
           .columnMapping(H2_COLUMN_MILLIS, "millis").columnMapping("count(*)", "value").create();
 
-    String dateColumn = "when_created::date";
     return RawSqlBuilder
-        .parse(String.format(
-            "select %1$s as date, count(*) as cnt from log_entry group by 1 order by 1",
-            dateColumn))
-        .columnMapping(dateColumn, "date").columnMapping("count(*)", "value").create();
+        .parse(
+            "select when_created::date as date, count(*) as cnt from log_entry group by 1 order by 1")
+        .columnMapping("date", "date").columnMapping("cnt", "value").create();
   }
 
   /**
@@ -105,9 +104,17 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID>
    */
   @Override
   public List<LogEntry> findBy(LogEntryCriteria criteria) {
+    return pagedBy(criteria).getList();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public PagedList<LogEntry> pagedBy(LogEntryCriteria criteria) {
     // TODO: config cache duration
-    return log(() -> cache.getOrElse(criteria.getCacheKey(), () -> LogEntry.findBy(criteria), 60),
-        LOGGER, "findBy");
+    return log(() -> cache.getOrElse(criteria.getCacheKey(), () -> LogEntry.pagedBy(criteria), 60),
+        LOGGER, "pagedBy");
   }
 
   /**

@@ -119,7 +119,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID>
   @Override
   public void delete(Project t) {
     if (t == null || t.deleted)
-      throw new NotFoundException(String.format("Project not found"));
+      throw new NotFoundException(dto.Project.class.getSimpleName(), t != null ? t.id : null);
     if (!t.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner))
       throw new PermissionException("User not allowed in project");
 
@@ -139,7 +139,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID>
     User loggedInUser = User.loggedInUser();
     for (Project p : t) {
       if (p == null || p.deleted)
-        throw new NotFoundException(String.format("Project not found"));
+        throw new NotFoundException(dto.Project.class.getSimpleName(), p != null ? p.id : null);
       if (!p.hasPermissionAny(loggedInUser, ProjectRole.Owner))
         throw new PermissionException("User not allowed in project");
     }

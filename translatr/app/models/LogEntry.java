@@ -16,8 +16,10 @@ import org.joda.time.DateTime;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 
+import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
 import dto.Dto;
 import play.libs.Json;
@@ -114,20 +116,24 @@ public class LogEntry implements Model<LogEntry, UUID> {
    * @return
    */
   public static List<LogEntry> findBy(LogEntryCriteria criteria) {
+    return pagedBy(criteria).getList();
+  }
+
+  /**
+   * @param criteria
+   * @return
+   */
+  public static PagedList<LogEntry> pagedBy(LogEntryCriteria criteria) {
     ExpressionList<LogEntry> query = findQuery(criteria);
-
-    if (criteria.getLimit() != null)
-      query.setMaxRows(criteria.getLimit() + 1);
-
-    if (criteria.getOffset() != null)
-      query.setFirstRow(criteria.getOffset());
 
     if (criteria.getOrder() != null)
       query.order(criteria.getOrder());
     else
       query.order("whenCreated desc");
 
-    return query.query().fetch("user").fetch("project").findList();
+    criteria.paged(query);
+
+    return new HasNextPagedList<>(query.query().fetch("user").fetch("project"));
   }
 
   public static int countBy(LogEntryCriteria criteria) {

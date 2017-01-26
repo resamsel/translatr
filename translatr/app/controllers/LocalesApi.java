@@ -11,13 +11,24 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
 import criterias.LocaleCriteria;
+import dto.errors.ConstraintViolationError;
+import dto.errors.GenericError;
+import dto.errors.NotFoundError;
+import dto.errors.PermissionError;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import io.swagger.annotations.AuthorizationScope;
 import models.Locale;
 import models.ProjectRole;
 import models.Scope;
 import models.User;
 import play.cache.CacheApi;
 import play.inject.Injector;
-import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.With;
 import services.LocaleService;
@@ -28,36 +39,187 @@ import services.UserService;
  * @author resamsel
  * @version 10 Jan 2017
  */
+@io.swagger.annotations.Api(value = "Locales", produces = "application/json")
 @With(ApiAction.class)
 public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
+  private static final String TYPE = "dto.Locale";
+
+  private static final String FIND = "Find locales";
+  private static final String FIND_RESPONSE = "Found locales";
+  private static final String GET = "Get locale by ID";
+  private static final String GET_RESPONSE = "Found locale";
+  private static final String CREATE = "Create locale";
+  private static final String CREATE_RESPONSE = "Created locale";
+  private static final String CREATE_REQUEST = "The locale to create";
+  private static final String UPDATE = "Update locale";
+  private static final String UPDATE_RESPONSE = "Updated locale";
+  private static final String UPDATE_REQUEST = "The locale to update";
+  private static final String DELETE = "Delete locale";
+  private static final String DELETE_RESPONSE = "Deleted locale";
+  private static final String UPLOAD = "Upload messages to locale";
+  private static final String UPLOAD_RESPONSE = "Uploaded locale";
+  private static final String DOWNLOAD = "Download messages of locale";
+  private static final String DOWNLOAD_RESPONSE = "Messages of locale";
+
+  private static final String SEARCH = "Part of the name of the locale";
+  private static final String NOT_FOUND_ERROR = "Locale not found";
+
+  private static final String PARAM_LOCALE_NAME = "localeName";
+  private static final String LOCALE_NAME = "The name of the locale";
+  private static final String FILE_TYPE = "The file type";
+
   @Inject
   public LocalesApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, LocaleService localeService) {
     super(injector, cache, auth, userService, logEntryService, localeService, Locale::byId,
-        Locale::findBy, dto.Locale.class, dto.Locale::from, Locale::from,
+        Locale::pagedBy, dto.Locale.class, dto.Locale::from, Locale::from,
         new Scope[] {Scope.ProjectRead, Scope.LocaleRead},
         new Scope[] {Scope.ProjectRead, Scope.LocaleWrite});
   }
 
-  public CompletionStage<Result> find(UUID projectId) {
+  @ApiOperation(value = FIND,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = LOCALE_READ, description = LOCALE_READ_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.Locale[].class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_LOCALE_NAME, value = LOCALE_NAME, dataType = "string",
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
+  public CompletionStage<Result> find(@ApiParam(value = "The project ID") UUID projectId) {
     return findBy(
-        new LocaleCriteria().withProjectId(projectId)
-            .withLocaleName(request().getQueryString("localeName"))
-            .withSearch(request().getQueryString("search")),
+        LocaleCriteria.from(request()).withProjectId(projectId)
+            .withLocaleName(request().getQueryString("localeName")),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
             ProjectRole.Translator, ProjectRole.Developer));
   }
 
-  public CompletionStage<Result> upload(UUID localeId, String fileType) {
-    return CompletableFuture.supplyAsync(() -> {
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = GET,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = LOCALE_READ, description = LOCALE_READ_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.Locale.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+      required = true, dataType = "string", paramType = "query")})
+  @Override
+  public CompletionStage<Result> get(@ApiParam(value = LOCALE_ID) UUID id) {
+    return super.get(id);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = CREATE,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = LOCALE_WRITE, description = LOCALE_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = CREATE_RESPONSE, response = dto.Locale.class),
+      @ApiResponse(code = 400, message = INPUT_ERROR, response = ConstraintViolationError.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({
+      @ApiImplicitParam(name = "body", value = CREATE_REQUEST, required = true, dataType = TYPE,
+          paramType = "body"),
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query")})
+  @Override
+  public CompletionStage<Result> create() {
+    return super.create();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = UPDATE,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = LOCALE_WRITE, description = LOCALE_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = UPDATE_RESPONSE, response = dto.Locale.class),
+      @ApiResponse(code = 400, message = INPUT_ERROR, response = ConstraintViolationError.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({
+      @ApiImplicitParam(name = "body", value = UPDATE_REQUEST, required = true, dataType = TYPE,
+          paramType = "body"),
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query")})
+  @Override
+  public CompletionStage<Result> update() {
+    return super.update();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = DELETE,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = LOCALE_WRITE, description = LOCALE_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = DELETE_RESPONSE, response = dto.Project.class),
+      @ApiResponse(code = 403, message = INPUT_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+      required = true, dataType = "string", paramType = "query")})
+  @Override
+  public CompletionStage<Result> delete(@ApiParam(value = LOCALE_ID) UUID id) {
+    return super.delete(id);
+  }
+
+  @ApiOperation(value = UPLOAD, authorizations = @Authorization(value = AUTHORIZATION,
+      scopes = {@AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+          @AuthorizationScope(scope = LOCALE_READ, description = LOCALE_READ_DESCRIPTION),
+          @AuthorizationScope(scope = MESSAGE_WRITE, description = MESSAGE_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = UPLOAD_RESPONSE, response = dto.Locale.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+      required = true, dataType = "string", paramType = "query")})
+  public CompletionStage<Result> upload(@ApiParam(value = LOCALE_ID) UUID localeId,
+      @ApiParam(value = FILE_TYPE) String fileType) {
+    return toJson(dtoMapper, () -> {
       checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
           Scope.MessageWrite);
 
-      return injector.instanceOf(Locales.class).importLocale(Locale.byId(localeId), request());
-    }, executionContext.current())
-        .thenApply(success -> ok(Json.newObject().put("status", success)));
+      Locale locale = Locale.byId(localeId);
+
+      injector.instanceOf(Locales.class).importLocale(locale, request());
+
+      return locale;
+    });
   }
 
+  @ApiOperation(value = DOWNLOAD, produces = "text/plain", authorizations = @Authorization(
+      value = AUTHORIZATION,
+      scopes = {@AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+          @AuthorizationScope(scope = LOCALE_READ, description = LOCALE_READ_DESCRIPTION),
+          @AuthorizationScope(scope = MESSAGE_READ, description = MESSAGE_READ_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = DOWNLOAD_RESPONSE),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+      required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> download(UUID localeId, String fileType) {
     return CompletableFuture.supplyAsync(() -> {
       checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
