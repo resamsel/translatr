@@ -170,6 +170,11 @@ public class User implements Model<User, UUID>, Subject {
     return this;
   }
 
+  public User withName(String name) {
+    this.name = name;
+    return this;
+  }
+
   /**
    * {@inheritDoc}
    */

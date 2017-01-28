@@ -37,7 +37,8 @@ libraryDependencies ++= Seq(
 	"org.webjars" % "swagger-ui" % "2.2.8",
 
 	// https://mvnrepository.com/artifact/org.easytesting/fest-assert-core
-	"org.easytesting" % "fest-assert-core" % "2.0M10"
+	"org.easytesting" % "fest-assert-core" % "2.0M10" % "test",
+	"org.mockito" % "mockito-core" % "2.6.9" % "test"
 )
 
 // From: https://github.com/playframework/playframework/issues/3818
@@ -102,3 +103,12 @@ Concat.parentDir := "concat"
 pipelineStages in Assets := Seq(concat)
 
 pipelineStages := Seq(concat)
+
+// Testing
+javaOptions in Test ++= Seq(
+  "-Dconfig.file=conf/test.conf",
+  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9999",
+  "-Xms512M",
+  "-Xmx1536M",
+  "-Xss1M"
+)

@@ -7,37 +7,17 @@ import static utils.PermissionUtils.hasPermissionAny;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import models.AccessToken;
 import models.Scope;
-import play.db.Database;
-import play.test.WithApplication;
+import tests.AbstractTest;
 
 /**
  * @author resamsel
  * @version 27 Oct 2016
  */
-public class PermissionUtilsTest extends WithApplication {
-  private Database database;
-
-  @Before
-  public void createDatabase() {
-    // database =
-    // Databases.createFrom("com.postgresql.Driver", "jdbc:postgresql://localhost/translatr-test",
-    // ImmutableMap.of("user", "translatr", "password", "translatr"));
-
-    // Evolutions.applyEvolutions(database);
-  }
-
-  @After
-  public void shutdownDatabase() {
-    if (database != null)
-      database.shutdown();
-  }
-
+public class PermissionUtilsTest extends AbstractTest {
   @Test
   public void testHasPermissionAll() {
     assertThat(hasPermissionAll(accessToken(), Scope.values())).isFalse();
