@@ -2,6 +2,8 @@ package integration.services;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -24,7 +26,13 @@ public class ProjectServiceTest extends AbstractTest {
     User user = createUser("user1");
     Project project = projectService.create(new Project().withOwner(user).withName("blubbb"));
 
+    assertThat(project.id).isNotNull();
+
+    project = Project.byId(project.id);
+
     assertThat(project.owner.name).isEqualTo("user1");
     assertThat(project.name).isEqualTo("blubbb");
+    assertThat(project.members.stream().map(m -> m.user).collect(Collectors.toList()))
+        .contains(user);
   }
 }
