@@ -1,6 +1,5 @@
 package services.impl;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Set;
 
@@ -69,7 +68,7 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
     try {
       return save(model);
     } catch (PersistenceException e) {
-      if (e.getCause() != null && e.getCause() instanceof SQLException
+      if (e.getCause() != null && e.getCause() instanceof PSQLException
           && "23505".equals(((PSQLException) e.getCause()).getSQLState()))
         throw new ValidationException("Entry already exists (duplicate key)");
 

@@ -45,6 +45,7 @@ import criterias.LogEntryCriteria;
 import criterias.ProjectUserCriteria;
 import criterias.UserCriteria;
 import play.api.Play;
+import play.api.inject.Injector;
 import play.libs.Json;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
@@ -169,6 +170,11 @@ public class User implements Model<User, UUID>, Subject {
     return this;
   }
 
+  public User withName(String name) {
+    this.name = name;
+    return this;
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -201,21 +207,28 @@ public class User implements Model<User, UUID>, Subject {
   }
 
   public static AuthUser loggedInAuthUser() {
+    Injector injector = Play.current().injector();
     Session session = Context.current().session();
     String provider = session.get("pa.p.id");
-    if (provider != null && !Play.current().injector().instanceOf(play.Application.class)
-        .configuration().getStringList(ConfigKey.AuthProviders.key()).contains(provider))
+    if (provider != null && !injector.instanceOf(play.Application.class).configuration()
+        .getStringList(ConfigKey.AuthProviders.key()).contains(provider))
       // Prevent NPE when using an unavailable auth provider
       session.clear();
 
-    PlayAuthenticate auth = Play.current().injector().instanceOf(PlayAuthenticate.class);
+    PlayAuthenticate auth = injector.instanceOf(PlayAuthenticate.class);
     AuthUser authUser = auth.getUser(session);
 
     return authUser;
   }
 
   public static User loggedInUser() {
-    Map<String, Object> args = Context.current().args;
+    Map<String, Object> args;
+    try {
+      args = Context.current().args;
+    } catch (RuntimeException e) {
+      // There is no HTTP Context available from here.
+      return null;
+    }
 
     // Logged-in via access_token?
     if (args.containsKey("accessToken"))
