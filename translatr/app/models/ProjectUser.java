@@ -118,6 +118,8 @@ public class ProjectUser implements Model<ProjectUser, Long> {
   private static ExpressionList<ProjectUser> findQuery(ProjectUserCriteria criteria) {
     ExpressionList<ProjectUser> query = find.where();
 
+    query.eq("project.deleted", false);
+
     if (criteria.getProjectId() != null)
       query.eq("project.id", criteria.getProjectId());
 
