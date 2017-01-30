@@ -2,6 +2,7 @@ package services;
 
 import com.google.inject.ImplementedBy;
 
+import criterias.AccessTokenCriteria;
 import models.AccessToken;
 import services.impl.AccessTokenServiceImpl;
 
@@ -11,11 +12,10 @@ import services.impl.AccessTokenServiceImpl;
  * @version 19 Oct 2016
  */
 @ImplementedBy(AccessTokenServiceImpl.class)
-public interface AccessTokenService extends ModelService<AccessToken>
-{
-	/**
-	 * @param accessTokenKey
-	 * @return
-	 */
-	AccessToken getByKey(String accessTokenKey);
+public interface AccessTokenService extends ModelService<AccessToken, Long, AccessTokenCriteria> {
+  /**
+   * @param accessTokenKey
+   * @return
+   */
+  AccessToken getByKey(String accessTokenKey);
 }

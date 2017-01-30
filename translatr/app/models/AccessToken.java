@@ -16,11 +16,13 @@ import org.joda.time.DateTime;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import criterias.AccessTokenCriteria;
+import criterias.HasNextPagedList;
 import play.data.validation.Constraints.MaxLength;
 import play.libs.Json;
 
@@ -115,6 +117,10 @@ public class AccessToken implements Model<AccessToken, Long> {
    * @return
    */
   public static List<AccessToken> findBy(AccessTokenCriteria criteria) {
+    return pagedBy(criteria).getList();
+  }
+
+  public static PagedList<AccessToken> pagedBy(AccessTokenCriteria criteria) {
     ExpressionList<AccessToken> query = find.where();
 
     if (criteria.getUserId() != null)
@@ -131,7 +137,7 @@ public class AccessToken implements Model<AccessToken, Long> {
     else
       query.order("whenCreated");
 
-    return query.findList();
+    return new HasNextPagedList<>(query);
   }
 
   /**

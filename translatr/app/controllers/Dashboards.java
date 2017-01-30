@@ -90,7 +90,7 @@ public class Dashboards extends AbstractController {
           FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
       ActivitySearchForm search = form.get();
 
-      PagedList<LogEntry> activities = logEntryService.pagedBy(
+      PagedList<LogEntry> activities = logEntryService.findBy(
           LogEntryCriteria.from(search).withProjectUserId(user.id).withOrder("whenCreated desc"));
 
       search.pager(activities);

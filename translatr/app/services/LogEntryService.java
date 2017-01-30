@@ -1,8 +1,8 @@
 package services;
 
 import java.util.List;
+import java.util.UUID;
 
-import com.avaje.ebean.PagedList;
 import com.google.inject.ImplementedBy;
 
 import criterias.LogEntryCriteria;
@@ -16,26 +16,10 @@ import services.impl.LogEntryServiceImpl;
  * @version 29 Aug 2016
  */
 @ImplementedBy(LogEntryServiceImpl.class)
-public interface LogEntryService extends ModelService<LogEntry> {
+public interface LogEntryService extends ModelService<LogEntry, UUID, LogEntryCriteria> {
   /**
    * @param criteria
    * @return
    */
   List<Aggregate> getAggregates(LogEntryCriteria criteria);
-
-  /**
-   * Wraps {@link LogEntry#findBy(LogEntryCriteria)} with caching.
-   * 
-   * @param criteria
-   * @return
-   */
-  List<LogEntry> findBy(LogEntryCriteria criteria);
-
-  /**
-   * Wraps {@link LogEntry#findBy(LogEntryCriteria)} with caching.
-   * 
-   * @param criteria
-   * @return
-   */
-  PagedList<LogEntry> pagedBy(LogEntryCriteria criteria);
 }

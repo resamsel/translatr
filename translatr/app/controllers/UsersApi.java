@@ -9,6 +9,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
 import criterias.UserCriteria;
+import dto.User;
 import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
@@ -21,14 +22,13 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
-import models.Scope;
-import models.User;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
 import services.LogEntryService;
 import services.UserService;
+import services.api.UserApiService;
 
 /**
  * @author resamsel
@@ -36,7 +36,7 @@ import services.UserService;
  */
 @io.swagger.annotations.Api(value = "Users", produces = "application/json")
 @With(ApiAction.class)
-public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
+public class UsersApi extends Api<User, UUID, UserCriteria> {
   private static final String TYPE = "dto.User";
 
   private static final String FIND = "Find users";
@@ -57,26 +57,25 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
 
   @Inject
   public UsersApi(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService) {
-    super(injector, cache, auth, userService, logEntryService, userService, User::byId,
-        User::pagedBy, dto.User.class, dto.User::from, User::from, new Scope[] {Scope.UserRead},
-        new Scope[] {Scope.UserWrite});
+      LogEntryService logEntryService, UserApiService userApiService) {
+    super(injector, cache, auth, userService, logEntryService, userApiService);
   }
 
+  @SuppressWarnings("unchecked")
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,
       scopes = @AuthorizationScope(scope = USER_READ, description = USER_READ_DESCRIPTION)))
   @ApiResponses({@ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.User[].class),
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
-          required = true, dataType = "string", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query"),
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> find() {
-    return findBy(UserCriteria.from(request()));
+    return toJsons(() -> api.find(UserCriteria.from(request())));
   }
 
   /**
@@ -90,9 +89,8 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  @Override
   public CompletionStage<Result> get(@ApiParam(value = USER_ID) UUID id) {
-    return super.get(id);
+    return toJson(() -> api.get(id));
   }
 
   /**
@@ -107,11 +105,10 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = CREATE_REQUEST, required = true, dataType = TYPE,
           paramType = "body"),
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
-          required = true, dataType = "string", paramType = "query")})
-  @Override
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query")})
   public CompletionStage<Result> create() {
-    return super.create();
+    return toJson(() -> api.create(request().body().asJson()));
   }
 
   /**
@@ -127,11 +124,10 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = UPDATE_REQUEST, required = true, dataType = TYPE,
           paramType = "body"),
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
-          required = true, dataType = "string", paramType = "query")})
-  @Override
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query")})
   public CompletionStage<Result> update() {
-    return super.update();
+    return toJson(() -> api.update(request().body().asJson()));
   }
 
   /**
@@ -145,8 +141,7 @@ public class UsersApi extends Api<User, UUID, UserCriteria, dto.User> {
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  @Override
   public CompletionStage<Result> delete(@ApiParam(value = PROJECT_ID) UUID id) {
-    return super.delete(id);
+    return toJson(() -> api.delete(id));
   }
 }

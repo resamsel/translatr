@@ -141,7 +141,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
     if (id == null)
       return null;
 
-    return Play.current().injector().instanceOf(ProjectService.class).getById(id);
+    return Play.current().injector().instanceOf(ProjectService.class).byId(id);
   }
 
   public static Project byIdUncached(UUID id) {

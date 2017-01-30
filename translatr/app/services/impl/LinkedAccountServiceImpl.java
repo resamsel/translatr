@@ -4,6 +4,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 
+import com.avaje.ebean.PagedList;
+
+import criterias.LinkedAccountCriteria;
 import models.LinkedAccount;
 import play.Configuration;
 import services.LinkedAccountService;
@@ -15,7 +18,8 @@ import services.LogEntryService;
  * @version 2 Oct 2016
  */
 @Singleton
-public class LinkedAccountServiceImpl extends AbstractModelService<LinkedAccount, Long>
+public class LinkedAccountServiceImpl
+    extends AbstractModelService<LinkedAccount, Long, LinkedAccountCriteria>
     implements LinkedAccountService {
   /**
    * @param configuration
@@ -26,12 +30,19 @@ public class LinkedAccountServiceImpl extends AbstractModelService<LinkedAccount
     super(configuration, validator, logEntryService);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public PagedList<LinkedAccount> findBy(LinkedAccountCriteria criteria) {
+    return LinkedAccount.pagedBy(criteria);
+  }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected LinkedAccount byId(Long id) {
+  public LinkedAccount byId(Long id) {
     return LinkedAccount.byId(id);
   }
 

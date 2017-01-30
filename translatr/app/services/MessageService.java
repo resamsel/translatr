@@ -1,7 +1,10 @@
 package services;
 
+import java.util.UUID;
+
 import com.google.inject.ImplementedBy;
 
+import criterias.MessageCriteria;
 import models.Message;
 import models.Project;
 import services.impl.MessageServiceImpl;
@@ -12,7 +15,7 @@ import services.impl.MessageServiceImpl;
  * @version 29 Aug 2016
  */
 @ImplementedBy(MessageServiceImpl.class)
-public interface MessageService extends ModelService<Message> {
+public interface MessageService extends ModelService<Message, UUID, MessageCriteria> {
   /**
    * @param project
    * @return

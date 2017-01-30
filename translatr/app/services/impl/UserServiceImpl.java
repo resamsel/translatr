@@ -14,6 +14,7 @@ import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.feth.play.module.pa.user.EmailIdentity;
 import com.feth.play.module.pa.user.NameIdentity;
@@ -23,6 +24,7 @@ import criterias.LinkedAccountCriteria;
 import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import criterias.ProjectUserCriteria;
+import criterias.UserCriteria;
 import models.AccessToken;
 import models.ActionType;
 import models.LinkedAccount;
@@ -46,7 +48,8 @@ import services.UserService;
  * @version 1 Oct 2016
  */
 @Singleton
-public class UserServiceImpl extends AbstractModelService<User, UUID> implements UserService {
+public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriteria>
+    implements UserService {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
   private final CacheApi cache;
@@ -80,7 +83,15 @@ public class UserServiceImpl extends AbstractModelService<User, UUID> implements
    * {@inheritDoc}
    */
   @Override
-  protected User byId(UUID id) {
+  public PagedList<User> findBy(UserCriteria criteria) {
+    return User.pagedBy(criteria);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public User byId(UUID id) {
     return User.byId(id);
   }
 

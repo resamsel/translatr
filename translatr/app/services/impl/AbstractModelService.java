@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
 
+import criterias.AbstractSearchCriteria;
 import models.Model;
 import play.Configuration;
 import play.mvc.Http.Context;
@@ -28,8 +29,8 @@ import utils.TransactionUtils;
  * @author resamsel
  * @version 9 Sep 2016
  */
-public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
-    implements ModelService<MODEL> {
+public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>>
+    implements ModelService<MODEL, ID, CRITERIA> {
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelService.class);
 
   protected final Configuration configuration;
@@ -57,8 +58,6 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID>
   protected Session session() {
     return Context.current().session();
   }
-
-  protected abstract MODEL byId(ID id);
 
   /**
    * {@inheritDoc}

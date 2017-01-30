@@ -104,7 +104,7 @@ public class Profiles extends AbstractController {
       ActivitySearchForm search = form.get();
 
       PagedList<LogEntry> activities =
-          logEntryService.pagedBy(LogEntryCriteria.from(search).withUserId(user.id));
+          logEntryService.findBy(LogEntryCriteria.from(search).withUserId(user.id));
 
       search.pager(activities);
 

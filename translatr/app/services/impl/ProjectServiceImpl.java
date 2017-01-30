@@ -15,6 +15,9 @@ import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.PagedList;
+
+import criterias.ProjectCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
 import models.ActionType;
@@ -36,7 +39,7 @@ import services.ProjectService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class ProjectServiceImpl extends AbstractModelService<Project, UUID>
+public class ProjectServiceImpl extends AbstractModelService<Project, UUID, ProjectCriteria>
     implements ProjectService {
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
@@ -62,15 +65,15 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID>
    * {@inheritDoc}
    */
   @Override
-  protected Project byId(UUID id) {
-    return Project.byId(id);
+  public PagedList<Project> findBy(ProjectCriteria criteria) {
+    return Project.pagedBy(criteria);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Project getById(UUID id) {
+  public Project byId(UUID id) {
     return log(() -> cache.getOrElse(Project.getCacheKey(id), () -> Project.byIdUncached(id), 60),
         LOGGER, "getById");
   }

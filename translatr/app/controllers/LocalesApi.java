@@ -11,6 +11,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
 import criterias.LocaleCriteria;
+import dto.Locale;
 import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
@@ -23,17 +24,16 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
-import models.Locale;
 import models.ProjectRole;
-import models.Scope;
 import models.User;
 import play.cache.CacheApi;
 import play.inject.Injector;
+import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import services.LocaleService;
 import services.LogEntryService;
 import services.UserService;
+import services.api.LocaleApiService;
 
 /**
  * @author resamsel
@@ -41,7 +41,7 @@ import services.UserService;
  */
 @io.swagger.annotations.Api(value = "Locales", produces = "application/json")
 @With(ApiAction.class)
-public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
+public class LocalesApi extends Api<Locale, UUID, LocaleCriteria> {
   private static final String TYPE = "dto.Locale";
 
   private static final String FIND = "Find locales";
@@ -68,15 +68,16 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
   private static final String LOCALE_NAME = "The name of the locale";
   private static final String FILE_TYPE = "The file type";
 
+  private final LocaleApiService localeApiService;
+
   @Inject
   public LocalesApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
-      UserService userService, LogEntryService logEntryService, LocaleService localeService) {
-    super(injector, cache, auth, userService, logEntryService, localeService, Locale::byId,
-        Locale::pagedBy, dto.Locale.class, dto.Locale::from, Locale::from,
-        new Scope[] {Scope.ProjectRead, Scope.LocaleRead},
-        new Scope[] {Scope.ProjectRead, Scope.LocaleWrite});
+      UserService userService, LogEntryService logEntryService, LocaleApiService localeApiService) {
+    super(injector, cache, auth, userService, logEntryService, localeApiService);
+    this.localeApiService = localeApiService;
   }
 
+  @SuppressWarnings("unchecked")
   @ApiOperation(value = FIND,
       authorizations = @Authorization(value = AUTHORIZATION,
           scopes = {
@@ -95,11 +96,11 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = "The project ID") UUID projectId) {
-    return findBy(
+    return toJsons(() -> api.find(
         LocaleCriteria.from(request()).withProjectId(projectId)
             .withLocaleName(request().getQueryString("localeName")),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
-            ProjectRole.Translator, ProjectRole.Developer));
+            ProjectRole.Translator, ProjectRole.Developer)));
   }
 
   /**
@@ -116,9 +117,8 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  @Override
   public CompletionStage<Result> get(@ApiParam(value = LOCALE_ID) UUID id) {
-    return super.get(id);
+    return toJson(() -> api.get(id));
   }
 
   /**
@@ -138,9 +138,9 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
           paramType = "body"),
       @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
           dataType = "string", paramType = "query")})
-  @Override
+  @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> create() {
-    return super.create();
+    return toJson(() -> api.create(request().body().asJson()));
   }
 
   /**
@@ -161,9 +161,9 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
           paramType = "body"),
       @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
           dataType = "string", paramType = "query")})
-  @Override
+  @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> update() {
-    return super.update();
+    return toJson(() -> api.update(request().body().asJson()));
   }
 
   /**
@@ -180,9 +180,8 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  @Override
   public CompletionStage<Result> delete(@ApiParam(value = LOCALE_ID) UUID id) {
-    return super.delete(id);
+    return toJson(() -> api.delete(id));
   }
 
   @ApiOperation(value = UPLOAD, authorizations = @Authorization(value = AUTHORIZATION,
@@ -197,16 +196,7 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> upload(@ApiParam(value = LOCALE_ID) UUID localeId,
       @ApiParam(value = FILE_TYPE) String fileType) {
-    return toJson(dtoMapper, () -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
-          Scope.MessageWrite);
-
-      Locale locale = Locale.byId(localeId);
-
-      injector.instanceOf(Locales.class).importLocale(locale, request());
-
-      return locale;
-    });
+    return toJson(() -> localeApiService.upload(localeId, fileType, request()));
   }
 
   @ApiOperation(value = DOWNLOAD, produces = "text/plain", authorizations = @Authorization(
@@ -221,12 +211,9 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria, dto.Locale> {
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> download(UUID localeId, String fileType) {
-    return CompletableFuture.supplyAsync(() -> {
-      checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
-          Scope.MessageRead);
-
-      return injector.instanceOf(Locales.class).download(localeId, fileType);
-    }, executionContext.current()).thenApply(data -> ok(new ByteArrayInputStream(data)))
-        .exceptionally(Api::handleException);
+    return CompletableFuture
+        .supplyAsync(() -> localeApiService.download(localeId, fileType),
+            executionContext.current())
+        .thenApply(data -> ok(new ByteArrayInputStream(data))).exceptionally(Api::handleException);
   }
 }

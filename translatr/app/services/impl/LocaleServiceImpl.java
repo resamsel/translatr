@@ -16,8 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.RawSqlBuilder;
 
+import criterias.LocaleCriteria;
 import dto.PermissionException;
 import models.ActionType;
 import models.Locale;
@@ -39,7 +41,8 @@ import services.MessageService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class LocaleServiceImpl extends AbstractModelService<Locale, UUID> implements LocaleService {
+public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, LocaleCriteria>
+    implements LocaleService {
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
 
   private final MessageService messageService;
@@ -61,7 +64,15 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID> implem
    * {@inheritDoc}
    */
   @Override
-  protected Locale byId(UUID id) {
+  public PagedList<Locale> findBy(LocaleCriteria criteria) {
+    return Locale.pagedBy(criteria);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Locale byId(UUID id) {
     return Locale.byId(id);
   }
 
@@ -89,7 +100,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID> implem
   protected void preSave(Locale t, boolean update) {
     if (update)
       logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.Locale.class,
-          dto.Locale.from(Locale.byId(t.id)), dto.Locale.from(t)));
+          dto.Locale.from(byId(t.id)), dto.Locale.from(t)));
   }
 
   /**

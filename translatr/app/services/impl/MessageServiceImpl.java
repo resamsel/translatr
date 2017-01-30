@@ -15,7 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.PagedList;
 
+import criterias.MessageCriteria;
 import models.ActionType;
 import models.LogEntry;
 import models.Message;
@@ -31,7 +33,7 @@ import services.MessageService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class MessageServiceImpl extends AbstractModelService<Message, UUID>
+public class MessageServiceImpl extends AbstractModelService<Message, UUID, MessageCriteria>
     implements MessageService {
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceImpl.class);
 
@@ -51,7 +53,15 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID>
    * {@inheritDoc}
    */
   @Override
-  protected Message byId(UUID id) {
+  public PagedList<Message> findBy(MessageCriteria criteria) {
+    return Message.pagedBy(criteria);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Message byId(UUID id) {
     return Message.byId(id);
   }
 

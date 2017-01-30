@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.google.inject.ImplementedBy;
 
+import criterias.ProjectCriteria;
 import models.Project;
 import models.User;
 import services.impl.ProjectServiceImpl;
@@ -14,18 +15,11 @@ import services.impl.ProjectServiceImpl;
  * @version 29 Aug 2016
  */
 @ImplementedBy(ProjectServiceImpl.class)
-public interface ProjectService extends ModelService<Project>
-{
-	/**
-	 * @param user
-	 * @param name
-	 * @return
-	 */
-	Project getByOwnerAndName(User user, String name);
-
-	/**
-	 * @param id
-	 * @return
-	 */
-	Project getById(UUID id);
+public interface ProjectService extends ModelService<Project, UUID, ProjectCriteria> {
+  /**
+   * @param user
+   * @param name
+   * @return
+   */
+  Project getByOwnerAndName(User user, String name);
 }

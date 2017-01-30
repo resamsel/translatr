@@ -15,8 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.RawSqlBuilder;
 
+import criterias.KeyCriteria;
 import dto.PermissionException;
 import models.ActionType;
 import models.Key;
@@ -37,7 +39,8 @@ import services.MessageService;
  * @author resamsel
  * @version 29 Aug 2016
  */
-public class KeyServiceImpl extends AbstractModelService<Key, UUID> implements KeyService {
+public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
+    implements KeyService {
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyServiceImpl.class);
 
   private final MessageService messageService;
@@ -59,7 +62,15 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID> implements K
    * {@inheritDoc}
    */
   @Override
-  protected Key byId(UUID id) {
+  public PagedList<Key> findBy(KeyCriteria criteria) {
+    return Key.pagedBy(criteria);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Key byId(UUID id) {
     return Key.byId(id);
   }
 

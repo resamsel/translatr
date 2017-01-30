@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.google.inject.ImplementedBy;
 
+import criterias.UserCriteria;
 import models.User;
 import models.UserStats;
 import services.impl.UserServiceImpl;
@@ -15,7 +16,7 @@ import services.impl.UserServiceImpl;
  * @version 1 Oct 2016
  */
 @ImplementedBy(UserServiceImpl.class)
-public interface UserService extends ModelService<User> {
+public interface UserService extends ModelService<User, UUID, UserCriteria> {
   /**
    * @param user
    * @return

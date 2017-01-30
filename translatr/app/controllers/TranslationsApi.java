@@ -9,6 +9,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
 import criterias.MessageCriteria;
+import dto.Message;
 import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
@@ -21,17 +22,16 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
-import models.Message;
 import models.ProjectRole;
-import models.Scope;
 import models.User;
 import play.cache.CacheApi;
 import play.inject.Injector;
+import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 import services.LogEntryService;
-import services.MessageService;
 import services.UserService;
+import services.api.MessageApiService;
 import utils.JsonUtils;
 
 /**
@@ -40,7 +40,7 @@ import utils.JsonUtils;
  */
 @io.swagger.annotations.Api(value = "Messages", produces = "application/json")
 @With(ApiAction.class)
-public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Message> {
+public class TranslationsApi extends Api<Message, UUID, MessageCriteria> {
   private static final String TYPE = "dto.Message";
 
   private static final String FIND = "Find messages";
@@ -70,13 +70,12 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
    */
   @Inject
   public TranslationsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
-      UserService userService, LogEntryService logEntryService, MessageService messageService) {
-    super(injector, cache, auth, userService, logEntryService, messageService, Message::byId,
-        Message::pagedBy, dto.Message.class, dto.Message::from, Message::from,
-        new Scope[] {Scope.ProjectRead, Scope.MessageRead},
-        new Scope[] {Scope.ProjectRead, Scope.MessageWrite});
+      UserService userService, LogEntryService logEntryService,
+      MessageApiService messageApiService) {
+    super(injector, cache, auth, userService, logEntryService, messageApiService);
   }
 
+  @SuppressWarnings("unchecked")
   @ApiOperation(value = FIND,
       authorizations = @Authorization(value = AUTHORIZATION,
           scopes = {
@@ -97,12 +96,12 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
-    return findBy(
+    return toJsons(() -> api.find(
         MessageCriteria.from(request()).withProjectId(projectId)
             .withLocaleId(JsonUtils.getUuid(request().getQueryString("localeId")))
             .withKeyName(request().getQueryString(PARAM_KEY_NAME)),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
-            ProjectRole.Translator, ProjectRole.Developer));
+            ProjectRole.Translator, ProjectRole.Developer)));
   }
 
   /**
@@ -119,9 +118,8 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  @Override
   public CompletionStage<Result> get(@ApiParam(value = MESSAGE_ID) UUID id) {
-    return super.get(id);
+    return toJson(() -> api.get(id));
   }
 
   /**
@@ -141,9 +139,9 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
           paramType = "body"),
       @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
           dataType = "string", paramType = "query")})
-  @Override
+  @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> create() {
-    return super.create();
+    return toJson(() -> api.create(request().body().asJson()));
   }
 
   /**
@@ -164,9 +162,9 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
           paramType = "body"),
       @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
           dataType = "string", paramType = "query")})
-  @Override
+  @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> update() {
-    return super.update();
+    return toJson(() -> api.update(request().body().asJson()));
   }
 
   /**
@@ -183,8 +181,7 @@ public class TranslationsApi extends Api<Message, UUID, MessageCriteria, dto.Mes
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  @Override
   public CompletionStage<Result> delete(@ApiParam(value = MESSAGE_ID) UUID id) {
-    return super.delete(id);
+    return toJson(() -> api.delete(id));
   }
 }

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.google.inject.ImplementedBy;
 
+import criterias.LocaleCriteria;
 import models.Locale;
 import services.impl.LocaleServiceImpl;
 
@@ -15,13 +16,11 @@ import services.impl.LocaleServiceImpl;
  * @version 29 Aug 2016
  */
 @ImplementedBy(LocaleServiceImpl.class)
-public interface LocaleService extends ModelService<Locale>
-{
-
-	/**
-	 * @param localeIds
-	 * @param keysSize
-	 * @return
-	 */
-	Map<UUID, Double> progress(List<UUID> localeIds, long keysSize);
+public interface LocaleService extends ModelService<Locale, UUID, LocaleCriteria> {
+  /**
+   * @param localeIds
+   * @param keysSize
+   * @return
+   */
+  Map<UUID, Double> progress(List<UUID> localeIds, long keysSize);
 }

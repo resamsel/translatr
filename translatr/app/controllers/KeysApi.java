@@ -9,6 +9,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
 import criterias.KeyCriteria;
+import dto.Key;
 import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
@@ -21,17 +22,16 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
-import models.Key;
 import models.ProjectRole;
-import models.Scope;
 import models.User;
 import play.cache.CacheApi;
 import play.inject.Injector;
+import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import services.KeyService;
 import services.LogEntryService;
 import services.UserService;
+import services.api.KeyApiService;
 
 /**
  * @author resamsel
@@ -39,7 +39,7 @@ import services.UserService;
  */
 @io.swagger.annotations.Api(value = "Keys", produces = "application/json")
 @With(ApiAction.class)
-public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
+public class KeysApi extends Api<Key, UUID, KeyCriteria> {
   private static final String TYPE = "dto.Key";
 
   private static final String FIND = "Find keys";
@@ -60,12 +60,11 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
 
   @Inject
   public KeysApi(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, KeyService keyService) {
-    super(injector, cache, auth, userService, logEntryService, keyService, Key::byId, Key::pagedBy,
-        dto.Key.class, dto.Key::from, Key::from, new Scope[] {Scope.ProjectRead, Scope.KeyRead},
-        new Scope[] {Scope.ProjectRead, Scope.KeyWrite});
+      LogEntryService logEntryService, KeyApiService keyApiService) {
+    super(injector, cache, auth, userService, logEntryService, keyApiService);
   }
 
+  @SuppressWarnings("unchecked")
   @ApiOperation(value = FIND,
       authorizations = @Authorization(value = AUTHORIZATION,
           scopes = {
@@ -75,16 +74,16 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
-          required = true, dataType = "string", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query"),
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
-    return findBy(KeyCriteria.from(request()).withProjectId(projectId),
+    return toJsons(() -> api.find(KeyCriteria.from(request()).withProjectId(projectId),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
-            ProjectRole.Translator, ProjectRole.Developer));
+            ProjectRole.Translator, ProjectRole.Developer)));
   }
 
   /**
@@ -101,9 +100,8 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  @Override
   public CompletionStage<Result> get(@ApiParam(value = KEY_ID) UUID id) {
-    return super.get(id);
+    return toJson(() -> api.get(id));
   }
 
   /**
@@ -121,11 +119,11 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = CREATE_REQUEST, required = true, dataType = TYPE,
           paramType = "body"),
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
-          required = true, dataType = "string", paramType = "query")})
-  @Override
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query")})
+  @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> create() {
-    return super.create();
+    return toJson(() -> api.create(request().body().asJson()));
   }
 
   /**
@@ -144,11 +142,11 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
   @ApiImplicitParams({
       @ApiImplicitParam(name = "body", value = UPDATE_REQUEST, required = true, dataType = TYPE,
           paramType = "body"),
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
-          required = true, dataType = "string", paramType = "query")})
-  @Override
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query")})
+  @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> update() {
-    return super.update();
+    return toJson(() -> api.update(request().body().asJson()));
   }
 
   /**
@@ -165,8 +163,7 @@ public class KeysApi extends Api<Key, UUID, KeyCriteria, dto.Key> {
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  @Override
   public CompletionStage<Result> delete(@ApiParam(value = KEY_ID) UUID id) {
-    return super.delete(id);
+    return toJson(() -> api.delete(id));
   }
 }

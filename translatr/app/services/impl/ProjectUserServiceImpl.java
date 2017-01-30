@@ -4,6 +4,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 
+import com.avaje.ebean.PagedList;
+
+import criterias.ProjectUserCriteria;
 import models.ActionType;
 import models.LogEntry;
 import models.ProjectUser;
@@ -19,8 +22,8 @@ import services.ProjectUserService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class ProjectUserServiceImpl extends AbstractModelService<ProjectUser, Long>
-    implements ProjectUserService {
+public class ProjectUserServiceImpl extends
+    AbstractModelService<ProjectUser, Long, ProjectUserCriteria> implements ProjectUserService {
   /**
    * 
    */
@@ -34,7 +37,15 @@ public class ProjectUserServiceImpl extends AbstractModelService<ProjectUser, Lo
    * {@inheritDoc}
    */
   @Override
-  protected ProjectUser byId(Long id) {
+  public PagedList<ProjectUser> findBy(ProjectUserCriteria criteria) {
+    return ProjectUser.pagedBy(criteria);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ProjectUser byId(Long id) {
     return ProjectUser.byId(id);
   }
 

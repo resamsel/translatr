@@ -12,6 +12,9 @@ import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.PagedList;
+
+import criterias.AccessTokenCriteria;
 import models.AccessToken;
 import models.ActionType;
 import models.LogEntry;
@@ -26,8 +29,8 @@ import services.LogEntryService;
  * @version 19 Oct 2016
  */
 @Singleton
-public class AccessTokenServiceImpl extends AbstractModelService<AccessToken, Long>
-    implements AccessTokenService {
+public class AccessTokenServiceImpl extends
+    AbstractModelService<AccessToken, Long, AccessTokenCriteria> implements AccessTokenService {
   private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenServiceImpl.class);
 
   private final CacheApi cache;
@@ -42,12 +45,19 @@ public class AccessTokenServiceImpl extends AbstractModelService<AccessToken, Lo
     this.cache = cache;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
+    return AccessToken.pagedBy(criteria);
+  }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected AccessToken byId(Long id) {
+  public AccessToken byId(Long id) {
     return AccessToken.byId(id);
   }
 

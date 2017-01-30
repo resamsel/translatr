@@ -36,7 +36,7 @@ import services.LogEntryService;
  * @version 29 Aug 2016
  */
 @Singleton
-public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID>
+public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, LogEntryCriteria>
     implements LogEntryService {
   private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryServiceImpl.class);
 
@@ -58,7 +58,7 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID>
    * {@inheritDoc}
    */
   @Override
-  protected LogEntry byId(UUID id) {
+  public LogEntry byId(UUID id) {
     return LogEntry.byId(id);
   }
 
@@ -103,15 +103,7 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID>
    * {@inheritDoc}
    */
   @Override
-  public List<LogEntry> findBy(LogEntryCriteria criteria) {
-    return pagedBy(criteria).getList();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public PagedList<LogEntry> pagedBy(LogEntryCriteria criteria) {
+  public PagedList<LogEntry> findBy(LogEntryCriteria criteria) {
     // TODO: config cache duration
     return log(() -> cache.getOrElse(criteria.getCacheKey(), () -> LogEntry.pagedBy(criteria), 60),
         LOGGER, "pagedBy");

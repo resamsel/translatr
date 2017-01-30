@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.google.inject.ImplementedBy;
 
+import criterias.KeyCriteria;
 import models.Key;
 import services.impl.KeyServiceImpl;
 
@@ -15,12 +16,11 @@ import services.impl.KeyServiceImpl;
  * @version 29 Aug 2016
  */
 @ImplementedBy(KeyServiceImpl.class)
-public interface KeyService extends ModelService<Key>
-{
-	/**
-	 * @param keyIds
-	 * @param localesSize
-	 * @return
-	 */
-	Map<UUID, Double> progress(List<UUID> keyIds, long localesSize);
+public interface KeyService extends ModelService<Key, UUID, KeyCriteria> {
+  /**
+   * @param keyIds
+   * @param localesSize
+   * @return
+   */
+  Map<UUID, Double> progress(List<UUID> keyIds, long localesSize);
 }

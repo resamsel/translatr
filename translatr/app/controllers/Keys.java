@@ -35,6 +35,7 @@ import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.With;
 import services.KeyService;
+import services.LocaleService;
 import services.LogEntryService;
 import services.UserService;
 import utils.FormUtils;
@@ -55,6 +56,8 @@ public class Keys extends AbstractController {
 
   private final KeyService keyService;
 
+  private final LocaleService localeService;
+
   /**
    * @param injector
    * @param cache
@@ -64,12 +67,13 @@ public class Keys extends AbstractController {
   @Inject
   protected Keys(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
       LogEntryService logEntryService, FormFactory formFactory, Configuration configuration,
-      KeyService keyService) {
+      KeyService keyService, LocaleService localeService) {
     super(injector, cache, auth, userService, logEntryService);
 
     this.formFactory = formFactory;
     this.configuration = configuration;
     this.keyService = keyService;
+    this.localeService = localeService;
   }
 
   public Result key(UUID id) {
@@ -114,7 +118,7 @@ public class Keys extends AbstractController {
     keyService.save(key);
 
     if (localeId != null) {
-      Locale locale = Locale.byId(localeId);
+      Locale locale = localeService.byId(localeId);
 
       return redirect(routes.Locales.locale(locale.id).withFragment("#key=" + key.name));
     }
@@ -185,7 +189,7 @@ public class Keys extends AbstractController {
     keyService.delete(key);
 
     if (localeId != null) {
-      Locale locale = Locale.byId(localeId);
+      Locale locale = localeService.byId(localeId);
       if (locale != null)
         return redirect(routes.Locales.locale(locale.id));
     }

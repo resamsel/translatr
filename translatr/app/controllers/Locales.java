@@ -3,6 +3,7 @@ package controllers;
 import java.io.File;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -201,7 +202,7 @@ public class Locales extends AbstractController {
   }
 
   public byte[] download(UUID localeId, String fileType) {
-    Locale locale = Locale.byId(localeId);
+    Locale locale = localeService.byId(localeId);
     if (locale == null)
       throw new NotFoundException(dto.Locale.class.getSimpleName(), localeId);
 
@@ -300,5 +301,15 @@ public class Locales extends AbstractController {
     LOGGER.debug("End of import");
 
     return "OK";
+  }
+
+  private Result locale(UUID localeId, Function<Locale, Result> processor) {
+    Locale locale = Locale.byId(localeId);
+    if (locale == null)
+      return redirect(routes.Dashboards.dashboard());
+
+    select(locale.project);
+
+    return processor.apply(locale);
   }
 }

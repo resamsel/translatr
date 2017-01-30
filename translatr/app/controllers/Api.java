@@ -4,25 +4,19 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 
 import org.slf4j.LoggerFactory;
 
-import com.avaje.ebean.PagedList;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import criterias.AbstractSearchCriteria;
 import dto.Dto;
 import dto.NotFoundException;
 import dto.PermissionException;
-import models.Model;
 import models.Project;
 import models.ProjectRole;
 import models.Scope;
@@ -31,15 +25,14 @@ import play.cache.CacheApi;
 import play.inject.Injector;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
-import play.mvc.BodyParser;
 import play.mvc.Result;
 import services.LogEntryService;
-import services.ModelService;
 import services.UserService;
+import services.api.ApiService;
 import utils.ErrorUtils;
 import utils.PermissionUtils;
 
-public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>, DTO extends Dto>
+public abstract class Api<DTO extends Dto, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>>
     extends AbstractController {
   protected static final String PERMISSION_ERROR = "Invalid access token";
   protected static final String INTERNAL_SERVER_ERROR = "Internal server error";
@@ -84,38 +77,14 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
 
   protected final HttpExecutionContext executionContext;
 
-  protected final ModelService<MODEL> service;
-
-  protected final Class<DTO> dtoClass;
-
-  protected final Function<MODEL, DTO> dtoMapper;
-
-  protected final Function<JsonNode, MODEL> modelMapper;
-
-  protected final Scope[] readScopes;
-
-  protected final Scope[] writeScopes;
-
-  protected final Function<ID, MODEL> getter;
-
-  protected final Function<CRITERIA, PagedList<MODEL>> finder;
+  protected final ApiService<DTO, ID, CRITERIA> api;
 
   protected Api(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, ModelService<MODEL> service, Function<ID, MODEL> getter,
-      Function<CRITERIA, PagedList<MODEL>> finder, Class<DTO> dtoClass,
-      Function<MODEL, DTO> dtoMapper, Function<JsonNode, MODEL> modelMapper, Scope[] readScopes,
-      Scope[] writeScopes) {
+      LogEntryService logEntryService, ApiService<DTO, ID, CRITERIA> api) {
     super(injector, cache, auth, userService, logEntryService);
 
     this.executionContext = injector.instanceOf(HttpExecutionContext.class);
-    this.service = service;
-    this.getter = getter;
-    this.finder = finder;
-    this.dtoClass = dtoClass;
-    this.dtoMapper = dtoMapper;
-    this.modelMapper = modelMapper;
-    this.readScopes = readScopes;
-    this.writeScopes = writeScopes;
+    this.api = api;
   }
 
   /**
@@ -165,75 +134,13 @@ public abstract class Api<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends A
     }
   }
 
-  protected <IN, OUT> CompletionStage<Result> toJson(Function<IN, OUT> mapper,
-      Supplier<IN> supplier) {
+  protected <IN, OUT> CompletionStage<Result> toJson(Supplier<IN> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(mapper.apply(out)))).exceptionally(Api::handleException);
+        .thenApply(out -> ok(Json.toJson(out))).exceptionally(Api::handleException);
   }
 
-  protected <IN, OUT> CompletionStage<Result> toJsons(Function<IN, OUT> mapper,
-      Supplier<List<IN>> supplier) {
+  protected <T> CompletionStage<Result> toJsons(Supplier<List<T>> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out.stream().map(mapper).collect(Collectors.toList()))))
-        .exceptionally(Api::handleException);
-  }
-
-  @SafeVarargs
-  protected final CompletionStage<Result> findBy(CRITERIA criteria,
-      Consumer<CRITERIA>... validators) {
-    return toJsons(dtoMapper, () -> {
-      for (Consumer<CRITERIA> validator : validators)
-        validator.accept(criteria);
-
-      checkPermissionAll("Access token not allowed", readScopes);
-
-      return finder.apply(criteria).getList();
-    });
-  }
-
-  public CompletionStage<Result> get(ID id) {
-    return toJson(dtoMapper, () -> {
-      checkPermissionAll("Access token not allowed", readScopes);
-
-      MODEL obj = getter.apply(id);
-
-      if (obj == null)
-        throw new NotFoundException(dtoClass.getSimpleName(), id);
-
-      return obj;
-    });
-  }
-
-  @BodyParser.Of(BodyParser.Json.class)
-  public CompletionStage<Result> create() {
-    return toJson(dtoMapper, () -> {
-      checkPermissionAll("Access token not allowed", writeScopes);
-
-      return service.create(modelMapper.apply(request().body().asJson()));
-    });
-  }
-
-  @BodyParser.Of(BodyParser.Json.class)
-  public CompletionStage<Result> update() {
-    return toJson(dtoMapper, () -> {
-      checkPermissionAll("Access token not allowed", writeScopes);
-
-      return service.update(modelMapper.apply(request().body().asJson()));
-    });
-  }
-
-  public CompletionStage<Result> delete(ID id) {
-    return toJson(dtoMapper, () -> {
-      checkPermissionAll("Access token not allowed", writeScopes);
-
-      MODEL m = getter.apply(id);
-
-      if (m == null)
-        throw new NotFoundException(dtoClass.getSimpleName(), id);
-
-      service.delete(m);
-
-      return m;
-    });
+        .thenApply(out -> ok(Json.toJson(out))).exceptionally(Api::handleException);
   }
 }

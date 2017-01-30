@@ -1,18 +1,17 @@
 package controllers;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.joda.time.DateTime;
 
+import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import commands.Command;
 import criterias.LogEntryCriteria;
 import models.Key;
-import models.Locale;
 import models.LogEntry;
 import models.Project;
 import models.User;
@@ -91,10 +90,10 @@ public abstract class AbstractController extends Controller {
   protected Template createTemplate() {
     User user = User.loggedInUser();
 
-    return Template.create(auth, user).withNotifications(notificationsOf(user));
+    return Template.create(auth, user).withNotifications(notificationsOf(user).getList());
   }
 
-  private List<LogEntry> notificationsOf(User user) {
+  private PagedList<LogEntry> notificationsOf(User user) {
     if (user == null)
       return null;
 
@@ -136,16 +135,6 @@ public abstract class AbstractController extends Controller {
 
   protected Result loggedInUser(Function<User, Result> processor) {
     return tryCatch(() -> processor.apply(User.loggedInUser()));
-  }
-
-  protected Result locale(UUID localeId, Function<Locale, Result> processor) {
-    Locale locale = Locale.byId(localeId);
-    if (locale == null)
-      return redirect(routes.Dashboards.dashboard());
-
-    select(locale.project);
-
-    return processor.apply(locale);
   }
 
   protected Result key(UUID keyId, Function<Key, Result> processor) {
