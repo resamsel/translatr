@@ -102,7 +102,7 @@ GET		/api/locale/:localeId			controllers.LocalesApi.get(localeId: java.util.UUID
 POST	/api/locale						controllers.LocalesApi.create
 PUT		/api/locale						controllers.LocalesApi.update
 DELETE	/api/locale/:localeId			controllers.LocalesApi.delete(localeId: java.util.UUID)
-POST	/api/locale/:localeId/import/:fileType	controllers.LocalesApi.upload(localeId: java.util.UUID, fileType: String)
+POST	/api/locale/:localeId/import	controllers.LocalesApi.upload(localeId: java.util.UUID)
 GET		/api/locale/:localeId/export/:fileType	controllers.LocalesApi.download(localeId: java.util.UUID, fileType: String)
 
 GET		/api/keys/:projectId			controllers.KeysApi.find(projectId: java.util.UUID)

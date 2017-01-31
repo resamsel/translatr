@@ -1,13 +1,11 @@
 package controllers;
 
-import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.validation.ValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,19 +20,8 @@ import commands.RevertDeleteLocaleCommand;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
-import dto.NotFoundException;
-import exporters.Exporter;
-import exporters.GettextExporter;
-import exporters.JavaPropertiesExporter;
-import exporters.PlayMessagesExporter;
-import forms.ImportLocaleForm;
 import forms.KeySearchForm;
 import forms.LocaleForm;
-import importers.GettextImporter;
-import importers.Importer;
-import importers.JavaPropertiesImporter;
-import importers.PlayMessagesImporter;
-import models.FileType;
 import models.Key;
 import models.Locale;
 import models.Message;
@@ -45,14 +32,12 @@ import play.data.Form;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.libs.Json;
-import play.mvc.Http.MultipartFormData;
-import play.mvc.Http.MultipartFormData.FilePart;
-import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.With;
 import services.LocaleService;
 import services.LogEntryService;
 import services.UserService;
+import services.api.LocaleApiService;
 import utils.FormUtils;
 import utils.TransactionUtils;
 
@@ -72,6 +57,8 @@ public class Locales extends AbstractController {
 
   private final LocaleService localeService;
 
+  private final LocaleApiService localeApiService;
+
   /**
    * @param injector
    * @param cache
@@ -81,11 +68,12 @@ public class Locales extends AbstractController {
   @Inject
   protected Locales(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, FormFactory formFactory,
-      Configuration configuration, LocaleService localeService) {
+      Configuration configuration, LocaleService localeService, LocaleApiService localeApiService) {
     super(injector, cache, auth, userService, logEntryService);
     this.formFactory = formFactory;
     this.configuration = configuration;
     this.localeService = localeService;
+    this.localeApiService = localeApiService;
   }
 
   public Result locale(UUID localeId) {
@@ -130,7 +118,7 @@ public class Locales extends AbstractController {
     localeService.save(locale);
 
     try {
-      importLocale(locale, request());
+      localeApiService.upload(locale.id, request());
     } catch (IllegalStateException e) {
       // This is OK, the fileType doesn't need to be filled
     }
@@ -190,7 +178,7 @@ public class Locales extends AbstractController {
   public Result doUpload(UUID localeId) {
     return locale(localeId, locale -> {
       try {
-        importLocale(locale, request());
+        localeApiService.upload(localeId, request());
       } catch (Exception e) {
         addError(e.getMessage());
         return badRequest(
@@ -199,33 +187,6 @@ public class Locales extends AbstractController {
 
       return redirect(routes.Locales.locale(localeId));
     });
-  }
-
-  public byte[] download(UUID localeId, String fileType) {
-    Locale locale = localeService.byId(localeId);
-    if (locale == null)
-      throw new NotFoundException(dto.Locale.class.getSimpleName(), localeId);
-
-    select(locale.project);
-
-    Exporter exporter;
-    switch (FileType.fromKey(fileType)) {
-      case PlayMessages:
-        exporter = new PlayMessagesExporter();
-        break;
-      case JavaProperties:
-        exporter = new JavaPropertiesExporter();
-        break;
-      case Gettext:
-        exporter = new GettextExporter();
-        break;
-      default:
-        throw new ValidationException("File type " + fileType + " not supported yet");
-    }
-
-    exporter.addHeaders(response(), locale);
-
-    return exporter.apply(locale);
   }
 
   public Result remove(UUID localeId) {
@@ -255,52 +216,6 @@ public class Locales extends AbstractController {
 
       return redirect(referer);
     });
-  }
-
-  /**
-   * @param locale
-   * @param request
-   * @return
-   */
-  public String importLocale(Locale locale, Request request) {
-    MultipartFormData<File> body = request.body().asMultipartFormData();
-    if (body == null)
-      throw new IllegalArgumentException(ctx().messages().at("import.error.multipartMissing"));
-
-    FilePart<File> messages = body.getFile("messages");
-
-    if (messages == null)
-      throw new IllegalArgumentException("Part 'messages' missing");
-
-    ImportLocaleForm form = formFactory.form(ImportLocaleForm.class).bindFromRequest().get();
-
-    LOGGER.debug("Type: {}", form.getFileType());
-
-    Importer importer;
-    switch (FileType.fromKey(form.getFileType())) {
-      case PlayMessages:
-        importer = injector.instanceOf(PlayMessagesImporter.class);
-        break;
-      case JavaProperties:
-        importer = injector.instanceOf(JavaPropertiesImporter.class);
-        break;
-      case Gettext:
-        importer = injector.instanceOf(GettextImporter.class);
-        break;
-      default:
-        throw new IllegalArgumentException(
-            "File type " + form.getFileType() + " not supported yet");
-    }
-
-    try {
-      importer.apply(messages.getFile(), locale);
-    } catch (Exception e) {
-      LOGGER.error("Error while importing messages", e);
-    }
-
-    LOGGER.debug("End of import");
-
-    return "OK";
   }
 
   private Result locale(UUID localeId, Function<Locale, Result> processor) {

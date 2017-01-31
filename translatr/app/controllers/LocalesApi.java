@@ -66,7 +66,6 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
 
   private static final String PARAM_LOCALE_NAME = "localeName";
   private static final String LOCALE_NAME = "The name of the locale";
-  private static final String FILE_TYPE = "The file type";
 
   private final LocaleApiService localeApiService;
 
@@ -194,9 +193,8 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> upload(@ApiParam(value = LOCALE_ID) UUID localeId,
-      @ApiParam(value = FILE_TYPE) String fileType) {
-    return toJson(() -> localeApiService.upload(localeId, fileType, request()));
+  public CompletionStage<Result> upload(@ApiParam(value = LOCALE_ID) UUID localeId) {
+    return toJson(() -> localeApiService.upload(localeId, request()));
   }
 
   @ApiOperation(value = DOWNLOAD, produces = "text/plain", authorizations = @Authorization(
@@ -212,8 +210,9 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> download(UUID localeId, String fileType) {
     return CompletableFuture
-        .supplyAsync(() -> localeApiService.download(localeId, fileType),
+        .supplyAsync(() -> localeApiService.download(localeId, fileType, response()),
             executionContext.current())
-        .thenApply(data -> ok(new ByteArrayInputStream(data))).exceptionally(AbstractApi::handleException);
+        .thenApply(data -> ok(new ByteArrayInputStream(data)))
+        .exceptionally(AbstractApi::handleException);
   }
 }

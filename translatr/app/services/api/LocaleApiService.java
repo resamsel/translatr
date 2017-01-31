@@ -7,6 +7,7 @@ import com.google.inject.ImplementedBy;
 import criterias.LocaleCriteria;
 import dto.Locale;
 import play.mvc.Http.Request;
+import play.mvc.Http.Response;
 import services.api.impl.LocaleApiServiceImpl;
 
 /**
@@ -15,7 +16,7 @@ import services.api.impl.LocaleApiServiceImpl;
  */
 @ImplementedBy(LocaleApiServiceImpl.class)
 public interface LocaleApiService extends ApiService<Locale, UUID, LocaleCriteria> {
-  Locale upload(UUID localeId, String fileType, Request request);
+  Locale upload(UUID localeId, Request request);
 
-  byte[] download(UUID localeId, String fileType);
+  byte[] download(UUID localeId, String fileType, Response response);
 }
