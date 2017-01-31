@@ -90,7 +90,12 @@ public abstract class AbstractController extends Controller {
   protected Template createTemplate() {
     User user = User.loggedInUser();
 
-    return Template.create(auth, user).withNotifications(notificationsOf(user).getList());
+    Template template = Template.create(auth, user);
+
+    if (user == null)
+      return template;
+
+    return template.withNotifications(notificationsOf(user).getList());
   }
 
   private PagedList<LogEntry> notificationsOf(User user) {
