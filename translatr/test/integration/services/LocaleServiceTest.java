@@ -25,7 +25,7 @@ public class LocaleServiceTest extends AbstractTest {
 
   @Test
   public void create() {
-    User user = createUser("user1");
+    User user = createUser("user1", "user1@resamsel.com");
     Project project = projectService.create(new Project().withOwner(user).withName("blubbb"));
     Locale locale = localeService.create(new Locale(project, "de"));
 

@@ -6,6 +6,7 @@ import static utils.Stopwatch.log;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -201,9 +202,10 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     // $username% and iterate
     // over them)
     String suffix = "";
+    ThreadLocalRandom random = ThreadLocalRandom.current();
     int retries = 10, i = 0;
     while (User.byUsername(String.format("%s%s", username, suffix)) != null && i++ < retries)
-      suffix = Integer.toString(i);
+      suffix = String.valueOf(random.nextInt(1000));
 
     return String.format("%s%s", username, suffix);
   }

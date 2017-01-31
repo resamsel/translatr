@@ -1,7 +1,7 @@
 version: "2"
 volumes:
-    translatr-h2:
-    translatr-data:
+#    translatr-h2:
+    translatr-pgdata:
 services:
 #    translatr:
 #        image: resamsel/play-translatr:1.0-SNAPSHOT
@@ -17,5 +17,5 @@ services:
         ports:
             - "5432:5432"
         volumes:
-            - translatr-data:/var/lib/postgresql/data
+            - translatr-pgdata:/var/lib/postgresql/data
             - ./docker/entrypoint-initdb.d:/docker-entrypoint-initdb.d

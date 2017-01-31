@@ -36,7 +36,7 @@ import services.api.UserApiService;
  */
 @io.swagger.annotations.Api(value = "Users", produces = "application/json")
 @With(ApiAction.class)
-public class UsersApi extends Api<User, UUID, UserCriteria> {
+public class UsersApi extends AbstractApi<User, UUID, UserCriteria> {
   private static final String TYPE = "dto.User";
 
   private static final String FIND = "Find users";

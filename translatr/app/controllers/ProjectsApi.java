@@ -37,7 +37,7 @@ import services.api.ProjectApiService;
  */
 @io.swagger.annotations.Api(value = "Projects", produces = "application/json")
 @With(ApiAction.class)
-public class ProjectsApi extends Api<Project, UUID, ProjectCriteria> {
+public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
   private static final String TYPE = "dto.Project";
 
   private static final String FIND = "Find projects";

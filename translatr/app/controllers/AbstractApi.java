@@ -32,7 +32,7 @@ import services.api.ApiService;
 import utils.ErrorUtils;
 import utils.PermissionUtils;
 
-public abstract class Api<DTO extends Dto, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>>
+public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>>
     extends AbstractController {
   protected static final String PERMISSION_ERROR = "Invalid access token";
   protected static final String INTERNAL_SERVER_ERROR = "Internal server error";
@@ -79,7 +79,7 @@ public abstract class Api<DTO extends Dto, ID, CRITERIA extends AbstractSearchCr
 
   protected final ApiService<DTO, ID, CRITERIA> api;
 
-  protected Api(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
+  protected AbstractApi(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
       LogEntryService logEntryService, ApiService<DTO, ID, CRITERIA> api) {
     super(injector, cache, auth, userService, logEntryService);
 
@@ -129,18 +129,18 @@ public abstract class Api<DTO extends Dto, ID, CRITERIA extends AbstractSearchCr
     } catch (ValidationException e) {
       return badRequest(ErrorUtils.toJson(e));
     } catch (Throwable e) {
-      LoggerFactory.getLogger(Api.class).error("Error while processing API request", e);
+      LoggerFactory.getLogger(AbstractApi.class).error("Error while processing API request", e);
       return internalServerError(ErrorUtils.toJson(e));
     }
   }
 
   protected <IN, OUT> CompletionStage<Result> toJson(Supplier<IN> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out))).exceptionally(Api::handleException);
+        .thenApply(out -> ok(Json.toJson(out))).exceptionally(AbstractApi::handleException);
   }
 
   protected <T> CompletionStage<Result> toJsons(Supplier<List<T>> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out))).exceptionally(Api::handleException);
+        .thenApply(out -> ok(Json.toJson(out))).exceptionally(AbstractApi::handleException);
   }
 }

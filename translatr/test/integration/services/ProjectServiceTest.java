@@ -23,7 +23,7 @@ public class ProjectServiceTest extends AbstractTest {
 
   @Test
   public void create() {
-    User user = createUser("user1");
+    User user = createUser("user1", "user1@resamsel.com");
     Project project = projectService.create(new Project().withOwner(user).withName("blubbb"));
 
     assertThat(project.id).isNotNull();

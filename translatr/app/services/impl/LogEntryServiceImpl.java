@@ -118,11 +118,14 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
       t.user = User.loggedInUser();
 
     if (t.project == null) {
-      Map<String, Object> args = Context.current().args;
-      if (args.containsKey("projectId"))
+      Map<String, Object> args = null;
+      try {
+        args = Context.current().args;
+      } catch (RuntimeException e) {
+        // There is no HTTP Context available from here
+      }
+      if (args != null && args.containsKey("projectId"))
         t.project = new Project().withId((UUID) args.get("projectId"));
-      else
-        LOGGER.warn("Project has not been set and was not found in context");
     }
   }
 

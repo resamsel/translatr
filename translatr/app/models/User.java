@@ -175,6 +175,16 @@ public class User implements Model<User, UUID>, Subject {
     return this;
   }
 
+  public User withEmail(String email) {
+    this.email = email;
+    return this;
+  }
+
+  public User withActive(boolean active) {
+    this.active = active;
+    return this;
+  }
+
   /**
    * {@inheritDoc}
    */

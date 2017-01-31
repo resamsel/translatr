@@ -41,7 +41,7 @@ import services.api.LocaleApiService;
  */
 @io.swagger.annotations.Api(value = "Locales", produces = "application/json")
 @With(ApiAction.class)
-public class LocalesApi extends Api<Locale, UUID, LocaleCriteria> {
+public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
   private static final String TYPE = "dto.Locale";
 
   private static final String FIND = "Find locales";
@@ -214,6 +214,6 @@ public class LocalesApi extends Api<Locale, UUID, LocaleCriteria> {
     return CompletableFuture
         .supplyAsync(() -> localeApiService.download(localeId, fileType),
             executionContext.current())
-        .thenApply(data -> ok(new ByteArrayInputStream(data))).exceptionally(Api::handleException);
+        .thenApply(data -> ok(new ByteArrayInputStream(data))).exceptionally(AbstractApi::handleException);
   }
 }

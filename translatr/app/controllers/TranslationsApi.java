@@ -40,7 +40,7 @@ import utils.JsonUtils;
  */
 @io.swagger.annotations.Api(value = "Messages", produces = "application/json")
 @With(ApiAction.class)
-public class TranslationsApi extends Api<Message, UUID, MessageCriteria> {
+public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria> {
   private static final String TYPE = "dto.Message";
 
   private static final String FIND = "Find messages";

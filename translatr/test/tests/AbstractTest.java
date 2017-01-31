@@ -6,12 +6,16 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static play.inject.Bindings.bind;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import org.mockito.Mockito;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Transaction;
 import com.google.inject.Guice;
 
 import models.User;
@@ -34,8 +38,8 @@ public class AbstractTest extends WithApplication {
    * @param name
    * @return
    */
-  protected User createUser(String name) {
-    return userService.create(new User().withName(name));
+  protected User createUser(String name, String email) {
+    return userService.create(new User().withName(name).withEmail(email).withActive(true));
   }
 
   protected GuiceApplicationBuilder builder() {
@@ -57,5 +61,29 @@ public class AbstractTest extends WithApplication {
     Guice.createInjector(builder.applicationModule()).injectMembers(this);
 
     return builder.build();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void startPlay() {
+    super.startPlay();
+
+    cleanDatabase();
+  }
+
+  private void cleanDatabase() {
+    Transaction tran = Ebean.beginTransaction();
+    try {
+      Connection conn = tran.getConnection();
+      conn.createStatement().executeUpdate("truncate user_ cascade");
+      Ebean.commitTransaction();
+    } catch (SQLException e) {
+      // LOGGER.error("Error while ...", e);
+    } finally {
+      Ebean.endTransaction();
+    }
+    Ebean.getServerCacheManager().clearAll();
   }
 }
