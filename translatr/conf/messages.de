@@ -109,7 +109,7 @@ key.new = Neuen Schlüssel anlegen
 key.remove = Schlüssel entfernen
 key.remove.tooltip = Schlüssel entfernen
 key.search = Weitere Schlüssel für "{0}"...
-key.selection.none = Kein Schlüssel ausgewählt
+key.selection.none = <i class="material-icons xlarge grey-text text-lighten-1">vpn_key</i><br/>\nKein Schlüssel ausgewählt
 key.title = {1} - Projekt {0}
 key.undefined = Schlüssel unbekannt:
 keys = Schlüssel
@@ -145,7 +145,7 @@ locale.preview = Vorschau
 locale.progress = Fortschritt
 locale.remove.tooltip = Sprache entfernen
 locale.search = Weitere Sprachen für "{0}"...
-locale.selection.none = Keine Sprache ausgewählt
+locale.selection.none = <i class="material-icons xlarge grey-text text-lighten-1">book</i><br/>\nKeine Sprache ausgewählt
 locale.status = Status
 locale.title = {1} - Projekt {0}
 locale.to.label = Übersetzen nach
