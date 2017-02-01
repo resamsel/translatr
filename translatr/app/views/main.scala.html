@@ -84,7 +84,8 @@
 							} else {
 								<li class="auth login">
 									<a href="@routes.Application.login" title="@Messages("auth.login")">
-										<i class="material-icons">account_circle</i>
+										<i class="material-icons left">account_circle</i>
+										@Html(Messages("auth.login"))
 									</a>
 								</li>
 							}
@@ -103,8 +104,6 @@
 	<main>
 		<script src="@routes.Application.javascriptRoutes"></script>
 		<script src="@routes.Assets.versioned("concat/scripts.js")"></script>
-		@tags.messages()
-
 		@content
 
 		<script type="text/javascript">
@@ -138,6 +137,7 @@
 		</div>
 	</footer>
 
+	@tags.messages()
 	@tags.undo()
 	@tags.undefined()
 </body>

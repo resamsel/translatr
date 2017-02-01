@@ -132,6 +132,9 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
   @Override
   public User getLocalUser(final AuthUserIdentity authUser) {
+    if (authUser == null)
+      return null;
+
     return log(
         () -> cache.getOrElse(String.format("%s:%s", authUser.getProvider(), authUser.getId()),
             () -> User.findByAuthUserIdentity(authUser), 10 * 60),

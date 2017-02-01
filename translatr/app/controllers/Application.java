@@ -91,8 +91,7 @@ public class Application extends AbstractController {
   public Result oAuthDenied(final String providerKey) {
     com.feth.play.module.pa.controllers.Authenticate.noCache(response());
 
-    return redirectWithError(routes.Application.index(),
-        "You need to accept the OAuth connection in order to use this website!");
+    return redirectWithError(routes.Application.index(), "error.access.denied");
   }
 
   public Result activityCsv() {
@@ -106,7 +105,7 @@ public class Application extends AbstractController {
     if (user == null)
       user = userService.byUsername("translatr");
     if (user == null)
-      return redirectWithError(routes.Application.index(), ctx().messages().at("user.notFound"));
+      return redirectWithError(routes.Application.index(), "user.notFound");
 
     Project project = Project.byOwnerAndName(user, brand);
     if (project == null)
@@ -134,8 +133,8 @@ public class Application extends AbstractController {
       }
     }
 
-    return redirectWithMessage(routes.Projects.project(project.id),
-        ctx().messages().at("project.created", project.name));
+    return redirectWithMessage(routes.Projects.project(project.id), "project.created",
+        project.name);
   }
 
   public Result commandExecute(String commandKey) {

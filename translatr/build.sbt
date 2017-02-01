@@ -81,6 +81,7 @@ Concat.groups := Seq(
 		"stylesheets/font-awesome.min.css",
 		"stylesheets/d3.v3.css",
 		"stylesheets/main.css",
+		"stylesheets/template.css",
 		"stylesheets/media.css"
 	)),
 	"scripts.js" -> group(Seq(

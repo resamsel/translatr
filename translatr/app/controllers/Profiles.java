@@ -259,8 +259,7 @@ public class Profiles extends AbstractController {
     return loggedInUser(user -> {
       AccessToken accessToken = accessTokenService.byId(accessTokenId);
       if (accessToken == null)
-        return redirectWithError(routes.Profiles.accessTokens(),
-            ctx().messages().at("accessToken.notFound"));
+        return redirectWithError(routes.Profiles.accessTokens(), "accessToken.notFound");
 
       if (!accessToken.user.id.equals(user.id)) {
         addError(ctx().messages().at("accessToken.access.denied", accessToken.id));
@@ -276,8 +275,7 @@ public class Profiles extends AbstractController {
     return loggedInUser(user -> {
       AccessToken accessToken = accessTokenService.byId(accessTokenId);
       if (accessToken == null)
-        return redirectWithError(routes.Profiles.accessTokens(),
-            ctx().messages().at("accessToken.notFound"));
+        return redirectWithError(routes.Profiles.accessTokens(), "accessToken.notFound");
 
       Form<AccessTokenForm> form = AccessTokenForm.form(formFactory).bindFromRequest();
 
@@ -317,8 +315,7 @@ public class Profiles extends AbstractController {
       AccessToken accessToken = accessTokenService.byId(accessTokenId);
 
       if (accessToken == null || !user.id.equals(accessToken.user.id))
-        return redirectWithError(routes.Profiles.accessTokens(),
-            ctx().messages().at("accessToken.notAllowed"));
+        return redirectWithError(routes.Profiles.accessTokens(), "accessToken.notAllowed");
 
       undoCommand(injector.instanceOf(RevertDeleteAccessTokenCommand.class).with(accessToken));
 

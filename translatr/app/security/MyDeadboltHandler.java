@@ -16,7 +16,6 @@ import play.mvc.Http;
 import play.mvc.Http.Session;
 import play.mvc.Result;
 import services.UserService;
-import utils.Template;
 
 public class MyDeadboltHandler extends AbstractDeadboltHandler {
   private final PlayAuthenticate auth;
@@ -50,9 +49,8 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler {
         return CompletableFuture.completedFuture(Optional.ofNullable(
             AbstractController.redirect(auth.getResolver().auth(session.get("pa.p.id")))));
 
-      return CompletableFuture.completedFuture(
-          Optional.ofNullable(AbstractController.redirectWithError(auth.getResolver().login(),
-              "You need to log in first to view '" + originalUrl + "'")));
+      return CompletableFuture.completedFuture(Optional.ofNullable(AbstractController
+          .redirectWithError(auth.getResolver().login(), "error.restricted.content", originalUrl)));
     }
   }
 
@@ -75,7 +73,8 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler {
     // if the user has a cookie with a valid user and the local user has
     // been deactivated/deleted in between, it is possible that this gets
     // shown. You might want to consider to sign the user out in this case.
-    return CompletableFuture.completedFuture(
-        forbidden(views.html.errors.restricted.render(Template.create(auth, null))));
+
+    return CompletableFuture.completedFuture(AbstractController
+        .redirectWithError(auth.getResolver().login(), "error.restricted.content"));
   }
 }

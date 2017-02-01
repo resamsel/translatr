@@ -65,13 +65,13 @@ public abstract class AbstractController extends Controller {
     return supplier.get();
   }
 
-  public static Result redirectWithError(Call call, String errorMessage) {
-    addError(errorMessage);
+  public static Result redirectWithError(Call call, String errorKey, Object... args) {
+    addError(ctx().messages().at(errorKey, args));
     return redirect(call);
   }
 
-  public static Result redirectWithMessage(Call call, String message) {
-    addMessage(message);
+  public static Result redirectWithMessage(Call call, String key, Object... args) {
+    addMessage(ctx().messages().at(key, args));
     return redirect(call);
   }
 

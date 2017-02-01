@@ -369,8 +369,7 @@ public class Projects extends AbstractController {
     Project project = projectService.byId(projectId);
 
     if (project == null)
-      return redirectWithError(routes.Dashboards.dashboard(),
-          ctx().messages().at("project.notFound", projectId));
+      return redirectWithError(routes.Dashboards.dashboard(), "project.notFound", projectId);
 
     select(project);
 

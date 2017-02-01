@@ -24,15 +24,15 @@ activity.all = All activity
 activity.amount = {0,choice,0#No new contributions|1#One new contribution|1<{0} new contributions}
 activity.content = <p>The activity graph shows the usage of Translatr. The change history contains contributions to users, projects, locales, keys, and translations. That way the activity of a project can be estimated, as well as the activity of individual users.</p>
 activity.empty = <i class="material-icons xlarge grey-text text-lighten-1">history</i><br/>\nNo activities yet.
-activity.sinceLastLogin = New contributions since last login
+activity.sinceLastLogin = New contributions since last signing in
 auth.as = Signed in as <strong>{0}</strong>
 auth.facebook = Facebook
 auth.github = Github
 auth.google = Google
 auth.keycloak = Keycloak
-auth.login = Login
-auth.login.content = Login with the given services
-auth.login.title = Login
+auth.login = Sign in
+auth.login.content = <i class="material-icons xlarge grey-text text-lighten-1">account_circle</i><br/>\nSign in with any of the given services
+auth.login.title = Sign in
 auth.logout = Logout
 auth.twitter = Twitter
 brand = Translatr
@@ -74,6 +74,7 @@ dashboard = Dashboard
 dashboard.info = There {0,choice,0#are no projects yet|1#is one project|1<are {0} projects}
 dashboard.title = Dashboard
 dashboard.tooltip = Open dashboard
+error.access.denied = You need to authorize Translatr in order to access contents
 error.accesstokenbyuserandname = Access token with given name already exists
 error.maxLength = The maximum length is {0} characters
 error.nameunique = Name must be unique

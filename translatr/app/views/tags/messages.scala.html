@@ -1,24 +1,21 @@
 @messageClass = {@if(flash.containsKey("message")) { light-blue }}
 @errorClass = {@if(flash.containsKey("error")) { red }}
 
-<div class="system-messages white-text @messageClass @errorClass">
-	@if(flash.containsKey("error")) {
-		<div class="container">
-			<button class="btn btn-flat btn-small btn-close white-text right">x</button>
+@if(flash.containsKey("error") || flash.containsKey("message")) {
+	<div class="system-message template">
+		@if(flash.containsKey("error")) {
+			<i class="material-icons left">error_outline</i>
 			@Html(flash.get("error"))
-		</div>
-	}
-	@if(flash.containsKey("message")) {
-		<div class="container">
-			<button class="btn btn-flat btn-small btn-close white-text right">x</button>
+		}
+		@if(flash.containsKey("message")) {
+			<i class="material-icons left">info_outline</i>
 			@Html(flash.get("message"))
-		</div>
-	}
+		}
+	</div>
 	<script>
 		$(document).ready(function() {
-			$('.system-messages .btn-close').click(function() {
-				$(this).parent().fadeOut();
-			});
-		});
+			var $toastContent = $('.system-message.template').clone().removeClass('template');
+			Materialize.toast($toastContent, 60000);
+		})
 	</script>
-</div>
+}

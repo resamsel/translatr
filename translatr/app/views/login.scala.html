@@ -8,10 +8,10 @@
 	</a>
 } {
 	@tags.content {
-		<div class="col s12 m4 offset-m2 right-align grey-text text-darken-1">
+		<div class="col s12 m3 offset-m3 center-align grey-text text-darken-1">
 			@Html(Messages("auth.login.content"))
 		</div>
-		<div class="col s12 m4">
+		<div class="col s12 m3 providers">
 			<ul class="collection auth-provider">
 				@if(template.auth != null) {
 					@forProviders(template.auth, providerKeys) { p =>
