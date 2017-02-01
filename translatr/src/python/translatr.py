@@ -203,7 +203,7 @@ class Api(object):
 
 	def locale_import(self, locale_id, file_type, files=None):
 		return self.request.post(
-			'locale/{0}/import/{1}'.format(locale_id, file_type),
+			'locale/{0}/import'.format(locale_id),
 			data={'fileType': file_type},
 			files=files
 		)
