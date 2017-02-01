@@ -27,7 +27,6 @@ import models.FileType;
 import models.Locale;
 import models.Scope;
 import play.data.FormFactory;
-import play.i18n.MessagesApi;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Http.Context;
@@ -50,20 +49,18 @@ public class LocaleApiServiceImpl extends
 
   private final ProjectService projectService;
   private final Injector injector;
-  private final MessagesApi messages;
 
   /**
    * @param localeService
    */
   @Inject
   protected LocaleApiServiceImpl(LocaleService localeService, ProjectService projectService,
-      Injector injector, MessagesApi messages) {
+      Injector injector) {
     super(localeService, dto.Locale.class, dto.Locale::from,
         new Scope[] {Scope.ProjectRead, Scope.LocaleRead},
         new Scope[] {Scope.ProjectRead, Scope.LocaleWrite});
     this.projectService = projectService;
     this.injector = injector;
-    this.messages = messages;
   }
 
   /**
@@ -79,7 +76,7 @@ public class LocaleApiServiceImpl extends
     MultipartFormData<File> body = request.body().asMultipartFormData();
     if (body == null)
       throw new IllegalArgumentException(
-          messages.get(Context.current().lang(), "import.error.multipartMissing"));
+          Context.current().messages().at("import.error.multipartMissing"));
 
     FilePart<File> messages = body.getFile("messages");
 

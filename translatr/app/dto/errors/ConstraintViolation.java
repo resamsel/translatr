@@ -6,8 +6,6 @@ import javax.validation.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import play.api.Play;
-import play.i18n.MessagesApi;
 import play.libs.Json;
 import play.mvc.Http.Context;
 
@@ -21,8 +19,8 @@ public class ConstraintViolation {
    * @param violation
    */
   public ConstraintViolation(javax.validation.ConstraintViolation<?> violation) {
-    this.message = Play.current().injector().instanceOf(MessagesApi.class)
-        .get(Context.current().lang(), violation.getMessage());
+    this.message = Context.current().messages().at(violation.getMessage(),
+        violation.getPropertyPath(), violation.getInvalidValue());
     this.field = violation.getPropertyPath().toString();
 
     Object iv = violation.getInvalidValue();
