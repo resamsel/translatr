@@ -10,6 +10,8 @@ import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import criterias.LocaleCriteria;
 import dto.NotFoundException;
 import exporters.Exporter;
@@ -27,12 +29,14 @@ import models.Scope;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
 import play.inject.Injector;
+import play.libs.Json;
 import play.mvc.Http.Context;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
 import services.LocaleService;
+import services.ProjectService;
 import services.api.LocaleApiService;
 
 /**
@@ -44,6 +48,7 @@ public class LocaleApiServiceImpl extends
     AbstractApiService<Locale, UUID, LocaleCriteria, dto.Locale> implements LocaleApiService {
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleApiServiceImpl.class);
 
+  private final ProjectService projectService;
   private final Injector injector;
   private final MessagesApi messages;
 
@@ -51,11 +56,12 @@ public class LocaleApiServiceImpl extends
    * @param localeService
    */
   @Inject
-  protected LocaleApiServiceImpl(LocaleService localeService, Injector injector,
-      MessagesApi messages) {
-    super(localeService, dto.Locale.class, dto.Locale::from, Locale::from,
+  protected LocaleApiServiceImpl(LocaleService localeService, ProjectService projectService,
+      Injector injector, MessagesApi messages) {
+    super(localeService, dto.Locale.class, dto.Locale::from,
         new Scope[] {Scope.ProjectRead, Scope.LocaleRead},
         new Scope[] {Scope.ProjectRead, Scope.LocaleWrite});
+    this.projectService = projectService;
     this.injector = injector;
     this.messages = messages;
   }
@@ -142,5 +148,15 @@ public class LocaleApiServiceImpl extends
     exporter.addHeaders(response, locale);
 
     return exporter.apply(locale);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Locale toModel(JsonNode json) {
+    dto.Locale dto = Json.fromJson(json, dto.Locale.class);
+
+    return dto.toModel(projectService.byId(dto.projectId));
   }
 }

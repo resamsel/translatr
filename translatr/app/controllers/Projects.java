@@ -160,7 +160,7 @@ public class Projects extends AbstractController {
   }
 
   public Result edit(UUID projectId) {
-    Project project = Project.byId(projectId);
+    Project project = projectService.byId(projectId);
 
     if (project == null)
       return redirect(routes.Application.index());
@@ -188,7 +188,7 @@ public class Projects extends AbstractController {
   }
 
   public Result remove(UUID projectId) {
-    Project project = Project.byId(projectId);
+    Project project = projectService.byId(projectId);
 
     LOGGER.debug("Key: {}", Json.toJson(project));
 
@@ -316,7 +316,7 @@ public class Projects extends AbstractController {
       if (form.hasErrors())
         return badRequest(views.html.projects.memberAdd.render(createTemplate(), project, form));
 
-      User user = User.byUsername(form.get().getUsername());
+      User user = userService.byUsername(form.get().getUsername());
 
       projectUserService
           .save(form.get().fill(new ProjectUser()).withProject(project).withUser(user));
@@ -327,7 +327,7 @@ public class Projects extends AbstractController {
 
   public Result memberRemove(UUID projectId, Long memberId) {
     return project(projectId, project -> {
-      ProjectUser member = ProjectUser.byId(memberId);
+      ProjectUser member = projectUserService.byId(memberId);
 
       if (member == null || !project.id.equals(member.project.id)) {
         flash("error", ctx().messages().at("project.member.notFound"));
@@ -366,7 +366,7 @@ public class Projects extends AbstractController {
   }
 
   private Result project(UUID projectId, Function<Project, Result> processor) {
-    Project project = Project.byId(projectId);
+    Project project = projectService.byId(projectId);
 
     if (project == null)
       return redirectWithError(routes.Dashboards.dashboard(),

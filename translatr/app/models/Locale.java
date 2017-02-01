@@ -27,7 +27,6 @@ import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.routes;
 import criterias.HasNextPagedList;
@@ -192,12 +191,16 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
     return this;
   }
 
-  public static Locale from(JsonNode json) {
-    return Json.fromJson(json, dto.Locale.class).toModel();
-  }
-
   @Override
   public String toString() {
     return String.format("{\"project\": %s, \"name\": %s}", project, Json.toJson(name));
+  }
+
+  /**
+   * @param userId
+   * @return
+   */
+  public static String getCacheKey(UUID localeId) {
+    return String.format("locale:%s", localeId.toString());
   }
 }

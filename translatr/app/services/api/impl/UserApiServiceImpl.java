@@ -5,9 +5,12 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import criterias.UserCriteria;
 import models.Scope;
 import models.User;
+import play.libs.Json;
 import services.UserService;
 import services.api.UserApiService;
 
@@ -23,7 +26,17 @@ public class UserApiServiceImpl extends AbstractApiService<User, UUID, UserCrite
    */
   @Inject
   protected UserApiServiceImpl(UserService userService) {
-    super(userService, dto.User.class, dto.User::from, User::from, new Scope[] {Scope.UserRead},
+    super(userService, dto.User.class, dto.User::from, new Scope[] {Scope.UserRead},
         new Scope[] {Scope.UserWrite});
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected User toModel(JsonNode json) {
+    dto.User dto = Json.fromJson(json, dto.User.class);
+
+    return dto.toModel(service.byId(dto.id));
   }
 }

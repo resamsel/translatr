@@ -27,17 +27,14 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
   protected ModelService<MODEL, ID, CRITERIA> service;
   protected Class<DTO> dtoClass;
   protected Function<MODEL, DTO> dtoMapper;
-  protected Function<JsonNode, MODEL> modelMapper;
   protected Scope[] readScopes;
   protected Scope[] writeScopes;
 
   protected AbstractApiService(ModelService<MODEL, ID, CRITERIA> service, Class<DTO> dtoClass,
-      Function<MODEL, DTO> dtoMapper, Function<JsonNode, MODEL> modelMapper, Scope[] readScopes,
-      Scope[] writeScopes) {
+      Function<MODEL, DTO> dtoMapper, Scope[] readScopes, Scope[] writeScopes) {
     this.service = service;
     this.dtoClass = dtoClass;
     this.dtoMapper = dtoMapper;
-    this.modelMapper = modelMapper;
     this.readScopes = readScopes;
     this.writeScopes = writeScopes;
   }
@@ -75,7 +72,7 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
   public DTO create(JsonNode in) {
     checkPermissionAll("Access token not allowed", writeScopes);
 
-    return dtoMapper.apply(service.create(modelMapper.apply(in)));
+    return dtoMapper.apply(service.create(toModel(in)));
   }
 
   /**
@@ -85,7 +82,7 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
   public DTO update(JsonNode in) {
     checkPermissionAll("Access token not allowed", writeScopes);
 
-    return dtoMapper.apply(service.update(modelMapper.apply(in)));
+    return dtoMapper.apply(service.update(toModel(in)));
   }
 
   /**
@@ -106,6 +103,12 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
 
     return out;
   }
+
+  /**
+   * @param json
+   * @return
+   */
+  protected abstract MODEL toModel(JsonNode json);
 
   /**
    * @param errorMessage

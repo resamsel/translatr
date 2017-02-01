@@ -17,5 +17,5 @@ public interface AccessTokenService extends ModelService<AccessToken, Long, Acce
    * @param accessTokenKey
    * @return
    */
-  AccessToken getByKey(String accessTokenKey);
+  AccessToken byKey(String accessTokenKey);
 }

@@ -32,8 +32,8 @@ public class User extends Dto {
     this.username = in.username;
   }
 
-  public models.User toModel() {
-    models.User out = id != null ? models.User.byId(id) : new models.User();
+  public models.User toModel(models.User user) {
+    models.User out = user != null ? user : new models.User();
 
     out.whenCreated = whenCreated;
     out.whenUpdated = whenUpdated;

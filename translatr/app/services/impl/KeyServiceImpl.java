@@ -96,7 +96,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
   protected void preSave(Key t, boolean update) {
     if (update)
       logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.Key.class,
-          dto.Key.from(Key.byId(t.id)), dto.Key.from(t)));
+          dto.Key.from(byId(t.id)), dto.Key.from(t)));
   }
 
   /**

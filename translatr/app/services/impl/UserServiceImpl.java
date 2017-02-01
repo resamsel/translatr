@@ -93,7 +93,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    */
   @Override
   public User byId(UUID id) {
-    return User.byId(id);
+    return cache.getOrElse(User.getCacheKey(id), () -> User.byId(id), 60);
   }
 
   @Override
@@ -177,7 +177,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
       t.username = emailToUsername(t.email);
     if (update)
       logEntryService.save(
-          LogEntry.from(ActionType.Update, null, dto.User.class, toDto(User.byId(t.id)), toDto(t)));
+          LogEntry.from(ActionType.Update, null, dto.User.class, toDto(byId(t.id)), toDto(t)));
   }
 
   /**
@@ -204,7 +204,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     String suffix = "";
     ThreadLocalRandom random = ThreadLocalRandom.current();
     int retries = 10, i = 0;
-    while (User.byUsername(String.format("%s%s", username, suffix)) != null && i++ < retries)
+    while (byUsername(String.format("%s%s", username, suffix)) != null && i++ < retries)
       suffix = String.valueOf(random.nextInt(1000));
 
     return String.format("%s%s", username, suffix);
@@ -254,9 +254,9 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    * {@inheritDoc}
    */
   @Override
-  public User getByUsername(String username) {
+  public User byUsername(String username) {
     return log(() -> cache.getOrElse(String.format("username:%s", username),
-        () -> User.byUsernameUncached(username), 60), LOGGER, "Retrieving user by username");
+        () -> User.byUsername(username), 60), LOGGER, "byUsername");
   }
 
   /**
@@ -265,7 +265,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   @Override
   public UserStats getUserStats(UUID userId) {
     return log(() -> cache.getOrElse(String.format("user:stats:%s", userId),
-        () -> User.userStatsUncached(userId), 60), LOGGER, "getUserStats");
+        () -> User.userStats(userId), 60), LOGGER, "getUserStats");
   }
 
   protected dto.User toDto(User t) {

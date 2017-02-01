@@ -63,7 +63,7 @@ public class ApiAction extends Action.Simple {
     }
 
     if (accessToken != null) {
-      AccessToken token = accessTokenService.getByKey(accessToken);
+      AccessToken token = accessTokenService.byKey(accessToken);
       if (token == null)
         return CompletableFuture.completedFuture(
             forbidden(ErrorUtils.toJson(new PermissionException("Invalid access_token"))));

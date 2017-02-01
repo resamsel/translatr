@@ -31,7 +31,6 @@ import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
@@ -209,10 +208,6 @@ public class User implements Model<User, UUID>, Subject {
    * @return
    */
   public static User byUsername(String username) {
-    return Play.current().injector().instanceOf(UserService.class).getByUsername(username);
-  }
-
-  public static User byUsernameUncached(String username) {
     return find.where().eq("username", username).findUnique();
   }
 
@@ -313,7 +308,7 @@ public class User implements Model<User, UUID>, Subject {
    * @param userId
    * @return
    */
-  public static UserStats userStatsUncached(UUID userId) {
+  public static UserStats userStats(UUID userId) {
     return UserStats.create(ProjectUser.countBy(new ProjectUserCriteria().withUserId(userId)),
         LogEntry.countBy(new LogEntryCriteria().withUserId(userId)));
   }
@@ -324,9 +319,5 @@ public class User implements Model<User, UUID>, Subject {
    */
   public static String getCacheKey(UUID userId) {
     return String.format("user:%s", userId.toString());
-  }
-
-  public static User from(JsonNode json) {
-    return Json.fromJson(json, dto.User.class).toModel();
   }
 }

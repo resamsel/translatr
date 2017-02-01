@@ -74,20 +74,18 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    */
   @Override
   public Project byId(UUID id) {
-    return log(() -> cache.getOrElse(Project.getCacheKey(id), () -> Project.byIdUncached(id), 60),
-        LOGGER, "getById");
+    return log(() -> cache.getOrElse(Project.getCacheKey(id), () -> Project.byId(id), 60), LOGGER,
+        "byId");
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Project getByOwnerAndName(User user, String name) {
-    return log(
-        () -> cache.getOrElse(
-            String.format("projectByOwnerAndName:%s:%s", user.id.toString(), name),
-            () -> Project.byOwnerAndNameUncached(user, name), 10 * 600),
-        LOGGER, "byOwnerAndName");
+  public Project byOwnerAndName(User user, String name) {
+    return log(() -> cache.getOrElse(
+        String.format("projectByOwnerAndName:%s:%s", user.id.toString(), name),
+        () -> Project.byOwnerAndName(user, name), 10 * 600), LOGGER, "byOwnerAndName");
   }
 
   /**
@@ -103,8 +101,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
       t.members.add(new ProjectUser(ProjectRole.Owner).withProject(t).withUser(t.owner));
 
     if (update)
-      logEntryService.save(LogEntry.from(ActionType.Update, t, dto.Project.class,
-          toDto(Project.byId(t.id)), toDto(t)));
+      logEntryService.save(
+          LogEntry.from(ActionType.Update, t, dto.Project.class, toDto(byId(t.id)), toDto(t)));
   }
 
   /**

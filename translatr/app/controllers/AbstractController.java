@@ -11,7 +11,6 @@ import com.feth.play.module.pa.PlayAuthenticate;
 
 import commands.Command;
 import criterias.LogEntryCriteria;
-import models.Key;
 import models.LogEntry;
 import models.Project;
 import models.User;
@@ -140,15 +139,5 @@ public abstract class AbstractController extends Controller {
 
   protected Result loggedInUser(Function<User, Result> processor) {
     return tryCatch(() -> processor.apply(User.loggedInUser()));
-  }
-
-  protected Result key(UUID keyId, Function<Key, Result> processor) {
-    Key key = Key.byId(keyId);
-    if (key == null)
-      return redirect(routes.Dashboards.dashboard());
-
-    select(key.project);
-
-    return processor.apply(key);
   }
 }

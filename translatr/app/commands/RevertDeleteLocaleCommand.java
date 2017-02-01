@@ -17,19 +17,22 @@ import play.mvc.Call;
 import play.mvc.Http.Context;
 import services.LocaleService;
 import services.MessageService;
+import services.ProjectService;
 
 public class RevertDeleteLocaleCommand implements Command<models.Locale> {
-  private Locale locale;
-
+  private final ProjectService projectService;
   private final LocaleService localeService;
-
   private final MessageService messageService;
+
+  private Locale locale;
 
   /**
    * 
    */
   @Inject
-  public RevertDeleteLocaleCommand(LocaleService localeService, MessageService messageService) {
+  public RevertDeleteLocaleCommand(ProjectService projectService, LocaleService localeService,
+      MessageService messageService) {
+    this.projectService = projectService;
     this.localeService = localeService;
     this.messageService = messageService;
   }
@@ -45,7 +48,7 @@ public class RevertDeleteLocaleCommand implements Command<models.Locale> {
 
   @Override
   public void execute() {
-    Project project = Project.byId(locale.projectId);
+    Project project = projectService.byId(locale.projectId);
 
     models.Locale model = locale.toModel(project);
     localeService.save(model);

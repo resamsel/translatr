@@ -19,70 +19,67 @@ import play.mvc.Call;
 import play.mvc.Http.Context;
 import services.KeyService;
 import services.MessageService;
+import services.ProjectService;
 
-public class RevertDeleteKeyCommand implements Command<models.Key>
-{
-	private Key key;
+public class RevertDeleteKeyCommand implements Command<models.Key> {
+  private final ProjectService projectService;
+  private final KeyService keyService;
+  private final MessageService messageService;
 
-	private List<Message> messages;
+  private Key key;
 
-	private final KeyService keyService;
+  private List<Message> messages;
 
-	private final MessageService messageService;
+  /**
+   * 
+   */
+  @Inject
+  public RevertDeleteKeyCommand(ProjectService projectService, KeyService keyService,
+      MessageService messageService) {
+    this.projectService = projectService;
+    this.keyService = keyService;
+    this.messageService = messageService;
+  }
 
-	/**
-	 * 
-	 */
-	@Inject
-	public RevertDeleteKeyCommand(KeyService keyService, MessageService messageService)
-	{
-		this.keyService = keyService;
-		this.messageService = messageService;
-	}
+  /**
+   * @param key
+   * @return
+   */
+  @Override
+  public RevertDeleteKeyCommand with(models.Key key) {
+    this.key = Key.from(key);
+    this.messages = key.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
+    return this;
+  }
 
-	/**
-	 * @param key
-	 * @return
-	 */
-	@Override
-	public RevertDeleteKeyCommand with(models.Key key)
-	{
-		this.key = Key.from(key);
-		this.messages = key.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
-		return this;
-	}
+  @Override
+  public void execute() {
+    Project project = projectService.byId(key.projectId);
 
-	@Override
-	public void execute()
-	{
-		Project project = Project.byId(key.projectId);
+    models.Key model = key.toModel(project);
+    keyService.save(model);
+    key.id = model.id;
 
-		models.Key model = key.toModel(project);
-		keyService.save(model);
-		key.id = model.id;
+    Map<String, Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(project.id))
+        .stream().collect(groupingBy(l -> l.name, reducing(null, a -> a, (a, b) -> b)));
 
-		Map<String, Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(project.id)).stream().collect(
-			groupingBy(l -> l.name, reducing(null, a -> a, (a, b) -> b)));
+    messageService.save(messages.stream().map(m -> m.toModel(locales.get(m.localeName), model))
+        .collect(Collectors.toList()));
+  }
 
-		messageService
-			.save(messages.stream().map(m -> m.toModel(locales.get(m.localeName), model)).collect(Collectors.toList()));
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getMessage() {
+    return Context.current().messages().at("key.deleted", key.name);
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getMessage()
-	{
-		return Context.current().messages().at("key.deleted", key.name);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Call redirect()
-	{
-		return routes.Projects.keys(key.projectId);
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Call redirect() {
+    return routes.Projects.keys(key.projectId);
+  }
 }

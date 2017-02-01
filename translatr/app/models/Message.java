@@ -25,13 +25,10 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
-import play.api.Play;
 import play.libs.Json;
-import services.MessageService;
 import validators.LocaleKeyCheck;
 
 @Entity
@@ -125,14 +122,6 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static int countBy(Project project) {
-    return Play.current().injector().instanceOf(MessageService.class).countBy(project);
-  }
-
-  /**
-   * @param project
-   * @return
-   */
-  public static int countByUncached(Project project) {
     return find.where().eq("key.project", project).findCount();
   }
 
@@ -231,10 +220,6 @@ public class Message implements Model<Message, UUID> {
   public static List<Message> last(Project project, int limit) {
     return find.fetch("key").fetch("locale").where().eq("key.project", project)
         .order("whenUpdated desc").setMaxRows(limit).findList();
-  }
-
-  public static Message from(JsonNode json) {
-    return Json.fromJson(json, dto.Message.class).toModel();
   }
 
   @Override

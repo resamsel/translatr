@@ -104,7 +104,7 @@ public class Application extends AbstractController {
     String brand = ctx().messages().at("brand");
     User user = User.loggedInUser();
     if (user == null)
-      user = User.byUsername("translatr");
+      user = userService.byUsername("translatr");
     if (user == null)
       return redirectWithError(routes.Application.index(), ctx().messages().at("user.notFound"));
 

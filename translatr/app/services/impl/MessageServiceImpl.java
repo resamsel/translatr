@@ -71,7 +71,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
   @Override
   public int countBy(Project project) {
     return log(() -> cache.getOrElse(String.format("message:countByProject:%s", project.id),
-        () -> Message.countByUncached(project), 60), LOGGER, "countByProject");
+        () -> Message.countBy(project), 60), LOGGER, "countBy");
   }
 
   /**

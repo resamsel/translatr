@@ -62,7 +62,7 @@ public interface UserService extends ModelService<User, UUID, UserCriteria> {
    * @param username
    * @return
    */
-  User getByUsername(String username);
+  User byUsername(String username);
 
   /**
    * @param userId

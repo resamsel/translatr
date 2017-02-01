@@ -150,7 +150,7 @@ public class Profiles extends AbstractController {
 
   public Result linkedAccountRemove(Long linkedAccountId) {
     return loggedInUser(user -> {
-      LinkedAccount linkedAccount = LinkedAccount.byId(linkedAccountId);
+      LinkedAccount linkedAccount = linkedAccountService.byId(linkedAccountId);
 
       if (linkedAccount == null || !user.id.equals(linkedAccount.user.id))
         return redirect(routes.Profiles.linkedAccounts());
@@ -257,7 +257,7 @@ public class Profiles extends AbstractController {
 
   public Result accessToken(Long accessTokenId) {
     return loggedInUser(user -> {
-      AccessToken accessToken = AccessToken.byId(accessTokenId);
+      AccessToken accessToken = accessTokenService.byId(accessTokenId);
       if (accessToken == null)
         return redirectWithError(routes.Profiles.accessTokens(),
             ctx().messages().at("accessToken.notFound"));
@@ -274,7 +274,7 @@ public class Profiles extends AbstractController {
 
   public Result doAccessTokenEdit(Long accessTokenId) {
     return loggedInUser(user -> {
-      AccessToken accessToken = AccessToken.byId(accessTokenId);
+      AccessToken accessToken = accessTokenService.byId(accessTokenId);
       if (accessToken == null)
         return redirectWithError(routes.Profiles.accessTokens(),
             ctx().messages().at("accessToken.notFound"));
@@ -314,7 +314,7 @@ public class Profiles extends AbstractController {
 
   public Result accessTokenRemove(Long accessTokenId) {
     return loggedInUser(user -> {
-      AccessToken accessToken = AccessToken.byId(accessTokenId);
+      AccessToken accessToken = accessTokenService.byId(accessTokenId);
 
       if (accessToken == null || !user.id.equals(accessToken.user.id))
         return redirectWithError(routes.Profiles.accessTokens(),

@@ -58,7 +58,7 @@ public class Users extends AbstractController {
    * @return
    */
   private Result user(UUID userId, Function<User, Result> processor) {
-    User user = User.byId(userId);
+    User user = userService.byId(userId);
     if (user == null)
       return redirectWithError(routes.Application.index(), ctx().messages().at("user.notFound"));
 

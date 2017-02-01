@@ -108,7 +108,7 @@ public class AccessToken implements Model<AccessToken, Long> {
    * @param key
    * @return
    */
-  public static AccessToken byKeyUncached(String key) {
+  public static AccessToken byKey(String key) {
     return find.fetch("user").where().eq("key", key).findUnique();
   }
 

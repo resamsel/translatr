@@ -47,10 +47,6 @@ public class Locale extends Dto {
     return this;
   }
 
-  public models.Locale toModel() {
-    return toModel(Project.byId(projectId));
-  }
-
   public models.Locale toModel(Project project) {
     models.Locale out = new models.Locale();
 

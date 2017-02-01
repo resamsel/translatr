@@ -65,9 +65,9 @@ public class AccessTokenServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  public AccessToken getByKey(String accessTokenKey) {
+  public AccessToken byKey(String accessTokenKey) {
     return log(() -> cache.getOrElse(getCacheKey(accessTokenKey),
-        () -> AccessToken.byKeyUncached(accessTokenKey), 60), LOGGER, "getByKey");
+        () -> AccessToken.byKey(accessTokenKey), 60), LOGGER, "getByKey");
   }
 
   /**
@@ -80,7 +80,7 @@ public class AccessTokenServiceImpl extends
 
     if (update)
       logEntryService.save(LogEntry.from(ActionType.Update, null, dto.AccessToken.class,
-          dto.AccessToken.from(AccessToken.byId(t.id)), dto.AccessToken.from(t)));
+          dto.AccessToken.from(byId(t.id)), dto.AccessToken.from(t)));
   }
 
   /**

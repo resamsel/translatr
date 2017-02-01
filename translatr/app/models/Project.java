@@ -34,16 +34,18 @@ import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
 import play.api.Play;
+import play.api.inject.Injector;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
 import play.mvc.Http.Context;
+import services.MessageService;
 import services.ProjectService;
+import services.UserService;
 import utils.PermissionUtils;
 import validators.NameUnique;
 import validators.ProjectNameUniqueChecker;
@@ -141,10 +143,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
     if (id == null)
       return null;
 
-    return Play.current().injector().instanceOf(ProjectService.class).byId(id);
-  }
-
-  public static Project byIdUncached(UUID id) {
     return find.fetch("owner").where().eq("id", id).findUnique();
   }
 
@@ -218,7 +216,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   public long messagesSize() {
-    return Message.countBy(this);
+    return Play.current().injector().instanceOf(MessageService.class).countBy(this);
   }
 
   public Project withName(String name) {
@@ -241,15 +239,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public static Project byOwnerAndName(User user, String name) {
-    return Play.current().injector().instanceOf(ProjectService.class).getByOwnerAndName(user, name);
-  }
-
-  /**
-   * @param user
-   * @param name
-   * @return
-   */
-  public static Project byOwnerAndNameUncached(User user, String name) {
     return find.where().eq("owner", user).eq("name", name).findUnique();
   }
 
@@ -282,13 +271,15 @@ public class Project implements Model<Project, UUID>, Suggestable {
     if (args.containsKey(BRAND_PROJECT_ID))
       return (UUID) args.get(BRAND_PROJECT_ID);
 
+    Injector injector = Play.current().injector();
     User user = User.loggedInUser();
     if (user == null)
-      user = User.byUsername("translatr");
+      user = injector.instanceOf(UserService.class).byUsername("translatr");
 
     Project brandProject = null;
     try {
-      brandProject = byOwnerAndName(user, ctx.messages().at("brand"));
+      brandProject = injector.instanceOf(ProjectService.class).byOwnerAndName(user,
+          ctx.messages().at("brand"));
     } catch (Exception e) {
       LOGGER.warn("Error while retrieving brand project", e);
     }
@@ -308,10 +299,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
    */
   public boolean hasPermissionAny(User user, ProjectRole... roles) {
     return PermissionUtils.hasPermissionAny(id, user, roles);
-  }
-
-  public static Project from(JsonNode json) {
-    return Json.fromJson(json, dto.Project.class).toModel();
   }
 
   /**

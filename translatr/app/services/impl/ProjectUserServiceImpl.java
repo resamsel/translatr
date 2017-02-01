@@ -56,7 +56,7 @@ public class ProjectUserServiceImpl extends
   protected void preSave(ProjectUser t, boolean update) {
     if (update)
       logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.ProjectUser.class,
-          toDto(ProjectUser.byId(t.id)), toDto(t)));
+          toDto(byId(t.id)), toDto(t)));
   }
 
   /**

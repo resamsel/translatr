@@ -1,11 +1,10 @@
 package controllers;
 
-import static java.util.stream.Collectors.groupingBy;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -37,6 +36,8 @@ import play.mvc.With;
 import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
+import services.MessageService;
+import services.ProjectService;
 import services.UserService;
 import utils.FormUtils;
 
@@ -58,6 +59,10 @@ public class Keys extends AbstractController {
 
   private final LocaleService localeService;
 
+  private final MessageService messageService;
+
+  private final ProjectService projectService;
+
   /**
    * @param injector
    * @param cache
@@ -67,37 +72,35 @@ public class Keys extends AbstractController {
   @Inject
   protected Keys(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
       LogEntryService logEntryService, FormFactory formFactory, Configuration configuration,
-      KeyService keyService, LocaleService localeService) {
+      KeyService keyService, LocaleService localeService, MessageService messageService,
+      ProjectService projectService) {
     super(injector, cache, auth, userService, logEntryService);
 
     this.formFactory = formFactory;
     this.configuration = configuration;
     this.keyService = keyService;
     this.localeService = localeService;
+    this.messageService = messageService;
+    this.projectService = projectService;
   }
 
   public Result key(UUID id) {
-    Key key = Key.byId(id);
+    return key(id, key -> {
+      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
 
-    if (key == null)
-      return redirect(routes.Application.index());
+      Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
 
-    select(key.project);
+      List<Locale> locales = Locale.byProject(key.project);
+      Map<UUID, Message> messages =
+          messageService.findBy(new MessageCriteria().withKeyName(key.name)).getList().stream()
+              .collect(Collectors.toMap(m -> m.locale.id, m -> m));
 
-    Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
-
-    Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
-
-    List<Locale> locales = Locale.byProject(key.project);
-    Map<UUID, Message> messages =
-        Message.findBy(new MessageCriteria().withKeyName(key.name)).stream()
-            .collect(groupingBy(m -> m.locale.id, Collectors.reducing(null, a -> a, (a, b) -> b)));
-
-    return ok(views.html.keys.key.render(createTemplate(), key, locales, messages, form));
+      return ok(views.html.keys.key.render(createTemplate(), key, locales, messages, form));
+    });
   }
 
   public Result create(UUID projectId, UUID localeId) {
-    Project project = Project.byId(projectId);
+    Project project = projectService.byId(projectId);
 
     if (project == null)
       return redirect(routes.Application.index());
@@ -127,7 +130,7 @@ public class Keys extends AbstractController {
   }
 
   public Result createImmediately(UUID projectId, String keyName) {
-    Project project = Project.byId(projectId);
+    Project project = projectService.byId(projectId);
 
     if (project == null)
       return redirect(routes.Application.index());
@@ -152,50 +155,48 @@ public class Keys extends AbstractController {
   }
 
   public Result edit(UUID keyId) {
-    Key key = Key.byId(keyId);
+    return key(keyId, key -> {
+      if ("POST".equals(request().method())) {
+        Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
 
-    if (key == null)
-      return redirect(routes.Application.index());
+        if (form.hasErrors())
+          return badRequest(views.html.keys.edit.render(createTemplate(), key, form));
 
-    select(key.project);
+        keyService.save(form.get().into(key));
 
-    if ("POST".equals(request().method())) {
-      Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
+        return redirect(routes.Projects.keys(key.project.id));
+      }
 
-      if (form.hasErrors())
-        return badRequest(views.html.keys.edit.render(createTemplate(), key, form));
-
-      keyService.save(form.get().into(key));
-
-      return redirect(routes.Projects.keys(key.project.id));
-    }
-
-    return ok(views.html.keys.edit.render(createTemplate(), key,
-        formFactory.form(KeyForm.class).fill(KeyForm.from(key))));
+      return ok(views.html.keys.edit.render(createTemplate(), key,
+          formFactory.form(KeyForm.class).fill(KeyForm.from(key))));
+    });
   }
 
   public Result remove(UUID keyId, UUID localeId) {
-    Key key = Key.byId(keyId);
+    return key(keyId, key -> {
+      undoCommand(injector.instanceOf(RevertDeleteKeyCommand.class).with(key));
 
-    LOGGER.debug("Key: {}", Json.toJson(key));
+      keyService.delete(key);
 
+      if (localeId != null) {
+        Locale locale = localeService.byId(localeId);
+        if (locale != null)
+          return redirect(routes.Locales.locale(locale.id));
+      }
+
+      LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
+
+      return redirect(routes.Projects.keys(key.project.id));
+    });
+  }
+
+  protected Result key(UUID keyId, Function<Key, Result> processor) {
+    Key key = keyService.byId(keyId);
     if (key == null)
-      return redirect(routes.Application.index());
+      return redirect(routes.Dashboards.dashboard());
 
     select(key.project);
 
-    undoCommand(injector.instanceOf(RevertDeleteKeyCommand.class).with(key));
-
-    keyService.delete(key);
-
-    if (localeId != null) {
-      Locale locale = localeService.byId(localeId);
-      if (locale != null)
-        return redirect(routes.Locales.locale(locale.id));
-    }
-
-    LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
-
-    return redirect(routes.Projects.keys(key.project.id));
+    return processor.apply(key);
   }
 }

@@ -28,7 +28,7 @@ public class ProjectServiceTest extends AbstractTest {
 
     assertThat(project.id).isNotNull();
 
-    project = Project.byId(project.id);
+    project = projectService.byId(project.id);
 
     assertThat(project.owner.name).isEqualTo("user1");
     assertThat(project.name).isEqualTo("blubbb");

@@ -36,6 +36,7 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.LocaleService;
 import services.LogEntryService;
+import services.ProjectService;
 import services.UserService;
 import services.api.LocaleApiService;
 import utils.FormUtils;
@@ -59,6 +60,8 @@ public class Locales extends AbstractController {
 
   private final LocaleApiService localeApiService;
 
+  private final ProjectService projectService;
+
   /**
    * @param injector
    * @param cache
@@ -68,12 +71,14 @@ public class Locales extends AbstractController {
   @Inject
   protected Locales(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, FormFactory formFactory,
-      Configuration configuration, LocaleService localeService, LocaleApiService localeApiService) {
+      Configuration configuration, LocaleService localeService, LocaleApiService localeApiService,
+      ProjectService projectService) {
     super(injector, cache, auth, userService, logEntryService);
     this.formFactory = formFactory;
     this.configuration = configuration;
     this.localeService = localeService;
     this.localeApiService = localeApiService;
+    this.projectService = projectService;
   }
 
   public Result locale(UUID localeId) {
@@ -98,7 +103,7 @@ public class Locales extends AbstractController {
   }
 
   public Result create(UUID projectId) {
-    Project project = Project.byId(projectId);
+    Project project = projectService.byId(projectId);
     if (project == null)
       return redirect(routes.Application.index());
 
@@ -127,7 +132,7 @@ public class Locales extends AbstractController {
   }
 
   public Result createImmediately(UUID projectId, String localeName) {
-    Project project = Project.byId(projectId);
+    Project project = projectService.byId(projectId);
 
     if (project == null)
       return redirect(routes.Application.index());
@@ -219,7 +224,7 @@ public class Locales extends AbstractController {
   }
 
   private Result locale(UUID localeId, Function<Locale, Result> processor) {
-    Locale locale = Locale.byId(localeId);
+    Locale locale = localeService.byId(localeId);
     if (locale == null)
       return redirect(routes.Dashboards.dashboard());
 

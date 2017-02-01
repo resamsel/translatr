@@ -28,7 +28,6 @@ import com.avaje.ebean.Query;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.routes;
 import criterias.HasNextPagedList;
@@ -199,10 +198,6 @@ public class Key implements Model<Key, UUID>, Suggestable {
     name = in.name;
 
     return this;
-  }
-
-  public static Key from(JsonNode json) {
-    return Json.fromJson(json, dto.Key.class).toModel();
   }
 
   @Override

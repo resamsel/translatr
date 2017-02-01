@@ -2,9 +2,10 @@ package validators;
 
 import javax.validation.ConstraintValidator;
 
-import models.User;
+import play.api.Play;
 import play.data.validation.Constraints;
 import play.libs.F.Tuple;
+import services.UserService;
 
 /**
  *
@@ -12,40 +13,38 @@ import play.libs.F.Tuple;
  * @version 6 Oct 2016
  */
 public class UserByUsernameValidator extends Constraints.Validator<Object>
-			implements ConstraintValidator<UserByUsername, Object>
-{
-	public static final String MESSAGE = "error.userbyusername";
+    implements ConstraintValidator<UserByUsername, Object> {
+  public static final String MESSAGE = "error.userbyusername";
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void initialize(UserByUsername constraintAnnotation)
-	{
-	}
+  private UserService userService;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isValid(Object object)
-	{
-		if(object == null)
-			return false;
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void initialize(UserByUsername constraintAnnotation) {
+    this.userService = Play.current().injector().instanceOf(UserService.class);
+  }
 
-		if(!(object instanceof String))
-			return false;
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isValid(Object object) {
+    if (object == null)
+      return false;
 
-		return User.byUsername((String)object) != null;
-	}
+    if (!(object instanceof String))
+      return false;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Tuple<String, Object[]> getErrorMessageKey()
-	{
-		return null;
-	}
+    return userService.byUsername((String) object) != null;
+  }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Tuple<String, Object[]> getErrorMessageKey() {
+    return null;
+  }
 }

@@ -70,7 +70,7 @@ public class RevertDeleteProjectCommand implements Command<models.Project> {
     LOGGER.info("DTO Project #locales: {}, #keys: {}, #messages: {}", project.locales.size(),
         project.keys.size(), project.messages.size());
 
-    models.Project model = models.Project.byId(project.id);
+    models.Project model = projectService.byId(project.id);
 
     LOGGER.info("Before save project: deleted = {}", model.deleted);
     projectService.save(model.withName(project.name).withDeleted(false));

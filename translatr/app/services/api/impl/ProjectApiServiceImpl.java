@@ -5,9 +5,12 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import criterias.ProjectCriteria;
 import models.Project;
 import models.Scope;
+import play.libs.Json;
 import services.ProjectService;
 import services.api.ProjectApiService;
 
@@ -23,7 +26,15 @@ public class ProjectApiServiceImpl extends
    */
   @Inject
   protected ProjectApiServiceImpl(ProjectService projectService) {
-    super(projectService, dto.Project.class, dto.Project::from, Project::from,
-        new Scope[] {Scope.ProjectRead}, new Scope[] {Scope.ProjectWrite});
+    super(projectService, dto.Project.class, dto.Project::from, new Scope[] {Scope.ProjectRead},
+        new Scope[] {Scope.ProjectWrite});
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Project toModel(JsonNode json) {
+    return Json.fromJson(json, dto.Project.class).toModel();
   }
 }
