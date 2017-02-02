@@ -31,4 +31,13 @@ public class KeyServiceTest extends AbstractTest {
 
     assertThat(key.name).isEqualTo("key.one");
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void injectMembers() {
+    keyService = app.injector().instanceOf(KeyService.class);
+    projectService = app.injector().instanceOf(ProjectService.class);
+  }
 }

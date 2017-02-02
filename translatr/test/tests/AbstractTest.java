@@ -6,17 +6,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static play.inject.Bindings.bind;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import org.mockito.Mockito;
-
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.Transaction;
-import com.google.inject.Guice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import models.User;
 import play.Application;
@@ -25,12 +21,15 @@ import play.cache.CacheApi;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.test.WithApplication;
 import services.UserService;
+import utils.TransactionUtils;
 
 /**
  * @author resamsel
  * @version 28 Jan 2017
  */
 public class AbstractTest extends WithApplication {
+  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTest.class);
+
   @Inject
   protected UserService userService;
 
@@ -58,8 +57,6 @@ public class AbstractTest extends WithApplication {
   protected Application provideApplication() {
     GuiceApplicationBuilder builder = builder();
 
-    Guice.createInjector(builder.applicationModule()).injectMembers(this);
-
     return builder.build();
   }
 
@@ -70,20 +67,26 @@ public class AbstractTest extends WithApplication {
   public void startPlay() {
     super.startPlay();
 
+    userService = app.injector().instanceOf(UserService.class);
+
+    injectMembers();
+
     cleanDatabase();
   }
 
+  /**
+   * 
+   */
+  protected void injectMembers() {}
+
   private void cleanDatabase() {
-    Transaction tran = Ebean.beginTransaction();
     try {
-      Connection conn = tran.getConnection();
-      conn.createStatement().executeUpdate("truncate user_ cascade");
-      Ebean.commitTransaction();
-    } catch (SQLException e) {
-      // LOGGER.error("Error while ...", e);
-    } finally {
-      Ebean.endTransaction();
+      TransactionUtils.execute(tx -> {
+        LOGGER.info("Deleting all users");
+        tx.getConnection().createStatement().executeUpdate("truncate user_ cascade");
+      });
+    } catch (Exception e) {
+      LOGGER.error("Error while cleaning database", e);
     }
-    Ebean.getServerCacheManager().clearAll();
   }
 }

@@ -31,4 +31,13 @@ public class LocaleServiceTest extends AbstractTest {
 
     assertThat(locale.name).isEqualTo("de");
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void injectMembers() {
+    localeService = app.injector().instanceOf(LocaleService.class);
+    projectService = app.injector().instanceOf(ProjectService.class);
+  }
 }

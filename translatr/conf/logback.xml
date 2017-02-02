@@ -72,6 +72,9 @@
 		name="utils"
 		level="DEBUG" />
 	<logger
+		name="tests"
+		level="DEBUG" />
+	<logger
 		name="org.jdbcdslog.StatementLogger"
 		level="INFO" /> <!-- Will log all statements -->
 

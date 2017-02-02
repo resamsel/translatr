@@ -42,4 +42,15 @@ public class MessageServiceTest extends AbstractTest {
     assertThat(message.id).isNotNull();
     assertThat(message.value).isEqualTo("Message One");
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void injectMembers() {
+    messageService = app.injector().instanceOf(MessageService.class);
+    localeService = app.injector().instanceOf(LocaleService.class);
+    keyService = app.injector().instanceOf(KeyService.class);
+    projectService = app.injector().instanceOf(ProjectService.class);
+  }
 }

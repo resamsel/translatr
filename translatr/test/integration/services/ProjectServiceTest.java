@@ -35,4 +35,12 @@ public class ProjectServiceTest extends AbstractTest {
     assertThat(project.members.stream().map(m -> m.user).collect(Collectors.toList()))
         .contains(user);
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void injectMembers() {
+    projectService = app.injector().instanceOf(ProjectService.class);
+  }
 }
