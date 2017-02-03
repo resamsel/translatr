@@ -94,14 +94,14 @@ public abstract class AbstractController extends Controller {
     if (user == null)
       return template;
 
-    return template.withNotifications(notificationsOf(user).getList());
+    return template.withNotifications(notificationsOf(user));
   }
 
   private PagedList<LogEntry> notificationsOf(User user) {
     if (user == null)
       return null;
 
-    DateTime whenCreatedMin = null;
+    DateTime whenCreatedMin;
     String sessionLastAcknowledged = session(SessionKey.LastAcknowledged.key());
     String sessionLastLogin = session(SessionKey.LastLogin.key());
     if (sessionLastAcknowledged != null)
@@ -111,8 +111,12 @@ public abstract class AbstractController extends Controller {
     else
       whenCreatedMin = user.whenCreated;
 
-    return logEntryService.findBy(new LogEntryCriteria().withUserIdExcluded(user.id)
-        .withWhenCreatedMin(whenCreatedMin).withProjectUserId(user.id));
+    PagedList<LogEntry> paged = logEntryService.findBy(new LogEntryCriteria().withLimit(10)
+        .withUserIdExcluded(user.id).withProjectUserId(user.id));
+
+    paged.getList().stream().forEach(l -> l.withUnread(l.whenCreated.isAfter(whenCreatedMin)));
+
+    return paged;
   }
 
   protected void select(Project project) {

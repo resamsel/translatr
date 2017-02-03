@@ -59,7 +59,7 @@
 									<li>
 										<a
 											id="notification-button"
-											class="dropdown-button @if(!template.notifications.isEmpty) { available }"
+											class="dropdown-button @if(template.hasUnreadNotifications) { available }"
 											href="#!"
 											title="@Messages("notifications")"
 											data-activates="dropdown-notifications"

@@ -1,4 +1,4 @@
-@(notifications: List[LogEntry])
+@(notifications: com.avaje.ebean.PagedList[LogEntry])
 
 @import utils.FormatUtils._
 
@@ -7,9 +7,9 @@
 		<li class="collection-header">
 			<span class="title">@Messages("notifications")</span>
 		</li>
-		@if(!notifications.isEmpty) {
-			@for(notification <- notifications) {
-				<li class="collection-item avatar">
+		@if(!notifications.getList.isEmpty) {
+			@for(notification <- notifications.getList) {
+				<li class="collection-item avatar @if(notification.unread) { unread }">
 					@if(notification.project != null) {
 						<i class="material-icons circle @utils.JsonUtils.colorOf(notification)">@utils.JsonUtils.iconOf(notification)</i>
 						<span class="title">

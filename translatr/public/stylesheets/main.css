@@ -481,6 +481,9 @@ textarea.materialize-textarea {
 .collection-item.active:focus {
     border-radius: 2px;
 }
+.collection-item.unread {
+    font-weight: bold;
+}
 .collection .collection-item.avatar {
     min-height: auto;
 }

@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.joda.time.DateTime;
 
@@ -59,6 +60,9 @@ public class LogEntry implements Model<LogEntry, UUID> {
   @Column(length = 1024 * 1024)
   public String after;
 
+  @Transient
+  public boolean unread = false;
+
   /**
    * {@inheritDoc}
    */
@@ -76,6 +80,11 @@ public class LogEntry implements Model<LogEntry, UUID> {
 
   public LogEntry withUser(User user) {
     this.user = user;
+    return this;
+  }
+
+  public LogEntry withUnread(boolean unread) {
+    this.unread = unread;
     return this;
   }
 
