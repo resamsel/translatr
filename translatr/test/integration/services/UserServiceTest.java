@@ -2,6 +2,8 @@ package integration.services;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
+import java.util.UUID;
+
 import org.junit.Test;
 
 import criterias.UserCriteria;
@@ -25,6 +27,38 @@ public class UserServiceTest extends AbstractTest {
   }
 
   @Test
+  public void findInactive() {
+    assertThat(userService.findBy(new UserCriteria()).getList()).hasSize(0);
+
+    userService.update(createUser("user1", "user1@resamsel.com").withActive(false));
+    createUser("user2", "user2@resamsel.com");
+    createUser("user3", "user3@resamsel.com");
+
+    assertThat(userService.findBy(new UserCriteria()).getList()).hasSize(2);
+  }
+
+  @Test
+  public void get() {
+    User user = createUser("user1", "user1@resamsel.com");
+
+    assertThat(userService.byId(user.id).id).isEqualTo(user.id);
+  }
+
+  @Test
+  public void getUnknownId() {
+    assertThat(userService.byId(UUID.randomUUID())).isNull();
+  }
+
+  @Test
+  public void getInactive() {
+    User user = createUser("user1", "user1@resamsel.com");
+
+    userService.update(user.withActive(false));
+
+    assertThat(userService.byId(user.id).id).isEqualTo(user.id);
+  }
+
+  @Test
   public void create() {
     User user = createUser("user1", "user1@resamsel.com");
 
@@ -37,12 +71,20 @@ public class UserServiceTest extends AbstractTest {
 
     assertThat(user.email).isEqualTo("user1@resamsel.com");
 
-    user.email = "a@b.c";
+    userService.update(user.withEmail("a@b.c"));
 
-    userService.update(user);
+    assertThat(userService.byId(user.id).email).isEqualTo("a@b.c");
+  }
 
-    user = userService.byId(user.id);
+  @Test
+  public void delete() {
+    User user = createUser("user1", "user1@resamsel.com");
 
-    assertThat(user.email).isEqualTo("a@b.c");
+    assertThat(user).isNotNull();
+    assertThat(user.id).isNotNull();
+
+    userService.delete(user);
+
+    assertThat(userService.byId(user.id)).isNull();
   }
 }
