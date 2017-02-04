@@ -1,5 +1,7 @@
 @(keys: List[models.Key], messages: Map[String, models.Message], more: Boolean)
 
+@import org.apache.commons.lang3.StringUtils
+
 @for(key <- keys) {
 	<a
 		id="@key.id"
@@ -9,6 +11,6 @@
 		keyName="@key.name"
 		title="@key.name">
 		<span class="title name">@key.name</span>
-		<div class="value">@if(messages.containsKey(key.name)) {@messages(key.name).value}</div>
+		<div class="value">@if(messages.containsKey(key.name)) {@StringUtils.abbreviate(messages(key.name).value, 50)}</div>
 	</a>
 }

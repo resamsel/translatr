@@ -44,7 +44,17 @@
 	</a>
 } {
 	@tags.editor {
-		<h5 class="header">@Messages("keys")</h5>
+		<div class="filter">
+			<a class="dropdown-button btn-flat waves-effect" href="#" data-activates="dropdown-locales">
+				<i class="material-icons right">arrow_drop_down</i>
+				@Messages("locale"): @locale.name
+			</a>
+			<ul id="dropdown-locales" class="dropdown-content">
+				@for(l <- locales.getList) {
+					<li><a href="@routes.Locales.locale(l.id)">@tags.locale(l.name)</a></li>
+				}
+			</ul>
+		</div>
 		@if(!keys.getList.isEmpty) {
 			<div class="collection keys">
 				@tags.keyItems(keys.getList, messages, false)
@@ -63,47 +73,56 @@
 		}
 	} {
 		<form id="form-message">
-			<div id="panel-message" class="card no-image">
-				<div class="card-content">
-					<span class="card-title truncate">@Messages("locale.to.label") @tags.locale(locale.name)</span>
-					<input id="field-id" type="hidden" />
-					<input id="field-key" type="hidden" />
-					<input id="field-keyId" type="hidden" />
-					<div class="input-field">
-						<textarea
-							id="field-value"
-							class="materialize-textarea"></textarea>
-						<label for="field-value">@Messages("locale.value.label")</label>
-					</div>
-				</div>
-				<div class="card-action">
-					<button
-						type="submit"
-						class="btn waves-effect waves-light btn-save">
-						@Messages("button.save")
-						<i class="material-icons right">send</i>
-					</button>
-					<button
-						type="button"
-						class="btn-flat waves-effect waves-light btn-cancel">
-						@Messages("button.cancel")
-					</button>
-				</div>
+			<input id="field-id" type="hidden" />
+			<input id="field-key" type="hidden" />
+			<input id="field-keyId" type="hidden" />
+
+			<div class="filter actions">
+				<button
+					type="button"
+					class="btn-flat waves-effect waves-light btn-cancel">
+					@Messages("button.cancel")
+				</button>
+				<button
+					type="submit"
+					class="btn waves-effect waves-light btn-save">
+					@Messages("button.save")
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+
+			<div id="panel-message" class="input-field">
+				<textarea
+					id="field-value"
+					class="materialize-textarea"></textarea>
 			</div>
 		</form>
-
-		<!-- Preview -->
-		<div id="panel-preview">
-			<h5 class="header">@Messages("locale.preview")</h5>
-			<p id="preview"></p>
-		</div>
 
 		<p id="no-selection" class="center empty grey-text">
 			@Html(Messages("key.selection.none"))
 		</p>
 	} {
+		<div class="filter">
+			<a
+				class="dropdown-button btn-flat waves-effect"
+				href="#"
+				data-activates="dropdown-preview"
+				data-constrainWidth="false">
+				<i class="material-icons right">arrow_drop_down</i>
+				@Messages("locale.preview")
+			</a>
+			<ul id="dropdown-preview" class="dropdown-content">
+				<li><a href="#preview">@Messages("locale.preview") @tags.locale(locale.name)</a></li>
+				@for(l <- locales.getList) {
+					<li><a href="#preview=@l.id">@tags.locale(l.name)</a></li>
+				}
+			</ul>
+		</div>
+		<!-- Preview -->
+		<div id="panel-preview">
+			<p id="preview"></p>
+		</div>
 		<div id="panel-messages">
-			<h5 class="header">@Messages("messages")</h5>
 			<div class="collection messages">
 				<a
 					class="collection-item waves-effect waves-red message template"

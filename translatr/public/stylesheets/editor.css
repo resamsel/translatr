@@ -1,0 +1,87 @@
+.grid-container {
+  display: flex;
+  flex: 1 0 auto;
+  flex-flow: row wrap;
+}
+/* We tell all items to be 100% width */
+.grid-container .grid-item {
+	flex: 1 100%;
+}
+.item-left {
+	background-color: #eeeeee;
+}
+.item-left,
+.item-main {
+	border-bottom: 1px solid #e0e0e0;
+}
+.grid-item .filter {
+	padding: 10px;
+	border-bottom: 1px solid #e0e0e0;
+}
+.item-main .filter {
+	text-align: right;
+}
+.grid-container .grid-item .input-field,
+.grid-container .grid-item #panel-preview {
+	padding: 10px;
+}
+
+.grid-container .grid-item > .collection,
+.grid-container .grid-item > form {
+	margin: 0;
+}
+.grid-item .collection-item,
+.grid-item .collection-item.active,
+.grid-item .collection-item.active:focus {
+	border-radius: 0;
+}
+.grid-item .collection .collection-item.avatar {
+	padding: 0.5rem 1rem;
+}
+.grid-item .collection-item .value {
+	max-width: initial;
+}
+
+/* Medium screens */
+@media only screen and (min-width: 601px) {
+	html, body {
+		height: 100%;
+	}
+	.template-locale main {
+	    height: calc(100% - 96px);
+	}
+
+	.grid-container {
+	    height: 100%;
+	    overflow: auto;
+	}
+
+	.grid-container .item-left {
+		flex: 1 0px;
+		display: flex;
+	    flex-direction: column;
+	}
+	.grid-container .item-main { flex: 5 0px; }
+	.grid-container .item-right { display: none; }
+
+	.item-left,
+	.item-main {
+		border-bottom-width: 0;
+		border-right: 1px solid #e0e0e0;
+	}
+	.item-left .collection {
+		overflow: scroll;
+	}
+}
+
+/* Large screens */
+@media only screen and (min-width: 993px) {
+	/* We invert order of first sidebar and main
+	 * And tell the main element to take twice as much width as the other two sidebars 
+	 */
+	.grid-container .item-main,
+	.grid-container .item-right { flex: 5 0px; }
+
+	.grid-container .item-left { flex: 2 0px; }
+	.grid-container .item-right { display: block; }
+}

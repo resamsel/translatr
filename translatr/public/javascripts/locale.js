@@ -103,7 +103,7 @@ App.Modules.MessageListModule = function(sb) {
 App.Modules.MessageModule = function(sb) {
 	var win = sb.dom.wrap(window);
 	var form = sb.dom.find('#form-message');
-	var message = sb.dom.find('#panel-message');
+	var message = sb.dom.find('#form-message');
 	var panelPreview = sb.dom.find('#panel-preview');
 	var panelMessages = sb.dom.find('#panel-messages');
 	var preview = sb.dom.find('#preview');
@@ -113,6 +113,7 @@ App.Modules.MessageModule = function(sb) {
 	var fieldValue = sb.dom.find('#field-value');
     var cancelButton = sb.dom.find('.btn-cancel');
     var noSelection = sb.dom.find("#no-selection");
+    var rightFilter = sb.dom.find(".item-right .filter");
 
 	function _handleKeyPress(event) {
 		if (event.which == 13 && (event.ctrlKey || event.metaKey)) {
@@ -145,7 +146,8 @@ App.Modules.MessageModule = function(sb) {
 		noSelection.hide();
 		message.show();
 		panelPreview.show();
-		panelMessages.show();
+		//panelMessages.show();
+		rightFilter.show();
 	    fieldId.val('');
 		fieldKey.val(keyName).attr('keyId', keyId);
 	    fieldValue.val('');
@@ -164,6 +166,7 @@ App.Modules.MessageModule = function(sb) {
 			message.hide();
 			panelPreview.hide();
 			panelMessages.hide();
+			rightFilter.hide();
 
 			win.keydown(_handleKeyPress);
 
@@ -204,6 +207,7 @@ App.Modules.MessageModule = function(sb) {
 				message.hide();
 				panelPreview.hide();
 				panelMessages.hide();
+				rightFilter.hide();
 				noSelection.show();
 				window.location.hash = '#';
 			});
