@@ -94,7 +94,8 @@ Concat.groups := Seq(
 		"javascripts/moment.min.js",
 		"javascripts/nprogress.js",
 		"javascripts/app.js",
-		"javascripts/main.js"
+		"javascripts/main.js",
+		"javascripts/editor.js"
 	))
 )
 

@@ -1,7 +1,47 @@
-@(left: Html)(main: Html)(right: Html)
+@(noSelectionKey: String)(left: Html)(right: Html)
 
 <div class="grid-container editor">
 	<div class="grid-item item-left">@left</div>
-	<div class="grid-item item-main">@main</div>
-	<div class="grid-item item-right">@right</div>
+	<div class="grid-item item-main">
+		<div class="filter actions">
+			<button
+				id="message-cancel"
+				type="button"
+				class="btn-flat waves-effect waves-light btn-cancel">
+				@Messages("button.cancel")
+			</button>
+			<button
+				id="message-submit"
+				type="submit"
+				class="btn waves-effect waves-light btn-save">
+				@Messages("button.save")
+				<i class="material-icons right">send</i>
+			</button>
+		</div>
+
+		<form id="form-message">
+			<input id="field-id" type="hidden" />
+			<input id="field-locale" type="hidden" />
+			<input id="field-localeId" type="hidden" />
+			<input id="field-key" type="hidden" />
+			<input id="field-keyId" type="hidden" />
+			<div class="input-field">
+				<textarea
+					id="field-value"
+					class="materialize-textarea"></textarea>
+			</div>
+		</form>
+
+		<p id="no-selection" class="center empty grey-text">
+			@Html(Messages(noSelectionKey))
+		</p>
+	</div>
+	<div class="grid-item item-right">
+		@right
+
+		<!-- Preview -->
+		<div id="panel-preview">
+			<p id="preview"></p>
+		</div>
+	</div>
 </div>

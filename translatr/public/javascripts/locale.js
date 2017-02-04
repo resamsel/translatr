@@ -1,11 +1,3 @@
-/*
- * Input:
- * 
- * * projectId: Project.id
- * * localeId: Locale.id
- * * locales: List of Locale
- */
-
 App.Modules.KeyCreateModule = function(sb) {
 	var form = sb.dom.find('#form-key');
 	var keyName = sb.dom.find('#field-key-name');
@@ -23,199 +15,129 @@ App.Modules.KeyCreateModule = function(sb) {
 	};
 };
 
-App.Modules.KeyListModule = function(sb) {
-	function _handleKeysChanged() {
-		var $keys = sb.dom.find('a.key');
-		$keys.click(function() {
-			var $this = sb.dom.wrap(this);
-			$keys.removeClass('active');
-			$this.addClass('active');
-			sb.publish('keySelected', [$this.attr('id'), $this.attr('keyName')]);
-		})
-		sb.dom.find('a.key .btn-remove').click(function(e) {
-			e.stopPropagation();
-			window.location.href = jsRoutes.controllers.Keys.remove($(this).parent().attr('id'), localeId).url;
-		});
-	}
-	return {
-		create: function() {
-			sb.subscribe('keysChanged', _handleKeysChanged);
+App.Modules.EditorMessageListModule = function(sb, options) {
+	var options = options || {};
+	var projectId = options.projectId || '';
+	var locales = options.locales || {};
 
-			_handleKeysChanged();
-		},
-		destroy: function() {
-		}
-	};
-};
-
-App.Modules.MessageListModule = function(sb) {
-    var panelMessages = sb.dom.find('#panel-messages .collection');
-    var template = sb.dom.find('.message.template');
+	var panelMessages = sb.dom.find('#panel-messages .messages');
 	var fieldValue = sb.dom.find('#field-value');
 	var panelPreview = sb.dom.find('#panel-preview');
+	var itemRight = sb.dom.find('.item-right');
 	var preview = sb.dom.find('#preview');
+	var dropdownButton = sb.dom.find('.item-right .filter .dropdown-button');
+	var dropdownPreview = sb.dom.find('#dropdown-preview');
+	var template = panelMessages.find('.template');
 
 	function _handleCopyMessageValue(e) {
 		e.preventDefault();
-		var value = sb.dom.wrap(this).find('.value').text();
+		var value = sb.dom.wrap(this).data('value');
 		fieldValue.val(value).trigger('autoresize');
 		Materialize.updateTextFields();
 		sb.publish('valueChanged', value);
 		preview.html(value);
 	}
+	
+	function _handleShowMessageValue(e) {
+		e.preventDefault();
+		var entry = sb.dom.wrap(this).data('message');
+		//sb.publish('valueChanged', entry.value);
+		preview.html(entry.value);
+		dropdownButton.find('span').html(locales[entry.localeId]);
+	}
 
 	function _handleMessageList(keyName, messageList) {
 		panelMessages.find('.message:not(.template)').remove();
-	    messageList.forEach(function(entry) {
-	    	var $msg = template.clone().removeClass('template');
-	    	var $a = $msg;
-	    	$a.attr('title', $a.attr('title') + ' (' + locales[entry.localeId] + ')')
-	    		.attr('href', window.location.hash)
+		messageList.forEach(function(entry) {
+			var $msg = template.clone().removeClass('template');
+			var $a = $msg.find('a');
+			$a.attr('href', window.location.hash)
+				.data('value', entry.value)
 	    		.click(_handleCopyMessageValue);
 	    	$msg.find('.localeName').html(locales[entry.localeId]);
-	    	$msg.find('.value').text(entry.value);
+	    	$msg.find('.value').html(entry.value);
 	    	panelMessages.append($msg);
-	    });
-	    panelMessages.show();
+		});
 	}
 
-    function _handleKeyChanged(keyId, keyName) {
-    	panelMessages.hide();
-	    sb.utilities.ajax(sb.utilities.merge(
+	function _handleItemSelected(item) {
+		if(item === null) {
+			panelMessages.hide();
+			return;
+		}
+
+		panelMessages.show();
+
+		var keyId = item.keyId;
+		var keyName = item.keyName;
+
+		sb.utilities.ajax(sb.utilities.merge(
 			jsRoutes.controllers.TranslationsApi.find(projectId),
 			{data: {keyName: keyName}}
 		)).done(function(data) {
-		    _handleMessageList(keyName, data);
+			_handleMessageList(keyName, data);
 		});
 	}
 
 	return {
 		create: function() {
-			sb.subscribe('keySelected', _handleKeyChanged);
-
-			panelMessages.hide();
+			sb.subscribe('itemSelected', _handleItemSelected);
 		},
 		destroy: function() {
 		}
 	};
 };
 
-App.Modules.MessageModule = function(sb) {
-	var win = sb.dom.wrap(window);
-	var form = sb.dom.find('#form-message');
-	var message = sb.dom.find('#form-message');
-	var panelPreview = sb.dom.find('#panel-preview');
-	var panelMessages = sb.dom.find('#panel-messages');
-	var preview = sb.dom.find('#preview');
-	var progress = form.find('.progress');
-	var fieldId = sb.dom.find('#field-id');
-	var fieldKey = sb.dom.find('#field-key');
-	var fieldValue = sb.dom.find('#field-value');
-    var cancelButton = sb.dom.find('.btn-cancel');
-    var noSelection = sb.dom.find("#no-selection");
-    var rightFilter = sb.dom.find(".item-right .filter");
+App.Modules.EditorLocaleSelectorModule = function(sb, options) {
+	var dropdownLinks = sb.dom.find('#dropdown-locales a');
 
-	function _handleKeyPress(event) {
-		if (event.which == 13 && (event.ctrlKey || event.metaKey)) {
-			event.preventDefault();
-			form.submit();
-	    }
-	}
+	function _handleItemSelected(item) {
+		if(item === null) {
+			dropdownLinks.each(function() {
+				$(this).attr('href', jsRoutes.controllers.Locales.locale($(this).attr('id')).url);
+			});
 
-	function _handleSaveMessage(message) {
-		progress.css('visibility', 'hidden');
-		sb.dom.find('#' + message.keyId).removeClass('no-message');
-		sb.dom.find('#' + message.keyId + ' .value').text(message.value);
-		sb.publish('keySelected', [message.keyId, fieldKey.val()]);
-		Materialize.toast(messages['message.updated'], 5000);
-	}
+			return;
+		}
 
-	function _handleMessage(messageList) {
-    	if(messageList.length === 0)
-    		return;
-
-    	var message = messageList[0];
-	    fieldId.val(message.id);
-	    fieldKey.val(message.keyName).attr('keyId', message.keyId);
-	    fieldValue.val(message.value).trigger('autoresize').focus();
-	    Materialize.updateTextFields();
-	    preview.html(message.value);
-	}
-
-	function _updateForm(keyId, keyName) {
-		noSelection.hide();
-		message.show();
-		panelPreview.show();
-		//panelMessages.show();
-		rightFilter.show();
-	    fieldId.val('');
-		fieldKey.val(keyName).attr('keyId', keyId);
-	    fieldValue.val('');
-	    Materialize.updateTextFields();
-	    preview.html('');
-	    sb.utilities.ajax(sb.utilities.merge(
-			jsRoutes.controllers.TranslationsApi.find(projectId),
-			{data: {"localeId": localeId, "keyName": keyName}}
-		)).done(_handleMessage);
+		dropdownLinks.each(function() {
+			$(this).attr('href', jsRoutes.controllers.Locales.locale($(this).attr('id')).url + '#key=' + item.keyName);
+		});
 	}
 
 	return {
 		create: function() {
-			sb.subscribe('keySelected', _updateForm);
-
-			message.hide();
-			panelPreview.hide();
-			panelMessages.hide();
-			rightFilter.hide();
-
-			win.keydown(_handleKeyPress);
-
-			fieldValue.on('change keyup paste', function() {
-				preview.html(fieldValue.val());
-			});
-
-			form.submit(function(e){
-		        e.preventDefault();
-		        progress.css('visibility', 'visible');
-
-		        var op;
-		        var data = {
-		        		"localeId": localeId,
-		        		"keyId": fieldKey.attr('keyId'),
-		        		"value": fieldValue.val()
-		        };
-
-		        if(fieldId.val() !== '') {
-		        	op = jsRoutes.controllers.TranslationsApi.update();
-		        	data["id"] = fieldId.val();
-		        } else {
-		        	op = jsRoutes.controllers.TranslationsApi.create();
-		        }
-
-		    	sb.utilities.ajax(sb.utilities.merge(
-					op,
-					{
-						contentType: 'application/json',
-						dataType: 'json',
-						data: JSON.stringify(data)
-					}
-				)).done(_handleSaveMessage);
-		    });
-
-			cancelButton.click(function() {
-				sb.dom.find('a.key').removeClass('active');
-				message.hide();
-				panelPreview.hide();
-				panelMessages.hide();
-				rightFilter.hide();
-				noSelection.show();
-				window.location.hash = '#';
-			});
+			sb.subscribe('itemSelected', _handleItemSelected);
 		},
 		destroy: function() {
 		}
-	};
-};
+	}
+}
+
+App.Modules.EditorSwitchModule = function(sb, options) {
+	var localeName = options.localeName || '';
+	var switchButton = sb.dom.find('#switch-editor');
+
+	function _handleItemSelected(item) {
+		if(item === null) {
+			switchButton.attr('href', '#');
+			switchButton.addClass('disabled');
+
+			return;
+		}
+
+		switchButton.attr('href', jsRoutes.controllers.Keys.key(item.keyId).url + '#locale=' + localeName);
+		switchButton.removeClass('disabled');
+	}
+
+	return {
+		create: function() {
+			sb.subscribe('itemSelected', _handleItemSelected);
+		},
+		destroy: function() {
+		}
+	}
+}
 
 App.Modules.SuggestionModule = function(sb) {
 	var form = sb.dom.find('#form-search');
@@ -274,7 +196,4 @@ App.Modules.LocaleHashModule = function(sb) {
 App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
 App.Core.register('KeyCreateModule', App.Modules.KeyCreateModule);
-App.Core.register('KeyListModule', App.Modules.KeyListModule);
-App.Core.register('MessageModule', App.Modules.MessageModule);
-App.Core.register('MessageListModule', App.Modules.MessageListModule);
 App.Core.register('LocaleHashModule', App.Modules.LocaleHashModule);

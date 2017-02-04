@@ -1,7 +1,8 @@
 .grid-container {
-  display: flex;
-  flex: 1 0 auto;
-  flex-flow: row wrap;
+	display: flex;
+	flex: 1 0 auto;
+	flex-flow: row wrap;
+	max-width: 100%;
 }
 /* We tell all items to be 100% width */
 .grid-container .grid-item {
@@ -17,6 +18,7 @@
 .grid-item .filter {
 	padding: 10px;
 	border-bottom: 1px solid #e0e0e0;
+	min-height: 57px;
 }
 .item-main .filter {
 	text-align: right;
@@ -24,11 +26,13 @@
 .grid-container .grid-item .input-field,
 .grid-container .grid-item #panel-preview {
 	padding: 10px;
+	margin-top: 0;
 }
 
 .grid-container .grid-item > .collection,
 .grid-container .grid-item > form {
-	margin: 0;
+	margin-bottom: 0;
+	border-radius: 0;
 }
 .grid-item .collection-item,
 .grid-item .collection-item.active,
@@ -41,14 +45,58 @@
 .grid-item .collection-item .value {
 	max-width: initial;
 }
+.grid-item .filter .dropdown-content .selected {
+    background-color: #8BC34A;
+}
+.grid-item .filter .dropdown-content .selected > a {
+    color: white;
+}
+.grid-item .tabs,
+.grid-item .tabs .tab {
+	height: 56px;
+}
+.grid-item .tabs .tab {
+	line-height: 57px;
+}
+.item-right .filter {
+	padding: 0;
+}
+.grid-item .message {
+	border-bottom: 1px solid #e0e0e0;
+}
+.grid-item .message .heading {
+	height: 48px;
+}
+.grid-item .message .title {
+	color: #757575;
+	text-transform: uppercase;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 16px;
+	line-height: 48px;
+	padding: 0 10px;
+}
+.grid-item .message .btn-flat {
+	margin: 5px 10px;
+	color: #757575;
+}
+.grid-item .message .value {
+	padding: 0 10px;
+}
 
 /* Medium screens */
 @media only screen and (min-width: 601px) {
 	html, body {
 		height: 100%;
 	}
-	.template-locale main {
+	.template-locale main,
+	.template-key main {
+		display: flex;
 	    height: calc(100% - 96px);
+	}
+	.template-locale footer,
+	.template-key footer {
+		display: none;
 	}
 
 	.grid-container {
@@ -56,8 +104,8 @@
 	    overflow: auto;
 	}
 
-	.grid-container .item-left {
-		flex: 1 0px;
+	.grid-container .grid-item {
+		flex: 2 0px;
 		display: flex;
 	    flex-direction: column;
 	}
@@ -69,8 +117,14 @@
 		border-bottom-width: 0;
 		border-right: 1px solid #e0e0e0;
 	}
-	.item-left .collection {
+	.grid-item > .collection,
+	.grid-item > form,
+	.grid-item > #panel-preview,
+	.grid-item > #panel-messages {
 		overflow: scroll;
+	}
+	.grid-item .btn-narrow {
+		padding: 0 0.5rem;
 	}
 }
 
@@ -79,9 +133,15 @@
 	/* We invert order of first sidebar and main
 	 * And tell the main element to take twice as much width as the other two sidebars 
 	 */
+	.grid-container .item-left {
+		flex: 2 0px;
+		max-width: 16.67%;
+	}
 	.grid-container .item-main,
-	.grid-container .item-right { flex: 5 0px; }
+	.grid-container .item-right {
+		flex: 5 0px;
+		max-width: 41.67%;
+	}
 
-	.grid-container .item-left { flex: 2 0px; }
-	.grid-container .item-right { display: block; }
+	.grid-container .item-right { display: flex; }
 }

@@ -43,93 +43,76 @@
 		@tags.locale(locale.name)
 	</a>
 } {
-	@tags.editor {
-		<div class="filter">
-			<a class="dropdown-button btn-flat waves-effect" href="#" data-activates="dropdown-locales">
-				<i class="material-icons right">arrow_drop_down</i>
-				@Messages("locale"): @locale.name
-			</a>
-			<ul id="dropdown-locales" class="dropdown-content">
-				@for(l <- locales.getList) {
-					<li><a href="@routes.Locales.locale(l.id)">@tags.locale(l.name)</a></li>
-				}
-			</ul>
-		</div>
-		@if(!keys.getList.isEmpty) {
-			<div class="collection keys">
-				@tags.keyItems(keys.getList, messages, false)
-			</div>
-		} else {
-			<p class="grey-text">
-				@Messages("keys.size", 0)
-			</p>
-			<div class="keys center">
-				@if(locale.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Translator)) {
-					<a href="#modal-create" class="modal-trigger btn waves-effect waves-light">
-						@Messages("key.create.title")
-					</a>
-				}
-			</div>
-		}
-	} {
-		<form id="form-message">
-			<input id="field-id" type="hidden" />
-			<input id="field-key" type="hidden" />
-			<input id="field-keyId" type="hidden" />
-
-			<div class="filter actions">
-				<button
-					type="button"
-					class="btn-flat waves-effect waves-light btn-cancel">
-					@Messages("button.cancel")
-				</button>
-				<button
-					type="submit"
-					class="btn waves-effect waves-light btn-save">
-					@Messages("button.save")
-					<i class="material-icons right">send</i>
-				</button>
-			</div>
-
-			<div id="panel-message" class="input-field">
-				<textarea
-					id="field-value"
-					class="materialize-textarea"></textarea>
-			</div>
-		</form>
-
-		<p id="no-selection" class="center empty grey-text">
-			@Html(Messages("key.selection.none"))
-		</p>
-	} {
-		<div class="filter">
+	@tags.editor("key.selection.none") {
+		@tags.editorColumn {
 			<a
-				class="dropdown-button btn-flat waves-effect"
+				id="switch-editor"
+				class="btn-flat btn-narrow waves-effect right disabled"
 				href="#"
-				data-activates="dropdown-preview"
+				title="@Messages("key.editor.switchto")">
+				<i class="material-icons">compare_arrows</i>
+			</a>
+			<a
+				class="dropdown-button btn-flat btn-narrow waves-effect"
+				href="#"
+				data-activates="dropdown-locales"
 				data-constrainWidth="false">
 				<i class="material-icons right">arrow_drop_down</i>
-				@Messages("locale.preview")
+				@tags.locale(locale.name)
 			</a>
-			<ul id="dropdown-preview" class="dropdown-content">
-				<li><a href="#preview">@Messages("locale.preview") @tags.locale(locale.name)</a></li>
+			<ul id="dropdown-locales" class="dropdown-content">
+				<li class="selected">
+					<a id="@locale.id" href="@routes.Locales.locale(locale.id)">@tags.locale(locale.name)</a>
+				</li>
 				@for(l <- locales.getList) {
-					<li><a href="#preview=@l.id">@tags.locale(l.name)</a></li>
+					@if(locale.id != l.id) {
+						<li>
+							<a id="@l.id" href="@routes.Locales.locale(l.id)">@tags.locale(l.name)</a>
+						</li>
+					}
 				}
 			</ul>
+		} {
+			@if(!keys.getList.isEmpty) {
+				<div class="collection keys">
+					@tags.keyItems(keys.getList, messages, false)
+				</div>
+			} else {
+				<p class="grey-text">
+					@Messages("keys.size", 0)
+				</p>
+				<div class="keys center">
+					@if(locale.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Translator)) {
+						<a href="#modal-create" class="modal-trigger btn waves-effect waves-light">
+							@Messages("key.create.title")
+						</a>
+					}
+				</div>
+			}
+		}
+	} {
+		<div class="filter">
+			<ul id="dropdown-preview" class="tabs">
+				<li class="tab preview active">
+					<a href="#preview">@Messages("locale.preview")</a>
+				</li>
+				<li class="tab messages">
+					<a href="#panel-messages">@Messages("messages")</a>
+				</li>
+			</ul>
 		</div>
-		<!-- Preview -->
-		<div id="panel-preview">
-			<p id="preview"></p>
-		</div>
+
 		<div id="panel-messages">
-			<div class="collection messages">
-				<a
-					class="collection-item waves-effect waves-red message template"
-					title="@Messages("value.copy")">
-					<span class="title localeName truncate">Name</span>
-					<div class="value">Value</div>
-				</a>
+			<div class="messages">
+				<div class="message template">
+					<div class="heading">
+						<a class="btn-flat waves-effect waves-red right" title="@Messages("value.copy")">
+							<i class="material-icons">content_paste</i>
+						</a>
+						<span class="title localeName truncate">Name</span>
+					</div>
+					<p class="value">Value</p>
+				</div>
 			</div>
 		</div>
 	}
@@ -144,17 +127,35 @@
 		</form>
 	}
 
-	<script>
-		var projectId = '@project.id';
-		var localeId = '@locale.id';
-		var locales = {
-			@for(locale <- locales.getList) {
-				'@locale.id': '@tags.locale(locale.name)',
-			}
-		};
-		var messages = {
-			'message.updated': '@Messages("message.updated")'
-		};
-	</script>
 	<script src="@routes.Assets.versioned("javascripts/locale.js")"></script>
+	<script>
+		$('ul.tabs').tabs();
+
+		var projectId = '@project.id';
+		var options = {
+			projectId: '@project.id',
+			localeName: '@locale.name',
+			messages: {
+				'message.updated': '@Messages("message.updated")'
+			},
+			locales: {
+				@for(locale <- locales.getList) {
+					'@locale.id': '@tags.locale(locale.name)',
+				}
+			},
+			itemToEvent: function(sb, item) {
+				return {
+					localeId: '@locale.id',
+					localeName: '@locale.name',
+					keyId: item.attr('id'),
+					keyName: item.attr('keyName')
+				};
+			}
+		}
+
+		App.Core.register('EditorModule', App.Modules.EditorModule, options);
+		App.Core.register('EditorMessageListModule', App.Modules.EditorMessageListModule, options);
+		App.Core.register('EditorLocaleSelectorModule', App.Modules.EditorLocaleSelectorModule, options);
+		App.Core.register('EditorSwitchModule', App.Modules.EditorSwitchModule, options);
+	</script>
 }

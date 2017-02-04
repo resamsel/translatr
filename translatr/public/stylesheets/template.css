@@ -21,10 +21,3 @@
     	display: flex;
 	}
 }
-
-.template-locale main {
-	display: flex;
-}
-.template-locale footer {
-	display: none;
-}
