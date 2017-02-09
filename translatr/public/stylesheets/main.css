@@ -441,7 +441,6 @@ nav ul .disabled:hover {
 /* Textarea */
 textarea.materialize-textarea {
 	overflow-y: auto;
-	max-height: 10rem;
 	margin: 0;
 	resize: vertical;
 }

@@ -31,11 +31,15 @@ App.Modules.MessageModule = function(sb) {
 	var fieldValue = sb.dom.find('#field-value');
 	var localeName = sb.dom.find('#locale-name');
 	var panelPreview = sb.dom.find('#panel-preview');
+	var panelMessages = sb.dom.find('#panel-messages');
+	var panelActions = sb.dom.find('.item-main .filter');
 	var preview = sb.dom.find('#preview');
-	var message = sb.dom.find("#panel-message");
+	var message = sb.dom.find("#form-message");
     var template = sb.dom.find('.message.template');
-    var cancelButton = sb.dom.find('.btn-cancel');
+    var submitButton = sb.dom.find('#message-submit');
+    var cancelButton = sb.dom.find('#message-cancel');
     var noSelection = sb.dom.find("#no-selection");
+    var rightFilter = sb.dom.find(".item-right .filter");
 
 	function _handleKeyPress(event) {
 		if (event.which == 13 && (event.ctrlKey || event.metaKey)) {
@@ -68,6 +72,8 @@ App.Modules.MessageModule = function(sb) {
     	noSelection.hide();
     	message.show();
     	panelPreview.show();
+		panelActions.show();
+		rightFilter.show();
     	fieldId.val('');
     	fieldLocale.val(keyName).attr('localeId', localeId);
     	fieldValue.val('');
@@ -86,7 +92,13 @@ App.Modules.MessageModule = function(sb) {
 
 			message.hide();
 			panelPreview.hide();
+			panelMessages.hide();
+			panelActions.hide();
+			rightFilter.hide();
 
+			submitButton.on('click', function() {
+				form.submit();
+			});
 			win.keydown(_handleKeyPress);
 
 			var locales = sb.dom.find('a.locale');
@@ -105,6 +117,9 @@ App.Modules.MessageModule = function(sb) {
 				sb.dom.find('.locales a.locale.active').removeClass('active');
 				message.hide();
 				panelPreview.hide();
+				panelMessages.hide();
+				panelActions.hide();
+				rightFilter.hide();
 				noSelection.show();
 				window.location.hash = '#';
 			});
@@ -141,6 +156,31 @@ App.Modules.MessageModule = function(sb) {
 		}
 	};
 };
+
+App.Modules.EditorSwitchModule = function(sb, options) {
+	var keyName = options.keyName || '';
+	var switchButton = sb.dom.find('#switch-editor');
+
+	function _handleItemSelected(item) {
+		if(item === null) {
+			switchButton.attr('href', '#');
+			switchButton.addClass('disabled');
+
+			return;
+		}
+
+		switchButton.attr('href', jsRoutes.controllers.Locales.locale(item.localeId).url + '#key=' + keyName);
+		switchButton.removeClass('disabled');
+	}
+
+	return {
+		create: function() {
+			sb.subscribe('itemSelected', _handleItemSelected);
+		},
+		destroy: function() {
+		}
+	}
+}
 
 App.Modules.KeyHashModule = function(sb) {
 	var params = $.deparam.fragment();
@@ -205,8 +245,32 @@ App.Modules.SuggestionModule = function(sb) {
 	};
 };
 
+App.Modules.EditorSwitchModule = function(sb, options) {
+	var keyName = options.keyName || '';
+	var switchButton = sb.dom.find('#switch-editor');
+
+	function _handleItemSelected(item) {
+		if(item === null) {
+			switchButton.attr('href', '#');
+			switchButton.addClass('disabled');
+
+			return;
+		}
+
+		switchButton.attr('href', jsRoutes.controllers.Locales.locale(item.localeId).url + '#key=' + keyName);
+		switchButton.removeClass('disabled');
+	}
+
+	return {
+		create: function() {
+			sb.subscribe('itemSelected', _handleItemSelected);
+		},
+		destroy: function() {
+		}
+	}
+}
+
 App.Core.register('KeyCreateModule', App.Modules.KeyCreateModule);
-App.Core.register('MessageModule', App.Modules.MessageModule);
+//App.Core.register('MessageModule', App.Modules.MessageModule);
 App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
-App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
 App.Core.register('KeyHashModule', App.Modules.KeyHashModule);

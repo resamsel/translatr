@@ -272,16 +272,16 @@ App.Modules.ActivityModule = function(sb, options) {
 App.Modules.NotificationModule = function(sb) {
 	var button = sb.dom.find('#notification-button');
 
+	function _handleNotificationsChanged(data) {
+		button.removeClass('available');
+	}
+	
 	function _handleNotification() {
 		if(button.hasClass('available')) {
 			sb.utilities.ajax(
 				jsRoutes.controllers.Profiles.resetNotifications()
 			).done(_handleNotificationsChanged);
 		}
-	}
-
-	function _handleNotificationsChanged(data) {
-		button.removeClass('available');
 	}
 
 	return {

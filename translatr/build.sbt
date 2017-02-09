@@ -81,6 +81,7 @@ Concat.groups := Seq(
 		"stylesheets/font-awesome.min.css",
 		"stylesheets/d3.v3.css",
 		"stylesheets/main.css",
+		"stylesheets/editor.css",
 		"stylesheets/template.css",
 		"stylesheets/media.css"
 	)),
@@ -93,7 +94,8 @@ Concat.groups := Seq(
 		"javascripts/moment.min.js",
 		"javascripts/nprogress.js",
 		"javascripts/app.js",
-		"javascripts/main.js"
+		"javascripts/main.js",
+		"javascripts/editor.js"
 	))
 )
 
