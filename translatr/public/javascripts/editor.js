@@ -6,17 +6,18 @@ App.Modules.EditorModule = function(sb, options) {
 	var form = sb.dom.find('#form-message');
 	var message = sb.dom.find('#form-message');
 	var panelPreview = sb.dom.find('#panel-preview');
+	var panelEditor = sb.dom.find('#panel-editor')[0];
 	var panelActions = sb.dom.find('.item-main .filter');
 	var preview = sb.dom.find('#preview');
 	var progress = form.find('.progress');
 	var fieldId = sb.dom.find('#field-id');
 	var fieldLocale = sb.dom.find('#field-locale');
 	var fieldKey = sb.dom.find('#field-key');
-	var fieldValue = sb.dom.find('#field-value');
     var submitButton = sb.dom.find('#message-submit');
     var cancelButton = sb.dom.find('#message-cancel');
     var noSelection = sb.dom.find("#no-selection");
     var rightFilter = sb.dom.find(".item-right .filter");
+	var codeEditor;
 
 	function _handleKeyPress(event) {
 		if (event.which == 13 && (event.ctrlKey || event.metaKey)) {
@@ -41,8 +42,7 @@ App.Modules.EditorModule = function(sb, options) {
 	    fieldId.val(msg.id);
 	    fieldKey.val(msg.keyName).attr('keyId', msg.keyId);
 	    fieldLocale.val(msg.localeName).attr('localeId', msg.localeId);
-	    fieldValue.val(msg.value).trigger('autoresize').focus();
-	    Materialize.updateTextFields();
+	    codeEditor.setValue(msg.value);
 	    preview.html(msg.value);
 	}
 
@@ -73,8 +73,7 @@ App.Modules.EditorModule = function(sb, options) {
 	    fieldId.val('');
 		fieldLocale.val(localeName).attr('localeId', localeId);
 		fieldKey.val(keyName).attr('keyId', keyId);
-	    fieldValue.val('');
-	    Materialize.updateTextFields();
+	    codeEditor.setValue('');
 	    preview.html('');
 
 	    sb.utilities.ajax(sb.utilities.merge(
@@ -94,7 +93,7 @@ App.Modules.EditorModule = function(sb, options) {
 	}
 
 	function _handleMessageChanged() {
-		preview.html(fieldValue.val());
+		preview.html(codeEditor.getValue());
 	}
 
 	function _handleSubmit(e){
@@ -104,7 +103,7 @@ App.Modules.EditorModule = function(sb, options) {
         var data = {
         		"localeId": fieldLocale.attr('localeId'),
         		"keyId": fieldKey.attr('keyId'),
-        		"value": fieldValue.val()
+        		"value": codeEditor.getValue()
         };
 
         var op;
@@ -136,6 +135,14 @@ App.Modules.EditorModule = function(sb, options) {
 				return;
 			}
 
+			codeEditor = CodeMirror(panelEditor, {
+				mode: 'xml',
+				lineNumbers: true,
+				lineWrapping: true,
+				styleActiveLine: true,
+				htmlMode: true
+			});
+
 			sb.subscribe('itemsChanged', _handleItemsChanged);
 			sb.subscribe('itemSelected', _handleItemSelected);
 
@@ -147,7 +154,7 @@ App.Modules.EditorModule = function(sb, options) {
 			form.submit(_handleSubmit);
 			submitButton.click(_handleSubmit);
 			win.keydown(_handleKeyPress);
-			fieldValue.on('change keyup paste', _handleMessageChanged);
+			codeEditor.on('change', _handleMessageChanged);
 			cancelButton.click(_handleCancelation);
 
 			_handleItemsChanged();

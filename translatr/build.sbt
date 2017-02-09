@@ -80,6 +80,8 @@ Concat.groups := Seq(
 		"stylesheets/nprogress.css",
 		"stylesheets/font-awesome.min.css",
 		"stylesheets/d3.v3.css",
+		"stylesheets/codemirror.css",
+		"stylesheets/codemirror.translatr.css",
 		"stylesheets/main.css",
 		"stylesheets/editor.css",
 		"stylesheets/template.css",
@@ -93,6 +95,8 @@ Concat.groups := Seq(
 		"javascripts/d3.v3.min.js",
 		"javascripts/moment.min.js",
 		"javascripts/nprogress.js",
+		"javascripts/codemirror.js",
+		"javascripts/codemirror.xml.js",
 		"javascripts/app.js",
 		"javascripts/main.js",
 		"javascripts/editor.js"

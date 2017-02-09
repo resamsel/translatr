@@ -29,10 +29,12 @@
 	margin-top: 0;
 }
 
-.grid-container .grid-item > .collection,
-.grid-container .grid-item > form {
+.grid-container .grid-item > .collection {
 	margin-bottom: 0;
 	border-radius: 0;
+}
+.grid-container .grid-item > form {
+	display: none;
 }
 .grid-item .collection-item,
 .grid-item .collection-item.active,
@@ -118,10 +120,13 @@
 		border-right: 1px solid #e0e0e0;
 	}
 	.grid-item > .collection,
-	.grid-item > form,
+	.grid-item > #panel-editor,
 	.grid-item > #panel-preview,
 	.grid-item > #panel-messages {
 		overflow: scroll;
+	}
+	.grid-item > #panel-editor {
+		flex: 1;
 	}
 	.grid-item .btn-narrow {
 		padding: 0 0.5rem;
