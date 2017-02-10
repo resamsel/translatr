@@ -6,7 +6,7 @@ App.Modules.EditorModule = function(sb, options) {
 	var form = sb.dom.find('#form-message');
 	var message = sb.dom.find('#form-message');
 	var panelPreview = sb.dom.find('#panel-preview');
-	var panelEditor = sb.dom.find('#panel-editor')[0];
+	var panelEditor = sb.dom.find('#panel-editor');
 	var panelActions = sb.dom.find('.item-main .filter');
 	var preview = sb.dom.find('#preview');
 	var progress = form.find('.progress');
@@ -53,6 +53,7 @@ App.Modules.EditorModule = function(sb, options) {
 			noSelection.show();
 			message.hide();
 			panelPreview.hide();
+			panelEditor.hide();
 			panelActions.hide();
 			rightFilter.hide();
 
@@ -67,6 +68,7 @@ App.Modules.EditorModule = function(sb, options) {
 		noSelection.hide();
 		message.show();
 		panelPreview.show();
+		panelEditor.show();
 		panelActions.show();
 		rightFilter.show();
 
@@ -135,7 +137,7 @@ App.Modules.EditorModule = function(sb, options) {
 				return;
 			}
 
-			codeEditor = CodeMirror(panelEditor, {
+			codeEditor = CodeMirror(panelEditor[0], {
 				mode: 'xml',
 				lineNumbers: true,
 				lineWrapping: true,
@@ -148,6 +150,7 @@ App.Modules.EditorModule = function(sb, options) {
 
 			message.hide();
 			panelPreview.hide();
+			panelEditor.hide();
 			panelActions.hide();
 			rightFilter.hide();
 
