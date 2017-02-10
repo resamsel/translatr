@@ -73,7 +73,13 @@ public class HasNextPagedList<T> implements PagedList<T> {
   public List<T> getList() {
     synchronized (monitor) {
       if (list == null) {
+        if (maxRows > 0)
+          query.setMaxRows(maxRows + 1);
+
         list = query.findList();
+
+        if (maxRows > 0)
+          query.setMaxRows(maxRows);
 
         if (hasNext = maxRows > 0 && list.size() > maxRows)
           list.subList(maxRows, list.size()).clear();
@@ -112,6 +118,10 @@ public class HasNextPagedList<T> implements PagedList<T> {
   @Override
   public int getPageSize() {
     return maxRows;
+  }
+
+  public int getOffset() {
+    return firstRow;
   }
 
   /**

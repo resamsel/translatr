@@ -56,11 +56,11 @@ App.Modules.MessageModule = function(sb) {
     	Materialize.toast(messages['message.updated'], 5000);
     }
 
-    function _handleMessage(messageList) {
-    	if(messageList.length === 0)
+    function _handleMessage(paged) {
+    	if(paged.list.length === 0)
     		return;
 
-    	var message = messageList[0];
+    	var message = paged.list[0];
     	fieldId.val(message.id);
     	fieldLocale.val(message.localeName).attr('localeId', message.localeId);
     	fieldValue.val(message.value).trigger('autoresize').focus();

@@ -1,6 +1,5 @@
 package controllers;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -11,6 +10,7 @@ import javax.validation.ValidationException;
 
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import criterias.AbstractSearchCriteria;
@@ -79,8 +79,8 @@ public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends Abstract
 
   protected final ApiService<DTO, ID, CRITERIA> api;
 
-  protected AbstractApi(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, ApiService<DTO, ID, CRITERIA> api) {
+  protected AbstractApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
+      UserService userService, LogEntryService logEntryService, ApiService<DTO, ID, CRITERIA> api) {
     super(injector, cache, auth, userService, logEntryService);
 
     this.executionContext = injector.instanceOf(HttpExecutionContext.class);
@@ -139,7 +139,7 @@ public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends Abstract
         .thenApply(out -> ok(Json.toJson(out))).exceptionally(AbstractApi::handleException);
   }
 
-  protected <T> CompletionStage<Result> toJsons(Supplier<List<T>> supplier) {
+  protected <T> CompletionStage<Result> toJsons(Supplier<PagedList<T>> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
         .thenApply(out -> ok(Json.toJson(out))).exceptionally(AbstractApi::handleException);
   }

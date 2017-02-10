@@ -1,15 +1,14 @@
 package services.api.impl;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import criterias.AbstractSearchCriteria;
 import dto.Dto;
+import dto.DtoPagedList;
 import dto.NotFoundException;
 import dto.PermissionException;
 import models.Model;
@@ -40,14 +39,14 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
   }
 
   @Override
-  public List<DTO> find(CRITERIA criteria,
+  public PagedList<DTO> find(CRITERIA criteria,
       @SuppressWarnings("unchecked") Consumer<CRITERIA>... validators) {
     for (Consumer<CRITERIA> validator : validators)
       validator.accept(criteria);
 
     checkPermissionAll("Access token not allowed", readScopes);
 
-    return service.findBy(criteria).getList().stream().map(dtoMapper).collect(toList());
+    return new DtoPagedList<>(service.findBy(criteria), dtoMapper);
   }
 
   /**

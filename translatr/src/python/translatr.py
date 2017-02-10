@@ -173,7 +173,7 @@ class Api(object):
 	def projects(self, **kwargs):
 		return [
 			Project(**p)
-			for p in self.request.get('projects', **kwargs).json()
+			for p in self.request.get('projects', **kwargs).json()['list']
 		]
 
 	def project_create(self, json):
@@ -190,7 +190,7 @@ class Api(object):
 			for l in self.request.get(
 					'locales/{project_id}'.format(**self.config),
 					**kwargs
-				).json()
+				).json()['list']
 		]
 
 	def locale_create(self, json):

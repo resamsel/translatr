@@ -34,11 +34,11 @@ App.Modules.EditorModule = function(sb, options) {
 		Materialize.toast(messages['message.updated'], 5000);
 	}
 
-	function _handleMessage(messageList) {
-    	if(messageList.length === 0)
+	function _handleMessage(paged) {
+    	if(paged.list.length === 0)
     		return;
 
-    	var msg = messageList[0];
+    	var msg = paged.list[0];
 	    fieldId.val(msg.id);
 	    fieldKey.val(msg.keyName).attr('keyId', msg.keyId);
 	    fieldLocale.val(msg.localeName).attr('localeId', msg.localeId);

@@ -81,7 +81,8 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria>
           scopes = {
               @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
               @AuthorizationScope(scope = MESSAGE_READ, description = MESSAGE_READ_DESCRIPTION)}))
-  @ApiResponses({@ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.Message[].class),
+  @ApiResponses({
+      @ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.MessagesPaged.class),
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({

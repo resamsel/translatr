@@ -46,9 +46,9 @@ App.Modules.EditorMessageListModule = function(sb, options) {
 		dropdownButton.find('span').html(locales[entry.localeId]);
 	}
 
-	function _handleMessageList(keyName, messageList) {
+	function _handleMessageList(keyName, paged) {
 		panelMessages.find('.message:not(.template)').remove();
-		messageList.forEach(function(entry) {
+		paged.list.forEach(function(entry) {
 			var $msg = template.clone().removeClass('template');
 			var $a = $msg.find('a');
 			$a.attr('href', window.location.hash)

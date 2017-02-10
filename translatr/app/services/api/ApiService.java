@@ -1,8 +1,8 @@
 package services.api;
 
-import java.util.List;
 import java.util.function.Consumer;
 
+import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import criterias.AbstractSearchCriteria;
@@ -17,7 +17,8 @@ public interface ApiService<T, ID, CRITERIA extends AbstractSearchCriteria<CRITE
    * @param validators
    * @return
    */
-  List<T> find(CRITERIA criteria, @SuppressWarnings("unchecked") Consumer<CRITERIA>... validators);
+  PagedList<T> find(CRITERIA criteria,
+      @SuppressWarnings("unchecked") Consumer<CRITERIA>... validators);
 
   T get(ID id);
 
