@@ -8,10 +8,10 @@
 
 */
 
+
 .CodeMirror {
 	height: 100%;
-	background: #f2f2f2;
-	color: #343434;
+	padding: 10px;
 }
-.CodeMirror .CodeMirror-linenumbers { background: #f2f2f2; }
 .CodeMirror .CodeMirror-gutters { border-right: none; }
+.CodeMirror .CodeMirror-linenumbers { background: #fff; }

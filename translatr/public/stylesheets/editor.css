@@ -30,7 +30,7 @@
 }
 
 .grid-container .grid-item > .collection {
-	margin-bottom: 0;
+	margin: 0;
 	border-radius: 0;
 }
 .grid-container .grid-item > form {
@@ -123,7 +123,7 @@
 	.grid-item > #panel-editor,
 	.grid-item > #panel-preview,
 	.grid-item > #panel-messages {
-		overflow: scroll;
+		overflow-y: scroll;
 	}
 	.grid-item > #panel-editor {
 		flex: 1;
