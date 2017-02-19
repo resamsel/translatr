@@ -46,6 +46,7 @@ API_HTML_ERROR = textwrap.dedent("""
 
 Project = namedtuple('Project', 'id name ownerId ownerName')
 Locale = namedtuple('Locale', 'id name projectId projectName')
+Key = namedtuple('Key', 'id name projectId projectName')
 
 logger = logging.getLogger(__name__)
 
@@ -214,6 +215,23 @@ class Api(object):
 			stream=True
 		)
 
+	def keys(self, **kwargs):
+		return [
+			Key(**k)
+			for k in self.request.get(
+					'keys/{project_id}'.format(**self.config),
+					**kwargs
+				).json()['list']
+		]
+
+	def key_create(self, json):
+		return Key(**self.request.post('key', json=json).json())
+
+	def key_delete(self, key_id):
+		return Key(
+			**self.request.delete('key/{0}'.format(key_id)).json()
+		)
+
 
 def read_config():
 	# Define a custom tag and associate the regex pattern we defined
@@ -361,14 +379,54 @@ def remove_locale(args):
 
 		locale = api.locale_delete(locale_id)
 
-		print(
-			'Locale {0} has been deleted'.format(
-				locale.name.replace(
-					'{0}-'.format(locale_id),
-					''
-				)
-			)
-		)
+		print('Locale {0} has been deleted'.format(locale.name))
+
+
+def keys(args):
+	config = read_config_merge(args)
+
+	assert_exists(config, 'endpoint', 'access_token', 'project_id')
+
+	api = Api(config)
+	keys = api.keys(params={'search': args.search})
+
+	print(tabulate([(k.id, k.name) for k in keys], tablefmt="plain"))
+
+
+def create_key(args):
+	config = read_config_merge(args)
+
+	assert_exists(config, 'endpoint', 'access_token')
+
+	api = Api(config)
+	key = api.key_create({
+		'projectId': config['project_id'],
+		'name': args.key_name
+	})
+
+	print('Key {0} has been created'.format(key.name))
+
+
+def remove_key(args):
+	config = read_config_merge(args)
+
+	assert_exists(config, 'endpoint', 'access_token')
+
+	api = Api(config)
+	for key_id in args.key_ids:
+		try:
+			UUID(key_id, version=4)
+		except ValueError:
+			keys = api.keys(params={'search': key_id})
+			if keys:
+				key_id = keys[0].id
+			else:
+				raise Exception(
+					"Key with ID '{0}' not found".format(key_id))
+
+		key = api.key_delete(key_id)
+
+		print('Key {0} has been deleted'.format(key.name))
 
 
 def pull(args):
@@ -592,6 +650,57 @@ def create_parser_locale(subparsers):
 	)
 
 
+def create_parser_key(subparsers):
+	parser_key = subparsers.add_parser(
+		'key',
+		help='key commands'
+	)
+	subparsers_key = parser_key.add_subparsers(
+		title="commands"
+	)
+	parser_key_list = subparsers_key.add_parser(
+		'ls',
+		help='list keys'
+	)
+	parser_key_list.set_defaults(func=keys)
+	parser_key_list.add_argument(
+		'search',
+		nargs='?',
+		help='the search string'
+	)
+	parser_key_list.add_argument(
+		'-p',
+		'--project-id',
+		help='the project ID'
+	)
+
+	parser_key_create = subparsers_key.add_parser(
+		'create',
+		help='create key'
+	)
+	parser_key_create.set_defaults(func=create_key)
+	parser_key_create.add_argument(
+		'key_name',
+		help='the key name'
+	)
+	parser_key_create.add_argument(
+		'-p',
+		'--project-id',
+		help='the project ID'
+	)
+
+	parser_key_remove = subparsers_key.add_parser(
+		'rm',
+		help='remove keys'
+	)
+	parser_key_remove.set_defaults(func=remove_key)
+	parser_key_remove.add_argument(
+		'key_ids',
+		nargs='+',
+		help='the key IDs'
+	)
+
+
 def create_parser():
 	parser = argparse.ArgumentParser(
 		description='Command line interface for translatr.'
@@ -619,6 +728,7 @@ def create_parser():
 	create_parser_init(subparsers)
 	create_parser_project(subparsers)
 	create_parser_locale(subparsers)
+	create_parser_key(subparsers)
 
 	parser_config = subparsers.add_parser(
 		'config',
