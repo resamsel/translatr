@@ -9,6 +9,7 @@ import static utils.Stopwatch.log;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -263,6 +264,20 @@ public class Project implements Model<Project, UUID>, Suggestable {
     userRoles.retainAll(Arrays.asList(roles));
 
     return !userRoles.isEmpty();
+  }
+
+  public ProjectRole roleOf(User user) {
+    if (user == null)
+      return null;
+
+    if (user.equals(owner))
+      return ProjectRole.Owner;
+
+    Optional<ProjectUser> member = members.stream().filter(m -> user.equals(m.user)).findFirst();
+    if (member.isPresent())
+      return member.get().role;
+
+    return null;
   }
 
   public static UUID brandProjectId() {

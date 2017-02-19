@@ -24,6 +24,7 @@
 					<i class="material-icons circle orange">view_quilt</i>
 					<a href="@routes.Projects.project(project.id)" class="title">
 						@project.name
+						<em>&mdash; @{project.roleOf(template.loggedInUser)}</em>
 					</a>
 					<p>
 						@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
