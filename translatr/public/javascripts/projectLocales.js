@@ -1,19 +1,3 @@
-App.Modules.LocalesCreateModule = function(sb) {
-	var select = sb.dom.find('select');
-	var form = sb.dom.find('#form-locale');
-	var saveButton = sb.dom.find('.btn-save');
-
-	return {
-		create : function() {
-			saveButton.click(function() {
-				form.submit();
-			});
-		},
-		destroy : function() {
-		}
-	};
-};
-
 App.Modules.SuggestionModule = function(sb) {
 	function _handleSuggestionSelected(suggestion) {
 		if(suggestion.data.name != '+++' && suggestion.data.name != '???' && suggestion.data.type === 'locale') {
@@ -56,7 +40,6 @@ App.Modules.LocalesHashModule = function(sb) {
 };
 
 App.Core.register('MaterialModule', App.Modules.MaterialModule);
-App.Core.register('LocalesCreateModule', App.Modules.LocalesCreateModule);
 App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
 App.Core.register('LocalesHashModule', App.Modules.LocalesHashModule);

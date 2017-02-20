@@ -83,7 +83,7 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria> {
   public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
     return toJsons(() -> api.find(KeyCriteria.from(request()).withProjectId(projectId),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
-            ProjectRole.Translator, ProjectRole.Developer)));
+            ProjectRole.Manager, ProjectRole.Translator, ProjectRole.Developer)));
   }
 
   /**

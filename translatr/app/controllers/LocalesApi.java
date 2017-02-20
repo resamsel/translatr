@@ -100,7 +100,7 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
         LocaleCriteria.from(request()).withProjectId(projectId)
             .withLocaleName(request().getQueryString("localeName")),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
-            ProjectRole.Translator, ProjectRole.Developer)));
+            ProjectRole.Manager, ProjectRole.Translator, ProjectRole.Developer)));
   }
 
   /**

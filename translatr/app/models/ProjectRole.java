@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
  * @version 5 Oct 2016
  */
 public enum ProjectRole {
-  Owner(3), Developer(2), Translator(1);
+  Owner(4), Manager(3), Developer(2), Translator(1);
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectRole.class);
 

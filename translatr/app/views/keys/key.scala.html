@@ -73,7 +73,7 @@
 					@Messages("locales.size", 0)
 				</p>
 				<div class="locales center">
-					@if(key.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Developer)) {
+					@if(key.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
 						<a href="#modal-create" class="modal-trigger btn waves-effect waves-light">
 							@Messages("locale.create.title")
 						</a>
@@ -91,10 +91,10 @@
 		</div>
 	}
 
-	@if(key.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Developer)) {
-		@tags.fabContainer("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = createActions)
+	@if(key.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
+		@tags.fabContainer("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = createActions)
 
-		@tags.modal(Messages("key.new"), "modal-create") {
+		@tags.modal(Messages("key.new"), "modal-create-key") {
 			<form id="form-key" method="post" action="@routes.Keys.create(key.project.id, null)">
 				<div class="form-group">
 					<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
@@ -135,5 +135,6 @@
 		App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
 		App.Core.register('EditorModule', App.Modules.EditorModule, options);
 		App.Core.register('EditorSwitchModule', App.Modules.EditorSwitchModule, options);
+		App.Core.register('KeyCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
 	</script>
 }

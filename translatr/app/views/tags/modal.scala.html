@@ -1,4 +1,4 @@
-@(title: String, id: String)(content: Html)
+@(title: String, id: String, saveForm: Boolean=true)(content: Html)
 
 <div
 	id="@id"
@@ -13,17 +13,25 @@
 			@content
 		</div>
 		<div class="modal-footer">
-			<button
-				type="button"
-				class="btn modal-action modal-close waves-effect waves-green btn-save">
-				@Messages("button.save")
-				<i class="material-icons right">send</i>
-			</button>
-			<button
-				type="button"
-				class="btn-flat modal-action modal-close waves-effect waves-green btn-close">
-				@Messages("button.close")
-			</button>
+			@if(saveForm) {
+				<button
+					type="button"
+					class="btn modal-action modal-close waves-effect waves-green btn-save">
+					@Messages("button.save")
+					<i class="material-icons right">send</i>
+				</button>
+				<button
+					type="button"
+					class="btn-flat modal-action modal-close waves-effect waves-green btn-close">
+					@Messages("button.close")
+				</button>
+			} else {
+				<button
+					type="button"
+					class="btn modal-action modal-close waves-effect waves-green btn-close">
+					@Messages("button.ok")
+				</button>
+			}
 		</div>
 	</div>
 	<!-- /.modal-content -->

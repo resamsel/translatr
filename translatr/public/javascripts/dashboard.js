@@ -45,21 +45,5 @@ App.Modules.DashboardSearchModule = function(sb) {
 	};
 };
 
-App.Modules.ProjectCreateModule = function(sb) {
-	var form = sb.dom.find('#form-project');
-	var buttonSave = sb.dom.find('#modal-create-project .btn-save');
-
-	return {
-		create: function() {
-			buttonSave.click(function() {
-				form.submit();
-			});
-		},
-		destroy: function() {
-		}
-	};
-};
-
 App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('DashboardSearchModule', App.Modules.DashboardSearchModule);
-App.Core.register('ProjectCreateModule', App.Modules.ProjectCreateModule);

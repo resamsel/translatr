@@ -1,19 +1,3 @@
-App.Modules.KeysCreateModule = function(sb) {
-	var select = sb.dom.find('select');
-	var form = sb.dom.find('#form-key');
-	var saveButton = sb.dom.find('.btn-save');
-
-	return {
-		create : function() {
-			saveButton.click(function() {
-				form.submit();
-			});
-		},
-		destroy : function() {
-		}
-	};
-};
-
 App.Modules.SuggestionModule = function(sb) {
 	function _handleSuggestionSelected(suggestion) {
 		if(suggestion.data.name != '+++' && suggestion.data.name != '???' && suggestion.data.type === 'key') {
@@ -33,6 +17,5 @@ App.Modules.SuggestionModule = function(sb) {
 };
 
 App.Core.register('MaterialModule', App.Modules.MaterialModule);
-App.Core.register('KeysCreateModule', App.Modules.KeysCreateModule);
 App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);

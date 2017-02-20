@@ -34,6 +34,7 @@ import forms.ActivitySearchForm;
 import forms.KeySearchForm;
 import forms.LocaleSearchForm;
 import forms.ProjectForm;
+import forms.ProjectOwnerForm;
 import forms.ProjectUserForm;
 import forms.SearchForm;
 import models.Key;
@@ -165,7 +166,7 @@ public class Projects extends AbstractController {
     if (project == null)
       return redirect(routes.Application.index());
 
-    if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner)) {
+    if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
       addError(ctx().messages().at("project.edit.denied", project.name));
       return redirect(routes.Projects.project(project.id));
     }
@@ -195,7 +196,7 @@ public class Projects extends AbstractController {
     if (project == null)
       return redirect(routes.Application.index());
 
-    if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner)) {
+    if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
       addError(ctx().messages().at("project.delete.denied", project.name));
       return redirect(routes.Projects.project(project.id));
     }
@@ -228,7 +229,8 @@ public class Projects extends AbstractController {
             .from(ctx().messages().at("key.search", search.search), Data.from(Key.class, null,
                 "???", search.urlWithOffset(routes.Projects.keys(project.id), 20, 0))));
 
-      if (PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Developer))
+      if (PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager,
+          ProjectRole.Developer))
         suggestions.add(Suggestable.DefaultSuggestable
             .from(ctx().messages().at("key.create", search.search), Data.from(Key.class, null,
                 "+++", routes.Keys.createImmediately(project.id, search.search).url())));
@@ -338,6 +340,31 @@ public class Projects extends AbstractController {
       undoCommand(injector.instanceOf(RevertDeleteProjectUserCommand.class).with(member));
 
       projectUserService.delete(member);
+
+      return redirect(routes.Projects.members(project.id));
+    });
+  }
+
+  public Result doOwnerChange(UUID projectId) {
+    return project(projectId, project -> {
+      Form<ProjectOwnerForm> form = formFactory.form(ProjectOwnerForm.class).bindFromRequest();
+
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
+        addError(ctx().messages().at("project.owner.change.denied", project.name));
+        return redirect(routes.Projects.members(project.id));
+      }
+
+      // if (form.hasErrors())
+      // return badRequest(views.html.projects.ownerChange.render(createTemplate(), project, form));
+
+      ProjectOwnerForm val = form.get();
+      // Make old owner a member of type Manager
+      project.members.stream().filter(m -> m.role == ProjectRole.Owner)
+          .forEach(m -> m.role = ProjectRole.Manager);
+      // Make new owner a member of type Owner
+      project.members.stream().filter(m -> m.user.id.equals(val.getOwnerId()))
+          .forEach(m -> m.role = ProjectRole.Owner);
+      projectService.save(project.withOwner(userService.byId(val.getOwnerId())));
 
       return redirect(routes.Projects.members(project.id));
     });

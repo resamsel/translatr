@@ -28,6 +28,8 @@ App.Modules.EditorModule = function(sb, options) {
 
 	function _handleSaveMessage(message) {
 		progress.css('visibility', 'hidden');
+		sb.dom.find('#' + message.localeId).removeClass('no-message');
+		sb.dom.find('#' + message.localeId + ' .value').text(message.value);
 		sb.dom.find('#' + message.keyId).removeClass('no-message');
 		sb.dom.find('#' + message.keyId + ' .value').text(message.value);
 		sb.publish('itemSelected', [message]);

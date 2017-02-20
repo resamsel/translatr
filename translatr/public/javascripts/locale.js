@@ -1,20 +1,3 @@
-App.Modules.KeyCreateModule = function(sb) {
-	var form = sb.dom.find('#form-key');
-	var keyName = sb.dom.find('#field-key-name');
-	var saveButton = sb.dom.find('.modal .btn-save');
-
-	return {
-		create : function() {
-			saveButton.click(function() {
-				form.attr('action', form.attr('action') + '#key=' + keyName.val());
-				form.submit();
-			});
-		},
-		destroy : function() {
-		}
-	};
-};
-
 App.Modules.EditorMessageListModule = function(sb, options) {
 	var options = options || {};
 	var projectId = options.projectId || '';
@@ -195,5 +178,4 @@ App.Modules.LocaleHashModule = function(sb) {
 
 App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
-App.Core.register('KeyCreateModule', App.Modules.KeyCreateModule);
 App.Core.register('LocaleHashModule', App.Modules.LocaleHashModule);

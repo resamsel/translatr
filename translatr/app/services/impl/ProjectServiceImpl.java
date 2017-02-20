@@ -121,7 +121,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   public void delete(Project t) {
     if (t == null || t.deleted)
       throw new NotFoundException(dto.Project.class.getSimpleName(), t != null ? t.id : null);
-    if (!t.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner))
+    if (!t.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager))
       throw new PermissionException("User not allowed in project");
 
     keyService.delete(t.keys);
@@ -141,7 +141,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     for (Project p : t) {
       if (p == null || p.deleted)
         throw new NotFoundException(dto.Project.class.getSimpleName(), p != null ? p.id : null);
-      if (!p.hasPermissionAny(loggedInUser, ProjectRole.Owner))
+      if (!p.hasPermissionAny(loggedInUser, ProjectRole.Owner, ProjectRole.Manager))
         throw new PermissionException("User not allowed in project");
     }
 

@@ -7,21 +7,6 @@
  * * locales: List of Locale
  */
 
-App.Modules.KeyCreateModule = function(sb) {
-	var form = sb.dom.find('#form-key');
-	var saveButton = sb.dom.find('.modal .btn-save');
-
-	return {
-		create : function() {
-			saveButton.click(function() {
-				form.submit();
-			});
-		},
-		destroy : function() {
-		}
-	};
-};
-
 App.Modules.MessageModule = function(sb) {
 	var win = sb.dom.wrap(window);
 	var form = sb.dom.find('#form-message');
@@ -270,7 +255,5 @@ App.Modules.EditorSwitchModule = function(sb, options) {
 	}
 }
 
-App.Core.register('KeyCreateModule', App.Modules.KeyCreateModule);
-//App.Core.register('MessageModule', App.Modules.MessageModule);
 App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('KeyHashModule', App.Modules.KeyHashModule);

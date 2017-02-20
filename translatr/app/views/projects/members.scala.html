@@ -30,13 +30,22 @@
 						@Messages("when.created", pretty(ctx.lang().locale, member.whenCreated))
 					</p>
 					@* Permission Check *@
-					@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner) || member.user.id == template.loggedInUser.id) {
+					@if(project.owner == member.user && project.owner == template.loggedInUser) {
 						<a
-							href="@routes.Projects.memberRemove(project.id, member.id)"
-							class="secondary-content btn-hover"
-							title="@Messages("button.remove")">
-							<i class="material-icons">delete_forever</i>
+							href="#modal-change-ownership"
+							class="secondary-content btn-hover modal-trigger"
+							title="@Messages("project.owner.change.button")">
+							<i class="material-icons">swap_horiz</i>
 						</a>
+					} else {
+						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager) || member.user.id == template.loggedInUser.id) {
+							<a
+								href="@routes.Projects.memberRemove(project.id, member.id)"
+								class="secondary-content btn-hover"
+								title="@Messages("button.remove")">
+								<i class="material-icons">delete_forever</i>
+							</a>
+						}
 					}
 				</li>
 			}
@@ -45,7 +54,7 @@
 		}
 	}
 
-	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner)) {
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager)) {
 		@tags.fabContainer("create-member", "add", tooltip = Messages("member.create.tooltip"), styleClass = "teal")
 
 		@tags.modal(Messages("member.new"), "modal-create-member") {
@@ -56,10 +65,24 @@
 				@memberFormContent(project, memberForm)
 			</form>
 		}
+
+		@tags.modal(Messages("member.ownership.change"), "modal-change-ownership", saveForm=memberList.getList.size > 1) {
+			<form
+				id="form-ownership"
+				method="post"
+				action="@routes.Projects.doOwnerChange(project.id)">
+				@ownerChangeFormContent(project, memberList, memberForm)
+			</form>
+		}
 	}
 
+	<script src="@routes.Assets.versioned("javascripts/projectMembers.js")"></script>
 	<script type="text/javascript">
 		var projectId = '@project.id';
+		App.Core.register('MaterialModule', App.Modules.MaterialModule);
+		App.Core.register('MembersCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-member'});
+		App.Core.register('ProjectOwnershipModule', App.Modules.ModalFormModule, {modalSelector: '#modal-change-ownership'});
+		App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
+		App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
 	</script>
-	<script src="@routes.Assets.versioned("javascripts/projectMembers.js")"></script>
 }

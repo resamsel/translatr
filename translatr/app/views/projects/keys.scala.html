@@ -34,7 +34,7 @@
 						@utils.FormatUtils.pretty(ctx.lang().locale, key.whenUpdated)
 					</p>
 					<div class="secondary-content">
-						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Developer)) {
+						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
 							<a
 								href="@routes.Keys.edit(key.id)"
 								class="btn-flat btn-hover waves-effect waves-light"
@@ -56,16 +56,18 @@
 		}
 	}
 
-	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Developer)) {
-		@tags.fabContainer("create", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
+		@tags.fabContainer("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
 
-		@tags.modal(Messages("key.new"), "modal-create") {
+		@tags.modal(Messages("key.new"), "modal-create-key") {
 			@tags.keyCreate(project)
 		}
 	}
 
 	<script type="text/javascript">
 		var projectId = '@project.id';
+
+		App.Core.register('KeysCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
 	</script>
 	<script src="@routes.Assets.versioned("javascripts/projectKeys.js")"></script>
 }

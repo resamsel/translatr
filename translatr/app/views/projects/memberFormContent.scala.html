@@ -4,7 +4,9 @@
 <div class="input-field">
 	<select id="field-role" name="role">
 		@for(role <- ProjectRole.values()) {
-			<option value="@role">@role</option>
+			@if(role.name != "Owner") {
+				<option value="@role">@Messages("project.role." + role.name)</option>
+			}
 		}
 	</select>
 	<label for="field-role">@Messages("member.role")</label>

@@ -10,6 +10,24 @@ App.Modules.ModalModule = function(sb) {
 	};
 };
 
+App.Modules.ModalFormModule = function(sb, options) {
+	var prepareForm = options.prepareForm || function(sb, form) {};
+	var modal = sb.dom.find(options.modalSelector);
+	var form = modal.find('form');
+	var saveButton = modal.find('.btn-save');
+
+	return {
+		create : function() {
+			saveButton.click(function() {
+				prepareForm(sb, form);
+				form.submit();
+			});
+		},
+		destroy : function() {
+		}
+	};
+};
+
 App.Modules.MaterialModule = function(sb) {
 	return {
 		create: function() {

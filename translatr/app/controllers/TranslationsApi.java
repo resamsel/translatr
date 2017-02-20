@@ -102,7 +102,7 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria>
             .withLocaleId(JsonUtils.getUuid(request().getQueryString("localeId")))
             .withKeyName(request().getQueryString(PARAM_KEY_NAME)),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
-            ProjectRole.Translator, ProjectRole.Developer)));
+            ProjectRole.Manager, ProjectRole.Translator, ProjectRole.Developer)));
   }
 
   /**

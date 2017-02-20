@@ -117,7 +117,8 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
    */
   @Override
   protected void preDelete(Key t) {
-    if (!t.project.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner, ProjectRole.Developer))
+    if (!t.project.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
+        ProjectRole.Developer))
       throw new PermissionException("User not allowed in project");
 
     logEntryService

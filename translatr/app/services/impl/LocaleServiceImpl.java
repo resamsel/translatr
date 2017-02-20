@@ -122,7 +122,8 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
    */
   @Override
   public void preDelete(Locale t) {
-    if (!t.project.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner, ProjectRole.Translator))
+    if (!t.project.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
+        ProjectRole.Translator))
       throw new PermissionException("User not allowed in project");
 
     logEntryService.save(

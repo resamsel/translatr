@@ -40,7 +40,7 @@
 						}
 					</p>
 					<div class="secondary-content">
-						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Translator)) {
+						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
 							<a
 								href="@routes.Locales.edit(locale.id)"
 								class="btn-flat btn-hover waves-effect waves-light"
@@ -73,7 +73,7 @@
 								</li>
 							}
 						</ul>
-						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Translator)) {
+						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
 							<a
 								href="@routes.Locales.remove(locale.id)"
 								class="btn-flat btn-hover waves-effect waves-light"
@@ -89,16 +89,18 @@
 		}
 	}
 
-	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Translator)) {
-		@tags.fabContainer("create", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue")
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
+		@tags.fabContainer("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue")
 
-		@tags.modal(Messages("locale.new"), "modal-create") {
+		@tags.modal(Messages("locale.new"), "modal-create-locale") {
 			@tags.localeCreate(project)
 		}
 	}
 
 	<script>
 		var projectId = '@project.id';
+
+		App.Core.register('LocalesCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-locale'});
 	</script>
 	<script src="@routes.Assets.versioned("javascripts/projectLocales.js")"></script>
 }

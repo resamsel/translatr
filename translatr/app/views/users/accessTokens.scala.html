@@ -45,5 +45,7 @@
 		</form>
 	}
 
-	<script src="@routes.Assets.versioned("javascripts/accessTokens.js")"></script>
+	<script>
+		App.Core.register('AccessTokenCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-access-token'});
+	</script>
 }

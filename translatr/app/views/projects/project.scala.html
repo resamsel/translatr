@@ -5,7 +5,7 @@
 @import views.html.tags.contentCardWithActions
 
 @projectActions = {
-	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner)) {
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager)) {
 		<li>
 			@tags.fab("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
 		</li>
@@ -33,7 +33,7 @@
 			<div class="svg-container"></div>
 		}
 
-		@if(project.localesSize() == 0 && project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Translator)) {
+		@if(project.localesSize() == 0 && project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
 			@contentCardWithActions(Messages("locales"), styleClass = "locales") {
 				<p>
 					@Messages("locales.size", project.localesSize())<br/>
@@ -55,7 +55,7 @@
 			}
 		}
 
-		@if(project.keysSize() == 0 && project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Developer)) {
+		@if(project.keysSize() == 0 && project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
 			@contentCardWithActions(Messages("keys"), styleClass = "keys") {
 				<p>
 					@Messages("keys.size", project.keysSize())
@@ -88,7 +88,7 @@
 		}
 	}
 
-	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner)) {
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager)) {
 		@tags.fabContainer("edit-project", "edit", href = routes.Projects.edit(project.id).url, tooltip = Messages("project.edit.tooltip"), styleClass = "orange", actions = projectActions)
 	} else { @if(project.hasRolesAny(template.loggedInUser, ProjectRole.Developer)) {
 		@tags.fabContainer("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
@@ -96,13 +96,13 @@
 		@tags.fabContainer("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue")
 	}}}
 
-	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Translator)) {
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
 		@tags.modal(Messages("locale.new"), "modal-create-locale") {
 			@tags.localeCreate(project)
 		}
 	}
 
-	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Developer)) {
+	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
 		@tags.modal(Messages("key.new"), "modal-create-key") {
 			@tags.keyCreate(project)
 		}
@@ -110,6 +110,9 @@
 
 	<script>
 		var projectId = '@project.id';
+
+		App.Core.register('LocaleCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-locale'});
+		App.Core.register('KeyCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
 	</script>
 	@tags.contributionScript()
 	<script src="@routes.Assets.versioned("javascripts/project.js")"></script>
