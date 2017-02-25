@@ -161,19 +161,28 @@ public class Projects extends AbstractController {
   }
 
   public Result edit(UUID projectId) {
-    Project project = projectService.byId(projectId);
+    return project(projectId, project -> {
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
+        addError(ctx().messages().at("project.edit.denied", project.name));
+        return redirect(routes.Projects.project(project.id));
+      }
 
-    if (project == null)
-      return redirect(routes.Application.index());
+      select(project);
 
-    if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
-      addError(ctx().messages().at("project.edit.denied", project.name));
-      return redirect(routes.Projects.project(project.id));
-    }
+      return ok(views.html.projects.edit.render(createTemplate(), project,
+          formFactory.form(ProjectForm.class).fill(ProjectForm.from(project))));
+    });
+  }
 
-    select(project);
+  public Result doEdit(UUID projectId) {
+    return project(projectId, project -> {
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
+        addError(ctx().messages().at("project.edit.denied", project.name));
+        return redirect(routes.Projects.project(project.id));
+      }
 
-    if ("POST".equals(request().method())) {
+      select(project);
+
       Form<ProjectForm> form = formFactory.form(ProjectForm.class).bindFromRequest();
 
       if (form.hasErrors())
@@ -182,10 +191,7 @@ public class Projects extends AbstractController {
       projectService.save(form.get().fill(project));
 
       return redirect(routes.Projects.project(project.id));
-    }
-
-    return ok(views.html.projects.edit.render(createTemplate(), project,
-        formFactory.form(ProjectForm.class).fill(ProjectForm.from(project))));
+    });
   }
 
   public Result remove(UUID projectId) {
@@ -314,7 +320,14 @@ public class Projects extends AbstractController {
     return project(projectId, project -> {
       Form<ProjectUserForm> form = ProjectUserForm.form(formFactory).bindFromRequest();
 
-      // TODO: Enable GET/POST switch
+      return ok(views.html.projects.memberAdd.render(createTemplate(), project, form));
+    });
+  }
+
+  public Result doMemberAdd(UUID projectId) {
+    return project(projectId, project -> {
+      Form<ProjectUserForm> form = ProjectUserForm.form(formFactory).bindFromRequest();
+
       if (form.hasErrors())
         return badRequest(views.html.projects.memberAdd.render(createTemplate(), project, form));
 

@@ -68,7 +68,7 @@ public class JsonUtils {
         break;
       case "dto.AccessToken":
         if (id != null)
-          return routes.Profiles.accessToken(id);
+          return routes.Profiles.accessTokenEdit(id);
         break;
       default:
         break;

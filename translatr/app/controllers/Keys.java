@@ -99,7 +99,19 @@ public class Keys extends AbstractController {
     });
   }
 
-  public Result create(UUID projectId, UUID localeId) {
+  public Result create(UUID projectId) {
+    Project project = projectService.byId(projectId);
+
+    if (project == null)
+      return redirect(routes.Application.index());
+
+    select(project);
+
+    return ok(views.html.keys.create.render(createTemplate(), project,
+        formFactory.form(KeyForm.class).bindFromRequest()));
+  }
+
+  public Result doCreate(UUID projectId, UUID localeId) {
     Project project = projectService.byId(projectId);
 
     if (project == null)
@@ -156,19 +168,21 @@ public class Keys extends AbstractController {
 
   public Result edit(UUID keyId) {
     return key(keyId, key -> {
-      if ("POST".equals(request().method())) {
-        Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
-
-        if (form.hasErrors())
-          return badRequest(views.html.keys.edit.render(createTemplate(), key, form));
-
-        keyService.save(form.get().into(key));
-
-        return redirect(routes.Projects.keys(key.project.id));
-      }
-
       return ok(views.html.keys.edit.render(createTemplate(), key,
           formFactory.form(KeyForm.class).fill(KeyForm.from(key))));
+    });
+  }
+
+  public Result doEdit(UUID keyId) {
+    return key(keyId, key -> {
+      Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
+
+      if (form.hasErrors())
+        return badRequest(views.html.keys.edit.render(createTemplate(), key, form));
+
+      keyService.save(form.get().into(key));
+
+      return redirect(routes.Projects.keys(key.project.id));
     });
   }
 

@@ -102,7 +102,7 @@ public class Locales extends AbstractController {
     });
   }
 
-  public Result create(UUID projectId) {
+  public Result doCreate(UUID projectId) {
     Project project = projectService.byId(projectId);
     if (project == null)
       return redirect(routes.Application.index());
@@ -158,19 +158,21 @@ public class Locales extends AbstractController {
 
   public Result edit(UUID localeId) {
     return locale(localeId, locale -> {
-      if ("POST".equals(request().method())) {
-        Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
-
-        if (form.hasErrors())
-          return badRequest(views.html.locales.edit.render(createTemplate(), locale, form));
-
-        localeService.save(form.get().into(locale));
-
-        return redirect(routes.Projects.locales(locale.project.id));
-      }
-
       return ok(views.html.locales.edit.render(createTemplate(), locale,
           formFactory.form(LocaleForm.class).fill(LocaleForm.from(locale))));
+    });
+  }
+
+  public Result doEdit(UUID localeId) {
+    return locale(localeId, locale -> {
+      Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
+
+      if (form.hasErrors())
+        return badRequest(views.html.locales.edit.render(createTemplate(), locale, form));
+
+      localeService.save(form.get().into(locale));
+
+      return redirect(routes.Projects.locales(locale.project.id));
     });
   }
 

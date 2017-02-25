@@ -1,6 +1,5 @@
 version: "2"
 volumes:
-#    translatr-h2:
     translatr-pgdata:
 services:
 #    translatr:

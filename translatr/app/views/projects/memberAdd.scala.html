@@ -10,7 +10,7 @@
 	</a>
 } {
 	@content(project, "members") {
-		<form action="@routes.Projects.memberAdd(project.id)" method="post">
+		<form action="@routes.Projects.doMemberAdd(project.id)" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">
 					<span class="card-title">@Messages("member.add.title")</span>

@@ -2,18 +2,18 @@
 
 @main(template.withTitle(Messages("locale.create.title", project.name))) {
 } {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
-			@project.name
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.locales(project.id)">
-			@Messages("locales")
-		</a>
+	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+		@Messages("dashboard")
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
+		@project.name
+	</a>
+	<a class="breadcrumb" href="@routes.Projects.locales(project.id)">
+		@Messages("locales")
+	</a>
 } {
 	@projects.content(project, "locales", "flex") {
-		<form action="@routes.Locales.create(project.id)" method="post">
+		<form action="@routes.Locales.doCreate(project.id)" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">
 					<span class="card-title">@Messages("locale.create.title")</span>

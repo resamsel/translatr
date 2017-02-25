@@ -16,7 +16,7 @@
 	</a>
 } {
 	@projects.content(locale.project, "locales", "flex") {
-		<form action="@routes.Locales.edit(locale.id)" method="post">
+		<form action="@routes.Locales.doEdit(locale.id)" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">
 					<span class="card-title">@Messages("locale.edit")</span>

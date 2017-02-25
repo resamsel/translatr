@@ -16,7 +16,7 @@
 	</a>
 } {
 	@projects.content(key.project, "keys", "flex") {
-		<form action="@routes.Keys.edit(key.id)" method="post">
+		<form action="@routes.Keys.doEdit(key.id)" method="post">
 			<div class="card no-image">
 				<div class="card-content">
 					<span class="card-title">@Messages("key.edit", key.name)</span>

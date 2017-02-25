@@ -255,7 +255,7 @@ public class Profiles extends AbstractController {
     });
   }
 
-  public Result accessToken(Long accessTokenId) {
+  public Result accessTokenEdit(Long accessTokenId) {
     return loggedInUser(user -> {
       AccessToken accessToken = accessTokenService.byId(accessTokenId);
       if (accessToken == null)
@@ -285,7 +285,7 @@ public class Profiles extends AbstractController {
 
       accessTokenService.save(form.get().fill(accessToken));
 
-      return redirect(routes.Profiles.accessToken(accessTokenId));
+      return redirect(routes.Profiles.accessTokenEdit(accessTokenId));
     });
   }
 
@@ -306,7 +306,7 @@ public class Profiles extends AbstractController {
       AccessToken accessToken =
           accessTokenService.save(form.get().fill(new AccessToken()).withUser(user));
 
-      return redirect(routes.Profiles.accessToken(accessToken.id));
+      return redirect(routes.Profiles.accessTokenEdit(accessToken.id));
     });
   }
 
