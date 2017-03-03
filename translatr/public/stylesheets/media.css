@@ -130,9 +130,6 @@
 		display: block;
 		width: auto;
 	}
-	.collection-item:hover .name {
-		max-width: calc(100% - 35px);
-	}
 	.ct-chart.ct-double-octave:before {
 		padding-bottom: 12.5%;
 	}

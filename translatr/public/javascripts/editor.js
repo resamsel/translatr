@@ -1,3 +1,14 @@
+function stripScripts(s) {
+    var div = document.createElement('div');
+    div.innerHTML = s;
+    var scripts = div.getElementsByTagName('script');
+    var i = scripts.length;
+    while (i--) {
+      scripts[i].parentNode.removeChild(scripts[i]);
+    }
+    return div.innerHTML;
+}
+
 App.Modules.EditorModule = function(sb, options) {
 	var options = options || {};
 	var messages = options.messages || {};
@@ -45,7 +56,7 @@ App.Modules.EditorModule = function(sb, options) {
 	    fieldKey.val(msg.keyName).attr('keyId', msg.keyId);
 	    fieldLocale.val(msg.localeName).attr('localeId', msg.localeId);
 	    codeEditor.setValue(msg.value);
-	    preview.html(msg.value);
+	    preview.html(stripScripts(msg.value));
 	}
 
 	function _handleItemSelected(item) {
@@ -97,7 +108,7 @@ App.Modules.EditorModule = function(sb, options) {
 	}
 
 	function _handleMessageChanged() {
-		preview.html(codeEditor.getValue());
+		preview.html(stripScripts(codeEditor.getValue()));
 	}
 
 	function _handleSubmit(e){
@@ -127,6 +138,10 @@ App.Modules.EditorModule = function(sb, options) {
 			}
 		)).done(_handleSaveMessage);
     }
+	
+	function _handleValueChanged(value) {
+		codeEditor.setValue(stripScripts(value));
+	}
 
 	function _handleCancelation() {
 		sb.publish('itemSelected', [null]);
@@ -149,6 +164,7 @@ App.Modules.EditorModule = function(sb, options) {
 
 			sb.subscribe('itemsChanged', _handleItemsChanged);
 			sb.subscribe('itemSelected', _handleItemSelected);
+			sb.subscribe('valueChanged', _handleValueChanged);
 
 			message.hide();
 			panelPreview.hide();

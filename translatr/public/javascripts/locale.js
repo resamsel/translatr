@@ -4,29 +4,12 @@ App.Modules.EditorMessageListModule = function(sb, options) {
 	var locales = options.locales || {};
 
 	var panelMessages = sb.dom.find('#panel-messages .messages');
-	var fieldValue = sb.dom.find('#field-value');
-	var panelPreview = sb.dom.find('#panel-preview');
-	var itemRight = sb.dom.find('.item-right');
-	var preview = sb.dom.find('#preview');
-	var dropdownButton = sb.dom.find('.item-right .filter .dropdown-button');
-	var dropdownPreview = sb.dom.find('#dropdown-preview');
 	var template = panelMessages.find('.template');
 
 	function _handleCopyMessageValue(e) {
 		e.preventDefault();
-		var value = sb.dom.wrap(this).data('value');
-		fieldValue.val(value).trigger('autoresize');
-		Materialize.updateTextFields();
-		sb.publish('valueChanged', value);
-		preview.html(value);
-	}
-	
-	function _handleShowMessageValue(e) {
-		e.preventDefault();
-		var entry = sb.dom.wrap(this).data('message');
-		//sb.publish('valueChanged', entry.value);
-		preview.html(entry.value);
-		dropdownButton.find('span').html(locales[entry.localeId]);
+
+		sb.publish('valueChanged', sb.dom.wrap(this).data('value'));
 	}
 
 	function _handleMessageList(keyName, paged) {
@@ -38,7 +21,7 @@ App.Modules.EditorMessageListModule = function(sb, options) {
 				.data('value', entry.value)
 	    		.click(_handleCopyMessageValue);
 	    	$msg.find('.localeName').html(locales[entry.localeId]);
-	    	$msg.find('.value').html(entry.value);
+	    	$msg.find('.value').html(stripScripts(entry.value));
 	    	panelMessages.append($msg);
 		});
 	}
@@ -51,14 +34,11 @@ App.Modules.EditorMessageListModule = function(sb, options) {
 
 		panelMessages.show();
 
-		var keyId = item.keyId;
-		var keyName = item.keyName;
-
 		sb.utilities.ajax(sb.utilities.merge(
 			jsRoutes.controllers.TranslationsApi.find(projectId),
-			{data: {keyName: keyName}}
+			{data: {keyName: item.keyName}}
 		)).done(function(data) {
-			_handleMessageList(keyName, data);
+			_handleMessageList(item.keyName, data);
 		});
 	}
 

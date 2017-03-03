@@ -214,7 +214,8 @@ App.Core = function(_$) {
 			}
 		},
 		publish: function(message, args) {
-			try {
+			if(message in cache) {
+				try {
 					var i;
 					for (i = 0; i < cache[message].length; i++) {
 						if (typeof args === "undefined") { args = []; }
@@ -223,8 +224,9 @@ App.Core = function(_$) {
 						}
 						cache[message][i].apply(this, args);
 					}
-			} catch (err) {
-				console.log(err);
+				} catch (err) {
+					console.log(err);
+				}
 			}
 		},
 		subscribe: function(message, callback) {
