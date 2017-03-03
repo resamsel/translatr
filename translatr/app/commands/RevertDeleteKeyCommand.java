@@ -1,7 +1,7 @@
 package commands;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.List;
 import java.util.Map;
@@ -18,11 +18,13 @@ import models.Project;
 import play.mvc.Call;
 import play.mvc.Http.Context;
 import services.KeyService;
+import services.LocaleService;
 import services.MessageService;
 import services.ProjectService;
 
 public class RevertDeleteKeyCommand implements Command<models.Key> {
   private final ProjectService projectService;
+  private final LocaleService localeService;
   private final KeyService keyService;
   private final MessageService messageService;
 
@@ -34,9 +36,10 @@ public class RevertDeleteKeyCommand implements Command<models.Key> {
    * 
    */
   @Inject
-  public RevertDeleteKeyCommand(ProjectService projectService, KeyService keyService,
-      MessageService messageService) {
+  public RevertDeleteKeyCommand(ProjectService projectService, LocaleService localeService,
+      KeyService keyService, MessageService messageService) {
     this.projectService = projectService;
+    this.localeService = localeService;
     this.keyService = keyService;
     this.messageService = messageService;
   }
@@ -60,11 +63,12 @@ public class RevertDeleteKeyCommand implements Command<models.Key> {
     keyService.save(model);
     key.id = model.id;
 
-    Map<String, Locale> locales = Locale.findBy(new LocaleCriteria().withProjectId(project.id))
-        .stream().collect(groupingBy(l -> l.name, reducing(null, a -> a, (a, b) -> b)));
+    Map<String, Locale> locales =
+        localeService.findBy(new LocaleCriteria().withProjectId(project.id)).getList().stream()
+            .collect(toMap(l -> l.name, a -> a));
 
-    messageService.save(messages.stream().map(m -> m.toModel(locales.get(m.localeName), model))
-        .collect(Collectors.toList()));
+    messageService.save(
+        messages.stream().map(m -> m.toModel(locales.get(m.localeName), model)).collect(toList()));
   }
 
   /**

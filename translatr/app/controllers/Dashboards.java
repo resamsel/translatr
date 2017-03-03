@@ -3,7 +3,6 @@ package controllers;
 import static utils.Stopwatch.log;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,6 +36,7 @@ import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.With;
 import services.LogEntryService;
+import services.ProjectService;
 import services.UserService;
 import utils.FormUtils;
 
@@ -53,17 +53,20 @@ public class Dashboards extends AbstractController {
 
   private final Configuration configuration;
 
+  private final ProjectService projectService;
+
   /**
    * 
    */
   @Inject
   public Dashboards(Injector injector, CacheApi cache, FormFactory formFactory,
       Configuration configuration, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService) {
+      LogEntryService logEntryService, ProjectService projectService) {
     super(injector, cache, auth, userService, logEntryService);
 
     this.formFactory = formFactory;
     this.configuration = configuration;
+    this.projectService = projectService;
   }
 
   @SubjectPresent(forceBeforeAuthCheck = true)
@@ -74,11 +77,11 @@ public class Dashboards extends AbstractController {
       if (search.order == null)
         search.order = "name";
 
-      List<Project> projects =
-          Project.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
+      PagedList<Project> projects =
+          projectService.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
 
-      return log(() -> ok(views.html.dashboards.dashboard.render(createTemplate(), projects,
-          FormUtils.Search.bindFromRequest(formFactory, configuration),
+      return log(() -> ok(views.html.dashboards.dashboard.render(createTemplate(),
+          projects.getList(), FormUtils.Search.bindFromRequest(formFactory, configuration),
           ProjectForm.form(formFactory))), LOGGER, "Rendering dashboard");
     });
   }
@@ -106,9 +109,9 @@ public class Dashboards extends AbstractController {
 
     List<Suggestable> suggestions = new ArrayList<>();
 
-    Collection<? extends Suggestable> projects = Project.findBy(ProjectCriteria.from(search));
-    if (!projects.isEmpty())
-      suggestions.addAll(projects);
+    PagedList<? extends Suggestable> projects = projectService.findBy(ProjectCriteria.from(search));
+    if (!projects.getList().isEmpty())
+      suggestions.addAll(projects.getList());
     else
       suggestions.add(Suggestable.DefaultSuggestable
           .from(ctx().messages().at("project.create", search.search), Data.from(Project.class, null,

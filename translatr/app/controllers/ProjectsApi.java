@@ -24,12 +24,14 @@ import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
 import models.User;
 import play.cache.CacheApi;
+import play.data.FormFactory;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
 import services.LogEntryService;
 import services.UserService;
 import services.api.ProjectApiService;
+import utils.FormUtils;
 
 /**
  * @author resamsel
@@ -52,15 +54,21 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
   private static final String UPDATE_REQUEST = "The project to update";
   private static final String DELETE = "Delete project";
   private static final String DELETE_RESPONSE = "Deleted project";
+  private static final String SEARCH = "Search the contents of the project";
+  private static final String SEARCH_RESPONSE = "Suggestions for contents";
 
-  private static final String SEARCH = "Part of the name of the project";
+  private static final String SEARCH_FIELD = "The search term";
   private static final String NOT_FOUND_ERROR = "Project not found";
+
+  private final ProjectApiService projectApiService;
 
   @Inject
   public ProjectsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService,
       ProjectApiService projectApiService) {
     super(injector, cache, auth, userService, logEntryService, projectApiService);
+
+    this.projectApiService = projectApiService;
   }
 
   /**
@@ -76,7 +84,7 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
   @ApiImplicitParams({
       @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
           dataType = "string", paramType = "query"),
-      @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
+      @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH_FIELD, dataType = "string",
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
@@ -150,5 +158,25 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> delete(@ApiParam(value = PROJECT_ID) UUID id) {
     return toJson(() -> api.delete(id));
+  }
+
+  @ApiOperation(value = SEARCH, authorizations = @Authorization(value = AUTHORIZATION,
+      scopes = {@AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)}))
+  @ApiResponses({
+      @ApiResponse(code = 200, message = SEARCH_RESPONSE, response = dto.SearchResponse.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH_FIELD, dataType = "string",
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
+  public CompletionStage<Result> search(UUID projectId) {
+    return toJsonSearch(() -> {
+      return projectApiService.search(projectId, FormUtils.Search
+          .bindFromRequest(injector.instanceOf(FormFactory.class), configuration).get());
+    });
   }
 }

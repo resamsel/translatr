@@ -147,14 +147,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return find.fetch("owner").where().eq("id", id).findUnique();
   }
 
-  /**
-   * @param criteria
-   * @return
-   */
-  public static List<Project> findBy(ProjectCriteria criteria) {
-    return pagedBy(criteria).getList();
-  }
-
   public static PagedList<Project> pagedBy(ProjectCriteria criteria) {
     ExpressionList<Project> query = find.fetch("owner").where();
 
@@ -175,13 +167,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
     criteria.paged(query);
 
     return log(() -> new HasNextPagedList<>(query), LOGGER, "pagedBy");
-  }
-
-  /**
-   * @return
-   */
-  public static List<Project> all() {
-    return find.where().eq("deleted", false).order("name").findList();
   }
 
   public float progress() {

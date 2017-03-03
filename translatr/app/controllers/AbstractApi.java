@@ -17,10 +17,12 @@ import criterias.AbstractSearchCriteria;
 import dto.Dto;
 import dto.NotFoundException;
 import dto.PermissionException;
+import dto.SearchResponse;
 import models.Project;
 import models.ProjectRole;
 import models.Scope;
 import models.User;
+import play.Configuration;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.libs.Json;
@@ -78,12 +80,14 @@ public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends Abstract
   protected final HttpExecutionContext executionContext;
 
   protected final ApiService<DTO, ID, CRITERIA> api;
+  protected final Configuration configuration;
 
   protected AbstractApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       UserService userService, LogEntryService logEntryService, ApiService<DTO, ID, CRITERIA> api) {
     super(injector, cache, auth, userService, logEntryService);
 
     this.executionContext = injector.instanceOf(HttpExecutionContext.class);
+    this.configuration = injector.instanceOf(Configuration.class);
     this.api = api;
   }
 
@@ -140,6 +144,11 @@ public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends Abstract
   }
 
   protected <T> CompletionStage<Result> toJsons(Supplier<PagedList<T>> supplier) {
+    return CompletableFuture.supplyAsync(supplier, executionContext.current())
+        .thenApply(out -> ok(Json.toJson(out))).exceptionally(AbstractApi::handleException);
+  }
+
+  protected <T> CompletionStage<Result> toJsonSearch(Supplier<SearchResponse> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
         .thenApply(out -> ok(Json.toJson(out))).exceptionally(AbstractApi::handleException);
   }

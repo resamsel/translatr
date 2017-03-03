@@ -2,8 +2,6 @@ package controllers;
 
 import static utils.Stopwatch.log;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
@@ -28,8 +26,6 @@ import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.LogEntryCriteria;
 import criterias.ProjectUserCriteria;
-import dto.SearchResponse;
-import dto.Suggestion;
 import forms.ActivitySearchForm;
 import forms.KeySearchForm;
 import forms.LocaleSearchForm;
@@ -43,8 +39,6 @@ import models.LogEntry;
 import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
-import models.Suggestable;
-import models.Suggestable.Data;
 import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
@@ -214,51 +208,6 @@ public class Projects extends AbstractController {
     projectService.delete(project);
 
     return redirect(routes.Dashboards.dashboard());
-  }
-
-  public Result search(UUID id) {
-    return keySearchForm(id, (project, form) -> {
-      KeySearchForm search = form.get();
-      search.setLimit(configuration.getInt("translatr.search.autocomplete.limit", 3));
-
-      List<Suggestable> suggestions = new ArrayList<>();
-
-      PagedList<? extends Suggestable> keys = Key.pagedBy(
-          KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
-
-      search.pager(keys);
-
-      if (!keys.getList().isEmpty())
-        suggestions.addAll(keys.getList());
-      if (search.hasMore)
-        suggestions.add(Suggestable.DefaultSuggestable
-            .from(ctx().messages().at("key.search", search.search), Data.from(Key.class, null,
-                "???", search.urlWithOffset(routes.Projects.keys(project.id), 20, 0))));
-
-      if (PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager,
-          ProjectRole.Developer))
-        suggestions.add(Suggestable.DefaultSuggestable
-            .from(ctx().messages().at("key.create", search.search), Data.from(Key.class, null,
-                "+++", routes.Keys.createImmediately(project.id, search.search).url())));
-
-      PagedList<? extends Suggestable> locales = Locale.pagedBy(new LocaleCriteria()
-          .withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
-
-      search.pager(locales);
-      if (!locales.getList().isEmpty())
-        suggestions.addAll(locales.getList());
-      if (search.hasMore)
-        suggestions.add(Suggestable.DefaultSuggestable
-            .from(ctx().messages().at("locale.search", search.search), Data.from(Locale.class, null,
-                "???", search.urlWithOffset(routes.Projects.locales(project.id), 20, 0))));
-
-      if (PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Translator))
-        suggestions.add(Suggestable.DefaultSuggestable
-            .from(ctx().messages().at("locale.create", search.search), Data.from(Locale.class, null,
-                "+++", routes.Locales.createImmediately(project.id, search.search).url())));
-
-      return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
-    });
   }
 
   public Result locales(UUID id) {

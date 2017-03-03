@@ -1,9 +1,10 @@
 package controllers;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -93,9 +94,8 @@ public class Locales extends AbstractController {
       search.pager(keys);
       PagedList<Locale> locales =
           Locale.pagedBy(new LocaleCriteria().withProjectId(locale.project.id).withLimit(100));
-      Map<String, Message> messages =
-          Message.findBy(new MessageCriteria().withLocaleId(locale.id)).stream().collect(Collectors
-              .groupingBy((m) -> m.key.name, Collectors.reducing(null, a -> a, (a, b) -> b)));
+      Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id))
+          .stream().collect(toMap(m -> m.key.name, a -> a));
 
       return ok(views.html.locales.locale.render(createTemplate(), locale.project, locale, keys,
           locales, messages, form));

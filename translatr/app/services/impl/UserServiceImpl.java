@@ -30,7 +30,6 @@ import models.AccessToken;
 import models.ActionType;
 import models.LinkedAccount;
 import models.LogEntry;
-import models.Project;
 import models.ProjectUser;
 import models.User;
 import models.UserStats;
@@ -237,10 +236,13 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
         .filter(logEntry -> !logEntry.contentType.equals("dto.User"))
         .map(logEntry -> logEntry.withUser(user)).collect(toList()));
 
-    projectService.save(Project
-        .findBy(new ProjectCriteria().withOwnerId(otherUser.id)).stream().map(project -> project
-            .withOwner(user).withName(String.format("%s (%s)", project.name, user.email)))
-        .collect(toList()));
+    projectService
+        .save(
+            projectService.findBy(new ProjectCriteria().withOwnerId(otherUser.id)).getList()
+                .stream()
+                .map(project -> project.withOwner(user)
+                    .withName(String.format("%s (%s)", project.name, user.email)))
+                .collect(toList()));
 
     projectUserService.save(ProjectUser.pagedBy(new ProjectUserCriteria().withUserId(otherUser.id))
         .getList().stream().map(member -> member.withUser(user)).collect(toList()));

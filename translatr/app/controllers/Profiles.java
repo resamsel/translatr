@@ -1,7 +1,6 @@
 package controllers;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.toMap;
 
 import javax.inject.Inject;
 
@@ -142,9 +141,8 @@ public class Profiles extends AbstractController {
 
       search.pager(accounts);
 
-      return ok(
-          views.html.users.linkedAccounts.render(createTemplate(), user, accounts.getList().stream()
-              .collect(groupingBy(a -> a.providerKey, reducing(null, a -> a, (a, b) -> b))), form));
+      return ok(views.html.users.linkedAccounts.render(createTemplate(), user,
+          accounts.getList().stream().collect(toMap(a -> a.providerKey, a -> a)), form));
     });
   }
 

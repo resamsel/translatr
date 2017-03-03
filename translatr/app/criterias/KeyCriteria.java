@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import forms.KeySearchForm;
+import forms.SearchForm;
 import play.mvc.Http.Request;
 
 /**
@@ -75,6 +76,14 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria> {
   public KeyCriteria withLocaleId(UUID localeId) {
     setLocaleId(localeId);
     return this;
+  }
+
+  /**
+   * @param form
+   * @return
+   */
+  public static KeyCriteria from(SearchForm form) {
+    return new KeyCriteria().with(form);
   }
 
   /**

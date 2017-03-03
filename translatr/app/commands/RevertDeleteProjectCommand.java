@@ -1,7 +1,7 @@
 package commands;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -78,13 +78,12 @@ public class RevertDeleteProjectCommand implements Command<models.Project> {
 
     Map<String, Key> keys = keyService
         .save(project.keys.stream().map(k -> k.toModel(model)).collect(Collectors.toList()))
-        .stream().collect(groupingBy(k -> k.name, reducing(null, a -> a, (a, b) -> b)));
+        .stream().collect(toMap(k -> k.name, a -> a));
     Map<String, Locale> locales = localeService
         .save(project.locales.stream().map(l -> l.toModel(model)).collect(Collectors.toList()))
-        .stream().collect(groupingBy(l -> l.name, reducing(null, a -> a, (a, b) -> b)));
+        .stream().collect(toMap(l -> l.name, a -> a));
     messageService.save(project.messages.stream()
-        .map(m -> m.toModel(locales.get(m.localeName), keys.get(m.keyName)))
-        .collect(Collectors.toList()));
+        .map(m -> m.toModel(locales.get(m.localeName), keys.get(m.keyName))).collect(toList()));
   }
 
   /**

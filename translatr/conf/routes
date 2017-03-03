@@ -46,7 +46,6 @@ GET		/project/create					controllers.Projects.create
 POST	/project/create					controllers.Projects.doCreate
 GET		/project/:projectName/create	controllers.Projects.createImmediately(projectName: String)
 GET		/project/:id					controllers.Projects.project(id: java.util.UUID)
-GET		/project/:id/search				controllers.Projects.search(id: java.util.UUID)
 GET		/project/:id/edit				controllers.Projects.edit(id: java.util.UUID)
 POST	/project/:id/edit				controllers.Projects.doEdit(id: java.util.UUID)
 GET		/project/:id/remove				controllers.Projects.remove(id: java.util.UUID)
@@ -93,6 +92,7 @@ GET		/command/:key/execute	controllers.Application.commandExecute(key: String)
 GET		/api/swagger.json				controllers.ApiHelpController.getResources
 
 GET		/api/projects					controllers.ProjectsApi.find
+GET		/api/project/:id/search			controllers.ProjectsApi.search(id: java.util.UUID)
 GET		/api/project/:projectId			controllers.ProjectsApi.get(projectId: java.util.UUID)
 POST	/api/project					controllers.ProjectsApi.create
 PUT		/api/project					controllers.ProjectsApi.update
