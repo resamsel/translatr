@@ -3,6 +3,8 @@ package models;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * @author resamsel
  * @version 21 Oct 2016
@@ -46,6 +48,7 @@ public enum Scope {
     this.type = type;
   }
 
+  @JsonValue
   public String scope() {
     return String.format("%s:%s", type, section).toLowerCase();
   }
