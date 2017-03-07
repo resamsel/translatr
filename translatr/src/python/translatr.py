@@ -47,6 +47,7 @@ API_HTML_ERROR = textwrap.dedent("""
 Project = namedtuple('Project', 'id name ownerId ownerName')
 Locale = namedtuple('Locale', 'id name projectId projectName')
 Key = namedtuple('Key', 'id name projectId projectName')
+User = namedtuple('User', 'id name username')
 
 logger = logging.getLogger(__name__)
 
@@ -236,6 +237,15 @@ class Api(object):
 			**self.request.delete('key/{0}'.format(key_id)).json()
 		)
 
+	def users(self, **kwargs):
+		return [
+			User(**u)
+			for u in self.request.get(
+					'users',
+					**kwargs
+				).json()['list']
+		]
+
 
 def read_config():
 	# Define a custom tag and associate the regex pattern we defined
@@ -412,6 +422,14 @@ def remove_key(args):
 		key = api.key_delete(key_id)
 
 		print('Key {0} has been deleted'.format(key.name))
+
+
+def users(args):
+	config = read_config_merge(args)
+
+	users = Api(config).users(params={'search': args.search})
+
+	print(tabulate([(u.id, u.name, u.username) for u in users], tablefmt="plain"))
 
 
 def pull(args):
@@ -683,6 +701,26 @@ def create_parser_key(subparsers):
 	)
 
 
+def create_parser_user(subparsers):
+	parser_user = subparsers.add_parser(
+		'user',
+		help='user commands'
+	)
+	subparsers_user = parser_user.add_subparsers(
+		title="commands"
+	)
+	parser_user_list = subparsers_user.add_parser(
+		'ls',
+		help='list users'
+	)
+	parser_user_list.set_defaults(func=users)
+	parser_user_list.add_argument(
+		'search',
+		nargs='?',
+		help='the search string'
+	)
+
+
 def create_parser():
 	parser = argparse.ArgumentParser(
 		description='Command line interface for translatr.'
@@ -721,6 +759,7 @@ def create_parser():
 	create_parser_project(subparsers)
 	create_parser_locale(subparsers)
 	create_parser_key(subparsers)
+	create_parser_user(subparsers)
 
 	parser_config = subparsers.add_parser(
 		'config',
