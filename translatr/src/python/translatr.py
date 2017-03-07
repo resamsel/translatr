@@ -132,6 +132,8 @@ class Request(object):
 		self.config = config
 
 	def request(self, operation, path, params=None, **kwargs):
+		assert_exists(self.config, 'endpoint', 'access_token')
+
 		if params is None:
 			params = {}
 		params.update({'access_token': self.config['access_token']})
@@ -186,6 +188,7 @@ class Api(object):
 		)
 
 	def locales(self, **kwargs):
+		assert_exists(self.config, 'project_id')
 		return [
 			Locale(**l)
 			for l in self.request.get(
@@ -216,6 +219,7 @@ class Api(object):
 		)
 
 	def keys(self, **kwargs):
+		assert_exists(self.config, 'project_id')
 		return [
 			Key(**k)
 			for k in self.request.get(
@@ -284,10 +288,7 @@ def config_info(args):
 def projects(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint', 'access_token')
-
-	api = Api(config)
-	projects = api.projects(params={'search': args.search})
+	projects = Api(config).projects(params={'search': args.search})
 
 	print(tabulate(
 		[(p.id, p.name, p.ownerName) for p in projects],
@@ -298,18 +299,16 @@ def projects(args):
 def create_project(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint', 'access_token')
+	project = Api(config).project_create({'name': args.project_name})
 
-	api = Api(config)
-	project = api.project_create({'name': args.project_name})
-
-	print('Project {0} has been created'.format(project.name))
+	print('Project {0} has been created (ID: {1})'.format(
+		project.name,
+		project.id
+	))
 
 
 def remove_project(args):
 	config = read_config_merge(args)
-
-	assert_exists(config, 'endpoint', 'access_token')
 
 	api = Api(config)
 	for project_id in args.project_ids:
@@ -338,10 +337,7 @@ def remove_project(args):
 def locales(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint', 'access_token', 'project_id')
-
-	api = Api(config)
-	locales = api.locales(params={'search': args.search})
+	locales = Api(config).locales(params={'search': args.search})
 
 	print(tabulate([(l.id, l.name) for l in locales], tablefmt="plain"))
 
@@ -349,10 +345,9 @@ def locales(args):
 def create_locale(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint', 'access_token')
+	assert_exists(config, 'project_id')
 
-	api = Api(config)
-	locale = api.locale_create({
+	locale = Api(config).locale_create({
 		'projectId': config['project_id'],
 		'name': args.locale_name
 	})
@@ -362,8 +357,6 @@ def create_locale(args):
 
 def remove_locale(args):
 	config = read_config_merge(args)
-
-	assert_exists(config, 'endpoint', 'access_token')
 
 	api = Api(config)
 	for locale_id in args.locale_ids:
@@ -385,10 +378,7 @@ def remove_locale(args):
 def keys(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint', 'access_token', 'project_id')
-
-	api = Api(config)
-	keys = api.keys(params={'search': args.search})
+	keys = Api(config).keys(params={'search': args.search})
 
 	print(tabulate([(k.id, k.name) for k in keys], tablefmt="plain"))
 
@@ -396,10 +386,7 @@ def keys(args):
 def create_key(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint', 'access_token')
-
-	api = Api(config)
-	key = api.key_create({
+	key = Api(config).key_create({
 		'projectId': config['project_id'],
 		'name': args.key_name
 	})
@@ -409,8 +396,6 @@ def create_key(args):
 
 def remove_key(args):
 	config = read_config_merge(args)
-
-	assert_exists(config, 'endpoint', 'access_token')
 
 	api = Api(config)
 	for key_id in args.key_ids:
@@ -432,11 +417,9 @@ def remove_key(args):
 def pull(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint', 'access_token', 'project_id',
-		'pull.target', 'pull.file_type')
+	assert_exists(config, 'pull.target', 'pull.file_type')
 
 	api = Api(config)
-
 	for locale in api.locales():
 		target = '{pull[target]}'.format(**config).format(locale=locale)
 		if locale.name == 'default':
@@ -455,8 +438,7 @@ def pull(args):
 def push(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'endpoint', 'access_token', 'project_id',
-		'push.target', 'push.file_type')
+	assert_exists(config, 'push.target', 'push.file_type')
 
 	api = Api(config)
 	locales = dict([(l.name, l) for l in api.locales()])
@@ -719,6 +701,16 @@ def create_parser():
 		const=logging.DEBUG,
 		default=logging.WARN,
 		help='set loglevel to debug'
+	)
+	parser.add_argument(
+		'-e',
+		'--endpoint',
+		help='the URL to the Translatr endpoint (default: from .translatr.yml)'
+	)
+	parser.add_argument(
+		'-t',
+		'--access-token',
+		help='the access token to be used (default: from .translatr.yml)'
 	)
 
 	subparsers = parser.add_subparsers(
