@@ -75,7 +75,7 @@
 						</ul>
 						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
 							<a
-								href="@routes.Locales.remove(locale.id)"
+								href="@routes.Locales.remove(locale.id, form.get.search, form.get.order, form.get.limit, form.get.offset)"
 								class="btn-flat btn-hover waves-effect waves-light"
 								title="@Messages("button.remove")">
 								<i class="material-icons">delete_forever</i>

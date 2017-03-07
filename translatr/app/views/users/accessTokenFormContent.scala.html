@@ -11,34 +11,34 @@
 <div class="row">
 	<div class="col s12 m6 l3">
 		<h6 class="header">@Messages("project")</h6>
-		@*inputs.checkbox(form("scopeProjectAdmin"), "accessToken-scopeProjectAdmin", Html(Messages("scope.project.admin")))<br/>*@
-		@inputs.checkbox(form("scopeProjectRead"), "accessToken-scopeProjectRead", Html(Messages("scope.project.read")))<br/>
-		@inputs.checkbox(form("scopeProjectWrite"), "accessToken-scopeProjectWrite", Html(Messages("scope.project.write")))
+		@*scopeCheckbox(form, Scope.ProjectAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.ProjectRead)<br/>
+		@scopeCheckbox(form, Scope.ProjectWrite)
 	</div>
 	<div class="col s12 m6 l3">
 		<h6 class="header">@Messages("locale")</h6>
-		@*inputs.checkbox(form("scopeLocaleAdmin"), "accessToken-scopeLocaleAdmin", Html(Messages("scope.locale.admin")))<br/>*@
-		@inputs.checkbox(form("scopeLocaleRead"), "accessToken-scopeLocaleRead", Html(Messages("scope.locale.read")))<br/>
-		@inputs.checkbox(form("scopeLocaleWrite"), "accessToken-scopeLocaleWrite", Html(Messages("scope.locale.write")))
+		@*scopeCheckbox(form, Scope.LocaleAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.LocaleRead)<br/>
+		@scopeCheckbox(form, Scope.LocaleWrite)
 	</div>
 	<div class="col s12 m6 l3">
 		<h6 class="header">@Messages("key")</h6>
-		@*inputs.checkbox(form("scopeKeyAdmin"), "accessToken-scopeKeyAdmin", Html(Messages("scope.key.admin")))<br/>*@
-		@inputs.checkbox(form("scopeKeyRead"), "accessToken-scopeKeyRead", Html(Messages("scope.key.read")))<br/>
-		@inputs.checkbox(form("scopeKeyWrite"), "accessToken-scopeKeyWrite", Html(Messages("scope.key.write")))
+		@*scopeCheckbox(form, Scope.KeyAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.KeyRead)<br/>
+		@scopeCheckbox(form, Scope.KeyWrite)
 	</div>
 	<div class="col s12 m6 l3">
 		<h6 class="header">@Messages("message")</h6>
-		@*inputs.checkbox(form("scopeMessageAdmin"), "accessToken-scopeMessageAdmin", Html(Messages("scope.message.admin")))<br/>*@
-		@inputs.checkbox(form("scopeMessageRead"), "accessToken-scopeMessageRead", Html(Messages("scope.message.read")))<br/>
-		@inputs.checkbox(form("scopeMessageWrite"), "accessToken-scopeMessageWrite", Html(Messages("scope.message.write")))
+		@*scopeCheckbox(form, Scope.MessageAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.MessageRead)<br/>
+		@scopeCheckbox(form, Scope.MessageWrite)
 	</div>
 </div>
 <div class="row">
 	<div class="col s12 m6 l3">
 		<h6 class="header">@Messages("user")</h6>
-		@*inputs.checkbox(form("scopeUserAdmin"), "accessToken-scopeUserAdmin", Html(Messages("scope.user.admin")))<br/>*@
-		@inputs.checkbox(form("scopeUserRead"), "accessToken-scopeUserRead", Html(Messages("scope.user.read")))<br/>
-		@inputs.checkbox(form("scopeUserWrite"), "accessToken-scopeUserWrite", Html(Messages("scope.user.write")))
+		@*scopeCheckbox(form, Scope.UserAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.UserRead)<br/>
+		@scopeCheckbox(form, Scope.UserWrite)
 	</div>
 </div>

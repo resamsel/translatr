@@ -10,6 +10,8 @@ import javax.inject.Singleton;
 import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import controllers.Keys;
+import controllers.Locales;
 import controllers.routes;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
@@ -75,9 +77,13 @@ public class ProjectApiServiceImpl extends
       if (!keys.getList().isEmpty())
         suggestions.addAll(keys.getList());
       if (search.hasMore)
-        suggestions.add(Suggestable.DefaultSuggestable
-            .from(messages.at("key.search", search.search), Data.from(Key.class, null, "???",
-                search.urlWithOffset(routes.Projects.keys(project.id), 20, 0))));
+        suggestions
+            .add(Suggestable.DefaultSuggestable.from(messages.at("key.search", search.search),
+                Data.from(Key.class, null, "???",
+                    search.urlWithOffset(
+                        routes.Projects.keys(project.id, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,
+                            Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET),
+                        Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET))));
 
       if (PermissionUtils.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Manager,
           ProjectRole.Developer) && PermissionUtils.hasPermissionAll(Scope.KeyWrite))
@@ -94,9 +100,13 @@ public class ProjectApiServiceImpl extends
       if (!locales.getList().isEmpty())
         suggestions.addAll(locales.getList());
       if (search.hasMore)
-        suggestions.add(Suggestable.DefaultSuggestable
-            .from(messages.at("locale.search", search.search), Data.from(Locale.class, null, "???",
-                search.urlWithOffset(routes.Projects.locales(project.id), 20, 0))));
+        suggestions
+            .add(Suggestable.DefaultSuggestable.from(messages.at("locale.search", search.search),
+                Data.from(Locale.class, null, "???",
+                    search.urlWithOffset(
+                        routes.Projects.locales(project.id, Locales.DEFAULT_SEARCH,
+                            Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET),
+                        Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET))));
 
       if (PermissionUtils.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Translator)
           && PermissionUtils.hasPermissionAll(Scope.LocaleWrite))

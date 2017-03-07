@@ -210,7 +210,7 @@ public class Projects extends AbstractController {
     return redirect(routes.Dashboards.dashboard());
   }
 
-  public Result locales(UUID id) {
+  public Result locales(UUID id, String s, String order, int limit, int offset) {
     return localeSearchForm(id, (project, form) -> {
       LocaleSearchForm search = form.get();
       if (search.order == null)
@@ -233,7 +233,7 @@ public class Projects extends AbstractController {
     });
   }
 
-  public Result keys(UUID id) {
+  public Result keys(UUID id, String s, String order, int limit, int offset) {
     return keySearchForm(id, (project, form) -> {
       KeySearchForm search = form.get();
       if (search.order == null)

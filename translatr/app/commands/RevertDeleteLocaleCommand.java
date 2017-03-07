@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import controllers.Locales;
 import controllers.routes;
 import criterias.KeyCriteria;
 import dto.Locale;
@@ -75,6 +76,7 @@ public class RevertDeleteLocaleCommand implements Command<models.Locale> {
    */
   @Override
   public Call redirect() {
-    return routes.Projects.locales(locale.projectId);
+    return routes.Projects.locales(locale.projectId, Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER,
+        Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET);
   }
 }

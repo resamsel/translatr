@@ -172,7 +172,8 @@ public class Locales extends AbstractController {
 
       localeService.save(form.get().into(locale));
 
-      return redirect(routes.Projects.locales(locale.project.id));
+      return redirect(routes.Projects.locales(locale.project.id, DEFAULT_SEARCH, DEFAULT_ORDER,
+          DEFAULT_LIMIT, DEFAULT_OFFSET));
     });
   }
 
@@ -196,7 +197,7 @@ public class Locales extends AbstractController {
     });
   }
 
-  public Result remove(UUID localeId) {
+  public Result remove(UUID localeId, String s, String order, int limit, int offset) {
     return locale(localeId, locale -> {
       undoCommand(injector.instanceOf(RevertDeleteLocaleCommand.class).with(locale));
 
@@ -210,7 +211,7 @@ public class Locales extends AbstractController {
 
       LOGGER.debug("Redirecting");
 
-      return redirect(routes.Projects.locales(locale.project.id));
+      return redirect(routes.Projects.locales(locale.project.id, s, order, limit, offset));
     });
   }
 

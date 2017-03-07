@@ -36,6 +36,14 @@ public abstract class AbstractController extends Controller {
 
   private static final String COMMAND_FORMAT = "command:%s";
 
+  public static final String DEFAULT_SEARCH = null;
+
+  public static final String DEFAULT_ORDER = "name";
+
+  public static final int DEFAULT_LIMIT = 20;
+
+  public static final int DEFAULT_OFFSET = 0;
+
   protected final Injector injector;
 
   protected final CacheApi cache;

@@ -182,11 +182,13 @@ public class Keys extends AbstractController {
 
       keyService.save(form.get().into(key));
 
-      return redirect(routes.Projects.keys(key.project.id));
+      return redirect(routes.Projects.keys(key.project.id, DEFAULT_SEARCH, DEFAULT_ORDER,
+          DEFAULT_LIMIT, DEFAULT_OFFSET));
     });
   }
 
-  public Result remove(UUID keyId, UUID localeId) {
+  public Result remove(UUID keyId, UUID localeId, String search, String order, int limit,
+      int offset) {
     return key(keyId, key -> {
       undoCommand(injector.instanceOf(RevertDeleteKeyCommand.class).with(key));
 
@@ -200,7 +202,7 @@ public class Keys extends AbstractController {
 
       LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
 
-      return redirect(routes.Projects.keys(key.project.id));
+      return redirect(routes.Projects.keys(key.project.id, search, order, limit, offset));
     });
   }
 

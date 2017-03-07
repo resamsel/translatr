@@ -1,6 +1,7 @@
 package dto;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import models.Scope;
 
@@ -25,7 +26,8 @@ public class PermissionException extends RuntimeException {
    * @param scopes
    */
   public PermissionException(String message, Scope... scopes) {
-    this(String.format("%s (scopes required: %s)", message, Arrays.asList(scopes)));
+    this(String.format("%s (scopes required: %s)", message,
+        Arrays.stream(scopes).map(Scope::toString).collect(Collectors.joining(", "))));
 
     this.scopes = scopes;
   }

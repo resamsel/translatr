@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import controllers.Keys;
 import controllers.routes;
 import criterias.LocaleCriteria;
 import dto.Key;
@@ -84,6 +85,7 @@ public class RevertDeleteKeyCommand implements Command<models.Key> {
    */
   @Override
   public Call redirect() {
-    return routes.Projects.keys(key.projectId);
+    return routes.Projects.keys(key.projectId, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,
+        Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET);
   }
 }

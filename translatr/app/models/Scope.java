@@ -47,10 +47,26 @@ public enum Scope {
   }
 
   public String scope() {
-    return String.format("%s:%s", section, type).toLowerCase();
+    return String.format("%s:%s", type, section).toLowerCase();
+  }
+
+  public ScopeSection getSection() {
+    return section;
+  }
+
+  public ScopeType getType() {
+    return type;
   }
 
   public static Scope fromString(String scope) {
     return MAP.get(scope);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return String.format("%s:%s", type.name().toLowerCase(), section.name().toLowerCase());
   }
 }
