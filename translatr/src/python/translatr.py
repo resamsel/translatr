@@ -69,7 +69,9 @@ def envvar_constructor(loader, node):
   return replace_envvar(value)
 
 
-def eprint(msg, width=80):
+def eprint(msg, width=None):
+	if width is None:
+		_, width = [int(i) for i in os.popen('stty size', 'r').read().split()]
 	print('\n'.join(textwrap.wrap(msg.strip(), width)))
 
 
@@ -648,6 +650,11 @@ def create_parser_locale(subparsers):
 		nargs='+',
 		help='the locale IDs'
 	)
+	parser_locale_remove.add_argument(
+		'-p',
+		'--project-id',
+		help='the project ID'
+	)
 
 
 def create_parser_key(subparsers):
@@ -698,6 +705,11 @@ def create_parser_key(subparsers):
 		'key_ids',
 		nargs='+',
 		help='the key IDs'
+	)
+	parser_key_remove.add_argument(
+		'-p',
+		'--project-id',
+		help='the project ID'
 	)
 
 
