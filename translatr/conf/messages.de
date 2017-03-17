@@ -39,6 +39,7 @@ brand = Translatr
 button.cancel = Abbrechen
 button.close = Schließen
 button.create = Anlegen
+button.discard = Verwerfen
 button.edit = Bearbeiten
 button.export = Exportieren
 button.goto = {0} öffnen

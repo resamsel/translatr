@@ -1,4 +1,4 @@
-@(template: utils.Template, project: models.Project, locale: models.Locale, keys: com.avaje.ebean.PagedList[models.Key], locales: com.avaje.ebean.PagedList[models.Locale], messages: Map[String, models.Message], form: Form[forms.KeySearchForm])
+@(template: utils.Template, project: models.Project, locale: models.Locale, form: Form[forms.KeySearchForm])
 
 @localeActions = {
 	<li>
@@ -64,15 +64,27 @@
 				<li class="selected">
 					<a id="@locale.id" href="@routes.Locales.locale(locale.id)">@tags.locale(locale.name)</a>
 				</li>
-				@for(l <- locales.getList) {
-					@if(locale.id != l.id) {
-						<li>
-							<a id="@l.id" href="@routes.Locales.locale(l.id)">@tags.locale(l.name)</a>
-						</li>
-					}
-				}
 			</ul>
+			<script type="text/template" id="locale-tmpl">
+				<a id="<%= id %>" href="<%- url %>#key/<%- keyName %>"><%- localeName %></a>
+			</script>
 		} {
+			<div id="keys-list" class="collection keys">
+			</div>
+			<script type="text/template" id="key-tmpl">
+				<span class="title name">
+					<%= (message !== null && message.hasChanged()) ? '*' : '' %><%= name %>
+				</span>
+				<div class="value">
+					<% if(message !== null) { %>
+						<%- message.get('value') %>
+					<% } %>
+				</div>
+			</script>
+			<script type="text/template" id="more-tmpl">
+				<a class="btn">More</a>
+			</script>
+		@*
 			@if(!keys.getList.isEmpty) {
 				<div class="collection keys">
 					@tags.keyItems(keys.getList, messages, false)
@@ -89,6 +101,7 @@
 					}
 				</div>
 			}
+		*@
 		}
 	} {
 		<div class="filter">
@@ -103,17 +116,16 @@
 		</div>
 
 		<div id="panel-messages">
-			<div class="messages">
-				<div class="message template">
-					<div class="heading">
-						<a class="btn light-green waves-effect waves-light right" title="@Messages("value.copy")">
-							<i class="material-icons">content_paste</i>
-						</a>
-						<span class="title localeName truncate">Name</span>
-					</div>
-					<p class="value">Value</p>
+			<div class="messages"></div>
+			<script type="text/template" id="message-tmpl">
+				<div class="heading">
+					<a class="btn light-green waves-effect waves-light right" title="@Messages("value.copy")">
+						<i class="material-icons">content_paste</i>
+					</a>
+					<span class="title localeName truncate"><%= localeName %></span>
 				</div>
-			</div>
+				<p class="value"><%- value %></p>
+			</script>
 		</div>
 	}
 
@@ -132,31 +144,22 @@
 		$('ul.tabs').tabs();
 
 		var projectId = '@project.id';
+		var messages = {
+			'message.updated': '@Messages("message.updated")'
+		};
 		var options = {
+			editor: new LocaleEditor(
+				new Project('@project.id'),
+				{id: '@locale.id', name: '@locale.name'},
+				undefined,
+				@Html(play.libs.Json.toJson(form.get()).toString)
+			),
 			projectId: '@project.id',
+			localeId: '@locale.id',
 			localeName: '@locale.name',
-			messages: {
-				'message.updated': '@Messages("message.updated")'
-			},
-			locales: {
-				@for(locale <- locales.getList) {
-					'@locale.id': '@tags.locale(locale.name)',
-				}
-			},
-			itemToEvent: function(sb, item) {
-				return {
-					localeId: '@locale.id',
-					localeName: '@locale.name',
-					keyId: item.attr('id'),
-					keyName: item.attr('keyName')
-				};
-			}
+			search: @Html(play.libs.Json.toJson(form.get()).toString)
 		}
 
-		App.Core.register('EditorModule', App.Modules.EditorModule, options);
-		App.Core.register('EditorMessageListModule', App.Modules.EditorMessageListModule, options);
-		App.Core.register('EditorLocaleSelectorModule', App.Modules.EditorLocaleSelectorModule, options);
-		App.Core.register('EditorSwitchModule', App.Modules.EditorSwitchModule, options);
 		App.Core.register('KeyCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
 	</script>
 }

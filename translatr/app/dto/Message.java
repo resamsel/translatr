@@ -2,6 +2,8 @@ package dto;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +25,12 @@ public class Message extends Dto {
   @JsonIgnore
   public DateTime whenUpdated;
 
+  @NotNull
   public UUID localeId;
 
   public String localeName;
 
+  @NotNull
   public UUID keyId;
 
   public String keyName;

@@ -1,14 +1,14 @@
 @(noSelectionKey: String)(left: Html)(right: Html)
 
-<div class="grid-container editor">
+<div id="editor" class="grid-container editor">
 	<div class="grid-item item-left">@left</div>
-	<div class="grid-item item-main">
+	<div id="editor-content" class="grid-item item-main">
 		<div class="filter actions">
 			<button
-				id="message-cancel"
+				id="message-discard"
 				type="button"
 				class="btn-flat waves-effect waves-light btn-cancel">
-				@Messages("button.cancel")
+				@Messages("button.discard")
 			</button>
 			<button
 				id="message-submit"

@@ -5,7 +5,7 @@ App.Modules.ModalModule = function(sb) {
 		create: function() {
 			// the "href" attribute of .modal-trigger must specify the modal ID that
 			// wants to be triggered
-			sb.dom.find('.modal-trigger').leanModal();
+			sb.dom.find('.modal').modal();
 		}
 	};
 };

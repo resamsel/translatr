@@ -97,6 +97,9 @@ Concat.groups := Seq(
 		"javascripts/nprogress.js",
 		"javascripts/codemirror.js",
 		"javascripts/codemirror.xml.js",
+		"javascripts/underscore-min.js",
+		"javascripts/backbone-min.js",
+		"javascripts/backbone.undo.js",
 		"javascripts/app.js",
 		"javascripts/main.js",
 		"javascripts/editor.js"
