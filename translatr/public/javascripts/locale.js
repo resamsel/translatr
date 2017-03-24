@@ -148,7 +148,7 @@ var LocaleEditor = Editor.extend({
 			this.search,
 			'keys',
 			this.itemType,
-			{ localeId: this.localeId }
+			this.localeName
 		);
 		this.messageList = new MessageListView(this.project, this.search);
 		this.localeSelector = new LocaleSelectorListView(this.project);

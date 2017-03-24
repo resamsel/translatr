@@ -31,7 +31,7 @@ var KeyEditor = Editor.extend({
 			this.search,
 			'locales',
 			this.itemType,
-			{ keyName: this.keyName }
+			this.keyName
 		);
 		this.editorSwitch = new EditorSwitchView(this.key.name);
 

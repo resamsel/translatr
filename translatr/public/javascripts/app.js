@@ -301,8 +301,11 @@ var Model = Backbone.Model.extend({
 			contentType: 'application/json',
 			dataType: 'json',
 			data: JSON.stringify(this.toJSON()),
-			success: function() {
+			success: function(data) {
 				options.success(arguments);
+				if(method == 'create') {
+					model.set('id', data.id);
+				}
 				that.undoManager.clear();
 				that.restart();
 				Materialize.toast(messages['message.updated'], 5000);
@@ -315,7 +318,7 @@ var WithMessage = Model.extend({
 	message: null,
 
 	initialize: function() {
-		this.setMessage(new Message({value: ''}));
+		this.setMessage({value: ''});
 	},
 
 	getMessage: function() {
@@ -327,7 +330,9 @@ var WithMessage = Model.extend({
 		if(this.message !== null) {
 			this.message.undoManager.stopTracking();
 		}
-		this.message = message;
+		if(message) {
+			this.message = new Message(message);
+		}
 		this.trigger('change:message', this.message);
 	}
 });

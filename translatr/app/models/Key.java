@@ -136,9 +136,8 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public static PagedList<Key> pagedBy(KeyCriteria criteria) {
-    Query<Key> q =
-        QueryUtils.fetch(Key.find.fetch("project").alias("k").setDisableLazyLoading(true),
-            criteria.getFetches(), FETCH_MAP);
+    Query<Key> q = QueryUtils.fetch(find.fetch("project").alias("k").setDisableLazyLoading(true),
+        criteria.getFetches(), FETCH_MAP);
 
     ExpressionList<Key> query = q.where();
 

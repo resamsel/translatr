@@ -3,7 +3,9 @@ package models;
 import static utils.FormatUtils.formatLocale;
 import static utils.Stopwatch.log;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -24,15 +26,18 @@ import org.slf4j.LoggerFactory;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
+import com.avaje.ebean.Query;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.ImmutableMap;
 
 import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.LocaleCriteria;
 import play.libs.Json;
 import play.mvc.Http.Context;
+import utils.QueryUtils;
 import validators.LocaleNameUniqueChecker;
 import validators.NameUnique;
 
@@ -43,6 +48,9 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Locale.class);
 
   public static final int NAME_LENGTH = 15;
+
+  private static final Map<String, List<String>> FETCH_MAP = ImmutableMap.of("project",
+      Arrays.asList("project"), "messages", Arrays.asList("messages", "messages.key"));
 
   @Id
   @GeneratedValue
@@ -148,7 +156,10 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static PagedList<Locale> pagedBy(LocaleCriteria criteria) {
-    ExpressionList<Locale> query = find.fetch("project").where();
+    Query<Locale> q = QueryUtils.fetch(find.fetch("project").alias("k").setDisableLazyLoading(true),
+        criteria.getFetches(), FETCH_MAP);
+
+    ExpressionList<Locale> query = q.where();
 
     if (criteria.getProjectId() != null)
       query.eq("project.id", criteria.getProjectId());

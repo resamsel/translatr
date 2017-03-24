@@ -94,7 +94,9 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
-      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
+      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string",
+          paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = "The project ID") UUID projectId) {
     return toJsons(() -> api.find(
         LocaleCriteria.from(request()).withProjectId(projectId)

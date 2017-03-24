@@ -49,12 +49,12 @@ var ItemListView = Backbone.View.extend({
 	el: '#items-list',
 	itemsEmpty: '#items-empty',
 
-	initialize: function(project, collection, search, styleClass, itemType, queryParams) {
+	initialize: function(project, collection, search, styleClass, itemType, messageKey) {
 		this.project = project;
 		this.collection = collection;
 		this.search = search;
 		this.itemType = itemType;
-		this.queryParams = queryParams;
+		this.messageKey = messageKey;
 
 		this.moreTemplate = _.template($('#more-tmpl').html());
 		this.noItems = $('#items-empty');
@@ -64,10 +64,11 @@ var ItemListView = Backbone.View.extend({
 
 		this.$el.addClass(styleClass);
 
+		var that = this;
 		var collection = this.collection;
-		collection.fetch({data: this.search}).then(function() {
-			Backbone.trigger('items:loaded', collection);
-		});
+		collection.fetch({
+			data: _.extend(this.search, {fetch: 'messages'})
+		}).then(function() { return that.loadMessages(); });
 	},
 
 	events: {
@@ -106,21 +107,14 @@ var ItemListView = Backbone.View.extend({
 		}
 	},
 
-	onItemsLoaded: function(items) {
-		var that = this;
-		var messages = this.project.messages;
-		var data = _.extend({
-			order: this.itemType + '.' + this.search.order
-		}, this.data);
-		messages.fetch({data: data}).then(function() {
-			messages.each(function(msg) {
-				var id = msg.get(that.itemType + 'Id');
-				if(id in items._byId) {
-					items._byId[id].setMessage(msg);
-				}
-			});
-			Backbone.trigger('messages:loaded');
-		});
+	loadMessages: function() {
+		this.collection.each(function(item) {
+			var messages = item.get('messages');
+			if(messages && this.messageKey in messages) {
+				item.setMessage(messages[this.messageKey]);
+			}
+		}, this);
+		Backbone.trigger('items:loaded', this.collection);
 	},
 
 	loadMore: function() {
@@ -128,6 +122,8 @@ var ItemListView = Backbone.View.extend({
 			console.log('No more items on server');
 			return;
 		}
+
+		var that = this;
 		var collection = this.collection;
 		this.$('.preloader-container').show();
 		this.$el.animate({
@@ -138,16 +134,9 @@ var ItemListView = Backbone.View.extend({
 			remove: false,
 			data: _.extend(
 				this.search,
-				{
-					offset: collection.length,
-					limit: this.search.limit * 2
-				}
+				{ offset: collection.length}
 			)
-		}).then(function() {
-			setTimeout(function() {
-				Backbone.trigger('items:loaded', collection);
-			}, 2000);
-		});
+		}).then(function() { return that.loadMessages(); });
 	}
 });
 
@@ -197,8 +186,6 @@ var CodeEditor = Backbone.View.extend({
 	},
 
 	onItemSelected: function(item) {
-		this.codeEditor.clearHistory();
-
 		if(item === undefined) {
 			this.noSelection.show();
 			this.panelEditor.hide();
@@ -209,6 +196,9 @@ var CodeEditor = Backbone.View.extend({
 			this.panelEditor.show();
 			this.panelActions.show();
 			this.rightFilter.show();
+
+			this.codeEditor.clearHistory();
+			this.codeEditor.refresh();
 		}
 	},
 
@@ -278,7 +268,7 @@ var Editor = Backbone.Model.extend({
 		this.search.order = this.search.order || 'name';
 
 		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
-		this.listenTo(Backbone, 'messages:loaded', this.onMessagesLoaded);
+		this.listenTo(Backbone, 'items:loaded', this.onItemsLoaded);
 		this.listenTo(Backbone, 'message:changed', this.onMessageChanged);
 		this.listenTo(Backbone, 'message:save', this.onSave);
 		this.listenTo(Backbone, 'message:discard', this.onDiscard);
@@ -318,9 +308,12 @@ var Editor = Backbone.Model.extend({
 		}
 	},
 
-	onMessagesLoaded: function() {
-		console.log('Editor.onMessagesLoaded');
-		Backbone.trigger('item:selected', this.selectedItem(this.selectedItemName));
+	onItemsLoaded: function() {
+		console.log('Editor.onItemsLoaded');
+		var selectedItem = this.selectedItem(this.selectedItemName);
+		setTimeout(function() {
+			Backbone.trigger('item:selected', selectedItem);
+		}, 100);
 	},
 
 	onMessageChanged: function(value) {

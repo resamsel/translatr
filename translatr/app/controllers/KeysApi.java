@@ -80,10 +80,10 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria> {
           dataType = "string", paramType = "query"),
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
           paramType = "query"),
-      @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string",
-          paramType = "query"),
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
-      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
+      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string",
+          paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
     return toJsons(() -> api.find(KeyCriteria.from(request()).withProjectId(projectId),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
