@@ -1,186 +1,348 @@
 function stripScripts(s) {
-    var div = document.createElement('div');
-    div.innerHTML = s;
-    var scripts = div.getElementsByTagName('script');
-    var i = scripts.length;
-    while (i--) {
-      scripts[i].parentNode.removeChild(scripts[i]);
-    }
-    return div.innerHTML;
+	var div = document.createElement('div');
+	div.innerHTML = s;
+	var scripts = div.getElementsByTagName('script');
+	var i = scripts.length;
+	while (i--) {
+	  scripts[i].parentNode.removeChild(scripts[i]);
+	}
+	return div.innerHTML;
 }
 
-App.Modules.EditorModule = function(sb, options) {
-	var options = options || {};
-	var messages = options.messages || {};
+var ItemListItemView = Backbone.View.extend({
+	tagName: 'a',
+	className: 'collection-item avatar waves-effect waves-light',
 
-	var win = sb.dom.wrap(window);
-	var form = sb.dom.find('#form-message');
-	var message = sb.dom.find('#form-message');
-	var panelPreview = sb.dom.find('#panel-preview');
-	var panelEditor = sb.dom.find('#panel-editor');
-	var panelActions = sb.dom.find('.item-main .filter');
-	var preview = sb.dom.find('#preview');
-	var progress = form.find('.progress');
-	var fieldId = sb.dom.find('#field-id');
-	var fieldLocale = sb.dom.find('#field-locale');
-	var fieldKey = sb.dom.find('#field-key');
-    var submitButton = sb.dom.find('#message-submit');
-    var cancelButton = sb.dom.find('#message-cancel');
-    var noSelection = sb.dom.find("#no-selection");
-    var rightFilter = sb.dom.find(".item-right .filter");
-	var codeEditor;
+	initialize: function(arguments) {
+		this.type = arguments.type;
 
-	function _handleKeyPress(event) {
-		if (event.which == 13 && (event.ctrlKey || event.metaKey)) {
-			event.preventDefault();
-			form.submit();
-	    }
+		this.template = _.template($('#item-tmpl').html());
+
+		this.listenTo(this.model, 'change', this.render);
+		this.listenTo(this.model, 'change:message', this.onMessageChanged);
+
+		this.onMessageChanged();
+	},
+
+	onMessageChanged: function() {
+		this.stopListening(this.message, 'change');
+		this.message = this.model.getMessage();
+		this.listenTo(this.message, 'change', this.render);
+		this.render();
+	},
+
+	render: function() {
+		var html = this.template(
+			_.extend(this.model.toJSON(), {message: this.message})
+		);
+		this.$el.html(html);
+		this.$el.addClass(this.type);
+		this.$el
+			.attr('id', this.model.id)
+			.attr('href', '#' + this.type + '/' + this.model.get('name'))
+			.attr('title', this.model.get('name'));
+		return this;
 	}
+});
 
-	function _handleSaveMessage(message) {
-		progress.css('visibility', 'hidden');
-		sb.dom.find('#' + message.localeId).removeClass('no-message');
-		sb.dom.find('#' + message.localeId + ' .value').text(message.value);
-		sb.dom.find('#' + message.keyId).removeClass('no-message');
-		sb.dom.find('#' + message.keyId + ' .value').text(message.value);
-		sb.publish('itemSelected', [message]);
-		Materialize.toast(messages['message.updated'], 5000);
-	}
+var ItemListView = Backbone.View.extend({
+	el: '#items-list',
+	itemsEmpty: '#items-empty',
 
-	function _handleMessage(paged) {
-    	if(paged.list.length === 0)
-    		return;
+	initialize: function(project, collection, search, styleClass, itemType, messageKey) {
+		this.project = project;
+		this.collection = collection;
+		this.search = search;
+		this.itemType = itemType;
+		this.messageKey = messageKey;
 
-    	var msg = paged.list[0];
-	    fieldId.val(msg.id);
-	    fieldKey.val(msg.keyName).attr('keyId', msg.keyId);
-	    fieldLocale.val(msg.localeName).attr('localeId', msg.localeId);
-	    codeEditor.setValue(msg.value);
-	    preview.html(stripScripts(msg.value));
-	}
+		this.moreTemplate = _.template($('#more-tmpl').html());
+		this.noItems = $('#items-empty');
 
-	function _handleItemSelected(item) {
-		if(item === null) {
-			sb.dom.find('.item-left .collection>a').removeClass('active');
+		this.listenTo(this.collection, 'sync', this.render);
+		this.listenTo(Backbone, 'items:loaded', this.onItemsLoaded);
 
-			noSelection.show();
-			message.hide();
-			panelPreview.hide();
-			panelEditor.hide();
-			panelActions.hide();
-			rightFilter.hide();
+		this.$el.addClass(styleClass);
 
+		var that = this;
+		var collection = this.collection;
+		collection.fetch({
+			data: _.extend(this.search, { fetch: 'messages' })
+		}).then(function() { return that.loadMessages(); });
+	},
+
+	events: {
+		"scroll": "onScroll"
+	},
+
+	onScroll: function() {
+		//console.log('onScroll', this.$el.scrollTop(), this.$el[0].scrollHeight - this.$el.parent().height(), this.$el[0].scrollHeight, this.$el.parent().height());
+		if(this.$el.scrollTop() == this.$el[0].scrollHeight - this.$el.height()) {
+			this.loadMore();
+		}
+	},
+
+	render: function() {
+		var $list = this.$el.empty();
+		var collection = this.collection;
+
+		if(collection.size() == 0) {
+			this.noItems.show();
+		} else {
+			this.noItems.hide();
+
+			collection.each(function(model) {
+				var item = new ItemListItemView({
+					model: model,
+					type: this.itemType
+				});
+				$list.append(item.render().$el);
+			}, this);
+		}
+
+		if(this.collection.hasMore) {
+			var template = this.moreTemplate({});
+			$list.append(template);
+			$(template).hide();
+		}
+	},
+
+	loadMessages: function() {
+		this.collection.each(function(item) {
+			var messages = item.get('messages');
+			if(messages && this.messageKey in messages) {
+				item.setMessage(messages[this.messageKey]);
+			}
+		}, this);
+		Backbone.trigger('items:loaded', this.collection);
+	},
+
+	loadMore: function() {
+		if(!this.collection.hasMore) {
+			console.log('No more items on server');
 			return;
 		}
 
-		var keyId = item.keyId;
-		var keyName = item.keyName;
-		var localeId = item.localeId;
-		var localeName = item.localeName;
-
-		noSelection.hide();
-		message.show();
-		panelPreview.show();
-		panelEditor.show();
-		panelActions.show();
-		rightFilter.show();
-
-	    fieldId.val('');
-		fieldLocale.val(localeName).attr('localeId', localeId);
-		fieldKey.val(keyName).attr('keyId', keyId);
-	    codeEditor.setValue('');
-	    preview.html('');
-
-	    sb.utilities.ajax(sb.utilities.merge(
-			jsRoutes.controllers.TranslationsApi.find(options.projectId),
-			{data: {"localeId": localeId, "keyName": keyName}}
-		)).done(_handleMessage);
+		var that = this;
+		var collection = this.collection;
+		this.$('.preloader-container').show();
+		this.$el.animate({
+			scrollTop: this.$el[0].scrollHeight - this.$el.height()
+		});
+		collection.fetch({
+			update: true,
+			remove: false,
+			data: _.extend(
+				this.search,
+				{ offset: collection.length }
+			)
+		}).then(function() { return that.loadMessages(); });
 	}
+});
 
-	function _handleItemsChanged() {
-		var $items = sb.dom.find('.item-left .collection>a');
-		$items.click(function() {
-			var $this = sb.dom.wrap(this);
-			$items.removeClass('active');
-			$this.addClass('active');
-			sb.publish('itemSelected', [options.itemToEvent(sb, $this)]);
-		})
-	}
+var CodeEditor = Backbone.View.extend({
+	el: '#editor-content',
 
-	function _handleMessageChanged() {
-		preview.html(stripScripts(codeEditor.getValue()));
-	}
+	initialize: function() {
+		this.panelEditor = this.$('#panel-editor');
+		this.panelActions = this.$('.filter');
+		this.noSelection = this.$("#no-selection");
+		this.rightFilter = $(".item-right .filter");
+		this.codeEditor = CodeMirror(this.panelEditor[0], {
+			mode: 'xml',
+			lineNumbers: true,
+			lineWrapping: true,
+			styleActiveLine: true,
+			htmlMode: true
+		});
 
-	function _handleSubmit(e){
-        e.preventDefault();
-        progress.css('visibility', 'visible');
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
+		this.listenTo(Backbone, 'message:change', this.onMessageChange);
 
-        var data = {
-        		"localeId": fieldLocale.attr('localeId'),
-        		"keyId": fieldKey.attr('keyId'),
-        		"value": codeEditor.getValue()
-        };
+		var that = this;
+		this.codeEditor.on('change', function() {
+			Backbone.trigger('message:changed', that.codeEditor.getValue());
+		});
 
-        var op;
-        if(fieldId.val() !== '') {
-        	op = jsRoutes.controllers.TranslationsApi.update();
-        	data["id"] = fieldId.val();
-        } else {
-        	op = jsRoutes.controllers.TranslationsApi.create();
-        }
+		this.noSelection.show();
+		this.panelEditor.hide();
+		this.panelActions.hide();
+		this.rightFilter.hide();
+	},
 
-    	sb.utilities.ajax(sb.utilities.merge(
-			op,
-			{
-				contentType: 'application/json',
-				dataType: 'json',
-				data: JSON.stringify(data)
-			}
-		)).done(_handleSaveMessage);
-    }
-	
-	function _handleValueChanged(value) {
-		codeEditor.setValue(stripScripts(value));
-	}
+	events: {
+		'click #message-submit': 'onSave',
+		'click #message-discard': 'onDiscard'
+	},
 
-	function _handleCancelation() {
-		sb.publish('itemSelected', [null]);
-		window.location.hash = '#';
-	}
+	onSave: function() {
+		Backbone.trigger('message:save');
+	},
 
-	return {
-		create: function() {
-			if(typeof options.projectId === 'undefined') {
-				return;
-			}
+	onDiscard: function() {
+		Backbone.trigger('message:discard');
+		this.codeEditor.clearHistory();
+		this.codeEditor.setValue('');
+	},
 
-			codeEditor = CodeMirror(panelEditor[0], {
-				mode: 'xml',
-				lineNumbers: true,
-				lineWrapping: true,
-				styleActiveLine: true,
-				htmlMode: true
-			});
+	onItemSelected: function(item) {
+		if(item === undefined) {
+			this.noSelection.show();
+			this.panelEditor.hide();
+			this.panelActions.hide();
+			this.rightFilter.hide();
+		} else {
+			this.noSelection.hide();
+			this.panelEditor.show();
+			this.panelActions.show();
+			this.rightFilter.show();
 
-			sb.subscribe('itemsChanged', _handleItemsChanged);
-			sb.subscribe('itemSelected', _handleItemSelected);
-			sb.subscribe('valueChanged', _handleValueChanged);
-
-			message.hide();
-			panelPreview.hide();
-			panelEditor.hide();
-			panelActions.hide();
-			rightFilter.hide();
-
-			form.submit(_handleSubmit);
-			submitButton.click(_handleSubmit);
-			win.keydown(_handleKeyPress);
-			codeEditor.on('change', _handleMessageChanged);
-			cancelButton.click(_handleCancelation);
-
-			_handleItemsChanged();
-		},
-		destroy: function() {
+			this.codeEditor.clearHistory();
+			this.codeEditor.refresh();
 		}
-	};
-};
+	},
+
+	onMessageChange: function(value) {
+		console.log('onMessageChange "' + value + '"', value);
+		this.codeEditor.setValue(value);
+	}
+});
+
+var Preview = Backbone.View.extend({
+	el: '#panel-preview',
+
+	initialize: function() {
+		this.message = null;
+
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
+
+		this.$el.hide();
+	},
+
+	onItemSelected: function(item) {
+		if(this.message !== null) {
+			this.stopListening(this.message);
+		}
+		if(item !== undefined) {
+			this.message = item.message;
+			this.listenTo(this.message, 'change', this.render);
+		} else {
+			this.message = null;
+		}
+		this.render();
+	},
+
+	render: function() {
+		if(this.message !== null) {
+			this.$('#preview').html(stripScripts(this.message.get('value')));
+			this.$el.show();
+		} else {
+			this.$('#preview').html('');
+			this.$el.hide();
+		}
+	}
+});
+
+var Editor = Backbone.Model.extend({
+	message: null,
+	app: null,
+	project: null,
+	locale: {id: null, name: null},
+	key: {id: null, name: null},
+	search: null,
+
+	initialize: function() {
+		this.app = this.get('app') || this.app;
+		this.project = this.get('project') || this.project;
+		this.locale = this.get('locale') || this.locale;
+		this.key = this.get('key') || this.key;
+		this.search = this.get('search') || this.search;
+
+		this.$el = $('#editor');
+
+		this.localeId = this.locale.id;
+		this.localeName = this.locale.name;
+		this.keyId = this.key.id;
+		this.keyName = this.key.name;
+
+		this.search.order = this.search.order || 'name';
+
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
+		this.listenTo(Backbone, 'items:loaded', this.onItemsLoaded);
+		this.listenTo(Backbone, 'message:changed', this.onMessageChanged);
+		this.listenTo(Backbone, 'message:save', this.onSave);
+		this.listenTo(Backbone, 'message:discard', this.onDiscard);
+
+		$(window).keydown(this.onKeyPress);
+
+		var that = this;
+		this.app.router.on('route:locale', function(arg) { return that.onRouteChanged(arg); });
+		this.app.router.on('route:key', function(arg) { return that.onRouteChanged(arg); });
+
+		this.codeEditor = new CodeEditor;
+		this.preview = new Preview;
+	},
+
+	selectedItem: function(itemName) {
+		return undefined;
+	},
+
+	onRouteChanged: function(itemName) {
+		console.log('onRouteChanged: ', itemName);
+		if(itemName === '') {
+			itemName = null;
+		}
+		this.selectedItemName = itemName;
+		Backbone.trigger('item:selected', this.selectedItem(itemName));
+	},
+
+	onItemSelected: function(item) {
+		console.log('onItemSelected', item);
+		if(item !== undefined) {
+			this.item = item;
+			this.message = item.getMessage();
+			Backbone.trigger('message:change', this.message.get('value'));
+		} else {
+			this.item = null;
+			this.message = null;
+		}
+	},
+
+	onItemsLoaded: function() {
+		console.log('Editor.onItemsLoaded');
+		var selectedItem = this.selectedItem(this.selectedItemName);
+		setTimeout(function() {
+			Backbone.trigger('item:selected', selectedItem);
+		}, 100);
+	},
+
+	onMessageChanged: function(value) {
+		if(this.message !== null) {
+			this.message.set('value', value);
+		}
+	},
+
+	onSave: function() {
+		if(this.message.isNew()) {
+			this.message.set({
+				localeId: this.localeId,
+				keyId: this.keyId
+			});
+		}
+		this.message.save();
+	},
+
+	onDiscard: function() {
+		if(this.message !== null) {
+			this.message.restart();
+		}
+		this.app.router.navigate(this.itemType + "/", {trigger: true, replace: true});
+	},
+
+	onKeyPress: function(event) {
+		if (event.which == 13 && (event.ctrlKey || event.metaKey)) {
+			event.preventDefault();
+			this.onSave();
+		}
+	}
+});

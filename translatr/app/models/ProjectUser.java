@@ -147,4 +147,12 @@ public class ProjectUser implements Model<ProjectUser, Long> {
   public static int countBy(ProjectUserCriteria criteria) {
     return log(() -> findQuery(criteria).findCount(), LOGGER, "countBy");
   }
+
+  /**
+   * @param project
+   * @return
+   */
+  public static long countBy(Project project) {
+    return find.where().eq("project", project).findCount();
+  }
 }

@@ -15,7 +15,26 @@ public class MessageCriteria extends AbstractSearchCriteria<MessageCriteria> {
 
   private String keyName;
 
+  private List<UUID> localeIds;
+
   private List<UUID> keyIds;
+
+  public List<UUID> getLocaleIds() {
+    return localeIds;
+  }
+
+  public void setLocaleIds(List<UUID> localeIds) {
+    this.localeIds = localeIds;
+  }
+
+  /**
+   * @param localeIds the localeIds to set
+   * @return this
+   */
+  public MessageCriteria withLocaleIds(List<UUID> localeIds) {
+    setLocaleIds(localeIds);
+    return this;
+  }
 
   /**
    * @return the keyName

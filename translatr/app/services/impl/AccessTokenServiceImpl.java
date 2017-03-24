@@ -57,7 +57,7 @@ public class AccessTokenServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  public AccessToken byId(Long id) {
+  public AccessToken byId(Long id, String... fetches) {
     return AccessToken.byId(id);
   }
 

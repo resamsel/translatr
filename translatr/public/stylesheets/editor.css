@@ -23,7 +23,14 @@
 .item-main .filter {
 	text-align: right;
 }
-.grid-container .grid-item .input-field,
+.filter .input-field.left {
+    margin-top: 0;
+    width: calc(100% - 3rem);
+}
+.filter .input-field.left input {
+    margin-bottom: 0;
+    height: 2.3rem;
+}
 .grid-container .grid-item #panel-preview {
 	padding: 10px;
 	margin-top: 0;

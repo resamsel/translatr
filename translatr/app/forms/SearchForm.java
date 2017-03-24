@@ -10,6 +10,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.avaje.ebean.PagedList;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import play.mvc.Call;
 
@@ -27,6 +28,7 @@ public class SearchForm {
 
   public String order;
 
+  @JsonIgnore
   public boolean hasMore = false;
 
   public String getSearch() {

@@ -156,7 +156,7 @@ App.Sandbox = Class.extend({
 
 App.Core = function(_$) {
 	var moduleData = {},
-		cache = {}, 
+		cache = {},
 		_dom = {
 			find: function(selector) {
 				return _$(selector);
@@ -172,6 +172,7 @@ App.Core = function(_$) {
 			each: _$.each,
 			ajax: _$.ajax
 		};
+	var dispatcher = _.clone(Backbone.Events)
 
 	return {
 		dom: _dom,
@@ -213,28 +214,13 @@ App.Core = function(_$) {
 				}
 			}
 		},
-		publish: function(message, args) {
-			if(message in cache) {
-				try {
-					var i;
-					for (i = 0; i < cache[message].length; i++) {
-						if (typeof args === "undefined") { args = []; }
-						if (!(args instanceof Array)) {
-							args = [args];
-						}
-						cache[message][i].apply(this, args);
-					}
-				} catch (err) {
-					console.log(err);
-				}
-			}
+		publish: function(event, args) {
+			console.log('publish: ' + event);
+			dispatcher.trigger(event, args);
+			console.log('/publish: ' + event);
 		},
 		subscribe: function(message, callback) {
-			if (!cache[message]) {
-				cache[message] = [];
-			}
-			cache[message].push(callback);
-			return [message, callback];
+			dispatcher.on(message, callback);
 		},
 		unsubscribe: function(handle) {
 			var t = handle[0];
@@ -246,3 +232,159 @@ App.Core = function(_$) {
 		}
 	};
 } (jQuery);
+
+function toQueryString(parameters) {
+	var queryString = _.reduce(
+		parameters,
+		function(components, value, key) {
+			if(value != null) {
+				components.push(key + '=' + encodeURIComponent(value));
+			}
+			return components;
+		},
+		[]
+	).join('&');
+	if(queryString.length > 0) {
+		queryString = '?' + queryString;
+	}
+	return queryString;
+}
+
+var AppRouter = Backbone.Router.extend({
+	initialize: function(app) {
+		this.app = app;
+	},
+
+	routes: {
+		'key/*keyName': 'key',
+		'locale/*localeName': 'locale'
+	}
+});
+var Translatr = Backbone.Model.extend({
+	initialize: function() {
+		this.router = new AppRouter(this);
+
+		this.listenTo(Backbone, 'all', this.onAny);
+	},
+
+	onAny: function() {
+		console.log('Translatr.onAny', arguments);
+	}
+});
+var app = new Translatr();
+
+var Model = Backbone.Model.extend({
+	initialize: function() {
+		this.undoManager = new Backbone.UndoManager;
+		this.undoManager.register(this);
+		this.undoManager.startTracking();
+	},
+	restart: function() {
+		this.undoManager.undoAll();
+		this.changed = null;
+		this.trigger('change', this);
+	},
+	request: function(method, model, options) {
+		return {
+			url: '/api/',
+			type: 'GET'
+		}
+	},
+	sync: function(method, model, options) {
+		console.log('message.sync', arguments);
+		var r = this.request(method, model, options);
+
+		var that = this;
+		return $.ajax({
+			url: r.url,
+			type: r.type,
+			contentType: 'application/json',
+			dataType: 'json',
+			data: JSON.stringify(this.toJSON()),
+			success: function(data) {
+				options.success(arguments);
+				if(method == 'create') {
+					model.set('id', data.id);
+				}
+				that.undoManager.clear();
+				that.restart();
+				Materialize.toast(messages['message.updated'], 5000);
+			},
+			error: options.error
+		});
+	}
+});
+var WithMessage = Model.extend({
+	message: null,
+
+	initialize: function() {
+		this.setMessage({value: ''});
+	},
+
+	getMessage: function() {
+		return this.message;
+	},
+
+	setMessage: function(message) {
+		console.log('setMessage', message);
+		if(this.message !== null) {
+			this.message.undoManager.stopTracking();
+		}
+		if(message) {
+			this.message = new Message(message);
+		}
+		this.trigger('change:message', this.message);
+	}
+});
+var Locale = WithMessage.extend({});
+var Key = WithMessage.extend({});
+var Message = Model.extend({
+	request: function(method, model, options) {
+		switch(method) {
+		case 'create':
+			return jsRoutes.controllers.TranslationsApi.create();
+		case 'update':
+			return jsRoutes.controllers.TranslationsApi.update();
+		}
+		return null;
+	},
+});
+var PagedCollection = Backbone.Collection.extend({
+	parse: function(data) {
+		this.hasMore = data.hasNext;
+		return data.list;
+	}
+});
+var LocaleList = PagedCollection.extend({
+	model: Locale,
+
+	initialize: function(projectId) {
+		this.url = jsRoutes.controllers.LocalesApi.find(projectId).url;
+	}
+});
+var KeyList = PagedCollection.extend({
+	model: Key,
+
+	initialize: function(projectId) {
+		this.url = jsRoutes.controllers.KeysApi.find(projectId).url;
+	}
+});
+var MessageList = PagedCollection.extend({
+	model: Message,
+
+	initialize: function(projectId) {
+		this.url = jsRoutes.controllers.TranslationsApi.find(projectId).url;
+	}
+});
+var Project = Backbone.Model.extend({
+	initialize: function(id) {
+		this.id = id;
+		this.keys = new KeyList(id);
+		this.locales = new LocaleList(id);
+		this.messages = new MessageList(id);
+	}
+});
+
+$(document).ready(function() {
+	Backbone.history.start();
+});

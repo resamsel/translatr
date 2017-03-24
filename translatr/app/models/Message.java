@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,13 +163,16 @@ public class Message implements Model<Message, UUID> {
     if (criteria.getLocaleId() != null)
       query.eq("locale.id", criteria.getLocaleId());
 
-    if (criteria.getKeyName() != null)
+    if (criteria.getLocaleIds() != null)
+      query.in("locale.id", criteria.getLocaleIds());
+
+    if (StringUtils.isNotEmpty(criteria.getKeyName()))
       query.eq("key.name", criteria.getKeyName());
 
     if (criteria.getKeyIds() != null)
       query.in("key.id", criteria.getKeyIds());
 
-    if (criteria.getSearch() != null)
+    if (StringUtils.isNotEmpty(criteria.getSearch()))
       query.ilike("value", "%" + criteria.getSearch() + "%");
 
     criteria.paged(query);

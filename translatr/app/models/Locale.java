@@ -1,9 +1,13 @@
 package models;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static utils.FormatUtils.formatLocale;
 import static utils.Stopwatch.log;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -17,6 +21,7 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +29,19 @@ import org.slf4j.LoggerFactory;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
+import com.avaje.ebean.Query;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.ImmutableMap;
 
 import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.LocaleCriteria;
+import criterias.MessageCriteria;
 import play.libs.Json;
 import play.mvc.Http.Context;
+import utils.QueryUtils;
 import validators.LocaleNameUniqueChecker;
 import validators.NameUnique;
 
@@ -43,6 +52,9 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Locale.class);
 
   public static final int NAME_LENGTH = 15;
+
+  private static final Map<String, List<String>> FETCH_MAP = ImmutableMap.of("project",
+      Arrays.asList("project"), "messages", Arrays.asList("messages", "messages.key"));
 
   @Id
   @GeneratedValue
@@ -148,7 +160,12 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static PagedList<Locale> pagedBy(LocaleCriteria criteria) {
-    ExpressionList<Locale> query = find.fetch("project").where();
+    Query<Locale> q = find.fetch("project").alias("k").setDisableLazyLoading(true);
+
+    if (StringUtils.isEmpty(criteria.getMessagesKeyName()) && !criteria.getFetches().isEmpty())
+      q = QueryUtils.fetch(q, criteria.getFetches(), FETCH_MAP);
+
+    ExpressionList<Locale> query = q.where();
 
     if (criteria.getProjectId() != null)
       query.eq("project.id", criteria.getProjectId());
@@ -164,7 +181,25 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
     criteria.paged(query);
 
-    return log(() -> new HasNextPagedList<>(query), LOGGER, "pagedBy");
+    return log(() -> fetch(new HasNextPagedList<>(query), criteria), LOGGER, "pagedBy");
+  }
+
+  private static HasNextPagedList<Locale> fetch(HasNextPagedList<Locale> paged,
+      LocaleCriteria criteria) {
+    if (StringUtils.isNotEmpty(criteria.getMessagesKeyName())
+        && criteria.getFetches().contains("messages")) {
+      // Retrieve messages that match the given keyName and locales retrieved
+      Map<UUID, Message> messages = Message
+          .pagedBy(new MessageCriteria().withKeyName(criteria.getMessagesKeyName())
+              .withLocaleIds(paged.getList().stream().map(l -> l.id).collect(toList())))
+          .getList().stream().collect(toMap(m -> m.locale.id, m -> m));
+
+      for (Locale locale : paged.getList())
+        if (messages.containsKey(locale.id))
+          locale.messages = Arrays.asList(messages.get(locale.id));
+    }
+
+    return paged;
   }
 
   public static List<Locale> last(Project project, int limit) {

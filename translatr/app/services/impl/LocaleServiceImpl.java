@@ -72,7 +72,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
    * {@inheritDoc}
    */
   @Override
-  public Locale byId(UUID id) {
+  public Locale byId(UUID id, String... fetches) {
     return cache.getOrElse(Locale.getCacheKey(id), () -> Locale.byId(id), 60);
   }
 

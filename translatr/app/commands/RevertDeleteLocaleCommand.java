@@ -59,8 +59,8 @@ public class RevertDeleteLocaleCommand implements Command<models.Locale> {
 
     Map<String, Key> keys = keyService.findBy(new KeyCriteria().withProjectId(project.id)).getList()
         .stream().collect(toMap(k -> k.name, a -> a));
-    messageService.save(
-        locale.messages.stream().map(m -> m.toModel(model, keys.get(m.keyName))).collect(toList()));
+    messageService.save(locale.messages.values().stream()
+        .map(m -> m.toModel(model, keys.get(m.keyName))).collect(toList()));
   }
 
   /**

@@ -53,10 +53,10 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
    * {@inheritDoc}
    */
   @Override
-  public DTO get(ID id) {
+  public DTO get(ID id, String... propertiesToFetch) {
     checkPermissionAll("Access token not allowed", readScopes);
 
-    MODEL obj = service.byId(id);
+    MODEL obj = service.byId(id, propertiesToFetch);
 
     if (obj == null)
       throw new NotFoundException(dtoClass.getSimpleName(), id);

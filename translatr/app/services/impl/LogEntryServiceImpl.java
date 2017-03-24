@@ -58,7 +58,7 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
    * {@inheritDoc}
    */
   @Override
-  public LogEntry byId(UUID id) {
+  public LogEntry byId(UUID id, String... fetches) {
     return LogEntry.byId(id);
   }
 

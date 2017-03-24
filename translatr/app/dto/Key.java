@@ -1,13 +1,18 @@
 package dto;
 
+import static java.util.stream.Collectors.toMap;
+
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import models.Project;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Key extends Dto {
   public UUID id;
 
@@ -23,6 +28,8 @@ public class Key extends Dto {
 
   public String name;
 
+  public Map<String, Message> messages;
+
   public Key() {}
 
   private Key(models.Key in) {
@@ -32,6 +39,10 @@ public class Key extends Dto {
     this.projectId = in.project.id;
     this.projectName = in.project.name;
     this.name = in.name;
+
+    if (!in.messages.isEmpty())
+      this.messages =
+          in.messages.stream().map(Message::from).collect(toMap(m -> m.localeName, m -> m));
   }
 
   public models.Key toModel(Project project) {

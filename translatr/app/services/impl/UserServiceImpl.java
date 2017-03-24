@@ -91,7 +91,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    * {@inheritDoc}
    */
   @Override
-  public User byId(UUID id) {
+  public User byId(UUID id, String... fetches) {
     return cache.getOrElse(User.getCacheKey(id), () -> User.byId(id), 60);
   }
 

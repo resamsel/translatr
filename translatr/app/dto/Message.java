@@ -2,16 +2,20 @@ package dto;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import models.Key;
 import models.Locale;
 import play.libs.Json;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message extends Dto {
   private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
@@ -23,10 +27,12 @@ public class Message extends Dto {
   @JsonIgnore
   public DateTime whenUpdated;
 
+  @NotNull
   public UUID localeId;
 
   public String localeName;
 
+  @NotNull
   public UUID keyId;
 
   public String keyName;
@@ -39,11 +45,17 @@ public class Message extends Dto {
     this.id = in.id;
     this.whenCreated = in.whenCreated;
     this.whenUpdated = in.whenUpdated;
-    this.localeId = in.locale.id;
-    this.localeName = in.locale.name;
-    this.keyId = in.key.id;
-    this.keyName = in.key.name;
     this.value = in.value;
+
+    if (in.locale != null) {
+      this.localeId = in.locale.id;
+      this.localeName = in.locale.name;
+    }
+
+    if (in.key != null) {
+      this.keyId = in.key.id;
+      this.keyName = in.key.name;
+    }
   }
 
   public models.Message toModel(Locale locale, Key key) {

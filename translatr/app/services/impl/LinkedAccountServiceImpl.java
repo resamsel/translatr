@@ -42,7 +42,7 @@ public class LinkedAccountServiceImpl
    * {@inheritDoc}
    */
   @Override
-  public LinkedAccount byId(Long id) {
+  public LinkedAccount byId(Long id, String... fetches) {
     return LinkedAccount.byId(id);
   }
 

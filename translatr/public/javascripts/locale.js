@@ -1,106 +1,183 @@
-App.Modules.EditorMessageListModule = function(sb, options) {
-	var options = options || {};
-	var projectId = options.projectId || '';
-	var locales = options.locales || {};
+var MessageListItemView = Backbone.View.extend({
+	tagName: 'div',
+	className: 'message',
+	template: _.template($('#message-tmpl').html()),
 
-	var panelMessages = sb.dom.find('#panel-messages .messages');
-	var template = panelMessages.find('.template');
-
-	function _handleCopyMessageValue(e) {
-		e.preventDefault();
-
-		sb.publish('valueChanged', sb.dom.wrap(this).data('value'));
-	}
-
-	function _handleMessageList(keyName, paged) {
-		panelMessages.find('.message:not(.template)').remove();
-		paged.list.forEach(function(entry) {
-			var $msg = template.clone().removeClass('template');
-			var $a = $msg.find('a');
-			$a.attr('href', window.location.hash)
-				.data('value', entry.value)
-	    		.click(_handleCopyMessageValue);
-	    	$msg.find('.localeName').html(locales[entry.localeId]);
-	    	$msg.find('.value').html(stripScripts(entry.value));
-	    	panelMessages.append($msg);
+	render: function() {
+		var html = this.template({
+			localeName: this.model.get('localeName'),
+			value: stripScripts(this.model.get('value'))
 		});
-	}
+		this.$el.html(html);
+		return this;
+	},
 
-	function _handleItemSelected(item) {
-		if(item === null) {
-			panelMessages.hide();
+	events: {
+		'click a.btn': 'onCopy'
+	},
+
+	onCopy: function() {
+		Backbone.trigger('message:change', this.model.get('value'));
+	}
+});
+var MessageListView = Backbone.View.extend({
+	el: '#panel-messages',
+
+	initialize: function(project, search) {
+		this.project = project;
+		this.search = search;
+
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
+
+		this.listView = this.$('.messages');
+	},
+
+	render: function() {
+		console.log('MessageListView.render');
+		var $list = this.listView.empty();
+		var collection = this.collection;
+
+		collection.each(function(model) {
+			var item = new MessageListItemView({model: model});
+			$list.append(item.render().$el);
+		}, this);
+	},
+
+	onItemSelected: function(item) {
+		if(item === undefined) {
+			this.listView.hide();
+
+			if(this.collection !== null) {
+				this.stopListening(this.collection, 'sync');
+				this.collection = null;
+			}
+
 			return;
 		}
 
-		panelMessages.show();
+		this.listView.show();
 
-		sb.utilities.ajax(sb.utilities.merge(
-			jsRoutes.controllers.TranslationsApi.find(projectId),
-			{data: {keyName: item.keyName}}
-		)).done(function(data) {
-			_handleMessageList(item.keyName, data);
-		});
+		this.collection = new MessageList(this.project.id);
+		this.listenTo(this.collection, 'sync', this.render);
+
+		var collection = this.collection;
+		collection.fetch({data: {keyName: item.get('name')}});
 	}
 
-	return {
-		create: function() {
-			sb.subscribe('itemSelected', _handleItemSelected);
-		},
-		destroy: function() {
+});
+var LocaleSelectorListItemView = Backbone.View.extend({
+	tagName: 'li',
+	template: _.template($('#locale-tmpl').html()),
+
+	initialize: function(arguments) {
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
+	},
+
+	render: function() {
+		var keyName = '';
+		if(this.message !== undefined) {
+			keyName = this.message.get('name');
 		}
-	};
-};
 
-App.Modules.EditorLocaleSelectorModule = function(sb, options) {
-	var dropdownLinks = sb.dom.find('#dropdown-locales a');
+		var html = this.template({
+			id: this.model.id,
+			url: jsRoutes.controllers.Locales.locale(this.model.id).url,
+			localeName: this.model.get('name'),
+			keyName: keyName
+		});
+		this.$el.html(html);
+		return this;
+	},
 
-	function _handleItemSelected(item) {
-		if(item === null) {
-			dropdownLinks.each(function() {
-				$(this).attr('href', jsRoutes.controllers.Locales.locale($(this).attr('id')).url);
+	onItemSelected: function(item) {
+		this.message = item;
+		this.render();
+	}
+});
+var LocaleSelectorListView = Backbone.View.extend({
+	el: '#dropdown-locales',
+
+	initialize: function(project) {
+		this.collection = project.locales;
+
+		this.listenTo(this.collection, 'sync', this.render);
+
+		var collection = this.collection;
+		this.collection.fetch({data:{order:'name'}});
+	},
+
+	render: function() {
+		var $list = this.$el.empty();
+		var collection = this.collection;
+		collection.each(function(model) {
+			var item = new LocaleSelectorListItemView({model: model});
+			$list.append(item.render().$el);
+		}, this);
+	}
+});
+var EditorSwitchView = Backbone.View.extend({
+	el: '#switch-editor',
+
+	initialize: function(localeName) {
+		this.localeName = localeName;
+
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
+	},
+
+	onItemSelected: function(item) {
+		if(item === undefined) {
+			this.$el.attr('href', '#');
+			this.$el.addClass('disabled');
+
+			return;
+		}
+
+		this.$el.attr('href', jsRoutes.controllers.Keys.key(item.id).url + '#locale/' + this.localeName);
+		this.$el.removeClass('disabled');
+	}
+});
+
+var LocaleEditor = Editor.extend({
+	initialize: function() {
+		Editor.prototype.initialize.apply(this, arguments);
+
+		this.itemType = 'key';
+		this.itemList = new ItemListView(
+			this.project,
+			this.project.keys,
+			this.search,
+			'keys',
+			this.itemType,
+			this.localeName
+		);
+		this.messageList = new MessageListView(this.project, this.search);
+		this.localeSelector = new LocaleSelectorListView(this.project);
+		this.editorSwitch = new EditorSwitchView(this.locale.name);
+	},
+
+	selectedItem: function(itemName) {
+		if(itemName !== null) {
+			return this.project.keys.find(function(item) {
+				return item.get('name') == itemName;
 			});
-
-			return;
 		}
+		return undefined;
+	},
 
-		dropdownLinks.each(function() {
-			$(this).attr('href', jsRoutes.controllers.Locales.locale($(this).attr('id')).url + '#key=' + item.keyName);
-		});
-	}
+	onItemSelected: function(model) {
+		Editor.prototype.onItemSelected.apply(this, arguments);
 
-	return {
-		create: function() {
-			sb.subscribe('itemSelected', _handleItemSelected);
-		},
-		destroy: function() {
-		}
-	}
-}
-
-App.Modules.EditorSwitchModule = function(sb, options) {
-	var localeName = options.localeName || '';
-	var switchButton = sb.dom.find('#switch-editor');
-
-	function _handleItemSelected(item) {
-		if(item === null) {
-			switchButton.attr('href', '#');
-			switchButton.addClass('disabled');
-
-			return;
-		}
-
-		switchButton.attr('href', jsRoutes.controllers.Keys.key(item.keyId).url + '#locale=' + localeName);
-		switchButton.removeClass('disabled');
-	}
-
-	return {
-		create: function() {
-			sb.subscribe('itemSelected', _handleItemSelected);
-		},
-		destroy: function() {
+		this.itemList.$el.find('.active').removeClass('active');
+		if(model !== undefined) {
+			this.keyId = model.id;
+			this.keyName = model.get('name');
+			this.itemList.$el.find('#' + model.id).addClass('active');
+		} else {
+			this.keyId = null;
+			this.keyName = null;
 		}
 	}
-}
+});
 
 App.Modules.SuggestionModule = function(sb) {
 	var form = sb.dom.find('#form-search');

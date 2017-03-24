@@ -107,7 +107,7 @@ POST	/api/locale/:localeId/import	controllers.LocalesApi.upload(localeId: java.u
 GET		/api/locale/:localeId/export/:fileType	controllers.LocalesApi.download(localeId: java.util.UUID, fileType: String)
 
 GET		/api/keys/:projectId			controllers.KeysApi.find(projectId: java.util.UUID)
-GET		/api/key/:keyId					controllers.KeysApi.get(keyId: java.util.UUID)
+GET		/api/key/:keyId					controllers.KeysApi.get(keyId: java.util.UUID, fetch: String ?= "")
 POST	/api/key						controllers.KeysApi.create
 PUT		/api/key						controllers.KeysApi.update
 DELETE	/api/key/:keyId					controllers.KeysApi.delete(keyId: java.util.UUID)

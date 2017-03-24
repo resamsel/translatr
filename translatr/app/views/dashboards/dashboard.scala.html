@@ -23,6 +23,7 @@
 						<em>&mdash; @{project.roleOf(template.loggedInUser)}</em>
 					</a>
 					<p>
+						@Messages("members.size", project.membersSize()),
 						@Messages("locales.size", project.localesSize()),
 						@Messages("keys.size", project.keysSize()),
 						@Messages("messages.size", project.messagesSize())

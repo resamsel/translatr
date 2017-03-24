@@ -1,8 +1,5 @@
 package controllers;
 
-import static java.util.stream.Collectors.toMap;
-
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -11,21 +8,15 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.collect.ImmutableMap;
 
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteLocaleCommand;
-import criterias.KeyCriteria;
-import criterias.LocaleCriteria;
-import criterias.MessageCriteria;
 import forms.KeySearchForm;
 import forms.LocaleForm;
-import models.Key;
 import models.Locale;
-import models.Message;
 import models.Project;
 import play.Configuration;
 import play.cache.CacheApi;
@@ -89,16 +80,7 @@ public class Locales extends AbstractController {
       if (search.order == null)
         search.order = "name";
 
-      PagedList<Key> keys = Key.pagedBy(
-          KeyCriteria.from(search).withProjectId(locale.project.id).withLocaleId(locale.id));
-      search.pager(keys);
-      PagedList<Locale> locales =
-          Locale.pagedBy(new LocaleCriteria().withProjectId(locale.project.id).withLimit(100));
-      Map<String, Message> messages = Message.findBy(new MessageCriteria().withLocaleId(locale.id))
-          .stream().collect(toMap(m -> m.key.name, a -> a));
-
-      return ok(views.html.locales.locale.render(createTemplate(), locale.project, locale, keys,
-          locales, messages, form));
+      return ok(views.html.locales.locale.render(createTemplate(), locale, form));
     });
   }
 
