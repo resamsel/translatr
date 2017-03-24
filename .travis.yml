@@ -5,12 +5,12 @@ before_script:
     - psql -c 'create user translatr;' -U postgres
     - psql -c 'create database "translatr-test";' -U postgres
     - psql -c 'grant all privileges on database "translatr-test" TO translatr;' -U postgres
-script:
     - cd translatr
+script:
     - bin/activator clean coverage test -Dconfig.file=conf/test.conf
     - bin/activator coverageAggregate
 after_success:
-    - cd translatr
+    - ln -s ../.git
     - bin/activator coveralls
 cache:
     directories:
