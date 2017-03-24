@@ -12,14 +12,12 @@ lazy val root = (project in file(".")).
 
 scalaVersion := "2.11.8"
 
-resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-
 libraryDependencies ++= Seq(
 	javaJdbc,
 	cache,
 
 	// Database
-	"org.postgresql" % "postgresql" % "9.4.1212",
+	"org.postgresql" % "postgresql" % "42.0.0",
 
 	// OAuth for Play
 	"com.feth" %% "play-authenticate" % "0.8.1",
@@ -29,16 +27,16 @@ libraryDependencies ++= Seq(
 	"commons-io" % "commons-io" % "2.5",
 
 	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-	"org.apache.httpcomponents" % "httpclient" % "4.5.2",
+	"org.apache.httpcomponents" % "httpclient" % "4.5.3",
 
 	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
 	
 	"io.swagger" %% "swagger-play2" % "1.5.3",
-	"org.webjars" % "swagger-ui" % "2.2.8",
+	"org.webjars" % "swagger-ui" % "2.2.10",
 
 	// https://mvnrepository.com/artifact/org.easytesting/fest-assert-core
 	"org.easytesting" % "fest-assert-core" % "2.0M10" % "test",
-	"org.mockito" % "mockito-core" % "2.6.9" % "test"
+	"org.mockito" % "mockito-core" % "2.7.19" % "test"
 )
 
 // From: https://github.com/playframework/playframework/issues/3818
