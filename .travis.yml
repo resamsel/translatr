@@ -7,7 +7,7 @@ before_script:
     - psql -c 'grant all privileges on database "translatr-test" TO translatr;' -U postgres
 script:
     - cd translatr
-    - bin/activator clean coverage test -Dconfig.file=conf/test.conf -J-Xmx512M
+    - bin/activator clean coverage test -Dconfig.file=conf/test.conf
     - bin/activator coverageAggregate
 after_success:
     - cd translatr
