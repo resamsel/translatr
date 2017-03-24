@@ -47,6 +47,8 @@ public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends Abstract
   protected static final String PARAM_OFFSET = "offset";
   protected static final String LIMIT = "The page size of the paged result list";
   protected static final String PARAM_LIMIT = "limit";
+  protected static final String FETCH = "The fields to fetch additionally, separated by commas";
+  protected static final String PARAM_FETCH = "fetch";
   protected static final String PROJECT_ID = "The project ID";
   protected static final String LOCALE_ID = "The locale ID";
   protected static final String PARAM_LOCALE_ID = "localeId";

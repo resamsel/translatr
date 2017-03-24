@@ -15,7 +15,7 @@ import models.Model;
 public interface ModelService<T extends Model<T, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>> {
   PagedList<T> findBy(CRITERIA criteria);
 
-  T byId(ID id);
+  T byId(ID id, String... propertiesToFetch);
 
   T create(T model);
 

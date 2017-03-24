@@ -206,8 +206,6 @@ App.Core = function(_$) {
 					this.start(moduleId);
 				}
 			}
-
-			Backbone.history.start();
 		},
 		stopAll: function() {
 			for (var moduleId in moduleData) {
@@ -235,10 +233,6 @@ App.Core = function(_$) {
 	};
 } (jQuery);
 
-var parseList = function(data) {
-	this.hasMore = data.hasMore;
-	return data.list;
-}
 function toQueryString(parameters) {
 	var queryString = _.reduce(
 		parameters,
@@ -257,12 +251,27 @@ function toQueryString(parameters) {
 }
 
 var AppRouter = Backbone.Router.extend({
+	initialize: function(app) {
+		this.app = app;
+	},
+
 	routes: {
 		'key/*keyName': 'key',
 		'locale/*localeName': 'locale'
 	}
 });
-var router = new AppRouter;
+var Translatr = Backbone.Model.extend({
+	initialize: function() {
+		this.router = new AppRouter(this);
+
+		this.listenTo(Backbone, 'all', this.onAny);
+	},
+
+	onAny: function() {
+		console.log('Translatr.onAny', arguments);
+	}
+});
+var app = new Translatr();
 
 var Model = Backbone.Model.extend({
 	initialize: function() {
@@ -302,8 +311,7 @@ var Model = Backbone.Model.extend({
 		});
 	}
 });
-var Locale = Model.extend({});
-var Key = Model.extend({
+var WithMessage = Model.extend({
 	message: null,
 
 	initialize: function() {
@@ -315,6 +323,7 @@ var Key = Model.extend({
 	},
 
 	setMessage: function(message) {
+		console.log('setMessage', message);
 		if(this.message !== null) {
 			this.message.undoManager.stopTracking();
 		}
@@ -322,6 +331,8 @@ var Key = Model.extend({
 		this.trigger('change:message', this.message);
 	}
 });
+var Locale = WithMessage.extend({});
+var Key = WithMessage.extend({});
 var Message = Model.extend({
 	request: function(method, model, options) {
 		switch(method) {
@@ -335,7 +346,7 @@ var Message = Model.extend({
 });
 var PagedCollection = Backbone.Collection.extend({
 	parse: function(data) {
-		this.hasMore = data.hasMore;
+		this.hasMore = data.hasNext;
 		return data.list;
 	}
 });
@@ -367,4 +378,8 @@ var Project = Backbone.Model.extend({
 		this.locales = new LocaleList(id);
 		this.messages = new MessageList(id);
 	}
+});
+
+$(document).ready(function() {
+	Backbone.history.start();
 });

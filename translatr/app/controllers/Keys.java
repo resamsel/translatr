@@ -1,11 +1,8 @@
 package controllers;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -18,12 +15,10 @@ import com.google.common.collect.ImmutableMap;
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteKeyCommand;
-import criterias.MessageCriteria;
 import forms.KeyForm;
 import forms.SearchForm;
 import models.Key;
 import models.Locale;
-import models.Message;
 import models.Project;
 import play.Configuration;
 import play.cache.CacheApi;
@@ -36,7 +31,6 @@ import play.mvc.With;
 import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
-import services.MessageService;
 import services.ProjectService;
 import services.UserService;
 import utils.FormUtils;
@@ -59,8 +53,6 @@ public class Keys extends AbstractController {
 
   private final LocaleService localeService;
 
-  private final MessageService messageService;
-
   private final ProjectService projectService;
 
   /**
@@ -72,15 +64,13 @@ public class Keys extends AbstractController {
   @Inject
   protected Keys(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
       LogEntryService logEntryService, FormFactory formFactory, Configuration configuration,
-      KeyService keyService, LocaleService localeService, MessageService messageService,
-      ProjectService projectService) {
+      KeyService keyService, LocaleService localeService, ProjectService projectService) {
     super(injector, cache, auth, userService, logEntryService);
 
     this.formFactory = formFactory;
     this.configuration = configuration;
     this.keyService = keyService;
     this.localeService = localeService;
-    this.messageService = messageService;
     this.projectService = projectService;
   }
 
@@ -90,12 +80,7 @@ public class Keys extends AbstractController {
 
       Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
 
-      List<Locale> locales = Locale.byProject(key.project);
-      Map<UUID, Message> messages =
-          messageService.findBy(new MessageCriteria().withKeyName(key.name)).getList().stream()
-              .collect(Collectors.toMap(m -> m.locale.id, m -> m));
-
-      return ok(views.html.keys.key.render(createTemplate(), key, locales, messages, form));
+      return ok(views.html.keys.key.render(createTemplate(), key, form));
     });
   }
 

@@ -1,7 +1,38 @@
 @(noSelectionKey: String)(left: Html)(right: Html)
 
 <div id="editor" class="grid-container editor">
-	<div class="grid-item item-left">@left</div>
+	<div class="grid-item item-left">
+		@left
+		<div id="items-list" class="collection">
+		</div>
+		<script type="text/template" id="item-tmpl">
+			<span class="title name">
+				<%= (message !== null && message.hasChanged()) ? '*' : '' %><%= name %>
+			</span>
+			<div class="value">
+				<% if(message !== null) { %>
+					<%- message.get('value') %>
+				<% } %>
+			</div>
+		</script>
+		<script type="text/template" id="more-tmpl">
+			<div class="preloader-container" style="padding:20px;text-align:center;">
+				<div class="preloader-wrapper small active">
+					<div class="spinner-layer spinner-green-only">
+						<div class="circle-clipper left">
+							<div class="circle"></div>
+						</div>
+						<div class="gap-patch">
+							<div class="circle"></div>
+						</div>
+						<div class="circle-clipper right">
+							<div class="circle"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</script>
+	</div>
 	<div id="editor-content" class="grid-item item-main">
 		<div class="filter actions">
 			<button

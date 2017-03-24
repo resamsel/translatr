@@ -61,7 +61,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
    * {@inheritDoc}
    */
   @Override
-  public Message byId(UUID id) {
+  public Message byId(UUID id, String... fetches) {
     return Message.byId(id);
   }
 

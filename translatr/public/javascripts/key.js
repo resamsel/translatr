@@ -1,3 +1,67 @@
+var EditorSwitchView = Backbone.View.extend({
+	el: '#switch-editor',
+
+	initialize: function(keyName) {
+		this.keyName = keyName;
+
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
+	},
+
+	onItemSelected: function(item) {
+		if(item === undefined) {
+			this.$el.attr('href', '#');
+			this.$el.addClass('disabled');
+
+			return;
+		}
+
+		this.$el.attr('href', jsRoutes.controllers.Locales.locale(item.id).url + '#key/' + this.keyName);
+		this.$el.removeClass('disabled');
+	}
+});
+
+var KeyEditor = Editor.extend({
+	initialize: function() {
+		Editor.prototype.initialize.apply(this, arguments);
+
+		this.itemType = 'locale';
+		this.itemList = new ItemListView(
+			this.project,
+			this.project.locales,
+			this.search,
+			'locales',
+			this.itemType,
+			{ keyName: this.keyName }
+		);
+		this.editorSwitch = new EditorSwitchView(this.key.name);
+
+		this.listenTo(Backbone, 'messages:loaded', this.onMessagesLoaded);
+	},
+
+	selectedItem: function(itemName) {
+		if(itemName !== null) {
+			return this.project.locales.find(function(item) {
+				return item.get('name') == itemName;
+			});
+		}
+		return undefined;
+	},
+
+	onItemSelected: function(model) {
+		Editor.prototype.onItemSelected.apply(this, arguments);
+
+		this.itemList.$el.find('.active').removeClass('active');
+		if(model !== undefined) {
+			this.localeId = model.id;
+			this.localeName = model.get('name');
+			this.itemList.$el.find('#' + model.id).addClass('active');
+		} else {
+			this.localeId = null;
+			this.localeName = null;
+		}
+	}
+});
+
 /*
  * Input:
  * 

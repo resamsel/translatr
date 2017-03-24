@@ -1,4 +1,4 @@
-@(template: utils.Template, project: models.Project, locale: models.Locale, form: Form[forms.KeySearchForm])
+@(template: utils.Template, locale: models.Locale, form: Form[forms.KeySearchForm])
 
 @localeActions = {
 	<li>
@@ -9,7 +9,7 @@
 	</li>
 }
 
-@main(template.withTitle(Messages("locale.title", project.name, tags.locale(locale.name))).withName("locale")) {
+@main(template.withTitle(Messages("locale.title", locale.project.name, tags.locale(locale.name))).withName("locale")) {
 	@tags.search(form) {
 		<button
 			type="button"
@@ -33,10 +33,10 @@
 	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
 		@Messages("dashboard")
 	</a>
-	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
-		@project.name
+	<a class="breadcrumb" href="@routes.Projects.project(locale.project.id)">
+		@locale.project.name
 	</a>
-	<a class="breadcrumb" href="@routes.Projects.locales(project.id)">
+	<a class="breadcrumb" href="@routes.Projects.locales(locale.project.id)">
 		@Messages("locales")
 	</a>
 	<a class="breadcrumb active" href="@routes.Locales.locale(locale.id)">
@@ -69,39 +69,18 @@
 				<a id="<%= id %>" href="<%- url %>#key/<%- keyName %>"><%- localeName %></a>
 			</script>
 		} {
-			<div id="keys-list" class="collection keys">
-			</div>
-			<script type="text/template" id="key-tmpl">
-				<span class="title name">
-					<%= (message !== null && message.hasChanged()) ? '*' : '' %><%= name %>
-				</span>
-				<div class="value">
-					<% if(message !== null) { %>
-						<%- message.get('value') %>
-					<% } %>
-				</div>
-			</script>
-			<script type="text/template" id="more-tmpl">
-				<a class="btn">More</a>
-			</script>
-		@*
-			@if(!keys.getList.isEmpty) {
-				<div class="collection keys">
-					@tags.keyItems(keys.getList, messages, false)
-				</div>
-			} else {
-				<p class="grey-text">
-					@Messages("keys.size", 0)
-				</p>
-				<div class="keys center">
+			<div id="items-empty">
+				<div class="locales center">
+					<p class="grey-text">
+						@Messages("keys.size", 0)
+					</p>
 					@if(locale.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
-						<a href="#modal-create-key" class="modal-trigger btn waves-effect waves-light">
-							@Messages("key.create.title")
+						<a href="#modal-create-locale" class="modal-trigger btn waves-effect waves-light">
+							@Messages("locale.create.title")
 						</a>
 					}
 				</div>
-			}
-		*@
+			</div>
 		}
 	} {
 		<div class="filter">
@@ -132,7 +111,7 @@
 	@tags.fabContainer("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = localeActions)
 
 	@tags.modal(Messages("key.new"), "modal-create-key") {
-		<form id="form-key" method="post" action="@routes.Keys.doCreate(project.id, locale.id)">
+		<form id="form-key" method="post" action="@routes.Keys.doCreate(locale.project.id, locale.id)">
 			<div class="form-group">
 				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
 			</div>
@@ -143,22 +122,16 @@
 	<script>
 		$('ul.tabs').tabs();
 
-		var projectId = '@project.id';
+		var projectId = '@locale.project.id';
 		var messages = {
 			'message.updated': '@Messages("message.updated")'
 		};
-		var options = {
-			editor: new LocaleEditor(
-				new Project('@project.id'),
-				{id: '@locale.id', name: '@locale.name'},
-				undefined,
-				@Html(play.libs.Json.toJson(form.get()).toString)
-			),
-			projectId: '@project.id',
-			localeId: '@locale.id',
-			localeName: '@locale.name',
+		var editor = new LocaleEditor({
+			app: app,
+			project: new Project('@locale.project.id'),
+			locale: @Html(play.libs.Json.toJson(locale).toString),
 			search: @Html(play.libs.Json.toJson(form.get()).toString)
-		}
+		});
 
 		App.Core.register('KeyCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
 	</script>

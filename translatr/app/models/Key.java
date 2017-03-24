@@ -2,7 +2,9 @@ package models;
 
 import static utils.Stopwatch.log;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -28,12 +30,14 @@ import com.avaje.ebean.Query;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.ImmutableMap;
 
 import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.KeyCriteria;
 import play.libs.Json;
 import play.mvc.Http.Context;
+import utils.QueryUtils;
 import validators.KeyNameUniqueChecker;
 import validators.NameUnique;
 
@@ -44,6 +48,9 @@ public class Key implements Model<Key, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Key.class);
 
   public static final int NAME_LENGTH = 255;
+
+  private static final Map<String, List<String>> FETCH_MAP = ImmutableMap.of("project",
+      Arrays.asList("project"), "messages", Arrays.asList("messages", "messages.locale"));
 
   @Id
   @GeneratedValue
@@ -108,8 +115,12 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @param keyId
    * @return
    */
-  public static Key byId(UUID id) {
-    return find.setId(id).fetch("project").findUnique();
+  public static Key byId(UUID id, String... propertiesToFetch) {
+    if (propertiesToFetch == null)
+      propertiesToFetch = new String[0];
+
+    return QueryUtils.fetch(find.setId(id).fetch("project").setDisableLazyLoading(true),
+        Arrays.asList(propertiesToFetch), FETCH_MAP).findUnique();
   }
 
   /**
@@ -125,7 +136,10 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public static PagedList<Key> pagedBy(KeyCriteria criteria) {
-    Query<Key> q = Key.find.fetch("project").alias("k");
+    Query<Key> q =
+        QueryUtils.fetch(Key.find.fetch("project").alias("k").setDisableLazyLoading(true),
+            criteria.getFetches(), FETCH_MAP);
+
     ExpressionList<Key> query = q.where();
 
     if (criteria.getProjectId() != null)

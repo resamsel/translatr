@@ -9,22 +9,154 @@ function stripScripts(s) {
 	return div.innerHTML;
 }
 
+var ItemListItemView = Backbone.View.extend({
+	tagName: 'a',
+	className: 'collection-item avatar waves-effect waves-light',
+
+	initialize: function(arguments) {
+		this.type = arguments.type;
+
+		this.template = _.template($('#item-tmpl').html());
+
+		this.listenTo(this.model, 'change', this.render);
+		this.listenTo(this.model, 'change:message', this.onMessageChanged);
+
+		this.onMessageChanged();
+	},
+
+	onMessageChanged: function() {
+		this.stopListening(this.message, 'change');
+		this.message = this.model.getMessage();
+		this.listenTo(this.message, 'change', this.render);
+		this.render();
+	},
+
+	render: function() {
+		var html = this.template(
+			_.extend(this.model.toJSON(), {message: this.message})
+		);
+		this.$el.html(html);
+		this.$el.addClass(this.type);
+		this.$el
+			.attr('id', this.model.id)
+			.attr('href', '#' + this.type + '/' + this.model.get('name'))
+			.attr('title', this.model.get('name'));
+		return this;
+	}
+});
+
+var ItemListView = Backbone.View.extend({
+	el: '#items-list',
+	itemsEmpty: '#items-empty',
+
+	initialize: function(project, collection, search, styleClass, itemType, queryParams) {
+		this.project = project;
+		this.collection = collection;
+		this.search = search;
+		this.itemType = itemType;
+		this.queryParams = queryParams;
+
+		this.moreTemplate = _.template($('#more-tmpl').html());
+		this.noItems = $('#items-empty');
+
+		this.listenTo(this.collection, 'sync', this.render);
+		this.listenTo(Backbone, 'items:loaded', this.onItemsLoaded);
+
+		this.$el.addClass(styleClass);
+
+		var collection = this.collection;
+		collection.fetch({data: this.search}).then(function() {
+			Backbone.trigger('items:loaded', collection);
+		});
+	},
+
+	events: {
+		"scroll": "onScroll"
+	},
+
+	onScroll: function() {
+		//console.log('onScroll', this.$el.scrollTop(), this.$el[0].scrollHeight - this.$el.parent().height(), this.$el[0].scrollHeight, this.$el.parent().height());
+		if(this.$el.scrollTop() == this.$el[0].scrollHeight - this.$el.height()) {
+			this.loadMore();
+		}
+	},
+
+	render: function() {
+		var $list = this.$el.empty();
+		var collection = this.collection;
+
+		if(collection.size() == 0) {
+			this.noItems.show();
+		} else {
+			this.noItems.hide();
+
+			collection.each(function(model) {
+				var item = new ItemListItemView({
+					model: model,
+					type: this.itemType
+				});
+				$list.append(item.render().$el);
+			}, this);
+		}
+
+		if(this.collection.hasMore) {
+			var template = this.moreTemplate({});
+			$list.append(template);
+			$(template).hide();
+		}
+	},
+
+	onItemsLoaded: function(items) {
+		var that = this;
+		var messages = this.project.messages;
+		var data = _.extend({
+			order: this.itemType + '.' + this.search.order
+		}, this.data);
+		messages.fetch({data: data}).then(function() {
+			messages.each(function(msg) {
+				var id = msg.get(that.itemType + 'Id');
+				if(id in items._byId) {
+					items._byId[id].setMessage(msg);
+				}
+			});
+			Backbone.trigger('messages:loaded');
+		});
+	},
+
+	loadMore: function() {
+		if(!this.collection.hasMore) {
+			console.log('No more items on server');
+			return;
+		}
+		var collection = this.collection;
+		this.$('.preloader-container').show();
+		this.$el.animate({
+			scrollTop: this.$el[0].scrollHeight - this.$el.height()
+		});
+		collection.fetch({
+			update: true,
+			remove: false,
+			data: _.extend(
+				this.search,
+				{
+					offset: collection.length,
+					limit: this.search.limit * 2
+				}
+			)
+		}).then(function() {
+			setTimeout(function() {
+				Backbone.trigger('items:loaded', collection);
+			}, 2000);
+		});
+	}
+});
+
 var CodeEditor = Backbone.View.extend({
 	el: '#editor-content',
-	message: null,
 
-	initialize: function(editor) {
-		this.editor = editor;
-
-		this.form = this.$('#form-message');
-		this.messageForm = this.$('#form-message');
+	initialize: function() {
 		this.panelEditor = this.$('#panel-editor');
 		this.panelActions = this.$('.filter');
-		this.progress = this.form.find('.progress');
-		this.fieldId = this.$('#field-id');
-		this.fieldLocale = this.$('#field-locale');
-		this.fieldKey = this.$('#field-key');
-		this.submitButton = this.$('#message-submit');
 		this.noSelection = this.$("#no-selection");
 		this.rightFilter = $(".item-right .filter");
 		this.codeEditor = CodeMirror(this.panelEditor[0], {
@@ -35,17 +167,15 @@ var CodeEditor = Backbone.View.extend({
 			htmlMode: true
 		});
 
-		this.listenTo(this.editor, 'message:selected', this.onMessageSelected);
-		this.listenTo(this.editor, 'message:change', this.onMessageChange);
-		this.listenTo(this.editor, 'message:changed', this.onMessageChanged);
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
+		this.listenTo(Backbone, 'message:change', this.onMessageChange);
 
 		var that = this;
 		this.codeEditor.on('change', function() {
-			that.editor.trigger('message:changed', that.message);
+			Backbone.trigger('message:changed', that.codeEditor.getValue());
 		});
 
 		this.noSelection.show();
-		this.messageForm.hide();
 		this.panelEditor.hide();
 		this.panelActions.hide();
 		this.rightFilter.hide();
@@ -57,72 +187,62 @@ var CodeEditor = Backbone.View.extend({
 	},
 
 	onSave: function() {
-		this.editor.onSave();
+		Backbone.trigger('message:save');
 	},
 
 	onDiscard: function() {
-		this.editor.onDiscard();
+		Backbone.trigger('message:discard');
+		this.codeEditor.clearHistory();
+		this.codeEditor.setValue('');
 	},
 
-	onMessageSelected: function(item) {
-		if(item === undefined) {
-			this.message = null;
+	onItemSelected: function(item) {
+		this.codeEditor.clearHistory();
 
+		if(item === undefined) {
 			this.noSelection.show();
-			this.messageForm.hide();
 			this.panelEditor.hide();
 			this.panelActions.hide();
 			this.rightFilter.hide();
-
-			return;
+		} else {
+			this.noSelection.hide();
+			this.panelEditor.show();
+			this.panelActions.show();
+			this.rightFilter.show();
 		}
-
-		this.message = item.getMessage();
-
-		this.noSelection.hide();
-		this.messageForm.show();
-		this.panelEditor.show();
-		this.panelActions.show();
-		this.rightFilter.show();
-
-		this.editor.trigger('message:change', this.message.get('value'));
 	},
 
 	onMessageChange: function(value) {
+		console.log('onMessageChange "' + value + '"', value);
 		this.codeEditor.setValue(value);
-	},
-
-	onMessageChanged: function() {
-		this.message.set('value', this.codeEditor.getValue());
 	}
 });
 
 var Preview = Backbone.View.extend({
 	el: '#panel-preview',
 
-	initialize: function(editor) {
-		this.editor = editor;
+	initialize: function() {
 		this.message = null;
 
-		this.listenTo(editor, 'message:selected', this.onMessageSelected);
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
 
 		this.$el.hide();
 	},
 
-	onMessageSelected: function(item) {
+	onItemSelected: function(item) {
 		if(this.message !== null) {
 			this.stopListening(this.message);
 		}
 		if(item !== undefined) {
 			this.message = item.message;
-			this.listenTo(this.message, 'change', this.onMessageChanged);
+			this.listenTo(this.message, 'change', this.render);
 		} else {
 			this.message = null;
 		}
-		this.onMessageChanged();
+		this.render();
 	},
 
-	onMessageChanged: function() {
+	render: function() {
 		if(this.message !== null) {
 			this.$('#preview').html(stripScripts(this.message.get('value')));
 			this.$el.show();
@@ -134,13 +254,20 @@ var Preview = Backbone.View.extend({
 });
 
 var Editor = Backbone.Model.extend({
-	'message': null,
+	message: null,
+	app: null,
+	project: null,
+	locale: {id: null, name: null},
+	key: {id: null, name: null},
+	search: null,
 
-	initialize: function(project, locale, key, search) {
-		this.project = project;
-		this.locale = locale || {id: null, name: null};
-		this.key = key || {id: null, name: null};
-		this.search = search;
+	initialize: function() {
+		this.app = this.get('app') || this.app;
+		this.project = this.get('project') || this.project;
+		this.locale = this.get('locale') || this.locale;
+		this.key = this.get('key') || this.key;
+		this.search = this.get('search') || this.search;
+
 		this.$el = $('#editor');
 
 		this.localeId = this.locale.id;
@@ -148,22 +275,57 @@ var Editor = Backbone.Model.extend({
 		this.keyId = this.key.id;
 		this.keyName = this.key.name;
 
-		search.order = search.order || 'name';
+		this.search.order = this.search.order || 'name';
 
-		this.listenTo(this, 'message:selected', this.onMessageSelected);
-		this.listenTo(this, 'keys:loaded', this.onKeysLoaded);
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
+		this.listenTo(Backbone, 'messages:loaded', this.onMessagesLoaded);
+		this.listenTo(Backbone, 'message:changed', this.onMessageChanged);
+		this.listenTo(Backbone, 'message:save', this.onSave);
+		this.listenTo(Backbone, 'message:discard', this.onDiscard);
+
 		$(window).keydown(this.onKeyPress);
 
-		this.undoManager = new Backbone.UndoManager();
-		this.codeEditor = new CodeEditor(this);
-		this.preview = new Preview(this);
+		var that = this;
+		this.app.router.on('route:locale', function(arg) { return that.onRouteChanged(arg); });
+		this.app.router.on('route:key', function(arg) { return that.onRouteChanged(arg); });
+
+		this.codeEditor = new CodeEditor;
+		this.preview = new Preview;
 	},
 
-	onMessageSelected: function(item) {
+	selectedItem: function(itemName) {
+		return undefined;
+	},
+
+	onRouteChanged: function(itemName) {
+		console.log('onRouteChanged: ', itemName);
+		if(itemName === '') {
+			itemName = null;
+		}
+		this.selectedItemName = itemName;
+		Backbone.trigger('item:selected', this.selectedItem(itemName));
+	},
+
+	onItemSelected: function(item) {
+		console.log('onItemSelected', item);
 		if(item !== undefined) {
-			this.message = item.message;
+			this.item = item;
+			this.message = item.getMessage();
+			Backbone.trigger('message:change', this.message.get('value'));
 		} else {
+			this.item = null;
 			this.message = null;
+		}
+	},
+
+	onMessagesLoaded: function() {
+		console.log('Editor.onMessagesLoaded');
+		Backbone.trigger('item:selected', this.selectedItem(this.selectedItemName));
+	},
+
+	onMessageChanged: function(value) {
+		if(this.message !== null) {
+			this.message.set('value', value);
 		}
 	},
 
@@ -181,7 +343,7 @@ var Editor = Backbone.Model.extend({
 		if(this.message !== null) {
 			this.message.restart();
 		}
-		router.navigate("key/", {trigger: true, replace: true});
+		this.app.router.navigate(this.itemType + "/", {trigger: true, replace: true});
 	},
 
 	onKeyPress: function(event) {

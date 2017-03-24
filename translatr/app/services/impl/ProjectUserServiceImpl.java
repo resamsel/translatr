@@ -45,7 +45,7 @@ public class ProjectUserServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  public ProjectUser byId(Long id) {
+  public ProjectUser byId(Long id, String... fetches) {
     return ProjectUser.byId(id);
   }
 

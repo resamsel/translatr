@@ -98,10 +98,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public List<ProjectUser> members;
 
   @Transient
-  private Long keysSize;
+  private Long localesSize;
 
   @Transient
-  private Long localesSize;
+  private Long keysSize;
 
   @Transient
   private Map<UUID, Long> keysSizeMap;
@@ -148,7 +148,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   public static PagedList<Project> pagedBy(ProjectCriteria criteria) {
-    ExpressionList<Project> query = find.fetch("owner").where();
+    ExpressionList<Project> query =
+        find.fetch("owner").fetch("members").fetch("locales").fetch("keys").where();
 
     query.eq("deleted", false);
 
@@ -189,16 +190,16 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return keysSizeMap.getOrDefault(localeId, 0l);
   }
 
+  public long membersSize() {
+    return members.size();
+  }
+
   public long localesSize() {
-    if (localesSize == null)
-      localesSize = Locale.countBy(this);
-    return localesSize;
+    return locales.size();
   }
 
   public long keysSize() {
-    if (keysSize == null)
-      keysSize = Key.countBy(this);
-    return keysSize;
+    return keys.size();
   }
 
   public long messagesSize() {

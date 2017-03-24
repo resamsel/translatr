@@ -100,6 +100,7 @@ Concat.groups := Seq(
 		"javascripts/underscore-min.js",
 		"javascripts/backbone-min.js",
 		"javascripts/backbone.undo.js",
+		"javascripts/backbone-pageable.min.js",
 		"javascripts/app.js",
 		"javascripts/main.js",
 		"javascripts/editor.js"

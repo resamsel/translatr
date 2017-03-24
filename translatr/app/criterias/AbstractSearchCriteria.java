@@ -1,6 +1,11 @@
 package criterias;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.avaje.ebean.ExpressionList;
 
@@ -28,6 +33,8 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
   private UUID userId;
 
   private UUID projectId;
+
+  private final List<String> fetches = new ArrayList<>();
 
   /**
    * 
@@ -165,6 +172,24 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
     return self;
   }
 
+  /**
+   * @return the fetches
+   */
+  public List<String> getFetches() {
+    return fetches;
+  }
+
+  public T withFetches(List<String> fetches) {
+    this.fetches.addAll(fetches);
+    return self;
+  }
+
+  public T withFetches(String... fetches) {
+    if (fetches != null)
+      return withFetches(Arrays.asList(fetches));
+    return self;
+  }
+
   public T with(SearchForm form) {
     return self.withSearch(form.search).withOffset(form.offset).withLimit(form.limit)
         .withOrder(form.order);
@@ -174,7 +199,8 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
     return self.withSearch(request.getQueryString("search"))
         .withOffset(NumberUtils.parseInt(request.getQueryString("offset")))
         .withLimit(NumberUtils.parseInt(request.getQueryString("limit")))
-        .withOrder(request.getQueryString("order"));
+        .withOrder(request.getQueryString("order"))
+        .withFetches(StringUtils.split(request.getQueryString("fetch"), ","));
   }
 
   /**

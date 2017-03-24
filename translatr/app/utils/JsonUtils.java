@@ -139,7 +139,7 @@ public class JsonUtils {
   }
 
   public static UUID getUuid(String uuid) {
-    if (uuid == null)
+    if (uuid == null || uuid.trim().length() < 1)
       return null;
 
     return UUID.fromString(uuid);

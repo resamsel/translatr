@@ -20,7 +20,7 @@ public interface ApiService<T, ID, CRITERIA extends AbstractSearchCriteria<CRITE
   PagedList<T> find(CRITERIA criteria,
       @SuppressWarnings("unchecked") Consumer<CRITERIA>... validators);
 
-  T get(ID id);
+  T get(ID id, String... propertiesToFetch);
 
   T create(JsonNode in);
 

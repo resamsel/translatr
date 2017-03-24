@@ -1,113 +1,7 @@
-var KeyListItemView = Backbone.View.extend({
-	tagName: 'a',
-	className: 'collection-item avatar waves-effect waves-light key',
-	template: _.template($('#key-tmpl').html()),
-
-	initialize: function(arguments) {
-		this.editor = arguments.editor;
-
-		this.listenTo(this.model, 'change', this.render);
-		this.listenTo(this.model, 'change:message', this.onMessageChanged);
-		this.onMessageChanged();
-	},
-
-	onMessageChanged: function() {
-		this.stopListening(this.message, 'change');
-		this.message = this.model.getMessage();
-		this.listenTo(this.message, 'change', this.render);
-		this.render();
-	},
-
-	render: function() {
-		var html = this.template(
-			_.extend(this.model.toJSON(), {message: this.message})
-		);
-		this.$el.html(html);
-		this.$el
-			.attr('id', this.model.id)
-			.attr('href', '#key/' + this.model.get('name'))
-			.attr('title', this.model.get('name'));
-		return this;
-	}
-});
-var KeyListView = Backbone.View.extend({
-	el: '#keys-list',
-	moreTemplate: _.template($('#more-tmpl').html()),
-
-	initialize: function(editor, search) {
-		this.editor = editor;
-		this.collection = editor.project.keys;
-		this.search = search;
-
-		this.listenTo(this.collection, 'sync', this.render);
-		this.listenTo(this.editor, 'keys:loaded', this.onKeysLoaded);
-
-		var collection = this.collection;
-		collection.fetch({data: this.search}).then(function() {
-			editor.trigger('keys:loaded', collection);
-		});
-	},
-
-	render: function() {
-		var $list = this.$el.empty();
-		var collection = this.collection;
-
-		collection.each(function(model) {
-			var item = new KeyListItemView({model: model, editor: this.editor});
-			$list.append(item.render().$el);
-		}, this);
-
-		if(this.collection.hasMore) {
-			$list.append(this.moreTemplate({}));
-		}
-	},
-
-	onKeysLoaded: function(keys) {
-		var that = this;
-		var messages = this.editor.project.messages;
-		messages.fetch({
-			data: {
-				localeId: this.editor.localeId,
-				order: 'key.' + this.search.order
-			}
-		}).then(function() {
-			messages.each(function(msg) {
-				var keyId = msg.get('keyId');
-				if(keyId in keys._byId) {
-					var key = keys._byId[keyId];
-					key.setMessage(msg);
-				}
-			});
-			that.trigger('messages:loaded');
-		});
-	},
-
-	loadMore: function() {
-		var editor = this.editor;
-		var collection = this.collection;
-		collection.fetch({
-			update: true,
-			remove: false,
-			data: _.extend(
-				this.search,
-				{
-					offset: this.collection.length,
-					limit: this.search.limit * 2
-				}
-			)
-		}).then(function() {
-			editor.trigger('keys:loaded', collection._byId);
-		});
-	}
-});
 var MessageListItemView = Backbone.View.extend({
 	tagName: 'div',
 	className: 'message',
 	template: _.template($('#message-tmpl').html()),
-
-	initialize: function(arguments) {
-		this.editor = arguments.editor;
-	},
 
 	render: function() {
 		var html = this.template({
@@ -123,37 +17,33 @@ var MessageListItemView = Backbone.View.extend({
 	},
 
 	onCopy: function() {
-		this.editor.trigger('message:change', this.model.get('value'));
+		Backbone.trigger('message:change', this.model.get('value'));
 	}
 });
 var MessageListView = Backbone.View.extend({
 	el: '#panel-messages',
 
-	initialize: function(editor, search) {
-		this.editor = editor;
+	initialize: function(project, search) {
+		this.project = project;
 		this.search = search;
 
-		this.listenTo(this.editor, 'message:selected', this.onMessageSelected);
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
 
 		this.listView = this.$('.messages');
 	},
 
 	render: function() {
-		console.log('messagelistview.render');
+		console.log('MessageListView.render');
 		var $list = this.listView.empty();
 		var collection = this.collection;
 
 		collection.each(function(model) {
-			var item = new MessageListItemView({model: model, editor: this.editor});
+			var item = new MessageListItemView({model: model});
 			$list.append(item.render().$el);
 		}, this);
-
-//		if(this.collection.hasMore) {
-//			$list.append(this.moreTemplate({}));
-//		}
 	},
 
-	onMessageSelected: function(item) {
+	onItemSelected: function(item) {
 		if(item === undefined) {
 			this.listView.hide();
 
@@ -167,10 +57,9 @@ var MessageListView = Backbone.View.extend({
 
 		this.listView.show();
 
-		this.collection = new MessageList(this.editor.project.id);
+		this.collection = new MessageList(this.project.id);
 		this.listenTo(this.collection, 'sync', this.render);
 
-		var editor = this.editor;
 		var collection = this.collection;
 		collection.fetch({data: {keyName: item.get('name')}});
 	}
@@ -181,9 +70,7 @@ var LocaleSelectorListItemView = Backbone.View.extend({
 	template: _.template($('#locale-tmpl').html()),
 
 	initialize: function(arguments) {
-		this.editor = arguments.editor;
-
-		this.listenTo(this.editor, 'message:selected', this.onMessageSelected);
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
 	},
 
 	render: function() {
@@ -202,7 +89,7 @@ var LocaleSelectorListItemView = Backbone.View.extend({
 		return this;
 	},
 
-	onMessageSelected: function(item) {
+	onItemSelected: function(item) {
 		this.message = item;
 		this.render();
 	}
@@ -210,9 +97,8 @@ var LocaleSelectorListItemView = Backbone.View.extend({
 var LocaleSelectorListView = Backbone.View.extend({
 	el: '#dropdown-locales',
 
-	initialize: function(editor) {
-		this.editor = editor;
-		this.collection = editor.project.locales;
+	initialize: function(project) {
+		this.collection = project.locales;
 
 		this.listenTo(this.collection, 'sync', this.render);
 
@@ -224,7 +110,7 @@ var LocaleSelectorListView = Backbone.View.extend({
 		var $list = this.$el.empty();
 		var collection = this.collection;
 		collection.each(function(model) {
-			var item = new LocaleSelectorListItemView({model: model, editor: this.editor});
+			var item = new LocaleSelectorListItemView({model: model});
 			$list.append(item.render().$el);
 		}, this);
 	}
@@ -232,13 +118,13 @@ var LocaleSelectorListView = Backbone.View.extend({
 var EditorSwitchView = Backbone.View.extend({
 	el: '#switch-editor',
 
-	initialize: function(editor) {
-		this.editor = editor;
+	initialize: function(localeName) {
+		this.localeName = localeName;
 
-		this.listenTo(this.editor, 'message:selected', this.onMessageSelected);
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
 	},
 
-	onMessageSelected: function(item) {
+	onItemSelected: function(item) {
 		if(item === undefined) {
 			this.$el.attr('href', '#');
 			this.$el.addClass('disabled');
@@ -246,53 +132,46 @@ var EditorSwitchView = Backbone.View.extend({
 			return;
 		}
 
-		this.$el.attr('href', jsRoutes.controllers.Keys.key(item.id).url + '#locale=' + this.editor.localeName);
+		this.$el.attr('href', jsRoutes.controllers.Keys.key(item.id).url + '#locale/' + this.localeName);
 		this.$el.removeClass('disabled');
 	}
 });
 
 var LocaleEditor = Editor.extend({
-	initialize: function(project, localeId, keyId, search) {
+	initialize: function() {
 		Editor.prototype.initialize.apply(this, arguments);
 
-		this.keyList = new KeyListView(this, this.search);
-		this.messageList = new MessageListView(this, this.search);
-		this.localeSelector = new LocaleSelectorListView(this);
-		this.editorSwitch = new EditorSwitchView(this);
-
-		this.listenTo(this, 'messages:loaded', this.onMessagesLoaded);
-
-		var that = this;
-		router.on('route:key', function(keyName) {
-			if(keyName === '') {
-				keyName = null;
-			}
-			that.selectedItemName = keyName;
-			that.trigger('message:selected', that.selectedItem(keyName));
-		});
+		this.itemType = 'key';
+		this.itemList = new ItemListView(
+			this.project,
+			this.project.keys,
+			this.search,
+			'keys',
+			this.itemType,
+			{ localeId: this.localeId }
+		);
+		this.messageList = new MessageListView(this.project, this.search);
+		this.localeSelector = new LocaleSelectorListView(this.project);
+		this.editorSwitch = new EditorSwitchView(this.locale.name);
 	},
 
-	selectedItem: function(selectedItemName) {
-		if(selectedItemName !== null) {
-			return this.keyList.collection.find(function(item) {
-				return item.get('name') == selectedItemName;
+	selectedItem: function(itemName) {
+		if(itemName !== null) {
+			return this.project.keys.find(function(item) {
+				return item.get('name') == itemName;
 			});
 		}
 		return undefined;
 	},
 
-	onMessagesLoaded: function() {
-		this.trigger('message:selected', this.selectedItem(this.selectedItemName));
-	},
+	onItemSelected: function(model) {
+		Editor.prototype.onItemSelected.apply(this, arguments);
 
-	onMessageSelected: function(model) {
-		Editor.prototype.onMessageSelected.apply(this, arguments);
-
-		this.keyList.$el.find('.active').removeClass('active');
+		this.itemList.$el.find('.active').removeClass('active');
 		if(model !== undefined) {
 			this.keyId = model.id;
 			this.keyName = model.get('name');
-			this.keyList.$el.find('#' + model.id).addClass('active');
+			this.itemList.$el.find('#' + model.id).addClass('active');
 		} else {
 			this.keyId = null;
 			this.keyName = null;

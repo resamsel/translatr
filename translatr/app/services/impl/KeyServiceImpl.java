@@ -70,8 +70,8 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
    * {@inheritDoc}
    */
   @Override
-  public Key byId(UUID id) {
-    return Key.byId(id);
+  public Key byId(UUID id, String... fetches) {
+    return Key.byId(id, fetches);
   }
 
   /**

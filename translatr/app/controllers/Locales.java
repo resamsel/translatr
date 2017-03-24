@@ -80,7 +80,7 @@ public class Locales extends AbstractController {
       if (search.order == null)
         search.order = "name";
 
-      return ok(views.html.locales.locale.render(createTemplate(), locale.project, locale, form));
+      return ok(views.html.locales.locale.render(createTemplate(), locale, form));
     });
   }
 

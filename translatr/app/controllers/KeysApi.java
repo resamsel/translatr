@@ -5,6 +5,8 @@ import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ApiAction;
@@ -78,6 +80,8 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria> {
           dataType = "string", paramType = "query"),
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
           paramType = "query"),
+      @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string",
+          paramType = "query"),
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
@@ -100,8 +104,9 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria> {
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> get(@ApiParam(value = KEY_ID) UUID id) {
-    return toJson(() -> api.get(id));
+  public CompletionStage<Result> get(@ApiParam(value = KEY_ID) UUID id,
+      @ApiParam(value = FETCH) String fetch) {
+    return toJson(() -> api.get(id, StringUtils.split(fetch, ",")));
   }
 
   /**
