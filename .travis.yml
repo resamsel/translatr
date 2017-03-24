@@ -1,10 +1,17 @@
 language: java
 jdk:
     - oraclejdk8
+before_script:
+    - psql -c 'create user translatr;' -U postgres
+    - psql -c 'create database "translatr-test";' -U postgres
+    - psql -c 'grant all privileges on database "translatr-test" TO translatr;' -U postgres
 script:
-    - cd translatr && bin/activator clean coverage test && bin/activator coverageAggregate
+    - cd translatr
+    - bin/activator clean coverage test -Dconfig.file=conf/test.conf -J-Xmx512M
+    - bin/activator coverageAggregate
 after_success:
-    - cd translatr && bin/activator coveralls
+    - cd translatr
+    - bin/activator coveralls
 cache:
     directories:
         - $HOME/.ivy2/cache
