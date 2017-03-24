@@ -2,9 +2,9 @@ language: java
 jdk:
     - oraclejdk8
 script:
-    - cd translatr && sbt clean coverage test && sbt coverageAggregate
+    - cd translatr && bin/activator clean coverage test && bin/activator coverageAggregate
 after_success:
-    - sbt coveralls
+    - cd translatr && bin/activator coveralls
 cache:
     directories:
         - $HOME/.ivy2/cache
