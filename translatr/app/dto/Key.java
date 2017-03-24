@@ -40,10 +40,9 @@ public class Key extends Dto {
     this.projectName = in.project.name;
     this.name = in.name;
 
-    if (!in.messages.isEmpty()) {
+    if (!in.messages.isEmpty())
       this.messages =
           in.messages.stream().map(Message::from).collect(toMap(m -> m.localeName, m -> m));
-    }
   }
 
   public models.Key toModel(Project project) {

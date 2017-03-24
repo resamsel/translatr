@@ -28,7 +28,7 @@ var KeyEditor = Editor.extend({
 		this.itemList = new ItemListView(
 			this.project,
 			this.project.locales,
-			this.search,
+			_.extend(this.search, { 'messages.keyName': this.keyName }),
 			'locales',
 			this.itemType,
 			this.keyName

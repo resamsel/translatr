@@ -163,6 +163,9 @@ public class Message implements Model<Message, UUID> {
     if (criteria.getLocaleId() != null)
       query.eq("locale.id", criteria.getLocaleId());
 
+    if (criteria.getLocaleIds() != null)
+      query.in("locale.id", criteria.getLocaleIds());
+
     if (StringUtils.isNotEmpty(criteria.getKeyName()))
       query.eq("key.name", criteria.getKeyName());
 

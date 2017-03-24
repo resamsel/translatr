@@ -1,5 +1,7 @@
 package models;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static utils.FormatUtils.formatLocale;
 import static utils.Stopwatch.log;
 
@@ -19,6 +21,7 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +38,7 @@ import com.google.common.collect.ImmutableMap;
 import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.LocaleCriteria;
+import criterias.MessageCriteria;
 import play.libs.Json;
 import play.mvc.Http.Context;
 import utils.QueryUtils;
@@ -156,8 +160,10 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static PagedList<Locale> pagedBy(LocaleCriteria criteria) {
-    Query<Locale> q = QueryUtils.fetch(find.fetch("project").alias("k").setDisableLazyLoading(true),
-        criteria.getFetches(), FETCH_MAP);
+    Query<Locale> q = find.fetch("project").alias("k").setDisableLazyLoading(true);
+
+    if (StringUtils.isEmpty(criteria.getMessagesKeyName()) && !criteria.getFetches().isEmpty())
+      q = QueryUtils.fetch(q, criteria.getFetches(), FETCH_MAP);
 
     ExpressionList<Locale> query = q.where();
 
@@ -175,7 +181,25 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
     criteria.paged(query);
 
-    return log(() -> new HasNextPagedList<>(query), LOGGER, "pagedBy");
+    return log(() -> fetch(new HasNextPagedList<>(query), criteria), LOGGER, "pagedBy");
+  }
+
+  private static HasNextPagedList<Locale> fetch(HasNextPagedList<Locale> paged,
+      LocaleCriteria criteria) {
+    if (StringUtils.isNotEmpty(criteria.getMessagesKeyName())
+        && criteria.getFetches().contains("messages")) {
+      // Retrieve messages that match the given keyName and locales retrieved
+      Map<UUID, Message> messages = Message
+          .pagedBy(new MessageCriteria().withKeyName(criteria.getMessagesKeyName())
+              .withLocaleIds(paged.getList().stream().map(l -> l.id).collect(toList())))
+          .getList().stream().collect(toMap(m -> m.locale.id, m -> m));
+
+      for (Locale locale : paged.getList())
+        if (messages.containsKey(locale.id))
+          locale.messages = Arrays.asList(messages.get(locale.id));
+    }
+
+    return paged;
   }
 
   public static List<Locale> last(Project project, int limit) {

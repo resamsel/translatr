@@ -8,10 +8,12 @@ import java.util.UUID;
 import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import criterias.MessageCriteria;
 import models.Project;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Locale extends Dto {
   public UUID id;
 
@@ -39,10 +41,9 @@ public class Locale extends Dto {
     this.projectName = in.project.name;
     this.name = in.name;
 
-    if (!in.messages.isEmpty()) {
+    if (!in.messages.isEmpty())
       this.messages =
           in.messages.stream().map(Message::from).collect(toMap(m -> m.keyName, m -> m));
-    }
   }
 
   public Locale load() {

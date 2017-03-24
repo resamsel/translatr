@@ -64,8 +64,11 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
   private static final String SEARCH = "Part of the name of the locale";
   private static final String NOT_FOUND_ERROR = "Locale not found";
 
-  private static final String PARAM_LOCALE_NAME = "localeName";
+  private static final String PARAM_LOCALE_NAME = LocaleCriteria.PARAM_LOCALE_NAME;
   private static final String LOCALE_NAME = "The name of the locale";
+  private static final String PARAM_MESSAGES_KEY_NAME = LocaleCriteria.PARAM_MESSAGES_KEY_NAME;
+  private static final String MESSAGES_KEY_NAME =
+      "The name of the key of fetched messages - use in combination with fetch: messages";
 
   private final LocaleApiService localeApiService;
 
@@ -96,11 +99,11 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string",
-          paramType = "query")})
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_MESSAGES_KEY_NAME, value = MESSAGES_KEY_NAME,
+          dataType = "string", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = "The project ID") UUID projectId) {
-    return toJsons(() -> api.find(
-        LocaleCriteria.from(request()).withProjectId(projectId)
-            .withLocaleName(request().getQueryString("localeName")),
+    return toJsons(() -> api.find(LocaleCriteria.from(request()).withProjectId(projectId),
         criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
             ProjectRole.Manager, ProjectRole.Translator, ProjectRole.Developer)));
   }

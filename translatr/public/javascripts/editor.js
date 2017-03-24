@@ -67,7 +67,7 @@ var ItemListView = Backbone.View.extend({
 		var that = this;
 		var collection = this.collection;
 		collection.fetch({
-			data: _.extend(this.search, {fetch: 'messages'})
+			data: _.extend(this.search, { fetch: 'messages' })
 		}).then(function() { return that.loadMessages(); });
 	},
 
@@ -134,7 +134,7 @@ var ItemListView = Backbone.View.extend({
 			remove: false,
 			data: _.extend(
 				this.search,
-				{ offset: collection.length}
+				{ offset: collection.length }
 			)
 		}).then(function() { return that.loadMessages(); });
 	}
