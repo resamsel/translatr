@@ -2,7 +2,7 @@ language: java
 jdk:
     - oraclejdk8
 script:
-    - sbt clean coverage test && sbt coverageAggregate
+    - cd translatr && sbt clean coverage test && sbt coverageAggregate
 after_success:
     - sbt coveralls
 cache:
