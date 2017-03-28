@@ -9,9 +9,9 @@ before_script:
 script:
     - bin/activator clean coverage test -Dconfig.file=conf/test.conf
     - bin/activator coverageAggregate
-after_success:
-    - ln -s ../.git
-    - bin/activator coveralls
+#after_success:
+#    - ln -s ../.git
+#    - bin/activator coveralls
 cache:
     directories:
         - $HOME/.ivy2/cache
