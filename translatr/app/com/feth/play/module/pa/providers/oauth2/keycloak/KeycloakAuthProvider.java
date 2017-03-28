@@ -33,8 +33,8 @@ public class KeycloakAuthProvider extends OAuth2AuthProvider<KeycloakAuthUser, K
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakAuthProvider.class);
 
-  public static abstract class SettingKeys extends OAuth2AuthProvider.SettingKeys {
-    public static final String USER_INFO_URL = "userInfoUrl";
+  private static abstract class SettingKeys extends OAuth2AuthProvider.SettingKeys {
+    private static final String USER_INFO_URL = "userInfoUrl";
   }
 
   /**
@@ -81,7 +81,7 @@ public class KeycloakAuthProvider extends OAuth2AuthProvider<KeycloakAuthUser, K
     }
   }
 
-  protected WSResponse fetchAuthResponse(String url, String accessToken) throws AuthException {
+  private WSResponse fetchAuthResponse(String url, String accessToken) throws AuthException {
     final WSRequest request = wsClient.url(url);
     request.setHeader("Authorization", "Bearer " + accessToken);
 

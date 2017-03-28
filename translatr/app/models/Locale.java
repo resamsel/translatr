@@ -151,15 +151,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @param criteria
    * @return
    */
-  public static List<Locale> findBy(LocaleCriteria criteria) {
-    return pagedBy(criteria).getList();
-  }
-
-  /**
-   * @param criteria
-   * @return
-   */
-  public static PagedList<Locale> pagedBy(LocaleCriteria criteria) {
+  public static PagedList<Locale> findBy(LocaleCriteria criteria) {
     Query<Locale> q = find.fetch("project").alias("k").setDisableLazyLoading(true);
 
     if (StringUtils.isEmpty(criteria.getMessagesKeyName()) && !criteria.getFetches().isEmpty())
@@ -181,7 +173,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
     criteria.paged(query);
 
-    return log(() -> fetch(new HasNextPagedList<>(query), criteria), LOGGER, "pagedBy");
+    return log(() -> fetch(new HasNextPagedList<>(query), criteria), LOGGER, "findBy");
   }
 
   private static HasNextPagedList<Locale> fetch(HasNextPagedList<Locale> paged,
@@ -190,7 +182,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
         && criteria.getFetches().contains("messages")) {
       // Retrieve messages that match the given keyName and locales retrieved
       Map<UUID, Message> messages = Message
-          .pagedBy(new MessageCriteria().withKeyName(criteria.getMessagesKeyName())
+          .findBy(new MessageCriteria().withKeyName(criteria.getMessagesKeyName())
               .withLocaleIds(paged.getList().stream().map(l -> l.id).collect(toList())))
           .getList().stream().collect(toMap(m -> m.locale.id, m -> m));
 

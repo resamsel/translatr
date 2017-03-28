@@ -48,7 +48,7 @@ public class Locale extends Dto {
 
   public Locale load() {
     if (messages == null)
-      messages = models.Message.findBy(new MessageCriteria().withLocaleId(id)).stream()
+      messages = models.Message.findBy(new MessageCriteria().withLocaleId(id)).getList().stream()
           .map(Message::from).collect(toMap(m -> m.keyName, m -> m));
 
     return this;

@@ -1,7 +1,5 @@
 package models;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -86,15 +84,7 @@ public class LinkedAccount implements Model<LinkedAccount, Long> {
     return find.where().eq("user", user).eq("providerKey", key).findUnique();
   }
 
-  /**
-   * @param criteria
-   * @return
-   */
-  public static List<LinkedAccount> findBy(LinkedAccountCriteria criteria) {
-    return pagedBy(criteria).getList();
-  }
-
-  public static PagedList<LinkedAccount> pagedBy(LinkedAccountCriteria criteria) {
+  public static PagedList<LinkedAccount> findBy(LinkedAccountCriteria criteria) {
     ExpressionList<LinkedAccount> query = find.where();
 
     if (criteria.getUserId() != null)

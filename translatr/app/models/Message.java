@@ -143,18 +143,10 @@ public class Message implements Model<Message, UUID> {
   }
 
   /**
-   * @param messageCriteria
-   * @return
-   */
-  public static List<Message> findBy(MessageCriteria criteria) {
-    return pagedBy(criteria).getList();
-  }
-
-  /**
    * @param criteria
    * @return
    */
-  public static PagedList<Message> pagedBy(MessageCriteria criteria) {
+  public static PagedList<Message> findBy(MessageCriteria criteria) {
     ExpressionList<Message> query = Message.find.fetch("key").fetch("locale").where();
 
     if (criteria.getProjectId() != null)
@@ -177,7 +169,7 @@ public class Message implements Model<Message, UUID> {
 
     criteria.paged(query);
 
-    return log(() -> new HasNextPagedList<>(query), LOGGER, "pagedBy");
+    return log(() -> new HasNextPagedList<>(query), LOGGER, "findBy");
   }
 
   /**

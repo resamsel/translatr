@@ -32,7 +32,7 @@ public class KeycloakAuthUser extends BasicOAuth2AuthUser
    * @param info
    * @param state
    */
-  public KeycloakAuthUser(JsonNode n, OAuth2AuthInfo info, String state) {
+  KeycloakAuthUser(JsonNode n, OAuth2AuthInfo info, String state) {
     super(n.get(Constants.ID).asText(), info, state);
 
     if (n.has(Constants.EMAIL)) {

@@ -112,15 +112,7 @@ public class AccessToken implements Model<AccessToken, Long> {
     return find.fetch("user").where().eq("key", key).findUnique();
   }
 
-  /**
-   * @param criteria
-   * @return
-   */
-  public static List<AccessToken> findBy(AccessTokenCriteria criteria) {
-    return pagedBy(criteria).getList();
-  }
-
-  public static PagedList<AccessToken> pagedBy(AccessTokenCriteria criteria) {
+  public static PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
     ExpressionList<AccessToken> query = find.where();
 
     if (criteria.getUserId() != null)

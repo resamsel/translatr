@@ -1,6 +1,5 @@
 package models;
 
-import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -124,15 +123,7 @@ public class LogEntry implements Model<LogEntry, UUID> {
    * @param criteria
    * @return
    */
-  public static List<LogEntry> findBy(LogEntryCriteria criteria) {
-    return pagedBy(criteria).getList();
-  }
-
-  /**
-   * @param criteria
-   * @return
-   */
-  public static PagedList<LogEntry> pagedBy(LogEntryCriteria criteria) {
+  public static PagedList<LogEntry> findBy(LogEntryCriteria criteria) {
     ExpressionList<LogEntry> query = findQuery(criteria);
 
     if (criteria.getOrder() != null)

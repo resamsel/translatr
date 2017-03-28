@@ -35,7 +35,7 @@ public class LinkedAccountServiceImpl
    */
   @Override
   public PagedList<LinkedAccount> findBy(LinkedAccountCriteria criteria) {
-    return LinkedAccount.pagedBy(criteria);
+    return LinkedAccount.findBy(criteria);
   }
 
   /**

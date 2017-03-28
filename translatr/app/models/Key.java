@@ -124,18 +124,10 @@ public class Key implements Model<Key, UUID>, Suggestable {
   }
 
   /**
-   * @param messageCriteria
-   * @return
-   */
-  public static List<Key> findBy(KeyCriteria criteria) {
-    return pagedBy(criteria).getList();
-  }
-
-  /**
    * @param criteria
    * @return
    */
-  public static PagedList<Key> pagedBy(KeyCriteria criteria) {
+  public static PagedList<Key> findBy(KeyCriteria criteria) {
     Query<Key> q = QueryUtils.fetch(find.fetch("project").alias("k").setDisableLazyLoading(true),
         criteria.getFetches(), FETCH_MAP);
 
@@ -150,7 +142,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
               .ilike("value", "%" + criteria.getSearch() + "%").query())
           .endJunction();
 
-    if (criteria.getMissing() == Boolean.TRUE) {
+    if (Boolean.TRUE.equals(criteria.getMissing())) {
       ExpressionList<Message> messageQuery =
           Ebean.createQuery(Message.class).where().raw("key.id = k.id");
 
@@ -165,7 +157,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
 
     criteria.paged(query);
 
-    return log(() -> new HasNextPagedList<>(query), LOGGER, "pagedBy");
+    return log(() -> new HasNextPagedList<>(query), LOGGER, "findBy");
   }
 
   /**

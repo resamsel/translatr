@@ -2,8 +2,6 @@ package models;
 
 import static utils.Stopwatch.log;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -131,17 +129,9 @@ public class ProjectUser implements Model<ProjectUser, Long> {
     return query;
   }
 
-  /**
-   * @param criteria
-   * @return
-   */
-  public static List<ProjectUser> findBy(ProjectUserCriteria criteria) {
-    return pagedBy(criteria).getList();
-  }
-
-  public static PagedList<ProjectUser> pagedBy(ProjectUserCriteria criteria) {
+  public static PagedList<ProjectUser> findBy(ProjectUserCriteria criteria) {
     return log(() -> new HasNextPagedList<>(findQuery(criteria).query().fetch("user")), LOGGER,
-        "pagedBy");
+        "findBy");
   }
 
   public static int countBy(ProjectUserCriteria criteria) {

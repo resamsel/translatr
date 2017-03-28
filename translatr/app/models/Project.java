@@ -147,7 +147,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return find.fetch("owner").where().eq("id", id).findUnique();
   }
 
-  public static PagedList<Project> pagedBy(ProjectCriteria criteria) {
+  public static PagedList<Project> findBy(ProjectCriteria criteria) {
     ExpressionList<Project> query =
         find.fetch("owner").fetch("members").fetch("locales").fetch("keys").where();
 
@@ -167,7 +167,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
     criteria.paged(query);
 
-    return log(() -> new HasNextPagedList<>(query), LOGGER, "pagedBy");
+    return log(() -> new HasNextPagedList<>(query), LOGGER, "findBy");
   }
 
   public float progress() {
@@ -184,7 +184,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   public long keysSizeMap(UUID localeId) {
     if (keysSizeMap == null)
-      keysSizeMap = Message.findBy(new MessageCriteria().withProjectId(this.id)).stream()
+      keysSizeMap = Message.findBy(new MessageCriteria().withProjectId(this.id)).getList().stream()
           .collect(groupingBy(m -> m.locale.id, counting()));
 
     return keysSizeMap.getOrDefault(localeId, 0l);

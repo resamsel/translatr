@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +68,7 @@ public abstract class AbstractImporter implements Importer {
 
   protected void load(Locale locale, Collection<String> keyNames) {
     keys = Key.findBy(new KeyCriteria().withProjectId(locale.project.id).withNames(keyNames))
-        .stream().collect(toMap(k -> k.name, a -> a));
+        .getList().stream().collect(toMap(k -> k.name, a -> a));
     messages = Message.byLocale(locale.id).stream().collect(toMap(m -> m.key.name, a -> a));
   }
 
@@ -76,7 +77,7 @@ public abstract class AbstractImporter implements Importer {
     for (String keyName : properties.stringPropertyNames()) {
       String value = (String) properties.get(keyName);
 
-      if (keyName == null || value == null || "".equals(value))
+      if (StringUtils.isEmpty(value))
         continue;
 
       if (!keys.containsKey(keyName))
@@ -93,7 +94,7 @@ public abstract class AbstractImporter implements Importer {
     for (String keyName : properties.stringPropertyNames()) {
       String value = (String) properties.get(keyName);
 
-      if (keyName == null || value == null || "".equals(value))
+      if (StringUtils.isEmpty(value))
         continue;
 
       if (!keys.containsKey(keyName))

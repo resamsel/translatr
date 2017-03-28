@@ -69,7 +69,7 @@ public class ProjectApiServiceImpl extends
     List<Suggestable> suggestions = new ArrayList<>();
 
     if (PermissionUtils.hasPermissionAll(Scope.KeyRead)) {
-      PagedList<? extends Suggestable> keys = Key.pagedBy(
+      PagedList<? extends Suggestable> keys = Key.findBy(
           KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
 
       search.pager(keys);
@@ -93,7 +93,7 @@ public class ProjectApiServiceImpl extends
     }
 
     if (PermissionUtils.hasPermissionAll(Scope.LocaleRead)) {
-      PagedList<? extends Suggestable> locales = Locale.pagedBy(new LocaleCriteria()
+      PagedList<? extends Suggestable> locales = Locale.findBy(new LocaleCriteria()
           .withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
 
       search.pager(locales);

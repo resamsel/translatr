@@ -2,6 +2,7 @@ package services.impl;
 
 import static utils.Stopwatch.log;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -50,7 +51,7 @@ public class AccessTokenServiceImpl extends
    */
   @Override
   public PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
-    return AccessToken.pagedBy(criteria);
+    return AccessToken.findBy(criteria);
   }
 
   /**
@@ -100,8 +101,8 @@ public class AccessTokenServiceImpl extends
    * @return
    */
   private String generateKey(int length) {
-    String raw = Base64.getEncoder()
-        .encodeToString(String.format("%s%s", UUID.randomUUID(), UUID.randomUUID()).getBytes());
+    String raw = Base64.getEncoder().encodeToString(String
+        .format("%s%s", UUID.randomUUID(), UUID.randomUUID()).getBytes(StandardCharsets.UTF_8));
 
     if (raw.length() > length)
       raw = raw.substring(0, length);

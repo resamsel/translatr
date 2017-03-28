@@ -66,7 +66,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    */
   @Override
   public PagedList<Project> findBy(ProjectCriteria criteria) {
-    return Project.pagedBy(criteria);
+    return Project.findBy(criteria);
   }
 
   /**

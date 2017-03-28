@@ -8,48 +8,44 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import models.User;
 
-public class AccessToken extends Dto
-{
-	public UUID userId;
+public class AccessToken extends Dto {
+  public UUID userId;
 
-	@JsonIgnore
-	public DateTime whenCreated;
+  @JsonIgnore
+  public DateTime whenCreated;
 
-	@JsonIgnore
-	public DateTime whenUpdated;
+  @JsonIgnore
+  public DateTime whenUpdated;
 
-	public String name;
+  public String name;
 
-	public String key;
+  public String key;
 
-	public String scope;
+  public String scope;
 
-	private AccessToken(models.AccessToken in)
-	{
-		this.userId = in.user.id;
-		this.name = in.name;
-		this.key = in.key;
-		this.scope = in.scope;
-		this.whenCreated = in.whenCreated;
-		this.whenUpdated = in.whenUpdated;
-	}
+  private AccessToken(models.AccessToken in) {
+    this.userId = in.user.id;
+    this.name = in.name;
+    this.key = in.key;
+    this.scope = in.scope;
+    this.whenCreated = in.whenCreated;
+    this.whenUpdated = in.whenUpdated;
+  }
 
-	public models.AccessToken toModel()
-	{
-		models.AccessToken out = new models.AccessToken();
+  public models.AccessToken toModel() {
+    models.AccessToken out = new models.AccessToken();
 
-		out.user = new User().withId(userId);
-		out.whenCreated = whenCreated;
-		out.whenUpdated = whenUpdated;
-		out.name = name;
-		out.key = key;
-		out.scope = scope;
+    out.user = new User().withId(userId);
+    out.whenCreated = whenCreated;
+    out.whenUpdated = whenUpdated;
+    out.name = name;
+    out.key = key;
+    out.scope = scope;
 
-		return out;
-	}
+    return out;
+  }
 
-	public static AccessToken from(models.AccessToken accessToken)
-	{
-		return new AccessToken(accessToken);
-	}
+  public static AccessToken from(models.AccessToken accessToken) {
+    return new AccessToken(accessToken);
+  }
 }

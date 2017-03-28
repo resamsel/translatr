@@ -97,7 +97,7 @@ public class PermissionUtils {
     LOGGER.debug("Members needed: {}", roles);
 
     for (ProjectUser member : ProjectUser
-        .pagedBy(new ProjectUserCriteria().withProjectId(projectId)).getList())
+        .findBy(new ProjectUserCriteria().withProjectId(projectId)).getList())
       if (user.id.equals(member.user.id) && roles.contains(member.role))
         return true;
 

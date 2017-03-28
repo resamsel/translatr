@@ -88,7 +88,7 @@ public class Profiles extends AbstractController {
         search.order = "name";
 
       PagedList<Project> projects =
-          Project.pagedBy(ProjectCriteria.from(search).withMemberId(user.id));
+          Project.findBy(ProjectCriteria.from(search).withMemberId(user.id));
 
       search.pager(projects);
 
@@ -137,7 +137,7 @@ public class Profiles extends AbstractController {
       SearchForm search = form.get();
 
       PagedList<LinkedAccount> accounts = LinkedAccount
-          .pagedBy(LinkedAccountCriteria.from(search).withUserId(user.id).withOrder("providerKey"));
+          .findBy(LinkedAccountCriteria.from(search).withUserId(user.id).withOrder("providerKey"));
 
       search.pager(accounts);
 
@@ -247,8 +247,9 @@ public class Profiles extends AbstractController {
 
   public Result accessTokens() {
     return loggedInUser(user -> {
-      return ok(views.html.users.accessTokens.render(createTemplate(), user,
-          AccessToken.findBy(new AccessTokenCriteria().withUserId(user.id).withOrder("name")),
+      return ok(views.html.users.accessTokens.render(
+          createTemplate(), user, AccessToken
+              .findBy(new AccessTokenCriteria().withUserId(user.id).withOrder("name")).getList(),
           AccessTokenForm.form(formFactory)));
     });
   }

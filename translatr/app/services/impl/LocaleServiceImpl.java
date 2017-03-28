@@ -65,7 +65,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
    */
   @Override
   public PagedList<Locale> findBy(LocaleCriteria criteria) {
-    return Locale.pagedBy(criteria);
+    return Locale.findBy(criteria);
   }
 
   /**

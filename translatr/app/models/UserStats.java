@@ -5,23 +5,19 @@ package models;
  * @author resamsel
  * @version 18 Oct 2016
  */
-public class UserStats
-{
-	public int numberOfProjects;
+public class UserStats {
+  public int numberOfProjects;
 
-	public int numberOfActivities;
+  public int numberOfActivities;
 
-	private UserStats()
-	{
-	}
+  private UserStats() {}
 
-	public static UserStats create(int numberOfProjects, int numberOfActivities)
-	{
-		UserStats out = new UserStats();
+  public static UserStats create(int numberOfProjects, int numberOfActivities) {
+    UserStats out = new UserStats();
 
-		out.numberOfProjects = numberOfProjects;
-		out.numberOfActivities = numberOfActivities;
+    out.numberOfProjects = numberOfProjects;
+    out.numberOfActivities = numberOfActivities;
 
-		return out;
-	}
+    return out;
+  }
 }

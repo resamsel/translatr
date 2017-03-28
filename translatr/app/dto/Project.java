@@ -50,11 +50,11 @@ public class Project extends Dto {
   }
 
   public Project load() {
-    keys = models.Key.findBy(new KeyCriteria().withProjectId(id)).stream().map(k -> Key.from(k))
-        .collect(toList());
-    locales = models.Locale.findBy(new LocaleCriteria().withProjectId(id)).stream()
+    keys = models.Key.findBy(new KeyCriteria().withProjectId(id)).getList().stream()
+        .map(k -> Key.from(k)).collect(toList());
+    locales = models.Locale.findBy(new LocaleCriteria().withProjectId(id)).getList().stream()
         .map(l -> Locale.from(l)).collect(toList());
-    messages = models.Message.findBy(new MessageCriteria().withProjectId(id)).stream()
+    messages = models.Message.findBy(new MessageCriteria().withProjectId(id)).getList().stream()
         .map(m -> Message.from(m)).collect(toList());
 
     return this;

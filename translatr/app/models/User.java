@@ -138,7 +138,7 @@ public class User implements Model<User, UUID>, Subject {
     return getEmailUserFind(email).findUnique();
   }
 
-  public static PagedList<User> pagedBy(UserCriteria criteria) {
+  public static PagedList<User> findBy(UserCriteria criteria) {
     ExpressionList<User> query = find.where();
 
     query.eq("active", true);
@@ -149,11 +149,7 @@ public class User implements Model<User, UUID>, Subject {
 
     criteria.paged(query);
 
-    return log(() -> new HasNextPagedList<User>(query), LOGGER, "pagedBy");
-  }
-
-  public static List<User> findBy(UserCriteria criteria) {
-    return pagedBy(criteria).getList();
+    return log(() -> new HasNextPagedList<User>(query), LOGGER, "findBy");
   }
 
   private static ExpressionList<User> getEmailUserFind(final String email) {

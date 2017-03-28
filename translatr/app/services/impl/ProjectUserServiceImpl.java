@@ -38,7 +38,7 @@ public class ProjectUserServiceImpl extends
    */
   @Override
   public PagedList<ProjectUser> findBy(ProjectUserCriteria criteria) {
-    return ProjectUser.pagedBy(criteria);
+    return ProjectUser.findBy(criteria);
   }
 
   /**

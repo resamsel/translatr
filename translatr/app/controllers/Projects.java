@@ -217,7 +217,7 @@ public class Projects extends AbstractController {
         search.order = "name";
 
       PagedList<Locale> locales =
-          Locale.pagedBy(LocaleCriteria.from(search).withProjectId(project.id));
+          Locale.findBy(LocaleCriteria.from(search).withProjectId(project.id));
 
       search.pager(locales);
 
@@ -239,7 +239,7 @@ public class Projects extends AbstractController {
       if (search.order == null)
         search.order = "name";
 
-      PagedList<Key> keys = Key.pagedBy(KeyCriteria.from(search).withProjectId(project.id));
+      PagedList<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
 
       search.pager(keys);
 
@@ -256,7 +256,7 @@ public class Projects extends AbstractController {
       SearchForm search = form.get();
 
       PagedList<ProjectUser> list =
-          ProjectUser.pagedBy(ProjectUserCriteria.from(search).withProjectId(project.id));
+          ProjectUser.findBy(ProjectUserCriteria.from(search).withProjectId(project.id));
 
       search.pager(list);
 

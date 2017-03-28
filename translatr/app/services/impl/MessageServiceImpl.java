@@ -54,7 +54,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
    */
   @Override
   public PagedList<Message> findBy(MessageCriteria criteria) {
-    return Message.pagedBy(criteria);
+    return Message.findBy(criteria);
   }
 
   /**

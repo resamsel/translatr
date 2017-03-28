@@ -63,7 +63,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
    */
   @Override
   public PagedList<Key> findBy(KeyCriteria criteria) {
-    return Key.pagedBy(criteria);
+    return Key.findBy(criteria);
   }
 
   /**

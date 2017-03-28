@@ -81,9 +81,7 @@ GET		/key/:projectId/create			controllers.Keys.create(projectId: java.util.UUID)
 POST	/key/:projectId/create			controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID = null)
 POST	/key/:projectId/:localeId/create	controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID)
 
-# Load demo data
-GET		/load							controllers.Application.load
-
+# Commands
 GET		/command/:key/execute	controllers.Application.commandExecute(key: String)
 
 #

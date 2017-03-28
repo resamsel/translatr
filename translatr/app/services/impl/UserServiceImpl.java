@@ -84,7 +84,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    */
   @Override
   public PagedList<User> findBy(UserCriteria criteria) {
-    return User.pagedBy(criteria);
+    return User.findBy(criteria);
   }
 
   /**
@@ -225,15 +225,15 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   @Override
   public User merge(final User user, final User otherUser) {
     linkedAccountService
-        .save(LinkedAccount.findBy(new LinkedAccountCriteria().withUserId(otherUser.id)).stream()
-            .map(linkedAccount -> linkedAccount.withUser(user)).collect(toList()));
+        .save(LinkedAccount.findBy(new LinkedAccountCriteria().withUserId(otherUser.id)).getList()
+            .stream().map(linkedAccount -> linkedAccount.withUser(user)).collect(toList()));
     otherUser.linkedAccounts.clear();
 
     accessTokenService.save(AccessToken.findBy(new AccessTokenCriteria().withUserId(otherUser.id))
-        .stream().map(accessToken -> accessToken.withUser(user)).collect(toList()));
+        .getList().stream().map(accessToken -> accessToken.withUser(user)).collect(toList()));
 
-    logEntryService.save(LogEntry.findBy(new LogEntryCriteria().withUserId(otherUser.id)).stream()
-        .filter(logEntry -> !logEntry.contentType.equals("dto.User"))
+    logEntryService.save(LogEntry.findBy(new LogEntryCriteria().withUserId(otherUser.id)).getList()
+        .stream().filter(logEntry -> !logEntry.contentType.equals("dto.User"))
         .map(logEntry -> logEntry.withUser(user)).collect(toList()));
 
     projectService
@@ -244,7 +244,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
                     .withName(String.format("%s (%s)", project.name, user.email)))
                 .collect(toList()));
 
-    projectUserService.save(ProjectUser.pagedBy(new ProjectUserCriteria().withUserId(otherUser.id))
+    projectUserService.save(ProjectUser.findBy(new ProjectUserCriteria().withUserId(otherUser.id))
         .getList().stream().map(member -> member.withUser(user)).collect(toList()));
 
 

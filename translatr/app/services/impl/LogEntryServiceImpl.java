@@ -105,8 +105,8 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
   @Override
   public PagedList<LogEntry> findBy(LogEntryCriteria criteria) {
     // TODO: config cache duration
-    return log(() -> cache.getOrElse(criteria.getCacheKey(), () -> LogEntry.pagedBy(criteria), 60),
-        LOGGER, "pagedBy");
+    return log(() -> cache.getOrElse(criteria.getCacheKey(), () -> LogEntry.findBy(criteria), 60),
+        LOGGER, "findBy");
   }
 
   /**
