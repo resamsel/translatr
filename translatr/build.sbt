@@ -1,4 +1,6 @@
 import com.typesafe.sbt.packager.docker._
+import de.johoop.findbugs4sbt._
+import de.johoop.findbugs4sbt.FindBugs._
 
 name := """translatr"""
 
@@ -121,3 +123,9 @@ javaOptions in Test ++= Seq(
   "-Xmx1536M",
   "-Xss1M"
 )
+
+findbugsSettings
+
+findbugsReportType := Some(ReportType.Html)
+
+findbugsReportPath := Some(crossTarget.value / "findbugs" / "report.html")
