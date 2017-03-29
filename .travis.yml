@@ -7,11 +7,10 @@ before_script:
     - psql -c 'grant all privileges on database "translatr-test" TO translatr;' -U postgres
     - cd translatr
 script:
-    - bin/activator clean coverage test -Dconfig.file=conf/test.conf
-    - bin/activator coverageAggregate
-#after_success:
-#    - ln -s ../.git
-#    - bin/activator coveralls
+    - bin/activator clean coverage test coverageReport -Dconfig.file=conf/test.conf
+after_success:
+    - ln -s ../.git
+    - bin/activator coveralls
 cache:
     directories:
         - $HOME/.ivy2/cache
