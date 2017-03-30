@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public abstract class PropertiesImporter extends AbstractImporter implements Imp
   protected Properties retrieveProperties(File file, Locale locale) throws IOException {
     Properties properties = new Properties();
     InputStreamReader reader =
-        new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
+        new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
 
     try {
       properties.load(reader);
