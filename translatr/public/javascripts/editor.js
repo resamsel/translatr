@@ -68,7 +68,9 @@ var ItemListView = Backbone.View.extend({
 		var collection = this.collection;
 		collection.fetch({
 			data: _.extend(this.search, { fetch: 'messages' })
-		}).then(function() { return that.loadMessages(); });
+		}).then(function() {
+			Backbone.trigger('items:loaded', this.collection);
+		});
 	},
 
 	events: {
@@ -83,8 +85,10 @@ var ItemListView = Backbone.View.extend({
 	},
 
 	render: function() {
-		var $list = this.$el.empty();
+		var $list = this.$el;
 		var collection = this.collection;
+
+		this.$('.preloader-container').remove();
 
 		if(collection.size() == 0) {
 			this.noItems.show();
@@ -92,11 +96,16 @@ var ItemListView = Backbone.View.extend({
 			this.noItems.hide();
 
 			collection.each(function(model) {
-				var item = new ItemListItemView({
-					model: model,
-					type: this.itemType
-				});
-				$list.append(item.render().$el);
+				if($list.find('#' + model.id).length === 0) {
+					$list.append(new ItemListItemView({
+						model: model,
+						type: this.itemType
+					}).render().$el);
+					var messages = model.get('messages');
+					if(messages && this.messageKey in messages) {
+						model.setMessage(messages[this.messageKey]);
+					}
+				}
 			}, this);
 		}
 
@@ -105,16 +114,6 @@ var ItemListView = Backbone.View.extend({
 			$list.append(template);
 			$(template).hide();
 		}
-	},
-
-	loadMessages: function() {
-		this.collection.each(function(item) {
-			var messages = item.get('messages');
-			if(messages && this.messageKey in messages) {
-				item.setMessage(messages[this.messageKey]);
-			}
-		}, this);
-		Backbone.trigger('items:loaded', this.collection);
 	},
 
 	loadMore: function() {
@@ -136,7 +135,9 @@ var ItemListView = Backbone.View.extend({
 				this.search,
 				{ offset: collection.length }
 			)
-		}).then(function() { return that.loadMessages(); });
+		}).then(function() {
+			Backbone.trigger('items:loaded', this.collection);
+		});
 	}
 });
 
@@ -144,11 +145,8 @@ var CodeEditor = Backbone.View.extend({
 	el: '#editor-content',
 
 	initialize: function() {
-		this.panelEditor = this.$('#panel-editor');
-		this.panelActions = this.$('.filter');
-		this.noSelection = this.$("#no-selection");
-		this.rightFilter = $(".item-right .filter");
-		this.codeEditor = CodeMirror(this.panelEditor[0], {
+		this.panelEditor = new OnItemSelectedView('#panel-editor');
+		this.codeEditor = CodeMirror(this.panelEditor.$el[0], {
 			mode: 'xml',
 			lineNumbers: true,
 			lineWrapping: true,
@@ -163,11 +161,6 @@ var CodeEditor = Backbone.View.extend({
 		this.codeEditor.on('change', function() {
 			Backbone.trigger('message:changed', that.codeEditor.getValue());
 		});
-
-		this.noSelection.show();
-		this.panelEditor.hide();
-		this.panelActions.hide();
-		this.rightFilter.hide();
 	},
 
 	events: {
@@ -186,17 +179,7 @@ var CodeEditor = Backbone.View.extend({
 	},
 
 	onItemSelected: function(item) {
-		if(item === undefined) {
-			this.noSelection.show();
-			this.panelEditor.hide();
-			this.panelActions.hide();
-			this.rightFilter.hide();
-		} else {
-			this.noSelection.hide();
-			this.panelEditor.show();
-			this.panelActions.show();
-			this.rightFilter.show();
-
+		if(item !== undefined) {
 			this.codeEditor.clearHistory();
 			this.codeEditor.refresh();
 		}
@@ -205,6 +188,40 @@ var CodeEditor = Backbone.View.extend({
 	onMessageChange: function(value) {
 		console.log('onMessageChange "' + value + '"', value);
 		this.codeEditor.setValue(value);
+	}
+});
+var OnItemSelectedView = Backbone.View.extend({
+	initialize: function(selector) {
+		this.$el = $(selector);
+
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
+
+		this.$el.hide();
+	},
+
+	onItemSelected: function(item) {
+		if(item !== undefined) {
+			this.$el.show();
+		} else {
+			this.$el.hide();
+		}
+	}
+});
+var OnItemUnselectedView = Backbone.View.extend({
+	initialize: function(selector) {
+		this.$el = $(selector);
+
+		this.listenTo(Backbone, 'item:selected', this.onItemSelected);
+
+		this.$el.show();
+	},
+
+	onItemSelected: function(item) {
+		if(item === undefined) {
+			this.$el.show();
+		} else {
+			this.$el.hide();
+		}
 	}
 });
 
@@ -281,6 +298,9 @@ var Editor = Backbone.Model.extend({
 
 		this.codeEditor = new CodeEditor;
 		this.preview = new Preview;
+		this.panelActions = new OnItemSelectedView('.filter');
+		this.noSelection = new OnItemUnselectedView("#no-selection");
+		this.rightFilter = new OnItemSelectedView(".item-right .filter");
 	},
 
 	selectedItem: function(itemName) {
