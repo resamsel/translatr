@@ -12,7 +12,7 @@ lazy val root = (project in file(".")).
 		buildInfoKeys := Seq[BuildInfoKey](name, version)
 	)
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.11"
 
 libraryDependencies ++= Seq(
 	javaJdbc,
@@ -21,11 +21,11 @@ libraryDependencies ++= Seq(
 	"com.typesafe.play.modules" %% "play-modules-redis" % "2.5.0",
 
 	// Database
-	"org.postgresql" % "postgresql" % "42.0.0",
+	"org.postgresql" % "postgresql" % "42.1.1",
 
 	// OAuth for Play
-	"com.feth" %% "play-authenticate" % "0.8.1",
-	"be.objectify" %% "deadbolt-java" % "2.5.4",
+	"com.feth" %% "play-authenticate" % "0.8.3",
+	"be.objectify" %% "deadbolt-java" % "2.5.5",
 
 	// Apache Commons IO
 	"commons-io" % "commons-io" % "2.5",
@@ -34,13 +34,13 @@ libraryDependencies ++= Seq(
 	"org.apache.httpcomponents" % "httpclient" % "4.5.3",
 
 	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
-	
+
 	"io.swagger" %% "swagger-play2" % "1.5.3",
 	"org.webjars" % "swagger-ui" % "2.2.10",
 
 	// https://mvnrepository.com/artifact/org.easytesting/fest-assert-core
 	"org.easytesting" % "fest-assert-core" % "2.0M10" % "test",
-	"org.mockito" % "mockito-core" % "2.7.19" % "test"
+	"org.mockito" % "mockito-core" % "2.7.22" % "test"
 )
 
 // From: https://github.com/playframework/playframework/issues/3818
@@ -119,7 +119,7 @@ pipelineStages := Seq(concat)
 
 // Testing
 javaOptions in Test ++= Seq(
-  "-Dconfig.file=conf/test.conf",
+  "-Dconfig.file=test.conf",
   "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9999",
   "-Xms512M",
   "-Xmx1536M",

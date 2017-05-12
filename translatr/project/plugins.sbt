@@ -3,7 +3,7 @@ resolvers += "sonatype-releases" at "https://oss.sonatype.org/content/repositori
 resolvers += Classpaths.sbtPluginReleases
 
 // The Play plugin
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.13")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.14")
 
 // Web plugins
 //addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
@@ -25,6 +25,5 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-play-enhancer" % "1.1.0")
 // enablePlugins(PlayEbean).
 addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "3.1.0")
 
-//addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.1.0")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.0")
 addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.1.0")

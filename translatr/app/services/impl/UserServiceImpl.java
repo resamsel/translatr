@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,19 +198,23 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    * @param email
    * @return
    */
-  private String emailToUsername(String email) {
-    String username = email.toLowerCase().replaceAll("@", "").replaceAll("\\.", "");
+  @Override
+  public String emailToUsername(String email) {
+    String username = email.toLowerCase().replaceAll("[@\\.-]", "");
 
     // TODO: potentially slow, replace with better variant (get all users with username like
     // $username% and iterate
     // over them)
+    String prefix = StringUtils.left(username, User.USERNAME_LENGTH);
     String suffix = "";
     ThreadLocalRandom random = ThreadLocalRandom.current();
     int retries = 10, i = 0;
-    while (byUsername(String.format("%s%s", username, suffix)) != null && i++ < retries)
+    while (byUsername(String.format("%s%s", prefix, suffix)) != null && i++ < retries) {
       suffix = String.valueOf(random.nextInt(1000));
+      prefix = StringUtils.left(username, User.USERNAME_LENGTH - suffix.length());
+    }
 
-    return String.format("%s%s", username, suffix);
+    return String.format("%s%s", prefix, suffix);
   }
 
   @Override

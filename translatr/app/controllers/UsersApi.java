@@ -61,7 +61,6 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria> {
     super(injector, cache, auth, userService, logEntryService, userApiService);
   }
 
-  @SuppressWarnings("unchecked")
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,
       scopes = @AuthorizationScope(scope = USER_READ, description = USER_READ_DESCRIPTION)))
   @ApiResponses({@ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.UsersPaged.class),

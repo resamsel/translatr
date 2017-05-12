@@ -79,7 +79,6 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
     this.localeApiService = localeApiService;
   }
 
-  @SuppressWarnings("unchecked")
   @ApiOperation(value = FIND,
       authorizations = @Authorization(value = AUTHORIZATION,
           scopes = {

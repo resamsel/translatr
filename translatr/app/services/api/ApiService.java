@@ -17,8 +17,14 @@ public interface ApiService<T, ID, CRITERIA extends AbstractSearchCriteria<CRITE
    * @param validators
    * @return
    */
-  @SuppressWarnings("unchecked")
-  PagedList<T> find(CRITERIA criteria, Consumer<CRITERIA>... validators);
+  PagedList<T> find(CRITERIA criteria, Consumer<CRITERIA> validator);
+
+  /**
+   * @param criteria
+   * @param validators
+   * @return
+   */
+  PagedList<T> find(CRITERIA criteria);
 
   T get(ID id, String... propertiesToFetch);
 

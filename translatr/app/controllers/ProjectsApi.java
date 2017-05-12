@@ -74,7 +74,6 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
   /**
    * {@inheritDoc}
    */
-  @SuppressWarnings("unchecked")
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,
       scopes = {@AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)}))
   @ApiResponses({

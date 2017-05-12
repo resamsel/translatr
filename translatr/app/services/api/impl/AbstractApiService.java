@@ -38,10 +38,17 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
     this.writeScopes = writeScopes;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public PagedList<DTO> find(CRITERIA criteria,
-      @SuppressWarnings("unchecked") Consumer<CRITERIA>... validators) {
-    for (Consumer<CRITERIA> validator : validators)
+  public PagedList<DTO> find(CRITERIA criteria) {
+    return find(criteria, null);
+  }
+
+  @Override
+  public PagedList<DTO> find(CRITERIA criteria, Consumer<CRITERIA> validator) {
+    if (validator != null)
       validator.accept(criteria);
 
     checkPermissionAll("Access token not allowed", readScopes);

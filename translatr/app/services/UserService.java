@@ -69,4 +69,10 @@ public interface UserService extends ModelService<User, UUID, UserCriteria> {
    * @return
    */
   UserStats getUserStats(UUID userId);
+
+  /**
+   * @param email
+   * @return
+   */
+  String emailToUsername(String email);
 }

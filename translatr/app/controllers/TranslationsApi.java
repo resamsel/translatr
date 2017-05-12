@@ -75,7 +75,6 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria>
     super(injector, cache, auth, userService, logEntryService, messageApiService);
   }
 
-  @SuppressWarnings("unchecked")
   @ApiOperation(value = FIND,
       authorizations = @Authorization(value = AUTHORIZATION,
           scopes = {

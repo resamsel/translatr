@@ -66,7 +66,6 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria> {
     super(injector, cache, auth, userService, logEntryService, keyApiService);
   }
 
-  @SuppressWarnings("unchecked")
   @ApiOperation(value = FIND,
       authorizations = @Authorization(value = AUTHORIZATION,
           scopes = {
