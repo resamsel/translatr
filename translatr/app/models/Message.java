@@ -169,7 +169,7 @@ public class Message implements Model<Message, UUID> {
 
     criteria.paged(query);
 
-    return log(() -> new HasNextPagedList<>(query), LOGGER, "findBy");
+    return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
   }
 
   /**

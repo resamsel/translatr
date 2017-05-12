@@ -293,12 +293,14 @@ var Editor = Backbone.Model.extend({
 		$(window).keydown(this.onKeyPress);
 
 		var that = this;
-		this.app.router.on('route:locale', function(arg) { return that.onRouteChanged(arg); });
-		this.app.router.on('route:key', function(arg) { return that.onRouteChanged(arg); });
+		this.app.router.on('route:nolocale', function() { return that.onRouteUnselected(); });
+		this.app.router.on('route:nokey', function() { return that.onRouteUnselected(); });
+		this.app.router.on('route:locale', function(arg) { return that.onRouteSelected(arg); });
+		this.app.router.on('route:key', function(arg) { return that.onRouteSelected(arg); });
 
 		this.codeEditor = new CodeEditor;
 		this.preview = new Preview;
-		this.panelActions = new OnItemSelectedView('.filter');
+		this.editorActions = new OnItemSelectedView('.item-main .filter');
 		this.noSelection = new OnItemUnselectedView("#no-selection");
 		this.rightFilter = new OnItemSelectedView(".item-right .filter");
 	},
@@ -307,10 +309,16 @@ var Editor = Backbone.Model.extend({
 		return undefined;
 	},
 
-	onRouteChanged: function(itemName) {
-		console.log('onRouteChanged: ', itemName);
-		if(itemName === '') {
-			itemName = null;
+	onRouteUnselected: function() {
+		console.log('onRouteUnselected');
+		this.selectedItemName = null;
+		Backbone.trigger('item:selected', undefined);
+	},
+
+	onRouteSelected: function(itemName) {
+		console.log('onRouteSelected: ', itemName);
+		if(itemName === null) {
+			itemName = '';
 		}
 		this.selectedItemName = itemName;
 		Backbone.trigger('item:selected', this.selectedItem(itemName));
@@ -356,7 +364,7 @@ var Editor = Backbone.Model.extend({
 		if(this.message !== null) {
 			this.message.restart();
 		}
-		this.app.router.navigate(this.itemType + "/", {trigger: true, replace: true});
+		this.app.router.navigate(this.itemType, {trigger: true, replace: true});
 	},
 
 	onKeyPress: function(event) {

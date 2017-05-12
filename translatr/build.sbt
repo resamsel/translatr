@@ -16,7 +16,9 @@ scalaVersion := "2.11.8"
 
 libraryDependencies ++= Seq(
 	javaJdbc,
+
 	cache,
+	"com.typesafe.play.modules" %% "play-modules-redis" % "2.5.0",
 
 	// Database
 	"org.postgresql" % "postgresql" % "42.0.0",

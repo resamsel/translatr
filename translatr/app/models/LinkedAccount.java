@@ -97,7 +97,7 @@ public class LinkedAccount implements Model<LinkedAccount, Long> {
 
     criteria.paged(query);
 
-    return new HasNextPagedList<>(query);
+    return HasNextPagedList.create(query);
   }
 
   /**

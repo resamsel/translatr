@@ -173,7 +173,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
     criteria.paged(query);
 
-    return log(() -> fetch(new HasNextPagedList<>(query), criteria), LOGGER, "findBy");
+    return log(() -> fetch(HasNextPagedList.create(query), criteria), LOGGER, "findBy");
   }
 
   private static HasNextPagedList<Locale> fetch(HasNextPagedList<Locale> paged,

@@ -167,7 +167,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
     criteria.paged(query);
 
-    return log(() -> new HasNextPagedList<>(query), LOGGER, "findBy");
+    return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
   }
 
   public float progress() {

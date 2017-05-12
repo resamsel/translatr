@@ -149,7 +149,7 @@ public class User implements Model<User, UUID>, Subject {
 
     criteria.paged(query);
 
-    return log(() -> new HasNextPagedList<User>(query), LOGGER, "findBy");
+    return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
   }
 
   private static ExpressionList<User> getEmailUserFind(final String email) {

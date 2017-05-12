@@ -256,8 +256,10 @@ var AppRouter = Backbone.Router.extend({
 	},
 
 	routes: {
-		'key/*keyName': 'key',
-		'locale/*localeName': 'locale'
+		'locale': 'nolocale',
+		'locale/*localeName': 'locale',
+		'key': 'nokey',
+		'key/*keyName': 'key'
 	}
 });
 var Translatr = Backbone.Model.extend({

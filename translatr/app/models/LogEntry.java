@@ -133,7 +133,7 @@ public class LogEntry implements Model<LogEntry, UUID> {
 
     criteria.paged(query);
 
-    return new HasNextPagedList<>(query.query().fetch("user").fetch("project"));
+    return HasNextPagedList.create(query.query().fetch("user").fetch("project"));
   }
 
   public static int countBy(LogEntryCriteria criteria) {

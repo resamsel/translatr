@@ -130,7 +130,7 @@ public class ProjectUser implements Model<ProjectUser, Long> {
   }
 
   public static PagedList<ProjectUser> findBy(ProjectUserCriteria criteria) {
-    return log(() -> new HasNextPagedList<>(findQuery(criteria).query().fetch("user")), LOGGER,
+    return log(() -> HasNextPagedList.create(findQuery(criteria).query().fetch("user")), LOGGER,
         "findBy");
   }
 

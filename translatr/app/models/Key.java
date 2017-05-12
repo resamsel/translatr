@@ -157,7 +157,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
 
     criteria.paged(query);
 
-    return log(() -> new HasNextPagedList<>(query), LOGGER, "findBy");
+    return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
   }
 
   /**

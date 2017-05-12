@@ -7,3 +7,9 @@ services:
         volumes:
             - ./data:/var/lib/postgresql/data
             - ./docker/entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    redis-translatr:
+        image: redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - ./redis-data:/data

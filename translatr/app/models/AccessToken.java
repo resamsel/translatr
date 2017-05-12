@@ -129,7 +129,7 @@ public class AccessToken implements Model<AccessToken, Long> {
     else
       query.order("whenCreated");
 
-    return new HasNextPagedList<>(query);
+    return HasNextPagedList.create(query);
   }
 
   /**

@@ -158,7 +158,7 @@ var LocaleEditor = Editor.extend({
 	selectedItem: function(itemName) {
 		if(itemName !== null) {
 			return this.project.keys.find(function(item) {
-				return item.get('name') == itemName;
+				return item.get('name') === itemName;
 			});
 		}
 		return undefined;
