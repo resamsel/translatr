@@ -7,7 +7,7 @@ before_script:
     - psql -c 'grant all privileges on database "translatr-test" TO translatr;' -U postgres
     - cd translatr
 script:
-    - bin/activator clean test -Dconfig.file=test.conf
+    - bin/activator clean jacoco:cover -Dconfig.file=test.conf
 cache:
     directories:
         - $HOME/.ivy2/cache

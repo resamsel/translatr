@@ -15,7 +15,26 @@ import play.mvc.Call;
  * @version 2 Oct 2016
  */
 public class JsonUtils {
+  public static final String USER_ICON = "account_circle";
+  public static final String PROJECT_ICON = "view_quilt";
+  public static final String LOCALE_ICON = "book";
+  public static final String KEY_ICON = "vpn_key";
+  public static final String MESSAGE_ICON = "message";
+  public static final String ACCESS_TOKEN_ICON = "vpn_key";
+  public static final String PROJECT_USER_ICON = "group_work";
+
+  public static final String USER_COLOR = "teal";
+  public static final String PROJECT_COLOR = "orange";
+  public static final String LOCALE_COLOR = "blue";
+  public static final String KEY_COLOR = "light-green";
+  public static final String MESSAGE_COLOR = "red";
+  public static final String ACCESS_TOKEN_COLOR = "green";
+  public static final String PROJECT_USER_COLOR = "purple";
+
   public static String nameOf(LogEntry activity) {
+    if (activity == null)
+      return null;
+
     JsonNode node = parse(activity);
 
     switch (activity.contentType) {
@@ -36,6 +55,9 @@ public class JsonUtils {
   }
 
   public static Call linkTo(LogEntry activity) {
+    if (activity == null)
+      return null;
+
     JsonNode node = parse(activity);
     Long id = getId(node);
     UUID uuid = getUuid(node);
@@ -78,39 +100,48 @@ public class JsonUtils {
   }
 
   public static String iconOf(LogEntry activity) {
+    if (activity == null)
+      return null;
+
     switch (activity.contentType) {
       case "dto.Project":
-        return "view_quilt";
+        return PROJECT_ICON;
       case "dto.Locale":
-        return "book";
+        return LOCALE_ICON;
       case "dto.Key":
+        return KEY_ICON;
       case "dto.AccessToken":
-        return "vpn_key";
+        return ACCESS_TOKEN_ICON;
       case "dto.Message":
-        return "message";
+        return MESSAGE_ICON;
       case "dto.User":
-        return "account_circle";
+        return USER_ICON;
       case "dto.ProjectUser":
-        return "group_work";
+        return PROJECT_USER_ICON;
       default:
         return "";
     }
   }
 
   public static String colorOf(LogEntry activity) {
+    if (activity == null)
+      return null;
+
     switch (activity.contentType) {
       case "dto.Project":
-        return "orange";
+        return PROJECT_COLOR;
       case "dto.Locale":
-        return "blue";
+        return LOCALE_COLOR;
       case "dto.Key":
-        return "light-green";
+        return KEY_COLOR;
       case "dto.Message":
-        return "red";
+        return MESSAGE_COLOR;
       case "dto.User":
-        return "teal";
+        return USER_COLOR;
       case "dto.AccessToken":
-        return "green";
+        return ACCESS_TOKEN_COLOR;
+      case "dto.ProjectUser":
+        return PROJECT_USER_COLOR;
       default:
         return "";
     }
@@ -135,26 +166,34 @@ public class JsonUtils {
     if (!node.hasNonNull(key))
       return null;
 
-    return UUID.fromString(node.get(key).asText());
+    return getUuid(node.get(key).asText());
   }
 
   public static UUID getUuid(String uuid) {
     if (uuid == null || uuid.trim().length() < 1)
       return null;
 
-    return UUID.fromString(uuid);
+    try {
+      return UUID.fromString(uuid);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 
   public static JsonNode parse(LogEntry activity) {
     switch (activity.type) {
       case Create:
       case Update:
-        return Json.parse(activity.after);
+        if (activity.after != null)
+          return Json.parse(activity.after);
+        break;
       case Delete:
-        return Json.parse(activity.before);
-      default:
-        return Json.parse("{}");
+        if (activity.before != null)
+          return Json.parse(activity.before);
+        break;
     }
+
+    return Json.newObject();
   }
 
   /**
