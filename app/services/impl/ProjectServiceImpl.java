@@ -3,6 +3,7 @@ package services.impl;
 import static utils.Stopwatch.log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
@@ -74,8 +75,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    */
   @Override
   public Project byId(UUID id, String... fetches) {
-    return log(() -> cache.getOrElse(Project.getCacheKey(id), () -> Project.byId(id), 60), LOGGER,
-        "byId");
+    return log(() -> cache.getOrElse(Project.getCacheKey(id, fetches),
+        () -> Project.byId(id, fetches), 60), LOGGER, "byId(fetches={})", Arrays.asList(fetches));
   }
 
   /**

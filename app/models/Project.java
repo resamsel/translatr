@@ -7,6 +7,7 @@ import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,7 @@ import services.MessageService;
 import services.ProjectService;
 import services.UserService;
 import utils.PermissionUtils;
+import utils.QueryUtils;
 import validators.NameUnique;
 import validators.ProjectNameUniqueChecker;
 
@@ -140,11 +143,17 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   private static final String BRAND_PROJECT_ID = "brandProjectId";
 
-  public static Project byId(UUID id) {
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("owner", "members");
+
+  public static Project byId(UUID id, String... fetches) {
     if (id == null)
       return null;
 
-    return find.fetch("owner").where().eq("id", id).findUnique();
+    HashSet<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
+    if (fetches.length > 0)
+      propertiesToFetch.addAll(Arrays.asList(fetches));
+
+    return QueryUtils.fetch(find.setId(id), propertiesToFetch).findUnique();
   }
 
   public static PagedList<Project> findBy(ProjectCriteria criteria) {
@@ -160,7 +169,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
       query.eq("members.user.id", criteria.getMemberId());
 
     if (criteria.getProjectId() != null)
-      query.eq("id", criteria.getProjectId());
+      query.idEq(criteria.getProjectId());
 
     if (criteria.getSearch() != null)
       query.ilike("name", "%" + criteria.getSearch() + "%");
@@ -184,6 +193,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   public long keysSizeMap(UUID localeId) {
     if (keysSizeMap == null)
+      // FIXME: This is an expensive operation, consider doing this in a group by query.
       keysSizeMap = Message.findBy(new MessageCriteria().withProjectId(this.id)).getList().stream()
           .collect(groupingBy(m -> m.locale.id, counting()));
 
@@ -304,13 +314,17 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * @param projectId
+   * @param fetches
    * @return
    */
-  public static String getCacheKey(UUID projectId) {
+  public static String getCacheKey(UUID projectId, String... fetches) {
     if (projectId == null)
       return null;
 
-    return String.format("project:%s", projectId.toString());
+    if (fetches.length > 0)
+      return String.format("project:%s:%s", projectId, StringUtils.join(fetches, ":"));
+
+    return String.format("project:%s", projectId);
   }
 
   @Override

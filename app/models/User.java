@@ -21,6 +21,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ import play.mvc.Http.Context;
 import play.mvc.Http.Session;
 import services.UserService;
 import utils.ConfigKey;
+import utils.QueryUtils;
 
 @Entity
 @Table(name = "user_")
@@ -195,8 +197,8 @@ public class User implements Model<User, UUID>, Subject {
     return this;
   }
 
-  public static User byId(UUID id) {
-    return find.byId(id);
+  public static User byId(UUID id, String... fetches) {
+    return QueryUtils.fetch(find.setId(id), fetches).findUnique();
   }
 
   /**
@@ -311,9 +313,16 @@ public class User implements Model<User, UUID>, Subject {
 
   /**
    * @param userId
+   * @param fetches
    * @return
    */
-  public static String getCacheKey(UUID userId) {
-    return String.format("user:%s", userId.toString());
+  public static String getCacheKey(UUID userId, String... fetches) {
+    if (userId == null)
+      return null;
+
+    if (fetches.length > 0)
+      return String.format("user:%s:%s", userId, StringUtils.join(fetches, ":"));
+
+    return String.format("user:%s", userId);
   }
 }

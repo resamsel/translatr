@@ -71,7 +71,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
    */
   @Override
   public Key byId(UUID id, String... fetches) {
-    return Key.byId(id, fetches);
+    return cache.getOrElse(Key.getCacheKey(id, fetches), () -> Key.byId(id, fetches), 60);
   }
 
   /**

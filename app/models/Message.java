@@ -2,7 +2,9 @@ package models;
 
 import static utils.Stopwatch.log;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,6 +32,7 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
 import play.libs.Json;
+import utils.QueryUtils;
 import validators.LocaleKeyCheck;
 
 @Entity
@@ -37,6 +40,10 @@ import validators.LocaleKeyCheck;
 @LocaleKeyCheck
 public class Message implements Model<Message, UUID> {
   private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
+
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("key", "locale");
+
+  private static final Find<UUID, Message> find = new Find<UUID, Message>() {};
 
   @Id
   @GeneratedValue
@@ -72,8 +79,6 @@ public class Message implements Model<Message, UUID> {
     this.value = value;
   }
 
-  private static final Find<UUID, Message> find = new Find<UUID, Message>() {};
-
   /**
    * {@inheritDoc}
    */
@@ -96,8 +101,12 @@ public class Message implements Model<Message, UUID> {
    * @param fromString
    * @return
    */
-  public static Message byId(UUID id) {
-    return find.setId(id).fetch("key").fetch("locale").findUnique();
+  public static Message byId(UUID id, String... fetches) {
+    HashSet<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
+    if (fetches.length > 0)
+      propertiesToFetch.addAll(Arrays.asList(fetches));
+
+    return QueryUtils.fetch(find.setId(id), propertiesToFetch).findUnique();
   }
 
   /**
@@ -105,7 +114,7 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static Map<UUID, Message> byIds(List<UUID> ids) {
-    return find.fetch("key").fetch("locale").where().in("id", ids).findMap();
+    return find.fetch("key").fetch("locale").where().idIn(ids).findMap();
   }
 
   /**
@@ -123,7 +132,8 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static int countBy(Project project) {
-    return find.where().eq("key.project", project).findCount();
+    return log(() -> find.where().eq("key.project", project).findCount(), LOGGER,
+        "countBy(Project)");
   }
 
   /**
@@ -131,7 +141,7 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static int countBy(Key key) {
-    return find.where().eq("key", key).findCount();
+    return log(() -> find.where().eq("key", key).findCount(), LOGGER, "countBy(Key)");
   }
 
   /**
@@ -139,7 +149,7 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static int countBy(Locale locale) {
-    return find.where().eq("locale", locale).findCount();
+    return log(() -> find.where().eq("locale", locale).findCount(), LOGGER, "countBy(Locale)");
   }
 
   /**
@@ -216,6 +226,21 @@ public class Message implements Model<Message, UUID> {
   public static List<Message> last(Project project, int limit) {
     return find.fetch("key").fetch("locale").where().eq("key.project", project)
         .order("whenUpdated desc").setMaxRows(limit).findList();
+  }
+
+  /**
+   * @param messageId
+   * @param fetches
+   * @return
+   */
+  public static String getCacheKey(UUID messageId, String... fetches) {
+    if (messageId == null)
+      return null;
+
+    if (fetches.length > 0)
+      return String.format("message:%s:%s", messageId, StringUtils.join(fetches, ":"));
+
+    return String.format("message:%s", messageId);
   }
 
   @Override

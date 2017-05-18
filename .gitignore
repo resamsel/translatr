@@ -13,4 +13,4 @@ bower_components
 node_modules
 .translatr.yml
 data
-redis-data/
+bin

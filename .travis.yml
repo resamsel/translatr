@@ -5,11 +5,10 @@ before_script:
     - psql -c 'create user translatr;' -U postgres
     - psql -c 'create database "translatr-test";' -U postgres
     - psql -c 'grant all privileges on database "translatr-test" TO translatr;' -U postgres
+    - cd translatr
 script:
-    - bin/activator clean coverage test coverageReport -Dconfig.file=test.conf
-after_success:
-    - bin/activator coveralls
+    - bin/activator clean test -Dconfig.file=test.conf
 cache:
     directories:
         - $HOME/.ivy2/cache
-        - $HOME/.sbt/boot/scala-$TRAVIS_SCALA_VERSION
+        - $HOME/.sbt/boot

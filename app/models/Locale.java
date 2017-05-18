@@ -6,6 +6,7 @@ import static utils.FormatUtils.formatLocale;
 import static utils.Stopwatch.log;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -110,12 +111,18 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
   private static final Find<UUID, Locale> find = new Find<UUID, Locale>() {};
 
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("project");
+
   /**
    * @param fromString
    * @return
    */
-  public static Locale byId(UUID id) {
-    return find.setId(id).fetch("project").findUnique();
+  public static Locale byId(UUID id, String... fetches) {
+    HashSet<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
+    if (fetches.length > 0)
+      propertiesToFetch.addAll(Arrays.asList(fetches));
+
+    return QueryUtils.fetch(find.setId(id), propertiesToFetch).findUnique();
   }
 
   /**
@@ -200,14 +207,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   }
 
   /**
-   * @param project
-   * @return
-   */
-  public static long countBy(Project project) {
-    return find.where().eq("project", project).findCount();
-  }
-
-  /**
    * @param model
    */
   @Override
@@ -218,16 +217,23 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
     return this;
   }
 
+  /**
+   * @param localeId
+   * @param fetches
+   * @return
+   */
+  public static String getCacheKey(UUID localeId, String... fetches) {
+    if (localeId == null)
+      return null;
+
+    if (fetches.length > 0)
+      return String.format("locale:%s:%s", localeId, StringUtils.join(fetches, ":"));
+
+    return String.format("locale:%s", localeId);
+  }
+
   @Override
   public String toString() {
     return String.format("{\"project\": %s, \"name\": %s}", project, Json.toJson(name));
-  }
-
-  /**
-   * @param userId
-   * @return
-   */
-  public static String getCacheKey(UUID localeId) {
-    return String.format("locale:%s", localeId.toString());
   }
 }

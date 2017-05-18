@@ -3,6 +3,7 @@ package models;
 import static utils.Stopwatch.log;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -18,6 +19,7 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,16 +113,20 @@ public class Key implements Model<Key, UUID>, Suggestable {
 
   private static final Find<UUID, Key> find = new Find<UUID, Key>() {};
 
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("project");
+
   /**
    * @param keyId
    * @return
    */
-  public static Key byId(UUID id, String... propertiesToFetch) {
-    if (propertiesToFetch == null)
-      propertiesToFetch = new String[0];
+  public static Key byId(UUID id, String... fetches) {
+    HashSet<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
+    if (fetches.length > 0)
+      propertiesToFetch.addAll(Arrays.asList(fetches));
 
-    return QueryUtils.fetch(find.setId(id).fetch("project").setDisableLazyLoading(true),
-        Arrays.asList(propertiesToFetch), FETCH_MAP).findUnique();
+    return QueryUtils
+        .fetch(find.setId(id).setDisableLazyLoading(true), propertiesToFetch, FETCH_MAP)
+        .findUnique();
   }
 
   /**
@@ -187,14 +193,6 @@ public class Key implements Model<Key, UUID>, Suggestable {
   }
 
   /**
-   * @param project
-   * @return
-   */
-  public static long countBy(Project project) {
-    return log(() -> find.where().eq("project", project).findCount(), LOGGER, "countBy");
-  }
-
-  /**
    * {@inheritDoc}
    */
   @Override
@@ -203,6 +201,21 @@ public class Key implements Model<Key, UUID>, Suggestable {
     name = in.name;
 
     return this;
+  }
+
+  /**
+   * @param keyId
+   * @param fetches
+   * @return
+   */
+  public static String getCacheKey(UUID keyId, String... fetches) {
+    if (keyId == null)
+      return null;
+
+    if (fetches.length > 0)
+      return String.format("key:%s:%s", keyId, StringUtils.join(fetches, ":"));
+
+    return String.format("key:%s", keyId);
   }
 
   @Override
