@@ -12,6 +12,5 @@ RUNNING_PID
 bower_components
 node_modules
 .translatr.yml
-translatr/data
-
-translatr/redis-data/
+data
+redis-data/

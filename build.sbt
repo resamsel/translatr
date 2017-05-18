@@ -12,7 +12,7 @@ lazy val root = (project in file(".")).
 		buildInfoKeys := Seq[BuildInfoKey](name, version)
 	)
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.11.8"
 
 libraryDependencies ++= Seq(
 	javaJdbc,
@@ -120,10 +120,10 @@ pipelineStages := Seq(concat)
 // Testing
 javaOptions in Test ++= Seq(
   "-Dconfig.file=test.conf",
-  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9999",
-  "-Xms512M",
-  "-Xmx1536M",
-  "-Xss1M"
+//  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9999",
+  "-Xms512m",
+  "-Xmx3g",
+  "-Xss256m"
 )
 
 findbugsSettings
