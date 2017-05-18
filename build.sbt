@@ -43,7 +43,11 @@ libraryDependencies ++= Seq(
 	"org.mockito" % "mockito-core" % "2.7.22" % "test"
 )
 
+//
+// Eclipse
+//
 // From: https://github.com/playframework/playframework/issues/3818
+//
 EclipseKeys.classpathTransformerFactories := EclipseKeys.classpathTransformerFactories.value.init
 
 EclipseKeys.eclipseOutput := Some(".target")
@@ -58,7 +62,9 @@ EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClass
 
 EclipseKeys.withSource := true
 
+//
 // Docker
+//
 maintainer := "René Panzar <rene.panzar@gmail.com>"
 
 dockerRepository := Some("resamsel")
@@ -69,13 +75,9 @@ dockerExposedPorts in Docker := Seq(9000)
 
 dockerExposedVolumes := Seq("/opt/docker/logs", "/opt/docker/data")
 
-// Conflict Classes
-conflictClassExcludes ++= Seq(
-  "LICENSE",
-  "reference.conf"
-)
-
+//
 // Concat
+//
 Concat.groups := Seq(
 	"styles.css" -> group(Seq(
 		"stylesheets/materialize.min.css",
@@ -117,17 +119,27 @@ pipelineStages in Assets := Seq(concat)
 
 pipelineStages := Seq(concat)
 
-// Testing
-javaOptions in Test ++= Seq(
-  "-Dconfig.file=test.conf",
-//  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9999",
-  "-Xms512m",
-  "-Xmx3g",
-  "-Xss256m"
-)
+//
+// JaCoCo test coverage
+//
+jacoco.settings
 
+// Unfortunately, this is really needed
+parallelExecution in jacoco.Config := false
+
+//
+// FindBugs
+//
 findbugsSettings
 
 findbugsReportType := Some(ReportType.Html)
 
 findbugsReportPath := Some(crossTarget.value / "findbugs" / "report.html")
+
+//
+// Conflict classes
+//
+conflictClassExcludes ++= Seq(
+  "LICENSE",
+  "reference.conf"
+)
