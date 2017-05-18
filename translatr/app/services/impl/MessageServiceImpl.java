@@ -62,7 +62,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
    */
   @Override
   public Message byId(UUID id, String... fetches) {
-    return Message.byId(id);
+    return cache.getOrElse(Message.getCacheKey(id, fetches), () -> Message.byId(id, fetches), 60);
   }
 
   /**

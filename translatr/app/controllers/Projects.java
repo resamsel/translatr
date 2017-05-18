@@ -228,7 +228,7 @@ public class Projects extends AbstractController {
       return ok(log(() -> views.html.projects.locales.render(createTemplate(), project, locales,
           localeService.progress(
               locales.getList().stream().map(l -> l.id).collect(Collectors.toList()),
-              Key.countBy(project)),
+              project.keys.size()),
           form), LOGGER, "Rendering projects.locales"));
     });
   }
@@ -245,7 +245,7 @@ public class Projects extends AbstractController {
 
       Map<UUID, Double> progress =
           keyService.progress(keys.getList().stream().map(k -> k.id).collect(Collectors.toList()),
-              Locale.countBy(project));
+              project.locales.size());
 
       return ok(views.html.projects.keys.render(createTemplate(), project, keys, progress, form));
     });
@@ -354,8 +354,9 @@ public class Projects extends AbstractController {
     });
   }
 
-  private Result project(UUID projectId, Function<Project, Result> processor) {
-    Project project = projectService.byId(projectId);
+  private Result project(UUID projectId, Function<Project, Result> processor,
+      String... propertiesToFetch) {
+    Project project = projectService.byId(projectId, propertiesToFetch);
 
     if (project == null)
       return redirectWithError(routes.Dashboards.dashboard(), "project.notFound", projectId);
@@ -374,7 +375,7 @@ public class Projects extends AbstractController {
   private <T extends Form<LocaleSearchForm>> Result localeSearchForm(UUID projectId,
       BiFunction<Project, Form<LocaleSearchForm>, Result> processor) {
     return project(projectId, project -> processor.apply(project,
-        FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration)));
+        FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration)), "keys", "locales");
   }
 
   private <T extends Form<KeySearchForm>> Result keySearchForm(UUID projectId,
