@@ -15,6 +15,7 @@ import play.mvc.Http.Context;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import services.AccessTokenService;
+import utils.ContextKey;
 import utils.ErrorUtils;
 
 /**
@@ -68,7 +69,7 @@ public class ApiAction extends Action.Simple {
         return CompletableFuture.completedFuture(
             forbidden(ErrorUtils.toJson(new PermissionException("Invalid access_token"))));
 
-      ctx.args.put("accessToken", token);
+      ContextKey.AccessToken.put(ctx, token);
     }
 
     return delegate.call(ctx);

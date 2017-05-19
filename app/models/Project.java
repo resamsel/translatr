@@ -49,6 +49,7 @@ import play.mvc.Http.Context;
 import services.MessageService;
 import services.ProjectService;
 import services.UserService;
+import utils.ContextKey;
 import utils.PermissionUtils;
 import utils.QueryUtils;
 import validators.NameUnique;
@@ -140,8 +141,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   private static final Find<UUID, Project> find = new Find<UUID, Project>() {};
-
-  private static final String BRAND_PROJECT_ID = "brandProjectId";
 
   private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("owner", "members");
 
@@ -277,10 +276,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   public static UUID brandProjectId() {
-    Context ctx = Context.current();
-    Map<String, Object> args = ctx.args;
-    if (args.containsKey(BRAND_PROJECT_ID))
-      return (UUID) args.get(BRAND_PROJECT_ID);
+    UUID brandProjectId = ContextKey.BrandProjectId.get();
+    if (brandProjectId != null)
+      return brandProjectId;
 
     Injector injector = Play.current().injector();
     User user = User.loggedInUser();
@@ -288,6 +286,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
       user = injector.instanceOf(UserService.class).byUsername("translatr");
 
     Project brandProject = null;
+    Context ctx = Context.current();
     try {
       brandProject = injector.instanceOf(ProjectService.class).byOwnerAndName(user,
           ctx.messages().at("brand"));
@@ -298,7 +297,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
     if (brandProject == null)
       return null;
 
-    args.put(BRAND_PROJECT_ID, brandProject.id);
+    ContextKey.BrandProjectId.put(ctx, brandProject.id);
 
     return brandProject.id;
   }

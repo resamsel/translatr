@@ -4,7 +4,6 @@ import static utils.Stopwatch.log;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -27,8 +26,8 @@ import models.Project;
 import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
-import play.mvc.Http.Context;
 import services.LogEntryService;
+import utils.ContextKey;
 
 /**
  *
@@ -118,14 +117,9 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
       t.user = User.loggedInUser();
 
     if (t.project == null) {
-      Map<String, Object> args = null;
-      try {
-        args = Context.current().args;
-      } catch (RuntimeException e) {
-        // There is no HTTP Context available from here
-      }
-      if (args != null && args.containsKey("projectId"))
-        t.project = new Project().withId((UUID) args.get("projectId"));
+      UUID projectId = ContextKey.ProjectId.get();
+      if (projectId != null)
+        t.project = new Project().withId(projectId);
     }
   }
 

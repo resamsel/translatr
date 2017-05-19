@@ -15,6 +15,7 @@ import play.cache.CacheApi;
 import play.mvc.Action;
 import play.mvc.Http.Context;
 import play.mvc.Result;
+import utils.ContextKey;
 
 /**
  *
@@ -51,8 +52,8 @@ public class ContextAction extends Action.Simple {
 
     if (ctx.flash().containsKey("undo")) {
       String key = ctx.flash().get("undo");
-      ctx.args.put("undoMessage", ((Command<?>) cache.get(key)).getMessage());
-      ctx.args.put("undoCommand", key);
+      ContextKey.UndoMessage.put(ctx, ((Command<?>) cache.get(key)).getMessage());
+      ContextKey.UndoCommand.put(ctx, key);
     }
 
     return delegate.call(ctx);

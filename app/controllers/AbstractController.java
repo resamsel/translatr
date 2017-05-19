@@ -21,6 +21,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.LogEntryService;
 import services.UserService;
+import utils.ContextKey;
 import utils.SessionKey;
 import utils.Template;
 
@@ -128,7 +129,7 @@ public abstract class AbstractController extends Controller {
   }
 
   protected void select(Project project) {
-    ctx().args.put("projectId", project.id);
+    ContextKey.ProjectId.put(ctx(), project.id);
   }
 
   protected Command<?> getCommand(String key) {

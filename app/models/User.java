@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -51,6 +50,7 @@ import play.mvc.Http.Context;
 import play.mvc.Http.Session;
 import services.UserService;
 import utils.ConfigKey;
+import utils.ContextKey;
 import utils.QueryUtils;
 
 @Entity
@@ -225,26 +225,24 @@ public class User implements Model<User, UUID>, Subject {
   }
 
   public static User loggedInUser() {
-    Map<String, Object> args;
-    try {
-      args = Context.current().args;
-    } catch (RuntimeException e) {
-      // There is no HTTP Context available from here.
+    Context ctx = ContextKey.context();
+    if (ctx == null)
       return null;
-    }
 
     // Logged-in via access_token?
-    if (args.containsKey("accessToken"))
-      return ((AccessToken) args.get("accessToken")).user;
+    AccessToken accessToken = ContextKey.AccessToken.get();
+    if (accessToken != null)
+      return accessToken.user;
 
     // Logged-in via auth plugin?
     AuthUser authUser = loggedInAuthUser();
     if (authUser != null) {
-      if (!args.containsKey(authUser.toString()))
-        args.put(authUser.toString(),
-            Play.current().injector().instanceOf(UserService.class).getLocalUser(authUser));
+      User user = ContextKey.get(ctx, authUser.toString());
+      if (user != null)
+        return user;
 
-      return (User) args.get(authUser.toString());
+      return ContextKey.put(ctx, authUser.toString(),
+          Play.current().injector().instanceOf(UserService.class).getLocalUser(authUser));
     }
 
     // Not logged-in

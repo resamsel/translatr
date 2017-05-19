@@ -15,7 +15,6 @@ import models.ProjectRole;
 import models.ProjectUser;
 import models.Scope;
 import models.User;
-import play.mvc.Http.Context;
 
 /**
  * @author resamsel
@@ -25,7 +24,7 @@ public class PermissionUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(PermissionUtils.class);
 
   public static boolean hasPermissionAll(Scope... scopes) {
-    return hasPermissionAll((AccessToken) Context.current().args.get("accessToken"), scopes);
+    return hasPermissionAll(ContextKey.AccessToken.get(), scopes);
   }
 
   public static boolean hasPermissionAll(AccessToken accessToken, Scope... scopes) {
@@ -43,7 +42,7 @@ public class PermissionUtils {
   }
 
   public static boolean hasPermissionAny(Scope... scopes) {
-    return hasPermissionAny((AccessToken) Context.current().args.get("accessToken"), scopes);
+    return hasPermissionAny(ContextKey.AccessToken.get(), scopes);
   }
 
   public static boolean hasPermissionAny(AccessToken accessToken, Scope... scopes) {
@@ -96,8 +95,8 @@ public class PermissionUtils {
   public static boolean hasPermissionAny(UUID projectId, User user, Collection<ProjectRole> roles) {
     LOGGER.debug("Members needed: {}", roles);
 
-    for (ProjectUser member : ProjectUser
-        .findBy(new ProjectUserCriteria().withProjectId(projectId)).getList())
+    for (ProjectUser member : ProjectUser.findBy(new ProjectUserCriteria().withProjectId(projectId))
+        .getList())
       if (user.id.equals(member.user.id) && roles.contains(member.role))
         return true;
 
