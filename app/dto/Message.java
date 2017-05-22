@@ -17,6 +17,8 @@ import play.libs.Json;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message extends Dto {
+  private static final long serialVersionUID = -8848810325610871318L;
+
   private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
   public UUID id;

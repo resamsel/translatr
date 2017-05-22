@@ -1,25 +1,16 @@
 package commands;
 
-import javax.inject.Inject;
-
 import controllers.routes;
 import dto.AccessToken;
+import play.inject.Injector;
 import play.mvc.Call;
 import play.mvc.Http.Context;
 import services.AccessTokenService;
 
 public class RevertDeleteAccessTokenCommand implements Command<models.AccessToken> {
+  private static final long serialVersionUID = 3620886642910047163L;
+
   private AccessToken accessToken;
-
-  private final AccessTokenService accessTokenService;
-
-  /**
-   * 
-   */
-  @Inject
-  public RevertDeleteAccessTokenCommand(AccessTokenService accessTokenService) {
-    this.accessTokenService = accessTokenService;
-  }
 
   /**
    * @param key
@@ -32,9 +23,9 @@ public class RevertDeleteAccessTokenCommand implements Command<models.AccessToke
   }
 
   @Override
-  public void execute() {
+  public void execute(Injector injector) {
     models.AccessToken model = accessToken.toModel();
-    accessTokenService.save(model);
+    injector.instanceOf(AccessTokenService.class).save(model);
   }
 
   /**
@@ -51,5 +42,13 @@ public class RevertDeleteAccessTokenCommand implements Command<models.AccessToke
   @Override
   public Call redirect() {
     return routes.Profiles.accessTokens();
+  }
+
+  /**
+   * @param accessToken
+   * @return
+   */
+  public static RevertDeleteAccessTokenCommand from(models.AccessToken accessToken) {
+    return new RevertDeleteAccessTokenCommand().with(accessToken);
   }
 }

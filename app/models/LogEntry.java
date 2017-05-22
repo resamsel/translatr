@@ -98,9 +98,24 @@ public class LogEntry implements Model<LogEntry, UUID> {
    */
   public static <T extends Dto> LogEntry from(ActionType type, Project project, Class<T> clazz,
       T before, T after) {
+    return from(type, null, project, clazz, before, after);
+  }
+
+  /**
+   * @param type
+   * @param user
+   * @param project
+   * @param clazz
+   * @param before
+   * @param after
+   * @return
+   */
+  public static <T> LogEntry from(ActionType type, User user, Project project, Class<T> clazz,
+      T before, T after) {
     LogEntry out = new LogEntry();
 
     out.type = type;
+    out.user = user;
     out.project = project;
     out.contentType = clazz.getName();
     if (before != null)

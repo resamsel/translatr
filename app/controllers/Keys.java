@@ -175,7 +175,7 @@ public class Keys extends AbstractController {
   public Result remove(UUID keyId, UUID localeId, String search, String order, int limit,
       int offset) {
     return key(keyId, key -> {
-      undoCommand(injector.instanceOf(RevertDeleteKeyCommand.class).with(key));
+      undoCommand(RevertDeleteKeyCommand.from(key));
 
       keyService.delete(key);
 

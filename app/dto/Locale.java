@@ -15,6 +15,8 @@ import models.Project;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Locale extends Dto {
+  private static final long serialVersionUID = -2778174337389175121L;
+
   public UUID id;
 
   @JsonIgnore

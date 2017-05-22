@@ -3,12 +3,16 @@
 <div class="collection depth">
 	<a
 		class="collection-item @if(active == "projects") { active green } else { green-text }"
-		href="@routes.Dashboards.dashboard()">
-		@Messages("projects")
+		href="@routes.Dashboards.dashboard()"
+		title="@Messages("projects")">
+		<i class="material-icons left">view_quilt</i>
+		<span>@Messages("projects")</span>
 	</a>
 	<a
 		class="collection-item @if(active == "activity") { active green } else { green-text }"
-		href="@routes.Dashboards.activity()">
-		@Messages("activity")
+		href="@routes.Dashboards.activity()"
+		title="@Messages("activity")">
+		<i class="material-icons left">notifications_active</i>
+		<span>@Messages("activity")</span>
 	</a>
 </div>

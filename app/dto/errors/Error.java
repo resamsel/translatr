@@ -8,4 +8,6 @@ import dto.Dto;
  */
 public abstract class Error extends Dto {
 
+  private static final long serialVersionUID = 1242449531429113343L;
+
 }

@@ -153,7 +153,7 @@ public class Profiles extends AbstractController {
       if (linkedAccount == null || !user.id.equals(linkedAccount.user.id))
         return redirect(routes.Profiles.linkedAccounts());
 
-      undoCommand(injector.instanceOf(RevertDeleteLinkedAccountCommand.class).with(linkedAccount));
+      undoCommand(RevertDeleteLinkedAccountCommand.from(linkedAccount));
 
       linkedAccountService.delete(linkedAccount);
 
@@ -316,7 +316,7 @@ public class Profiles extends AbstractController {
       if (accessToken == null || !user.id.equals(accessToken.user.id))
         return redirectWithError(routes.Profiles.accessTokens(), "accessToken.notAllowed");
 
-      undoCommand(injector.instanceOf(RevertDeleteAccessTokenCommand.class).with(accessToken));
+      undoCommand(RevertDeleteAccessTokenCommand.from(accessToken));
 
       accessTokenService.delete(accessToken);
 

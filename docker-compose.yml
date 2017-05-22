@@ -1,4 +1,7 @@
 version: "2"
+volumes:
+    pg-data:
+    redis-data:
 services:
     db-translatr:
         image: postgres
@@ -6,10 +9,12 @@ services:
             - "5432:5432"
         volumes:
             - ./data/pg-data:/var/lib/postgresql/data
+#            - pg-data:/var/lib/postgresql/data
             - ./docker/entrypoint-initdb.d:/docker-entrypoint-initdb.d
     redis-translatr:
         image: redis
         ports:
             - "6379:6379"
         volumes:
-            - ./data/redis-data:/data
+#            - ./data/redis-data:/data
+            - redis-data:/data

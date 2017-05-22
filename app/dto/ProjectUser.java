@@ -11,6 +11,8 @@ import models.ProjectRole;
 import models.User;
 
 public class ProjectUser extends Dto {
+  private static final long serialVersionUID = 523759011096520257L;
+
   public UUID projectId;
 
   public String projectName;

@@ -10,6 +10,7 @@
     "backbone-pageable": "^1.4.8",
     "backbone-undo": "^0.2.5",
     "codemirror": "^5.24.2",
+    "getstream": "^3.5.0",
     "jquery": "^3.2.0",
     "materialize-css": "^0.98.0"
   },

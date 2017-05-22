@@ -17,6 +17,8 @@ import criterias.HasNextPagedList;
  * @version 10 Feb 2017
  */
 public class DtoPagedList<MODEL, DTO extends Dto> extends Dto implements PagedList<DTO> {
+  private static final long serialVersionUID = -702426798092435389L;
+
   private List<DTO> list;
 
   @JsonIgnore

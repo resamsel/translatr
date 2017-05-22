@@ -20,7 +20,7 @@ public class JsonUtils {
   public static final String LOCALE_ICON = "book";
   public static final String KEY_ICON = "vpn_key";
   public static final String MESSAGE_ICON = "message";
-  public static final String ACCESS_TOKEN_ICON = "vpn_key";
+  public static final String ACCESS_TOKEN_ICON = "accessibility";
   public static final String PROJECT_USER_ICON = "group_work";
 
   public static final String USER_COLOR = "teal";
@@ -190,6 +190,11 @@ public class JsonUtils {
       case Delete:
         if (activity.before != null)
           return Json.parse(activity.before);
+        break;
+      case Login:
+      case Logout:
+        if (activity.after != null)
+          return Json.parse(activity.after);
         break;
     }
 

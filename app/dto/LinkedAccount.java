@@ -8,7 +8,9 @@ import models.User;
 
 public class LinkedAccount extends Dto
 {
-	public UUID userId;
+	private static final long serialVersionUID = 2867985852818242361L;
+
+  public UUID userId;
 
 	public DateTime whenCreated;
 

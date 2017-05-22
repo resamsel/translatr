@@ -16,8 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import org.apache.commons.lang3.StringUtils;
@@ -89,9 +87,6 @@ public class User implements Model<User, UUID>, Subject {
   public String email;
 
   public boolean emailValidated;
-
-  @Temporal(TemporalType.TIMESTAMP)
-  public DateTime lastLogin;
 
   @JsonIgnore
   @OneToMany(cascade = CascadeType.ALL)
@@ -192,7 +187,6 @@ public class User implements Model<User, UUID>, Subject {
     name = in.name;
     email = in.email;
     emailValidated = in.emailValidated;
-    lastLogin = in.lastLogin;
 
     return this;
   }

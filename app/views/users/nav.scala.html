@@ -3,29 +3,41 @@
 <div class="collection depth">
 	@if(template.loggedInUser.id == user.id) {
 		<a class="collection-item @if(active == "info") { active green } else { green-text }"
-			href="@routes.Profiles.profile()">
-			@Messages("info")
+			href="@routes.Profiles.profile()"
+			title="@Messages("info")">
+			<i class="material-icons left">info</i>
+			<span>@Messages("info")</span>
 		</a>
 		<a class="collection-item @if(active == "projects") { active green } else { green-text }"
-			href="@routes.Profiles.projects()">
-			@Messages("projects")
+			href="@routes.Profiles.projects()"
+			title="@Messages("projects")">
+			<i class="material-icons left">view_quilt</i>
+			<span>@Messages("projects")</span>
 		</a>
 		<a class="collection-item @if(active == "activity") { active green } else { green-text }"
-			href="@routes.Profiles.activity()">
-			@Messages("activity")
+			href="@routes.Profiles.activity()"
+			title="@Messages("activity")">
+			<i class="material-icons left">notifications_active</i>
+			<span>@Messages("activity")</span>
 		</a>
 		<a class="collection-item @if(active == "linkedAccounts") { active green } else { green-text }"
-			href="@routes.Profiles.linkedAccounts()">
-			@Messages("linkedAccounts")
+			href="@routes.Profiles.linkedAccounts()"
+			title="@Messages("linkedAccounts")">
+			<i class="material-icons left">account_box</i>
+			<span>@Messages("linkedAccounts")</span>
 		</a>
 		<a class="collection-item @if(active == "accessTokens") { active green } else { green-text }"
-			href="@routes.Profiles.accessTokens()">
-			@Messages("accessTokens")
+			href="@routes.Profiles.accessTokens()"
+			title="@Messages("accessTokens")">
+			<i class="material-icons left">accessibility</i>
+			<span>@Messages("accessTokens")</span>
 		</a>
 	} else {
 		<a class="collection-item @if(active == "info") { active green } else { green-text }"
-			href="@routes.Users.user(user.id)">
-			@Messages("info")
+			href="@routes.Users.user(user.id)"
+			title="@Messages("info")">
+			<i class="material-icons left">info</i>
+			<span>@Messages("info")</span>
 		</a>
 	}
 </div>

@@ -203,7 +203,7 @@ public class Projects extends AbstractController {
 
     select(project);
 
-    undoCommand(injector.instanceOf(RevertDeleteProjectCommand.class).with(project));
+    undoCommand(RevertDeleteProjectCommand.from(project));
 
     projectService.delete(project);
 
@@ -299,7 +299,7 @@ public class Projects extends AbstractController {
         return redirect(routes.Projects.members(project.id));
       }
 
-      undoCommand(injector.instanceOf(RevertDeleteProjectUserCommand.class).with(member));
+      undoCommand(RevertDeleteProjectUserCommand.from(member));
 
       projectUserService.delete(member);
 

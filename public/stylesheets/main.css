@@ -1,5 +1,8 @@
 html, body {
 	background-color: #f2f2f2;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
 	display: flex;
 	min-height: 100vh;
 	flex-direction: column;
@@ -8,6 +11,7 @@ header {
     z-index: 2;
 }
 main {
+	-webkit-flex: 1 0 auto;
 	flex: 1 0 auto;
 }
 h1 .material-icons {

@@ -1,33 +1,39 @@
 package utils;
 
+import play.Configuration;
+
 /**
  *
  * @author resamsel
  * @version 30 Sep 2016
  */
-public enum ConfigKey
-{
-	/* The list of available auth providers */
-	AuthProviders("translatr.auth.providers");
+public enum ConfigKey {
+  /* The list of available auth providers */
+  AuthProviders("translatr.auth.providers"),
 
-	private String key;
+  StreamIOKey("translatr.stream.io.key"),
 
-	ConfigKey(String key)
-	{
-		this.key = key;
-	}
+  StreamIOSecret("translatr.stream.io.secret");
 
-	public String key()
-	{
-		return key;
-	}
+  private String key;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString()
-	{
-		return key;
-	}
+  ConfigKey(String key) {
+    this.key = key;
+  }
+
+  public String key() {
+    return key;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return key;
+  }
+
+  public String getString(Configuration config) {
+    return config.getString(key);
+  }
 }

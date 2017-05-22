@@ -181,7 +181,7 @@ public class Locales extends AbstractController {
 
   public Result remove(UUID localeId, String s, String order, int limit, int offset) {
     return locale(localeId, locale -> {
-      undoCommand(injector.instanceOf(RevertDeleteLocaleCommand.class).with(locale));
+      undoCommand(RevertDeleteLocaleCommand.from(locale));
 
       try {
         TransactionUtils.batchExecute((tx) -> {

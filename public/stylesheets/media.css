@@ -14,15 +14,28 @@
 	    right: 0;
 	    bottom: 23px;
 	}
+	.sidebar .collection a.collection-item {
+		display: inline-block;
+	}
+	.sidebar .collection a.collection-item:not(.active)::before {
+		content: "";
+		display: inline-block;
+	}
+	.sidebar .collection a.collection-item:not(.active) span {
+		display: none;
+	}
+	.sidebar .collection a.collection-item:not(.active) i.material-icons.left {
+		margin-right: 0;
+	}
 	.mainview,
 	.navview,
 	.subview {
 		height: auto;
-    }
-    .row .col {
-    	float: none;
-    }
-    .card.card-user {
+	}
+	.row .col {
+		float: none;
+	}
+	.card.card-user {
 		display: -webkit-flex;
 		display: -ms-flexbox;
 		display: flex;
@@ -44,7 +57,7 @@
 	.template-project .main > * {
 		flex: 1 100%;
 	}
-    .table.responsive-table th {
+	.table.responsive-table th {
 		text-align: right !important;
 		width: auto;
 	}

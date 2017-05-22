@@ -2,9 +2,11 @@ package services.impl;
 
 import static utils.Stopwatch.log;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,13 +22,16 @@ import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
 
 import criterias.LogEntryCriteria;
+import io.getstream.client.exception.StreamClientException;
 import models.Aggregate;
 import models.LogEntry;
 import models.Project;
 import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
+import play.libs.concurrent.HttpExecutionContext;
 import services.LogEntryService;
+import services.NotificationService;
 import utils.ContextKey;
 
 /**
@@ -42,15 +47,22 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
   private static final String H2_COLUMN_MILLIS =
       "datediff('millisecond', timestamp '1970-01-01 00:00:00', parsedatetime(formatdatetime(when_created, 'yyyy-MM-dd HH:00:00'), 'yyyy-MM-dd HH:mm:ss'))*1000";
 
+  private final HttpExecutionContext executionContext;
+
   private final CacheApi cache;
+
+  private final NotificationService notificationService;
 
   /**
    * 
    */
   @Inject
-  public LogEntryServiceImpl(Configuration configuration, Validator validator, CacheApi cache) {
+  public LogEntryServiceImpl(Configuration configuration, HttpExecutionContext executionContext,
+      Validator validator, CacheApi cache, NotificationService notificationService) {
     super(configuration, validator, null);
+    this.executionContext = executionContext;
     this.cache = cache;
+    this.notificationService = notificationService;
   }
 
   /**
@@ -131,5 +143,21 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
     t.stream().forEach(e -> {
       preSave(e, false);
     });
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postSave(LogEntry t, boolean update) {
+    if (t.user != null && t.project != null) {
+      CompletableFuture.runAsync(() -> {
+        try {
+          notificationService.publish(t.user, t.project, t);
+        } catch (IOException | StreamClientException e) {
+          LOGGER.error("Error while publishing notification", e);
+        }
+      }, executionContext.current());
+    }
   }
 }

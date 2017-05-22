@@ -13,7 +13,6 @@ import criterias.LogEntryCriteria;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.inject.Injector;
-import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
@@ -72,20 +71,24 @@ public class Application extends AbstractController {
   public Result commandExecute(String commandKey) {
     Command<?> command = getCommand(commandKey);
 
-    if (command == null)
-      return notFound(Json.toJson("Command not found"));
+    String referer = request().getHeader("Referer");
 
-    command.execute();
+    if (command == null) {
+      if (referer == null)
+        return redirectWithError(routes.Dashboards.dashboard(), "command.notFound");
+
+      return redirectWithError(referer, "command.notFound");
+    }
+
+    command.execute(injector);
 
     Call call = command.redirect();
 
     if (call != null)
       return redirect(call);
 
-    String referer = request().getHeader("Referer");
-
     if (referer == null)
-      return redirect(routes.Application.index());
+      return redirect(routes.Dashboards.dashboard());
 
     return redirect(referer);
   }

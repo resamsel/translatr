@@ -14,6 +14,8 @@ import models.Project;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Key extends Dto {
+  private static final long serialVersionUID = 4515423450076475406L;
+
   public UUID id;
 
   @JsonIgnore

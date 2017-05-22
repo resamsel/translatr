@@ -79,6 +79,11 @@ public abstract class AbstractController extends Controller {
     return redirect(call);
   }
 
+  public static Result redirectWithError(String url, String errorKey, Object... args) {
+    addError(ctx().messages().at(errorKey, args));
+    return redirect(url);
+  }
+
   public static Result redirectWithMessage(Call call, String key, Object... args) {
     addMessage(ctx().messages().at(key, args));
     return redirect(call);

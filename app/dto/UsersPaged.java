@@ -9,6 +9,8 @@ import com.avaje.ebean.PagedList;
  * @version 10 Feb 2017
  */
 public class UsersPaged extends DtoPagedList<models.User, User> {
+  private static final long serialVersionUID = -2110566783351009448L;
+
   /**
    * @param delegate
    * @param mapper
