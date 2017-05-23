@@ -3,8 +3,6 @@ package services.impl;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.joda.time.DateTime;
-
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.service.AbstractUserService;
 import com.feth.play.module.pa.user.AuthUser;
@@ -69,8 +67,9 @@ public class AuthenticateServiceImpl extends AbstractUserService {
    */
   @Override
   public AuthUser update(AuthUser knownUser) {
-    logEntryService.save(LogEntry.from(ActionType.Login, userService.getLocalUser(knownUser), null,
-        DateTime.class, null, DateTime.now()));
+    User user = userService.getLocalUser(knownUser);
+    logEntryService.save(
+        LogEntry.from(ActionType.Login, user, null, dto.User.class, null, dto.User.from(user)));
 
     return knownUser;
   }
