@@ -239,6 +239,13 @@ nav ul .disabled:hover {
   opacity: 1;
 }
 
+/* Sidebar */
+.sidebar {
+	display: flex;
+	flex-direction: column;
+	flex: 1 0 auto;
+}
+
 /* Autocomplete */
 .autocomplete-suggestions {
 	background-color: white;
@@ -346,13 +353,7 @@ nav ul .disabled:hover {
 	height: 40px;
 }
 
-.dashboard .container-main,
-.template-dashboard .container-main,
-.template-dashboard-activity .container-main,
-.template-user-projects .container-main,
-.template-user-access-tokens .container-main,
-.template-keys .container-main,
-.template-locales .container-main,
+.flex-container,
 .flex {
 	display: -webkit-box;
 	display: -moz-box;

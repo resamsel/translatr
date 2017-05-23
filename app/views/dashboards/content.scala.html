@@ -1,7 +1,7 @@
 @(template: utils.Template, active: String, numberOfProjects: Integer = null)(content: Html)
 
 <div class="container-fluid content">
-	<div class="container row container-main">
+	<div class="container row container-main flex-container">
 		<div class="col sidebar">
 			@card(template.loggedInUser, numberOfProjects)
 

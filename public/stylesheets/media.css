@@ -3,6 +3,9 @@
 	#nprogress {
 		display: none;
 	}
+	.flex-container {
+		flex-direction: column;
+	}
 	h1 .material-icons {
 	    display: block;
 	    float: none !important;
@@ -14,17 +17,21 @@
 	    right: 0;
 	    bottom: 23px;
 	}
-	.sidebar .collection a.collection-item {
+	.sidebar > .nav {
+		order: -1;
+		text-align: center;
+	}
+	.sidebar > .nav a {
 		display: inline-block;
 	}
-	.sidebar .collection a.collection-item:not(.active)::before {
+	.sidebar > .nav a:not(.active)::before {
 		content: "";
 		display: inline-block;
 	}
-	.sidebar .collection a.collection-item:not(.active) span {
-		display: none;
+	.sidebar > .nav a.active span.hide-on-small-only {
+		display: inline-block !important;
 	}
-	.sidebar .collection a.collection-item:not(.active) i.material-icons.left {
+	.sidebar > .nav a:not(.active) i.material-icons.left {
 		margin-right: 0;
 	}
 	.mainview,

@@ -1,18 +1,18 @@
 @(template: utils.Template, active: String)
 
-<div class="collection depth">
+<div class="nav collection depth">
 	<a
 		class="collection-item @if(active == "projects") { active green } else { green-text }"
 		href="@routes.Dashboards.dashboard()"
 		title="@Messages("projects")">
-		<i class="material-icons left">view_quilt</i>
-		<span>@Messages("projects")</span>
+		<i class="material-icons left hide-on-med-only">view_quilt</i>
+		<span class="hide-on-small-only">@Messages("projects")</span>
 	</a>
 	<a
 		class="collection-item @if(active == "activity") { active green } else { green-text }"
 		href="@routes.Dashboards.activity()"
 		title="@Messages("activity")">
-		<i class="material-icons left">notifications_active</i>
-		<span>@Messages("activity")</span>
+		<i class="material-icons left hide-on-med-only">notifications_active</i>
+		<span class="hide-on-small-only">@Messages("activity")</span>
 	</a>
 </div>
