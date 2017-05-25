@@ -50,10 +50,8 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.KeyService;
 import services.LocaleService;
-import services.LogEntryService;
 import services.ProjectService;
 import services.ProjectUserService;
-import services.UserService;
 import utils.FormUtils;
 import utils.PermissionUtils;
 
@@ -84,10 +82,9 @@ public class Projects extends AbstractController {
    */
   @Inject
   public Projects(Injector injector, CacheApi cache, FormFactory formFactory, PlayAuthenticate auth,
-      UserService userService, LogEntryService logEntryService, ProjectService projectService,
-      LocaleService localeService, KeyService keyService, ProjectUserService projectUserService,
-      Configuration configuration) {
-    super(injector, cache, auth, userService, logEntryService);
+      ProjectService projectService, LocaleService localeService, KeyService keyService,
+      ProjectUserService projectUserService, Configuration configuration) {
+    super(injector, cache, auth);
 
     this.formFactory = formFactory;
     this.projectService = projectService;

@@ -290,9 +290,8 @@ var Editor = Backbone.Model.extend({
 		this.listenTo(Backbone, 'message:save', this.onSave);
 		this.listenTo(Backbone, 'message:discard', this.onDiscard);
 
-		$(window).keydown(this.onKeyPress);
-
 		var that = this;
+		$(window).keydown(function(e) { return that.onKeyPress(e); });
 		this.app.router.on('route:nolocale', function() { return that.onRouteUnselected(); });
 		this.app.router.on('route:nokey', function() { return that.onRouteUnselected(); });
 		this.app.router.on('route:locale', function(arg) { return that.onRouteSelected(arg); });

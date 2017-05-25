@@ -70,7 +70,7 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
    */
   @Override
   public LogEntry byId(UUID id, String... fetches) {
-    return LogEntry.byId(id);
+    return cache.getOrElse(LogEntry.getCacheKey(id, fetches), () -> LogEntry.byId(id, fetches), 60);
   }
 
   @Override

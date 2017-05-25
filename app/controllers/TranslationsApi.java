@@ -29,8 +29,6 @@ import play.inject.Injector;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import services.LogEntryService;
-import services.UserService;
 import services.api.MessageApiService;
 import utils.JsonUtils;
 
@@ -70,9 +68,8 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria>
    */
   @Inject
   public TranslationsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
-      UserService userService, LogEntryService logEntryService,
       MessageApiService messageApiService) {
-    super(injector, cache, auth, userService, logEntryService, messageApiService);
+    super(injector, cache, auth, messageApiService);
   }
 
   @ApiOperation(value = FIND,

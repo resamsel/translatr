@@ -17,8 +17,6 @@ import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
 import play.routing.JavaScriptReverseRouter;
-import services.LogEntryService;
-import services.UserService;
 import utils.ConfigKey;
 
 /**
@@ -32,8 +30,8 @@ public class Application extends AbstractController {
 
   @Inject
   public Application(Injector injector, Configuration configuration, CacheApi cache,
-      PlayAuthenticate auth, UserService userService, LogEntryService logEntryService) {
-    super(injector, cache, auth, userService, logEntryService);
+      PlayAuthenticate auth) {
+    super(injector, cache, auth);
 
     this.configuration = configuration;
   }

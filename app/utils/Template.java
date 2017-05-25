@@ -1,9 +1,7 @@
 package utils;
 
-import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 
-import models.LogEntry;
 import models.User;
 
 /**
@@ -20,7 +18,7 @@ public class Template {
 
   public String name;
 
-  public PagedList<LogEntry> notifications;
+  public boolean notificationsEnabled;
 
   /**
    * @param auth
@@ -40,13 +38,9 @@ public class Template {
     return this;
   }
 
-  public Template withNotifications(PagedList<LogEntry> notifications) {
-    this.notifications = notifications;
+  public Template withNotificationsEnabled(boolean notificationsEnabled) {
+    this.notificationsEnabled = notificationsEnabled;
     return this;
-  }
-
-  public boolean hasUnreadNotifications() {
-    return notifications != null && notifications.getList().stream().anyMatch(l -> l.unread);
   }
 
   public static Template create(PlayAuthenticate auth, User user) {

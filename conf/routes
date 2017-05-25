@@ -121,6 +121,8 @@ GET		/api/user/:userId				controllers.UsersApi.get(userId: java.util.UUID)
 # Disable updating users for the moment
 #PUT		/api/user						controllers.UsersApi.update
 
+GET		/api/notifications				controllers.NotificationsApi.find
+
 # Map static resources from the /public folder to the /assets URL path
 GET		/assets/*file					controllers.Assets.versioned(path="/public", file: Asset)
 GET		/api/docs						controllers.ApiDocs.index()

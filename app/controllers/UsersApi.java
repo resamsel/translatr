@@ -58,7 +58,7 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria> {
   @Inject
   public UsersApi(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
       LogEntryService logEntryService, UserApiService userApiService) {
-    super(injector, cache, auth, userService, logEntryService, userApiService);
+    super(injector, cache, auth, userApiService);
   }
 
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,

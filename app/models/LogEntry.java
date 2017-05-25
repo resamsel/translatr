@@ -1,5 +1,8 @@
 package models;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -12,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 import com.avaje.ebean.ExpressionList;
@@ -23,6 +27,7 @@ import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
 import dto.Dto;
 import play.libs.Json;
+import utils.QueryUtils;
 
 /**
  *
@@ -89,6 +94,8 @@ public class LogEntry implements Model<LogEntry, UUID> {
 
   private static final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>() {};
 
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("user", "project");
+
   /**
    * @param type
    * @param clazz
@@ -130,8 +137,13 @@ public class LogEntry implements Model<LogEntry, UUID> {
    * @param id
    * @return
    */
-  public static LogEntry byId(UUID id) {
-    return find.setId(id).findUnique();
+  public static LogEntry byId(UUID id, String... fetches) {
+    HashSet<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
+    if (fetches.length > 0)
+      propertiesToFetch.addAll(Arrays.asList(fetches));
+
+    return QueryUtils.fetch(find.setId(id).setDisableLazyLoading(true), propertiesToFetch)
+        .findUnique();
   }
 
   /**
@@ -196,5 +208,20 @@ public class LogEntry implements Model<LogEntry, UUID> {
     after = in.after;
 
     return this;
+  }
+
+  /**
+   * @param activityId
+   * @param fetches
+   * @return
+   */
+  public static String getCacheKey(UUID activityId, String... fetches) {
+    if (activityId == null)
+      return null;
+
+    if (fetches.length > 0)
+      return String.format("activity:%s:%s", activityId, StringUtils.join(fetches, ":"));
+
+    return String.format("activity:%s", activityId);
   }
 }

@@ -35,9 +35,7 @@ import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.With;
-import services.LogEntryService;
 import services.ProjectService;
-import services.UserService;
 import utils.FormUtils;
 
 /**
@@ -60,9 +58,8 @@ public class Dashboards extends AbstractController {
    */
   @Inject
   public Dashboards(Injector injector, CacheApi cache, FormFactory formFactory,
-      Configuration configuration, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, ProjectService projectService) {
-    super(injector, cache, auth, userService, logEntryService);
+      Configuration configuration, PlayAuthenticate auth, ProjectService projectService) {
+    super(injector, cache, auth);
 
     this.formFactory = formFactory;
     this.configuration = configuration;

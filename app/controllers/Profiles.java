@@ -36,8 +36,6 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.AccessTokenService;
 import services.LinkedAccountService;
-import services.LogEntryService;
-import services.UserService;
 import utils.FormUtils;
 import utils.SessionKey;
 
@@ -64,10 +62,10 @@ public class Profiles extends AbstractController {
    * @param userService
    */
   @Inject
-  public Profiles(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, FormFactory formFactory, Configuration configuration,
-      LinkedAccountService linkedAccountService, AccessTokenService accessTokenService) {
-    super(injector, cache, auth, userService, logEntryService);
+  public Profiles(Injector injector, CacheApi cache, PlayAuthenticate auth, FormFactory formFactory,
+      Configuration configuration, LinkedAccountService linkedAccountService,
+      AccessTokenService accessTokenService) {
+    super(injector, cache, auth);
 
     this.formFactory = formFactory;
     this.configuration = configuration;

@@ -2,8 +2,11 @@ package services.impl;
 
 import java.io.IOException;
 
+import criterias.NotificationCriteria;
 import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
+import io.getstream.client.model.beans.StreamResponse;
 import models.LogEntry;
 import models.Project;
 import models.User;
@@ -14,6 +17,22 @@ import services.NotificationService;
  * @version 19 May 2017
  */
 public class NotificationServiceDummy implements NotificationService {
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isEnabled() {
+    return false;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public StreamResponse<AggregatedActivity<SimpleActivity>> find(NotificationCriteria criteria) {
+    return null;
+  }
+
   /**
    * {@inheritDoc}
    */

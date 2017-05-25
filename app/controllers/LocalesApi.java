@@ -31,8 +31,6 @@ import play.inject.Injector;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import services.LogEntryService;
-import services.UserService;
 import services.api.LocaleApiService;
 
 /**
@@ -74,8 +72,8 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
 
   @Inject
   public LocalesApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
-      UserService userService, LogEntryService logEntryService, LocaleApiService localeApiService) {
-    super(injector, cache, auth, userService, logEntryService, localeApiService);
+      LocaleApiService localeApiService) {
+    super(injector, cache, auth, localeApiService);
     this.localeApiService = localeApiService;
   }
 

@@ -30,9 +30,7 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.KeyService;
 import services.LocaleService;
-import services.LogEntryService;
 import services.ProjectService;
-import services.UserService;
 import utils.FormUtils;
 
 /**
@@ -62,10 +60,10 @@ public class Keys extends AbstractController {
    * @param userService
    */
   @Inject
-  protected Keys(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, FormFactory formFactory, Configuration configuration,
-      KeyService keyService, LocaleService localeService, ProjectService projectService) {
-    super(injector, cache, auth, userService, logEntryService);
+  protected Keys(Injector injector, CacheApi cache, PlayAuthenticate auth, FormFactory formFactory,
+      Configuration configuration, KeyService keyService, LocaleService localeService,
+      ProjectService projectService) {
+    super(injector, cache, auth);
 
     this.formFactory = formFactory;
     this.configuration = configuration;
