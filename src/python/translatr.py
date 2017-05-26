@@ -327,7 +327,11 @@ def remove_project(args):
 		try:
 			UUID(project_id, version=4)
 		except ValueError:
-			projects = api.projects(params={'search': project_id})
+			projects = [
+				p
+				for p in api.projects(params={'search': project_id})
+				if p.name == project_id
+			]
 			if projects:
 				project_id = projects[0].id
 			else:
@@ -375,7 +379,11 @@ def remove_locale(args):
 		try:
 			UUID(locale_id, version=4)
 		except ValueError:
-			locales = api.locales(params={'search': locale_id})
+			locales = [
+				l
+				for l in api.locales(params={'search': locale_id})
+				if l.name == locale_id
+			]
 			if locales:
 				locale_id = locales[0].id
 			else:
@@ -414,7 +422,11 @@ def remove_key(args):
 		try:
 			UUID(key_id, version=4)
 		except ValueError:
-			keys = api.keys(params={'search': key_id})
+			keys = [
+				k
+				for k in api.keys(params={'search': key_id})
+				if k.name == key_id
+			]
 			if keys:
 				key_id = keys[0].id
 			else:

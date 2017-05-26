@@ -2,6 +2,7 @@ package services.impl;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -27,8 +28,10 @@ import models.Model;
 import models.Project;
 import models.User;
 import play.Configuration;
+import play.libs.Json;
 import services.NotificationService;
 import utils.ConfigKey;
+import utils.JsonUtils;
 
 @Singleton
 public class NotificationServiceImpl implements NotificationService {
@@ -81,12 +84,14 @@ public class NotificationServiceImpl implements NotificationService {
   @Override
   public void follow(User user, Project project) throws IOException, StreamClientException {
     LOGGER.debug("User {} follows project {}", user.username, project.name);
-    createFeed(user).follow(FEED_SLUG_PROJECT, project.id.toString());
+    streamClient.newFeed(FEED_SLUG_TIMELINE_AGGREGATED, user.id.toString())
+        .follow(FEED_SLUG_PROJECT_AGGREGATED, project.id.toString());
   }
 
   @Override
   public void unfollow(User user, Project project) throws IOException, StreamClientException {
-    createFeed(user).unfollow(FEED_SLUG_PROJECT, project.id.toString());
+    streamClient.newFeed(FEED_SLUG_TIMELINE_AGGREGATED, user.id.toString())
+        .unfollow(FEED_SLUG_PROJECT, project.id.toString());
   }
 
   @Override
@@ -100,15 +105,16 @@ public class NotificationServiceImpl implements NotificationService {
 
     activity.setActor(toId(FEED_SLUG_USER, user));
     activity.setVerb(logEntry.type.name().toLowerCase());
-    activity.setObject(toId(FEED_SLUG_LOG_ENTRY, logEntry));
+    activity.setObject(JsonUtils.nameOf(logEntry));
     activity.setForeignId(toId(FEED_SLUG_LOG_ENTRY, logEntry));
-    if (project != null)
-      activity.setTarget(toId(FEED_SLUG_PROJECT, project));
+    activity.setTarget(toContentId(logEntry));
+    LOGGER.debug("Creating activity: {}", Json.toJson(activity));
 
-    LOGGER.debug("Adding activity to feed user:{} and project_aggregated:{}", user.id, project.id);
-    return activityService.addActivityToMany(Arrays.asList(toId(FEED_SLUG_USER, user),
-        toId(FEED_SLUG_TIMELINE_AGGREGATED, user), toId(FEED_SLUG_PROJECT_AGGREGATED, project)),
-        activity);
+    List<String> feeds = Arrays.asList(toId(FEED_SLUG_USER, user),
+        toId(FEED_SLUG_TIMELINE_AGGREGATED, user), toId(FEED_SLUG_PROJECT_AGGREGATED, project));
+    LOGGER.debug("Adding activity to feeds: {}", feeds);
+
+    return activityService.addActivityToMany(feeds, activity);
   }
 
   private Feed createFeed(User user) throws InvalidFeedNameException {
@@ -116,10 +122,36 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   /**
-   * @param user
+   * @param slug the entity type
+   * @param model the model
    * @return
    */
   private String toId(String slug, Model<?, ?> model) {
     return String.format("%s:%s", slug, String.valueOf(model.getId()));
+  }
+
+  /**
+   * @param slug the entity type
+   * @param model the model
+   * @return
+   */
+  private String toContentId(LogEntry logEntry) {
+    String slug = logEntry.contentType.replaceAll("^.*\\.", "").toLowerCase();
+    String id;
+    switch (logEntry.type) {
+      case Create:
+      case Update:
+      case Login:
+      case Logout:
+        id = Json.parse(logEntry.after).get("id").asText();
+        break;
+      case Delete:
+        id = Json.parse(logEntry.before).get("id").asText();
+        break;
+      default:
+        id = "0";
+        break;
+    }
+    return String.format("%s:%s", slug, id);
   }
 }

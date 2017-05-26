@@ -56,8 +56,10 @@ public class Notification extends Dto {
       if (activity.project != null)
         out.project = Project.from(activity.project);
       out.text = messages.at("activity." + activity.type + ".title",
-          messages.at("contentType." + activity.contentType),
-          FormatUtils.pretty(ctx.lang().locale(), activity.whenCreated));
+          activity.project != null ? activity.project.name : "",
+          messages.at("contentType." + activity.contentType), JsonUtils.nameOf(activity),
+          FormatUtils.pretty(ctx.lang().locale(), activity.whenCreated), activity.user.name,
+          activity.user.username, activity.user.id);
     }
 
     return out;

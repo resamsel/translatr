@@ -312,3 +312,27 @@ App.Modules.NotificationModule = function(sb) {
 App.Core.register('ModalModule', App.Modules.ModalModule);
 App.Core.register('NProgressModule', App.Modules.NProgressModule);
 App.Core.register('NotificationModule', App.Modules.NotificationModule);
+
+var NotificationListItemView = Backbone.View.extend({
+	tagName: 'div',
+	className: 'notification',
+	template: _.template($('#notification-tmpl').html()),
+
+	render: function() {
+		var html = this.template({
+			icon: this.model.get(''),
+			text: this.model.get('text'),
+			updatedAt: stripScripts(this.model.get('value'))
+		});
+		this.$el.html(html);
+		return this;
+	},
+
+	events: {
+		'click a.btn': 'onCopy'
+	},
+
+	onCopy: function() {
+		Backbone.trigger('message:change', this.model.get('value'));
+	}
+});

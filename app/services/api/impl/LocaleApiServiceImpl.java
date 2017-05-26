@@ -123,7 +123,7 @@ public class LocaleApiServiceImpl extends
     checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
         Scope.MessageRead);
 
-    Locale locale = service.byId(localeId);
+    Locale locale = service.byId(localeId, Locale.FETCH_MESSAGES);
     if (locale == null)
       throw new NotFoundException(dto.Locale.class.getSimpleName(), localeId);
 

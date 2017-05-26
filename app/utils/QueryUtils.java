@@ -15,8 +15,8 @@ import com.avaje.ebean.Query;
 public class QueryUtils {
   public static <T> Query<T> fetch(Query<T> query, Collection<String> propertiesToFetch,
       Map<String, List<String>> fetchMap) {
-    return fetch(query, propertiesToFetch.stream().filter(fetch -> fetchMap.containsKey(fetch))
-        .map(fetch -> fetchMap.get(fetch)).flatMap(fetches -> fetches.stream()));
+    return fetch(query, propertiesToFetch.stream().filter(fetchMap::containsKey).map(fetchMap::get)
+        .flatMap(fetches -> fetches.stream()));
   }
 
   public static <T> Query<T> fetch(Query<T> query, String... propertiesToFetch) {
@@ -28,7 +28,7 @@ public class QueryUtils {
   }
 
   public static <T> Query<T> fetch(Query<T> query, Stream<String> propertiesToFetch) {
-    propertiesToFetch.forEach(fetch -> query.fetch(fetch));
+    propertiesToFetch.forEach(query::fetch);
 
     return query;
   }

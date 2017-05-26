@@ -54,8 +54,15 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
   public static final int NAME_LENGTH = 15;
 
-  private static final Map<String, List<String>> FETCH_MAP = ImmutableMap.of("project",
-      Arrays.asList("project"), "messages", Arrays.asList("messages", "messages.key"));
+  public static final String FETCH_MESSAGES = "messages";
+
+  private static final Find<UUID, Locale> find = new Find<UUID, Locale>() {};
+
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("project");
+
+  private static final Map<String, List<String>> FETCH_MAP =
+      ImmutableMap.of("project", Arrays.asList("project"), FETCH_MESSAGES,
+          Arrays.asList(FETCH_MESSAGES, FETCH_MESSAGES + ".key"));
 
   @Id
   @GeneratedValue
@@ -109,10 +116,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
         routes.Locales.locale(id).absoluteURL(Context.current().request()));
   }
 
-  private static final Find<UUID, Locale> find = new Find<UUID, Locale>() {};
-
-  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("project");
-
   /**
    * @param fromString
    * @return
@@ -122,7 +125,9 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
     if (fetches.length > 0)
       propertiesToFetch.addAll(Arrays.asList(fetches));
 
-    return QueryUtils.fetch(find.setId(id), propertiesToFetch).findUnique();
+    return QueryUtils
+        .fetch(find.setId(id).setDisableLazyLoading(true), propertiesToFetch, FETCH_MAP)
+        .findUnique();
   }
 
   /**

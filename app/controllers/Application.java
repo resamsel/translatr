@@ -14,6 +14,7 @@ import play.Configuration;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.Call;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
 import play.routing.JavaScriptReverseRouter;
@@ -69,7 +70,7 @@ public class Application extends AbstractController {
   public Result commandExecute(String commandKey) {
     Command<?> command = getCommand(commandKey);
 
-    String referer = request().getHeader("Referer");
+    String referer = request().getHeader(Http.HeaderNames.REFERER);
 
     if (command == null) {
       if (referer == null)
@@ -92,14 +93,15 @@ public class Application extends AbstractController {
   }
 
   public Result javascriptRoutes() {
-    return ok(JavaScriptReverseRouter.create("jsRoutes",
-        routes.javascript.Application.activityCsv(), routes.javascript.Users.activityCsv(),
-        routes.javascript.Profiles.activity(), routes.javascript.Profiles.resetNotifications(),
-        routes.javascript.Dashboards.search(), routes.javascript.ProjectsApi.search(),
-        routes.javascript.Projects.activity(), routes.javascript.Projects.activityCsv(),
-        routes.javascript.Locales.locale(), routes.javascript.Keys.key(),
-        routes.javascript.Keys.createImmediately(), routes.javascript.LocalesApi.find(),
-        routes.javascript.KeysApi.find(), routes.javascript.TranslationsApi.create(),
-        routes.javascript.TranslationsApi.update(), routes.javascript.TranslationsApi.find()));
+    return ok(
+        JavaScriptReverseRouter.create("jsRoutes", routes.javascript.Application.activityCsv(),
+            routes.javascript.Users.activityCsv(), routes.javascript.Profiles.activity(),
+            routes.javascript.Profiles.resetNotifications(), routes.javascript.Dashboards.search(),
+            routes.javascript.ProjectsApi.search(), routes.javascript.Projects.activity(),
+            routes.javascript.Projects.activityCsv(), routes.javascript.Locales.locale(),
+            routes.javascript.Keys.key(), routes.javascript.Keys.createImmediately(),
+            routes.javascript.LocalesApi.find(), routes.javascript.KeysApi.find(),
+            routes.javascript.TranslationsApi.create(), routes.javascript.TranslationsApi.update(),
+            routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find()));
   }
 }
