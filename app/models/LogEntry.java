@@ -224,4 +224,11 @@ public class LogEntry implements Model<LogEntry, UUID> {
 
     return String.format("activity:%s", activityId);
   }
+
+  /**
+   * @return
+   */
+  public String getSimpleContentType() {
+    return contentType.replaceAll("^.*\\.", "").toLowerCase();
+  }
 }

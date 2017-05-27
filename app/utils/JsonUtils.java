@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import controllers.Keys;
 import controllers.routes;
 import models.LogEntry;
 import play.libs.Json;
@@ -77,12 +78,14 @@ public class JsonUtils {
         break;
       case "dto.Key":
         if (uuid != null)
-          return routes.Keys.key(uuid);
+          return routes.Keys.key(uuid, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT,
+              Keys.DEFAULT_OFFSET);
         break;
       case "dto.Message":
         UUID keyId = getUuid(node, "keyId");
         if (keyId != null)
-          return routes.Keys.key(keyId);
+          return routes.Keys.key(keyId, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT,
+              Keys.DEFAULT_OFFSET);
         break;
       case "dto.ProjectUser":
         if (uuid != null)

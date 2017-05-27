@@ -29,9 +29,12 @@ public class Notification extends Dto {
   public User user;
   public Project project;
   public String verb;
-  public String text;
+  public String title;
   public UUID activityId;
   public String contentType;
+  public String name;
+  public String icon;
+  public String color;
 
   /**
    * 
@@ -52,10 +55,13 @@ public class Notification extends Dto {
       Context ctx = Context.current();
       Messages messages = ctx.messages();
       out.activityId = activity.id;
-      out.contentType = activity.contentType;
+      out.contentType = activity.getSimpleContentType();
+      out.name = JsonUtils.nameOf(activity);
+      out.icon = JsonUtils.iconOf(activity);
+      out.color = JsonUtils.colorOf(activity);
       if (activity.project != null)
         out.project = Project.from(activity.project);
-      out.text = messages.at("activity." + activity.type + ".title",
+      out.title = messages.at("activity." + activity.type.normalize() + ".title",
           activity.project != null ? activity.project.name : "",
           messages.at("contentType." + activity.contentType), JsonUtils.nameOf(activity),
           FormatUtils.pretty(ctx.lang().locale(), activity.whenCreated), activity.user.name,

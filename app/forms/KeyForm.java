@@ -1,6 +1,7 @@
 package forms;
 
 import models.Key;
+import play.data.Form;
 import play.data.validation.Constraints;
 
 /**
@@ -8,7 +9,7 @@ import play.data.validation.Constraints;
  * @author resamsel
  * @version 2 Sep 2016
  */
-public class KeyForm {
+public class KeyForm extends SearchForm {
   @Constraints.MinLength(0)
   @Constraints.MaxLength(Key.NAME_LENGTH)
   private String name;
@@ -37,14 +38,17 @@ public class KeyForm {
     return in;
   }
 
+  public KeyForm with(Key in) {
+    name = in.name;
+    return this;
+  }
+
   /**
    * @param key
    * @return
    */
-  public static KeyForm from(Key in) {
-    KeyForm out = new KeyForm();
-
-    out.name = in.name;
+  public static Form<KeyForm> with(Key in, Form<KeyForm> out) {
+    out.get().name = in.name;
 
     return out;
   }

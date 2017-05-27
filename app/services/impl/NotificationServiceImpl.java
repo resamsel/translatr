@@ -136,7 +136,7 @@ public class NotificationServiceImpl implements NotificationService {
    * @return
    */
   private String toContentId(LogEntry logEntry) {
-    String slug = logEntry.contentType.replaceAll("^.*\\.", "").toLowerCase();
+    String slug = logEntry.getSimpleContentType();
     String id;
     switch (logEntry.type) {
       case Create:

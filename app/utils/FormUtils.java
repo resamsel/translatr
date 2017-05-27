@@ -1,6 +1,7 @@
 package utils;
 
 import forms.ActivitySearchForm;
+import forms.KeyForm;
 import forms.KeySearchForm;
 import forms.LocaleSearchForm;
 import forms.SearchForm;
@@ -70,6 +71,13 @@ public class FormUtils {
         obj.missing = configuration.getBoolean("translatr.search.missing", false);
 
       return Search.init(form, configuration);
+    }
+  }
+
+  public static class Key {
+    public static Form<KeyForm> bindFromRequest(FormFactory formFactory,
+        Configuration configuration) {
+      return Search.init(FormUtils.bindFromRequest(formFactory, KeyForm.class), configuration);
     }
   }
 

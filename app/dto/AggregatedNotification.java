@@ -19,11 +19,15 @@ public class AggregatedNotification extends Dto {
   public String created;
   public DateTime whenUpdated;
   public String updated;
+  public String title;
+  public String subtitle;
   public String verb;
   public long activityCount;
   public long actorCount;
-  public String text;
-  public String aggregated;
+  public String contentType;
+  public String name;
+  public String icon;
+  public String color;
   public User user;
   public Project project;
 
@@ -41,11 +45,15 @@ public class AggregatedNotification extends Dto {
     out.actorCount = in.getActorCount();
     if (in.getActivities() != null && !in.getActivities().isEmpty()) {
       Notification activity = Notification.from(in.getActivities().get(0));
-      out.text = activity.text;
+      out.title = activity.title;
+      out.contentType = activity.contentType;
+      out.name = activity.name;
+      out.icon = activity.icon;
+      out.color = activity.color;
       out.user = activity.user;
       out.project = activity.project;
     }
-    out.aggregated = messages.at("activity." + out.verb + ".aggregated", out.activityCount,
+    out.subtitle = messages.at("activity." + out.verb + ".subtitle", out.activityCount,
         out.actorCount, out.updated);
 
     return out;

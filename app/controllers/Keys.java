@@ -72,7 +72,7 @@ public class Keys extends AbstractController {
     this.projectService = projectService;
   }
 
-  public Result key(UUID id) {
+  public Result key(UUID id, String search, String order, int limit, int offset) {
     return key(id, key -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
 
@@ -94,7 +94,8 @@ public class Keys extends AbstractController {
         formFactory.form(KeyForm.class).bindFromRequest()));
   }
 
-  public Result doCreate(UUID projectId, UUID localeId) {
+  public Result doCreate(UUID projectId, UUID localeId, String search, String order, int limit,
+      int offset) {
     Project project = projectService.byId(projectId);
 
     if (project == null)
@@ -121,10 +122,11 @@ public class Keys extends AbstractController {
       return redirect(routes.Locales.locale(locale.id).withFragment("#key=" + key.name));
     }
 
-    return redirect(routes.Keys.key(key.id));
+    return redirect(routes.Keys.key(key.id, search, order, limit, offset));
   }
 
-  public Result createImmediately(UUID projectId, String keyName) {
+  public Result createImmediately(UUID projectId, String keyName, String search, String order,
+      int limit, int offset) {
     Project project = projectService.byId(projectId);
 
     if (project == null)
@@ -146,27 +148,30 @@ public class Keys extends AbstractController {
       keyService.save(key);
     }
 
-    return redirect(routes.Keys.key(key.id));
+    return redirect(routes.Keys.key(key.id, search, order, limit, offset));
   }
 
-  public Result edit(UUID keyId) {
+  public Result edit(UUID keyId, String search, String order, int limit, int offset) {
     return key(keyId, key -> {
+
       return ok(views.html.keys.edit.render(createTemplate(), key,
-          formFactory.form(KeyForm.class).fill(KeyForm.from(key))));
+          KeyForm.with(key, FormUtils.Key.bindFromRequest(formFactory, configuration))));
     });
   }
 
   public Result doEdit(UUID keyId) {
     return key(keyId, key -> {
-      Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
+      Form<KeyForm> form = FormUtils.Key.bindFromRequest(formFactory, configuration);
 
       if (form.hasErrors())
         return badRequest(views.html.keys.edit.render(createTemplate(), key, form));
 
       keyService.save(form.get().into(key));
 
-      return redirect(routes.Projects.keys(key.project.id, DEFAULT_SEARCH, DEFAULT_ORDER,
-          DEFAULT_LIMIT, DEFAULT_OFFSET));
+      KeyForm search = form.get();
+
+      return redirect(routes.Projects.keys(key.project.id, search.search, search.order,
+          search.limit, search.offset));
     });
   }
 

@@ -320,7 +320,7 @@ var NotificationListItemView = Backbone.View.extend({
 
 	render: function() {
 		var html = this.template({
-			icon: this.model.get(''),
+			icon: this.model.get('contentType'),
 			text: this.model.get('text'),
 			updatedAt: stripScripts(this.model.get('value'))
 		});

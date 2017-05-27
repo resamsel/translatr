@@ -27,7 +27,7 @@
 						</a>
 					</span>
 					<p>
-						@Messages("activity." + activity.getType + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
+						@Messages("activity." + activity.getType.normalize + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
 						@if(activity.user != null) {
 							@Messages("by")
 							<a href="@routes.Users.user(activity.user.id)">

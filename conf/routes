@@ -71,15 +71,15 @@ GET		/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
 POST	/locale/:id/import				controllers.Locales.doUpload(id: java.util.UUID)
 
 # Keys
-GET		/key/:id						controllers.Keys.key(id: java.util.UUID)
-GET		/key/:id/edit					controllers.Keys.edit(id: java.util.UUID)
+GET		/key/:id						controllers.Keys.key(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/key/:id/edit					controllers.Keys.edit(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/key/:id/edit					controllers.Keys.doEdit(id: java.util.UUID)
 GET		/key/:keyId/remove				controllers.Keys.remove(keyId: java.util.UUID, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/key/:keyId/:localeId/remove	controllers.Keys.remove(keyId: java.util.UUID, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/key/:projectId/:keyName/create	controllers.Keys.createImmediately(projectId: java.util.UUID, keyName: String)
+GET		/key/:projectId/:keyName/create	controllers.Keys.createImmediately(projectId: java.util.UUID, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/key/:projectId/create			controllers.Keys.create(projectId: java.util.UUID)
-POST	/key/:projectId/create			controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID = null)
-POST	/key/:projectId/:localeId/create	controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID)
+POST	/key/:projectId/create			controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+POST	/key/:projectId/:localeId/create	controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 
 # Commands
 GET		/command/:key/execute	controllers.Application.commandExecute(key: String)
