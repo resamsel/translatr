@@ -52,4 +52,14 @@ public class KeyForm extends SearchForm {
 
     return out;
   }
+
+  /**
+   * @param key
+   * @return
+   */
+  public static Form<KeyForm> with(String keyName, Form<KeyForm> out) {
+    out.get().name = keyName;
+
+    return out;
+  }
 }

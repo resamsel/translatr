@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.feth.play.module.pa.PlayAuthenticate;
-import com.google.common.collect.ImmutableMap;
 
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
@@ -91,7 +90,7 @@ public class Keys extends AbstractController {
     select(project);
 
     return ok(views.html.keys.create.render(createTemplate(), project,
-        formFactory.form(KeyForm.class).bindFromRequest()));
+        FormUtils.Key.bindFromRequest(formFactory, configuration)));
   }
 
   public Result doCreate(UUID projectId, UUID localeId, String search, String order, int limit,
@@ -103,7 +102,7 @@ public class Keys extends AbstractController {
 
     select(project);
 
-    Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
+    Form<KeyForm> form = FormUtils.Key.bindFromRequest(formFactory, configuration);
 
     if (form.hasErrors())
       return badRequest(views.html.keys.create.render(createTemplate(), project, form));
@@ -119,7 +118,8 @@ public class Keys extends AbstractController {
     if (localeId != null) {
       Locale locale = localeService.byId(localeId);
 
-      return redirect(routes.Locales.locale(locale.id).withFragment("#key=" + key.name));
+      return redirect(routes.Locales.locale(locale.id, search, order, limit, offset)
+          .withFragment("key/" + key.name));
     }
 
     return redirect(routes.Keys.key(key.id, search, order, limit, offset));
@@ -136,7 +136,7 @@ public class Keys extends AbstractController {
 
     if (keyName.length() > Key.NAME_LENGTH)
       return badRequest(views.html.keys.create.render(createTemplate(), project,
-          formFactory.form(KeyForm.class).bind(ImmutableMap.of("name", keyName))));
+          KeyForm.with(keyName, FormUtils.Key.bindFromRequest(formFactory, configuration))));
 
     Key key = Key.byProjectAndName(project, keyName);
 
@@ -185,7 +185,7 @@ public class Keys extends AbstractController {
       if (localeId != null) {
         Locale locale = localeService.byId(localeId);
         if (locale != null)
-          return redirect(routes.Locales.locale(locale.id));
+          return redirect(routes.Locales.locale(locale.id, search, order, limit, offset));
       }
 
       LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));

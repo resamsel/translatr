@@ -60,13 +60,12 @@ GET		/project/:id/activity			controllers.Projects.activity(id: java.util.UUID)
 GET		/project/:id/activity/csv		controllers.Projects.activityCsv(id: java.util.UUID)
 
 # Locales
-GET		/locale/:id						controllers.Locales.locale(id: java.util.UUID)
-GET		/locale/:id/edit				controllers.Locales.edit(id: java.util.UUID)
+GET		/locale/:id						controllers.Locales.locale(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/locale/:id/edit				controllers.Locales.edit(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/locale/:id/edit				controllers.Locales.doEdit(id: java.util.UUID)
 GET		/locale/:id/remove				controllers.Locales.remove(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/locale/:projectId/:localeName/create	controllers.Locales.createImmediately(projectId: java.util.UUID, localeName: String)
+GET		/locale/:projectId/:localeName/create	controllers.Locales.createImmediately(projectId: java.util.UUID, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/locale/:projectId				controllers.Locales.doCreate(projectId: java.util.UUID)
-GET		/locale/:id/translate			controllers.Locales.translate(id: java.util.UUID)
 GET		/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
 POST	/locale/:id/import				controllers.Locales.doUpload(id: java.util.UUID)
 

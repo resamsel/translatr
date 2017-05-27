@@ -115,9 +115,15 @@ public class ProjectApiServiceImpl extends
 
       if (PermissionUtils.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Translator)
           && PermissionUtils.hasPermissionAll(Scope.LocaleWrite))
-        suggestions.add(Suggestable.DefaultSuggestable
-            .from(messages.at("locale.create", search.search), Data.from(Locale.class, null, "+++",
-                routes.Locales.createImmediately(project.id, search.search).url())));
+        suggestions
+            .add(
+                Suggestable.DefaultSuggestable
+                    .from(
+                        messages.at("locale.create", search.search), Data
+                            .from(Locale.class, null, "+++",
+                                routes.Locales.createImmediately(project.id, search.search,
+                                    search.search, search.order, search.limit, search.offset)
+                                    .url())));
     }
 
     return SearchResponse.from(Suggestion.from(suggestions));

@@ -36,6 +36,7 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
 
+import controllers.Locales;
 import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.LocaleCriteria;
@@ -113,7 +114,9 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   @Override
   public Data data() {
     return Data.from(Locale.class, id, formatLocale(Context.current().lang().locale(), this),
-        routes.Locales.locale(id).absoluteURL(Context.current().request()));
+        routes.Locales.locale(id, Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER,
+            Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET)
+            .absoluteURL(Context.current().request()));
   }
 
   /**

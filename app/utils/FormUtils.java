@@ -3,6 +3,7 @@ package utils;
 import forms.ActivitySearchForm;
 import forms.KeyForm;
 import forms.KeySearchForm;
+import forms.LocaleForm;
 import forms.LocaleSearchForm;
 import forms.SearchForm;
 import play.Configuration;
@@ -54,6 +55,13 @@ public class FormUtils {
         obj.missing = configuration.getBoolean("translatr.search.missing", false);
 
       return Search.init(form, configuration);
+    }
+  }
+
+  public static class Locale {
+    public static Form<LocaleForm> bindFromRequest(FormFactory formFactory,
+        Configuration configuration) {
+      return Search.init(FormUtils.bindFromRequest(formFactory, LocaleForm.class), configuration);
     }
   }
 

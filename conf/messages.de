@@ -119,7 +119,7 @@ key.selection.none = <i class="material-icons xlarge grey-text text-lighten-1">v
 key.title = {1} - Projekt {0}
 key.undefined = Schlüssel unbekannt:
 keys = Schlüssel
-keys.empty = <i class="material-icons xlarge grey-text text-lighten-1">vpn_key</i><br/>\nNoch keine Schlüssel.
+keys.empty = <i class="material-icons xlarge grey-text text-lighten-1">vpn_key</i><br/>\nKeine Schlüssel gefunden
 keys.size = {0,choice,0#noch keine Schlüssel|1#ein Schlüssel|1<{0} Schlüssel}
 keys.title = Schlüssel - Projekt {0}
 latest = zuletzt
@@ -158,7 +158,7 @@ locale.title = {1} - Projekt {0}
 locale.to.label = Übersetzen nach
 locale.value.label = Wert
 locales = Sprachen
-locales.empty = <i class="material-icons xlarge grey-text text-lighten-1">book</i><br/>\nNoch keine Sprachen.
+locales.empty = <i class="material-icons xlarge grey-text text-lighten-1">book</i><br/>\nKeine Sprachen gefunden
 locales.size = {0,choice,0#noch keine Sprache|1#eine Sprache|1<{0} Sprachen}
 locales.title = Sprachen - Projekt {0}
 main.subtitle = Ein modernes und intuitives I18n-Werkzeug

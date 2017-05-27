@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.feth.play.module.pa.PlayAuthenticate;
-import com.google.common.collect.ImmutableMap;
 
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
@@ -71,12 +70,12 @@ public class Locales extends AbstractController {
     this.projectService = projectService;
   }
 
-  public Result locale(UUID localeId) {
+  public Result locale(UUID localeId, String search, String order, int limit, int offset) {
     return locale(localeId, locale -> {
       Form<KeySearchForm> form = FormUtils.KeySearch.bindFromRequest(formFactory, configuration);
-      KeySearchForm search = form.get();
-      if (search.order == null)
-        search.order = "name";
+      KeySearchForm s = form.get();
+      if (s.order == null)
+        s.order = "name";
 
       return ok(views.html.locales.locale.render(createTemplate(), locale, form));
     });
@@ -89,7 +88,7 @@ public class Locales extends AbstractController {
 
     select(project);
 
-    Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
+    Form<LocaleForm> form = FormUtils.Locale.bindFromRequest(formFactory, configuration);
 
     if (form.hasErrors())
       return badRequest(views.html.locales.create.render(createTemplate(), project, form));
@@ -108,10 +107,14 @@ public class Locales extends AbstractController {
       // This is OK, the fileType doesn't need to be filled
     }
 
-    return redirect(routes.Locales.locale(locale.id));
+    LocaleForm search = form.get();
+
+    return redirect(
+        routes.Locales.locale(locale.id, search.search, search.order, search.limit, search.offset));
   }
 
-  public Result createImmediately(UUID projectId, String localeName) {
+  public Result createImmediately(UUID projectId, String localeName, String search, String order,
+      int limit, int offset) {
     Project project = projectService.byId(projectId);
 
     if (project == null)
@@ -120,8 +123,8 @@ public class Locales extends AbstractController {
     select(project);
 
     if (localeName.length() > Locale.NAME_LENGTH)
-      return badRequest(views.html.locales.create.render(createTemplate(), project,
-          formFactory.form(LocaleForm.class).bind(ImmutableMap.of("name", localeName))));
+      return badRequest(views.html.locales.create.render(createTemplate(), project, LocaleForm
+          .with(localeName, FormUtils.Locale.bindFromRequest(formFactory, configuration))));
 
     Locale locale = Locale.byProjectAndName(project, localeName);
 
@@ -133,27 +136,28 @@ public class Locales extends AbstractController {
       localeService.save(locale);
     }
 
-    return redirect(routes.Locales.locale(locale.id));
+    return redirect(routes.Locales.locale(locale.id, search, order, limit, offset));
   }
 
-  public Result edit(UUID localeId) {
+  public Result edit(UUID localeId, String search, String order, int limit, int offset) {
     return locale(localeId, locale -> {
       return ok(views.html.locales.edit.render(createTemplate(), locale,
-          formFactory.form(LocaleForm.class).fill(LocaleForm.from(locale))));
+          LocaleForm.with(locale, FormUtils.Locale.bindFromRequest(formFactory, configuration))));
     });
   }
 
   public Result doEdit(UUID localeId) {
     return locale(localeId, locale -> {
-      Form<LocaleForm> form = formFactory.form(LocaleForm.class).bindFromRequest();
+      Form<LocaleForm> form = FormUtils.Locale.bindFromRequest(formFactory, configuration);
 
       if (form.hasErrors())
         return badRequest(views.html.locales.edit.render(createTemplate(), locale, form));
 
       localeService.save(form.get().into(locale));
 
-      return redirect(routes.Projects.locales(locale.project.id, DEFAULT_SEARCH, DEFAULT_ORDER,
-          DEFAULT_LIMIT, DEFAULT_OFFSET));
+      LocaleForm search = form.get();
+      return redirect(routes.Projects.locales(locale.project.id, search.search, search.order,
+          search.limit, search.offset));
     });
   }
 
@@ -173,7 +177,8 @@ public class Locales extends AbstractController {
             views.html.locales.upload.render(createTemplate(), locale.project, locale));
       }
 
-      return redirect(routes.Locales.locale(localeId));
+      return redirect(routes.Locales.locale(localeId, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+          DEFAULT_OFFSET));
     });
   }
 
@@ -189,20 +194,7 @@ public class Locales extends AbstractController {
         LOGGER.error("Error while batch deleting locale", e);
       }
 
-      LOGGER.debug("Redirecting");
-
       return redirect(routes.Projects.locales(locale.project.id, s, order, limit, offset));
-    });
-  }
-
-  public Result translate(UUID localeId) {
-    return locale(localeId, locale -> {
-      String referer = request().getHeader("Referer");
-
-      if (referer == null)
-        return redirect(routes.Locales.locale(localeId));
-
-      return redirect(referer);
     });
   }
 

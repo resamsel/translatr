@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.Keys;
+import controllers.Locales;
 import controllers.routes;
 import models.LogEntry;
 import play.libs.Json;
@@ -74,7 +75,8 @@ public class JsonUtils {
         break;
       case "dto.Locale":
         if (uuid != null)
-          return routes.Locales.locale(uuid);
+          return routes.Locales.locale(uuid, Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER,
+              Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET);
         break;
       case "dto.Key":
         if (uuid != null)
