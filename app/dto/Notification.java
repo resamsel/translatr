@@ -1,20 +1,15 @@
 package dto;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import io.getstream.client.model.activities.SimpleActivity;
 import models.LogEntry;
 import play.api.Play;
 import play.api.inject.Injector;
-import play.i18n.Messages;
-import play.mvc.Http.Context;
 import services.LogEntryService;
 import services.UserService;
-import utils.FormatUtils;
+import utils.ActivityUtils;
 import utils.JsonUtils;
 
 /**
@@ -52,20 +47,14 @@ public class Notification extends Dto {
     out.time = in.getTime();
     LogEntry activity = logEntryService.byId(extractUuid(in.getForeignId()));
     if (activity != null) {
-      Context ctx = Context.current();
-      Messages messages = ctx.messages();
       out.activityId = activity.id;
       out.contentType = activity.getSimpleContentType();
-      out.name = JsonUtils.nameOf(activity);
-      out.icon = JsonUtils.iconOf(activity);
-      out.color = JsonUtils.colorOf(activity);
+      out.title = ActivityUtils.titleOf(activity);
+      out.name = ActivityUtils.nameOf(activity);
+      out.icon = ActivityUtils.iconOf(activity);
+      out.color = ActivityUtils.colorOf(activity);
       if (activity.project != null)
         out.project = Project.from(activity.project);
-      out.title = messages.at("activity." + activity.type.normalize() + ".title",
-          activity.project != null ? activity.project.name : "",
-          messages.at("contentType." + activity.contentType), JsonUtils.nameOf(activity),
-          FormatUtils.pretty(ctx.lang().locale(), activity.whenCreated), activity.user.name,
-          activity.user.username, activity.user.id);
     }
 
     return out;
@@ -77,15 +66,5 @@ public class Notification extends Dto {
       return null;
 
     return JsonUtils.getUuid(parts[1]);
-  }
-
-  /**
-   * @param activities
-   * @return
-   */
-  public static List<Notification> fromList(List<SimpleActivity> in) {
-    // TODO: implement
-
-    return in.stream().map(Notification::from).collect(toList());
   }
 }

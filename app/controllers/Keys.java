@@ -148,7 +148,8 @@ public class Keys extends AbstractController {
       keyService.save(key);
     }
 
-    return redirect(routes.Keys.key(key.id, search, order, limit, offset));
+    return redirect(
+        routes.Keys.key(key.id, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET));
   }
 
   public Result edit(UUID keyId, String search, String order, int limit, int offset) {

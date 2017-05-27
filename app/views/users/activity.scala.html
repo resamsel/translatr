@@ -20,12 +20,12 @@
 		} {
 			@for(activity <- activityList.getList) {
 				<li class="collection-item avatar">
-					<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
-					<a href="@utils.JsonUtils.linkTo(activity)" class="title">
-						@utils.JsonUtils.nameOf(activity)
+					<i class="material-icons circle @utils.ActivityUtils.colorOf(activity)">@utils.ActivityUtils.iconOf(activity)</i>
+					<a href="@utils.ActivityUtils.linkTo(activity)" class="title">
+						@utils.ActivityUtils.nameOf(activity)
 					</a>
 					<p>
-						@Messages("activity." + activity.getType.normalize + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
+						@utils.ActivityUtils.infoOf(activity)
 					</p>
 				</li>
 			}

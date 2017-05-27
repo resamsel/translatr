@@ -17,13 +17,16 @@ activity = Aktivität
 activity.all = Alle Aktivitäten
 activity.amount = {0,choice,0#Keine neuen Beiträge|1#Ein neuer Beitrag|1<{0} neue Beiträge}
 activity.content = <p>Die Aktivität zeigt an, wie aktiv Translatr genutzt wird. Dabei wird die Änderungshistorie genutzt, in der sich Beiträge für Benutzer, Projekte, Sprachen, Schlüssel, und Übersetzungen befinden. So kann die Aktivität eines Projekts bestimmt werden, oder auch die eines Benutzers.</p>
+activity.create.info = {0} angelegt {1}
 activity.create.subtitle = {0,choice,0#Nicht |1<{0} mal }angelegt{1,choice,0# von unbekannt|1#|1< von {1} Benutzern} {2}
 activity.create.title = {0}: {1} {2} angelegt von {4} ({5})
+activity.delete.info = {0} gelöscht {1}
 activity.delete.subtitle = {0,choice,0#Nicht |1<{0} mal }gelöscht{1,choice,0# von unbekannt|1#|1< von {1} Benutzern}
 activity.delete.title = {0}: {1} {2} gelöscht von {4} ({5})
 activity.empty = <i class="material-icons xlarge grey-text text-lighten-1">history</i><br/>\nNoch keine Aktivität.
 activity.login.title = {0} hat sich {1} angemeldet
 activity.sinceLastLogin = Neue Beiträge seit letzter Anmeldung
+activity.update.info = {0} geändert {1}
 activity.update.subtitle = {0,choice,0#Nicht |1<{0} mal }geändert{1,choice,0# von unbekannt|1#|1< von {1} Benutzern} {2}
 activity.update.title = {0}: {1} {2} geändert von {4} ({5})
 auth.as = Angemeldet als <strong>{0}</strong>

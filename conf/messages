@@ -17,13 +17,16 @@ activity = Activity
 activity.all = All activity
 activity.amount = {0,choice,0#No new contributions|1#One new contribution|1<{0} new contributions}
 activity.content = <p>The activity graph shows the usage of Translatr. The change history contains contributions to users, projects, locales, keys, and translations. That way the activity of a project can be estimated, as well as the activity of individual users.</p>
+activity.create.info = {0} created {1}
 activity.create.subtitle = {0,choice,0#Not created|1#created|1<created {0} times}{1,choice,0# by unknown|1#|1< by {1} users} {2}
 activity.create.title = {0}: {1} {2} created by {4} ({5})
+activity.delete.info = {0} deleted {1}
 activity.delete.subtitle = {0,choice,0#Not deleted|1#deleted|1<deleted {0} times}{1,choice,0# by unknown|1#|1< by {1} users}
 activity.delete.title = {0}: {1} {2} deleted by {4} ({5})
 activity.empty = <i class="material-icons xlarge grey-text text-lighten-1">history</i><br/>\nNo activities yet.
 activity.login.title = {0} logged-in {1}
 activity.sinceLastLogin = New contributions since last signing in
+activity.update.info = {0} changed {1}
 activity.update.subtitle = {0,choice,0#Not changed|1#changed|1<changed {0} times}{1,choice,0# by unknown|1#|1< by {1} users} {2}
 activity.update.title = {0}: {1} {2} changed by {4} ({5})
 auth.as = Signed in as <strong>{0}</strong>

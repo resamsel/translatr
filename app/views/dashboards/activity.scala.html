@@ -20,14 +20,14 @@
 		} {
 			@for(activity <- activityList.getList) {
 				<li class="collection-item avatar">
-					<i class="material-icons circle @utils.JsonUtils.colorOf(activity)">@utils.JsonUtils.iconOf(activity)</i>
+					<i class="material-icons circle @utils.ActivityUtils.colorOf(activity)">@utils.ActivityUtils.iconOf(activity)</i>
 					<span class="title truncate">
-						<a href="@utils.JsonUtils.linkTo(activity)">
-							@utils.JsonUtils.nameOf(activity)
+						<a href="@utils.ActivityUtils.linkTo(activity)">
+							@utils.ActivityUtils.nameOf(activity)
 						</a>
 					</span>
 					<p>
-						@Messages("activity." + activity.getType.normalize + ".title", Messages("contentType." + activity.contentType), pretty(ctx.lang().locale, activity.whenCreated))
+						@utils.ActivityUtils.infoOf(activity)
 						@if(activity.user != null) {
 							@Messages("by")
 							<a href="@routes.Users.user(activity.user.id)">

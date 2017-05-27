@@ -31,7 +31,7 @@ import play.Configuration;
 import play.libs.Json;
 import services.NotificationService;
 import utils.ConfigKey;
-import utils.JsonUtils;
+import utils.ActivityUtils;
 
 @Singleton
 public class NotificationServiceImpl implements NotificationService {
@@ -105,7 +105,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     activity.setActor(toId(FEED_SLUG_USER, user));
     activity.setVerb(logEntry.type.name().toLowerCase());
-    activity.setObject(JsonUtils.nameOf(logEntry));
+    activity.setObject(ActivityUtils.nameOf(logEntry));
     activity.setForeignId(toId(FEED_SLUG_LOG_ENTRY, logEntry));
     activity.setTarget(toContentId(logEntry));
     LOGGER.debug("Creating activity: {}", Json.toJson(activity));
