@@ -10,7 +10,6 @@ import criterias.AbstractSearchCriteria;
 import dto.Dto;
 import dto.DtoPagedList;
 import dto.NotFoundException;
-import dto.PermissionException;
 import models.Model;
 import models.Scope;
 import services.ModelService;
@@ -51,7 +50,7 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
     if (validator != null)
       validator.accept(criteria);
 
-    checkPermissionAll("Access token not allowed", readScopes);
+    PermissionUtils.checkPermissionAll("Access token not allowed", readScopes);
 
     return new DtoPagedList<>(service.findBy(criteria), dtoMapper);
   }
@@ -61,7 +60,7 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
    */
   @Override
   public DTO get(ID id, String... propertiesToFetch) {
-    checkPermissionAll("Access token not allowed", readScopes);
+    PermissionUtils.checkPermissionAll("Access token not allowed", readScopes);
 
     MODEL obj = service.byId(id, propertiesToFetch);
 
@@ -76,7 +75,7 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
    */
   @Override
   public DTO create(JsonNode in) {
-    checkPermissionAll("Access token not allowed", writeScopes);
+    PermissionUtils.checkPermissionAll("Access token not allowed", writeScopes);
 
     return dtoMapper.apply(service.create(toModel(in)));
   }
@@ -86,7 +85,7 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
    */
   @Override
   public DTO update(JsonNode in) {
-    checkPermissionAll("Access token not allowed", writeScopes);
+    PermissionUtils.checkPermissionAll("Access token not allowed", writeScopes);
 
     return dtoMapper.apply(service.update(toModel(in)));
   }
@@ -96,7 +95,7 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
    */
   @Override
   public DTO delete(ID id) {
-    checkPermissionAll("Access token not allowed", writeScopes);
+    PermissionUtils.checkPermissionAll("Access token not allowed", writeScopes);
 
     MODEL m = service.byId(id);
 
@@ -115,13 +114,4 @@ public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRI
    * @return
    */
   protected abstract MODEL toModel(JsonNode json);
-
-  /**
-   * @param errorMessage
-   * @param scopes
-   */
-  protected void checkPermissionAll(String errorMessage, Scope... scopes) {
-    if (!PermissionUtils.hasPermissionAll(scopes))
-      throw new PermissionException(errorMessage, scopes);
-  }
 }

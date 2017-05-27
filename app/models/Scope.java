@@ -28,7 +28,11 @@ public enum Scope {
 
   MessageRead(ScopeSection.Message, ScopeType.Read),
 
-  MessageWrite(ScopeSection.Message, ScopeType.Write);
+  MessageWrite(ScopeSection.Message, ScopeType.Write),
+
+  NotificationRead(ScopeSection.Notification, ScopeType.Read),
+
+  NotificationWrite(ScopeSection.Notification, ScopeType.Write);
 
   private static final Map<String, Scope> MAP = new HashMap<>();
 

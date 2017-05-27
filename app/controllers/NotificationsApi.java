@@ -14,6 +14,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import actions.ApiAction;
 import criterias.NotificationCriteria;
 import dto.NotificationsPaged;
+import dto.PermissionException;
 import dto.errors.GenericError;
 import dto.errors.PermissionError;
 import io.getstream.client.exception.StreamClientException;
@@ -27,11 +28,13 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
+import models.Scope;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
 import services.NotificationService;
+import utils.PermissionUtils;
 
 /**
  * @author resamsel
@@ -79,8 +82,10 @@ public class NotificationsApi extends AbstractBaseApi {
   public CompletionStage<Result> find() {
     StreamResponse<AggregatedActivity<SimpleActivity>> notifications;
     try {
+      PermissionUtils.checkPermissionAll("Access token not allowed", Scope.NotificationRead);
+
       notifications = notificationService.find(NotificationCriteria.from(request()));
-    } catch (IOException | StreamClientException e) {
+    } catch (IOException | StreamClientException | PermissionException e) {
       LOGGER.error("Error while retrieving notifications", e);
       return CompletableFuture.completedFuture(handleException(e));
     }

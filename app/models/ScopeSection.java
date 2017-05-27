@@ -5,5 +5,5 @@ package models;
  * @version 21 Oct 2016
  */
 public enum ScopeSection {
-  Project, Locale, Key, Message, User
+  Project, Locale, Key, Message, User, Notification
 }

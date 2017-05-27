@@ -181,6 +181,7 @@ message.updated = Translation has been updated
 messages = Translations
 messages.missing = {0,choice,0#no missing translations|1#one translation missing|1<{0} translations missing}
 messages.size = {0,choice,0#no translations yet|1#one translation|1<{0} translations}
+notification = Notification
 notification.update.aggregated = {0,choice,0#Not changed|1#changed|1<changed {0} times}{1,choice,0# by unknown|1#|1< by {1} users} {2}
 notifications = Notifications
 notifications.empty = No new notifications

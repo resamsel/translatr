@@ -2,8 +2,7 @@ package forms;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.stream.Collectors;
 
 import models.AccessToken;
 import models.Scope;
@@ -24,21 +23,7 @@ public class AccessTokenForm {
 
   private String key;
 
-  // private Boolean scopeUserAdmin = false;
-  private Boolean scopeUserRead = false;
-  private Boolean scopeUserWrite = false;
-  // private Boolean scopeProjectAdmin = false;
-  private Boolean scopeProjectRead = false;
-  private Boolean scopeProjectWrite = false;
-  // private Boolean scopeLocaleAdmin = false;
-  private Boolean scopeLocaleRead = false;
-  private Boolean scopeLocaleWrite = false;
-  // private Boolean scopeKeyAdmin = false;
-  private Boolean scopeKeyRead = false;
-  private Boolean scopeKeyWrite = false;
-  // private Boolean scopeMessageAdmin = false;
-  private Boolean scopeMessageRead = false;
-  private Boolean scopeMessageWrite = false;
+  private List<Scope> scopes = new ArrayList<>();
 
   public String getName() {
     return name;
@@ -53,83 +38,99 @@ public class AccessTokenForm {
   }
 
   public Boolean getScopeUserRead() {
-    return scopeUserRead;
+    return scopes.contains(Scope.UserRead);
   }
 
   public void setScopeUserRead(Boolean scopeUserRead) {
-    this.scopeUserRead = scopeUserRead;
+    scopes.add(Scope.UserRead);
   }
 
   public Boolean getScopeUserWrite() {
-    return scopeUserWrite;
+    return scopes.contains(Scope.UserWrite);
   }
 
   public void setScopeUserWrite(Boolean scopeUserWrite) {
-    this.scopeUserWrite = scopeUserWrite;
+    scopes.add(Scope.UserWrite);
   }
 
   public Boolean getScopeProjectRead() {
-    return scopeProjectRead;
+    return scopes.contains(Scope.ProjectRead);
   }
 
   public void setScopeProjectRead(Boolean scopeProjectRead) {
-    this.scopeProjectRead = scopeProjectRead;
+    scopes.add(Scope.ProjectRead);
   }
 
   public Boolean getScopeProjectWrite() {
-    return scopeProjectWrite;
+    return scopes.contains(Scope.ProjectWrite);
   }
 
   public void setScopeProjectWrite(Boolean scopeProjectWrite) {
-    this.scopeProjectWrite = scopeProjectWrite;
+    scopes.add(Scope.ProjectWrite);
   }
 
   public Boolean getScopeLocaleRead() {
-    return scopeLocaleRead;
+    return scopes.contains(Scope.LocaleRead);
   }
 
   public void setScopeLocaleRead(Boolean scopeLocaleRead) {
-    this.scopeLocaleRead = scopeLocaleRead;
+    scopes.add(Scope.LocaleRead);
   }
 
   public Boolean getScopeLocaleWrite() {
-    return scopeLocaleWrite;
+    return scopes.contains(Scope.LocaleWrite);
   }
 
   public void setScopeLocaleWrite(Boolean scopeLocaleWrite) {
-    this.scopeLocaleWrite = scopeLocaleWrite;
+    scopes.add(Scope.LocaleWrite);
   }
 
   public Boolean getScopeKeyRead() {
-    return scopeKeyRead;
+    return scopes.contains(Scope.KeyRead);
   }
 
   public void setScopeKeyRead(Boolean scopeKeyRead) {
-    this.scopeKeyRead = scopeKeyRead;
+    scopes.add(Scope.KeyRead);
   }
 
   public Boolean getScopeKeyWrite() {
-    return scopeKeyWrite;
+    return scopes.contains(Scope.KeyWrite);
   }
 
   public void setScopeKeyWrite(Boolean scopeKeyWrite) {
-    this.scopeKeyWrite = scopeKeyWrite;
+    scopes.add(Scope.KeyWrite);
   }
 
   public Boolean getScopeMessageRead() {
-    return scopeMessageRead;
+    return scopes.contains(Scope.MessageRead);
   }
 
   public void setScopeMessageRead(Boolean scopeMessageRead) {
-    this.scopeMessageRead = scopeMessageRead;
+    scopes.add(Scope.MessageRead);
   }
 
   public Boolean getScopeMessageWrite() {
-    return scopeMessageWrite;
+    return scopes.contains(Scope.MessageWrite);
   }
 
   public void setScopeMessageWrite(Boolean scopeMessageWrite) {
-    this.scopeMessageWrite = scopeMessageWrite;
+    scopes.add(Scope.MessageWrite);
+  }
+
+  public Boolean getScopeNotificationRead() {
+    return scopes.contains(Scope.NotificationRead);
+  }
+
+  public void setScopeNotificationRead(Boolean scopeNotificationRead) {
+    scopes.add(Scope.NotificationRead);
+  }
+
+  public Boolean getScopeNotificationWrite() {
+    return scopes.contains(Scope.NotificationWrite);
+  }
+
+  public void setScopeNotificationWrite(Boolean scopeNotificationWrite) {
+    scopes.add(Scope.NotificationWrite);
   }
 
   /**
@@ -138,40 +139,7 @@ public class AccessTokenForm {
    */
   public AccessToken fill(AccessToken in) {
     in.name = name;
-
-    List<String> scopes = new ArrayList<>();
-    // if (scopeUserAdmin)
-    // scopes.add(Scope.UserAdmin.scope());
-    if (scopeUserRead)
-      scopes.add(Scope.UserRead.scope());
-    if (scopeUserWrite)
-      scopes.add(Scope.UserWrite.scope());
-    // if (scopeProjectAdmin)
-    // scopes.add(Scope.ProjectAdmin.scope());
-    if (scopeProjectRead)
-      scopes.add(Scope.ProjectRead.scope());
-    if (scopeProjectWrite)
-      scopes.add(Scope.ProjectWrite.scope());
-    // if (scopeLocaleAdmin)
-    // scopes.add(Scope.LocaleAdmin.scope());
-    if (scopeLocaleRead)
-      scopes.add(Scope.LocaleRead.scope());
-    if (scopeLocaleWrite)
-      scopes.add(Scope.LocaleWrite.scope());
-    // if (scopeKeyAdmin)
-    // scopes.add(Scope.KeyAdmin.scope());
-    if (scopeKeyRead)
-      scopes.add(Scope.KeyRead.scope());
-    if (scopeKeyWrite)
-      scopes.add(Scope.KeyWrite.scope());
-    // if (scopeMessageAdmin)
-    // scopes.add(Scope.MessageAdmin.scope());
-    if (scopeMessageRead)
-      scopes.add(Scope.MessageRead.scope());
-    if (scopeMessageWrite)
-      scopes.add(Scope.MessageWrite.scope());
-
-    in.scope = StringUtils.join(scopes, ",");
+    in.scope = scopes.stream().map(Scope::scope).collect(Collectors.joining(","));
 
     return in;
   }
@@ -185,23 +153,7 @@ public class AccessTokenForm {
 
     out.name = in.name;
     out.key = in.key;
-
-    List<Scope> scopes = in.getScopeList();
-    // out.scopeUserAdmin = scopes.contains(Scope.UserAdmin);
-    out.scopeUserRead = scopes.contains(Scope.UserRead);
-    out.scopeUserWrite = scopes.contains(Scope.UserWrite);
-    // out.scopeProjectAdmin = scopes.contains(Scope.ProjectAdmin);
-    out.scopeProjectRead = scopes.contains(Scope.ProjectRead);
-    out.scopeProjectWrite = scopes.contains(Scope.ProjectWrite);
-    // out.scopeLocaleAdmin = scopes.contains(Scope.LocaleAdmin);
-    out.scopeLocaleRead = scopes.contains(Scope.LocaleRead);
-    out.scopeLocaleWrite = scopes.contains(Scope.LocaleWrite);
-    // out.scopeKeyAdmin = scopes.contains(Scope.KeyAdmin);
-    out.scopeKeyRead = scopes.contains(Scope.KeyRead);
-    out.scopeKeyWrite = scopes.contains(Scope.KeyWrite);
-    // out.scopeMessageAdmin = scopes.contains(Scope.MessageAdmin);
-    out.scopeMessageRead = scopes.contains(Scope.MessageRead);
-    out.scopeMessageWrite = scopes.contains(Scope.MessageWrite);
+    out.scopes = in.getScopeList();
 
     return out;
   }

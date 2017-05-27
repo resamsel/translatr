@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import criterias.ProjectUserCriteria;
+import dto.PermissionException;
 import models.AccessToken;
 import models.Project;
 import models.ProjectRole;
@@ -101,5 +102,14 @@ public class PermissionUtils {
         return true;
 
     return false;
+  }
+
+  /**
+   * @param errorMessage
+   * @param scopes
+   */
+  public static void checkPermissionAll(String errorMessage, Scope... scopes) {
+    if (!hasPermissionAll(scopes))
+      throw new PermissionException(errorMessage, scopes);
   }
 }

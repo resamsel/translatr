@@ -58,7 +58,7 @@ public class ProjectApiServiceImpl extends
    */
   @Override
   public SearchResponse search(UUID projectId, SearchForm search) {
-    checkPermissionAll("Access token not allowed", readScopes);
+    PermissionUtils.checkPermissionAll("Access token not allowed", readScopes);
 
     Messages messages = Context.current().messages();
 

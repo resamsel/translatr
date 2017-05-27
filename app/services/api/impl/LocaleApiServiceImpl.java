@@ -37,6 +37,7 @@ import play.mvc.Http.Response;
 import services.LocaleService;
 import services.ProjectService;
 import services.api.LocaleApiService;
+import utils.PermissionUtils;
 
 /**
  * @author resamsel
@@ -68,7 +69,7 @@ public class LocaleApiServiceImpl extends
    */
   @Override
   public dto.Locale upload(UUID localeId, Request request) {
-    checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
+    PermissionUtils.checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
         Scope.MessageWrite);
 
     Locale locale = service.byId(localeId);
@@ -120,7 +121,7 @@ public class LocaleApiServiceImpl extends
    */
   @Override
   public byte[] download(UUID localeId, String fileType, Response response) {
-    checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
+    PermissionUtils.checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
         Scope.MessageRead);
 
     Locale locale = service.byId(localeId, Locale.FETCH_MESSAGES);
