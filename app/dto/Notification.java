@@ -30,6 +30,7 @@ public class Notification extends Dto {
   public String name;
   public String icon;
   public String color;
+  public String link;
 
   /**
    * 
@@ -53,6 +54,7 @@ public class Notification extends Dto {
       out.name = ActivityUtils.nameOf(activity);
       out.icon = ActivityUtils.iconOf(activity);
       out.color = ActivityUtils.colorOf(activity);
+      out.link = ActivityUtils.linkTo(activity).url();
       if (activity.project != null)
         out.project = Project.from(activity.project);
     }

@@ -110,6 +110,7 @@ Concat.groups := Seq(
 		"javascripts/backbone-pageable.min.js",
 		"javascripts/app.js",
 		"javascripts/main.js",
+		"javascripts/notification.js",
 		"javascripts/editor.js"
 	))
 )

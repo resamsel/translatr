@@ -3,18 +3,16 @@
 @import play.api.Play
 
 @if(!StreamIOKey.getString(Play.current.configuration).isEmpty) {
+<script type="text/template" id="notification-tmpl">
+	<i class="material-icons circle <%= color %>"><%= icon %></i>
+	<a class="title" href="<%= link %>"><%= title %></a>
+	<p class="when-created"><%= subtitle %></p>
+</script>
 <ul id="dropdown-notifications" class="notifications dropdown-content collection with-header">
 	<li class="collection-header">
 		<span class="title">@Messages("notifications")</span>
 	</li>
-	<script type="text/template" id="notification-tmpl">
-		<li class="collection-item avatar">
-			<i class="material-icons circle <%= contentType %>"><%= icon %></i>
-			<span class="title"></span>
-			<p class="when-created"></p>
-		</li>
-	</script>
-	<li class="collection-item avatar no-notification">
+	<li class="collection-item avatar no-notifications">
 		<i class="material-icons circle light-gray">info</i>
 		<a class="title disabled">@Messages("notifications.empty")</a>
 		<p>&nbsp;</p>

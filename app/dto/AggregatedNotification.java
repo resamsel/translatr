@@ -28,6 +28,7 @@ public class AggregatedNotification extends Dto {
   public String name;
   public String icon;
   public String color;
+  public String link;
   public User user;
   public Project project;
 
@@ -50,6 +51,7 @@ public class AggregatedNotification extends Dto {
       out.name = activity.name;
       out.icon = activity.icon;
       out.color = activity.color;
+      out.link = activity.link;
       out.user = activity.user;
       out.project = activity.project;
     }

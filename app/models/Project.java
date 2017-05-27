@@ -42,13 +42,11 @@ import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
 import play.api.Play;
-import play.api.inject.Injector;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
 import play.mvc.Http.Context;
 import services.MessageService;
 import services.ProjectService;
-import services.UserService;
 import utils.ContextKey;
 import utils.PermissionUtils;
 import utils.QueryUtils;
@@ -280,16 +278,14 @@ public class Project implements Model<Project, UUID>, Suggestable {
     if (brandProjectId != null)
       return brandProjectId;
 
-    Injector injector = Play.current().injector();
     User user = User.loggedInUser();
     if (user == null)
-      user = injector.instanceOf(UserService.class).byUsername("translatr");
+      return null;
 
     Project brandProject = null;
-    Context ctx = Context.current();
     try {
-      brandProject = injector.instanceOf(ProjectService.class).byOwnerAndName(user,
-          ctx.messages().at("brand"));
+      brandProject = Play.current().injector().instanceOf(ProjectService.class).byOwnerAndName(user,
+          "Translatr");
     } catch (Exception e) {
       LOGGER.warn("Error while retrieving brand project", e);
     }
@@ -297,7 +293,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
     if (brandProject == null)
       return null;
 
-    ContextKey.BrandProjectId.put(ctx, brandProject.id);
+    ContextKey.BrandProjectId.put(Context.current(), brandProject.id);
 
     return brandProject.id;
   }

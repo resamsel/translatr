@@ -31,6 +31,12 @@ p {
 #notification-button.available i.material-icons {
 	color: #ffeb3b;
 }
+#dropdown-notifications {
+	overflow-y: scroll;
+}
+#dropdown-notifications .title {
+	white-space: normal;
+}
 
 /* System Messages */
 .system-messages .container {

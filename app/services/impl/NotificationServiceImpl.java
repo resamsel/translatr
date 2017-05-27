@@ -30,15 +30,14 @@ import models.User;
 import play.Configuration;
 import play.libs.Json;
 import services.NotificationService;
-import utils.ConfigKey;
 import utils.ActivityUtils;
+import utils.ConfigKey;
 
 @Singleton
 public class NotificationServiceImpl implements NotificationService {
   private static final Logger LOGGER = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
   private static final String FEED_SLUG_PROJECT = "project";
-  private static final String FEED_SLUG_PROJECT_AGGREGATED = "project_aggregated";
   private static final String FEED_SLUG_USER = "user";
   private static final String FEED_SLUG_LOG_ENTRY = "activity";
   private static final String FEED_SLUG_TIMELINE_AGGREGATED = "timeline_aggregated";
@@ -85,7 +84,7 @@ public class NotificationServiceImpl implements NotificationService {
   public void follow(User user, Project project) throws IOException, StreamClientException {
     LOGGER.debug("User {} follows project {}", user.username, project.name);
     streamClient.newFeed(FEED_SLUG_TIMELINE_AGGREGATED, user.id.toString())
-        .follow(FEED_SLUG_PROJECT_AGGREGATED, project.id.toString());
+        .follow(FEED_SLUG_PROJECT, project.id.toString());
   }
 
   @Override
@@ -110,8 +109,9 @@ public class NotificationServiceImpl implements NotificationService {
     activity.setTarget(toContentId(logEntry));
     LOGGER.debug("Creating activity: {}", Json.toJson(activity));
 
-    List<String> feeds = Arrays.asList(toId(FEED_SLUG_USER, user),
-        toId(FEED_SLUG_TIMELINE_AGGREGATED, user), toId(FEED_SLUG_PROJECT_AGGREGATED, project));
+    List<String> feeds =
+        Arrays.asList(toId(FEED_SLUG_USER, user), toId(FEED_SLUG_TIMELINE_AGGREGATED, user),
+            toId(FEED_SLUG_TIMELINE_AGGREGATED, user), toId(FEED_SLUG_PROJECT, project));
     LOGGER.debug("Adding activity to feeds: {}", feeds);
 
     return activityService.addActivityToMany(feeds, activity);
