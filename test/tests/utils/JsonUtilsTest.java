@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import controllers.Keys;
 import models.ActionType;
 import models.LogEntry;
 import play.libs.Json;
@@ -38,14 +39,16 @@ public class JsonUtilsTest {
         JsonUtils.linkTo(createLogEntry(ActionType.Create, dto.Locale.class.getName(), uuid)))
             .isEqualTo(controllers.routes.Locales.locale(uuid));
     assertThat(JsonUtils.linkTo(createLogEntry(ActionType.Create, dto.Key.class.getName(), uuid)))
-        .isEqualTo(controllers.routes.Keys.key(uuid));
+        .isEqualTo(controllers.routes.Keys.key(uuid, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,
+            Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
     assertThat(
         JsonUtils.linkTo(createLogEntry(ActionType.Create, dto.Message.class.getName(), uuid)))
             .isNull();
     LogEntry logEntry = createLogEntry(ActionType.Create, dto.Message.class.getName(), uuid);
     logEntry.after =
         ((ObjectNode) Json.parse(logEntry.after)).put("keyId", uuid.toString()).toString();
-    assertThat(JsonUtils.linkTo(logEntry)).isEqualTo(controllers.routes.Keys.key(uuid));
+    assertThat(JsonUtils.linkTo(logEntry)).isEqualTo(controllers.routes.Keys.key(uuid,
+        Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
     assertThat(
         JsonUtils.linkTo(createLogEntry(ActionType.Create, dto.ProjectUser.class.getName(), uuid)))
             .isEqualTo(controllers.routes.Projects.members(uuid));
