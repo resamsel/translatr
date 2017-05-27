@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.Keys;
+import controllers.Locales;
 import models.ActionType;
 import models.LogEntry;
 import play.libs.Json;
@@ -37,7 +38,8 @@ public class JsonUtilsTest {
             .isEqualTo(controllers.routes.Projects.project(uuid));
     assertThat(
         JsonUtils.linkTo(createLogEntry(ActionType.Create, dto.Locale.class.getName(), uuid)))
-            .isEqualTo(controllers.routes.Locales.locale(uuid));
+            .isEqualTo(controllers.routes.Locales.locale(uuid, Locales.DEFAULT_SEARCH,
+                Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET));
     assertThat(JsonUtils.linkTo(createLogEntry(ActionType.Create, dto.Key.class.getName(), uuid)))
         .isEqualTo(controllers.routes.Keys.key(uuid, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,
             Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
