@@ -21,11 +21,11 @@ import utils.ConfigKey;
  * @author resamsel
  * @version 19 May 2017
  */
-public class ForceSSLilter extends Filter {
+public class ForceSSLFilter extends Filter {
   private final Configuration configuration;
 
   @Inject
-  public ForceSSLilter(Materializer mat, Configuration configuration) {
+  public ForceSSLFilter(Materializer mat, Configuration configuration) {
     super(mat);
     this.configuration = configuration;
   }
@@ -40,7 +40,7 @@ public class ForceSSLilter extends Filter {
         return CompletableFuture.completedFuture(
             Results.movedPermanently(String.format("https://%s%s", rh.host(), rh.uri())));
       else
-        next.apply(rh).thenApply(
+        return next.apply(rh).thenApply(
             result -> result.withHeader("Strict-Transport-Security", "max-age=31536000"));
     }
 

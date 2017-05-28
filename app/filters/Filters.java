@@ -12,13 +12,13 @@ import play.mvc.EssentialFilter;
  */
 public class Filters implements HttpFilters {
   private final TimingFilter timingFilter;
-  private final ForceSSLilter tlsFilter;
+  private final ForceSSLFilter tlsFilter;
 
   /**
    * 
    */
   @Inject
-  public Filters(TimingFilter timingFilter, ForceSSLilter tlsFilter) {
+  public Filters(TimingFilter timingFilter, ForceSSLFilter tlsFilter) {
     this.timingFilter = timingFilter;
     this.tlsFilter = tlsFilter;
   }
