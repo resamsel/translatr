@@ -1,61 +1,54 @@
 package commands;
 
-import javax.inject.Inject;
-
 import controllers.routes;
 import dto.LinkedAccount;
+import play.inject.Injector;
 import play.mvc.Call;
 import play.mvc.Http.Context;
 import services.LinkedAccountService;
 
-public class RevertDeleteLinkedAccountCommand implements Command<models.LinkedAccount>
-{
-	private LinkedAccount linkedAccount;
+public class RevertDeleteLinkedAccountCommand implements Command<models.LinkedAccount> {
+  private static final long serialVersionUID = 7856521291080668659L;
 
-	private final LinkedAccountService linkedAccountService;
+  private LinkedAccount linkedAccount;
 
-	/**
-	 * 
-	 */
-	@Inject
-	public RevertDeleteLinkedAccountCommand(LinkedAccountService linkedAccountService)
-	{
-		this.linkedAccountService = linkedAccountService;
-	}
+  /**
+   * @param key
+   * @return
+   */
+  @Override
+  public RevertDeleteLinkedAccountCommand with(models.LinkedAccount linkedAccount) {
+    this.linkedAccount = LinkedAccount.from(linkedAccount);
+    return this;
+  }
 
-	/**
-	 * @param key
-	 * @return
-	 */
-	@Override
-	public RevertDeleteLinkedAccountCommand with(models.LinkedAccount linkedAccount)
-	{
-		this.linkedAccount = LinkedAccount.from(linkedAccount);
-		return this;
-	}
+  @Override
+  public void execute(Injector injector) {
+    models.LinkedAccount model = linkedAccount.toModel();
+    injector.instanceOf(LinkedAccountService.class).save(model);
+  }
 
-	@Override
-	public void execute()
-	{
-		models.LinkedAccount model = linkedAccount.toModel();
-		linkedAccountService.save(model);
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getMessage() {
+    return Context.current().messages().at("linkedAccount.deleted", linkedAccount.providerKey);
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getMessage()
-	{
-		return Context.current().messages().at("linkedAccount.deleted", linkedAccount.providerKey);
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Call redirect() {
+    return routes.Profiles.linkedAccounts();
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Call redirect()
-	{
-		return routes.Profiles.linkedAccounts();
-	}
+  /**
+   * @param linkedAccount
+   * @return
+   */
+  public static RevertDeleteLinkedAccountCommand from(models.LinkedAccount linkedAccount) {
+    return new RevertDeleteLinkedAccountCommand().with(linkedAccount);
+  }
 }

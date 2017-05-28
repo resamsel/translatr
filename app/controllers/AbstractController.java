@@ -4,14 +4,9 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.joda.time.DateTime;
-
-import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import commands.Command;
-import criterias.LogEntryCriteria;
-import models.LogEntry;
 import models.Project;
 import models.User;
 import play.cache.CacheApi;
@@ -20,9 +15,9 @@ import play.mvc.Call;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.LogEntryService;
+import services.NotificationService;
 import services.UserService;
 import utils.ContextKey;
-import utils.SessionKey;
 import utils.Template;
 
 /**
@@ -55,19 +50,22 @@ public abstract class AbstractController extends Controller {
 
   protected final LogEntryService logEntryService;
 
+  protected final NotificationService notificationService;
+
   /**
    * @param injector
    * @param userService
    * @param auth
    * 
    */
-  protected AbstractController(Injector injector, CacheApi cache, PlayAuthenticate auth,
-      UserService userService, LogEntryService logEntryService) {
+  protected AbstractController(Injector injector, CacheApi cache, PlayAuthenticate auth) {
     this.injector = injector;
     this.cache = cache;
     this.auth = auth;
-    this.userService = userService;
-    this.logEntryService = logEntryService;
+
+    this.userService = injector.instanceOf(UserService.class);
+    this.logEntryService = injector.instanceOf(LogEntryService.class);
+    this.notificationService = injector.instanceOf(NotificationService.class);
   }
 
   protected Result tryCatch(Supplier<Result> supplier) {
@@ -77,6 +75,11 @@ public abstract class AbstractController extends Controller {
   public static Result redirectWithError(Call call, String errorKey, Object... args) {
     addError(ctx().messages().at(errorKey, args));
     return redirect(call);
+  }
+
+  public static Result redirectWithError(String url, String errorKey, Object... args) {
+    addError(ctx().messages().at(errorKey, args));
+    return redirect(url);
   }
 
   public static Result redirectWithMessage(Call call, String key, Object... args) {
@@ -103,29 +106,7 @@ public abstract class AbstractController extends Controller {
     if (user == null)
       return template;
 
-    return template.withNotifications(notificationsOf(user));
-  }
-
-  private PagedList<LogEntry> notificationsOf(User user) {
-    if (user == null)
-      return null;
-
-    DateTime whenCreatedMin;
-    String sessionLastAcknowledged = session(SessionKey.LastAcknowledged.key());
-    String sessionLastLogin = session(SessionKey.LastLogin.key());
-    if (sessionLastAcknowledged != null)
-      whenCreatedMin = DateTime.parse(sessionLastAcknowledged);
-    else if (sessionLastLogin != null)
-      whenCreatedMin = DateTime.parse(sessionLastLogin);
-    else
-      whenCreatedMin = user.whenCreated;
-
-    PagedList<LogEntry> paged = logEntryService.findBy(new LogEntryCriteria().withLimit(10)
-        .withUserIdExcluded(user.id).withProjectUserId(user.id));
-
-    paged.getList().stream().forEach(l -> l.withUnread(l.whenCreated.isAfter(whenCreatedMin)));
-
-    return paged;
+    return template.withNotificationsEnabled(notificationService.isEnabled());
   }
 
   protected void select(Project project) {

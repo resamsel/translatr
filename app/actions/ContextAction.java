@@ -52,8 +52,11 @@ public class ContextAction extends Action.Simple {
 
     if (ctx.flash().containsKey("undo")) {
       String key = ctx.flash().get("undo");
-      ContextKey.UndoMessage.put(ctx, ((Command<?>) cache.get(key)).getMessage());
-      ContextKey.UndoCommand.put(ctx, key);
+      Command<?> command = (Command<?>) cache.get(key);
+      if (command != null) {
+        ContextKey.UndoMessage.put(ctx, command.getMessage());
+        ContextKey.UndoCommand.put(ctx, key);
+      }
     }
 
     return delegate.call(ctx);

@@ -1,6 +1,6 @@
 @(template: utils.Template)
 
-@main(template.withTitle(Messages("brand")).withName("index")) { } { } {
+@main(template.withTitle("Translatr").withName("index")) { } { } {
 	<div class="section green">
 		<div class="container">
 			<div class="row">
@@ -15,7 +15,7 @@
 		</div>
 	</div>
 	<div class="floating-action-btn @if(template.loggedInUser == null) { hide }">
-		@tags.fab("dashboard", "dashboard", tooltip = Messages("dashboard.tooltip"), href = routes.Dashboards.dashboard().url, styleClass = "btn-large light-blue")
+		@tags.fab("dashboard", "dashboard", tooltip = Messages("dashboard.tooltip"), href = routes.Dashboards.projects().url, styleClass = "btn-large light-blue")
 	</div>
 	<div class="container">
 		<div class="section intro">

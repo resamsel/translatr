@@ -29,6 +29,21 @@
 	</a>
 } {
 	@content(project, "info", "flex") {
+		@contentCard(project.name) {
+			<div class="progress">
+				<div class="determinate" style="width: @{project.progress()*100}%;"></div>
+			</div>
+			<p>
+				@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
+			</p>
+			@users.chip(project.owner)
+			@for(member <- project.members) {
+				@if(member.user.id != project.owner.id) {
+					@users.chip(member.user, key="project.member")
+				}
+			}
+		}
+
 		@contentCard(Messages("activity"), styleClass = "activity") {
 			<div class="svg-container"></div>
 		}

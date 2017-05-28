@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.feth.play.module.pa.PlayAuthenticate;
-import com.google.common.collect.ImmutableMap;
 
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
@@ -30,9 +29,7 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.KeyService;
 import services.LocaleService;
-import services.LogEntryService;
 import services.ProjectService;
-import services.UserService;
 import utils.FormUtils;
 
 /**
@@ -62,10 +59,10 @@ public class Keys extends AbstractController {
    * @param userService
    */
   @Inject
-  protected Keys(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, FormFactory formFactory, Configuration configuration,
-      KeyService keyService, LocaleService localeService, ProjectService projectService) {
-    super(injector, cache, auth, userService, logEntryService);
+  protected Keys(Injector injector, CacheApi cache, PlayAuthenticate auth, FormFactory formFactory,
+      Configuration configuration, KeyService keyService, LocaleService localeService,
+      ProjectService projectService) {
+    super(injector, cache, auth);
 
     this.formFactory = formFactory;
     this.configuration = configuration;
@@ -74,7 +71,7 @@ public class Keys extends AbstractController {
     this.projectService = projectService;
   }
 
-  public Result key(UUID id) {
+  public Result key(UUID id, String search, String order, int limit, int offset) {
     return key(id, key -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
 
@@ -93,10 +90,11 @@ public class Keys extends AbstractController {
     select(project);
 
     return ok(views.html.keys.create.render(createTemplate(), project,
-        formFactory.form(KeyForm.class).bindFromRequest()));
+        FormUtils.Key.bindFromRequest(formFactory, configuration)));
   }
 
-  public Result doCreate(UUID projectId, UUID localeId) {
+  public Result doCreate(UUID projectId, UUID localeId, String search, String order, int limit,
+      int offset) {
     Project project = projectService.byId(projectId);
 
     if (project == null)
@@ -104,7 +102,7 @@ public class Keys extends AbstractController {
 
     select(project);
 
-    Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
+    Form<KeyForm> form = FormUtils.Key.bindFromRequest(formFactory, configuration);
 
     if (form.hasErrors())
       return badRequest(views.html.keys.create.render(createTemplate(), project, form));
@@ -120,13 +118,15 @@ public class Keys extends AbstractController {
     if (localeId != null) {
       Locale locale = localeService.byId(localeId);
 
-      return redirect(routes.Locales.locale(locale.id).withFragment("#key=" + key.name));
+      return redirect(routes.Locales.locale(locale.id, search, order, limit, offset)
+          .withFragment("key/" + key.name));
     }
 
-    return redirect(routes.Keys.key(key.id));
+    return redirect(routes.Keys.key(key.id, search, order, limit, offset));
   }
 
-  public Result createImmediately(UUID projectId, String keyName) {
+  public Result createImmediately(UUID projectId, String keyName, String search, String order,
+      int limit, int offset) {
     Project project = projectService.byId(projectId);
 
     if (project == null)
@@ -136,7 +136,7 @@ public class Keys extends AbstractController {
 
     if (keyName.length() > Key.NAME_LENGTH)
       return badRequest(views.html.keys.create.render(createTemplate(), project,
-          formFactory.form(KeyForm.class).bind(ImmutableMap.of("name", keyName))));
+          KeyForm.with(keyName, FormUtils.Key.bindFromRequest(formFactory, configuration))));
 
     Key key = Key.byProjectAndName(project, keyName);
 
@@ -148,41 +148,45 @@ public class Keys extends AbstractController {
       keyService.save(key);
     }
 
-    return redirect(routes.Keys.key(key.id));
+    return redirect(
+        routes.Keys.key(key.id, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET));
   }
 
-  public Result edit(UUID keyId) {
+  public Result edit(UUID keyId, String search, String order, int limit, int offset) {
     return key(keyId, key -> {
+
       return ok(views.html.keys.edit.render(createTemplate(), key,
-          formFactory.form(KeyForm.class).fill(KeyForm.from(key))));
+          KeyForm.with(key, FormUtils.Key.bindFromRequest(formFactory, configuration))));
     });
   }
 
   public Result doEdit(UUID keyId) {
     return key(keyId, key -> {
-      Form<KeyForm> form = formFactory.form(KeyForm.class).bindFromRequest();
+      Form<KeyForm> form = FormUtils.Key.bindFromRequest(formFactory, configuration);
 
       if (form.hasErrors())
         return badRequest(views.html.keys.edit.render(createTemplate(), key, form));
 
       keyService.save(form.get().into(key));
 
-      return redirect(routes.Projects.keys(key.project.id, DEFAULT_SEARCH, DEFAULT_ORDER,
-          DEFAULT_LIMIT, DEFAULT_OFFSET));
+      KeyForm search = form.get();
+
+      return redirect(routes.Projects.keys(key.project.id, search.search, search.order,
+          search.limit, search.offset));
     });
   }
 
   public Result remove(UUID keyId, UUID localeId, String search, String order, int limit,
       int offset) {
     return key(keyId, key -> {
-      undoCommand(injector.instanceOf(RevertDeleteKeyCommand.class).with(key));
+      undoCommand(RevertDeleteKeyCommand.from(key));
 
       keyService.delete(key);
 
       if (localeId != null) {
         Locale locale = localeService.byId(localeId);
         if (locale != null)
-          return redirect(routes.Locales.locale(locale.id));
+          return redirect(routes.Locales.locale(locale.id, search, order, limit, offset));
       }
 
       LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));

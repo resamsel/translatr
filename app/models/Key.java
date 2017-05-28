@@ -34,6 +34,7 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
 
+import controllers.AbstractController;
 import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.KeyCriteria;
@@ -108,7 +109,10 @@ public class Key implements Model<Key, UUID>, Suggestable {
   @Override
   public Data data() {
     return Data.from(Key.class, id, name,
-        routes.Keys.key(id).absoluteURL(Context.current().request()));
+        routes.Keys
+            .key(id, AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+                AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET)
+            .absoluteURL(Context.current().request()));
   }
 
   private static final Find<UUID, Key> find = new Find<UUID, Key>() {};

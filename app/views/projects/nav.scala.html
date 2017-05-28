@@ -1,29 +1,39 @@
 @(project: models.Project, active: String)
 
-<div class="collection depth">
+<div class="nav collection">
 	<a
 		class="collection-item @if(active == "info") { active green } else { green-text }"
-		href="@routes.Projects.project(project.id)">
-		@Messages("info")
+		href="@routes.Projects.project(project.id)"
+		title="@Messages("info")">
+		<i class="material-icons left hide-on-med-only">info</i>
+		<span class="hide-on-small-only">@Messages("info")</span>
 	</a>
 	<a
 		class="collection-item @if(active == "locales") { active green } else { green-text }"
-		href="@routes.Projects.locales(project.id)">
-		@Messages("locales")
+		href="@routes.Projects.locales(project.id)"
+		title="@Messages("locales")">
+		<i class="material-icons left hide-on-med-only">book</i>
+		<span class="hide-on-small-only">@Messages("locales")</span>
 	</a>
 	<a
 		class="collection-item @if(active == "keys") { active green } else { green-text }"
-		href="@routes.Projects.keys(project.id)">
-		@Messages("keys")
+		href="@routes.Projects.keys(project.id)"
+		title="@Messages("keys")">
+		<i class="material-icons left hide-on-med-only">vpn_key</i>
+		<span class="hide-on-small-only">@Messages("keys")</span>
 	</a>
 	<a
 		class="collection-item @if(active == "members") { active green } else { green-text }"
-		href="@routes.Projects.members(project.id)">
-		@Messages("project.members")
+		href="@routes.Projects.members(project.id)"
+		title="@Messages("project.members")">
+		<i class="material-icons left hide-on-med-only">group_work</i>
+		<span class="hide-on-small-only">@Messages("project.members")</span>
 	</a>
 	<a
 		class="collection-item @if(active == "activity") { active green } else { green-text }"
-		href="@routes.Projects.activity(project.id)">
-		@Messages("activity")
+		href="@routes.Projects.activity(project.id)"
+		title="@Messages("activity")">
+		<i class="material-icons left hide-on-med-only">notifications_active</i>
+		<span class="hide-on-small-only">@Messages("activity")</span>
 	</a>
 </div>

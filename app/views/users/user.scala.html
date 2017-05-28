@@ -10,9 +10,7 @@
 	</a>
 } {
 	@content(template, user, "info", "flex") {
-		@contentCard(Messages("activity"), styleClass = "activity") {
-			<div class="svg-container"></div>
-		}
+		@card(template, user)
 		@contentCard(Messages("info"), styleClass = "info") {
 			<ul class="profile-info">
 				@if(template.loggedInUser.id == user.id) {
@@ -28,6 +26,9 @@
 					@Messages("user.created", user.whenCreated.toDate)
 				</li>
 			</ul>
+		}
+		@contentCard(Messages("activity"), styleClass = "activity") {
+			<div class="svg-container"></div>
 		}
 		@contentCard(Messages("contributions"), styleClass = "contributions") {
 			<p>

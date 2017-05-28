@@ -87,7 +87,7 @@ public class Projects extends AbstractController {
       UserService userService, LogEntryService logEntryService, ProjectService projectService,
       LocaleService localeService, KeyService keyService, ProjectUserService projectUserService,
       Configuration configuration) {
-    super(injector, cache, auth, userService, logEntryService);
+    super(injector, cache, auth);
 
     this.formFactory = formFactory;
     this.projectService = projectService;
@@ -106,7 +106,7 @@ public class Projects extends AbstractController {
 
       return ok(log(() -> views.html.projects.project.render(createTemplate(), project, form),
           LOGGER, "Rendering project"));
-    });
+    }, Project.FETCH_MEMBERS);
   }
 
   public Result create() {
@@ -203,7 +203,7 @@ public class Projects extends AbstractController {
 
     select(project);
 
-    undoCommand(injector.instanceOf(RevertDeleteProjectCommand.class).with(project));
+    undoCommand(RevertDeleteProjectCommand.from(project));
 
     projectService.delete(project);
 
@@ -299,7 +299,7 @@ public class Projects extends AbstractController {
         return redirect(routes.Projects.members(project.id));
       }
 
-      undoCommand(injector.instanceOf(RevertDeleteProjectUserCommand.class).with(member));
+      undoCommand(RevertDeleteProjectUserCommand.from(member));
 
       projectUserService.delete(member);
 
@@ -367,9 +367,9 @@ public class Projects extends AbstractController {
   }
 
   private <T extends Form<SearchForm>> Result searchForm(UUID projectId,
-      BiFunction<Project, Form<SearchForm>, Result> processor) {
+      BiFunction<Project, Form<SearchForm>, Result> processor, String... propertiesToFetch) {
     return project(projectId, project -> processor.apply(project,
-        FormUtils.Search.bindFromRequest(formFactory, configuration)));
+        FormUtils.Search.bindFromRequest(formFactory, configuration)), propertiesToFetch);
   }
 
   private <T extends Form<LocaleSearchForm>> Result localeSearchForm(UUID projectId,

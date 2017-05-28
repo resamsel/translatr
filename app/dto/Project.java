@@ -15,6 +15,8 @@ import criterias.MessageCriteria;
 import models.User;
 
 public class Project extends Dto {
+  private static final long serialVersionUID = 4241999533661305290L;
+
   public UUID id;
 
   @JsonIgnore

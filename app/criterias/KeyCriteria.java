@@ -95,6 +95,7 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria> {
   }
 
   public static KeyCriteria from(Request request) {
-    return new KeyCriteria().with(request);
+    return new KeyCriteria().with(request).withMissing(Boolean
+        .parseBoolean(request.queryString().getOrDefault("missing", new String[] {"false"})[0]));
   }
 }

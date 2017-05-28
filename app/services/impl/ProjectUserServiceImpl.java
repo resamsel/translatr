@@ -1,19 +1,28 @@
 package services.impl;
 
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.avaje.ebean.PagedList;
 
 import criterias.ProjectUserCriteria;
+import io.getstream.client.exception.StreamClientException;
 import models.ActionType;
 import models.LogEntry;
 import models.ProjectUser;
 import play.Configuration;
+import play.libs.concurrent.HttpExecutionContext;
 import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
+import services.NotificationService;
 import services.ProjectUserService;
 
 /**
@@ -24,13 +33,22 @@ import services.ProjectUserService;
 @Singleton
 public class ProjectUserServiceImpl extends
     AbstractModelService<ProjectUser, Long, ProjectUserCriteria> implements ProjectUserService {
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProjectUserServiceImpl.class);
+
+  private final HttpExecutionContext executionContext;
+  private final NotificationService notificationService;
+
   /**
    * 
    */
   @Inject
   public ProjectUserServiceImpl(Configuration configuration, Validator validator,
-      LocaleService localeService, KeyService keyService, LogEntryService logEntryService) {
+      LocaleService localeService, KeyService keyService, LogEntryService logEntryService,
+      HttpExecutionContext executionContext, NotificationService notificationService) {
     super(configuration, validator, logEntryService);
+
+    this.executionContext = executionContext;
+    this.notificationService = notificationService;
   }
 
   /**
@@ -67,6 +85,15 @@ public class ProjectUserServiceImpl extends
     if (!update)
       logEntryService
           .save(LogEntry.from(ActionType.Create, t.project, dto.ProjectUser.class, null, toDto(t)));
+
+    CompletableFuture.runAsync(() -> {
+      try {
+        notificationService.follow(t.user, t.project);
+      } catch (IOException | StreamClientException e) {
+        LOGGER.error("Error while following project notification", e);
+      }
+    }, executionContext.current());
+
   }
 
   /**

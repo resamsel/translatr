@@ -36,6 +36,7 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
 
+import controllers.Locales;
 import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.LocaleCriteria;
@@ -54,8 +55,15 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
   public static final int NAME_LENGTH = 15;
 
-  private static final Map<String, List<String>> FETCH_MAP = ImmutableMap.of("project",
-      Arrays.asList("project"), "messages", Arrays.asList("messages", "messages.key"));
+  public static final String FETCH_MESSAGES = "messages";
+
+  private static final Find<UUID, Locale> find = new Find<UUID, Locale>() {};
+
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("project");
+
+  private static final Map<String, List<String>> FETCH_MAP =
+      ImmutableMap.of("project", Arrays.asList("project"), FETCH_MESSAGES,
+          Arrays.asList(FETCH_MESSAGES, FETCH_MESSAGES + ".key"));
 
   @Id
   @GeneratedValue
@@ -106,12 +114,10 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   @Override
   public Data data() {
     return Data.from(Locale.class, id, formatLocale(Context.current().lang().locale(), this),
-        routes.Locales.locale(id).absoluteURL(Context.current().request()));
+        routes.Locales.locale(id, Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER,
+            Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET)
+            .absoluteURL(Context.current().request()));
   }
-
-  private static final Find<UUID, Locale> find = new Find<UUID, Locale>() {};
-
-  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("project");
 
   /**
    * @param fromString
@@ -122,7 +128,9 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
     if (fetches.length > 0)
       propertiesToFetch.addAll(Arrays.asList(fetches));
 
-    return QueryUtils.fetch(find.setId(id), propertiesToFetch).findUnique();
+    return QueryUtils
+        .fetch(find.setId(id).setDisableLazyLoading(true), propertiesToFetch, FETCH_MAP)
+        .findUnique();
   }
 
   /**

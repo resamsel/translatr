@@ -31,8 +31,6 @@ import play.inject.Injector;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import services.LogEntryService;
-import services.UserService;
 import services.api.KeyApiService;
 
 /**
@@ -61,9 +59,9 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria> {
   private static final String NOT_FOUND_ERROR = "Key not found";
 
   @Inject
-  public KeysApi(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, KeyApiService keyApiService) {
-    super(injector, cache, auth, userService, logEntryService, keyApiService);
+  public KeysApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
+      KeyApiService keyApiService) {
+    super(injector, cache, auth, keyApiService);
   }
 
   @ApiOperation(value = FIND,

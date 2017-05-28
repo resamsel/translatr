@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -42,13 +43,11 @@ import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
 import play.api.Play;
-import play.api.inject.Injector;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
 import play.mvc.Http.Context;
 import services.MessageService;
 import services.ProjectService;
-import services.UserService;
 import utils.ContextKey;
 import utils.PermissionUtils;
 import utils.QueryUtils;
@@ -62,6 +61,15 @@ public class Project implements Model<Project, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
   public static final int NAME_LENGTH = 255;
+
+  public static final String FETCH_MEMBERS = "members";
+  public static final String FETCH_OWNER = "owner";
+  public static final String FETCH_LOCALES = "locales";
+  public static final String FETCH_KEYS = "keys";
+
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList(FETCH_OWNER, FETCH_MEMBERS);
+
+  private static final Find<UUID, Project> find = new Find<UUID, Project>() {};
 
   @Id
   @GeneratedValue
@@ -140,15 +148,11 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return this;
   }
 
-  private static final Find<UUID, Project> find = new Find<UUID, Project>() {};
-
-  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("owner", "members");
-
   public static Project byId(UUID id, String... fetches) {
     if (id == null)
       return null;
 
-    HashSet<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
+    Set<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
     if (fetches.length > 0)
       propertiesToFetch.addAll(Arrays.asList(fetches));
 
@@ -157,7 +161,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   public static PagedList<Project> findBy(ProjectCriteria criteria) {
     ExpressionList<Project> query =
-        find.fetch("owner").fetch("members").fetch("locales").fetch("keys").where();
+        find.fetch(FETCH_OWNER).fetch(FETCH_MEMBERS).fetch(FETCH_LOCALES).fetch(FETCH_KEYS).where();
 
     query.eq("deleted", false);
 
@@ -280,16 +284,14 @@ public class Project implements Model<Project, UUID>, Suggestable {
     if (brandProjectId != null)
       return brandProjectId;
 
-    Injector injector = Play.current().injector();
     User user = User.loggedInUser();
     if (user == null)
-      user = injector.instanceOf(UserService.class).byUsername("translatr");
+      return null;
 
     Project brandProject = null;
-    Context ctx = Context.current();
     try {
-      brandProject = injector.instanceOf(ProjectService.class).byOwnerAndName(user,
-          ctx.messages().at("brand"));
+      brandProject = Play.current().injector().instanceOf(ProjectService.class).byOwnerAndName(user,
+          "Translatr");
     } catch (Exception e) {
       LOGGER.warn("Error while retrieving brand project", e);
     }
@@ -297,7 +299,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
     if (brandProject == null)
       return null;
 
-    ContextKey.BrandProjectId.put(ctx, brandProject.id);
+    ContextKey.BrandProjectId.put(Context.current(), brandProject.id);
 
     return brandProject.id;
   }

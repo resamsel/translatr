@@ -36,8 +36,6 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.AccessTokenService;
 import services.LinkedAccountService;
-import services.LogEntryService;
-import services.UserService;
 import utils.FormUtils;
 import utils.SessionKey;
 
@@ -64,10 +62,10 @@ public class Profiles extends AbstractController {
    * @param userService
    */
   @Inject
-  public Profiles(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, FormFactory formFactory, Configuration configuration,
-      LinkedAccountService linkedAccountService, AccessTokenService accessTokenService) {
-    super(injector, cache, auth, userService, logEntryService);
+  public Profiles(Injector injector, CacheApi cache, PlayAuthenticate auth, FormFactory formFactory,
+      Configuration configuration, LinkedAccountService linkedAccountService,
+      AccessTokenService accessTokenService) {
+    super(injector, cache, auth);
 
     this.formFactory = formFactory;
     this.configuration = configuration;
@@ -153,7 +151,7 @@ public class Profiles extends AbstractController {
       if (linkedAccount == null || !user.id.equals(linkedAccount.user.id))
         return redirect(routes.Profiles.linkedAccounts());
 
-      undoCommand(injector.instanceOf(RevertDeleteLinkedAccountCommand.class).with(linkedAccount));
+      undoCommand(RevertDeleteLinkedAccountCommand.from(linkedAccount));
 
       linkedAccountService.delete(linkedAccount);
 
@@ -316,7 +314,7 @@ public class Profiles extends AbstractController {
       if (accessToken == null || !user.id.equals(accessToken.user.id))
         return redirectWithError(routes.Profiles.accessTokens(), "accessToken.notAllowed");
 
-      undoCommand(injector.instanceOf(RevertDeleteAccessTokenCommand.class).with(accessToken));
+      undoCommand(RevertDeleteAccessTokenCommand.from(accessToken));
 
       accessTokenService.delete(accessToken);
 

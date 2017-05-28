@@ -35,9 +35,7 @@ import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.With;
-import services.LogEntryService;
 import services.ProjectService;
-import services.UserService;
 import utils.FormUtils;
 
 /**
@@ -60,17 +58,20 @@ public class Dashboards extends AbstractController {
    */
   @Inject
   public Dashboards(Injector injector, CacheApi cache, FormFactory formFactory,
-      Configuration configuration, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, ProjectService projectService) {
-    super(injector, cache, auth, userService, logEntryService);
+      Configuration configuration, PlayAuthenticate auth, ProjectService projectService) {
+    super(injector, cache, auth);
 
     this.formFactory = formFactory;
     this.configuration = configuration;
     this.projectService = projectService;
   }
 
-  @SubjectPresent(forceBeforeAuthCheck = true)
   public Result dashboard() {
+    return redirect(controllers.routes.Dashboards.projects());
+  }
+
+  @SubjectPresent(forceBeforeAuthCheck = true)
+  public Result projects() {
     return loggedInUser(user -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
@@ -80,7 +81,7 @@ public class Dashboards extends AbstractController {
       PagedList<Project> projects =
           projectService.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
 
-      return log(() -> ok(views.html.dashboards.dashboard.render(createTemplate(),
+      return log(() -> ok(views.html.dashboards.projects.render(createTemplate(),
           projects.getList(), FormUtils.Search.bindFromRequest(formFactory, configuration),
           ProjectForm.form(formFactory))), LOGGER, "Rendering dashboard");
     });

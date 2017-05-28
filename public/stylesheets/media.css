@@ -3,6 +3,9 @@
 	#nprogress {
 		display: none;
 	}
+	.flex-container {
+		flex-direction: column;
+	}
 	h1 .material-icons {
 	    display: block;
 	    float: none !important;
@@ -18,18 +21,9 @@
 	.navview,
 	.subview {
 		height: auto;
-    }
-    .row .col {
-    	float: none;
-    }
-    .card.card-user {
-		display: -webkit-flex;
-		display: -ms-flexbox;
-		display: flex;
 	}
-	.card.card-user .card-image img {
-		width: 120px;
-		min-width: 120px;
+	.row .col {
+		float: none;
 	}
 }
 
@@ -41,10 +35,7 @@
 	nav .brand-logo i.material-icons {
 		padding-left: 15px;
 	}
-	.template-project .main > * {
-		flex: 1 100%;
-	}
-    .table.responsive-table th {
+	.table.responsive-table th {
 		text-align: right !important;
 		width: auto;
 	}
@@ -85,7 +76,7 @@
 		line-height: 44px;
 	}
 	.notifications {
-		min-width: 360px;
+		width: 360px;
 	}
 	.breadcrumbs {
 		top: 64px;
@@ -101,11 +92,20 @@
 	.container {
 	    width: 90%;
 	}
-	.sidebar {
-	    width: 200px;
+	.flex > * {
+		flex: 1 0;
 	}
-	.container .col.main {
-		width: calc(100% - 200px);
+	.flex.main > .activity,
+	.flex.main > .messages {
+		flex: 2 100%;
+	}
+	.template-project .main > .locales,
+	.template-user .card.user {
+		margin-right: 0.5rem;
+	}
+	.template-project .main > .keys,
+	.template-user .card.info {
+		margin-left: 0.5rem;
 	}
 
 	.tabs-container {
@@ -143,24 +143,7 @@
 
 /* Large+ */
 @media only screen and (min-width: 993px) {
-	.flex > * {
-		flex: 1 0;
-	}
-	.template-project .main > .locales,
-	.template-user .card.info {
-		margin-right: 0.5rem;
-	}
-	.template-project .main > .keys,
-	.template-user .card.contributions {
-		margin-left: 0.5rem;
-	}
 	.responsive-table .btn-hover {
 		visibility: hidden;
-	}
-	.sidebar {
-		width: 300px;
-	}
-	.container .col.main {
-		width: calc(100% - 300px);
 	}
 }

@@ -9,26 +9,31 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import akka.stream.Materializer;
+import play.Configuration;
 import play.api.Play;
 import play.mvc.Filter;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+import utils.ConfigKey;
 
 /**
  * @author resamsel
  * @version 19 May 2017
  */
-public class ForceSslFilter extends Filter {
+public class ForceSSLilter extends Filter {
+  private final Configuration configuration;
+
   @Inject
-  public ForceSslFilter(Materializer mat) {
+  public ForceSSLilter(Materializer mat, Configuration configuration) {
     super(mat);
+    this.configuration = configuration;
   }
 
   @Override
   public CompletionStage<Result> apply(Function<Http.RequestHeader, CompletionStage<Result>> next,
       Http.RequestHeader rh) {
-    if (Play.current().isProd()) {
+    if (Play.current().isProd() && ConfigKey.ForceSSL.getBoolean(configuration)) {
       String[] httpsHeader =
           rh.headers().getOrDefault(Http.HeaderNames.X_FORWARDED_PROTO, new String[] {"http"});
       if (StringUtils.isEmpty(httpsHeader[0]) || httpsHeader[0].equalsIgnoreCase("http"))

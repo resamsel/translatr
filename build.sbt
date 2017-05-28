@@ -33,6 +33,9 @@ libraryDependencies ++= Seq(
 	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
 	"org.apache.httpcomponents" % "httpclient" % "4.5.3",
 
+	// https://mvnrepository.com/artifact/io.getstream.client/stream-repo-apache
+	"io.getstream.client" % "stream-repo-apache" % "1.2.2",
+
 	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
 
 	"io.swagger" %% "swagger-play2" % "1.5.3",
@@ -107,6 +110,7 @@ Concat.groups := Seq(
 		"javascripts/backbone-pageable.min.js",
 		"javascripts/app.js",
 		"javascripts/main.js",
+		"javascripts/notification.js",
 		"javascripts/editor.js"
 	))
 )
@@ -123,6 +127,13 @@ pipelineStages := Seq(concat)
 // JaCoCo test coverage
 //
 jacoco.settings
+
+jacoco.excludes in jacoco.Config := Seq(
+	"router.*",
+	"views.html.*", // should probably not be excluded
+	"*.Reverse*",
+	"*.routes"
+)
 
 // Unfortunately, this is really needed
 parallelExecution in jacoco.Config := false

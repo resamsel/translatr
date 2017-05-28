@@ -26,10 +26,10 @@
 				<div class="nav-wrapper">
 					<a class="brand-logo light left" href="@routes.Application.index()">
 						<i class="material-icons prefix">language</i>
-						<span class="hide-on-small-only">@Messages("brand")</span>
+						<span class="hide-on-small-only">Translatr</span>
 					</a>
 
-					@tags.notifications(template.notifications)
+					@tags.notifications()
 
 					<ul id="dropdown-logged-in" class="dropdown-content">
 						@if(template.loggedInUser != null) {
@@ -55,11 +55,11 @@
 					<ul class="right">
 						@if(template.auth != null) {
 							@if(template.loggedInUser != null) {
-								@if(template.notifications != null) {
+								@if(template.notificationsEnabled) {
 									<li>
 										<a
 											id="notification-button"
-											class="dropdown-button @if(template.hasUnreadNotifications) { available }"
+											class="dropdown-button"
 											href="#!"
 											title="@Messages("notifications")"
 											data-activates="dropdown-notifications"

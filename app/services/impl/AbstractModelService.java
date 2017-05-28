@@ -145,6 +145,7 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
       postSave(t);
     } catch (Exception e) {
       LOGGER.error("Error while batch saving entities", e);
+      throw new PersistenceException(e);
     }
 
     return t;
@@ -193,6 +194,7 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
       postDelete(t);
     } catch (Exception e) {
       LOGGER.error("Error while batch deleting entities", e);
+      throw new PersistenceException(e);
     }
   }
 

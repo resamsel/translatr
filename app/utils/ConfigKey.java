@@ -1,33 +1,51 @@
 package utils;
 
+import play.Configuration;
+import scala.Option;
+
 /**
  *
  * @author resamsel
  * @version 30 Sep 2016
  */
-public enum ConfigKey
-{
-	/* The list of available auth providers */
-	AuthProviders("translatr.auth.providers");
+public enum ConfigKey {
+  /* Whether or not to force SSL */
+  ForceSSL("translatr.forceSSL"),
 
-	private String key;
+  /* The list of available auth providers */
+  AuthProviders("translatr.auth.providers"),
 
-	ConfigKey(String key)
-	{
-		this.key = key;
-	}
+  StreamIOKey("translatr.stream.io.key"),
 
-	public String key()
-	{
-		return key;
-	}
+  StreamIOSecret("translatr.stream.io.secret");
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString()
-	{
-		return key;
-	}
+  private String key;
+
+  ConfigKey(String key) {
+    this.key = key;
+  }
+
+  public String key() {
+    return key;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return key;
+  }
+
+  public String getString(Configuration config) {
+    return config.getString(key);
+  }
+
+  public String getString(play.api.Configuration config) {
+    return config.getString(key, Option.empty()).get();
+  }
+
+  public Boolean getBoolean(Configuration config) {
+    return config.getBoolean(key);
+  }
 }

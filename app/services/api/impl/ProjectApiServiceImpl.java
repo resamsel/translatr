@@ -58,7 +58,7 @@ public class ProjectApiServiceImpl extends
    */
   @Override
   public SearchResponse search(UUID projectId, SearchForm search) {
-    checkPermissionAll("Access token not allowed", readScopes);
+    PermissionUtils.checkPermissionAll("Access token not allowed", readScopes);
 
     Messages messages = Context.current().messages();
 
@@ -69,8 +69,8 @@ public class ProjectApiServiceImpl extends
     List<Suggestable> suggestions = new ArrayList<>();
 
     if (PermissionUtils.hasPermissionAll(Scope.KeyRead)) {
-      PagedList<? extends Suggestable> keys = Key.findBy(
-          KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
+      PagedList<? extends Suggestable> keys = Key
+          .findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
 
       search.pager(keys);
 
@@ -87,9 +87,14 @@ public class ProjectApiServiceImpl extends
 
       if (PermissionUtils.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Manager,
           ProjectRole.Developer) && PermissionUtils.hasPermissionAll(Scope.KeyWrite))
-        suggestions.add(Suggestable.DefaultSuggestable
-            .from(messages.at("key.create", search.search), Data.from(Key.class, null, "+++",
-                routes.Keys.createImmediately(project.id, search.search).url())));
+        suggestions
+            .add(
+                Suggestable.DefaultSuggestable.from(messages.at("key.create", search.search),
+                    Data.from(Key.class, null, "+++",
+                        routes.Keys
+                            .createImmediately(project.id, search.search, search.search,
+                                Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET)
+                            .url())));
     }
 
     if (PermissionUtils.hasPermissionAll(Scope.LocaleRead)) {
@@ -110,9 +115,15 @@ public class ProjectApiServiceImpl extends
 
       if (PermissionUtils.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Translator)
           && PermissionUtils.hasPermissionAll(Scope.LocaleWrite))
-        suggestions.add(Suggestable.DefaultSuggestable
-            .from(messages.at("locale.create", search.search), Data.from(Locale.class, null, "+++",
-                routes.Locales.createImmediately(project.id, search.search).url())));
+        suggestions
+            .add(
+                Suggestable.DefaultSuggestable
+                    .from(
+                        messages.at("locale.create", search.search), Data
+                            .from(Locale.class, null, "+++",
+                                routes.Locales.createImmediately(project.id, search.search,
+                                    search.search, search.order, search.limit, search.offset)
+                                    .url())));
     }
 
     return SearchResponse.from(Suggestion.from(suggestions));

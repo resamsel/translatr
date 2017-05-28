@@ -28,8 +28,6 @@ import play.data.FormFactory;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
-import services.LogEntryService;
-import services.UserService;
 import services.api.ProjectApiService;
 import utils.FormUtils;
 
@@ -64,9 +62,8 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
 
   @Inject
   public ProjectsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
-      UserService userService, LogEntryService logEntryService,
       ProjectApiService projectApiService) {
-    super(injector, cache, auth, userService, logEntryService, projectApiService);
+    super(injector, cache, auth, projectApiService);
 
     this.projectApiService = projectApiService;
   }

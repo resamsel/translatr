@@ -3,6 +3,8 @@ package services.impl;
 import static utils.Stopwatch.log;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -62,7 +64,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
    */
   @Override
   public Message byId(UUID id, String... fetches) {
-    return cache.getOrElse(Message.getCacheKey(id, fetches), () -> Message.byId(id, fetches), 60);
+    return cache.getOrElse(Message.getCacheKey(id, fetches), () -> Message.byId(id, fetches), 10);
   }
 
   /**
@@ -88,8 +90,13 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
    */
   @Override
   protected void preSave(Collection<Message> t) {
-    Map<UUID, Message> messages =
-        Message.byIds(t.stream().map(m -> m.id).collect(Collectors.toList()));
+    List<UUID> ids =
+        t.stream().filter(m -> m.id != null).map(m -> m.id).collect(Collectors.toList());
+    Map<UUID, Message> messages;
+    if (ids.size() > 0)
+      messages = Message.byIds(ids);
+    else
+      messages = Collections.emptyMap();
 
     logEntryService.save(t.stream().filter(m -> !Ebean.getBeanState(m).isNew()).map(m -> {
       return logEntryUpdate(m, messages.get(m.id));

@@ -13,13 +13,11 @@ import criterias.LogEntryCriteria;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.inject.Injector;
-import play.libs.Json;
 import play.mvc.Call;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
 import play.routing.JavaScriptReverseRouter;
-import services.LogEntryService;
-import services.UserService;
 import utils.ConfigKey;
 
 /**
@@ -33,8 +31,8 @@ public class Application extends AbstractController {
 
   @Inject
   public Application(Injector injector, Configuration configuration, CacheApi cache,
-      PlayAuthenticate auth, UserService userService, LogEntryService logEntryService) {
-    super(injector, cache, auth, userService, logEntryService);
+      PlayAuthenticate auth) {
+    super(injector, cache, auth);
 
     this.configuration = configuration;
   }
@@ -72,33 +70,38 @@ public class Application extends AbstractController {
   public Result commandExecute(String commandKey) {
     Command<?> command = getCommand(commandKey);
 
-    if (command == null)
-      return notFound(Json.toJson("Command not found"));
+    String referer = request().getHeader(Http.HeaderNames.REFERER);
 
-    command.execute();
+    if (command == null) {
+      if (referer == null)
+        return redirectWithError(routes.Dashboards.dashboard(), "command.notFound");
+
+      return redirectWithError(referer, "command.notFound");
+    }
+
+    command.execute(injector);
 
     Call call = command.redirect();
 
     if (call != null)
       return redirect(call);
 
-    String referer = request().getHeader("Referer");
-
     if (referer == null)
-      return redirect(routes.Application.index());
+      return redirect(routes.Dashboards.dashboard());
 
     return redirect(referer);
   }
 
   public Result javascriptRoutes() {
-    return ok(JavaScriptReverseRouter.create("jsRoutes",
-        routes.javascript.Application.activityCsv(), routes.javascript.Users.activityCsv(),
-        routes.javascript.Profiles.activity(), routes.javascript.Profiles.resetNotifications(),
-        routes.javascript.Dashboards.search(), routes.javascript.ProjectsApi.search(),
-        routes.javascript.Projects.activity(), routes.javascript.Projects.activityCsv(),
-        routes.javascript.Locales.locale(), routes.javascript.Keys.key(),
-        routes.javascript.Keys.createImmediately(), routes.javascript.LocalesApi.find(),
-        routes.javascript.KeysApi.find(), routes.javascript.TranslationsApi.create(),
-        routes.javascript.TranslationsApi.update(), routes.javascript.TranslationsApi.find()));
+    return ok(
+        JavaScriptReverseRouter.create("jsRoutes", routes.javascript.Application.activityCsv(),
+            routes.javascript.Users.activityCsv(), routes.javascript.Profiles.activity(),
+            routes.javascript.Profiles.resetNotifications(), routes.javascript.Dashboards.search(),
+            routes.javascript.ProjectsApi.search(), routes.javascript.Projects.activity(),
+            routes.javascript.Projects.activityCsv(), routes.javascript.Locales.locale(),
+            routes.javascript.Keys.key(), routes.javascript.Keys.createImmediately(),
+            routes.javascript.LocalesApi.find(), routes.javascript.KeysApi.find(),
+            routes.javascript.TranslationsApi.create(), routes.javascript.TranslationsApi.update(),
+            routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find()));
   }
 }

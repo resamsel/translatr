@@ -5,14 +5,13 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import controllers.Locales;
 import controllers.routes;
 import criterias.KeyCriteria;
 import dto.Locale;
 import models.Key;
 import models.Project;
+import play.inject.Injector;
 import play.mvc.Call;
 import play.mvc.Http.Context;
 import services.KeyService;
@@ -21,24 +20,9 @@ import services.MessageService;
 import services.ProjectService;
 
 public class RevertDeleteLocaleCommand implements Command<models.Locale> {
-  private final ProjectService projectService;
-  private final LocaleService localeService;
-  private final KeyService keyService;
-  private final MessageService messageService;
+  private static final long serialVersionUID = -1628328599712791510L;
 
   private Locale locale;
-
-  /**
-   * 
-   */
-  @Inject
-  public RevertDeleteLocaleCommand(ProjectService projectService, LocaleService localeService,
-      KeyService keyService, MessageService messageService) {
-    this.projectService = projectService;
-    this.localeService = localeService;
-    this.keyService = keyService;
-    this.messageService = messageService;
-  }
 
   /**
    * {@inheritDoc}
@@ -50,16 +34,17 @@ public class RevertDeleteLocaleCommand implements Command<models.Locale> {
   }
 
   @Override
-  public void execute() {
-    Project project = projectService.byId(locale.projectId);
+  public void execute(Injector injector) {
+    Project project = injector.instanceOf(ProjectService.class).byId(locale.projectId);
 
     models.Locale model = locale.toModel(project);
-    localeService.save(model);
+    injector.instanceOf(LocaleService.class).save(model);
     locale.id = model.id;
 
-    Map<String, Key> keys = keyService.findBy(new KeyCriteria().withProjectId(project.id)).getList()
-        .stream().collect(toMap(k -> k.name, a -> a));
-    messageService.save(locale.messages.values().stream()
+    Map<String, Key> keys =
+        injector.instanceOf(KeyService.class).findBy(new KeyCriteria().withProjectId(project.id))
+            .getList().stream().collect(toMap(k -> k.name, a -> a));
+    injector.instanceOf(MessageService.class).save(locale.messages.values().stream()
         .map(m -> m.toModel(model, keys.get(m.keyName))).collect(toList()));
   }
 
@@ -78,5 +63,13 @@ public class RevertDeleteLocaleCommand implements Command<models.Locale> {
   public Call redirect() {
     return routes.Projects.locales(locale.projectId, Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER,
         Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET);
+  }
+
+  /**
+   * @param locale
+   * @return
+   */
+  public static RevertDeleteLocaleCommand from(models.Locale locale) {
+    return new RevertDeleteLocaleCommand().with(locale);
   }
 }

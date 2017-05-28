@@ -38,6 +38,7 @@ GET		/profile/notifications/reset	controllers.Profiles.resetNotifications
 
 # Dashboards
 GET		/dashboard						controllers.Dashboards.dashboard
+GET		/dashboard/projects				controllers.Dashboards.projects
 GET		/dashboard/activity				controllers.Dashboards.activity
 GET		/dashboard/search				controllers.Dashboards.search
 
@@ -60,26 +61,25 @@ GET		/project/:id/activity			controllers.Projects.activity(id: java.util.UUID)
 GET		/project/:id/activity/csv		controllers.Projects.activityCsv(id: java.util.UUID)
 
 # Locales
-GET		/locale/:id						controllers.Locales.locale(id: java.util.UUID)
-GET		/locale/:id/edit				controllers.Locales.edit(id: java.util.UUID)
+GET		/locale/:id						controllers.Locales.locale(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/locale/:id/edit				controllers.Locales.edit(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/locale/:id/edit				controllers.Locales.doEdit(id: java.util.UUID)
 GET		/locale/:id/remove				controllers.Locales.remove(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/locale/:projectId/:localeName/create	controllers.Locales.createImmediately(projectId: java.util.UUID, localeName: String)
+GET		/locale/:projectId/:localeName/create	controllers.Locales.createImmediately(projectId: java.util.UUID, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/locale/:projectId				controllers.Locales.doCreate(projectId: java.util.UUID)
-GET		/locale/:id/translate			controllers.Locales.translate(id: java.util.UUID)
 GET		/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
 POST	/locale/:id/import				controllers.Locales.doUpload(id: java.util.UUID)
 
 # Keys
-GET		/key/:id						controllers.Keys.key(id: java.util.UUID)
-GET		/key/:id/edit					controllers.Keys.edit(id: java.util.UUID)
+GET		/key/:id						controllers.Keys.key(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/key/:id/edit					controllers.Keys.edit(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/key/:id/edit					controllers.Keys.doEdit(id: java.util.UUID)
 GET		/key/:keyId/remove				controllers.Keys.remove(keyId: java.util.UUID, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/key/:keyId/:localeId/remove	controllers.Keys.remove(keyId: java.util.UUID, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/key/:projectId/:keyName/create	controllers.Keys.createImmediately(projectId: java.util.UUID, keyName: String)
+GET		/key/:projectId/:keyName/create	controllers.Keys.createImmediately(projectId: java.util.UUID, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/key/:projectId/create			controllers.Keys.create(projectId: java.util.UUID)
-POST	/key/:projectId/create			controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID = null)
-POST	/key/:projectId/:localeId/create	controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID)
+POST	/key/:projectId/create			controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+POST	/key/:projectId/:localeId/create	controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 
 # Commands
 GET		/command/:key/execute	controllers.Application.commandExecute(key: String)
@@ -120,6 +120,8 @@ GET		/api/users						controllers.UsersApi.find
 GET		/api/user/:userId				controllers.UsersApi.get(userId: java.util.UUID)
 # Disable updating users for the moment
 #PUT		/api/user						controllers.UsersApi.update
+
+GET		/api/notifications				controllers.NotificationsApi.find
 
 # Map static resources from the /public folder to the /assets URL path
 GET		/assets/*file					controllers.Assets.versioned(path="/public", file: Asset)

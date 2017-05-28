@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import models.User;
 
 public class AccessToken extends Dto {
+  private static final long serialVersionUID = 8641212952047519698L;
+
   public UUID userId;
 
   @JsonIgnore

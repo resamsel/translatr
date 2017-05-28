@@ -1,31 +1,43 @@
 @(template: utils.Template, user: User, active: String)
 
-<div class="collection depth">
+<div class="nav collection">
 	@if(template.loggedInUser.id == user.id) {
 		<a class="collection-item @if(active == "info") { active green } else { green-text }"
-			href="@routes.Profiles.profile()">
-			@Messages("info")
+			href="@routes.Profiles.profile()"
+			title="@Messages("info")">
+			<i class="material-icons left hide-on-med-only">info</i>
+			<span class="hide-on-small-only">@Messages("info")</span>
 		</a>
 		<a class="collection-item @if(active == "projects") { active green } else { green-text }"
-			href="@routes.Profiles.projects()">
-			@Messages("projects")
+			href="@routes.Profiles.projects()"
+			title="@Messages("projects")">
+			<i class="material-icons left hide-on-med-only">view_quilt</i>
+			<span class="hide-on-small-only">@Messages("projects")</span>
 		</a>
 		<a class="collection-item @if(active == "activity") { active green } else { green-text }"
-			href="@routes.Profiles.activity()">
-			@Messages("activity")
+			href="@routes.Profiles.activity()"
+			title="@Messages("activity")">
+			<i class="material-icons left hide-on-med-only">notifications_active</i>
+			<span class="hide-on-small-only">@Messages("activity")</span>
 		</a>
 		<a class="collection-item @if(active == "linkedAccounts") { active green } else { green-text }"
-			href="@routes.Profiles.linkedAccounts()">
-			@Messages("linkedAccounts")
+			href="@routes.Profiles.linkedAccounts()"
+			title="@Messages("linkedAccounts")">
+			<i class="material-icons left hide-on-med-only">account_box</i>
+			<span class="hide-on-small-only">@Messages("linkedAccounts")</span>
 		</a>
 		<a class="collection-item @if(active == "accessTokens") { active green } else { green-text }"
-			href="@routes.Profiles.accessTokens()">
-			@Messages("accessTokens")
+			href="@routes.Profiles.accessTokens()"
+			title="@Messages("accessTokens")">
+			<i class="material-icons left hide-on-med-only">accessibility</i>
+			<span class="hide-on-small-only">@Messages("accessTokens")</span>
 		</a>
-	} else {
+	@*} else {
 		<a class="collection-item @if(active == "info") { active green } else { green-text }"
-			href="@routes.Users.user(user.id)">
-			@Messages("info")
+			href="@routes.Users.user(user.id)"
+			title="@Messages("info")">
+			<i class="material-icons left hide-on-med-only">info</i>
+			<span class="hide-on-small-only">@Messages("info")</span>
 		</a>
-	}
+	*@}
 </div>

@@ -3,7 +3,7 @@
 @main(template.withTitle(Messages("dashboard.title")).withName("dashboard")) {
 	@tags.search(form)()
 } {
-	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
+	<a class="breadcrumb" href="@routes.Dashboards.projects()">
 		@Messages("dashboard")
 	</a>
 } {
@@ -11,8 +11,8 @@
 		@tags.collection(projectList, "projects.empty") {
 			<span class="title">@Messages("project.name")</span>
 			@tags.sortOrders {
-				@tags.orderLink(form.get, routes.Dashboards.dashboard(), "project.name", "name", "name desc", "name")
-				@tags.orderLink(form.get, routes.Dashboards.dashboard(), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+				@tags.orderLink(form.get, routes.Dashboards.projects(), "project.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, routes.Dashboards.projects(), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
 			@for(project <- projectList) {
@@ -31,7 +31,7 @@
 				</li>
 			}
 		} {
-			@tags.pager(routes.Dashboards.dashboard(), form.get)
+			@tags.pager(routes.Dashboards.projects(), form.get)
 		}
 	}
 
@@ -39,7 +39,7 @@
 
 	@tags.modal(Messages("project.new"), "modal-create-project") {
 		<form id="form-project" method="post" action="@routes.Projects.create()">
-			@projects.formContent(projectForm)
+			@views.html.projects.formContent(projectForm)
 		</form>
 	}
 

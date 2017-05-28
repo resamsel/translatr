@@ -386,6 +386,23 @@ var Project = Backbone.Model.extend({
 		this.messages = new MessageList(id);
 	}
 });
+var Notification = Backbone.Model.extend({
+	initialize: function(id) {
+		this.id = id;
+	}
+});
+var NotificationList = PagedCollection.extend({
+	model: Notification,
+
+	initialize: function() {
+		this.url = jsRoutes.controllers.NotificationsApi.find().url;
+	},
+
+	parse: function(data) {
+		this.hasMore = data.list.length > 0;
+		return data.list;
+	}
+});
 
 $(document).ready(function() {
 	Backbone.history.start();

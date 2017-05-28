@@ -14,17 +14,21 @@ accessToken.title = Access Token
 accessTokens = Access Tokens
 accessTokens.empty = <i class="material-icons xlarge grey-text text-lighten-1">vpn_key</i><br/>\nNo access tokens yet.
 activity = Activity
-activity.Create.notification = {2} created {0} {1}
-activity.Create.title = {0} created {1}
-activity.Delete.notification = {2} deleted {0} {1}
-activity.Delete.title = {0} deleted {1}
-activity.Update.notification = {2} updated {0} {1}
-activity.Update.title = {0} changed {1}
 activity.all = All activity
 activity.amount = {0,choice,0#No new contributions|1#One new contribution|1<{0} new contributions}
 activity.content = <p>The activity graph shows the usage of Translatr. The change history contains contributions to users, projects, locales, keys, and translations. That way the activity of a project can be estimated, as well as the activity of individual users.</p>
+activity.create.info = {0} created {1}
+activity.create.subtitle = {0,choice,0#Not created|1#created|1<created {0} times}{1,choice,0# by unknown|1#|1< by {1} users} {2}
+activity.create.title = {0}: {2} created by {4}
+activity.delete.info = {0} deleted {1}
+activity.delete.subtitle = {0,choice,0#Not deleted|1#deleted|1<deleted {0} times}{1,choice,0# by unknown|1#|1< by {1} users}
+activity.delete.title = {0}: {2} deleted by {4}
 activity.empty = <i class="material-icons xlarge grey-text text-lighten-1">history</i><br/>\nNo activities yet.
+activity.login.title = {0} logged-in {1}
 activity.sinceLastLogin = New contributions since last signing in
+activity.update.info = {0} changed {1}
+activity.update.subtitle = {0,choice,0#Not changed|1#changed|1<changed {0} times}{1,choice,0# by unknown|1#|1< by {1} users} {2}
+activity.update.title = {0}: {2} changed by {4}
 auth.as = Signed in as <strong>{0}</strong>
 auth.facebook = Facebook
 auth.github = Github
@@ -35,7 +39,6 @@ auth.login.content = <i class="material-icons xlarge grey-text text-lighten-1">a
 auth.login.title = Sign in
 auth.logout = Logout
 auth.twitter = Twitter
-brand = Translatr
 button.cancel = Cancel
 button.close = Close
 button.create = Create
@@ -59,6 +62,7 @@ cli.install.title = Installation
 cli.title = Command Line Interface
 cli.usage.content = <p>To use Translatr CLI we need a .translatr.yml config file. Create one in any directory that you want to enable the CLI. Translatr will then use that file as configuration.</p>\n\n<h5 class="header">Example .translatr.yml for Play messages</h5>\n\n<pre class="language-yml"><code>translatr:\n  endpoint: http://localhost:9000\n  access_token: &lt;access token&gt;\n  project_id: &lt;project ID&gt;\n  pull:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'\n  push:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'</code></pre>\n\n<p>Create a new access token and enter it in the .translatr.yml: <a href="/profile/accessToken/create">create an access token</a>.</p>\n\n<p>Then, create a project in the web GUI and enter the project ID (40 character UUID in the URL, i.e. http://localhost:9000/project/<strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong> -> project ID: <strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong>) in the .translatr.yml.</p>\n\n<h5 class="header">Pushing</h5>\n\n<p>By pushing you send the matching messages files to the given endpoint, creating locales if needed.</p>\n\n<pre class="language-bash"><code>translatr push</code></pre>\n\n<p>This will overwrite all existing messages, if any. No existing keys/locales will be removed, this is not a sync operation.</p>\n\n<h5 class="header">Pulling</h5>\n\n<p>By pulling you download all locales into separate files into the configured files (translatr.pull.target key).</p>\n\n<pre class="language-bash"><code>translatr pull</code></pre>\n\n<p>This will overwrite any existing files locally. All known locales will be downloaded.</p>
 cli.usage.title = Usage
+command.notFound = Command was not found
 contentType.dto.AccessToken = Access token
 contentType.dto.Key = Key
 contentType.dto.Locale = Locale
@@ -117,7 +121,7 @@ key.selection.none = <i class="material-icons xlarge grey-text text-lighten-1">v
 key.title = {1} - Project {0}
 key.undefined = Key undefined:
 keys = Keys
-keys.empty = <i class="material-icons xlarge grey-text text-lighten-1">vpn_key</i><br/>\nNo keys yet.
+keys.empty = <i class="material-icons xlarge grey-text text-lighten-1">vpn_key</i><br/>\nNo keys found
 keys.size = {0,choice,0#no keys yet|1#one key|1<{0} keys}
 keys.title = Keys - Project {0}
 latest = latest
@@ -156,7 +160,7 @@ locale.title = {1} - Project {0}
 locale.to.label = Translate to
 locale.value.label = Value
 locales = Locales
-locales.empty = <i class="material-icons xlarge grey-text text-lighten-1">book</i><br/>\nNo locales yet.
+locales.empty = <i class="material-icons xlarge grey-text text-lighten-1">book</i><br/>\nNo locales found
 locales.size = {0,choice,0#no locales yet|1#one locale|1<{0} locales}
 locales.title = Locales - Project {0}
 main.subtitle = A modern and intuitive i18n tool
@@ -177,6 +181,8 @@ message.updated = Translation has been updated
 messages = Translations
 messages.missing = {0,choice,0#no missing translations|1#one translation missing|1<{0} translations missing}
 messages.size = {0,choice,0#no translations yet|1#one translation|1<{0} translations}
+notification = Notification
+notification.update.aggregated = {0,choice,0#Not changed|1#changed|1<changed {0} times}{1,choice,0# by unknown|1#|1< by {1} users} {2}
 notifications = Notifications
 notifications.empty = No new notifications
 overview = Overview

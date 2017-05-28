@@ -113,6 +113,9 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   protected void postSave(Project t, boolean update) {
     if (!update)
       logEntryService.save(LogEntry.from(ActionType.Create, t, dto.Project.class, null, toDto(t)));
+
+    // When message has been created, the project cache needs to be invalidated
+    cache.remove(Project.getCacheKey(t.id));
   }
 
   /**
