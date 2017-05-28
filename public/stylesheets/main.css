@@ -368,17 +368,13 @@ nav ul .disabled:hover {
 /* Chip */
 .chip.user {
 	background-color: transparent;
-	height: 40px;
-	line-height: 40px;
+	height: 32px;
+	line-height: 32px;
 	font-size: inherit;
 	font-weight: inherit;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
-}
-.chip.user img {
-	width: 40px;
-	height: 40px;
 }
 
 .flex-container,

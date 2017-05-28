@@ -1,7 +1,7 @@
-@(user: User, key: String = "project.owner", imgKey: String = "project.owner.info")
+@(user: User, key: String = "project.owner", imgKey: String = "project.owner.info", size: Int = 32)
 
 <div class="chip user">
-	@tags.gravatar(user, help = Messages(imgKey))
+	@tags.gravatar(user, help=Messages(imgKey), size=size)
 	@Html(Messages(key, user.name))
 	<a href="@routes.Users.user(user.id)">
 		@user.name
