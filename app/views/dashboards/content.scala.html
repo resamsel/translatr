@@ -1,15 +1,14 @@
 @(template: utils.Template, active: String, numberOfProjects: Integer = null)(content: Html)
 
-<div class="container-fluid content">
-	<div class="container row container-main flex-container">
-		<div class="col sidebar">
-			@card(template.loggedInUser, numberOfProjects)
-
-			@if(active != null) {
+<div class="container-fluid content @if(active != null) { content-@active }">
+	@if(active != null) {
+		<div class="container row">
+			<div class="col s12">
 				@nav(template, active)
-			}
+			</div>
 		</div>
-
+	}
+	<div class="container row container-main flex-container">
 		<div class="col s12 main">
 			@content
 		</div>

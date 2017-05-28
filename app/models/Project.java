@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -60,6 +61,15 @@ public class Project implements Model<Project, UUID>, Suggestable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
   public static final int NAME_LENGTH = 255;
+
+  public static final String FETCH_MEMBERS = "members";
+  public static final String FETCH_OWNER = "owner";
+  public static final String FETCH_LOCALES = "locales";
+  public static final String FETCH_KEYS = "keys";
+
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList(FETCH_OWNER, FETCH_MEMBERS);
+
+  private static final Find<UUID, Project> find = new Find<UUID, Project>() {};
 
   @Id
   @GeneratedValue
@@ -138,15 +148,11 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return this;
   }
 
-  private static final Find<UUID, Project> find = new Find<UUID, Project>() {};
-
-  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("owner", "members");
-
   public static Project byId(UUID id, String... fetches) {
     if (id == null)
       return null;
 
-    HashSet<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
+    Set<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
     if (fetches.length > 0)
       propertiesToFetch.addAll(Arrays.asList(fetches));
 
@@ -155,7 +161,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   public static PagedList<Project> findBy(ProjectCriteria criteria) {
     ExpressionList<Project> query =
-        find.fetch("owner").fetch("members").fetch("locales").fetch("keys").where();
+        find.fetch(FETCH_OWNER).fetch(FETCH_MEMBERS).fetch(FETCH_LOCALES).fetch(FETCH_KEYS).where();
 
     query.eq("deleted", false);
 

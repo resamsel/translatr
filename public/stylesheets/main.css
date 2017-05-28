@@ -245,12 +245,24 @@ nav ul .disabled:hover {
   opacity: 1;
 }
 
-/* Sidebar */
-.sidebar {
-	display: flex;
-	flex-direction: column;
-	flex: 1 0 auto;
+/* Content Navigation */
+.nav {
+	text-align: center;
 }
+.content .nav a {
+	display: inline-block;
+}
+.nav a:not(.active)::before {
+	content: "";
+	display: inline-block;
+}
+.nav a.active span.hide-on-small-only {
+	display: inline-block !important;
+}
+.nav a:not(.active) i.material-icons.left {
+	margin-right: 0;
+}
+
 
 /* Autocomplete */
 .autocomplete-suggestions {
@@ -311,6 +323,15 @@ nav ul .disabled:hover {
     float: left;
     width: 28%;
 }
+.card.card-user {
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+}
+.card.card-user .card-image img {
+	width: 120px;
+	min-width: 120px;
+}
 .card .card-content {
 	flex-grow: 1;
 }
@@ -345,17 +366,17 @@ nav ul .disabled:hover {
 
 /* Chip */
 .chip.user {
-    background-color: transparent;
-    height: 40px;
-    line-height: 40px;
-    font-size: inherit;
-    font-weight: inherit;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+	background-color: transparent;
+	height: 40px;
+	line-height: 40px;
+	font-size: inherit;
+	font-weight: inherit;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 .chip.user img {
-    width: 40px;
+	width: 40px;
 	height: 40px;
 }
 
@@ -378,11 +399,11 @@ nav ul .disabled:hover {
 }
 .flex > * > .card {
 	flex: 1 100%;
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 .flex > .header {
-	flex: 1 100%;	
+	flex: 1 100%;
 }
 .flex > .activity,
 .template-project .flex > .messages {

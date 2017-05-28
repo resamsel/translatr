@@ -106,7 +106,7 @@ public class Projects extends AbstractController {
 
       return ok(log(() -> views.html.projects.project.render(createTemplate(), project, form),
           LOGGER, "Rendering project"));
-    });
+    }, Project.FETCH_MEMBERS);
   }
 
   public Result create() {
@@ -367,9 +367,9 @@ public class Projects extends AbstractController {
   }
 
   private <T extends Form<SearchForm>> Result searchForm(UUID projectId,
-      BiFunction<Project, Form<SearchForm>, Result> processor) {
+      BiFunction<Project, Form<SearchForm>, Result> processor, String... propertiesToFetch) {
     return project(projectId, project -> processor.apply(project,
-        FormUtils.Search.bindFromRequest(formFactory, configuration)));
+        FormUtils.Search.bindFromRequest(formFactory, configuration)), propertiesToFetch);
   }
 
   private <T extends Form<LocaleSearchForm>> Result localeSearchForm(UUID projectId,

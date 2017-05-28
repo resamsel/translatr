@@ -1,6 +1,6 @@
 @(template: utils.Template, user: User, active: String)
 
-<div class="nav collection depth">
+<div class="nav collection">
 	@if(template.loggedInUser.id == user.id) {
 		<a class="collection-item @if(active == "info") { active green } else { green-text }"
 			href="@routes.Profiles.profile()"
