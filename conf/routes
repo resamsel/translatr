@@ -38,6 +38,7 @@ GET		/profile/notifications/reset	controllers.Profiles.resetNotifications
 
 # Dashboards
 GET		/dashboard						controllers.Dashboards.dashboard
+GET		/dashboard/projects				controllers.Dashboards.projects
 GET		/dashboard/activity				controllers.Dashboards.activity
 GET		/dashboard/search				controllers.Dashboards.search
 

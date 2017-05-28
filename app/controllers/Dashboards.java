@@ -66,8 +66,12 @@ public class Dashboards extends AbstractController {
     this.projectService = projectService;
   }
 
-  @SubjectPresent(forceBeforeAuthCheck = true)
   public Result dashboard() {
+    return redirect(controllers.routes.Dashboards.projects());
+  }
+
+  @SubjectPresent(forceBeforeAuthCheck = true)
+  public Result projects() {
     return loggedInUser(user -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
@@ -77,7 +81,7 @@ public class Dashboards extends AbstractController {
       PagedList<Project> projects =
           projectService.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
 
-      return log(() -> ok(views.html.dashboards.dashboard.render(createTemplate(),
+      return log(() -> ok(views.html.dashboards.projects.render(createTemplate(),
           projects.getList(), FormUtils.Search.bindFromRequest(formFactory, configuration),
           ProjectForm.form(formFactory))), LOGGER, "Rendering dashboard");
     });

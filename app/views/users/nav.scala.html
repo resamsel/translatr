@@ -32,12 +32,12 @@
 			<i class="material-icons left hide-on-med-only">accessibility</i>
 			<span class="hide-on-small-only">@Messages("accessTokens")</span>
 		</a>
-	} else {
+	@*} else {
 		<a class="collection-item @if(active == "info") { active green } else { green-text }"
 			href="@routes.Users.user(user.id)"
 			title="@Messages("info")">
 			<i class="material-icons left hide-on-med-only">info</i>
 			<span class="hide-on-small-only">@Messages("info")</span>
 		</a>
-	}
+	*@}
 </div>

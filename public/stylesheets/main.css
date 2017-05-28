@@ -248,6 +248,7 @@ nav ul .disabled:hover {
 /* Content Navigation */
 .nav {
 	text-align: center;
+	margin-bottom: 0;
 }
 .content .nav a {
 	display: inline-block;
