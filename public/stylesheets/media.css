@@ -32,9 +32,6 @@
 	nav .brand-logo.left {
 		left: 0;
 	}
-	nav .brand-logo i.material-icons {
-		padding-left: 15px;
-	}
 	.table.responsive-table th {
 		text-align: right !important;
 		width: auto;
@@ -52,15 +49,11 @@
 
 /* Medium+ */
 @media only screen and (min-width: 601px) {
-	nav,
-	.navbar {
-		height: 96px;
-	}
 	nav .nav-wrapper {
 		height: 64px;
 	}
 	nav .brand-logo {
-		margin-left: 1rem;
+		margin-left: 0.5rem;
 	}
 	.navbar-form {
 		margin: 0 25%;
@@ -78,9 +71,6 @@
 	.notifications {
 		width: 360px;
 	}
-	.breadcrumbs {
-		top: 64px;
-	}
 	.fixed-action-btn.horizontal ul li {
 	    margin: 7.5px;
 	}
@@ -89,22 +79,19 @@
 		bottom: auto;
 	}
 	/* Overview Pages */
-	.container {
-	    width: 90%;
-	}
 	.flex > * {
 		flex: 1 0;
 	}
 	.flex.main > .activity,
-	.flex.main > .messages {
-		flex: 2 100%;
+	.flex.main > .info {
+		flex: 3 100%;
 	}
-	.template-project .main > .locales,
-	.template-user .card.user {
+	.template-project-info .main > .locales,
+	.template-project-info .main > .keys {
 		margin-right: 0.5rem;
 	}
-	.template-project .main > .keys,
-	.template-user .card.info {
+	.template-project-info .main > .keys,
+	.template-project-info .main > .messages {
 		margin-left: 0.5rem;
 	}
 

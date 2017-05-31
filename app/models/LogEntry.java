@@ -174,6 +174,9 @@ public class LogEntry implements Model<LogEntry, UUID> {
   private static ExpressionList<LogEntry> findQuery(LogEntryCriteria criteria) {
     ExpressionList<LogEntry> query = find.where();
 
+    if (criteria.getIds() != null)
+      query.idIn(criteria.getIds());
+
     if (criteria.getUserId() != null)
       query.eq("user.id", criteria.getUserId());
 

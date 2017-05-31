@@ -1,13 +1,7 @@
 @(template: utils.Template, projectList: List[Project], form: Form[forms.SearchForm], projectForm: Form[forms.ProjectForm])
 
-@main(template.withTitle(Messages("dashboard.title")).withName("dashboard")) {
-	@tags.search(form)()
-} {
-	<a class="breadcrumb" href="@routes.Dashboards.projects()">
-		@Messages("dashboard")
-	</a>
-} {
-	@content(template, "projects", projectList.size) {
+@main(template.withTitle(Messages("dashboard")).withName("dashboard-projects"))(tags.search(form)())(nav(template, "projects")) {
+	@content {
 		@tags.collection(projectList, "projects.empty") {
 			<span class="title">@Messages("project.name")</span>
 			@tags.sortOrders {

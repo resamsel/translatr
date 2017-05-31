@@ -1,21 +1,7 @@
 @(template: utils.Template, project: models.Project, locale: models.Locale)
 
-@main(template.withTitle(Messages("locale.import.title", locale.project.name, tags.locale(locale.name)))) {
-} {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
-			@project.name
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.locales(project.id)">
-			@Messages("locales")
-		</a>
-		<a class="breadcrumb" href="@routes.Locales.locale(locale.id)">
-			@tags.locale(locale.name)
-		</a>
-} {
-	@projects.content(project, "locales") {
+@main(template.withTitle(Messages("locale.import.title", locale.project.name, tags.locale(locale.name))))()(projects.nav(project, "locales")) {
+	@projects.content() {
 		<form action="@routes.Locales.upload(locale.id)" method="post" enctype="multipart/form-data">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">

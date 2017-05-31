@@ -1,15 +1,7 @@
 @(template: utils.Template, project: models.Project, form: Form[forms.ProjectForm])
 
-@main(template.withTitle(Messages("project.edit.title", project.name))) {
-} {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb active" href="@routes.Projects.project(project.id)">
-			@project.name
-		</a>
-} {
-	@content(project, "info") {
+@main(template.withTitle(project.name).withName("project-edit").withBackLink(routes.Projects.project(project.id)))()(nav(project, "info")) {
+	@content("offset-m2 m8 offset-l3 l6") {
 		<form action="@routes.Projects.doEdit(project.id)" method="post">
 			<div class="card no-image">
 				<div class="card-content">

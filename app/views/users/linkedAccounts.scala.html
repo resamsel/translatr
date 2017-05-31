@@ -3,16 +3,8 @@
 @import utils.FormatUtils._
 @import com.feth.play.module.pa.views.html._
 
-@main(template.withTitle(Messages("user.title", user.name)).withName("user-linked-accounts")) {
-} {
-	<a class="breadcrumb" href="@routes.Users.user(user.id)">
-		@user.name
-	</a>
-	<a class="breadcrumb" href="@routes.Profiles.linkedAccounts()">
-		@Messages("linkedAccounts")
-	</a>
-} {
-	@content(template, user, "linkedAccounts") {
+@main(template.withTitle(user.name).withName("user-linked-accounts"))()(nav(template, user, "linkedAccounts")) {
+	@content("linkedAccounts") {
 		<div class="row">
 			<div class="col s8">
 				@tags.collection(linkedAccountMap.values, "linkedAccounts.empty", "linked-accounts") {

@@ -1,18 +1,7 @@
 @(template: utils.Template, project: Project, form: Form[forms.KeyForm])
 
-@main(template.withTitle(Messages("key.create.title", project.name))) {
-} {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.project(project.id)">
-			@project.name
-		</a>
-		<a class="breadcrumb" href="@routes.Projects.keys(project.id)">
-			@Messages("keys")
-		</a>
-} {
-	@projects.content(project, "keys", "flex") {
+@main(template.withTitle(project.name).withBackLink(routes.Projects.project(project.id)))()(projects.nav(project, "keys")) {
+	@projects.content("flex") {
 		<form action="@routes.Keys.doCreate(project.id, null)" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">

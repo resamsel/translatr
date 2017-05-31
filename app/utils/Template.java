@@ -3,6 +3,7 @@ package utils;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import models.User;
+import play.mvc.Call;
 
 /**
  *
@@ -17,6 +18,8 @@ public class Template {
   public String title;
 
   public String name;
+
+  public Call backLink;
 
   public boolean notificationsEnabled;
 
@@ -35,6 +38,11 @@ public class Template {
 
   public Template withName(String name) {
     this.name = name;
+    return this;
+  }
+
+  public Template withBackLink(Call backLink) {
+    this.backLink = backLink;
     return this;
   }
 

@@ -36,6 +36,10 @@ public class Notification extends Dto {
    * 
    */
   public static Notification from(SimpleActivity in) {
+    return from(in, null);
+  }
+
+  public static Notification from(SimpleActivity in, LogEntry activity) {
     Injector injector = Play.current().injector();
     UserService userService = injector.instanceOf(UserService.class);
     LogEntryService logEntryService = injector.instanceOf(LogEntryService.class);
@@ -46,7 +50,8 @@ public class Notification extends Dto {
     out.user = User.from(userService.byId(extractUuid(in.getActor())));
     out.verb = in.getVerb();
     out.time = in.getTime();
-    LogEntry activity = logEntryService.byId(extractUuid(in.getForeignId()));
+    if (activity == null)
+      activity = logEntryService.byId(extractUuid(in.getForeignId()));
     if (activity != null) {
       out.activityId = activity.id;
       out.contentType = activity.getSimpleContentType();
@@ -62,7 +67,7 @@ public class Notification extends Dto {
     return out;
   }
 
-  private static UUID extractUuid(String id) {
+  public static UUID extractUuid(String id) {
     String[] parts = id.split(":", 2);
     if (parts.length != 2)
       return null;

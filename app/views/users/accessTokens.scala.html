@@ -2,16 +2,8 @@
 
 @import utils.FormatUtils.pretty
 
-@main(template.withTitle(Messages("user.title", user.name)).withName("user-access-tokens")) {
-} {
-	<a class="breadcrumb" href="@routes.Users.user(user.id)">
-		@user.name
-	</a>
-	<a class="breadcrumb" href="@routes.Profiles.accessTokens()">
-		@Messages("accessTokens")
-	</a>
-} {
-	@content(template, user, "accessTokens") {
+@main(template.withTitle(user.name).withName("user-access-tokens"))()(nav(template, user, "accessTokens")) {
+	@content("accessTokens") {
 		@tags.collection(accessTokenList, "accessTokens.empty", "access-tokens") {
 			<span class="title">@Messages("accessToken")</span>
 		} {

@@ -1,12 +1,7 @@
 @(template: utils.Template, user: User, form: Form[forms.UserForm])
 
-@main(template.withTitle(Messages("user.edit.title")).withName("user-edit")) {
-} {
-	<a class="breadcrumb" href="@routes.Users.user(user.id)">
-		@user.name
-	</a>
-} {
-	@content(template, user, "info") {
+@main(template.withTitle(user.name).withName("user-edit").withBackLink(routes.Profiles.profile()))()(nav(template, user, "info")) {
+	@content("info offset-m2 m8 offset-l3 l6") {
 		<form action="@routes.Profiles.doEdit()" method="post">
 			<div class="card no-image">
 				<div class="card-content">

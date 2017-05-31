@@ -1,9 +1,18 @@
 package dto;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.joda.time.DateTime;
 
+import criterias.LogEntryCriteria;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
+import models.LogEntry;
 import play.i18n.Messages;
 import play.mvc.Http.Context;
 import utils.FormatUtils;
@@ -32,7 +41,8 @@ public class AggregatedNotification extends Dto {
   public User user;
   public Project project;
 
-  public static AggregatedNotification from(AggregatedActivity<SimpleActivity> in) {
+  public static AggregatedNotification from(AggregatedActivity<SimpleActivity> in,
+      Map<UUID, LogEntry> logEntryMap) {
     Messages messages = Context.current().messages();
 
     AggregatedNotification out = new AggregatedNotification();
@@ -45,7 +55,16 @@ public class AggregatedNotification extends Dto {
     out.activityCount = in.getActivityCount();
     out.actorCount = in.getActorCount();
     if (in.getActivities() != null && !in.getActivities().isEmpty()) {
-      Notification activity = Notification.from(in.getActivities().get(0));
+      SimpleActivity firstActivity = in.getActivities().get(0);
+      Notification activity = null;
+      if (logEntryMap != null) {
+        UUID logEntryId = Notification.extractUuid(firstActivity.getForeignId());
+        if (logEntryMap.containsKey(logEntryId))
+          activity = Notification.from(firstActivity, logEntryMap.get(logEntryId));
+      }
+      if (activity == null)
+        activity = Notification.from(firstActivity);
+
       out.title = activity.title;
       out.contentType = activity.contentType;
       out.name = activity.name;
@@ -59,5 +78,14 @@ public class AggregatedNotification extends Dto {
         out.actorCount, out.updated);
 
     return out;
+  }
+
+  public static List<AggregatedNotification> from(List<AggregatedActivity<SimpleActivity>> in) {
+    List<UUID> ids = in.stream().flatMap(activity -> activity.getActivities().stream())
+        .map(activity -> Notification.extractUuid(activity.getForeignId())).collect(toList());
+    Map<UUID, LogEntry> map = LogEntry.findBy(new LogEntryCriteria().withIds(ids)).getList()
+        .stream().collect(toMap(LogEntry::getId, a -> a));
+
+    return in.stream().map(a -> from(a, map)).collect(toList());
   }
 }

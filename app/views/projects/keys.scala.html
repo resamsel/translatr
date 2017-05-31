@@ -1,19 +1,11 @@
 @(template: utils.Template, project: models.Project, keys: com.avaje.ebean.PagedList[models.Key], progress: Map[java.util.UUID, Double], form: Form[forms.KeySearchForm])
 
-@main(template.withTitle(Messages("keys.title", project.name)).withName("keys")) {
+@main(template.withTitle(project.name).withName("project-keys")) {
 	@tags.search(form)()
 } {
-	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-		@Messages("dashboard")
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
-		@project.name
-	</a>
-	<a class="breadcrumb active" href="@routes.Projects.keys(project.id)">
-		@Messages("keys")
-	</a>
+	@nav(project, "keys")
 } {
-	@content(project, "keys") {
+	@content() {
 		@tags.collection(keys.getList, "keys.empty", "keys") {
 			<span class="title">@Messages("key.name")</span>
 			@tags.sortOrders {

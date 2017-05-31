@@ -1,18 +1,7 @@
 @(template: utils.Template, project: Project, form: Form[forms.LocaleForm])
 
-@main(template.withTitle(Messages("locale.create.title", project.name))) {
-} {
-	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-		@Messages("dashboard")
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
-		@project.name
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.locales(project.id)">
-		@Messages("locales")
-	</a>
-} {
-	@projects.content(project, "locales", "flex") {
+@main(template.withTitle(project.name).withBackLink(routes.Projects.project(project.id)))()(projects.nav(project, "locales")) {
+	@projects.content("flex") {
 		<form action="@routes.Locales.doCreate(project.id)" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">

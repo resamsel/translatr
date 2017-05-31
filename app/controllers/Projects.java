@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
+import play.data.validation.ValidationError;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
@@ -129,7 +131,14 @@ public class Projects extends AbstractController {
       form.get().fill(project).withDeleted(false);
     else
       project = form.get().fill(new Project()).withOwner(owner);
-    projectService.save(project);
+    try {
+      projectService.save(project);
+    } catch (ConstraintViolationException e) {
+      e.getConstraintViolations().forEach(violation -> {
+        form.reject(new ValidationError("name", violation.getMessage()));
+      });
+      return badRequest(views.html.projects.create.render(createTemplate(), form));
+    }
 
     select(project);
 

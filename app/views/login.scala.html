@@ -2,11 +2,7 @@
 
 @import tags._
 
-@main(template.withTitle(Messages("auth.login.title")).withName("login")) { } {
-	<a class="breadcrumb" href="@routes.Application.login()">
-		@Messages("auth.login.title")
-	</a>
-} {
+@main(template.withTitle(Messages("auth.login.title")).withName("login"))()() {
 	@tags.content {
 		<div class="col s12 m3 offset-m3 center-align grey-text text-darken-1">
 			@Html(Messages("auth.login.content"))

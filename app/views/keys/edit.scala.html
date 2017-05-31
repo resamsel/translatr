@@ -1,21 +1,7 @@
 @(template: utils.Template, key: models.Key, form: Form[forms.KeyForm])
 
-@main(template.withTitle(Messages("key.edit.title", key.project.name, key.name))) {
-} {
-	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-		@Messages("dashboard")
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
-		@key.project.name
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.keys(key.project.id)">
-		@Messages("keys")
-	</a>
-	<a class="breadcrumb" href="@routes.Keys.key(key.id)">
-		@key.name
-	</a>
-} {
-	@projects.content(key.project, "keys", "flex") {
+@main(template.withTitle(key.project.name).withBackLink(routes.Projects.project(key.project.id)))()(projects.nav(key.project, "keys")) {
+	@projects.content("flex") {
 		<form action="@routes.Keys.doEdit(key.id)" method="post">
 			<div class="card no-image">
 				<div class="card-content">

@@ -1,0 +1,11 @@
+@(call: Call, item: String, key: String, icon: String, active: String)
+<li class="tab">
+	<a
+		class="collection-item @if(active == item) { active }"
+		href="@call"
+		target="_self"
+		title="@Messages(key)">
+		<i class="material-icons hide-on-med-and-up">@icon</i>
+		<span class="hide-on-small-only">@Messages(key)</span>
+	</a>
+</li>

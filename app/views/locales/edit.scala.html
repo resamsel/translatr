@@ -1,21 +1,7 @@
 @(template: utils.Template, locale: models.Locale, form: Form[forms.LocaleForm])
 
-@main(template.withTitle(Messages("locale.edit.title", locale.project.name, tags.locale(locale.name)))) {
-} {
-	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-		@Messages("dashboard")
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.project(locale.project.id)">
-		@locale.project.name
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.locales(locale.project.id)">
-		@Messages("locales")
-	</a>
-	<a class="breadcrumb" href="@routes.Locales.locale(locale.id)">
-		@tags.locale(locale.name)
-	</a>
-} {
-	@projects.content(locale.project, "locales", "flex") {
+@main(template.withTitle(locale.project.name).withBackLink(routes.Projects.project(locale.project.id)))()(projects.nav(locale.project, "locales")) {
+	@projects.content("flex") {
 		<form action="@routes.Locales.doEdit(locale.id)" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">

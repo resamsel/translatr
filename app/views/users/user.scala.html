@@ -3,39 +3,45 @@
 @import utils.FormatUtils._
 @import views.html.tags.contentCard
 
-@main(template.withTitle(Messages("user.title", user.name)).withName("user")) {
-} {
-	<a class="breadcrumb" href="@routes.Users.user(user.id)">
-		@user.name
-	</a>
-} {
-	@content(template, user, "info", "flex") {
-		@card(template, user)
-		@contentCard(Messages("info"), styleClass = "info") {
-			<ul class="profile-info">
-				@if(template.loggedInUser.id == user.id) {
-					<li class="truncate">
-						<a href="mailto:@user.email">
-							<i class="material-icons left">email</i>
-							@user.email
-						</a>
-					</li>
+@main(template.withTitle(user.name).withName("user-info"))()(nav(template, user, "info")) {
+	@content("info") {
+		<div class="row">
+			<div class="col s12 offset-m2 m8 offset-l3 l6">
+				@card(template, user) {
+					<ul class="profile-info">
+						<li class="truncate">
+							<i class="material-icons left">link</i>
+							<a href="@routes.Users.user(user.id)">@user.username</a>
+						</li>
+						@if(template.loggedInUser.id == user.id) {
+							<li class="truncate">
+								<a href="mailto:@user.email">
+									<i class="material-icons left">email</i>
+									@user.email
+								</a>
+							</li>
+						}
+						<li class="truncate">
+							<i class="material-icons left">access_time</i>
+							@Messages("user.created", user.whenCreated.toDate)
+						</li>
+						<li class="truncate">
+							<i class="material-icons left">view_quilt</i>
+							@Messages("projects.amount", stats.numberOfProjects)
+						</li>
+						<li class="truncate">
+							<i class="material-icons left">group_work</i>
+							@Messages("contributions.amount", stats.numberOfActivities)
+						</li>
+					</ul>
 				}
-				<li class="truncate">
-					<i class="material-icons left">access_time</i>
-					@Messages("user.created", user.whenCreated.toDate)
-				</li>
-			</ul>
-		}
-		@contentCard(Messages("activity"), styleClass = "activity") {
-			<div class="svg-container"></div>
-		}
-		@contentCard(Messages("contributions"), styleClass = "contributions") {
-			<p>
-				@Messages("projects.amount", stats.numberOfProjects),
-				@Messages("contributions.amount", stats.numberOfActivities)
-			</p>
-		}
+			</div>
+			<div class="col s12">
+				@tags.contentCard(Messages("activity"), styleClass = "activity col s12") {
+					<div class="svg-container"></div>
+				}
+			</div>
+		</div>
 	}
 
 	<script>

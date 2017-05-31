@@ -1,7 +1,5 @@
 package dto;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -28,8 +26,7 @@ public class NotificationsPaged extends Dto implements PagedList<AggregatedNotif
    */
   public NotificationsPaged(StreamResponse<AggregatedActivity<SimpleActivity>> delegate) {
     if (delegate != null)
-      this.list =
-          delegate.getResults().stream().map(AggregatedNotification::from).collect(toList());
+      this.list = AggregatedNotification.from(delegate.getResults());
     else
       this.list = Collections.emptyList();
   }

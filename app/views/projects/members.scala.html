@@ -2,20 +2,8 @@
 
 @import utils.FormatUtils._
 
-@main(template.withTitle(Messages("keys.title", project.name))) {
-	@tags.search(form)()
-} {
-	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-		@Messages("dashboard")
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
-		@project.name
-	</a>
-	<a class="breadcrumb active" href="@routes.Projects.members(project.id)">
-		@Messages("project.members")
-	</a>
-} {
-	@content(project, "members") {
+@main(template.withTitle(project.name).withName("project-members"))(tags.search(form)())(nav(project, "members")) {
+	@content() {
 		@tags.collection(memberList.getList, "members.empty") {
 				<span class="title">@Messages("project.member")</span>
 			} {

@@ -2,16 +2,8 @@
 
 @import utils.FormatUtils._
 
-@main(template.withTitle(Messages("user.title", user.name)).withName("user")) {
-} {
-	<a class="breadcrumb" href="@routes.Users.user(user.id)">
-		@user.name
-	</a>
-	<a class="breadcrumb" href="@routes.Profiles.activity()">
-		@Messages("activity")
-	</a>
-} {
-	@content(template, user, "activity") {
+@main(template.withTitle(user.name).withName("user-activity"))()(nav(template, user, "activity")) {
+	@content("activity") {
 		@tags.collection(activityList.getList, "activity.empty") {
 			<span class="title">@Messages("activity")</span>
 			@tags.sortOrders {

@@ -9,7 +9,7 @@
 	</li>
 }
 
-@main(template.withTitle(Messages("key.title", key.project.name, key.name)).withName("key")) {
+@main(template.withTitle(key.project.name).withName("key").withBackLink(routes.Projects.project(key.project.id))) {
 	@tags.search(form) {
 		<button
 			type="button"
@@ -30,18 +30,7 @@
 		</ul>
 	}
 } {
-	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-		@Messages("dashboard")
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.project(key.project.id)">
-		@key.project.name
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.keys(key.project.id)">
-		@Messages("keys")
-	</a>
-	<a class="breadcrumb active" href="@routes.Keys.key(key.id)">
-		@key.name
-	</a>
+	@projects.nav(key.project, "keys")
 } {
 	@tags.editor("locale.selection.none") {
 		@tags.editorColumn {

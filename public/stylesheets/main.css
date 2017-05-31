@@ -45,7 +45,6 @@ p {
 
 /* Header */
 .header {
-	color: #9e9e9e;
 	font-weight: 300;
 }
 .template-index .header {
@@ -166,15 +165,22 @@ nav ul a.dropdown-button {
 /* Navbar */
 nav,
 .navbar {
-	height: 88px;
+	height: auto;
 	box-shadow: none;
 	background-color: transparent;
 }
 nav .nav-wrapper {
 	height: 56px;
 }
+nav .page-title {
+	font-size: 18px;
+	left: 72px;
+	-webkit-transform: none;
+	transform: none;
+}
 nav .brand-logo i.material-icons {
-	margin-right: 3px;
+	padding: 0 1rem 0 1.2rem;
+	margin-right: 10px;
 }
 nav ul .disabled:hover {
 	background-color: transparent;
@@ -247,23 +253,18 @@ nav ul .disabled:hover {
 
 /* Content Navigation */
 .nav {
-	text-align: center;
-	margin-bottom: 0;
+	z-index: 1;
 }
-.content .nav a {
-	display: inline-block;
+.nav-center ul {
+    text-align: center;
 }
-.nav a:not(.active)::before {
-	content: "";
-	display: inline-block;
+.nav-center ul li {
+    display: inline;
+    float: none;
 }
-.nav a.active span.hide-on-small-only {
-	display: inline-block !important;
+.nav-center ul li a {
+    display: inline-block;
 }
-.nav a:not(.active) i.material-icons.left {
-	margin-right: 0;
-}
-
 
 /* Autocomplete */
 .autocomplete-suggestions {
@@ -325,13 +326,21 @@ nav ul .disabled:hover {
 	width: 28%;
 }
 .card.card-user {
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
+	margin-top: 100px;
+}
+.card.card-user .card-image {
+	position: relative;
+	height: 70px;
 }
 .card.card-user .card-image img {
-	width: 120px;
-	min-width: 120px;
+	width: 150px;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	border: 2px solid white;
+	border-radius: 50%;
+}
+.card.card-user .card-content ul > li {
+	display: inline-block;
 }
 .card .card-content {
 	flex-grow: 1;
@@ -385,7 +394,7 @@ nav ul .disabled:hover {
 	display: -webkit-flex;
 	display: flex;
 }
-.template-dashboard .container-main,
+.template-dashboard-projects .container-main,
 .flex {
 	flex-flow: row wrap;
 	margin-bottom: 0;
@@ -406,20 +415,19 @@ nav ul .disabled:hover {
 .template-project .flex > .messages {
 	flex: 2 100%;
 }
-.template-dashboard .container-main > .main,
+.template-dashboard-projects .container-main > .main,
 .template-dashboard-activity .container-main > .main,
 .template-user-projects .container-main > .main,
 .template-user-access-tokens .container-main > .main,
-.template-keys .container-main > .main,
-.template-locales .container-main > .main {
+.template-project-keys .container-main > .main,
+.template-project-locales .container-main > .main {
 	display: flex;
 	flex-flow: column;
 }
 
 /* Breadcrumb */
 .breadcrumbs {
-	position: absolute;
-	top: 56px;
+	display: none;
 	height: 32px;
 	line-height: 32px;
 	padding: 0 1rem;
@@ -623,15 +631,15 @@ textarea.materialize-textarea {
 .tabs {
 	background-color: transparent;
 }
-.tabs .tab a {
+.tabs:not(.tabs-transparent) .tab a {
 	color: #757575;
 }
-.tabs .indicator {
+.tabs:not(.tabs-transparent) .indicator {
 	background-color: #4CAF50;
 }
-.tabs .tab a.active,
-.tabs .tab a:hover,
-.tabs .tab a:focus {
+.tabs:not(.tabs-transparent) .tab a.active,
+.tabs:not(.tabs-transparent) .tab a:hover,
+.tabs:not(.tabs-transparent) .tab a:focus {
 	color: #4CAF50;
 }
 

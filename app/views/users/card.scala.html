@@ -1,13 +1,13 @@
-@(template: utils.Template, user: User)
+@(template: utils.Template, user: User)(content: Html)
 
 @import utils.FormatUtils._
 
 <div class="card card-user">
-	<div class="card-image teal">
-		@tags.gravatar(user, 400)
+	<div class="card-image">
+		@tags.gravatar(user, size=400, styleClass="circle")
 	</div>
-	<div class="card-content truncate">
+	<div class="card-content center">
 		<span class="card-title">@user.name</span>
-		<p>@user.username</p>
+		@content
 	</div>
 </div>

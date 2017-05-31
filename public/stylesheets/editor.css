@@ -108,7 +108,7 @@
 		display: -webkit-flex;
 		display: -ms-flexbox;
 		display: flex;
-		height: calc(100% - 96px);
+		height: calc(100% - 112px);
 	}
 	.template-locale footer,
 	.template-key footer {

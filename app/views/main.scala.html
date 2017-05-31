@@ -1,4 +1,4 @@
-@(template: utils.Template)(nav: Html)(breadcrumbs: Html)(content: Html)
+@(template: utils.Template)(nav: Html = Html(""))(tabs: Html = Html(""))(content: Html)
 
 @import com.feth.play.module.pa.views.html._
 
@@ -10,7 +10,7 @@
 <meta http-equiv="Content-Language" content="@ctx.lang().locale">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<title>@Html(template.title)</title>
+<title>Translatr – @Html(template.title)</title>
 
 <link rel="stylesheet" href="@routes.Assets.versioned("concat/styles.css")">
 <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
@@ -21,13 +21,34 @@
 <body>
 	<header>
 		<!-- Navigation -->
-		<div class="navbar navbar-fixed-off">
+		<div class="navbar">
 			<nav role="navigation" class="green z-depth-1">
 				<div class="nav-wrapper">
-					<a class="brand-logo light left" href="@routes.Application.index()">
-						<i class="material-icons prefix">language</i>
-						<span class="hide-on-small-only">Translatr</span>
-					</a>
+					@if(template.backLink != null) {
+						<a class="brand-logo light left waves-effect waves-light" href="@template.backLink">
+							<i class="material-icons prefix">arrow_back</i>
+						</a>
+						<div class="brand-logo page-title light">
+							@if(template.title != null) {
+								<span class="hide-on-med-and-down">Translatr – </span>
+								<span class="hide-on-small-only">@template.title</span>
+							} else {
+								<span class="hide-on-small-only">Translatr</span>
+							}
+						</div>
+					} else {
+						<a class="brand-logo light left waves-effect waves-light" href="@routes.Application.index()">
+							<i class="material-icons prefix">language</i>
+						</a>
+						<div class="brand-logo page-title light">
+							@if(template.title != null) {
+								<span class="hide-on-med-and-down">Translatr – </span>
+								<span class="hide-on-small-only">@template.title</span>
+							} else {
+								<span class="hide-on-small-only">Translatr</span>
+							}
+						</div>
+					}
 
 					@tags.notifications()
 
@@ -94,9 +115,7 @@
 
 					@nav
 				</div>
-				@tags.breadcrumbs {
-					@breadcrumbs
-				}
+				@tabs
 			</nav>
 		</div>
 	</header>

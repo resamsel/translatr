@@ -1,19 +1,11 @@
 @(template: utils.Template, project: models.Project, locales: com.avaje.ebean.PagedList[models.Locale], progress: Map[java.util.UUID, Double], form: Form[forms.LocaleSearchForm])
 
-@main(template.withTitle(Messages("locales.title", project.name)).withName("locales")) {
+@main(template.withTitle(project.name).withName("project-locales")) {
 	@tags.search(form)()
 } {
-	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-		@Messages("dashboard")
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
-		@project.name
-	</a>
-	<a class="breadcrumb active" href="@routes.Projects.locales(project.id)">
-		@Messages("locales")
-	</a>
+	@nav(project, "locales")
 } {
-	@content(project, "locales") {
+	@content() {
 		@tags.collection(locales.getList, "locales.empty", "locales") {
 			<span class="title">@Messages("locale.name")</span>
 			@tags.sortOrders {

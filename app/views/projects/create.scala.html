@@ -1,12 +1,7 @@
 @(template: utils.Template, form: Form[forms.ProjectForm])
 
-@main(template.withTitle(Messages("project.create.title"))) {
-} {
-		<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-			@Messages("dashboard")
-		</a>
-} {
-	@dashboards.content(template, "projects") {
+@main(template.withTitle(Messages("dashboard")).withName("project-create").withBackLink(routes.Dashboards.dashboard()))()(dashboards.nav(template, "projects")) {
+	@dashboards.content {
 		<form action="@routes.Projects.create()" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">

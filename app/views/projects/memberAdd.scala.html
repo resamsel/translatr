@@ -1,15 +1,7 @@
 @(template: utils.Template, project: Project, form: Form[forms.ProjectUserForm])
 
-@main(template.withTitle(Messages("project.create.title")).withName("member-add")) {
-} {
-	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-		@Messages("dashboard")
-	</a>
-	<a class="breadcrumb active" href="@routes.Projects.project(project.id)">
-		@project.name
-	</a>
-} {
-	@content(project, "members") {
+@main(template.withTitle(project.name).withName("project-member-add").withBackLink(routes.Projects.project(project.id)))()(nav(project, "members")) {
+	@content() {
 		<form action="@routes.Projects.doMemberAdd(project.id)" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">

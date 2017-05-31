@@ -2,19 +2,11 @@
 
 @import utils.FormatUtils._
 
-@main(template.withTitle(Messages("project.title", project.name)).withName("project-activity")) {
+@main(template.withTitle(project.name).withName("project-activity")) {
 } {
-	<a class="breadcrumb" href="@routes.Dashboards.dashboard()">
-		@Messages("dashboard")
-	</a>
-	<a class="breadcrumb" href="@routes.Projects.project(project.id)">
-		@project.name
-	</a>
-	<a class="breadcrumb active" href="@routes.Projects.activity(project.id)">
-		@Messages("activity")
-	</a>
+	@nav(project, "activity")
 } {
-	@content(project, "activity") {
+	@content() {
 		@tags.collection(activityList.getList, "activity.empty") {
 			<span class="title">@Messages("activity")</span>
 			@tags.sortOrders {

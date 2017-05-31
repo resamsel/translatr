@@ -203,8 +203,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     String username = email.toLowerCase().replaceAll("[@\\.-]", "");
 
     // TODO: potentially slow, replace with better variant (get all users with username like
-    // $username% and iterate
-    // over them)
+    // $username% and iterate over them)
     String prefix = StringUtils.left(username, User.USERNAME_LENGTH);
     String suffix = "";
     ThreadLocalRandom random = ThreadLocalRandom.current();
