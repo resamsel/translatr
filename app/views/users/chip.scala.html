@@ -2,7 +2,7 @@
 
 <div class="chip">
 	@tags.gravatar(user, help=Messages(imgKey), size=size)
-	<a href="@routes.Users.user(user.id)">
+	<a href="@routes.Users.user(user.username)">
 		@if(me) { @Messages("user.me") } else { @user.name }
 	</a>
 	(@Html(Messages(key, user.name)))

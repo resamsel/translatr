@@ -2,10 +2,10 @@
 
 @if(template.loggedInUser.id == user.id) {
 	@tags.navView {
-		@tags.navItem(routes.Profiles.profile(), "info", "info", "info", active)
-		@tags.navItem(routes.Profiles.projects(), "projects", "projects", "view_quilt", active)
-		@tags.navItem(routes.Profiles.activity(), "activity", "activity", "notifications_active", active)
-		@tags.navItem(routes.Profiles.linkedAccounts(), "linkedAccounts", "linkedAccounts", "account_box", active)
-		@tags.navItem(routes.Profiles.accessTokens(), "accessTokens", "accessTokens", "accessibility", active)
+		@tags.navItem(routes.Users.user(user.username), "info", "info", "info", active)
+		@tags.navItem(routes.Users.projects(user.username), "projects", "projects", "view_quilt", active)
+		@tags.navItem(routes.Users.activity(user.username), "activity", "activity", "notifications_active", active)
+		@tags.navItem(routes.Users.linkedAccounts(user.username), "linkedAccounts", "linkedAccounts", "account_box", active)
+		@tags.navItem(routes.Users.accessTokens(user.username), "accessTokens", "accessTokens", "accessibility", active)
 	}
 }

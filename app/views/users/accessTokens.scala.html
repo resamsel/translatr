@@ -1,8 +1,8 @@
-@(template: utils.Template, user: models.User, accessTokenList: List[AccessToken], accessTokenForm: Form[forms.AccessTokenForm])
+@(template: utils.Template, user: models.User, accessTokenList: List[AccessToken], form: Form[forms.AccessTokenForm])
 
 @import utils.FormatUtils.pretty
 
-@main(template.withTitle(user.name).withName("user-access-tokens"))()(nav(template, user, "accessTokens")) {
+@main(template.withTitle(user.name).withName("user-access-tokens"))(tags.search(form)())(nav(template, user, "accessTokens")) {
 	@content("accessTokens") {
 		@tags.collection(accessTokenList, "accessTokens.empty", "access-tokens") {
 			<span class="title">@Messages("accessToken")</span>
@@ -33,7 +33,7 @@
 
 	@tags.modal(Messages("accessToken.create"), "modal-create-access-token") {
 		<form id="form-access-token" method="post" action="@routes.Profiles.doAccessTokenCreate()">
-			@accessTokenFormContent(template.loggedInUser, accessTokenForm)
+			@accessTokenFormContent(template.loggedInUser, form)
 		</form>
 	}
 

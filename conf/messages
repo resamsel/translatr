@@ -1,3 +1,4 @@
+access.denied = Access to resource was denied
 accessToken = Access token
 accessToken.access.denied = Access to access token {0} was denied
 accessToken.create = Create access token

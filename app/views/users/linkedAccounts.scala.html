@@ -6,7 +6,7 @@
 @main(template.withTitle(user.name).withName("user-linked-accounts"))()(nav(template, user, "linkedAccounts")) {
 	@content("linkedAccounts") {
 		<div class="row">
-			<div class="col s8">
+			<div class="col s12 m8">
 				@tags.collection(linkedAccountMap.values, "linkedAccounts.empty", "linked-accounts") {
 					<span class="title">@Messages("linkedAccount")</span>
 				} {
@@ -20,7 +20,7 @@
 								@Messages("user.linked", pretty(ctx.lang().locale, linkedAccount.whenCreated))
 							</p>
 							<a
-								href="@routes.Profiles.linkedAccountRemove(linkedAccount.id)"
+								href="@routes.Users.linkedAccountRemove(user.username, linkedAccount.id)"
 								class="secondary-content btn-hover"
 								title="@Messages("button.unlink")">
 								<i class="material-icons">delete_forever</i>
@@ -28,10 +28,10 @@
 						</li>
 					}
 				} {
-					@tags.pager(routes.Profiles.linkedAccounts(), form.get)
+					@tags.pager(routes.Users.linkedAccounts(user.username), form.get)
 				}
 			</div>
-			<div class="col s4">
+			<div class="col s12 m4">
 				<ul class="collection auth-provider">
 					@if(template.auth != null) {
 						@forProviders(template.auth) { p =>

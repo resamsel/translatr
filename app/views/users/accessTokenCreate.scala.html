@@ -1,6 +1,6 @@
 @(template: utils.Template, user: User, form: Form[forms.AccessTokenForm])
 
-@main(template.withTitle(user.name).withName("user-access-token-create").withBackLink(routes.Profiles.profile()))()(nav(template, user, "accessTokens")) {
+@main(template.withTitle(user.name).withName("user-access-token-create").withBackLink(routes.Users.user(user.username)))()(nav(template, user, "accessTokens")) {
 	@content("accessTokens") {
 		<form action="@routes.Profiles.accessTokenCreate()" method="post">
 			<div class="card no-image">
@@ -16,7 +16,7 @@
 					</button>
 					<a
 						class="btn-flat btn-cancel black-text"
-						href="@routes.Profiles.accessTokens()">
+						href="@routes.Users.accessTokens(user.username)">
 						@Messages("button.cancel")
 					</a>
 				</div>

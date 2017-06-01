@@ -2,13 +2,13 @@
 
 @import utils.FormatUtils._
 
-@main(template.withTitle(user.name).withName("user-projects"))()(nav(template, user, "projects")) {
+@main(template.withTitle(user.name).withName("user-projects"))(tags.search(form)())(nav(template, user, "projects")) {
 	@content("projects") {
 		@tags.collection(projectList, "projects.empty") {
 			<span class="title">@Messages("project")</span>
 			@tags.sortOrders {
-				@tags.orderLink(form.get, routes.Profiles.projects(), "project.name", "name", "name desc", "name")
-				@tags.orderLink(form.get, routes.Profiles.projects(), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+				@tags.orderLink(form.get, routes.Users.projects(user.username), "project.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, routes.Users.projects(user.username), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
 			@for(project <- projectList) {
@@ -24,7 +24,7 @@
 				</li>
 			}
 		} {
-			@tags.pager(routes.Profiles.projects(), form.get)
+			@tags.pager(routes.Users.projects(user.username), form.get)
 		}
 	}
 }

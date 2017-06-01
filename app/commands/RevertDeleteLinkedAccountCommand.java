@@ -24,8 +24,7 @@ public class RevertDeleteLinkedAccountCommand implements Command<models.LinkedAc
 
   @Override
   public void execute(Injector injector) {
-    models.LinkedAccount model = linkedAccount.toModel();
-    injector.instanceOf(LinkedAccountService.class).save(model);
+    injector.instanceOf(LinkedAccountService.class).save(linkedAccount.toModel());
   }
 
   /**

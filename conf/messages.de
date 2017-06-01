@@ -1,3 +1,4 @@
+access.denied = Zugriff auf Ressource wurde verweigert
 accessToken = Zugangsschlüssel
 accessToken.access.denied = Zugriff auf Zugangsschlüssel {0} wurde verweigert
 accessToken.create = Zugangsschlüssel anlegen

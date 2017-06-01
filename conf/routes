@@ -3,32 +3,34 @@
 # ~~~~
 
 # Basic functions
-GET		/								controllers.Application.index
-GET		/activity/csv					controllers.Application.activityCsv
+GET		/							controllers.Application.index
+GET		/activity/csv				controllers.Application.activityCsv
 
 # Authentication
-GET		/login							controllers.Application.login
-GET		/logout							controllers.Application.logout
-GET		/authenticate/:provider			com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
+GET		/login						controllers.Application.login
+GET		/logout						controllers.Application.logout
+GET		/authenticate/:provider		com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
 GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider: String)
 
 # Users
-GET		/user/:id					controllers.Users.user(id: java.util.UUID)
-GET		/user/:id/activity/csv		controllers.Users.activityCsv(id: java.util.UUID)
+GET		/user/:username				controllers.Users.user(username: String)
+GET		/user/:username/activity/csv	controllers.Users.activityCsv(username: String)
+GET		/user/:username/projects			controllers.Users.projects(username: String)
+GET		/user/:username/activity			controllers.Users.activity(username: String)
+GET		/user/:username/linkedAccounts		controllers.Users.linkedAccounts(username: String)
+GET		/user/:username/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
+GET		/user/:username/accessTokens		controllers.Users.accessTokens(username: String)
 
 # Profiles
 GET		/profile					controllers.Profiles.profile
+GET		/profile/linkedAccounts		controllers.Profiles.linkedAccounts
+GET		/profile/accessTokens		controllers.Profiles.accessTokens
 GET		/profile/edit				controllers.Profiles.edit
 POST	/profile/edit				controllers.Profiles.doEdit
-GET		/profile/projects			controllers.Profiles.projects
-GET		/profile/activity			controllers.Profiles.activity
-GET		/profile/linkedAccounts		controllers.Profiles.linkedAccounts
-GET		/profile/linkedAccount/:linkedAccountId/remove	controllers.Profiles.linkedAccountRemove(linkedAccountId: Long)
 GET		/profile/link				controllers.Profiles.askLink
 POST	/profile/link				controllers.Profiles.doLink
 GET		/accounts/merge				controllers.Profiles.askMerge
 POST	/accounts/merge				controllers.Profiles.doMerge
-GET		/profile/accessTokens		controllers.Profiles.accessTokens
 GET		/profile/accessToken/create	controllers.Profiles.accessTokenCreate
 POST	/profile/accessToken/create	controllers.Profiles.doAccessTokenCreate
 GET		/profile/accessToken/:accessTokenId/edit	controllers.Profiles.accessTokenEdit(accessTokenId: Long)

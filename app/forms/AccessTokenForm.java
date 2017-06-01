@@ -15,8 +15,7 @@ import play.data.validation.Constraints;
  * @author resamsel
  * @version 2 Sep 2016
  */
-public class AccessTokenForm {
-  @Constraints.Required
+public class AccessTokenForm extends SearchForm {
   @Constraints.MaxLength(AccessToken.NAME_LENGTH)
   // @AccessTokenByUserAndName
   private String name;

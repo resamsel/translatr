@@ -1,33 +1,19 @@
 package controllers;
 
-import static java.util.stream.Collectors.toMap;
-
 import javax.inject.Inject;
 
 import org.joda.time.DateTime;
 
-import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
 
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteAccessTokenCommand;
-import commands.RevertDeleteLinkedAccountCommand;
-import criterias.AccessTokenCriteria;
-import criterias.LinkedAccountCriteria;
-import criterias.LogEntryCriteria;
-import criterias.ProjectCriteria;
 import forms.Accept;
 import forms.AccessTokenForm;
-import forms.ActivitySearchForm;
-import forms.SearchForm;
 import forms.UserForm;
 import models.AccessToken;
-import models.LinkedAccount;
-import models.LogEntry;
-import models.Project;
-import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
@@ -35,8 +21,6 @@ import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
 import services.AccessTokenService;
-import services.LinkedAccountService;
-import utils.FormUtils;
 import utils.SessionKey;
 
 /**
@@ -49,10 +33,6 @@ import utils.SessionKey;
 public class Profiles extends AbstractController {
   private final FormFactory formFactory;
 
-  private final Configuration configuration;
-
-  private final LinkedAccountService linkedAccountService;
-
   private final AccessTokenService accessTokenService;
 
   /**
@@ -63,50 +43,23 @@ public class Profiles extends AbstractController {
    */
   @Inject
   public Profiles(Injector injector, CacheApi cache, PlayAuthenticate auth, FormFactory formFactory,
-      Configuration configuration, LinkedAccountService linkedAccountService,
       AccessTokenService accessTokenService) {
     super(injector, cache, auth);
 
     this.formFactory = formFactory;
-    this.configuration = configuration;
-    this.linkedAccountService = linkedAccountService;
     this.accessTokenService = accessTokenService;
   }
 
   public Result profile() {
-    return loggedInUser(user -> ok(
-        views.html.users.user.render(createTemplate(), user, userService.getUserStats(user.id))));
+    return loggedInUser(user -> redirect(controllers.routes.Users.user(user.username)));
   }
 
-  public Result projects() {
-    return loggedInUser(user -> {
-      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
-      SearchForm search = form.get();
-      if (search.order == null)
-        search.order = "name";
-
-      PagedList<Project> projects =
-          Project.findBy(ProjectCriteria.from(search).withMemberId(user.id));
-
-      search.pager(projects);
-
-      return ok(views.html.users.projects.render(createTemplate(), user, projects.getList(), form));
-    });
+  public Result linkedAccounts() {
+    return loggedInUser(user -> redirect(controllers.routes.Users.linkedAccounts(user.username)));
   }
 
-  public Result activity() {
-    return loggedInUser(user -> {
-      Form<ActivitySearchForm> form =
-          FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
-      ActivitySearchForm search = form.get();
-
-      PagedList<LogEntry> activities =
-          logEntryService.findBy(LogEntryCriteria.from(search).withUserId(user.id));
-
-      search.pager(activities);
-
-      return ok(views.html.users.activity.render(createTemplate(), user, activities, form));
-    });
+  public Result accessTokens() {
+    return loggedInUser(user -> redirect(controllers.routes.Users.accessTokens(user.username)));
   }
 
   public Result edit() {
@@ -125,37 +78,7 @@ public class Profiles extends AbstractController {
 
       userService.save(form.get().into(user));
 
-      return redirect(routes.Users.user(user.id));
-    });
-  }
-
-  public Result linkedAccounts() {
-    return loggedInUser(user -> {
-      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
-      SearchForm search = form.get();
-
-      PagedList<LinkedAccount> accounts = LinkedAccount
-          .findBy(LinkedAccountCriteria.from(search).withUserId(user.id).withOrder("providerKey"));
-
-      search.pager(accounts);
-
-      return ok(views.html.users.linkedAccounts.render(createTemplate(), user,
-          accounts.getList().stream().collect(toMap(a -> a.providerKey, a -> a)), form));
-    });
-  }
-
-  public Result linkedAccountRemove(Long linkedAccountId) {
-    return loggedInUser(user -> {
-      LinkedAccount linkedAccount = linkedAccountService.byId(linkedAccountId);
-
-      if (linkedAccount == null || !user.id.equals(linkedAccount.user.id))
-        return redirect(routes.Profiles.linkedAccounts());
-
-      undoCommand(RevertDeleteLinkedAccountCommand.from(linkedAccount));
-
-      linkedAccountService.delete(linkedAccount);
-
-      return redirect(routes.Profiles.linkedAccounts());
+      return redirect(routes.Users.user(user.username));
     });
   }
 
@@ -243,24 +166,15 @@ public class Profiles extends AbstractController {
     }
   }
 
-  public Result accessTokens() {
-    return loggedInUser(user -> {
-      return ok(views.html.users.accessTokens.render(
-          createTemplate(), user, AccessToken
-              .findBy(new AccessTokenCriteria().withUserId(user.id).withOrder("name")).getList(),
-          AccessTokenForm.form(formFactory)));
-    });
-  }
-
   public Result accessTokenEdit(Long accessTokenId) {
     return loggedInUser(user -> {
       AccessToken accessToken = accessTokenService.byId(accessTokenId);
       if (accessToken == null)
-        return redirectWithError(routes.Profiles.accessTokens(), "accessToken.notFound");
+        return redirectWithError(routes.Users.accessTokens(user.username), "accessToken.notFound");
 
       if (!accessToken.user.id.equals(user.id)) {
         addError(ctx().messages().at("accessToken.access.denied", accessToken.id));
-        return redirect(routes.Profiles.accessTokens());
+        return redirect(routes.Users.accessTokens(user.username));
       }
 
       return ok(views.html.users.accessToken.render(createTemplate(), user, accessToken,
@@ -272,7 +186,7 @@ public class Profiles extends AbstractController {
     return loggedInUser(user -> {
       AccessToken accessToken = accessTokenService.byId(accessTokenId);
       if (accessToken == null)
-        return redirectWithError(routes.Profiles.accessTokens(), "accessToken.notFound");
+        return redirectWithError(routes.Users.accessTokens(user.username), "accessToken.notFound");
 
       Form<AccessTokenForm> form = AccessTokenForm.form(formFactory).bindFromRequest();
 
@@ -282,7 +196,7 @@ public class Profiles extends AbstractController {
 
       accessTokenService.save(form.get().fill(accessToken));
 
-      return redirect(routes.Profiles.accessTokenEdit(accessTokenId));
+      return redirect(routes.Users.accessTokens(user.username));
     });
   }
 
@@ -312,13 +226,14 @@ public class Profiles extends AbstractController {
       AccessToken accessToken = accessTokenService.byId(accessTokenId);
 
       if (accessToken == null || !user.id.equals(accessToken.user.id))
-        return redirectWithError(routes.Profiles.accessTokens(), "accessToken.notAllowed");
+        return redirectWithError(routes.Users.accessTokens(user.username),
+            "accessToken.notAllowed");
 
       undoCommand(RevertDeleteAccessTokenCommand.from(accessToken));
 
       accessTokenService.delete(accessToken);
 
-      return redirect(routes.Profiles.accessTokens());
+      return redirect(routes.Users.accessTokens(user.username));
     });
   }
 

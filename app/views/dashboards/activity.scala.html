@@ -2,7 +2,7 @@
 
 @import utils.FormatUtils._
 
-@main(template.withTitle(Messages("dashboard")).withName("dashboard-activity"))()(nav(template, "activity")) {
+@main(template.withTitle(Messages("dashboard")).withName("dashboard-activity"))(tags.search(form)())(nav(template, "activity")) {
 	@content {
 		@tags.collection(activityList.getList, "activity.empty") {
 			<span class="title">@Messages("activity")</span>
@@ -22,7 +22,7 @@
 						@utils.ActivityUtils.infoOf(activity)
 						@if(activity.user != null) {
 							@Messages("by")
-							<a href="@routes.Users.user(activity.user.id)">
+							<a href="@routes.Users.user(activity.user.username)">
 								@activity.user.name
 							</a>
 						}

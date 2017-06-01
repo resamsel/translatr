@@ -10,7 +10,7 @@
 			@for(member <- memberList.getList) {
 				<li class="collection-item avatar">
 					@tags.gravatar(member.user, 48, "circle")
-					<a href="@routes.Users.user(member.user.id)" class="title">
+					<a href="@routes.Users.user(member.user.username)" class="title">
 						@member.user.username &mdash; @member.user.name
 					</a>
 					<p>

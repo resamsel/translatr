@@ -11,7 +11,7 @@
 					<ul class="profile-info">
 						<li class="truncate">
 							<i class="material-icons left">link</i>
-							<a href="@routes.Users.user(user.id)">@user.username</a>
+							<a href="@routes.Users.user(user.username)">@user.username</a>
 						</li>
 						@if(template.loggedInUser.id == user.id) {
 							<li class="truncate">
@@ -48,11 +48,12 @@
 		@tags.fabContainer("edit-user", "edit", href=routes.Profiles.edit().url, tooltip=Messages("user.edit"), styleClass="teal")
 	}
 
-	<script type="text/javascript">
-		var userId = "@user.id";
-
-		//App.Core.register('KeysCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
-	</script>
 	@tags.contributionScript()
-	<script src="@routes.Assets.versioned("javascripts/user.js")"></script>
+	<script type="text/javascript">
+		App.Core.register('ActivityModule', App.Modules.ActivityModule, {
+			dataUrl: jsRoutes.controllers.Users.activityCsv('@user.username').url,
+			cellUrl: jsRoutes.controllers.Users.activity('@user.username').url,
+			messages: contributionMessages
+		});
+	</script>
 }

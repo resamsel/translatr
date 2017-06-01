@@ -177,6 +177,10 @@ public class LogEntry implements Model<LogEntry, UUID> {
     if (criteria.getIds() != null)
       query.idIn(criteria.getIds());
 
+    if (StringUtils.isNoneEmpty(criteria.getSearch()))
+      query.disjunction().ilike("before", "%" + criteria.getSearch() + "%")
+          .ilike("after", "%" + criteria.getSearch() + "%").endJunction();
+
     if (criteria.getUserId() != null)
       query.eq("user.id", criteria.getUserId());
 

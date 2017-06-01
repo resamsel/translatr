@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 import com.avaje.ebean.ExpressionList;
@@ -118,16 +119,10 @@ public class AccessToken implements Model<AccessToken, Long> {
     if (criteria.getUserId() != null)
       query.eq("user.id", criteria.getUserId());
 
-    if (criteria.getLimit() != null)
-      query.setMaxRows(criteria.getLimit() + 1);
+    if (StringUtils.isNoneEmpty(criteria.getSearch()))
+      query.ilike("name", "%" + criteria.getSearch() + "%");
 
-    if (criteria.getOffset() != null)
-      query.setFirstRow(criteria.getOffset());
-
-    if (criteria.getOrder() != null)
-      query.order(criteria.getOrder());
-    else
-      query.order("whenCreated");
+    criteria.paged(query);
 
     return HasNextPagedList.create(query);
   }

@@ -62,7 +62,7 @@
 								<a href="@routes.Dashboards.dashboard()">@Messages("dashboard")</a>
 							</li>
 							<li>
-								<a href="@routes.Profiles.profile()">@Messages("user.profile")</a>
+								<a href="@routes.Users.user(template.loggedInUser.username)">@Messages("user.profile")</a>
 							</li>
 							<li class="divider"></li>
 							<li>

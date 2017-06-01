@@ -1,5 +1,6 @@
 package utils;
 
+import forms.AccessTokenForm;
 import forms.ActivitySearchForm;
 import forms.KeyForm;
 import forms.KeySearchForm;
@@ -93,6 +94,14 @@ public class FormUtils {
     public static Form<ActivitySearchForm> bindFromRequest(FormFactory formFactory,
         Configuration configuration) {
       return Search.init(FormUtils.bindFromRequest(formFactory, ActivitySearchForm.class),
+          configuration);
+    }
+  }
+
+  public static class AccessToken {
+    public static Form<AccessTokenForm> bindFromRequest(FormFactory formFactory,
+        Configuration configuration) {
+      return Search.init(FormUtils.bindFromRequest(formFactory, AccessTokenForm.class),
           configuration);
     }
   }
