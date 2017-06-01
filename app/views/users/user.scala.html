@@ -44,8 +44,14 @@
 		</div>
 	}
 
-	<script>
+	@if(template.loggedInUser.id == user.id) {
+		@tags.fabContainer("edit-user", "edit", href=routes.Profiles.edit().url, tooltip=Messages("user.edit"), styleClass="teal")
+	}
+
+	<script type="text/javascript">
 		var userId = "@user.id";
+
+		//App.Core.register('KeysCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
 	</script>
 	@tags.contributionScript()
 	<script src="@routes.Assets.versioned("javascripts/user.js")"></script>
