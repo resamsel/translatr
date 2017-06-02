@@ -18,7 +18,6 @@ import dto.SearchResponse;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.libs.Json;
-import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Result;
 import utils.ErrorUtils;
 
@@ -70,8 +69,6 @@ public class AbstractBaseApi extends AbstractController {
   protected static final String USER_WRITE = "user:write";
   protected static final String USER_WRITE_DESCRIPTION = "Write user";
 
-  protected final HttpExecutionContext executionContext;
-
   /**
    * @param injector
    * @param cache
@@ -81,26 +78,25 @@ public class AbstractBaseApi extends AbstractController {
    */
   protected AbstractBaseApi(Injector injector, CacheApi cache, PlayAuthenticate auth) {
     super(injector, cache, auth);
-
-    this.executionContext = injector.instanceOf(HttpExecutionContext.class);
   }
 
   protected <IN, OUT> CompletionStage<Result> toJson(Supplier<IN> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out))).exceptionally(AbstractBaseApi::handleException);
+        .thenApply(out -> ok(Json.toJson(out))).exceptionally(this::handleException);
   }
 
   protected <T> CompletionStage<Result> toJsons(Supplier<PagedList<T>> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out))).exceptionally(AbstractBaseApi::handleException);
+        .thenApply(out -> ok(Json.toJson(out))).exceptionally(this::handleException);
   }
 
   protected <T> CompletionStage<Result> toJsonSearch(Supplier<SearchResponse> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out))).exceptionally(AbstractBaseApi::handleException);
+        .thenApply(out -> ok(Json.toJson(out))).exceptionally(this::handleException);
   }
 
-  protected static Result handleException(Throwable t) {
+  @Override
+  protected Result handleException(Throwable t) {
     try {
       if (t.getCause() != null)
         throw t.getCause();

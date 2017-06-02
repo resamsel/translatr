@@ -1,6 +1,7 @@
 package controllers;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 
 import org.joda.time.DateTime;
 
@@ -21,7 +22,9 @@ import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
 import services.AccessTokenService;
+import utils.FormUtils;
 import utils.SessionKey;
+import utils.Template;
 
 /**
  *
@@ -76,7 +79,12 @@ public class Profiles extends AbstractController {
       if (form.hasErrors())
         return badRequest(views.html.users.edit.render(createTemplate(), user, form));
 
-      userService.save(form.get().into(user));
+      try {
+        userService.save(form.get().into(user));
+      } catch (ConstraintViolationException e) {
+        return badRequest(
+            views.html.users.edit.render(createTemplate(), user, FormUtils.include(form, e)));
+      }
 
       return redirect(routes.Users.user(user.username));
     });
@@ -194,7 +202,12 @@ public class Profiles extends AbstractController {
         return badRequest(
             views.html.users.accessToken.render(createTemplate(), user, accessToken, form));
 
-      accessTokenService.save(form.get().fill(accessToken));
+      try {
+        accessTokenService.save(form.get().fill(accessToken));
+      } catch (ConstraintViolationException e) {
+        return badRequest(views.html.users.accessToken.render(createTemplate(), user, accessToken,
+            FormUtils.include(form, e)));
+      }
 
       return redirect(routes.Users.accessTokens(user.username));
     });
@@ -214,8 +227,13 @@ public class Profiles extends AbstractController {
       if (form.hasErrors())
         return badRequest(views.html.users.accessTokenCreate.render(createTemplate(), user, form));
 
-      AccessToken accessToken =
-          accessTokenService.save(form.get().fill(new AccessToken()).withUser(user));
+      AccessToken accessToken;
+      try {
+        accessToken = accessTokenService.save(form.get().fill(new AccessToken()).withUser(user));
+      } catch (ConstraintViolationException e) {
+        return badRequest(views.html.users.accessTokenCreate.render(createTemplate(), user,
+            FormUtils.include(form, e)));
+      }
 
       return redirect(routes.Profiles.accessTokenEdit(accessToken.id));
     });
@@ -240,5 +258,13 @@ public class Profiles extends AbstractController {
   public Result resetNotifications() {
     session(SessionKey.LastAcknowledged.key(), DateTime.now().toString());
     return ok();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Template createTemplate() {
+    return super.createTemplate().withSection(SECTION_PROFILE);
   }
 }

@@ -15,6 +15,8 @@ public class Template {
 
   public final User loggedInUser;
 
+  public String section;
+
   public String title;
 
   public String name;
@@ -29,6 +31,11 @@ public class Template {
   private Template(PlayAuthenticate auth, User loggedInUser) {
     this.auth = auth;
     this.loggedInUser = loggedInUser;
+  }
+
+  public Template withSection(String section) {
+    this.section = section;
+    return this;
   }
 
   public Template withTitle(String title) {
@@ -53,13 +60,5 @@ public class Template {
 
   public static Template create(PlayAuthenticate auth, User user) {
     return new Template(auth, user);
-  }
-
-  public static Template from(String title, String name) {
-    return new Template(null, null).withTitle(title).withName(name);
-  }
-
-  public static Template from(String title) {
-    return new Template(null, null).withTitle(title);
   }
 }

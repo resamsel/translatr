@@ -51,6 +51,10 @@ import utils.ConfigKey;
 import utils.ContextKey;
 import utils.QueryUtils;
 
+/**
+ * @author René Panzar
+ * @version 2 Jun 2017
+ */
 @Entity
 @Table(name = "user_")
 public class User implements Model<User, UUID>, Subject {

@@ -47,7 +47,7 @@ GET		/dashboard/search				controllers.Dashboards.search
 # Projects
 GET		/project/create					controllers.Projects.create
 POST	/project/create					controllers.Projects.doCreate
-GET		/project/:projectName/create	controllers.Projects.createImmediately(projectName: String)
+GET		/project/create/$projectName<.+>	controllers.Projects.createImmediately(projectName: String)
 GET		/project/:id					controllers.Projects.project(id: java.util.UUID)
 GET		/project/:id/edit				controllers.Projects.edit(id: java.util.UUID)
 POST	/project/:id/edit				controllers.Projects.doEdit(id: java.util.UUID)
@@ -67,7 +67,7 @@ GET		/locale/:id						controllers.Locales.locale(id: java.util.UUID, search: Str
 GET		/locale/:id/edit				controllers.Locales.edit(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/locale/:id/edit				controllers.Locales.doEdit(id: java.util.UUID)
 GET		/locale/:id/remove				controllers.Locales.remove(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/locale/:projectId/:localeName/create	controllers.Locales.createImmediately(projectId: java.util.UUID, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/locale/:projectId/create/$localeName<.+>	controllers.Locales.createImmediately(projectId: java.util.UUID, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/locale/:projectId				controllers.Locales.doCreate(projectId: java.util.UUID)
 GET		/locale/:id/import				controllers.Locales.upload(id: java.util.UUID)
 POST	/locale/:id/import				controllers.Locales.doUpload(id: java.util.UUID)
@@ -78,7 +78,7 @@ GET		/key/:id/edit					controllers.Keys.edit(id: java.util.UUID, search: String 
 POST	/key/:id/edit					controllers.Keys.doEdit(id: java.util.UUID)
 GET		/key/:keyId/remove				controllers.Keys.remove(keyId: java.util.UUID, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/key/:keyId/:localeId/remove	controllers.Keys.remove(keyId: java.util.UUID, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/key/:projectId/:keyName/create	controllers.Keys.createImmediately(projectId: java.util.UUID, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/key/:projectId/create/$keyName<.+>	controllers.Keys.createImmediately(projectId: java.util.UUID, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/key/:projectId/create			controllers.Keys.create(projectId: java.util.UUID)
 POST	/key/:projectId/create			controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/key/:projectId/:localeId/create	controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)

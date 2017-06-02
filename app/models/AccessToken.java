@@ -26,8 +26,11 @@ import criterias.AccessTokenCriteria;
 import criterias.HasNextPagedList;
 import play.data.validation.Constraints.MaxLength;
 import play.libs.Json;
+import validators.AccessTokenNameUniqueChecker;
+import validators.NameUnique;
 
 @Entity
+@NameUnique(checker = AccessTokenNameUniqueChecker.class)
 public class AccessToken implements Model<AccessToken, Long> {
   public static final int NAME_LENGTH = 32;
 

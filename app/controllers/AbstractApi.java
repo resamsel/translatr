@@ -1,7 +1,6 @@
 package controllers;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 import com.feth.play.module.pa.PlayAuthenticate;
 
@@ -13,7 +12,6 @@ import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.inject.Injector;
-import play.mvc.Result;
 import services.api.ApiService;
 import utils.PermissionUtils;
 
@@ -33,14 +31,5 @@ public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends Abstract
   protected void checkProjectRole(UUID projectId, User user, ProjectRole... roles) {
     if (!PermissionUtils.hasPermissionAny(projectId, user, roles))
       throw new PermissionException("User not allowed in project");
-  }
-
-  @Override
-  protected Result tryCatch(Supplier<Result> supplier) {
-    try {
-      return supplier.get();
-    } catch (Throwable t) {
-      return handleException(t);
-    }
   }
 }

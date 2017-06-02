@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import services.LocaleService;
 import services.ProjectService;
 import services.api.LocaleApiService;
 import utils.FormUtils;
+import utils.Template;
 import utils.TransactionUtils;
 
 /**
@@ -99,7 +101,12 @@ public class Locales extends AbstractController {
 
     locale.project = project;
 
-    localeService.save(locale);
+    try {
+      localeService.save(locale);
+    } catch (ConstraintViolationException e) {
+      return badRequest(
+          views.html.locales.create.render(createTemplate(), project, FormUtils.include(form, e)));
+    }
 
     try {
       localeApiService.upload(locale.id, request());
@@ -122,9 +129,10 @@ public class Locales extends AbstractController {
 
     select(project);
 
+    Form<LocaleForm> form =
+        LocaleForm.with(localeName, FormUtils.Locale.bindFromRequest(formFactory, configuration));
     if (localeName.length() > Locale.NAME_LENGTH)
-      return badRequest(views.html.locales.create.render(createTemplate(), project, LocaleForm
-          .with(localeName, FormUtils.Locale.bindFromRequest(formFactory, configuration))));
+      return badRequest(views.html.locales.create.render(createTemplate(), project, form));
 
     Locale locale = Locale.byProjectAndName(project, localeName);
 
@@ -133,7 +141,12 @@ public class Locales extends AbstractController {
 
       LOGGER.debug("Locale: {}", Json.toJson(locale));
 
-      localeService.save(locale);
+      try {
+        localeService.save(locale);
+      } catch (ConstraintViolationException e) {
+        return badRequest(views.html.locales.create.render(createTemplate(), project,
+            FormUtils.include(form, e)));
+      }
     }
 
     return redirect(routes.Locales.locale(locale.id, search, order, limit, offset));
@@ -206,5 +219,13 @@ public class Locales extends AbstractController {
     select(locale.project);
 
     return processor.apply(locale);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Template createTemplate() {
+    return super.createTemplate().withSection(SECTION_DASHBOARD);
   }
 }

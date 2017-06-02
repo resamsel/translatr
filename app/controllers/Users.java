@@ -33,6 +33,7 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.LinkedAccountService;
 import utils.FormUtils;
+import utils.Template;
 
 /**
  *
@@ -159,5 +160,13 @@ public class Users extends AbstractController {
       return redirectWithError(routes.Users.user(user.username), "access.denied");
 
     return processor.apply(user);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Template createTemplate() {
+    return super.createTemplate().withSection(SECTION_PROFILE);
   }
 }

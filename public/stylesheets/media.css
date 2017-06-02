@@ -29,6 +29,13 @@
 
 /* -Medium */
 @media (max-width: 992px) {
+	#sidenav.fixed {
+		float: none;
+		position: fixed;
+	}
+	.content {
+		margin: 0;
+	}
 	nav .brand-logo.left {
 		left: 0;
 	}
@@ -130,6 +137,37 @@
 
 /* Large+ */
 @media only screen and (min-width: 993px) {
+	.container {
+		width: 90%;
+		max-width: 1024px;
+	}
+	#sidenav.fixed {
+		width: 200px !important;
+		box-shadow: none;
+		background: transparent;
+		padding: 1rem 0.5rem;
+	}
+	.template-index #sidenav.fixed,
+	.template-locale #sidenav.fixed,
+	.template-key #sidenav.fixed {
+		display: none;
+	}
+	.side-nav li>a {
+		color: #616161;
+		border-radius: 2px;
+		font-weight: normal;
+		padding: 0 1rem;
+	}
+	.side-nav li>a>i.material-icons {
+		margin-right: 1rem;
+	}
+	.side-nav li.active>a,
+	.side-nav li.active>a>i.material-icons {
+		color: #43a047;
+	}
+	.side-nav .userView {
+		display: none;
+	}
 	.responsive-table .btn-hover {
 		visibility: hidden;
 	}

@@ -37,6 +37,7 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.ProjectService;
 import utils.FormUtils;
+import utils.Template;
 
 /**
  *
@@ -119,5 +120,13 @@ public class Dashboards extends AbstractController {
               "+++", controllers.routes.Projects.createImmediately(search.search).url())));
 
     return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Template createTemplate() {
+    return super.createTemplate().withSection(SECTION_DASHBOARD);
   }
 }

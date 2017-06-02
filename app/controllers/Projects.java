@@ -2,8 +2,10 @@ package controllers;
 
 import static utils.Stopwatch.log;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletionStage;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,7 +47,6 @@ import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
-import play.data.validation.ValidationError;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
@@ -58,6 +59,7 @@ import services.ProjectUserService;
 import services.UserService;
 import utils.FormUtils;
 import utils.PermissionUtils;
+import utils.Template;
 
 /**
  *
@@ -112,43 +114,43 @@ public class Projects extends AbstractController {
   }
 
   public Result create() {
-    Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
-
-    return ok(views.html.projects.create.render(createTemplate(), form));
+    return ok(views.html.projects.create.render(createTemplate(),
+        ProjectForm.form(formFactory).bindFromRequest()));
   }
 
-  public Result doCreate() {
-    Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
+  public CompletionStage<Result> doCreate() {
+    return tryCatch(() -> {
+      Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
+      if (form.hasErrors())
+        throw new ConstraintViolationException(Collections.emptySet());
 
-    if (form.hasErrors())
-      return badRequest(views.html.projects.create.render(createTemplate(), form));
+      LOGGER.debug("Project: {}", Json.toJson(form));
 
-    LOGGER.debug("Project: {}", Json.toJson(form));
+      User owner = User.loggedInUser();
+      Project project = Project.byOwnerAndName(owner, form.get().getName());
+      if (project != null)
+        form.get().fill(project).withDeleted(false);
+      else
+        project = form.get().fill(new Project()).withOwner(owner);
 
-    User owner = User.loggedInUser();
-    Project project = Project.byOwnerAndName(owner, form.get().getName());
-    if (project != null)
-      form.get().fill(project).withDeleted(false);
-    else
-      project = form.get().fill(new Project()).withOwner(owner);
-    try {
       projectService.save(project);
-    } catch (ConstraintViolationException e) {
-      e.getConstraintViolations().forEach(violation -> {
-        form.reject(new ValidationError("name", violation.getMessage()));
-      });
-      return badRequest(views.html.projects.create.render(createTemplate(), form));
-    }
 
-    select(project);
+      select(project);
 
-    return redirect(routes.Projects.project(project.id));
+      return redirect(routes.Projects.project(project.id));
+    }).exceptionally(t -> {
+      if (t instanceof ConstraintViolationException)
+        return badRequest(views.html.projects.create.render(createTemplate(),
+            FormUtils.include(ProjectForm.form(formFactory).bindFromRequest(), t)));
+      return handleException(t);
+    });
   }
 
   public Result createImmediately(String projectName) {
-    if (projectName.length() > Project.NAME_LENGTH)
-      return badRequest(views.html.projects.create.render(createTemplate(),
-          ProjectForm.form(formFactory).bind(ImmutableMap.of("name", projectName))));
+    Form<ProjectForm> form =
+        ProjectForm.form(formFactory).bind(ImmutableMap.of("name", projectName));
+    if (form.hasErrors())
+      return badRequest(views.html.projects.create.render(createTemplate(), form));
 
     User owner = User.loggedInUser();
     Project project = Project.byOwnerAndName(owner, projectName);
@@ -157,7 +159,12 @@ public class Projects extends AbstractController {
 
       LOGGER.debug("Project: {}", Json.toJson(project));
 
-      projectService.save(project);
+      try {
+        projectService.save(project);
+      } catch (ConstraintViolationException e) {
+        return badRequest(
+            views.html.projects.create.render(createTemplate(), FormUtils.include(form, e)));
+      }
     }
 
     return redirect(routes.Projects.project(project.id));
@@ -391,5 +398,13 @@ public class Projects extends AbstractController {
       BiFunction<Project, Form<KeySearchForm>, Result> processor) {
     return project(projectId, project -> processor.apply(project,
         FormUtils.KeySearch.bindFromRequest(formFactory, configuration)));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Template createTemplate() {
+    return super.createTemplate().withSection(SECTION_DASHBOARD);
   }
 }

@@ -19,6 +19,7 @@ import play.mvc.Result;
 import play.mvc.With;
 import play.routing.JavaScriptReverseRouter;
 import utils.ConfigKey;
+import utils.Template;
 
 /**
  * This controller contains an action to handle HTTP requests to the application's home page.
@@ -103,5 +104,13 @@ public class Application extends AbstractController {
             routes.javascript.LocalesApi.find(), routes.javascript.KeysApi.find(),
             routes.javascript.TranslationsApi.create(), routes.javascript.TranslationsApi.update(),
             routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find()));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Template createTemplate() {
+    return super.createTemplate().withSection(SECTION_HOME);
   }
 }

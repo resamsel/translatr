@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ import services.KeyService;
 import services.LocaleService;
 import services.ProjectService;
 import utils.FormUtils;
+import utils.Template;
 
 /**
  *
@@ -113,7 +115,12 @@ public class Keys extends AbstractController {
 
     LOGGER.debug("Key: {}", Json.toJson(key));
 
-    keyService.save(key);
+    try {
+      keyService.save(key);
+    } catch (ConstraintViolationException e) {
+      return badRequest(
+          views.html.keys.create.render(createTemplate(), project, FormUtils.include(form, e)));
+    }
 
     if (localeId != null) {
       Locale locale = localeService.byId(localeId);
@@ -134,9 +141,10 @@ public class Keys extends AbstractController {
 
     select(project);
 
+    Form<KeyForm> form =
+        KeyForm.with(keyName, FormUtils.Key.bindFromRequest(formFactory, configuration));
     if (keyName.length() > Key.NAME_LENGTH)
-      return badRequest(views.html.keys.create.render(createTemplate(), project,
-          KeyForm.with(keyName, FormUtils.Key.bindFromRequest(formFactory, configuration))));
+      return badRequest(views.html.keys.create.render(createTemplate(), project, form));
 
     Key key = Key.byProjectAndName(project, keyName);
 
@@ -145,7 +153,12 @@ public class Keys extends AbstractController {
 
       LOGGER.debug("Key: {}", Json.toJson(key));
 
-      keyService.save(key);
+      try {
+        keyService.save(key);
+      } catch (ConstraintViolationException e) {
+        return badRequest(
+            views.html.keys.create.render(createTemplate(), project, FormUtils.include(form, e)));
+      }
     }
 
     return redirect(
@@ -167,7 +180,12 @@ public class Keys extends AbstractController {
       if (form.hasErrors())
         return badRequest(views.html.keys.edit.render(createTemplate(), key, form));
 
-      keyService.save(form.get().into(key));
+      try {
+        keyService.save(form.get().into(key));
+      } catch (ConstraintViolationException e) {
+        return badRequest(
+            views.html.keys.edit.render(createTemplate(), key, FormUtils.include(form, e)));
+      }
 
       KeyForm search = form.get();
 
@@ -203,5 +221,13 @@ public class Keys extends AbstractController {
     select(key.project);
 
     return processor.apply(key);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Template createTemplate() {
+    return super.createTemplate().withSection(SECTION_DASHBOARD);
   }
 }

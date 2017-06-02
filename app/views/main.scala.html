@@ -25,7 +25,7 @@
 			<nav role="navigation" class="green z-depth-1">
 				<div class="nav-wrapper">
 					@if(template.backLink != null) {
-						<a class="brand-logo light left waves-effect waves-light" href="@template.backLink">
+						<a class="button-collapse backlink show-on-large" href="@template.backLink">
 							<i class="material-icons prefix">arrow_back</i>
 						</a>
 						<div class="brand-logo page-title light">
@@ -37,8 +37,11 @@
 							}
 						</div>
 					} else {
-						<a class="brand-logo light left waves-effect waves-light" href="@routes.Application.index()">
-							<i class="material-icons prefix">language</i>
+						<a href="#" class="button-collapse" data-activates="sidenav">
+							<i class="material-icons">menu</i>
+						</a>
+						<a class="button-collapse backlink hide-on-med-and-down show-on-large" href="@routes.Application.index">
+							<i class="material-icons">language</i>
 						</a>
 						<div class="brand-logo page-title light">
 							@if(template.title != null) {
@@ -123,6 +126,9 @@
 	<main>
 		<script src="@routes.Application.javascriptRoutes"></script>
 		<script src="@routes.Assets.versioned("concat/scripts.js")"></script>
+
+		@tags.sidenav(template)
+
 		@content
 
 		<script type="text/javascript">

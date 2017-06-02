@@ -215,7 +215,6 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
     return CompletableFuture
         .supplyAsync(() -> localeApiService.download(localeId, fileType, response()),
             executionContext.current())
-        .thenApply(data -> ok(new ByteArrayInputStream(data)))
-        .exceptionally(AbstractApi::handleException);
+        .thenApply(data -> ok(new ByteArrayInputStream(data))).exceptionally(this::handleException);
   }
 }

@@ -1,11 +1,12 @@
 App.Modules = App.Modules || {};
 
-App.Modules.ModalModule = function(sb) {
+App.Modules.MaterializeModule = function(sb) {
 	return {
 		create: function() {
 			// the "href" attribute of .modal-trigger must specify the modal ID that
 			// wants to be triggered
 			sb.dom.find('.modal').modal();
+			sb.dom.find('.button-collapse:not(.backlink)').sideNav();
 		}
 	};
 };
@@ -309,6 +310,6 @@ App.Modules.NotificationModule = function(sb) {
 	}
 }
 
-App.Core.register('ModalModule', App.Modules.ModalModule);
+App.Core.register('MaterializeModule', App.Modules.MaterializeModule);
 App.Core.register('NProgressModule', App.Modules.NProgressModule);
 App.Core.register('NotificationModule', App.Modules.NotificationModule);

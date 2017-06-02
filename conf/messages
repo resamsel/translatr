@@ -94,6 +94,7 @@ filetype.play_messages = Play Messages (messages.?'{locale.name}')
 footer.about = Designed and built by <a href="https://twitter.com/resamsel" target="_blank">@resamsel</a>. Code licensed <a rel="license" href="https://github.com/resamsel/translatr/blob/master/LICENSE" target="_blank">GPLv3</a>.
 footer.header = About
 footer.links = Links
+help = Help
 import.error.multipartMissing = Multipart form data missing
 import.file = Choose file
 info = Info

@@ -7,9 +7,6 @@ html, body {
 	min-height: 100vh;
 	flex-direction: column;
 }
-header {
-	z-index: 2;
-}
 main {
 	-webkit-flex: 1 0 auto;
 	flex: 1 0 auto;
@@ -49,6 +46,21 @@ p {
 }
 .template-index .header {
 	color: #43A047;
+}
+
+/* Side Navigation */
+#sidenav.fixed {
+	float: left;
+	position: static;
+}
+.content {
+	margin: 0 200px;
+}
+.side-nav .divider {
+    margin: 8px 0;
+}
+.template-index .nav-wrapper .button-collapse {
+	display: none;
 }
 
 /* Preformatted */
@@ -174,7 +186,6 @@ nav .nav-wrapper {
 }
 nav .page-title {
 	font-size: 18px;
-	left: 72px;
 	-webkit-transform: none;
 	transform: none;
 }
@@ -198,6 +209,10 @@ nav ul .disabled:hover {
 .template-index .breadcrumbs,
 .template-index .brand-logo {
 	display: none;
+}
+.template-locale header,
+.template-key header {
+	z-index: 1;
 }
 .navbar-form {
 	padding: 10px;
@@ -681,7 +696,7 @@ textarea.materialize-textarea {
 	padding-bottom: 1rem;
 }
 .collection.auth-provider .collection-item.avatar {
-	padding: 0.5rem 1rem;
+	padding: 0.5rem 0;
 }
 .collection.auth-provider .collection-item:not(.active):hover {
 	background-color: transparent;

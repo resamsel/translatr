@@ -1,16 +1,22 @@
 package controllers;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.slf4j.LoggerFactory;
 
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import commands.Command;
+import dto.PermissionException;
 import models.Project;
 import models.User;
 import play.cache.CacheApi;
 import play.inject.Injector;
+import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Call;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -40,11 +46,19 @@ public abstract class AbstractController extends Controller {
 
   public static final int DEFAULT_OFFSET = 0;
 
+  public static final String SECTION_HOME = "home";
+
+  public static final String SECTION_DASHBOARD = "dashboard";
+
+  public static final String SECTION_PROFILE = "profile";
+
   protected final Injector injector;
 
   protected final CacheApi cache;
 
   protected final PlayAuthenticate auth;
+
+  protected final HttpExecutionContext executionContext;
 
   protected final UserService userService;
 
@@ -63,13 +77,14 @@ public abstract class AbstractController extends Controller {
     this.cache = cache;
     this.auth = auth;
 
+    this.executionContext = injector.instanceOf(HttpExecutionContext.class);
     this.userService = injector.instanceOf(UserService.class);
     this.logEntryService = injector.instanceOf(LogEntryService.class);
     this.notificationService = injector.instanceOf(NotificationService.class);
   }
 
-  protected Result tryCatch(Supplier<Result> supplier) {
-    return supplier.get();
+  protected CompletionStage<Result> tryCatch(Supplier<Result> supplier) {
+    return CompletableFuture.supplyAsync(supplier, executionContext.current());
   }
 
   public static Result redirectWithError(Call call, String errorKey, Object... args) {
@@ -132,6 +147,25 @@ public abstract class AbstractController extends Controller {
 
 
   protected Result loggedInUser(Function<User, Result> processor) {
-    return tryCatch(() -> processor.apply(User.loggedInUser()));
+    return processor.apply(User.loggedInUser());
+  }
+
+  /**
+   * @param t
+   * @return
+   */
+  protected Result handleException(Throwable t) {
+    try {
+      if (t.getCause() != null)
+        throw t.getCause();
+
+      throw t;
+    } catch (PermissionException e) {
+      addError("access.denied");
+      return forbidden(views.html.errors.restricted.render(createTemplate()));
+    } catch (Throwable e) {
+      LoggerFactory.getLogger(AbstractApi.class).error("Error while processing request", e);
+      return internalServerError(views.html.errors.restricted.render(createTemplate()));
+    }
   }
 }

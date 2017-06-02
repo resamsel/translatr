@@ -1,5 +1,7 @@
 package utils;
 
+import javax.validation.ConstraintViolationException;
+
 import forms.AccessTokenForm;
 import forms.ActivitySearchForm;
 import forms.KeyForm;
@@ -10,6 +12,7 @@ import forms.SearchForm;
 import play.Configuration;
 import play.data.Form;
 import play.data.FormFactory;
+import play.data.validation.ValidationError;
 
 /**
  * @author resamsel
@@ -18,6 +21,19 @@ import play.data.FormFactory;
 public class FormUtils {
   protected static <T> Form<T> bindFromRequest(FormFactory formFactory, Class<T> formClass) {
     return formFactory.form(formClass).bindFromRequest();
+  }
+
+  public static <T> Form<T> include(Form<T> form, Throwable t) {
+    if (t instanceof ConstraintViolationException)
+      return include(form, (ConstraintViolationException) t);
+    return form;
+  }
+
+  public static <T> Form<T> include(Form<T> form, ConstraintViolationException e) {
+    e.getConstraintViolations().forEach(violation -> {
+      form.reject(new ValidationError("name", violation.getMessage()));
+    });
+    return form;
   }
 
   public static class Search {
