@@ -31,9 +31,9 @@ public class ActivityUtilsTest {
 
     UUID uuid = UUID.randomUUID();
     long id = ThreadLocalRandom.current().nextLong();
-    assertThat(
-        ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.User.class.getName(), uuid)))
-            .isEqualTo(controllers.routes.Users.user(uuid));
+    LogEntry activity = createLogEntry(ActionType.Create, dto.User.class.getName(), uuid);
+    activity.after = Json.stringify(Json.newObject().put("username", "username"));
+    assertThat(ActivityUtils.linkTo(activity)).isEqualTo(controllers.routes.Users.user("username"));
     assertThat(
         ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Project.class.getName(), uuid)))
             .isEqualTo(controllers.routes.Projects.project(uuid));

@@ -69,7 +69,8 @@ public class ActivityUtils {
 
     switch (activity.contentType) {
       case "dto.User":
-        if (uuid != null)
+        String name = JsonUtils.getAsText(node, "username");
+        if (name != null)
           return routes.Users.user(JsonUtils.getAsText(node, "username"));
         break;
       case "dto.Project":
