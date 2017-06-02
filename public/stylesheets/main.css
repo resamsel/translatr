@@ -60,7 +60,7 @@ p {
     margin: 8px 0;
 }
 .template-index .nav-wrapper .button-collapse {
-	display: none;
+	display: none !important;
 }
 
 /* Preformatted */
