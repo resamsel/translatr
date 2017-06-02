@@ -97,6 +97,15 @@
 	padding: 0 10px;
 }
 
+/* Small screens */
+@media only screen and (max-width: 600px) {
+	.item-left { max-width: 100%; }
+	.item-left > .collection {
+		max-width: 100%;
+		overflow-x: scroll;
+	}
+}
+
 /* Medium screens */
 @media only screen and (min-width: 601px) {
 	html, body {
@@ -139,6 +148,9 @@
 	.item-main {
 		border-bottom-width: 0;
 		border-right: 1px solid #e0e0e0;
+	}
+	.item-left {
+		max-width: 25%;
 	}
 	.grid-item > .collection,
 	.grid-item > #panel-editor,
