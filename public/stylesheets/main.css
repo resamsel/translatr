@@ -216,7 +216,7 @@ nav ul .disabled:hover {
 }
 .navbar-form {
 	padding: 10px;
-	margin: 0 4rem;
+	margin: 0 8rem 0 4rem;
 	text-align: center;
 }
 .navbar-form .input-field {

@@ -60,7 +60,7 @@
 		height: 64px;
 	}
 	nav .brand-logo {
-		margin-left: 0.5rem;
+		left: auto;
 	}
 	.navbar-form {
 		margin: 0 25%;
