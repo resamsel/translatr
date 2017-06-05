@@ -60,8 +60,8 @@ public class Users extends AbstractController {
 
   public Result user(String username) {
     return user(username, user -> {
-      return ok(
-          views.html.users.user.render(createTemplate(), user, userService.getUserStats(user.id)));
+      return ok(views.html.users.user.render(createTemplate(user), user,
+          userService.getUserStats(user.id)));
     });
   }
 
@@ -77,7 +77,8 @@ public class Users extends AbstractController {
 
       search.pager(projects);
 
-      return ok(views.html.users.projects.render(createTemplate(), user, projects.getList(), form));
+      return ok(
+          views.html.users.projects.render(createTemplate(user), user, projects.getList(), form));
     }, true);
   }
 
@@ -92,7 +93,7 @@ public class Users extends AbstractController {
 
       search.pager(activities);
 
-      return ok(views.html.users.activity.render(createTemplate(), user, activities, form));
+      return ok(views.html.users.activity.render(createTemplate(user), user, activities, form));
     }, true);
   }
 
@@ -113,7 +114,7 @@ public class Users extends AbstractController {
 
       search.pager(accounts);
 
-      return ok(views.html.users.linkedAccounts.render(createTemplate(), user,
+      return ok(views.html.users.linkedAccounts.render(createTemplate(user), user,
           accounts.getList().stream().collect(toMap(a -> a.providerKey, a -> a)), form));
     }, true);
   }
@@ -141,7 +142,7 @@ public class Users extends AbstractController {
       if (search.order == null)
         search.order = "name";
 
-      return ok(views.html.users.accessTokens.render(createTemplate(), user,
+      return ok(views.html.users.accessTokens.render(createTemplate(user), user,
           AccessToken.findBy(AccessTokenCriteria.from(search).withUserId(user.id)).getList(),
           form));
     }, true);
@@ -162,11 +163,12 @@ public class Users extends AbstractController {
     return processor.apply(user);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Template createTemplate() {
-    return super.createTemplate().withSection(SECTION_PROFILE);
+  private Template createTemplate(User user) {
+    Template template = createTemplate();
+
+    if (user != null && template.loggedInUser != null && user.id.equals(template.loggedInUser.id))
+      return template.withSection(SECTION_PROFILE);
+
+    return template.withSection(SECTION_COMMUNITY);
   }
 }

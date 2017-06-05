@@ -52,6 +52,8 @@ public abstract class AbstractController extends Controller {
 
   public static final String SECTION_PROFILE = "profile";
 
+  public static final String SECTION_COMMUNITY = "community";
+
   protected final Injector injector;
 
   protected final CacheApi cache;
