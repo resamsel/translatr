@@ -4,7 +4,7 @@ import de.johoop.findbugs4sbt.FindBugs._
 
 name := """translatr"""
 
-version := "2.1.0-SNAPSHOT"
+version := "2.1.0"
 
 lazy val root = (project in file(".")).
 	enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin).
