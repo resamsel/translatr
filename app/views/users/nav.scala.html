@@ -1,0 +1,11 @@
+@(template: utils.Template, user: User, active: String)
+
+@if(template.loggedInUser.id == user.id) {
+	@tags.navView {
+		@tags.navItem(routes.Users.user(user.username), "info", "info", "info", active)
+		@tags.navItem(routes.Users.projects(user.username), "projects", "projects", "view_quilt", active)
+		@tags.navItem(routes.Users.activity(user.username), "activity", "activity", "notifications_active", active)
+		@tags.navItem(routes.Users.linkedAccounts(user.username), "linkedAccounts", "linkedAccounts", "account_box", active)
+		@tags.navItem(routes.Users.accessTokens(user.username), "accessTokens", "accessTokens", "accessibility", active)
+	}
+}

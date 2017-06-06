@@ -1,0 +1,13 @@
+language: java
+jdk:
+    - oraclejdk8
+before_script:
+    - psql -c 'create user translatr;' -U postgres
+    - psql -c 'create database "translatr-test";' -U postgres
+    - psql -c 'grant all privileges on database "translatr-test" TO translatr;' -U postgres
+script:
+    - bin/activator clean jacoco:cover -Dconfig.file=test.conf
+cache:
+    directories:
+        - $HOME/.ivy2/cache
+        - $HOME/.sbt/boot

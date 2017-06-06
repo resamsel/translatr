@@ -1,0 +1,26 @@
+@(template: utils.Template, form: Form[forms.Accept], aUser: com.feth.play.module.pa.user.AuthUser, bUser: com.feth.play.module.pa.user.AuthUser)
+
+@label = {
+	@Messages("playauthenticate.merge.accounts.question", aUser, bUser)
+}
+
+@main(template.withTitle(Messages("profile.askLink.title")))()(users.nav(template, template.loggedInUser, "info")) {
+	@users.content("info") {
+		<form action="@routes.Profiles.askMerge()" method="post">
+			<div id="panel-message" class="card no-image">
+				<div class="card-content">
+					<span class="card-title">@Messages("profile.askLink.title")</span>
+					@inputs.checkbox(form("accept"), "accept", label)
+				</div>
+				<div class="card-action">
+					<button
+						type="submit"
+						class="btn waves-effect waves-light btn-save">
+						@Messages("button.save")
+						<i class="material-icons right">send</i>
+					</button>
+				</div>
+			</div>
+		</form>
+	}
+}

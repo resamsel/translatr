@@ -1,0 +1,126 @@
+@(template: utils.Template, locale: models.Locale, form: Form[forms.KeySearchForm])
+
+@localeActions = {
+	<li>
+		@tags.fab("remove-locale", "delete_forever", href = routes.Locales.remove(locale.id).url, tooltip = Messages("locale.remove.tooltip"), styleClass = "red")
+	</li>
+	<li>
+		@tags.fab("edit-locale", "edit", href = routes.Locales.edit(locale.id).url, tooltip = Messages("locale.edit.tooltip"), styleClass = "blue")
+	</li>
+}
+
+@main(template.withTitle(locale.project.name).withName("locale").withBackLink(routes.Projects.locales(locale.project.id, locale.name))) {
+	@tags.search(form) {
+		<button
+			type="button"
+			class="btn btn-flat dropdown-button"
+			data-activates="filter-options"
+			data-beloworigin="true"
+			data-alignment="right"
+			data-constrainwidth="false">
+			<i class="material-icons">arrow_drop_down</i>
+		</button>
+		<ul id="filter-options" class="dropdown-content">
+			<li>
+				<input id="field-missing" name="missing" type="checkbox" @if(form.get.missing) {checked="checked"} />
+				<label for="field-missing">
+					@Messages("message.untranslated")
+				</label>
+			</li>
+		</ul>
+	}
+} {
+} {
+	@tags.editor("key.selection.none") {
+		@tags.editorColumn {
+			<a
+				id="switch-editor"
+				class="btn-flat btn-narrow waves-effect right disabled"
+				href="#"
+				title="@Messages("key.editor.switchto")">
+				<i class="material-icons">compare_arrows</i>
+			</a>
+			<a
+				class="dropdown-button btn-flat btn-narrow waves-effect"
+				href="#"
+				data-activates="dropdown-locales"
+				data-constrainWidth="false">
+				<i class="material-icons right">arrow_drop_down</i>
+				@tags.locale(locale.name)
+			</a>
+			<ul id="dropdown-locales" class="dropdown-content">
+				<li class="selected">
+					<a id="@locale.id" href="@routes.Locales.locale(locale.id)">@tags.locale(locale.name)</a>
+				</li>
+			</ul>
+			<script type="text/template" id="locale-tmpl">
+				<a id="<%= id %>" href="<%- url %>#key/<%- keyName %>"><%- localeName %></a>
+			</script>
+		} {
+			<div id="items-empty">
+				<div class="locales center">
+					<p class="grey-text">
+						@Messages("keys.size", 0)
+					</p>
+					@if(locale.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
+						<a href="#modal-create-locale" class="modal-trigger btn waves-effect waves-light">
+							@Messages("locale.create.title")
+						</a>
+					}
+				</div>
+			</div>
+		}
+	} {
+		<div class="filter">
+			<ul id="dropdown-preview" class="tabs">
+				<li class="tab preview active">
+					<a href="#preview">@Messages("locale.preview")</a>
+				</li>
+				<li class="tab messages">
+					<a href="#panel-messages">@Messages("messages")</a>
+				</li>
+			</ul>
+		</div>
+
+		<div id="panel-messages">
+			<div class="messages"></div>
+			<script type="text/template" id="message-tmpl">
+				<div class="heading">
+					<a class="btn light-green waves-effect waves-light right" title="@Messages("value.copy")">
+						<i class="material-icons">content_paste</i>
+					</a>
+					<span class="title localeName truncate"><%= localeName %></span>
+				</div>
+				<p class="value"><%- value %></p>
+			</script>
+		</div>
+	}
+
+	@tags.fabContainer("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = localeActions)
+
+	@tags.modal(Messages("key.new"), "modal-create-key") {
+		<form id="form-key" method="post" action="@routes.Keys.doCreate(locale.project.id, locale.id)">
+			<div class="form-group">
+				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
+			</div>
+		</form>
+	}
+
+	<script src="@routes.Assets.versioned("javascripts/locale.js")"></script>
+	<script>
+		$('ul.tabs').tabs();
+
+		var projectId = '@locale.project.id';
+		var messages = {
+			'message.updated': '@Messages("message.updated")'
+		};
+		var editor = new LocaleEditor({
+			app: app,
+			project: new Project('@locale.project.id'),
+			locale: @Html(play.libs.Json.toJson(locale).toString),
+			search: @Html(play.libs.Json.toJson(form.get()).toString)
+		});
+
+		App.Core.register('KeyCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
+	</script>
+}

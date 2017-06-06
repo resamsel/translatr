@@ -1,0 +1,48 @@
+@(user: User, form: Form[forms.AccessTokenForm])
+
+@inputs.text(form("name"), "accessToken-name", "accessToken.name")
+
+@if(form("key").value != null) {
+	@inputs.text(form("key"), "accessToken-key", "accessToken.key", disabled = true)
+}
+
+<h5 class="header">@Messages("accessToken.scopes")</h5>
+
+<div class="row">
+	<div class="col s12 m6 l4">
+		<h6 class="header">@Messages("project")</h6>
+		@*scopeCheckbox(form, Scope.ProjectAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.ProjectRead)<br/>
+		@scopeCheckbox(form, Scope.ProjectWrite)
+	</div>
+	<div class="col s12 m6 l4">
+		<h6 class="header">@Messages("locale")</h6>
+		@*scopeCheckbox(form, Scope.LocaleAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.LocaleRead)<br/>
+		@scopeCheckbox(form, Scope.LocaleWrite)
+	</div>
+	<div class="col s12 m6 l4">
+		<h6 class="header">@Messages("key")</h6>
+		@*scopeCheckbox(form, Scope.KeyAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.KeyRead)<br/>
+		@scopeCheckbox(form, Scope.KeyWrite)
+	</div>
+	<div class="col s12 m6 l4">
+		<h6 class="header">@Messages("message")</h6>
+		@*scopeCheckbox(form, Scope.MessageAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.MessageRead)<br/>
+		@scopeCheckbox(form, Scope.MessageWrite)
+	</div>
+	<div class="col s12 m6 l4">
+		<h6 class="header">@Messages("user")</h6>
+		@*scopeCheckbox(form, Scope.UserAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.UserRead)<br/>
+		@scopeCheckbox(form, Scope.UserWrite)
+	</div>
+	<div class="col s12 m6 l4">
+		<h6 class="header">@Messages("notification")</h6>
+		@*scopeCheckbox(form, Scope.NotificationAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.NotificationRead)<br/>
+		@scopeCheckbox(form, Scope.NotificationWrite)
+	</div>
+</div>

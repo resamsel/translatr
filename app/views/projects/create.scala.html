@@ -1,0 +1,32 @@
+@(template: utils.Template, form: Form[forms.ProjectForm])
+
+@main(template.withTitle(Messages("dashboard")).withName("project-create").withBackLink(routes.Dashboards.dashboard()))()(dashboards.nav(template, "projects")) {
+	@dashboards.content {
+		<form action="@routes.Projects.create()" method="post">
+			<div id="panel-message" class="card no-image">
+				<div class="card-content">
+					<span class="card-title">@Messages("project.create.title")</span>
+					@projects.formContent(form)
+				</div>
+				<div class="card-action">
+					<button
+						type="submit"
+						class="btn waves-effect waves-light btn-save">
+						@Messages("button.save")
+						<i class="material-icons right">send</i>
+					</button>
+					<a
+						class="btn-flat btn-cancel black-text"
+						href="@routes.Dashboards.projects()">
+						@Messages("button.cancel")
+					</a>
+				</div>
+			</div>
+		</form>
+	}
+	<script>
+		$(document).ready(function() {
+			Materialize.updateTextFields();
+		});
+	</script>
+}

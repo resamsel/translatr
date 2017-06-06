@@ -1,0 +1,20 @@
+@(project: Project, memberList: com.avaje.ebean.PagedList[ProjectUser], form: Form[forms.ProjectUserForm])
+
+@if(memberList.getList.size > 1) {
+	<p>
+		@Html(Messages("project.owner.change"))
+	</p>
+	<br />
+	<div class="input-field">
+		<select id="field-owner" name="ownerId">
+			@for(member <- memberList.getList) {
+				@if(member.user != project.owner) {
+					<option value="@member.user.id">@member.user.name &mdash; @member.role</option>
+				}
+			}
+		</select>
+		<label for="field-role">@Messages("project.owner.new")</label>
+	</div>
+} else {
+	@Html(Messages("project.owner.change.info"))
+}

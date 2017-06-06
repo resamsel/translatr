@@ -1,0 +1,36 @@
+@(template: utils.Template, project: Project, activityList: com.avaje.ebean.PagedList[LogEntry], form: Form[forms.ActivitySearchForm])
+
+@import utils.FormatUtils._
+
+@main(template.withTitle(project.name).withName("project-activity"))(tags.search(form)())(nav(project, "activity")) {
+	@content() {
+		@tags.collection(activityList.getList, "activity.empty") {
+			<span class="title">@Messages("activity")</span>
+			@tags.sortOrders {
+				@tags.orderLink(form.get, routes.Projects.activity(project.id), "when.created", "whenCreated desc", "whenCreated", "whenCreated")
+			}
+		} {
+			@for(activity <- activityList.getList) {
+				<li class="collection-item avatar black-text">
+					<i class="material-icons circle @utils.ActivityUtils.colorOf(activity)">@utils.ActivityUtils.iconOf(activity)</i>
+					<span class="title truncate">
+						<a href="@utils.ActivityUtils.linkTo(activity)">
+							@utils.ActivityUtils.nameOf(activity)
+						</a>
+					</span>
+					<p>
+						@utils.ActivityUtils.infoOf(activity)
+						@if(activity.user != null) {
+							@Messages("by")
+							<a href="@routes.Users.user(activity.user.username)">
+								@activity.user.name
+							</a>
+						}
+					</p>
+				</li>
+			}
+		} {
+			@tags.pager(routes.Projects.activity(project.id), form.get)
+		}
+	}
+}

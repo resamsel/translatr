@@ -1,0 +1,23 @@
+/* Login */
+.template-login main {
+    display: flex;
+    align-items: center;
+}
+.template-login .container-fluid.content {
+    flex: 1 0 auto;
+}
+.template-login .row {
+    align-items: center;
+}
+.template-login .row .col.providers {
+    margin-left: 0;
+}
+.template-login .collection.auth-provider {
+	padding-bottom: 0;
+}
+
+@media only screen and (min-width: 601px) {
+	.template-login .row {
+    	display: flex;
+	}
+}

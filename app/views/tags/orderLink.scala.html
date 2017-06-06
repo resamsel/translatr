@@ -1,0 +1,12 @@
+@(form: forms.SearchForm, call: Call, key: String, ascOrder: String, descOrder: String, defaultOrder: String)
+
+<li>
+	<a href="@form.urlWithOrder(call, descOrder)" class="sort-order">
+		@Messages(key + "." + "desc")
+	</a>
+</li>
+<li>
+	<a href="@form.urlWithOrder(call, ascOrder)" class="sort-order">
+		@Messages(key + "." + "asc")
+	</a>
+</li>

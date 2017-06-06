@@ -1,0 +1,15 @@
+@(project: models.Project)
+
+<form
+	id="form-key"
+	method="post"
+	action="@routes.Keys.doCreate(project.id, null)">
+	<div class="input-field">
+		<input
+			id="field-key-name"
+			type="text"
+			name="name"
+			class="validate" />
+		<label for="field-key-name">@Messages("key.name")</label>
+	</div>
+</form>

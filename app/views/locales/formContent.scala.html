@@ -1,0 +1,7 @@
+@(form: Form[forms.LocaleForm])
+
+@inputs.hidden(form("search"), "locale-search")
+@inputs.hidden(form("limit"), "locale-limit")
+@inputs.hidden(form("offset"), "locale-offset")
+@inputs.hidden(form("order"), "locale-order")
+@inputs.text(form("name"), "locale-name", "locale.name")

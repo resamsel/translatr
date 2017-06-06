@@ -1,0 +1,43 @@
+@(template: utils.Template, user: models.User, accessTokenList: List[AccessToken], form: Form[forms.AccessTokenForm])
+
+@import utils.FormatUtils.pretty
+
+@main(template.withTitle(user.name).withName("user-access-tokens"))(tags.search(form)())(nav(template, user, "accessTokens")) {
+	@content("accessTokens") {
+		@tags.collection(accessTokenList, "accessTokens.empty", "access-tokens") {
+			<span class="title">@Messages("accessToken")</span>
+		} {
+			@for(accessToken <- accessTokenList) {
+				<li class="collection-item avatar">
+					<i class="material-icons circle red">accessibility</i>
+					<span class="title">
+						<a href="@routes.Profiles.accessTokenEdit(accessToken.id)">
+							@accessToken.name
+						</a>
+					</span>
+					<p>
+						@Messages("when.created", pretty(ctx.lang().locale, accessToken.whenCreated))
+					</p>
+					<a
+						href="@routes.Profiles.accessTokenRemove(accessToken.id)"
+						class="secondary-content btn-hover"
+						title="@Messages("button.remove")">
+						<i class="material-icons">delete_forever</i>
+					</a>
+				</li>
+			}
+		} { }
+	}
+
+	@tags.fabContainer("create-access-token", "add", tooltip = Messages("accessToken.create.tooltip"), styleClass = "green")
+
+	@tags.modal(Messages("accessToken.create"), "modal-create-access-token") {
+		<form id="form-access-token" method="post" action="@routes.Profiles.doAccessTokenCreate()">
+			@accessTokenFormContent(template.loggedInUser, form)
+		</form>
+	}
+
+	<script>
+		App.Core.register('AccessTokenCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-access-token'});
+	</script>
+}

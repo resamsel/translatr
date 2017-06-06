@@ -1,0 +1,45 @@
+.svg-container {
+	display: inline-block;
+	position: relative;
+	width: 100%;
+	padding-bottom: 18%;
+	vertical-align: middle;
+	overflow: hidden;
+}
+.svg-content {
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+text.legend,
+.weekday,
+.month {
+	fill: rgba(0, 0, 0, 0.6);
+}
+.day {
+	fill: rgba(0, 0, 0, 0.125);
+}
+.day.active {
+	fill: rgba(255, 0, 0, 0.5);
+}
+
+.RdYlGn .q0-11{fill:#1e6823; opacity: 0.09;}
+.RdYlGn .q1-11{fill:#1e6823; opacity: 0.18;}
+.RdYlGn .q2-11{fill:#1e6823; opacity: 0.27;}
+.RdYlGn .q3-11{fill:#1e6823; opacity: 0.36;}
+.RdYlGn .q4-11{fill:#1e6823; opacity: 0.45;}
+.RdYlGn .q5-11{fill:#1e6823; opacity: 0.54;}
+.RdYlGn .q6-11{fill:#1e6823; opacity: 0.63;}
+.RdYlGn .q7-11{fill:#1e6823; opacity: 0.72;}
+.RdYlGn .q8-11{fill:#1e6823; opacity: 0.81;}
+.RdYlGn .q9-11{fill:#1e6823; opacity: 0.9;}
+.RdYlGn .q10-11{fill:#1e6823; opacity: 1;}
+
+.RdYlGn .q0-4{fill:#d6e685;}
+.RdYlGn .q1-4{fill:#8cc665;}
+.RdYlGn .q2-4{fill:#44a340;}
+.RdYlGn .q3-4{fill:#1e6823;}
+
+.RdYlGn.clickable .has-data {cursor: pointer;}

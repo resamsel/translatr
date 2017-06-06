@@ -1,0 +1,17 @@
+@(title: String, link: Call = null, styleClass: String = "")(content: Html = Html(""))(actions: Html = Html(""))
+
+<div class="card no-image @styleClass">
+	<div class="card-content">
+		@if(link != null) {
+			<a
+				href="@link"
+				class="card-title">@title</a>
+		} else {
+			<span class="card-title">@title</span>
+		}
+		@content
+	</div>
+	<div class="card-action">
+		@actions
+	</div>
+</div>

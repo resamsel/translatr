@@ -12,4 +12,5 @@ RUNNING_PID
 bower_components
 node_modules
 .translatr.yml
-translatr/data
+data
+bin

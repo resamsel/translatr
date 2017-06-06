@@ -1,0 +1,108 @@
+@(template: utils.Template, key: models.Key, form: Form[forms.SearchForm])
+
+@createActions = {
+	<li>
+		@tags.fab("remove-key", "delete_forever", href = routes.Keys.remove(key.id, null).url, tooltip = Messages("key.remove.tooltip"), styleClass = "red")
+	</li>
+	<li>
+		@tags.fab("edit-key", "edit", href = routes.Keys.edit(key.id).url, tooltip = Messages("key.edit.tooltip"), styleClass = "light-green")
+	</li>
+}
+
+@main(template.withTitle(key.project.name).withName("key").withBackLink(routes.Projects.keys(key.project.id, key.name))) {
+	@tags.search(form) {
+		<button
+			type="button"
+			class="btn btn-flat dropdown-button"
+			data-activates="filter-options"
+			data-beloworigin="true"
+			data-alignment="right"
+			data-constrainwidth="false">
+			<i class="material-icons">arrow_drop_down</i>
+		</button>
+		<ul id="filter-options" class="dropdown-content">
+			<li>
+				<input id="field-untranslated" type="checkbox" />
+				<label for="field-untranslated">
+					@Messages("message.untranslated")
+				</label>
+			</li>
+		</ul>
+	}
+} {
+} {
+	@tags.editor("locale.selection.none") {
+		@tags.editorColumn {
+			<a
+				id="switch-editor"
+				class="btn-flat btn-narrow waves-effect right disabled"
+				href="#"
+				title="@Messages("locale.editor.switchto")">
+				<i class="material-icons">compare_arrows</i>
+			</a>
+			<div class="input-field left">
+				<input id="key-name" value="@key.name" disabled="disabled">
+			</div>
+		} {
+			<div id="items-empty">
+				<div class="locales center">
+					<p class="grey-text">
+						@Messages("locales.size", 0)
+					</p>
+					@if(key.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
+						<a href="#modal-create-locale" class="modal-trigger btn waves-effect waves-light">
+							@Messages("locale.create.title")
+						</a>
+					}
+				</div>
+			</div>
+		}
+	} {
+		<div class="filter">
+			<ul id="dropdown-preview" class="tabs">
+				<li class="tab preview disabled">
+					<a href="#preview">@Messages("locale.preview")</a>
+				</li>
+			</ul>
+		</div>
+	}
+
+	@if(key.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
+		@tags.fabContainer("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = createActions)
+
+		@tags.modal(Messages("key.new"), "modal-create-key") {
+			<form id="form-key" method="post" action="@routes.Keys.doCreate(key.project.id, null)">
+				<div class="form-group">
+					<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
+				</div>
+			</form>
+		}
+	}
+	@if(key.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
+		@tags.modal(Messages("locale.new"), "modal-create-locale") {
+			@tags.localeCreate(key.project)
+		}
+	}
+
+	<script src="@routes.Assets.versioned("javascripts/key.js")"></script>
+	<script>
+		$('ul.tabs').tabs();
+
+		var projectId = '@key.project.id';
+		var keyId = '@key.id';
+		var keyName = '@key.name';
+		var messages = {
+			'message.updated': '@Messages("message.updated")'
+		};
+		var editor = new KeyEditor({
+			app: app,
+			project: new Project('@key.project.id'),
+			key: @Html(play.libs.Json.toJson(key).toString),
+			search: @Html(play.libs.Json.toJson(form.get()).toString)
+		});
+
+		App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
+		App.Core.register('LocaleCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-locale'});
+		App.Core.register('KeyCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
+	</script>
+}

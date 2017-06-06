@@ -1,0 +1,9 @@
+@(project: models.Project, active: String)
+
+@tags.navView {
+	@tags.navItem(routes.Projects.project(project.id), "info", "info", "info", active)
+	@tags.navItem(routes.Projects.locales(project.id), "locales", "locales", "book", active)
+	@tags.navItem(routes.Projects.keys(project.id), "keys", "keys", "vpn_key", active)
+	@tags.navItem(routes.Projects.members(project.id), "members", "project.members", "group_work", active)
+	@tags.navItem(routes.Projects.activity(project.id), "activity", "activity", "notifications_active", active)
+}
