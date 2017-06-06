@@ -76,6 +76,8 @@ public class Key implements Model<Key, UUID>, Suggestable {
   @NotNull
   public String name;
 
+  public Integer wordCount;
+
   @JsonIgnore
   @OneToMany
   public List<Message> messages;

@@ -97,6 +97,41 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
    * {@inheritDoc}
    */
   @Override
+  public void increaseWordCountBy(UUID localeId, int wordCountDiff) {
+    if (wordCountDiff == 0) {
+      LOGGER.debug("Not changing word count");
+      return;
+    }
+
+    Locale locale = Locale.byId(localeId);
+
+    if (locale == null)
+      return;
+
+    if (locale.wordCount == null)
+      locale.wordCount = 0;
+    locale.wordCount += wordCountDiff;
+
+    log(() -> persist(locale), LOGGER, "Increased word count by %d", wordCountDiff);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void resetWordCount(UUID projectId) {
+    try {
+      Ebean.createSqlUpdate("update locale set word_count = null where project_id = :projectId")
+          .setParameter("projectId", projectId).execute();
+    } catch (Exception e) {
+      LOGGER.error("Error while resetting word count", e);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   protected void preSave(Locale t, boolean update) {
     if (update)
       logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.Locale.class,

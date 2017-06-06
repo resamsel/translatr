@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -103,10 +104,9 @@ public class Projects extends AbstractController {
 
   public Result project(UUID projectId) {
     return searchForm(projectId, (project, form) -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values())) {
-        addError(ctx().messages().at("project.access.denied", project.name));
-        return redirect(routes.Dashboards.dashboard());
-      }
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values()))
+        return redirectWithError(routes.Dashboards.dashboard(), "project.access.denied",
+            project.name);
 
       return ok(log(() -> views.html.projects.project.render(createTemplate(), project, form),
           LOGGER, "Rendering project"));
@@ -171,11 +171,10 @@ public class Projects extends AbstractController {
   }
 
   public Result edit(UUID projectId) {
-    return project(projectId, project -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
-        addError(ctx().messages().at("project.edit.denied", project.name));
-        return redirect(routes.Projects.project(project.id));
-      }
+    return projectLegacy(projectId, project -> {
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
+        return redirectWithError(routes.Projects.project(project.id), "project.edit.denied",
+            project.name);
 
       select(project);
 
@@ -185,11 +184,10 @@ public class Projects extends AbstractController {
   }
 
   public Result doEdit(UUID projectId) {
-    return project(projectId, project -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
-        addError(ctx().messages().at("project.edit.denied", project.name));
-        return redirect(routes.Projects.project(project.id));
-      }
+    return projectLegacy(projectId, project -> {
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
+        return redirectWithError(routes.Projects.project(project.id), "project.edit.denied",
+            project.name);
 
       select(project);
 
@@ -212,10 +210,9 @@ public class Projects extends AbstractController {
     if (project == null)
       return redirect(routes.Application.index());
 
-    if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
-      addError(ctx().messages().at("project.delete.denied", project.name));
-      return redirect(routes.Projects.project(project.id));
-    }
+    if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
+      return redirectWithError(routes.Projects.project(project.id), "project.delete.denied",
+          project.name);
 
     select(project);
 
@@ -282,7 +279,7 @@ public class Projects extends AbstractController {
   }
 
   public Result memberAdd(UUID projectId) {
-    return project(projectId, project -> {
+    return projectLegacy(projectId, project -> {
       Form<ProjectUserForm> form = ProjectUserForm.form(formFactory).bindFromRequest();
 
       return ok(views.html.projects.memberAdd.render(createTemplate(), project, form));
@@ -290,7 +287,7 @@ public class Projects extends AbstractController {
   }
 
   public Result doMemberAdd(UUID projectId) {
-    return project(projectId, project -> {
+    return projectLegacy(projectId, project -> {
       Form<ProjectUserForm> form = ProjectUserForm.form(formFactory).bindFromRequest();
 
       if (form.hasErrors())
@@ -306,14 +303,11 @@ public class Projects extends AbstractController {
   }
 
   public Result memberRemove(UUID projectId, Long memberId) {
-    return project(projectId, project -> {
+    return projectLegacy(projectId, project -> {
       ProjectUser member = projectUserService.byId(memberId);
 
-      if (member == null || !project.id.equals(member.project.id)) {
-        flash("error", ctx().messages().at("project.member.notFound"));
-
-        return redirect(routes.Projects.members(project.id));
-      }
+      if (member == null || !project.id.equals(member.project.id))
+        return redirectWithError(routes.Projects.members(project.id), "project.member.notFound");
 
       undoCommand(RevertDeleteProjectUserCommand.from(member));
 
@@ -324,13 +318,12 @@ public class Projects extends AbstractController {
   }
 
   public Result doOwnerChange(UUID projectId) {
-    return project(projectId, project -> {
+    return projectLegacy(projectId, project -> {
       Form<ProjectOwnerForm> form = formFactory.form(ProjectOwnerForm.class).bindFromRequest();
 
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
-        addError(ctx().messages().at("project.owner.change.denied", project.name));
-        return redirect(routes.Projects.members(project.id));
-      }
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
+        return redirectWithError(routes.Projects.members(project.id), "project.owner.change.denied",
+            project.name);
 
       // if (form.hasErrors())
       // return badRequest(views.html.projects.ownerChange.render(createTemplate(), project, form));
@@ -349,7 +342,7 @@ public class Projects extends AbstractController {
   }
 
   public Result activity(UUID projectId) {
-    return project(projectId, project -> {
+    return projectLegacy(projectId, project -> {
       Form<ActivitySearchForm> form =
           FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
       ActivitySearchForm search = form.get();
@@ -364,39 +357,74 @@ public class Projects extends AbstractController {
   }
 
   public Result activityCsv(UUID projectId) {
-    return project(projectId, project -> {
+    return projectLegacy(projectId, project -> {
       return ok(new ActivityCsvConverter()
           .apply(logEntryService.getAggregates(new LogEntryCriteria().withProjectId(project.id))));
     });
   }
 
-  private Result project(UUID projectId, Function<Project, Result> processor,
+  public CompletionStage<Result> wordCountReset(UUID projectId) {
+    return project(projectId, project -> {
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
+        return redirectWithError(routes.Projects.project(project.id), "project.edit.denied",
+            project.name);
+
+      select(project);
+
+      projectService.resetWordCount(projectId);
+
+      return redirectWithMessage(routes.Projects.project(project.id), "project.wordCount.reset");
+    });
+  }
+
+  private CompletionStage<Result> project(UUID projectId, Function<Project, Result> processor,
       String... propertiesToFetch) {
-    Project project = projectService.byId(projectId, propertiesToFetch);
+    return tryCatch(() -> {
+      Project project = projectService.byId(projectId, propertiesToFetch);
 
-    if (project == null)
-      return redirectWithError(routes.Dashboards.dashboard(), "project.notFound", projectId);
+      if (project == null)
+        return redirectWithError(routes.Dashboards.dashboard(), "project.notFound", projectId);
 
-    select(project);
+      select(project);
 
-    return processor.apply(project);
+      return processor.apply(project);
+    });
+  }
+
+  /**
+   * 
+   * @param projectId
+   * @param processor
+   * @param propertiesToFetch
+   * @return
+   * @deprecated Use {@link Projects#project(UUID, Function, String...)} instead!
+   */
+  @Deprecated
+  private Result projectLegacy(UUID projectId, Function<Project, Result> processor,
+      String... propertiesToFetch) {
+    try {
+      return project(projectId, processor, propertiesToFetch).toCompletableFuture().get();
+    } catch (InterruptedException | ExecutionException e) {
+      LOGGER.error("Error while getting result of future", e);
+      return internalServerError(e.getMessage());
+    }
   }
 
   private <T extends Form<SearchForm>> Result searchForm(UUID projectId,
       BiFunction<Project, Form<SearchForm>, Result> processor, String... propertiesToFetch) {
-    return project(projectId, project -> processor.apply(project,
+    return projectLegacy(projectId, project -> processor.apply(project,
         FormUtils.Search.bindFromRequest(formFactory, configuration)), propertiesToFetch);
   }
 
   private <T extends Form<LocaleSearchForm>> Result localeSearchForm(UUID projectId,
       BiFunction<Project, Form<LocaleSearchForm>, Result> processor) {
-    return project(projectId, project -> processor.apply(project,
+    return projectLegacy(projectId, project -> processor.apply(project,
         FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration)), "keys", "locales");
   }
 
   private <T extends Form<KeySearchForm>> Result keySearchForm(UUID projectId,
       BiFunction<Project, Form<KeySearchForm>, Result> processor) {
-    return project(projectId, project -> processor.apply(project,
+    return projectLegacy(projectId, project -> processor.apply(project,
         FormUtils.KeySearch.bindFromRequest(formFactory, configuration)));
   }
 

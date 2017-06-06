@@ -114,11 +114,21 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
 
     preSave(t, update);
 
-    Ebean.save(t);
-    // Ebean.refresh(t);
+    persist(t);
 
     postSave(t, update);
 
+    return t;
+  }
+
+  /**
+   * Persist model to database, ignoring any pre/post save methods.
+   * 
+   * @param t
+   */
+  protected MODEL persist(MODEL t) {
+    Ebean.save(t);
+    // Ebean.refresh(t);
     return t;
   }
 
@@ -139,14 +149,24 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   public Collection<MODEL> save(Collection<MODEL> t) {
     try {
       preSave(t);
-      TransactionUtils.batchExecute((tx) -> {
-        Ebean.saveAll(t);
-      });
+      persist(t);
       postSave(t);
     } catch (Exception e) {
       LOGGER.error("Error while batch saving entities", e);
       throw new PersistenceException(e);
     }
+
+    return t;
+  }
+
+  /**
+   * @param t
+   * @throws Exception
+   */
+  protected Collection<MODEL> persist(Collection<MODEL> t) throws Exception {
+    TransactionUtils.batchExecute((tx) -> {
+      Ebean.saveAll(t);
+    });
 
     return t;
   }

@@ -22,4 +22,15 @@ public interface ProjectService extends ModelService<Project, UUID, ProjectCrite
    * @return
    */
   Project byOwnerAndName(User user, String name);
+
+  /**
+   * @param projectId
+   * @param wordCountDiff
+   */
+  void increaseWordCountBy(UUID projectId, int wordCountDiff);
+
+  /**
+   * @param projectId
+   */
+  void resetWordCount(UUID projectId);
 }

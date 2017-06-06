@@ -9,7 +9,7 @@
 	</li>
 }
 
-@main(template.withTitle(key.project.name).withName("key").withBackLink(routes.Projects.project(key.project.id))) {
+@main(template.withTitle(key.project.name).withName("key").withBackLink(routes.Projects.keys(key.project.id, key.name))) {
 	@tags.search(form) {
 		<button
 			type="button"

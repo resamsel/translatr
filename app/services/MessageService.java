@@ -21,4 +21,9 @@ public interface MessageService extends ModelService<Message, UUID, MessageCrite
    * @return
    */
   int countBy(Project project);
+
+  /**
+   * @param projectId
+   */
+  void resetWordCount(UUID projectId);
 }

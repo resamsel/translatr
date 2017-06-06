@@ -19,13 +19,14 @@
 					</div>
 					</a>
 					<p>
-						@defining(project.missing(locale.id)) { missing =>
+						@defining(project.missingKeys(locale.id)) { missing =>
 							@if(missing == 0) {
 								@Messages("locale.complete")
 							} else {
 								@Messages("messages.missing", missing)
 							}
 						}
+						(@Messages("words.size", Option(locale.wordCount).getOrElse(0)))
 					</p>
 					<div class="secondary-content">
 						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {

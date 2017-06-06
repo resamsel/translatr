@@ -19,7 +19,14 @@
 						</div>
 					</a>
 					<p>
-						@utils.FormatUtils.pretty(ctx.lang().locale, key.whenUpdated)
+						@defining(project.missingLocales(key.id)) { missing =>
+							@if(missing == 0) {
+								@Messages("key.complete")
+							} else {
+								@Messages("messages.missing", missing)
+							}
+						}
+						(@Messages("words.size", Option(key.wordCount).getOrElse(0)))
 					</p>
 					<div class="secondary-content">
 						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {

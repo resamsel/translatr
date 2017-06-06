@@ -97,6 +97,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
   @Required
   public User owner;
 
+  public Integer wordCount;
+
   @JsonIgnore
   @OneToMany
   public List<Locale> locales;
@@ -114,6 +116,12 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   @Transient
   private Long keysSize;
+
+  @Transient
+  private List<Message> messages;
+
+  @Transient
+  private Map<UUID, Long> localesSizeMap;
 
   @Transient
   private Map<UUID, Long> keysSizeMap;
@@ -190,17 +198,35 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return (float) Message.countBy(this) / (float) (keysSize * localesSize);
   }
 
-  public long missing(UUID localeId) {
+  public long missingKeys(UUID localeId) {
     return keysSize() - keysSizeMap(localeId);
   }
 
   public long keysSizeMap(UUID localeId) {
     if (keysSizeMap == null)
       // FIXME: This is an expensive operation, consider doing this in a group by query.
-      keysSizeMap = Message.findBy(new MessageCriteria().withProjectId(this.id)).getList().stream()
-          .collect(groupingBy(m -> m.locale.id, counting()));
+      keysSizeMap = messageList().stream().collect(groupingBy(m -> m.locale.id, counting()));
 
     return keysSizeMap.getOrDefault(localeId, 0l);
+  }
+
+  public long missingLocales(UUID keyId) {
+    return localesSize() - localesSizeMap(keyId);
+  }
+
+  public long localesSizeMap(UUID keyId) {
+    if (localesSizeMap == null)
+      // FIXME: This is an expensive operation, consider doing this in a group by query.
+      localesSizeMap = messageList().stream().collect(groupingBy(m -> m.key.id, counting()));
+
+    return localesSizeMap.getOrDefault(keyId, 0l);
+  }
+
+  public List<Message> messageList() {
+    if (messages == null)
+      messages = Message.findBy(new MessageCriteria().withProjectId(this.id)).getList();
+
+    return messages;
   }
 
   public long membersSize() {

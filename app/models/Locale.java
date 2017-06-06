@@ -86,6 +86,8 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   @NotNull
   public String name;
 
+  public Integer wordCount;
+
   @JsonIgnore
   @OneToMany
   public List<Message> messages;

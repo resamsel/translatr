@@ -67,11 +67,9 @@ public class Message implements Model<Message, UUID> {
   @Column(nullable = false, length = 1024 * 1024)
   public String value;
 
-  public Message() {}
+  public Integer wordCount;
 
-  public Message(models.Message message) {
-    this(message.locale, message.key, message.value);
-  }
+  public Message() {}
 
   public Message(Locale locale, Key key, String value) {
     this.locale = locale;

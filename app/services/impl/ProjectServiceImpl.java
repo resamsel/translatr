@@ -1,11 +1,13 @@
 package services.impl;
 
+import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -22,7 +24,9 @@ import criterias.ProjectCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
 import models.ActionType;
+import models.Locale;
 import models.LogEntry;
+import models.Message;
 import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
@@ -32,6 +36,7 @@ import play.cache.CacheApi;
 import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
+import services.MessageService;
 import services.ProjectService;
 
 /**
@@ -50,16 +55,20 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
   private final KeyService keyService;
 
+  private final MessageService messageService;
+
   /**
    * 
    */
   @Inject
   public ProjectServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
-      LocaleService localeService, KeyService keyService, LogEntryService logEntryService) {
+      LocaleService localeService, KeyService keyService, MessageService messageService,
+      LogEntryService logEntryService) {
     super(configuration, validator, logEntryService);
     this.cache = cache;
     this.localeService = localeService;
     this.keyService = keyService;
+    this.messageService = messageService;
   }
 
   /**
@@ -87,6 +96,46 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     return log(() -> cache.getOrElse(
         String.format("projectByOwnerAndName:%s:%s", user.id.toString(), name),
         () -> Project.byOwnerAndName(user, name), 10 * 600), LOGGER, "byOwnerAndName");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void increaseWordCountBy(UUID projectId, int wordCountDiff) {
+    if (wordCountDiff == 0) {
+      LOGGER.debug("Not changing word count");
+      return;
+    }
+
+    Project project = Project.byId(projectId);
+
+    if (project == null)
+      return;
+
+    if (project.wordCount == null)
+      project.wordCount = 0;
+    project.wordCount += wordCountDiff;
+
+    log(() -> persist(project), LOGGER, "Increased word count by %d", wordCountDiff);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void resetWordCount(UUID projectId) {
+    Project project = byId(projectId, Project.FETCH_LOCALES);
+    List<UUID> localeIds = project.locales.stream().map(Locale::getId).collect(toList());
+
+    project.wordCount = null;
+
+    persist(project);
+
+    localeService.resetWordCount(projectId);
+    keyService.resetWordCount(projectId);
+    messageService.resetWordCount(projectId);
+    messageService.save(Message.byLocales(localeIds));
   }
 
   /**

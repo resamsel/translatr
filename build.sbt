@@ -36,6 +36,9 @@ libraryDependencies ++= Seq(
 	// https://mvnrepository.com/artifact/io.getstream.client/stream-repo-apache
 	"io.getstream.client" % "stream-repo-apache" % "1.2.2",
 
+	// https://mvnrepository.com/artifact/org.jsoup/jsoup
+	"org.jsoup" % "jsoup" % "1.10.2",
+
 	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
 
 	"io.swagger" %% "swagger-play2" % "1.5.3",

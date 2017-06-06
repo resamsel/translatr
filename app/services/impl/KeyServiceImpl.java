@@ -93,6 +93,41 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
    * {@inheritDoc}
    */
   @Override
+  public void increaseWordCountBy(UUID keyId, int wordCountDiff) {
+    if (wordCountDiff == 0) {
+      LOGGER.debug("Not changing word count");
+      return;
+    }
+
+    Key key = Key.byId(keyId);
+
+    if (key == null)
+      return;
+
+    if (key.wordCount == null)
+      key.wordCount = 0;
+    key.wordCount += wordCountDiff;
+
+    log(() -> persist(key), LOGGER, "Increased word count by %d", wordCountDiff);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void resetWordCount(UUID projectId) {
+    try {
+      Ebean.createSqlUpdate("update key set word_count = null where project_id = :projectId")
+          .setParameter("projectId", projectId).execute();
+    } catch (Exception e) {
+      LOGGER.error("Error while resetting word count", e);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   protected void preSave(Key t, boolean update) {
     if (update)
       logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.Key.class,

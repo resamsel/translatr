@@ -19,7 +19,11 @@
 						<em>&mdash; @{project.roleOf(template.loggedInUser)}</em>
 					</a>
 					<p>
-						@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
+						@Messages("members.size", project.membersSize()),
+						@Messages("locales.size", project.localesSize()),
+						@Messages("keys.size", project.keysSize()),
+						@Messages("messages.size", project.messagesSize()),
+						@Messages("words.size", Option(project.wordCount).getOrElse(0))
 					</p>
 				</li>
 			}

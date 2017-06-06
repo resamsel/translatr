@@ -13,6 +13,9 @@
 			@tags.fab("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue")
 		</li>
 		<li>
+			@tags.fab("reset-word-count", "clear", href = routes.Projects.wordCountReset(project.id).url, tooltip = Messages("project.wordCount.reset.tooltip"), styleClass = "orange")
+		</li>
+		<li>
 			@tags.fab("remove-project", "delete_forever", href = routes.Projects.remove(project.id).url, tooltip = Messages("project.remove.tooltip"), styleClass = "red")
 		</li>
 	}
@@ -37,6 +40,21 @@
 					)
 				}
 			}
+			<div class="chip">
+				@Messages("members.size", project.membersSize())
+			</div>
+			<div class="chip">
+				@Messages("locales.size", project.localesSize())
+			</div>
+			<div class="chip">
+				@Messages("keys.size", project.keysSize())
+			</div>
+			<div class="chip">
+				@Messages("messages.size", project.messagesSize())
+			</div>
+			<div class="chip">
+				@Messages("words.size", Option(project.wordCount).getOrElse(0))
+			</div>
 		}
 
 		@contentCard(Messages("activity"), styleClass = "activity") {
@@ -44,11 +62,7 @@
 		}
 
 		@if(project.localesSize() == 0 && project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
-			@contentCardWithActions(Messages("locales"), styleClass = "locales") {
-				<p>
-					@Messages("locales.size", project.localesSize())<br/>
-				</p>
-			} {
+			@contentCardWithActions(Messages("locales"), styleClass = "locales")() {
 				<a href="#modal-create-locale" class="modal-trigger">
 					@Messages("locale.create.title")
 				</a>
@@ -56,9 +70,8 @@
 		} else {
 			@contentCard(Messages("locales"), styleClass = "locales") {
 				<p>
-					@Messages("locales.size", project.localesSize())
 					@if(project.localesSize() > 0) {
-						&mdash; @Messages("latest"):
+						@Messages("latest"):
 						@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
 					}
 				</p>
@@ -66,11 +79,7 @@
 		}
 
 		@if(project.keysSize() == 0 && project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
-			@contentCardWithActions(Messages("keys"), styleClass = "keys") {
-				<p>
-					@Messages("keys.size", project.keysSize())
-				</p>
-			} {
+			@contentCardWithActions(Messages("keys"), styleClass = "keys")() {
 				<a href="#modal-create-key" class="modal-trigger">
 					@Messages("key.create.title")
 				</a>
@@ -78,9 +87,8 @@
  		} else {
 			@contentCard(Messages("keys"), styleClass = "keys") {
 				<p>
-					@Messages("keys.size", project.keysSize())
 					@if(project.keysSize() > 0) {
-						&mdash; @Messages("latest"):
+						@Messages("latest"):
 						@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
 					}
 				</p>
@@ -89,9 +97,8 @@
 
 		@contentCard(Messages("messages"), styleClass = "messages") {
 			<p>
-				@Messages("messages.size", project.messagesSize())
 				@if(project.messagesSize() > 0) {
-					&mdash; @Messages("latest"):
+					@Messages("latest"):
 					@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
 				}
 			</p>

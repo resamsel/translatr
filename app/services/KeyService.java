@@ -23,4 +23,15 @@ public interface KeyService extends ModelService<Key, UUID, KeyCriteria> {
    * @return
    */
   Map<UUID, Double> progress(List<UUID> keyIds, long localesSize);
+
+  /**
+   * @param keyId
+   * @param wordCountDiff
+   */
+  void increaseWordCountBy(UUID keyId, int wordCountDiff);
+
+  /**
+   * @param projectId
+   */
+  void resetWordCount(UUID projectId);
 }

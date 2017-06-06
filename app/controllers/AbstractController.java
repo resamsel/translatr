@@ -89,18 +89,22 @@ public abstract class AbstractController extends Controller {
     return CompletableFuture.supplyAsync(supplier, executionContext.current());
   }
 
+  public static String message(String key, Object... args) {
+    return ctx().messages().at(key, args);
+  }
+
   public static Result redirectWithError(Call call, String errorKey, Object... args) {
-    addError(ctx().messages().at(errorKey, args));
+    addError(message(errorKey, args));
     return redirect(call);
   }
 
   public static Result redirectWithError(String url, String errorKey, Object... args) {
-    addError(ctx().messages().at(errorKey, args));
+    addError(message(errorKey, args));
     return redirect(url);
   }
 
   public static Result redirectWithMessage(Call call, String key, Object... args) {
-    addMessage(ctx().messages().at(key, args));
+    addMessage(message(key, args));
     return redirect(call);
   }
 
