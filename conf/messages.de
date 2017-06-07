@@ -1,3 +1,4 @@
+about = Über
 access.denied = Zugriff auf Ressource wurde verweigert
 accessToken = Zugangsschlüssel
 accessToken.access.denied = Zugriff auf Zugangsschlüssel {0} wurde verweigert
@@ -95,7 +96,6 @@ footer.about = Entworfen und entwickelt von <a href="https://twitter.com/resamse
 footer.header = Über
 footer.links = Links
 help = Hilfe
-home = Heim
 import.error.multipartMissing = Multipart Formulardaten fehlen in der Anfrage
 import.file = Datei wählen
 info = Info

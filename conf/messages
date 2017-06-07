@@ -1,3 +1,4 @@
+about = About
 access.denied = Access to resource was denied
 accessToken = Access token
 accessToken.access.denied = Access to access token {0} was denied
@@ -95,7 +96,6 @@ footer.about = Designed and built by <a href="https://twitter.com/resamsel" targ
 footer.header = About
 footer.links = Links
 help = Help
-home = Home
 import.error.multipartMissing = Multipart form data missing
 import.file = Choose file
 info = Info

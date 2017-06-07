@@ -10,15 +10,9 @@
 				<span class="white-text email">@template.loggedInUser.email</span>
 			</div>
 		</li>
-		<li @if(template.section == "home") { class="active" }>
-			<a href="@routes.Application.index">
-				<i class="material-icons left">home</i>
-				@Messages("home")
-			</a>
-		</li>
 		<li @if(template.section == "dashboard") { class="active" }>
 			<a href="@routes.Dashboards.dashboard">
-				<i class="material-icons left">dashboard</i>
+				<i class="material-icons left">home</i>
 				@Messages("dashboard")
 			</a>
 		</li>
@@ -29,6 +23,12 @@
 			</a>
 		</li>
 		<li><div class="divider"></div></li>
+		<li @if(template.section == "home") { class="active" }>
+			<a href="@routes.Application.index">
+				<i class="material-icons left">info</i>
+				@Messages("about")
+			</a>
+		</li>
 		<li>
 			<a href="https://github.com/resamsel/translatr/wiki" target="_blank">
 				<i class="material-icons left">help</i>
