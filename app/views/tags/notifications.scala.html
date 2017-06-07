@@ -8,6 +8,11 @@
 	<a class="title" href="<%= link %>"><%= title %></a>
 	<p class="when-created"><%= subtitle %></p>
 </script>
+<script type="text/javascript">
+$(function(){
+	new NotificationListView(new NotificationList());
+});
+</script>
 <ul id="dropdown-notifications" class="notifications dropdown-content collection with-header">
 	<li class="collection-header">
 		<span class="title">@Messages("notifications")</span>
