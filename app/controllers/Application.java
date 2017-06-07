@@ -1,8 +1,11 @@
 package controllers;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.feth.play.module.pa.PlayAuthenticate;
 
@@ -43,7 +46,8 @@ public class Application extends AbstractController {
   }
 
   public Result login() {
-    List<String> providers = configuration.getStringList(ConfigKey.AuthProviders.key());
+    List<String> providers = Arrays
+        .asList(StringUtils.split(configuration.getString(ConfigKey.AuthProviders.key()), ","));
 
     if (providers.size() == 1)
       return redirect(

@@ -211,8 +211,10 @@ public class User implements Model<User, UUID>, Subject {
     Injector injector = Play.current().injector();
     Session session = Context.current().session();
     String provider = session.get("pa.p.id");
-    if (provider != null && !injector.instanceOf(play.Application.class).configuration()
-        .getStringList(ConfigKey.AuthProviders.key()).contains(provider))
+    List<String> authProviders =
+        Arrays.asList(StringUtils.split(injector.instanceOf(play.Application.class).configuration()
+            .getString(ConfigKey.AuthProviders.key()), ","));
+    if (provider != null && !authProviders.contains(provider))
       // Prevent NPE when using an unavailable auth provider
       session.clear();
 
