@@ -360,7 +360,7 @@ nav ul .disabled:hover {
 .card .card-content {
 	flex-grow: 1;
 }
-.card .card-content .chip {
+.card .card-content .chip-container {
 	margin-top: 1.2rem;
 }
 

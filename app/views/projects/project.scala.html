@@ -30,30 +30,32 @@
 			<p>
 				@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
 			</p>
-			@users.chip(project.owner, me=template.loggedInUser.id == project.owner.id)
-			@for(member <- project.members) {
-				@if(member.user.id != project.owner.id) {
-					@users.chip(
-						member.user,
-						key="project.role." + member.role,
-						me=template.loggedInUser.id == member.user.id
-					)
+			<div class="chip-container">
+				@users.chip(project.owner, me=template.loggedInUser.id == project.owner.id)
+				@for(member <- project.members) {
+					@if(member.user.id != project.owner.id) {
+						@users.chip(
+							member.user,
+							key="project.role." + member.role,
+							me=template.loggedInUser.id == member.user.id
+						)
+					}
 				}
-			}
-			<div class="chip">
-				@Messages("members.size", project.membersSize())
-			</div>
-			<div class="chip">
-				@Messages("locales.size", project.localesSize())
-			</div>
-			<div class="chip">
-				@Messages("keys.size", project.keysSize())
-			</div>
-			<div class="chip">
-				@Messages("messages.size", project.messagesSize())
-			</div>
-			<div class="chip">
-				@Messages("words.size", Option(project.wordCount).getOrElse(0))
+				<div class="chip">
+					@Messages("members.size", project.membersSize())
+				</div>
+				<div class="chip">
+					@Messages("locales.size", project.localesSize())
+				</div>
+				<div class="chip">
+					@Messages("keys.size", project.keysSize())
+				</div>
+				<div class="chip">
+					@Messages("messages.size", project.messagesSize())
+				</div>
+				<div class="chip">
+					@Messages("words.size", Option(project.wordCount).getOrElse(0))
+				</div>
 			</div>
 		}
 
