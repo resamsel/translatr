@@ -1,6 +1,7 @@
 @(template: utils.Template, user: models.User, projectList: List[models.Project], form: Form[forms.SearchForm])
 
 @import utils.FormatUtils._
+@import utils.ActivityUtils._
 
 @main(template.withTitle(user.name).withName("user-projects"))(tags.search(form)())(nav(template, user, "projects")) {
 	@content("projects") {
@@ -13,7 +14,7 @@
 		} {
 			@for(project <- projectList) {
 				<li class="collection-item avatar">
-					<i class="material-icons circle orange">view_quilt</i>
+					<i class="material-icons circle @PROJECT_COLOR">@PROJECT_ICON</i>
 					<a href="@routes.Projects.project(project.id)" class="title">
 						@project.name
 						<em>&mdash; @{project.roleOf(template.loggedInUser)}</em>

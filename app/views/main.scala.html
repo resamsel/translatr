@@ -53,7 +53,9 @@
 						</div>
 					}
 
-					@tags.notifications()
+					@if(template.notificationsEnabled) {
+						@tags.notifications()
+					}
 
 					<ul id="dropdown-logged-in" class="dropdown-content">
 						@if(template.loggedInUser != null) {

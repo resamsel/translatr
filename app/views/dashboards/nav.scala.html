@@ -1,6 +1,8 @@
 @(template: utils.Template, active: String)
 
+@import utils.ActivityUtils._
+
 @tags.navView {
-	@tags.navItem(routes.Dashboards.projects(), "projects", "projects", "view_quilt", active)
-	@tags.navItem(routes.Dashboards.activity(), "activity", "activity", "change_history", active)
+	@tags.navItem(routes.Dashboards.projects(), "projects", "projects", PROJECT_ICON, active)
+	@tags.navItem(routes.Dashboards.activity(), "activity", "activity", ACTIVITY_ICON, active)
 }

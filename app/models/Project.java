@@ -38,6 +38,7 @@ import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.ImmutableMap;
 
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
@@ -68,6 +69,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public static final String FETCH_KEYS = "keys";
 
   private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList(FETCH_OWNER, FETCH_MEMBERS);
+
+  private static final Map<String, List<String>> FETCH_MAP =
+      ImmutableMap.of("project", Arrays.asList("project"), FETCH_MEMBERS,
+          Arrays.asList(FETCH_MEMBERS, FETCH_MEMBERS + ".user"));
 
   private static final Find<UUID, Project> find = new Find<UUID, Project>() {};
 
@@ -164,7 +169,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
     if (fetches.length > 0)
       propertiesToFetch.addAll(Arrays.asList(fetches));
 
-    return QueryUtils.fetch(find.setId(id), propertiesToFetch).findUnique();
+    return QueryUtils.fetch(find.setId(id), propertiesToFetch, FETCH_MAP).findUnique();
   }
 
   public static PagedList<Project> findBy(ProjectCriteria criteria) {

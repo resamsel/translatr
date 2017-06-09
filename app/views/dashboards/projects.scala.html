@@ -1,5 +1,7 @@
 @(template: utils.Template, projectList: List[Project], form: Form[forms.SearchForm], projectForm: Form[forms.ProjectForm])
 
+@import utils.ActivityUtils._
+
 @main(template.withTitle(Messages("dashboard")).withName("dashboard-projects"))(tags.search(form)())(nav(template, "projects")) {
 	@content {
 		@tags.collection(projectList, "projects.empty") {
@@ -11,7 +13,7 @@
 		} {
 			@for(project <- projectList) {
 				<li class="collection-item avatar black-text">
-					<i class="material-icons circle orange">view_quilt</i>
+					<i class="material-icons circle @PROJECT_COLOR">@PROJECT_ICON</i>
 					<a href="@routes.Projects.project(project.id)" class="title">
 						@project.name
 						<em>&mdash; @{project.roleOf(template.loggedInUser)}</em>

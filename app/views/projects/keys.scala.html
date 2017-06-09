@@ -1,5 +1,7 @@
 @(template: utils.Template, project: models.Project, keys: com.avaje.ebean.PagedList[models.Key], progress: Map[java.util.UUID, Double], form: Form[forms.KeySearchForm])
 
+@import utils.ActivityUtils._
+
 @main(template.withTitle(project.name).withName("project-keys"))(tags.search(form)())(nav(project, "keys")) {
 	@content() {
 		@tags.collection(keys.getList, "keys.empty", "keys") {
@@ -11,7 +13,7 @@
 		} {
 			@for(key <- keys.getList) {
 				<li class="collection-item avatar">
-					<i class="material-icons circle light-green">vpn_key</i>
+					<i class="material-icons circle @KEY_COLOR">@KEY_ICON</i>
 					<a class="key title" href="@routes.Keys.key(key.id)">
 						@key.name
 						<div class="progress">

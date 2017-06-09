@@ -1,5 +1,7 @@
 @(template: utils.Template)
 
+@import utils.ActivityUtils._
+
 @if(template.loggedInUser != null) {
 	<ul class="side-nav fixed" id="sidenav">
 		<li>
@@ -12,13 +14,13 @@
 		</li>
 		<li @if(template.section == "dashboard") { class="active" }>
 			<a href="@routes.Dashboards.dashboard">
-				<i class="material-icons left">dashboard</i>
+				<i class="material-icons left">@DASHBOARD_ICON</i>
 				@Messages("dashboard")
 			</a>
 		</li>
 		<li @if(template.section == "profile") { class="active" }>
 			<a href="@routes.Profiles.profile">
-				<i class="material-icons left">account_box</i>
+				<i class="material-icons left">@USER_ICON</i>
 				@Messages("user.profile")
 			</a>
 		</li>

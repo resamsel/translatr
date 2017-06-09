@@ -2,38 +2,39 @@
 
 @import utils.FormatUtils._
 @import views.html.tags.contentCard
+@import utils.ActivityUtils._
 
 @main(template.withTitle(user.name).withName("user-info"))()(nav(template, user, "info")) {
 	@content("info") {
 		<div class="row">
 			<div class="col s12 offset-m2 m8 offset-l3 l6">
 				@card(template, user) {
-					<ul class="profile-info">
-						<li class="truncate">
-							<i class="material-icons left">link</i>
+					<div class="chip-container">
+						<div class="chip truncate">
+							<i class="material-icons left @USER_COLOR white-text">link</i>
 							<a href="@routes.Users.user(user.username)">@user.username</a>
-						</li>
+						</div>
 						@if(template.loggedInUser.id == user.id) {
-							<li class="truncate">
+							<div class="chip truncate">
+								<i class="material-icons left @USER_COLOR white-text">email</i>
 								<a href="mailto:@user.email">
-									<i class="material-icons left">email</i>
 									@user.email
 								</a>
-							</li>
+							</div>
 						}
-						<li class="truncate">
-							<i class="material-icons left">access_time</i>
+						<div class="chip truncate">
+							<i class="material-icons left @USER_COLOR white-text">access_time</i>
 							@Messages("user.created", user.whenCreated.toDate)
-						</li>
-						<li class="truncate">
-							<i class="material-icons left">view_quilt</i>
+						</div>
+						<div class="chip truncate">
+							<i class="material-icons left @PROJECT_COLOR white-text">@PROJECT_ICON</i>
 							@Messages("projects.amount", stats.numberOfProjects)
-						</li>
-						<li class="truncate">
-							<i class="material-icons left">group_work</i>
+						</div>
+						<div class="chip truncate">
+							<i class="material-icons left @ACTIVITY_COLOR white-text">@ACTIVITY_ICON</i>
 							@Messages("contributions.amount", stats.numberOfActivities)
-						</li>
-					</ul>
+						</div>
+					</div>
 				}
 			</div>
 			<div class="col s12">

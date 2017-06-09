@@ -2,7 +2,6 @@
 @import utils.ConfigKey.StreamIOKey
 @import play.api.Play
 
-@if(!StreamIOKey.getString(Play.current.configuration).isEmpty) {
 <script type="text/template" id="notification-tmpl">
 	<i class="material-icons circle <%= color %>"><%= icon %></i>
 	<a class="title" href="<%= link %>"><%= title %></a>
@@ -26,4 +25,3 @@ $(function(){
 		<a class="title" href="@routes.Dashboards.activity()">@Messages("activity.all")</a>
 	</li>
 </ul>
-}

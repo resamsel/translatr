@@ -78,7 +78,7 @@
 		name="org.jdbcdslog.StatementLogger"
 		level="INFO" /> <!-- Will log all statements -->
 
-	<!-- Off these ones as they are annoying, and anyway we manage configuration 
+	<!-- Off these ones as they are annoying, and anyway we manage configuration
 		ourselves -->
 	<logger
 		name="com.avaje.ebean.config.PropertyMapLoader"

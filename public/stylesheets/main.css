@@ -363,6 +363,15 @@ nav ul .disabled:hover {
 .card .card-content .chip-container {
 	margin-top: 1.2rem;
 }
+.chip .left {
+	margin: 0 8px 0 -12px;
+	height: 32px;
+	width: 32px;
+	border-radius: 50%;
+	line-height: 32px;
+	font-size: 16px;
+	padding: 0 8px;
+}
 
 .card.no-image .card-image {
 	height: 75px;
