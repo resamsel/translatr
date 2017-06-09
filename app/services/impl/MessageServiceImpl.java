@@ -1,14 +1,15 @@
 package services.impl;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static utils.Stopwatch.log;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -113,8 +114,12 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
     messageWordCountActor.tell(new ChangeMessageWordCount(t.id, t.locale.project.id, t.locale.id,
         t.key.id, t.wordCount, t.wordCount - wordCount), null);
 
-    if (update)
-      logEntryService.save(logEntryUpdate(t, Message.byId(t.id)));
+    if (update) {
+      Message existing = Message.byId(t.id);
+      if (!Objects.equals(t.value, existing.value))
+        // Only track changes of message´s value
+        logEntryService.save(logEntryUpdate(t, existing));
+    }
   }
 
   /**
@@ -126,7 +131,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
       int wc = MessageUtils.wordCount(m);
       return new ChangeMessageWordCount(m.id, m.locale.project.id, m.locale.id, m.key.id, wc,
           wc - (m.wordCount != null ? m.wordCount : 0));
-    }).collect(Collectors.toMap(wc -> wc.messageId, wc -> wc, (a, b) -> a));
+    }).collect(toMap(wc -> wc.messageId, wc -> wc, (a, b) -> a));
 
     messageWordCountActor.tell(wordCount.values(), null);
 
@@ -134,12 +139,15 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
     t.stream().filter(m -> m.id != null).forEach(m -> m.wordCount = wordCount.getOrDefault(m.id,
         new ChangeMessageWordCount(null, null, null, null, 0, 0)).wordCount);
 
-    List<UUID> ids =
-        t.stream().filter(m -> m.id != null).map(m -> m.id).collect(Collectors.toList());
+    List<UUID> ids = t.stream().filter(m -> m.id != null).map(m -> m.id).collect(toList());
     Map<UUID, Message> messages = ids.size() > 0 ? Message.byIds(ids) : Collections.emptyMap();
 
-    logEntryService.save(t.stream().map(m -> Ebean.getBeanState(m).isNew() ? logEntryCreate(m)
-        : logEntryUpdate(m, messages.get(m.id))).collect(Collectors.toList()));
+    logEntryService.save(t.stream().filter(
+        // Only track changes of message´s value
+        m -> Ebean.getBeanState(m).isNew() || !Objects.equals(m.value, messages.get(m.id).value))
+        .map(m -> Ebean.getBeanState(m).isNew() ? logEntryCreate(m)
+            : logEntryUpdate(m, messages.get(m.id)))
+        .collect(toList()));
   }
 
   /**
@@ -166,7 +174,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
       int wc = MessageUtils.wordCount(m);
       return new ChangeMessageWordCount(m.id, m.locale.project.id, m.locale.id, m.key.id, wc,
           wc - (m.wordCount != null ? m.wordCount : 0));
-    }).collect(Collectors.toMap(wc -> wc.messageId, wc -> wc));
+    }).collect(toMap(wc -> wc.messageId, wc -> wc));
 
     messageWordCountActor.tell(wordCount.values(), null);
 
@@ -196,7 +204,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
   @Override
   protected void preDelete(Collection<Message> t) {
     logEntryService.save(t.stream().map(m -> LogEntry.from(ActionType.Delete, m.key.project,
-        dto.Message.class, dto.Message.from(m), null)).collect(Collectors.toList()));
+        dto.Message.class, dto.Message.from(m), null)).collect(toList()));
   }
 
   /**
@@ -218,7 +226,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
         t.stream().filter(m -> m.wordCount != null).map(m -> {
           return new ChangeMessageWordCount(m.id, m.locale.project.id, m.locale.id, m.key.id, 0,
               -m.wordCount);
-        }).collect(Collectors.toMap(wc -> wc.messageId, wc -> wc, (a, b) -> a));
+        }).collect(toMap(wc -> wc.messageId, wc -> wc, (a, b) -> a));
 
     messageWordCountActor.tell(wordCount.values(), null);
   }

@@ -2,8 +2,10 @@ package utils;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import com.avaje.ebean.Query;
@@ -31,5 +33,17 @@ public class QueryUtils {
     propertiesToFetch.forEach(query::fetch);
 
     return query;
+  }
+
+  /**
+   * @param propertiesToFetch
+   * @param fetches
+   * @return
+   */
+  public static Set<String> mergeFetches(List<String> propertiesToFetch, String... fetches) {
+    HashSet<String> fetchSet = new HashSet<>(propertiesToFetch);
+    if (fetches.length > 0)
+      fetchSet.addAll(Arrays.asList(fetches));
+    return fetchSet;
   }
 }

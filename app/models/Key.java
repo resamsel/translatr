@@ -3,7 +3,6 @@ package models;
 import static utils.Stopwatch.log;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -35,7 +34,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
 
 import controllers.AbstractController;
-import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.KeyCriteria;
 import play.libs.Json;
@@ -111,7 +109,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
   @Override
   public Data data() {
     return Data.from(Key.class, id, name,
-        routes.Keys
+        controllers.routes.Keys
             .key(id, AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
                 AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET)
             .absoluteURL(Context.current().request()));
@@ -126,13 +124,8 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public static Key byId(UUID id, String... fetches) {
-    HashSet<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
-    if (fetches.length > 0)
-      propertiesToFetch.addAll(Arrays.asList(fetches));
-
-    return QueryUtils
-        .fetch(find.setId(id).setDisableLazyLoading(true), propertiesToFetch, FETCH_MAP)
-        .findUnique();
+    return QueryUtils.fetch(find.setId(id).setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP).findUnique();
   }
 
   /**
@@ -140,7 +133,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public static PagedList<Key> findBy(KeyCriteria criteria) {
-    Query<Key> q = QueryUtils.fetch(find.fetch("project").alias("k").setDisableLazyLoading(true),
+    Query<Key> q = QueryUtils.fetch(find.query().alias("k").setDisableLazyLoading(true),
         criteria.getFetches(), FETCH_MAP);
 
     ExpressionList<Key> query = q.where();
