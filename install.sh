@@ -7,7 +7,7 @@ TRANSLATR_TAG=${TRANSLATR_TAG:=master}
 
 TRANSLATR=${TRANSLATR_PREFIX}/bin/translatr
 
-curl -fsSL https://raw.githubusercontent.com/resamsel/translatr/${TRANSLATR_TAG}/translatr/src/python/translatr.py > ${TRANSLATR}
+curl -fsSL https://raw.githubusercontent.com/resamsel/translatr/${TRANSLATR_TAG}/src/python/translatr.py > ${TRANSLATR}
 
 chmod +x ${TRANSLATR}
 
