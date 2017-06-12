@@ -77,9 +77,6 @@ contributions.legend.less = Less
 contributions.legend.more = More
 contributions.legend.tooltip = Relative activity: {0}-{1}% (log(n)/log(max))
 copyright = © 2017 René Samselnig (version {0})\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
-dashboard = Dashboard
-dashboard.info = There {0,choice,0#are no projects yet|1#is one project|1<are {0} projects}
-dashboard.tooltip = Open dashboard
 error.access.denied = You need to authorize Translatr in order to access contents
 error.accesstokenbyuserandname = Access token with given name already exists
 error.maxLength = The maximum length is {0} characters
@@ -233,6 +230,7 @@ project.wordCount.reset.tooltip = Re-calculate word count
 projects = Projects
 projects.amount = {0} projects
 projects.empty = <i class="material-icons xlarge grey-text text-lighten-1">view_quilt</i><br/>\nNo projects yet.
+projects.tooltip = Open projects
 promo1.content = Preview, quick switching between locales, and the possibility of build system integration allow faster development.
 promo1.icon = flash_on
 promo1.title = Speeds up development
@@ -264,14 +262,14 @@ user.notLinked = not linked
 user.profile = Profile
 user.username = Username
 user.username.duplicate = Username not available
-users = People
+users = Contributors
 users.empty = <i class="material-icons xlarge grey-text text-lighten-1">group</i><br/>\nNo users yet.
 validation.optional = optional
 value.copy = Copy value
-when.created = created
+when.created = created {0}
 when.created.asc = creation ascending
 when.created.desc = creation descending
-when.updated = updated
+when.updated = updated {0}
 when.updated.asc = updated ascending
 when.updated.desc = updated descending
 words.size = {0,choice,0#no words yet|1#one word|1<{0} words}

@@ -32,16 +32,6 @@
 				@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
 			</p>
 			<div class="chip-container">
-				@users.chip(project.owner, me=template.loggedInUser.id == project.owner.id)
-				@for(member <- project.members) {
-					@if(member.user.id != project.owner.id) {
-						@users.chip(
-							member.user,
-							key="project.role." + member.role,
-							me=template.loggedInUser.id == member.user.id
-						)
-					}
-				}
 				<div class="chip">
 					<i class="material-icons left @LOCALE_COLOR white-text">@LOCALE_ICON</i>
 					@Messages("locales.size", project.localesSize())
@@ -62,6 +52,19 @@
 					<i class="material-icons left @PROJECT_USER_COLOR white-text">@PROJECT_USER_ICON</i>
 					@Messages("members.size", project.membersSize())
 				</div>
+				@users.chip(project.owner, me=template.loggedInUser.id == project.owner.id)
+				@for(member <- project.members.subList(0, Math.min(project.members.size, 3))) {
+					@if(member.user.id != project.owner.id) {
+						@users.chip(
+							member.user,
+							key="project.role." + member.role,
+							me=template.loggedInUser.id == member.user.id
+						)
+					}
+				}
+				@if(project.members.size() > 3) {
+					…
+				}
 			</div>
 		}
 

@@ -18,10 +18,10 @@ import play.mvc.Http.Context;
  * @version 2 Oct 2016
  */
 public class ActivityUtils {
-  public static final String DASHBOARD_ICON = "dashboard";
+  public static final String PROJECTS_ICON = "dashboard";
+  public static final String PROJECT_ICON = "view_quilt";
   public static final String USERS_ICON = "group";
   public static final String USER_ICON = "account_circle";
-  public static final String PROJECT_ICON = "view_quilt";
   public static final String LOCALE_ICON = "language";
   public static final String KEY_ICON = "vpn_key";
   public static final String MESSAGE_ICON = "message";

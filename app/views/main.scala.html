@@ -22,7 +22,7 @@
 	<header>
 		<!-- Navigation -->
 		<div class="navbar">
-			<nav role="navigation" class="green z-depth-1">
+			<nav role="navigation" class="green z-depth-2">
 				<div class="nav-wrapper">
 					@if(template.backLink != null) {
 						<a class="button-collapse backlink show-on-large" href="@template.backLink">
@@ -64,7 +64,7 @@
 							</li>
 							<li class="divider"></li>
 							<li>
-								<a href="@routes.Dashboards.dashboard()">@Messages("dashboard")</a>
+								<a href="@routes.Projects.index()">@Messages("projects")</a>
 							</li>
 							<li>
 								<a href="@routes.Users.user(template.loggedInUser.username)">@Messages("user.profile")</a>
@@ -87,7 +87,6 @@
 											title="@Messages("notifications")"
 											data-activates="dropdown-notifications"
 											data-constrainwidth="false"
-											data-beloworigin="true"
 											data-alignment="right">
 											<i class="material-icons">notifications</i>
 										</a>
@@ -99,7 +98,6 @@
 										href="#!"
 										data-activates="dropdown-logged-in"
 										data-constrainwidth="false"
-										data-beloworigin="true"
 										data-alignment="right">
 										@tags.gravatar(template.loggedInUser, 32, "circle")
 									</a>

@@ -2,13 +2,13 @@
 
 @import utils.ActivityUtils._
 
-@main(template.withTitle(Messages("dashboard")).withName("dashboard-projects"))(tags.search(form)())(nav(template, "projects")) {
-	@content {
+@main(template.withTitle(Messages("projects")).withName("projects"))(tags.search(form)())() {
+	@tags.mainContent() {
 		@tags.collection(projectList, "projects.empty") {
 			<span class="title">@Messages("project.name")</span>
 			@tags.sortOrders {
-				@tags.orderLink(form.get, routes.Dashboards.projects(), "project.name", "name", "name desc", "name")
-				@tags.orderLink(form.get, routes.Dashboards.projects(), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+				@tags.orderLink(form.get, routes.Projects.index, "project.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, routes.Projects.index, "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
 			@for(project <- projectList) {
@@ -28,7 +28,7 @@
 				</li>
 			}
 		} {
-			@tags.pager(routes.Dashboards.projects(), form.get)
+			@tags.pager(routes.Projects.index, form.get)
 		}
 	}
 
@@ -43,5 +43,5 @@
 	<script>
 		App.Core.register('ProjectCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-project'});
 	</script>
-	<script src="@routes.Assets.versioned("javascripts/dashboard.js")"></script>
+	<script src="@routes.Assets.versioned("javascripts/projects.js")"></script>
 }

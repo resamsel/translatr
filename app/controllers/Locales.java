@@ -214,7 +214,7 @@ public class Locales extends AbstractController {
   private Result locale(UUID localeId, Function<Locale, Result> processor) {
     Locale locale = localeService.byId(localeId);
     if (locale == null)
-      return redirect(routes.Dashboards.dashboard());
+      return redirect(routes.Projects.index());
 
     select(locale.project);
 
@@ -226,6 +226,6 @@ public class Locales extends AbstractController {
    */
   @Override
   protected Template createTemplate() {
-    return super.createTemplate().withSection(SECTION_DASHBOARD);
+    return super.createTemplate().withSection(SECTION_PROJECTS);
   }
 }

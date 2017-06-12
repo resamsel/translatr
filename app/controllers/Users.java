@@ -67,8 +67,13 @@ public class Users extends AbstractController {
       if (search.order == null)
         search.order = "name";
 
+      PagedList<User> users = userService.findBy(UserCriteria.from(search)
+          .withFetches(User.FETCH_MEMBERSHIPS).withFetches(User.FETCH_ACTIVITIES));
+
+      search.pager(users);
+
       return ok(views.html.users.index.render(createTemplate().withSection(SECTION_COMMUNITY),
-          userService.findBy(UserCriteria.from(search)), form));
+          users, form));
     });
   }
 
@@ -91,8 +96,7 @@ public class Users extends AbstractController {
 
       search.pager(projects);
 
-      return ok(
-          views.html.users.projects.render(createTemplate(user), user, projects.getList(), form));
+      return ok(views.html.users.projects.render(createTemplate(user), user, projects, form));
     }, true);
   }
 

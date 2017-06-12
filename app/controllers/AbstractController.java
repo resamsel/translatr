@@ -48,7 +48,7 @@ public abstract class AbstractController extends Controller {
 
   public static final String SECTION_HOME = "home";
 
-  public static final String SECTION_DASHBOARD = "dashboard";
+  public static final String SECTION_PROJECTS = "projects";
 
   public static final String SECTION_PROFILE = "profile";
 

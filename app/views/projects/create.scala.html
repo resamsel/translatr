@@ -1,7 +1,7 @@
 @(template: utils.Template, form: Form[forms.ProjectForm])
 
-@main(template.withTitle(Messages("dashboard")).withName("project-create").withBackLink(routes.Dashboards.dashboard()))()(dashboards.nav(template, "projects")) {
-	@dashboards.content {
+@main(template.withTitle(Messages("projects")).withName("project-create").withBackLink(routes.Projects.index))()() {
+	@tags.mainContent() {
 		<form action="@routes.Projects.create()" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">
@@ -17,7 +17,7 @@
 					</button>
 					<a
 						class="btn-flat btn-cancel black-text"
-						href="@routes.Dashboards.projects()">
+						href="@routes.Projects.index">
 						@Messages("button.cancel")
 					</a>
 				</div>

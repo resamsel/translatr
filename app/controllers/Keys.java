@@ -216,7 +216,7 @@ public class Keys extends AbstractController {
   protected Result key(UUID keyId, Function<Key, Result> processor) {
     Key key = keyService.byId(keyId);
     if (key == null)
-      return redirect(routes.Dashboards.dashboard());
+      return redirect(routes.Projects.index());
 
     select(key.project);
 
@@ -228,6 +228,6 @@ public class Keys extends AbstractController {
    */
   @Override
   protected Template createTemplate() {
-    return super.createTemplate().withSection(SECTION_DASHBOARD);
+    return super.createTemplate().withSection(SECTION_PROJECTS);
   }
 }

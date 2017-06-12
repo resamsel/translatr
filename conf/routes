@@ -26,6 +26,7 @@ GET		/user/:username/accessTokens	controllers.Users.accessTokens(username: Strin
 GET		/profile					controllers.Profiles.profile
 GET		/profile/linkedAccounts		controllers.Profiles.linkedAccounts
 GET		/profile/accessTokens		controllers.Profiles.accessTokens
+GET		/profile/activity			controllers.Profiles.activity
 GET		/profile/edit				controllers.Profiles.edit
 POST	/profile/edit				controllers.Profiles.doEdit
 GET		/profile/link				controllers.Profiles.askLink
@@ -39,13 +40,9 @@ POST	/profile/accessToken/:accessTokenId/edit	controllers.Profiles.doAccessToken
 GET		/profile/accessToken/:accessTokenId/remove	controllers.Profiles.accessTokenRemove(accessTokenId: Long)
 GET		/profile/notifications/reset	controllers.Profiles.resetNotifications
 
-# Dashboards
-GET		/dashboard					controllers.Dashboards.dashboard
-GET		/dashboard/projects			controllers.Dashboards.projects
-GET		/dashboard/activity			controllers.Dashboards.activity
-GET		/dashboard/search			controllers.Dashboards.search
-
 # Projects
+GET		/projects					controllers.Projects.index
+GET		/projects/search			controllers.Projects.search
 GET		/project/create				controllers.Projects.create
 POST	/project/create				controllers.Projects.doCreate
 GET		/project/create/$projectName<.+>	controllers.Projects.createImmediately(projectName: String)

@@ -10,17 +10,20 @@
 		} {
 			@for(user <- userList.getList) {
 				<li class="collection-item avatar">
-					<i class="material-icons circle @USER_COLOR">@USER_ICON</i>
+					@tags.gravatar(user, 48, "circle")
 					<span class="title">
 						<a href="@routes.Users.user(user.username)">
 							@user.name
 						</a>
 					</span>
 					<p>
-						@Messages("when.created", pretty(ctx.lang().locale, user.whenCreated))
+						@Messages("projects.amount", user.memberships.size()),
+						@Messages("contributions.amount", user.activities.size())
 					</p>
 				</li>
 			}
-		} { }
+		} {
+			@tags.pager(routes.Users.index(), form.get)
+		}
 	}
 }

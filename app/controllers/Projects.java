@@ -2,7 +2,9 @@ package controllers;
 
 import static utils.Stopwatch.log;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
@@ -29,7 +31,10 @@ import converters.ActivityCsvConverter;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.LogEntryCriteria;
+import criterias.ProjectCriteria;
 import criterias.ProjectUserCriteria;
+import dto.SearchResponse;
+import dto.Suggestion;
 import forms.ActivitySearchForm;
 import forms.KeySearchForm;
 import forms.LocaleSearchForm;
@@ -43,6 +48,8 @@ import models.LogEntry;
 import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
+import models.Suggestable;
+import models.Suggestable.Data;
 import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
@@ -102,11 +109,45 @@ public class Projects extends AbstractController {
     this.configuration = configuration;
   }
 
+  @SubjectPresent(forceBeforeAuthCheck = true)
+  public Result index() {
+    return loggedInUser(user -> {
+      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
+      SearchForm search = form.get();
+      if (search.order == null)
+        search.order = "name";
+
+      PagedList<Project> projects =
+          projectService.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
+
+      return log(() -> ok(views.html.projects.index.render(createTemplate(), projects.getList(),
+          FormUtils.Search.bindFromRequest(formFactory, configuration),
+          ProjectForm.form(formFactory))), LOGGER, "Rendering projects");
+    });
+  }
+
+  @SubjectPresent
+  public Result search() {
+    Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
+    SearchForm search = form.get();
+
+    List<Suggestable> suggestions = new ArrayList<>();
+
+    PagedList<? extends Suggestable> projects = projectService.findBy(ProjectCriteria.from(search));
+    if (!projects.getList().isEmpty())
+      suggestions.addAll(projects.getList());
+    else
+      suggestions.add(Suggestable.DefaultSuggestable
+          .from(ctx().messages().at("project.create", search.search), Data.from(Project.class, null,
+              "+++", controllers.routes.Projects.createImmediately(search.search).url())));
+
+    return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
+  }
+
   public Result project(UUID projectId) {
     return searchForm(projectId, (project, form) -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values()))
-        return redirectWithError(routes.Dashboards.dashboard(), "project.access.denied",
-            project.name);
+        return redirectWithError(routes.Projects.index(), "project.access.denied", project.name);
 
       return ok(log(() -> views.html.projects.project.render(createTemplate(), project, form),
           LOGGER, "Rendering project"));
@@ -139,10 +180,12 @@ public class Projects extends AbstractController {
 
       return redirect(routes.Projects.project(project.id));
     }).exceptionally(t -> {
-      if (t instanceof ConstraintViolationException)
+      Throwable cause = t.getCause();
+      if (cause instanceof ConstraintViolationException)
         return badRequest(views.html.projects.create.render(createTemplate(),
-            FormUtils.include(ProjectForm.form(formFactory).bindFromRequest(), t)));
-      return handleException(t);
+            FormUtils.include(ProjectForm.form(formFactory).bindFromRequest(), cause)));
+
+      return handleException(cause);
     });
   }
 
@@ -220,7 +263,7 @@ public class Projects extends AbstractController {
 
     projectService.delete(project);
 
-    return redirect(routes.Dashboards.dashboard());
+    return redirect(routes.Projects.index());
   }
 
   public Result locales(UUID id, String s, String order, int limit, int offset) {
@@ -383,7 +426,7 @@ public class Projects extends AbstractController {
       Project project = projectService.byId(projectId, propertiesToFetch);
 
       if (project == null)
-        return redirectWithError(routes.Dashboards.dashboard(), "project.notFound", projectId);
+        return redirectWithError(routes.Projects.index(), "project.notFound", projectId);
 
       select(project);
 
@@ -433,6 +476,6 @@ public class Projects extends AbstractController {
    */
   @Override
   protected Template createTemplate() {
-    return super.createTemplate().withSection(SECTION_DASHBOARD);
+    return super.createTemplate().withSection(SECTION_PROJECTS);
   }
 }

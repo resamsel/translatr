@@ -418,7 +418,7 @@ nav ul .disabled:hover {
 	display: -webkit-flex;
 	display: flex;
 }
-.template-dashboard-projects .container-main,
+.template-projects .container-main,
 .flex {
 	flex-flow: row wrap;
 	margin-bottom: 0;
@@ -439,8 +439,7 @@ nav ul .disabled:hover {
 .template-project .flex > .messages {
 	flex: 2 100%;
 }
-.template-dashboard-projects .container-main > .main,
-.template-dashboard-activity .container-main > .main,
+.template-projects .container-main > .main,
 .template-user-projects .container-main > .main,
 .template-user-access-tokens .container-main > .main,
 .template-project-keys .container-main > .main,

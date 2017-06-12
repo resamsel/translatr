@@ -12,10 +12,10 @@
 				<span class="white-text email">@template.loggedInUser.email</span>
 			</div>
 		</li>
-		<li @if(template.section == "dashboard") { class="active" }>
-			<a href="@routes.Dashboards.dashboard">
-				<i class="material-icons left">@DASHBOARD_ICON</i>
-				@Messages("dashboard")
+		<li @if(template.section == "projects") { class="active" }>
+			<a href="@routes.Projects.index">
+				<i class="material-icons left">@PROJECTS_ICON</i>
+				@Messages("projects")
 			</a>
 		</li>
 		<li @if(template.section == "users") { class="active" }>
