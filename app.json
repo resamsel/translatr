@@ -1,0 +1,83 @@
+{
+  "name": "Translatr",
+  "description": "I18n Translation Management",
+  "scripts": {
+  },
+  "env": {
+    "APPLICATION_SECRET": {
+      "required": true
+    },
+    "AUTH_PROVIDERS": {
+      "required": true
+    },
+    "DATABASE_DRIVER": {
+      "required": true
+    },
+    "FACEBOOK_CLIENT_ID": {
+      "required": true
+    },
+    "FACEBOOK_CLIENT_SECRET": {
+      "required": true
+    },
+    "FORCE_SSL": {
+      "required": true
+    },
+    "GITHUB_CLIENT_ID": {
+      "required": true
+    },
+    "GITHUB_CLIENT_SECRET": {
+      "required": true
+    },
+    "GOOGLE_CLIENT_ID": {
+      "required": true
+    },
+    "GOOGLE_CLIENT_SECRET": {
+      "required": true
+    },
+    "KEYCLOAK_CLIENT_ID": {
+      "required": true
+    },
+    "KEYCLOAK_CLIENT_SECRET": {
+      "required": true
+    },
+    "KEYCLOAK_HOST": {
+      "required": true
+    },
+    "NETTY_TRANSPORT": {
+      "required": true
+    },
+    "REDIS_URL": {
+      "required": true
+    },
+    "STREAM_IO_KEY": {
+      "required": true
+    },
+    "STREAM_IO_SECRET": {
+      "required": true
+    },
+    "STREAM_URL": {
+      "required": true
+    },
+    "TWITTER_CONSUMER_KEY": {
+      "required": true
+    },
+    "TWITTER_CONSUMER_SECRET": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "addons": [
+    "heroku-postgresql",
+    "heroku-redis",
+    "stream"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/scala"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-metrics"
+    }
+  ]
+}
