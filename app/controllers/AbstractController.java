@@ -52,7 +52,7 @@ public abstract class AbstractController extends Controller {
 
   public static final String SECTION_PROFILE = "profile";
 
-  public static final String SECTION_COMMUNITY = "community";
+  public static final String SECTION_COMMUNITY = "users";
 
   protected final Injector injector;
 

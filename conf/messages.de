@@ -264,6 +264,8 @@ user.notLinked = nicht verknüpft
 user.profile = Profil
 user.username = Benutzername
 user.username.duplicate = Benutzername wird bereits verwendet
+users = Leute
+users.empty = <i class="material-icons xlarge grey-text text-lighten-1">group</i><br/>\nNoch keine Benutzer.
 validation.optional = optional
 value.copy = Wert übernehmen
 when.created = angelegt

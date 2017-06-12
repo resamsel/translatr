@@ -18,6 +18,12 @@
 				@Messages("dashboard")
 			</a>
 		</li>
+		<li @if(template.section == "users") { class="active" }>
+			<a href="@routes.Users.index">
+				<i class="material-icons left">@USERS_ICON</i>
+				@Messages("users")
+			</a>
+		</li>
 		<li @if(template.section == "profile") { class="active" }>
 			<a href="@routes.Profiles.profile">
 				<i class="material-icons left">@USER_ICON</i>

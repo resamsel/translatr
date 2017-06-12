@@ -264,6 +264,8 @@ user.notLinked = not linked
 user.profile = Profile
 user.username = Username
 user.username.duplicate = Username not available
+users = People
+users.empty = <i class="material-icons xlarge grey-text text-lighten-1">group</i><br/>\nNo users yet.
 validation.optional = optional
 value.copy = Copy value
 when.created = created
