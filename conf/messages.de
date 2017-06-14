@@ -76,7 +76,7 @@ contributions.amount = {0} Beiträge
 contributions.legend.less = Weniger
 contributions.legend.more = Mehr
 contributions.legend.tooltip = Relative Aktivität: {0}-{1}% (log(n)/log(max))
-copyright = © 2017 René Samselnig (Version {0})\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
+copyright = © 2017 René Samselnig (<span title="{1}">{0}</span>)\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
 error.access.denied = Translatr benötigt eingeschränkten Zugriff auf dein Konto, um dir die Inhalte anzuzeigen
 error.accesstokenbyuserandname = Zugangsschlüssel mit angegebenem Namen existiert bereits
 error.maxLength = Maximallänge beträgt {0} Zeichen

@@ -76,7 +76,7 @@ contributions.amount = {0} contributions
 contributions.legend.less = Less
 contributions.legend.more = More
 contributions.legend.tooltip = Relative activity: {0}-{1}% (log(n)/log(max))
-copyright = © 2017 René Samselnig (version {0})\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
+copyright = © 2017 René Samselnig (<span title="{1}">{0}</span>)\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
 error.access.denied = You need to authorize Translatr in order to access contents
 error.accesstokenbyuserandname = Access token with given name already exists
 error.maxLength = The maximum length is {0} characters

@@ -4,6 +4,8 @@ resolvers += Classpaths.sbtPluginReleases
 
 // The Play plugin
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.15")
+// The Twirl plugin
+//addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.3.2")
 
 // Web plugins
 //addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
