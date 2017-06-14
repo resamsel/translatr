@@ -1,9 +1,13 @@
 package dto.errors;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class GenericErrorInfo {
+public class GenericErrorInfo implements Serializable {
+  private static final long serialVersionUID = 4947481159672010360L;
+
   public String type;
   public String message;
 

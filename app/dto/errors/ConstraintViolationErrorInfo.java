@@ -13,6 +13,8 @@ import javax.validation.ValidationException;
  * @version 18 Jan 2017
  */
 public class ConstraintViolationErrorInfo extends GenericErrorInfo {
+  private static final long serialVersionUID = -8421065080228995362L;
+
   public List<ConstraintViolation> violations;
 
   /**

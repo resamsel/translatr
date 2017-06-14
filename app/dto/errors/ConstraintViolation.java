@@ -1,5 +1,6 @@
 package dto.errors;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
 
 import javax.validation.ValidationException;
@@ -10,7 +11,9 @@ import play.libs.Json;
 import play.mvc.Http.Context;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ConstraintViolation {
+public class ConstraintViolation implements Serializable {
+  private static final long serialVersionUID = -5843326601541262360L;
+
   public String message;
   public String field;
   public Object invalidValue;

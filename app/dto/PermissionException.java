@@ -31,4 +31,24 @@ public class PermissionException extends RuntimeException {
 
     this.scopes = scopes;
   }
+
+  /**
+   * FindBugs EI: getScopes() may expose internal representation by returning
+   * PermissionException.scopes.
+   * 
+   * @return the scopes
+   */
+  public Scope[] getScopes() {
+    return Arrays.copyOf(scopes, scopes.length);
+  }
+
+  /**
+   * FindBugs EI2: setScopes(Scope[]) may expose internal representation by storing an externally
+   * mutable object into PermissionException.scopes.
+   * 
+   * @param scopes the scopes to set
+   */
+  public void setScopes(Scope[] scopes) {
+    this.scopes = Arrays.copyOf(scopes, scopes.length);
+  }
 }
