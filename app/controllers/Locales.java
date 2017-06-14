@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -76,10 +77,9 @@ public class Locales extends AbstractController {
   }
 
   public Result localeBy(String username, String projectName, String localeName) {
-    return user(username,
-        user -> project(user, projectName,
-            project -> locale(project, localeName, locale -> locale(locale.id, DEFAULT_SEARCH,
-                DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET))));
+    return user(username, user -> project(user, projectName, project -> locale(project, localeName,
+        locale -> locale(locale.id, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET))),
+        User.FETCH_PROJECTS, User.FETCH_PROJECTS + ".locales");
   }
 
 
@@ -223,6 +223,13 @@ public class Locales extends AbstractController {
   }
 
   private Result project(User user, String projectName, Function<Project, Result> processor) {
+    if (user.projects != null) {
+      Optional<Project> project =
+          user.projects.stream().filter(p -> p.name.equals(projectName)).findFirst();
+      if (project.isPresent())
+        return processor.apply(project.get());
+    }
+
     Project project = projectService.byOwnerAndName(user, projectName);
     if (project == null)
       return redirectWithError(routes.Application.index(), "project.notFound");
@@ -231,6 +238,13 @@ public class Locales extends AbstractController {
   }
 
   private Result locale(Project project, String localeName, Function<Locale, Result> processor) {
+    if (project.locales != null) {
+      Optional<Locale> locale =
+          project.locales.stream().filter(l -> l.name.equals(localeName)).findFirst();
+      if (locale.isPresent())
+        return processor.apply(locale.get());
+    }
+
     PagedList<Locale> locales = localeService
         .findBy(new LocaleCriteria().withProjectId(project.id).withLocaleName(localeName));
     if (locales.getList().isEmpty())

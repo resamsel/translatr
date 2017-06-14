@@ -14,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -66,8 +67,8 @@ public class User implements Model<User, UUID>, Subject {
 
   public static final int EMAIL_LENGTH = 255;
 
+  public static final String FETCH_PROJECTS = "projects";
   public static final String FETCH_MEMBERSHIPS = "memberships";
-
   public static final String FETCH_ACTIVITIES = "activities";
 
   @Id
@@ -95,6 +96,11 @@ public class User implements Model<User, UUID>, Subject {
   public String email;
 
   public boolean emailValidated;
+
+  @JsonIgnore
+  @OneToMany
+  @JoinColumn(name = "owner_id")
+  public List<Project> projects;
 
   @JsonIgnore
   @OneToMany(cascade = CascadeType.ALL)
@@ -211,8 +217,8 @@ public class User implements Model<User, UUID>, Subject {
    * @param username
    * @return
    */
-  public static User byUsername(String username) {
-    return find.where().eq("username", username).findUnique();
+  public static User byUsername(String username, String... fetches) {
+    return QueryUtils.fetch(find.query(), fetches).where().eq("username", username).findUnique();
   }
 
   public static AuthUser loggedInAuthUser() {
@@ -317,11 +323,6 @@ public class User implements Model<User, UUID>, Subject {
         LogEntry.countBy(new LogEntryCriteria().withUserId(userId)));
   }
 
-  /**
-   * @param userId
-   * @param fetches
-   * @return
-   */
   public static String getCacheKey(UUID userId, String... fetches) {
     if (userId == null)
       return null;
@@ -330,5 +331,15 @@ public class User implements Model<User, UUID>, Subject {
       return String.format("user:%s:%s", userId, StringUtils.join(fetches, ":"));
 
     return String.format("user:%s", userId);
+  }
+
+  public static String getCacheKey(String username, String... fetches) {
+    if (username == null)
+      return null;
+
+    if (fetches.length > 0)
+      return String.format("username:%s:%s", username, StringUtils.join(fetches, ":"));
+
+    return String.format("username:%s", username);
   }
 }

@@ -7,11 +7,9 @@ import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -165,11 +163,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
     if (id == null)
       return null;
 
-    Set<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
-    if (fetches.length > 0)
-      propertiesToFetch.addAll(Arrays.asList(fetches));
-
-    return QueryUtils.fetch(find.setId(id), propertiesToFetch, FETCH_MAP).findUnique();
+    return QueryUtils
+        .fetch(find.setId(id), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
+        .findUnique();
   }
 
   public static PagedList<Project> findBy(ProjectCriteria criteria) {
@@ -269,8 +265,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @param name
    * @return
    */
-  public static Project byOwnerAndName(User user, String name) {
-    return find.where().eq("owner", user).eq("name", name).findUnique();
+  public static Project byOwnerAndName(User user, String name, String... fetches) {
+    return QueryUtils
+        .fetch(find.query(), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
+        .where().eq("owner", user).eq("name", name).findUnique();
   }
 
   /**
@@ -357,6 +355,17 @@ public class Project implements Model<Project, UUID>, Suggestable {
       return String.format("project:%s:%s", projectId, StringUtils.join(fetches, ":"));
 
     return String.format("project:%s", projectId);
+  }
+
+  public static String getCacheKey(User user, String projectName, String... fetches) {
+    if (user == null || StringUtils.isEmpty(projectName))
+      return null;
+
+    if (fetches.length > 0)
+      return String.format("project:owner:%s:name:%s:%s", user.id, projectName,
+          StringUtils.join(fetches, ":"));
+
+    return String.format("project:owner:%s:name:%s", user.id, projectName);
   }
 
   @Override

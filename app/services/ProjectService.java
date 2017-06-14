@@ -21,7 +21,7 @@ public interface ProjectService extends ModelService<Project, UUID, ProjectCrite
    * @param name
    * @return
    */
-  Project byOwnerAndName(User user, String name);
+  Project byOwnerAndName(User user, String name, String... fetches);
 
   /**
    * @param projectId

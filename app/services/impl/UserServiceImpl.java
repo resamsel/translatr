@@ -263,9 +263,9 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    * {@inheritDoc}
    */
   @Override
-  public User byUsername(String username) {
-    return log(() -> cache.getOrElse(String.format("username:%s", username),
-        () -> User.byUsername(username), 60), LOGGER, "byUsername");
+  public User byUsername(String username, String... fetches) {
+    return log(() -> cache.getOrElse(User.getCacheKey(username, fetches),
+        () -> User.byUsername(username, fetches), 60), LOGGER, "byUsername");
   }
 
   /**

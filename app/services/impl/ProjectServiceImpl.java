@@ -92,10 +92,9 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    * {@inheritDoc}
    */
   @Override
-  public Project byOwnerAndName(User user, String name) {
-    return log(() -> cache.getOrElse(
-        String.format("projectByOwnerAndName:%s:%s", user.id.toString(), name),
-        () -> Project.byOwnerAndName(user, name), 10 * 600), LOGGER, "byOwnerAndName");
+  public Project byOwnerAndName(User user, String name, String... fetches) {
+    return log(() -> cache.getOrElse(Project.getCacheKey(user, name, fetches),
+        () -> Project.byOwnerAndName(user, name, fetches), 10 * 600), LOGGER, "byOwnerAndName");
   }
 
   /**

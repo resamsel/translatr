@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -145,7 +146,8 @@ public class Projects extends AbstractController {
   }
 
   public Result projectBy(String username, String projectName) {
-    return user(username, user -> project(user, projectName, project -> project(project.id)));
+    return user(username, user -> project(user, projectName, project -> project(project.id)),
+        User.FETCH_PROJECTS);
   }
 
   public Result project(UUID projectId) {
@@ -481,6 +483,13 @@ public class Projects extends AbstractController {
   }
 
   private Result project(User user, String projectName, Function<Project, Result> processor) {
+    if (user.projects != null) {
+      Optional<Project> project =
+          user.projects.stream().filter(p -> p.name.equals(projectName)).findFirst();
+      if (project.isPresent())
+        return processor.apply(project.get());
+    }
+
     Project project = projectService.byOwnerAndName(user, projectName);
     if (project == null)
       return redirectWithError(routes.Application.index(), "project.notFound");

@@ -156,12 +156,13 @@ public abstract class AbstractController extends Controller {
     return processor.apply(User.loggedInUser());
   }
 
-  protected Result user(String username, Function<User, Result> processor) {
-    return user(username, processor, false);
+  protected Result user(String username, Function<User, Result> processor, String... fetches) {
+    return user(username, processor, false, fetches);
   }
 
-  protected Result user(String username, Function<User, Result> processor, boolean restrict) {
-    User user = userService.byUsername(username);
+  protected Result user(String username, Function<User, Result> processor, boolean restrict,
+      String... fetches) {
+    User user = userService.byUsername(username, fetches);
     if (user == null)
       return redirectWithError(routes.Application.index(), "user.notFound");
 

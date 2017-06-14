@@ -17,7 +17,8 @@ public class UserTest {
   public void getCacheKey() {
     UUID userId = UUID.randomUUID();
 
-    assertThat(User.getCacheKey(null)).isNull();
+    assertThat(User.getCacheKey((UUID) null)).isNull();
+    assertThat(User.getCacheKey((String) null)).isNull();
     assertThat(User.getCacheKey(userId)).isEqualTo("user:" + userId);
     assertThat(User.getCacheKey(userId, "linkedAccounts"))
         .isEqualTo("user:" + userId + ":linkedAccounts");

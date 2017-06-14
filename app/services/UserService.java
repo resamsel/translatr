@@ -60,9 +60,10 @@ public interface UserService extends ModelService<User, UUID, UserCriteria> {
 
   /**
    * @param username
+   * @param fetches
    * @return
    */
-  User byUsername(String username);
+  User byUsername(String username, String... fetches);
 
   /**
    * @param userId
