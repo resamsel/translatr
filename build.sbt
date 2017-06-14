@@ -2,7 +2,7 @@ import com.typesafe.sbt.packager.docker._
 
 name := """translatr"""
 
-version := "2.1.1"
+version := "2.2.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).
 	enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin).
