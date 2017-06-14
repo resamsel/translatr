@@ -65,6 +65,10 @@ public class Profiles extends AbstractController {
     return loggedInUser(user -> redirect(controllers.routes.Users.accessTokens(user.username)));
   }
 
+  public Result activity() {
+    return loggedInUser(user -> redirect(controllers.routes.Users.activity(user.username)));
+  }
+
   public Result edit() {
     return loggedInUser(user -> {
       return ok(views.html.users.edit.render(createTemplate(), user,

@@ -4,7 +4,6 @@ import static utils.Stopwatch.log;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -28,6 +27,7 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
+import com.google.common.collect.ImmutableMap;
 
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
@@ -41,7 +41,14 @@ import validators.LocaleKeyCheck;
 public class Message implements Model<Message, UUID> {
   private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
-  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("key", "locale");
+  public static final String FETCH_LOCALE = "locale";
+
+  public static final String FETCH_KEY = "key";
+
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList(FETCH_LOCALE, FETCH_KEY);
+
+  private static final Map<String, List<String>> FETCH_MAP = ImmutableMap.of(FETCH_LOCALE,
+      Arrays.asList(FETCH_LOCALE, FETCH_LOCALE + ".project"), FETCH_KEY, Arrays.asList(FETCH_KEY));
 
   private static final Find<UUID, Message> find = new Find<UUID, Message>() {};
 
@@ -100,11 +107,9 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static Message byId(UUID id, String... fetches) {
-    HashSet<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
-    if (fetches.length > 0)
-      propertiesToFetch.addAll(Arrays.asList(fetches));
-
-    return QueryUtils.fetch(find.setId(id), propertiesToFetch).findUnique();
+    return QueryUtils
+        .fetch(find.setId(id), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
+        .findUnique();
   }
 
   /**
@@ -112,7 +117,8 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static Map<UUID, Message> byIds(List<UUID> ids) {
-    return find.fetch("key").fetch("locale").where().idIn(ids).findMap();
+    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where().idIn(ids)
+        .findMap();
   }
 
   /**
@@ -121,8 +127,8 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static Message byKeyAndLocale(Key key, Locale locale) {
-    return find.fetch("key").fetch("locale").where().eq("key", key).eq("locale", locale)
-        .findUnique();
+    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where().eq("key", key)
+        .eq("locale", locale).findUnique();
   }
 
   /**
@@ -155,7 +161,8 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static PagedList<Message> findBy(MessageCriteria criteria) {
-    ExpressionList<Message> query = Message.find.fetch("key").fetch("locale").where();
+    ExpressionList<Message> query =
+        QueryUtils.fetch(find.query(), criteria.getFetches(), FETCH_MAP).where();
 
     if (criteria.getProjectId() != null)
       query.eq("key.project.id", criteria.getProjectId());
@@ -185,7 +192,8 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static List<Message> byLocale(UUID localeId) {
-    return find.fetch("key").fetch("locale").where().eq("locale.id", localeId).findList();
+    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where()
+        .eq("locale.id", localeId).findList();
   }
 
   /**
@@ -193,7 +201,8 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static List<Message> byLocales(Collection<UUID> ids) {
-    return find.where().in("locale.id", ids).findList();
+    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where()
+        .in("locale.id", ids).findList();
   }
 
   /**
@@ -201,7 +210,8 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static List<Message> byKey(Key key) {
-    return find.where().eq("key", key).findList();
+    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where().eq("key", key)
+        .findList();
   }
 
   /**

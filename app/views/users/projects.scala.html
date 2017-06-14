@@ -1,19 +1,20 @@
-@(template: utils.Template, user: models.User, projectList: List[models.Project], form: Form[forms.SearchForm])
+@(template: utils.Template, user: models.User, projectList: com.avaje.ebean.PagedList[models.Project], form: Form[forms.SearchForm])
 
 @import utils.FormatUtils._
+@import utils.ActivityUtils._
 
 @main(template.withTitle(user.name).withName("user-projects"))(tags.search(form)())(nav(template, user, "projects")) {
 	@content("projects") {
-		@tags.collection(projectList, "projects.empty") {
+		@tags.collection(projectList.getList, "projects.empty") {
 			<span class="title">@Messages("project")</span>
 			@tags.sortOrders {
 				@tags.orderLink(form.get, routes.Users.projects(user.username), "project.name", "name", "name desc", "name")
 				@tags.orderLink(form.get, routes.Users.projects(user.username), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
-			@for(project <- projectList) {
+			@for(project <- projectList.getList) {
 				<li class="collection-item avatar">
-					<i class="material-icons circle orange">view_quilt</i>
+					<i class="material-icons circle @PROJECT_COLOR">@PROJECT_ICON</i>
 					<a href="@routes.Projects.project(project.id)" class="title">
 						@project.name
 						<em>&mdash; @{project.roleOf(template.loggedInUser)}</em>

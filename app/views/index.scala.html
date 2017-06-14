@@ -1,5 +1,7 @@
 @(template: utils.Template)
 
+@import utils.ActivityUtils._
+
 @main(template.withTitle("Translatr").withName("index")) { } { } {
 	<div class="section green">
 		<div class="container">
@@ -15,7 +17,7 @@
 		</div>
 	</div>
 	<div class="floating-action-btn @if(template.loggedInUser == null) { hide }">
-		@tags.fab("dashboard", "dashboard", tooltip = Messages("dashboard.tooltip"), href = routes.Dashboards.projects().url, styleClass = "btn-large light-blue")
+		@tags.fab("projects", PROJECTS_ICON, tooltip = Messages("projects.tooltip"), href = routes.Projects.index.url, styleClass = "btn-large light-blue")
 	</div>
 	<div class="container">
 		<div class="section intro">

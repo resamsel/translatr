@@ -1,5 +1,7 @@
 @(template: utils.Template)
 
+@import utils.ActivityUtils._
+
 @if(template.loggedInUser != null) {
 	<ul class="side-nav fixed" id="sidenav">
 		<li>
@@ -10,25 +12,31 @@
 				<span class="white-text email">@template.loggedInUser.email</span>
 			</div>
 		</li>
-		<li @if(template.section == "home") { class="active" }>
-			<a href="@routes.Application.index">
-				<i class="material-icons left">home</i>
-				@Messages("home")
+		<li @if(template.section == "projects") { class="active" }>
+			<a href="@routes.Projects.index">
+				<i class="material-icons left">@PROJECTS_ICON</i>
+				@Messages("projects")
 			</a>
 		</li>
-		<li @if(template.section == "dashboard") { class="active" }>
-			<a href="@routes.Dashboards.dashboard">
-				<i class="material-icons left">dashboard</i>
-				@Messages("dashboard")
+		<li @if(template.section == "users") { class="active" }>
+			<a href="@routes.Users.index">
+				<i class="material-icons left">@USERS_ICON</i>
+				@Messages("users")
 			</a>
 		</li>
 		<li @if(template.section == "profile") { class="active" }>
 			<a href="@routes.Profiles.profile">
-				<i class="material-icons left">account_box</i>
+				<i class="material-icons left">@USER_ICON</i>
 				@Messages("user.profile")
 			</a>
 		</li>
 		<li><div class="divider"></div></li>
+		<li @if(template.section == "home") { class="active" }>
+			<a href="@routes.Application.index">
+				<i class="material-icons left">info</i>
+				@Messages("about")
+			</a>
+		</li>
 		<li>
 			<a href="https://github.com/resamsel/translatr/wiki" target="_blank">
 				<i class="material-icons left">help</i>

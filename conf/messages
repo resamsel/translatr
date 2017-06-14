@@ -1,3 +1,4 @@
+about = About
 access.denied = Access to resource was denied
 accessToken = Access token
 accessToken.access.denied = Access to access token {0} was denied
@@ -60,7 +61,7 @@ cli.content = <p>The Command Line Interface allows to manage translations throug
 cli.install.content = <p>Paste this at a terminal prompt:</p>\n\n<pre class="language-bash"><code>curl -fsSL https://raw.githubusercontent.com/resamsel/translatr/master/install.sh | bash</code></pre>
 cli.install.title = Installation
 cli.title = Command Line Interface
-cli.usage.content = <p>To use Translatr CLI we need a .translatr.yml config file. Create one in any directory that you want to enable the CLI. Translatr will then use that file as configuration.</p>\n\n<h5 class="header">Example .translatr.yml for Play messages</h5>\n\n<pre class="language-yml"><code>translatr:\n  endpoint: http://localhost:9000\n  access_token: &lt;access token&gt;\n  project_id: &lt;project ID&gt;\n  pull:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'\n  push:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'</code></pre>\n\n<p>Create a new access token and enter it in the .translatr.yml: <a href="/profile/accessToken/create">create an access token</a>.</p>\n\n<p>Then, create a project in the web GUI and enter the project ID (40 character UUID in the URL, i.e. http://localhost:9000/project/<strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong> -> project ID: <strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong>) in the .translatr.yml.</p>\n\n<h5 class="header">Pushing</h5>\n\n<p>By pushing you send the matching messages files to the given endpoint, creating locales if needed.</p>\n\n<pre class="language-bash"><code>translatr push</code></pre>\n\n<p>This will overwrite all existing messages, if any. No existing keys/locales will be removed, this is not a sync operation.</p>\n\n<h5 class="header">Pulling</h5>\n\n<p>By pulling you download all locales into separate files into the configured files (translatr.pull.target key).</p>\n\n<pre class="language-bash"><code>translatr pull</code></pre>\n\n<p>This will overwrite any existing files locally. All known locales will be downloaded.</p>
+cli.usage.content = <p>To use Translatr CLI we need a .translatr.yml config file. Create one in any directory that you want to enable the CLI. Translatr will then use that file as configuration.</p>\n\n<h5 class="header">Example .translatr.yml for Play messages</h5>\n\n<pre class="language-yml"><code>translatr:\n  endpoint: <script>document.write(window.location.href)</script>\n  access_token: &lt;access token&gt;\n  project_id: &lt;project ID&gt;\n  pull:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'\n  push:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'</code></pre>\n\n<p>Create a new access token and enter it in the .translatr.yml: <a href="/profile/accessToken/create">create an access token</a>.</p>\n\n<p>Then, create a project in the web GUI and enter the project ID (40 character UUID in the URL, i.e. http://localhost:9000/project/<strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong> -> project ID: <strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong>) in the .translatr.yml.</p>\n\n<h5 class="header">Pushing</h5>\n\n<p>By pushing you send the matching messages files to the given endpoint, creating locales if needed.</p>\n\n<pre class="language-bash"><code>translatr push</code></pre>\n\n<p>This will overwrite all existing messages, if any. No existing keys/locales will be removed, this is not a sync operation.</p>\n\n<h5 class="header">Pulling</h5>\n\n<p>By pulling you download all locales into separate files into the configured files (translatr.pull.target key).</p>\n\n<pre class="language-bash"><code>translatr pull</code></pre>\n\n<p>This will overwrite any existing files locally. All known locales will be downloaded.</p>
 cli.usage.title = Usage
 command.notFound = Command was not found
 contentType.dto.AccessToken = Access token
@@ -75,10 +76,7 @@ contributions.amount = {0} contributions
 contributions.legend.less = Less
 contributions.legend.more = More
 contributions.legend.tooltip = Relative activity: {0}-{1}% (log(n)/log(max))
-copyright = © 2017 René Samselnig (version {0})\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
-dashboard = Dashboard
-dashboard.info = There {0,choice,0#are no projects yet|1#is one project|1<are {0} projects}
-dashboard.tooltip = Open dashboard
+copyright = © 2017 René Samselnig (<span title="{1}">{0}</span>)\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
 error.access.denied = You need to authorize Translatr in order to access contents
 error.accesstokenbyuserandname = Access token with given name already exists
 error.maxLength = The maximum length is {0} characters
@@ -95,7 +93,6 @@ footer.about = Designed and built by <a href="https://twitter.com/resamsel" targ
 footer.header = About
 footer.links = Links
 help = Help
-home = Home
 import.error.multipartMissing = Multipart form data missing
 import.file = Choose file
 info = Info
@@ -233,6 +230,7 @@ project.wordCount.reset.tooltip = Re-calculate word count
 projects = Projects
 projects.amount = {0} projects
 projects.empty = <i class="material-icons xlarge grey-text text-lighten-1">view_quilt</i><br/>\nNo projects yet.
+projects.tooltip = Open projects
 promo1.content = Preview, quick switching between locales, and the possibility of build system integration allow faster development.
 promo1.icon = flash_on
 promo1.title = Speeds up development
@@ -264,12 +262,14 @@ user.notLinked = not linked
 user.profile = Profile
 user.username = Username
 user.username.duplicate = Username not available
+users = Contributors
+users.empty = <i class="material-icons xlarge grey-text text-lighten-1">group</i><br/>\nNo users yet.
 validation.optional = optional
 value.copy = Copy value
-when.created = created
+when.created = created {0}
 when.created.asc = creation ascending
 when.created.desc = creation descending
-when.updated = updated
+when.updated = updated {0}
 when.updated.asc = updated ascending
 when.updated.desc = updated descending
 words.size = {0,choice,0#no words yet|1#one word|1<{0} words}

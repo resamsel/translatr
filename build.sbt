@@ -1,10 +1,8 @@
 import com.typesafe.sbt.packager.docker._
-import de.johoop.findbugs4sbt._
-import de.johoop.findbugs4sbt.FindBugs._
 
 name := """translatr"""
 
-version := "2.1.0"
+version := "2.1.1"
 
 lazy val root = (project in file(".")).
 	enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin).
@@ -12,7 +10,7 @@ lazy val root = (project in file(".")).
 		buildInfoKeys := Seq[BuildInfoKey](name, version)
 	)
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.11"
 
 libraryDependencies ++= Seq(
 	javaJdbc,
@@ -34,10 +32,10 @@ libraryDependencies ++= Seq(
 	"org.apache.httpcomponents" % "httpclient" % "4.5.3",
 
 	// https://mvnrepository.com/artifact/io.getstream.client/stream-repo-apache
-	"io.getstream.client" % "stream-repo-apache" % "1.2.2",
+	"io.getstream.client" % "stream-repo-apache" % "1.3.0",
 
 	// https://mvnrepository.com/artifact/org.jsoup/jsoup
-	"org.jsoup" % "jsoup" % "1.10.2",
+	"org.jsoup" % "jsoup" % "1.10.3",
 
 	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
 
@@ -45,8 +43,8 @@ libraryDependencies ++= Seq(
 	"org.webjars" % "swagger-ui" % "2.2.10",
 
 	// https://mvnrepository.com/artifact/org.easytesting/fest-assert-core
-	"org.easytesting" % "fest-assert-core" % "2.0M10" % "test",
-	"org.mockito" % "mockito-core" % "2.7.22" % "test"
+	"org.easytesting" % "fest-assert-core" % "2.0M10" % "test"
+//	"org.mockito" % "mockito-core" % "2.8.9" % "test"
 )
 
 //
@@ -144,9 +142,20 @@ parallelExecution in jacoco.Config := false
 //
 // FindBugs
 //
-findbugsSettings
+findbugsExcludeFilters := Some(
+	<FindBugsFilter>
+		<!-- See docs/examples at http://findbugs.sourceforge.net/manual/filter.html -->
+		<Match><Class name="~views\.html\..*"/></Match>
+		<Match><Class name="~router.Routes.*"/></Match>
+		<Match><Class name="~.*controllers\.routes.*"/></Match>
+		<Match><Method name="~_ebean.*"/></Match>
+		<Match><Field name="~_ebean.*"/></Match>
+		<Bug code="SnVI" />
+		<Bug code="SA" />
+	</FindBugsFilter>
+)
 
-findbugsReportType := Some(ReportType.Html)
+findbugsReportType := Some(FindBugsReportType.Html)
 
 findbugsReportPath := Some(crossTarget.value / "findbugs" / "report.html")
 
@@ -157,3 +166,5 @@ conflictClassExcludes ++= Seq(
   "LICENSE",
   "reference.conf"
 )
+
+buildInfoOptions += BuildInfoOption.BuildTime

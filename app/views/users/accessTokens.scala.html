@@ -1,6 +1,7 @@
 @(template: utils.Template, user: models.User, accessTokenList: List[AccessToken], form: Form[forms.AccessTokenForm])
 
 @import utils.FormatUtils.pretty
+@import utils.ActivityUtils._
 
 @main(template.withTitle(user.name).withName("user-access-tokens"))(tags.search(form)())(nav(template, user, "accessTokens")) {
 	@content("accessTokens") {
@@ -9,7 +10,7 @@
 		} {
 			@for(accessToken <- accessTokenList) {
 				<li class="collection-item avatar">
-					<i class="material-icons circle red">accessibility</i>
+					<i class="material-icons circle @ACCESS_TOKEN_COLOR">@ACCESS_TOKEN_ICON</i>
 					<span class="title">
 						<a href="@routes.Profiles.accessTokenEdit(accessToken.id)">
 							@accessToken.name

@@ -1,8 +1,11 @@
 package controllers;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.feth.play.module.pa.PlayAuthenticate;
 
@@ -43,7 +46,8 @@ public class Application extends AbstractController {
   }
 
   public Result login() {
-    List<String> providers = configuration.getStringList(ConfigKey.AuthProviders.key());
+    List<String> providers = Arrays
+        .asList(StringUtils.split(configuration.getString(ConfigKey.AuthProviders.key()), ","));
 
     if (providers.size() == 1)
       return redirect(
@@ -75,7 +79,7 @@ public class Application extends AbstractController {
 
     if (command == null) {
       if (referer == null)
-        return redirectWithError(routes.Dashboards.dashboard(), "command.notFound");
+        return redirectWithError(routes.Projects.index(), "command.notFound");
 
       return redirectWithError(referer, "command.notFound");
     }
@@ -88,7 +92,7 @@ public class Application extends AbstractController {
       return redirect(call);
 
     if (referer == null)
-      return redirect(routes.Dashboards.dashboard());
+      return redirect(routes.Projects.index());
 
     return redirect(referer);
   }
@@ -97,7 +101,7 @@ public class Application extends AbstractController {
     return ok(
         JavaScriptReverseRouter.create("jsRoutes", routes.javascript.Application.activityCsv(),
             routes.javascript.Users.activityCsv(), routes.javascript.Users.activity(),
-            routes.javascript.Profiles.resetNotifications(), routes.javascript.Dashboards.search(),
+            routes.javascript.Profiles.resetNotifications(), routes.javascript.Projects.search(),
             routes.javascript.ProjectsApi.search(), routes.javascript.Projects.activity(),
             routes.javascript.Projects.activityCsv(), routes.javascript.Locales.locale(),
             routes.javascript.Keys.key(), routes.javascript.Keys.createImmediately(),

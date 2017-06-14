@@ -19,35 +19,33 @@ import utils.Stopwatch;
  * @author resamsel
  * @version 13 Jul 2016
  */
-public class TimingFilter extends Filter
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(TimingFilter.class);
+public class TimingFilter extends Filter {
+  private static final Logger LOGGER = LoggerFactory.getLogger(TimingFilter.class);
 
-	/**
-	 * @param mat
-	 */
-	@Inject
-	public TimingFilter(Materializer mat)
-	{
-		super(mat);
-	}
+  /**
+   * @param mat
+   */
+  @Inject
+  public TimingFilter(Materializer mat) {
+    super(mat);
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CompletionStage<Result> apply(Function<RequestHeader, CompletionStage<Result>> next, RequestHeader rh)
-	{
-		Stopwatch stopwatch = Stopwatch.createStarted();
-		return next.apply(rh).thenApply(result -> {
-			if(!rh.uri().startsWith("/assets/"))
-			{
-				LOGGER.debug("{} {} took {} and returned {}", rh.method(), rh.uri(), stopwatch, result.status());
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public CompletionStage<Result> apply(Function<RequestHeader, CompletionStage<Result>> next,
+      RequestHeader rh) {
+    Stopwatch stopwatch = Stopwatch.createStarted();
+    return next.apply(rh).thenApply(result -> {
+      if (!rh.uri().startsWith("/assets/")) {
+        LOGGER.info("{} {} took {} and returned {}", rh.method(), rh.uri(), stopwatch,
+            result.status());
 
-				return result.withHeader("X-Timing", stopwatch.toString());
-			}
+        return result.withHeader("X-Timing", stopwatch.toString());
+      }
 
-			return result;
-		});
-	}
+      return result;
+    });
+  }
 }

@@ -205,24 +205,6 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
 
   /**
    * @param query
-   * @deprecated Use {@link AbstractSearchCriteria#paged(ExpressionList)}
-   */
-  @Deprecated
-  public <U> ExpressionList<U> paging(ExpressionList<U> query) {
-    if (getLimit() != null)
-      query.setMaxRows(getLimit() + 1);
-
-    if (getOffset() != null)
-      query.setFirstRow(getOffset());
-
-    if (getOrder() != null)
-      query.order(getOrder());
-
-    return query;
-  }
-
-  /**
-   * @param query
    */
   public <U> ExpressionList<U> paged(ExpressionList<U> query) {
     if (getLimit() != null)

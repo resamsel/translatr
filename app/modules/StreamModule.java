@@ -25,11 +25,18 @@ public class StreamModule extends Module {
    */
   @Override
   public Seq<Binding<?>> bindings(Environment environment, Configuration configuration) {
-    String streamIoKey = configuration.getString(ConfigKey.StreamIOKey.key(), Option.empty()).get();
-    String streamIoSecret =
-        configuration.getString(ConfigKey.StreamIOSecret.key(), Option.empty()).get();
+    Option<String> streamIoKey =
+        configuration.getString(ConfigKey.StreamIOKey.key(), Option.empty());
+    Option<String> streamIoSecret =
+        configuration.getString(ConfigKey.StreamIOSecret.key(), Option.empty());
 
-    if (StringUtils.isEmpty(streamIoKey) || StringUtils.isEmpty(streamIoSecret))
+    if (!streamIoKey.isDefined() || !streamIoSecret.isDefined())
+      return seq(bind(NotificationService.class).to(NotificationServiceDummy.class));
+
+    String streamIoKeyValue = streamIoKey.get();
+    String streamIoSecretValue = streamIoSecret.get();
+
+    if (StringUtils.isEmpty(streamIoKeyValue) || StringUtils.isEmpty(streamIoSecretValue))
       return seq(bind(NotificationService.class).to(NotificationServiceDummy.class));
 
     return seq(bind(NotificationService.class).to(NotificationServiceImpl.class),

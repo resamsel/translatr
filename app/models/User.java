@@ -66,6 +66,10 @@ public class User implements Model<User, UUID>, Subject {
 
   public static final int EMAIL_LENGTH = 255;
 
+  public static final String FETCH_MEMBERSHIPS = "memberships";
+
+  public static final String FETCH_ACTIVITIES = "activities";
+
   @Id
   @GeneratedValue
   public UUID id;
@@ -98,7 +102,11 @@ public class User implements Model<User, UUID>, Subject {
 
   @JsonIgnore
   @OneToMany
-  public List<ProjectUser> projects;
+  public List<ProjectUser> memberships;
+
+  @JsonIgnore
+  @OneToMany
+  public List<LogEntry> activities;
 
   private static final Find<UUID, User> find = new Find<UUID, User>() {};
 
@@ -140,7 +148,7 @@ public class User implements Model<User, UUID>, Subject {
   }
 
   public static PagedList<User> findBy(UserCriteria criteria) {
-    ExpressionList<User> query = find.where();
+    ExpressionList<User> query = QueryUtils.fetch(find.query(), criteria.getFetches()).where();
 
     query.eq("active", true);
 
@@ -211,8 +219,10 @@ public class User implements Model<User, UUID>, Subject {
     Injector injector = Play.current().injector();
     Session session = Context.current().session();
     String provider = session.get("pa.p.id");
-    if (provider != null && !injector.instanceOf(play.Application.class).configuration()
-        .getStringList(ConfigKey.AuthProviders.key()).contains(provider))
+    List<String> authProviders =
+        Arrays.asList(StringUtils.split(injector.instanceOf(play.Application.class).configuration()
+            .getString(ConfigKey.AuthProviders.key()), ","));
+    if (provider != null && !authProviders.contains(provider))
       // Prevent NPE when using an unavailable auth provider
       session.clear();
 

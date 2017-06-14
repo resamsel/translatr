@@ -360,8 +360,17 @@ nav ul .disabled:hover {
 .card .card-content {
 	flex-grow: 1;
 }
-.card .card-content .chip {
+.card .card-content .chip-container {
 	margin-top: 1.2rem;
+}
+.chip .left {
+	margin: 0 8px 0 -12px;
+	height: 32px;
+	width: 32px;
+	border-radius: 50%;
+	line-height: 32px;
+	font-size: 16px;
+	padding: 0 8px;
 }
 
 .card.no-image .card-image {
@@ -409,7 +418,7 @@ nav ul .disabled:hover {
 	display: -webkit-flex;
 	display: flex;
 }
-.template-dashboard-projects .container-main,
+.template-projects .container-main,
 .flex {
 	flex-flow: row wrap;
 	margin-bottom: 0;
@@ -430,8 +439,7 @@ nav ul .disabled:hover {
 .template-project .flex > .messages {
 	flex: 2 100%;
 }
-.template-dashboard-projects .container-main > .main,
-.template-dashboard-activity .container-main > .main,
+.template-projects .container-main > .main,
 .template-user-projects .container-main > .main,
 .template-user-access-tokens .container-main > .main,
 .template-project-keys .container-main > .main,

@@ -32,7 +32,7 @@ App.Modules.DashboardSearchModule = function(sb) {
 			win.keydown(_handleKeyPress);
 
 			fieldSearch.autocomplete({
-				serviceUrl: jsRoutes.controllers.Dashboards.search().url,
+				serviceUrl: jsRoutes.controllers.Projects.search().url,
 				onSelect: _handleSelect,
 				triggerSelectOnValidInput: false,
 				deferRequestBy: 200,

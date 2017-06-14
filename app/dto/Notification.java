@@ -49,7 +49,7 @@ public class Notification extends Dto {
     out.id = in.getId();
     out.user = User.from(userService.byId(extractUuid(in.getActor())));
     out.verb = in.getVerb();
-    out.time = in.getTime();
+    out.time = in.getTime() != null ? new Date(in.getTime().getTime()) : null;
     if (activity == null)
       activity = logEntryService.byId(extractUuid(in.getForeignId()));
     if (activity != null) {
@@ -65,6 +65,25 @@ public class Notification extends Dto {
     }
 
     return out;
+  }
+
+  /**
+   * FindBugs EI: getTime() may expose internal representation by returning Notification.time.
+   * 
+   * @return the time
+   */
+  public Date getTime() {
+    return time != null ? new Date(time.getTime()) : null;
+  }
+
+  /**
+   * FindBugs EI2: setTime(Date) may expose internal representation by storing an externally mutable
+   * object into Notification.time.
+   * 
+   * @param time the time to set
+   */
+  public void setTime(Date time) {
+    this.time = time != null ? new Date(time.getTime()) : null;
   }
 
   public static UUID extractUuid(String id) {

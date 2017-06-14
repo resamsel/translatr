@@ -22,7 +22,7 @@
 	<header>
 		<!-- Navigation -->
 		<div class="navbar">
-			<nav role="navigation" class="green z-depth-1">
+			<nav role="navigation" class="green z-depth-2">
 				<div class="nav-wrapper">
 					@if(template.backLink != null) {
 						<a class="button-collapse backlink show-on-large" href="@template.backLink">
@@ -53,7 +53,9 @@
 						</div>
 					}
 
-					@tags.notifications()
+					@if(template.notificationsEnabled) {
+						@tags.notifications()
+					}
 
 					<ul id="dropdown-logged-in" class="dropdown-content">
 						@if(template.loggedInUser != null) {
@@ -62,15 +64,12 @@
 							</li>
 							<li class="divider"></li>
 							<li>
-								<a href="@routes.Dashboards.dashboard()">@Messages("dashboard")</a>
+								<a href="@routes.Projects.index()">@Messages("projects")</a>
 							</li>
 							<li>
 								<a href="@routes.Users.user(template.loggedInUser.username)">@Messages("user.profile")</a>
 							</li>
 							<li class="divider"></li>
-							<li>
-								<a href="@routes.Profiles.edit()">@Messages("user.edit")</a>
-							</li>
 							<li>
 								<a href="@routes.Application.logout">@Messages("auth.logout")</a>
 							</li>
@@ -88,7 +87,6 @@
 											title="@Messages("notifications")"
 											data-activates="dropdown-notifications"
 											data-constrainwidth="false"
-											data-beloworigin="true"
 											data-alignment="right">
 											<i class="material-icons">notifications</i>
 										</a>
@@ -100,7 +98,6 @@
 										href="#!"
 										data-activates="dropdown-logged-in"
 										data-constrainwidth="false"
-										data-beloworigin="true"
 										data-alignment="right">
 										@tags.gravatar(template.loggedInUser, 32, "circle")
 									</a>
@@ -157,7 +154,7 @@
 		</div>
 		<div class="footer-copyright grey-text text-darken-1">
 			<div class="container">
-				@Html(Messages("copyright", buildinfo.BuildInfo.version))
+				@Html(Messages("copyright", buildinfo.BuildInfo.version, buildinfo.BuildInfo.builtAtString))
 			</div>
 		</div>
 	</footer>

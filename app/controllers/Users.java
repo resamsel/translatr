@@ -2,6 +2,7 @@ package controllers;
 
 import static java.util.stream.Collectors.toMap;
 
+import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 import javax.inject.Inject;
@@ -16,6 +17,7 @@ import criterias.AccessTokenCriteria;
 import criterias.LinkedAccountCriteria;
 import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
+import criterias.UserCriteria;
 import forms.AccessTokenForm;
 import forms.ActivitySearchForm;
 import forms.SearchForm;
@@ -58,6 +60,23 @@ public class Users extends AbstractController {
     this.linkedAccountService = linkedAccountService;
   }
 
+  public CompletionStage<Result> index() {
+    return tryCatch(() -> {
+      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
+      SearchForm search = form.get();
+      if (search.order == null)
+        search.order = "name";
+
+      PagedList<User> users = userService.findBy(UserCriteria.from(search)
+          .withFetches(User.FETCH_MEMBERSHIPS).withFetches(User.FETCH_ACTIVITIES));
+
+      search.pager(users);
+
+      return ok(views.html.users.index.render(createTemplate().withSection(SECTION_COMMUNITY),
+          users, form));
+    });
+  }
+
   public Result user(String username) {
     return user(username, user -> {
       return ok(views.html.users.user.render(createTemplate(user), user,
@@ -77,8 +96,7 @@ public class Users extends AbstractController {
 
       search.pager(projects);
 
-      return ok(
-          views.html.users.projects.render(createTemplate(user), user, projects.getList(), form));
+      return ok(views.html.users.projects.render(createTemplate(user), user, projects, form));
     }, true);
   }
 

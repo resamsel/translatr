@@ -1,7 +1,10 @@
 package modules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.feth.play.module.pa.Resolver;
 import com.feth.play.module.pa.providers.oauth1.twitter.TwitterAuthProvider;
@@ -31,10 +34,10 @@ public class SimpleOAuthModule extends Module {
     bindings.add(bind(Resolver.class).to(OAuthResolver.class));
     bindings.add(bind(AuthenticateServiceImpl.class).toSelf().eagerly());
 
-    Option<List<String>> providersOption =
-        configuration.getStringList(ConfigKey.AuthProviders.key());
+    Option<String> providersOption =
+        configuration.getString(ConfigKey.AuthProviders.key(), Option.empty());
     if (providersOption.nonEmpty()) {
-      List<String> providers = providersOption.get();
+      List<String> providers = Arrays.asList(StringUtils.split(providersOption.get(), ","));
       if (providers.contains(KeycloakAuthProvider.PROVIDER_KEY))
         bindings.add(bind(KeycloakAuthProvider.class).toSelf().eagerly());
       if (providers.contains(GoogleAuthProvider.PROVIDER_KEY))

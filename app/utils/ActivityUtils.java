@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.Keys;
 import controllers.Locales;
-import controllers.routes;
 import models.LogEntry;
 import play.i18n.Messages;
 import play.libs.Json;
@@ -19,21 +18,28 @@ import play.mvc.Http.Context;
  * @version 2 Oct 2016
  */
 public class ActivityUtils {
-  public static final String USER_ICON = "account_circle";
+  public static final String PROJECTS_ICON = "dashboard";
   public static final String PROJECT_ICON = "view_quilt";
-  public static final String LOCALE_ICON = "book";
+  public static final String USERS_ICON = "group";
+  public static final String USER_ICON = "account_circle";
+  public static final String LOCALE_ICON = "language";
   public static final String KEY_ICON = "vpn_key";
   public static final String MESSAGE_ICON = "message";
-  public static final String ACCESS_TOKEN_ICON = "accessibility";
-  public static final String PROJECT_USER_ICON = "group_work";
+  public static final String WORD_ICON = "short_text";
+  public static final String LINKED_ACCOUNT_ICON = "account_box";
+  public static final String ACCESS_TOKEN_ICON = "vpn_key";
+  public static final String PROJECT_USER_ICON = "group";
+  public static final String ACTIVITY_ICON = "change_history";
 
   public static final String USER_COLOR = "teal";
   public static final String PROJECT_COLOR = "orange";
   public static final String LOCALE_COLOR = "blue";
   public static final String KEY_COLOR = "light-green";
   public static final String MESSAGE_COLOR = "red";
-  public static final String ACCESS_TOKEN_COLOR = "green";
+  public static final String WORD_COLOR = "green";
+  public static final String ACCESS_TOKEN_COLOR = "red";
   public static final String PROJECT_USER_COLOR = "purple";
+  public static final String ACTIVITY_COLOR = "green";
 
   public static String nameOf(LogEntry activity) {
     if (activity == null)
@@ -71,35 +77,35 @@ public class ActivityUtils {
       case "dto.User":
         String name = JsonUtils.getAsText(node, "username");
         if (name != null)
-          return routes.Users.user(JsonUtils.getAsText(node, "username"));
+          return controllers.routes.Users.user(JsonUtils.getAsText(node, "username"));
         break;
       case "dto.Project":
         if (uuid != null)
-          return routes.Projects.project(uuid);
+          return controllers.routes.Projects.project(uuid);
         break;
       case "dto.Locale":
         if (uuid != null)
-          return routes.Locales.locale(uuid, Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER,
-              Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET);
+          return controllers.routes.Locales.locale(uuid, Locales.DEFAULT_SEARCH,
+              Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET);
         break;
       case "dto.Key":
         if (uuid != null)
-          return routes.Keys.key(uuid, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT,
-              Keys.DEFAULT_OFFSET);
+          return controllers.routes.Keys.key(uuid, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,
+              Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET);
         break;
       case "dto.Message":
         UUID keyId = JsonUtils.getUuid(node, "keyId");
         if (keyId != null)
-          return routes.Keys.key(keyId, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT,
-              Keys.DEFAULT_OFFSET);
+          return controllers.routes.Keys.key(keyId, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,
+              Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET);
         break;
       case "dto.ProjectUser":
         if (uuid != null)
-          return routes.Projects.members(uuid);
+          return controllers.routes.Projects.members(uuid);
         break;
       case "dto.AccessToken":
         if (id != null)
-          return routes.Profiles.accessTokenEdit(id);
+          return controllers.routes.Profiles.accessTokenEdit(id);
         break;
       default:
         break;

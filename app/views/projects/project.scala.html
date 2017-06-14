@@ -3,6 +3,7 @@
 @import utils.FormatUtils._
 @import views.html.tags.contentCard
 @import views.html.tags.contentCardWithActions
+@import utils.ActivityUtils._
 
 @projectActions = {
 	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager)) {
@@ -30,30 +31,40 @@
 			<p>
 				@{Messages("timestamps.info", pretty(ctx.lang().locale, project.whenCreated), pretty(ctx.lang().locale, project.whenUpdated))}.
 			</p>
-			@users.chip(project.owner, me=template.loggedInUser.id == project.owner.id)
-			@for(member <- project.members) {
-				@if(member.user.id != project.owner.id) {
-					@users.chip(
-						member.user,
-						key="project.role." + member.role,
-						me=template.loggedInUser.id == member.user.id
-					)
+			<div class="chip-container">
+				<div class="chip">
+					<i class="material-icons left @LOCALE_COLOR white-text">@LOCALE_ICON</i>
+					@Messages("locales.size", project.localesSize())
+				</div>
+				<div class="chip">
+					<i class="material-icons left @KEY_COLOR white-text">@KEY_ICON</i>
+					@Messages("keys.size", project.keysSize())
+				</div>
+				<div class="chip">
+					<i class="material-icons left @MESSAGE_COLOR white-text">@MESSAGE_ICON</i>
+					@Messages("messages.size", project.messagesSize())
+				</div>
+				<div class="chip">
+					<i class="material-icons left @WORD_COLOR white-text">@WORD_ICON</i>
+					@Messages("words.size", Option(project.wordCount).getOrElse(0))
+				</div>
+				<div class="chip">
+					<i class="material-icons left @PROJECT_USER_COLOR white-text">@PROJECT_USER_ICON</i>
+					@Messages("members.size", project.membersSize())
+				</div>
+				@users.chip(project.owner, me=template.loggedInUser.id == project.owner.id)
+				@for(member <- project.members.subList(0, Math.min(project.members.size, 3))) {
+					@if(member.user.id != project.owner.id) {
+						@users.chip(
+							member.user,
+							key="project.role." + member.role,
+							me=template.loggedInUser.id == member.user.id
+						)
+					}
 				}
-			}
-			<div class="chip">
-				@Messages("members.size", project.membersSize())
-			</div>
-			<div class="chip">
-				@Messages("locales.size", project.localesSize())
-			</div>
-			<div class="chip">
-				@Messages("keys.size", project.keysSize())
-			</div>
-			<div class="chip">
-				@Messages("messages.size", project.messagesSize())
-			</div>
-			<div class="chip">
-				@Messages("words.size", Option(project.wordCount).getOrElse(0))
+				@if(project.members.size() > 3) {
+					…
+				}
 			</div>
 		}
 

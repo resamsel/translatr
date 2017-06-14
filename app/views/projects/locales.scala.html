@@ -1,5 +1,7 @@
 @(template: utils.Template, project: models.Project, locales: com.avaje.ebean.PagedList[models.Locale], progress: Map[java.util.UUID, Double], form: Form[forms.LocaleSearchForm])
 
+@import utils.ActivityUtils._
+
 @main(template.withTitle(project.name).withName("project-locales"))(tags.search(form)())(nav(project, "locales")) {
 	@content() {
 		@tags.collection(locales.getList, "locales.empty", "locales") {
@@ -11,7 +13,7 @@
 		} {
 			@for(locale <- locales.getList) {
 				<li class="collection-item avatar">
-					<i class="material-icons circle blue">book</i>
+					<i class="material-icons circle @LOCALE_COLOR">@LOCALE_ICON</i>
 					<a class="locale title" href="@routes.Locales.locale(locale.id)">
 						@tags.locale(locale.name)
 					<div class="progress">

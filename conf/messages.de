@@ -1,3 +1,4 @@
+about = Über
 access.denied = Zugriff auf Ressource wurde verweigert
 accessToken = Zugangsschlüssel
 accessToken.access.denied = Zugriff auf Zugangsschlüssel {0} wurde verweigert
@@ -60,7 +61,7 @@ cli.content = <p>Das Command Line Interface ermöglicht die Verwaltung der Über
 cli.install.content = <p>Füge folgendes im Terminal ein:</p>\n\n<pre class="language-bash"><code>curl -fsSL https://raw.githubusercontent.com/resamsel/translatr/master/install.sh | bash</code></pre>
 cli.install.title = Installation
 cli.title = Command Line Interface
-cli.usage.content = <p>Um Translatr CLI nutzen zu können, brauchen wir eine .translatr.yml Konfigurationsdatei. Lege diese Datei im Verzeichnis an, für das CLI werden soll. Translatr benutzt diese Datei als Konfiguration.</p>\n\n<h5 class="header">Beispiel .translatr.yml für Play messages</h5>\n\n<pre class="language-yml"><code>translatr:\n  endpoint: http://localhost:9000\n  access_token: &lt;Zugangsschlüssel&gt;\n  project_id: &lt;Projekt-ID&gt;\n  pull:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'\n  push:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'</code></pre>\n\n<p>Lege einen neuen Zugangsschlüssel (Access-Token) an und trage den Schlüssel in .translatr.yml ein: <a href="/profile/accessToken/create">Zugangsschlüssel</a>.</p>\n\n<p>Danach lege ein Projekt über die Weboberfläche an und trage die Projekt-ID (40 Zeichen UUID in der URL, z.B. http://localhost:9000/project/<strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong> -&gt; Projekt-ID: <strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong>) ein.</p>\n\n<h5 class="header">Hochladen</h5>\n\n<p>Mit der <strong>push</strong>-Operation werden die passenden messages-Dateien zum angegebenen Endpunkt hochzuladen. Sprachen werden dabei angelegt, falls notwendig.</p>\n\n<pre class="language-bash"><code>translatr push</code></pre>\n\n<p>Dadurch werden bestehende Nachrichten mit den Werten in den messages-Dateien überschrieben. Existierende Schlüssel und Sprachen bleiben bestehen, diese Operation ist keine Synchronisierung.</p>\n\n<h5 class="header">Herunterladen</h5>\n\n<p>Mit der By <strong>pull</strong>-Operation werden alle Sprachen in die konfigurierten Dateien heruntergeladen (Konfiguration: translatr.pull.target).</p>\n\n<pre class="language-bash"><code>translatr pull</code></pre>\n\n<p>Dadurch werden bestehende lokale Dateien überschrieben. Alle bekannten Sprachen werden heruntergeladen.</p>
+cli.usage.content = <p>Um Translatr CLI nutzen zu können, brauchen wir eine .translatr.yml Konfigurationsdatei. Lege diese Datei im Verzeichnis an, für das CLI werden soll. Translatr benutzt diese Datei als Konfiguration.</p>\n\n<h5 class="header">Beispiel .translatr.yml für Play messages</h5>\n\n<pre class="language-yml"><code>translatr:\n  endpoint: <script>document.write(window.location.href)</script>\n  access_token: &lt;Zugangsschlüssel&gt;\n  project_id: &lt;Projekt-ID&gt;\n  pull:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'\n  push:\n    file_type: play_messages\n    target: conf/messages.?'{locale.name}'</code></pre>\n\n<p>Lege einen neuen Zugangsschlüssel (Access-Token) an und trage den Schlüssel in .translatr.yml ein: <a href="/profile/accessToken/create">Zugangsschlüssel</a>.</p>\n\n<p>Danach lege ein Projekt über die Weboberfläche an und trage die Projekt-ID (40 Zeichen UUID in der URL, z.B. http://localhost:9000/project/<strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong> -&gt; Projekt-ID: <strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong>) ein.</p>\n\n<h5 class="header">Hochladen</h5>\n\n<p>Mit der <strong>push</strong>-Operation werden die passenden messages-Dateien zum angegebenen Endpunkt hochzuladen. Sprachen werden dabei angelegt, falls notwendig.</p>\n\n<pre class="language-bash"><code>translatr push</code></pre>\n\n<p>Dadurch werden bestehende Nachrichten mit den Werten in den messages-Dateien überschrieben. Existierende Schlüssel und Sprachen bleiben bestehen, diese Operation ist keine Synchronisierung.</p>\n\n<h5 class="header">Herunterladen</h5>\n\n<p>Mit der By <strong>pull</strong>-Operation werden alle Sprachen in die konfigurierten Dateien heruntergeladen (Konfiguration: translatr.pull.target).</p>\n\n<pre class="language-bash"><code>translatr pull</code></pre>\n\n<p>Dadurch werden bestehende lokale Dateien überschrieben. Alle bekannten Sprachen werden heruntergeladen.</p>
 cli.usage.title = Nutzung
 command.notFound = Befehl wurde nicht gefunden
 contentType.dto.AccessToken = Zugangsschlüssel
@@ -75,10 +76,7 @@ contributions.amount = {0} Beiträge
 contributions.legend.less = Weniger
 contributions.legend.more = Mehr
 contributions.legend.tooltip = Relative Aktivität: {0}-{1}% (log(n)/log(max))
-copyright = © 2017 René Samselnig (Version {0})\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
-dashboard = Dashboard
-dashboard.info = Hier gibt es {0,choice,0#noch keine Projekte|1#ein Projekt|1<{0} Projekte}
-dashboard.tooltip = Dashboard öffnen
+copyright = © 2017 René Samselnig (<span title="{1}">{0}</span>)\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
 error.access.denied = Translatr benötigt eingeschränkten Zugriff auf dein Konto, um dir die Inhalte anzuzeigen
 error.accesstokenbyuserandname = Zugangsschlüssel mit angegebenem Namen existiert bereits
 error.maxLength = Maximallänge beträgt {0} Zeichen
@@ -95,7 +93,6 @@ footer.about = Entworfen und entwickelt von <a href="https://twitter.com/resamse
 footer.header = Über
 footer.links = Links
 help = Hilfe
-home = Heim
 import.error.multipartMissing = Multipart Formulardaten fehlen in der Anfrage
 import.file = Datei wählen
 info = Info
@@ -233,6 +230,7 @@ project.wordCount.reset.tooltip = Wortanzahl neu berechnen
 projects = Projekte
 projects.amount = {0} Projekte
 projects.empty = <i class="material-icons xlarge grey-text text-lighten-1">view_quilt</i><br/>\nNoch keine Projekte.
+projects.tooltip = Projekte öffnen
 promo1.content = Die Vorschau, der schnelle Wechsel zwischen Sprachen und die Möglichkeit zur Integration in das Build-System ermöglichen eine schnellere Entwicklung.
 promo1.icon = flash_on
 promo1.title = Beschleunigt die Entwicklung
@@ -264,12 +262,14 @@ user.notLinked = nicht verknüpft
 user.profile = Profil
 user.username = Benutzername
 user.username.duplicate = Benutzername wird bereits verwendet
+users = Beitragende
+users.empty = <i class="material-icons xlarge grey-text text-lighten-1">group</i><br/>\nNoch keine Benutzer.
 validation.optional = optional
 value.copy = Wert übernehmen
-when.created = angelegt
+when.created = angelegt {0}
 when.created.asc = Erzeugung aufsteigend
 when.created.desc = Erzeugung absteigend
-when.updated = aktualisiert
+when.updated = aktualisiert {0}
 when.updated.asc = Aktualisierung aufsteigend
 when.updated.desc = Aktualisierung absteigend
 words.size = {0,choice,0#noch keine Wörter|1#ein Wort|1<{0} Wörter}

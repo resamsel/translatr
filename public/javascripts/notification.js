@@ -1,7 +1,11 @@
 var NotificationListItemView = Backbone.View.extend({
 	tagName: 'li',
 	className: 'collection-item avatar',
-	template: _.template($('#notification-tmpl').html()),
+	template: null,
+
+	initialize: function(collection) {
+		this.template = _.template($('#notification-tmpl').html());
+	},
 
 	render: function() {
 		var html = this.template({
@@ -43,5 +47,3 @@ var NotificationListView = Backbone.View.extend({
 		}
 	}
 });
-
-new NotificationListView(new NotificationList());

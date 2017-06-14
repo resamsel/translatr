@@ -1,5 +1,6 @@
 package criterias;
 
+import forms.SearchForm;
 import play.mvc.Http.Request;
 
 /**
@@ -9,5 +10,13 @@ import play.mvc.Http.Request;
 public class UserCriteria extends AbstractSearchCriteria<UserCriteria> {
   public static UserCriteria from(Request request) {
     return new UserCriteria().with(request);
+  }
+
+  /**
+   * @param form
+   * @return
+   */
+  public static UserCriteria from(SearchForm form) {
+    return new UserCriteria().with(form);
   }
 }
