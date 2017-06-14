@@ -144,6 +144,10 @@ public class Projects extends AbstractController {
     return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
   }
 
+  public Result projectBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project -> project(project.id)));
+  }
+
   public Result project(UUID projectId) {
     return searchForm(projectId, (project, form) -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values()))
@@ -264,6 +268,11 @@ public class Projects extends AbstractController {
     projectService.delete(project);
 
     return redirect(routes.Projects.index());
+  }
+
+  public Result localesBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project -> locales(project.id,
+        DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET)));
   }
 
   public Result locales(UUID id, String s, String order, int limit, int offset) {
@@ -469,6 +478,14 @@ public class Projects extends AbstractController {
       BiFunction<Project, Form<KeySearchForm>, Result> processor) {
     return projectLegacy(projectId, project -> processor.apply(project,
         FormUtils.KeySearch.bindFromRequest(formFactory, configuration)));
+  }
+
+  private Result project(User user, String projectName, Function<Project, Result> processor) {
+    Project project = projectService.byOwnerAndName(user, projectName);
+    if (project == null)
+      return redirectWithError(routes.Application.index(), "project.notFound");
+
+    return processor.apply(project);
   }
 
   /**

@@ -3,7 +3,6 @@ package controllers;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -75,6 +74,10 @@ public class Users extends AbstractController {
       return ok(views.html.users.index.render(createTemplate().withSection(SECTION_COMMUNITY),
           users, form));
     });
+  }
+
+  public Result userByUsername(String username) {
+    return user(username);
   }
 
   public Result user(String username) {
@@ -164,21 +167,6 @@ public class Users extends AbstractController {
           AccessToken.findBy(AccessTokenCriteria.from(search).withUserId(user.id)).getList(),
           form));
     }, true);
-  }
-
-  private Result user(String username, Function<User, Result> processor) {
-    return user(username, processor, false);
-  }
-
-  private Result user(String username, Function<User, Result> processor, boolean restrict) {
-    User user = userService.byUsername(username);
-    if (user == null)
-      return redirectWithError(routes.Application.index(), "user.notFound");
-
-    if (restrict && !user.id.equals(User.loggedInUserId()))
-      return redirectWithError(routes.Users.user(user.username), "access.denied");
-
-    return processor.apply(user);
   }
 
   private Template createTemplate(User user) {

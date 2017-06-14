@@ -14,13 +14,6 @@ GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider
 
 # Users
 GET		/users						controllers.Users.index()
-GET		/user/:username				controllers.Users.user(username: String)
-GET		/user/:username/activity/csv	controllers.Users.activityCsv(username: String)
-GET		/user/:username/projects	controllers.Users.projects(username: String)
-GET		/user/:username/activity	controllers.Users.activity(username: String)
-GET		/user/:username/linkedAccounts	controllers.Users.linkedAccounts(username: String)
-GET		/user/:username/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
-GET		/user/:username/accessTokens	controllers.Users.accessTokens(username: String)
 
 # Profiles
 GET		/profile					controllers.Profiles.profile
@@ -31,8 +24,8 @@ GET		/profile/edit				controllers.Profiles.edit
 POST	/profile/edit				controllers.Profiles.doEdit
 GET		/profile/link				controllers.Profiles.askLink
 POST	/profile/link				controllers.Profiles.doLink
-GET		/accounts/merge				controllers.Profiles.askMerge
-POST	/accounts/merge				controllers.Profiles.doMerge
+GET		/profile/merge				controllers.Profiles.askMerge
+POST	/profile/merge				controllers.Profiles.doMerge
 GET		/profile/accessToken/create	controllers.Profiles.accessTokenCreate
 POST	/profile/accessToken/create	controllers.Profiles.doAccessTokenCreate
 GET		/profile/accessToken/:accessTokenId/edit	controllers.Profiles.accessTokenEdit(accessTokenId: Long)
@@ -130,3 +123,16 @@ GET		/api/docs					controllers.ApiDocs.index()
 GET		/api/*file					controllers.ApiDocs.versioned(path="/public/lib/swagger-ui", file: String)
 
 GET		/javascriptRoutes			controllers.Application.javascriptRoutes
+
+# Root routes for usernames
+GET		/:username					controllers.Users.user(username: String)
+GET		/:username/activity/csv		controllers.Users.activityCsv(username: String)
+GET		/:username/projects			controllers.Users.projects(username: String)
+GET		/:username/activity			controllers.Users.activity(username: String)
+GET		/:username/linkedAccounts	controllers.Users.linkedAccounts(username: String)
+GET		/:username/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
+GET		/:username/accessTokens		controllers.Users.accessTokens(username: String)
+
+GET		/:username/:projectName		controllers.Projects.projectBy(username: String, projectName: String)
+GET		/:username/:projectName/locales	controllers.Projects.localesBy(username: String, projectName: String)
+GET		/:username/:projectName/locale/:localeName	controllers.Locales.localeBy(username: String, projectName: String, localeName: String)

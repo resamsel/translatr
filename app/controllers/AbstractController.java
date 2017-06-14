@@ -156,6 +156,21 @@ public abstract class AbstractController extends Controller {
     return processor.apply(User.loggedInUser());
   }
 
+  protected Result user(String username, Function<User, Result> processor) {
+    return user(username, processor, false);
+  }
+
+  protected Result user(String username, Function<User, Result> processor, boolean restrict) {
+    User user = userService.byUsername(username);
+    if (user == null)
+      return redirectWithError(routes.Application.index(), "user.notFound");
+
+    if (restrict && !user.id.equals(User.loggedInUserId()))
+      return redirectWithError(routes.Users.user(user.username), "access.denied");
+
+    return processor.apply(user);
+  }
+
   /**
    * @param t
    * @return

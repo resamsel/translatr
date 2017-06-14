@@ -9,15 +9,18 @@ import javax.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteLocaleCommand;
+import criterias.LocaleCriteria;
 import forms.KeySearchForm;
 import forms.LocaleForm;
 import models.Locale;
 import models.Project;
+import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
@@ -71,6 +74,14 @@ public class Locales extends AbstractController {
     this.localeApiService = localeApiService;
     this.projectService = projectService;
   }
+
+  public Result localeBy(String username, String projectName, String localeName) {
+    return user(username,
+        user -> project(user, projectName,
+            project -> locale(project, localeName, locale -> locale(locale.id, DEFAULT_SEARCH,
+                DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET))));
+  }
+
 
   public Result locale(UUID localeId, String search, String order, int limit, int offset) {
     return locale(localeId, locale -> {
@@ -209,6 +220,25 @@ public class Locales extends AbstractController {
 
       return redirect(routes.Projects.locales(locale.project.id, s, order, limit, offset));
     });
+  }
+
+  private Result project(User user, String projectName, Function<Project, Result> processor) {
+    Project project = projectService.byOwnerAndName(user, projectName);
+    if (project == null)
+      return redirectWithError(routes.Application.index(), "project.notFound");
+
+    return processor.apply(project);
+  }
+
+  private Result locale(Project project, String localeName, Function<Locale, Result> processor) {
+    PagedList<Locale> locales = localeService
+        .findBy(new LocaleCriteria().withProjectId(project.id).withLocaleName(localeName));
+    if (locales.getList().isEmpty())
+      return redirect(routes.Projects.project(project.id));
+
+    select(project);
+
+    return processor.apply(locales.getList().get(0));
   }
 
   private Result locale(UUID localeId, Function<Locale, Result> processor) {
