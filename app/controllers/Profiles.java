@@ -84,7 +84,7 @@ public class Profiles extends AbstractController {
         return badRequest(views.html.users.edit.render(createTemplate(), user, form));
 
       try {
-        userService.save(form.get().into(user));
+        user = userService.save(form.get().into(user));
       } catch (ConstraintViolationException e) {
         return badRequest(
             views.html.users.edit.render(createTemplate(), user, FormUtils.include(form, e)));

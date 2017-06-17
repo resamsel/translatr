@@ -85,7 +85,7 @@ public class User implements Model<User, UUID>, Subject {
 
   public boolean active;
 
-  @Column(length = USERNAME_LENGTH, unique = true)
+  @Column(nullable = false, length = USERNAME_LENGTH, unique = true)
   public String username;
 
   @Column(nullable = false, length = NAME_LENGTH)

@@ -75,10 +75,86 @@ translatr pull
 
 This will overwrite any existing files locally. All known locales will be downloaded.
 
-# Deployment
+# Contributing
 
-In root repository directory:
+Contribute by creating pull requests. The project can be developed with Eclipse, needs a PostgreSQL database and a Redis key/value store. For authorisation, any of the following is implemented: Google, GitHub, Facebook, Twitter, and Keycloak.
+
+Creating project files for Eclipse:
 
 ```
-git subtree push --prefix translatr heroku master
+bin/activator eclipse
+```
+
+## Style Guide
+
+Use the Google style guide for Java:
+
+https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml
+
+## Authorisation
+
+### Google
+
+Credentials can be retrieved here: https://code.google.com/apis/console
+
+```
+export AUTH_PROVIDERS=google
+export GOOGLE_CLIENT_ID=...
+export GOOGLE_CLIENT_SECRET=...
+```
+
+### GitHub
+
+Credentials can be retrieved here: https://github.com/settings/applications/new
+
+```
+export AUTH_PROVIDERS=github
+export GITHUB_CLIENT_ID=...
+export GITHUB_CLIENT_SECRET=...
+```
+
+### Facebook
+
+Credentials can be retrieved here: https://developers.facebook.com/apps
+
+```
+export AUTH_PROVIDERS=facebook
+export FACEBOOK_CLIENT_ID=...
+export FACEBOOK_CLIENT_SECRET=...
+```
+
+### Twitter
+
+Credentials can be retrieved here: https://dev.twitter.com/docs/auth/oauth
+
+```
+export AUTH_PROVIDERS=twitter
+export TWITTER_CONSUMER_KEY=...
+export TWITTER_CONSUMER_SECRET=...
+```
+
+### Keycloak
+
+The realm needs to be named Translatr.
+
+A Keycloak app for Heroku can be found here: https://github.com/resamsel/keycloak-swarm-heroku
+
+```
+export KEYCLOAK_HOST=http://localhost:8080
+export KEYCLOAK_CLIENT_ID=...
+export KEYCLOAK_CLIENT_SECRET=...
+```
+
+## Running Translatr
+
+Start database and Redis (Docker/docker-compose needed):
+
+```
+docker-compose up -d
+```
+
+Then, start the application:
+
+```
+bin/activator ~run -Dconfig.file=dev.conf
 ```
