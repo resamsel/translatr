@@ -77,7 +77,18 @@ This will overwrite any existing files locally. All known locales will be downlo
 
 # Contributing
 
-Contribute by creating pull requests. The project can be developed with Eclipse, needs a PostgreSQL database and a Redis key/value store. For authorisation, any of the following is implemented: Google, GitHub, Facebook, Twitter, and Keycloak.
+Any suggestion or issue is welcome. Push request are very welcome, please check out the guidelines.
+
+## Pull Request Guidelines
+
+1. Pull requests should link to at least one issue that it is solving. The issue itself should be descriptive so that a reviewer can understand what the PR is doing. The description in the PR should only add any useful additional information needed that is not in the issue.
+1. Keep pull requests small and simple. A pull request should generally address one, or a few related issues. This makes it easier to review the pull request, and document the changes.
+1. Test your code before submitting a pull request! It is unsafe to merge untested code even if you think it will work without testing. Creating unit tests for any changes is a good idea, and is highly encouraged.
+1. Before issuing a pull request, sync with the main repository and address any conflicts that may exist.
+
+# Development
+
+The project can be developed with Eclipse, needs a PostgreSQL database and a Redis key/value store. For authorisation, any of the following is implemented: Google, GitHub, Facebook, Twitter, and Keycloak.
 
 Creating project files for Eclipse:
 
@@ -135,9 +146,7 @@ export TWITTER_CONSUMER_SECRET=...
 
 ### Keycloak
 
-The realm needs to be named Translatr.
-
-A Keycloak app for Heroku can be found here: https://github.com/resamsel/keycloak-swarm-heroku
+The realm needs to be named Translatr. This is a sample [Keycloak app for Heroku](https://github.com/resamsel/keycloak-swarm-heroku).
 
 ```
 export KEYCLOAK_HOST=http://localhost:8080
@@ -158,3 +167,16 @@ Then, start the application:
 ```
 bin/activator ~run -Dconfig.file=dev.conf
 ```
+
+## Testing
+
+Unit and integration tests live in the **test/** directory. In Eclipse, this
+directory should be a source directory.
+
+Unit tests can be run by issuing the following command:
+
+```
+bin/activator clean jacoco:cover -Dconfig.file=test.conf -J-Xmx1g
+```
+
+Jacoco generates a coverage report in **target/scala-2.11/jacoco/html/index.html**
