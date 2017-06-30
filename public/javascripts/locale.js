@@ -81,7 +81,11 @@ var LocaleSelectorListItemView = Backbone.View.extend({
 
 		var html = this.template({
 			id: this.model.id,
-			url: jsRoutes.controllers.Locales.locale(this.model.id).url,
+			url: jsRoutes.controllers.Locales.localeBy(
+					this.model.get('projectOwnerUsername'),
+					this.model.get('projectPath'),
+					this.model.get('name')
+				).url,
 			localeName: this.model.get('name'),
 			keyName: keyName
 		});

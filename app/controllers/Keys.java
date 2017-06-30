@@ -125,8 +125,8 @@ public class Keys extends AbstractController {
     if (localeId != null) {
       Locale locale = localeService.byId(localeId);
 
-      return redirect(routes.Locales.locale(locale.id, search, order, limit, offset)
-          .withFragment("key/" + key.name));
+      return redirect(routes.Locales.localeBy(locale.project.owner.username, locale.project.path,
+          locale.name, search, order, limit, offset).withFragment("key/" + key.name));
     }
 
     return redirect(routes.Keys.key(key.id, search, order, limit, offset));
@@ -204,7 +204,8 @@ public class Keys extends AbstractController {
       if (localeId != null) {
         Locale locale = localeService.byId(localeId);
         if (locale != null)
-          return redirect(routes.Locales.locale(locale.id, search, order, limit, offset));
+          return redirect(routes.Locales.localeBy(locale.project.owner.username,
+              locale.project.path, locale.name, search, order, limit, offset));
       }
 
       LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));

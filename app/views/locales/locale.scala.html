@@ -50,7 +50,7 @@
 			</a>
 			<ul id="dropdown-locales" class="dropdown-content">
 				<li class="selected">
-					<a id="@locale.id" href="@routes.Locales.locale(locale.id)">@tags.locale(locale.name)</a>
+					<a id="@locale.id" href="@routes.Locales.localeBy(locale.project.owner.username, locale.project.path, locale.name)">@tags.locale(locale.name)</a>
 				</li>
 			</ul>
 			<script type="text/template" id="locale-tmpl">

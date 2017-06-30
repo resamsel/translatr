@@ -285,8 +285,7 @@ public class Projects extends AbstractController {
       Form<LocaleSearchForm> form =
           FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration);
       LocaleSearchForm search = form.get();
-      if (search.order == null)
-        search.order = "name";
+      search.update(s, order, limit, offset);
 
       PagedList<Locale> locales =
           Locale.findBy(LocaleCriteria.from(search).withProjectId(project.id));
@@ -310,8 +309,7 @@ public class Projects extends AbstractController {
     return user(username, user -> project(user, projectPath, project -> {
       Form<KeySearchForm> form = FormUtils.KeySearch.bindFromRequest(formFactory, configuration);
       KeySearchForm search = form.get();
-      if (search.order == null)
-        search.order = "name";
+      search.update(s, order, limit, offset);
 
       PagedList<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
 
@@ -328,8 +326,7 @@ public class Projects extends AbstractController {
   public Result keys(UUID id, String s, String order, int limit, int offset) {
     return keySearchForm(id, (project, form) -> {
       KeySearchForm search = form.get();
-      if (search.order == null)
-        search.order = "name";
+      search.update(s, order, limit, offset);
 
       PagedList<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
 

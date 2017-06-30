@@ -15,7 +15,14 @@ var EditorSwitchView = Backbone.View.extend({
 			return;
 		}
 
-		this.$el.attr('href', jsRoutes.controllers.Locales.locale(item.id).url + '#key/' + this.keyName);
+		this.$el.attr(
+			'href',
+			jsRoutes.controllers.Locales.localeBy(
+				item.get('projectOwnerUsername'),
+				item.get('projectPath'),
+				item.get('name')
+			).url + '#key/' + this.keyName
+		);
 		this.$el.removeClass('disabled');
 	}
 });
@@ -133,31 +140,6 @@ App.Modules.SuggestionModule = function(sb) {
 		}
 	};
 };
-
-App.Modules.EditorSwitchModule = function(sb, options) {
-	var keyName = options.keyName || '';
-	var switchButton = sb.dom.find('#switch-editor');
-
-	function _handleItemSelected(item) {
-		if(item === null) {
-			switchButton.attr('href', '#');
-			switchButton.addClass('disabled');
-
-			return;
-		}
-
-		switchButton.attr('href', jsRoutes.controllers.Locales.locale(item.localeId).url + '?search=' + keyName + '#key=' + keyName);
-		switchButton.removeClass('disabled');
-	}
-
-	return {
-		create: function() {
-			sb.subscribe('itemSelected', _handleItemSelected);
-		},
-		destroy: function() {
-		}
-	}
-}
 
 App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 App.Core.register('KeyHashModule', App.Modules.KeyHashModule);

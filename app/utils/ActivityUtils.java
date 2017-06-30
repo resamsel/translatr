@@ -81,17 +81,19 @@ public class ActivityUtils {
         break;
       }
       case "dto.Project": {
-        String ownerUsername = JsonUtils.getAsText(node, "ownerUsername");
-        String path = JsonUtils.getAsText(node, "path");
-        if (path != null && ownerUsername != null)
-          return controllers.routes.Projects.projectBy(ownerUsername, path);
+        dto.Project project = Json.fromJson(node, dto.Project.class);
+        if (project != null)
+          return controllers.routes.Projects.projectBy(project.ownerUsername, project.path);
         break;
       }
-      case "dto.Locale":
-        if (uuid != null)
-          return controllers.routes.Locales.locale(uuid, Locales.DEFAULT_SEARCH,
-              Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET);
+      case "dto.Locale": {
+        dto.Locale locale = Json.fromJson(node, dto.Locale.class);
+        if (locale != null)
+          return controllers.routes.Locales.localeBy(locale.projectOwnerUsername,
+              locale.projectPath, locale.name, Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER,
+              Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET);
         break;
+      }
       case "dto.Key":
         if (uuid != null)
           return controllers.routes.Keys.key(uuid, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,

@@ -33,17 +33,21 @@ public class ActivityUtilsTest {
     long id = ThreadLocalRandom.current().nextLong();
     String ownerUsername = "username";
     String path = "path";
+    String localeName = "en";
     LogEntry activity = createLogEntry(ActionType.Create, dto.User.class.getName(), uuid);
     activity.after = Json.stringify(Json.newObject().put("username", "username"));
+
     assertThat(ActivityUtils.linkTo(activity)).isEqualTo(controllers.routes.Users.user("username"));
     assertThat(ActivityUtils.linkTo(createLogEntry(ActionType.Create,
         dto.Project.class.getName(), Json.newObject().put("name", "name").put("path", path)
             .put("ownerUsername", ownerUsername))))
                 .isEqualTo(controllers.routes.Projects.projectBy(ownerUsername, path));
-    assertThat(
-        ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Locale.class.getName(), uuid)))
-            .isEqualTo(controllers.routes.Locales.locale(uuid, Locales.DEFAULT_SEARCH,
-                Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET));
+    assertThat(ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Locale.class.getName(),
+        Json.newObject().put("name", localeName).put("projectOwnerUsername", ownerUsername)
+            .put("projectPath", path))))
+                .isEqualTo(controllers.routes.Locales.localeBy(ownerUsername, path, localeName,
+                    Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
+                    Locales.DEFAULT_OFFSET));
     assertThat(
         ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Key.class.getName(), uuid)))
             .isEqualTo(controllers.routes.Keys.key(uuid, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,

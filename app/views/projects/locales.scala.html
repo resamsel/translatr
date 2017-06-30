@@ -14,7 +14,7 @@
 			@for(locale <- locales.getList) {
 				<li class="collection-item avatar">
 					<i class="material-icons circle @LOCALE_COLOR">@LOCALE_ICON</i>
-					<a class="locale title" href="@routes.Locales.locale(locale.id)">
+					<a class="locale title" href="@routes.Locales.localeBy(locale.project.owner.username, locale.project.path, locale.name)">
 						@tags.locale(locale.name)
 					<div class="progress">
 						<div class="determinate" style="width: @{progress.getOrDefault(locale.id, 0)*100}%;"></div>
@@ -88,10 +88,11 @@
 		}
 	}
 
+	<script src="@routes.Assets.versioned("javascripts/projectLocales.js")"></script>
 	<script>
 		var projectId = '@project.id';
 
 		App.Core.register('LocalesCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-locale'});
+		App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 	</script>
-	<script src="@routes.Assets.versioned("javascripts/projectLocales.js")"></script>
 }

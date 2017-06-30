@@ -48,7 +48,8 @@ public class Message implements Model<Message, UUID> {
   private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList(FETCH_LOCALE, FETCH_KEY);
 
   private static final Map<String, List<String>> FETCH_MAP = ImmutableMap.of(FETCH_LOCALE,
-      Arrays.asList(FETCH_LOCALE, FETCH_LOCALE + ".project"), FETCH_KEY, Arrays.asList(FETCH_KEY));
+      Arrays.asList(FETCH_LOCALE, FETCH_LOCALE + ".project", FETCH_LOCALE + ".project.owner"),
+      FETCH_KEY, Arrays.asList(FETCH_KEY));
 
   private static final Find<UUID, Message> find = new Find<UUID, Message>() {};
 

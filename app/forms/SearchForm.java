@@ -131,4 +131,13 @@ public class SearchForm {
       return call.url();
     }
   }
+
+  public SearchForm update(String search, String order, int limit, int offset) {
+    this.search = search;
+    this.order = order;
+    this.limit = limit;
+    this.offset = offset;
+
+    return this;
+  }
 }

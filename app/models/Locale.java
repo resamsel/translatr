@@ -115,8 +115,9 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   @Override
   public Data data() {
     return Data.from(Locale.class, id, formatLocale(Context.current().lang().locale(), this),
-        routes.Locales.locale(id, Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER,
-            Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET)
+        routes.Locales
+            .localeBy(project.owner.username, project.path, name, Locales.DEFAULT_SEARCH,
+                Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET)
             .absoluteURL(Context.current().request()));
   }
 

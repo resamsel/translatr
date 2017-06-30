@@ -77,22 +77,16 @@ public class Locales extends AbstractController {
     this.projectService = projectService;
   }
 
-  public CompletionStage<Result> localeBy(String username, String projectName, String localeName) {
-    return user(username, user -> project(user, projectName, project -> locale(project, localeName,
-        locale -> locale(locale.id, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET))),
-        User.FETCH_PROJECTS, User.FETCH_PROJECTS + ".locales");
-  }
+  public CompletionStage<Result> localeBy(String username, String projectPath, String localeName,
+      String search, String order, int limit, int offset) {
+    return user(username,
+        user -> project(user, projectPath, project -> locale(project, localeName, locale -> {
+          Form<KeySearchForm> form =
+              FormUtils.KeySearch.bindFromRequest(formFactory, configuration);
+          form.get().update(search, order, limit, offset);
 
-
-  public Result locale(UUID localeId, String search, String order, int limit, int offset) {
-    return locale(localeId, locale -> {
-      Form<KeySearchForm> form = FormUtils.KeySearch.bindFromRequest(formFactory, configuration);
-      KeySearchForm s = form.get();
-      if (s.order == null)
-        s.order = "name";
-
-      return ok(views.html.locales.locale.render(createTemplate(), locale, form));
-    });
+          return ok(views.html.locales.locale.render(createTemplate(), locale, form));
+        })), User.FETCH_PROJECTS, User.FETCH_PROJECTS + ".locales");
   }
 
   public Result doCreate(UUID projectId) {
@@ -128,8 +122,8 @@ public class Locales extends AbstractController {
 
     LocaleForm search = form.get();
 
-    return redirect(
-        routes.Locales.locale(locale.id, search.search, search.order, search.limit, search.offset));
+    return redirect(routes.Locales.localeBy(locale.project.owner.username, locale.project.path,
+        locale.name, search.search, search.order, search.limit, search.offset));
   }
 
   public Result createImmediately(UUID projectId, String localeName, String search, String order,
@@ -161,7 +155,8 @@ public class Locales extends AbstractController {
       }
     }
 
-    return redirect(routes.Locales.locale(locale.id, search, order, limit, offset));
+    return redirect(routes.Locales.localeBy(locale.project.owner.username, locale.project.path,
+        locale.name, search, order, limit, offset));
   }
 
   public Result edit(UUID localeId, String search, String order, int limit, int offset) {
@@ -202,8 +197,8 @@ public class Locales extends AbstractController {
             views.html.locales.upload.render(createTemplate(), locale.project, locale));
       }
 
-      return redirect(routes.Locales.locale(localeId, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
-          DEFAULT_OFFSET));
+      return redirect(routes.Locales.localeBy(locale.project.owner.username, locale.project.path,
+          locale.name, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET));
     });
   }
 
@@ -224,15 +219,15 @@ public class Locales extends AbstractController {
     });
   }
 
-  private Result project(User user, String projectName, Function<Project, Result> processor) {
+  private Result project(User user, String projectPath, Function<Project, Result> processor) {
     if (user.projects != null) {
       Optional<Project> project =
-          user.projects.stream().filter(p -> p.name.equals(projectName)).findFirst();
+          user.projects.stream().filter(p -> p.path.equals(projectPath)).findFirst();
       if (project.isPresent())
         return processor.apply(project.get());
     }
 
-    Project project = projectService.byOwnerAndName(user, projectName);
+    Project project = projectService.byOwnerAndPath(user, projectPath);
     if (project == null)
       return redirectWithError(routes.Application.index(), "project.notFound");
 

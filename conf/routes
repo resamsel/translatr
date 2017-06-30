@@ -55,7 +55,7 @@ GET		/project/:id/activity/csv	controllers.Projects.activityCsv(id: java.util.UU
 GET		/project/:id/wordCount/reset	controllers.Projects.wordCountReset(id: java.util.UUID)
 
 # Locales
-GET		/locale/:id					controllers.Locales.locale(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+#GET		/locale/:id					controllers.Locales.locale(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/locale/:id/edit			controllers.Locales.edit(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/locale/:id/edit			controllers.Locales.doEdit(id: java.util.UUID)
 GET		/locale/:id/remove			controllers.Locales.remove(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
@@ -135,5 +135,5 @@ GET		/:username/accessTokens		controllers.Users.accessTokens(username: String)
 
 GET		/:username/:projectName		controllers.Projects.projectBy(username: String, projectName: String)
 GET		/:username/:projectName/locales	controllers.Projects.localesBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/:username/:projectName/locale/:localeName	controllers.Locales.localeBy(username: String, projectName: String, localeName: String)
+GET		/:username/:projectName/locale/:localeName	controllers.Locales.localeBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/:username/:projectName/keys	controllers.Projects.keysBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
