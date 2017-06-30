@@ -41,9 +41,22 @@ public class QueryUtils {
    * @return
    */
   public static Set<String> mergeFetches(List<String> propertiesToFetch, String... fetches) {
-    HashSet<String> fetchSet = new HashSet<>(propertiesToFetch);
     if (fetches.length > 0)
-      fetchSet.addAll(Arrays.asList(fetches));
+      return mergeFetches(propertiesToFetch, Arrays.asList(fetches));
+
+    return new HashSet<>(propertiesToFetch);
+  }
+
+  /**
+   * @param propertiesToFetch
+   * @param fetches
+   * @return
+   */
+  public static Set<String> mergeFetches(List<String> propertiesToFetch,
+      Collection<String> fetches) {
+    HashSet<String> fetchSet = new HashSet<>(propertiesToFetch);
+    if (fetches != null && fetches.size() > 0)
+      fetchSet.addAll(fetches);
     return fetchSet;
   }
 }

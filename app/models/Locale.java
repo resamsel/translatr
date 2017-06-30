@@ -163,10 +163,12 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static PagedList<Locale> findBy(LocaleCriteria criteria) {
-    Query<Locale> q = find.fetch("project").alias("k").setDisableLazyLoading(true);
+    Query<Locale> q = QueryUtils.fetch(find.query().alias("k").setDisableLazyLoading(true),
+        PROPERTIES_TO_FETCH, FETCH_MAP);
 
     if (StringUtils.isEmpty(criteria.getMessagesKeyName()) && !criteria.getFetches().isEmpty())
-      q = QueryUtils.fetch(q, criteria.getFetches(), FETCH_MAP);
+      q = QueryUtils.fetch(q, QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
+          FETCH_MAP);
 
     ExpressionList<Locale> query = q.where();
 

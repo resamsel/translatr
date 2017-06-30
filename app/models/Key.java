@@ -135,7 +135,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
    */
   public static PagedList<Key> findBy(KeyCriteria criteria) {
     Query<Key> q = QueryUtils.fetch(find.query().alias("k").setDisableLazyLoading(true),
-        criteria.getFetches(), FETCH_MAP);
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()), FETCH_MAP);
 
     ExpressionList<Key> query = q.where();
 
