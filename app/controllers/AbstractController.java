@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import commands.Command;
+import dto.NotFoundException;
 import dto.PermissionException;
 import models.Project;
 import models.User;
@@ -85,7 +86,7 @@ public abstract class AbstractController extends Controller {
     this.notificationService = injector.instanceOf(NotificationService.class);
   }
 
-  protected CompletionStage<Result> tryCatch(Supplier<Result> supplier) {
+  protected <T> CompletionStage<T> tryCatch(Supplier<T> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current());
   }
 
@@ -151,25 +152,33 @@ public abstract class AbstractController extends Controller {
     return undoKey;
   }
 
-
-  protected Result loggedInUser(Function<User, Result> processor) {
-    return processor.apply(User.loggedInUser());
+  protected CompletionStage<Result> loggedInUser(Function<User, Result> processor) {
+    return tryCatch(() -> User.loggedInUser()).thenApply(processor);
   }
 
-  protected Result user(String username, Function<User, Result> processor, String... fetches) {
+  protected CompletionStage<Result> user(String username, Function<User, Result> processor,
+      String... fetches) {
     return user(username, processor, false, fetches);
   }
 
-  protected Result user(String username, Function<User, Result> processor, boolean restrict,
-      String... fetches) {
-    User user = userService.byUsername(username, fetches);
-    if (user == null)
-      return redirectWithError(routes.Application.index(), "user.notFound");
+  protected CompletionStage<Result> user(String username, Function<User, Result> processor,
+      boolean restrict, String... fetches) {
+    return tryCatch(() -> {
+      User user = userService.byUsername(username, fetches);
+      if (user == null)
+        throw new NotFoundException("User", username);
 
-    if (restrict && !user.id.equals(User.loggedInUserId()))
-      return redirectWithError(routes.Users.user(user.username), "access.denied");
+      if (restrict && !user.id.equals(User.loggedInUserId()))
+        throw new PermissionException("user.notFound");
 
-    return processor.apply(user);
+      return processor.apply(user);
+    }).exceptionally(e -> {
+      if (e instanceof NotFoundException)
+        return redirectWithError(controllers.routes.Application.index(), "user.notFound");
+      if (e instanceof PermissionException)
+        return redirectWithError(controllers.routes.Users.user(username), "access.denied");
+      return internalServerError(e.getMessage());
+    });
   }
 
   /**

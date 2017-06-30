@@ -7,8 +7,8 @@
 		@tags.collection(locales.getList, "locales.empty", "locales") {
 			<span class="title">@Messages("locale.name")</span>
 			@tags.sortOrders {
-				@tags.orderLink(form.get, routes.Projects.locales(project.id), "locale.name", "name", "name desc", "name")
-				@tags.orderLink(form.get, routes.Projects.locales(project.id), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+				@tags.orderLink(form.get, routes.Projects.localesBy(project.owner.username, project.path), "locale.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, routes.Projects.localesBy(project.owner.username, project.path), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
 			@for(locale <- locales.getList) {
@@ -76,7 +76,7 @@
 				</li>
 			}
 		} {
-			@tags.pager(routes.Projects.locales(project.id), form.get)
+			@tags.pager(routes.Projects.localesBy(project.owner.username, project.path), form.get)
 		}
 	}
 

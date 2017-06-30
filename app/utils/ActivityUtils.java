@@ -74,15 +74,19 @@ public class ActivityUtils {
     UUID uuid = JsonUtils.getUuid(node);
 
     switch (activity.contentType) {
-      case "dto.User":
+      case "dto.User": {
         String name = JsonUtils.getAsText(node, "username");
         if (name != null)
           return controllers.routes.Users.user(JsonUtils.getAsText(node, "username"));
         break;
-      case "dto.Project":
-        if (uuid != null)
-          return controllers.routes.Projects.project(uuid);
+      }
+      case "dto.Project": {
+        String ownerUsername = JsonUtils.getAsText(node, "ownerUsername");
+        String path = JsonUtils.getAsText(node, "path");
+        if (path != null && ownerUsername != null)
+          return controllers.routes.Projects.projectBy(ownerUsername, path);
         break;
+      }
       case "dto.Locale":
         if (uuid != null)
           return controllers.routes.Locales.locale(uuid, Locales.DEFAULT_SEARCH,

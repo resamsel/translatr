@@ -1,6 +1,6 @@
 @(template: utils.Template, project: Project, form: Form[forms.LocaleForm])
 
-@main(template.withTitle(project.name).withBackLink(routes.Projects.project(project.id)))()(projects.nav(project, "locales")) {
+@main(template.withTitle(project.name).withBackLink(routes.Projects.projectBy(project.owner.username, project.path)))()(projects.nav(project, "locales")) {
 	@projects.content("flex") {
 		<form action="@routes.Locales.doCreate(project.id)" method="post">
 			<div id="panel-message" class="card no-image">
@@ -17,7 +17,7 @@
 					</button>
 					<a
 						class="btn-flat btn-cancel black-text"
-						href="@routes.Projects.locales(project.id)">
+						href="@routes.Projects.localesBy(project.owner.username, project.path)">
 						@Messages("button.cancel")
 					</a>
 				</div>

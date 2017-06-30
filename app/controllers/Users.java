@@ -76,18 +76,18 @@ public class Users extends AbstractController {
     });
   }
 
-  public Result userByUsername(String username) {
+  public CompletionStage<Result> userByUsername(String username) {
     return user(username);
   }
 
-  public Result user(String username) {
+  public CompletionStage<Result> user(String username) {
     return user(username, user -> {
       return ok(views.html.users.user.render(createTemplate(user), user,
           userService.getUserStats(user.id)));
     });
   }
 
-  public Result projects(String username) {
+  public CompletionStage<Result> projects(String username) {
     return user(username, user -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
@@ -103,7 +103,7 @@ public class Users extends AbstractController {
     }, true);
   }
 
-  public Result activity(String username) {
+  public CompletionStage<Result> activity(String username) {
     return user(username, user -> {
       Form<ActivitySearchForm> form =
           FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
@@ -118,14 +118,14 @@ public class Users extends AbstractController {
     }, true);
   }
 
-  public Result activityCsv(String username) {
+  public CompletionStage<Result> activityCsv(String username) {
     return user(username, user -> {
       return ok(new ActivityCsvConverter()
           .apply(logEntryService.getAggregates(new LogEntryCriteria().withUserId(user.id))));
     }, true);
   }
 
-  public Result linkedAccounts(String username) {
+  public CompletionStage<Result> linkedAccounts(String username) {
     return user(username, user -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
@@ -140,7 +140,7 @@ public class Users extends AbstractController {
     }, true);
   }
 
-  public Result linkedAccountRemove(String username, Long linkedAccountId) {
+  public CompletionStage<Result> linkedAccountRemove(String username, Long linkedAccountId) {
     return user(username, user -> {
       LinkedAccount linkedAccount = linkedAccountService.byId(linkedAccountId);
 
@@ -155,7 +155,7 @@ public class Users extends AbstractController {
     }, true);
   }
 
-  public Result accessTokens(String username) {
+  public CompletionStage<Result> accessTokens(String username) {
     return user(username, user -> {
       Form<AccessTokenForm> form =
           FormUtils.AccessToken.bindFromRequest(formFactory, configuration);

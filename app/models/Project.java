@@ -95,6 +95,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
   @Required
   public String name;
 
+  @Column(nullable = false, length = NAME_LENGTH)
+  @Required
+  public String path;
+
   @ManyToOne
   @JoinColumn(name = "owner_id")
   @Required
@@ -150,8 +154,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   @Override
   public Data data() {
-    return Data.from(Project.class, id, name,
-        controllers.routes.Projects.project(id).absoluteURL(Context.current().request()));
+    return Data.from(Project.class, id, name, controllers.routes.Projects
+        .projectBy(owner.username, path).absoluteURL(Context.current().request()));
   }
 
   public Project withId(UUID id) {
@@ -269,6 +273,16 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return QueryUtils
         .fetch(find.query(), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
         .where().eq("owner", user).eq("name", name).findUnique();
+  }
+
+  /**
+   * @param path
+   * @return
+   */
+  public static Project byOwnerAndPath(User user, String path, String... fetches) {
+    return QueryUtils
+        .fetch(find.query(), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
+        .where().eq("owner", user).eq("path", path).findUnique();
   }
 
   /**

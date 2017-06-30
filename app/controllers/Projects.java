@@ -111,7 +111,7 @@ public class Projects extends AbstractController {
   }
 
   @SubjectPresent(forceBeforeAuthCheck = true)
-  public Result index() {
+  public CompletionStage<Result> index() {
     return loggedInUser(user -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
@@ -145,19 +145,26 @@ public class Projects extends AbstractController {
     return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
   }
 
-  public Result projectBy(String username, String projectName) {
-    return user(username, user -> project(user, projectName, project -> project(project.id)),
-        User.FETCH_PROJECTS);
-  }
-
-  public Result project(UUID projectId) {
-    return searchForm(projectId, (project, form) -> {
+  public CompletionStage<Result> projectBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values()))
         return redirectWithError(routes.Projects.index(), "project.access.denied", project.name);
 
-      return ok(log(() -> views.html.projects.project.render(createTemplate(), project, form),
-          LOGGER, "Rendering project"));
-    }, Project.FETCH_MEMBERS);
+      return ok(views.html.projects.project.render(createTemplate(), project,
+          FormUtils.Search.bindFromRequest(formFactory, configuration)));
+    }), User.FETCH_PROJECTS);
+  }
+
+  public CompletionStage<Result> project(UUID projectId) {
+    return project(projectId, project -> redirect(
+        controllers.routes.Projects.projectBy(project.owner.username, project.name)));
+    // return searchForm(projectId, (project, form) -> {
+    // if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values()))
+    // return redirectWithError(routes.Projects.index(), "project.access.denied", project.name);
+    //
+    // return ok(log(() -> views.html.projects.project.render(createTemplate(), project, form),
+    // LOGGER, "Rendering project"));
+    // }, Project.FETCH_MEMBERS);
   }
 
   public Result create() {
@@ -184,7 +191,7 @@ public class Projects extends AbstractController {
 
       select(project);
 
-      return redirect(routes.Projects.project(project.id));
+      return redirect(routes.Projects.projectBy(project.owner.username, project.path));
     }).exceptionally(t -> {
       Throwable cause = t.getCause();
       if (cause instanceof ConstraintViolationException)
@@ -216,14 +223,14 @@ public class Projects extends AbstractController {
       }
     }
 
-    return redirect(routes.Projects.project(project.id));
+    return redirect(routes.Projects.projectBy(project.owner.username, project.path));
   }
 
-  public Result edit(UUID projectId) {
-    return projectLegacy(projectId, project -> {
+  public CompletionStage<Result> edit(UUID projectId) {
+    return project(projectId, project -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
-        return redirectWithError(routes.Projects.project(project.id), "project.edit.denied",
-            project.name);
+        return redirectWithError(routes.Projects.projectBy(project.owner.username, project.path),
+            "project.edit.denied", project.name);
 
       select(project);
 
@@ -232,11 +239,11 @@ public class Projects extends AbstractController {
     });
   }
 
-  public Result doEdit(UUID projectId) {
-    return projectLegacy(projectId, project -> {
+  public CompletionStage<Result> doEdit(UUID projectId) {
+    return project(projectId, project -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
-        return redirectWithError(routes.Projects.project(project.id), "project.edit.denied",
-            project.name);
+        return redirectWithError(routes.Projects.projectBy(project.owner.username, project.path),
+            "project.edit.denied", project.name);
 
       select(project);
 
@@ -247,7 +254,7 @@ public class Projects extends AbstractController {
 
       projectService.save(form.get().fill(project));
 
-      return redirect(routes.Projects.project(project.id));
+      return redirect(routes.Projects.projectBy(project.owner.username, project.path));
     });
   }
 
@@ -260,8 +267,8 @@ public class Projects extends AbstractController {
       return redirect(routes.Application.index());
 
     if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
-      return redirectWithError(routes.Projects.project(project.id), "project.delete.denied",
-          project.name);
+      return redirectWithError(routes.Projects.projectBy(project.owner.username, project.path),
+          "project.delete.denied", project.name);
 
     select(project);
 
@@ -272,13 +279,11 @@ public class Projects extends AbstractController {
     return redirect(routes.Projects.index());
   }
 
-  public Result localesBy(String username, String projectName) {
-    return user(username, user -> project(user, projectName, project -> locales(project.id,
-        DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET)));
-  }
-
-  public Result locales(UUID id, String s, String order, int limit, int offset) {
-    return localeSearchForm(id, (project, form) -> {
+  public CompletionStage<Result> localesBy(String username, String projectPath, String s,
+      String order, int limit, int offset) {
+    return user(username, user -> project(user, projectPath, project -> {
+      Form<LocaleSearchForm> form =
+          FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration);
       LocaleSearchForm search = form.get();
       if (search.order == null)
         search.order = "name";
@@ -292,12 +297,32 @@ public class Projects extends AbstractController {
       // Collections.sort(locales,
       // (a, b) -> formatLocale(locale, a).compareTo(formatLocale(locale, b)));
 
-      return ok(log(() -> views.html.projects.locales.render(createTemplate(), project, locales,
+      return ok(views.html.projects.locales.render(createTemplate(), project, locales,
           localeService.progress(
               locales.getList().stream().map(l -> l.id).collect(Collectors.toList()),
               project.keys.size()),
-          form), LOGGER, "Rendering projects.locales"));
-    });
+          form));
+    }));
+  }
+
+  public CompletionStage<Result> keysBy(String username, String projectPath, String s, String order,
+      int limit, int offset) {
+    return user(username, user -> project(user, projectPath, project -> {
+      Form<KeySearchForm> form = FormUtils.KeySearch.bindFromRequest(formFactory, configuration);
+      KeySearchForm search = form.get();
+      if (search.order == null)
+        search.order = "name";
+
+      PagedList<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
+
+      search.pager(keys);
+
+      Map<UUID, Double> progress =
+          keyService.progress(keys.getList().stream().map(k -> k.id).collect(Collectors.toList()),
+              project.locales.size());
+
+      return ok(views.html.projects.keys.render(createTemplate(), project, keys, progress, form));
+    }));
   }
 
   public Result keys(UUID id, String s, String order, int limit, int offset) {
@@ -420,14 +445,15 @@ public class Projects extends AbstractController {
   public CompletionStage<Result> wordCountReset(UUID projectId) {
     return project(projectId, project -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
-        return redirectWithError(routes.Projects.project(project.id), "project.edit.denied",
-            project.name);
+        return redirectWithError(routes.Projects.projectBy(project.owner.username, project.path),
+            "project.edit.denied", project.name);
 
       select(project);
 
       projectService.resetWordCount(projectId);
 
-      return redirectWithMessage(routes.Projects.project(project.id), "project.wordCount.reset");
+      return redirectWithMessage(routes.Projects.projectBy(project.owner.username, project.path),
+          "project.wordCount.reset");
     });
   }
 
@@ -470,27 +496,21 @@ public class Projects extends AbstractController {
         FormUtils.Search.bindFromRequest(formFactory, configuration)), propertiesToFetch);
   }
 
-  private <T extends Form<LocaleSearchForm>> Result localeSearchForm(UUID projectId,
-      BiFunction<Project, Form<LocaleSearchForm>, Result> processor) {
-    return projectLegacy(projectId, project -> processor.apply(project,
-        FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration)), "keys", "locales");
-  }
-
   private <T extends Form<KeySearchForm>> Result keySearchForm(UUID projectId,
       BiFunction<Project, Form<KeySearchForm>, Result> processor) {
     return projectLegacy(projectId, project -> processor.apply(project,
         FormUtils.KeySearch.bindFromRequest(formFactory, configuration)));
   }
 
-  private Result project(User user, String projectName, Function<Project, Result> processor) {
+  private Result project(User user, String projectPath, Function<Project, Result> processor) {
     if (user.projects != null) {
       Optional<Project> project =
-          user.projects.stream().filter(p -> p.name.equals(projectName)).findFirst();
+          user.projects.stream().filter(p -> p.path.equals(projectPath)).findFirst();
       if (project.isPresent())
         return processor.apply(project.get());
     }
 
-    Project project = projectService.byOwnerAndName(user, projectName);
+    Project project = projectService.byOwnerAndPath(user, projectPath);
     if (project == null)
       return redirectWithError(routes.Application.index(), "project.notFound");
 

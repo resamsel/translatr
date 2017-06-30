@@ -6,7 +6,6 @@ import static utils.FormatUtils.formatLocale;
 import static utils.Stopwatch.log;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -62,7 +61,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("project");
 
   private static final Map<String, List<String>> FETCH_MAP =
-      ImmutableMap.of("project", Arrays.asList("project"), FETCH_MESSAGES,
+      ImmutableMap.of("project", Arrays.asList("project", "project.owner"), FETCH_MESSAGES,
           Arrays.asList(FETCH_MESSAGES, FETCH_MESSAGES + ".key"));
 
   @Id
@@ -126,13 +125,8 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static Locale byId(UUID id, String... fetches) {
-    HashSet<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
-    if (fetches.length > 0)
-      propertiesToFetch.addAll(Arrays.asList(fetches));
-
-    return QueryUtils
-        .fetch(find.setId(id).setDisableLazyLoading(true), propertiesToFetch, FETCH_MAP)
-        .findUnique();
+    return QueryUtils.fetch(find.setId(id).setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP).findUnique();
   }
 
   /**

@@ -3,9 +3,9 @@
 @import utils.ActivityUtils._
 
 @tags.navView {
-	@tags.navItem(routes.Projects.project(project.id), "info", "project", PROJECT_ICON, active)
-	@tags.navItem(routes.Projects.locales(project.id), "locales", "locales", LOCALE_ICON, active)
-	@tags.navItem(routes.Projects.keys(project.id), "keys", "keys", KEY_ICON, active)
+	@tags.navItem(routes.Projects.projectBy(project.owner.username, project.path), "info", "project", PROJECT_ICON, active)
+	@tags.navItem(routes.Projects.localesBy(project.owner.username, project.path), "locales", "locales", LOCALE_ICON, active)
+	@tags.navItem(routes.Projects.keysBy(project.owner.username, project.path), "keys", "keys", KEY_ICON, active)
 	@tags.navItem(routes.Projects.members(project.id), "members", "project.members", PROJECT_USER_ICON, active)
 	@tags.navItem(routes.Projects.activity(project.id), "activity", "activity", ACTIVITY_ICON, active)
 }

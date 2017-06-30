@@ -82,7 +82,7 @@ public class RevertDeleteProjectCommand implements Command<models.Project> {
    */
   @Override
   public Call redirect() {
-    return routes.Projects.project(project.id);
+    return routes.Projects.projectBy(project.ownerUsername, project.path);
   }
 
   /**

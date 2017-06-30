@@ -189,8 +189,8 @@ public class Keys extends AbstractController {
 
       KeyForm search = form.get();
 
-      return redirect(routes.Projects.keys(key.project.id, search.search, search.order,
-          search.limit, search.offset));
+      return redirect(routes.Projects.keysBy(key.project.owner.username, key.project.path,
+          search.search, search.order, search.limit, search.offset));
     });
   }
 
@@ -209,12 +209,13 @@ public class Keys extends AbstractController {
 
       LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
 
-      return redirect(routes.Projects.keys(key.project.id, search, order, limit, offset));
+      return redirect(routes.Projects.keysBy(key.project.owner.username, key.project.path, search,
+          order, limit, offset));
     });
   }
 
   protected Result key(UUID keyId, Function<Key, Result> processor) {
-    Key key = keyService.byId(keyId);
+    Key key = keyService.byId(keyId, "project");
     if (key == null)
       return redirect(routes.Projects.index());
 

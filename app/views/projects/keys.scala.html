@@ -7,8 +7,8 @@
 		@tags.collection(keys.getList, "keys.empty", "keys") {
 			<span class="title">@Messages("key.name")</span>
 			@tags.sortOrders {
-				@tags.orderLink(form.get, routes.Projects.keys(project.id), "key.name", "name", "name desc", "name")
-				@tags.orderLink(form.get, routes.Projects.keys(project.id), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+				@tags.orderLink(form.get, routes.Projects.keysBy(project.owner.username, project.path), "key.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, routes.Projects.keysBy(project.owner.username, project.path), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
 			@for(key <- keys.getList) {
@@ -49,7 +49,7 @@
 				</li>
 			}
 		} {
-			@tags.pager(routes.Projects.keys(project.id), form.get)
+			@tags.pager(routes.Projects.keysBy(project.owner.username, project.path), form.get)
 		}
 	}
 

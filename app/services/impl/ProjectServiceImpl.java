@@ -101,6 +101,15 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    * {@inheritDoc}
    */
   @Override
+  public Project byOwnerAndPath(User user, String path, String... fetches) {
+    return log(() -> cache.getOrElse(Project.getCacheKey(user, path, fetches),
+        () -> Project.byOwnerAndPath(user, path, fetches), 10 * 600), LOGGER, "byOwnerAndName");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void increaseWordCountBy(UUID projectId, int wordCountDiff) {
     if (wordCountDiff == 0) {
       LOGGER.debug("Not changing word count");

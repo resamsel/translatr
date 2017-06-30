@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 import javax.inject.Inject;
@@ -76,7 +77,7 @@ public class Locales extends AbstractController {
     this.projectService = projectService;
   }
 
-  public Result localeBy(String username, String projectName, String localeName) {
+  public CompletionStage<Result> localeBy(String username, String projectName, String localeName) {
     return user(username, user -> project(user, projectName, project -> locale(project, localeName,
         locale -> locale(locale.id, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET))),
         User.FETCH_PROJECTS, User.FETCH_PROJECTS + ".locales");
@@ -180,8 +181,8 @@ public class Locales extends AbstractController {
       localeService.save(form.get().into(locale));
 
       LocaleForm search = form.get();
-      return redirect(routes.Projects.locales(locale.project.id, search.search, search.order,
-          search.limit, search.offset));
+      return redirect(routes.Projects.localesBy(locale.project.owner.username, locale.project.path,
+          search.search, search.order, search.limit, search.offset));
     });
   }
 
@@ -218,7 +219,8 @@ public class Locales extends AbstractController {
         LOGGER.error("Error while batch deleting locale", e);
       }
 
-      return redirect(routes.Projects.locales(locale.project.id, s, order, limit, offset));
+      return redirect(routes.Projects.localesBy(locale.project.owner.username, locale.project.path,
+          s, order, limit, offset));
     });
   }
 
@@ -248,7 +250,7 @@ public class Locales extends AbstractController {
     PagedList<Locale> locales = localeService
         .findBy(new LocaleCriteria().withProjectId(project.id).withLocaleName(localeName));
     if (locales.getList().isEmpty())
-      return redirect(routes.Projects.project(project.id));
+      return redirect(routes.Projects.projectBy(project.owner.username, project.path));
 
     select(project);
 

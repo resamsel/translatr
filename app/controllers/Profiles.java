@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.concurrent.CompletionStage;
+
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 
@@ -53,30 +55,30 @@ public class Profiles extends AbstractController {
     this.accessTokenService = accessTokenService;
   }
 
-  public Result profile() {
+  public CompletionStage<Result> profile() {
     return loggedInUser(user -> redirect(controllers.routes.Users.user(user.username)));
   }
 
-  public Result linkedAccounts() {
+  public CompletionStage<Result> linkedAccounts() {
     return loggedInUser(user -> redirect(controllers.routes.Users.linkedAccounts(user.username)));
   }
 
-  public Result accessTokens() {
+  public CompletionStage<Result> accessTokens() {
     return loggedInUser(user -> redirect(controllers.routes.Users.accessTokens(user.username)));
   }
 
-  public Result activity() {
+  public CompletionStage<Result> activity() {
     return loggedInUser(user -> redirect(controllers.routes.Users.activity(user.username)));
   }
 
-  public Result edit() {
+  public CompletionStage<Result> edit() {
     return loggedInUser(user -> {
       return ok(views.html.users.edit.render(createTemplate(), user,
           formFactory.form(UserForm.class).fill(UserForm.from(user))));
     });
   }
 
-  public Result doEdit() {
+  public CompletionStage<Result> doEdit() {
     return loggedInUser(user -> {
       Form<UserForm> form = formFactory.form(UserForm.class).bindFromRequest();
 
@@ -178,7 +180,7 @@ public class Profiles extends AbstractController {
     }
   }
 
-  public Result accessTokenEdit(Long accessTokenId) {
+  public CompletionStage<Result> accessTokenEdit(Long accessTokenId) {
     return loggedInUser(user -> {
       AccessToken accessToken = accessTokenService.byId(accessTokenId);
       if (accessToken == null)
@@ -194,7 +196,7 @@ public class Profiles extends AbstractController {
     });
   }
 
-  public Result doAccessTokenEdit(Long accessTokenId) {
+  public CompletionStage<Result> doAccessTokenEdit(Long accessTokenId) {
     return loggedInUser(user -> {
       AccessToken accessToken = accessTokenService.byId(accessTokenId);
       if (accessToken == null)
@@ -217,14 +219,14 @@ public class Profiles extends AbstractController {
     });
   }
 
-  public Result accessTokenCreate() {
+  public CompletionStage<Result> accessTokenCreate() {
     return loggedInUser(user -> {
       return ok(views.html.users.accessTokenCreate.render(createTemplate(), user,
           AccessTokenForm.form(formFactory).bindFromRequest()));
     });
   }
 
-  public Result doAccessTokenCreate() {
+  public CompletionStage<Result> doAccessTokenCreate() {
     return loggedInUser(user -> {
       Form<AccessTokenForm> form = AccessTokenForm.form(formFactory).bindFromRequest();
 
@@ -243,7 +245,7 @@ public class Profiles extends AbstractController {
     });
   }
 
-  public Result accessTokenRemove(Long accessTokenId) {
+  public CompletionStage<Result> accessTokenRemove(Long accessTokenId) {
     return loggedInUser(user -> {
       AccessToken accessToken = accessTokenService.byId(accessTokenId);
 

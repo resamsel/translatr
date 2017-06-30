@@ -50,8 +50,13 @@ public class Key implements Model<Key, UUID>, Suggestable {
 
   public static final int NAME_LENGTH = 255;
 
-  private static final Map<String, List<String>> FETCH_MAP = ImmutableMap.of("project",
-      Arrays.asList("project"), "messages", Arrays.asList("messages", "messages.locale"));
+  private static final Find<UUID, Key> find = new Find<UUID, Key>() {};
+
+  private static final Map<String, List<String>> FETCH_MAP =
+      ImmutableMap.of("project", Arrays.asList("project", "project.owner"), "messages",
+          Arrays.asList("messages", "messages.locale"));
+
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("project");
 
   @Id
   @GeneratedValue
@@ -114,10 +119,6 @@ public class Key implements Model<Key, UUID>, Suggestable {
                 AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET)
             .absoluteURL(Context.current().request()));
   }
-
-  private static final Find<UUID, Key> find = new Find<UUID, Key>() {};
-
-  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("project");
 
   /**
    * @param keyId

@@ -29,6 +29,10 @@ public class Locale extends Dto {
 
   public String projectName;
 
+  public String projectPath;
+
+  public String projectOwnerUsername;
+
   public String name;
 
   public Map<String, Message> messages;
@@ -41,6 +45,8 @@ public class Locale extends Dto {
     this.whenUpdated = in.whenUpdated;
     this.projectId = in.project.id;
     this.projectName = in.project.name;
+    this.projectPath = in.project.path;
+    this.projectOwnerUsername = in.project.owner.username;
     this.name = in.name;
 
     if (in.messages != null && !in.messages.isEmpty())

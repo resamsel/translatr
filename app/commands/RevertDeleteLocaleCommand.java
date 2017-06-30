@@ -61,8 +61,9 @@ public class RevertDeleteLocaleCommand implements Command<models.Locale> {
    */
   @Override
   public Call redirect() {
-    return routes.Projects.locales(locale.projectId, Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER,
-        Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET);
+    return routes.Projects.localesBy(locale.projectOwnerUsername, locale.projectPath,
+        Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
+        Locales.DEFAULT_OFFSET);
   }
 
   /**

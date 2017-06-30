@@ -10,57 +10,71 @@ import play.data.validation.Constraints;
  * @author resamsel
  * @version 2 Sep 2016
  */
-public class ProjectForm
-{
-	@Constraints.Required
-	@Constraints.MaxLength(Project.NAME_LENGTH)
-	private String name;
+public class ProjectForm {
+  @Constraints.Required
+  @Constraints.MaxLength(Project.NAME_LENGTH)
+  private String name;
 
-	/**
-	 * @return the name
-	 */
-	public String getName()
-	{
-		return name;
-	}
+  @Constraints.Required
+  @Constraints.MaxLength(Project.NAME_LENGTH)
+  private String path;
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name)
-	{
-		this.name = name;
-	}
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
 
-	/**
-	 * 
-	 */
-	public Project fill(Project in)
-	{
-		in.name = name;
+  /**
+   * @param name the name to set
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
 
-		return in;
-	}
+  /**
+   * @return the path
+   */
+  public String getPath() {
+    return path;
+  }
 
-	/**
-	 * @param project
-	 * @return
-	 */
-	public static ProjectForm from(Project in)
-	{
-		ProjectForm out = new ProjectForm();
+  /**
+   * @param path the path to set
+   */
+  public void setPath(String path) {
+    this.path = path;
+  }
 
-		out.name = in.name;
+  /**
+   * 
+   */
+  public Project fill(Project in) {
+    in.name = name;
+    in.path = path;
 
-		return out;
-	}
+    return in;
+  }
 
-	/**
-	 * @param formFactory
-	 * @return
-	 */
-	public static Form<ProjectForm> form(FormFactory formFactory)
-	{
-		return formFactory.form(ProjectForm.class);
-	}
+  /**
+   * @param project
+   * @return
+   */
+  public static ProjectForm from(Project in) {
+    ProjectForm out = new ProjectForm();
+
+    out.name = in.name;
+    out.path = in.path;
+
+    return out;
+  }
+
+  /**
+   * @param formFactory
+   * @return
+   */
+  public static Form<ProjectForm> form(FormFactory formFactory) {
+    return formFactory.form(ProjectForm.class);
+  }
 }

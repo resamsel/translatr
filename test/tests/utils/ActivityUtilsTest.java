@@ -31,12 +31,15 @@ public class ActivityUtilsTest {
 
     UUID uuid = UUID.randomUUID();
     long id = ThreadLocalRandom.current().nextLong();
+    String ownerUsername = "username";
+    String path = "path";
     LogEntry activity = createLogEntry(ActionType.Create, dto.User.class.getName(), uuid);
     activity.after = Json.stringify(Json.newObject().put("username", "username"));
     assertThat(ActivityUtils.linkTo(activity)).isEqualTo(controllers.routes.Users.user("username"));
-    assertThat(
-        ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Project.class.getName(), uuid)))
-            .isEqualTo(controllers.routes.Projects.project(uuid));
+    assertThat(ActivityUtils.linkTo(createLogEntry(ActionType.Create,
+        dto.Project.class.getName(), Json.newObject().put("name", "name").put("path", path)
+            .put("ownerUsername", ownerUsername))))
+                .isEqualTo(controllers.routes.Projects.projectBy(ownerUsername, path));
     assertThat(
         ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Locale.class.getName(), uuid)))
             .isEqualTo(controllers.routes.Locales.locale(uuid, Locales.DEFAULT_SEARCH,
