@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.Keys;
 import controllers.Locales;
+import controllers.Projects;
 import models.ActionType;
 import models.LogEntry;
 import play.libs.Json;
@@ -47,6 +48,8 @@ public class ActivityUtilsTest {
             .put("projectPath", path).put("keyPathName", keyPathName);
     message.set("locale", locale);
     message.set("key", key);
+    ObjectNode projectUser =
+        Json.newObject().put("projectOwnerUsername", ownerUsername).put("projectPath", path);
     LogEntry activity = createLogEntry(ActionType.Create, dto.User.class.getName(), uuid);
     activity.after = Json.stringify(Json.newObject().put("username", "username"));
 
@@ -72,8 +75,10 @@ public class ActivityUtilsTest {
         .isEqualTo(controllers.routes.Keys.keyBy(ownerUsername, path, keyPathName,
             Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
     assertThat(ActivityUtils
-        .linkTo(createLogEntry(ActionType.Create, dto.ProjectUser.class.getName(), uuid)))
-            .isEqualTo(controllers.routes.Projects.members(uuid));
+        .linkTo(createLogEntry(ActionType.Create, dto.ProjectUser.class.getName(), projectUser)))
+            .isEqualTo(
+                controllers.routes.Projects.membersBy(ownerUsername, path, Projects.DEFAULT_SEARCH,
+                    Projects.DEFAULT_ORDER, Projects.DEFAULT_LIMIT, Projects.DEFAULT_OFFSET));
     assertThat(ActivityUtils
         .linkTo(createLogEntry(ActionType.Create, dto.AccessToken.class.getName(), id)))
             .isEqualTo(controllers.routes.Profiles.accessTokenEdit(id));

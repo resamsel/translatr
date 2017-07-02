@@ -1,7 +1,5 @@
 package utils;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.LogEntry;
@@ -69,7 +67,6 @@ public class ActivityUtils {
 
     JsonNode node = parse(activity);
     Long id = JsonUtils.getId(node);
-    UUID uuid = JsonUtils.getUuid(node);
 
     switch (activity.contentType) {
       case "dto.User": {
@@ -102,10 +99,12 @@ public class ActivityUtils {
           return message.route();
         break;
       }
-      case "dto.ProjectUser":
-        if (uuid != null)
-          return controllers.routes.Projects.members(uuid);
+      case "dto.ProjectUser": {
+        dto.ProjectUser member = Json.fromJson(node, dto.ProjectUser.class);
+        if (member != null)
+          return member.route();
         break;
+      }
       case "dto.AccessToken":
         if (id != null)
           return controllers.routes.Profiles.accessTokenEdit(id);

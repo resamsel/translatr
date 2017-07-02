@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -308,25 +307,10 @@ public class Projects extends AbstractController {
     }));
   }
 
-  public Result keys(UUID id, String s, String order, int limit, int offset) {
-    return keySearchForm(id, (project, form) -> {
-      KeySearchForm search = form.get();
-      search.update(s, order, limit, offset);
-
-      PagedList<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
-
-      search.pager(keys);
-
-      Map<UUID, Double> progress =
-          keyService.progress(keys.getList().stream().map(k -> k.id).collect(Collectors.toList()),
-              project.locales.size());
-
-      return ok(views.html.projects.keys.render(createTemplate(), project, keys, progress, form));
-    });
-  }
-
-  public Result members(UUID projectId) {
-    return searchForm(projectId, (project, form) -> {
+  public CompletionStage<Result> membersBy(String username, String projectPath, String s,
+      String order, int limit, int offset) {
+    return user(username, user -> project(user, projectPath, project -> {
+      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
 
       PagedList<ProjectUser> list =
@@ -336,7 +320,7 @@ public class Projects extends AbstractController {
 
       return ok(views.html.projects.members.render(createTemplate(), project, list, form,
           ProjectUserForm.form(formFactory)));
-    });
+    }));
   }
 
   public Result memberAdd(UUID projectId) {
@@ -359,7 +343,7 @@ public class Projects extends AbstractController {
       projectUserService
           .save(form.get().fill(new ProjectUser()).withProject(project).withUser(user));
 
-      return redirect(routes.Projects.members(project.id));
+      return redirect(project.membersRoute());
     });
   }
 
@@ -368,13 +352,13 @@ public class Projects extends AbstractController {
       ProjectUser member = projectUserService.byId(memberId);
 
       if (member == null || !project.id.equals(member.project.id))
-        return redirectWithError(routes.Projects.members(project.id), "project.member.notFound");
+        return redirectWithError(project.membersRoute(), "project.member.notFound");
 
       undoCommand(RevertDeleteProjectUserCommand.from(member));
 
       projectUserService.delete(member);
 
-      return redirect(routes.Projects.members(project.id));
+      return redirect(project.membersRoute());
     });
   }
 
@@ -383,7 +367,7 @@ public class Projects extends AbstractController {
       Form<ProjectOwnerForm> form = formFactory.form(ProjectOwnerForm.class).bindFromRequest();
 
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
-        return redirectWithError(routes.Projects.members(project.id), "project.owner.change.denied",
+        return redirectWithError(project.membersRoute(), "project.owner.change.denied",
             project.name);
 
       // if (form.hasErrors())
@@ -398,7 +382,7 @@ public class Projects extends AbstractController {
           .forEach(m -> m.role = ProjectRole.Owner);
       projectService.save(project.withOwner(userService.byId(val.getOwnerId())));
 
-      return redirect(routes.Projects.members(project.id));
+      return redirect(project.membersRoute());
     });
   }
 
@@ -468,18 +452,6 @@ public class Projects extends AbstractController {
       LOGGER.error("Error while getting result of future", e);
       return internalServerError(e.getMessage());
     }
-  }
-
-  private <T extends Form<SearchForm>> Result searchForm(UUID projectId,
-      BiFunction<Project, Form<SearchForm>, Result> processor, String... propertiesToFetch) {
-    return projectLegacy(projectId, project -> processor.apply(project,
-        FormUtils.Search.bindFromRequest(formFactory, configuration)), propertiesToFetch);
-  }
-
-  private <T extends Form<KeySearchForm>> Result keySearchForm(UUID projectId,
-      BiFunction<Project, Form<KeySearchForm>, Result> processor) {
-    return projectLegacy(projectId, project -> processor.apply(project,
-        FormUtils.KeySearch.bindFromRequest(formFactory, configuration)));
   }
 
   private Result project(User user, String projectPath, Function<Project, Result> processor) {

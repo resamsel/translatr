@@ -3,7 +3,6 @@ package commands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controllers.routes;
 import dto.ProjectUser;
 import play.inject.Injector;
 import play.mvc.Call;
@@ -60,7 +59,7 @@ public class RevertDeleteProjectUserCommand implements Command<models.ProjectUse
    */
   @Override
   public Call redirect() {
-    return routes.Projects.members(projectUser.projectId);
+    return projectUser.route();
   }
 
   /**

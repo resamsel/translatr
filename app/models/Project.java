@@ -38,6 +38,7 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
 
+import controllers.AbstractController;
 import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
@@ -396,6 +397,31 @@ public class Project implements Model<Project, UUID>, Suggestable {
    */
   public Call route() {
     return routes.Projects.projectBy(owner.username, path);
+  }
+
+  /**
+   * Return the route to the members of the given project.
+   * 
+   * @param search
+   * 
+   * @param key
+   * @return
+   */
+  public Call membersRoute() {
+    return membersRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the members of the given project.
+   * 
+   * @param search
+   * 
+   * @param key
+   * @return
+   */
+  public Call membersRoute(String search, String order, int limit, int offset) {
+    return routes.Projects.membersBy(owner.username, path, search, order, limit, offset);
   }
 
   @Override
