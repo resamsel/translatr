@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controllers.routes;
 import dto.Project;
 import models.Key;
 import models.Locale;
@@ -82,7 +81,7 @@ public class RevertDeleteProjectCommand implements Command<models.Project> {
    */
   @Override
   public Call redirect() {
-    return routes.Projects.projectBy(project.ownerUsername, project.path);
+    return project.route();
   }
 
   /**

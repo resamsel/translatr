@@ -14,11 +14,11 @@
 			@for(locale <- locales.getList) {
 				<li class="collection-item avatar">
 					<i class="material-icons circle @LOCALE_COLOR">@LOCALE_ICON</i>
-					<a class="locale title" href="@routes.Locales.localeBy(locale.project.owner.username, locale.project.path, locale.name)">
+					<a class="locale title" href="@locale.route()">
 						@tags.locale(locale.name)
-					<div class="progress">
-						<div class="determinate" style="width: @{progress.getOrDefault(locale.id, 0)*100}%;"></div>
-					</div>
+						<div class="progress">
+							<div class="determinate" style="width: @{progress.getOrDefault(locale.id, 0)*100}%;"></div>
+						</div>
 					</a>
 					<p>
 						@defining(project.missingKeys(locale.id)) { missing =>

@@ -38,12 +38,14 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
 
+import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
 import play.api.Play;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
+import play.mvc.Call;
 import play.mvc.Http.Context;
 import services.MessageService;
 import services.ProjectService;
@@ -154,8 +156,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   @Override
   public Data data() {
-    return Data.from(Project.class, id, name, controllers.routes.Projects
-        .projectBy(owner.username, path).absoluteURL(Context.current().request()));
+    return Data.from(Project.class, id, name, route().absoluteURL(Context.current().request()));
   }
 
   public Project withId(UUID id) {
@@ -252,6 +253,11 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   public Project withName(String name) {
     this.name = name;
+    return this;
+  }
+
+  public Project withPath(String path) {
+    this.path = path;
     return this;
   }
 
@@ -380,6 +386,16 @@ public class Project implements Model<Project, UUID>, Suggestable {
           StringUtils.join(fetches, ":"));
 
     return String.format("project:owner:%s:name:%s", user.id, projectName);
+  }
+
+  /**
+   * Return the route to the given project.
+   * 
+   * @param key
+   * @return
+   */
+  public Call route() {
+    return routes.Projects.projectBy(owner.username, path);
   }
 
   @Override

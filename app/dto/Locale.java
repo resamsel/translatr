@@ -10,8 +10,11 @@ import org.joda.time.DateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import controllers.AbstractController;
+import controllers.routes;
 import criterias.MessageCriteria;
 import models.Project;
+import play.api.mvc.Call;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Locale extends Dto {
@@ -35,6 +38,8 @@ public class Locale extends Dto {
 
   public String name;
 
+  public String pathName;
+
   public Map<String, Message> messages;
 
   public Locale() {}
@@ -48,6 +53,7 @@ public class Locale extends Dto {
     this.projectPath = in.project.path;
     this.projectOwnerUsername = in.project.owner.username;
     this.name = in.name;
+    this.pathName = in.getPathName();
 
     if (in.messages != null && !in.messages.isEmpty())
       this.messages =
@@ -72,6 +78,32 @@ public class Locale extends Dto {
     out.name = name;
 
     return out;
+  }
+
+  /**
+   * Return the route to the given key, with default params added.
+   * 
+   * @param key
+   * @return
+   */
+  public Call route() {
+    return route(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the given key, with params added.
+   * 
+   * @param key
+   * @param search
+   * @param order
+   * @param limit
+   * @param offset
+   * @return
+   */
+  public Call route(String search, String order, int limit, int offset) {
+    return routes.Locales.localeBy(projectOwnerUsername, projectPath, pathName, search, order,
+        limit, offset);
   }
 
   /**

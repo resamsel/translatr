@@ -1,7 +1,10 @@
 package controllers;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 import javax.inject.Inject;
@@ -10,16 +13,19 @@ import javax.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteKeyCommand;
+import criterias.KeyCriteria;
 import forms.KeyForm;
-import forms.SearchForm;
+import forms.LocaleSearchForm;
 import models.Key;
 import models.Locale;
 import models.Project;
+import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
@@ -73,9 +79,22 @@ public class Keys extends AbstractController {
     this.projectService = projectService;
   }
 
+  public CompletionStage<Result> keyBy(String username, String projectPath, String keyName,
+      String search, String order, int limit, int offset) {
+    return user(username,
+        user -> project(user, projectPath, project -> key(project, keyName, key -> {
+          Form<LocaleSearchForm> form =
+              FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration);
+          form.get().update(search, order, limit, offset);
+
+          return ok(views.html.keys.key.render(createTemplate(), key, form));
+        })), User.FETCH_PROJECTS, User.FETCH_PROJECTS + ".keys");
+  }
+
   public Result key(UUID id, String search, String order, int limit, int offset) {
     return key(id, key -> {
-      Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
+      Form<LocaleSearchForm> form =
+          FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration);
 
       Collections.sort(key.project.keys, (a, b) -> a.name.compareTo(b.name));
 
@@ -125,11 +144,10 @@ public class Keys extends AbstractController {
     if (localeId != null) {
       Locale locale = localeService.byId(localeId);
 
-      return redirect(routes.Locales.localeBy(locale.project.owner.username, locale.project.path,
-          locale.name, search, order, limit, offset).withFragment("key/" + key.name));
+      return redirect(locale.route(search, order, limit, offset).withFragment("key/" + key.name));
     }
 
-    return redirect(routes.Keys.key(key.id, search, order, limit, offset));
+    return redirect(key.route(search, order, limit, offset));
   }
 
   public Result createImmediately(UUID projectId, String keyName, String search, String order,
@@ -161,8 +179,7 @@ public class Keys extends AbstractController {
       }
     }
 
-    return redirect(
-        routes.Keys.key(key.id, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET));
+    return redirect(key.route());
   }
 
   public Result edit(UUID keyId, String search, String order, int limit, int offset) {
@@ -204,8 +221,7 @@ public class Keys extends AbstractController {
       if (localeId != null) {
         Locale locale = localeService.byId(localeId);
         if (locale != null)
-          return redirect(routes.Locales.localeBy(locale.project.owner.username,
-              locale.project.path, locale.name, search, order, limit, offset));
+          return redirect(locale.route(search, order, limit, offset));
       }
 
       LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
@@ -214,6 +230,39 @@ public class Keys extends AbstractController {
           order, limit, offset));
     });
   }
+
+  private Result project(User user, String projectPath, Function<Project, Result> processor) {
+    if (user.projects != null) {
+      Optional<Project> project =
+          user.projects.stream().filter(p -> p.path.equals(projectPath)).findFirst();
+      if (project.isPresent())
+        return processor.apply(project.get());
+    }
+
+    Project project = projectService.byOwnerAndPath(user, projectPath);
+    if (project == null)
+      return redirectWithError(routes.Application.index(), "project.notFound");
+
+    return processor.apply(project);
+  }
+
+  private Result key(Project project, String keyName, Function<Key, Result> processor) {
+    if (project.keys != null) {
+      Optional<Key> key = project.keys.stream().filter(k -> k.name.equals(keyName)).findFirst();
+      if (key.isPresent())
+        return processor.apply(key.get());
+    }
+
+    PagedList<Key> keys = keyService
+        .findBy(new KeyCriteria().withProjectId(project.id).withNames(Arrays.asList(keyName)));
+    if (keys.getList().isEmpty())
+      return redirect(project.route());
+
+    select(project);
+
+    return processor.apply(keys.getList().get(0));
+  }
+
 
   protected Result key(UUID keyId, Function<Key, Result> processor) {
     Key key = keyService.byId(keyId, "project");

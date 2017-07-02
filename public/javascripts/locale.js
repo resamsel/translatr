@@ -136,7 +136,14 @@ var EditorSwitchView = Backbone.View.extend({
 			return;
 		}
 
-		this.$el.attr('href', jsRoutes.controllers.Keys.key(item.id).url + '#locale/' + this.localeName);
+		this.$el.attr(
+			'href',
+			jsRoutes.controllers.Keys.keyBy(
+					item.get('projectOwnerUsername'),
+					item.get('projectPath'),
+					item.get('pathName')
+			).url + '#locale/' + this.localeName
+		);
 		this.$el.removeClass('disabled');
 	}
 });
@@ -183,26 +190,6 @@ var LocaleEditor = Editor.extend({
 	}
 });
 
-App.Modules.SuggestionModule = function(sb) {
-	var form = sb.dom.find('#form-search');
-
-	function _handleSuggestionSelected(suggestion) {
-		if(suggestion.data.type == 'key' && suggestion.data.name != '+++') {
-			form.submit();
-		} else {
-			window.location.href = suggestion.data.url;
-		}
-	}
-
-	return {
-		create: function() {
-			sb.subscribe('suggestionSelected', _handleSuggestionSelected);
-		},
-		destroy: function() {
-		}
-	};
-};
-
 App.Modules.LocaleHashModule = function(sb) {
 	var params = $.deparam.fragment();
 	var location = window.location;
@@ -216,14 +203,14 @@ App.Modules.LocaleHashModule = function(sb) {
 				{ scrollTop: _scrollTopOffset(keys, $a) },
 				'500'
 			);
-			$a.click();
+			$a[0].click();
 		} else {
-			var $key = sb.dom.find('.keys .collection-item:first-child a.key');
+			var $key = sb.dom.find('.keys .collection-item.key:first-child');
 			params.key = $key.attr('keyName');
-			$key.click();
+			$key[0].click();
 		}
 	}
-	
+
 	function _scrollTopOffset(container, item) {
 		return - container.position().top - container.css('margin-top').replace('px', '') + item.parent().offset() ? item.parent().offset().top : 0
 	}
@@ -236,7 +223,3 @@ App.Modules.LocaleHashModule = function(sb) {
 		}
 	};
 };
-
-App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
-App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
-App.Core.register('LocaleHashModule', App.Modules.LocaleHashModule);

@@ -1,4 +1,4 @@
-@(template: utils.Template, key: models.Key, form: Form[forms.SearchForm])
+@(template: utils.Template, key: models.Key, form: Form[forms.LocaleSearchForm])
 
 @createActions = {
 	<li>
@@ -104,5 +104,36 @@
 		App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
 		App.Core.register('LocaleCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-locale'});
 		App.Core.register('KeyCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
+		App.Core.register('KeyHashModule', App.Modules.KeyHashModule);
+		App.Core.register('SuggestionModule', App.Modules.SuggestionModule, {
+			handleSuggestionSelected: function(suggestion) {
+				var filterUntranslated = sb.dom.find('#field-untranslated');
+				var handleSearch = function(value) {
+					if(value !== '') {
+						sb.dom.find('a.locale').parent().hide();
+						if(filterUntranslated.is(':checked')) {
+							sb.dom.find('a.locale.no-message .name:contains("' + value + '"), a.locale.no-message .value:contains("' + value + '")')
+							.parent().parent().show();
+						} else {
+							sb.dom.find('a.locale .name:contains("' + value + '"), a.locale .value:contains("' + value + '")')
+							.parent().parent().show();
+						}
+					} else {
+						if(filterUntranslated.is(':checked')) {
+							sb.dom.find('a.locale').parent().hide();
+							sb.dom.find('a.locale.no-message').parent().show();
+						} else {
+							sb.dom.find('a.locale').parent().show();
+						}
+					}
+				}
+
+				if(suggestion.data.type == 'locale' && suggestion.data.name != '+++') {
+					handleSearch(suggestion.data.name);
+				} else {
+					window.location.href = suggestion.data.url;
+				}
+			}
+		});
 	</script>
 }

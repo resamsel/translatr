@@ -1,7 +1,7 @@
 @(message: models.Message)
 
 <a
-	href="@routes.Locales.localeBy(message.locale.project.owner.username, message.locale.project.path, message.locale.name)?search=@message.key.name#key/@message.key.name"
+	href="@message.locale.route(message.key.name, AbstractController.DEFAULT_ORDER, AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET)#key/@message.key.name"
 	title="@message.key.name">
 	@Html(message.key.name.replaceAll("\\.", ".<wbr/>")) (@message.locale.name)
 </a>

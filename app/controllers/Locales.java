@@ -37,6 +37,7 @@ import services.api.LocaleApiService;
 import utils.FormUtils;
 import utils.Template;
 import utils.TransactionUtils;
+import utils.UrlUtils;
 
 /**
  *
@@ -79,8 +80,8 @@ public class Locales extends AbstractController {
 
   public CompletionStage<Result> localeBy(String username, String projectPath, String localeName,
       String search, String order, int limit, int offset) {
-    return user(username,
-        user -> project(user, projectPath, project -> locale(project, localeName, locale -> {
+    return user(username, user -> project(user, projectPath,
+        project -> locale(project, UrlUtils.decode(localeName), locale -> {
           Form<KeySearchForm> form =
               FormUtils.KeySearch.bindFromRequest(formFactory, configuration);
           form.get().update(search, order, limit, offset);
@@ -122,8 +123,7 @@ public class Locales extends AbstractController {
 
     LocaleForm search = form.get();
 
-    return redirect(routes.Locales.localeBy(locale.project.owner.username, locale.project.path,
-        locale.name, search.search, search.order, search.limit, search.offset));
+    return redirect(locale.route(search.search, search.order, search.limit, search.offset));
   }
 
   public Result createImmediately(UUID projectId, String localeName, String search, String order,
@@ -155,8 +155,7 @@ public class Locales extends AbstractController {
       }
     }
 
-    return redirect(routes.Locales.localeBy(locale.project.owner.username, locale.project.path,
-        locale.name, search, order, limit, offset));
+    return redirect(locale.route(search, order, limit, offset));
   }
 
   public Result edit(UUID localeId, String search, String order, int limit, int offset) {
@@ -197,8 +196,7 @@ public class Locales extends AbstractController {
             views.html.locales.upload.render(createTemplate(), locale.project, locale));
       }
 
-      return redirect(routes.Locales.localeBy(locale.project.owner.username, locale.project.path,
-          locale.name, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET));
+      return redirect(locale.route());
     });
   }
 
@@ -245,7 +243,7 @@ public class Locales extends AbstractController {
     PagedList<Locale> locales = localeService
         .findBy(new LocaleCriteria().withProjectId(project.id).withLocaleName(localeName));
     if (locales.getList().isEmpty())
-      return redirect(routes.Projects.projectBy(project.owner.username, project.path));
+      return redirect(project.route());
 
     select(project);
 

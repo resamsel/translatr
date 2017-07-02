@@ -155,18 +155,6 @@ public class Projects extends AbstractController {
     }), User.FETCH_PROJECTS);
   }
 
-  public CompletionStage<Result> project(UUID projectId) {
-    return project(projectId, project -> redirect(
-        controllers.routes.Projects.projectBy(project.owner.username, project.name)));
-    // return searchForm(projectId, (project, form) -> {
-    // if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values()))
-    // return redirectWithError(routes.Projects.index(), "project.access.denied", project.name);
-    //
-    // return ok(log(() -> views.html.projects.project.render(createTemplate(), project, form),
-    // LOGGER, "Rendering project"));
-    // }, Project.FETCH_MEMBERS);
-  }
-
   public Result create() {
     return ok(views.html.projects.create.render(createTemplate(),
         ProjectForm.form(formFactory).bindFromRequest()));
@@ -191,7 +179,7 @@ public class Projects extends AbstractController {
 
       select(project);
 
-      return redirect(routes.Projects.projectBy(project.owner.username, project.path));
+      return redirect(project.route());
     }).exceptionally(t -> {
       Throwable cause = t.getCause();
       if (cause instanceof ConstraintViolationException)
@@ -223,14 +211,13 @@ public class Projects extends AbstractController {
       }
     }
 
-    return redirect(routes.Projects.projectBy(project.owner.username, project.path));
+    return redirect(project.route());
   }
 
   public CompletionStage<Result> edit(UUID projectId) {
     return project(projectId, project -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
-        return redirectWithError(routes.Projects.projectBy(project.owner.username, project.path),
-            "project.edit.denied", project.name);
+        return redirectWithError(project.route(), "project.edit.denied", project.name);
 
       select(project);
 
@@ -242,8 +229,7 @@ public class Projects extends AbstractController {
   public CompletionStage<Result> doEdit(UUID projectId) {
     return project(projectId, project -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
-        return redirectWithError(routes.Projects.projectBy(project.owner.username, project.path),
-            "project.edit.denied", project.name);
+        return redirectWithError(project.route(), "project.edit.denied", project.name);
 
       select(project);
 
@@ -254,7 +240,7 @@ public class Projects extends AbstractController {
 
       projectService.save(form.get().fill(project));
 
-      return redirect(routes.Projects.projectBy(project.owner.username, project.path));
+      return redirect(project.route());
     });
   }
 
@@ -267,8 +253,7 @@ public class Projects extends AbstractController {
       return redirect(routes.Application.index());
 
     if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
-      return redirectWithError(routes.Projects.projectBy(project.owner.username, project.path),
-          "project.delete.denied", project.name);
+      return redirectWithError(project.route(), "project.delete.denied", project.name);
 
     select(project);
 
@@ -442,15 +427,13 @@ public class Projects extends AbstractController {
   public CompletionStage<Result> wordCountReset(UUID projectId) {
     return project(projectId, project -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
-        return redirectWithError(routes.Projects.projectBy(project.owner.username, project.path),
-            "project.edit.denied", project.name);
+        return redirectWithError(project.route(), "project.edit.denied", project.name);
 
       select(project);
 
       projectService.resetWordCount(projectId);
 
-      return redirectWithMessage(routes.Projects.projectBy(project.owner.username, project.path),
-          "project.wordCount.reset");
+      return redirectWithMessage(project.route(), "project.wordCount.reset");
     });
   }
 

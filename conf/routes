@@ -65,7 +65,7 @@ GET		/locale/:id/import			controllers.Locales.upload(id: java.util.UUID)
 POST	/locale/:id/import			controllers.Locales.doUpload(id: java.util.UUID)
 
 # Keys
-GET		/key/:id					controllers.Keys.key(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+#GET		/key/:id					controllers.Keys.key(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/key/:id/edit				controllers.Keys.edit(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/key/:id/edit				controllers.Keys.doEdit(id: java.util.UUID)
 GET		/key/:keyId/remove			controllers.Keys.remove(keyId: java.util.UUID, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
@@ -133,7 +133,8 @@ GET		/:username/linkedAccounts	controllers.Users.linkedAccounts(username: String
 GET		/:username/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
 GET		/:username/accessTokens		controllers.Users.accessTokens(username: String)
 
-GET		/:username/:projectName		controllers.Projects.projectBy(username: String, projectName: String)
-GET		/:username/:projectName/locales	controllers.Projects.localesBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/:username/:projectName/locale/:localeName	controllers.Locales.localeBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/:username/:projectName/keys	controllers.Projects.keysBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectPath		controllers.Projects.projectBy(username: String, projectPath: String)
+GET		/:username/:projectPath/locales	controllers.Projects.localesBy(username: String, projectPath: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectPath/locale/:localeName	controllers.Locales.localeBy(username: String, projectPath: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectPath/keys	controllers.Projects.keysBy(username: String, projectPath: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectPath/key/:keyName	controllers.Keys.keyBy(username: String, projectPath: String, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)

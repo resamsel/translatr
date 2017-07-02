@@ -4,8 +4,6 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import controllers.Keys;
-import controllers.Locales;
 import models.LogEntry;
 import play.i18n.Messages;
 import play.libs.Json;
@@ -83,28 +81,27 @@ public class ActivityUtils {
       case "dto.Project": {
         dto.Project project = Json.fromJson(node, dto.Project.class);
         if (project != null)
-          return controllers.routes.Projects.projectBy(project.ownerUsername, project.path);
+          return project.route();
         break;
       }
       case "dto.Locale": {
         dto.Locale locale = Json.fromJson(node, dto.Locale.class);
         if (locale != null)
-          return controllers.routes.Locales.localeBy(locale.projectOwnerUsername,
-              locale.projectPath, locale.name, Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER,
-              Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET);
+          return locale.route();
         break;
       }
-      case "dto.Key":
-        if (uuid != null)
-          return controllers.routes.Keys.key(uuid, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,
-              Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET);
+      case "dto.Key": {
+        dto.Key key = Json.fromJson(node, dto.Key.class);
+        if (key != null)
+          return key.route();
         break;
-      case "dto.Message":
-        UUID keyId = JsonUtils.getUuid(node, "keyId");
-        if (keyId != null)
-          return controllers.routes.Keys.key(keyId, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,
-              Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET);
+      }
+      case "dto.Message": {
+        dto.Message message = Json.fromJson(node, dto.Message.class);
+        if (message != null)
+          return message.route();
         break;
+      }
       case "dto.ProjectUser":
         if (uuid != null)
           return controllers.routes.Projects.members(uuid);

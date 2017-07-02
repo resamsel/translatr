@@ -104,7 +104,7 @@ public class Application extends AbstractController {
             routes.javascript.Profiles.resetNotifications(), routes.javascript.Projects.search(),
             routes.javascript.ProjectsApi.search(), routes.javascript.Projects.activity(),
             routes.javascript.Projects.activityCsv(), routes.javascript.Locales.localeBy(),
-            routes.javascript.Keys.key(), routes.javascript.Keys.createImmediately(),
+            routes.javascript.Keys.keyBy(), routes.javascript.Keys.createImmediately(),
             routes.javascript.LocalesApi.find(), routes.javascript.KeysApi.find(),
             routes.javascript.TranslationsApi.create(), routes.javascript.TranslationsApi.update(),
             routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find()));

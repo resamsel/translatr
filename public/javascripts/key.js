@@ -88,10 +88,10 @@ App.Modules.KeyHashModule = function(sb) {
 			$a.click();
 		} else {
 			var $locale = sb.dom.find('.locales .collection-item.locale:first-child');
-			$locale.click();
+			$locale[0].click();
 		}
 	}
-	
+
 	return {
 		create: function() {
 			doc.ready(_initFromHash);
@@ -100,46 +100,3 @@ App.Modules.KeyHashModule = function(sb) {
 		}
 	};
 }
-
-App.Modules.SuggestionModule = function(sb) {
-	var filterUntranslated = sb.dom.find('#field-untranslated');
-
-	function _handleSearch(value) {
-		if(value !== '') {
-			sb.dom.find('a.locale').parent().hide();
-			if(filterUntranslated.is(':checked')) {
-				sb.dom.find('a.locale.no-message .name:contains("' + value + '"), a.locale.no-message .value:contains("' + value + '")')
-				.parent().parent().show();
-			} else {
-				sb.dom.find('a.locale .name:contains("' + value + '"), a.locale .value:contains("' + value + '")')
-				.parent().parent().show();
-			}
-		} else {
-			if(filterUntranslated.is(':checked')) {
-				sb.dom.find('a.locale').parent().hide();
-				sb.dom.find('a.locale.no-message').parent().show();
-			} else {
-				sb.dom.find('a.locale').parent().show();
-			}
-		}
-	}
-
-	function _handleSuggestionSelected(suggestion) {
-		if(suggestion.data.type == 'locale' && suggestion.data.name != '+++') {
-			_handleSearch(suggestion.data.name);
-		} else {
-			window.location.href = suggestion.data.url;
-		}
-	}
-
-	return {
-		create: function() {
-			sb.subscribe('suggestionSelected', _handleSuggestionSelected);
-		},
-		destroy: function() {
-		}
-	};
-};
-
-App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
-App.Core.register('KeyHashModule', App.Modules.KeyHashModule);

@@ -59,6 +59,21 @@ App.Modules.NProgressModule = function(sb) {
 	}
 }
 
+App.Modules.SuggestionModule = function(sb, options) {
+	var defaultHandleSuggestionSelected = function(suggestion) {
+		window.location.href = suggestion.data.url;
+	};
+	var handleSuggestionSelected = options.handleSuggestionSelected || defaultHandleSuggestionSelected;
+
+	return {
+		create: function() {
+			sb.subscribe('suggestionSelected', handleSuggestionSelected);
+		},
+		destroy: function() {
+		}
+	};
+};
+
 App.Modules.ProjectSearchModule = function(sb) {
 	var fieldSearch = sb.dom.find('#field-search');
 	var win = sb.dom.wrap(window);

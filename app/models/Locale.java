@@ -35,14 +35,17 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
 
+import controllers.AbstractController;
 import controllers.Locales;
 import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
+import play.api.mvc.Call;
 import play.libs.Json;
 import play.mvc.Http.Context;
 import utils.QueryUtils;
+import utils.UrlUtils;
 import validators.LocaleNameUniqueChecker;
 import validators.NameUnique;
 
@@ -242,5 +245,38 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   @Override
   public String toString() {
     return String.format("{\"project\": %s, \"name\": %s}", project, Json.toJson(name));
+  }
+
+  /**
+   * 
+   */
+  public String getPathName() {
+    return UrlUtils.encode(name);
+  }
+
+  /**
+   * Return the route to the given key, with default params added.
+   * 
+   * @param key
+   * @return
+   */
+  public Call route() {
+    return route(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the given key, with params added.
+   * 
+   * @param key
+   * @param search
+   * @param order
+   * @param limit
+   * @param offset
+   * @return
+   */
+  public Call route(String search, String order, int limit, int offset) {
+    return routes.Locales.localeBy(project.owner.username, project.path, name, search, order, limit,
+        offset);
   }
 }

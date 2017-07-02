@@ -50,7 +50,7 @@
 			</a>
 			<ul id="dropdown-locales" class="dropdown-content">
 				<li class="selected">
-					<a id="@locale.id" href="@routes.Locales.localeBy(locale.project.owner.username, locale.project.path, locale.name)">@tags.locale(locale.name)</a>
+					<a id="@locale.id" href="@locale.route()">@tags.locale(locale.name)</a>
 				</li>
 			</ul>
 			<script type="text/template" id="locale-tmpl">
@@ -122,5 +122,16 @@
 		});
 
 		App.Core.register('KeyCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
+		App.Core.register('SuggestionModule', App.Modules.SuggestionModule, {
+			handleSuggestionSelected: function(suggestion) {
+				if(suggestion.data.type == 'key' && suggestion.data.name != '+++') {
+					sb.dom.find('#form-search').submit();
+				} else {
+					window.location.href = suggestion.data.url;
+				}
+			}
+		});
+		App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
+		App.Core.register('LocaleHashModule', App.Modules.LocaleHashModule);
 	</script>
 }

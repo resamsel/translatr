@@ -14,7 +14,7 @@
 			@for(key <- keys.getList) {
 				<li class="collection-item avatar">
 					<i class="material-icons circle @KEY_COLOR">@KEY_ICON</i>
-					<a class="key title" href="@routes.Keys.key(key.id)">
+					<a class="key title" href="@key.route()">
 						@key.name
 						<div class="progress">
 							<div class="determinate" style="width: @{progress.getOrDefault(key.id, 0)*100}%;"></div>
@@ -65,6 +65,8 @@
 		var projectId = '@project.id';
 
 		App.Core.register('KeysCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
+		App.Core.register('MaterialModule', App.Modules.MaterialModule);
+		App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
+		App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
 	</script>
-	<script src="@routes.Assets.versioned("javascripts/projectKeys.js")"></script>
 }

@@ -136,12 +136,19 @@
 		}
 	}
 
+	@tags.contributionScript()
 	<script>
 		var projectId = '@project.id';
 
 		App.Core.register('LocaleCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-locale'});
 		App.Core.register('KeyCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
+		App.Core.register('MaterialModule', App.Modules.MaterialModule);
+		App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
+		App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
+		App.Core.register('ActivityModule', App.Modules.ActivityModule, {
+			dataUrl: jsRoutes.controllers.Projects.activityCsv(projectId).url,
+			cellUrl: jsRoutes.controllers.Projects.activity(projectId).url,
+			messages: contributionMessages
+		});
 	</script>
-	@tags.contributionScript()
-	<script src="@routes.Assets.versioned("javascripts/project.js")"></script>
 }

@@ -2,8 +2,6 @@ package dto;
 
 import java.util.UUID;
 
-import javax.validation.constraints.NotNull;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +9,12 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import controllers.AbstractController;
+import controllers.routes;
 import models.Key;
 import models.Locale;
 import play.libs.Json;
+import play.mvc.Call;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message extends Dto {
@@ -25,19 +26,20 @@ public class Message extends Dto {
 
   @JsonIgnore
   public DateTime whenCreated;
-
   @JsonIgnore
   public DateTime whenUpdated;
 
-  @NotNull
   public UUID localeId;
-
   public String localeName;
+  public String localePathName;
 
-  @NotNull
   public UUID keyId;
-
   public String keyName;
+  public String keyPathName;
+
+  public String projectName;
+  public String projectOwnerUsername;
+  public String projectPath;
 
   public String value;
 
@@ -52,11 +54,17 @@ public class Message extends Dto {
     if (in.locale != null) {
       this.localeId = in.locale.id;
       this.localeName = in.locale.name;
+      this.localePathName = in.locale.getPathName();
     }
 
     if (in.key != null) {
       this.keyId = in.key.id;
       this.keyName = in.key.name;
+      this.keyPathName = in.key.getPathName();
+      if (in.key.project != null) {
+        this.projectOwnerUsername = in.key.project.owner.username;
+        this.projectPath = in.key.project.path;
+      }
     }
   }
 
@@ -73,6 +81,15 @@ public class Message extends Dto {
     LOGGER.trace("DTO Message toModel: {}", Json.toJson(out));
 
     return out;
+  }
+
+  public Call route() {
+    if (projectOwnerUsername == null || projectPath == null || keyPathName == null)
+      return null;
+
+    return routes.Keys.keyBy(projectOwnerUsername, projectPath, keyPathName,
+        AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
   }
 
   public static Message validate(Message message) {

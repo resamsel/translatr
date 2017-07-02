@@ -9,10 +9,13 @@ import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import controllers.AbstractController;
+import controllers.routes;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
 import models.User;
+import play.mvc.Call;
 
 public class Project extends Dto {
   private static final long serialVersionUID = 4241999533661305290L;
@@ -82,6 +85,31 @@ public class Project extends Dto {
       out.owner = User.loggedInUser();
 
     return out;
+  }
+
+  /**
+   * Return the route to the given key, with default params added.
+   * 
+   * @param key
+   * @return
+   */
+  public Call route() {
+    return route(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the given key, with params added.
+   * 
+   * @param key
+   * @param search
+   * @param order
+   * @param limit
+   * @param offset
+   * @return
+   */
+  public Call route(String search, String order, int limit, int offset) {
+    return routes.Projects.projectBy(ownerUsername, path);
   }
 
   /**
