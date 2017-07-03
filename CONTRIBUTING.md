@@ -10,11 +10,22 @@ sections in order to know what and how to work on something.
 
 ## How to file a bug report
 
-TODO
+If you find a security vulnerability, do NOT open an issue. Email XXXX instead.
+
+When filing an issue, make sure to answer these four questions:
+
+1. What version of Translatr are you using?
+1. What did you do?
+1. What did you expect to see?
+1. What did you see instead?
 
 ## How to suggest a new feature
 
-TODO
+If you find yourself wishing for a feature that doesn't exist in Translatr, you
+are probably not alone. There are bound to be others out there with similar
+needs. Many of the features that Translatr has today have been added because our
+users saw the need. Open an issue on our issues list on GitHub which describes
+the feature you would like to see, why you need it, and how it should work.
 
 ## How to set up your environment and run tests
 
@@ -126,8 +137,8 @@ itself should be descriptive so that a reviewer can understand what the PR is
 doing. The description in the PR should only add any useful additional
 information needed that is not in the issue.
 1. Keep pull requests small and simple. A pull request should generally address
-one, or a few related issues. This makes it easier to review the pull request,
-and document the changes.
+one issue. This makes it easier to review the pull request, and document the
+changes.
 1. Test your code before submitting a pull request! It is unsafe to merge
 untested code even if you think it will work without testing. Creating unit
 tests for any changes is a good idea, and is highly encouraged.
