@@ -251,7 +251,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public Call route(String search, String order, int limit, int offset) {
-    return routes.Keys.keyBy(project.owner.username, project.path, name, search, order, limit,
+    return routes.Keys.keyBy(project.owner.username, project.name, name, search, order, limit,
         offset);
   }
 }

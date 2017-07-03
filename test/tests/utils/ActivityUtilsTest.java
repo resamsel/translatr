@@ -33,38 +33,36 @@ public class ActivityUtilsTest {
     UUID uuid = UUID.randomUUID();
     long id = ThreadLocalRandom.current().nextLong();
     String ownerUsername = "username";
-    String path = "path";
+    String name = "name";
     String localeName = "en";
     String keyName = "a/b/c";
     String keyPathName = "a%2Fb%2Fc";
-    ObjectNode project =
-        Json.newObject().put("name", "name").put("path", path).put("ownerUsername", ownerUsername);
+    ObjectNode project = Json.newObject().put("name", "name").put("ownerUsername", ownerUsername);
     ObjectNode locale = Json.newObject().put("name", localeName).put("pathName", localeName)
-        .put("projectOwnerUsername", ownerUsername).put("projectPath", path);
+        .put("projectName", name).put("projectOwnerUsername", ownerUsername);
     ObjectNode key = Json.newObject().put("name", keyName).put("pathName", keyPathName)
-        .put("projectOwnerUsername", ownerUsername).put("projectPath", path);
-    ObjectNode message =
-        Json.newObject().put("value", "abc").put("projectOwnerUsername", ownerUsername)
-            .put("projectPath", path).put("keyPathName", keyPathName);
+        .put("projectName", name).put("projectOwnerUsername", ownerUsername);
+    ObjectNode message = Json.newObject().put("value", "abc").put("projectName", name)
+        .put("projectOwnerUsername", ownerUsername).put("keyPathName", keyPathName);
     message.set("locale", locale);
     message.set("key", key);
     ObjectNode projectUser =
-        Json.newObject().put("projectOwnerUsername", ownerUsername).put("projectPath", path);
+        Json.newObject().put("projectName", name).put("projectOwnerUsername", ownerUsername);
     LogEntry activity = createLogEntry(ActionType.Create, dto.User.class.getName(), uuid);
     activity.after = Json.stringify(Json.newObject().put("username", "username"));
 
     assertThat(ActivityUtils.linkTo(activity)).isEqualTo(controllers.routes.Users.user("username"));
     assertThat(ActivityUtils
         .linkTo(createLogEntry(ActionType.Create, dto.Project.class.getName(), project)))
-            .isEqualTo(controllers.routes.Projects.projectBy(ownerUsername, path));
+            .isEqualTo(controllers.routes.Projects.projectBy(ownerUsername, name));
     assertThat(
         ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Locale.class.getName(), locale)))
-            .isEqualTo(controllers.routes.Locales.localeBy(ownerUsername, path, localeName,
+            .isEqualTo(controllers.routes.Locales.localeBy(ownerUsername, name, localeName,
                 Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
                 Locales.DEFAULT_OFFSET));
     assertThat(
         ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Key.class.getName(), key)))
-            .isEqualTo(controllers.routes.Keys.keyBy(ownerUsername, path, keyPathName,
+            .isEqualTo(controllers.routes.Keys.keyBy(ownerUsername, name, keyPathName,
                 Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
     assertThat(
         ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Message.class.getName(), uuid)))
@@ -72,12 +70,12 @@ public class ActivityUtilsTest {
     LogEntry logEntry = createLogEntry(ActionType.Create, dto.Message.class.getName(), message);
     logEntry.after = message.toString();
     assertThat(ActivityUtils.linkTo(logEntry))
-        .isEqualTo(controllers.routes.Keys.keyBy(ownerUsername, path, keyPathName,
+        .isEqualTo(controllers.routes.Keys.keyBy(ownerUsername, name, keyPathName,
             Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
     assertThat(ActivityUtils
         .linkTo(createLogEntry(ActionType.Create, dto.ProjectUser.class.getName(), projectUser)))
             .isEqualTo(
-                controllers.routes.Projects.membersBy(ownerUsername, path, Projects.DEFAULT_SEARCH,
+                controllers.routes.Projects.membersBy(ownerUsername, name, Projects.DEFAULT_SEARCH,
                     Projects.DEFAULT_ORDER, Projects.DEFAULT_LIMIT, Projects.DEFAULT_OFFSET));
     assertThat(ActivityUtils
         .linkTo(createLogEntry(ActionType.Create, dto.AccessToken.class.getName(), id)))

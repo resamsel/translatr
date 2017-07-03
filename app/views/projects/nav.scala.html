@@ -4,8 +4,8 @@
 
 @tags.navView {
 	@tags.navItem(project.route, "info", "project", PROJECT_ICON, active)
-	@tags.navItem(routes.Projects.localesBy(project.owner.username, project.path), "locales", "locales", LOCALE_ICON, active)
-	@tags.navItem(routes.Projects.keysBy(project.owner.username, project.path), "keys", "keys", KEY_ICON, active)
+	@tags.navItem(project.localesRoute, "locales", "locales", LOCALE_ICON, active)
+	@tags.navItem(project.keysRoute, "keys", "keys", KEY_ICON, active)
 	@tags.navItem(project.membersRoute, "members", "project.members", PROJECT_USER_ICON, active)
 	@tags.navItem(project.activityRoute, "activity", "activity", ACTIVITY_ICON, active)
 }

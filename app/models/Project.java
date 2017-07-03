@@ -98,10 +98,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   @Required
   public String name;
 
-  @Column(nullable = false, length = NAME_LENGTH)
-  @Required
-  public String path;
-
   @ManyToOne
   @JoinColumn(name = "owner_id")
   @Required
@@ -257,11 +253,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return this;
   }
 
-  public Project withPath(String path) {
-    this.path = path;
-    return this;
-  }
-
   public Project withOwner(User owner) {
     this.owner = owner;
     return this;
@@ -280,16 +271,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return QueryUtils
         .fetch(find.query(), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
         .where().eq("owner", user).eq("name", name).findUnique();
-  }
-
-  /**
-   * @param path
-   * @return
-   */
-  public static Project byOwnerAndPath(User user, String path, String... fetches) {
-    return QueryUtils
-        .fetch(find.query(), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
-        .where().eq("owner", user).eq("path", path).findUnique();
   }
 
   /**
@@ -396,7 +377,61 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public Call route() {
-    return routes.Projects.projectBy(owner.username, path);
+    return routes.Projects.projectBy(owner.username, name);
+  }
+
+  /**
+   * Return the route to the locales of this project.
+   * 
+   * @param search
+   * 
+   * @param key
+   * @return
+   */
+  public Call localesRoute() {
+    return localesRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the locales of this project.
+   * 
+   * @return
+   */
+  public Call localesRoute(String search, String order, int limit, int offset) {
+    return routes.Projects.localesBy(owner.username, name, search, order, limit, offset);
+  }
+
+  /**
+   * Return the route to the keys of this project.
+   * 
+   * @param search
+   * 
+   * @param key
+   * @return
+   */
+  public Call keysRoute() {
+    return keysRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the keys of this project.
+   * 
+   * @return
+   */
+  public Call keysRoute(String search) {
+    return keysRoute(search, AbstractController.DEFAULT_ORDER, AbstractController.DEFAULT_LIMIT,
+        AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the keys of this project.
+   * 
+   * @return
+   */
+  public Call keysRoute(String search, String order, int limit, int offset) {
+    return routes.Projects.keysBy(owner.username, name, search, order, limit, offset);
   }
 
   /**
@@ -421,7 +456,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public Call membersRoute(String search, String order, int limit, int offset) {
-    return routes.Projects.membersBy(owner.username, path, search, order, limit, offset);
+    return routes.Projects.membersBy(owner.username, name, search, order, limit, offset);
   }
 
   /**
@@ -446,7 +481,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public Call activityRoute(String search, String order, int limit, int offset) {
-    return routes.Projects.activityBy(owner.username, path, search, order, limit, offset);
+    return routes.Projects.activityBy(owner.username, name, search, order, limit, offset);
   }
 
   /**

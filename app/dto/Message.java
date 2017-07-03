@@ -39,7 +39,6 @@ public class Message extends Dto {
 
   public String projectName;
   public String projectOwnerUsername;
-  public String projectPath;
 
   public String value;
 
@@ -63,7 +62,6 @@ public class Message extends Dto {
       this.keyPathName = in.key.getPathName();
       if (in.key.project != null) {
         this.projectOwnerUsername = in.key.project.owner.username;
-        this.projectPath = in.key.project.path;
       }
     }
   }
@@ -84,10 +82,10 @@ public class Message extends Dto {
   }
 
   public Call route() {
-    if (projectOwnerUsername == null || projectPath == null || keyPathName == null)
+    if (projectOwnerUsername == null || projectName == null || keyPathName == null)
       return null;
 
-    return routes.Keys.keyBy(projectOwnerUsername, projectPath, keyPathName,
+    return routes.Keys.keyBy(projectOwnerUsername, projectName, keyPathName,
         AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
         AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
   }

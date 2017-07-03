@@ -119,7 +119,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   public Data data() {
     return Data.from(Locale.class, id, formatLocale(Context.current().lang().locale(), this),
         routes.Locales
-            .localeBy(project.owner.username, project.path, name, Locales.DEFAULT_SEARCH,
+            .localeBy(project.owner.username, project.name, name, Locales.DEFAULT_SEARCH,
                 Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET)
             .absoluteURL(Context.current().request()));
   }
@@ -276,7 +276,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public Call route(String search, String order, int limit, int offset) {
-    return routes.Locales.localeBy(project.owner.username, project.path, name, search, order, limit,
+    return routes.Locales.localeBy(project.owner.username, project.name, name, search, order, limit,
         offset);
   }
 }

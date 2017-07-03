@@ -263,9 +263,9 @@ public class Projects extends AbstractController {
     return redirect(routes.Projects.index());
   }
 
-  public CompletionStage<Result> localesBy(String username, String projectPath, String s,
+  public CompletionStage<Result> localesBy(String username, String projectName, String s,
       String order, int limit, int offset) {
-    return user(username, user -> project(user, projectPath, project -> {
+    return user(username, user -> project(user, projectName, project -> {
       Form<LocaleSearchForm> form =
           FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration);
       LocaleSearchForm search = form.get();
@@ -288,9 +288,9 @@ public class Projects extends AbstractController {
     }));
   }
 
-  public CompletionStage<Result> keysBy(String username, String projectPath, String s, String order,
+  public CompletionStage<Result> keysBy(String username, String projectName, String s, String order,
       int limit, int offset) {
-    return user(username, user -> project(user, projectPath, project -> {
+    return user(username, user -> project(user, projectName, project -> {
       Form<KeySearchForm> form = FormUtils.KeySearch.bindFromRequest(formFactory, configuration);
       KeySearchForm search = form.get();
       search.update(s, order, limit, offset);
@@ -307,9 +307,9 @@ public class Projects extends AbstractController {
     }));
   }
 
-  public CompletionStage<Result> membersBy(String username, String projectPath, String s,
+  public CompletionStage<Result> membersBy(String username, String projectName, String s,
       String order, int limit, int offset) {
-    return user(username, user -> project(user, projectPath, project -> {
+    return user(username, user -> project(user, projectName, project -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
 
@@ -386,9 +386,9 @@ public class Projects extends AbstractController {
     });
   }
 
-  public CompletionStage<Result> activityBy(String username, String projectPath, String s,
+  public CompletionStage<Result> activityBy(String username, String projectName, String s,
       String order, int limit, int offset) {
-    return user(username, user -> project(user, projectPath, project -> {
+    return user(username, user -> project(user, projectName, project -> {
       Form<ActivitySearchForm> form =
           FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
       ActivitySearchForm search = form.get();
@@ -471,15 +471,15 @@ public class Projects extends AbstractController {
     }
   }
 
-  private Result project(User user, String projectPath, Function<Project, Result> processor) {
+  private Result project(User user, String projectName, Function<Project, Result> processor) {
     if (user.projects != null) {
       Optional<Project> project =
-          user.projects.stream().filter(p -> p.path.equals(projectPath)).findFirst();
+          user.projects.stream().filter(p -> p.name.equals(projectName)).findFirst();
       if (project.isPresent())
         return processor.apply(project.get());
     }
 
-    Project project = projectService.byOwnerAndPath(user, projectPath);
+    Project project = projectService.byOwnerAndName(user, projectName);
     if (project == null)
       return redirectWithError(routes.Application.index(), "project.notFound");
 

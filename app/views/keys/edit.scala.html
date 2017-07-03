@@ -1,6 +1,6 @@
 @(template: utils.Template, key: models.Key, form: Form[forms.KeyForm])
 
-@main(template.withTitle(key.project.name).withBackLink(routes.Projects.projectBy(key.project.owner.username, key.project.path)))()(projects.nav(key.project, "keys")) {
+@main(template.withTitle(key.project.name).withBackLink(key.project.route))()(projects.nav(key.project, "keys")) {
 	@projects.content("flex") {
 		<form action="@routes.Keys.doEdit(key.id)" method="post">
 			<div class="card no-image">
@@ -17,7 +17,7 @@
 					</button>
 					<a
 						class="btn-flat btn-cancel black-text"
-						href="@routes.Projects.keysBy(key.project.owner.username, key.project.path)">
+						href="@key.project.keysRoute">
 						@Messages("button.cancel")
 					</a>
 				</div>

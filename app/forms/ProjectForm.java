@@ -15,10 +15,6 @@ public class ProjectForm {
   @Constraints.MaxLength(Project.NAME_LENGTH)
   private String name;
 
-  @Constraints.Required
-  @Constraints.MaxLength(Project.NAME_LENGTH)
-  private String path;
-
   /**
    * @return the name
    */
@@ -34,25 +30,10 @@ public class ProjectForm {
   }
 
   /**
-   * @return the path
-   */
-  public String getPath() {
-    return path;
-  }
-
-  /**
-   * @param path the path to set
-   */
-  public void setPath(String path) {
-    this.path = path;
-  }
-
-  /**
    * 
    */
   public Project fill(Project in) {
     in.name = name;
-    in.path = path;
 
     return in;
   }
@@ -65,7 +46,6 @@ public class ProjectForm {
     ProjectForm out = new ProjectForm();
 
     out.name = in.name;
-    out.path = in.path;
 
     return out;
   }

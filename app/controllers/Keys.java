@@ -79,10 +79,10 @@ public class Keys extends AbstractController {
     this.projectService = projectService;
   }
 
-  public CompletionStage<Result> keyBy(String username, String projectPath, String keyName,
+  public CompletionStage<Result> keyBy(String username, String projectName, String keyName,
       String search, String order, int limit, int offset) {
     return user(username,
-        user -> project(user, projectPath, project -> key(project, keyName, key -> {
+        user -> project(user, projectName, project -> key(project, keyName, key -> {
           Form<LocaleSearchForm> form =
               FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration);
           form.get().update(search, order, limit, offset);
@@ -206,7 +206,7 @@ public class Keys extends AbstractController {
 
       KeyForm search = form.get();
 
-      return redirect(routes.Projects.keysBy(key.project.owner.username, key.project.path,
+      return redirect(routes.Projects.keysBy(key.project.owner.username, key.project.name,
           search.search, search.order, search.limit, search.offset));
     });
   }
@@ -226,20 +226,20 @@ public class Keys extends AbstractController {
 
       LOGGER.debug("Go to projectKeys: {}", Json.toJson(key));
 
-      return redirect(routes.Projects.keysBy(key.project.owner.username, key.project.path, search,
+      return redirect(routes.Projects.keysBy(key.project.owner.username, key.project.name, search,
           order, limit, offset));
     });
   }
 
-  private Result project(User user, String projectPath, Function<Project, Result> processor) {
+  private Result project(User user, String projectName, Function<Project, Result> processor) {
     if (user.projects != null) {
       Optional<Project> project =
-          user.projects.stream().filter(p -> p.path.equals(projectPath)).findFirst();
+          user.projects.stream().filter(p -> p.name.equals(projectName)).findFirst();
       if (project.isPresent())
         return processor.apply(project.get());
     }
 
-    Project project = projectService.byOwnerAndPath(user, projectPath);
+    Project project = projectService.byOwnerAndName(user, projectName);
     if (project == null)
       return redirectWithError(routes.Application.index(), "project.notFound");
 

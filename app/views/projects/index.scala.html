@@ -14,7 +14,7 @@
 			@for(project <- projectList) {
 				<li class="collection-item avatar black-text">
 					<i class="material-icons circle @PROJECT_COLOR">@PROJECT_ICON</i>
-					<a href="@routes.Projects.projectBy(project.owner.username, project.path)" class="title">
+					<a href="@project.route" class="title">
 						@project.name
 						<em>&mdash; @{project.roleOf(template.loggedInUser)}</em>
 					</a>

@@ -30,8 +30,6 @@ public class Project extends Dto {
 
   public String name;
 
-  public String path;
-
   public UUID ownerId;
 
   public String ownerName;
@@ -54,7 +52,6 @@ public class Project extends Dto {
     this.whenCreated = in.whenCreated;
     this.whenUpdated = in.whenUpdated;
     this.name = in.name;
-    this.path = in.path;
     this.ownerId = in.owner.id;
     this.ownerName = in.owner.name;
     this.ownerUsername = in.owner.username;
@@ -78,7 +75,6 @@ public class Project extends Dto {
     out.whenCreated = whenCreated;
     out.whenUpdated = whenUpdated;
     out.name = name;
-    out.path = path;
     if (ownerId != null)
       out.owner = new User().withId(ownerId);
     else
@@ -109,7 +105,7 @@ public class Project extends Dto {
    * @return
    */
   public Call route(String search, String order, int limit, int offset) {
-    return routes.Projects.projectBy(ownerUsername, path);
+    return routes.Projects.projectBy(ownerUsername, name);
   }
 
   /**

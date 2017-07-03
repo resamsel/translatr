@@ -1,6 +1,6 @@
 @(template: utils.Template, project: Project, form: Form[forms.ProjectUserForm])
 
-@main(template.withTitle(project.name).withName("project-member-add").withBackLink(routes.Projects.projectBy(project.owner.username, project.path)))()(nav(project, "members")) {
+@main(template.withTitle(project.name).withName("project-member-add").withBackLink(project.route))()(nav(project, "members")) {
 	@content() {
 		<form action="@routes.Projects.doMemberAdd(project.id)" method="post">
 			<div id="panel-message" class="card no-image">

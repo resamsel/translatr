@@ -9,7 +9,7 @@
 	</li>
 }
 
-@main(template.withTitle(locale.project.name).withName("locale").withBackLink(routes.Projects.localesBy(locale.project.owner.username, locale.project.path))) {
+@main(template.withTitle(locale.project.name).withName("locale").withBackLink(locale.project.localesRoute)) {
 	@tags.search(form) {
 		<button
 			type="button"

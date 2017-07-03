@@ -29,11 +29,7 @@ public class Locale extends Dto {
   public DateTime whenUpdated;
 
   public UUID projectId;
-
   public String projectName;
-
-  public String projectPath;
-
   public String projectOwnerUsername;
 
   public String name;
@@ -50,7 +46,6 @@ public class Locale extends Dto {
     this.whenUpdated = in.whenUpdated;
     this.projectId = in.project.id;
     this.projectName = in.project.name;
-    this.projectPath = in.project.path;
     this.projectOwnerUsername = in.project.owner.username;
     this.name = in.name;
     this.pathName = in.getPathName();
@@ -102,10 +97,10 @@ public class Locale extends Dto {
    * @return
    */
   public Call route(String search, String order, int limit, int offset) {
-    if (projectOwnerUsername == null || projectPath == null || pathName == null)
+    if (projectOwnerUsername == null || projectName == null || pathName == null)
       return null;
 
-    return routes.Locales.localeBy(projectOwnerUsername, projectPath, pathName, search, order,
+    return routes.Locales.localeBy(projectOwnerUsername, projectName, pathName, search, order,
         limit, offset);
   }
 

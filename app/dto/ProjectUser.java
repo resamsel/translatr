@@ -19,7 +19,6 @@ public class ProjectUser extends Dto {
   public UUID projectId;
   public String projectName;
   public String projectOwnerUsername;
-  public String projectPath;
 
   public UUID userId;
   public String userName;
@@ -38,7 +37,6 @@ public class ProjectUser extends Dto {
     this.projectId = in.project.id;
     this.projectName = in.project.name;
     this.projectOwnerUsername = in.project.owner.username;
-    this.projectPath = in.project.path;
     this.userId = in.user.id;
     this.userName = in.user.username;
     this.role = in.role;
@@ -59,7 +57,7 @@ public class ProjectUser extends Dto {
   }
 
   public Call route() {
-    return routes.Projects.membersBy(projectOwnerUsername, projectPath,
+    return routes.Projects.membersBy(projectOwnerUsername, projectName,
         AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
         AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
   }

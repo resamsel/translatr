@@ -81,7 +81,7 @@ public class ProjectApiServiceImpl extends
             messages.at("key.search", search.search),
             Data.from(Key.class, null, "???",
                 search.urlWithOffset(
-                    routes.Projects.keysBy(project.ownerUsername, project.path, Keys.DEFAULT_SEARCH,
+                    routes.Projects.keysBy(project.ownerUsername, project.name, Keys.DEFAULT_SEARCH,
                         Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET),
                     Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET))));
 
@@ -108,7 +108,7 @@ public class ProjectApiServiceImpl extends
         suggestions.add(Suggestable.DefaultSuggestable.from(
             messages.at("locale.search", search.search),
             Data.from(Locale.class, null, "???",
-                search.urlWithOffset(routes.Projects.localesBy(project.ownerUsername, project.path,
+                search.urlWithOffset(routes.Projects.localesBy(project.ownerUsername, project.name,
                     Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
                     Locales.DEFAULT_OFFSET), Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET))));
 

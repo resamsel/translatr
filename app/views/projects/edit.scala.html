@@ -1,6 +1,6 @@
 @(template: utils.Template, project: models.Project, form: Form[forms.ProjectForm])
 
-@main(template.withTitle(project.name).withName("project-edit").withBackLink(routes.Projects.projectBy(project.owner.username, project.path)))()(nav(project, "info")) {
+@main(template.withTitle(project.name).withName("project-edit").withBackLink(project.route))()(nav(project, "info")) {
 	@content("offset-m2 m8 offset-l3 l6") {
 		<form action="@routes.Projects.doEdit(project.id)" method="post">
 			<div class="card no-image">
@@ -17,7 +17,7 @@
 					</button>
 					<a
 						class="btn-flat btn-cancel black-text"
-						href="@routes.Projects.projectBy(project.owner.username, project.path)">
+						href="@project.route">
 						@Messages("button.cancel")
 					</a>
 				</div>

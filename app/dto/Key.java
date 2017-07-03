@@ -28,11 +28,7 @@ public class Key extends Dto {
   public DateTime whenUpdated;
 
   public UUID projectId;
-
   public String projectName;
-
-  public String projectPath;
-
   public String projectOwnerUsername;
 
   public String name;
@@ -49,7 +45,6 @@ public class Key extends Dto {
     this.whenUpdated = in.whenUpdated;
     this.projectId = in.project.id;
     this.projectName = in.project.name;
-    this.projectPath = in.project.path;
     this.projectOwnerUsername = in.project.owner.username;
     this.name = in.name;
     this.pathName = in.getPathName();
@@ -93,7 +88,7 @@ public class Key extends Dto {
    * @return
    */
   public Call route(String search, String order, int limit, int offset) {
-    return routes.Keys.keyBy(projectOwnerUsername, projectPath, pathName, search, order, limit,
+    return routes.Keys.keyBy(projectOwnerUsername, projectName, pathName, search, order, limit,
         offset);
   }
 
