@@ -386,6 +386,22 @@ public class Projects extends AbstractController {
     });
   }
 
+  public CompletionStage<Result> activityBy(String username, String projectPath, String s,
+      String order, int limit, int offset) {
+    return user(username, user -> project(user, projectPath, project -> {
+      Form<ActivitySearchForm> form =
+          FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
+      ActivitySearchForm search = form.get();
+
+      PagedList<LogEntry> activities = logEntryService.findBy(
+          LogEntryCriteria.from(search).withProjectId(project.id).withOrder("whenCreated desc"));
+
+      search.pager(activities);
+
+      return ok(views.html.projects.activity.render(createTemplate(), project, activities, form));
+    }));
+  }
+
   public Result activity(UUID projectId) {
     return projectLegacy(projectId, project -> {
       Form<ActivitySearchForm> form =
@@ -421,6 +437,7 @@ public class Projects extends AbstractController {
     });
   }
 
+  @Deprecated
   private CompletionStage<Result> project(UUID projectId, Function<Project, Result> processor,
       String... propertiesToFetch) {
     return tryCatch(() -> {

@@ -102,6 +102,9 @@ public class Locale extends Dto {
    * @return
    */
   public Call route(String search, String order, int limit, int offset) {
+    if (projectOwnerUsername == null || projectPath == null || pathName == null)
+      return null;
+
     return routes.Locales.localeBy(projectOwnerUsername, projectPath, pathName, search, order,
         limit, offset);
   }

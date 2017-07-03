@@ -390,7 +390,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   /**
-   * Return the route to the given project.
+   * Return the route to this project.
    * 
    * @param key
    * @return
@@ -400,7 +400,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   /**
-   * Return the route to the members of the given project.
+   * Return the route to the members of this project.
    * 
    * @param search
    * 
@@ -413,7 +413,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   /**
-   * Return the route to the members of the given project.
+   * Return the route to the members of this project.
    * 
    * @param search
    * 
@@ -422,6 +422,43 @@ public class Project implements Model<Project, UUID>, Suggestable {
    */
   public Call membersRoute(String search, String order, int limit, int offset) {
     return routes.Projects.membersBy(owner.username, path, search, order, limit, offset);
+  }
+
+  /**
+   * Return the route to the members of this project.
+   * 
+   * @param search
+   * 
+   * @param key
+   * @return
+   */
+  public Call activityRoute() {
+    return activityRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the activity of this project.
+   * 
+   * @param search
+   * 
+   * @param key
+   * @return
+   */
+  public Call activityRoute(String search, String order, int limit, int offset) {
+    return routes.Projects.activityBy(owner.username, path, search, order, limit, offset);
+  }
+
+  /**
+   * Return the route to the members of this project.
+   * 
+   * @param search
+   * 
+   * @param key
+   * @return
+   */
+  public Call activityCsvRoute() {
+    return routes.Projects.activityCsv(id);
   }
 
   @Override

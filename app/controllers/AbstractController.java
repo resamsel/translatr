@@ -6,6 +6,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.feth.play.module.pa.PlayAuthenticate;
@@ -33,26 +34,21 @@ import utils.Template;
  * @version 16 Sep 2016
  */
 public abstract class AbstractController extends Controller {
-  private static final String FLASH_MESSAGE_KEY = "message";
+  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractController.class);
 
+  private static final String FLASH_MESSAGE_KEY = "message";
   private static final String FLASH_ERROR_KEY = "error";
 
   private static final String COMMAND_FORMAT = "command:%s";
 
   public static final String DEFAULT_SEARCH = null;
-
   public static final String DEFAULT_ORDER = "name";
-
   public static final int DEFAULT_LIMIT = 20;
-
   public static final int DEFAULT_OFFSET = 0;
 
   public static final String SECTION_HOME = "home";
-
   public static final String SECTION_PROJECTS = "projects";
-
   public static final String SECTION_PROFILE = "profile";
-
   public static final String SECTION_COMMUNITY = "users";
 
   protected final Injector injector;
@@ -173,11 +169,15 @@ public abstract class AbstractController extends Controller {
 
       return processor.apply(user);
     }).exceptionally(e -> {
+      if (e.getCause() != null)
+        e = e.getCause();
       if (e instanceof NotFoundException)
         return redirectWithError(controllers.routes.Application.index(), "user.notFound");
       if (e instanceof PermissionException)
         return redirectWithError(controllers.routes.Users.user(username), "access.denied");
-      return internalServerError(e.getMessage());
+
+      LOGGER.error("Error while processing request", e);
+      throw new RuntimeException(e);
     });
   }
 

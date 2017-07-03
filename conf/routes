@@ -50,7 +50,7 @@ GET		/project/:id/member/add		controllers.Projects.memberAdd(id: java.util.UUID)
 POST	/project/:id/member/add		controllers.Projects.doMemberAdd(id: java.util.UUID)
 GET		/project/:id/member/:memberId/remove	controllers.Projects.memberRemove(id: java.util.UUID, memberId: Long)
 POST	/project/:id/owner/change	controllers.Projects.doOwnerChange(id: java.util.UUID)
-GET		/project/:id/activity		controllers.Projects.activity(id: java.util.UUID)
+#GET		/project/:id/activity		controllers.Projects.activity(id: java.util.UUID)
 GET		/project/:id/activity/csv	controllers.Projects.activityCsv(id: java.util.UUID)
 GET		/project/:id/wordCount/reset	controllers.Projects.wordCountReset(id: java.util.UUID)
 
@@ -139,3 +139,4 @@ GET		/:username/:projectPath/locale/:localeName	controllers.Locales.localeBy(use
 GET		/:username/:projectPath/keys	controllers.Projects.keysBy(username: String, projectPath: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/:username/:projectPath/key/:keyName	controllers.Keys.keyBy(username: String, projectPath: String, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/:username/:projectPath/members	controllers.Projects.membersBy(username: String, projectPath: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectPath/activity	controllers.Projects.activityBy(username: String, projectPath: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
