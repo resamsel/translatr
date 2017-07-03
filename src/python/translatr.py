@@ -269,6 +269,9 @@ def read_config_merge(args):
 	params = dict((k,v) for k,v in args.__dict__.iteritems() if v is not None)
 	config.update(params)
 
+	if 'endpoint' in config:
+		config['endpoint'] = config['endpoint'].strip('/')
+
 	return config
 
 

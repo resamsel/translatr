@@ -178,6 +178,10 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
       t.email = t.email.toLowerCase();
     if (t.username == null && t.email != null)
       t.username = emailToUsername(t.email);
+    if (t.username == null && t.name != null)
+      t.username = nameToUsername(t.name);
+    if (t.username == null)
+      t.username = String.valueOf(ThreadLocalRandom.current().nextLong());
     if (update)
       logEntryService.save(
           LogEntry.from(ActionType.Update, null, dto.User.class, toDto(byId(t.id)), toDto(t)));
@@ -200,7 +204,29 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    */
   @Override
   public String emailToUsername(String email) {
-    String username = email.toLowerCase().replaceAll("[@\\.-]", "");
+    if (StringUtils.isEmpty(email))
+      return null;
+
+    return uniqueUsername(email.toLowerCase().replaceAll("[@\\.-]", ""));
+  }
+
+  @Override
+  public String nameToUsername(String name) {
+    if (StringUtils.isEmpty(name))
+      return null;
+
+    return uniqueUsername(name.replaceAll("[^A-Za-z0-9_-]", "").toLowerCase());
+  }
+
+  /**
+   * Generate a unique username from the given proposal.
+   * 
+   * @param username
+   * @return
+   */
+  private String uniqueUsername(String username) {
+    if (StringUtils.isEmpty(username))
+      return null;
 
     // TODO: potentially slow, replace with better variant (get all users with username like
     // $username% and iterate over them)

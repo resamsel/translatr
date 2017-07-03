@@ -76,4 +76,12 @@ public interface UserService extends ModelService<User, UUID, UserCriteria> {
    * @return
    */
   String emailToUsername(String email);
+
+  /**
+   * Create a username from the given name.
+   *
+   * @param name
+   * @return
+   */
+  String nameToUsername(String name);
 }
