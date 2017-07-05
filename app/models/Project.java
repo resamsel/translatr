@@ -39,7 +39,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
 
 import controllers.AbstractController;
-import controllers.routes;
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
@@ -373,11 +372,37 @@ public class Project implements Model<Project, UUID>, Suggestable {
   /**
    * Return the route to this project.
    * 
-   * @param key
    * @return
    */
   public Call route() {
-    return routes.Projects.projectBy(owner.username, name);
+    return controllers.routes.Projects.projectBy(owner.username, name);
+  }
+
+  /**
+   * Return the edit route to this project.
+   * 
+   * @return
+   */
+  public Call editRoute() {
+    return controllers.routes.Projects.editBy(owner.username, name);
+  }
+
+  /**
+   * Return the do edit route to this project.
+   * 
+   * @return
+   */
+  public Call doEditRoute() {
+    return controllers.routes.Projects.doEditBy(owner.username, name);
+  }
+
+  /**
+   * Return the remove route to this project.
+   * 
+   * @return
+   */
+  public Call removeRoute() {
+    return controllers.routes.Projects.removeBy(owner.username, name);
   }
 
   /**
@@ -399,7 +424,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public Call localesRoute(String search, String order, int limit, int offset) {
-    return routes.Projects.localesBy(owner.username, name, search, order, limit, offset);
+    return controllers.routes.Projects.localesBy(owner.username, name, search, order, limit,
+        offset);
   }
 
   /**
@@ -431,7 +457,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public Call keysRoute(String search, String order, int limit, int offset) {
-    return routes.Projects.keysBy(owner.username, name, search, order, limit, offset);
+    return controllers.routes.Projects.keysBy(owner.username, name, search, order, limit, offset);
   }
 
   /**
@@ -456,7 +482,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public Call membersRoute(String search, String order, int limit, int offset) {
-    return routes.Projects.membersBy(owner.username, name, search, order, limit, offset);
+    return controllers.routes.Projects.membersBy(owner.username, name, search, order, limit,
+        offset);
   }
 
   /**
@@ -481,7 +508,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public Call activityRoute(String search, String order, int limit, int offset) {
-    return routes.Projects.activityBy(owner.username, name, search, order, limit, offset);
+    return controllers.routes.Projects.activityBy(owner.username, name, search, order, limit,
+        offset);
   }
 
   /**
@@ -493,7 +521,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public Call activityCsvRoute() {
-    return routes.Projects.activityCsv(id);
+    return controllers.routes.Projects.activityCsv(id);
   }
 
   @Override

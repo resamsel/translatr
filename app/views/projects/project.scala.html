@@ -17,7 +17,7 @@
 			@tags.fab("reset-word-count", "clear", href = routes.Projects.wordCountReset(project.id).url, tooltip = Messages("project.wordCount.reset.tooltip"), styleClass = "orange")
 		</li>
 		<li>
-			@tags.fab("remove-project", "delete_forever", href = routes.Projects.remove(project.id).url, tooltip = Messages("project.remove.tooltip"), styleClass = "red")
+			@tags.fab("remove-project", "delete_forever", href = project.removeRoute.url, tooltip = Messages("project.remove.tooltip"), styleClass = "red")
 		</li>
 	}
 }
@@ -117,7 +117,7 @@
 	}
 
 	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager)) {
-		@tags.fabContainer("edit-project", "edit", href = routes.Projects.edit(project.id).url, tooltip = Messages("project.edit.tooltip"), styleClass = "orange", actions = projectActions)
+		@tags.fabContainer("edit-project", "edit", href = project.editRoute.url, tooltip = Messages("project.edit.tooltip"), styleClass = "orange", actions = projectActions)
 	} else { @if(project.hasRolesAny(template.loggedInUser, ProjectRole.Developer)) {
 		@tags.fabContainer("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
 	} else { @if(project.hasRolesAny(template.loggedInUser, ProjectRole.Translator)) {

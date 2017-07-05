@@ -45,6 +45,7 @@ import criterias.UserCriteria;
 import play.api.Play;
 import play.api.inject.Injector;
 import play.libs.Json;
+import play.mvc.Call;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
 import services.UserService;
@@ -312,6 +313,20 @@ public class User implements Model<User, UUID>, Subject {
   @Override
   public String toString() {
     return String.format("{\"name\": %s}", Json.toJson(name));
+  }
+
+  /**
+   * Return the route to the user.
+   */
+  public Call route() {
+    return controllers.routes.Users.user(username);
+  }
+
+  /**
+   * Return the route to the user.
+   */
+  public Call projectsRoute() {
+    return controllers.routes.Users.projects(username);
   }
 
   /**

@@ -13,7 +13,7 @@
 			</div>
 		</li>
 		<li @if(template.section == "projects") { class="active" }>
-			<a href="@routes.Projects.index">
+			<a href="@routes.Projects.index()">
 				<i class="material-icons left">@PROJECTS_ICON</i>
 				@Messages("projects")
 			</a>

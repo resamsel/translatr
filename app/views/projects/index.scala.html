@@ -1,17 +1,17 @@
-@(template: utils.Template, projectList: List[Project], form: Form[forms.SearchForm], projectForm: Form[forms.ProjectForm])
+@(template: utils.Template, projectList: com.avaje.ebean.PagedList[Project], form: Form[forms.SearchForm], projectForm: Form[forms.ProjectForm])
 
 @import utils.ActivityUtils._
 
 @main(template.withTitle(Messages("projects")).withName("projects"))(tags.search(form)())() {
 	@tags.mainContent() {
-		@tags.collection(projectList, "projects.empty") {
+		@tags.collection(projectList.getList, "projects.empty") {
 			<span class="title">@Messages("project.name")</span>
 			@tags.sortOrders {
-				@tags.orderLink(form.get, routes.Projects.index, "project.name", "name", "name desc", "name")
-				@tags.orderLink(form.get, routes.Projects.index, "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+				@tags.orderLink(form.get, template.loggedInUser.projectsRoute, "project.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, template.loggedInUser.projectsRoute, "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
-			@for(project <- projectList) {
+			@for(project <- projectList.getList) {
 				<li class="collection-item avatar black-text">
 					<i class="material-icons circle @PROJECT_COLOR">@PROJECT_ICON</i>
 					<a href="@project.route" class="title">
@@ -28,7 +28,7 @@
 				</li>
 			}
 		} {
-			@tags.pager(routes.Projects.index, form.get)
+			@tags.pager(template.loggedInUser.projectsRoute, form.get)
 		}
 	}
 

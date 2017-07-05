@@ -1,7 +1,5 @@
 package controllers;
 
-import static utils.Stopwatch.log;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,6 +55,7 @@ import play.data.Form;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.libs.Json;
+import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
 import services.KeyService;
@@ -109,20 +108,19 @@ public class Projects extends AbstractController {
     this.configuration = configuration;
   }
 
-  @SubjectPresent(forceBeforeAuthCheck = true)
-  public CompletionStage<Result> index() {
+  public CompletionStage<Result> index(String s, String order, int limit, int offset) {
     return loggedInUser(user -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
-      if (search.order == null)
-        search.order = "name";
+      search.update(s, order, limit, offset);
 
       PagedList<Project> projects =
           projectService.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
 
-      return log(() -> ok(views.html.projects.index.render(createTemplate(), projects.getList(),
-          FormUtils.Search.bindFromRequest(formFactory, configuration),
-          ProjectForm.form(formFactory))), LOGGER, "Rendering projects");
+      search.pager(projects);
+
+      return ok(views.html.projects.index.render(createTemplate(), projects, form,
+          ProjectForm.form(formFactory)));
     });
   }
 
@@ -147,7 +145,7 @@ public class Projects extends AbstractController {
   public CompletionStage<Result> projectBy(String username, String projectName) {
     return user(username, user -> project(user, projectName, project -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values()))
-        return redirectWithError(routes.Projects.index(), "project.access.denied", project.name);
+        return redirectWithError(user.route(), "project.access.denied", project.name);
 
       return ok(views.html.projects.project.render(createTemplate(), project,
           FormUtils.Search.bindFromRequest(formFactory, configuration)));
@@ -213,8 +211,8 @@ public class Projects extends AbstractController {
     return redirect(project.route());
   }
 
-  public CompletionStage<Result> edit(UUID projectId) {
-    return project(projectId, project -> {
+  public CompletionStage<Result> editBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
         return redirectWithError(project.route(), "project.edit.denied", project.name);
 
@@ -222,11 +220,11 @@ public class Projects extends AbstractController {
 
       return ok(views.html.projects.edit.render(createTemplate(), project,
           formFactory.form(ProjectForm.class).fill(ProjectForm.from(project))));
-    });
+    }));
   }
 
-  public CompletionStage<Result> doEdit(UUID projectId) {
-    return project(projectId, project -> {
+  public CompletionStage<Result> doEditBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
         return redirectWithError(project.route(), "project.edit.denied", project.name);
 
@@ -240,27 +238,22 @@ public class Projects extends AbstractController {
       projectService.save(form.get().fill(project));
 
       return redirect(project.route());
-    });
+    }));
   }
 
-  public Result remove(UUID projectId) {
-    Project project = projectService.byId(projectId);
+  public CompletionStage<Result> removeBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project -> {
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
+        return redirectWithError(project.route(), "project.delete.denied", project.name);
 
-    LOGGER.debug("Key: {}", Json.toJson(project));
+      select(project);
 
-    if (project == null)
-      return redirect(routes.Application.index());
+      undoCommand(RevertDeleteProjectCommand.from(project));
 
-    if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
-      return redirectWithError(project.route(), "project.delete.denied", project.name);
+      projectService.delete(project);
 
-    select(project);
-
-    undoCommand(RevertDeleteProjectCommand.from(project));
-
-    projectService.delete(project);
-
-    return redirect(routes.Projects.index());
+      return redirect(user.route());
+    }));
   }
 
   public CompletionStage<Result> localesBy(String username, String projectName, String s,
@@ -444,7 +437,9 @@ public class Projects extends AbstractController {
       Project project = projectService.byId(projectId, propertiesToFetch);
 
       if (project == null)
-        return redirectWithError(routes.Projects.index(), "project.notFound", projectId);
+        return redirectWithError(
+            routes.Projects.index(DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET),
+            "project.notFound", projectId);
 
       select(project);
 
@@ -481,7 +476,9 @@ public class Projects extends AbstractController {
 
     Project project = projectService.byOwnerAndName(user, projectName);
     if (project == null)
-      return redirectWithError(routes.Application.index(), "project.notFound");
+      return redirectWithError(
+          routes.Projects.index(DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET),
+          "project.notFound");
 
     return processor.apply(project);
   }
@@ -492,5 +489,12 @@ public class Projects extends AbstractController {
   @Override
   protected Template createTemplate() {
     return super.createTemplate().withSection(SECTION_PROJECTS);
+  }
+
+  /**
+   * @return
+   */
+  public static Call indexRoute() {
+    return routes.Projects.index(DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET);
   }
 }

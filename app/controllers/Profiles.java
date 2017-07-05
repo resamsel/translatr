@@ -59,6 +59,10 @@ public class Profiles extends AbstractController {
     return loggedInUser(user -> redirect(controllers.routes.Users.user(user.username)));
   }
 
+  public CompletionStage<Result> projects() {
+    return loggedInUser(user -> redirect(controllers.routes.Users.projects(user.username)));
+  }
+
   public CompletionStage<Result> linkedAccounts() {
     return loggedInUser(user -> redirect(controllers.routes.Users.linkedAccounts(user.username)));
   }

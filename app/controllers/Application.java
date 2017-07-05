@@ -79,7 +79,7 @@ public class Application extends AbstractController {
 
     if (command == null) {
       if (referer == null)
-        return redirectWithError(routes.Projects.index(), "command.notFound");
+        return redirectWithError(Projects.indexRoute(), "command.notFound");
 
       return redirectWithError(referer, "command.notFound");
     }
@@ -92,7 +92,7 @@ public class Application extends AbstractController {
       return redirect(call);
 
     if (referer == null)
-      return redirect(routes.Projects.index());
+      return redirect(Projects.indexRoute());
 
     return redirect(referer);
   }

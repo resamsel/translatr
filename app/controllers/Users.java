@@ -33,6 +33,7 @@ import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
 import services.LinkedAccountService;
+import services.ProjectService;
 import utils.FormUtils;
 import utils.Template;
 
@@ -47,15 +48,19 @@ public class Users extends AbstractController {
 
   private final Configuration configuration;
 
+  private final ProjectService projectService;
+
   private final LinkedAccountService linkedAccountService;
 
   @Inject
   public Users(Injector injector, CacheApi cache, PlayAuthenticate auth, FormFactory formFactory,
-      Configuration configuration, LinkedAccountService linkedAccountService) {
+      Configuration configuration, ProjectService projectService,
+      LinkedAccountService linkedAccountService) {
     super(injector, cache, auth);
 
     this.formFactory = formFactory;
     this.configuration = configuration;
+    this.projectService = projectService;
     this.linkedAccountService = linkedAccountService;
   }
 
@@ -95,7 +100,7 @@ public class Users extends AbstractController {
         search.order = "name";
 
       PagedList<Project> projects =
-          Project.findBy(ProjectCriteria.from(search).withMemberId(user.id));
+          projectService.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
 
       search.pager(projects);
 

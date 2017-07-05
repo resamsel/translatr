@@ -2,7 +2,7 @@
 
 @main(template.withTitle(project.name).withName("project-edit").withBackLink(project.route))()(nav(project, "info")) {
 	@content("offset-m2 m8 offset-l3 l6") {
-		<form action="@routes.Projects.doEdit(project.id)" method="post">
+		<form action="@project.doEditRoute" method="post">
 			<div class="card no-image">
 				<div class="card-content">
 					<span class="card-title">@Messages("project.edit")</span>

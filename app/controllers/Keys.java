@@ -106,7 +106,7 @@ public class Keys extends AbstractController {
     Project project = projectService.byId(projectId);
 
     if (project == null)
-      return redirect(routes.Application.index());
+      return redirect(Projects.indexRoute());
 
     select(project);
 
@@ -119,7 +119,7 @@ public class Keys extends AbstractController {
     Project project = projectService.byId(projectId);
 
     if (project == null)
-      return redirect(routes.Application.index());
+      return redirect(Projects.indexRoute());
 
     select(project);
 
@@ -155,7 +155,7 @@ public class Keys extends AbstractController {
     Project project = projectService.byId(projectId);
 
     if (project == null)
-      return redirect(routes.Application.index());
+      return redirect(Projects.indexRoute());
 
     select(project);
 
@@ -241,7 +241,7 @@ public class Keys extends AbstractController {
 
     Project project = projectService.byOwnerAndName(user, projectName);
     if (project == null)
-      return redirectWithError(routes.Application.index(), "project.notFound");
+      return redirectWithError(Projects.indexRoute(), "project.notFound");
 
     return processor.apply(project);
   }
@@ -267,7 +267,7 @@ public class Keys extends AbstractController {
   protected Result key(UUID keyId, Function<Key, Result> processor) {
     Key key = keyService.byId(keyId, "project");
     if (key == null)
-      return redirect(routes.Projects.index());
+      return redirect(Projects.indexRoute());
 
     select(key.project);
 

@@ -93,7 +93,7 @@ public class Locales extends AbstractController {
   public Result doCreate(UUID projectId) {
     Project project = projectService.byId(projectId);
     if (project == null)
-      return redirect(routes.Application.index());
+      return redirect(Projects.indexRoute());
 
     select(project);
 
@@ -131,7 +131,7 @@ public class Locales extends AbstractController {
     Project project = projectService.byId(projectId);
 
     if (project == null)
-      return redirect(routes.Application.index());
+      return redirect(Projects.indexRoute());
 
     select(project);
 
@@ -227,7 +227,7 @@ public class Locales extends AbstractController {
 
     Project project = projectService.byOwnerAndName(user, projectName);
     if (project == null)
-      return redirectWithError(routes.Application.index(), "project.notFound");
+      return redirectWithError(Projects.indexRoute(), "project.notFound");
 
     return processor.apply(project);
   }
@@ -253,7 +253,7 @@ public class Locales extends AbstractController {
   private Result locale(UUID localeId, Function<Locale, Result> processor) {
     Locale locale = localeService.byId(localeId);
     if (locale == null)
-      return redirect(routes.Projects.index());
+      return redirect(Projects.indexRoute());
 
     select(locale.project);
 

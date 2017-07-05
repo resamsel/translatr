@@ -172,7 +172,7 @@ public abstract class AbstractController extends Controller {
       if (e.getCause() != null)
         e = e.getCause();
       if (e instanceof NotFoundException)
-        return redirectWithError(controllers.routes.Application.index(), "user.notFound");
+        return redirectWithError(Projects.indexRoute(), "user.notFound");
       if (e instanceof PermissionException)
         return redirectWithError(controllers.routes.Users.user(username), "access.denied");
 

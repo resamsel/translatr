@@ -17,6 +17,7 @@ GET		/users						controllers.Users.index()
 
 # Profiles
 GET		/profile					controllers.Profiles.profile
+GET		/profile/projects			controllers.Profiles.projects
 GET		/profile/linkedAccounts		controllers.Profiles.linkedAccounts
 GET		/profile/accessTokens		controllers.Profiles.accessTokens
 GET		/profile/activity			controllers.Profiles.activity
@@ -34,23 +35,15 @@ GET		/profile/accessToken/:accessTokenId/remove	controllers.Profiles.accessToken
 GET		/profile/notifications/reset	controllers.Profiles.resetNotifications
 
 # Projects
-GET		/projects					controllers.Projects.index
+GET		/projects					controllers.Projects.index(search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/projects/search			controllers.Projects.search
-GET		/project/create				controllers.Projects.create
-POST	/project/create				controllers.Projects.doCreate
-GET		/project/create/$projectName<.+>	controllers.Projects.createImmediately(projectName: String)
-#GET		/project/:id				controllers.Projects.project(id: java.util.UUID)
-GET		/project/:id/edit			controllers.Projects.edit(id: java.util.UUID)
-POST	/project/:id/edit			controllers.Projects.doEdit(id: java.util.UUID)
-GET		/project/:id/remove			controllers.Projects.remove(id: java.util.UUID)
-#GET		/project/:id/locales		controllers.Projects.locales(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-#GET		/project/:id/keys			controllers.Projects.keys(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-#GET		/project/:id/members		controllers.Projects.members(id: java.util.UUID)
+GET		/projects/create			controllers.Projects.create
+POST	/projects/create			controllers.Projects.doCreate
+GET		/projects/create/$projectName<.+>	controllers.Projects.createImmediately(projectName: String)
 GET		/project/:id/member/add		controllers.Projects.memberAdd(id: java.util.UUID)
 POST	/project/:id/member/add		controllers.Projects.doMemberAdd(id: java.util.UUID)
 GET		/project/:id/member/:memberId/remove	controllers.Projects.memberRemove(id: java.util.UUID, memberId: Long)
 POST	/project/:id/owner/change	controllers.Projects.doOwnerChange(id: java.util.UUID)
-#GET		/project/:id/activity		controllers.Projects.activity(id: java.util.UUID)
 GET		/project/:id/activity/csv	controllers.Projects.activityCsv(id: java.util.UUID)
 GET		/project/:id/wordCount/reset	controllers.Projects.wordCountReset(id: java.util.UUID)
 
@@ -133,10 +126,13 @@ GET		/:username/linkedAccounts	controllers.Users.linkedAccounts(username: String
 GET		/:username/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
 GET		/:username/accessTokens		controllers.Users.accessTokens(username: String)
 
-GET		/:username/:projectPath		controllers.Projects.projectBy(username: String, projectPath: String)
-GET		/:username/:projectPath/locales	controllers.Projects.localesBy(username: String, projectPath: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/:username/:projectPath/locale/:localeName	controllers.Locales.localeBy(username: String, projectPath: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/:username/:projectPath/keys	controllers.Projects.keysBy(username: String, projectPath: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/:username/:projectPath/key/:keyName	controllers.Keys.keyBy(username: String, projectPath: String, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/:username/:projectPath/members	controllers.Projects.membersBy(username: String, projectPath: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/:username/:projectPath/activity	controllers.Projects.activityBy(username: String, projectPath: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName				controllers.Projects.projectBy(username: String, projectName: String)
+GET		/:username/:projectName/edit		controllers.Projects.editBy(username: String, projectName: String)
+POST	/:username/:projectName/edit		controllers.Projects.doEditBy(username: String, projectName: String)
+GET		/:username/:projectName/remove		controllers.Projects.removeBy(username: String, projectName: String)
+GET		/:username/:projectName/locales		controllers.Projects.localesBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/locale/:localeName	controllers.Locales.localeBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/keys		controllers.Projects.keysBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/key/:keyName	controllers.Keys.keyBy(username: String, projectName: String, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/members		controllers.Projects.membersBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/activity	controllers.Projects.activityBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
