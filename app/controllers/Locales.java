@@ -29,6 +29,7 @@ import play.data.Form;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.libs.Json;
+import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
 import services.LocaleService;
@@ -90,76 +91,64 @@ public class Locales extends AbstractController {
         })), User.FETCH_PROJECTS, User.FETCH_PROJECTS + ".locales");
   }
 
-  public Result doCreate(UUID projectId) {
-    Project project = projectService.byId(projectId);
-    if (project == null) {
-      return redirect(Projects.indexRoute());
-    }
+  public CompletionStage<Result> doCreateBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project -> {
+      Form<LocaleForm> form = FormUtils.Locale.bindFromRequest(formFactory, configuration);
 
-    select(project);
+      if (form.hasErrors()) {
+        return badRequest(views.html.locales.create.render(createTemplate(), project, form));
+      }
 
-    Form<LocaleForm> form = FormUtils.Locale.bindFromRequest(formFactory, configuration);
+      Locale locale = form.get().into(new Locale());
 
-    if (form.hasErrors()) {
-      return badRequest(views.html.locales.create.render(createTemplate(), project, form));
-    }
-
-    LOGGER.debug("Locale: {}", Json.toJson(form));
-
-    Locale locale = form.get().into(new Locale());
-
-    locale.project = project;
-
-    try {
-      localeService.save(locale);
-    } catch (ConstraintViolationException e) {
-      return badRequest(
-          views.html.locales.create.render(createTemplate(), project, FormUtils.include(form, e)));
-    }
-
-    try {
-      localeApiService.upload(locale.id, request());
-    } catch (IllegalStateException e) {
-      // This is OK, the fileType doesn't need to be filled
-    }
-
-    LocaleForm search = form.get();
-
-    return redirect(locale.route(search.search, search.order, search.limit, search.offset));
-  }
-
-  public Result createImmediately(UUID projectId, String localeName, String search, String order,
-      int limit, int offset) {
-    Project project = projectService.byId(projectId);
-
-    if (project == null) {
-      return redirect(Projects.indexRoute());
-    }
-
-    select(project);
-
-    Form<LocaleForm> form =
-        LocaleForm.with(localeName, FormUtils.Locale.bindFromRequest(formFactory, configuration));
-    if (localeName.length() > Locale.NAME_LENGTH) {
-      return badRequest(views.html.locales.create.render(createTemplate(), project, form));
-    }
-
-    Locale locale = Locale.byProjectAndName(project, localeName);
-
-    if (locale == null) {
-      locale = new Locale(project, localeName);
-
-      LOGGER.debug("Locale: {}", Json.toJson(locale));
+      locale.project = project;
 
       try {
         localeService.save(locale);
       } catch (ConstraintViolationException e) {
-        return badRequest(views.html.locales.create.render(createTemplate(), project,
-            FormUtils.include(form, e)));
+        return badRequest(
+            views.html.locales.create
+                .render(createTemplate(), project, FormUtils.include(form, e)));
       }
-    }
 
-    return redirect(locale.route(search, order, limit, offset));
+      try {
+        localeApiService.upload(locale.id, request());
+      } catch (Exception e) {
+        // This is OK, the fileType doesn't need to be filled
+      }
+
+      LocaleForm search = form.get();
+
+      return redirect(locale.route(search.search, search.order, search.limit, search.offset));
+    }));
+  }
+
+  public CompletionStage<Result> createImmediatelyBy(String username, String projectName,
+      String localeName, String search, String order, int limit, int offset) {
+    return user(username, user -> project(user, projectName, project -> {
+      Form<LocaleForm> form =
+          LocaleForm.with(localeName, FormUtils.Locale.bindFromRequest(formFactory, configuration));
+      if (localeName.length() > Locale.NAME_LENGTH) {
+        return badRequest(views.html.locales.create.render(createTemplate(), project, form));
+      }
+
+      Locale locale = Locale.byProjectAndName(project, localeName);
+
+      if (locale == null) {
+        locale = new Locale(project, localeName);
+
+        LOGGER.debug("Locale: {}", Json.toJson(locale));
+
+        try {
+          localeService.save(locale);
+        } catch (ConstraintViolationException e) {
+          return badRequest(views.html.locales.create.render(createTemplate(), project,
+              FormUtils.include(form, e)));
+        }
+      }
+
+      return redirect(locale.route(search, order, limit, offset));
+    }));
   }
 
   public CompletionStage<Result> editBy(String username, String projectName, String localeName,
@@ -177,8 +166,9 @@ public class Locales extends AbstractController {
         user -> project(user, projectName, project -> locale(project, localeName, locale -> {
           Form<LocaleForm> form = FormUtils.Locale.bindFromRequest(formFactory, configuration);
 
-          if (form.hasErrors())
+          if (form.hasErrors()) {
             return badRequest(views.html.locales.edit.render(createTemplate(), locale, form));
+          }
 
           localeService.save(form.get().into(locale));
 
@@ -209,21 +199,24 @@ public class Locales extends AbstractController {
     });
   }
 
-  public Result remove(UUID localeId, String s, String order, int limit, int offset) {
-    return locale(localeId, locale -> {
-      undoCommand(RevertDeleteLocaleCommand.from(locale));
+  public CompletionStage<Result> removeBy(String username, String projectName, String localeName,
+      String s, String order, int limit, int offset) {
+    return user(username,
+        user -> project(user, projectName, project -> locale(project, localeName, locale -> {
+          undoCommand(RevertDeleteLocaleCommand.from(locale));
 
-      try {
-        TransactionUtils.batchExecute((tx) -> {
-          localeService.delete(locale);
-        });
-      } catch (Exception e) {
-        LOGGER.error("Error while batch deleting locale", e);
-      }
+          try {
+            TransactionUtils.batchExecute((tx) -> {
+              localeService.delete(locale);
+            });
+          } catch (Exception e) {
+            LOGGER.error("Error while batch deleting locale", e);
+          }
 
-      return redirect(routes.Projects.localesBy(locale.project.owner.username, locale.project.name,
-          s, order, limit, offset));
-    });
+          return redirect(
+              routes.Projects.localesBy(locale.project.owner.username, locale.project.name,
+                  s, order, limit, offset));
+        })));
   }
 
   private Result project(User user, String projectName, Function<Project, Result> processor) {
@@ -280,5 +273,23 @@ public class Locales extends AbstractController {
   @Override
   protected Template createTemplate() {
     return super.createTemplate().withSection(SECTION_PROJECTS);
+  }
+
+  /**
+   * @param project
+   * @return
+   */
+  public static Call doCreateRoute(Project project) {
+    return routes.Locales.doCreateBy(project.owner.username, project.name);
+  }
+
+  /**
+   * @return
+   */
+  public static Call createImmediatelyRoute(dto.Project project, String localeName,
+      String search, String order, int limit, int offset) {
+    return routes.Locales
+        .createImmediatelyBy(project.ownerUsername, project.name, localeName, search, order, limit,
+            offset);
   }
 }

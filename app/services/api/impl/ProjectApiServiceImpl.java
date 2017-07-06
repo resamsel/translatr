@@ -120,7 +120,7 @@ public class ProjectApiServiceImpl extends
                     .from(
                         messages.at("locale.create", search.search), Data
                             .from(Locale.class, null, "+++",
-                                routes.Locales.createImmediately(project.id, search.search,
+                                Locales.createImmediatelyRoute(project, search.search,
                                     search.search, search.order, search.limit, search.offset)
                                     .url())));
     }

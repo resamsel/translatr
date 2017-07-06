@@ -308,4 +308,24 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   public Call doEditRoute() {
     return routes.Locales.doEditBy(project.owner.username, project.name, name);
   }
+
+  /**
+   * @return
+   */
+  public Call removeRoute() {
+    return removeRoute(Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
+        Locales.DEFAULT_OFFSET);
+  }
+
+  /**
+   * @param search
+   * @param order
+   * @param limit
+   * @param offset
+   * @return
+   */
+  public Call removeRoute(String search, String order, int limit, int offset) {
+    return routes.Locales.removeBy(project.owner.username, project.name, name, search, order, limit,
+        offset);
+  }
 }

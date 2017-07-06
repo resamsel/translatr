@@ -1,6 +1,6 @@
 @(project: models.Project)
 
-<form id="form-locale" method="post" action="@routes.Locales.doCreate(project.id)" enctype="multipart/form-data">
+<form id="form-locale" method="post" action="@Locales.doCreateRoute(project)" enctype="multipart/form-data">
 	<div class="input-field">
 		<input
 			id="field-locale-name"
