@@ -53,13 +53,15 @@ import validators.NameUnique;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
 @NameUnique(checker = LocaleNameUniqueChecker.class)
 public class Locale implements Model<Locale, UUID>, Suggestable {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(Locale.class);
 
   public static final int NAME_LENGTH = 15;
 
   public static final String FETCH_MESSAGES = "messages";
 
-  private static final Find<UUID, Locale> find = new Find<UUID, Locale>() {};
+  private static final Find<UUID, Locale> find = new Find<UUID, Locale>() {
+  };
 
   private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("project");
 
@@ -94,7 +96,8 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   @OneToMany
   public List<Message> messages;
 
-  public Locale() {}
+  public Locale() {
+  }
 
   public Locale(Project project, String name) {
     this.project = project;
@@ -125,7 +128,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   }
 
   /**
-   * @param fromString
    * @return
    */
   public static Locale byId(UUID id, String... fetches) {
@@ -147,8 +149,9 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static Locale byProjectAndName(Project project, String name) {
-    if (project == null)
+    if (project == null) {
       return null;
+    }
 
     return byProjectAndName(project.id, name);
   }
@@ -170,23 +173,28 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
     Query<Locale> q = QueryUtils.fetch(find.query().alias("k").setDisableLazyLoading(true),
         PROPERTIES_TO_FETCH, FETCH_MAP);
 
-    if (StringUtils.isEmpty(criteria.getMessagesKeyName()) && !criteria.getFetches().isEmpty())
+    if (StringUtils.isEmpty(criteria.getMessagesKeyName()) && !criteria.getFetches().isEmpty()) {
       q = QueryUtils.fetch(q, QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
           FETCH_MAP);
+    }
 
     ExpressionList<Locale> query = q.where();
 
-    if (criteria.getProjectId() != null)
+    if (criteria.getProjectId() != null) {
       query.eq("project.id", criteria.getProjectId());
+    }
 
-    if (criteria.getLocaleName() != null)
+    if (criteria.getLocaleName() != null) {
       query.eq("name", criteria.getLocaleName());
+    }
 
-    if (criteria.getSearch() != null)
+    if (criteria.getSearch() != null) {
       query.ilike("name", "%" + criteria.getSearch() + "%");
+    }
 
-    if (criteria.getOrder() != null)
+    if (criteria.getOrder() != null) {
       query.setOrderBy(criteria.getOrder());
+    }
 
     criteria.paged(query);
 
@@ -203,9 +211,11 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
               .withLocaleIds(paged.getList().stream().map(l -> l.id).collect(toList())))
           .getList().stream().collect(toMap(m -> m.locale.id, m -> m));
 
-      for (Locale locale : paged.getList())
-        if (messages.containsKey(locale.id))
+      for (Locale locale : paged.getList()) {
+        if (messages.containsKey(locale.id)) {
           locale.messages = Arrays.asList(messages.get(locale.id));
+        }
+      }
     }
 
     return paged;
@@ -217,7 +227,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   }
 
   /**
-   * @param model
+   * @param in
    */
   @Override
   public Locale updateFrom(Locale in) {
@@ -233,11 +243,13 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static String getCacheKey(UUID localeId, String... fetches) {
-    if (localeId == null)
+    if (localeId == null) {
       return null;
+    }
 
-    if (fetches.length > 0)
+    if (fetches.length > 0) {
       return String.format("locale:%s:%s", localeId, StringUtils.join(fetches, ":"));
+    }
 
     return String.format("locale:%s", localeId);
   }
@@ -248,7 +260,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   }
 
   /**
-   * 
+   *
    */
   public String getPathName() {
     return UrlUtils.encode(name);
@@ -256,9 +268,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
   /**
    * Return the route to the given key, with default params added.
-   * 
-   * @param key
-   * @return
    */
   public Call route() {
     return route(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
@@ -267,16 +276,36 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
   /**
    * Return the route to the given key, with params added.
-   * 
-   * @param key
+   */
+  public Call route(String search, String order, int limit, int offset) {
+    return routes.Locales.localeBy(project.owner.username, project.name, name, search, order, limit,
+        offset);
+  }
+
+  /**
+   * @return
+   */
+  public Call editRoute() {
+    return editRoute(Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
+        Locales.DEFAULT_OFFSET);
+  }
+
+  /**
    * @param search
    * @param order
    * @param limit
    * @param offset
    * @return
    */
-  public Call route(String search, String order, int limit, int offset) {
-    return routes.Locales.localeBy(project.owner.username, project.name, name, search, order, limit,
+  public Call editRoute(String search, String order, int limit, int offset) {
+    return routes.Locales.editBy(project.owner.username, project.name, name, search, order, limit,
         offset);
+  }
+
+  /**
+   * @return
+   */
+  public Call doEditRoute() {
+    return routes.Locales.doEditBy(project.owner.username, project.name, name);
   }
 }

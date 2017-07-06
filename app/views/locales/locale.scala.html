@@ -5,7 +5,7 @@
 		@tags.fab("remove-locale", "delete_forever", href = routes.Locales.remove(locale.id).url, tooltip = Messages("locale.remove.tooltip"), styleClass = "red")
 	</li>
 	<li>
-		@tags.fab("edit-locale", "edit", href = routes.Locales.edit(locale.id).url, tooltip = Messages("locale.edit.tooltip"), styleClass = "blue")
+		@tags.fab("edit-locale", "edit", href = locale.editRoute.url, tooltip = Messages("locale.edit.tooltip"), styleClass = "blue")
 	</li>
 }
 

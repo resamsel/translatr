@@ -33,7 +33,7 @@
 					<div class="secondary-content">
 						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
 							<a
-								href="@routes.Locales.edit(locale.id, form.get.search, form.get.order, form.get.limit, form.get.offset)"
+								href="@locale.editRoute(form.get.search, form.get.order, form.get.limit, form.get.offset)"
 								class="btn-flat btn-hover waves-effect waves-light"
 								title="@Messages("button.edit")">
 								<i class="material-icons">mode_edit</i>

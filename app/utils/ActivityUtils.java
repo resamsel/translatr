@@ -3,6 +3,7 @@ package utils;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.LogEntry;
+import org.jetbrains.annotations.Contract;
 import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Call;
@@ -37,6 +38,7 @@ public class ActivityUtils {
   public static final String PROJECT_USER_COLOR = "purple";
   public static final String ACTIVITY_COLOR = "green";
 
+  @Contract("null -> null")
   public static String nameOf(LogEntry activity) {
     if (activity == null)
       return null;
@@ -61,6 +63,7 @@ public class ActivityUtils {
     }
   }
 
+  @Contract("null -> null")
   public static Call linkTo(LogEntry activity) {
     if (activity == null)
       return null;
@@ -116,6 +119,7 @@ public class ActivityUtils {
     return null;
   }
 
+  @Contract(value = "null -> null", pure = true)
   public static String iconOf(LogEntry activity) {
     if (activity == null)
       return null;
@@ -140,6 +144,7 @@ public class ActivityUtils {
     }
   }
 
+  @Contract(value = "null -> null", pure = true)
   public static String colorOf(LogEntry activity) {
     if (activity == null)
       return null;

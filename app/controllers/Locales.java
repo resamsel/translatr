@@ -40,13 +40,13 @@ import utils.TransactionUtils;
 import utils.UrlUtils;
 
 /**
- *
  * @author resamsel
  * @version 3 Oct 2016
  */
 @With(ContextAction.class)
 @SubjectPresent(forceBeforeAuthCheck = true)
 public class Locales extends AbstractController {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(Locales.class);
 
   private final FormFactory formFactory;
@@ -92,15 +92,17 @@ public class Locales extends AbstractController {
 
   public Result doCreate(UUID projectId) {
     Project project = projectService.byId(projectId);
-    if (project == null)
+    if (project == null) {
       return redirect(Projects.indexRoute());
+    }
 
     select(project);
 
     Form<LocaleForm> form = FormUtils.Locale.bindFromRequest(formFactory, configuration);
 
-    if (form.hasErrors())
+    if (form.hasErrors()) {
       return badRequest(views.html.locales.create.render(createTemplate(), project, form));
+    }
 
     LOGGER.debug("Locale: {}", Json.toJson(form));
 
@@ -130,15 +132,17 @@ public class Locales extends AbstractController {
       int limit, int offset) {
     Project project = projectService.byId(projectId);
 
-    if (project == null)
+    if (project == null) {
       return redirect(Projects.indexRoute());
+    }
 
     select(project);
 
     Form<LocaleForm> form =
         LocaleForm.with(localeName, FormUtils.Locale.bindFromRequest(formFactory, configuration));
-    if (localeName.length() > Locale.NAME_LENGTH)
+    if (localeName.length() > Locale.NAME_LENGTH) {
       return badRequest(views.html.locales.create.render(createTemplate(), project, form));
+    }
 
     Locale locale = Locale.byProjectAndName(project, localeName);
 
@@ -158,26 +162,31 @@ public class Locales extends AbstractController {
     return redirect(locale.route(search, order, limit, offset));
   }
 
-  public Result edit(UUID localeId, String search, String order, int limit, int offset) {
-    return locale(localeId, locale -> {
-      return ok(views.html.locales.edit.render(createTemplate(), locale,
-          LocaleForm.with(locale, FormUtils.Locale.bindFromRequest(formFactory, configuration))));
-    });
+  public CompletionStage<Result> editBy(String username, String projectName, String localeName,
+      String search, String order, int limit, int offset) {
+    return user(username,
+        user -> project(user, projectName, project -> locale(project, localeName, locale -> {
+          return ok(views.html.locales.edit.render(createTemplate(), locale,
+              LocaleForm
+                  .with(locale, FormUtils.Locale.bindFromRequest(formFactory, configuration))));
+        })));
   }
 
-  public Result doEdit(UUID localeId) {
-    return locale(localeId, locale -> {
-      Form<LocaleForm> form = FormUtils.Locale.bindFromRequest(formFactory, configuration);
+  public CompletionStage<Result> doEditBy(String username, String projectName, String localeName) {
+    return user(username,
+        user -> project(user, projectName, project -> locale(project, localeName, locale -> {
+          Form<LocaleForm> form = FormUtils.Locale.bindFromRequest(formFactory, configuration);
 
-      if (form.hasErrors())
-        return badRequest(views.html.locales.edit.render(createTemplate(), locale, form));
+          if (form.hasErrors())
+            return badRequest(views.html.locales.edit.render(createTemplate(), locale, form));
 
-      localeService.save(form.get().into(locale));
+          localeService.save(form.get().into(locale));
 
-      LocaleForm search = form.get();
-      return redirect(routes.Projects.localesBy(locale.project.owner.username, locale.project.name,
-          search.search, search.order, search.limit, search.offset));
-    });
+          LocaleForm search = form.get();
+          return redirect(
+              routes.Projects.localesBy(locale.project.owner.username, locale.project.name,
+                  search.search, search.order, search.limit, search.offset));
+        })));
   }
 
   public Result upload(UUID localeId) {
@@ -221,13 +230,15 @@ public class Locales extends AbstractController {
     if (user.projects != null) {
       Optional<Project> project =
           user.projects.stream().filter(p -> p.name.equals(projectName)).findFirst();
-      if (project.isPresent())
+      if (project.isPresent()) {
         return processor.apply(project.get());
+      }
     }
 
     Project project = projectService.byOwnerAndName(user, projectName);
-    if (project == null)
+    if (project == null) {
       return redirectWithError(Projects.indexRoute(), "project.notFound");
+    }
 
     return processor.apply(project);
   }
@@ -236,14 +247,16 @@ public class Locales extends AbstractController {
     if (project.locales != null) {
       Optional<Locale> locale =
           project.locales.stream().filter(l -> l.name.equals(localeName)).findFirst();
-      if (locale.isPresent())
+      if (locale.isPresent()) {
         return processor.apply(locale.get());
+      }
     }
 
     PagedList<Locale> locales = localeService
         .findBy(new LocaleCriteria().withProjectId(project.id).withLocaleName(localeName));
-    if (locales.getList().isEmpty())
+    if (locales.getList().isEmpty()) {
       return redirect(project.route());
+    }
 
     select(project);
 
@@ -252,8 +265,9 @@ public class Locales extends AbstractController {
 
   private Result locale(UUID localeId, Function<Locale, Result> processor) {
     Locale locale = localeService.byId(localeId);
-    if (locale == null)
+    if (locale == null) {
       return redirect(Projects.indexRoute());
+    }
 
     select(locale.project);
 

@@ -69,7 +69,6 @@ public class Key extends Dto {
   /**
    * Return the route to the given key, with default params added.
    * 
-   * @param key
    * @return
    */
   public Call route() {
@@ -80,7 +79,6 @@ public class Key extends Dto {
   /**
    * Return the route to the given key, with params added.
    * 
-   * @param key
    * @param search
    * @param order
    * @param limit
@@ -88,6 +86,9 @@ public class Key extends Dto {
    * @return
    */
   public Call route(String search, String order, int limit, int offset) {
+    if(projectOwnerUsername == null || projectName == null || pathName == null)
+      return null;
+
     return routes.Keys.keyBy(projectOwnerUsername, projectName, pathName, search, order, limit,
         offset);
   }
