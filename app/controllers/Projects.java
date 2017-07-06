@@ -60,22 +60,20 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.KeyService;
 import services.LocaleService;
-import services.LogEntryService;
 import services.ProjectService;
 import services.ProjectUserService;
-import services.UserService;
 import utils.FormUtils;
 import utils.PermissionUtils;
 import utils.Template;
 
 /**
- *
  * @author resamsel
  * @version 16 Sep 2016
  */
 @With(ContextAction.class)
 @SubjectPresent(forceBeforeAuthCheck = true)
 public class Projects extends AbstractController {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(Projects.class);
 
   private final ProjectService projectService;
@@ -91,13 +89,12 @@ public class Projects extends AbstractController {
   private final Configuration configuration;
 
   /**
-   * 
+   *
    */
   @Inject
   public Projects(Injector injector, CacheApi cache, FormFactory formFactory, PlayAuthenticate auth,
-      UserService userService, LogEntryService logEntryService, ProjectService projectService,
-      LocaleService localeService, KeyService keyService, ProjectUserService projectUserService,
-      Configuration configuration) {
+      ProjectService projectService, LocaleService localeService, KeyService keyService,
+      ProjectUserService projectUserService, Configuration configuration) {
     super(injector, cache, auth);
 
     this.formFactory = formFactory;
@@ -132,20 +129,22 @@ public class Projects extends AbstractController {
     List<Suggestable> suggestions = new ArrayList<>();
 
     PagedList<? extends Suggestable> projects = projectService.findBy(ProjectCriteria.from(search));
-    if (!projects.getList().isEmpty())
+    if (!projects.getList().isEmpty()) {
       suggestions.addAll(projects.getList());
-    else
+    } else {
       suggestions.add(Suggestable.DefaultSuggestable
           .from(ctx().messages().at("project.create", search.search), Data.from(Project.class, null,
               "+++", controllers.routes.Projects.createImmediately(search.search).url())));
+    }
 
     return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
   }
 
   public CompletionStage<Result> projectBy(String username, String projectName) {
     return user(username, user -> project(user, projectName, project -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values()))
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values())) {
         return redirectWithError(user.route(), "project.access.denied", project.name);
+      }
 
       return ok(views.html.projects.project.render(createTemplate(), project,
           FormUtils.Search.bindFromRequest(formFactory, configuration)));
@@ -160,17 +159,19 @@ public class Projects extends AbstractController {
   public CompletionStage<Result> doCreate() {
     return tryCatch(() -> {
       Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
-      if (form.hasErrors())
+      if (form.hasErrors()) {
         throw new ConstraintViolationException(Collections.emptySet());
+      }
 
       LOGGER.debug("Project: {}", Json.toJson(form));
 
       User owner = User.loggedInUser();
       Project project = Project.byOwnerAndName(owner, form.get().getName());
-      if (project != null)
+      if (project != null) {
         form.get().fill(project).withDeleted(false);
-      else
+      } else {
         project = form.get().fill(new Project()).withOwner(owner);
+      }
 
       projectService.save(project);
 
@@ -179,9 +180,10 @@ public class Projects extends AbstractController {
       return redirect(project.route());
     }).exceptionally(t -> {
       Throwable cause = t.getCause();
-      if (cause instanceof ConstraintViolationException)
+      if (cause instanceof ConstraintViolationException) {
         return badRequest(views.html.projects.create.render(createTemplate(),
             FormUtils.include(ProjectForm.form(formFactory).bindFromRequest(), cause)));
+      }
 
       return handleException(cause);
     });
@@ -190,8 +192,9 @@ public class Projects extends AbstractController {
   public Result createImmediately(String projectName) {
     Form<ProjectForm> form =
         ProjectForm.form(formFactory).bind(ImmutableMap.of("name", projectName));
-    if (form.hasErrors())
+    if (form.hasErrors()) {
       return badRequest(views.html.projects.create.render(createTemplate(), form));
+    }
 
     User owner = User.loggedInUser();
     Project project = Project.byOwnerAndName(owner, projectName);
@@ -213,8 +216,9 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> editBy(String username, String projectName) {
     return user(username, user -> project(user, projectName, project -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.route(), "project.edit.denied", project.name);
+      }
 
       select(project);
 
@@ -225,15 +229,17 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> doEditBy(String username, String projectName) {
     return user(username, user -> project(user, projectName, project -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.route(), "project.edit.denied", project.name);
+      }
 
       select(project);
 
       Form<ProjectForm> form = formFactory.form(ProjectForm.class).bindFromRequest();
 
-      if (form.hasErrors())
+      if (form.hasErrors()) {
         return badRequest(views.html.projects.edit.render(createTemplate(), project, form));
+      }
 
       projectService.save(form.get().fill(project));
 
@@ -243,8 +249,9 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> removeBy(String username, String projectName) {
     return user(username, user -> project(user, projectName, project -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.route(), "project.delete.denied", project.name);
+      }
 
       select(project);
 
@@ -316,32 +323,31 @@ public class Projects extends AbstractController {
     }));
   }
 
-  public Result memberAdd(UUID projectId) {
-    return projectLegacy(projectId, project -> {
-      Form<ProjectUserForm> form = ProjectUserForm.form(formFactory).bindFromRequest();
-
-      return ok(views.html.projects.memberAdd.render(createTemplate(), project, form));
-    });
+  public CompletionStage<Result> memberAddBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project ->
+        ok(views.html.projects.memberAdd
+            .render(createTemplate(), project, ProjectUserForm.form(formFactory).bindFromRequest()))
+    ));
   }
 
-  public Result doMemberAdd(UUID projectId) {
-    return projectLegacy(projectId, project -> {
+  public CompletionStage<Result> doMemberAddBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project ->{
       Form<ProjectUserForm> form = ProjectUserForm.form(formFactory).bindFromRequest();
 
       if (form.hasErrors())
         return badRequest(views.html.projects.memberAdd.render(createTemplate(), project, form));
 
-      User user = userService.byUsername(form.get().getUsername());
+      User member = userService.byUsername(form.get().getUsername());
 
       projectUserService
-          .save(form.get().fill(new ProjectUser()).withProject(project).withUser(user));
+          .save(form.get().fill(new ProjectUser()).withProject(project).withUser(member));
 
       return redirect(project.membersRoute());
-    });
+    }));
   }
 
-  public Result memberRemove(UUID projectId, Long memberId) {
-    return projectLegacy(projectId, project -> {
+  public CompletionStage<Result> memberRemoveBy(String username, String projectName, Long memberId) {
+    return user(username, user -> project(user, projectName, project -> {
       ProjectUser member = projectUserService.byId(memberId);
 
       if (member == null || !project.id.equals(member.project.id))
@@ -352,11 +358,11 @@ public class Projects extends AbstractController {
       projectUserService.delete(member);
 
       return redirect(project.membersRoute());
-    });
+    }));
   }
 
-  public Result doOwnerChange(UUID projectId) {
-    return projectLegacy(projectId, project -> {
+  public CompletionStage<Result> doOwnerChangeBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project -> {
       Form<ProjectOwnerForm> form = formFactory.form(ProjectOwnerForm.class).bindFromRequest();
 
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
@@ -376,7 +382,7 @@ public class Projects extends AbstractController {
       projectService.save(project.withOwner(userService.byId(val.getOwnerId())));
 
       return redirect(project.membersRoute());
-    });
+    }));
   }
 
   public CompletionStage<Result> activityBy(String username, String projectName, String s,
@@ -410,24 +416,25 @@ public class Projects extends AbstractController {
     });
   }
 
-  public Result activityCsv(UUID projectId) {
-    return projectLegacy(projectId, project -> {
+  public CompletionStage<Result> activityCsvBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project -> {
       return ok(new ActivityCsvConverter()
           .apply(logEntryService.getAggregates(new LogEntryCriteria().withProjectId(project.id))));
-    });
+    }));
   }
 
-  public CompletionStage<Result> wordCountReset(UUID projectId) {
-    return project(projectId, project -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
+  public CompletionStage<Result> wordCountResetBy(String username, String projectName) {
+    return user(username, user -> project(user, projectName, project -> {
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.route(), "project.edit.denied", project.name);
+      }
 
       select(project);
 
-      projectService.resetWordCount(projectId);
+      projectService.resetWordCount(project.id);
 
       return redirectWithMessage(project.route(), "project.wordCount.reset");
-    });
+    }));
   }
 
   @Deprecated
@@ -436,10 +443,11 @@ public class Projects extends AbstractController {
     return tryCatch(() -> {
       Project project = projectService.byId(projectId, propertiesToFetch);
 
-      if (project == null)
+      if (project == null) {
         return redirectWithError(
             routes.Projects.index(DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET),
             "project.notFound", projectId);
+      }
 
       select(project);
 
@@ -448,11 +456,6 @@ public class Projects extends AbstractController {
   }
 
   /**
-   * 
-   * @param projectId
-   * @param processor
-   * @param propertiesToFetch
-   * @return
    * @deprecated Use {@link Projects#project(UUID, Function, String...)} instead!
    */
   @Deprecated
@@ -470,15 +473,17 @@ public class Projects extends AbstractController {
     if (user.projects != null) {
       Optional<Project> project =
           user.projects.stream().filter(p -> p.name.equals(projectName)).findFirst();
-      if (project.isPresent())
+      if (project.isPresent()) {
         return processor.apply(project.get());
+      }
     }
 
     Project project = projectService.byOwnerAndName(user, projectName);
-    if (project == null)
+    if (project == null) {
       return redirectWithError(
           routes.Projects.index(DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET),
           "project.notFound");
+    }
 
     return processor.apply(project);
   }

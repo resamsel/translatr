@@ -2,6 +2,10 @@ package models;
 
 import static utils.Stopwatch.log;
 
+import com.google.common.collect.ImmutableMap;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -24,17 +28,26 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import criterias.HasNextPagedList;
 import criterias.ProjectUserCriteria;
+import utils.QueryUtils;
 
 /**
- *
  * @author resamsel
  * @version 5 Oct 2016
  */
 @Entity
 public class ProjectUser implements Model<ProjectUser, Long> {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectUser.class);
 
   public static final int ROLE_LENGTH = 16;
+
+  private static final String FETCH_PROJECT = "project";
+
+  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList(FETCH_PROJECT);
+
+  private static final Map<String, List<String>> FETCH_MAP =
+      ImmutableMap.of(FETCH_PROJECT, Arrays.asList(FETCH_PROJECT, FETCH_PROJECT + ".owner"));
+
 
   @Id
   @GeneratedValue
@@ -62,18 +75,20 @@ public class ProjectUser implements Model<ProjectUser, Long> {
   public ProjectRole role;
 
   /**
-   * 
+   *
    */
-  public ProjectUser() {}
+  public ProjectUser() {
+  }
 
   /**
-   * 
+   *
    */
   public ProjectUser(ProjectRole role) {
     this.role = role;
   }
 
-  private static final Find<Long, ProjectUser> find = new Find<Long, ProjectUser>() {};
+  private static final Find<Long, ProjectUser> find = new Find<Long, ProjectUser>() {
+  };
 
   /**
    * {@inheritDoc}
@@ -106,7 +121,8 @@ public class ProjectUser implements Model<ProjectUser, Long> {
   }
 
   public static ProjectUser byId(Long id) {
-    return find.byId(id);
+    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where().idEq(id)
+        .findUnique();
   }
 
   /**
@@ -118,11 +134,13 @@ public class ProjectUser implements Model<ProjectUser, Long> {
 
     query.eq("project.deleted", false);
 
-    if (criteria.getProjectId() != null)
+    if (criteria.getProjectId() != null) {
       query.eq("project.id", criteria.getProjectId());
+    }
 
-    if (criteria.getUserId() != null)
+    if (criteria.getUserId() != null) {
       query.eq("user.id", criteria.getUserId());
+    }
 
     criteria.paged(query);
 

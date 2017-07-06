@@ -14,7 +14,7 @@
 			@tags.fab("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue")
 		</li>
 		<li>
-			@tags.fab("reset-word-count", "clear", href = routes.Projects.wordCountReset(project.id).url, tooltip = Messages("project.wordCount.reset.tooltip"), styleClass = "orange")
+			@tags.fab("reset-word-count", "clear", href = project.wordCountResetRoute.url, tooltip = Messages("project.wordCount.reset.tooltip"), styleClass = "orange")
 		</li>
 		<li>
 			@tags.fab("remove-project", "delete_forever", href = project.removeRoute.url, tooltip = Messages("project.remove.tooltip"), styleClass = "red")

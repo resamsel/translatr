@@ -60,6 +60,7 @@ import utils.QueryUtils;
 @Entity
 @Table(name = "user_")
 public class User implements Model<User, UUID>, Subject {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
 
   public static final int USERNAME_LENGTH = 32;
@@ -115,7 +116,8 @@ public class User implements Model<User, UUID>, Subject {
   @OneToMany
   public List<LogEntry> activities;
 
-  private static final Find<UUID, User> find = new Find<UUID, User>() {};
+  private static final Find<UUID, User> find = new Find<UUID, User>() {
+  };
 
   /**
    * {@inheritDoc}
@@ -136,16 +138,18 @@ public class User implements Model<User, UUID>, Subject {
   }
 
   public static User findByAuthUserIdentity(final AuthUserIdentity identity) {
-    if (identity == null)
+    if (identity == null) {
       return null;
+    }
 
     return log(() -> getAuthUserFind(identity).findUnique(), LOGGER, "findByAuthUserIdentity");
   }
 
   public Set<String> getProviders() {
     final Set<String> providerKeys = new HashSet<String>(linkedAccounts.size());
-    for (final LinkedAccount acc : linkedAccounts)
+    for (final LinkedAccount acc : linkedAccounts) {
       providerKeys.add(acc.providerKey);
+    }
 
     return providerKeys;
   }
@@ -159,9 +163,10 @@ public class User implements Model<User, UUID>, Subject {
 
     query.eq("active", true);
 
-    if (criteria.getSearch() != null)
+    if (criteria.getSearch() != null) {
       query.disjunction().ilike("name", "%" + criteria.getSearch() + "%")
           .ilike("username", "%" + criteria.getSearch() + "%").endJunction();
+    }
 
     criteria.paged(query);
 
@@ -183,6 +188,12 @@ public class User implements Model<User, UUID>, Subject {
 
   public User withName(String name) {
     this.name = name;
+    return this;
+  }
+
+
+  public User withUsername(String username) {
+    this.username = username;
     return this;
   }
 
@@ -230,8 +241,10 @@ public class User implements Model<User, UUID>, Subject {
         Arrays.asList(StringUtils.split(injector.instanceOf(play.Application.class).configuration()
             .getString(ConfigKey.AuthProviders.key()), ","));
     if (provider != null && !authProviders.contains(provider))
-      // Prevent NPE when using an unavailable auth provider
+    // Prevent NPE when using an unavailable auth provider
+    {
       session.clear();
+    }
 
     PlayAuthenticate auth = injector.instanceOf(PlayAuthenticate.class);
     AuthUser authUser = auth.getUser(session);
@@ -241,20 +254,23 @@ public class User implements Model<User, UUID>, Subject {
 
   public static User loggedInUser() {
     Context ctx = ContextKey.context();
-    if (ctx == null)
+    if (ctx == null) {
       return null;
+    }
 
     // Logged-in via access_token?
     AccessToken accessToken = ContextKey.AccessToken.get();
-    if (accessToken != null)
+    if (accessToken != null) {
       return accessToken.user;
+    }
 
     // Logged-in via auth plugin?
     AuthUser authUser = loggedInAuthUser();
     if (authUser != null) {
       User user = ContextKey.get(ctx, authUser.toString());
-      if (user != null)
+      if (user != null) {
         return user;
+      }
 
       return ContextKey.put(ctx, authUser.toString(),
           Play.current().injector().instanceOf(UserService.class).getLocalUser(authUser));
@@ -270,8 +286,9 @@ public class User implements Model<User, UUID>, Subject {
   public static UUID loggedInUserId() {
     User loggedInUser = loggedInUser();
 
-    if (loggedInUser == null)
+    if (loggedInUser == null) {
       return null;
+    }
 
     return loggedInUser.id;
   }
@@ -339,21 +356,25 @@ public class User implements Model<User, UUID>, Subject {
   }
 
   public static String getCacheKey(UUID userId, String... fetches) {
-    if (userId == null)
+    if (userId == null) {
       return null;
+    }
 
-    if (fetches.length > 0)
+    if (fetches.length > 0) {
       return String.format("user:%s:%s", userId, StringUtils.join(fetches, ":"));
+    }
 
     return String.format("user:%s", userId);
   }
 
   public static String getCacheKey(String username, String... fetches) {
-    if (username == null)
+    if (username == null) {
       return null;
+    }
 
-    if (fetches.length > 0)
+    if (fetches.length > 0) {
       return String.format("username:%s:%s", username, StringUtils.join(fetches, ":"));
+    }
 
     return String.format("username:%s", username);
   }

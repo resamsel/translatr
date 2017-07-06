@@ -28,7 +28,7 @@
 					} else {
 						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager) || member.user.id == template.loggedInUser.id) {
 							<a
-								href="@routes.Projects.memberRemove(project.id, member.id)"
+								href="@project.memberRemoveRoute(member.id)"
 								class="secondary-content btn-hover"
 								title="@Messages("button.remove")">
 								<i class="material-icons">delete_forever</i>
@@ -49,7 +49,7 @@
 			<form
 				id="form-member"
 				method="post"
-				action="@routes.Projects.doMemberAdd(project.id)">
+				action="@project.doMemberAddRoute">
 				@memberFormContent(project, memberForm)
 			</form>
 		}
@@ -58,7 +58,7 @@
 			<form
 				id="form-ownership"
 				method="post"
-				action="@routes.Projects.doOwnerChange(project.id)">
+				action="@project.doOwnerChangeRoute">
 				@ownerChangeFormContent(project, memberList, memberForm)
 			</form>
 		}

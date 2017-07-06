@@ -14,6 +14,7 @@ import models.User;
 import play.mvc.Call;
 
 public class ProjectUser extends Dto {
+
   private static final long serialVersionUID = 523759011096520257L;
 
   public UUID projectId;
@@ -21,7 +22,7 @@ public class ProjectUser extends Dto {
   public String projectOwnerUsername;
 
   public UUID userId;
-  public String userName;
+  public String userUsername;
 
   public ProjectRole role;
 
@@ -31,14 +32,15 @@ public class ProjectUser extends Dto {
   @JsonIgnore
   public DateTime whenUpdated;
 
-  public ProjectUser() {}
+  public ProjectUser() {
+  }
 
   private ProjectUser(models.ProjectUser in) {
     this.projectId = in.project.id;
     this.projectName = in.project.name;
     this.projectOwnerUsername = in.project.owner.username;
     this.userId = in.user.id;
-    this.userName = in.user.username;
+    this.userUsername = in.user.username;
     this.role = in.role;
     this.whenCreated = in.whenCreated;
     this.whenUpdated = in.whenUpdated;
@@ -47,8 +49,9 @@ public class ProjectUser extends Dto {
   public models.ProjectUser toModel() {
     models.ProjectUser out = new models.ProjectUser();
 
-    out.project = new Project().withId(projectId);
-    out.user = new User().withId(userId);
+    out.project = new Project().withId(projectId).withName(projectName)
+        .withOwner(new User().withUsername(projectOwnerUsername));
+    out.user = new User().withId(userId).withUsername(userUsername);
     out.role = role;
     out.whenCreated = whenCreated;
     out.whenUpdated = whenUpdated;

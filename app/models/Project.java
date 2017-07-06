@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
+import controllers.routes;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -273,7 +274,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   /**
-   * @param project
+   * @param in
    */
   @Override
   public Project updateFrom(Project in) {
@@ -408,9 +409,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   /**
    * Return the route to the locales of this project.
    * 
-   * @param search
-   * 
-   * @param key
    * @return
    */
   public Call localesRoute() {
@@ -431,9 +429,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   /**
    * Return the route to the keys of this project.
    * 
-   * @param search
-   * 
-   * @param key
    * @return
    */
   public Call keysRoute() {
@@ -463,9 +458,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   /**
    * Return the route to the members of this project.
    * 
-   * @param search
-   * 
-   * @param key
    * @return
    */
   public Call membersRoute() {
@@ -476,9 +468,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   /**
    * Return the route to the members of this project.
    * 
-   * @param search
-   * 
-   * @param key
    * @return
    */
   public Call membersRoute(String search, String order, int limit, int offset) {
@@ -489,9 +478,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   /**
    * Return the route to the members of this project.
    * 
-   * @param search
-   * 
-   * @param key
    * @return
    */
   public Call activityRoute() {
@@ -502,9 +488,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   /**
    * Return the route to the activity of this project.
    * 
-   * @param search
-   * 
-   * @param key
    * @return
    */
   public Call activityRoute(String search, String order, int limit, int offset) {
@@ -515,13 +498,55 @@ public class Project implements Model<Project, UUID>, Suggestable {
   /**
    * Return the route to the members of this project.
    * 
-   * @param search
-   * 
-   * @param key
    * @return
    */
   public Call activityCsvRoute() {
-    return controllers.routes.Projects.activityCsv(id);
+    return controllers.routes.Projects.activityCsvBy(owner.username, name);
+  }
+
+  /**
+   * Return the route to the word count reset of this project.
+   *
+   * @return
+   */
+  public Call wordCountResetRoute() {
+    return controllers.routes.Projects.wordCountResetBy(owner.username, name);
+  }
+
+  /**
+   * Return the route to the do owner change of this project.
+   *
+   * @return
+   */
+  public Call doOwnerChangeRoute() {
+    return controllers.routes.Projects.doOwnerChangeBy(owner.username, name);
+  }
+
+  /**
+   * Return the route to the member add of this project.
+   *
+   * @return
+   */
+  public Call memberAddRoute() {
+    return controllers.routes.Projects.memberAddBy(owner.username, name);
+  }
+
+  /**
+   * Return the route to the do member add of this project.
+   *
+   * @return
+   */
+  public Call doMemberAddRoute() {
+    return controllers.routes.Projects.doMemberAddBy(owner.username, name);
+  }
+
+  /**
+   * Return the route to the member remove of this project.
+   *
+   * @return
+   */
+  public Call memberRemoveRoute(Long memberId) {
+    return controllers.routes.Projects.memberRemoveBy(owner.username, name, memberId);
   }
 
   @Override

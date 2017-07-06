@@ -39,7 +39,7 @@ public class RevertDeleteProjectUserCommand implements Command<models.ProjectUse
   public void execute(Injector injector) {
     models.ProjectUser model = projectUser.toModel();
 
-    LOGGER.debug("Reverting member {} from project {}", projectUser.userName,
+    LOGGER.debug("Reverting member {} from project {}", projectUser.userUsername,
         projectUser.projectName);
 
     injector.instanceOf(ProjectUserService.class).save(model);
@@ -50,7 +50,7 @@ public class RevertDeleteProjectUserCommand implements Command<models.ProjectUse
    */
   @Override
   public String getMessage() {
-    return Context.current().messages().at("project.member.deleted", projectUser.userName,
+    return Context.current().messages().at("project.member.deleted", projectUser.userUsername,
         projectUser.projectName);
   }
 
