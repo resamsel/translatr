@@ -4,6 +4,7 @@ import models.Project;
 import play.data.Form;
 import play.data.FormFactory;
 import play.data.validation.Constraints;
+import validators.ProjectName;
 
 /**
  *
@@ -13,6 +14,8 @@ import play.data.validation.Constraints;
 public class ProjectForm {
   @Constraints.Required
   @Constraints.MaxLength(Project.NAME_LENGTH)
+  @Constraints.Pattern("[a-zA-Z0-9_-]*")
+  @ProjectName
   private String name;
 
   /**

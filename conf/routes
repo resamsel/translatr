@@ -70,7 +70,7 @@ GET		/command/:key/execute		controllers.Application.commandExecute(key: String)
 GET		/javascriptRoutes			controllers.Application.javascriptRoutes
 
 # Users
-GET		/users						controllers.Users.index()
+GET		/users						controllers.Users.index
 
 # Profiles
 GET		/profile					controllers.Profiles.profile
@@ -84,11 +84,11 @@ GET		/profile/link				controllers.Profiles.askLink
 POST	/profile/link				controllers.Profiles.doLink
 GET		/profile/merge				controllers.Profiles.askMerge
 POST	/profile/merge				controllers.Profiles.doMerge
-GET		/profile/accessToken/create	controllers.Profiles.accessTokenCreate
-POST	/profile/accessToken/create	controllers.Profiles.doAccessTokenCreate
-GET		/profile/accessToken/:accessTokenId/edit	controllers.Profiles.accessTokenEdit(accessTokenId: Long)
-POST	/profile/accessToken/:accessTokenId/edit	controllers.Profiles.doAccessTokenEdit(accessTokenId: Long)
-GET		/profile/accessToken/:accessTokenId/remove	controllers.Profiles.accessTokenRemove(accessTokenId: Long)
+GET		/profile/accessTokens/create	controllers.Profiles.accessTokenCreate
+POST	/profile/accessTokens/create	controllers.Profiles.doAccessTokenCreate
+GET		/profile/accessTokens/:accessTokenId/edit	controllers.Profiles.accessTokenEdit(accessTokenId: Long)
+POST	/profile/accessTokens/:accessTokenId/edit	controllers.Profiles.doAccessTokenEdit(accessTokenId: Long)
+GET		/profile/accessTokens/:accessTokenId/remove	controllers.Profiles.accessTokenRemove(accessTokenId: Long)
 GET		/profile/notifications/reset	controllers.Profiles.resetNotifications
 
 # Projects
@@ -97,11 +97,11 @@ GET		/projects/create/$projectName<.+>	controllers.Projects.createImmediately(pr
 
 # User
 GET		/:username					controllers.Users.user(username: String)
-GET		/:username/activity/csv		controllers.Users.activityCsv(username: String)
 GET		/:username/projects			controllers.Users.projects(username: String)
+GET		/:username/activity/csv		controllers.Users.activityCsv(username: String)
 GET		/:username/activity			controllers.Users.activity(username: String)
 GET		/:username/linkedAccounts	controllers.Users.linkedAccounts(username: String)
-GET		/:username/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
+GET		/:username/linkedAccounts/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
 GET		/:username/accessTokens		controllers.Users.accessTokens(username: String)
 
 # Project

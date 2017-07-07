@@ -9,6 +9,7 @@ import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 import play.mvc.Http.Context;
 import services.UserService;
+import validators.Username;
 
 /**
  *
@@ -24,6 +25,7 @@ public class UserForm {
 
   @Constraints.Required
   @Constraints.MaxLength(User.USERNAME_LENGTH)
+  @Username
   private String username;
 
   @Constraints.Required

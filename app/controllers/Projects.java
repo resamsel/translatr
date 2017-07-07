@@ -238,7 +238,12 @@ public class Projects extends AbstractController {
         return badRequest(views.html.projects.edit.render(createTemplate(), project, form));
       }
 
-      projectService.save(form.get().fill(project));
+      try {
+        projectService.save(form.get().fill(project));
+      } catch (ConstraintViolationException e) {
+        return badRequest(
+            views.html.projects.edit.render(createTemplate(), project, FormUtils.include(form, e)));
+      }
 
       return redirect(project.route());
     }));

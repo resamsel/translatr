@@ -45,8 +45,8 @@ API_HTML_ERROR = textwrap.dedent("""
 """)
 
 Project = namedtuple('Project', 'id name ownerId ownerName')
-Locale = namedtuple('Locale', 'id name projectId projectName')
-Key = namedtuple('Key', 'id name projectId projectName')
+Locale = namedtuple('Locale', 'id name projectId projectOwnerUsername projectName pathName')
+Key = namedtuple('Key', 'id name projectId projectOwnerUsername projectName pathName')
 User = namedtuple('User', 'id name username')
 
 logger = logging.getLogger(__name__)

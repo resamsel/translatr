@@ -48,6 +48,7 @@ import services.UserService;
 import utils.ConfigKey;
 import utils.ContextKey;
 import utils.QueryUtils;
+import validators.Username;
 
 /**
  * @author René Panzar
@@ -85,6 +86,7 @@ public class User implements Model<User, UUID>, Subject {
   public boolean active;
 
   @Column(nullable = false, length = USERNAME_LENGTH, unique = true)
+  @Username
   public String username;
 
   @Column(nullable = false, length = NAME_LENGTH)
