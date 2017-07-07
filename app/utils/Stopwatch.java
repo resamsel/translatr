@@ -2,7 +2,6 @@ package utils;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-
 import org.slf4j.Logger;
 
 /**

@@ -3,9 +3,8 @@ package tests.utils;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static utils.MessageUtils.wordCount;
 
-import org.junit.Test;
-
 import models.Message;
+import org.junit.Test;
 
 /**
  * @author resamsel

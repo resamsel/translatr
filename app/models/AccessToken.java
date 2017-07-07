@@ -1,29 +1,25 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Version;
-
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import criterias.AccessTokenCriteria;
 import criterias.HasNextPagedList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Version;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import play.data.validation.Constraints.MaxLength;
 import play.libs.Json;
 import validators.AccessTokenNameUniqueChecker;
@@ -137,9 +133,5 @@ public class AccessToken implements Model<AccessToken, Long> {
    */
   public static AccessToken byUserAndName(UUID userId, String name) {
     return find.where().eq("user.id", userId).eq("name", name).findUnique();
-  }
-
-  public static AccessToken from(JsonNode json) {
-    return Json.fromJson(json, AccessToken.class);
   }
 }

@@ -2,32 +2,27 @@ package services.impl;
 
 import static utils.Stopwatch.log;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Validator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
-
 import criterias.LogEntryCriteria;
 import io.getstream.client.exception.StreamClientException;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
 import models.Aggregate;
 import models.LogEntry;
 import models.Project;
 import models.User;
-import play.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import services.LogEntryService;
@@ -35,13 +30,13 @@ import services.NotificationService;
 import utils.ContextKey;
 
 /**
- *
  * @author resamsel
  * @version 29 Aug 2016
  */
 @Singleton
 public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, LogEntryCriteria>
     implements LogEntryService {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryServiceImpl.class);
 
   private static final String H2_COLUMN_MILLIS =
@@ -53,13 +48,10 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
 
   private final NotificationService notificationService;
 
-  /**
-   * 
-   */
   @Inject
-  public LogEntryServiceImpl(Configuration configuration, HttpExecutionContext executionContext,
-      Validator validator, CacheApi cache, NotificationService notificationService) {
-    super(configuration, validator, null);
+  public LogEntryServiceImpl(HttpExecutionContext executionContext, Validator validator,
+      CacheApi cache, NotificationService notificationService) {
+    super(validator, null);
     this.executionContext = executionContext;
     this.cache = cache;
     this.notificationService = notificationService;
@@ -78,11 +70,13 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
     ExpressionList<Aggregate> query =
         Ebean.find(Aggregate.class).setRawSql(getAggregatesRawSql()).where();
 
-    if (criteria.getProjectId() != null)
+    if (criteria.getProjectId() != null) {
       query.eq("project_id", criteria.getProjectId());
+    }
 
-    if (criteria.getUserId() != null)
+    if (criteria.getUserId() != null) {
       query.eq("user_id", criteria.getUserId());
+    }
 
     String cacheKey =
         String.format("logentry:aggregates:%s:%s", criteria.getUserId(), criteria.getProjectId());
@@ -97,12 +91,13 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
    */
   private RawSql getAggregatesRawSql() {
     String dbpName = Ebean.getDefaultServer().getPluginApi().getDatabasePlatform().getName();
-    if ("h2".equals(dbpName))
+    if ("h2".equals(dbpName)) {
       return RawSqlBuilder
           .parse(String.format(
               "select %1$s as millis, count(*) as cnt from log_entry group by %1$s order by 1",
               H2_COLUMN_MILLIS))
           .columnMapping(H2_COLUMN_MILLIS, "millis").columnMapping("count(*)", "value").create();
+    }
 
     return RawSqlBuilder
         .parse(
@@ -125,13 +120,15 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
    */
   @Override
   public void preSave(LogEntry t, boolean update) {
-    if (t.user == null)
+    if (t.user == null) {
       t.user = User.loggedInUser();
+    }
 
     if (t.project == null) {
       UUID projectId = ContextKey.ProjectId.get();
-      if (projectId != null)
+      if (projectId != null) {
         t.project = new Project().withId(projectId);
+      }
     }
   }
 

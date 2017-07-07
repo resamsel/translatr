@@ -1,12 +1,10 @@
 package services;
 
-import javax.inject.Singleton;
-
 import com.feth.play.module.pa.Resolver;
 import com.feth.play.module.pa.exceptions.AccessDeniedException;
 import com.feth.play.module.pa.exceptions.AuthException;
-
 import controllers.routes;
+import javax.inject.Singleton;
 import play.mvc.Call;
 
 /**

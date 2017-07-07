@@ -1,8 +1,7 @@
 package criterias;
 
-import java.util.UUID;
-
 import forms.SearchForm;
+import java.util.UUID;
 import play.mvc.Http.Request;
 
 /**

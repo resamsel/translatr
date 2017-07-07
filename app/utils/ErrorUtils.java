@@ -1,15 +1,13 @@
 package utils;
 
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
 import dto.NotFoundException;
 import dto.PermissionException;
 import dto.errors.ConstraintViolationError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 import play.libs.Json;
 
 /**

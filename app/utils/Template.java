@@ -1,7 +1,6 @@
 package utils;
 
 import com.feth.play.module.pa.PlayAuthenticate;
-
 import models.User;
 import play.mvc.Call;
 

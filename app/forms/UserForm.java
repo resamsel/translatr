@@ -3,7 +3,6 @@ package forms;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import models.User;
 import play.api.Play;
 import play.data.validation.Constraints;

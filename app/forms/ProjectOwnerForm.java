@@ -1,7 +1,6 @@
 package forms;
 
 import java.util.UUID;
-
 import play.data.validation.Constraints;
 
 /**

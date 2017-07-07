@@ -1,10 +1,8 @@
 package utils;
 
 import play.Configuration;
-import scala.Option;
 
 /**
- *
  * @author resamsel
  * @version 30 Sep 2016
  */
@@ -39,10 +37,6 @@ public enum ConfigKey {
 
   public String getString(Configuration config) {
     return config.getString(key);
-  }
-
-  public String getString(play.api.Configuration config) {
-    return config.getString(key, Option.empty()).get();
   }
 
   public Boolean getBoolean(Configuration config) {

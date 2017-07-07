@@ -1,7 +1,6 @@
 package criterias;
 
 import com.avaje.ebean.ExpressionList;
-
 import forms.SearchForm;
 
 /**

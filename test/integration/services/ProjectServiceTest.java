@@ -3,13 +3,10 @@ package integration.services;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.stream.Collectors;
-
 import javax.inject.Inject;
-
-import org.junit.Test;
-
 import models.Project;
 import models.User;
+import org.junit.Test;
 import services.ProjectService;
 import tests.AbstractTest;
 

@@ -1,9 +1,8 @@
 package commands;
 
+import dto.ProjectUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import dto.ProjectUser;
 import play.inject.Injector;
 import play.mvc.Call;
 import play.mvc.Http.Context;

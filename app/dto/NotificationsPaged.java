@@ -1,14 +1,12 @@
 package dto;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Future;
-
 import com.avaje.ebean.PagedList;
-
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.StreamResponse;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * @author resamsel

@@ -7,14 +7,11 @@ import static org.mockito.Mockito.when;
 import static play.inject.Bindings.bind;
 
 import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
-
+import models.User;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import models.User;
 import play.Application;
 import play.api.cache.EhCacheModule;
 import play.cache.CacheApi;

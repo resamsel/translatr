@@ -1,10 +1,8 @@
 package services;
 
-import java.util.UUID;
-
 import com.google.inject.ImplementedBy;
-
 import criterias.ProjectCriteria;
+import java.util.UUID;
 import models.Project;
 import models.User;
 import services.impl.ProjectServiceImpl;

@@ -1,13 +1,11 @@
 package services.impl;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.service.AbstractUserService;
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
-
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import models.ActionType;
 import models.LogEntry;
 import models.User;

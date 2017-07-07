@@ -1,21 +1,21 @@
 package controllers;
 
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.feth.play.module.pa.PlayAuthenticate;
-
 import commands.Command;
 import dto.NotFoundException;
 import dto.PermissionException;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import models.Project;
 import models.User;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.libs.concurrent.HttpExecutionContext;
@@ -24,16 +24,17 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.LogEntryService;
 import services.NotificationService;
+import services.ProjectService;
 import services.UserService;
 import utils.ContextKey;
 import utils.Template;
 
 /**
- *
  * @author resamsel
  * @version 16 Sep 2016
  */
 public abstract class AbstractController extends Controller {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractController.class);
 
   private static final String FLASH_MESSAGE_KEY = "message";
@@ -61,16 +62,12 @@ public abstract class AbstractController extends Controller {
 
   protected final UserService userService;
 
+  protected final ProjectService projectService;
+
   protected final LogEntryService logEntryService;
 
   protected final NotificationService notificationService;
 
-  /**
-   * @param injector
-   * @param userService
-   * @param auth
-   * 
-   */
   protected AbstractController(Injector injector, CacheApi cache, PlayAuthenticate auth) {
     this.injector = injector;
     this.cache = cache;
@@ -78,6 +75,7 @@ public abstract class AbstractController extends Controller {
 
     this.executionContext = injector.instanceOf(HttpExecutionContext.class);
     this.userService = injector.instanceOf(UserService.class);
+    this.projectService = injector.instanceOf(ProjectService.class);
     this.logEntryService = injector.instanceOf(LogEntryService.class);
     this.notificationService = injector.instanceOf(NotificationService.class);
   }
@@ -121,8 +119,9 @@ public abstract class AbstractController extends Controller {
 
     Template template = Template.create(auth, user);
 
-    if (user == null)
+    if (user == null) {
       return template;
+    }
 
     return template.withNotificationsEnabled(notificationService.isEnabled());
   }
@@ -161,24 +160,50 @@ public abstract class AbstractController extends Controller {
       boolean restrict, String... fetches) {
     return tryCatch(() -> {
       User user = userService.byUsername(username, fetches);
-      if (user == null)
+      if (user == null) {
         throw new NotFoundException("User", username);
+      }
 
-      if (restrict && !user.id.equals(User.loggedInUserId()))
+      if (restrict && !user.id.equals(User.loggedInUserId())) {
         throw new PermissionException("user.notFound");
+      }
 
       return processor.apply(user);
     }).exceptionally(e -> {
-      if (e.getCause() != null)
-        e = e.getCause();
-      if (e instanceof NotFoundException)
+      e = ExceptionUtils.getRootCause(e);
+      if (e instanceof NotFoundException) {
         return redirectWithError(Projects.indexRoute(), "user.notFound");
-      if (e instanceof PermissionException)
+      }
+      if (e instanceof PermissionException) {
         return redirectWithError(controllers.routes.Users.user(username), "access.denied");
+      }
 
       LOGGER.error("Error while processing request", e);
       throw new RuntimeException(e);
     });
+  }
+
+  private Result project(User user, String projectName, Function<Project, Result> processor) {
+    if (user.projects != null) {
+      Optional<Project> project =
+          user.projects.stream().filter(p -> p.name.equals(projectName)).findFirst();
+      if (project.isPresent()) {
+        return processor.apply(project.get());
+      }
+    }
+
+    Project project = projectService.byOwnerAndName(user, projectName);
+    if (project == null) {
+      return redirectWithError(Projects.indexRoute(), "project.notFound");
+    }
+
+    return processor.apply(project);
+  }
+
+  protected CompletionStage<Result> project(String username, String projectName,
+      BiFunction<User, Project, Result> processor, String... fetches) {
+    return user(username,
+        user -> project(user, projectName, project -> processor.apply(user, project)), fetches);
   }
 
   /**
@@ -187,10 +212,7 @@ public abstract class AbstractController extends Controller {
    */
   protected Result handleException(Throwable t) {
     try {
-      if (t.getCause() != null)
-        throw t.getCause();
-
-      throw t;
+      throw ExceptionUtils.getRootCause(t);
     } catch (PermissionException e) {
       addError("access.denied");
       return forbidden(views.html.errors.restricted.render(createTemplate()));

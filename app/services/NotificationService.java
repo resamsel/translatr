@@ -1,12 +1,11 @@
 package services;
 
-import java.io.IOException;
-
 import criterias.NotificationCriteria;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.StreamResponse;
+import java.io.IOException;
 import models.LogEntry;
 import models.Project;
 import models.User;

@@ -1,7 +1,6 @@
 package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
 import models.LogEntry;
 import org.jetbrains.annotations.Contract;
 import play.i18n.Messages;

@@ -1,15 +1,7 @@
 package services.api.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import controllers.Keys;
 import controllers.Locales;
 import controllers.routes;
@@ -19,6 +11,11 @@ import criterias.ProjectCriteria;
 import dto.SearchResponse;
 import dto.Suggestion;
 import forms.SearchForm;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import models.Key;
 import models.Locale;
 import models.Project;
@@ -41,6 +38,7 @@ import utils.PermissionUtils;
 @Singleton
 public class ProjectApiServiceImpl extends
     AbstractApiService<Project, UUID, ProjectCriteria, dto.Project> implements ProjectApiService {
+
   private final Configuration configuration;
 
   /**
@@ -48,8 +46,8 @@ public class ProjectApiServiceImpl extends
    */
   @Inject
   protected ProjectApiServiceImpl(Configuration configuration, ProjectService projectService) {
-    super(projectService, dto.Project.class, dto.Project::from, new Scope[] {Scope.ProjectRead},
-        new Scope[] {Scope.ProjectWrite});
+    super(projectService, dto.Project.class, dto.Project::from, new Scope[]{Scope.ProjectRead},
+        new Scope[]{Scope.ProjectWrite});
     this.configuration = configuration;
   }
 
@@ -74,9 +72,10 @@ public class ProjectApiServiceImpl extends
 
       search.pager(keys);
 
-      if (!keys.getList().isEmpty())
+      if (!keys.getList().isEmpty()) {
         suggestions.addAll(keys.getList());
-      if (search.hasMore)
+      }
+      if (search.hasMore) {
         suggestions.add(Suggestable.DefaultSuggestable.from(
             messages.at("key.search", search.search),
             Data.from(Key.class, null, "???",
@@ -84,17 +83,18 @@ public class ProjectApiServiceImpl extends
                     routes.Projects.keysBy(project.ownerUsername, project.name, Keys.DEFAULT_SEARCH,
                         Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET),
                     Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET))));
+      }
 
       if (PermissionUtils.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Manager,
-          ProjectRole.Developer) && PermissionUtils.hasPermissionAll(Scope.KeyWrite))
+          ProjectRole.Developer) && PermissionUtils.hasPermissionAll(Scope.KeyWrite)) {
         suggestions
             .add(
                 Suggestable.DefaultSuggestable.from(messages.at("key.create", search.search),
                     Data.from(Key.class, null, "+++",
-                        routes.Keys
-                            .createImmediately(project.id, search.search, search.search,
-                                Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET)
+                        Keys.createImmediatelyRoute(project, search.search, search.search,
+                            Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET)
                             .url())));
+      }
     }
 
     if (PermissionUtils.hasPermissionAll(Scope.LocaleRead)) {
@@ -102,18 +102,20 @@ public class ProjectApiServiceImpl extends
           .withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
 
       search.pager(locales);
-      if (!locales.getList().isEmpty())
+      if (!locales.getList().isEmpty()) {
         suggestions.addAll(locales.getList());
-      if (search.hasMore)
+      }
+      if (search.hasMore) {
         suggestions.add(Suggestable.DefaultSuggestable.from(
             messages.at("locale.search", search.search),
             Data.from(Locale.class, null, "???",
                 search.urlWithOffset(routes.Projects.localesBy(project.ownerUsername, project.name,
                     Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
                     Locales.DEFAULT_OFFSET), Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET))));
+      }
 
       if (PermissionUtils.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Translator)
-          && PermissionUtils.hasPermissionAll(Scope.LocaleWrite))
+          && PermissionUtils.hasPermissionAll(Scope.LocaleWrite)) {
         suggestions
             .add(
                 Suggestable.DefaultSuggestable
@@ -123,6 +125,7 @@ public class ProjectApiServiceImpl extends
                                 Locales.createImmediatelyRoute(project, search.search,
                                     search.search, search.order, search.limit, search.offset)
                                     .url())));
+      }
     }
 
     return SearchResponse.from(Suggestion.from(suggestions));

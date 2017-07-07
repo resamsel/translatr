@@ -1,10 +1,8 @@
 package dto;
 
-import java.util.UUID;
-
-import org.joda.time.DateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.UUID;
+import org.joda.time.DateTime;
 
 public class User extends Dto {
   private static final long serialVersionUID = -3130261034824279541L;

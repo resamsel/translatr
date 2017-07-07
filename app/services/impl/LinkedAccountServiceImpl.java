@@ -1,19 +1,15 @@
 package services.impl;
 
+import com.avaje.ebean.PagedList;
+import criterias.LinkedAccountCriteria;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-
-import com.avaje.ebean.PagedList;
-
-import criterias.LinkedAccountCriteria;
 import models.LinkedAccount;
-import play.Configuration;
 import services.LinkedAccountService;
 import services.LogEntryService;
 
 /**
- *
  * @author resamsel
  * @version 2 Oct 2016
  */
@@ -21,13 +17,10 @@ import services.LogEntryService;
 public class LinkedAccountServiceImpl
     extends AbstractModelService<LinkedAccount, Long, LinkedAccountCriteria>
     implements LinkedAccountService {
-  /**
-   * @param configuration
-   */
+
   @Inject
-  public LinkedAccountServiceImpl(Configuration configuration, Validator validator,
-      LogEntryService logEntryService) {
-    super(configuration, validator, logEntryService);
+  public LinkedAccountServiceImpl(Validator validator, LogEntryService logEntryService) {
+    super(validator, logEntryService);
   }
 
   /**

@@ -6,11 +6,9 @@ import static utils.PermissionUtils.hasPermissionAny;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
-
-import org.junit.Test;
-
 import models.AccessToken;
 import models.Scope;
+import org.junit.Test;
 import tests.AbstractTest;
 
 /**

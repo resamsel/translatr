@@ -1,4 +1,4 @@
-import com.typesafe.sbt.packager.docker._
+
 
 name := """translatr"""
 

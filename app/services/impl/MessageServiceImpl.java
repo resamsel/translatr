@@ -4,60 +4,51 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static utils.Stopwatch.log;
 
+import actors.MessageWordCountActor;
+import actors.WordCountProtocol.ChangeMessageWordCount;
+import akka.actor.ActorRef;
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.PagedList;
+import criterias.MessageCriteria;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.PagedList;
-
-import actors.MessageWordCountActor;
-import actors.WordCountProtocol.ChangeMessageWordCount;
-import akka.actor.ActorRef;
-import criterias.MessageCriteria;
 import models.ActionType;
 import models.LogEntry;
 import models.Message;
 import models.Project;
-import play.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
 import services.LogEntryService;
 import services.MessageService;
 import utils.MessageUtils;
 
 /**
- *
  * @author resamsel
  * @version 29 Aug 2016
  */
 @Singleton
 public class MessageServiceImpl extends AbstractModelService<Message, UUID, MessageCriteria>
     implements MessageService {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceImpl.class);
 
   private final ActorRef messageWordCountActor;
 
   private final CacheApi cache;
 
-  /**
-   * 
-   */
   @Inject
-  public MessageServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
-      LogEntryService logEntryService,
+  public MessageServiceImpl(Validator validator, CacheApi cache, LogEntryService logEntryService,
       @Named(MessageWordCountActor.NAME) ActorRef messageWordCountActor) {
-    super(configuration, validator, logEntryService);
+    super(validator, logEntryService);
 
     this.cache = cache;
     this.messageWordCountActor = messageWordCountActor;
@@ -117,8 +108,10 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
     if (update) {
       Message existing = Message.byId(t.id);
       if (!Objects.equals(t.value, existing.value))
-        // Only track changes of message´s value
+      // Only track changes of message´s value
+      {
         logEntryService.save(logEntryUpdate(t, existing));
+      }
     }
   }
 
@@ -212,9 +205,10 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
    */
   @Override
   protected void postDelete(Message t) {
-    if (t.wordCount != null)
+    if (t.wordCount != null) {
       messageWordCountActor.tell(new ChangeMessageWordCount(t.id, t.locale.project.id, t.locale.id,
           t.key.id, 0, -t.wordCount), null);
+    }
   }
 
   /**

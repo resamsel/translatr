@@ -3,16 +3,14 @@ package dto;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.joda.time.DateTime;
-
 import criterias.LogEntryCriteria;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import models.LogEntry;
+import org.joda.time.DateTime;
 import play.i18n.Messages;
 import play.mvc.Http.Context;
 import utils.FormatUtils;

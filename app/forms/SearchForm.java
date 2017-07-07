@@ -1,17 +1,14 @@
 package forms;
 
+import com.avaje.ebean.PagedList;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
-
-import com.avaje.ebean.PagedList;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import play.mvc.Call;
 
 /**

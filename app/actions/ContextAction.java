@@ -1,15 +1,13 @@
 package actions;
 
+import commands.Command;
+import controllers.AbstractController;
+import controllers.routes;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
 import javax.inject.Inject;
-
-import commands.Command;
-import controllers.AbstractController;
-import controllers.routes;
 import models.User;
 import play.cache.CacheApi;
 import play.mvc.Action;

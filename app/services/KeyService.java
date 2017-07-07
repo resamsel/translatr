@@ -1,12 +1,10 @@
 package services;
 
+import com.google.inject.ImplementedBy;
+import criterias.KeyCriteria;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import com.google.inject.ImplementedBy;
-
-import criterias.KeyCriteria;
 import models.Key;
 import services.impl.KeyServiceImpl;
 

@@ -2,17 +2,14 @@ package dto;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.util.Map;
-import java.util.UUID;
-
-import org.joda.time.DateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import controllers.AbstractController;
 import controllers.routes;
+import java.util.Map;
+import java.util.UUID;
 import models.Project;
+import org.joda.time.DateTime;
 import play.api.mvc.Call;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -1,20 +1,17 @@
 package controllers;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Supplier;
-
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
-
-import org.slf4j.LoggerFactory;
-
 import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
-
 import dto.NotFoundException;
 import dto.PermissionException;
 import dto.SearchResponse;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Supplier;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.libs.Json;
@@ -98,10 +95,7 @@ public class AbstractBaseApi extends AbstractController {
   @Override
   protected Result handleException(Throwable t) {
     try {
-      if (t.getCause() != null)
-        throw t.getCause();
-
-      throw t;
+      throw ExceptionUtils.getRootCause(t);
     } catch (PermissionException e) {
       return forbidden(ErrorUtils.toJson(e));
     } catch (NotFoundException e) {

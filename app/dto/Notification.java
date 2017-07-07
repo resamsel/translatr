@@ -1,9 +1,8 @@
 package dto;
 
+import io.getstream.client.model.activities.SimpleActivity;
 import java.util.Date;
 import java.util.UUID;
-
-import io.getstream.client.model.activities.SimpleActivity;
 import models.LogEntry;
 import play.api.Play;
 import play.api.inject.Injector;

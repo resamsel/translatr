@@ -1,18 +1,17 @@
 package criterias;
 
-import java.util.Collection;
-import java.util.UUID;
-
 import forms.KeySearchForm;
 import forms.SearchForm;
+import java.util.Collection;
+import java.util.UUID;
 import play.mvc.Http.Request;
 
 /**
- *
  * @author resamsel
  * @version 19 Aug 2016
  */
 public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria> {
+
   private Boolean missing;
 
   private Collection<String> names;
@@ -73,8 +72,9 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria> {
    * @param localeId
    * @return
    */
-  public KeyCriteria withLocaleId(UUID localeId) {
-    setLocaleId(localeId);
+  public KeyCriteria withLocaleId(String localeId) {
+    if(localeId != null)
+      setLocaleId(UUID.fromString(localeId));
     return this;
   }
 
@@ -96,6 +96,7 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria> {
 
   public static KeyCriteria from(Request request) {
     return new KeyCriteria().with(request).withMissing(Boolean
-        .parseBoolean(request.queryString().getOrDefault("missing", new String[] {"false"})[0]));
+        .parseBoolean(request.queryString().getOrDefault("missing", new String[]{"false"})[0]))
+        .withLocaleId(request.queryString().getOrDefault("localeId", new String[]{null})[0]);
   }
 }

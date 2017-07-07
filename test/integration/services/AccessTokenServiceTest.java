@@ -2,12 +2,11 @@ package integration.services;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-import org.junit.Test;
-
 import criterias.AccessTokenCriteria;
 import criterias.UserCriteria;
 import models.AccessToken;
 import models.User;
+import org.junit.Test;
 import services.AccessTokenService;
 import tests.AbstractTest;
 

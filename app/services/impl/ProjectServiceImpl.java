@@ -3,6 +3,10 @@ package services.impl;
 import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
+import com.avaje.ebean.PagedList;
+import criterias.ProjectCriteria;
+import dto.NotFoundException;
+import dto.PermissionException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,19 +14,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.PagedList;
-
-import criterias.ProjectCriteria;
-import dto.NotFoundException;
-import dto.PermissionException;
 import models.ActionType;
 import models.Locale;
 import models.LogEntry;
@@ -31,7 +25,8 @@ import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
 import models.User;
-import play.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
 import services.KeyService;
 import services.LocaleService;
@@ -40,13 +35,13 @@ import services.MessageService;
 import services.ProjectService;
 
 /**
- *
  * @author resamsel
  * @version 29 Aug 2016
  */
 @Singleton
 public class ProjectServiceImpl extends AbstractModelService<Project, UUID, ProjectCriteria>
     implements ProjectService {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
   private final CacheApi cache;
@@ -57,14 +52,10 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
   private final MessageService messageService;
 
-  /**
-   * 
-   */
   @Inject
-  public ProjectServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
-      LocaleService localeService, KeyService keyService, MessageService messageService,
-      LogEntryService logEntryService) {
-    super(configuration, validator, logEntryService);
+  public ProjectServiceImpl(Validator validator, CacheApi cache, LocaleService localeService,
+      KeyService keyService, MessageService messageService, LogEntryService logEntryService) {
+    super(validator, logEntryService);
     this.cache = cache;
     this.localeService = localeService;
     this.keyService = keyService;
@@ -109,11 +100,13 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
     Project project = Project.byId(projectId);
 
-    if (project == null)
+    if (project == null) {
       return;
+    }
 
-    if (project.wordCount == null)
+    if (project.wordCount == null) {
       project.wordCount = 0;
+    }
     project.wordCount += wordCountDiff;
 
     log(() -> persist(project), LOGGER, "Increased word count by %d", wordCountDiff);
@@ -142,16 +135,20 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    */
   @Override
   protected void preSave(Project t, boolean update) {
-    if (t.owner == null)
+    if (t.owner == null) {
       t.owner = User.loggedInUser();
-    if (t.members == null)
+    }
+    if (t.members == null) {
       t.members = new ArrayList<>();
-    if (t.members.isEmpty())
+    }
+    if (t.members.isEmpty()) {
       t.members.add(new ProjectUser(ProjectRole.Owner).withProject(t).withUser(t.owner));
+    }
 
-    if (update)
+    if (update) {
       logEntryService.save(
           LogEntry.from(ActionType.Update, t, dto.Project.class, toDto(byId(t.id)), toDto(t)));
+    }
   }
 
   /**
@@ -159,8 +156,9 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    */
   @Override
   protected void postSave(Project t, boolean update) {
-    if (!update)
+    if (!update) {
       logEntryService.save(LogEntry.from(ActionType.Create, t, dto.Project.class, null, toDto(t)));
+    }
 
     // When message has been created, the project cache needs to be invalidated
     cache.remove(Project.getCacheKey(t.id));
@@ -171,10 +169,12 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    */
   @Override
   public void delete(Project t) {
-    if (t == null || t.deleted)
+    if (t == null || t.deleted) {
       throw new NotFoundException(dto.Project.class.getSimpleName(), t != null ? t.id : null);
-    if (!t.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager))
+    }
+    if (!t.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager)) {
       throw new PermissionException("User not allowed in project");
+    }
 
     keyService.delete(t.keys);
     localeService.delete(t.locales);
@@ -191,10 +191,12 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   public void delete(Collection<Project> t) {
     User loggedInUser = User.loggedInUser();
     for (Project p : t) {
-      if (p == null || p.deleted)
+      if (p == null || p.deleted) {
         throw new NotFoundException(dto.Project.class.getSimpleName(), p != null ? p.id : null);
-      if (!p.hasPermissionAny(loggedInUser, ProjectRole.Owner, ProjectRole.Manager))
+      }
+      if (!p.hasPermissionAny(loggedInUser, ProjectRole.Owner, ProjectRole.Manager)) {
         throw new PermissionException("User not allowed in project");
+      }
     }
 
     keyService

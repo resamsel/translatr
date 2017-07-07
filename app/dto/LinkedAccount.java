@@ -1,10 +1,8 @@
 package dto;
 
 import java.util.UUID;
-
-import org.joda.time.DateTime;
-
 import models.User;
+import org.joda.time.DateTime;
 
 public class LinkedAccount extends Dto
 {

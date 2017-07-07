@@ -2,28 +2,9 @@ package models;
 
 import static utils.Stopwatch.log;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import be.objectify.deadbolt.java.models.Permission;
+import be.objectify.deadbolt.java.models.Role;
+import be.objectify.deadbolt.java.models.Subject;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -33,15 +14,30 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
-
-import be.objectify.deadbolt.java.models.Permission;
-import be.objectify.deadbolt.java.models.Role;
-import be.objectify.deadbolt.java.models.Subject;
 import controllers.Application;
 import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
 import criterias.ProjectUserCriteria;
 import criterias.UserCriteria;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Version;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.api.Play;
 import play.api.inject.Injector;
 import play.libs.Json;
@@ -127,11 +123,6 @@ public class User implements Model<User, UUID>, Subject {
     return id;
   }
 
-  public static boolean existsByAuthUserIdentity(final AuthUserIdentity identity) {
-    final ExpressionList<User> exp = getAuthUserFind(identity);
-    return exp.findCount() > 0;
-  }
-
   private static ExpressionList<User> getAuthUserFind(final AuthUserIdentity identity) {
     return find.where().eq("active", true).eq("linkedAccounts.providerUserId", identity.getId())
         .eq("linkedAccounts.providerKey", identity.getProvider());
@@ -154,10 +145,6 @@ public class User implements Model<User, UUID>, Subject {
     return providerKeys;
   }
 
-  public static User findByEmail(final String email) {
-    return getEmailUserFind(email).findUnique();
-  }
-
   public static PagedList<User> findBy(UserCriteria criteria) {
     ExpressionList<User> query = QueryUtils.fetch(find.query(), criteria.getFetches()).where();
 
@@ -171,14 +158,6 @@ public class User implements Model<User, UUID>, Subject {
     criteria.paged(query);
 
     return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
-  }
-
-  private static ExpressionList<User> getEmailUserFind(final String email) {
-    return find.where().eq("active", true).eq("email", email);
-  }
-
-  public LinkedAccount getAccountByProvider(final String providerKey) {
-    return LinkedAccount.findByProviderKey(this, providerKey);
   }
 
   public User withId(UUID id) {
@@ -337,13 +316,6 @@ public class User implements Model<User, UUID>, Subject {
    */
   public Call route() {
     return controllers.routes.Users.user(username);
-  }
-
-  /**
-   * Return the route to the user.
-   */
-  public Call projectsRoute() {
-    return controllers.routes.Users.projects(username);
   }
 
   /**

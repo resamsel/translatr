@@ -1,18 +1,15 @@
 package dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import controllers.AbstractController;
+import controllers.routes;
 import java.util.UUID;
-
+import models.Key;
+import models.Locale;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import controllers.AbstractController;
-import controllers.routes;
-import models.Key;
-import models.Locale;
 import play.libs.Json;
 import play.mvc.Call;
 

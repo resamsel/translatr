@@ -1,7 +1,6 @@
 package services;
 
 import com.google.inject.ImplementedBy;
-
 import criterias.AccessTokenCriteria;
 import models.AccessToken;
 import services.impl.AccessTokenServiceImpl;

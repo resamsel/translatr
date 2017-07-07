@@ -3,9 +3,7 @@ package tests.utils;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.UUID;
-
 import org.junit.Test;
-
 import utils.JsonUtils;
 
 /**

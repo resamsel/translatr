@@ -1,22 +1,18 @@
 package controllers;
 
-import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
-
-import org.joda.time.DateTime;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-import com.feth.play.module.pa.user.AuthUser;
-
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
+import com.feth.play.module.pa.PlayAuthenticate;
+import com.feth.play.module.pa.user.AuthUser;
 import commands.RevertDeleteAccessTokenCommand;
 import forms.Accept;
 import forms.AccessTokenForm;
 import forms.UserForm;
+import java.util.concurrent.CompletionStage;
+import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 import models.AccessToken;
+import org.joda.time.DateTime;
 import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;

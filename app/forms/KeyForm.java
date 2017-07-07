@@ -38,13 +38,9 @@ public class KeyForm extends SearchForm {
     return in;
   }
 
-  public KeyForm with(Key in) {
-    name = in.name;
-    return this;
-  }
-
   /**
-   * @param key
+   * @param in
+   * @param out
    * @return
    */
   public static Form<KeyForm> with(Key in, Form<KeyForm> out) {

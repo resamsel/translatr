@@ -1,11 +1,10 @@
 package modules;
 
-import com.google.inject.AbstractModule;
-
 import actors.KeyWordCountActor;
 import actors.LocaleWordCountActor;
 import actors.MessageWordCountActor;
 import actors.ProjectWordCountActor;
+import com.google.inject.AbstractModule;
 import play.libs.akka.AkkaGuiceSupport;
 
 /**

@@ -1,9 +1,8 @@
 package utils;
 
+import models.Locale;
 import org.joda.time.DateTime;
 import org.ocpsoft.prettytime.PrettyTime;
-
-import models.Locale;
 
 public class FormatUtils {
   public static final String pretty(java.util.Locale locale, DateTime dateTime) {

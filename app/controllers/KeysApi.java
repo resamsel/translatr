@@ -1,15 +1,7 @@
 package controllers;
 
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-
 import actions.ApiAction;
+import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.KeyCriteria;
 import dto.Key;
 import dto.errors.ConstraintViolationError;
@@ -24,8 +16,12 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
+import javax.inject.Inject;
 import models.ProjectRole;
 import models.User;
+import org.apache.commons.lang3.StringUtils;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.BodyParser;

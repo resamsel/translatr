@@ -1,15 +1,5 @@
 package services.impl;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import criterias.NotificationCriteria;
 import io.getstream.client.StreamClient;
 import io.getstream.client.apache.StreamClientImpl;
@@ -23,10 +13,17 @@ import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.service.AggregatedActivityServiceImpl;
 import io.getstream.client.service.FlatActivityServiceImpl;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import models.LogEntry;
 import models.Model;
 import models.Project;
 import models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.libs.Json;
 import services.NotificationService;

@@ -2,14 +2,9 @@ package controllers;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
-
+import actions.ContextAction;
 import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
-
-import actions.ContextAction;
 import commands.RevertDeleteLinkedAccountCommand;
 import converters.ActivityCsvConverter;
 import criterias.AccessTokenCriteria;
@@ -20,6 +15,8 @@ import criterias.UserCriteria;
 import forms.AccessTokenForm;
 import forms.ActivitySearchForm;
 import forms.SearchForm;
+import java.util.concurrent.CompletionStage;
+import javax.inject.Inject;
 import models.AccessToken;
 import models.LinkedAccount;
 import models.LogEntry;
@@ -38,12 +35,12 @@ import utils.FormUtils;
 import utils.Template;
 
 /**
- *
  * @author resamsel
  * @version 26 Sep 2016
  */
 @With(ContextAction.class)
 public class Users extends AbstractController {
+
   private final FormFactory formFactory;
 
   private final Configuration configuration;
@@ -68,8 +65,9 @@ public class Users extends AbstractController {
     return tryCatch(() -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
-      if (search.order == null)
+      if (search.order == null) {
         search.order = "name";
+      }
 
       PagedList<User> users = userService.findBy(UserCriteria.from(search)
           .withFetches(User.FETCH_MEMBERSHIPS).withFetches(User.FETCH_ACTIVITIES));
@@ -81,23 +79,18 @@ public class Users extends AbstractController {
     });
   }
 
-  public CompletionStage<Result> userByUsername(String username) {
-    return user(username);
-  }
-
   public CompletionStage<Result> user(String username) {
-    return user(username, user -> {
-      return ok(views.html.users.user.render(createTemplate(user), user,
-          userService.getUserStats(user.id)));
-    });
+    return user(username, user -> ok(views.html.users.user.render(createTemplate(user), user,
+        userService.getUserStats(user.id))));
   }
 
   public CompletionStage<Result> projects(String username) {
     return user(username, user -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
-      if (search.order == null)
+      if (search.order == null) {
         search.order = "name";
+      }
 
       PagedList<Project> projects =
           projectService.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
@@ -124,10 +117,8 @@ public class Users extends AbstractController {
   }
 
   public CompletionStage<Result> activityCsv(String username) {
-    return user(username, user -> {
-      return ok(new ActivityCsvConverter()
-          .apply(logEntryService.getAggregates(new LogEntryCriteria().withUserId(user.id))));
-    }, true);
+    return user(username, user -> ok(new ActivityCsvConverter()
+        .apply(logEntryService.getAggregates(new LogEntryCriteria().withUserId(user.id)))), true);
   }
 
   public CompletionStage<Result> linkedAccounts(String username) {
@@ -149,8 +140,9 @@ public class Users extends AbstractController {
     return user(username, user -> {
       LinkedAccount linkedAccount = linkedAccountService.byId(linkedAccountId);
 
-      if (linkedAccount == null || !user.id.equals(linkedAccount.user.id))
+      if (linkedAccount == null || !user.id.equals(linkedAccount.user.id)) {
         return redirect(routes.Users.linkedAccounts(user.username));
+      }
 
       undoCommand(RevertDeleteLinkedAccountCommand.from(linkedAccount));
 
@@ -165,8 +157,9 @@ public class Users extends AbstractController {
       Form<AccessTokenForm> form =
           FormUtils.AccessToken.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
-      if (search.order == null)
+      if (search.order == null) {
         search.order = "name";
+      }
 
       return ok(views.html.users.accessTokens.render(createTemplate(user), user,
           AccessToken.findBy(AccessTokenCriteria.from(search).withUserId(user.id)).getList(),
@@ -177,8 +170,9 @@ public class Users extends AbstractController {
   private Template createTemplate(User user) {
     Template template = createTemplate();
 
-    if (user != null && template.loggedInUser != null && user.id.equals(template.loggedInUser.id))
+    if (user != null && template.loggedInUser != null && user.id.equals(template.loggedInUser.id)) {
       return template.withSection(SECTION_PROFILE);
+    }
 
     return template.withSection(SECTION_COMMUNITY);
   }

@@ -3,12 +3,11 @@ package commands;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.Map;
-
 import controllers.Locales;
 import controllers.routes;
 import criterias.KeyCriteria;
 import dto.Locale;
+import java.util.Map;
 import models.Key;
 import models.Project;
 import play.inject.Injector;

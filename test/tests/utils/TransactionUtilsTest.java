@@ -3,7 +3,6 @@ package tests.utils;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.junit.Test;
-
 import utils.TransactionUtils;
 
 public class TransactionUtilsTest {

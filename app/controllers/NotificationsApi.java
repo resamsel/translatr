@@ -1,17 +1,7 @@
 package controllers;
 
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-
 import actions.ApiAction;
+import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.NotificationCriteria;
 import dto.NotificationsPaged;
 import dto.PermissionException;
@@ -28,7 +18,13 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import javax.inject.Inject;
 import models.Scope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.Result;

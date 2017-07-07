@@ -1,27 +1,26 @@
 package utils;
 
+import criterias.ProjectUserCriteria;
+import dto.PermissionException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import criterias.ProjectUserCriteria;
-import dto.PermissionException;
 import models.AccessToken;
 import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
 import models.Scope;
 import models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author resamsel
  * @version 21 Oct 2016
  */
 public class PermissionUtils {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(PermissionUtils.class);
 
   public static boolean hasPermissionAll(Scope... scopes) {
@@ -32,8 +31,9 @@ public class PermissionUtils {
     LOGGER.debug("Scopes of access token: {}, needed: {}",
         accessToken != null ? accessToken.getScopeList() : "-", scopes);
 
-    if (accessToken == null)
+    if (accessToken == null) {
       return User.loggedInUser() != null;
+    }
 
     // TODO: allow admin scopes also
     // !PermissionUtils.hasPermissionAny(Scope.ProjectRead, Scope.ProjectAdmin)
@@ -42,16 +42,13 @@ public class PermissionUtils {
     return accessToken.getScopeList().containsAll(Arrays.asList(scopes));
   }
 
-  public static boolean hasPermissionAny(Scope... scopes) {
-    return hasPermissionAny(ContextKey.AccessToken.get(), scopes);
-  }
-
   public static boolean hasPermissionAny(AccessToken accessToken, Scope... scopes) {
     LOGGER.debug("Scopes of access token: {}, needed: {}",
         accessToken != null ? accessToken.getScopeList() : "-", scopes);
 
-    if (accessToken == null)
+    if (accessToken == null) {
       return false;
+    }
 
     List<Scope> scopeList = accessToken.getScopeList();
     scopeList.retainAll(Arrays.asList(scopes));
@@ -97,9 +94,11 @@ public class PermissionUtils {
     LOGGER.debug("Members needed: {}", roles);
 
     for (ProjectUser member : ProjectUser.findBy(new ProjectUserCriteria().withProjectId(projectId))
-        .getList())
-      if (user.id.equals(member.user.id) && roles.contains(member.role))
+        .getList()) {
+      if (user.id.equals(member.user.id) && roles.contains(member.role)) {
         return true;
+      }
+    }
 
     return false;
   }
@@ -109,7 +108,8 @@ public class PermissionUtils {
    * @param scopes
    */
   public static void checkPermissionAll(String errorMessage, Scope... scopes) {
-    if (!hasPermissionAll(scopes))
+    if (!hasPermissionAll(scopes)) {
       throw new PermissionException(errorMessage, scopes);
+    }
   }
 }

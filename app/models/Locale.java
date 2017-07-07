@@ -5,11 +5,24 @@ import static java.util.stream.Collectors.toMap;
 import static utils.FormatUtils.formatLocale;
 import static utils.Stopwatch.log;
 
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
+import com.avaje.ebean.Query;
+import com.avaje.ebean.annotation.CreatedTimestamp;
+import com.avaje.ebean.annotation.UpdatedTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.ImmutableMap;
+import controllers.AbstractController;
+import controllers.Locales;
+import controllers.routes;
+import criterias.HasNextPagedList;
+import criterias.LocaleCriteria;
+import criterias.MessageCriteria;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,27 +33,10 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
-
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.ImmutableMap;
-
-import controllers.AbstractController;
-import controllers.Locales;
-import controllers.routes;
-import criterias.HasNextPagedList;
-import criterias.LocaleCriteria;
-import criterias.MessageCriteria;
 import play.api.mvc.Call;
 import play.libs.Json;
 import play.mvc.Http.Context;
@@ -133,14 +129,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   public static Locale byId(UUID id, String... fetches) {
     return QueryUtils.fetch(find.setId(id).setDisableLazyLoading(true),
         QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP).findUnique();
-  }
-
-  /**
-   * @param project
-   * @return
-   */
-  public static List<Locale> byProject(Project project) {
-    return find.fetch("project").where().eq("project", project).findList();
   }
 
   /**

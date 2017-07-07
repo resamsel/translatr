@@ -1,18 +1,14 @@
 package controllers;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-
 import actions.ContextAction;
+import com.feth.play.module.pa.PlayAuthenticate;
 import commands.Command;
 import converters.ActivityCsvConverter;
 import criterias.LogEntryCriteria;
+import java.util.Arrays;
+import java.util.List;
+import javax.inject.Inject;
+import org.apache.commons.lang3.StringUtils;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.inject.Injector;
@@ -103,7 +99,7 @@ public class Application extends AbstractController {
             routes.javascript.Users.activityCsv(), routes.javascript.Users.activity(),
             routes.javascript.Profiles.resetNotifications(), routes.javascript.Projects.search(),
             routes.javascript.ProjectsApi.search(), routes.javascript.Locales.localeBy(),
-            routes.javascript.Keys.keyBy(), routes.javascript.Keys.createImmediately(),
+            routes.javascript.Keys.keyBy(), routes.javascript.Keys.createImmediatelyBy(),
             routes.javascript.LocalesApi.find(), routes.javascript.KeysApi.find(),
             routes.javascript.TranslationsApi.create(), routes.javascript.TranslationsApi.update(),
             routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find()));

@@ -1,7 +1,6 @@
 package services;
 
 import com.google.inject.ImplementedBy;
-
 import criterias.ProjectUserCriteria;
 import models.ProjectUser;
 import services.impl.ProjectUserServiceImpl;

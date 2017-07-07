@@ -2,22 +2,19 @@ package criterias;
 
 import java.util.List;
 import java.util.UUID;
-
 import play.mvc.Http.Request;
 
 /**
- *
  * @author resamsel
  * @version 19 Aug 2016
  */
 public class MessageCriteria extends AbstractSearchCriteria<MessageCriteria> {
+
   private UUID localeId;
 
   private String keyName;
 
   private List<UUID> localeIds;
-
-  private List<UUID> keyIds;
 
   public List<UUID> getLocaleIds() {
     return localeIds;
@@ -79,29 +76,6 @@ public class MessageCriteria extends AbstractSearchCriteria<MessageCriteria> {
    */
   public MessageCriteria withLocaleId(UUID localeId) {
     setLocaleId(localeId);
-    return this;
-  }
-
-  /**
-   * @return the keyIds
-   */
-  public List<UUID> getKeyIds() {
-    return keyIds;
-  }
-
-  /**
-   * @param keyIds the keyIds to set
-   */
-  public void setKeyIds(List<UUID> keyIds) {
-    this.keyIds = keyIds;
-  }
-
-  /**
-   * @param keyIds
-   * @return
-   */
-  public MessageCriteria withKeyIds(List<UUID> keyIds) {
-    setKeyIds(keyIds);
     return this;
   }
 

@@ -2,19 +2,16 @@ package dto;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.joda.time.DateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import controllers.AbstractController;
 import controllers.routes;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
+import java.util.List;
+import java.util.UUID;
 import models.User;
+import org.joda.time.DateTime;
 import play.mvc.Call;
 
 public class Project extends Dto {

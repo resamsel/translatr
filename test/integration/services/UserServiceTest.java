@@ -2,12 +2,10 @@ package integration.services;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-import java.util.UUID;
-
-import org.junit.Test;
-
 import criterias.UserCriteria;
+import java.util.UUID;
 import models.User;
+import org.junit.Test;
 import tests.AbstractTest;
 
 /**

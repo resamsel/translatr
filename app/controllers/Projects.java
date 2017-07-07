@@ -1,28 +1,10 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import actions.ContextAction;
+import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.collect.ImmutableMap;
-
-import actions.ContextAction;
-import be.objectify.deadbolt.java.actions.SubjectPresent;
 import commands.RevertDeleteProjectCommand;
 import commands.RevertDeleteProjectUserCommand;
 import converters.ActivityCsvConverter;
@@ -40,6 +22,17 @@ import forms.ProjectForm;
 import forms.ProjectOwnerForm;
 import forms.ProjectUserForm;
 import forms.SearchForm;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 import models.Key;
 import models.Locale;
 import models.LogEntry;
@@ -49,6 +42,9 @@ import models.ProjectUser;
 import models.Suggestable;
 import models.Suggestable.Data;
 import models.User;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
@@ -141,23 +137,24 @@ public class Projects extends AbstractController {
   }
 
   public CompletionStage<Result> projectBy(String username, String projectName) {
-    return user(username, user -> project(user, projectName, project -> {
+    return project(username, projectName, (user, project) -> {
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values())) {
         return redirectWithError(user.route(), "project.access.denied", project.name);
       }
 
       return ok(views.html.projects.project.render(createTemplate(), project,
           FormUtils.Search.bindFromRequest(formFactory, configuration)));
-    }), User.FETCH_PROJECTS);
+    }, User.FETCH_PROJECTS);
   }
 
-  public Result create() {
-    return ok(views.html.projects.create.render(createTemplate(),
-        ProjectForm.form(formFactory).bindFromRequest()));
+  public CompletionStage<Result> createBy(String username) {
+    return user(username, user ->
+        ok(views.html.projects.create.render(createTemplate(),
+            ProjectForm.form(formFactory).bindFromRequest())));
   }
 
-  public CompletionStage<Result> doCreate() {
-    return tryCatch(() -> {
+  public CompletionStage<Result> doCreateBy(String username) {
+    return user(username, user -> {
       Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
       if (form.hasErrors()) {
         throw new ConstraintViolationException(Collections.emptySet());
@@ -179,7 +176,7 @@ public class Projects extends AbstractController {
 
       return redirect(project.route());
     }).exceptionally(t -> {
-      Throwable cause = t.getCause();
+      Throwable cause = ExceptionUtils.getRootCause(t);
       if (cause instanceof ConstraintViolationException) {
         return badRequest(views.html.projects.create.render(createTemplate(),
             FormUtils.include(ProjectForm.form(formFactory).bindFromRequest(), cause)));
@@ -331,11 +328,12 @@ public class Projects extends AbstractController {
   }
 
   public CompletionStage<Result> doMemberAddBy(String username, String projectName) {
-    return user(username, user -> project(user, projectName, project ->{
+    return user(username, user -> project(user, projectName, project -> {
       Form<ProjectUserForm> form = ProjectUserForm.form(formFactory).bindFromRequest();
 
-      if (form.hasErrors())
+      if (form.hasErrors()) {
         return badRequest(views.html.projects.memberAdd.render(createTemplate(), project, form));
+      }
 
       User member = userService.byUsername(form.get().getUsername());
 
@@ -346,12 +344,14 @@ public class Projects extends AbstractController {
     }));
   }
 
-  public CompletionStage<Result> memberRemoveBy(String username, String projectName, Long memberId) {
+  public CompletionStage<Result> memberRemoveBy(String username, String projectName,
+      Long memberId) {
     return user(username, user -> project(user, projectName, project -> {
       ProjectUser member = projectUserService.byId(memberId);
 
-      if (member == null || !project.id.equals(member.project.id))
+      if (member == null || !project.id.equals(member.project.id)) {
         return redirectWithError(project.membersRoute(), "project.member.notFound");
+      }
 
       undoCommand(RevertDeleteProjectUserCommand.from(member));
 
@@ -365,9 +365,10 @@ public class Projects extends AbstractController {
     return user(username, user -> project(user, projectName, project -> {
       Form<ProjectOwnerForm> form = formFactory.form(ProjectOwnerForm.class).bindFromRequest();
 
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager))
+      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.membersRoute(), "project.owner.change.denied",
             project.name);
+      }
 
       // if (form.hasErrors())
       // return badRequest(views.html.projects.ownerChange.render(createTemplate(), project, form));
@@ -401,26 +402,10 @@ public class Projects extends AbstractController {
     }));
   }
 
-  public Result activity(UUID projectId) {
-    return projectLegacy(projectId, project -> {
-      Form<ActivitySearchForm> form =
-          FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
-      ActivitySearchForm search = form.get();
-
-      PagedList<LogEntry> activities = logEntryService.findBy(
-          LogEntryCriteria.from(search).withProjectId(project.id).withOrder("whenCreated desc"));
-
-      search.pager(activities);
-
-      return ok(views.html.projects.activity.render(createTemplate(), project, activities, form));
-    });
-  }
-
   public CompletionStage<Result> activityCsvBy(String username, String projectName) {
-    return user(username, user -> project(user, projectName, project -> {
-      return ok(new ActivityCsvConverter()
-          .apply(logEntryService.getAggregates(new LogEntryCriteria().withProjectId(project.id))));
-    }));
+    return project(username, projectName, (user, project) -> ok(new ActivityCsvConverter()
+        .apply(
+            logEntryService.getAggregates(new LogEntryCriteria().withProjectId(project.id)))));
   }
 
   public CompletionStage<Result> wordCountResetBy(String username, String projectName) {
@@ -455,20 +440,6 @@ public class Projects extends AbstractController {
     });
   }
 
-  /**
-   * @deprecated Use {@link Projects#project(UUID, Function, String...)} instead!
-   */
-  @Deprecated
-  private Result projectLegacy(UUID projectId, Function<Project, Result> processor,
-      String... propertiesToFetch) {
-    try {
-      return project(projectId, processor, propertiesToFetch).toCompletableFuture().get();
-    } catch (InterruptedException | ExecutionException e) {
-      LOGGER.error("Error while getting result of future", e);
-      return internalServerError(e.getMessage());
-    }
-  }
-
   private Result project(User user, String projectName, Function<Project, Result> processor) {
     if (user.projects != null) {
       Optional<Project> project =
@@ -501,5 +472,21 @@ public class Projects extends AbstractController {
    */
   public static Call indexRoute() {
     return routes.Projects.index(DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET);
+  }
+
+  /**
+   * @return
+   * @param username
+   */
+  public static Call createRoute(String username) {
+    return routes.Projects.createBy(username);
+  }
+
+  /**
+   * @return
+   * @param username
+   */
+  public static Call doCreateRoute(String username) {
+    return routes.Projects.doCreateBy(username);
   }
 }

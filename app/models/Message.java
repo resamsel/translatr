@@ -2,12 +2,19 @@ package models;
 
 import static utils.Stopwatch.log;
 
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
+import com.avaje.ebean.annotation.CreatedTimestamp;
+import com.avaje.ebean.annotation.UpdatedTimestamp;
+import com.google.common.collect.ImmutableMap;
+import criterias.HasNextPagedList;
+import criterias.MessageCriteria;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,21 +23,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
-
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
-import com.google.common.collect.ImmutableMap;
-
-import criterias.HasNextPagedList;
-import criterias.MessageCriteria;
 import play.libs.Json;
 import utils.QueryUtils;
 import validators.LocaleKeyCheck;
@@ -39,6 +35,7 @@ import validators.LocaleKeyCheck;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"locale_id", "key_id"})})
 @LocaleKeyCheck
 public class Message implements Model<Message, UUID> {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
   public static final String FETCH_LOCALE = "locale";
@@ -51,7 +48,8 @@ public class Message implements Model<Message, UUID> {
       Arrays.asList(FETCH_LOCALE, FETCH_LOCALE + ".project", FETCH_LOCALE + ".project.owner"),
       FETCH_KEY, Arrays.asList(FETCH_KEY));
 
-  private static final Find<UUID, Message> find = new Find<UUID, Message>() {};
+  private static final Find<UUID, Message> find = new Find<UUID, Message>() {
+  };
 
   @Id
   @GeneratedValue
@@ -77,7 +75,8 @@ public class Message implements Model<Message, UUID> {
 
   public Integer wordCount;
 
-  public Message() {}
+  public Message() {
+  }
 
   public Message(Locale locale, Key key, String value) {
     this.locale = locale;
@@ -123,38 +122,12 @@ public class Message implements Model<Message, UUID> {
   }
 
   /**
-   * @param key
-   * @param locale
-   * @return
-   */
-  public static Message byKeyAndLocale(Key key, Locale locale) {
-    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where().eq("key", key)
-        .eq("locale", locale).findUnique();
-  }
-
-  /**
    * @param project
    * @return
    */
   public static int countBy(Project project) {
     return log(() -> find.where().eq("key.project", project).findCount(), LOGGER,
         "countBy(Project)");
-  }
-
-  /**
-   * @param key
-   * @return
-   */
-  public static int countBy(Key key) {
-    return log(() -> find.where().eq("key", key).findCount(), LOGGER, "countBy(Key)");
-  }
-
-  /**
-   * @param locale
-   * @return
-   */
-  public static int countBy(Locale locale) {
-    return log(() -> find.where().eq("locale", locale).findCount(), LOGGER, "countBy(Locale)");
   }
 
   /**
@@ -165,23 +138,25 @@ public class Message implements Model<Message, UUID> {
     ExpressionList<Message> query =
         QueryUtils.fetch(find.query(), criteria.getFetches(), FETCH_MAP).where();
 
-    if (criteria.getProjectId() != null)
+    if (criteria.getProjectId() != null) {
       query.eq("key.project.id", criteria.getProjectId());
+    }
 
-    if (criteria.getLocaleId() != null)
+    if (criteria.getLocaleId() != null) {
       query.eq("locale.id", criteria.getLocaleId());
+    }
 
-    if (criteria.getLocaleIds() != null)
+    if (criteria.getLocaleIds() != null) {
       query.in("locale.id", criteria.getLocaleIds());
+    }
 
-    if (StringUtils.isNotEmpty(criteria.getKeyName()))
+    if (StringUtils.isNotEmpty(criteria.getKeyName())) {
       query.eq("key.name", criteria.getKeyName());
+    }
 
-    if (criteria.getKeyIds() != null)
-      query.in("key.id", criteria.getKeyIds());
-
-    if (StringUtils.isNotEmpty(criteria.getSearch()))
+    if (StringUtils.isNotEmpty(criteria.getSearch())) {
       query.ilike("value", "%" + criteria.getSearch() + "%");
+    }
 
     criteria.paged(query);
 
@@ -223,15 +198,6 @@ public class Message implements Model<Message, UUID> {
     return find.where().in("key.id", ids).findList();
   }
 
-  /**
-   * @param localeId
-   * @param key
-   * @return
-   */
-  public static Message byLocaleAndKeyName(UUID localeId, String key) {
-    return find.where().eq("locale.id", localeId).eq("key.name", key).findUnique();
-  }
-
   public static List<Message> last(Project project, int limit) {
     return find.fetch("key").fetch("locale").where().eq("key.project", project)
         .order("whenUpdated desc").setMaxRows(limit).findList();
@@ -243,11 +209,13 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static String getCacheKey(UUID messageId, String... fetches) {
-    if (messageId == null)
+    if (messageId == null) {
       return null;
+    }
 
-    if (fetches.length > 0)
+    if (fetches.length > 0) {
       return String.format("message:%s:%s", messageId, StringUtils.join(fetches, ":"));
+    }
 
     return String.format("message:%s", messageId);
   }

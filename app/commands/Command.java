@@ -1,7 +1,6 @@
 package commands;
 
 import java.io.Serializable;
-
 import play.inject.Injector;
 import play.mvc.Call;
 

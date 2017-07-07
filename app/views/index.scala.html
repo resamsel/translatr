@@ -16,9 +16,9 @@
 			</div>
 		</div>
 	</div>
-	@if(template.loggedInUser == null) {
+	@if(template.loggedInUser != null) {
 		<div class="floating-action-btn">
-			@tags.fab("projects", PROJECTS_ICON, tooltip = Messages("projects.tooltip"), href = template.loggedInUser.projectsRoute.url, styleClass = "btn-large light-blue")
+			@tags.fab("projects", PROJECTS_ICON, tooltip = Messages("projects.tooltip"), href = Projects.indexRoute.url, styleClass = "btn-large light-blue")
 		</div>
 	}
 	<div class="container">

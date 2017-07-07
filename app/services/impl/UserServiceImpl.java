@@ -3,30 +3,23 @@ package services.impl;
 import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Validator;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.feth.play.module.pa.user.EmailIdentity;
 import com.feth.play.module.pa.user.NameIdentity;
-
 import criterias.AccessTokenCriteria;
 import criterias.LinkedAccountCriteria;
 import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import criterias.ProjectUserCriteria;
 import criterias.UserCriteria;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
 import models.AccessToken;
 import models.ActionType;
 import models.LinkedAccount;
@@ -34,7 +27,9 @@ import models.LogEntry;
 import models.ProjectUser;
 import models.User;
 import models.UserStats;
-import play.Configuration;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
 import services.AccessTokenService;
 import services.LinkedAccountService;
@@ -44,13 +39,13 @@ import services.ProjectUserService;
 import services.UserService;
 
 /**
- *
  * @author resamsel
  * @version 1 Oct 2016
  */
 @Singleton
 public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriteria>
     implements UserService {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
   private final CacheApi cache;
@@ -63,16 +58,12 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
   private final ProjectUserService projectUserService;
 
-
-  /**
-   * @param configuration
-   */
   @Inject
-  public UserServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
+  public UserServiceImpl(Validator validator, CacheApi cache,
       LinkedAccountService linkedAccountService, AccessTokenService accessTokenService,
       ProjectService projectService, ProjectUserService projectUserService,
       LogEntryService logEntryService) {
-    super(configuration, validator, logEntryService);
+    super(validator, logEntryService);
     this.cache = cache;
     this.linkedAccountService = linkedAccountService;
     this.accessTokenService = accessTokenService;
@@ -116,8 +107,9 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     if (authUser instanceof NameIdentity) {
       final NameIdentity identity = (NameIdentity) authUser;
       final String name = identity.getName();
-      if (name != null)
+      if (name != null) {
         user.name = name;
+      }
     }
 
     return save(user);
@@ -132,8 +124,9 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
   @Override
   public User getLocalUser(final AuthUserIdentity authUser) {
-    if (authUser == null)
+    if (authUser == null) {
       return null;
+    }
 
     return log(
         () -> cache.getOrElse(String.format("%s:%s", authUser.getProvider(), authUser.getId()),
@@ -174,17 +167,22 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    */
   @Override
   protected void preSave(User t, boolean update) {
-    if (t.email != null)
+    if (t.email != null) {
       t.email = t.email.toLowerCase();
-    if (t.username == null && t.email != null)
+    }
+    if (t.username == null && t.email != null) {
       t.username = emailToUsername(t.email);
-    if (t.username == null && t.name != null)
+    }
+    if (t.username == null && t.name != null) {
       t.username = nameToUsername(t.name);
-    if (t.username == null)
+    }
+    if (t.username == null) {
       t.username = String.valueOf(ThreadLocalRandom.current().nextLong());
-    if (update)
+    }
+    if (update) {
       logEntryService.save(
           LogEntry.from(ActionType.Update, null, dto.User.class, toDto(byId(t.id)), toDto(t)));
+    }
   }
 
   /**
@@ -204,29 +202,29 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    */
   @Override
   public String emailToUsername(String email) {
-    if (StringUtils.isEmpty(email))
+    if (StringUtils.isEmpty(email)) {
       return null;
+    }
 
     return uniqueUsername(email.toLowerCase().replaceAll("[@\\.-]", ""));
   }
 
   @Override
   public String nameToUsername(String name) {
-    if (StringUtils.isEmpty(name))
+    if (StringUtils.isEmpty(name)) {
       return null;
+    }
 
     return uniqueUsername(name.replaceAll("[^A-Za-z0-9_-]", "").toLowerCase());
   }
 
   /**
    * Generate a unique username from the given proposal.
-   * 
-   * @param username
-   * @return
    */
   private String uniqueUsername(String username) {
-    if (StringUtils.isEmpty(username))
+    if (StringUtils.isEmpty(username)) {
       return null;
+    }
 
     // TODO: potentially slow, replace with better variant (get all users with username like
     // $username% and iterate over them)
@@ -249,7 +247,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
   /**
    * Do merging stuff here - like resources, etc.
-   * 
+   *
    * {@inheritDoc}
    */
   @Override
@@ -277,10 +275,9 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     projectUserService.save(ProjectUser.findBy(new ProjectUserCriteria().withUserId(otherUser.id))
         .getList().stream().map(member -> member.withUser(user)).collect(toList()));
 
-
     // deactivate the merged user that got added to this one
     otherUser.active = false;
-    save(Arrays.asList(new User[] {otherUser, user}));
+    save(Arrays.asList(new User[]{otherUser, user}));
 
     return user;
   }

@@ -2,7 +2,15 @@ package models;
 
 import static utils.Stopwatch.log;
 
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
+import com.avaje.ebean.annotation.CreatedTimestamp;
+import com.avaje.ebean.annotation.UpdatedTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
+import criterias.HasNextPagedList;
+import criterias.ProjectUserCriteria;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -14,20 +22,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import criterias.HasNextPagedList;
-import criterias.ProjectUserCriteria;
 import utils.QueryUtils;
 
 /**
@@ -154,13 +151,5 @@ public class ProjectUser implements Model<ProjectUser, Long> {
 
   public static int countBy(ProjectUserCriteria criteria) {
     return log(() -> findQuery(criteria).findCount(), LOGGER, "countBy");
-  }
-
-  /**
-   * @param project
-   * @return
-   */
-  public static long countBy(Project project) {
-    return find.where().eq("project", project).findCount();
   }
 }

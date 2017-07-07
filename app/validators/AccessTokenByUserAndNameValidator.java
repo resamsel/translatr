@@ -1,7 +1,6 @@
 package validators;
 
 import javax.validation.ConstraintValidator;
-
 import models.AccessToken;
 import models.User;
 import play.data.validation.Constraints;

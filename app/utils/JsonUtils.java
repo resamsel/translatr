@@ -1,39 +1,30 @@
 package utils;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.UUID;
 
 /**
  * @author resamsel
  * @version 27 May 2017
  */
 public class JsonUtils {
+
   public static Long getId(JsonNode node) {
     return getId(node, "id");
   }
 
   private static Long getId(JsonNode node, String key) {
-    if (!node.hasNonNull(key))
+    if (!node.hasNonNull(key)) {
       return null;
+    }
 
     return node.get(key).asLong();
   }
 
-  public static UUID getUuid(JsonNode node) {
-    return getUuid(node, "id");
-  }
-
-  public static UUID getUuid(JsonNode node, String key) {
-    if (!node.hasNonNull(key))
-      return null;
-
-    return getUuid(node.get(key).asText());
-  }
-
   public static UUID getUuid(String uuid) {
-    if (uuid == null || uuid.trim().length() < 1)
+    if (uuid == null || uuid.trim().length() < 1) {
       return null;
+    }
 
     try {
       return UUID.fromString(uuid);
@@ -44,12 +35,13 @@ public class JsonUtils {
 
   /**
    * @param node
-   * @param string
+   * @param fieldName
    * @return
    */
   public static String getAsText(JsonNode node, String fieldName) {
-    if (!node.hasNonNull(fieldName))
+    if (!node.hasNonNull(fieldName)) {
       return null;
+    }
 
     return node.get(fieldName).asText();
   }

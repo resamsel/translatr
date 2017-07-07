@@ -1,62 +1,38 @@
 package services.impl;
 
+import com.avaje.ebean.Ebean;
+import criterias.AbstractSearchCriteria;
 import java.util.Collection;
 import java.util.Set;
-
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
-
+import models.Model;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.Ebean;
-
-import criterias.AbstractSearchCriteria;
-import models.Model;
-import play.Configuration;
-import play.mvc.Http.Context;
-import play.mvc.Http.Session;
 import services.LogEntryService;
 import services.ModelService;
 import utils.TransactionUtils;
 
 /**
- *
  * @author resamsel
  * @version 9 Sep 2016
  */
 public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>>
     implements ModelService<MODEL, ID, CRITERIA> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelService.class);
 
-  protected final Configuration configuration;
+  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelService.class);
 
   protected final Validator validator;
 
   protected final LogEntryService logEntryService;
 
-
-  /**
-   * @param configuration
-   */
-  public AbstractModelService(Configuration configuration, Validator validator,
-      LogEntryService logEntryService) {
-    this.configuration = configuration;
+  public AbstractModelService(Validator validator, LogEntryService logEntryService) {
     this.validator = validator;
     this.logEntryService = logEntryService;
-  }
-
-  /**
-   * Shorthand for context.current.session.
-   * 
-   * @return
-   */
-  protected Session session() {
-    return Context.current().session();
   }
 
   /**
@@ -68,8 +44,9 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
       return save(model);
     } catch (PersistenceException e) {
       if (e.getCause() != null && e.getCause() instanceof PSQLException
-          && "23505".equals(((PSQLException) e.getCause()).getSQLState()))
+          && "23505".equals(((PSQLException) e.getCause()).getSQLState())) {
         throw new ValidationException("Entry already exists (duplicate key)");
+      }
 
       throw new ValidationException(e.getMessage());
     }
@@ -80,13 +57,15 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
    */
   @Override
   public MODEL update(MODEL model) {
-    if (model.getId() == null)
+    if (model.getId() == null) {
       throw new ValidationException("Field 'id' required");
+    }
 
     MODEL m = byId(model.getId());
 
-    if (m == null)
+    if (m == null) {
       throw new ValidationException(String.format("Entity with ID '%s' not found", model.getId()));
+    }
 
     return save(m.updateFrom(model));
   }
@@ -97,8 +76,9 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   protected MODEL validate(MODEL model) {
     Set<ConstraintViolation<MODEL>> violations = validator.validate(model);
 
-    if (!violations.isEmpty())
+    if (!violations.isEmpty()) {
       throw new ConstraintViolationException("Constraint violations detected", violations);
+    }
 
     return model;
   }
@@ -123,8 +103,6 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
 
   /**
    * Persist model to database, ignoring any pre/post save methods.
-   * 
-   * @param t
    */
   protected MODEL persist(MODEL t) {
     Ebean.save(t);
@@ -135,12 +113,14 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   /**
    * @param t
    */
-  protected void preSave(MODEL t, boolean update) {}
+  protected void preSave(MODEL t, boolean update) {
+  }
 
   /**
    * @param t
    */
-  protected void postSave(MODEL t, boolean update) {}
+  protected void postSave(MODEL t, boolean update) {
+  }
 
   /**
    * {@inheritDoc}
@@ -174,12 +154,14 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   /**
    * @param t
    */
-  protected void preSave(Collection<MODEL> t) {}
+  protected void preSave(Collection<MODEL> t) {
+  }
 
   /**
    * @param t
    */
-  protected void postSave(Collection<MODEL> t) {}
+  protected void postSave(Collection<MODEL> t) {
+  }
 
   /**
    * {@inheritDoc}
@@ -194,12 +176,14 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   /**
    * @param t
    */
-  protected void preDelete(MODEL t) {}
+  protected void preDelete(MODEL t) {
+  }
 
   /**
    * @param t
    */
-  protected void postDelete(MODEL t) {}
+  protected void postDelete(MODEL t) {
+  }
 
   /**
    * {@inheritDoc}
@@ -221,10 +205,12 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   /**
    * @param t
    */
-  protected void preDelete(Collection<MODEL> t) {}
+  protected void preDelete(Collection<MODEL> t) {
+  }
 
   /**
    * @param t
    */
-  protected void postDelete(Collection<MODEL> t) {}
+  protected void postDelete(Collection<MODEL> t) {
+  }
 }

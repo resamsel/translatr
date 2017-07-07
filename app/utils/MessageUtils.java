@@ -1,10 +1,8 @@
 package utils;
 
 import java.util.StringTokenizer;
-
-import org.jsoup.Jsoup;
-
 import models.Message;
+import org.jsoup.Jsoup;
 
 /**
  * @author resamsel

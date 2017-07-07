@@ -6,13 +6,22 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
-import controllers.routes;
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
+import com.avaje.ebean.annotation.CreatedTimestamp;
+import com.avaje.ebean.annotation.UpdatedTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.ImmutableMap;
+import controllers.AbstractController;
+import criterias.HasNextPagedList;
+import criterias.MessageCriteria;
+import criterias.ProjectCriteria;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,24 +34,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
-
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.ImmutableMap;
-
-import controllers.AbstractController;
-import criterias.HasNextPagedList;
-import criterias.MessageCriteria;
-import criterias.ProjectCriteria;
 import play.api.Play;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
@@ -60,6 +55,7 @@ import validators.ProjectNameUniqueChecker;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
 @NameUnique(checker = ProjectNameUniqueChecker.class)
 public class Project implements Model<Project, UUID>, Suggestable {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
   public static final int NAME_LENGTH = 255;
@@ -75,7 +71,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
       ImmutableMap.of("project", Arrays.asList("project"), FETCH_MEMBERS,
           Arrays.asList(FETCH_MEMBERS, FETCH_MEMBERS + ".user"));
 
-  private static final Find<UUID, Project> find = new Find<UUID, Project>() {};
+  private static final Find<UUID, Project> find = new Find<UUID, Project>() {
+  };
 
   @Id
   @GeneratedValue
@@ -118,12 +115,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public List<ProjectUser> members;
 
   @Transient
-  private Long localesSize;
-
-  @Transient
-  private Long keysSize;
-
-  @Transient
   private List<Message> messages;
 
   @Transient
@@ -132,7 +123,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
   @Transient
   private Map<UUID, Long> keysSizeMap;
 
-  public Project() {}
+  public Project() {
+  }
 
   public Project(String name) {
     this.name = name;
@@ -162,8 +154,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   public static Project byId(UUID id, String... fetches) {
-    if (id == null)
+    if (id == null) {
       return null;
+    }
 
     return QueryUtils
         .fetch(find.setId(id), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
@@ -176,17 +169,21 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
     query.eq("deleted", false);
 
-    if (criteria.getOwnerId() != null)
+    if (criteria.getOwnerId() != null) {
       query.eq("owner.id", criteria.getOwnerId());
+    }
 
-    if (criteria.getMemberId() != null)
+    if (criteria.getMemberId() != null) {
       query.eq("members.user.id", criteria.getMemberId());
+    }
 
-    if (criteria.getProjectId() != null)
+    if (criteria.getProjectId() != null) {
       query.idEq(criteria.getProjectId());
+    }
 
-    if (criteria.getSearch() != null)
+    if (criteria.getSearch() != null) {
       query.ilike("name", "%" + criteria.getSearch() + "%");
+    }
 
     criteria.paged(query);
 
@@ -196,8 +193,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public float progress() {
     long keysSize = keysSize();
     long localesSize = localesSize();
-    if (keysSize < 1 || localesSize < 1)
+    if (keysSize < 1 || localesSize < 1) {
       return 0f;
+    }
     return (float) Message.countBy(this) / (float) (keysSize * localesSize);
   }
 
@@ -207,8 +205,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   public long keysSizeMap(UUID localeId) {
     if (keysSizeMap == null)
-      // FIXME: This is an expensive operation, consider doing this in a group by query.
+    // FIXME: This is an expensive operation, consider doing this in a group by query.
+    {
       keysSizeMap = messageList().stream().collect(groupingBy(m -> m.locale.id, counting()));
+    }
 
     return keysSizeMap.getOrDefault(localeId, 0l);
   }
@@ -219,15 +219,18 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   public long localesSizeMap(UUID keyId) {
     if (localesSizeMap == null)
-      // FIXME: This is an expensive operation, consider doing this in a group by query.
+    // FIXME: This is an expensive operation, consider doing this in a group by query.
+    {
       localesSizeMap = messageList().stream().collect(groupingBy(m -> m.key.id, counting()));
+    }
 
     return localesSizeMap.getOrDefault(keyId, 0l);
   }
 
   public List<Message> messageList() {
-    if (messages == null)
+    if (messages == null) {
       messages = Message.findBy(new MessageCriteria().withProjectId(this.id)).getList();
+    }
 
     return messages;
   }
@@ -287,8 +290,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public boolean hasRolesAny(User user, ProjectRole... roles) {
     Map<UUID, List<ProjectRole>> userMap =
         members.stream().collect(groupingBy(m -> m.user.id, mapping(m -> m.role, toList())));
-    if (!userMap.containsKey(user.id))
+    if (!userMap.containsKey(user.id)) {
       return false;
+    }
 
     List<ProjectRole> userRoles = userMap.get(user.id);
     userRoles.retainAll(Arrays.asList(roles));
@@ -297,27 +301,32 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   public ProjectRole roleOf(User user) {
-    if (user == null)
+    if (user == null) {
       return null;
+    }
 
-    if (user.equals(owner))
+    if (user.equals(owner)) {
       return ProjectRole.Owner;
+    }
 
     Optional<ProjectUser> member = members.stream().filter(m -> user.equals(m.user)).findFirst();
-    if (member.isPresent())
+    if (member.isPresent()) {
       return member.get().role;
+    }
 
     return null;
   }
 
   public static UUID brandProjectId() {
     UUID brandProjectId = ContextKey.BrandProjectId.get();
-    if (brandProjectId != null)
+    if (brandProjectId != null) {
       return brandProjectId;
+    }
 
     User user = User.loggedInUser();
-    if (user == null)
+    if (user == null) {
       return null;
+    }
 
     Project brandProject = null;
     try {
@@ -327,8 +336,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
       LOGGER.warn("Error while retrieving brand project", e);
     }
 
-    if (brandProject == null)
+    if (brandProject == null) {
       return null;
+    }
 
     ContextKey.BrandProjectId.put(Context.current(), brandProject.id);
 
@@ -337,7 +347,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * @param user
-   * @param role
+   * @param roles
    * @return
    */
   public boolean hasPermissionAny(User user, ProjectRole... roles) {
@@ -350,30 +360,32 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * @return
    */
   public static String getCacheKey(UUID projectId, String... fetches) {
-    if (projectId == null)
+    if (projectId == null) {
       return null;
+    }
 
-    if (fetches.length > 0)
+    if (fetches.length > 0) {
       return String.format("project:%s:%s", projectId, StringUtils.join(fetches, ":"));
+    }
 
     return String.format("project:%s", projectId);
   }
 
   public static String getCacheKey(User user, String projectName, String... fetches) {
-    if (user == null || StringUtils.isEmpty(projectName))
+    if (user == null || StringUtils.isEmpty(projectName)) {
       return null;
+    }
 
-    if (fetches.length > 0)
+    if (fetches.length > 0) {
       return String.format("project:owner:%s:name:%s:%s", user.id, projectName,
           StringUtils.join(fetches, ":"));
+    }
 
     return String.format("project:owner:%s:name:%s", user.id, projectName);
   }
 
   /**
    * Return the route to this project.
-   * 
-   * @return
    */
   public Call route() {
     return controllers.routes.Projects.projectBy(owner.username, name);
@@ -381,8 +393,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the edit route to this project.
-   * 
-   * @return
    */
   public Call editRoute() {
     return controllers.routes.Projects.editBy(owner.username, name);
@@ -390,8 +400,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the do edit route to this project.
-   * 
-   * @return
    */
   public Call doEditRoute() {
     return controllers.routes.Projects.doEditBy(owner.username, name);
@@ -399,8 +407,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the remove route to this project.
-   * 
-   * @return
    */
   public Call removeRoute() {
     return controllers.routes.Projects.removeBy(owner.username, name);
@@ -408,8 +414,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the locales of this project.
-   * 
-   * @return
    */
   public Call localesRoute() {
     return localesRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
@@ -418,8 +422,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the locales of this project.
-   * 
-   * @return
    */
   public Call localesRoute(String search, String order, int limit, int offset) {
     return controllers.routes.Projects.localesBy(owner.username, name, search, order, limit,
@@ -428,8 +430,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the keys of this project.
-   * 
-   * @return
    */
   public Call keysRoute() {
     return keysRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
@@ -438,8 +438,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the keys of this project.
-   * 
-   * @return
    */
   public Call keysRoute(String search) {
     return keysRoute(search, AbstractController.DEFAULT_ORDER, AbstractController.DEFAULT_LIMIT,
@@ -448,8 +446,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the keys of this project.
-   * 
-   * @return
    */
   public Call keysRoute(String search, String order, int limit, int offset) {
     return controllers.routes.Projects.keysBy(owner.username, name, search, order, limit, offset);
@@ -457,8 +453,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the members of this project.
-   * 
-   * @return
    */
   public Call membersRoute() {
     return membersRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
@@ -467,8 +461,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the members of this project.
-   * 
-   * @return
    */
   public Call membersRoute(String search, String order, int limit, int offset) {
     return controllers.routes.Projects.membersBy(owner.username, name, search, order, limit,
@@ -477,8 +469,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the members of this project.
-   * 
-   * @return
    */
   public Call activityRoute() {
     return activityRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
@@ -487,8 +477,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the activity of this project.
-   * 
-   * @return
    */
   public Call activityRoute(String search, String order, int limit, int offset) {
     return controllers.routes.Projects.activityBy(owner.username, name, search, order, limit,
@@ -497,8 +485,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the members of this project.
-   * 
-   * @return
    */
   public Call activityCsvRoute() {
     return controllers.routes.Projects.activityCsvBy(owner.username, name);
@@ -506,8 +492,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the word count reset of this project.
-   *
-   * @return
    */
   public Call wordCountResetRoute() {
     return controllers.routes.Projects.wordCountResetBy(owner.username, name);
@@ -515,26 +499,13 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the do owner change of this project.
-   *
-   * @return
    */
   public Call doOwnerChangeRoute() {
     return controllers.routes.Projects.doOwnerChangeBy(owner.username, name);
   }
 
   /**
-   * Return the route to the member add of this project.
-   *
-   * @return
-   */
-  public Call memberAddRoute() {
-    return controllers.routes.Projects.memberAddBy(owner.username, name);
-  }
-
-  /**
    * Return the route to the do member add of this project.
-   *
-   * @return
    */
   public Call doMemberAddRoute() {
     return controllers.routes.Projects.doMemberAddBy(owner.username, name);
@@ -542,8 +513,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   /**
    * Return the route to the member remove of this project.
-   *
-   * @return
    */
   public Call memberRemoveRoute(Long memberId) {
     return controllers.routes.Projects.memberRemoveBy(owner.username, name, memberId);

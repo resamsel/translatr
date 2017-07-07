@@ -2,10 +2,10 @@
 
 @createActions = {
 	<li>
-		@tags.fab("remove-key", "delete_forever", href = routes.Keys.remove(key.id, null).url, tooltip = Messages("key.remove.tooltip"), styleClass = "red")
+		@tags.fab("remove-key", "delete_forever", href = key.removeRoute().url, tooltip = Messages("key.remove.tooltip"), styleClass = "red")
 	</li>
 	<li>
-		@tags.fab("edit-key", "edit", href = routes.Keys.edit(key.id).url, tooltip = Messages("key.edit.tooltip"), styleClass = "light-green")
+		@tags.fab("edit-key", "edit", href = key.editRoute.url, tooltip = Messages("key.edit.tooltip"), styleClass = "light-green")
 	</li>
 }
 
@@ -71,7 +71,7 @@
 		@tags.fabContainer("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = createActions)
 
 		@tags.modal(Messages("key.new"), "modal-create-key") {
-			<form id="form-key" method="post" action="@routes.Keys.doCreate(key.project.id, null)">
+			<form id="form-key" method="post" action="@Keys.doCreateRoute(key.project)">
 				<div class="form-group">
 					<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
 				</div>

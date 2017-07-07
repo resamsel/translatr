@@ -3,15 +3,13 @@ package commands;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
+import dto.Project;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import dto.Project;
 import models.Key;
 import models.Locale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.inject.Injector;
 import play.mvc.Call;
 import play.mvc.Http.Context;

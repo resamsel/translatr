@@ -2,11 +2,23 @@ package models;
 
 import static utils.Stopwatch.log;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Model.Find;
+import com.avaje.ebean.PagedList;
+import com.avaje.ebean.Query;
+import com.avaje.ebean.annotation.CreatedTimestamp;
+import com.avaje.ebean.annotation.UpdatedTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.ImmutableMap;
+import controllers.Keys;
+import controllers.routes;
+import criterias.HasNextPagedList;
+import criterias.KeyCriteria;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,26 +29,10 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
-
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.ImmutableMap;
-
-import controllers.AbstractController;
-import controllers.routes;
-import criterias.HasNextPagedList;
-import criterias.KeyCriteria;
 import play.api.mvc.Call;
 import play.libs.Json;
 import play.mvc.Http.Context;
@@ -49,11 +45,13 @@ import validators.NameUnique;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
 @NameUnique(checker = KeyNameUniqueChecker.class)
 public class Key implements Model<Key, UUID>, Suggestable {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(Key.class);
 
   public static final int NAME_LENGTH = 255;
 
-  private static final Find<UUID, Key> find = new Find<UUID, Key>() {};
+  private static final Find<UUID, Key> find = new Find<UUID, Key>() {
+  };
 
   private static final Map<String, List<String>> FETCH_MAP =
       ImmutableMap.of("project", Arrays.asList("project", "project.owner"), "messages",
@@ -88,7 +86,8 @@ public class Key implements Model<Key, UUID>, Suggestable {
   @OneToMany
   public List<Message> messages;
 
-  public Key() {}
+  public Key() {
+  }
 
   public Key(Project project, String name) {
     this.project = project;
@@ -120,7 +119,6 @@ public class Key implements Model<Key, UUID>, Suggestable {
   }
 
   /**
-   * @param keyId
    * @return
    */
   public static Key byId(UUID id, String... fetches) {
@@ -138,27 +136,31 @@ public class Key implements Model<Key, UUID>, Suggestable {
 
     ExpressionList<Key> query = q.where();
 
-    if (criteria.getProjectId() != null)
+    if (criteria.getProjectId() != null) {
       query.eq("project.id", criteria.getProjectId());
+    }
 
-    if (criteria.getSearch() != null)
+    if (criteria.getSearch() != null) {
       query.disjunction().ilike("name", "%" + criteria.getSearch() + "%")
           .exists(Ebean.createQuery(Message.class).where().raw("key.id = k.id")
               .ilike("value", "%" + criteria.getSearch() + "%").query())
           .endJunction();
+    }
 
     if (Boolean.TRUE.equals(criteria.getMissing())) {
       ExpressionList<Message> messageQuery =
           Ebean.createQuery(Message.class).where().raw("key.id = k.id");
 
-      if (criteria.getLocaleId() != null)
+      if (criteria.getLocaleId() != null) {
         messageQuery.eq("locale.id", criteria.getLocaleId());
+      }
 
       query.notExists(messageQuery.query());
     }
 
-    if (criteria.getOrder() != null)
+    if (criteria.getOrder() != null) {
       query.setOrderBy(criteria.getOrder());
+    }
 
     criteria.paged(query);
 
@@ -171,8 +173,9 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public static Key byProjectAndName(Project project, String name) {
-    if (project == null)
+    if (project == null) {
       return null;
+    }
 
     return byProjectAndName(project.id, name);
   }
@@ -208,11 +211,13 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public static String getCacheKey(UUID keyId, String... fetches) {
-    if (keyId == null)
+    if (keyId == null) {
       return null;
+    }
 
-    if (fetches.length > 0)
+    if (fetches.length > 0) {
       return String.format("key:%s:%s", keyId, StringUtils.join(fetches, ":"));
+    }
 
     return String.format("key:%s", keyId);
   }
@@ -231,27 +236,56 @@ public class Key implements Model<Key, UUID>, Suggestable {
 
   /**
    * Return the route to the given key, with default params added.
-   * 
-   * @param key
-   * @return
    */
   public Call route() {
-    return route(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
-        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+    return route(Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET);
   }
 
   /**
    * Return the route to the given key, with params added.
-   * 
-   * @param key
-   * @param search
-   * @param order
-   * @param limit
-   * @param offset
-   * @return
    */
   public Call route(String search, String order, int limit, int offset) {
     return routes.Keys.keyBy(project.owner.username, project.name, name, search, order, limit,
         offset);
+  }
+
+  /**
+   * Return the route to the edit route.
+   */
+  public Call editRoute() {
+    return editRoute(Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT,
+        Keys.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the edit route with params.
+   */
+  public Call editRoute(String search, String order, int limit, int offset) {
+    return routes.Keys
+        .editBy(project.owner.username, project.name, name, search, order, limit, offset);
+  }
+
+  /**
+   * Return the route to the do edit route.
+   */
+  public Call doEditRoute() {
+    return routes.Keys.doEditBy(project.owner.username, project.name, name);
+  }
+
+  /**
+   * Return the route to the remove route.
+   */
+  public Call removeRoute() {
+    return removeRoute(Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT,
+        Keys.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the remove route with params.
+   */
+  public Call removeRoute(String search, String order, int limit, int offset) {
+    return routes.Keys
+        .removeBy(project.owner.username, project.name, name, null, search, order, limit,
+            offset);
   }
 }

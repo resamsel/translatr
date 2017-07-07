@@ -7,8 +7,8 @@
 		@tags.collection(projectList.getList, "projects.empty") {
 			<span class="title">@Messages("project.name")</span>
 			@tags.sortOrders {
-				@tags.orderLink(form.get, template.loggedInUser.projectsRoute, "project.name", "name", "name desc", "name")
-				@tags.orderLink(form.get, template.loggedInUser.projectsRoute, "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+				@tags.orderLink(form.get, Projects.indexRoute, "project.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, Projects.indexRoute, "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
 			@for(project <- projectList.getList) {
@@ -28,14 +28,14 @@
 				</li>
 			}
 		} {
-			@tags.pager(template.loggedInUser.projectsRoute, form.get)
+			@tags.pager(Projects.indexRoute, form.get)
 		}
 	}
 
 	@tags.fabContainer("create-project", "add", tooltip = Messages("project.create.tooltip"), styleClass = "orange")
 
 	@tags.modal(Messages("project.new"), "modal-create-project") {
-		<form id="form-project" method="post" action="@routes.Projects.create()">
+		<form id="form-project" method="post" action="@Projects.createRoute(template.loggedInUser.username)">
 			@views.html.projects.formContent(projectForm)
 		</form>
 	}

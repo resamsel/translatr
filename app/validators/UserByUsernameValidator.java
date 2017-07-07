@@ -1,7 +1,6 @@
 package validators;
 
 import javax.validation.ConstraintValidator;
-
 import play.api.Play;
 import play.data.validation.Constraints;
 import play.libs.F.Tuple;

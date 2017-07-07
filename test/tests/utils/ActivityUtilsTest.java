@@ -2,19 +2,16 @@ package tests.utils;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-
-import org.junit.Test;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import controllers.Keys;
 import controllers.Locales;
 import controllers.Projects;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import models.ActionType;
 import models.LogEntry;
+import org.junit.Test;
 import play.libs.Json;
 import utils.ActivityUtils;
 

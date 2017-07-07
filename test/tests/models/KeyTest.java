@@ -3,10 +3,8 @@ package tests.models;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.UUID;
-
-import org.junit.Test;
-
 import models.Key;
+import org.junit.Test;
 
 /**
  * @author resamsel

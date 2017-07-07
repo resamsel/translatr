@@ -1,11 +1,9 @@
 package services;
 
+import com.google.inject.ImplementedBy;
+import criterias.LogEntryCriteria;
 import java.util.List;
 import java.util.UUID;
-
-import com.google.inject.ImplementedBy;
-
-import criterias.LogEntryCriteria;
 import models.Aggregate;
 import models.LogEntry;
 import services.impl.LogEntryServiceImpl;
