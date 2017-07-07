@@ -179,24 +179,27 @@ public class Locales extends AbstractController {
         })));
   }
 
-  public Result upload(UUID localeId) {
-    return locale(localeId, locale -> {
-      return ok(views.html.locales.upload.render(createTemplate(), locale.project, locale));
-    });
+  public CompletionStage<Result> uploadBy(String username, String projectName, String localeName) {
+    return user(username,
+        user -> project(user, projectName, project -> locale(project, localeName, locale -> {
+          return ok(views.html.locales.upload.render(createTemplate(), locale.project, locale));
+        })));
   }
 
-  public Result doUpload(UUID localeId) {
-    return locale(localeId, locale -> {
-      try {
-        localeApiService.upload(localeId, request());
-      } catch (Exception e) {
-        addError(e.getMessage());
-        return badRequest(
-            views.html.locales.upload.render(createTemplate(), locale.project, locale));
-      }
+  public CompletionStage<Result> doUploadBy(String username, String projectName,
+      String localeName) {
+    return user(username,
+        user -> project(user, projectName, project -> locale(project, localeName, locale -> {
+          try {
+            localeApiService.upload(locale.id, request());
+          } catch (Exception e) {
+            addError(e.getMessage());
+            return badRequest(
+                views.html.locales.upload.render(createTemplate(), locale.project, locale));
+          }
 
-      return redirect(locale.route());
-    });
+          return redirect(locale.route());
+        })));
   }
 
   public CompletionStage<Result> removeBy(String username, String projectName, String localeName,

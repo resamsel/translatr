@@ -328,4 +328,18 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
     return routes.Locales.removeBy(project.owner.username, project.name, name, search, order, limit,
         offset);
   }
+
+  /**
+   * @return
+   */
+  public Call uploadRoute() {
+    return routes.Locales.uploadBy(project.owner.username, project.name, name);
+  }
+
+  /**
+   * @return
+   */
+  public Call doUploadRoute() {
+    return routes.Locales.doUploadBy(project.owner.username, project.name, name);
+  }
 }

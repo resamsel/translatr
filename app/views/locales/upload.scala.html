@@ -2,7 +2,7 @@
 
 @main(template.withTitle(Messages("locale.import.title", locale.project.name, tags.locale(locale.name))))()(projects.nav(project, "locales")) {
 	@projects.content() {
-		<form action="@routes.Locales.upload(locale.id)" method="post" enctype="multipart/form-data">
+		<form action="@locale.doUploadRoute" method="post" enctype="multipart/form-data">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">
 					<span class="card-title">@Messages("locale.import")</span>

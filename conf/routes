@@ -60,6 +60,11 @@ GET		/logout						controllers.Application.logout
 GET		/authenticate/:provider		com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
 GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider: String)
 
+# Commands
+GET		/command/:key/execute		controllers.Application.commandExecute(key: String)
+
+GET		/javascriptRoutes			controllers.Application.javascriptRoutes
+
 # Users
 GET		/users						controllers.Users.index()
 
@@ -88,10 +93,6 @@ GET		/projects/create			controllers.Projects.create
 POST	/projects/create			controllers.Projects.doCreate
 GET		/projects/create/$projectName<.+>	controllers.Projects.createImmediately(projectName: String)
 
-# Locales
-GET		/locales/:id/import			controllers.Locales.upload(id: java.util.UUID)
-POST	/locales/:id/import			controllers.Locales.doUpload(id: java.util.UUID)
-
 # Keys
 GET		/keys/:id/edit				controllers.Keys.edit(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/keys/:id/edit				controllers.Keys.doEdit(id: java.util.UUID)
@@ -102,12 +103,7 @@ GET		/keys/:projectId/create		controllers.Keys.create(projectId: java.util.UUID)
 POST	/keys/:projectId/create		controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/keys/:projectId/:localeId/create	controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 
-# Commands
-GET		/command/:key/execute		controllers.Application.commandExecute(key: String)
-
-GET		/javascriptRoutes			controllers.Application.javascriptRoutes
-
-# Root routes for usernames
+# User
 GET		/:username					controllers.Users.user(username: String)
 GET		/:username/activity/csv		controllers.Users.activityCsv(username: String)
 GET		/:username/projects			controllers.Users.projects(username: String)
@@ -116,10 +112,15 @@ GET		/:username/linkedAccounts	controllers.Users.linkedAccounts(username: String
 GET		/:username/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
 GET		/:username/accessTokens		controllers.Users.accessTokens(username: String)
 
+# Project
 GET		/:username/:projectName						controllers.Projects.projectBy(username: String, projectName: String)
 GET		/:username/:projectName/edit				controllers.Projects.editBy(username: String, projectName: String)
 POST	/:username/:projectName/edit				controllers.Projects.doEditBy(username: String, projectName: String)
 GET		/:username/:projectName/remove				controllers.Projects.removeBy(username: String, projectName: String)
+GET		/:username/:projectName/wordCount/reset		controllers.Projects.wordCountResetBy(username: String, projectName: String)
+POST	/:username/:projectName/owner/change		controllers.Projects.doOwnerChangeBy(username: String, projectName: String)
+
+# Locales
 GET		/:username/:projectName/locales				controllers.Projects.localesBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/:username/:projectName/locales/create		controllers.Locales.doCreateBy(username: String, projectName: String)
 GET		/:username/:projectName/locales/:localeName	controllers.Locales.localeBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
@@ -127,13 +128,19 @@ GET		/:username/:projectName/locales/:localeName/create	controllers.Locales.crea
 GET		/:username/:projectName/locales/:localeName/edit	controllers.Locales.editBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 POST	/:username/:projectName/locales/:localeName/edit	controllers.Locales.doEditBy(username: String, projectName: String, localeName: String)
 GET		/:username/:projectName/locales/:localeName/remove	controllers.Locales.removeBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/locales/:localeName/import	controllers.Locales.uploadBy(username: String, projectName: String, localeName: String)
+POST	/:username/:projectName/locales/:localeName/import	controllers.Locales.doUploadBy(username: String, projectName: String, localeName: String)
+
+# Keys
 GET		/:username/:projectName/keys				controllers.Projects.keysBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/:username/:projectName/keys/:keyName		controllers.Keys.keyBy(username: String, projectName: String, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+
+# Members
 GET		/:username/:projectName/members				controllers.Projects.membersBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/:username/:projectName/members/add			controllers.Projects.memberAddBy(username: String, projectName: String)
 POST	/:username/:projectName/members/add			controllers.Projects.doMemberAddBy(username: String, projectName: String)
 GET		/:username/:projectName/members/:memberId/remove	controllers.Projects.memberRemoveBy(username: String, projectName: String, memberId: Long)
+
+# Activity
 GET		/:username/:projectName/activity			controllers.Projects.activityBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET		/:username/:projectName/activity/csv		controllers.Projects.activityCsvBy(username: String, projectName: String)
-GET		/:username/:projectName/wordCount/reset		controllers.Projects.wordCountResetBy(username: String, projectName: String)
-POST	/:username/:projectName/owner/change		controllers.Projects.doOwnerChangeBy(username: String, projectName: String)
