@@ -144,7 +144,10 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     if (t.members.isEmpty()) {
       t.members.add(new ProjectUser(ProjectRole.Owner).withProject(t).withUser(t.owner));
     }
+  }
 
+  @Override
+  protected void prePersist(Project t, boolean update) {
     if (update) {
       logEntryService.save(
           LogEntry.from(ActionType.Update, t, dto.Project.class, toDto(byId(t.id)), toDto(t)));

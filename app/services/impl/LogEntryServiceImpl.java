@@ -17,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import models.AccessToken;
 import models.Aggregate;
 import models.LogEntry;
 import models.Project;
@@ -123,7 +124,10 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
     if (t.user == null) {
       t.user = User.loggedInUser();
     }
+  }
 
+  @Override
+  protected void prePersist(LogEntry t, boolean update) {
     if (t.project == null) {
       UUID projectId = ContextKey.ProjectId.get();
       if (projectId != null) {

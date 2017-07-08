@@ -122,7 +122,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
    * {@inheritDoc}
    */
   @Override
-  protected void preSave(Key t, boolean update) {
+  protected void prePersist(Key t, boolean update) {
     if (update) {
       logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.Key.class,
           dto.Key.from(byId(t.id)), dto.Key.from(t)));

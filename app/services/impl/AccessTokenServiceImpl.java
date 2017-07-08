@@ -71,7 +71,10 @@ public class AccessTokenServiceImpl extends
     if (t.key == null) {
       t.key = generateKey(AccessToken.KEY_LENGTH);
     }
+  }
 
+  @Override
+  protected void prePersist(AccessToken t, boolean update) {
     if (update) {
       logEntryService.save(LogEntry.from(ActionType.Update, null, dto.AccessToken.class,
           dto.AccessToken.from(byId(t.id)), dto.AccessToken.from(t)));

@@ -126,7 +126,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
    * {@inheritDoc}
    */
   @Override
-  protected void preSave(Locale t, boolean update) {
+  protected void prePersist(Locale t, boolean update) {
     if (update) {
       logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.Locale.class,
           dto.Locale.from(byId(t.id)), dto.Locale.from(t)));

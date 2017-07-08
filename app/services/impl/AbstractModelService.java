@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import criterias.AbstractSearchCriteria;
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -71,13 +72,15 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   }
 
   /**
-   * @param dto
+   * @param model
    */
   protected MODEL validate(MODEL model) {
     Set<ConstraintViolation<MODEL>> violations = validator.validate(model);
 
     if (!violations.isEmpty()) {
-      throw new ConstraintViolationException("Constraint violations detected", violations);
+      throw new ConstraintViolationException(
+          "Constraint violations detected: " + violations.stream().map(Object::toString).collect(
+              Collectors.joining(",")), violations);
     }
 
     return model;
@@ -90,9 +93,11 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   public MODEL save(MODEL t) {
     boolean update = !Ebean.getBeanState(t).isNew();
 
+    preSave(t, update);
+
     validate(t);
 
-    preSave(t, update);
+    prePersist(t, update);
 
     persist(t);
 
@@ -114,6 +119,12 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
    * @param t
    */
   protected void preSave(MODEL t, boolean update) {
+  }
+
+  /**
+   * @param t
+   */
+  protected void prePersist(MODEL t, boolean update) {
   }
 
   /**

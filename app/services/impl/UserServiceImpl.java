@@ -183,6 +183,10 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     if (t.username == null) {
       t.username = String.valueOf(ThreadLocalRandom.current().nextLong());
     }
+  }
+
+  @Override
+  protected void prePersist(User t, boolean update) {
     if (update) {
       logEntryService.save(
           LogEntry.from(ActionType.Update, null, dto.User.class, toDto(byId(t.id)), toDto(t)));

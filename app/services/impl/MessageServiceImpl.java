@@ -104,7 +104,10 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
 
     messageWordCountActor.tell(new ChangeMessageWordCount(t.id, t.locale.project.id, t.locale.id,
         t.key.id, t.wordCount, t.wordCount - wordCount), null);
+  }
 
+  @Override
+  protected void prePersist(Message t, boolean update) {
     if (update) {
       Message existing = Message.byId(t.id);
       if (!Objects.equals(t.value, existing.value))

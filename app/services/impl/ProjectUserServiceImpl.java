@@ -63,7 +63,7 @@ public class ProjectUserServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected void preSave(ProjectUser t, boolean update) {
+  protected void prePersist(ProjectUser t, boolean update) {
     if (update) {
       logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.ProjectUser.class,
           toDto(byId(t.id)), toDto(t)));

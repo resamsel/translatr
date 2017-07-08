@@ -6,12 +6,16 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author resamsel
  * @version 6 Oct 2016
  */
 public class UsernameValidator implements ConstraintValidator<Username, Object> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(UsernameValidator.class);
 
   public static final String MESSAGE = "error.username.invalid";
   private List<String> excluded;
