@@ -14,7 +14,7 @@ import validators.ProjectName;
 public class ProjectForm {
   @Constraints.Required
   @Constraints.MaxLength(Project.NAME_LENGTH)
-  @Constraints.Pattern("[a-zA-Z0-9_-]*")
+  @Constraints.Pattern("[a-zA-Z0-9_\\.-]*")
   @ProjectName
   private String name;
 

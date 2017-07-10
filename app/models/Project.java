@@ -39,6 +39,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.api.Play;
+import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
 import play.mvc.Call;
@@ -49,6 +50,7 @@ import utils.ContextKey;
 import utils.PermissionUtils;
 import utils.QueryUtils;
 import validators.NameUnique;
+import validators.ProjectName;
 import validators.ProjectNameUniqueChecker;
 
 @Entity
@@ -91,8 +93,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
   @UpdatedTimestamp
   public DateTime whenUpdated;
 
-  @Column(nullable = false, length = NAME_LENGTH)
+  @Column(nullable = false)
   @Required
+  @Constraints.Pattern("[a-zA-Z0-9_\\.-]*")
+  @ProjectName
   public String name;
 
   @ManyToOne

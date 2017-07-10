@@ -40,6 +40,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.api.Play;
 import play.api.inject.Injector;
+import play.data.validation.Constraints;
+import play.data.validation.Constraints.Pattern;
+import play.data.validation.Constraints.Required;
 import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Http.Context;
@@ -86,13 +89,14 @@ public class User implements Model<User, UUID>, Subject {
   public boolean active;
 
   @Column(nullable = false, length = USERNAME_LENGTH, unique = true)
+  @Required
+  @Constraints.Pattern("[a-zA-Z0-9_\\.-]*")
   @Username
   public String username;
 
   @Column(nullable = false, length = NAME_LENGTH)
   public String name;
 
-  @Column(length = EMAIL_LENGTH, unique = false)
   public String email;
 
   public boolean emailValidated;

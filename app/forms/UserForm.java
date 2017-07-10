@@ -25,6 +25,7 @@ public class UserForm {
 
   @Constraints.Required
   @Constraints.MaxLength(User.USERNAME_LENGTH)
+  @Constraints.Pattern("[a-zA-Z0-9_\\.-]*")
   @Username
   private String username;
 

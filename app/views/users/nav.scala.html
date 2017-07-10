@@ -5,7 +5,7 @@
 @if(template.loggedInUser.id == user.id) {
 	@tags.navView {
 		@tags.navItem(routes.Users.user(user.username), "info", "user.profile", USER_ICON, active)
-		@tags.navItem(routes.Users.projects(user.username), "projects", "projects", PROJECT_ICON, active)
+		@*tags.navItem(routes.Users.projects(user.username), "projects", "projects", PROJECT_ICON, active)*@
 		@tags.navItem(routes.Users.activity(user.username), "activity", "activity", ACTIVITY_ICON, active)
 		@tags.navItem(routes.Users.linkedAccounts(user.username), "linkedAccounts", "linkedAccounts", LINKED_ACCOUNT_ICON, active)
 		@tags.navItem(routes.Users.accessTokens(user.username), "accessTokens", "accessTokens", ACCESS_TOKEN_ICON, active)
