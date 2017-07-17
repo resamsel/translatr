@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -41,7 +42,6 @@ import org.slf4j.LoggerFactory;
 import play.api.Play;
 import play.api.inject.Injector;
 import play.data.validation.Constraints;
-import play.data.validation.Constraints.Pattern;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
 import play.mvc.Call;
@@ -321,7 +321,7 @@ public class User implements Model<User, UUID>, Subject {
    * Return the route to the user.
    */
   public Call route() {
-    return controllers.routes.Users.user(username);
+    return controllers.routes.Users.user(Objects.requireNonNull(username, "Username is null"));
   }
 
   /**

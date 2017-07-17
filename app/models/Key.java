@@ -18,6 +18,7 @@ import criterias.KeyCriteria;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -131,8 +132,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public static PagedList<Key> findBy(KeyCriteria criteria) {
-    Query<Key> q = QueryUtils.fetch(find.query().alias("k").setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()), FETCH_MAP);
+    Query<Key> q = fetch(criteria.getFetches());
 
     ExpressionList<Key> query = q.where();
 
@@ -167,6 +167,15 @@ public class Key implements Model<Key, UUID>, Suggestable {
     return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
   }
 
+  private static Query<Key> fetch(List<String> fetches) {
+    return fetch(fetches.toArray(new String[fetches.size()]));
+  }
+
+  private static Query<Key> fetch(String... fetches) {
+    return QueryUtils.fetch(find.query().alias("k").setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
+  }
+
   /**
    * @param project
    * @param name
@@ -186,11 +195,11 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * @return
    */
   public static Key byProjectAndName(UUID projectId, String name) {
-    return find.fetch("project").where().eq("project.id", projectId).eq("name", name).findUnique();
+    return fetch().where().eq("project.id", projectId).eq("name", name).findUnique();
   }
 
   public static List<Key> last(Project project, int limit) {
-    return find.fetch("project").where().eq("project", project).order("whenUpdated desc")
+    return fetch().where().eq("project", project).order("whenUpdated desc")
         .setMaxRows(limit).findList();
   }
 
@@ -245,8 +254,13 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * Return the route to the given key, with params added.
    */
   public Call route(String search, String order, int limit, int offset) {
-    return routes.Keys.keyBy(project.owner.username, project.name, name, search, order, limit,
-        offset);
+    Objects.requireNonNull(project, "Project is null");
+    Objects.requireNonNull(project.owner, "Project owner is null");
+    return routes.Keys
+        .keyBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
+            Objects.requireNonNull(project.name, "Project name is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit,
+            offset);
   }
 
   /**
@@ -261,15 +275,24 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * Return the route to the edit route with params.
    */
   public Call editRoute(String search, String order, int limit, int offset) {
+    Objects.requireNonNull(project, "Project is null");
+    Objects.requireNonNull(project.owner, "Project owner is null");
     return routes.Keys
-        .editBy(project.owner.username, project.name, name, search, order, limit, offset);
+        .editBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
+            Objects.requireNonNull(project.name, "Project name is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit, offset);
   }
 
   /**
    * Return the route to the do edit route.
    */
   public Call doEditRoute() {
-    return routes.Keys.doEditBy(project.owner.username, project.name, name);
+    Objects.requireNonNull(project, "Project is null");
+    Objects.requireNonNull(project.owner, "Project owner is null");
+    return routes.Keys
+        .doEditBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
+            Objects.requireNonNull(project.name, "Project name is null"),
+            Objects.requireNonNull(name, "Name is null"));
   }
 
   /**
@@ -284,8 +307,12 @@ public class Key implements Model<Key, UUID>, Suggestable {
    * Return the route to the remove route with params.
    */
   public Call removeRoute(String search, String order, int limit, int offset) {
+    Objects.requireNonNull(project, "Project is null");
+    Objects.requireNonNull(project.owner, "Project owner is null");
     return routes.Keys
-        .removeBy(project.owner.username, project.name, name, null, search, order, limit,
+        .removeBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
+            Objects.requireNonNull(project.name, "Project name is null"),
+            Objects.requireNonNull(name, "Name is null"), null, search, order, limit,
             offset);
   }
 }

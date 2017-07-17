@@ -48,8 +48,8 @@ public class AccessTokenServiceTest extends AbstractTest {
     User user = createUser("user1", "user1@resamsel.com");
     AccessToken accessToken = createAccessToken(user);
 
-    assertThat(accessToken.name).isEqualTo("accessToken1");
-    assertThat(accessToken.key).isNotNull();
+    assertThat(accessToken.name).as("AccessToken.name").isEqualTo("accessToken1");
+    assertThat(accessToken.key).as("AccessToken.key").isNotNull();
   }
 
   /**

@@ -5,6 +5,7 @@ import static utils.Stopwatch.log;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
+import com.avaje.ebean.Query;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.google.common.collect.ImmutableMap;
@@ -103,7 +104,6 @@ public class Message implements Model<Message, UUID> {
   }
 
   /**
-   * @param fromString
    * @return
    */
   public static Message byId(UUID id, String... fetches) {
@@ -113,12 +113,20 @@ public class Message implements Model<Message, UUID> {
   }
 
   /**
-   * @param collect
    * @return
    */
   public static Map<UUID, Message> byIds(List<UUID> ids) {
     return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where().idIn(ids)
         .findMap();
+  }
+
+  private static Query<Message> fetch(List<String> fetches) {
+    return fetch(fetches.toArray(new String[fetches.size()]));
+  }
+
+  private static Query<Message> fetch(String... fetches) {
+    return QueryUtils.fetch(find.query().alias("k").setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 
   /**
@@ -135,8 +143,7 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static PagedList<Message> findBy(MessageCriteria criteria) {
-    ExpressionList<Message> query =
-        QueryUtils.fetch(find.query(), criteria.getFetches(), FETCH_MAP).where();
+    ExpressionList<Message> query = fetch(criteria.getFetches()).where();
 
     if (criteria.getProjectId() != null) {
       query.eq("key.project.id", criteria.getProjectId());
@@ -168,17 +175,14 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static List<Message> byLocale(UUID localeId) {
-    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where()
-        .eq("locale.id", localeId).findList();
+    return fetch().where().eq("locale.id", localeId).findList();
   }
 
   /**
-   * @param localeId
    * @return
    */
   public static List<Message> byLocales(Collection<UUID> ids) {
-    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where()
-        .in("locale.id", ids).findList();
+    return fetch().where().in("locale.id", ids).findList();
   }
 
   /**
@@ -186,21 +190,19 @@ public class Message implements Model<Message, UUID> {
    * @return
    */
   public static List<Message> byKey(Key key) {
-    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where().eq("key", key)
-        .findList();
+    return fetch().where().eq("key", key).findList();
   }
 
   /**
-   * @param key
    * @return
    */
   public static List<Message> byKeys(Collection<UUID> ids) {
-    return find.where().in("key.id", ids).findList();
+    return fetch().where().in("key.id", ids).findList();
   }
 
   public static List<Message> last(Project project, int limit) {
-    return find.fetch("key").fetch("locale").where().eq("key.project", project)
-        .order("whenUpdated desc").setMaxRows(limit).findList();
+    return fetch().where().eq("key.project", project).order("whenUpdated desc").setMaxRows(limit)
+        .findList();
   }
 
   /**

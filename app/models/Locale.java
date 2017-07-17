@@ -22,6 +22,7 @@ import criterias.MessageCriteria;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -150,7 +151,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static Locale byProjectAndName(UUID projectId, String name) {
-    return find.fetch("project").where().eq("project.id", projectId).eq("name", name).findUnique();
+    return fetch().where().eq("project.id", projectId).eq("name", name).findUnique();
   }
 
   /**
@@ -158,8 +159,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public static PagedList<Locale> findBy(LocaleCriteria criteria) {
-    Query<Locale> q = QueryUtils.fetch(find.query().alias("k").setDisableLazyLoading(true),
-        PROPERTIES_TO_FETCH, FETCH_MAP);
+    Query<Locale> q = fetch();
 
     if (StringUtils.isEmpty(criteria.getMessagesKeyName()) && !criteria.getFetches().isEmpty()) {
       q = QueryUtils.fetch(q, QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
@@ -189,6 +189,11 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
     return log(() -> fetch(HasNextPagedList.create(query), criteria), LOGGER, "findBy");
   }
 
+  private static Query<Locale> fetch(String... fetches) {
+    return QueryUtils.fetch(find.query().setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
+  }
+
   private static HasNextPagedList<Locale> fetch(HasNextPagedList<Locale> paged,
       LocaleCriteria criteria) {
     if (StringUtils.isNotEmpty(criteria.getMessagesKeyName())
@@ -210,8 +215,9 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   }
 
   public static List<Locale> last(Project project, int limit) {
-    return log(() -> find.fetch("project").where().eq("project", project).order("whenUpdated desc")
-        .setMaxRows(limit).findList(), LOGGER, "last(%d)", limit);
+    return log(
+        () -> fetch().where().eq("project", project).order("whenUpdated desc").setMaxRows(limit)
+            .findList(), LOGGER, "last(%d)", limit);
   }
 
   /**
@@ -266,8 +272,13 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * Return the route to the given key, with params added.
    */
   public Call route(String search, String order, int limit, int offset) {
-    return routes.Locales.localeBy(project.owner.username, project.name, name, search, order, limit,
-        offset);
+    Objects.requireNonNull(project, "Project is null");
+    Objects.requireNonNull(project.owner, "Project owner is null");
+    return routes.Locales
+        .localeBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
+            Objects.requireNonNull(project.name, "Project name is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit,
+            offset);
   }
 
   /**
@@ -286,15 +297,25 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public Call editRoute(String search, String order, int limit, int offset) {
-    return routes.Locales.editBy(project.owner.username, project.name, name, search, order, limit,
-        offset);
+    Objects.requireNonNull(project, "Project is null");
+    Objects.requireNonNull(project.owner, "Project owner is null");
+    return routes.Locales
+        .editBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
+            Objects.requireNonNull(project.name, "Project name is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit,
+            offset);
   }
 
   /**
    * @return
    */
   public Call doEditRoute() {
-    return routes.Locales.doEditBy(project.owner.username, project.name, name);
+    Objects.requireNonNull(project, "Project is null");
+    Objects.requireNonNull(project.owner, "Project owner is null");
+    return routes.Locales
+        .doEditBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
+            Objects.requireNonNull(project.name, "Project name is null"),
+            Objects.requireNonNull(name, "Name is null"));
   }
 
   /**
@@ -313,21 +334,36 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    * @return
    */
   public Call removeRoute(String search, String order, int limit, int offset) {
-    return routes.Locales.removeBy(project.owner.username, project.name, name, search, order, limit,
-        offset);
+    Objects.requireNonNull(project, "Project is null");
+    Objects.requireNonNull(project.owner, "Project owner is null");
+    return routes.Locales
+        .removeBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
+            Objects.requireNonNull(project.name, "Project name is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit,
+            offset);
   }
 
   /**
    * @return
    */
   public Call uploadRoute() {
-    return routes.Locales.uploadBy(project.owner.username, project.name, name);
+    Objects.requireNonNull(project, "Project is null");
+    Objects.requireNonNull(project.owner, "Project owner is null");
+    return routes.Locales
+        .uploadBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
+            Objects.requireNonNull(project.name, "Project name is null"),
+            Objects.requireNonNull(name, "Name is null"));
   }
 
   /**
    * @return
    */
   public Call doUploadRoute() {
-    return routes.Locales.doUploadBy(project.owner.username, project.name, name);
+    Objects.requireNonNull(project, "Project is null");
+    Objects.requireNonNull(project.owner, "Project owner is null");
+    return routes.Locales.doUploadBy(
+        Objects.requireNonNull(project.owner.username, "Project owner username is null"),
+        Objects.requireNonNull(project.name, "Project name is null"),
+        Objects.requireNonNull(name, "Name is null"));
   }
 }

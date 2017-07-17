@@ -12,7 +12,7 @@
 				<li class="collection-item avatar">
 					<i class="material-icons circle @ACCESS_TOKEN_COLOR">@ACCESS_TOKEN_ICON</i>
 					<span class="title">
-						<a href="@routes.Profiles.accessTokenEdit(accessToken.id)">
+						<a href="@accessToken.editRoute">
 							@accessToken.name
 						</a>
 					</span>
@@ -20,7 +20,7 @@
 						@Messages("when.created", pretty(ctx.lang().locale, accessToken.whenCreated))
 					</p>
 					<a
-						href="@routes.Profiles.accessTokenRemove(accessToken.id)"
+						href="@accessToken.removeRoute"
 						class="secondary-content btn-hover"
 						title="@Messages("button.remove")">
 						<i class="material-icons">delete_forever</i>

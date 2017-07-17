@@ -20,6 +20,7 @@ import criterias.ProjectCriteria;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -392,28 +393,40 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * Return the route to this project.
    */
   public Call route() {
-    return controllers.routes.Projects.projectBy(owner.username, name);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .projectBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
   }
 
   /**
    * Return the edit route to this project.
    */
   public Call editRoute() {
-    return controllers.routes.Projects.editBy(owner.username, name);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .editBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
   }
 
   /**
    * Return the do edit route to this project.
    */
   public Call doEditRoute() {
-    return controllers.routes.Projects.doEditBy(owner.username, name);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .doEditBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
   }
 
   /**
    * Return the remove route to this project.
    */
   public Call removeRoute() {
-    return controllers.routes.Projects.removeBy(owner.username, name);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .removeBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
   }
 
   /**
@@ -428,8 +441,11 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * Return the route to the locales of this project.
    */
   public Call localesRoute(String search, String order, int limit, int offset) {
-    return controllers.routes.Projects.localesBy(owner.username, name, search, order, limit,
-        offset);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .localesBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit,
+            offset);
   }
 
   /**
@@ -452,7 +468,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * Return the route to the keys of this project.
    */
   public Call keysRoute(String search, String order, int limit, int offset) {
-    return controllers.routes.Projects.keysBy(owner.username, name, search, order, limit, offset);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .keysBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit, offset);
   }
 
   /**
@@ -467,8 +486,11 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * Return the route to the members of this project.
    */
   public Call membersRoute(String search, String order, int limit, int offset) {
-    return controllers.routes.Projects.membersBy(owner.username, name, search, order, limit,
-        offset);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .membersBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit,
+            offset);
   }
 
   /**
@@ -483,43 +505,62 @@ public class Project implements Model<Project, UUID>, Suggestable {
    * Return the route to the activity of this project.
    */
   public Call activityRoute(String search, String order, int limit, int offset) {
-    return controllers.routes.Projects.activityBy(owner.username, name, search, order, limit,
-        offset);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .activityBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit,
+            offset);
   }
 
   /**
    * Return the route to the members of this project.
    */
   public Call activityCsvRoute() {
-    return controllers.routes.Projects.activityCsvBy(owner.username, name);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .activityCsvBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
   }
 
   /**
    * Return the route to the word count reset of this project.
    */
   public Call wordCountResetRoute() {
-    return controllers.routes.Projects.wordCountResetBy(owner.username, name);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .wordCountResetBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
   }
 
   /**
    * Return the route to the do owner change of this project.
    */
   public Call doOwnerChangeRoute() {
-    return controllers.routes.Projects.doOwnerChangeBy(owner.username, name);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .doOwnerChangeBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
   }
 
   /**
    * Return the route to the do member add of this project.
    */
   public Call doMemberAddRoute() {
-    return controllers.routes.Projects.doMemberAddBy(owner.username, name);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .doMemberAddBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
   }
 
   /**
    * Return the route to the member remove of this project.
    */
   public Call memberRemoveRoute(Long memberId) {
-    return controllers.routes.Projects.memberRemoveBy(owner.username, name, memberId);
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .memberRemoveBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"),
+            Objects.requireNonNull(memberId, "Member ID is null"));
   }
 
   @Override

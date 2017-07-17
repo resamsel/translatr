@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 import actions.ContextAction;
 import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
+import commands.RevertDeleteAccessTokenCommand;
 import commands.RevertDeleteLinkedAccountCommand;
 import converters.ActivityCsvConverter;
 import criterias.AccessTokenCriteria;
@@ -17,6 +18,7 @@ import forms.ActivitySearchForm;
 import forms.SearchForm;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 import models.AccessToken;
 import models.LinkedAccount;
 import models.LogEntry;
@@ -29,6 +31,7 @@ import play.data.FormFactory;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.AccessTokenService;
 import services.LinkedAccountService;
 import services.ProjectService;
 import utils.FormUtils;
@@ -49,16 +52,19 @@ public class Users extends AbstractController {
 
   private final LinkedAccountService linkedAccountService;
 
+  private final AccessTokenService accessTokenService;
+
   @Inject
   public Users(Injector injector, CacheApi cache, PlayAuthenticate auth, FormFactory formFactory,
       Configuration configuration, ProjectService projectService,
-      LinkedAccountService linkedAccountService) {
+      LinkedAccountService linkedAccountService, AccessTokenService accessTokenService) {
     super(injector, cache, auth);
 
     this.formFactory = formFactory;
     this.configuration = configuration;
     this.projectService = projectService;
     this.linkedAccountService = linkedAccountService;
+    this.accessTokenService = accessTokenService;
   }
 
   public CompletionStage<Result> index() {
@@ -164,6 +170,65 @@ public class Users extends AbstractController {
       return ok(views.html.users.accessTokens.render(createTemplate(user), user,
           AccessToken.findBy(AccessTokenCriteria.from(search).withUserId(user.id)).getList(),
           form));
+    }, true);
+  }
+
+  public CompletionStage<Result> accessTokenEdit(String username, Long accessTokenId) {
+    return user(username, user -> {
+      AccessToken accessToken = accessTokenService.byId(accessTokenId);
+      if (accessToken == null) {
+        return redirectWithError(routes.Users.accessTokens(user.username), "accessToken.notFound");
+      }
+
+      if (!accessToken.user.id.equals(user.id)) {
+        addError(ctx().messages().at("accessToken.access.denied", accessToken.id));
+        return redirect(routes.Users.accessTokens(user.username));
+      }
+
+      return ok(views.html.users.accessToken.render(createTemplate(), user, accessToken,
+          AccessTokenForm.form(formFactory).fill(AccessTokenForm.from(accessToken))));
+    });
+  }
+
+  public CompletionStage<Result> doAccessTokenEdit(String username, Long accessTokenId) {
+    return user(username, user -> {
+      AccessToken accessToken = accessTokenService.byId(accessTokenId);
+      if (accessToken == null) {
+        return redirectWithError(routes.Users.accessTokens(user.username), "accessToken.notFound");
+      }
+
+      Form<AccessTokenForm> form = AccessTokenForm.form(formFactory).bindFromRequest();
+
+      if (form.hasErrors()) {
+        return badRequest(
+            views.html.users.accessToken.render(createTemplate(), user, accessToken, form));
+      }
+
+      try {
+        accessTokenService.save(form.get().fill(accessToken));
+      } catch (ConstraintViolationException e) {
+        return badRequest(views.html.users.accessToken.render(createTemplate(), user, accessToken,
+            FormUtils.include(form, e)));
+      }
+
+      return redirect(routes.Users.accessTokens(user.username));
+    });
+  }
+
+  public CompletionStage<Result> accessTokenRemove(String username, Long accessTokenId) {
+    return user(username, user -> {
+      AccessToken accessToken = accessTokenService.byId(accessTokenId);
+
+      if (accessToken == null || !user.id.equals(accessToken.user.id)) {
+        return redirectWithError(routes.Users.accessTokens(user.username),
+            "accessToken.notAllowed");
+      }
+
+      undoCommand(RevertDeleteAccessTokenCommand.from(accessToken));
+
+      accessTokenService.delete(accessToken);
+
+      return redirect(routes.Users.accessTokens(user.username));
     }, true);
   }
 

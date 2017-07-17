@@ -86,9 +86,6 @@ GET		/profile/merge				controllers.Profiles.askMerge
 POST	/profile/merge				controllers.Profiles.doMerge
 GET		/profile/accessTokens/create	controllers.Profiles.accessTokenCreate
 POST	/profile/accessTokens/create	controllers.Profiles.doAccessTokenCreate
-GET		/profile/accessTokens/:accessTokenId/edit	controllers.Profiles.accessTokenEdit(accessTokenId: Long)
-POST	/profile/accessTokens/:accessTokenId/edit	controllers.Profiles.doAccessTokenEdit(accessTokenId: Long)
-GET		/profile/accessTokens/:accessTokenId/remove	controllers.Profiles.accessTokenRemove(accessTokenId: Long)
 GET		/profile/notifications/reset	controllers.Profiles.resetNotifications
 
 # Projects
@@ -103,6 +100,9 @@ GET		/:username/activity			controllers.Users.activity(username: String)
 GET		/:username/linkedAccounts	controllers.Users.linkedAccounts(username: String)
 GET		/:username/linkedAccounts/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
 GET		/:username/accessTokens		controllers.Users.accessTokens(username: String)
+GET		/:username/accessTokens/:accessTokenId/edit	controllers.Users.accessTokenEdit(username: String, accessTokenId: Long)
+POST	/:username/accessTokens/:accessTokenId/edit	controllers.Users.doAccessTokenEdit(username: String, accessTokenId: Long)
+GET		/:username/accessTokens/:accessTokenId/remove	controllers.Users.accessTokenRemove(username: String, accessTokenId: Long)
 
 # Project
 GET		/:username/create							controllers.Projects.createBy(username: String)

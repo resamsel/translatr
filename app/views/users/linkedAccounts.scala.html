@@ -20,7 +20,7 @@
 								@Messages("user.linked", pretty(ctx.lang().locale, linkedAccount.whenCreated))
 							</p>
 							<a
-								href="@routes.Users.linkedAccountRemove(user.username, linkedAccount.id)"
+								href="@linkedAccount.removeRoute"
 								class="secondary-content btn-hover"
 								title="@Messages("button.unlink")">
 								<i class="material-icons">delete_forever</i>

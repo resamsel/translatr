@@ -16,7 +16,8 @@ public class AccessTokenNameUniqueChecker implements NameUniqueChecker {
       return false;
 
     AccessToken t = (AccessToken) o;
+    AccessToken existing = AccessToken.byUserAndName(t.user.id, t.name);
 
-    return AccessToken.byUserAndName(t.user.id, t.name) == null;
+    return existing == null || t.id == existing.id;
   }
 }
