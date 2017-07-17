@@ -12,7 +12,7 @@ import sys
 import os
 import textwrap
 
-from collections import namedtuple
+from argparse import Namespace
 from tabulate import tabulate
 from uuid import UUID
 
@@ -44,10 +44,6 @@ API_HTML_ERROR = textwrap.dedent("""
 	{0}
 """)
 
-Project = namedtuple('Project', 'id name ownerId ownerName')
-Locale = namedtuple('Locale', 'id name projectId projectOwnerUsername projectName pathName')
-Key = namedtuple('Key', 'id name projectId projectOwnerUsername projectName pathName')
-User = namedtuple('User', 'id name username')
 
 logger = logging.getLogger(__name__)
 
@@ -77,9 +73,9 @@ def eprint(msg, width=None):
 
 def target_repl(m):
 	return m.group(0) \
+		.replace('.', '_') \
 		.replace('{', r'(?P<') \
-		.replace('}', r'>\w*)') \
-		.replace('.', '_')
+		.replace('}', r'>.*)')
 
 
 def target_pattern(target):
@@ -169,6 +165,9 @@ class Request(object):
 
 	def delete(self, path, **kwargs):
 		return self.request(requests.delete, path, **kwargs)
+
+
+Project, Locale, Key, User = Namespace, Namespace, Namespace, Namespace
 
 
 class Api(object):
@@ -483,6 +482,7 @@ def push(args):
 	logger.debug('Filter: %s', file_filter)
 	pattern = target_pattern(target)
 	for filename in glob.iglob(file_filter):
+		logger.debug('Filename: %s', filename)
 		m = pattern.match(filename)
 		if not m:
 			# Skip this entry
