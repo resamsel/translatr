@@ -40,11 +40,16 @@ public class AbstractTest extends WithApplication {
 
   protected GuiceApplicationBuilder builder() {
     CacheApi cache = Mockito.mock(CacheApi.class);
-    when(cache.getOrElse(anyString(), any(), anyInt()))
-        .thenAnswer(invocation -> ((Callable<?>) invocation.getArguments()[1]).call());
+
+    prepareCache(cache);
 
     return new GuiceApplicationBuilder().disable(EhCacheModule.class)
         .overrides(bind(CacheApi.class).toInstance(cache));
+  }
+
+  protected void prepareCache(CacheApi cache) {
+    when(cache.getOrElse(anyString(), any(), anyInt()))
+        .thenAnswer(invocation -> ((Callable<?>) invocation.getArguments()[1]).call());
   }
 
   /**

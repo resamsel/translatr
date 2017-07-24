@@ -44,7 +44,7 @@ libraryDependencies ++= Seq(
 
 	// https://mvnrepository.com/artifact/org.easytesting/fest-assert-core
 	"org.easytesting" % "fest-assert-core" % "2.0M10" % "test",
-	"org.mockito" % "mockito-core" % "2.8.9" % "test"
+	"org.mockito" % "mockito-core" % "2.8.47" % "test"
 )
 
 //
@@ -125,9 +125,19 @@ pipelineStages in Assets := Seq(concat)
 pipelineStages := Seq(concat)
 
 //
+// Tests
+//
+fork in Test := false
+
+//
 // JaCoCo test coverage
 //
 jacoco.settings
+
+// Unfortunately, this is really needed
+parallelExecution in jacoco.Config := false
+
+fork in jacoco.Config := false
 
 jacoco.excludes in jacoco.Config := Seq(
 	"router.*",
@@ -135,9 +145,6 @@ jacoco.excludes in jacoco.Config := Seq(
 	"*.Reverse*",
 	"*.routes"
 )
-
-// Unfortunately, this is really needed
-parallelExecution in jacoco.Config := false
 
 //
 // FindBugs

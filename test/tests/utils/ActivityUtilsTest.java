@@ -16,6 +16,7 @@ import play.libs.Json;
 import utils.ActivityUtils;
 
 public class ActivityUtilsTest {
+
   @Test
   public void instanceOf() {
     assertThat(new ActivityUtils()).isNotNull();
@@ -51,19 +52,19 @@ public class ActivityUtilsTest {
     assertThat(ActivityUtils.linkTo(activity)).isEqualTo(controllers.routes.Users.user("username"));
     assertThat(ActivityUtils
         .linkTo(createLogEntry(ActionType.Create, dto.Project.class.getName(), project)))
-            .isEqualTo(controllers.routes.Projects.projectBy(ownerUsername, name));
+        .isEqualTo(controllers.routes.Projects.projectBy(ownerUsername, name));
     assertThat(
         ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Locale.class.getName(), locale)))
-            .isEqualTo(controllers.routes.Locales.localeBy(ownerUsername, name, localeName,
-                Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
-                Locales.DEFAULT_OFFSET));
+        .isEqualTo(controllers.routes.Locales.localeBy(ownerUsername, name, localeName,
+            Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
+            Locales.DEFAULT_OFFSET));
     assertThat(
         ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Key.class.getName(), key)))
-            .isEqualTo(controllers.routes.Keys.keyBy(ownerUsername, name, keyPathName,
-                Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
+        .isEqualTo(controllers.routes.Keys.keyBy(ownerUsername, name, keyPathName,
+            Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
     assertThat(
         ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Message.class.getName(), uuid)))
-            .isNull();
+        .isNull();
     LogEntry logEntry = createLogEntry(ActionType.Create, dto.Message.class.getName(), message);
     logEntry.after = message.toString();
     assertThat(ActivityUtils.linkTo(logEntry))
@@ -71,15 +72,16 @@ public class ActivityUtilsTest {
             Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
     assertThat(ActivityUtils
         .linkTo(createLogEntry(ActionType.Create, dto.ProjectUser.class.getName(), projectUser)))
-            .isEqualTo(
-                controllers.routes.Projects.membersBy(ownerUsername, name, Projects.DEFAULT_SEARCH,
-                    Projects.DEFAULT_ORDER, Projects.DEFAULT_LIMIT, Projects.DEFAULT_OFFSET));
+        .isEqualTo(
+            controllers.routes.Projects.membersBy(ownerUsername, name, Projects.DEFAULT_SEARCH,
+                Projects.DEFAULT_ORDER, Projects.DEFAULT_LIMIT, Projects.DEFAULT_OFFSET));
     assertThat(ActivityUtils
-        .linkTo(createLogEntry(ActionType.Create, dto.AccessToken.class.getName(), id)))
-            .isEqualTo(controllers.routes.Profiles.accessTokenEdit(id));
+        .linkTo(createLogEntry(ActionType.Create, dto.AccessToken.class.getName(),
+            Json.newObject().put("id", id).put("username", "username"))))
+        .isEqualTo(controllers.routes.Users.accessTokenEdit(ownerUsername, id));
     assertThat(
         ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Suggestion.class.getName(), id)))
-            .isNull();
+        .isNull();
   }
 
   @Test
@@ -97,13 +99,13 @@ public class ActivityUtilsTest {
         .isEqualTo(ActivityUtils.MESSAGE_ICON);
     assertThat(
         ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.ProjectUser.class.getName())))
-            .isEqualTo(ActivityUtils.PROJECT_USER_ICON);
+        .isEqualTo(ActivityUtils.PROJECT_USER_ICON);
     assertThat(
         ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.AccessToken.class.getName())))
-            .isEqualTo(ActivityUtils.ACCESS_TOKEN_ICON);
+        .isEqualTo(ActivityUtils.ACCESS_TOKEN_ICON);
     assertThat(
         ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.Suggestion.class.getName())))
-            .isEqualTo("");
+        .isEqualTo("");
   }
 
   @Test
@@ -113,23 +115,23 @@ public class ActivityUtilsTest {
         .isEqualTo(ActivityUtils.USER_COLOR);
     assertThat(
         ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.Project.class.getName())))
-            .isEqualTo(ActivityUtils.PROJECT_COLOR);
+        .isEqualTo(ActivityUtils.PROJECT_COLOR);
     assertThat(ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.Locale.class.getName())))
         .isEqualTo(ActivityUtils.LOCALE_COLOR);
     assertThat(ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.Key.class.getName())))
         .isEqualTo(ActivityUtils.KEY_COLOR);
     assertThat(
         ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.Message.class.getName())))
-            .isEqualTo(ActivityUtils.MESSAGE_COLOR);
+        .isEqualTo(ActivityUtils.MESSAGE_COLOR);
     assertThat(
         ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.ProjectUser.class.getName())))
-            .isEqualTo(ActivityUtils.PROJECT_USER_COLOR);
+        .isEqualTo(ActivityUtils.PROJECT_USER_COLOR);
     assertThat(
         ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.AccessToken.class.getName())))
-            .isEqualTo(ActivityUtils.ACCESS_TOKEN_COLOR);
+        .isEqualTo(ActivityUtils.ACCESS_TOKEN_COLOR);
     assertThat(
         ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.Suggestion.class.getName())))
-            .isEqualTo("");
+        .isEqualTo("");
   }
 
   @Test
@@ -137,19 +139,19 @@ public class ActivityUtilsTest {
     assertThat(ActivityUtils.nameOf(null)).isNull();
     assertThat(ActivityUtils
         .nameOf(createLogEntry(ActionType.Create, dto.User.class.getName(), Json.newObject())))
-            .isNull();
+        .isNull();
     assertThat(
         ActivityUtils.nameOf(createLogEntry(ActionType.Create, dto.User.class.getName(), "U")))
-            .isEqualTo("U");
+        .isEqualTo("U");
     assertThat(
         ActivityUtils.nameOf(createLogEntry(ActionType.Create, dto.Project.class.getName(), "P")))
-            .isEqualTo("P");
+        .isEqualTo("P");
     assertThat(
         ActivityUtils.nameOf(createLogEntry(ActionType.Create, dto.Locale.class.getName(), "L")))
-            .isEqualTo("L");
+        .isEqualTo("L");
     assertThat(
         ActivityUtils.nameOf(createLogEntry(ActionType.Create, dto.Key.class.getName(), "K")))
-            .isEqualTo("K");
+        .isEqualTo("K");
     assertThat(ActivityUtils.nameOf(createLogEntry(ActionType.Create, dto.Message.class.getName(),
         Json.newObject().put("keyName", "K").put("localeName", "L")))).isEqualTo("K (L)");
     assertThat(
@@ -157,26 +159,26 @@ public class ActivityUtilsTest {
             Json.newObject().put("projectName", "P").put("userName", "U")))).isEqualTo("P (U)");
     assertThat(ActivityUtils
         .nameOf(createLogEntry(ActionType.Create, dto.AccessToken.class.getName(), "A")))
-            .isEqualTo("A");
+        .isEqualTo("A");
     assertThat(ActivityUtils
         .nameOf(createLogEntry(ActionType.Create, dto.Suggestion.class.getName(), "A")))
-            .isEqualTo("");
+        .isEqualTo("");
   }
 
   @Test
   public void parse() {
     assertThat(ActivityUtils
         .parse(createLogEntry(ActionType.Create, dto.User.class.getName(), Json.newObject())))
-            .isEqualTo(Json.newObject());
+        .isEqualTo(Json.newObject());
     assertThat(ActivityUtils
         .parse(createLogEntry(ActionType.Delete, dto.User.class.getName(), Json.newObject())))
-            .isEqualTo(Json.newObject());
+        .isEqualTo(Json.newObject());
     assertThat(ActivityUtils
         .parse(createLogEntry(ActionType.Create, dto.User.class.getName(), (JsonNode) null)))
-            .isEqualTo(Json.newObject());
+        .isEqualTo(Json.newObject());
     assertThat(ActivityUtils
         .parse(createLogEntry(ActionType.Delete, dto.User.class.getName(), (JsonNode) null)))
-            .isEqualTo(Json.newObject());
+        .isEqualTo(Json.newObject());
   }
 
   private LogEntry createLogEntry(ActionType type, String contentType) {
@@ -203,12 +205,14 @@ public class ActivityUtilsTest {
 
     switch (type) {
       case Create:
-        if (json != null)
+        if (json != null) {
           out.after = json.toString();
+        }
         break;
       case Delete:
-        if (json != null)
+        if (json != null) {
           out.before = json.toString();
+        }
         break;
       default:
         break;

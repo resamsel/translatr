@@ -3,6 +3,7 @@ package controllers;
 import static java.util.stream.Collectors.toMap;
 
 import actions.ContextAction;
+import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 import commands.RevertDeleteAccessTokenCommand;
@@ -42,6 +43,7 @@ import utils.Template;
  * @version 26 Sep 2016
  */
 @With(ContextAction.class)
+@SubjectPresent(forceBeforeAuthCheck = true)
 public class Users extends AbstractController {
 
   private final FormFactory formFactory;

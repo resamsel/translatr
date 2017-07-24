@@ -192,6 +192,11 @@ public class User implements Model<User, UUID>, Subject {
     return this;
   }
 
+  public User withWhenCreated(DateTime whenCreated) {
+    this.whenCreated = whenCreated;
+    return this;
+  }
+
   /**
    * {@inheritDoc}
    */

@@ -105,6 +105,11 @@ public class ProjectUser implements Model<ProjectUser, Long> {
     return this;
   }
 
+  public ProjectUser withRole(ProjectRole role) {
+    this.role = role;
+    return this;
+  }
+
   /**
    * {@inheritDoc}
    */

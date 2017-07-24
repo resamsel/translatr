@@ -62,6 +62,10 @@ public class PermissionUtils {
    * @return
    */
   public static boolean hasPermissionAny(Project project, ProjectRole... roles) {
+    if (project.members != null) {
+      return hasPermissionAny(project.members, User.loggedInUser(), Arrays.asList(roles));
+    }
+
     return hasPermissionAny(project.id, User.loggedInUser(), roles);
   }
 
@@ -75,26 +79,31 @@ public class PermissionUtils {
   }
 
   /**
-   * @param project
+   * @param projectId
    * @param loggedInUser
    * @param roles
    * @return
    */
   public static boolean hasPermissionAny(UUID projectId, User loggedInUser, ProjectRole... roles) {
-    return hasPermissionAny(projectId, User.loggedInUser(), Arrays.asList(roles));
+    return hasPermissionAny(projectId, loggedInUser, Arrays.asList(roles));
   }
 
   /**
-   * @param project
+   * @param projectId
    * @param user
    * @param roles
    * @return
    */
   public static boolean hasPermissionAny(UUID projectId, User user, Collection<ProjectRole> roles) {
-    LOGGER.debug("Members needed: {}", roles);
+    return hasPermissionAny(ProjectUser.findBy(new ProjectUserCriteria().withProjectId(projectId))
+        .getList(), user, roles);
+  }
 
-    for (ProjectUser member : ProjectUser.findBy(new ProjectUserCriteria().withProjectId(projectId))
-        .getList()) {
+  public static boolean hasPermissionAny(List<ProjectUser> members, User user,
+      Collection<ProjectRole> roles) {
+    LOGGER.debug("Roles needed (any): {}", roles);
+
+    for (ProjectUser member : members) {
       if (user.id.equals(member.user.id) && roles.contains(member.role)) {
         return true;
       }

@@ -15,11 +15,11 @@ import services.impl.ProjectServiceImpl;
 @ImplementedBy(ProjectServiceImpl.class)
 public interface ProjectService extends ModelService<Project, UUID, ProjectCriteria> {
   /**
-   * @param user
-   * @param name
+   * @param username The username of the project owner
+   * @param name The name of the project
    * @return
    */
-  Project byOwnerAndName(User user, String name, String... fetches);
+  Project byOwnerAndName(String username, String name, String... fetches);
 
   /**
    * @param projectId

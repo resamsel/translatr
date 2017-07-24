@@ -9,7 +9,6 @@ import assertions.ResultAssert;
 import controllers.Projects;
 import controllers.routes;
 import java.util.UUID;
-import models.Project;
 import models.User;
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -17,18 +16,17 @@ import play.cache.CacheApi;
 import play.mvc.Http.RequestBuilder;
 import play.mvc.Result;
 import play.test.Helpers;
-import utils.ProjectRepository;
 import utils.TestFactory;
 import utils.UserRepository;
 
 /**
  * Created by resamsel on 10/07/2017.
  */
-public class ProjectsTest extends ControllerTest {
+public class UsersTest extends ControllerTest {
 
   @Test
   public void testIndexDenied() {
-    assertAccessDenied(routes.Projects.index("", "", 20, 0), "Projects overview denied");
+    assertAccessDenied(routes.Users.index(), "Users overview denied");
   }
 
   @Test
@@ -36,10 +34,10 @@ public class ProjectsTest extends ControllerTest {
     Result result = Helpers.route(app,
         new RequestBuilder()
             .session(TestFactory.createSession("google", "123916278356185", "asdfasdf"))
-            .uri(routes.Projects.index("", "", 20, 0).url()));
+            .uri(routes.Users.index().url()));
 
     ResultAssert.assertThat(result)
-        .as("Projects overview")
+        .as("Users overview")
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
@@ -47,23 +45,23 @@ public class ProjectsTest extends ControllerTest {
   }
 
   @Test
-  public void testProjectDenied() {
-    assertAccessDenied(routes.Projects.projectBy("johnsmith", "project1"), "Project view denied");
+  public void testUserDenied() {
+    assertAccessDenied(routes.Users.user("johnsmith"), "User view denied");
   }
 
   @Test
-  public void testProject() {
+  public void testUser() {
     Result result = Helpers.route(app,
         new RequestBuilder()
             .session(TestFactory.createSession("google", "123916278356185", "asdfasdf"))
-            .uri(routes.Projects.projectBy("johnsmith", "project1").url()));
+            .uri(routes.Users.user("johnsmith").url()));
 
     ResultAssert.assertThat(result)
-        .as("Project view")
+        .as("User view")
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
-        .contentContains("project1", mat);
+        .contentContains("johnsmith@google.com", mat);
   }
 
   @Override
@@ -71,10 +69,9 @@ public class ProjectsTest extends ControllerTest {
     super.prepareCache(cache);
 
     User johnSmith = UserRepository.byUsername("johnsmith");
-    Project project1 = ProjectRepository.byOwnerAndName("johnsmith", "project1");
     when(cache.getOrElse(eq("google:123916278356185"), any(), anyInt()))
         .thenAnswer(a -> johnSmith);
-    when(cache.getOrElse(eq("project:owner:johnsmith:name:project1"), any(), anyInt()))
-        .thenAnswer(a -> project1);
+    when(cache.getOrElse(eq("username:johnsmith"), any(), anyInt()))
+        .thenAnswer(a -> johnSmith);
   }
 }

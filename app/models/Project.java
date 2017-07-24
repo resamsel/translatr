@@ -17,6 +17,7 @@ import controllers.AbstractController;
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
 import criterias.ProjectCriteria;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -271,14 +272,33 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return this;
   }
 
+  public Project withWhenCreated(DateTime whenCreated) {
+    this.whenCreated = whenCreated;
+    return this;
+  }
+
+  public Project withWhenUpdated(DateTime whenUpdated) {
+    this.whenUpdated = whenUpdated;
+    return this;
+  }
+
+  public Project withMembers(ProjectUser... members) {
+    if (this.members == null) {
+      this.members = new ArrayList<>();
+    }
+
+    this.members.addAll(Arrays.asList(members));
+    return this;
+  }
+
   /**
    * @param name
    * @return
    */
-  public static Project byOwnerAndName(User user, String name, String... fetches) {
+  public static Project byOwnerAndName(String username, String name, String... fetches) {
     return QueryUtils
         .fetch(find.query(), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
-        .where().eq("owner", user).eq("name", name).findUnique();
+        .where().eq("owner.username", username).eq("name", name).findUnique();
   }
 
   /**
@@ -335,8 +355,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
     Project brandProject = null;
     try {
-      brandProject = Play.current().injector().instanceOf(ProjectService.class).byOwnerAndName(user,
-          "Translatr");
+      brandProject = Play.current().injector().instanceOf(ProjectService.class)
+          .byOwnerAndName(user.username, "Translatr");
     } catch (Exception e) {
       LOGGER.warn("Error while retrieving brand project", e);
     }
@@ -376,17 +396,17 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return String.format("project:%s", projectId);
   }
 
-  public static String getCacheKey(User user, String projectName, String... fetches) {
-    if (user == null || StringUtils.isEmpty(projectName)) {
+  public static String getCacheKey(String username, String projectName, String... fetches) {
+    if (username == null || StringUtils.isEmpty(projectName)) {
       return null;
     }
 
     if (fetches.length > 0) {
-      return String.format("project:owner:%s:name:%s:%s", user.id, projectName,
+      return String.format("project:owner:%s:name:%s:%s", username, projectName,
           StringUtils.join(fetches, ":"));
     }
 
-    return String.format("project:owner:%s:name:%s", user.id, projectName);
+    return String.format("project:owner:%s:name:%s", username, projectName);
   }
 
   /**

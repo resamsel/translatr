@@ -1,6 +1,7 @@
 package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import controllers.routes;
 import models.LogEntry;
 import org.jetbrains.annotations.Contract;
 import play.i18n.Messages;
@@ -107,10 +108,12 @@ public class ActivityUtils {
           return member.route();
         break;
       }
-      case "dto.AccessToken":
-        if (id != null)
-          return controllers.routes.Profiles.accessTokenEdit(id);
+      case "dto.AccessToken": {
+        String name = JsonUtils.getAsText(node, "username");
+        if (name != null && id != null)
+          return controllers.routes.Users.accessTokenEdit(name, id);
         break;
+      }
       default:
         break;
     }

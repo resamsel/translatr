@@ -17,6 +17,6 @@ public class ProjectNameUniqueChecker implements NameUniqueChecker {
 
     Project t = (Project) o;
 
-    return Project.byOwnerAndName(t.owner, t.name) == null;
+    return Project.byOwnerAndName(t.owner.username, t.name) == null;
   }
 }

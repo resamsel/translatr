@@ -4,7 +4,6 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import commands.Command;
 import dto.NotFoundException;
 import dto.PermissionException;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -89,12 +88,20 @@ public abstract class AbstractController extends Controller {
   }
 
   public static Result redirectWithError(Call call, String errorKey, Object... args) {
-    addError(message(errorKey, args));
+    String message =  message(errorKey, args);
+
+    LOGGER.debug("Redirecting with error message: {}", message);
+
+    addError(message);
     return redirect(call);
   }
 
   public static Result redirectWithError(String url, String errorKey, Object... args) {
-    addError(message(errorKey, args));
+    String message =  message(errorKey, args);
+
+    LOGGER.debug("Redirecting with error message: {}", message);
+
+    addError(message);
     return redirect(url);
   }
 
@@ -183,27 +190,27 @@ public abstract class AbstractController extends Controller {
     });
   }
 
-  private Result project(User user, String projectName, Function<Project, Result> processor) {
-    if (user.projects != null) {
-      Optional<Project> project =
-          user.projects.stream().filter(p -> p.name.equals(projectName)).findFirst();
-      if (project.isPresent()) {
-        return processor.apply(project.get());
-      }
-    }
-
-    Project project = projectService.byOwnerAndName(user, projectName);
-    if (project == null) {
-      return redirectWithError(Projects.indexRoute(), "project.notFound");
-    }
-
-    return processor.apply(project);
+  protected CompletionStage<Result> project(String username, String projectName,
+      BiFunction<User, Project, Result> processor, String... fetches) {
+    return project(username, projectName, processor, false, fetches);
   }
 
   protected CompletionStage<Result> project(String username, String projectName,
-      BiFunction<User, Project, Result> processor, String... fetches) {
-    return user(username,
-        user -> project(user, projectName, project -> processor.apply(user, project)), fetches);
+      BiFunction<User, Project, Result> processor, boolean restrict, String... fetches) {
+    return tryCatch(() -> {
+      Project project = projectService.byOwnerAndName(username, projectName);
+      if (project == null) {
+        return redirectWithError(Projects.indexRoute(), "project.notFound");
+      }
+
+      if (restrict && !project.owner.id.equals(User.loggedInUserId())) {
+        return redirectWithError(Projects.indexRoute(), "user.notFound");
+      }
+
+      select(project);
+
+      return processor.apply(project.owner, project);
+    });
   }
 
   /**
