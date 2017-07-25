@@ -234,6 +234,9 @@ public class User implements Model<User, UUID>, Subject {
     List<String> authProviders =
         Arrays.asList(StringUtils.split(injector.instanceOf(play.Application.class).configuration()
             .getString(ConfigKey.AuthProviders.key()), ","));
+
+    LOGGER.debug("Auth providers: {}", authProviders);
+
     if (provider != null && !authProviders.contains(provider))
     // Prevent NPE when using an unavailable auth provider
     {
