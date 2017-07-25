@@ -155,7 +155,7 @@ public abstract class AbstractController extends Controller {
   }
 
   protected CompletionStage<Result> loggedInUser(Function<User, Result> processor) {
-    return tryCatch(() -> User.loggedInUser()).thenApply(processor);
+    return tryCatch(User::loggedInUser).thenApply(processor);
   }
 
   protected CompletionStage<Result> user(String username, Function<User, Result> processor,

@@ -135,9 +135,13 @@ public class User implements Model<User, UUID>, Subject {
   }
 
   public static User findByAuthUserIdentity(final AuthUserIdentity identity) {
+    LOGGER.debug("findByAuthUserIdentity({})", identity);
+
     if (identity == null) {
       return null;
     }
+
+    LOGGER.debug("Cache miss for: {}:{}", identity.getProvider(), identity.getId());
 
     return log(() -> getAuthUserFind(identity).findUnique(), LOGGER, "findByAuthUserIdentity");
   }
@@ -245,6 +249,7 @@ public class User implements Model<User, UUID>, Subject {
   public static User loggedInUser() {
     Context ctx = ContextKey.context();
     if (ctx == null) {
+      LOGGER.debug("Context is null");
       return null;
     }
 
@@ -262,11 +267,12 @@ public class User implements Model<User, UUID>, Subject {
         return user;
       }
 
+      LOGGER.debug("Auth user not in context");
       return ContextKey.put(ctx, authUser.toString(),
           Play.current().injector().instanceOf(UserService.class).getLocalUser(authUser));
     }
 
-    // Not logged-in
+    LOGGER.debug("Not logged-in");
     return null;
   }
 

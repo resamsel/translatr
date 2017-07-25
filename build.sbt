@@ -19,7 +19,7 @@ libraryDependencies ++= Seq(
 	"com.typesafe.play.modules" %% "play-modules-redis" % "2.5.0",
 
 	// Database
-	"org.postgresql" % "postgresql" % "42.1.1",
+	"org.postgresql" % "postgresql" % "42.1.3",
 
 	// OAuth for Play
 	"com.feth" %% "play-authenticate" % "0.8.3",

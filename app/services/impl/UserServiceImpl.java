@@ -129,6 +129,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   @Override
   public User getLocalUser(final AuthUserIdentity authUser) {
     if (authUser == null) {
+      LOGGER.debug("Auth user is null");
       return null;
     }
 
