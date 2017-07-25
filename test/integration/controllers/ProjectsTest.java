@@ -1,24 +1,26 @@
 package integration.controllers;
 
+import static assertions.ResultAssert.assertThat;
+import static controllers.AbstractController.DEFAULT_LIMIT;
+import static controllers.AbstractController.DEFAULT_OFFSET;
+import static controllers.AbstractController.DEFAULT_ORDER;
+import static controllers.AbstractController.DEFAULT_SEARCH;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static utils.TestFactory.createSession;
 
-import assertions.ResultAssert;
 import controllers.Projects;
 import controllers.routes;
-import java.util.UUID;
 import models.Project;
 import models.User;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import play.cache.CacheApi;
 import play.mvc.Http.RequestBuilder;
 import play.mvc.Result;
 import play.test.Helpers;
 import utils.ProjectRepository;
-import utils.TestFactory;
 import utils.UserRepository;
 
 /**
@@ -35,11 +37,11 @@ public class ProjectsTest extends ControllerTest {
   public void testIndex() {
     Result result = Helpers.route(app,
         new RequestBuilder()
-            .session(TestFactory.createSession("google", "123916278356185", "asdfasdf"))
+            .session(createSession("google", "123916278356185", "asdfasdf"))
             .uri(routes.Projects.index("", "", 20, 0).url()));
 
-    ResultAssert.assertThat(result)
-        .as("Projects overview")
+    assertThat(result)
+        .as("projects overview")
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
@@ -55,11 +57,107 @@ public class ProjectsTest extends ControllerTest {
   public void testProject() {
     Result result = Helpers.route(app,
         new RequestBuilder()
-            .session(TestFactory.createSession("google", "123916278356185", "asdfasdf"))
+            .session(createSession("google", "123916278356185", "asdfasdf"))
             .uri(routes.Projects.projectBy("johnsmith", "project1").url()));
 
-    ResultAssert.assertThat(result)
-        .as("Project view")
+    assertThat(result)
+        .as("project view")
+        .statusIsEqualTo(Projects.OK)
+        .contentTypeIsEqualTo("text/html")
+        .charsetIsEqualTo("utf-8")
+        .contentContains("project1", mat);
+  }
+
+  @Test
+  public void testLocalesDenied() {
+    assertAccessDenied(routes.Projects
+        .localesBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+            DEFAULT_OFFSET), "Project locales denied");
+  }
+
+  @Test
+  public void testLocales() {
+    Result result = Helpers.route(app,
+        new RequestBuilder()
+            .session(createSession("google", "123916278356185", "asdfasdf"))
+            .uri(routes.Projects
+                .localesBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+                    DEFAULT_OFFSET).url()));
+
+    assertThat(result)
+        .as("project locales view")
+        .statusIsEqualTo(Projects.OK)
+        .contentTypeIsEqualTo("text/html")
+        .charsetIsEqualTo("utf-8")
+        .contentContains("project1", mat);
+  }
+
+  @Test
+  public void testKeysDenied() {
+    assertAccessDenied(routes.Projects
+        .keysBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+            DEFAULT_OFFSET), "Project keys denied");
+  }
+
+  @Test
+  public void testKeys() {
+    Result result = Helpers.route(app,
+        new RequestBuilder()
+            .session(createSession("google", "123916278356185", "asdfasdf"))
+            .uri(routes.Projects
+                .keysBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+                    DEFAULT_OFFSET).url()));
+
+    assertThat(result)
+        .as("project keys view")
+        .statusIsEqualTo(Projects.OK)
+        .contentTypeIsEqualTo("text/html")
+        .charsetIsEqualTo("utf-8")
+        .contentContains("project1", mat);
+  }
+
+  @Test
+  public void testMembersDenied() {
+    assertAccessDenied(routes.Projects
+        .membersBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+            DEFAULT_OFFSET), "Project members denied");
+  }
+
+  @Test
+  public void testMembers() {
+    Result result = Helpers.route(app,
+        new RequestBuilder()
+            .session(createSession("google", "123916278356185", "asdfasdf"))
+            .uri(routes.Projects
+                .membersBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+                    DEFAULT_OFFSET).url()));
+
+    assertThat(result)
+        .as("project members view")
+        .statusIsEqualTo(Projects.OK)
+        .contentTypeIsEqualTo("text/html")
+        .charsetIsEqualTo("utf-8")
+        .contentContains("project1", mat);
+  }
+
+  @Test
+  public void testActivityDenied() {
+    assertAccessDenied(routes.Projects
+        .activityBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+            DEFAULT_OFFSET), "Project activity denied");
+  }
+
+  @Test
+  public void testActivity() {
+    Result result = Helpers.route(app,
+        new RequestBuilder()
+            .session(createSession("google", "123916278356185", "asdfasdf"))
+            .uri(routes.Projects
+                .activityBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+                    DEFAULT_OFFSET).url()));
+
+    assertThat(result)
+        .as("project activity view")
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
