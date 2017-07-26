@@ -22,6 +22,14 @@ public class UserRepository {
             .withEmail("johnsmith@google.com")
             .withUsername("johnsmith")
             .withWhenCreated(DateTime.now()));
+    REPOSITORY.put(
+        "janedoe",
+        new User()
+            .withId(UUID.randomUUID())
+            .withName("Jane Doe")
+            .withEmail("janedoe@google.com")
+            .withUsername("janedoe")
+            .withWhenCreated(DateTime.now()));
   }
 
   public static User byUsername(String username) {

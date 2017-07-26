@@ -2,6 +2,7 @@ package assertions;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
+import org.apache.commons.lang3.StringUtils;
 import org.fest.assertions.api.AbstractAssert;
 
 /**
@@ -28,7 +29,7 @@ public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A
   protected S isEqualTo(String field, String expected, String actual) {
     assertThat(actual)
         .overridingErrorMessage("Expected %s's %s to be <%s> but was <%s> (%s)", name, field,
-            expected, actual, descriptionText())
+            expected, StringUtils.abbreviate(actual.trim(), 50), descriptionText())
         .isEqualTo(expected);
     return myself;
   }
@@ -36,8 +37,7 @@ public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A
   protected S contains(String field, String s, String actual) {
     assertThat(actual)
         .overridingErrorMessage("Expected %s's %s to contain <%s> but was <%s> (%s)", name, field,
-            s, actual, descriptionText())
-        .contains(s);
+            s, StringUtils.abbreviate(actual.trim(), 50), descriptionText()).contains(s);
     return myself;
   }
 }

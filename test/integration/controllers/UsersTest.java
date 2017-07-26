@@ -5,21 +5,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static utils.TestFactory.createSession;
+import static utils.TestFactory.requestAsJohnSmith;
+import static utils.UserRepository.byUsername;
 
-import assertions.ResultAssert;
 import controllers.Projects;
 import controllers.routes;
-import java.util.UUID;
 import models.User;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import play.cache.CacheApi;
-import play.mvc.Http.RequestBuilder;
 import play.mvc.Result;
 import play.test.Helpers;
-import utils.TestFactory;
-import utils.UserRepository;
 
 /**
  * Created by resamsel on 10/07/2017.
@@ -33,10 +28,7 @@ public class UsersTest extends ControllerTest {
 
   @Test
   public void testIndex() {
-    Result result = Helpers.route(app,
-        new RequestBuilder()
-            .session(createSession("google", "123916278356185", "asdfasdf"))
-            .uri(routes.Users.index().url()));
+    Result result = Helpers.route(app, requestAsJohnSmith().uri(routes.Users.index().url()));
 
     assertThat(result)
         .as("users overview")
@@ -53,17 +45,29 @@ public class UsersTest extends ControllerTest {
 
   @Test
   public void testUser() {
-    Result result = Helpers.route(app,
-        new RequestBuilder()
-            .session(createSession("google", "123916278356185", "asdfasdf"))
-            .uri(routes.Users.user("johnsmith").url()));
+    Result result = Helpers
+        .route(app, requestAsJohnSmith().uri(routes.Users.user("johnsmith").url()));
 
     assertThat(result)
         .as("user view")
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
+        .contentContains("activity", mat)
         .contentContains("johnsmith@google.com", mat);
+  }
+
+  @Test
+  public void testUserJaneDoe() {
+    Result result = Helpers
+        .route(app, requestAsJohnSmith().uri(routes.Users.user("janedoe").url()));
+
+    assertThat(result)
+        .as("user janedoe view")
+        .statusIsEqualTo(Projects.OK)
+        .contentTypeIsEqualTo("text/html")
+        .charsetIsEqualTo("utf-8")
+        .contentContains("janedoe", mat);
   }
 
   @Test
@@ -72,11 +76,15 @@ public class UsersTest extends ControllerTest {
   }
 
   @Test
+  public void testProjectsJaneDoeDenied() {
+    assertAccessDenied(requestAsJohnSmith().uri(routes.Users.projects("janedoe").url()),
+        "user projects jane doe denied");
+  }
+
+  @Test
   public void testProjects() {
-    Result result = Helpers.route(app,
-        new RequestBuilder()
-            .session(createSession("google", "123916278356185", "asdfasdf"))
-            .uri(routes.Users.projects("johnsmith").url()));
+    Result result = Helpers
+        .route(app, requestAsJohnSmith().uri(routes.Users.projects("johnsmith").url()));
 
     assertThat(result)
         .as("user projects view")
@@ -93,10 +101,8 @@ public class UsersTest extends ControllerTest {
 
   @Test
   public void testActivity() {
-    Result result = Helpers.route(app,
-        new RequestBuilder()
-            .session(createSession("google", "123916278356185", "asdfasdf"))
-            .uri(routes.Users.activity("johnsmith").url()));
+    Result result = Helpers
+        .route(app, requestAsJohnSmith().uri(routes.Users.activity("johnsmith").url()));
 
     assertThat(result)
         .as("user activity view")
@@ -113,10 +119,8 @@ public class UsersTest extends ControllerTest {
 
   @Test
   public void testLinkedAccounts() {
-    Result result = Helpers.route(app,
-        new RequestBuilder()
-            .session(createSession("google", "123916278356185", "asdfasdf"))
-            .uri(routes.Users.linkedAccounts("johnsmith").url()));
+    Result result = Helpers
+        .route(app, requestAsJohnSmith().uri(routes.Users.linkedAccounts("johnsmith").url()));
 
     assertThat(result)
         .as("user linked accounts view")
@@ -133,10 +137,8 @@ public class UsersTest extends ControllerTest {
 
   @Test
   public void testAccessTokens() {
-    Result result = Helpers.route(app,
-        new RequestBuilder()
-            .session(createSession("google", "123916278356185", "asdfasdf"))
-            .uri(routes.Users.accessTokens("johnsmith").url()));
+    Result result = Helpers
+        .route(app, requestAsJohnSmith().uri(routes.Users.accessTokens("johnsmith").url()));
 
     assertThat(result)
         .as("user access tokens view")
@@ -150,10 +152,14 @@ public class UsersTest extends ControllerTest {
   protected void prepareCache(CacheApi cache) {
     super.prepareCache(cache);
 
-    User johnSmith = UserRepository.byUsername("johnsmith");
+    User johnSmith = byUsername("johnsmith");
+    User janeDoe = byUsername("janedoe");
+
     when(cache.getOrElse(eq("google:123916278356185"), any(), anyInt()))
         .thenAnswer(a -> johnSmith);
     when(cache.getOrElse(eq("username:johnsmith"), any(), anyInt()))
         .thenAnswer(a -> johnSmith);
+    when(cache.getOrElse(eq("username:janedoe"), any(), anyInt()))
+        .thenAnswer(a -> janeDoe);
   }
 }

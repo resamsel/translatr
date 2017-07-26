@@ -1,11 +1,14 @@
 package utils;
 
+import static utils.UserRepository.byUsername;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
+import models.User;
 import org.joda.time.DateTime;
 
 /**
@@ -16,16 +19,29 @@ public class ProjectRepository {
   private static final Map<String, Project> REPOSITORY = new HashMap<>();
 
   static {
+    User johnSmith = byUsername("johnsmith");
+    User janeDoe = byUsername("janedoe");
     REPOSITORY.put(
         "johnsmith/project1",
         new Project()
             .withId(UUID.randomUUID())
             .withName("project1")
-            .withOwner(UserRepository.byUsername("johnsmith"))
+            .withOwner(johnSmith)
             .withWhenCreated(DateTime.now())
             .withWhenUpdated(DateTime.now())
             .withMembers(new ProjectUser()
-                .withUser(UserRepository.byUsername("johnsmith"))
+                .withUser(johnSmith)
+                .withRole(ProjectRole.Owner)));
+    REPOSITORY.put(
+        "janedoe/project1",
+        new Project()
+            .withId(UUID.randomUUID())
+            .withName("project1")
+            .withOwner(janeDoe)
+            .withWhenCreated(DateTime.now())
+            .withWhenUpdated(DateTime.now())
+            .withMembers(new ProjectUser()
+                .withUser(janeDoe)
                 .withRole(ProjectRole.Owner)));
   }
 
