@@ -7,44 +7,35 @@ import play.data.validation.Constraints;
 import play.libs.F.Tuple;
 
 /**
- *
  * @author resamsel
  * @version 6 Oct 2016
  */
 public class AccessTokenByUserAndNameValidator extends Constraints.Validator<Object>
-			implements ConstraintValidator<AccessTokenByUserAndName, Object>
-{
-	public static final String MESSAGE = "error.accesstokenbyuserandname";
+    implements ConstraintValidator<AccessTokenByUserAndName, Object> {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void initialize(AccessTokenByUserAndName constraintAnnotation)
-	{
-	}
+  public static final String MESSAGE = "error.accesstokenbyuserandname";
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isValid(Object object)
-	{
-		if(object == null)
-			return false;
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void initialize(AccessTokenByUserAndName constraintAnnotation) {
+  }
 
-		if(!(object instanceof String))
-			return false;
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isValid(Object object) {
+    return object != null && object instanceof String
+        && AccessToken.byUserAndName(User.loggedInUserId(), (String) object) == null;
+  }
 
-		return AccessToken.byUserAndName(User.loggedInUserId(), (String)object) == null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Tuple<String, Object[]> getErrorMessageKey()
-	{
-		return null;
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Tuple<String, Object[]> getErrorMessageKey() {
+    return null;
+  }
 }

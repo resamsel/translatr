@@ -8,73 +8,96 @@ import static controllers.AbstractController.DEFAULT_SEARCH;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
-import static utils.ProjectRepository.byOwnerAndName;
+import static play.inject.Bindings.bind;
+import static utils.ProjectRepositoryMock.byOwnerAndName;
+import static utils.ProjectUserRepositoryMock.by;
 import static utils.TestFactory.requestAsJohnSmith;
-import static utils.UserRepository.byUsername;
+import static utils.UserRepositoryMock.byUsername;
 
+import assertions.ProjectAssert;
+import com.google.common.collect.ImmutableMap;
 import controllers.Projects;
 import controllers.routes;
+import criterias.HasNextPagedList;
 import models.Project;
+import models.ProjectRole;
+import models.ProjectUser;
 import models.User;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
+import play.api.inject.Binding;
 import play.cache.CacheApi;
+import play.mvc.Http.RequestBuilder;
 import play.mvc.Result;
 import play.test.Helpers;
+import services.ProjectService;
+import services.ProjectUserService;
 
 /**
  * Created by resamsel on 10/07/2017.
  */
 public class ProjectsTest extends ControllerTest {
 
+  private ProjectService projectService;
+  private ProjectUserService projectUserService;
+
+  private User johnSmith;
+  private User janeDoe;
+  private Project project1;
+
   @Test
   public void testIndexDenied() {
-    assertAccessDenied(routes.Projects.index("", "", 20, 0), "projects overview denied");
+    assertAccessDenied(Projects.indexRoute(), "projects overview denied");
   }
 
   @Test
   public void testIndex() {
     Result result = Helpers
-        .route(app, requestAsJohnSmith().uri(routes.Projects.index("", "", 20, 0).url()));
+        .route(app, requestAsJohnSmith().uri(Projects.indexRoute().url()));
 
     assertThat(result)
         .as("projects overview")
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
-        .contentContains("johnsmith@google.com", mat);
+        .contentContains(johnSmith.email, mat);
   }
 
   @Test
   public void testProjectDenied() {
-    assertAccessDenied(routes.Projects.projectBy("johnsmith", "project1"), "project view denied");
+    assertAccessDenied(routes.Projects.projectBy(johnSmith.username, project1.name),
+        "project view denied");
   }
 
   @Test
   public void testProject() {
     Result result = Helpers.route(app,
-        requestAsJohnSmith().uri(routes.Projects.projectBy("johnsmith", "project1").url()));
+        requestAsJohnSmith()
+            .uri(routes.Projects.projectBy(johnSmith.username, project1.name).url()));
 
     assertThat(result)
         .as("project view")
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
-        .contentContains("project1", mat)
-        .contentContains(byOwnerAndName("johnsmith", "project1").id.toString(), mat);
+        .contentContains(project1.name, mat)
+        .contentContains(byOwnerAndName(johnSmith.username, project1.name).id.toString(), mat);
   }
 
   @Test
   public void testLocalesDenied() {
     assertAccessDenied(routes.Projects
-        .localesBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+        .localesBy(johnSmith.username, project1.name, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
             DEFAULT_OFFSET), "project locales denied");
   }
 
   @Test
   public void testLocales() {
     Result result = Helpers.route(app, requestAsJohnSmith().uri(routes.Projects
-        .localesBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+        .localesBy(johnSmith.username, project1.name, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
             DEFAULT_OFFSET).url()));
 
     assertThat(result)
@@ -82,20 +105,20 @@ public class ProjectsTest extends ControllerTest {
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
-        .contentContains("project1", mat);
+        .contentContains(project1.name, mat);
   }
 
   @Test
   public void testKeysDenied() {
     assertAccessDenied(routes.Projects
-        .keysBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+        .keysBy(johnSmith.username, project1.name, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
             DEFAULT_OFFSET), "project keys denied");
   }
 
   @Test
   public void testKeys() {
     Result result = Helpers.route(app, requestAsJohnSmith().uri(routes.Projects
-        .keysBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+        .keysBy(johnSmith.username, project1.name, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
             DEFAULT_OFFSET).url()));
 
     assertThat(result)
@@ -103,20 +126,20 @@ public class ProjectsTest extends ControllerTest {
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
-        .contentContains("project1", mat);
+        .contentContains(project1.name, mat);
   }
 
   @Test
   public void testMembersDenied() {
     assertAccessDenied(routes.Projects
-        .membersBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+        .membersBy(johnSmith.username, project1.name, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
             DEFAULT_OFFSET), "project members denied");
   }
 
   @Test
   public void testMembers() {
     Result result = Helpers.route(app, requestAsJohnSmith().uri(routes.Projects
-        .membersBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+        .membersBy(johnSmith.username, project1.name, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
             DEFAULT_OFFSET).url()));
 
     assertThat(result)
@@ -124,39 +147,97 @@ public class ProjectsTest extends ControllerTest {
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
-        .contentContains("project1", mat);
+        .contentContains(project1.name, mat);
   }
 
   @Test
   public void testMemberAddDenied() {
     assertAccessDenied(routes.Projects
-        .memberAddBy("johnsmith", "project1"), "project member add denied");
+        .memberAddBy(johnSmith.username, project1.name), "project member add denied");
   }
 
   @Test
   public void testMemberAdd() {
     Result result = Helpers.route(app,
-        requestAsJohnSmith().uri(routes.Projects.memberAddBy("johnsmith", "project1").url()));
+        requestAsJohnSmith()
+            .uri(routes.Projects.memberAddBy(johnSmith.username, project1.name).url()));
 
     assertThat(result)
         .as("project member add view")
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
-        .contentContains("project1", mat);
+        .contentContains(project1.name, mat);
+  }
+
+  @Test
+  public void testDoMemberAddDenied() {
+    assertAccessDenied(routes.Projects.doMemberAddBy(johnSmith.username, project1.name),
+        "project member do add denied");
+  }
+
+  @Test
+  public void testDoMemberAdd() {
+    Result result = Helpers.route(app,
+        requestAsJohnSmith()
+            .method("POST")
+            .bodyForm(ImmutableMap.of("username", janeDoe.username, "role", "Manager"))
+            .uri(routes.Projects.doMemberAddBy(johnSmith.username, project1.name).url()));
+
+    assertThat(result)
+        .as("project member do add view")
+        .statusIsEqualTo(Projects.SEE_OTHER)
+        .headerIsEqualTo("location", routes.Projects
+            .membersBy(johnSmith.username, project1.name, DEFAULT_SEARCH, DEFAULT_ORDER,
+                DEFAULT_LIMIT,
+                DEFAULT_OFFSET).url());
+
+    spy(projectUserService).save((ProjectUser) any());
+  }
+
+  @Test
+  public void testDoOwnerChangeDenied() {
+    assertAccessDenied(
+        new RequestBuilder()
+            .method("POST")
+            .uri(routes.Projects.doOwnerChangeBy(johnSmith.username, project1.name).url()),
+        "project owner change denied");
+  }
+
+  @Test
+  public void testDoOwnerChange() {
+    Result result = Helpers.route(app,
+        requestAsJohnSmith()
+            .method("POST")
+            .bodyForm(ImmutableMap.of("ownerId", janeDoe.id.toString()))
+            .uri(routes.Projects.doOwnerChangeBy(johnSmith.username, project1.name).url()));
+
+    assertThat(result)
+        .as("project do owner change view")
+        .statusIsEqualTo(Projects.SEE_OTHER)
+        .headerIsEqualTo("location", routes.Projects
+            .membersBy(janeDoe.username, project1.name, DEFAULT_SEARCH, DEFAULT_ORDER,
+                DEFAULT_LIMIT, DEFAULT_OFFSET).url());
+
+    ProjectAssert.assertThat(project1).ownerIsEqualTo(janeDoe);
+
+    spy(projectService).save((Project) any());
+
+    // reset owner
+    project1.owner = johnSmith;
   }
 
   @Test
   public void testActivityDenied() {
     assertAccessDenied(routes.Projects
-        .activityBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+        .activityBy(johnSmith.username, project1.name, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
             DEFAULT_OFFSET), "project activity denied");
   }
 
   @Test
   public void testActivity() {
     Result result = Helpers.route(app, requestAsJohnSmith().uri(routes.Projects
-        .activityBy("johnsmith", "project1", DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
+        .activityBy(johnSmith.username, project1.name, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,
             DEFAULT_OFFSET).url()));
 
     assertThat(result)
@@ -164,18 +245,54 @@ public class ProjectsTest extends ControllerTest {
         .statusIsEqualTo(Projects.OK)
         .contentTypeIsEqualTo("text/html")
         .charsetIsEqualTo("utf-8")
-        .contentContains("project1", mat);
+        .contentContains(project1.name, mat);
+  }
+
+  @Override
+  protected Binding<?>[] createBindings() {
+    johnSmith = byUsername("johnsmith");
+    janeDoe = byUsername("janedoe");
+    project1 = byOwnerAndName(johnSmith.username, "project1");
+
+    projectService = mock(ProjectService.class);
+    projectUserService = mock(ProjectUserService.class);
+
+    when(projectService.findBy(any()))
+        .thenAnswer(a -> HasNextPagedList.create(project1));
+    when(projectService.byOwnerAndName(eq(johnSmith.username), eq(project1.name)))
+        .thenAnswer(a -> project1);
+    when(projectService.save((Project) any()))
+        .thenAnswer(a -> a.getArguments()[0]);
+    when(projectUserService.findBy(any()))
+        .thenAnswer(a -> HasNextPagedList.create(
+            by(project1, johnSmith, ProjectRole.Owner),
+            by(project1, janeDoe, ProjectRole.Manager)));
+    when(projectUserService.save((ProjectUser) any()))
+        .thenAnswer(a -> a.getArguments()[0]);
+
+    return ArrayUtils.addAll(
+        super.createBindings(),
+        bind(ProjectService.class).toInstance(projectService),
+        bind(ProjectUserService.class).toInstance(projectUserService)
+    );
   }
 
   @Override
   protected void prepareCache(CacheApi cache) {
     super.prepareCache(cache);
 
-    User johnSmith = byUsername("johnsmith");
-    Project project1 = byOwnerAndName("johnsmith", "project1");
-    when(cache.getOrElse(eq("google:123916278356185"), any(), anyInt()))
+    String project1CacheKey = Project.getCacheKey(johnSmith.username, project1.name);
+    String johnSmithCacheKey = "google:123916278356185";
+    String janeDoeCacheKey = User.getCacheKey(janeDoe.username);
+    String janeDoeIdCacheKey = User.getCacheKey(janeDoe.id);
+
+    when(cache.getOrElse(eq(johnSmithCacheKey), any(), anyInt()))
         .thenAnswer(a -> johnSmith);
-    when(cache.getOrElse(eq("project:owner:johnsmith:name:project1"), any(), anyInt()))
+    when(cache.getOrElse(eq(project1CacheKey), any(), anyInt()))
         .thenAnswer(a -> project1);
+    when(cache.getOrElse(eq(janeDoeCacheKey), any(), anyInt()))
+        .thenAnswer(a -> janeDoe);
+    when(cache.getOrElse(eq(janeDoeIdCacheKey), any(), anyInt()))
+        .thenAnswer(a -> janeDoe);
   }
 }

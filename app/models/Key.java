@@ -140,11 +140,23 @@ public class Key implements Model<Key, UUID>, Suggestable {
       query.eq("project.id", criteria.getProjectId());
     }
 
+    if (criteria.getNames() != null && !criteria.getNames().isEmpty()) {
+      query.in("name", criteria.getNames());
+    }
+
     if (criteria.getSearch() != null) {
       query.disjunction().ilike("name", "%" + criteria.getSearch() + "%")
           .exists(Ebean.createQuery(Message.class).where().raw("key.id = k.id")
               .ilike("value", "%" + criteria.getSearch() + "%").query())
           .endJunction();
+    }
+
+    if (criteria.getProjectOwnerUsername() != null) {
+      query.eq("project.owner.username", criteria.getProjectOwnerUsername());
+    }
+
+    if (criteria.getProjectName() != null) {
+      query.eq("project.name", criteria.getProjectName());
     }
 
     if (Boolean.TRUE.equals(criteria.getMissing())) {

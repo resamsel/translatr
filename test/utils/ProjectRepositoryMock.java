@@ -1,6 +1,6 @@
 package utils;
 
-import static utils.UserRepository.byUsername;
+import static utils.UserRepositoryMock.byUsername;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import org.joda.time.DateTime;
 /**
  * Created by resamsel on 24/07/2017.
  */
-public class ProjectRepository {
+public class ProjectRepositoryMock {
 
   private static final Map<String, Project> REPOSITORY = new HashMap<>();
 

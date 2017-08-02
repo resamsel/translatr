@@ -19,8 +19,8 @@ public class ProjectNameValidator implements ConstraintValidator<ProjectName, Ob
 
   @Override
   public void initialize(ProjectName constraintAnnotation) {
-    excluded = Arrays.asList(constraintAnnotation.excluded().split(",")).stream()
-        .map(StringUtils::strip).collect(Collectors.toList());
+    excluded = Arrays.stream(constraintAnnotation.excluded().split(",")).map(StringUtils::strip)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -28,10 +28,6 @@ public class ProjectNameValidator implements ConstraintValidator<ProjectName, Ob
    */
   @Override
   public boolean isValid(Object object, ConstraintValidatorContext constraintContext) {
-    if (object == null) {
-      return false;
-    }
-
-    return !excluded.contains(object);
+    return object != null && object instanceof String && !excluded.contains(object);
   }
 }

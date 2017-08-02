@@ -1,4 +1,4 @@
-@(template: utils.Template, project: Project, memberList: com.avaje.ebean.PagedList[ProjectUser], form: Form[forms.SearchForm], memberForm: Form[forms.ProjectUserForm])
+@(template: utils.Template, project: Project, memberList: com.avaje.ebean.PagedList[ProjectUser], form: Form[forms.SearchForm], memberForm: Form[forms.ProjectUserForm], ownerForm: Form[forms.ProjectOwnerForm])
 
 @import utils.FormatUtils._
 
@@ -46,21 +46,15 @@
 		@tags.fabContainer("create-member", "add", tooltip = Messages("member.create.tooltip"), styleClass = "teal")
 
 		@tags.modal(Messages("member.new"), "modal-create-member") {
-			<form
-				id="form-member"
-				method="post"
-				action="@project.doMemberAddRoute">
+			@helper.form(action = project.doMemberAddRoute, 'id -> "form-member") {
 				@memberFormContent(project, memberForm)
-			</form>
+			}
 		}
 
 		@tags.modal(Messages("member.ownership.change"), "modal-change-ownership", saveForm=memberList.getList.size > 1) {
-			<form
-				id="form-ownership"
-				method="post"
-				action="@project.doOwnerChangeRoute">
-				@ownerChangeFormContent(project, memberList, memberForm)
-			</form>
+			@helper.form(action = project.doOwnerChangeRoute, 'id -> "form-ownership") {
+				@ownerChangeFormContent(project, memberList, ownerForm)
+			}
 		}
 	}
 

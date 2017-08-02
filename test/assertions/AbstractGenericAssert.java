@@ -26,6 +26,14 @@ public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A
     return myself;
   }
 
+  protected <T> S isEqualTo(String field, T expected, T actual) {
+    assertThat(actual)
+        .overridingErrorMessage("Expected %s's %s to be <%s> but was <%s> (%s)", name, field,
+            expected, actual, descriptionText())
+        .isEqualTo(expected);
+    return myself;
+  }
+
   protected S isEqualTo(String field, String expected, String actual) {
     assertThat(actual)
         .overridingErrorMessage("Expected %s's %s to be <%s> but was <%s> (%s)", name, field,

@@ -18,6 +18,10 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria> {
 
   private UUID localeId;
 
+  private String projectOwnerUsername;
+
+  private String projectName;
+
   public Boolean getMissing() {
     return missing;
   }
@@ -73,8 +77,35 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria> {
    * @return
    */
   public KeyCriteria withLocaleId(String localeId) {
-    if(localeId != null)
+    if (localeId != null) {
       setLocaleId(UUID.fromString(localeId));
+    }
+    return this;
+  }
+
+  public String getProjectOwnerUsername() {
+    return projectOwnerUsername;
+  }
+
+  public void setProjectOwnerUsername(String projectOwnerUsername) {
+    this.projectOwnerUsername = projectOwnerUsername;
+  }
+
+  public KeyCriteria withProjectOwnerUsername(String projectOwnerUsername) {
+    setProjectOwnerUsername(projectOwnerUsername);
+    return this;
+  }
+
+  public String getProjectName() {
+    return projectName;
+  }
+
+  public void setProjectName(String projectName) {
+    this.projectName = projectName;
+  }
+
+  public KeyCriteria withProjectName(String projectName) {
+    setProjectName(projectName);
     return this;
   }
 

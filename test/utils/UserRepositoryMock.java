@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 /**
  * Created by resamsel on 24/07/2017.
  */
-public class UserRepository {
+public class UserRepositoryMock {
 
   private static final Map<String, User> REPOSITORY = new HashMap<>();
 

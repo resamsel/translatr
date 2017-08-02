@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Application;
 import play.api.cache.EhCacheModule;
+import play.api.inject.Binding;
 import play.cache.CacheApi;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.test.WithApplication;
@@ -25,6 +26,7 @@ import utils.TransactionUtils;
  * @version 28 Jan 2017
  */
 public class AbstractTest extends WithApplication {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTest.class);
 
   @Inject
@@ -39,12 +41,16 @@ public class AbstractTest extends WithApplication {
   }
 
   protected GuiceApplicationBuilder builder() {
+    return new GuiceApplicationBuilder().disable(EhCacheModule.class)
+        .overrides(createBindings());
+  }
+
+  protected Binding<?>[] createBindings() {
     CacheApi cache = Mockito.mock(CacheApi.class);
 
     prepareCache(cache);
 
-    return new GuiceApplicationBuilder().disable(EhCacheModule.class)
-        .overrides(bind(CacheApi.class).toInstance(cache));
+    return new Binding[]{bind(CacheApi.class).toInstance(cache)};
   }
 
   protected void prepareCache(CacheApi cache) {
@@ -77,9 +83,10 @@ public class AbstractTest extends WithApplication {
   }
 
   /**
-   * 
+   *
    */
-  protected void injectMembers() {}
+  protected void injectMembers() {
+  }
 
   private void cleanDatabase() {
     try {

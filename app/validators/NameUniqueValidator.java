@@ -6,11 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author resamsel
  * @version 6 Oct 2016
  */
 public class NameUniqueValidator implements ConstraintValidator<NameUnique, Object> {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(NameUniqueValidator.class);
 
   public static final String MESSAGE = "error.nameunique";
@@ -34,9 +34,6 @@ public class NameUniqueValidator implements ConstraintValidator<NameUnique, Obje
    */
   @Override
   public boolean isValid(Object object, ConstraintValidatorContext constraintContext) {
-    if (object == null)
-      return false;
-
-    return checker.isValid(object);
+    return object != null && checker.isValid(object);
   }
 }

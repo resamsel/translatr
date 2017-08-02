@@ -40,8 +40,6 @@ import models.ProjectUser;
 import models.Suggestable;
 import models.Suggestable.Data;
 import models.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.data.Form;
@@ -56,6 +54,7 @@ import services.LocaleService;
 import services.ProjectService;
 import services.ProjectUserService;
 import utils.FormUtils;
+import utils.FormUtils.Search;
 import utils.PermissionUtils;
 import utils.Template;
 
@@ -139,7 +138,7 @@ public class Projects extends AbstractController {
 
       return ok(views.html.projects.project.render(createTemplate(), project,
           FormUtils.Search.bindFromRequest(formFactory, configuration)));
-    }, User.FETCH_PROJECTS);
+    });
   }
 
   public CompletionStage<Result> createBy(String username) {
@@ -156,6 +155,7 @@ public class Projects extends AbstractController {
 
       Project project = Project.byOwnerAndName(user.username, form.get().getName());
       if (project != null) {
+        // Revive project
         form.get().fill(project).withDeleted(false);
       } else {
         project = form.get().fill(new Project()).withOwner(user);
@@ -168,11 +168,7 @@ public class Projects extends AbstractController {
             views.html.projects.create.render(createTemplate(), FormUtils.include(form, e)));
       }
 
-      addMessage(message("project.created", project.name));
-
-      select(project);
-
-      return redirect(project.route());
+      return redirectWithMessage(select(project).route(), "project.created", project.name);
     });
   }
 
@@ -298,13 +294,14 @@ public class Projects extends AbstractController {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
 
-      PagedList<ProjectUser> list =
-          ProjectUser.findBy(ProjectUserCriteria.from(search).withProjectId(project.id));
-
-      search.pager(list);
-
-      return ok(views.html.projects.members.render(createTemplate(), project, list, form,
-          ProjectUserForm.form(formFactory)));
+      return ok(views.html.projects.members.render(
+          createTemplate(),
+          project,
+          search.pager(projectUserService
+              .findBy(ProjectUserCriteria.from(search).withProjectId(project.id))),
+          form,
+          ProjectUserForm.form(formFactory),
+          ProjectOwnerForm.form(formFactory)));
     });
   }
 
@@ -349,15 +346,23 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> doOwnerChangeBy(String username, String projectName) {
     return project(username, projectName, (user, project) -> {
-      Form<ProjectOwnerForm> form = formFactory.form(ProjectOwnerForm.class).bindFromRequest();
+      Form<ProjectOwnerForm> form = ProjectOwnerForm.form(formFactory).bindFromRequest();
 
       if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.membersRoute(), "project.owner.change.denied",
             project.name);
       }
 
-      // if (form.hasErrors())
-      // return badRequest(views.html.projects.ownerChange.render(createTemplate(), project, form));
+      if (form.hasErrors()) {
+        Form<SearchForm> searchForm = Search.bindFromRequest(formFactory, configuration);
+        SearchForm search = searchForm.get();
+
+        return badRequest(views.html.projects.ownerChange.render(
+            createTemplate(),
+            project,
+            projectUserService.findBy(ProjectUserCriteria.from(search).withProjectId(project.id)),
+            form));
+      }
 
       ProjectOwnerForm val = form.get();
       // Make old owner a member of type Manager
@@ -407,33 +412,19 @@ public class Projects extends AbstractController {
     });
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   protected Template createTemplate() {
     return super.createTemplate().withSection(SECTION_PROJECTS);
   }
 
-  /**
-   * @return
-   */
   public static Call indexRoute() {
     return routes.Projects.index(DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET);
   }
 
-  /**
-   * @return
-   * @param username
-   */
   public static Call createRoute(String username) {
     return routes.Projects.createBy(username);
   }
 
-  /**
-   * @return
-   * @param username
-   */
   public static Call doCreateRoute(String username) {
     return routes.Projects.doCreateBy(username);
   }

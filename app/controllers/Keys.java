@@ -9,17 +9,14 @@ import criterias.KeyCriteria;
 import forms.KeyForm;
 import forms.LocaleSearchForm;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import models.Key;
 import models.Locale;
 import models.Project;
-import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
@@ -67,13 +64,13 @@ public class Keys extends AbstractController {
 
   public CompletionStage<Result> keyBy(String username, String projectName, String keyName,
       String search, String order, int limit, int offset) {
-    return project(username, projectName, (user, project) -> key(project, keyName, key -> {
+    return key(username, projectName, keyName, (project, key) -> {
       Form<LocaleSearchForm> form =
           FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration);
       form.get().update(search, order, limit, offset);
 
       return ok(views.html.keys.key.render(createTemplate(), key, form));
-    }), User.FETCH_PROJECTS, User.FETCH_PROJECTS + ".keys");
+    });
   }
 
   public CompletionStage<Result> createBy(String username, String projectName) {
@@ -115,8 +112,7 @@ public class Keys extends AbstractController {
   }
 
   public CompletionStage<Result> createImmediatelyBy(String username, String projectName,
-      String keyName, String search, String order,
-      int limit, int offset) {
+      String keyName, String search, String order, int limit, int offset) {
     return project(username, projectName, (user, project) -> {
       Form<KeyForm> form =
           KeyForm.with(keyName, FormUtils.Key.bindFromRequest(formFactory, configuration));
@@ -194,51 +190,32 @@ public class Keys extends AbstractController {
     });
   }
 
-  private Result key(Project project, String keyName, Function<Key, Result> processor) {
-    if (project.keys != null) {
-      Optional<Key> key = project.keys.stream().filter(k -> k.name.equals(keyName)).findFirst();
-      if (key.isPresent()) {
-        return processor.apply(key.get());
-      }
-    }
-
-    PagedList<Key> keys = keyService
-        .findBy(new KeyCriteria().withProjectId(project.id).withNames(Arrays.asList(keyName)));
-    if (keys.getList().isEmpty()) {
-      return redirect(project.route());
-    }
-
-    select(project);
-
-    return processor.apply(keys.getList().get(0));
-  }
-
   private CompletionStage<Result> key(String username, String projectName, String keyName,
       BiFunction<Project, Key, Result> processor) {
-    return project(username, projectName,
-        (user, project) -> key(project, keyName, key -> processor.apply(project, key)));
+    return tryCatch(() -> {
+      PagedList<Key> keys = keyService.findBy(
+          new KeyCriteria()
+              .withProjectOwnerUsername(username)
+              .withProjectName(projectName)
+              .withNames(Arrays.asList(keyName)));
+
+      if (keys.getList().isEmpty()) {
+        return notFound(username, projectName, "key.notFound", keyName);
+      }
+
+      return processor.apply(select(keys.getList().get(0).project), keys.getList().get(0));
+    });
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   protected Template createTemplate() {
     return super.createTemplate().withSection(SECTION_PROJECTS);
   }
 
-  /**
-   * @param project
-   * @return
-   */
   public static Call doCreateRoute(Project project) {
     return doCreateRoute(project, null);
   }
 
-  /**
-   * @param project
-   * @return
-   */
   public static Call doCreateRoute(Project project, UUID localeId) {
     return routes.Keys
         .doCreateBy(project.owner.username, project.name, localeId, DEFAULT_SEARCH, DEFAULT_ORDER,

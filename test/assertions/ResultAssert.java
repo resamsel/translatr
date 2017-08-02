@@ -31,6 +31,10 @@ public class ResultAssert extends AbstractGenericAssert<ResultAssert, Result> {
     return isEqualTo("charset", expected, actual.charset().get());
   }
 
+  public ResultAssert headerIsEqualTo(String header, String expected) {
+    return isEqualTo("header:" + header, expected, actual.header(header).get());
+  }
+
   public ResultAssert contentContains(String expected, Materializer materializer) {
     return contains("content", expected, content(materializer));
   }

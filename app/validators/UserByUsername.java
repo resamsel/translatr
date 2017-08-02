@@ -9,7 +9,6 @@ import javax.validation.Payload;
 import play.data.Form;
 
 /**
- *
  * @author resamsel
  * @version 6 Oct 2016
  */
@@ -17,11 +16,11 @@ import play.data.Form;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = UserByUsernameValidator.class)
 @Form.Display(name = "constraint.userbyusername")
-public @interface UserByUsername
-{
-	String message() default UserByUsernameValidator.MESSAGE;
+public @interface UserByUsername {
 
-	Class<?>[] groups() default {};
+  String message() default UserByUsernameValidator.MESSAGE;
 
-	Class<? extends Payload>[] payload() default {};
+  Class<?>[] groups() default {};
+
+  Class<? extends Payload>[] payload() default {};
 }

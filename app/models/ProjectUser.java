@@ -95,6 +95,11 @@ public class ProjectUser implements Model<ProjectUser, Long> {
     return id;
   }
 
+  public ProjectUser withId(Long id) {
+    this.id = id;
+    return this;
+  }
+
   public ProjectUser withProject(Project project) {
     this.project = project;
     return this;
@@ -107,6 +112,16 @@ public class ProjectUser implements Model<ProjectUser, Long> {
 
   public ProjectUser withRole(ProjectRole role) {
     this.role = role;
+    return this;
+  }
+
+  public ProjectUser withWhenCreated(DateTime whenCreated) {
+    this.whenCreated = whenCreated;
+    return this;
+  }
+
+  public ProjectUser withWhenUpdated(DateTime whenUpdated) {
+    this.whenUpdated = whenUpdated;
     return this;
   }
 

@@ -44,7 +44,7 @@ import play.api.Play;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
-import play.mvc.Call;
+import play.api.mvc.Call;
 import play.mvc.Http.Context;
 import services.MessageService;
 import services.ProjectService;

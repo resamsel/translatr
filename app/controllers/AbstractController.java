@@ -83,12 +83,31 @@ public abstract class AbstractController extends Controller {
     return CompletableFuture.supplyAsync(supplier, executionContext.current());
   }
 
+  protected Result notFound(String username, String messageKey, Object... args) {
+    User user = userService.byUsername(username);
+    if (user != null) {
+      return redirectWithError(user.route(), messageKey, args);
+    }
+
+    return redirectWithError(Projects.indexRoute(), "user.notFound", username);
+  }
+
+  protected Result notFound(String username, String projectName, String messageKey,
+      Object... args) {
+    Project project = projectService.byOwnerAndName(username, projectName);
+    if (project != null) {
+      return redirectWithError(project.route(), messageKey, args);
+    }
+
+    return notFound(username, "project.notFound", (Object)projectName);
+  }
+
   public static String message(String key, Object... args) {
     return ctx().messages().at(key, args);
   }
 
   public static Result redirectWithError(Call call, String errorKey, Object... args) {
-    String message =  message(errorKey, args);
+    String message = message(errorKey, args);
 
     LOGGER.debug("Redirecting with error message: {}", message);
 
@@ -97,7 +116,7 @@ public abstract class AbstractController extends Controller {
   }
 
   public static Result redirectWithError(String url, String errorKey, Object... args) {
-    String message =  message(errorKey, args);
+    String message = message(errorKey, args);
 
     LOGGER.debug("Redirecting with error message: {}", message);
 
@@ -133,8 +152,9 @@ public abstract class AbstractController extends Controller {
     return template.withNotificationsEnabled(notificationService.isEnabled());
   }
 
-  protected void select(Project project) {
+  protected Project select(Project project) {
     ContextKey.ProjectId.put(ctx(), project.id);
+    return project;
   }
 
   protected Command<?> getCommand(String key) {
@@ -198,18 +218,16 @@ public abstract class AbstractController extends Controller {
   protected CompletionStage<Result> project(String username, String projectName,
       BiFunction<User, Project, Result> processor, boolean restrict, String... fetches) {
     return tryCatch(() -> {
-      Project project = projectService.byOwnerAndName(username, projectName);
+      Project project = projectService.byOwnerAndName(username, projectName, fetches);
       if (project == null) {
-        return redirectWithError(Projects.indexRoute(), "project.notFound");
+        return redirectWithError(Projects.indexRoute(), "project.notFound", projectName);
       }
 
       if (restrict && !project.owner.id.equals(User.loggedInUserId())) {
-        return redirectWithError(Projects.indexRoute(), "user.notFound");
+        return redirectWithError(Projects.indexRoute(), "user.notFound", username);
       }
 
-      select(project);
-
-      return processor.apply(project.owner, project);
+      return processor.apply(select(project).owner, project);
     });
   }
 

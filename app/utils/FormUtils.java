@@ -32,17 +32,16 @@ public class FormUtils {
   }
 
   public static <T> Form<T> include(Form<T> form, ConstraintViolationException e) {
-    e.getConstraintViolations().forEach(violation -> {
-      form.reject(new ValidationError(pathFrom(violation, "name"), violation.getMessage()));
-    });
+    e.getConstraintViolations().forEach(violation -> form
+        .reject(new ValidationError(pathFrom(violation), violation.getMessage())));
     return form;
   }
 
-  public static String pathFrom(ConstraintViolation<?> violation, String defaultValue) {
+  private static String pathFrom(ConstraintViolation<?> violation) {
     if (violation.getPropertyPath() != null) {
       return violation.getPropertyPath().toString();
     }
-    return defaultValue;
+    return "name";
   }
 
   public static class Search {
@@ -52,11 +51,6 @@ public class FormUtils {
       return init(FormUtils.bindFromRequest(formFactory, SearchForm.class), configuration);
     }
 
-    /**
-     * @param form
-     * @param configuration
-     * @return
-     */
     protected static <T extends SearchForm> Form<T> init(Form<T> form,
         Configuration configuration) {
       T obj = form.get();

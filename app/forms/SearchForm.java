@@ -6,17 +6,18 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import play.mvc.Call;
 
 /**
- *
  * @author resamsel
  * @version 4 Sep 2016
  */
 public class SearchForm {
+
   public String search;
 
   public Integer limit;
@@ -104,8 +105,9 @@ public class SearchForm {
   /**
    * @param pagedList
    */
-  public void pager(PagedList<?> pagedList) {
-    hasMore = pagedList.hasNext();
+  public <T> PagedList<T> pager(PagedList<T> pagedList) {
+    hasMore = Objects.requireNonNull(pagedList.hasNext(), "pagedList is null");
+    return pagedList;
   }
 
   protected List<NameValuePair> parameters(int limit, int offset, String order, String search) {
@@ -114,8 +116,9 @@ public class SearchForm {
             new BasicNameValuePair("offset", String.valueOf(offset)),
             new BasicNameValuePair("order", order)));
 
-    if (search != null && search.length() > 0)
+    if (search != null && search.length() > 0) {
       parameters.add(new BasicNameValuePair("search", search));
+    }
 
     return parameters;
   }

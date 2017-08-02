@@ -38,20 +38,12 @@ public class ProjectUserForm {
     this.role = role;
   }
 
-  /**
-   * @param projectUser
-   * @return
-   */
   public ProjectUser fill(ProjectUser in) {
     in.role = role;
 
     return in;
   }
 
-  /**
-   * @param formFactory
-   * @return
-   */
   public static Form<ProjectUserForm> form(FormFactory formFactory) {
     return formFactory.form(ProjectUserForm.class);
   }

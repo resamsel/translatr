@@ -1,6 +1,8 @@
 package forms;
 
 import java.util.UUID;
+import play.data.Form;
+import play.data.FormFactory;
 import play.data.validation.Constraints;
 
 /**
@@ -17,5 +19,9 @@ public class ProjectOwnerForm {
 
   public void setOwnerId(UUID ownerId) {
     this.ownerId = ownerId;
+  }
+
+  public static Form<ProjectOwnerForm> form(FormFactory formFactory) {
+    return formFactory.form(ProjectOwnerForm.class);
   }
 }

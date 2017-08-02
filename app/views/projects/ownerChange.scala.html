@@ -1,0 +1,9 @@
+@(template: utils.Template, project: Project, memberList: com.avaje.ebean.PagedList[ProjectUser], form: Form[forms.ProjectOwnerForm])
+
+@main(template.withTitle(project.name).withName("project-owner-change").withBackLink(project.route))()(nav(project, "members")) {
+	@content() {
+		@helper.form(action = project.doOwnerChangeRoute, 'id -> "form-ownership") {
+			@ownerChangeFormContent(project, memberList, form)
+		}
+	}
+}
