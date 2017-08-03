@@ -34,7 +34,7 @@ public interface UserService extends ModelService<User, UUID, UserCriteria> {
   User getLocalUser(AuthUserIdentity user);
 
   /**
-   * @param user
+   * @param authUser
    */
   boolean isLocalUser(AuthUserIdentity authUser);
 
@@ -68,18 +68,4 @@ public interface UserService extends ModelService<User, UUID, UserCriteria> {
    * @return
    */
   UserStats getUserStats(UUID userId);
-
-  /**
-   * @param email
-   * @return
-   */
-  String emailToUsername(String email);
-
-  /**
-   * Create a username from the given name.
-   *
-   * @param name
-   * @return
-   */
-  String nameToUsername(String name);
 }

@@ -27,7 +27,7 @@ public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends Abstract
   }
 
   protected void checkProjectRole(UUID projectId, User user, ProjectRole... roles) {
-    if (!PermissionUtils.hasPermissionAny(projectId, user, roles))
+    if (!permissionService.hasPermissionAny(projectId, user, roles))
       throw new PermissionException("User not allowed in project");
   }
 }

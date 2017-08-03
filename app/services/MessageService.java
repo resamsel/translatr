@@ -2,6 +2,7 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import criterias.MessageCriteria;
+import java.util.List;
 import java.util.UUID;
 import models.Message;
 import models.Project;
@@ -24,4 +25,6 @@ public interface MessageService extends ModelService<Message, UUID, MessageCrite
    * @param projectId
    */
   void resetWordCount(UUID projectId);
+
+  List<Message> latest(Project project, int limit);
 }

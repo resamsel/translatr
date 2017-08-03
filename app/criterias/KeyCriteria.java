@@ -22,6 +22,10 @@ public class KeyCriteria extends AbstractSearchCriteria<KeyCriteria> {
 
   private String projectName;
 
+  public KeyCriteria() {
+    super("key");
+  }
+
   public Boolean getMissing() {
     return missing;
   }

@@ -52,11 +52,6 @@ public class Locales extends AbstractController {
 
   private final LocaleApiService localeApiService;
 
-  /**
-   * @param injector
-   * @param cache
-   * @param auth
-   */
   @Inject
   protected Locales(Injector injector, CacheApi cache, PlayAuthenticate auth,
       FormFactory formFactory, Configuration configuration, LocaleService localeService,
@@ -121,7 +116,7 @@ public class Locales extends AbstractController {
         return badRequest(views.html.locales.create.render(createTemplate(), project, form));
       }
 
-      Locale locale = Locale.byProjectAndName(project, localeName);
+      Locale locale = localeService.byProjectAndName(project, localeName);
 
       if (locale == null) {
         locale = new Locale(project, localeName);
@@ -189,12 +184,10 @@ public class Locales extends AbstractController {
   public CompletionStage<Result> removeBy(String username, String projectName, String localeName,
       String s, String order, int limit, int offset) {
     return locale(username, projectName, localeName, (project, locale) -> {
-      undoCommand(RevertDeleteLocaleCommand.from(locale));
+      undoCommand(injector.instanceOf(RevertDeleteLocaleCommand.class).with(locale));
 
       try {
-        TransactionUtils.batchExecute((tx) -> {
-          localeService.delete(locale);
-        });
+        TransactionUtils.batchExecute((tx) -> localeService.delete(locale));
       } catch (Exception e) {
         LOGGER.error("Error while batch deleting locale", e);
       }
@@ -240,17 +233,10 @@ public class Locales extends AbstractController {
     return super.createTemplate().withSection(SECTION_PROJECTS);
   }
 
-  /**
-   * @param project
-   * @return
-   */
   public static Call doCreateRoute(Project project) {
     return routes.Locales.doCreateBy(project.owner.username, project.name);
   }
 
-  /**
-   * @return
-   */
   public static Call createImmediatelyRoute(dto.Project project, String localeName,
       String search, String order, int limit, int offset) {
     return routes.Locales

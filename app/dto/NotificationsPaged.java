@@ -17,11 +17,6 @@ public class NotificationsPaged extends Dto implements PagedList<AggregatedNotif
 
   private List<AggregatedNotification> list;
 
-  /**
-   * @param delegate
-   * @param mapper
-   * 
-   */
   public NotificationsPaged(StreamResponse<AggregatedActivity<SimpleActivity>> delegate) {
     if (delegate != null)
       this.list = AggregatedNotification.from(delegate.getResults());

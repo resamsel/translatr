@@ -9,6 +9,11 @@ import forms.SearchForm;
  * @version 19 Oct 2016
  */
 public class AccessTokenCriteria extends AbstractSearchCriteria<AccessTokenCriteria> {
+
+  public AccessTokenCriteria() {
+    super("accessToken");
+  }
+
   public static AccessTokenCriteria from(SearchForm form) {
     return new AccessTokenCriteria().with(form);
   }

@@ -13,6 +13,10 @@ public class LogEntryCriteria extends AbstractSearchCriteria<LogEntryCriteria> {
 
   private List<UUID> ids;
 
+  public LogEntryCriteria() {
+    super("logEntry");
+  }
+
   /**
    * @return the ids
    */

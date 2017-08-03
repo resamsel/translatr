@@ -9,15 +9,13 @@ import models.LogEntry;
 import services.impl.LogEntryServiceImpl;
 
 /**
- *
  * @author resamsel
  * @version 29 Aug 2016
  */
 @ImplementedBy(LogEntryServiceImpl.class)
 public interface LogEntryService extends ModelService<LogEntry, UUID, LogEntryCriteria> {
-  /**
-   * @param criteria
-   * @return
-   */
+
   List<Aggregate> getAggregates(LogEntryCriteria criteria);
+
+  int countBy(LogEntryCriteria criteria);
 }

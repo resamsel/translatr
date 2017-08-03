@@ -17,7 +17,7 @@ public class QueryUtils {
   public static <T> Query<T> fetch(Query<T> query, Collection<String> propertiesToFetch,
       Map<String, List<String>> fetchMap) {
     return fetch(query, propertiesToFetch.stream().filter(fetchMap::containsKey).map(fetchMap::get)
-        .flatMap(fetches -> fetches.stream()));
+        .flatMap(Collection::stream));
   }
 
   public static <T> Query<T> fetch(Query<T> query, String... propertiesToFetch) {
@@ -34,11 +34,13 @@ public class QueryUtils {
     return query;
   }
 
-  /**
-   * @param propertiesToFetch
-   * @param fetches
-   * @return
-   */
+  public static Set<String> mergeFetches(String[] propertiesToFetch, String... fetches) {
+    if(propertiesToFetch.length > 0)
+      return mergeFetches(Arrays.asList(propertiesToFetch), fetches);
+
+    return new HashSet<>(Arrays.asList(fetches));
+  }
+
   public static Set<String> mergeFetches(List<String> propertiesToFetch, String... fetches) {
     if (fetches.length > 0)
       return mergeFetches(propertiesToFetch, Arrays.asList(fetches));
@@ -46,11 +48,6 @@ public class QueryUtils {
     return new HashSet<>(propertiesToFetch);
   }
 
-  /**
-   * @param propertiesToFetch
-   * @param fetches
-   * @return
-   */
   public static Set<String> mergeFetches(List<String> propertiesToFetch,
       Collection<String> fetches) {
     HashSet<String> fetchSet = new HashSet<>(propertiesToFetch);

@@ -46,13 +46,6 @@ public class NotificationsApi extends AbstractBaseApi {
 
   private NotificationService notificationService;
 
-  /**
-   * @param injector
-   * @param cache
-   * @param auth
-   * @param userService
-   * @param logEntryService
-   */
   @Inject
   public NotificationsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
       NotificationService notificationService) {
@@ -78,7 +71,7 @@ public class NotificationsApi extends AbstractBaseApi {
   public CompletionStage<Result> find() {
     StreamResponse<AggregatedActivity<SimpleActivity>> notifications;
     try {
-      PermissionUtils.checkPermissionAll("Access token not allowed", Scope.NotificationRead);
+      permissionService.checkPermissionAll("Access token not allowed", Scope.NotificationRead);
 
       notifications = notificationService.find(NotificationCriteria.from(request()));
     } catch (IOException | StreamClientException | PermissionException e) {

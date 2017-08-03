@@ -8,6 +8,11 @@ import play.mvc.Http.Request;
  * @version 24 Jan 2017
  */
 public class UserCriteria extends AbstractSearchCriteria<UserCriteria> {
+
+  public UserCriteria() {
+    super("user");
+  }
+
   public static UserCriteria from(Request request) {
     return new UserCriteria().with(request);
   }

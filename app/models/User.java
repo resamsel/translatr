@@ -1,24 +1,16 @@
 package models;
 
-import static utils.Stopwatch.log;
-
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
-import com.feth.play.module.pa.user.AuthUserIdentity;
 import controllers.Application;
-import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
 import criterias.ProjectUserCriteria;
-import criterias.UserCriteria;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,10 +39,11 @@ import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
+import services.LogEntryService;
+import services.ProjectUserService;
 import services.UserService;
 import utils.ConfigKey;
 import utils.ContextKey;
-import utils.QueryUtils;
 import validators.Username;
 
 /**
@@ -118,9 +111,6 @@ public class User implements Model<User, UUID>, Subject {
   @OneToMany
   public List<LogEntry> activities;
 
-  private static final Find<UUID, User> find = new Find<UUID, User>() {
-  };
-
   /**
    * {@inheritDoc}
    */
@@ -129,45 +119,13 @@ public class User implements Model<User, UUID>, Subject {
     return id;
   }
 
-  private static ExpressionList<User> getAuthUserFind(final AuthUserIdentity identity) {
-    return find.where().eq("active", true).eq("linkedAccounts.providerUserId", identity.getId())
-        .eq("linkedAccounts.providerKey", identity.getProvider());
-  }
-
-  public static User findByAuthUserIdentity(final AuthUserIdentity identity) {
-    LOGGER.debug("findByAuthUserIdentity({})", identity);
-
-    if (identity == null) {
-      return null;
-    }
-
-    LOGGER.debug("Cache miss for: {}:{}", identity.getProvider(), identity.getId());
-
-    return log(() -> getAuthUserFind(identity).findUnique(), LOGGER, "findByAuthUserIdentity");
-  }
-
   public Set<String> getProviders() {
-    final Set<String> providerKeys = new HashSet<String>(linkedAccounts.size());
+    final Set<String> providerKeys = new HashSet<>(linkedAccounts.size());
     for (final LinkedAccount acc : linkedAccounts) {
       providerKeys.add(acc.providerKey);
     }
 
     return providerKeys;
-  }
-
-  public static PagedList<User> findBy(UserCriteria criteria) {
-    ExpressionList<User> query = QueryUtils.fetch(find.query(), criteria.getFetches()).where();
-
-    query.eq("active", true);
-
-    if (criteria.getSearch() != null) {
-      query.disjunction().ilike("name", "%" + criteria.getSearch() + "%")
-          .ilike("username", "%" + criteria.getSearch() + "%").endJunction();
-    }
-
-    criteria.paged(query);
-
-    return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
   }
 
   public User withId(UUID id) {
@@ -215,19 +173,7 @@ public class User implements Model<User, UUID>, Subject {
     return this;
   }
 
-  public static User byId(UUID id, String... fetches) {
-    return QueryUtils.fetch(find.setId(id), fetches).findUnique();
-  }
-
-  /**
-   * @param username
-   * @return
-   */
-  public static User byUsername(String username, String... fetches) {
-    return QueryUtils.fetch(find.query(), fetches).where().eq("username", username).findUnique();
-  }
-
-  public static AuthUser loggedInAuthUser() {
+  private static AuthUser loggedInAuthUser() {
     Injector injector = Play.current().injector();
     Session session = Context.current().session();
     String provider = session.get("pa.p.id");
@@ -244,9 +190,8 @@ public class User implements Model<User, UUID>, Subject {
     }
 
     PlayAuthenticate auth = injector.instanceOf(PlayAuthenticate.class);
-    AuthUser authUser = auth.getUser(session);
 
-    return authUser;
+    return auth.getUser(session);
   }
 
   public static User loggedInUser() {
@@ -279,9 +224,6 @@ public class User implements Model<User, UUID>, Subject {
     return null;
   }
 
-  /**
-   * @return
-   */
   public static UUID loggedInUserId() {
     User loggedInUser = loggedInUser();
 
@@ -297,7 +239,7 @@ public class User implements Model<User, UUID>, Subject {
    */
   @Override
   public List<? extends Role> getRoles() {
-    return Arrays.asList(UserRole.from(Application.USER_ROLE));
+    return Collections.singletonList(UserRole.from(Application.USER_ROLE));
   }
 
   /**
@@ -316,9 +258,6 @@ public class User implements Model<User, UUID>, Subject {
     return id != null ? id.toString() : null;
   }
 
-  /**
-   * @return
-   */
   public boolean isComplete() {
     return username != null && name != null && email != null;
   }
@@ -338,13 +277,14 @@ public class User implements Model<User, UUID>, Subject {
     return controllers.routes.Users.user(Objects.requireNonNull(username, "Username is null"));
   }
 
-  /**
-   * @param userId
-   * @return
-   */
   public static UserStats userStats(UUID userId) {
-    return UserStats.create(ProjectUser.countBy(new ProjectUserCriteria().withUserId(userId)),
-        LogEntry.countBy(new LogEntryCriteria().withUserId(userId)));
+    Injector injector = Play.current().injector();
+
+    return UserStats.create(
+        injector.instanceOf(ProjectUserService.class)
+            .countBy(new ProjectUserCriteria().withUserId(userId)),
+        injector.instanceOf(LogEntryService.class)
+            .countBy(new LogEntryCriteria().withUserId(userId)));
   }
 
   public static String getCacheKey(UUID userId, String... fetches) {

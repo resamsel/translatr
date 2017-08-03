@@ -1,24 +1,17 @@
 package models;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
-import static utils.Stopwatch.log;
 
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.ImmutableMap;
 import controllers.AbstractController;
-import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
-import criterias.ProjectCriteria;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,16 +34,14 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.api.Play;
+import play.api.mvc.Call;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
-import play.api.mvc.Call;
 import play.mvc.Http.Context;
 import services.MessageService;
 import services.ProjectService;
 import utils.ContextKey;
-import utils.PermissionUtils;
-import utils.QueryUtils;
 import validators.NameUnique;
 import validators.ProjectName;
 import validators.ProjectNameUniqueChecker;
@@ -68,15 +59,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public static final String FETCH_OWNER = "owner";
   public static final String FETCH_LOCALES = "locales";
   public static final String FETCH_KEYS = "keys";
-
-  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList(FETCH_OWNER, FETCH_MEMBERS);
-
-  private static final Map<String, List<String>> FETCH_MAP =
-      ImmutableMap.of("project", Arrays.asList("project"), FETCH_MEMBERS,
-          Arrays.asList(FETCH_MEMBERS, FETCH_MEMBERS + ".user"));
-
-  private static final Find<UUID, Project> find = new Find<UUID, Project>() {
-  };
 
   @Id
   @GeneratedValue
@@ -159,83 +141,47 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return this;
   }
 
-  public static Project byId(UUID id, String... fetches) {
-    if (id == null) {
-      return null;
-    }
-
-    return QueryUtils
-        .fetch(find.setId(id), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
-        .findUnique();
-  }
-
-  public static PagedList<Project> findBy(ProjectCriteria criteria) {
-    ExpressionList<Project> query =
-        find.fetch(FETCH_OWNER).fetch(FETCH_MEMBERS).fetch(FETCH_LOCALES).fetch(FETCH_KEYS).where();
-
-    query.eq("deleted", false);
-
-    if (criteria.getOwnerId() != null) {
-      query.eq("owner.id", criteria.getOwnerId());
-    }
-
-    if (criteria.getMemberId() != null) {
-      query.eq("members.user.id", criteria.getMemberId());
-    }
-
-    if (criteria.getProjectId() != null) {
-      query.idEq(criteria.getProjectId());
-    }
-
-    if (criteria.getSearch() != null) {
-      query.ilike("name", "%" + criteria.getSearch() + "%");
-    }
-
-    criteria.paged(query);
-
-    return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
-  }
-
   public float progress() {
     long keysSize = keysSize();
     long localesSize = localesSize();
     if (keysSize < 1 || localesSize < 1) {
       return 0f;
     }
-    return (float) Message.countBy(this) / (float) (keysSize * localesSize);
+    return (float) messagesSize() / (float) (keysSize * localesSize);
   }
 
   public long missingKeys(UUID localeId) {
     return keysSize() - keysSizeMap(localeId);
   }
 
-  public long keysSizeMap(UUID localeId) {
+  private long keysSizeMap(UUID localeId) {
     if (keysSizeMap == null)
     // FIXME: This is an expensive operation, consider doing this in a group by query.
     {
       keysSizeMap = messageList().stream().collect(groupingBy(m -> m.locale.id, counting()));
     }
 
-    return keysSizeMap.getOrDefault(localeId, 0l);
+    return keysSizeMap.getOrDefault(localeId, 0L);
   }
 
   public long missingLocales(UUID keyId) {
     return localesSize() - localesSizeMap(keyId);
   }
 
-  public long localesSizeMap(UUID keyId) {
+  private long localesSizeMap(UUID keyId) {
     if (localesSizeMap == null)
     // FIXME: This is an expensive operation, consider doing this in a group by query.
     {
       localesSizeMap = messageList().stream().collect(groupingBy(m -> m.key.id, counting()));
     }
 
-    return localesSizeMap.getOrDefault(keyId, 0l);
+    return localesSizeMap.getOrDefault(keyId, 0L);
   }
 
-  public List<Message> messageList() {
+  private List<Message> messageList() {
     if (messages == null) {
-      messages = Message.findBy(new MessageCriteria().withProjectId(this.id)).getList();
+      messages = Play.current().injector().instanceOf(MessageService.class)
+          .findBy(new MessageCriteria().withProjectId(this.id)).getList();
     }
 
     return messages;
@@ -287,23 +233,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
       this.members = new ArrayList<>();
     }
 
-    this.members.addAll(Arrays.asList(members));
+    this.members.addAll(asList(members));
     return this;
   }
 
-  /**
-   * @param name
-   * @return
-   */
-  public static Project byOwnerAndName(String username, String name, String... fetches) {
-    return QueryUtils
-        .fetch(find.query(), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
-        .where().eq("owner.username", username).eq("name", name).findUnique();
-  }
-
-  /**
-   * @param in
-   */
   @Override
   public Project updateFrom(Project in) {
     name = in.name;
@@ -320,7 +253,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
     }
 
     List<ProjectRole> userRoles = userMap.get(user.id);
-    userRoles.retainAll(Arrays.asList(roles));
+    userRoles.retainAll(asList(roles));
 
     return !userRoles.isEmpty();
   }
@@ -370,20 +303,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return brandProject.id;
   }
 
-  /**
-   * @param user
-   * @param roles
-   * @return
-   */
-  public boolean hasPermissionAny(User user, ProjectRole... roles) {
-    return PermissionUtils.hasPermissionAny(id, user, roles);
-  }
-
-  /**
-   * @param projectId
-   * @param fetches
-   * @return
-   */
   public static String getCacheKey(UUID projectId, String... fetches) {
     if (projectId == null) {
       return null;
@@ -505,7 +424,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   /**
    * Return the route to the members of this project.
    */
-  public Call membersRoute(String search, String order, int limit, int offset) {
+  private Call membersRoute(String search, String order, int limit, int offset) {
     Objects.requireNonNull(owner, "Owner is null");
     return controllers.routes.Projects
         .membersBy(Objects.requireNonNull(owner.username, "Owner username is null"),
@@ -524,7 +443,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   /**
    * Return the route to the activity of this project.
    */
-  public Call activityRoute(String search, String order, int limit, int offset) {
+  private Call activityRoute(String search, String order, int limit, int offset) {
     Objects.requireNonNull(owner, "Owner is null");
     return controllers.routes.Projects
         .activityBy(Objects.requireNonNull(owner.username, "Owner username is null"),

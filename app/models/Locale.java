@@ -1,14 +1,7 @@
 package models;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static utils.FormatUtils.formatLocale;
-import static utils.Stopwatch.log;
 
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -16,10 +9,8 @@ import com.google.common.collect.ImmutableMap;
 import controllers.AbstractController;
 import controllers.Locales;
 import controllers.routes;
-import criterias.HasNextPagedList;
-import criterias.LocaleCriteria;
-import criterias.MessageCriteria;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,12 +27,9 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import play.api.mvc.Call;
 import play.libs.Json;
 import play.mvc.Http.Context;
-import utils.QueryUtils;
 import utils.UrlUtils;
 import validators.LocaleNameUniqueChecker;
 import validators.NameUnique;
@@ -51,18 +39,13 @@ import validators.NameUnique;
 @NameUnique(checker = LocaleNameUniqueChecker.class)
 public class Locale implements Model<Locale, UUID>, Suggestable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Locale.class);
-
   public static final int NAME_LENGTH = 15;
 
   public static final String FETCH_MESSAGES = "messages";
 
-  private static final Find<UUID, Locale> find = new Find<UUID, Locale>() {
-  };
+  public static final List<String> PROPERTIES_TO_FETCH = Collections.singletonList("project");
 
-  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("project");
-
-  private static final Map<String, List<String>> FETCH_MAP =
+  public static final Map<String, List<String>> FETCH_MAP =
       ImmutableMap.of("project", Arrays.asList("project", "project.owner"), FETCH_MESSAGES,
           Arrays.asList(FETCH_MESSAGES, FETCH_MESSAGES + ".key"));
 
@@ -124,105 +107,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
             .absoluteURL(Context.current().request()));
   }
 
-  /**
-   * @return
-   */
-  public static Locale byId(UUID id, String... fetches) {
-    return QueryUtils.fetch(find.setId(id).setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP).findUnique();
-  }
-
-  /**
-   * @param project
-   * @param name
-   * @return
-   */
-  public static Locale byProjectAndName(Project project, String name) {
-    if (project == null) {
-      return null;
-    }
-
-    return byProjectAndName(project.id, name);
-  }
-
-  /**
-   * @param projectId
-   * @param name
-   * @return
-   */
-  public static Locale byProjectAndName(UUID projectId, String name) {
-    return fetch().where().eq("project.id", projectId).eq("name", name).findUnique();
-  }
-
-  /**
-   * @param criteria
-   * @return
-   */
-  public static PagedList<Locale> findBy(LocaleCriteria criteria) {
-    Query<Locale> q = fetch();
-
-    if (StringUtils.isEmpty(criteria.getMessagesKeyName()) && !criteria.getFetches().isEmpty()) {
-      q = QueryUtils.fetch(q, QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
-          FETCH_MAP);
-    }
-
-    ExpressionList<Locale> query = q.where();
-
-    if (criteria.getProjectId() != null) {
-      query.eq("project.id", criteria.getProjectId());
-    }
-
-    if (criteria.getLocaleName() != null) {
-      query.eq("name", criteria.getLocaleName());
-    }
-
-    if (criteria.getSearch() != null) {
-      query.ilike("name", "%" + criteria.getSearch() + "%");
-    }
-
-    if (criteria.getOrder() != null) {
-      query.setOrderBy(criteria.getOrder());
-    }
-
-    criteria.paged(query);
-
-    return log(() -> fetch(HasNextPagedList.create(query), criteria), LOGGER, "findBy");
-  }
-
-  private static Query<Locale> fetch(String... fetches) {
-    return QueryUtils.fetch(find.query().setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
-  }
-
-  private static HasNextPagedList<Locale> fetch(HasNextPagedList<Locale> paged,
-      LocaleCriteria criteria) {
-    if (StringUtils.isNotEmpty(criteria.getMessagesKeyName())
-        && criteria.getFetches().contains("messages")) {
-      // Retrieve messages that match the given keyName and locales retrieved
-      Map<UUID, Message> messages = Message
-          .findBy(new MessageCriteria().withKeyName(criteria.getMessagesKeyName())
-              .withLocaleIds(paged.getList().stream().map(l -> l.id).collect(toList())))
-          .getList().stream().collect(toMap(m -> m.locale.id, m -> m));
-
-      for (Locale locale : paged.getList()) {
-        if (messages.containsKey(locale.id)) {
-          locale.messages = Arrays.asList(messages.get(locale.id));
-        }
-      }
-    }
-
-    return paged;
-  }
-
-  public static List<Locale> last(Project project, int limit) {
-    return log(
-        () -> fetch().where().eq("project", project).order("whenUpdated desc").setMaxRows(limit)
-            .findList(), LOGGER, "last(%d)", limit);
-  }
-
-  /**
-   * @param in
-   */
   @Override
   public Locale updateFrom(Locale in) {
     project = in.project;
@@ -231,11 +115,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
     return this;
   }
 
-  /**
-   * @param localeId
-   * @param fetches
-   * @return
-   */
   public static String getCacheKey(UUID localeId, String... fetches) {
     if (localeId == null) {
       return null;
@@ -281,21 +160,11 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
             offset);
   }
 
-  /**
-   * @return
-   */
   public Call editRoute() {
     return editRoute(Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
         Locales.DEFAULT_OFFSET);
   }
 
-  /**
-   * @param search
-   * @param order
-   * @param limit
-   * @param offset
-   * @return
-   */
   public Call editRoute(String search, String order, int limit, int offset) {
     Objects.requireNonNull(project, "Project is null");
     Objects.requireNonNull(project.owner, "Project owner is null");
@@ -306,9 +175,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
             offset);
   }
 
-  /**
-   * @return
-   */
   public Call doEditRoute() {
     Objects.requireNonNull(project, "Project is null");
     Objects.requireNonNull(project.owner, "Project owner is null");
@@ -318,21 +184,11 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
             Objects.requireNonNull(name, "Name is null"));
   }
 
-  /**
-   * @return
-   */
   public Call removeRoute() {
     return removeRoute(Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
         Locales.DEFAULT_OFFSET);
   }
 
-  /**
-   * @param search
-   * @param order
-   * @param limit
-   * @param offset
-   * @return
-   */
   public Call removeRoute(String search, String order, int limit, int offset) {
     Objects.requireNonNull(project, "Project is null");
     Objects.requireNonNull(project.owner, "Project owner is null");
@@ -343,9 +199,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
             offset);
   }
 
-  /**
-   * @return
-   */
   public Call uploadRoute() {
     Objects.requireNonNull(project, "Project is null");
     Objects.requireNonNull(project.owner, "Project owner is null");
@@ -355,9 +208,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
             Objects.requireNonNull(name, "Name is null"));
   }
 
-  /**
-   * @return
-   */
   public Call doUploadRoute() {
     Objects.requireNonNull(project, "Project is null");
     Objects.requireNonNull(project.owner, "Project owner is null");

@@ -18,6 +18,10 @@ public class LocaleCriteria extends AbstractSearchCriteria<LocaleCriteria> {
 
   private String messagesKeyName;
 
+  public LocaleCriteria() {
+    super("locale");
+  }
+
   public Boolean getMissing() {
     return missing;
   }

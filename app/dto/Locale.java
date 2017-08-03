@@ -12,9 +12,11 @@ import java.util.UUID;
 import models.Project;
 import org.joda.time.DateTime;
 import play.api.mvc.Call;
+import services.MessageService;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Locale extends Dto {
+
   private static final long serialVersionUID = -2778174337389175121L;
 
   public UUID id;
@@ -35,7 +37,8 @@ public class Locale extends Dto {
 
   public Map<String, Message> messages;
 
-  public Locale() {}
+  public Locale() {
+  }
 
   private Locale(models.Locale in) {
     this.id = in.id;
@@ -47,15 +50,17 @@ public class Locale extends Dto {
     this.name = in.name;
     this.pathName = in.getPathName();
 
-    if (in.messages != null && !in.messages.isEmpty())
+    if (in.messages != null && !in.messages.isEmpty()) {
       this.messages =
           in.messages.stream().map(Message::from).collect(toMap(m -> m.keyName, m -> m));
+    }
   }
 
-  public Locale load() {
-    if (messages == null)
-      messages = models.Message.findBy(new MessageCriteria().withLocaleId(id)).getList().stream()
+  public Locale load(MessageService messageService) {
+    if (messages == null) {
+      messages = messageService.findBy(new MessageCriteria().withLocaleId(id)).getList().stream()
           .map(Message::from).collect(toMap(m -> m.keyName, m -> m));
+    }
 
     return this;
   }
@@ -74,9 +79,6 @@ public class Locale extends Dto {
 
   /**
    * Return the route to the given key, with default params added.
-   * 
-   * @param key
-   * @return
    */
   public Call route() {
     return route(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
@@ -85,26 +87,16 @@ public class Locale extends Dto {
 
   /**
    * Return the route to the given key, with params added.
-   * 
-   * @param key
-   * @param search
-   * @param order
-   * @param limit
-   * @param offset
-   * @return
    */
   public Call route(String search, String order, int limit, int offset) {
-    if (projectOwnerUsername == null || projectName == null || pathName == null)
+    if (projectOwnerUsername == null || projectName == null || pathName == null) {
       return null;
+    }
 
     return routes.Locales.localeBy(projectOwnerUsername, projectName, pathName, search, order,
         limit, offset);
   }
 
-  /**
-   * @param locale
-   * @return
-   */
   public static Locale from(models.Locale locale) {
     return new Locale(locale);
   }

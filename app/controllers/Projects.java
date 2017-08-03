@@ -51,6 +51,7 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.KeyService;
 import services.LocaleService;
+import services.MessageService;
 import services.ProjectService;
 import services.ProjectUserService;
 import utils.FormUtils;
@@ -67,15 +68,11 @@ import utils.Template;
 public class Projects extends AbstractController {
 
   private final ProjectService projectService;
-
   private final LocaleService localeService;
-
   private final KeyService keyService;
-
   private final FormFactory formFactory;
-
+  private final MessageService messageService;
   private final ProjectUserService projectUserService;
-
   private final Configuration configuration;
 
   /**
@@ -84,13 +81,15 @@ public class Projects extends AbstractController {
   @Inject
   public Projects(Injector injector, CacheApi cache, FormFactory formFactory, PlayAuthenticate auth,
       ProjectService projectService, LocaleService localeService, KeyService keyService,
-      ProjectUserService projectUserService, Configuration configuration) {
+      MessageService messageService, ProjectUserService projectUserService,
+      Configuration configuration) {
     super(injector, cache, auth);
 
     this.formFactory = formFactory;
     this.projectService = projectService;
     this.localeService = localeService;
     this.keyService = keyService;
+    this.messageService = messageService;
     this.projectUserService = projectUserService;
     this.configuration = configuration;
   }
@@ -132,11 +131,16 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> projectBy(String username, String projectName) {
     return project(username, projectName, (user, project) -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.values())) {
+      if (!permissionService.hasPermissionAny(project, ProjectRole.values())) {
         return redirectWithError(user.route(), "project.access.denied", project.name);
       }
 
-      return ok(views.html.projects.project.render(createTemplate(), project,
+      return ok(views.html.projects.project.render(
+          createTemplate(),
+          project,
+          localeService.latest(project, 3),
+          keyService.latest(project, 3),
+          messageService.latest(project, 3),
           FormUtils.Search.bindFromRequest(formFactory, configuration)));
     });
   }
@@ -153,7 +157,7 @@ public class Projects extends AbstractController {
         throw new ConstraintViolationException(Collections.emptySet());
       }
 
-      Project project = Project.byOwnerAndName(user.username, form.get().getName());
+      Project project = projectService.byOwnerAndName(user.username, form.get().getName());
       if (project != null) {
         // Revive project
         form.get().fill(project).withDeleted(false);
@@ -180,7 +184,7 @@ public class Projects extends AbstractController {
         return badRequest(views.html.projects.create.render(createTemplate(), form));
       }
 
-      Project project = Project.byOwnerAndName(user.username, projectName);
+      Project project = projectService.byOwnerAndName(user.username, projectName);
       if (project == null) {
         try {
           project = projectService.save(new Project(projectName).withOwner(user));
@@ -201,7 +205,7 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> editBy(String username, String projectName) {
     return project(username, projectName, (user, project) -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
+      if (!permissionService.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.route(), "project.edit.denied", project.name);
       }
 
@@ -212,7 +216,7 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> doEditBy(String username, String projectName) {
     return project(username, projectName, (user, project) -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
+      if (!permissionService.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.route(), "project.edit.denied", project.name);
       }
 
@@ -234,13 +238,13 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> removeBy(String username, String projectName) {
     return project(username, projectName, (user, project) -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
+      if (!permissionService.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.route(), "project.delete.denied", project.name);
       }
 
       select(project);
 
-      undoCommand(RevertDeleteProjectCommand.from(project));
+      undoCommand(injector.instanceOf(RevertDeleteProjectCommand.class).with(project));
 
       projectService.delete(project);
 
@@ -257,7 +261,7 @@ public class Projects extends AbstractController {
       search.update(s, order, limit, offset);
 
       PagedList<Locale> locales =
-          Locale.findBy(LocaleCriteria.from(search).withProjectId(project.id));
+          localeService.findBy(LocaleCriteria.from(search).withProjectId(project.id));
 
       search.pager(locales);
 
@@ -276,7 +280,7 @@ public class Projects extends AbstractController {
       KeySearchForm search = form.get();
       search.update(s, order, limit, offset);
 
-      PagedList<Key> keys = Key.findBy(KeyCriteria.from(search).withProjectId(project.id));
+      PagedList<Key> keys = keyService.findBy(KeyCriteria.from(search).withProjectId(project.id));
 
       search.pager(keys);
 
@@ -348,7 +352,7 @@ public class Projects extends AbstractController {
     return project(username, projectName, (user, project) -> {
       Form<ProjectOwnerForm> form = ProjectOwnerForm.form(formFactory).bindFromRequest();
 
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
+      if (!permissionService.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.membersRoute(), "project.owner.change.denied",
             project.name);
       }
@@ -400,7 +404,7 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> wordCountResetBy(String username, String projectName) {
     return project(username, projectName, (user, project) -> {
-      if (!PermissionUtils.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
+      if (!permissionService.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.route(), "project.edit.denied", project.name);
       }
 

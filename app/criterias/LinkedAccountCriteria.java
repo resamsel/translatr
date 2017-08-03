@@ -9,6 +9,11 @@ import forms.SearchForm;
  */
 public class LinkedAccountCriteria extends AbstractSearchCriteria<LinkedAccountCriteria>
 {
+
+	public LinkedAccountCriteria() {
+		super("linkedAccount");
+	}
+
 	public static LinkedAccountCriteria from(SearchForm form)
 	{
 		return new LinkedAccountCriteria().with(form);

@@ -12,4 +12,6 @@ import services.impl.ProjectUserServiceImpl;
  */
 @ImplementedBy(ProjectUserServiceImpl.class)
 public interface ProjectUserService extends ModelService<ProjectUser, Long, ProjectUserCriteria> {
+
+  int countBy(ProjectUserCriteria criteria);
 }

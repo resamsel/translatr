@@ -3,6 +3,7 @@ package importers;
 import static java.util.stream.Collectors.toMap;
 
 import criterias.KeyCriteria;
+import criterias.MessageCriteria;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,15 +20,14 @@ import services.KeyService;
 import services.MessageService;
 
 /**
- *
  * @author resamsel
  * @version 7 Oct 2016
  */
 public abstract class AbstractImporter implements Importer {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractImporter.class);
 
   private final KeyService keyService;
-
   private final MessageService messageService;
 
   /**
@@ -59,45 +59,49 @@ public abstract class AbstractImporter implements Importer {
     LOGGER.debug("Imported from file {}", file.getName());
   }
 
-  /**
-   * @return
-   */
   protected abstract Properties retrieveProperties(File file, Locale locale) throws Exception;
 
   protected void load(Locale locale, Collection<String> keyNames) {
-    keys = Key.findBy(new KeyCriteria().withProjectId(locale.project.id).withNames(keyNames))
+    keys = keyService.findBy(new KeyCriteria().withProjectId(locale.project.id).withNames(keyNames))
         .getList().stream().collect(toMap(k -> k.name, a -> a));
-    messages = Message.byLocale(locale.id).stream().collect(toMap(m -> m.key.name, a -> a));
+    messages = messageService.findBy(new MessageCriteria().withLocaleId(locale.id)).getList()
+        .stream().collect(toMap(m -> m.key.name, a -> a));
   }
 
-  protected void saveKeys(Locale locale, Properties properties) {
+  void saveKeys(Locale locale, Properties properties) {
     List<Key> newKeys = new ArrayList<>();
     for (String keyName : properties.stringPropertyNames()) {
       String value = (String) properties.get(keyName);
 
-      if (StringUtils.isEmpty(value))
+      if (StringUtils.isEmpty(value)) {
         continue;
+      }
 
-      if (!keys.containsKey(keyName))
+      if (!keys.containsKey(keyName)) {
         newKeys.add(new Key(locale.project, keyName));
+      }
     }
 
     // Update keys cache
-    for (Key key : keyService.save(newKeys))
+    for (Key key : keyService.save(newKeys)) {
       keys.put(key.name, key);
+    }
   }
 
-  protected void saveMessages(Locale locale, Properties properties) {
+  void saveMessages(Locale locale, Properties properties) {
     List<Message> newMessages = new ArrayList<>();
     for (String keyName : properties.stringPropertyNames()) {
       String value = (String) properties.get(keyName);
 
-      if (StringUtils.isEmpty(value))
+      if (StringUtils.isEmpty(value)) {
         continue;
+      }
 
       if (!keys.containsKey(keyName))
-        // Must not happen, keys have been created earlier
+      // Must not happen, keys have been created earlier
+      {
         continue;
+      }
 
       Key key = keys.get(keyName);
 

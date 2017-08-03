@@ -1,19 +1,17 @@
 package services.api.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import criterias.MessageCriteria;
 import java.util.UUID;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import criterias.MessageCriteria;
 import models.Message;
 import models.Scope;
 import play.libs.Json;
 import services.KeyService;
 import services.LocaleService;
 import services.MessageService;
+import services.PermissionService;
 import services.api.MessageApiService;
 
 /**
@@ -23,18 +21,18 @@ import services.api.MessageApiService;
 @Singleton
 public class MessageApiServiceImpl extends
     AbstractApiService<Message, UUID, MessageCriteria, dto.Message> implements MessageApiService {
+
   private final LocaleService localeService;
   private final KeyService keyService;
 
-  /**
-   * @param messageService
-   */
   @Inject
   protected MessageApiServiceImpl(MessageService messageService, LocaleService localeService,
-      KeyService keyService) {
+      KeyService keyService, PermissionService permissionService) {
     super(messageService, dto.Message.class, dto.Message::from,
-        new Scope[] {Scope.ProjectRead, Scope.MessageRead},
-        new Scope[] {Scope.ProjectRead, Scope.MessageWrite});
+        new Scope[]{Scope.ProjectRead, Scope.MessageRead},
+        new Scope[]{Scope.ProjectRead, Scope.MessageWrite},
+        permissionService);
+
     this.localeService = localeService;
     this.keyService = keyService;
   }

@@ -1,4 +1,4 @@
-@(template: utils.Template, project: models.Project, form: Form[forms.SearchForm])
+@(template: utils.Template, project: models.Project, latestLocales: List[models.Locale], latestKeys: List[models.Key], latestMessages: List[models.Message], form: Form[forms.SearchForm])
 
 @import utils.FormatUtils._
 @import views.html.tags.contentCard
@@ -83,7 +83,7 @@
 				<p>
 					@if(project.localesSize() > 0) {
 						@Messages("latest"):
-						@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
+						@{Html(latestLocales.map(l => tags.localeLink(l)).mkString(", "))}.
 					}
 				</p>
 			}
@@ -100,7 +100,7 @@
 				<p>
 					@if(project.keysSize() > 0) {
 						@Messages("latest"):
-						@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
+						@{Html(latestKeys.map(k => tags.keyLink(k)).mkString(", "))}.
 					}
 				</p>
 			}
@@ -110,7 +110,7 @@
 			<p>
 				@if(project.messagesSize() > 0) {
 					@Messages("latest"):
-					@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
+					@{Html(latestMessages.map(m => tags.messageLink(m)).mkString(", "))}.
 				}
 			</p>
 		}

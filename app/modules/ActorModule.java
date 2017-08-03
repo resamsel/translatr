@@ -3,6 +3,7 @@ package modules;
 import actors.KeyWordCountActor;
 import actors.LocaleWordCountActor;
 import actors.MessageWordCountActor;
+import actors.NotificationActor;
 import actors.ProjectWordCountActor;
 import com.google.inject.AbstractModule;
 import play.libs.akka.AkkaGuiceSupport;
@@ -21,5 +22,6 @@ public class ActorModule extends AbstractModule implements AkkaGuiceSupport {
     bindActor(LocaleWordCountActor.class, LocaleWordCountActor.NAME);
     bindActor(KeyWordCountActor.class, KeyWordCountActor.NAME);
     bindActor(ProjectWordCountActor.class, ProjectWordCountActor.NAME);
+    bindActor(NotificationActor.class, NotificationActor.NAME);
   }
 }

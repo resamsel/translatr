@@ -27,9 +27,11 @@ import play.Configuration;
 import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Http.Context;
+import services.KeyService;
+import services.LocaleService;
+import services.PermissionService;
 import services.ProjectService;
 import services.api.ProjectApiService;
-import utils.PermissionUtils;
 
 /**
  * @author resamsel
@@ -40,15 +42,20 @@ public class ProjectApiServiceImpl extends
     AbstractApiService<Project, UUID, ProjectCriteria, dto.Project> implements ProjectApiService {
 
   private final Configuration configuration;
+  private final LocaleService localeService;
+  private final KeyService keyService;
 
-  /**
-   * @param projectService
-   */
   @Inject
-  protected ProjectApiServiceImpl(Configuration configuration, ProjectService projectService) {
-    super(projectService, dto.Project.class, dto.Project::from, new Scope[]{Scope.ProjectRead},
-        new Scope[]{Scope.ProjectWrite});
+  protected ProjectApiServiceImpl(Configuration configuration, ProjectService projectService,
+      LocaleService localeService, KeyService keyService, PermissionService permissionService) {
+    super(projectService, dto.Project.class, dto.Project::from,
+        new Scope[]{Scope.ProjectRead},
+        new Scope[]{Scope.ProjectWrite},
+        permissionService);
+
     this.configuration = configuration;
+    this.localeService = localeService;
+    this.keyService = keyService;
   }
 
   /**
@@ -56,7 +63,7 @@ public class ProjectApiServiceImpl extends
    */
   @Override
   public SearchResponse search(UUID projectId, SearchForm search) {
-    PermissionUtils.checkPermissionAll("Access token not allowed", readScopes);
+    permissionService.checkPermissionAll("Access token not allowed", readScopes);
 
     Messages messages = Context.current().messages();
 
@@ -66,8 +73,8 @@ public class ProjectApiServiceImpl extends
 
     List<Suggestable> suggestions = new ArrayList<>();
 
-    if (PermissionUtils.hasPermissionAll(Scope.KeyRead)) {
-      PagedList<? extends Suggestable> keys = Key
+    if (permissionService.hasPermissionAll(Scope.KeyRead)) {
+      PagedList<? extends Suggestable> keys = keyService
           .findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
 
       search.pager(keys);
@@ -85,8 +92,8 @@ public class ProjectApiServiceImpl extends
                     Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET))));
       }
 
-      if (PermissionUtils.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Manager,
-          ProjectRole.Developer) && PermissionUtils.hasPermissionAll(Scope.KeyWrite)) {
+      if (permissionService.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Manager,
+          ProjectRole.Developer) && permissionService.hasPermissionAll(Scope.KeyWrite)) {
         suggestions
             .add(
                 Suggestable.DefaultSuggestable.from(messages.at("key.create", search.search),
@@ -97,8 +104,8 @@ public class ProjectApiServiceImpl extends
       }
     }
 
-    if (PermissionUtils.hasPermissionAll(Scope.LocaleRead)) {
-      PagedList<? extends Suggestable> locales = Locale.findBy(new LocaleCriteria()
+    if (permissionService.hasPermissionAll(Scope.LocaleRead)) {
+      PagedList<? extends Suggestable> locales = localeService.findBy(new LocaleCriteria()
           .withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
 
       search.pager(locales);
@@ -114,8 +121,8 @@ public class ProjectApiServiceImpl extends
                     Locales.DEFAULT_OFFSET), Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET))));
       }
 
-      if (PermissionUtils.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Translator)
-          && PermissionUtils.hasPermissionAll(Scope.LocaleWrite)) {
+      if (permissionService.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Translator)
+          && permissionService.hasPermissionAll(Scope.LocaleWrite)) {
         suggestions
             .add(
                 Suggestable.DefaultSuggestable

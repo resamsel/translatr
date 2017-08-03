@@ -23,6 +23,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.LogEntryService;
 import services.NotificationService;
+import services.PermissionService;
 import services.ProjectService;
 import services.UserService;
 import utils.ContextKey;
@@ -67,6 +68,8 @@ public abstract class AbstractController extends Controller {
 
   protected final NotificationService notificationService;
 
+  protected final PermissionService permissionService;
+
   protected AbstractController(Injector injector, CacheApi cache, PlayAuthenticate auth) {
     this.injector = injector;
     this.cache = cache;
@@ -77,6 +80,7 @@ public abstract class AbstractController extends Controller {
     this.projectService = injector.instanceOf(ProjectService.class);
     this.logEntryService = injector.instanceOf(LogEntryService.class);
     this.notificationService = injector.instanceOf(NotificationService.class);
+    this.permissionService = injector.instanceOf(PermissionService.class);
   }
 
   protected <T> CompletionStage<T> tryCatch(Supplier<T> supplier) {

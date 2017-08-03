@@ -8,7 +8,7 @@ import commands.RevertDeleteKeyCommand;
 import criterias.KeyCriteria;
 import forms.KeyForm;
 import forms.LocaleSearchForm;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import java.util.function.BiFunction;
@@ -120,7 +120,7 @@ public class Keys extends AbstractController {
         return badRequest(views.html.keys.create.render(createTemplate(), project, form));
       }
 
-      Key key = Key.byProjectAndName(project, keyName);
+      Key key = keyService.byProjectAndName(project, keyName);
 
       if (key == null) {
         key = new Key(project, keyName);
@@ -197,7 +197,7 @@ public class Keys extends AbstractController {
           new KeyCriteria()
               .withProjectOwnerUsername(username)
               .withProjectName(projectName)
-              .withNames(Arrays.asList(keyName)));
+              .withNames(Collections.singletonList(keyName)));
 
       if (keys.getList().isEmpty()) {
         return notFound(username, projectName, "key.notFound", keyName);

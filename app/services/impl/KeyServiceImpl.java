@@ -3,31 +3,23 @@ package services.impl;
 import static utils.Stopwatch.log;
 
 import com.avaje.ebean.Ebean;
-import com.avaje.ebean.PagedList;
 import com.avaje.ebean.RawSqlBuilder;
 import criterias.KeyCriteria;
-import dto.PermissionException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.validation.Validator;
-import models.ActionType;
 import models.Key;
-import models.LogEntry;
-import models.Message;
 import models.Project;
-import models.ProjectRole;
 import models.Stat;
-import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
+import repositories.KeyRepository;
 import services.KeyService;
 import services.LogEntryService;
-import services.MessageService;
 
 /**
  * @author resamsel
@@ -38,32 +30,17 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyServiceImpl.class);
 
-  private final MessageService messageService;
+  private final KeyRepository keyRepository;
 
   private final CacheApi cache;
 
   @Inject
-  public KeyServiceImpl(Validator validator, CacheApi cache, MessageService messageService,
+  public KeyServiceImpl(Validator validator, CacheApi cache, KeyRepository keyRepository,
       LogEntryService logEntryService) {
-    super(validator, logEntryService);
+    super(validator, cache, keyRepository, Key::getCacheKey, logEntryService);
+
     this.cache = cache;
-    this.messageService = messageService;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public PagedList<Key> findBy(KeyCriteria criteria) {
-    return Key.findBy(criteria);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Key byId(UUID id, String... fetches) {
-    return cache.getOrElse(Key.getCacheKey(id, fetches), () -> Key.byId(id, fetches), 60);
+    this.keyRepository = keyRepository;
   }
 
   /**
@@ -91,7 +68,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
       return;
     }
 
-    Key key = Key.byId(keyId);
+    Key key = modelRepository.byId(keyId);
 
     if (key == null) {
       return;
@@ -118,64 +95,19 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  protected void prePersist(Key t, boolean update) {
-    if (update) {
-      logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.Key.class,
-          dto.Key.from(byId(t.id)), dto.Key.from(t)));
-    }
+  public List<Key> latest(Project project, int limit) {
+    return cache.getOrElse(
+        String.format("project:%s:keys:latest:%d", project.id, limit),
+        () -> keyRepository.latest(project, limit),
+        60);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  protected void postSave(Key t, boolean update) {
-    if (!update) {
-      logEntryService
-          .save(LogEntry.from(ActionType.Create, t.project, dto.Key.class, null, dto.Key.from(t)));
-
-      cache.remove(Project.getCacheKey(t.project.id));
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void preDelete(Key t) {
-    if (!t.project.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
-        ProjectRole.Developer)) {
-      throw new PermissionException("User not allowed in project");
-    }
-
-    logEntryService
-        .save(LogEntry.from(ActionType.Delete, t.project, dto.Key.class, dto.Key.from(t), null));
-
-    messageService.delete(Message.byKey(t));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postDelete(Key t) {
-    // When message has been created, the project cache needs to be invalidated
-    cache.remove(Project.getCacheKey(t.project.id));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void preDelete(Collection<Key> t) {
-    logEntryService.save(t.stream()
-        .map(k -> LogEntry.from(ActionType.Delete, k.project, dto.Key.class, dto.Key.from(k), null))
-        .collect(Collectors.toList()));
-
-    messageService.delete(Message.byKeys(t.stream().map(k -> k.id).collect(Collectors.toList())));
+  public Key byProjectAndName(Project project, String name) {
+    return cache.getOrElse(
+        String.format("project:%s:key:%s", project.id, name),
+        () -> keyRepository.byProjectAndName(project, name),
+        60);
   }
 }

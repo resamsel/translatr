@@ -29,7 +29,6 @@ public class AbstractTest extends WithApplication {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTest.class);
 
-  @Inject
   protected UserService userService;
 
   /**

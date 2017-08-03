@@ -16,6 +16,10 @@ public class MessageCriteria extends AbstractSearchCriteria<MessageCriteria> {
 
   private List<UUID> localeIds;
 
+  public MessageCriteria() {
+    super("message");
+  }
+
   public List<UUID> getLocaleIds() {
     return localeIds;
   }

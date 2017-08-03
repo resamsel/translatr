@@ -14,6 +14,10 @@ public class ProjectCriteria extends AbstractSearchCriteria<ProjectCriteria> {
 
   private UUID memberId;
 
+  public ProjectCriteria() {
+    super("project");
+  }
+
   public UUID getOwnerId() {
     return ownerId;
   }

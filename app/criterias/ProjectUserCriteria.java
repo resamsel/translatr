@@ -9,6 +9,11 @@ import forms.SearchForm;
  */
 public class ProjectUserCriteria extends AbstractSearchCriteria<ProjectUserCriteria>
 {
+
+	public ProjectUserCriteria() {
+		super("projectUser");
+	}
+
 	public static ProjectUserCriteria from(SearchForm search)
 	{
 		return new ProjectUserCriteria().with(search);

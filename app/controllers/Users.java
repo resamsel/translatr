@@ -170,7 +170,7 @@ public class Users extends AbstractController {
       }
 
       return ok(views.html.users.accessTokens.render(createTemplate(user), user,
-          AccessToken.findBy(AccessTokenCriteria.from(search).withUserId(user.id)).getList(),
+          accessTokenService.findBy(AccessTokenCriteria.from(search).withUserId(user.id)).getList(),
           form));
     }, true);
   }
