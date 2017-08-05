@@ -13,5 +13,7 @@ import repositories.impl.LogEntryRepositoryImpl;
 public interface LogEntryRepository extends
     ModelRepository<LogEntry, UUID, LogEntryCriteria> {
 
+  String[] PROPERTIES_TO_FETCH = {"user", "project"};
+
   int countBy(LogEntryCriteria criteria);
 }

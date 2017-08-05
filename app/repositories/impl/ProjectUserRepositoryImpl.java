@@ -3,6 +3,9 @@ package repositories.impl;
 import static models.ProjectUser.FETCH_PROJECT;
 import static utils.Stopwatch.log;
 
+import actors.NotificationActor;
+import actors.NotificationProtocol.FollowNotification;
+import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -14,8 +17,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import models.ActionType;
+import models.LogEntry;
 import models.ProjectUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,18 +37,18 @@ public class ProjectUserRepositoryImpl extends
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectUserRepositoryImpl.class);
 
-  private static final List<String> PROPERTIES_TO_FETCH = Collections.singletonList(FETCH_PROJECT);
-
-  private static final Map<String, List<String>> FETCH_MAP =
-      ImmutableMap.of(FETCH_PROJECT, Arrays.asList(FETCH_PROJECT, FETCH_PROJECT + ".owner"));
-
   private final Find<Long, ProjectUser> find = new Find<Long, ProjectUser>() {
   };
 
+  private final ActorRef notificationActor;
+
   @Inject
   public ProjectUserRepositoryImpl(Validator validator, CacheApi cache,
-      LogEntryRepository logEntryRepository) {
+      LogEntryRepository logEntryRepository,
+      @Named(NotificationActor.NAME) ActorRef notificationActor) {
     super(validator, cache, logEntryRepository);
+
+    this.notificationActor = notificationActor;
   }
 
   @Override
@@ -78,5 +84,42 @@ public class ProjectUserRepositoryImpl extends
     criteria.paged(query);
 
     return query;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void prePersist(ProjectUser t, boolean update) {
+    if (update) {
+      logEntryRepository.save(LogEntry.from(ActionType.Update, t.project, dto.ProjectUser.class,
+          toDto(byId(t.id)), toDto(t)));
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postSave(ProjectUser t, boolean update) {
+    if (!update) {
+      logEntryRepository
+          .save(LogEntry.from(ActionType.Create, t.project, dto.ProjectUser.class, null, toDto(t)));
+    }
+
+    notificationActor.tell(new FollowNotification(t.user.id, t.project.id), null);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void preDelete(ProjectUser t) {
+    logEntryRepository
+        .save(LogEntry.from(ActionType.Delete, t.project, dto.ProjectUser.class, toDto(t), null));
+  }
+
+  private dto.ProjectUser toDto(ProjectUser t) {
+    return dto.ProjectUser.from(t);
   }
 }

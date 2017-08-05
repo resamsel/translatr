@@ -1,15 +1,10 @@
 package repositories.impl;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static models.Project.FETCH_MEMBERS;
-import static models.Project.FETCH_OWNER;
 import static utils.Stopwatch.log;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
-import com.google.common.collect.ImmutableMap;
 import criterias.HasNextPagedList;
 import criterias.ProjectCriteria;
 import dto.NotFoundException;
@@ -17,8 +12,6 @@ import dto.PermissionException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -47,12 +40,6 @@ public class ProjectRepositoryImpl extends
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectRepositoryImpl.class);
 
-  private static final String[] PROPERTIES_TO_FETCH = {FETCH_OWNER, FETCH_MEMBERS};
-
-  private static final Map<String, List<String>> FETCH_MAP =
-      ImmutableMap.of("project", singletonList("project"), FETCH_MEMBERS,
-          asList(FETCH_MEMBERS, FETCH_MEMBERS + ".user"));
-
   private final LocaleRepository localeRepository;
   private final KeyRepository keyRepository;
   private final PermissionService permissionService;
@@ -73,8 +60,9 @@ public class ProjectRepositoryImpl extends
 
   @Override
   public PagedList<Project> findBy(ProjectCriteria criteria) {
+    // FIXME: are all fetches really needed?
     ExpressionList<Project> query = find.fetch(FETCH_OWNER).fetch(FETCH_MEMBERS)
-        .fetch(Project.FETCH_LOCALES).fetch(Project.FETCH_KEYS).where();
+        .fetch(FETCH_LOCALES).fetch(FETCH_KEYS).where();
 
     query.eq("deleted", false);
 
@@ -154,7 +142,7 @@ public class ProjectRepositoryImpl extends
           .save(LogEntry.from(ActionType.Create, t, dto.Project.class, null, toDto(t)));
     }
 
-    // When message has been created, the project cache needs to be invalidated
+    // When project has been created, the project cache needs to be invalidated
     cache.remove(Project.getCacheKey(t.id, PROPERTIES_TO_FETCH));
     cache.remove(Project.getCacheKey(t.owner.username, t.name));
     cache.remove(new ProjectCriteria().withMemberId(User.loggedInUserId()).getCacheKey());

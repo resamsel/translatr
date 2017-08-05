@@ -79,7 +79,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
     }
     key.wordCount += wordCountDiff;
 
-    log(() -> persist(key), LOGGER, "Increased word count by %d", wordCountDiff);
+    log(() -> modelRepository.persist(key), LOGGER, "Increased word count by %d", wordCountDiff);
   }
 
   /**

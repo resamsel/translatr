@@ -145,8 +145,9 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   @Override
   public User merge(final User user, final User otherUser) {
     linkedAccountService
-        .save(LinkedAccount.findBy(new LinkedAccountCriteria().withUserId(otherUser.id)).getList()
-            .stream().map(linkedAccount -> linkedAccount.withUser(user)).collect(toList()));
+        .save(linkedAccountService.findBy(new LinkedAccountCriteria().withUserId(otherUser.id))
+            .getList().stream().map(linkedAccount -> linkedAccount.withUser(user))
+            .collect(toList()));
     otherUser.linkedAccounts.clear();
 
     accessTokenService

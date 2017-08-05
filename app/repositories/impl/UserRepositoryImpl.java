@@ -57,12 +57,13 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
   @Override
   public User byId(UUID id, String... fetches) {
-    return QueryUtils.fetch(find.setId(id), fetches).findUnique();
+    return QueryUtils.fetch(find.setId(id), fetches, FETCH_MAP).findUnique();
   }
 
   @Override
   public User byUsername(String username, String... fetches) {
-    return QueryUtils.fetch(find.query(), fetches).where().eq("username", username).findUnique();
+    return QueryUtils.fetch(find.query(), fetches, FETCH_MAP).where().eq("username", username)
+        .findUnique();
   }
 
   private ExpressionList<User> getAuthUserFind(final AuthUserIdentity identity) {

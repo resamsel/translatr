@@ -134,7 +134,7 @@ public class Users extends AbstractController {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
 
-      PagedList<LinkedAccount> accounts = LinkedAccount
+      PagedList<LinkedAccount> accounts = linkedAccountService
           .findBy(LinkedAccountCriteria.from(search).withUserId(user.id).withOrder("providerKey"));
 
       search.pager(accounts);

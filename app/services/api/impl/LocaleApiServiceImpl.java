@@ -30,6 +30,7 @@ import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
+import repositories.LocaleRepository;
 import services.LocaleService;
 import services.PermissionService;
 import services.ProjectService;
@@ -124,7 +125,7 @@ public class LocaleApiServiceImpl extends
         .checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
             Scope.MessageRead);
 
-    Locale locale = service.byId(localeId, Locale.FETCH_MESSAGES);
+    Locale locale = service.byId(localeId, LocaleRepository.FETCH_MESSAGES);
     if (locale == null) {
       throw new NotFoundException(dto.Locale.class.getSimpleName(), localeId);
     }

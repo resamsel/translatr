@@ -1,17 +1,14 @@
 package repositories.impl;
 
 import actors.NotificationActor;
-import actors.NotificationProtocol.Notification;
+import actors.NotificationProtocol.PublishNotification;
 import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,8 +27,6 @@ import utils.QueryUtils;
 public class LogEntryRepositoryImpl extends
     AbstractModelRepository<LogEntry, UUID, LogEntryCriteria> implements
     LogEntryRepository {
-
-  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList("user", "project");
 
   private final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>() {
   };
@@ -63,13 +58,8 @@ public class LogEntryRepositoryImpl extends
 
   @Override
   public LogEntry byId(UUID id, String... fetches) {
-    HashSet<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
-    if (fetches.length > 0) {
-      propertiesToFetch.addAll(Arrays.asList(fetches));
-    }
-
-    return QueryUtils.fetch(find.setId(id).setDisableLazyLoading(true), propertiesToFetch)
-        .findUnique();
+    return QueryUtils.fetch(find.setId(id).setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches)).findUnique();
   }
 
   @Override
@@ -134,7 +124,7 @@ public class LogEntryRepositoryImpl extends
   @Override
   protected void postSave(LogEntry t, boolean update) {
     if (t.user != null && t.project != null) {
-      notificationActor.tell(new Notification(t), null);
+      notificationActor.tell(new PublishNotification(t), null);
     }
   }
 }

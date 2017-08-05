@@ -62,10 +62,6 @@ public class User implements Model<User, UUID>, Subject {
 
   public static final int EMAIL_LENGTH = 255;
 
-  public static final String FETCH_PROJECTS = "projects";
-  public static final String FETCH_MEMBERSHIPS = "memberships";
-  public static final String FETCH_ACTIVITIES = "activities";
-
   @Id
   @GeneratedValue
   public UUID id;

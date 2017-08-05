@@ -41,14 +41,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
   public static final int NAME_LENGTH = 15;
 
-  public static final String FETCH_MESSAGES = "messages";
-
-  public static final List<String> PROPERTIES_TO_FETCH = Collections.singletonList("project");
-
-  public static final Map<String, List<String>> FETCH_MAP =
-      ImmutableMap.of("project", Arrays.asList("project", "project.owner"), FETCH_MESSAGES,
-          Arrays.asList(FETCH_MESSAGES, FETCH_MESSAGES + ".key"));
-
   @Id
   @GeneratedValue
   public UUID id;

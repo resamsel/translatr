@@ -27,9 +27,7 @@ public class AccessToken implements Model<AccessToken, Long> {
 
   public static final int KEY_LENGTH = 64;
 
-  public static final int SCOPE_LENGTH = 255;
-
-  public static final String FETCH_USER = "user";
+  private static final int SCOPE_LENGTH = 255;
 
   @Id
   @GeneratedValue

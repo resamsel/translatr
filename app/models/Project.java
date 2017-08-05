@@ -55,11 +55,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   public static final int NAME_LENGTH = 255;
 
-  public static final String FETCH_MEMBERS = "members";
-  public static final String FETCH_OWNER = "owner";
-  public static final String FETCH_LOCALES = "locales";
-  public static final String FETCH_KEYS = "keys";
-
   @Id
   @GeneratedValue
   public UUID id;

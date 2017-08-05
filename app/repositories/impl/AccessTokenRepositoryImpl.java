@@ -1,7 +1,5 @@
 package repositories.impl;
 
-import static models.AccessToken.FETCH_USER;
-
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -27,9 +25,6 @@ import utils.QueryUtils;
 public class AccessTokenRepositoryImpl extends
     AbstractModelRepository<AccessToken, Long, AccessTokenCriteria> implements
     AccessTokenRepository {
-
-  private static final String[] PROPERTIES_TO_FETCH = new String[]{FETCH_USER};
-
 
   public final Find<Long, AccessToken> find = new Find<Long, AccessToken>() {
   };

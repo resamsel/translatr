@@ -6,6 +6,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.LinkedAccount;
+import play.cache.CacheApi;
+import repositories.LinkedAccountRepository;
 import services.LinkedAccountService;
 import services.LogEntryService;
 
@@ -19,24 +21,9 @@ public class LinkedAccountServiceImpl
     implements LinkedAccountService {
 
   @Inject
-  public LinkedAccountServiceImpl(Validator validator, LogEntryService logEntryService) {
-    super(validator, logEntryService);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public PagedList<LinkedAccount> findBy(LinkedAccountCriteria criteria) {
-    return LinkedAccount.findBy(criteria);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public LinkedAccount byId(Long id, String... fetches) {
-    return LinkedAccount.byId(id);
+  public LinkedAccountServiceImpl(Validator validator, CacheApi cache,
+      LinkedAccountRepository linkedAccountRepository, LogEntryService logEntryService) {
+    super(validator, cache, linkedAccountRepository, LinkedAccount::getCacheKey, logEntryService);
   }
 
   /**

@@ -8,7 +8,7 @@ import utils.ActivityUtils;
 
 public class NotificationProtocol {
 
-  public static class Notification {
+  public static class PublishNotification {
 
     public final UUID id;
     public final ActionType type;
@@ -17,7 +17,7 @@ public class NotificationProtocol {
     public final UUID userId;
     public final UUID projectId;
 
-    public Notification(LogEntry logEntry) {
+    public PublishNotification(LogEntry logEntry) {
       this.id = logEntry.id;
       this.type = logEntry.type;
       this.name = ActivityUtils.nameOf(logEntry);
@@ -44,6 +44,17 @@ public class NotificationProtocol {
           break;
       }
       return String.format("%s:%s", slug, id);
+    }
+  }
+
+  public static class FollowNotification {
+
+    public final UUID userId;
+    public final UUID projectId;
+
+    public FollowNotification(UUID userId, UUID projectId) {
+      this.userId = userId;
+      this.projectId = projectId;
     }
   }
 }

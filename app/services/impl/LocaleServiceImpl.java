@@ -19,10 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
 import repositories.LocaleRepository;
-import repositories.MessageRepository;
 import services.LocaleService;
 import services.LogEntryService;
-import services.MessageService;
 
 /**
  * @author resamsel
@@ -98,7 +96,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
     }
     locale.wordCount += wordCountDiff;
 
-    log(() -> persist(locale), LOGGER, "Increased word count by %d", wordCountDiff);
+    log(() -> modelRepository.persist(locale), LOGGER, "Increased word count by %d", wordCountDiff);
   }
 
   /**

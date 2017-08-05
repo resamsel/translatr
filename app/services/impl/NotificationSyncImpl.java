@@ -40,7 +40,7 @@ public class NotificationSyncImpl implements NotificationSync {
       projectService.findBy(new ProjectCriteria()).getList().stream().forEach(project -> {
         project.members.stream().forEach(member -> {
           try {
-            notificationService.follow(member.user, project);
+            notificationService.follow(member.user.id, project.id);
           } catch (IOException | StreamClientException e) {
             LOGGER.error("Error while following project feed", e);
           }

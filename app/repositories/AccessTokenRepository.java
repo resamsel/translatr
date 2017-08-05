@@ -2,16 +2,17 @@ package repositories;
 
 import com.google.inject.ImplementedBy;
 import criterias.AccessTokenCriteria;
-import java.util.List;
 import java.util.UUID;
 import models.AccessToken;
-import models.Key;
-import models.Project;
 import repositories.impl.AccessTokenRepositoryImpl;
 
 @ImplementedBy(AccessTokenRepositoryImpl.class)
 public interface AccessTokenRepository extends
     ModelRepository<AccessToken, Long, AccessTokenCriteria> {
+
+  String FETCH_USER = "user";
+
+  String[] PROPERTIES_TO_FETCH = new String[]{FETCH_USER};
 
   AccessToken byKey(String key);
 

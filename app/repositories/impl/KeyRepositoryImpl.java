@@ -43,12 +43,6 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyRepositoryImpl.class);
 
-  private static final Map<String, List<String>> FETCH_MAP =
-      ImmutableMap.of("project", Arrays.asList("project", "project.owner"), "messages",
-          Arrays.asList("messages", "messages.locale"));
-
-  private static final List<String> PROPERTIES_TO_FETCH = Collections.singletonList("project");
-
   private final Find<UUID, Key> find = new Find<UUID, Key>() {
   };
 

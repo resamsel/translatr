@@ -67,7 +67,7 @@ public class Notification extends Dto {
   }
 
   /**
-   * FindBugs EI: getTime() may expose internal representation by returning Notification.time.
+   * FindBugs EI: getTime() may expose internal representation by returning PublishNotification.time.
    * 
    * @return the time
    */
@@ -77,7 +77,7 @@ public class Notification extends Dto {
 
   /**
    * FindBugs EI2: setTime(Date) may expose internal representation by storing an externally mutable
-   * object into Notification.time.
+   * object into PublishNotification.time.
    * 
    * @param time the time to set
    */

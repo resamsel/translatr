@@ -2,8 +2,6 @@ package repositories.impl;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static models.Locale.FETCH_MAP;
-import static models.Locale.PROPERTIES_TO_FETCH;
 import static utils.Stopwatch.log;
 
 import com.avaje.ebean.ExpressionList;

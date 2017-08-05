@@ -15,9 +15,9 @@ import models.User;
 public interface NotificationService {
   boolean isEnabled();
 
-  void follow(User user, Project project) throws IOException, StreamClientException;
+  void follow(UUID userId, UUID projectId) throws IOException, StreamClientException;
 
-  void unfollow(User user, Project project) throws IOException, StreamClientException;
+  void unfollow(UUID userId, UUID projectId) throws IOException, StreamClientException;
 
   SimpleActivity publish(UUID id, ActionType type, String name, String contentId, UUID userId, UUID projectId)
       throws IOException, StreamClientException;

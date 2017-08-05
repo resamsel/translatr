@@ -80,16 +80,16 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   @Override
-  public void follow(User user, Project project) throws IOException, StreamClientException {
-    LOGGER.debug("User {} follows project {}", user.username, project.name);
-    streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, user.id.toString())
-        .follow(FEED_GROUP_PROJECT, project.id.toString());
+  public void follow(UUID userId, UUID projectId) throws IOException, StreamClientException {
+    LOGGER.debug("User {} follows project {}", userId, projectId);
+    streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, userId.toString())
+        .follow(FEED_GROUP_PROJECT, projectId.toString());
   }
 
   @Override
-  public void unfollow(User user, Project project) throws IOException, StreamClientException {
-    streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, user.id.toString())
-        .unfollow(FEED_GROUP_PROJECT, project.id.toString());
+  public void unfollow(UUID userId, UUID projectId) throws IOException, StreamClientException {
+    streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, userId.toString())
+        .unfollow(FEED_GROUP_PROJECT, projectId.toString());
   }
 
   @Override

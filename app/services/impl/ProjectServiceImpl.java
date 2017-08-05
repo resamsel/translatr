@@ -87,7 +87,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     }
     project.wordCount += wordCountDiff;
 
-    log(() -> persist(project), LOGGER, "Increased word count by %d", wordCountDiff);
+    log(() -> modelRepository.persist(project), LOGGER, "Increased word count by %d", wordCountDiff);
   }
 
   /**
@@ -95,12 +95,12 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    */
   @Override
   public void resetWordCount(UUID projectId) {
-    Project project = byId(projectId, Project.FETCH_LOCALES);
+    Project project = byId(projectId, ProjectRepository.FETCH_LOCALES);
     List<UUID> localeIds = project.locales.stream().map(Locale::getId).collect(toList());
 
     project.wordCount = null;
 
-    persist(project);
+    modelRepository.persist(project);
 
     localeService.resetWordCount(projectId);
     keyService.resetWordCount(projectId);

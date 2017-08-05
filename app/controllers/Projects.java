@@ -154,7 +154,7 @@ public class Projects extends AbstractController {
     return user(username, user -> {
       Form<ProjectForm> form = ProjectForm.form(formFactory).bindFromRequest();
       if (form.hasErrors()) {
-        throw new ConstraintViolationException(Collections.emptySet());
+        return badRequest(views.html.projects.create.render(createTemplate(), form));
       }
 
       Project project = projectService.byOwnerAndName(user.username, form.get().getName());

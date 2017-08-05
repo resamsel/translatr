@@ -102,10 +102,8 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
     return t;
   }
 
-  /**
-   * Persist model to database, ignoring any pre/post save methods.
-   */
-  protected MODEL persist(MODEL t) {
+  @Override
+  public MODEL persist(MODEL t) {
     Ebean.save(t);
     // Ebean.refresh(t);
     return t;

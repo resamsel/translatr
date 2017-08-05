@@ -14,9 +14,20 @@ public interface ModelRepository<T extends Model<T, ID>, ID, CRITERIA extends Ab
 
   T update(T model);
 
+  /**
+   * Persist model to database.
+   */
   T save(T t);
 
+  /**
+   * Persist model collection to database.
+   */
   Collection<T> save(Collection<T> t);
+
+  /**
+   * Persist model to database, ignoring any pre/post save methods.
+   */
+  T persist(T t);
 
   void delete(T t);
 

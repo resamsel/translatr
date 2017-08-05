@@ -2,8 +2,6 @@ package repositories.impl;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static models.Message.FETCH_KEY;
-import static models.Message.FETCH_LOCALE;
 import static utils.Stopwatch.log;
 
 import actors.MessageWordCountActor;
@@ -14,10 +12,8 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
-import com.google.common.collect.ImmutableMap;
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -48,12 +44,6 @@ public class MessageRepositoryImpl extends
     MessageRepository {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageRepositoryImpl.class);
-
-  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList(FETCH_LOCALE, FETCH_KEY);
-
-  private static final Map<String, List<String>> FETCH_MAP = ImmutableMap.of(FETCH_LOCALE,
-      Arrays.asList(FETCH_LOCALE, FETCH_LOCALE + ".project", FETCH_LOCALE + ".project.owner"),
-      FETCH_KEY, Collections.singletonList(FETCH_KEY));
 
   private final ActorRef messageWordCountActor;
 

@@ -1,10 +1,10 @@
 package actors;
 
-import actors.NotificationProtocol.Notification;
+import actors.NotificationProtocol.FollowNotification;
+import actors.NotificationProtocol.PublishNotification;
 import akka.actor.UntypedActor;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import models.LogEntry;
 import services.NotificationService;
 
 @Singleton
@@ -20,10 +20,14 @@ public class NotificationActor extends UntypedActor {
 
   @Override
   public void onReceive(Object msg) throws Throwable {
-    if (msg instanceof Notification) {
-      Notification t = (Notification) msg;
+    if (msg instanceof PublishNotification) {
+      PublishNotification t = (PublishNotification) msg;
 
       notificationService.publish(t.id, t.type, t.name, t.contentId, t.userId, t.projectId);
+    } else if(msg instanceof FollowNotification) {
+      FollowNotification t = (FollowNotification)msg;
+
+      notificationService.follow(t.userId, t.projectId);
     }
   }
 }

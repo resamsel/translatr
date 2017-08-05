@@ -62,9 +62,9 @@
 					<p class="grey-text">
 						@Messages("keys.size", 0)
 					</p>
-					@if(locale.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
-						<a href="#modal-create-locale" class="modal-trigger btn waves-effect waves-light">
-							@Messages("locale.create.title")
+					@if(locale.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
+						<a href="#modal-create-key" class="modal-trigger btn waves-effect waves-light">
+							@Messages("key.create.title")
 						</a>
 					}
 				</div>
