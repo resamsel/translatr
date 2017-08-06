@@ -26,13 +26,14 @@ import models.LogEntry;
 import models.Project;
 import models.User;
 import play.Configuration;
-import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import repositories.UserRepository;
 import services.AccessTokenService;
+import services.CacheService;
 import services.LinkedAccountService;
 import services.ProjectService;
 import utils.FormUtils;
@@ -57,7 +58,8 @@ public class Users extends AbstractController {
   private final AccessTokenService accessTokenService;
 
   @Inject
-  public Users(Injector injector, CacheApi cache, PlayAuthenticate auth, FormFactory formFactory,
+  public Users(Injector injector, CacheService cache, PlayAuthenticate auth,
+      FormFactory formFactory,
       Configuration configuration, ProjectService projectService,
       LinkedAccountService linkedAccountService, AccessTokenService accessTokenService) {
     super(injector, cache, auth);
@@ -78,7 +80,8 @@ public class Users extends AbstractController {
       }
 
       PagedList<User> users = userService.findBy(UserCriteria.from(search)
-          .withFetches(User.FETCH_MEMBERSHIPS).withFetches(User.FETCH_ACTIVITIES));
+          .withFetches(UserRepository.FETCH_MEMBERSHIPS)
+          .withFetches(UserRepository.FETCH_ACTIVITIES));
 
       search.pager(users);
 

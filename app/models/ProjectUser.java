@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import utils.CacheUtils;
 
 /**
  * @author resamsel
@@ -114,14 +115,6 @@ public class ProjectUser implements Model<ProjectUser, Long> {
   }
 
   public static String getCacheKey(Long id, String... fetches) {
-    if (id == null) {
-      return null;
-    }
-
-    if (fetches.length > 0) {
-      return String.format("member:%d:%s", id, StringUtils.join(fetches, ":"));
-    }
-
-    return String.format("member:%d", id);
+    return CacheUtils.getCacheKey("member:id", id, fetches);
   }
 }

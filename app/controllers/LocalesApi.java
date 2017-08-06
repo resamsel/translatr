@@ -23,11 +23,11 @@ import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 import models.ProjectRole;
 import models.User;
-import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import services.CacheService;
 import services.api.LocaleApiService;
 
 /**
@@ -68,7 +68,7 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
   private final LocaleApiService localeApiService;
 
   @Inject
-  public LocalesApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
+  public LocalesApi(Injector injector, CacheService cache, PlayAuthenticate auth,
       LocaleApiService localeApiService) {
     super(injector, cache, auth, localeApiService);
     this.localeApiService = localeApiService;

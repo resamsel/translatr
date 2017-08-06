@@ -1,13 +1,12 @@
 package services.impl;
 
-import com.avaje.ebean.PagedList;
 import criterias.LinkedAccountCriteria;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.LinkedAccount;
-import play.cache.CacheApi;
 import repositories.LinkedAccountRepository;
+import services.CacheService;
 import services.LinkedAccountService;
 import services.LogEntryService;
 
@@ -21,7 +20,7 @@ public class LinkedAccountServiceImpl
     implements LinkedAccountService {
 
   @Inject
-  public LinkedAccountServiceImpl(Validator validator, CacheApi cache,
+  public LinkedAccountServiceImpl(Validator validator, CacheService cache,
       LinkedAccountRepository linkedAccountRepository, LogEntryService logEntryService) {
     super(validator, cache, linkedAccountRepository, LinkedAccount::getCacheKey, logEntryService);
   }

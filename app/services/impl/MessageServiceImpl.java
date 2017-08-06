@@ -13,8 +13,8 @@ import models.Message;
 import models.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.MessageRepository;
+import services.CacheService;
 import services.LogEntryService;
 import services.MessageService;
 
@@ -31,7 +31,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
   private final MessageRepository messageRepository;
 
   @Inject
-  public MessageServiceImpl(Validator validator, CacheApi cache,
+  public MessageServiceImpl(Validator validator, CacheService cache,
       MessageRepository messageRepository, LogEntryService logEntryService) {
     super(validator, cache, messageRepository, Message::getCacheKey, logEntryService);
 
@@ -68,5 +68,11 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
         String.format("project:%s:messages:latest:%d", project.id, limit),
         () -> messageRepository.latest(project, limit),
         60);
+  }
+
+  @Override
+  protected void postSave(Message t) {
+    // When message has been created, the project cache needs to be invalidated
+    cache.removeByPrefix(Project.getCacheKey(t.key.project.id));
   }
 }

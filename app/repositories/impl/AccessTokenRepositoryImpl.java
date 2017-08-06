@@ -16,7 +16,6 @@ import models.AccessToken;
 import models.ActionType;
 import models.LogEntry;
 import org.apache.commons.lang3.StringUtils;
-import play.cache.CacheApi;
 import repositories.AccessTokenRepository;
 import repositories.LogEntryRepository;
 import utils.QueryUtils;
@@ -30,9 +29,8 @@ public class AccessTokenRepositoryImpl extends
   };
 
   @Inject
-  public AccessTokenRepositoryImpl(Validator validator, CacheApi cache,
-      LogEntryRepository logEntryRepository) {
-    super(validator, cache, logEntryRepository);
+  public AccessTokenRepositoryImpl(Validator validator, LogEntryRepository logEntryRepository) {
+    super(validator, logEntryRepository);
   }
 
   @Override
@@ -98,8 +96,6 @@ public class AccessTokenRepositoryImpl extends
       logEntryRepository.save(LogEntry.from(ActionType.Create, null, dto.AccessToken.class, null,
           dto.AccessToken.from(t)));
     }
-
-    cache.remove(AccessToken.getCacheKey(t.key));
   }
 
   private String generateKey(int length) {

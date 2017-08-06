@@ -5,14 +5,10 @@ import static utils.FormatUtils.formatLocale;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.ImmutableMap;
 import controllers.AbstractController;
 import controllers.Locales;
 import controllers.routes;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -30,6 +26,7 @@ import org.joda.time.DateTime;
 import play.api.mvc.Call;
 import play.libs.Json;
 import play.mvc.Http.Context;
+import utils.CacheUtils;
 import utils.UrlUtils;
 import validators.LocaleNameUniqueChecker;
 import validators.NameUnique;
@@ -108,15 +105,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   }
 
   public static String getCacheKey(UUID localeId, String... fetches) {
-    if (localeId == null) {
-      return null;
-    }
-
-    if (fetches.length > 0) {
-      return String.format("locale:%s:%s", localeId, StringUtils.join(fetches, ":"));
-    }
-
-    return String.format("locale:%s", localeId);
+    return CacheUtils.getCacheKey("locale:id", localeId, fetches);
   }
 
   @Override

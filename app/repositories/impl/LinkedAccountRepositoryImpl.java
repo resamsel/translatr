@@ -8,7 +8,6 @@ import criterias.LinkedAccountCriteria;
 import javax.inject.Inject;
 import javax.validation.Validator;
 import models.LinkedAccount;
-import play.cache.CacheApi;
 import repositories.LinkedAccountRepository;
 import repositories.LogEntryRepository;
 import utils.QueryUtils;
@@ -21,9 +20,8 @@ public class LinkedAccountRepositoryImpl extends
   };
 
   @Inject
-  public LinkedAccountRepositoryImpl(Validator validator, CacheApi cache,
-      LogEntryRepository logEntryRepository) {
-    super(validator, cache, logEntryRepository);
+  public LinkedAccountRepositoryImpl(Validator validator, LogEntryRepository logEntryRepository) {
+    super(validator, logEntryRepository);
   }
 
   @Override

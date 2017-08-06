@@ -31,7 +31,6 @@ import models.User;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.LocaleRepository;
 import repositories.LogEntryRepository;
 import repositories.MessageRepository;
@@ -50,10 +49,9 @@ public class LocaleRepositoryImpl extends
   private final PermissionService permissionService;
 
   @Inject
-  public LocaleRepositoryImpl(Validator validator, CacheApi cache,
-      MessageRepository messageRepository, LogEntryRepository logEntryRepository,
-      PermissionService permissionService) {
-    super(validator, cache, logEntryRepository);
+  public LocaleRepositoryImpl(Validator validator, MessageRepository messageRepository,
+      LogEntryRepository logEntryRepository, PermissionService permissionService) {
+    super(validator, logEntryRepository);
 
     this.messageRepository = messageRepository;
     this.permissionService = permissionService;
@@ -161,19 +159,7 @@ public class LocaleRepositoryImpl extends
     if (!update) {
       logEntryRepository.save(
           LogEntry.from(ActionType.Create, t.project, dto.Locale.class, null, dto.Locale.from(t)));
-
-      // When message has been created, the project cache needs to be invalidated
-      cache.remove(Project.getCacheKey(t.project.id));
     }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postDelete(Locale t) {
-    // When message has been created, the project cache needs to be invalidated
-    cache.remove(Project.getCacheKey(t.project.id));
   }
 
   /**

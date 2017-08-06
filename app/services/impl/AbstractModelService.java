@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.function.BiFunction;
 import javax.validation.Validator;
 import models.Model;
-import play.cache.CacheApi;
 import repositories.ModelRepository;
+import services.CacheService;
 import services.LogEntryService;
 import services.ModelService;
 
@@ -22,11 +22,11 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
 
   protected final Validator validator;
   protected final LogEntryService logEntryService;
-  protected final CacheApi cache;
+  protected final CacheService cache;
   final ModelRepository<MODEL, ID, CRITERIA> modelRepository;
   private final BiFunction<ID, String[], String> cacheKeyGetter;
 
-  public AbstractModelService(Validator validator, CacheApi cache,
+  public AbstractModelService(Validator validator, CacheService cache,
       ModelRepository<MODEL, ID, CRITERIA> modelRepository,
       BiFunction<ID, String[], String> cacheKeyGetter, LogEntryService logEntryService) {
     this.validator = validator;
@@ -76,7 +76,23 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
    */
   @Override
   public MODEL save(MODEL t) {
-    return modelRepository.save(t);
+    preSave(t);
+
+    MODEL m = modelRepository.save(t);
+
+    postSave(t);
+
+    return m;
+  }
+
+  /**
+   * Remove name based keys from cache before name might have been changed.
+   */
+  protected void preSave(MODEL t) {
+  }
+
+  protected void postSave(MODEL t) {
+    cache.removeByPrefix(cacheKeyGetter.apply(t.getId(), new String[0]));
   }
 
   @Override
@@ -86,11 +102,22 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
 
   @Override
   public void delete(MODEL t) {
+    preDelete(t);
+
     modelRepository.delete(t);
+
+    postDelete(t);
   }
 
   @Override
   public void delete(Collection<MODEL> t) {
     modelRepository.delete(t);
+  }
+
+  protected void preDelete(MODEL t) {
+  }
+
+  protected void postDelete(MODEL t) {
+    cache.removeByPrefix(cacheKeyGetter.apply(t.getId(), new String[0]));
   }
 }

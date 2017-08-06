@@ -10,6 +10,7 @@ import models.User;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.inject.Injector;
+import services.CacheService;
 import services.api.ApiService;
 import utils.PermissionUtils;
 
@@ -18,7 +19,7 @@ public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends Abstract
   protected final ApiService<DTO, ID, CRITERIA> api;
   protected final Configuration configuration;
 
-  protected AbstractApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
+  protected AbstractApi(Injector injector, CacheService cache, PlayAuthenticate auth,
       ApiService<DTO, ID, CRITERIA> api) {
     super(injector, cache, auth);
 

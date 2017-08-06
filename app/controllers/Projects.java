@@ -23,7 +23,6 @@ import forms.ProjectOwnerForm;
 import forms.ProjectUserForm;
 import forms.SearchForm;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -41,7 +40,6 @@ import models.Suggestable;
 import models.Suggestable.Data;
 import models.User;
 import play.Configuration;
-import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
 import play.inject.Injector;
@@ -49,6 +47,7 @@ import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
+import services.CacheService;
 import services.KeyService;
 import services.LocaleService;
 import services.MessageService;
@@ -56,7 +55,6 @@ import services.ProjectService;
 import services.ProjectUserService;
 import utils.FormUtils;
 import utils.FormUtils.Search;
-import utils.PermissionUtils;
 import utils.Template;
 
 /**
@@ -79,7 +77,8 @@ public class Projects extends AbstractController {
    *
    */
   @Inject
-  public Projects(Injector injector, CacheApi cache, FormFactory formFactory, PlayAuthenticate auth,
+  public Projects(Injector injector, CacheService cache, FormFactory formFactory,
+      PlayAuthenticate auth,
       ProjectService projectService, LocaleService localeService, KeyService keyService,
       MessageService messageService, ProjectUserService projectUserService,
       Configuration configuration) {

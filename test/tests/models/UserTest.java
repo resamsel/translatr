@@ -17,10 +17,10 @@ public class UserTest {
 
     assertThat(User.getCacheKey((UUID) null)).isNull();
     assertThat(User.getCacheKey((String) null)).isNull();
-    assertThat(User.getCacheKey(userId)).isEqualTo("user:" + userId);
+    assertThat(User.getCacheKey(userId)).isEqualTo("user:id:" + userId);
     assertThat(User.getCacheKey(userId, "linkedAccounts"))
-        .isEqualTo("user:" + userId + ":linkedAccounts");
+        .isEqualTo("user:id:" + userId + ":linkedAccounts");
     assertThat(User.getCacheKey(userId, "linkedAccounts", "projects"))
-        .isEqualTo("user:" + userId + ":linkedAccounts:projects");
+        .isEqualTo("user:id:" + userId + ":linkedAccounts:projects");
   }
 }

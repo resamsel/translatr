@@ -606,7 +606,7 @@ def create_parser_project(subparsers):
 
 	parser_project_remove = subparsers_project.add_parser(
 		'rm',
-		help='remove projects'
+		help='removeAll projects'
 	)
 	parser_project_remove.set_defaults(func=remove_project)
 	parser_project_remove.add_argument(
@@ -657,7 +657,7 @@ def create_parser_locale(subparsers):
 
 	parser_locale_remove = subparsers_locale.add_parser(
 		'rm',
-		help='remove locales'
+		help='removeAll locales'
 	)
 	parser_locale_remove.set_defaults(func=remove_locale)
 	parser_locale_remove.add_argument(
@@ -713,7 +713,7 @@ def create_parser_key(subparsers):
 
 	parser_key_remove = subparsers_key.add_parser(
 		'rm',
-		help='remove keys'
+		help='removeAll keys'
 	)
 	parser_key_remove.set_defaults(func=remove_key)
 	parser_key_remove.add_argument(

@@ -17,8 +17,8 @@ import models.Project;
 import models.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.LocaleRepository;
+import services.CacheService;
 import services.LocaleService;
 import services.LogEntryService;
 
@@ -35,8 +35,8 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   private final LocaleRepository localeRepository;
 
   @Inject
-  public LocaleServiceImpl(Validator validator, CacheApi cache, LocaleRepository localeRepository,
-      LogEntryService logEntryService) {
+  public LocaleServiceImpl(Validator validator, CacheService cache,
+      LocaleRepository localeRepository, LogEntryService logEntryService) {
     super(validator, cache, localeRepository, Locale::getCacheKey, logEntryService);
 
     this.localeRepository = localeRepository;
@@ -69,7 +69,9 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
                 .parse("SELECT m.locale_id, count(m.id) FROM message m GROUP BY m.locale_id")
                 .columnMapping("m.locale_id", "id").columnMapping("count(m.id)", "count").create())
             .where().in("m.locale_id", localeIds).findList(),
-        LOGGER, "Retrieving locale progress");
+        LOGGER,
+        "Retrieving locale progress"
+    );
 
     return stats.stream().collect(Collectors.groupingBy(k -> k.id,
         Collectors.averagingDouble(t -> (double) t.count / (double) keysSize)));
@@ -110,5 +112,20 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
     } catch (Exception e) {
       LOGGER.error("Error while resetting word count", e);
     }
+  }
+
+  @Override
+  protected void postSave(Locale t) {
+    // When message has been created, the project cache needs to be invalidated
+    cache.removeByPrefix(Project.getCacheKey(t.project.id));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postDelete(Locale t) {
+    // When locale has been deleted, the project cache needs to be invalidated
+    cache.removeByPrefix(Project.getCacheKey(t.project.id));
   }
 }

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
 import repositories.AccessTokenRepository;
 import services.AccessTokenService;
+import services.CacheService;
 import services.LogEntryService;
 
 /**
@@ -29,11 +30,11 @@ public class AccessTokenServiceImpl extends
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenServiceImpl.class);
 
-  private final CacheApi cache;
+  private final CacheService cache;
   private final AccessTokenRepository accessTokenRepository;
 
   @Inject
-  public AccessTokenServiceImpl(Validator validator, CacheApi cache,
+  public AccessTokenServiceImpl(Validator validator, CacheService cache,
       AccessTokenRepository accessTokenRepository, LogEntryService logEntryService) {
     super(validator, cache, accessTokenRepository, AccessToken::getCacheKey, logEntryService);
 

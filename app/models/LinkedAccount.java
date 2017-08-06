@@ -9,9 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import play.mvc.Call;
+import utils.CacheUtils;
 
 @Entity
 public class LinkedAccount implements Model<LinkedAccount, Long> {
@@ -78,14 +78,6 @@ public class LinkedAccount implements Model<LinkedAccount, Long> {
   }
 
   public static String getCacheKey(Long id, String... fetches) {
-    if (id == null) {
-      return null;
-    }
-
-    if (fetches.length > 0) {
-      return String.format("linkedAccount:%d:%s", id, StringUtils.join(fetches, ":"));
-    }
-
-    return String.format("linkedAccount:%d", id);
+    return CacheUtils.getCacheKey("linkedAccount:id", id, fetches);
   }
 }

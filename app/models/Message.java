@@ -14,6 +14,7 @@ import javax.persistence.Version;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import play.libs.Json;
+import utils.CacheUtils;
 import validators.LocaleKeyCheck;
 
 @Entity
@@ -73,15 +74,7 @@ public class Message implements Model<Message, UUID> {
   }
 
   public static String getCacheKey(UUID messageId, String... fetches) {
-    if (messageId == null) {
-      return null;
-    }
-
-    if (fetches.length > 0) {
-      return String.format("message:%s:%s", messageId, StringUtils.join(fetches, ":"));
-    }
-
-    return String.format("message:%s", messageId);
+    return CacheUtils.getCacheKey("message:id", messageId, fetches);
   }
 
   @Override

@@ -19,12 +19,10 @@ import io.swagger.annotations.AuthorizationScope;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
-import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
-import services.LogEntryService;
-import services.UserService;
+import services.CacheService;
 import services.api.UserApiService;
 
 /**
@@ -34,6 +32,7 @@ import services.api.UserApiService;
 @io.swagger.annotations.Api(value = "Users", produces = "application/json")
 @With(ApiAction.class)
 public class UsersApi extends AbstractApi<User, UUID, UserCriteria> {
+
   private static final String TYPE = "dto.User";
 
   private static final String FIND = "Find users";
@@ -53,8 +52,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria> {
   private static final String NOT_FOUND_ERROR = "User not found";
 
   @Inject
-  public UsersApi(Injector injector, CacheApi cache, PlayAuthenticate auth, UserService userService,
-      LogEntryService logEntryService, UserApiService userApiService) {
+  public UsersApi(Injector injector, CacheService cache, PlayAuthenticate auth,
+      UserApiService userApiService) {
     super(injector, cache, auth, userApiService);
   }
 

@@ -9,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
 import controllers.Application;
-import criterias.LogEntryCriteria;
-import criterias.ProjectUserCriteria;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -39,9 +37,8 @@ import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
-import services.LogEntryService;
-import services.ProjectUserService;
 import services.UserService;
+import utils.CacheUtils;
 import utils.ConfigKey;
 import utils.ContextKey;
 import validators.Username;
@@ -273,37 +270,11 @@ public class User implements Model<User, UUID>, Subject {
     return controllers.routes.Users.user(Objects.requireNonNull(username, "Username is null"));
   }
 
-  public static UserStats userStats(UUID userId) {
-    Injector injector = Play.current().injector();
-
-    return UserStats.create(
-        injector.instanceOf(ProjectUserService.class)
-            .countBy(new ProjectUserCriteria().withUserId(userId)),
-        injector.instanceOf(LogEntryService.class)
-            .countBy(new LogEntryCriteria().withUserId(userId)));
-  }
-
   public static String getCacheKey(UUID userId, String... fetches) {
-    if (userId == null) {
-      return null;
-    }
-
-    if (fetches.length > 0) {
-      return String.format("user:%s:%s", userId, StringUtils.join(fetches, ":"));
-    }
-
-    return String.format("user:%s", userId);
+    return CacheUtils.getCacheKey("user:id", userId, fetches);
   }
 
   public static String getCacheKey(String username, String... fetches) {
-    if (username == null) {
-      return null;
-    }
-
-    if (fetches.length > 0) {
-      return String.format("username:%s:%s", username, StringUtils.join(fetches, ":"));
-    }
-
-    return String.format("username:%s", username);
+    return CacheUtils.getCacheKey("user:username", username, fetches);
   }
 }

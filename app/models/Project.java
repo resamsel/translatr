@@ -41,6 +41,7 @@ import play.libs.Json;
 import play.mvc.Http.Context;
 import services.MessageService;
 import services.ProjectService;
+import utils.CacheUtils;
 import utils.ContextKey;
 import validators.NameUnique;
 import validators.ProjectName;
@@ -299,15 +300,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   public static String getCacheKey(UUID projectId, String... fetches) {
-    if (projectId == null) {
-      return null;
-    }
-
-    if (fetches.length > 0) {
-      return String.format("project:%s:%s", projectId, StringUtils.join(fetches, ":"));
-    }
-
-    return String.format("project:%s", projectId);
+    return CacheUtils.getCacheKey("project:id", projectId, fetches);
   }
 
   public static String getCacheKey(String username, String projectName, String... fetches) {
@@ -315,12 +308,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
       return null;
     }
 
-    if (fetches.length > 0) {
-      return String.format("project:owner:%s:name:%s:%s", username, projectName,
-          StringUtils.join(fetches, ":"));
-    }
-
-    return String.format("project:owner:%s:name:%s", username, projectName);
+    return CacheUtils
+        .getCacheKey("project:owner", String.format("%s:%s", username, projectName), fetches);
   }
 
   /**
@@ -354,7 +343,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   /**
-   * Return the remove route to this project.
+   * Return the removeAll route to this project.
    */
   public Call removeRoute() {
     Objects.requireNonNull(owner, "Owner is null");
@@ -487,7 +476,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   /**
-   * Return the route to the member remove of this project.
+   * Return the route to the member removeAll of this project.
    */
   public Call memberRemoveRoute(Long memberId) {
     Objects.requireNonNull(owner, "Owner is null");

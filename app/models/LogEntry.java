@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import play.libs.Json;
+import utils.CacheUtils;
 
 /**
  * @author resamsel
@@ -109,15 +110,7 @@ public class LogEntry implements Model<LogEntry, UUID> {
   }
 
   public static String getCacheKey(UUID activityId, String... fetches) {
-    if (activityId == null) {
-      return null;
-    }
-
-    if (fetches.length > 0) {
-      return String.format("activity:%s:%s", activityId, StringUtils.join(fetches, ":"));
-    }
-
-    return String.format("activity:%s", activityId);
+    return CacheUtils.getCacheKey("activity:id", activityId, fetches);
   }
 
   public String getSimpleContentType() {

@@ -25,12 +25,11 @@ import javax.inject.Inject;
 import models.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.CacheService;
 import services.NotificationService;
-import utils.PermissionUtils;
 
 /**
  * @author resamsel
@@ -39,6 +38,7 @@ import utils.PermissionUtils;
 @io.swagger.annotations.Api(value = "Notifications", produces = "application/json")
 @With(ApiAction.class)
 public class NotificationsApi extends AbstractBaseApi {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(NotificationsApi.class);
 
   private static final String FIND = "Find notifications";
@@ -47,7 +47,7 @@ public class NotificationsApi extends AbstractBaseApi {
   private NotificationService notificationService;
 
   @Inject
-  public NotificationsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
+  public NotificationsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
       NotificationService notificationService) {
     super(injector, cache, auth);
 

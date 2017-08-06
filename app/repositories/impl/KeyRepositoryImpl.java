@@ -7,15 +7,11 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
-import com.google.common.collect.ImmutableMap;
 import criterias.HasNextPagedList;
 import criterias.KeyCriteria;
 import dto.PermissionException;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -30,7 +26,6 @@ import models.ProjectRole;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.KeyRepository;
 import repositories.LogEntryRepository;
 import repositories.MessageRepository;
@@ -50,9 +45,9 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   private final PermissionService permissionService;
 
   @Inject
-  public KeyRepositoryImpl(Validator validator, CacheApi cache, MessageRepository messageRepository,
+  public KeyRepositoryImpl(Validator validator, MessageRepository messageRepository,
       LogEntryRepository logEntryRepository, PermissionService permissionService) {
-    super(validator, cache, logEntryRepository);
+    super(validator, logEntryRepository);
 
     this.messageRepository = messageRepository;
     this.permissionService = permissionService;
@@ -160,8 +155,6 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
     if (!update) {
       logEntryRepository
           .save(LogEntry.from(ActionType.Create, t.project, dto.Key.class, null, dto.Key.from(t)));
-
-      cache.remove(Project.getCacheKey(t.project.id));
     }
   }
 
@@ -170,8 +163,9 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
    */
   @Override
   protected void preDelete(Key t) {
-    if (!permissionService.hasPermissionAny(t.project.id, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
-        ProjectRole.Developer)) {
+    if (!permissionService
+        .hasPermissionAny(t.project.id, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
+            ProjectRole.Developer)) {
       throw new PermissionException("User not allowed in project");
     }
 
@@ -179,15 +173,6 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
         .save(LogEntry.from(ActionType.Delete, t.project, dto.Key.class, dto.Key.from(t), null));
 
     messageRepository.delete(messageRepository.byKey(t));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postDelete(Key t) {
-    // When message has been created, the project cache needs to be invalidated
-    cache.remove(Project.getCacheKey(t.project.id));
   }
 
   /**

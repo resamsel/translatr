@@ -16,11 +16,9 @@ import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import models.Locale;
 import models.Project;
-import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
-import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
 import play.inject.Injector;
@@ -28,6 +26,8 @@ import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
+import repositories.UserRepository;
+import services.CacheService;
 import services.LocaleService;
 import services.api.LocaleApiService;
 import utils.FormUtils;
@@ -53,7 +53,7 @@ public class Locales extends AbstractController {
   private final LocaleApiService localeApiService;
 
   @Inject
-  protected Locales(Injector injector, CacheApi cache, PlayAuthenticate auth,
+  protected Locales(Injector injector, CacheService cache, PlayAuthenticate auth,
       FormFactory formFactory, Configuration configuration, LocaleService localeService,
       LocaleApiService localeApiService) {
     super(injector, cache, auth);
@@ -72,7 +72,7 @@ public class Locales extends AbstractController {
       form.get().update(search, order, limit, offset);
 
       return ok(views.html.locales.locale.render(createTemplate(), locale, form));
-    }, User.FETCH_PROJECTS, User.FETCH_PROJECTS + ".locales");
+    }, UserRepository.FETCH_PROJECTS, UserRepository.FETCH_PROJECTS + ".locales");
   }
 
   public CompletionStage<Result> doCreateBy(String username, String projectName) {

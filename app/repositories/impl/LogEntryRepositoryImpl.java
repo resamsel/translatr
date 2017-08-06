@@ -18,7 +18,6 @@ import models.LogEntry;
 import models.Project;
 import models.User;
 import org.apache.commons.lang3.StringUtils;
-import play.cache.CacheApi;
 import repositories.LogEntryRepository;
 import utils.ContextKey;
 import utils.QueryUtils;
@@ -34,9 +33,9 @@ public class LogEntryRepositoryImpl extends
   private final ActorRef notificationActor;
 
   @Inject
-  public LogEntryRepositoryImpl(Validator validator, CacheApi cache,
+  public LogEntryRepositoryImpl(Validator validator,
       @Named(NotificationActor.NAME) ActorRef notificationActor) {
-    super(validator, cache, null);
+    super(validator, null);
 
     this.notificationActor = notificationActor;
   }

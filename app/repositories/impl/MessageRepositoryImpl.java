@@ -32,7 +32,6 @@ import models.Project;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.LogEntryRepository;
 import repositories.MessageRepository;
 import utils.MessageUtils;
@@ -51,10 +50,9 @@ public class MessageRepositoryImpl extends
   };
 
   @Inject
-  public MessageRepositoryImpl(Validator validator, CacheApi cache,
-      LogEntryRepository logEntryRepository,
+  public MessageRepositoryImpl(Validator validator, LogEntryRepository logEntryRepository,
       @Named(MessageWordCountActor.NAME) ActorRef messageWordCountActor) {
-    super(validator, cache, logEntryRepository);
+    super(validator, logEntryRepository);
 
     this.messageWordCountActor = messageWordCountActor;
   }
@@ -201,9 +199,6 @@ public class MessageRepositoryImpl extends
   protected void postSave(Message t, boolean update) {
     if (!update) {
       logEntryRepository.save(logEntryCreate(t));
-
-      // When message has been created, the project cache needs to be invalidated
-      cache.remove(Project.getCacheKey(t.key.project.id));
     }
   }
 

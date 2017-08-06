@@ -14,7 +14,6 @@ import models.Model;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.LogEntryRepository;
 import repositories.ModelRepository;
 import utils.TransactionUtils;
@@ -29,12 +28,10 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelRepository.class);
 
   protected final Validator validator;
-  protected final CacheApi cache;
   protected final LogEntryRepository logEntryRepository;
 
-  AbstractModelRepository(Validator validator, CacheApi cache, LogEntryRepository logEntryRepository) {
+  AbstractModelRepository(Validator validator, LogEntryRepository logEntryRepository) {
     this.validator = validator;
-    this.cache = cache;
     this.logEntryRepository = logEntryRepository;
   }
 

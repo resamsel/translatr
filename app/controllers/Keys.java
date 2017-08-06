@@ -20,7 +20,6 @@ import models.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
-import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
 import play.inject.Injector;
@@ -28,6 +27,7 @@ import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
+import services.CacheService;
 import services.KeyService;
 import services.LocaleService;
 import utils.FormUtils;
@@ -52,7 +52,8 @@ public class Keys extends AbstractController {
   private final LocaleService localeService;
 
   @Inject
-  protected Keys(Injector injector, CacheApi cache, PlayAuthenticate auth, FormFactory formFactory,
+  protected Keys(Injector injector, CacheService cache, PlayAuthenticate auth,
+      FormFactory formFactory,
       Configuration configuration, KeyService keyService, LocaleService localeService) {
     super(injector, cache, auth);
 

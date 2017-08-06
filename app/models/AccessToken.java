@@ -16,6 +16,7 @@ import javax.persistence.Version;
 import org.joda.time.DateTime;
 import play.data.validation.Constraints.MaxLength;
 import play.mvc.Call;
+import utils.CacheUtils;
 import validators.AccessTokenNameUniqueChecker;
 import validators.NameUnique;
 
@@ -108,10 +109,10 @@ public class AccessToken implements Model<AccessToken, Long> {
   }
 
   public static String getCacheKey(Long id, String... fetches) {
-    return String.format("accessToken:id:%d", id);
+    return CacheUtils.getCacheKey("accessToken:id", id, fetches);
   }
 
   public static String getCacheKey(String key) {
-    return String.format("accessToken:key:%s", key);
+    return CacheUtils.getCacheKey("accessToken:key", key);
   }
 }

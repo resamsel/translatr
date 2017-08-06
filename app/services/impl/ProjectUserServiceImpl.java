@@ -7,6 +7,7 @@ import javax.validation.Validator;
 import models.ProjectUser;
 import play.cache.CacheApi;
 import repositories.ProjectUserRepository;
+import services.CacheService;
 import services.LogEntryService;
 import services.ProjectUserService;
 
@@ -21,7 +22,7 @@ public class ProjectUserServiceImpl extends
   private final ProjectUserRepository projectUserRepository;
 
   @Inject
-  public ProjectUserServiceImpl(Validator validator, CacheApi cache,
+  public ProjectUserServiceImpl(Validator validator, CacheService cache,
       ProjectUserRepository projectUserRepository, LogEntryService logEntryService) {
     super(validator, cache, projectUserRepository, ProjectUser::getCacheKey, logEntryService);
 

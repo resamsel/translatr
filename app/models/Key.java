@@ -23,6 +23,7 @@ import org.joda.time.DateTime;
 import play.api.mvc.Call;
 import play.libs.Json;
 import play.mvc.Http.Context;
+import utils.CacheUtils;
 import utils.UrlUtils;
 import validators.KeyNameUniqueChecker;
 import validators.NameUnique;
@@ -105,15 +106,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
   }
 
   public static String getCacheKey(UUID keyId, String... fetches) {
-    if (keyId == null) {
-      return null;
-    }
-
-    if (fetches.length > 0) {
-      return String.format("key:%s:%s", keyId, StringUtils.join(fetches, ":"));
-    }
-
-    return String.format("key:%s", keyId);
+    return CacheUtils.getCacheKey("key:id", keyId, fetches);
   }
 
   @Override
@@ -178,7 +171,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
   }
 
   /**
-   * Return the route to the remove route.
+   * Return the route to the removeAll route.
    */
   public Call removeRoute() {
     return removeRoute(Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT,
@@ -186,7 +179,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
   }
 
   /**
-   * Return the route to the remove route with params.
+   * Return the route to the removeAll route with params.
    */
   public Call removeRoute(String search, String order, int limit, int offset) {
     Objects.requireNonNull(project, "Project is null");

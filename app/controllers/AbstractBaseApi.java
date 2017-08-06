@@ -16,6 +16,7 @@ import play.cache.CacheApi;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
+import services.CacheService;
 import utils.ErrorUtils;
 
 /**
@@ -73,7 +74,7 @@ public class AbstractBaseApi extends AbstractController {
    * @param userService
    * @param logEntryService
    */
-  protected AbstractBaseApi(Injector injector, CacheApi cache, PlayAuthenticate auth) {
+  protected AbstractBaseApi(Injector injector, CacheService cache, PlayAuthenticate auth) {
     super(injector, cache, auth);
   }
 

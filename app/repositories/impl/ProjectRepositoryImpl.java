@@ -25,7 +25,6 @@ import models.ProjectUser;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.KeyRepository;
 import repositories.LocaleRepository;
 import repositories.LogEntryRepository;
@@ -48,10 +47,10 @@ public class ProjectRepositoryImpl extends
   };
 
   @Inject
-  public ProjectRepositoryImpl(Validator validator, CacheApi cache,
-      LocaleRepository localeRepository, KeyRepository keyRepository,
-      LogEntryRepository logEntryRepository, PermissionService permissionService) {
-    super(validator, cache, logEntryRepository);
+  public ProjectRepositoryImpl(Validator validator, LocaleRepository localeRepository,
+      KeyRepository keyRepository, LogEntryRepository logEntryRepository,
+      PermissionService permissionService) {
+    super(validator, logEntryRepository);
 
     this.localeRepository = localeRepository;
     this.keyRepository = keyRepository;
@@ -141,11 +140,6 @@ public class ProjectRepositoryImpl extends
       logEntryRepository
           .save(LogEntry.from(ActionType.Create, t, dto.Project.class, null, toDto(t)));
     }
-
-    // When project has been created, the project cache needs to be invalidated
-    cache.remove(Project.getCacheKey(t.id, PROPERTIES_TO_FETCH));
-    cache.remove(Project.getCacheKey(t.owner.username, t.name));
-    cache.remove(new ProjectCriteria().withMemberId(User.loggedInUserId()).getCacheKey());
   }
 
   /**

@@ -12,13 +12,13 @@ import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import models.AccessToken;
 import org.joda.time.DateTime;
-import play.cache.CacheApi;
 import play.data.Form;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
 import services.AccessTokenService;
+import services.CacheService;
 import utils.FormUtils;
 import utils.SessionKey;
 import utils.Template;
@@ -41,7 +41,8 @@ public class Profiles extends AbstractController {
    * @param auth
    */
   @Inject
-  public Profiles(Injector injector, CacheApi cache, PlayAuthenticate auth, FormFactory formFactory,
+  public Profiles(Injector injector, CacheService cache, PlayAuthenticate auth,
+      FormFactory formFactory,
       AccessTokenService accessTokenService) {
     super(injector, cache, auth);
 

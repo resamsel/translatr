@@ -1,6 +1,5 @@
 package repositories.impl;
 
-import static models.ProjectUser.FETCH_PROJECT;
 import static utils.Stopwatch.log;
 
 import actors.NotificationActor;
@@ -9,13 +8,8 @@ import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
-import com.google.common.collect.ImmutableMap;
 import criterias.HasNextPagedList;
 import criterias.ProjectUserCriteria;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -25,7 +19,6 @@ import models.LogEntry;
 import models.ProjectUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.LogEntryRepository;
 import repositories.ProjectUserRepository;
 import utils.QueryUtils;
@@ -43,10 +36,9 @@ public class ProjectUserRepositoryImpl extends
   private final ActorRef notificationActor;
 
   @Inject
-  public ProjectUserRepositoryImpl(Validator validator, CacheApi cache,
-      LogEntryRepository logEntryRepository,
+  public ProjectUserRepositoryImpl(Validator validator, LogEntryRepository logEntryRepository,
       @Named(NotificationActor.NAME) ActorRef notificationActor) {
-    super(validator, cache, logEntryRepository);
+    super(validator, logEntryRepository);
 
     this.notificationActor = notificationActor;
   }

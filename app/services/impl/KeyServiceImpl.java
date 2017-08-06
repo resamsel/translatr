@@ -16,8 +16,8 @@ import models.Project;
 import models.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.KeyRepository;
+import services.CacheService;
 import services.KeyService;
 import services.LogEntryService;
 
@@ -32,10 +32,10 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
   private final KeyRepository keyRepository;
 
-  private final CacheApi cache;
+  private final CacheService cache;
 
   @Inject
-  public KeyServiceImpl(Validator validator, CacheApi cache, KeyRepository keyRepository,
+  public KeyServiceImpl(Validator validator, CacheService cache, KeyRepository keyRepository,
       LogEntryService logEntryService) {
     super(validator, cache, keyRepository, Key::getCacheKey, logEntryService);
 
@@ -109,5 +109,10 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
         String.format("project:%s:key:%s", project.id, name),
         () -> keyRepository.byProjectAndName(project, name),
         60);
+  }
+
+  @Override
+  protected void postSave(Key t) {
+    cache.remove(Project.getCacheKey(t.project.id));
   }
 }

@@ -9,28 +9,28 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 import models.User;
-import play.cache.CacheApi;
 import play.mvc.Action;
 import play.mvc.Http.Context;
 import play.mvc.Result;
+import services.CacheService;
 import utils.ContextKey;
 
 /**
- *
  * @author resamsel
  * @version 17 Aug 2016
  */
 public class ContextAction extends Action.Simple {
+
   private static final List<String> ALLOWED_ROUTES =
       Arrays.asList(routes.Application.logout().path(), routes.Profiles.edit().path());
 
-  private final CacheApi cache;
+  private final CacheService cache;
 
   /**
-   * 
+   *
    */
   @Inject
-  public ContextAction(CacheApi cache) {
+  public ContextAction(CacheService cache) {
     this.cache = cache;
   }
 

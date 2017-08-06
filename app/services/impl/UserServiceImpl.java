@@ -23,9 +23,9 @@ import models.User;
 import models.UserStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.UserRepository;
 import services.AccessTokenService;
+import services.CacheService;
 import services.LinkedAccountService;
 import services.LogEntryService;
 import services.ProjectService;
@@ -42,25 +42,19 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
-  private final CacheApi cache;
-
   private final UserRepository userRepository;
   private final LinkedAccountService linkedAccountService;
-
   private final AccessTokenService accessTokenService;
-
   private final ProjectService projectService;
-
   private final ProjectUserService projectUserService;
 
   @Inject
-  public UserServiceImpl(Validator validator, CacheApi cache, UserRepository userRepository,
+  public UserServiceImpl(Validator validator, CacheService cache, UserRepository userRepository,
       LinkedAccountService linkedAccountService, AccessTokenService accessTokenService,
       ProjectService projectService, ProjectUserService projectUserService,
       LogEntryService logEntryService) {
     super(validator, cache, userRepository, User::getCacheKey, logEntryService);
 
-    this.cache = cache;
     this.userRepository = userRepository;
     this.linkedAccountService = linkedAccountService;
     this.accessTokenService = accessTokenService;
@@ -183,8 +177,10 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    */
   @Override
   public User byUsername(String username, String... fetches) {
-    return log(() -> cache.getOrElse(User.getCacheKey(username, fetches),
-        () -> userRepository.byUsername(username, fetches), 60), LOGGER, "byUsername");
+    return cache.getOrElse(
+        User.getCacheKey(username, fetches),
+        () -> userRepository.byUsername(username, fetches),
+        60);
   }
 
   /**
@@ -192,7 +188,33 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    */
   @Override
   public UserStats getUserStats(UUID userId) {
-    return log(() -> cache.getOrElse(String.format("user:stats:%s", userId),
-        () -> User.userStats(userId), 60), LOGGER, "getUserStats");
+    return log(
+        () -> cache.getOrElse(
+            String.format("user:stats:%s", userId),
+            () -> UserStats.create(
+                projectUserService.countBy(new ProjectUserCriteria().withUserId(userId)),
+                logEntryService.countBy(new LogEntryCriteria().withUserId(userId))
+            ),
+            60
+        ),
+        LOGGER,
+        "getUserStats");
+  }
+
+  @Override
+  protected void preSave(User t) {
+    User cached = cache.get(User.getCacheKey(t.getId()));
+    if (cached != null) {
+      cache.removeByPrefix(User.getCacheKey(cached.username));
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postSave(User t) {
+    // When user has been updated, the user cache needs to be invalidated
+    cache.remove(User.getCacheKey(t.id));
   }
 }

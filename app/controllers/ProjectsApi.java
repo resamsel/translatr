@@ -20,11 +20,11 @@ import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 import models.User;
-import play.cache.CacheApi;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.CacheService;
 import services.api.ProjectApiService;
 import utils.FormUtils;
 
@@ -35,6 +35,7 @@ import utils.FormUtils;
 @io.swagger.annotations.Api(value = "Projects", produces = "application/json")
 @With(ApiAction.class)
 public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
+
   private static final String TYPE = "dto.Project";
 
   private static final String FIND = "Find projects";
@@ -58,7 +59,7 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
   private final ProjectApiService projectApiService;
 
   @Inject
-  public ProjectsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
+  public ProjectsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
       ProjectApiService projectApiService) {
     super(injector, cache, auth, projectApiService);
 

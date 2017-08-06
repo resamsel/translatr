@@ -11,11 +11,12 @@ import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.Locale;
 import models.Project;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.MessageRepository;
 import repositories.ProjectRepository;
+import services.CacheService;
 import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
@@ -39,7 +40,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   private final MessageRepository messageRepository;
 
   @Inject
-  public ProjectServiceImpl(Validator validator, CacheApi cache,
+  public ProjectServiceImpl(Validator validator, CacheService cache,
       ProjectRepository projectRepository, LocaleService localeService, KeyService keyService,
       MessageService messageService, MessageRepository messageRepository,
       LogEntryService logEntryService) {
@@ -87,7 +88,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     }
     project.wordCount += wordCountDiff;
 
-    log(() -> modelRepository.persist(project), LOGGER, "Increased word count by %d", wordCountDiff);
+    log(() -> modelRepository.persist(project), LOGGER, "Increased word count by %d",
+        wordCountDiff);
   }
 
   /**
@@ -106,5 +108,13 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     keyService.resetWordCount(projectId);
     messageService.resetWordCount(projectId);
     messageService.save(messageRepository.byLocales(localeIds));
+  }
+
+  @Override
+  protected void postSave(Project t) {
+    // When project has been created, the project cache needs to be invalidated
+    cache.removeByPrefix(Project.getCacheKey(t.id));
+    cache.removeByPrefix(Project.getCacheKey(t.owner.username, t.name));
+    cache.removeByPrefix(new ProjectCriteria().withMemberId(User.loggedInUserId()).getCacheKey());
   }
 }

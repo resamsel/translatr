@@ -19,7 +19,6 @@ import models.User;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.LogEntryRepository;
 import repositories.UserRepository;
 import utils.QueryUtils;
@@ -34,9 +33,8 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   };
 
   @Inject
-  public UserRepositoryImpl(Validator validator, CacheApi cache,
-      LogEntryRepository logEntryRepository) {
-    super(validator, cache, logEntryRepository);
+  public UserRepositoryImpl(Validator validator, LogEntryRepository logEntryRepository) {
+    super(validator, logEntryRepository);
   }
 
   @Override
@@ -148,17 +146,6 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
     if (update) {
       logEntryRepository.save(
           LogEntry.from(ActionType.Update, null, dto.User.class, toDto(byId(t.id)), toDto(t)));
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postSave(User t, boolean update) {
-    if (update) {
-      // When user has been updated, the user cache needs to be invalidated
-      cache.remove(User.getCacheKey(t.id));
     }
   }
 

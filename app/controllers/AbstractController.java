@@ -15,12 +15,12 @@ import models.User;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import play.inject.Injector;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Call;
 import play.mvc.Controller;
 import play.mvc.Result;
+import services.CacheService;
 import services.LogEntryService;
 import services.NotificationService;
 import services.PermissionService;
@@ -54,7 +54,7 @@ public abstract class AbstractController extends Controller {
 
   protected final Injector injector;
 
-  protected final CacheApi cache;
+  protected final CacheService cache;
 
   protected final PlayAuthenticate auth;
 
@@ -70,7 +70,7 @@ public abstract class AbstractController extends Controller {
 
   protected final PermissionService permissionService;
 
-  protected AbstractController(Injector injector, CacheApi cache, PlayAuthenticate auth) {
+  protected AbstractController(Injector injector, CacheService cache, PlayAuthenticate auth) {
     this.injector = injector;
     this.cache = cache;
     this.auth = auth;
@@ -103,7 +103,7 @@ public abstract class AbstractController extends Controller {
       return redirectWithError(project.route(), messageKey, args);
     }
 
-    return notFound(username, "project.notFound", (Object)projectName);
+    return notFound(username, "project.notFound", (Object) projectName);
   }
 
   public static String message(String key, Object... args) {
