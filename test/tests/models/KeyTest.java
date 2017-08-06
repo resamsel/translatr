@@ -11,14 +11,16 @@ import org.junit.Test;
  * @version 18 May 2017
  */
 public class KeyTest {
+
   @Test
   public void getCacheKey() {
     UUID keyId = UUID.randomUUID();
 
     assertThat(Key.getCacheKey(null)).isNull();
-    assertThat(Key.getCacheKey(keyId)).isEqualTo("key:" + keyId);
-    assertThat(Key.getCacheKey(keyId, "project")).isEqualTo("key:" + keyId + ":project");
+    assertThat(Key.getCacheKey(keyId)).isEqualTo("key:id:" + keyId);
+    assertThat(Key.getCacheKey(keyId, "project"))
+        .isEqualTo("key:id:" + keyId + ":project");
     assertThat(Key.getCacheKey(keyId, "project", "messages"))
-        .isEqualTo("key:" + keyId + ":project:messages");
+        .isEqualTo("key:id:" + keyId + ":project:messages");
   }
 }

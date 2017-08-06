@@ -1,9 +1,11 @@
 package services.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import play.cache.CacheApi;
@@ -68,7 +70,10 @@ public class CacheServiceImpl implements CacheService {
 
   @Override
   public void removeAll(Predicate<String> filter) {
-    cacheKeys.keySet().stream().filter(filter).forEach(key -> {
+    List<String> keys = cacheKeys.keySet().stream().filter(filter)
+        .collect(Collectors.toList());
+
+    keys.forEach(key -> {
       cacheKeys.remove(key);
       cache.remove(key);
     });
