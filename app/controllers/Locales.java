@@ -26,6 +26,7 @@ import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
+import repositories.ProjectRepository;
 import repositories.UserRepository;
 import services.CacheService;
 import services.LocaleService;
@@ -72,7 +73,7 @@ public class Locales extends AbstractController {
       form.get().update(search, order, limit, offset);
 
       return ok(views.html.locales.locale.render(createTemplate(), locale, form));
-    }, UserRepository.FETCH_PROJECTS, UserRepository.FETCH_PROJECTS + ".locales");
+    }, ProjectRepository.FETCH_LOCALES);
   }
 
   public CompletionStage<Result> doCreateBy(String username, String projectName) {

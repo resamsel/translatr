@@ -8,11 +8,15 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
 import services.CacheService;
 
 @Singleton
 public class CacheServiceImpl implements CacheService {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(CacheServiceImpl.class);
 
   private final CacheApi cache;
 
@@ -30,6 +34,9 @@ public class CacheServiceImpl implements CacheService {
 
   @Override
   public <T> T getOrElse(String key, Callable<T> block, int expiration) {
+    LOGGER.debug("getOrElse(key={}, block=..., expiration={})(cache={})", key, expiration,
+        cache.getClass());
+
     cacheKeys.put(key, expiration);
     return cache.getOrElse(key, block, expiration);
   }
@@ -65,6 +72,8 @@ public class CacheServiceImpl implements CacheService {
 
   @Override
   public void removeByPrefix(String prefix) {
+    LOGGER.debug("removeByPrefix(prefix={})", prefix);
+
     removeAll(key -> key.startsWith(prefix));
   }
 
@@ -73,7 +82,10 @@ public class CacheServiceImpl implements CacheService {
     List<String> keys = cacheKeys.keySet().stream().filter(filter)
         .collect(Collectors.toList());
 
+    LOGGER.debug("removeAll: found keys for given filter: {} (all: {})", keys, cacheKeys.keySet());
+
     keys.forEach(key -> {
+      LOGGER.debug("Removing key {}", key);
       cacheKeys.remove(key);
       cache.remove(key);
     });

@@ -45,7 +45,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   @Override
   public List<Locale> latest(Project project, int limit) {
     return cache.getOrElse(
-        String.format("project:%s:locales:latest:%d", project.id, limit),
+        String.format("project:id:%s:latest:locales:%d", project.id, limit),
         () -> localeRepository.latest(project, limit),
         60);
   }
@@ -53,7 +53,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   @Override
   public Locale byProjectAndName(Project project, String name) {
     return cache.getOrElse(
-        String.format("project:%s:locale:%s", project.id, name),
+        String.format("project:id:%s:locale:%s", project.id, name),
         () -> localeRepository.byProjectAndName(project, name),
         60);
   }
@@ -118,6 +118,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   protected void postSave(Locale t) {
     // When message has been created, the project cache needs to be invalidated
     cache.removeByPrefix(Project.getCacheKey(t.project.id));
+    cache.removeByPrefix(Project.getCacheKey(t.project.owner.username, t.project.name));
   }
 
   /**
@@ -127,5 +128,6 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   protected void postDelete(Locale t) {
     // When locale has been deleted, the project cache needs to be invalidated
     cache.removeByPrefix(Project.getCacheKey(t.project.id));
+    cache.removeByPrefix(Project.getCacheKey(t.project.owner.username, t.project.name));
   }
 }

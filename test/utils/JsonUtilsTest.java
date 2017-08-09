@@ -1,4 +1,4 @@
-package tests.utils;
+package utils;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 

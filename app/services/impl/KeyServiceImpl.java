@@ -1,5 +1,7 @@
 package services.impl;
 
+import static java.util.stream.Collectors.averagingDouble;
+import static java.util.stream.Collectors.groupingBy;
 import static utils.Stopwatch.log;
 
 import com.avaje.ebean.Ebean;
@@ -8,7 +10,6 @@ import criterias.KeyCriteria;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.validation.Validator;
 import models.Key;
@@ -54,8 +55,12 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
                 .columnMapping("m.key_id", "id").columnMapping("count(m.id)", "count").create())
         .where().in("m.key_id", keyIds).findList(), LOGGER, "Retrieving key progress");
 
-    return stats.stream().collect(Collectors.groupingBy(k -> k.id,
-        Collectors.averagingDouble(t -> (double) t.count / (double) localesSize)));
+    return stats.stream().collect(
+        groupingBy(
+            k -> k.id,
+            averagingDouble(t -> (double) t.count / (double) localesSize)
+        )
+    );
   }
 
   /**
@@ -79,7 +84,12 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
     }
     key.wordCount += wordCountDiff;
 
-    log(() -> modelRepository.persist(key), LOGGER, "Increased word count by %d", wordCountDiff);
+    log(
+        () -> modelRepository.persist(key),
+        LOGGER,
+        "Increased word count by %d",
+        wordCountDiff
+    );
   }
 
   /**
@@ -98,21 +108,34 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
   @Override
   public List<Key> latest(Project project, int limit) {
     return cache.getOrElse(
-        String.format("project:%s:keys:latest:%d", project.id, limit),
+        String.format("project:id:%s:latest:keys:%d", project.id, limit),
         () -> keyRepository.latest(project, limit),
-        60);
+        60
+    );
   }
 
   @Override
   public Key byProjectAndName(Project project, String name) {
     return cache.getOrElse(
-        String.format("project:%s:key:%s", project.id, name),
+        String.format("project:id:%s:key:%s", project.id, name),
         () -> keyRepository.byProjectAndName(project, name),
-        60);
+        60
+    );
   }
 
   @Override
   protected void postSave(Key t) {
     cache.remove(Project.getCacheKey(t.project.id));
+    cache.removeByPrefix(Project.getCacheKey(t.project.owner.username, t.project.name));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postDelete(Key t) {
+    // When key has been deleted, the project cache needs to be invalidated
+    cache.removeByPrefix(Project.getCacheKey(t.project.id));
+    cache.removeByPrefix(Project.getCacheKey(t.project.owner.username, t.project.name));
   }
 }

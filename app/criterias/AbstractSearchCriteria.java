@@ -208,8 +208,7 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
    * Must be overridden by subclasses to allow caching.
    */
   public String getCacheKey() {
-    return String
-        .format("searchCriteria:%s:%s:%s:%s:%d:%d:%s", type, search, userId, projectId, limit,
-            offset, order);
+    return String.format("%s:criteria:%s:%s:%s:%d:%d:%s", type, projectId, search, userId, limit,
+        offset, order);
   }
 }

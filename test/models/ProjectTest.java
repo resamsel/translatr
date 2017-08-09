@@ -1,4 +1,4 @@
-package tests.models;
+package models;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 

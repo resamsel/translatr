@@ -47,7 +47,8 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
     return cache.getOrElse(
         criteria.getCacheKey(),
         () -> logEntryRepository.countBy(criteria),
-        60);
+        60
+    );
   }
 
   @Override
@@ -64,11 +65,18 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
     }
 
     String cacheKey =
-        String.format("logentry:aggregates:%s:%s", criteria.getUserId(), criteria.getProjectId());
+        String.format("activity:aggregates:%s:%s", criteria.getUserId(), criteria.getProjectId());
 
     // TODO: config cache duration
-    return log(() -> cache.getOrElse(cacheKey, query::findList, 60), LOGGER,
-        "Retrieving log entry aggregates");
+    return log(
+        () -> cache.getOrElse(
+            cacheKey,
+            query::findList,
+            60
+        ),
+        LOGGER,
+        "Retrieving log entry aggregates"
+    );
   }
 
   private RawSql getAggregatesRawSql() {
@@ -78,12 +86,16 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
           .parse(String.format(
               "select %1$s as millis, count(*) as cnt from log_entry group by %1$s order by 1",
               H2_COLUMN_MILLIS))
-          .columnMapping(H2_COLUMN_MILLIS, "millis").columnMapping("count(*)", "value").create();
+          .columnMapping(H2_COLUMN_MILLIS, "millis")
+          .columnMapping("count(*)", "value")
+          .create();
     }
 
     return RawSqlBuilder
         .parse(
             "select when_created::date as date, count(*) as cnt from log_entry group by 1 order by 1")
-        .columnMapping("date", "date").columnMapping("cnt", "value").create();
+        .columnMapping("date", "date")
+        .columnMapping("cnt", "value")
+        .create();
   }
 }

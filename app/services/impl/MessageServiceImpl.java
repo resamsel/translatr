@@ -43,8 +43,14 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
    */
   @Override
   public int countBy(Project project) {
-    return log(() -> cache.getOrElse(String.format("message:countByProject:%s", project.id),
-        () -> messageRepository.countBy(project), 60), LOGGER, "countBy");
+    return log(
+        () -> cache.getOrElse(
+            String.format("project:id:%s:message:countByProject", project.id),
+            () -> messageRepository.countBy(project),
+            60),
+        LOGGER,
+        "countBy"
+    );
   }
 
   /**
@@ -65,14 +71,31 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
   @Override
   public List<Message> latest(Project project, int limit) {
     return cache.getOrElse(
-        String.format("project:%s:messages:latest:%d", project.id, limit),
+        String.format("project:id:%s:latest:messages:%d", project.id, limit),
         () -> messageRepository.latest(project, limit),
-        60);
+        60
+    );
   }
 
   @Override
   protected void postSave(Message t) {
+    super.postSave(t);
+
     // When message has been created, the project cache needs to be invalidated
     cache.removeByPrefix(Project.getCacheKey(t.key.project.id));
+    cache.removeByPrefix(Project.getCacheKey(t.key.project.owner.username, t.key.project.name));
+    cache.removeByPrefix(String.format("message:criteria:%s", t.key.project.id));
+    cache.removeByPrefix(String.format("locale:criteria:%s", t.key.project.id));
+    cache.removeByPrefix(String.format("key:criteria:%s", t.key.project.id));
+  }
+
+  @Override
+  protected void postUpdate(Message t) {
+    super.postUpdate(t);
+
+    cache.keys().forEach((key, value) -> LOGGER.debug("Key {} with expiration {}", key, value));
+    cache.removeByPrefix(String.format("message:criteria:%s", t.key.project.id));
+    cache.removeByPrefix(String.format("locale:criteria:%s", t.key.project.id));
+    cache.removeByPrefix(String.format("key:criteria:%s", t.key.project.id));
   }
 }

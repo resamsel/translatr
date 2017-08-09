@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.function.BiFunction;
 import javax.validation.Validator;
 import models.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repositories.ModelRepository;
 import services.CacheService;
 import services.LogEntryService;
@@ -19,6 +21,8 @@ import services.ModelService;
  */
 public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>>
     implements ModelService<MODEL, ID, CRITERIA> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelService.class);
 
   protected final Validator validator;
   protected final LogEntryService logEntryService;
@@ -44,7 +48,8 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
     return cache.getOrElse(
         requireNonNull(criteria, "criteria is null").getCacheKey(),
         () -> modelRepository.findBy(criteria),
-        60);
+        60
+    );
   }
 
   @Override
@@ -52,7 +57,8 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
     return cache.getOrElse(
         cacheKeyGetter.apply(id, fetches),
         () -> modelRepository.byId(id, fetches),
-        60);
+        60
+    );
   }
 
   /**
@@ -67,20 +73,14 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
    * {@inheritDoc}
    */
   @Override
-  public MODEL update(MODEL model) {
-    return modelRepository.update(model);
-  }
+  public MODEL update(MODEL t) {
+    LOGGER.debug("update({})", t);
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public MODEL save(MODEL t) {
-    preSave(t);
+    preUpdate(t);
 
-    MODEL m = modelRepository.save(t);
+    MODEL m = modelRepository.update(t);
 
-    postSave(t);
+    postUpdate(m);
 
     return m;
   }
@@ -88,11 +88,33 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   /**
    * Remove name based keys from cache before name might have been changed.
    */
+  protected void preUpdate(MODEL t) {
+  }
+
+  protected void postUpdate(MODEL t) {
+    cache.removeByPrefix(cacheKeyGetter.apply(t.getId(), new String[0]));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MODEL save(MODEL t) {
+    LOGGER.debug("save({})", t);
+
+    preSave(t);
+
+    MODEL m = modelRepository.save(t);
+
+    postSave(m);
+
+    return m;
+  }
+
   protected void preSave(MODEL t) {
   }
 
   protected void postSave(MODEL t) {
-    cache.removeByPrefix(cacheKeyGetter.apply(t.getId(), new String[0]));
   }
 
   @Override
