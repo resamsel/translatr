@@ -11,7 +11,6 @@ import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.Locale;
 import models.Project;
-import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
@@ -62,7 +61,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
         () -> cache.getOrElse(
             Project.getCacheKey(username, name, fetches),
             () -> projectRepository.byOwnerAndName(username, name, fetches),
-            10 * 600),
+            10 * 600
+        ),
         LOGGER,
         "byOwnerAndName");
   }
@@ -112,9 +112,25 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
   @Override
   protected void postSave(Project t) {
+    super.postSave(t);
+
     // When project has been created, the project cache needs to be invalidated
+    cache.removeByPrefix("project:criteria:");
     cache.removeByPrefix(Project.getCacheKey(t.id));
     cache.removeByPrefix(Project.getCacheKey(t.owner.username, t.name));
-    cache.removeByPrefix(new ProjectCriteria().withMemberId(User.loggedInUserId()).getCacheKey());
+  }
+
+  @Override
+  protected void postUpdate(Project t) {
+    super.postUpdate(t);
+
+    // When project has been created, the project cache needs to be invalidated
+    cache.removeByPrefix("project:criteria:");
+
+    Project existing = cache.get(Project.getCacheKey(t.id));
+    if (existing != null) {
+      cache.removeByPrefix(Project.getCacheKey(existing.owner.username, existing.name));
+    }
+    cache.removeByPrefix(Project.getCacheKey(t.id));
   }
 }

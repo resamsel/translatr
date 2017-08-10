@@ -13,6 +13,10 @@ public class ProjectAssert extends AbstractGenericAssert<ProjectAssert, Project>
     return new ProjectAssert(actual);
   }
 
+  public ProjectAssert nameIsEqualTo(String expected) {
+    return isEqualTo("name", expected, actual.name);
+  }
+
   public ProjectAssert ownerIsEqualTo(User expected) {
     return isEqualTo("owner", expected, actual.owner);
   }

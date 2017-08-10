@@ -9,14 +9,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
+import static utils.MessageRepositoryMock.createMessage;
 
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
 import java.util.UUID;
 import javax.validation.Validator;
-import models.Key;
 import models.Message;
-import models.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -31,8 +30,8 @@ public class MessageServiceTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceTest.class);
 
   private MessageRepository messageRepository;
-  private MessageServiceImpl messageService;
-  private CacheServiceImpl cacheService;
+  private MessageService messageService;
+  private CacheService cacheService;
 
   @Test
   public void testById() {
@@ -81,32 +80,14 @@ public class MessageServiceTest {
     verify(messageRepository, times(1)).findBy(eq(criteria));
 
     // This should trigger cache invalidation
-    message = createMessage(message, "value2");
+    message = createMessage(message, "value3");
     messageService.update(message);
 
     when(messageRepository.findBy(eq(criteria))).thenReturn(HasNextPagedList.create(message));
     assertThat(messageService.findBy(criteria).getList().get(0))
         .as("uncached (invalidated)")
-        .valueIsEqualTo("value2");
+        .valueIsEqualTo("value3");
     verify(messageRepository, times(2)).findBy(eq(criteria));
-  }
-
-  private Message createMessage(Message message, String value) {
-    return createMessage(message.id, message.key.project.id, value);
-  }
-
-  private Message createMessage(UUID id, UUID projectId, String value) {
-    Message message = new Message();
-
-    message.id = id;
-    message.value = value;
-    message.key = new Key();
-    message.key.project = new Project();
-    message.key.project.id = projectId;
-
-    LOGGER.debug("Creating message with ID {} and project ID {}", message.id, message.key.project.id);
-
-    return message;
   }
 
   @Before

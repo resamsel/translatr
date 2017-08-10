@@ -48,4 +48,18 @@ public class ProjectRepositoryMock {
   public static Project byOwnerAndName(String username, String projectName) {
     return REPOSITORY.get(username + "/" + projectName);
   }
+
+  public static Project createProject(Project project, String name) {
+    return createProject(project.id, name, project.owner.username);
+  }
+
+  public static Project createProject(UUID id, String name, String username) {
+    Project project = new Project();
+
+    project.id = id;
+    project.name = name;
+    project.owner = UserRepositoryMock.byUsername(username);
+
+    return project;
+  }
 }
