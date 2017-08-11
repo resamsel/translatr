@@ -19,6 +19,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.LinkedAccount;
+import models.Locale;
+import models.Project;
 import models.User;
 import models.UserStats;
 import org.slf4j.Logger;
@@ -209,12 +211,30 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     }
   }
 
+  @Override
+  protected void postSave(User t) {
+    super.postSave(t);
+
+    // When user has been created
+    cache.removeByPrefix("user:criteria:");
+  }
+
+  @Override
+  protected void postUpdate(User t) {
+    super.postUpdate(t);
+
+    // When user has been updated, the user cache needs to be invalidated
+    cache.removeByPrefix("user:criteria:");
+  }
+
   /**
    * {@inheritDoc}
    */
   @Override
-  protected void postSave(User t) {
-    // When user has been updated, the user cache needs to be invalidated
-    cache.remove(User.getCacheKey(t.id));
+  protected void postDelete(User t) {
+    super.postDelete(t);
+
+    // When locale has been deleted, the locale cache needs to be invalidated
+    cache.removeByPrefix("user:criteria:");
   }
 }

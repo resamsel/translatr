@@ -20,4 +20,12 @@ public class ProjectAssert extends AbstractGenericAssert<ProjectAssert, Project>
   public ProjectAssert ownerIsEqualTo(User expected) {
     return isEqualTo("owner", expected, actual.owner);
   }
+
+  public ProjectAssert wordCountIsNull() {
+    return isNull("wordCount", actual.wordCount);
+  }
+
+  public ProjectAssert wordCountIsEqualTo(Integer expected) {
+    return isEqualTo("wordCount", expected, actual.wordCount);
+  }
 }

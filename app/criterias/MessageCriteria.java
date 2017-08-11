@@ -8,7 +8,7 @@ import play.mvc.Http.Request;
  * @author resamsel
  * @version 19 Aug 2016
  */
-public class MessageCriteria extends AbstractSearchCriteria<MessageCriteria> {
+public class MessageCriteria extends AbstractProjectSearchCriteria<MessageCriteria> {
 
   private UUID localeId;
 

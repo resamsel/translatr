@@ -35,4 +35,19 @@ public class UserRepositoryMock {
   public static User byUsername(String username) {
     return REPOSITORY.get(username);
   }
+
+  public static User createUser(User user, String name, String username, String email) {
+    return createUser(user.id, name, username, email);
+  }
+
+  public static User createUser(UUID id, String name, String username, String email) {
+    User m = new User();
+
+    m.id = id;
+    m.name = name;
+    m.username = username;
+    m.email = email;
+
+    return m;
+  }
 }

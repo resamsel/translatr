@@ -263,6 +263,21 @@ public class User implements Model<User, UUID>, Subject {
     return String.format("{\"name\": %s}", Json.toJson(name));
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof User)) {
+      return false;
+    }
+    User that = (User) obj;
+    return this.id == that.id || id != null && id.equals(that.id);
+  }
+
   /**
    * Return the route to the user.
    */

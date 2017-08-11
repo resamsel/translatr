@@ -17,9 +17,9 @@ import utils.NumberUtils;
 public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>>
     implements SearchCriteria {
 
-  private final String type;
+  protected final String type;
 
-  private T self;
+  protected T self;
 
   private Integer offset;
 
@@ -30,8 +30,6 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
   private String search;
 
   private UUID userId;
-
-  private UUID projectId;
 
   private final List<String> fetches = new ArrayList<>();
 
@@ -54,29 +52,6 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
 
   public T withUserId(UUID userId) {
     setUserId(userId);
-    return self;
-  }
-
-  /**
-   * @return the projectId
-   */
-  public UUID getProjectId() {
-    return projectId;
-  }
-
-  /**
-   * @param projectId the projectId to set
-   */
-  public void setProjectId(UUID projectId) {
-    this.projectId = projectId;
-  }
-
-  /**
-   * @param projectId the projectId to set
-   * @return this
-   */
-  public T withProjectId(UUID projectId) {
-    setProjectId(projectId);
     return self;
   }
 
@@ -208,7 +183,6 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
    * Must be overridden by subclasses to allow caching.
    */
   public String getCacheKey() {
-    return String.format("%s:criteria:%s:%s:%s:%d:%d:%s", type, projectId, search, userId, limit,
-        offset, order);
+    return String.format("%s:criteria:%s:%s:%s:%d:%d", type, userId, search, order, limit, offset);
   }
 }

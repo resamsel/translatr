@@ -16,8 +16,10 @@ import criterias.MessageCriteria;
 import java.util.UUID;
 import javax.validation.Validator;
 import models.Message;
+import models.Project;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
@@ -37,8 +39,7 @@ public class MessageServiceTest {
   public void testById() {
     // mock message
     Message message = createMessage(UUID.randomUUID(), UUID.randomUUID(), "value");
-    when(messageRepository.byId(eq(message.id))).thenReturn(message);
-    when(messageRepository.update(any())).thenAnswer(a -> a.getArguments()[0]);
+    messageRepository.create(message);
 
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet()).doesNotContain("message:id:" + message.id);
@@ -51,10 +52,8 @@ public class MessageServiceTest {
     verify(messageRepository, times(1)).byId(eq(message.id));
 
     // This should trigger cache invalidation
-    message = createMessage(message, "value2");
-    messageService.update(message);
+    messageService.update(createMessage(message, "value2"));
 
-    when(messageRepository.byId(eq(message.id))).thenReturn(message);
     assertThat(cacheService.keys().keySet()).doesNotContain("message:id:" + message.id);
     assertThat(messageService.byId(message.id)).valueIsEqualTo("value2");
     verify(messageRepository, times(2)).byId(eq(message.id));
@@ -64,11 +63,10 @@ public class MessageServiceTest {
   public void testFindBy() {
     // mock message
     Message message = createMessage(UUID.randomUUID(), UUID.randomUUID(), "value");
-    MessageCriteria criteria = new MessageCriteria().withProjectId(message.key.project.id);
-    when(messageRepository.findBy(eq(criteria))).thenReturn(HasNextPagedList.create(message));
-    when(messageRepository.update(any())).thenAnswer(a -> a.getArguments()[0]);
+    messageRepository.create(message);
 
     // This invocation should feed the cache
+    MessageCriteria criteria = new MessageCriteria().withProjectId(message.key.project.id);
     assertThat(messageService.findBy(criteria).getList().get(0))
         .as("uncached")
         .valueIsEqualTo("value");
@@ -80,10 +78,8 @@ public class MessageServiceTest {
     verify(messageRepository, times(1)).findBy(eq(criteria));
 
     // This should trigger cache invalidation
-    message = createMessage(message, "value3");
-    messageService.update(message);
+    messageService.update(createMessage(message, "value3"));
 
-    when(messageRepository.findBy(eq(criteria))).thenReturn(HasNextPagedList.create(message));
     assertThat(messageService.findBy(criteria).getList().get(0))
         .as("uncached (invalidated)")
         .valueIsEqualTo("value3");
@@ -101,5 +97,15 @@ public class MessageServiceTest {
         messageRepository,
         mock(LogEntryService.class)
     );
+
+    when(messageRepository.create(any())).then(this::persist);
+    when(messageRepository.update(any())).then(this::persist);
+  }
+
+  private Message persist(InvocationOnMock a) {
+    Message t = a.getArgument(0);
+    when(messageRepository.byId(eq(t.id), any())).thenReturn(t);
+    when(messageRepository.findBy(any())).thenReturn(HasNextPagedList.create(t));
+    return t;
   }
 }

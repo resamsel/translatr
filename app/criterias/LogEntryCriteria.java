@@ -3,18 +3,17 @@ package criterias;
 import forms.ActivitySearchForm;
 import java.util.List;
 import java.util.UUID;
-import org.joda.time.DateTime;
 
 /**
  * @author resamsel
  * @version 19 Aug 2016
  */
-public class LogEntryCriteria extends AbstractSearchCriteria<LogEntryCriteria> {
+public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCriteria> {
 
   private List<UUID> ids;
 
   public LogEntryCriteria() {
-    super("logEntry");
+    super("activity");
   }
 
   /**
@@ -31,10 +30,6 @@ public class LogEntryCriteria extends AbstractSearchCriteria<LogEntryCriteria> {
     this.ids = ids;
   }
 
-  /**
-   * @param ids
-   * @return
-   */
   public LogEntryCriteria withIds(List<UUID> ids) {
     setIds(ids);
     return this;

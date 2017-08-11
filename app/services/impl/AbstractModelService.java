@@ -76,19 +76,11 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   public MODEL update(MODEL t) {
     LOGGER.debug("update({})", t);
 
-    preUpdate(t);
-
     MODEL m = modelRepository.update(t);
 
     postUpdate(m);
 
     return m;
-  }
-
-  /**
-   * Remove name based keys from cache before name might have been changed.
-   */
-  protected void preUpdate(MODEL t) {
   }
 
   protected void postUpdate(MODEL t) {
@@ -124,8 +116,6 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
 
   @Override
   public void delete(MODEL t) {
-    preDelete(t);
-
     modelRepository.delete(t);
 
     postDelete(t);
@@ -134,9 +124,6 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   @Override
   public void delete(Collection<MODEL> t) {
     modelRepository.delete(t);
-  }
-
-  protected void preDelete(MODEL t) {
   }
 
   protected void postDelete(MODEL t) {

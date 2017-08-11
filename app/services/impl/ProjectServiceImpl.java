@@ -77,8 +77,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
       return;
     }
 
-    Project project = modelRepository.byId(projectId);
-
+    Project project = byId(projectId);
     if (project == null) {
       return;
     }
@@ -88,8 +87,14 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     }
     project.wordCount += wordCountDiff;
 
-    log(() -> modelRepository.persist(project), LOGGER, "Increased word count by %d",
-        wordCountDiff);
+    log(
+        () -> modelRepository.persist(project),
+        LOGGER,
+        "Increased word count by %d",
+        wordCountDiff
+    );
+
+    postUpdate(project);
   }
 
   /**
@@ -104,6 +109,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
     modelRepository.persist(project);
 
+    postUpdate(project);
+
     localeService.resetWordCount(projectId);
     keyService.resetWordCount(projectId);
     messageService.resetWordCount(projectId);
@@ -116,21 +123,18 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
     // When project has been created, the project cache needs to be invalidated
     cache.removeByPrefix("project:criteria:");
-    cache.removeByPrefix(Project.getCacheKey(t.id));
-    cache.removeByPrefix(Project.getCacheKey(t.owner.username, t.name));
   }
 
   @Override
   protected void postUpdate(Project t) {
     super.postUpdate(t);
 
-    // When project has been created, the project cache needs to be invalidated
+    // When project has been updated, the project cache needs to be invalidated
     cache.removeByPrefix("project:criteria:");
 
     Project existing = cache.get(Project.getCacheKey(t.id));
     if (existing != null) {
       cache.removeByPrefix(Project.getCacheKey(existing.owner.username, existing.name));
     }
-    cache.removeByPrefix(Project.getCacheKey(t.id));
   }
 }

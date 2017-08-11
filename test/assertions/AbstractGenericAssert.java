@@ -18,6 +18,22 @@ public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A
     this.name = name;
   }
 
+  protected S isNull(String field, Object actual) {
+    assertThat(actual)
+        .overridingErrorMessage("Expected %s's %s to be null, but was <%s> (%s)", name, field,
+            actual, descriptionText())
+        .isNull();
+    return myself;
+  }
+
+  protected S isNotNull(String field, Object actual) {
+    assertThat(actual)
+        .overridingErrorMessage("Expected %s's %s to be not null, but was <%s> (%s)", name, field,
+            actual, descriptionText())
+        .isNotNull();
+    return myself;
+  }
+
   protected S isEqualTo(String field, int expected, int actual) {
     assertThat(actual)
         .overridingErrorMessage("Expected %s's %s to be <%s> but was <%s> (%s)", name, field,

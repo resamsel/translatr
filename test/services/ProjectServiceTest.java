@@ -18,6 +18,7 @@ import javax.validation.Validator;
 import models.Project;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
@@ -38,7 +39,7 @@ public class ProjectServiceTest {
   public void testById() {
     // mock project
     Project project = createProject(UUID.randomUUID(), "name", "johnsmith");
-    when(projectRepository.byId(eq(project.id))).thenReturn(project);
+    projectRepository.create(project);
 
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet()).doesNotContain("project:id:" + project.id);
@@ -54,7 +55,6 @@ public class ProjectServiceTest {
     project = createProject(project, "name2");
     projectService.update(project);
 
-    when(projectRepository.byId(eq(project.id))).thenReturn(project);
     assertThat(cacheService.keys().keySet()).doesNotContain("project:id:" + project.id);
     assertThat(projectService.byId(project.id)).nameIsEqualTo("name2");
     verify(projectRepository, times(2)).byId(eq(project.id));
@@ -64,10 +64,10 @@ public class ProjectServiceTest {
   public void testFindBy() {
     // mock project
     Project project = createProject(UUID.randomUUID(), "name", "johnsmith");
-    ProjectCriteria criteria = new ProjectCriteria().withSearch("name");
-    when(projectRepository.findBy(eq(criteria))).thenReturn(HasNextPagedList.create(project));
+    projectRepository.create(project);
 
     // This invocation should feed the cache
+    ProjectCriteria criteria = new ProjectCriteria().withSearch("name");
     assertThat(projectService.findBy(criteria).getList().get(0))
         .as("uncached")
         .nameIsEqualTo("name");
@@ -82,7 +82,6 @@ public class ProjectServiceTest {
     project = createProject(project, "name3");
     projectService.update(project);
 
-    when(projectRepository.findBy(eq(criteria))).thenReturn(HasNextPagedList.create(project));
     assertThat(projectService.findBy(criteria).getList().get(0))
         .as("uncached (invalidated)")
         .nameIsEqualTo("name3");
@@ -93,8 +92,7 @@ public class ProjectServiceTest {
   public void testByOwnerAndName() {
     // mock project
     Project project = createProject(UUID.randomUUID(), "name", "johnsmith");
-    when(projectRepository.byOwnerAndName(eq(project.owner.username), eq(project.name)))
-        .thenReturn(project);
+    projectRepository.create(project);
 
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet())
@@ -116,8 +114,6 @@ public class ProjectServiceTest {
     project = createProject(project, "name2");
     projectService.update(project);
 
-    when(projectRepository.byOwnerAndName(eq(project.owner.username), eq(project.name)))
-        .thenReturn(project);
     assertThat(cacheService.keys().keySet())
         .doesNotContain("project:owner:" + project.owner.username + ":" + project.name);
     assertThat(projectService.byOwnerAndName(project.owner.username, project.name))
@@ -125,6 +121,38 @@ public class ProjectServiceTest {
     verify(projectRepository, times(1))
         .byOwnerAndName(eq(project.owner.username), eq(project.name));
   }
+
+  @Test
+  public void testIncreaseWordCountBy() {
+    // mock project
+    Project project = createProject(UUID.randomUUID(), "name", "johnsmith");
+    projectRepository.create(project);
+
+    assertThat(projectService.byId(project.id)).wordCountIsNull();
+
+    // This should trigger cache invalidation
+    projectService.increaseWordCountBy(project.id, 1);
+
+    assertThat(projectService.byId(project.id)).wordCountIsEqualTo(1);
+    verify(projectRepository, times(2)).byId(eq(project.id));
+  }
+
+  @Test
+  public void testResetWordCount() {
+    // mock project
+    Project project = createProject(UUID.randomUUID(), "name", "johnsmith");
+    project.wordCount = 100;
+    projectRepository.create(project);
+
+    assertThat(projectService.byId(project.id)).wordCountIsEqualTo(100);
+
+    // This should trigger cache invalidation
+    projectService.resetWordCount(project.id);
+
+    assertThat(projectService.byId(project.id)).wordCountIsNull();
+    verify(projectRepository, times(2)).byId(eq(project.id));
+  }
+
 
   @Before
   public void before() {
@@ -144,6 +172,15 @@ public class ProjectServiceTest {
         mock(LogEntryService.class)
     );
 
-    when(projectRepository.update(any())).thenAnswer(a -> a.getArguments()[0]);
+    when(projectRepository.create(any())).then(this::persist);
+    when(projectRepository.update(any())).then(this::persist);
+  }
+
+  private Project persist(InvocationOnMock a) {
+    Project p = a.getArgument(0);
+    when(projectRepository.byId(eq(p.id), any())).thenReturn(p);
+    when(projectRepository.byOwnerAndName(eq(p.owner.username), eq(p.name))).thenReturn(p);
+    when(projectRepository.findBy(any())).thenReturn(HasNextPagedList.create(p));
+    return p;
   }
 }

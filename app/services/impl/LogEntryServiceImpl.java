@@ -98,4 +98,31 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
         .columnMapping("cnt", "value")
         .create();
   }
+
+  @Override
+  protected void postSave(LogEntry t) {
+    super.postSave(t);
+
+    // When user has been created
+    cache.removeByPrefix("activity:criteria:");
+  }
+
+  @Override
+  protected void postUpdate(LogEntry t) {
+    super.postUpdate(t);
+
+    // When user has been updated, the user cache needs to be invalidated
+    cache.removeByPrefix("activity:criteria:");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postDelete(LogEntry t) {
+    super.postDelete(t);
+
+    // When locale has been deleted, the locale cache needs to be invalidated
+    cache.removeByPrefix("activity:criteria:");
+  }
 }

@@ -8,7 +8,7 @@ import play.mvc.Http.Request;
  * @author resamsel
  * @version 19 Aug 2016
  */
-public class LocaleCriteria extends AbstractSearchCriteria<LocaleCriteria> {
+public class LocaleCriteria extends AbstractProjectSearchCriteria<LocaleCriteria> {
   public static final String PARAM_LOCALE_NAME = "localeName";
   public static final String PARAM_MESSAGES_KEY_NAME = "messages.keyName";
 

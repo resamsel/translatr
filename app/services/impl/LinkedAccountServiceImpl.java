@@ -4,6 +4,7 @@ import criterias.LinkedAccountCriteria;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import models.AccessToken;
 import models.LinkedAccount;
 import repositories.LinkedAccountRepository;
 import services.CacheService;
@@ -36,5 +37,32 @@ public class LinkedAccountServiceImpl
     ret.providerUserId = linkedAccount.providerUserId;
 
     return ret;
+  }
+
+  @Override
+  protected void postSave(LinkedAccount t) {
+    super.postSave(t);
+
+    // When linked account has been created
+    cache.removeByPrefix("linkedAccount:criteria:");
+  }
+
+  @Override
+  protected void postUpdate(LinkedAccount t) {
+    super.postUpdate(t);
+
+    // When linked account has been updated, the linked account cache needs to be invalidated
+    cache.removeByPrefix("linkedAccount:criteria:" + t.user.id);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postDelete(LinkedAccount t) {
+    super.postDelete(t);
+
+    // When linked account has been deleted, the linked account cache needs to be invalidated
+    cache.removeByPrefix("linkedAccount:criteria:");
   }
 }

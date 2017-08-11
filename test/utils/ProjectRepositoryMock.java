@@ -2,6 +2,7 @@ package utils;
 
 import static utils.UserRepositoryMock.byUsername;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -59,6 +60,7 @@ public class ProjectRepositoryMock {
     project.id = id;
     project.name = name;
     project.owner = UserRepositoryMock.byUsername(username);
+    project.locales = Collections.emptyList();
 
     return project;
   }

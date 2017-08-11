@@ -116,9 +116,21 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
 
   @Override
   protected void postSave(Locale t) {
-    // When message has been created, the project cache needs to be invalidated
+    super.postSave(t);
+
+    // When locale has been created, the project cache needs to be invalidated
     cache.removeByPrefix(Project.getCacheKey(t.project.id));
     cache.removeByPrefix(Project.getCacheKey(t.project.owner.username, t.project.name));
+
+    cache.removeByPrefix("locale:criteria:" + t.project.id);
+  }
+
+  @Override
+  protected void postUpdate(Locale t) {
+    super.postUpdate(t);
+
+    // When locale has been updated, the locale cache needs to be invalidated
+    cache.removeByPrefix("locale:criteria:" + t.project.id);
   }
 
   /**
@@ -126,8 +138,13 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
    */
   @Override
   protected void postDelete(Locale t) {
+    super.postDelete(t);
+
     // When locale has been deleted, the project cache needs to be invalidated
     cache.removeByPrefix(Project.getCacheKey(t.project.id));
     cache.removeByPrefix(Project.getCacheKey(t.project.owner.username, t.project.name));
+
+    // When locale has been deleted, the locale cache needs to be invalidated
+    cache.removeByPrefix("locale:criteria:" + t.project.id);
   }
 }

@@ -5,11 +5,11 @@ import java.util.UUID;
 import play.mvc.Http.Request;
 
 /**
- *
  * @author resamsel
  * @version 26 Sep 2016
  */
-public class ProjectCriteria extends AbstractSearchCriteria<ProjectCriteria> {
+public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriteria> {
+
   private UUID ownerId;
 
   private UUID memberId;
@@ -27,7 +27,7 @@ public class ProjectCriteria extends AbstractSearchCriteria<ProjectCriteria> {
   }
 
   public ProjectCriteria withOwnerId(UUID ownerId) {
-    this.ownerId = ownerId;
+    setOwnerId(ownerId);
     return this;
   }
 
@@ -40,7 +40,7 @@ public class ProjectCriteria extends AbstractSearchCriteria<ProjectCriteria> {
   }
 
   public ProjectCriteria withMemberId(UUID memberId) {
-    this.memberId = memberId;
+    setMemberId(memberId);
     return this;
   }
 

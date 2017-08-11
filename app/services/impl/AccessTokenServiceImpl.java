@@ -3,18 +3,12 @@ package services.impl;
 import static utils.Stopwatch.log;
 
 import criterias.AccessTokenCriteria;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.AccessToken;
-import models.ActionType;
-import models.LogEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
 import repositories.AccessTokenRepository;
 import services.AccessTokenService;
 import services.CacheService;
@@ -49,5 +43,32 @@ public class AccessTokenServiceImpl extends
   public AccessToken byKey(String accessTokenKey) {
     return log(() -> cache.getOrElse(AccessToken.getCacheKey(accessTokenKey),
         () -> accessTokenRepository.byKey(accessTokenKey), 60), LOGGER, "getByKey");
+  }
+
+  @Override
+  protected void postSave(AccessToken t) {
+    super.postSave(t);
+
+    // When user has been created
+    cache.removeByPrefix("accessToken:criteria:");
+  }
+
+  @Override
+  protected void postUpdate(AccessToken t) {
+    super.postUpdate(t);
+
+    // When user has been updated, the user cache needs to be invalidated
+    cache.removeByPrefix("accessToken:criteria:" + t.user.id);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postDelete(AccessToken t) {
+    super.postDelete(t);
+
+    // When locale has been deleted, the locale cache needs to be invalidated
+    cache.removeByPrefix("accessToken:criteria:");
   }
 }
