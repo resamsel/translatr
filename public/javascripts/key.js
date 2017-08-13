@@ -19,7 +19,7 @@ var EditorSwitchView = Backbone.View.extend({
 			'href',
 			jsRoutes.controllers.Locales.localeBy(
 				item.get('projectOwnerUsername'),
-				item.get('projectPath'),
+				item.get('projectName'),
 				item.get('name')
 			).url + '#key/' + this.keyName
 		);

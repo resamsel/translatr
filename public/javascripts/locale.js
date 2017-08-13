@@ -83,7 +83,7 @@ var LocaleSelectorListItemView = Backbone.View.extend({
 			id: this.model.id,
 			url: jsRoutes.controllers.Locales.localeBy(
 					this.model.get('projectOwnerUsername'),
-					this.model.get('projectPath'),
+					this.model.get('projectName'),
 					this.model.get('name')
 				).url,
 			localeName: this.model.get('name'),
@@ -140,7 +140,7 @@ var EditorSwitchView = Backbone.View.extend({
 			'href',
 			jsRoutes.controllers.Keys.keyBy(
 					item.get('projectOwnerUsername'),
-					item.get('projectPath'),
+					item.get('projectName'),
 					item.get('pathName')
 			).url + '#locale/' + this.localeName
 		);
