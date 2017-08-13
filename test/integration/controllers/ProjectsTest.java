@@ -88,6 +88,47 @@ public class ProjectsTest extends ControllerTest {
   }
 
   @Test
+  public void testEditDenied() {
+    assertAccessDenied(routes.Projects.editBy(johnSmith.username, project1.name),
+        "project edit denied");
+  }
+
+  @Test
+  public void testEdit() {
+    Result result = Helpers.route(app,
+        requestAsJohnSmith().uri(routes.Projects.editBy(johnSmith.username, project1.name).url()));
+
+    assertThat(result)
+        .as("project edit view")
+        .statusIsEqualTo(Projects.OK)
+        .contentTypeIsEqualTo("text/html")
+        .contentContains(project1.name, mat);
+  }
+
+  @Test
+  public void testDoEditDenied() {
+    assertAccessDenied(routes.Projects.doEditBy(johnSmith.username, project1.name),
+        "project do edit denied");
+  }
+
+  @Test
+  public void testDoEdit() {
+    Result result = Helpers.route(
+        app,
+        requestAsJohnSmith()
+            .method("POST")
+            .bodyForm(ImmutableMap.of("name", "Changed-Name"))
+            .uri(routes.Projects.doEditBy(johnSmith.username, project1.name).url())
+    );
+
+    assertThat(result)
+        .as("project do edit view")
+        .statusIsEqualTo(Projects.SEE_OTHER)
+        .headerIsEqualTo("Location",
+            routes.Projects.projectBy(johnSmith.username, project1.name).url());
+  }
+
+  @Test
   public void testLocalesDenied() {
     assertAccessDenied(routes.Projects
         .localesBy(johnSmith.username, project1.name, DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT,

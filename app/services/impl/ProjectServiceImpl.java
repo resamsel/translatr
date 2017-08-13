@@ -64,7 +64,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
             10 * 600
         ),
         LOGGER,
-        "byOwnerAndName");
+        "byOwnerAndName"
+    );
   }
 
   /**
@@ -127,8 +128,6 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
   @Override
   protected void postUpdate(Project t) {
-    super.postUpdate(t);
-
     // When project has been updated, the project cache needs to be invalidated
     cache.removeByPrefix("project:criteria:");
 
@@ -136,5 +135,20 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     if (existing != null) {
       cache.removeByPrefix(Project.getCacheKey(existing.owner.username, existing.name));
     }
+
+    super.postUpdate(t);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postDelete(Project t) {
+    super.postDelete(t);
+
+    // When key has been deleted, the project cache needs to be invalidated
+    cache.removeByPrefix("project:criteria:" + t.id);
+
+    cache.removeByPrefix(Project.getCacheKey(t.owner.username, t.name));
   }
 }
