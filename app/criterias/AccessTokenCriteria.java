@@ -27,4 +27,9 @@ public class AccessTokenCriteria extends AbstractSearchCriteria<AccessTokenCrite
 
     return super.paged(query);
   }
+
+  @Override
+  protected String getCacheKeyParticle() {
+    return "";
+  }
 }

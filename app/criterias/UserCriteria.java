@@ -17,11 +17,12 @@ public class UserCriteria extends AbstractSearchCriteria<UserCriteria> {
     return new UserCriteria().with(request);
   }
 
-  /**
-   * @param form
-   * @return
-   */
   public static UserCriteria from(SearchForm form) {
     return new UserCriteria().with(form);
+  }
+
+  @Override
+  protected String getCacheKeyParticle() {
+    return "";
   }
 }

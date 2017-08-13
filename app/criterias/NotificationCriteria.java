@@ -9,11 +9,16 @@ import play.mvc.Http.Request;
  */
 public class NotificationCriteria extends AbstractSearchCriteria<NotificationCriteria> {
 
-  public NotificationCriteria() {
+  private NotificationCriteria() {
     super("notification");
   }
 
   public static NotificationCriteria from(Request request) {
     return new NotificationCriteria().with(request);
+  }
+
+  @Override
+  protected String getCacheKeyParticle() {
+    return "";
   }
 }

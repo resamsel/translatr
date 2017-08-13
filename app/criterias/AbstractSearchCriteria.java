@@ -179,10 +179,15 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
     return query;
   }
 
+  public String getCacheKey() {
+    return String.format(
+        "%s:criteria:%s:%s:%s:%d:%d:%s",
+        type, userId, search, order, limit, offset, getCacheKeyParticle()
+    );
+  }
+
   /**
    * Must be overridden by subclasses to allow caching.
    */
-  public String getCacheKey() {
-    return String.format("%s:criteria:%s:%s:%s:%d:%d", type, userId, search, order, limit, offset);
-  }
+  protected abstract String getCacheKeyParticle();
 }

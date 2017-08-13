@@ -34,53 +34,33 @@ public class KeyCriteria extends AbstractProjectSearchCriteria<KeyCriteria> {
     this.missing = missing;
   }
 
-  public KeyCriteria withMissing(Boolean missing) {
+  private KeyCriteria withMissing(Boolean missing) {
     setMissing(missing);
     return this;
   }
 
-  /**
-   * @return the names
-   */
   public Collection<String> getNames() {
     return names;
   }
 
-  /**
-   * @param names the names to set
-   */
   public void setNames(Collection<String> names) {
     this.names = names;
   }
 
-  /**
-   * @param names
-   * @return
-   */
   public KeyCriteria withNames(Collection<String> names) {
     setNames(names);
     return this;
   }
 
-  /**
-   * @return the untranslated
-   */
   public UUID getLocaleId() {
     return localeId;
   }
 
-  /**
-   * @param localeId the untranslated to set
-   */
   public void setLocaleId(UUID localeId) {
     this.localeId = localeId;
   }
 
-  /**
-   * @param localeId
-   * @return
-   */
-  public KeyCriteria withLocaleId(String localeId) {
+  private KeyCriteria withLocaleId(String localeId) {
     if (localeId != null) {
       setLocaleId(UUID.fromString(localeId));
     }
@@ -113,18 +93,16 @@ public class KeyCriteria extends AbstractProjectSearchCriteria<KeyCriteria> {
     return this;
   }
 
-  /**
-   * @param form
-   * @return
-   */
+  @Override
+  protected String getCacheKeyParticle() {
+    return String
+        .format("%s:%s:%s:%s:%s", projectOwnerUsername, projectName, missing, names, localeId);
+  }
+
   public static KeyCriteria from(SearchForm form) {
     return new KeyCriteria().with(form);
   }
 
-  /**
-   * @param form
-   * @return
-   */
   public static KeyCriteria from(KeySearchForm form) {
     return new KeyCriteria().with(form).withMissing(form.missing);
   }

@@ -24,7 +24,7 @@ public class MessageCriteria extends AbstractProjectSearchCriteria<MessageCriter
     return localeIds;
   }
 
-  public void setLocaleIds(List<UUID> localeIds) {
+  private void setLocaleIds(List<UUID> localeIds) {
     this.localeIds = localeIds;
   }
 
@@ -74,13 +74,14 @@ public class MessageCriteria extends AbstractProjectSearchCriteria<MessageCriter
     this.localeId = localeId;
   }
 
-  /**
-   * @param localeId
-   * @return
-   */
   public MessageCriteria withLocaleId(UUID localeId) {
     setLocaleId(localeId);
     return this;
+  }
+
+  @Override
+  protected String getCacheKeyParticle() {
+    return String.format("%s:%s:%s", localeId, keyName, localeIds);
   }
 
   public static MessageCriteria from(Request request) {

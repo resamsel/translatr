@@ -37,8 +37,8 @@ public abstract class AbstractProjectSearchCriteria<T extends AbstractProjectSea
   /**
    * Must be overridden by subclasses to allow caching.
    */
-  public String getCacheKey() {
-    return String.format("%s:criteria:%s:%s:%s:%s:%d:%d", type, projectId, getUserId(), getSearch(),
-        getOrder(), getLimit(), getOffset());
+  public final String getCacheKey() {
+    return String.format("%s:criteria:%s:%s:%s:%s:%d:%d:%s", type, projectId, getUserId(), getSearch(),
+        getOrder(), getLimit(), getOffset(), getCacheKeyParticle());
   }
 }

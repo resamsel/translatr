@@ -22,7 +22,7 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
     return ownerId;
   }
 
-  public void setOwnerId(UUID ownerId) {
+  private void setOwnerId(UUID ownerId) {
     this.ownerId = ownerId;
   }
 
@@ -35,13 +35,18 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
     return memberId;
   }
 
-  public void setMemberId(UUID memberId) {
+  private void setMemberId(UUID memberId) {
     this.memberId = memberId;
   }
 
   public ProjectCriteria withMemberId(UUID memberId) {
     setMemberId(memberId);
     return this;
+  }
+
+  @Override
+  protected String getCacheKeyParticle() {
+    return String.format("%s:%s", ownerId, memberId);
   }
 
   public static ProjectCriteria from(SearchForm form) {

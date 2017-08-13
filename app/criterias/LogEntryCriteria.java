@@ -26,7 +26,7 @@ public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCrit
   /**
    * @param ids the ids to set
    */
-  public void setIds(List<UUID> ids) {
+  private void setIds(List<UUID> ids) {
     this.ids = ids;
   }
 
@@ -37,5 +37,10 @@ public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCrit
 
   public static LogEntryCriteria from(ActivitySearchForm form) {
     return new LogEntryCriteria().with(form);
+  }
+
+  @Override
+  protected String getCacheKeyParticle() {
+    return String.format("%s", ids);
   }
 }
