@@ -18,7 +18,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import play.api.mvc.Call;
 import play.libs.Json;

@@ -117,7 +117,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
   @Override
   public Key byProjectAndName(Project project, String name) {
     return cache.getOrElse(
-        String.format("project:id:%s:key:%s", project.id, name),
+        getCacheKey(project.id, name),
         () -> keyRepository.byProjectAndName(project, name),
         60
     );
@@ -136,6 +136,13 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
   @Override
   protected void postUpdate(Key t) {
+    Key existing = cache.get(Key.getCacheKey(t.id));
+    if (existing != null) {
+      cache.removeByPrefix(getCacheKey(existing.project.id, existing.name));
+    } else {
+      cache.removeByPrefix(getCacheKey(t.project.id, ""));
+    }
+
     super.postUpdate(t);
 
     // When locale has been updated, the locale cache needs to be invalidated
@@ -147,6 +154,11 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
    */
   @Override
   protected void postDelete(Key t) {
+    Key existing = byId(t.id);
+    if (existing != null) {
+      cache.removeByPrefix(getCacheKey(existing.project.id, existing.name));
+    }
+
     super.postDelete(t);
 
     // When key has been deleted, the project cache needs to be invalidated
@@ -155,5 +167,9 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
     // When key has been deleted, the key cache needs to be invalidated
     cache.removeByPrefix("key:criteria:" + t.project.id);
+  }
+
+  private static String getCacheKey(UUID projectId, String keyName) {
+    return String.format("key:project:%s:name:%s", projectId, keyName);
   }
 }

@@ -20,6 +20,7 @@ import tests.AbstractTest;
  * @version 28 Jan 2017
  */
 public class MessageServiceTest extends AbstractTest {
+
   @Inject
   MessageService messageService;
   @Inject

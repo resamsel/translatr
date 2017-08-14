@@ -14,13 +14,12 @@ import criterias.ProjectUserCriteria;
 import criterias.UserCriteria;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.LinkedAccount;
-import models.Locale;
-import models.Project;
 import models.User;
 import models.UserStats;
 import org.slf4j.Logger;
@@ -107,9 +106,14 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     }
 
     return log(
-        () -> cache.getOrElse(String.format("%s:%s", authUser.getProvider(), authUser.getId()),
-            () -> userRepository.findByAuthUserIdentity(authUser), 10 * 60),
-        LOGGER, "getLocalUser");
+        () -> cache.getOrElse(
+            String.format("%s:%s", authUser.getProvider(), authUser.getId()),
+            () -> userRepository.findByAuthUserIdentity(authUser),
+            10 * 60
+        ),
+        LOGGER,
+        "getLocalUser"
+    );
   }
 
   /**
@@ -140,10 +144,14 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    */
   @Override
   public User merge(final User user, final User otherUser) {
-    linkedAccountService
-        .save(linkedAccountService.findBy(new LinkedAccountCriteria().withUserId(otherUser.id))
-            .getList().stream().map(linkedAccount -> linkedAccount.withUser(user))
-            .collect(toList()));
+    linkedAccountService.save(
+        linkedAccountService.findBy(new LinkedAccountCriteria()
+            .withUserId(Objects.requireNonNull(otherUser, "other user").id))
+            .getList()
+            .stream()
+            .map(linkedAccount -> linkedAccount.withUser(user))
+            .collect(toList())
+    );
     otherUser.linkedAccounts.clear();
 
     accessTokenService

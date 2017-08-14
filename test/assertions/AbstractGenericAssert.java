@@ -2,6 +2,7 @@ package assertions;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
+import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.fest.assertions.api.AbstractAssert;
 
@@ -26,11 +27,19 @@ public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A
     return myself;
   }
 
-  protected S isNotNull(String field, Object actual) {
+  protected S isTrue(String field, Boolean actual) {
     assertThat(actual)
-        .overridingErrorMessage("Expected %s's %s to be not null, but was <%s> (%s)", name, field,
+        .overridingErrorMessage("Expected %s's %s to be true, but was <%s> (%s)", name, field,
             actual, descriptionText())
-        .isNotNull();
+        .isTrue();
+    return myself;
+  }
+
+  protected S isFalse(String field, Boolean actual) {
+    assertThat(actual)
+        .overridingErrorMessage("Expected %s's %s to be false, but was <%s> (%s)", name, field,
+            actual, descriptionText())
+        .isFalse();
     return myself;
   }
 
@@ -62,6 +71,13 @@ public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A
     assertThat(actual)
         .overridingErrorMessage("Expected %s's %s to contain <%s> but was <%s> (%s)", name, field,
             s, StringUtils.abbreviate(actual.trim(), 50), descriptionText()).contains(s);
+    return myself;
+  }
+
+  protected S hasSize(String field, int expected, Collection<?> actual) {
+    assertThat(actual)
+        .overridingErrorMessage("Expected %s's %s to have a size of <%d> but was <%d> (%s)", name,
+            field, expected, actual.size(), descriptionText()).hasSize(expected);
     return myself;
   }
 }

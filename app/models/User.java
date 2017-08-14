@@ -1,5 +1,7 @@
 package models;
 
+import static play.libs.Json.toJson;
+
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
@@ -33,7 +35,6 @@ import play.api.Play;
 import play.api.inject.Injector;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
-import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
@@ -260,7 +261,7 @@ public class User implements Model<User, UUID>, Subject {
    */
   @Override
   public String toString() {
-    return String.format("{\"name\": %s}", Json.toJson(name));
+    return String.format("{\"name\": %s, \"username\": %s}", toJson(name), toJson(username));
   }
 
   @Override

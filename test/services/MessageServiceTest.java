@@ -16,7 +16,6 @@ import criterias.MessageCriteria;
 import java.util.UUID;
 import javax.validation.Validator;
 import models.Message;
-import models.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;

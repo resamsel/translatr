@@ -21,10 +21,12 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.libs.Json;
 import repositories.KeyRepository;
 import services.impl.CacheServiceImpl;
 import services.impl.KeyServiceImpl;
 import utils.CacheApiMock;
+import utils.ProjectRepositoryMock;
 
 public class KeyServiceTest {
 
@@ -85,6 +87,31 @@ public class KeyServiceTest {
     verify(keyRepository, times(2)).findBy(eq(criteria));
   }
 
+  @Test
+  public void testByProjectAndName() {
+    // mock key
+    Key key = createKey(UUID.randomUUID(),
+        ProjectRepositoryMock.byOwnerAndName("johnsmith", "project1"), "a");
+    keyRepository.create(key);
+
+    // This invocation should feed the cache
+    assertThat(keyService.byProjectAndName(key.project, key.name)).nameIsEqualTo("a");
+    verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
+
+    // This invocation should use the cache, not the repository
+    assertThat(keyService.byProjectAndName(key.project, key.name)).nameIsEqualTo("a");
+    verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
+
+    // This should trigger cache invalidation
+    key = createKey(key, "ab");
+    keyService.update(key);
+
+    assertThat(cacheService.keys().keySet())
+        .doesNotContain("key:project:" + key.project.id + ":name:a");
+    assertThat(keyService.byProjectAndName(key.project, key.name)).nameIsEqualTo("ab");
+    verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
+  }
+
   @Before
   public void before() {
     keyRepository = mock(KeyRepository.class,
@@ -103,7 +130,9 @@ public class KeyServiceTest {
 
   private Key persist(InvocationOnMock a) {
     Key t = a.getArgument(0);
+    LOGGER.debug("mock: persisting {} - {}", t.getClass(), Json.toJson(t));
     when(keyRepository.byId(eq(t.id), any())).thenReturn(t);
+    when(keyRepository.byProjectAndName(eq(t.project), eq(t.name))).thenReturn(t);
     when(keyRepository.findBy(any())).thenReturn(HasNextPagedList.create(t));
     return t;
   }

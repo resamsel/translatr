@@ -1,5 +1,6 @@
 package utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -47,6 +48,11 @@ public class UserRepositoryMock {
     m.name = name;
     m.username = username;
     m.email = email;
+    m.active = true;
+    m.linkedAccounts = new ArrayList<>();
+    m.activities = new ArrayList<>();
+    m.memberships = new ArrayList<>();
+    m.projects = new ArrayList<>();
 
     return m;
   }
