@@ -27,7 +27,6 @@ import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
 import repositories.ProjectRepository;
-import repositories.UserRepository;
 import services.CacheService;
 import services.LocaleService;
 import services.api.LocaleApiService;
@@ -152,7 +151,7 @@ public class Locales extends AbstractController {
         return badRequest(views.html.locales.edit.render(createTemplate(), locale, form));
       }
 
-      localeService.save(form.get().into(locale));
+      localeService.update(form.get().into(locale));
 
       LocaleForm search = form.get();
       return redirect(

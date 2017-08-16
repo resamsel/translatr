@@ -1,5 +1,7 @@
 package services.impl;
 
+import static java.util.Collections.synchronizedMap;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,7 @@ public class CacheServiceImpl implements CacheService {
 
   private final CacheApi cache;
 
-  private final Map<String, Integer> cacheKeys = new HashMap<>();
+  private final Map<String, Integer> cacheKeys = synchronizedMap(new HashMap<>());
 
   @Inject
   public CacheServiceImpl(CacheApi cache) {
@@ -74,21 +76,26 @@ public class CacheServiceImpl implements CacheService {
   public void removeByPrefix(String prefix) {
     LOGGER.debug("removeByPrefix(prefix={})", prefix);
 
-    removeAll(key -> key.startsWith(prefix));
+    if (prefix != null) {
+      removeAll(key -> key.startsWith(prefix));
+    }
   }
 
   @Override
   public void removeAll(Predicate<String> filter) {
-    List<String> keys = cacheKeys.keySet().stream().filter(filter)
-        .collect(Collectors.toList());
+    synchronized (cacheKeys) {
+      List<String> keys = cacheKeys.keySet().stream().filter(filter)
+          .collect(Collectors.toList());
 
-    LOGGER.debug("removeAll: found keys for given filter: {} (all: {})", keys, cacheKeys.keySet());
+      LOGGER
+          .debug("removeAll: found keys for given filter: {} (all: {})", keys, cacheKeys.keySet());
 
-    keys.forEach(key -> {
-      LOGGER.debug("Removing key {}", key);
-      cacheKeys.remove(key);
-      cache.remove(key);
-    });
+      keys.forEach(key -> {
+        LOGGER.debug("Removing key {}", key);
+        cacheKeys.remove(key);
+        cache.remove(key);
+      });
+    }
   }
 
   @Override

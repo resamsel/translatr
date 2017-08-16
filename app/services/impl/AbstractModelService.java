@@ -85,6 +85,7 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
 
   protected void postUpdate(MODEL t) {
     cache.removeByPrefix(cacheKeyGetter.apply(t.getId(), new String[0]));
+    cache.set(cacheKeyGetter.apply(t.getId(), new String[0]), t, 60);
   }
 
   /**
@@ -107,6 +108,7 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   }
 
   protected void postSave(MODEL t) {
+    cache.set(cacheKeyGetter.apply(t.getId(), new String[0]), t, 60);
   }
 
   @Override

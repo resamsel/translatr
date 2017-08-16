@@ -1,5 +1,6 @@
 package services.impl;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
@@ -61,7 +62,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
         () -> cache.getOrElse(
             Project.getCacheKey(username, name, fetches),
             () -> projectRepository.byOwnerAndName(username, name, fetches),
-            10 * 600
+            10 * 30
         ),
         LOGGER,
         "byOwnerAndName"
@@ -131,9 +132,17 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     // When project has been updated, the project cache needs to be invalidated
     cache.removeByPrefix("project:criteria:");
 
-    Project existing = cache.get(Project.getCacheKey(t.id));
-    if (existing != null) {
-      cache.removeByPrefix(Project.getCacheKey(existing.owner.username, existing.name));
+    Project cached = cache.get(Project.getCacheKey(t.id));
+    if (cached != null) {
+      cache.removeByPrefix(Project.getCacheKey(
+          requireNonNull(cached.owner, "owner (cached)").username,
+          cached.name
+      ));
+    } else {
+      cache.removeByPrefix(Project.getCacheKey(
+          requireNonNull(t.owner, "owner").username,
+          ""
+      ));
     }
 
     super.postUpdate(t);

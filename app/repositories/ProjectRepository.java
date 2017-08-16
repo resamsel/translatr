@@ -1,6 +1,7 @@
 package repositories;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.ImplementedBy;
@@ -21,8 +22,11 @@ public interface ProjectRepository extends ModelRepository<Project, UUID, Projec
 
   String[] PROPERTIES_TO_FETCH = {FETCH_OWNER, FETCH_MEMBERS};
 
-  Map<String, List<String>> FETCH_MAP =
-      ImmutableMap.of(FETCH_MEMBERS, asList(FETCH_MEMBERS, FETCH_MEMBERS + ".user"));
+  Map<String, List<String>> FETCH_MAP = ImmutableMap
+      .of(
+          FETCH_OWNER, singletonList(FETCH_OWNER),
+          FETCH_MEMBERS, asList(FETCH_MEMBERS, FETCH_MEMBERS + ".user")
+      );
 
   Project byOwnerAndName(String username, String name, String... fetches);
 }

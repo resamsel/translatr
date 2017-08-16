@@ -157,7 +157,7 @@ public class Keys extends AbstractController {
       }
 
       try {
-        keyService.save(form.get().into(key));
+        keyService.update(form.get().into(key));
       } catch (ConstraintViolationException e) {
         return badRequest(
             views.html.keys.edit.render(createTemplate(), key, FormUtils.include(form, e)));

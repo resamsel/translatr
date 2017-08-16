@@ -40,6 +40,8 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
    */
   @Override
   public MODEL create(MODEL model) {
+    LOGGER.debug("create(model={})", model);
+
     try {
       return save(model);
     } catch (PersistenceException e) {

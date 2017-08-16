@@ -225,7 +225,7 @@ public class Projects extends AbstractController {
       }
 
       try {
-        project = projectService.save(form.get().fill(project));
+        project = projectService.update(form.get().fill(project));
       } catch (ConstraintViolationException e) {
         return badRequest(
             views.html.projects.edit.render(createTemplate(), project, FormUtils.include(form, e)));
@@ -374,7 +374,7 @@ public class Projects extends AbstractController {
       // Make new owner a member of type Owner
       project.members.stream().filter(m -> m.user.id.equals(val.getOwnerId()))
           .forEach(m -> m.role = ProjectRole.Owner);
-      projectService.save(project.withOwner(userService.byId(val.getOwnerId())));
+      projectService.update(project.withOwner(userService.byId(val.getOwnerId())));
 
       return redirect(project.membersRoute());
     });

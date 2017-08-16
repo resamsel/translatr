@@ -8,6 +8,8 @@ import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.libs.Json;
 
 /**
@@ -15,43 +17,27 @@ import play.libs.Json;
  * @version 9 Jan 2017
  */
 public class ErrorUtils {
-  /**
-   * @param e
-   * @return
-   */
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ErrorUtils.class);
+
   public static JsonNode toJson(PermissionException e) {
     return Json.toJson(new PermissionError(e));
   }
 
-  /**
-   * @param e
-   * @return
-   */
   public static JsonNode toJson(NotFoundException e) {
     return Json.toJson(new NotFoundError(e));
   }
 
-  /**
-   * @param e
-   * @return
-   */
   public static JsonNode toJson(ConstraintViolationException e) {
     return Json.toJson(new ConstraintViolationError(e));
   }
 
-  /**
-   * @param e
-   * @return
-   */
   public static JsonNode toJson(ValidationException e) {
     return Json.toJson(new ConstraintViolationError(e));
   }
 
-  /**
-   * @param t
-   * @return
-   */
   public static JsonNode toJson(Throwable t) {
+    LOGGER.debug("Throwing generic error", t);
     return Json.toJson(new dto.errors.GenericError(t.getMessage()));
   }
 }

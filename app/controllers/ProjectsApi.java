@@ -168,9 +168,10 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> search(UUID projectId) {
-    return toJsonSearch(() -> {
-      return projectApiService.search(projectId, FormUtils.Search
-          .bindFromRequest(injector.instanceOf(FormFactory.class), configuration).get());
-    });
+    return toJsonSearch(() -> projectApiService.search(
+        projectId,
+        FormUtils.Search.bindFromRequest(injector.instanceOf(FormFactory.class), configuration)
+            .get()
+    ));
   }
 }

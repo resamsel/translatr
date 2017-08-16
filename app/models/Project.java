@@ -29,7 +29,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -304,7 +303,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   public static String getCacheKey(String username, String projectName, String... fetches) {
-    if (username == null || StringUtils.isEmpty(projectName)) {
+    if (username == null) {
       return null;
     }
 
