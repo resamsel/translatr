@@ -53,9 +53,9 @@ public class MessageServiceTest {
     // This should trigger cache invalidation
     messageService.update(createMessage(message, "value2"));
 
-    assertThat(cacheService.keys().keySet()).doesNotContain("message:id:" + message.id);
+    assertThat(cacheService.keys().keySet()).contains("message:id:" + message.id);
     assertThat(messageService.byId(message.id)).valueIsEqualTo("value2");
-    verify(messageRepository, times(2)).byId(eq(message.id));
+    verify(messageRepository, times(1)).byId(eq(message.id));
   }
 
   @Test

@@ -57,9 +57,9 @@ public class AccessTokenServiceTest {
     // This should trigger cache invalidation
     accessTokenService.update(createAccessToken(accessToken, "de-AT"));
 
-    assertThat(cacheService.keys().keySet()).doesNotContain("accessToken:id:" + accessToken.id);
+    assertThat(cacheService.keys().keySet()).contains("accessToken:id:" + accessToken.id);
     assertThat(accessTokenService.byId(accessToken.id)).nameIsEqualTo("de-AT");
-    verify(accessTokenRepository, times(2)).byId(eq(accessToken.id));
+    verify(accessTokenRepository, times(1)).byId(eq(accessToken.id));
   }
 
   @Test

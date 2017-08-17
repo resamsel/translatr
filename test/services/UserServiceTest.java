@@ -61,9 +61,9 @@ public class UserServiceTest {
     // This should trigger cache invalidation
     userService.update(createUser(user, "ab", "b", "a@b.com"));
 
-    assertThat(cacheService.keys().keySet()).doesNotContain("user:id:" + user.id);
+    assertThat(cacheService.keys().keySet()).contains("user:id:" + user.id);
     assertThat(userService.byId(user.id)).nameIsEqualTo("ab");
-    verify(userRepository, times(2)).byId(eq(user.id));
+    verify(userRepository, times(1)).byId(eq(user.id));
   }
 
   @Test

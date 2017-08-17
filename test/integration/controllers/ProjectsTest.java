@@ -304,6 +304,8 @@ public class ProjectsTest extends ControllerTest {
         .thenAnswer(a -> project1);
     when(projectService.save((Project) any()))
         .thenAnswer(a -> a.getArguments()[0]);
+    when(projectService.update(any()))
+        .thenAnswer(a -> a.getArguments()[0]);
     when(projectUserService.findBy(any()))
         .thenAnswer(a -> HasNextPagedList.create(
             by(project1, johnSmith, ProjectRole.Owner),

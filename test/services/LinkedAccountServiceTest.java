@@ -11,8 +11,8 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 import static utils.LinkedAccountRepositoryMock.createLinkedAccount;
 
-import criterias.LinkedAccountCriteria;
 import criterias.HasNextPagedList;
+import criterias.LinkedAccountCriteria;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.validation.Validator;
 import models.LinkedAccount;
@@ -23,8 +23,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LinkedAccountRepository;
-import services.impl.LinkedAccountServiceImpl;
 import services.impl.CacheServiceImpl;
+import services.impl.LinkedAccountServiceImpl;
 import utils.CacheApiMock;
 import utils.UserRepositoryMock;
 
@@ -40,32 +40,36 @@ public class LinkedAccountServiceTest {
   @Test
   public void testById() {
     // mock linkedAccount
-    LinkedAccount linkedAccount = createLinkedAccount(ThreadLocalRandom.current().nextLong(), johnSmith,
+    LinkedAccount linkedAccount = createLinkedAccount(ThreadLocalRandom.current().nextLong(),
+        johnSmith,
         "google");
     linkedAccountRepository.create(linkedAccount);
 
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet()).doesNotContain("linkedAccount:id:" + linkedAccount.id);
-    assertThat(linkedAccountService.byId(linkedAccount.id)).providerKeyIsEqualTo(linkedAccount.providerKey);
+    assertThat(linkedAccountService.byId(linkedAccount.id))
+        .providerKeyIsEqualTo(linkedAccount.providerKey);
     verify(linkedAccountRepository, times(1)).byId(eq(linkedAccount.id));
 
     // This invocation should use the cache, not the repository
     assertThat(cacheService.keys().keySet()).contains("linkedAccount:id:" + linkedAccount.id);
-    assertThat(linkedAccountService.byId(linkedAccount.id)).providerKeyIsEqualTo(linkedAccount.providerKey);
+    assertThat(linkedAccountService.byId(linkedAccount.id))
+        .providerKeyIsEqualTo(linkedAccount.providerKey);
     verify(linkedAccountRepository, times(1)).byId(eq(linkedAccount.id));
 
     // This should trigger cache invalidation
     linkedAccountService.update(createLinkedAccount(linkedAccount, "facebook"));
 
-    assertThat(cacheService.keys().keySet()).doesNotContain("linkedAccount:id:" + linkedAccount.id);
+    assertThat(cacheService.keys().keySet()).contains("linkedAccount:id:" + linkedAccount.id);
     assertThat(linkedAccountService.byId(linkedAccount.id)).providerKeyIsEqualTo("facebook");
-    verify(linkedAccountRepository, times(2)).byId(eq(linkedAccount.id));
+    verify(linkedAccountRepository, times(1)).byId(eq(linkedAccount.id));
   }
 
   @Test
   public void testFindBy() {
     // mock linkedAccount
-    LinkedAccount linkedAccount = createLinkedAccount(ThreadLocalRandom.current().nextLong(), johnSmith,
+    LinkedAccount linkedAccount = createLinkedAccount(ThreadLocalRandom.current().nextLong(),
+        johnSmith,
         "google");
     linkedAccountRepository.create(linkedAccount);
 

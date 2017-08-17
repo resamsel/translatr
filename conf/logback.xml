@@ -51,6 +51,9 @@
 		name="services"
 		level="DEBUG" />
 	<logger
+		name="repositories"
+		level="DEBUG" />
+	<logger
 		name="importers"
 		level="DEBUG" />
 	<logger

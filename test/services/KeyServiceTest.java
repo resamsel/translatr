@@ -55,9 +55,9 @@ public class KeyServiceTest {
     // This should trigger cache invalidation
     keyService.update(createKey(key, "ab"));
 
-    assertThat(cacheService.keys().keySet()).doesNotContain("key:id:" + key.id);
+    assertThat(cacheService.keys().keySet()).contains("key:id:" + key.id);
     assertThat(keyService.byId(key.id)).nameIsEqualTo("ab");
-    verify(keyRepository, times(2)).byId(eq(key.id));
+    verify(keyRepository, times(1)).byId(eq(key.id));
   }
 
   @Test

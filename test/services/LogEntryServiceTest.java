@@ -60,9 +60,9 @@ public class LogEntryServiceTest {
     // This should trigger cache invalidation
     logEntryService.update(createLogEntry(logEntry.id, janeDoe, project1));
 
-    assertThat(cacheService.keys().keySet()).doesNotContain("activity:id:" + logEntry.id);
+    assertThat(cacheService.keys().keySet()).contains("activity:id:" + logEntry.id);
     assertThat(logEntryService.byId(logEntry.id)).userIsEqualTo(janeDoe);
-    verify(logEntryRepository, times(2)).byId(eq(logEntry.id));
+    verify(logEntryRepository, times(1)).byId(eq(logEntry.id));
   }
 
   @Test

@@ -55,9 +55,9 @@ public class ProjectServiceTest {
     project = createProject(project, "name2");
     projectService.update(project);
 
-    assertThat(cacheService.keys().keySet()).doesNotContain("project:id:" + project.id);
+    assertThat(cacheService.keys().keySet()).contains("project:id:" + project.id);
     assertThat(projectService.byId(project.id)).nameIsEqualTo("name2");
-    verify(projectRepository, times(2)).byId(eq(project.id));
+    verify(projectRepository, times(1)).byId(eq(project.id));
   }
 
   @Test
@@ -134,7 +134,7 @@ public class ProjectServiceTest {
     projectService.increaseWordCountBy(project.id, 1);
 
     assertThat(projectService.byId(project.id)).wordCountIsEqualTo(1);
-    verify(projectRepository, times(2)).byId(eq(project.id));
+    verify(projectRepository, times(1)).byId(eq(project.id));
   }
 
   @Test
@@ -150,7 +150,7 @@ public class ProjectServiceTest {
     projectService.resetWordCount(project.id);
 
     assertThat(projectService.byId(project.id)).wordCountIsNull();
-    verify(projectRepository, times(2)).byId(eq(project.id));
+    verify(projectRepository, times(1)).byId(eq(project.id));
   }
 
 

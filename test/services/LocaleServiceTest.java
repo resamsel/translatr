@@ -53,9 +53,9 @@ public class LocaleServiceTest {
     // This should trigger cache invalidation
     localeService.update(createLocale(locale, "de-AT"));
 
-    assertThat(cacheService.keys().keySet()).doesNotContain("locale:id:" + locale.id);
+    assertThat(cacheService.keys().keySet()).contains("locale:id:" + locale.id);
     assertThat(localeService.byId(locale.id)).nameIsEqualTo("de-AT");
-    verify(localeRepository, times(2)).byId(eq(locale.id));
+    verify(localeRepository, times(1)).byId(eq(locale.id));
   }
 
   @Test
