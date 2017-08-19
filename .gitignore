@@ -14,3 +14,4 @@ node_modules
 .translatr.yml
 data
 bin
+jmeter.log
