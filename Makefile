@@ -2,18 +2,32 @@ LOG_FILE = /tmp/load-test.log
 TARGET = target/load-test
 CSV_HEADER = Id,Name,Username,ProjectId,AccessToken
 
-PERSONAS = Margaret Armin
-COUNT = 15
-Armin_COUNT = 100
+PERSONAS = Margaret Armin Anne Martin Marie
+THREADS = 15
+LOOPS = 10
+Armin_THREADS = 100
+Armin_LOOPS = 150
 
 log = $(shell echo "$@" | tee -a "$(LOG_FILE)")
 log_start = $(call log,$(1))
 
-$(TARGET)/%.sql:
+$(TARGET)/load-test.properties:
+	echo "[AppSpecific]" > $@
+
+$(TARGET)/%.sql: $(TARGET)/load-test.properties
 	mkdir -p $(TARGET)
-	for i in `seq 1 $(or $($(@:$(TARGET)/%.sql=%_COUNT)),$($(@:$(TARGET)/%.sql=%_COUNT)),$(COUNT))`; do \
-		measurements/user-template.sh $(@:$(TARGET)/%.sql=%) $$i ; \
+	$(eval PERSONA := $(@:$(TARGET)/%.sql=%))
+	$(eval T := $(or $($(PERSONA)_THREADS),$($(PERSONA)_THREADS),$(THREADS)))
+	$(eval L := $(or $($(PERSONA)_LOOPS),$($(PERSONA)_LOOPS),$(LOOPS)))
+	for i in `seq 1 $(T)`; do \
+		load-test/user-template.sh $(@:$(TARGET)/%.sql=%) $$i ; \
 	done >> $@
+
+	echo >> $<
+	echo "; Persona $(PERSONA)" >> $<
+	echo "$(@:$(TARGET)/%.sql=%.threads) = $(T)" >> $<
+	echo "$(@:$(TARGET)/%.sql=%.loops) = $(L)" >> $<
+	echo "$(@:$(TARGET)/%.sql=%.csv) = $(PWD)/$(@:$(TARGET)/%.sql=$(TARGET)/%.csv)" >> $<
 
 $(TARGET)/%.csv: $(TARGET)/%.sql
 	mkdir -p $(TARGET)
@@ -30,3 +44,4 @@ clean:
 	rm -f $(PERSONAS:%=$(TARGET)/%.csv)
 	rm -f $(PERSONAS:%=$(TARGET)/%.sql)
 	rm -f $(TARGET)/init.sql
+	rm -f $(TARGET)/load-test.properties

@@ -9,6 +9,7 @@ LOG_FILE="/tmp/load-test.log"
 JMETER="$(which jmeter)"
 JMETER_VERSION="apache-jmeter-3.2"
 JMETER_URL="http://www.apache.org/dist/jmeter/binaries/$JMETER_VERSION.zip"
+export JMETER_OPTS="-Xmx1024m"
 
 SECRET="794DC7FC-CB32-4D28-A173-AA388239C8BD"
 
@@ -47,8 +48,8 @@ help() {
 }
 
 clean_database() {
-	log_start Cleaning database
-	cat "$MAIN_DIR/measurements/cleanup.sql" | docker exec -i translatr_db-translatr_1 psql -U postgres >> "$LOG_FILE"
+	log_start Resetting database
+	cat "$MAIN_DIR/load-test/cleanup.sql" | docker exec -i translatr_db-translatr_1 psql -U postgres >> "$LOG_FILE"
 	log_end
 }
 
@@ -81,7 +82,7 @@ start_translatr() {
 	cd "$DIST_DIR/translatr-"*/
 	log_start Starting translatr
 	bin/translatr \
-		-Dconfig.file="$MAIN_DIR/measurements/load-test.conf" \
+		-Dconfig.file="$MAIN_DIR/load-test/load-test.conf" \
 		-Dplay.crypto.secret="$SECRET" >> "$DIST_DIR/load-test.log" \
 		2>&1 &
 	while ! nc -z localhost 9000; do
@@ -136,10 +137,9 @@ run_load_test() {
 	prepare_jmeter
 	rm -rf $LOAD_TEST_DIR/results $LOAD_TEST_DIR/samples.log
 	log_start Running load test
-	JMETER_OPTS="-Xmx1024m -Djava.awt.headless=true" $JMETER -n -t "$MAIN_DIR/measurements/Translatr.jmx" \
+	$JMETER -n -t "$MAIN_DIR/load-test/Translatr.jmx" \
 		-e -l $LOAD_TEST_DIR/samples.log \
-		-JMargaret.csv=$LOAD_TEST_DIR/Margaret.csv \
-		-JArmin.csv=$LOAD_TEST_DIR/Armin.csv \
+		-q "$LOAD_TEST_DIR/load-test.properties" \
 		-o "$LOAD_TEST_DIR/results" >> "$LOG_FILE"
 	log_end
 	stop_translatr
