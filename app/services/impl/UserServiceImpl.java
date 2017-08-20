@@ -88,14 +88,14 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
       }
     }
 
-    return save(user);
+    return create(user);
   }
 
   @Override
   public User addLinkedAccount(final AuthUserIdentity oldUser, final AuthUserIdentity newUser) {
     final User u = getLocalUser(oldUser);
     u.linkedAccounts.add(LinkedAccount.createFrom(newUser));
-    return save(u);
+    return create(u);
   }
 
   @Override
@@ -212,7 +212,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   }
 
   @Override
-  protected void preSave(User t) {
+  protected void preCreate(User t) {
     User cached = cache.get(User.getCacheKey(t.getId()));
     if (cached != null) {
       cache.removeByPrefix(User.getCacheKey(cached.username));
@@ -220,8 +220,8 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   }
 
   @Override
-  protected void postSave(User t) {
-    super.postSave(t);
+  protected void postCreate(User t) {
+    super.postCreate(t);
 
     // When user has been created
     cache.removeByPrefix("user:criteria:");

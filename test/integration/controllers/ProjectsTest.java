@@ -233,7 +233,7 @@ public class ProjectsTest extends ControllerTest {
                 DEFAULT_LIMIT,
                 DEFAULT_OFFSET).url());
 
-    spy(projectUserService).save((ProjectUser) any());
+    spy(projectUserService).create((ProjectUser) any());
   }
 
   @Test
@@ -262,7 +262,7 @@ public class ProjectsTest extends ControllerTest {
 
     ProjectAssert.assertThat(project1).ownerIsEqualTo(janeDoe);
 
-    spy(projectService).save((Project) any());
+    spy(projectService).create(any());
 
     // reset owner
     project1.owner = johnSmith;
@@ -302,7 +302,7 @@ public class ProjectsTest extends ControllerTest {
         .thenAnswer(a -> HasNextPagedList.create(project1));
     when(projectService.byOwnerAndName(eq(johnSmith.username), eq(project1.name)))
         .thenAnswer(a -> project1);
-    when(projectService.save((Project) any()))
+    when(projectService.create(any()))
         .thenAnswer(a -> a.getArguments()[0]);
     when(projectService.update(any()))
         .thenAnswer(a -> a.getArguments()[0]);
@@ -310,7 +310,7 @@ public class ProjectsTest extends ControllerTest {
         .thenAnswer(a -> HasNextPagedList.create(
             by(project1, johnSmith, ProjectRole.Owner),
             by(project1, janeDoe, ProjectRole.Manager)));
-    when(projectUserService.save((ProjectUser) any()))
+    when(projectUserService.create(any()))
         .thenAnswer(a -> a.getArguments()[0]);
 
     return ArrayUtils.addAll(

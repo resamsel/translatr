@@ -124,12 +124,15 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
   }
 
   @Override
-  protected void postSave(Key t) {
-    super.postSave(t);
+  protected void postCreate(Key t) {
+    super.postCreate(t);
 
     // When key has been created, the project cache needs to be invalidated
     cache.remove(Project.getCacheKey(t.project.id));
-    cache.removeByPrefix(Project.getCacheKey(t.project.owner.username, t.project.name));
+    if (t.project.owner != null) {
+      cache.removeByPrefix(Project.getCacheKey(t.project.owner.username, t.project.name));
+      cache.removeByPrefix("key:criteria:null:" + t.project.owner.username + ":" + t.project.name);
+    }
 
     cache.removeByPrefix("key:criteria:" + t.project.id);
   }

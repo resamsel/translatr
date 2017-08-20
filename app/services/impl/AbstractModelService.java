@@ -66,7 +66,22 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
    */
   @Override
   public MODEL create(MODEL model) {
-    return modelRepository.create(model);
+    LOGGER.debug("create({})", model);
+
+    preCreate(model);
+
+    MODEL m = modelRepository.save(model);
+
+    postCreate(m);
+
+    return m;
+  }
+
+  protected void preCreate(MODEL t) {
+  }
+
+  protected void postCreate(MODEL t) {
+    cache.set(cacheKeyGetter.apply(t.getId(), new String[0]), t, 60);
   }
 
   /**
@@ -85,29 +100,6 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
 
   protected void postUpdate(MODEL t) {
     cache.removeByPrefix(cacheKeyGetter.apply(t.getId(), new String[0]));
-    cache.set(cacheKeyGetter.apply(t.getId(), new String[0]), t, 60);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public MODEL save(MODEL t) {
-    LOGGER.debug("save({})", t);
-
-    preSave(t);
-
-    MODEL m = modelRepository.save(t);
-
-    postSave(m);
-
-    return m;
-  }
-
-  protected void preSave(MODEL t) {
-  }
-
-  protected void postSave(MODEL t) {
     cache.set(cacheKeyGetter.apply(t.getId(), new String[0]), t, 60);
   }
 

@@ -78,8 +78,8 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
   }
 
   @Override
-  protected void postSave(Message t) {
-    super.postSave(t);
+  protected void postCreate(Message t) {
+    super.postCreate(t);
 
     // When message has been created, the project cache needs to be invalidated
     cache.removeByPrefix(Project.getCacheKey(t.key.project.id));

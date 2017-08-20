@@ -66,7 +66,7 @@ public class AuthenticateServiceImpl extends AbstractUserService {
   @Override
   public AuthUser update(AuthUser knownUser) {
     User user = userService.getLocalUser(knownUser);
-    logEntryService.save(
+    logEntryService.create(
         LogEntry.from(ActionType.Login, user, null, dto.User.class, null, dto.User.from(user)));
 
     return knownUser;

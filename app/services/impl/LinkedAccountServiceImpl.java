@@ -4,7 +4,6 @@ import criterias.LinkedAccountCriteria;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-import models.AccessToken;
 import models.LinkedAccount;
 import repositories.LinkedAccountRepository;
 import services.CacheService;
@@ -40,8 +39,8 @@ public class LinkedAccountServiceImpl
   }
 
   @Override
-  protected void postSave(LinkedAccount t) {
-    super.postSave(t);
+  protected void postCreate(LinkedAccount t) {
+    super.postCreate(t);
 
     // When linked account has been created
     cache.removeByPrefix("linkedAccount:criteria:");

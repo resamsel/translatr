@@ -24,7 +24,7 @@ public class RevertDeleteAccessTokenCommand implements Command<models.AccessToke
 
   @Override
   public void execute(Injector injector) {
-    injector.instanceOf(AccessTokenService.class).save(accessToken.toModel());
+    injector.instanceOf(AccessTokenService.class).update(accessToken.toModel());
   }
 
   /**

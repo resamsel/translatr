@@ -19,8 +19,6 @@ public interface ModelService<T extends Model<T, ID>, ID, CRITERIA extends Abstr
 
   T update(T model);
 
-  T save(T t);
-
   Collection<T> save(Collection<T> t);
 
   void delete(T t);

@@ -100,8 +100,8 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
   }
 
   @Override
-  protected void postSave(LogEntry t) {
-    super.postSave(t);
+  protected void postCreate(LogEntry t) {
+    super.postCreate(t);
 
     // When user has been created
     cache.removeByPrefix("activity:criteria:");

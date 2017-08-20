@@ -96,7 +96,7 @@ public class Keys extends AbstractController {
       LOGGER.debug("Key: {}", Json.toJson(key));
 
       try {
-        keyService.save(key);
+        keyService.create(key);
       } catch (ConstraintViolationException e) {
         return badRequest(
             views.html.keys.create.render(createTemplate(), project, FormUtils.include(form, e)));
@@ -129,7 +129,7 @@ public class Keys extends AbstractController {
         LOGGER.debug("Key: {}", Json.toJson(key));
 
         try {
-          keyService.save(key);
+          keyService.create(key);
         } catch (ConstraintViolationException e) {
           return badRequest(
               views.html.keys.create.render(createTemplate(), project, FormUtils.include(form, e)));

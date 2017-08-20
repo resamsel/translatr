@@ -88,7 +88,7 @@ public class Locales extends AbstractController {
       locale.project = project;
 
       try {
-        localeService.save(locale);
+        localeService.create(locale);
       } catch (ConstraintViolationException e) {
         return badRequest(
             views.html.locales.create
@@ -124,7 +124,7 @@ public class Locales extends AbstractController {
         LOGGER.debug("Locale: {}", Json.toJson(locale));
 
         try {
-          localeService.save(locale);
+          localeService.create(locale);
         } catch (ConstraintViolationException e) {
           return badRequest(views.html.locales.create.render(createTemplate(), project,
               FormUtils.include(form, e)));

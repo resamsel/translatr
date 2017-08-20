@@ -120,8 +120,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   }
 
   @Override
-  protected void postSave(Project t) {
-    super.postSave(t);
+  protected void postCreate(Project t) {
+    super.postCreate(t);
 
     // When project has been created, the project cache needs to be invalidated
     cache.removeByPrefix("project:criteria:");

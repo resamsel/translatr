@@ -165,7 +165,7 @@ public class Projects extends AbstractController {
       }
 
       try {
-        project = projectService.save(project);
+        project = projectService.create(project);
       } catch (ConstraintViolationException e) {
         return badRequest(
             views.html.projects.create.render(createTemplate(), FormUtils.include(form, e)));
@@ -186,7 +186,7 @@ public class Projects extends AbstractController {
       Project project = projectService.byOwnerAndName(user.username, projectName);
       if (project == null) {
         try {
-          project = projectService.save(new Project(projectName).withOwner(user));
+          project = projectService.create(new Project(projectName).withOwner(user));
         } catch (ConstraintViolationException e) {
           return badRequest(
               views.html.projects.create.render(createTemplate(), FormUtils
@@ -324,7 +324,7 @@ public class Projects extends AbstractController {
       User member = userService.byUsername(form.get().getUsername());
 
       projectUserService
-          .save(form.get().fill(new ProjectUser()).withProject(project).withUser(member));
+          .create(form.get().fill(new ProjectUser()).withProject(project).withUser(member));
 
       return redirect(project.membersRoute());
     });

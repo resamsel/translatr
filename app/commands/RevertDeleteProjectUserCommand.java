@@ -41,7 +41,7 @@ public class RevertDeleteProjectUserCommand implements Command<models.ProjectUse
     LOGGER.debug("Reverting member {} from project {}", projectUser.userUsername,
         projectUser.projectName);
 
-    injector.instanceOf(ProjectUserService.class).save(model);
+    injector.instanceOf(ProjectUserService.class).update(model);
   }
 
   /**

@@ -49,7 +49,7 @@ public class RevertDeleteLocaleCommand implements Command<models.Locale> {
     Project project = injector.instanceOf(ProjectService.class).byId(locale.projectId);
 
     models.Locale model = locale.toModel(project);
-    injector.instanceOf(LocaleService.class).save(model);
+    injector.instanceOf(LocaleService.class).update(model);
     locale.id = model.id;
 
     Map<String, Key> keys =

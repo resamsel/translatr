@@ -44,7 +44,7 @@ public class RevertDeleteKeyCommand implements Command<models.Key> {
     Project project = injector.instanceOf(ProjectService.class).byId(key.projectId);
 
     models.Key model = key.toModel(project);
-    injector.instanceOf(KeyService.class).save(model);
+    injector.instanceOf(KeyService.class).update(model);
     key.id = model.id;
 
     Map<String, Locale> locales = injector.instanceOf(LocaleService.class)

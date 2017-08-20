@@ -65,7 +65,7 @@ public class RevertDeleteProjectCommand implements Command<models.Project> {
     models.Project model = projectService.byId(project.id);
 
     LOGGER.info("Before save project: deleted = {}", model.deleted);
-    projectService.save(model.withName(project.name).withDeleted(false));
+    projectService.update(model.withName(project.name).withDeleted(false));
     LOGGER.info("After save project: deleted = {}", model.deleted);
 
     Map<String, Key> keys = injector.instanceOf(KeyService.class)

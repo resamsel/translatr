@@ -85,6 +85,17 @@ public class KeyServiceTest {
         .as("uncached (invalidated)")
         .nameIsEqualTo("ab");
     verify(keyRepository, times(2)).findBy(eq(criteria));
+
+    LOGGER.debug("Cache keys before key creation: {}", cacheService.keys().keySet());
+    LOGGER.debug("Project ID: {}", key.project.id);
+    // This should trigger cache invalidation
+    keyService.create(createKey(UUID.randomUUID(), key.project.id, "c"));
+    LOGGER.debug("Cache keys after key creation: {}", cacheService.keys().keySet());
+
+    assertThat(keyService.findBy(criteria).getList().get(0))
+        .as("uncached (invalidated after creation)")
+        .nameIsEqualTo("c");
+    verify(keyRepository, times(3)).findBy(eq(criteria));
   }
 
   @Test
@@ -124,12 +135,15 @@ public class KeyServiceTest {
         mock(LogEntryService.class)
     );
 
+    when(keyRepository.save((Key) any())).then(this::persist);
     when(keyRepository.create(any())).then(this::persist);
     when(keyRepository.update(any())).then(this::persist);
   }
 
   private Key persist(InvocationOnMock a) {
     Key t = a.getArgument(0);
+    if(t.id == null)
+      t.id = UUID.randomUUID();
     LOGGER.debug("mock: persisting {} - {}", t.getClass(), Json.toJson(t));
     when(keyRepository.byId(eq(t.id), any())).thenReturn(t);
     when(keyRepository.byProjectAndName(eq(t.project), eq(t.name))).thenReturn(t);

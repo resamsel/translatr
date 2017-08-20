@@ -46,8 +46,8 @@ public class AccessTokenServiceImpl extends
   }
 
   @Override
-  protected void postSave(AccessToken t) {
-    super.postSave(t);
+  protected void postCreate(AccessToken t) {
+    super.postCreate(t);
 
     // When user has been created
     cache.removeByPrefix("accessToken:criteria:");

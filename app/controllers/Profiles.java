@@ -84,7 +84,7 @@ public class Profiles extends AbstractController {
       }
 
       try {
-        user = userService.save(form.get().into(user));
+        user = userService.update(form.get().into(user));
       } catch (ConstraintViolationException e) {
         return badRequest(
             views.html.users.edit.render(createTemplate(), user, FormUtils.include(form, e)));
@@ -199,7 +199,7 @@ public class Profiles extends AbstractController {
 
       AccessToken accessToken;
       try {
-        accessToken = accessTokenService.save(form.get().fill(new AccessToken()).withUser(user));
+        accessToken = accessTokenService.create(form.get().fill(new AccessToken()).withUser(user));
       } catch (ConstraintViolationException e) {
         return badRequest(views.html.users.accessTokenCreate.render(createTemplate(), user,
             FormUtils.include(form, e)));

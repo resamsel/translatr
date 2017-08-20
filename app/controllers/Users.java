@@ -210,7 +210,7 @@ public class Users extends AbstractController {
       }
 
       try {
-        accessTokenService.save(form.get().fill(accessToken));
+        accessTokenService.update(form.get().fill(accessToken));
       } catch (ConstraintViolationException e) {
         return badRequest(views.html.users.accessToken.render(createTemplate(), user, accessToken,
             FormUtils.include(form, e)));
