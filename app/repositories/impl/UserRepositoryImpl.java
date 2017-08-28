@@ -2,6 +2,9 @@ package repositories.impl;
 
 import static utils.Stopwatch.log;
 
+import actors.ActivityActor;
+import actors.ActivityProtocol.Activity;
+import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -11,15 +14,14 @@ import criterias.UserCriteria;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.ActionType;
-import models.LogEntry;
 import models.User;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repositories.LogEntryRepository;
 import repositories.UserRepository;
 import utils.QueryUtils;
 
@@ -33,8 +35,9 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   };
 
   @Inject
-  public UserRepositoryImpl(Validator validator, LogEntryRepository logEntryRepository) {
-    super(validator, logEntryRepository);
+  public UserRepositoryImpl(Validator validator,
+      @Named(ActivityActor.NAME) ActorRef activityActor) {
+    super(validator, activityActor);
   }
 
   @Override
@@ -144,8 +147,10 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   @Override
   protected void prePersist(User t, boolean update) {
     if (update) {
-      logEntryRepository.save(
-          LogEntry.from(ActionType.Update, null, dto.User.class, toDto(byId(t.id)), toDto(t)));
+      activityActor.tell(
+          new Activity<>(ActionType.Update, null, dto.User.class, toDto(byId(t.id)), toDto(t)),
+          null
+      );
     }
   }
 

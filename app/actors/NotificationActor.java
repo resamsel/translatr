@@ -9,6 +9,7 @@ import services.NotificationService;
 
 @Singleton
 public class NotificationActor extends UntypedActor {
+
   public static final String NAME = "notification-actor";
 
   private final NotificationService notificationService;
@@ -24,8 +25,8 @@ public class NotificationActor extends UntypedActor {
       PublishNotification t = (PublishNotification) msg;
 
       notificationService.publish(t.id, t.type, t.name, t.contentId, t.userId, t.projectId);
-    } else if(msg instanceof FollowNotification) {
-      FollowNotification t = (FollowNotification)msg;
+    } else if (msg instanceof FollowNotification) {
+      FollowNotification t = (FollowNotification) msg;
 
       notificationService.follow(t.userId, t.projectId);
     }

@@ -1,5 +1,8 @@
 package repositories.impl;
 
+import actors.ActivityActor;
+import actors.ActivityProtocol.Activity;
+import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -10,14 +13,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.AccessToken;
 import models.ActionType;
-import models.LogEntry;
 import org.apache.commons.lang3.StringUtils;
 import repositories.AccessTokenRepository;
-import repositories.LogEntryRepository;
 import utils.QueryUtils;
 
 @Singleton
@@ -29,8 +31,9 @@ public class AccessTokenRepositoryImpl extends
   };
 
   @Inject
-  public AccessTokenRepositoryImpl(Validator validator, LogEntryRepository logEntryRepository) {
-    super(validator, logEntryRepository);
+  public AccessTokenRepositoryImpl(Validator validator,
+      @Named(ActivityActor.NAME) ActorRef activityActor) {
+    super(validator, activityActor);
   }
 
   @Override
@@ -82,8 +85,12 @@ public class AccessTokenRepositoryImpl extends
   @Override
   protected void prePersist(AccessToken t, boolean update) {
     if (update) {
-      logEntryRepository.save(LogEntry.from(ActionType.Update, null, dto.AccessToken.class,
-          dto.AccessToken.from(byId(t.id)), dto.AccessToken.from(t)));
+      activityActor.tell(
+          new Activity<>(
+              ActionType.Update, null, dto.AccessToken.class, dto.AccessToken.from(byId(t.id)),
+              dto.AccessToken.from(t)),
+          null
+      );
     }
   }
 
@@ -93,8 +100,11 @@ public class AccessTokenRepositoryImpl extends
   @Override
   protected void postSave(AccessToken t, boolean update) {
     if (!update) {
-      logEntryRepository.save(LogEntry.from(ActionType.Create, null, dto.AccessToken.class, null,
-          dto.AccessToken.from(t)));
+      activityActor.tell(
+          new Activity<>(
+              ActionType.Create, null, dto.AccessToken.class, null, dto.AccessToken.from(t)),
+          null
+      );
     }
   }
 

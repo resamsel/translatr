@@ -2,6 +2,10 @@ package repositories.impl;
 
 import static utils.Stopwatch.log;
 
+import actors.ActivityActor;
+import actors.ActivityProtocol.Activities;
+import actors.ActivityProtocol.Activity;
+import akka.actor.ActorRef;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
@@ -15,11 +19,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.ActionType;
 import models.Key;
-import models.LogEntry;
 import models.Message;
 import models.Project;
 import models.ProjectRole;
@@ -27,7 +31,6 @@ import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
-import repositories.LogEntryRepository;
 import repositories.MessageRepository;
 import services.PermissionService;
 import utils.QueryUtils;
@@ -45,9 +48,9 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   private final PermissionService permissionService;
 
   @Inject
-  public KeyRepositoryImpl(Validator validator, MessageRepository messageRepository,
-      LogEntryRepository logEntryRepository, PermissionService permissionService) {
-    super(validator, logEntryRepository);
+  public KeyRepositoryImpl(Validator validator, @Named(ActivityActor.NAME) ActorRef activityActor,
+      MessageRepository messageRepository, PermissionService permissionService) {
+    super(validator, activityActor);
 
     this.messageRepository = messageRepository;
     this.permissionService = permissionService;
@@ -142,8 +145,12 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   @Override
   protected void prePersist(Key t, boolean update) {
     if (update) {
-      logEntryRepository.save(LogEntry.from(ActionType.Update, t.project, dto.Key.class,
-          dto.Key.from(byId(t.id)), dto.Key.from(t)));
+      activityActor.tell(
+          new Activity<>(
+              ActionType.Update, t.project, dto.Key.class,
+              dto.Key.from(byId(t.id)), dto.Key.from(t)),
+          null
+      );
     }
   }
 
@@ -153,8 +160,10 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   @Override
   protected void postSave(Key t, boolean update) {
     if (!update) {
-      logEntryRepository
-          .save(LogEntry.from(ActionType.Create, t.project, dto.Key.class, null, dto.Key.from(t)));
+      activityActor.tell(
+          new Activity<>(ActionType.Create, t.project, dto.Key.class, null, dto.Key.from(t)),
+          null
+      );
     }
   }
 
@@ -169,8 +178,10 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
       throw new PermissionException("User not allowed in project");
     }
 
-    logEntryRepository
-        .save(LogEntry.from(ActionType.Delete, t.project, dto.Key.class, dto.Key.from(t), null));
+    activityActor.tell(
+        new Activity<>(ActionType.Delete, t.project, dto.Key.class, dto.Key.from(t), null),
+        null
+    );
 
     messageRepository.delete(messageRepository.byKey(t));
   }
@@ -180,9 +191,14 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
    */
   @Override
   protected void preDelete(Collection<Key> t) {
-    logEntryRepository.save(t.stream()
-        .map(k -> LogEntry.from(ActionType.Delete, k.project, dto.Key.class, dto.Key.from(k), null))
-        .collect(Collectors.toList()));
+    activityActor.tell(
+        new Activities<>(
+            t.stream()
+                .map(k -> new Activity<>(ActionType.Delete, k.project, dto.Key.class,
+                    dto.Key.from(k), null))
+                .collect(Collectors.toList())),
+        null
+    );
 
     messageRepository
         .delete(messageRepository.byKeys(t.stream().map(k -> k.id).collect(Collectors.toList())));

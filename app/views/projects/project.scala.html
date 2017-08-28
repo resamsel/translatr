@@ -23,7 +23,7 @@
 }
 
 @main(template.withTitle(project.name).withName("project-info"))(tags.search(form)())(nav(project, "info")) {
-	@content("flex") {
+	@tags.mainContent("flex") {
 		@contentCard(project.name, styleClass = "info", badge = project.id.toString) {
 			<div class="progress">
 				<div class="determinate" style="width: @{project.progress()*100}%;"></div>

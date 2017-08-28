@@ -3,7 +3,7 @@
 @import utils.ActivityUtils._
 
 @main(template.withTitle(project.name).withName("project-keys"))(tags.search(form)())(nav(project, "keys")) {
-	@content() {
+	@tags.mainContent() {
 		@tags.collection(keys.getList, "keys.empty", "keys") {
 			<span class="title">@Messages("key.name")</span>
 			@tags.sortOrders {

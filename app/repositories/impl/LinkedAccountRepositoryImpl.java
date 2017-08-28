@@ -1,15 +1,17 @@
 package repositories.impl;
 
+import actors.ActivityActor;
+import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import criterias.HasNextPagedList;
 import criterias.LinkedAccountCriteria;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.validation.Validator;
 import models.LinkedAccount;
 import repositories.LinkedAccountRepository;
-import repositories.LogEntryRepository;
 import utils.QueryUtils;
 
 public class LinkedAccountRepositoryImpl extends
@@ -20,8 +22,9 @@ public class LinkedAccountRepositoryImpl extends
   };
 
   @Inject
-  public LinkedAccountRepositoryImpl(Validator validator, LogEntryRepository logEntryRepository) {
-    super(validator, logEntryRepository);
+  public LinkedAccountRepositoryImpl(Validator validator,
+      @Named(ActivityActor.NAME) ActorRef activityActor) {
+    super(validator, activityActor);
   }
 
   @Override

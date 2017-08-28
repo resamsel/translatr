@@ -4,6 +4,9 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static utils.Stopwatch.log;
 
+import actors.ActivityActor;
+import actors.ActivityProtocol.Activities;
+import actors.ActivityProtocol.Activity;
 import actors.MessageWordCountActor;
 import actors.WordCountProtocol.ChangeMessageWordCount;
 import akka.actor.ActorRef;
@@ -26,13 +29,11 @@ import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.ActionType;
 import models.Key;
-import models.LogEntry;
 import models.Message;
 import models.Project;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repositories.LogEntryRepository;
 import repositories.MessageRepository;
 import utils.MessageUtils;
 import utils.QueryUtils;
@@ -50,9 +51,10 @@ public class MessageRepositoryImpl extends
   };
 
   @Inject
-  public MessageRepositoryImpl(Validator validator, LogEntryRepository logEntryRepository,
+  public MessageRepositoryImpl(Validator validator,
+      @Named(ActivityActor.NAME) ActorRef activityActor,
       @Named(MessageWordCountActor.NAME) ActorRef messageWordCountActor) {
-    super(validator, logEntryRepository);
+    super(validator, activityActor);
 
     this.messageWordCountActor = messageWordCountActor;
   }
@@ -159,7 +161,7 @@ public class MessageRepositoryImpl extends
       if (!Objects.equals(t.value, existing.value))
       // Only track changes of message´s value
       {
-        logEntryRepository.save(logEntryUpdate(t, existing));
+        activityActor.tell(logEntryUpdate(t, existing), null);
       }
     }
   }
@@ -184,12 +186,16 @@ public class MessageRepositoryImpl extends
     List<UUID> ids = t.stream().filter(m -> m.id != null).map(m -> m.id).collect(toList());
     Map<UUID, Message> messages = ids.size() > 0 ? byIds(ids) : Collections.emptyMap();
 
-    logEntryRepository.save(t.stream().filter(
-        // Only track changes of message´s value
-        m -> Ebean.getBeanState(m).isNew() || !Objects.equals(m.value, messages.get(m.id).value))
-        .map(m -> Ebean.getBeanState(m).isNew() ? logEntryCreate(m)
-            : logEntryUpdate(m, messages.get(m.id)))
-        .collect(toList()));
+    activityActor.tell(
+        new Activities<>(t.stream().filter(
+            // Only track changes of message´s value
+            m -> Ebean.getBeanState(m).isNew() || !Objects
+                .equals(m.value, messages.get(m.id).value))
+            .map(m -> Ebean.getBeanState(m).isNew() ? logEntryCreate(m)
+                : logEntryUpdate(m, messages.get(m.id)))
+            .collect(toList())),
+        null
+    );
   }
 
   /**
@@ -198,7 +204,7 @@ public class MessageRepositoryImpl extends
   @Override
   protected void postSave(Message t, boolean update) {
     if (!update) {
-      logEntryRepository.save(logEntryCreate(t));
+      activityActor.tell(logEntryCreate(t), null);
     }
   }
 
@@ -233,8 +239,11 @@ public class MessageRepositoryImpl extends
    */
   @Override
   public void preDelete(Message t) {
-    logEntryRepository.save(LogEntry.from(ActionType.Delete, t.key.project, dto.Message.class,
-        dto.Message.from(t), null));
+    activityActor.tell(
+        new Activity<>(ActionType.Delete, t.key.project, dto.Message.class, dto.Message.from(t),
+            null),
+        null
+    );
   }
 
   /**
@@ -242,8 +251,11 @@ public class MessageRepositoryImpl extends
    */
   @Override
   protected void preDelete(Collection<Message> t) {
-    logEntryRepository.save(t.stream().map(m -> LogEntry.from(ActionType.Delete, m.key.project,
-        dto.Message.class, dto.Message.from(m), null)).collect(toList()));
+    activityActor.tell(
+        new Activities<>(t.stream().map(m -> new Activity<>(ActionType.Delete, m.key.project,
+            dto.Message.class, dto.Message.from(m), null)).collect(toList())),
+        null
+    );
   }
 
   /**
@@ -273,13 +285,23 @@ public class MessageRepositoryImpl extends
     messageWordCountActor.tell(wordCount.values(), null);
   }
 
-  private LogEntry logEntryCreate(Message message) {
-    return LogEntry.from(ActionType.Create, message.key.project, dto.Message.class, null,
-        dto.Message.from(message));
+  private Activity<dto.Message> logEntryCreate(Message message) {
+    return new Activity<>(
+        ActionType.Create,
+        message.key.project,
+        dto.Message.class,
+        null,
+        dto.Message.from(message)
+    );
   }
 
-  private LogEntry logEntryUpdate(Message message, Message previous) {
-    return LogEntry.from(ActionType.Update, message.key.project, dto.Message.class,
-        dto.Message.from(previous), dto.Message.from(message));
+  private Activity<dto.Message> logEntryUpdate(Message message, Message previous) {
+    return new Activity<>(
+        ActionType.Update,
+        message.key.project,
+        dto.Message.class,
+        dto.Message.from(previous),
+        dto.Message.from(message)
+    );
   }
 }

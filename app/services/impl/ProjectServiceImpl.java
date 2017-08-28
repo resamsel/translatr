@@ -12,6 +12,9 @@ import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.Locale;
 import models.Project;
+import models.ProjectRole;
+import models.ProjectUser;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
@@ -22,6 +25,7 @@ import services.LocaleService;
 import services.LogEntryService;
 import services.MessageService;
 import services.ProjectService;
+import services.ProjectUserService;
 
 /**
  * @author resamsel
@@ -38,12 +42,13 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   private final KeyService keyService;
   private final MessageService messageService;
   private final MessageRepository messageRepository;
+  private final ProjectUserService projectUserService;
 
   @Inject
   public ProjectServiceImpl(Validator validator, CacheService cache,
       ProjectRepository projectRepository, LocaleService localeService, KeyService keyService,
       MessageService messageService, MessageRepository messageRepository,
-      LogEntryService logEntryService) {
+      ProjectUserService projectUserService, LogEntryService logEntryService) {
     super(validator, cache, projectRepository, Project::getCacheKey, logEntryService);
 
     this.projectRepository = projectRepository;
@@ -51,6 +56,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     this.keyService = keyService;
     this.messageService = messageService;
     this.messageRepository = messageRepository;
+    this.projectUserService = projectUserService;
   }
 
   /**
@@ -117,6 +123,32 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     keyService.resetWordCount(projectId);
     messageService.resetWordCount(projectId);
     messageService.save(messageRepository.byLocales(localeIds));
+  }
+
+  @Override
+  public void changeOwner(Project project, User owner) {
+    requireNonNull(project, "project");
+    requireNonNull(owner, "owner");
+
+    // Make old owner a member of type Manager
+    ProjectUser ownerRole = project.members.stream()
+        .filter(m -> m.role == ProjectRole.Owner)
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Project has no owner"));
+
+    ownerRole.role = ProjectRole.Manager;
+
+    // Make new owner a member of type Owner
+    ProjectUser newOwnerRole = project.members.stream()
+        .filter(m -> m.user.id.equals(owner.id))
+        .findFirst()
+        .orElseGet(() -> new ProjectUser(ProjectRole.Manager).withProject(project).withUser(owner));
+
+    newOwnerRole.role = ProjectRole.Owner;
+
+    projectUserService.update(ownerRole);
+    projectUserService.update(newOwnerRole);
+    modelRepository.update(project.withOwner(owner));
   }
 
   @Override

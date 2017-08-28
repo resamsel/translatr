@@ -1,7 +1,7 @@
 @(template: utils.Template, user: User, accessToken: AccessToken, form: Form[forms.AccessTokenForm])
 
 @main(template.withTitle(user.name).withName("user-access-token").withBackLink(routes.Users.user(user.username)))()(nav(template, user, "accessTokens")) {
-	@content("accessTokens offset-m2 m8") {
+	@tags.mainContent("accessTokens offset-m2 m8") {
 		<form action="@accessToken.doEditRoute" method="post">
 			<div class="card no-image">
 				<div class="card-content">

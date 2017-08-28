@@ -39,6 +39,8 @@ import models.ProjectUser;
 import models.Suggestable;
 import models.Suggestable.Data;
 import models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.data.Form;
 import play.data.FormFactory;
@@ -64,6 +66,8 @@ import utils.Template;
 @With(ContextAction.class)
 @SubjectPresent(forceBeforeAuthCheck = true)
 public class Projects extends AbstractController {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(Projects.class);
 
   private final ProjectService projectService;
   private final LocaleService localeService;
@@ -296,6 +300,9 @@ public class Projects extends AbstractController {
     return project(username, projectName, (user, project) -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
+      Form<ProjectOwnerForm> projectOwnerForm = ProjectOwnerForm.form(formFactory).fill(
+          new ProjectOwnerForm().withProjectId(project.id).withProjectName(project.name)
+      );
 
       return ok(views.html.projects.members.render(
           createTemplate(),
@@ -304,7 +311,7 @@ public class Projects extends AbstractController {
               .findBy(ProjectUserCriteria.from(search).withProjectId(project.id))),
           form,
           ProjectUserForm.form(formFactory),
-          ProjectOwnerForm.form(formFactory)));
+          projectOwnerForm));
     });
   }
 
@@ -349,32 +356,40 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> doOwnerChangeBy(String username, String projectName) {
     return project(username, projectName, (user, project) -> {
-      Form<ProjectOwnerForm> form = ProjectOwnerForm.form(formFactory).bindFromRequest();
-
       if (!permissionService.hasPermissionAny(project, ProjectRole.Owner, ProjectRole.Manager)) {
         return redirectWithError(project.membersRoute(), "project.owner.change.denied",
             project.name);
       }
 
-      if (form.hasErrors()) {
-        Form<SearchForm> searchForm = Search.bindFromRequest(formFactory, configuration);
-        SearchForm search = searchForm.get();
+      Form<SearchForm> searchForm = Search.bindFromRequest(formFactory, configuration);
+      SearchForm search = searchForm.get();
 
+      Form<ProjectOwnerForm> form = ProjectOwnerForm.form(formFactory).bindFromRequest();
+      if (form.hasErrors()) {
+        LOGGER.debug("doOwnerChange: form errors: {}", form.errorsAsJson());
         return badRequest(views.html.projects.ownerChange.render(
             createTemplate(),
             project,
             projectUserService.findBy(ProjectUserCriteria.from(search).withProjectId(project.id)),
-            form));
+            form
+        ));
       }
+      ProjectOwnerForm projectOwner = form.get();
 
-      ProjectOwnerForm val = form.get();
-      // Make old owner a member of type Manager
-      project.members.stream().filter(m -> m.role == ProjectRole.Owner)
-          .forEach(m -> m.role = ProjectRole.Manager);
-      // Make new owner a member of type Owner
-      project.members.stream().filter(m -> m.user.id.equals(val.getOwnerId()))
-          .forEach(m -> m.role = ProjectRole.Owner);
-      projectService.update(project.withOwner(userService.byId(val.getOwnerId())));
+      try {
+        if (!project.name.equals(projectOwner.getProjectName())) {
+          project = projectService.update(project.withName(projectOwner.getProjectName()));
+        }
+
+        projectService.changeOwner(project, userService.byId(projectOwner.getOwnerId()));
+      } catch (ConstraintViolationException e) {
+        return badRequest(views.html.projects.ownerChange.render(
+            createTemplate(),
+            project,
+            projectUserService.findBy(ProjectUserCriteria.from(search).withProjectId(project.id)),
+            FormUtils.include(form, e)
+        ));
+      }
 
       return redirect(project.membersRoute());
     });

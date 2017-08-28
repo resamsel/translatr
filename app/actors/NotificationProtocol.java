@@ -1,5 +1,7 @@
 package actors;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.UUID;
 import models.ActionType;
 import models.LogEntry;
@@ -34,10 +36,22 @@ public class NotificationProtocol {
         case Update:
         case Login:
         case Logout:
-          id = Json.parse(logEntry.after).get("id").asText();
+          id = requireNonNull(
+              Json.parse(requireNonNull(
+                  logEntry.after,
+                  "logEntry.after"
+              )).get("id"),
+              "id"
+          ).asText();
           break;
         case Delete:
-          id = Json.parse(logEntry.before).get("id").asText();
+          id = requireNonNull(
+              Json.parse(requireNonNull(
+                  logEntry.before,
+                  "logEntry.before"
+              )).get("id"),
+              "id"
+          ).asText();
           break;
         default:
           id = "0";

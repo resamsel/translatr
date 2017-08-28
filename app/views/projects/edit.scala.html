@@ -1,7 +1,7 @@
 @(template: utils.Template, project: models.Project, form: Form[forms.ProjectForm])
 
 @main(template.withTitle(project.name).withName("project-edit").withBackLink(project.route))()(nav(project, "info")) {
-	@content("offset-m2 m8 offset-l3 l6") {
+	@tags.mainContent("offset-m2 m8 offset-l3 l6") {
 		<form action="@project.doEditRoute" method="post">
 			<div class="card no-image">
 				<div class="card-content">
@@ -9,9 +9,7 @@
 					@projects.formContent(form)
 				</div>
 				<div class="card-action">
-					<button
-						type="submit"
-						class="btn waves-effect waves-light btn-save">
+					<button class="btn waves-effect waves-light btn-save">
 						@Messages("button.save")
 						<i class="material-icons right">send</i>
 					</button>

@@ -1,5 +1,6 @@
 package repositories.impl;
 
+import actors.ActivityActor;
 import actors.NotificationActor;
 import actors.NotificationProtocol.PublishNotification;
 import akka.actor.ActorRef;
@@ -34,8 +35,9 @@ public class LogEntryRepositoryImpl extends
 
   @Inject
   public LogEntryRepositoryImpl(Validator validator,
+      @Named(ActivityActor.NAME) ActorRef activityActor,
       @Named(NotificationActor.NAME) ActorRef notificationActor) {
-    super(validator, null);
+    super(validator, activityActor);
 
     this.notificationActor = notificationActor;
   }

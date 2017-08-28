@@ -1,14 +1,23 @@
 @(project: Project, memberList: com.avaje.ebean.PagedList[ProjectUser], form: Form[forms.ProjectOwnerForm])
 
 @if(memberList.getList.size > 1) {
-	<p>
-		@Html(Messages("project.owner.change"))
-	</p>
+  <div>
+	@Html(Messages("project.owner.change"))
+  </div>
 	<br />
-	@inputs.select(form("ownerId"), "project-owner", "project.owner") {
+	@if(form.hasGlobalErrors) {
+		<div class="error">
+			@for(error <- form.globalErrors) {
+				<p class="red-text">@Messages(error.messages, error.arguments.toArray: _*)</p>
+			}
+		</div>
+	}
+
+	@inputs.hidden(form("projectId"), "project-id")
+	@inputs.select(form("ownerId"), "project-owner", "project.owner.new") {
 		@for(member <- memberList.getList) {
 			@if(member.user != project.owner) {
-			<option value="@member.user.id">@member.user.name &mdash; @member.role</option>
+				<option value="@member.user.id">@member.user.name &mdash; @member.role</option>
 			}
 		}
 	}

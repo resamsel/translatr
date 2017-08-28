@@ -42,6 +42,9 @@
 		name="application"
 		level="DEBUG" />
 	<logger
+		name="actors"
+		level="DEBUG" />
+	<logger
 		name="filters"
 		level="DEBUG" />
 	<logger
@@ -76,6 +79,9 @@
 		level="DEBUG" />
 	<logger
 		name="tests"
+		level="DEBUG" />
+	<logger
+		name="validators"
 		level="DEBUG" />
 	<logger
 		name="org.jdbcdslog.StatementLogger"

@@ -2,20 +2,24 @@ LOG_FILE = /tmp/load-test.log
 TARGET = target/load-test
 CSV_HEADER = Id,Name,Username,ProjectId,AccessToken
 
-PERSONAS = Margaret Armin Anne Martin Marie
+PERSONAS = Margaret Armin Anne Martin Marie Roberto
 THREADS = 15
 LOOPS = 10
 Armin_THREADS = 100
 Armin_LOOPS = 150
+Roberto_THREADS = 10
+Roberto_LOOPS = 15
 
 log = $(shell echo "$@" | tee -a "$(LOG_FILE)")
 log_start = $(call log,$(1))
+
+init:
+	mkdir -p $(TARGET)
 
 $(TARGET)/load-test.properties:
 	echo "[AppSpecific]" > $@
 
 $(TARGET)/%.sql: $(TARGET)/load-test.properties
-	mkdir -p $(TARGET)
 	$(eval PERSONA := $(@:$(TARGET)/%.sql=%))
 	$(eval T := $(or $($(PERSONA)_THREADS),$($(PERSONA)_THREADS),$(THREADS)))
 	$(eval L := $(or $($(PERSONA)_LOOPS),$($(PERSONA)_LOOPS),$(LOOPS)))
@@ -30,18 +34,16 @@ $(TARGET)/%.sql: $(TARGET)/load-test.properties
 	echo "$(@:$(TARGET)/%.sql=%.csv) = $(PWD)/$(@:$(TARGET)/%.sql=$(TARGET)/%.csv)" >> $<
 
 $(TARGET)/%.csv: $(TARGET)/%.sql
-	mkdir -p $(TARGET)
 	echo $(CSV_HEADER) > $@
 	grep -E ^-- "$^" | sed 's/^-- //' | grep "$(@:$(TARGET)/%.csv=%)" >> $@
 
 $(TARGET)/init.sql: $(PERSONAS:%=$(TARGET)/%.csv)
-	mkdir -p $(TARGET)
 	cat $(^:$(TARGET)/%.csv=$(TARGET)/%.sql) > $@
-
-init.sql: $(TARGET)/init.sql
 
 clean:
 	rm -f $(PERSONAS:%=$(TARGET)/%.csv)
 	rm -f $(PERSONAS:%=$(TARGET)/%.sql)
 	rm -f $(TARGET)/init.sql
 	rm -f $(TARGET)/load-test.properties
+
+-include init

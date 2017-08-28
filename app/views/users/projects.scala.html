@@ -4,7 +4,7 @@
 @import utils.ActivityUtils._
 
 @main(template.withTitle(user.name).withName("user-projects"))(tags.search(form)())(nav(template, user, "projects")) {
-	@content("projects") {
+	@tags.mainContent("projects") {
 		@tags.collection(projectList.getList, "projects.empty") {
 			<span class="title">@Messages("project")</span>
 			@tags.sortOrders {

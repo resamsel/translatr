@@ -4,7 +4,7 @@
 @import utils.ActivityUtils._
 
 @main(template.withTitle(Messages("users")).withName("users"))(tags.search(form)())() {
-	@content("users") {
+	@tags.mainContent("users") {
 		@tags.collection(userList.getList, "users.empty", "users") {
 			<span class="title">@Messages("user.name")</span>
 		} {

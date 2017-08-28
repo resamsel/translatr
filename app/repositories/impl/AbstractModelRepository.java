@@ -1,5 +1,6 @@
 package repositories.impl;
 
+import akka.actor.ActorRef;
 import com.avaje.ebean.Ebean;
 import criterias.AbstractSearchCriteria;
 import java.util.Collection;
@@ -14,7 +15,6 @@ import models.Model;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repositories.LogEntryRepository;
 import repositories.ModelRepository;
 import utils.TransactionUtils;
 
@@ -28,11 +28,11 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelRepository.class);
 
   protected final Validator validator;
-  protected final LogEntryRepository logEntryRepository;
+  final ActorRef activityActor;
 
-  AbstractModelRepository(Validator validator, LogEntryRepository logEntryRepository) {
+  AbstractModelRepository(Validator validator, ActorRef activityActor) {
     this.validator = validator;
-    this.logEntryRepository = logEntryRepository;
+    this.activityActor = activityActor;
   }
 
   /**

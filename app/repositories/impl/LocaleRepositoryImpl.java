@@ -4,6 +4,10 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static utils.Stopwatch.log;
 
+import actors.ActivityActor;
+import actors.ActivityProtocol.Activities;
+import actors.ActivityProtocol.Activity;
+import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -19,11 +23,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.ActionType;
 import models.Locale;
-import models.LogEntry;
 import models.Message;
 import models.Project;
 import models.ProjectRole;
@@ -32,7 +36,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LocaleRepository;
-import repositories.LogEntryRepository;
 import repositories.MessageRepository;
 import services.PermissionService;
 import utils.QueryUtils;
@@ -49,9 +52,10 @@ public class LocaleRepositoryImpl extends
   private final PermissionService permissionService;
 
   @Inject
-  public LocaleRepositoryImpl(Validator validator, MessageRepository messageRepository,
-      LogEntryRepository logEntryRepository, PermissionService permissionService) {
-    super(validator, logEntryRepository);
+  public LocaleRepositoryImpl(Validator validator,
+      @Named(ActivityActor.NAME) ActorRef activityActor, MessageRepository messageRepository,
+      PermissionService permissionService) {
+    super(validator, activityActor);
 
     this.messageRepository = messageRepository;
     this.permissionService = permissionService;
@@ -146,8 +150,11 @@ public class LocaleRepositoryImpl extends
   @Override
   protected void prePersist(Locale t, boolean update) {
     if (update) {
-      logEntryRepository.save(LogEntry.from(ActionType.Update, t.project, dto.Locale.class,
-          dto.Locale.from(byId(t.id)), dto.Locale.from(t)));
+      activityActor.tell(
+          new Activity<>(ActionType.Update, t.project, dto.Locale.class,
+              dto.Locale.from(byId(t.id)), dto.Locale.from(t)),
+          null
+      );
     }
   }
 
@@ -157,8 +164,10 @@ public class LocaleRepositoryImpl extends
   @Override
   protected void postSave(Locale t, boolean update) {
     if (!update) {
-      logEntryRepository.save(
-          LogEntry.from(ActionType.Create, t.project, dto.Locale.class, null, dto.Locale.from(t)));
+      activityActor.tell(
+          new Activity<>(ActionType.Create, t.project, dto.Locale.class, null, dto.Locale.from(t)),
+          null
+      );
     }
   }
 
@@ -173,8 +182,10 @@ public class LocaleRepositoryImpl extends
       throw new PermissionException("User not allowed in project");
     }
 
-    logEntryRepository.save(
-        LogEntry.from(ActionType.Delete, t.project, dto.Locale.class, dto.Locale.from(t), null));
+    activityActor.tell(
+        new Activity<>(ActionType.Delete, t.project, dto.Locale.class, dto.Locale.from(t), null),
+        null
+    );
 
     messageRepository.delete(messageRepository.byLocale(t.id));
   }
@@ -184,8 +195,11 @@ public class LocaleRepositoryImpl extends
    */
   @Override
   public void preDelete(Collection<Locale> t) {
-    logEntryRepository.save(t.stream().map(l -> LogEntry.from(ActionType.Delete, l.project,
-        dto.Locale.class, dto.Locale.from(l), null)).collect(Collectors.toList()));
+    activityActor.tell(
+        new Activities<>(t.stream().map(l -> new Activity<>(ActionType.Delete, l.project,
+            dto.Locale.class, dto.Locale.from(l), null)).collect(Collectors.toList())),
+        null
+    );
 
     messageRepository.delete(
         messageRepository.byLocales(t.stream().map(m -> m.id).collect(Collectors.toList())));

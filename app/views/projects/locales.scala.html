@@ -3,7 +3,7 @@
 @import utils.ActivityUtils._
 
 @main(template.withTitle(project.name).withName("project-locales"))(tags.search(form)())(nav(project, "locales")) {
-	@content() {
+	@tags.mainContent() {
 		@tags.collection(locales.getList, "locales.empty", "locales") {
 			<span class="title">@Messages("locale.name")</span>
 			@tags.sortOrders {

@@ -1,7 +1,7 @@
 @(template: utils.Template, key: models.Key, form: Form[forms.KeyForm])
 
 @main(template.withTitle(key.project.name).withBackLink(key.project.route))()(projects.nav(key.project, "keys")) {
-	@projects.content("flex") {
+	@tags.mainContent("flex") {
 		<form action="@key.doEditRoute" method="post">
 			<div class="card no-image">
 				<div class="card-content">

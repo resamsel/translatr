@@ -11,9 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import utils.CacheUtils;
+import validators.NameUnique;
+import validators.ProjectNameUniqueChecker;
 
 /**
  * @author resamsel

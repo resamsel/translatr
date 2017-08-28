@@ -24,7 +24,6 @@ import controllers.routes;
 import criterias.HasNextPagedList;
 import models.Project;
 import models.ProjectRole;
-import models.ProjectUser;
 import models.User;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
@@ -233,7 +232,7 @@ public class ProjectsTest extends ControllerTest {
                 DEFAULT_LIMIT,
                 DEFAULT_OFFSET).url());
 
-    spy(projectUserService).create((ProjectUser) any());
+    spy(projectUserService).create(any());
   }
 
   @Test

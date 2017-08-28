@@ -2,6 +2,10 @@ package repositories.impl;
 
 import static utils.Stopwatch.log;
 
+import actors.ActivityActor;
+import actors.ActivityProtocol.Activities;
+import actors.ActivityProtocol.Activity;
+import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -15,10 +19,10 @@ import java.util.Collections;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.ActionType;
-import models.LogEntry;
 import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
@@ -27,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
 import repositories.LocaleRepository;
-import repositories.LogEntryRepository;
 import repositories.ProjectRepository;
 import services.PermissionService;
 import utils.QueryUtils;
@@ -47,10 +50,10 @@ public class ProjectRepositoryImpl extends
   };
 
   @Inject
-  public ProjectRepositoryImpl(Validator validator, LocaleRepository localeRepository,
-      KeyRepository keyRepository, LogEntryRepository logEntryRepository,
-      PermissionService permissionService) {
-    super(validator, logEntryRepository);
+  public ProjectRepositoryImpl(Validator validator,
+      @Named(ActivityActor.NAME) ActorRef activityActor, LocaleRepository localeRepository,
+      KeyRepository keyRepository, PermissionService permissionService) {
+    super(validator, activityActor);
 
     this.localeRepository = localeRepository;
     this.keyRepository = keyRepository;
@@ -71,6 +74,10 @@ public class ProjectRepositoryImpl extends
 
     if (criteria.getMemberId() != null) {
       query.eq("members.user.id", criteria.getMemberId());
+    }
+
+    if (criteria.getName() != null) {
+      query.eq("name", criteria.getName());
     }
 
     if (criteria.getProjectId() != null) {
@@ -126,8 +133,10 @@ public class ProjectRepositoryImpl extends
   @Override
   protected void prePersist(Project t, boolean update) {
     if (update) {
-      logEntryRepository.save(
-          LogEntry.from(ActionType.Update, t, dto.Project.class, toDto(byId(t.id)), toDto(t)));
+      activityActor.tell(
+          new Activity<>(ActionType.Update, t, dto.Project.class, toDto(byId(t.id)), toDto(t)),
+          null
+      );
     }
   }
 
@@ -137,8 +146,10 @@ public class ProjectRepositoryImpl extends
   @Override
   protected void postSave(Project t, boolean update) {
     if (!update) {
-      logEntryRepository
-          .save(LogEntry.from(ActionType.Create, t, dto.Project.class, null, toDto(t)));
+      activityActor.tell(
+          new Activity<>(ActionType.Create, t, dto.Project.class, null, toDto(t)),
+          null
+      );
     }
   }
 
@@ -158,7 +169,10 @@ public class ProjectRepositoryImpl extends
     localeRepository.delete(t.locales);
     keyRepository.delete(t.keys);
 
-    logEntryRepository.save(LogEntry.from(ActionType.Delete, t, dto.Project.class, toDto(t), null));
+    activityActor.tell(
+        new Activity<>(ActionType.Delete, t, dto.Project.class, toDto(t), null),
+        null
+    );
 
     super.save(t.withName(String.format("%s-%s", t.id, t.name)).withDeleted(true));
   }
@@ -185,9 +199,12 @@ public class ProjectRepositoryImpl extends
     localeRepository.delete(
         t.stream().map(p -> p.locales).flatMap(Collection::stream).collect(Collectors.toList()));
 
-    logEntryRepository.save(
-        t.stream().map(p -> LogEntry.from(ActionType.Delete, p, dto.Project.class, toDto(p), null))
-            .collect(Collectors.toList()));
+    activityActor.tell(
+        new Activities<>(t.stream()
+            .map(p -> new Activity<>(ActionType.Delete, p, dto.Project.class, toDto(p), null))
+            .collect(Collectors.toList())),
+        null
+    );
 
     super.save(
         t.stream().map(p -> p.withName(String.format("%s-%s", p.id, p.name)).withDeleted(true))

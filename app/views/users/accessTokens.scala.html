@@ -4,7 +4,7 @@
 @import utils.ActivityUtils._
 
 @main(template.withTitle(user.name).withName("user-access-tokens"))(tags.search(form)())(nav(template, user, "accessTokens")) {
-	@content("accessTokens") {
+	@tags.mainContent("accessTokens") {
 		@tags.collection(accessTokenList, "accessTokens.empty", "access-tokens") {
 			<span class="title">@Messages("accessToken")</span>
 		} {

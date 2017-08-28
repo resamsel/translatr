@@ -2,6 +2,8 @@ package repositories.impl;
 
 import static utils.Stopwatch.log;
 
+import actors.ActivityActor;
+import actors.ActivityProtocol.Activity;
 import actors.NotificationActor;
 import actors.NotificationProtocol.FollowNotification;
 import akka.actor.ActorRef;
@@ -15,11 +17,9 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.ActionType;
-import models.LogEntry;
 import models.ProjectUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repositories.LogEntryRepository;
 import repositories.ProjectUserRepository;
 import utils.QueryUtils;
 
@@ -36,16 +36,17 @@ public class ProjectUserRepositoryImpl extends
   private final ActorRef notificationActor;
 
   @Inject
-  public ProjectUserRepositoryImpl(Validator validator, LogEntryRepository logEntryRepository,
+  public ProjectUserRepositoryImpl(Validator validator,
+      @Named(ActivityActor.NAME) ActorRef activityActor,
       @Named(NotificationActor.NAME) ActorRef notificationActor) {
-    super(validator, logEntryRepository);
+    super(validator, activityActor);
 
     this.notificationActor = notificationActor;
   }
 
   @Override
   public PagedList<ProjectUser> findBy(ProjectUserCriteria criteria) {
-    return log(() -> HasNextPagedList.create(findQuery(criteria).query().fetch("user")), LOGGER,
+    return log(() -> HasNextPagedList.create(findQuery(criteria).query()), LOGGER,
         "findBy");
   }
 
@@ -61,7 +62,8 @@ public class ProjectUserRepositoryImpl extends
   }
 
   private ExpressionList<ProjectUser> findQuery(ProjectUserCriteria criteria) {
-    ExpressionList<ProjectUser> query = find.where();
+    ExpressionList<ProjectUser> query = QueryUtils
+        .fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where();
 
     query.eq("project.deleted", false);
 
@@ -84,8 +86,12 @@ public class ProjectUserRepositoryImpl extends
   @Override
   protected void prePersist(ProjectUser t, boolean update) {
     if (update) {
-      logEntryRepository.save(LogEntry.from(ActionType.Update, t.project, dto.ProjectUser.class,
-          toDto(byId(t.id)), toDto(t)));
+      activityActor.tell(
+          new Activity<>(
+              ActionType.Update, t.project, dto.ProjectUser.class, toDto(byId(t.id)), toDto(t)
+          ),
+          null
+      );
     }
   }
 
@@ -95,8 +101,12 @@ public class ProjectUserRepositoryImpl extends
   @Override
   protected void postSave(ProjectUser t, boolean update) {
     if (!update) {
-      logEntryRepository
-          .save(LogEntry.from(ActionType.Create, t.project, dto.ProjectUser.class, null, toDto(t)));
+      activityActor.tell(
+          new Activity<>(
+              ActionType.Create, t.project, dto.ProjectUser.class, null, toDto(t)
+          ),
+          null
+      );
     }
 
     notificationActor.tell(new FollowNotification(t.user.id, t.project.id), null);
@@ -107,8 +117,12 @@ public class ProjectUserRepositoryImpl extends
    */
   @Override
   public void preDelete(ProjectUser t) {
-    logEntryRepository
-        .save(LogEntry.from(ActionType.Delete, t.project, dto.ProjectUser.class, toDto(t), null));
+    activityActor.tell(
+        new Activity<>(
+            ActionType.Delete, t.project, dto.ProjectUser.class, toDto(t), null
+        ),
+        null
+    );
   }
 
   private dto.ProjectUser toDto(ProjectUser t) {

@@ -1,7 +1,7 @@
 @(template: utils.Template, locale: models.Locale, form: Form[forms.LocaleForm])
 
 @main(template.withTitle(locale.project.name).withBackLink(locale.project.route))()(projects.nav(locale.project, "locales")) {
-	@projects.content("flex") {
+	@tags.mainContent("flex") {
 		<form action="@locale.doEditRoute" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">

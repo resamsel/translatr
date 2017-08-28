@@ -1,6 +1,8 @@
 #!/bin/bash
 
 SELF=$0
+
+PSQL="docker exec -i translatr_db-translatr_1 psql -U postgres"
 MAIN_DIR="$(cd $PWD; echo $PWD)"
 TARGET_DIR="$MAIN_DIR/target"
 DIST_DIR="$TARGET_DIR/universal"
@@ -38,7 +40,7 @@ help() {
 	echo
 	echo Tools for Translatr development and testing
 	echo
-	echo clean$'\t\t'cleans the distribution
+	echo clean$'\t\t'cleans the build directories
 	echo
 	echo Commands:
 	echo
@@ -49,13 +51,13 @@ help() {
 
 clean_database() {
 	log_start Resetting database
-	cat "$MAIN_DIR/load-test/cleanup.sql" | docker exec -i translatr_db-translatr_1 psql -U postgres >> "$LOG_FILE"
+	cat "$MAIN_DIR/load-test/cleanup.sql" | $PSQL >> "$LOG_FILE"
 	log_end
 }
 
 clean_dist() {
     cd "$MAIN_DIR"
-    log_start Cleaning distribution
+    log_start Cleaning translatr build
     bin/activator clean >> "$LOG_FILE"
     log_end
 }
@@ -63,7 +65,7 @@ clean_dist() {
 build_dist() {
 	if ! ls $DIST_DIR/translatr-*.zip > /dev/null 2>&1; then
 		cd "$MAIN_DIR"
-		log_start Building distribution
+		log_start Building translatr
 		bin/activator dist -J-Xmx1024m >> "$LOG_FILE"
 		log_end
 	fi
@@ -72,7 +74,7 @@ build_dist() {
 unzip_dist() {
 	if ! ls $DIST_DIR/translatr-*/ > /dev/null 2>&1; then
 		cd "$DIST_DIR"
-		log_start Installing distribution
+		log_start Installing translatr
 		unzip translatr-*.zip >> "$LOG_FILE"
 		log_end
 	fi
@@ -94,14 +96,17 @@ start_translatr() {
 init_database() {
 	cd "$MAIN_DIR"
 	log_start Initialising database
-	make clean init.sql >> "$LOG_FILE"
-	cat "$LOAD_TEST_DIR/init.sql" | docker exec -i translatr_db-translatr_1 psql -U postgres translatr-load-test >> "$LOG_FILE"
+	make clean target/load-test/init.sql >> "$LOG_FILE"
+	cat "$LOAD_TEST_DIR/init.sql" | $PSQL translatr-load-test >> "$LOG_FILE"
 	log_end
 }
 
 stop_translatr() {
-    log_start Stopping translatr
-    pkill -f translatr- && log_end || log not running
+	log_start Stopping translatr
+	pkill -f translatr- && log_end || log not running
+	while pgrep -f translatr-; do
+		sleep 1
+	done >> "$LOG_FILE" 2>&1
 }
 
 prepare_jmeter() {
@@ -133,28 +138,37 @@ run_translatr() {
 }
 
 run_load_test() {
+	TEST_FILE="$1"
+	SAMPLES_FILE="$LOAD_TEST_DIR/samples-$TEST_FILE.log"
+	RESULTS_DIR="$LOAD_TEST_DIR/results-$TEST_FILE"
+
+	log
+	log Load testing: $TEST_FILE
+	log
+
 	run_translatr
 	prepare_jmeter
-	rm -rf $LOAD_TEST_DIR/results $LOAD_TEST_DIR/samples.log
+	rm -rf "$RESULTS_DIR" "$SAMPLES_FILE"
 	log_start Running load test
-	$JMETER -n -t "$MAIN_DIR/load-test/Translatr.jmx" \
-		-e -l $LOAD_TEST_DIR/samples.log \
+	$JMETER -n -t "$MAIN_DIR/load-test/$TEST_FILE.jmx" \
+		-e -l "$SAMPLES_FILE" \
 		-q "$LOAD_TEST_DIR/load-test.properties" \
-		-o "$LOAD_TEST_DIR/results" >> "$LOG_FILE"
+		-o "$RESULTS_DIR" >> "$LOG_FILE"
 	log_end
 	stop_translatr
+
+	log Results: "$RESULTS_DIR/index.html"
 }
 
 load_test() {
-	log "+--------------------------------+"
-	log "|   Prepare and run load tests   |"
-	log "+--------------------------------+"
-	log
+	log Prepare and run load tests
 
-	run_load_test
+	# log_start Cleaning test data
+	# make clean >> "$LOG_FILE"
+	# log_end
 
-	log
-	log Results: "$LOAD_TEST_DIR/results/index.html"
+	run_load_test load-test
+	run_load_test load-test-ro
 }
 
 CMD=help

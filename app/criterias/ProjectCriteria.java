@@ -14,6 +14,8 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
 
   private UUID memberId;
 
+  private String name;
+
   public ProjectCriteria() {
     super("project");
   }
@@ -44,9 +46,22 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
     return this;
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public ProjectCriteria withName(String name) {
+    setName(name);
+    return this;
+  }
+
   @Override
   protected String getCacheKeyParticle() {
-    return String.format("%s:%s", ownerId, memberId);
+    return String.format("%s:%s:%s", name, ownerId, memberId);
   }
 
   public static ProjectCriteria from(SearchForm form) {

@@ -3,7 +3,7 @@
 @import utils.FormatUtils._
 
 @main(template.withTitle(project.name).withName("project-members"))(tags.search(form)())(nav(project, "members")) {
-	@content() {
+	@tags.mainContent() {
 		@tags.collection(memberList.getList, "members.empty") {
 				<span class="title">@Messages("project.member")</span>
 			} {
@@ -54,6 +54,7 @@
 		@tags.modal(Messages("member.ownership.change"), "modal-change-ownership", saveForm=memberList.getList.size > 1) {
 			@helper.form(action = project.doOwnerChangeRoute, 'id -> "form-ownership") {
 				@ownerChangeFormContent(project, memberList, ownerForm)
+				@inputs.hidden(ownerForm("projectName"), "project-name")
 			}
 		}
 	}

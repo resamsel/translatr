@@ -1,9 +1,32 @@
 @(template: utils.Template, project: Project, memberList: com.avaje.ebean.PagedList[ProjectUser], form: Form[forms.ProjectOwnerForm])
 
 @main(template.withTitle(project.name).withName("project-owner-change").withBackLink(project.route))()(nav(project, "members")) {
-	@content() {
+	@tags.mainContent() {
 		@helper.form(action = project.doOwnerChangeRoute, 'id -> "form-ownership") {
-			@ownerChangeFormContent(project, memberList, form)
+			<div class="card no-image">
+				<div class="card-content">
+					<span class="card-title">@Messages("member.ownership.change")</span>
+					@ownerChangeFormContent(project, memberList, form)
+
+					@inputs.text(form("projectName"), "project-name", "project.name.new")
+				</div>
+				<div class="card-action">
+					<button
+							class="btn waves-effect waves-light btn-save">
+						@Messages("button.save")
+						<i class="material-icons right">send</i>
+					</button>
+					<a
+							class="btn-flat btn-cancel black-text"
+							href="@project.membersRoute">
+						@Messages("button.cancel")
+					</a>
+				</div>
+			</div>
 		}
 	}
+
+	<script type="text/javascript">
+		App.Core.register('MaterialModule', App.Modules.MaterialModule);
+	</script>
 }

@@ -4,8 +4,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import play.inject.Injector;
 
 /**
