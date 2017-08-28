@@ -169,6 +169,7 @@ public class ProjectServiceTest {
         mock(KeyService.class),
         mock(MessageService.class),
         mock(MessageRepository.class),
+        mock(ProjectUserService.class),
         mock(LogEntryService.class)
     );
 
