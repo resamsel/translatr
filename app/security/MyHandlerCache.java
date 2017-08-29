@@ -1,13 +1,11 @@
 package security;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
+import com.feth.play.module.pa.PlayAuthenticate;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import services.UserService;
 
 @Singleton

@@ -1,13 +1,12 @@
 package services;
 
+import com.google.inject.ImplementedBy;
+import criterias.KeyCriteria;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import com.google.inject.ImplementedBy;
-
-import criterias.KeyCriteria;
 import models.Key;
+import models.Project;
 import services.impl.KeyServiceImpl;
 
 /**
@@ -17,21 +16,13 @@ import services.impl.KeyServiceImpl;
  */
 @ImplementedBy(KeyServiceImpl.class)
 public interface KeyService extends ModelService<Key, UUID, KeyCriteria> {
-  /**
-   * @param keyIds
-   * @param localesSize
-   * @return
-   */
   Map<UUID, Double> progress(List<UUID> keyIds, long localesSize);
 
-  /**
-   * @param keyId
-   * @param wordCountDiff
-   */
   void increaseWordCountBy(UUID keyId, int wordCountDiff);
 
-  /**
-   * @param projectId
-   */
   void resetWordCount(UUID projectId);
+
+  List<Key> latest(Project project, int limit);
+
+  Key byProjectAndName(Project project, String keyName);
 }

@@ -1,13 +1,10 @@
 @(project: Project, form: Form[forms.ProjectUserForm])
 
 @inputs.text(form("username"), "user-username", "user.username")
-<div class="input-field">
-	<select id="field-role" name="role">
-		@for(role <- ProjectRole.values()) {
-			@if(role.name != "Owner") {
-				<option value="@role">@Messages("project.role." + role.name)</option>
-			}
+@inputs.select(form("role"), "project-role", "member.role") {
+	@for(role <- ProjectRole.values()) {
+		@if(role.name != "Owner") {
+			<option value="@role">@Messages("project.role." + role.name)</option>
 		}
-	</select>
-	<label for="field-role">@Messages("member.role")</label>
-</div>
+	}
+}

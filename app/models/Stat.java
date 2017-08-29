@@ -1,10 +1,8 @@
 package models;
 
-import java.util.UUID;
-
-import javax.persistence.Entity;
-
 import com.avaje.ebean.annotation.Sql;
+import java.util.UUID;
+import javax.persistence.Entity;
 
 /**
  *

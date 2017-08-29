@@ -3,16 +3,15 @@ package commands;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
+import dto.Project;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import controllers.routes;
-import dto.Project;
+import javax.inject.Inject;
+import javax.persistence.Transient;
 import models.Key;
 import models.Locale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.inject.Injector;
 import play.mvc.Call;
 import play.mvc.Http.Context;
@@ -22,24 +21,34 @@ import services.MessageService;
 import services.ProjectService;
 
 /**
- *
  * @author resamsel
  * @version 19 Aug 2016
  */
 public class RevertDeleteProjectCommand implements Command<models.Project> {
+
   private static final long serialVersionUID = -3106538601628220021L;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RevertDeleteProjectCommand.class);
 
+  @Transient
+  private final LocaleService localeService;
+  @Transient
+  private final KeyService keyService;
+  private final MessageService messageService;
+
   private Project project;
 
-  /**
-   * @param project
-   * @return
-   */
+  @Inject
+  public RevertDeleteProjectCommand(LocaleService localeService, KeyService keyService,
+      MessageService messageService) {
+    this.localeService = localeService;
+    this.keyService = keyService;
+    this.messageService = messageService;
+  }
+
   @Override
   public RevertDeleteProjectCommand with(models.Project project) {
-    this.project = Project.from(project).load();
+    this.project = Project.from(project).load(localeService, keyService, messageService);
     return this;
   }
 
@@ -56,7 +65,7 @@ public class RevertDeleteProjectCommand implements Command<models.Project> {
     models.Project model = projectService.byId(project.id);
 
     LOGGER.info("Before save project: deleted = {}", model.deleted);
-    projectService.save(model.withName(project.name).withDeleted(false));
+    projectService.update(model.withName(project.name).withDeleted(false));
     LOGGER.info("After save project: deleted = {}", model.deleted);
 
     Map<String, Key> keys = injector.instanceOf(KeyService.class)
@@ -82,14 +91,6 @@ public class RevertDeleteProjectCommand implements Command<models.Project> {
    */
   @Override
   public Call redirect() {
-    return routes.Projects.project(project.id);
-  }
-
-  /**
-   * @param project
-   * @return
-   */
-  public static RevertDeleteProjectCommand from(models.Project project) {
-    return new RevertDeleteProjectCommand().with(project);
+    return project.route();
   }
 }

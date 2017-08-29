@@ -76,14 +76,17 @@ contributions.amount = {0} Beiträge
 contributions.legend.less = Weniger
 contributions.legend.more = Mehr
 contributions.legend.tooltip = Relative Aktivität: {0}-{1}% (log(n)/log(max))
-copyright = © 2017 René Samselnig (<span title="{1}">{0}</span>)\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
+copyright = © 2017 René Panzar (<span title="{1}">{0}</span>)\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
 error.access.denied = Translatr benötigt eingeschränkten Zugriff auf dein Konto, um dir die Inhalte anzuzeigen
 error.accesstokenbyuserandname = Zugangsschlüssel mit angegebenem Namen existiert bereits
 error.maxLength = Maximallänge beträgt {0} Zeichen
 error.nameunique = Name muss eindeutig sein
+error.nameunique.ownerchange = Projekt mit gleichem Namen existiert bereits für neuen Besitzer
+error.projectname.invalid = Ungültiger Wert für den Projektnamen (ungültige Werte: {0})
 error.restricted.content = Der Zugriff auf die angeforderte Resource wurde verwehrt. Bitte melde dich an, um Zugriff zu erhalten.
 error.restricted.title = Zugriff verwehrt
 error.userbyusername = Kein Benutzer mit angegebenen Benutzernamen bekannt
+error.username.invalid = Ungültiger Wert für Benutzername (ungültige Werte: {0})
 filetype.choose = Dateityp auswählen
 filetype.gettext = Gettext ('{locale.name}'/LC_MESSAGES/message.po)
 filetype.java_properties = Java Properties (messages_?'{locale.name}'.properties)
@@ -211,6 +214,7 @@ project.members = Beitragende
 project.name = Projektname
 project.name.asc = Projektname aufsteigend
 project.name.desc = Projektname absteigend
+project.name.new = Neuer Projektname
 project.new = Neues Projekt anlegen
 project.notFound = Projekt mit ID {0} wurde nicht gefunden
 project.owner = Besitzer

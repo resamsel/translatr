@@ -1,18 +1,15 @@
 package controllers;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-
 import actions.ContextAction;
+import com.feth.play.module.pa.PlayAuthenticate;
 import commands.Command;
 import converters.ActivityCsvConverter;
 import criterias.LogEntryCriteria;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import javax.inject.Inject;
+import org.apache.commons.lang3.StringUtils;
 import play.Configuration;
 import play.cache.CacheApi;
 import play.inject.Injector;
@@ -21,6 +18,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
 import play.routing.JavaScriptReverseRouter;
+import services.CacheService;
 import utils.ConfigKey;
 import utils.Template;
 
@@ -29,85 +27,97 @@ import utils.Template;
  */
 @With(ContextAction.class)
 public class Application extends AbstractController {
+
   public static final String USER_ROLE = "user";
 
   private final Configuration configuration;
 
   @Inject
-  public Application(Injector injector, Configuration configuration, CacheApi cache,
+  public Application(Injector injector, Configuration configuration, CacheService cache,
       PlayAuthenticate auth) {
     super(injector, cache, auth);
 
     this.configuration = configuration;
   }
 
-  public Result index() {
-    return ok(views.html.index.render(createTemplate()));
+  public CompletionStage<Result> index() {
+    return tryCatch(() -> ok(views.html.index.render(createTemplate())));
   }
 
-  public Result login() {
-    List<String> providers = Arrays
-        .asList(StringUtils.split(configuration.getString(ConfigKey.AuthProviders.key()), ","));
+  public CompletionStage<Result> login() {
+    return tryCatch(() -> {
+      List<String> providers = Arrays
+          .asList(StringUtils.split(configuration.getString(ConfigKey.AuthProviders.key()), ","));
 
-    if (providers.size() == 1)
-      return redirect(
-          com.feth.play.module.pa.controllers.routes.Authenticate.authenticate(providers.get(0)));
+      if (providers.size() == 1) {
+        return redirect(
+            com.feth.play.module.pa.controllers.routes.Authenticate.authenticate(providers.get(0)));
+      }
 
-    return ok(views.html.login.render(createTemplate(), providers));
+      return ok(views.html.login.render(createTemplate(), providers));
+    });
   }
 
-  public Result logout() {
-    userService.logout(auth.getUser(session()));
-    return injector.instanceOf(com.feth.play.module.pa.controllers.Authenticate.class).logout();
+  public CompletionStage<Result> logout() {
+    return tryCatch(() -> {
+      userService.logout(auth.getUser(session()));
+      return injector.instanceOf(com.feth.play.module.pa.controllers.Authenticate.class).logout();
+    });
   }
 
-  public Result oAuthDenied(final String providerKey) {
-    com.feth.play.module.pa.controllers.Authenticate.noCache(response());
+  public CompletionStage<Result> oAuthDenied(final String providerKey) {
+    return tryCatch(() -> {
+      com.feth.play.module.pa.controllers.Authenticate.noCache(response());
 
-    return redirectWithError(routes.Application.index(), "error.access.denied");
+      return redirectWithError(routes.Application.index(), "error.access.denied");
+    });
   }
 
-  public Result activityCsv() {
-    return ok(
-        new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria())));
+  public CompletionStage<Result> activityCsv() {
+    return tryCatch(() -> ok(
+        new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria()))));
   }
 
-  public Result commandExecute(String commandKey) {
-    Command<?> command = getCommand(commandKey);
+  public CompletionStage<Result> commandExecute(String commandKey) {
+    return tryCatch(() -> {
+      Command<?> command = getCommand(commandKey);
 
-    String referer = request().getHeader(Http.HeaderNames.REFERER);
+      String referer = request().getHeader(Http.HeaderNames.REFERER);
 
-    if (command == null) {
-      if (referer == null)
-        return redirectWithError(routes.Projects.index(), "command.notFound");
+      if (command == null) {
+        if (referer == null) {
+          return redirectWithError(Projects.indexRoute(), "command.notFound");
+        }
 
-      return redirectWithError(referer, "command.notFound");
-    }
+        return redirectWithError(referer, "command.notFound");
+      }
 
-    command.execute(injector);
+      command.execute(injector);
 
-    Call call = command.redirect();
+      Call call = command.redirect();
 
-    if (call != null)
-      return redirect(call);
+      if (call != null) {
+        return redirect(call);
+      }
 
-    if (referer == null)
-      return redirect(routes.Projects.index());
+      if (referer == null) {
+        return redirect(Projects.indexRoute());
+      }
 
-    return redirect(referer);
+      return redirect(referer);
+    });
   }
 
-  public Result javascriptRoutes() {
-    return ok(
+  public CompletionStage<Result> javascriptRoutes() {
+    return tryCatch(() -> ok(
         JavaScriptReverseRouter.create("jsRoutes", routes.javascript.Application.activityCsv(),
             routes.javascript.Users.activityCsv(), routes.javascript.Users.activity(),
             routes.javascript.Profiles.resetNotifications(), routes.javascript.Projects.search(),
-            routes.javascript.ProjectsApi.search(), routes.javascript.Projects.activity(),
-            routes.javascript.Projects.activityCsv(), routes.javascript.Locales.locale(),
-            routes.javascript.Keys.key(), routes.javascript.Keys.createImmediately(),
+            routes.javascript.ProjectsApi.search(), routes.javascript.Locales.localeBy(),
+            routes.javascript.Keys.keyBy(), routes.javascript.Keys.createImmediatelyBy(),
             routes.javascript.LocalesApi.find(), routes.javascript.KeysApi.find(),
             routes.javascript.TranslationsApi.create(), routes.javascript.TranslationsApi.update(),
-            routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find()));
+            routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find())));
   }
 
   /**

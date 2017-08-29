@@ -2,64 +2,38 @@ package services.impl;
 
 import static utils.Stopwatch.log;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.UUID;
-
+import criterias.AccessTokenCriteria;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-
+import models.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.PagedList;
-
-import criterias.AccessTokenCriteria;
-import models.AccessToken;
-import models.ActionType;
-import models.LogEntry;
-import play.Configuration;
-import play.cache.CacheApi;
+import repositories.AccessTokenRepository;
 import services.AccessTokenService;
+import services.CacheService;
 import services.LogEntryService;
 
 /**
- *
  * @author resamsel
  * @version 19 Oct 2016
  */
 @Singleton
 public class AccessTokenServiceImpl extends
     AbstractModelService<AccessToken, Long, AccessTokenCriteria> implements AccessTokenService {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenServiceImpl.class);
 
-  private final CacheApi cache;
+  private final CacheService cache;
+  private final AccessTokenRepository accessTokenRepository;
 
-  /**
-   * @param configuration
-   */
   @Inject
-  public AccessTokenServiceImpl(Configuration configuration, Validator validator,
-      LogEntryService logEntryService, CacheApi cache) {
-    super(configuration, validator, logEntryService);
+  public AccessTokenServiceImpl(Validator validator, CacheService cache,
+      AccessTokenRepository accessTokenRepository, LogEntryService logEntryService) {
+    super(validator, cache, accessTokenRepository, AccessToken::getCacheKey, logEntryService);
+
     this.cache = cache;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
-    return AccessToken.findBy(criteria);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public AccessToken byId(Long id, String... fetches) {
-    return AccessToken.byId(id);
+    this.accessTokenRepository = accessTokenRepository;
   }
 
   /**
@@ -67,54 +41,34 @@ public class AccessTokenServiceImpl extends
    */
   @Override
   public AccessToken byKey(String accessTokenKey) {
-    return log(() -> cache.getOrElse(getCacheKey(accessTokenKey),
-        () -> AccessToken.byKey(accessTokenKey), 60), LOGGER, "getByKey");
+    return log(() -> cache.getOrElse(AccessToken.getCacheKey(accessTokenKey),
+        () -> accessTokenRepository.byKey(accessTokenKey), 60), LOGGER, "getByKey");
+  }
+
+  @Override
+  protected void postCreate(AccessToken t) {
+    super.postCreate(t);
+
+    // When user has been created
+    cache.removeByPrefix("accessToken:criteria:");
+  }
+
+  @Override
+  protected void postUpdate(AccessToken t) {
+    super.postUpdate(t);
+
+    // When user has been updated, the user cache needs to be invalidated
+    cache.removeByPrefix("accessToken:criteria:" + t.user.id);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected void preSave(AccessToken t, boolean update) {
-    if (t.key == null)
-      t.key = generateKey(AccessToken.KEY_LENGTH);
+  protected void postDelete(AccessToken t) {
+    super.postDelete(t);
 
-    if (update)
-      logEntryService.save(LogEntry.from(ActionType.Update, null, dto.AccessToken.class,
-          dto.AccessToken.from(byId(t.id)), dto.AccessToken.from(t)));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postSave(AccessToken t, boolean update) {
-    if (!update)
-      logEntryService.save(LogEntry.from(ActionType.Create, null, dto.AccessToken.class, null,
-          dto.AccessToken.from(t)));
-
-    cache.remove(getCacheKey(t.key));
-  }
-
-  /**
-   * @param length
-   * @return
-   */
-  private String generateKey(int length) {
-    String raw = Base64.getEncoder().encodeToString(String
-        .format("%s%s", UUID.randomUUID(), UUID.randomUUID()).getBytes(StandardCharsets.UTF_8));
-
-    if (raw.length() > length)
-      raw = raw.substring(0, length);
-
-    return raw.replace("+", "/");
-  }
-
-  /**
-   * @param accessTokenKey
-   * @return
-   */
-  private String getCacheKey(String accessTokenKey) {
-    return String.format("accessToken:%s", accessTokenKey);
+    // When locale has been deleted, the locale cache needs to be invalidated
+    cache.removeByPrefix("accessToken:criteria:");
   }
 }

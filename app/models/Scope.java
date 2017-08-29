@@ -1,9 +1,8 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * @author resamsel

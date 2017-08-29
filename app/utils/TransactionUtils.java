@@ -1,9 +1,8 @@
 package utils;
 
-import java.util.function.Consumer;
-
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Transaction;
+import java.util.function.Consumer;
 
 /**
  *

@@ -3,13 +3,10 @@ package integration.services;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.stream.Collectors;
-
 import javax.inject.Inject;
-
-import org.junit.Test;
-
 import models.Project;
 import models.User;
+import org.junit.Test;
 import services.ProjectService;
 import tests.AbstractTest;
 
@@ -30,10 +27,10 @@ public class ProjectServiceTest extends AbstractTest {
 
     project = projectService.byId(project.id);
 
-    assertThat(project.owner.name).isEqualTo("user1");
-    assertThat(project.name).isEqualTo("blubbb");
-    assertThat(project.members.stream().map(m -> m.user).collect(Collectors.toList()))
-        .contains(user);
+    assertThat(project.owner.name).as("Owner name").isEqualTo("user1");
+    assertThat(project.name).as("Project name").isEqualTo("blubbb");
+    assertThat(project.members.stream().map(m -> m.user.id).collect(Collectors.toList()))
+        .as("Member ID").contains(user.id);
   }
 
   /**

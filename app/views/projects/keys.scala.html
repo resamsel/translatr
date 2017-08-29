@@ -3,18 +3,18 @@
 @import utils.ActivityUtils._
 
 @main(template.withTitle(project.name).withName("project-keys"))(tags.search(form)())(nav(project, "keys")) {
-	@content() {
+	@tags.mainContent() {
 		@tags.collection(keys.getList, "keys.empty", "keys") {
 			<span class="title">@Messages("key.name")</span>
 			@tags.sortOrders {
-				@tags.orderLink(form.get, routes.Projects.keys(project.id), "key.name", "name", "name desc", "name")
-				@tags.orderLink(form.get, routes.Projects.keys(project.id), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+				@tags.orderLink(form.get, project.keysRoute, "key.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, project.keysRoute, "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
 			@for(key <- keys.getList) {
 				<li class="collection-item avatar">
 					<i class="material-icons circle @KEY_COLOR">@KEY_ICON</i>
-					<a class="key title" href="@routes.Keys.key(key.id)">
+					<a class="key title" href="@key.route()">
 						@key.name
 						<div class="progress">
 							<div class="determinate" style="width: @{progress.getOrDefault(key.id, 0)*100}%;"></div>
@@ -33,13 +33,13 @@
 					<div class="secondary-content">
 						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
 							<a
-								href="@routes.Keys.edit(key.id, form.get.search, form.get.order, form.get.limit, form.get.offset)"
+								href="@key.editRoute(form.get.search, form.get.order, form.get.limit, form.get.offset)"
 								class="btn-flat btn-hover waves-effect waves-light"
 								title="@Messages("button.edit")">
 								<i class="material-icons">mode_edit</i>
 							</a>
 							<a
-								href="@routes.Keys.remove(key.id, null, form.get.search, form.get.order, form.get.limit, form.get.offset)"
+								href="@key.removeRoute(form.get.search, form.get.order, form.get.limit, form.get.offset)"
 								class="btn-flat btn-hover waves-effect waves-light"
 								title="@Messages("button.remove")">
 								<i class="material-icons">delete_forever</i>
@@ -49,7 +49,7 @@
 				</li>
 			}
 		} {
-			@tags.pager(routes.Projects.keys(project.id), form.get)
+			@tags.pager(project.keysRoute, form.get)
 		}
 	}
 
@@ -65,6 +65,8 @@
 		var projectId = '@project.id';
 
 		App.Core.register('KeysCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
+		App.Core.register('MaterialModule', App.Modules.MaterialModule);
+		App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
+		App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
 	</script>
-	<script src="@routes.Assets.versioned("javascripts/projectKeys.js")"></script>
 }

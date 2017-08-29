@@ -1,14 +1,11 @@
 package filters;
 
+import akka.stream.Materializer;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
-
 import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import akka.stream.Materializer;
 import play.mvc.Filter;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;

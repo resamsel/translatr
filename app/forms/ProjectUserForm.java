@@ -9,71 +9,42 @@ import play.data.validation.Constraints;
 import validators.UserByUsername;
 
 /**
- *
  * @author resamsel
  * @version 2 Sep 2016
  */
-public class ProjectUserForm
-{
-	@Constraints.Required
-	@Constraints.MaxLength(User.USERNAME_LENGTH)
-	@UserByUsername
-	private String username;
+public class ProjectUserForm {
 
-	@Constraints.Required
-	private ProjectRole role;
+  @Constraints.Required
+  @Constraints.MaxLength(User.USERNAME_LENGTH)
+  @UserByUsername
+  private String username;
 
-	public String getUsername()
-	{
-		return username;
-	}
+  @Constraints.Required
+  private ProjectRole role;
 
-	public void setUsername(String username)
-	{
-		this.username = username;
-	}
+  public String getUsername() {
+    return username;
+  }
 
-	public ProjectRole getRole()
-	{
-		return role;
-	}
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-	public void setRole(ProjectRole role)
-	{
-		this.role = role;
-	}
+  public ProjectRole getRole() {
+    return role;
+  }
 
-	/**
-	 * @param projectUser
-	 * @return
-	 */
-	public ProjectUser fill(ProjectUser in)
-	{
-		in.role = role;
+  public void setRole(ProjectRole role) {
+    this.role = role;
+  }
 
-		return in;
-	}
+  public ProjectUser fill(ProjectUser in) {
+    in.role = role;
 
-	/**
-	 * @param project
-	 * @return
-	 */
-	public static ProjectUserForm from(ProjectUser in)
-	{
-		ProjectUserForm out = new ProjectUserForm();
+    return in;
+  }
 
-		out.role = in.role;
-		out.username = in.user.username;
-
-		return out;
-	}
-
-	/**
-	 * @param formFactory
-	 * @return
-	 */
-	public static Form<ProjectUserForm> form(FormFactory formFactory)
-	{
-		return formFactory.form(ProjectUserForm.class);
-	}
+  public static Form<ProjectUserForm> form(FormFactory formFactory) {
+    return formFactory.form(ProjectUserForm.class);
+  }
 }

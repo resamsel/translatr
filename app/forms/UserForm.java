@@ -3,13 +3,13 @@ package forms;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import models.User;
 import play.api.Play;
 import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 import play.mvc.Http.Context;
 import services.UserService;
+import validators.Username;
 
 /**
  *
@@ -25,6 +25,8 @@ public class UserForm {
 
   @Constraints.Required
   @Constraints.MaxLength(User.USERNAME_LENGTH)
+  @Constraints.Pattern("[a-zA-Z0-9_\\.-]*")
+  @Username
   private String username;
 
   @Constraints.Required

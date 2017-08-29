@@ -8,11 +8,9 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
-
+import models.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import models.Locale;
 import services.KeyService;
 import services.MessageService;
 

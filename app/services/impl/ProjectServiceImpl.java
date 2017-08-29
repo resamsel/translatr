@@ -1,101 +1,78 @@
 package services.impl;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import criterias.ProjectCriteria;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.PagedList;
-
-import criterias.ProjectCriteria;
-import dto.NotFoundException;
-import dto.PermissionException;
-import models.ActionType;
 import models.Locale;
-import models.LogEntry;
-import models.Message;
 import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
 import models.User;
-import play.Configuration;
-import play.cache.CacheApi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import repositories.MessageRepository;
+import repositories.ProjectRepository;
+import services.CacheService;
 import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
 import services.MessageService;
 import services.ProjectService;
+import services.ProjectUserService;
 
 /**
- *
  * @author resamsel
  * @version 29 Aug 2016
  */
 @Singleton
 public class ProjectServiceImpl extends AbstractModelService<Project, UUID, ProjectCriteria>
     implements ProjectService {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
-  private final CacheApi cache;
-
+  private final ProjectRepository projectRepository;
   private final LocaleService localeService;
-
   private final KeyService keyService;
-
   private final MessageService messageService;
+  private final MessageRepository messageRepository;
+  private final ProjectUserService projectUserService;
 
-  /**
-   * 
-   */
   @Inject
-  public ProjectServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
-      LocaleService localeService, KeyService keyService, MessageService messageService,
-      LogEntryService logEntryService) {
-    super(configuration, validator, logEntryService);
-    this.cache = cache;
+  public ProjectServiceImpl(Validator validator, CacheService cache,
+      ProjectRepository projectRepository, LocaleService localeService, KeyService keyService,
+      MessageService messageService, MessageRepository messageRepository,
+      ProjectUserService projectUserService, LogEntryService logEntryService) {
+    super(validator, cache, projectRepository, Project::getCacheKey, logEntryService);
+
+    this.projectRepository = projectRepository;
     this.localeService = localeService;
     this.keyService = keyService;
     this.messageService = messageService;
+    this.messageRepository = messageRepository;
+    this.projectUserService = projectUserService;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public PagedList<Project> findBy(ProjectCriteria criteria) {
-    return Project.findBy(criteria);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Project byId(UUID id, String... fetches) {
-    return log(() -> cache.getOrElse(Project.getCacheKey(id, fetches),
-        () -> Project.byId(id, fetches), 60), LOGGER, "byId(fetches={})", Arrays.asList(fetches));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Project byOwnerAndName(User user, String name) {
-    return log(() -> cache.getOrElse(
-        String.format("projectByOwnerAndName:%s:%s", user.id.toString(), name),
-        () -> Project.byOwnerAndName(user, name), 10 * 600), LOGGER, "byOwnerAndName");
+  public Project byOwnerAndName(String username, String name, String... fetches) {
+    return log(
+        () -> cache.getOrElse(
+            Project.getCacheKey(username, name, fetches),
+            () -> projectRepository.byOwnerAndName(username, name, fetches),
+            10 * 30
+        ),
+        LOGGER,
+        "byOwnerAndName"
+    );
   }
 
   /**
@@ -108,16 +85,24 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
       return;
     }
 
-    Project project = Project.byId(projectId);
-
-    if (project == null)
+    Project project = byId(projectId);
+    if (project == null) {
       return;
+    }
 
-    if (project.wordCount == null)
+    if (project.wordCount == null) {
       project.wordCount = 0;
+    }
     project.wordCount += wordCountDiff;
 
-    log(() -> persist(project), LOGGER, "Increased word count by %d", wordCountDiff);
+    log(
+        () -> modelRepository.persist(project),
+        LOGGER,
+        "Increased word count by %d",
+        wordCountDiff
+    );
+
+    postUpdate(project);
   }
 
   /**
@@ -125,100 +110,92 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    */
   @Override
   public void resetWordCount(UUID projectId) {
-    Project project = byId(projectId, Project.FETCH_LOCALES);
+    Project project = byId(projectId, ProjectRepository.FETCH_LOCALES);
     List<UUID> localeIds = project.locales.stream().map(Locale::getId).collect(toList());
 
     project.wordCount = null;
 
-    persist(project);
+    modelRepository.persist(project);
+
+    postUpdate(project);
 
     localeService.resetWordCount(projectId);
     keyService.resetWordCount(projectId);
     messageService.resetWordCount(projectId);
-    messageService.save(Message.byLocales(localeIds));
+    messageService.save(messageRepository.byLocales(localeIds));
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  protected void preSave(Project t, boolean update) {
-    if (t.owner == null)
-      t.owner = User.loggedInUser();
-    if (t.members == null)
-      t.members = new ArrayList<>();
-    if (t.members.isEmpty())
-      t.members.add(new ProjectUser(ProjectRole.Owner).withProject(t).withUser(t.owner));
+  public void changeOwner(Project project, User owner) {
+    LOGGER.debug("changeOwner(project={}, owner={})", project, owner);
 
-    if (update)
-      logEntryService.save(
-          LogEntry.from(ActionType.Update, t, dto.Project.class, toDto(byId(t.id)), toDto(t)));
-  }
+    requireNonNull(project, "project");
+    requireNonNull(owner, "owner");
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postSave(Project t, boolean update) {
-    if (!update)
-      logEntryService.save(LogEntry.from(ActionType.Create, t, dto.Project.class, null, toDto(t)));
+    // Make old owner a member of type Manager
+    ProjectUser ownerRole = project.members.stream()
+        .filter(m -> m.role == ProjectRole.Owner)
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Project has no owner"));
 
-    // When message has been created, the project cache needs to be invalidated
-    cache.remove(Project.getCacheKey(t.id));
-  }
+    ownerRole.role = ProjectRole.Manager;
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void delete(Project t) {
-    if (t == null || t.deleted)
-      throw new NotFoundException(dto.Project.class.getSimpleName(), t != null ? t.id : null);
-    if (!t.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager))
-      throw new PermissionException("User not allowed in project");
+    // Make new owner a member of type Owner
+    ProjectUser newOwnerRole = project.members.stream()
+        .filter(m -> m.user.id.equals(owner.id))
+        .findFirst()
+        .orElseGet(() -> new ProjectUser(ProjectRole.Manager).withProject(project).withUser(owner));
 
-    keyService.delete(t.keys);
-    localeService.delete(t.locales);
+    newOwnerRole.role = ProjectRole.Owner;
 
-    logEntryService.save(LogEntry.from(ActionType.Delete, t, dto.Project.class, toDto(t), null));
-
-    super.save(t.withName(String.format("%s-%s", t.id, t.name)).withDeleted(true));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void delete(Collection<Project> t) {
-    User loggedInUser = User.loggedInUser();
-    for (Project p : t) {
-      if (p == null || p.deleted)
-        throw new NotFoundException(dto.Project.class.getSimpleName(), p != null ? p.id : null);
-      if (!p.hasPermissionAny(loggedInUser, ProjectRole.Owner, ProjectRole.Manager))
-        throw new PermissionException("User not allowed in project");
+    if (newOwnerRole.id == null) {
+      project.members.add(newOwnerRole);
     }
 
-    keyService
-        .delete(t.stream().map(p -> p.keys).flatMap(k -> k.stream()).collect(Collectors.toList()));
-    localeService.delete(
-        t.stream().map(p -> p.locales).flatMap(l -> l.stream()).collect(Collectors.toList()));
-
-    logEntryService.save(
-        t.stream().map(p -> LogEntry.from(ActionType.Delete, p, dto.Project.class, toDto(p), null))
-            .collect(Collectors.toList()));
-
-    super.save(
-        t.stream().map(p -> p.withName(String.format("%s-%s", p.id, p.name)).withDeleted(true))
-            .collect(Collectors.toList()));
+    update(project.withOwner(owner));
+    projectUserService.update(ownerRole);
+    projectUserService.update(newOwnerRole);
   }
 
-  protected dto.Project toDto(Project t) {
-    dto.Project out = dto.Project.from(t);
+  @Override
+  protected void postCreate(Project t) {
+    super.postCreate(t);
 
-    out.keys = Collections.emptyList();
-    out.locales = Collections.emptyList();
-    out.messages = Collections.emptyList();
+    // When project has been created, the project cache needs to be invalidated
+    cache.removeByPrefix("project:criteria:");
+  }
 
-    return out;
+  @Override
+  protected void postUpdate(Project t) {
+    // When project has been updated, the project cache needs to be invalidated
+    cache.removeByPrefix("project:criteria:");
+
+    Project cached = cache.get(Project.getCacheKey(t.id));
+    if (cached != null) {
+      cache.removeByPrefix(Project.getCacheKey(
+          requireNonNull(cached.owner, "owner (cached)").username,
+          cached.name
+      ));
+    } else {
+      cache.removeByPrefix(Project.getCacheKey(
+          requireNonNull(t.owner, "owner").username,
+          ""
+      ));
+    }
+
+    super.postUpdate(t);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void postDelete(Project t) {
+    super.postDelete(t);
+
+    // When key has been deleted, the project cache needs to be invalidated
+    cache.removeByPrefix("project:criteria:" + t.id);
+
+    cache.removeByPrefix(Project.getCacheKey(t.owner.username, t.name));
   }
 }

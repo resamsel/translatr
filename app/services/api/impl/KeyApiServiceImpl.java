@@ -1,17 +1,15 @@
 package services.api.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import criterias.KeyCriteria;
 import java.util.UUID;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import criterias.KeyCriteria;
 import models.Key;
 import models.Scope;
 import play.libs.Json;
 import services.KeyService;
+import services.PermissionService;
 import services.ProjectService;
 import services.api.KeyApiService;
 
@@ -22,16 +20,17 @@ import services.api.KeyApiService;
 @Singleton
 public class KeyApiServiceImpl extends AbstractApiService<Key, UUID, KeyCriteria, dto.Key>
     implements KeyApiService {
+
   private final ProjectService projectService;
 
-  /**
-   * @param localeService
-   */
   @Inject
-  protected KeyApiServiceImpl(KeyService localeService, ProjectService projectService) {
+  protected KeyApiServiceImpl(KeyService localeService, ProjectService projectService,
+      PermissionService permissionService) {
     super(localeService, dto.Key.class, dto.Key::from,
-        new Scope[] {Scope.ProjectRead, Scope.KeyRead},
-        new Scope[] {Scope.ProjectRead, Scope.KeyWrite});
+        new Scope[]{Scope.ProjectRead, Scope.KeyRead},
+        new Scope[]{Scope.ProjectRead, Scope.KeyWrite},
+        permissionService);
+
     this.projectService = projectService;
   }
 

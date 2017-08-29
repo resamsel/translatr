@@ -1,111 +1,67 @@
 package services.impl;
 
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-
+import criterias.ProjectUserCriteria;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.PagedList;
-
-import criterias.ProjectUserCriteria;
-import io.getstream.client.exception.StreamClientException;
-import models.ActionType;
-import models.LogEntry;
+import models.Key;
+import models.Project;
 import models.ProjectUser;
-import play.Configuration;
-import play.libs.concurrent.HttpExecutionContext;
-import services.KeyService;
-import services.LocaleService;
+import play.cache.CacheApi;
+import repositories.ProjectUserRepository;
+import services.CacheService;
 import services.LogEntryService;
-import services.NotificationService;
 import services.ProjectUserService;
 
 /**
- *
  * @author resamsel
  * @version 29 Aug 2016
  */
 @Singleton
 public class ProjectUserServiceImpl extends
     AbstractModelService<ProjectUser, Long, ProjectUserCriteria> implements ProjectUserService {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ProjectUserServiceImpl.class);
 
-  private final HttpExecutionContext executionContext;
-  private final NotificationService notificationService;
+  private final ProjectUserRepository projectUserRepository;
 
-  /**
-   * 
-   */
   @Inject
-  public ProjectUserServiceImpl(Configuration configuration, Validator validator,
-      LocaleService localeService, KeyService keyService, LogEntryService logEntryService,
-      HttpExecutionContext executionContext, NotificationService notificationService) {
-    super(configuration, validator, logEntryService);
+  public ProjectUserServiceImpl(Validator validator, CacheService cache,
+      ProjectUserRepository projectUserRepository, LogEntryService logEntryService) {
+    super(validator, cache, projectUserRepository, ProjectUser::getCacheKey, logEntryService);
 
-    this.executionContext = executionContext;
-    this.notificationService = notificationService;
+    this.projectUserRepository = projectUserRepository;
+  }
+
+  @Override
+  public int countBy(ProjectUserCriteria criteria) {
+    return cache.getOrElse(
+        criteria.getCacheKey(),
+        () -> projectUserRepository.countBy(criteria),
+        60);
+  }
+
+  @Override
+  protected void postCreate(ProjectUser t) {
+    super.postCreate(t);
+
+    cache.removeByPrefix("member:criteria:" + t.project.id);
+  }
+
+  @Override
+  protected void postUpdate(ProjectUser t) {
+    super.postUpdate(t);
+
+    // When locale has been updated, the locale cache needs to be invalidated
+    cache.removeByPrefix("member:criteria:" + t.project.id);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public PagedList<ProjectUser> findBy(ProjectUserCriteria criteria) {
-    return ProjectUser.findBy(criteria);
-  }
+  protected void postDelete(ProjectUser t) {
+    super.postDelete(t);
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public ProjectUser byId(Long id, String... fetches) {
-    return ProjectUser.byId(id);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void preSave(ProjectUser t, boolean update) {
-    if (update)
-      logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.ProjectUser.class,
-          toDto(byId(t.id)), toDto(t)));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postSave(ProjectUser t, boolean update) {
-    if (!update)
-      logEntryService
-          .save(LogEntry.from(ActionType.Create, t.project, dto.ProjectUser.class, null, toDto(t)));
-
-    CompletableFuture.runAsync(() -> {
-      try {
-        notificationService.follow(t.user, t.project);
-      } catch (IOException | StreamClientException e) {
-        LOGGER.error("Error while following project notification", e);
-      }
-    }, executionContext.current());
-
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void preDelete(ProjectUser t) {
-    logEntryService
-        .save(LogEntry.from(ActionType.Delete, t.project, dto.ProjectUser.class, toDto(t), null));
-  }
-
-  protected dto.ProjectUser toDto(ProjectUser t) {
-    return dto.ProjectUser.from(t);
+    // When member has been deleted, the key cache needs to be invalidated
+    cache.removeByPrefix("member:criteria:" + t.project.id);
   }
 }

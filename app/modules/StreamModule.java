@@ -1,7 +1,6 @@
 package modules;
 
 import org.apache.commons.lang3.StringUtils;
-
 import play.api.Configuration;
 import play.api.Environment;
 import play.api.inject.Binding;

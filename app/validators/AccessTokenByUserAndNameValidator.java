@@ -1,51 +1,49 @@
 package validators;
 
+import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
-
-import models.AccessToken;
 import models.User;
 import play.data.validation.Constraints;
 import play.libs.F.Tuple;
+import repositories.AccessTokenRepository;
 
 /**
- *
  * @author resamsel
  * @version 6 Oct 2016
  */
 public class AccessTokenByUserAndNameValidator extends Constraints.Validator<Object>
-			implements ConstraintValidator<AccessTokenByUserAndName, Object>
-{
-	public static final String MESSAGE = "error.accesstokenbyuserandname";
+    implements ConstraintValidator<AccessTokenByUserAndName, Object> {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void initialize(AccessTokenByUserAndName constraintAnnotation)
-	{
-	}
+  public static final String MESSAGE = "error.accesstokenbyuserandname";
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isValid(Object object)
-	{
-		if(object == null)
-			return false;
+  private final AccessTokenRepository accessTokenRepository;
 
-		if(!(object instanceof String))
-			return false;
+  @Inject
+  public AccessTokenByUserAndNameValidator(AccessTokenRepository accessTokenRepository) {
+    this.accessTokenRepository = accessTokenRepository;
+  }
 
-		return AccessToken.byUserAndName(User.loggedInUserId(), (String)object) == null;
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void initialize(AccessTokenByUserAndName constraintAnnotation) {
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Tuple<String, Object[]> getErrorMessageKey()
-	{
-		return null;
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isValid(Object object) {
+    return object != null && object instanceof String
+        && accessTokenRepository.byUserAndName(User.loggedInUserId(), (String) object) == null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Tuple<String, Object[]> getErrorMessageKey() {
+    return null;
+  }
 }

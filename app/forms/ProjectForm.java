@@ -4,63 +4,43 @@ import models.Project;
 import play.data.Form;
 import play.data.FormFactory;
 import play.data.validation.Constraints;
+import validators.ProjectName;
 
 /**
- *
  * @author resamsel
  * @version 2 Sep 2016
  */
-public class ProjectForm
-{
-	@Constraints.Required
-	@Constraints.MaxLength(Project.NAME_LENGTH)
-	private String name;
+public class ProjectForm {
 
-	/**
-	 * @return the name
-	 */
-	public String getName()
-	{
-		return name;
-	}
+  @Constraints.Required
+  @Constraints.MaxLength(Project.NAME_LENGTH)
+  @Constraints.Pattern("[a-zA-Z0-9_\\.-]*")
+  @ProjectName
+  private String name;
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name)
-	{
-		this.name = name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	/**
-	 * 
-	 */
-	public Project fill(Project in)
-	{
-		in.name = name;
+  public void setName(String name) {
+    this.name = name;
+  }
 
-		return in;
-	}
+  public Project fill(Project in) {
+    in.name = name;
 
-	/**
-	 * @param project
-	 * @return
-	 */
-	public static ProjectForm from(Project in)
-	{
-		ProjectForm out = new ProjectForm();
+    return in;
+  }
 
-		out.name = in.name;
+  public static ProjectForm from(Project in) {
+    ProjectForm out = new ProjectForm();
 
-		return out;
-	}
+    out.name = in.name;
 
-	/**
-	 * @param formFactory
-	 * @return
-	 */
-	public static Form<ProjectForm> form(FormFactory formFactory)
-	{
-		return formFactory.form(ProjectForm.class);
-	}
+    return out;
+  }
+
+  public static Form<ProjectForm> form(FormFactory formFactory) {
+    return formFactory.form(ProjectForm.class);
+  }
 }

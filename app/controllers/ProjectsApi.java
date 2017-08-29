@@ -1,13 +1,7 @@
 package controllers;
 
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-
 import actions.ApiAction;
+import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.ProjectCriteria;
 import dto.Project;
 import dto.errors.ConstraintViolationError;
@@ -22,12 +16,15 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
+import javax.inject.Inject;
 import models.User;
-import play.cache.CacheApi;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.CacheService;
 import services.api.ProjectApiService;
 import utils.FormUtils;
 
@@ -38,6 +35,7 @@ import utils.FormUtils;
 @io.swagger.annotations.Api(value = "Projects", produces = "application/json")
 @With(ApiAction.class)
 public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
+
   private static final String TYPE = "dto.Project";
 
   private static final String FIND = "Find projects";
@@ -61,7 +59,7 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
   private final ProjectApiService projectApiService;
 
   @Inject
-  public ProjectsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
+  public ProjectsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
       ProjectApiService projectApiService) {
     super(injector, cache, auth, projectApiService);
 
@@ -170,9 +168,10 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> search(UUID projectId) {
-    return toJsonSearch(() -> {
-      return projectApiService.search(projectId, FormUtils.Search
-          .bindFromRequest(injector.instanceOf(FormFactory.class), configuration).get());
-    });
+    return toJsonSearch(() -> projectApiService.search(
+        projectId,
+        FormUtils.Search.bindFromRequest(injector.instanceOf(FormFactory.class), configuration)
+            .get()
+    ));
   }
 }

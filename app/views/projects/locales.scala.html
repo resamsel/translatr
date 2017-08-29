@@ -3,22 +3,22 @@
 @import utils.ActivityUtils._
 
 @main(template.withTitle(project.name).withName("project-locales"))(tags.search(form)())(nav(project, "locales")) {
-	@content() {
+	@tags.mainContent() {
 		@tags.collection(locales.getList, "locales.empty", "locales") {
 			<span class="title">@Messages("locale.name")</span>
 			@tags.sortOrders {
-				@tags.orderLink(form.get, routes.Projects.locales(project.id), "locale.name", "name", "name desc", "name")
-				@tags.orderLink(form.get, routes.Projects.locales(project.id), "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+				@tags.orderLink(form.get, project.localesRoute, "locale.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, project.localesRoute, "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
 			@for(locale <- locales.getList) {
 				<li class="collection-item avatar">
 					<i class="material-icons circle @LOCALE_COLOR">@LOCALE_ICON</i>
-					<a class="locale title" href="@routes.Locales.locale(locale.id)">
+					<a class="locale title" href="@locale.route()">
 						@tags.locale(locale.name)
-					<div class="progress">
-						<div class="determinate" style="width: @{progress.getOrDefault(locale.id, 0)*100}%;"></div>
-					</div>
+						<div class="progress">
+							<div class="determinate" style="width: @{progress.getOrDefault(locale.id, 0)*100}%;"></div>
+						</div>
 					</a>
 					<p>
 						@defining(project.missingKeys(locale.id)) { missing =>
@@ -33,13 +33,13 @@
 					<div class="secondary-content">
 						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
 							<a
-								href="@routes.Locales.edit(locale.id, form.get.search, form.get.order, form.get.limit, form.get.offset)"
+								href="@locale.editRoute(form.get.search, form.get.order, form.get.limit, form.get.offset)"
 								class="btn-flat btn-hover waves-effect waves-light"
 								title="@Messages("button.edit")">
 								<i class="material-icons">mode_edit</i>
 							</a>
 							<a
-								href="@routes.Locales.upload(locale.id)"
+								href="@locale.uploadRoute"
 								class="btn-flat btn-hover waves-effect waves-light"
 								title="@Messages("button.import")">
 								<i class="material-icons">file_upload</i>
@@ -66,7 +66,7 @@
 						</ul>
 						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
 							<a
-								href="@routes.Locales.remove(locale.id, form.get.search, form.get.order, form.get.limit, form.get.offset)"
+								href="@locale.removeRoute(form.get.search, form.get.order, form.get.limit, form.get.offset)"
 								class="btn-flat btn-hover waves-effect waves-light"
 								title="@Messages("button.remove")">
 								<i class="material-icons">delete_forever</i>
@@ -76,7 +76,7 @@
 				</li>
 			}
 		} {
-			@tags.pager(routes.Projects.locales(project.id), form.get)
+			@tags.pager(project.localesRoute, form.get)
 		}
 	}
 
@@ -88,10 +88,11 @@
 		}
 	}
 
+	<script src="@routes.Assets.versioned("javascripts/projectLocales.js")"></script>
 	<script>
 		var projectId = '@project.id';
 
 		App.Core.register('LocalesCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-locale'});
+		App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
 	</script>
-	<script src="@routes.Assets.versioned("javascripts/projectLocales.js")"></script>
 }

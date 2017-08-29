@@ -7,16 +7,14 @@ import static org.mockito.Mockito.when;
 import static play.inject.Bindings.bind;
 
 import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
-
+import models.User;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import models.User;
 import play.Application;
 import play.api.cache.EhCacheModule;
+import play.api.inject.Binding;
 import play.cache.CacheApi;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.test.WithApplication;
@@ -28,9 +26,9 @@ import utils.TransactionUtils;
  * @version 28 Jan 2017
  */
 public class AbstractTest extends WithApplication {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTest.class);
 
-  @Inject
   protected UserService userService;
 
   /**
@@ -42,12 +40,21 @@ public class AbstractTest extends WithApplication {
   }
 
   protected GuiceApplicationBuilder builder() {
+    return new GuiceApplicationBuilder().disable(EhCacheModule.class)
+        .overrides(createBindings());
+  }
+
+  protected Binding<?>[] createBindings() {
     CacheApi cache = Mockito.mock(CacheApi.class);
+
+    prepareCache(cache);
+
+    return new Binding[]{bind(CacheApi.class).toInstance(cache)};
+  }
+
+  protected void prepareCache(CacheApi cache) {
     when(cache.getOrElse(anyString(), any(), anyInt()))
         .thenAnswer(invocation -> ((Callable<?>) invocation.getArguments()[1]).call());
-
-    return new GuiceApplicationBuilder().disable(EhCacheModule.class)
-        .overrides(bind(CacheApi.class).toInstance(cache));
   }
 
   /**
@@ -75,9 +82,10 @@ public class AbstractTest extends WithApplication {
   }
 
   /**
-   * 
+   *
    */
-  protected void injectMembers() {}
+  protected void injectMembers() {
+  }
 
   private void cleanDatabase() {
     try {

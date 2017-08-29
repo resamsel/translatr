@@ -2,12 +2,11 @@ package integration.services;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-import org.junit.Test;
-
 import criterias.AccessTokenCriteria;
 import criterias.UserCriteria;
 import models.AccessToken;
 import models.User;
+import org.junit.Test;
 import services.AccessTokenService;
 import tests.AbstractTest;
 
@@ -49,8 +48,8 @@ public class AccessTokenServiceTest extends AbstractTest {
     User user = createUser("user1", "user1@resamsel.com");
     AccessToken accessToken = createAccessToken(user);
 
-    assertThat(accessToken.name).isEqualTo("accessToken1");
-    assertThat(accessToken.key).isNotNull();
+    assertThat(accessToken.name).as("AccessToken.name").isEqualTo("accessToken1");
+    assertThat(accessToken.key).as("AccessToken.key").isNotNull();
   }
 
   /**

@@ -7,7 +7,9 @@ import java.util.UUID;
  * @version 6 Jun 2017
  */
 public class WordCountProtocol {
+
   public static class ChangeMessageWordCount {
+
     public final UUID messageId;
     public final UUID projectId;
     public final UUID localeId;
@@ -27,6 +29,7 @@ public class WordCountProtocol {
   }
 
   public static class ChangeWordCount {
+
     public final UUID id;
     public int wordCount;
     public int wordCountDiff;

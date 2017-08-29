@@ -1,21 +1,23 @@
 package criterias;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.concurrent.Future;
-
-import javax.persistence.Transient;
-
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import com.avaje.ebeaninternal.api.Monitor;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Future;
+import javax.persistence.Transient;
 
 /**
  * @author resamsel
  * @version 24 Jan 2017
  */
 public class HasNextPagedList<T> implements PagedList<T>, Serializable {
+
   private static final long serialVersionUID = 4751634978699094645L;
 
   @Transient
@@ -28,26 +30,32 @@ public class HasNextPagedList<T> implements PagedList<T>, Serializable {
   private List<T> list;
   private boolean hasNext;
 
-  /**
-   * Construct with firstRow/maxRows.
-   */
   private HasNextPagedList(Query<T> query) {
     this.query = query;
     this.maxRows = query.getMaxRows();
     this.firstRow = query.getFirstRow();
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void loadCount() {}
+  private HasNextPagedList(List<T> list) {
+    this.list = Objects.requireNonNull(list, "List is null");
+    this.query = null;
+    this.maxRows = list.size();
+    this.firstRow = 0;
+  }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void loadRowCount() {}
+  public void loadCount() {
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void loadRowCount() {
+  }
 
   /**
    * {@inheritDoc}
@@ -72,17 +80,25 @@ public class HasNextPagedList<T> implements PagedList<T>, Serializable {
   public List<T> getList() {
     synchronized (monitor) {
       if (list == null) {
-        if (maxRows > 0)
-          query.setMaxRows(maxRows + 1);
+        if (query != null) {
+          if (maxRows > 0) {
+            query.setMaxRows(maxRows + 1);
+          }
 
-        list = query.findList();
+          list = query.findList();
 
-        if (maxRows > 0)
-          query.setMaxRows(maxRows);
+          if (maxRows > 0) {
+            query.setMaxRows(maxRows);
+          }
 
-        if (hasNext = maxRows > 0 && list.size() > maxRows)
-          list.subList(maxRows, list.size()).clear();
+          if (hasNext = maxRows > 0 && list.size() > maxRows) {
+            list.subList(maxRows, list.size()).clear();
+          }
+        } else {
+          list = Collections.emptyList();
+        }
       }
+
       return list;
     }
   }
@@ -161,5 +177,14 @@ public class HasNextPagedList<T> implements PagedList<T>, Serializable {
 
   public static <T> HasNextPagedList<T> create(ExpressionList<T> expressionList) {
     return create(expressionList.query());
+  }
+
+  public static <T> HasNextPagedList<T> create(List<T> list) {
+    return new HasNextPagedList<>(list);
+  }
+
+  @SafeVarargs
+  public static <T> HasNextPagedList<T> create(T... a) {
+    return new HasNextPagedList<>(Arrays.asList(a));
   }
 }

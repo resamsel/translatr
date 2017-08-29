@@ -1,4 +1,4 @@
-import com.typesafe.sbt.packager.docker._
+
 
 name := """translatr"""
 
@@ -19,7 +19,7 @@ libraryDependencies ++= Seq(
 	"com.typesafe.play.modules" %% "play-modules-redis" % "2.5.0",
 
 	// Database
-	"org.postgresql" % "postgresql" % "42.1.1",
+	"org.postgresql" % "postgresql" % "42.1.3",
 
 	// OAuth for Play
 	"com.feth" %% "play-authenticate" % "0.8.3",
@@ -44,7 +44,7 @@ libraryDependencies ++= Seq(
 
 	// https://mvnrepository.com/artifact/org.easytesting/fest-assert-core
 	"org.easytesting" % "fest-assert-core" % "2.0M10" % "test",
-	"org.mockito" % "mockito-core" % "2.8.9" % "test"
+	"org.mockito" % "mockito-core" % "2.8.47" % "test"
 )
 
 //
@@ -125,9 +125,19 @@ pipelineStages in Assets := Seq(concat)
 pipelineStages := Seq(concat)
 
 //
+// Tests
+//
+fork in Test := false
+
+//
 // JaCoCo test coverage
 //
 jacoco.settings
+
+// Unfortunately, this is really needed
+parallelExecution in jacoco.Config := false
+
+fork in jacoco.Config := false
 
 jacoco.excludes in jacoco.Config := Seq(
 	"router.*",
@@ -135,9 +145,6 @@ jacoco.excludes in jacoco.Config := Seq(
 	"*.Reverse*",
 	"*.routes"
 )
-
-// Unfortunately, this is really needed
-parallelExecution in jacoco.Config := false
 
 //
 // FindBugs

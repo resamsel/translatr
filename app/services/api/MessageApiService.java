@@ -1,11 +1,9 @@
 package services.api;
 
-import java.util.UUID;
-
 import com.google.inject.ImplementedBy;
-
 import criterias.MessageCriteria;
 import dto.Message;
+import java.util.UUID;
 import services.api.impl.MessageApiServiceImpl;
 
 /**

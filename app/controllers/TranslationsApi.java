@@ -1,13 +1,7 @@
 package controllers;
 
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-
 import actions.ApiAction;
+import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.MessageCriteria;
 import dto.Message;
 import dto.errors.ConstraintViolationError;
@@ -22,13 +16,16 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
+import javax.inject.Inject;
 import models.ProjectRole;
 import models.User;
-import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import services.CacheService;
 import services.api.MessageApiService;
 import utils.JsonUtils;
 
@@ -39,6 +36,7 @@ import utils.JsonUtils;
 @io.swagger.annotations.Api(value = "Messages", produces = "application/json")
 @With(ApiAction.class)
 public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria> {
+
   private static final String TYPE = "dto.Message";
 
   private static final String FIND = "Find messages";
@@ -67,7 +65,7 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria>
    * @param logEntryService
    */
   @Inject
-  public TranslationsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
+  public TranslationsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
       MessageApiService messageApiService) {
     super(injector, cache, auth, messageApiService);
   }

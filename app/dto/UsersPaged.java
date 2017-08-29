@@ -1,8 +1,7 @@
 package dto;
 
-import java.util.function.Function;
-
 import com.avaje.ebean.PagedList;
+import java.util.function.Function;
 
 /**
  * @author resamsel

@@ -2,7 +2,6 @@ package dto;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
-
 import models.Scope;
 
 /**

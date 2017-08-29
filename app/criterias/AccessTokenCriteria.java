@@ -1,7 +1,6 @@
 package criterias;
 
 import com.avaje.ebean.ExpressionList;
-
 import forms.SearchForm;
 
 /**
@@ -10,6 +9,11 @@ import forms.SearchForm;
  * @version 19 Oct 2016
  */
 public class AccessTokenCriteria extends AbstractSearchCriteria<AccessTokenCriteria> {
+
+  public AccessTokenCriteria() {
+    super("accessToken");
+  }
+
   public static AccessTokenCriteria from(SearchForm form) {
     return new AccessTokenCriteria().with(form);
   }
@@ -22,5 +26,10 @@ public class AccessTokenCriteria extends AbstractSearchCriteria<AccessTokenCrite
     query.order("whenCreated");
 
     return super.paged(query);
+  }
+
+  @Override
+  protected String getCacheKeyParticle() {
+    return "";
   }
 }

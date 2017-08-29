@@ -1,8 +1,8 @@
 @(template: utils.Template, project: Project, form: Form[forms.KeyForm])
 
-@main(template.withTitle(project.name).withBackLink(routes.Projects.project(project.id)))()(projects.nav(project, "keys")) {
-	@projects.content("flex") {
-		<form action="@routes.Keys.doCreate(project.id, null)" method="post">
+@main(template.withTitle(project.name).withBackLink(project.route))()(projects.nav(project, "keys")) {
+	@tags.mainContent("flex") {
+		<form action="@Keys.doCreateRoute(project)" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">
 					<span class="card-title">@Messages("key.create.title")</span>
@@ -17,7 +17,7 @@
 					</button>
 					<a
 						class="btn-flat btn-cancel black-text"
-						href="@routes.Projects.keys(project.id)">
+						href="@project.keysRoute">
 						@Messages("button.cancel")
 					</a>
 				</div>

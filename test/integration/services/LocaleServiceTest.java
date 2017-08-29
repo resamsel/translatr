@@ -3,12 +3,10 @@ package integration.services;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import javax.inject.Inject;
-
-import org.junit.Test;
-
 import models.Locale;
 import models.Project;
 import models.User;
+import org.junit.Test;
 import services.LocaleService;
 import services.ProjectService;
 import tests.AbstractTest;

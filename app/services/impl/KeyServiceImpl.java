@@ -1,77 +1,47 @@
 package services.impl;
 
+import static java.util.stream.Collectors.averagingDouble;
+import static java.util.stream.Collectors.groupingBy;
 import static utils.Stopwatch.log;
 
-import java.util.Collection;
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.RawSqlBuilder;
+import criterias.KeyCriteria;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
 import javax.inject.Inject;
 import javax.validation.Validator;
-
+import models.Key;
+import models.Project;
+import models.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.RawSqlBuilder;
-
-import criterias.KeyCriteria;
-import dto.PermissionException;
-import models.ActionType;
-import models.Key;
-import models.LogEntry;
-import models.Message;
-import models.Project;
-import models.ProjectRole;
-import models.Stat;
-import models.User;
-import play.Configuration;
-import play.cache.CacheApi;
+import repositories.KeyRepository;
+import services.CacheService;
 import services.KeyService;
 import services.LogEntryService;
-import services.MessageService;
 
 /**
- *
  * @author resamsel
  * @version 29 Aug 2016
  */
 public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
     implements KeyService {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyServiceImpl.class);
 
-  private final MessageService messageService;
+  private final KeyRepository keyRepository;
 
-  private final CacheApi cache;
+  private final CacheService cache;
 
-  /**
-   * 
-   */
   @Inject
-  public KeyServiceImpl(Configuration configuration, Validator validator, CacheApi cache,
-      MessageService messageService, LogEntryService logEntryService) {
-    super(configuration, validator, logEntryService);
+  public KeyServiceImpl(Validator validator, CacheService cache, KeyRepository keyRepository,
+      LogEntryService logEntryService) {
+    super(validator, cache, keyRepository, Key::getCacheKey, logEntryService);
+
     this.cache = cache;
-    this.messageService = messageService;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public PagedList<Key> findBy(KeyCriteria criteria) {
-    return Key.findBy(criteria);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Key byId(UUID id, String... fetches) {
-    return cache.getOrElse(Key.getCacheKey(id, fetches), () -> Key.byId(id, fetches), 60);
+    this.keyRepository = keyRepository;
   }
 
   /**
@@ -85,8 +55,12 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
                 .columnMapping("m.key_id", "id").columnMapping("count(m.id)", "count").create())
         .where().in("m.key_id", keyIds).findList(), LOGGER, "Retrieving key progress");
 
-    return stats.stream().collect(Collectors.groupingBy(k -> k.id,
-        Collectors.averagingDouble(t -> (double) t.count / (double) localesSize)));
+    return stats.stream().collect(
+        groupingBy(
+            k -> k.id,
+            averagingDouble(t -> (double) t.count / (double) localesSize)
+        )
+    );
   }
 
   /**
@@ -99,16 +73,23 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
       return;
     }
 
-    Key key = Key.byId(keyId);
+    Key key = modelRepository.byId(keyId);
 
-    if (key == null)
+    if (key == null) {
       return;
+    }
 
-    if (key.wordCount == null)
+    if (key.wordCount == null) {
       key.wordCount = 0;
+    }
     key.wordCount += wordCountDiff;
 
-    log(() -> persist(key), LOGGER, "Increased word count by %d", wordCountDiff);
+    log(
+        () -> modelRepository.persist(key),
+        LOGGER,
+        "Increased word count by %d",
+        wordCountDiff
+    );
   }
 
   /**
@@ -124,42 +105,51 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  protected void preSave(Key t, boolean update) {
-    if (update)
-      logEntryService.save(LogEntry.from(ActionType.Update, t.project, dto.Key.class,
-          dto.Key.from(byId(t.id)), dto.Key.from(t)));
+  public List<Key> latest(Project project, int limit) {
+    return cache.getOrElse(
+        String.format("project:id:%s:latest:keys:%d", project.id, limit),
+        () -> keyRepository.latest(project, limit),
+        60
+    );
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  protected void postSave(Key t, boolean update) {
-    if (!update) {
-      logEntryService
-          .save(LogEntry.from(ActionType.Create, t.project, dto.Key.class, null, dto.Key.from(t)));
+  public Key byProjectAndName(Project project, String name) {
+    return cache.getOrElse(
+        getCacheKey(project.id, name),
+        () -> keyRepository.byProjectAndName(project, name),
+        60
+    );
+  }
 
-      cache.remove(Project.getCacheKey(t.project.id));
+  @Override
+  protected void postCreate(Key t) {
+    super.postCreate(t);
+
+    // When key has been created, the project cache needs to be invalidated
+    cache.remove(Project.getCacheKey(t.project.id));
+    if (t.project.owner != null) {
+      cache.removeByPrefix(Project.getCacheKey(t.project.owner.username, t.project.name));
+      cache.removeByPrefix("key:criteria:null:" + t.project.owner.username + ":" + t.project.name);
     }
+
+    cache.removeByPrefix("key:criteria:" + t.project.id);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  protected void preDelete(Key t) {
-    if (!t.project.hasPermissionAny(User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
-        ProjectRole.Developer))
-      throw new PermissionException("User not allowed in project");
+  protected void postUpdate(Key t) {
+    Key existing = cache.get(Key.getCacheKey(t.id));
+    if (existing != null) {
+      cache.removeByPrefix(getCacheKey(existing.project.id, existing.name));
+    } else {
+      cache.removeByPrefix(getCacheKey(t.project.id, ""));
+    }
 
-    logEntryService
-        .save(LogEntry.from(ActionType.Delete, t.project, dto.Key.class, dto.Key.from(t), null));
+    super.postUpdate(t);
 
-    messageService.delete(Message.byKey(t));
+    // When locale has been updated, the locale cache needs to be invalidated
+    cache.removeByPrefix("key:criteria:" + t.project.id);
   }
 
   /**
@@ -167,19 +157,22 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
    */
   @Override
   protected void postDelete(Key t) {
-    // When message has been created, the project cache needs to be invalidated
-    cache.remove(Project.getCacheKey(t.project.id));
+    Key existing = byId(t.id);
+    if (existing != null) {
+      cache.removeByPrefix(getCacheKey(existing.project.id, existing.name));
+    }
+
+    super.postDelete(t);
+
+    // When key has been deleted, the project cache needs to be invalidated
+    cache.removeByPrefix(Project.getCacheKey(t.project.id));
+    cache.removeByPrefix(Project.getCacheKey(t.project.owner.username, t.project.name));
+
+    // When key has been deleted, the key cache needs to be invalidated
+    cache.removeByPrefix("key:criteria:" + t.project.id);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void preDelete(Collection<Key> t) {
-    logEntryService.save(t.stream()
-        .map(k -> LogEntry.from(ActionType.Delete, k.project, dto.Key.class, dto.Key.from(k), null))
-        .collect(Collectors.toList()));
-
-    messageService.delete(Message.byKeys(t.stream().map(k -> k.id).collect(Collectors.toList())));
+  private static String getCacheKey(UUID projectId, String keyName) {
+    return String.format("key:project:%s:name:%s", projectId, keyName);
   }
 }

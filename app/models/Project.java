@@ -1,19 +1,22 @@
 package models;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
-import static utils.Stopwatch.log;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import com.avaje.ebean.annotation.CreatedTimestamp;
+import com.avaje.ebean.annotation.UpdatedTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import controllers.AbstractController;
+import criterias.MessageCriteria;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,55 +29,31 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
-
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.ImmutableMap;
-
-import criterias.HasNextPagedList;
-import criterias.MessageCriteria;
-import criterias.ProjectCriteria;
 import play.api.Play;
+import play.api.mvc.Call;
+import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
 import play.mvc.Http.Context;
 import services.MessageService;
 import services.ProjectService;
+import utils.CacheUtils;
 import utils.ContextKey;
-import utils.PermissionUtils;
-import utils.QueryUtils;
 import validators.NameUnique;
+import validators.ProjectName;
 import validators.ProjectNameUniqueChecker;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
 @NameUnique(checker = ProjectNameUniqueChecker.class)
 public class Project implements Model<Project, UUID>, Suggestable {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
   public static final int NAME_LENGTH = 255;
-
-  public static final String FETCH_MEMBERS = "members";
-  public static final String FETCH_OWNER = "owner";
-  public static final String FETCH_LOCALES = "locales";
-  public static final String FETCH_KEYS = "keys";
-
-  private static final List<String> PROPERTIES_TO_FETCH = Arrays.asList(FETCH_OWNER, FETCH_MEMBERS);
-
-  private static final Map<String, List<String>> FETCH_MAP =
-      ImmutableMap.of("project", Arrays.asList("project"), FETCH_MEMBERS,
-          Arrays.asList(FETCH_MEMBERS, FETCH_MEMBERS + ".user"));
-
-  private static final Find<UUID, Project> find = new Find<UUID, Project>() {};
 
   @Id
   @GeneratedValue
@@ -93,8 +72,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
   @UpdatedTimestamp
   public DateTime whenUpdated;
 
-  @Column(nullable = false, length = NAME_LENGTH)
+  @Column(nullable = false)
   @Required
+  @Constraints.Pattern("[a-zA-Z0-9_\\.-]*")
+  @ProjectName
   public String name;
 
   @ManyToOne
@@ -117,12 +98,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public List<ProjectUser> members;
 
   @Transient
-  private Long localesSize;
-
-  @Transient
-  private Long keysSize;
-
-  @Transient
   private List<Message> messages;
 
   @Transient
@@ -131,7 +106,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
   @Transient
   private Map<UUID, Long> keysSizeMap;
 
-  public Project() {}
+  public Project() {
+  }
 
   public Project(String name) {
     this.name = name;
@@ -152,8 +128,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   @Override
   public Data data() {
-    return Data.from(Project.class, id, name,
-        controllers.routes.Projects.project(id).absoluteURL(Context.current().request()));
+    return Data.from(Project.class, id, name, route().absoluteURL(Context.current().request()));
   }
 
   public Project withId(UUID id) {
@@ -161,75 +136,48 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return this;
   }
 
-  public static Project byId(UUID id, String... fetches) {
-    if (id == null)
-      return null;
-
-    Set<String> propertiesToFetch = new HashSet<>(PROPERTIES_TO_FETCH);
-    if (fetches.length > 0)
-      propertiesToFetch.addAll(Arrays.asList(fetches));
-
-    return QueryUtils.fetch(find.setId(id), propertiesToFetch, FETCH_MAP).findUnique();
-  }
-
-  public static PagedList<Project> findBy(ProjectCriteria criteria) {
-    ExpressionList<Project> query =
-        find.fetch(FETCH_OWNER).fetch(FETCH_MEMBERS).fetch(FETCH_LOCALES).fetch(FETCH_KEYS).where();
-
-    query.eq("deleted", false);
-
-    if (criteria.getOwnerId() != null)
-      query.eq("owner.id", criteria.getOwnerId());
-
-    if (criteria.getMemberId() != null)
-      query.eq("members.user.id", criteria.getMemberId());
-
-    if (criteria.getProjectId() != null)
-      query.idEq(criteria.getProjectId());
-
-    if (criteria.getSearch() != null)
-      query.ilike("name", "%" + criteria.getSearch() + "%");
-
-    criteria.paged(query);
-
-    return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
-  }
-
   public float progress() {
     long keysSize = keysSize();
     long localesSize = localesSize();
-    if (keysSize < 1 || localesSize < 1)
+    if (keysSize < 1 || localesSize < 1) {
       return 0f;
-    return (float) Message.countBy(this) / (float) (keysSize * localesSize);
+    }
+    return (float) messagesSize() / (float) (keysSize * localesSize);
   }
 
   public long missingKeys(UUID localeId) {
     return keysSize() - keysSizeMap(localeId);
   }
 
-  public long keysSizeMap(UUID localeId) {
+  private long keysSizeMap(UUID localeId) {
     if (keysSizeMap == null)
-      // FIXME: This is an expensive operation, consider doing this in a group by query.
+    // FIXME: This is an expensive operation, consider doing this in a group by query.
+    {
       keysSizeMap = messageList().stream().collect(groupingBy(m -> m.locale.id, counting()));
+    }
 
-    return keysSizeMap.getOrDefault(localeId, 0l);
+    return keysSizeMap.getOrDefault(localeId, 0L);
   }
 
   public long missingLocales(UUID keyId) {
     return localesSize() - localesSizeMap(keyId);
   }
 
-  public long localesSizeMap(UUID keyId) {
+  private long localesSizeMap(UUID keyId) {
     if (localesSizeMap == null)
-      // FIXME: This is an expensive operation, consider doing this in a group by query.
+    // FIXME: This is an expensive operation, consider doing this in a group by query.
+    {
       localesSizeMap = messageList().stream().collect(groupingBy(m -> m.key.id, counting()));
+    }
 
-    return localesSizeMap.getOrDefault(keyId, 0l);
+    return localesSizeMap.getOrDefault(keyId, 0L);
   }
 
-  public List<Message> messageList() {
-    if (messages == null)
-      messages = Message.findBy(new MessageCriteria().withProjectId(this.id)).getList();
+  private List<Message> messageList() {
+    if (messages == null) {
+      messages = Play.current().injector().instanceOf(MessageService.class)
+          .findBy(new MessageCriteria().withProjectId(this.id)).getList();
+    }
 
     return messages;
   }
@@ -265,17 +213,25 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return this;
   }
 
-  /**
-   * @param name
-   * @return
-   */
-  public static Project byOwnerAndName(User user, String name) {
-    return find.where().eq("owner", user).eq("name", name).findUnique();
+  public Project withWhenCreated(DateTime whenCreated) {
+    this.whenCreated = whenCreated;
+    return this;
   }
 
-  /**
-   * @param project
-   */
+  public Project withWhenUpdated(DateTime whenUpdated) {
+    this.whenUpdated = whenUpdated;
+    return this;
+  }
+
+  public Project withMembers(ProjectUser... members) {
+    if (this.members == null) {
+      this.members = new ArrayList<>();
+    }
+
+    this.members.addAll(asList(members));
+    return this;
+  }
+
   @Override
   public Project updateFrom(Project in) {
     name = in.name;
@@ -287,76 +243,246 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public boolean hasRolesAny(User user, ProjectRole... roles) {
     Map<UUID, List<ProjectRole>> userMap =
         members.stream().collect(groupingBy(m -> m.user.id, mapping(m -> m.role, toList())));
-    if (!userMap.containsKey(user.id))
+    if (!userMap.containsKey(user.id)) {
       return false;
+    }
 
     List<ProjectRole> userRoles = userMap.get(user.id);
-    userRoles.retainAll(Arrays.asList(roles));
+    userRoles.retainAll(asList(roles));
 
     return !userRoles.isEmpty();
   }
 
   public ProjectRole roleOf(User user) {
-    if (user == null)
+    if (user == null) {
       return null;
+    }
 
-    if (user.equals(owner))
+    if (user.equals(owner)) {
       return ProjectRole.Owner;
+    }
 
     Optional<ProjectUser> member = members.stream().filter(m -> user.equals(m.user)).findFirst();
-    if (member.isPresent())
+    if (member.isPresent()) {
       return member.get().role;
+    }
 
     return null;
   }
 
   public static UUID brandProjectId() {
     UUID brandProjectId = ContextKey.BrandProjectId.get();
-    if (brandProjectId != null)
+    if (brandProjectId != null) {
       return brandProjectId;
+    }
 
     User user = User.loggedInUser();
-    if (user == null)
+    if (user == null) {
       return null;
+    }
 
     Project brandProject = null;
     try {
-      brandProject = Play.current().injector().instanceOf(ProjectService.class).byOwnerAndName(user,
-          "Translatr");
+      brandProject = Play.current().injector().instanceOf(ProjectService.class)
+          .byOwnerAndName(user.username, "Translatr");
     } catch (Exception e) {
       LOGGER.warn("Error while retrieving brand project", e);
     }
 
-    if (brandProject == null)
+    if (brandProject == null) {
       return null;
+    }
 
     ContextKey.BrandProjectId.put(Context.current(), brandProject.id);
 
     return brandProject.id;
   }
 
-  /**
-   * @param user
-   * @param role
-   * @return
-   */
-  public boolean hasPermissionAny(User user, ProjectRole... roles) {
-    return PermissionUtils.hasPermissionAny(id, user, roles);
+  public static String getCacheKey(UUID projectId, String... fetches) {
+    return CacheUtils.getCacheKey("project:id", projectId, fetches);
+  }
+
+  public static String getCacheKey(String username, String projectName, String... fetches) {
+    if (username == null) {
+      return null;
+    }
+
+    return CacheUtils
+        .getCacheKey("project:owner", String.format("%s:%s", username, projectName), fetches);
   }
 
   /**
-   * @param projectId
-   * @param fetches
-   * @return
+   * Return the route to this project.
    */
-  public static String getCacheKey(UUID projectId, String... fetches) {
-    if (projectId == null)
-      return null;
+  public Call route() {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .projectBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
+  }
 
-    if (fetches.length > 0)
-      return String.format("project:%s:%s", projectId, StringUtils.join(fetches, ":"));
+  /**
+   * Return the edit route to this project.
+   */
+  public Call editRoute() {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .editBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
+  }
 
-    return String.format("project:%s", projectId);
+  /**
+   * Return the do edit route to this project.
+   */
+  public Call doEditRoute() {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .doEditBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
+  }
+
+  /**
+   * Return the removeAll route to this project.
+   */
+  public Call removeRoute() {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .removeBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
+  }
+
+  /**
+   * Return the route to the locales of this project.
+   */
+  public Call localesRoute() {
+    return localesRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the locales of this project.
+   */
+  public Call localesRoute(String search, String order, int limit, int offset) {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .localesBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit,
+            offset);
+  }
+
+  /**
+   * Return the route to the keys of this project.
+   */
+  public Call keysRoute() {
+    return keysRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the keys of this project.
+   */
+  public Call keysRoute(String search) {
+    return keysRoute(search, AbstractController.DEFAULT_ORDER, AbstractController.DEFAULT_LIMIT,
+        AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the keys of this project.
+   */
+  public Call keysRoute(String search, String order, int limit, int offset) {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .keysBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit, offset);
+  }
+
+  /**
+   * Return the route to the members of this project.
+   */
+  public Call membersRoute() {
+    return membersRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the members of this project.
+   */
+  private Call membersRoute(String search, String order, int limit, int offset) {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .membersBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit,
+            offset);
+  }
+
+  /**
+   * Return the route to the members of this project.
+   */
+  public Call activityRoute() {
+    return activityRoute(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
+  }
+
+  /**
+   * Return the route to the activity of this project.
+   */
+  private Call activityRoute(String search, String order, int limit, int offset) {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .activityBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"), search, order, limit,
+            offset);
+  }
+
+  /**
+   * Return the route to the members of this project.
+   */
+  public Call activityCsvRoute() {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .activityCsvBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
+  }
+
+  /**
+   * Return the route to the word count reset of this project.
+   */
+  public Call wordCountResetRoute() {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .wordCountResetBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
+  }
+
+  /**
+   * Return the route to the do owner change of this project.
+   */
+  public Call doOwnerChangeRoute() {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .doOwnerChangeBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
+  }
+
+  /**
+   * Return the route to the do member add of this project.
+   */
+  public Call doMemberAddRoute() {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .doMemberAddBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"));
+  }
+
+  /**
+   * Return the route to the member removeAll of this project.
+   */
+  public Call memberRemoveRoute(Long memberId) {
+    Objects.requireNonNull(owner, "Owner is null");
+    return controllers.routes.Projects
+        .memberRemoveBy(Objects.requireNonNull(owner.username, "Owner username is null"),
+            Objects.requireNonNull(name, "Name is null"),
+            Objects.requireNonNull(memberId, "Member ID is null"));
   }
 
   @Override

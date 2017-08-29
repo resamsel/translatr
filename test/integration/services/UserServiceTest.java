@@ -2,12 +2,10 @@ package integration.services;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-import java.util.UUID;
-
-import org.junit.Test;
-
 import criterias.UserCriteria;
+import java.util.UUID;
 import models.User;
+import org.junit.Test;
 import tests.AbstractTest;
 
 /**
@@ -86,27 +84,5 @@ public class UserServiceTest extends AbstractTest {
     userService.delete(user);
 
     assertThat(userService.byId(user.id)).isNull();
-  }
-
-  @Test
-  public void emailToUsername() {
-    String username =
-        userService.emailToUsername("this.is.a.really.long.email@long-domain-for-test.com");
-
-    assertThat(username).isEqualTo("thisisareallylongemaillongdomain");
-
-    User user1 = createUser("User with long email 1",
-        "this.is.a.really.long.email@long-domain-for-test.com");
-
-    assertThat(user1.username).isEqualTo("thisisareallylongemaillongdomain");
-
-    username = userService.emailToUsername("this.is.a.really.long.email@long-domain-for-test.com");
-
-    assertThat(username).startsWith("thisisareallylongemaillongdo");
-
-    User user2 = createUser("User with long email 2",
-        "this.is.a.really.long.email@long-domain-for-test.com");
-
-    assertThat(user2.username).isNotEqualTo(user1.username);
   }
 }

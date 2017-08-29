@@ -3,11 +3,11 @@
 @import utils.FormatUtils._
 
 @main(template.withTitle(project.name).withName("project-activity"))(tags.search(form)())(nav(project, "activity")) {
-	@content() {
+	@tags.mainContent() {
 		@tags.collection(activityList.getList, "activity.empty") {
 			<span class="title">@Messages("activity")</span>
 			@tags.sortOrders {
-				@tags.orderLink(form.get, routes.Projects.activity(project.id), "when.created", "whenCreated desc", "whenCreated", "whenCreated")
+				@tags.orderLink(form.get, project.activityRoute, "when.created", "whenCreated desc", "whenCreated", "whenCreated")
 			}
 		} {
 			@for(activity <- activityList.getList) {
@@ -30,7 +30,7 @@
 				</li>
 			}
 		} {
-			@tags.pager(routes.Projects.activity(project.id), form.get)
+			@tags.pager(project.activityRoute, form.get)
 		}
 	}
 }

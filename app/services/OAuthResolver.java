@@ -1,12 +1,11 @@
 package services;
 
-import javax.inject.Singleton;
-
 import com.feth.play.module.pa.Resolver;
 import com.feth.play.module.pa.exceptions.AccessDeniedException;
 import com.feth.play.module.pa.exceptions.AuthException;
-
+import controllers.Projects;
 import controllers.routes;
+import javax.inject.Singleton;
 import play.mvc.Call;
 
 /**
@@ -24,7 +23,7 @@ public class OAuthResolver extends Resolver {
   public Call afterAuth() {
     // The user will be redirected to this page after authentication
     // if no original URL was saved
-    return routes.Projects.index();
+    return Projects.indexRoute();
   }
 
   @Override

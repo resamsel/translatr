@@ -5,7 +5,7 @@
 }
 
 @main(template.withTitle(Messages("profile.askLink.title")))()(users.nav(template, template.loggedInUser, "info")) {
-	@users.content("info") {
+	@tags.mainContent("info") {
 		<form action="@routes.Profiles.askMerge()" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">

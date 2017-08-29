@@ -1,14 +1,17 @@
 package commands;
 
+import static controllers.AbstractController.DEFAULT_LIMIT;
+import static controllers.AbstractController.DEFAULT_OFFSET;
+import static controllers.AbstractController.DEFAULT_ORDER;
+import static controllers.AbstractController.DEFAULT_SEARCH;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.Map;
-
-import controllers.Locales;
 import controllers.routes;
 import criterias.KeyCriteria;
 import dto.Locale;
+import java.util.Map;
+import javax.inject.Inject;
 import models.Key;
 import models.Project;
 import play.inject.Injector;
@@ -20,16 +23,24 @@ import services.MessageService;
 import services.ProjectService;
 
 public class RevertDeleteLocaleCommand implements Command<models.Locale> {
+
   private static final long serialVersionUID = -1628328599712791510L;
 
+  private final MessageService messageService;
+
   private Locale locale;
+
+  @Inject
+  public RevertDeleteLocaleCommand(MessageService messageService) {
+    this.messageService = messageService;
+  }
 
   /**
    * {@inheritDoc}
    */
   @Override
   public RevertDeleteLocaleCommand with(models.Locale locale) {
-    this.locale = Locale.from(locale).load();
+    this.locale = Locale.from(locale).load(messageService);
     return this;
   }
 
@@ -38,7 +49,7 @@ public class RevertDeleteLocaleCommand implements Command<models.Locale> {
     Project project = injector.instanceOf(ProjectService.class).byId(locale.projectId);
 
     models.Locale model = locale.toModel(project);
-    injector.instanceOf(LocaleService.class).save(model);
+    injector.instanceOf(LocaleService.class).update(model);
     locale.id = model.id;
 
     Map<String, Key> keys =
@@ -61,15 +72,7 @@ public class RevertDeleteLocaleCommand implements Command<models.Locale> {
    */
   @Override
   public Call redirect() {
-    return routes.Projects.locales(locale.projectId, Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER,
-        Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET);
-  }
-
-  /**
-   * @param locale
-   * @return
-   */
-  public static RevertDeleteLocaleCommand from(models.Locale locale) {
-    return new RevertDeleteLocaleCommand().with(locale);
+    return routes.Projects.localesBy(locale.projectOwnerUsername, locale.projectName,
+        DEFAULT_SEARCH, DEFAULT_ORDER, DEFAULT_LIMIT, DEFAULT_OFFSET);
   }
 }
