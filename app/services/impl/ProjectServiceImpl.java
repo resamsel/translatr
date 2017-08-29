@@ -127,6 +127,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
   @Override
   public void changeOwner(Project project, User owner) {
+    LOGGER.debug("changeOwner(project={}, owner={})", project, owner);
+
     requireNonNull(project, "project");
     requireNonNull(owner, "owner");
 
@@ -146,9 +148,13 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
     newOwnerRole.role = ProjectRole.Owner;
 
+    if (newOwnerRole.id == null) {
+      project.members.add(newOwnerRole);
+    }
+
+    update(project.withOwner(owner));
     projectUserService.update(ownerRole);
     projectUserService.update(newOwnerRole);
-    modelRepository.update(project.withOwner(owner));
   }
 
   @Override

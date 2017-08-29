@@ -366,7 +366,10 @@ public class Projects extends AbstractController {
 
       Form<ProjectOwnerForm> form = ProjectOwnerForm.form(formFactory).bindFromRequest();
       if (form.hasErrors()) {
-        LOGGER.debug("doOwnerChange: form errors: {}", form.errorsAsJson());
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("doOwnerChange: form errors: {}", form.errorsAsJson());
+        }
+
         return badRequest(views.html.projects.ownerChange.render(
             createTemplate(),
             project,
@@ -377,11 +380,10 @@ public class Projects extends AbstractController {
       ProjectOwnerForm projectOwner = form.get();
 
       try {
-        if (!project.name.equals(projectOwner.getProjectName())) {
-          project = projectService.update(project.withName(projectOwner.getProjectName()));
-        }
-
-        projectService.changeOwner(project, userService.byId(projectOwner.getOwnerId()));
+        projectService.changeOwner(
+            project.withName(projectOwner.getProjectName()),
+            userService.byId(projectOwner.getOwnerId())
+        );
       } catch (ConstraintViolationException e) {
         return badRequest(views.html.projects.ownerChange.render(
             createTemplate(),

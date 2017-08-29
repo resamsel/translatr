@@ -2,6 +2,7 @@ package services;
 
 import static assertions.ProjectAssert.assertThat;
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -13,9 +14,16 @@ import static utils.ProjectRepositoryMock.createProject;
 
 import criterias.HasNextPagedList;
 import criterias.ProjectCriteria;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import models.Project;
+import models.User;
+import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -26,6 +34,8 @@ import repositories.ProjectRepository;
 import services.impl.CacheServiceImpl;
 import services.impl.ProjectServiceImpl;
 import utils.CacheApiMock;
+import utils.UserRepositoryMock;
+import validators.ProjectNameUniqueChecker;
 
 public class ProjectServiceTest {
 
@@ -34,6 +44,9 @@ public class ProjectServiceTest {
   private ProjectRepository projectRepository;
   private ProjectService projectService;
   private CacheService cacheService;
+  private User johnSmith;
+  private User janeDoe;
+  private Validator validator;
 
   @Test
   public void testById() {
@@ -63,7 +76,7 @@ public class ProjectServiceTest {
   @Test
   public void testFindBy() {
     // mock project
-    Project project = createProject(UUID.randomUUID(), "name", "johnsmith");
+    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
     projectRepository.create(project);
 
     // This invocation should feed the cache
@@ -91,7 +104,7 @@ public class ProjectServiceTest {
   @Test
   public void testByOwnerAndName() {
     // mock project
-    Project project = createProject(UUID.randomUUID(), "name", "johnsmith");
+    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
     projectRepository.create(project);
 
     // This invocation should feed the cache
@@ -125,7 +138,7 @@ public class ProjectServiceTest {
   @Test
   public void testIncreaseWordCountBy() {
     // mock project
-    Project project = createProject(UUID.randomUUID(), "name", "johnsmith");
+    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
     projectRepository.create(project);
 
     assertThat(projectService.byId(project.id)).wordCountIsNull();
@@ -140,7 +153,7 @@ public class ProjectServiceTest {
   @Test
   public void testResetWordCount() {
     // mock project
-    Project project = createProject(UUID.randomUUID(), "name", "johnsmith");
+    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
     project.wordCount = 100;
     projectRepository.create(project);
 
@@ -153,16 +166,68 @@ public class ProjectServiceTest {
     verify(projectRepository, times(1)).byId(eq(project.id));
   }
 
+  @Test
+  public void testChangeOwner() {
+    // mock projects
+    Project projectJohn = createProject(UUID.randomUUID(), "name", johnSmith.username);
+    projectRepository.create(projectJohn);
+    Project projectJane = createProject(UUID.randomUUID(), "name", janeDoe.username);
+    projectRepository.create(projectJane);
+
+    assertThat(projectService.byId(projectJohn.id))
+        .ownerIsEqualTo(johnSmith)
+        .nameIsEqualTo(projectJohn.name);
+    assertThat(projectService.byId(projectJane.id))
+        .ownerIsEqualTo(janeDoe)
+        .nameIsEqualTo(projectJane.name);
+
+    when(validator.validate(any())).thenAnswer(a -> {
+      Project p = a.getArgument(0);
+
+      if (!new ProjectNameUniqueChecker(projectService).isValid(p)) {
+        return new HashSet<>(Collections.singletonList(
+            ConstraintViolationImpl.forBeanValidation(
+                "",
+                Collections.emptyMap(),
+                "",
+                Project.class,
+                p,
+                null,
+                null,
+                null,
+                null,
+                null)
+        ));
+      }
+
+      return new HashSet<>();
+    });
+
+    try {
+      projectService.changeOwner(projectJohn, janeDoe);
+      failBecauseExceptionWasNotThrown(ConstraintViolationException.class);
+    } catch (Exception e) {
+      assertThat(e).isInstanceOf(ConstraintViolationException.class);
+    }
+
+    // This should trigger cache invalidation
+    projectService.changeOwner(projectJohn.withName("name2"), janeDoe);
+
+    assertThat(projectService.byId(projectJohn.id)).ownerIsEqualTo(janeDoe).nameIsEqualTo("name2");
+    verify(projectRepository, times(1)).byId(eq(projectJohn.id));
+  }
+
 
   @Before
   public void before() {
+    validator = mock(Validator.class);
     projectRepository = mock(
         ProjectRepository.class,
         withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation()))
     );
     cacheService = new CacheServiceImpl(new CacheApiMock());
     projectService = new ProjectServiceImpl(
-        mock(Validator.class),
+        validator,
         cacheService,
         projectRepository,
         mock(LocaleService.class),
@@ -172,6 +237,8 @@ public class ProjectServiceTest {
         mock(ProjectUserService.class),
         mock(LogEntryService.class)
     );
+    johnSmith = UserRepositoryMock.byUsername("johnsmith");
+    janeDoe = UserRepositoryMock.byUsername("janedoe");
 
     when(projectRepository.create(any())).then(this::persist);
     when(projectRepository.update(any())).then(this::persist);
@@ -179,6 +246,12 @@ public class ProjectServiceTest {
 
   private Project persist(InvocationOnMock a) {
     Project p = a.getArgument(0);
+
+    Set<ConstraintViolation<Project>> violations = validator.validate(p);
+    if (violations != null && !violations.isEmpty()) {
+      throw new ConstraintViolationException("Violations found", violations);
+    }
+
     when(projectRepository.byId(eq(p.id), any())).thenReturn(p);
     when(projectRepository.byOwnerAndName(eq(p.owner.username), eq(p.name))).thenReturn(p);
     when(projectRepository.findBy(any())).thenReturn(HasNextPagedList.create(p));

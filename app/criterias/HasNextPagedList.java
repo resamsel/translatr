@@ -183,6 +183,7 @@ public class HasNextPagedList<T> implements PagedList<T>, Serializable {
     return new HasNextPagedList<>(list);
   }
 
+  @SafeVarargs
   public static <T> HasNextPagedList<T> create(T... a) {
     return new HasNextPagedList<>(Arrays.asList(a));
   }

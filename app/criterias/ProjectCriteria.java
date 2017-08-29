@@ -64,6 +64,40 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
     return String.format("%s:%s:%s", name, ownerId, memberId);
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    ProjectCriteria that = (ProjectCriteria) o;
+
+    return (ownerId != null ? ownerId.equals(that.ownerId) : that.ownerId == null) && (
+        memberId != null ? memberId.equals(that.memberId) : that.memberId == null) && (name != null
+        ? name.equals(that.name) : that.name == null);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = ownerId != null ? ownerId.hashCode() : 0;
+    result = 31 * result + (memberId != null ? memberId.hashCode() : 0);
+    result = 31 * result + (name != null ? name.hashCode() : 0);
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "ProjectCriteria {" +
+        "ownerId=" + ownerId +
+        ", memberId=" + memberId +
+        ", name='" + name + '\'' +
+        ", type='" + type + '\'' +
+        '}';
+  }
+
   public static ProjectCriteria from(SearchForm form) {
     return new ProjectCriteria().with(form);
   }

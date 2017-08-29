@@ -41,7 +41,7 @@ public class ProjectOwnerUniqueChecker implements NameUniqueChecker {
             .withName(requireNonNull(t.getProjectName(), "project name"))
     );
 
-    LOGGER.debug("existing projecta: {}", projects);
+    LOGGER.debug("existing projects: {}", projects != null ? projects.getList() : null);
 
     return projects == null || projects.getList().isEmpty();
   }
