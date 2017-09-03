@@ -58,6 +58,16 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
         60);
   }
 
+  @Override
+  public Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
+      String... fetches) {
+    return cache.getOrElse(
+        String.format("locale:owner:%s:projectName:%s:name:%s", username, projectName, localeName),
+        () -> localeRepository.byOwnerAndProjectAndName(username, projectName, localeName, fetches),
+        60
+    );
+  }
+
   /**
    * {@inheritDoc}
    */

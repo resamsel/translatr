@@ -20,7 +20,8 @@ import services.api.MessageApiService;
  */
 @Singleton
 public class MessageApiServiceImpl extends
-    AbstractApiService<Message, UUID, MessageCriteria, dto.Message> implements MessageApiService {
+    AbstractApiService<Message, UUID, MessageCriteria, MessageService, dto.Message> implements
+    MessageApiService {
 
   private final LocaleService localeService;
   private final KeyService keyService;

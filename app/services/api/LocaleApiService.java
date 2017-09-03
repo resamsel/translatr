@@ -17,4 +17,7 @@ public interface LocaleApiService extends ApiService<Locale, UUID, LocaleCriteri
   Locale upload(UUID localeId, Request request);
 
   byte[] download(UUID localeId, String fileType, Response response);
+
+  Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
+      String... fetches);
 }

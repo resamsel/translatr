@@ -18,17 +18,19 @@ import services.api.ApiService;
  * @author resamsel
  * @version 29 Jan 2017
  */
-public abstract class AbstractApiService<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>, DTO extends Dto>
+public abstract class AbstractApiService
+    <MODEL extends Model<MODEL, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>,
+        SERVICE extends ModelService<MODEL, ID, CRITERIA>, DTO extends Dto>
     implements ApiService<DTO, ID, CRITERIA> {
 
-  protected ModelService<MODEL, ID, CRITERIA> service;
+  protected SERVICE service;
   private Class<DTO> dtoClass;
   Function<MODEL, DTO> dtoMapper;
   Scope[] readScopes;
   private Scope[] writeScopes;
   protected final PermissionService permissionService;
 
-  protected AbstractApiService(ModelService<MODEL, ID, CRITERIA> service, Class<DTO> dtoClass,
+  protected AbstractApiService(SERVICE service, Class<DTO> dtoClass,
       Function<MODEL, DTO> dtoMapper, Scope[] readScopes, Scope[] writeScopes,
       PermissionService permissionService) {
 

@@ -35,11 +35,6 @@ public class Profiles extends AbstractController {
 
   private final AccessTokenService accessTokenService;
 
-  /**
-   * @param injector
-   * @param cache
-   * @param auth
-   */
   @Inject
   public Profiles(Injector injector, CacheService cache, PlayAuthenticate auth,
       FormFactory formFactory,
@@ -51,11 +46,11 @@ public class Profiles extends AbstractController {
   }
 
   public CompletionStage<Result> profile() {
-    return loggedInUser(user -> redirect(controllers.routes.Users.user(user.username)));
+    return loggedInUser(user -> redirect(user.profileRoute()));
   }
 
   public CompletionStage<Result> projects() {
-    return loggedInUser(user -> redirect(controllers.routes.Users.projects(user.username)));
+    return loggedInUser(user -> redirect(user.projectsRoute()));
   }
 
   public CompletionStage<Result> linkedAccounts() {
@@ -90,7 +85,7 @@ public class Profiles extends AbstractController {
             views.html.users.edit.render(createTemplate(), user, FormUtils.include(form, e)));
       }
 
-      return redirect(routes.Users.user(user.username));
+      return redirect(user.route());
     });
   }
 

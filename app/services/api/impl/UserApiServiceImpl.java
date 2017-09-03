@@ -17,7 +17,8 @@ import services.api.UserApiService;
  * @version 29 Jan 2017
  */
 @Singleton
-public class UserApiServiceImpl extends AbstractApiService<User, UUID, UserCriteria, dto.User>
+public class UserApiServiceImpl extends
+    AbstractApiService<User, UUID, UserCriteria, UserService, dto.User>
     implements UserApiService {
 
   @Inject

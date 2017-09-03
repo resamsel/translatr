@@ -12,7 +12,7 @@ import org.fest.assertions.api.AbstractAssert;
 public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A>, A> extends
     AbstractAssert<S, A> {
 
-  private final String name;
+  protected final String name;
 
   protected AbstractGenericAssert(String name, A actual, Class<S> selfType) {
     super(actual, selfType);
@@ -27,7 +27,7 @@ public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A
     return myself;
   }
 
-  protected S isTrue(String field, Boolean actual) {
+  S isTrue(String field, Boolean actual) {
     assertThat(actual)
         .overridingErrorMessage("Expected %s's %s to be true, but was <%s> (%s)", name, field,
             actual, descriptionText())
@@ -35,7 +35,7 @@ public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A
     return myself;
   }
 
-  protected S isFalse(String field, Boolean actual) {
+  S isFalse(String field, Boolean actual) {
     assertThat(actual)
         .overridingErrorMessage("Expected %s's %s to be false, but was <%s> (%s)", name, field,
             actual, descriptionText())
@@ -43,28 +43,35 @@ public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A
     return myself;
   }
 
-  protected S isEqualTo(String field, int expected, int actual) {
+  protected <T> S isEqualTo(T expected, T actual, String newErrorMessage, Object... args) {
     assertThat(actual)
-        .overridingErrorMessage("Expected %s's %s to be <%s> but was <%s> (%s)", name, field,
-            expected, actual, descriptionText())
+        .overridingErrorMessage(newErrorMessage, args)
         .isEqualTo(expected);
     return myself;
+  }
+
+  protected S isEqualTo(String field, int expected, int actual) {
+    return isEqualTo(
+        expected, actual,
+        "Expected %s's %s to be <%s> but was <%s> (%s)",
+        name, field, expected, actual, descriptionText()
+    );
   }
 
   protected <T> S isEqualTo(String field, T expected, T actual) {
-    assertThat(actual)
-        .overridingErrorMessage("Expected %s's %s to be <%s> but was <%s> (%s)", name, field,
-            expected, actual, descriptionText())
-        .isEqualTo(expected);
-    return myself;
+    return isEqualTo(
+        expected, actual,
+        "Expected %s's %s to be <%s> but was <%s> (%s)",
+        name, field, expected, actual, descriptionText()
+    );
   }
 
   protected S isEqualTo(String field, String expected, String actual) {
-    assertThat(actual)
-        .overridingErrorMessage("Expected %s's %s to be <%s> but was <%s> (%s)", name, field,
-            expected, StringUtils.abbreviate(actual.trim(), 50), descriptionText())
-        .isEqualTo(expected);
-    return myself;
+    return isEqualTo(
+        expected, actual,
+        "Expected %s's %s to be <%s> but was <%s> (%s)",
+        name, field, expected, StringUtils.abbreviate(actual.trim(), 50), descriptionText()
+    );
   }
 
   protected S contains(String field, String s, String actual) {
@@ -74,7 +81,7 @@ public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A
     return myself;
   }
 
-  protected S hasSize(String field, int expected, Collection<?> actual) {
+  S hasSize(String field, int expected, Collection<?> actual) {
     assertThat(actual)
         .overridingErrorMessage("Expected %s's %s to have a size of <%d> but was <%d> (%s)", name,
             field, expected, actual.size(), descriptionText()).hasSize(expected);

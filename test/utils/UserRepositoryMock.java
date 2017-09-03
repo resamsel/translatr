@@ -1,9 +1,14 @@
 package utils;
 
+import static java.util.Collections.singletonList;
+import static java.util.UUID.randomUUID;
+import static utils.LinkedAccountRepositoryMock.createLinkedAccount;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import models.User;
 import org.joda.time.DateTime;
 
@@ -17,20 +22,12 @@ public class UserRepositoryMock {
   static {
     REPOSITORY.put(
         "johnsmith",
-        new User()
-            .withId(UUID.randomUUID())
-            .withName("John Smith")
-            .withEmail("johnsmith@google.com")
-            .withUsername("johnsmith")
-            .withWhenCreated(DateTime.now()));
+        createUser(randomUUID(), "John Smith", "johnsmith", "johnsmith@google.com")
+    );
     REPOSITORY.put(
         "janedoe",
-        new User()
-            .withId(UUID.randomUUID())
-            .withName("Jane Doe")
-            .withEmail("janedoe@google.com")
-            .withUsername("janedoe")
-            .withWhenCreated(DateTime.now()));
+        createUser(randomUUID(), "Jane Doe", "janedoe", "janedoe@google.com")
+    );
   }
 
   public static User byUsername(String username) {
@@ -49,10 +46,17 @@ public class UserRepositoryMock {
     m.username = username;
     m.email = email;
     m.active = true;
-    m.linkedAccounts = new ArrayList<>();
+    m.linkedAccounts = new ArrayList<>(singletonList(createLinkedAccount(
+        ThreadLocalRandom.current().nextLong(),
+        m,
+        "google",
+        randomUUID().toString()
+    )));
     m.activities = new ArrayList<>();
     m.memberships = new ArrayList<>();
     m.projects = new ArrayList<>();
+    m.whenCreated = DateTime.now();
+    m.whenUpdated = DateTime.now();
 
     return m;
   }

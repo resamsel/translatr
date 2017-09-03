@@ -20,7 +20,11 @@ public class ResultAssert extends AbstractGenericAssert<ResultAssert, Result> {
   }
 
   public ResultAssert statusIsEqualTo(int expected) {
-    return isEqualTo("status", expected, actual.status());
+    return isEqualTo(
+        expected, actual.status(),
+        "Expected %s's %s to be <%s> but was <%s> with headers <%s> (%s)",
+        name, "status", expected, actual.status(), actual.headers(), descriptionText()
+    );
   }
 
   public ResultAssert contentTypeIsEqualTo(String expected) {
@@ -33,6 +37,10 @@ public class ResultAssert extends AbstractGenericAssert<ResultAssert, Result> {
 
   public ResultAssert headerIsEqualTo(String header, String expected) {
     return isEqualTo("header:" + header, expected, actual.header(header).get());
+  }
+
+  public ResultAssert contentIsEqualTo(String expected, Materializer materializer) {
+    return isEqualTo("content", expected, content(materializer));
   }
 
   public ResultAssert contentContains(String expected, Materializer materializer) {

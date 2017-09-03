@@ -28,4 +28,7 @@ public interface LocaleRepository extends ModelRepository<Locale, UUID, LocaleCr
   List<Locale> latest(Project project, int limit);
 
   Locale byProjectAndName(Project project, String name);
+
+  Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
+      String... fetches);
 }

@@ -13,6 +13,7 @@ import static utils.LinkedAccountRepositoryMock.createLinkedAccount;
 
 import criterias.HasNextPagedList;
 import criterias.LinkedAccountCriteria;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.validation.Validator;
 import models.LinkedAccount;
@@ -41,8 +42,7 @@ public class LinkedAccountServiceTest {
   public void testById() {
     // mock linkedAccount
     LinkedAccount linkedAccount = createLinkedAccount(ThreadLocalRandom.current().nextLong(),
-        johnSmith,
-        "google");
+        johnSmith, "google", UUID.randomUUID().toString());
     linkedAccountRepository.create(linkedAccount);
 
     // This invocation should feed the cache
@@ -58,7 +58,8 @@ public class LinkedAccountServiceTest {
     verify(linkedAccountRepository, times(1)).byId(eq(linkedAccount.id));
 
     // This should trigger cache invalidation
-    linkedAccountService.update(createLinkedAccount(linkedAccount, "facebook"));
+    linkedAccountService
+        .update(createLinkedAccount(linkedAccount, "facebook", UUID.randomUUID().toString()));
 
     assertThat(cacheService.keys().keySet()).contains("linkedAccount:id:" + linkedAccount.id);
     assertThat(linkedAccountService.byId(linkedAccount.id)).providerKeyIsEqualTo("facebook");
@@ -69,8 +70,7 @@ public class LinkedAccountServiceTest {
   public void testFindBy() {
     // mock linkedAccount
     LinkedAccount linkedAccount = createLinkedAccount(ThreadLocalRandom.current().nextLong(),
-        johnSmith,
-        "google");
+        johnSmith, "google", UUID.randomUUID().toString());
     linkedAccountRepository.create(linkedAccount);
 
     // This invocation should feed the cache
@@ -86,7 +86,8 @@ public class LinkedAccountServiceTest {
     verify(linkedAccountRepository, times(1)).findBy(eq(criteria));
 
     // This should trigger cache invalidation
-    linkedAccountService.update(createLinkedAccount(linkedAccount, "facebook"));
+    linkedAccountService
+        .update(createLinkedAccount(linkedAccount, "facebook", UUID.randomUUID().toString()));
 
     assertThat(linkedAccountService.findBy(criteria).getList().get(0))
         .as("uncached (invalidated)")

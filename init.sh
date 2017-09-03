@@ -52,6 +52,8 @@ help() {
 clean_database() {
 	log_start Resetting database
 	cat "$MAIN_DIR/load-test/cleanup.sql" | $PSQL >> "$LOG_FILE"
+	echo 'create extension if not exists "uuid-ossp";' \
+		| $PSQL -d translatr-load-test >> "$LOG_FILE"
 	log_end
 }
 
@@ -130,7 +132,6 @@ run_translatr() {
 	fi
 
 	clean_database
-	[ "$CLEAN" = "clean" ] && clean_dist
 	build_dist
 	unzip_dist
 	start_translatr
@@ -153,6 +154,7 @@ run_load_test() {
 	$JMETER -n -t "$MAIN_DIR/load-test/$TEST_FILE.jmx" \
 		-e -l "$SAMPLES_FILE" \
 		-q "$LOAD_TEST_DIR/load-test.properties" \
+		-JBaseDir="$LOAD_TEST_DIR" \
 		-o "$RESULTS_DIR" >> "$LOG_FILE"
 	log_end
 	stop_translatr
@@ -163,11 +165,13 @@ run_load_test() {
 load_test() {
 	log Prepare and run load tests
 
+	[ "$CLEAN" = "clean" ] && clean_dist
+
 	# log_start Cleaning test data
 	# make clean >> "$LOG_FILE"
 	# log_end
 
-	run_load_test load-test
+#	run_load_test load-test
 	run_load_test load-test-ro
 }
 

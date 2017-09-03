@@ -47,6 +47,9 @@ GET		/api/notifications			controllers.NotificationsApi.find
 # Map static resources from the /public folder to the /assets URL path
 GET		/assets/*file				controllers.Assets.versioned(path="/public", file: Asset)
 GET		/api/docs					controllers.ApiDocs.index()
+
+GET		/api/:username/:projectName/locales/:localeName/export/:fileType		controllers.LocalesApi.downloadBy(username: String, projectName: String, localeName: String, fileType: String)
+
 GET		/api/*file					controllers.ApiDocs.versioned(path="/public/lib/swagger-ui", file: String)
 
 #

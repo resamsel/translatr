@@ -39,7 +39,8 @@ import services.api.ProjectApiService;
  */
 @Singleton
 public class ProjectApiServiceImpl extends
-    AbstractApiService<Project, UUID, ProjectCriteria, dto.Project> implements ProjectApiService {
+    AbstractApiService<Project, UUID, ProjectCriteria, ProjectService, dto.Project> implements
+    ProjectApiService {
 
   private final Configuration configuration;
   private final LocaleService localeService;

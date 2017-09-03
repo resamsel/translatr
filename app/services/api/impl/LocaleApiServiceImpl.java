@@ -42,7 +42,8 @@ import services.api.LocaleApiService;
  */
 @Singleton
 public class LocaleApiServiceImpl extends
-    AbstractApiService<Locale, UUID, LocaleCriteria, dto.Locale> implements LocaleApiService {
+    AbstractApiService<Locale, UUID, LocaleCriteria, LocaleService, dto.Locale> implements
+    LocaleApiService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleApiServiceImpl.class);
 
@@ -59,6 +60,21 @@ public class LocaleApiServiceImpl extends
 
     this.projectService = projectService;
     this.injector = injector;
+  }
+
+  @Override
+  public dto.Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
+      String... fetches) {
+    permissionService
+        .checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
+            Scope.MessageRead);
+
+    Locale locale = service.byOwnerAndProjectAndName(username, projectName, localeName, fetches);
+    if (locale == null) {
+      throw new NotFoundException(dto.Locale.class.getSimpleName(), localeName);
+    }
+
+    return dtoMapper.apply(locale);
   }
 
   /**

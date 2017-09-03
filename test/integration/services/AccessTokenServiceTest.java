@@ -8,13 +8,14 @@ import models.AccessToken;
 import models.User;
 import org.junit.Test;
 import services.AccessTokenService;
-import tests.AbstractTest;
+import tests.AbstractDatabaseTest;
 
 /**
  * @author resamsel
  * @version 28 Jan 2017
  */
-public class AccessTokenServiceTest extends AbstractTest {
+public class AccessTokenServiceTest extends AbstractDatabaseTest {
+
   private AccessTokenService accessTokenService;
 
   @Test
@@ -27,11 +28,6 @@ public class AccessTokenServiceTest extends AbstractTest {
     assertThat(userService.findBy(new UserCriteria()).getList()).hasSize(1);
   }
 
-  /**
-   * @param user
-   * @return
-   * 
-   */
   private AccessToken createAccessToken(User user) {
     AccessToken out = new AccessToken();
 

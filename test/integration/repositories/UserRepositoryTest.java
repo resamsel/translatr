@@ -5,9 +5,9 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import models.User;
 import org.junit.Test;
 import repositories.UserRepository;
-import tests.AbstractTest;
+import tests.AbstractDatabaseTest;
 
-public class UserRepositoryTest extends AbstractTest {
+public class UserRepositoryTest extends AbstractDatabaseTest {
 
   private UserRepository userRepository;
 
@@ -23,7 +23,8 @@ public class UserRepositoryTest extends AbstractTest {
 
     assertThat(user1.username).isEqualTo("thisisareallylongemaillongdomain");
 
-    username = userRepository.emailToUsername("this.is.a.really.long.email@long-domain-for-test.com");
+    username = userRepository
+        .emailToUsername("this.is.a.really.long.email@long-domain-for-test.com");
 
     assertThat(username).startsWith("thisisareallylongemaillongdo");
 

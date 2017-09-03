@@ -148,11 +148,6 @@ public class User implements Model<User, UUID>, Subject {
     return this;
   }
 
-  public User withWhenCreated(DateTime whenCreated) {
-    this.whenCreated = whenCreated;
-    return this;
-  }
-
   /**
    * {@inheritDoc}
    */
@@ -292,5 +287,25 @@ public class User implements Model<User, UUID>, Subject {
 
   public static String getCacheKey(String username, String... fetches) {
     return CacheUtils.getCacheKey("user:username", username, fetches);
+  }
+
+  public Call profileRoute() {
+    return controllers.routes.Users.user(username);
+  }
+
+  public Call projectsRoute() {
+    return controllers.routes.Users.projects(username);
+  }
+
+  public Call activityRoute() {
+    return controllers.routes.Users.activity(username);
+  }
+
+  public Call accessTokensRoute() {
+    return controllers.routes.Users.accessTokens(username);
+  }
+
+  public Call linkedAccountsRoute() {
+    return controllers.routes.Users.linkedAccounts(username);
   }
 }

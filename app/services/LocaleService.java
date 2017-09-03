@@ -25,4 +25,7 @@ public interface LocaleService extends ModelService<Locale, UUID, LocaleCriteria
   void increaseWordCountBy(UUID localeId, int wordCountDiff);
 
   void resetWordCount(UUID projectId);
+
+  Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
+      String... fetches);
 }

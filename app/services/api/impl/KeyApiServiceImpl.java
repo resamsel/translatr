@@ -18,7 +18,8 @@ import services.api.KeyApiService;
  * @version 29 Jan 2017
  */
 @Singleton
-public class KeyApiServiceImpl extends AbstractApiService<Key, UUID, KeyCriteria, dto.Key>
+public class KeyApiServiceImpl extends
+    AbstractApiService<Key, UUID, KeyCriteria, KeyService, dto.Key>
     implements KeyApiService {
 
   private final ProjectService projectService;

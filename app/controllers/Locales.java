@@ -2,16 +2,13 @@ package controllers;
 
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
-import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 import commands.RevertDeleteLocaleCommand;
-import criterias.LocaleCriteria;
+import exceptions.LocaleNotFoundException;
 import forms.KeySearchForm;
 import forms.LocaleForm;
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import models.Locale;
@@ -198,31 +195,32 @@ public class Locales extends AbstractController {
     });
   }
 
-  private Result locale(Project project, String localeName, Function<Locale, Result> processor) {
-    if (project.locales != null) {
-      Optional<Locale> locale =
-          project.locales.stream().filter(l -> l.name.equals(localeName)).findFirst();
-      if (locale.isPresent()) {
-        return processor.apply(locale.get());
-      }
-    }
-
-    PagedList<Locale> locales = localeService
-        .findBy(new LocaleCriteria().withProjectId(project.id).withLocaleName(localeName));
-    if (locales.getList().isEmpty()) {
-      return redirect(project.route());
-    }
-
-    select(project);
-
-    return processor.apply(locales.getList().get(0));
-  }
-
   private CompletionStage<Result> locale(String username, String projectName, String localeName,
       BiFunction<Project, Locale, Result> processor, String... fetches) {
-    return project(username, projectName,
-        (user, project) -> locale(project, localeName, locale -> processor.apply(project, locale)),
-        fetches);
+    return tryCatch(() -> {
+      Locale locale = locale(username, projectName, localeName, fetches);
+
+      return processor.apply(select(locale.project), locale);
+    }).exceptionally(this::handleException);
+  }
+
+  /**
+   * Retrieves the locale from the service and throws an exception, if it has not been found.
+   *
+   * @return the locale
+   */
+  private Locale locale(String username, String projectName, String localeName, String... fetches)
+      throws LocaleNotFoundException {
+    Locale locale = localeService
+        .byOwnerAndProjectAndName(username, projectName, localeName, fetches);
+    if (locale == null) {
+      throw new LocaleNotFoundException(
+          message("locale.notFoundBy", username, projectName, localeName),
+          username, projectName, localeName
+      );
+    }
+
+    return locale;
   }
 
   /**

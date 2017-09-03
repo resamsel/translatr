@@ -6,6 +6,7 @@ import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.PlayAuthenticate;
 import commands.RevertDeleteKeyCommand;
 import criterias.KeyCriteria;
+import exceptions.KeyNotFoundException;
 import forms.KeyForm;
 import forms.LocaleSearchForm;
 import java.util.Collections;
@@ -194,18 +195,32 @@ public class Keys extends AbstractController {
   private CompletionStage<Result> key(String username, String projectName, String keyName,
       BiFunction<Project, Key, Result> processor) {
     return tryCatch(() -> {
-      PagedList<Key> keys = keyService.findBy(
-          new KeyCriteria()
-              .withProjectOwnerUsername(username)
-              .withProjectName(projectName)
-              .withNames(Collections.singletonList(keyName)));
+      Key key = key(username, projectName, keyName);
 
-      if (keys.getList().isEmpty()) {
-        return notFound(username, projectName, "key.notFound", keyName);
-      }
+      return processor.apply(select(key.project), key);
+    }).exceptionally(this::handleException);
+  }
 
-      return processor.apply(select(keys.getList().get(0).project), keys.getList().get(0));
-    });
+  /**
+   * Retrieves the key from the service and throws an exception, if the key has not been found.
+   *
+   * @return the key
+   */
+  private Key key(String username, String projectName, String keyName) throws KeyNotFoundException {
+    PagedList<Key> keys = keyService.findBy(
+        new KeyCriteria()
+            .withProjectOwnerUsername(username)
+            .withProjectName(projectName)
+            .withNames(Collections.singletonList(keyName)));
+
+    if (keys.getList().isEmpty()) {
+      throw new KeyNotFoundException(
+          message("key.notFoundBy", username, projectName, keyName),
+          username, projectName, keyName
+      );
+    }
+
+    return keys.getList().get(0);
   }
 
   @Override

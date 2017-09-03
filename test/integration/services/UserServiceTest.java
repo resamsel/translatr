@@ -6,13 +6,14 @@ import criterias.UserCriteria;
 import java.util.UUID;
 import models.User;
 import org.junit.Test;
-import tests.AbstractTest;
+import tests.AbstractDatabaseTest;
 
 /**
  * @author resamsel
  * @version 28 Jan 2017
  */
-public class UserServiceTest extends AbstractTest {
+public class UserServiceTest extends AbstractDatabaseTest {
+
   @Test
   public void find() {
     assertThat(userService.findBy(new UserCriteria()).getList()).hasSize(0);

@@ -144,6 +144,17 @@ public class LocaleRepositoryImpl extends
     return fetch().where().eq("project.id", projectId).eq("name", name).findUnique();
   }
 
+  @Override
+  public Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
+      String... fetches) {
+    return fetch(fetches)
+        .where()
+        .eq("project.owner.username", username)
+        .eq("project.name", projectName)
+        .eq("name", localeName)
+        .findUnique();
+  }
+
   /**
    * {@inheritDoc}
    */
