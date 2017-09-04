@@ -1,11 +1,15 @@
 package utils;
 
 import com.google.common.collect.ImmutableMap;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import models.AccessToken;
 import models.LinkedAccount;
 import models.User;
+import org.apache.http.client.utils.URIBuilder;
+import play.mvc.Call;
 import play.mvc.Http.RequestBuilder;
 
 /**
@@ -40,5 +44,19 @@ public class TestFactory {
 
   public static RequestBuilder requestAs(User user) {
     return new RequestBuilder().session(createSession(user));
+  }
+
+  public static RequestBuilder requestAs(Call call, AccessToken accessToken) {
+    try {
+      return new RequestBuilder()
+          .method(call.method())
+          .uri(
+              new URIBuilder(call.url())
+                  .addParameter("access_token", accessToken.key)
+                  .build()
+          );
+    } catch (URISyntaxException e) {
+      throw new IllegalArgumentException(e);
+    }
   }
 }

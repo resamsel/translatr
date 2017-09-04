@@ -108,7 +108,7 @@ public class AccessTokenRepositoryImpl extends
     }
   }
 
-  private String generateKey(int length) {
+  public static String generateKey(int length) {
     String raw = Base64.getEncoder().encodeToString(String
         .format("%s%s", UUID.randomUUID(), UUID.randomUUID()).getBytes(StandardCharsets.UTF_8));
 

@@ -11,12 +11,17 @@ public class LocaleRepositoryMock {
   }
 
   public static Locale createLocale(UUID id, UUID projectId, String name) {
+    Project project = new Project();
+    project.id = projectId;
+    return createLocale(id, project, name);
+  }
+
+  public static Locale createLocale(UUID id, Project project, String name) {
     Locale locale = new Locale();
 
     locale.id = id;
     locale.name = name;
-    locale.project = new Project();
-    locale.project.id = projectId;
+    locale.project = project;
 
     return locale;
   }

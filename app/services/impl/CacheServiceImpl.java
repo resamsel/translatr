@@ -77,7 +77,7 @@ public class CacheServiceImpl implements CacheService {
     LOGGER.debug("removeByPrefix(prefix={})", prefix);
 
     if (prefix != null) {
-      removeAll(key -> key.startsWith(prefix));
+      removeAll(key -> key != null && key.startsWith(prefix));
     }
   }
 

@@ -16,12 +16,14 @@ import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthUser;
 import com.feth.play.module.pa.user.AuthUser;
 import com.google.common.collect.ImmutableMap;
 import controllers.Profiles;
+import controllers.Projects;
 import controllers.routes;
 import criterias.HasNextPagedList;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import models.AccessToken;
+import models.LogEntry;
 import models.User;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
@@ -32,6 +34,7 @@ import play.api.inject.Binding;
 import play.libs.Json;
 import play.mvc.Result;
 import repositories.AccessTokenRepository;
+import repositories.LogEntryRepository;
 import repositories.UserRepository;
 
 public class ProfilesTest extends ControllerTest {
@@ -264,8 +267,74 @@ public class ProfilesTest extends ControllerTest {
   }
 
   @Test
+  public void testDoLink() {
+    Result result = route(app, requestAs(johnSmith).uri(routes.Profiles.doLink().url()));
+
+    assertThat(result)
+        .as("do link missing session info")
+        .statusIsEqualTo(Profiles.SEE_OTHER)
+        .headerIsEqualTo("location", routes.Application.index().url());
+
+    String sessionId = UUID.randomUUID().toString();
+    AuthUser authUser = new GoogleAuthUser(
+        Json.newObject()
+            .put("id", "12345"),
+        new GoogleAuthInfo(
+            Json.newObject()
+                .put("token_type", "bearer")
+                .put("id_token", "12345")
+        ),
+        ""
+    );
+    when(cache.get(eq(sessionId + "_null"))).thenReturn(authUser);
+
+    result = route(app,
+        requestAs(johnSmith)
+            .method("POST")
+            .session("pa.s.id", sessionId)
+            .bodyForm(ImmutableMap.of("accept", "true"))
+            .uri(routes.Profiles.doLink().url()));
+
+    assertThat(result)
+        .as("do link")
+        .statusIsEqualTo(Profiles.SEE_OTHER)
+        .headerIsEqualTo("location", Projects.indexRoute().url());
+  }
+
+  @Test
   public void testAskMergeDenied() {
     assertAccessDenied(routes.Profiles.askMerge(), "ask merge denied");
+  }
+
+  @Test
+  public void testAskMerge() {
+    Result result = route(app, requestAs(johnSmith).uri(routes.Profiles.askMerge().url()));
+
+    assertThat(result)
+        .as("ask merge missing session info")
+        .statusIsEqualTo(Profiles.SEE_OTHER)
+        .headerIsEqualTo("location", routes.Application.index().url());
+
+    String sessionId = UUID.randomUUID().toString();
+    AuthUser authUser = new GoogleAuthUser(
+        Json.newObject()
+            .put("id", "12345"),
+        new GoogleAuthInfo(
+            Json.newObject()
+                .put("token_type", "bearer")
+                .put("id_token", "12345")
+        ),
+        ""
+    );
+    when(cache.get(eq(sessionId + "_null"))).thenReturn(authUser);
+
+    result = route(app, requestAs(johnSmith)
+        .session("pa.s.id", sessionId)
+        .uri(routes.Profiles.askMerge().url()));
+
+    assertThat(result)
+        .as("ask merge")
+        .statusIsEqualTo(Profiles.OK);
   }
 
   @Test
@@ -283,15 +352,22 @@ public class ProfilesTest extends ControllerTest {
     accessTokenRepository = mock(AccessTokenRepository.class,
         withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation()))
     );
+    LogEntryRepository logEntryRepository = mock(
+        LogEntryRepository.class,
+        withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation()))
+    );
 
     when(userRepository.findByAuthUserIdentity(any())).thenReturn(johnSmith);
     when(userRepository.update(any())).then(this::persist);
+    when(userRepository.save((User) any())).then(this::persist);
     when(accessTokenRepository.save((AccessToken) any())).then(this::persistAccessToken);
+    when(logEntryRepository.save((LogEntry) any())).then(a -> a.getArgument(0));
 
     return ArrayUtils.addAll(
         super.createBindings(),
         bind(UserRepository.class).toInstance(userRepository),
-        bind(AccessTokenRepository.class).toInstance(accessTokenRepository)
+        bind(AccessTokenRepository.class).toInstance(accessTokenRepository),
+        bind(LogEntryRepository.class).toInstance(logEntryRepository)
     );
   }
 
