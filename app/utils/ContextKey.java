@@ -17,7 +17,7 @@ public enum ContextKey {
 
   private String key;
 
-  private ContextKey(String key) {
+  ContextKey(String key) {
     this.key = key;
   }
 
