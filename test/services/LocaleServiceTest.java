@@ -1,6 +1,6 @@
 package services;
 
-import static assertions.LocaleAssert.assertThat;
+import static assertions.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
