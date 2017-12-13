@@ -13,6 +13,7 @@ import criterias.HasNextPagedList;
 import criterias.ProjectCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+
 import models.ActionType;
 import models.Project;
 import models.ProjectRole;
@@ -62,9 +64,10 @@ public class ProjectRepositoryImpl extends
 
   @Override
   public PagedList<Project> findBy(ProjectCriteria criteria) {
-    // FIXME: are all fetches really needed?
-    ExpressionList<Project> query = find.fetch(FETCH_OWNER).fetch(FETCH_MEMBERS)
-        .fetch(FETCH_LOCALES).fetch(FETCH_KEYS).where();
+    ExpressionList<Project> query = QueryUtils.fetch(
+        find.query().setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches())
+    ).where();
 
     query.eq("deleted", false);
 

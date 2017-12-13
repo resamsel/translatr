@@ -8,8 +8,10 @@ import controllers.routes;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
+
 import java.util.List;
 import java.util.UUID;
+
 import models.User;
 import org.joda.time.DateTime;
 import play.mvc.Call;
@@ -37,13 +39,10 @@ public class Project extends Dto {
 
   public String ownerUsername;
 
-  @JsonIgnore
   public List<Key> keys;
 
-  @JsonIgnore
   public List<Locale> locales;
 
-  @JsonIgnore
   public List<Message> messages;
 
   public Project() {
@@ -57,6 +56,14 @@ public class Project extends Dto {
     this.ownerId = in.owner.id;
     this.ownerName = in.owner.name;
     this.ownerUsername = in.owner.username;
+
+    if (in.keys != null && !in.keys.isEmpty()) {
+      this.keys = in.keys.stream().map(Key::from).collect(toList());
+    }
+
+    if (in.locales != null && !in.locales.isEmpty()) {
+      this.locales = in.locales.stream().map(Locale::from).collect(toList());
+    }
   }
 
   public Project load(LocaleService localeService, KeyService keyService,

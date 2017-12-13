@@ -2,6 +2,8 @@ package criterias;
 
 import java.util.UUID;
 
+import static org.apache.commons.lang3.StringUtils.join;
+
 public abstract class AbstractProjectSearchCriteria<T extends AbstractProjectSearchCriteria<T>> extends
     AbstractSearchCriteria<T> {
 
@@ -38,7 +40,11 @@ public abstract class AbstractProjectSearchCriteria<T extends AbstractProjectSea
    * Must be overridden by subclasses to allow caching.
    */
   public final String getCacheKey() {
-    return String.format("%s:criteria:%s:%s:%s:%s:%d:%d:%s", type, projectId, getUserId(), getSearch(),
-        getOrder(), getLimit(), getOffset(), getCacheKeyParticle());
+    return String.format(
+        "%s:criteria:%s:%s:%s:%s:%d:%d:%s:%s",
+        type, projectId, getUserId(), getSearch(), getOrder(), getLimit(), getOffset(),
+        getFetches() != null ? join(getFetches(), ',') : "",
+        getCacheKeyParticle()
+    );
   }
 }

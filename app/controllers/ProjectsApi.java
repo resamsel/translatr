@@ -16,9 +16,11 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
+
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
+
 import models.User;
 import play.data.FormFactory;
 import play.inject.Injector;
@@ -69,22 +71,27 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
   /**
    * {@inheritDoc}
    */
-  @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,
-      scopes = {@AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)}))
+  @ApiOperation(value = FIND,
+      authorizations = @Authorization(value = AUTHORIZATION, scopes = {
+          @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)}))
   @ApiResponses({
       @ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.ProjectsPaged.class),
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
-      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)
+  })
   @ApiImplicitParams({
       @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
           dataType = "string", paramType = "query"),
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH_FIELD, dataType = "string",
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
-      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
+      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string", paramType = "query")
+  })
   public CompletionStage<Result> find() {
     return toJsons(
-        () -> api.find(ProjectCriteria.from(request()).withMemberId(User.loggedInUserId())));
+        () -> api.find(
+            ProjectCriteria.from(request()).withMemberId(User.loggedInUserId()).withFetches()));
   }
 
   /**
