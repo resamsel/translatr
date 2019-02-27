@@ -1,7 +1,6 @@
 package services;
 
 import com.google.inject.ImplementedBy;
-
 import criterias.LinkedAccountCriteria;
 import models.LinkedAccount;
 import services.impl.LinkedAccountServiceImpl;

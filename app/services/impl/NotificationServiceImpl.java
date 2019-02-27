@@ -1,15 +1,5 @@
 package services.impl;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import criterias.NotificationCriteria;
 import io.getstream.client.StreamClient;
 import io.getstream.client.apache.StreamClientImpl;
@@ -23,10 +13,19 @@ import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.service.AggregatedActivityServiceImpl;
 import io.getstream.client.service.FlatActivityServiceImpl;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import models.ActionType;
 import models.LogEntry;
 import models.Model;
 import models.Project;
 import models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.libs.Json;
 import services.NotificationService;
@@ -81,77 +80,52 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   @Override
-  public void follow(User user, Project project) throws IOException, StreamClientException {
-    LOGGER.debug("User {} follows project {}", user.username, project.name);
-    streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, user.id.toString())
-        .follow(FEED_GROUP_PROJECT, project.id.toString());
+  public void follow(UUID userId, UUID projectId) throws IOException, StreamClientException {
+    LOGGER.debug("User {} follows project {}", userId, projectId);
+    streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, userId.toString())
+        .follow(FEED_GROUP_PROJECT, projectId.toString());
   }
 
   @Override
-  public void unfollow(User user, Project project) throws IOException, StreamClientException {
-    streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, user.id.toString())
-        .unfollow(FEED_GROUP_PROJECT, project.id.toString());
+  public void unfollow(UUID userId, UUID projectId) throws IOException, StreamClientException {
+    streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, userId.toString())
+        .unfollow(FEED_GROUP_PROJECT, projectId.toString());
   }
 
   @Override
-  public SimpleActivity publish(User user, Project project, LogEntry logEntry)
+  public SimpleActivity publish(UUID id, ActionType type, String name, String contentId, UUID userId, UUID projectId)
       throws IOException, StreamClientException {
-    Feed userFeed = createFeed(user);
+  Feed userFeed = createFeed(userId);
     FlatActivityServiceImpl<SimpleActivity> activityService =
         userFeed.newFlatActivityService(SimpleActivity.class);
 
     SimpleActivity activity = new SimpleActivity();
 
-    activity.setActor(toId(FEED_SLUG_USER, user));
-    activity.setVerb(logEntry.type.name().toLowerCase());
-    activity.setObject(ActivityUtils.nameOf(logEntry));
-    activity.setForeignId(toId(FEED_SLUG_LOG_ENTRY, logEntry));
-    activity.setTarget(toContentId(logEntry));
+    activity.setActor(toId(FEED_SLUG_USER, userId));
+    activity.setVerb(type.name().toLowerCase());
+    activity.setObject(name);
+    activity.setForeignId(toId(FEED_SLUG_LOG_ENTRY, id));
+    activity.setTarget(contentId);
     LOGGER.debug("Creating activity: {}", Json.toJson(activity));
 
     List<String> feeds =
-        Arrays.asList(toId(FEED_SLUG_USER, user), toId(FEED_GROUP_TIMELINE_AGGREGATED, user),
-            toId(FEED_GROUP_TIMELINE_AGGREGATED, user), toId(FEED_GROUP_PROJECT, project));
+        Arrays.asList(toId(FEED_SLUG_USER, userId), toId(FEED_GROUP_TIMELINE_AGGREGATED, userId),
+            toId(FEED_GROUP_TIMELINE_AGGREGATED, userId), toId(FEED_GROUP_PROJECT, projectId));
     LOGGER.debug("Adding activity to feeds: {}", feeds);
 
     return activityService.addActivityToMany(feeds, activity);
   }
 
-  private Feed createFeed(User user) throws InvalidFeedNameException {
-    return streamClient.newFeed(FEED_SLUG_USER, user.id.toString());
+  private Feed createFeed(UUID userId) throws InvalidFeedNameException {
+    return streamClient.newFeed(FEED_SLUG_USER, userId.toString());
   }
 
   /**
    * @param slug the entity type
-   * @param model the model
+   * @param id the ID of the slug
    * @return
    */
-  private String toId(String slug, Model<?, ?> model) {
-    return String.format("%s:%s", slug, String.valueOf(model.getId()));
-  }
-
-  /**
-   * @param slug the entity type
-   * @param model the model
-   * @return
-   */
-  private String toContentId(LogEntry logEntry) {
-    String slug = logEntry.getSimpleContentType();
-    String id;
-    switch (logEntry.type) {
-      case Create:
-      case Update:
-      case Login:
-      case Logout:
-        id = Json.parse(logEntry.after).get("id").asText();
-        break;
-      case Delete:
-        id = Json.parse(logEntry.before).get("id").asText();
-        break;
-      default:
-        id = "0";
-        break;
-    }
-    return String.format("%s:%s", slug, id);
+  private String toId(String slug, UUID id) {
+    return String.format("%s:%s", slug, String.valueOf(id));
   }
 }

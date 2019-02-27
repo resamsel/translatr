@@ -1,4 +1,4 @@
-@(template: utils.Template, project: models.Project, form: Form[forms.SearchForm])
+@(template: utils.Template, project: models.Project, latestLocales: List[models.Locale], latestKeys: List[models.Key], latestMessages: List[models.Message], form: Form[forms.SearchForm])
 
 @import utils.FormatUtils._
 @import views.html.tags.contentCard
@@ -14,17 +14,17 @@
 			@tags.fab("create-locale", "add", tooltip = Messages("locale.create.tooltip"), styleClass = "blue")
 		</li>
 		<li>
-			@tags.fab("reset-word-count", "clear", href = routes.Projects.wordCountReset(project.id).url, tooltip = Messages("project.wordCount.reset.tooltip"), styleClass = "orange")
+			@tags.fab("reset-word-count", "clear", href = project.wordCountResetRoute.url, tooltip = Messages("project.wordCount.reset.tooltip"), styleClass = "orange")
 		</li>
 		<li>
-			@tags.fab("remove-project", "delete_forever", href = routes.Projects.remove(project.id).url, tooltip = Messages("project.remove.tooltip"), styleClass = "red")
+			@tags.fab("remove-project", "delete_forever", href = project.removeRoute.url, tooltip = Messages("project.remove.tooltip"), styleClass = "red")
 		</li>
 	}
 }
 
 @main(template.withTitle(project.name).withName("project-info"))(tags.search(form)())(nav(project, "info")) {
-	@content("flex") {
-		@contentCard(project.name, styleClass = "info") {
+	@tags.mainContent("flex") {
+		@contentCard(project.name, styleClass = "info", badge = project.id.toString) {
 			<div class="progress">
 				<div class="determinate" style="width: @{project.progress()*100}%;"></div>
 			</div>
@@ -83,7 +83,7 @@
 				<p>
 					@if(project.localesSize() > 0) {
 						@Messages("latest"):
-						@{Html(models.Locale.last(project, 3).map(l => tags.localeLink(l)).mkString(", "))}.
+						@{Html(latestLocales.map(l => tags.localeLink(l)).mkString(", "))}.
 					}
 				</p>
 			}
@@ -100,7 +100,7 @@
 				<p>
 					@if(project.keysSize() > 0) {
 						@Messages("latest"):
-						@{Html(models.Key.last(project, 3).map(k => tags.keyLink(k)).mkString(", "))}.
+						@{Html(latestKeys.map(k => tags.keyLink(k)).mkString(", "))}.
 					}
 				</p>
 			}
@@ -110,14 +110,14 @@
 			<p>
 				@if(project.messagesSize() > 0) {
 					@Messages("latest"):
-					@{Html(models.Message.last(project, 3).map(m => tags.messageLink(m)).mkString(", "))}.
+					@{Html(latestMessages.map(m => tags.messageLink(m)).mkString(", "))}.
 				}
 			</p>
 		}
 	}
 
 	@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager)) {
-		@tags.fabContainer("edit-project", "edit", href = routes.Projects.edit(project.id).url, tooltip = Messages("project.edit.tooltip"), styleClass = "orange", actions = projectActions)
+		@tags.fabContainer("edit-project", "edit", href = project.editRoute.url, tooltip = Messages("project.edit.tooltip"), styleClass = "orange", actions = projectActions)
 	} else { @if(project.hasRolesAny(template.loggedInUser, ProjectRole.Developer)) {
 		@tags.fabContainer("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green")
 	} else { @if(project.hasRolesAny(template.loggedInUser, ProjectRole.Translator)) {
@@ -136,12 +136,19 @@
 		}
 	}
 
+	@tags.contributionScript()
 	<script>
 		var projectId = '@project.id';
 
 		App.Core.register('LocaleCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-locale'});
 		App.Core.register('KeyCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
+		App.Core.register('MaterialModule', App.Modules.MaterialModule);
+		App.Core.register('SuggestionModule', App.Modules.SuggestionModule);
+		App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
+		App.Core.register('ActivityModule', App.Modules.ActivityModule, {
+			dataUrl: '@project.activityCsvRoute.url',
+			cellUrl: '@project.activityRoute.url',
+			messages: contributionMessages
+		});
 	</script>
-	@tags.contributionScript()
-	<script src="@routes.Assets.versioned("javascripts/project.js")"></script>
 }

@@ -1,16 +1,13 @@
 package services.impl;
 
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import criterias.ProjectCriteria;
 import io.getstream.client.exception.StreamClientException;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.libs.concurrent.HttpExecutionContext;
 import services.NotificationService;
 import services.NotificationSync;
@@ -43,7 +40,7 @@ public class NotificationSyncImpl implements NotificationSync {
       projectService.findBy(new ProjectCriteria()).getList().stream().forEach(project -> {
         project.members.stream().forEach(member -> {
           try {
-            notificationService.follow(member.user, project);
+            notificationService.follow(member.user.id, project.id);
           } catch (IOException | StreamClientException e) {
             LOGGER.error("Error while following project feed", e);
           }

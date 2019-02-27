@@ -1,8 +1,7 @@
 package dto.errors;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.io.Serializable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GenericErrorInfo implements Serializable {

@@ -1,10 +1,8 @@
 package commands;
 
+import dto.ProjectUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import controllers.routes;
-import dto.ProjectUser;
 import play.inject.Injector;
 import play.mvc.Call;
 import play.mvc.Http.Context;
@@ -40,10 +38,10 @@ public class RevertDeleteProjectUserCommand implements Command<models.ProjectUse
   public void execute(Injector injector) {
     models.ProjectUser model = projectUser.toModel();
 
-    LOGGER.debug("Reverting member {} from project {}", projectUser.userName,
+    LOGGER.debug("Reverting member {} from project {}", projectUser.userUsername,
         projectUser.projectName);
 
-    injector.instanceOf(ProjectUserService.class).save(model);
+    injector.instanceOf(ProjectUserService.class).update(model);
   }
 
   /**
@@ -51,7 +49,7 @@ public class RevertDeleteProjectUserCommand implements Command<models.ProjectUse
    */
   @Override
   public String getMessage() {
-    return Context.current().messages().at("project.member.deleted", projectUser.userName,
+    return Context.current().messages().at("project.member.deleted", projectUser.userUsername,
         projectUser.projectName);
   }
 
@@ -60,7 +58,7 @@ public class RevertDeleteProjectUserCommand implements Command<models.ProjectUse
    */
   @Override
   public Call redirect() {
-    return routes.Projects.members(projectUser.projectId);
+    return projectUser.route();
   }
 
   /**

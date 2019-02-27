@@ -5,12 +5,9 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.commons.io.IOUtils;
-
 import play.api.http.HttpErrorHandler;
 import play.mvc.Result;
 import play.mvc.Results;

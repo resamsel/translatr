@@ -1,8 +1,8 @@
 @(template: utils.Template, locale: models.Locale, form: Form[forms.LocaleForm])
 
-@main(template.withTitle(locale.project.name).withBackLink(routes.Projects.project(locale.project.id)))()(projects.nav(locale.project, "locales")) {
-	@projects.content("flex") {
-		<form action="@routes.Locales.doEdit(locale.id)" method="post">
+@main(template.withTitle(locale.project.name).withBackLink(locale.project.route))()(projects.nav(locale.project, "locales")) {
+	@tags.mainContent("flex") {
+		<form action="@locale.doEditRoute" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">
 					<span class="card-title">@Messages("locale.edit")</span>
@@ -17,7 +17,7 @@
 					</button>
 					<a
 						class="btn-flat btn-cancel black-text"
-						href="@routes.Projects.locales(locale.project.id)">
+						href="@locale.project.localesRoute">
 						@Messages("button.cancel")
 					</a>
 				</div>

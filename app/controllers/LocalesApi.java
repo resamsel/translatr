@@ -1,15 +1,7 @@
 package controllers;
 
-import java.io.ByteArrayInputStream;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-
 import actions.ApiAction;
+import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.LocaleCriteria;
 import dto.Locale;
 import dto.errors.ConstraintViolationError;
@@ -24,13 +16,19 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
+import java.io.ByteArrayInputStream;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
+import javax.inject.Inject;
 import models.ProjectRole;
 import models.User;
-import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import services.CacheService;
 import services.api.LocaleApiService;
 
 /**
@@ -40,6 +38,7 @@ import services.api.LocaleApiService;
 @io.swagger.annotations.Api(value = "Locales", produces = "application/json")
 @With(ApiAction.class)
 public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
+
   private static final String TYPE = "dto.Locale";
 
   private static final String FIND = "Find locales";
@@ -71,7 +70,7 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
   private final LocaleApiService localeApiService;
 
   @Inject
-  public LocalesApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
+  public LocalesApi(Injector injector, CacheService cache, PlayAuthenticate auth,
       LocaleApiService localeApiService) {
     super(injector, cache, auth, localeApiService);
     this.localeApiService = localeApiService;
@@ -216,5 +215,40 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
         .supplyAsync(() -> localeApiService.download(localeId, fileType, response()),
             executionContext.current())
         .thenApply(data -> ok(new ByteArrayInputStream(data))).exceptionally(this::handleException);
+  }
+
+  @ApiOperation(value = DOWNLOAD, produces = "text/plain", authorizations = @Authorization(
+      value = AUTHORIZATION,
+      scopes = {@AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+          @AuthorizationScope(scope = LOCALE_READ, description = LOCALE_READ_DESCRIPTION),
+          @AuthorizationScope(scope = MESSAGE_READ, description = MESSAGE_READ_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = DOWNLOAD_RESPONSE),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+      required = true, dataType = "string", paramType = "query")})
+  public CompletionStage<Result> downloadBy(String username, String projectName, String localeName,
+      String fileType) {
+    return locale(
+        username,
+        projectName,
+        localeName,
+        locale -> ok(
+            new ByteArrayInputStream(localeApiService.download(locale.id, fileType, response())))
+    ).exceptionally(this::handleException);
+  }
+
+  private CompletionStage<Result> locale(String username, String projectName, String localeName,
+      Function<Locale, Result> processor, String... fetches) {
+    return tryCatch(() -> {
+      Locale locale = localeApiService
+          .byOwnerAndProjectAndName(username, projectName, localeName, fetches);
+
+      checkProjectRole(locale.projectId, User.loggedInUser(), ProjectRole.Owner,
+          ProjectRole.Manager, ProjectRole.Developer, ProjectRole.Translator);
+
+      return processor.apply(locale);
+    });
   }
 }

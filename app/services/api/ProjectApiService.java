@@ -1,13 +1,11 @@
 package services.api;
 
-import java.util.UUID;
-
 import com.google.inject.ImplementedBy;
-
 import criterias.ProjectCriteria;
 import dto.Project;
 import dto.SearchResponse;
 import forms.SearchForm;
+import java.util.UUID;
 import services.api.impl.ProjectApiServiceImpl;
 
 /**

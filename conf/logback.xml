@@ -42,6 +42,9 @@
 		name="application"
 		level="DEBUG" />
 	<logger
+		name="actors"
+		level="DEBUG" />
+	<logger
 		name="filters"
 		level="DEBUG" />
 	<logger
@@ -49,6 +52,9 @@
 		level="DEBUG" />
 	<logger
 		name="services"
+		level="DEBUG" />
+	<logger
+		name="repositories"
 		level="DEBUG" />
 	<logger
 		name="importers"
@@ -72,8 +78,17 @@
 		name="utils"
 		level="DEBUG" />
 	<logger
+		name="validators"
+		level="DEBUG" />
+
+	<!-- Tests -->
+	<logger
 		name="tests"
 		level="DEBUG" />
+	<logger
+		name="integration"
+		level="DEBUG" />
+
 	<logger
 		name="org.jdbcdslog.StatementLogger"
 		level="INFO" /> <!-- Will log all statements -->

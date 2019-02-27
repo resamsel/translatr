@@ -3,7 +3,6 @@ package modules;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaMapper;
 import com.google.inject.AbstractModule;
-
 import play.libs.Json;
 
 /**

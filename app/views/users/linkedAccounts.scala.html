@@ -4,7 +4,7 @@
 @import com.feth.play.module.pa.views.html._
 
 @main(template.withTitle(user.name).withName("user-linked-accounts"))()(nav(template, user, "linkedAccounts")) {
-	@content("linkedAccounts") {
+	@tags.mainContent("linkedAccounts") {
 		<div class="row">
 			<div class="col s12 m8">
 				@tags.collection(linkedAccountMap.values, "linkedAccounts.empty", "linked-accounts") {
@@ -20,7 +20,7 @@
 								@Messages("user.linked", pretty(ctx.lang().locale, linkedAccount.whenCreated))
 							</p>
 							<a
-								href="@routes.Users.linkedAccountRemove(user.username, linkedAccount.id)"
+								href="@linkedAccount.removeRoute"
 								class="secondary-content btn-hover"
 								title="@Messages("button.unlink")">
 								<i class="material-icons">delete_forever</i>

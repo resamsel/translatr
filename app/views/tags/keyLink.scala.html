@@ -1,5 +1,5 @@
 @(key: models.Key)
 
 <a
-	href="@routes.Keys.key(key.id)"
+	href="@key.route()"
 	title="@key.name">@Html(key.name.replaceAll("\\.", ".<wbr/>"))</a>

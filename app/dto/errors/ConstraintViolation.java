@@ -1,12 +1,9 @@
 package dto.errors;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.text.MessageFormat;
-
 import javax.validation.ValidationException;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import play.libs.Json;
 import play.mvc.Http.Context;
 

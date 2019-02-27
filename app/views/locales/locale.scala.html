@@ -2,14 +2,14 @@
 
 @localeActions = {
 	<li>
-		@tags.fab("remove-locale", "delete_forever", href = routes.Locales.remove(locale.id).url, tooltip = Messages("locale.remove.tooltip"), styleClass = "red")
+		@tags.fab("remove-locale", "delete_forever", href = locale.removeRoute().url, tooltip = Messages("locale.remove.tooltip"), styleClass = "red")
 	</li>
 	<li>
-		@tags.fab("edit-locale", "edit", href = routes.Locales.edit(locale.id).url, tooltip = Messages("locale.edit.tooltip"), styleClass = "blue")
+		@tags.fab("edit-locale", "edit", href = locale.editRoute.url, tooltip = Messages("locale.edit.tooltip"), styleClass = "blue")
 	</li>
 }
 
-@main(template.withTitle(locale.project.name).withName("locale").withBackLink(routes.Projects.locales(locale.project.id, locale.name))) {
+@main(template.withTitle(locale.project.name).withName("locale").withBackLink(locale.project.localesRoute)) {
 	@tags.search(form) {
 		<button
 			type="button"
@@ -50,7 +50,7 @@
 			</a>
 			<ul id="dropdown-locales" class="dropdown-content">
 				<li class="selected">
-					<a id="@locale.id" href="@routes.Locales.locale(locale.id)">@tags.locale(locale.name)</a>
+					<a id="@locale.id" href="@locale.route()">@tags.locale(locale.name)</a>
 				</li>
 			</ul>
 			<script type="text/template" id="locale-tmpl">
@@ -62,9 +62,9 @@
 					<p class="grey-text">
 						@Messages("keys.size", 0)
 					</p>
-					@if(locale.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Translator)) {
-						<a href="#modal-create-locale" class="modal-trigger btn waves-effect waves-light">
-							@Messages("locale.create.title")
+					@if(locale.project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager, ProjectRole.Developer)) {
+						<a href="#modal-create-key" class="modal-trigger btn waves-effect waves-light">
+							@Messages("key.create.title")
 						</a>
 					}
 				</div>
@@ -99,7 +99,7 @@
 	@tags.fabContainer("create-key", "add", tooltip = Messages("key.create.tooltip"), styleClass = "light-green", actions = localeActions)
 
 	@tags.modal(Messages("key.new"), "modal-create-key") {
-		<form id="form-key" method="post" action="@routes.Keys.doCreate(locale.project.id, locale.id)">
+		<form id="form-key" method="post" action="@Keys.doCreateRoute(locale.project, locale.id)">
 			<div class="form-group">
 				<input id="field-key-name" name="name" class="form-control" placeholder="@Messages("key.label")"></input>
 			</div>
@@ -122,5 +122,16 @@
 		});
 
 		App.Core.register('KeyCreateModule', App.Modules.ModalFormModule, {modalSelector: '#modal-create-key'});
+		App.Core.register('SuggestionModule', App.Modules.SuggestionModule, {
+			handleSuggestionSelected: function(suggestion) {
+				if(suggestion.data.type == 'key' && suggestion.data.name != '+++') {
+					sb.dom.find('#form-search').submit();
+				} else {
+					window.location.href = suggestion.data.url;
+				}
+			}
+		});
+		App.Core.register('ProjectSearchModule', App.Modules.ProjectSearchModule);
+		App.Core.register('LocaleHashModule', App.Modules.LocaleHashModule);
 	</script>
 }

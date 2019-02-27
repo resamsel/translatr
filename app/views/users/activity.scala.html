@@ -3,7 +3,7 @@
 @import utils.FormatUtils._
 
 @main(template.withTitle(user.name).withName("user-activity"))(tags.search(form)())(nav(template, user, "activity")) {
-	@content("activity") {
+	@tags.mainContent("activity") {
 		@tags.collection(activityList.getList, "activity.empty") {
 			<span class="title">@Messages("activity")</span>
 			@tags.sortOrders {

@@ -1,11 +1,9 @@
 package services;
 
-import java.util.UUID;
-
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.google.inject.ImplementedBy;
-
 import criterias.UserCriteria;
+import java.util.UUID;
 import models.User;
 import models.UserStats;
 import services.impl.UserServiceImpl;
@@ -36,7 +34,7 @@ public interface UserService extends ModelService<User, UUID, UserCriteria> {
   User getLocalUser(AuthUserIdentity user);
 
   /**
-   * @param user
+   * @param authUser
    */
   boolean isLocalUser(AuthUserIdentity authUser);
 
@@ -60,19 +58,14 @@ public interface UserService extends ModelService<User, UUID, UserCriteria> {
 
   /**
    * @param username
+   * @param fetches
    * @return
    */
-  User byUsername(String username);
+  User byUsername(String username, String... fetches);
 
   /**
    * @param userId
    * @return
    */
   UserStats getUserStats(UUID userId);
-
-  /**
-   * @param email
-   * @return
-   */
-  String emailToUsername(String email);
 }

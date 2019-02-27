@@ -1,4 +1,4 @@
-# Translatr [![Build Status](https://travis-ci.org/resamsel/translatr.svg?branch=master)](https://travis-ci.org/resamsel/translatr) [![Coverage Status](https://coveralls.io/repos/github/resamsel/translatr/badge.svg?branch=master)](https://coveralls.io/github/resamsel/translatr?branch=master)
+# Translatr [![Build Status](https://travis-ci.org/resamsel/translatr.svg?branch=master)](https://travis-ci.org/resamsel/translatr) [![Coverage Status](https://coveralls.io/repos/github/resamsel/translatr/badge.svg?branch=master)](https://coveralls.io/github/resamsel/translatr?branch=master) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
 
 A modern and intuitive i18n tool. Translatr simplifies i18n for developers and translators. It uses the [Play Framework](http://www.playframework.com) to translate other projects. Importing conf/messages.locale (Play Framework), src/main/resources/messages_locale.properties (Java properties), and i18n/locale/main.po (Gettext) files allows easy locale management.
 
@@ -75,10 +75,7 @@ translatr pull
 
 This will overwrite any existing files locally. All known locales will be downloaded.
 
-# Deployment
+## Contributing
 
-In root repository directory:
-
-```
-git subtree push --prefix translatr heroku master
-```
+Information about contributing to this project can be found on the
+[CONTRIBUTING](CONTRIBUTING.md) page.

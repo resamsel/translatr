@@ -1,42 +1,34 @@
 package models;
 
+import com.avaje.ebean.annotation.CreatedTimestamp;
+import com.avaje.ebean.annotation.UpdatedTimestamp;
+import controllers.routes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 import java.util.stream.Collectors;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
-
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import criterias.AccessTokenCriteria;
-import criterias.HasNextPagedList;
 import play.data.validation.Constraints.MaxLength;
-import play.libs.Json;
+import play.mvc.Call;
+import utils.CacheUtils;
 import validators.AccessTokenNameUniqueChecker;
 import validators.NameUnique;
 
 @Entity
 @NameUnique(checker = AccessTokenNameUniqueChecker.class)
 public class AccessToken implements Model<AccessToken, Long> {
+
   public static final int NAME_LENGTH = 32;
 
   public static final int KEY_LENGTH = 64;
 
-  public static final int SCOPE_LENGTH = 255;
+  private static final int SCOPE_LENGTH = 255;
 
   @Id
   @GeneratedValue
@@ -63,8 +55,6 @@ public class AccessToken implements Model<AccessToken, Long> {
   @MaxLength(SCOPE_LENGTH)
   public String scope;
 
-  public static final Find<Long, AccessToken> find = new Find<Long, AccessToken>() {};
-
   /**
    * {@inheritDoc}
    */
@@ -79,11 +69,12 @@ public class AccessToken implements Model<AccessToken, Long> {
   }
 
   public List<Scope> getScopeList() {
-    if (scope == null)
+    if (scope == null) {
       return new ArrayList<>();
+    }
 
     return new ArrayList<>(Arrays.asList(scope.split(","))).stream()
-        .map(scope -> Scope.fromString(scope)).collect(Collectors.toList());
+        .map(Scope::fromString).collect(Collectors.toList());
   }
 
   /**
@@ -99,47 +90,29 @@ public class AccessToken implements Model<AccessToken, Long> {
     return this;
   }
 
-  /**
-   * @param id
-   * @return
-   */
-  public static AccessToken byId(Long id) {
-    return find.setId(id).findUnique();
+  public Call editRoute() {
+    Objects.requireNonNull(user, "User is null");
+    return routes.Users
+        .accessTokenEdit(Objects.requireNonNull(user.username, "User username is null"), id);
   }
 
-  /**
-   * @param user
-   * @param key
-   * @return
-   */
-  public static AccessToken byKey(String key) {
-    return find.fetch("user").where().eq("key", key).findUnique();
+  public Call doEditRoute() {
+    Objects.requireNonNull(user, "User is null");
+    return routes.Users
+        .doAccessTokenEdit(Objects.requireNonNull(user.username, "User username is null"), id);
   }
 
-  public static PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
-    ExpressionList<AccessToken> query = find.where();
-
-    if (criteria.getUserId() != null)
-      query.eq("user.id", criteria.getUserId());
-
-    if (StringUtils.isNoneEmpty(criteria.getSearch()))
-      query.ilike("name", "%" + criteria.getSearch() + "%");
-
-    criteria.paged(query);
-
-    return HasNextPagedList.create(query);
+  public Call removeRoute() {
+    Objects.requireNonNull(user, "User is null");
+    return routes.Users
+        .accessTokenRemove(Objects.requireNonNull(user.username, "User username is null"), id);
   }
 
-  /**
-   * @param userId
-   * @param name
-   * @return
-   */
-  public static AccessToken byUserAndName(UUID userId, String name) {
-    return find.where().eq("user.id", userId).eq("name", name).findUnique();
+  public static String getCacheKey(Long id, String... fetches) {
+    return CacheUtils.getCacheKey("accessToken:id", id, fetches);
   }
 
-  public static AccessToken from(JsonNode json) {
-    return Json.fromJson(json, AccessToken.class);
+  public static String getCacheKey(String key) {
+    return CacheUtils.getCacheKey("accessToken:key", key);
   }
 }

@@ -1,14 +1,11 @@
 package filters;
 
+import akka.stream.Materializer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
-
 import javax.inject.Inject;
-
 import org.apache.commons.lang3.StringUtils;
-
-import akka.stream.Materializer;
 import play.Configuration;
 import play.api.Play;
 import play.mvc.Filter;

@@ -2,7 +2,6 @@ package converters;
 
 import java.util.List;
 import java.util.function.Function;
-
 import models.Aggregate;
 
 /**

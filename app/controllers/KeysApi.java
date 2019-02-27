@@ -1,15 +1,7 @@
 package controllers;
 
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-
 import actions.ApiAction;
+import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.KeyCriteria;
 import dto.Key;
 import dto.errors.ConstraintViolationError;
@@ -24,13 +16,17 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
+import javax.inject.Inject;
 import models.ProjectRole;
 import models.User;
-import play.cache.CacheApi;
+import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import services.CacheService;
 import services.api.KeyApiService;
 
 /**
@@ -40,6 +36,7 @@ import services.api.KeyApiService;
 @io.swagger.annotations.Api(value = "Keys", produces = "application/json")
 @With(ApiAction.class)
 public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria> {
+
   private static final String TYPE = "dto.Key";
 
   private static final String FIND = "Find keys";
@@ -59,7 +56,7 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria> {
   private static final String NOT_FOUND_ERROR = "Key not found";
 
   @Inject
-  public KeysApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
+  public KeysApi(Injector injector, CacheService cache, PlayAuthenticate auth,
       KeyApiService keyApiService) {
     super(injector, cache, auth, keyApiService);
   }

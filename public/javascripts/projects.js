@@ -1,17 +1,3 @@
-App.Modules.SuggestionModule = function(sb) {
-	function _handleSuggestionSelected(suggestion) {
-		window.location.href = suggestion.data.url;
-	}
-
-	return {
-		create: function() {
-			sb.subscribe('suggestionSelected', _handleSuggestionSelected);
-		},
-		destroy: function() {
-		}
-	};
-};
-
 App.Modules.DashboardSearchModule = function(sb) {
 	var fieldSearch = sb.dom.find('#field-search');
 	var win = sb.dom.wrap(window);

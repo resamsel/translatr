@@ -1,8 +1,8 @@
 @(template: utils.Template, user: User, accessToken: AccessToken, form: Form[forms.AccessTokenForm])
 
 @main(template.withTitle(user.name).withName("user-access-token").withBackLink(routes.Users.user(user.username)))()(nav(template, user, "accessTokens")) {
-	@content("accessTokens offset-m2 m8") {
-		<form action="@routes.Profiles.doAccessTokenEdit(accessToken.id)" method="post">
+	@tags.mainContent("accessTokens offset-m2 m8") {
+		<form action="@accessToken.doEditRoute" method="post">
 			<div class="card no-image">
 				<div class="card-content">
 					<span class="card-title">@Messages("accessToken")</span>
@@ -25,5 +25,5 @@
 		</form>
 	}
 
-	@tags.fabContainer("delete-access-token", "delete_forever", href = routes.Profiles.accessTokenRemove(accessToken.id).url, tooltip = Messages("accessToken.delete.tooltip"), styleClass = "green")
+	@tags.fabContainer("delete-access-token", "delete_forever", href = accessToken.removeRoute.url, tooltip = Messages("accessToken.delete.tooltip"), styleClass = "green")
 }

@@ -1,20 +1,20 @@
-@(template: utils.Template, projectList: List[Project], form: Form[forms.SearchForm], projectForm: Form[forms.ProjectForm])
+@(template: utils.Template, projectList: com.avaje.ebean.PagedList[Project], form: Form[forms.SearchForm], projectForm: Form[forms.ProjectForm])
 
 @import utils.ActivityUtils._
 
 @main(template.withTitle(Messages("projects")).withName("projects"))(tags.search(form)())() {
 	@tags.mainContent() {
-		@tags.collection(projectList, "projects.empty") {
+		@tags.collection(projectList.getList, "projects.empty") {
 			<span class="title">@Messages("project.name")</span>
 			@tags.sortOrders {
-				@tags.orderLink(form.get, routes.Projects.index, "project.name", "name", "name desc", "name")
-				@tags.orderLink(form.get, routes.Projects.index, "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
+				@tags.orderLink(form.get, Projects.indexRoute, "project.name", "name", "name desc", "name")
+				@tags.orderLink(form.get, Projects.indexRoute, "when.updated", "whenUpdated", "whenUpdated desc", "whenUpdated desc")
 			}
 		} {
-			@for(project <- projectList) {
+			@for(project <- projectList.getList) {
 				<li class="collection-item avatar black-text">
 					<i class="material-icons circle @PROJECT_COLOR">@PROJECT_ICON</i>
-					<a href="@routes.Projects.project(project.id)" class="title">
+					<a href="@project.route" class="title">
 						@project.name
 						<em>&mdash; @{project.roleOf(template.loggedInUser)}</em>
 					</a>
@@ -28,14 +28,14 @@
 				</li>
 			}
 		} {
-			@tags.pager(routes.Projects.index, form.get)
+			@tags.pager(Projects.indexRoute, form.get)
 		}
 	}
 
 	@tags.fabContainer("create-project", "add", tooltip = Messages("project.create.tooltip"), styleClass = "orange")
 
 	@tags.modal(Messages("project.new"), "modal-create-project") {
-		<form id="form-project" method="post" action="@routes.Projects.create()">
+		<form id="form-project" method="post" action="@Projects.createRoute(template.loggedInUser.username)">
 			@views.html.projects.formContent(projectForm)
 		</form>
 	}

@@ -1,9 +1,9 @@
-@(template: utils.Template, project: Project, memberList: com.avaje.ebean.PagedList[ProjectUser], form: Form[forms.SearchForm], memberForm: Form[forms.ProjectUserForm])
+@(template: utils.Template, project: Project, memberList: com.avaje.ebean.PagedList[ProjectUser], form: Form[forms.SearchForm], memberForm: Form[forms.ProjectUserForm], ownerForm: Form[forms.ProjectOwnerForm])
 
 @import utils.FormatUtils._
 
 @main(template.withTitle(project.name).withName("project-members"))(tags.search(form)())(nav(project, "members")) {
-	@content() {
+	@tags.mainContent() {
 		@tags.collection(memberList.getList, "members.empty") {
 				<span class="title">@Messages("project.member")</span>
 			} {
@@ -28,7 +28,7 @@
 					} else {
 						@if(project.hasRolesAny(template.loggedInUser, ProjectRole.Owner, ProjectRole.Manager) || member.user.id == template.loggedInUser.id) {
 							<a
-								href="@routes.Projects.memberRemove(project.id, member.id)"
+								href="@project.memberRemoveRoute(member.id)"
 								class="secondary-content btn-hover"
 								title="@Messages("button.remove")">
 								<i class="material-icons">delete_forever</i>
@@ -38,7 +38,7 @@
 				</li>
 			}
 		} {
-			@tags.pager(routes.Projects.members(project.id), form.get)
+			@tags.pager(project.membersRoute, form.get)
 		}
 	}
 
@@ -46,25 +46,19 @@
 		@tags.fabContainer("create-member", "add", tooltip = Messages("member.create.tooltip"), styleClass = "teal")
 
 		@tags.modal(Messages("member.new"), "modal-create-member") {
-			<form
-				id="form-member"
-				method="post"
-				action="@routes.Projects.doMemberAdd(project.id)">
+			@helper.form(action = project.doMemberAddRoute, 'id -> "form-member") {
 				@memberFormContent(project, memberForm)
-			</form>
+			}
 		}
 
 		@tags.modal(Messages("member.ownership.change"), "modal-change-ownership", saveForm=memberList.getList.size > 1) {
-			<form
-				id="form-ownership"
-				method="post"
-				action="@routes.Projects.doOwnerChange(project.id)">
-				@ownerChangeFormContent(project, memberList, memberForm)
-			</form>
+			@helper.form(action = project.doOwnerChangeRoute, 'id -> "form-ownership") {
+				@ownerChangeFormContent(project, memberList, ownerForm)
+				@inputs.hidden(ownerForm("projectName"), "project-name")
+			}
 		}
 	}
 
-	<script src="@routes.Assets.versioned("javascripts/projectMembers.js")"></script>
 	<script type="text/javascript">
 		var projectId = '@project.id';
 		App.Core.register('MaterialModule', App.Modules.MaterialModule);

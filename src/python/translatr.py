@@ -12,7 +12,7 @@ import sys
 import os
 import textwrap
 
-from collections import namedtuple
+from argparse import Namespace
 from tabulate import tabulate
 from uuid import UUID
 
@@ -44,10 +44,6 @@ API_HTML_ERROR = textwrap.dedent("""
 	{0}
 """)
 
-Project = namedtuple('Project', 'id name ownerId ownerName')
-Locale = namedtuple('Locale', 'id name projectId projectName')
-Key = namedtuple('Key', 'id name projectId projectName')
-User = namedtuple('User', 'id name username')
 
 logger = logging.getLogger(__name__)
 
@@ -77,9 +73,9 @@ def eprint(msg, width=None):
 
 def target_repl(m):
 	return m.group(0) \
+		.replace('.', '_') \
 		.replace('{', r'(?P<') \
-		.replace('}', r'>\w*)') \
-		.replace('.', '_')
+		.replace('}', r'>.*)')
 
 
 def target_pattern(target):
@@ -169,6 +165,9 @@ class Request(object):
 
 	def delete(self, path, **kwargs):
 		return self.request(requests.delete, path, **kwargs)
+
+
+Project, Locale, Key, User = Namespace, Namespace, Namespace, Namespace
 
 
 class Api(object):
@@ -268,6 +267,9 @@ def read_config_merge(args):
 
 	params = dict((k,v) for k,v in args.__dict__.iteritems() if v is not None)
 	config.update(params)
+
+	if 'endpoint' in config:
+		config['endpoint'] = config['endpoint'].strip('/')
 
 	return config
 
@@ -480,6 +482,7 @@ def push(args):
 	logger.debug('Filter: %s', file_filter)
 	pattern = target_pattern(target)
 	for filename in glob.iglob(file_filter):
+		logger.debug('Filename: %s', filename)
 		m = pattern.match(filename)
 		if not m:
 			# Skip this entry
@@ -603,7 +606,7 @@ def create_parser_project(subparsers):
 
 	parser_project_remove = subparsers_project.add_parser(
 		'rm',
-		help='remove projects'
+		help='removeAll projects'
 	)
 	parser_project_remove.set_defaults(func=remove_project)
 	parser_project_remove.add_argument(
@@ -654,7 +657,7 @@ def create_parser_locale(subparsers):
 
 	parser_locale_remove = subparsers_locale.add_parser(
 		'rm',
-		help='remove locales'
+		help='removeAll locales'
 	)
 	parser_locale_remove.set_defaults(func=remove_locale)
 	parser_locale_remove.add_argument(
@@ -710,7 +713,7 @@ def create_parser_key(subparsers):
 
 	parser_key_remove = subparsers_key.add_parser(
 		'rm',
-		help='remove keys'
+		help='removeAll keys'
 	)
 	parser_key_remove.set_defaults(func=remove_key)
 	parser_key_remove.add_argument(

@@ -1,10 +1,9 @@
 package actors;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import actors.WordCountProtocol.ChangeWordCount;
 import akka.actor.UntypedActor;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import services.ProjectService;
 
 /**

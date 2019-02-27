@@ -3,18 +3,18 @@ package dto;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.joda.time.DateTime;
-
 import criterias.LogEntryCriteria;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import models.LogEntry;
+import org.joda.time.DateTime;
+import play.api.Play;
 import play.i18n.Messages;
 import play.mvc.Http.Context;
+import services.LogEntryService;
 import utils.FormatUtils;
 
 /**
@@ -22,6 +22,7 @@ import utils.FormatUtils;
  * @version 23 May 2017
  */
 public class AggregatedNotification extends Dto {
+
   private static final long serialVersionUID = -6020395415666005155L;
 
   public DateTime whenCreated;
@@ -59,11 +60,13 @@ public class AggregatedNotification extends Dto {
       Notification activity = null;
       if (logEntryMap != null) {
         UUID logEntryId = Notification.extractUuid(firstActivity.getForeignId());
-        if (logEntryMap.containsKey(logEntryId))
+        if (logEntryMap.containsKey(logEntryId)) {
           activity = Notification.from(firstActivity, logEntryMap.get(logEntryId));
+        }
       }
-      if (activity == null)
+      if (activity == null) {
         activity = Notification.from(firstActivity);
+      }
 
       out.title = activity.title;
       out.contentType = activity.contentType;
@@ -83,7 +86,8 @@ public class AggregatedNotification extends Dto {
   public static List<AggregatedNotification> from(List<AggregatedActivity<SimpleActivity>> in) {
     List<UUID> ids = in.stream().flatMap(activity -> activity.getActivities().stream())
         .map(activity -> Notification.extractUuid(activity.getForeignId())).collect(toList());
-    Map<UUID, LogEntry> map = LogEntry.findBy(new LogEntryCriteria().withIds(ids)).getList()
+    Map<UUID, LogEntry> map = Play.current().injector().instanceOf(LogEntryService.class)
+        .findBy(new LogEntryCriteria().withIds(ids)).getList()
         .stream().collect(toMap(LogEntry::getId, a -> a));
 
     return in.stream().map(a -> from(a, map)).collect(toList());

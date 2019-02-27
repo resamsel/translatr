@@ -3,15 +3,14 @@ package commands;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import controllers.Keys;
 import controllers.routes;
 import criterias.LocaleCriteria;
 import dto.Key;
 import dto.Message;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import models.Locale;
 import models.Project;
 import play.inject.Injector;
@@ -45,7 +44,7 @@ public class RevertDeleteKeyCommand implements Command<models.Key> {
     Project project = injector.instanceOf(ProjectService.class).byId(key.projectId);
 
     models.Key model = key.toModel(project);
-    injector.instanceOf(KeyService.class).save(model);
+    injector.instanceOf(KeyService.class).update(model);
     key.id = model.id;
 
     Map<String, Locale> locales = injector.instanceOf(LocaleService.class)
@@ -69,8 +68,8 @@ public class RevertDeleteKeyCommand implements Command<models.Key> {
    */
   @Override
   public Call redirect() {
-    return routes.Projects.keys(key.projectId, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,
-        Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET);
+    return routes.Projects.keysBy(key.projectOwnerUsername, key.projectName, Keys.DEFAULT_SEARCH,
+        Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET);
   }
 
   /**

@@ -1,12 +1,9 @@
 package utils;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
-import controllers.Keys;
-import controllers.Locales;
+import controllers.routes;
 import models.LogEntry;
+import org.jetbrains.annotations.Contract;
 import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Call;
@@ -41,6 +38,7 @@ public class ActivityUtils {
   public static final String PROJECT_USER_COLOR = "purple";
   public static final String ACTIVITY_COLOR = "green";
 
+  @Contract("null -> null")
   public static String nameOf(LogEntry activity) {
     if (activity == null)
       return null;
@@ -65,48 +63,57 @@ public class ActivityUtils {
     }
   }
 
+  @Contract("null -> null")
   public static Call linkTo(LogEntry activity) {
     if (activity == null)
       return null;
 
     JsonNode node = parse(activity);
     Long id = JsonUtils.getId(node);
-    UUID uuid = JsonUtils.getUuid(node);
 
     switch (activity.contentType) {
-      case "dto.User":
+      case "dto.User": {
         String name = JsonUtils.getAsText(node, "username");
         if (name != null)
           return controllers.routes.Users.user(JsonUtils.getAsText(node, "username"));
         break;
-      case "dto.Project":
-        if (uuid != null)
-          return controllers.routes.Projects.project(uuid);
+      }
+      case "dto.Project": {
+        dto.Project project = Json.fromJson(node, dto.Project.class);
+        if (project != null)
+          return project.route();
         break;
-      case "dto.Locale":
-        if (uuid != null)
-          return controllers.routes.Locales.locale(uuid, Locales.DEFAULT_SEARCH,
-              Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET);
+      }
+      case "dto.Locale": {
+        dto.Locale locale = Json.fromJson(node, dto.Locale.class);
+        if (locale != null)
+          return locale.route();
         break;
-      case "dto.Key":
-        if (uuid != null)
-          return controllers.routes.Keys.key(uuid, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,
-              Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET);
+      }
+      case "dto.Key": {
+        dto.Key key = Json.fromJson(node, dto.Key.class);
+        if (key != null)
+          return key.route();
         break;
-      case "dto.Message":
-        UUID keyId = JsonUtils.getUuid(node, "keyId");
-        if (keyId != null)
-          return controllers.routes.Keys.key(keyId, Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER,
-              Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET);
+      }
+      case "dto.Message": {
+        dto.Message message = Json.fromJson(node, dto.Message.class);
+        if (message != null)
+          return message.route();
         break;
-      case "dto.ProjectUser":
-        if (uuid != null)
-          return controllers.routes.Projects.members(uuid);
+      }
+      case "dto.ProjectUser": {
+        dto.ProjectUser member = Json.fromJson(node, dto.ProjectUser.class);
+        if (member != null)
+          return member.route();
         break;
-      case "dto.AccessToken":
-        if (id != null)
-          return controllers.routes.Profiles.accessTokenEdit(id);
+      }
+      case "dto.AccessToken": {
+        String name = JsonUtils.getAsText(node, "username");
+        if (name != null && id != null)
+          return controllers.routes.Users.accessTokenEdit(name, id);
         break;
+      }
       default:
         break;
     }
@@ -114,6 +121,7 @@ public class ActivityUtils {
     return null;
   }
 
+  @Contract(value = "null -> null", pure = true)
   public static String iconOf(LogEntry activity) {
     if (activity == null)
       return null;
@@ -138,6 +146,7 @@ public class ActivityUtils {
     }
   }
 
+  @Contract(value = "null -> null", pure = true)
   public static String colorOf(LogEntry activity) {
     if (activity == null)
       return null;

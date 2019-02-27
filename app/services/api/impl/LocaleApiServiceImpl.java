@@ -1,17 +1,6 @@
 package services.api.impl;
 
-import java.io.File;
-import java.util.UUID;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.ValidationException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
 import criterias.LocaleCriteria;
 import dto.NotFoundException;
 import exporters.Exporter;
@@ -23,9 +12,16 @@ import importers.GettextImporter;
 import importers.Importer;
 import importers.JavaPropertiesImporter;
 import importers.PlayMessagesImporter;
+import java.io.File;
+import java.util.UUID;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.ValidationException;
 import models.FileType;
 import models.Locale;
 import models.Scope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.libs.Json;
@@ -34,10 +30,11 @@ import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
+import repositories.LocaleRepository;
 import services.LocaleService;
+import services.PermissionService;
 import services.ProjectService;
 import services.api.LocaleApiService;
-import utils.PermissionUtils;
 
 /**
  * @author resamsel
@@ -45,23 +42,39 @@ import utils.PermissionUtils;
  */
 @Singleton
 public class LocaleApiServiceImpl extends
-    AbstractApiService<Locale, UUID, LocaleCriteria, dto.Locale> implements LocaleApiService {
+    AbstractApiService<Locale, UUID, LocaleCriteria, LocaleService, dto.Locale> implements
+    LocaleApiService {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleApiServiceImpl.class);
 
   private final ProjectService projectService;
   private final Injector injector;
 
-  /**
-   * @param localeService
-   */
   @Inject
   protected LocaleApiServiceImpl(LocaleService localeService, ProjectService projectService,
-      Injector injector) {
+      Injector injector, PermissionService permissionService) {
     super(localeService, dto.Locale.class, dto.Locale::from,
-        new Scope[] {Scope.ProjectRead, Scope.LocaleRead},
-        new Scope[] {Scope.ProjectRead, Scope.LocaleWrite});
+        new Scope[]{Scope.ProjectRead, Scope.LocaleRead},
+        new Scope[]{Scope.ProjectRead, Scope.LocaleWrite},
+        permissionService);
+
     this.projectService = projectService;
     this.injector = injector;
+  }
+
+  @Override
+  public dto.Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
+      String... fetches) {
+    permissionService
+        .checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
+            Scope.MessageRead);
+
+    Locale locale = service.byOwnerAndProjectAndName(username, projectName, localeName, fetches);
+    if (locale == null) {
+      throw new NotFoundException(dto.Locale.class.getSimpleName(), localeName);
+    }
+
+    return dtoMapper.apply(locale);
   }
 
   /**
@@ -69,20 +82,23 @@ public class LocaleApiServiceImpl extends
    */
   @Override
   public dto.Locale upload(UUID localeId, Request request) {
-    PermissionUtils.checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
-        Scope.MessageWrite);
+    permissionService
+        .checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
+            Scope.MessageWrite);
 
     Locale locale = service.byId(localeId);
 
     MultipartFormData<File> body = request.body().asMultipartFormData();
-    if (body == null)
+    if (body == null) {
       throw new IllegalArgumentException(
           Context.current().messages().at("import.error.multipartMissing"));
+    }
 
     FilePart<File> messages = body.getFile("messages");
 
-    if (messages == null)
+    if (messages == null) {
       throw new IllegalArgumentException("Part 'messages' missing");
+    }
 
     ImportLocaleForm form =
         injector.instanceOf(FormFactory.class).form(ImportLocaleForm.class).bindFromRequest().get();
@@ -121,12 +137,14 @@ public class LocaleApiServiceImpl extends
    */
   @Override
   public byte[] download(UUID localeId, String fileType, Response response) {
-    PermissionUtils.checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
-        Scope.MessageRead);
+    permissionService
+        .checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
+            Scope.MessageRead);
 
-    Locale locale = service.byId(localeId, Locale.FETCH_MESSAGES);
-    if (locale == null)
+    Locale locale = service.byId(localeId, LocaleRepository.FETCH_MESSAGES);
+    if (locale == null) {
       throw new NotFoundException(dto.Locale.class.getSimpleName(), localeId);
+    }
 
     Exporter exporter;
     switch (FileType.fromKey(fileType)) {

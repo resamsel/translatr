@@ -1,11 +1,9 @@
 package services.api;
 
-import java.util.function.Consumer;
-
 import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import criterias.AbstractSearchCriteria;
+import java.util.function.Consumer;
 
 /**
  * @author resamsel

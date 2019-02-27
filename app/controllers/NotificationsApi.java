@@ -1,17 +1,7 @@
 package controllers;
 
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-
 import actions.ApiAction;
+import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.NotificationCriteria;
 import dto.NotificationsPaged;
 import dto.PermissionException;
@@ -28,13 +18,18 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import javax.inject.Inject;
 import models.Scope;
-import play.cache.CacheApi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.CacheService;
 import services.NotificationService;
-import utils.PermissionUtils;
 
 /**
  * @author resamsel
@@ -43,6 +38,7 @@ import utils.PermissionUtils;
 @io.swagger.annotations.Api(value = "Notifications", produces = "application/json")
 @With(ApiAction.class)
 public class NotificationsApi extends AbstractBaseApi {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(NotificationsApi.class);
 
   private static final String FIND = "Find notifications";
@@ -50,15 +46,8 @@ public class NotificationsApi extends AbstractBaseApi {
 
   private NotificationService notificationService;
 
-  /**
-   * @param injector
-   * @param cache
-   * @param auth
-   * @param userService
-   * @param logEntryService
-   */
   @Inject
-  public NotificationsApi(Injector injector, CacheApi cache, PlayAuthenticate auth,
+  public NotificationsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
       NotificationService notificationService) {
     super(injector, cache, auth);
 
@@ -82,7 +71,7 @@ public class NotificationsApi extends AbstractBaseApi {
   public CompletionStage<Result> find() {
     StreamResponse<AggregatedActivity<SimpleActivity>> notifications;
     try {
-      PermissionUtils.checkPermissionAll("Access token not allowed", Scope.NotificationRead);
+      permissionService.checkPermissionAll("Access token not allowed", Scope.NotificationRead);
 
       notifications = notificationService.find(NotificationCriteria.from(request()));
     } catch (IOException | StreamClientException | PermissionException e) {

@@ -2,15 +2,13 @@ package dto;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.List;
-import java.util.concurrent.Future;
-import java.util.function.Function;
-
 import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import criterias.HasNextPagedList;
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.function.Function;
 
 /**
  * @author resamsel

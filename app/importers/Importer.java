@@ -1,7 +1,6 @@
 package importers;
 
 import java.io.File;
-
 import models.Locale;
 
 public interface Importer {

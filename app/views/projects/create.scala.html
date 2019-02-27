@@ -1,8 +1,8 @@
 @(template: utils.Template, form: Form[forms.ProjectForm])
 
-@main(template.withTitle(Messages("projects")).withName("project-create").withBackLink(routes.Projects.index))()() {
+@main(template.withTitle(Messages("projects")).withName("project-create").withBackLink(Projects.indexRoute))()() {
 	@tags.mainContent() {
-		<form action="@routes.Projects.create()" method="post">
+		<form action="@Projects.doCreateRoute(template.loggedInUser.username)" method="post">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">
 					<span class="card-title">@Messages("project.create.title")</span>
@@ -17,7 +17,7 @@
 					</button>
 					<a
 						class="btn-flat btn-cancel black-text"
-						href="@routes.Projects.index">
+						href="@Projects.indexRoute">
 						@Messages("button.cancel")
 					</a>
 				</div>

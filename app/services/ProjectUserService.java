@@ -1,7 +1,6 @@
 package services;
 
 import com.google.inject.ImplementedBy;
-
 import criterias.ProjectUserCriteria;
 import models.ProjectUser;
 import services.impl.ProjectUserServiceImpl;
@@ -13,4 +12,6 @@ import services.impl.ProjectUserServiceImpl;
  */
 @ImplementedBy(ProjectUserServiceImpl.class)
 public interface ProjectUserService extends ModelService<ProjectUser, Long, ProjectUserCriteria> {
+
+  int countBy(ProjectUserCriteria criteria);
 }

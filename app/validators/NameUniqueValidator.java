@@ -1,33 +1,35 @@
 package validators;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import play.inject.Injector;
 
 /**
- *
  * @author resamsel
  * @version 6 Oct 2016
  */
+@Singleton
 public class NameUniqueValidator implements ConstraintValidator<NameUnique, Object> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(NameUniqueValidator.class);
 
   public static final String MESSAGE = "error.nameunique";
 
+  private final Injector injector;
+
   private NameUniqueChecker checker;
+
+  @Inject
+  public NameUniqueValidator(Injector injector) {
+    this.injector = injector;
+  }
 
   /**
    * {@inheritDoc}
    */
   @Override
   public void initialize(NameUnique constraintAnnotation) {
-    try {
-      this.checker = constraintAnnotation.checker().newInstance();
-    } catch (InstantiationException | IllegalAccessException e) {
-      LOGGER.error("Error while creating checker instance", e);
-    }
+    this.checker = injector.instanceOf(constraintAnnotation.checker());
   }
 
   /**
@@ -35,9 +37,6 @@ public class NameUniqueValidator implements ConstraintValidator<NameUnique, Obje
    */
   @Override
   public boolean isValid(Object object, ConstraintValidatorContext constraintContext) {
-    if (object == null)
-      return false;
-
-    return checker.isValid(object);
+    return object != null && checker.isValid(object);
   }
 }

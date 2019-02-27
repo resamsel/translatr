@@ -2,94 +2,14 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Basic functions
-GET		/							controllers.Application.index
-GET		/activity/csv				controllers.Application.activityCsv
-
-# Authentication
-GET		/login						controllers.Application.login
-GET		/logout						controllers.Application.logout
-GET		/authenticate/:provider		com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
-GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider: String)
-
-# Users
-GET		/users						controllers.Users.index()
-GET		/user/:username				controllers.Users.user(username: String)
-GET		/user/:username/activity/csv	controllers.Users.activityCsv(username: String)
-GET		/user/:username/projects	controllers.Users.projects(username: String)
-GET		/user/:username/activity	controllers.Users.activity(username: String)
-GET		/user/:username/linkedAccounts	controllers.Users.linkedAccounts(username: String)
-GET		/user/:username/linkedAccount/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
-GET		/user/:username/accessTokens	controllers.Users.accessTokens(username: String)
-
-# Profiles
-GET		/profile					controllers.Profiles.profile
-GET		/profile/linkedAccounts		controllers.Profiles.linkedAccounts
-GET		/profile/accessTokens		controllers.Profiles.accessTokens
-GET		/profile/activity			controllers.Profiles.activity
-GET		/profile/edit				controllers.Profiles.edit
-POST	/profile/edit				controllers.Profiles.doEdit
-GET		/profile/link				controllers.Profiles.askLink
-POST	/profile/link				controllers.Profiles.doLink
-GET		/accounts/merge				controllers.Profiles.askMerge
-POST	/accounts/merge				controllers.Profiles.doMerge
-GET		/profile/accessToken/create	controllers.Profiles.accessTokenCreate
-POST	/profile/accessToken/create	controllers.Profiles.doAccessTokenCreate
-GET		/profile/accessToken/:accessTokenId/edit	controllers.Profiles.accessTokenEdit(accessTokenId: Long)
-POST	/profile/accessToken/:accessTokenId/edit	controllers.Profiles.doAccessTokenEdit(accessTokenId: Long)
-GET		/profile/accessToken/:accessTokenId/remove	controllers.Profiles.accessTokenRemove(accessTokenId: Long)
-GET		/profile/notifications/reset	controllers.Profiles.resetNotifications
-
-# Projects
-GET		/projects					controllers.Projects.index
-GET		/projects/search			controllers.Projects.search
-GET		/project/create				controllers.Projects.create
-POST	/project/create				controllers.Projects.doCreate
-GET		/project/create/$projectName<.+>	controllers.Projects.createImmediately(projectName: String)
-GET		/project/:id				controllers.Projects.project(id: java.util.UUID)
-GET		/project/:id/edit			controllers.Projects.edit(id: java.util.UUID)
-POST	/project/:id/edit			controllers.Projects.doEdit(id: java.util.UUID)
-GET		/project/:id/remove			controllers.Projects.remove(id: java.util.UUID)
-GET		/project/:id/locales		controllers.Projects.locales(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/project/:id/keys			controllers.Projects.keys(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/project/:id/members		controllers.Projects.members(id: java.util.UUID)
-GET		/project/:id/member/add		controllers.Projects.memberAdd(id: java.util.UUID)
-POST	/project/:id/member/add		controllers.Projects.doMemberAdd(id: java.util.UUID)
-GET		/project/:id/member/:memberId/remove	controllers.Projects.memberRemove(id: java.util.UUID, memberId: Long)
-POST	/project/:id/owner/change	controllers.Projects.doOwnerChange(id: java.util.UUID)
-GET		/project/:id/activity		controllers.Projects.activity(id: java.util.UUID)
-GET		/project/:id/activity/csv	controllers.Projects.activityCsv(id: java.util.UUID)
-GET		/project/:id/wordCount/reset	controllers.Projects.wordCountReset(id: java.util.UUID)
-
-# Locales
-GET		/locale/:id					controllers.Locales.locale(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/locale/:id/edit			controllers.Locales.edit(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-POST	/locale/:id/edit			controllers.Locales.doEdit(id: java.util.UUID)
-GET		/locale/:id/remove			controllers.Locales.remove(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/locale/:projectId/create/$localeName<.+>	controllers.Locales.createImmediately(projectId: java.util.UUID, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-POST	/locale/:projectId			controllers.Locales.doCreate(projectId: java.util.UUID)
-GET		/locale/:id/import			controllers.Locales.upload(id: java.util.UUID)
-POST	/locale/:id/import			controllers.Locales.doUpload(id: java.util.UUID)
-
-# Keys
-GET		/key/:id					controllers.Keys.key(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/key/:id/edit				controllers.Keys.edit(id: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-POST	/key/:id/edit				controllers.Keys.doEdit(id: java.util.UUID)
-GET		/key/:keyId/remove			controllers.Keys.remove(keyId: java.util.UUID, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/key/:keyId/:localeId/remove	controllers.Keys.remove(keyId: java.util.UUID, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/key/:projectId/create/$keyName<.+>	controllers.Keys.createImmediately(projectId: java.util.UUID, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/key/:projectId/create		controllers.Keys.create(projectId: java.util.UUID)
-POST	/key/:projectId/create		controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-POST	/key/:projectId/:localeId/create	controllers.Keys.doCreate(projectId: java.util.UUID, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-
-# Commands
-GET		/command/:key/execute		controllers.Application.commandExecute(key: String)
-
 #
 # API
 #
+
+# Swagger Specification
 GET		/api/swagger.json			controllers.ApiHelpController.getResources
 
+GET		/projects/search			controllers.Projects.search
 GET		/api/projects				controllers.ProjectsApi.find
 GET		/api/project/:id/search		controllers.ProjectsApi.search(id: java.util.UUID)
 GET		/api/project/:projectId		controllers.ProjectsApi.get(projectId: java.util.UUID)
@@ -127,6 +47,105 @@ GET		/api/notifications			controllers.NotificationsApi.find
 # Map static resources from the /public folder to the /assets URL path
 GET		/assets/*file				controllers.Assets.versioned(path="/public", file: Asset)
 GET		/api/docs					controllers.ApiDocs.index()
+
+GET		/api/:username/:projectName/locales/:localeName/export/:fileType		controllers.LocalesApi.downloadBy(username: String, projectName: String, localeName: String, fileType: String)
+
 GET		/api/*file					controllers.ApiDocs.versioned(path="/public/lib/swagger-ui", file: String)
 
+#
+# WEB
+#
+
+GET		/							controllers.Application.index
+
+# Activity
+GET		/activity/csv				controllers.Application.activityCsv
+
+# Authentication
+GET		/login						controllers.Application.login
+GET		/logout						controllers.Application.logout
+GET		/authenticate/:provider		com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
+GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider: String)
+
+# Commands
+GET		/command/:key/execute		controllers.Application.commandExecute(key: String)
+
 GET		/javascriptRoutes			controllers.Application.javascriptRoutes
+
+# Users
+GET		/users						controllers.Users.index
+
+# Profiles
+GET		/profile					controllers.Profiles.profile
+GET		/profile/projects			controllers.Profiles.projects
+GET		/profile/linkedAccounts		controllers.Profiles.linkedAccounts
+GET		/profile/accessTokens		controllers.Profiles.accessTokens
+GET		/profile/activity			controllers.Profiles.activity
+GET		/profile/edit				controllers.Profiles.edit
+POST	/profile/edit				controllers.Profiles.doEdit
+GET		/profile/link				controllers.Profiles.askLink
+POST	/profile/link				controllers.Profiles.doLink
+GET		/profile/merge				controllers.Profiles.askMerge
+POST	/profile/merge				controllers.Profiles.doMerge
+GET		/profile/accessTokens/create	controllers.Profiles.accessTokenCreate
+POST	/profile/accessTokens/create	controllers.Profiles.doAccessTokenCreate
+GET		/profile/notifications/reset	controllers.Profiles.resetNotifications
+
+# Projects
+GET		/projects					controllers.Projects.index(search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/projects/create/$projectName<.+>	controllers.Projects.createImmediately(projectName: String)
+
+# User
+GET		/:username					controllers.Users.user(username: String)
+GET		/:username/projects			controllers.Users.projects(username: String)
+GET		/:username/activity/csv		controllers.Users.activityCsv(username: String)
+GET		/:username/activity			controllers.Users.activity(username: String)
+GET		/:username/linkedAccounts	controllers.Users.linkedAccounts(username: String)
+GET		/:username/linkedAccounts/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
+GET		/:username/accessTokens		controllers.Users.accessTokens(username: String)
+GET		/:username/accessTokens/:accessTokenId/edit	controllers.Users.accessTokenEdit(username: String, accessTokenId: Long)
+POST	/:username/accessTokens/:accessTokenId/edit	controllers.Users.doAccessTokenEdit(username: String, accessTokenId: Long)
+GET		/:username/accessTokens/:accessTokenId/remove	controllers.Users.accessTokenRemove(username: String, accessTokenId: Long)
+
+# Project
+GET		/:username/create							controllers.Projects.createBy(username: String)
+POST	/:username/create							controllers.Projects.doCreateBy(username: String)
+GET		/:username/:projectName						controllers.Projects.projectBy(username: String, projectName: String)
+GET		/:username/:projectName/edit				controllers.Projects.editBy(username: String, projectName: String)
+POST	/:username/:projectName/edit				controllers.Projects.doEditBy(username: String, projectName: String)
+GET		/:username/:projectName/remove				controllers.Projects.removeBy(username: String, projectName: String)
+GET		/:username/:projectName/wordCount/reset		controllers.Projects.wordCountResetBy(username: String, projectName: String)
+POST	/:username/:projectName/owner/change		controllers.Projects.doOwnerChangeBy(username: String, projectName: String)
+
+# Locales
+GET		/:username/:projectName/locales				controllers.Projects.localesBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+POST	/:username/:projectName/locales/create		controllers.Locales.doCreateBy(username: String, projectName: String)
+GET		/:username/:projectName/locales/:localeName	controllers.Locales.localeBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/locales/:localeName/create	controllers.Locales.createImmediatelyBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/locales/:localeName/edit	controllers.Locales.editBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+POST	/:username/:projectName/locales/:localeName/edit	controllers.Locales.doEditBy(username: String, projectName: String, localeName: String)
+GET		/:username/:projectName/locales/:localeName/remove	controllers.Locales.removeBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/locales/:localeName/import	controllers.Locales.uploadBy(username: String, projectName: String, localeName: String)
+POST	/:username/:projectName/locales/:localeName/import	controllers.Locales.doUploadBy(username: String, projectName: String, localeName: String)
+
+# Keys
+GET		/:username/:projectName/keys				controllers.Projects.keysBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/keys/create			controllers.Keys.createBy(username: String, projectName: String)
+POST	/:username/:projectName/keys/create			controllers.Keys.doCreateBy(username: String, projectName: String, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+POST	/:username/:projectName/keys/:localeId/create	controllers.Keys.doCreateBy(username: String, projectName: String, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/keys/create/$keyName<.+>	controllers.Keys.createImmediatelyBy(username: String, projectName: String, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/keys/:keyName		controllers.Keys.keyBy(username: String, projectName: String, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/keys/:keyName/edit	controllers.Keys.editBy(username: String, projectName: String, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+POST	/:username/:projectName/keys/:keyName/edit	controllers.Keys.doEditBy(username: String, projectName: String, keyName: String)
+GET		/:username/:projectName/keys/:keyName/remove	controllers.Keys.removeBy(username: String, projectName: String, keyName: String, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/keys/:keyName/:localeId/remove	controllers.Keys.removeBy(username: String, projectName: String, keyName: String, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+
+# Members
+GET		/:username/:projectName/members				controllers.Projects.membersBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/members/add			controllers.Projects.memberAddBy(username: String, projectName: String)
+POST	/:username/:projectName/members/add			controllers.Projects.doMemberAddBy(username: String, projectName: String)
+GET		/:username/:projectName/members/:memberId/remove	controllers.Projects.memberRemoveBy(username: String, projectName: String, memberId: Long)
+
+# Activity
+GET		/:username/:projectName/activity			controllers.Projects.activityBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET		/:username/:projectName/activity/csv		controllers.Projects.activityCsvBy(username: String, projectName: String)

@@ -1,12 +1,9 @@
 package dto;
 
-import java.util.UUID;
-
-import org.joda.time.DateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.util.UUID;
 import models.User;
+import org.joda.time.DateTime;
 
 public class AccessToken extends Dto {
   private static final long serialVersionUID = 8641212952047519698L;

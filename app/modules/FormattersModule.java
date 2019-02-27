@@ -1,7 +1,6 @@
 package modules;
 
 import com.google.inject.AbstractModule;
-
 import play.data.format.Formatters;
 import utils.FormattersProvider;
 

@@ -1,8 +1,8 @@
 @(template: utils.Template, project: models.Project, locale: models.Locale)
 
 @main(template.withTitle(Messages("locale.import.title", locale.project.name, tags.locale(locale.name))))()(projects.nav(project, "locales")) {
-	@projects.content() {
-		<form action="@routes.Locales.upload(locale.id)" method="post" enctype="multipart/form-data">
+	@tags.mainContent() {
+		<form action="@locale.doUploadRoute" method="post" enctype="multipart/form-data">
 			<div id="panel-message" class="card no-image">
 				<div class="card-content">
 					<span class="card-title">@Messages("locale.import")</span>
@@ -34,7 +34,7 @@
 					</button>
 					<a
 						class="btn-flat btn-cancel black-text"
-						href="@routes.Projects.locales(locale.project.id)">
+						href="@locale.project.localesRoute">
 						@Messages("button.cancel")
 					</a>
 				</div>
