@@ -12,5 +12,5 @@ import services.api.impl.UserApiServiceImpl;
  */
 @ImplementedBy(UserApiServiceImpl.class)
 public interface UserApiService extends ApiService<User, UUID, UserCriteria> {
-
+    User me();
 }

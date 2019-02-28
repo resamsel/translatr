@@ -19,6 +19,8 @@ public class User extends Dto {
 
   public String username;
 
+  public String email;
+
   /**
    * 
    */
@@ -30,6 +32,7 @@ public class User extends Dto {
     this.whenUpdated = in.whenUpdated;
     this.name = in.name;
     this.username = in.username;
+    this.email = in.email;
   }
 
   public models.User toModel(models.User user) {
@@ -39,15 +42,20 @@ public class User extends Dto {
     out.whenUpdated = whenUpdated;
     out.name = name;
     out.username = username;
+    out.email = email;
 
     return out;
   }
 
   /**
-   * @param project
+   * @param in
    * @return
    */
   public static User from(models.User in) {
+    if (in == null) {
+      return null;
+    }
+
     return new User(in);
   }
 }

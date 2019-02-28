@@ -1,0 +1,54 @@
+/* You can add global styles to this file, and also import other style files */
+
+@mixin translatr-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, sans-serif;
+}
+
+.main-container {
+  z-index: 0;
+}
+
+.container {
+  padding: 0 8px;
+
+  > :not(last-child) {
+    margin-bottom: 8px;
+  }
+}
+
+.flex-spacer {
+  flex-grow: 1;
+}
+
+.flex {
+  display: flex;
+  flex-flow: row wrap;
+
+  > * {
+    flex: 1 100%;
+  }
+}
+
+.mat-list-base {
+  &.mat-nav-list {
+    padding-top: 0;
+  }
+
+  .mat-list-icon.mat-icon.circle {
+    font-size: 18px;
+    line-height: 32px;
+    width: 32px;
+    height: 32px;
+    color: #fff;
+    text-align: center;
+  }
+}

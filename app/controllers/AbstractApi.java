@@ -14,13 +14,13 @@ import services.CacheService;
 import services.api.ApiService;
 import utils.PermissionUtils;
 
-public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>>
+public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>, API extends ApiService<DTO, ID, CRITERIA>>
     extends AbstractBaseApi {
-  protected final ApiService<DTO, ID, CRITERIA> api;
+  protected final API api;
   protected final Configuration configuration;
 
   protected AbstractApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-      ApiService<DTO, ID, CRITERIA> api) {
+      API api) {
     super(injector, cache, auth);
 
     this.configuration = injector.instanceOf(Configuration.class);

@@ -22,6 +22,7 @@ import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 
 import models.User;
+import org.apache.commons.lang3.StringUtils;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.mvc.Result;
@@ -36,7 +37,7 @@ import utils.FormUtils;
  */
 @io.swagger.annotations.Api(value = "Projects", produces = "application/json")
 @With(ApiAction.class)
-public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
+public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, ProjectApiService> {
 
   private static final String TYPE = "dto.Project";
 
@@ -105,8 +106,9 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> get(@ApiParam(value = PROJECT_ID) UUID id) {
-    return toJson(() -> api.get(id));
+  public CompletionStage<Result> get(@ApiParam(value = PROJECT_ID) UUID id,
+      @ApiParam(value = FETCH) String fetch) {
+    return toJson(() -> api.get(id, StringUtils.split(fetch, ",")));
   }
 
   /**

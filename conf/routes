@@ -12,7 +12,7 @@ GET		/api/swagger.json			controllers.ApiHelpController.getResources
 GET		/projects/search			controllers.Projects.search
 GET		/api/projects				controllers.ProjectsApi.find
 GET		/api/project/:id/search		controllers.ProjectsApi.search(id: java.util.UUID)
-GET		/api/project/:projectId		controllers.ProjectsApi.get(projectId: java.util.UUID)
+GET		/api/project/:projectId		controllers.ProjectsApi.get(projectId: java.util.UUID, fetch: String ?= "")
 POST	/api/project				controllers.ProjectsApi.create
 PUT		/api/project				controllers.ProjectsApi.update
 DELETE	/api/project/:projectId		controllers.ProjectsApi.delete(projectId: java.util.UUID)
@@ -39,6 +39,7 @@ DELETE	/api/message/:messageId		controllers.TranslationsApi.delete(messageId: ja
 
 GET		/api/users					controllers.UsersApi.find
 GET		/api/user/:userId			controllers.UsersApi.get(userId: java.util.UUID)
+GET     /api/me                     controllers.UsersApi.me
 # Disable updating users for the moment
 #PUT		/api/user				controllers.UsersApi.update
 
@@ -57,6 +58,8 @@ GET		/api/*file					controllers.ApiDocs.versioned(path="/public/lib/swagger-ui",
 #
 
 GET		/							controllers.Application.index
+GET		/ui                         controllers.Application.indexUi
+GET     /ui/                        controllers.Default.redirect(to = "/ui")
 
 # Activity
 GET		/activity/csv				controllers.Application.activityCsv
@@ -71,6 +74,9 @@ GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider
 GET		/command/:key/execute		controllers.Application.commandExecute(key: String)
 
 GET		/javascriptRoutes			controllers.Application.javascriptRoutes
+
+# Serve static assets under public directory
+GET     /ui/*file                   controllers.Application.assetOrDefault(file: String)
 
 # Users
 GET		/users						controllers.Users.index

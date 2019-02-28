@@ -101,7 +101,6 @@ public class ProjectRepositoryImpl extends
     if (id == null) {
       return null;
     }
-
     return QueryUtils
         .fetch(find.setId(id), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
         .findUnique();

@@ -37,7 +37,7 @@ import services.api.LocaleApiService;
  */
 @io.swagger.annotations.Api(value = "Locales", produces = "application/json")
 @With(ApiAction.class)
-public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria> {
+public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, LocaleApiService> {
 
   private static final String TYPE = "dto.Locale";
 

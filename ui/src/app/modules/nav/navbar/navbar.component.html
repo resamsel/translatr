@@ -1,0 +1,24 @@
+<mat-toolbar color="primary" class="mat-elevation-z2">
+  <ng-container>
+    <mat-toolbar-row>
+      <button
+        *ngIf="sidenav"
+        mat-icon-button
+        class="burger"
+        (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a mat-button routerLink="/" class="logo">
+        <mat-icon>language</mat-icon>
+        Translatr
+      </a>
+      <span *ngIf="page" class="page">{{page}}</span>
+      <ng-content></ng-content>
+      <div class="flex-spacer"></div>
+      <app-auth-bar-item></app-auth-bar-item>
+    </mat-toolbar-row>
+  </ng-container>
+  <ng-container>
+    <ng-content select="mat-toolbar-row"></ng-content>
+  </ng-container>
+</mat-toolbar>

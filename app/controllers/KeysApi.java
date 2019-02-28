@@ -35,7 +35,7 @@ import services.api.KeyApiService;
  */
 @io.swagger.annotations.Api(value = "Keys", produces = "application/json")
 @With(ApiAction.class)
-public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria> {
+public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> {
 
   private static final String TYPE = "dto.Key";
 

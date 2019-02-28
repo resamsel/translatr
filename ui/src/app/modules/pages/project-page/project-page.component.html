@@ -1,0 +1,22 @@
+<app-sidenav>
+  <mat-toolbar-row class="secondary">
+    <nav mat-tab-nav-bar color="accent" position="0">
+      <a mat-tab-link
+         [routerLink]="['/project', project?.id]"
+         routerLinkActive
+         #projectLink="routerLinkActive"
+         [active]="projectLink.isActive">
+        Project
+      </a>
+      <a mat-tab-link
+         [routerLink]="['/project', project?.id, 'keys']"
+         routerLinkActive
+         #keysLink="routerLinkActive"
+         [active]="keysLink.isActive">
+        Keys
+      </a>
+    </nav>
+  </mat-toolbar-row>
+
+  <router-outlet></router-outlet>
+</app-sidenav>

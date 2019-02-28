@@ -25,10 +25,8 @@ public class Project extends Dto {
 
   public UUID id;
 
-  @JsonIgnore
   public DateTime whenCreated;
 
-  @JsonIgnore
   public DateTime whenUpdated;
 
   public String name;
@@ -44,6 +42,8 @@ public class Project extends Dto {
   public List<Locale> locales;
 
   public List<Message> messages;
+
+  public List<Member> members;
 
   public Project() {
   }
@@ -63,6 +63,10 @@ public class Project extends Dto {
 
     if (in.locales != null && !in.locales.isEmpty()) {
       this.locales = in.locales.stream().map(Locale::from).collect(toList());
+    }
+
+    if (in.members != null && !in.members.isEmpty()) {
+        this.members = in.members.stream().map(Member::from).collect(toList());
     }
   }
 

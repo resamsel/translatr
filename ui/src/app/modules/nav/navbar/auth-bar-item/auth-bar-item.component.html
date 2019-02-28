@@ -1,0 +1,16 @@
+<button
+  mat-icon-button
+  class="account-button"
+  [matMenuTriggerFor]="userMenu"
+  *ngIf="me$ | async as user">
+  <img class="icon" ngxGravatar [email]="user.email" size="36">
+</button>
+<mat-menu #userMenu="matMenu" xPosition="before">
+  <ng-content></ng-content>
+  <button
+    mat-menu-item
+    *ngIf="me$ | async as user"
+    (click)="signOut()">
+    Logout {{user.name}}
+  </button>
+</mat-menu>

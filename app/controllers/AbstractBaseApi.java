@@ -1,10 +1,13 @@
 package controllers;
 
 import com.avaje.ebean.PagedList;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 import dto.NotFoundException;
 import dto.PermissionException;
 import dto.SearchResponse;
+
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
@@ -76,7 +79,8 @@ public class AbstractBaseApi extends AbstractController {
 
   protected <IN> CompletionStage<Result> toJson(Supplier<IN> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out))).exceptionally(this::handleException);
+        .thenApply(out -> ok(Optional.ofNullable(out).map(Json::toJson).orElse(NullNode.getInstance())))
+        .exceptionally(this::handleException);
   }
 
   <T> CompletionStage<Result> toJsons(Supplier<PagedList<T>> supplier) {

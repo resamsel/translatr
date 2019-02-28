@@ -29,6 +29,11 @@ public class UserApiServiceImpl extends
         permissionService);
   }
 
+  @Override
+  public dto.User me() {
+    return dtoMapper.apply(User.loggedInUser());
+  }
+
   /**
    * {@inheritDoc}
    */

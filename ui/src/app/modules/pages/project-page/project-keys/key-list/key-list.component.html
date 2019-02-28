@@ -1,0 +1,8 @@
+<h2>Keys</h2>
+<mat-nav-list *ngIf="keys" class="mat-elevation-z2">
+  <a mat-list-item *ngFor="let key of keys" [routerLink]="['/project', project.id, 'keys', key.id]">
+    <mat-icon matListIcon class="circle">vpn_key</mat-icon>
+    <h3 matLine>{{key.name}}</h3>
+    <p matLine>{{key.ownerName}}</p>
+  </a>
+</mat-nav-list>

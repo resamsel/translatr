@@ -11,6 +11,8 @@ import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import play.Configuration;
+import play.api.mvc.Action;
+import play.api.mvc.AnyContent;
 import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.Call;
@@ -31,17 +33,30 @@ public class Application extends AbstractController {
   public static final String USER_ROLE = "user";
 
   private final Configuration configuration;
+  private final Assets assets;
 
   @Inject
   public Application(Injector injector, Configuration configuration, CacheService cache,
-      PlayAuthenticate auth) {
+      PlayAuthenticate auth, Assets assets) {
     super(injector, cache, auth);
 
     this.configuration = configuration;
+    this.assets = assets;
   }
 
   public CompletionStage<Result> index() {
     return tryCatch(() -> ok(views.html.index.render(createTemplate())));
+  }
+
+  public Action<AnyContent> indexUi() {
+    return assets.at("/public", "index.html", false);
+  }
+
+  public Action<AnyContent> assetOrDefault(String resource) {
+    if (resource.contains(".")) {
+      return assets.at("/public", resource, false);
+    }
+    return indexUi();
   }
 
   public CompletionStage<Result> login() {

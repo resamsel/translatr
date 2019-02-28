@@ -31,7 +31,7 @@ import services.api.UserApiService;
  */
 @io.swagger.annotations.Api(value = "Users", produces = "application/json")
 @With(ApiAction.class)
-public class UsersApi extends AbstractApi<User, UUID, UserCriteria> {
+public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiService> {
 
   private static final String TYPE = "dto.User";
 
@@ -86,6 +86,21 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria> {
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> get(@ApiParam(value = USER_ID) UUID id) {
     return toJson(() -> api.get(id));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = @AuthorizationScope(scope = USER_READ, description = USER_READ_DESCRIPTION)))
+  @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.User.class),
+          @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+          @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+          @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+          required = true, dataType = "string", paramType = "query")})
+  public CompletionStage<Result> me() {
+    return toJson(api::me);
   }
 
   /**

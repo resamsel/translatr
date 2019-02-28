@@ -1,0 +1,48 @@
+/*
+ * Media query for medium screens
+ */
+@media only screen and (min-width: 600px) {
+  .container {
+    padding: 16px;
+    margin: 0 auto;
+    width: 85%;
+  }
+
+  .container.narrow {
+    width: 65%;
+    max-width: 480px;
+  }
+
+  .flex > .small {
+    flex: 1 auto;
+    width: 25%;
+  }
+
+  .flex > .small:not(:last-child) {
+    margin-right: 8px;
+  }
+}
+
+/*
+ * Media query for large screens
+ */
+@media screen and (min-width: 992px) {
+  .container {
+    width: 90%;
+    max-width: 1024px;
+    padding: 16px 0;
+  }
+
+  .container.narrow {
+    width: 70%;
+  }
+}
+
+/*
+ * Media query for extra large screens
+ */
+@media screen and (min-width: 1200px) {
+  .container.narrow {
+    width: 50%;
+  }
+}

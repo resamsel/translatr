@@ -1,0 +1,35 @@
+<div class="container flex">
+  <mat-card>
+    <mat-card-title>
+      {{project?.name}}
+    </mat-card-title>
+    <mat-card-content>
+      <p *ngIf="project as project" i18n="@@temporal.info">Created: {{project.whenCreated | amTimeAgo}},
+        updated: {{project.whenUpdated | amTimeAgo}}</p>
+      <mat-chip-list>
+        <mat-chip *ngFor="let member of project?.members">{{member.userName}} ({{member.role}})
+        </mat-chip>
+      </mat-chip-list>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-title i18n="@@activity">Activity</mat-card-title>
+  </mat-card>
+  <mat-card class="small">
+    <mat-card-title i18n="@@keys">Keys</mat-card-title>
+    <mat-card-content>
+      <span i18n="@@latest">Latest: </span>
+      <a *ngFor="let key of project?.keys" [routerLink]="['key', key.id]">{{key.name}}</a>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="small">
+    <mat-card-title i18n="@@locales">Locales</mat-card-title>
+    <mat-card-content>
+      <span i18n="@@latest">Latest: </span>
+      <a *ngFor="let locale of project?.locales" [routerLink]="['locale', locale.id]">{{locale.name}}</a>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="small">
+    <mat-card-title i18n="@@translations">Translations</mat-card-title>
+  </mat-card>
+</div>
