@@ -9,6 +9,7 @@ import {ProjectPageModule} from "./modules/pages/project-page/project-page.modul
 import {LayoutModule} from '@angular/cdk/layout';
 import {MatButtonModule, MatToolbarModule} from '@angular/material';
 import {SidenavModule} from "./modules/nav/sidenav/sidenav.module";
+import {UserPageModule} from "./modules/pages/user-page/user-page.module";
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import {SidenavModule} from "./modules/nav/sidenav/sidenav.module";
     MainPageModule,
     ProjectsPageModule,
     ProjectPageModule,
+    UserPageModule,
     LayoutModule,
     MatToolbarModule,
     MatButtonModule

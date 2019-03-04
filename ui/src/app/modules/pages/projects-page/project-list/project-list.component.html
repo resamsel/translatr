@@ -1,6 +1,6 @@
 <h2>Projects</h2>
 <mat-nav-list *ngIf="projects" class="mat-elevation-z2">
-  <a mat-list-item *ngFor="let project of projects.list" [routerLink]="['/project', project.id]">
+  <a mat-list-item *ngFor="let project of projects.list" [routerLink]="['/', project.ownerUsername, project.name]">
     <mat-icon matListIcon class="circle">view_quilt</mat-icon>
     <h3 matLine>{{project.name}}</h3>
     <p matLine>{{project.ownerName}}</p>

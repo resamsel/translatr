@@ -1,6 +1,6 @@
 export interface Key {
   id: string;
-  whenCreated: string;
-  whenUpdated: string;
+  whenCreated: Date;
+  whenUpdated: Date;
   name: string;
 }

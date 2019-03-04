@@ -8,7 +8,7 @@
         (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
-      <a mat-button routerLink="/" class="logo">
+      <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="logo">
         <mat-icon>language</mat-icon>
         Translatr
       </a>

@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import {PagedList} from "../../../shared/paged-list";
 import {Project} from "../../../shared/project";
-import {HttpClient} from "@angular/common/http";
+import {ProjectService} from "../../../services/project.service";
 
 @Component({
   selector: 'app-projects-page',
@@ -12,10 +12,10 @@ import {HttpClient} from "@angular/common/http";
 export class ProjectsPageComponent implements OnInit {
   projects$: Observable<PagedList<Project>>;
 
-  constructor(private http: HttpClient) {
+  constructor(private readonly projectService: ProjectService) {
   }
 
   ngOnInit(): void {
-    this.projects$ = this.http.get<PagedList<Project>>('/api/projects');
+    this.projects$ = this.projectService.getProjects();
   }
 }

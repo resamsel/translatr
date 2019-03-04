@@ -1,22 +1,56 @@
 <app-sidenav>
-  <mat-toolbar-row class="secondary">
-    <nav mat-tab-nav-bar color="accent" position="0">
+  <div class="container breadcrumbs">
+    <mat-icon>view_quilt</mat-icon>
+    <a [routerLink]="['/', project?.ownerUsername]">{{project?.ownerUsername}}</a>
+    <span>/</span>
+    <a [routerLink]="['/', project?.ownerUsername, project?.name]">{{project?.name}}</a>
+  </div>
+
+  <nav mat-tab-nav-bar color="accent" position="0">
+    <div class="container" routerLinkActive>
       <a mat-tab-link
-         [routerLink]="['/project', project?.id]"
+         [routerLink]="['/', project?.ownerUsername, project?.name]"
          routerLinkActive
+         [routerLinkActiveOptions]="{exact: true}"
          #projectLink="routerLinkActive"
          [active]="projectLink.isActive">
+        <mat-icon>view_quilt</mat-icon>
         Project
       </a>
       <a mat-tab-link
-         [routerLink]="['/project', project?.id, 'keys']"
+         [routerLink]="['/', project?.ownerUsername, project?.name, 'locales']"
+         routerLinkActive
+         #localesLink="routerLinkActive"
+         [active]="localesLink.isActive">
+        <mat-icon>language</mat-icon>
+        Languages
+      </a>
+      <a mat-tab-link
+         [routerLink]="['/', project?.ownerUsername, project?.name, 'keys']"
          routerLinkActive
          #keysLink="routerLinkActive"
          [active]="keysLink.isActive">
+        <mat-icon>vpn_key</mat-icon>
         Keys
       </a>
-    </nav>
-  </mat-toolbar-row>
+      <a mat-tab-link
+         [routerLink]="['/', project?.ownerUsername, project?.name, 'members']"
+         routerLinkActive
+         #membersLink="routerLinkActive"
+         [active]="membersLink.isActive">
+        <mat-icon>group</mat-icon>
+        Members
+      </a>
+      <a mat-tab-link
+         [routerLink]="['/', project?.ownerUsername, project?.name, 'activity']"
+         routerLinkActive
+         #activityLink="routerLinkActive"
+         [active]="activityLink.isActive">
+        <mat-icon>change_history</mat-icon>
+        Activity
+      </a>
+    </div>
+  </nav>
 
   <router-outlet></router-outlet>
 </app-sidenav>

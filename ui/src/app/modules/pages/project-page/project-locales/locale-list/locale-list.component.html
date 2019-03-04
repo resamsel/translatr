@@ -1,0 +1,8 @@
+<h2>Languages</h2>
+<mat-nav-list *ngIf="locales" class="mat-elevation-z2">
+  <a mat-list-item *ngFor="let locale of locales" [routerLink]="['/', project.ownerUsername, project.name, 'locales', locale.name]">
+    <mat-icon matListIcon class="circle">language</mat-icon>
+    <h3 matLine>{{locale.name}}</h3>
+    <p matLine>{{locale.displayName}}</p>
+  </a>
+</mat-nav-list>

@@ -9,6 +9,7 @@ export interface Project {
   name: string;
   ownerId: string;
   ownerName: string;
+  ownerUsername: string;
   locales: Array<Locale>;
   keys: Array<Key>;
   members: Array<Member>;

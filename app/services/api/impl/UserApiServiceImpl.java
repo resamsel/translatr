@@ -30,6 +30,11 @@ public class UserApiServiceImpl extends
   }
 
   @Override
+  public dto.User byUsername(String username, String... propertiesToFetch) {
+    return dtoMapper.apply(service.byUsername(username, propertiesToFetch));
+  }
+
+  @Override
   public dto.User me() {
     return dtoMapper.apply(User.loggedInUser());
   }

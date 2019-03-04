@@ -59,6 +59,11 @@ public class ProjectApiServiceImpl extends
     this.keyService = keyService;
   }
 
+  @Override
+  public dto.Project byOwnerAndName(String username, String name, String... fetches) {
+    return dtoMapper.apply(service.byOwnerAndName(username, name, fetches));
+  }
+
   /**
    * {@inheritDoc}
    */

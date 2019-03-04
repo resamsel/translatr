@@ -5,7 +5,7 @@ import {MatButtonModule, MatCardModule, MatGridListModule, MatIconModule, MatMen
 import {LayoutModule} from '@angular/cdk/layout';
 import {MainPageRoutingModule} from "./main-page-routing.module";
 import {RouterModule, Routes} from "@angular/router";
-import {SidenavModule} from "../../nav/sidenav/sidenav.module";
+import {NavbarModule} from "../../nav/navbar/navbar.module";
 
 const routes: Routes = [
   {path: '', component: MainPageComponent}
@@ -16,7 +16,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forChild(routes),
     CommonModule,
-    SidenavModule,
+    NavbarModule,
     MainPageRoutingModule,
     MatGridListModule,
     MatCardModule,

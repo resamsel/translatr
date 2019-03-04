@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
@@ -88,6 +89,22 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> get(@ApiParam(value = USER_ID) UUID id) {
     return toJson(() -> api.get(id));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = @AuthorizationScope(scope = USER_READ, description = USER_READ_DESCRIPTION)))
+  @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.User.class),
+          @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+          @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+          @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+          required = true, dataType = "string", paramType = "query")})
+  public CompletionStage<Result> byName(@ApiParam(value = USER_USERNAME) String username,
+        @ApiParam(value = FETCH) String fetch) {
+    return toJson(() -> api.byUsername(username, StringUtils.split(fetch, ",")));
   }
 
   /**

@@ -10,6 +10,16 @@
   background: inherit;
 }
 
+.mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-container {
+  flex-grow: 1;
+}
+
 .mat-toolbar.mat-primary {
   position: sticky;
   top: 0;

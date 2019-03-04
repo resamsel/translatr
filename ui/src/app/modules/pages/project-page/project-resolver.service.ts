@@ -17,12 +17,13 @@ export class ProjectResolverService implements Resolve<Project> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Project> {
-    const id = route.paramMap.get('id');
+    const username = route.paramMap.get('username');
+    const projectName = route.paramMap.get('projectName');
 
-    console.log('resolver', id);
+    console.log('resolver', username, projectName);
 
     return this.projectService
-      .getProject(id, {params: {fetch: 'keys,locales'}})
+      .getProjectByOwnerAndName(username, projectName, {params: {fetch: 'keys,locales'}})
       .pipe(
         take(1),
         mergeMap((project: Project) => {

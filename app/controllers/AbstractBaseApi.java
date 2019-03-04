@@ -44,11 +44,13 @@ public class AbstractBaseApi extends AbstractController {
   static final String FETCH = "The fields to fetch additionally, separated by commas";
   static final String PARAM_FETCH = "fetch";
   static final String PROJECT_ID = "The project ID";
+  static final String PROJECT_NAME = "The project name";
   static final String LOCALE_ID = "The locale ID";
   static final String PARAM_LOCALE_ID = "localeId";
   static final String KEY_ID = "The key ID";
   static final String MESSAGE_ID = "The message ID";
   static final String USER_ID = "The user ID";
+  static final String USER_USERNAME = "The user username";
 
   static final String AUTHORIZATION = "scopes";
 

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ProjectResolverService } from './project-resolver.service';
 
-describe('ProjectResolverService', () => {
+describe('UserResolverService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {

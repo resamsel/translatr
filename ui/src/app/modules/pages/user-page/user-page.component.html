@@ -1,0 +1,22 @@
+<app-sidenav>
+  <div class="container breadcrumbs">
+    <mat-icon>account_circle</mat-icon>
+    <a [routerLink]="['/', user?.username]">{{user?.username}}</a>
+  </div>
+
+  <nav mat-tab-nav-bar color="accent" position="0">
+    <div class="container" routerLinkActive>
+      <a mat-tab-link
+         [routerLink]="['/', user?.username]"
+         routerLinkActive
+         [routerLinkActiveOptions]="{exact: true}"
+         #projectLink="routerLinkActive"
+         [active]="projectLink.isActive">
+        <mat-icon>account_circle</mat-icon>
+        Profile
+      </a>
+    </div>
+  </nav>
+
+  <router-outlet></router-outlet>
+</app-sidenav>

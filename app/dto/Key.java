@@ -19,10 +19,8 @@ public class Key extends Dto {
 
   public UUID id;
 
-  @JsonIgnore
   public DateTime whenCreated;
 
-  @JsonIgnore
   public DateTime whenUpdated;
 
   public UUID projectId;

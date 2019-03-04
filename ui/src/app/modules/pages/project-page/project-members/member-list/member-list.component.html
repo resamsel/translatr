@@ -1,0 +1,8 @@
+<h2>Members</h2>
+<mat-nav-list *ngIf="members" class="mat-elevation-z2">
+  <a mat-list-item *ngFor="let member of members" [routerLink]="['/', member.userUsername]">
+    <img class="icon"matListIcon ngxGravatar [email]="member.email" size="36">
+    <h3 matLine>{{member.userName}} — {{member.role}}</h3>
+    <p matLine>{{member.userUsername}}</p>
+  </a>
+</mat-nav-list>

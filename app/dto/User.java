@@ -9,10 +9,8 @@ public class User extends Dto {
 
   public UUID id;
 
-  @JsonIgnore
   public DateTime whenCreated;
 
-  @JsonIgnore
   public DateTime whenUpdated;
 
   public String name;

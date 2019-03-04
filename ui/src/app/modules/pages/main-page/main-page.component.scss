@@ -15,3 +15,36 @@
 .dashboard-card-content {
   text-align: center;
 }
+
+.section.green {
+  background-color: #43a047;
+
+  .header {
+    color: #43a047;
+    font-weight: 300;
+  }
+
+  .light {
+    font-weight: 300;
+  }
+
+  .white-text {
+    color: #fff;
+  }
+
+  .green-text.text-lighten-4 {
+    color: #C8E6C9 !important;
+  }
+
+  .light, .page-footer .footer-copyright {
+    font-weight: 300;
+  }
+
+  .green-text {
+    color: #4CAF50;
+  }
+}
+
+.mat-fab.floating-action-btn {
+  color: #fff;
+}

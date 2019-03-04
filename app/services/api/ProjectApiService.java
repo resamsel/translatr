@@ -14,6 +14,9 @@ import services.api.impl.ProjectApiServiceImpl;
  */
 @ImplementedBy(ProjectApiServiceImpl.class)
 public interface ProjectApiService extends ApiService<Project, UUID, ProjectCriteria> {
+
+  Project byOwnerAndName(String username, String name, String... fetches);
+
   /**
    * @param projectId
    * @param searchForm
