@@ -19,8 +19,6 @@ export class UserResolverService implements Resolve<User> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<User> {
     const username = route.paramMap.get('username');
 
-    console.log('resolver', username);
-
     return this.userService
       .getUserByName(username, {params: {}})
       .pipe(

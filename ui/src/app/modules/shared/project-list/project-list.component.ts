@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {PagedList} from "../../../../shared/paged-list";
-import {Project} from "../../../../shared/project";
+import {PagedList} from "../../../shared/paged-list";
+import {Project} from "../../../shared/project";
 
 @Component({
   selector: 'app-project-list',

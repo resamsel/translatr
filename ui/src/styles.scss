@@ -13,6 +13,10 @@ body {
   font-family: Roboto, sans-serif;
 }
 
+header {
+  background: #f2f2f2;
+}
+
 a, a:active, a:visited {
   color: #039be5;
   text-decoration: none;
@@ -22,6 +26,7 @@ a:hover {
   text-decoration: underline;
 }
 
+a.mat-button:hover,
 .mat-tab-nav-bar a:hover {
   text-decoration: none;
 }
@@ -111,6 +116,10 @@ pre[class*="language-"]:before {
 
   .mat-icon {
     margin-right: 8px;
+  }
+
+  .mat-tab-label-active:not(.mat-tab-disabled) {
+    opacity: 1;
   }
 }
 

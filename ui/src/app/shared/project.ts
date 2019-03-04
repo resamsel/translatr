@@ -1,6 +1,7 @@
 import {Member} from "./member";
 import {Locale} from "./locale";
 import {Key} from "./key";
+import {Message} from "./message";
 
 export interface Project {
   id: string;
@@ -13,4 +14,5 @@ export interface Project {
   locales: Array<Locale>;
   keys: Array<Key>;
   members: Array<Member>;
+  messages: Array<Message>;
 }

@@ -18,7 +18,6 @@ export class ProjectPageComponent implements OnInit {
     this.route.data
       .subscribe((data: { project: Project }) => {
         this.project = data.project;
-        console.log('page data', data);
       });
   }
 }

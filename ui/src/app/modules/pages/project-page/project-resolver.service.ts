@@ -20,10 +20,8 @@ export class ProjectResolverService implements Resolve<Project> {
     const username = route.paramMap.get('username');
     const projectName = route.paramMap.get('projectName');
 
-    console.log('resolver', username, projectName);
-
     return this.projectService
-      .getProjectByOwnerAndName(username, projectName, {params: {fetch: 'keys,locales'}})
+      .getProjectByOwnerAndName(username, projectName, {params: {fetch: 'keys,locales,messages'}})
       .pipe(
         take(1),
         mergeMap((project: Project) => {

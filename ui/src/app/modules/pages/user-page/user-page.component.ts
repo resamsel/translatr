@@ -11,14 +11,13 @@ export class UserPageComponent implements OnInit {
 
   user: User;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private readonly route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
     this.route.data
       .subscribe((data: { user: User }) => {
         this.user = data.user;
-        console.log('page data', data);
       });
   }
 }

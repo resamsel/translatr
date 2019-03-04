@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {User} from "../../../../shared/user";
-import {tap} from "rxjs/operators";
 
 @Component({
   selector: 'app-auth-bar-item',
@@ -16,6 +15,6 @@ export class AuthBarItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.me$ = this.http.get<User>('/api/me').pipe(tap(console.log));
+    this.me$ = this.http.get<User>('/api/me');
   }
 }
