@@ -156,7 +156,8 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
   }
 
   public T with(Request request) {
-    return self.withSearch(request.getQueryString("search"))
+    return self
+        .withSearch(request.getQueryString("search"))
         .withOffset(NumberUtils.parseInt(request.getQueryString("offset")))
         .withLimit(NumberUtils.parseInt(request.getQueryString("limit")))
         .withOrder(request.getQueryString("order"))

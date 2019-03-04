@@ -20,6 +20,7 @@ import { LocaleListComponent } from './project-locales/locale-list/locale-list.c
 import { ProjectMembersComponent } from './project-members/project-members.component';
 import { MemberListComponent } from './project-members/member-list/member-list.component';
 import {GravatarModule} from "ngx-gravatar";
+import { ActivityModule } from "../../shared/activity/activity.module";
 
 @NgModule({
   declarations: [ProjectPageComponent, ProjectInfoComponent, ProjectKeysComponent, KeyListComponent, ProjectLocalesComponent, LocaleListComponent, ProjectMembersComponent, MemberListComponent],
@@ -27,6 +28,7 @@ import {GravatarModule} from "ngx-gravatar";
     ProjectPageRoutingModule,
     CommonModule,
     SidenavModule,
+    ActivityModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,

@@ -13,6 +13,8 @@ public class Member {
 
     public String userUsername;
 
+    public String userEmail;
+
     public MemberRole role;
 
     public Member(ProjectUser member) {
@@ -20,6 +22,7 @@ public class Member {
         this.userId = member.user.id;
         this.userName = member.user.name;
         this.userUsername = member.user.username;
+        this.userEmail = member.user.email;
         this.role = MemberRole.from(member.role);
     }
 

@@ -1,22 +1,11 @@
-import {Injectable} from '@angular/core';
-import {Observable} from "rxjs";
-import {Project} from "../shared/project";
-import {HttpClient, HttpParams} from "@angular/common/http";
-import {map} from "rxjs/operators";
-import {PagedList} from "../shared/paged-list";
-
-interface Temporal {
-  whenCreated: Date | string;
-  whenUpdated: Date | string
-}
-
-function convertTemporals<T extends Temporal>(t: T): T {
-  return {
-    ...(t as object),
-    whenCreated: new Date(t.whenCreated),
-    whenUpdated: new Date(t.whenUpdated)
-  } as T;
-}
+import { Injectable } from '@angular/core';
+import { Observable } from "rxjs";
+import { Project } from "../shared/project";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { map } from "rxjs/operators";
+import { PagedList } from "../shared/paged-list";
+import { convertTemporals, convertTemporalsList } from "../shared/mapper-utils";
+import { Aggregate } from "../shared/aggregate";
 
 @Injectable({
   providedIn: 'root'
@@ -36,16 +25,37 @@ export class ProjectService {
       .pipe(
         map((project: Project) => ({
           ...convertTemporals(project),
-          locales: project.locales.map(convertTemporals)
+          locales: convertTemporalsList(project.locales),
+          keys: convertTemporalsList(project.keys)
         }))
       );
   }
 
-  getProjects(options?: {
+  getProjects(username: string, options?: {
     params?: HttpParams | {
       [param: string]: string | string[];
     }
   }): Observable<PagedList<Project>> {
-    return this.http.get<PagedList<Project>>('/api/projects', options);
+    console.log('getProjects', username, options);
+    return this.http
+      .get<PagedList<Project>>(
+        '/api/projects',
+        {
+          params: {
+            owner: username
+          }
+        }
+      )
+      .pipe(
+        map((list: PagedList<Project>) => ({
+          ...list,
+          list: convertTemporalsList(list.list)
+        }))
+      );
+  }
+
+  activity(projectId: string): Observable<PagedList<Aggregate>> {
+    return this.http
+      .get<PagedList<Aggregate>>(`/api/project/${projectId}/activity`);
   }
 }

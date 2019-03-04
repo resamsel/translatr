@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {User} from "../../../../shared/user";
-import {ProjectService} from "../../../../services/project.service";
-import {Observable} from "rxjs";
-import {PagedList} from "../../../../shared/paged-list";
-import {Project} from "../../../../shared/project";
+import { Component, OnInit } from '@angular/core';
+import { User } from "../../../../shared/user";
+import { Observable } from "rxjs";
+import { PagedList } from "../../../../shared/paged-list";
+import { ActivatedRoute } from "@angular/router";
+import { UserService } from "../../../../services/user.service";
+import { Aggregate } from "../../../../shared/aggregate";
 
 @Component({
   selector: 'app-user-info',
@@ -14,16 +14,16 @@ import {Project} from "../../../../shared/project";
 export class UserInfoComponent implements OnInit {
 
   user: User;
-  projects$: Observable<PagedList<Project>>;
+  activity$: Observable<PagedList<Aggregate> | undefined>;
 
-  constructor(private readonly route: ActivatedRoute, private readonly projectService: ProjectService) {
+  constructor(private readonly route: ActivatedRoute, private readonly userService: UserService) {
   }
 
   ngOnInit() {
     this.route.parent.data
       .subscribe((data: { user: User }) => {
         this.user = data.user;
+        this.activity$ = this.userService.activity(data.user.id);
       });
-    this.projects$ = this.projectService.getProjects();
   }
 }

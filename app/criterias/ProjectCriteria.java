@@ -12,6 +12,8 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
 
   private UUID ownerId;
 
+  private String ownerUsername;
+
   private UUID memberId;
 
   private String name;
@@ -30,6 +32,19 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
 
   public ProjectCriteria withOwnerId(UUID ownerId) {
     setOwnerId(ownerId);
+    return this;
+  }
+
+  public String getOwnerUsername() {
+    return ownerUsername;
+  }
+
+  public void setOwnerUsername(String ownerUsername) {
+    this.ownerUsername = ownerUsername;
+  }
+
+  public ProjectCriteria withOwnerUsername(String ownerUsername) {
+    setOwnerUsername(ownerUsername);
     return this;
   }
 
@@ -61,7 +76,7 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
 
   @Override
   protected String getCacheKeyParticle() {
-    return String.format("%s:%s:%s", name, ownerId, memberId);
+    return String.format("%s:%s:%s:%s", name, ownerId, ownerUsername, memberId);
   }
 
   @Override
@@ -103,6 +118,8 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
   }
 
   public static ProjectCriteria from(Request request) {
-    return new ProjectCriteria().with(request);
+    return new ProjectCriteria()
+        .with(request)
+        .withOwnerUsername(request.getQueryString("owner"));
   }
 }

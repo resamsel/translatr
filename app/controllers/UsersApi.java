@@ -111,6 +111,21 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
    * {@inheritDoc}
    */
   @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = @AuthorizationScope(scope = USER_READ, description = USER_READ_DESCRIPTION)))
+  @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.AggregatesPaged.class),
+          @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+          @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+          @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+          required = true, dataType = "string", paramType = "query")})
+  public CompletionStage<Result> activity(@ApiParam(value = USER_ID) UUID id) {
+    return toJson(() -> api.activity(id));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
       scopes = @AuthorizationScope(scope = USER_READ, description = USER_READ_DESCRIPTION)))
   @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.User.class),
       @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),

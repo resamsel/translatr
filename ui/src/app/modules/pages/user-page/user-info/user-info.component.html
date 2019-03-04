@@ -1,12 +1,6 @@
-<div class="container flex">
-  <div class="info">
-    <p i18n="@@temporal.info">
-      Created: {{user?.whenCreated | amTimeAgo}},
-      updated: {{user?.whenUpdated | amTimeAgo}}
-    </p>
-    <mat-chip-list>
-    </mat-chip-list>
-  </div>
-
-  <app-project-list [projects]="projects$ | async"></app-project-list>
-</div>
+<mat-card>
+  <mat-card-title i18n="@@activity">Activity</mat-card-title>
+  <mat-card-content>
+    <app-activity [activity]="activity$ | async"></app-activity>
+  </mat-card-content>
+</mat-card>

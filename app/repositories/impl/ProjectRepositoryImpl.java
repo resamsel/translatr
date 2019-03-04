@@ -75,6 +75,10 @@ public class ProjectRepositoryImpl extends
       query.eq("owner.id", criteria.getOwnerId());
     }
 
+    if (criteria.getOwnerUsername() != null) {
+      query.eq("owner.username", criteria.getOwnerUsername());
+    }
+
     if (criteria.getMemberId() != null) {
       query.eq("members.user.id", criteria.getMemberId());
     }

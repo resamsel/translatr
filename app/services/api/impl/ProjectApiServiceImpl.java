@@ -5,17 +5,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import controllers.Keys;
 import controllers.Locales;
 import controllers.routes;
-import criterias.KeyCriteria;
-import criterias.LocaleCriteria;
-import criterias.ProjectCriteria;
+import criterias.*;
+import dto.DtoPagedList;
 import dto.SearchResponse;
 import dto.Suggestion;
 import forms.SearchForm;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import models.Key;
 import models.Locale;
 import models.Project;
@@ -27,10 +28,7 @@ import play.Configuration;
 import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Http.Context;
-import services.KeyService;
-import services.LocaleService;
-import services.PermissionService;
-import services.ProjectService;
+import services.*;
 import services.api.ProjectApiService;
 
 /**
@@ -45,10 +43,13 @@ public class ProjectApiServiceImpl extends
   private final Configuration configuration;
   private final LocaleService localeService;
   private final KeyService keyService;
+  private final LogEntryService logEntryService;
 
   @Inject
-  protected ProjectApiServiceImpl(Configuration configuration, ProjectService projectService,
-      LocaleService localeService, KeyService keyService, PermissionService permissionService) {
+  protected ProjectApiServiceImpl(
+      Configuration configuration, ProjectService projectService,
+      LocaleService localeService, KeyService keyService, LogEntryService logEntryService,
+      PermissionService permissionService) {
     super(projectService, dto.Project.class, dto.Project::from,
         new Scope[]{Scope.ProjectRead},
         new Scope[]{Scope.ProjectWrite},
@@ -57,11 +58,19 @@ public class ProjectApiServiceImpl extends
     this.configuration = configuration;
     this.localeService = localeService;
     this.keyService = keyService;
+    this.logEntryService = logEntryService;
   }
 
   @Override
   public dto.Project byOwnerAndName(String username, String name, String... fetches) {
     return dtoMapper.apply(service.byOwnerAndName(username, name, fetches));
+  }
+
+  @Override
+  public PagedList<dto.Aggregate> activity(UUID id) {
+    return new DtoPagedList<>(
+        HasNextPagedList.create(logEntryService.getAggregates(new LogEntryCriteria().withProjectId(id))),
+        dto.Aggregate::from);
   }
 
   /**

@@ -1,7 +1,9 @@
 package services.api;
 
+import com.avaje.ebean.PagedList;
 import com.google.inject.ImplementedBy;
 import criterias.UserCriteria;
+import dto.Aggregate;
 import dto.User;
 import java.util.UUID;
 import services.api.impl.UserApiServiceImpl;
@@ -13,6 +15,8 @@ import services.api.impl.UserApiServiceImpl;
 @ImplementedBy(UserApiServiceImpl.class)
 public interface UserApiService extends ApiService<User, UUID, UserCriteria> {
     User byUsername(String username, String... propertiesToFetch);
+
+    PagedList<Aggregate> activity(UUID userId);
 
     User me();
 }

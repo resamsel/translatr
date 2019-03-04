@@ -1,9 +1,16 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {MainPageComponent} from "./main-page.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { MainPageComponent } from "./main-page.component";
+import { AuthResolverService } from "../../../services/auth-resolver.service";
 
 const routes: Routes = [
-  {path: '', component: MainPageComponent}
+  {
+    path: '',
+    component: MainPageComponent,
+    resolve: {
+      me: AuthResolverService
+    }
+  }
 ];
 
 @NgModule({

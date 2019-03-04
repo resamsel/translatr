@@ -13,6 +13,7 @@ GET		/projects/search			controllers.Projects.search
 GET		/api/projects				controllers.ProjectsApi.find
 GET		/api/project/:id/search		controllers.ProjectsApi.search(id: java.util.UUID)
 GET		/api/project/:projectId		controllers.ProjectsApi.get(projectId: java.util.UUID, fetch: String ?= "")
+GET     /api/project/:projectId/activity  controllers.ProjectsApi.activity(projectId: java.util.UUID)
 POST	/api/project				controllers.ProjectsApi.create
 PUT		/api/project				controllers.ProjectsApi.update
 DELETE	/api/project/:projectId		controllers.ProjectsApi.delete(projectId: java.util.UUID)
@@ -38,8 +39,9 @@ PUT		/api/message				controllers.TranslationsApi.update
 DELETE	/api/message/:messageId		controllers.TranslationsApi.delete(messageId: java.util.UUID)
 
 GET		/api/users					controllers.UsersApi.find
-GET		/api/user/:userId			controllers.UsersApi.get(userId: java.util.UUID)
 GET     /api/me                     controllers.UsersApi.me
+GET		/api/user/:userId			controllers.UsersApi.get(userId: java.util.UUID)
+GET     /api/user/:userId/activity  controllers.UsersApi.activity(userId: java.util.UUID)
 # Disable updating users for the moment
 #PUT		/api/user				controllers.UsersApi.update
 

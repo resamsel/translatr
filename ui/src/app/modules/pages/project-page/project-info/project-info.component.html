@@ -14,6 +14,9 @@
 
   <mat-card>
     <mat-card-title i18n="@@activity">Activity</mat-card-title>
+    <mat-card-content>
+      <app-activity [activity]="activity$ | async"></app-activity>
+    </mat-card-content>
   </mat-card>
   <mat-card class="small">
     <mat-card-title i18n="@@locales">Languages</mat-card-title>

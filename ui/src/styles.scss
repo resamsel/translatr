@@ -111,11 +111,13 @@ pre[class*="language-"]:before {
   }
 }
 
-.mat-tab-nav-bar .container {
-  padding: 0;
+.mat-tab-nav-bar {
+  .container {
+    padding: 0;
 
-  > :not(last-child) {
-    margin-bottom: 0;
+    > :not(last-child) {
+      margin-bottom: 0;
+    }
   }
 
   .mat-icon {

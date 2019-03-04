@@ -132,6 +132,21 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
     /**
      * {@inheritDoc}
      */
+    @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
+        scopes = @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)))
+    @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.AggregatesPaged.class),
+        @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+        @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+        @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+    @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+        required = true, dataType = "string", paramType = "query")})
+    public CompletionStage<Result> activity(@ApiParam(value = PROJECT_ID) UUID id) {
+        return toJson(() -> api.activity(id));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @ApiOperation(value = CREATE, authorizations = @Authorization(value = AUTHORIZATION, scopes = {
             @AuthorizationScope(scope = PROJECT_WRITE, description = PROJECT_WRITE_DESCRIPTION)}))
     @ApiResponses({@ApiResponse(code = 200, message = CREATE_RESPONSE, response = dto.Project.class),

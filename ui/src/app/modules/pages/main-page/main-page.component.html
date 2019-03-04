@@ -15,9 +15,14 @@
   </div>
 </div>
 
-<button mat-fab color="accent" [routerLink]="['/projects']" class="floating-action-btn pin-top">
+<a
+  *ngIf="me"
+  mat-fab
+  color="accent"
+  [routerLink]="['/', me?.username]"
+  class="floating-action-btn pin-top">
   <mat-icon>view_quilt</mat-icon>
-</button>
+</a>
 
 <div class="container">
   <div class="section intro">

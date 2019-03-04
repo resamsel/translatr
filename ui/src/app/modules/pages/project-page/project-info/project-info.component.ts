@@ -3,6 +3,12 @@ import {Project} from "../../../../shared/project";
 import {ActivatedRoute} from "@angular/router";
 import {Locale} from "../../../../shared/locale";
 import {Key} from "../../../../shared/key";
+import { Observable } from "rxjs";
+import { PagedList } from "../../../../shared/paged-list";
+import { Aggregate } from "../../../../shared/aggregate";
+import { UserService } from "../../../../services/user.service";
+import { User } from "../../../../shared/user";
+import { ProjectService } from "../../../../services/project.service";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,14 +19,16 @@ import {Key} from "../../../../shared/key";
 export class ProjectInfoComponent implements OnInit {
 
   project: Project;
+  activity$: Observable<PagedList<Aggregate> | undefined>;
 
-  constructor(private readonly route: ActivatedRoute) {
+  constructor(private readonly route: ActivatedRoute, private readonly projectService: ProjectService) {
   }
 
   ngOnInit() {
     this.route.parent.data
       .subscribe((data: { project: Project }) => {
         this.project = data.project;
+        this.activity$ = this.projectService.activity(data.project.id);
       });
   }
 

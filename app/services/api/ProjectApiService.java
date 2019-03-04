@@ -1,7 +1,9 @@
 package services.api;
 
+import com.avaje.ebean.PagedList;
 import com.google.inject.ImplementedBy;
 import criterias.ProjectCriteria;
+import dto.Aggregate;
 import dto.Project;
 import dto.SearchResponse;
 import forms.SearchForm;
@@ -16,6 +18,8 @@ import services.api.impl.ProjectApiServiceImpl;
 public interface ProjectApiService extends ApiService<Project, UUID, ProjectCriteria> {
 
   Project byOwnerAndName(String username, String name, String... fetches);
+
+  PagedList<Aggregate> activity(UUID userId);
 
   /**
    * @param projectId
