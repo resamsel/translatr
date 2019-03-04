@@ -1,10 +1,12 @@
 <app-sidenav>
   <header>
-    <div class="container breadcrumbs">
-      <mat-icon>view_quilt</mat-icon>
-      <a [routerLink]="['/', project?.ownerUsername]">{{project?.ownerUsername}}</a>
-      <span>/</span>
-      <a [routerLink]="['/', project?.ownerUsername, project?.name]">{{project?.name}}</a>
+    <div class="container">
+      <div class="breadcrumbs">
+        <mat-icon>view_quilt</mat-icon>
+        <a [routerLink]="['/', project?.ownerUsername]">{{project?.ownerUsername}}</a>
+        <span>/</span>
+        <a [routerLink]="['/', project?.ownerUsername, project?.name]">{{project?.name}}</a>
+      </div>
     </div>
 
     <nav mat-tab-nav-bar color="accent" position="0">

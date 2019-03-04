@@ -41,6 +41,10 @@ a.mat-button:hover,
   > :not(last-child) {
     margin-bottom: 8px;
   }
+
+  > .breadcrumbs {
+    margin-bottom: 0;
+  }
 }
 
 .flex-spacer {
@@ -127,8 +131,11 @@ pre[class*="language-"]:before {
   font-size: 18px;
 
   .mat-icon {
-    font-size: inherit;
+    font-size: 24px;
+    margin-right: 4px;
     line-height: inherit;
+    vertical-align: middle;
+    opacity: .6;
   }
 
   > span {
