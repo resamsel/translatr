@@ -7,6 +7,8 @@
       <p *ngIf="project as project" i18n="@@temporal.info">Created: {{project.whenCreated | amTimeAgo}},
         updated: {{project.whenUpdated | amTimeAgo}}</p>
       <mat-chip-list>
+        <mat-chip i18n="@@keys.summary">{{project?.keys?.length}} keys</mat-chip>
+        <mat-chip i18n="@@locales.summary">{{project?.locales?.length}} languages</mat-chip>
         <mat-chip *ngFor="let member of project?.members">{{member.userName}} ({{member.role}})
         </mat-chip>
       </mat-chip-list>

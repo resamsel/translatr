@@ -12,7 +12,7 @@ import {SidenavModule} from "./modules/nav/sidenav/sidenav.module";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

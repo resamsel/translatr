@@ -16,9 +16,11 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
+
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
+
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
@@ -53,7 +55,7 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
 
   @Inject
   public UsersApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-      UserApiService userApiService) {
+                  UserApiService userApiService) {
     super(injector, cache, auth, userApiService);
   }
 
@@ -92,13 +94,13 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
    * {@inheritDoc}
    */
   @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
-          scopes = @AuthorizationScope(scope = USER_READ, description = USER_READ_DESCRIPTION)))
+      scopes = @AuthorizationScope(scope = USER_READ, description = USER_READ_DESCRIPTION)))
   @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.User.class),
-          @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
-          @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
-          @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
-          required = true, dataType = "string", paramType = "query")})
+      required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> me() {
     return toJson(api::me);
   }
