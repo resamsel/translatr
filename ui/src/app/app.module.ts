@@ -11,6 +11,7 @@ import { SidenavModule } from "./modules/nav/sidenav/sidenav.module";
 import { UserPageModule } from "./modules/pages/user-page/user-page.module";
 import { HttpClientModule } from "@angular/common/http";
 import { ActivityComponent } from './modules/shared/activity/activity.component';
+import { ProjectsPageModule } from "./modules/pages/projects-page/projects-page.module";
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { ActivityComponent } from './modules/shared/activity/activity.component'
     HttpClientModule,
     SidenavModule,
     MainPageModule,
+    ProjectsPageModule,
     UserPageModule,
     ProjectPageModule,
     LayoutModule,

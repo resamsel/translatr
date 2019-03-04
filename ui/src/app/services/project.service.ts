@@ -31,7 +31,7 @@ export class ProjectService {
       );
   }
 
-  getProjects(username: string, options?: {
+  getProjects(username?: string, options?: {
     params?: HttpParams | {
       [param: string]: string | string[];
     }
@@ -40,11 +40,11 @@ export class ProjectService {
     return this.http
       .get<PagedList<Project>>(
         '/api/projects',
-        {
+        username !== undefined ? {
           params: {
             owner: username
           }
-        }
+        } : options
       )
       .pipe(
         map((list: PagedList<Project>) => ({
