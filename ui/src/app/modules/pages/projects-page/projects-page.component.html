@@ -3,4 +3,12 @@
     <h2>Projects</h2>
     <app-project-list [projects]="projects$ | async"></app-project-list>
   </div>
+
+  <button
+    mat-fab
+    color="accent"
+    class="floating-action-btn pin-bottom"
+    (click)="openProjectCreationDialog()">
+    <mat-icon>add</mat-icon>
+  </button>
 </app-sidenav>

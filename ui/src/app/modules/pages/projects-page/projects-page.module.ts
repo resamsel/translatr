@@ -4,6 +4,8 @@ import { CommonModule } from "@angular/common";
 import { ProjectsPageRoutingModule } from "./projects-page-routing.module";
 import { SidenavModule } from "../../nav/sidenav/sidenav.module";
 import { ProjectListModule } from "../../shared/project-list/project-list.module";
+import {MatButtonModule, MatDialogModule, MatIconModule} from "@angular/material";
+import {ProjectCreationDialogModule} from "../../shared/project-creation-dialog/project-creation-dialog.module";
 
 @NgModule({
   declarations: [
@@ -11,9 +13,13 @@ import { ProjectListModule } from "../../shared/project-list/project-list.module
   ],
   imports: [
     ProjectsPageRoutingModule,
+    ProjectCreationDialogModule,
     CommonModule,
     SidenavModule,
-    ProjectListModule
+    ProjectListModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule
   ]
 })
 export class ProjectsPageModule {

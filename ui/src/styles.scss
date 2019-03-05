@@ -104,10 +104,23 @@ pre[class*="language-"]:before {
   float: right;
   z-index: 1;
 
-  &.pin-top {
+  &.pin-top,
+  &.pin-bottom {
     position: relative;
-    top: -28px;
     right: 32px;
+  }
+
+  &.pin-top {
+    top: -28px;
+  }
+
+  &.pin-bottom {
+    position: absolute;
+    bottom: 32px;
+  }
+
+  &.mat-fab .mat-icon {
+    color: #fff;
   }
 }
 
@@ -148,4 +161,8 @@ pre[class*="language-"]:before {
   > :last-child {
     font-weight: bold;
   }
+}
+
+.mat-dialog-actions {
+  justify-content: flex-end;
 }

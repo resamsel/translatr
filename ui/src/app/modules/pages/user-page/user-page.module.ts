@@ -4,7 +4,14 @@ import { CommonModule } from '@angular/common';
 import { UserPageRoutingModule } from './user-page-routing.module';
 import { UserPageComponent } from './user-page.component';
 import { UserProjectsComponent } from './user-projects/user-projects.component';
-import { MatCardModule, MatChipsModule, MatIconModule, MatTabsModule } from "@angular/material";
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatChipsModule,
+  MatDialogModule,
+  MatIconModule,
+  MatTabsModule
+} from "@angular/material";
 import { RouterModule } from "@angular/router";
 import { SidenavModule } from "../../nav/sidenav/sidenav.module";
 import { MomentModule } from "ngx-moment";
@@ -26,8 +33,10 @@ import { ActivityModule } from "../../shared/activity/activity.module";
     MatTabsModule,
     MatChipsModule,
     MatCardModule,
+    MatButtonModule,
     MomentModule,
-    GravatarModule
+    GravatarModule,
+    MatDialogModule
   ]
 })
 export class UserPageModule {

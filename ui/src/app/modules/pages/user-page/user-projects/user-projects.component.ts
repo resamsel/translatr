@@ -5,6 +5,9 @@ import { ProjectService } from "../../../../services/project.service";
 import { Observable } from "rxjs";
 import { PagedList } from "../../../../shared/paged-list";
 import { Project } from "../../../../shared/project";
+import {ProjectCreationDialogComponent} from "../../../shared/project-creation-dialog/project-creation-dialog.component";
+import {take} from "rxjs/operators";
+import {MatDialog} from "@angular/material";
 
 @Component({
   selector: 'app-user-projects',
@@ -16,7 +19,11 @@ export class UserProjectsComponent implements OnInit {
   user: User;
   projects$: Observable<PagedList<Project>>;
 
-  constructor(private readonly route: ActivatedRoute, private readonly projectService: ProjectService) {
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly projectService: ProjectService,
+    private readonly dialog: MatDialog
+  ) {
   }
 
   ngOnInit() {
@@ -24,7 +31,18 @@ export class UserProjectsComponent implements OnInit {
       .subscribe((data: { user: User }) => {
         console.log('parent.data', data);
         this.user = data.user;
-        this.projects$ = this.projectService.getProjects(data.user.username);
+        this.loadProjects();
       });
+  }
+
+  private loadProjects(): void {
+    this.projects$ = this.projectService.getProjects(this.user.username);
+  }
+
+  openProjectCreationDialog(): void {
+    const ref = this.dialog.open(ProjectCreationDialogComponent);
+    ref.afterClosed()
+      .pipe(take(1))
+      .subscribe(() => this.loadProjects());
   }
 }
