@@ -1,7 +1,8 @@
-import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
-import {FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms";
-import {MatDialogRef, MatSnackBar} from "@angular/material";
-import {ProjectService} from "../../../services/project.service";
+import { Component, ElementRef, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
+import { MatDialogRef, MatSnackBar } from "@angular/material";
+import { ProjectService } from "../../../services/project.service";
+import { Project } from "../../../shared/project";
 
 const ENTER_KEYCODE = 'Enter';
 
@@ -29,7 +30,7 @@ export class ProjectCreationDialogComponent implements OnInit {
 
   form = new FormGroup({
     'name': new FormControl('', [
-      Validators.minLength(1),
+      Validators.required,
       Validators.pattern('[a-zA-Z0-9_\.-]+')
     ])
   });
@@ -42,35 +43,41 @@ export class ProjectCreationDialogComponent implements OnInit {
   constructor(
     private readonly snackBar: MatSnackBar,
     private readonly projectService: ProjectService,
-    private readonly dialogRef: MatDialogRef<ProjectCreationDialogComponent>) {
+    private readonly dialogRef: MatDialogRef<ProjectCreationDialogComponent>
+  ) {
   }
 
   ngOnInit() {
-    // this.nameFormControl.statusChanges();
+    this.nameFormControl
+      .statusChanges
+      .subscribe(status => console.log('status', status, this.processing));
   }
 
   public onSave(): void {
     this.processing = true;
     this.projectService.create(this.form.value)
       .subscribe(
-        () => this.onCreated(),
-        (res: {error: Error}) => {
+        () => this.onCreated(this.form.value),
+        (res: { error: Error }) => {
           console.error(res);
+          this.processing = false;
+
           this.nameFormControl
             .setErrors(res.error.error.violations.reduce(
               (prev: ValidationErrors, violation: Violation) => ({...prev, [violation.field]: violation.message}),
               {}));
-        },
-        () => this.processing = false
+          this.nameFormControl.markAsTouched();
+        }
       );
   }
 
   log = console.log;
 
-  private onCreated(): void {
+  private onCreated(project: Project): void {
+    this.processing = false;
     this.dialogRef.close();
     this.snackBar.open(
-      'Project has been created',
+      `Project ${project.name} has been created`,
       'Dismiss',
       {duration: 3000}
     );

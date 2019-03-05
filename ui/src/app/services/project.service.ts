@@ -6,6 +6,7 @@ import { map } from "rxjs/operators";
 import { PagedList } from "../shared/paged-list";
 import { convertTemporals, convertTemporalsList } from "../shared/mapper-utils";
 import { Aggregate } from "../shared/aggregate";
+import { Activity } from "../shared/activity";
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,6 @@ export class ProjectService {
       [param: string]: string | string[];
     }
   }): Observable<PagedList<Project>> {
-    console.log('getProjects', username, options);
     return this.http
       .get<PagedList<Project>>(
         '/api/projects',
@@ -62,5 +62,9 @@ export class ProjectService {
   create(project: { name: string }): Observable<Project> {
     return this.http
       .post<Project>('/api/project', project);
+  }
+
+  activityList(projectId: string): Observable<PagedList<Activity>> {
+    return this.http.get<PagedList<Activity>>('/api/activities', {params: {projectId}});
   }
 }

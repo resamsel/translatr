@@ -21,9 +21,11 @@ import { ProjectMembersComponent } from './project-members/project-members.compo
 import { MemberListComponent } from './project-members/member-list/member-list.component';
 import {GravatarModule} from "ngx-gravatar";
 import { ActivityModule } from "../../shared/activity/activity.module";
+import { ProjectActivityComponent } from './project-activity/project-activity.component';
+import { ActivityListComponent } from './project-activity/activity-list/activity-list.component';
 
 @NgModule({
-  declarations: [ProjectPageComponent, ProjectInfoComponent, ProjectKeysComponent, KeyListComponent, ProjectLocalesComponent, LocaleListComponent, ProjectMembersComponent, MemberListComponent],
+  declarations: [ProjectPageComponent, ProjectInfoComponent, ProjectKeysComponent, KeyListComponent, ProjectLocalesComponent, LocaleListComponent, ProjectMembersComponent, MemberListComponent, ProjectActivityComponent, ActivityListComponent],
   imports: [
     ProjectPageRoutingModule,
     CommonModule,

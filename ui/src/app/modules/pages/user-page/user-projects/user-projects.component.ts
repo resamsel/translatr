@@ -29,7 +29,6 @@ export class UserProjectsComponent implements OnInit {
   ngOnInit() {
     this.route.parent.data
       .subscribe((data: { user: User }) => {
-        console.log('parent.data', data);
         this.user = data.user;
         this.loadProjects();
       });

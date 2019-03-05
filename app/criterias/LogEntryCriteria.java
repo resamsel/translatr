@@ -1,7 +1,10 @@
 package criterias;
 
 import forms.ActivitySearchForm;
+import play.mvc.Http;
+
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -37,6 +40,15 @@ public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCrit
 
   public static LogEntryCriteria from(ActivitySearchForm form) {
     return new LogEntryCriteria().with(form);
+  }
+
+  public static LogEntryCriteria from(Http.Request request) {
+    return new LogEntryCriteria()
+        .with(request)
+        .withProjectId(
+            Optional.ofNullable(request.getQueryString("projectId"))
+                .map(UUID::fromString)
+                .orElse(null));
   }
 
   @Override
