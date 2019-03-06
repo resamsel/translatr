@@ -1,0 +1,11 @@
+a.more {
+  &:hover {
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+  }
+
+  ::ng-deep .mat-list-item-content {
+    justify-content: center;
+  }
+}

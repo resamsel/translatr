@@ -14,6 +14,7 @@ export interface Activity {
   userId: string;
   userName: string;
   userUsername: string;
+  userEmail: string;
   projectId: string;
   projectName: string;
   before: string;

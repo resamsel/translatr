@@ -61,7 +61,8 @@ a.mat-button:hover,
 }
 
 .mat-list-base {
-  &.mat-nav-list {
+  &.mat-nav-list,
+  &.mat-list {
     padding-top: 0;
   }
 

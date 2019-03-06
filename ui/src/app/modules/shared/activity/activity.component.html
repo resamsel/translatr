@@ -1,3 +1,5 @@
 <ol>
   <li *ngFor="let item of activity?.list">{{item.date}}: {{item.value}}</li>
 </ol>
+
+<app-frappe-chart [data]="data"></app-frappe-chart>

@@ -31,6 +31,14 @@
           <mat-icon>view_quilt</mat-icon>
           Projects
         </a>
+        <a mat-tab-link
+           [routerLink]="['/', user?.username, 'activity']"
+           routerLinkActive
+           #activityLink="routerLinkActive"
+           [active]="activityLink.isActive">
+          <mat-icon>change_history</mat-icon>
+          Activity
+        </a>
       </nav>
 
       <router-outlet></router-outlet>

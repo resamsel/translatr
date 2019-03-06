@@ -13,6 +13,7 @@ public class Activity extends Dto {
   public UUID userId;
   public String userName;
   public String userUsername;
+  public String userEmail;
   public UUID projectId;
   public String projectName;
   public String before;
@@ -27,6 +28,7 @@ public class Activity extends Dto {
       this.userId = in.user.id;
       this.userName = in.user.name;
       this.userUsername = in.user.username;
+      this.userEmail = in.user.email;
     }
     if (in.project != null) {
       this.projectId = in.project.id;

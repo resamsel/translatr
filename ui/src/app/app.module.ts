@@ -13,9 +13,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {ProjectsPageModule} from "./modules/pages/projects-page/projects-page.module";
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

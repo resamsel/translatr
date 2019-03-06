@@ -1,0 +1,21 @@
+<mat-list *ngIf="activities; else empty" class="mat-elevation-z2">
+  <mat-list-item *ngFor="let activity of activities.list; trackBy: trackByFn">
+    <img class="icon" matListIcon ngxGravatar [email]="activity.userEmail" size="36">
+    <h3 matLine>
+      <a class="user-name" [routerLink]="['/', activity.userUsername]">{{activity.userName}}</a>
+      <ng-container [ngSwitch]="activity.type">
+        <span *ngSwitchCase="'Create'" class="type" i18n> created {{activity.contentType.replace('dto.', '')}}</span>
+        <span *ngSwitchCase="'Update'" class="type" i18n> updated {{activity.contentType.replace('dto.', '')}}</span>
+        <span *ngSwitchCase="'Delete'" class="type" i18n> deleted {{activity.contentType.replace('dto.', '')}}</span>
+        <span *ngSwitchCase="'Login'" class="type" i18n> logged in</span>
+        <span *ngSwitchCase="'Logout'" class="type" i18n> logged out</span>
+      </ng-container>
+    </h3>
+    <p matLine title="{{activity.whenCreated | date:'full'}}">{{activity.whenCreated | amTimeAgo}}</p>
+  </mat-list-item>
+  <a mat-list-item class="more" *ngIf="activities?.hasNext" (click)="loadMore()">
+    More
+  </a>
+</mat-list>
+
+<ng-template #empty i18n="@@empty.activities">No activities</ng-template>

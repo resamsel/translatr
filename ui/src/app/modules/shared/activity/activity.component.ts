@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { Aggregate } from "../../../shared/aggregate";
-import { PagedList } from "../../../shared/paged-list";
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {Aggregate} from "../../../shared/aggregate";
+import {PagedList} from "../../../shared/paged-list";
 
 interface DataPoint {
   name: string;
@@ -23,6 +23,19 @@ interface Data {
 export class ActivityComponent implements OnInit {
 
   @Input() activity: PagedList<Aggregate>;
+
+  data: [
+    {
+      title: "Some Data",
+      color: "light-blue",
+      values: [25, 40, 30, 35, 8, 52, 17, -4]
+    },
+    {
+      title: "Another Set",
+      color: "violet",
+      values: [25, 50, -10, 15, 18, 32, 27, 14]
+    }
+    ];
 
   constructor() {
   }

@@ -5,6 +5,7 @@ import { UserResolverService } from "./user-resolver.service";
 import { UserProjectsComponent } from "./user-projects/user-projects.component";
 import { AuthResolverService } from "../../../services/auth-resolver.service";
 import { UserInfoComponent } from "./user-info/user-info.component";
+import {UserActivityComponent} from "./user-activity/user-activity.component";
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
       {
         path: 'projects',
         component: UserProjectsComponent
+      },
+      {
+        path: 'activity',
+        component: UserActivityComponent
       }
     ]
   }

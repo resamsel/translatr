@@ -63,8 +63,4 @@ export class ProjectService {
     return this.http
       .post<Project>('/api/project', project);
   }
-
-  activityList(projectId: string): Observable<PagedList<Activity>> {
-    return this.http.get<PagedList<Activity>>('/api/activities', {params: {projectId}});
-  }
 }
