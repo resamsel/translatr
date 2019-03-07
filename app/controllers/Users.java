@@ -129,7 +129,7 @@ public class Users extends AbstractController {
 
   public CompletionStage<Result> activityCsv(String username) {
     return user(username, user -> ok(new ActivityCsvConverter()
-        .apply(logEntryService.getAggregates(new LogEntryCriteria().withUserId(user.id)))), true);
+        .apply(logEntryService.getAggregates(new LogEntryCriteria().withUserId(user.id)).getList())), true);
   }
 
   public CompletionStage<Result> linkedAccounts(String username) {

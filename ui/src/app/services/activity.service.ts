@@ -1,8 +1,12 @@
-import {Injectable} from '@angular/core';
-import {Observable} from "rxjs";
-import {PagedList} from "../shared/paged-list";
-import {Activity} from "../shared/activity";
-import {HttpClient} from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import { Observable } from "rxjs";
+import { PagedList } from "../shared/paged-list";
+import { Activity } from "../shared/activity";
+import { HttpClient } from "@angular/common/http";
+import { Aggregate } from "../shared/aggregate";
+import { map } from "rxjs/operators";
+import { Project } from "../shared/project";
+import { convertTemporalsList } from "../shared/mapper-utils";
 
 export interface ActivityCriteria {
   userId?: string;
@@ -25,5 +29,18 @@ export class ActivityService {
       '/api/activities',
       {params: criteria as { [param: string]: string | string[]; }}
     );
+  }
+
+  aggregated(criteria: ActivityCriteria): Observable<PagedList<Aggregate>> {
+    return this.http.get<PagedList<Aggregate>>(
+      '/api/activities/aggregated',
+      {params: criteria as { [param: string]: string | string[]; }}
+    )
+      .pipe(
+        map((list: PagedList<Aggregate>) => ({
+          ...list,
+          list: list.list.map((aggregate: Aggregate) => ({...aggregate, date: new Date(aggregate.date)}))
+        }))
+      );
   }
 }

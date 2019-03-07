@@ -90,7 +90,7 @@ public class Application extends AbstractController {
 
   public CompletionStage<Result> activityCsv() {
     return tryCatch(() -> ok(
-        new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria()))));
+        new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria()).getList())));
   }
 
   public CompletionStage<Result> commandExecute(String commandKey) {

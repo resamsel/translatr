@@ -9,6 +9,7 @@ import { Aggregate } from "../../../../shared/aggregate";
 import { UserService } from "../../../../services/user.service";
 import { User } from "../../../../shared/user";
 import { ProjectService } from "../../../../services/project.service";
+import { ActivityService } from "../../../../services/activity.service";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,14 +22,17 @@ export class ProjectInfoComponent implements OnInit {
   project: Project;
   activity$: Observable<PagedList<Aggregate> | undefined>;
 
-  constructor(private readonly route: ActivatedRoute, private readonly projectService: ProjectService) {
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly projectService: ProjectService,
+    private readonly activityService: ActivityService) {
   }
 
   ngOnInit() {
     this.route.parent.data
       .subscribe((data: { project: Project }) => {
         this.project = data.project;
-        this.activity$ = this.projectService.activity(data.project.id);
+        this.activity$ = this.activityService.aggregated({projectId: data.project.id});
       });
   }
 

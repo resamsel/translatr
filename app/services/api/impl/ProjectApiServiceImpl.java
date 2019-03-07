@@ -69,7 +69,7 @@ public class ProjectApiServiceImpl extends
   @Override
   public PagedList<dto.Aggregate> activity(UUID id) {
     return new DtoPagedList<>(
-        HasNextPagedList.create(logEntryService.getAggregates(new LogEntryCriteria().withProjectId(id))),
+        logEntryService.getAggregates(new LogEntryCriteria().withProjectId(id)),
         dto.Aggregate::from);
   }
 

@@ -415,7 +415,7 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> activityCsvBy(String username, String projectName) {
     return project(username, projectName, (user, project) -> ok(new ActivityCsvConverter()
-        .apply(logEntryService.getAggregates(new LogEntryCriteria().withProjectId(project.id)))));
+        .apply(logEntryService.getAggregates(new LogEntryCriteria().withProjectId(project.id)).getList())));
   }
 
   public CompletionStage<Result> wordCountResetBy(String username, String projectName) {

@@ -2,12 +2,10 @@ package services.impl;
 
 import static utils.Stopwatch.log;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.RawSql;
-import com.avaje.ebean.RawSqlBuilder;
+import com.avaje.ebean.*;
 import criterias.LogEntryCriteria;
-import java.util.List;
+
+import java.util.Optional;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -52,9 +50,13 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
   }
 
   @Override
-  public List<Aggregate> getAggregates(LogEntryCriteria criteria) {
+  public PagedList<Aggregate> getAggregates(LogEntryCriteria criteria) {
     ExpressionList<Aggregate> query =
-        Ebean.find(Aggregate.class).setRawSql(getAggregatesRawSql()).where();
+        Ebean.find(Aggregate.class)
+            .setRawSql(getAggregatesRawSql())
+            .setMaxRows(Optional.ofNullable(criteria.getLimit()).orElse(1000))
+            .setFirstRow(Optional.ofNullable(criteria.getOffset()).orElse(0))
+            .where();
 
     if (criteria.getProjectId() != null) {
       query.eq("project_id", criteria.getProjectId());
@@ -71,7 +73,7 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
     return log(
         () -> cache.getOrElse(
             cacheKey,
-            query::findList,
+            query::findPagedList,
             60
         ),
         LOGGER,

@@ -1,7 +1,12 @@
 package services.api.impl;
 
+import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
+import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
+import dto.Activity;
+import dto.DtoPagedList;
+import models.Aggregate;
 import models.LogEntry;
 import models.Scope;
 import play.libs.Json;
@@ -29,6 +34,11 @@ public class ActivityApiServiceImpl extends
         new Scope[]{Scope.ProjectRead},
         new Scope[]{Scope.ProjectWrite},
         permissionService);
+  }
+
+  @Override
+  public PagedList<dto.Aggregate> getAggregates(LogEntryCriteria criteria) {
+    return new DtoPagedList<>(service.getAggregates(criteria), dto.Aggregate::from);
   }
 
   /**

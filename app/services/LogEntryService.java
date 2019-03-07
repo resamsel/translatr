@@ -1,8 +1,9 @@
 package services;
 
+import com.avaje.ebean.PagedList;
 import com.google.inject.ImplementedBy;
 import criterias.LogEntryCriteria;
-import java.util.List;
+
 import java.util.UUID;
 import models.Aggregate;
 import models.LogEntry;
@@ -15,7 +16,7 @@ import services.impl.LogEntryServiceImpl;
 @ImplementedBy(LogEntryServiceImpl.class)
 public interface LogEntryService extends ModelService<LogEntry, UUID, LogEntryCriteria> {
 
-  List<Aggregate> getAggregates(LogEntryCriteria criteria);
+  PagedList<Aggregate> getAggregates(LogEntryCriteria criteria);
 
   int countBy(LogEntryCriteria criteria);
 }

@@ -50,7 +50,7 @@ public class UserApiServiceImpl extends
   @Override
   public PagedList<dto.Aggregate> activity(UUID id) {
     return new DtoPagedList<>(
-        HasNextPagedList.create(logEntryService.getAggregates(new LogEntryCriteria().withUserId(id))),
+        logEntryService.getAggregates(new LogEntryCriteria().withUserId(id)),
         dto.Aggregate::from);
   }
 

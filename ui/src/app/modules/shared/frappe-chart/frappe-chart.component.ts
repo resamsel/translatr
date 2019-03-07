@@ -1,35 +1,44 @@
-import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
-import * as frappe from 'frappe-charts';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Heatmap } from 'frappe-charts/dist/frappe-charts.min.esm';
+
+export interface HeatmapData {
+  dataPoints: {[key: string]: number},
+  start: Date,
+  end: Date
+}
 
 @Component({
   selector: 'app-frappe-chart',
-  template: '<div></div>',
-  styleUrls: ['./frappe-chart.component.scss'],
+  template: '<div id="chart"></div>',
   host: {
     class: 'app-frappe-chart'
   }
 })
-export class FrappeChartComponent implements OnChanges {
+export class FrappeChartComponent {
 
   @Input() title: string;
-  @Input() data: any;
-  @Input() type = 'bar';
-  @Input() height = 250;
 
-  @Output() frappe: EventEmitter<any> = new EventEmitter();
+  @Input() set data(data: HeatmapData) {
+    console.log('data', data);
+    if (data === undefined) {
+      return;
+    }
 
-  constructor(private readonly el: ElementRef) {
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    const chart = new frappe.Chart({
-      parent: this.el.nativeElement,
-      title: this.title,
-      region_fill: 1,
-      data: this.data,
-      type: this.type,
-      height: this.height
-    });
+    console.log('chart', data);
+    const chart = new Heatmap(
+      '#chart',
+      {
+        title: this.title,
+        data: data,
+        type: 'heatmap',
+        height: this.height,
+        colors: ['#7cd6fd', '#743ee2']
+      });
     this.frappe.emit(chart);
   }
+
+  @Input() type = 'bar';
+  @Input() height = 160;
+
+  @Output() frappe: EventEmitter<any> = new EventEmitter();
 }

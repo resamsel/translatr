@@ -3,9 +3,9 @@ package controllers;
 import actions.ApiAction;
 import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.LogEntryCriteria;
-import criterias.UserCriteria;
 import dto.Activity;
 import dto.errors.GenericError;
+import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
 import io.swagger.annotations.*;
 import play.inject.Injector;
@@ -23,6 +23,8 @@ import java.util.concurrent.CompletionStage;
 public class ActivitiesApi extends AbstractApi<Activity, UUID, LogEntryCriteria, ActivityApiService> {
   private static final String FIND = "Find activites";
   private static final String FIND_RESPONSE = "Found activities";
+  private static final String ACTIVITY = "Find aggregated activites";
+  private static final String ACTIVITY_RESPONSE = "Found aggregated activities";
 
   private static final String SEARCH = "Part of the contents of the activity";
 
@@ -46,5 +48,19 @@ public class ActivitiesApi extends AbstractApi<Activity, UUID, LogEntryCriteria,
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> find() {
     return toJsons(() -> api.find(LogEntryCriteria.from(request())));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = ACTIVITY, authorizations = @Authorization(value = AUTHORIZATION,
+      scopes = @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)))
+  @ApiResponses({@ApiResponse(code = 200, message = ACTIVITY_RESPONSE, response = dto.AggregatesPaged.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+      required = true, dataType = "string", paramType = "query")})
+  public CompletionStage<Result> activity() {
+    return toJsons(() -> api.getAggregates(LogEntryCriteria.from(request())));
   }
 }
