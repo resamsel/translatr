@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { Aggregate } from "../../../shared/aggregate";
-import { PagedList } from "../../../shared/paged-list";
-import { HeatmapData } from "../frappe-chart/frappe-chart.component";
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {Aggregate} from "../../../shared/aggregate";
+import {PagedList} from "../../../shared/paged-list";
+import {HeatmapData} from "../frappe-chart/frappe-chart.component";
 
 interface DataPoint {
   name: string;
@@ -38,9 +38,7 @@ export class ActivityComponent implements OnInit {
     this.data = {
       dataPoints: activity.list.reduce(
         (data: { [key: string]: number }, value: Aggregate) => {
-          console.log('date', value.date, value.date.getTime().toString());
-          data[value.date.getTime()/1000] = value.value;
-          console.log('loop data', data);
+          data[value.millis / 1000] = value.value;
           return data;
         }, {}),
       start: minusOneYear(new Date()),

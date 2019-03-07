@@ -16,6 +16,10 @@ public class Aggregate extends Dto {
     this.millis = in.millis;
     this.key = in.key;
     this.value = in.value;
+
+    if (this.millis == 0 && in.date != null) {
+      this.millis = in.date.getMillis();
+    }
   }
 
 

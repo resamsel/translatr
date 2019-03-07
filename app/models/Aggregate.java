@@ -1,8 +1,9 @@
 package models;
 
 import com.avaje.ebean.annotation.Sql;
-import javax.persistence.Entity;
 import org.joda.time.DateTime;
+
+import javax.persistence.Entity;
 
 /**
  *

@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Heatmap } from 'frappe-charts/dist/frappe-charts.min.esm';
+import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {Heatmap} from 'frappe-charts/dist/frappe-charts.min.esm';
 
 export interface HeatmapData {
-  dataPoints: {[key: string]: number},
+  dataPoints: { [key: string]: number },
   start: Date,
   end: Date
 }
@@ -10,6 +10,7 @@ export interface HeatmapData {
 @Component({
   selector: 'app-frappe-chart',
   template: '<div id="chart"></div>',
+  styleUrls: ['./frappe-chart.component.scss'],
   host: {
     class: 'app-frappe-chart'
   }
@@ -17,28 +18,28 @@ export interface HeatmapData {
 export class FrappeChartComponent {
 
   @Input() title: string;
+  @Input() height = 160;
 
   @Input() set data(data: HeatmapData) {
-    console.log('data', data);
-    if (data === undefined) {
+    if (!data) {
       return;
     }
 
-    console.log('chart', data);
-    const chart = new Heatmap(
+    this.chart = new Heatmap(
       '#chart',
       {
         title: this.title,
         data: data,
         type: 'heatmap',
         height: this.height,
-        colors: ['#7cd6fd', '#743ee2']
+        colors: ['#dedede', '#d9e38c', '#9bc26d', '#669f4b', '#3d662e'],
+        discreteDomains: 0
       });
-    this.frappe.emit(chart);
+    // this.chart.svg.setAttribute('viewBox', `0 0 716 160`);
+    // this.chart.svg.setAttribute('width', '100%');
+    // this.chart.svg.setAttribute('height', '100%');
+    console.log('chart', this.chart);
   }
 
-  @Input() type = 'bar';
-  @Input() height = 160;
-
-  @Output() frappe: EventEmitter<any> = new EventEmitter();
+  private chart: Heatmap;
 }

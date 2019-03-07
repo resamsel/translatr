@@ -18,4 +18,14 @@
   </a>
 </mat-list>
 
-<ng-template #empty i18n="@@empty.activities">No activities</ng-template>
+<ng-template #empty i18n="@@empty.activities">
+  <mat-list class="empty mat-elevation-z2">
+    <mat-list-item *ngFor="let index of [0,1,2,3,4]">
+      <mat-icon matListIcon class="icon">account_circle</mat-icon>
+      <h3 matLine>
+        <span class="title item-{{index}}"></span>
+      </h3>
+      <p matLine class="subtitle"></p>
+    </mat-list-item>
+  </mat-list>
+</ng-template>

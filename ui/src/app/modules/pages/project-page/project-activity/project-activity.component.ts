@@ -12,7 +12,6 @@ import {ActivityCriteria, ActivityService} from "../../../../services/activity.s
 export class ProjectActivityComponent implements OnInit {
 
   project: Project;
-  activity$;
   activities$;
   private criteria: ActivityCriteria;
 
@@ -27,7 +26,6 @@ export class ProjectActivityComponent implements OnInit {
     this.route.parent.data
       .subscribe((data: { project: Project }) => {
         this.project = data.project;
-        this.activity$ = this.projectService.activity(this.project.id);
         this.criteria = {
           projectId: this.project.id,
           limit: 10

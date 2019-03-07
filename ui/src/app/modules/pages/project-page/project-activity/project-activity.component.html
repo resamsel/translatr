@@ -1,4 +1,3 @@
 <div class="container">
-  <app-activity [activity]="activity$ | async"></app-activity>
   <app-activity-list [activities]="activities$ | async" (more)="onLoadMore($event)"></app-activity-list>
 </div>
