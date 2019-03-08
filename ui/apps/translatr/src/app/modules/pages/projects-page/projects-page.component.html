@@ -1,0 +1,73 @@
+<app-sidenav>
+  <header>
+    <div class="container">
+      <div class="breadcrumbs">
+        <mat-icon>view_quilt</mat-icon>
+        <a [routerLink]="['/', project?.ownerUsername]">{{project?.ownerUsername}}</a>
+        <span>/</span>
+        <a [routerLink]="['/', project?.ownerUsername, project?.name]">{{project?.name}}</a>
+      </div>
+    </div>
+
+    <nav mat-tab-nav-bar color="accent" position="0">
+      <div class="container" routerLinkActive>
+        <a mat-tab-link
+           [routerLink]="['/', project?.ownerUsername, project?.name]"
+           routerLinkActive
+           [routerLinkActiveOptions]="{exact: true}"
+           #projectLink="routerLinkActive"
+           [active]="projectLink.isActive">
+          <mat-icon>view_quilt</mat-icon>
+          Project
+        </a>
+        <a mat-tab-link
+           [routerLink]="['/', project?.ownerUsername, project?.name, 'locales']"
+           routerLinkActive
+           #localesLink="routerLinkActive"
+           [active]="localesLink.isActive">
+          <mat-icon>language</mat-icon>
+          Languages
+        </a>
+        <a mat-tab-link
+           [routerLink]="['/', project?.ownerUsername, project?.name, 'keys']"
+           routerLinkActive
+           #keysLink="routerLinkActive"
+           [active]="keysLink.isActive">
+          <mat-icon>vpn_key</mat-icon>
+          Keys
+        </a>
+        <a mat-tab-link
+           [routerLink]="['/', project?.ownerUsername, project?.name, 'members']"
+           routerLinkActive
+           #membersLink="routerLinkActive"
+           [active]="membersLink.isActive">
+          <mat-icon>group</mat-icon>
+          Members
+        </a>
+        <a mat-tab-link
+           [routerLink]="['/', project?.ownerUsername, project?.name, 'activity']"
+           routerLinkActive
+           #activityLink="routerLinkActive"
+           [active]="activityLink.isActive">
+          <mat-icon>change_history</mat-icon>
+          Activity
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <router-outlet></router-outlet>
+
+  <div class="container">
+    <h2>Projects</h2>
+    <app-project-list [projects]="projects$ | async"></app-project-list>
+  </div>
+
+  <button
+    mat-fab
+    color="accent"
+    class="floating-action-btn pin-bottom"
+    (click)="openProjectCreationDialog()">
+    <mat-icon>add</mat-icon>
+  </button>
+</app-sidenav>

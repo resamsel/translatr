@@ -1,11 +1,11 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
+  "newProjectRoot": "",
   "projects": {
     "translatr": {
-      "root": "",
-      "sourceRoot": "src",
+      "root": "apps/translatr",
+      "sourceRoot": "apps/translatr/src",
       "projectType": "application",
       "prefix": "app",
       "schematics": {
@@ -17,20 +17,20 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/translatr",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.app.json",
+            "outputPath": "dist/apps/translatr",
+            "index": "apps/translatr/src/index.html",
+            "main": "apps/translatr/src/main.ts",
+            "polyfills": "apps/translatr/src/polyfills.ts",
+            "tsConfig": "apps/translatr/tsconfig.app.json",
             "assets": [
-              "src/favicon.png",
-              "src/assets"
+              "apps/translatr/src/favicon.png",
+              "apps/translatr/src/assets"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
-              "src/styles.scss",
-              "src/theme.scss",
-              "src/media.scss"
+              "apps/translatr/src/styles.scss",
+              "apps/translatr/src/theme.scss",
+              "apps/translatr/src/media.scss"
             ],
             "scripts": [],
             "baseHref": "/ui/",
@@ -40,8 +40,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "apps/translatr/src/environments/environment.ts",
+                  "with": "apps/translatr/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -83,20 +83,20 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
+            "main": "apps/translatr/src/test.ts",
+            "polyfills": "apps/translatr/src/polyfills.ts",
+            "tsConfig": "apps/translatr/tsconfig.spec.json",
+            "karmaConfig": "apps/translatr/karma.conf.js",
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
-              "src/styles.scss",
-              "src/theme.scss",
-              "src/media.scss"
+              "apps/translatr/src/styles.scss",
+              "apps/translatr/src/theme.scss",
+              "apps/translatr/src/media.scss"
             ],
             "scripts": [],
             "assets": [
-              "src/favicon.png",
-              "src/assets"
+              "apps/translatr/src/favicon.png",
+              "apps/translatr/src/assets"
             ]
           }
         },
@@ -104,8 +104,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
+              "apps/translatr/tsconfig.app.json",
+              "apps/translatr/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -115,14 +115,14 @@
       }
     },
     "translatr-e2e": {
-      "root": "e2e/",
+      "root": "apps/translatr-e2e",
       "projectType": "application",
       "prefix": "",
       "architect": {
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
+            "protractorConfig": "apps/translatr-e2e/protractor.conf.js",
             "devServerTarget": "translatr:serve"
           },
           "configurations": {
@@ -134,7 +134,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": "e2e/tsconfig.e2e.json",
+            "tsConfig": "apps/translatr-e2e/tsconfig.e2e.json",
             "exclude": [
               "**/node_modules/**"
             ]
@@ -143,5 +143,8 @@
       }
     }
   },
-  "defaultProject": "translatr"
+  "defaultProject": "translatr",
+  "cli": {
+    "defaultCollection": "@nrwl/schematics"
+  }
 }

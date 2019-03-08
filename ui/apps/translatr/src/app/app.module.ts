@@ -12,6 +12,7 @@ import {UserPageModule} from "./modules/pages/user-page/user-page.module";
 import {HttpClientModule} from "@angular/common/http";
 import {ProjectsPageModule} from "./modules/pages/projects-page/projects-page.module";
 import {UsersPageModule} from "./modules/pages/users-page/users-page.module";
+import { NxModule } from '@nrwl/nx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,7 +29,8 @@ import {UsersPageModule} from "./modules/pages/users-page/users-page.module";
     ProjectPageModule,
     LayoutModule,
     MatToolbarModule,
-    MatButtonModule
+    MatButtonModule,
+    NxModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
