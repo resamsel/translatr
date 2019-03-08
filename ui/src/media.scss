@@ -23,6 +23,17 @@
       margin-right: 8px;
     }
   }
+
+  .mat-sidenav.mat-drawer:not(.mat-drawer-side) {
+    z-index: 1;
+    box-shadow: none;
+    background: transparent;
+    top: 64px;
+  }
+
+  .light-theme .mat-drawer-backdrop.mat-drawer-shown {
+    display: none;
+  }
 }
 
 /*
