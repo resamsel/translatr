@@ -11,6 +11,7 @@ import {SidenavModule} from "./modules/nav/sidenav/sidenav.module";
 import {UserPageModule} from "./modules/pages/user-page/user-page.module";
 import {HttpClientModule} from "@angular/common/http";
 import {ProjectsPageModule} from "./modules/pages/projects-page/projects-page.module";
+import {UsersPageModule} from "./modules/pages/users-page/users-page.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +23,7 @@ import {ProjectsPageModule} from "./modules/pages/projects-page/projects-page.mo
     SidenavModule,
     MainPageModule,
     ProjectsPageModule,
+    UsersPageModule,
     UserPageModule,
     ProjectPageModule,
     LayoutModule,

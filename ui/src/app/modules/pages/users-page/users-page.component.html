@@ -1,0 +1,14 @@
+<app-sidenav>
+  <header class="with-separator">
+    <div class="container">
+      <div class="breadcrumbs">
+        <mat-icon>group</mat-icon>
+        <a routerLink="/users">Contributors</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <app-user-list [users]="users$ | async"></app-user-list>
+  </div>
+</app-sidenav>

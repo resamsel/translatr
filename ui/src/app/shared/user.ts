@@ -1,3 +1,5 @@
+import {Member} from "./member";
+
 export interface User {
   id: string;
   whenCreated: Date;
@@ -5,4 +7,5 @@ export interface User {
   name: string;
   username: string;
   email: string;
+  memberships?: Member[];
 }

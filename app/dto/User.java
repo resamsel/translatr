@@ -1,8 +1,10 @@
 package dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.UUID;
 import org.joda.time.DateTime;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class User extends Dto {
   private static final long serialVersionUID = -3130261034824279541L;
@@ -19,6 +21,8 @@ public class User extends Dto {
 
   public String email;
 
+  public List<ProjectUser> memberships;
+
   /**
    * 
    */
@@ -31,6 +35,10 @@ public class User extends Dto {
     this.name = in.name;
     this.username = in.username;
     this.email = in.email;
+
+    if (in.memberships != null && !in.memberships.isEmpty()) {
+      this.memberships = in.memberships.stream().map(ProjectUser::from).collect(Collectors.toList());
+    }
   }
 
   public models.User toModel(models.User user) {

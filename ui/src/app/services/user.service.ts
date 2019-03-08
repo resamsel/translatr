@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { User } from "../shared/user";
-import { convertTemporals } from "../shared/mapper-utils";
+import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
 import { Aggregate } from "../shared/aggregate";
 import { PagedList } from "../shared/paged-list";
 
@@ -13,6 +13,15 @@ import { PagedList } from "../shared/paged-list";
 export class UserService {
 
   constructor(private readonly http: HttpClient) {
+  }
+
+  getUsers(): Observable<PagedList<User> | undefined> {
+    return this.http
+      .get<PagedList<User>>('/api/users')
+      .pipe(map((list: PagedList<User>) => ({
+        ...list,
+        list: convertTemporalsList(list.list)
+      })));
   }
 
   getUserByName(username: string, options?: {
