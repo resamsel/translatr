@@ -7,7 +7,7 @@
         #name
         type="text"
         placeholder="Project name"
-        i18n-placeholder
+        i18n-placeholder="@@project.name"
         cdkFocusInitial
         [formControl]="nameFormControl">
       <mat-error *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern">Must match pattern [a-zA-Z0-9_.-]*</mat-error>

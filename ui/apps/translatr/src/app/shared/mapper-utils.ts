@@ -4,6 +4,10 @@ export interface Temporal {
 }
 
 export const convertTemporals = <T extends Temporal>(t: T): T => {
+  if (!t) {
+    return t;
+  }
+
   return {
     ...(t as object),
     whenCreated: new Date(t.whenCreated),
@@ -12,8 +16,8 @@ export const convertTemporals = <T extends Temporal>(t: T): T => {
 };
 
 export const convertTemporalsList = <T extends Temporal>(list?: Array<T>): Array<T> | undefined => {
-  if (list === undefined) {
-    return undefined;
+  if (!list) {
+    return list;
   }
 
   return list.map(convertTemporals);

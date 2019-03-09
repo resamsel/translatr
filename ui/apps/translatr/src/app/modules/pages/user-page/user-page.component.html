@@ -1,19 +1,14 @@
 <app-sidenav>
-  <div class="container">
-    <mat-card class="info">
-      <img mat-card-image ngxGravatar [email]="user?.email" [round]="false" [size]="200">
-      <mat-card-content>
-        <h2>{{user?.name}}</h2>
-        <p>{{user?.username}}</p>
-        <mat-chip-list class="mat-chip-list-stacked">
-          <mat-chip>{{user?.email}}</mat-chip>
-          <mat-chip [title]="user?.whenCreated | date">{{user?.whenCreated | amTimeAgo}}</mat-chip>
-        </mat-chip-list>
-      </mat-card-content>
-    </mat-card>
+  <header>
+    <div class="container">
+      <div class="breadcrumbs">
+        <mat-icon>account_circle</mat-icon>
+        <a [routerLink]="['/', user?.username]">{{user?.username}}</a>
+      </div>
+    </div>
 
-    <div class="content">
-      <nav mat-tab-nav-bar color="accent" position="0">
+    <nav mat-tab-nav-bar color="accent">
+      <div class="container" routerLinkActive>
         <a mat-tab-link
            [routerLink]="['/', user?.username]"
            routerLinkActive
@@ -28,7 +23,7 @@
            routerLinkActive
            #projectsLink="routerLinkActive"
            [active]="projectsLink.isActive">
-          <mat-icon>view_quilt</mat-icon>
+          <mat-icon>extension</mat-icon>
           Projects
         </a>
         <a mat-tab-link
@@ -39,9 +34,17 @@
           <mat-icon>change_history</mat-icon>
           Activity
         </a>
-      </nav>
+      </div>
+    </nav>
+  </header>
 
+  <div class="container">
+    <app-user-card [user]="user"></app-user-card>
+
+    <div class="content">
       <router-outlet></router-outlet>
     </div>
+
+    <div class="clearfix"></div>
   </div>
 </app-sidenav>

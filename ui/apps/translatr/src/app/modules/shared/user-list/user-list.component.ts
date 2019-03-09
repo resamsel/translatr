@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {PagedList} from "../../../../shared/paged-list";
-import {User} from "../../../../shared/user";
+import {PagedList} from "../../../shared/paged-list";
+import {User} from "../../../shared/user";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

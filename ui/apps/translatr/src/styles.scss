@@ -163,8 +163,8 @@ pre[class*="language-"]:before {
     margin: 0 4px;
   }
 
-  > :last-child {
-    font-weight: bold;
+  > a:last-child {
+    font-weight: 500;
   }
 }
 

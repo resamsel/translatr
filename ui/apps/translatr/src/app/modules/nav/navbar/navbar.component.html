@@ -8,9 +8,21 @@
         (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
-      <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="logo">
+      <a mat-button
+         routerLink="/"
+         class="logo">
         <mat-icon>language</mat-icon>
-        Translatr
+        <span>Translatr</span>
+      </a>
+      <a mat-button
+         routerLink="/projects"
+         class="projects">
+        Projects
+      </a>
+      <a mat-button
+         routerLink="/users"
+         class="users">
+        Contributors
       </a>
       <span *ngIf="page" class="page">{{page}}</span>
       <ng-content></ng-content>

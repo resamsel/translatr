@@ -1,27 +1,19 @@
 import { NgModule } from '@angular/core';
-import { ProjectsPageComponent } from "./projects-page.component";
-import { CommonModule } from "@angular/common";
+import { CommonModule } from '@angular/common';
+import { ProjectsPageComponent } from './projects-page.component';
 import { ProjectsPageRoutingModule } from "./projects-page-routing.module";
+import { MatIconModule } from "@angular/material";
 import { SidenavModule } from "../../nav/sidenav/sidenav.module";
 import { ProjectListModule } from "../../shared/project-list/project-list.module";
-import { MatButtonModule, MatDialogModule, MatIconModule, MatTabsModule } from "@angular/material";
-import {ProjectCreationDialogModule} from "../../shared/project-creation-dialog/project-creation-dialog.module";
 
 @NgModule({
-  declarations: [
-    ProjectsPageComponent
-  ],
+  declarations: [ProjectsPageComponent],
   imports: [
-    ProjectsPageRoutingModule,
-    ProjectCreationDialogModule,
     CommonModule,
+    ProjectsPageRoutingModule,
     SidenavModule,
     ProjectListModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatTabsModule
+    MatIconModule
   ]
 })
-export class ProjectsPageModule {
-}
+export class ProjectsPageModule { }

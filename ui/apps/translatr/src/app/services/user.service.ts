@@ -15,9 +15,13 @@ export class UserService {
   constructor(private readonly http: HttpClient) {
   }
 
-  getUsers(): Observable<PagedList<User> | undefined> {
+  getUsers(options?: {
+    params?: HttpParams | {
+      [param: string]: string | string[];
+    }
+  }): Observable<PagedList<User> | undefined> {
     return this.http
-      .get<PagedList<User>>('/api/users')
+      .get<PagedList<User>>('/api/users', options)
       .pipe(map((list: PagedList<User>) => ({
         ...list,
         list: convertTemporalsList(list.list)

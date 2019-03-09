@@ -1,34 +1,24 @@
-import {Component, OnInit} from '@angular/core';
-import {Observable} from "rxjs";
-import {PagedList} from "../../../shared/paged-list";
-import {Project} from "../../../shared/project";
-import {ProjectService} from "../../../services/project.service";
-import {ProjectCreationDialogComponent} from "../../shared/project-creation-dialog/project-creation-dialog.component";
-import {MatDialog} from "@angular/material";
-import {take} from "rxjs/operators";
+import { Component, OnInit } from '@angular/core';
+import { Project } from "../../../shared/project";
+import { ActivatedRoute } from "@angular/router";
+import { PagedList } from "../../../shared/paged-list";
 
 @Component({
   selector: 'app-projects-page',
-  templateUrl: './projects-page.component.html'
+  templateUrl: './projects-page.component.html',
+  styleUrls: ['./projects-page.component.scss']
 })
 export class ProjectsPageComponent implements OnInit {
-  projects$: Observable<PagedList<Project>>;
 
-  constructor(private readonly projectService: ProjectService, private readonly dialog: MatDialog) {
+  projects: PagedList<Project>;
+
+  constructor(private readonly route: ActivatedRoute) {
   }
 
-  ngOnInit(): void {
-    this.loadProjects();
-  }
-
-  loadProjects(): void {
-    this.projects$ = this.projectService.getProjects();
-  }
-
-  openProjectCreationDialog(): void {
-    const ref = this.dialog.open(ProjectCreationDialogComponent);
-    ref.afterClosed()
-      .pipe(take(1))
-      .subscribe(() => this.loadProjects());
+  ngOnInit() {
+    this.route.data
+      .subscribe((data: { projects: PagedList<Project> }) => {
+        this.projects = data.projects;
+      });
   }
 }

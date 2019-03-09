@@ -1,38 +1,11 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" [fixedInViewport]="isHandset$ | async"
-               [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-               [mode]="'over'"
-               [opened]="!(isHandset$ | async)">
-    <mat-toolbar>Menu</mat-toolbar>
-    <mat-nav-list>
-      <a
-        mat-list-item
-        routerLink="/projects"
-        routerLinkActive
-        i18n>Projects</a>
-      <a
-        mat-list-item
-        routerLink="/users"
-        routerLinkActive
-        i18n>Contributors</a>
-      <a
-        mat-list-item
-        routerLink="/profile"
-        routerLinkActive
-        i18n>Profile</a>
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <app-navbar [sidenav]="drawer">
-      <ng-container ngProjectAs="mat-toolbar-row">
-        <ng-content select="mat-toolbar-row"></ng-content>
-      </ng-container>
-    </app-navbar>
+<app-navbar>
+  <ng-container ngProjectAs="mat-toolbar-row">
+    <ng-content select="mat-toolbar-row"></ng-content>
+  </ng-container>
+</app-navbar>
 
-    <div class="main-container">
-      <ng-content></ng-content>
-    </div>
+<div class="main-container">
+  <ng-content></ng-content>
+</div>
 
-    <app-footer></app-footer>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<app-footer></app-footer>

@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Project } from "../../../shared/project";
+import { PagedList } from "../../../../shared/paged-list";
 import { ActivatedRoute } from "@angular/router";
-import { PagedList } from "../../../shared/paged-list";
-import { User } from "../../../shared/user";
+import { User } from "../../../../shared/user";
 
 @Component({
-  selector: 'app-projects-page',
-  templateUrl: './users-page.component.html',
-  styleUrls: ['./users-page.component.scss']
+  selector: 'app-dashboard-users',
+  templateUrl: './dashboard-users.component.html',
+  styleUrls: ['./dashboard-users.component.scss']
 })
-export class UsersPageComponent implements OnInit {
+export class DashboardUsersComponent implements OnInit {
 
   users: PagedList<User>;
 
@@ -19,6 +18,7 @@ export class UsersPageComponent implements OnInit {
   ngOnInit() {
     this.route.data
       .subscribe((data: { users: PagedList<User> }) => {
+        console.log(data);
         this.users = data.users;
       });
   }

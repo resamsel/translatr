@@ -2,14 +2,14 @@
   <header>
     <div class="container">
       <div class="breadcrumbs">
-        <mat-icon>view_quilt</mat-icon>
+        <mat-icon>extension</mat-icon>
         <a [routerLink]="['/', project?.ownerUsername]">{{project?.ownerUsername}}</a>
         <span>/</span>
         <a [routerLink]="['/', project?.ownerUsername, project?.name]">{{project?.name}}</a>
       </div>
     </div>
 
-    <nav mat-tab-nav-bar color="accent" position="0">
+    <nav mat-tab-nav-bar color="accent">
       <div class="container" routerLinkActive>
         <a mat-tab-link
            [routerLink]="['/', project?.ownerUsername, project?.name]"
@@ -17,7 +17,7 @@
            [routerLinkActiveOptions]="{exact: true}"
            #projectLink="routerLinkActive"
            [active]="projectLink.isActive">
-          <mat-icon>view_quilt</mat-icon>
+          <mat-icon>extension</mat-icon>
           Project
         </a>
         <a mat-tab-link

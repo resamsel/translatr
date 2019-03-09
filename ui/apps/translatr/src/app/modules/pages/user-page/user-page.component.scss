@@ -2,19 +2,14 @@ h2 {
   margin: 0;
 }
 
-.info {
-  float: left;
-  width: 168px;
-
-  img {
-    border-radius: 4px 4px 0 0 !important;
-  }
-}
-
 .content {
   margin-left: 232px;
 
   .mat-tab-nav-bar {
     margin-bottom: 16px;
   }
+}
+
+.clearfix {
+  clear: both;
 }

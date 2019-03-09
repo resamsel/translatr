@@ -3,7 +3,7 @@
     <img class="icon" matListIcon ngxGravatar [email]="user.email" size="36">
     <h3 matLine>{{user.name}} <span class="username">{{user.username}}</span></h3>
     <p matLine>
-      <span i18n="@@user.memberships">{user.memberships?.length, plural,
+      <span i18n="@@user.memberships">{user.memberships?.length || 0, plural,
         =0 {Not contributing at the moment}
         =1 {Contributing to one project}
         other {Contributing to {{user.memberships.length}} projects}}</span>

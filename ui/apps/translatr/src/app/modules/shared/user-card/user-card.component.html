@@ -1,0 +1,11 @@
+<mat-card class="info">
+  <img mat-card-image ngxGravatar [email]="user?.email" [round]="false" [size]="200">
+  <mat-card-content>
+    <h2>{{user?.name}}</h2>
+    <p>{{user?.username}}</p>
+    <mat-chip-list class="mat-chip-list-stacked">
+      <mat-chip>{{user?.email}}</mat-chip>
+      <mat-chip [title]="user?.whenCreated | date">{{user?.whenCreated | amTimeAgo}}</mat-chip>
+    </mat-chip-list>
+  </mat-card-content>
+</mat-card>
