@@ -1,7 +1,7 @@
 <app-sidenav>
   <header>
     <div class="container">
-      <div class="breadcrumbs">
+      <div class="breadcrumbs" *ngIf="project$ | async as project">
         <mat-icon>extension</mat-icon>
         <a [routerLink]="['/', project?.ownerUsername]">{{project?.ownerUsername}}</a>
         <span>/</span>
@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <nav mat-tab-nav-bar color="accent">
+    <nav mat-tab-nav-bar color="accent" *ngIf="project$ | async as project">
       <div class="container" routerLinkActive>
         <a mat-tab-link
            [routerLink]="['/', project?.ownerUsername, project?.name]"

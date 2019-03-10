@@ -1,6 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {Project} from "../../../../shared/project";
-import {ActivatedRoute} from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { ProjectFacade } from "../+state/project.facade";
 
 @Component({
   selector: 'app-project-members',
@@ -9,15 +8,11 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class ProjectMembersComponent implements OnInit {
 
-  project: Project;
+  project$ = this.projectFacade.project$;
 
-  constructor(private readonly route: ActivatedRoute) {
+  constructor(private readonly projectFacade: ProjectFacade) {
   }
 
   ngOnInit() {
-    this.route.parent.data
-      .subscribe((data: { project: Project }) => {
-        this.project = data.project;
-      });
   }
 }

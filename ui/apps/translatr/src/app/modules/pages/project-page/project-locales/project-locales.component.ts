@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Project} from "../../../../shared/project";
-import {ActivatedRoute} from "@angular/router";
+import { ProjectFacade } from "../+state/project.facade";
 
 @Component({
   selector: 'app-project-locales',
@@ -9,15 +8,11 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class ProjectLocalesComponent implements OnInit {
 
-  project: Project;
+  project$ = this.projectFacade.project$;
 
-  constructor(private readonly route: ActivatedRoute) {
+  constructor(private readonly projectFacade: ProjectFacade) {
   }
 
   ngOnInit() {
-    this.route.parent.data
-      .subscribe((data: {project: Project}) => {
-        this.project = data.project;
-      });
   }
 }

@@ -2,10 +2,14 @@
   <img mat-card-image ngxGravatar [email]="user?.email" [round]="false" [size]="200">
   <mat-card-content>
     <h2>{{user?.name}}</h2>
-    <p>{{user?.username}}</p>
-    <mat-chip-list class="mat-chip-list-stacked">
-      <mat-chip>{{user?.email}}</mat-chip>
-      <mat-chip [title]="user?.whenCreated | date">{{user?.whenCreated | amTimeAgo}}</mat-chip>
-    </mat-chip-list>
+    <p class="ellipsis">{{user?.username}}</p>
+    <p class="email ellipsis">
+      <mat-icon inline="true">email</mat-icon>
+      <span [title]="user?.email">{{user?.email}}</span>
+    </p>
+    <p class="when-created ellipsis">
+      <mat-icon inline="true">access_time</mat-icon>
+      <span [title]="user?.whenCreated | date">{{user?.whenCreated | amTimeAgo}}</span>
+    </p>
   </mat-card-content>
 </mat-card>

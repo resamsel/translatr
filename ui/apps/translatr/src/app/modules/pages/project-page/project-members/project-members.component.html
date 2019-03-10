@@ -1,3 +1,3 @@
 <div class="container">
-  <app-member-list [project]="project" [members]="project?.members"></app-member-list>
+  <app-member-list [project]="project$ | async" [members]="(project$ | async)?.members"></app-member-list>
 </div>

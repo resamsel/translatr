@@ -10,10 +10,12 @@ import { MatButtonModule, MatToolbarModule } from '@angular/material';
 import { SidenavModule } from "./modules/nav/sidenav/sidenav.module";
 import { UserPageModule } from "./modules/pages/user-page/user-page.module";
 import { HttpClientModule } from "@angular/common/http";
-import { DashboardPageModule } from "./modules/pages/dashboard-page/dashboard-page.module";
 import { NxModule } from '@nrwl/nx';
 import { ProjectsPageModule } from "./modules/pages/projects-page/projects-page.module";
 import { UsersPageModule } from "./modules/pages/users-page/users-page.module";
+import { StoreModule } from "@ngrx/store";
+import { EffectsModule } from "@ngrx/effects";
+import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +34,9 @@ import { UsersPageModule } from "./modules/pages/users-page/users-page.module";
     LayoutModule,
     MatToolbarModule,
     MatButtonModule,
+    StoreModule.forRoot({}),
+    StoreDevtoolsModule.instrument({}),
+    EffectsModule.forRoot([]),
     NxModule.forRoot()
   ],
   providers: [],

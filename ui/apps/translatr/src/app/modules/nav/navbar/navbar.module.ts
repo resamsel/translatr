@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {NavbarComponent} from './navbar.component';
-import {MatButtonModule, MatIconModule, MatMenuModule, MatToolbarModule} from "@angular/material";
+import { MatButtonModule, MatDividerModule, MatIconModule, MatMenuModule, MatToolbarModule } from "@angular/material";
 import {AuthBarItemComponent} from "./auth-bar-item/auth-bar-item.component";
 import {RouterModule} from "@angular/router";
 import {GravatarModule} from "ngx-gravatar";
@@ -14,6 +14,7 @@ import {GravatarModule} from "ngx-gravatar";
     MatToolbarModule,
     MatButtonModule,
     MatMenuModule,
+    MatDividerModule,
     RouterModule,
     GravatarModule
   ],

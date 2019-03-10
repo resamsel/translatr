@@ -1,0 +1,20 @@
+<mat-nav-list *ngIf="pagedList; else empty">
+  <ng-container *ngFor="let item of pagedList.list; trackBy: trackByFn">
+    <ng-container *ngTemplateOutlet="template; context: {$implicit: item}"></ng-container>
+  </ng-container>
+  <a mat-list-item class="more" *ngIf="pagedList?.hasNext" (click)="loadMore()" i18n>
+    More
+  </a>
+</mat-nav-list>
+
+<ng-template #empty>
+  <mat-list class="empty">
+    <mat-list-item *ngFor="let index of [0,1,2]">
+      <mat-icon matListIcon class="icon">account_circle</mat-icon>
+      <h3 matLine>
+        <span class="title item-{{index}}"></span>
+      </h3>
+      <p matLine class="subtitle"></p>
+    </mat-list-item>
+  </mat-list>
+</ng-template>

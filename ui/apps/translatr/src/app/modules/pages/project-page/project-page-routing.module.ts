@@ -14,11 +14,6 @@ const routes: Routes = [
   {
     path: ':username/:projectName',
     component: ProjectPageComponent,
-    resolve: {
-      me: AuthResolverService,
-      user: UserResolverService,
-      project: ProjectResolverService
-    },
     children: [
       {
         path: '',

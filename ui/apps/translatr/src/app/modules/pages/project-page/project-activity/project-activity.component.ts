@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Project } from "../../../../shared/project";
-import { ActivatedRoute } from "@angular/router";
-import { ProjectService } from "../../../../services/project.service";
-import {ActivityCriteria, ActivityService} from "../../../../services/activity.service";
+import { ActivityCriteria } from "../../../../services/activity.service";
+import { ProjectFacade } from "../+state/project.facade";
+import { filter, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: 'app-project-activity',
@@ -11,23 +11,22 @@ import {ActivityCriteria, ActivityService} from "../../../../services/activity.s
 })
 export class ProjectActivityComponent implements OnInit {
 
-  project: Project;
-  activities$;
+  project$ = this.projectFacade.project$;
+  activities$ = this.projectFacade.activities$;
   private criteria: ActivityCriteria;
 
-  constructor(
-    private readonly projectService: ProjectService,
-    private readonly activityService: ActivityService,
-    private readonly route: ActivatedRoute
-  ) {
+  constructor(private readonly projectFacade: ProjectFacade) {
   }
 
   ngOnInit() {
-    this.route.parent.data
-      .subscribe((data: { project: Project }) => {
-        this.project = data.project;
+    this.project$
+      .pipe(
+        takeUntil(this.projectFacade.unload$),
+        filter((project?: Project) => project !== undefined)
+      )
+      .subscribe((project: Project) => {
         this.criteria = {
-          projectId: this.project.id,
+          projectId: project.id,
           limit: 10
         };
         this.loadActivities();
@@ -35,7 +34,7 @@ export class ProjectActivityComponent implements OnInit {
   }
 
   private loadActivities(): void {
-    this.activities$ = this.activityService.activityList(this.criteria);
+    this.projectFacade.loadActivities(this.criteria);
   }
 
   onLoadMore(limit: number): void {

@@ -1,4 +1,4 @@
-<mat-list *ngIf="activities; else empty" class="mat-elevation-z2">
+<mat-list *ngIf="activities; else empty">
   <mat-list-item *ngFor="let activity of activities.list; trackBy: trackByFn">
     <img class="icon" matListIcon ngxGravatar [email]="activity.userEmail" size="36">
     <h3 matLine>
@@ -19,8 +19,8 @@
 </mat-list>
 
 <ng-template #empty i18n="@@empty.activities">
-  <mat-list class="empty mat-elevation-z2">
-    <mat-list-item *ngFor="let index of [0,1,2,3,4]">
+  <mat-list class="empty">
+    <mat-list-item *ngFor="let index of [0,1,2]">
       <mat-icon matListIcon class="icon">account_circle</mat-icon>
       <h3 matLine>
         <span class="title item-{{index}}"></span>

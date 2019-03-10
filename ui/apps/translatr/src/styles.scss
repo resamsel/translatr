@@ -171,3 +171,7 @@ pre[class*="language-"]:before {
 .mat-dialog-actions {
   justify-content: flex-end;
 }
+
+.mat-list-item:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}

@@ -22,7 +22,6 @@ import { ActivityModule } from "../../shared/activity/activity.module";
 import { ActivityListModule } from "../../shared/activity-list/activity-list.module";
 import { UserActivityComponent } from './user-activity/user-activity.component';
 import { UserCardModule } from "../../shared/user-card/user-card.module";
-import { ProjectCreationDialogComponent } from "../../shared/project-creation-dialog/project-creation-dialog.component";
 import { ProjectCreationDialogModule } from "../../shared/project-creation-dialog/project-creation-dialog.module";
 
 @NgModule({

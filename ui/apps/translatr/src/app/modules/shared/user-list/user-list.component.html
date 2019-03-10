@@ -1,4 +1,4 @@
-<mat-nav-list *ngIf="users" class="mat-elevation-z2">
+<mat-nav-list *ngIf="users">
   <a mat-list-item *ngFor="let user of users.list" [routerLink]="['/', user.username]">
     <img class="icon" matListIcon ngxGravatar [email]="user.email" size="36">
     <h3 matLine>{{user.name}} <span class="username">{{user.username}}</span></h3>

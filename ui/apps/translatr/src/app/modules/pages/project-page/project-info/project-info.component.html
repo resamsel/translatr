@@ -1,4 +1,4 @@
-<div class="container flex">
+<div class="container flex" *ngIf="project$ | async as project">
   <div class="info">
     <p i18n="@@temporal.info">
       Created: {{project?.whenCreated | amTimeAgo}},
@@ -22,7 +22,7 @@
     <mat-card-title i18n="@@locales">Languages</mat-card-title>
     <mat-card-content>
       <span i18n="@@latest">Latest: </span>
-      <ng-container *ngFor="let locale of latestLocales(); let i = index">
+      <ng-container *ngFor="let locale of latestLocales(project$ | async); let i = index">
         <span *ngIf="i > 0">, </span>
         <a [routerLink]="['locales', locale.name]">{{locale.name}}
           — {{locale.displayName}}</a>
@@ -33,7 +33,7 @@
     <mat-card-title i18n="@@keys">Keys</mat-card-title>
     <mat-card-content>
       <span i18n="@@latest">Latest: </span>
-      <ng-container *ngFor="let key of latestKeys(); let i = index">
+      <ng-container *ngFor="let key of latestKeys(project$ | async); let i = index">
         <span *ngIf="i > 0">, </span>
         <a [routerLink]="['keys', key.name]">{{key.name}}</a>
       </ng-container>

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserCardComponent } from './user-card.component';
 import { GravatarModule } from "ngx-gravatar";
-import { MatCardModule, MatChipsModule } from "@angular/material";
+import { MatCardModule, MatIconModule } from "@angular/material";
 import { MomentModule } from "ngx-moment";
 
 @NgModule({
@@ -10,7 +10,7 @@ import { MomentModule } from "ngx-moment";
   imports: [
     CommonModule,
     MatCardModule,
-    MatChipsModule,
+    MatIconModule,
     GravatarModule,
     MomentModule
   ],
