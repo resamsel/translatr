@@ -21,11 +21,16 @@ header {
   }
 }
 
+a,
+a:active,
+a:visited {
+  text-decoration: none;
+}
+
 a.link,
 a.link:active,
 a.link:visited {
   color: #039be5;
-  text-decoration: none;
 }
 
 a.link:hover {

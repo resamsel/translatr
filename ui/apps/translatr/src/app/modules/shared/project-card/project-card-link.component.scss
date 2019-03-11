@@ -1,0 +1,10 @@
+@import '~@angular/material/theming';
+
+a ::ng-deep .mat-card {
+  @include mat-elevation-transition;
+  @include mat-elevation(2);
+
+  &:hover {
+    @include mat-elevation(8);
+  }
+}

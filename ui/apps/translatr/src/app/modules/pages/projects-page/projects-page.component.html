@@ -11,9 +11,11 @@
   <div class="container">
     <section>
       <h2>Active Projects</h2>
-      <app-project-card-link
-        *ngFor="let project of (projects$ | async)?.list.slice(0,4)"
-        [project]="project"></app-project-card-link>
+      <div class="flex-stretch">
+        <app-project-card-link
+          *ngFor="let project of (projects$ | async)?.list.slice(0,4)"
+          [project]="project"></app-project-card-link>
+      </div>
       <div class="clearfix"></div>
     </section>
 

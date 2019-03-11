@@ -1,0 +1,15 @@
+.flex-stretch {
+  display: flex;
+
+  > * {
+    flex: 1 1 25%;
+  }
+
+  > *:not(:last-child) {
+    margin-right: 16px;
+  }
+
+  ::ng-deep .mat-card-image {
+    width: calc(100% + 32px);
+  }
+}

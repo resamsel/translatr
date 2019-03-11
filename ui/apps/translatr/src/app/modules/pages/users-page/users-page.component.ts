@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Project } from "../../../shared/project";
 import { ActivatedRoute } from "@angular/router";
 import { PagedList } from "../../../shared/paged-list";
 import { User } from "../../../shared/user";
+import { Observable } from "rxjs";
 
 @Component({
   selector: 'app-projects-page',
@@ -12,6 +12,7 @@ import { User } from "../../../shared/user";
 export class UsersPageComponent implements OnInit {
 
   users: PagedList<User>;
+  topContributors$: Observable<PagedList<User>>;
 
   constructor(private readonly route: ActivatedRoute) {
   }
