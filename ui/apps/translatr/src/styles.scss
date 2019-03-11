@@ -21,18 +21,15 @@ header {
   }
 }
 
-a, a:active, a:visited {
+a.link,
+a.link:active,
+a.link:visited {
   color: #039be5;
   text-decoration: none;
 }
 
-a:hover {
+a.link:hover {
   text-decoration: underline;
-}
-
-a.mat-button:hover,
-.mat-tab-nav-bar a:hover {
-  text-decoration: none;
 }
 
 .main-container {
@@ -174,4 +171,29 @@ pre[class*="language-"]:before {
 
 .mat-list-item:not(:last-child) {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.clearfix {
+  clear: both;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@keyframes opacityPulse {
+  0% {
+    opacity: 0.4;
+  }
+  40% {
+    opacity: 1.0;
+  }
+  60% {
+    opacity: 1.0;
+  }
+  100% {
+    opacity: 0.4;
+  }
 }

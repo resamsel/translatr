@@ -11,7 +11,6 @@ import { Observable } from "rxjs";
 })
 export class ProjectPageComponent implements OnInit, OnDestroy {
 
-  // project: Project;
   project$ = this.projectFacade.project$;
 
   constructor(private route: ActivatedRoute, private readonly projectFacade: ProjectFacade) {
@@ -21,10 +20,6 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.projectFacade.loadProject(params.get('username'), params.get('projectName'));
     });
-    // this.route.data
-    //   .subscribe((data: { project: Project }) => {
-    //     this.project = data.project;
-    //   });
   }
 
   ngOnDestroy(): void {

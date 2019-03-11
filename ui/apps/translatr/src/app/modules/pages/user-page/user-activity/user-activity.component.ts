@@ -36,8 +36,8 @@ export class UserActivityComponent implements OnInit {
     this.activities$ = this.activityService.activityList(this.criteria);
   }
 
-  onMore(limit: number): void {
-    this.criteria = {...this.criteria, limit};
+  onMore(): void {
+    this.criteria = {...this.criteria, limit: this.criteria.limit * 2};
     this.loadActivities();
   }
 }

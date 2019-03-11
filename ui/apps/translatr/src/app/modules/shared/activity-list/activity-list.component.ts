@@ -10,7 +10,7 @@ import {Activity} from "../../../shared/activity";
 export class ActivityListComponent implements OnInit {
 
   @Input() activities: PagedList<Activity>;
-  @Output() more = new EventEmitter<number>();
+  @Output() more = new EventEmitter<void>();
 
   constructor() {
   }
@@ -23,6 +23,6 @@ export class ActivityListComponent implements OnInit {
   }
 
   loadMore(): void {
-    this.more.emit(this.activities.limit * 2);
+    this.more.emit();
   }
 }

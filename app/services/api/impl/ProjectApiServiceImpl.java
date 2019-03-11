@@ -13,6 +13,7 @@ import forms.SearchForm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -63,7 +64,9 @@ public class ProjectApiServiceImpl extends
 
   @Override
   public dto.Project byOwnerAndName(String username, String name, String... fetches) {
-    return dtoMapper.apply(service.byOwnerAndName(username, name, fetches));
+    return Optional.ofNullable(service.byOwnerAndName(username, name, fetches))
+            .map(dtoMapper)
+            .orElse(null);
   }
 
   @Override

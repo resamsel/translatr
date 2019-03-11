@@ -1,15 +1,17 @@
-<mat-nav-list *ngIf="users">
-  <a mat-list-item *ngFor="let user of users.list" [routerLink]="['/', user.username]">
-    <img class="icon" matListIcon ngxGravatar [email]="user.email" size="36">
-    <h3 matLine>{{user.name}} <span class="username">{{user.username}}</span></h3>
-    <p matLine>
+<app-nav-list [pagedList]="users" [template]="template">
+  <ng-template #template let-user>
+    <a mat-list-item [routerLink]="['/', user.username]">
+      <img class="icon" matListIcon ngxGravatar [email]="user.email" size="36">
+      <h3 matLine>{{user.name}} <span class="username">{{user.username}}</span></h3>
+      <p matLine>
       <span i18n="@@user.memberships">{user.memberships?.length || 0, plural,
         =0 {Not contributing at the moment}
         =1 {Contributing to one project}
         other {Contributing to {{user.memberships.length}} projects}}</span>
-    </p>
-    <p matLine>
-      <span i18n>Joined {{user.whenCreated | amTimeAgo}}</span>
-    </p>
-  </a>
-</mat-nav-list>
+      </p>
+      <p matLine>
+        <span i18n>Joined {{user.whenCreated | amTimeAgo}}</span>
+      </p>
+    </a>
+  </ng-template>
+</app-nav-list>

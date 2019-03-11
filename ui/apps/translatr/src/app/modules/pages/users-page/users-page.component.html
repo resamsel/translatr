@@ -3,12 +3,21 @@
     <div class="container">
       <div class="breadcrumbs">
         <mat-icon>group</mat-icon>
-        <a [routerLink]="['/users']">Contributors</a>
+        <a class="link" routerLink="/users">Contributors</a>
       </div>
     </div>
   </header>
 
   <div class="container">
-    <app-user-list [users]="users"></app-user-list>
+    <section>
+      <h2>Top Contributors</h2>
+      <app-user-card-link *ngFor="let user of users?.list.slice(0, 4)" [user]="user"></app-user-card-link>
+      <div class="clearfix"></div>
+    </section>
+
+    <section>
+      <h2>All Contributors</h2>
+      <app-user-list [users]="users"></app-user-list>
+    </section>
   </div>
 </app-sidenav>

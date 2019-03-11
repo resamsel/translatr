@@ -4,17 +4,20 @@ import { UserCardComponent } from './user-card.component';
 import { GravatarModule } from "ngx-gravatar";
 import { MatCardModule, MatIconModule } from "@angular/material";
 import { MomentModule } from "ngx-moment";
+import { UserCardLinkComponent } from './user-card-link.component';
+import {RouterModule} from "@angular/router";
 
 @NgModule({
-  declarations: [UserCardComponent],
+  declarations: [UserCardComponent, UserCardLinkComponent],
   imports: [
     CommonModule,
+    RouterModule,
     MatCardModule,
     MatIconModule,
     GravatarModule,
     MomentModule
   ],
-  exports: [UserCardComponent]
+  exports: [UserCardComponent, UserCardLinkComponent]
 })
 export class UserCardModule {
 }

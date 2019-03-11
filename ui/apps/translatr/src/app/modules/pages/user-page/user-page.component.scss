@@ -10,6 +10,12 @@ h2 {
   }
 }
 
-.clearfix {
-  clear: both;
+
+.email,
+.when-created {
+  margin-bottom: 0;
+
+  .mat-icon {
+    margin-right: 4px;
+  }
 }

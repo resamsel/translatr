@@ -3,13 +3,6 @@
   <mat-card-content>
     <h2>{{user?.name}}</h2>
     <p class="ellipsis">{{user?.username}}</p>
-    <p class="email ellipsis">
-      <mat-icon inline="true">email</mat-icon>
-      <span [title]="user?.email">{{user?.email}}</span>
-    </p>
-    <p class="when-created ellipsis">
-      <mat-icon inline="true">access_time</mat-icon>
-      <span [title]="user?.whenCreated | date">{{user?.whenCreated | amTimeAgo}}</span>
-    </p>
+    <ng-content></ng-content>
   </mat-card-content>
 </mat-card>

@@ -3,7 +3,7 @@
     <div class="container">
       <div class="breadcrumbs">
         <mat-icon>account_circle</mat-icon>
-        <a [routerLink]="['/', user?.username]">{{user?.username}}</a>
+        <a class="link" [routerLink]="['/', user?.username]">{{user?.username}}</a>
       </div>
     </div>
 
@@ -39,7 +39,16 @@
   </header>
 
   <div class="container">
-    <app-user-card [user]="user"></app-user-card>
+    <app-user-card [user]="user">
+      <p class="email ellipsis">
+        <mat-icon inline="true">email</mat-icon>
+        <span [title]="user?.email">{{user?.email}}</span>
+      </p>
+      <p class="when-created ellipsis">
+        <mat-icon inline="true">access_time</mat-icon>
+        <span [title]="user?.whenCreated | date">{{user?.whenCreated | amTimeAgo}}</span>
+      </p>
+    </app-user-card>
 
     <div class="content">
       <router-outlet></router-outlet>

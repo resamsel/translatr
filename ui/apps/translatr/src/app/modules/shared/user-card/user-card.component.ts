@@ -5,7 +5,10 @@ import { User } from "../../../shared/user";
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-user-card',
   templateUrl: './user-card.component.html',
-  styleUrls: ['./user-card.component.scss']
+  styleUrls: ['./user-card.component.scss'],
+  host: {
+    class: 'user-card'
+  }
 })
 export class UserCardComponent implements OnInit {
 

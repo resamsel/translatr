@@ -1,16 +1,4 @@
-.sidenav-container {
-  height: 100%;
-}
-
-.sidenav {
-  width: 200px;
-}
-
-.sidenav .mat-toolbar {
-  background: inherit;
-}
-
-.mat-sidenav-content {
+.sidenav-content {
   display: flex;
   flex-direction: column;
   min-height: 100vh;

@@ -1,0 +1,26 @@
+.info {
+  float: left;
+  width: 168px;
+  margin: 0 16px 16px 0;
+
+  img {
+    border-radius: 4px 4px 0 0 !important;
+    margin-bottom: 8px;
+  }
+}
+
+h2 {
+  margin-bottom: 0;
+}
+
+.mat-card-image {
+  width: 200px;
+  height: 200px;
+  display: block;
+  line-height: 200px;
+  font-size: 168px;
+  text-align: center;
+  background-color: #ff9800;
+  color: #fff;
+  text-transform: capitalize;
+}

@@ -5,12 +5,16 @@ import { MatIconModule, MatListModule } from "@angular/material";
 import { GravatarModule } from "ngx-gravatar";
 import { MomentModule } from "ngx-moment";
 import { RouterModule } from "@angular/router";
+import {NavListModule} from "../nav-list/nav-list.module";
+import {UserCardModule} from "../user-card/user-card.module";
 
 @NgModule({
   declarations: [UserListComponent],
   imports: [
     CommonModule,
     RouterModule,
+    NavListModule,
+    UserCardModule,
     MatListModule,
     MatIconModule,
     GravatarModule,

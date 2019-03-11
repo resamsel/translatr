@@ -12,30 +12,36 @@
     </mat-chip-list>
   </div>
 
-  <mat-card>
-    <mat-card-title i18n="@@activity">Activity</mat-card-title>
-    <mat-card-content>
-      <app-activity [activity]="activity$ | async"></app-activity>
-    </mat-card-content>
-  </mat-card>
-  <mat-card class="small">
-    <mat-card-title i18n="@@locales">Languages</mat-card-title>
-    <mat-card-content>
-      <span i18n="@@latest">Latest: </span>
-      <ng-container *ngFor="let locale of latestLocales(project$ | async); let i = index">
-        <span *ngIf="i > 0">, </span>
-        <a [routerLink]="['locales', locale.name]">{{locale.name}}
-          — {{locale.displayName}}</a>
-      </ng-container>
-    </mat-card-content>
-  </mat-card>
+  <div>
+    <h2 i18n="@@activity">Activity</h2>
+    <mat-card>
+      <mat-card-content>
+        <app-activity [activity]="activity$ | async"></app-activity>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="small">
+    <h2 i18n="@@locales">Languages</h2>
+    <mat-card>
+      <mat-card-content>
+        <span i18n="@@latest">Latest: </span>
+        <ng-container *ngFor="let locale of latestLocales(project$ | async); let i = index">
+          <span *ngIf="i > 0">, </span>
+          <a class="link" [routerLink]="['locales', locale.name]">{{locale.name}}
+            — {{locale.displayName}}</a>
+        </ng-container>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
   <mat-card class="small">
     <mat-card-title i18n="@@keys">Keys</mat-card-title>
     <mat-card-content>
       <span i18n="@@latest">Latest: </span>
       <ng-container *ngFor="let key of latestKeys(project$ | async); let i = index">
         <span *ngIf="i > 0">, </span>
-        <a [routerLink]="['keys', key.name]">{{key.name}}</a>
+        <a class="link" [routerLink]="['keys', key.name]">{{key.name}}</a>
       </ng-container>
     </mat-card-content>
   </mat-card>

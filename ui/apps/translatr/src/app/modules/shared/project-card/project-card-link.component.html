@@ -1,0 +1,5 @@
+<a [routerLink]="['/', project?.ownerUsername, project?.name]">
+  <app-project-card [project]="project">
+    <ng-content></ng-content>
+  </app-project-card>
+</a>

@@ -3,9 +3,9 @@
     <div class="container">
       <div class="breadcrumbs" *ngIf="project$ | async as project">
         <mat-icon>extension</mat-icon>
-        <a [routerLink]="['/', project?.ownerUsername]">{{project?.ownerUsername}}</a>
+        <a class="link" [routerLink]="['/', project?.ownerUsername]">{{project?.ownerUsername}}</a>
         <span>/</span>
-        <a [routerLink]="['/', project?.ownerUsername, project?.name]">{{project?.name}}</a>
+        <a class="link" [routerLink]="['/', project?.ownerUsername, project?.name]">{{project?.name}}</a>
       </div>
     </div>
 

@@ -1,24 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { Project } from "../../../shared/project";
-import { ActivatedRoute } from "@angular/router";
-import { PagedList } from "../../../shared/paged-list";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ProjectsFacade} from "./+state/projects.facade";
+import {takeUntil} from "rxjs/operators";
+import {Observable, Subject} from "rxjs";
+import {Project} from "../../../shared/project";
+import {PagedList} from "../../../shared/paged-list";
 
 @Component({
   selector: 'app-projects-page',
   templateUrl: './projects-page.component.html',
   styleUrls: ['./projects-page.component.scss']
 })
-export class ProjectsPageComponent implements OnInit {
+export class ProjectsPageComponent implements OnInit, OnDestroy {
+  public projects$ = this.projectsFacade.allProjects$;
 
-  projects: PagedList<Project>;
-
-  constructor(private readonly route: ActivatedRoute) {
+  constructor(private readonly projectsFacade: ProjectsFacade) {
   }
 
   ngOnInit() {
-    this.route.data
-      .subscribe((data: { projects: PagedList<Project> }) => {
-        this.projects = data.projects;
-      });
+    this.projectsFacade.loadProjects();
+  }
+
+  ngOnDestroy(): void {
+    this.projectsFacade.unloadProjects();
   }
 }

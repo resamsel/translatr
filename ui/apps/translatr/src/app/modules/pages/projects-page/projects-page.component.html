@@ -3,12 +3,23 @@
     <div class="container">
       <div class="breadcrumbs">
         <mat-icon>extension</mat-icon>
-        <a [routerLink]="['/projects']">Projects</a>
+        <a class="link" routerLink="/projects">Projects</a>
       </div>
     </div>
   </header>
 
   <div class="container">
-    <app-project-list [projects]="projects"></app-project-list>
+    <section>
+      <h2>Active Projects</h2>
+      <app-project-card-link
+        *ngFor="let project of (projects$ | async)?.list.slice(0,4)"
+        [project]="project"></app-project-card-link>
+      <div class="clearfix"></div>
+    </section>
+
+    <section>
+      <h2>All Projects</h2>
+      <app-project-list [projects]="projects$ | async"></app-project-list>
+    </section>
   </div>
 </app-sidenav>

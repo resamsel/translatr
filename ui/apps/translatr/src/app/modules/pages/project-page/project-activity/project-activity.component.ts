@@ -37,8 +37,8 @@ export class ProjectActivityComponent implements OnInit {
     this.projectFacade.loadActivities(this.criteria);
   }
 
-  onLoadMore(limit: number): void {
-    this.criteria = {...this.criteria, limit};
+  onMore(): void {
+    this.criteria = {...this.criteria, limit: this.criteria.limit * 2};
     this.loadActivities();
   }
 }

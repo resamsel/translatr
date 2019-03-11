@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Observable } from "rxjs";
-import { Project } from "../shared/project";
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { map } from "rxjs/operators";
-import { PagedList } from "../shared/paged-list";
-import { convertTemporals, convertTemporalsList } from "../shared/mapper-utils";
-import { Aggregate } from "../shared/aggregate";
-import { Activity } from "../shared/activity";
+import {Injectable} from '@angular/core';
+import {Observable} from "rxjs";
+import {Project} from "../shared/project";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {map} from "rxjs/operators";
+import {PagedList} from "../shared/paged-list";
+import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
+import {Aggregate} from "../shared/aggregate";
 
 @Injectable({
   providedIn: 'root'
@@ -32,20 +31,13 @@ export class ProjectService {
       );
   }
 
-  getProjects(username?: string, options?: {
+  getProjects(options?: {
     params?: HttpParams | {
       [param: string]: string | string[];
     }
   }): Observable<PagedList<Project>> {
     return this.http
-      .get<PagedList<Project>>(
-        '/api/projects',
-        username !== undefined ? {
-          params: {
-            owner: username
-          }
-        } : options
-      )
+      .get<PagedList<Project>>('/api/projects', options)
       .pipe(
         map((list: PagedList<Project>) => ({
           ...list,

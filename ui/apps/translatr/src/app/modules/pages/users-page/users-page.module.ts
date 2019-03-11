@@ -5,6 +5,7 @@ import { UsersPageRoutingModule } from "./users-page-routing.module";
 import { MatIconModule } from "@angular/material";
 import { SidenavModule } from "../../nav/sidenav/sidenav.module";
 import { UserListModule } from "../../shared/user-list/user-list.module";
+import {UserCardModule} from "../../shared/user-card/user-card.module";
 
 @NgModule({
   declarations: [UsersPageComponent],
@@ -13,6 +14,7 @@ import { UserListModule } from "../../shared/user-list/user-list.module";
     UsersPageRoutingModule,
     SidenavModule,
     UserListModule,
+    UserCardModule,
     MatIconModule
   ]
 })

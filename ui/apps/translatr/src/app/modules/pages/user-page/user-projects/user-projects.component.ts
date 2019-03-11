@@ -35,7 +35,7 @@ export class UserProjectsComponent implements OnInit {
   }
 
   private loadProjects(): void {
-    this.projects$ = this.projectService.getProjects(this.user.username);
+    this.projects$ = this.projectService.getProjects({params: {owner: this.user.username}});
   }
 
   openProjectCreationDialog(): void {

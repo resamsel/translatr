@@ -1,20 +1,37 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
-import { select, Store } from '@ngrx/store';
+import {select, Store} from '@ngrx/store';
 
-import { ProjectPartialState } from './project.reducer';
-import { projectQuery } from './project.selectors';
-import { LoadProject, LoadProjectActivities, LoadProjectActivityAggregated, UnloadProject } from './project.actions';
-import { ActivityCriteria } from "../../../../services/activity.service";
-import { Subject } from "rxjs";
+import {ProjectPartialState} from './project.reducer';
+import {projectQuery} from './project.selectors';
+import {LoadProject, LoadProjectActivities, LoadProjectActivityAggregated, UnloadProject} from './project.actions';
+import {ActivityCriteria} from "../../../../services/activity.service";
+import {Observable, Subject} from "rxjs";
+import {Project} from "../../../../shared/project";
+import {takeUntil} from "rxjs/operators";
+import {PagedList} from "../../../../shared/paged-list";
+import {Aggregate} from "../../../../shared/aggregate";
+import {Activity} from "../../../../shared/activity";
 
 @Injectable()
 export class ProjectFacade {
-  loading$ = this.store.pipe(select(projectQuery.getLoading));
-  project$ = this.store.pipe(select(projectQuery.getProject));
-  activityAggregated$ = this.store.pipe(select(projectQuery.getActivityAggregated));
-  activities$ = this.store.pipe(select(projectQuery.getActivities));
-  unload$ = new Subject<void>();
+  get project$(): Observable<Project> {
+    return this.store.pipe(takeUntil(this.unload$), select(projectQuery.getProject));
+  }
+
+  get activityAggregated$(): Observable<PagedList<Aggregate>> {
+    return this.store.pipe(takeUntil(this.unload$), select(projectQuery.getActivityAggregated));
+  }
+
+  get activities$(): Observable<PagedList<Activity>> {
+    return this.store.pipe(takeUntil(this.unload$), select(projectQuery.getActivities));
+  }
+
+  get unload$(): Observable<void> {
+    return this._unload$.asObservable();
+  }
+
+  private _unload$ = new Subject<void>();
 
   constructor(private store: Store<ProjectPartialState>) {
   }
@@ -28,12 +45,11 @@ export class ProjectFacade {
   }
 
   loadActivities(criteria: ActivityCriteria) {
-    console.log('loadActivities');
     this.store.dispatch(new LoadProjectActivities(criteria));
   }
 
   unloadProject() {
-    this.unload$.next();
+    this._unload$.next();
     this.store.dispatch(new UnloadProject());
   }
 }

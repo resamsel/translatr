@@ -1,11 +1,13 @@
-<app-navbar>
-  <ng-container ngProjectAs="mat-toolbar-row">
-    <ng-content select="mat-toolbar-row"></ng-content>
-  </ng-container>
-</app-navbar>
+<div class="sidenav-content">
+  <app-navbar>
+    <ng-container ngProjectAs="mat-toolbar-row">
+      <ng-content select="mat-toolbar-row"></ng-content>
+    </ng-container>
+  </app-navbar>
 
-<div class="main-container">
-  <ng-content></ng-content>
+  <div class="main-container">
+    <ng-content></ng-content>
+  </div>
+
+  <app-footer></app-footer>
 </div>
-
-<app-footer></app-footer>

@@ -1,27 +1,14 @@
 .info {
   float: left;
   width: 168px;
+  margin: 0 16px 16px 0;
 
   img {
     border-radius: 4px 4px 0 0 !important;
+    margin-bottom: 8px;
   }
 }
 
 h2 {
   margin-bottom: 0;
-}
-
-.ellipsis {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.email,
-.when-created {
-  margin-bottom: 0;
-
-  .mat-icon {
-    margin-right: 4px;
-  }
 }

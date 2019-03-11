@@ -9,8 +9,7 @@ const routes: Routes = [
     path: 'projects',
     component: ProjectsPageComponent,
     resolve: {
-      me: AuthResolverService,
-      projects: ProjectsResolverService
+      me: AuthResolverService
     }
   }
 ];
