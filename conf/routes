@@ -57,6 +57,7 @@ GET		/api/docs					controllers.ApiDocs.index()
 # Generic mappings based on username, project name, ...
 GET     /api/:username              controllers.UsersApi.byName(username: String, fetch: String ?= "")
 GET     /api/:username/:projectName controllers.ProjectsApi.byOwnerAndName(username: String, projectName: String, fetch: String ?= "")
+GET		/api/:username/:projectName/locales/:localeName     controllers.LocalesApi.byOwnerAndProjectNameAndName(username: String, projectName: String, localeName: String, fetch: String ?= "")
 GET		/api/:username/:projectName/locales/:localeName/export/:fileType		controllers.LocalesApi.downloadBy(username: String, projectName: String, localeName: String, fileType: String)
 
 GET		/api/*file					controllers.ApiDocs.versioned(path="/public/lib/swagger-ui", file: String)

@@ -5,6 +5,7 @@ import {SidenavComponent} from "./sidenav.component";
 import {NavbarModule} from "../navbar/navbar.module";
 import { FooterModule } from "../footer/footer.module";
 import { RouterModule } from "@angular/router";
+import { SearchBarComponent } from "../navbar/search-bar/search-bar.component";
 
 @NgModule({
   declarations: [SidenavComponent],
@@ -18,7 +19,7 @@ import { RouterModule } from "@angular/router";
     MatIconModule,
     MatListModule
   ],
-  exports: [SidenavComponent]
+  exports: [SidenavComponent, SearchBarComponent]
 })
 export class SidenavModule {
 }

@@ -3,14 +3,14 @@
     <ng-container *ngTemplateOutlet="template; context: {$implicit: item}"></ng-container>
   </ng-container>
   <a mat-list-item class="more" *ngIf="pagedList?.hasNext" (click)="loadMore()" i18n>
-    More
+    <i>Load more</i>
   </a>
 </mat-nav-list>
 
 <ng-template #empty>
   <mat-list class="empty">
-    <mat-list-item *ngFor="let index of [0,1,2,3,4]" [ngClass]="'item-' + index">
-      <mat-icon matListIcon class="icon">account_circle</mat-icon>
+    <mat-list-item *ngFor="let i of loadingList" class="item">
+      <mat-icon *ngIf="showLoadingAvatar" matListIcon class="icon">account_circle</mat-icon>
       <h3 matLine>
         <span class="title"></span>
       </h3>

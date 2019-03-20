@@ -52,6 +52,14 @@
           <mat-icon>change_history</mat-icon>
           Activity
         </a>
+        <a mat-tab-link
+           [routerLink]="['/', project?.ownerUsername, project?.name, 'settings']"
+           routerLinkActive
+           #settingsLink="routerLinkActive"
+           [active]="settingsLink.isActive">
+          <mat-icon>settings</mat-icon>
+          Settings
+        </a>
       </div>
     </nav>
   </header>

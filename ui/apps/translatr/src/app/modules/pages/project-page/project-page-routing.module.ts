@@ -9,6 +9,7 @@ import {ProjectMembersComponent} from "./project-members/project-members.compone
 import { AuthResolverService } from "../../../services/auth-resolver.service";
 import { UserResolverService } from "../user-page/user-resolver.service";
 import { ProjectActivityComponent } from "./project-activity/project-activity.component";
+import { ProjectSettingsComponent } from "./project-settings/project-settings.component";
 
 const routes: Routes = [
   {
@@ -34,6 +35,10 @@ const routes: Routes = [
       {
         path: 'activity',
         component: ProjectActivityComponent
+      },
+      {
+        path: 'settings',
+        component: ProjectSettingsComponent
       }
     ]
   }

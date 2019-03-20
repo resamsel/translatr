@@ -1,0 +1,32 @@
+.search {
+  height: 64px;
+
+  ::ng-deep {
+    .mat-form-field-wrapper {
+      padding: 2px;
+      margin: 0;
+    }
+
+    .mat-form-field-outline {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+    }
+
+    .mat-form-field-infix {
+      padding: 8px 0;
+      border-top-width: 14px;
+      border-bottom: 2px solid transparent;
+    }
+
+    .mat-form-field-flex {
+      padding: 0 8px;
+      margin-top: 0;
+    }
+
+    .mat-form-field-outline-start,
+    .mat-form-field-outline-gap,
+    .mat-form-field-outline-end {
+      border-color: transparent;
+    }
+  }
+}

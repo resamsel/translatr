@@ -1,6 +1,7 @@
 package controllers;
 
 import actions.ApiAction;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.LocaleCriteria;
 import dto.Locale;
@@ -8,28 +9,25 @@ import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
-import java.io.ByteArrayInputStream;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
-import javax.inject.Inject;
+import io.swagger.annotations.*;
 import models.ProjectRole;
 import models.User;
+import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
+import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 import services.CacheService;
 import services.api.LocaleApiService;
+
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
 
 /**
  * @author resamsel
@@ -71,7 +69,7 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
 
   @Inject
   public LocalesApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-      LocaleApiService localeApiService) {
+                    LocaleApiService localeApiService) {
     super(injector, cache, auth, localeApiService);
     this.localeApiService = localeApiService;
   }
@@ -120,6 +118,35 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> get(@ApiParam(value = LOCALE_ID) UUID id) {
     return toJson(() -> api.get(id));
+  }
+
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = GET,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = LOCALE_READ, description = LOCALE_READ_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.Locale.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+      required = true, dataType = "string", paramType = "query")})
+  public CompletionStage<Result> byOwnerAndProjectNameAndName(
+      @ApiParam(value = USER_USERNAME) String username,
+      @ApiParam(value = PROJECT_NAME) String projectName,
+      @ApiParam(value = LOCALE_NAME) String localeName,
+      @ApiParam(value = FETCH) String fetch) {
+    return locale(
+        username,
+        projectName,
+        localeName,
+        locale -> ok(Optional.ofNullable(locale).map(Json::toJson).orElse(NullNode.getInstance())),
+        StringUtils.split(fetch, ","))
+        .exceptionally(this::handleException);
   }
 
   /**
@@ -229,7 +256,7 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> downloadBy(String username, String projectName, String localeName,
-      String fileType) {
+                                            String fileType) {
     return locale(
         username,
         projectName,
@@ -240,7 +267,7 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
   }
 
   private CompletionStage<Result> locale(String username, String projectName, String localeName,
-      Function<Locale, Result> processor, String... fetches) {
+                                         Function<Locale, Result> processor, String... fetches) {
     return tryCatch(() -> {
       Locale locale = localeApiService
           .byOwnerAndProjectAndName(username, projectName, localeName, fetches);

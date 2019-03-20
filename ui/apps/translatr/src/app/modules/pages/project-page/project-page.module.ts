@@ -29,6 +29,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { initialState as projectInitialState, PROJECT_FEATURE_KEY, projectReducer } from './+state/project.reducer';
 import { ProjectEffects } from './+state/project.effects';
 import { ProjectFacade } from './+state/project.facade';
+import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { ProjectFacade } from './+state/project.facade';
     LocaleListComponent,
     ProjectMembersComponent,
     MemberListComponent,
-    ProjectActivityComponent
+    ProjectActivityComponent,
+    ProjectSettingsComponent
   ],
   imports: [
     ProjectPageRoutingModule,

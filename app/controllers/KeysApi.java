@@ -8,17 +8,7 @@ import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
+import io.swagger.annotations.*;
 import models.ProjectRole;
 import models.User;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +18,10 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.CacheService;
 import services.api.KeyApiService;
+
+import javax.inject.Inject;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author resamsel
@@ -57,7 +51,7 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
 
   @Inject
   public KeysApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-      KeyApiService keyApiService) {
+                 KeyApiService keyApiService) {
     super(injector, cache, auth, keyApiService);
   }
 
@@ -79,9 +73,17 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
       @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string",
           paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
-    return toJsons(() -> api.find(KeyCriteria.from(request()).withProjectId(projectId),
-        criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
-            ProjectRole.Manager, ProjectRole.Translator, ProjectRole.Developer)));
+    return toJsons(() -> api.find(
+        KeyCriteria.from(request()).withProjectId(projectId),
+        criteria -> checkProjectRole(
+            projectId,
+            User.loggedInUser(),
+            ProjectRole.Owner,
+            ProjectRole.Manager,
+            ProjectRole.Translator,
+            ProjectRole.Developer
+        ))
+    );
   }
 
   /**
@@ -99,7 +101,7 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> get(@ApiParam(value = KEY_ID) UUID id,
-      @ApiParam(value = FETCH) String fetch) {
+                                     @ApiParam(value = FETCH) String fetch) {
     return toJson(() -> api.get(id, StringUtils.split(fetch, ",")));
   }
 

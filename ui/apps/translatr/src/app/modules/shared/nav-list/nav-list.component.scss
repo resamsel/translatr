@@ -20,43 +20,29 @@
     width: 64px;
   }
 
-  &.item-0 {
-    animation-delay: 0s;
-
-    .title {
-      width: 214px;
+  @for $i from 1 through 20 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i/10}s;
     }
   }
 
-  &.item-1 {
-    animation-delay: .2s;
-
-    .title {
-      width: 192px;
-    }
+  &:nth-child(1n) .title {
+    width: 214px;
   }
 
-  &.item-2 {
-    animation-delay: .4s;
-
-    .title {
-      width: 184px;
-    }
+  &:nth-child(2n) .title {
+    width: 192px;
   }
 
-  &.item-3 {
-    animation-delay: .6s;
-
-    .title {
-      width: 184px;
-    }
+  &:nth-child(3n) .title {
+    width: 160px;
   }
 
-  &.item-4 {
-    animation-delay: .8s;
+  &:nth-child(4n) .title {
+    width: 184px;
+  }
 
-    .title {
-      width: 184px;
-    }
+  &:nth-child(5n) .title {
+    width: 176px;
   }
 }

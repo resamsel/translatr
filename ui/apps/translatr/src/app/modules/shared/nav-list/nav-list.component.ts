@@ -9,10 +9,11 @@ import { PagedList } from "../../../shared/paged-list";
 export class NavListComponent implements OnInit {
 
   @Input() pagedList: PagedList<{ id: string }> | undefined;
+  @Input() loadingListLength = 5;
+  @Input() showLoadingAvatar = true;
+  @Input() template: TemplateRef<any>;
 
   @Output() more = new EventEmitter<number>();
-
-  @Input() template: TemplateRef<any>;
 
   constructor() {
   }
@@ -22,6 +23,10 @@ export class NavListComponent implements OnInit {
 
   trackByFn(index: number, item: { id: string }): string {
     return item.id;
+  }
+
+  get loadingList(): number[] {
+    return Array(this.loadingListLength).map((value: number, index: number) => index);
   }
 
   loadMore(): void {

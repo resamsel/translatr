@@ -1,0 +1,79 @@
+<app-sidenav>
+  <app-search-bar [criteria]="keySearch$ | async" (search)="onSearch($event)"></app-search-bar>
+
+  <div class="main" [class.selected]="selectedMessage$ | async">
+    <div class="sidebar">
+      <div class="locale">
+        <button mat-button [matMenuTriggerFor]="localeSelector">
+          {{(locale$ | async)?.displayName}}
+          <mat-icon [inline]="true">arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #localeSelector="matMenu" [overlapTrigger]="true">
+          <a
+            mat-menu-item
+            *ngFor="let locale of (locales$ | async)?.list"
+            [routerLink]="['..', locale.name]"
+            queryParamsHandling="preserve">{{locale.displayName}}</a>
+        </mat-menu>
+      </div>
+      <mat-divider></mat-divider>
+      <app-nav-list
+        [pagedList]="keys$ | async"
+        [template]="template"
+        [showLoadingAvatar]="false"
+        [loadingListLength]="10"
+        (more)="onLoadMore($event)"
+        class="nav-list">
+        <ng-template #template let-key>
+          <a
+            mat-list-item
+            [routerLink]="[]"
+            [queryParams]="{key: key.name}"
+            queryParamsHandling="merge"
+            [class.active]="(selectedMessage$ | async)?.keyName === key.name">
+            <h3 matLine>{{key.name}}</h3>
+            <p matLine class="translation">{{key.messages[(locale$ | async)?.name]?.value}}</p>
+          </a>
+        </ng-template>
+      </app-nav-list>
+    </div>
+    <div class="editor">
+      <div class="buttons">
+        <h2>Language Editor</h2>
+        <div class="flex-spacer"></div>
+        <a mat-button [routerLink]="[]">Cancel</a>
+        <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="content">
+        <ngx-codemirror
+          *ngIf="message"
+          [(ngModel)]="message.value"
+          [autoFocus]="true"
+          [options]="options"
+        ></ngx-codemirror>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="nav">
+        <mat-tab-group #tabs>
+          <mat-tab label="Preview" i18n-label="@@preview">
+            <div class="preview">
+              <p [innerHTML]="(selectedMessage$ | async)?.value"></p>
+            </div>
+          </mat-tab>
+          <mat-tab label="Translations" i18n-label="@@translations">
+            <div class="preview">
+              <mat-list>
+                <mat-list-item *ngFor="let message of messagesOfKey(keys$ | async, selectedKey$ | async)" class="translation">
+                  <h3 matLine>{{message.localeName}}</h3>
+                  <p matLine>{{message.value}}</p>
+                </mat-list-item>
+              </mat-list>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+  </div>
+</app-sidenav>

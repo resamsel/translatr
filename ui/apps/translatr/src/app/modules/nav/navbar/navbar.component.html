@@ -25,6 +25,7 @@
         Contributors
       </a>
       <span *ngIf="page" class="page">{{page}}</span>
+      <ng-content select="app-search-bar"></ng-content>
       <ng-content></ng-content>
       <div class="flex-spacer"></div>
       <app-auth-bar-item></app-auth-bar-item>

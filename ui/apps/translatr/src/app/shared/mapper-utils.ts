@@ -1,6 +1,6 @@
 export interface Temporal {
-  whenCreated: Date | string;
-  whenUpdated: Date | string
+  whenCreated?: Date | string;
+  whenUpdated?: Date | string
 }
 
 export const convertTemporals = <T extends Temporal>(t: T): T => {
@@ -10,8 +10,8 @@ export const convertTemporals = <T extends Temporal>(t: T): T => {
 
   return {
     ...(t as object),
-    whenCreated: new Date(t.whenCreated),
-    whenUpdated: new Date(t.whenUpdated)
+    whenCreated: t.whenCreated && new Date(t.whenCreated),
+    whenUpdated: t.whenUpdated && new Date(t.whenUpdated)
   } as T;
 };
 

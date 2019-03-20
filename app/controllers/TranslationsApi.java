@@ -8,17 +8,7 @@ import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
+import io.swagger.annotations.*;
 import models.ProjectRole;
 import models.User;
 import play.inject.Injector;
@@ -28,6 +18,10 @@ import play.mvc.With;
 import services.CacheService;
 import services.api.MessageApiService;
 import utils.JsonUtils;
+
+import javax.inject.Inject;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author resamsel
@@ -66,7 +60,7 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
    */
   @Inject
   public TranslationsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-      MessageApiService messageApiService) {
+                         MessageApiService messageApiService) {
     super(injector, cache, auth, messageApiService);
   }
 
@@ -92,11 +86,17 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
     return toJsons(() -> api.find(
-        MessageCriteria.from(request()).withProjectId(projectId)
+        MessageCriteria.from(request())
+            .withProjectId(projectId)
             .withLocaleId(JsonUtils.getUuid(request().getQueryString("localeId")))
             .withKeyName(request().getQueryString(PARAM_KEY_NAME)),
-        criteria -> checkProjectRole(projectId, User.loggedInUser(), ProjectRole.Owner,
-            ProjectRole.Manager, ProjectRole.Translator, ProjectRole.Developer)));
+        criteria -> checkProjectRole(
+            projectId,
+            User.loggedInUser(),
+            ProjectRole.Owner,
+            ProjectRole.Manager,
+            ProjectRole.Translator,
+            ProjectRole.Developer)));
   }
 
   /**

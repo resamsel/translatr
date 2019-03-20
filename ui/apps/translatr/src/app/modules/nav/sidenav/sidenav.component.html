@@ -1,5 +1,8 @@
 <div class="sidenav-content">
   <app-navbar>
+    <ng-container ngProjectAs="app-search-bar">
+      <ng-content select="app-search-bar"></ng-content>
+    </ng-container>
     <ng-container ngProjectAs="mat-toolbar-row">
       <ng-content select="mat-toolbar-row"></ng-content>
     </ng-container>

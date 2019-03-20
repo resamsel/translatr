@@ -16,6 +16,7 @@ import { UsersPageModule } from "./modules/pages/users-page/users-page.module";
 import { StoreModule } from "@ngrx/store";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
+import { EditorPageModule } from "./modules/pages/editor-page/editor-page.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,6 +32,7 @@ import { StoreDevtoolsModule } from "@ngrx/store-devtools";
     UsersPageModule,
     UserPageModule,
     ProjectPageModule,
+    EditorPageModule,
     LayoutModule,
     MatToolbarModule,
     MatButtonModule,
