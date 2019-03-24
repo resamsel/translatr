@@ -87,7 +87,11 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     this.editorFacade.loadKeysBy({limit: `${limit + 25}`});
   }
 
-  messagesOfKey(keys: PagedList<Key>, keyName: string): Array<Message> {
+  messagesOfKey(keys?: PagedList<Key>, keyName?: string): Array<Message> {
+    if (keys === undefined || keyName === undefined) {
+      return [];
+    }
+
     const key = keys.list.find((k: Key) => k.name === keyName);
     if (key === undefined) {
       return [];

@@ -62,8 +62,8 @@
 
 .editor {
   @include mat-elevation(8);
-  flex-grow: 1;
   display: flex;
+  flex: 1 1 100%;
   flex-direction: column;
 
   & > * {
@@ -110,57 +110,36 @@
 
 .meta {
   display: none;
-  flex-grow: 1;
+  flex: 1 1 100%;
   border-left: 1px solid rgba(0, 0, 0, 0.06);
+  width: 100%;
 
   ::ng-deep .mat-tab-label {
     height: 52px;
   }
 
-  .nav {
-    display: flex;
-    flex-grow: 1;
-    width: 100%;
-
-    .mat-tab-group {
-      flex-grow: 1;
-      max-width: 100%;
-
-      ::ng-deep {
-        .mat-tab-body-wrapper {
-          max-height: 100%;
-          overflow: auto;
-
-          .mat-tab-body {
-            //overflow: visible;
-          }
-        }
+  .mat-tab-group {
+    ::ng-deep {
+      .mat-tab-body-wrapper {
+        flex: 1 0 100%;
       }
     }
+  }
 
-    ::ng-deep .mat-tab-content {
-      display: flex;
+  .preview {
+    p {
+      padding: 8px 16px;
     }
+  }
 
-    .preview {
-      max-height: 100%;
-      overflow: auto;
-      flex-grow: 1;
+  .translation {
+    height: auto;
+    min-height: 72px;
+    max-height: 216px;
+    overflow: hidden;
 
-      p {
-        padding: 8px;
-      }
-    }
-
-    .translation {
-      height: auto;
-      min-height: 72px;
-      max-height: 216px;
-      overflow: hidden;
-
-      ::ng-deep .mat-line {
-        white-space: normal;
-      }
+    ::ng-deep .mat-line {
+      white-space: normal;
     }
   }
 
