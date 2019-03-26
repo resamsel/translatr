@@ -24,6 +24,16 @@ const getLocales = createSelector(
   (state: EditorState) => state.locales
 );
 
+const getLocalesLoading = createSelector(
+  getLoadingState,
+  (state: LoadingState<EditorState>) => state.locales
+);
+
+const getKey = createSelector(
+  getEditorState,
+  (state: EditorState) => state.key
+);
+
 const getKeys = createSelector(
   getEditorState,
   (state: EditorState) => state.keys
@@ -32,6 +42,11 @@ const getKeys = createSelector(
 const getKeysLoading = createSelector(
   getLoadingState,
   (state: LoadingState<EditorState>) => state.keys
+);
+
+const getSelectedLocale = createSelector(
+  getEditorState,
+  (state: EditorState) => state.selectedLocale
 );
 
 const getSelectedKey = createSelector(
@@ -44,18 +59,21 @@ const getSelectedMessage = createSelector(
   (state: EditorState) => state.selectedMessage
 );
 
-const getKeySearch = createSelector(
+const getSearch = createSelector(
   getEditorState,
-  (state: EditorState) => state.keySearch
+  (state: EditorState) => state.search
 );
 
 export const editorQuery = {
   getError,
   getLocale,
   getLocales,
+  getLocalesLoading,
+  getKey,
   getKeys,
   getKeysLoading,
+  getSelectedLocale,
   getSelectedKey,
   getSelectedMessage,
-  getKeySearch
+  getSearch
 };

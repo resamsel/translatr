@@ -44,7 +44,6 @@ export class ActivityComponent implements OnInit {
       start: minusOneYear(new Date()),
       end: new Date()
     };
-    console.log('this.data', this.data, activity);
   }
 
   data: HeatmapData;

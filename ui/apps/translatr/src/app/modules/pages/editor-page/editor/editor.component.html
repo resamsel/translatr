@@ -1,0 +1,52 @@
+<app-sidenav class="flat">
+  <ng-container ngProjectAs="app-search-bar">
+    <ng-content select="app-search-bar"></ng-content>
+  </ng-container>
+
+  <div class="main" [class.selected]="message">
+    <div class="sidebar">
+      <div class="selector">
+        <ng-content select="app-editor-selector"></ng-content>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="nav-list">
+        <ng-content select="app-nav-list"></ng-content>
+      </div>
+    </div>
+    <div class="editor">
+      <div class="buttons">
+        <h2>{{title}}</h2>
+        <div class="flex-spacer"></div>
+        <a mat-button [routerLink]="[]">Cancel</a>
+        <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="content">
+        <ngx-codemirror
+          *ngIf="message"
+          [(ngModel)]="message.value"
+          [autoFocus]="true"
+          [options]="options"
+        ></ngx-codemirror>
+      </div>
+    </div>
+    <div class="meta">
+      <mat-tab-group #tabs>
+        <mat-tab label="Preview" i18n-label="@@preview">
+          <div class="preview">
+            <p [innerHTML]="message?.value"></p>
+          </div>
+        </mat-tab>
+        <mat-tab label="Translations" i18n-label="@@translations">
+          <mat-list>
+            <mat-list-item *ngFor="let message of messages"
+                           class="translation">
+              <h3 matLine>{{message.localeName}}</h3>
+              <p matLine [innerHTML]="message.value"></p>
+            </mat-list-item>
+          </mat-list>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</app-sidenav>

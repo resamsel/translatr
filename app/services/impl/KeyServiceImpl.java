@@ -7,11 +7,13 @@ import static utils.Stopwatch.log;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.RawSqlBuilder;
 import criterias.KeyCriteria;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.validation.Validator;
+
 import models.Key;
 import models.Project;
 import models.Stat;
@@ -37,7 +39,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
   @Inject
   public KeyServiceImpl(Validator validator, CacheService cache, KeyRepository keyRepository,
-      LogEntryService logEntryService) {
+                        LogEntryService logEntryService) {
     super(validator, cache, keyRepository, Key::getCacheKey, logEntryService);
 
     this.cache = cache;
@@ -119,6 +121,15 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
     return cache.getOrElse(
         getCacheKey(project.id, name),
         () -> keyRepository.byProjectAndName(project, name),
+        60
+    );
+  }
+
+  @Override
+  public Key byOwnerAndProjectAndName(String username, String projectName, String keyName, String... fetches) {
+    return cache.getOrElse(
+        String.format("key:owner:%s:projectName:%s:name:%s", username, projectName, keyName),
+        () -> keyRepository.byOwnerAndProjectAndName(username, projectName, keyName, fetches),
         60
     );
   }

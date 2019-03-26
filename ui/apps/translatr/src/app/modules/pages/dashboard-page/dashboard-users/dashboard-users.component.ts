@@ -18,7 +18,6 @@ export class DashboardUsersComponent implements OnInit {
   ngOnInit() {
     this.route.data
       .subscribe((data: { users: PagedList<User> }) => {
-        console.log(data);
         this.users = data.users;
       });
   }

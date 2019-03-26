@@ -1,13 +1,12 @@
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { EditorFacade } from "./+state/editor.facade";
-import { ActivatedRoute, ParamMap, Params, Router } from "@angular/router";
-import { filter, take, takeUntil } from "rxjs/operators";
-import { Message } from "../../../shared/message";
-import { MatTabGroup } from "@angular/material";
-import { combineLatest } from "rxjs";
-import { Locale } from "../../../shared/locale";
-import { PagedList } from "../../../shared/paged-list";
-import { Key } from "../../../shared/key";
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {EditorFacade} from "./+state/editor.facade";
+import {ActivatedRoute, ParamMap, Params, Router} from "@angular/router";
+import {filter, take, takeUntil} from "rxjs/operators";
+import {Message} from "../../../shared/message";
+import {combineLatest} from "rxjs";
+import {Locale} from "../../../shared/locale";
+import {PagedList} from "../../../shared/paged-list";
+import {Key} from "../../../shared/key";
 
 @Component({
   selector: 'app-locale-editor-page',
@@ -21,17 +20,8 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   keys$ = this.editorFacade.keys$;
   selectedMessage$ = this.editorFacade.selectedMessage$;
   selectedKey$ = this.editorFacade.selectedKey$;
-  keySearch$ = this.editorFacade.keySearch$;
+  search$ = this.editorFacade.search$;
   message: Message;
-  options = {
-    mode: 'xml',
-    lineNumbers: true,
-    lineWrapping: true,
-    styleActiveLine: true,
-    htmlMode: true
-  };
-
-  @ViewChild('tabs', {read: MatTabGroup}) private tabs: MatTabGroup;
 
   constructor(
     private readonly editorFacade: EditorFacade,
@@ -42,7 +32,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.paramMap
-      .pipe(takeUntil(this.editorFacade.unloadLocaleEditor$))
+      .pipe(takeUntil(this.editorFacade.unloadEditor$))
       .subscribe((params: ParamMap) => {
         this.editorFacade.loadLocaleEditor(
           params.get('username'),
@@ -51,18 +41,13 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
         );
       });
     this.route.queryParams
-      .pipe(takeUntil(this.editorFacade.unloadLocaleEditor$))
+      .pipe(takeUntil(this.editorFacade.unloadEditor$))
       .subscribe((params: Params) => {
         this.editorFacade.updateKeySearch(params);
         this.editorFacade.selectKey(params.key);
       });
     this.selectedMessage$.subscribe((message: Message) => {
-      console.log('message', message);
-      this.message = message;
-      this.tabs.realignInkBar();
-
       if (message === undefined) {
-        console.log('removing key from query params, as no message was selected');
         combineLatest(this.locale$, this.editorFacade.keysLoading$)
           .pipe(take(1), filter(([locale, loading]: [Locale, boolean]) => locale !== undefined && !loading))
           .subscribe(() => this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {key: null}}));
@@ -71,12 +56,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.editorFacade.unloadLocaleEditor();
-  }
-
-  @HostListener('keydown.control.enter')
-  onSave(): void {
-    this.editorFacade.saveMessage(this.message);
+    this.editorFacade.unloadEditor();
   }
 
   onSearch(criteria: RequestCriteria) {

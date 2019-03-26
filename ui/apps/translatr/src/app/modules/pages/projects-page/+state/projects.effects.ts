@@ -16,7 +16,6 @@ export class ProjectsEffects {
     {
       run: (action: LoadProjects, state: ProjectsPartialState) => {
         if (!action.payload.reload && state[PROJECTS_FEATURE_KEY].pagedList) {
-          console.log('Reusing cache');
           return new ProjectsLoaded(state[PROJECTS_FEATURE_KEY].pagedList);
         }
         // Your custom REST 'load' logic goes here. For now just return an empty list...

@@ -30,17 +30,9 @@
 .sidebar {
   border-right: 1px solid rgba(0, 0, 0, 0.06);
   max-width: 33.33%;
-  flex-grow: 1;
+  flex: 1 1 100%;
   display: flex;
   flex-direction: column;
-
-  .locale {
-    min-height: 52px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 8px;
-  }
 
   a {
     .translation {
@@ -52,11 +44,11 @@
   .nav-list {
     overflow-x: scroll;
     max-height: 100%;
-  }
 
-  a.active {
-    background: #8BC34A;
-    color: #fff;
+    ::ng-deep a.active {
+      background: #8BC34A;
+      color: #fff;
+    }
   }
 
   @media only screen and (min-width: 993px) {

@@ -1,7 +1,5 @@
 package repositories.impl;
 
-import static utils.Stopwatch.log;
-
 import actors.ActivityActor;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
@@ -14,26 +12,24 @@ import com.avaje.ebean.Query;
 import criterias.HasNextPagedList;
 import criterias.KeyCriteria;
 import dto.PermissionException;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.validation.Validator;
-import models.ActionType;
-import models.Key;
-import models.Message;
-import models.Project;
-import models.ProjectRole;
-import models.User;
+import models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
 import repositories.MessageRepository;
 import services.PermissionService;
 import utils.QueryUtils;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static utils.Stopwatch.log;
 
 @Singleton
 public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCriteria> implements
@@ -49,7 +45,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
   @Inject
   public KeyRepositoryImpl(Validator validator, @Named(ActivityActor.NAME) ActorRef activityActor,
-      MessageRepository messageRepository, PermissionService permissionService) {
+                           MessageRepository messageRepository, PermissionService permissionService) {
     super(validator, activityActor);
 
     this.messageRepository = messageRepository;
@@ -128,6 +124,16 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
   public Key byProjectAndName(UUID projectId, String name) {
     return fetch().where().eq("project.id", projectId).eq("name", name).findUnique();
+  }
+
+  @Override
+  public Key byOwnerAndProjectAndName(String username, String projectName, String keyName, String... fetches) {
+    return fetch(fetches)
+        .where()
+        .eq("project.owner.username", username)
+        .eq("project.name", projectName)
+        .eq("name", keyName)
+        .findUnique();
   }
 
   private Query<Key> fetch(List<String> fetches) {

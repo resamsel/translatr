@@ -2,15 +2,16 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import criterias.KeyCriteria;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import models.Key;
 import models.Project;
 import services.impl.KeyServiceImpl;
 
 /**
- *
  * @author resamsel
  * @version 29 Aug 2016
  */
@@ -25,4 +26,6 @@ public interface KeyService extends ModelService<Key, UUID, KeyCriteria> {
   List<Key> latest(Project project, int limit);
 
   Key byProjectAndName(Project project, String keyName);
+
+  Key byOwnerAndProjectAndName(String username, String projectName, String keyName, String... fetches);
 }

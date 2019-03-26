@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { convertTemporals, convertTemporalsList } from "../shared/mapper-utils";
-import { Key } from "../shared/key";
-import { PagedList } from "../shared/paged-list";
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
+import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
+import {Key} from "../shared/key";
+import {PagedList} from "../shared/paged-list";
 
 @Injectable({
   providedIn: 'root'
@@ -15,19 +15,17 @@ export class KeyService {
   }
 
   byOwnerAndProjectNameAndName(
-    username: string,
-    projectName: string,
-    localeName: string,
-    options?: {
+    options: {
+      username: string;
+      projectName: string;
+      keyName: string;
       params?: HttpParams | {
         [param: string]: string | string[];
       }
     }): Observable<Key> {
     return this.http
-      .get<Key>(`/api/${username}/${projectName}/keys/${localeName}`, options)
-      .pipe(
-        map((key: Key) => convertTemporals(key))
-      );
+      .get<Key>(`/api/${options.username}/${options.projectName}/keys/${options.keyName}`, options)
+      .pipe(map(convertTemporals));
   }
 
   getKeys(options: {

@@ -59,6 +59,7 @@ GET     /api/:username              controllers.UsersApi.byName(username: String
 GET     /api/:username/:projectName controllers.ProjectsApi.byOwnerAndName(username: String, projectName: String, fetch: String ?= "")
 GET		/api/:username/:projectName/locales/:localeName     controllers.LocalesApi.byOwnerAndProjectNameAndName(username: String, projectName: String, localeName: String, fetch: String ?= "")
 GET		/api/:username/:projectName/locales/:localeName/export/:fileType		controllers.LocalesApi.downloadBy(username: String, projectName: String, localeName: String, fileType: String)
+GET		/api/:username/:projectName/keys/:keyName     controllers.KeysApi.byOwnerAndProjectNameAndName(username: String, projectName: String, keyName: String, fetch: String ?= "")
 
 GET		/api/*file					controllers.ApiDocs.versioned(path="/public/lib/swagger-ui", file: String)
 

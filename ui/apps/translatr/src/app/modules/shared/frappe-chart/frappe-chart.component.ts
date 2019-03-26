@@ -38,7 +38,6 @@ export class FrappeChartComponent {
     // this.chart.svg.setAttribute('viewBox', `0 0 716 160`);
     // this.chart.svg.setAttribute('width', '100%');
     // this.chart.svg.setAttribute('height', '100%');
-    console.log('chart', this.chart);
   }
 
   private chart: Heatmap;

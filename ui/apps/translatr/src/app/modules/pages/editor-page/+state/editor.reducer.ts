@@ -29,10 +29,11 @@ export interface EditorState {
   key?: Key;
   keys?: PagedList<Key>;
 
+  selectedLocale?: string;
   selectedKey?: string;
   selectedMessage?: Message;
 
-  keySearch?: RequestCriteria;
+  search?: RequestCriteria;
 
   loading: LoadingState<EditorState>;
 
@@ -44,7 +45,7 @@ export interface EditorPartialState {
 }
 
 export const initialState: EditorState = {
-  keySearch: {
+  search: {
     limit: '25',
     order: 'name',
     fetch: 'messages'
@@ -54,6 +55,7 @@ export const initialState: EditorState = {
     locales: false,
     key: false,
     keys: false,
+    selectedLocale: false,
     selectedKey: false,
     selectedMessage: false,
     loading: false,
@@ -108,25 +110,35 @@ export function editorReducer(
     case EditorActionTypes.LocaleLoaded:
       return placePayload(state, 'locale', action.payload);
 
+    case EditorActionTypes.LoadLocalesBy:
+      return placePayload(state, 'search', {...state.search, ...action.payload});
+    case EditorActionTypes.LoadLocaleSearch:
+      return placePayload(state, 'search', {...state.search, ...action.payload});
     case EditorActionTypes.LoadLocales:
       return activateLoading(state, 'locales');
     case EditorActionTypes.LocalesLoaded:
       return placePayload(state, 'locales', action.payload);
 
+    case EditorActionTypes.LoadKey:
+      return activateLoading(state, 'key');
+    case EditorActionTypes.KeyLoaded:
+      return placePayload(state, 'key', action.payload);
+
+    case EditorActionTypes.LoadKeysBy:
+      return placePayload(state, 'search', {...state.search, ...action.payload});
+    case EditorActionTypes.LoadKeySearch:
+      return placePayload(state, 'search', {...state.search, ...action.payload});
     case EditorActionTypes.LoadKeys:
       return activateLoading(state, 'keys');
     case EditorActionTypes.KeysLoaded:
       return placePayload(state, 'keys', action.payload);
 
+    case EditorActionTypes.SelectLocale:
+      return placePayload(state, 'selectedLocale', action.payload.locale);
     case EditorActionTypes.SelectKey:
       return placePayload(state, 'selectedKey', action.payload.key);
     case EditorActionTypes.MessageSelected:
       return placePayload(state, 'selectedMessage', action.payload.message);
-
-    case EditorActionTypes.LoadKeysBy:
-      return placePayload(state, 'keySearch', {...state.keySearch, ...action.payload});
-    case EditorActionTypes.LoadKeySearch:
-      return placePayload(state, 'keySearch', {...state.keySearch, ...action.payload});
 
     case EditorActionTypes.MessageSaved:
       return {

@@ -1,22 +1,28 @@
-import { Action } from '@ngrx/store';
-import { Locale } from "../../../../shared/locale";
-import { PagedList } from "../../../../shared/paged-list";
-import { Message } from "../../../../shared/message";
-import { Key } from "../../../../shared/key";
+import {Action} from '@ngrx/store';
+import {Locale} from "../../../../shared/locale";
+import {PagedList} from "../../../../shared/paged-list";
+import {Message} from "../../../../shared/message";
+import {Key} from "../../../../shared/key";
 
 export enum EditorActionTypes {
   LoadLocales = '[Editor Page] Load Locales',
+  LoadLocalesBy = '[Editor Page] Load Locales By',
+  LoadLocaleSearch = '[Editor Page] Load Locale Search',
   LocalesLoaded = '[Locales API] Locales Loaded',
   LocalesLoadError = '[Locales API] Locales Load Error',
   LoadLocale = '[Editor Page] Load Locale',
   LocaleLoaded = '[Locales API] Locale Loaded',
   LocaleLoadError = '[Locales API] Locale Load Error',
+  SelectLocale = '[Editor Page] Select Locale',
 
   LoadKeys = '[Editor Page] Load Keys',
   LoadKeysBy = '[Editor Page] Load Keys By',
   LoadKeySearch = '[Editor Page] Load Key Search',
   KeysLoaded = '[Keys API] Keys Loaded',
   KeysLoadError = '[Keys API] Keys Load Error',
+  LoadKey = '[Editor Page] Load Key',
+  KeyLoaded = '[Keys API] Key Loaded',
+  KeyLoadError = '[Keys API] Key Load Error',
   SelectKey = '[Editor Page] Select Key',
 
   MessageSelected = '[Editor Page] Message Selected',
@@ -28,7 +34,10 @@ export enum EditorActionTypes {
 export class LoadLocales implements Action {
   readonly type = EditorActionTypes.LoadLocales;
 
-  constructor(public payload: { projectId: string }) {
+  constructor(public payload: {
+    projectId: string;
+    options?: { params: RequestCriteria };
+  }) {
   }
 }
 
@@ -91,10 +100,38 @@ export class KeysLoaded implements Action {
   }
 }
 
+export class LoadKey implements Action {
+  readonly type = EditorActionTypes.LoadKey;
+
+  constructor(public payload: { username: string; projectName: string; keyName: string }) {
+  }
+}
+
+export class KeyLoadError implements Action {
+  readonly type = EditorActionTypes.KeyLoadError;
+
+  constructor(public payload: any) {
+  }
+}
+
+export class KeyLoaded implements Action {
+  readonly type = EditorActionTypes.KeyLoaded;
+
+  constructor(public payload: Key) {
+  }
+}
+
 export class SelectKey implements Action {
   readonly type = EditorActionTypes.SelectKey;
 
   constructor(public payload: { key?: string }) {
+  }
+}
+
+export class SelectLocale implements Action {
+  readonly type = EditorActionTypes.SelectLocale;
+
+  constructor(public payload: { locale?: string }) {
   }
 }
 
@@ -133,6 +170,20 @@ export class LoadKeysBy implements Action {
   }
 }
 
+export class LoadLocalesBy implements Action {
+  readonly type = EditorActionTypes.LoadLocalesBy;
+
+  constructor(public payload: RequestCriteria) {
+  }
+}
+
+export class LoadLocaleSearch implements Action {
+  readonly type = EditorActionTypes.LoadLocaleSearch;
+
+  constructor(public payload: RequestCriteria) {
+  }
+}
+
 export class LoadKeySearch implements Action {
   readonly type = EditorActionTypes.LoadKeySearch;
 
@@ -141,9 +192,10 @@ export class LoadKeySearch implements Action {
 }
 
 export type EditorAction =
-  LoadLocales | LocalesLoaded | LocalesLoadError |
+  LoadLocales | LoadLocalesBy | LocalesLoaded | LocalesLoadError |
   LoadLocale | LocaleLoaded | LocaleLoadError |
   LoadKeys | LoadKeysBy | KeysLoaded | KeysLoadError |
-  SelectKey | MessageSelected | MessageSelectError |
+  LoadKey | KeyLoaded | KeyLoadError |
+  SelectKey | SelectLocale | MessageSelected | MessageSelectError |
   SaveMessage | MessageSaved |
-  LoadKeySearch;
+  LoadLocaleSearch | LoadKeySearch;
