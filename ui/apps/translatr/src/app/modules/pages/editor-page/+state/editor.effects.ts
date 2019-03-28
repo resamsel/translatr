@@ -1,16 +1,21 @@
-import { Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/nx';
-import { EDITOR_FEATURE_KEY, EditorPartialState } from './editor.reducer';
+import {Injectable} from '@angular/core';
+import {Actions, Effect} from '@ngrx/effects';
+import {DataPersistence} from '@nrwl/nx';
+import {EDITOR_FEATURE_KEY, EditorPartialState} from './editor.reducer';
 import {
-  EditorActionTypes, KeyLoaded, KeyLoadError,
+  EditorActionTypes,
+  KeyLoaded,
+  KeyLoadError,
   KeysLoaded,
-  KeysLoadError, LoadKey,
+  KeysLoadError,
+  LoadKey,
   LoadKeys,
   LoadKeysBy,
   LoadKeySearch,
   LoadLocale,
-  LoadLocales, LoadLocalesBy, LoadLocaleSearch,
+  LoadLocales,
+  LoadLocalesBy,
+  LoadLocaleSearch,
   LocaleLoaded,
   LocaleLoadError,
   LocalesLoaded,
@@ -19,20 +24,21 @@ import {
   MessageSelected,
   MessageSelectError,
   SaveMessage,
-  SelectKey, SelectLocale
+  SelectKey,
+  SelectLocale
 } from './editor.actions';
-import { LocaleService } from "../../../../services/locale.service";
-import { Locale } from "../../../../shared/locale";
-import { filter, map, take } from "rxjs/operators";
-import { combineLatest, Observable } from "rxjs";
-import { KeyService } from "../../../../services/key.service";
-import { PagedList } from "../../../../shared/paged-list";
-import { Key } from "../../../../shared/key";
-import { MessageService } from "../../../../services/message.service";
-import { Message } from "../../../../shared/message";
-import { Action } from "@ngrx/store";
-import { EditorFacade } from "./editor.facade";
-import { MatSnackBar } from "@angular/material";
+import {LocaleService} from "../../../../services/locale.service";
+import {Locale} from "../../../../shared/locale";
+import {filter, map, take} from "rxjs/operators";
+import {combineLatest, Observable} from "rxjs";
+import {KeyService} from "../../../../services/key.service";
+import {PagedList} from "../../../../shared/paged-list";
+import {Key} from "../../../../shared/key";
+import {MessageService} from "../../../../services/message.service";
+import {Message} from "../../../../shared/message";
+import {Action} from "@ngrx/store";
+import {EditorFacade} from "./editor.facade";
+import {MatSnackBar} from "@angular/material";
 
 @Injectable()
 export class EditorEffects {
@@ -134,7 +140,10 @@ export class EditorEffects {
     EditorActionTypes.LocaleLoaded,
     {
       run: (action: LocaleLoaded) => new LoadLocales({
-        projectId: action.payload.projectId
+        projectId: action.payload.projectId,
+        options: {
+          ...
+        }
       })
     }
   );
@@ -167,7 +176,6 @@ export class EditorEffects {
           options: {
             ...action.payload.options || {},
             params: {
-              ...state[EDITOR_FEATURE_KEY].search,
               ...action.payload.options && action.payload.options.params || {}
             }
           }
@@ -182,11 +190,31 @@ export class EditorEffects {
     }
   );
 
+  @Effect() selectLocaleAfterKeyChanged$ = this.dataPersistence.fetch(
+    EditorActionTypes.KeyLoaded,
+    {
+      run: (action: KeyLoaded, state?: EditorPartialState): Observable<Action> | Action | void => {
+        console.log(`Dispatching SelectKey(${state[EDITOR_FEATURE_KEY].selectedLocale}): selectLocaleAfterKeyChanged$`);
+        return new SelectLocale({locale: state[EDITOR_FEATURE_KEY].selectedLocale});
+      }
+    }
+  );
+
   @Effect() selectKeyAfterLocaleChanged$ = this.dataPersistence.fetch(
     EditorActionTypes.LocaleLoaded,
     {
       run: (action: LocaleLoaded, state?: EditorPartialState): Observable<Action> | Action | void => {
+        console.log(`Dispatching SelectKey(${state[EDITOR_FEATURE_KEY].selectedKey}): selectKeyAfterLocaleChanged$`);
         return new SelectKey({key: state[EDITOR_FEATURE_KEY].selectedKey});
+      }
+    }
+  );
+
+  @Effect() selectLocaleAfterLocalesLoaded$ = this.dataPersistence.fetch(
+    EditorActionTypes.LocalesLoaded,
+    {
+      run: (action: LocalesLoaded, state: EditorPartialState): Observable<Action> | Action | void => {
+        return new SelectLocale({locale: state[EDITOR_FEATURE_KEY].selectedLocale});
       }
     }
   );
@@ -195,6 +223,7 @@ export class EditorEffects {
     EditorActionTypes.KeysLoaded,
     {
       run: (action: KeysLoaded, state?: EditorPartialState): Observable<Action> | Action | void => {
+        console.log(`Dispatching SelectKey(${state[EDITOR_FEATURE_KEY].selectedKey}): selectKeyAfterKeysLoaded$`);
         return new SelectKey({key: state[EDITOR_FEATURE_KEY].selectedKey});
       }
     }
@@ -205,15 +234,19 @@ export class EditorEffects {
     {
       run: (action: SelectKey): Observable<Action> | Action | void => {
         if (action.payload.key === undefined) {
+          console.log('Key empty in action', action);
           return new MessageSelected({});
         }
 
-        return combineLatest(this.facade.locale$, this.facade.keys$).pipe(
-          filter(([locale, keys]: [Locale, PagedList<Key>]) => locale !== undefined && keys !== undefined),
+        console.log('Key exists in action', action);
+
+        return combineLatest(this.facade.locale$, this.facade.keys$, this.facade.keysLoading$).pipe(
+          filter(([locale, keys, loading]: [Locale, PagedList<Key>, boolean]) => !loading && locale !== undefined && keys !== undefined),
           take(1),
-          map(([locale, keys]: [Locale, PagedList<Key>]) => {
+          map(([locale, keys,]: [Locale, PagedList<Key>, boolean]) => {
             const key = keys.list.find((key: Key) => key.name === action.payload.key);
             if (key === undefined) {
+              console.log('Key not found in key list', keys);
               return new MessageSelected({});
             }
 
@@ -246,15 +279,19 @@ export class EditorEffects {
     {
       run: (action: SelectLocale): Observable<Action> | Action | void => {
         if (action.payload.locale === undefined) {
+          console.log('Locale empty in action', action);
           return new MessageSelected({});
         }
 
-        return combineLatest(this.facade.key$, this.facade.locales$).pipe(
-          filter(([key, locales]: [Key, PagedList<Locale>]) => key !== undefined && locales !== undefined),
+        console.log('Locale exists in action', action);
+
+        return combineLatest(this.facade.key$, this.facade.locales$, this.facade.localesLoading$).pipe(
+          filter(([key, locales, loading]: [Key, PagedList<Locale>, boolean]) => !loading && key !== undefined && locales !== undefined),
           take(1),
-          map(([key, locales]: [Key, PagedList<Locale>]) => {
+          map(([key, locales,]: [Key, PagedList<Locale>, boolean]) => {
             const locale = locales.list.find((locale: Locale) => locale.name === action.payload.locale);
             if (locale === undefined) {
+              console.log('Locale not found in locale list', locales);
               return new MessageSelected({});
             }
 

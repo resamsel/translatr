@@ -1,4 +1,5 @@
 <app-editor
+  [projectName]="(key$ | async)?.projectName"
   title="Key Editor"
   i18n-title="@@key.editor"
   [message]="selectedMessage$ | async"

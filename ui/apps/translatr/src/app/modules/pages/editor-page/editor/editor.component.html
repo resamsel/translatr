@@ -1,4 +1,4 @@
-<app-sidenav class="flat">
+<app-sidenav class="flat" page="{{projectName}} - {{title}}">
   <ng-container ngProjectAs="app-search-bar">
     <ng-content select="app-search-bar"></ng-content>
   </ng-container>
@@ -15,8 +15,6 @@
     </div>
     <div class="editor">
       <div class="buttons">
-        <h2>{{title}}</h2>
-        <div class="flex-spacer"></div>
         <a mat-button [routerLink]="[]">Cancel</a>
         <button mat-raised-button color="primary" (click)="onSave()">Save</button>
       </div>
@@ -24,6 +22,7 @@
       <div class="content">
         <ngx-codemirror
           *ngIf="message"
+          #editor
           [(ngModel)]="message.value"
           [autoFocus]="true"
           [options]="options"

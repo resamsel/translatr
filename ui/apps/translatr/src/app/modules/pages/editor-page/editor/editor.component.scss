@@ -58,16 +58,13 @@
 
 .editor {
   @include mat-elevation(8);
-  display: flex;
+  display: none;
   flex: 1 1 100%;
   flex-direction: column;
   z-index: 0;
 
-  & > * {
-    visibility: hidden;
-  }
-
   .buttons {
+    order: 2;
     display: flex;
     justify-content: flex-end;
     padding: 8px;
@@ -146,8 +143,8 @@
 }
 
 .selected {
-  .editor > * {
-    visibility: visible;
+  .editor {
+    display: flex;
   }
 
   @media only screen and (min-width: 993px) {

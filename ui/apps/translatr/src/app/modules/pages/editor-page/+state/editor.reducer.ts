@@ -1,8 +1,8 @@
-import { EditorAction, EditorActionTypes } from './editor.actions';
-import { PagedList } from "../../../../shared/paged-list";
-import { Locale } from "../../../../shared/locale";
-import { Key } from "../../../../shared/key";
-import { Message } from "../../../../shared/message";
+import {EditorAction, EditorActionTypes} from './editor.actions';
+import {PagedList} from "../../../../shared/paged-list";
+import {Locale} from "../../../../shared/locale";
+import {Key} from "../../../../shared/key";
+import {Message} from "../../../../shared/message";
 
 export const EDITOR_FEATURE_KEY = 'editor';
 
@@ -64,12 +64,28 @@ export const initialState: EditorState = {
   error: {}
 };
 
-function updateWithMessage(keys: PagedList<Key>, locale: Locale, message: Message) {
+function updateKeysWithMessage(keys: PagedList<Key>, locale: Locale, message: Message): PagedList<Key> {
+  if (keys === undefined || locale === undefined) {
+    return keys;
+  }
+
   const index = keys.list.findIndex((k: Key) => k.id === message.keyId);
   if (index !== -1) {
     keys.list[index].messages[locale.name] = message;
   }
   return keys;
+}
+
+function updateLocalesWithMessage(locales: PagedList<Locale>, key: Key, message: Message): PagedList<Locale> {
+  if (locales === undefined || key === undefined) {
+    return locales;
+  }
+
+  const index = locales.list.findIndex((l: Locale) => l.id === message.localeId);
+  if (index !== -1) {
+    locales.list[index].messages[key.name] = message;
+  }
+  return locales;
 }
 
 function activateLoading<K extends keyof EditorState>(
@@ -143,9 +159,12 @@ export function editorReducer(
     case EditorActionTypes.MessageSaved:
       return {
         ...state,
-        keys: updateWithMessage(state.keys, state.locale, action.payload),
+        keys: updateKeysWithMessage(state.keys, state.locale, action.payload),
+        locales: updateLocalesWithMessage(state.locales, state.key, action.payload),
         selectedMessage: state.selectedMessage.id === action.payload.id ? action.payload : state.selectedMessage
       }
+    case EditorActionTypes.UnloadEditor:
+      return {...initialState};
   }
   return state;
 }

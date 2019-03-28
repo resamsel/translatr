@@ -1,4 +1,5 @@
 <app-editor
+  [projectName]="(locale$ | async)?.projectName"
   title="Language Editor"
   i18n-title="@@locale.editor"
   [message]="selectedMessage$ | async"

@@ -1,5 +1,13 @@
+:host {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+}
+
 .search {
   height: 64px;
+  width: 100%;
 
   ::ng-deep {
     .mat-form-field-wrapper {

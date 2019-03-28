@@ -12,7 +12,7 @@ import {
   LoadLocaleSearch,
   SaveMessage,
   SelectKey,
-  SelectLocale
+  SelectLocale, UnloadEditor
 } from './editor.actions';
 import { Observable, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -72,15 +72,17 @@ export class EditorFacade {
     this.store.dispatch(new LoadLocale({username, projectName, localeName}));
   }
 
-  unloadEditor(): void {
-    this.unloadEditor$.next();
-  }
-
   loadKeyEditor(username: string, projectName: string, keyName: string): void {
     this.store.dispatch(new LoadKey({username, projectName, keyName: keyName}));
   }
 
+  unloadEditor(): void {
+    this.unloadEditor$.next();
+    this.store.dispatch(new UnloadEditor());
+  }
+
   selectKey(key?: string): void {
+    console.log(`Dispatching SelectKey(${key})`);
     this.store.dispatch(new SelectKey({key}));
   }
 

@@ -1,5 +1,5 @@
 <div class="sidenav-content">
-  <app-navbar>
+  <app-navbar [page]="page">
     <ng-container ngProjectAs="app-search-bar">
       <ng-content select="app-search-bar"></ng-content>
     </ng-container>

@@ -28,7 +28,9 @@ export enum EditorActionTypes {
   MessageSelected = '[Editor Page] Message Selected',
   MessageSelectError = '[Editor Page] Message Select Error',
   SaveMessage = '[Editor Page] Save Message',
-  MessageSaved = '[Messages API] Message Saved'
+  MessageSaved = '[Messages API] Message Saved',
+
+  UnloadEditor = '[Editor Page] Unload Editor'
 }
 
 export class LoadLocales implements Action {
@@ -72,7 +74,7 @@ export class LocaleLoadError implements Action {
 export class LocaleLoaded implements Action {
   readonly type = EditorActionTypes.LocaleLoaded;
 
-  constructor(public payload: Locale) {
+  constructor(public payload: { locale: Locale, params?: RequestCriteria }) {
   }
 }
 
@@ -191,6 +193,10 @@ export class LoadKeySearch implements Action {
   }
 }
 
+export class UnloadEditor implements Action {
+  readonly type = EditorActionTypes.UnloadEditor;
+}
+
 export type EditorAction =
   LoadLocales | LoadLocalesBy | LocalesLoaded | LocalesLoadError |
   LoadLocale | LocaleLoaded | LocaleLoadError |
@@ -198,4 +204,5 @@ export type EditorAction =
   LoadKey | KeyLoaded | KeyLoadError |
   SelectKey | SelectLocale | MessageSelected | MessageSelectError |
   SaveMessage | MessageSaved |
-  LoadLocaleSearch | LoadKeySearch;
+  LoadLocaleSearch | LoadKeySearch |
+  UnloadEditor;

@@ -9,6 +9,7 @@ import {MatDrawer} from "@angular/material";
 export class NavbarComponent implements OnInit {
 
   @Input() sidenav: MatDrawer;
+  @Input() page: string;
 
   constructor() { }
 

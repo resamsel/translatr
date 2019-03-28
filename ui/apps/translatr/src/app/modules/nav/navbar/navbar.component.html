@@ -8,12 +8,18 @@
         (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
-      <a mat-button
+      <a mat-icon-button
          routerLink="/"
          class="logo">
         <mat-icon>language</mat-icon>
+      </a>
+      <a routerLink="/" class="title">
         <span>Translatr</span>
       </a>
+      <span *ngIf="page" class="page">{{page}}</span>
+      <ng-content select="app-search-bar"></ng-content>
+      <ng-content></ng-content>
+      <div class="flex-spacer"></div>
       <a mat-button
          routerLink="/projects"
          class="projects">
@@ -24,10 +30,6 @@
          class="users">
         Contributors
       </a>
-      <span *ngIf="page" class="page">{{page}}</span>
-      <ng-content select="app-search-bar"></ng-content>
-      <ng-content></ng-content>
-      <div class="flex-spacer"></div>
       <app-auth-bar-item></app-auth-bar-item>
     </mat-toolbar-row>
   </ng-container>

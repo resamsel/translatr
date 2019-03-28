@@ -3,13 +3,10 @@ import {RouterModule, Routes} from '@angular/router';
 import {ProjectPageComponent} from "./project-page.component";
 import {ProjectInfoComponent} from "./project-info/project-info.component";
 import {ProjectKeysComponent} from "./project-keys/project-keys.component";
-import {ProjectResolverService} from "./project-resolver.service";
 import {ProjectLocalesComponent} from "./project-locales/project-locales.component";
 import {ProjectMembersComponent} from "./project-members/project-members.component";
-import { AuthResolverService } from "../../../services/auth-resolver.service";
-import { UserResolverService } from "../user-page/user-resolver.service";
-import { ProjectActivityComponent } from "./project-activity/project-activity.component";
-import { ProjectSettingsComponent } from "./project-settings/project-settings.component";
+import {ProjectActivityComponent} from "./project-activity/project-activity.component";
+import {ProjectSettingsComponent} from "./project-settings/project-settings.component";
 
 const routes: Routes = [
   {

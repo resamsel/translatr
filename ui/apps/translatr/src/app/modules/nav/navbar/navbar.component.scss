@@ -2,6 +2,22 @@
   z-index: 2;
 }
 
+.title {
+  font-weight: 400;
+  display: inline-block;
+  color: currentColor;
+}
+
 .active {
   display: none;
+}
+
+.page {
+  font-size: 18px;
+  font-weight: 400;
+  height: 24px;
+  line-height: 24px;
+  margin-left: 16px;
+  padding: 0 16px;
+  border-left: 1px solid rgba(255, 255, 255, 0.6);
 }

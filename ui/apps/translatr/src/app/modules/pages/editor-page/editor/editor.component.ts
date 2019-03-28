@@ -1,7 +1,16 @@
-import {ChangeDetectionStrategy, Component, HostListener, Input, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewChecked,
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  Input,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {Message} from "../../../../shared/message";
 import {EditorFacade} from "../+state/editor.facade";
 import {MatTabGroup} from "@angular/material";
+import {CodemirrorComponent} from "@ctrl/ngx-codemirror";
 
 @Component({
   selector: 'app-editor',
@@ -9,23 +18,13 @@ import {MatTabGroup} from "@angular/material";
   styleUrls: ['./editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent implements OnInit, AfterViewChecked {
+  @Input() projectName: string;
   @Input() title: string;
-
-  private _message: Message;
-  get message(): Message {
-    return this._message;
-  }
-
-  @Input() set message(value: Message) {
-    this._message = value;
-    if (this.tabs) {
-      this.tabs.realignInkBar();
-    }
-  }
-
+  @Input() message: Message;
   @Input() messages: Array<Message>;
 
+  @ViewChild('editor', {read: CodemirrorComponent}) private editor: CodemirrorComponent;
   @ViewChild('tabs', {read: MatTabGroup}) private tabs: MatTabGroup;
 
   readonly options = {
@@ -40,6 +39,15 @@ export class EditorComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.editor) {
+      this.editor.codeMirror.refresh();
+    }
+    if (this.tabs) {
+      this.tabs.realignInkBar();
+    }
   }
 
   @HostListener('keydown.control.enter')
