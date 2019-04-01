@@ -9,6 +9,8 @@ export interface Key {
   displayName: string;
 
   projectId: string;
+  projectName: string;
+  projectOwnerUsername: string;
 
   messages: { [key: string]: Message };
 }

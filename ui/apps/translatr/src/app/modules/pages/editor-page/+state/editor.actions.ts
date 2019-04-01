@@ -3,6 +3,7 @@ import {Locale} from "../../../../shared/locale";
 import {PagedList} from "../../../../shared/paged-list";
 import {Message} from "../../../../shared/message";
 import {Key} from "../../../../shared/key";
+import {RequestCriteria} from "../../../../shared/request-criteria";
 
 export enum EditorActionTypes {
   LoadLocales = '[Editor Page] Load Locales',

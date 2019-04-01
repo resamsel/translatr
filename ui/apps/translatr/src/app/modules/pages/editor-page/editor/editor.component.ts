@@ -19,8 +19,9 @@ import {CodemirrorComponent} from "@ctrl/ngx-codemirror";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditorComponent implements OnInit, AfterViewChecked {
+  @Input() ownerName: string;
   @Input() projectName: string;
-  @Input() title: string;
+  @Input() name: string;
   @Input() message: Message;
   @Input() messages: Array<Message>;
 
@@ -52,6 +53,6 @@ export class EditorComponent implements OnInit, AfterViewChecked {
 
   @HostListener('keydown.control.enter')
   onSave(): void {
-    this.facade.saveMessage(this._message);
+    this.facade.saveMessage(this.message);
   }
 }

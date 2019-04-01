@@ -1,4 +1,8 @@
-<app-sidenav class="flat" page="{{projectName}} - {{title}}">
+<app-sidenav class="flat" page="{{name}}" [backLink]="{routerLink: ['/', ownerName, projectName], name: projectName}">
+  <ng-container ngProjectAs="a.back">
+    <ng-content select="a.back"></ng-content>
+  </ng-container>
+
   <ng-container ngProjectAs="app-search-bar">
     <ng-content select="app-search-bar"></ng-content>
   </ng-container>

@@ -10,6 +10,7 @@ import { map } from 'rxjs/operators';
 })
 export class SidenavComponent {
   @Input() page: string;
+  @Input() backLink: {routerLink: string[]; name: string};
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(

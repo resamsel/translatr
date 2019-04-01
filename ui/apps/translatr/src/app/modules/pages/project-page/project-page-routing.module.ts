@@ -7,11 +7,15 @@ import {ProjectLocalesComponent} from "./project-locales/project-locales.compone
 import {ProjectMembersComponent} from "./project-members/project-members.component";
 import {ProjectActivityComponent} from "./project-activity/project-activity.component";
 import {ProjectSettingsComponent} from "./project-settings/project-settings.component";
+import {AuthResolverService} from "../../../services/auth-resolver.service";
 
 const routes: Routes = [
   {
     path: ':username/:projectName',
     component: ProjectPageComponent,
+    resolve: {
+      me: AuthResolverService
+    },
     children: [
       {
         path: '',

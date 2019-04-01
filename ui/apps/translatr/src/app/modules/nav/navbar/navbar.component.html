@@ -8,14 +8,29 @@
         (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
-      <a mat-icon-button
-         routerLink="/"
-         class="logo">
-        <mat-icon>language</mat-icon>
-      </a>
-      <a routerLink="/" class="title">
-        <span>Translatr</span>
-      </a>
+      <ng-container *ngIf="!backLink; else backLinkTemplate">
+        <a
+          mat-icon-button
+          routerLink="/"
+          class="logo">
+          <mat-icon>language</mat-icon>
+        </a>
+        <a routerLink="/" class="title">
+          <span>Translatr</span>
+        </a>
+      </ng-container>
+      <ng-template #backLinkTemplate>
+        <a
+          mat-icon-button
+          [routerLink]="backLink.routerLink"
+          class="logo" [title]="backLink.name">
+          <mat-icon>arrow_back</mat-icon>
+        </a>
+        <a [routerLink]="backLink.routerLink" class="title">
+          <span>{{backLink.name}}</span>
+        </a>
+      </ng-template>
+      <ng-content select="a.back"></ng-content>
       <span *ngIf="page" class="page">{{page}}</span>
       <ng-content select="app-search-bar"></ng-content>
       <ng-content></ng-content>

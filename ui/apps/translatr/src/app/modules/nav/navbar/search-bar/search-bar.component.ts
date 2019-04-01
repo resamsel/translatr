@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from "@angular/forms";
+import {RequestCriteria} from "../../../../shared/request-criteria";
 
 @Component({
   selector: 'app-search-bar',

@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { Key } from "../shared/key";
-import { map } from "rxjs/operators";
-import { convertTemporals, convertTemporalsList } from "../shared/mapper-utils";
-import { PagedList } from "../shared/paged-list";
-import { Message } from "../shared/message";
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
+import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
+import {PagedList} from "../shared/paged-list";
+import {Message} from "../shared/message";
+import {RequestCriteria} from "../shared/request-criteria";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class MessageService {
   constructor(private readonly http: HttpClient) {
   }
 
-  getMessages(options: {
+  _getMessages(options: {
     projectId: string;
     localeId?: string;
     keyName?: string;
@@ -28,7 +28,7 @@ export class MessageService {
         `/api/messages/${options.projectId}`,
         {
           params: {
-            ...options.options && options.options.params ? options.options.params: {},
+            ...options.options && options.options.params ? options.options.params : {},
             localeId: options.localeId
           }
         })

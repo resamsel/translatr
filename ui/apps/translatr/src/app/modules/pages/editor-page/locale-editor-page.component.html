@@ -1,7 +1,8 @@
 <app-editor
+  [ownerName]="(locale$ | async)?.projectOwnerUsername"
   [projectName]="(locale$ | async)?.projectName"
-  title="Language Editor"
-  i18n-title="@@locale.editor"
+  name="Language Editor"
+  i18n-name="@@locale.editor"
   [message]="selectedMessage$ | async"
   [messages]="messagesOfKey(keys$ | async, selectedKey$ | async)">
   <app-search-bar [criteria]="search$ | async" (search)="onSearch($event)"></app-search-bar>

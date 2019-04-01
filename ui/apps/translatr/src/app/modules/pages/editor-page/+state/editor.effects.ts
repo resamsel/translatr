@@ -48,7 +48,7 @@ export class EditorEffects {
       run: (action: LoadLocale) => {
         // Your custom REST 'load' logic goes here. For now just return an empty list...
         return this.localeService.byOwnerAndProjectNameAndName(action.payload)
-          .pipe(map((locale: Locale) => new LocaleLoaded(locale)));
+          .pipe(map((locale: Locale) => new LocaleLoaded({locale})));
       },
 
       onError: (action: LoadLocale, error) => {
@@ -131,7 +131,10 @@ export class EditorEffects {
     EditorActionTypes.LocaleLoaded,
     {
       run: (action: LocaleLoaded) => new LoadKeys({
-        projectId: action.payload.projectId
+        projectId: action.payload.locale.projectId,
+        options: {
+          params: action.payload.params
+        }
       })
     }
   );
@@ -140,9 +143,9 @@ export class EditorEffects {
     EditorActionTypes.LocaleLoaded,
     {
       run: (action: LocaleLoaded) => new LoadLocales({
-        projectId: action.payload.projectId,
+        projectId: action.payload.locale.projectId,
         options: {
-          ...
+          params: action.payload.params
         }
       })
     }
@@ -170,7 +173,7 @@ export class EditorEffects {
   @Effect() loadLocales$ = this.dataPersistence.fetch(
     EditorActionTypes.LoadLocales,
     {
-      run: (action: LoadLocales, state: EditorPartialState) => {
+      run: (action: LoadLocales) => {
         return this.localeService.getLocales({
           ...action.payload,
           options: {

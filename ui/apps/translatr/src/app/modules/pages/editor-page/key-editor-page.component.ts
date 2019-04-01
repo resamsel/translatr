@@ -7,6 +7,7 @@ import {combineLatest} from "rxjs";
 import {PagedList} from "../../../shared/paged-list";
 import {Key} from "../../../shared/key";
 import {Locale} from "../../../shared/locale";
+import {RequestCriteria} from "../../../shared/request-criteria";
 
 @Component({
   selector: 'app-key-editor-page',

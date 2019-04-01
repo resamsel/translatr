@@ -5,6 +5,7 @@ import {map} from "rxjs/operators";
 import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
 import {Key} from "../shared/key";
 import {PagedList} from "../shared/paged-list";
+import {RequestCriteria} from "../shared/request-criteria";
 
 @Injectable({
   providedIn: 'root'

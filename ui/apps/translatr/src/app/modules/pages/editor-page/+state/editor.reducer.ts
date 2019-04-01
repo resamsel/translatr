@@ -3,6 +3,7 @@ import {PagedList} from "../../../../shared/paged-list";
 import {Locale} from "../../../../shared/locale";
 import {Key} from "../../../../shared/key";
 import {Message} from "../../../../shared/message";
+import {RequestCriteria} from "../../../../shared/request-criteria";
 
 export const EDITOR_FEATURE_KEY = 'editor';
 
@@ -124,7 +125,7 @@ export function editorReducer(
     case EditorActionTypes.LoadLocale:
       return activateLoading(state, 'locale');
     case EditorActionTypes.LocaleLoaded:
-      return placePayload(state, 'locale', action.payload);
+      return placePayload(state, 'locale', action.payload.locale);
 
     case EditorActionTypes.LoadLocalesBy:
       return placePayload(state, 'search', {...state.search, ...action.payload});
@@ -162,7 +163,7 @@ export function editorReducer(
         keys: updateKeysWithMessage(state.keys, state.locale, action.payload),
         locales: updateLocalesWithMessage(state.locales, state.key, action.payload),
         selectedMessage: state.selectedMessage.id === action.payload.id ? action.payload : state.selectedMessage
-      }
+      };
     case EditorActionTypes.UnloadEditor:
       return {...initialState};
   }

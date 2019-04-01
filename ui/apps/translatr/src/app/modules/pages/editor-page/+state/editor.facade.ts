@@ -20,6 +20,7 @@ import { Locale } from "../../../../shared/locale";
 import { PagedList } from "../../../../shared/paged-list";
 import { Message } from "../../../../shared/message";
 import { Key } from "../../../../shared/key";
+import {RequestCriteria} from "../../../../shared/request-criteria";
 
 @Injectable()
 export class EditorFacade {
