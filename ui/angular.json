@@ -32,6 +32,11 @@
               "apps/translatr/src/theme.scss",
               "apps/translatr/src/media.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "apps/translatr/src/styles"
+              ]
+            },
             "scripts": [],
             "baseHref": "/ui/",
             "deployUrl": "/ui/"

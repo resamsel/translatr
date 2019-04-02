@@ -22,6 +22,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LocaleRepository;
+import repositories.ProjectRepository;
 import services.impl.CacheServiceImpl;
 import services.impl.LocaleServiceImpl;
 import utils.CacheApiMock;
@@ -94,7 +95,8 @@ public class LocaleServiceTest {
         mock(Validator.class),
         cacheService,
         localeRepository,
-        mock(LogEntryService.class)
+        mock(LogEntryService.class),
+        mock(ProjectRepository.class)
     );
 
     when(localeRepository.create(any())).then(this::persist);

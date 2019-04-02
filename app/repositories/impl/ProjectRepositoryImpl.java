@@ -6,6 +6,7 @@ import actors.ActivityActor;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
 import akka.actor.ActorRef;
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -29,6 +30,7 @@ import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
 import models.User;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
@@ -95,6 +97,10 @@ public class ProjectRepositoryImpl extends
       query.ilike("name", "%" + criteria.getSearch() + "%");
     }
 
+    if (criteria.getOrder() != null) {
+      query.setOrderBy(criteria.getOrder());
+    }
+
     criteria.paged(query);
 
     return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
@@ -125,6 +131,7 @@ public class ProjectRepositoryImpl extends
    */
   @Override
   protected void preSave(Project t, boolean update) {
+    Ebean.markAsDirty(t);
     if (t.owner == null) {
       t.owner = User.loggedInUser();
     }

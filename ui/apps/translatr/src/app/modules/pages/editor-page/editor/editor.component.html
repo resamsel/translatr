@@ -1,8 +1,7 @@
-<app-sidenav class="flat" page="{{name}}" [backLink]="{routerLink: ['/', ownerName, projectName], name: projectName}">
-  <ng-container ngProjectAs="a.back">
-    <ng-content select="a.back"></ng-content>
-  </ng-container>
-
+<app-sidenav
+  class="flat"
+  page="{{name}}"
+  [backLink]="ownerName && projectName ? {routerLink: ['/', ownerName, projectName], name: projectName} : undefined">
   <ng-container ngProjectAs="app-search-bar">
     <ng-content select="app-search-bar"></ng-content>
   </ng-container>

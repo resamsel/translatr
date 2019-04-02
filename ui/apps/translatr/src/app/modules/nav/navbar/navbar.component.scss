@@ -1,11 +1,17 @@
+@import "mixins";
+
 .mat-toolbar {
   z-index: 2;
 }
 
 .title {
   font-weight: 400;
-  display: inline-block;
+  display: none;
   color: currentColor;
+
+  @include medium {
+    display: inline-block;
+  }
 }
 
 .active {
@@ -13,11 +19,41 @@
 }
 
 .page {
-  font-size: 18px;
   font-weight: 400;
   height: 24px;
   line-height: 24px;
-  margin-left: 16px;
-  padding: 0 16px;
-  border-left: 1px solid rgba(255, 255, 255, 0.6);
+
+  @include extra-large {
+    font-size: 18px;
+    margin-left: 16px;
+    padding: 0 16px;
+    border-left: 1px solid rgba(255, 255, 255, 0.6);
+  }
+}
+
+.mat-button {
+  display: none;
+
+  @include medium {
+    display: block;
+
+    .text {
+      display: inline;
+    }
+    .mat-icon {
+      display: none;
+    }
+  }
+
+  @include large {
+    .mat-icon {
+      display: inline-block;
+    }
+  }
+}
+
+.show-on-small {
+  @include medium {
+    display: none;
+  }
 }

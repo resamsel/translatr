@@ -104,6 +104,11 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   }
 
   @Override
+  public MODEL save(MODEL t) {
+    return modelRepository.save(t);
+  }
+
+  @Override
   public Collection<MODEL> save(Collection<MODEL> t) {
     return modelRepository.save(t);
   }

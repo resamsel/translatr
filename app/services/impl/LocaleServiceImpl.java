@@ -1,26 +1,28 @@
 package services.impl;
 
-import static utils.Stopwatch.log;
-
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.RawSqlBuilder;
 import criterias.LocaleCriteria;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Validator;
 import models.Locale;
 import models.Project;
 import models.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LocaleRepository;
+import repositories.ProjectRepository;
 import services.CacheService;
 import services.LocaleService;
 import services.LogEntryService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static utils.Stopwatch.log;
 
 /**
  * @author resamsel
@@ -33,13 +35,16 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
 
   private final LocaleRepository localeRepository;
+  private final ProjectRepository projectRepository;
 
   @Inject
   public LocaleServiceImpl(Validator validator, CacheService cache,
-      LocaleRepository localeRepository, LogEntryService logEntryService) {
+                           LocaleRepository localeRepository, LogEntryService logEntryService,
+                           ProjectRepository projectRepository) {
     super(validator, cache, localeRepository, Locale::getCacheKey, logEntryService);
 
     this.localeRepository = localeRepository;
+    this.projectRepository = projectRepository;
   }
 
   @Override
@@ -60,7 +65,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
 
   @Override
   public Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
-      String... fetches) {
+                                         String... fetches) {
     return cache.getOrElse(
         String.format("locale:owner:%s:projectName:%s:name:%s", username, projectName, localeName),
         () -> localeRepository.byOwnerAndProjectAndName(username, projectName, localeName, fetches),
@@ -136,6 +141,8 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
     }
 
     cache.removeByPrefix("locale:criteria:" + t.project.id);
+
+    projectRepository.save(t.project);
   }
 
   @Override
@@ -144,6 +151,8 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
 
     // When locale has been updated, the locale cache needs to be invalidated
     cache.removeByPrefix("locale:criteria:" + t.project.id);
+
+    projectRepository.save(t.project);
   }
 
   /**
@@ -159,5 +168,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
 
     // When locale has been deleted, the locale cache needs to be invalidated
     cache.removeByPrefix("locale:criteria:" + t.project.id);
+
+    projectRepository.save(t.project);
   }
 }

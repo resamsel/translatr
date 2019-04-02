@@ -18,7 +18,7 @@
            #projectLink="routerLinkActive"
            [active]="projectLink.isActive">
           <mat-icon>extension</mat-icon>
-          Project
+          <span>Project</span>
         </a>
         <a mat-tab-link
            [routerLink]="['/', project?.ownerUsername, project?.name, 'locales']"
@@ -26,7 +26,7 @@
            #localesLink="routerLinkActive"
            [active]="localesLink.isActive">
           <mat-icon>language</mat-icon>
-          Languages
+          <span>Languages</span>
         </a>
         <a mat-tab-link
            [routerLink]="['/', project?.ownerUsername, project?.name, 'keys']"
@@ -34,7 +34,7 @@
            #keysLink="routerLinkActive"
            [active]="keysLink.isActive">
           <mat-icon>vpn_key</mat-icon>
-          Keys
+          <span>Keys</span>
         </a>
         <a mat-tab-link
            [routerLink]="['/', project?.ownerUsername, project?.name, 'members']"
@@ -42,7 +42,7 @@
            #membersLink="routerLinkActive"
            [active]="membersLink.isActive">
           <mat-icon>group</mat-icon>
-          Members
+          <span>Members</span>
         </a>
         <a mat-tab-link
            [routerLink]="['/', project?.ownerUsername, project?.name, 'activity']"
@@ -50,7 +50,7 @@
            #activityLink="routerLinkActive"
            [active]="activityLink.isActive">
           <mat-icon>change_history</mat-icon>
-          Activity
+          <span>Activity</span>
         </a>
         <a mat-tab-link
            [routerLink]="['/', project?.ownerUsername, project?.name, 'settings']"
@@ -58,7 +58,7 @@
            #settingsLink="routerLinkActive"
            [active]="settingsLink.isActive">
           <mat-icon>settings</mat-icon>
-          Settings
+          <span>Settings</span>
         </a>
       </div>
     </nav>

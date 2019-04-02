@@ -15,6 +15,7 @@ import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
 import models.User;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
@@ -96,7 +97,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     project.wordCount += wordCountDiff;
 
     log(
-        () -> modelRepository.persist(project),
+        () -> modelRepository.save(project),
         LOGGER,
         "Increased word count by %d",
         wordCountDiff
@@ -115,7 +116,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
     project.wordCount = null;
 
-    modelRepository.persist(project);
+    modelRepository.save(project);
 
     postUpdate(project);
 

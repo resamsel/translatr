@@ -49,12 +49,12 @@ public class Application extends AbstractController {
   }
 
   public Action<AnyContent> indexUi() {
-    return assets.at("/public", "index.html", false);
+    return assets.at("/public/ui", "index.html", false);
   }
 
   public Action<AnyContent> assetOrDefault(String resource) {
     if (resource.contains(".")) {
-      return assets.at("/public", resource, false);
+      return assets.at("/public/ui", resource, false);
     }
     return indexUi();
   }

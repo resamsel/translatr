@@ -1,7 +1,9 @@
+@import "mixins";
+
 /*
  * Media query for medium screens
  */
-@media screen and (min-width: 600px) {
+@include medium {
   .container {
     padding: 16px;
     margin: 0 auto;
@@ -39,7 +41,7 @@
 /*
  * Media query for large screens
  */
-@media screen and (min-width: 992px) {
+@include large {
   .container {
     width: 90%;
     max-width: 1024px;
@@ -64,7 +66,7 @@
 /*
  * Media query for extra large screens
  */
-@media screen and (min-width: 1200px) {
+@include extra-large {
   .container.narrow {
     width: 50%;
   }

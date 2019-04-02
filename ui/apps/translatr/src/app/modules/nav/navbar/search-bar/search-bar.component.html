@@ -1,3 +1,17 @@
 <mat-form-field class="search" appearance="outline">
-  <input matInput type="search" [formControl]="searchControl" (keydown.enter)="onSearch($event)">
+  <input
+    matInput
+    type="search"
+    placeholder="Search"
+    [formControl]="searchControl"
+    (keydown.enter)="onSearch($event)">
+  <button
+    mat-button
+    *ngIf="searchControl.value"
+    matSuffix
+    mat-icon-button
+    aria-label="Clear"
+    (click)="searchControl.setValue('')">
+    <mat-icon>close</mat-icon>
+  </button>
 </mat-form-field>

@@ -18,7 +18,6 @@ export class ProjectsEffects {
         if (!action.payload.reload && state[PROJECTS_FEATURE_KEY].pagedList) {
           return new ProjectsLoaded(state[PROJECTS_FEATURE_KEY].pagedList);
         }
-        // Your custom REST 'load' logic goes here. For now just return an empty list...
         return this.projectService.getProjects({params: {order: 'whenUpdated desc'}})
           .pipe(map((payload: PagedList<Project>) => new ProjectsLoaded(payload)));
       },
