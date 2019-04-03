@@ -5,8 +5,8 @@ import { ProjectPageRoutingModule } from './project-page-routing.module';
 import {
   MatButtonModule,
   MatCardModule,
-  MatChipsModule,
-  MatIconModule,
+  MatChipsModule, MatFormFieldModule,
+  MatIconModule, MatInputModule,
   MatListModule,
   MatTabsModule,
   MatToolbarModule
@@ -30,6 +30,7 @@ import { initialState as projectInitialState, PROJECT_FEATURE_KEY, projectReduce
 import { ProjectEffects } from './+state/project.effects';
 import { ProjectFacade } from './+state/project.facade';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -47,6 +48,8 @@ import { ProjectSettingsComponent } from './project-settings/project-settings.co
   imports: [
     ProjectPageRoutingModule,
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     SidenavModule,
     ActivityModule,
     ActivityListModule,
@@ -57,12 +60,15 @@ import { ProjectSettingsComponent } from './project-settings/project-settings.co
     MatChipsModule,
     MatTabsModule,
     MatListModule,
+    MatInputModule,
+    MatFormFieldModule,
     MomentModule,
     GravatarModule,
     StoreModule.forFeature(PROJECT_FEATURE_KEY, projectReducer, {
       initialState: projectInitialState
     }),
-    EffectsModule.forFeature([ProjectEffects])
+    EffectsModule.forFeature([ProjectEffects]),
+    MatFormFieldModule
   ],
   providers: [ProjectFacade]
 })

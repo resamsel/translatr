@@ -18,6 +18,7 @@ import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.ActionType;
 import models.ProjectUser;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.ProjectUserRepository;
@@ -88,7 +89,7 @@ public class ProjectUserRepositoryImpl extends
     if (update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Update, t.project, dto.ProjectUser.class, toDto(byId(t.id)), toDto(t)
+              ActionType.Update, User.loggedInUser(), t.project, dto.ProjectUser.class, toDto(byId(t.id)), toDto(t)
           ),
           null
       );
@@ -103,7 +104,7 @@ public class ProjectUserRepositoryImpl extends
     if (!update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Create, t.project, dto.ProjectUser.class, null, toDto(t)
+              ActionType.Create, User.loggedInUser(), t.project, dto.ProjectUser.class, null, toDto(t)
           ),
           null
       );
@@ -119,7 +120,7 @@ public class ProjectUserRepositoryImpl extends
   public void preDelete(ProjectUser t) {
     activityActor.tell(
         new Activity<>(
-            ActionType.Delete, t.project, dto.ProjectUser.class, toDto(t), null
+            ActionType.Delete, User.loggedInUser(), t.project, dto.ProjectUser.class, toDto(t), null
         ),
         null
     );

@@ -1,6 +1,18 @@
-<h2 i18n="@@activity">Activity</h2>
-<mat-card>
-  <mat-card-content>
-    <app-activity [activity]="activity$ | async"></app-activity>
-  </mat-card-content>
-</mat-card>
+<section>
+  <h2>Active Projects</h2>
+  <div class="flex-stretch">
+    <app-project-card-link
+      *ngFor="let project of (projects$ | async)?.list.slice(0,3)"
+      [project]="project"></app-project-card-link>
+  </div>
+  <div class="clearfix"></div>
+</section>
+
+<section>
+  <h2 i18n="@@activity">Activity</h2>
+  <mat-card>
+    <mat-card-content>
+      <app-activity [activity]="activity$ | async"></app-activity>
+    </mat-card-content>
+  </mat-card>
+</section>

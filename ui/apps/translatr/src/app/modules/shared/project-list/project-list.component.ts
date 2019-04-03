@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {PagedList} from "../../../shared/paged-list";
 import {Project} from "../../../shared/project";
+import {firstChar} from "../../../shared/utils";
 
 @Component({
   selector: 'app-project-list',
@@ -10,4 +11,6 @@ import {Project} from "../../../shared/project";
 })
 export class ProjectListComponent {
   @Input() projects: PagedList<Project>;
+
+  firstChar = firstChar;
 }

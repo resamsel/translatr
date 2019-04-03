@@ -30,7 +30,6 @@ import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
 import models.User;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
@@ -147,7 +146,7 @@ public class ProjectRepositoryImpl extends
   protected void prePersist(Project t, boolean update) {
     if (update) {
       activityActor.tell(
-          new Activity<>(ActionType.Update, t, dto.Project.class, toDto(byId(t.id)), toDto(t)),
+          new Activity<>(ActionType.Update, User.loggedInUser(), t, dto.Project.class, toDto(byId(t.id)), toDto(t)),
           null
       );
     }
@@ -160,7 +159,7 @@ public class ProjectRepositoryImpl extends
   protected void postSave(Project t, boolean update) {
     if (!update) {
       activityActor.tell(
-          new Activity<>(ActionType.Create, t, dto.Project.class, null, toDto(t)),
+          new Activity<>(ActionType.Create, User.loggedInUser(), t, dto.Project.class, null, toDto(t)),
           null
       );
     }
@@ -183,7 +182,7 @@ public class ProjectRepositoryImpl extends
     keyRepository.delete(t.keys);
 
     activityActor.tell(
-        new Activity<>(ActionType.Delete, t, dto.Project.class, toDto(t), null),
+        new Activity<>(ActionType.Delete, User.loggedInUser(), t, dto.Project.class, toDto(t), null),
         null
     );
 
@@ -214,7 +213,7 @@ public class ProjectRepositoryImpl extends
 
     activityActor.tell(
         new Activities<>(t.stream()
-            .map(p -> new Activity<>(ActionType.Delete, p, dto.Project.class, toDto(p), null))
+            .map(p -> new Activity<>(ActionType.Delete, User.loggedInUser(), p, dto.Project.class, toDto(p), null))
             .collect(Collectors.toList())),
         null
     );

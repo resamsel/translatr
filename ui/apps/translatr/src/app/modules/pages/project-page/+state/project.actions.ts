@@ -15,6 +15,8 @@ export enum ProjectActionTypes {
   LoadProjectActivities = '[Project Page] Load Project Activities',
   ProjectActivitiesLoaded = '[Projects API] Project Activities Loaded',
   ProjectActivitiesLoadError = '[Projects API] Project Activities Load Error',
+  SaveProject = '[Project Page] Save Project',
+  ProjectSaved = '[Projects API] Project Saved',
   UnloadProject = '[Project Page] Unload Project'
 }
 
@@ -81,6 +83,18 @@ export class ProjectActivitiesLoaded implements Action {
   }
 }
 
+export class SaveProject implements Action {
+  readonly type = ProjectActionTypes.SaveProject;
+
+  constructor(public payload: Project) {}
+}
+
+export class ProjectSaved implements Action {
+  readonly type = ProjectActionTypes.ProjectSaved;
+
+  constructor(public payload: Project) {}
+}
+
 export class UnloadProject implements Action {
   readonly type = ProjectActionTypes.UnloadProject;
 }
@@ -94,17 +108,6 @@ export type ProjectAction = LoadProject
   | LoadProjectActivities
   | ProjectActivitiesLoaded
   | ProjectActivitiesLoadError
+  | SaveProject
+  | ProjectSaved
   | UnloadProject;
-
-export const fromProjectActions = {
-  LoadProject,
-  ProjectLoaded,
-  ProjectLoadError,
-  LoadProjectActivityAggregated,
-  ProjectActivityAggregatedLoaded,
-  ProjectActivityAggregatedLoadError,
-  LoadProjectActivities,
-  ProjectActivitiesLoaded,
-  ProjectActivitiesLoadError,
-  UnloadProject
-};

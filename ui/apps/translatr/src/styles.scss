@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import "mixins";
 
 @mixin translatr-theme($theme) {
   $primary: map-get($theme, primary);
@@ -187,6 +188,39 @@ pre[class*="language-"]:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.flex-stretch {
+  display: flex;
+  flex-wrap: wrap;
+
+  > * {
+    flex: 1 0 75%;
+    margin-bottom: 8px;
+  }
+
+  .mat-card .mat-card-image {
+    //width: calc(100% + 32px);
+    border-radius: 50%;
+    margin: auto;
+    margin-bottom: 16px;
+  }
+
+  @include medium {
+    margin: -8px;
+
+    > * {
+      flex: 1 0 40%;
+      margin: 8px;
+    }
+  }
+
+  @include large {
+    > * {
+      flex: 1 0 20%;
+    }
+  }
+}
+
 
 @keyframes opacityPulse {
   0% {

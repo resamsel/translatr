@@ -53,6 +53,13 @@ export class ProjectService {
 
   create(project: { name: string }): Observable<Project> {
     return this.http
-      .post<Project>('/api/project', project);
+      .post<Project>('/api/project', project)
+      .pipe(map(convertTemporals));
+  }
+
+  update(project: Project): Observable<Project> {
+    return this.http
+      .put<Project>('/api/project', project)
+      .pipe(map(convertTemporals));
   }
 }

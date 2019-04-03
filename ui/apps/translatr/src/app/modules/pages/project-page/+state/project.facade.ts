@@ -4,7 +4,13 @@ import {select, Store} from '@ngrx/store';
 
 import {ProjectPartialState} from './project.reducer';
 import {projectQuery} from './project.selectors';
-import {LoadProject, LoadProjectActivities, LoadProjectActivityAggregated, UnloadProject} from './project.actions';
+import {
+  LoadProject,
+  LoadProjectActivities,
+  LoadProjectActivityAggregated,
+  SaveProject,
+  UnloadProject
+} from './project.actions';
 import {ActivityCriteria} from "../../../../services/activity.service";
 import {Observable, Subject} from "rxjs";
 import {Project} from "../../../../shared/project";
@@ -51,5 +57,12 @@ export class ProjectFacade {
   unloadProject() {
     this._unload$.next();
     this.store.dispatch(new UnloadProject());
+  }
+
+  save(project: Project) {
+    this.store.dispatch(new SaveProject({
+      id: project.id,
+      name: project.name
+    }));
   }
 }

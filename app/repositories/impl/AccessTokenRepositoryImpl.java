@@ -18,6 +18,7 @@ import javax.inject.Singleton;
 import javax.validation.Validator;
 import models.AccessToken;
 import models.ActionType;
+import models.User;
 import org.apache.commons.lang3.StringUtils;
 import repositories.AccessTokenRepository;
 import utils.QueryUtils;
@@ -87,7 +88,7 @@ public class AccessTokenRepositoryImpl extends
     if (update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Update, null, dto.AccessToken.class, dto.AccessToken.from(byId(t.id)),
+              ActionType.Update, User.loggedInUser(), null, dto.AccessToken.class, dto.AccessToken.from(byId(t.id)),
               dto.AccessToken.from(t)),
           null
       );
@@ -102,7 +103,7 @@ public class AccessTokenRepositoryImpl extends
     if (!update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Create, null, dto.AccessToken.class, null, dto.AccessToken.from(t)),
+              ActionType.Create, User.loggedInUser(), null, dto.AccessToken.class, null, dto.AccessToken.from(t)),
           null
       );
     }

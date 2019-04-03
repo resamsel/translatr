@@ -31,7 +31,7 @@ export class ProjectCreationDialogComponent implements OnInit {
   form = new FormGroup({
     'name': new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z0-9_\.-]+')
+      Validators.pattern('[^\\s/]+')
     ])
   });
   public processing: boolean = false;

@@ -153,7 +153,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
     if (update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Update, t.project, dto.Key.class,
+              ActionType.Update, User.loggedInUser(), t.project, dto.Key.class,
               dto.Key.from(byId(t.id)), dto.Key.from(t)),
           null
       );
@@ -167,7 +167,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   protected void postSave(Key t, boolean update) {
     if (!update) {
       activityActor.tell(
-          new Activity<>(ActionType.Create, t.project, dto.Key.class, null, dto.Key.from(t)),
+          new Activity<>(ActionType.Create, User.loggedInUser(), t.project, dto.Key.class, null, dto.Key.from(t)),
           null
       );
     }
@@ -185,7 +185,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
     }
 
     activityActor.tell(
-        new Activity<>(ActionType.Delete, t.project, dto.Key.class, dto.Key.from(t), null),
+        new Activity<>(ActionType.Delete, User.loggedInUser(), t.project, dto.Key.class, dto.Key.from(t), null),
         null
     );
 
@@ -200,7 +200,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
     activityActor.tell(
         new Activities<>(
             t.stream()
-                .map(k -> new Activity<>(ActionType.Delete, k.project, dto.Key.class,
+                .map(k -> new Activity<>(ActionType.Delete, User.loggedInUser(), k.project, dto.Key.class,
                     dto.Key.from(k), null))
                 .collect(Collectors.toList())),
         null

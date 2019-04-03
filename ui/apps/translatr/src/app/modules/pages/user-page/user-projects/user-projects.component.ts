@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
-import { User } from "../../../../shared/user";
-import { ProjectService } from "../../../../services/project.service";
-import { Observable } from "rxjs";
-import { PagedList } from "../../../../shared/paged-list";
-import { Project } from "../../../../shared/project";
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import {User} from "../../../../shared/user";
+import {ProjectService} from "../../../../services/project.service";
+import {Observable} from "rxjs";
+import {PagedList} from "../../../../shared/paged-list";
+import {Project} from "../../../../shared/project";
 import {ProjectCreationDialogComponent} from "../../../shared/project-creation-dialog/project-creation-dialog.component";
 import {take} from "rxjs/operators";
 import {MatDialog} from "@angular/material";
@@ -35,7 +35,12 @@ export class UserProjectsComponent implements OnInit {
   }
 
   private loadProjects(): void {
-    this.projects$ = this.projectService.getProjects({params: {owner: this.user.username}});
+    this.projects$ = this.projectService.getProjects({
+      params: {
+        owner: this.user.username,
+        order: 'whenUpdated desc'
+      }
+    });
   }
 
   openProjectCreationDialog(): void {

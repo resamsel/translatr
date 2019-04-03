@@ -9,16 +9,20 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
+
 import java.util.Collection;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+
 import models.LogEntry;
 import models.Project;
 import models.User;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repositories.LogEntryRepository;
 import utils.ContextKey;
 import utils.QueryUtils;
@@ -27,6 +31,7 @@ import utils.QueryUtils;
 public class LogEntryRepositoryImpl extends
     AbstractModelRepository<LogEntry, UUID, LogEntryCriteria> implements
     LogEntryRepository {
+  private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryRepositoryImpl.class);
 
   private final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>() {
   };
@@ -35,8 +40,8 @@ public class LogEntryRepositoryImpl extends
 
   @Inject
   public LogEntryRepositoryImpl(Validator validator,
-      @Named(ActivityActor.NAME) ActorRef activityActor,
-      @Named(NotificationActor.NAME) ActorRef notificationActor) {
+                                @Named(ActivityActor.NAME) ActorRef activityActor,
+                                @Named(NotificationActor.NAME) ActorRef notificationActor) {
     super(validator, activityActor);
 
     this.notificationActor = notificationActor;
@@ -98,6 +103,7 @@ public class LogEntryRepositoryImpl extends
   public void preSave(LogEntry t, boolean update) {
     if (t.user == null) {
       t.user = User.loggedInUser();
+      LOGGER.debug("preSave(): user of log entry is {}", t.user);
     }
   }
 

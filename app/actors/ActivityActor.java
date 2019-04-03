@@ -43,6 +43,6 @@ public class ActivityActor extends UntypedActor {
   }
 
   private static <T extends Dto> LogEntry fromActivity(Activity<T> t) {
-    return LogEntry.from(t.type, t.project, t.dtoClass, t.before, t.after);
+    return LogEntry.from(t.type, t.user, t.project, t.dtoClass, t.before, t.after);
   }
 }

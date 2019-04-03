@@ -23,6 +23,7 @@ import { ActivityListModule } from "../../shared/activity-list/activity-list.mod
 import { UserActivityComponent } from './user-activity/user-activity.component';
 import { UserCardModule } from "../../shared/user-card/user-card.module";
 import { ProjectCreationDialogModule } from "../../shared/project-creation-dialog/project-creation-dialog.module";
+import {ProjectCardModule} from "../../shared/project-card/project-card.module";
 
 @NgModule({
   declarations: [UserPageComponent, UserProjectsComponent, UserInfoComponent, UserActivityComponent],
@@ -35,6 +36,7 @@ import { ProjectCreationDialogModule } from "../../shared/project-creation-dialo
     ActivityListModule,
     ActivityModule,
     UserCardModule,
+    ProjectCardModule,
     ProjectCreationDialogModule,
     MatIconModule,
     MatTabsModule,

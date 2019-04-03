@@ -27,10 +27,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-import models.ActionType;
-import models.Key;
-import models.Message;
-import models.Project;
+
+import models.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -240,7 +238,7 @@ public class MessageRepositoryImpl extends
   @Override
   public void preDelete(Message t) {
     activityActor.tell(
-        new Activity<>(ActionType.Delete, t.key.project, dto.Message.class, dto.Message.from(t),
+        new Activity<>(ActionType.Delete, User.loggedInUser(), t.key.project, dto.Message.class, dto.Message.from(t),
             null),
         null
     );
@@ -252,7 +250,7 @@ public class MessageRepositoryImpl extends
   @Override
   protected void preDelete(Collection<Message> t) {
     activityActor.tell(
-        new Activities<>(t.stream().map(m -> new Activity<>(ActionType.Delete, m.key.project,
+        new Activities<>(t.stream().map(m -> new Activity<>(ActionType.Delete, User.loggedInUser(), m.key.project,
             dto.Message.class, dto.Message.from(m), null)).collect(toList())),
         null
     );
@@ -288,6 +286,7 @@ public class MessageRepositoryImpl extends
   private Activity<dto.Message> logEntryCreate(Message message) {
     return new Activity<>(
         ActionType.Create,
+        User.loggedInUser(),
         message.key.project,
         dto.Message.class,
         null,
@@ -298,6 +297,7 @@ public class MessageRepositoryImpl extends
   private Activity<dto.Message> logEntryUpdate(Message message, Message previous) {
     return new Activity<>(
         ActionType.Update,
+        User.loggedInUser(),
         message.key.project,
         dto.Message.class,
         dto.Message.from(previous),

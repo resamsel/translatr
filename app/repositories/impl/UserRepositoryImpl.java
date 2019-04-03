@@ -148,7 +148,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   protected void prePersist(User t, boolean update) {
     if (update) {
       activityActor.tell(
-          new Activity<>(ActionType.Update, null, dto.User.class, toDto(byId(t.id)), toDto(t)),
+          new Activity<>(ActionType.Update, User.loggedInUser(), null, dto.User.class, toDto(byId(t.id)), toDto(t)),
           null
       );
     }

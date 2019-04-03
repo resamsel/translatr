@@ -1,5 +1,5 @@
 <mat-card class="info">
-  <span mat-card-image>{{project?.name.slice(0, 1)}}</span>
+  <span mat-card-image>{{firstChar(project?.name)}}</span>
   <mat-card-content>
     <h2>{{project?.name}}</h2>
     <p class="ellipsis">{{project?.ownerName}}</p>

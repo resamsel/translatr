@@ -1,8 +1,8 @@
-import { ProjectAction, ProjectActionTypes } from './project.actions';
-import { Project } from "../../../../shared/project";
-import { PagedList } from "../../../../shared/paged-list";
-import { Aggregate } from "../../../../shared/aggregate";
-import { Activity } from "../../../../shared/activity";
+import {ProjectAction, ProjectActionTypes} from './project.actions';
+import {Project} from "../../../../shared/project";
+import {PagedList} from "../../../../shared/paged-list";
+import {Aggregate} from "../../../../shared/aggregate";
+import {Activity} from "../../../../shared/activity";
 
 export const PROJECT_FEATURE_KEY = 'project';
 
@@ -47,6 +47,12 @@ export function projectReducer(
       return {
         ...state,
         activities: action.payload
+      };
+    case ProjectActionTypes.ProjectSaved:
+      return {
+        ...state,
+        project: action.payload,
+        loading: false
       };
     case ProjectActionTypes.UnloadProject:
       return {...initialState};

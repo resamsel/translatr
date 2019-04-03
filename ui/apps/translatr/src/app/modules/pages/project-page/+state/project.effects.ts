@@ -12,7 +12,7 @@ import {
   ProjectActivityAggregatedLoaded,
   ProjectActivityAggregatedLoadError,
   ProjectLoaded,
-  ProjectLoadError
+  ProjectLoadError, ProjectSaved, SaveProject
 } from './project.actions';
 import { ProjectService } from "../../../../services/project.service";
 import { map } from "rxjs/operators";
@@ -21,6 +21,8 @@ import { ActivityService } from "../../../../services/activity.service";
 import { PagedList } from "../../../../shared/paged-list";
 import { Aggregate } from "../../../../shared/aggregate";
 import { Activity } from "../../../../shared/activity";
+import {Observable} from "rxjs";
+import {Action} from "@ngrx/store";
 
 @Injectable()
 export class ProjectEffects {
@@ -68,6 +70,16 @@ export class ProjectEffects {
       onError: (action: LoadProjectActivities, error) => {
         console.error('Error', error);
         return new ProjectActivitiesLoadError(error);
+      }
+    }
+  );
+
+  @Effect() saveProject$ = this.dataPersistence.fetch(
+    ProjectActionTypes.SaveProject,
+    {
+      run: (action: SaveProject, state?: ProjectPartialState): Observable<Action> | Action | void => {
+        return this.projectService.update(action.payload)
+          .pipe(map((payload: Project) => new ProjectSaved(payload)));
       }
     }
   );

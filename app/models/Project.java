@@ -74,7 +74,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   @Column(nullable = false)
   @Required
-  @Constraints.Pattern("[a-zA-Z0-9_\\.-]*")
+  @Constraints.Pattern("[^\\s/]*")
   @ProjectName
   public String name;
 

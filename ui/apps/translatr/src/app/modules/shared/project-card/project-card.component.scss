@@ -10,12 +10,14 @@ h2 {
   text-overflow: ellipsis;
 }
 
+$size: 160px;
+
 .mat-card-image {
-  width: 200px;
-  height: 200px;
+  width: $size;
+  height: $size;
   display: block;
-  line-height: 200px;
-  font-size: 168px;
+  line-height: $size;
+  font-size: 80px;
   text-align: center;
   background-color: #ff9800;
   color: #fff;

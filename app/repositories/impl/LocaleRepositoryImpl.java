@@ -162,7 +162,7 @@ public class LocaleRepositoryImpl extends
   protected void prePersist(Locale t, boolean update) {
     if (update) {
       activityActor.tell(
-          new Activity<>(ActionType.Update, t.project, dto.Locale.class,
+          new Activity<>(ActionType.Update, User.loggedInUser(), t.project, dto.Locale.class,
               dto.Locale.from(byId(t.id)), dto.Locale.from(t)),
           null
       );
@@ -176,7 +176,7 @@ public class LocaleRepositoryImpl extends
   protected void postSave(Locale t, boolean update) {
     if (!update) {
       activityActor.tell(
-          new Activity<>(ActionType.Create, t.project, dto.Locale.class, null, dto.Locale.from(t)),
+          new Activity<>(ActionType.Create, User.loggedInUser(), t.project, dto.Locale.class, null, dto.Locale.from(t)),
           null
       );
     }
@@ -194,7 +194,7 @@ public class LocaleRepositoryImpl extends
     }
 
     activityActor.tell(
-        new Activity<>(ActionType.Delete, t.project, dto.Locale.class, dto.Locale.from(t), null),
+        new Activity<>(ActionType.Delete, User.loggedInUser(), t.project, dto.Locale.class, dto.Locale.from(t), null),
         null
     );
 
@@ -207,7 +207,7 @@ public class LocaleRepositoryImpl extends
   @Override
   public void preDelete(Collection<Locale> t) {
     activityActor.tell(
-        new Activities<>(t.stream().map(l -> new Activity<>(ActionType.Delete, l.project,
+        new Activities<>(t.stream().map(l -> new Activity<>(ActionType.Delete, User.loggedInUser(), l.project,
             dto.Locale.class, dto.Locale.from(l), null)).collect(Collectors.toList())),
         null
     );
