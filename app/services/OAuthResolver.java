@@ -23,7 +23,7 @@ public class OAuthResolver extends Resolver {
   public Call afterAuth() {
     // The user will be redirected to this page after authentication
     // if no original URL was saved
-    return Projects.indexRoute();
+    return routes.Application.indexUi();
   }
 
   @Override
