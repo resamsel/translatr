@@ -1,7 +1,7 @@
 <mat-card class="info">
   <span mat-card-image>{{firstChar(project?.name)}}</span>
   <mat-card-content>
-    <h2>{{project?.name}}</h2>
+    <h2 class="ellipsis">{{project?.name}}</h2>
     <p class="ellipsis">{{project?.ownerName}}</p>
     <ng-content></ng-content>
   </mat-card-content>

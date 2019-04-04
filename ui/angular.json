@@ -27,10 +27,9 @@
               "apps/translatr/src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
-              "apps/translatr/src/styles.scss",
-              "apps/translatr/src/theme.scss",
-              "apps/translatr/src/media.scss"
+              "apps/translatr/src/styles/styles.scss",
+              "apps/translatr/src/styles/theme.scss",
+              "apps/translatr/src/styles/media.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [

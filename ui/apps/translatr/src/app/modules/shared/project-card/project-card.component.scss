@@ -1,3 +1,5 @@
+@import "mixins";
+
 .info {
   img {
     border-radius: 4px 4px 0 0 !important;
@@ -7,19 +9,27 @@
 
 h2 {
   margin-bottom: 0;
-  text-overflow: ellipsis;
 }
 
-$size: 160px;
+$size: 64px;
+$size-large: 160px;
 
 .mat-card-image {
-  width: $size;
-  height: $size;
   display: block;
-  line-height: $size;
-  font-size: 80px;
   text-align: center;
   background-color: #ff9800;
   color: #fff;
   text-transform: capitalize;
+
+  width: $size;
+  height: $size;
+  line-height: $size;
+  font-size: $size/2;
+
+  @include medium {
+    width: $size-large;
+    height: $size-large;
+    line-height: $size-large;
+    font-size: $size-large/2;
+  }
 }

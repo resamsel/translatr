@@ -10,9 +10,5 @@
 
 <section>
   <h2 i18n="@@activity">Activity</h2>
-  <mat-card>
-    <mat-card-content>
-      <app-activity [activity]="activity$ | async"></app-activity>
-    </mat-card-content>
-  </mat-card>
+  <app-activity [activity]="activity$ | async"></app-activity>
 </section>

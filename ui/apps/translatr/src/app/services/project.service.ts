@@ -7,6 +7,12 @@ import {PagedList} from "../shared/paged-list";
 import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
 import {Aggregate} from "../shared/aggregate";
 
+const projectMapper = (project: Project) => ({
+  ...convertTemporals(project),
+  locales: !!project ? convertTemporalsList(project.locales) : undefined,
+  keys: !!project ? convertTemporalsList(project.keys) : undefined
+});
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,11 +29,7 @@ export class ProjectService {
     return this.http
       .get<Project>(`/api/${username}/${projectName}`, options)
       .pipe(
-        map((project: Project) => ({
-          ...convertTemporals(project),
-          locales: convertTemporalsList(project.locales),
-          keys: convertTemporalsList(project.keys)
-        }))
+        map(projectMapper)
       );
   }
 
@@ -54,12 +56,12 @@ export class ProjectService {
   create(project: { name: string }): Observable<Project> {
     return this.http
       .post<Project>('/api/project', project)
-      .pipe(map(convertTemporals));
+      .pipe(map(projectMapper));
   }
 
   update(project: Project): Observable<Project> {
     return this.http
       .put<Project>('/api/project', project)
-      .pipe(map(convertTemporals));
+      .pipe(map(projectMapper));
   }
 }

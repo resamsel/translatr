@@ -12,6 +12,7 @@
 body {
   margin: 0;
   font-family: Roboto, sans-serif;
+  overflow: auto;
 }
 
 header {
@@ -164,6 +165,7 @@ pre[class*="language-"]:before {
   > span {
     display: inline-block;
     margin: 0 4px;
+    opacity: .6;
   }
 
   > a:last-child {
@@ -198,25 +200,31 @@ pre[class*="language-"]:before {
     margin-bottom: 8px;
   }
 
-  .mat-card .mat-card-image {
-    //width: calc(100% + 32px);
-    border-radius: 50%;
-    margin: auto;
-    margin-bottom: 16px;
+  .mat-card {
+    display: flex;
+
+    .mat-card-image {
+      //width: calc(100% + 32px);
+      border-radius: 50%;
+      margin: auto 16px auto 0;
+
+      @include medium {
+        margin: auto auto 16px;
+      }
+    }
   }
 
   @include medium {
     margin: -8px;
 
-    > * {
-      flex: 1 0 40%;
-      margin: 8px;
+    .mat-card {
+      flex-direction: column;
     }
-  }
 
-  @include large {
     > * {
-      flex: 1 0 20%;
+      width: 192px;
+      flex: 0 0;
+      margin: 8px;
     }
   }
 }

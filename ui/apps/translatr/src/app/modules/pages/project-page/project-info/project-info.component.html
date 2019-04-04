@@ -14,38 +14,40 @@
 
   <div>
     <h2 i18n="@@activity">Activity</h2>
-    <mat-card>
-      <mat-card-content>
-        <app-activity [activity]="activity$ | async"></app-activity>
-      </mat-card-content>
-    </mat-card>
+    <app-activity [activity]="activity$ | async"></app-activity>
   </div>
 
   <div class="small">
-    <h2 i18n="@@locales">Languages</h2>
-    <mat-card>
-      <mat-card-content>
-        <span i18n="@@latest">Latest: </span>
-        <ng-container *ngFor="let locale of latestLocales(project$ | async); let i = index">
-          <span *ngIf="i > 0">, </span>
-          <a class="link" [routerLink]="['locales', locale.name]">{{locale.name}}
-            — {{locale.displayName}}</a>
-        </ng-container>
-      </mat-card-content>
-    </mat-card>
+    <h2 i18n="@@locales.latest">Latest Languages</h2>
+    <div *ngIf="latestLocales$ | async; else localesEmpty">
+      <ng-container *ngFor="let locale of latestLocales$ | async; let i = index">
+        <span *ngIf="i > 0">, </span>
+        <a class="link" [routerLink]="['locales', locale.name]">{{locale.name}}
+          — {{locale.displayName}}</a>
+      </ng-container>
+    </div>
+    <ng-template #localesEmpty>No languages yet.</ng-template>
   </div>
 
-  <mat-card class="small">
-    <mat-card-title i18n="@@keys">Keys</mat-card-title>
-    <mat-card-content>
-      <span i18n="@@latest">Latest: </span>
-      <ng-container *ngFor="let key of latestKeys(project$ | async); let i = index">
+  <div class="small">
+    <h2 i18n="@@keys.latest">Latest Keys</h2>
+    <div *ngIf="latestKeys$ | async; else keysEmpty">
+      <ng-container *ngFor="let key of latestKeys$ | async; let i = index">
         <span *ngIf="i > 0">, </span>
         <a class="link" [routerLink]="['keys', key.name]">{{key.name}}</a>
       </ng-container>
-    </mat-card-content>
-  </mat-card>
-  <mat-card class="small">
-    <mat-card-title i18n="@@translations">Translations</mat-card-title>
-  </mat-card>
+    </div>
+    <ng-template #keysEmpty>No keys yet.</ng-template>
+  </div>
+
+  <div class="small">
+    <h2 i18n="@@translations.latest">Latest Translations</h2>
+    <div *ngIf="latestMessages$ | async; else messagesEmpty">
+      <ng-container *ngFor="let message of latestMessages$ | async; let i = index">
+        <span *ngIf="i > 0">, </span>
+        <a class="link" [routerLink]="['keys', message.localeName]">{{message.localeName}}</a>
+      </ng-container>
+    </div>
+    <ng-template #messagesEmpty>No translations yet.</ng-template>
+  </div>
 </div>

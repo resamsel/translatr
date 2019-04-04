@@ -5,7 +5,22 @@
         <mat-icon>extension</mat-icon>
         <a class="link" [routerLink]="['/', project?.ownerUsername]">{{project?.ownerUsername}}</a>
         <span>/</span>
-        <a class="link" [routerLink]="['/', project?.ownerUsername, project?.name]">{{project?.name}}</a>
+        <mat-form-field [ngClass]="{dirty: nameFormControl.dirty}">
+          <input
+            matInput
+            #name
+            type="text"
+            [formControl]="nameFormControl"
+            (keyup.enter)="onSaveName()">
+          <button matSuffix mat-icon-button>
+            <mat-icon>mode_edit</mat-icon>
+          </button>
+          <button matSuffix mat-button color="primary" (click)="onSaveName()">Save</button>
+          <mat-error *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern">Must match pattern [^\s/]*
+          </mat-error>
+          <mat-error
+            *ngIf="nameFormControl.invalid && nameFormControl.errors['']">{{nameFormControl.errors['']}}</mat-error>
+        </mat-form-field>
       </div>
     </div>
 
@@ -51,14 +66,6 @@
            [active]="activityLink.isActive">
           <mat-icon>change_history</mat-icon>
           <span>Activity</span>
-        </a>
-        <a mat-tab-link
-           [routerLink]="['/', project?.ownerUsername, project?.name, 'settings']"
-           routerLinkActive
-           #settingsLink="routerLinkActive"
-           [active]="settingsLink.isActive">
-          <mat-icon>settings</mat-icon>
-          <span>Settings</span>
         </a>
       </div>
     </nav>

@@ -6,7 +6,6 @@ import {ProjectKeysComponent} from "./project-keys/project-keys.component";
 import {ProjectLocalesComponent} from "./project-locales/project-locales.component";
 import {ProjectMembersComponent} from "./project-members/project-members.component";
 import {ProjectActivityComponent} from "./project-activity/project-activity.component";
-import {ProjectSettingsComponent} from "./project-settings/project-settings.component";
 import {AuthResolverService} from "../../../services/auth-resolver.service";
 
 const routes: Routes = [
@@ -36,10 +35,6 @@ const routes: Routes = [
       {
         path: 'activity',
         component: ProjectActivityComponent
-      },
-      {
-        path: 'settings',
-        component: ProjectSettingsComponent
       }
     ]
   }

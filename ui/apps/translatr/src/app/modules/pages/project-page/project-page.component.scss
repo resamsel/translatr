@@ -1,5 +1,15 @@
 @import "mixins";
 
+.mat-tab-nav-bar .container {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+
+  @include large {
+    justify-content: flex-start;
+  }
+}
+
 a.mat-tab-link {
   min-width: auto;
   padding: 0 8px;
@@ -25,6 +35,44 @@ a.mat-tab-link {
 
     > .mat-icon {
       display: inline-block;
+    }
+  }
+}
+
+.mat-form-field {
+  ::ng-deep {
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    .mat-form-field-infix {
+      padding: 0;
+      border-top-width: 0;
+    }
+
+    .mat-form-field-underline {
+      background-color: transparent;
+      bottom: 0;
+    }
+  }
+
+  .mat-button {
+    display: none;
+    line-height: 28px;
+  }
+
+  &.mat-focused,
+  &.dirty {
+    ::ng-deep .mat-form-field-underline {
+      background-color: #fff;
+    }
+
+    .mat-button {
+      display: initial;
+    }
+
+    .mat-icon-button {
+      display: none;
     }
   }
 }
