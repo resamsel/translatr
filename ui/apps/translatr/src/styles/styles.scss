@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
 @import "mixins";
 
 @mixin translatr-theme($theme) {
@@ -37,6 +38,15 @@ a.link:visited {
 
 a.link:hover {
   text-decoration: underline;
+}
+
+a .mat-card:not([class*='mat-elevation-z']) {
+  @include mat-elevation-transition;
+  @include mat-elevation(2);
+
+  &:hover {
+    @include mat-elevation(4);
+  }
 }
 
 .main-container {

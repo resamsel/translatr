@@ -14,8 +14,8 @@ import {EMPTY, of} from "rxjs";
 })
 export class ProjectInfoComponent implements OnInit {
 
-  project$ = this.projectFacade.project$;
-  activity$ = this.projectFacade.activityAggregated$;
+  project$ = this.facade.project$;
+  activity$ = this.facade.activityAggregated$;
   latestLocales$ = this.project$.pipe(
     filter(project => !!project && !!project.locales),
     pluck<Project, Locale[]>('locales'),
@@ -37,14 +37,14 @@ export class ProjectInfoComponent implements OnInit {
   latestMessages$ = this.project$.pipe(switchMapTo(EMPTY));
 
   constructor(
-    private readonly projectFacade: ProjectFacade) {
+    private readonly facade: ProjectFacade) {
   }
 
   ngOnInit() {
     this.project$
       .pipe(filter((project?: Project) => !!project && !!project.id))
       .subscribe((project: Project) => {
-        this.projectFacade.loadActivityAggregated(project.id);
+        this.facade.loadActivityAggregated(project.id);
       });
   }
 }

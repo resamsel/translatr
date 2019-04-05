@@ -14,7 +14,7 @@ import {MatSnackBar} from '@angular/material';
 })
 export class ProjectPageComponent implements OnInit, OnDestroy {
 
-  project$ = this.projectFacade.project$;
+  project$ = this.facade.project$;
 
   form = new FormGroup({
     'name': new FormControl('', [
@@ -31,12 +31,12 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly snackBar: MatSnackBar,
-    private readonly projectFacade: ProjectFacade) {
+    private readonly facade: ProjectFacade) {
   }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.projectFacade.loadProject(params.get('username'), params.get('projectName'));
+      this.facade.loadProject(params.get('username'), params.get('projectName'));
     });
     this.project$
       .pipe(filter(project => !!project), take(1))
@@ -44,7 +44,7 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.projectFacade.unloadProject();
+    this.facade.unloadProject();
   }
 
   onSaveName() {
@@ -52,8 +52,8 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     this.project$
       .pipe(
         take(1),
-        tap(project => this.projectFacade.save({...project, name: this.nameFormControl.value as string})),
-        switchMapTo(this.projectFacade.project$.pipe(
+        tap(project => this.facade.save({...project, name: this.nameFormControl.value as string})),
+        switchMapTo(this.facade.project$.pipe(
           filter(project => project.name === this.nameFormControl.value),
           take(1)
         ))

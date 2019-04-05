@@ -8,9 +8,9 @@ import { ProjectFacade } from "../+state/project.facade";
 })
 export class ProjectMembersComponent implements OnInit {
 
-  project$ = this.projectFacade.project$;
+  project$ = this.facade.project$;
 
-  constructor(private readonly projectFacade: ProjectFacade) {
+  constructor(private readonly facade: ProjectFacade) {
   }
 
   ngOnInit() {

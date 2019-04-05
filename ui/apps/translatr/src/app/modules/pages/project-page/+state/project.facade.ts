@@ -5,6 +5,8 @@ import {select, Store} from '@ngrx/store';
 import {ProjectPartialState} from './project.reducer';
 import {projectQuery} from './project.selectors';
 import {
+  LoadKeys,
+  LoadLocales,
   LoadProject,
   LoadProjectActivities,
   LoadProjectActivityAggregated,
@@ -18,32 +20,37 @@ import {takeUntil} from "rxjs/operators";
 import {PagedList} from "../../../../shared/paged-list";
 import {Aggregate} from "../../../../shared/aggregate";
 import {Activity} from "../../../../shared/activity";
+import { RequestCriteria } from "../../../../shared/request-criteria";
 
 @Injectable()
 export class ProjectFacade {
-  get project$(): Observable<Project> {
-    return this.store.pipe(takeUntil(this.unload$), select(projectQuery.getProject));
-  }
 
-  get activityAggregated$(): Observable<PagedList<Aggregate>> {
-    return this.store.pipe(takeUntil(this.unload$), select(projectQuery.getActivityAggregated));
-  }
-
-  get activities$(): Observable<PagedList<Activity>> {
-    return this.store.pipe(takeUntil(this.unload$), select(projectQuery.getActivities));
-  }
+  private _unload$ = new Subject<void>();
 
   get unload$(): Observable<void> {
     return this._unload$.asObservable();
   }
 
-  private _unload$ = new Subject<void>();
+  project$ = this.store.pipe(takeUntil(this.unload$), select(projectQuery.getProject));
+  locales$ = this.store.pipe(takeUntil(this.unload$), select(projectQuery.getLocales));
+  keys$ = this.store.pipe(takeUntil(this.unload$), select(projectQuery.getKeys));
+
+  activityAggregated$ = this.store.pipe(takeUntil(this.unload$), select(projectQuery.getActivityAggregated));
+  activities$ = this.store.pipe(takeUntil(this.unload$), select(projectQuery.getActivities));
 
   constructor(private store: Store<ProjectPartialState>) {
   }
 
   loadProject(username: string, projectName: string) {
     this.store.dispatch(new LoadProject({username, projectName}));
+  }
+
+  loadLocales(projectId: string, criteria?: RequestCriteria) {
+    this.store.dispatch(new LoadLocales({projectId, criteria}));
+  }
+
+  loadKeys(projectId: string, criteria?: RequestCriteria) {
+    this.store.dispatch(new LoadKeys({projectId, criteria}));
   }
 
   loadActivityAggregated(projectId: string) {

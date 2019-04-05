@@ -4,11 +4,20 @@ import { PagedList } from "../../../../shared/paged-list";
 import { Aggregate } from "../../../../shared/aggregate";
 import { ActivityCriteria } from "../../../../services/activity.service";
 import { Activity } from "../../../../shared/activity";
+import { Locale } from "../../../../shared/locale";
+import { Key } from "../../../../shared/key";
+import { RequestCriteria } from "../../../../shared/request-criteria";
 
 export enum ProjectActionTypes {
   LoadProject = '[Project Page] Load Project',
   ProjectLoaded = '[Projects API] Project Loaded',
   ProjectLoadError = '[Projects API] Project Load Error',
+  LoadLocales = '[Project Page] Load Locales',
+  LocalesLoaded = '[Projects API] Locales Loaded',
+  LocalesLoadError = '[Projects API] Locales Load Error',
+  LoadKeys = '[Project Page] Load Keys',
+  KeysLoaded = '[Projects API] Keys Loaded',
+  KeysLoadError = '[Projects API] Keys Load Error',
   LoadProjectActivityAggregated = '[Project Page] Load Project Activity Aggregated',
   ProjectActivityAggregatedLoaded = '[Projects API] Project Activity Aggregated Loaded',
   ProjectActivityAggregatedLoadError = '[Projects API] Project Activity Aggregated Load Error',
@@ -38,6 +47,54 @@ export class ProjectLoaded implements Action {
   readonly type = ProjectActionTypes.ProjectLoaded;
 
   constructor(public payload: Project) {
+  }
+}
+
+export class LoadLocales implements Action {
+  readonly type = ProjectActionTypes.LoadLocales;
+
+  constructor(public payload: {
+    projectId: string;
+    criteria?: RequestCriteria;
+  }) {
+  }
+}
+
+export class LocalesLoadError implements Action {
+  readonly type = ProjectActionTypes.LocalesLoadError;
+
+  constructor(public payload: any) {
+  }
+}
+
+export class LocalesLoaded implements Action {
+  readonly type = ProjectActionTypes.LocalesLoaded;
+
+  constructor(public payload: PagedList<Locale>) {
+  }
+}
+
+export class LoadKeys implements Action {
+  readonly type = ProjectActionTypes.LoadKeys;
+
+  constructor(public payload: {
+    projectId: string;
+    criteria?: RequestCriteria;
+  }) {
+  }
+}
+
+export class KeysLoadError implements Action {
+  readonly type = ProjectActionTypes.KeysLoadError;
+
+  constructor(public payload: any) {
+  }
+}
+
+export class KeysLoaded implements Action {
+  readonly type = ProjectActionTypes.KeysLoaded;
+
+  constructor(public payload: PagedList<Key>) {
   }
 }
 
@@ -86,28 +143,26 @@ export class ProjectActivitiesLoaded implements Action {
 export class SaveProject implements Action {
   readonly type = ProjectActionTypes.SaveProject;
 
-  constructor(public payload: Project) {}
+  constructor(public payload: Project) {
+  }
 }
 
 export class ProjectSaved implements Action {
   readonly type = ProjectActionTypes.ProjectSaved;
 
-  constructor(public payload: Project) {}
+  constructor(public payload: Project) {
+  }
 }
 
 export class UnloadProject implements Action {
   readonly type = ProjectActionTypes.UnloadProject;
 }
 
-export type ProjectAction = LoadProject
-  | ProjectLoaded
-  | ProjectLoadError
-  | LoadProjectActivityAggregated
-  | ProjectActivityAggregatedLoaded
-  | ProjectActivityAggregatedLoadError
-  | LoadProjectActivities
-  | ProjectActivitiesLoaded
-  | ProjectActivitiesLoadError
-  | SaveProject
-  | ProjectSaved
+export type ProjectAction =
+  LoadProject | ProjectLoaded | ProjectLoadError
+  | LoadLocales | LocalesLoaded | LocalesLoadError
+  | LoadKeys | KeysLoaded | KeysLoadError
+  | LoadProjectActivityAggregated | ProjectActivityAggregatedLoaded | ProjectActivityAggregatedLoadError
+  | LoadProjectActivities | ProjectActivitiesLoaded | ProjectActivitiesLoadError
+  | SaveProject | ProjectSaved
   | UnloadProject;

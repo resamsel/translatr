@@ -1,13 +1,20 @@
-import {ProjectAction, ProjectActionTypes} from './project.actions';
-import {Project} from "../../../../shared/project";
-import {PagedList} from "../../../../shared/paged-list";
-import {Aggregate} from "../../../../shared/aggregate";
-import {Activity} from "../../../../shared/activity";
+import { ProjectAction, ProjectActionTypes } from './project.actions';
+import { Project } from "../../../../shared/project";
+import { PagedList } from "../../../../shared/paged-list";
+import { Aggregate } from "../../../../shared/aggregate";
+import { Activity } from "../../../../shared/activity";
+import { Locale } from "../../../../shared/locale";
+import { Key } from "../../../../shared/key";
+import { RequestCriteria } from "../../../../shared/request-criteria";
 
 export const PROJECT_FEATURE_KEY = 'project';
 
 export interface ProjectState {
   project?: Project;
+  locales?: PagedList<Locale>;
+  localesSearch: RequestCriteria;
+  keys?: PagedList<Key>;
+  keysSearch: RequestCriteria;
   activityAggregated?: PagedList<Aggregate>,
   activities?: PagedList<Activity>,
   loading: boolean;
@@ -19,6 +26,16 @@ export interface ProjectPartialState {
 }
 
 export const initialState: ProjectState = {
+  localesSearch: {
+    limit: '50',
+    offset: '0',
+    order: 'name asc'
+  },
+  keysSearch: {
+    limit: '50',
+    offset: '0',
+    order: 'name asc'
+  },
   loading: false
 };
 
@@ -37,6 +54,32 @@ export function projectReducer(
         ...state,
         project: action.payload,
         loading: false
+      };
+    case ProjectActionTypes.LoadLocales:
+      return {
+        ...state,
+        localesSearch: {
+          ...state.localesSearch,
+          ...action.payload.criteria ? action.payload.criteria : {}
+        }
+      };
+    case ProjectActionTypes.LocalesLoaded:
+      return {
+        ...state,
+        locales: action.payload
+      };
+    case ProjectActionTypes.LoadKeys:
+      return {
+        ...state,
+        keysSearch: {
+          ...state.keysSearch,
+          ...action.payload.criteria ? action.payload.criteria : {}
+        }
+      };
+    case ProjectActionTypes.KeysLoaded:
+      return {
+        ...state,
+        keys: action.payload
       };
     case ProjectActionTypes.ProjectActivityAggregatedLoaded:
       return {

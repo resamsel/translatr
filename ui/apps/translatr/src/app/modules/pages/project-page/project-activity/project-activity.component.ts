@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Project } from "../../../../shared/project";
 import { ActivityCriteria } from "../../../../services/activity.service";
 import { ProjectFacade } from "../+state/project.facade";
-import { filter, takeUntil } from "rxjs/operators";
+import { filter } from "rxjs/operators";
 
 @Component({
   selector: 'app-project-activity',
@@ -11,19 +11,16 @@ import { filter, takeUntil } from "rxjs/operators";
 })
 export class ProjectActivityComponent implements OnInit {
 
-  project$ = this.projectFacade.project$;
-  activities$ = this.projectFacade.activities$;
+  project$ = this.facade.project$;
+  activities$ = this.facade.activities$;
   private criteria: ActivityCriteria;
 
-  constructor(private readonly projectFacade: ProjectFacade) {
+  constructor(private readonly facade: ProjectFacade) {
   }
 
   ngOnInit() {
     this.project$
-      .pipe(
-        takeUntil(this.projectFacade.unload$),
-        filter((project?: Project) => project !== undefined)
-      )
+      .pipe(filter((project?: Project) => project !== undefined))
       .subscribe((project: Project) => {
         this.criteria = {
           projectId: project.id,
@@ -34,7 +31,7 @@ export class ProjectActivityComponent implements OnInit {
   }
 
   private loadActivities(): void {
-    this.projectFacade.loadActivities(this.criteria);
+    this.facade.loadActivities(this.criteria);
   }
 
   onMore(): void {

@@ -1,7 +1,9 @@
-<mat-nav-list *ngIf="locales">
-  <a mat-list-item *ngFor="let locale of locales" [routerLink]="['/', project.ownerUsername, project.name, 'locales', locale.name]">
-    <mat-icon matListIcon class="circle">language</mat-icon>
-    <h3 matLine>{{locale.name}}</h3>
-    <p matLine>{{locale.displayName}}</p>
-  </a>
-</mat-nav-list>
+<app-nav-list [pagedList]="locales" [template]="template" (more)="more.emit($event)">
+  <ng-template #template let-locale>
+    <a mat-list-item [routerLink]="['/', project.ownerUsername, project.name, 'locales', locale.name]">
+      <mat-icon matListIcon class="circle">language</mat-icon>
+      <h3 matLine>{{locale.name}}</h3>
+      <p matLine>{{locale.displayName}}</p>
+    </a>
+  </ng-template>
+</app-nav-list>

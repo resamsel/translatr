@@ -33,6 +33,7 @@ import {initialState as projectInitialState, PROJECT_FEATURE_KEY, projectReducer
 import {ProjectEffects} from './+state/project.effects';
 import {ProjectFacade} from './+state/project.facade';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { NavListModule } from "../../shared/nav-list/nav-list.module";
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     SidenavModule,
     ActivityModule,
     ActivityListModule,
+    NavListModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
