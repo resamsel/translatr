@@ -1,0 +1,50 @@
+<mat-toolbar color="primary" class="mat-elevation-z2">
+  <ng-container>
+    <mat-toolbar-row>
+      <button
+        *ngIf="sidenav"
+        mat-icon-button
+        class="burger"
+        (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <ng-container *ngIf="backLink; else logo">
+        <a
+          mat-icon-button
+          [routerLink]="backLink.routerLink"
+          class="logo"
+          [title]="backLink.name">
+          <mat-icon>arrow_back</mat-icon>
+        </a>
+        <a
+          [routerLink]="backLink.routerLink"
+          class="title">
+          <span>{{backLink.name}}</span>
+        </a>
+      </ng-container>
+      <ng-template #logo>
+        <a
+          mat-icon-button
+          routerLink="/"
+          class="logo">
+          <mat-icon>language</mat-icon>
+        </a>
+        <a routerLink="/" class="title">
+          <span>{{title}}</span>
+        </a>
+      </ng-template>
+      <span *ngIf="page" class="page">{{page}}</span>
+
+      <ng-content select="app-search-bar"></ng-content>
+
+      <div class="flex-spacer"></div>
+
+      <ng-content></ng-content>
+
+      <app-auth-bar-item></app-auth-bar-item>
+    </mat-toolbar-row>
+  </ng-container>
+  <ng-container>
+    <ng-content select="mat-toolbar-row"></ng-content>
+  </ng-container>
+</mat-toolbar>

@@ -54,8 +54,8 @@ public class ProjectRepositoryImpl extends
 
   @Inject
   public ProjectRepositoryImpl(Validator validator,
-      @Named(ActivityActor.NAME) ActorRef activityActor, LocaleRepository localeRepository,
-      KeyRepository keyRepository, PermissionService permissionService) {
+                               @Named(ActivityActor.NAME) ActorRef activityActor, LocaleRepository localeRepository,
+                               KeyRepository keyRepository, PermissionService permissionService) {
     super(validator, activityActor);
 
     this.localeRepository = localeRepository;
@@ -118,7 +118,11 @@ public class ProjectRepositoryImpl extends
   @Override
   public Project byOwnerAndName(String username, String name, String... fetches) {
     return QueryUtils
-        .fetch(find.query(), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
+        .fetch(
+            find.query().setDisableLazyLoading(true),
+            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches),
+            FETCH_MAP
+        )
         .where()
         .eq("owner.username", username)
         .eq("name", name)

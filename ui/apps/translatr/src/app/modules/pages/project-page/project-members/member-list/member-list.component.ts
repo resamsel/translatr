@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Project} from "../../../../../shared/project";
-import {Member} from "../../../../../shared/member";
+import {Project} from "../../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import {Member} from "../../../../../../../../../libs/translatr-sdk/src/lib/shared/member";
 
 @Component({
   selector: 'app-member-list',

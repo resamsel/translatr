@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { PagedList } from "../../../../shared/paged-list";
+import { PagedList } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
 import { ActivatedRoute } from "@angular/router";
-import { User } from "../../../../shared/user";
+import { User } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/user";
 
 @Component({
   selector: 'app-dashboard-users',

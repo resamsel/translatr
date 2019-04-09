@@ -52,9 +52,20 @@ public class Application extends AbstractController {
     return assets.at("/public/ui", "index.html", false);
   }
 
-  public Action<AnyContent> assetOrDefault(String resource) {
+  public Action<AnyContent> assetOrDefaultUi(String resource) {
     if (resource.contains(".")) {
       return assets.at("/public/ui", resource, false);
+    }
+    return indexUi();
+  }
+
+  public Action<AnyContent> indexAdmin() {
+    return assets.at("/public/admin", "index.html", false);
+  }
+
+  public Action<AnyContent> assetOrDefaultAdmin(String resource) {
+    if (resource.contains(".")) {
+      return assets.at("/public/admin", resource, false);
     }
     return indexUi();
   }

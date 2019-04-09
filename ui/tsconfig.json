@@ -11,18 +11,12 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es5",
-    "typeRoots": [
-      "node_modules/@types",
-      "typings.d.ts"
-    ],
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "typeRoots": ["node_modules/@types", "typings.d.ts"],
+    "lib": ["es2018", "dom"],
     "paths": {
-      "@dev/*": [
-        "libs/*"
-      ]
+      "@dev/*": ["libs/*"],
+      "@dev/translatr-sdk": ["libs/translatr-sdk/src/index.ts"],
+      "@dev/translatr-components": ["libs/translatr-components/src/index.ts"]
     }
   }
 }

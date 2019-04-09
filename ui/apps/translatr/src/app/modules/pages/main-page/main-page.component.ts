@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { User } from "../../../shared/user";
+import { User } from "../../../../../../../libs/translatr-sdk/src/lib/shared/user";
 import { ActivatedRoute } from "@angular/router";
 
 @Component({

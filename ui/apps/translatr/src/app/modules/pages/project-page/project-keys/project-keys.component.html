@@ -1,3 +1,9 @@
 <div class="container">
-  <app-key-list [project]="project$ | async" [keys]="keys$ | async" (more)="onMore($event)"></app-key-list>
+  <app-key-list
+    [project]="project$ | async"
+    [keys]="keys$ | async"
+    (more)="onMore($event)"
+    (edit)="onEdit($event)"
+    (delete)="onDelete($event)"
+  ></app-key-list>
 </div>

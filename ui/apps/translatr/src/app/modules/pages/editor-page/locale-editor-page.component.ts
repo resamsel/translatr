@@ -1,13 +1,13 @@
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {EditorFacade} from "./+state/editor.facade";
-import {ActivatedRoute, ParamMap, Params, Router} from "@angular/router";
-import {filter, take, takeUntil} from "rxjs/operators";
-import {Message} from "../../../shared/message";
-import {combineLatest} from "rxjs";
-import {Locale} from "../../../shared/locale";
-import {PagedList} from "../../../shared/paged-list";
-import {Key} from "../../../shared/key";
-import {RequestCriteria} from "../../../shared/request-criteria";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { EditorFacade } from "./+state/editor.facade";
+import { ActivatedRoute, ParamMap, Params, Router } from "@angular/router";
+import { filter, take, takeUntil } from "rxjs/operators";
+import { Message } from "@dev/translatr-sdk";
+import { combineLatest } from "rxjs";
+import { Locale } from "@dev/translatr-sdk";
+import { PagedList } from "@dev/translatr-sdk";
+import { Key } from "@dev/translatr-sdk";
+import { RequestCriteria } from "@dev/translatr-sdk";
 
 @Component({
   selector: 'app-locale-editor-page',

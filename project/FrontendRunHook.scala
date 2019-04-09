@@ -13,18 +13,21 @@ object FrontendRunHook {
   def apply(base: File): PlayRunHook = {
     object UIBuildHook extends PlayRunHook {
 
-      var process: Option[Process] = None
+      var processUi: Option[Process] = None
+      var processAdmin: Option[Process] = None
 
       /**
         * Change these commands if you want to use Yarn.
         */
       var npmInstall: String = FrontendCommands.dependencyInstall
-      var npmRun: String = FrontendCommands.serve
+      var npmRunUi: String = FrontendCommands.serveUi
+      var npmRunAdmin: String = FrontendCommands.serveAdmin
 
       // Windows requires npm commands prefixed with cmd /c
       if (System.getProperty("os.name").toLowerCase().contains("win")) {
         npmInstall = "cmd /c" + npmInstall
-        npmRun = "cmd /c" + npmRun
+        npmRunUi = "cmd /c" + npmRunUi
+        npmRunAdmin = "cmd /c" + npmRunAdmin
       }
 
       /**
@@ -40,8 +43,11 @@ object FrontendRunHook {
         * Run npm start
         */
       override def afterStarted(addr: InetSocketAddress): Unit = {
-        process = Option(
-          Process(npmRun, base / "ui").run
+        processUi = Option(
+          Process(npmRunUi, base / "ui").run
+        )
+        processAdmin = Option(
+          Process(npmRunAdmin, base / "ui").run
         )
       }
 
@@ -50,8 +56,10 @@ object FrontendRunHook {
         * Cleanup frontend execution processes.
         */
       override def afterStopped(): Unit = {
-        process.foreach(_.destroy())
-        process = None
+        processUi.foreach(_.destroy())
+        processUi = None
+        processAdmin.foreach(_.destroy())
+        processAdmin = None
       }
 
     }

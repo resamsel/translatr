@@ -2,6 +2,6 @@
   <a mat-list-item *ngFor="let member of members" [routerLink]="['/', member.userUsername]">
     <img class="icon" matListIcon ngxGravatar [email]="member.userEmail" size="36">
     <h3 matLine>{{member.userName}} — {{member.role}}</h3>
-    <p matLine>{{member.userUsername}}</p>
+    <p matLine i18n="@@added.when" [title]="member?.whenCreated | date:'full'">Added {{member?.whenCreated | amTimeAgo}}</p>
   </a>
 </mat-nav-list>

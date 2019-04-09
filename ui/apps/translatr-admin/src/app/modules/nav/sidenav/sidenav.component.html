@@ -1,0 +1,13 @@
+<div class="sidenav-content">
+  <app-navbar title="Translatr Admin" [page]="page" [backLink]="backLink">
+    <ng-container ngProjectAs="app-search-bar">
+      <ng-content select="app-search-bar"></ng-content>
+    </ng-container>
+  </app-navbar>
+
+  <div class="main-container">
+    <ng-content></ng-content>
+  </div>
+
+  <app-footer></app-footer>
+</div>

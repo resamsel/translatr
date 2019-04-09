@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
-import { PagedList } from "../../../shared/paged-list";
-import { User } from "../../../shared/user";
+import { PagedList } from "../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import { User } from "../../../../../../../libs/translatr-sdk/src/lib/shared/user";
 import { Observable } from "rxjs";
 
 @Component({

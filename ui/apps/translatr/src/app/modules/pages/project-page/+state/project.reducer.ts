@@ -1,11 +1,11 @@
 import { ProjectAction, ProjectActionTypes } from './project.actions';
-import { Project } from "../../../../shared/project";
-import { PagedList } from "../../../../shared/paged-list";
-import { Aggregate } from "../../../../shared/aggregate";
-import { Activity } from "../../../../shared/activity";
-import { Locale } from "../../../../shared/locale";
-import { Key } from "../../../../shared/key";
-import { RequestCriteria } from "../../../../shared/request-criteria";
+import { Project } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import { PagedList } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import { Aggregate } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/aggregate";
+import { Activity } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/activity";
+import { Locale } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
+import { Key } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
+import { RequestCriteria } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/request-criteria";
 
 export const PROJECT_FEATURE_KEY = 'project';
 

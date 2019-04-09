@@ -1,6 +1,6 @@
 import {Action} from '@ngrx/store';
-import {PagedList} from "../../../../shared/paged-list";
-import {Project} from "../../../../shared/project";
+import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
 
 export enum ProjectsActionTypes {
   LoadProjects = '[Projects Page] Load Projects',

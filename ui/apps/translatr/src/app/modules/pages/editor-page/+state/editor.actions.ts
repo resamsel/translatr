@@ -1,9 +1,9 @@
 import {Action} from '@ngrx/store';
-import {Locale} from "../../../../shared/locale";
-import {PagedList} from "../../../../shared/paged-list";
-import {Message} from "../../../../shared/message";
-import {Key} from "../../../../shared/key";
-import {RequestCriteria} from "../../../../shared/request-criteria";
+import {Locale} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
+import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import {Message} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/message";
+import {Key} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
+import {RequestCriteria} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/request-criteria";
 
 export enum EditorActionTypes {
   LoadLocales = '[Editor Page] Load Locales',

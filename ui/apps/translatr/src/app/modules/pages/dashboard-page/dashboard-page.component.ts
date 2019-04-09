@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from "rxjs";
-import { PagedList } from "../../../shared/paged-list";
-import { Project } from "../../../shared/project";
-import { ProjectService } from "../../../services/project.service";
+import { PagedList } from "../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import { Project } from "../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import { ProjectService } from "../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
 import { MatDialog } from "@angular/material";
 
 @Component({

@@ -15,6 +15,7 @@ import {
 import { ProjectsEffects } from './+state/projects.effects';
 import { ProjectsFacade } from './+state/projects.facade';
 import {ProjectCardModule} from "../../shared/project-card/project-card.module";
+import { GravatarModule } from "ngx-gravatar";
 
 @NgModule({
   declarations: [ProjectsPageComponent],
@@ -25,6 +26,7 @@ import {ProjectCardModule} from "../../shared/project-card/project-card.module";
     ProjectListModule,
     ProjectCardModule,
     MatIconModule,
+    GravatarModule,
     StoreModule.forFeature(PROJECTS_FEATURE_KEY, projectsReducer, {
       initialState: projectsInitialState
     }),

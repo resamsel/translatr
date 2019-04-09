@@ -43,7 +43,7 @@ public class Project extends Dto {
 
   public List<Message> messages;
 
-  public List<Member> members;
+  public List<ProjectUser> members;
 
   public Project() {
   }
@@ -66,7 +66,7 @@ public class Project extends Dto {
     }
 
     if (in.members != null && !in.members.isEmpty()) {
-        this.members = in.members.stream().map(Member::from).collect(toList());
+        this.members = in.members.stream().map(ProjectUser::from).collect(toList());
     }
   }
 

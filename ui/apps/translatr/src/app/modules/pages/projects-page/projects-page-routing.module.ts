@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ProjectsResolverService } from "../dashboard-page/projects-resolver.service";
 import { ProjectsPageComponent } from "./projects-page.component";
-import { AuthResolverService } from "../../../services/auth-resolver.service";
+import { AuthResolverService } from "../../../../../../../libs/translatr-sdk/src/lib/services/auth-resolver.service";
 
 const routes: Routes = [
   {

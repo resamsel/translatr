@@ -6,6 +6,28 @@
     <ng-container ngProjectAs="mat-toolbar-row">
       <ng-content select="mat-toolbar-row"></ng-content>
     </ng-container>
+
+    <a
+      mat-icon-button
+      routerLink="/projects"
+      class="show-on-small">
+      <mat-icon>extension</mat-icon>
+    </a>
+    <a mat-button routerLink="/projects">
+      <mat-icon>extension</mat-icon>
+      <span class="text">Projects</span>
+    </a>
+
+    <a
+      mat-icon-button
+      routerLink="/users"
+      class="show-on-small">
+      <mat-icon>group</mat-icon>
+    </a>
+    <a mat-button routerLink="/users">
+      <mat-icon>group</mat-icon>
+      <span class="text">Contributors</span>
+    </a>
   </app-navbar>
 
   <div class="main-container">

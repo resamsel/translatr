@@ -1,9 +1,9 @@
 import {EditorAction, EditorActionTypes} from './editor.actions';
-import {PagedList} from "../../../../shared/paged-list";
-import {Locale} from "../../../../shared/locale";
-import {Key} from "../../../../shared/key";
-import {Message} from "../../../../shared/message";
-import {RequestCriteria} from "../../../../shared/request-criteria";
+import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import {Locale} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
+import {Key} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
+import {Message} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/message";
+import {RequestCriteria} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/request-criteria";
 
 export const EDITOR_FEATURE_KEY = 'editor';
 

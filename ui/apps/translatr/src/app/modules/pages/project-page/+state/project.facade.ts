@@ -13,14 +13,14 @@ import {
   SaveProject,
   UnloadProject
 } from './project.actions';
-import {ActivityCriteria} from "../../../../services/activity.service";
+import {ActivityCriteria} from "../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service";
 import {Observable, Subject} from "rxjs";
-import {Project} from "../../../../shared/project";
+import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
 import {takeUntil} from "rxjs/operators";
-import {PagedList} from "../../../../shared/paged-list";
-import {Aggregate} from "../../../../shared/aggregate";
-import {Activity} from "../../../../shared/activity";
-import { RequestCriteria } from "../../../../shared/request-criteria";
+import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import {Aggregate} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/aggregate";
+import {Activity} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/activity";
+import { RequestCriteria } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/request-criteria";
 
 @Injectable()
 export class ProjectFacade {

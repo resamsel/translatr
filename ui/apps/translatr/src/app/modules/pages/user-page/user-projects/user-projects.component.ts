@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {User} from "../../../../shared/user";
-import {ProjectService} from "../../../../services/project.service";
+import {User} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/user";
+import {ProjectService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
 import {Observable} from "rxjs";
-import {PagedList} from "../../../../shared/paged-list";
-import {Project} from "../../../../shared/project";
+import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
 import {ProjectCreationDialogComponent} from "../../../shared/project-creation-dialog/project-creation-dialog.component";
 import {take} from "rxjs/operators";
 import {MatDialog} from "@angular/material";

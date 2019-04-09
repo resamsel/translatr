@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from "../../../../shared/user";
+import { User } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/user";
 import { Observable } from "rxjs";
-import { PagedList } from "../../../../shared/paged-list";
+import { PagedList } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
 import { ActivatedRoute } from "@angular/router";
-import { UserService } from "../../../../services/user.service";
-import { Aggregate } from "../../../../shared/aggregate";
-import {Project} from "../../../../shared/project";
-import {ProjectService} from "../../../../services/project.service";
+import { UserService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/user.service";
+import { Aggregate } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/aggregate";
+import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import {ProjectService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
 
 @Component({
   selector: 'app-user-info',

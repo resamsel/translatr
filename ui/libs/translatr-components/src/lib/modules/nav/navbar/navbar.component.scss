@@ -1,0 +1,32 @@
+@import "mixins";
+
+.mat-toolbar {
+  z-index: 2;
+}
+
+.title {
+  font-weight: 400;
+  display: none;
+  color: currentColor;
+
+  @include medium {
+    display: inline-block;
+  }
+}
+
+.active {
+  display: none;
+}
+
+.page {
+  font-weight: 400;
+  height: 24px;
+  line-height: 24px;
+
+  @include extra-large {
+    font-size: 18px;
+    margin-left: 16px;
+    padding: 0 16px;
+    border-left: 1px solid rgba(255, 255, 255, 0.6);
+  }
+}

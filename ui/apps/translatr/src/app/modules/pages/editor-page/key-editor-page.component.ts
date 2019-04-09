@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Message} from "../../../shared/message";
+import {Message} from "../../../../../../../libs/translatr-sdk/src/lib/shared/message";
 import {EditorFacade} from "./+state/editor.facade";
 import {ActivatedRoute, ParamMap, Params, Router} from "@angular/router";
 import {filter, take, takeUntil} from "rxjs/operators";
 import {combineLatest} from "rxjs";
-import {PagedList} from "../../../shared/paged-list";
-import {Key} from "../../../shared/key";
-import {Locale} from "../../../shared/locale";
-import {RequestCriteria} from "../../../shared/request-criteria";
+import {PagedList} from "../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import {Key} from "../../../../../../../libs/translatr-sdk/src/lib/shared/key";
+import {Locale} from "../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
+import {RequestCriteria} from "../../../../../../../libs/translatr-sdk/src/lib/shared/request-criteria";
 
 @Component({
   selector: 'app-key-editor-page',

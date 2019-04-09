@@ -2,7 +2,16 @@
   <span mat-card-image>{{firstChar(project?.name)}}</span>
   <mat-card-content>
     <h2 class="ellipsis">{{project?.name}}</h2>
-    <p class="ellipsis">{{project?.ownerName}}</p>
+    <p class="owner ellipsis">{{project?.ownerName}}</p>
+    <p class="members">
+      <img
+        *ngFor="let member of project?.members.slice(0,5)"
+        ngxGravatar
+        [email]="member.userEmail"
+        size="32"
+        class="user-icon"
+        [title]="member.userName">
+    </p>
     <ng-content></ng-content>
   </mat-card-content>
 </mat-card>

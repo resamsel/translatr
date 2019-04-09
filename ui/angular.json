@@ -27,13 +27,13 @@
               "apps/translatr/src/assets"
             ],
             "styles": [
-              "apps/translatr/src/styles/styles.scss",
-              "apps/translatr/src/styles/theme.scss",
-              "apps/translatr/src/styles/media.scss"
+              "libs/translatr-components/src/styles/styles.scss",
+              "libs/translatr-components/src/styles/theme.scss",
+              "libs/translatr-components/src/styles/media.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "apps/translatr/src/styles"
+                "libs/translatr-components/src/styles"
               ]
             },
             "scripts": [],
@@ -93,9 +93,9 @@
             "karmaConfig": "apps/translatr/karma.conf.js",
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
-              "apps/translatr/src/styles.scss",
-              "apps/translatr/src/theme.scss",
-              "apps/translatr/src/media.scss"
+              "libs/translatr-components/src/styles/styles.scss",
+              "libs/translatr-components/src/styles/theme.scss",
+              "libs/translatr-components/src/styles/media.scss"
             ],
             "scripts": [],
             "assets": [
@@ -143,6 +143,210 @@
               "**/node_modules/**"
             ]
           }
+        }
+      }
+    },
+    "translatr-admin": {
+      "root": "apps/translatr-admin/",
+      "sourceRoot": "apps/translatr-admin/src",
+      "projectType": "application",
+      "prefix": "dev",
+      "schematics": {
+        "@nrwl/schematics:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/translatr-admin",
+            "index": "apps/translatr-admin/src/index.html",
+            "main": "apps/translatr-admin/src/main.ts",
+            "polyfills": "apps/translatr-admin/src/polyfills.ts",
+            "tsConfig": "apps/translatr-admin/tsconfig.app.json",
+            "assets": [
+              "apps/translatr-admin/src/favicon.ico",
+              "apps/translatr-admin/src/assets"
+            ],
+            "styles": [
+              "libs/translatr-components/src/styles/styles.scss",
+              "libs/translatr-components/src/styles/theme.scss",
+              "libs/translatr-components/src/styles/media.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "libs/translatr-components/src/styles"
+              ]
+            },
+            "scripts": [],
+            "baseHref": "/admin/",
+            "deployUrl": "/admin/"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/translatr-admin/src/environments/environment.ts",
+                  "with": "apps/translatr-admin/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "translatr-admin:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "translatr-admin:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "translatr-admin:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/translatr-admin/tsconfig.app.json",
+              "apps/translatr-admin/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "apps/translatr-admin/jest.config.js",
+            "tsConfig": "apps/translatr-admin/tsconfig.spec.json",
+            "setupFile": "apps/translatr-admin/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "translatr-admin-e2e": {
+      "root": "apps/translatr-admin-e2e",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/builders:cypress",
+          "options": {
+            "cypressConfig": "apps/translatr-admin-e2e/cypress.json",
+            "tsConfig": "apps/translatr-admin-e2e/tsconfig.e2e.json",
+            "devServerTarget": "translatr-admin:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "translatr-admin:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/translatr-admin-e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "translatr-sdk": {
+      "root": "libs/translatr-sdk",
+      "sourceRoot": "libs/translatr-sdk/src",
+      "projectType": "library",
+      "prefix": "dev",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/translatr-sdk/tsconfig.lib.json",
+              "libs/translatr-sdk/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/translatr-sdk/jest.config.js",
+            "tsConfig": "libs/translatr-sdk/tsconfig.spec.json"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/schematics:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "translatr-components": {
+      "root": "libs/translatr-components",
+      "sourceRoot": "libs/translatr-components/src",
+      "projectType": "library",
+      "prefix": "dev",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "stylePreprocessorOptions": {
+              "includePaths": ["libs/translatr-components/src/styles"]
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/translatr-components/tsconfig.lib.json",
+              "libs/translatr-components/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/translatr-components/jest.config.js",
+            "tsConfig": "libs/translatr-components/tsconfig.spec.json"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/schematics:component": {
+          "styleext": "scss"
         }
       }
     }

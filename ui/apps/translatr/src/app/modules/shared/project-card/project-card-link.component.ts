@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Project} from "../../../shared/project";
+import {Project} from "../../../../../../../libs/translatr-sdk/src/lib/shared/project";
 
 @Component({
   selector: 'app-project-card-link',

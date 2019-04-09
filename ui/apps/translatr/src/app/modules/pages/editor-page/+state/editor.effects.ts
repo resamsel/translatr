@@ -27,15 +27,15 @@ import {
   SelectKey,
   SelectLocale
 } from './editor.actions';
-import {LocaleService} from "../../../../services/locale.service";
-import {Locale} from "../../../../shared/locale";
+import {LocaleService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/locale.service";
+import {Locale} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
 import {filter, map, take} from "rxjs/operators";
 import {combineLatest, Observable} from "rxjs";
-import {KeyService} from "../../../../services/key.service";
-import {PagedList} from "../../../../shared/paged-list";
-import {Key} from "../../../../shared/key";
-import {MessageService} from "../../../../services/message.service";
-import {Message} from "../../../../shared/message";
+import {KeyService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/key.service";
+import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import {Key} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
+import {MessageService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/message.service";
+import {Message} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/message";
 import {Action} from "@ngrx/store";
 import {EditorFacade} from "./editor.facade";
 import {MatSnackBar} from "@angular/material";

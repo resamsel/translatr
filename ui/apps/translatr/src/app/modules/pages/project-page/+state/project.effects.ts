@@ -8,29 +8,31 @@ import {
   LoadLocales,
   LoadProject,
   LoadProjectActivities,
-  LoadProjectActivityAggregated, LocalesLoaded,
+  LoadProjectActivityAggregated,
+  LocalesLoaded,
   ProjectActionTypes,
   ProjectActivitiesLoaded,
   ProjectActivitiesLoadError,
   ProjectActivityAggregatedLoaded,
   ProjectActivityAggregatedLoadError,
   ProjectLoaded,
-  ProjectLoadError, ProjectSaved, SaveProject
+  ProjectLoadError,
+  ProjectSaved,
+  SaveProject
 } from './project.actions';
-import { ProjectService } from "../../../../services/project.service";
-import { map, pluck } from "rxjs/operators";
-import { Project } from "../../../../shared/project";
-import { ActivityService } from "../../../../services/activity.service";
-import { PagedList } from "../../../../shared/paged-list";
-import { Aggregate } from "../../../../shared/aggregate";
-import { Activity } from "../../../../shared/activity";
+import { ProjectService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
+import { map } from "rxjs/operators";
+import { Project } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import { ActivityService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service";
+import { PagedList } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import { Aggregate } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/aggregate";
+import { Activity } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/activity";
 import { Observable } from "rxjs";
 import { Action } from "@ngrx/store";
-import { LocaleService } from "../../../../services/locale.service";
-import { KeyService } from "../../../../services/key.service";
-import { Locale } from "../../../../shared/locale";
-import { Key } from "../../../../shared/key";
-import { EDITOR_FEATURE_KEY } from "../../editor-page/+state/editor.reducer";
+import { LocaleService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/locale.service";
+import { KeyService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/key.service";
+import { Locale } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
+import { Key } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
 
 @Injectable()
 export class ProjectEffects {

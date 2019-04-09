@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {User} from "../../../shared/user";
+import {User} from "../../../../../../../libs/translatr-sdk/src/lib/shared/user";
 
 @Component({
   selector: 'app-user-card-link',

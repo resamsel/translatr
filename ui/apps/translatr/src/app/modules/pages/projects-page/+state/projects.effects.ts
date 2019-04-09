@@ -4,10 +4,10 @@ import {DataPersistence} from '@nrwl/nx';
 
 import {PROJECTS_FEATURE_KEY, ProjectsPartialState} from './projects.reducer';
 import {LoadProjects, ProjectsActionTypes, ProjectsLoaded, ProjectsLoadError} from './projects.actions';
-import {ProjectService} from "../../../../services/project.service";
+import {ProjectService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
 import {map} from "rxjs/operators";
-import {PagedList} from "../../../../shared/paged-list";
-import {Project} from "../../../../shared/project";
+import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
 
 @Injectable()
 export class ProjectsEffects {

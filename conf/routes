@@ -70,6 +70,8 @@ GET		/api/*file					controllers.ApiDocs.versioned(path="/public/lib/swagger-ui",
 GET		/							controllers.Application.index
 GET		/ui                         controllers.Application.indexUi
 GET     /ui/                        controllers.Default.redirect(to = "/ui")
+GET		/admin                      controllers.Application.indexAdmin
+GET     /admin/                     controllers.Default.redirect(to = "/admin")
 
 # Activity
 GET		/activity/csv				controllers.Application.activityCsv
@@ -86,7 +88,8 @@ GET		/command/:key/execute		controllers.Application.commandExecute(key: String)
 GET		/javascriptRoutes			controllers.Application.javascriptRoutes
 
 # Serve static assets under public directory
-GET     /ui/*file                   controllers.Application.assetOrDefault(file: String)
+GET     /ui/*file                   controllers.Application.assetOrDefaultUi(file: String)
+GET     /admin/*file                controllers.Application.assetOrDefaultAdmin(file: String)
 
 # Users
 GET		/users						controllers.Users.index

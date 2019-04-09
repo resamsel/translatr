@@ -1,9 +1,24 @@
 <app-nav-list [pagedList]="keys" [template]="template" (more)="more.emit($event)">
+  <mat-list-item>Sort by</mat-list-item>
   <ng-template #template let-key>
     <a mat-list-item [routerLink]="['/', project.ownerUsername, project.name, 'keys', key.name]">
       <mat-icon matListIcon class="circle">vpn_key</mat-icon>
       <h3 matLine>{{key.name}}</h3>
-      <p matLine>{{key.ownerName}}</p>
+      <p matLine i18n="@@updated.when" [title]="key?.whenUpdated | date:'full'">Updated {{key?.whenUpdated | amTimeAgo}}</p>
+      <button
+        mat-icon-button
+        title="Edit"
+        i18n-title="@@button.edit"
+        (click)="onEdit(key, $event)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        title="Delete"
+        i18n-title="@@button.delete"
+        (click)="onDelete(key, $event)">
+        <mat-icon>delete</mat-icon>
+      </button>
     </a>
   </ng-template>
 </app-nav-list>

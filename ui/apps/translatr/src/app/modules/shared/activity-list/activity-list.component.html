@@ -11,7 +11,7 @@
         <span *ngSwitchCase="'Logout'" class="type" i18n> logged out</span>
       </ng-container>
     </h3>
-    <p matLine title="{{activity.whenCreated | date:'full'}}">{{activity.whenCreated | amTimeAgo}}</p>
+    <p matLine [title]="activity.whenCreated | date:'full'">{{activity.whenCreated | amTimeAgo}}</p>
   </mat-list-item>
   <a mat-list-item class="more" *ngIf="activities?.hasNext" (click)="loadMore()">
     More

@@ -1,8 +1,8 @@
 import { Component, ElementRef, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { MatDialogRef, MatSnackBar } from "@angular/material";
-import { ProjectService } from "../../../services/project.service";
-import { Project } from "../../../shared/project";
+import { ProjectService } from "../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
+import { Project } from "../../../../../../../libs/translatr-sdk/src/lib/shared/project";
 
 const ENTER_KEYCODE = 'Enter';
 

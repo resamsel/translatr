@@ -13,6 +13,18 @@
     },
     "translatr-e2e": {
       "tags": []
+    },
+    "translatr-admin": {
+      "tags": []
+    },
+    "translatr-admin-e2e": {
+      "tags": []
+    },
+    "translatr-sdk": {
+      "tags": []
+    },
+    "translatr-components": {
+      "tags": []
     }
   }
 }

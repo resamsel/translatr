@@ -25,6 +25,7 @@ import {NavListModule} from "../../shared/nav-list/nav-list.module";
 import {EditorComponent} from './editor/editor.component';
 import {EditorSelectorComponent} from "./editor/editor-selector.component";
 import {KeyEditorPageComponent} from './key-editor-page.component';
+import { NavbarModule } from "@dev/translatr-components/src/lib";
 
 @NgModule({
   declarations: [LocaleEditorPageComponent, EditorComponent, EditorSelectorComponent, KeyEditorPageComponent],
@@ -32,6 +33,7 @@ import {KeyEditorPageComponent} from './key-editor-page.component';
     CommonModule,
     EditorPageRoutingModule,
     SidenavModule,
+    NavbarModule,
     FormsModule,
     NavListModule,
     MatFormFieldModule,

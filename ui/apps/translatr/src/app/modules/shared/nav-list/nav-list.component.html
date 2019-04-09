@@ -1,4 +1,5 @@
 <mat-nav-list *ngIf="pagedList; else empty">
+  <ng-content></ng-content>
   <ng-container *ngFor="let item of pagedList.list; trackBy: trackByFn">
     <ng-container *ngTemplateOutlet="template; context: {$implicit: item}"></ng-container>
   </ng-container>

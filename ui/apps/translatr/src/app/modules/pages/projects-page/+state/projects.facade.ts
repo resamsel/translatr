@@ -5,8 +5,8 @@ import {select, Store} from '@ngrx/store';
 import {ProjectsPartialState} from './projects.reducer';
 import {projectsQuery} from './projects.selectors';
 import {LoadProjects, UnloadProjects} from './projects.actions';
-import {Project} from "../../../../shared/project";
-import {PagedList} from "../../../../shared/paged-list";
+import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
 import {Observable, Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 

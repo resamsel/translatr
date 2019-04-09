@@ -1,0 +1,28 @@
+<app-sidenav>
+  <header>
+    <nav mat-tab-nav-bar color="accent">
+      <div class="container" routerLinkActive>
+        <a mat-tab-link
+           routerLink="/"
+           routerLinkActive
+           [routerLinkActiveOptions]="{exact: true}"
+           #infoLink="routerLinkActive"
+           [active]="infoLink.isActive">
+          <mat-icon>view_quilt</mat-icon>
+          <span>Dashboard</span>
+        </a>
+        <a mat-tab-link
+           routerLink="/users"
+           routerLinkActive
+           [routerLinkActiveOptions]="{exact: true}"
+           #usersLink="routerLinkActive"
+           [active]="usersLink.isActive">
+          <mat-icon>group</mat-icon>
+          <span>Users</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <router-outlet></router-outlet>
+</app-sidenav>

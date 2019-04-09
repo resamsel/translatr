@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ProjectFacade } from "../+state/project.facade";
 import { take, tap } from "rxjs/operators";
-import { Project } from "../../../../shared/project";
+import { Project } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import { Locale } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
+import { Key } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
+import { MatSnackBar } from "@angular/material";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,7 +21,10 @@ export class ProjectKeysComponent implements OnInit {
       }}));
   keys$ = this.facade.keys$;
 
-  constructor(private readonly facade: ProjectFacade) {
+  constructor(
+    private readonly facade: ProjectFacade,
+    private readonly snackBar: MatSnackBar
+  ) {
   }
 
   ngOnInit() {
@@ -29,5 +35,13 @@ export class ProjectKeysComponent implements OnInit {
       .pipe(take(1))
       .subscribe((project: Project) =>
         this.facade.loadKeys(project.id, {limit: `${limit}`}));
+  }
+
+  onEdit(key: Key) {
+    this.snackBar.open(`Edit key ${key.name}`, 'Dismiss', {duration: 2000});
+  }
+
+  onDelete(key: Key) {
+    this.snackBar.open(`Delete key ${key.name}`, 'Undo', {duration: 2000});
   }
 }
