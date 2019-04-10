@@ -1,6 +1,6 @@
 {
   "name": "translatr",
-  "version": "0.0.0",
+  "version": "2.3.0-SNAPSHOT",
   "scripts": {
     "ng": "ng",
     "prettier": "prettier --write \"**/*.{js,json,css,md,ts,html,component.html}\"",

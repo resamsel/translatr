@@ -166,7 +166,7 @@
             "polyfills": "apps/translatr-admin/src/polyfills.ts",
             "tsConfig": "apps/translatr-admin/tsconfig.app.json",
             "assets": [
-              "apps/translatr-admin/src/favicon.ico",
+              "apps/translatr-admin/src/favicon.png",
               "apps/translatr-admin/src/assets"
             ],
             "styles": [

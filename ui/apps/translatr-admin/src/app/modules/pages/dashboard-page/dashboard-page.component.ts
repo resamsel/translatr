@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {AppFacade} from "../../../+state/app.facade";
 
 @Component({
   selector: 'dev-dashboard-page',
@@ -6,8 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./dashboard-page.component.css']
 })
 export class DashboardPageComponent implements OnInit {
+  me$ = this.facade.me$;
 
-  constructor() { }
+  constructor(private readonly facade: AppFacade) {
+  }
 
   ngOnInit() {
   }

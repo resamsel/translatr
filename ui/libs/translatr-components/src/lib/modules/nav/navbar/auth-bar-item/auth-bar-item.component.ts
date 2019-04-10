@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { User } from "../../../../../../../translatr-sdk/src/lib/shared/user";
-import { ActivatedRoute } from "@angular/router";
-import { filter, map, switchMap } from "rxjs/operators";
-import { EMPTY, of } from "rxjs";
+import {Component, Input, OnInit} from '@angular/core';
+import {User} from "@dev/translatr-sdk";
+import {ActivatedRoute} from "@angular/router";
+import {filter, map, switchMap} from "rxjs/operators";
+import {EMPTY, of} from "rxjs";
 
 @Component({
   selector: 'app-auth-bar-item',
@@ -11,7 +11,7 @@ import { EMPTY, of } from "rxjs";
 })
 export class AuthBarItemComponent implements OnInit {
 
-  me: User;
+  @Input() me: User;
 
   constructor(private readonly route: ActivatedRoute) {
   }
