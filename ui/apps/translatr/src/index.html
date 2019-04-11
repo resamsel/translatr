@@ -22,45 +22,43 @@
       height: 100vh;
     }
 
-    .app-loading .spinner {
-      height: 200px;
-      width: 200px;
-      animation: rotate 2s linear infinite;
-      transform-origin: center center;
+    .app-loading .material-icons {
+      color: #888;
+      font-size: 112px;
+    }
+
+    .app-loading .dots {
+      position: relative;
+      width: 100px;
+    }
+
+    .app-loading .dots .dot {
       position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      margin: auto;
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #888;
+      animation: backforth 2s ease-in-out infinite;
     }
 
-    .app-loading .spinner .path {
-      stroke-dasharray: 1, 200;
-      stroke-dashoffset: 0;
-      animation: dash 1.5s ease-in-out infinite;
-      stroke-linecap: round;
-      stroke: #43a047;
+    .app-loading .dots .dot:nth-child(2) {
+      animation-delay: 150ms;
     }
 
-    @keyframes rotate {
-      100% {
-        transform: rotate(360deg);
-      }
+    .app-loading .dots .dot:nth-child(3) {
+      animation-delay: 300ms;
     }
 
-    @keyframes dash {
+    @keyframes backforth {
       0% {
-        stroke-dasharray: 1, 200;
-        stroke-dashoffset: 0;
+        left: 0;
       }
       50% {
-        stroke-dasharray: 89, 200;
-        stroke-dashoffset: -35px;
+        left: calc(100% - 16px);
       }
       100% {
-        stroke-dasharray: 89, 200;
-        stroke-dashoffset: -124px;
+        left: 0;
       }
     }
   </style>
@@ -74,9 +72,11 @@
 <app-root>
   <div class="app-loading">
     <i class="material-icons">language</i>
-    <svg class="spinner" viewBox="25 25 50 50">
-      <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
-    </svg>
+    <div class="dots">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
   </div>
 </app-root>
 </body>
