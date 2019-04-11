@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>{data.type, select, create {Create user} update {Edit {{data.user.name}}}}</h1>
+<div mat-dialog-content [formGroup]="form">
+  <mat-form-field>
+    <input matInput placeholder="Name" formControlName="name" cdkFocusInitial>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Username" formControlName="username">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Email" formControlName="email">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button color="primary" [mat-dialog-close]="form.getRawValue()">Ok</button>
+</div>

@@ -1,3 +1,11 @@
+<button
+  mat-fab
+  color="accent"
+  class="floating-action-btn pin-bottom"
+  (click)="onCreate()">
+  <mat-icon>add</mat-icon>
+</button>
+
 <div class="container">
   <table mat-table [dataSource]="(users$ | async)?.list" class="mat-elevation-z2">
     <ng-container matColumnDef="name">

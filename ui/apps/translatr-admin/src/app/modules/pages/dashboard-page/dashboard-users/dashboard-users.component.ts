@@ -3,6 +3,9 @@ import {AppFacade} from "../../../../+state/app.facade";
 import {User} from "@dev/translatr-sdk";
 import {take} from "rxjs/operators";
 import {UserDeleted, UserDeleteError} from "../../../../+state/app.actions";
+import {UserEditDialogComponent} from "@dev/translatr-components/src/lib/modules/user/user-edit-dialog/user-edit-dialog.component";
+import {MatDialog} from "@angular/material";
+import {filter} from "rxjs/internal/operators/filter";
 
 @Component({
   selector: 'dev-users',
@@ -15,14 +18,45 @@ export class DashboardUsersComponent implements OnInit {
   userDeleted$ = this.facade.userDeleted$;
   displayedColumns = ['name', 'username', 'email', 'when_created', 'actions'];
 
-  constructor(private readonly facade: AppFacade) {
+  constructor(private readonly facade: AppFacade, private readonly dialog: MatDialog) {
     facade.loadUsers();
   }
 
   ngOnInit() {
   }
 
+  onCreate() {
+    this.dialog
+      .open(UserEditDialogComponent, {
+        width: '250px',
+        data: {
+          type: 'create',
+          user: {}
+        }
+      })
+      .afterClosed()
+      .pipe(filter(x => !!x))
+      .subscribe((user: User) => {
+        console.log('The dialog was closed', user);
+        this.facade.createUser(user);
+      });
+  }
+
   onEdit(user: User) {
+    this.dialog
+      .open(UserEditDialogComponent, {
+        width: '250px',
+        data: {
+          type: 'update',
+          user
+        }
+      })
+      .afterClosed()
+      .pipe(filter(x => !!x))
+      .subscribe((user: User) => {
+        console.log('The dialog was closed', user);
+        this.facade.updateUser(user);
+      });
   }
 
   onDelete(user: User) {

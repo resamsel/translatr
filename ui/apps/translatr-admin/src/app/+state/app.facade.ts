@@ -2,7 +2,15 @@ import {Injectable} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {AppPartialState} from './app.reducer';
 import {appQuery} from './app.selectors';
-import {AppAction, AppActionTypes, DeleteUser, LoadLoggedInUser, LoadUsers} from './app.actions';
+import {
+  AppAction,
+  AppActionTypes,
+  CreateUser,
+  DeleteUser,
+  LoadLoggedInUser,
+  LoadUsers,
+  UpdateUser
+} from './app.actions';
 import {User} from "@dev/translatr-sdk";
 import {Actions, ofType} from "@ngrx/effects";
 
@@ -25,6 +33,14 @@ export class AppFacade {
 
   loadUsers() {
     this.store.dispatch(new LoadUsers());
+  }
+
+  createUser(user: User) {
+    this.store.dispatch(new CreateUser(user));
+  }
+
+  updateUser(user: User) {
+    this.store.dispatch(new UpdateUser(user));
   }
 
   deleteUser(user: User) {

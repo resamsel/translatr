@@ -1,22 +1,25 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {DataPersistence} from '@nrwl/nx';
-
 import {AppPartialState} from './app.reducer';
 import {
-  AppActionTypes,
+  AppActionTypes, CreateUser,
   DeleteUser,
   LoadLoggedInUser,
   LoadUsers,
   LoggedInUserLoaded,
   LoggedInUserLoadError,
+  UpdateUser, UserCreated, UserCreateError,
   UserDeleted,
   UserDeleteError,
   UsersLoaded,
-  UsersLoadError
+  UsersLoadError,
+  UserUpdated,
+  UserUpdateError
 } from './app.actions';
 import {PagedList, User, UserService} from "@dev/translatr-sdk";
 import {map} from "rxjs/operators";
+import {createHash} from "crypto";
 
 @Injectable()
 export class AppEffects {
@@ -50,6 +53,26 @@ export class AppEffects {
         return new UsersLoadError(error);
       }
     }
+  );
+
+  @Effect() createUser$ = this.actions$.pipe(
+    ofType(AppActionTypes.CreateUser),
+    map((action: CreateUser) => {
+      if (action.payload.username !== 'translatr') {
+        return new UserCreated({...action.payload, id: '1-2-3-4'});
+      }
+      return new UserCreateError(action.payload);
+    })
+  );
+
+  @Effect() updateUser$ = this.actions$.pipe(
+    ofType(AppActionTypes.UpdateUser),
+    map((action: UpdateUser) => {
+      if (action.payload.username !== 'translatr') {
+        return new UserUpdated(action.payload);
+      }
+      return new UserUpdateError(action.payload);
+    })
   );
 
   @Effect() deleteUser$ = this.actions$.pipe(

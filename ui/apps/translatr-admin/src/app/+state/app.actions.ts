@@ -10,6 +10,14 @@ export enum AppActionTypes {
   UsersLoaded = '[Translatr API] Users Loaded',
   UsersLoadError = '[Translatr API] Users Load Error',
 
+  CreateUser = '[Users Page] Create User',
+  UserCreated = '[Translatr API] User Created',
+  UserCreateError = '[Translatr API] User Create Error',
+
+  UpdateUser = '[Users Page] Update User',
+  UserUpdated = '[Translatr API] User Updated',
+  UserUpdateError = '[Translatr API] User Update Error',
+
   DeleteUser = '[Users Page] Delete User',
   UserDeleted = '[Translatr API] User Deleted',
   UserDeleteError = '[Translatr API] User Delete Error'
@@ -51,6 +59,48 @@ export class UsersLoaded implements Action {
   }
 }
 
+export class CreateUser implements Action {
+  readonly type = AppActionTypes.CreateUser;
+
+  constructor(public payload: User) {
+  }
+}
+
+export class UserCreateError implements Action {
+  readonly type = AppActionTypes.UserCreateError;
+
+  constructor(public payload: any) {
+  }
+}
+
+export class UserCreated implements Action {
+  readonly type = AppActionTypes.UserCreated;
+
+  constructor(public payload: User) {
+  }
+}
+
+export class UpdateUser implements Action {
+  readonly type = AppActionTypes.UpdateUser;
+
+  constructor(public payload: User) {
+  }
+}
+
+export class UserUpdateError implements Action {
+  readonly type = AppActionTypes.UserUpdateError;
+
+  constructor(public payload: any) {
+  }
+}
+
+export class UserUpdated implements Action {
+  readonly type = AppActionTypes.UserUpdated;
+
+  constructor(public payload: User) {
+  }
+}
+
 export class DeleteUser implements Action {
   readonly type = AppActionTypes.DeleteUser;
 
@@ -75,4 +125,6 @@ export class UserDeleted implements Action {
 export type AppAction =
   LoadLoggedInUser | LoggedInUserLoaded | LoggedInUserLoadError
   | LoadUsers | UsersLoaded | UsersLoadError
+  | CreateUser | UserCreated | UserCreateError
+  | UpdateUser | UserUpdated | UserUpdateError
   | DeleteUser | UserDeleted | UserDeleteError;
