@@ -5,10 +5,10 @@ import {AppPartialState} from './app.reducer';
 import {
   AppActionTypes, CreateUser,
   DeleteUser,
-  LoadLoggedInUser,
+  LoadLoggedInUser, LoadProjects,
   LoadUsers,
   LoggedInUserLoaded,
-  LoggedInUserLoadError,
+  LoggedInUserLoadError, ProjectsLoaded, ProjectsLoadError,
   UpdateUser, UserCreated, UserCreateError,
   UserDeleted,
   UserDeleteError,
@@ -17,9 +17,11 @@ import {
   UserUpdated,
   UserUpdateError
 } from './app.actions';
-import {PagedList, User, UserService} from "@dev/translatr-sdk";
-import {map} from "rxjs/operators";
+import {PagedList, Project, ProjectService, User, UserService} from "@dev/translatr-sdk";
+import {catchError, map, switchMap} from "rxjs/operators";
 import {createHash} from "crypto";
+import {of} from "rxjs/internal/observable/of";
+import {ProjectLoaded} from "../../../../translatr/src/app/modules/pages/project-page/+state/project.actions";
 
 @Injectable()
 export class AppEffects {
@@ -39,20 +41,22 @@ export class AppEffects {
     }
   );
 
-  @Effect() loadUsers$ = this.dataPersistence.fetch(
-    AppActionTypes.LoadUsers,
-    {
-      run: (action: LoadUsers, state: AppPartialState) => {
-        // Your custom REST 'load' logic goes here. For now just return an empty list...
-        return this.userService.getUsers()
-          .pipe(map((payload: PagedList<User>) => new UsersLoaded(payload)));
-      },
+  @Effect() loadUsers$ = this.actions$.pipe(
+    ofType(AppActionTypes.LoadUsers),
+    switchMap((action: LoadUsers) => this.userService.getUsers()
+      .pipe(
+        map((payload: PagedList<User>) => new UsersLoaded(payload)),
+        catchError(error => of(new UsersLoadError(error)))
+      ))
+  );
 
-      onError: (action: LoadUsers, error) => {
-        console.error('Error', error);
-        return new UsersLoadError(error);
-      }
-    }
+  @Effect() loadProjects$ = this.actions$.pipe(
+    ofType(AppActionTypes.LoadProjects),
+    switchMap((action: LoadProjects) => this.projectService.getProjects()
+      .pipe(
+        map((payload: PagedList<Project>) => new ProjectsLoaded(payload)),
+        catchError(error => of(new ProjectsLoadError(error)))
+      ))
   );
 
   @Effect() createUser$ = this.actions$.pipe(
@@ -88,7 +92,8 @@ export class AppEffects {
   constructor(
     private actions$: Actions,
     private dataPersistence: DataPersistence<AppPartialState>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly projectService: ProjectService
   ) {
   }
 }

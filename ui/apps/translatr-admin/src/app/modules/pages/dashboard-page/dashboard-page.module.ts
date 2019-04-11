@@ -9,9 +9,10 @@ import {DashboardUsersComponent} from './dashboard-users/dashboard-users.compone
 import {DashboardInfoComponent} from './dashboard-info/dashboard-info.component';
 import {MomentModule} from "ngx-moment";
 import {UserEditDialogModule} from "@dev/translatr-components/src/lib/modules/user/user-edit-dialog/user-edit-dialog.module";
+import { DashboardProjectsComponent } from './dashboard-projects/dashboard-projects.component';
 
 @NgModule({
-  declarations: [DashboardPageComponent, DashboardUsersComponent, DashboardInfoComponent],
+  declarations: [DashboardPageComponent, DashboardUsersComponent, DashboardInfoComponent, DashboardProjectsComponent],
   imports: [
     CommonModule,
     DashboardPageRoutingModule,

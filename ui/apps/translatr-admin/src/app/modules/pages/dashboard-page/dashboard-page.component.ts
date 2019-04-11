@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AppFacade} from "../../../+state/app.facade";
+import {routes} from "./dashboard-page-routing.module";
+import {Route} from "@angular/router";
 
 @Component({
   selector: 'dev-dashboard-page',
@@ -8,6 +10,7 @@ import {AppFacade} from "../../../+state/app.facade";
 })
 export class DashboardPageComponent implements OnInit {
   me$ = this.facade.me$;
+  routes = routes[0].children;
 
   constructor(private readonly facade: AppFacade) {
   }
@@ -15,4 +18,11 @@ export class DashboardPageComponent implements OnInit {
   ngOnInit() {
   }
 
+  routerLink(route: Route) {
+    if (route === '') {
+      return '/';
+    }
+
+    return `/${route.path}`;
+  }
 }

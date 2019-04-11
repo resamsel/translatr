@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {AppFacade} from "../../../../+state/app.facade";
 import {User} from "@dev/translatr-sdk";
 import {take} from "rxjs/operators";

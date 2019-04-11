@@ -4,8 +4,9 @@ import { DashboardPageComponent } from "./dashboard-page.component";
 import { AuthResolverService } from "@dev/translatr-sdk";
 import { DashboardUsersComponent } from "./dashboard-users/dashboard-users.component";
 import { DashboardInfoComponent } from "./dashboard-info/dashboard-info.component";
+import {DashboardProjectsComponent} from "./dashboard-projects/dashboard-projects.component";
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     component: DashboardPageComponent,
     path: '',
@@ -15,11 +16,27 @@ const routes: Routes = [
     children: [
       {
         component: DashboardInfoComponent,
-        path: ''
+        path: '',
+        data: {
+          icon: 'view_quilt',
+          name: 'Dashboard'
+        }
       },
       {
         component: DashboardUsersComponent,
-        path: 'users'
+        path: 'users',
+        data: {
+          icon: 'group',
+          name: 'Users'
+        }
+      },
+      {
+        component: DashboardProjectsComponent,
+        path: 'projects',
+        data: {
+          icon: 'extension',
+          name: 'Projects'
+        }
       }
     ]
   }

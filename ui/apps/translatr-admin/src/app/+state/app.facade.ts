@@ -3,11 +3,11 @@ import {select, Store} from '@ngrx/store';
 import {AppPartialState} from './app.reducer';
 import {appQuery} from './app.selectors';
 import {
-  AppAction,
   AppActionTypes,
   CreateUser,
   DeleteUser,
   LoadLoggedInUser,
+  LoadProjects,
   LoadUsers,
   UpdateUser
 } from './app.actions';
@@ -21,6 +21,7 @@ export class AppFacade {
   userDeleted$ = this.actions$.pipe(
     ofType(AppActionTypes.UserDeleted, AppActionTypes.UserDeleteError)
   );
+  projects$ = this.store.pipe(select(appQuery.getProjects));
 
   constructor(
     private readonly store: Store<AppPartialState>,
@@ -33,6 +34,10 @@ export class AppFacade {
 
   loadUsers() {
     this.store.dispatch(new LoadUsers());
+  }
+
+  loadProjects() {
+    this.store.dispatch(new LoadProjects());
   }
 
   createUser(user: User) {

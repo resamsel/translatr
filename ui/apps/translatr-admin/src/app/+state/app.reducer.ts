@@ -1,11 +1,12 @@
 import {AppAction, AppActionTypes} from './app.actions';
-import {PagedList, User} from "@dev/translatr-sdk";
+import {PagedList, Project, User} from "@dev/translatr-sdk";
 
 export const APP_FEATURE_KEY = 'app';
 
 export interface AppState {
   me?: User;
   users?: PagedList<User>;
+  projects?: PagedList<Project>;
 }
 
 export interface AppPartialState {
@@ -28,6 +29,11 @@ export function appReducer(
       return {
         ...state,
         users: action.payload
+      };
+    case AppActionTypes.ProjectsLoaded:
+      return {
+        ...state,
+        projects: action.payload
       };
     case AppActionTypes.UserCreated:
       return {

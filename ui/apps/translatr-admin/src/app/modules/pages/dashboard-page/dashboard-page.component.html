@@ -3,22 +3,14 @@
     <nav mat-tab-nav-bar color="accent">
       <div class="container" routerLinkActive>
         <a mat-tab-link
-           routerLink="/"
+           *ngFor="let child of routes"
+           [routerLink]="routerLink(child)"
            routerLinkActive
            [routerLinkActiveOptions]="{exact: true}"
-           #infoLink="routerLinkActive"
-           [active]="infoLink.isActive">
-          <mat-icon>view_quilt</mat-icon>
-          <span>Dashboard</span>
-        </a>
-        <a mat-tab-link
-           routerLink="/users"
-           routerLinkActive
-           [routerLinkActiveOptions]="{exact: true}"
-           #usersLink="routerLinkActive"
-           [active]="usersLink.isActive">
-          <mat-icon>group</mat-icon>
-          <span>Users</span>
+           #link="routerLinkActive"
+           [active]="link.isActive">
+          <mat-icon>{{child.data.icon}}</mat-icon>
+          {{child.data.name}}
         </a>
       </div>
     </nav>

@@ -14,7 +14,13 @@ const getUsers = createSelector(
   (state: AppState) => state.users
 );
 
+const getProjects = createSelector(
+  getAppState,
+  (state: AppState) => state.projects
+);
+
 export const appQuery = {
   getLoggedInUser,
-  getUsers
+  getUsers,
+  getProjects
 };

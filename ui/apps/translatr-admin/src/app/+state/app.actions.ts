@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store';
-import {PagedList, User} from "@dev/translatr-sdk";
+import {PagedList, Project, User} from "@dev/translatr-sdk";
 
 export enum AppActionTypes {
   LoadLoggedInUser = '[Main Page] Load Logged-In User',
@@ -9,6 +9,10 @@ export enum AppActionTypes {
   LoadUsers = '[Users Page] Load Users',
   UsersLoaded = '[Translatr API] Users Loaded',
   UsersLoadError = '[Translatr API] Users Load Error',
+
+  LoadProjects = '[Projects Page] Load Projects',
+  ProjectsLoaded = '[Translatr API] Projects Loaded',
+  ProjectsLoadError = '[Translatr API] Projects Load Error',
 
   CreateUser = '[Users Page] Create User',
   UserCreated = '[Translatr API] User Created',
@@ -56,6 +60,24 @@ export class UsersLoaded implements Action {
   readonly type = AppActionTypes.UsersLoaded;
 
   constructor(public payload: PagedList<User>) {
+  }
+}
+
+export class LoadProjects implements Action {
+  readonly type = AppActionTypes.LoadProjects;
+}
+
+export class ProjectsLoadError implements Action {
+  readonly type = AppActionTypes.ProjectsLoadError;
+
+  constructor(public payload: any) {
+  }
+}
+
+export class ProjectsLoaded implements Action {
+  readonly type = AppActionTypes.ProjectsLoaded;
+
+  constructor(public payload: PagedList<Project>) {
   }
 }
 
@@ -125,6 +147,7 @@ export class UserDeleted implements Action {
 export type AppAction =
   LoadLoggedInUser | LoggedInUserLoaded | LoggedInUserLoadError
   | LoadUsers | UsersLoaded | UsersLoadError
+  | LoadProjects | ProjectsLoaded | ProjectsLoadError
   | CreateUser | UserCreated | UserCreateError
   | UpdateUser | UserUpdated | UserUpdateError
   | DeleteUser | UserDeleted | UserDeleteError;
