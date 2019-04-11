@@ -12,7 +12,7 @@ import {filter} from "rxjs/internal/operators/filter";
   templateUrl: './dashboard-users.component.html',
   styleUrls: ['./dashboard-users.component.css']
 })
-export class DashboardUsersComponent implements OnInit {
+export class DashboardUsersComponent {
 
   users$ = this.facade.users$;
   userDeleted$ = this.facade.userDeleted$;
@@ -22,13 +22,9 @@ export class DashboardUsersComponent implements OnInit {
     facade.loadUsers();
   }
 
-  ngOnInit() {
-  }
-
   onCreate() {
     this.dialog
       .open(UserEditDialogComponent, {
-        width: '250px',
         data: {
           type: 'create',
           user: {}
@@ -45,7 +41,6 @@ export class DashboardUsersComponent implements OnInit {
   onEdit(user: User) {
     this.dialog
       .open(UserEditDialogComponent, {
-        width: '250px',
         data: {
           type: 'update',
           user
