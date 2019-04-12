@@ -41,9 +41,10 @@ DELETE	/api/message/:messageId		controllers.TranslationsApi.delete(messageId: ja
 GET		/api/users					controllers.UsersApi.find
 GET     /api/me                     controllers.UsersApi.me
 GET		/api/user/:userId			controllers.UsersApi.get(userId: java.util.UUID)
+POST    /api/user       			controllers.UsersApi.create
+PUT     /api/user       			controllers.UsersApi.update
+DELETE  /api/user/:userId			controllers.UsersApi.delete(userId: java.util.UUID)
 GET     /api/user/:userId/activity  controllers.UsersApi.activity(userId: java.util.UUID)
-# Disable updating users for the moment
-#PUT		/api/user				controllers.UsersApi.update
 
 GET		/api/notifications			controllers.NotificationsApi.find
 

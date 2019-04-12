@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { User } from "../shared/user";
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
+import {User} from "../shared/user";
 import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
-import { Aggregate } from "../shared/aggregate";
-import { PagedList } from "../shared/paged-list";
+import {Aggregate} from "../shared/aggregate";
+import {PagedList} from "../shared/paged-list";
 
 @Injectable({
   providedIn: 'root'
@@ -47,5 +47,24 @@ export class UserService {
   activity(userId: string): Observable<PagedList<Aggregate> | undefined> {
     return this.http
       .get<PagedList<Aggregate>>(`/api/user/${userId}/activity`);
+  }
+
+  create(user: User): Observable<User | undefined> {
+    return this.http
+      .post<User>('/api/user', user)
+      .pipe(map(convertTemporals));
+  }
+
+  update(user: User): Observable<User | undefined> {
+    console.log(user);
+    return this.http
+      .put<User>('/api/user', user)
+      .pipe(map(convertTemporals));
+  }
+
+  delete(userId: string): Observable<User | undefined> {
+    return this.http
+      .delete<User>(`/api/user/${userId}`)
+      .pipe(map(convertTemporals));
   }
 }

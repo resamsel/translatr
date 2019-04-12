@@ -3,7 +3,7 @@
     <nav mat-tab-nav-bar color="accent">
       <div class="container" routerLinkActive>
         <a mat-tab-link
-           *ngFor="let child of routes"
+           *ngFor="let child of children"
            [routerLink]="routerLink(child)"
            routerLinkActive
            [routerLinkActiveOptions]="{exact: true}"

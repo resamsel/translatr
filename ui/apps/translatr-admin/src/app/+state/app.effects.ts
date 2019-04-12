@@ -3,13 +3,19 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import {DataPersistence} from '@nrwl/nx';
 import {AppPartialState} from './app.reducer';
 import {
-  AppActionTypes, CreateUser,
+  AppActionTypes,
+  CreateUser,
   DeleteUser,
-  LoadLoggedInUser, LoadProjects,
+  LoadLoggedInUser,
+  LoadProjects,
   LoadUsers,
   LoggedInUserLoaded,
-  LoggedInUserLoadError, ProjectsLoaded, ProjectsLoadError,
-  UpdateUser, UserCreated, UserCreateError,
+  LoggedInUserLoadError,
+  ProjectsLoaded,
+  ProjectsLoadError,
+  UpdateUser,
+  UserCreated,
+  UserCreateError,
   UserDeleted,
   UserDeleteError,
   UsersLoaded,
@@ -19,9 +25,7 @@ import {
 } from './app.actions';
 import {PagedList, Project, ProjectService, User, UserService} from "@dev/translatr-sdk";
 import {catchError, map, switchMap} from "rxjs/operators";
-import {createHash} from "crypto";
 import {of} from "rxjs/internal/observable/of";
-import {ProjectLoaded} from "../../../../translatr/src/app/modules/pages/project-page/+state/project.actions";
 
 @Injectable()
 export class AppEffects {
@@ -52,7 +56,8 @@ export class AppEffects {
 
   @Effect() loadProjects$ = this.actions$.pipe(
     ofType(AppActionTypes.LoadProjects),
-    switchMap((action: LoadProjects) => this.projectService.getProjects()
+    switchMap((action: LoadProjects) => this.projectService
+      .getProjects()
       .pipe(
         map((payload: PagedList<Project>) => new ProjectsLoaded(payload)),
         catchError(error => of(new ProjectsLoadError(error)))
@@ -61,32 +66,32 @@ export class AppEffects {
 
   @Effect() createUser$ = this.actions$.pipe(
     ofType(AppActionTypes.CreateUser),
-    map((action: CreateUser) => {
-      if (action.payload.username !== 'translatr') {
-        return new UserCreated({...action.payload, id: '1-2-3-4'});
-      }
-      return new UserCreateError(action.payload);
-    })
+    switchMap((action: CreateUser) => this.userService
+      .create(action.payload)
+      .pipe(
+        map((payload: User) => new UserCreated(payload)),
+        catchError(error => of(new UserCreateError(error)))
+      ))
   );
 
   @Effect() updateUser$ = this.actions$.pipe(
     ofType(AppActionTypes.UpdateUser),
-    map((action: UpdateUser) => {
-      if (action.payload.username !== 'translatr') {
-        return new UserUpdated(action.payload);
-      }
-      return new UserUpdateError(action.payload);
-    })
+    switchMap((action: UpdateUser) => this.userService
+      .update(action.payload)
+      .pipe(
+        map((payload: User) => new UserUpdated(payload)),
+        catchError(error => of(new UserUpdateError(error)))
+      ))
   );
 
   @Effect() deleteUser$ = this.actions$.pipe(
     ofType(AppActionTypes.DeleteUser),
-    map((action: DeleteUser) => {
-      if (action.payload.username !== 'translatr') {
-        return new UserDeleted(action.payload);
-      }
-      return new UserDeleteError(action.payload);
-    })
+    switchMap((action: DeleteUser) => this.userService
+      .delete(action.payload.id)
+      .pipe(
+        map((payload: User) => new UserDeleted(payload)),
+        catchError(error => of(new UserDeleteError(error)))
+      ))
   );
 
   constructor(

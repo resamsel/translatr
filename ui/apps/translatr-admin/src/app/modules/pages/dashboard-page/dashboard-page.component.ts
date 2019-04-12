@@ -1,7 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {AppFacade} from "../../../+state/app.facade";
-import {routes} from "./dashboard-page-routing.module";
-import {Route} from "@angular/router";
+import {Route, Routes} from "@angular/router";
+import {DASHBOARD_ROUTES} from "./dashboard-page.token";
+
+interface NameIconRoute {
+  data: {
+    icon: string;
+    name: string;
+  };
+}
 
 @Component({
   selector: 'dev-dashboard-page',
@@ -10,9 +17,12 @@ import {Route} from "@angular/router";
 })
 export class DashboardPageComponent implements OnInit {
   me$ = this.facade.me$;
-  routes = routes[0].children;
+  children: NameIconRoute[] = this.routes[0].children;
 
-  constructor(private readonly facade: AppFacade) {
+  constructor(
+    private readonly facade: AppFacade,
+    @Inject(DASHBOARD_ROUTES) private routes: {children: NameIconRoute[]}[]
+  ) {
   }
 
   ngOnInit() {

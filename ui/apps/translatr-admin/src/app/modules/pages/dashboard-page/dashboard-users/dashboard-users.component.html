@@ -2,6 +2,7 @@
   mat-fab
   color="accent"
   class="floating-action-btn pin-bottom"
+  *ngIf="allowCreate$ | async"
   (click)="onCreate()">
   <mat-icon>add</mat-icon>
 </button>
@@ -11,6 +12,11 @@
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
       <td mat-cell *matCellDef="let element">{{element.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef>Role</th>
+      <td mat-cell *matCellDef="let element">{{element.role}}</td>
     </ng-container>
 
     <ng-container matColumnDef="username">
@@ -25,14 +31,25 @@
 
     <ng-container matColumnDef="when_created">
       <th mat-header-cell *matHeaderCellDef>Joined</th>
-      <td mat-cell *matCellDef="let element" [title]="element.whenCreated | date:'full'">{{element.whenCreated | amTimeAgo}}</td>
+      <td mat-cell *matCellDef="let element"
+          [title]="element.whenCreated | date:'full'">{{element.whenCreated | amTimeAgo}}</td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef class="actions">Actions</th>
       <td mat-cell *matCellDef="let element" class="actions">
-        <button mat-icon-button (click)="onEdit(element)"><mat-icon>edit</mat-icon></button>
-        <button mat-icon-button (click)="onDelete(element)"><mat-icon>delete</mat-icon></button>
+        <button
+          mat-icon-button
+          [disabled]="!(allowEdit$(element) | async)"
+          (click)="onEdit(element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          [disabled]="!(allowDelete$(element) | async)"
+          (click)="onDelete(element)">
+          <mat-icon>delete</mat-icon>
+        </button>
       </td>
     </ng-container>
 

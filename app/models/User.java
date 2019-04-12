@@ -1,7 +1,5 @@
 package models;
 
-import static play.libs.Json.toJson;
-
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
@@ -10,23 +8,6 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
-import controllers.Application;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Version;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -42,7 +23,14 @@ import services.UserService;
 import utils.CacheUtils;
 import utils.ConfigKey;
 import utils.ContextKey;
+import validators.NameUnique;
 import validators.Username;
+import validators.UserUsernameUniqueChecker;
+
+import javax.persistence.*;
+import java.util.*;
+
+import static play.libs.Json.toJson;
 
 /**
  * @author René Panzar
@@ -50,6 +38,7 @@ import validators.Username;
  */
 @Entity
 @Table(name = "user_")
+@NameUnique(checker = UserUsernameUniqueChecker.class, field = "username", message = "error.usernameunique")
 public class User implements Model<User, UUID>, Subject {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
@@ -59,6 +48,8 @@ public class User implements Model<User, UUID>, Subject {
   public static final int NAME_LENGTH = 32;
 
   public static final int EMAIL_LENGTH = 255;
+
+  public static final int ROLE_LENGTH = 16;
 
   @Id
   @GeneratedValue
@@ -73,7 +64,7 @@ public class User implements Model<User, UUID>, Subject {
   @UpdatedTimestamp
   public DateTime whenUpdated;
 
-  public boolean active;
+  public boolean active = true;
 
   @Column(nullable = false, length = USERNAME_LENGTH, unique = true)
   @Required
@@ -81,12 +72,17 @@ public class User implements Model<User, UUID>, Subject {
   @Username
   public String username;
 
+  @Required
   @Column(nullable = false, length = NAME_LENGTH)
   public String name;
 
   public String email;
 
   public boolean emailValidated;
+
+  @Enumerated(EnumType.STRING)
+  @Column(length = ROLE_LENGTH)
+  public UserRole role = UserRole.User;
 
   @JsonIgnore
   @OneToMany
@@ -228,7 +224,7 @@ public class User implements Model<User, UUID>, Subject {
    */
   @Override
   public List<? extends Role> getRoles() {
-    return Collections.singletonList(UserRole.from(Application.USER_ROLE));
+    return Collections.singletonList(UserRole.User);
   }
 
   /**

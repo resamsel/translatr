@@ -3,7 +3,6 @@ package dto;
 import controllers.AbstractController;
 import controllers.routes;
 import models.Project;
-import models.ProjectRole;
 import models.User;
 import org.joda.time.DateTime;
 import play.mvc.Call;
@@ -34,7 +33,7 @@ public class ProjectUser extends Dto {
 
   private ProjectUser(models.ProjectUser in) {
     this.id = in.id;
-    this.role = in.role;
+    this.role = ProjectRole.from(in.role);
     this.whenCreated = in.whenCreated;
     this.whenUpdated = in.whenUpdated;
 
@@ -58,7 +57,7 @@ public class ProjectUser extends Dto {
         .withName(projectName)
         .withOwner(new User().withUsername(projectOwnerUsername));
     out.user = new User().withId(userId).withUsername(userUsername);
-    out.role = role;
+    out.role = role.toModel();
     out.whenCreated = whenCreated;
     out.whenUpdated = whenUpdated;
 

@@ -87,6 +87,7 @@ error.restricted.content = Access was denied to the requested resource. Signing 
 error.restricted.title = Access restricted
 error.userbyusername = Could not find user by given username
 error.username.invalid = Invalid value for username (invalid values: {0})
+error.usernameunique = Username must be unique
 filetype.choose = Choose file type
 filetype.gettext = Gettext ('{locale.name}'/LC_MESSAGES/message.po)
 filetype.java_properties = Java Properties (messages_?'{locale.name}'.properties)

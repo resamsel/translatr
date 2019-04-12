@@ -18,6 +18,10 @@ import {Actions, ofType} from "@ngrx/effects";
 export class AppFacade {
   me$ = this.store.pipe(select(appQuery.getLoggedInUser));
   users$ = this.store.pipe(select(appQuery.getUsers));
+  userCreated$ = this.actions$.pipe(ofType(AppActionTypes.UserCreated));
+  userCreateError$ = this.actions$.pipe(ofType(AppActionTypes.UserCreateError));
+  userUpdated$ = this.actions$.pipe(ofType(AppActionTypes.UserUpdated));
+  userUpdateError$ = this.actions$.pipe(ofType(AppActionTypes.UserUpdateError));
   userDeleted$ = this.actions$.pipe(
     ofType(AppActionTypes.UserDeleted, AppActionTypes.UserDeleteError)
   );

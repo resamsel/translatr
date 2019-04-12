@@ -21,6 +21,8 @@ public class User extends Dto {
 
   public String email;
 
+  public UserRole role;
+
   public List<ProjectUser> memberships;
 
   /**
@@ -35,6 +37,7 @@ public class User extends Dto {
     this.name = in.name;
     this.username = in.username;
     this.email = in.email;
+    this.role = UserRole.from(in.role);
 
     if (in.memberships != null && !in.memberships.isEmpty()) {
       this.memberships = in.memberships.stream().map(ProjectUser::from).collect(Collectors.toList());
@@ -49,6 +52,7 @@ public class User extends Dto {
     out.name = name;
     out.username = username;
     out.email = email;
+    out.role = role.toModel();
 
     return out;
   }

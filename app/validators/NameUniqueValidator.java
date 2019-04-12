@@ -4,7 +4,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
+import play.i18n.Lang;
+import play.i18n.MessagesApi;
 import play.inject.Injector;
+import play.mvc.Http;
 
 /**
  * @author resamsel
@@ -18,6 +22,9 @@ public class NameUniqueValidator implements ConstraintValidator<NameUnique, Obje
   private final Injector injector;
 
   private NameUniqueChecker checker;
+  private NameUnique constraintAnnotation;
+  private MessagesApi messagesApi;
+  private Lang lang;
 
   @Inject
   public NameUniqueValidator(Injector injector) {
@@ -29,7 +36,10 @@ public class NameUniqueValidator implements ConstraintValidator<NameUnique, Obje
    */
   @Override
   public void initialize(NameUnique constraintAnnotation) {
+    this.constraintAnnotation = constraintAnnotation;
     this.checker = injector.instanceOf(constraintAnnotation.checker());
+    this.messagesApi = injector.instanceOf(MessagesApi.class);
+    this.lang = Http.Context.current().lang();
   }
 
   /**
@@ -37,6 +47,16 @@ public class NameUniqueValidator implements ConstraintValidator<NameUnique, Obje
    */
   @Override
   public boolean isValid(Object object, ConstraintValidatorContext constraintContext) {
-    return object != null && checker.isValid(object);
+    if (object != null && checker.isValid(object)) {
+      return true;
+    }
+
+    constraintContext.disableDefaultConstraintViolation();
+    constraintContext
+        .buildConstraintViolationWithTemplate(messagesApi.get(lang, constraintAnnotation.message()))
+        .addPropertyNode(constraintAnnotation.field())
+        .addConstraintViolation();
+
+    return false;
   }
 }

@@ -1,5 +1,6 @@
 import {Action} from '@ngrx/store';
 import {PagedList, Project, User} from "@dev/translatr-sdk";
+import {HttpErrorResponse} from "@angular/common/http";
 
 export enum AppActionTypes {
   LoadLoggedInUser = '[Main Page] Load Logged-In User',
@@ -34,7 +35,7 @@ export class LoadLoggedInUser implements Action {
 export class LoggedInUserLoadError implements Action {
   readonly type = AppActionTypes.LoggedInUserLoadError;
 
-  constructor(public payload: any) {
+  constructor(public payload: HttpErrorResponse) {
   }
 }
 
@@ -52,7 +53,7 @@ export class LoadUsers implements Action {
 export class UsersLoadError implements Action {
   readonly type = AppActionTypes.UsersLoadError;
 
-  constructor(public payload: any) {
+  constructor(public payload: HttpErrorResponse) {
   }
 }
 
@@ -70,7 +71,7 @@ export class LoadProjects implements Action {
 export class ProjectsLoadError implements Action {
   readonly type = AppActionTypes.ProjectsLoadError;
 
-  constructor(public payload: any) {
+  constructor(public payload: HttpErrorResponse) {
   }
 }
 
@@ -91,7 +92,7 @@ export class CreateUser implements Action {
 export class UserCreateError implements Action {
   readonly type = AppActionTypes.UserCreateError;
 
-  constructor(public payload: any) {
+  constructor(public payload: HttpErrorResponse) {
   }
 }
 
@@ -112,7 +113,7 @@ export class UpdateUser implements Action {
 export class UserUpdateError implements Action {
   readonly type = AppActionTypes.UserUpdateError;
 
-  constructor(public payload: any) {
+  constructor(public payload: HttpErrorResponse) {
   }
 }
 
@@ -133,7 +134,7 @@ export class DeleteUser implements Action {
 export class UserDeleteError implements Action {
   readonly type = AppActionTypes.UserDeleteError;
 
-  constructor(public payload: any) {
+  constructor(public payload: HttpErrorResponse) {
   }
 }
 

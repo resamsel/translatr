@@ -30,8 +30,6 @@ import utils.Template;
 @With(ContextAction.class)
 public class Application extends AbstractController {
 
-  public static final String USER_ROLE = "user";
-
   private final Configuration configuration;
   private final Assets assets;
 

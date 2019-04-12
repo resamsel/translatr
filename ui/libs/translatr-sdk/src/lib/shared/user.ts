@@ -1,4 +1,5 @@
 import {Member} from "./member";
+import {UserRole} from "@dev/translatr-sdk/src/lib/shared/user-role";
 
 export interface User {
   id: string;
@@ -7,5 +8,6 @@ export interface User {
   name: string;
   username: string;
   email: string;
+  role: UserRole;
   memberships?: Member[];
 }
