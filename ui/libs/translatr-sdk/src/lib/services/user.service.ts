@@ -1,11 +1,12 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {map} from "rxjs/operators";
-import {User} from "../shared/user";
-import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
-import {Aggregate} from "../shared/aggregate";
-import {PagedList} from "../shared/paged-list";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { User } from "../shared/user";
+import { convertTemporals, convertTemporalsList } from "../shared/mapper-utils";
+import { Aggregate } from "../shared/aggregate";
+import { PagedList } from "../shared/paged-list";
+import { RequestCriteria } from "@dev/translatr-sdk";
 
 @Injectable({
   providedIn: 'root'
@@ -15,13 +16,9 @@ export class UserService {
   constructor(private readonly http: HttpClient) {
   }
 
-  getUsers(options?: {
-    params?: HttpParams | {
-      [param: string]: string | string[];
-    }
-  }): Observable<PagedList<User> | undefined> {
+  getUsers(criteria?: RequestCriteria): Observable<PagedList<User> | undefined> {
     return this.http
-      .get<PagedList<User>>('/api/users', options)
+      .get<PagedList<User>>('/api/users', {params: {...criteria ? criteria : {}}})
       .pipe(map((list: PagedList<User>) => ({
         ...list,
         list: convertTemporalsList(list.list)
@@ -56,7 +53,6 @@ export class UserService {
   }
 
   update(user: User): Observable<User | undefined> {
-    console.log(user);
     return this.http
       .put<User>('/api/user', user)
       .pipe(map(convertTemporals));

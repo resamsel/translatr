@@ -10,4 +10,5 @@ export * from './paged-list';
 export * from './project';
 export * from './request-criteria';
 export * from './user';
+export * from './user-role';
 export * from './utils';

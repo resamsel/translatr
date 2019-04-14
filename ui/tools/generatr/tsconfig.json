@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc/tools-generatr",
+    "module": "commonjs",
+    "target": "es5",
+    "types": [
+      "node"
+    ],
+    "experimentalDecorators": true,
+    "baseUrl": "../../"
+  },
+  "include": [
+    "**/*.ts"
+  ]
+}

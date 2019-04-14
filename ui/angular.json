@@ -320,7 +320,9 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "stylePreprocessorOptions": {
-              "includePaths": ["libs/translatr-components/src/styles"]
+              "includePaths": [
+                "libs/translatr-components/src/styles"
+              ]
             }
           }
         },

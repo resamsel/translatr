@@ -7,7 +7,10 @@
   <mat-icon>add</mat-icon>
 </button>
 
-<div class="container">
+<div class="container dense">
+  <mat-form-field>
+    <input matInput placeholder="Filter" (keyup)="onFilter($event.target.value)">
+  </mat-form-field>
   <table mat-table [dataSource]="(users$ | async)?.list" class="mat-elevation-z2">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
@@ -46,14 +49,19 @@
         </button>
         <button
           mat-icon-button
-          [disabled]="!(allowDelete$(element) | async)"
-          (click)="onDelete(element)">
+          [mat-menu-trigger-for]="deleteMenu"
+          [disabled]="!(allowDelete$(element) | async)">
           <mat-icon>delete</mat-icon>
         </button>
+        <mat-menu #deleteMenu="matMenu" xPosition="before">
+          <button mat-menu-item (click)="onDelete(element)">Delete</button>
+        </mat-menu>
       </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+
+  <button mat-button [disabled]="!(users$ | async)?.hasNext" (click)="onLoadMore()">More...</button>
 </div>

@@ -1,16 +1,18 @@
-import {Component} from '@angular/core';
-import {AppFacade} from "../../../../+state/app.facade";
-import {User} from "@dev/translatr-sdk";
-import {map, take} from "rxjs/operators";
-import {UserDeleted, UserDeleteError} from "../../../../+state/app.actions";
+import { Component } from '@angular/core';
+import { AppFacade } from "../../../../+state/app.facade";
+import { RequestCriteria, User } from "@dev/translatr-sdk";
+import { debounceTime, distinctUntilChanged, map, shareReplay, startWith, take, tap } from "rxjs/operators";
+import { UserDeleted, UserDeleteError } from "../../../../+state/app.actions";
 import {
   UserEditDialogComponent,
   UserEditDialogConfig
 } from "@dev/translatr-components/src/lib/modules/user/user-edit-dialog/user-edit-dialog.component";
-import {MatDialog} from "@angular/material";
-import {filter} from "rxjs/internal/operators/filter";
-import {UserRole} from "@dev/translatr-sdk/src/lib/shared/user-role";
-import {Observable} from "rxjs";
+import { MatDialog } from "@angular/material";
+import { filter } from "rxjs/internal/operators/filter";
+import { UserRole } from "@dev/translatr-sdk/src/lib/shared/user-role";
+import { merge, Observable, Subject } from "rxjs";
+import { FormControl } from "@angular/forms";
+import { scan } from "rxjs/internal/operators/scan";
 
 const isAdmin = (user?: User): boolean => user !== undefined && user.role === UserRole.Admin;
 
@@ -26,21 +28,40 @@ const mapToAllowedRoles = () => map((me?: User): UserRole[] =>
   [UserRole.User, ...isAdmin(me) ? [UserRole.Admin] : []]);
 
 @Component({
-  selector: 'dev-users',
+  selector: 'dev-dashboard-users',
   templateUrl: './dashboard-users.component.html',
   styleUrls: ['./dashboard-users.component.css']
 })
 export class DashboardUsersComponent {
 
-  readonly displayedColumns = ['name', 'role', 'username', 'email', 'when_created', 'actions'];
+  readonly displayedColumns = ['name', 'username', 'email', 'when_created', 'role', 'actions'];
 
   me$ = this.facade.me$;
+  search$ = new Subject<string>();
+  limit$ = new Subject<number>();
+  commands$ = merge(
+    this.search$.asObservable().pipe(
+      distinctUntilChanged(),
+      debounceTime(200),
+      map((search: string) => ({search}))
+    ),
+    this.limit$.asObservable().pipe(
+      distinctUntilChanged(),
+      map((limit: number) => ({limit: `${limit}`}))
+    )
+  )
+    .pipe(
+      startWith({limit: '20', search: '', order: 'name asc'}),
+      scan((acc: RequestCriteria, value: RequestCriteria) => ({...acc, ...value})),
+      shareReplay(1)
+    );
   users$ = this.facade.users$;
   userDeleted$ = this.facade.userDeleted$;
   allowCreate$ = this.me$.pipe(hasCreateUserPermission());
+  search = new FormControl();
 
   constructor(private readonly facade: AppFacade, private readonly dialog: MatDialog) {
-    facade.loadUsers();
+    this.commands$.subscribe((criteria: RequestCriteria) => this.facade.loadUsers(criteria));
   }
 
   allowEdit$(user: User): Observable<boolean> {
@@ -98,5 +119,16 @@ export class DashboardUsersComponent {
         }
       });
     this.facade.deleteUser(user);
+  }
+
+  onFilter(value: string) {
+    this.search$.next(value);
+  }
+
+  onLoadMore() {
+    this.commands$
+      .pipe(tap(console.log), take(1))
+      .subscribe((criteria: RequestCriteria) =>
+        this.limit$.next(parseInt(criteria.limit, 10) * 2));
   }
 }

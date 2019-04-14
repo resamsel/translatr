@@ -1,15 +1,15 @@
 <footer>
   <div class="container">
     <div class="copyright">
-      © 2019 <a class="link" href="https://twitter.com/resamsel" target="_blank">René Panzar</a> (<span
-      title="2019-03-01 06:40:21.727">2.3.0-SNAPSHOT</span>)
-
+      © 2019
+      <a class="link" href="https://twitter.com/resamsel" target="_blank">{{buildInfo.author}}</a>
+      (<span [title]="buildInfo.buildDate">{{buildInfo.version}}</span>)
     </div>
     <div class="links">
       <ul>
         <li><a class="link" href="https://twitter.com/resamsel" target="_blank">Twitter</a></li>
-        <li><a class="link" href="https://github.com/resamsel/translatr" target="_blank">GitHub</a></li>
-        <li><a class="link" href="https://github.com/resamsel/translatr/issues" target="_blank">Feedback</a></li>
+        <li><a class="link" [href]="buildInfo.homepage" target="_blank">GitHub</a></li>
+        <li><a class="link" [href]="buildInfo.bugsUrl" target="_blank">Feedback</a></li>
         <li><a class="link" href="https://github.com/resamsel/translatr/blob/master/LICENSE">License</a></li>
       </ul>
     </div>

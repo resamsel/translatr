@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {User} from "@dev/translatr-sdk";
-import {FormControl, FormGroup, ValidationErrors} from "@angular/forms";
+import { FormControl, FormGroup, ValidationErrors, Validator, ValidatorFn, Validators } from "@angular/forms";
 import {UserRole} from "@dev/translatr-sdk/src/lib/shared/user-role";
 import {Observable} from "rxjs";
 import {takeUntil, tap} from "rxjs/operators";
@@ -37,9 +37,9 @@ const defaultUser: Partial<User> = {
 export class UserEditDialogComponent {
   form = new FormGroup({
     id: new FormControl(),
-    name: new FormControl(),
-    role: new FormControl(),
-    username: new FormControl(),
+    name: new FormControl('', Validators.required),
+    role: new FormControl('', Validators.required),
+    username: new FormControl('', Validators.required),
     email: new FormControl()
   });
   roles: UserRole[] = [UserRole.Admin, UserRole.User];

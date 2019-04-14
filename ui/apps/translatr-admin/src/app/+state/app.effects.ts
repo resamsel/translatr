@@ -47,7 +47,7 @@ export class AppEffects {
 
   @Effect() loadUsers$ = this.actions$.pipe(
     ofType(AppActionTypes.LoadUsers),
-    switchMap((action: LoadUsers) => this.userService.getUsers()
+    switchMap((action: LoadUsers) => this.userService.getUsers(action.payload)
       .pipe(
         map((payload: PagedList<User>) => new UsersLoaded(payload)),
         catchError(error => of(new UsersLoadError(error)))

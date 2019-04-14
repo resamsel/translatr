@@ -11,7 +11,7 @@ import {
   LoadUsers,
   UpdateUser
 } from './app.actions';
-import {User} from "@dev/translatr-sdk";
+import { RequestCriteria, User } from "@dev/translatr-sdk";
 import {Actions, ofType} from "@ngrx/effects";
 
 @Injectable()
@@ -36,8 +36,8 @@ export class AppFacade {
     this.store.dispatch(new LoadLoggedInUser());
   }
 
-  loadUsers() {
-    this.store.dispatch(new LoadUsers());
+  loadUsers(criteria?: RequestCriteria) {
+    this.store.dispatch(new LoadUsers(criteria));
   }
 
   loadProjects() {

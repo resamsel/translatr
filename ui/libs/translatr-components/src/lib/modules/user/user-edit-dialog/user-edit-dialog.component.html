@@ -2,17 +2,21 @@
 <div mat-dialog-content [formGroup]="form">
   <mat-error *ngIf="form.errors && form.errors['']">{{form.errors['']}}</mat-error>
   <mat-form-field>
-    <input matInput placeholder="Name" formControlName="name" cdkFocusInitial>
+    <input matInput required placeholder="Name" formControlName="name" cdkFocusInitial>
     <mat-error *ngIf="form.get('name').errors">{{form.get('name').errors.violation}}</mat-error>
   </mat-form-field>
   <mat-form-field>
+    <mat-label>Role</mat-label>
     <mat-select required formControlName="role">
-      <mat-option *ngFor="let role of roles" [value]="role" [disabled]="data.allowedRoles.indexOf(role) === -1">{{role}}</mat-option>
+      <mat-option
+        *ngFor="let role of roles"
+        [value]="role"
+        [disabled]="data.allowedRoles.indexOf(role) === -1">{{role}}</mat-option>
     </mat-select>
     <mat-error *ngIf="form.get('role').errors">{{form.get('role').errors.violation}}</mat-error>
   </mat-form-field>
   <mat-form-field>
-    <input matInput placeholder="Username" formControlName="username">
+    <input matInput required placeholder="Username" formControlName="username">
     <mat-error *ngIf="form.get('username').errors">{{form.get('username').errors.violation}}</mat-error>
   </mat-form-field>
   <mat-form-field>

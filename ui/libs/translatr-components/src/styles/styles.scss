@@ -56,7 +56,7 @@ a .mat-card:not([class*='mat-elevation-z']) {
 .container {
   padding: 8px;
 
-  > :not(last-child) {
+  &:not(.dense) > :not(last-child) {
     margin-bottom: 8px;
   }
 

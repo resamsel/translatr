@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store';
-import {PagedList, Project, User} from "@dev/translatr-sdk";
+import { PagedList, Project, RequestCriteria, User } from "@dev/translatr-sdk";
 import {HttpErrorResponse} from "@angular/common/http";
 
 export enum AppActionTypes {
@@ -48,6 +48,9 @@ export class LoggedInUserLoaded implements Action {
 
 export class LoadUsers implements Action {
   readonly type = AppActionTypes.LoadUsers;
+
+  constructor(public payload?: RequestCriteria) {
+  }
 }
 
 export class UsersLoadError implements Action {

@@ -1,6 +1,12 @@
 {
   "name": "translatr",
-  "version": "2.3.0-SNAPSHOT",
+  "version": "3.0.0-SNAPSHOT",
+  "author": "René Panzar",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/resamsel/translatr/issues"
+  },
+  "homepage": "https://github.com/resamsel/translatr#readme",
   "scripts": {
     "ng": "ng",
     "prettier": "prettier --write \"**/*.{js,json,css,md,ts,html,component.html}\"",
@@ -10,12 +16,15 @@
     "test:ci": "ng test --watch=false --browsers ChromeHeadless",
     "test:coverage": "ng test --watch=true --code-coverage=true",
     "test:coverage:ci": "ng test --watch=false --code-coverage=true --browsers ChromeHeadless",
+    "prebuild": "npm run buildinfo",
     "build": "ng build",
     "build:ui:dev": "ng build translatr --progress --output-path ../public/ui",
     "build:ui:prod": "ng build translatr --progress --prod --output-path ../public/ui",
     "build:admin:dev": "ng build translatr-admin --progress --output-path ../public/admin",
     "build:admin:prod": "ng build translatr-admin --progress --prod --output-path ../public/admin",
+    "prebuild:prod": "npm run buildinfo",
     "build:prod": "npm run build:ui:prod && npm run build:admin:prod",
+    "buildinfo": "node tools/build-info.js",
     "lint": "./node_modules/.bin/nx lint && ng lint",
     "e2e": "ng e2e",
     "affected:apps": "./node_modules/.bin/nx affected:apps",
@@ -33,7 +42,8 @@
     "update:check": "ng update",
     "dep-graph": "./node_modules/.bin/nx dep-graph",
     "workspace-schematic": "./node_modules/.bin/nx workspace-schematic",
-    "help": "./node_modules/.bin/nx help"
+    "help": "./node_modules/.bin/nx help",
+    "tools:generatr": "ts-node --project tools/generatr/tsconfig.json tools/generatr/generatr.ts"
   },
   "private": true,
   "dependencies": {
@@ -65,21 +75,31 @@
     "runes": "^0.4.3",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "@nestjs/common": "5.5.0",
+    "@nestjs/core": "5.5.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.11.0",
     "@angular/cli": "~7.1.4",
     "@angular/compiler-cli": "~7.1.0",
+    "@angular/http": "^7.2.13",
     "@angular/language-service": "~7.1.0",
     "@ngrx/store-devtools": "7.2.0",
+    "@nrwl/builders": "7.6.2",
     "@schuchard/prettier": "^3.0.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/jest": "23.0.0",
+    "@types/jquery": "3.3.6",
     "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
+    "cypress": "3.1.0",
+    "dateformat": "^3.0.3",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
+    "jest": "23.0.0",
+    "jest-preset-angular": "6.0.1",
     "karma": "~3.1.1",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "~2.0.1",
@@ -89,15 +109,13 @@
     "ngrx-store-freeze": "0.2.4",
     "prettier": "^1.16.4",
     "protractor": "~5.4.0",
+    "random-name": "^0.1.2",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
     "tslint-config-prettier": "1.18.0",
     "typescript": "~3.1.6",
-    "cypress": "3.1.0",
-    "@types/jquery": "3.3.6",
-    "@nrwl/builders": "7.6.2",
-    "jest": "23.0.0",
-    "@types/jest": "23.0.0",
-    "jest-preset-angular": "6.0.1"
+    "xmlhttprequest": "^1.8.0",
+    "@nestjs/schematics": "5.11.2",
+    "@nestjs/testing": "5.5.0"
   }
 }

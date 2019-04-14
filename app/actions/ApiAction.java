@@ -21,6 +21,7 @@ import utils.ErrorUtils;
  */
 public class ApiAction extends Action.Simple {
   private static final String ACCESS_TOKEN_PARAM = "access_token";
+  private static final String ACCESS_TOKEN_HEADER = "x-access-token";
 
   private final AccessTokenService accessTokenService;
 
@@ -59,6 +60,9 @@ public class ApiAction extends Action.Simple {
       default:
         break;
     }
+
+    if (accessToken == null && req.hasHeader(ACCESS_TOKEN_HEADER))
+      accessToken = req.getHeader(ACCESS_TOKEN_HEADER);
 
     if (accessToken != null) {
       AccessToken token = accessTokenService.byKey(accessToken);

@@ -1,7 +1,7 @@
 <app-sidenav [me]="me$ | async">
   <header>
     <nav mat-tab-nav-bar color="accent">
-      <div class="container" routerLinkActive>
+      <div class="container dense" routerLinkActive>
         <a mat-tab-link
            *ngFor="let child of children"
            [routerLink]="routerLink(child)"
