@@ -1,4 +1,6 @@
-table {
+.mat-form-field,
+table,
+.mat-button {
   width: 100%;
 }
 

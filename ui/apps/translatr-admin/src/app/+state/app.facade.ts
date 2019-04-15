@@ -40,8 +40,8 @@ export class AppFacade {
     this.store.dispatch(new LoadUsers(criteria));
   }
 
-  loadProjects() {
-    this.store.dispatch(new LoadProjects());
+  loadProjects(criteria?: RequestCriteria) {
+    this.store.dispatch(new LoadProjects(criteria));
   }
 
   createUser(user: User) {

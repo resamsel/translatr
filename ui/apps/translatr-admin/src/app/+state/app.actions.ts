@@ -69,6 +69,9 @@ export class UsersLoaded implements Action {
 
 export class LoadProjects implements Action {
   readonly type = AppActionTypes.LoadProjects;
+
+  constructor(public payload?: RequestCriteria) {
+  }
 }
 
 export class ProjectsLoadError implements Action {

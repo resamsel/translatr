@@ -57,7 +57,7 @@ export class AppEffects {
   @Effect() loadProjects$ = this.actions$.pipe(
     ofType(AppActionTypes.LoadProjects),
     switchMap((action: LoadProjects) => this.projectService
-      .getProjects()
+      .getProjects({params: {...action.payload}})
       .pipe(
         map((payload: PagedList<Project>) => new ProjectsLoaded(payload)),
         catchError(error => of(new ProjectsLoadError(error)))
