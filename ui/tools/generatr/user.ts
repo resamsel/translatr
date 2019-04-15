@@ -1,16 +1,44 @@
-import { PagedList, RequestCriteria, User, UserRole } from "../../libs/translatr-sdk/src/lib/shared/index";
-import { Observable, of, throwError } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
-import { HttpErrorResponse } from "@angular/common/http";
-import { mergeMap } from "rxjs/internal/operators/mergeMap";
+import {AccessToken, PagedList, RequestCriteria, User, UserRole, UserService} from "@dev/translatr-sdk";
+import {Observable, of, throwError} from "rxjs";
+import {catchError, map, switchMap} from "rxjs/operators";
+import {HttpErrorResponse} from "@angular/common/http";
+import {mergeMap} from "rxjs/internal/operators/mergeMap";
 import * as randomName from 'random-name';
-import { State } from './state';
-import { UserService } from "../../libs/translatr-sdk/src/lib/services/user.service";
-import { errorMessage, pickRandomly } from "./utils";
+import {State} from './state';
+import {cartesianProduct, errorMessage, pickRandomly} from "./utils";
+import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
+import {Injector} from "@angular/core";
 
-const getRandomUser = (userService: UserService, criteria: RequestCriteria, filterFn: (user: User) => boolean): Observable<User> =>
+const scope = cartesianProduct([
+  ['read', 'write'],
+  ['project', 'locale', 'key']
+])
+  .map((value: string[]) => value.join(':'))
+  .join(',');
+
+export const getRandomUser = (userService: UserService, criteria: RequestCriteria, filterFn: (user: User) => boolean): Observable<User> =>
   userService.getUsers({limit: '20', order: 'whenUpdated asc'}).pipe(
     map((pagedList: PagedList<User>) => pickRandomly(pagedList.list.filter(filterFn))));
+
+export const getRandomUserAccessToken = (
+  injector: Injector,
+  criteria: RequestCriteria,
+  filterFn: (user: User) => boolean
+): Observable<{user: User, accessToken: AccessToken}> => {
+  const userService = injector.get(UserService);
+  const accessTokenService = injector.get(AccessTokenService);
+  return getRandomUser(userService, criteria, filterFn).pipe(
+    switchMap((user: User) => accessTokenService.find({userId: user.id}).pipe(
+      map((pagedList: PagedList<AccessToken>) => ({list: pagedList.list, user})))),
+    switchMap((payload: { list: AccessToken[], user: User }) => {
+      if (payload.list.length === 0) {
+        return accessTokenService.create({userId: payload.user.id, name: randomName.first(), scope})
+          .pipe(map((accessToken: AccessToken) => ({user: payload.user, accessToken})));
+      }
+      return of({user: payload.user, accessToken: pickRandomly(payload.list)});
+    })
+  );
+};
 
 export const me = (userService: UserService, state: State): Observable<State> => {
   return userService.getLoggedInUser()
@@ -20,11 +48,15 @@ export const me = (userService: UserService, state: State): Observable<State> =>
           return throwError('Could not login, access token most probably invalid');
         }
 
-        return of({...state, me: user, message: `Logged-in user is ${user.name}/${user.username} with role ${user.role}`});
+        return of({
+          ...state,
+          me: user,
+          message: `Logged-in user is ${user.name}/${user.username} with role ${user.role}`
+        });
       }),
       catchError((err: HttpErrorResponse | string) => {
           if (err instanceof HttpErrorResponse) {
-            return throwError({...state, message: `Could not login: ${errorMessage(err.error.error)}`});
+            return throwError({...state, message: `Could not login: ${errorMessage(err)}`});
           }
           return throwError({...state, message: err});
         }
@@ -47,7 +79,7 @@ export const createRandomUser = (userService: UserService, state: State): Observ
     .pipe(
       map((user: User) => `${user.name} (${user.username}) has been created`),
       catchError((err: HttpErrorResponse) =>
-        of(`${name} (${username}) could not be created (${errorMessage(err.error.error)})`)),
+        of(`${name} (${username}) could not be created (${errorMessage(err)})`)),
       map((message: string) => ({...state, message}))
     );
 };
@@ -67,7 +99,7 @@ export const updateRandomUser = (userService: UserService, state: State): Observ
           .pipe(
             map((u: User) => `${u.name} (${u.username}) has been updated`),
             catchError((err: HttpErrorResponse) =>
-              of(`${user.name} (${user.username}) could not be updated (${errorMessage(err.error.error)})`)),
+              of(`${user.name} (${user.username}) could not be updated (${errorMessage(err)})`)),
           )
       }),
       map((message: string) => ({...state, message}))
@@ -85,7 +117,7 @@ export const deleteRandomUser = (userService: UserService, state: State): Observ
         .pipe(
           map(() => `${user.name} (${user.username}) has been deleted`),
           catchError((err: HttpErrorResponse) =>
-            of(`${user.name} (${user.username}) could not be deleted (${errorMessage(err.error.error)})`)),
+            of(`${user.name} (${user.username}) could not be deleted (${errorMessage(err)})`)),
         )),
       map((message: string) => ({...state, message}))
     );

@@ -10,6 +10,7 @@
   "scripts": {
     "ng": "ng",
     "prettier": "prettier --write \"**/*.{js,json,css,md,ts,html,component.html}\"",
+    "prestart": "npm run buildinfo",
     "start": "ng serve --proxy-config apps/translatr/src/proxy.conf.js --host 0.0.0.0 --port 4210",
     "start:admin": "ng serve translatr-admin --proxy-config apps/translatr-admin/src/proxy.conf.js --host 0.0.0.0 --port 4211",
     "test": "ng test",
@@ -43,7 +44,7 @@
     "dep-graph": "./node_modules/.bin/nx dep-graph",
     "workspace-schematic": "./node_modules/.bin/nx workspace-schematic",
     "help": "./node_modules/.bin/nx help",
-    "tools:generatr": "ts-node --project tools/generatr/tsconfig.json tools/generatr/generatr.ts"
+    "tools:generatr": "ts-node --project tools/generatr/tsconfig.json -r tsconfig-paths/register tools/generatr/generatr.ts"
   },
   "private": true,
   "dependencies": {
@@ -75,9 +76,7 @@
     "runes": "^0.4.3",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
-    "zone.js": "~0.8.26",
-    "@nestjs/common": "5.5.0",
-    "@nestjs/core": "5.5.0"
+    "zone.js": "~0.8.26"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.11.0",
@@ -85,6 +84,8 @@
     "@angular/compiler-cli": "~7.1.0",
     "@angular/http": "^7.2.13",
     "@angular/language-service": "~7.1.0",
+    "@nestjs/schematics": "5.11.2",
+    "@nestjs/testing": "5.5.0",
     "@ngrx/store-devtools": "7.2.0",
     "@nrwl/builders": "7.6.2",
     "@schuchard/prettier": "^3.0.0",
@@ -111,11 +112,10 @@
     "protractor": "~5.4.0",
     "random-name": "^0.1.2",
     "ts-node": "~7.0.0",
+    "tsconfig-paths": "^3.8.0",
     "tslint": "~5.11.0",
     "tslint-config-prettier": "1.18.0",
     "typescript": "~3.1.6",
-    "xmlhttprequest": "^1.8.0",
-    "@nestjs/schematics": "5.11.2",
-    "@nestjs/testing": "5.5.0"
+    "xmlhttprequest": "^1.8.0"
   }
 }

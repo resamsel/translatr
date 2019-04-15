@@ -2,11 +2,16 @@ package services.impl;
 
 import static utils.Stopwatch.log;
 
+import com.avaje.ebean.PagedList;
 import criterias.AccessTokenCriteria;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+
 import models.AccessToken;
+import models.User;
+import models.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.AccessTokenRepository;
@@ -29,11 +34,21 @@ public class AccessTokenServiceImpl extends
 
   @Inject
   public AccessTokenServiceImpl(Validator validator, CacheService cache,
-      AccessTokenRepository accessTokenRepository, LogEntryService logEntryService) {
+                                AccessTokenRepository accessTokenRepository, LogEntryService logEntryService) {
     super(validator, cache, accessTokenRepository, AccessToken::getCacheKey, logEntryService);
 
     this.cache = cache;
     this.accessTokenRepository = accessTokenRepository;
+  }
+
+  @Override
+  public PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
+    User loggedInUser = User.loggedInUser();
+    if (loggedInUser != null && loggedInUser.role != UserRole.Admin) {
+      criteria.setUserId(loggedInUser.id);
+    }
+
+    return super.findBy(criteria);
   }
 
   /**
@@ -43,6 +58,11 @@ public class AccessTokenServiceImpl extends
   public AccessToken byKey(String accessTokenKey) {
     return log(() -> cache.getOrElse(AccessToken.getCacheKey(accessTokenKey),
         () -> accessTokenRepository.byKey(accessTokenKey), 60), LOGGER, "getByKey");
+  }
+
+  @Override
+  protected void preCreate(AccessToken t) {
+    super.preCreate(t);
   }
 
   @Override

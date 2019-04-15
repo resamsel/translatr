@@ -1,6 +1,7 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,10 @@ public enum Scope {
   UserRead(ScopeSection.User, ScopeType.Read),
 
   UserWrite(ScopeSection.User, ScopeType.Write),
+
+  AccessTokenRead(ScopeSection.AccessToken, ScopeType.Read),
+
+  AccessTokenWrite(ScopeSection.AccessToken, ScopeType.Write),
 
   ProjectRead(ScopeSection.Project, ScopeType.Read),
 
@@ -44,9 +49,9 @@ public enum Scope {
   }
 
   /**
-   * 
+   *
    */
-  private Scope(ScopeSection section, ScopeType type) {
+  Scope(ScopeSection section, ScopeType type) {
     this.section = section;
     this.type = type;
   }

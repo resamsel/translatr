@@ -4,7 +4,7 @@ import {Key} from "./key";
 import {Message} from "./message";
 
 export interface Project {
-  id: string;
+  id?: string;
   whenCreated?: Date;
   whenUpdated?: Date;
   name: string;

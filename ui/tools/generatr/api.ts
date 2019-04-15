@@ -1,9 +1,9 @@
-import { HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { Injector, StaticProvider } from "@angular/core";
-import { ProjectService } from "../../libs/translatr-sdk/src/lib/services/project.service";
-import { UserService } from "../../libs/translatr-sdk/src/lib/services/user.service";
-import { XMLHttpRequest } from 'xmlhttprequest';
+import {HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {Injector, StaticProvider} from "@angular/core";
+import {ProjectService, UserService} from "@dev/translatr-sdk";
+import {XMLHttpRequest} from 'xmlhttprequest';
+import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
 
 export class BrowserXhr implements XhrFactory {
   constructor() {
@@ -27,13 +27,19 @@ class MyHttpHandler implements HttpHandler {
 
   handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
     const url = `${this.baseUrl}${req.url}`;
-    const newReq = new HttpRequest(req.method, url, req.body, {
-      headers: req.headers.append('x-access-token', this.accessToken),
-      reportProgress: req.reportProgress,
-      params: req.params.append('access_token', this.accessToken),
-      responseType: req.responseType,
-      withCredentials: req.withCredentials
-    });
+    const params = !req.params.has('access_token')
+      ? req.params.set('access_token', this.accessToken)
+      : req.params;
+    const newReq = new HttpRequest(
+      req.method,
+      url,
+      req.body, {
+        reportProgress: req.reportProgress,
+        params,
+        responseType: req.responseType,
+        withCredentials: req.withCredentials
+      }
+    );
     return this.handler.handle(newReq);
   }
 }
@@ -53,6 +59,11 @@ const providers: StaticProvider[] = [
   {
     provide: ProjectService,
     useFactory: (client: HttpClient) => new ProjectService(client),
+    deps: [HttpClient]
+  },
+  {
+    provide: AccessTokenService,
+    useFactory: (client: HttpClient) => new AccessTokenService(client),
     deps: [HttpClient]
   }
 ];

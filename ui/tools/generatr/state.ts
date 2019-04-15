@@ -5,7 +5,11 @@ export enum Action {
   Me = 'Me',
   CreateRandomUser = 'Create Random User',
   UpdateRandomUser = 'Update Random User',
-  DeleteRandomUser = 'Delete Random User'
+  DeleteRandomUser = 'Delete Random User',
+
+  CreateRandomProject = 'Create Random Project',
+  UpdateRandomProject = 'Update Random Project',
+  DeleteRandomProject = 'Delete Random Project'
 }
 
 export interface Config {
@@ -15,6 +19,10 @@ export interface Config {
     createUser: number;
     updateUser: number;
     deleteUser: number;
+
+    createProject: number;
+    updateProject: number;
+    deleteProject: number;
   };
 }
 

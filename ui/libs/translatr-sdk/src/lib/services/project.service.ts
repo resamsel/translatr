@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Observable } from "rxjs";
-import { Project } from "../shared/project";
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { map } from "rxjs/operators";
-import { PagedList } from "../shared/paged-list";
-import { convertTemporals, convertTemporalsList } from "../shared/mapper-utils";
-import { Aggregate } from "../shared/aggregate";
+import {Injectable} from '@angular/core';
+import {Observable} from "rxjs";
+import {Project} from "../shared/project";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {map} from "rxjs/operators";
+import {PagedList} from "../shared/paged-list";
+import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
+import {Aggregate} from "../shared/aggregate";
+import {options} from "tsconfig-paths/lib/options";
+import {RequestCriteria} from "@dev/translatr-sdk";
 
 const projectMapper = (project: Project) => ({
   ...convertTemporals(project),
@@ -52,9 +54,16 @@ export class ProjectService {
       .get<PagedList<Aggregate>>(`/api/project/${projectId}/activity`);
   }
 
-  create(project: { name: string }): Observable<Project> {
+  create(
+    project: Project,
+    options?: {
+      params: {
+        [param: string]: string | string[];
+      }
+    }
+  ): Observable<Project> {
     return this.http
-      .post<Project>('/api/project', project)
+      .post<Project>('/api/project', project, options)
       .pipe(map(projectMapper));
   }
 

@@ -51,6 +51,22 @@ public class AccessTokenForm extends SearchForm {
     scopes.add(Scope.UserWrite);
   }
 
+  public Boolean getScopeAccessTokenRead() {
+    return scopes.contains(Scope.AccessTokenRead);
+  }
+
+  public void setScopeAccessTokenRead(Boolean scopeAccessTokenRead) {
+    scopes.add(Scope.AccessTokenRead);
+  }
+
+  public Boolean getScopeAccessTokenWrite() {
+    return scopes.contains(Scope.AccessTokenWrite);
+  }
+
+  public void setScopeAccessTokenWrite(Boolean scopeAccessTokenWrite) {
+    scopes.add(Scope.AccessTokenWrite);
+  }
+
   public Boolean getScopeProjectRead() {
     return scopes.contains(Scope.ProjectRead);
   }

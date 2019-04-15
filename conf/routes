@@ -46,6 +46,12 @@ PUT     /api/user       			controllers.UsersApi.update
 DELETE  /api/user/:userId			controllers.UsersApi.delete(userId: java.util.UUID)
 GET     /api/user/:userId/activity  controllers.UsersApi.activity(userId: java.util.UUID)
 
+GET		/api/accesstokens			controllers.AccessTokensApi.find
+GET		/api/accesstoken/:accessTokenId	controllers.AccessTokensApi.get(accessTokenId: Long)
+POST    /api/accesstoken       		controllers.AccessTokensApi.create
+PUT     /api/accesstoken       		controllers.AccessTokensApi.update
+DELETE  /api/accesstoken/:accessTokenId	controllers.AccessTokensApi.delete(accessTokenId: Long)
+
 GET		/api/notifications			controllers.NotificationsApi.find
 
 GET		/api/activities 			controllers.ActivitiesApi.find

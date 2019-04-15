@@ -19,6 +19,7 @@ import javax.validation.Validator;
 import models.AccessToken;
 import models.ActionType;
 import models.User;
+import models.UserRole;
 import org.apache.commons.lang3.StringUtils;
 import repositories.AccessTokenRepository;
 import utils.QueryUtils;
@@ -78,6 +79,11 @@ public class AccessTokenRepositoryImpl extends
    */
   @Override
   protected void preSave(AccessToken t, boolean update) {
+    User loggedInUser = User.loggedInUser();
+    if (t.user == null || (loggedInUser != null && t.user.id != loggedInUser.id && loggedInUser.role != UserRole.Admin)) {
+      // only allow admins to create access tokens for other users
+      t.user = loggedInUser;
+    }
     if (t.key == null) {
       t.key = generateKey(AccessToken.KEY_LENGTH);
     }

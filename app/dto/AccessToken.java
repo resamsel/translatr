@@ -1,14 +1,18 @@
 package dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.UUID;
 import models.User;
 import org.joda.time.DateTime;
+
+import java.util.UUID;
 
 public class AccessToken extends Dto {
   private static final long serialVersionUID = 8641212952047519698L;
 
+  public Long id;
+
   public UUID userId;
+  public String userName;
 
   @JsonIgnore
   public DateTime whenCreated;
@@ -22,8 +26,13 @@ public class AccessToken extends Dto {
 
   public String scope;
 
+  public AccessToken() {
+  }
+
   private AccessToken(models.AccessToken in) {
+    this.id = in.id;
     this.userId = in.user.id;
+    this.userName = in.user.name;
     this.name = in.name;
     this.key = in.key;
     this.scope = in.scope;
@@ -34,6 +43,7 @@ public class AccessToken extends Dto {
   public models.AccessToken toModel() {
     models.AccessToken out = new models.AccessToken();
 
+    out.id = id;
     out.user = new User().withId(userId);
     out.whenCreated = whenCreated;
     out.whenUpdated = whenUpdated;

@@ -40,6 +40,12 @@
 		@scopeCheckbox(form, Scope.UserWrite)
 	</div>
 	<div class="col s12 m6 l4">
+		<h6 class="header">@Messages("accessToken")</h6>
+		@*scopeCheckbox(form, Scope.AccessTokenAdmin)<br/>*@
+		@scopeCheckbox(form, Scope.AccessTokenRead)<br/>
+		@scopeCheckbox(form, Scope.AccessTokenWrite)
+	</div>
+	<div class="col s12 m6 l4">
 		<h6 class="header">@Messages("notification")</h6>
 		@*scopeCheckbox(form, Scope.NotificationAdmin)<br/>*@
 		@scopeCheckbox(form, Scope.NotificationRead)<br/>

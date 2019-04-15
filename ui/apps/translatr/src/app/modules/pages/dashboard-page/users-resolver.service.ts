@@ -16,6 +16,6 @@ export class UsersResolverService implements Resolve<PagedList<User>> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<PagedList<User>> {
-    return this.userService.getUsers({params: {fetch: 'memberships'}});
+    return this.userService.getUsers({fetch: 'memberships'});
   }
 }

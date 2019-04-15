@@ -1,5 +1,5 @@
-import { ConstraintViolationErrorInfo } from "@dev/translatr-sdk/src/lib/shared/constraint-violation-error-info";
-import { ConstraintViolation } from "@dev/translatr-sdk/src/lib/shared/constraint-violation";
+import {ConstraintViolation, ConstraintViolationErrorInfo} from "@dev/translatr-sdk";
+import {HttpErrorResponse} from "@angular/common/http";
 
 export const envAsString = (key: string, defaultValue: string): string => {
   if (process.env[key]) {
@@ -21,10 +21,48 @@ export const pickRandomly = <T>(options: Array<T>): T => {
   return options[Math.ceil(Math.random() * options.length) - 1];
 };
 
-export const errorMessage = (error: ConstraintViolationErrorInfo): string => {
+export const errorMessage = (error: HttpErrorResponse | ConstraintViolationErrorInfo): string => {
+  if (error instanceof HttpErrorResponse) {
+    if (!!error.error && !!error.error.error) {
+      return errorMessage(error.error.error);
+    }
+
+    return error.message;
+  }
+
   if (!!error.violations) {
     return error.violations.map((v: ConstraintViolation) => `${v.field}: ${v.message}`).join(', ');
   }
 
   return error.message;
 };
+
+/**
+ * Calculates "Cartesian Product" sets.
+ * @example
+ *   cartesianProduct([[1,2], [4,8], [16,32]])
+ *   Returns:
+ *   [
+ *     [1, 4, 16],
+ *     [1, 4, 32],
+ *     [1, 8, 16],
+ *     [1, 8, 32],
+ *     [2, 4, 16],
+ *     [2, 4, 32],
+ *     [2, 8, 16],
+ *     [2, 8, 32]
+ *   ]
+ * @see https://stackoverflow.com/a/36234242/1955709
+ * @see https://en.wikipedia.org/wiki/Cartesian_product
+ * @param arr {T[][]}
+ * @returns {T[][]}
+ */
+export function cartesianProduct<T> (arr: T[][]): T[][] {
+  return arr.reduce((a, b) => {
+    return a.map(x => {
+      return b.map(y => {
+        return x.concat(y)
+      })
+    }).reduce((c, d) => c.concat(d), [])
+  }, [[]] as T[][])
+}

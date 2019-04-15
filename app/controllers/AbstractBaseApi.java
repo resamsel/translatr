@@ -51,6 +51,7 @@ public class AbstractBaseApi extends AbstractController {
   static final String MESSAGE_ID = "The message ID";
   static final String USER_ID = "The user ID";
   static final String USER_USERNAME = "The user username";
+  static final String ACCESS_TOKEN_ID = "The access token ID";
 
   static final String AUTHORIZATION = "scopes";
 
