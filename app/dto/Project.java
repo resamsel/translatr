@@ -31,6 +31,8 @@ public class Project extends Dto {
 
   public String name;
 
+  public String description;
+
   public UUID ownerId;
 
   public String ownerName;
@@ -53,6 +55,7 @@ public class Project extends Dto {
     this.whenCreated = in.whenCreated;
     this.whenUpdated = in.whenUpdated;
     this.name = in.name;
+    this.description = in.description;
     if (in.owner != null) {
       this.ownerId = in.owner.id;
       this.ownerName = in.owner.name;
@@ -91,6 +94,7 @@ public class Project extends Dto {
     out.whenCreated = whenCreated;
     out.whenUpdated = whenUpdated;
     out.name = name;
+    out.description = description;
     if (ownerId != null) {
       out.owner = new User().withId(ownerId);
     } else {

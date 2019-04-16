@@ -1,12 +1,12 @@
-import {AccessToken, PagedList, RequestCriteria, User, UserRole, UserService} from "@dev/translatr-sdk";
-import {Observable, of, throwError} from "rxjs";
-import {catchError, map, switchMap} from "rxjs/operators";
-import {HttpErrorResponse} from "@angular/common/http";
+import { AccessToken, PagedList, RequestCriteria, User, UserRole, UserService } from "@dev/translatr-sdk";
+import { Observable, of, throwError } from "rxjs";
+import { catchError, filter, map, switchMap } from "rxjs/operators";
+import { HttpErrorResponse } from "@angular/common/http";
 import * as randomName from 'random-name';
-import {State} from './state';
-import {cartesianProduct, errorMessage, pickRandomly} from "./utils";
-import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
-import {Injector} from "@angular/core";
+import { State } from './state';
+import { cartesianProduct, errorMessage, pickRandomly } from "./utils";
+import { AccessTokenService } from "@dev/translatr-sdk/src/lib/services/access-token.service";
+import { Injector } from "@angular/core";
 
 const scope = cartesianProduct([
   ['read', 'write'],
@@ -57,12 +57,12 @@ export const me = (userService: UserService): Observable<Partial<State>> => {
           return throwError({message: `Could not login: ${errorMessage(err)}`});
         }
 
-        return throwError({message: err});
+        return throwError({message: `me: ${err}`});
       })
     )
 };
 
-export const createRandomUser = (userService: UserService, state: State): Observable<State> => {
+export const createRandomUser = (userService: UserService): Observable<Partial<State>> => {
   const firstName = randomName.first();
   const lastName = randomName.last();
   const name = `${firstName} ${lastName}`;
@@ -78,17 +78,18 @@ export const createRandomUser = (userService: UserService, state: State): Observ
       map((user: User) => `${user.name} (${user.username}) has been created`),
       catchError((err: HttpErrorResponse) =>
         of(`${name} (${username}) could not be created (${errorMessage(err)})`)),
-      map((message: string) => ({...state, message}))
+      map((message: string) => ({message}))
     );
 };
 
-export const updateRandomUser = (userService: UserService, state: State): Observable<State> => {
+export const updateRandomUser = (userService: UserService): Observable<Partial<State>> => {
   return getRandomUser(
     userService,
     {limit: '20', order: 'whenUpdated asc'},
     (user: User) => user.role === UserRole.User
   )
     .pipe(
+      filter((user: User) => !!user),
       switchMap((user: User) => {
         const name = user.name.indexOf('!') > 0
           ? user.name.replace('!', '')
@@ -100,11 +101,12 @@ export const updateRandomUser = (userService: UserService, state: State): Observ
               of(`${user.name} (${user.username}) could not be updated (${errorMessage(err)})`)),
           )
       }),
-      map((message: string) => ({...state, message}))
+      catchError(err => of(`Error while retrieving random user (${errorMessage(err)})`)),
+      map((message: string) => ({message}))
     );
 };
 
-export const deleteRandomUser = (userService: UserService, state: State): Observable<State> => {
+export const deleteRandomUser = (userService: UserService): Observable<Partial<State>> => {
   return getRandomUser(
     userService,
     {limit: '20', order: 'whenUpdated asc'},
@@ -117,6 +119,7 @@ export const deleteRandomUser = (userService: UserService, state: State): Observ
           catchError((err: HttpErrorResponse) =>
             of(`${user.name} (${user.username}) could not be deleted (${errorMessage(err)})`)),
         )),
-      map((message: string) => ({...state, message}))
+      catchError(err => of(`Error while retrieving random user (${errorMessage(err)})`)),
+      map((message: string) => ({message}))
     );
 };

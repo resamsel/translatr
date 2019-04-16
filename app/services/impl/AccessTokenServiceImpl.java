@@ -61,11 +61,6 @@ public class AccessTokenServiceImpl extends
   }
 
   @Override
-  protected void preCreate(AccessToken t) {
-    super.preCreate(t);
-  }
-
-  @Override
   protected void postCreate(AccessToken t) {
     super.postCreate(t);
 

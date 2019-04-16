@@ -1,7 +1,5 @@
 package repositories.impl;
 
-import static utils.Stopwatch.log;
-
 import actors.ActivityActor;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
@@ -14,22 +12,7 @@ import criterias.HasNextPagedList;
 import criterias.ProjectCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.validation.Validator;
-
-import models.ActionType;
-import models.Project;
-import models.ProjectRole;
-import models.ProjectUser;
-import models.User;
+import models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
@@ -37,6 +20,18 @@ import repositories.LocaleRepository;
 import repositories.ProjectRepository;
 import services.PermissionService;
 import utils.QueryUtils;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static utils.Stopwatch.log;
 
 @Singleton
 public class ProjectRepositoryImpl extends
@@ -93,7 +88,12 @@ public class ProjectRepositoryImpl extends
     }
 
     if (criteria.getSearch() != null) {
-      query.ilike("name", "%" + criteria.getSearch() + "%");
+      query.disjunction()
+          .ilike("name", "%" + criteria.getSearch() + "%")
+          .ilike("description", "%" + criteria.getSearch() + "%")
+          .ilike("owner.name", "%" + criteria.getSearch() + "%")
+          .ilike("owner.username", "%" + criteria.getSearch() + "%")
+          .endJunction();
     }
 
     if (criteria.getOrder() != null) {
@@ -135,7 +135,7 @@ public class ProjectRepositoryImpl extends
   @Override
   protected void preSave(Project t, boolean update) {
     Ebean.markAsDirty(t);
-    if (t.owner == null) {
+    if (t.owner == null || t.owner.id == null) {
       t.owner = User.loggedInUser();
     }
     if (t.members == null) {

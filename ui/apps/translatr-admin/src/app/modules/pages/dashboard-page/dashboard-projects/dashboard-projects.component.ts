@@ -11,7 +11,7 @@ import {merge, Subject} from "rxjs";
 })
 export class DashboardProjectsComponent {
 
-  displayedColumns = ['name', 'owner', 'when_created', 'actions'];
+  displayedColumns = ['name', 'description', 'owner', 'when_created', 'actions'];
 
   projects$ = this.facade.projects$;
   search$ = new Subject<string>();

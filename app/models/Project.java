@@ -73,15 +73,19 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public DateTime whenUpdated;
 
   @Column(nullable = false)
+  @ManyToOne
+  @JoinColumn(name = "owner_id")
+  @Required
+  public User owner;
+
+  @Column(nullable = false)
   @Required
   @Constraints.Pattern("[^\\s/]*")
   @ProjectName
   public String name;
 
-  @ManyToOne
-  @JoinColumn(name = "owner_id")
-  @Required
-  public User owner;
+  @Constraints.MaxLength(2000)
+  public String description;
 
   public Integer wordCount;
 

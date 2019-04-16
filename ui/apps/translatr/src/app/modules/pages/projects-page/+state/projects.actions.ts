@@ -1,6 +1,7 @@
 import {Action} from '@ngrx/store';
 import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
 import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import { RequestCriteria } from "@dev/translatr-sdk";
 
 export enum ProjectsActionTypes {
   LoadProjects = '[Projects Page] Load Projects',
@@ -9,10 +10,14 @@ export enum ProjectsActionTypes {
   UnloadProjects = '[Projects Page] Unload Projects'
 }
 
+export interface ProjectsCriteria extends RequestCriteria {
+  reload?: boolean;
+}
+
 export class LoadProjects implements Action {
   readonly type = ProjectsActionTypes.LoadProjects;
 
-  constructor(public payload: { reload?: boolean } = {reload: false}) {
+  constructor(public payload: ProjectsCriteria = {reload: false}) {
   }
 }
 

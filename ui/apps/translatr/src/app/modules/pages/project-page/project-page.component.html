@@ -22,10 +22,14 @@
             *ngIf="nameFormControl.invalid && nameFormControl.errors['']">{{nameFormControl.errors['']}}</mat-error>
         </mat-form-field>
       </div>
+
+      <div *ngIf="(project$ | async)?.description">
+        {{(project$ | async)?.description}}
+      </div>
     </div>
 
     <nav mat-tab-nav-bar color="accent" *ngIf="project$ | async as project">
-      <div class="container" routerLinkActive>
+      <div class="container dense" routerLinkActive>
         <a mat-tab-link
            [routerLink]="['/', project?.ownerUsername, project?.name]"
            routerLinkActive

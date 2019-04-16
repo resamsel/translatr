@@ -9,5 +9,7 @@ table,
 }
 
 .actions {
-  text-align: right;
+  text-align: center;
+  width: 1px;
+  white-space: nowrap;
 }

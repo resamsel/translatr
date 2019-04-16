@@ -14,7 +14,7 @@ const createProject = (project: Project, accessToken: AccessToken, projectServic
   return projectService.create(project, {params: {access_token: accessToken.key}});
 };
 
-export const createRandomProject = (injector: Injector, state: State): Observable<State> => {
+export const createRandomProject = (injector: Injector): Observable<Partial<State>> => {
   // Randomly choose user, create project for that user with random name
   return getRandomUserAccessToken(injector, {limit: '10'}, (user: User) => user.role === UserRole.User)
     .pipe(
@@ -24,6 +24,7 @@ export const createRandomProject = (injector: Injector, state: State): Observabl
         createProject(
           {
             name: randomName.place().replace(' ', ''),
+            description: 'Generated',
             ownerId: payload.user.id
           },
           payload.accessToken,
@@ -31,12 +32,12 @@ export const createRandomProject = (injector: Injector, state: State): Observabl
           .pipe(map((project: Project) => ({user: payload.user, project})))
       ),
       map((payload: { user: User, project: Project }) =>
-        ({...state, message: `${payload.user.name} created project ${payload.project.name}`})),
-      catchError((err: HttpErrorResponse) => of({...state, message: errorMessage(err)}))
+        ({message: `${payload.user.name} created project ${payload.project.name}`})),
+      catchError((err: HttpErrorResponse) => of({message: errorMessage(err)}))
     );
 };
 
-export const updateRandomProject = (injector: Injector, state: State): Observable<State> => {
+export const updateRandomProject = (injector: Injector): Observable<Partial<State>> => {
   const projectService = injector.get(ProjectService);
   // Randomly choose user, update project of that user randomly
   return getRandomUserAccessToken(injector, {limit: '10'}, (user: User) => user.role === UserRole.User)
@@ -55,7 +56,10 @@ export const updateRandomProject = (injector: Injector, state: State): Observabl
           return of(payload);
         }
 
-        const project = {name: randomName.place().replace(' ', '')};
+        const project: Project = {
+          name: randomName.place().replace(' ', ''),
+          description: 'Generated'
+        };
         return createProject(project, payload.accessToken, projectService)
           .pipe(map((project: Project) => ({user: payload.user, project})));
       }),
@@ -63,19 +67,19 @@ export const updateRandomProject = (injector: Injector, state: State): Observabl
         console.log('updating project...', payload.project.name);
         return projectService.update({
           ...payload.project,
-          name: payload.project.name.endsWith('_')
-            ? payload.project.name.replace('_', '')
-            : `${payload.project.name}_`
+          description: payload.project.description.endsWith('!')
+            ? payload.project.description.replace('!', '')
+            : `${payload.project.description}!`
         });
       }),
       map((project: Project) =>
-        ({...state, message: `+++ ${project.ownerName} updated project ${project.name} +++`})),
-      catchError((err: HttpErrorResponse) => of({...state, message: errorMessage(err)}))
+        ({message: `+++ ${project.ownerName} updated project ${project.name} +++`})),
+      catchError((err: HttpErrorResponse) => of({message: errorMessage(err)}))
     )
 };
 
-export const deleteRandomProject = (injector: Injector, state: State): Observable<State> => {
+export const deleteRandomProject = (injector: Injector): Observable<Partial<State>> => {
   // Randomly choose user, delete project of that user randomly
   return getRandomUser(injector.get(UserService), {limit: '10'}, (user: User) => user.role === UserRole.User)
-    .pipe(map((user: User) => ({...state, message: `TODO: ${user.name} deleted random project`})));
+    .pipe(map((user: User) => ({message: `TODO: ${user.name} deleted random project`})));
 };

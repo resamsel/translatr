@@ -8,6 +8,7 @@ export interface Project {
   whenCreated?: Date;
   whenUpdated?: Date;
   name: string;
+  description?: string;
   ownerId?: string;
   ownerName?: string;
   ownerUsername?: string;

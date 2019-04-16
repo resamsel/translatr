@@ -48,13 +48,13 @@ const state$: Observable<State> = stateCommand$.asObservable().pipe(
 const commands$: Observable<Command> = merge(
   of({type: Action.ShowConfig}),
 
-  // interval(intervals.me / intervals.stressFactor).pipe(mapTo({type: Action.Me})),
-  // interval(intervals.createUser / intervals.stressFactor).pipe(mapTo({type: Action.CreateRandomUser})),
-  // interval(intervals.updateUser / intervals.stressFactor).pipe(mapTo({type: Action.UpdateRandomUser})),
-  // interval(intervals.deleteUser / intervals.stressFactor).pipe(mapTo({type: Action.DeleteRandomUser})),
-  //
-  // interval(intervals.createProject / intervals.stressFactor).pipe(mapTo({type: Action.CreateRandomProject})),
-  interval(intervals.updateProject / intervals.stressFactor).pipe(mapTo({type: Action.UpdateRandomProject})),
+  interval(intervals.me / intervals.stressFactor).pipe(mapTo({type: Action.Me})),
+  interval(intervals.createUser / intervals.stressFactor).pipe(mapTo({type: Action.CreateRandomUser})),
+  interval(intervals.updateUser / intervals.stressFactor).pipe(mapTo({type: Action.UpdateRandomUser})),
+  interval(intervals.deleteUser / intervals.stressFactor).pipe(mapTo({type: Action.DeleteRandomUser})),
+
+  interval(intervals.createProject / intervals.stressFactor).pipe(mapTo({type: Action.CreateRandomProject})),
+  // interval(intervals.updateProject / intervals.stressFactor).pipe(mapTo({type: Action.UpdateRandomProject})),
   // interval(intervals.deleteProject / intervals.stressFactor).pipe(mapTo({type: Action.DeleteRandomProject}))
 );
 

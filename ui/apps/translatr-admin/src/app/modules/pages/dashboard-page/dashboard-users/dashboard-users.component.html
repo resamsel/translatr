@@ -15,7 +15,9 @@
     <table mat-table [dataSource]="(users$ | async)?.list" class="mat-elevation-z2" [trackBy]="trackByFn">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let element">{{element.name}}</td>
+        <td mat-cell *matCellDef="let element">
+          <a class="link" href="/ui/{{element.username}}">{{element.name}}</a>
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="role">
