@@ -2,7 +2,6 @@ import {AccessToken, PagedList, RequestCriteria, User, UserRole, UserService} fr
 import {Observable, of, throwError} from "rxjs";
 import {catchError, map, switchMap} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
-import {mergeMap} from "rxjs/internal/operators/mergeMap";
 import * as randomName from 'random-name';
 import {State} from './state';
 import {cartesianProduct, errorMessage, pickRandomly} from "./utils";
@@ -24,7 +23,7 @@ export const getRandomUserAccessToken = (
   injector: Injector,
   criteria: RequestCriteria,
   filterFn: (user: User) => boolean
-): Observable<{user: User, accessToken: AccessToken}> => {
+): Observable<{ user: User, accessToken: AccessToken }> => {
   const userService = injector.get(UserService);
   const accessTokenService = injector.get(AccessTokenService);
   return getRandomUser(userService, criteria, filterFn).pipe(
@@ -40,27 +39,26 @@ export const getRandomUserAccessToken = (
   );
 };
 
-export const me = (userService: UserService, state: State): Observable<State> => {
+export const me = (userService: UserService): Observable<Partial<State>> => {
   return userService.getLoggedInUser()
     .pipe(
-      mergeMap((user: User) => {
+      switchMap((user: User) => {
         if (!user) {
           return throwError('Could not login, access token most probably invalid');
         }
 
         return of({
-          ...state,
           me: user,
           message: `Logged-in user is ${user.name}/${user.username} with role ${user.role}`
         });
       }),
       catchError((err: HttpErrorResponse | string) => {
-          if (err instanceof HttpErrorResponse) {
-            return throwError({...state, message: `Could not login: ${errorMessage(err)}`});
-          }
-          return throwError({...state, message: err});
+        if (err instanceof HttpErrorResponse) {
+          return throwError({message: `Could not login: ${errorMessage(err)}`});
         }
-      )
+
+        return throwError({message: err});
+      })
     )
 };
 

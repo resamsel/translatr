@@ -14,7 +14,6 @@ import play.mvc.Http;
  * @author resamsel
  * @version 6 Oct 2016
  */
-@Singleton
 public class NameUniqueValidator implements ConstraintValidator<NameUnique, Object> {
 
   public static final String MESSAGE = "error.nameunique";

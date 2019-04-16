@@ -2,6 +2,9 @@ package criterias;
 
 import forms.SearchForm;
 import java.util.UUID;
+
+import models.User;
+import models.UserRole;
 import play.mvc.Http.Request;
 
 /**
@@ -118,8 +121,15 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
   }
 
   public static ProjectCriteria from(Request request) {
-    return new ProjectCriteria()
+    ProjectCriteria criteria = new ProjectCriteria()
         .with(request)
         .withOwnerUsername(request.getQueryString("owner"));
+
+    User loggedInUser = User.loggedInUser();
+    if (loggedInUser != null && loggedInUser.role != UserRole.Admin) {
+      return criteria.withMemberId(loggedInUser.id);
+    }
+
+    return criteria;
   }
 }

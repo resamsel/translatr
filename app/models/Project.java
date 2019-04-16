@@ -48,7 +48,7 @@ import validators.ProjectNameUniqueChecker;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
-@NameUnique(checker = ProjectNameUniqueChecker.class)
+@NameUnique(checker = ProjectNameUniqueChecker.class, message = "error.projectnameunique")
 public class Project implements Model<Project, UUID>, Suggestable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);

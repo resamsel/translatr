@@ -64,6 +64,10 @@ export class DashboardUsersComponent {
     this.commands$.subscribe((criteria: RequestCriteria) => this.facade.loadUsers(criteria));
   }
 
+  trackByFn(index: number, item: { id: string }): string {
+    return item.id;
+  }
+
   allowEdit$(user: User): Observable<boolean> {
     return this.me$.pipe(hasEditUserPermission(user));
   }

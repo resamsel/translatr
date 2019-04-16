@@ -79,9 +79,11 @@ contributions.legend.tooltip = Relative activity: {0}-{1}% (log(n)/log(max))
 copyright = © 2017 René Panzar (<span title="{1}">{0}</span>)\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
 error.access.denied = You need to authorize Translatr in order to access contents
 error.accesstokenbyuserandname = Access token with given name already exists
+error.accesstokennameunique = Access token name must be unique
 error.maxLength = The maximum length is {0} characters
 error.nameunique = Name must be unique
 error.nameunique.ownerchange = Project with same name exists for new owner
+error.projectnameunique = Project name must be unique
 error.projectname.invalid = Invalid value for project name (invalid values: {0})
 error.restricted.content = Access was denied to the requested resource. Signing in might resolve that issue for you.
 error.restricted.title = Access restricted

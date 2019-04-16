@@ -90,9 +90,7 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
             @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string", paramType = "query")
     })
     public CompletionStage<Result> find() {
-        return toJsons(
-                () -> api.find(
-                        ProjectCriteria.from(request()).withMemberId(User.loggedInUserId()).withFetches()));
+      return toJsons(() -> api.find(ProjectCriteria.from(request()).withFetches()));
     }
 
     /**

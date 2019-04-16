@@ -21,7 +21,7 @@ import validators.AccessTokenNameUniqueChecker;
 import validators.NameUnique;
 
 @Entity
-@NameUnique(checker = AccessTokenNameUniqueChecker.class)
+@NameUnique(checker = AccessTokenNameUniqueChecker.class, message = "error.accesstokennameunique")
 public class AccessToken implements Model<AccessToken, Long> {
 
   public static final int NAME_LENGTH = 32;

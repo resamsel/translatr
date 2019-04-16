@@ -53,9 +53,11 @@ public class Project extends Dto {
     this.whenCreated = in.whenCreated;
     this.whenUpdated = in.whenUpdated;
     this.name = in.name;
-    this.ownerId = in.owner.id;
-    this.ownerName = in.owner.name;
-    this.ownerUsername = in.owner.username;
+    if (in.owner != null) {
+      this.ownerId = in.owner.id;
+      this.ownerName = in.owner.name;
+      this.ownerUsername = in.owner.username;
+    }
 
     if (in.keys != null && !in.keys.isEmpty()) {
       this.keys = in.keys.stream().map(Key::from).collect(toList());

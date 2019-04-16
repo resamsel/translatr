@@ -34,7 +34,7 @@ export class ProjectService {
       .pipe(map(projectMapper));
   }
 
-  getProjects(options?: {
+  find(options?: {
     params?: HttpParams | {
       [param: string]: string | string[];
     }
@@ -47,6 +47,14 @@ export class ProjectService {
           list: convertTemporalsList(list.list)
         }))
       );
+  }
+
+  getProjects(options?: {
+    params?: HttpParams | {
+      [param: string]: string | string[];
+    }
+  }): Observable<PagedList<Project>> {
+    return this.find(options);
   }
 
   activity(projectId: string): Observable<PagedList<Aggregate>> {
