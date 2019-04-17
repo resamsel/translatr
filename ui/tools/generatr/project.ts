@@ -2,16 +2,31 @@ import {Injector} from "@angular/core";
 import {Observable, of} from "rxjs";
 import {State} from "./state";
 import {getRandomUser, getRandomUserAccessToken} from "./user";
-import {AccessToken, PagedList, Project, ProjectService, User, UserRole, UserService} from "@dev/translatr-sdk";
-import {catchError, concatMap, map} from "rxjs/operators";
+import {
+  AccessToken,
+  Locale, LocaleService,
+  PagedList,
+  Project,
+  ProjectService,
+  User,
+  UserRole,
+  UserService
+} from "@dev/translatr-sdk";
+import { catchError, concatMap, map, mapTo } from "rxjs/operators";
 import {switchMap} from "rxjs/internal/operators/switchMap";
 import * as randomName from 'random-name';
 import {errorMessage, pickRandomly} from "./utils";
 import {HttpErrorResponse} from "@angular/common/http";
 import {filter} from "rxjs/internal/operators/filter";
 
+const localeNames = ['en', 'de', 'it', 'fr', 'hu', 'sl', 'cs', 'es', 'pl', 'gr'];
+
 const createProject = (project: Project, accessToken: AccessToken, projectService: ProjectService): Observable<Project> => {
   return projectService.create(project, {params: {access_token: accessToken.key}});
+};
+
+const createLocale = (injector: Injector, project: Project, locale: Locale): Observable<Locale> => {
+  return injector.get(LocaleService).create(locale, {});
 };
 
 export const createRandomProject = (injector: Injector): Observable<Partial<State>> => {
@@ -31,6 +46,10 @@ export const createRandomProject = (injector: Injector): Observable<Partial<Stat
           injector.get(ProjectService))
           .pipe(map((project: Project) => ({user: payload.user, project})))
       ),
+      concatMap((payload: { user: User, project: Project }) => {
+        return createLocale(injector, payload.project, {name: pickRandomly(localeNames)})
+          .pipe(mapTo(payload));
+      }),
       map((payload: { user: User, project: Project }) =>
         ({message: `${payload.user.name} created project ${payload.project.name}`})),
       catchError((err: HttpErrorResponse) => of({message: errorMessage(err)}))

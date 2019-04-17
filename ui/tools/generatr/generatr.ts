@@ -5,6 +5,7 @@ import {envAsNumber, envAsString} from "./utils";
 import {handleCommand} from "./handler";
 import {Injector} from "@angular/core";
 import {createInjector} from "./api";
+import * as dateformat from 'dateformat';
 
 const config: Config = {
   baseUrl: envAsString('ENDPOINT', 'http://localhost:9000'),
@@ -15,17 +16,17 @@ const config: Config = {
     // every minute
     me: envAsNumber('ME_INTERVAL', 10 * 60 * 1000),
 
-    // every three minutes
-    createUser: envAsNumber('CREATE_USER_INTERVAL', 3 * 60 * 1000),
-    // every minute
-    updateUser: envAsNumber('UPDATE_USER_INTERVAL', 60 * 1000),
-    // every 15 minutes
-    deleteUser: envAsNumber('DELETE_USER_INTERVAL', 15 * 60 * 1000),
+    // every thirty minutes
+    createUser: envAsNumber('CREATE_USER_INTERVAL', 30 * 60 * 1000),
+    // every five minutes
+    updateUser: envAsNumber('UPDATE_USER_INTERVAL', 5 * 60 * 1000),
+    // every hour
+    deleteUser: envAsNumber('DELETE_USER_INTERVAL', 60 * 60 * 1000),
 
-    // every 5 minutes
+    // every five minutes
     createProject: envAsNumber('CREATE_PROJECT_INTERVAL', 5 * 60 * 1000),
-    // every minute
-    updateProject: envAsNumber('UPDATE_PROJECT_INTERVAL', 60 * 1000),
+    // every fifteen minutes
+    updateProject: envAsNumber('UPDATE_PROJECT_INTERVAL', 15 * 60 * 1000),
     // every hour
     deleteProject: envAsNumber('DELETE_PROJECT_INTERVAL', 60 * 60 * 1000)
   }
@@ -53,9 +54,21 @@ const commands$: Observable<Command> = merge(
   interval(intervals.updateUser / intervals.stressFactor).pipe(mapTo({type: Action.UpdateRandomUser})),
   interval(intervals.deleteUser / intervals.stressFactor).pipe(mapTo({type: Action.DeleteRandomUser})),
 
+  // TODO: add 1+ contributors, 1+ locales, 1+ keys
   interval(intervals.createProject / intervals.stressFactor).pipe(mapTo({type: Action.CreateRandomProject})),
   // interval(intervals.updateProject / intervals.stressFactor).pipe(mapTo({type: Action.UpdateRandomProject})),
-  // interval(intervals.deleteProject / intervals.stressFactor).pipe(mapTo({type: Action.DeleteRandomProject}))
+  // interval(intervals.deleteProject / intervals.stressFactor).pipe(mapTo({type: Action.DeleteRandomProject})),
+
+  // TODO
+  // create locale every hour
+  // delete locale every two hours
+  // create key every minute
+  // create key every hour
+  // add translation (incl. locale and key, if not existing) every minute
+  // change translation (incl. locale and key, if not existing) every minute
+  // add contributor every minute
+  // change contributor mode every hour
+  // delete contributor every hour
 );
 
 commands$.pipe(
@@ -63,6 +76,6 @@ commands$.pipe(
   handleCommand(injector),
 //  tap((state: State) => stateCommand$.next(state))
 ).subscribe(
-  (state: State) => console.log(`${new Date().toISOString()}: ${state.message}`),
-  (state: State) => console.error(`${new Date().toISOString()}: ${state.message}`)
+  (state: State) => console.log(`${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message}`),
+  (state: State) => console.error(`${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message}`)
 );
