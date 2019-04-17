@@ -5,6 +5,7 @@ import {DashboardInfoComponent} from "./dashboard-info/dashboard-info.component"
 import {DashboardUsersComponent} from "./dashboard-users/dashboard-users.component";
 import {DashboardProjectsComponent} from "./dashboard-projects/dashboard-projects.component";
 import {DASHBOARD_ROUTES} from "./dashboard-page.token";
+import {DashboardAccessTokensComponent} from "./dashboard-access-tokens/dashboard-access-tokens.component";
 
 export const routes: Routes = [
   {
@@ -33,6 +34,14 @@ export const routes: Routes = [
         data: {
           icon: 'extension',
           name: 'Projects'
+        }
+      },
+      {
+        component: DashboardAccessTokensComponent,
+        path: 'accesstokens',
+        data: {
+          icon: 'vpn_key',
+          name: 'Access Tokens'
         }
       }
     ]

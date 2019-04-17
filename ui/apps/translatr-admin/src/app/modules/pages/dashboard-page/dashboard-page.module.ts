@@ -19,9 +19,10 @@ import { MomentModule } from "ngx-moment";
 import { UserEditDialogModule } from "@dev/translatr-components/src/lib/modules/user/user-edit-dialog/user-edit-dialog.module";
 import { DashboardProjectsComponent } from './dashboard-projects/dashboard-projects.component';
 import { ReactiveFormsModule } from "@angular/forms";
+import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
 
 @NgModule({
-  declarations: [DashboardPageComponent, DashboardUsersComponent, DashboardInfoComponent, DashboardProjectsComponent],
+  declarations: [DashboardPageComponent, DashboardUsersComponent, DashboardInfoComponent, DashboardProjectsComponent, DashboardAccessTokensComponent],
   imports: [
     CommonModule,
     DashboardPageRoutingModule,

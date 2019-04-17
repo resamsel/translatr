@@ -1,4 +1,4 @@
-<app-navbar></app-navbar>
+<app-navbar [me]="me$ | async"></app-navbar>
 
 <div class="section green">
   <div class="container">
@@ -16,7 +16,7 @@
 </div>
 
 <a
-  *ngIf="me"
+  *ngIf="me$ | async"
   mat-fab
   color="accent"
   [routerLink]="['/projects']"

@@ -8,6 +8,7 @@ import {PagedList} from "../../../../../../../libs/translatr-sdk/src/lib/shared/
 import {Key} from "../../../../../../../libs/translatr-sdk/src/lib/shared/key";
 import {Locale} from "../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
 import {RequestCriteria} from "../../../../../../../libs/translatr-sdk/src/lib/shared/request-criteria";
+import {AppFacade} from "../../../+state/app.facade";
 
 @Component({
   selector: 'app-key-editor-page',
@@ -15,6 +16,7 @@ import {RequestCriteria} from "../../../../../../../libs/translatr-sdk/src/lib/s
   styleUrls: ['./key-editor-page.component.scss']
 })
 export class KeyEditorPageComponent implements OnInit, OnDestroy {
+  me$ = this.appFacade.me$;
   key$ = this.facade.key$;
   locales$ = this.facade.locales$;
   keys$ = this.facade.keys$;
@@ -23,6 +25,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   search$ = this.facade.search$;
 
   constructor(
+    private readonly appFacade: AppFacade,
     private readonly facade: EditorFacade,
     private readonly route: ActivatedRoute,
     private readonly router: Router

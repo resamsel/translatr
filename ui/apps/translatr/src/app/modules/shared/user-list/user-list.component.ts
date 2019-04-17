@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {PagedList} from "../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
 import {User} from "../../../../../../../libs/translatr-sdk/src/lib/shared/user";
 
@@ -11,6 +11,7 @@ import {User} from "../../../../../../../libs/translatr-sdk/src/lib/shared/user"
 export class UserListComponent implements OnInit {
 
   @Input() users: PagedList<User>;
+  @Output() readonly more = new EventEmitter<number>();
 
   constructor() {
   }

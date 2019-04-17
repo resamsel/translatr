@@ -15,10 +15,7 @@ export class ProjectsEffects {
     ProjectsActionTypes.LoadProjects,
     {
       run: (action: LoadProjects, state: ProjectsPartialState) => {
-        if (!action.payload.reload && state[PROJECTS_FEATURE_KEY].pagedList) {
-          return new ProjectsLoaded(state[PROJECTS_FEATURE_KEY].pagedList);
-        }
-        return this.projectService.getProjects({params: {order: 'whenUpdated desc'}})
+        return this.projectService.find({params: {...action.payload}})
           .pipe(map((payload: PagedList<Project>) => new ProjectsLoaded(payload)));
       },
 

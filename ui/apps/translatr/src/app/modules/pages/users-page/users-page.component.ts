@@ -1,26 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
-import { PagedList } from "../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
-import { User } from "../../../../../../../libs/translatr-sdk/src/lib/shared/user";
-import { Observable } from "rxjs";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {PagedList, User} from "@dev/translatr-sdk";
+import {Observable} from "rxjs";
+import {UsersFacade} from "./+state/users.facade";
+import {AppFacade} from "../../../+state/app.facade";
 
 @Component({
   selector: 'app-projects-page',
   templateUrl: './users-page.component.html',
   styleUrls: ['./users-page.component.scss']
 })
-export class UsersPageComponent implements OnInit {
+export class UsersPageComponent implements OnInit, OnDestroy {
 
-  users: PagedList<User>;
+  me$ = this.appFacade.me$;
+  users$ = this.facade.users$;
   topContributors$: Observable<PagedList<User>>;
 
-  constructor(private readonly route: ActivatedRoute) {
+  constructor(private readonly appFacade: AppFacade, private readonly facade: UsersFacade) {
   }
 
   ngOnInit() {
-    this.route.data
-      .subscribe((data: { users: PagedList<User> }) => {
-        this.users = data.users;
-      });
+    this.onLoadUsers(20);
+  }
+
+  ngOnDestroy(): void {
+    this.facade.unload();
+  }
+
+  onLoadUsers(limit: number) {
+    this.facade.loadUsers({order: 'whenUpdated desc', limit: `${limit}`});
   }
 }

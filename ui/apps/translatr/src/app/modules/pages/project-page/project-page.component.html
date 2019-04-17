@@ -1,4 +1,4 @@
-<app-sidenav>
+<app-sidenav [me]="me$ | async">
   <header>
     <div class="container">
       <div class="breadcrumbs" *ngIf="project$ | async as project">

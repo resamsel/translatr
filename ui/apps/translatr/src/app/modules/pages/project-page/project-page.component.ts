@@ -6,6 +6,7 @@ import {Observable} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {filter, switchMapTo, take, tap} from "rxjs/operators";
 import {MatSnackBar} from '@angular/material';
+import {AppFacade} from "../../../+state/app.facade";
 
 @Component({
   selector: 'app-project-page',
@@ -14,6 +15,7 @@ import {MatSnackBar} from '@angular/material';
 })
 export class ProjectPageComponent implements OnInit, OnDestroy {
 
+  me$ = this.appFacade.me$;
   project$ = this.facade.project$;
 
   form = new FormGroup({
@@ -31,7 +33,8 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly snackBar: MatSnackBar,
-    private readonly facade: ProjectFacade) {
+    private readonly facade: ProjectFacade,
+    private readonly appFacade: AppFacade) {
   }
 
   ngOnInit(): void {

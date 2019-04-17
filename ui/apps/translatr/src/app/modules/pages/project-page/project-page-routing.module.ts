@@ -6,15 +6,11 @@ import {ProjectKeysComponent} from "./project-keys/project-keys.component";
 import {ProjectLocalesComponent} from "./project-locales/project-locales.component";
 import {ProjectMembersComponent} from "./project-members/project-members.component";
 import {ProjectActivityComponent} from "./project-activity/project-activity.component";
-import {AuthResolverService} from "../../../../../../../libs/translatr-sdk/src/lib/services/auth-resolver.service";
 
 const routes: Routes = [
   {
     path: ':username/:projectName',
     component: ProjectPageComponent,
-    resolve: {
-      me: AuthResolverService
-    },
     children: [
       {
         path: '',

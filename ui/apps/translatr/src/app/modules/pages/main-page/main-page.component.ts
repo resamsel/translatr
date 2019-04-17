@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { User } from "../../../../../../../libs/translatr-sdk/src/lib/shared/user";
-import { ActivatedRoute } from "@angular/router";
+import {Component} from '@angular/core';
+import {AppFacade} from "../../../+state/app.facade";
 
 @Component({
   selector: 'app-main-page',
@@ -9,15 +8,8 @@ import { ActivatedRoute } from "@angular/router";
 })
 export class MainPageComponent {
 
-  me: User;
+  me$ = this.facade.me$;
 
-  constructor(private readonly route: ActivatedRoute) {
-  }
-
-  ngOnInit(): void {
-    this.route.data
-      .subscribe((data: { me: User }) => {
-        this.me = data.me;
-      });
+  constructor(private readonly facade: AppFacade) {
   }
 }

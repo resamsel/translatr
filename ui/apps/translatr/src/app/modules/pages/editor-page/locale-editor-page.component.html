@@ -1,4 +1,5 @@
 <app-editor
+  [me]="me$ | async"
   [ownerName]="(locale$ | async)?.projectOwnerUsername"
   [projectName]="(locale$ | async)?.projectName"
   name="Language Editor"

@@ -6,10 +6,7 @@ import { AuthResolverService } from "../../../../../../../libs/translatr-sdk/src
 const routes: Routes = [
   {
     path: '',
-    component: MainPageComponent,
-    resolve: {
-      me: AuthResolverService
-    }
+    component: MainPageComponent
   }
 ];
 

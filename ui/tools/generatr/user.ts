@@ -1,6 +1,6 @@
 import { AccessToken, PagedList, RequestCriteria, User, UserRole, UserService } from "@dev/translatr-sdk";
 import { Observable, of, throwError } from "rxjs";
-import { catchError, filter, map, switchMap } from "rxjs/operators";
+import {catchError, concatMap, filter, map, switchMap} from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import * as randomName from 'random-name';
 import { State } from './state';
@@ -27,9 +27,9 @@ export const getRandomUserAccessToken = (
   const userService = injector.get(UserService);
   const accessTokenService = injector.get(AccessTokenService);
   return getRandomUser(userService, criteria, filterFn).pipe(
-    switchMap((user: User) => accessTokenService.find({userId: user.id}).pipe(
+    concatMap((user: User) => accessTokenService.find({userId: user.id}).pipe(
       map((pagedList: PagedList<AccessToken>) => ({list: pagedList.list, user})))),
-    switchMap((payload: { list: AccessToken[], user: User }) => {
+    concatMap((payload: { list: AccessToken[], user: User }) => {
       if (payload.list.length === 0) {
         return accessTokenService.create({userId: payload.user.id, name: randomName.first(), scope})
           .pipe(map((accessToken: AccessToken) => ({user: payload.user, accessToken})));
@@ -42,7 +42,7 @@ export const getRandomUserAccessToken = (
 export const me = (userService: UserService): Observable<Partial<State>> => {
   return userService.getLoggedInUser()
     .pipe(
-      switchMap((user: User) => {
+      concatMap((user: User) => {
         if (!user) {
           return throwError('Could not login, access token most probably invalid');
         }
@@ -90,7 +90,7 @@ export const updateRandomUser = (userService: UserService): Observable<Partial<S
   )
     .pipe(
       filter((user: User) => !!user),
-      switchMap((user: User) => {
+      concatMap((user: User) => {
         const name = user.name.indexOf('!') > 0
           ? user.name.replace('!', '')
           : `${user.name}!`;
@@ -113,7 +113,7 @@ export const deleteRandomUser = (userService: UserService): Observable<Partial<S
     (user: User) => user.role === UserRole.User
   )
     .pipe(
-      switchMap((user: User) => userService.delete(user.id)
+      concatMap((user: User) => userService.delete(user.id)
         .pipe(
           map(() => `${user.name} (${user.username}) has been deleted`),
           catchError((err: HttpErrorResponse) =>

@@ -7,17 +7,11 @@ import {AuthResolverService} from "../../../../../../../libs/translatr-sdk/src/l
 const routes: Routes = [
   {
     path: ':username/:projectName/locales/:localeName',
-    component: LocaleEditorPageComponent,
-    resolve: {
-      me: AuthResolverService
-    }
+    component: LocaleEditorPageComponent
   },
   {
     path: ':username/:projectName/keys/:keyName',
-    component: KeyEditorPageComponent,
-    resolve: {
-      me: AuthResolverService
-    }
+    component: KeyEditorPageComponent
   }
 ];
 

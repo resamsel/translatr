@@ -7,7 +7,7 @@ import {PagedList} from "../shared/paged-list";
 import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
 import {Aggregate} from "../shared/aggregate";
 import {options} from "tsconfig-paths/lib/options";
-import {RequestCriteria} from "@dev/translatr-sdk";
+import {RequestCriteria, User} from "@dev/translatr-sdk";
 
 const projectMapper = (project: Project) => ({
   ...convertTemporals(project),
@@ -79,5 +79,11 @@ export class ProjectService {
     return this.http
       .put<Project>('/api/project', project)
       .pipe(map(projectMapper));
+  }
+
+  delete(projectId: string): Observable<Project | undefined> {
+    return this.http
+      .delete<Project>(`/api/project/${projectId}`)
+      .pipe(map(convertTemporals));
   }
 }

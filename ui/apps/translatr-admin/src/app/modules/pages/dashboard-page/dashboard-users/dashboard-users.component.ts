@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AppFacade } from "../../../../+state/app.facade";
 import { RequestCriteria, User } from "@dev/translatr-sdk";
-import { debounceTime, distinctUntilChanged, map, shareReplay, startWith, take, tap } from "rxjs/operators";
+import {debounceTime, distinctUntilChanged, map, mapTo, shareReplay, startWith, take, tap} from "rxjs/operators";
 import { UserDeleted, UserDeleteError } from "../../../../+state/app.actions";
 import {
   UserEditDialogComponent,
@@ -14,9 +14,9 @@ import { merge, Observable, Subject } from "rxjs";
 import { FormControl } from "@angular/forms";
 import { scan } from "rxjs/internal/operators/scan";
 
-const isAdmin = (user?: User): boolean => user !== undefined && user.role === UserRole.Admin;
+export const isAdmin = (user?: User): boolean => user !== undefined && user.role === UserRole.Admin;
 
-const hasCreateUserPermission = () => map(isAdmin);
+export const hasCreateUserPermission = () => map(isAdmin);
 
 const hasEditUserPermission = (user: User) => map((me?: User) =>
   (me !== undefined && me.id === user.id) || isAdmin(me));
@@ -24,7 +24,7 @@ const hasEditUserPermission = (user: User) => map((me?: User) =>
 const hasDeleteUserPermission = (user: User) => map((me?: User) =>
   (me !== undefined && me.id !== user.id) && isAdmin(me));
 
-const mapToAllowedRoles = () => map((me?: User): UserRole[] =>
+export const mapToAllowedRoles = () => map((me?: User): UserRole[] =>
   [UserRole.User, ...isAdmin(me) ? [UserRole.Admin] : []]);
 
 @Component({
@@ -39,6 +39,7 @@ export class DashboardUsersComponent {
   me$ = this.facade.me$;
   search$ = new Subject<string>();
   limit$ = new Subject<number>();
+  reload$ = new Subject<void>();
   commands$ = merge(
     this.search$.asObservable().pipe(
       distinctUntilChanged(),
@@ -48,7 +49,8 @@ export class DashboardUsersComponent {
     this.limit$.asObservable().pipe(
       distinctUntilChanged(),
       map((limit: number) => ({limit: `${limit}`}))
-    )
+    ),
+    this.reload$.asObservable().pipe(mapTo({}))
   )
     .pipe(
       startWith({limit: '20', search: '', order: 'name asc'}),
@@ -118,6 +120,7 @@ export class DashboardUsersComponent {
       .subscribe((action: UserDeleted | UserDeleteError) => {
         if (action instanceof UserDeleted) {
           console.log(`User ${action.payload.username} has been deleted`);
+          this.reload$.next();
         } else {
           console.warn(`User ${action.payload.error.error} could not be deleted`);
         }

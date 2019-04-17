@@ -1,9 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ProjectsFacade} from "./+state/projects.facade";
-import {takeUntil} from "rxjs/operators";
-import {Observable, Subject} from "rxjs";
-import {Project} from "../../../../../../../libs/translatr-sdk/src/lib/shared/project";
-import {PagedList} from "../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import {AppFacade} from "../../../+state/app.facade";
 
 @Component({
   selector: 'app-projects-page',
@@ -11,16 +8,21 @@ import {PagedList} from "../../../../../../../libs/translatr-sdk/src/lib/shared/
   styleUrls: ['./projects-page.component.scss']
 })
 export class ProjectsPageComponent implements OnInit, OnDestroy {
-  public projects$ = this.projectsFacade.allProjects$;
+  me$ = this.appFacade.me$;
+  projects$ = this.facade.allProjects$;
 
-  constructor(private readonly projectsFacade: ProjectsFacade) {
+  constructor(private readonly facade: ProjectsFacade, private readonly appFacade: AppFacade) {
   }
 
   ngOnInit() {
-    this.projectsFacade.loadProjects();
+    this.onLoadProjects(20);
   }
 
   ngOnDestroy(): void {
-    this.projectsFacade.unloadProjects();
+    this.facade.unloadProjects();
+  }
+
+  onLoadProjects(limit: number) {
+    this.facade.loadProjects({order: 'whenUpdated desc', limit: `${limit}`});
   }
 }

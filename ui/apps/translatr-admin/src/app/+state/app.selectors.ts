@@ -19,8 +19,14 @@ const getProjects = createSelector(
   (state: AppState) => state.projects
 );
 
+const getAccessTokens = createSelector(
+  getAppState,
+  (state: AppState) => state.accessTokens
+);
+
 export const appQuery = {
   getLoggedInUser,
   getUsers,
-  getProjects
+  getProjects,
+  getAccessTokens
 };

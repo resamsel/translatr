@@ -1,0 +1,11 @@
+.mat-form-field,
+table,
+.mat-button {
+  width: 100%;
+}
+
+.actions {
+  text-align: center;
+  width: 1px;
+  white-space: nowrap;
+}

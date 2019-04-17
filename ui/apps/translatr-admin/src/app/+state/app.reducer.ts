@@ -1,5 +1,5 @@
 import {AppAction, AppActionTypes} from './app.actions';
-import {PagedList, Project, User} from "@dev/translatr-sdk";
+import {AccessToken, PagedList, Project, User} from "@dev/translatr-sdk";
 
 export const APP_FEATURE_KEY = 'app';
 
@@ -7,6 +7,7 @@ export interface AppState {
   me?: User;
   users?: PagedList<User>;
   projects?: PagedList<Project>;
+  accessTokens?: PagedList<AccessToken>;
 }
 
 export interface AppPartialState {
@@ -35,6 +36,11 @@ export function appReducer(
         ...state,
         projects: action.payload
       };
+    case AppActionTypes.AccessTokensLoaded:
+      return {
+        ...state,
+        accessTokens: action.payload
+      };
     case AppActionTypes.UserCreated:
       return {
         ...state,
@@ -57,6 +63,14 @@ export function appReducer(
         users: {
           ...state.users,
           list: state.users.list.filter((user: User) => user.id !== action.payload.id)
+        }
+      };
+    case AppActionTypes.ProjectDeleted:
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          list: state.projects.list.filter((project: Project) => project.id !== action.payload.id)
         }
       };
   }

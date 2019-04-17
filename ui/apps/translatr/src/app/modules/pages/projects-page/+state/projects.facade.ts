@@ -4,33 +4,24 @@ import {select, Store} from '@ngrx/store';
 
 import {ProjectsPartialState} from './projects.reducer';
 import {projectsQuery} from './projects.selectors';
-import {LoadProjects, UnloadProjects} from './projects.actions';
-import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
-import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
-import {Observable, Subject} from "rxjs";
+import {LoadProjects, ProjectCriteria} from './projects.actions';
+import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 
 @Injectable()
 export class ProjectsFacade {
-  get allProjects$(): Observable<PagedList<Project>> {
-    return this.store.pipe(takeUntil(this.unload$), select(projectsQuery.getAllProjects));
-  }
+  private unload$ = new Subject<void>();
 
-  get unload$(): Observable<void> {
-    return this._unload$.asObservable();
-  }
-
-  private _unload$ = new Subject<void>();
+  allProjects$ = this.store.pipe(takeUntil(this.unload$.asObservable()), select(projectsQuery.getAllProjects));
 
   constructor(private store: Store<ProjectsPartialState>) {
   }
 
-  loadProjects() {
-    this.store.dispatch(new LoadProjects());
+  loadProjects(criteria?: ProjectCriteria) {
+    this.store.dispatch(new LoadProjects(criteria));
   }
 
   unloadProjects() {
-    this._unload$.next();
-    this.store.dispatch(new UnloadProjects());
+    this.unload$.next();
   }
 }

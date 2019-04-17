@@ -5,13 +5,15 @@ import {appQuery} from './app.selectors';
 import {
   AppActionTypes,
   CreateUser,
+  DeleteProject,
   DeleteUser,
+  LoadAccessTokens,
   LoadLoggedInUser,
   LoadProjects,
   LoadUsers,
   UpdateUser
 } from './app.actions';
-import { RequestCriteria, User } from "@dev/translatr-sdk";
+import {Project, RequestCriteria, User} from "@dev/translatr-sdk";
 import {Actions, ofType} from "@ngrx/effects";
 
 @Injectable()
@@ -26,11 +28,17 @@ export class AppFacade {
     ofType(AppActionTypes.UserDeleted, AppActionTypes.UserDeleteError)
   );
   projects$ = this.store.pipe(select(appQuery.getProjects));
+  projectDeleted$ = this.actions$.pipe(
+    ofType(AppActionTypes.ProjectDeleted, AppActionTypes.ProjectDeleteError)
+  );
+  accessTokens$ = this.store.pipe(select(appQuery.getAccessTokens));
 
   constructor(
     private readonly store: Store<AppPartialState>,
     private readonly actions$: Actions) {
   }
+
+  // Users
 
   loadLoggedInUser() {
     this.store.dispatch(new LoadLoggedInUser());
@@ -38,10 +46,6 @@ export class AppFacade {
 
   loadUsers(criteria?: RequestCriteria) {
     this.store.dispatch(new LoadUsers(criteria));
-  }
-
-  loadProjects(criteria?: RequestCriteria) {
-    this.store.dispatch(new LoadProjects(criteria));
   }
 
   createUser(user: User) {
@@ -54,5 +58,21 @@ export class AppFacade {
 
   deleteUser(user: User) {
     this.store.dispatch(new DeleteUser(user));
+  }
+
+  // Projects
+
+  loadProjects(criteria?: RequestCriteria) {
+    this.store.dispatch(new LoadProjects(criteria));
+  }
+
+  deleteProject(project: Project) {
+    this.store.dispatch(new DeleteProject(project));
+  }
+
+  // Access Tokens
+
+  loadAccessTokens(criteria: RequestCriteria) {
+    this.store.dispatch(new LoadAccessTokens(criteria));
   }
 }

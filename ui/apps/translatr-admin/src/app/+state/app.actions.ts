@@ -1,8 +1,10 @@
 import {Action} from '@ngrx/store';
-import { PagedList, Project, RequestCriteria, User } from "@dev/translatr-sdk";
+import {AccessToken, PagedList, Project, RequestCriteria, User} from "@dev/translatr-sdk";
 import {HttpErrorResponse} from "@angular/common/http";
 
 export enum AppActionTypes {
+  // Users
+
   LoadLoggedInUser = '[Main Page] Load Logged-In User',
   LoggedInUserLoaded = '[Translatr API] Logged-In User Loaded',
   LoggedInUserLoadError = '[Translatr API] Logged-In User Load Error',
@@ -10,10 +12,6 @@ export enum AppActionTypes {
   LoadUsers = '[Users Page] Load Users',
   UsersLoaded = '[Translatr API] Users Loaded',
   UsersLoadError = '[Translatr API] Users Load Error',
-
-  LoadProjects = '[Projects Page] Load Projects',
-  ProjectsLoaded = '[Translatr API] Projects Loaded',
-  ProjectsLoadError = '[Translatr API] Projects Load Error',
 
   CreateUser = '[Users Page] Create User',
   UserCreated = '[Translatr API] User Created',
@@ -25,8 +23,26 @@ export enum AppActionTypes {
 
   DeleteUser = '[Users Page] Delete User',
   UserDeleted = '[Translatr API] User Deleted',
-  UserDeleteError = '[Translatr API] User Delete Error'
+  UserDeleteError = '[Translatr API] User Delete Error',
+
+  // Projects
+
+  LoadProjects = '[Projects Page] Load Projects',
+  ProjectsLoaded = '[Translatr API] Projects Loaded',
+  ProjectsLoadError = '[Translatr API] Projects Load Error',
+
+  DeleteProject = '[Projects Page] Delete Project',
+  ProjectDeleted = '[Translatr API] Project Deleted',
+  ProjectDeleteError = '[Translatr API] Project Delete Error',
+
+  // Access Tokens
+
+  LoadAccessTokens = '[AccessTokens Page] Load AccessTokens',
+  AccessTokensLoaded = '[Translatr API] AccessTokens Loaded',
+  AccessTokensLoadError = '[Translatr API] AccessTokens Load Error'
 }
+
+// Users
 
 export class LoadLoggedInUser implements Action {
   readonly type = AppActionTypes.LoadLoggedInUser;
@@ -64,27 +80,6 @@ export class UsersLoaded implements Action {
   readonly type = AppActionTypes.UsersLoaded;
 
   constructor(public payload: PagedList<User>) {
-  }
-}
-
-export class LoadProjects implements Action {
-  readonly type = AppActionTypes.LoadProjects;
-
-  constructor(public payload?: RequestCriteria) {
-  }
-}
-
-export class ProjectsLoadError implements Action {
-  readonly type = AppActionTypes.ProjectsLoadError;
-
-  constructor(public payload: HttpErrorResponse) {
-  }
-}
-
-export class ProjectsLoaded implements Action {
-  readonly type = AppActionTypes.ProjectsLoaded;
-
-  constructor(public payload: PagedList<Project>) {
   }
 }
 
@@ -151,10 +146,82 @@ export class UserDeleted implements Action {
   }
 }
 
+// Projects
+
+export class LoadProjects implements Action {
+  readonly type = AppActionTypes.LoadProjects;
+
+  constructor(public payload?: RequestCriteria) {
+  }
+}
+
+export class ProjectsLoadError implements Action {
+  readonly type = AppActionTypes.ProjectsLoadError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class ProjectsLoaded implements Action {
+  readonly type = AppActionTypes.ProjectsLoaded;
+
+  constructor(public payload: PagedList<Project>) {
+  }
+}
+
+export class DeleteProject implements Action {
+  readonly type = AppActionTypes.DeleteProject;
+
+  constructor(public payload: Project) {
+  }
+}
+
+export class ProjectDeleteError implements Action {
+  readonly type = AppActionTypes.ProjectDeleteError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class ProjectDeleted implements Action {
+  readonly type = AppActionTypes.ProjectDeleted;
+
+  constructor(public payload: Project) {
+  }
+}
+
+// Access Tokens
+
+export class LoadAccessTokens implements Action {
+  readonly type = AppActionTypes.LoadAccessTokens;
+
+  constructor(public payload?: RequestCriteria) {
+  }
+}
+
+export class AccessTokensLoadError implements Action {
+  readonly type = AppActionTypes.AccessTokensLoadError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class AccessTokensLoaded implements Action {
+  readonly type = AppActionTypes.AccessTokensLoaded;
+
+  constructor(public payload: PagedList<AccessToken>) {
+  }
+}
+
 export type AppAction =
+  // Users
   LoadLoggedInUser | LoggedInUserLoaded | LoggedInUserLoadError
   | LoadUsers | UsersLoaded | UsersLoadError
-  | LoadProjects | ProjectsLoaded | ProjectsLoadError
   | CreateUser | UserCreated | UserCreateError
   | UpdateUser | UserUpdated | UserUpdateError
-  | DeleteUser | UserDeleted | UserDeleteError;
+  | DeleteUser | UserDeleted | UserDeleteError
+  // Projects
+  | LoadProjects | ProjectsLoaded | ProjectsLoadError
+  | DeleteProject | ProjectDeleted | ProjectDeleteError
+  // Access Tokens
+  | LoadAccessTokens | AccessTokensLoaded | AccessTokensLoadError;

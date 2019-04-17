@@ -1,23 +1,19 @@
 import {Action} from '@ngrx/store';
-import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
-import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
-import { RequestCriteria } from "@dev/translatr-sdk";
+import {PagedList, Project, RequestCriteria} from "@dev/translatr-sdk";
 
 export enum ProjectsActionTypes {
   LoadProjects = '[Projects Page] Load Projects',
   ProjectsLoaded = '[Projects API] Projects Loaded',
-  ProjectsLoadError = '[Projects API] Projects Load Error',
-  UnloadProjects = '[Projects Page] Unload Projects'
+  ProjectsLoadError = '[Projects API] Projects Load Error'
 }
 
-export interface ProjectsCriteria extends RequestCriteria {
-  reload?: boolean;
+export interface ProjectCriteria extends RequestCriteria {
 }
 
 export class LoadProjects implements Action {
   readonly type = ProjectsActionTypes.LoadProjects;
 
-  constructor(public payload: ProjectsCriteria = {reload: false}) {
+  constructor(public payload?: ProjectCriteria) {
   }
 }
 
@@ -35,18 +31,6 @@ export class ProjectsLoaded implements Action {
   }
 }
 
-export class UnloadProjects implements Action {
-  readonly type = ProjectsActionTypes.UnloadProjects;
-}
-
 export type ProjectsAction = LoadProjects
   | ProjectsLoaded
-  | ProjectsLoadError
-  | UnloadProjects;
-
-export const fromProjectsActions = {
-  LoadProjects,
-  ProjectsLoaded,
-  ProjectsLoadError,
-  UnloadProjects
-};
+  | ProjectsLoadError;

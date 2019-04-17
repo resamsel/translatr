@@ -40,8 +40,6 @@ export function projectsReducer(
         ...state,
         error: action.payload
       };
-    case ProjectsActionTypes.UnloadProjects:
-      return {...initialState};
   }
 
   return state;

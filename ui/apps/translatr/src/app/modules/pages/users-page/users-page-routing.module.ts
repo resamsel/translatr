@@ -1,24 +1,17 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { UsersPageComponent } from "./users-page.component";
-import { UsersResolverService } from "../dashboard-page/users-resolver.service";
-import { AuthResolverService } from "../../../../../../../libs/translatr-sdk/src/lib/services/auth-resolver.service";
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {UsersPageComponent} from "./users-page.component";
 
 const routes: Routes = [
   {
     path: 'users',
-    component: UsersPageComponent,
-    resolve: {
-      me: AuthResolverService,
-      users: UsersResolverService
-    }
+    component: UsersPageComponent
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [UsersResolverService]
 })
 export class UsersPageRoutingModule {
 }

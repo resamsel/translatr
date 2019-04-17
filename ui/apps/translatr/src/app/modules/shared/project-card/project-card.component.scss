@@ -1,5 +1,8 @@
 @import "mixins";
 
+$size: 64px;
+$size-large: 160px;
+
 .info {
   .owner {
     position: absolute;
@@ -16,14 +19,15 @@
       margin-right: 8px;
     }
   }
+
+  @include medium {
+    width: $size-large;
+  }
 }
 
 h2 {
   margin-bottom: 0;
 }
-
-$size: 64px;
-$size-large: 160px;
 
 .mat-card-image {
   display: block;

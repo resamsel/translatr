@@ -1,7 +1,7 @@
 <mat-card class="info">
-  <img mat-card-image ngxGravatar [email]="user?.email" [round]="false" [size]="200">
+  <img mat-card-image ngxGravatar [email]="user?.email" [round]="false" [size]="180">
   <mat-card-content>
-    <h2>{{user?.name}}</h2>
+    <h2 class="ellipsis">{{user?.name}}</h2>
     <p class="ellipsis">{{user?.username}}</p>
     <ng-content></ng-content>
   </mat-card-content>

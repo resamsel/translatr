@@ -11,6 +11,7 @@ import {Message} from "../../../../../../../../libs/translatr-sdk/src/lib/shared
 import {EditorFacade} from "../+state/editor.facade";
 import {MatTabGroup} from "@angular/material";
 import {CodemirrorComponent} from "@ctrl/ngx-codemirror";
+import {User} from "@dev/translatr-sdk";
 
 @Component({
   selector: 'app-editor',
@@ -19,6 +20,7 @@ import {CodemirrorComponent} from "@ctrl/ngx-codemirror";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditorComponent implements OnInit, AfterViewChecked {
+  @Input() me: User;
   @Input() ownerName: string;
   @Input() projectName: string;
   @Input() name: string;

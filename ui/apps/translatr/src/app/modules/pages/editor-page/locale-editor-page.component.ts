@@ -1,13 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { EditorFacade } from "./+state/editor.facade";
-import { ActivatedRoute, ParamMap, Params, Router } from "@angular/router";
-import { filter, take, takeUntil } from "rxjs/operators";
-import { Message } from "@dev/translatr-sdk";
-import { combineLatest } from "rxjs";
-import { Locale } from "@dev/translatr-sdk";
-import { PagedList } from "@dev/translatr-sdk";
-import { Key } from "@dev/translatr-sdk";
-import { RequestCriteria } from "@dev/translatr-sdk";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {EditorFacade} from "./+state/editor.facade";
+import {ActivatedRoute, ParamMap, Params, Router} from "@angular/router";
+import {filter, take, takeUntil} from "rxjs/operators";
+import {Key, Locale, Message, PagedList, RequestCriteria} from "@dev/translatr-sdk";
+import {combineLatest} from "rxjs";
+import {AppFacade} from "../../../+state/app.facade";
 
 @Component({
   selector: 'app-locale-editor-page',
@@ -16,16 +13,18 @@ import { RequestCriteria } from "@dev/translatr-sdk";
 })
 export class LocaleEditorPageComponent implements OnInit, OnDestroy {
 
-  locale$ = this.editorFacade.locale$;
-  locales$ = this.editorFacade.locales$;
-  keys$ = this.editorFacade.keys$;
-  selectedMessage$ = this.editorFacade.selectedMessage$;
-  selectedKey$ = this.editorFacade.selectedKey$;
-  search$ = this.editorFacade.search$;
+  me$ = this.appFacade.me$;
+  locale$ = this.facade.locale$;
+  locales$ = this.facade.locales$;
+  keys$ = this.facade.keys$;
+  selectedMessage$ = this.facade.selectedMessage$;
+  selectedKey$ = this.facade.selectedKey$;
+  search$ = this.facade.search$;
   message: Message;
 
   constructor(
-    private readonly editorFacade: EditorFacade,
+    private readonly appFacade: AppFacade,
+    private readonly facade: EditorFacade,
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {
@@ -33,23 +32,23 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.paramMap
-      .pipe(takeUntil(this.editorFacade.unloadEditor$))
+      .pipe(takeUntil(this.facade.unloadEditor$))
       .subscribe((params: ParamMap) => {
-        this.editorFacade.loadLocaleEditor(
+        this.facade.loadLocaleEditor(
           params.get('username'),
           params.get('projectName'),
           params.get('localeName')
         );
       });
     this.route.queryParams
-      .pipe(takeUntil(this.editorFacade.unloadEditor$))
+      .pipe(takeUntil(this.facade.unloadEditor$))
       .subscribe((params: Params) => {
-        this.editorFacade.updateKeySearch(params);
-        this.editorFacade.selectKey(params.key);
+        this.facade.updateKeySearch(params);
+        this.facade.selectKey(params.key);
       });
     this.selectedMessage$.subscribe((message: Message) => {
       if (message === undefined) {
-        combineLatest(this.locale$, this.editorFacade.keysLoading$)
+        combineLatest(this.locale$, this.facade.keysLoading$)
           .pipe(take(1), filter(([locale, loading]: [Locale, boolean]) => locale !== undefined && !loading))
           .subscribe(() => this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {key: null}}));
       }
@@ -57,7 +56,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.editorFacade.unloadEditor();
+    this.facade.unloadEditor();
   }
 
   onSearch(criteria: RequestCriteria) {
@@ -65,7 +64,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onLoadMore(limit: number): void {
-    this.editorFacade.loadKeysBy({limit: `${limit + 25}`});
+    this.facade.loadKeysBy({limit: `${limit + 25}`});
   }
 
   messagesOfKey(keys?: PagedList<Key>, keyName?: string): Array<Message> {

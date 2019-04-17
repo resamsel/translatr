@@ -84,8 +84,6 @@
     "@angular/compiler-cli": "~7.1.0",
     "@angular/http": "^7.2.13",
     "@angular/language-service": "~7.1.0",
-    "@nestjs/schematics": "5.11.2",
-    "@nestjs/testing": "5.5.0",
     "@ngrx/store-devtools": "7.2.0",
     "@nrwl/builders": "7.6.2",
     "@schuchard/prettier": "^3.0.0",

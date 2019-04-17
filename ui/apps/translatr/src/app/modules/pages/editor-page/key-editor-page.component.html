@@ -1,4 +1,5 @@
 <app-editor
+  [me]="me$ | async"
   [ownerName]="(key$ | async)?.projectOwnerUsername"
   [projectName]="(key$ | async)?.projectName"
   name="Key Editor"
