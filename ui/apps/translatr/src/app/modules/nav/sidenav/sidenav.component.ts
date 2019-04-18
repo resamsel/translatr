@@ -1,8 +1,8 @@
 import {Component, Input} from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import {User} from "@dev/translatr-sdk";
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {User} from "@dev/translatr-model";
 
 @Component({
   selector: 'app-sidenav',
@@ -11,7 +11,7 @@ import {User} from "@dev/translatr-sdk";
 })
 export class SidenavComponent {
   @Input() page: string;
-  @Input() backLink: {routerLink: string[]; name: string};
+  @Input() backLink: { routerLink: string[]; name: string };
   @Input() me: User | undefined;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -19,6 +19,7 @@ export class SidenavComponent {
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(private breakpointObserver: BreakpointObserver) {
+  }
 
 }

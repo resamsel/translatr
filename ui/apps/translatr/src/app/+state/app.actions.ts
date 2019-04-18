@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store';
-import {User} from "@dev/translatr-sdk";
+import {User} from "@dev/translatr-model";
 
 export enum AppActionTypes {
   LoadMe = '[Main Page] Load Me',

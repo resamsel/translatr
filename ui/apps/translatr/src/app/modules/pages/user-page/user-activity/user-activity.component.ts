@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
-import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import {PagedList} from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
 import {ActivatedRoute} from "@angular/router";
-import {User} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/user";
+import {User} from "../../../../../../../../libs/translatr-model/src/lib/model/user";
 import {ActivityCriteria, ActivityService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service";
-import {Activity} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/activity";
+import {Activity} from "../../../../../../../../libs/translatr-model/src/lib/model/activity";
 
 @Component({
   selector: 'app-user-activity',

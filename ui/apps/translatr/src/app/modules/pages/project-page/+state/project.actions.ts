@@ -1,12 +1,12 @@
 import { Action } from '@ngrx/store';
-import { Project } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
-import { PagedList } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
-import { Aggregate } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/aggregate";
+import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
+import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
+import { Aggregate } from "../../../../../../../../libs/translatr-model/src/lib/model/aggregate";
 import { ActivityCriteria } from "../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service";
-import { Activity } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/activity";
-import { Locale } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
-import { Key } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
-import { RequestCriteria } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/request-criteria";
+import { Activity } from "../../../../../../../../libs/translatr-model/src/lib/model/activity";
+import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
+import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
+import { RequestCriteria } from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
 
 export enum ProjectActionTypes {
   LoadProject = '[Project Page] Load Project',

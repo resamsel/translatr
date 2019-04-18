@@ -1,7 +1,6 @@
-import { User } from "@dev/translatr-sdk";
+import { User } from "@dev/translatr-model";
 
 export enum Action {
-  UpdateState = 'Update State',
   ShowConfig = 'Show Config',
 
   Me = 'Me',

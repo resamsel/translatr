@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { User } from "../../../../../../../libs/translatr-sdk/src/lib/shared/user";
+import { User } from "../../../../../../../libs/translatr-model/src/lib/model/user";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {AppFacade} from "../../../../+state/app.facade";
 import {debounceTime, distinctUntilChanged, map, mapTo, scan, shareReplay, startWith, take, tap} from "rxjs/operators";
-import {Project, RequestCriteria, User} from "@dev/translatr-sdk";
+import {Project, ProjectCriteria, RequestCriteria, User} from "@dev/translatr-model";
 import {merge, Observable, Subject} from "rxjs";
 import {isAdmin} from "../dashboard-users/dashboard-users.component";
 import {ProjectDeleted, ProjectDeleteError} from "../../../../+state/app.actions";
@@ -41,12 +41,12 @@ export class DashboardProjectsComponent {
   )
     .pipe(
       startWith({limit: '20', search: '', order: 'name asc'}),
-      scan((acc: RequestCriteria, value: RequestCriteria) => ({...acc, ...value})),
+      scan((acc: ProjectCriteria, value: ProjectCriteria) => ({...acc, ...value})),
       shareReplay(1)
     );
 
   constructor(private readonly facade: AppFacade) {
-    this.commands$.subscribe((criteria: RequestCriteria) => this.facade.loadProjects(criteria));
+    this.commands$.subscribe((criteria: ProjectCriteria) => this.facade.loadProjects(criteria));
   }
 
   trackByFn(index: number, item: { id: string }): string {

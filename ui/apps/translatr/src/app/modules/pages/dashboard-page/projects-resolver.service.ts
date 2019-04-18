@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
-import { Project } from "../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import { Project } from "../../../../../../../libs/translatr-model/src/lib/model/project";
 import { ProjectService } from "../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
 import { Observable } from "rxjs";
-import { PagedList } from "../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import { PagedList } from "../../../../../../../libs/translatr-model/src/lib/model/paged-list";
 
 @Injectable({
   providedIn: 'root'

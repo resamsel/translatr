@@ -1,13 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect} from '@ngrx/effects';
 import {DataPersistence} from '@nrwl/nx';
-
-import {PROJECTS_FEATURE_KEY, ProjectsPartialState} from './projects.reducer';
+import {ProjectsPartialState} from './projects.reducer';
 import {LoadProjects, ProjectsActionTypes, ProjectsLoaded, ProjectsLoadError} from './projects.actions';
-import {ProjectService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
+import {ProjectService} from "@dev/translatr-sdk";
 import {map} from "rxjs/operators";
-import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
-import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import {PagedList, Project} from "@dev/translatr-model";
 
 @Injectable()
 export class ProjectsEffects {
@@ -15,7 +13,7 @@ export class ProjectsEffects {
     ProjectsActionTypes.LoadProjects,
     {
       run: (action: LoadProjects, state: ProjectsPartialState) => {
-        return this.projectService.find({params: {...action.payload}})
+        return this.projectService.find(action.payload)
           .pipe(map((payload: PagedList<Project>) => new ProjectsLoaded(payload)));
       },
 

@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {User} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/user";
+import {User} from "../../../../../../../../libs/translatr-model/src/lib/model/user";
 import {ProjectService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
 import {Observable} from "rxjs";
-import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
-import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import {PagedList} from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
+import {Project} from "../../../../../../../../libs/translatr-model/src/lib/model/project";
 import {ProjectCreationDialogComponent} from "../../../shared/project-creation-dialog/project-creation-dialog.component";
 import {take} from "rxjs/operators";
 import {MatDialog} from "@angular/material";
@@ -36,10 +36,8 @@ export class UserProjectsComponent implements OnInit {
 
   private loadProjects(): void {
     this.projects$ = this.projectService.getProjects({
-      params: {
-        owner: this.user.username,
-        order: 'whenUpdated desc'
-      }
+      owner: this.user.username,
+      order: 'whenUpdated desc'
     });
   }
 

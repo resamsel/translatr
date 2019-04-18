@@ -1,25 +1,27 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DashboardPageRoutingModule } from './dashboard-page-routing.module';
-import { DashboardPageComponent } from './dashboard-page.component';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {DashboardPageRoutingModule} from './dashboard-page-routing.module';
+import {DashboardPageComponent} from './dashboard-page.component';
 import {
   MatButtonModule,
   MatDialogModule,
   MatIconModule,
   MatInputModule,
-  MatMenuModule, MatPaginatorModule,
+  MatMenuModule,
+  MatPaginatorModule,
   MatSelectModule,
   MatTableModule,
   MatTabsModule
 } from "@angular/material";
-import { SidenavModule } from "../../nav/sidenav/sidenav.module";
-import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
-import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
-import { MomentModule } from "ngx-moment";
-import { UserEditDialogModule } from "@dev/translatr-components/src/lib/modules/user/user-edit-dialog/user-edit-dialog.module";
-import { DashboardProjectsComponent } from './dashboard-projects/dashboard-projects.component';
-import { ReactiveFormsModule } from "@angular/forms";
-import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
+import {SidenavModule} from "../../nav/sidenav/sidenav.module";
+import {DashboardUsersComponent} from './dashboard-users/dashboard-users.component';
+import {DashboardInfoComponent} from './dashboard-info/dashboard-info.component';
+import {MomentModule} from "ngx-moment";
+import {UserEditDialogModule} from "@dev/translatr-components/src/lib/modules/user/user-edit-dialog/user-edit-dialog.module";
+import {DashboardProjectsComponent} from './dashboard-projects/dashboard-projects.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import {DashboardAccessTokensComponent} from './dashboard-access-tokens/dashboard-access-tokens.component';
+import {GravatarModule} from "ngx-gravatar";
 
 @NgModule({
   declarations: [DashboardPageComponent, DashboardUsersComponent, DashboardInfoComponent, DashboardProjectsComponent, DashboardAccessTokensComponent],
@@ -38,7 +40,8 @@ import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashbo
     MatMenuModule,
     MatSelectModule,
     MatInputModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    GravatarModule
   ]
 })
 export class DashboardPageModule {

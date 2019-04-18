@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { User } from "../shared/user";
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
-import { Observable } from "rxjs";
-import { UserService } from "./user.service";
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from "@angular/router";
+import {Observable} from "rxjs";
+import {UserService} from "./user.service";
+import {User} from "@dev/translatr-model";
 
 @Injectable({
   providedIn: 'root'

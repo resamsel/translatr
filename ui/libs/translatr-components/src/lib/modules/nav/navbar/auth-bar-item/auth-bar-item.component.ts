@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {User} from "@dev/translatr-sdk";
+import {User} from "@dev/translatr-model";
 import {ActivatedRoute} from "@angular/router";
 import {filter, map, switchMap} from "rxjs/operators";
 import {EMPTY, of} from "rxjs";

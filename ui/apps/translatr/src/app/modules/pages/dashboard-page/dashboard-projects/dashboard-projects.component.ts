@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectCreationDialogComponent } from "../../../shared/project-creation-dialog/project-creation-dialog.component";
 import { take } from "rxjs/operators";
-import { Project } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
-import { PagedList } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
+import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
 import { ActivatedRoute } from "@angular/router";
 import { MatDialog } from "@angular/material";
 

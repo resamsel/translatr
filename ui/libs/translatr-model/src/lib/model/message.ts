@@ -4,10 +4,10 @@ export interface Message {
   whenUpdated?: Date;
 
   localeId: string;
-  localeName: string;
+  localeName?: string;
 
   keyId: string;
-  keyName: string;
+  keyName?: string;
 
   value: string;
 }

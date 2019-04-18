@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {merge, Subject} from "rxjs";
 import {debounceTime, distinctUntilChanged, map, scan, shareReplay, startWith, take, tap} from "rxjs/operators";
-import {RequestCriteria} from "@dev/translatr-sdk";
+import {RequestCriteria} from "@dev/translatr-model";
 import {AppFacade} from "../../../../+state/app.facade";
 
 @Component({

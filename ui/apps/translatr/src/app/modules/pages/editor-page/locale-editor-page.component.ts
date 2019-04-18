@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {EditorFacade} from "./+state/editor.facade";
 import {ActivatedRoute, ParamMap, Params, Router} from "@angular/router";
 import {filter, take, takeUntil} from "rxjs/operators";
-import {Key, Locale, Message, PagedList, RequestCriteria} from "@dev/translatr-sdk";
+import {Key, Locale, Message, PagedList, RequestCriteria} from "@dev/translatr-model";
 import {combineLatest} from "rxjs";
 import {AppFacade} from "../../../+state/app.facade";
 

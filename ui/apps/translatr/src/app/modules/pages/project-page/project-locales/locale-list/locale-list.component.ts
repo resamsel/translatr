@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Project } from "../../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
-import { Locale } from "../../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
-import { PagedList } from "../../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import { Project } from "../../../../../../../../../libs/translatr-model/src/lib/model/project";
+import { Locale } from "../../../../../../../../../libs/translatr-model/src/lib/model/locale";
+import { PagedList } from "../../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
 
 @Component({
   selector: 'app-locale-list',

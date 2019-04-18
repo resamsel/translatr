@@ -7,11 +7,10 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {Message} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/message";
+import {Message, User} from "@dev/translatr-model";
 import {EditorFacade} from "../+state/editor.facade";
 import {MatTabGroup} from "@angular/material";
 import {CodemirrorComponent} from "@ctrl/ngx-codemirror";
-import {User} from "@dev/translatr-sdk";
 
 @Component({
   selector: 'app-editor',

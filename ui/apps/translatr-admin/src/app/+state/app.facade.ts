@@ -13,7 +13,7 @@ import {
   LoadUsers,
   UpdateUser
 } from './app.actions';
-import {Project, RequestCriteria, User} from "@dev/translatr-sdk";
+import {Project, ProjectCriteria, RequestCriteria, User} from "@dev/translatr-model";
 import {Actions, ofType} from "@ngrx/effects";
 
 @Injectable()
@@ -62,7 +62,7 @@ export class AppFacade {
 
   // Projects
 
-  loadProjects(criteria?: RequestCriteria) {
+  loadProjects(criteria?: ProjectCriteria) {
     this.store.dispatch(new LoadProjects(criteria));
   }
 

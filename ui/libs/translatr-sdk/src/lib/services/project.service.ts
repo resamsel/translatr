@@ -1,13 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
-import {Project} from "../shared/project";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {map} from "rxjs/operators";
-import {PagedList} from "../shared/paged-list";
 import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
-import {Aggregate} from "../shared/aggregate";
-import {options} from "tsconfig-paths/lib/options";
-import {RequestCriteria, User} from "@dev/translatr-sdk";
+import {Aggregate, PagedList, Project, ProjectCriteria} from "@dev/translatr-model";
+import {AbstractService} from "@dev/translatr-sdk/src/lib/services/abstract.service";
 
 const projectMapper = (project: Project) => ({
   ...convertTemporals(project),
@@ -19,9 +16,10 @@ const projectMapper = (project: Project) => ({
 @Injectable({
   providedIn: 'root'
 })
-export class ProjectService {
+export class ProjectService extends AbstractService<Project, ProjectCriteria> {
 
-  constructor(private readonly http: HttpClient) {
+  constructor(http: HttpClient) {
+    super(http, '/api/projects', '/api/project');
   }
 
   getProjectByOwnerAndName(username: string, projectName: string, options?: {
@@ -34,56 +32,12 @@ export class ProjectService {
       .pipe(map(projectMapper));
   }
 
-  find(options?: {
-    params?: HttpParams | {
-      [param: string]: string | string[];
-    }
-  }): Observable<PagedList<Project>> {
-    return this.http
-      .get<PagedList<Project>>('/api/projects', options)
-      .pipe(
-        map((list: PagedList<Project>) => ({
-          ...list,
-          list: convertTemporalsList(list.list)
-        }))
-      );
-  }
-
-  getProjects(options?: {
-    params?: HttpParams | {
-      [param: string]: string | string[];
-    }
-  }): Observable<PagedList<Project>> {
+  getProjects(options?: ProjectCriteria): Observable<PagedList<Project>> {
     return this.find(options);
   }
 
   activity(projectId: string): Observable<PagedList<Aggregate>> {
     return this.http
       .get<PagedList<Aggregate>>(`/api/project/${projectId}/activity`);
-  }
-
-  create(
-    project: Project,
-    options?: {
-      params: {
-        [param: string]: string | string[];
-      }
-    }
-  ): Observable<Project> {
-    return this.http
-      .post<Project>('/api/project', project, options)
-      .pipe(map(projectMapper));
-  }
-
-  update(project: Project): Observable<Project> {
-    return this.http
-      .put<Project>('/api/project', project)
-      .pipe(map(projectMapper));
-  }
-
-  delete(projectId: string): Observable<Project | undefined> {
-    return this.http
-      .delete<Project>(`/api/project/${projectId}`)
-      .pipe(map(convertTemporals));
   }
 }

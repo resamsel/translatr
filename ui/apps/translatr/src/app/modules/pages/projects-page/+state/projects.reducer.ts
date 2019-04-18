@@ -1,6 +1,6 @@
 import {ProjectsAction, ProjectsActionTypes} from './projects.actions';
-import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
-import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import {PagedList} from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
+import {Project} from "../../../../../../../../libs/translatr-model/src/lib/model/project";
 
 export const PROJECTS_FEATURE_KEY = 'projects';
 

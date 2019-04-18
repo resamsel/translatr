@@ -110,13 +110,13 @@
 	<script>
 		$('ul.tabs').tabs();
 
-		var projectId = '@locale.project.id';
+		var projectId = 'project.id';
 		var messages = {
 			'message.updated': '@Messages("message.updated")'
 		};
 		var editor = new LocaleEditor({
 			app: app,
-			project: new Project('@locale.project.id'),
+			project: new Project('project.id'),
 			locale: @Html(play.libs.Json.toJson(locale).toString),
 			search: @Html(play.libs.Json.toJson(form.get()).toString)
 		});

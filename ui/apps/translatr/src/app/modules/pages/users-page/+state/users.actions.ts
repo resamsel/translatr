@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store';
-import {PagedList, RequestCriteria, User} from "@dev/translatr-sdk";
+import {PagedList, RequestCriteria, User} from "@dev/translatr-model";
 
 export interface UserCriteria extends RequestCriteria {
 }

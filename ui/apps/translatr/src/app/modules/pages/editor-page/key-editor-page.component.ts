@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Message} from "../../../../../../../libs/translatr-sdk/src/lib/shared/message";
+import {Message} from "../../../../../../../libs/translatr-model/src/lib/model/message";
 import {EditorFacade} from "./+state/editor.facade";
 import {ActivatedRoute, ParamMap, Params, Router} from "@angular/router";
 import {filter, take, takeUntil} from "rxjs/operators";
 import {combineLatest} from "rxjs";
-import {PagedList} from "../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
-import {Key} from "../../../../../../../libs/translatr-sdk/src/lib/shared/key";
-import {Locale} from "../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
-import {RequestCriteria} from "../../../../../../../libs/translatr-sdk/src/lib/shared/request-criteria";
+import {PagedList} from "../../../../../../../libs/translatr-model/src/lib/model/paged-list";
+import {Key} from "../../../../../../../libs/translatr-model/src/lib/model/key";
+import {Locale} from "../../../../../../../libs/translatr-model/src/lib/model/locale";
+import {RequestCriteria} from "../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
 import {AppFacade} from "../../../+state/app.facade";
 
 @Component({

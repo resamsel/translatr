@@ -25,6 +25,9 @@
     },
     "translatr-components": {
       "tags": []
+    },
+    "translatr-model": {
+      "tags": []
     }
   }
 }

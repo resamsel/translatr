@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ProjectFacade } from "../+state/project.facade";
 import { take, tap } from "rxjs/operators";
-import { Project } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
-import { Locale } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
-import { Key } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
+import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
+import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
+import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
 import { MatSnackBar } from "@angular/material";
 
 @Component({

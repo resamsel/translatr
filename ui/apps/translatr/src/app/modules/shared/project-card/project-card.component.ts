@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Project} from "../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import {Project} from "../../../../../../../libs/translatr-model/src/lib/model/project";
 import {firstChar} from "../../../../../../../libs/translatr-sdk/src/lib/shared/utils";
 
 @Component({

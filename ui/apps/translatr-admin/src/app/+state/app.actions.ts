@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store';
-import {AccessToken, PagedList, Project, RequestCriteria, User} from "@dev/translatr-sdk";
+import {AccessToken, PagedList, Project, ProjectCriteria, RequestCriteria, User} from "@dev/translatr-model";
 import {HttpErrorResponse} from "@angular/common/http";
 
 export enum AppActionTypes {
@@ -151,7 +151,7 @@ export class UserDeleted implements Action {
 export class LoadProjects implements Action {
   readonly type = AppActionTypes.LoadProjects;
 
-  constructor(public payload?: RequestCriteria) {
+  constructor(public payload?: ProjectCriteria) {
   }
 }
 

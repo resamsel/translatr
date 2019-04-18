@@ -1,5 +1,5 @@
 import {interval, merge, Observable, of, Subject} from "rxjs";
-import {exhaustMap, mapTo, scan, startWith, tap, withLatestFrom} from "rxjs/operators";
+import {mapTo, scan, startWith, withLatestFrom} from "rxjs/operators";
 import {Action, Command, Config, State} from "./state";
 import {envAsNumber, envAsString} from "./utils";
 import {handleCommand} from "./handler";

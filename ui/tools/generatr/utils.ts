@@ -1,4 +1,4 @@
-import {ConstraintViolation, ConstraintViolationErrorInfo} from "@dev/translatr-sdk";
+import {ConstraintViolation, ConstraintViolationErrorInfo} from "@dev/translatr-model";
 import {HttpErrorResponse} from "@angular/common/http";
 
 export const envAsString = (key: string, defaultValue: string): string => {

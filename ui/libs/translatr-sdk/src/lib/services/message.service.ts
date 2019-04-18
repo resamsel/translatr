@@ -2,17 +2,17 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
-import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
-import {PagedList} from "../shared/paged-list";
-import {Message} from "../shared/message";
-import {RequestCriteria} from "../shared/request-criteria";
+import {convertTemporalsList} from "../shared/mapper-utils";
+import {AbstractService} from "@dev/translatr-sdk/src/lib/services/abstract.service";
+import {Message, PagedList, RequestCriteria} from "@dev/translatr-model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class MessageService {
+export class MessageService extends AbstractService<Message, RequestCriteria> {
 
-  constructor(private readonly http: HttpClient) {
+  constructor(http: HttpClient) {
+    super(http, '/api/messages', '/api/message');
   }
 
   _getMessages(options: {
@@ -38,17 +38,5 @@ export class MessageService {
           list: convertTemporalsList(payload.list)
         }))
       );
-  }
-
-  create(message: Message): Observable<Message> {
-    return this.http
-      .post<Message>('/api/message', message)
-      .pipe(map(convertTemporals));
-  }
-
-  update(message: Message): Observable<Message> {
-    return this.http
-      .put<Message>('/api/message', message)
-      .pipe(map(convertTemporals));
   }
 }

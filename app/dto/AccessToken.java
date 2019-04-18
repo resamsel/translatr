@@ -14,10 +14,7 @@ public class AccessToken extends Dto {
   public UUID userId;
   public String userName;
 
-  @JsonIgnore
   public DateTime whenCreated;
-
-  @JsonIgnore
   public DateTime whenUpdated;
 
   public String name;

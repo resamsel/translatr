@@ -1,13 +1,10 @@
 import {Action} from '@ngrx/store';
-import {PagedList, Project, RequestCriteria} from "@dev/translatr-sdk";
+import {PagedList, Project, ProjectCriteria} from "@dev/translatr-model";
 
 export enum ProjectsActionTypes {
   LoadProjects = '[Projects Page] Load Projects',
   ProjectsLoaded = '[Projects API] Projects Loaded',
   ProjectsLoadError = '[Projects API] Projects Load Error'
-}
-
-export interface ProjectCriteria extends RequestCriteria {
 }
 
 export class LoadProjects implements Action {

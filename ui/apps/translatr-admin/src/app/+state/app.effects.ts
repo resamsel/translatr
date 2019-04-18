@@ -3,15 +3,20 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import {DataPersistence} from '@nrwl/nx';
 import {AppPartialState} from './app.reducer';
 import {
-  AccessTokensLoaded, AccessTokensLoadError,
+  AccessTokensLoaded,
+  AccessTokensLoadError,
   AppActionTypes,
-  CreateUser, DeleteProject,
-  DeleteUser, LoadAccessTokens,
+  CreateUser,
+  DeleteProject,
+  DeleteUser,
+  LoadAccessTokens,
   LoadLoggedInUser,
   LoadProjects,
   LoadUsers,
   LoggedInUserLoaded,
-  LoggedInUserLoadError, ProjectDeleted, ProjectDeleteError,
+  LoggedInUserLoadError,
+  ProjectDeleted,
+  ProjectDeleteError,
   ProjectsLoaded,
   ProjectsLoadError,
   UpdateUser,
@@ -24,10 +29,11 @@ import {
   UserUpdated,
   UserUpdateError
 } from './app.actions';
-import {AccessToken, PagedList, Project, ProjectService, User, UserService} from "@dev/translatr-sdk";
+import {AccessToken, PagedList, Project, User} from "@dev/translatr-model";
 import {catchError, map, switchMap} from "rxjs/operators";
 import {of} from "rxjs/internal/observable/of";
 import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
+import {ProjectService, UserService} from "@dev/translatr-sdk";
 
 @Injectable()
 export class AppEffects {
@@ -93,7 +99,7 @@ export class AppEffects {
   @Effect() loadProjects$ = this.actions$.pipe(
     ofType(AppActionTypes.LoadProjects),
     switchMap((action: LoadProjects) => this.projectService
-      .find({params: {...action.payload}})
+      .find(action.payload)
       .pipe(
         map((payload: PagedList<Project>) => new ProjectsLoaded(payload)),
         catchError(error => of(new ProjectsLoadError(error)))

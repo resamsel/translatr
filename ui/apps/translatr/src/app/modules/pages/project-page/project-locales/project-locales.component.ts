@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectFacade } from "../+state/project.facade";
 import { take, tap } from "rxjs/operators";
-import { Project } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
-import { Locale } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
+import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
+import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
 import { MatSnackBar } from "@angular/material";
 
 @Component({

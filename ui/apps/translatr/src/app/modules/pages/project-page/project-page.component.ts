@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Project} from "../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import {Project} from "../../../../../../../libs/translatr-model/src/lib/model/project";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {ProjectFacade} from "./+state/project.facade";
 import {Observable} from "rxjs";

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Project } from "../../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
-import { Key } from "../../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
-import { PagedList } from "../../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import { Project } from "../../../../../../../../../libs/translatr-model/src/lib/model/project";
+import { Key } from "../../../../../../../../../libs/translatr-model/src/lib/model/key";
+import { PagedList } from "../../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
 
 @Component({
   selector: 'app-key-list',

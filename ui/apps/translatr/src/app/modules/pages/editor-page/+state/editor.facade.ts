@@ -16,11 +16,11 @@ import {
 } from './editor.actions';
 import { Observable, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { Locale } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
-import { PagedList } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
-import { Message } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/message";
-import { Key } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
-import {RequestCriteria} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/request-criteria";
+import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
+import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
+import { Message } from "../../../../../../../../libs/translatr-model/src/lib/model/message";
+import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
+import {RequestCriteria} from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
 
 @Injectable()
 export class EditorFacade {

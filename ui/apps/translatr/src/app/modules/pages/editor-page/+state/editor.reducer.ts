@@ -1,9 +1,9 @@
 import {EditorAction, EditorActionTypes} from './editor.actions';
-import {PagedList} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
-import {Locale} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
-import {Key} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
-import {Message} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/message";
-import {RequestCriteria} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/request-criteria";
+import {PagedList} from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
+import {Locale} from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
+import {Key} from "../../../../../../../../libs/translatr-model/src/lib/model/key";
+import {Message} from "../../../../../../../../libs/translatr-model/src/lib/model/message";
+import {RequestCriteria} from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
 
 export const EDITOR_FEATURE_KEY = 'editor';
 

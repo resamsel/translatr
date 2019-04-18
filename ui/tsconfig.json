@@ -16,7 +16,8 @@
     "paths": {
       "@dev/*": ["libs/*"],
       "@dev/translatr-sdk": ["libs/translatr-sdk/src/index.ts"],
-      "@dev/translatr-components": ["libs/translatr-components/src/index.ts"]
+      "@dev/translatr-components": ["libs/translatr-components/src/index.ts"],
+      "@dev/translatr-model": ["libs/translatr-model/src/index.ts"]
     }
   }
 }

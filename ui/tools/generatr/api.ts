@@ -1,7 +1,7 @@
 import {HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Injector, StaticProvider} from "@angular/core";
-import {ProjectService, UserService} from "@dev/translatr-sdk";
+import {KeyService, LocaleService, MessageService, ProjectService, UserService} from "@dev/translatr-sdk";
 import {XMLHttpRequest} from 'xmlhttprequest';
 import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
 
@@ -59,6 +59,21 @@ const providers: StaticProvider[] = [
   {
     provide: ProjectService,
     useFactory: (client: HttpClient) => new ProjectService(client),
+    deps: [HttpClient]
+  },
+  {
+    provide: LocaleService,
+    useFactory: (client: HttpClient) => new LocaleService(client),
+    deps: [HttpClient]
+  },
+  {
+    provide: KeyService,
+    useFactory: (client: HttpClient) => new KeyService(client),
+    deps: [HttpClient]
+  },
+  {
+    provide: MessageService,
+    useFactory: (client: HttpClient) => new MessageService(client),
     deps: [HttpClient]
   },
   {

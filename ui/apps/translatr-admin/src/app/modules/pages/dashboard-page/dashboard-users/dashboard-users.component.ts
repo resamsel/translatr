@@ -1,18 +1,18 @@
-import { Component } from '@angular/core';
-import { AppFacade } from "../../../../+state/app.facade";
-import { RequestCriteria, User } from "@dev/translatr-sdk";
+import {Component} from '@angular/core';
+import {AppFacade} from "../../../../+state/app.facade";
+import {RequestCriteria, User} from "@dev/translatr-model";
 import {debounceTime, distinctUntilChanged, map, mapTo, shareReplay, startWith, take, tap} from "rxjs/operators";
-import { UserDeleted, UserDeleteError } from "../../../../+state/app.actions";
+import {UserDeleted, UserDeleteError} from "../../../../+state/app.actions";
 import {
   UserEditDialogComponent,
   UserEditDialogConfig
 } from "@dev/translatr-components/src/lib/modules/user/user-edit-dialog/user-edit-dialog.component";
-import { MatDialog } from "@angular/material";
-import { filter } from "rxjs/internal/operators/filter";
-import { UserRole } from "@dev/translatr-sdk/src/lib/shared/user-role";
-import { merge, Observable, Subject } from "rxjs";
-import { FormControl } from "@angular/forms";
-import { scan } from "rxjs/internal/operators/scan";
+import {MatDialog} from "@angular/material";
+import {filter} from "rxjs/internal/operators/filter";
+import {UserRole} from "@dev/translatr-model/src/lib/model/user-role";
+import {merge, Observable, Subject} from "rxjs";
+import {FormControl} from "@angular/forms";
+import {scan} from "rxjs/internal/operators/scan";
 
 export const isAdmin = (user?: User): boolean => user !== undefined && user.role === UserRole.Admin;
 
@@ -30,7 +30,7 @@ export const mapToAllowedRoles = () => map((me?: User): UserRole[] =>
 @Component({
   selector: 'dev-dashboard-users',
   templateUrl: './dashboard-users.component.html',
-  styleUrls: ['./dashboard-users.component.css']
+  styleUrls: ['./dashboard-users.component.scss']
 })
 export class DashboardUsersComponent {
 

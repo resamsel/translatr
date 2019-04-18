@@ -5,4 +5,4 @@ export const firstChar = (name: string): string => {
     return name;
   }
   return runes.substr(name, 0, 1);
-}
+};

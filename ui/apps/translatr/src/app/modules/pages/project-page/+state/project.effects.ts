@@ -22,17 +22,17 @@ import {
 } from './project.actions';
 import { ProjectService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
 import { map } from "rxjs/operators";
-import { Project } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
 import { ActivityService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service";
-import { PagedList } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
-import { Aggregate } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/aggregate";
-import { Activity } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/activity";
+import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
+import { Aggregate } from "../../../../../../../../libs/translatr-model/src/lib/model/aggregate";
+import { Activity } from "../../../../../../../../libs/translatr-model/src/lib/model/activity";
 import { Observable } from "rxjs";
 import { Action } from "@ngrx/store";
 import { LocaleService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/locale.service";
 import { KeyService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/key.service";
-import { Locale } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/locale";
-import { Key } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/key";
+import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
+import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
 
 @Injectable()
 export class ProjectEffects {

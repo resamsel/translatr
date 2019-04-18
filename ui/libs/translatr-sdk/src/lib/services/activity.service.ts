@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs";
-import { PagedList } from "../shared/paged-list";
-import { Activity } from "../shared/activity";
 import { HttpClient } from "@angular/common/http";
-import { Aggregate } from "../shared/aggregate";
 import { map } from "rxjs/operators";
+import {Activity, Aggregate, PagedList} from "@dev/translatr-model";
 
 export interface ActivityCriteria {
   userId?: string;

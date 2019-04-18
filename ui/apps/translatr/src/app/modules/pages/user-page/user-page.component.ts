@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {User} from "../../../../../../../libs/translatr-sdk/src/lib/shared/user";
+import {User} from "../../../../../../../libs/translatr-model/src/lib/model/user";
 
 @Component({
   selector: 'app-user-page',

@@ -1,12 +1,9 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
-import {User} from "@dev/translatr-sdk";
-import { FormControl, FormGroup, ValidationErrors, Validator, ValidatorFn, Validators } from "@angular/forms";
-import {UserRole} from "@dev/translatr-sdk/src/lib/shared/user-role";
+import {ConstraintViolation, ConstraintViolationErrorInfo, User, UserRole} from "@dev/translatr-model";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Observable} from "rxjs";
-import {takeUntil, tap} from "rxjs/operators";
-import {ConstraintViolation} from "@dev/translatr-sdk/src/lib/shared/constraint-violation";
-import {ConstraintViolationErrorInfo} from "@dev/translatr-sdk/src/lib/shared/constraint-violation-error-info";
+import {takeUntil} from "rxjs/operators";
 
 export interface ErrorAction {
   payload: {

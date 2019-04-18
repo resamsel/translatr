@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/user";
+import { User } from "../../../../../../../../libs/translatr-model/src/lib/model/user";
 import { Observable } from "rxjs";
-import { PagedList } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/paged-list";
+import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
 import { ActivatedRoute } from "@angular/router";
 import { UserService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/user.service";
-import { Aggregate } from "../../../../../../../../libs/translatr-sdk/src/lib/shared/aggregate";
-import {Project} from "../../../../../../../../libs/translatr-sdk/src/lib/shared/project";
+import { Aggregate } from "../../../../../../../../libs/translatr-model/src/lib/model/aggregate";
+import {Project} from "../../../../../../../../libs/translatr-model/src/lib/model/project";
 import {ProjectService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
 
 @Component({
@@ -30,10 +30,9 @@ export class UserInfoComponent implements OnInit {
       .subscribe((data: { user: User }) => {
         this.user = data.user;
         this.projects$ = this.projectService.getProjects({
-          params: {
             owner: this.user.username,
             order: 'whenUpdated desc'
-          }});
+          });
         this.activity$ = this.userService.activity(data.user.id);
       });
   }

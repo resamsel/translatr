@@ -3,16 +3,16 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
-import {Key} from "../shared/key";
-import {PagedList} from "../shared/paged-list";
-import {RequestCriteria} from "../shared/request-criteria";
+import {AbstractService} from "./abstract.service";
+import {Key, PagedList, RequestCriteria} from "@dev/translatr-model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class KeyService {
+export class KeyService extends AbstractService<Key, RequestCriteria> {
 
-  constructor(private readonly http: HttpClient) {
+  constructor(http: HttpClient) {
+    super(http, '/api/keys', '/api/key');
   }
 
   byOwnerAndProjectNameAndName(

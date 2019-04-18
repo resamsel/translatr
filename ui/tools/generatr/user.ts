@@ -1,16 +1,17 @@
-import { AccessToken, PagedList, RequestCriteria, User, UserRole, UserService } from "@dev/translatr-sdk";
-import { Observable, of, throwError } from "rxjs";
-import {catchError, concatMap, filter, map, switchMap} from "rxjs/operators";
-import { HttpErrorResponse } from "@angular/common/http";
+import {AccessToken, PagedList, RequestCriteria, User, UserRole} from "@dev/translatr-model";
+import {Observable, of, throwError} from "rxjs";
+import {catchError, concatMap, filter, map} from "rxjs/operators";
+import {HttpErrorResponse} from "@angular/common/http";
 import * as randomName from 'random-name';
-import { State } from './state';
-import { cartesianProduct, errorMessage, pickRandomly } from "./utils";
-import { AccessTokenService } from "@dev/translatr-sdk/src/lib/services/access-token.service";
-import { Injector } from "@angular/core";
+import {State} from './state';
+import {cartesianProduct, errorMessage, pickRandomly} from "./utils";
+import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
+import {Injector} from "@angular/core";
+import {UserService} from "@dev/translatr-sdk";
 
 const scope = cartesianProduct([
   ['read', 'write'],
-  ['project', 'locale', 'key']
+  ['project', 'locale', 'key', 'message']
 ])
   .map((value: string[]) => value.join(':'))
   .join(',');
