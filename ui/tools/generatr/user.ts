@@ -4,10 +4,10 @@ import {catchError, concatMap, filter, map} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import * as randomName from 'random-name';
 import {State} from './state';
-import {cartesianProduct, errorMessage, pickRandomly} from "./utils";
+import {cartesianProduct, pickRandomly} from "./utils";
 import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
 import {Injector} from "@angular/core";
-import {UserService} from "@dev/translatr-sdk";
+import {UserService, errorMessage} from "@dev/translatr-sdk";
 
 const scope = cartesianProduct([
   ['read', 'write'],

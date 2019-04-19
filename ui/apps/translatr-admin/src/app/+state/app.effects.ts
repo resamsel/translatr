@@ -8,7 +8,7 @@ import {
   AppActionTypes,
   CreateUser,
   DeleteProject,
-  DeleteUser,
+  DeleteUser, DeleteUsers,
   LoadAccessTokens,
   LoadLoggedInUser,
   LoadProjects,
@@ -23,17 +23,20 @@ import {
   UserCreated,
   UserCreateError,
   UserDeleted,
-  UserDeleteError,
+  UserDeleteError, UsersDeleted, UsersDeleteError,
   UsersLoaded,
   UsersLoadError,
   UserUpdated,
   UserUpdateError
 } from './app.actions';
 import {AccessToken, PagedList, Project, User} from "@dev/translatr-model";
-import {catchError, map, switchMap} from "rxjs/operators";
+import {catchError, concatMap, map, switchMap} from "rxjs/operators";
 import {of} from "rxjs/internal/observable/of";
 import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
 import {ProjectService, UserService} from "@dev/translatr-sdk";
+import {merge, Observable} from "rxjs";
+import {scan} from "rxjs/internal/operators/scan";
+import {concat} from "rxjs/internal/observable/concat";
 
 @Injectable()
 export class AppEffects {
@@ -92,6 +95,17 @@ export class AppEffects {
         map((payload: User) => new UserDeleted(payload)),
         catchError(error => of(new UserDeleteError(error)))
       ))
+  );
+
+  @Effect() deleteUsers$ = this.actions$.pipe(
+    ofType(AppActionTypes.DeleteUsers),
+    switchMap((action: DeleteUsers) => this.userService
+        .deleteAll(action.payload.map((user: User) => user.id))
+        .pipe(
+          map((payload: User[]) => new UsersDeleted(payload)),
+          catchError(error => of(new UsersDeleteError(error)))
+        )
+    )
   );
 
   // Projects

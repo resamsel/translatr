@@ -38,15 +38,12 @@
             (click)="onEdit(element)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button
-            mat-icon-button
-            [mat-menu-trigger-for]="deleteMenu"
-            [disabled]="!(allowDelete$(element) | async)">
-            <mat-icon>delete</mat-icon>
-          </button>
-          <mat-menu #deleteMenu="matMenu" xPosition="before">
-            <button mat-menu-item (click)="onDelete(element)">Delete</button>
-          </mat-menu>
+          <confirm-button
+            title="Delete"
+            icon="delete"
+            [disabled]="!(allowDelete$(element) | async)"
+            (confirm)="onDelete(element)">
+          </confirm-button>
         </td>
       </ng-container>
 

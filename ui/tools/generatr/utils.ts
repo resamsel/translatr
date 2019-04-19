@@ -21,22 +21,6 @@ export const pickRandomly = <T>(options: Array<T>): T => {
   return options[Math.ceil(Math.random() * options.length) - 1];
 };
 
-export const errorMessage = (error: HttpErrorResponse | ConstraintViolationErrorInfo): string => {
-  if (error instanceof HttpErrorResponse) {
-    if (!!error.error && !!error.error.error) {
-      return errorMessage(error.error.error);
-    }
-
-    return error.message;
-  }
-
-  if (!!error.violations) {
-    return error.violations.map((v: ConstraintViolation) => `${v.field}: ${v.message}`).join(', ');
-  }
-
-  return error.message;
-};
-
 /**
  * Calculates "Cartesian Product" sets.
  * @example

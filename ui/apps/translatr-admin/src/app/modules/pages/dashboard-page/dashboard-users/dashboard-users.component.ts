@@ -1,28 +1,34 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {AppFacade} from "../../../../+state/app.facade";
-import {RequestCriteria, User} from "@dev/translatr-model";
-import {debounceTime, distinctUntilChanged, map, mapTo, shareReplay, startWith, take, tap} from "rxjs/operators";
-import {UserDeleted, UserDeleteError} from "../../../../+state/app.actions";
+import {PagedList, RequestCriteria, User} from "@dev/translatr-model";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  mapTo,
+  shareReplay,
+  startWith,
+  take,
+  tap,
+  withLatestFrom
+} from "rxjs/operators";
+import {UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError} from "../../../../+state/app.actions";
 import {
   UserEditDialogComponent,
   UserEditDialogConfig
 } from "@dev/translatr-components/src/lib/modules/user/user-edit-dialog/user-edit-dialog.component";
-import {MatDialog} from "@angular/material";
+import {MatDialog, MatSnackBar} from "@angular/material";
 import {filter} from "rxjs/internal/operators/filter";
 import {UserRole} from "@dev/translatr-model/src/lib/model/user-role";
 import {merge, Observable, Subject} from "rxjs";
-import {FormControl} from "@angular/forms";
 import {scan} from "rxjs/internal/operators/scan";
-
-export const isAdmin = (user?: User): boolean => user !== undefined && user.role === UserRole.Admin;
-
-export const hasCreateUserPermission = () => map(isAdmin);
-
-const hasEditUserPermission = (user: User) => map((me?: User) =>
-  (me !== undefined && me.id === user.id) || isAdmin(me));
-
-const hasDeleteUserPermission = (user: User) => map((me?: User) =>
-  (me !== undefined && me.id !== user.id) && isAdmin(me));
+import {SelectionModel} from "@angular/cdk/collections";
+import {
+  hasCreateUserPermission, hasDeleteAllUsersPermission,
+  hasDeleteUserPermission,
+  hasEditUserPermission,
+  isAdmin
+} from "@dev/translatr-sdk/src/lib/shared/permissions";
 
 export const mapToAllowedRoles = () => map((me?: User): UserRole[] =>
   [UserRole.User, ...isAdmin(me) ? [UserRole.Admin] : []]);
@@ -32,9 +38,9 @@ export const mapToAllowedRoles = () => map((me?: User): UserRole[] =>
   templateUrl: './dashboard-users.component.html',
   styleUrls: ['./dashboard-users.component.scss']
 })
-export class DashboardUsersComponent {
+export class DashboardUsersComponent implements OnDestroy {
 
-  readonly displayedColumns = ['name', 'username', 'email', 'when_created', 'role', 'actions'];
+  readonly displayedColumns = ['icon', 'name', 'username', 'email', 'when_created', 'role', 'actions'];
 
   me$ = this.facade.me$;
   search$ = new Subject<string>();
@@ -58,12 +64,34 @@ export class DashboardUsersComponent {
       shareReplay(1)
     );
   users$ = this.facade.users$;
-  userDeleted$ = this.facade.userDeleted$;
   allowCreate$ = this.me$.pipe(hasCreateUserPermission());
-  search = new FormControl();
 
-  constructor(private readonly facade: AppFacade, private readonly dialog: MatDialog) {
+  selection = new SelectionModel<User>(true, []);
+
+  constructor(
+    private readonly facade: AppFacade,
+    private readonly dialog: MatDialog,
+    private readonly snackBar: MatSnackBar
+  ) {
     this.commands$.subscribe((criteria: RequestCriteria) => this.facade.loadUsers(criteria));
+    this.facade.userDeleted$
+      .subscribe((action: UserDeleted | UserDeleteError) => {
+        if (action instanceof UserDeleted) {
+          snackBar.open(`User ${action.payload.username} has been deleted`, 'Dismiss', {duration: 3000});
+          this.reload$.next();
+        } else {
+          snackBar.open(`User could not be deleted: ${action.payload.error.error}`, 'Dismiss', {duration: 8000});
+        }
+      });
+    this.facade.usersDeleted$
+      .subscribe((action: UsersDeleted | UsersDeleteError) => {
+        if (action instanceof UsersDeleted) {
+          snackBar.open(`${action.payload.length} users have been deleted`, 'Dismiss', {duration: 3000});
+        } else {
+          snackBar.open(`Users could not be deleted: ${action.payload.error.error}`, 'Dismiss', {duration: 8000});
+        }
+        this.reload$.next();
+      });
   }
 
   trackByFn(index: number, item: { id: string }): string {
@@ -76,6 +104,10 @@ export class DashboardUsersComponent {
 
   allowDelete$(user: User): Observable<boolean> {
     return this.me$.pipe(hasDeleteUserPermission(user));
+  }
+
+  allowDeleteAll$(users: User[]): Observable<boolean> {
+    return this.me$.pipe(hasDeleteAllUsersPermission(users));
   }
 
   onCreate() {
@@ -115,17 +147,11 @@ export class DashboardUsersComponent {
   }
 
   onDelete(user: User) {
-    this.userDeleted$
-      .pipe(take(1))
-      .subscribe((action: UserDeleted | UserDeleteError) => {
-        if (action instanceof UserDeleted) {
-          console.log(`User ${action.payload.username} has been deleted`);
-          this.reload$.next();
-        } else {
-          console.warn(`User ${action.payload.error.error} could not be deleted`);
-        }
-      });
     this.facade.deleteUser(user);
+  }
+
+  onDeleteAll(users: User[]) {
+    this.facade.deleteUsers(users);
   }
 
   onFilter(value: string) {
@@ -134,8 +160,38 @@ export class DashboardUsersComponent {
 
   onLoadMore() {
     this.commands$
-      .pipe(tap(console.log), take(1))
+      .pipe(take(1))
       .subscribe((criteria: RequestCriteria) =>
         this.limit$.next(parseInt(criteria.limit, 10) * 2));
+  }
+
+  /**
+   * Whether the number of selected elements matches the total number of rows.
+   */
+  isAllSelected$(): Observable<boolean> {
+    return this.users$.pipe(
+      take(1),
+      map((pagedList: PagedList<User>) => {
+        const numSelected = this.selection.selected.length;
+        const numRows = pagedList.list.length;
+        return numSelected == numRows;
+      })
+    );
+  }
+
+  /**
+   * Selects all rows if they are not all selected; otherwise clear selection.
+   */
+  masterToggle() {
+    this.users$.pipe(take(1), withLatestFrom(this.isAllSelected$()))
+      .subscribe(([pagedList, allSelected]: [PagedList<User>, boolean]) =>
+        allSelected ?
+          this.selection.clear() :
+          pagedList.list.forEach(row => this.selection.select(row))
+      );
+  }
+
+  ngOnDestroy(): void {
+    this.facade.unloadUsers();
   }
 }

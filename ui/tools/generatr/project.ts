@@ -5,10 +5,10 @@ import {getRandomUser, getRandomUserAccessToken} from "./user";
 import {AccessToken, Key, Locale, Message, PagedList, Project, User, UserRole} from "@dev/translatr-model";
 import {catchError, concatMap, map, mapTo} from "rxjs/operators";
 import * as randomName from 'random-name';
-import {cartesianProduct, errorMessage, pickRandomly} from "./utils";
+import {cartesianProduct, pickRandomly} from "./utils";
 import {HttpErrorResponse} from "@angular/common/http";
 import {filter} from "rxjs/internal/operators/filter";
-import {KeyService, LocaleService, MessageService, ProjectService, UserService} from "@dev/translatr-sdk";
+import {KeyService, LocaleService, MessageService, ProjectService, UserService, errorMessage} from "@dev/translatr-sdk";
 
 const localeNames = ['en', 'de', 'it', 'fr', 'hu', 'sl', 'cs', 'es', 'pl', 'gr'];
 const featureNames = ['user', 'project', 'locale', 'key', 'message', 'accessToken'];

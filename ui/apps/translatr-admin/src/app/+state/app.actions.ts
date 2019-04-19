@@ -25,6 +25,10 @@ export enum AppActionTypes {
   UserDeleted = '[Translatr API] User Deleted',
   UserDeleteError = '[Translatr API] User Delete Error',
 
+  DeleteUsers = '[Users Page] Delete Users',
+  UsersDeleted = '[Translatr API] Users Deleted',
+  UsersDeleteError = '[Translatr API] Users Delete Error',
+
   // Projects
 
   LoadProjects = '[Projects Page] Load Projects',
@@ -146,6 +150,27 @@ export class UserDeleted implements Action {
   }
 }
 
+export class DeleteUsers implements Action {
+  readonly type = AppActionTypes.DeleteUsers;
+
+  constructor(public payload: User[]) {
+  }
+}
+
+export class UsersDeleteError implements Action {
+  readonly type = AppActionTypes.UsersDeleteError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class UsersDeleted implements Action {
+  readonly type = AppActionTypes.UsersDeleted;
+
+  constructor(public payload: User[]) {
+  }
+}
+
 // Projects
 
 export class LoadProjects implements Action {
@@ -220,6 +245,7 @@ export type AppAction =
   | CreateUser | UserCreated | UserCreateError
   | UpdateUser | UserUpdated | UserUpdateError
   | DeleteUser | UserDeleted | UserDeleteError
+  | DeleteUsers | UsersDeleted | UsersDeleteError
   // Projects
   | LoadProjects | ProjectsLoaded | ProjectsLoadError
   | DeleteProject | ProjectDeleted | ProjectDeleteError

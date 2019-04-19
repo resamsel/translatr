@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import {interval, Observable} from "rxjs";
+import {concatAll, map, take} from "rxjs/operators";
 import { convertTemporals, convertTemporalsList } from "../shared/mapper-utils";
 import {Aggregate, PagedList, RequestCriteria, User} from "@dev/translatr-model";
+import {concat} from "rxjs/internal/observable/concat";
+import {merge} from "rxjs/internal/observable/merge";
+import {combineLatest} from "rxjs/internal/observable/combineLatest";
 
 @Injectable({
   providedIn: 'root'
@@ -59,5 +62,9 @@ export class UserService {
     return this.http
       .delete<User>(`/api/user/${userId}`)
       .pipe(map(convertTemporals));
+  }
+
+  deleteAll(userIds: string[]): Observable<User[]> {
+    return combineLatest(...userIds.map((id: string) => this.delete(id)));
   }
 }

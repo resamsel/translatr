@@ -65,6 +65,15 @@ export function appReducer(
           list: state.users.list.filter((user: User) => user.id !== action.payload.id)
         }
       };
+    case AppActionTypes.UsersDeleted:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          list: state.users.list.filter((user: User) =>
+            action.payload.find((deleted: User) => user.id !== deleted.id))
+        }
+      };
     case AppActionTypes.ProjectDeleted:
       return {
         ...state,

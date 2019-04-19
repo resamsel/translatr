@@ -3,13 +3,13 @@ import {CommonModule} from '@angular/common';
 import {DashboardPageRoutingModule} from './dashboard-page-routing.module';
 import {DashboardPageComponent} from './dashboard-page.component';
 import {
-  MatButtonModule,
+  MatButtonModule, MatCheckboxModule,
   MatDialogModule,
   MatIconModule,
   MatInputModule,
   MatMenuModule,
   MatPaginatorModule,
-  MatSelectModule,
+  MatSelectModule, MatSnackBarModule,
   MatTableModule,
   MatTabsModule
 } from "@angular/material";
@@ -22,6 +22,7 @@ import {DashboardProjectsComponent} from './dashboard-projects/dashboard-project
 import {ReactiveFormsModule} from "@angular/forms";
 import {DashboardAccessTokensComponent} from './dashboard-access-tokens/dashboard-access-tokens.component';
 import {GravatarModule} from "ngx-gravatar";
+import {ButtonModule} from "@dev/translatr-components/src/lib/modules/button/button.module";
 
 @NgModule({
   declarations: [DashboardPageComponent, DashboardUsersComponent, DashboardInfoComponent, DashboardProjectsComponent, DashboardAccessTokensComponent],
@@ -30,6 +31,7 @@ import {GravatarModule} from "ngx-gravatar";
     DashboardPageRoutingModule,
     SidenavModule,
     UserEditDialogModule,
+    ButtonModule,
     ReactiveFormsModule,
     MatIconModule,
     MatButtonModule,
@@ -41,6 +43,8 @@ import {GravatarModule} from "ngx-gravatar";
     MatSelectModule,
     MatInputModule,
     MatPaginatorModule,
+    MatCheckboxModule,
+    MatSnackBarModule,
     GravatarModule
   ]
 })

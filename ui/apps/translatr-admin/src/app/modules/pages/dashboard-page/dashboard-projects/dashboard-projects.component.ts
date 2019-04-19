@@ -1,29 +1,25 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {AppFacade} from "../../../../+state/app.facade";
 import {debounceTime, distinctUntilChanged, map, mapTo, scan, shareReplay, startWith, take, tap} from "rxjs/operators";
-import {Project, ProjectCriteria, RequestCriteria, User} from "@dev/translatr-model";
+import {Project, ProjectCriteria, RequestCriteria} from "@dev/translatr-model";
 import {merge, Observable, Subject} from "rxjs";
-import {isAdmin} from "../dashboard-users/dashboard-users.component";
 import {ProjectDeleted, ProjectDeleteError} from "../../../../+state/app.actions";
-
-const hasEditProjectPermission = (project: Project) => map((me?: User) =>
-  (me !== undefined && me.id === project.ownerId) || isAdmin(me));
-
-const hasDeleteProjectPermission = (project: Project) => map((me?: User) =>
-  (me !== undefined && me.id === project.ownerId) || isAdmin(me));
+import {MatDialog, MatSnackBar} from "@angular/material";
+import {errorMessage} from "@dev/translatr-sdk";
+import {hasDeleteProjectPermission, hasEditProjectPermission} from "@dev/translatr-sdk/src/lib/shared/permissions";
+import {of} from "rxjs/internal/observable/of";
 
 @Component({
   selector: 'dev-dashboard-projects',
   templateUrl: './dashboard-projects.component.html',
   styleUrls: ['./dashboard-projects.component.css']
 })
-export class DashboardProjectsComponent {
+export class DashboardProjectsComponent implements OnDestroy {
 
   displayedColumns = ['name', 'description', 'owner', 'when_created', 'actions'];
 
   me$ = this.facade.me$;
   projects$ = this.facade.projects$;
-  projectDeleted$ = this.facade.projectDeleted$;
   search$ = new Subject<string>();
   limit$ = new Subject<number>();
   reload$ = new Subject<void>();
@@ -45,8 +41,29 @@ export class DashboardProjectsComponent {
       shareReplay(1)
     );
 
-  constructor(private readonly facade: AppFacade) {
+  constructor(
+    private readonly facade: AppFacade,
+    private readonly dialog: MatDialog,
+    private readonly snackBar: MatSnackBar
+  ) {
     this.commands$.subscribe((criteria: ProjectCriteria) => this.facade.loadProjects(criteria));
+    facade.projectDeleted$
+      .subscribe((action: ProjectDeleted | ProjectDeleteError) => {
+        if (action instanceof ProjectDeleted) {
+          snackBar.open(
+            `Project ${action.payload.name} has been deleted`,
+            'Dismiss',
+            {duration: 3000}
+          );
+          this.reload$.next();
+        } else {
+          snackBar.open(
+            `Project could not be deleted: ${errorMessage(action.payload)}`,
+            'Dismiss',
+            {duration: 8000}
+          );
+        }
+      });
   }
 
   trackByFn(index: number, item: { id: string }): string {
@@ -54,7 +71,7 @@ export class DashboardProjectsComponent {
   }
 
   allowEdit$(project: Project): Observable<boolean> {
-    return this.me$.pipe(hasEditProjectPermission(project));
+    return of(false); // this.me$.pipe(hasEditProjectPermission(project));
   }
 
   allowDelete$(project: Project): Observable<boolean> {
@@ -62,17 +79,6 @@ export class DashboardProjectsComponent {
   }
 
   onDelete(project: Project) {
-    this.projectDeleted$
-      .pipe(take(1))
-      .subscribe((action: ProjectDeleted | ProjectDeleteError) => {
-        if (action instanceof ProjectDeleted) {
-          console.log(`Project ${action.payload.name} has been deleted`);
-          this.reload$.next();
-        } else {
-          console.warn(`Project ${action.payload.error.error} could not be deleted`);
-        }
-      });
-    console.log('deleting...');
     this.facade.deleteProject(project);
   }
 
@@ -82,8 +88,12 @@ export class DashboardProjectsComponent {
 
   onLoadMore() {
     this.commands$
-      .pipe(tap(console.log), take(1))
+      .pipe(take(1))
       .subscribe((criteria: RequestCriteria) =>
         this.limit$.next(parseInt(criteria.limit, 10) * 2));
+  }
+
+  ngOnDestroy(): void {
+    this.facade.unloadProjects();
   }
 }
