@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {User} from "../../../../../../../libs/translatr-model/src/lib/model/user";
+import { Component, Input, OnInit } from '@angular/core';
+import { User } from "../../../../../../../libs/translatr-model/src/lib/model/user";
 
 @Component({
   selector: 'app-user-card-link',

@@ -39,7 +39,7 @@
   </header>
 
   <div class="container">
-    <app-user-card [user]="user">
+    <user-card [user]="user">
       <p class="email ellipsis">
         <mat-icon inline="true">email</mat-icon>
         <span [title]="user?.email">{{user?.email}}</span>
@@ -48,7 +48,7 @@
         <mat-icon inline="true">access_time</mat-icon>
         <span [title]="user?.whenCreated | date">{{user?.whenCreated | amTimeAgo}}</span>
       </p>
-    </app-user-card>
+    </user-card>
 
     <div class="content">
       <router-outlet></router-outlet>

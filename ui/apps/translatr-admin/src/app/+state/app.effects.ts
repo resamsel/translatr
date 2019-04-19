@@ -1,17 +1,19 @@
-import {Injectable} from '@angular/core';
-import {Actions, Effect, ofType} from '@ngrx/effects';
-import {DataPersistence} from '@nrwl/nx';
-import {AppPartialState} from './app.reducer';
+import { Injectable } from '@angular/core';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { DataPersistence } from '@nrwl/nx';
+import { AppPartialState } from './app.reducer';
 import {
   AccessTokensLoaded,
   AccessTokensLoadError,
   AppActionTypes,
   CreateUser,
   DeleteProject,
-  DeleteUser, DeleteUsers,
+  DeleteUser,
+  DeleteUsers,
   LoadAccessTokens,
   LoadLoggedInUser,
   LoadProjects,
+  LoadUser,
   LoadUsers,
   LoggedInUserLoaded,
   LoggedInUserLoadError,
@@ -23,20 +25,21 @@ import {
   UserCreated,
   UserCreateError,
   UserDeleted,
-  UserDeleteError, UsersDeleted, UsersDeleteError,
+  UserDeleteError,
+  UserLoaded,
+  UserLoadError,
+  UsersDeleted,
+  UsersDeleteError,
   UsersLoaded,
   UsersLoadError,
   UserUpdated,
   UserUpdateError
 } from './app.actions';
-import {AccessToken, PagedList, Project, User} from "@dev/translatr-model";
-import {catchError, concatMap, map, switchMap} from "rxjs/operators";
-import {of} from "rxjs/internal/observable/of";
-import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
-import {ProjectService, UserService} from "@dev/translatr-sdk";
-import {merge, Observable} from "rxjs";
-import {scan} from "rxjs/internal/operators/scan";
-import {concat} from "rxjs/internal/observable/concat";
+import { AccessToken, PagedList, Project, User } from "@dev/translatr-model";
+import { catchError, map, switchMap } from "rxjs/operators";
+import { of } from "rxjs/internal/observable/of";
+import { AccessTokenService } from "@dev/translatr-sdk/src/lib/services/access-token.service";
+import { ProjectService, UserService } from "@dev/translatr-sdk";
 
 @Injectable()
 export class AppEffects {
@@ -64,6 +67,16 @@ export class AppEffects {
       .pipe(
         map((payload: PagedList<User>) => new UsersLoaded(payload)),
         catchError(error => of(new UsersLoadError(error)))
+      ))
+  );
+
+  @Effect() loadUser$ = this.actions$.pipe(
+    ofType(AppActionTypes.LoadUser),
+    switchMap((action: LoadUser) => this.userService
+      .get(action.payload.userId)
+      .pipe(
+        map((payload: User) => new UserLoaded(payload)),
+        catchError(error => of(new UserLoadError(error)))
       ))
   );
 

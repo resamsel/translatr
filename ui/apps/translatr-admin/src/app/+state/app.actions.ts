@@ -1,6 +1,6 @@
-import {Action} from '@ngrx/store';
-import {AccessToken, PagedList, Project, ProjectCriteria, RequestCriteria, User} from "@dev/translatr-model";
-import {HttpErrorResponse} from "@angular/common/http";
+import { Action } from '@ngrx/store';
+import { AccessToken, PagedList, Project, ProjectCriteria, RequestCriteria, User } from "@dev/translatr-model";
+import { HttpErrorResponse } from "@angular/common/http";
 
 export enum AppActionTypes {
   // Users
@@ -12,6 +12,10 @@ export enum AppActionTypes {
   LoadUsers = '[Users Page] Load Users',
   UsersLoaded = '[Translatr API] Users Loaded',
   UsersLoadError = '[Translatr API] Users Load Error',
+
+  LoadUser = '[User Page] Load User',
+  UserLoaded = '[Translatr API] User Loaded',
+  UserLoadError = '[Translatr API] User Load Error',
 
   CreateUser = '[Users Page] Create User',
   UserCreated = '[Translatr API] User Created',
@@ -84,6 +88,27 @@ export class UsersLoaded implements Action {
   readonly type = AppActionTypes.UsersLoaded;
 
   constructor(public payload: PagedList<User>) {
+  }
+}
+
+export class LoadUser implements Action {
+  readonly type = AppActionTypes.LoadUser;
+
+  constructor(public payload: {userId: string}) {
+  }
+}
+
+export class UserLoadError implements Action {
+  readonly type = AppActionTypes.UserLoadError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class UserLoaded implements Action {
+  readonly type = AppActionTypes.UserLoaded;
+
+  constructor(public payload: User) {
   }
 }
 
@@ -242,6 +267,7 @@ export type AppAction =
   // Users
   LoadLoggedInUser | LoggedInUserLoaded | LoggedInUserLoadError
   | LoadUsers | UsersLoaded | UsersLoadError
+  | LoadUser | UserLoaded | UserLoadError
   | CreateUser | UserCreated | UserCreateError
   | UpdateUser | UserUpdated | UserUpdateError
   | DeleteUser | UserDeleted | UserDeleteError

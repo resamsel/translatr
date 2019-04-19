@@ -1,22 +1,24 @@
-import {Injectable} from '@angular/core';
-import {select, Store} from '@ngrx/store';
-import {AppPartialState} from './app.reducer';
-import {appQuery} from './app.selectors';
+import { Injectable } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { AppPartialState } from './app.reducer';
+import { appQuery } from './app.selectors';
 import {
   AppActionTypes,
   CreateUser,
   DeleteProject,
-  DeleteUser, DeleteUsers,
+  DeleteUser,
+  DeleteUsers,
   LoadAccessTokens,
   LoadLoggedInUser,
   LoadProjects,
+  LoadUser,
   LoadUsers,
   UpdateUser
 } from './app.actions';
-import {Project, ProjectCriteria, RequestCriteria, User} from "@dev/translatr-model";
-import {Actions, ofType} from "@ngrx/effects";
-import {Subject} from "rxjs";
-import {takeUntil} from "rxjs/operators";
+import { Project, ProjectCriteria, RequestCriteria, User } from "@dev/translatr-model";
+import { Actions, ofType } from "@ngrx/effects";
+import { Observable, Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Injectable()
 export class AppFacade {
@@ -75,6 +77,10 @@ export class AppFacade {
 
   accessTokens$ = this.store.pipe(select(appQuery.getAccessTokens));
 
+  user$(userId: string): Observable<User | undefined> {
+    return this.store.pipe(select(appQuery.getUser(userId)));
+  }
+
   constructor(
     private readonly store: Store<AppPartialState>,
     private readonly actions$: Actions) {
@@ -88,6 +94,10 @@ export class AppFacade {
 
   loadUsers(criteria?: RequestCriteria) {
     this.store.dispatch(new LoadUsers(criteria));
+  }
+
+  loadUser(userId: string) {
+    this.store.dispatch(new LoadUser({userId}));
   }
 
   createUser(user: User) {

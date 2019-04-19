@@ -5,14 +5,10 @@ import { UsersPageRoutingModule } from './users-page-routing.module';
 import { MatIconModule } from '@angular/material';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { UserListModule } from '../../shared/user-list/user-list.module';
-import { UserCardModule } from '../../shared/user-card/user-card.module';
+import { UserCardModule } from '../../../../../../../libs/translatr-components/src/lib/modules/user/user-card/user-card.module';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import {
-  USERS_FEATURE_KEY,
-  initialState as usersInitialState,
-  usersReducer
-} from './+state/users.reducer';
+import { initialState as usersInitialState, USERS_FEATURE_KEY, usersReducer } from './+state/users.reducer';
 import { UsersEffects } from './+state/users.effects';
 import { UsersFacade } from './+state/users.facade';
 

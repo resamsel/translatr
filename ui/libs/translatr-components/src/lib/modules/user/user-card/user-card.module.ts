@@ -5,7 +5,7 @@ import { GravatarModule } from "ngx-gravatar";
 import { MatCardModule, MatIconModule } from "@angular/material";
 import { MomentModule } from "ngx-moment";
 import { UserCardLinkComponent } from './user-card-link.component';
-import {RouterModule} from "@angular/router";
+import { RouterModule } from "@angular/router";
 
 @NgModule({
   declarations: [UserCardComponent, UserCardLinkComponent],

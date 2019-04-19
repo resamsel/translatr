@@ -1,11 +1,12 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {DashboardPageComponent} from "./dashboard-page.component";
-import {DashboardInfoComponent} from "./dashboard-info/dashboard-info.component";
-import {DashboardUsersComponent} from "./dashboard-users/dashboard-users.component";
-import {DashboardProjectsComponent} from "./dashboard-projects/dashboard-projects.component";
-import {DASHBOARD_ROUTES} from "./dashboard-page.token";
-import {DashboardAccessTokensComponent} from "./dashboard-access-tokens/dashboard-access-tokens.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { DashboardPageComponent } from "./dashboard-page.component";
+import { DashboardInfoComponent } from "./dashboard-info/dashboard-info.component";
+import { DashboardUsersComponent } from "./dashboard-users/dashboard-users.component";
+import { DashboardProjectsComponent } from "./dashboard-projects/dashboard-projects.component";
+import { DASHBOARD_ROUTES } from "./dashboard-page.token";
+import { DashboardAccessTokensComponent } from "./dashboard-access-tokens/dashboard-access-tokens.component";
+import { DashboardUserComponent } from "./dashboard-user/dashboard-user.component";
 
 export const routes: Routes = [
   {
@@ -21,12 +22,21 @@ export const routes: Routes = [
         }
       },
       {
-        component: DashboardUsersComponent,
         path: 'users',
         data: {
           icon: 'group',
           name: 'Users'
-        }
+        },
+        children: [
+          {
+            component: DashboardUsersComponent,
+            path: ''
+          },
+          {
+            component: DashboardUserComponent,
+            path: ':id'
+          }
+        ]
       },
       {
         component: DashboardProjectsComponent,

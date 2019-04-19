@@ -1,5 +1,5 @@
-import {AppAction, AppActionTypes} from './app.actions';
-import {AccessToken, PagedList, Project, User} from "@dev/translatr-model";
+import { AppAction, AppActionTypes } from './app.actions';
+import { AccessToken, PagedList, Project, User } from "@dev/translatr-model";
 
 export const APP_FEATURE_KEY = 'app';
 
@@ -30,6 +30,13 @@ export function appReducer(
       return {
         ...state,
         users: action.payload
+      };
+    case AppActionTypes.UserLoaded:
+      return {
+        ...state,
+        users: state.users
+          ? {...state.users, list: [...state.users.list, action.payload]}
+          : {list: [action.payload], hasNext: false, hasPrev: false, offset: 0, limit: 1}
       };
     case AppActionTypes.ProjectsLoaded:
       return {

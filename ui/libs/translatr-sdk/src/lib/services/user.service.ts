@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
-import {interval, Observable} from "rxjs";
-import {concatAll, map, take} from "rxjs/operators";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { convertTemporals, convertTemporalsList } from "../shared/mapper-utils";
-import {Aggregate, PagedList, RequestCriteria, User} from "@dev/translatr-model";
-import {concat} from "rxjs/internal/observable/concat";
-import {merge} from "rxjs/internal/observable/merge";
-import {combineLatest} from "rxjs/internal/observable/combineLatest";
+import { Aggregate, PagedList, RequestCriteria, User } from "@dev/translatr-model";
+import { combineLatest } from "rxjs/internal/observable/combineLatest";
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +21,12 @@ export class UserService {
         ...list,
         list: convertTemporalsList(list.list)
       })));
+  }
+
+  get(userId: string, criteria?: RequestCriteria): Observable<User> {
+    return this.http
+      .get<User>(`/api/user/${userId}`, {params: {...criteria}})
+      .pipe(map(convertTemporals));
   }
 
   getUserByName(username: string, options?: {

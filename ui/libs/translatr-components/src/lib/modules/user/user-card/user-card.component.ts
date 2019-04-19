@@ -3,7 +3,7 @@ import { User } from "../../../../../../../libs/translatr-model/src/lib/model/us
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-user-card',
+  selector: 'user-card',
   templateUrl: './user-card.component.html',
   styleUrls: ['./user-card.component.scss'],
   host: {

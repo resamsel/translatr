@@ -21,9 +21,9 @@ import { UserInfoComponent } from './user-info/user-info.component';
 import { ActivityModule } from "../../shared/activity/activity.module";
 import { ActivityListModule } from "../../shared/activity-list/activity-list.module";
 import { UserActivityComponent } from './user-activity/user-activity.component';
-import { UserCardModule } from "../../shared/user-card/user-card.module";
+import { UserCardModule } from "../../../../../../../libs/translatr-components/src/lib/modules/user/user-card/user-card.module";
 import { ProjectCreationDialogModule } from "../../shared/project-creation-dialog/project-creation-dialog.module";
-import {ProjectCardModule} from "../../shared/project-card/project-card.module";
+import { ProjectCardModule } from "../../shared/project-card/project-card.module";
 
 @NgModule({
   declarations: [UserPageComponent, UserProjectsComponent, UserInfoComponent, UserActivityComponent],
