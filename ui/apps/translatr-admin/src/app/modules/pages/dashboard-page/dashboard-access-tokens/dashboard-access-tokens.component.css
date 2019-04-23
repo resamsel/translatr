@@ -9,3 +9,10 @@ table,
   width: 1px;
   white-space: nowrap;
 }
+
+.scope {
+  max-width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -20,8 +20,7 @@
 
       <ng-container matColumnDef="scopes">
         <th mat-header-cell *matHeaderCellDef>Scope</th>
-        <td mat-cell *matCellDef="let element">{{element.scope.split(',').slice(0, 4).join(', ')}}<span
-          *ngIf="element.scope.split(',').length > 4">, ...</span></td>
+        <td mat-cell *matCellDef="let element" class="scope">{{element.scope.split(',') | ellipsis}}</td>
       </ng-container>
 
       <ng-container matColumnDef="when_created">

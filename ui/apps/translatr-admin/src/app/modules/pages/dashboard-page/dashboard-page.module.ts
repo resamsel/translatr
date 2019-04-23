@@ -28,6 +28,7 @@ import { ButtonModule } from "@dev/translatr-components/src/lib/modules/button/b
 import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
 import { UserCardModule } from "@dev/translatr-components/src/lib/modules/user/user-card/user-card.module";
 import { EntityTableModule } from "@dev/translatr-components/src/lib/modules/entity/entity-table/entity-table.module";
+import { EllipsisModule } from "../../pipes/ellipsis/ellipsis.module";
 
 @NgModule({
   declarations: [DashboardPageComponent, DashboardUsersComponent, DashboardInfoComponent, DashboardProjectsComponent, DashboardAccessTokensComponent, DashboardUserComponent],
@@ -38,6 +39,8 @@ import { EntityTableModule } from "@dev/translatr-components/src/lib/modules/ent
     UserEditDialogModule,
     ButtonModule,
     UserCardModule,
+    EllipsisModule,
+
     ReactiveFormsModule,
     MatIconModule,
     MatButtonModule,
