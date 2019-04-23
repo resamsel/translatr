@@ -1,6 +1,5 @@
 .mat-form-field,
-table,
-.mat-button {
+table {
   width: 100%;
 }
 
@@ -15,4 +14,9 @@ table,
 .selection-header {
   color: inherit;
   font-size: 14px;
+}
+
+.more-button {
+  display: block;
+  margin: 8px auto;
 }

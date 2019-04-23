@@ -1,17 +1,16 @@
-import { Component, OnDestroy } from '@angular/core';
-import { AppFacade } from "../../../../+state/app.facade";
-import { RequestCriteria, User } from "@dev/translatr-model";
-import { debounceTime, distinctUntilChanged, map, mapTo, shareReplay, startWith, take } from "rxjs/operators";
-import { UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError } from "../../../../+state/app.actions";
+import {Component, OnDestroy} from '@angular/core';
+import {AppFacade} from "../../../../+state/app.facade";
+import {RequestCriteria, User} from "@dev/translatr-model";
+import {map, mapTo, startWith, take} from "rxjs/operators";
+import {UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError} from "../../../../+state/app.actions";
 import {
   UserEditDialogComponent,
   UserEditDialogConfig
 } from "@dev/translatr-components/src/lib/modules/user/user-edit-dialog/user-edit-dialog.component";
-import { MatDialog, MatSnackBar } from "@angular/material";
-import { filter } from "rxjs/internal/operators/filter";
-import { UserRole } from "@dev/translatr-model/src/lib/model/user-role";
-import { merge, Observable, Subject } from "rxjs";
-import { scan } from "rxjs/internal/operators/scan";
+import {MatDialog, MatSnackBar} from "@angular/material";
+import {filter} from "rxjs/internal/operators/filter";
+import {UserRole} from "@dev/translatr-model/src/lib/model/user-role";
+import {merge, Observable} from "rxjs";
 import {
   hasCreateUserPermission,
   hasDeleteAllUsersPermission,
@@ -19,7 +18,7 @@ import {
   hasEditUserPermission,
   isAdmin
 } from "@dev/translatr-sdk/src/lib/shared/permissions";
-import { Entity } from "@dev/translatr-components";
+import {Entity} from "@dev/translatr-components";
 
 export const mapToAllowedRoles = () => map((me?: User): UserRole[] =>
   [UserRole.User, ...isAdmin(me) ? [UserRole.Admin] : []]);
@@ -34,28 +33,18 @@ export class DashboardUsersComponent implements OnDestroy {
   readonly displayedColumns = ['name', 'username', 'email', 'when_created', 'role', 'actions'];
 
   me$ = this.facade.me$;
-  search$ = new Subject<string>();
-  limit$ = new Subject<number>();
-  reload$ = new Subject<void>();
-  commands$ = merge(
-    this.search$.asObservable().pipe(
-      distinctUntilChanged(),
-      debounceTime(200),
-      map((search: string) => ({search}))
-    ),
-    this.limit$.asObservable().pipe(
-      distinctUntilChanged(),
-      map((limit: number) => ({limit: `${limit}`}))
-    ),
-    this.reload$.asObservable().pipe(mapTo({}))
-  )
-    .pipe(
-      startWith({limit: '20', search: '', order: 'name asc'}),
-      scan((acc: RequestCriteria, value: RequestCriteria) => ({...acc, ...value})),
-      shareReplay(1)
-    );
   users$ = this.facade.users$;
   allowCreate$ = this.me$.pipe(hasCreateUserPermission());
+
+  load$ = merge(
+    this.facade.userDeleted$
+      .pipe(filter((action: UserDeleted | UserDeleteError) => action instanceof UserDeleted)),
+    this.facade.usersDeleted$
+      .pipe(filter((action: UsersDeleted | UsersDeleteError) => action instanceof UsersDeleted))
+  ).pipe(
+    mapTo({}),
+    startWith({limit: '20', order: 'name asc'})
+  );
 
   selected: Entity[] = [];
 
@@ -64,12 +53,10 @@ export class DashboardUsersComponent implements OnDestroy {
     private readonly dialog: MatDialog,
     private readonly snackBar: MatSnackBar
   ) {
-    this.commands$.subscribe((criteria: RequestCriteria) => this.facade.loadUsers(criteria));
     this.facade.userDeleted$
       .subscribe((action: UserDeleted | UserDeleteError) => {
         if (action instanceof UserDeleted) {
           snackBar.open(`User ${action.payload.username} has been deleted`, 'Dismiss', {duration: 3000});
-          this.reload$.next();
         } else {
           snackBar.open(`User could not be deleted: ${action.payload.error.error}`, 'Dismiss', {duration: 8000});
         }
@@ -81,7 +68,6 @@ export class DashboardUsersComponent implements OnDestroy {
         } else {
           snackBar.open(`Users could not be deleted: ${action.payload.error.error}`, 'Dismiss', {duration: 8000});
         }
-        this.reload$.next();
       });
   }
 
@@ -89,15 +75,8 @@ export class DashboardUsersComponent implements OnDestroy {
     this.selected = entities;
   }
 
-  onFilter(value: string) {
-    this.search$.next(value);
-  }
-
-  onLoadMore() {
-    this.commands$
-      .pipe(take(1))
-      .subscribe((criteria: RequestCriteria) =>
-        this.limit$.next(parseInt(criteria.limit, 10) * 2));
+  onCriteriaChanged(criteria: RequestCriteria) {
+    this.facade.loadUsers(criteria);
   }
 
   allowEdit$(user: User): Observable<boolean> {

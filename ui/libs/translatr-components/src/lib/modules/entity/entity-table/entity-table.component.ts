@@ -10,9 +10,11 @@ import {
   QueryList,
   ViewChild
 } from '@angular/core';
-import { SelectionModel } from "@angular/cdk/collections";
-import { MatColumnDef, MatTable } from "@angular/material";
-import { PagedList } from "@dev/translatr-model";
+import {SelectionModel} from "@angular/cdk/collections";
+import {MatColumnDef, MatTable} from "@angular/material";
+import {PagedList, RequestCriteria} from "@dev/translatr-model";
+import {merge, Subject} from "rxjs";
+import {debounceTime, distinctUntilChanged, map, scan, shareReplay, take} from "rxjs/operators";
 
 export interface Entity {
   id: string;
@@ -39,17 +41,42 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
     return this._displayedColumns;
   }
 
+  @Input() set load(criteria: RequestCriteria) {
+    this.init$.next(criteria);
+    this.selection.clear();
+  }
+
+  @Output() readonly criteria = new EventEmitter<RequestCriteria>();
   @Output() readonly selected = new EventEmitter<Entity[]>();
-  @Output() readonly filter = new EventEmitter<string>();
-  @Output() readonly more = new EventEmitter<number>();
 
   @ViewChild(MatTable) private table: MatTable<Entity>;
 
   @ContentChildren(MatColumnDef) protected columns: QueryList<MatColumnDef>;
 
+  init$ = new Subject<RequestCriteria>();
+  search$ = new Subject<string>();
+  limit$ = new Subject<number>();
+  commands$ = merge(
+    this.init$.asObservable(),
+    this.search$.asObservable().pipe(
+      distinctUntilChanged(),
+      debounceTime(200),
+      map((search: string) => ({search}))
+    ),
+    this.limit$.asObservable().pipe(
+      distinctUntilChanged(),
+      map((limit: number) => ({limit: `${limit}`}))
+    )
+  )
+    .pipe(
+      scan((acc: RequestCriteria, value: RequestCriteria) => ({...acc, ...value})),
+      shareReplay(1)
+    );
+
   selection = new SelectionModel<Entity>(true, []);
 
   constructor() {
+    this.commands$.subscribe((criteria: RequestCriteria) => this.criteria.emit(criteria));
   }
 
   ngOnInit() {
@@ -65,11 +92,14 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   }
 
   onFilter(value: string) {
-    this.filter.emit(value);
+    this.search$.next(value);
   }
 
   onLoadMore() {
-    this.more.emit(this.dataSource.limit * 2);
+    this.commands$
+      .pipe(take(1))
+      .subscribe((criteria: RequestCriteria) =>
+        this.limit$.next(parseInt(criteria.limit, 10) * 2));
   }
 
   // Selection

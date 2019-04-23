@@ -23,7 +23,8 @@
   </ng-container>
 
   <ng-container matColumnDef="selectionActions">
-    <th mat-header-cell *matHeaderCellDef class="selection-header selection-actions" [attr.colspan]="columns.length - 1">
+    <th mat-header-cell *matHeaderCellDef class="selection-header selection-actions"
+        [attr.colspan]="columns.length - 1">
       <ng-content select="selection-actions"></ng-content>
     </th>
   </ng-container>
@@ -35,4 +36,11 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
-<button mat-button [disabled]="!dataSource?.hasNext" (click)="onLoadMore()">More...</button>
+<button
+  mat-button
+  color="accent"
+  class="more-button"
+  *ngIf="dataSource !== undefined"
+  [disabled]="!dataSource?.hasNext"
+  (click)="onLoadMore()">More...
+</button>

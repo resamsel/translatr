@@ -3,8 +3,8 @@
     <entity-table
       [dataSource]="accessTokens$ | async"
       [displayedColumns]="displayedColumns"
-      (filter)="onFilter($event)"
-      (more)="onLoadMore()"
+      [load]="load$ | async"
+      (criteria)="onCriteriaChanged($event)"
       (selected)="onSelected($event)">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>
@@ -19,8 +19,9 @@
       </ng-container>
 
       <ng-container matColumnDef="scopes">
-        <th mat-header-cell *matHeaderCellDef>Scope#</th>
-        <td mat-cell *matCellDef="let element">{{element.scope.split(',').length}}</td>
+        <th mat-header-cell *matHeaderCellDef>Scope</th>
+        <td mat-cell *matCellDef="let element">{{element.scope.split(',').slice(0, 4).join(', ')}}<span
+          *ngIf="element.scope.split(',').length > 4">, ...</span></td>
       </ng-container>
 
       <ng-container matColumnDef="when_created">

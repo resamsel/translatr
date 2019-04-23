@@ -3,8 +3,8 @@
     <entity-table
       [dataSource]="projects$ | async"
       [displayedColumns]="displayedColumns"
-      (filter)="onFilter($event)"
-      (more)="onLoadMore()"
+      [load]="load$ | async"
+      (criteria)="onCriteriaChanged($event)"
       (selected)="onSelected($event)">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>

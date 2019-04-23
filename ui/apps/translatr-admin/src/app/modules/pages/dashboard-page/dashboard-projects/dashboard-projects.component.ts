@@ -1,14 +1,12 @@
-import { Component, OnDestroy } from '@angular/core';
-import { AppFacade } from "../../../../+state/app.facade";
-import { debounceTime, distinctUntilChanged, map, mapTo, scan, shareReplay, startWith, take } from "rxjs/operators";
-import { Project, ProjectCriteria, RequestCriteria } from "@dev/translatr-model";
-import { merge, Observable, Subject } from "rxjs";
-import { ProjectDeleted, ProjectDeleteError } from "../../../../+state/app.actions";
-import { MatDialog, MatSnackBar } from "@angular/material";
-import { errorMessage } from "@dev/translatr-sdk";
-import { hasDeleteProjectPermission } from "@dev/translatr-sdk/src/lib/shared/permissions";
-import { of } from "rxjs/internal/observable/of";
-import { Entity } from "@dev/translatr-components";
+import {Component, OnDestroy} from '@angular/core';
+import {AppFacade} from "../../../../+state/app.facade";
+import {Project, RequestCriteria} from "@dev/translatr-model";
+import {Observable, of} from "rxjs";
+import {ProjectDeleted, ProjectDeleteError} from "../../../../+state/app.actions";
+import {MatDialog, MatSnackBar} from "@angular/material";
+import {errorMessage} from "@dev/translatr-sdk";
+import {hasDeleteProjectPermission} from "@dev/translatr-sdk/src/lib/shared/permissions";
+import {Entity} from "@dev/translatr-components";
 
 @Component({
   selector: 'dev-dashboard-projects',
@@ -21,26 +19,7 @@ export class DashboardProjectsComponent implements OnDestroy {
 
   me$ = this.facade.me$;
   projects$ = this.facade.projects$;
-  search$ = new Subject<string>();
-  limit$ = new Subject<number>();
-  reload$ = new Subject<void>();
-  commands$ = merge(
-    this.search$.asObservable().pipe(
-      distinctUntilChanged(),
-      debounceTime(200),
-      map((search: string) => ({search}))
-    ),
-    this.limit$.asObservable().pipe(
-      distinctUntilChanged(),
-      map((limit: number) => ({limit: `${limit}`}))
-    ),
-    this.reload$.asObservable().pipe(mapTo({}))
-  )
-    .pipe(
-      startWith({limit: '20', search: '', order: 'name asc'}),
-      scan((acc: ProjectCriteria, value: ProjectCriteria) => ({...acc, ...value})),
-      shareReplay(1)
-    );
+  load$ = of({limit: '20', order: 'name asc'});
 
   selected: Entity[] = [];
 
@@ -49,7 +28,6 @@ export class DashboardProjectsComponent implements OnDestroy {
     private readonly dialog: MatDialog,
     private readonly snackBar: MatSnackBar
   ) {
-    this.commands$.subscribe((criteria: ProjectCriteria) => this.facade.loadProjects(criteria));
     facade.projectDeleted$
       .subscribe((action: ProjectDeleted | ProjectDeleteError) => {
         if (action instanceof ProjectDeleted) {
@@ -58,7 +36,7 @@ export class DashboardProjectsComponent implements OnDestroy {
             'Dismiss',
             {duration: 3000}
           );
-          this.reload$.next();
+          // this.reload$.next();
         } else {
           snackBar.open(
             `Project could not be deleted: ${errorMessage(action.payload)}`,
@@ -73,15 +51,8 @@ export class DashboardProjectsComponent implements OnDestroy {
     this.selected = entities;
   }
 
-  onFilter(value: string) {
-    this.search$.next(value);
-  }
-
-  onLoadMore() {
-    this.commands$
-      .pipe(take(1))
-      .subscribe((criteria: RequestCriteria) =>
-        this.limit$.next(parseInt(criteria.limit, 10) * 2));
+  onCriteriaChanged(criteria: RequestCriteria) {
+    this.facade.loadProjects(criteria);
   }
 
   allowEdit$(project: Project): Observable<boolean> {
