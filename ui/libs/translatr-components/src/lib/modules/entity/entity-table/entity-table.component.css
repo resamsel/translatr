@@ -1,0 +1,18 @@
+.mat-form-field,
+table,
+.mat-button {
+  width: 100%;
+}
+
+.cdk-column-selection {
+  width: 32px;
+}
+
+.selection-actions {
+  text-align: right;
+}
+
+.selection-header {
+  color: inherit;
+  font-size: 14px;
+}

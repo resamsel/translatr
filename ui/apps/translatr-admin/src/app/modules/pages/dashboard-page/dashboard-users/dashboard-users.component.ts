@@ -1,34 +1,25 @@
-import {Component, OnDestroy} from '@angular/core';
-import {AppFacade} from "../../../../+state/app.facade";
-import {PagedList, RequestCriteria, User} from "@dev/translatr-model";
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  mapTo,
-  shareReplay,
-  startWith,
-  take,
-  tap,
-  withLatestFrom
-} from "rxjs/operators";
-import {UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError} from "../../../../+state/app.actions";
+import { Component, OnDestroy } from '@angular/core';
+import { AppFacade } from "../../../../+state/app.facade";
+import { RequestCriteria, User } from "@dev/translatr-model";
+import { debounceTime, distinctUntilChanged, map, mapTo, shareReplay, startWith, take } from "rxjs/operators";
+import { UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError } from "../../../../+state/app.actions";
 import {
   UserEditDialogComponent,
   UserEditDialogConfig
 } from "@dev/translatr-components/src/lib/modules/user/user-edit-dialog/user-edit-dialog.component";
-import {MatDialog, MatSnackBar} from "@angular/material";
-import {filter} from "rxjs/internal/operators/filter";
-import {UserRole} from "@dev/translatr-model/src/lib/model/user-role";
-import {merge, Observable, Subject} from "rxjs";
-import {scan} from "rxjs/internal/operators/scan";
-import {SelectionModel} from "@angular/cdk/collections";
+import { MatDialog, MatSnackBar } from "@angular/material";
+import { filter } from "rxjs/internal/operators/filter";
+import { UserRole } from "@dev/translatr-model/src/lib/model/user-role";
+import { merge, Observable, Subject } from "rxjs";
+import { scan } from "rxjs/internal/operators/scan";
 import {
-  hasCreateUserPermission, hasDeleteAllUsersPermission,
+  hasCreateUserPermission,
+  hasDeleteAllUsersPermission,
   hasDeleteUserPermission,
   hasEditUserPermission,
   isAdmin
 } from "@dev/translatr-sdk/src/lib/shared/permissions";
+import { Entity } from "@dev/translatr-components";
 
 export const mapToAllowedRoles = () => map((me?: User): UserRole[] =>
   [UserRole.User, ...isAdmin(me) ? [UserRole.Admin] : []]);
@@ -40,7 +31,7 @@ export const mapToAllowedRoles = () => map((me?: User): UserRole[] =>
 })
 export class DashboardUsersComponent implements OnDestroy {
 
-  readonly displayedColumns = ['icon', 'name', 'username', 'email', 'when_created', 'role', 'actions'];
+  readonly displayedColumns = ['name', 'username', 'email', 'when_created', 'role', 'actions'];
 
   me$ = this.facade.me$;
   search$ = new Subject<string>();
@@ -66,7 +57,7 @@ export class DashboardUsersComponent implements OnDestroy {
   users$ = this.facade.users$;
   allowCreate$ = this.me$.pipe(hasCreateUserPermission());
 
-  selection = new SelectionModel<User>(true, []);
+  selected: Entity[] = [];
 
   constructor(
     private readonly facade: AppFacade,
@@ -94,8 +85,19 @@ export class DashboardUsersComponent implements OnDestroy {
       });
   }
 
-  trackByFn(index: number, item: { id: string }): string {
-    return item.id;
+  onSelected(entities: Entity[]) {
+    this.selected = entities;
+  }
+
+  onFilter(value: string) {
+    this.search$.next(value);
+  }
+
+  onLoadMore() {
+    this.commands$
+      .pipe(take(1))
+      .subscribe((criteria: RequestCriteria) =>
+        this.limit$.next(parseInt(criteria.limit, 10) * 2));
   }
 
   allowEdit$(user: User): Observable<boolean> {
@@ -152,43 +154,6 @@ export class DashboardUsersComponent implements OnDestroy {
 
   onDeleteAll(users: User[]) {
     this.facade.deleteUsers(users);
-  }
-
-  onFilter(value: string) {
-    this.search$.next(value);
-  }
-
-  onLoadMore() {
-    this.commands$
-      .pipe(take(1))
-      .subscribe((criteria: RequestCriteria) =>
-        this.limit$.next(parseInt(criteria.limit, 10) * 2));
-  }
-
-  /**
-   * Whether the number of selected elements matches the total number of rows.
-   */
-  isAllSelected$(): Observable<boolean> {
-    return this.users$.pipe(
-      take(1),
-      map((pagedList: PagedList<User>) => {
-        const numSelected = this.selection.selected.length;
-        const numRows = pagedList.list.length;
-        return numSelected == numRows;
-      })
-    );
-  }
-
-  /**
-   * Selects all rows if they are not all selected; otherwise clear selection.
-   */
-  masterToggle() {
-    this.users$.pipe(take(1), withLatestFrom(this.isAllSelected$()))
-      .subscribe(([pagedList, allSelected]: [PagedList<User>, boolean]) =>
-        allSelected ?
-          this.selection.clear() :
-          pagedList.list.forEach(row => this.selection.select(row))
-      );
   }
 
   ngOnDestroy(): void {

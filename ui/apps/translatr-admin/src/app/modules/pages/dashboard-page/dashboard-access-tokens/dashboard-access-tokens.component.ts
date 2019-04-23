@@ -1,10 +1,10 @@
-import {Component} from '@angular/core';
-import {merge, Observable, Subject} from "rxjs";
-import {debounceTime, distinctUntilChanged, map, scan, shareReplay, startWith, take, tap} from "rxjs/operators";
-import {AccessToken, RequestCriteria} from "@dev/translatr-model";
-import {AppFacade} from "../../../../+state/app.facade";
-import {hasDeleteAccessTokenPermission} from "@dev/translatr-sdk/src/lib/shared/permissions";
-import {of} from "rxjs/internal/observable/of";
+import { Component } from '@angular/core';
+import { merge, Observable, Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged, map, scan, shareReplay, startWith, take } from "rxjs/operators";
+import { AccessToken, RequestCriteria } from "@dev/translatr-model";
+import { AppFacade } from "../../../../+state/app.facade";
+import { of } from "rxjs/internal/observable/of";
+import { Entity } from "@dev/translatr-components";
 
 @Component({
   selector: 'dev-dashboard-access-tokens',
@@ -13,7 +13,7 @@ import {of} from "rxjs/internal/observable/of";
 })
 export class DashboardAccessTokensComponent {
 
-  displayedColumns = ['name', 'user', 'when_created', 'actions'];
+  displayedColumns = ['name', 'user', 'scopes', 'when_created', 'actions'];
 
   me$ = this.facade.me$;
   accessTokens$ = this.facade.accessTokens$;
@@ -36,8 +36,14 @@ export class DashboardAccessTokensComponent {
       shareReplay(1)
     );
 
+  selected: Entity[] = [];
+
   constructor(private readonly facade: AppFacade) {
     this.commands$.subscribe((criteria: RequestCriteria) => this.facade.loadAccessTokens(criteria));
+  }
+
+  onSelected(entities: Entity[]) {
+    this.selected = entities;
   }
 
   onFilter(value: string) {
@@ -65,5 +71,9 @@ export class DashboardAccessTokensComponent {
 
   onDelete(accessToken: AccessToken) {
     // this.facade.deleteAccessToken(accessToken);
+  }
+
+  allowDeleteAll$(accessTokens: AccessToken[]): Observable<boolean> {
+    return of(false); // this.me$.pipe(hasDeleteAllAccessTokensPermission(accessTokens));
   }
 }

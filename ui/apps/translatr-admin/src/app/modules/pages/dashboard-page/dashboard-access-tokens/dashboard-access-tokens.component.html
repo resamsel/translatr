@@ -1,9 +1,11 @@
 <div class="container">
   <div>
-    <mat-form-field>
-      <input matInput placeholder="Filter" (keyup)="onFilter($event.target.value)">
-    </mat-form-field>
-    <table mat-table [dataSource]="(accessTokens$ | async)?.list" class="mat-elevation-z2">
+    <entity-table
+      [dataSource]="accessTokens$ | async"
+      [displayedColumns]="displayedColumns"
+      (filter)="onFilter($event)"
+      (more)="onLoadMore()"
+      (selected)="onSelected($event)">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>
         <td mat-cell *matCellDef="let element">{{element.name}}</td>
@@ -14,6 +16,11 @@
         <td mat-cell *matCellDef="let element">
           <a class="link" href="/ui/{{element.userUsername}}">{{element.userName}}</a>
         </td>
+      </ng-container>
+
+      <ng-container matColumnDef="scopes">
+        <th mat-header-cell *matHeaderCellDef>Scope#</th>
+        <td mat-cell *matCellDef="let element">{{element.scope.split(',').length}}</td>
       </ng-container>
 
       <ng-container matColumnDef="when_created">
@@ -41,10 +48,13 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+      <selection-actions>
+        <confirm-button
+          title="Delete selected"
+          icon="delete"
+          [disabled]="!(allowDeleteAll$(selected) | async)"
+          (confirm)="onDeleteAll(selected)"></confirm-button>
+      </selection-actions>
+    </entity-table>
   </div>
-
-  <button mat-button [disabled]="!(accessTokens$ | async)?.hasNext" (click)="onLoadMore()">More...</button>
 </div>

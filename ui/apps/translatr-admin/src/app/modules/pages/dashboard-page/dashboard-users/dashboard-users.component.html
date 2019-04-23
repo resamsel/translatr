@@ -9,26 +9,12 @@
 
 <div class="container">
   <div>
-    <mat-form-field>
-      <input matInput placeholder="Filter" (keyup)="onFilter($event.target.value)">
-    </mat-form-field>
-    <table mat-table [dataSource]="(users$ | async)?.list" class="mat-elevation-z2" [trackBy]="trackByFn">
-      <ng-container matColumnDef="icon">
-        <th mat-header-cell *matHeaderCellDef>
-          <mat-checkbox (change)="$event ? masterToggle() : null"
-                        [checked]="selection.hasValue() && isAllSelected$() | async"
-                        [indeterminate]="selection.hasValue() && !(isAllSelected$() | async)">
-          </mat-checkbox>
-        </th>
-        <td mat-cell *matCellDef="let element">
-          <mat-checkbox
-            (click)="$event.stopPropagation()"
-            (change)="$event ? selection.toggle(element) : null"
-            [checked]="selection.isSelected(element)">
-          </mat-checkbox>
-        </td>
-      </ng-container>
-
+    <entity-table
+      [dataSource]="users$ | async"
+      [displayedColumns]="displayedColumns"
+      (filter)="onFilter($event)"
+      (more)="onLoadMore()"
+      (selected)="onSelected($event)">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>
         <td mat-cell *matCellDef="let element">
@@ -78,25 +64,13 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="selected">
-        <th mat-header-cell *matHeaderCellDef class="selection-header">{{selection.selected.length}} selected</th>
-      </ng-container>
-
-      <ng-container matColumnDef="selectionActions">
-        <th mat-header-cell *matHeaderCellDef class="selection-header selection-actions" colspan="5">
+      <selection-actions>
           <confirm-button
             title="Delete selected"
             icon="delete"
-            [disabled]="!(allowDeleteAll$(selection.selected) | async)"
-            (confirm)="onDeleteAll(selection.selected)"></confirm-button>
-        </th>
-      </ng-container>
-
-      <tr mat-header-row
-          *matHeaderRowDef="selection.isEmpty() ? displayedColumns : ['icon', 'selected', 'selectionActions']"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+            [disabled]="!(allowDeleteAll$(selected) | async)"
+            (confirm)="onDeleteAll(selected)"></confirm-button>
+      </selection-actions>
+    </entity-table>
   </div>
-
-  <button mat-button [disabled]="!(users$ | async)?.hasNext" (click)="onLoadMore()">More...</button>
 </div>

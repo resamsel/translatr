@@ -1,13 +1,14 @@
-import {Component, OnDestroy} from '@angular/core';
-import {AppFacade} from "../../../../+state/app.facade";
-import {debounceTime, distinctUntilChanged, map, mapTo, scan, shareReplay, startWith, take, tap} from "rxjs/operators";
-import {Project, ProjectCriteria, RequestCriteria} from "@dev/translatr-model";
-import {merge, Observable, Subject} from "rxjs";
-import {ProjectDeleted, ProjectDeleteError} from "../../../../+state/app.actions";
-import {MatDialog, MatSnackBar} from "@angular/material";
-import {errorMessage} from "@dev/translatr-sdk";
-import {hasDeleteProjectPermission, hasEditProjectPermission} from "@dev/translatr-sdk/src/lib/shared/permissions";
-import {of} from "rxjs/internal/observable/of";
+import { Component, OnDestroy } from '@angular/core';
+import { AppFacade } from "../../../../+state/app.facade";
+import { debounceTime, distinctUntilChanged, map, mapTo, scan, shareReplay, startWith, take } from "rxjs/operators";
+import { Project, ProjectCriteria, RequestCriteria } from "@dev/translatr-model";
+import { merge, Observable, Subject } from "rxjs";
+import { ProjectDeleted, ProjectDeleteError } from "../../../../+state/app.actions";
+import { MatDialog, MatSnackBar } from "@angular/material";
+import { errorMessage } from "@dev/translatr-sdk";
+import { hasDeleteProjectPermission } from "@dev/translatr-sdk/src/lib/shared/permissions";
+import { of } from "rxjs/internal/observable/of";
+import { Entity } from "@dev/translatr-components";
 
 @Component({
   selector: 'dev-dashboard-projects',
@@ -41,6 +42,8 @@ export class DashboardProjectsComponent implements OnDestroy {
       shareReplay(1)
     );
 
+  selected: Entity[] = [];
+
   constructor(
     private readonly facade: AppFacade,
     private readonly dialog: MatDialog,
@@ -66,8 +69,19 @@ export class DashboardProjectsComponent implements OnDestroy {
       });
   }
 
-  trackByFn(index: number, item: { id: string }): string {
-    return item.id;
+  onSelected(entities: Entity[]) {
+    this.selected = entities;
+  }
+
+  onFilter(value: string) {
+    this.search$.next(value);
+  }
+
+  onLoadMore() {
+    this.commands$
+      .pipe(take(1))
+      .subscribe((criteria: RequestCriteria) =>
+        this.limit$.next(parseInt(criteria.limit, 10) * 2));
   }
 
   allowEdit$(project: Project): Observable<boolean> {
@@ -82,15 +96,8 @@ export class DashboardProjectsComponent implements OnDestroy {
     this.facade.deleteProject(project);
   }
 
-  onFilter(value: string) {
-    this.search$.next(value);
-  }
-
-  onLoadMore() {
-    this.commands$
-      .pipe(take(1))
-      .subscribe((criteria: RequestCriteria) =>
-        this.limit$.next(parseInt(criteria.limit, 10) * 2));
+  allowDeleteAll$(projects: Project[]): Observable<boolean> {
+    return of(false); // this.me$.pipe(hasDeleteAllAccessTokensPermission(accessTokens));
   }
 
   ngOnDestroy(): void {

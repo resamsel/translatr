@@ -27,6 +27,7 @@ import { GravatarModule } from "ngx-gravatar";
 import { ButtonModule } from "@dev/translatr-components/src/lib/modules/button/button.module";
 import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
 import { UserCardModule } from "@dev/translatr-components/src/lib/modules/user/user-card/user-card.module";
+import { EntityTableModule } from "@dev/translatr-components/src/lib/modules/entity/entity-table/entity-table.module";
 
 @NgModule({
   declarations: [DashboardPageComponent, DashboardUsersComponent, DashboardInfoComponent, DashboardProjectsComponent, DashboardAccessTokensComponent, DashboardUserComponent],
@@ -50,7 +51,8 @@ import { UserCardModule } from "@dev/translatr-components/src/lib/modules/user/u
     MatPaginatorModule,
     MatCheckboxModule,
     MatSnackBarModule,
-    GravatarModule
+    GravatarModule,
+    EntityTableModule
   ]
 })
 export class DashboardPageModule {
