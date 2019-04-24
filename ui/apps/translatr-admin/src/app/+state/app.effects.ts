@@ -1,13 +1,20 @@
-import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/nx';
-import { AppPartialState } from './app.reducer';
+import {Injectable} from '@angular/core';
+import {Actions, Effect, ofType} from '@ngrx/effects';
+import {DataPersistence} from '@nrwl/nx';
+import {AppPartialState} from './app.reducer';
 import {
+  AccessTokenDeleted,
+  AccessTokenDeleteError,
+  AccessTokensDeleted,
+  AccessTokensDeleteError,
   AccessTokensLoaded,
   AccessTokensLoadError,
   AppActionTypes,
   CreateUser,
+  DeleteAccessToken,
+  DeleteAccessTokens,
   DeleteProject,
+  DeleteProjects,
   DeleteUser,
   DeleteUsers,
   LoadAccessTokens,
@@ -19,6 +26,8 @@ import {
   LoggedInUserLoadError,
   ProjectDeleted,
   ProjectDeleteError,
+  ProjectsDeleted,
+  ProjectsDeleteError,
   ProjectsLoaded,
   ProjectsLoadError,
   UpdateUser,
@@ -35,11 +44,11 @@ import {
   UserUpdated,
   UserUpdateError
 } from './app.actions';
-import { AccessToken, PagedList, Project, User } from "@dev/translatr-model";
-import { catchError, map, switchMap } from "rxjs/operators";
-import { of } from "rxjs/internal/observable/of";
-import { AccessTokenService } from "@dev/translatr-sdk/src/lib/services/access-token.service";
-import { ProjectService, UserService } from "@dev/translatr-sdk";
+import {AccessToken, PagedList, Project, User} from "@dev/translatr-model";
+import {catchError, map, switchMap} from "rxjs/operators";
+import {of} from "rxjs/internal/observable/of";
+import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
+import {ProjectService, UserService} from "@dev/translatr-sdk";
 
 @Injectable()
 export class AppEffects {
@@ -138,9 +147,20 @@ export class AppEffects {
     switchMap((action: DeleteProject) => this.projectService
       .delete(action.payload.id)
       .pipe(
-        map((payload: User) => new ProjectDeleted(payload)),
+        map((payload: Project) => new ProjectDeleted(payload)),
         catchError(error => of(new ProjectDeleteError(error)))
       ))
+  );
+
+  @Effect() deleteProjects$ = this.actions$.pipe(
+    ofType(AppActionTypes.DeleteProjects),
+    switchMap((action: DeleteProjects) => this.projectService
+      .deleteAll(action.payload.map((project: Project) => project.id))
+      .pipe(
+        map((payload: Project[]) => new ProjectsDeleted(payload)),
+        catchError(error => of(new ProjectsDeleteError(error)))
+      )
+    )
   );
 
   // Access Tokens
@@ -153,6 +173,28 @@ export class AppEffects {
         map((payload: PagedList<AccessToken>) => new AccessTokensLoaded(payload)),
         catchError(error => of(new AccessTokensLoadError(error)))
       ))
+  );
+
+
+  @Effect() deleteAccessToken$ = this.actions$.pipe(
+    ofType(AppActionTypes.DeleteAccessToken),
+    switchMap((action: DeleteAccessToken) => this.accessTokenService
+      .delete(action.payload.id)
+      .pipe(
+        map((payload: AccessToken) => new AccessTokenDeleted(payload)),
+        catchError(error => of(new AccessTokenDeleteError(error)))
+      ))
+  );
+
+  @Effect() deleteAccessTokens$ = this.actions$.pipe(
+    ofType(AppActionTypes.DeleteAccessTokens),
+    switchMap((action: DeleteAccessTokens) => this.accessTokenService
+      .deleteAll(action.payload.map((accessToken: AccessToken) => accessToken.id))
+      .pipe(
+        map((payload: AccessToken[]) => new AccessTokensDeleted(payload)),
+        catchError(error => of(new AccessTokensDeleteError(error)))
+      )
+    )
   );
 
   constructor(

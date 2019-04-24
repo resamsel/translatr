@@ -1,6 +1,6 @@
 import {HttpClient} from "@angular/common/http";
 import {convertTemporals, convertTemporalsList} from '../shared';
-import {Observable} from "rxjs";
+import {combineLatest, Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {PagedList, RequestCriteria} from "@dev/translatr-model";
 
@@ -39,10 +39,14 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
       .pipe(map(convertTemporals));
   }
 
-  delete(id: string, options?: RequestOptions): Observable<DTO | undefined> {
+  delete(id: string | number, options?: RequestOptions): Observable<DTO | undefined> {
     return this.http
       .delete<DTO>(`${this.entityPath}/${id}`, options)
       .pipe(map(convertTemporals));
+  }
+
+  deleteAll(ids: (string | number)[]): Observable<DTO[]> {
+    return combineLatest(...ids.map((id: string | number) => this.delete(id)));
   }
 }
 

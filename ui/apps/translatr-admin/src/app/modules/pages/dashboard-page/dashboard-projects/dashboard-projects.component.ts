@@ -2,10 +2,13 @@ import {Component, OnDestroy} from '@angular/core';
 import {AppFacade} from "../../../../+state/app.facade";
 import {Project, RequestCriteria} from "@dev/translatr-model";
 import {Observable, of} from "rxjs";
-import {ProjectDeleted, ProjectDeleteError} from "../../../../+state/app.actions";
+import {ProjectDeleted, ProjectDeleteError, ProjectsDeleted, ProjectsDeleteError} from "../../../../+state/app.actions";
 import {MatDialog, MatSnackBar} from "@angular/material";
 import {errorMessage} from "@dev/translatr-sdk";
-import {hasDeleteProjectPermission} from "@dev/translatr-sdk/src/lib/shared/permissions";
+import {
+  hasDeleteAllProjectsPermission,
+  hasDeleteProjectPermission
+} from "@dev/translatr-sdk/src/lib/shared/permissions";
 import {Entity} from "@dev/translatr-components";
 
 @Component({
@@ -45,6 +48,22 @@ export class DashboardProjectsComponent implements OnDestroy {
           );
         }
       });
+    facade.projectsDeleted$
+      .subscribe((action: ProjectsDeleted | ProjectsDeleteError) => {
+        if (action instanceof ProjectsDeleted) {
+          snackBar.open(
+            `${action.payload.length} projects have been deleted`,
+            'Dismiss',
+            {duration: 3000}
+          );
+        } else {
+          snackBar.open(
+            `Projects could not be deleted: ${errorMessage(action.payload)}`,
+            'Dismiss',
+            {duration: 8000}
+          );
+        }
+      });
   }
 
   onSelected(entities: Entity[]) {
@@ -68,7 +87,11 @@ export class DashboardProjectsComponent implements OnDestroy {
   }
 
   allowDeleteAll$(projects: Project[]): Observable<boolean> {
-    return of(false); // this.me$.pipe(hasDeleteAllAccessTokensPermission(accessTokens));
+    return this.me$.pipe(hasDeleteAllProjectsPermission(projects));
+  }
+
+  onDeleteAll(projects: Project[]) {
+    this.facade.deleteProjects(projects);
   }
 
   ngOnDestroy(): void {

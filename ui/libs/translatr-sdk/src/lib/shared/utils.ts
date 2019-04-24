@@ -10,7 +10,6 @@ export const firstChar = (name: string): string => {
 };
 
 export const errorMessage = (error: HttpErrorResponse | ConstraintViolationErrorInfo): string => {
-  console.log('errorMessage', error);
   if (error instanceof HttpErrorResponse) {
     if (!!error.error && !!error.error.error) {
       return errorMessage(error.error.error);

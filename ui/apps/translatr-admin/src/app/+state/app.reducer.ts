@@ -1,5 +1,5 @@
-import { AppAction, AppActionTypes } from './app.actions';
-import { AccessToken, PagedList, Project, User } from "@dev/translatr-model";
+import {AppAction, AppActionTypes} from './app.actions';
+import {AccessToken, PagedList, Project, User} from "@dev/translatr-model";
 
 export const APP_FEATURE_KEY = 'app';
 
@@ -38,16 +38,6 @@ export function appReducer(
           ? {...state.users, list: [...state.users.list, action.payload]}
           : {list: [action.payload], hasNext: false, hasPrev: false, offset: 0, limit: 1}
       };
-    case AppActionTypes.ProjectsLoaded:
-      return {
-        ...state,
-        projects: action.payload
-      };
-    case AppActionTypes.AccessTokensLoaded:
-      return {
-        ...state,
-        accessTokens: action.payload
-      };
     case AppActionTypes.UserCreated:
       return {
         ...state,
@@ -81,6 +71,14 @@ export function appReducer(
             action.payload.find((deleted: User) => user.id !== deleted.id))
         }
       };
+
+    // Projects
+
+    case AppActionTypes.ProjectsLoaded:
+      return {
+        ...state,
+        projects: action.payload
+      };
     case AppActionTypes.ProjectDeleted:
       return {
         ...state,
@@ -89,6 +87,42 @@ export function appReducer(
           list: state.projects.list.filter((project: Project) => project.id !== action.payload.id)
         }
       };
+    case AppActionTypes.ProjectsDeleted:
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          list: state.projects.list.filter((project: Project) =>
+            action.payload.find((deleted: Project) => project.id !== deleted.id))
+        }
+      };
+
+    // Access Tokens
+
+    case AppActionTypes.AccessTokensLoaded:
+      return {
+        ...state,
+        accessTokens: action.payload
+      };
+    case AppActionTypes.AccessTokenDeleted:
+      return {
+        ...state,
+        accessTokens: {
+          ...state.accessTokens,
+          list: state.accessTokens.list.filter((accessToken: AccessToken) => accessToken.id !== action.payload.id)
+        }
+      };
+    case AppActionTypes.AccessTokensDeleted:
+      return {
+        ...state,
+        accessTokens: {
+          ...state.accessTokens,
+          list: state.accessTokens.list.filter((accessToken: AccessToken) =>
+            action.payload.find((deleted: AccessToken) => accessToken.id !== deleted.id))
+        }
+      };
+
+    default:
+      return state;
   }
-  return state;
 }

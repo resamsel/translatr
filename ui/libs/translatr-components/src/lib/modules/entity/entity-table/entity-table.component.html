@@ -1,7 +1,7 @@
 <mat-form-field>
   <input matInput placeholder="Filter" (keyup)="onFilter($event.target.value)">
 </mat-form-field>
-<table mat-table [dataSource]="dataSource?.list" class="mat-elevation-z2" [trackBy]="trackByFn">
+<table mat-table [dataSource]="dataSource?.list" [trackBy]="trackByFn">
   <ng-container matColumnDef="selection">
     <th mat-header-cell *matHeaderCellDef>
       <mat-checkbox (change)="$event ? masterToggle() : null"
@@ -37,10 +37,9 @@
 </table>
 
 <button
-  mat-button
-  color="accent"
+  mat-flat-button
   class="more-button"
   *ngIf="dataSource !== undefined"
   [disabled]="!dataSource?.hasNext"
-  (click)="onLoadMore()">More...
+  (click)="onLoadMore()">Load more...
 </button>

@@ -83,7 +83,6 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit(): void {
-    console.log('columns after view init', this.columns);
     this.columns.forEach((column: MatColumnDef) => this.table.addColumnDef(column));
   }
 

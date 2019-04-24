@@ -1,6 +1,6 @@
-import { Action } from '@ngrx/store';
-import { AccessToken, PagedList, Project, ProjectCriteria, RequestCriteria, User } from "@dev/translatr-model";
-import { HttpErrorResponse } from "@angular/common/http";
+import {Action} from '@ngrx/store';
+import {AccessToken, PagedList, Project, ProjectCriteria, RequestCriteria, User} from "@dev/translatr-model";
+import {HttpErrorResponse} from "@angular/common/http";
 
 export enum AppActionTypes {
   // Users
@@ -43,11 +43,23 @@ export enum AppActionTypes {
   ProjectDeleted = '[Translatr API] Project Deleted',
   ProjectDeleteError = '[Translatr API] Project Delete Error',
 
+  DeleteProjects = '[Projects Page] Delete Projects',
+  ProjectsDeleted = '[Translatr API] Projects Deleted',
+  ProjectsDeleteError = '[Translatr API] Projects Delete Error',
+
   // Access Tokens
 
   LoadAccessTokens = '[AccessTokens Page] Load AccessTokens',
   AccessTokensLoaded = '[Translatr API] AccessTokens Loaded',
-  AccessTokensLoadError = '[Translatr API] AccessTokens Load Error'
+  AccessTokensLoadError = '[Translatr API] AccessTokens Load Error',
+
+  DeleteAccessToken = '[AccessTokens Page] Delete AccessToken',
+  AccessTokenDeleted = '[Translatr API] AccessToken Deleted',
+  AccessTokenDeleteError = '[Translatr API] AccessToken Delete Error',
+
+  DeleteAccessTokens = '[AccessTokens Page] Delete AccessTokens',
+  AccessTokensDeleted = '[Translatr API] AccessTokens Deleted',
+  AccessTokensDeleteError = '[Translatr API] AccessTokens Delete Error'
 }
 
 // Users
@@ -94,7 +106,7 @@ export class UsersLoaded implements Action {
 export class LoadUser implements Action {
   readonly type = AppActionTypes.LoadUser;
 
-  constructor(public payload: {userId: string}) {
+  constructor(public payload: { userId: string }) {
   }
 }
 
@@ -240,6 +252,27 @@ export class ProjectDeleted implements Action {
   }
 }
 
+export class DeleteProjects implements Action {
+  readonly type = AppActionTypes.DeleteProjects;
+
+  constructor(public payload: Project[]) {
+  }
+}
+
+export class ProjectsDeleteError implements Action {
+  readonly type = AppActionTypes.ProjectsDeleteError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class ProjectsDeleted implements Action {
+  readonly type = AppActionTypes.ProjectsDeleted;
+
+  constructor(public payload: Project[]) {
+  }
+}
+
 // Access Tokens
 
 export class LoadAccessTokens implements Action {
@@ -263,6 +296,48 @@ export class AccessTokensLoaded implements Action {
   }
 }
 
+export class DeleteAccessToken implements Action {
+  readonly type = AppActionTypes.DeleteAccessToken;
+
+  constructor(public payload: AccessToken) {
+  }
+}
+
+export class AccessTokenDeleteError implements Action {
+  readonly type = AppActionTypes.AccessTokenDeleteError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class AccessTokenDeleted implements Action {
+  readonly type = AppActionTypes.AccessTokenDeleted;
+
+  constructor(public payload: AccessToken) {
+  }
+}
+
+export class DeleteAccessTokens implements Action {
+  readonly type = AppActionTypes.DeleteAccessTokens;
+
+  constructor(public payload: AccessToken[]) {
+  }
+}
+
+export class AccessTokensDeleteError implements Action {
+  readonly type = AppActionTypes.AccessTokensDeleteError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class AccessTokensDeleted implements Action {
+  readonly type = AppActionTypes.AccessTokensDeleted;
+
+  constructor(public payload: AccessToken[]) {
+  }
+}
+
 export type AppAction =
   // Users
   LoadLoggedInUser | LoggedInUserLoaded | LoggedInUserLoadError
@@ -275,5 +350,8 @@ export type AppAction =
   // Projects
   | LoadProjects | ProjectsLoaded | ProjectsLoadError
   | DeleteProject | ProjectDeleted | ProjectDeleteError
+  | DeleteProjects | ProjectsDeleted | ProjectsDeleteError
   // Access Tokens
-  | LoadAccessTokens | AccessTokensLoaded | AccessTokensLoadError;
+  | LoadAccessTokens | AccessTokensLoaded | AccessTokensLoadError
+  | DeleteAccessToken | AccessTokenDeleted | AccessTokenDeleteError
+  | DeleteAccessTokens | AccessTokensDeleted | AccessTokensDeleteError;
