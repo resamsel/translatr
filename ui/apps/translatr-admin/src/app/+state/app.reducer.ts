@@ -1,5 +1,5 @@
-import {AppAction, AppActionTypes} from './app.actions';
-import {AccessToken, PagedList, Project, User} from "@dev/translatr-model";
+import { AppAction, AppActionTypes } from './app.actions';
+import { AccessToken, PagedList, Project, User } from "@dev/translatr-model";
 
 export const APP_FEATURE_KEY = 'app';
 
@@ -78,6 +78,14 @@ export function appReducer(
       return {
         ...state,
         projects: action.payload
+      };
+    case AppActionTypes.ProjectUpdated:
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          list: state.projects.list.map((project: Project) => project.id === action.payload.id ? action.payload : project)
+        }
       };
     case AppActionTypes.ProjectDeleted:
       return {

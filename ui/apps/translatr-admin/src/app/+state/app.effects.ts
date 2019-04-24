@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {Actions, Effect, ofType} from '@ngrx/effects';
-import {DataPersistence} from '@nrwl/nx';
-import {AppPartialState} from './app.reducer';
+import { Injectable } from '@angular/core';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { DataPersistence } from '@nrwl/nx';
+import { AppPartialState } from './app.reducer';
 import {
   AccessTokenDeleted,
   AccessTokenDeleteError,
@@ -30,6 +30,9 @@ import {
   ProjectsDeleteError,
   ProjectsLoaded,
   ProjectsLoadError,
+  ProjectUpdated,
+  ProjectUpdateError,
+  UpdateProject,
   UpdateUser,
   UserCreated,
   UserCreateError,
@@ -44,11 +47,11 @@ import {
   UserUpdated,
   UserUpdateError
 } from './app.actions';
-import {AccessToken, PagedList, Project, User} from "@dev/translatr-model";
-import {catchError, map, switchMap} from "rxjs/operators";
-import {of} from "rxjs/internal/observable/of";
-import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
-import {ProjectService, UserService} from "@dev/translatr-sdk";
+import { AccessToken, PagedList, Project, User } from "@dev/translatr-model";
+import { catchError, map, switchMap } from "rxjs/operators";
+import { of } from "rxjs/internal/observable/of";
+import { AccessTokenService } from "@dev/translatr-sdk/src/lib/services/access-token.service";
+import { ProjectService, UserService } from "@dev/translatr-sdk";
 
 @Injectable()
 export class AppEffects {
@@ -122,11 +125,11 @@ export class AppEffects {
   @Effect() deleteUsers$ = this.actions$.pipe(
     ofType(AppActionTypes.DeleteUsers),
     switchMap((action: DeleteUsers) => this.userService
-        .deleteAll(action.payload.map((user: User) => user.id))
-        .pipe(
-          map((payload: User[]) => new UsersDeleted(payload)),
-          catchError(error => of(new UsersDeleteError(error)))
-        )
+      .deleteAll(action.payload.map((user: User) => user.id))
+      .pipe(
+        map((payload: User[]) => new UsersDeleted(payload)),
+        catchError(error => of(new UsersDeleteError(error)))
+      )
     )
   );
 
@@ -139,6 +142,16 @@ export class AppEffects {
       .pipe(
         map((payload: PagedList<Project>) => new ProjectsLoaded(payload)),
         catchError(error => of(new ProjectsLoadError(error)))
+      ))
+  );
+
+  @Effect() updateProject$ = this.actions$.pipe(
+    ofType(AppActionTypes.UpdateProject),
+    switchMap((action: UpdateProject) => this.projectService
+      .update(action.payload)
+      .pipe(
+        map((payload: Project) => new ProjectUpdated(payload)),
+        catchError(error => of(new ProjectUpdateError(error)))
       ))
   );
 

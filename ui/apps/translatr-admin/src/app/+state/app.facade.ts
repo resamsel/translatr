@@ -16,6 +16,7 @@ import {
   LoadProjects,
   LoadUser,
   LoadUsers,
+  UpdateProject,
   UpdateUser
 } from './app.actions';
 import { AccessToken, Project, ProjectCriteria, RequestCriteria, User } from "@dev/translatr-model";

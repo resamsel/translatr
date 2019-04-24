@@ -47,6 +47,10 @@ export enum AppActionTypes {
   ProjectsLoaded = '[Translatr API] Projects Loaded',
   ProjectsLoadError = '[Translatr API] Projects Load Error',
 
+  UpdateProject = '[Projects Page] Update Project',
+  ProjectUpdated = '[Translatr API] Project Updated',
+  ProjectUpdateError = '[Translatr API] Project Update Error',
+
   DeleteProject = '[Projects Page] Delete Project',
   ProjectDeleted = '[Translatr API] Project Deleted',
   ProjectDeleteError = '[Translatr API] Project Delete Error',
@@ -247,6 +251,27 @@ export class ProjectsLoaded implements Action {
   }
 }
 
+export class UpdateProject implements Action {
+  readonly type = AppActionTypes.UpdateProject;
+
+  constructor(public payload: Project) {
+  }
+}
+
+export class ProjectUpdateError implements Action {
+  readonly type = AppActionTypes.ProjectUpdateError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class ProjectUpdated implements Action {
+  readonly type = AppActionTypes.ProjectUpdated;
+
+  constructor(public payload: Project) {
+  }
+}
+
 export class DeleteProject implements Action {
   readonly type = AppActionTypes.DeleteProject;
 
@@ -365,6 +390,7 @@ export type AppAction =
   | DeleteUsers | UsersDeleted | UsersDeleteError
   // Projects
   | LoadProjects | ProjectsLoaded | ProjectsLoadError
+  | UpdateProject | ProjectUpdated | ProjectUpdateError
   | DeleteProject | ProjectDeleted | ProjectDeleteError
   | DeleteProjects | ProjectsDeleted | ProjectsDeleteError
   // Access Tokens
