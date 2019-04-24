@@ -1,5 +1,5 @@
-import {AccessToken, Project, User, UserRole} from "@dev/translatr-model";
-import {map} from "rxjs/operators";
+import { AccessToken, Project, User, UserRole } from "@dev/translatr-model";
+import { map } from "rxjs/operators";
 
 // General
 
@@ -38,8 +38,14 @@ export const hasDeleteAllProjectsPermission = (projects: Project[]) => map((me?:
 
 // Access Tokens
 
+export const hasUserPermissionToEditAccessToken = (me: User, accessToken: AccessToken) =>
+  (me !== undefined && me.id === accessToken.userId) || isAdmin(me);
+
 export const hasUserPermissionToDeleteAccessToken = (me: User, accessToken: AccessToken) =>
   (me !== undefined && me.id === accessToken.userId) || isAdmin(me);
+
+export const hasEditAccessTokenPermission = (accessToken: AccessToken) => map((me?: User) =>
+  hasUserPermissionToEditAccessToken(me, accessToken));
 
 export const hasDeleteAccessTokenPermission = (accessToken: AccessToken) => map((me?: User) =>
   hasUserPermissionToDeleteAccessToken(me, accessToken));

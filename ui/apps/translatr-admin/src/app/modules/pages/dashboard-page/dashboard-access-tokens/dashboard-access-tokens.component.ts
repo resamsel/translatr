@@ -1,11 +1,12 @@
-import {Component} from '@angular/core';
-import {merge, Observable, of} from "rxjs";
-import {AccessToken, RequestCriteria} from "@dev/translatr-model";
-import {AppFacade} from "../../../../+state/app.facade";
-import {Entity} from "@dev/translatr-components";
+import { Component } from '@angular/core';
+import { merge, Observable, of } from "rxjs";
+import { AccessToken, RequestCriteria } from "@dev/translatr-model";
+import { AppFacade } from "../../../../+state/app.facade";
+import { Entity } from "@dev/translatr-components";
 import {
   hasDeleteAccessTokenPermission,
-  hasDeleteAllAccessTokensPermission
+  hasDeleteAllAccessTokensPermission,
+  hasEditAccessTokenPermission
 } from "@dev/translatr-sdk/src/lib/shared/permissions";
 import {
   AccessTokenDeleted,
@@ -14,30 +15,11 @@ import {
   AccessTokensDeleteError,
   AppActionTypes
 } from "../../../../+state/app.actions";
-import {errorMessage} from "@dev/translatr-sdk";
-import {MatDialog, MatSnackBar} from "@angular/material";
-import {mapTo} from "rxjs/operators";
-import {ofType} from "@ngrx/effects";
-import {Action} from "@ngrx/store";
-
-export const notifyEvent = <O extends Action, E extends Action>(
-  snackBar: MatSnackBar,
-  observable: Observable<O | E>,
-  okType: AppActionTypes,
-  okMessage: (action: O) => string,
-  errorMessage: (action: E) => string
-) => {
-  observable
-    .subscribe((action: O | E) => {
-      if (action.type === okType) {
-        snackBar.open(okMessage(action as O), 'Dismiss', {duration: 3000});
-        // this.reload$.next();
-      } else {
-        snackBar.open(errorMessage(action as E), 'Dismiss', {duration: 8000});
-      }
-    });
-
-};
+import { errorMessage } from "@dev/translatr-sdk";
+import { MatDialog, MatSnackBar } from "@angular/material";
+import { mapTo } from "rxjs/operators";
+import { ofType } from "@ngrx/effects";
+import { notifyEvent } from "@dev/translatr-components/src/lib/modules/events/utils";
 
 @Component({
   selector: 'dev-dashboard-access-tokens',
@@ -88,7 +70,7 @@ export class DashboardAccessTokensComponent {
   }
 
   allowEdit$(accessToken: AccessToken): Observable<boolean> {
-    return of(false); // this.me$.pipe(hasDeleteAccessTokenPermission(accessToken));
+    return this.me$.pipe(hasEditAccessTokenPermission(accessToken));
   }
 
   onEdit(accessToken: AccessToken) {

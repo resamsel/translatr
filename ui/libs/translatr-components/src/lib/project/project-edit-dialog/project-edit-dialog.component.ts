@@ -1,43 +1,35 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
-import { ConstraintViolation, ConstraintViolationErrorInfo, ErrorAction, User, UserRole } from "@dev/translatr-model";
+import { takeUntil } from "rxjs/operators";
+import { ConstraintViolation, ConstraintViolationErrorInfo, ErrorAction, Project } from "@dev/translatr-model";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
-import { takeUntil } from "rxjs/operators";
 
-export interface UserEditDialogConfig {
+export interface ProjectEditDialogConfig {
   type: 'create' | 'update';
-  allowedRoles: UserRole[];
-  user?: User;
-  onSubmit: (user: User) => void;
-  success$: Observable<User>;
+  project?: Project;
+  onSubmit: (project: Project) => void;
+  success$: Observable<Project>;
   error$: Observable<ErrorAction>;
 }
 
-const defaultUser: Partial<User> = {
-  role: UserRole.User
-};
-
 @Component({
-  selector: 'dev-user-edit-dialog',
-  templateUrl: './user-edit-dialog.component.html',
-  styleUrls: ['./user-edit-dialog.component.css']
+  selector: 'dev-project-edit-dialog',
+  templateUrl: './project-edit-dialog.component.html',
+  styleUrls: ['./project-edit-dialog.component.css']
 })
-export class UserEditDialogComponent {
+export class ProjectEditDialogComponent {
   form = new FormGroup({
     id: new FormControl(),
     name: new FormControl('', Validators.required),
-    role: new FormControl('', Validators.required),
-    username: new FormControl('', Validators.required),
-    email: new FormControl()
+    description: new FormControl(''),
   });
-  roles: UserRole[] = [UserRole.Admin, UserRole.User];
 
   constructor(
-    public dialogRef: MatDialogRef<UserEditDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: UserEditDialogConfig
+    public dialogRef: MatDialogRef<ProjectEditDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: ProjectEditDialogConfig
   ) {
-    this.form.patchValue(data.user !== undefined ? data.user : {...defaultUser});
+    this.form.patchValue(data.project !== undefined ? data.project : {});
     data.success$
       .pipe(takeUntil(dialogRef.afterClosed()))
       .subscribe(() => dialogRef.close());

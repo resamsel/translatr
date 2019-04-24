@@ -1,6 +1,14 @@
-import {Action} from '@ngrx/store';
-import {AccessToken, PagedList, Project, ProjectCriteria, RequestCriteria, User} from "@dev/translatr-model";
-import {HttpErrorResponse} from "@angular/common/http";
+import { Action } from '@ngrx/store';
+import {
+  AccessToken,
+  ConstraintViolationErrorInfo,
+  PagedList,
+  Project,
+  ProjectCriteria,
+  RequestCriteria,
+  User
+} from "@dev/translatr-model";
+import { HttpErrorResponse } from "@angular/common/http";
 
 export enum AppActionTypes {
   // Users
@@ -60,6 +68,14 @@ export enum AppActionTypes {
   DeleteAccessTokens = '[AccessTokens Page] Delete AccessTokens',
   AccessTokensDeleted = '[Translatr API] AccessTokens Deleted',
   AccessTokensDeleteError = '[Translatr API] AccessTokens Delete Error'
+}
+
+export interface ErrorAction {
+  payload: {
+    error: {
+      error: ConstraintViolationErrorInfo
+    }
+  };
 }
 
 // Users

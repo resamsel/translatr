@@ -1,15 +1,24 @@
-import {Component, OnDestroy} from '@angular/core';
-import {AppFacade} from "../../../../+state/app.facade";
-import {Project, RequestCriteria} from "@dev/translatr-model";
-import {Observable, of} from "rxjs";
-import {ProjectDeleted, ProjectDeleteError, ProjectsDeleted, ProjectsDeleteError} from "../../../../+state/app.actions";
-import {MatDialog, MatSnackBar} from "@angular/material";
-import {errorMessage} from "@dev/translatr-sdk";
+import { Component, OnDestroy } from '@angular/core';
+import { AppFacade } from "../../../../+state/app.facade";
+import { Project, RequestCriteria } from "@dev/translatr-model";
+import { Observable, of } from "rxjs";
+import {
+  AppActionTypes,
+  ProjectDeleted,
+  ProjectDeleteError,
+  ProjectsDeleted,
+  ProjectsDeleteError
+} from "../../../../+state/app.actions";
+import { MatDialog, MatSnackBar } from "@angular/material";
+import { errorMessage } from "@dev/translatr-sdk";
 import {
   hasDeleteAllProjectsPermission,
-  hasDeleteProjectPermission
+  hasDeleteProjectPermission,
+  hasEditProjectPermission
 } from "@dev/translatr-sdk/src/lib/shared/permissions";
-import {Entity} from "@dev/translatr-components";
+import { Entity } from "@dev/translatr-components";
+import { notifyEvent } from "@dev/translatr-components/src/lib/modules/events/utils";
+import { ProjectEditDialogComponent } from "@dev/translatr-components/src/lib/project/project-edit-dialog/project-edit-dialog.component";
 
 @Component({
   selector: 'dev-dashboard-projects',
@@ -31,39 +40,20 @@ export class DashboardProjectsComponent implements OnDestroy {
     private readonly dialog: MatDialog,
     private readonly snackBar: MatSnackBar
   ) {
-    facade.projectDeleted$
-      .subscribe((action: ProjectDeleted | ProjectDeleteError) => {
-        if (action instanceof ProjectDeleted) {
-          snackBar.open(
-            `Project ${action.payload.name} has been deleted`,
-            'Dismiss',
-            {duration: 3000}
-          );
-          // this.reload$.next();
-        } else {
-          snackBar.open(
-            `Project could not be deleted: ${errorMessage(action.payload)}`,
-            'Dismiss',
-            {duration: 8000}
-          );
-        }
-      });
-    facade.projectsDeleted$
-      .subscribe((action: ProjectsDeleted | ProjectsDeleteError) => {
-        if (action instanceof ProjectsDeleted) {
-          snackBar.open(
-            `${action.payload.length} projects have been deleted`,
-            'Dismiss',
-            {duration: 3000}
-          );
-        } else {
-          snackBar.open(
-            `Projects could not be deleted: ${errorMessage(action.payload)}`,
-            'Dismiss',
-            {duration: 8000}
-          );
-        }
-      });
+    notifyEvent(
+      snackBar,
+      facade.projectDeleted$,
+      AppActionTypes.ProjectDeleted,
+      (action: ProjectDeleted) => `Project ${action.payload.name} has been deleted`,
+      (action: ProjectDeleteError) => `Project could not be deleted: ${errorMessage(action.payload)}`
+    );
+    notifyEvent(
+      snackBar,
+      facade.projectsDeleted$,
+      AppActionTypes.ProjectsDeleted,
+      (action: ProjectsDeleted) => `${action.payload.length} projects have been deleted`,
+      (action: ProjectsDeleteError) => `Projects could not be deleted: ${errorMessage(action.payload)}`
+    );
   }
 
   onSelected(entities: Entity[]) {
@@ -75,7 +65,20 @@ export class DashboardProjectsComponent implements OnDestroy {
   }
 
   allowEdit$(project: Project): Observable<boolean> {
-    return of(false); // this.me$.pipe(hasEditProjectPermission(project));
+    return this.me$.pipe(hasEditProjectPermission(project));
+  }
+
+  onEdit(project: Project) {
+    this.dialog
+      .open(ProjectEditDialogComponent, {
+        data: {
+          type: 'update',
+          project,
+          onSubmit: (project: Project) => this.facade.updateProject(project),
+          success$: this.facade.projectUpdated$,
+          error$: this.facade.projectUpdateError$
+        }
+      });
   }
 
   allowDelete$(project: Project): Observable<boolean> {

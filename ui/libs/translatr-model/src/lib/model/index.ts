@@ -3,6 +3,7 @@ export * from './activity';
 export * from './aggregate';
 export * from './constraint-violation';
 export * from './constraint-violation-error-info';
+export * from './error-action';
 export * from './key';
 export * from './locale';
 export * from './member';

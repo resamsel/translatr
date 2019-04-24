@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {select, Store} from '@ngrx/store';
-import {AppPartialState} from './app.reducer';
-import {appQuery} from './app.selectors';
+import { Injectable } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { AppPartialState } from './app.reducer';
+import { appQuery } from './app.selectors';
 import {
   AppActionTypes,
   CreateUser,
@@ -18,10 +18,10 @@ import {
   LoadUsers,
   UpdateUser
 } from './app.actions';
-import {AccessToken, Project, ProjectCriteria, RequestCriteria, User} from "@dev/translatr-model";
-import {Actions, ofType} from "@ngrx/effects";
-import {Observable, Subject} from "rxjs";
-import {takeUntil} from "rxjs/operators";
+import { AccessToken, Project, ProjectCriteria, RequestCriteria, User } from "@dev/translatr-model";
+import { Actions, ofType } from "@ngrx/effects";
+import { Observable, Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Injectable()
 export class AppFacade {
@@ -71,6 +71,16 @@ export class AppFacade {
     select(appQuery.getProjects),
     takeUntil(this.unloadProjects$.asObservable())
   );
+
+  projectUpdated$ = this.actions$.pipe(
+    ofType(AppActionTypes.ProjectUpdated),
+    takeUntil(this.unloadProjects$.asObservable())
+  );
+  projectUpdateError$ = this.actions$.pipe(
+    ofType(AppActionTypes.ProjectUpdateError),
+    takeUntil(this.unloadProjects$.asObservable())
+  );
+
   projectDeleted$ = this.actions$.pipe(
     ofType(AppActionTypes.ProjectDeleted, AppActionTypes.ProjectDeleteError),
     takeUntil(this.unloadProjects$.asObservable())
@@ -139,6 +149,10 @@ export class AppFacade {
 
   loadProjects(criteria?: ProjectCriteria) {
     this.store.dispatch(new LoadProjects(criteria));
+  }
+
+  updateProject(project: Project) {
+    this.store.dispatch(new UpdateProject(project));
   }
 
   deleteProject(project: Project) {
