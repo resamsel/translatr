@@ -360,6 +360,63 @@
         }
       },
       "schematics": {}
+    },
+    "generator": {
+      "root": "libs/generator",
+      "sourceRoot": "libs/generator/src",
+      "projectType": "library",
+      "prefix": "translatr",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/generator/tsconfig.lib.json",
+              "libs/generator/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/generator/jest.config.js",
+            "tsConfig": "libs/generator/tsconfig.spec.json",
+            "setupFile": "libs/generator/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
+    },
+    "utils": {
+      "root": "libs/utils",
+      "sourceRoot": "libs/utils/src",
+      "projectType": "library",
+      "prefix": "dev",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/utils/tsconfig.lib.json",
+              "libs/utils/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/utils/jest.config.js",
+            "tsConfig": "libs/utils/tsconfig.spec.json"
+          }
+        }
+      },
+      "schematics": {}
     }
   },
   "defaultProject": "translatr",

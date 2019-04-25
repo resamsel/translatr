@@ -1,3 +1,5 @@
+export * from './abstract.service';
+export * from './access-token.service';
 export * from './activity.service';
 export * from './auth-resolver.service';
 export * from './key.service';

@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {Observable} from "rxjs";
-import {HttpClient, HttpParams} from "@angular/common/http";
-import {map} from "rxjs/operators";
-import {convertTemporals, convertTemporalsList} from "../shared/mapper-utils";
-import {Aggregate, PagedList, Project, ProjectCriteria} from "@dev/translatr-model";
-import {AbstractService} from "@dev/translatr-sdk/src/lib/services/abstract.service";
+import {Observable} from 'rxjs';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {map} from 'rxjs/operators';
+import {convertTemporals, convertTemporalsList} from '../shared/mapper-utils';
+import {Aggregate, PagedList, Project, ProjectCriteria} from '@dev/translatr-model';
+import {AbstractService} from './abstract.service';
 
 const projectMapper = (project: Project) => ({
   ...convertTemporals(project),

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { BUILD_INFO } from "@dev/translatr-components/src/build-info";
+import {Component, OnInit} from '@angular/core';
+import {BUILD_INFO} from '../../../../build-info';
 
 @Component({
   selector: 'app-footer',

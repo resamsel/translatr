@@ -9,25 +9,48 @@
   },
   "projects": {
     "translatr": {
-      "tags": []
+      "tags": [
+        "app"
+      ]
     },
     "translatr-e2e": {
-      "tags": []
+      "tags": [
+        "e2e"
+      ]
     },
     "translatr-admin": {
-      "tags": []
+      "tags": [
+        "app"
+      ]
     },
     "translatr-admin-e2e": {
-      "tags": []
+      "tags": [
+        "e2e"
+      ]
     },
     "translatr-sdk": {
-      "tags": []
+      "tags": [
+        "lib",
+        "api"
+      ]
     },
     "translatr-components": {
-      "tags": []
+      "tags": [
+        "lib"
+      ]
     },
     "translatr-model": {
+      "tags": [
+        "lib"
+      ]
+    },
+    "generator": {
       "tags": []
+    },
+    "utils": {
+      "tags": [
+        "utils"
+      ]
     }
   }
 }

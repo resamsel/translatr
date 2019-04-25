@@ -1,16 +1,9 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { EntityTableComponent } from './entity-table.component';
-import {
-  MatButtonModule,
-  MatCheckboxModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatTableModule
-} from "@angular/material";
-import { ButtonModule } from "@dev/translatr-components/src/lib/modules/button/button.module";
-import { SelectionActionsComponent } from './selection-actions.component';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {EntityTableComponent} from './entity-table.component';
+import {MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatTableModule} from '@angular/material';
+import {ButtonModule} from '../../button';
+import {SelectionActionsComponent} from './selection-actions.component';
 
 @NgModule({
   declarations: [

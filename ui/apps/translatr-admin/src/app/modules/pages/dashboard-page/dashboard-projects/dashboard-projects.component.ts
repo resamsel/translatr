@@ -1,24 +1,11 @@
-import { Component, OnDestroy } from '@angular/core';
-import { AppFacade } from "../../../../+state/app.facade";
-import { Project, RequestCriteria } from "@dev/translatr-model";
-import { Observable, of } from "rxjs";
-import {
-  AppActionTypes,
-  ProjectDeleted,
-  ProjectDeleteError,
-  ProjectsDeleted,
-  ProjectsDeleteError
-} from "../../../../+state/app.actions";
-import { MatDialog, MatSnackBar } from "@angular/material";
-import { errorMessage } from "@dev/translatr-sdk";
-import {
-  hasDeleteAllProjectsPermission,
-  hasDeleteProjectPermission,
-  hasEditProjectPermission
-} from "@dev/translatr-sdk/src/lib/shared/permissions";
-import { Entity } from "@dev/translatr-components";
-import { notifyEvent } from "@dev/translatr-components/src/lib/modules/events/utils";
-import { ProjectEditDialogComponent } from "@dev/translatr-components/src/lib/project/project-edit-dialog/project-edit-dialog.component";
+import {Component, OnDestroy} from '@angular/core';
+import {AppFacade} from '../../../../+state/app.facade';
+import {Project, RequestCriteria} from '@dev/translatr-model';
+import {Observable, of} from 'rxjs';
+import {AppActionTypes, ProjectDeleted, ProjectDeleteError, ProjectsDeleted, ProjectsDeleteError} from '../../../../+state/app.actions';
+import {MatDialog, MatSnackBar} from '@angular/material';
+import {errorMessage, hasDeleteAllProjectsPermission, hasDeleteProjectPermission, hasEditProjectPermission} from '@dev/translatr-sdk';
+import {Entity, notifyEvent, ProjectEditDialogComponent} from '@dev/translatr-components';
 
 @Component({
   selector: 'dev-dashboard-projects',

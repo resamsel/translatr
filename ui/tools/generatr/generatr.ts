@@ -1,10 +1,8 @@
-import {interval, merge, Observable, of, Subject} from "rxjs";
-import {mapTo, scan, startWith, withLatestFrom} from "rxjs/operators";
-import {Action, Command, Config, State} from "./state";
-import {envAsNumber, envAsString} from "./utils";
-import {handleCommand} from "./handler";
-import {Injector} from "@angular/core";
-import {createInjector} from "./api";
+import {interval, merge, Observable, of, Subject} from 'rxjs';
+import {mapTo, scan, startWith, withLatestFrom} from 'rxjs/operators';
+import {envAsNumber, envAsString} from '@translatr/utils';
+import {Injector} from '@angular/core';
+import {Action, Command, Config, createInjector, handleCommand, State} from '@translatr/generator';
 import * as dateformat from 'dateformat';
 
 const config: Config = {

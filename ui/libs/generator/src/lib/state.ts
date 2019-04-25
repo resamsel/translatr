@@ -1,4 +1,4 @@
-import { User } from "@dev/translatr-model";
+import {User} from '@dev/translatr-model';
 
 export enum Action {
   ShowConfig = 'Show Config',

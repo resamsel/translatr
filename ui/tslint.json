@@ -134,9 +134,24 @@
         "allow": [],
         "depConstraints": [
           {
-            "sourceTag": "*",
+            "sourceTag": "app",
             "onlyDependOnLibsWithTags": [
-              "*"
+              "api",
+              "lib",
+              "utils"
+            ]
+          },
+          {
+            "sourceTag": "e2e",
+            "onlyDependOnLibsWithTags": [
+              "app"
+            ]
+          },
+          {
+            "sourceTag": "lib",
+            "onlyDependOnLibsWithTags": [
+              "lib",
+              "utils"
             ]
           }
         ]

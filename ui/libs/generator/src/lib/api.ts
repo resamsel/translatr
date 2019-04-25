@@ -1,9 +1,8 @@
-import {HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {Injector, StaticProvider} from "@angular/core";
-import {KeyService, LocaleService, MessageService, ProjectService, UserService} from "@dev/translatr-sdk";
+import {HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {Injector, StaticProvider} from '@angular/core';
+import {AccessTokenService, KeyService, LocaleService, MessageService, ProjectService, UserService} from '@dev/translatr-sdk';
 import {XMLHttpRequest} from 'xmlhttprequest';
-import {AccessTokenService} from "@dev/translatr-sdk/src/lib/services/access-token.service";
 
 export class BrowserXhr implements XhrFactory {
   constructor() {

@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {PagedList} from "../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import {Activity} from "../../../../../../../libs/translatr-model/src/lib/model/activity";
+import {Activity, PagedList} from '@dev/translatr-model';
 
 @Component({
   selector: 'app-activity-list',

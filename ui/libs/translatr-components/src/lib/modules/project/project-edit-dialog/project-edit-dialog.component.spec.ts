@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ProjectEditDialogComponent } from './project-edit-dialog.component';
+import {ProjectEditDialogComponent} from './project-edit-dialog.component';
 
 describe('ProjectEditDialogComponent', () => {
   let component: ProjectEditDialogComponent;

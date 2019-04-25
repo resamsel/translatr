@@ -1,25 +1,24 @@
-import { Component } from '@angular/core';
-import { merge, Observable, of } from "rxjs";
-import { AccessToken, RequestCriteria } from "@dev/translatr-model";
-import { AppFacade } from "../../../../+state/app.facade";
-import { Entity } from "@dev/translatr-components";
+import {Component} from '@angular/core';
+import {merge, Observable, of} from 'rxjs';
+import {AccessToken, RequestCriteria} from '@dev/translatr-model';
+import {AppFacade} from '../../../../+state/app.facade';
+import {Entity, notifyEvent} from '@dev/translatr-components';
 import {
+  errorMessage,
   hasDeleteAccessTokenPermission,
   hasDeleteAllAccessTokensPermission,
   hasEditAccessTokenPermission
-} from "@dev/translatr-sdk/src/lib/shared/permissions";
+} from '@dev/translatr-sdk';
 import {
   AccessTokenDeleted,
   AccessTokenDeleteError,
   AccessTokensDeleted,
   AccessTokensDeleteError,
   AppActionTypes
-} from "../../../../+state/app.actions";
-import { errorMessage } from "@dev/translatr-sdk";
-import { MatDialog, MatSnackBar } from "@angular/material";
-import { mapTo } from "rxjs/operators";
-import { ofType } from "@ngrx/effects";
-import { notifyEvent } from "@dev/translatr-components/src/lib/modules/events/utils";
+} from '../../../../+state/app.actions';
+import {MatDialog, MatSnackBar} from '@angular/material';
+import {mapTo} from 'rxjs/operators';
+import {ofType} from '@ngrx/effects';
 
 @Component({
   selector: 'dev-dashboard-access-tokens',

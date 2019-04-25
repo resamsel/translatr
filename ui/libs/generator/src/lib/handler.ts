@@ -1,10 +1,19 @@
-import { Injector } from "@angular/core";
-import { Action, Command, State } from "./state";
-import { Observable, of } from "rxjs";
-import { createRandomUser, deleteRandomUser, me, updateRandomUser } from "./user";
-import { UserService } from "@dev/translatr-sdk";
-import { createRandomProject, deleteRandomProject, updateRandomProject } from "./project";
-import { concatMap } from "rxjs/internal/operators/concatMap";
+import {Injector} from '@angular/core';
+import {Observable, of} from 'rxjs';
+import {UserService} from '@dev/translatr-sdk';
+import {
+  Action,
+  Command,
+  createRandomProject,
+  createRandomUser,
+  deleteRandomProject,
+  deleteRandomUser,
+  me,
+  State,
+  updateRandomProject,
+  updateRandomUser
+} from '@translatr/generator';
+import {concatMap} from 'rxjs/operators';
 
 export const handleCommand = (injector: Injector) => concatMap(([command, state]: [Command, State]): Observable<Partial<State>> => {
   switch (command.type) {

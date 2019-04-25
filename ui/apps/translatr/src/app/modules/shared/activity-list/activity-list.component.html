@@ -1,8 +1,8 @@
 <mat-list *ngIf="activities; else empty">
   <mat-list-item *ngFor="let activity of activities.list; trackBy: trackByFn">
-    <img class="icon" matListIcon ngxGravatar [email]="activity.userEmail" size="36">
+    <img [email]="activity.userEmail" class="icon" matListIcon ngxGravatar size="36">
     <h3 matLine>
-      <a class="link user-name" [routerLink]="['/', activity.userUsername]">{{activity.userName}}</a>
+      <a [routerLink]="['/', activity.userUsername]" class="link user-name">{{activity.userName}}</a>
       <ng-container [ngSwitch]="activity.type">
         <span *ngSwitchCase="'Create'" class="type" i18n> created {{activity.contentType.replace('dto.', '')}}</span>
         <span *ngSwitchCase="'Update'" class="type" i18n> updated {{activity.contentType.replace('dto.', '')}}</span>
@@ -11,9 +11,9 @@
         <span *ngSwitchCase="'Logout'" class="type" i18n> logged out</span>
       </ng-container>
     </h3>
-    <p matLine [title]="activity.whenCreated | date:'full'">{{activity.whenCreated | amTimeAgo}}</p>
+    <p [title]="activity.whenCreated | date:'full'" matLine>{{activity.whenCreated | amTimeAgo}}</p>
   </mat-list-item>
-  <a mat-list-item class="more" *ngIf="activities?.hasNext" (click)="loadMore()">
+  <a (click)="loadMore()" *ngIf="activities?.hasNext" class="more" mat-list-item>
     More
   </a>
 </mat-list>
@@ -21,11 +21,11 @@
 <ng-template #empty i18n="@@empty.activities">
   <mat-list class="empty">
     <mat-list-item *ngFor="let index of [0,1,2]">
-      <mat-icon matListIcon class="icon">account_circle</mat-icon>
+      <mat-icon class="icon" matListIcon>account_circle</mat-icon>
       <h3 matLine>
         <span class="title item-{{index}}"></span>
       </h3>
-      <p matLine class="subtitle"></p>
+      <p class="subtitle" matLine></p>
     </mat-list-item>
   </mat-list>
 </ng-template>

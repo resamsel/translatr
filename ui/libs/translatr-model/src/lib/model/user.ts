@@ -1,5 +1,5 @@
-import {Member} from "./member";
-import {UserRole} from "@dev/translatr-model/src/lib/model/user-role";
+import {Member} from './member';
+import {UserRole} from './user-role';
 
 export interface User {
   id?: string;

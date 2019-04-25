@@ -1,4 +1,4 @@
-import {ConstraintViolation} from "@dev/translatr-model/src/lib/model/constraint-violation";
+import {ConstraintViolation} from './constraint-violation';
 
 export interface ConstraintViolationErrorInfo {
   message: string;

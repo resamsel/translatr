@@ -20,12 +20,12 @@ import {EDITOR_FEATURE_KEY, editorReducer, initialState as editorInitialState} f
 import {EditorEffects} from './+state/editor.effects';
 import {EditorFacade} from './+state/editor.facade';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
-import {FormsModule} from "@angular/forms";
-import {NavListModule} from "../../shared/nav-list/nav-list.module";
+import {FormsModule} from '@angular/forms';
+import {NavListModule} from '../../shared/nav-list/nav-list.module';
 import {EditorComponent} from './editor/editor.component';
-import {EditorSelectorComponent} from "./editor/editor-selector.component";
+import {EditorSelectorComponent} from './editor/editor-selector.component';
 import {KeyEditorPageComponent} from './key-editor-page.component';
-import { NavbarModule } from "@dev/translatr-components/src/lib";
+import {NavbarModule} from '@dev/translatr-components';
 
 @NgModule({
   declarations: [LocaleEditorPageComponent, EditorComponent, EditorSelectorComponent, KeyEditorPageComponent],

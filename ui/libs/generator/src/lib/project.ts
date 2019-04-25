@@ -1,14 +1,13 @@
-import {Injector} from "@angular/core";
-import {Observable, of} from "rxjs";
-import {State} from "./state";
-import {getRandomUser, getRandomUserAccessToken} from "./user";
-import {AccessToken, Key, Locale, Message, PagedList, Project, User, UserRole} from "@dev/translatr-model";
-import {catchError, concatMap, map, mapTo} from "rxjs/operators";
+import {Injector} from '@angular/core';
+import {Observable, of} from 'rxjs';
+import {State} from './state';
+import {getRandomUser, getRandomUserAccessToken} from './user';
+import {AccessToken, Key, Locale, Message, PagedList, Project, User, UserRole} from '@dev/translatr-model';
+import {catchError, concatMap, filter, map, mapTo} from 'rxjs/operators';
 import * as randomName from 'random-name';
-import {cartesianProduct, pickRandomly} from "./utils";
-import {HttpErrorResponse} from "@angular/common/http";
-import {filter} from "rxjs/internal/operators/filter";
-import {KeyService, LocaleService, MessageService, ProjectService, UserService, errorMessage} from "@dev/translatr-sdk";
+import {HttpErrorResponse} from '@angular/common/http';
+import {errorMessage, KeyService, LocaleService, MessageService, ProjectService, UserService} from '@dev/translatr-sdk';
+import {cartesianProduct, pickRandomly} from '@translatr/utils';
 
 const localeNames = ['en', 'de', 'it', 'fr', 'hu', 'sl', 'cs', 'es', 'pl', 'gr'];
 const featureNames = ['user', 'project', 'locale', 'key', 'message', 'accessToken'];

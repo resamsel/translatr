@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {AbstractService} from "@dev/translatr-sdk/src/lib/services/abstract.service";
-import {AccessToken, RequestCriteria} from "@dev/translatr-model";
+import {HttpClient} from '@angular/common/http';
+import {AbstractService} from './abstract.service';
+import {AccessToken, RequestCriteria} from '@dev/translatr-model';
 
 export interface AccessTokenCriteria extends RequestCriteria {
   userId?: string;
