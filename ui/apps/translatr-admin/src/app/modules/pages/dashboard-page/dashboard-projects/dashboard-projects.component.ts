@@ -33,7 +33,7 @@ export class DashboardProjectsComponent implements OnDestroy {
   projects$ = this.facade.projects$;
   load$ = of({limit: '20', order: 'name asc'});
 
-  selected: Entity[] = [];
+  selected: Project[] = [];
 
   constructor(
     private readonly facade: AppFacade,
@@ -57,7 +57,7 @@ export class DashboardProjectsComponent implements OnDestroy {
   }
 
   onSelected(entities: Entity[]) {
-    this.selected = entities;
+    this.selected = entities as Project[];
   }
 
   onCriteriaChanged(criteria: RequestCriteria) {

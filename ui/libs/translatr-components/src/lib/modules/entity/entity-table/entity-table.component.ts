@@ -10,14 +10,14 @@ import {
   QueryList,
   ViewChild
 } from '@angular/core';
-import {SelectionModel} from "@angular/cdk/collections";
-import {MatColumnDef, MatTable} from "@angular/material";
-import {PagedList, RequestCriteria} from "@dev/translatr-model";
-import {merge, Subject} from "rxjs";
-import {debounceTime, distinctUntilChanged, map, scan, shareReplay, take} from "rxjs/operators";
+import { SelectionModel } from "@angular/cdk/collections";
+import { MatColumnDef, MatTable } from "@angular/material";
+import { PagedList, RequestCriteria } from "@dev/translatr-model";
+import { merge, Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged, map, scan, shareReplay, take } from "rxjs/operators";
 
 export interface Entity {
-  id: string;
+  id: string | number;
 }
 
 @Component({
@@ -87,7 +87,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   }
 
   trackByFn(index: number, item: Entity): string {
-    return item.id;
+    return `${item.id}`;
   }
 
   onFilter(value: string) {

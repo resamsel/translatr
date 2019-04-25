@@ -46,7 +46,7 @@ export class DashboardUsersComponent implements OnDestroy {
     startWith({limit: '20', order: 'name asc'})
   );
 
-  selected: Entity[] = [];
+  selected: User[] = [];
 
   constructor(
     private readonly facade: AppFacade,
@@ -72,7 +72,7 @@ export class DashboardUsersComponent implements OnDestroy {
   }
 
   onSelected(entities: Entity[]) {
-    this.selected = entities;
+    this.selected = entities as User[];
   }
 
   onCriteriaChanged(criteria: RequestCriteria) {

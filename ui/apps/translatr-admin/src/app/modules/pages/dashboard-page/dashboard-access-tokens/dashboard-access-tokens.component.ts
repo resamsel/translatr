@@ -38,7 +38,7 @@ export class DashboardAccessTokensComponent {
     this.facade.accessTokensDeleted$.pipe(ofType(AppActionTypes.AccessTokensDeleted), mapTo({}))
   );
 
-  selected: Entity[] = [];
+  selected: AccessToken[] = [];
 
   constructor(
     private readonly facade: AppFacade,
@@ -62,7 +62,7 @@ export class DashboardAccessTokensComponent {
   }
 
   onSelected(entities: Entity[]) {
-    this.selected = entities;
+    this.selected = entities as AccessToken[];
   }
 
   onCriteriaChanged(criteria: RequestCriteria) {
