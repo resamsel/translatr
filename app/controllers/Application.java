@@ -5,15 +5,10 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import commands.Command;
 import converters.ActivityCsvConverter;
 import criterias.LogEntryCriteria;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import play.Configuration;
 import play.api.mvc.Action;
 import play.api.mvc.AnyContent;
-import play.cache.CacheApi;
 import play.inject.Injector;
 import play.mvc.Call;
 import play.mvc.Http;
@@ -23,6 +18,11 @@ import play.routing.JavaScriptReverseRouter;
 import services.CacheService;
 import utils.ConfigKey;
 import utils.Template;
+
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 /**
  * This controller contains an action to handle HTTP requests to the application's home page.
@@ -51,7 +51,7 @@ public class Application extends AbstractController {
   }
 
   public Action<AnyContent> assetOrDefaultUi(String resource) {
-    if (resource.contains(".")) {
+    if (resource.matches("[^/]+(\\.[^/]+)+")) {
       return assets.at("/public/ui", resource, false);
     }
     return indexUi();
@@ -62,10 +62,10 @@ public class Application extends AbstractController {
   }
 
   public Action<AnyContent> assetOrDefaultAdmin(String resource) {
-    if (resource.contains(".")) {
+    if (resource.matches("[^/]+(\\.[^/]+)+")) {
       return assets.at("/public/admin", resource, false);
     }
-    return indexUi();
+    return indexAdmin();
   }
 
   public CompletionStage<Result> login() {
