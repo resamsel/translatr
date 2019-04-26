@@ -32,6 +32,7 @@ public class LocaleKeyValidator implements ConstraintValidator<LocaleKeyCheck, M
     }
 
     if (message.locale == null) {
+      context.disableDefaultConstraintViolation();
       context.buildConstraintViolationWithTemplate(LOCALE_NOT_FOUND_MESSAGE)
           .addPropertyNode("locale")
           .addConstraintViolation();
@@ -39,6 +40,7 @@ public class LocaleKeyValidator implements ConstraintValidator<LocaleKeyCheck, M
     }
 
     if (message.key == null) {
+      context.disableDefaultConstraintViolation();
       context.buildConstraintViolationWithTemplate(KEY_NOT_FOUND_MESSAGE)
           .addPropertyNode("locale")
           .addConstraintViolation();
@@ -46,6 +48,7 @@ public class LocaleKeyValidator implements ConstraintValidator<LocaleKeyCheck, M
     }
 
     if (!message.locale.project.equals(message.key.project)) {
+      context.disableDefaultConstraintViolation();
       context.buildConstraintViolationWithTemplate(
           String.format(PROJECT_MISMATCH_MESSAGE, message.locale.project.id, message.key.project.id))
           .addPropertyNode("locale")
