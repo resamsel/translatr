@@ -23,20 +23,20 @@
     }
 
     .app-loading .material-icons {
-      color: #888;
-      font-size: 128px;
+      opacity: 0.4;
+      font-size: 64px;
     }
 
     .app-loading .dots {
       position: relative;
-      width: 72px;
+      width: 40px;
     }
 
     .app-loading .dots .dot {
       position: absolute;
       display: inline-block;
-      width: 12px;
-      height: 12px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: #ccc;
       animation: backforth 2s ease-in-out infinite;
@@ -44,12 +44,12 @@
 
     .app-loading .dots .dot:nth-child(2) {
       animation-delay: 150ms;
-      opacity: 0.67;
+      opacity: 0.5;
     }
 
     .app-loading .dots .dot:nth-child(3) {
       animation-delay: 300ms;
-      opacity: 0.33;
+      opacity: 0.25;
     }
 
     @keyframes backforth {
@@ -57,7 +57,7 @@
         left: 0;
       }
       50% {
-        left: calc(100% - 12px);
+        left: calc(100% - 8px);
       }
       100% {
         left: 0;
