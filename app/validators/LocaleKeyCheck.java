@@ -17,8 +17,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = LocaleKeyValidator.class)
-@Form.Display(name = "constraint.localekeyinvalid")
+@Form.Display(name = LocaleKeyValidator.MESSAGE)
 public @interface LocaleKeyCheck {
+  String message() default LocaleKeyValidator.MESSAGE;
+
   Class<?>[] groups() default {};
 
   Class<? extends Payload>[] payload() default {};

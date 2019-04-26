@@ -1,13 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {User} from "../../../../../../../../libs/translatr-model/src/lib/model/user";
-import {ProjectService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
-import {Observable} from "rxjs";
-import {PagedList} from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import {Project} from "../../../../../../../../libs/translatr-model/src/lib/model/project";
-import {ProjectCreationDialogComponent} from "../../../shared/project-creation-dialog/project-creation-dialog.component";
-import {take} from "rxjs/operators";
-import {MatDialog} from "@angular/material";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { User } from '../../../../../../../../libs/translatr-model/src/lib/model/user';
+import { ProjectService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/project.service';
+import { Observable } from 'rxjs';
+import { PagedList } from '../../../../../../../../libs/translatr-model/src/lib/model/paged-list';
+import { Project } from '../../../../../../../../libs/translatr-model/src/lib/model/project';
+import { ProjectCreationDialogComponent } from '../../../shared/project-creation-dialog/project-creation-dialog.component';
+import { take } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-user-projects',
@@ -35,7 +35,7 @@ export class UserProjectsComponent implements OnInit {
   }
 
   private loadProjects(): void {
-    this.projects$ = this.projectService.getProjects({
+    this.projects$ = this.projectService.find({
       owner: this.user.username,
       order: 'whenUpdated desc'
     });

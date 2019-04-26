@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {Actions, Effect} from '@ngrx/effects';
-import {DataPersistence} from '@nrwl/nx';
-import {EDITOR_FEATURE_KEY, EditorPartialState} from './editor.reducer';
+import { Injectable } from '@angular/core';
+import { Actions, Effect } from '@ngrx/effects';
+import { DataPersistence } from '@nrwl/nx';
+import { EDITOR_FEATURE_KEY, EditorPartialState } from './editor.reducer';
 import {
   EditorActionTypes,
   KeyLoaded,
@@ -27,18 +27,18 @@ import {
   SelectKey,
   SelectLocale
 } from './editor.actions';
-import {LocaleService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/locale.service";
-import {Locale} from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
-import {filter, map, take} from "rxjs/operators";
-import {combineLatest, Observable} from "rxjs";
-import {KeyService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/key.service";
-import {PagedList} from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import {Key} from "../../../../../../../../libs/translatr-model/src/lib/model/key";
-import {MessageService} from "../../../../../../../../libs/translatr-sdk/src/lib/services/message.service";
-import {Message} from "../../../../../../../../libs/translatr-model/src/lib/model/message";
-import {Action} from "@ngrx/store";
-import {EditorFacade} from "./editor.facade";
-import {MatSnackBar} from "@angular/material";
+import { LocaleService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/locale.service';
+import { Locale } from '../../../../../../../../libs/translatr-model/src/lib/model/locale';
+import { filter, map, take } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { KeyService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/key.service';
+import { PagedList } from '../../../../../../../../libs/translatr-model/src/lib/model/paged-list';
+import { Key } from '../../../../../../../../libs/translatr-model/src/lib/model/key';
+import { MessageService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/message.service';
+import { Message } from '../../../../../../../../libs/translatr-model/src/lib/model/message';
+import { Action } from '@ngrx/store';
+import { EditorFacade } from './editor.facade';
+import { MatSnackBar } from '@angular/material';
 
 @Injectable()
 export class EditorEffects {
@@ -76,17 +76,10 @@ export class EditorEffects {
     EditorActionTypes.LoadKeys,
     {
       run: (action: LoadKeys, state?: EditorPartialState) => {
-        return this.keyService
-          .getKeys({
-            ...action.payload,
-            options: {
-              ...action.payload.options || {},
-              params: {
-                ...state[EDITOR_FEATURE_KEY].search,
-                ...action.payload.options && action.payload.options.params || {}
-              }
-            }
-          })
+        return this.keyService.find({
+          ...state[EDITOR_FEATURE_KEY].search,
+          ...action.payload
+        })
           .pipe(map((payload: PagedList<Key>) => new KeysLoaded(payload)));
       },
 
@@ -131,10 +124,8 @@ export class EditorEffects {
     EditorActionTypes.LocaleLoaded,
     {
       run: (action: LocaleLoaded) => new LoadKeys({
-        projectId: action.payload.locale.projectId,
-        options: {
-          params: action.payload.params
-        }
+        ...action.payload.params,
+        projectId: action.payload.locale.projectId
       })
     }
   );
@@ -143,10 +134,8 @@ export class EditorEffects {
     EditorActionTypes.LocaleLoaded,
     {
       run: (action: LocaleLoaded) => new LoadLocales({
-        projectId: action.payload.locale.projectId,
-        options: {
-          params: action.payload.params
-        }
+        ...action.payload.params,
+        projectId: action.payload.locale.projectId
       })
     }
   );
@@ -156,7 +145,7 @@ export class EditorEffects {
     {
       run: (action: KeyLoaded) => new LoadLocales({
         projectId: action.payload.projectId,
-        options: {params: {fetch: 'messages'}}
+        fetch: 'messages'
       })
     }
   );
@@ -174,15 +163,7 @@ export class EditorEffects {
     EditorActionTypes.LoadLocales,
     {
       run: (action: LoadLocales) => {
-        return this.localeService.getLocales({
-          ...action.payload,
-          options: {
-            ...action.payload.options || {},
-            params: {
-              ...action.payload.options && action.payload.options.params || {}
-            }
-          }
-        })
+        return this.localeService.find(action.payload)
           .pipe(map((payload: PagedList<Locale>) => new LocalesLoaded(payload)));
       },
 
@@ -327,13 +308,9 @@ export class EditorEffects {
     {
       run: (action: LoadLocalesBy, state?: EditorPartialState) => {
         return new LoadLocales({
-          projectId: state[EDITOR_FEATURE_KEY].key.projectId,
-          options: {
-            params: {
-              ...{limit: '25', order: 'name', fetch: 'messages'},
-              ...action.payload
-            }
-          }
+          ...{limit: '25', order: 'name', fetch: 'messages'},
+          ...action.payload,
+          projectId: state[EDITOR_FEATURE_KEY].key.projectId
         });
       },
 
@@ -349,13 +326,9 @@ export class EditorEffects {
     {
       run: (action: LoadKeysBy, state?: EditorPartialState) => {
         return new LoadKeys({
+          ...{limit: '25', order: 'name', fetch: 'messages'},
+          ...action.payload,
           projectId: state[EDITOR_FEATURE_KEY].locale.projectId,
-          options: {
-            params: {
-              ...{limit: '25', order: 'name', fetch: 'messages'},
-              ...action.payload
-            }
-          }
         });
       },
 

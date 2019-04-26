@@ -11,6 +11,7 @@ import javax.validation.ConstraintValidatorContext;
  */
 public class LocaleKeyValidator implements ConstraintValidator<LocaleKeyCheck, Message> {
 
+  public static final String MESSAGE = "Message invalid";
   private static final String LOCALE_NOT_FOUND_MESSAGE = "Locale not found";
   private static final String KEY_NOT_FOUND_MESSAGE = "Key not found";
   private static final String PROJECT_MISMATCH_MESSAGE = "Projects do not match (%s != %s)";

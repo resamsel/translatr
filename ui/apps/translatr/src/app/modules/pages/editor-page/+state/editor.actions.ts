@@ -1,9 +1,10 @@
-import {Action} from '@ngrx/store';
-import {Locale} from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
-import {PagedList} from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import {Message} from "../../../../../../../../libs/translatr-model/src/lib/model/message";
-import {Key} from "../../../../../../../../libs/translatr-model/src/lib/model/key";
-import {RequestCriteria} from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
+import { Action } from '@ngrx/store';
+import { Locale } from '../../../../../../../../libs/translatr-model/src/lib/model/locale';
+import { PagedList } from '../../../../../../../../libs/translatr-model/src/lib/model/paged-list';
+import { Message } from '../../../../../../../../libs/translatr-model/src/lib/model/message';
+import { Key } from '../../../../../../../../libs/translatr-model/src/lib/model/key';
+import { RequestCriteria } from '../../../../../../../../libs/translatr-model/src/lib/model/request-criteria';
+import { KeyCriteria, LocaleCriteria } from '@dev/translatr-model';
 
 export enum EditorActionTypes {
   LoadLocales = '[Editor Page] Load Locales',
@@ -37,10 +38,7 @@ export enum EditorActionTypes {
 export class LoadLocales implements Action {
   readonly type = EditorActionTypes.LoadLocales;
 
-  constructor(public payload: {
-    projectId: string;
-    options?: { params: RequestCriteria };
-  }) {
+  constructor(public payload: LocaleCriteria) {
   }
 }
 
@@ -82,10 +80,7 @@ export class LocaleLoaded implements Action {
 export class LoadKeys implements Action {
   readonly type = EditorActionTypes.LoadKeys;
 
-  constructor(public payload: {
-    projectId: string;
-    options?: { params: RequestCriteria };
-  }) {
+  constructor(public payload: KeyCriteria) {
   }
 }
 

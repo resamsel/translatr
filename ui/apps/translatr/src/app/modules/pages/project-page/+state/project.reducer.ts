@@ -1,11 +1,5 @@
 import { ProjectAction, ProjectActionTypes } from './project.actions';
-import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
-import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import { Aggregate } from "../../../../../../../../libs/translatr-model/src/lib/model/aggregate";
-import { Activity } from "../../../../../../../../libs/translatr-model/src/lib/model/activity";
-import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
-import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
-import { RequestCriteria } from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
+import { Activity, Aggregate, Key, Locale, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 
 export const PROJECT_FEATURE_KEY = 'project';
 
@@ -60,7 +54,7 @@ export function projectReducer(
         ...state,
         localesSearch: {
           ...state.localesSearch,
-          ...action.payload.criteria ? action.payload.criteria : {}
+          ...action.payload ? action.payload : {}
         }
       };
     case ProjectActionTypes.LocalesLoaded:
@@ -73,7 +67,7 @@ export function projectReducer(
         ...state,
         keysSearch: {
           ...state.keysSearch,
-          ...action.payload.criteria ? action.payload.criteria : {}
+          ...action.payload ? action.payload : {}
         }
       };
     case ProjectActionTypes.KeysLoaded:

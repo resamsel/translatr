@@ -2,7 +2,7 @@
   <header>
     <div class="container">
       <div class="breadcrumbs" *ngIf="project$ | async as project">
-        <mat-icon>extension</mat-icon>
+        <mat-icon>book</mat-icon>
         <a class="link" [routerLink]="['/', project?.ownerUsername]">{{project?.ownerUsername}}</a>
         <span>/</span>
         <mat-form-field [ngClass]="{dirty: nameFormControl.dirty}">
@@ -36,7 +36,7 @@
            [routerLinkActiveOptions]="{exact: true}"
            #projectLink="routerLinkActive"
            [active]="projectLink.isActive">
-          <mat-icon>extension</mat-icon>
+          <mat-icon>book</mat-icon>
           <span>Project</span>
         </a>
         <a mat-tab-link

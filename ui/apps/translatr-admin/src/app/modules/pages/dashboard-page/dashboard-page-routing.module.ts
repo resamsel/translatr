@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardPageComponent } from "./dashboard-page.component";
-import { DashboardInfoComponent } from "./dashboard-info/dashboard-info.component";
-import { DashboardUsersComponent } from "./dashboard-users/dashboard-users.component";
-import { DashboardProjectsComponent } from "./dashboard-projects/dashboard-projects.component";
-import { DASHBOARD_ROUTES } from "./dashboard-page.token";
-import { DashboardAccessTokensComponent } from "./dashboard-access-tokens/dashboard-access-tokens.component";
-import { DashboardUserComponent } from "./dashboard-user/dashboard-user.component";
+import { DashboardPageComponent } from './dashboard-page.component';
+import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
+import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
+import { DashboardProjectsComponent } from './dashboard-projects/dashboard-projects.component';
+import { DASHBOARD_ROUTES } from './dashboard-page.token';
+import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
+import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
 
 export const routes: Routes = [
   {
@@ -42,7 +42,7 @@ export const routes: Routes = [
         component: DashboardProjectsComponent,
         path: 'projects',
         data: {
-          icon: 'extension',
+          icon: 'library_books',
           name: 'Projects'
         }
       },

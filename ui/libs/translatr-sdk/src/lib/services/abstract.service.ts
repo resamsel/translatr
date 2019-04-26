@@ -33,6 +33,19 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
       );
   }
 
+  get(id: string, criteria?: CRITERIA): Observable<DTO> {
+    const path = `${this.entityPath}/${id}`;
+    return this.http
+      .get<DTO>(path, {params: {...criteria ? (criteria as unknown as object) : {}}})
+      .pipe(
+        map(convertTemporals),
+        catchError(err => {
+          console.error(`Error while getting ${path}`, err, id, criteria);
+          return throwError(err);
+        })
+      );
+  }
+
   create(dto: DTO, options?: RequestOptions): Observable<DTO | undefined> {
     return this.http
       .post<DTO>(this.entityPath, dto, options)

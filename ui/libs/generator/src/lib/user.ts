@@ -16,7 +16,7 @@ const scope = cartesianProduct([
   .join(',');
 
 export const getRandomUser = (userService: UserService, criteria: RequestCriteria, filterFn: (user: User) => boolean): Observable<User> =>
-  userService.getUsers({limit: '20', order: 'whenUpdated asc'}).pipe(
+  userService.find({limit: '20', order: 'whenUpdated asc'}).pipe(
     map((pagedList: PagedList<User>) => pickRandomly(pagedList.list.filter(filterFn))));
 
 export const getRandomUserAccessToken = (
@@ -41,7 +41,7 @@ export const getRandomUserAccessToken = (
 };
 
 export const me = (userService: UserService): Observable<Partial<State>> => {
-  return userService.getLoggedInUser()
+  return userService.me()
     .pipe(
       concatMap((user: User) => {
         if (!user) {

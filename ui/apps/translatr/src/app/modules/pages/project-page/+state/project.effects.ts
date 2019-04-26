@@ -20,19 +20,19 @@ import {
   ProjectSaved,
   SaveProject
 } from './project.actions';
-import { ProjectService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
-import { map } from "rxjs/operators";
-import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
-import { ActivityService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service";
-import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import { Aggregate } from "../../../../../../../../libs/translatr-model/src/lib/model/aggregate";
-import { Activity } from "../../../../../../../../libs/translatr-model/src/lib/model/activity";
-import { Observable } from "rxjs";
-import { Action } from "@ngrx/store";
-import { LocaleService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/locale.service";
-import { KeyService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/key.service";
-import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
-import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
+import { ProjectService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/project.service';
+import { map } from 'rxjs/operators';
+import { Project } from '../../../../../../../../libs/translatr-model/src/lib/model/project';
+import { ActivityService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service';
+import { PagedList } from '../../../../../../../../libs/translatr-model/src/lib/model/paged-list';
+import { Aggregate } from '../../../../../../../../libs/translatr-model/src/lib/model/aggregate';
+import { Activity } from '../../../../../../../../libs/translatr-model/src/lib/model/activity';
+import { Observable } from 'rxjs';
+import { Action } from '@ngrx/store';
+import { LocaleService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/locale.service';
+import { KeyService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/key.service';
+import { Locale } from '../../../../../../../../libs/translatr-model/src/lib/model/locale';
+import { Key } from '../../../../../../../../libs/translatr-model/src/lib/model/key';
 
 @Injectable()
 export class ProjectEffects {
@@ -57,16 +57,10 @@ export class ProjectEffects {
     ProjectActionTypes.LoadLocales,
     {
       run: (action: LoadLocales, state?: ProjectPartialState): Observable<Action> | Action | void => {
-        return this.localeService
-          .getLocales({
-            projectId: action.payload.projectId,
-            options: {
-              params: {
-                ...state[PROJECT_FEATURE_KEY].localesSearch,
-                ...action.payload.criteria ? action.payload.criteria : {}
-              }
-            }
-          })
+        return this.localeService.find({
+          ...state[PROJECT_FEATURE_KEY].localesSearch,
+          ...action.payload
+        })
           .pipe(map((payload: PagedList<Locale>) => new LocalesLoaded(payload)));
       }
     }
@@ -76,16 +70,10 @@ export class ProjectEffects {
     ProjectActionTypes.LoadKeys,
     {
       run: (action: LoadKeys, state?: ProjectPartialState): Observable<Action> | Action | void => {
-        return this.keyService
-          .getKeys({
-            projectId: action.payload.projectId,
-            options: {
-              params: {
-                ...state[PROJECT_FEATURE_KEY].keysSearch,
-                ...action.payload.criteria ? action.payload.criteria : {}
-              }
-            }
-          })
+        return this.keyService.find({
+          ...state[PROJECT_FEATURE_KEY].keysSearch,
+          ...action.payload
+        })
           .pipe(map((payload: PagedList<Key>) => new KeysLoaded(payload)));
       }
     }
@@ -94,7 +82,7 @@ export class ProjectEffects {
   @Effect() loadProjectActivity$ = this.dataPersistence.fetch(
     ProjectActionTypes.LoadProjectActivityAggregated,
     {
-      run: (action: LoadProjectActivityAggregated, state: ProjectPartialState) => {
+      run: (action: LoadProjectActivityAggregated) => {
         const payload = action.payload;
         return this.activityService
           .aggregated({projectId: payload.id})

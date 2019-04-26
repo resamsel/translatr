@@ -14,8 +14,8 @@ const config: Config = {
     // every minute
     me: envAsNumber('ME_INTERVAL', 10 * 60 * 1000),
 
-    // every thirty minutes
-    createUser: envAsNumber('CREATE_USER_INTERVAL', 30 * 60 * 1000),
+    // every ten minutes
+    createUser: envAsNumber('CREATE_USER_INTERVAL', 10 * 60 * 1000),
     // every five minutes
     updateUser: envAsNumber('UPDATE_USER_INTERVAL', 5 * 60 * 1000),
     // every hour

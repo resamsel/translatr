@@ -1,12 +1,12 @@
 import { Action } from '@ngrx/store';
-import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
-import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import { Aggregate } from "../../../../../../../../libs/translatr-model/src/lib/model/aggregate";
-import { ActivityCriteria } from "../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service";
-import { Activity } from "../../../../../../../../libs/translatr-model/src/lib/model/activity";
-import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
-import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
-import { RequestCriteria } from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
+import { Project } from '../../../../../../../../libs/translatr-model/src/lib/model/project';
+import { PagedList } from '../../../../../../../../libs/translatr-model/src/lib/model/paged-list';
+import { Aggregate } from '../../../../../../../../libs/translatr-model/src/lib/model/aggregate';
+import { ActivityCriteria } from '../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service';
+import { Activity } from '../../../../../../../../libs/translatr-model/src/lib/model/activity';
+import { Locale } from '../../../../../../../../libs/translatr-model/src/lib/model/locale';
+import { Key } from '../../../../../../../../libs/translatr-model/src/lib/model/key';
+import { KeyCriteria, LocaleCriteria } from '@dev/translatr-model';
 
 export enum ProjectActionTypes {
   LoadProject = '[Project Page] Load Project',
@@ -53,10 +53,7 @@ export class ProjectLoaded implements Action {
 export class LoadLocales implements Action {
   readonly type = ProjectActionTypes.LoadLocales;
 
-  constructor(public payload: {
-    projectId: string;
-    criteria?: RequestCriteria;
-  }) {
+  constructor(public payload: LocaleCriteria) {
   }
 }
 
@@ -77,10 +74,7 @@ export class LocalesLoaded implements Action {
 export class LoadKeys implements Action {
   readonly type = ProjectActionTypes.LoadKeys;
 
-  constructor(public payload: {
-    projectId: string;
-    criteria?: RequestCriteria;
-  }) {
+  constructor(public payload: KeyCriteria) {
   }
 }
 

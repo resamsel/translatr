@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import {select, Store} from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 
-import {ProjectPartialState} from './project.reducer';
-import {projectQuery} from './project.selectors';
+import { ProjectPartialState } from './project.reducer';
+import { projectQuery } from './project.selectors';
 import {
   LoadKeys,
   LoadLocales,
@@ -13,14 +13,11 @@ import {
   SaveProject,
   UnloadProject
 } from './project.actions';
-import {ActivityCriteria} from "../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service";
-import {Observable, Subject} from "rxjs";
-import {Project} from "../../../../../../../../libs/translatr-model/src/lib/model/project";
-import {takeUntil} from "rxjs/operators";
-import {PagedList} from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import {Aggregate} from "../../../../../../../../libs/translatr-model/src/lib/model/aggregate";
-import {Activity} from "../../../../../../../../libs/translatr-model/src/lib/model/activity";
-import { RequestCriteria } from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
+import { ActivityCriteria } from '../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service';
+import { Observable, Subject } from 'rxjs';
+import { Project } from '../../../../../../../../libs/translatr-model/src/lib/model/project';
+import { takeUntil } from 'rxjs/operators';
+import { RequestCriteria } from '../../../../../../../../libs/translatr-model/src/lib/model/request-criteria';
 
 @Injectable()
 export class ProjectFacade {
@@ -46,11 +43,11 @@ export class ProjectFacade {
   }
 
   loadLocales(projectId: string, criteria?: RequestCriteria) {
-    this.store.dispatch(new LoadLocales({projectId, criteria}));
+    this.store.dispatch(new LoadLocales({...criteria, projectId}));
   }
 
   loadKeys(projectId: string, criteria?: RequestCriteria) {
-    this.store.dispatch(new LoadKeys({projectId, criteria}));
+    this.store.dispatch(new LoadKeys({...criteria, projectId}));
   }
 
   loadActivityAggregated(projectId: string) {

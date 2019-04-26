@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
-import {Actions, Effect, ofType} from '@ngrx/effects';
-import {AppActionTypes, LoadMe, MeLoaded, MeLoadError} from './app.actions';
-import {User} from "@dev/translatr-model";
-import {switchMap} from "rxjs/internal/operators/switchMap";
-import {catchError, map} from "rxjs/operators";
-import {of} from "rxjs/internal/observable/of";
-import {UserService} from "@dev/translatr-sdk";
+import { Injectable } from '@angular/core';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { AppActionTypes, LoadMe, MeLoaded, MeLoadError } from './app.actions';
+import { User } from '@dev/translatr-model';
+import { switchMap } from 'rxjs/internal/operators/switchMap';
+import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs/internal/observable/of';
+import { UserService } from '@dev/translatr-sdk';
 
 @Injectable()
 export class AppEffects {
@@ -13,7 +13,7 @@ export class AppEffects {
     ofType(AppActionTypes.LoadMe),
     switchMap((action: LoadMe) => {
       return this.userService
-        .getLoggedInUser()
+        .me()
         .pipe(map((user: User) => new MeLoaded(user)));
     }),
     catchError((error) => {

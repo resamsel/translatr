@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from "rxjs";
-import { PagedList } from "../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import { Project } from "../../../../../../../libs/translatr-model/src/lib/model/project";
-import { ProjectService } from "../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
-import { MatDialog } from "@angular/material";
+import { Observable } from 'rxjs';
+import { PagedList } from '../../../../../../../libs/translatr-model/src/lib/model/paged-list';
+import { Project } from '../../../../../../../libs/translatr-model/src/lib/model/project';
+import { ProjectService } from '../../../../../../../libs/translatr-sdk/src/lib/services/project.service';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-projects-page',
@@ -20,6 +20,6 @@ export class DashboardPageComponent implements OnInit {
   }
 
   loadProjects(): void {
-    this.projects$ = this.projectService.getProjects();
+    this.projects$ = this.projectService.find();
   }
 }

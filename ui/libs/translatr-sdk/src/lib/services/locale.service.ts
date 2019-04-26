@@ -1,15 +1,15 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {convertTemporals, convertTemporalsList} from '../shared/mapper-utils';
-import {AbstractService} from './abstract.service';
-import {Locale, PagedList, RequestCriteria} from '@dev/translatr-model';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { convertTemporals } from '../shared/mapper-utils';
+import { AbstractService } from './abstract.service';
+import { Locale, LocaleCriteria } from '@dev/translatr-model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LocaleService extends AbstractService<Locale, RequestCriteria> {
+export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
 
   constructor(http: HttpClient) {
     super(http, '/api/locales', '/api/locale');
@@ -30,24 +30,5 @@ export class LocaleService extends AbstractService<Locale, RequestCriteria> {
         {params: options.params}
       )
       .pipe(map((locale: Locale) => convertTemporals(locale)));
-  }
-
-  getLocales(
-    options: {
-      projectId: string;
-      options?: {
-        params?: HttpParams | {
-          [param: string]: string | string[];
-        };
-      }
-    }): Observable<PagedList<Locale>> {
-    return this.http
-      .get<PagedList<Locale>>(`/api/locales/${options.projectId}`, options.options)
-      .pipe(
-        map((payload: PagedList<Locale>) => ({
-          ...payload,
-          list: convertTemporalsList(payload.list)
-        }))
-      );
   }
 }

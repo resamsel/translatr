@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from "@angular/router";
-import {EMPTY, Observable, of} from "rxjs";
-import {mergeMap, take} from "rxjs/operators";
-import {User} from "../../../../../../../libs/translatr-model/src/lib/model/user";
-import {UserService} from "../../../../../../../libs/translatr-sdk/src/lib/services/user.service";
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { EMPTY, Observable, of } from 'rxjs';
+import { mergeMap, take } from 'rxjs/operators';
+import { User } from '../../../../../../../libs/translatr-model/src/lib/model/user';
+import { UserService } from '../../../../../../../libs/translatr-sdk/src/lib/services/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class UserResolverService implements Resolve<User> {
     const username = route.paramMap.get('username');
 
     return this.userService
-      .getUserByName(username, {params: {}})
+      .byUsername(username, {params: {}})
       .pipe(
         take(1),
         mergeMap((user: User) => {
