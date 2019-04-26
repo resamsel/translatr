@@ -1,8 +1,8 @@
-import {interval, merge, Observable, of, Subject} from 'rxjs';
-import {mapTo, scan, startWith, withLatestFrom} from 'rxjs/operators';
-import {envAsNumber, envAsString} from '@translatr/utils';
-import {Injector} from '@angular/core';
-import {Action, Command, Config, createInjector, handleCommand, State} from '@translatr/generator';
+import { interval, merge, Observable, of, Subject } from 'rxjs';
+import { mapTo, scan, startWith, withLatestFrom } from 'rxjs/operators';
+import { envAsNumber, envAsString } from '@translatr/utils';
+import { Injector } from '@angular/core';
+import { Action, Command, Config, createInjector, handleCommand, State } from '@translatr/generator';
 import * as dateformat from 'dateformat';
 
 const config: Config = {
@@ -75,5 +75,5 @@ commands$.pipe(
 //  tap((state: State) => stateCommand$.next(state))
 ).subscribe(
   (state: State) => console.log(`${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message}`),
-  (state: State) => console.error(`${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message}`)
+  (state: State) => console.error(`${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message} (state: ${state})`)
 );

@@ -1,12 +1,7 @@
 package services.impl;
 
-import static java.util.Objects.requireNonNull;
-
 import com.avaje.ebean.PagedList;
 import criterias.AbstractSearchCriteria;
-import java.util.Collection;
-import java.util.function.BiFunction;
-import javax.validation.Validator;
 import models.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +9,12 @@ import repositories.ModelRepository;
 import services.CacheService;
 import services.LogEntryService;
 import services.ModelService;
+
+import javax.validation.Validator;
+import java.util.Collection;
+import java.util.function.BiFunction;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author resamsel
@@ -54,6 +55,10 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
 
   @Override
   public MODEL byId(ID id, String... fetches) {
+    if (id == null) {
+      return null;
+    }
+
     return cache.getOrElse(
         cacheKeyGetter.apply(id, fetches),
         () -> modelRepository.byId(id, fetches),

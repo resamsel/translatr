@@ -1,34 +1,10 @@
 package models;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
-
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import controllers.AbstractController;
 import criterias.MessageCriteria;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +21,12 @@ import utils.ContextKey;
 import validators.NameUnique;
 import validators.ProjectName;
 import validators.ProjectNameUniqueChecker;
+
+import javax.persistence.*;
+import java.util.*;
+
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.*;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
@@ -487,6 +469,19 @@ public class Project implements Model<Project, UUID>, Suggestable {
         .memberRemoveBy(Objects.requireNonNull(owner.username, "Owner username is null"),
             Objects.requireNonNull(name, "Name is null"),
             Objects.requireNonNull(memberId, "Member ID is null"));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Project project = (Project) o;
+    return id.equals(project.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 
   @Override

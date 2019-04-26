@@ -1,12 +1,12 @@
-import {AccessToken, PagedList, RequestCriteria, User, UserRole} from '@dev/translatr-model';
-import {Observable, of, throwError} from 'rxjs';
-import {catchError, concatMap, filter, map} from 'rxjs/operators';
-import {HttpErrorResponse} from '@angular/common/http';
+import { AccessToken, PagedList, RequestCriteria, User, UserRole } from '@dev/translatr-model';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, concatMap, filter, map } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 import * as randomName from 'random-name';
-import {State} from './state';
-import {cartesianProduct, pickRandomly} from '@translatr/utils';
-import {AccessTokenService, errorMessage, UserService} from '@dev/translatr-sdk';
-import {Injector} from '@angular/core';
+import { State } from './state';
+import { cartesianProduct, pickRandomly } from '@translatr/utils';
+import { AccessTokenService, errorMessage, UserService } from '@dev/translatr-sdk';
+import { Injector } from '@angular/core';
 
 const scope = cartesianProduct([
   ['read', 'write'],
@@ -27,6 +27,7 @@ export const getRandomUserAccessToken = (
   const userService = injector.get(UserService);
   const accessTokenService = injector.get(AccessTokenService);
   return getRandomUser(userService, criteria, filterFn).pipe(
+    filter((user: User) => user !== undefined),
     concatMap((user: User) => accessTokenService.find({userId: user.id}).pipe(
       map((pagedList: PagedList<AccessToken>) => ({list: pagedList.list, user})))),
     concatMap((payload: { list: AccessToken[], user: User }) => {
@@ -113,6 +114,7 @@ export const deleteRandomUser = (userService: UserService): Observable<Partial<S
     (user: User) => user.role === UserRole.User
   )
     .pipe(
+      filter((user: User) => user !== undefined),
       concatMap((user: User) => userService.delete(user.id)
         .pipe(
           map(() => `${user.name} (${user.username}) has been deleted`),

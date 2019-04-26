@@ -1,8 +1,8 @@
-import {HttpClient} from "@angular/common/http";
-import {convertTemporals, convertTemporalsList} from '../shared';
-import {combineLatest, Observable} from "rxjs";
-import {map} from "rxjs/operators";
-import {PagedList, RequestCriteria} from "@dev/translatr-model";
+import { HttpClient } from '@angular/common/http';
+import { convertTemporals, convertTemporalsList } from '../shared';
+import { combineLatest, Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { PagedList, RequestCriteria } from '@dev/translatr-model';
 
 export interface RequestOptions {
   params: {
@@ -20,29 +20,54 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
 
   find(criteria?: CRITERIA): Observable<PagedList<DTO> | undefined> {
     return this.http
-      .get<PagedList<DTO>>(this.listPath, {params: {...criteria ? (criteria as object) : {}}})
-      .pipe(map((list: PagedList<DTO>) => ({
-        ...list,
-        list: convertTemporalsList(list.list)
-      })));
+      .get<PagedList<DTO>>(this.listPath, {params: {...criteria ? (criteria as unknown as object) : {}}})
+      .pipe(
+        map((list: PagedList<DTO>) => ({
+          ...list,
+          list: convertTemporalsList(list.list)
+        })),
+        catchError(err => {
+          console.error(`Error while finding ${this.listPath}`, err, criteria);
+          return throwError(err);
+        })
+      );
   }
 
   create(dto: DTO, options?: RequestOptions): Observable<DTO | undefined> {
     return this.http
       .post<DTO>(this.entityPath, dto, options)
-      .pipe(map(convertTemporals));
+      .pipe(
+        map(convertTemporals),
+        catchError(err => {
+          console.error(`Error while creating ${this.entityPath}`, err, dto, options);
+          return throwError(err);
+        })
+      );
   }
 
   update(dto: DTO, options?: RequestOptions): Observable<DTO | undefined> {
     return this.http
       .put<DTO>(this.entityPath, dto, options)
-      .pipe(map(convertTemporals));
+      .pipe(
+        map(convertTemporals),
+        catchError(err => {
+          console.error(`Error while updating ${this.entityPath}`, err, dto, options);
+          return throwError(err);
+        })
+      );
   }
 
   delete(id: string | number, options?: RequestOptions): Observable<DTO | undefined> {
+    const path = `${this.entityPath}/${id}`;
     return this.http
-      .delete<DTO>(`${this.entityPath}/${id}`, options)
-      .pipe(map(convertTemporals));
+      .delete<DTO>(path, options)
+      .pipe(
+        map(convertTemporals),
+        catchError(err => {
+          console.error(`Error while deleting ${path}`, err, id, options);
+          return throwError(err);
+        })
+      );
   }
 
   deleteAll(ids: (string | number)[]): Observable<DTO[]> {

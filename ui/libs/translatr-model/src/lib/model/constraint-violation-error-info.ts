@@ -1,7 +1,6 @@
-import {ConstraintViolation} from './constraint-violation';
+import { ConstraintViolation } from './constraint-violation';
+import { ErrorInfo } from './error-info';
 
-export interface ConstraintViolationErrorInfo {
-  message: string;
-  type: string;
+export interface ConstraintViolationErrorInfo extends ErrorInfo {
   violations?: Array<ConstraintViolation>;
 }
