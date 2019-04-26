@@ -12,7 +12,7 @@ import { Key, KeyCriteria } from '@dev/translatr-model';
 export class KeyService extends AbstractService<Key, KeyCriteria> {
 
   constructor(http: HttpClient) {
-    super(http, '/api/keys', '/api/key');
+    super(http, (criteria: KeyCriteria) => `/api/keys/${criteria.projectId}`, '/api/key');
   }
 
   byOwnerAndProjectNameAndName(

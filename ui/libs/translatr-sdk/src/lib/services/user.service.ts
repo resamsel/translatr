@@ -12,7 +12,7 @@ import { AbstractService } from './abstract.service';
 export class UserService extends AbstractService<User, RequestCriteria> {
 
   constructor(http: HttpClient) {
-    super(http, '/api/users', '/api/user');
+    super(http, () => '/api/users', '/api/user');
   }
 
   byUsername(username: string, options?: {

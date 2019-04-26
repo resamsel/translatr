@@ -12,7 +12,7 @@ import { Locale, LocaleCriteria } from '@dev/translatr-model';
 export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
 
   constructor(http: HttpClient) {
-    super(http, '/api/locales', '/api/locale');
+    super(http, (criteria: LocaleCriteria) => `/api/locales/${criteria.projectId}`, '/api/locale');
   }
 
   byOwnerAndProjectNameAndName(

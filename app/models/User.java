@@ -24,8 +24,8 @@ import utils.CacheUtils;
 import utils.ConfigKey;
 import utils.ContextKey;
 import validators.NameUnique;
-import validators.Username;
 import validators.UserUsernameUniqueChecker;
+import validators.Username;
 
 import javax.persistence.*;
 import java.util.*;
@@ -247,6 +247,10 @@ public class User implements Model<User, UUID>, Subject {
     return username != null && name != null && email != null;
   }
 
+  public boolean isAdmin() {
+    return role == UserRole.Admin;
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -267,7 +271,7 @@ public class User implements Model<User, UUID>, Subject {
       return false;
     }
     User that = (User) obj;
-    return this.id == that.id || id != null && id.equals(that.id);
+    return Objects.equals(id, that.id);
   }
 
   /**

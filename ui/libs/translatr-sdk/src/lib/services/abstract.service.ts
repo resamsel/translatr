@@ -13,21 +13,21 @@ export interface RequestOptions {
 export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
   constructor(
     protected readonly http: HttpClient,
-    private readonly listPath: string,
+    private readonly listPath: (criteria: CRITERIA) => string,
     private readonly entityPath: string
   ) {
   }
 
   find(criteria?: CRITERIA): Observable<PagedList<DTO> | undefined> {
     return this.http
-      .get<PagedList<DTO>>(this.listPath, {params: {...criteria ? (criteria as unknown as object) : {}}})
+      .get<PagedList<DTO>>(this.listPath(criteria), {params: {...criteria ? (criteria as unknown as object) : {}}})
       .pipe(
         map((list: PagedList<DTO>) => ({
           ...list,
           list: convertTemporalsList(list.list)
         })),
         catchError(err => {
-          console.error(`Error while finding ${this.listPath}`, err, criteria);
+          console.error(`Error while finding ${this.listPath(criteria)}`, err, criteria);
           return throwError(err);
         })
       );

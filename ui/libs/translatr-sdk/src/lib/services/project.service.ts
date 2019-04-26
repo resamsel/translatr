@@ -19,7 +19,7 @@ const projectMapper = (project: Project) => ({
 export class ProjectService extends AbstractService<Project, ProjectCriteria> {
 
   constructor(http: HttpClient) {
-    super(http, '/api/projects', '/api/project');
+    super(http, () => '/api/projects', '/api/project');
   }
 
   getProjectByOwnerAndName(username: string, projectName: string, options?: {

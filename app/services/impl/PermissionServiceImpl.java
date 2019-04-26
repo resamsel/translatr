@@ -2,23 +2,19 @@ package services.impl;
 
 import criterias.ProjectUserCriteria;
 import dto.PermissionException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import models.AccessToken;
-import models.Project;
-import models.ProjectRole;
-import models.ProjectUser;
-import models.Scope;
-import models.User;
+import models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.PermissionService;
 import services.ProjectUserService;
 import utils.ContextKey;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 @Singleton
 public class PermissionServiceImpl implements PermissionService {
@@ -53,6 +49,10 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public boolean hasPermissionAny(UUID projectId, User user, Collection<ProjectRole> roles) {
+    if (user.isAdmin()) {
+      return true;
+    }
+
     return hasPermissionAny(
         projectUserService.findBy(new ProjectUserCriteria().withProjectId(projectId))
             .getList(), user, roles);
