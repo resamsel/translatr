@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { UserPageComponent } from './user-page.component';
 import { UserResolverService } from './user-resolver.service';
 import { UserProjectsComponent } from './user-projects/user-projects.component';
-import { AuthResolverService } from '../../../../../../../libs/translatr-sdk/src/lib/services/auth-resolver.service';
+import { AuthResolverService } from '@dev/translatr-sdk';
 import { UserInfoComponent } from './user-info/user-info.component';
 import { UserActivityComponent } from './user-activity/user-activity.component';
 import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';

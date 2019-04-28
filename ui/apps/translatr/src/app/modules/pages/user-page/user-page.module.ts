@@ -4,7 +4,15 @@ import { CommonModule } from '@angular/common';
 import { UserPageRoutingModule } from './user-page-routing.module';
 import { UserPageComponent } from './user-page.component';
 import { UserProjectsComponent } from './user-projects/user-projects.component';
-import { MatButtonModule, MatCardModule, MatChipsModule, MatDialogModule, MatIconModule, MatTabsModule } from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatChipsModule,
+  MatDialogModule,
+  MatIconModule,
+  MatListModule,
+  MatTabsModule
+} from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { MomentModule } from 'ngx-moment';
@@ -54,6 +62,8 @@ import { NavListModule } from '../../shared/nav-list/nav-list.module';
     MomentModule,
     GravatarModule,
     MatDialogModule,
+    MatListModule,
+
     StoreModule.forFeature(USER_FEATURE_KEY, userReducer, {
       initialState: userInitialState
     }),

@@ -374,9 +374,7 @@
               "libs/generator/tsconfig.lib.json",
               "libs/generator/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "test": {
@@ -403,9 +401,7 @@
               "libs/utils/tsconfig.lib.json",
               "libs/utils/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "test": {
@@ -413,6 +409,32 @@
           "options": {
             "jestConfig": "libs/utils/jest.config.js",
             "tsConfig": "libs/utils/tsconfig.spec.json"
+          }
+        }
+      },
+      "schematics": {}
+    },
+    "node-utils": {
+      "root": "libs/node-utils",
+      "sourceRoot": "libs/node-utils/src",
+      "projectType": "library",
+      "prefix": "dev",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/node-utils/tsconfig.lib.json",
+              "libs/node-utils/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/node-utils/jest.config.js",
+            "tsConfig": "libs/node-utils/tsconfig.spec.json"
           }
         }
       },

@@ -1,8 +1,9 @@
 <app-nav-list [pagedList]="accessTokens$ | async" [template]="template">
   <ng-template #template let-accessToken>
-    <a mat-list-item [routerLink]="['/', accessToken.ownerUsername, accessToken.name]">
+    <a mat-list-item [routerLink]="['/', user.username, 'access-token', accessToken.id]">
+      <mat-icon matListIcon class="circle">vpn_key</mat-icon>
       <h3 matLine>{{accessToken.name}}</h3>
-      <p matLine>{{accessToken.ownerName}}</p>
+      <p matLine [title]="accessToken.whenCreated | date">{{accessToken.whenCreated | amTimeAgo}}</p>
     </a>
   </ng-template>
 </app-nav-list>

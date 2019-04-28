@@ -5,6 +5,7 @@ export interface AccessToken {
 
   userId: string;
   userName?: string;
+  userUsername?: string;
 
   name: string;
   key?: string;

@@ -1,5 +1,5 @@
 import { Generator, GeneratorConfig } from '@translatr/generator';
-import { envAsNumber, envAsString } from '@translatr/utils';
+import { envAsNumber, envAsString } from '@translatr/node-utils';
 
 const config: GeneratorConfig = {
   baseUrl: envAsString('ENDPOINT', 'http://localhost:9000'),
