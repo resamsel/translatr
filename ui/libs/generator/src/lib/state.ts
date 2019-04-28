@@ -1,4 +1,4 @@
-import {User} from '@dev/translatr-model';
+import { User } from '@dev/translatr-model';
 
 export enum Action {
   ShowConfig = 'Show Config',
@@ -10,32 +10,46 @@ export enum Action {
 
   CreateRandomProject = 'Create Random Project',
   UpdateRandomProject = 'Update Random Project',
-  DeleteRandomProject = 'Delete Random Project'
+  DeleteRandomProject = 'Delete Random Project',
+
+  CreateRandomLocale = 'Create Random Locale',
+  DeleteRandomLocale = 'Delete Random Locale',
+
+  CreateRandomKey = 'Create Random Key',
+  DeleteRandomKey = 'Delete Random Key'
 }
 
 export interface Command {
   type?: Action;
 }
 
-export interface Config {
+export interface GeneratorIntervals {
+  stressFactor: number;
+
+  me: number;
+  createUser: number;
+  updateUser: number;
+  deleteUser: number;
+
+  createProject: number;
+  updateProject: number;
+  deleteProject: number;
+
+  createLocale: number;
+  deleteLocale: number;
+
+  createKey: number;
+  deleteKey: number;
+}
+
+export interface GeneratorConfig {
   baseUrl: string;
   accessToken: string;
-  intervals: {
-    stressFactor: number;
-
-    me: number;
-    createUser: number;
-    updateUser: number;
-    deleteUser: number;
-
-    createProject: number;
-    updateProject: number;
-    deleteProject: number;
-  };
+  intervals: GeneratorIntervals;
 }
 
 export interface State {
-  config: Config;
+  config: GeneratorConfig;
   me?: User;
   message?: string;
 }

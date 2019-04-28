@@ -1,11 +1,7 @@
-import { interval, merge, Observable, of, Subject } from 'rxjs';
-import { mapTo, scan, startWith, withLatestFrom } from 'rxjs/operators';
+import { Generator, GeneratorConfig } from '@translatr/generator';
 import { envAsNumber, envAsString } from '@translatr/utils';
-import { Injector } from '@angular/core';
-import { Action, Command, Config, createInjector, handleCommand, State } from '@translatr/generator';
-import * as dateformat from 'dateformat';
 
-const config: Config = {
+const config: GeneratorConfig = {
   baseUrl: envAsString('ENDPOINT', 'http://localhost:9000'),
   accessToken: envAsString('ACCESS_TOKEN', ''),
   intervals: {
@@ -26,54 +22,18 @@ const config: Config = {
     // every fifteen minutes
     updateProject: envAsNumber('UPDATE_PROJECT_INTERVAL', 15 * 60 * 1000),
     // every hour
-    deleteProject: envAsNumber('DELETE_PROJECT_INTERVAL', 60 * 60 * 1000)
+    deleteProject: envAsNumber('DELETE_PROJECT_INTERVAL', 60 * 60 * 1000),
+
+    // every hour
+    createLocale: envAsNumber('CREATE_LOCALE_INTERVAL', 60 * 60 * 1000),
+    // every two hours
+    deleteLocale: envAsNumber('DELETE_LOCALE_INTERVAL', 2 * 60 * 60 * 1000),
+
+    // every minute
+    createKey: envAsNumber('CREATE_KEY_INTERVAL', 60 * 1000),
+    // every hour
+    deleteKey: envAsNumber('DELETE_KEY_INTERVAL', 60 * 60 * 1000)
   }
 };
 
-// const platform = platformBrowserDynamic();
-// const injector = platform.injector;
-// platform.bootstrapModule(TranslatrSdkModule)
-//   .catch(console.error);
-
-const intervals = config.intervals;
-const injector: Injector = createInjector(config.baseUrl, config.accessToken);
-const stateCommand$ = new Subject<Partial<State>>();
-
-const state$: Observable<State> = stateCommand$.asObservable().pipe(
-  startWith({config}),
-  scan((acc: State, next: State) => ({...acc, ...next}))
-);
-
-const commands$: Observable<Command> = merge(
-  of({type: Action.ShowConfig}),
-
-  interval(intervals.me / intervals.stressFactor).pipe(mapTo({type: Action.Me})),
-  interval(intervals.createUser / intervals.stressFactor).pipe(mapTo({type: Action.CreateRandomUser})),
-  interval(intervals.updateUser / intervals.stressFactor).pipe(mapTo({type: Action.UpdateRandomUser})),
-  interval(intervals.deleteUser / intervals.stressFactor).pipe(mapTo({type: Action.DeleteRandomUser})),
-
-  // TODO: add 1+ contributors, 1+ locales, 1+ keys
-  interval(intervals.createProject / intervals.stressFactor).pipe(mapTo({type: Action.CreateRandomProject})),
-  // interval(intervals.updateProject / intervals.stressFactor).pipe(mapTo({type: Action.UpdateRandomProject})),
-  // interval(intervals.deleteProject / intervals.stressFactor).pipe(mapTo({type: Action.DeleteRandomProject})),
-
-  // TODO
-  // create locale every hour
-  // delete locale every two hours
-  // create key every minute
-  // create key every hour
-  // add translation (incl. locale and key, if not existing) every minute
-  // change translation (incl. locale and key, if not existing) every minute
-  // add contributor every minute
-  // change contributor mode every hour
-  // delete contributor every hour
-);
-
-commands$.pipe(
-  withLatestFrom(state$),
-  handleCommand(injector),
-//  tap((state: State) => stateCommand$.next(state))
-).subscribe(
-  (state: State) => console.log(`${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message}`),
-  (state: State) => console.error(`${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message} (state: ${state})`)
-);
+new Generator(config).execute();

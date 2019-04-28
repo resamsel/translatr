@@ -1,11 +1,15 @@
-import {Injector} from '@angular/core';
-import {Observable, of} from 'rxjs';
-import {UserService} from '@dev/translatr-sdk';
+import { Injector } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { UserService } from '@dev/translatr-sdk';
 import {
   Action,
   Command,
+  createRandomKey,
+  createRandomLocale,
   createRandomProject,
   createRandomUser,
+  deleteRandomKey,
+  deleteRandomLocale,
   deleteRandomProject,
   deleteRandomUser,
   me,
@@ -13,7 +17,7 @@ import {
   updateRandomProject,
   updateRandomUser
 } from '@translatr/generator';
-import {concatMap} from 'rxjs/operators';
+import { concatMap } from 'rxjs/operators';
 
 export const handleCommand = (injector: Injector) => concatMap(([command, state]: [Command, State]): Observable<Partial<State>> => {
   switch (command.type) {
@@ -35,6 +39,16 @@ export const handleCommand = (injector: Injector) => concatMap(([command, state]
       return updateRandomProject(injector);
     case Action.DeleteRandomProject:
       return deleteRandomProject(injector);
+
+    case Action.CreateRandomLocale:
+      return createRandomLocale(injector);
+    case Action.DeleteRandomLocale:
+      return deleteRandomLocale(injector);
+
+    case Action.CreateRandomKey:
+      return createRandomKey(injector);
+    case Action.DeleteRandomKey:
+      return deleteRandomKey(injector);
 
     default:
       return of({type: command.type, message: `Unknown command ${command.type}`});
