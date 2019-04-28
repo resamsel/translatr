@@ -1,6 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {User} from "../../../../../../../libs/translatr-model/src/lib/model/user";
+import { Component, Inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Route } from '@angular/router';
+import { User } from '@dev/translatr-model';
+import { NameIconRoute } from '@translatr/utils';
+import { USER_ROUTES } from './user-page.token';
 
 @Component({
   selector: 'app-user-page',
@@ -10,8 +12,12 @@ import {User} from "../../../../../../../libs/translatr-model/src/lib/model/user
 export class UserPageComponent implements OnInit {
 
   user: User;
+  children: NameIconRoute[] = this.routes[0].children;
 
-  constructor(private readonly route: ActivatedRoute) {
+  constructor(
+    private readonly route: ActivatedRoute,
+    @Inject(USER_ROUTES) private routes: {children: NameIconRoute[]}[]
+  ) {
   }
 
   ngOnInit(): void {
@@ -19,5 +25,13 @@ export class UserPageComponent implements OnInit {
       .subscribe((data: { user: User }) => {
         this.user = data.user;
       });
+  }
+
+  routerLink(route: Route) {
+    if (route === '') {
+      return `/${this.user.username}`;
+    }
+
+    return `/${this.user.username}/${route.path}`;
   }
 }

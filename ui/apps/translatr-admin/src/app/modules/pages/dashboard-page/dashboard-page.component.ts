@@ -1,14 +1,8 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {AppFacade} from "../../../+state/app.facade";
-import {Route, Routes} from "@angular/router";
-import {DASHBOARD_ROUTES} from "./dashboard-page.token";
-
-interface NameIconRoute {
-  data: {
-    icon: string;
-    name: string;
-  };
-}
+import { Component, Inject, OnInit } from '@angular/core';
+import { AppFacade } from '../../../+state/app.facade';
+import { Route } from '@angular/router';
+import { DASHBOARD_ROUTES } from './dashboard-page.token';
+import { NameIconRoute } from '@translatr/utils';
 
 @Component({
   selector: 'dev-dashboard-page',

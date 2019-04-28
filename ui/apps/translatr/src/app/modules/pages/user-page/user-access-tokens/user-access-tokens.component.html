@@ -1,0 +1,8 @@
+<app-nav-list [pagedList]="accessTokens$ | async" [template]="template">
+  <ng-template #template let-accessToken>
+    <a mat-list-item [routerLink]="['/', accessToken.ownerUsername, accessToken.name]">
+      <h3 matLine>{{accessToken.name}}</h3>
+      <p matLine>{{accessToken.ownerName}}</p>
+    </a>
+  </ng-template>
+</app-nav-list>

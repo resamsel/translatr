@@ -10,29 +10,14 @@
     <nav mat-tab-nav-bar color="accent">
       <div class="container dense" routerLinkActive>
         <a mat-tab-link
-           [routerLink]="['/', user?.username]"
+           *ngFor="let child of children"
+           [routerLink]="routerLink(child)"
            routerLinkActive
-           [routerLinkActiveOptions]="{exact: true}"
-           #infoLink="routerLinkActive"
-           [active]="infoLink.isActive">
-          <mat-icon>info</mat-icon>
-          Info
-        </a>
-        <a mat-tab-link
-           [routerLink]="['/', user?.username, 'projects']"
-           routerLinkActive
-           #projectsLink="routerLinkActive"
-           [active]="projectsLink.isActive">
-          <mat-icon>library_books</mat-icon>
-          Projects
-        </a>
-        <a mat-tab-link
-           [routerLink]="['/', user?.username, 'activity']"
-           routerLinkActive
-           #activityLink="routerLinkActive"
-           [active]="activityLink.isActive">
-          <mat-icon>change_history</mat-icon>
-          Activity
+           [routerLinkActiveOptions]="{exact: child.path === ''}"
+           #link="routerLinkActive"
+           [active]="link.isActive">
+          <mat-icon>{{child.data.icon}}</mat-icon>
+          {{child.data.name}}
         </a>
       </div>
     </nav>

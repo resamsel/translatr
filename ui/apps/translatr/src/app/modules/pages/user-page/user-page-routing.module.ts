@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UserPageComponent } from "./user-page.component";
-import { UserResolverService } from "./user-resolver.service";
-import { UserProjectsComponent } from "./user-projects/user-projects.component";
-import { AuthResolverService } from "../../../../../../../libs/translatr-sdk/src/lib/services/auth-resolver.service";
-import { UserInfoComponent } from "./user-info/user-info.component";
-import {UserActivityComponent} from "./user-activity/user-activity.component";
+import { UserPageComponent } from './user-page.component';
+import { UserResolverService } from './user-resolver.service';
+import { UserProjectsComponent } from './user-projects/user-projects.component';
+import { AuthResolverService } from '../../../../../../../libs/translatr-sdk/src/lib/services/auth-resolver.service';
+import { UserInfoComponent } from './user-info/user-info.component';
+import { UserActivityComponent } from './user-activity/user-activity.component';
+import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';
+import { USER_ROUTES } from './user-page.token';
 
 const routes: Routes = [
   {
@@ -18,15 +20,35 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: UserInfoComponent
+        component: UserInfoComponent,
+        data: {
+          icon: 'info',
+          name: 'Info'
+        }
       },
       {
         path: 'projects',
-        component: UserProjectsComponent
+        component: UserProjectsComponent,
+        data: {
+          icon: 'library_books',
+          name: 'Projects'
+        }
       },
       {
         path: 'activity',
-        component: UserActivityComponent
+        component: UserActivityComponent,
+        data: {
+          icon: 'change_history',
+          name: 'Activity'
+        }
+      },
+      {
+        path: 'access-tokens',
+        component: UserAccessTokensComponent,
+        data: {
+          icon: 'vpn_key',
+          name: 'Access Tokens'
+        }
       }
     ]
   }
@@ -34,7 +56,10 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [
+    {provide: USER_ROUTES, useValue: routes}
+  ]
 })
 export class UserPageRoutingModule {
 }
