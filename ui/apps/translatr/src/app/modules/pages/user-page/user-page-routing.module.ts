@@ -1,18 +1,20 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { UserPageComponent } from './user-page.component';
-import { UserResolverService } from './user-resolver.service';
-import { UserProjectsComponent } from './user-projects/user-projects.component';
-import { AuthResolverService } from '@dev/translatr-sdk';
-import { UserInfoComponent } from './user-info/user-info.component';
-import { UserActivityComponent } from './user-activity/user-activity.component';
-import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';
-import { USER_ROUTES } from './user-page.token';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {UserPageComponent} from './user-page.component';
+import {UserResolverService} from './user-resolver.service';
+import {UserProjectsComponent} from './user-projects/user-projects.component';
+import {AuthResolverService} from '@dev/translatr-sdk';
+import {UserInfoComponent} from './user-info/user-info.component';
+import {UserActivityComponent} from './user-activity/user-activity.component';
+import {UserAccessTokensComponent} from './user-access-tokens/user-access-tokens.component';
+import {USER_ROUTES} from './user-page.token';
+import {MyselfGuard} from '../../../guards/myself.guard';
 
 const routes: Routes = [
   {
     path: ':username',
     component: UserPageComponent,
+    // canActivate: [AuthGuard],
     resolve: {
       me: AuthResolverService,
       user: UserResolverService
@@ -45,6 +47,7 @@ const routes: Routes = [
       {
         path: 'access-tokens',
         component: UserAccessTokensComponent,
+        canActivate: [MyselfGuard],
         data: {
           icon: 'vpn_key',
           name: 'Access Tokens'

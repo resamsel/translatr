@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { User } from '../../../../../../../../libs/translatr-model/src/lib/model/user';
-import { Observable } from 'rxjs';
-import { PagedList } from '../../../../../../../../libs/translatr-model/src/lib/model/paged-list';
-import { ActivatedRoute } from '@angular/router';
-import { UserService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/user.service';
-import { Aggregate } from '../../../../../../../../libs/translatr-model/src/lib/model/aggregate';
-import { Project } from '../../../../../../../../libs/translatr-model/src/lib/model/project';
-import { ProjectService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/project.service';
+import {Component, OnInit} from '@angular/core';
+import {Aggregate, PagedList, Project, User} from '@dev/translatr-model';
+import {Observable} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
+import {ProjectService, UserService} from '@dev/translatr-sdk';
 
 @Component({
   selector: 'app-user-info',

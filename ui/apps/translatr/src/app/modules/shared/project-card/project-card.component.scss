@@ -5,19 +5,15 @@ $size-large: 160px;
 
 .info {
   .owner {
-    position: absolute;
-    top: 8px;
-    left: 16px;
-    color: #fff;
+    display: block;
+    margin-top: 8px;
   }
 
-  .members {
-    margin-top: 8px;
-
-    .user-icon {
-      display: inline-block;
-      margin-right: 8px;
-    }
+  .user-icon {
+    display: inline-block;
+    margin-right: 8px;
+    margin-top: 4px;
+    float: left;
   }
 
   @include medium {
@@ -32,8 +28,7 @@ h2 {
 .mat-card-image {
   display: block;
   text-align: center;
-  //background-color: #ff9800;
-  background-image: linear-gradient(45deg, rgba(255, 168, 0, 0.96), #ff9800);
+  background-image: linear-gradient(45deg, rgba(255, 168, 0, 0.96), rgba(255, 168, 0, 1));
   color: #fff;
   text-transform: capitalize;
 

@@ -9,16 +9,18 @@
 
     <nav mat-tab-nav-bar color="accent">
       <div class="container dense" routerLinkActive>
-        <a mat-tab-link
-           *ngFor="let child of children"
-           [routerLink]="routerLink(child)"
-           routerLinkActive
-           [routerLinkActiveOptions]="{exact: child.path === ''}"
-           #link="routerLinkActive"
-           [active]="link.isActive">
-          <mat-icon>{{child.data.icon}}</mat-icon>
-          {{child.data.name}}
-        </a>
+        <ng-container *ngFor="let child of children">
+          <a mat-tab-link
+             *ngIf="!child.data.hasPermission || child.data.hasPermission(me$ | async, user)"
+             [routerLink]="routerLink(child)"
+             routerLinkActive
+             [routerLinkActiveOptions]="{exact: child.path === ''}"
+             #link="routerLinkActive"
+             [active]="link.isActive">
+            <mat-icon>{{child.data.icon}}</mat-icon>
+            {{child.data.name}}
+          </a>
+        </ng-container>
       </div>
     </nav>
   </header>

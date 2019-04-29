@@ -1,8 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Route } from '@angular/router';
-import { User } from '@dev/translatr-model';
-import { NameIconRoute } from '@translatr/utils';
-import { USER_ROUTES } from './user-page.token';
+import {Component, Inject, OnInit} from '@angular/core';
+import {ActivatedRoute, Route} from '@angular/router';
+import {User} from '@dev/translatr-model';
+import {NameIconRoute} from '@translatr/utils';
+import {USER_ROUTES} from './user-page.token';
+import {AppFacade} from '../../../+state/app.facade';
 
 @Component({
   selector: 'app-user-page',
@@ -11,10 +12,12 @@ import { USER_ROUTES } from './user-page.token';
 })
 export class UserPageComponent implements OnInit {
 
+  me$ = this.appFacade.me$;
   user: User;
   children: NameIconRoute[] = this.routes[0].children;
 
   constructor(
+    private readonly appFacade: AppFacade,
     private readonly route: ActivatedRoute,
     @Inject(USER_ROUTES) private routes: {children: NameIconRoute[]}[]
   ) {

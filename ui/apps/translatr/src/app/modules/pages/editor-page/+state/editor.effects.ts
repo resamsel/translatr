@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/nx';
-import { EDITOR_FEATURE_KEY, EditorPartialState } from './editor.reducer';
+import {Injectable} from '@angular/core';
+import {Actions, Effect} from '@ngrx/effects';
+import {DataPersistence} from '@nrwl/nx';
+import {EDITOR_FEATURE_KEY, EditorPartialState} from './editor.reducer';
 import {
   EditorActionTypes,
   KeyLoaded,
@@ -27,18 +27,13 @@ import {
   SelectKey,
   SelectLocale
 } from './editor.actions';
-import { LocaleService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/locale.service';
-import { Locale } from '../../../../../../../../libs/translatr-model/src/lib/model/locale';
-import { filter, map, take } from 'rxjs/operators';
-import { combineLatest, Observable } from 'rxjs';
-import { KeyService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/key.service';
-import { PagedList } from '../../../../../../../../libs/translatr-model/src/lib/model/paged-list';
-import { Key } from '../../../../../../../../libs/translatr-model/src/lib/model/key';
-import { MessageService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/message.service';
-import { Message } from '../../../../../../../../libs/translatr-model/src/lib/model/message';
-import { Action } from '@ngrx/store';
-import { EditorFacade } from './editor.facade';
-import { MatSnackBar } from '@angular/material';
+import {KeyService, LocaleService, MessageService} from '@dev/translatr-sdk';
+import {Key, Locale, Message, PagedList} from '@dev/translatr-model';
+import {filter, map, take} from 'rxjs/operators';
+import {combineLatest, Observable} from 'rxjs';
+import {Action} from '@ngrx/store';
+import {EditorFacade} from './editor.facade';
+import {MatSnackBar} from '@angular/material';
 
 @Injectable()
 export class EditorEffects {

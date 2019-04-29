@@ -1,23 +1,21 @@
 package dto;
 
-import static java.util.stream.Collectors.toList;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import controllers.AbstractController;
 import controllers.routes;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
-
-import java.util.List;
-import java.util.UUID;
-
 import models.User;
 import org.joda.time.DateTime;
 import play.mvc.Call;
 import services.KeyService;
 import services.LocaleService;
 import services.MessageService;
+
+import java.util.List;
+import java.util.UUID;
+
+import static java.util.stream.Collectors.toList;
 
 public class Project extends Dto {
 
@@ -26,25 +24,19 @@ public class Project extends Dto {
   public UUID id;
 
   public DateTime whenCreated;
-
   public DateTime whenUpdated;
 
   public String name;
-
   public String description;
 
   public UUID ownerId;
-
   public String ownerName;
-
   public String ownerUsername;
+  public String ownerEmail;
 
   public List<Key> keys;
-
   public List<Locale> locales;
-
   public List<Message> messages;
-
   public List<ProjectUser> members;
 
   public Project() {
@@ -60,6 +52,7 @@ public class Project extends Dto {
       this.ownerId = in.owner.id;
       this.ownerName = in.owner.name;
       this.ownerUsername = in.owner.username;
+      this.ownerEmail = in.owner.email;
     }
 
     if (in.keys != null && !in.keys.isEmpty()) {
@@ -71,12 +64,12 @@ public class Project extends Dto {
     }
 
     if (in.members != null && !in.members.isEmpty()) {
-        this.members = in.members.stream().map(ProjectUser::from).collect(toList());
+      this.members = in.members.stream().map(ProjectUser::from).collect(toList());
     }
   }
 
   public Project load(LocaleService localeService, KeyService keyService,
-      MessageService messageService) {
+                      MessageService messageService) {
     keys = keyService.findBy(new KeyCriteria().withProjectId(id)).getList().stream()
         .map(Key::from).collect(toList());
     locales = localeService.findBy(new LocaleCriteria().withProjectId(id)).getList().stream()

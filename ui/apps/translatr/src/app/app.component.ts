@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AppFacade} from "./+state/app.facade";
+import {AppFacade} from './+state/app.facade';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +10,5 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.facade.loadMe();
   }
 }

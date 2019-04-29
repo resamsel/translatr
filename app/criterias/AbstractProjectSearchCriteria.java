@@ -42,7 +42,13 @@ public abstract class AbstractProjectSearchCriteria<T extends AbstractProjectSea
   public final String getCacheKey() {
     return String.format(
         "%s:criteria:%s:%s:%s:%s:%d:%d:%s:%s",
-        type, projectId, getUserId(), getSearch(), getOrder(), getLimit(), getOffset(),
+        type,
+        projectId != null ? projectId : "",
+        getUserId() != null ? getUserId() : "",
+        getSearch() != null ? getSearch() : "",
+        getOrder() != null ? getOrder() : "",
+        getLimit(),
+        getOffset(),
         getFetches() != null ? join(getFetches(), ',') : "",
         getCacheKeyParticle()
     );

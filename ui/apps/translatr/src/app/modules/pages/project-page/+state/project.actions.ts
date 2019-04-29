@@ -1,12 +1,6 @@
-import { Action } from '@ngrx/store';
-import { Project } from '../../../../../../../../libs/translatr-model/src/lib/model/project';
-import { PagedList } from '../../../../../../../../libs/translatr-model/src/lib/model/paged-list';
-import { Aggregate } from '../../../../../../../../libs/translatr-model/src/lib/model/aggregate';
-import { ActivityCriteria } from '../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service';
-import { Activity } from '../../../../../../../../libs/translatr-model/src/lib/model/activity';
-import { Locale } from '../../../../../../../../libs/translatr-model/src/lib/model/locale';
-import { Key } from '../../../../../../../../libs/translatr-model/src/lib/model/key';
-import { KeyCriteria, LocaleCriteria } from '@dev/translatr-model';
+import {Action} from '@ngrx/store';
+import {Activity, Aggregate, Key, KeyCriteria, Locale, LocaleCriteria, PagedList, Project} from '@dev/translatr-model';
+import {ActivityCriteria} from '@dev/translatr-sdk';
 
 export enum ProjectActionTypes {
   LoadProject = '[Project Page] Load Project',

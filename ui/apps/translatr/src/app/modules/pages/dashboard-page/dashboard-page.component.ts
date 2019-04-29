@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { PagedList } from '../../../../../../../libs/translatr-model/src/lib/model/paged-list';
-import { Project } from '../../../../../../../libs/translatr-model/src/lib/model/project';
-import { ProjectService } from '../../../../../../../libs/translatr-sdk/src/lib/services/project.service';
-import { MatDialog } from '@angular/material';
+import {Component, OnInit} from '@angular/core';
+import {Observable} from 'rxjs';
+import {PagedList, Project} from '@dev/translatr-model';
+import {ProjectService} from '@dev/translatr-sdk';
+import {MatDialog} from '@angular/material';
 
 @Component({
   selector: 'app-projects-page',

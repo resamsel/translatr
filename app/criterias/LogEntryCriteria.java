@@ -38,17 +38,24 @@ public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCrit
     return this;
   }
 
+  @Override
+  public LogEntryCriteria with(Http.Request request) {
+    return super
+        .with(request)
+        .withUserId(Optional.ofNullable(request.getQueryString("userId"))
+            .map(UUID::fromString)
+            .orElse(null))
+        .withProjectId(Optional.ofNullable(request.getQueryString("projectId"))
+            .map(UUID::fromString)
+            .orElse(null));
+  }
+
   public static LogEntryCriteria from(ActivitySearchForm form) {
     return new LogEntryCriteria().with(form);
   }
 
   public static LogEntryCriteria from(Http.Request request) {
-    return new LogEntryCriteria()
-        .with(request)
-        .withProjectId(
-            Optional.ofNullable(request.getQueryString("projectId"))
-                .map(UUID::fromString)
-                .orElse(null));
+    return new LogEntryCriteria().with(request);
   }
 
   @Override

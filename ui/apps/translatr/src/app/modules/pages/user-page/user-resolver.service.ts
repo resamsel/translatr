@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { EMPTY, Observable, of } from 'rxjs';
-import { mergeMap, take } from 'rxjs/operators';
-import { User } from '../../../../../../../libs/translatr-model/src/lib/model/user';
-import { UserService } from '../../../../../../../libs/translatr-sdk/src/lib/services/user.service';
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@angular/router';
+import {EMPTY, Observable, of} from 'rxjs';
+import {mergeMap, take} from 'rxjs/operators';
+import {User} from '@dev/translatr-model';
+import {UserService} from '@dev/translatr-sdk';
 
 @Injectable({
   providedIn: 'root'

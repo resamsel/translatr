@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/nx';
-import { PROJECT_FEATURE_KEY, ProjectPartialState } from './project.reducer';
+import {Injectable} from '@angular/core';
+import {Actions, Effect} from '@ngrx/effects';
+import {DataPersistence} from '@nrwl/nx';
+import {PROJECT_FEATURE_KEY, ProjectPartialState} from './project.reducer';
 import {
   KeysLoaded,
   LoadKeys,
@@ -20,19 +20,11 @@ import {
   ProjectSaved,
   SaveProject
 } from './project.actions';
-import { ProjectService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/project.service';
-import { map } from 'rxjs/operators';
-import { Project } from '../../../../../../../../libs/translatr-model/src/lib/model/project';
-import { ActivityService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service';
-import { PagedList } from '../../../../../../../../libs/translatr-model/src/lib/model/paged-list';
-import { Aggregate } from '../../../../../../../../libs/translatr-model/src/lib/model/aggregate';
-import { Activity } from '../../../../../../../../libs/translatr-model/src/lib/model/activity';
-import { Observable } from 'rxjs';
-import { Action } from '@ngrx/store';
-import { LocaleService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/locale.service';
-import { KeyService } from '../../../../../../../../libs/translatr-sdk/src/lib/services/key.service';
-import { Locale } from '../../../../../../../../libs/translatr-model/src/lib/model/locale';
-import { Key } from '../../../../../../../../libs/translatr-model/src/lib/model/key';
+import {ActivityService, KeyService, LocaleService, ProjectService} from '@dev/translatr-sdk';
+import {map} from 'rxjs/operators';
+import {Activity, Aggregate, Key, Locale, PagedList, Project} from '@dev/translatr-model';
+import {Observable} from 'rxjs';
+import {Action} from '@ngrx/store';
 
 @Injectable()
 export class ProjectEffects {

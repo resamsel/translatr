@@ -1,3 +1,27 @@
+@import "mixins";
+
 .info {
   margin-bottom: 16px;
+}
+
+.mat-card-image {
+  display: block;
+  height: 48px;
+  color: #fff;
+
+  @include medium {
+    height: 64px;
+  }
+}
+
+.locales > .mat-card-image {
+  background-image: linear-gradient(45deg, rgba(33, 150, 243, 0.9), rgba(33, 150, 243, 1));
+}
+
+.keys > .mat-card-image {
+  background-image: linear-gradient(45deg, rgba(139, 195, 74, 0.9), rgba(139, 195, 74, 1));
+}
+
+.messages > .mat-card-image {
+  background-image: linear-gradient(45deg, rgba(244, 67, 54, 0.9), rgba(244, 67, 54, 1));
 }
