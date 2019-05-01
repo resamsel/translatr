@@ -45,7 +45,7 @@
     "workspace-schematic": "./node_modules/.bin/nx workspace-schematic",
     "help": "./node_modules/.bin/nx help",
     "tools:generatr": "ts-node --project tools/generatr/tsconfig.json -r tsconfig-paths/register tools/generatr/generatr.ts",
-    "kill:server": "fuser 4210/tcp -k; fuser 4211/tcp"
+    "kill:server": "fuser 4210/tcp -k; fuser 4211/tcp -k; echo 'ports freed'"
   },
   "private": true,
   "dependencies": {
@@ -71,6 +71,7 @@
     "core-js": "^2.5.4",
     "frappe-charts": "^1.1.0",
     "hammerjs": "^2.0.8",
+    "jasmine-marbles": "^0.5.0",
     "moment": "^2.24.0",
     "ngx-gravatar": "^7.2.2",
     "ngx-moment": "^3.4.0",
@@ -82,7 +83,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.13.8",
-    "@angular/cli": "~7.1.4",
+    "@angular/cli": "~7.3.8",
     "@angular/compiler-cli": "^7.2.14",
     "@angular/http": "^7.2.14",
     "@angular/language-service": "~7.2.14",
@@ -115,7 +116,7 @@
     "tsconfig-paths": "^3.8.0",
     "tslint": "~5.11.0",
     "tslint-config-prettier": "1.18.0",
-    "typescript": "~3.1.6",
+    "typescript": "~3.2.4",
     "xmlhttprequest": "^1.8.0"
   }
 }
