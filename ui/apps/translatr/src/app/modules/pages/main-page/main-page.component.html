@@ -1,4 +1,17 @@
-<app-navbar [me]="me$ | async"></app-navbar>
+<app-navbar [me]="me$ | async">
+  <app-auth-bar-item [me]="me$ | async">
+    <a
+      mat-menu-item
+      *ngIf="me$ | async as me"
+      [routerLink]="['/', me.username]">
+      Profile
+    </a>
+    <ng-container *ngIf="isAdmin(me$ | async)">
+      <mat-divider></mat-divider>
+      <a mat-menu-item [href]="adminRoute()">Admin</a>
+    </ng-container>
+  </app-auth-bar-item>
+</app-navbar>
 
 <div class="section green">
   <div class="container">
@@ -98,7 +111,7 @@
         <h5 class="header">Beispiel .translatr.yml für Play messages</h5>
 
         <pre class="language-yml"><code>translatr:
-  endpoint: <script>document.write(window.location.href)</script>http://localhost:9000/
+  endpoint: <script>document.write(window.location.href);</script>http://localhost:9000/
   access_token: &lt;Zugangsschlüssel&gt;
   project_id: &lt;Projekt-ID&gt;
   pull:

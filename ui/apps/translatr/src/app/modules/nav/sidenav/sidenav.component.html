@@ -28,6 +28,19 @@
       <mat-icon>group</mat-icon>
       <span class="text">Contributors</span>
     </a>
+
+    <app-auth-bar-item [me]="me">
+      <a
+        mat-menu-item
+        *ngIf="me"
+        [routerLink]="['/', me.username]">
+        Profile
+      </a>
+      <ng-container *ngIf="isAdmin(me)">
+        <mat-divider></mat-divider>
+        <a mat-menu-item [href]="adminRoute()">Admin</a>
+      </ng-container>
+    </app-auth-bar-item>
   </app-navbar>
 
   <div class="main-container">

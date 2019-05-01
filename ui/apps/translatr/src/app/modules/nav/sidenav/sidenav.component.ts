@@ -1,8 +1,9 @@
-import {Component, Input} from '@angular/core';
-import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {User} from "@dev/translatr-model";
+import { Component, Input } from "@angular/core";
+import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { User, UserRole } from "@dev/translatr-model";
+import { environment } from "../../../../environments/environment";
 
 @Component({
   selector: 'app-sidenav',
@@ -22,4 +23,11 @@ export class SidenavComponent {
   constructor(private breakpointObserver: BreakpointObserver) {
   }
 
+  isAdmin(me: User | undefined): boolean {
+    return !!me && me.role === UserRole.Admin;
+  }
+
+  adminRoute(): string {
+    return environment.adminUrl;
+  }
 }

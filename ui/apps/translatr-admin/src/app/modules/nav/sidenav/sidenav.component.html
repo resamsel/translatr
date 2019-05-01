@@ -7,6 +7,10 @@
     <ng-container ngProjectAs="app-search-bar">
       <ng-content select="app-search-bar"></ng-content>
     </ng-container>
+
+    <app-auth-bar-item [me]="me">
+      <a mat-menu-item [href]="uiRoute()">UI</a>
+    </app-auth-bar-item>
   </app-navbar>
 
   <div class="main-container">

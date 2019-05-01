@@ -1,14 +1,22 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {ActivatedRoute, Route} from '@angular/router';
-import {User} from '@dev/translatr-model';
-import {NameIconRoute} from '@translatr/utils';
-import {USER_ROUTES} from './user-page.token';
-import {AppFacade} from '../../../+state/app.facade';
+import { Component, Inject, Injector, OnInit } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Route } from "@angular/router";
+import { User } from "@dev/translatr-model";
+import { NameIconRoute } from "@translatr/utils";
+import { USER_ROUTES } from "./user-page.token";
+import { AppFacade } from "../../../+state/app.facade";
+import { combineLatest, Observable, of } from "rxjs";
+import { map } from "rxjs/operators";
+
+class DummyRoute extends ActivatedRouteSnapshot {
+  constructor(public readonly routeConfig: any) {
+    super();
+  }
+}
 
 @Component({
-  selector: 'app-user-page',
-  templateUrl: './user-page.component.html',
-  styleUrls: ['./user-page.component.scss']
+  selector: "app-user-page",
+  templateUrl: "./user-page.component.html",
+  styleUrls: ["./user-page.component.scss"]
 })
 export class UserPageComponent implements OnInit {
 
@@ -18,8 +26,9 @@ export class UserPageComponent implements OnInit {
 
   constructor(
     private readonly appFacade: AppFacade,
+    private readonly injector: Injector,
     private readonly route: ActivatedRoute,
-    @Inject(USER_ROUTES) private routes: {children: NameIconRoute[]}[]
+    @Inject(USER_ROUTES) private routes: { children: NameIconRoute[] }[]
   ) {
   }
 
@@ -31,10 +40,25 @@ export class UserPageComponent implements OnInit {
   }
 
   routerLink(route: Route) {
-    if (route === '') {
+    if (route === "") {
       return `/${this.user.username}`;
     }
 
     return `/${this.user.username}/${route.path}`;
+  }
+
+  canActivate$(route: NameIconRoute): Observable<boolean> {
+    if (!route.canActivate) {
+      return of(true);
+    }
+
+    return combineLatest(
+      route.canActivate
+        .map((guard: any) => this.injector.get<CanActivate>(guard))
+        .filter((guard: CanActivate) => guard && guard.canActivate)
+        .map((guard: CanActivate) =>
+          guard.canActivate(new DummyRoute(route), undefined) as Observable<boolean>)
+    ).pipe(map((values: boolean[]) =>
+      values.reduce((acc: boolean, next: boolean) => acc && next, true)));
   }
 }

@@ -7,12 +7,6 @@
 </button>
 <mat-menu #userMenu="matMenu" xPosition="before">
   <ng-content></ng-content>
-  <a
-    mat-menu-item
-    *ngIf="me"
-    [routerLink]="['/', me.username]">
-    Profile
-  </a>
   <mat-divider></mat-divider>
   <a
     mat-menu-item

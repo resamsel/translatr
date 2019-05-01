@@ -11,7 +11,7 @@
       <div class="container dense" routerLinkActive>
         <ng-container *ngFor="let child of children">
           <a mat-tab-link
-             *ngIf="!child.data.hasPermission || child.data.hasPermission(me$ | async, user)"
+             *ngIf="canActivate$(child) | async"
              [routerLink]="routerLink(child)"
              routerLinkActive
              [routerLinkActiveOptions]="{exact: child.path === ''}"

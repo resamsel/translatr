@@ -1,14 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {AppFacade} from './+state/app.facade';
+import { Component } from "@angular/core";
+import { AppFacade } from "./+state/app.facade";
 
 @Component({
-  selector: 'app-root',
-  template: '<router-outlet></router-outlet>'
+  selector: "app-root",
+  template: "<router-outlet></router-outlet>"
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   constructor(private readonly facade: AppFacade) {
-  }
-
-  ngOnInit(): void {
+    facade.loadMe();
   }
 }
