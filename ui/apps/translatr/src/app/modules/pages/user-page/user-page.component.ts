@@ -1,11 +1,11 @@
-import { Component, Inject, Injector, OnInit } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Route } from "@angular/router";
-import { User } from "@dev/translatr-model";
-import { NameIconRoute } from "@translatr/utils";
-import { USER_ROUTES } from "./user-page.token";
-import { AppFacade } from "../../../+state/app.facade";
-import { combineLatest, Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
+import {Component, Inject, Injector, OnInit} from '@angular/core';
+import {ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Route} from '@angular/router';
+import {User} from '@dev/translatr-model';
+import {NameIconRoute} from '@translatr/utils';
+import {USER_ROUTES} from './user-page.token';
+import {AppFacade} from '../../../+state/app.facade';
+import {combineLatest, Observable, of} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 class DummyRoute extends ActivatedRouteSnapshot {
   constructor(public readonly routeConfig: any) {
@@ -52,13 +52,14 @@ export class UserPageComponent implements OnInit {
       return of(true);
     }
 
+    const r = new DummyRoute(route);
+
     return combineLatest(
       route.canActivate
         .map((guard: any) => this.injector.get<CanActivate>(guard))
         .filter((guard: CanActivate) => guard && guard.canActivate)
         .map((guard: CanActivate) =>
-          guard.canActivate(new DummyRoute(route), undefined) as Observable<boolean>)
-    ).pipe(map((values: boolean[]) =>
-      values.reduce((acc: boolean, next: boolean) => acc && next, true)));
+          guard.canActivate(r, undefined) as Observable<boolean>)
+    ).pipe(map((values: boolean[]) => values.every(Boolean)));
   }
 }
