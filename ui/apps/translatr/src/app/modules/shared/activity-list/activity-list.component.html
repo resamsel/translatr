@@ -4,9 +4,9 @@
     <h3 matLine>
       <a [routerLink]="['/', activity.userUsername]" class="link user-name">{{activity.userName}}</a>
       <ng-container [ngSwitch]="activity.type">
-        <span *ngSwitchCase="'Create'" class="type" i18n> created {{activity.contentType.replace('dto.', '')}}</span>
-        <span *ngSwitchCase="'Update'" class="type" i18n> updated {{activity.contentType.replace('dto.', '')}}</span>
-        <span *ngSwitchCase="'Delete'" class="type" i18n> deleted {{activity.contentType.replace('dto.', '')}}</span>
+        <span *ngSwitchCase="'Create'" class="type" i18n> created <app-activity-content [activity]="activity"></app-activity-content></span>
+        <span *ngSwitchCase="'Update'" class="type" i18n> updated <app-activity-content [activity]="activity"></app-activity-content></span>
+        <span *ngSwitchCase="'Delete'" class="type" i18n> deleted <app-activity-content [activity]="activity"></app-activity-content></span>
         <span *ngSwitchCase="'Login'" class="type" i18n> logged in</span>
         <span *ngSwitchCase="'Logout'" class="type" i18n> logged out</span>
       </ng-container>

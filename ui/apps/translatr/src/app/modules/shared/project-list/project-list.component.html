@@ -2,8 +2,8 @@
   <ng-template #template let-project>
     <a mat-list-item [routerLink]="['/', project.ownerUsername, project.name]">
       <span matListIcon class="mat-icon circle">{{firstChar(project.name)}}</span>
-      <h3 matLine>{{project.name}}</h3>
-      <p matLine>{{project.ownerName}}</p>
+      <h3 matLine>{{project.name}} <span class="owner">{{project.ownerName}}</span></h3>
+      <p matLine i18n="@@added.when" [title]="project.whenCreated | date:'full'">{{project.whenCreated | amTimeAgo}}</p>
     </a>
   </ng-template>
 </app-nav-list>

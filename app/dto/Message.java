@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import controllers.AbstractController;
 import controllers.routes;
-import java.util.UUID;
 import models.Key;
 import models.Locale;
 import org.joda.time.DateTime;
@@ -12,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.libs.Json;
 import play.mvc.Call;
+import utils.FormatUtils;
+
+import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message extends Dto {
@@ -28,12 +30,14 @@ public class Message extends Dto {
 
   public UUID localeId;
   public String localeName;
+  public String localeDisplayName;
   public String localePathName;
 
   public UUID keyId;
   public String keyName;
   public String keyPathName;
 
+  public UUID projectId;
   public String projectName;
   public String projectOwnerUsername;
 
@@ -50,6 +54,7 @@ public class Message extends Dto {
     if (in.locale != null) {
       this.localeId = in.locale.id;
       this.localeName = in.locale.name;
+      this.localeDisplayName = FormatUtils.formatDisplayName(in.locale);
       this.localePathName = in.locale.getPathName();
     }
 
@@ -58,6 +63,8 @@ public class Message extends Dto {
       this.keyName = in.key.name;
       this.keyPathName = in.key.getPathName();
       if (in.key.project != null) {
+        this.projectId = in.key.project.id;
+        this.projectName = in.key.project.name;
         this.projectOwnerUsername = in.key.project.owner.username;
       }
     }

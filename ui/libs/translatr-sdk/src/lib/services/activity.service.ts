@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
-import {Activity, Aggregate, PagedList} from "@dev/translatr-model";
+import { Activity, Aggregate, PagedList } from "@dev/translatr-model";
 
 export interface ActivityCriteria {
   userId?: string;
@@ -35,7 +35,8 @@ export class ActivityService {
       .pipe(
         map((list: PagedList<Aggregate>) => ({
           ...list,
-          list: list.list.map((aggregate: Aggregate) => ({...aggregate, date: new Date(aggregate.date)}))
+          list: list.list.map((aggregate: Aggregate) =>
+            ({...aggregate, date: new Date(aggregate.date)}))
         }))
       );
   }

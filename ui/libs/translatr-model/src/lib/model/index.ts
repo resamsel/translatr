@@ -18,6 +18,7 @@ export * from './paged-list';
 export * from './permission-error-info';
 export * from './project';
 export * from './project-criteria';
+export * from './project-embedded';
 export * from './request-criteria';
 export * from './user';
 export * from './user-role';
