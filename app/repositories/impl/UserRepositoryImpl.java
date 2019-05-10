@@ -1,7 +1,5 @@
 package repositories.impl;
 
-import static utils.Stopwatch.log;
-
 import actors.ActivityActor;
 import actors.ActivityProtocol.Activity;
 import akka.actor.ActorRef;
@@ -11,12 +9,6 @@ import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import criterias.HasNextPagedList;
 import criterias.UserCriteria;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.validation.Validator;
 import models.ActionType;
 import models.User;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +16,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.UserRepository;
 import utils.QueryUtils;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static utils.Stopwatch.log;
 
 @Singleton
 public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, UserCriteria> implements
@@ -68,7 +69,9 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   }
 
   private ExpressionList<User> getAuthUserFind(final AuthUserIdentity identity) {
-    return find.where().eq("active", true).eq("linkedAccounts.providerUserId", identity.getId())
+    return find.where()
+        .eq("active", true)
+        .eq("linkedAccounts.providerUserId", identity.getId())
         .eq("linkedAccounts.providerKey", identity.getProvider());
   }
 
@@ -106,7 +109,8 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   /**
    * Generate a unique username from the given proposal.
    */
-  private String uniqueUsername(String username) {
+  @Override
+  public String uniqueUsername(String username) {
     if (StringUtils.isEmpty(username)) {
       return null;
     }

@@ -5,13 +5,21 @@ import com.feth.play.module.pa.providers.oauth2.BasicOAuth2AuthUser;
 import com.feth.play.module.pa.providers.oauth2.OAuth2AuthInfo;
 import com.feth.play.module.pa.user.BasicIdentity;
 import com.feth.play.module.pa.user.FirstLastNameIdentity;
+import com.feth.play.module.pa.user.PreferredUsernameIdentity;
+import com.feth.play.module.pa.user.UserRoleIdentity;
+import models.UserRole;
+
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * @author resamsel
  * @version 4 Jan 2017
  */
 public class KeycloakAuthUser extends BasicOAuth2AuthUser
-    implements BasicIdentity, FirstLastNameIdentity {
+    implements BasicIdentity, FirstLastNameIdentity, UserRoleIdentity, PreferredUsernameIdentity {
   private static final long serialVersionUID = -3369519859589372425L;
 
   private static class Constants {
@@ -20,15 +28,19 @@ public class KeycloakAuthUser extends BasicOAuth2AuthUser
     public static final String NAME = "name";
     public static final String FIRST_NAME = "given_name"; // "Fred",
     public static final String LAST_NAME = "family_name"; // "Example",
+    public static final String PREFERRED_USERNAME = "preferred_username";
+    public static final String GROUPS = "groups";
   }
 
   private String email;
+  private String preferredUsername;
+  private UserRole userRole = UserRole.User;
   private String name;
   private String firstName;
   private String lastName;
 
   /**
-   * @param id
+   * @param n
    * @param info
    * @param state
    */
@@ -48,6 +60,18 @@ public class KeycloakAuthUser extends BasicOAuth2AuthUser
     }
     if (n.has(Constants.LAST_NAME)) {
       this.lastName = n.get(Constants.LAST_NAME).asText();
+    }
+
+    if (n.has(Constants.PREFERRED_USERNAME)) {
+      this.preferredUsername = n.get(Constants.PREFERRED_USERNAME).asText();
+    }
+
+    if (n.has(Constants.GROUPS) && n.get(Constants.GROUPS).isArray()) {
+      Stream<JsonNode> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+          n.get(Constants.GROUPS).iterator(), Spliterator.ORDERED), false);
+      if (stream.map(JsonNode::asText).anyMatch("admin"::equalsIgnoreCase)) {
+        this.userRole = UserRole.Admin;
+      }
     }
   }
 
@@ -89,5 +113,15 @@ public class KeycloakAuthUser extends BasicOAuth2AuthUser
   @Override
   public String getLastName() {
     return lastName;
+  }
+
+  @Override
+  public UserRole getUserRole() {
+    return userRole;
+  }
+
+  @Override
+  public String getPreferredUsername() {
+    return preferredUsername;
   }
 }

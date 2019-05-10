@@ -4,12 +4,13 @@ import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.ImplementedBy;
 import criterias.UserCriteria;
+import models.User;
+import repositories.impl.UserRepositoryImpl;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import models.User;
-import repositories.impl.UserRepositoryImpl;
 
 @ImplementedBy(UserRepositoryImpl.class)
 public interface UserRepository extends ModelRepository<User, UUID, UserCriteria> {
@@ -28,4 +29,6 @@ public interface UserRepository extends ModelRepository<User, UUID, UserCriteria
   String nameToUsername(String name);
 
   String emailToUsername(String email);
+
+  String uniqueUsername(String username);
 }

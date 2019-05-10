@@ -1,37 +1,22 @@
 package services.impl;
 
-import static java.util.stream.Collectors.toList;
-import static utils.Stopwatch.log;
-
-import com.feth.play.module.pa.user.AuthUserIdentity;
-import com.feth.play.module.pa.user.EmailIdentity;
-import com.feth.play.module.pa.user.NameIdentity;
-import criterias.AccessTokenCriteria;
-import criterias.LinkedAccountCriteria;
-import criterias.LogEntryCriteria;
-import criterias.ProjectCriteria;
-import criterias.ProjectUserCriteria;
-import criterias.UserCriteria;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Validator;
+import com.feth.play.module.pa.user.*;
+import criterias.*;
 import models.LinkedAccount;
 import models.User;
 import models.UserStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.UserRepository;
-import services.AccessTokenService;
-import services.CacheService;
-import services.LinkedAccountService;
-import services.LogEntryService;
-import services.ProjectService;
-import services.ProjectUserService;
-import services.UserService;
+import services.*;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.*;
+
+import static java.util.stream.Collectors.toList;
+import static utils.Stopwatch.log;
 
 /**
  * @author resamsel
@@ -82,10 +67,20 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
     if (authUser instanceof NameIdentity) {
       final NameIdentity identity = (NameIdentity) authUser;
-      final String name = identity.getName();
-      if (name != null) {
-        user.name = name;
-      }
+      Optional.ofNullable(identity.getName())
+          .ifPresent(name -> user.name = name);
+    }
+
+    if (authUser instanceof UserRoleIdentity) {
+      final UserRoleIdentity identity = (UserRoleIdentity) authUser;
+      Optional.ofNullable(identity.getUserRole())
+          .ifPresent(role -> user.role = role);
+    }
+
+    if (authUser instanceof PreferredUsernameIdentity) {
+      final PreferredUsernameIdentity identity = (PreferredUsernameIdentity) authUser;
+      Optional.ofNullable(identity.getPreferredUsername())
+          .ifPresent(preferredUsername -> user.username = userRepository.uniqueUsername(preferredUsername));
     }
 
     return create(user);
@@ -101,7 +96,6 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   @Override
   public User getLocalUser(final AuthUserIdentity authUser) {
     if (authUser == null) {
-      LOGGER.debug("Auth user is null");
       return null;
     }
 
