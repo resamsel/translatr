@@ -5,11 +5,11 @@ import { KeyEditorPageComponent } from "./key-editor-page.component";
 
 const routes: Routes = [
   {
-    path: ":username/:projectName/locales/:localeName",
+    path: ':username/:projectName/locales/:localeName',
     component: LocaleEditorPageComponent
   },
   {
-    path: ":username/:projectName/keys/:keyName",
+    path: ':username/:projectName/keys/:keyName',
     component: KeyEditorPageComponent
   }
 ];

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
 import { ActivityCriteria } from "../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service";
 import { ProjectFacade } from "../+state/project.facade";

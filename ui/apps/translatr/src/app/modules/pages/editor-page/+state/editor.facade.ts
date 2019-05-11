@@ -1,26 +1,27 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
-import { select, Store } from '@ngrx/store';
+import { select, Store } from "@ngrx/store";
 
-import { EditorPartialState } from './editor.reducer';
-import { editorQuery } from './editor.selectors';
+import { EditorPartialState } from "./editor.reducer";
+import { editorQuery } from "./editor.selectors";
 import {
   LoadKey,
   LoadKeysBy,
   LoadKeySearch,
-  LoadLocale, LoadLocalesBy,
+  LoadLocale,
   LoadLocaleSearch,
   SaveMessage,
   SelectKey,
-  SelectLocale, UnloadEditor
-} from './editor.actions';
+  SelectLocale,
+  UnloadEditor
+} from "./editor.actions";
 import { Observable, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
 import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
 import { Message } from "../../../../../../../../libs/translatr-model/src/lib/model/message";
 import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
-import {RequestCriteria} from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
+import { RequestCriteria } from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
 
 @Injectable()
 export class EditorFacade {
@@ -100,10 +101,10 @@ export class EditorFacade {
   }
 
   updateLocaleSearch(criteria: RequestCriteria) {
-    this.store.dispatch(new LoadLocaleSearch(criteria))
+    this.store.dispatch(new LoadLocaleSearch(criteria));
   }
 
   updateKeySearch(criteria: RequestCriteria) {
-    this.store.dispatch(new LoadKeySearch(criteria))
+    this.store.dispatch(new LoadKeySearch(criteria));
   }
 }

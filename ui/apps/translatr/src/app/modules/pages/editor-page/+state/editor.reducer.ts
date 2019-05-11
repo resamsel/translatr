@@ -1,9 +1,9 @@
-import {EditorAction, EditorActionTypes} from './editor.actions';
-import {PagedList} from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import {Locale} from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
-import {Key} from "../../../../../../../../libs/translatr-model/src/lib/model/key";
-import {Message} from "../../../../../../../../libs/translatr-model/src/lib/model/message";
-import {RequestCriteria} from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
+import { EditorAction, EditorActionTypes } from "./editor.actions";
+import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
+import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
+import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
+import { Message } from "../../../../../../../../libs/translatr-model/src/lib/model/message";
+import { RequestCriteria } from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
 
 export const EDITOR_FEATURE_KEY = 'editor';
 
@@ -17,11 +17,11 @@ export const EDITOR_FEATURE_KEY = 'editor';
 
 export type LoadingState<S> = {
   [key in keyof S]: boolean;
-}
+};
 
 export type ErrorState<S> = {
   [key in keyof S]?: any;
-}
+};
 
 export interface EditorState {
   locale?: Locale;

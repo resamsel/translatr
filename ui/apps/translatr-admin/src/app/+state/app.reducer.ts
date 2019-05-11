@@ -1,4 +1,4 @@
-import { AppAction, AppActionTypes } from './app.actions';
+import { AppAction, AppActionTypes } from "./app.actions";
 import { AccessToken, PagedList, Project, User } from "@dev/translatr-model";
 
 export const APP_FEATURE_KEY = 'app';

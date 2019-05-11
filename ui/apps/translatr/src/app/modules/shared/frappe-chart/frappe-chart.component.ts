@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
-import {Heatmap} from 'frappe-charts/dist/frappe-charts.min.esm';
+import { Component, Input } from "@angular/core";
+import { Heatmap } from "frappe-charts/dist/frappe-charts.min.esm";
 
 export interface HeatmapData {
-  dataPoints: { [key: string]: number },
-  start: Date,
-  end: Date
+  dataPoints: { [key: string]: number };
+  start: Date;
+  end: Date;
 }
 
 @Component({

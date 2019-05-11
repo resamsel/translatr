@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { UserListComponent } from "./user-list.component";
 import { MatIconModule, MatListModule } from "@angular/material";
 import { GravatarModule } from "ngx-gravatar";

@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { NavListComponent } from './nav-list.component';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { NavListComponent } from "./nav-list.component";
 import { MatIconModule, MatListModule } from "@angular/material";
 
 @NgModule({

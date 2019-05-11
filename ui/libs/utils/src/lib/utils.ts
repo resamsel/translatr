@@ -26,8 +26,8 @@ export function cartesianProduct<T> (arr: T[][]): T[][] {
   return arr.reduce((a, b) => {
     return a.map(x => {
       return b.map(y => {
-        return x.concat(y)
-      })
-    }).reduce((c, d) => c.concat(d), [])
-  }, [[]] as T[][])
+        return x.concat(y);
+      });
+    }).reduce((c, d) => c.concat(d), []);
+  }, [[]] as T[][]);
 }

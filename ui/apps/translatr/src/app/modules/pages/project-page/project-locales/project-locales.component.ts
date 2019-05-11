@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { ProjectFacade } from "../+state/project.facade";
 import { take, tap } from "rxjs/operators";
 import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
@@ -15,7 +15,7 @@ export class ProjectLocalesComponent implements OnInit {
   project$ = this.facade.project$.pipe(
     tap((project: Project) => {
       if (!!project) {
-        this.facade.loadLocales(project.id)
+        this.facade.loadLocales(project.id);
       }
     }));
   locales$ = this.facade.locales$;

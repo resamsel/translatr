@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ProjectFacade } from "../+state/project.facade";
 import { take, tap } from "rxjs/operators";
 import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
-import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
 import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
 import { MatSnackBar } from "@angular/material";
 
@@ -17,7 +16,7 @@ export class ProjectKeysComponent implements OnInit {
   project$ = this.facade.project$.pipe(
     tap((project: Project) => {
       if (!!project) {
-        this.facade.loadKeys(project.id)
+        this.facade.loadKeys(project.id);
       }}));
   keys$ = this.facade.keys$;
 

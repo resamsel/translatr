@@ -1,5 +1,5 @@
-import {Action} from '@ngrx/store';
-import {PagedList, Project, ProjectCriteria} from "@dev/translatr-model";
+import { Action } from "@ngrx/store";
+import { PagedList, Project, ProjectCriteria } from "@dev/translatr-model";
 
 export enum ProjectsActionTypes {
   LoadProjects = '[Projects Page] Load Projects',

@@ -1,5 +1,5 @@
-import { ProjectAction, ProjectActionTypes } from './project.actions';
-import { Activity, Aggregate, Key, Locale, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
+import { ProjectAction, ProjectActionTypes } from "./project.actions";
+import { Activity, Aggregate, Key, Locale, PagedList, Project, RequestCriteria } from "@dev/translatr-model";
 
 export const PROJECT_FEATURE_KEY = 'project';
 
@@ -9,8 +9,8 @@ export interface ProjectState {
   localesSearch: RequestCriteria;
   keys?: PagedList<Key>;
   keysSearch: RequestCriteria;
-  activityAggregated?: PagedList<Aggregate>,
-  activities?: PagedList<Activity>,
+  activityAggregated?: PagedList<Aggregate>;
+  activities?: PagedList<Activity>;
   loading: boolean;
   error?: any; // last none error (if any)
 }

@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { ActivityComponent } from "./activity.component";
-import {FrappeChartModule} from "../frappe-chart/frappe-chart.module";
+import { FrappeChartModule } from "../frappe-chart/frappe-chart.module";
 
 @NgModule({
   declarations: [ActivityComponent],

@@ -1,12 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Project} from "../../../../../../../libs/translatr-model/src/lib/model/project";
-import {ActivatedRoute, ParamMap, Router} from "@angular/router";
-import {ProjectFacade} from "./+state/project.facade";
-import {Observable} from "rxjs";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {filter, switchMapTo, take, tap} from "rxjs/operators";
-import {MatSnackBar} from '@angular/material';
-import {AppFacade} from "../../../+state/app.facade";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { ActivatedRoute, ParamMap, Router } from "@angular/router";
+import { ProjectFacade } from "./+state/project.facade";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { filter, switchMapTo, take, tap } from "rxjs/operators";
+import { MatSnackBar } from "@angular/material";
+import { AppFacade } from "../../../+state/app.facade";
 
 @Component({
   selector: 'app-project-page',

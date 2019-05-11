@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {Actions, Effect} from '@ngrx/effects';
-import {DataPersistence} from '@nrwl/nx';
-import {EDITOR_FEATURE_KEY, EditorPartialState} from './editor.reducer';
+import { Injectable } from "@angular/core";
+import { Actions, Effect } from "@ngrx/effects";
+import { DataPersistence } from "@nrwl/nx";
+import { EDITOR_FEATURE_KEY, EditorPartialState } from "./editor.reducer";
 import {
   EditorActionTypes,
   KeyLoaded,
@@ -26,14 +26,14 @@ import {
   SaveMessage,
   SelectKey,
   SelectLocale
-} from './editor.actions';
-import {KeyService, LocaleService, MessageService} from '@dev/translatr-sdk';
-import {Key, Locale, Message, PagedList} from '@dev/translatr-model';
-import {filter, map, take} from 'rxjs/operators';
-import {combineLatest, Observable} from 'rxjs';
-import {Action} from '@ngrx/store';
-import {EditorFacade} from './editor.facade';
-import {MatSnackBar} from '@angular/material';
+} from "./editor.actions";
+import { KeyService, LocaleService, MessageService } from "@dev/translatr-sdk";
+import { Key, Locale, Message, PagedList } from "@dev/translatr-model";
+import { filter, map, take } from "rxjs/operators";
+import { combineLatest, Observable } from "rxjs";
+import { Action } from "@ngrx/store";
+import { EditorFacade } from "./editor.facade";
+import { MatSnackBar } from "@angular/material";
 
 @Injectable()
 export class EditorEffects {
@@ -222,7 +222,7 @@ export class EditorEffects {
         return combineLatest(this.facade.locale$, this.facade.keys$, this.facade.keysLoading$).pipe(
           filter(([locale, keys, loading]: [Locale, PagedList<Key>, boolean]) => !loading && locale !== undefined && keys !== undefined),
           take(1),
-          map(([locale, keys,]: [Locale, PagedList<Key>, boolean]) => {
+          map(([locale, keys, ]: [Locale, PagedList<Key>, boolean]) => {
             const key = keys.list.find((key: Key) => key.name === action.payload.key);
             if (key === undefined) {
               console.log('Key not found in key list', keys);
@@ -267,7 +267,7 @@ export class EditorEffects {
         return combineLatest(this.facade.key$, this.facade.locales$, this.facade.localesLoading$).pipe(
           filter(([key, locales, loading]: [Key, PagedList<Locale>, boolean]) => !loading && key !== undefined && locales !== undefined),
           take(1),
-          map(([key, locales,]: [Key, PagedList<Locale>, boolean]) => {
+          map(([key, locales, ]: [Key, PagedList<Locale>, boolean]) => {
             const locale = locales.list.find((locale: Locale) => locale.name === action.payload.locale);
             if (locale === undefined) {
               console.log('Locale not found in locale list', locales);

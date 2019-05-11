@@ -1,5 +1,5 @@
-import { ErrorInfo } from './error-info';
+import { ErrorInfo } from "./error-info";
 
-export interface PermissionErrorInfo extends ErrorInfo{
+export interface PermissionErrorInfo extends ErrorInfo {
   scopes: string[];
 }

@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
-import { select, Store } from '@ngrx/store';
+import { select, Store } from "@ngrx/store";
 
-import { UsersPartialState } from './users.reducer';
-import { usersQuery } from './users.selectors';
-import {LoadUsers, UserCriteria} from './users.actions';
-import {Subject} from "rxjs";
-import {takeUntil} from "rxjs/operators";
+import { UsersPartialState } from "./users.reducer";
+import { usersQuery } from "./users.selectors";
+import { LoadUsers, UserCriteria } from "./users.actions";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Injectable()
 export class UsersFacade {

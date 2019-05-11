@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Project } from "../../../../../../../../../libs/translatr-model/src/lib/model/project";
 import { Key } from "../../../../../../../../../libs/translatr-model/src/lib/model/key";
 import { PagedList } from "../../../../../../../../../libs/translatr-model/src/lib/model/paged-list";

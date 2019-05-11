@@ -4,9 +4,9 @@ import { User, UserRole } from "@dev/translatr-model";
 import { environment } from "../../../../environments/environment";
 
 @Component({
-  selector: "app-main-page",
-  templateUrl: "./main-page.component.html",
-  styleUrls: ["./main-page.component.scss"]
+  selector: 'app-main-page',
+  templateUrl: './main-page.component.html',
+  styleUrls: ['./main-page.component.scss']
 })
 export class MainPageComponent {
 

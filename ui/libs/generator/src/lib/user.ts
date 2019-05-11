@@ -1,12 +1,12 @@
-import { AccessToken, PagedList, RequestCriteria, User, UserRole } from '@dev/translatr-model';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, concatMap, filter, map } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
-import * as randomName from 'random-name';
-import { State } from './state';
-import { cartesianProduct, pickRandomly } from '@translatr/utils';
-import { AccessTokenService, errorMessage, UserService } from '@dev/translatr-sdk';
-import { Injector } from '@angular/core';
+import { AccessToken, PagedList, RequestCriteria, User, UserRole } from "@dev/translatr-model";
+import { Observable, of, throwError } from "rxjs";
+import { catchError, concatMap, filter, map } from "rxjs/operators";
+import { HttpErrorResponse } from "@angular/common/http";
+import * as randomName from "random-name";
+import { State } from "./state";
+import { cartesianProduct, pickRandomly } from "@translatr/utils";
+import { AccessTokenService, errorMessage, UserService } from "@dev/translatr-sdk";
+import { Injector } from "@angular/core";
 
 const scope = cartesianProduct([
   ['read', 'write'],
@@ -60,7 +60,7 @@ export const me = (userService: UserService): Observable<Partial<State>> => {
 
         return throwError({message: `me: ${err}`});
       })
-    )
+    );
 };
 
 export const createRandomUser = (userService: UserService): Observable<Partial<State>> => {
@@ -100,7 +100,7 @@ export const updateRandomUser = (userService: UserService): Observable<Partial<S
             map((u: User) => `${u.name} (${u.username}) has been updated`),
             catchError((err: HttpErrorResponse) =>
               of(`${user.name} (${user.username}) could not be updated (${errorMessage(err)})`)),
-          )
+          );
       }),
       catchError(err => of(`Error while retrieving random user (${errorMessage(err)})`)),
       map((message: string) => ({message}))

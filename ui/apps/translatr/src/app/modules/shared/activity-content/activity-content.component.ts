@@ -3,9 +3,9 @@ import { Activity, Key, Locale, Message, Project } from "@dev/translatr-model";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: "app-activity-content",
-  templateUrl: "./activity-content.component.html",
-  styleUrls: ["./activity-content.component.scss"]
+  selector: 'app-activity-content',
+  templateUrl: './activity-content.component.html',
+  styleUrls: ['./activity-content.component.scss']
 })
 export class ActivityContentComponent implements OnInit {
 
@@ -18,7 +18,7 @@ export class ActivityContentComponent implements OnInit {
 
     return this.activity
       .contentType
-      .replace("dto.", "")
+      .replace('dto.', '')
       .toLowerCase();
   }
 
@@ -26,7 +26,7 @@ export class ActivityContentComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("activity", this.activity);
+    console.log('activity', this.activity);
   }
 
   get project(): Project | undefined {

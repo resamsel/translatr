@@ -1,11 +1,11 @@
-import {MemberRole} from "./member-role";
+import { MemberRole } from "./member-role";
 
 export interface Member {
   id: string;
   whenCreated: Date;
   whenUpdated: Date;
 
-  role: MemberRole
+  role: MemberRole;
 
   userName: string;
   userId: string;

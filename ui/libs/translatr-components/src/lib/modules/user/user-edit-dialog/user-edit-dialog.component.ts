@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
 import { ConstraintViolation, ConstraintViolationErrorInfo, ErrorAction, User, UserRole } from "@dev/translatr-model";
 import { FormControl, FormGroup, Validators } from "@angular/forms";

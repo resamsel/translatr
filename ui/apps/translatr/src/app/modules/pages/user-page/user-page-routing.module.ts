@@ -11,7 +11,7 @@ import { MyselfGuard } from "../../../guards/myself.guard";
 
 const routes: Routes = [
   {
-    path: ":username",
+    path: ':username',
     component: UserPageComponent,
     // canActivate: [AuthGuard],
     resolve: {
@@ -19,37 +19,37 @@ const routes: Routes = [
     },
     children: [
       {
-        path: "",
-        pathMatch: "full",
+        path: '',
+        pathMatch: 'full',
         component: UserInfoComponent,
         data: {
-          icon: "info",
-          name: "Info"
+          icon: 'info',
+          name: 'Info'
         }
       },
       {
-        path: "projects",
+        path: 'projects',
         component: UserProjectsComponent,
         data: {
-          icon: "library_books",
-          name: "Projects"
+          icon: 'library_books',
+          name: 'Projects'
         }
       },
       {
-        path: "activity",
+        path: 'activity',
         component: UserActivityComponent,
         data: {
-          icon: "change_history",
-          name: "Activity"
+          icon: 'change_history',
+          name: 'Activity'
         }
       },
       {
-        path: "access-tokens",
+        path: 'access-tokens',
         component: UserAccessTokensComponent,
         canActivate: [MyselfGuard],
         data: {
-          icon: "vpn_key",
-          name: "Access Tokens"
+          icon: 'vpn_key',
+          name: 'Access Tokens'
         }
       }
     ]

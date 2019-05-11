@@ -1,19 +1,19 @@
-import {Component, OnDestroy} from '@angular/core';
-import {AppFacade} from '../../../../+state/app.facade';
-import {RequestCriteria, User, UserRole} from '@dev/translatr-model';
-import {map, mapTo, startWith, take} from 'rxjs/operators';
-import {UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError} from '../../../../+state/app.actions';
-import {Entity, UserEditDialogComponent, UserEditDialogConfig} from '@dev/translatr-components';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import {filter} from 'rxjs/internal/operators/filter';
-import {merge, Observable} from 'rxjs';
+import { Component, OnDestroy } from "@angular/core";
+import { AppFacade } from "../../../../+state/app.facade";
+import { RequestCriteria, User, UserRole } from "@dev/translatr-model";
+import { map, mapTo, startWith, take } from "rxjs/operators";
+import { UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError } from "../../../../+state/app.actions";
+import { Entity, UserEditDialogComponent, UserEditDialogConfig } from "@dev/translatr-components";
+import { MatDialog, MatSnackBar } from "@angular/material";
+import { filter } from "rxjs/internal/operators/filter";
+import { merge, Observable } from "rxjs";
 import {
   hasCreateUserPermission,
   hasDeleteAllUsersPermission,
   hasDeleteUserPermission,
   hasEditUserPermission,
   isAdmin
-} from '@dev/translatr-sdk';
+} from "@dev/translatr-sdk";
 
 export const mapToAllowedRoles = () => map((me?: User): UserRole[] =>
   [UserRole.User, ...isAdmin(me) ? [UserRole.Admin] : []]);
@@ -98,7 +98,7 @@ export class DashboardUsersComponent implements OnDestroy {
               success$: this.facade.userCreated$,
               error$: this.facade.userCreateError$
             } as UserEditDialogConfig
-          })
+          });
       });
   }
 

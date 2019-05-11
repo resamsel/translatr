@@ -9,7 +9,7 @@ import {
   Output,
   QueryList,
   ViewChild
-} from '@angular/core';
+} from "@angular/core";
 import { SelectionModel } from "@angular/cdk/collections";
 import { MatColumnDef, MatTable } from "@angular/material";
 import { PagedList, RequestCriteria } from "@dev/translatr-model";
@@ -118,7 +118,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   masterToggle() {
     this.isAllSelected() ?
       this.selection.clear() :
-      this.dataSource.list.forEach(row => this.selection.select(row))
+      this.dataSource.list.forEach(row => this.selection.select(row));
   }
 
   onSelectionChange(element: Entity) {
