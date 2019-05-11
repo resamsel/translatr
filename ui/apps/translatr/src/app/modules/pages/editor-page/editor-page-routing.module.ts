@@ -1,16 +1,15 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
 import { LocaleEditorPageComponent } from "./locale-editor-page.component";
-import {KeyEditorPageComponent} from "./key-editor-page.component";
-import {AuthResolverService} from "../../../../../../../libs/translatr-sdk/src/lib/services/auth-resolver.service";
+import { KeyEditorPageComponent } from "./key-editor-page.component";
 
 const routes: Routes = [
   {
-    path: ':username/:projectName/locales/:localeName',
+    path: ":username/:projectName/locales/:localeName",
     component: LocaleEditorPageComponent
   },
   {
-    path: ':username/:projectName/keys/:keyName',
+    path: ":username/:projectName/keys/:keyName",
     component: KeyEditorPageComponent
   }
 ];
@@ -19,4 +18,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class EditorPageRoutingModule { }
+export class EditorPageRoutingModule {
+}

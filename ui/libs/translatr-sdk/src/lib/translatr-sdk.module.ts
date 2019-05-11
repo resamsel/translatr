@@ -4,7 +4,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {
   AccessTokenService,
   ActivityService,
-  AuthResolverService,
   KeyService,
   LocaleService,
   MessageService,
@@ -21,7 +20,6 @@ import {
   providers: [
     AccessTokenService,
     ActivityService,
-    AuthResolverService,
     KeyService,
     LocaleService,
     MessageService,

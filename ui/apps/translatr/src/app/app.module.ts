@@ -27,16 +27,12 @@ import {storeFreeze} from 'ngrx-store-freeze';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+
     AppRoutingModule,
     TranslatrSdkModule,
     SidenavModule,
-    // DashboardPageModule,
-    ProjectsPageModule,
-    UsersPageModule,
-    UserPageModule,
-    ProjectPageModule,
-    EditorPageModule,
     LayoutModule,
+
     MatToolbarModule,
     MatButtonModule,
 

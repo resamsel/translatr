@@ -28,7 +28,7 @@ export class UserResolverService implements Resolve<User> {
             return of(user);
           }
 
-          this.router.navigate(['/dashboard/users']);
+          this.router.navigate(['/users']);
           return EMPTY;
         })
       );

@@ -1,11 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {ProjectsResolverService} from "../dashboard-page/projects-resolver.service";
+import {ProjectsResolverService} from "../../shared/resolver/projects-resolver.service";
 import {ProjectsPageComponent} from "./projects-page.component";
 
 const routes: Routes = [
   {
-    path: 'projects',
+    path: '',
     component: ProjectsPageComponent
   }
 ];
