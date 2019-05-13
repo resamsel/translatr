@@ -1,0 +1,45 @@
+.controls,
+.mat-form-field,
+table {
+  width: 100%;
+}
+
+.controls {
+  display: flex;
+
+  > * {
+    flex-grow: 1;
+  }
+
+  ::ng-deep {
+    .mat-paginator-container,
+    .mat-paginator-page-size,
+    .mat-paginator-range-label {
+      flex-wrap: nowrap;
+      white-space: nowrap;
+    }
+
+    .mat-form-field-prefix {
+      margin-right: 8px;
+      font-size: 12px;
+    }
+  }
+}
+
+.cdk-column-selection {
+  width: 32px;
+}
+
+.selection-actions {
+  text-align: right;
+}
+
+.selection-header {
+  color: inherit;
+  font-size: 14px;
+}
+
+.more-button {
+  display: block;
+  margin: 8px auto;
+}

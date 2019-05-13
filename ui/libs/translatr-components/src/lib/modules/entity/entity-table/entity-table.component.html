@@ -1,10 +1,22 @@
-<mat-form-field>
-  <input
-    matInput
-    placeholder="Filter"
-    (keyup)="onFilter($event.target.value)"
-  />
-</mat-form-field>
+<div class="controls">
+  <mat-form-field>
+    <mat-icon matPrefix>search</mat-icon>
+    <input
+      matInput
+      placeholder="Filter"
+      [value]="(commands$ | async).search || ''"
+      (keyup)="onFilter($event.target.value)"
+    />
+  </mat-form-field>
+
+  <mat-paginator
+    [length]="dataSource?.offset + dataSource?.list.length + (dataSource?.hasNext ? 1 : 0)"
+    [pageIndex]="dataSource?.offset / dataSource?.limit"
+    [pageSize]="dataSource?.limit"
+    (page)="onPage($event)"
+  ></mat-paginator>
+</div>
+
 <table mat-table [dataSource]="dataSource?.list" [trackBy]="trackByFn">
   <ng-container matColumnDef="selection">
     <th mat-header-cell *matHeaderCellDef>
@@ -54,13 +66,3 @@
   ></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
-
-<button
-  mat-flat-button
-  class="more-button"
-  *ngIf="dataSource !== undefined"
-  [disabled]="!dataSource?.hasNext"
-  (click)="onLoadMore()"
->
-  Load more...
-</button>

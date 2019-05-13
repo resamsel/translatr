@@ -1,7 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EntityTableComponent } from './entity-table.component';
-import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatTableModule } from '@angular/material';
+import {
+  MatButtonModule,
+  MatCheckboxModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
+  MatPaginatorModule,
+  MatTableModule
+} from '@angular/material';
 import { ButtonModule } from '../../button';
 import { SelectionActionsComponent } from './selection-actions.component';
 
@@ -16,7 +24,9 @@ import { SelectionActionsComponent } from './selection-actions.component';
     MatIconModule,
     MatCheckboxModule,
     MatInputModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatPaginatorModule
   ]
 })
-export class EntityTableModule {}
+export class EntityTableModule {
+}

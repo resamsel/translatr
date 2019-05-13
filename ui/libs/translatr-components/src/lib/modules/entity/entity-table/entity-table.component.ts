@@ -11,10 +11,11 @@ import {
   ViewChild
 } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatColumnDef, MatTable } from '@angular/material';
+import { MatColumnDef, MatTable, PageEvent } from '@angular/material';
 import { PagedList, RequestCriteria } from '@dev/translatr-model';
 import { merge, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, scan, shareReplay, take } from 'rxjs/operators';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 export interface Entity {
   id: string | number;
@@ -24,7 +25,7 @@ export interface Entity {
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'entity-table',
   templateUrl: './entity-table.component.html',
-  styleUrls: ['./entity-table.component.css']
+  styleUrls: ['./entity-table.component.scss']
 })
 export class EntityTableComponent implements OnInit, AfterContentInit {
   @Input() dataSource: PagedList<Entity>;
@@ -56,6 +57,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   init$ = new Subject<RequestCriteria>();
   search$ = new Subject<string>();
   limit$ = new Subject<number>();
+  offset$ = new Subject<number>();
   commands$ = merge(
     this.init$.asObservable(),
     this.search$.asObservable().pipe(
@@ -66,6 +68,15 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
     this.limit$.asObservable().pipe(
       distinctUntilChanged(),
       map((limit: number) => ({ limit: `${limit}` }))
+    ),
+    this.offset$.asObservable().pipe(
+      distinctUntilChanged(),
+      map((offset: number) => ({ offset: `${offset}` }))
+    ),
+    this.route.queryParams.pipe(
+      map((params: Params) => ({
+        ...params
+      }))
     )
   ).pipe(
     scan((acc: RequestCriteria, value: RequestCriteria) => ({
@@ -77,10 +88,14 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
 
   selection = new SelectionModel<Entity>(true, []);
 
-  constructor() {
-    this.commands$.subscribe((criteria: RequestCriteria) =>
-      this.criteria.emit(criteria)
-    );
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
+  ) {
+    this.commands$.subscribe((criteria: RequestCriteria) =>{
+      this.criteria.emit(criteria);
+      this.router.navigate([], {queryParams: criteria});
+    });
   }
 
   ngOnInit() {}
@@ -130,5 +145,10 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   onSelectionChange(element: Entity) {
     this.selection.toggle(element);
     this.selected.emit(this.selection.selected);
+  }
+
+  onPage(event: PageEvent) {
+    console.log('onPage', event);
+    this.offset$.next(event.pageIndex * event.pageSize);
   }
 }
