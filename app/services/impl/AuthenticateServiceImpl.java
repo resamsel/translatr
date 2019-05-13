@@ -4,13 +4,15 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.service.AbstractUserService;
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import com.feth.play.module.pa.user.UserRoleIdentity;
 import models.ActionType;
 import models.LogEntry;
 import models.User;
 import services.LogEntryService;
 import services.UserService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton
 public class AuthenticateServiceImpl extends AbstractUserService {
@@ -66,6 +68,14 @@ public class AuthenticateServiceImpl extends AbstractUserService {
   @Override
   public AuthUser update(AuthUser knownUser) {
     User user = userService.getLocalUser(knownUser);
+
+    if (knownUser instanceof UserRoleIdentity) {
+      UserRoleIdentity identity = (UserRoleIdentity) knownUser;
+      if (user.role != identity.getUserRole()) {
+        user = userService.update(user.withRole(identity.getUserRole()));
+      }
+    }
+
     logEntryService.create(
         LogEntry.from(ActionType.Login, user, null, dto.User.class, null, dto.User.from(user)));
 

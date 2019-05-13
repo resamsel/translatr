@@ -1,8 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { convertTemporals, convertTemporalsList } from '../shared';
 import { combineLatest, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { PagedList, RequestCriteria } from '@dev/translatr-model';
+import { Router } from '@angular/router';
+import { environment } from '../../../../../apps/translatr/src/environments/environment';
 
 export interface RequestOptions {
   params: {
@@ -13,6 +15,7 @@ export interface RequestOptions {
 export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
   constructor(
     protected readonly http: HttpClient,
+    protected readonly router: Router,
     private readonly listPath: (criteria: CRITERIA) => string,
     private readonly entityPath: string
   ) {}
@@ -27,12 +30,18 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
           ...list,
           list: convertTemporalsList(list.list)
         })),
-        catchError(err => {
+        catchError((err: HttpErrorResponse) => {
           console.error(
             `Error while finding ${this.listPath(criteria)}`,
             err,
             criteria
           );
+
+          if (err.status >= 400) {
+            console.log('navigateByUrl', `${environment.endpointUrl}/login`);
+            window.location.href = `${environment.endpointUrl}/login?redirect_uri=${this.router.url}`;
+          }
+
           return throwError(err);
         })
       );

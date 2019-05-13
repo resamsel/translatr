@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { convertTemporals, convertTemporalsList } from '../shared/mapper-utils';
 import { Aggregate, PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
 import { AbstractService } from './abstract.service';
+import { Router } from '@angular/router';
 
 const projectMapper = (project: Project) => ({
   ...convertTemporals(project),
@@ -17,8 +18,8 @@ const projectMapper = (project: Project) => ({
   providedIn: 'root'
 })
 export class ProjectService extends AbstractService<Project, ProjectCriteria> {
-  constructor(http: HttpClient) {
-    super(http, () => '/api/projects', '/api/project');
+  constructor(http: HttpClient, router: Router) {
+    super(http, router, () => '/api/projects', '/api/project');
   }
 
   getProjectByOwnerAndName(

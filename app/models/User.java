@@ -49,7 +49,7 @@ public class User implements Model<User, UUID>, Subject {
 
   public static final int EMAIL_LENGTH = 255;
 
-  public static final int ROLE_LENGTH = 16;
+  private static final int ROLE_LENGTH = 16;
 
   @Id
   @GeneratedValue
@@ -144,6 +144,11 @@ public class User implements Model<User, UUID>, Subject {
     return this;
   }
 
+  public User withRole(UserRole role) {
+    this.role = role;
+    return this;
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -154,6 +159,7 @@ public class User implements Model<User, UUID>, Subject {
     name = in.name;
     email = in.email;
     emailValidated = in.emailValidated;
+    role = in.role;
 
     return this;
   }

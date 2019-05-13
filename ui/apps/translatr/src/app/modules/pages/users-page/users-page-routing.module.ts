@@ -5,7 +5,8 @@ import { UsersPageComponent } from './users-page.component';
 const routes: Routes = [
   {
     path: '',
-    component: UsersPageComponent
+    component: UsersPageComponent,
+    // canActivate: [AuthGuard]
   }
 ];
 
@@ -13,4 +14,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class UsersPageRoutingModule {}
+export class UsersPageRoutingModule {
+}

@@ -11,13 +11,12 @@ import { environment } from '../../../../environments/environment';
 export class MainPageComponent {
   me$ = this.facade.me$;
 
-  constructor(private readonly facade: AppFacade) {}
+  adminRoute = environment.adminUrl;
+
+  constructor(private readonly facade: AppFacade) {
+  }
 
   isAdmin(me: User | undefined): boolean {
     return !!me && me.role === UserRole.Admin;
-  }
-
-  adminRoute(): string {
-    return environment.adminUrl;
   }
 }

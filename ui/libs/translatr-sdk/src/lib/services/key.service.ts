@@ -5,14 +5,16 @@ import { map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { AbstractService } from './abstract.service';
 import { Key, KeyCriteria } from '@dev/translatr-model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class KeyService extends AbstractService<Key, KeyCriteria> {
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, router: Router) {
     super(
       http,
+      router,
       (criteria: KeyCriteria) => `/api/keys/${criteria.projectId}`,
       '/api/key'
     );

@@ -5,14 +5,16 @@ import { map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { AbstractService } from './abstract.service';
 import { Locale, LocaleCriteria } from '@dev/translatr-model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, router: Router) {
     super(
       http,
+      router,
       (criteria: LocaleCriteria) => `/api/locales/${criteria.projectId}`,
       '/api/locale'
     );

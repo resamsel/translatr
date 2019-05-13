@@ -5,13 +5,14 @@ import { map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { Aggregate, PagedList, RequestCriteria, User } from '@dev/translatr-model';
 import { AbstractService } from './abstract.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService extends AbstractService<User, RequestCriteria> {
-  constructor(http: HttpClient) {
-    super(http, () => '/api/users', '/api/user');
+  constructor(http: HttpClient, router: Router) {
+    super(http, router, () => '/api/users', '/api/user');
   }
 
   byUsername(

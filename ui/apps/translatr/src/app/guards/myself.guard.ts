@@ -20,7 +20,7 @@ export class MyselfGuard implements CanActivate {
   ): Observable<boolean> | Promise<boolean> | boolean {
     return this.appFacade.me$.pipe(
       map((me: User) => {
-        if (me === undefined) {
+        if (!me) {
           this.router.navigate(['/']);
           return false;
         }

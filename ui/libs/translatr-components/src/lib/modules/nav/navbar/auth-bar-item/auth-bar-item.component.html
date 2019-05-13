@@ -4,10 +4,15 @@
   [matMenuTriggerFor]="userMenu"
   *ngIf="me"
 >
-  <img class="icon" ngxGravatar [email]="me.email" size="36" />
+  <img class="icon" ngxGravatar [email]="me.email" size="36"/>
 </button>
 <mat-menu #userMenu="matMenu" xPosition="before">
   <ng-content></ng-content>
   <mat-divider></mat-divider>
-  <a mat-menu-item *ngIf="me" href="/logout"> Logout {{ me.name }} </a>
+  <a mat-menu-item *ngIf="me" href="{{endpointUrl}}/logout"> Logout {{ me.name }} </a>
 </mat-menu>
+
+<a href="{{endpointUrl}}/login" mat-button *ngIf="!me">
+  <mat-icon>group</mat-icon>
+  Sign in
+</a>
