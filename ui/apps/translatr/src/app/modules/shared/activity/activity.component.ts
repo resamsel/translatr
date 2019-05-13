@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
-import { Aggregate } from "../../../../../../../libs/translatr-model/src/lib/model/aggregate";
-import { PagedList } from "../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import { HeatmapData } from "../frappe-chart/frappe-chart.component";
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {Aggregate, PagedList} from '@dev/translatr-model';
+import {HeatmapData} from '../frappe-chart/frappe-chart.component';
 
 interface DataPoint {
   name: string;

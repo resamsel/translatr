@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { PagedList } from "../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import { User } from "../../../../../../../libs/translatr-model/src/lib/model/user";
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {PagedList, User} from '@dev/translatr-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

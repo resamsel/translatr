@@ -1,9 +1,7 @@
-import { Injectable } from "@angular/core";
-
-import { select, Store } from "@ngrx/store";
-
-import { EditorPartialState } from "./editor.reducer";
-import { editorQuery } from "./editor.selectors";
+import {Injectable} from '@angular/core';
+import {select, Store} from '@ngrx/store';
+import {EditorPartialState} from './editor.reducer';
+import {editorQuery} from './editor.selectors';
 import {
   LoadKey,
   LoadKeysBy,
@@ -14,14 +12,10 @@ import {
   SelectKey,
   SelectLocale,
   UnloadEditor
-} from "./editor.actions";
-import { Observable, Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { Locale } from "../../../../../../../../libs/translatr-model/src/lib/model/locale";
-import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import { Message } from "../../../../../../../../libs/translatr-model/src/lib/model/message";
-import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
-import { RequestCriteria } from "../../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
+} from './editor.actions';
+import {Observable, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {Key, Locale, Message, PagedList, RequestCriteria} from '@dev/translatr-model';
 
 @Injectable()
 export class EditorFacade {

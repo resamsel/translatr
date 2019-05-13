@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { EditorFacade } from "./+state/editor.facade";
-import { ActivatedRoute, ParamMap, Params, Router } from "@angular/router";
-import { filter, take, takeUntil } from "rxjs/operators";
-import { Key, Locale, Message, PagedList, RequestCriteria } from "@dev/translatr-model";
-import { combineLatest } from "rxjs";
-import { AppFacade } from "../../../+state/app.facade";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {EditorFacade} from './+state/editor.facade';
+import {ActivatedRoute, ParamMap, Params, Router} from '@angular/router';
+import {filter, take, takeUntil} from 'rxjs/operators';
+import {Key, Locale, Message, PagedList, RequestCriteria} from '@dev/translatr-model';
+import {combineLatest} from 'rxjs';
+import {AppFacade} from '../../../+state/app.facade';
 
 @Component({
   selector: 'app-locale-editor-page',
@@ -48,7 +48,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
       });
     this.selectedMessage$.subscribe((message: Message) => {
       if (message === undefined) {
-        combineLatest(this.locale$, this.facade.keysLoading$)
+        combineLatest([this.locale$, this.facade.keysLoading$])
           .pipe(take(1), filter(([locale, loading]: [Locale, boolean]) => locale !== undefined && !loading))
           .subscribe(() => this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {key: null}}));
       }

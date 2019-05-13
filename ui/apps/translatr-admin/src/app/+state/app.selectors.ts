@@ -1,6 +1,6 @@
-import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { APP_FEATURE_KEY, AppState } from "./app.reducer";
-import { User } from "@dev/translatr-model";
+import {createFeatureSelector, createSelector} from '@ngrx/store';
+import {APP_FEATURE_KEY, AppState} from './app.reducer';
+import {User} from '@dev/translatr-model';
 
 // Lookup the 'Admin' feature state managed by NgRx
 const getAppState = createFeatureSelector<AppState>(APP_FEATURE_KEY);

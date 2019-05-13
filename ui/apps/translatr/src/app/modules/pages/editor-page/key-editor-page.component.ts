@@ -1,14 +1,10 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Message } from "../../../../../../../libs/translatr-model/src/lib/model/message";
-import { EditorFacade } from "./+state/editor.facade";
-import { ActivatedRoute, ParamMap, Params, Router } from "@angular/router";
-import { filter, take, takeUntil } from "rxjs/operators";
-import { combineLatest } from "rxjs";
-import { PagedList } from "../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import { Key } from "../../../../../../../libs/translatr-model/src/lib/model/key";
-import { Locale } from "../../../../../../../libs/translatr-model/src/lib/model/locale";
-import { RequestCriteria } from "../../../../../../../libs/translatr-model/src/lib/model/request-criteria";
-import { AppFacade } from "../../../+state/app.facade";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Key, Locale, Message, PagedList, RequestCriteria} from '@dev/translatr-model';
+import {EditorFacade} from './+state/editor.facade';
+import {ActivatedRoute, ParamMap, Params, Router} from '@angular/router';
+import {filter, take, takeUntil} from 'rxjs/operators';
+import {combineLatest} from 'rxjs';
+import {AppFacade} from '../../../+state/app.facade';
 
 @Component({
   selector: 'app-key-editor-page',
@@ -50,7 +46,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
       });
     this.selectedMessage$.subscribe((message: Message) => {
       if (message === undefined) {
-        combineLatest(this.key$, this.facade.localesLoading$)
+        combineLatest([this.key$, this.facade.localesLoading$])
           .pipe(take(1), filter(([key, loading]: [Key, boolean]) => key !== undefined && !loading))
           .subscribe(() => this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {locale: null}}));
       }

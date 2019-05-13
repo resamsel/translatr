@@ -1,22 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
-import { User } from "../../../../../../../libs/translatr-model/src/lib/model/user";
+import {ChangeDetectionStrategy, Component, HostBinding, Input} from '@angular/core';
+import {User} from '@dev/translatr-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'user-card',
   templateUrl: './user-card.component.html',
-  styleUrls: ['./user-card.component.scss'],
-  host: {
-    class: 'user-card'
-  }
+  styleUrls: ['./user-card.component.scss']
 })
-export class UserCardComponent implements OnInit {
-
+export class UserCardComponent {
   @Input() user: User;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  @HostBinding('class') clazz = 'user-card';
 }

@@ -1,7 +1,8 @@
-import { Action } from "@ngrx/store";
-import { PagedList, RequestCriteria, User } from "@dev/translatr-model";
+import {Action} from '@ngrx/store';
+import {PagedList, RequestCriteria, User} from '@dev/translatr-model';
 
 export interface UserCriteria extends RequestCriteria {
+  userId?: string;
 }
 
 export enum UsersActionTypes {

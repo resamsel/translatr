@@ -1,6 +1,6 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { NavbarComponent } from "./navbar.component";
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {NavbarComponent} from './navbar.component';
 import {
   MatButtonModule,
   MatDividerModule,
@@ -9,12 +9,12 @@ import {
   MatInputModule,
   MatMenuModule,
   MatToolbarModule
-} from "@angular/material";
-import { AuthBarItemComponent } from "./auth-bar-item/auth-bar-item.component";
-import { RouterModule } from "@angular/router";
-import { GravatarModule } from "ngx-gravatar";
-import { SearchBarComponent } from "./search-bar/search-bar.component";
-import { ReactiveFormsModule } from "@angular/forms";
+} from '@angular/material';
+import {AuthBarItemComponent} from './auth-bar-item/auth-bar-item.component';
+import {RouterModule} from '@angular/router';
+import {GravatarModule} from 'ngx-gravatar';
+import {SearchBarComponent} from './search-bar/search-bar.component';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [

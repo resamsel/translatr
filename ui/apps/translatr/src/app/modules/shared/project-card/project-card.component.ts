@@ -1,16 +1,13 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { Project } from "../../../../../../../libs/translatr-model/src/lib/model/project";
-import { firstChar } from "../../../../../../../libs/translatr-sdk/src/lib/shared/utils";
+import {Component, HostBinding, Input} from '@angular/core';
+import {Project} from '@dev/translatr-model';
+import {firstChar} from '@dev/translatr-sdk';
 
 @Component({
   selector: 'app-project-card',
   templateUrl: './project-card.component.html',
-  styleUrls: ['./project-card.component.scss'],
-  host: {
-    class: 'project-card'
-  }
+  styleUrls: ['./project-card.component.scss']
 })
-export class ProjectCardComponent implements OnInit {
+export class ProjectCardComponent {
 
   constructor() {
   }
@@ -19,6 +16,5 @@ export class ProjectCardComponent implements OnInit {
 
   firstChar = firstChar;
 
-  ngOnInit() {
-  }
+  @HostBinding('class') clazz = 'project-card';
 }

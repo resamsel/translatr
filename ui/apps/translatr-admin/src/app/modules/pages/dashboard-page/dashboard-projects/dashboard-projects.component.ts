@@ -61,7 +61,7 @@ export class DashboardProjectsComponent implements OnDestroy {
         data: {
           type: 'update',
           project,
-          onSubmit: (project: Project) => this.facade.updateProject(project),
+          onSubmit: (p: Project) => this.facade.updateProject(p),
           success$: this.facade.projectUpdated$,
           error$: this.facade.projectUpdateError$
         }

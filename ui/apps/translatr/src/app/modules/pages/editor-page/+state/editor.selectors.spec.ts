@@ -1,5 +1,5 @@
-import { Entity } from "./editor.reducer";
-import { editorQuery } from "./editor.selectors";
+import {Entity} from './editor.reducer';
+import {editorQuery} from './editor.selectors';
 
 describe('Editor Selectors', () => {
   const ERROR_MSG = 'No Error Available';

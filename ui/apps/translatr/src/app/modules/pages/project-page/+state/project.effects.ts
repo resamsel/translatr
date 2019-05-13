@@ -35,7 +35,7 @@ export class ProjectEffects {
         const payload = action.payload;
         return this.projectService
           .getProjectByOwnerAndName(payload.username, payload.projectName)
-          .pipe(map((payload: Project) => new ProjectLoaded(payload)));
+          .pipe(map((p: Project) => new ProjectLoaded(p)));
       },
 
       onError: (action: LoadProject, error) => {
@@ -78,7 +78,7 @@ export class ProjectEffects {
         const payload = action.payload;
         return this.activityService
           .aggregated({projectId: payload.id})
-          .pipe(map((payload: PagedList<Aggregate>) => new ProjectActivityAggregatedLoaded(payload)));
+          .pipe(map((p: PagedList<Aggregate>) => new ProjectActivityAggregatedLoaded(p)));
       },
 
       onError: (action: LoadProjectActivityAggregated, error) => {
@@ -95,7 +95,7 @@ export class ProjectEffects {
         const payload = action.payload;
         return this.activityService
           .activityList(payload)
-          .pipe(map((payload: PagedList<Activity>) => new ProjectActivitiesLoaded(payload)));
+          .pipe(map((p: PagedList<Activity>) => new ProjectActivitiesLoaded(p)));
       },
 
       onError: (action: LoadProjectActivities, error) => {

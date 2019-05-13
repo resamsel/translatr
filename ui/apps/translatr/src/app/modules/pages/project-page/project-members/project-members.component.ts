@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import { ProjectFacade } from "../+state/project.facade";
+import {Component, OnInit} from '@angular/core';
+import {ProjectFacade} from '../+state/project.facade';
 
 @Component({
   selector: 'app-project-members',

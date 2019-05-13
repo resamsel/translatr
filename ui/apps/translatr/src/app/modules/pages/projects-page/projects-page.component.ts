@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ProjectsFacade } from "./+state/projects.facade";
-import { AppFacade } from "../../../+state/app.facade";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ProjectsFacade} from './+state/projects.facade';
+import {AppFacade} from '../../../+state/app.facade';
 
 @Component({
   selector: 'app-projects-page',

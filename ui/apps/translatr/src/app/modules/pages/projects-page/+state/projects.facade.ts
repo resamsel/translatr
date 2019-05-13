@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { select, Store } from "@ngrx/store";
-import { ProjectsPartialState } from "./projects.reducer";
-import { projectsQuery } from "./projects.selectors";
-import { LoadProjects } from "./projects.actions";
-import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { ProjectCriteria } from "@dev/translatr-model";
+import {Injectable} from '@angular/core';
+import {select, Store} from '@ngrx/store';
+import {ProjectsPartialState} from './projects.reducer';
+import {projectsQuery} from './projects.selectors';
+import {LoadProjects} from './projects.actions';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {ProjectCriteria} from '@dev/translatr-model';
 
 @Injectable()
 export class ProjectsFacade {

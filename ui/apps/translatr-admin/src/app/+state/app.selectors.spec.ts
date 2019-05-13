@@ -1,5 +1,5 @@
-import { Entity } from "./app.reducer";
-import { appQuery } from "./app.selectors";
+import {Entity} from './app.reducer';
+import {appQuery} from './app.selectors';
 
 describe('Admin Selectors', () => {
   const ERROR_MSG = 'No Error Available';

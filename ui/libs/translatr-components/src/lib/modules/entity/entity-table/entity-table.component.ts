@@ -9,12 +9,12 @@ import {
   Output,
   QueryList,
   ViewChild
-} from "@angular/core";
-import { SelectionModel } from "@angular/cdk/collections";
-import { MatColumnDef, MatTable } from "@angular/material";
-import { PagedList, RequestCriteria } from "@dev/translatr-model";
-import { merge, Subject } from "rxjs";
-import { debounceTime, distinctUntilChanged, map, scan, shareReplay, take } from "rxjs/operators";
+} from '@angular/core';
+import {SelectionModel} from '@angular/cdk/collections';
+import {MatColumnDef, MatTable} from '@angular/material';
+import {PagedList, RequestCriteria} from '@dev/translatr-model';
+import {merge, Subject} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, scan, shareReplay, take} from 'rxjs/operators';
 
 export interface Entity {
   id: string | number;
@@ -109,7 +109,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.list.length;
-    return numSelected == numRows;
+    return numSelected === numRows;
   }
 
   /**

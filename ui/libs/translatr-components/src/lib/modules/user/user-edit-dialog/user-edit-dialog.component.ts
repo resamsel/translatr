@@ -1,9 +1,9 @@
-import { Component, Inject } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
-import { ConstraintViolation, ConstraintViolationErrorInfo, ErrorAction, User, UserRole } from "@dev/translatr-model";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Observable } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {ConstraintViolation, ConstraintViolationErrorInfo, ErrorAction, User, UserRole} from '@dev/translatr-model';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Observable} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 export interface UserEditDialogConfig {
   type: 'create' | 'update';

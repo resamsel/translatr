@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { Actions, Effect } from "@ngrx/effects";
-import { DataPersistence } from "@nrwl/nx";
-import { ProjectsPartialState } from "./projects.reducer";
-import { LoadProjects, ProjectsActionTypes, ProjectsLoaded, ProjectsLoadError } from "./projects.actions";
-import { ProjectService } from "@dev/translatr-sdk";
-import { map } from "rxjs/operators";
-import { PagedList, Project } from "@dev/translatr-model";
+import {Injectable} from '@angular/core';
+import {Actions, Effect} from '@ngrx/effects';
+import {DataPersistence} from '@nrwl/nx';
+import {ProjectsPartialState} from './projects.reducer';
+import {LoadProjects, ProjectsActionTypes, ProjectsLoaded, ProjectsLoadError} from './projects.actions';
+import {ProjectService} from '@dev/translatr-sdk';
+import {map} from 'rxjs/operators';
+import {PagedList, Project} from '@dev/translatr-model';
 
 @Injectable()
 export class ProjectsEffects {

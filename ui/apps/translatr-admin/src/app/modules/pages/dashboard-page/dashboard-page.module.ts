@@ -34,7 +34,14 @@ import {GravatarModule} from 'ngx-gravatar';
 import {DashboardUserComponent} from './dashboard-user/dashboard-user.component';
 
 @NgModule({
-  declarations: [DashboardPageComponent, DashboardUsersComponent, DashboardInfoComponent, DashboardProjectsComponent, DashboardAccessTokensComponent, DashboardUserComponent],
+  declarations: [
+    DashboardPageComponent,
+    DashboardUsersComponent,
+    DashboardInfoComponent,
+    DashboardProjectsComponent,
+    DashboardAccessTokensComponent,
+    DashboardUserComponent
+  ],
   imports: [
     CommonModule,
     DashboardPageRoutingModule,

@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { PagedList, User } from "@dev/translatr-model";
-import { Observable } from "rxjs";
-import { UsersFacade } from "./+state/users.facade";
-import { AppFacade } from "../../../+state/app.facade";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {PagedList, User} from '@dev/translatr-model';
+import {Observable} from 'rxjs';
+import {UsersFacade} from './+state/users.facade';
+import {AppFacade} from '../../../+state/app.facade';
 
 @Component({
   selector: 'app-projects-page',

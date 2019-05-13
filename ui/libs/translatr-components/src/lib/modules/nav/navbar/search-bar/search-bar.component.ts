@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { RequestCriteria } from "../../../../../../../translatr-model/src/lib/model/request-criteria";
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {RequestCriteria} from '@dev/translatr-model';
 
 @Component({
   selector: 'app-search-bar',

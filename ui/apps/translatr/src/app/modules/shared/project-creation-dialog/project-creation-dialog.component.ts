@@ -1,8 +1,8 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from "@angular/core";
-import { FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
-import { MatDialogRef, MatSnackBar } from "@angular/material";
-import { ProjectService } from "../../../../../../../libs/translatr-sdk/src/lib/services/project.service";
-import { Project } from "../../../../../../../libs/translatr-model/src/lib/model/project";
+import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms';
+import {MatDialogRef, MatSnackBar} from '@angular/material';
+import {ProjectService} from '@dev/translatr-sdk';
+import {Project} from '@dev/translatr-model';
 
 const ENTER_KEYCODE = 'Enter';
 
@@ -37,6 +37,7 @@ export class ProjectCreationDialogComponent implements OnInit {
     private readonly dialogRef: MatDialogRef<ProjectCreationDialogComponent>
   ) {
   }
+
   @ViewChild('name') nameField: ElementRef;
 
   form = new FormGroup({

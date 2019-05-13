@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from "@angular/core";
-import { PagedList } from "../../../../../../../libs/translatr-model/src/lib/model/paged-list";
+import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
+import {PagedList} from '@dev/translatr-model';
 
 @Component({
   selector: 'app-nav-list',

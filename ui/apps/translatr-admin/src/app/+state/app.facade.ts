@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { select, Store } from "@ngrx/store";
-import { AppPartialState } from "./app.reducer";
-import { appQuery } from "./app.selectors";
+import {Injectable} from '@angular/core';
+import {select, Store} from '@ngrx/store';
+import {AppPartialState} from './app.reducer';
+import {appQuery} from './app.selectors';
 import {
   AppActionTypes,
   CreateUser,
@@ -18,11 +18,11 @@ import {
   LoadUsers,
   UpdateProject,
   UpdateUser
-} from "./app.actions";
-import { AccessToken, Project, ProjectCriteria, RequestCriteria, User } from "@dev/translatr-model";
-import { Actions, ofType } from "@ngrx/effects";
-import { Observable, Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+} from './app.actions';
+import {AccessToken, Project, ProjectCriteria, RequestCriteria, User} from '@dev/translatr-model';
+import {Actions, ofType} from '@ngrx/effects';
+import {Observable, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 @Injectable()
 export class AppFacade {

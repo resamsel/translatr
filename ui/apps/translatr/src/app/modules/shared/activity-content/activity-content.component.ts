@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
-import { Activity, Key, Locale, Message, Project } from "@dev/translatr-model";
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {Activity, Key, Locale, Message, Project} from '@dev/translatr-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

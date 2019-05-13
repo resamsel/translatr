@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { HttpClient } from "@angular/common/http";
-import { map } from "rxjs/operators";
-import { Activity, Aggregate, PagedList } from "@dev/translatr-model";
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {map} from 'rxjs/operators';
+import {Activity, Aggregate, PagedList} from '@dev/translatr-model';
 
 export interface ActivityCriteria {
   userId?: string;

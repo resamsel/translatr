@@ -1,12 +1,12 @@
-import { AccessToken, PagedList, RequestCriteria, User, UserRole } from "@dev/translatr-model";
-import { Observable, of, throwError } from "rxjs";
-import { catchError, concatMap, filter, map } from "rxjs/operators";
-import { HttpErrorResponse } from "@angular/common/http";
-import * as randomName from "random-name";
-import { State } from "./state";
-import { cartesianProduct, pickRandomly } from "@translatr/utils";
-import { AccessTokenService, errorMessage, UserService } from "@dev/translatr-sdk";
-import { Injector } from "@angular/core";
+import {AccessToken, PagedList, RequestCriteria, User, UserRole} from '@dev/translatr-model';
+import {Observable, of, throwError} from 'rxjs';
+import {catchError, concatMap, filter, map} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
+import * as randomName from 'random-name';
+import {State} from './state';
+import {cartesianProduct, pickRandomly} from '@translatr/utils';
+import {AccessTokenService, errorMessage, UserService} from '@dev/translatr-sdk';
+import {Injector} from '@angular/core';
 
 const scope = cartesianProduct([
   ['read', 'write'],

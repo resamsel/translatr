@@ -1,10 +1,8 @@
-import { Component, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
-import { PagedList } from "../../../../../../../../libs/translatr-model/src/lib/model/paged-list";
-import { ActivatedRoute } from "@angular/router";
-import { User } from "../../../../../../../../libs/translatr-model/src/lib/model/user";
-import { ActivityCriteria, ActivityService } from "../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service";
-import { Activity } from "../../../../../../../../libs/translatr-model/src/lib/model/activity";
+import {Component, OnInit} from '@angular/core';
+import {Observable} from 'rxjs';
+import {Activity, PagedList, User} from '@dev/translatr-model';
+import {ActivatedRoute} from '@angular/router';
+import {ActivityCriteria, ActivityService} from '@dev/translatr-sdk';
 
 @Component({
   selector: 'app-user-activity',

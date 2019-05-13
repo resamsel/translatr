@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { MatDrawer } from "@angular/material";
-import { User } from "@dev/translatr-model";
+import {Component, Input, OnInit} from '@angular/core';
+import {MatDrawer} from '@angular/material';
+import {User} from '@dev/translatr-model';
 
 @Component({
   selector: 'app-navbar',

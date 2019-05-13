@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
-import { ProjectFacade } from "../+state/project.facade";
-import { take, tap } from "rxjs/operators";
-import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
-import { Key } from "../../../../../../../../libs/translatr-model/src/lib/model/key";
-import { MatSnackBar } from "@angular/material";
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ProjectFacade} from '../+state/project.facade';
+import {take, tap} from 'rxjs/operators';
+import {Key, Project} from '@dev/translatr-model';
+import {MatSnackBar} from '@angular/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

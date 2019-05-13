@@ -1,16 +1,16 @@
-import { Injector } from '@angular/core';
-import { combineLatest, Observable, of } from 'rxjs';
-import { State } from './state';
-import { getRandomUserAccessToken } from './user';
-import { AccessToken, Key, Locale, Message, PagedList, Project, User, UserRole } from '@dev/translatr-model';
-import { catchError, concatMap, filter, map, mapTo } from 'rxjs/operators';
+import {Injector} from '@angular/core';
+import {combineLatest, Observable, of} from 'rxjs';
+import {State} from './state';
+import {getRandomUserAccessToken} from './user';
+import {AccessToken, Key, Locale, Message, PagedList, Project, User, UserRole} from '@dev/translatr-model';
+import {catchError, concatMap, filter, map, mapTo} from 'rxjs/operators';
 import * as randomName from 'random-name';
-import { HttpErrorResponse } from '@angular/common/http';
-import { errorMessage, MessageService, ProjectService } from '@dev/translatr-sdk';
-import { pickRandomly } from '@translatr/utils';
+import {HttpErrorResponse} from '@angular/common/http';
+import {errorMessage, MessageService, ProjectService} from '@dev/translatr-sdk';
+import {pickRandomly} from '@translatr/utils';
 import * as _ from 'underscore';
-import { createLocale, localeNames } from '@translatr/generator';
-import { createKey, keyNames } from '@translatr/generator/src/lib/key';
+import {createLocale, localeNames} from '@translatr/generator';
+import {createKey, keyNames} from '@translatr/generator/src/lib/key';
 
 const createProject = (project: Project, accessToken: AccessToken, projectService: ProjectService): Observable<Project> => {
   return projectService.create(project, {params: {access_token: accessToken.key}});
@@ -78,7 +78,10 @@ export const createRandomProject = (injector: Injector): Observable<Partial<Stat
           .pipe(mapTo(payload));
       }),
       map((payload: { user: User; project: Project; locales: Locale[]; keys: Key[] }) =>
-        ({message: `${payload.user.name} created project ${payload.project.name} with ${payload.locales.length} languages and ${payload.keys.length} keys`})),
+        ({
+          message: `${payload.user.name} created project ${payload.project.name} with \
+        ${payload.locales.length} languages and ${payload.keys.length} keys`
+        })),
       catchError((err: HttpErrorResponse) => of({message: errorMessage(err)}))
     );
 };
@@ -107,7 +110,7 @@ export const updateRandomProject = (injector: Injector): Observable<Partial<Stat
           description: 'Generated'
         };
         return createProject(project, payload.accessToken, projectService)
-          .pipe(map((project: Project) => ({...payload, project})));
+          .pipe(map((p: Project) => ({...payload, project: p})));
       }),
       concatMap((payload: { user: User; project: Project; accessToken: AccessToken }) => {
         return projectService.update(

@@ -1,5 +1,5 @@
-import { AccessToken, Project, User, UserRole } from "@dev/translatr-model";
-import { map } from "rxjs/operators";
+import {AccessToken, Project, User, UserRole} from '@dev/translatr-model';
+import {map} from 'rxjs/operators';
 
 // General
 

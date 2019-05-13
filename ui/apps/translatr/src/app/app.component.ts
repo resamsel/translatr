@@ -1,5 +1,5 @@
-import { Component } from "@angular/core";
-import { AppFacade } from "./+state/app.facade";
+import {Component} from '@angular/core';
+import {AppFacade} from './+state/app.facade';
 
 @Component({
   selector: 'app-root',

@@ -1,8 +1,8 @@
-import { Component, OnInit } from "@angular/core";
-import { Project } from "../../../../../../../../libs/translatr-model/src/lib/model/project";
-import { ActivityCriteria } from "../../../../../../../../libs/translatr-sdk/src/lib/services/activity.service";
-import { ProjectFacade } from "../+state/project.facade";
-import { filter } from "rxjs/operators";
+import {Component, OnInit} from '@angular/core';
+import {Project} from '@dev/translatr-model';
+import {ActivityCriteria} from '@dev/translatr-sdk';
+import {ProjectFacade} from '../+state/project.facade';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-activity',

@@ -1,8 +1,8 @@
-import { AfterViewChecked, ChangeDetectionStrategy, Component, HostListener, Input, OnInit, ViewChild } from "@angular/core";
-import { Message, User } from "@dev/translatr-model";
-import { EditorFacade } from "../+state/editor.facade";
-import { MatTabGroup } from "@angular/material";
-import { CodemirrorComponent } from "@ctrl/ngx-codemirror";
+import {AfterViewChecked, ChangeDetectionStrategy, Component, HostListener, Input, OnInit, ViewChild} from '@angular/core';
+import {Message, User} from '@dev/translatr-model';
+import {EditorFacade} from '../+state/editor.facade';
+import {MatTabGroup} from '@angular/material';
+import {CodemirrorComponent} from '@ctrl/ngx-codemirror';
 
 @Component({
   selector: 'app-editor',

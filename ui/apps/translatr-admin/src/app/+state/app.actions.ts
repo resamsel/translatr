@@ -1,14 +1,6 @@
-import { Action } from "@ngrx/store";
-import {
-  AccessToken,
-  ConstraintViolationErrorInfo,
-  PagedList,
-  Project,
-  ProjectCriteria,
-  RequestCriteria,
-  User
-} from "@dev/translatr-model";
-import { HttpErrorResponse } from "@angular/common/http";
+import {Action} from '@ngrx/store';
+import {AccessToken, ConstraintViolationErrorInfo, PagedList, Project, ProjectCriteria, RequestCriteria, User} from '@dev/translatr-model';
+import {HttpErrorResponse} from '@angular/common/http';
 
 export enum AppActionTypes {
   // Users

@@ -1,5 +1,5 @@
-import { AppAction, AppActionTypes } from "./app.actions";
-import { User } from "@dev/translatr-model";
+import {AppAction, AppActionTypes} from './app.actions';
+import {User} from '@dev/translatr-model';
 
 export const APP_FEATURE_KEY = 'app';
 

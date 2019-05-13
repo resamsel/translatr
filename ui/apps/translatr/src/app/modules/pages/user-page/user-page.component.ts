@@ -1,11 +1,11 @@
-import { Component, Inject, Injector, OnInit } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Route } from "@angular/router";
-import { User } from "@dev/translatr-model";
-import { NameIconRoute } from "@translatr/utils";
-import { USER_ROUTES } from "./user-page.token";
-import { AppFacade } from "../../../+state/app.facade";
-import { combineLatest, Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
+import {Component, Inject, Injector, OnInit} from '@angular/core';
+import {ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Route} from '@angular/router';
+import {User} from '@dev/translatr-model';
+import {NameIconRoute} from '@translatr/utils';
+import {USER_ROUTES} from './user-page.token';
+import {AppFacade} from '../../../+state/app.facade';
+import {combineLatest, Observable, of} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 class DummyRoute extends ActivatedRouteSnapshot {
   constructor(public readonly routeConfig: any) {

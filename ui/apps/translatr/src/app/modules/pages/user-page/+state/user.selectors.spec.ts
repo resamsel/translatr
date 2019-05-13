@@ -1,5 +1,5 @@
-import { Entity } from "./user.reducer";
-import { userQuery } from "./user.selectors";
+import {Entity} from './user.reducer';
+import {userQuery} from './user.selectors';
 
 describe('User Selectors', () => {
   const ERROR_MSG = 'No Error Available';

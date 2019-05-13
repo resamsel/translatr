@@ -19,8 +19,6 @@ export const pickRandomly = <T>(options: Array<T>): T => {
  *   ]
  * @see https://stackoverflow.com/a/36234242/1955709
  * @see https://en.wikipedia.org/wiki/Cartesian_product
- * @param arr {T[][]}
- * @returns {T[][]}
  */
 export function cartesianProduct<T> (arr: T[][]): T[][] {
   return arr.reduce((a, b) => {

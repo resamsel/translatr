@@ -1,12 +1,11 @@
-import { Action } from "@ngrx/store";
-import { MatSnackBar } from "@angular/material";
-import { Observable } from "rxjs";
-import { AppActionTypes } from "../../../../../../apps/translatr-admin/src/app/+state/app.actions";
+import {Action} from '@ngrx/store';
+import {MatSnackBar} from '@angular/material';
+import {Observable} from 'rxjs';
 
 export const notifyEvent = <O extends Action, E extends Action>(
   snackBar: MatSnackBar,
   observable: Observable<O | E>,
-  okType: AppActionTypes,
+  okType: string,
   okMessage: (action: O) => string,
   errorMessage: (action: E) => string
 ) => {

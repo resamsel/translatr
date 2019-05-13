@@ -1,5 +1,5 @@
-import { Entity } from "./project.reducer";
-import { projectQuery } from "./project.selectors";
+import {Entity} from './project.reducer';
+import {projectQuery} from './project.selectors';
 
 describe('Project Selectors', () => {
   const ERROR_MSG = 'No Error Available';

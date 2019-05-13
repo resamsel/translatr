@@ -30,7 +30,9 @@
       "tags": ["lib"]
     },
     "generator": {
-      "tags": []
+      "tags": [
+        "lib"
+      ]
     },
     "utils": {
       "tags": ["utils"]

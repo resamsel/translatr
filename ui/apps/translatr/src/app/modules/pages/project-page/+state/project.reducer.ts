@@ -1,5 +1,5 @@
-import { ProjectAction, ProjectActionTypes } from "./project.actions";
-import { Activity, Aggregate, Key, Locale, PagedList, Project, RequestCriteria } from "@dev/translatr-model";
+import {ProjectAction, ProjectActionTypes} from './project.actions';
+import {Activity, Aggregate, Key, Locale, PagedList, Project, RequestCriteria} from '@dev/translatr-model';
 
 export const PROJECT_FEATURE_KEY = 'project';
 

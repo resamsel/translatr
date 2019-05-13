@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { convertTemporals, convertTemporalsList } from '../shared';
-import { combineLatest, Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { PagedList, RequestCriteria } from '@dev/translatr-model';
+import {HttpClient} from '@angular/common/http';
+import {convertTemporals, convertTemporalsList} from '../shared';
+import {combineLatest, Observable, throwError} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
+import {PagedList, RequestCriteria} from '@dev/translatr-model';
 
 export interface RequestOptions {
   params: {
@@ -84,7 +84,7 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
   }
 
   deleteAll(ids: (string | number)[]): Observable<DTO[]> {
-    return combineLatest(...ids.map((id: string | number) => this.delete(id)));
+    return combineLatest(ids.map((id: string | number) => this.delete(id)));
   }
 }
 

@@ -1,5 +1,5 @@
-import { Component, Input } from "@angular/core";
-import { Heatmap } from "frappe-charts/dist/frappe-charts.min.esm";
+import {Component, HostBinding, Input} from '@angular/core';
+import {Heatmap} from 'frappe-charts/dist/frappe-charts.min.esm';
 
 export interface HeatmapData {
   dataPoints: { [key: string]: number };
@@ -10,10 +10,7 @@ export interface HeatmapData {
 @Component({
   selector: 'app-frappe-chart',
   template: '<div id="chart"></div>',
-  styleUrls: ['./frappe-chart.component.scss'],
-  host: {
-    class: 'app-frappe-chart'
-  }
+  styleUrls: ['./frappe-chart.component.scss']
 })
 export class FrappeChartComponent {
 
@@ -41,4 +38,6 @@ export class FrappeChartComponent {
   }
 
   private chart: Heatmap;
+
+  @HostBinding('class') clazz = 'app-frappe-chart';
 }
