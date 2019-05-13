@@ -1,19 +1,24 @@
 <div class="container flex" *ngIf="project$ | async as project">
-  <div class="info">
-    <p i18n="@@temporal.info">
-      Created: {{project?.whenCreated | amTimeAgo}},
-      updated: {{project?.whenUpdated | amTimeAgo}}
-    </p>
-    <mat-chip-list>
-      <mat-chip i18n="@@members.summary">{{project?.members?.length}} members</mat-chip>
-      <mat-chip *ngFor="let member of project?.members">{{member.userName}} ({{member.role}})</mat-chip>
-    </mat-chip-list>
-  </div>
+  <mat-card class="info">
+    <mat-card-title>{{project?.name}}</mat-card-title>
+    <mat-card-content>
+      <p i18n="@@temporal.info">
+        Created: {{project?.whenCreated | amTimeAgo}},
+        updated: {{project?.whenUpdated | amTimeAgo}}
+      </p>
+      <mat-chip-list>
+        <mat-chip i18n="@@members.summary">{{project?.members?.length}} members</mat-chip>
+        <mat-chip *ngFor="let member of project?.members">{{member.userName}} ({{member.role}})</mat-chip>
+      </mat-chip-list>
+    </mat-card-content>
+  </mat-card>
 
-  <div>
-    <h2 i18n="@@activity">Activity</h2>
-    <app-activity [activity]="activity$ | async"></app-activity>
-  </div>
+  <mat-card class="activity">
+    <mat-card-title i18n="@@activity">Activity</mat-card-title>
+    <mat-card-content>
+      <app-activity [activity]="activity$ | async"></app-activity>
+    </mat-card-content>
+  </mat-card>
 
   <mat-card class="small locales">
     <div mat-card-image></div>
