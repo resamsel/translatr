@@ -7,28 +7,46 @@ import * as dateformat from 'dateformat';
 export class Generator {
   readonly stateCommand$ = new Subject<Partial<State>>();
   readonly state$: Observable<State> = this.stateCommand$.asObservable().pipe(
-    startWith({config: this.config}),
-    scan((acc: State, next: State) => ({...acc, ...next}))
+    startWith({ config: this.config }),
+    scan((acc: State, next: State) => ({ ...acc, ...next }))
   );
 
   readonly commands$: Observable<Command> = merge(
-    of({type: Action.ShowConfig}),
+    of({ type: Action.ShowConfig }),
 
-    interval(this.intervals.me / this.intervals.stressFactor).pipe(mapTo({type: Action.Me})),
-    interval(this.intervals.createUser / this.intervals.stressFactor).pipe(mapTo({type: Action.CreateRandomUser})),
-    interval(this.intervals.updateUser / this.intervals.stressFactor).pipe(mapTo({type: Action.UpdateRandomUser})),
-    interval(this.intervals.deleteUser / this.intervals.stressFactor).pipe(mapTo({type: Action.DeleteRandomUser})),
+    interval(this.intervals.me / this.intervals.stressFactor).pipe(
+      mapTo({ type: Action.Me })
+    ),
+    interval(this.intervals.createUser / this.intervals.stressFactor).pipe(
+      mapTo({ type: Action.CreateRandomUser })
+    ),
+    interval(this.intervals.updateUser / this.intervals.stressFactor).pipe(
+      mapTo({ type: Action.UpdateRandomUser })
+    ),
+    interval(this.intervals.deleteUser / this.intervals.stressFactor).pipe(
+      mapTo({ type: Action.DeleteRandomUser })
+    ),
 
     // TODO: add 1+ contributors
-    interval(this.intervals.createProject / this.intervals.stressFactor).pipe(mapTo({type: Action.CreateRandomProject})),
-    interval(this.intervals.updateProject / this.intervals.stressFactor).pipe(mapTo({type: Action.UpdateRandomProject})),
-    interval(this.intervals.deleteProject / this.intervals.stressFactor).pipe(mapTo({type: Action.DeleteRandomProject})),
+    interval(this.intervals.createProject / this.intervals.stressFactor).pipe(
+      mapTo({ type: Action.CreateRandomProject })
+    ),
+    interval(this.intervals.updateProject / this.intervals.stressFactor).pipe(
+      mapTo({ type: Action.UpdateRandomProject })
+    ),
+    interval(this.intervals.deleteProject / this.intervals.stressFactor).pipe(
+      mapTo({ type: Action.DeleteRandomProject })
+    ),
 
     // TODO
     // create locale every hour
-    interval(this.intervals.createLocale / this.intervals.stressFactor).pipe(mapTo({type: Action.CreateRandomLocale})),
+    interval(this.intervals.createLocale / this.intervals.stressFactor).pipe(
+      mapTo({ type: Action.CreateRandomLocale })
+    ),
     // delete locale every two hours
-    interval(this.intervals.deleteLocale / this.intervals.stressFactor).pipe(mapTo({type: Action.DeleteRandomLocale})),
+    interval(this.intervals.deleteLocale / this.intervals.stressFactor).pipe(
+      mapTo({ type: Action.DeleteRandomLocale })
+    )
 
     // TODO
     // create key every minute
@@ -47,19 +65,31 @@ export class Generator {
     return this.config.intervals;
   }
 
-  constructor(public readonly config: GeneratorConfig) {
-  }
+  constructor(public readonly config: GeneratorConfig) {}
 
   execute() {
-    const injector: Injector = createInjector(this.config.baseUrl, this.config.accessToken);
-
-    this.commands$.pipe(
-      withLatestFrom(this.state$),
-      handleCommand(injector),
-//  tap((state: State) => stateCommand$.next(state))
-    ).subscribe(
-      (state: State) => console.log(`${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message}`),
-      (state: State) => console.error(`${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message} (state: ${state})`)
+    const injector: Injector = createInjector(
+      this.config.baseUrl,
+      this.config.accessToken
     );
+
+    this.commands$
+      .pipe(
+        withLatestFrom(this.state$),
+        handleCommand(injector)
+        //  tap((state: State) => stateCommand$.next(state))
+      )
+      .subscribe(
+        (state: State) =>
+          console.log(
+            `${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message}`
+          ),
+        (state: State) =>
+          console.error(
+            `${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${
+              state.message
+            } (state: ${state})`
+          )
+      );
   }
 }

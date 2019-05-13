@@ -8,9 +8,8 @@ describe('UserActivityComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserActivityComponent ]
-    })
-    .compileComponents();
+      declarations: [UserActivityComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

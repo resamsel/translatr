@@ -1,5 +1,5 @@
-import {AppAction, AppActionTypes} from './app.actions';
-import {User} from '@dev/translatr-model';
+import { AppAction, AppActionTypes } from './app.actions';
+import { User } from '@dev/translatr-model';
 
 export const APP_FEATURE_KEY = 'app';
 
@@ -29,7 +29,7 @@ export function appReducer(
     case AppActionTypes.MeLoaded: {
       return {
         ...state,
-        me: action.payload,
+        me: action.payload
       };
     }
     default:

@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {ProjectFacade} from '../+state/project.facade';
+import { Component, OnInit } from '@angular/core';
+import { ProjectFacade } from '../+state/project.facade';
 
 @Component({
   selector: 'app-project-members',
@@ -7,12 +7,9 @@ import {ProjectFacade} from '../+state/project.facade';
   styleUrls: ['./project-members.component.scss']
 })
 export class ProjectMembersComponent implements OnInit {
-
   project$ = this.facade.project$;
 
-  constructor(private readonly facade: ProjectFacade) {
-  }
+  constructor(private readonly facade: ProjectFacade) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

@@ -5,12 +5,16 @@
   name="Language Editor"
   i18n-name="@@locale.editor"
   [message]="selectedMessage$ | async"
-  [messages]="messagesOfKey(keys$ | async, selectedKey$ | async)">
-  <app-search-bar [criteria]="search$ | async" (search)="onSearch($event)"></app-search-bar>
+  [messages]="messagesOfKey(keys$ | async, selectedKey$ | async)"
+>
+  <app-search-bar
+    [criteria]="search$ | async"
+    (search)="onSearch($event)"
+  ></app-search-bar>
 
   <app-editor-selector>
     <button mat-button [matMenuTriggerFor]="localeSelector">
-      {{(locale$ | async)?.displayName}}
+      {{ (locale$ | async)?.displayName }}
       <mat-icon [inline]="true">arrow_drop_down</mat-icon>
     </button>
     <mat-menu #localeSelector="matMenu" [overlapTrigger]="true">
@@ -18,15 +22,21 @@
         mat-menu-item
         *ngFor="let locale of (locales$ | async)?.list"
         [routerLink]="['..', locale.name]"
-        queryParamsHandling="preserve">{{locale.displayName}}</a>
+        queryParamsHandling="preserve"
+        >{{ locale.displayName }}</a
+      >
     </mat-menu>
     <div class="flex-spacer"></div>
     <a
       mat-icon-button
       *ngIf="selectedKey$ | async; else disabledLink"
-      [routerLink]="['../..', 'keys', (selectedKey$ | async)]"
-      [queryParams]="{locale: (locale$ | async)?.name, search: (locale$ | async)?.name}"
-      [disabled]="!(selectedKey$ | async)">
+      [routerLink]="['../..', 'keys', selectedKey$ | async]"
+      [queryParams]="{
+        locale: (locale$ | async)?.name,
+        search: (locale$ | async)?.name
+      }"
+      [disabled]="!(selectedKey$ | async)"
+    >
       <mat-icon>compare_arrows</mat-icon>
     </a>
     <ng-template #disabledLink>
@@ -41,16 +51,20 @@
     [template]="template"
     [showLoadingAvatar]="false"
     [loadingListLength]="10"
-    (more)="onLoadMore($event)">
+    (more)="onLoadMore($event)"
+  >
     <ng-template #template let-key>
       <a
         mat-list-item
         [routerLink]="[]"
-        [queryParams]="{key: key.name}"
+        [queryParams]="{ key: key.name }"
         queryParamsHandling="merge"
-        [class.active]="(selectedMessage$ | async)?.keyName === key.name">
-        <h3 matLine>{{key.name}}</h3>
-        <p matLine class="translation">{{key.messages[(locale$ | async)?.name]?.value}}</p>
+        [class.active]="(selectedMessage$ | async)?.keyName === key.name"
+      >
+        <h3 matLine>{{ key.name }}</h3>
+        <p matLine class="translation">
+          {{ key.messages[((locale$ | async)?.name)]?.value }}
+        </p>
       </a>
     </ng-template>
   </app-nav-list>

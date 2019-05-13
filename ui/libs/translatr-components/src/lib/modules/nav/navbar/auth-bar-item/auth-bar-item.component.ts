@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {User} from '@dev/translatr-model';
+import { Component, Input } from '@angular/core';
+import { User } from '@dev/translatr-model';
 
 @Component({
   selector: 'app-auth-bar-item',

@@ -1,22 +1,11 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {HttpClientModule} from '@angular/common/http';
-import {
-  AccessTokenService,
-  ActivityService,
-  KeyService,
-  LocaleService,
-  MessageService,
-  ProjectService,
-  UserService
-} from './services';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { AccessTokenService, ActivityService, KeyService, LocaleService, MessageService, ProjectService, UserService } from './services';
 
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    HttpClientModule
-  ],
+  imports: [CommonModule, HttpClientModule],
   providers: [
     AccessTokenService,
     ActivityService,
@@ -27,5 +16,4 @@ import {
     UserService
   ]
 })
-export class TranslatrSdkModule {
-}
+export class TranslatrSdkModule {}

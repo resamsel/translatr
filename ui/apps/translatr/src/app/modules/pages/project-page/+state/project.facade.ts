@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import {select, Store} from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 
-import {ProjectPartialState} from './project.reducer';
-import {projectQuery} from './project.selectors';
+import { ProjectPartialState } from './project.reducer';
+import { projectQuery } from './project.selectors';
 import {
   LoadKeys,
   LoadLocales,
@@ -13,44 +13,57 @@ import {
   SaveProject,
   UnloadProject
 } from './project.actions';
-import {ActivityCriteria} from '@dev/translatr-sdk';
-import {Observable, Subject} from 'rxjs';
-import {Project, RequestCriteria} from '@dev/translatr-model';
-import {takeUntil} from 'rxjs/operators';
+import { ActivityCriteria } from '@dev/translatr-sdk';
+import { Observable, Subject } from 'rxjs';
+import { Project, RequestCriteria } from '@dev/translatr-model';
+import { takeUntil } from 'rxjs/operators';
 
 @Injectable()
 export class ProjectFacade {
-
   private _unload$ = new Subject<void>();
 
   get unload$(): Observable<void> {
     return this._unload$.asObservable();
   }
 
-  project$ = this.store.pipe(takeUntil(this.unload$), select(projectQuery.getProject));
-  locales$ = this.store.pipe(takeUntil(this.unload$), select(projectQuery.getLocales));
-  keys$ = this.store.pipe(takeUntil(this.unload$), select(projectQuery.getKeys));
+  project$ = this.store.pipe(
+    takeUntil(this.unload$),
+    select(projectQuery.getProject)
+  );
+  locales$ = this.store.pipe(
+    takeUntil(this.unload$),
+    select(projectQuery.getLocales)
+  );
+  keys$ = this.store.pipe(
+    takeUntil(this.unload$),
+    select(projectQuery.getKeys)
+  );
 
-  activityAggregated$ = this.store.pipe(takeUntil(this.unload$), select(projectQuery.getActivityAggregated));
-  activities$ = this.store.pipe(takeUntil(this.unload$), select(projectQuery.getActivities));
+  activityAggregated$ = this.store.pipe(
+    takeUntil(this.unload$),
+    select(projectQuery.getActivityAggregated)
+  );
+  activities$ = this.store.pipe(
+    takeUntil(this.unload$),
+    select(projectQuery.getActivities)
+  );
 
-  constructor(private store: Store<ProjectPartialState>) {
-  }
+  constructor(private store: Store<ProjectPartialState>) {}
 
   loadProject(username: string, projectName: string) {
-    this.store.dispatch(new LoadProject({username, projectName}));
+    this.store.dispatch(new LoadProject({ username, projectName }));
   }
 
   loadLocales(projectId: string, criteria?: RequestCriteria) {
-    this.store.dispatch(new LoadLocales({...criteria, projectId}));
+    this.store.dispatch(new LoadLocales({ ...criteria, projectId }));
   }
 
   loadKeys(projectId: string, criteria?: RequestCriteria) {
-    this.store.dispatch(new LoadKeys({...criteria, projectId}));
+    this.store.dispatch(new LoadKeys({ ...criteria, projectId }));
   }
 
   loadActivityAggregated(projectId: string) {
-    this.store.dispatch(new LoadProjectActivityAggregated({id: projectId}));
+    this.store.dispatch(new LoadProjectActivityAggregated({ id: projectId }));
   }
 
   loadActivities(criteria: ActivityCriteria) {
@@ -63,9 +76,11 @@ export class ProjectFacade {
   }
 
   save(project: Project) {
-    this.store.dispatch(new SaveProject({
-      id: project.id,
-      name: project.name
-    }));
+    this.store.dispatch(
+      new SaveProject({
+        id: project.id,
+        name: project.name
+      })
+    );
   }
 }

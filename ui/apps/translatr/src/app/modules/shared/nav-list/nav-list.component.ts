@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
-import {PagedList} from '@dev/translatr-model';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { PagedList } from '@dev/translatr-model';
 
 @Component({
   selector: 'app-nav-list',
@@ -7,7 +7,6 @@ import {PagedList} from '@dev/translatr-model';
   styleUrls: ['./nav-list.component.scss']
 })
 export class NavListComponent implements OnInit {
-
   @Input() pagedList: PagedList<{ id: string }> | undefined;
   @Input() loadingListLength = 5;
   @Input() showLoadingAvatar = true;
@@ -15,18 +14,18 @@ export class NavListComponent implements OnInit {
 
   @Output() more = new EventEmitter<number>();
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   trackByFn(index: number, item: { id: string }): string {
     return item.id;
   }
 
   get loadingList(): number[] {
-    return Array(this.loadingListLength).map((value: number, index: number) => index);
+    return Array(this.loadingListLength).map(
+      (value: number, index: number) => index
+    );
   }
 
   loadMore(): void {

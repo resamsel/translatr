@@ -12,13 +12,19 @@
     <section>
       <h2>Top Contributors</h2>
       <div class="flex-stretch">
-        <app-user-card-link *ngFor="let user of (users$ | async)?.list.slice(0, 4)" [user]="user"></app-user-card-link>
+        <app-user-card-link
+          *ngFor="let user of (users$ | async)?.list.slice(0, 4)"
+          [user]="user"
+        ></app-user-card-link>
       </div>
     </section>
 
     <section>
       <h2>All Contributors</h2>
-      <app-user-list [users]="(users$ | async)" (more)="onLoadUsers($event)"></app-user-list>
+      <app-user-list
+        [users]="users$ | async"
+        (more)="onLoadUsers($event)"
+      ></app-user-list>
     </section>
   </div>
 </app-sidenav>

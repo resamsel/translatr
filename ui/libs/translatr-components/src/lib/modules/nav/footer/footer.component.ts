@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {BUILD_INFO} from '../../../../build-info';
+import { Component, OnInit } from '@angular/core';
+import { BUILD_INFO } from '../../../../build-info';
 
 @Component({
   selector: 'app-footer',
@@ -7,12 +7,9 @@ import {BUILD_INFO} from '../../../../build-info';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent implements OnInit {
-
   buildInfo = BUILD_INFO;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

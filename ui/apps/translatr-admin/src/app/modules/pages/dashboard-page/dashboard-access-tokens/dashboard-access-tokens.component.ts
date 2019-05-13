@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
-import {merge, Observable, of} from 'rxjs';
-import {AccessToken, RequestCriteria} from '@dev/translatr-model';
-import {AppFacade} from '../../../../+state/app.facade';
-import {Entity, notifyEvent} from '@dev/translatr-components';
+import { Component } from '@angular/core';
+import { merge, Observable, of } from 'rxjs';
+import { AccessToken, RequestCriteria } from '@dev/translatr-model';
+import { AppFacade } from '../../../../+state/app.facade';
+import { Entity, notifyEvent } from '@dev/translatr-components';
 import {
   errorMessage,
   hasDeleteAccessTokenPermission,
@@ -16,9 +16,9 @@ import {
   AccessTokensDeleteError,
   AppActionTypes
 } from '../../../../+state/app.actions';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import {mapTo} from 'rxjs/operators';
-import {ofType} from '@ngrx/effects';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { mapTo } from 'rxjs/operators';
+import { ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'dev-dashboard-access-tokens',
@@ -26,15 +26,20 @@ import {ofType} from '@ngrx/effects';
   styleUrls: ['./dashboard-access-tokens.component.css']
 })
 export class DashboardAccessTokensComponent {
-
   displayedColumns = ['name', 'user', 'scopes', 'when_created', 'actions'];
 
   me$ = this.facade.me$;
   accessTokens$ = this.facade.accessTokens$;
   load$ = merge(
-    of({limit: '20', order: 'name asc'}),
-    this.facade.accessTokenDeleted$.pipe(ofType(AppActionTypes.AccessTokenDeleted), mapTo({})),
-    this.facade.accessTokensDeleted$.pipe(ofType(AppActionTypes.AccessTokensDeleted), mapTo({}))
+    of({ limit: '20', order: 'name asc' }),
+    this.facade.accessTokenDeleted$.pipe(
+      ofType(AppActionTypes.AccessTokenDeleted),
+      mapTo({})
+    ),
+    this.facade.accessTokensDeleted$.pipe(
+      ofType(AppActionTypes.AccessTokensDeleted),
+      mapTo({})
+    )
   );
 
   selected: AccessToken[] = [];
@@ -48,15 +53,19 @@ export class DashboardAccessTokensComponent {
       snackBar,
       facade.accessTokenDeleted$,
       AppActionTypes.AccessTokenDeleted,
-      (action: AccessTokenDeleted) => `Access token ${action.payload.name} has been deleted`,
-      (action: AccessTokenDeleteError) => `Access token could not be deleted: ${errorMessage(action.payload)}`
+      (action: AccessTokenDeleted) =>
+        `Access token ${action.payload.name} has been deleted`,
+      (action: AccessTokenDeleteError) =>
+        `Access token could not be deleted: ${errorMessage(action.payload)}`
     );
     notifyEvent(
       snackBar,
       facade.accessTokensDeleted$,
       AppActionTypes.AccessTokensDeleted,
-      (action: AccessTokensDeleted) => `${action.payload.length} access tokens have been deleted`,
-      (action: AccessTokensDeleteError) => `Access tokens could not be deleted: ${errorMessage(action.payload)}`
+      (action: AccessTokensDeleted) =>
+        `${action.payload.length} access tokens have been deleted`,
+      (action: AccessTokensDeleteError) =>
+        `Access tokens could not be deleted: ${errorMessage(action.payload)}`
     );
   }
 

@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {ProjectEditDialogComponent} from './project-edit-dialog.component';
-import {MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule} from '@angular/material';
-import {ReactiveFormsModule} from '@angular/forms';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ProjectEditDialogComponent } from './project-edit-dialog.component';
+import { MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule } from '@angular/material';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [ProjectEditDialogComponent],
@@ -17,4 +17,4 @@ import {ReactiveFormsModule} from '@angular/forms';
   ],
   entryComponents: [ProjectEditDialogComponent]
 })
-export class ProjectEditDialogModule { }
+export class ProjectEditDialogModule {}

@@ -15,7 +15,9 @@ export const firstChar = (name: string): string => {
   return runes.substr(name, 0, 1);
 };
 
-export const errorMessage = (error: HttpErrorResponse | ErrorInfos | Error): string => {
+export const errorMessage = (
+  error: HttpErrorResponse | ErrorInfos | Error
+): string => {
   if (error instanceof HttpErrorResponse) {
     if (!!error.error && !!error.error.error) {
       return errorMessage(error.error.error);
@@ -31,11 +33,16 @@ export const errorMessage = (error: HttpErrorResponse | ErrorInfos | Error): str
   switch (error.type) {
     case 'ConstraintViolationException':
       return (error as ConstraintViolationErrorInfo).violations
-        .map((v: ConstraintViolation) => `${v.field}: ${v.message}`).join(', ');
+        .map((v: ConstraintViolation) => `${v.field}: ${v.message}`)
+        .join(', ');
     case 'PermissionError':
-      return `${error.type}: Scopes needed: ${(error as PermissionErrorInfo).scopes}`;
+      return `${error.type}: Scopes needed: ${
+        (error as PermissionErrorInfo).scopes
+      }`;
     case 'NotFoundError':
-      return `${error.type}: ${(error as NotFoundErrorInfo).entity} with ID '${(error as NotFoundErrorInfo).id}' was not found`;
+      return `${error.type}: ${(error as NotFoundErrorInfo).entity} with ID '${
+        (error as NotFoundErrorInfo).id
+      }' was not found`;
     default:
       return `${error.type}: ${error.message}`;
   }

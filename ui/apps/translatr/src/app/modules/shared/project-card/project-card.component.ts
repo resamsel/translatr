@@ -1,6 +1,6 @@
-import {Component, HostBinding, Input} from '@angular/core';
-import {Project} from '@dev/translatr-model';
-import {firstChar} from '@dev/translatr-sdk';
+import { Component, HostBinding, Input } from '@angular/core';
+import { Project } from '@dev/translatr-model';
+import { firstChar } from '@dev/translatr-sdk';
 
 @Component({
   selector: 'app-project-card',
@@ -8,9 +8,7 @@ import {firstChar} from '@dev/translatr-sdk';
   styleUrls: ['./project-card.component.scss']
 })
 export class ProjectCardComponent {
-
-  constructor() {
-  }
+  constructor() {}
 
   @Input() project: Project;
 

@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {select, Store} from '@ngrx/store';
-import {AppPartialState} from './app.reducer';
-import {appQuery} from './app.selectors';
+import { Injectable } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { AppPartialState } from './app.reducer';
+import { appQuery } from './app.selectors';
 import {
   AppActionTypes,
   CreateUser,
@@ -19,10 +19,10 @@ import {
   UpdateProject,
   UpdateUser
 } from './app.actions';
-import {AccessToken, Project, ProjectCriteria, RequestCriteria, User} from '@dev/translatr-model';
-import {Actions, ofType} from '@ngrx/effects';
-import {Observable, Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import { AccessToken, Project, ProjectCriteria, RequestCriteria, User } from '@dev/translatr-model';
+import { Actions, ofType } from '@ngrx/effects';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Injectable()
 export class AppFacade {
@@ -95,11 +95,17 @@ export class AppFacade {
 
   accessTokens$ = this.store.pipe(select(appQuery.getAccessTokens));
   accessTokenDeleted$ = this.actions$.pipe(
-    ofType(AppActionTypes.AccessTokenDeleted, AppActionTypes.AccessTokenDeleteError),
+    ofType(
+      AppActionTypes.AccessTokenDeleted,
+      AppActionTypes.AccessTokenDeleteError
+    ),
     takeUntil(this.unloadProjects$.asObservable())
   );
   accessTokensDeleted$ = this.actions$.pipe(
-    ofType(AppActionTypes.AccessTokensDeleted, AppActionTypes.AccessTokensDeleteError),
+    ofType(
+      AppActionTypes.AccessTokensDeleted,
+      AppActionTypes.AccessTokensDeleteError
+    ),
     takeUntil(this.unloadProjects$.asObservable())
   );
 
@@ -109,8 +115,8 @@ export class AppFacade {
 
   constructor(
     private readonly store: Store<AppPartialState>,
-    private readonly actions$: Actions) {
-  }
+    private readonly actions$: Actions
+  ) {}
 
   // Users
 
@@ -123,7 +129,7 @@ export class AppFacade {
   }
 
   loadUser(userId: string) {
-    this.store.dispatch(new LoadUser({userId}));
+    this.store.dispatch(new LoadUser({ userId }));
   }
 
   createUser(user: User) {

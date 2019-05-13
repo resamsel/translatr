@@ -10,24 +10,30 @@ import { Locale, LocaleCriteria } from '@dev/translatr-model';
   providedIn: 'root'
 })
 export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
-
   constructor(http: HttpClient) {
-    super(http, (criteria: LocaleCriteria) => `/api/locales/${criteria.projectId}`, '/api/locale');
+    super(
+      http,
+      (criteria: LocaleCriteria) => `/api/locales/${criteria.projectId}`,
+      '/api/locale'
+    );
   }
 
-  byOwnerAndProjectNameAndName(
-    options: {
-      username: string;
-      projectName: string;
-      localeName: string;
-      params?: HttpParams | {
-        [param: string]: string | string[];
-      }
-    }): Observable<Locale> {
+  byOwnerAndProjectNameAndName(options: {
+    username: string;
+    projectName: string;
+    localeName: string;
+    params?:
+      | HttpParams
+      | {
+          [param: string]: string | string[];
+        };
+  }): Observable<Locale> {
     return this.http
       .get<Locale>(
-        `/api/${options.username}/${options.projectName}/locales/${options.localeName}`,
-        {params: options.params}
+        `/api/${options.username}/${options.projectName}/locales/${
+          options.localeName
+        }`,
+        { params: options.params }
       )
       .pipe(map((locale: Locale) => convertTemporals(locale)));
   }

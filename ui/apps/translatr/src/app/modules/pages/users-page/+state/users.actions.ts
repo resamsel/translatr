@@ -1,5 +1,5 @@
-import {Action} from '@ngrx/store';
-import {PagedList, RequestCriteria, User} from '@dev/translatr-model';
+import { Action } from '@ngrx/store';
+import { PagedList, RequestCriteria, User } from '@dev/translatr-model';
 
 export interface UserCriteria extends RequestCriteria {
   userId?: string;
@@ -14,22 +14,19 @@ export enum UsersActionTypes {
 export class LoadUsers implements Action {
   readonly type = UsersActionTypes.LoadUsers;
 
-  constructor(public payload: UserCriteria) {
-  }
+  constructor(public payload: UserCriteria) {}
 }
 
 export class UsersLoadError implements Action {
   readonly type = UsersActionTypes.UsersLoadError;
 
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class UsersLoaded implements Action {
   readonly type = UsersActionTypes.UsersLoaded;
 
-  constructor(public payload: PagedList<User>) {
-  }
+  constructor(public payload: PagedList<User>) {}
 }
 
 export type UsersAction = LoadUsers | UsersLoaded | UsersLoadError;

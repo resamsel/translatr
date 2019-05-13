@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {Actions, Effect} from '@ngrx/effects';
-import {DataPersistence} from '@nrwl/nx';
-import {EDITOR_FEATURE_KEY, EditorPartialState} from './editor.reducer';
+import { Injectable } from '@angular/core';
+import { Actions, Effect } from '@ngrx/effects';
+import { DataPersistence } from '@nrwl/nx';
+import { EDITOR_FEATURE_KEY, EditorPartialState } from './editor.reducer';
 import {
   EditorActionTypes,
   KeyLoaded,
@@ -27,13 +27,13 @@ import {
   SelectKey,
   SelectLocale
 } from './editor.actions';
-import {KeyService, LocaleService, MessageService} from '@dev/translatr-sdk';
-import {Key, Locale, Message, PagedList} from '@dev/translatr-model';
-import {filter, map, take} from 'rxjs/operators';
-import {combineLatest, Observable} from 'rxjs';
-import {Action} from '@ngrx/store';
-import {EditorFacade} from './editor.facade';
-import {MatSnackBar} from '@angular/material';
+import { KeyService, LocaleService, MessageService } from '@dev/translatr-sdk';
+import { Key, Locale, Message, PagedList } from '@dev/translatr-model';
+import { filter, map, take } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { Action } from '@ngrx/store';
+import { EditorFacade } from './editor.facade';
+import { MatSnackBar } from '@angular/material';
 
 @Injectable()
 export class EditorEffects {
@@ -42,8 +42,9 @@ export class EditorEffects {
     {
       run: (action: LoadLocale) => {
         // Your custom REST 'load' logic goes here. For now just return an empty list...
-        return this.localeService.byOwnerAndProjectNameAndName(action.payload)
-          .pipe(map((locale: Locale) => new LocaleLoaded({locale})));
+        return this.localeService
+          .byOwnerAndProjectNameAndName(action.payload)
+          .pipe(map((locale: Locale) => new LocaleLoaded({ locale })));
       },
 
       onError: (action: LoadLocale, error) => {
@@ -56,7 +57,10 @@ export class EditorEffects {
   @Effect() loadLocaleSearch$ = this.dataPersistence.fetch(
     EditorActionTypes.LoadLocaleSearch,
     {
-      run: (action: LoadLocaleSearch, state?: EditorPartialState): Observable<Action> | Action | void => {
+      run: (
+        action: LoadLocaleSearch,
+        state?: EditorPartialState
+      ): Observable<Action> | Action | void => {
         const key = state[EDITOR_FEATURE_KEY].key;
         if (key === undefined) {
           return;
@@ -67,44 +71,43 @@ export class EditorEffects {
     }
   );
 
-  @Effect() loadKeys$ = this.dataPersistence.fetch(
-    EditorActionTypes.LoadKeys,
-    {
-      run: (action: LoadKeys, state?: EditorPartialState) => {
-        return this.keyService.find({
+  @Effect() loadKeys$ = this.dataPersistence.fetch(EditorActionTypes.LoadKeys, {
+    run: (action: LoadKeys, state?: EditorPartialState) => {
+      return this.keyService
+        .find({
           ...state[EDITOR_FEATURE_KEY].search,
           ...action.payload
         })
-          .pipe(map((payload: PagedList<Key>) => new KeysLoaded(payload)));
-      },
+        .pipe(map((payload: PagedList<Key>) => new KeysLoaded(payload)));
+    },
 
-      onError: (action: LoadKeys, error: any): Observable<any> | any => {
-        console.error('Error', error);
-        return new KeysLoadError(error);
-      }
+    onError: (action: LoadKeys, error: any): Observable<any> | any => {
+      console.error('Error', error);
+      return new KeysLoadError(error);
     }
-  );
+  });
 
-  @Effect() loadKey$ = this.dataPersistence.fetch(
-    EditorActionTypes.LoadKey,
-    {
-      run: (action: LoadKey) => {
-        // Your custom REST 'load' logic goes here. For now just return an empty list...
-        return this.keyService.byOwnerAndProjectNameAndName(action.payload)
-          .pipe(map((key: Key) => new KeyLoaded(key)));
-      },
+  @Effect() loadKey$ = this.dataPersistence.fetch(EditorActionTypes.LoadKey, {
+    run: (action: LoadKey) => {
+      // Your custom REST 'load' logic goes here. For now just return an empty list...
+      return this.keyService
+        .byOwnerAndProjectNameAndName(action.payload)
+        .pipe(map((key: Key) => new KeyLoaded(key)));
+    },
 
-      onError: (action: LoadKey, error) => {
-        console.error('Error', error);
-        return new KeyLoadError(error);
-      }
+    onError: (action: LoadKey, error) => {
+      console.error('Error', error);
+      return new KeyLoadError(error);
     }
-  );
+  });
 
   @Effect() loadKeySearch$ = this.dataPersistence.fetch(
     EditorActionTypes.LoadKeySearch,
     {
-      run: (action: LoadKeySearch, state?: EditorPartialState): Observable<Action> | Action | void => {
+      run: (
+        action: LoadKeySearch,
+        state?: EditorPartialState
+      ): Observable<Action> | Action | void => {
         const locale = state[EDITOR_FEATURE_KEY].locale;
         if (locale === undefined) {
           return;
@@ -118,39 +121,43 @@ export class EditorEffects {
   @Effect() loadKeysAfterLocaleLoaded$ = this.dataPersistence.fetch(
     EditorActionTypes.LocaleLoaded,
     {
-      run: (action: LocaleLoaded) => new LoadKeys({
-        ...action.payload.params,
-        projectId: action.payload.locale.projectId
-      })
+      run: (action: LocaleLoaded) =>
+        new LoadKeys({
+          ...action.payload.params,
+          projectId: action.payload.locale.projectId
+        })
     }
   );
 
   @Effect() loadLocalesAfterLocaleLoaded$ = this.dataPersistence.fetch(
     EditorActionTypes.LocaleLoaded,
     {
-      run: (action: LocaleLoaded) => new LoadLocales({
-        ...action.payload.params,
-        projectId: action.payload.locale.projectId
-      })
+      run: (action: LocaleLoaded) =>
+        new LoadLocales({
+          ...action.payload.params,
+          projectId: action.payload.locale.projectId
+        })
     }
   );
 
   @Effect() loadLocalesAfterKeyLoaded$ = this.dataPersistence.fetch(
     EditorActionTypes.KeyLoaded,
     {
-      run: (action: KeyLoaded) => new LoadLocales({
-        projectId: action.payload.projectId,
-        fetch: 'messages'
-      })
+      run: (action: KeyLoaded) =>
+        new LoadLocales({
+          projectId: action.payload.projectId,
+          fetch: 'messages'
+        })
     }
   );
 
   @Effect() loadKeysAfterKeyLoaded$ = this.dataPersistence.fetch(
     EditorActionTypes.KeyLoaded,
     {
-      run: (action: KeyLoaded) => new LoadKeys({
-        projectId: action.payload.projectId
-      })
+      run: (action: KeyLoaded) =>
+        new LoadKeys({
+          projectId: action.payload.projectId
+        })
     }
   );
 
@@ -158,8 +165,11 @@ export class EditorEffects {
     EditorActionTypes.LoadLocales,
     {
       run: (action: LoadLocales) => {
-        return this.localeService.find(action.payload)
-          .pipe(map((payload: PagedList<Locale>) => new LocalesLoaded(payload)));
+        return this.localeService
+          .find(action.payload)
+          .pipe(
+            map((payload: PagedList<Locale>) => new LocalesLoaded(payload))
+          );
       },
 
       onError: (action: LoadLocales, error: any): Observable<any> | any => {
@@ -172,9 +182,18 @@ export class EditorEffects {
   @Effect() selectLocaleAfterKeyChanged$ = this.dataPersistence.fetch(
     EditorActionTypes.KeyLoaded,
     {
-      run: (action: KeyLoaded, state?: EditorPartialState): Observable<Action> | Action | void => {
-        console.log(`Dispatching SelectKey(${state[EDITOR_FEATURE_KEY].selectedLocale}): selectLocaleAfterKeyChanged$`);
-        return new SelectLocale({locale: state[EDITOR_FEATURE_KEY].selectedLocale});
+      run: (
+        action: KeyLoaded,
+        state?: EditorPartialState
+      ): Observable<Action> | Action | void => {
+        console.log(
+          `Dispatching SelectKey(${
+            state[EDITOR_FEATURE_KEY].selectedLocale
+          }): selectLocaleAfterKeyChanged$`
+        );
+        return new SelectLocale({
+          locale: state[EDITOR_FEATURE_KEY].selectedLocale
+        });
       }
     }
   );
@@ -182,9 +201,16 @@ export class EditorEffects {
   @Effect() selectKeyAfterLocaleChanged$ = this.dataPersistence.fetch(
     EditorActionTypes.LocaleLoaded,
     {
-      run: (action: LocaleLoaded, state?: EditorPartialState): Observable<Action> | Action | void => {
-        console.log(`Dispatching SelectKey(${state[EDITOR_FEATURE_KEY].selectedKey}): selectKeyAfterLocaleChanged$`);
-        return new SelectKey({key: state[EDITOR_FEATURE_KEY].selectedKey});
+      run: (
+        action: LocaleLoaded,
+        state?: EditorPartialState
+      ): Observable<Action> | Action | void => {
+        console.log(
+          `Dispatching SelectKey(${
+            state[EDITOR_FEATURE_KEY].selectedKey
+          }): selectKeyAfterLocaleChanged$`
+        );
+        return new SelectKey({ key: state[EDITOR_FEATURE_KEY].selectedKey });
       }
     }
   );
@@ -192,8 +218,13 @@ export class EditorEffects {
   @Effect() selectLocaleAfterLocalesLoaded$ = this.dataPersistence.fetch(
     EditorActionTypes.LocalesLoaded,
     {
-      run: (action: LocalesLoaded, state: EditorPartialState): Observable<Action> | Action | void => {
-        return new SelectLocale({locale: state[EDITOR_FEATURE_KEY].selectedLocale});
+      run: (
+        action: LocalesLoaded,
+        state: EditorPartialState
+      ): Observable<Action> | Action | void => {
+        return new SelectLocale({
+          locale: state[EDITOR_FEATURE_KEY].selectedLocale
+        });
       }
     }
   );
@@ -201,9 +232,16 @@ export class EditorEffects {
   @Effect() selectKeyAfterKeysLoaded$ = this.dataPersistence.fetch(
     EditorActionTypes.KeysLoaded,
     {
-      run: (action: KeysLoaded, state?: EditorPartialState): Observable<Action> | Action | void => {
-        console.log(`Dispatching SelectKey(${state[EDITOR_FEATURE_KEY].selectedKey}): selectKeyAfterKeysLoaded$`);
-        return new SelectKey({key: state[EDITOR_FEATURE_KEY].selectedKey});
+      run: (
+        action: KeysLoaded,
+        state?: EditorPartialState
+      ): Observable<Action> | Action | void => {
+        console.log(
+          `Dispatching SelectKey(${
+            state[EDITOR_FEATURE_KEY].selectedKey
+          }): selectKeyAfterKeysLoaded$`
+        );
+        return new SelectKey({ key: state[EDITOR_FEATURE_KEY].selectedKey });
       }
     }
   );
@@ -219,11 +257,20 @@ export class EditorEffects {
 
         console.log('Key exists in action', action);
 
-        return combineLatest([this.facade.locale$, this.facade.keys$, this.facade.keysLoading$]).pipe(
-          filter(([locale, keys, loading]: [Locale, PagedList<Key>, boolean]) => !loading && locale !== undefined && keys !== undefined),
+        return combineLatest([
+          this.facade.locale$,
+          this.facade.keys$,
+          this.facade.keysLoading$
+        ]).pipe(
+          filter(
+            ([locale, keys, loading]: [Locale, PagedList<Key>, boolean]) =>
+              !loading && locale !== undefined && keys !== undefined
+          ),
           take(1),
-          map(([locale, keys, ]: [Locale, PagedList<Key>, boolean]) => {
-            const key = keys.list.find((k: Key) => k.name === action.payload.key);
+          map(([locale, keys]: [Locale, PagedList<Key>, boolean]) => {
+            const key = keys.list.find(
+              (k: Key) => k.name === action.payload.key
+            );
             if (key === undefined) {
               console.log('Key not found in key list', keys);
               return new MessageSelected({});
@@ -241,7 +288,7 @@ export class EditorEffects {
                 value: ''
               };
             }
-            return new MessageSelected({message});
+            return new MessageSelected({ message });
           })
         );
       },
@@ -264,11 +311,20 @@ export class EditorEffects {
 
         console.log('Locale exists in action', action);
 
-        return combineLatest([this.facade.key$, this.facade.locales$, this.facade.localesLoading$]).pipe(
-          filter(([key, locales, loading]: [Key, PagedList<Locale>, boolean]) => !loading && key !== undefined && locales !== undefined),
+        return combineLatest([
+          this.facade.key$,
+          this.facade.locales$,
+          this.facade.localesLoading$
+        ]).pipe(
+          filter(
+            ([key, locales, loading]: [Key, PagedList<Locale>, boolean]) =>
+              !loading && key !== undefined && locales !== undefined
+          ),
           take(1),
-          map(([key, locales, ]: [Key, PagedList<Locale>, boolean]) => {
-            const locale = locales.list.find((l: Locale) => l.name === action.payload.locale);
+          map(([key, locales]: [Key, PagedList<Locale>, boolean]) => {
+            const locale = locales.list.find(
+              (l: Locale) => l.name === action.payload.locale
+            );
             if (locale === undefined) {
               console.log('Locale not found in locale list', locales);
               return new MessageSelected({});
@@ -286,7 +342,7 @@ export class EditorEffects {
                 value: ''
               };
             }
-            return new MessageSelected({message});
+            return new MessageSelected({ message });
           })
         );
       },
@@ -303,7 +359,7 @@ export class EditorEffects {
     {
       run: (action: LoadLocalesBy, state?: EditorPartialState) => {
         return new LoadLocales({
-          ...{limit: '25', order: 'name', fetch: 'messages'},
+          ...{ limit: '25', order: 'name', fetch: 'messages' },
           ...action.payload,
           projectId: state[EDITOR_FEATURE_KEY].key.projectId
         });
@@ -321,9 +377,9 @@ export class EditorEffects {
     {
       run: (action: LoadKeysBy, state?: EditorPartialState) => {
         return new LoadKeys({
-          ...{limit: '25', order: 'name', fetch: 'messages'},
+          ...{ limit: '25', order: 'name', fetch: 'messages' },
           ...action.payload,
-          projectId: state[EDITOR_FEATURE_KEY].locale.projectId,
+          projectId: state[EDITOR_FEATURE_KEY].locale.projectId
         });
       },
 
@@ -345,7 +401,9 @@ export class EditorEffects {
           observable = this.messageService.update(action.payload);
         }
 
-        return observable.pipe(map((message: Message) => new MessageSaved(message)));
+        return observable.pipe(
+          map((message: Message) => new MessageSaved(message))
+        );
       }
     }
   );
@@ -355,11 +413,14 @@ export class EditorEffects {
     {
       run: (action: MessageSaved) => {
         this.snackBar.open(
-          `Translation has been saved for key ${action.payload.keyName} and language ${action.payload.localeName}`,
+          `Translation has been saved for key ${
+            action.payload.keyName
+          } and language ${action.payload.localeName}`,
           'Dismiss',
           {
-            duration: 2000,
-          });
+            duration: 2000
+          }
+        );
       }
     }
   );
@@ -372,6 +433,5 @@ export class EditorEffects {
     private readonly keyService: KeyService,
     private readonly messageService: MessageService,
     private readonly snackBar: MatSnackBar
-  ) {
-  }
+  ) {}
 }

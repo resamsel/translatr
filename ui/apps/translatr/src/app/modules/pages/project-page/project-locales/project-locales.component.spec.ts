@@ -8,9 +8,8 @@ describe('ProjectLocalesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProjectLocalesComponent ]
-    })
-    .compileComponents();
+      declarations: [ProjectLocalesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

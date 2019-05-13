@@ -3,22 +3,24 @@
     <div class="container">
       <div class="breadcrumbs">
         <mat-icon>account_circle</mat-icon>
-        <span>{{user?.username}}</span>
+        <span>{{ user?.username }}</span>
       </div>
     </div>
 
     <nav mat-tab-nav-bar color="accent">
       <div class="container dense" routerLinkActive>
         <ng-container *ngFor="let child of children">
-          <a mat-tab-link
-             *ngIf="canActivate$(child) | async"
-             [routerLink]="routerLink(child)"
-             routerLinkActive
-             [routerLinkActiveOptions]="{exact: child.path === ''}"
-             #link="routerLinkActive"
-             [active]="link.isActive">
-            <mat-icon>{{child.data.icon}}</mat-icon>
-            {{child.data.name}}
+          <a
+            mat-tab-link
+            *ngIf="canActivate$(child) | async"
+            [routerLink]="routerLink(child)"
+            routerLinkActive
+            [routerLinkActiveOptions]="{ exact: child.path === '' }"
+            #link="routerLinkActive"
+            [active]="link.isActive"
+          >
+            <mat-icon>{{ child.data.icon }}</mat-icon>
+            {{ child.data.name }}
           </a>
         </ng-container>
       </div>
@@ -29,11 +31,13 @@
     <user-card [user]="user">
       <p class="email ellipsis">
         <mat-icon inline="true">email</mat-icon>
-        <span [title]="user?.email">{{user?.email}}</span>
+        <span [title]="user?.email">{{ user?.email }}</span>
       </p>
       <p class="when-created ellipsis">
         <mat-icon inline="true">access_time</mat-icon>
-        <span [title]="user?.whenCreated | date">{{user?.whenCreated | amTimeAgo}}</span>
+        <span [title]="user?.whenCreated | date">{{
+          user?.whenCreated | amTimeAgo
+        }}</span>
       </p>
     </user-card>
 

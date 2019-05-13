@@ -3,21 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { readFirst } from '@nrwl/nx/testing';
 
 import { EffectsModule } from '@ngrx/effects';
-import { StoreModule, Store } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 
 import { NxModule } from '@nrwl/nx';
 
 import { AppEffects } from './app.effects';
 import { AppFacade } from './app.facade';
-
-import { appQuery } from './app.selectors';
-import { LoadAdmin, AdminLoaded } from './app.actions';
-import {
-  AppState,
-  Entity,
-  initialState,
-  appReducer
-} from './app.reducer';
+import { AdminLoaded } from './app.actions';
+import { appReducer, AppState, Entity, initialState } from './app.reducer';
 
 interface TestSchema {
   admin: AppState;

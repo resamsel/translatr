@@ -5,10 +5,7 @@ import { Component, OnInit } from '@angular/core';
   template: '<ng-content></ng-content>'
 })
 export class SelectionActionsComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

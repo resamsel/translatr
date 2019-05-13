@@ -10,7 +10,10 @@ export interface AccessTokenCriteria extends RequestCriteria {
 @Injectable({
   providedIn: 'root'
 })
-export class AccessTokenService extends AbstractService<AccessToken, AccessTokenCriteria> {
+export class AccessTokenService extends AbstractService<
+  AccessToken,
+  AccessTokenCriteria
+> {
   constructor(http: HttpClient) {
     super(http, () => '/api/accesstokens', '/api/accesstoken');
   }

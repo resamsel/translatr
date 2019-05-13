@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {EditorFacade} from './+state/editor.facade';
-import {ActivatedRoute, ParamMap, Params, Router} from '@angular/router';
-import {filter, take, takeUntil} from 'rxjs/operators';
-import {Key, Locale, Message, PagedList, RequestCriteria} from '@dev/translatr-model';
-import {combineLatest} from 'rxjs';
-import {AppFacade} from '../../../+state/app.facade';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { EditorFacade } from './+state/editor.facade';
+import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
+import { filter, take, takeUntil } from 'rxjs/operators';
+import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
+import { combineLatest } from 'rxjs';
+import { AppFacade } from '../../../+state/app.facade';
 
 @Component({
   selector: 'app-locale-editor-page',
@@ -12,7 +12,6 @@ import {AppFacade} from '../../../+state/app.facade';
   styleUrls: ['./locale-editor-page.component.scss']
 })
 export class LocaleEditorPageComponent implements OnInit, OnDestroy {
-
   me$ = this.appFacade.me$;
   locale$ = this.facade.locale$;
   locales$ = this.facade.locales$;
@@ -27,8 +26,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     private readonly facade: EditorFacade,
     private readonly route: ActivatedRoute,
     private readonly router: Router
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.route.paramMap
@@ -49,8 +47,19 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     this.selectedMessage$.subscribe((message: Message) => {
       if (message === undefined) {
         combineLatest([this.locale$, this.facade.keysLoading$])
-          .pipe(take(1), filter(([locale, loading]: [Locale, boolean]) => locale !== undefined && !loading))
-          .subscribe(() => this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {key: null}}));
+          .pipe(
+            take(1),
+            filter(
+              ([locale, loading]: [Locale, boolean]) =>
+                locale !== undefined && !loading
+            )
+          )
+          .subscribe(() =>
+            this.router.navigate([], {
+              queryParamsHandling: 'merge',
+              queryParams: { key: null }
+            })
+          );
       }
     });
   }
@@ -60,11 +69,14 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onSearch(criteria: RequestCriteria) {
-    this.router.navigate([], {queryParamsHandling: 'merge', queryParams: criteria});
+    this.router.navigate([], {
+      queryParamsHandling: 'merge',
+      queryParams: criteria
+    });
   }
 
   onLoadMore(limit: number): void {
-    this.facade.loadKeysBy({limit: `${limit + 25}`});
+    this.facade.loadKeysBy({ limit: `${limit + 25}` });
   }
 
   messagesOfKey(keys?: PagedList<Key>, keyName?: string): Array<Message> {

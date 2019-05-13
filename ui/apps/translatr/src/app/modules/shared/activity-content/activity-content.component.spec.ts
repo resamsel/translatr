@@ -1,6 +1,6 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {ActivityContentComponent} from './activity-content.component';
+import { ActivityContentComponent } from './activity-content.component';
 
 describe('ActivityContentComponent', () => {
   let component: ActivityContentComponent;
@@ -8,9 +8,8 @@ describe('ActivityContentComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ActivityContentComponent ]
-    })
-    .compileComponents();
+      declarations: [ActivityContentComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

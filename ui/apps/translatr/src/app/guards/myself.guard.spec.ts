@@ -1,6 +1,6 @@
-import {inject, TestBed} from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
-import {MyselfGuard} from './myself.guard';
+import { MyselfGuard } from './myself.guard';
 
 describe('MyselfGuardGuard', () => {
   beforeEach(() => {

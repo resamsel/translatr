@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {Project} from '@dev/translatr-model';
-import {ActivityCriteria} from '@dev/translatr-sdk';
-import {ProjectFacade} from '../+state/project.facade';
-import {filter} from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { Project } from '@dev/translatr-model';
+import { ActivityCriteria } from '@dev/translatr-sdk';
+import { ProjectFacade } from '../+state/project.facade';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-activity',
@@ -10,13 +10,11 @@ import {filter} from 'rxjs/operators';
   styleUrls: ['./project-activity.component.scss']
 })
 export class ProjectActivityComponent implements OnInit {
-
   project$ = this.facade.project$;
   activities$ = this.facade.activities$;
   private criteria: ActivityCriteria;
 
-  constructor(private readonly facade: ProjectFacade) {
-  }
+  constructor(private readonly facade: ProjectFacade) {}
 
   ngOnInit() {
     this.project$
@@ -35,7 +33,7 @@ export class ProjectActivityComponent implements OnInit {
   }
 
   onMore(): void {
-    this.criteria = {...this.criteria, limit: this.criteria.limit * 2};
+    this.criteria = { ...this.criteria, limit: this.criteria.limit * 2 };
     this.loadActivities();
   }
 }

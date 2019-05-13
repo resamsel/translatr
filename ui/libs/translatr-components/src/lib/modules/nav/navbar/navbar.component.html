@@ -5,7 +5,8 @@
         *ngIf="sidenav"
         mat-icon-button
         class="burger"
-        (click)="sidenav.toggle()">
+        (click)="sidenav.toggle()"
+      >
         <mat-icon>menu</mat-icon>
       </button>
       <ng-container *ngIf="backLink; else logo">
@@ -13,27 +14,23 @@
           mat-icon-button
           [routerLink]="backLink.routerLink"
           class="logo"
-          [title]="backLink.name">
+          [title]="backLink.name"
+        >
           <mat-icon>arrow_back</mat-icon>
         </a>
-        <a
-          [routerLink]="backLink.routerLink"
-          class="title">
-          <span>{{backLink.name}}</span>
+        <a [routerLink]="backLink.routerLink" class="title">
+          <span>{{ backLink.name }}</span>
         </a>
       </ng-container>
       <ng-template #logo>
-        <a
-          mat-icon-button
-          routerLink="/"
-          class="logo">
+        <a mat-icon-button routerLink="/" class="logo">
           <mat-icon>language</mat-icon>
         </a>
         <a routerLink="/" class="title">
-          <span>{{title}}</span>
+          <span>{{ title }}</span>
         </a>
       </ng-template>
-      <span *ngIf="page" class="page">{{page}}</span>
+      <span *ngIf="page" class="page">{{ page }}</span>
 
       <ng-content select="app-search-bar"></ng-content>
 

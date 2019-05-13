@@ -1,5 +1,5 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
@@ -8,7 +8,8 @@ const routes: Routes = [
   },
   {
     path: 'projects',
-    loadChildren: './modules/pages/projects-page/projects-page.module#ProjectsPageModule'
+    loadChildren:
+      './modules/pages/projects-page/projects-page.module#ProjectsPageModule'
   },
   {
     path: '',
@@ -21,11 +22,13 @@ const routes: Routes = [
   },
   {
     path: '',
-    loadChildren: './modules/pages/project-page/project-page.module#ProjectPageModule'
+    loadChildren:
+      './modules/pages/project-page/project-page.module#ProjectPageModule'
   },
   {
     path: '',
-    loadChildren: './modules/pages/editor-page/editor-page.module#EditorPageModule'
+    loadChildren:
+      './modules/pages/editor-page/editor-page.module#EditorPageModule'
   }
 ];
 
@@ -33,5 +36,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

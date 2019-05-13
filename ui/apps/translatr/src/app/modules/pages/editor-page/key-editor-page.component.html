@@ -5,8 +5,12 @@
   name="Key Editor"
   i18n-name="@@key.editor"
   [message]="selectedMessage$ | async"
-  [messages]="messagesOfLocale(locales$ | async, selectedLocale$ | async)">
-  <app-search-bar [criteria]="search$ | async" (search)="onSearch($event)"></app-search-bar>
+  [messages]="messagesOfLocale(locales$ | async, selectedLocale$ | async)"
+>
+  <app-search-bar
+    [criteria]="search$ | async"
+    (search)="onSearch($event)"
+  ></app-search-bar>
 
   <app-editor-selector>
     <mat-form-field class="selector">
@@ -14,15 +18,20 @@
         matInput
         #keyInput
         [value]="(key$ | async)?.name"
-        (keydown.enter)="onKeyChange(keyInput.value)">
+        (keydown.enter)="onKeyChange(keyInput.value)"
+      />
       <mat-icon matPrefix>vpn_key</mat-icon>
     </mat-form-field>
     <div class="flex-spacer"></div>
     <a
       mat-icon-button
       *ngIf="selectedLocale$ | async; else disabledLink"
-      [routerLink]="['../..', 'locales', (selectedLocale$ | async)]"
-      [queryParams]="{key: (key$ | async)?.name, search: (key$ | async)?.name}">
+      [routerLink]="['../..', 'locales', selectedLocale$ | async]"
+      [queryParams]="{
+        key: (key$ | async)?.name,
+        search: (key$ | async)?.name
+      }"
+    >
       <mat-icon>compare_arrows</mat-icon>
     </a>
     <ng-template #disabledLink>
@@ -37,18 +46,23 @@
     [template]="template"
     [showLoadingAvatar]="false"
     [loadingListLength]="10"
-    (more)="onLoadMore($event)">
+    (more)="onLoadMore($event)"
+  >
     <ng-template #template let-locale>
       <a
         mat-list-item
         [routerLink]="[]"
-        [queryParams]="{locale: locale.name}"
+        [queryParams]="{ locale: locale.name }"
         queryParamsHandling="merge"
-        [class.active]="(selectedMessage$ | async)?.localeName === locale.name">
-        <h3 matLine>{{locale.displayName}}</h3>
-        <p matLine class="translation">{{locale.messages && locale.messages[(key$ | async)?.name]?.value}}</p>
+        [class.active]="(selectedMessage$ | async)?.localeName === locale.name"
+      >
+        <h3 matLine>{{ locale.displayName }}</h3>
+        <p matLine class="translation">
+          {{
+            locale.messages && locale.messages[((key$ | async)?.name)]?.value
+          }}
+        </p>
       </a>
     </ng-template>
   </app-nav-list>
-
 </app-editor>

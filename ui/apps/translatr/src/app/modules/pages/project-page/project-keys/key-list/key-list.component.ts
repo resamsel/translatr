@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Key, PagedList, Project} from '@dev/translatr-model';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Key, PagedList, Project } from '@dev/translatr-model';
 
 @Component({
   selector: 'app-key-list',

@@ -15,12 +15,10 @@ export class DashboardPageComponent implements OnInit {
 
   constructor(
     private readonly facade: AppFacade,
-    @Inject(DASHBOARD_ROUTES) private routes: {children: NameIconRoute[]}[]
-  ) {
-  }
+    @Inject(DASHBOARD_ROUTES) private routes: { children: NameIconRoute[] }[]
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   routerLink(route: Route) {
     if (route === '') {

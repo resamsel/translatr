@@ -1,9 +1,17 @@
 <mat-nav-list *ngIf="pagedList; else empty">
   <ng-content></ng-content>
   <ng-container *ngFor="let item of pagedList.list; trackBy: trackByFn">
-    <ng-container *ngTemplateOutlet="template; context: {$implicit: item}"></ng-container>
+    <ng-container
+      *ngTemplateOutlet="template; context: { $implicit: item }"
+    ></ng-container>
   </ng-container>
-  <a mat-list-item class="more" *ngIf="pagedList?.hasNext" (click)="loadMore()" i18n>
+  <a
+    mat-list-item
+    class="more"
+    *ngIf="pagedList?.hasNext"
+    (click)="loadMore()"
+    i18n
+  >
     <i>Load more</i>
   </a>
 </mat-nav-list>
@@ -11,7 +19,9 @@
 <ng-template #empty>
   <mat-list class="empty">
     <mat-list-item *ngFor="let i of loadingList" class="item">
-      <mat-icon *ngIf="showLoadingAvatar" matListIcon class="icon">account_circle</mat-icon>
+      <mat-icon *ngIf="showLoadingAvatar" matListIcon class="icon"
+        >account_circle</mat-icon
+      >
       <h3 matLine>
         <span class="title"></span>
       </h3>

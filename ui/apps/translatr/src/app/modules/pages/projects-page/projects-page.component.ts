@@ -1,6 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ProjectsFacade} from './+state/projects.facade';
-import {AppFacade} from '../../../+state/app.facade';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ProjectsFacade } from './+state/projects.facade';
+import { AppFacade } from '../../../+state/app.facade';
 
 @Component({
   selector: 'app-projects-page',
@@ -11,8 +11,10 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
   projects$ = this.facade.allProjects$;
 
-  constructor(private readonly facade: ProjectsFacade, private readonly appFacade: AppFacade) {
-  }
+  constructor(
+    private readonly facade: ProjectsFacade,
+    private readonly appFacade: AppFacade
+  ) {}
 
   ngOnInit() {
     this.onLoadProjects(20);
@@ -23,6 +25,6 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
   }
 
   onLoadProjects(limit: number) {
-    this.facade.loadProjects({order: 'whenUpdated desc', limit: `${limit}`});
+    this.facade.loadProjects({ order: 'whenUpdated desc', limit: `${limit}` });
   }
 }

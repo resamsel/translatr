@@ -1,4 +1,4 @@
-import {ProjectEmbedded} from './project-embedded';
+import { ProjectEmbedded } from './project-embedded';
 
 export interface Message extends ProjectEmbedded {
   id?: string;

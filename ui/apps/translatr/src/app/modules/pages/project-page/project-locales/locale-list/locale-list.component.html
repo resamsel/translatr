@@ -1,21 +1,42 @@
-<app-nav-list [pagedList]="locales" [template]="template" (more)="more.emit($event)">
+<app-nav-list
+  [pagedList]="locales"
+  [template]="template"
+  (more)="more.emit($event)"
+>
   <ng-template #template let-locale>
-    <a mat-list-item [routerLink]="['/', project.ownerUsername, project.name, 'locales', locale.name]">
+    <a
+      mat-list-item
+      [routerLink]="[
+        '/',
+        project.ownerUsername,
+        project.name,
+        'locales',
+        locale.name
+      ]"
+    >
       <mat-icon matListIcon class="circle">language</mat-icon>
-      <h3 matLine>{{locale.name}} — {{locale.displayName}}</h3>
-      <p matLine i18n="@@updated.when" [title]="locale?.whenUpdated | date:'full'">Updated {{locale?.whenUpdated | amTimeAgo}}</p>
+      <h3 matLine>{{ locale.name }} — {{ locale.displayName }}</h3>
+      <p
+        matLine
+        i18n="@@updated.when"
+        [title]="locale?.whenUpdated | date: 'full'"
+      >
+        Updated {{ locale?.whenUpdated | amTimeAgo }}
+      </p>
       <button
         mat-icon-button
         title="Edit"
         i18n-title="@@button.edit"
-        (click)="onEdit(locale, $event)">
+        (click)="onEdit(locale, $event)"
+      >
         <mat-icon>edit</mat-icon>
       </button>
       <button
         mat-icon-button
         title="Delete"
         i18n-title="@@button.delete"
-        (click)="onDelete(locale, $event)">
+        (click)="onDelete(locale, $event)"
+      >
         <mat-icon>delete</mat-icon>
       </button>
     </a>

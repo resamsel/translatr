@@ -1,6 +1,14 @@
-import {Action} from '@ngrx/store';
-import {AccessToken, ConstraintViolationErrorInfo, PagedList, Project, ProjectCriteria, RequestCriteria, User} from '@dev/translatr-model';
-import {HttpErrorResponse} from '@angular/common/http';
+import { Action } from '@ngrx/store';
+import {
+  AccessToken,
+  ConstraintViolationErrorInfo,
+  PagedList,
+  Project,
+  ProjectCriteria,
+  RequestCriteria,
+  User
+} from '@dev/translatr-model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export enum AppActionTypes {
   // Users
@@ -69,8 +77,8 @@ export enum AppActionTypes {
 export interface ErrorAction {
   payload: {
     error: {
-      error: ConstraintViolationErrorInfo
-    }
+      error: ConstraintViolationErrorInfo;
+    };
   };
 }
 
@@ -83,141 +91,121 @@ export class LoadLoggedInUser implements Action {
 export class LoggedInUserLoadError implements Action {
   readonly type = AppActionTypes.LoggedInUserLoadError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class LoggedInUserLoaded implements Action {
   readonly type = AppActionTypes.LoggedInUserLoaded;
 
-  constructor(public payload: User) {
-  }
+  constructor(public payload: User) {}
 }
 
 export class LoadUsers implements Action {
   readonly type = AppActionTypes.LoadUsers;
 
-  constructor(public payload?: RequestCriteria) {
-  }
+  constructor(public payload?: RequestCriteria) {}
 }
 
 export class UsersLoadError implements Action {
   readonly type = AppActionTypes.UsersLoadError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class UsersLoaded implements Action {
   readonly type = AppActionTypes.UsersLoaded;
 
-  constructor(public payload: PagedList<User>) {
-  }
+  constructor(public payload: PagedList<User>) {}
 }
 
 export class LoadUser implements Action {
   readonly type = AppActionTypes.LoadUser;
 
-  constructor(public payload: { userId: string }) {
-  }
+  constructor(public payload: { userId: string }) {}
 }
 
 export class UserLoadError implements Action {
   readonly type = AppActionTypes.UserLoadError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class UserLoaded implements Action {
   readonly type = AppActionTypes.UserLoaded;
 
-  constructor(public payload: User) {
-  }
+  constructor(public payload: User) {}
 }
 
 export class CreateUser implements Action {
   readonly type = AppActionTypes.CreateUser;
 
-  constructor(public payload: User) {
-  }
+  constructor(public payload: User) {}
 }
 
 export class UserCreateError implements Action {
   readonly type = AppActionTypes.UserCreateError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class UserCreated implements Action {
   readonly type = AppActionTypes.UserCreated;
 
-  constructor(public payload: User) {
-  }
+  constructor(public payload: User) {}
 }
 
 export class UpdateUser implements Action {
   readonly type = AppActionTypes.UpdateUser;
 
-  constructor(public payload: User) {
-  }
+  constructor(public payload: User) {}
 }
 
 export class UserUpdateError implements Action {
   readonly type = AppActionTypes.UserUpdateError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class UserUpdated implements Action {
   readonly type = AppActionTypes.UserUpdated;
 
-  constructor(public payload: User) {
-  }
+  constructor(public payload: User) {}
 }
 
 export class DeleteUser implements Action {
   readonly type = AppActionTypes.DeleteUser;
 
-  constructor(public payload: User) {
-  }
+  constructor(public payload: User) {}
 }
 
 export class UserDeleteError implements Action {
   readonly type = AppActionTypes.UserDeleteError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class UserDeleted implements Action {
   readonly type = AppActionTypes.UserDeleted;
 
-  constructor(public payload: User) {
-  }
+  constructor(public payload: User) {}
 }
 
 export class DeleteUsers implements Action {
   readonly type = AppActionTypes.DeleteUsers;
 
-  constructor(public payload: User[]) {
-  }
+  constructor(public payload: User[]) {}
 }
 
 export class UsersDeleteError implements Action {
   readonly type = AppActionTypes.UsersDeleteError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class UsersDeleted implements Action {
   readonly type = AppActionTypes.UsersDeleted;
 
-  constructor(public payload: User[]) {
-  }
+  constructor(public payload: User[]) {}
 }
 
 // Projects
@@ -225,85 +213,73 @@ export class UsersDeleted implements Action {
 export class LoadProjects implements Action {
   readonly type = AppActionTypes.LoadProjects;
 
-  constructor(public payload?: ProjectCriteria) {
-  }
+  constructor(public payload?: ProjectCriteria) {}
 }
 
 export class ProjectsLoadError implements Action {
   readonly type = AppActionTypes.ProjectsLoadError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class ProjectsLoaded implements Action {
   readonly type = AppActionTypes.ProjectsLoaded;
 
-  constructor(public payload: PagedList<Project>) {
-  }
+  constructor(public payload: PagedList<Project>) {}
 }
 
 export class UpdateProject implements Action {
   readonly type = AppActionTypes.UpdateProject;
 
-  constructor(public payload: Project) {
-  }
+  constructor(public payload: Project) {}
 }
 
 export class ProjectUpdateError implements Action {
   readonly type = AppActionTypes.ProjectUpdateError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class ProjectUpdated implements Action {
   readonly type = AppActionTypes.ProjectUpdated;
 
-  constructor(public payload: Project) {
-  }
+  constructor(public payload: Project) {}
 }
 
 export class DeleteProject implements Action {
   readonly type = AppActionTypes.DeleteProject;
 
-  constructor(public payload: Project) {
-  }
+  constructor(public payload: Project) {}
 }
 
 export class ProjectDeleteError implements Action {
   readonly type = AppActionTypes.ProjectDeleteError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class ProjectDeleted implements Action {
   readonly type = AppActionTypes.ProjectDeleted;
 
-  constructor(public payload: Project) {
-  }
+  constructor(public payload: Project) {}
 }
 
 export class DeleteProjects implements Action {
   readonly type = AppActionTypes.DeleteProjects;
 
-  constructor(public payload: Project[]) {
-  }
+  constructor(public payload: Project[]) {}
 }
 
 export class ProjectsDeleteError implements Action {
   readonly type = AppActionTypes.ProjectsDeleteError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class ProjectsDeleted implements Action {
   readonly type = AppActionTypes.ProjectsDeleted;
 
-  constructor(public payload: Project[]) {
-  }
+  constructor(public payload: Project[]) {}
 }
 
 // Access Tokens
@@ -311,81 +287,100 @@ export class ProjectsDeleted implements Action {
 export class LoadAccessTokens implements Action {
   readonly type = AppActionTypes.LoadAccessTokens;
 
-  constructor(public payload?: RequestCriteria) {
-  }
+  constructor(public payload?: RequestCriteria) {}
 }
 
 export class AccessTokensLoadError implements Action {
   readonly type = AppActionTypes.AccessTokensLoadError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class AccessTokensLoaded implements Action {
   readonly type = AppActionTypes.AccessTokensLoaded;
 
-  constructor(public payload: PagedList<AccessToken>) {
-  }
+  constructor(public payload: PagedList<AccessToken>) {}
 }
 
 export class DeleteAccessToken implements Action {
   readonly type = AppActionTypes.DeleteAccessToken;
 
-  constructor(public payload: AccessToken) {
-  }
+  constructor(public payload: AccessToken) {}
 }
 
 export class AccessTokenDeleteError implements Action {
   readonly type = AppActionTypes.AccessTokenDeleteError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class AccessTokenDeleted implements Action {
   readonly type = AppActionTypes.AccessTokenDeleted;
 
-  constructor(public payload: AccessToken) {
-  }
+  constructor(public payload: AccessToken) {}
 }
 
 export class DeleteAccessTokens implements Action {
   readonly type = AppActionTypes.DeleteAccessTokens;
 
-  constructor(public payload: AccessToken[]) {
-  }
+  constructor(public payload: AccessToken[]) {}
 }
 
 export class AccessTokensDeleteError implements Action {
   readonly type = AppActionTypes.AccessTokensDeleteError;
 
-  constructor(public payload: HttpErrorResponse) {
-  }
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class AccessTokensDeleted implements Action {
   readonly type = AppActionTypes.AccessTokensDeleted;
 
-  constructor(public payload: AccessToken[]) {
-  }
+  constructor(public payload: AccessToken[]) {}
 }
 
 export type AppAction =
   // Users
-  LoadLoggedInUser | LoggedInUserLoaded | LoggedInUserLoadError
-  | LoadUsers | UsersLoaded | UsersLoadError
-  | LoadUser | UserLoaded | UserLoadError
-  | CreateUser | UserCreated | UserCreateError
-  | UpdateUser | UserUpdated | UserUpdateError
-  | DeleteUser | UserDeleted | UserDeleteError
-  | DeleteUsers | UsersDeleted | UsersDeleteError
+  | LoadLoggedInUser
+  | LoggedInUserLoaded
+  | LoggedInUserLoadError
+  | LoadUsers
+  | UsersLoaded
+  | UsersLoadError
+  | LoadUser
+  | UserLoaded
+  | UserLoadError
+  | CreateUser
+  | UserCreated
+  | UserCreateError
+  | UpdateUser
+  | UserUpdated
+  | UserUpdateError
+  | DeleteUser
+  | UserDeleted
+  | UserDeleteError
+  | DeleteUsers
+  | UsersDeleted
+  | UsersDeleteError
   // Projects
-  | LoadProjects | ProjectsLoaded | ProjectsLoadError
-  | UpdateProject | ProjectUpdated | ProjectUpdateError
-  | DeleteProject | ProjectDeleted | ProjectDeleteError
-  | DeleteProjects | ProjectsDeleted | ProjectsDeleteError
+  | LoadProjects
+  | ProjectsLoaded
+  | ProjectsLoadError
+  | UpdateProject
+  | ProjectUpdated
+  | ProjectUpdateError
+  | DeleteProject
+  | ProjectDeleted
+  | ProjectDeleteError
+  | DeleteProjects
+  | ProjectsDeleted
+  | ProjectsDeleteError
   // Access Tokens
-  | LoadAccessTokens | AccessTokensLoaded | AccessTokensLoadError
-  | DeleteAccessToken | AccessTokenDeleted | AccessTokenDeleteError
-  | DeleteAccessTokens | AccessTokensDeleted | AccessTokensDeleteError;
+  | LoadAccessTokens
+  | AccessTokensLoaded
+  | AccessTokensLoadError
+  | DeleteAccessToken
+  | AccessTokenDeleted
+  | AccessTokenDeleteError
+  | DeleteAccessTokens
+  | AccessTokensDeleted
+  | AccessTokensDeleteError;

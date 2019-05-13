@@ -1,5 +1,5 @@
-import {Entity} from './users.reducer';
-import {usersQuery} from './users.selectors';
+import { Entity } from './users.reducer';
+import { usersQuery } from './users.selectors';
 
 describe('Users Selectors', () => {
   const ERROR_MSG = 'No Error Available';
@@ -42,13 +42,13 @@ describe('Users Selectors', () => {
       expect(selId).toBe('PRODUCT-BBB');
     });
 
-    it('getLoaded() should return the current \'loaded\' status', () => {
+    it("getLoaded() should return the current 'loaded' status", () => {
       const result = usersQuery.getLoaded(storeState);
 
       expect(result).toBe(true);
     });
 
-    it('getError() should return the current \'error\' storeState', () => {
+    it("getError() should return the current 'error' storeState", () => {
       const result = usersQuery.getError(storeState);
 
       expect(result).toBe(ERROR_MSG);

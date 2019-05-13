@@ -9,13 +9,27 @@
         placeholder="Project name"
         i18n-placeholder="@@project.name"
         cdkFocusInitial
-        [formControl]="nameFormControl">
-      <mat-error *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern">Must match pattern [a-zA-Z0-9_.-]*</mat-error>
-      <mat-error *ngIf="nameFormControl.invalid && nameFormControl.errors['']">{{nameFormControl.errors['']}}</mat-error>
+        [formControl]="nameFormControl"
+      />
+      <mat-error
+        *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern"
+        >Must match pattern [a-zA-Z0-9_.-]*</mat-error
+      >
+      <mat-error
+        *ngIf="nameFormControl.invalid && nameFormControl.errors['']"
+        >{{ nameFormControl.errors[''] }}</mat-error
+      >
     </mat-form-field>
   </div>
 </div>
 <div mat-dialog-actions class="mat-dialog-actions">
   <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button (click)="onSave()" color="primary" [disabled]="form.invalid || processing">Save</button>
+  <button
+    mat-button
+    (click)="onSave()"
+    color="primary"
+    [disabled]="form.invalid || processing"
+  >
+    Save
+  </button>
 </div>

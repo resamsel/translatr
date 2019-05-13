@@ -23,5 +23,5 @@ const getAllProjects = createSelector(
 export const projectsQuery = {
   getLoading,
   getError,
-  getAllProjects,
+  getAllProjects
 };

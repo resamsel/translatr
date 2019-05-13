@@ -13,7 +13,10 @@ export class UserFacade {
   allUser$ = this.store.pipe(select(userQuery.getAllUser));
   selectedUser$ = this.store.pipe(select(userQuery.getSelectedUser));
 
-  constructor(private store: Store<UserPartialState>, private readonly accessTokenService: AccessTokenService) {}
+  constructor(
+    private store: Store<UserPartialState>,
+    private readonly accessTokenService: AccessTokenService
+  ) {}
 
   loadAll() {
     this.store.dispatch(new LoadUser());

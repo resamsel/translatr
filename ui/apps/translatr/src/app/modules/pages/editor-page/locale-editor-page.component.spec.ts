@@ -8,9 +8,8 @@ describe('LocaleEditorPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LocaleEditorPageComponent ]
-    })
-    .compileComponents();
+      declarations: [LocaleEditorPageComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

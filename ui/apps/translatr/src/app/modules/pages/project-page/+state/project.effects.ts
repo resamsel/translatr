@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {Actions, Effect} from '@ngrx/effects';
-import {DataPersistence} from '@nrwl/nx';
-import {PROJECT_FEATURE_KEY, ProjectPartialState} from './project.reducer';
+import { Injectable } from '@angular/core';
+import { Actions, Effect } from '@ngrx/effects';
+import { DataPersistence } from '@nrwl/nx';
+import { PROJECT_FEATURE_KEY, ProjectPartialState } from './project.reducer';
 import {
   KeysLoaded,
   LoadKeys,
@@ -20,11 +20,11 @@ import {
   ProjectSaved,
   SaveProject
 } from './project.actions';
-import {ActivityService, KeyService, LocaleService, ProjectService} from '@dev/translatr-sdk';
-import {map} from 'rxjs/operators';
-import {Activity, Aggregate, Key, Locale, PagedList, Project} from '@dev/translatr-model';
-import {Observable} from 'rxjs';
-import {Action} from '@ngrx/store';
+import { ActivityService, KeyService, LocaleService, ProjectService } from '@dev/translatr-sdk';
+import { map } from 'rxjs/operators';
+import { Activity, Aggregate, Key, Locale, PagedList, Project } from '@dev/translatr-model';
+import { Observable } from 'rxjs';
+import { Action } from '@ngrx/store';
 
 @Injectable()
 export class ProjectEffects {
@@ -48,12 +48,18 @@ export class ProjectEffects {
   @Effect() loadLocales$ = this.dataPersistence.fetch(
     ProjectActionTypes.LoadLocales,
     {
-      run: (action: LoadLocales, state?: ProjectPartialState): Observable<Action> | Action | void => {
-        return this.localeService.find({
-          ...state[PROJECT_FEATURE_KEY].localesSearch,
-          ...action.payload
-        })
-          .pipe(map((payload: PagedList<Locale>) => new LocalesLoaded(payload)));
+      run: (
+        action: LoadLocales,
+        state?: ProjectPartialState
+      ): Observable<Action> | Action | void => {
+        return this.localeService
+          .find({
+            ...state[PROJECT_FEATURE_KEY].localesSearch,
+            ...action.payload
+          })
+          .pipe(
+            map((payload: PagedList<Locale>) => new LocalesLoaded(payload))
+          );
       }
     }
   );
@@ -61,11 +67,15 @@ export class ProjectEffects {
   @Effect() loadKeys$ = this.dataPersistence.fetch(
     ProjectActionTypes.LoadKeys,
     {
-      run: (action: LoadKeys, state?: ProjectPartialState): Observable<Action> | Action | void => {
-        return this.keyService.find({
-          ...state[PROJECT_FEATURE_KEY].keysSearch,
-          ...action.payload
-        })
+      run: (
+        action: LoadKeys,
+        state?: ProjectPartialState
+      ): Observable<Action> | Action | void => {
+        return this.keyService
+          .find({
+            ...state[PROJECT_FEATURE_KEY].keysSearch,
+            ...action.payload
+          })
           .pipe(map((payload: PagedList<Key>) => new KeysLoaded(payload)));
       }
     }
@@ -77,8 +87,13 @@ export class ProjectEffects {
       run: (action: LoadProjectActivityAggregated) => {
         const payload = action.payload;
         return this.activityService
-          .aggregated({projectId: payload.id})
-          .pipe(map((p: PagedList<Aggregate>) => new ProjectActivityAggregatedLoaded(p)));
+          .aggregated({ projectId: payload.id })
+          .pipe(
+            map(
+              (p: PagedList<Aggregate>) =>
+                new ProjectActivityAggregatedLoaded(p)
+            )
+          );
       },
 
       onError: (action: LoadProjectActivityAggregated, error) => {
@@ -95,7 +110,9 @@ export class ProjectEffects {
         const payload = action.payload;
         return this.activityService
           .activityList(payload)
-          .pipe(map((p: PagedList<Activity>) => new ProjectActivitiesLoaded(p)));
+          .pipe(
+            map((p: PagedList<Activity>) => new ProjectActivitiesLoaded(p))
+          );
       },
 
       onError: (action: LoadProjectActivities, error) => {
@@ -108,7 +125,10 @@ export class ProjectEffects {
   @Effect() saveProject$ = this.dataPersistence.fetch(
     ProjectActionTypes.SaveProject,
     {
-      run: (action: SaveProject, state?: ProjectPartialState): Observable<Action> | Action | void => {
+      run: (
+        action: SaveProject,
+        state?: ProjectPartialState
+      ): Observable<Action> | Action | void => {
         return this.projectService
           .update(action.payload)
           .pipe(map((payload: Project) => new ProjectSaved(payload)));
@@ -123,6 +143,5 @@ export class ProjectEffects {
     private localeService: LocaleService,
     private keyService: KeyService,
     private activityService: ActivityService
-  ) {
-  }
+  ) {}
 }

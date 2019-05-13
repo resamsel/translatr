@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {ProjectFacade} from './+state/project.facade';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {filter, switchMapTo, take, tap} from 'rxjs/operators';
-import {MatSnackBar} from '@angular/material';
-import {AppFacade} from '../../../+state/app.facade';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ProjectFacade } from './+state/project.facade';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { filter, switchMapTo, take, tap } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material';
+import { AppFacade } from '../../../+state/app.facade';
 
 @Component({
   selector: 'app-project-page',
@@ -12,12 +12,11 @@ import {AppFacade} from '../../../+state/app.facade';
   styleUrls: ['./project-page.component.scss']
 })
 export class ProjectPageComponent implements OnInit, OnDestroy {
-
   me$ = this.appFacade.me$;
   project$ = this.facade.project$;
 
   form = new FormGroup({
-    'name': new FormControl('', [
+    name: new FormControl('', [
       Validators.required,
       Validators.pattern('[^\\s/]+')
     ])
@@ -32,15 +31,21 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly snackBar: MatSnackBar,
     private readonly facade: ProjectFacade,
-    private readonly appFacade: AppFacade) {
-  }
+    private readonly appFacade: AppFacade
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.facade.loadProject(params.get('username'), params.get('projectName'));
+      this.facade.loadProject(
+        params.get('username'),
+        params.get('projectName')
+      );
     });
     this.project$
-      .pipe(filter(project => !!project), take(1))
+      .pipe(
+        filter(project => !!project),
+        take(1)
+      )
       .subscribe(project => this.nameFormControl.setValue(project.name));
   }
 
@@ -53,20 +58,25 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     this.project$
       .pipe(
         take(1),
-        tap(project => this.facade.save({...project, name: this.nameFormControl.value as string})),
-        switchMapTo(this.facade.project$.pipe(
-          filter(project => project.name === this.nameFormControl.value),
-          take(1)
-        ))
+        tap(project =>
+          this.facade.save({
+            ...project,
+            name: this.nameFormControl.value as string
+          })
+        ),
+        switchMapTo(
+          this.facade.project$.pipe(
+            filter(project => project.name === this.nameFormControl.value),
+            take(1)
+          )
+        )
       )
       .subscribe(project => {
-        this.router.navigate([project.ownerUsername, project.name])
-          .then(() => this.snackBar.open(
-            'Name has been updated',
-            'Dismiss',
-            {duration: 2000}
-            )
-          );
+        this.router.navigate([project.ownerUsername, project.name]).then(() =>
+          this.snackBar.open('Name has been updated', 'Dismiss', {
+            duration: 2000
+          })
+        );
       });
   }
 }

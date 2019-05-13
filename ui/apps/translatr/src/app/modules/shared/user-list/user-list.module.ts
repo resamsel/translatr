@@ -1,12 +1,12 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {UserListComponent} from './user-list.component';
-import {MatIconModule, MatListModule} from '@angular/material';
-import {GravatarModule} from 'ngx-gravatar';
-import {MomentModule} from 'ngx-moment';
-import {RouterModule} from '@angular/router';
-import {NavListModule} from '../nav-list/nav-list.module';
-import {UserCardModule} from '@dev/translatr-components';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { UserListComponent } from './user-list.component';
+import { MatIconModule, MatListModule } from '@angular/material';
+import { GravatarModule } from 'ngx-gravatar';
+import { MomentModule } from 'ngx-moment';
+import { RouterModule } from '@angular/router';
+import { NavListModule } from '../nav-list/nav-list.module';
+import { UserCardModule } from '@dev/translatr-components';
 
 @NgModule({
   declarations: [UserListComponent],
@@ -22,4 +22,4 @@ import {UserCardModule} from '@dev/translatr-components';
   ],
   exports: [UserListComponent]
 })
-export class UserListModule { }
+export class UserListModule {}

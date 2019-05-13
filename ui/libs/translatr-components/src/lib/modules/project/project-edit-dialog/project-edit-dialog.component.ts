@@ -1,9 +1,9 @@
-import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {takeUntil} from 'rxjs/operators';
-import {ConstraintViolation, ConstraintViolationErrorInfo, ErrorAction, Project} from '@dev/translatr-model';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Observable} from 'rxjs';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { takeUntil } from 'rxjs/operators';
+import { ConstraintViolation, ConstraintViolationErrorInfo, ErrorAction, Project } from '@dev/translatr-model';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 export interface ProjectEditDialogConfig {
   type: 'create' | 'update';
@@ -22,7 +22,7 @@ export class ProjectEditDialogComponent {
   form = new FormGroup({
     id: new FormControl(),
     name: new FormControl('', Validators.required),
-    description: new FormControl(''),
+    description: new FormControl('')
   });
 
   constructor(
@@ -35,7 +35,9 @@ export class ProjectEditDialogComponent {
       .subscribe(() => dialogRef.close());
     data.error$
       .pipe(takeUntil(dialogRef.afterClosed()))
-      .subscribe((action: ErrorAction) => this.setErrors(action.payload.error.error));
+      .subscribe((action: ErrorAction) =>
+        this.setErrors(action.payload.error.error)
+      );
   }
 
   onCancel() {
@@ -50,11 +52,16 @@ export class ProjectEditDialogComponent {
     console.log(error);
     if (error.type === 'ConstraintViolationException') {
       error.violations
-        .filter((violation: ConstraintViolation) => !!this.form.get(violation.field))
+        .filter(
+          (violation: ConstraintViolation) => !!this.form.get(violation.field)
+        )
         .forEach((violation: ConstraintViolation) =>
-          this.form.get(violation.field).setErrors({'violation': violation.message}));
+          this.form
+            .get(violation.field)
+            .setErrors({ violation: violation.message })
+        );
     } else {
-      this.form.setErrors({'': error.message});
+      this.form.setErrors({ '': error.message });
     }
   }
 }

@@ -1,5 +1,5 @@
-import {Message} from './message';
-import {ProjectEmbedded} from './project-embedded';
+import { Message } from './message';
+import { ProjectEmbedded } from './project-embedded';
 
 export interface Key extends ProjectEmbedded {
   id?: string;

@@ -16,7 +16,7 @@ export class AppEffects {
         .me()
         .pipe(map((user: User) => new MeLoaded(user)));
     }),
-    catchError((error) => {
+    catchError(error => {
       console.error('Error', error);
       return of(new MeLoadError(error));
     })
@@ -25,6 +25,5 @@ export class AppEffects {
   constructor(
     private actions$: Actions,
     private readonly userService: UserService
-  ) {
-  }
+  ) {}
 }

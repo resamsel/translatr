@@ -3,71 +3,95 @@
     <div class="container">
       <div class="breadcrumbs" *ngIf="project$ | async as project">
         <mat-icon>book</mat-icon>
-        <a class="link" [routerLink]="['/', project?.ownerUsername]">{{project?.ownerUsername}}</a>
+        <a class="link" [routerLink]="['/', project?.ownerUsername]">{{
+          project?.ownerUsername
+        }}</a>
         <span>/</span>
-        <mat-form-field [ngClass]="{dirty: nameFormControl.dirty}">
+        <mat-form-field [ngClass]="{ dirty: nameFormControl.dirty }">
           <input
             matInput
             #name
             type="text"
             [formControl]="nameFormControl"
-            (keyup.enter)="onSaveName()">
+            (keyup.enter)="onSaveName()"
+          />
           <button matSuffix mat-icon-button>
             <mat-icon>mode_edit</mat-icon>
           </button>
-          <button matSuffix mat-button color="primary" (click)="onSaveName()">Save</button>
-          <mat-error *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern">Must match pattern [^\s/]*
+          <button matSuffix mat-button color="primary" (click)="onSaveName()">
+            Save
+          </button>
+          <mat-error
+            *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern"
+            >Must match pattern [^\s/]*
           </mat-error>
           <mat-error
-            *ngIf="nameFormControl.invalid && nameFormControl.errors['']">{{nameFormControl.errors['']}}</mat-error>
+            *ngIf="nameFormControl.invalid && nameFormControl.errors['']"
+            >{{ nameFormControl.errors[''] }}</mat-error
+          >
         </mat-form-field>
       </div>
 
       <div *ngIf="(project$ | async)?.description">
-        {{(project$ | async)?.description}}
+        {{ (project$ | async)?.description }}
       </div>
     </div>
 
     <nav mat-tab-nav-bar color="accent" *ngIf="project$ | async as project">
       <div class="container dense" routerLinkActive>
-        <a mat-tab-link
-           [routerLink]="['/', project?.ownerUsername, project?.name]"
-           routerLinkActive
-           [routerLinkActiveOptions]="{exact: true}"
-           #projectLink="routerLinkActive"
-           [active]="projectLink.isActive">
+        <a
+          mat-tab-link
+          [routerLink]="['/', project?.ownerUsername, project?.name]"
+          routerLinkActive
+          [routerLinkActiveOptions]="{ exact: true }"
+          #projectLink="routerLinkActive"
+          [active]="projectLink.isActive"
+        >
           <mat-icon>book</mat-icon>
           <span>Project</span>
         </a>
-        <a mat-tab-link
-           [routerLink]="['/', project?.ownerUsername, project?.name, 'locales']"
-           routerLinkActive
-           #localesLink="routerLinkActive"
-           [active]="localesLink.isActive">
+        <a
+          mat-tab-link
+          [routerLink]="['/', project?.ownerUsername, project?.name, 'locales']"
+          routerLinkActive
+          #localesLink="routerLinkActive"
+          [active]="localesLink.isActive"
+        >
           <mat-icon>language</mat-icon>
           <span>Languages</span>
         </a>
-        <a mat-tab-link
-           [routerLink]="['/', project?.ownerUsername, project?.name, 'keys']"
-           routerLinkActive
-           #keysLink="routerLinkActive"
-           [active]="keysLink.isActive">
+        <a
+          mat-tab-link
+          [routerLink]="['/', project?.ownerUsername, project?.name, 'keys']"
+          routerLinkActive
+          #keysLink="routerLinkActive"
+          [active]="keysLink.isActive"
+        >
           <mat-icon>vpn_key</mat-icon>
           <span>Keys</span>
         </a>
-        <a mat-tab-link
-           [routerLink]="['/', project?.ownerUsername, project?.name, 'members']"
-           routerLinkActive
-           #membersLink="routerLinkActive"
-           [active]="membersLink.isActive">
+        <a
+          mat-tab-link
+          [routerLink]="['/', project?.ownerUsername, project?.name, 'members']"
+          routerLinkActive
+          #membersLink="routerLinkActive"
+          [active]="membersLink.isActive"
+        >
           <mat-icon>group</mat-icon>
           <span>Members</span>
         </a>
-        <a mat-tab-link
-           [routerLink]="['/', project?.ownerUsername, project?.name, 'activity']"
-           routerLinkActive
-           #activityLink="routerLinkActive"
-           [active]="activityLink.isActive">
+        <a
+          mat-tab-link
+          [routerLink]="[
+            '/',
+            project?.ownerUsername,
+            project?.name,
+            'activity'
+          ]"
+          routerLinkActive
+          #activityLink="routerLinkActive"
+          [active]="activityLink.isActive"
+        >
           <mat-icon>change_history</mat-icon>
           <span>Activity</span>
         </a>

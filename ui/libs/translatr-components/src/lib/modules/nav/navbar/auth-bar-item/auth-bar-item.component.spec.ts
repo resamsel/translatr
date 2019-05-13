@@ -8,9 +8,8 @@ describe('AuthBarItemComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AuthBarItemComponent ]
-    })
-    .compileComponents();
+      declarations: [AuthBarItemComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

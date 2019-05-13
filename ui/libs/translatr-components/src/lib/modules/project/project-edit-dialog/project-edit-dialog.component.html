@@ -1,16 +1,42 @@
-<h1 mat-dialog-title>{data.type, select, create {Create project} update {Edit {{data.project.name}}}}</h1>
+<h1 mat-dialog-title>
+  {data.type, select, create {Create project} update {Edit
+  {{ data.project.name }}}}
+</h1>
 <div mat-dialog-content [formGroup]="form">
-  <mat-error *ngIf="form.errors && form.errors['']">{{form.errors['']}}</mat-error>
+  <mat-error *ngIf="form.errors && form.errors['']">{{
+    form.errors['']
+  }}</mat-error>
   <mat-form-field>
-    <input matInput required placeholder="Name" formControlName="name" cdkFocusInitial>
-    <mat-error *ngIf="form.get('name').errors">{{form.get('name').errors.violation}}</mat-error>
+    <input
+      matInput
+      required
+      placeholder="Name"
+      formControlName="name"
+      cdkFocusInitial
+    />
+    <mat-error *ngIf="form.get('name').errors">{{
+      form.get('name').errors.violation
+    }}</mat-error>
   </mat-form-field>
   <mat-form-field>
-    <textarea matInput placeholder="Description" formControlName="description"></textarea>
-    <mat-error *ngIf="form.get('description').errors">{{form.get('description').errors.violation}}</mat-error>
+    <textarea
+      matInput
+      placeholder="Description"
+      formControlName="description"
+    ></textarea>
+    <mat-error *ngIf="form.get('description').errors">{{
+      form.get('description').errors.violation
+    }}</mat-error>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">OK</button>
+  <button
+    mat-button
+    color="primary"
+    (click)="onSubmit()"
+    [disabled]="form.invalid"
+  >
+    OK
+  </button>
 </div>

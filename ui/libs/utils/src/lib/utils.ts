@@ -20,12 +20,17 @@ export const pickRandomly = <T>(options: Array<T>): T => {
  * @see https://stackoverflow.com/a/36234242/1955709
  * @see https://en.wikipedia.org/wiki/Cartesian_product
  */
-export function cartesianProduct<T> (arr: T[][]): T[][] {
-  return arr.reduce((a, b) => {
-    return a.map(x => {
-      return b.map(y => {
-        return x.concat(y);
-      });
-    }).reduce((c, d) => c.concat(d), []);
-  }, [[]] as T[][]);
+export function cartesianProduct<T>(arr: T[][]): T[][] {
+  return arr.reduce(
+    (a, b) => {
+      return a
+        .map(x => {
+          return b.map(y => {
+            return x.concat(y);
+          });
+        })
+        .reduce((c, d) => c.concat(d), []);
+    },
+    [[]] as T[][]
+  );
 }

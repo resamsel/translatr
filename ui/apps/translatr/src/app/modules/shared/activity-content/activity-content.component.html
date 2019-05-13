@@ -3,37 +3,85 @@
     translation
   </span>
   <span *ngSwitchDefault class="content-type" i18n>
-    {{contentType}}
+    {{ contentType }}
   </span>
 </ng-container>
 <ng-container [ngSwitch]="contentType">
   <span *ngSwitchCase="'project'" class="content-type" i18n>
-    <a [routerLink]="['/', project?.ownerUsername, project?.name]" class="link">{{project?.name}}</a>
+    <a
+      [routerLink]="['/', project?.ownerUsername, project?.name]"
+      class="link"
+      >{{ project?.name }}</a
+    >
   </span>
   <span *ngSwitchCase="'locale'" class="content-type" i18n>
     <a
-      [routerLink]="['/', locale?.projectOwnerUsername, locale?.projectName, 'locales', locale?.name]"
-      class="link">{{locale?.displayName}}</a>
+      [routerLink]="[
+        '/',
+        locale?.projectOwnerUsername,
+        locale?.projectName,
+        'locales',
+        locale?.name
+      ]"
+      class="link"
+      >{{ locale?.displayName }}</a
+    >
     in project
-    <a [routerLink]="['/', locale?.projectOwnerUsername, locale?.projectName]" class="link">{{locale?.projectName}}</a>
+    <a
+      [routerLink]="['/', locale?.projectOwnerUsername, locale?.projectName]"
+      class="link"
+      >{{ locale?.projectName }}</a
+    >
   </span>
   <span *ngSwitchCase="'key'" class="content-type" i18n>
-    <a [routerLink]="['/', key?.projectOwnerUsername, key?.projectName, 'keys', key?.name]"
-       class="link">{{key?.name}}</a>
+    <a
+      [routerLink]="[
+        '/',
+        key?.projectOwnerUsername,
+        key?.projectName,
+        'keys',
+        key?.name
+      ]"
+      class="link"
+      >{{ key?.name }}</a
+    >
     in project
-    <a [routerLink]="['/', key?.projectOwnerUsername, key?.projectName]" class="link">{{key?.projectName}}</a>
+    <a
+      [routerLink]="['/', key?.projectOwnerUsername, key?.projectName]"
+      class="link"
+      >{{ key?.projectName }}</a
+    >
   </span>
   <span *ngSwitchCase="'message'" class="content-type" i18n>
     for key
     <a
-      [routerLink]="['/', message?.projectOwnerUsername, message?.projectName, 'keys', message?.keyName]"
-      class="link">{{message?.keyName}}</a>
+      [routerLink]="[
+        '/',
+        message?.projectOwnerUsername,
+        message?.projectName,
+        'keys',
+        message?.keyName
+      ]"
+      class="link"
+      >{{ message?.keyName }}</a
+    >
     of
     <a
-      [routerLink]="['/', message?.projectOwnerUsername, message?.projectName, 'locales', message?.localeName]"
-      class="link">{{message?.localeDisplayName}}</a>
+      [routerLink]="[
+        '/',
+        message?.projectOwnerUsername,
+        message?.projectName,
+        'locales',
+        message?.localeName
+      ]"
+      class="link"
+      >{{ message?.localeDisplayName }}</a
+    >
     in project
-    <a [routerLink]="['/', message?.projectOwnerUsername, message?.projectName]"
-       class="link">{{message?.projectName}}</a>
+    <a
+      [routerLink]="['/', message?.projectOwnerUsername, message?.projectName]"
+      class="link"
+      >{{ message?.projectName }}</a
+    >
   </span>
 </ng-container>

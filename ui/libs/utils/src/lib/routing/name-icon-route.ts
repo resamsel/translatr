@@ -1,4 +1,4 @@
-import {Route} from '@angular/router';
+import { Route } from '@angular/router';
 
 export interface NameIconRoute extends Route {
   data: {
@@ -6,4 +6,3 @@ export interface NameIconRoute extends Route {
     name: string;
   };
 }
-

@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Key, Locale, Message, PagedList, RequestCriteria} from '@dev/translatr-model';
-import {EditorFacade} from './+state/editor.facade';
-import {ActivatedRoute, ParamMap, Params, Router} from '@angular/router';
-import {filter, take, takeUntil} from 'rxjs/operators';
-import {combineLatest} from 'rxjs';
-import {AppFacade} from '../../../+state/app.facade';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
+import { EditorFacade } from './+state/editor.facade';
+import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
+import { filter, take, takeUntil } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { AppFacade } from '../../../+state/app.facade';
 
 @Component({
   selector: 'app-key-editor-page',
@@ -25,8 +25,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
     private readonly facade: EditorFacade,
     private readonly route: ActivatedRoute,
     private readonly router: Router
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.route.paramMap
@@ -47,8 +46,18 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
     this.selectedMessage$.subscribe((message: Message) => {
       if (message === undefined) {
         combineLatest([this.key$, this.facade.localesLoading$])
-          .pipe(take(1), filter(([key, loading]: [Key, boolean]) => key !== undefined && !loading))
-          .subscribe(() => this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {locale: null}}));
+          .pipe(
+            take(1),
+            filter(
+              ([key, loading]: [Key, boolean]) => key !== undefined && !loading
+            )
+          )
+          .subscribe(() =>
+            this.router.navigate([], {
+              queryParamsHandling: 'merge',
+              queryParams: { locale: null }
+            })
+          );
       }
     });
   }
@@ -58,14 +67,20 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onSearch(criteria: RequestCriteria) {
-    this.router.navigate([], {queryParamsHandling: 'merge', queryParams: criteria});
+    this.router.navigate([], {
+      queryParamsHandling: 'merge',
+      queryParams: criteria
+    });
   }
 
   onLoadMore(limit: number): void {
     // this.facade.loadLocalesBy({limit: `${limit + 25}`});
   }
 
-  messagesOfLocale(locales?: PagedList<Locale>, localeName?: string): Array<Message> {
+  messagesOfLocale(
+    locales?: PagedList<Locale>,
+    localeName?: string
+  ): Array<Message> {
     if (locales === undefined || localeName === undefined) {
       return [];
     }
@@ -79,6 +94,9 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onKeyChange(value: string) {
-    this.router.navigate(['..', value], {queryParamsHandling: 'preserve', relativeTo: this.route});
+    this.router.navigate(['..', value], {
+      queryParamsHandling: 'preserve',
+      relativeTo: this.route
+    });
   }
 }

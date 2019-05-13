@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, HostBinding, Input} from '@angular/core';
-import {User} from '@dev/translatr-model';
+import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
+import { User } from '@dev/translatr-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,4 +1,4 @@
-import {EllipsisPipe} from './ellipsis.pipe';
+import { EllipsisPipe } from './ellipsis.pipe';
 
 describe('EllipsisPipe', () => {
   it('create an instance', () => {

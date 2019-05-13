@@ -1,5 +1,5 @@
-import {UsersAction, UsersActionTypes} from './users.actions';
-import {PagedList, User} from '@dev/translatr-model';
+import { UsersAction, UsersActionTypes } from './users.actions';
+import { PagedList, User } from '@dev/translatr-model';
 
 export const USERS_FEATURE_KEY = 'users';
 

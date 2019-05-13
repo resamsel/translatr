@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {PagedList, Project} from '@dev/translatr-model';
-import {firstChar} from '@dev/translatr-sdk';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { PagedList, Project } from '@dev/translatr-model';
+import { firstChar } from '@dev/translatr-sdk';
 
 @Component({
   selector: 'app-project-list',

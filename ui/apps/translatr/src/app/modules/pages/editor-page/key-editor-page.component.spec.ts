@@ -8,9 +8,8 @@ describe('KeyEditorPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ KeyEditorPageComponent ]
-    })
-    .compileComponents();
+      declarations: [KeyEditorPageComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

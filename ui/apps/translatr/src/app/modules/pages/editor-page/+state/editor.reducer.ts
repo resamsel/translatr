@@ -1,5 +1,5 @@
-import {EditorAction, EditorActionTypes} from './editor.actions';
-import {Key, Locale, Message, PagedList, RequestCriteria} from '@dev/translatr-model';
+import { EditorAction, EditorActionTypes } from './editor.actions';
+import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 
 export const EDITOR_FEATURE_KEY = 'editor';
 
@@ -11,13 +11,9 @@ export const EDITOR_FEATURE_KEY = 'editor';
  *  Note: replace if already defined in another module
  */
 
-export type LoadingState<S> = {
-  [key in keyof S]: boolean;
-};
+export type LoadingState<S> = { [key in keyof S]: boolean };
 
-export type ErrorState<S> = {
-  [key in keyof S]?: any;
-};
+export type ErrorState<S> = { [key in keyof S]?: any };
 
 export interface EditorState {
   locale?: Locale;
@@ -61,7 +57,11 @@ export const initialState: EditorState = {
   error: {}
 };
 
-function updateKeysWithMessage(keys: PagedList<Key>, locale: Locale, message: Message): PagedList<Key> {
+function updateKeysWithMessage(
+  keys: PagedList<Key>,
+  locale: Locale,
+  message: Message
+): PagedList<Key> {
   if (keys === undefined || locale === undefined) {
     return keys;
   }
@@ -73,12 +73,18 @@ function updateKeysWithMessage(keys: PagedList<Key>, locale: Locale, message: Me
   return keys;
 }
 
-function updateLocalesWithMessage(locales: PagedList<Locale>, key: Key, message: Message): PagedList<Locale> {
+function updateLocalesWithMessage(
+  locales: PagedList<Locale>,
+  key: Key,
+  message: Message
+): PagedList<Locale> {
   if (locales === undefined || key === undefined) {
     return locales;
   }
 
-  const index = locales.list.findIndex((l: Locale) => l.id === message.localeId);
+  const index = locales.list.findIndex(
+    (l: Locale) => l.id === message.localeId
+  );
   if (index !== -1) {
     locales.list[index].messages[key.name] = message;
   }
@@ -124,9 +130,15 @@ export function editorReducer(
       return placePayload(state, 'locale', action.payload.locale);
 
     case EditorActionTypes.LoadLocalesBy:
-      return placePayload(state, 'search', {...state.search, ...action.payload});
+      return placePayload(state, 'search', {
+        ...state.search,
+        ...action.payload
+      });
     case EditorActionTypes.LoadLocaleSearch:
-      return placePayload(state, 'search', {...state.search, ...action.payload});
+      return placePayload(state, 'search', {
+        ...state.search,
+        ...action.payload
+      });
     case EditorActionTypes.LoadLocales:
       return activateLoading(state, 'locales');
     case EditorActionTypes.LocalesLoaded:
@@ -138,9 +150,15 @@ export function editorReducer(
       return placePayload(state, 'key', action.payload);
 
     case EditorActionTypes.LoadKeysBy:
-      return placePayload(state, 'search', {...state.search, ...action.payload});
+      return placePayload(state, 'search', {
+        ...state.search,
+        ...action.payload
+      });
     case EditorActionTypes.LoadKeySearch:
-      return placePayload(state, 'search', {...state.search, ...action.payload});
+      return placePayload(state, 'search', {
+        ...state.search,
+        ...action.payload
+      });
     case EditorActionTypes.LoadKeys:
       return activateLoading(state, 'keys');
     case EditorActionTypes.KeysLoaded:
@@ -157,11 +175,18 @@ export function editorReducer(
       return {
         ...state,
         keys: updateKeysWithMessage(state.keys, state.locale, action.payload),
-        locales: updateLocalesWithMessage(state.locales, state.key, action.payload),
-        selectedMessage: state.selectedMessage.id === action.payload.id ? action.payload : state.selectedMessage
+        locales: updateLocalesWithMessage(
+          state.locales,
+          state.key,
+          action.payload
+        ),
+        selectedMessage:
+          state.selectedMessage.id === action.payload.id
+            ? action.payload
+            : state.selectedMessage
       };
     case EditorActionTypes.UnloadEditor:
-      return {...initialState};
+      return { ...initialState };
   }
   return state;
 }

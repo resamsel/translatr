@@ -1,3 +1,6 @@
 export enum MemberRole {
-  Owner, Manager, Developer, Translator
+  Owner,
+  Manager,
+  Developer,
+  Translator
 }

@@ -1,8 +1,13 @@
 <app-sidenav
   class="flat"
-  page="{{name}}"
-  [backLink]="ownerName && projectName ? {routerLink: ['/', ownerName, projectName], name: projectName} : undefined"
-  [me]="me">
+  page="{{ name }}"
+  [backLink]="
+    ownerName && projectName
+      ? { routerLink: ['/', ownerName, projectName], name: projectName }
+      : undefined
+  "
+  [me]="me"
+>
   <ng-container ngProjectAs="app-search-bar">
     <ng-content select="app-search-bar"></ng-content>
   </ng-container>
@@ -20,7 +25,9 @@
     <div class="editor">
       <div class="buttons">
         <a mat-button [routerLink]="[]">Cancel</a>
-        <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+        <button mat-raised-button color="primary" (click)="onSave()">
+          Save
+        </button>
       </div>
       <mat-divider></mat-divider>
       <div class="content">
@@ -42,9 +49,8 @@
         </mat-tab>
         <mat-tab label="Translations" i18n-label="@@translations">
           <mat-list>
-            <mat-list-item *ngFor="let message of messages"
-                           class="translation">
-              <h3 matLine>{{message.localeName}}</h3>
+            <mat-list-item *ngFor="let message of messages" class="translation">
+              <h3 matLine>{{ message.localeName }}</h3>
               <p matLine [innerHTML]="message.value"></p>
             </mat-list-item>
           </mat-list>

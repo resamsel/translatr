@@ -10,18 +10,20 @@ import { Observable } from 'rxjs';
   styleUrls: ['./user-access-tokens.component.scss']
 })
 export class UserAccessTokensComponent implements OnInit {
-
   user: User;
   accessTokens$: Observable<PagedList<AccessToken> | undefined>;
 
-  constructor(private readonly route: ActivatedRoute, private readonly facade: UserFacade) {
-  }
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly facade: UserFacade
+  ) {}
 
   ngOnInit() {
-    this.route.parent.data
-      .subscribe((data: { user: User }) => {
-        this.user = data.user;
-        this.accessTokens$ = this.facade.loadAccessTokens({userId: data.user.id});
+    this.route.parent.data.subscribe((data: { user: User }) => {
+      this.user = data.user;
+      this.accessTokens$ = this.facade.loadAccessTokens({
+        userId: data.user.id
       });
+    });
   }
 }

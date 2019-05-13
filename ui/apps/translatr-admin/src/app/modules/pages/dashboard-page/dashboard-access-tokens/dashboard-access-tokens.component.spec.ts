@@ -8,9 +8,8 @@ describe('DashboardAccessTokensComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardAccessTokensComponent ]
-    })
-    .compileComponents();
+      declarations: [DashboardAccessTokensComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

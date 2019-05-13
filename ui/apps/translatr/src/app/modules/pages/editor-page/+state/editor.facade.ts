@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {select, Store} from '@ngrx/store';
-import {EditorPartialState} from './editor.reducer';
-import {editorQuery} from './editor.selectors';
+import { Injectable } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { EditorPartialState } from './editor.reducer';
+import { editorQuery } from './editor.selectors';
 import {
   LoadKey,
   LoadKeysBy,
@@ -13,63 +13,98 @@ import {
   SelectLocale,
   UnloadEditor
 } from './editor.actions';
-import {Observable, Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
-import {Key, Locale, Message, PagedList, RequestCriteria} from '@dev/translatr-model';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 
 @Injectable()
 export class EditorFacade {
   unloadEditor$ = new Subject<void>();
 
   get locale$(): Observable<Locale> {
-    return this.store.pipe(takeUntil(this.unloadEditor$), select(editorQuery.getLocale));
+    return this.store.pipe(
+      takeUntil(this.unloadEditor$),
+      select(editorQuery.getLocale)
+    );
   }
 
   get locales$(): Observable<PagedList<Locale>> {
-    return this.store.pipe(takeUntil(this.unloadEditor$), select(editorQuery.getLocales));
+    return this.store.pipe(
+      takeUntil(this.unloadEditor$),
+      select(editorQuery.getLocales)
+    );
   }
 
   get localesLoading$(): Observable<boolean> {
-    return this.store.pipe(takeUntil(this.unloadEditor$), select(editorQuery.getLocalesLoading));
+    return this.store.pipe(
+      takeUntil(this.unloadEditor$),
+      select(editorQuery.getLocalesLoading)
+    );
   }
 
   get key$(): Observable<Key> {
-    return this.store.pipe(takeUntil(this.unloadEditor$), select(editorQuery.getKey));
+    return this.store.pipe(
+      takeUntil(this.unloadEditor$),
+      select(editorQuery.getKey)
+    );
   }
 
   get keys$(): Observable<PagedList<Key>> {
-    return this.store.pipe(takeUntil(this.unloadEditor$), select(editorQuery.getKeys));
+    return this.store.pipe(
+      takeUntil(this.unloadEditor$),
+      select(editorQuery.getKeys)
+    );
   }
 
   get keysLoading$(): Observable<boolean> {
-    return this.store.pipe(takeUntil(this.unloadEditor$), select(editorQuery.getKeysLoading));
+    return this.store.pipe(
+      takeUntil(this.unloadEditor$),
+      select(editorQuery.getKeysLoading)
+    );
   }
 
   get selectedLocale$(): Observable<string> {
-    return this.store.pipe(takeUntil(this.unloadEditor$), select(editorQuery.getSelectedLocale));
+    return this.store.pipe(
+      takeUntil(this.unloadEditor$),
+      select(editorQuery.getSelectedLocale)
+    );
   }
 
   get selectedKey$(): Observable<string> {
-    return this.store.pipe(takeUntil(this.unloadEditor$), select(editorQuery.getSelectedKey));
+    return this.store.pipe(
+      takeUntil(this.unloadEditor$),
+      select(editorQuery.getSelectedKey)
+    );
   }
 
   get selectedMessage$(): Observable<Message> {
-    return this.store.pipe(takeUntil(this.unloadEditor$), select(editorQuery.getSelectedMessage));
+    return this.store.pipe(
+      takeUntil(this.unloadEditor$),
+      select(editorQuery.getSelectedMessage)
+    );
   }
 
   get search$(): Observable<RequestCriteria> {
-    return this.store.pipe(takeUntil(this.unloadEditor$), select(editorQuery.getSearch));
+    return this.store.pipe(
+      takeUntil(this.unloadEditor$),
+      select(editorQuery.getSearch)
+    );
   }
 
-  constructor(private store: Store<EditorPartialState>) {
-  }
+  constructor(private store: Store<EditorPartialState>) {}
 
-  loadLocaleEditor(username: string, projectName: string, localeName: string): void {
-    this.store.dispatch(new LoadLocale({username, projectName, localeName}));
+  loadLocaleEditor(
+    username: string,
+    projectName: string,
+    localeName: string
+  ): void {
+    this.store.dispatch(new LoadLocale({ username, projectName, localeName }));
   }
 
   loadKeyEditor(username: string, projectName: string, keyName: string): void {
-    this.store.dispatch(new LoadKey({username, projectName, keyName: keyName}));
+    this.store.dispatch(
+      new LoadKey({ username, projectName, keyName: keyName })
+    );
   }
 
   unloadEditor(): void {
@@ -79,11 +114,11 @@ export class EditorFacade {
 
   selectKey(key?: string): void {
     console.log(`Dispatching SelectKey(${key})`);
-    this.store.dispatch(new SelectKey({key}));
+    this.store.dispatch(new SelectKey({ key }));
   }
 
   selectLocale(locale?: string): void {
-    this.store.dispatch(new SelectLocale({locale}));
+    this.store.dispatch(new SelectLocale({ locale }));
   }
 
   saveMessage(message: Message): void {

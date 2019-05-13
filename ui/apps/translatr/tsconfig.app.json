@@ -4,8 +4,5 @@
     "outDir": "../../dist/out-tsc/apps/translatr",
     "types": []
   },
-  "exclude": [
-    "test.ts",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["test.ts", "**/*.spec.ts"]
 }

@@ -7,7 +7,6 @@ import { Message, RequestCriteria } from '@dev/translatr-model';
   providedIn: 'root'
 })
 export class MessageService extends AbstractService<Message, RequestCriteria> {
-
   constructor(http: HttpClient) {
     super(http, () => '/api/messages', '/api/message');
   }

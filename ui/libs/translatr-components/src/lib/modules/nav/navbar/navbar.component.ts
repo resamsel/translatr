@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {MatDrawer} from '@angular/material';
-import {User} from '@dev/translatr-model';
+import { Component, Input, OnInit } from '@angular/core';
+import { MatDrawer } from '@angular/material';
+import { User } from '@dev/translatr-model';
 
 @Component({
   selector: 'app-navbar',
@@ -8,17 +8,13 @@ import {User} from '@dev/translatr-model';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-
   @Input() title = 'Translatr';
   @Input() sidenav: MatDrawer;
   @Input() backLink: { routerLink: string[]; name: string };
   @Input() page: string;
   @Input() me: User | undefined;
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

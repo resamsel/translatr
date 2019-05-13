@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {RequestCriteria} from '@dev/translatr-model';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { RequestCriteria } from '@dev/translatr-model';
 
 @Component({
   selector: 'app-search-bar',
@@ -27,7 +27,7 @@ export class SearchBarComponent {
   @Output() search = new EventEmitter<RequestCriteria>();
 
   onSearch(event: Event) {
-    this.search.emit({search: this.searchControl.value});
+    this.search.emit({ search: this.searchControl.value });
     event.preventDefault();
   }
 }

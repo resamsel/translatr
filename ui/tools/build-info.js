@@ -1,6 +1,6 @@
-const {version, name, author, bugs, homepage} = require('../package.json');
-const {resolve, relative} = require('path');
-const {writeFileSync} = require('fs-extra');
+const { version, name, author, bugs, homepage } = require('../package.json');
+const { resolve, relative } = require('path');
+const { writeFileSync } = require('fs-extra');
 const dateFormat = require('dateformat');
 
 const now = new Date();
@@ -12,11 +12,19 @@ const info = {
   homepage,
   bugsUrl: bugs.url,
   buildDate: now,
-  buildVersion: `${version}-${dateFormat('yyyymmddhhMMss')}`,
+  buildVersion: `${version}-${dateFormat('yyyymmddhhMMss')}`
 };
 
-const file = resolve(__dirname, '..', 'libs', 'translatr-components', 'src', 'build-info.ts');
-writeFileSync(file,
+const file = resolve(
+  __dirname,
+  '..',
+  'libs',
+  'translatr-components',
+  'src',
+  'build-info.ts'
+);
+writeFileSync(
+  file,
   `// IMPORTANT: THIS FILE IS AUTO GENERATED! DO NOT MANUALLY EDIT OR CHECKIN!
 /* tslint:disable */
 export interface BuildInfo {
@@ -30,6 +38,13 @@ export interface BuildInfo {
 }
 export const BUILD_INFO: BuildInfo = ${JSON.stringify(info, null, 2)};
 /* tslint:enable */
-`, {encoding: 'utf-8'});
+`,
+  { encoding: 'utf-8' }
+);
 
-console.log(`Wrote build info ${info.version} to ${relative(resolve(__dirname, '..'), file)}`);
+console.log(
+  `Wrote build info ${info.version} to ${relative(
+    resolve(__dirname, '..'),
+    file
+  )}`
+);

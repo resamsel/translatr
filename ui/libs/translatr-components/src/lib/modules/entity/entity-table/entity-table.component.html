@@ -1,39 +1,58 @@
 <mat-form-field>
-  <input matInput placeholder="Filter" (keyup)="onFilter($event.target.value)">
+  <input
+    matInput
+    placeholder="Filter"
+    (keyup)="onFilter($event.target.value)"
+  />
 </mat-form-field>
 <table mat-table [dataSource]="dataSource?.list" [trackBy]="trackByFn">
   <ng-container matColumnDef="selection">
     <th mat-header-cell *matHeaderCellDef>
-      <mat-checkbox (change)="$event ? masterToggle() : null"
-                    [checked]="selection.hasValue() && isAllSelected()"
-                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+      <mat-checkbox
+        (change)="$event ? masterToggle() : null"
+        [checked]="selection.hasValue() && isAllSelected()"
+        [indeterminate]="selection.hasValue() && !isAllSelected()"
+      >
       </mat-checkbox>
     </th>
     <td mat-cell *matCellDef="let element">
       <mat-checkbox
         (click)="$event.stopPropagation()"
         (change)="$event ? onSelectionChange(element) : null"
-        [checked]="selection.isSelected(element)">
+        [checked]="selection.isSelected(element)"
+      >
       </mat-checkbox>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="selected">
-    <th mat-header-cell *matHeaderCellDef class="selection-header">{{selection.selected.length}} selected</th>
+    <th mat-header-cell *matHeaderCellDef class="selection-header">
+      {{ selection.selected.length }} selected
+    </th>
   </ng-container>
 
   <ng-container matColumnDef="selectionActions">
-    <th mat-header-cell *matHeaderCellDef class="selection-header selection-actions"
-        [attr.colspan]="columns.length - 1">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      class="selection-header selection-actions"
+      [attr.colspan]="columns.length - 1"
+    >
       <ng-content select="selection-actions"></ng-content>
     </th>
   </ng-container>
 
   <ng-content select="[matColumnDef]"></ng-content>
 
-  <tr mat-header-row
-      *matHeaderRowDef="selection.isEmpty() ? displayedColumns : ['selection', 'selected', 'selectionActions']"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  <tr
+    mat-header-row
+    *matHeaderRowDef="
+      selection.isEmpty()
+        ? displayedColumns
+        : ['selection', 'selected', 'selectionActions']
+    "
+  ></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
 
 <button
@@ -41,5 +60,7 @@
   class="more-button"
   *ngIf="dataSource !== undefined"
   [disabled]="!dataSource?.hasNext"
-  (click)="onLoadMore()">Load more...
+  (click)="onLoadMore()"
+>
+  Load more...
 </button>

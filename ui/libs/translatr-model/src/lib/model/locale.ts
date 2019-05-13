@@ -1,5 +1,5 @@
-import {Message} from './message';
-import {ProjectEmbedded} from './project-embedded';
+import { Message } from './message';
+import { ProjectEmbedded } from './project-embedded';
 
 export interface Locale extends ProjectEmbedded {
   id?: string;

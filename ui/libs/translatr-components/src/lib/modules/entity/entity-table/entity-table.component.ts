@@ -10,11 +10,11 @@ import {
   QueryList,
   ViewChild
 } from '@angular/core';
-import {SelectionModel} from '@angular/cdk/collections';
-import {MatColumnDef, MatTable} from '@angular/material';
-import {PagedList, RequestCriteria} from '@dev/translatr-model';
-import {merge, Subject} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, scan, shareReplay, take} from 'rxjs/operators';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatColumnDef, MatTable } from '@angular/material';
+import { PagedList, RequestCriteria } from '@dev/translatr-model';
+import { merge, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, scan, shareReplay, take } from 'rxjs/operators';
 
 export interface Entity {
   id: string | number;
@@ -27,14 +27,14 @@ export interface Entity {
   styleUrls: ['./entity-table.component.css']
 })
 export class EntityTableComponent implements OnInit, AfterContentInit {
-
   @Input() dataSource: PagedList<Entity>;
   private _displayedColumns: string[];
 
   @Input() set displayedColumns(displayedColumns: string[]) {
-    this._displayedColumns = displayedColumns.indexOf('selection') >= 0
-      ? displayedColumns
-      : ['selection', ...displayedColumns];
+    this._displayedColumns =
+      displayedColumns.indexOf('selection') >= 0
+        ? displayedColumns
+        : ['selection', ...displayedColumns];
   }
 
   get displayedColumns(): string[] {
@@ -61,29 +61,34 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
     this.search$.asObservable().pipe(
       distinctUntilChanged(),
       debounceTime(200),
-      map((search: string) => ({search}))
+      map((search: string) => ({ search }))
     ),
     this.limit$.asObservable().pipe(
       distinctUntilChanged(),
-      map((limit: number) => ({limit: `${limit}`}))
+      map((limit: number) => ({ limit: `${limit}` }))
     )
-  )
-    .pipe(
-      scan((acc: RequestCriteria, value: RequestCriteria) => ({...acc, ...value})),
-      shareReplay(1)
-    );
+  ).pipe(
+    scan((acc: RequestCriteria, value: RequestCriteria) => ({
+      ...acc,
+      ...value
+    })),
+    shareReplay(1)
+  );
 
   selection = new SelectionModel<Entity>(true, []);
 
   constructor() {
-    this.commands$.subscribe((criteria: RequestCriteria) => this.criteria.emit(criteria));
+    this.commands$.subscribe((criteria: RequestCriteria) =>
+      this.criteria.emit(criteria)
+    );
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngAfterContentInit(): void {
-    this.columns.forEach((column: MatColumnDef) => this.table.addColumnDef(column));
+    this.columns.forEach((column: MatColumnDef) =>
+      this.table.addColumnDef(column)
+    );
   }
 
   trackByFn(index: number, item: Entity): string {
@@ -98,7 +103,8 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
     this.commands$
       .pipe(take(1))
       .subscribe((criteria: RequestCriteria) =>
-        this.limit$.next(parseInt(criteria.limit, 10) * 2));
+        this.limit$.next(parseInt(criteria.limit, 10) * 2)
+      );
   }
 
   // Selection
@@ -116,9 +122,9 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
    * Selects all rows if they are not all selected; otherwise clear selection.
    */
   masterToggle() {
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.dataSource.list.forEach(row => this.selection.select(row));
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.dataSource.list.forEach(row => this.selection.select(row));
   }
 
   onSelectionChange(element: Entity) {

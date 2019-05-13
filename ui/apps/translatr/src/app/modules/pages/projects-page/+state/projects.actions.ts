@@ -1,5 +1,5 @@
-import {Action} from '@ngrx/store';
-import {PagedList, Project, ProjectCriteria} from '@dev/translatr-model';
+import { Action } from '@ngrx/store';
+import { PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
 
 export enum ProjectsActionTypes {
   LoadProjects = '[Projects Page] Load Projects',
@@ -10,24 +10,19 @@ export enum ProjectsActionTypes {
 export class LoadProjects implements Action {
   readonly type = ProjectsActionTypes.LoadProjects;
 
-  constructor(public payload?: ProjectCriteria) {
-  }
+  constructor(public payload?: ProjectCriteria) {}
 }
 
 export class ProjectsLoadError implements Action {
   readonly type = ProjectsActionTypes.ProjectsLoadError;
 
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class ProjectsLoaded implements Action {
   readonly type = ProjectsActionTypes.ProjectsLoaded;
 
-  constructor(public payload: PagedList<Project>) {
-  }
+  constructor(public payload: PagedList<Project>) {}
 }
 
-export type ProjectsAction = LoadProjects
-  | ProjectsLoaded
-  | ProjectsLoadError;
+export type ProjectsAction = LoadProjects | ProjectsLoaded | ProjectsLoadError;

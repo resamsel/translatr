@@ -8,9 +8,8 @@ describe('FrappeChartComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FrappeChartComponent ]
-    })
-    .compileComponents();
+      declarations: [FrappeChartComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

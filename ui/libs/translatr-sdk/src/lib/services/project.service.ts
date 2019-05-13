@@ -17,23 +17,29 @@ const projectMapper = (project: Project) => ({
   providedIn: 'root'
 })
 export class ProjectService extends AbstractService<Project, ProjectCriteria> {
-
   constructor(http: HttpClient) {
     super(http, () => '/api/projects', '/api/project');
   }
 
-  getProjectByOwnerAndName(username: string, projectName: string, options?: {
-    params?: HttpParams | {
-      [param: string]: string | string[];
+  getProjectByOwnerAndName(
+    username: string,
+    projectName: string,
+    options?: {
+      params?:
+        | HttpParams
+        | {
+            [param: string]: string | string[];
+          };
     }
-  }): Observable<Project | undefined> {
+  ): Observable<Project | undefined> {
     return this.http
       .get<Project>(`/api/${username}/${projectName}`, options)
       .pipe(map(projectMapper));
   }
 
   activity(projectId: string): Observable<PagedList<Aggregate>> {
-    return this.http
-      .get<PagedList<Aggregate>>(`/api/project/${projectId}/activity`);
+    return this.http.get<PagedList<Aggregate>>(
+      `/api/project/${projectId}/activity`
+    );
   }
 }

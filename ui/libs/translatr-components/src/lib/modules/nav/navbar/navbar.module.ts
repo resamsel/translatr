@@ -1,6 +1,6 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {NavbarComponent} from './navbar.component';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NavbarComponent } from './navbar.component';
 import {
   MatButtonModule,
   MatDividerModule,
@@ -10,18 +10,14 @@ import {
   MatMenuModule,
   MatToolbarModule
 } from '@angular/material';
-import {AuthBarItemComponent} from './auth-bar-item/auth-bar-item.component';
-import {RouterModule} from '@angular/router';
-import {GravatarModule} from 'ngx-gravatar';
-import {SearchBarComponent} from './search-bar/search-bar.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import { AuthBarItemComponent } from './auth-bar-item/auth-bar-item.component';
+import { RouterModule } from '@angular/router';
+import { GravatarModule } from 'ngx-gravatar';
+import { SearchBarComponent } from './search-bar/search-bar.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [
-    NavbarComponent,
-    AuthBarItemComponent,
-    SearchBarComponent
-  ],
+  declarations: [NavbarComponent, AuthBarItemComponent, SearchBarComponent],
   imports: [
     CommonModule,
     MatIconModule,
@@ -35,11 +31,6 @@ import {ReactiveFormsModule} from '@angular/forms';
     RouterModule,
     GravatarModule
   ],
-  exports: [
-    NavbarComponent,
-    SearchBarComponent,
-    AuthBarItemComponent
-  ]
+  exports: [NavbarComponent, SearchBarComponent, AuthBarItemComponent]
 })
-export class NavbarModule {
-}
+export class NavbarModule {}

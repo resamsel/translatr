@@ -1,7 +1,7 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {ProjectsResolverService} from '../../shared/resolver/projects-resolver.service';
-import {ProjectsPageComponent} from './projects-page.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { ProjectsResolverService } from '../../shared/resolver/projects-resolver.service';
+import { ProjectsPageComponent } from './projects-page.component';
 
 const routes: Routes = [
   {
@@ -15,5 +15,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [ProjectsResolverService]
 })
-export class ProjectsPageRoutingModule {
-}
+export class ProjectsPageRoutingModule {}

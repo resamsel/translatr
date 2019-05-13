@@ -1,7 +1,7 @@
-import {Member} from './member';
-import {Locale} from './locale';
-import {Key} from './key';
-import {Message} from './message';
+import { Member } from './member';
+import { Locale } from './locale';
+import { Key } from './key';
+import { Message } from './message';
 
 export interface Project {
   id?: string;

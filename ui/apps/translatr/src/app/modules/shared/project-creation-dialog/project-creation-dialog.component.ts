@@ -1,8 +1,8 @@
-import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
-import {FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms';
-import {MatDialogRef, MatSnackBar} from '@angular/material';
-import {ProjectService} from '@dev/translatr-sdk';
-import {Project} from '@dev/translatr-model';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { ProjectService } from '@dev/translatr-sdk';
+import { Project } from '@dev/translatr-model';
 
 const ENTER_KEYCODE = 'Enter';
 
@@ -26,7 +26,6 @@ interface Error {
   styleUrls: ['./project-creation-dialog.component.scss']
 })
 export class ProjectCreationDialogComponent implements OnInit {
-
   public get nameFormControl() {
     return this.form.get('name');
   }
@@ -35,13 +34,12 @@ export class ProjectCreationDialogComponent implements OnInit {
     private readonly snackBar: MatSnackBar,
     private readonly projectService: ProjectService,
     private readonly dialogRef: MatDialogRef<ProjectCreationDialogComponent>
-  ) {
-  }
+  ) {}
 
   @ViewChild('name') nameField: ElementRef;
 
   form = new FormGroup({
-    'name': new FormControl('', [
+    name: new FormControl('', [
       Validators.required,
       Validators.pattern('[^\\s/]+')
     ])
@@ -51,37 +49,39 @@ export class ProjectCreationDialogComponent implements OnInit {
   log = console.log;
 
   ngOnInit() {
-    this.nameFormControl
-      .statusChanges
-      .subscribe(status => console.log('status', status, this.processing));
+    this.nameFormControl.statusChanges.subscribe(status =>
+      console.log('status', status, this.processing)
+    );
   }
 
   public onSave(): void {
     this.processing = true;
-    this.projectService.create(this.form.value)
-      .subscribe(
-        () => this.onCreated(this.form.value),
-        (res: { error: Error }) => {
-          console.error(res);
-          this.processing = false;
+    this.projectService.create(this.form.value).subscribe(
+      () => this.onCreated(this.form.value),
+      (res: { error: Error }) => {
+        console.error(res);
+        this.processing = false;
 
-          this.nameFormControl
-            .setErrors(res.error.error.violations.reduce(
-              (prev: ValidationErrors, violation: Violation) => ({...prev, [violation.field]: violation.message}),
-              {}));
-          this.nameFormControl.markAsTouched();
-        }
-      );
+        this.nameFormControl.setErrors(
+          res.error.error.violations.reduce(
+            (prev: ValidationErrors, violation: Violation) => ({
+              ...prev,
+              [violation.field]: violation.message
+            }),
+            {}
+          )
+        );
+        this.nameFormControl.markAsTouched();
+      }
+    );
   }
 
   private onCreated(project: Project): void {
     this.processing = false;
     this.dialogRef.close();
-    this.snackBar.open(
-      `Project ${project.name} has been created`,
-      'Dismiss',
-      {duration: 3000}
-    );
+    this.snackBar.open(`Project ${project.name} has been created`, 'Dismiss', {
+      duration: 3000
+    });
   }
 
   @HostListener('window:keyup', ['$event'])

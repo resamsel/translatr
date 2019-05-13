@@ -1,5 +1,5 @@
-import {ProjectAction, ProjectActionTypes} from './project.actions';
-import {Activity, Aggregate, Key, Locale, PagedList, Project, RequestCriteria} from '@dev/translatr-model';
+import { ProjectAction, ProjectActionTypes } from './project.actions';
+import { Activity, Aggregate, Key, Locale, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 
 export const PROJECT_FEATURE_KEY = 'project';
 
@@ -54,7 +54,7 @@ export function projectReducer(
         ...state,
         localesSearch: {
           ...state.localesSearch,
-          ...action.payload ? action.payload : {}
+          ...(action.payload ? action.payload : {})
         }
       };
     case ProjectActionTypes.LocalesLoaded:
@@ -67,7 +67,7 @@ export function projectReducer(
         ...state,
         keysSearch: {
           ...state.keysSearch,
-          ...action.payload ? action.payload : {}
+          ...(action.payload ? action.payload : {})
         }
       };
     case ProjectActionTypes.KeysLoaded:
@@ -92,7 +92,7 @@ export function projectReducer(
         loading: false
       };
     case ProjectActionTypes.UnloadProject:
-      return {...initialState};
+      return { ...initialState };
   }
   return state;
 }

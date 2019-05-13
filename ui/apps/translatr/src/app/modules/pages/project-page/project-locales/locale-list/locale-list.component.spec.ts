@@ -8,9 +8,8 @@ describe('LocaleListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LocaleListComponent ]
-    })
-    .compileComponents();
+      declarations: [LocaleListComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

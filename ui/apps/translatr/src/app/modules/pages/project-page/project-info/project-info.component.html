@@ -1,14 +1,18 @@
 <div class="container flex" *ngIf="project$ | async as project">
   <mat-card class="info">
-    <mat-card-title>{{project?.name}}</mat-card-title>
+    <mat-card-title>{{ project?.name }}</mat-card-title>
     <mat-card-content>
       <p i18n="@@temporal.info">
-        Created: {{project?.whenCreated | amTimeAgo}},
-        updated: {{project?.whenUpdated | amTimeAgo}}
+        Created: {{ project?.whenCreated | amTimeAgo }}, updated:
+        {{ project?.whenUpdated | amTimeAgo }}
       </p>
       <mat-chip-list>
-        <mat-chip i18n="@@members.summary">{{project?.members?.length}} members</mat-chip>
-        <mat-chip *ngFor="let member of project?.members">{{member.userName}} ({{member.role}})</mat-chip>
+        <mat-chip i18n="@@members.summary"
+          >{{ project?.members?.length }} members</mat-chip
+        >
+        <mat-chip *ngFor="let member of project?.members"
+          >{{ member.userName }} ({{ member.role }})</mat-chip
+        >
       </mat-chip-list>
     </mat-card-content>
   </mat-card>
@@ -25,10 +29,13 @@
     <mat-card-title i18n="@@locales.latest">Latest Languages</mat-card-title>
     <mat-card-content>
       <div *ngIf="latestLocales$ | async; else localesEmpty">
-        <ng-container *ngFor="let locale of latestLocales$ | async; let i = index">
+        <ng-container
+          *ngFor="let locale of latestLocales$ | async; let i = index"
+        >
           <span *ngIf="i > 0">, </span>
-          <a class="link" [routerLink]="['locales', locale.name]">{{locale.name}}
-            — {{locale.displayName}}</a>
+          <a class="link" [routerLink]="['locales', locale.name]"
+            >{{ locale.name }} — {{ locale.displayName }}</a
+          >
         </ng-container>
       </div>
       <ng-template #localesEmpty>No languages yet.</ng-template>
@@ -42,7 +49,7 @@
       <div *ngIf="latestKeys$ | async; else keysEmpty">
         <ng-container *ngFor="let key of latestKeys$ | async; let i = index">
           <span *ngIf="i > 0">, </span>
-          <a class="link" [routerLink]="['keys', key.name]">{{key.name}}</a>
+          <a class="link" [routerLink]="['keys', key.name]">{{ key.name }}</a>
         </ng-container>
       </div>
       <ng-template #keysEmpty>No keys yet.</ng-template>
@@ -51,12 +58,18 @@
 
   <mat-card class="small messages">
     <div mat-card-image></div>
-    <mat-card-title i18n="@@translations.latest">Latest Translations</mat-card-title>
+    <mat-card-title i18n="@@translations.latest"
+      >Latest Translations</mat-card-title
+    >
     <mat-card-content>
       <div *ngIf="latestMessages$ | async; else messagesEmpty">
-        <ng-container *ngFor="let message of latestMessages$ | async; let i = index">
+        <ng-container
+          *ngFor="let message of latestMessages$ | async; let i = index"
+        >
           <span *ngIf="i > 0">, </span>
-          <a class="link" [routerLink]="['keys', message.localeName]">{{message.localeName}}</a>
+          <a class="link" [routerLink]="['keys', message.localeName]">{{
+            message.localeName
+          }}</a>
         </ng-container>
       </div>
       <ng-template #messagesEmpty>No translations yet.</ng-template>

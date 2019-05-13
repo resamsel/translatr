@@ -1,10 +1,5 @@
 import { AdminLoaded } from './app.actions';
-import {
-  AppState,
-  Entity,
-  initialState,
-  appReducer
-} from './app.reducer';
+import { appReducer, AppState, Entity, initialState } from './app.reducer';
 
 describe('Admin Reducer', () => {
   const getAdminId = it => it['id'];

@@ -1,5 +1,5 @@
-import {Component, HostBinding, Input} from '@angular/core';
-import {Heatmap} from 'frappe-charts/dist/frappe-charts.min.esm';
+import { Component, HostBinding, Input } from '@angular/core';
+import { Heatmap } from 'frappe-charts/dist/frappe-charts.min.esm';
 
 export interface HeatmapData {
   dataPoints: { [key: string]: number };
@@ -13,7 +13,6 @@ export interface HeatmapData {
   styleUrls: ['./frappe-chart.component.scss']
 })
 export class FrappeChartComponent {
-
   @Input() title: string;
   @Input() height = 160;
 
@@ -22,16 +21,14 @@ export class FrappeChartComponent {
       return;
     }
 
-    this.chart = new Heatmap(
-      '#chart',
-      {
-        title: this.title,
-        data: data,
-        type: 'heatmap',
-        height: this.height,
-        colors: ['#dedede', '#d9e38c', '#9bc26d', '#669f4b', '#3d662e'],
-        discreteDomains: 0
-      });
+    this.chart = new Heatmap('#chart', {
+      title: this.title,
+      data: data,
+      type: 'heatmap',
+      height: this.height,
+      colors: ['#dedede', '#d9e38c', '#9bc26d', '#669f4b', '#3d662e'],
+      discreteDomains: 0
+    });
     // this.chart.svg.setAttribute('viewBox', `0 0 716 160`);
     // this.chart.svg.setAttribute('width', '100%');
     // this.chart.svg.setAttribute('height', '100%');

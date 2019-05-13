@@ -1,5 +1,5 @@
-import {AppAction, AppActionTypes} from './app.actions';
-import {AccessToken, PagedList, Project, User} from '@dev/translatr-model';
+import { AppAction, AppActionTypes } from './app.actions';
+import { AccessToken, PagedList, Project, User } from '@dev/translatr-model';
 
 export const APP_FEATURE_KEY = 'app';
 
@@ -35,8 +35,14 @@ export function appReducer(
       return {
         ...state,
         users: state.users
-          ? {...state.users, list: [...state.users.list, action.payload]}
-          : {list: [action.payload], hasNext: false, hasPrev: false, offset: 0, limit: 1}
+          ? { ...state.users, list: [...state.users.list, action.payload] }
+          : {
+              list: [action.payload],
+              hasNext: false,
+              hasPrev: false,
+              offset: 0,
+              limit: 1
+            }
       };
     case AppActionTypes.UserCreated:
       return {
@@ -51,7 +57,9 @@ export function appReducer(
         ...state,
         users: {
           ...state.users,
-          list: state.users.list.map((user: User) => user.id === action.payload.id ? action.payload : user)
+          list: state.users.list.map((user: User) =>
+            user.id === action.payload.id ? action.payload : user
+          )
         }
       };
     case AppActionTypes.UserDeleted:
@@ -59,7 +67,9 @@ export function appReducer(
         ...state,
         users: {
           ...state.users,
-          list: state.users.list.filter((user: User) => user.id !== action.payload.id)
+          list: state.users.list.filter(
+            (user: User) => user.id !== action.payload.id
+          )
         }
       };
     case AppActionTypes.UsersDeleted:
@@ -68,7 +78,8 @@ export function appReducer(
         users: {
           ...state.users,
           list: state.users.list.filter((user: User) =>
-            action.payload.find((deleted: User) => user.id !== deleted.id))
+            action.payload.find((deleted: User) => user.id !== deleted.id)
+          )
         }
       };
 
@@ -84,7 +95,9 @@ export function appReducer(
         ...state,
         projects: {
           ...state.projects,
-          list: state.projects.list.map((project: Project) => project.id === action.payload.id ? action.payload : project)
+          list: state.projects.list.map((project: Project) =>
+            project.id === action.payload.id ? action.payload : project
+          )
         }
       };
     case AppActionTypes.ProjectDeleted:
@@ -92,7 +105,9 @@ export function appReducer(
         ...state,
         projects: {
           ...state.projects,
-          list: state.projects.list.filter((project: Project) => project.id !== action.payload.id)
+          list: state.projects.list.filter(
+            (project: Project) => project.id !== action.payload.id
+          )
         }
       };
     case AppActionTypes.ProjectsDeleted:
@@ -101,7 +116,8 @@ export function appReducer(
         projects: {
           ...state.projects,
           list: state.projects.list.filter((project: Project) =>
-            action.payload.find((deleted: Project) => project.id !== deleted.id))
+            action.payload.find((deleted: Project) => project.id !== deleted.id)
+          )
         }
       };
 
@@ -117,7 +133,9 @@ export function appReducer(
         ...state,
         accessTokens: {
           ...state.accessTokens,
-          list: state.accessTokens.list.filter((accessToken: AccessToken) => accessToken.id !== action.payload.id)
+          list: state.accessTokens.list.filter(
+            (accessToken: AccessToken) => accessToken.id !== action.payload.id
+          )
         }
       };
     case AppActionTypes.AccessTokensDeleted:
@@ -126,7 +144,10 @@ export function appReducer(
         accessTokens: {
           ...state.accessTokens,
           list: state.accessTokens.list.filter((accessToken: AccessToken) =>
-            action.payload.find((deleted: AccessToken) => accessToken.id !== deleted.id))
+            action.payload.find(
+              (deleted: AccessToken) => accessToken.id !== deleted.id
+            )
+          )
         }
       };
 

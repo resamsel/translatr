@@ -61,9 +61,6 @@ export const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [
-    {provide: DASHBOARD_ROUTES, useValue: routes}
-  ]
+  providers: [{ provide: DASHBOARD_ROUTES, useValue: routes }]
 })
-export class DashboardPageRoutingModule {
-}
+export class DashboardPageRoutingModule {}

@@ -1,15 +1,14 @@
-import {HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {Injector, StaticProvider} from '@angular/core';
-import {AccessTokenService, KeyService, LocaleService, MessageService, ProjectService, UserService} from '@dev/translatr-sdk';
-import {XMLHttpRequest} from 'xmlhttprequest';
+import { HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Injector, StaticProvider } from '@angular/core';
+import { AccessTokenService, KeyService, LocaleService, MessageService, ProjectService, UserService } from '@dev/translatr-sdk';
+import { XMLHttpRequest } from 'xmlhttprequest';
 
 export class BrowserXhr implements XhrFactory {
-  constructor() {
-  }
+  constructor() {}
 
   build(): any {
-    return <any>(new XMLHttpRequest());
+    return <any>new XMLHttpRequest();
   }
 }
 
@@ -29,16 +28,12 @@ class MyHttpHandler implements HttpHandler {
     const params = !req.params.has('access_token')
       ? req.params.set('access_token', this.accessToken)
       : req.params;
-    const newReq = new HttpRequest(
-      req.method,
-      url,
-      req.body, {
-        reportProgress: req.reportProgress,
-        params,
-        responseType: req.responseType,
-        withCredentials: req.withCredentials
-      }
-    );
+    const newReq = new HttpRequest(req.method, url, req.body, {
+      reportProgress: req.reportProgress,
+      params,
+      responseType: req.responseType,
+      withCredentials: req.withCredentials
+    });
     return this.handler.handle(newReq);
   }
 }
@@ -49,7 +44,7 @@ const providers: StaticProvider[] = [
     useFactory: (backend: HttpHandler): HttpClient => new HttpClient(backend),
     deps: [HttpHandler]
   },
-  {provide: XhrFactory, useValue: new BrowserXhr()},
+  { provide: XhrFactory, useValue: new BrowserXhr() },
   {
     provide: UserService,
     useFactory: (client: HttpClient) => new UserService(client),
@@ -82,13 +77,17 @@ const providers: StaticProvider[] = [
   }
 ];
 
-export const createInjector = (baseUrl: string, accessToken: string): Injector => {
+export const createInjector = (
+  baseUrl: string,
+  accessToken: string
+): Injector => {
   return Injector.create({
     providers: [
       ...providers,
       {
         provide: HttpHandler,
-        useFactory: (xhrFactory: XhrFactory) => new MyHttpHandler(xhrFactory, baseUrl, accessToken),
+        useFactory: (xhrFactory: XhrFactory) =>
+          new MyHttpHandler(xhrFactory, baseUrl, accessToken),
         deps: [XhrFactory]
       }
     ]

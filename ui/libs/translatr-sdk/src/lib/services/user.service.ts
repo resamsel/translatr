@@ -10,29 +10,30 @@ import { AbstractService } from './abstract.service';
   providedIn: 'root'
 })
 export class UserService extends AbstractService<User, RequestCriteria> {
-
   constructor(http: HttpClient) {
     super(http, () => '/api/users', '/api/user');
   }
 
-  byUsername(username: string, options?: {
-    params?: HttpParams | {
-      [param: string]: string | string[];
+  byUsername(
+    username: string,
+    options?: {
+      params?:
+        | HttpParams
+        | {
+            [param: string]: string | string[];
+          };
     }
-  }): Observable<User | undefined> {
+  ): Observable<User | undefined> {
     return this.http
       .get<User>(`/api/${username}`, options)
       .pipe(map(convertTemporals));
   }
 
   me(): Observable<User | undefined> {
-    return this.http
-      .get<User>('/api/me')
-      .pipe(map(convertTemporals));
+    return this.http.get<User>('/api/me').pipe(map(convertTemporals));
   }
 
   activity(userId: string): Observable<PagedList<Aggregate> | undefined> {
-    return this.http
-      .get<PagedList<Aggregate>>(`/api/user/${userId}/activity`);
+    return this.http.get<PagedList<Aggregate>>(`/api/user/${userId}/activity`);
   }
 }

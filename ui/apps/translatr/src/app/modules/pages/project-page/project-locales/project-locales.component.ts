@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {ProjectFacade} from '../+state/project.facade';
-import {take, tap} from 'rxjs/operators';
-import {Locale, Project} from '@dev/translatr-model';
-import {MatSnackBar} from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { ProjectFacade } from '../+state/project.facade';
+import { take, tap } from 'rxjs/operators';
+import { Locale, Project } from '@dev/translatr-model';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-project-locales',
@@ -10,36 +10,39 @@ import {MatSnackBar} from '@angular/material';
   styleUrls: ['./project-locales.component.scss']
 })
 export class ProjectLocalesComponent implements OnInit {
-
   project$ = this.facade.project$.pipe(
     tap((project: Project) => {
       if (!!project) {
         this.facade.loadLocales(project.id);
       }
-    }));
+    })
+  );
   locales$ = this.facade.locales$;
 
   constructor(
     private readonly facade: ProjectFacade,
     private readonly snackBar: MatSnackBar
-  ) {
-  }
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onMore(limit: number) {
     this.facade.project$
       .pipe(take(1))
       .subscribe((project: Project) =>
-        this.facade.loadLocales(project.id, {limit: `${limit}`}));
+        this.facade.loadLocales(project.id, { limit: `${limit}` })
+      );
   }
 
   onEdit(locale: Locale) {
-    this.snackBar.open(`Edit locale ${locale.displayName}`, 'Dismiss', {duration: 2000});
+    this.snackBar.open(`Edit locale ${locale.displayName}`, 'Dismiss', {
+      duration: 2000
+    });
   }
 
   onDelete(locale: Locale) {
-    this.snackBar.open(`Delete locale ${locale.displayName}`, 'Undo', {duration: 2000});
+    this.snackBar.open(`Delete locale ${locale.displayName}`, 'Undo', {
+      duration: 2000
+    });
   }
 }

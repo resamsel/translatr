@@ -7,10 +7,7 @@
       <ng-content select="mat-toolbar-row"></ng-content>
     </ng-container>
 
-    <a
-      mat-icon-button
-      routerLink="/projects"
-      class="show-on-small">
+    <a mat-icon-button routerLink="/projects" class="show-on-small">
       <mat-icon>library_books</mat-icon>
     </a>
     <a mat-button routerLink="/projects">
@@ -18,10 +15,7 @@
       <span class="text">Projects</span>
     </a>
 
-    <a
-      mat-icon-button
-      routerLink="/users"
-      class="show-on-small">
+    <a mat-icon-button routerLink="/users" class="show-on-small">
       <mat-icon>group</mat-icon>
     </a>
     <a mat-button routerLink="/users">
@@ -30,10 +24,7 @@
     </a>
 
     <app-auth-bar-item [me]="me">
-      <a
-        mat-menu-item
-        *ngIf="me"
-        [routerLink]="['/', me.username]">
+      <a mat-menu-item *ngIf="me" [routerLink]="['/', me.username]">
         Profile
       </a>
       <ng-container *ngIf="isAdmin(me)">

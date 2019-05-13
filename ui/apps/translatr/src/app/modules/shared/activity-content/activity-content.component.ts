@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {Activity, Key, Locale, Message, Project} from '@dev/translatr-model';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Activity, Key, Locale, Message, Project } from '@dev/translatr-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -8,7 +8,6 @@ import {Activity, Key, Locale, Message, Project} from '@dev/translatr-model';
   styleUrls: ['./activity-content.component.scss']
 })
 export class ActivityContentComponent implements OnInit {
-
   @Input() activity: Activity;
 
   get contentType(): string {
@@ -16,14 +15,10 @@ export class ActivityContentComponent implements OnInit {
       return undefined;
     }
 
-    return this.activity
-      .contentType
-      .replace('dto.', '')
-      .toLowerCase();
+    return this.activity.contentType.replace('dto.', '').toLowerCase();
   }
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
     console.log('activity', this.activity);

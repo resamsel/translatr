@@ -1,8 +1,16 @@
 <mat-list *ngIf="activities; else empty">
   <mat-list-item *ngFor="let activity of activities.list; trackBy: trackByFn">
-    <img [email]="activity.userEmail" class="icon" matListIcon ngxGravatar size="36">
+    <img
+      [email]="activity.userEmail"
+      class="icon"
+      matListIcon
+      ngxGravatar
+      size="36"
+    />
     <h3 matLine>
-      <a [routerLink]="['/', activity.userUsername]" class="link user-name">{{activity.userName}}</a>
+      <a [routerLink]="['/', activity.userUsername]" class="link user-name">{{
+        activity.userName
+      }}</a>
 
       <ng-container [ngSwitch]="activity.type">
         <span *ngSwitchCase="'Create'" class="type" i18n>
@@ -17,23 +25,34 @@
           <app-tag>deleted</app-tag>
           <app-activity-content [activity]="activity"></app-activity-content>
         </span>
-        <span *ngSwitchCase="'Login'" class="type" i18n> <app-tag>logged in</app-tag></span>
-        <span *ngSwitchCase="'Logout'" class="type" i18n> <app-tag>logged out</app-tag></span>
+        <span *ngSwitchCase="'Login'" class="type" i18n>
+          <app-tag>logged in</app-tag></span
+        >
+        <span *ngSwitchCase="'Logout'" class="type" i18n>
+          <app-tag>logged out</app-tag></span
+        >
       </ng-container>
-      <span [title]="activity.whenCreated | date:'full'">{{activity.whenCreated | amTimeAgo}}</span>
+      <span [title]="activity.whenCreated | date: 'full'">{{
+        activity.whenCreated | amTimeAgo
+      }}</span>
     </h3>
   </mat-list-item>
-  <a (click)="loadMore()" *ngIf="activities?.hasNext" class="more" mat-list-item>
+  <a
+    (click)="loadMore()"
+    *ngIf="activities?.hasNext"
+    class="more"
+    mat-list-item
+  >
     More
   </a>
 </mat-list>
 
 <ng-template #empty>
   <mat-list class="empty">
-    <mat-list-item *ngFor="let index of [0,1,2]">
+    <mat-list-item *ngFor="let index of [0, 1, 2]">
       <mat-icon class="icon" matListIcon>account_circle</mat-icon>
       <h3 matLine>
-        <span class="title item-{{index}}"></span>
+        <span class="title item-{{ index }}"></span>
       </h3>
       <p class="subtitle" matLine></p>
     </mat-list-item>

@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {PagedList, Project, User} from '@dev/translatr-model';
-import {ProjectService} from '@dev/translatr-sdk';
-import {Observable} from 'rxjs';
-import {ProjectCreationDialogComponent} from '../../../shared/project-creation-dialog/project-creation-dialog.component';
-import {take} from 'rxjs/operators';
-import {MatDialog} from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { PagedList, Project, User } from '@dev/translatr-model';
+import { ProjectService } from '@dev/translatr-sdk';
+import { Observable } from 'rxjs';
+import { ProjectCreationDialogComponent } from '../../../shared/project-creation-dialog/project-creation-dialog.component';
+import { take } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-user-projects',
@@ -13,7 +13,6 @@ import {MatDialog} from '@angular/material';
   styleUrls: ['./user-projects.component.scss']
 })
 export class UserProjectsComponent implements OnInit {
-
   user: User;
   projects$: Observable<PagedList<Project>>;
 
@@ -21,15 +20,13 @@ export class UserProjectsComponent implements OnInit {
     private readonly projectService: ProjectService,
     private readonly route: ActivatedRoute,
     private readonly dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
-    this.route.parent.data
-      .subscribe((data: { user: User }) => {
-        this.user = data.user;
-        this.loadProjects();
-      });
+    this.route.parent.data.subscribe((data: { user: User }) => {
+      this.user = data.user;
+      this.loadProjects();
+    });
   }
 
   private loadProjects(): void {
@@ -42,7 +39,8 @@ export class UserProjectsComponent implements OnInit {
 
   openProjectCreationDialog(): void {
     const ref = this.dialog.open(ProjectCreationDialogComponent);
-    ref.afterClosed()
+    ref
+      .afterClosed()
       .pipe(take(1))
       .subscribe(() => this.loadProjects());
   }

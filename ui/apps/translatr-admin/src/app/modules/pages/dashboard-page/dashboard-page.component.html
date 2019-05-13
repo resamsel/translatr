@@ -2,15 +2,17 @@
   <header>
     <nav mat-tab-nav-bar color="accent">
       <div class="container dense" routerLinkActive>
-        <a mat-tab-link
-           *ngFor="let child of children"
-           [routerLink]="routerLink(child)"
-           routerLinkActive
-           [routerLinkActiveOptions]="{exact: true}"
-           #link="routerLinkActive"
-           [active]="link.isActive">
-          <mat-icon>{{child.data.icon}}</mat-icon>
-          {{child.data.name}}
+        <a
+          mat-tab-link
+          *ngFor="let child of children"
+          [routerLink]="routerLink(child)"
+          routerLinkActive
+          [routerLinkActiveOptions]="{ exact: true }"
+          #link="routerLinkActive"
+          [active]="link.isActive"
+        >
+          <mat-icon>{{ child.data.icon }}</mat-icon>
+          {{ child.data.name }}
         </a>
       </div>
     </nav>

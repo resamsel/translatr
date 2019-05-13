@@ -1,11 +1,11 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {ProjectPageComponent} from './project-page.component';
-import {ProjectInfoComponent} from './project-info/project-info.component';
-import {ProjectKeysComponent} from './project-keys/project-keys.component';
-import {ProjectLocalesComponent} from './project-locales/project-locales.component';
-import {ProjectMembersComponent} from './project-members/project-members.component';
-import {ProjectActivityComponent} from './project-activity/project-activity.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { ProjectPageComponent } from './project-page.component';
+import { ProjectInfoComponent } from './project-info/project-info.component';
+import { ProjectKeysComponent } from './project-keys/project-keys.component';
+import { ProjectLocalesComponent } from './project-locales/project-locales.component';
+import { ProjectMembersComponent } from './project-members/project-members.component';
+import { ProjectActivityComponent } from './project-activity/project-activity.component';
 
 const routes: Routes = [
   {
@@ -40,5 +40,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ProjectPageRoutingModule {
-}
+export class ProjectPageRoutingModule {}

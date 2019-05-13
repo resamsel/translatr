@@ -1,4 +1,4 @@
-import {Pipe, PipeTransform} from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
 const defaultConfig = {
   max: 3,
@@ -11,7 +11,6 @@ const defaultConfig = {
   pure: false
 })
 export class EllipsisPipe implements PipeTransform {
-
   transform(value: any, args?: any): string {
     if (!value) {
       return '';

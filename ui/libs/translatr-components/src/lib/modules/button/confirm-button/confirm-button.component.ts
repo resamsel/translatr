@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -7,7 +7,6 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
   styleUrls: ['./confirm-button.component.css']
 })
 export class ConfirmButtonComponent {
-
   @Input() title: string;
   @Input() icon: string;
   @Input() disabled = false;

@@ -1,11 +1,11 @@
-import {Component, OnDestroy} from '@angular/core';
-import {AppFacade} from '../../../../+state/app.facade';
-import {Project, RequestCriteria} from '@dev/translatr-model';
-import {Observable, of} from 'rxjs';
-import {AppActionTypes, ProjectDeleted, ProjectDeleteError, ProjectsDeleted, ProjectsDeleteError} from '../../../../+state/app.actions';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import {errorMessage, hasDeleteAllProjectsPermission, hasDeleteProjectPermission, hasEditProjectPermission} from '@dev/translatr-sdk';
-import {Entity, notifyEvent, ProjectEditDialogComponent} from '@dev/translatr-components';
+import { Component, OnDestroy } from '@angular/core';
+import { AppFacade } from '../../../../+state/app.facade';
+import { Project, RequestCriteria } from '@dev/translatr-model';
+import { Observable, of } from 'rxjs';
+import { AppActionTypes, ProjectDeleted, ProjectDeleteError, ProjectsDeleted, ProjectsDeleteError } from '../../../../+state/app.actions';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { errorMessage, hasDeleteAllProjectsPermission, hasDeleteProjectPermission, hasEditProjectPermission } from '@dev/translatr-sdk';
+import { Entity, notifyEvent, ProjectEditDialogComponent } from '@dev/translatr-components';
 
 @Component({
   selector: 'dev-dashboard-projects',
@@ -13,12 +13,17 @@ import {Entity, notifyEvent, ProjectEditDialogComponent} from '@dev/translatr-co
   styleUrls: ['./dashboard-projects.component.css']
 })
 export class DashboardProjectsComponent implements OnDestroy {
-
-  displayedColumns = ['name', 'description', 'owner', 'when_created', 'actions'];
+  displayedColumns = [
+    'name',
+    'description',
+    'owner',
+    'when_created',
+    'actions'
+  ];
 
   me$ = this.facade.me$;
   projects$ = this.facade.projects$;
-  load$ = of({limit: '20', order: 'name asc'});
+  load$ = of({ limit: '20', order: 'name asc' });
 
   selected: Project[] = [];
 
@@ -31,15 +36,19 @@ export class DashboardProjectsComponent implements OnDestroy {
       snackBar,
       facade.projectDeleted$,
       AppActionTypes.ProjectDeleted,
-      (action: ProjectDeleted) => `Project ${action.payload.name} has been deleted`,
-      (action: ProjectDeleteError) => `Project could not be deleted: ${errorMessage(action.payload)}`
+      (action: ProjectDeleted) =>
+        `Project ${action.payload.name} has been deleted`,
+      (action: ProjectDeleteError) =>
+        `Project could not be deleted: ${errorMessage(action.payload)}`
     );
     notifyEvent(
       snackBar,
       facade.projectsDeleted$,
       AppActionTypes.ProjectsDeleted,
-      (action: ProjectsDeleted) => `${action.payload.length} projects have been deleted`,
-      (action: ProjectsDeleteError) => `Projects could not be deleted: ${errorMessage(action.payload)}`
+      (action: ProjectsDeleted) =>
+        `${action.payload.length} projects have been deleted`,
+      (action: ProjectsDeleteError) =>
+        `Projects could not be deleted: ${errorMessage(action.payload)}`
     );
   }
 
@@ -56,16 +65,15 @@ export class DashboardProjectsComponent implements OnDestroy {
   }
 
   onEdit(project: Project) {
-    this.dialog
-      .open(ProjectEditDialogComponent, {
-        data: {
-          type: 'update',
-          project,
-          onSubmit: (p: Project) => this.facade.updateProject(p),
-          success$: this.facade.projectUpdated$,
-          error$: this.facade.projectUpdateError$
-        }
-      });
+    this.dialog.open(ProjectEditDialogComponent, {
+      data: {
+        type: 'update',
+        project,
+        onSubmit: (p: Project) => this.facade.updateProject(p),
+        success$: this.facade.projectUpdated$,
+        error$: this.facade.projectUpdateError$
+      }
+    });
   }
 
   allowDelete$(project: Project): Observable<boolean> {
