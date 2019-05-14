@@ -114,6 +114,7 @@
     "prettier": "^1.17.0",
     "protractor": "~5.4.0",
     "random-name": "^0.1.2",
+    "rxjs-tslint-rules": "^4.23.1",
     "ts-node": "~7.0.0",
     "tsconfig-paths": "^3.8.0",
     "tslint": "~5.11.0",

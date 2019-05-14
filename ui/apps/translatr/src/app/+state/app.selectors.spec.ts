@@ -1,4 +1,3 @@
-import { Entity } from './app.reducer';
 import { appQuery } from './app.selectors';
 
 describe('App Selectors', () => {
@@ -42,13 +41,13 @@ describe('App Selectors', () => {
       expect(selId).toBe('PRODUCT-BBB');
     });
 
-    it("getLoaded() should return the current 'loaded' status", () => {
+    it('getLoaded() should return the current \'loaded\' status', () => {
       const result = appQuery.getLoaded(storeState);
 
       expect(result).toBe(true);
     });
 
-    it("getError() should return the current 'error' storeState", () => {
+    it('getError() should return the current \'error\' storeState', () => {
       const result = appQuery.getError(storeState);
 
       expect(result).toBe(ERROR_MSG);

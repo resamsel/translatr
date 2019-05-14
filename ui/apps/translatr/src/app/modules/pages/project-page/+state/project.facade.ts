@@ -27,25 +27,25 @@ export class ProjectFacade {
   }
 
   project$ = this.store.pipe(
-    takeUntil(this.unload$),
-    select(projectQuery.getProject)
+    select(projectQuery.getProject),
+    takeUntil(this.unload$)
   );
   locales$ = this.store.pipe(
-    takeUntil(this.unload$),
-    select(projectQuery.getLocales)
+    select(projectQuery.getLocales),
+    takeUntil(this.unload$)
   );
   keys$ = this.store.pipe(
-    takeUntil(this.unload$),
-    select(projectQuery.getKeys)
+    select(projectQuery.getKeys),
+    takeUntil(this.unload$)
   );
 
   activityAggregated$ = this.store.pipe(
-    takeUntil(this.unload$),
-    select(projectQuery.getActivityAggregated)
+    select(projectQuery.getActivityAggregated),
+    takeUntil(this.unload$)
   );
   activities$ = this.store.pipe(
-    takeUntil(this.unload$),
-    select(projectQuery.getActivities)
+    select(projectQuery.getActivities),
+    takeUntil(this.unload$)
   );
 
   constructor(private store: Store<ProjectPartialState>) {}

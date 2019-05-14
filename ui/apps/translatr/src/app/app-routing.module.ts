@@ -3,6 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
+    path: 'login',
+    loadChildren: '@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module#LoginPageModule'
+  },
+  {
     path: 'users',
     loadChildren: './modules/pages/users-page/users-page.module#UsersPageModule'
   },

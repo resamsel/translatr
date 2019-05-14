@@ -13,8 +13,8 @@ export class UsersFacade {
   private unload$ = new Subject<void>();
 
   users$ = this.store.pipe(
-    takeUntil(this.unload$.asObservable()),
-    select(usersQuery.getUsers)
+    select(usersQuery.getUsers),
+    takeUntil(this.unload$.asObservable())
   );
 
   constructor(private store: Store<UsersPartialState>) {}

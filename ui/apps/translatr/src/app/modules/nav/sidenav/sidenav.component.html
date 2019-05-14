@@ -23,7 +23,7 @@
       <span class="text">Contributors</span>
     </a>
 
-    <app-auth-bar-item [me]="me">
+    <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
       <a mat-menu-item *ngIf="me" [routerLink]="['/', me.username]">
         Profile
       </a>

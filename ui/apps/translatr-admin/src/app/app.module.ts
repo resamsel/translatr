@@ -16,6 +16,8 @@ import { environment } from '../environments/environment';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { storeFreeze } from 'ngrx-store-freeze';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ENDPOINT_URL, LOGIN_URL } from '@translatr/utils';
+import { LoginPageModule } from '@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +28,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     SidenavModule,
     RouterModule.forRoot([], { initialNavigation: 'enabled' }),
     DashboardPageModule,
+    LoginPageModule,
     NxModule.forRoot(),
     StoreModule.forRoot(
       { app: appReducer },
@@ -38,7 +41,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     StoreRouterConnectingModule
   ],
-  providers: [AppFacade],
+  providers: [
+    AppFacade,
+    { provide: ENDPOINT_URL, useValue: environment.endpointUrl },
+    { provide: LOGIN_URL, useValue: `${environment.uiUrl}/login` }
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

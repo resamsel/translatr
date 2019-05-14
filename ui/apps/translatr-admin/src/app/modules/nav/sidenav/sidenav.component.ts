@@ -15,6 +15,8 @@ export class SidenavComponent {
   @Input() backLink: { routerLink: string[]; name: string };
   @Input() me: User | undefined;
 
+  readonly endpointUrl = environment.endpointUrl;
+
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
     .pipe(map(result => result.matches));

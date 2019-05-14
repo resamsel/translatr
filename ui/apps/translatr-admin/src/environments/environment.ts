@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  endpointUrl: 'http://localhost:9000',
   uiUrl: 'http://localhost:4210/ui'
 };
 

@@ -5,3 +5,4 @@ export * from './nav';
 export * from './pipes';
 export * from './project';
 export * from './user';
+export * from './pages';

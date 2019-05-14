@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -6,6 +6,7 @@ import { convertTemporals, convertTemporalsList } from '../shared/mapper-utils';
 import { Aggregate, PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
 import { AbstractService } from './abstract.service';
 import { Router } from '@angular/router';
+import { LOGIN_URL } from '@translatr/utils';
 
 const projectMapper = (project: Project) => ({
   ...convertTemporals(project),
@@ -18,8 +19,12 @@ const projectMapper = (project: Project) => ({
   providedIn: 'root'
 })
 export class ProjectService extends AbstractService<Project, ProjectCriteria> {
-  constructor(http: HttpClient, router: Router) {
-    super(http, router, () => '/api/projects', '/api/project');
+  constructor(
+    http: HttpClient,
+    router: Router,
+    @Inject(LOGIN_URL) @Optional() loginUrl: string
+  ) {
+    super(http, router, loginUrl, () => '/api/projects', '/api/project');
   }
 
   getProjectByOwnerAndName(

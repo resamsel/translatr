@@ -23,71 +23,71 @@ export class EditorFacade {
 
   get locale$(): Observable<Locale> {
     return this.store.pipe(
-      takeUntil(this.unloadEditor$),
-      select(editorQuery.getLocale)
+      select(editorQuery.getLocale),
+      takeUntil(this.unloadEditor$)
     );
   }
 
   get locales$(): Observable<PagedList<Locale>> {
     return this.store.pipe(
-      takeUntil(this.unloadEditor$),
-      select(editorQuery.getLocales)
+      select(editorQuery.getLocales),
+      takeUntil(this.unloadEditor$)
     );
   }
 
   get localesLoading$(): Observable<boolean> {
     return this.store.pipe(
-      takeUntil(this.unloadEditor$),
-      select(editorQuery.getLocalesLoading)
+      select(editorQuery.getLocalesLoading),
+      takeUntil(this.unloadEditor$)
     );
   }
 
   get key$(): Observable<Key> {
     return this.store.pipe(
-      takeUntil(this.unloadEditor$),
-      select(editorQuery.getKey)
+      select(editorQuery.getKey),
+      takeUntil(this.unloadEditor$)
     );
   }
 
   get keys$(): Observable<PagedList<Key>> {
     return this.store.pipe(
-      takeUntil(this.unloadEditor$),
-      select(editorQuery.getKeys)
+      select(editorQuery.getKeys),
+      takeUntil(this.unloadEditor$)
     );
   }
 
   get keysLoading$(): Observable<boolean> {
     return this.store.pipe(
-      takeUntil(this.unloadEditor$),
-      select(editorQuery.getKeysLoading)
+      select(editorQuery.getKeysLoading),
+      takeUntil(this.unloadEditor$)
     );
   }
 
   get selectedLocale$(): Observable<string> {
     return this.store.pipe(
-      takeUntil(this.unloadEditor$),
-      select(editorQuery.getSelectedLocale)
+      select(editorQuery.getSelectedLocale),
+      takeUntil(this.unloadEditor$)
     );
   }
 
   get selectedKey$(): Observable<string> {
     return this.store.pipe(
-      takeUntil(this.unloadEditor$),
-      select(editorQuery.getSelectedKey)
+      select(editorQuery.getSelectedKey),
+      takeUntil(this.unloadEditor$)
     );
   }
 
   get selectedMessage$(): Observable<Message> {
     return this.store.pipe(
-      takeUntil(this.unloadEditor$),
-      select(editorQuery.getSelectedMessage)
+      select(editorQuery.getSelectedMessage),
+      takeUntil(this.unloadEditor$)
     );
   }
 
   get search$(): Observable<RequestCriteria> {
     return this.store.pipe(
-      takeUntil(this.unloadEditor$),
-      select(editorQuery.getSearch)
+      select(editorQuery.getSearch),
+      takeUntil(this.unloadEditor$)
     );
   }
 

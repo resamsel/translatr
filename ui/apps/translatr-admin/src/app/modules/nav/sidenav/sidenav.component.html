@@ -8,7 +8,7 @@
       <ng-content select="app-search-bar"></ng-content>
     </ng-container>
 
-    <app-auth-bar-item [me]="me">
+    <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
       <a mat-menu-item [href]="uiRoute()">UI</a>
     </app-auth-bar-item>
   </app-navbar>

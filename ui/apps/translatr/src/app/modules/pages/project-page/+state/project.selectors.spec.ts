@@ -42,13 +42,13 @@ describe('Project Selectors', () => {
       expect(selId).toBe('PRODUCT-BBB');
     });
 
-    it("getLoaded() should return the current 'loaded' status", () => {
+    it('getLoaded() should return the current \'loaded\' status', () => {
       const result = projectQuery.getLoaded(storeState);
 
       expect(result).toBe(true);
     });
 
-    it("getError() should return the current 'error' storeState", () => {
+    it('getError() should return the current \'error\' storeState', () => {
       const result = projectQuery.getError(storeState);
 
       expect(result).toBe(ERROR_MSG);

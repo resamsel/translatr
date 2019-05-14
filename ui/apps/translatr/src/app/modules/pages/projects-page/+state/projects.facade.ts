@@ -12,8 +12,8 @@ export class ProjectsFacade {
   private unload$ = new Subject<void>();
 
   allProjects$ = this.store.pipe(
-    takeUntil(this.unload$.asObservable()),
-    select(projectsQuery.getAllProjects)
+    select(projectsQuery.getAllProjects),
+    takeUntil(this.unload$.asObservable())
   );
 
   constructor(private store: Store<ProjectsPartialState>) {}

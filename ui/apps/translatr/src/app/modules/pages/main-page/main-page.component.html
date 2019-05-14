@@ -1,5 +1,5 @@
 <app-navbar>
-  <app-auth-bar-item [me]="me$ | async">
+  <app-auth-bar-item [me]="me$ | async" [endpointUrl]="endpointUrl">
     <a
       mat-menu-item
       *ngIf="me$ | async as me"
@@ -9,7 +9,7 @@
     </a>
     <ng-container *ngIf="isAdmin(me$ | async)">
       <mat-divider></mat-divider>
-      <a mat-menu-item [href]="adminRoute">Admin</a>
+      <a mat-menu-item [href]="adminUrl">Admin</a>
     </ng-container>
   </app-auth-bar-item>
 </app-navbar>

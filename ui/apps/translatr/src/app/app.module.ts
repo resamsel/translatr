@@ -16,6 +16,7 @@ import { AppEffects } from './+state/app.effects';
 import { AppFacade } from './+state/app.facade';
 import { environment } from '../environments/environment';
 import { storeFreeze } from 'ngrx-store-freeze';
+import { ENDPOINT_URL, LOGIN_URL } from '@translatr/utils';
 
 @NgModule({
   declarations: [AppComponent],
@@ -42,7 +43,11 @@ import { storeFreeze } from 'ngrx-store-freeze';
     EffectsModule.forRoot([AppEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : []
   ],
-  providers: [AppFacade],
+  providers: [
+    AppFacade,
+    { provide: ENDPOINT_URL, useValue: environment.endpointUrl },
+    { provide: LOGIN_URL, useValue: '/login' }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

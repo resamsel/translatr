@@ -11,7 +11,8 @@ import { environment } from '../../../../environments/environment';
 export class MainPageComponent {
   me$ = this.facade.me$;
 
-  adminRoute = environment.adminUrl;
+  readonly adminUrl = environment.adminUrl;
+  readonly endpointUrl = environment.endpointUrl;
 
   constructor(private readonly facade: AppFacade) {
   }

@@ -92,7 +92,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {
-    this.commands$.subscribe((criteria: RequestCriteria) =>{
+    this.commands$.subscribe((criteria: RequestCriteria) => {
       this.criteria.emit(criteria);
       this.router.navigate([], {queryParams: criteria});
     });

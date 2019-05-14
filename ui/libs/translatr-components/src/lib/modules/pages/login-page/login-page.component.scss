@@ -1,0 +1,77 @@
+@import '~@angular/material/theming';
+
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper {
+  flex: 1 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .login {
+    display: flex;
+    width: 600px;
+    height: 375px;
+
+    .options,
+    .info {
+      flex: 1 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .info {
+      color: rgba(0,0,0,0.6);
+
+      .mat-icon {
+        font-size: 128px;
+        color: rgba(0,0,0,0.3);
+        display: block;
+        height: 128px;
+        width: 128px;
+        margin: 0 auto;
+      }
+    }
+
+    .options {
+      .mat-button {
+        display: block;
+        width: 100%;
+        margin: 4px 16px;
+        color: #fff;
+
+        @include mat-elevation-transition;
+
+        &:hover {
+          @include mat-elevation(4);
+        }
+
+        &.google {
+          background: #dd4b39;
+        }
+
+        &.keycloak {
+          background: #393F44;
+        }
+        
+        &.github {
+          background: #444;
+        }
+        
+        &.facebook {
+          background: #3b5998;
+        }
+
+        &.twitter {
+          background: #55acee;
+        }
+      }
+    }
+  }
+}
