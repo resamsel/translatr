@@ -1,12 +1,16 @@
 <div class="controls">
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-icon matPrefix>search</mat-icon>
     <input
+      #input
       matInput
       placeholder="Filter"
       [value]="(commands$ | async).search || ''"
-      (keyup)="onFilter($event.target.value)"
+      (keyup.enter)="onFilter($event.target.value)"
     />
+    <button *ngIf="input.value" matSuffix mat-icon-button aria-label="Clear" (click)="input.value = ''; onFilter('')">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-form-field>
 
   <mat-paginator

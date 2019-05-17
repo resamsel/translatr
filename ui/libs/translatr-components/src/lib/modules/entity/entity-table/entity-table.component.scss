@@ -2,26 +2,16 @@
 .mat-form-field,
 table {
   width: 100%;
+
+  ::ng-deep tbody tr:hover {
+    background: rgba(0, 0, 0, 0.08);
+  }
 }
 
 .controls {
-  display: flex;
-
-  > * {
-    flex-grow: 1;
-  }
-
   ::ng-deep {
-    .mat-paginator-container,
-    .mat-paginator-page-size,
-    .mat-paginator-range-label {
-      flex-wrap: nowrap;
-      white-space: nowrap;
-    }
-
-    .mat-form-field-prefix {
-      margin-right: 8px;
-      font-size: 12px;
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
     }
   }
 }
