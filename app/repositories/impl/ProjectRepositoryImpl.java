@@ -12,6 +12,7 @@ import criterias.HasNextPagedList;
 import criterias.ProjectCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
+import mappers.ProjectMapper;
 import models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,7 +229,7 @@ public class ProjectRepositoryImpl extends
   }
 
   private dto.Project toDto(Project t) {
-    dto.Project out = dto.Project.from(t);
+    dto.Project out = ProjectMapper.toDto(t);
 
     out.keys = Collections.emptyList();
     out.locales = Collections.emptyList();

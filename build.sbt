@@ -47,6 +47,8 @@ libraryDependencies ++= Seq(
 	"org.mockito" % "mockito-core" % "2.8.47" % "test"
 )
 
+unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "java"
+
 //
 // Eclipse
 //

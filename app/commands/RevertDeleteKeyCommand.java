@@ -1,16 +1,12 @@
 package commands;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-
 import controllers.Keys;
 import controllers.routes;
 import criterias.LocaleCriteria;
 import dto.Key;
 import dto.Message;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import mappers.KeyMapper;
+import mappers.MessageMapper;
 import models.Locale;
 import models.Project;
 import play.inject.Injector;
@@ -20,6 +16,13 @@ import services.KeyService;
 import services.LocaleService;
 import services.MessageService;
 import services.ProjectService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class RevertDeleteKeyCommand implements Command<models.Key> {
   private static final long serialVersionUID = 6162300697203071900L;
@@ -34,8 +37,8 @@ public class RevertDeleteKeyCommand implements Command<models.Key> {
    */
   @Override
   public RevertDeleteKeyCommand with(models.Key key) {
-    this.key = Key.from(key);
-    this.messages = key.messages.stream().map(m -> Message.from(m)).collect(Collectors.toList());
+    this.key = KeyMapper.toDto(key);
+    this.messages = key.messages.stream().map(m -> MessageMapper.toDto(m)).collect(Collectors.toList());
     return this;
   }
 
@@ -43,7 +46,7 @@ public class RevertDeleteKeyCommand implements Command<models.Key> {
   public void execute(Injector injector) {
     Project project = injector.instanceOf(ProjectService.class).byId(key.projectId);
 
-    models.Key model = key.toModel(project);
+    models.Key model = KeyMapper.toModel(key, project);
     injector.instanceOf(KeyService.class).update(model);
     key.id = model.id;
 
@@ -52,7 +55,7 @@ public class RevertDeleteKeyCommand implements Command<models.Key> {
         .collect(toMap(l -> l.name, a -> a));
 
     injector.instanceOf(MessageService.class).save(
-        messages.stream().map(m -> m.toModel(locales.get(m.localeName), model)).collect(toList()));
+        messages.stream().map(m -> MessageMapper.toModel(m, locales.get(m.localeName), model)).collect(toList()));
   }
 
   /**

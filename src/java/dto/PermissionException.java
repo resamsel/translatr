@@ -1,8 +1,6 @@
 package dto;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import models.Scope;
 
 /**
  * @author resamsel
@@ -11,22 +9,21 @@ import models.Scope;
 public class PermissionException extends RuntimeException {
   private static final long serialVersionUID = -5814708556078110519L;
 
-  public Scope[] scopes;
+  public String[] scopes;
 
   /**
-   * 
+   *
    */
   public PermissionException(String message) {
     super(message);
   }
 
   /**
-   * @param errorMessage
+   * @param message
    * @param scopes
    */
-  public PermissionException(String message, Scope... scopes) {
-    this(String.format("%s (scopes required: %s)", message,
-        Arrays.stream(scopes).map(Scope::toString).collect(Collectors.joining(", "))));
+  public PermissionException(String message, String... scopes) {
+    this(String.format("%s (scopes required: %s)", message, String.join(", ", scopes)));
 
     this.scopes = scopes;
   }
@@ -34,20 +31,20 @@ public class PermissionException extends RuntimeException {
   /**
    * FindBugs EI: getScopes() may expose internal representation by returning
    * PermissionException.scopes.
-   * 
+   *
    * @return the scopes
    */
-  public Scope[] getScopes() {
+  public String[] getScopes() {
     return Arrays.copyOf(scopes, scopes.length);
   }
 
   /**
    * FindBugs EI2: setScopes(Scope[]) may expose internal representation by storing an externally
    * mutable object into PermissionException.scopes.
-   * 
+   *
    * @param scopes the scopes to set
    */
-  public void setScopes(Scope[] scopes) {
+  public void setScopes(String[] scopes) {
     this.scopes = Arrays.copyOf(scopes, scopes.length);
   }
 }

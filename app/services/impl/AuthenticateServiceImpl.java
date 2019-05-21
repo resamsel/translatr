@@ -5,6 +5,7 @@ import com.feth.play.module.pa.service.AbstractUserService;
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.feth.play.module.pa.user.UserRoleIdentity;
+import mappers.UserMapper;
 import models.ActionType;
 import models.LogEntry;
 import models.User;
@@ -77,7 +78,7 @@ public class AuthenticateServiceImpl extends AbstractUserService {
     }
 
     logEntryService.create(
-        LogEntry.from(ActionType.Login, user, null, dto.User.class, null, dto.User.from(user)));
+        LogEntry.from(ActionType.Login, user, null, dto.User.class, null, UserMapper.toDto(user)));
 
     return knownUser;
   }

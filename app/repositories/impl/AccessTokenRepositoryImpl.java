@@ -9,13 +9,7 @@ import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import criterias.AccessTokenCriteria;
 import criterias.HasNextPagedList;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.validation.Validator;
+import mappers.AccessTokenMapper;
 import models.AccessToken;
 import models.ActionType;
 import models.User;
@@ -23,6 +17,14 @@ import models.UserRole;
 import org.apache.commons.lang3.StringUtils;
 import repositories.AccessTokenRepository;
 import utils.QueryUtils;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.UUID;
 
 @Singleton
 public class AccessTokenRepositoryImpl extends
@@ -34,7 +36,7 @@ public class AccessTokenRepositoryImpl extends
 
   @Inject
   public AccessTokenRepositoryImpl(Validator validator,
-      @Named(ActivityActor.NAME) ActorRef activityActor) {
+                                   @Named(ActivityActor.NAME) ActorRef activityActor) {
     super(validator, activityActor);
   }
 
@@ -94,8 +96,13 @@ public class AccessTokenRepositoryImpl extends
     if (update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Update, User.loggedInUser(), null, dto.AccessToken.class, dto.AccessToken.from(byId(t.id)),
-              dto.AccessToken.from(t)),
+              ActionType.Update,
+              User.loggedInUser(),
+              null,
+              dto.AccessToken.class,
+              AccessTokenMapper.toDto(byId(t.id)),
+              AccessTokenMapper.toDto(t)
+          ),
           null
       );
     }
@@ -109,7 +116,13 @@ public class AccessTokenRepositoryImpl extends
     if (!update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Create, User.loggedInUser(), null, dto.AccessToken.class, null, dto.AccessToken.from(t)),
+              ActionType.Create,
+              User.loggedInUser(),
+              null,
+              dto.AccessToken.class,
+              null,
+              AccessTokenMapper.toDto(t)
+          ),
           null
       );
     }

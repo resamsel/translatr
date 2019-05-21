@@ -2,9 +2,7 @@ package services.api.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import criterias.MessageCriteria;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import mappers.MessageMapper;
 import models.Message;
 import models.Scope;
 import play.libs.Json;
@@ -13,6 +11,10 @@ import services.LocaleService;
 import services.MessageService;
 import services.PermissionService;
 import services.api.MessageApiService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.UUID;
 
 /**
  * @author resamsel
@@ -29,7 +31,7 @@ public class MessageApiServiceImpl extends
   @Inject
   protected MessageApiServiceImpl(MessageService messageService, LocaleService localeService,
       KeyService keyService, PermissionService permissionService) {
-    super(messageService, dto.Message.class, dto.Message::from,
+    super(messageService, dto.Message.class, MessageMapper::toDto,
         new Scope[]{Scope.ProjectRead, Scope.MessageRead},
         new Scope[]{Scope.ProjectRead, Scope.MessageWrite},
         permissionService);
@@ -45,6 +47,6 @@ public class MessageApiServiceImpl extends
   protected Message toModel(JsonNode json) {
     dto.Message dto = Json.fromJson(json, dto.Message.class);
 
-    return dto.toModel(localeService.byId(dto.localeId), keyService.byId(dto.keyId));
+    return MessageMapper.toModel(dto, localeService.byId(dto.localeId), keyService.byId(dto.keyId));
   }
 }

@@ -1,9 +1,5 @@
 package repositories.impl;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-import static utils.Stopwatch.log;
-
 import actors.ActivityActor;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
@@ -17,17 +13,7 @@ import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.validation.Validator;
-
+import mappers.MessageMapper;
 import models.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,6 +21,16 @@ import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
 import utils.MessageUtils;
 import utils.QueryUtils;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.*;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static utils.Stopwatch.log;
 
 @Singleton
 public class MessageRepositoryImpl extends
@@ -238,7 +234,7 @@ public class MessageRepositoryImpl extends
   @Override
   public void preDelete(Message t) {
     activityActor.tell(
-        new Activity<>(ActionType.Delete, User.loggedInUser(), t.key.project, dto.Message.class, dto.Message.from(t),
+        new Activity<>(ActionType.Delete, User.loggedInUser(), t.key.project, dto.Message.class, MessageMapper.toDto(t),
             null),
         null
     );
@@ -251,7 +247,7 @@ public class MessageRepositoryImpl extends
   protected void preDelete(Collection<Message> t) {
     activityActor.tell(
         new Activities<>(t.stream().map(m -> new Activity<>(ActionType.Delete, User.loggedInUser(), m.key.project,
-            dto.Message.class, dto.Message.from(m), null)).collect(toList())),
+            dto.Message.class, MessageMapper.toDto(m), null)).collect(toList())),
         null
     );
   }
@@ -290,7 +286,7 @@ public class MessageRepositoryImpl extends
         message.key.project,
         dto.Message.class,
         null,
-        dto.Message.from(message)
+        MessageMapper.toDto(message)
     );
   }
 
@@ -300,8 +296,8 @@ public class MessageRepositoryImpl extends
         User.loggedInUser(),
         message.key.project,
         dto.Message.class,
-        dto.Message.from(previous),
-        dto.Message.from(message)
+        MessageMapper.toDto(previous),
+        MessageMapper.toDto(message)
     );
   }
 }

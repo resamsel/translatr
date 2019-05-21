@@ -2,20 +2,19 @@ package services.api.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import criterias.KeyCriteria;
-
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import dto.NotFoundException;
+import mappers.KeyMapper;
 import models.Key;
-import models.Locale;
 import models.Scope;
 import play.libs.Json;
 import services.KeyService;
 import services.PermissionService;
 import services.ProjectService;
 import services.api.KeyApiService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.UUID;
 
 /**
  * @author resamsel
@@ -31,7 +30,7 @@ public class KeyApiServiceImpl extends
   @Inject
   protected KeyApiServiceImpl(KeyService localeService, ProjectService projectService,
                               PermissionService permissionService) {
-    super(localeService, dto.Key.class, dto.Key::from,
+    super(localeService, dto.Key.class, KeyMapper::toDto,
         new Scope[]{Scope.ProjectRead, Scope.KeyRead},
         new Scope[]{Scope.ProjectRead, Scope.KeyWrite},
         permissionService);
@@ -60,6 +59,6 @@ public class KeyApiServiceImpl extends
   protected Key toModel(JsonNode json) {
     dto.Key dto = Json.fromJson(json, dto.Key.class);
 
-    return dto.toModel(projectService.byId(dto.projectId));
+    return KeyMapper.toModel(dto, projectService.byId(dto.projectId));
   }
 }

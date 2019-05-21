@@ -8,37 +8,12 @@ import com.google.common.collect.ImmutableMap;
 import commands.RevertDeleteProjectCommand;
 import commands.RevertDeleteProjectUserCommand;
 import converters.ActivityCsvConverter;
-import criterias.KeyCriteria;
-import criterias.LocaleCriteria;
-import criterias.LogEntryCriteria;
-import criterias.ProjectCriteria;
-import criterias.ProjectUserCriteria;
+import criterias.*;
 import dto.SearchResponse;
-import dto.Suggestion;
-import forms.ActivitySearchForm;
-import forms.KeySearchForm;
-import forms.LocaleSearchForm;
-import forms.ProjectForm;
-import forms.ProjectOwnerForm;
-import forms.ProjectUserForm;
-import forms.SearchForm;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
-import models.Key;
-import models.Locale;
-import models.LogEntry;
-import models.Project;
-import models.ProjectRole;
-import models.ProjectUser;
-import models.Suggestable;
+import forms.*;
+import mappers.SuggestionMapper;
+import models.*;
 import models.Suggestable.Data;
-import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
@@ -49,15 +24,19 @@ import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
-import services.CacheService;
-import services.KeyService;
-import services.LocaleService;
-import services.MessageService;
-import services.ProjectService;
-import services.ProjectUserService;
+import services.*;
 import utils.FormUtils;
 import utils.FormUtils.Search;
 import utils.Template;
+
+import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 /**
  * @author resamsel
@@ -129,7 +108,7 @@ public class Projects extends AbstractController {
               "+++", controllers.routes.Projects.createImmediately(search.search).url())));
     }
 
-    return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
+    return ok(Json.toJson(SearchResponse.from(SuggestionMapper.toDto(suggestions))));
   }
 
   public CompletionStage<Result> projectBy(String username, String projectName) {

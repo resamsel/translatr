@@ -22,7 +22,7 @@ import java.util.concurrent.CompletionStage;
 @With(ApiAction.class)
 public class AccessTokensApi extends AbstractApi<AccessToken, Long, AccessTokenCriteria, AccessTokenApiService> {
 
-  private static final String TYPE = "dto.User";
+  private static final String TYPE = "User";
 
   private static final String FIND = "Find access tokens";
   private static final String FIND_RESPONSE = "Found access tokens";

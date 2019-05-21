@@ -5,7 +5,6 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.LogEntryCriteria;
 import dto.Activity;
 import dto.errors.GenericError;
-import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
 import io.swagger.annotations.*;
 import play.inject.Injector;

@@ -28,7 +28,7 @@ import java.util.concurrent.CompletionStage;
 @With(ApiAction.class)
 public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiService> {
 
-  private static final String TYPE = "dto.User";
+  private static final String TYPE = "User";
 
   private static final String FIND = "Find users";
   private static final String FIND_RESPONSE = "Found users";

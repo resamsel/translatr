@@ -12,6 +12,7 @@ import com.avaje.ebean.Query;
 import criterias.HasNextPagedList;
 import criterias.KeyCriteria;
 import dto.PermissionException;
+import mappers.KeyMapper;
 import models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,7 +155,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
       activityActor.tell(
           new Activity<>(
               ActionType.Update, User.loggedInUser(), t.project, dto.Key.class,
-              dto.Key.from(byId(t.id)), dto.Key.from(t)),
+              KeyMapper.toDto(byId(t.id)), KeyMapper.toDto(t)),
           null
       );
     }
@@ -167,7 +168,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   protected void postSave(Key t, boolean update) {
     if (!update) {
       activityActor.tell(
-          new Activity<>(ActionType.Create, User.loggedInUser(), t.project, dto.Key.class, null, dto.Key.from(t)),
+          new Activity<>(ActionType.Create, User.loggedInUser(), t.project, dto.Key.class, null, KeyMapper.toDto(t)),
           null
       );
     }
@@ -185,7 +186,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
     }
 
     activityActor.tell(
-        new Activity<>(ActionType.Delete, User.loggedInUser(), t.project, dto.Key.class, dto.Key.from(t), null),
+        new Activity<>(ActionType.Delete, User.loggedInUser(), t.project, dto.Key.class, KeyMapper.toDto(t), null),
         null
     );
 
@@ -201,7 +202,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
         new Activities<>(
             t.stream()
                 .map(k -> new Activity<>(ActionType.Delete, User.loggedInUser(), k.project, dto.Key.class,
-                    dto.Key.from(k), null))
+                    KeyMapper.toDto(k), null))
                 .collect(Collectors.toList())),
         null
     );

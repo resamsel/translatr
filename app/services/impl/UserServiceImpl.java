@@ -154,7 +154,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
     logEntryService
         .save(logEntryService.findBy(new LogEntryCriteria().withUserId(otherUser.id)).getList()
-            .stream().filter(logEntry -> !logEntry.contentType.equals("dto.User"))
+            .stream().filter(logEntry -> !logEntry.contentType.equals("User"))
             .map(logEntry -> logEntry.withUser(user)).collect(toList()));
 
     projectService
