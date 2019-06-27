@@ -4,6 +4,7 @@ import { EntityTableComponent } from './entity-table.component';
 import {
   MatButtonModule,
   MatCheckboxModule,
+  MatDividerModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
@@ -25,7 +26,8 @@ import { SelectionActionsComponent } from './selection-actions.component';
     MatCheckboxModule,
     MatInputModule,
     MatFormFieldModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDividerModule
   ]
 })
 export class EntityTableModule {

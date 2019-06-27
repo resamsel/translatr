@@ -1,6 +1,7 @@
 <div class="container">
   <div>
     <entity-table
+      label="Access tokens"
       [dataSource]="accessTokens$ | async"
       [displayedColumns]="displayedColumns"
       [load]="load$ | async"

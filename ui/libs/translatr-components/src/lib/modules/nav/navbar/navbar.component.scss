@@ -1,5 +1,9 @@
 @import "mixins";
 
+:host {
+  z-index: 1;
+}
+
 .mat-toolbar {
   z-index: 2;
 }

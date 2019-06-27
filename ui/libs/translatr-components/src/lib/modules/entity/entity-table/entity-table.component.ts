@@ -47,6 +47,8 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
     this.selection.clear();
   }
 
+  @Input() label: string;
+
   @Output() readonly criteria = new EventEmitter<RequestCriteria>();
   @Output() readonly selected = new EventEmitter<Entity[]>();
 
@@ -94,7 +96,10 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   ) {
     this.commands$.subscribe((criteria: RequestCriteria) => {
       this.criteria.emit(criteria);
-      this.router.navigate([], {queryParams: criteria});
+      this.router.navigate([], {
+        relativeTo: route,
+        queryParams: criteria
+      });
     });
   }
 

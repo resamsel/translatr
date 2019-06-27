@@ -10,15 +10,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DtoGenerator {
 
-  private static final Set<String> IGNORED_FIELDS = new HashSet<>(Arrays.asList("serialVersionUID"));
+  private static final Set<String> IGNORED_FIELDS = new HashSet<>(Arrays.asList("serialVersionUID", "LOGGER"));
   private static final String TARGET_DIR = "ui/libs/translatr-model/src/lib/model-generated";
   private final File targetDir;
   private final String packageName;
@@ -53,6 +55,7 @@ public class DtoGenerator {
         .stream()
         .flatMap(this::includeDependencies)
         .filter(dtoClass -> dtoClass != Dto.class)
+        .filter(dtoClass -> dtoClass != DtoPagedList.class)
         .filter(dtoClass -> dtoClass.getPackage() != null && dtoClass.getPackage().getName().startsWith(packageName))
         .filter(dtoClass -> dtoClass.getSuperclass() != DtoPagedList.class)
         .filter(dtoClass -> dtoClass.getSuperclass() != PagedList.class)
@@ -69,7 +72,8 @@ public class DtoGenerator {
 
   private Stream<? extends Class<?>> includeDependencies(Class<? extends Dto> dtoClass) {
     return Stream.concat(
-        Arrays.stream(new Class<?>[]{dtoClass, dtoClass.getSuperclass()}),
+        Arrays.stream(new Class<?>[]{dtoClass, dtoClass.getSuperclass()})
+            .filter(Objects::nonNull),
         Arrays.stream(dtoClass.getDeclaredFields()).map(Field::getType));
   }
 
@@ -108,19 +112,26 @@ public class DtoGenerator {
   }
 
   private String imports(Class<?> dtoClass) {
-    return Arrays.stream(dtoClass.getDeclaredFields())
-        .filter(field -> !field.isEnumConstant())
-        .filter(field -> field.getType().getPackage() != null && field.getType().getPackage().getName().startsWith(packageName))
+    return Stream.concat(
+        Arrays.stream(dtoClass.getDeclaredFields())
+            .filter(field -> !field.isEnumConstant())
+            .map(Field::getType),
+        Stream.of(dtoClass.getSuperclass())
+            .filter(Objects::nonNull)
+            .filter(clazz -> clazz != Object.class)
+            .filter(clazz -> clazz != Dto.class))
+        .filter(clazz -> clazz.getPackage() != null)
+        .filter(clazz -> clazz.getPackage().getName().startsWith(packageName))
         .distinct()
-        .map(field -> String.format(
+        .map(clazz -> String.format(
             "import { %s } from './%s';",
-            field.getType().getSimpleName(),
-            fileName(field.getType().getSimpleName()).replaceAll("\\.ts", "")))
+            clazz.getSimpleName(),
+            fileName(clazz.getSimpleName()).replaceAll("\\.ts", "")))
         .collect(Collectors.joining("\n"));
   }
 
   private static String extension(Class<?> dtoClass) {
-    if (dtoClass.isEnum()) {
+    if (dtoClass.isEnum() || dtoClass.getSuperclass() == Object.class) {
       return "";
     }
 
@@ -134,12 +145,37 @@ public class DtoGenerator {
   private static String fields(Class<?> dtoClass) {
     return Arrays.stream(dtoClass.getDeclaredFields())
         .filter(field -> !IGNORED_FIELDS.contains(field.getName()))
-        .map(field -> String.format("  %1$s?: %2$s;", field.getName(), toTypeScriptType(field.getType())))
+        .map(field -> String.format("  %1$s?: %2$s;", field.getName(), toTypeScriptType(field)))
         .collect(Collectors.joining("\n"));
   }
 
+  private static String getParameterizedType(Field field) {
+    if (field.getGenericType() instanceof ParameterizedType) {
+      ParameterizedType type = (ParameterizedType) field.getGenericType();
+      return type.getActualTypeArguments()[0].getTypeName();
+    }
+    return null;
+  }
+
+  private static String toTypeScriptType(Field field) {
+    System.out.println(field);
+    Class<?> type = field.getType();
+
+    String parameterizedType = getParameterizedType(field);
+    if (parameterizedType != null) {
+      return String.format("Array<%s>", toTypeScriptType(parameterizedType));
+    }
+
+    return toTypeScriptType(type);
+  }
+
   private static String toTypeScriptType(Class<?> type) {
-    switch (type.getSimpleName()) {
+    return toTypeScriptType(type.getSimpleName());
+  }
+
+  private static String toTypeScriptType(String typeName) {
+    String trimmedTypeName = typeName.replaceAll("[a-z]+\\.", "");
+    switch (trimmedTypeName) {
       case "String":
       case "UUID":
         return "string";
@@ -153,8 +189,10 @@ public class DtoGenerator {
       case "DtoPagedList":
         return "PagedList";
       case "List":
-        return "Array<" + toTypeScriptType(type.getGenericInterfaces()[0].getClass()) + ">";
+        return "Array";
+      default:
+        System.out.println(typeName);
+        return trimmedTypeName;
     }
-    return type.getSimpleName();
   }
 }

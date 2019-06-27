@@ -8,6 +8,7 @@ import {
   MatDialogModule,
   MatIconModule,
   MatInputModule,
+  MatListModule,
   MatMenuModule,
   MatPaginatorModule,
   MatSelectModule,
@@ -66,7 +67,8 @@ import { DashboardUserComponent } from './dashboard-user/dashboard-user.componen
     MatCheckboxModule,
     MatSnackBarModule,
     GravatarModule,
-    EntityTableModule
+    EntityTableModule,
+    MatListModule
   ]
 })
 export class DashboardPageModule {}

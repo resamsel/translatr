@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardPageComponent } from './dashboard-page.component';
-import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
 import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
 import { DashboardProjectsComponent } from './dashboard-projects/dashboard-projects.component';
 import { DASHBOARD_ROUTES } from './dashboard-page.token';
@@ -13,14 +12,14 @@ export const routes: Routes = [
     component: DashboardPageComponent,
     path: '',
     children: [
-      {
-        component: DashboardInfoComponent,
-        path: '',
-        data: {
-          icon: 'view_quilt',
-          name: 'Dashboard'
-        }
-      },
+      // {
+      //   component: DashboardInfoComponent,
+      //   path: '',
+      //   data: {
+      //     icon: 'view_quilt',
+      //     name: 'Dashboard'
+      //   }
+      // },
       {
         path: 'users',
         data: {

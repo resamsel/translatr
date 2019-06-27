@@ -11,6 +11,7 @@
 <div class="container">
   <div>
     <entity-table
+      label="Users"
       [dataSource]="users$ | async"
       [displayedColumns]="displayedColumns"
       [load]="load$ | async"
