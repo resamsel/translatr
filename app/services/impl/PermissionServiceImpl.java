@@ -96,7 +96,7 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public boolean hasPermissionAny(List<ProjectUser> members, User user,
-      Collection<ProjectRole> roles) {
+                                  Collection<ProjectRole> roles) {
     LOGGER.debug("Roles needed (any): {}", roles);
 
     for (ProjectUser member : members) {
@@ -111,7 +111,13 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public void checkPermissionAll(String errorMessage, Scope... scopes) {
     if (!hasPermissionAll(scopes)) {
-      throw new PermissionException(errorMessage, scopes);
+      throw new PermissionException(
+          errorMessage,
+          Arrays.stream(scopes)
+              .map(Enum::name)
+              .toArray(String[]::new
+              )
+      );
     }
   }
 }

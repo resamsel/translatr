@@ -1,13 +1,10 @@
 package commands;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-
 import dto.Project;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.persistence.Transient;
+import mappers.KeyMapper;
+import mappers.LocaleMapper;
+import mappers.MessageMapper;
+import mappers.ProjectMapper;
 import models.Key;
 import models.Locale;
 import org.slf4j.Logger;
@@ -19,6 +16,14 @@ import services.KeyService;
 import services.LocaleService;
 import services.MessageService;
 import services.ProjectService;
+
+import javax.inject.Inject;
+import javax.persistence.Transient;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author resamsel
@@ -48,7 +53,7 @@ public class RevertDeleteProjectCommand implements Command<models.Project> {
 
   @Override
   public RevertDeleteProjectCommand with(models.Project project) {
-    this.project = Project.from(project).load(localeService, keyService, messageService);
+    this.project = ProjectMapper.loadInto(project, localeService, keyService, messageService);
     return this;
   }
 
@@ -69,13 +74,13 @@ public class RevertDeleteProjectCommand implements Command<models.Project> {
     LOGGER.info("After save project: deleted = {}", model.deleted);
 
     Map<String, Key> keys = injector.instanceOf(KeyService.class)
-        .save(project.keys.stream().map(k -> k.toModel(model)).collect(Collectors.toList()))
+        .save(project.keys.stream().map(k -> KeyMapper.toModel(k, model)).collect(Collectors.toList()))
         .stream().collect(toMap(k -> k.name, a -> a));
     Map<String, Locale> locales = injector.instanceOf(LocaleService.class)
-        .save(project.locales.stream().map(l -> l.toModel(model)).collect(Collectors.toList()))
+        .save(project.locales.stream().map(l -> LocaleMapper.toModel(l, model)).collect(Collectors.toList()))
         .stream().collect(toMap(l -> l.name, a -> a));
     injector.instanceOf(MessageService.class).save(project.messages.stream()
-        .map(m -> m.toModel(locales.get(m.localeName), keys.get(m.keyName))).collect(toList()));
+        .map(m -> MessageMapper.toModel(m, locales.get(m.localeName), keys.get(m.keyName))).collect(toList()));
   }
 
   /**
@@ -91,6 +96,6 @@ public class RevertDeleteProjectCommand implements Command<models.Project> {
    */
   @Override
   public Call redirect() {
-    return project.route();
+    return ProjectMapper.toModel(project).route();
   }
 }

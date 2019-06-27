@@ -4,15 +4,14 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.AbstractSearchCriteria;
 import dto.Dto;
 import dto.PermissionException;
-import java.util.UUID;
 import models.ProjectRole;
 import models.User;
 import play.Configuration;
-import play.cache.CacheApi;
 import play.inject.Injector;
 import services.CacheService;
 import services.api.ApiService;
-import utils.PermissionUtils;
+
+import java.util.UUID;
 
 public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>, API extends ApiService<DTO, ID, CRITERIA>>
     extends AbstractBaseApi {

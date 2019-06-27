@@ -2,10 +2,11 @@ package services.api.impl;
 
 import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
-import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
 import criterias.UserCriteria;
 import dto.DtoPagedList;
+import mappers.AggregateMapper;
+import mappers.UserMapper;
 import models.Scope;
 import models.User;
 import play.libs.Json;
@@ -34,7 +35,7 @@ public class UserApiServiceImpl extends
       UserService userService,
       PermissionService permissionService,
       LogEntryService logEntryService) {
-    super(userService, dto.User.class, dto.User::from,
+    super(userService, dto.User.class, UserMapper::toDto,
         new Scope[]{Scope.UserRead},
         new Scope[]{Scope.UserWrite},
         permissionService);
@@ -51,7 +52,7 @@ public class UserApiServiceImpl extends
   public PagedList<dto.Aggregate> activity(UUID id) {
     return new DtoPagedList<>(
         logEntryService.getAggregates(new LogEntryCriteria().withUserId(id)),
-        dto.Aggregate::from);
+        AggregateMapper::toDto);
   }
 
   @Override
@@ -66,6 +67,6 @@ public class UserApiServiceImpl extends
   protected User toModel(JsonNode json) {
     dto.User dto = Json.fromJson(json, dto.User.class);
 
-    return dto.toModel(service.byId(dto.id));
+    return UserMapper.toModel(dto, service.byId(dto.id));
   }
 }

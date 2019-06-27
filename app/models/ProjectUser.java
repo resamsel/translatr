@@ -3,18 +3,14 @@ package models;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Version;
+import controllers.AbstractController;
+import controllers.routes;
 import org.joda.time.DateTime;
+import play.mvc.Call;
 import utils.CacheUtils;
-import validators.NameUnique;
-import validators.ProjectNameUniqueChecker;
+
+import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * @author resamsel
@@ -117,5 +113,14 @@ public class ProjectUser implements Model<ProjectUser, Long> {
 
   public static String getCacheKey(Long id, String... fetches) {
     return CacheUtils.getCacheKey("member:id", id, fetches);
+  }
+
+  public Call route() {
+    Objects.requireNonNull(project, "Project is null");
+    Objects.requireNonNull(project.owner, "Project owner is null");
+
+    return routes.Projects.membersBy(project.owner.username, project.name,
+        AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
+        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
   }
 }

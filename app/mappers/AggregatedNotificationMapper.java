@@ -1,57 +1,36 @@
-package dto;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+package mappers;
 
 import criterias.LogEntryCriteria;
+import dto.AggregatedNotification;
+import dto.Notification;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import models.LogEntry;
 import org.joda.time.DateTime;
 import play.api.Play;
 import play.i18n.Messages;
-import play.mvc.Http.Context;
+import play.mvc.Http;
 import services.LogEntryService;
 import utils.FormatUtils;
 
-/**
- * @author resamsel
- * @version 23 May 2017
- */
-public class AggregatedNotification extends Dto {
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-  private static final long serialVersionUID = -6020395415666005155L;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
-  public DateTime whenCreated;
-  public String created;
-  public DateTime whenUpdated;
-  public String updated;
-  public String title;
-  public String subtitle;
-  public String verb;
-  public long activityCount;
-  public long actorCount;
-  public String contentType;
-  public String name;
-  public String icon;
-  public String color;
-  public String link;
-  public User user;
-  public Project project;
-
-  public static AggregatedNotification from(AggregatedActivity<SimpleActivity> in,
-      Map<UUID, LogEntry> logEntryMap) {
-    Messages messages = Context.current().messages();
+public class AggregatedNotificationMapper {
+  public static AggregatedNotification toDto(AggregatedActivity<SimpleActivity> in,
+                                             Map<UUID, LogEntry> logEntryMap) {
+    Messages messages = Http.Context.current().messages();
 
     AggregatedNotification out = new AggregatedNotification();
 
     out.whenCreated = new DateTime(in.getCreatedAt());
-    out.created = FormatUtils.pretty(Context.current().lang().locale(), out.whenCreated);
+    out.created = FormatUtils.pretty(Http.Context.current().lang().locale(), out.whenCreated);
     out.whenUpdated = new DateTime(in.getUpdatedAt());
-    out.updated = FormatUtils.pretty(Context.current().lang().locale(), out.whenUpdated);
+    out.updated = FormatUtils.pretty(Http.Context.current().lang().locale(), out.whenUpdated);
     out.verb = in.getVerb();
     out.activityCount = in.getActivityCount();
     out.actorCount = in.getActorCount();
@@ -61,11 +40,11 @@ public class AggregatedNotification extends Dto {
       if (logEntryMap != null) {
         UUID logEntryId = Notification.extractUuid(firstActivity.getForeignId());
         if (logEntryMap.containsKey(logEntryId)) {
-          activity = Notification.from(firstActivity, logEntryMap.get(logEntryId));
+          activity = NotificationMapper.toDto(firstActivity, logEntryMap.get(logEntryId));
         }
       }
       if (activity == null) {
-        activity = Notification.from(firstActivity);
+        activity = NotificationMapper.toDto(firstActivity);
       }
 
       out.title = activity.title;
@@ -83,13 +62,13 @@ public class AggregatedNotification extends Dto {
     return out;
   }
 
-  public static List<AggregatedNotification> from(List<AggregatedActivity<SimpleActivity>> in) {
+  public static List<AggregatedNotification> toDto(List<AggregatedActivity<SimpleActivity>> in) {
     List<UUID> ids = in.stream().flatMap(activity -> activity.getActivities().stream())
         .map(activity -> Notification.extractUuid(activity.getForeignId())).collect(toList());
     Map<UUID, LogEntry> map = Play.current().injector().instanceOf(LogEntryService.class)
         .findBy(new LogEntryCriteria().withIds(ids)).getList()
         .stream().collect(toMap(LogEntry::getId, a -> a));
 
-    return in.stream().map(a -> from(a, map)).collect(toList());
+    return in.stream().map(a -> toDto(a, map)).collect(toList());
   }
 }

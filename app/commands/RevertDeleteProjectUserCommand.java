@@ -1,6 +1,7 @@
 package commands;
 
 import dto.ProjectUser;
+import mappers.ProjectUserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.inject.Injector;
@@ -27,7 +28,7 @@ public class RevertDeleteProjectUserCommand implements Command<models.ProjectUse
    */
   @Override
   public RevertDeleteProjectUserCommand with(models.ProjectUser projectUser) {
-    this.projectUser = ProjectUser.from(projectUser);
+    this.projectUser = ProjectUserMapper.toDto(projectUser);
     return this;
   }
 
@@ -36,7 +37,7 @@ public class RevertDeleteProjectUserCommand implements Command<models.ProjectUse
    */
   @Override
   public void execute(Injector injector) {
-    models.ProjectUser model = projectUser.toModel();
+    models.ProjectUser model = ProjectUserMapper.toModel(projectUser);
 
     LOGGER.debug("Reverting member {} from project {}", projectUser.userUsername,
         projectUser.projectName);
@@ -58,7 +59,7 @@ public class RevertDeleteProjectUserCommand implements Command<models.ProjectUse
    */
   @Override
   public Call redirect() {
-    return projectUser.route();
+    return ProjectUserMapper.toModel(projectUser).route();
   }
 
   /**

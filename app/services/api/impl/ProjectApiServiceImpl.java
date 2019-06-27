@@ -5,25 +5,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import controllers.Keys;
 import controllers.Locales;
 import controllers.routes;
-import criterias.*;
+import criterias.KeyCriteria;
+import criterias.LocaleCriteria;
+import criterias.LogEntryCriteria;
+import criterias.ProjectCriteria;
 import dto.DtoPagedList;
 import dto.SearchResponse;
-import dto.Suggestion;
 import forms.SearchForm;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import models.Key;
-import models.Locale;
-import models.Project;
-import models.ProjectRole;
-import models.Scope;
-import models.Suggestable;
+import mappers.AggregateMapper;
+import mappers.ProjectMapper;
+import mappers.SuggestionMapper;
+import models.*;
 import models.Suggestable.Data;
 import play.Configuration;
 import play.i18n.Messages;
@@ -31,6 +23,13 @@ import play.libs.Json;
 import play.mvc.Http.Context;
 import services.*;
 import services.api.ProjectApiService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author resamsel
@@ -51,7 +50,7 @@ public class ProjectApiServiceImpl extends
       Configuration configuration, ProjectService projectService,
       LocaleService localeService, KeyService keyService, LogEntryService logEntryService,
       PermissionService permissionService) {
-    super(projectService, dto.Project.class, dto.Project::from,
+    super(projectService, dto.Project.class, ProjectMapper::toDto,
         new Scope[]{Scope.ProjectRead},
         new Scope[]{Scope.ProjectWrite},
         permissionService);
@@ -73,7 +72,7 @@ public class ProjectApiServiceImpl extends
   public PagedList<dto.Aggregate> activity(UUID id) {
     return new DtoPagedList<>(
         logEntryService.getAggregates(new LogEntryCriteria().withProjectId(id)),
-        dto.Aggregate::from);
+        AggregateMapper::toDto);
   }
 
   /**
@@ -153,7 +152,7 @@ public class ProjectApiServiceImpl extends
       }
     }
 
-    return SearchResponse.from(Suggestion.from(suggestions));
+    return SearchResponse.from(SuggestionMapper.toDto(suggestions));
   }
 
   /**
@@ -161,6 +160,6 @@ public class ProjectApiServiceImpl extends
    */
   @Override
   protected Project toModel(JsonNode json) {
-    return Json.fromJson(json, dto.Project.class).toModel();
+    return ProjectMapper.toModel(Json.fromJson(json, dto.Project.class));
   }
 }

@@ -2,11 +2,10 @@ package services.api.impl;
 
 import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
-import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
-import dto.Activity;
 import dto.DtoPagedList;
-import models.Aggregate;
+import mappers.ActivityMapper;
+import mappers.AggregateMapper;
 import models.LogEntry;
 import models.Scope;
 import play.libs.Json;
@@ -30,7 +29,7 @@ public class ActivityApiServiceImpl extends
   @Inject
   protected ActivityApiServiceImpl(
       LogEntryService logEntryService, PermissionService permissionService) {
-    super(logEntryService, dto.Activity.class, dto.Activity::from,
+    super(logEntryService, dto.Activity.class, ActivityMapper::toDto,
         new Scope[]{Scope.ProjectRead},
         new Scope[]{Scope.ProjectWrite},
         permissionService);
@@ -38,7 +37,7 @@ public class ActivityApiServiceImpl extends
 
   @Override
   public PagedList<dto.Aggregate> getAggregates(LogEntryCriteria criteria) {
-    return new DtoPagedList<>(service.getAggregates(criteria), dto.Aggregate::from);
+    return new DtoPagedList<>(service.getAggregates(criteria), AggregateMapper::toDto);
   }
 
   /**
@@ -48,6 +47,6 @@ public class ActivityApiServiceImpl extends
   protected LogEntry toModel(JsonNode json) {
     dto.Activity dto = Json.fromJson(json, dto.Activity.class);
 
-    return dto.toModel(service.byId(dto.id));
+    return ActivityMapper.toModel(dto, service.byId(dto.id));
   }
 }

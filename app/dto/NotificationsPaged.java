@@ -4,6 +4,8 @@ import com.avaje.ebean.PagedList;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.StreamResponse;
+import mappers.AggregatedNotificationMapper;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -19,7 +21,7 @@ public class NotificationsPaged extends Dto implements PagedList<AggregatedNotif
 
   public NotificationsPaged(StreamResponse<AggregatedActivity<SimpleActivity>> delegate) {
     if (delegate != null)
-      this.list = AggregatedNotification.from(delegate.getResults());
+      this.list = AggregatedNotificationMapper.toDto(delegate.getResults());
     else
       this.list = Collections.emptyList();
   }

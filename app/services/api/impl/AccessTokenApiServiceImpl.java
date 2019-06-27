@@ -2,6 +2,7 @@ package services.api.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import criterias.AccessTokenCriteria;
+import mappers.AccessTokenMapper;
 import models.AccessToken;
 import models.Scope;
 import play.libs.Json;
@@ -20,7 +21,7 @@ public class AccessTokenApiServiceImpl
     super(
         service,
         dto.AccessToken.class,
-        dto.AccessToken::from,
+        AccessTokenMapper::toDto,
         new Scope[]{Scope.AccessTokenRead},
         new Scope[]{Scope.AccessTokenWrite},
         permissionService);
@@ -28,6 +29,6 @@ public class AccessTokenApiServiceImpl
 
   @Override
   protected AccessToken toModel(JsonNode json) {
-    return Json.fromJson(json, dto.AccessToken.class).toModel();
+    return AccessTokenMapper.toModel(Json.fromJson(json, dto.AccessToken.class));
   }
 }

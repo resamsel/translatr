@@ -1,11 +1,11 @@
 package dto.errors;
 
+import javax.validation.ValidationException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.validation.ValidationException;
 
 /**
  * @author resamsel
@@ -20,7 +20,7 @@ public class ConstraintViolationErrorInfo extends GenericErrorInfo {
    * @param violation
    */
   public ConstraintViolationErrorInfo(javax.validation.ConstraintViolation<?> violation) {
-    this(Arrays.asList(violation));
+    this(Collections.singletonList(violation));
   }
 
   /**
@@ -32,7 +32,7 @@ public class ConstraintViolationErrorInfo extends GenericErrorInfo {
 
     if (violations != null)
       this.violations =
-          violations.stream().map(v -> new ConstraintViolation(v)).collect(Collectors.toList());
+          violations.stream().map(ConstraintViolation::new).collect(Collectors.toList());
     else
       this.violations = new ArrayList<>();
   }
@@ -41,6 +41,6 @@ public class ConstraintViolationErrorInfo extends GenericErrorInfo {
     super("ConstraintViolationException", "Constraint violations detected");
 
     if (e != null)
-      this.violations = Arrays.asList(new ConstraintViolation(e));
+      this.violations = Collections.singletonList(new ConstraintViolation(e));
   }
 }

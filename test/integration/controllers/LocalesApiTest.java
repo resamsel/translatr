@@ -1,22 +1,10 @@
 package integration.controllers;
 
-import static assertions.ResultAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-import static play.inject.Bindings.bind;
-import static play.test.Helpers.route;
-import static utils.TestFactory.requestAs;
-import static utils.UserRepositoryMock.byUsername;
-
 import controllers.LocalesApi;
 import controllers.routes;
 import criterias.HasNextPagedList;
 import dto.NotFoundException;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
+import mappers.LocaleMapper;
 import models.AccessToken;
 import models.Locale;
 import models.Project;
@@ -33,6 +21,18 @@ import services.api.LocaleApiService;
 import utils.AccessTokenRepositoryMock;
 import utils.LocaleRepositoryMock;
 import utils.ProjectRepositoryMock;
+
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static assertions.ResultAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static play.inject.Bindings.bind;
+import static play.test.Helpers.route;
+import static utils.TestFactory.requestAs;
+import static utils.UserRepositoryMock.byUsername;
 
 public class LocalesApiTest extends ApiControllerTest {
 
@@ -100,7 +100,7 @@ public class LocalesApiTest extends ApiControllerTest {
         .thenReturn(HasNextPagedList.create(project1.members));
     when(localeApiService
         .byOwnerAndProjectAndName(eq(johnSmith.username), eq(project1.name), eq(locale.name)))
-        .thenReturn(dto.Locale.from(locale));
+        .thenReturn(LocaleMapper.toDto(locale));
     when(localeApiService.byOwnerAndProjectAndName(eq("a"), eq("b"), eq("c")))
         .thenThrow(new NotFoundException(dto.Locale.class.getName(), "c"));
     when(localeApiService.download(eq(locale.id), eq("java_properties"), any()))

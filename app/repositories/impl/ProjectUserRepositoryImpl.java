@@ -1,7 +1,5 @@
 package repositories.impl;
 
-import static utils.Stopwatch.log;
-
 import actors.ActivityActor;
 import actors.ActivityProtocol.Activity;
 import actors.NotificationActor;
@@ -12,10 +10,7 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import criterias.HasNextPagedList;
 import criterias.ProjectUserCriteria;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.validation.Validator;
+import mappers.ProjectUserMapper;
 import models.ActionType;
 import models.ProjectUser;
 import models.User;
@@ -23,6 +18,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.ProjectUserRepository;
 import utils.QueryUtils;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+
+import static utils.Stopwatch.log;
 
 @Singleton
 public class ProjectUserRepositoryImpl extends
@@ -127,6 +129,6 @@ public class ProjectUserRepositoryImpl extends
   }
 
   private dto.ProjectUser toDto(ProjectUser t) {
-    return dto.ProjectUser.from(t);
+    return ProjectUserMapper.toDto(t);
   }
 }

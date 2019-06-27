@@ -12,11 +12,7 @@ import importers.GettextImporter;
 import importers.Importer;
 import importers.JavaPropertiesImporter;
 import importers.PlayMessagesImporter;
-import java.io.File;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.ValidationException;
+import mappers.LocaleMapper;
 import models.FileType;
 import models.Locale;
 import models.Scope;
@@ -36,6 +32,12 @@ import services.PermissionService;
 import services.ProjectService;
 import services.api.LocaleApiService;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.ValidationException;
+import java.io.File;
+import java.util.UUID;
+
 /**
  * @author resamsel
  * @version 29 Jan 2017
@@ -53,7 +55,7 @@ public class LocaleApiServiceImpl extends
   @Inject
   protected LocaleApiServiceImpl(LocaleService localeService, ProjectService projectService,
       Injector injector, PermissionService permissionService) {
-    super(localeService, dto.Locale.class, dto.Locale::from,
+    super(localeService, dto.Locale.class, LocaleMapper::toDto,
         new Scope[]{Scope.ProjectRead, Scope.LocaleRead},
         new Scope[]{Scope.ProjectRead, Scope.LocaleWrite},
         permissionService);
@@ -173,6 +175,6 @@ public class LocaleApiServiceImpl extends
   protected Locale toModel(JsonNode json) {
     dto.Locale dto = Json.fromJson(json, dto.Locale.class);
 
-    return dto.toModel(projectService.byId(dto.projectId));
+    return LocaleMapper.toModel(dto, projectService.byId(dto.projectId));
   }
 }

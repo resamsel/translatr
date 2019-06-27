@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.KeyCriteria;
 import dto.Key;
-import dto.Locale;
 import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
@@ -36,7 +35,7 @@ import java.util.function.Function;
 @With(ApiAction.class)
 public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> {
 
-  private static final String TYPE = "dto.Key";
+  private static final String TYPE = "Key";
 
   private static final String FIND = "Find keys";
   private static final String FIND_RESPONSE = "Found keys";

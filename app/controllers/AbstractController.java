@@ -8,11 +8,6 @@ import exceptions.KeyNotFoundException;
 import exceptions.LocaleNotFoundException;
 import exceptions.ProjectNotFoundException;
 import exceptions.UserNotFoundException;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import models.Project;
 import models.Scope;
 import models.User;
@@ -24,15 +19,16 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Call;
 import play.mvc.Controller;
 import play.mvc.Result;
-import services.CacheService;
-import services.LogEntryService;
-import services.NotificationService;
-import services.PermissionService;
-import services.ProjectService;
-import services.UserService;
+import services.*;
 import utils.CheckedSupplier;
 import utils.ContextKey;
 import utils.Template;
+
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * @author resamsel
@@ -262,7 +258,7 @@ public abstract class AbstractController extends Controller {
     }
 
     if (restrict && !project.owner.id.equals(User.loggedInUserId())) {
-      throw new PermissionException(message("access.denied"), Scope.ProjectRead);
+      throw new PermissionException(message("access.denied"), Scope.ProjectRead.name());
     }
 
     return project;

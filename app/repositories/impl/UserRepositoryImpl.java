@@ -9,6 +9,7 @@ import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import criterias.HasNextPagedList;
 import criterias.UserCriteria;
+import mappers.UserMapper;
 import models.ActionType;
 import models.User;
 import org.apache.commons.lang3.StringUtils;
@@ -159,6 +160,6 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   }
 
   private dto.User toDto(User t) {
-    return dto.User.from(t);
+    return UserMapper.toDto(t);
   }
 }

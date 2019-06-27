@@ -1,9 +1,5 @@
 package repositories.impl;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-import static utils.Stopwatch.log;
-
 import actors.ActivityActor;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
@@ -16,22 +12,9 @@ import criterias.HasNextPagedList;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
 import dto.PermissionException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.validation.Validator;
-import models.ActionType;
+import mappers.LocaleMapper;
 import models.Locale;
-import models.Message;
-import models.Project;
-import models.ProjectRole;
-import models.User;
+import models.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +22,17 @@ import repositories.LocaleRepository;
 import repositories.MessageRepository;
 import services.PermissionService;
 import utils.QueryUtils;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static utils.Stopwatch.log;
 
 @Singleton
 public class LocaleRepositoryImpl extends
@@ -163,7 +157,7 @@ public class LocaleRepositoryImpl extends
     if (update) {
       activityActor.tell(
           new Activity<>(ActionType.Update, User.loggedInUser(), t.project, dto.Locale.class,
-              dto.Locale.from(byId(t.id)), dto.Locale.from(t)),
+              LocaleMapper.toDto(byId(t.id)), LocaleMapper.toDto(t)),
           null
       );
     }
@@ -176,7 +170,7 @@ public class LocaleRepositoryImpl extends
   protected void postSave(Locale t, boolean update) {
     if (!update) {
       activityActor.tell(
-          new Activity<>(ActionType.Create, User.loggedInUser(), t.project, dto.Locale.class, null, dto.Locale.from(t)),
+          new Activity<>(ActionType.Create, User.loggedInUser(), t.project, dto.Locale.class, null, LocaleMapper.toDto(t)),
           null
       );
     }
@@ -194,7 +188,7 @@ public class LocaleRepositoryImpl extends
     }
 
     activityActor.tell(
-        new Activity<>(ActionType.Delete, User.loggedInUser(), t.project, dto.Locale.class, dto.Locale.from(t), null),
+        new Activity<>(ActionType.Delete, User.loggedInUser(), t.project, dto.Locale.class, LocaleMapper.toDto(t), null),
         null
     );
 
@@ -208,7 +202,7 @@ public class LocaleRepositoryImpl extends
   public void preDelete(Collection<Locale> t) {
     activityActor.tell(
         new Activities<>(t.stream().map(l -> new Activity<>(ActionType.Delete, User.loggedInUser(), l.project,
-            dto.Locale.class, dto.Locale.from(l), null)).collect(Collectors.toList())),
+            dto.Locale.class, LocaleMapper.toDto(l), null)).collect(Collectors.toList())),
         null
     );
 

@@ -8,20 +8,7 @@ import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
-
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
-
-import models.User;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import play.data.FormFactory;
 import play.inject.Injector;
@@ -31,6 +18,10 @@ import services.CacheService;
 import services.api.ProjectApiService;
 import utils.FormUtils;
 
+import javax.inject.Inject;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
+
 /**
  * @author resamsel
  * @version 10 Jan 2017
@@ -39,7 +30,7 @@ import utils.FormUtils;
 @With(ApiAction.class)
 public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, ProjectApiService> {
 
-    private static final String TYPE = "dto.Project";
+    private static final String TYPE = "Project";
 
     private static final String FIND = "Find projects";
     private static final String FIND_RESPONSE = "Found projects";

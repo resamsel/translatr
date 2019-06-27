@@ -1,11 +1,11 @@
 package dto.errors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import play.libs.Json;
+
+import javax.validation.ValidationException;
 import java.io.Serializable;
 import java.text.MessageFormat;
-import javax.validation.ValidationException;
-import play.libs.Json;
-import play.mvc.Http.Context;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ConstraintViolation implements Serializable {
@@ -19,7 +19,7 @@ public class ConstraintViolation implements Serializable {
    * @param violation
    */
   public ConstraintViolation(javax.validation.ConstraintViolation<?> violation) {
-    this.message = Context.current().messages().at(violation.getMessage(),
+    this.message = MessageFormat.format(violation.getMessage(),
         violation.getPropertyPath(), violation.getInvalidValue());
     this.field = violation.getPropertyPath().toString();
 
@@ -30,7 +30,7 @@ public class ConstraintViolation implements Serializable {
   }
 
   /**
-   * 
+   *
    */
   public ConstraintViolation(ValidationException e) {
     this.message = e.getMessage();

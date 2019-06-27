@@ -31,7 +31,7 @@ import java.util.concurrent.CompletionStage;
 @With(ApiAction.class)
 public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria, MessageApiService> {
 
-  private static final String TYPE = "dto.Message";
+  private static final String TYPE = "Message";
 
   private static final String FIND = "Find messages";
   private static final String FIND_RESPONSE = "Found messages";

@@ -37,7 +37,7 @@ import java.util.function.Function;
 @With(ApiAction.class)
 public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, LocaleApiService> {
 
-    private static final String TYPE = "dto.Locale";
+    private static final String TYPE = "Locale";
 
     private static final String FIND = "Find locales";
     private static final String FIND_RESPONSE = "Found locales";
