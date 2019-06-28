@@ -17,9 +17,11 @@ export class DashboardPageComponent implements OnInit {
     private readonly facade: AppFacade,
     private readonly router: Router,
     @Inject(DASHBOARD_ROUTES) private routes: { children: NameIconRoute[] }[]
-  ) {}
+  ) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   routerLink(route: Route) {
     if (route === '') {
@@ -33,5 +35,14 @@ export class DashboardPageComponent implements OnInit {
     let charPos = this.router.url.indexOf('?');
     let cleanUrl = charPos !== -1 ? this.router.url.slice(0, charPos) : this.router.url;
     return (cleanUrl === url);
+  }
+
+  activePage(): string | undefined {
+    const activeRoutes = this.children.filter((route) => this.isLinkActive(this.routerLink(route)));
+    if (activeRoutes.length === 0) {
+      return undefined;
+    }
+
+    return activeRoutes[0].data.name;
   }
 }

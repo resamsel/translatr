@@ -12,9 +12,11 @@ import {
   MatMenuModule,
   MatPaginatorModule,
   MatSelectModule,
+  MatSidenavModule,
   MatSnackBarModule,
   MatTableModule,
-  MatTabsModule
+  MatTabsModule,
+  MatToolbarModule
 } from '@angular/material';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
@@ -68,7 +70,9 @@ import { DashboardUserComponent } from './dashboard-user/dashboard-user.componen
     MatSnackBarModule,
     GravatarModule,
     EntityTableModule,
-    MatListModule
+    MatListModule,
+    MatSidenavModule,
+    MatToolbarModule
   ]
 })
 export class DashboardPageModule {}

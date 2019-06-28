@@ -1,21 +1,28 @@
-<div class="sidenav-content">
-  <app-navbar
-    title="Translatr Admin"
-    [page]="page"
-    [backLink]="backLink"
-  >
-    <ng-container ngProjectAs="app-search-bar">
-      <ng-content select="app-search-bar"></ng-content>
-    </ng-container>
+<mat-sidenav-container [hasBackdrop]="true">
+  <ng-container ngProjectAs="mat-sidenav">
+    <ng-content select="mat-sidenav"></ng-content>
+  </ng-container>
 
-    <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
-      <a mat-menu-item [href]="uiRoute()">UI</a>
-    </app-auth-bar-item>
-  </app-navbar>
+  <mat-sidenav-content>
+    <app-navbar
+      title="Translatr Admin"
+      [page]="page"
+      [backLink]="backLink"
+      [sidenav]="sidenav"
+    >
+      <ng-container ngProjectAs="app-search-bar">
+        <ng-content select="app-search-bar"></ng-content>
+      </ng-container>
 
-  <div class="main-container">
-    <ng-content></ng-content>
-  </div>
+      <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
+        <a mat-menu-item [href]="uiRoute()">UI</a>
+      </app-auth-bar-item>
+    </app-navbar>
 
-  <app-footer></app-footer>
-</div>
+    <div class="main-container">
+      <ng-content></ng-content>
+    </div>
+
+    <app-footer></app-footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

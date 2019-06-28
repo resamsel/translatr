@@ -11,6 +11,7 @@
       </button>
       <ng-container *ngIf="backLink; else logo">
         <a
+          *ngIf="!sidenav"
           mat-icon-button
           [routerLink]="backLink.routerLink"
           class="logo"
@@ -23,7 +24,7 @@
         </a>
       </ng-container>
       <ng-template #logo>
-        <a mat-icon-button routerLink="/" class="logo">
+        <a *ngIf="!sidenav" mat-icon-button routerLink="/" class="logo">
           <mat-icon>language</mat-icon>
         </a>
         <a routerLink="/" class="title">

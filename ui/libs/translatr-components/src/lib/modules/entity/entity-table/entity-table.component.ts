@@ -47,8 +47,6 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
     this.selection.clear();
   }
 
-  @Input() label: string;
-
   @Output() readonly criteria = new EventEmitter<RequestCriteria>();
   @Output() readonly selected = new EventEmitter<Entity[]>();
 

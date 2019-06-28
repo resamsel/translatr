@@ -1,9 +1,5 @@
 @import "mixins";
 
-.sidenav {
-  display: none;
-}
-
 @include large {
   ::ng-deep .main-container {
     display: flex;
@@ -22,10 +18,7 @@
         color: rgba(0, 0, 0, 0.6);
 
         &.list-item-active {
-          font-weight: bold;
-          //color: mat-color($accent, darker) !important;
           background: rgba(0, 0, 0, 0.04);
-          //background: rgba(0, 0, 0, 0.06);
         }
       }
     }

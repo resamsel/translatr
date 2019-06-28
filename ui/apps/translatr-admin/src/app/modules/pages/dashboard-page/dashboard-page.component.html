@@ -1,32 +1,27 @@
-<app-sidenav [me]="me$ | async">
-  <header>
-    <nav class="topnav" mat-tab-nav-bar color="accent">
-      <div class="container dense" routerLinkActive>
-        <a
-          mat-tab-link
-          *ngFor="let child of children"
-          [routerLink]="routerLink(child)"
-          [active]="isLinkActive(routerLink(child))"
-        >
-          <mat-icon>{{ child.data.icon }}</mat-icon>
-          {{ child.data.name }}
-        </a>
-      </div>
-    </nav>
-    <div class="sidenav">
-      <mat-nav-list routerLinkActive>
-        <a
-          mat-list-item
-          *ngFor="let child of children"
-          [routerLink]="[routerLink(child)]"
-          [class.list-item-active]="isLinkActive(routerLink(child))"
-        >
-          <mat-icon mat-list-icon>{{ child.data.icon }}</mat-icon>
-          {{ child.data.name }}
-        </a>
-      </mat-nav-list>
-    </div>
-  </header>
+<app-sidenav [me]="me$ | async" [sidenav]="sidenav" [page]="activePage()">
+  <mat-sidenav #sidenav mode="side" class="sidenav">
+    <mat-toolbar>
+      <button
+        mat-icon-button
+        (click)="sidenav.toggle()"
+      >
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span>Translatr Admin</span>
+    </mat-toolbar>
+    <mat-nav-list routerLinkActive>
+      <a
+        mat-list-item
+        *ngFor="let child of children"
+        [routerLink]="[routerLink(child)]"
+        (click)="sidenav.close()"
+        [class.list-item-active]="isLinkActive(routerLink(child))"
+      >
+        <mat-icon mat-list-icon>{{ child.data.icon }}</mat-icon>
+        {{ child.data.name }}
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
 
   <div class="content">
     <router-outlet></router-outlet>

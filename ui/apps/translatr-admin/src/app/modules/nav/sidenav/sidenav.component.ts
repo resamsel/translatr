@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from '@dev/translatr-model';
 import { environment } from '../../../../environments/environment';
+import { MatDrawer } from '@angular/material';
 
 @Component({
   selector: 'app-sidenav',
@@ -14,6 +15,7 @@ export class SidenavComponent {
   @Input() page: string;
   @Input() backLink: { routerLink: string[]; name: string };
   @Input() me: User | undefined;
+  @Input() sidenav: MatDrawer;
 
   readonly endpointUrl = environment.endpointUrl;
 
@@ -21,7 +23,8 @@ export class SidenavComponent {
     .observe(Breakpoints.Handset)
     .pipe(map(result => result.matches));
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(private breakpointObserver: BreakpointObserver) {
+  }
 
   uiRoute(): string {
     return environment.uiUrl;
