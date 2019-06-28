@@ -6,9 +6,10 @@ import dto.PermissionException;
 import dto.errors.ConstraintViolationError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
+import play.libs.Json;
+
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
-import play.libs.Json;
 
 /**
  * @author resamsel

@@ -1,16 +1,17 @@
 package repositories;
 
-import static models.ProjectUser.FETCH_PROJECT;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.ImplementedBy;
 import criterias.ProjectUserCriteria;
+import models.ProjectUser;
+import repositories.impl.ProjectUserRepositoryImpl;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import models.ProjectUser;
-import repositories.impl.ProjectUserRepositoryImpl;
+
+import static models.ProjectUser.FETCH_PROJECT;
 
 @ImplementedBy(ProjectUserRepositoryImpl.class)
 public interface ProjectUserRepository extends

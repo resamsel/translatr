@@ -1,16 +1,17 @@
 package actors;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.reducing;
-
 import actors.WordCountProtocol.ChangeMessageWordCount;
 import actors.WordCountProtocol.ChangeWordCount;
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
-import java.util.Collection;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.Collection;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.reducing;
 
 /**
  * @author resamsel

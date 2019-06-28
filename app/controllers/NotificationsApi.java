@@ -11,17 +11,7 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.StreamResponse;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
+import io.swagger.annotations.*;
 import models.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +20,11 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.CacheService;
 import services.NotificationService;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author resamsel

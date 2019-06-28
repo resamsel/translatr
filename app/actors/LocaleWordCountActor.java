@@ -2,9 +2,10 @@ package actors;
 
 import actors.WordCountProtocol.ChangeWordCount;
 import akka.actor.UntypedActor;
+import services.LocaleService;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import services.LocaleService;
 
 /**
  * @author resamsel

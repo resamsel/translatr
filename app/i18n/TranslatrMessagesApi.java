@@ -1,8 +1,5 @@
 package i18n;
 
-import java.util.HashSet;
-import java.util.Set;
-import javax.inject.Inject;
 import play.api.Configuration;
 import play.api.Environment;
 import play.api.i18n.DefaultMessagesApi;
@@ -10,6 +7,10 @@ import play.api.i18n.Lang;
 import play.api.i18n.Langs;
 import scala.collection.Seq;
 import utils.ContextKey;
+
+import javax.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *

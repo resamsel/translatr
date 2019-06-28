@@ -1,8 +1,9 @@
 package criterias;
 
+import play.mvc.Http.Request;
+
 import java.util.List;
 import java.util.UUID;
-import play.mvc.Http.Request;
 
 /**
  * @author resamsel

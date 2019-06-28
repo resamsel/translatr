@@ -2,14 +2,13 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import criterias.KeyCriteria;
+import models.Key;
+import models.Project;
+import services.impl.KeyServiceImpl;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import models.Key;
-import models.Project;
-import services.impl.KeyServiceImpl;
 
 /**
  * @author resamsel

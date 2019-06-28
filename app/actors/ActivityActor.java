@@ -4,12 +4,13 @@ import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
 import akka.actor.UntypedActor;
 import dto.Dto;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import models.LogEntry;
 import org.slf4j.LoggerFactory;
 import repositories.LogEntryRepository;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ActivityActor extends UntypedActor {

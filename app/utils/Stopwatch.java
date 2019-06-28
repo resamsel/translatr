@@ -1,8 +1,9 @@
 package utils;
 
+import org.slf4j.Logger;
+
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import org.slf4j.Logger;
 
 /**
  *

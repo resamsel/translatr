@@ -1,16 +1,12 @@
 package services;
 
 import com.google.inject.ImplementedBy;
+import models.*;
+import services.impl.PermissionServiceImpl;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import models.AccessToken;
-import models.Project;
-import models.ProjectRole;
-import models.ProjectUser;
-import models.Scope;
-import models.User;
-import services.impl.PermissionServiceImpl;
 
 @ImplementedBy(PermissionServiceImpl.class)
 public interface PermissionService {

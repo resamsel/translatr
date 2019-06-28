@@ -1,13 +1,14 @@
 package forms;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import models.AccessToken;
 import models.Scope;
 import play.data.Form;
 import play.data.FormFactory;
 import play.data.validation.Constraints;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *

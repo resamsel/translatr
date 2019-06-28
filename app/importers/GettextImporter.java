@@ -1,16 +1,17 @@
 package importers;
 
 import com.gettextresourcebundle.GettextResourceBundle;
+import models.Locale;
+import services.KeyService;
+import services.MessageService;
+
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import javax.inject.Inject;
-import models.Locale;
-import services.KeyService;
-import services.MessageService;
 
 /**
  *

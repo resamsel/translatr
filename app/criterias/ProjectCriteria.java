@@ -1,11 +1,11 @@
 package criterias;
 
 import forms.SearchForm;
-import java.util.UUID;
-
 import models.User;
 import models.UserRole;
 import play.mvc.Http.Request;
+
+import java.util.UUID;
 
 /**
  * @author resamsel

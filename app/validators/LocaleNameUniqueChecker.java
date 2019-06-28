@@ -1,9 +1,10 @@
 package validators;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import models.Locale;
 import repositories.LocaleRepository;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * @author resamsel

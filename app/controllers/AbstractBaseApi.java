@@ -6,13 +6,6 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import dto.NotFoundException;
 import dto.PermissionException;
 import dto.SearchResponse;
-
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Supplier;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +14,13 @@ import play.libs.Json;
 import play.mvc.Result;
 import services.CacheService;
 import utils.ErrorUtils;
+
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Supplier;
 
 /**
  * @author resamsel

@@ -3,10 +3,11 @@ package services;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.google.inject.ImplementedBy;
 import criterias.UserCriteria;
-import java.util.UUID;
 import models.User;
 import models.UserStats;
 import services.impl.UserServiceImpl;
+
+import java.util.UUID;
 
 /**
  *

@@ -3,22 +3,19 @@ package models;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import controllers.routes;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Version;
 import org.joda.time.DateTime;
 import play.data.validation.Constraints.MaxLength;
 import play.mvc.Call;
 import utils.CacheUtils;
 import validators.AccessTokenNameUniqueChecker;
 import validators.NameUnique;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @NameUnique(checker = AccessTokenNameUniqueChecker.class, message = "error.accesstokennameunique")

@@ -1,13 +1,11 @@
 package repositories;
 
 import com.google.inject.ImplementedBy;
-import criterias.AccessTokenCriteria;
 import criterias.LogEntryCriteria;
-import java.util.UUID;
-import models.AccessToken;
 import models.LogEntry;
-import repositories.impl.AccessTokenRepositoryImpl;
 import repositories.impl.LogEntryRepositoryImpl;
+
+import java.util.UUID;
 
 @ImplementedBy(LogEntryRepositoryImpl.class)
 public interface LogEntryRepository extends

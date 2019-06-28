@@ -7,9 +7,6 @@ import com.feth.play.module.pa.user.AuthUser;
 import forms.Accept;
 import forms.AccessTokenForm;
 import forms.UserForm;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
 import models.AccessToken;
 import org.joda.time.DateTime;
 import play.data.Form;
@@ -22,6 +19,10 @@ import services.CacheService;
 import utils.FormUtils;
 import utils.SessionKey;
 import utils.Template;
+
+import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author resamsel

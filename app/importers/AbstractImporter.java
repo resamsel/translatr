@@ -1,15 +1,7 @@
 package importers;
 
-import static java.util.stream.Collectors.toMap;
-
 import criterias.KeyCriteria;
 import criterias.MessageCriteria;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import models.Key;
 import models.Locale;
 import models.Message;
@@ -18,6 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.KeyService;
 import services.MessageService;
+
+import java.io.File;
+import java.util.*;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author resamsel

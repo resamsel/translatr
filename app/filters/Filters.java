@@ -1,8 +1,9 @@
 package filters;
 
-import javax.inject.Inject;
 import play.http.HttpFilters;
 import play.mvc.EssentialFilter;
+
+import javax.inject.Inject;
 
 /**
  *

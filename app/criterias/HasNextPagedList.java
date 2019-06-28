@@ -4,13 +4,14 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import com.avaje.ebeaninternal.api.Monitor;
+
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Future;
-import javax.persistence.Transient;
 
 /**
  * @author resamsel

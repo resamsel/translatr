@@ -2,8 +2,9 @@ package services;
 
 import com.avaje.ebean.PagedList;
 import criterias.AbstractSearchCriteria;
-import java.util.Collection;
 import models.Model;
+
+import java.util.Collection;
 
 /**
  *

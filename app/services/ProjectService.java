@@ -2,10 +2,11 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import criterias.ProjectCriteria;
-import java.util.UUID;
 import models.Project;
 import models.User;
 import services.impl.ProjectServiceImpl;
+
+import java.util.UUID;
 
 /**
  * @author resamsel

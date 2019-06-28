@@ -3,13 +3,14 @@ package repositories;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.ImplementedBy;
 import criterias.LocaleCriteria;
+import models.Locale;
+import models.Project;
+import repositories.impl.LocaleRepositoryImpl;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import models.Locale;
-import models.Project;
-import repositories.impl.LocaleRepositoryImpl;
 
 @ImplementedBy(LocaleRepositoryImpl.class)
 public interface LocaleRepository extends ModelRepository<Locale, UUID, LocaleCriteria> {

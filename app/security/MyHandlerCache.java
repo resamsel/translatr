@@ -4,9 +4,10 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.feth.play.module.pa.PlayAuthenticate;
+import services.UserService;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import services.UserService;
 
 @Singleton
 public class MyHandlerCache implements HandlerCache

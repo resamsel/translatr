@@ -1,6 +1,5 @@
 package validators;
 
-import models.Key;
 import models.User;
 import repositories.UserRepository;
 

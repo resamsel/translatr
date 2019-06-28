@@ -2,9 +2,10 @@ package criterias;
 
 import forms.KeySearchForm;
 import forms.SearchForm;
+import play.mvc.Http.Request;
+
 import java.util.Collection;
 import java.util.UUID;
-import play.mvc.Http.Request;
 
 /**
  * @author resamsel

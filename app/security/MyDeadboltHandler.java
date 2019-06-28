@@ -7,13 +7,14 @@ import be.objectify.deadbolt.java.models.Subject;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import controllers.AbstractController;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import play.mvc.Http;
 import play.mvc.Http.Session;
 import play.mvc.Result;
 import services.UserService;
+
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class MyDeadboltHandler extends AbstractDeadboltHandler {
   private final PlayAuthenticate auth;

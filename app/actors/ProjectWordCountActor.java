@@ -2,9 +2,10 @@ package actors;
 
 import actors.WordCountProtocol.ChangeWordCount;
 import akka.actor.UntypedActor;
+import services.ProjectService;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import services.ProjectService;
 
 /**
  * @author resamsel

@@ -1,18 +1,17 @@
 package repositories;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.ImplementedBy;
 import criterias.ProjectCriteria;
+import models.Project;
+import repositories.impl.ProjectRepositoryImpl;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import models.Project;
-import repositories.impl.ProjectRepositoryImpl;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 @ImplementedBy(ProjectRepositoryImpl.class)
 public interface ProjectRepository extends ModelRepository<Project, UUID, ProjectCriteria> {

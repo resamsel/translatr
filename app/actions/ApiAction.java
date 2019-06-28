@@ -2,10 +2,6 @@ package actions;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import dto.PermissionException;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
 import models.AccessToken;
 import play.mvc.Action;
 import play.mvc.Http.Context;
@@ -14,6 +10,11 @@ import play.mvc.Result;
 import services.AccessTokenService;
 import utils.ContextKey;
 import utils.ErrorUtils;
+
+import javax.inject.Inject;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author resamsel

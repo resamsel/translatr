@@ -3,16 +3,14 @@ package repositories;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.ImplementedBy;
 import criterias.KeyCriteria;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import models.Key;
 import models.Project;
 import repositories.impl.KeyRepositoryImpl;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @ImplementedBy(KeyRepositoryImpl.class)
 public interface KeyRepository extends ModelRepository<Key, UUID, KeyCriteria> {

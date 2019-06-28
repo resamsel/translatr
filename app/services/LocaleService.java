@@ -2,12 +2,13 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import criterias.LocaleCriteria;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import models.Locale;
 import models.Project;
 import services.impl.LocaleServiceImpl;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author resamsel

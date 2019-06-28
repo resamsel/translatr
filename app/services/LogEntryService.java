@@ -3,11 +3,11 @@ package services;
 import com.avaje.ebean.PagedList;
 import com.google.inject.ImplementedBy;
 import criterias.LogEntryCriteria;
-
-import java.util.UUID;
 import models.Aggregate;
 import models.LogEntry;
 import services.impl.LogEntryServiceImpl;
+
+import java.util.UUID;
 
 /**
  * @author resamsel

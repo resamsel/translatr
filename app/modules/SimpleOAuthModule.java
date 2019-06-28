@@ -6,9 +6,6 @@ import com.feth.play.module.pa.providers.oauth2.facebook.FacebookAuthProvider;
 import com.feth.play.module.pa.providers.oauth2.github.GithubAuthProvider;
 import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthProvider;
 import com.feth.play.module.pa.providers.oauth2.keycloak.KeycloakAuthProvider;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import play.api.Configuration;
 import play.api.Environment;
@@ -19,6 +16,10 @@ import scala.collection.Seq;
 import services.OAuthResolver;
 import services.impl.AuthenticateServiceImpl;
 import utils.ConfigKey;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Initial DI module.

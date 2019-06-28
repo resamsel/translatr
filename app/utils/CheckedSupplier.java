@@ -1,7 +1,6 @@
 package utils;
 
 import java.util.concurrent.CompletionException;
-import java.util.function.Supplier;
 
 public interface CheckedSupplier<T> {
 

@@ -2,9 +2,10 @@ package repositories;
 
 import com.google.inject.ImplementedBy;
 import criterias.AccessTokenCriteria;
-import java.util.UUID;
 import models.AccessToken;
 import repositories.impl.AccessTokenRepositoryImpl;
+
+import java.util.UUID;
 
 @ImplementedBy(AccessTokenRepositoryImpl.class)
 public interface AccessTokenRepository extends

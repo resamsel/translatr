@@ -1,7 +1,5 @@
 package controllers;
 
-import static java.util.stream.Collectors.toMap;
-
 import actions.ContextAction;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.avaje.ebean.PagedList;
@@ -9,22 +7,11 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import commands.RevertDeleteAccessTokenCommand;
 import commands.RevertDeleteLinkedAccountCommand;
 import converters.ActivityCsvConverter;
-import criterias.AccessTokenCriteria;
-import criterias.LinkedAccountCriteria;
-import criterias.LogEntryCriteria;
-import criterias.ProjectCriteria;
-import criterias.UserCriteria;
+import criterias.*;
 import forms.AccessTokenForm;
 import forms.ActivitySearchForm;
 import forms.SearchForm;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
-import models.AccessToken;
-import models.LinkedAccount;
-import models.LogEntry;
-import models.Project;
-import models.User;
+import models.*;
 import play.Configuration;
 import play.data.Form;
 import play.data.FormFactory;
@@ -38,6 +25,12 @@ import services.LinkedAccountService;
 import services.ProjectService;
 import utils.FormUtils;
 import utils.Template;
+
+import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
+import java.util.concurrent.CompletionStage;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author resamsel

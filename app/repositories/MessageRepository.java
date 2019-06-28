@@ -3,16 +3,12 @@ package repositories;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.ImplementedBy;
 import criterias.MessageCriteria;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import models.Key;
 import models.Message;
 import models.Project;
 import repositories.impl.MessageRepositoryImpl;
+
+import java.util.*;
 
 @ImplementedBy(MessageRepositoryImpl.class)
 public interface MessageRepository extends ModelRepository<Message, UUID, MessageCriteria> {
