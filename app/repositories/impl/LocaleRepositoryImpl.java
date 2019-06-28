@@ -13,7 +13,6 @@ import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
 import dto.PermissionException;
 import mappers.LocaleMapper;
-import models.Locale;
 import models.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
