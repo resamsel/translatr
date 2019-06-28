@@ -32,8 +32,8 @@ export class DashboardPageComponent implements OnInit {
   }
 
   isLinkActive(url) {
-    let charPos = this.router.url.indexOf('?');
-    let cleanUrl = charPos !== -1 ? this.router.url.slice(0, charPos) : this.router.url;
+    const charPos = this.router.url.indexOf('?');
+    const cleanUrl = charPos !== -1 ? this.router.url.slice(0, charPos) : this.router.url;
     return (cleanUrl === url);
   }
 
