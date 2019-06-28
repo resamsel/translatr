@@ -13,7 +13,7 @@
   display: none;
   color: currentColor;
 
-  @include medium {
+  @include large {
     display: inline-block;
   }
 }
@@ -27,7 +27,7 @@
   height: 24px;
   line-height: 24px;
 
-  @include extra-large {
+  @include large {
     font-size: 18px;
     margin-left: 16px;
     padding: 0 16px;

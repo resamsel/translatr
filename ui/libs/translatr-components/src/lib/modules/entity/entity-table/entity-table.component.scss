@@ -1,7 +1,4 @@
-.mat-divider.header {
-  margin-bottom: 16px;
-}
-
+@import "mixins";
 
 table {
   width: 100%;
@@ -17,13 +14,15 @@ table {
 
 .controls {
   display: flex;
+  justify-content: center;
 
   .mat-form-field {
-    width: 200px;
-  }
-
-  .mat-paginator {
     flex-grow: 1;
+
+    @include medium {
+      flex-grow: 0;
+      width: 62.5%;
+    }
   }
 }
 

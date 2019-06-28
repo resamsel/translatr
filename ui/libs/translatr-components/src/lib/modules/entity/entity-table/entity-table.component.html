@@ -12,13 +12,6 @@
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
-
-  <mat-paginator
-    [length]="dataSource?.offset + dataSource?.list.length + (dataSource?.hasNext ? 1 : 0)"
-    [pageIndex]="dataSource?.offset / dataSource?.limit"
-    [pageSize]="dataSource?.limit"
-    (page)="onPage($event)"
-  ></mat-paginator>
 </div>
 
 <table mat-table [dataSource]="dataSource?.list" [trackBy]="trackByFn">
@@ -70,3 +63,10 @@
   ></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
+
+<mat-paginator
+  [length]="dataSource?.offset + dataSource?.list.length + (dataSource?.hasNext ? 1 : 0)"
+  [pageIndex]="dataSource?.offset / dataSource?.limit"
+  [pageSize]="dataSource?.limit"
+  (page)="onPage($event)"
+></mat-paginator>
