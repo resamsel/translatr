@@ -19,7 +19,7 @@
         >
           <mat-icon>arrow_back</mat-icon>
         </a>
-        <a [routerLink]="backLink.routerLink" class="title">
+        <a [routerLink]="backLink.routerLink" class="title" [class.has-page]="page">
           <span>{{ backLink.name }}</span>
         </a>
       </ng-container>
@@ -27,7 +27,7 @@
         <a *ngIf="!sidenav" mat-icon-button routerLink="/" class="logo">
           <mat-icon>language</mat-icon>
         </a>
-        <a routerLink="/" class="title">
+        <a routerLink="/" class="title" [class.has-page]="page">
           <span>{{ title }}</span>
         </a>
       </ng-template>

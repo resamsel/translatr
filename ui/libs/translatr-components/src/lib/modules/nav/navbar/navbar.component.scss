@@ -13,8 +13,16 @@
   display: none;
   color: currentColor;
 
-  @include large {
-    display: inline-block;
+  &.has-page {
+    @include large {
+      display: inline-block;
+    }
+  }
+
+  &:not(.has-page) {
+    @include medium {
+      display: inline-block;
+    }
   }
 }
 
