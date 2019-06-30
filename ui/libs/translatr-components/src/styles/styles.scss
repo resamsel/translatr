@@ -134,7 +134,7 @@ pre[class*="language-"]:before {
   }
 
   &.pin-bottom {
-    position: absolute;
+    position: fixed;
     bottom: 32px;
   }
 

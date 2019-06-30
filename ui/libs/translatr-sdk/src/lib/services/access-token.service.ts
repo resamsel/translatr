@@ -16,8 +16,8 @@ export class AccessTokenService extends AbstractService<AccessToken,
   AccessTokenCriteria> {
   constructor(
     http: HttpClient,
-    router: Router,
-    @Inject(LOGIN_URL) @Optional() loginUrl: string
+    router: Router = undefined,
+    @Inject(LOGIN_URL) @Optional() loginUrl: string = undefined
   ) {
     super(http, router, loginUrl, () => '/api/accesstokens', '/api/accesstoken');
   }

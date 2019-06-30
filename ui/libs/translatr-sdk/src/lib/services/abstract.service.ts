@@ -40,7 +40,9 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
 
           if (err.status >= 400) {
             console.log('redirect', this.loginUrl);
-            if (this.loginUrl !== undefined && this.loginUrl !== null) {
+            if (this.router !== undefined
+              && this.loginUrl !== undefined
+              && this.loginUrl !== null) {
               this.router.navigate([this.loginUrl])
                 .then((navigated: boolean) => {
                   if (!navigated) {

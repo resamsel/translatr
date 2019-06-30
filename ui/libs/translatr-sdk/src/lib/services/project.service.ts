@@ -21,8 +21,8 @@ const projectMapper = (project: Project) => ({
 export class ProjectService extends AbstractService<Project, ProjectCriteria> {
   constructor(
     http: HttpClient,
-    router: Router,
-    @Inject(LOGIN_URL) @Optional() loginUrl: string
+    router: Router = undefined,
+    @Inject(LOGIN_URL) @Optional() loginUrl: string = undefined
   ) {
     super(http, router, loginUrl, () => '/api/projects', '/api/project');
   }

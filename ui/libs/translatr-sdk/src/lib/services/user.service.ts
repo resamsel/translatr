@@ -14,8 +14,8 @@ import { LOGIN_URL } from '@translatr/utils';
 export class UserService extends AbstractService<User, RequestCriteria> {
   constructor(
     http: HttpClient,
-    router: Router,
-    @Inject(LOGIN_URL) @Optional() loginUrl: string
+    router: Router = undefined,
+    @Inject(LOGIN_URL) @Optional() loginUrl: string = undefined
   ) {
     console.log('endpoint url', loginUrl);
     super(http, router, loginUrl, () => '/api/users', '/api/user');
