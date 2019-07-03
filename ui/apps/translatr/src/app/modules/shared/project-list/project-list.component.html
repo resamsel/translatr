@@ -1,4 +1,4 @@
-<app-nav-list [pagedList]="projects" [template]="template">
+<app-nav-list [pagedList]="projects" [template]="template" [empty]="empty">
   <ng-template #template let-project>
     <a mat-list-item [routerLink]="['/', project.ownerUsername, project.name]">
       <span matListIcon class="mat-icon circle">{{
@@ -15,5 +15,8 @@
         {{ project.whenCreated | amTimeAgo }}
       </p>
     </a>
+  </ng-template>
+  <ng-template #empty>
+    No projects yet.
   </ng-template>
 </app-nav-list>

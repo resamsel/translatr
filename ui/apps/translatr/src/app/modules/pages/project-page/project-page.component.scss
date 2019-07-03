@@ -5,7 +5,8 @@
   flex-grow: 1;
   justify-content: center;
 
-  @include large {
+  @include medium {
+    flex-grow: initial;
     justify-content: flex-start;
   }
 }

@@ -11,6 +11,7 @@ export class NavListComponent implements OnInit {
   @Input() loadingListLength = 5;
   @Input() showLoadingAvatar = true;
   @Input() template: TemplateRef<any>;
+  @Input() empty: TemplateRef<any>;
 
   @Output() more = new EventEmitter<number>();
 

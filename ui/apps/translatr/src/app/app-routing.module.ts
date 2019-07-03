@@ -7,6 +7,10 @@ const routes: Routes = [
     loadChildren: '@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module#LoginPageModule'
   },
   {
+    path: 'dashboard',
+    loadChildren: './modules/pages/dashboard-page/dashboard-page.module#DashboardPageModule'
+  },
+  {
     path: 'users',
     loadChildren: './modules/pages/users-page/users-page.module#UsersPageModule'
   },

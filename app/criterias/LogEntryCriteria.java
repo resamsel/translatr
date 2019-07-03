@@ -44,9 +44,6 @@ public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCrit
         .with(request)
         .withUserId(Optional.ofNullable(request.getQueryString("userId"))
             .map(UUID::fromString)
-            .orElse(null))
-        .withProjectId(Optional.ofNullable(request.getQueryString("projectId"))
-            .map(UUID::fromString)
             .orElse(null));
   }
 

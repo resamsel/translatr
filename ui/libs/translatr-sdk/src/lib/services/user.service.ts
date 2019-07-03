@@ -27,8 +27,8 @@ export class UserService extends AbstractService<User, RequestCriteria> {
       params?:
         | HttpParams
         | {
-            [param: string]: string | string[];
-          };
+        [param: string]: string | string[];
+      };
     }
   ): Observable<User | undefined> {
     return this.http

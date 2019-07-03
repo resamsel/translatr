@@ -1,0 +1,21 @@
+<app-sidenav [me]="me$ | async">
+  <header class="with-separator">
+    <div class="container">
+      <div class="breadcrumbs">
+        <mat-icon>view_quilt</mat-icon>
+        <span>Dashboard</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <section>
+      <h2>My Projects</h2>
+      <app-project-list [projects]="projects$ | async"></app-project-list>
+    </section>
+    <section>
+      <h2>Activity on my Projects</h2>
+      <app-activity-list [activities]="activities$ | async"></app-activity-list>
+    </section>
+  </div>
+</app-sidenav>

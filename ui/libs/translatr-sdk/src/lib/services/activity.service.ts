@@ -7,6 +7,7 @@ import { Activity, Aggregate, PagedList } from '@dev/translatr-model';
 export interface ActivityCriteria {
   userId?: string;
   projectId?: string;
+  projectOwnerId?: string;
   limit?: number;
   offset?: number;
   order?: string;

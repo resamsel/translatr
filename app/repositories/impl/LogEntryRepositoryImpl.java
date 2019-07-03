@@ -93,6 +93,10 @@ public class LogEntryRepositoryImpl extends
       query.eq("project.id", criteria.getProjectId());
     }
 
+    if (criteria.getProjectOwnerId() != null) {
+      query.eq("project.owner.id", criteria.getProjectOwnerId());
+    }
+
     return query;
   }
 
