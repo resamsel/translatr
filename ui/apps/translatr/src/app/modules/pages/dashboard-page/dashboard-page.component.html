@@ -11,7 +11,10 @@
   <div class="container">
     <section>
       <h2>My Projects</h2>
-      <app-project-list [projects]="projects$ | async"></app-project-list>
+      <app-project-list
+        [projects]="projects$ | async"
+        allowProjectCreation="true"
+        (onCreate)="openProjectCreationDialog()"></app-project-list>
     </section>
     <section>
       <h2>Activity on my Projects</h2>

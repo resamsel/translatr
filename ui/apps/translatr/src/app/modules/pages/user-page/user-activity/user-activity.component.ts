@@ -29,7 +29,7 @@ export class UserActivityComponent implements OnInit {
   }
 
   private loadActivities(): void {
-    this.activities$ = this.activityService.activityList(this.criteria);
+    this.activities$ = this.activityService.find(this.criteria);
   }
 
   onMore(): void {

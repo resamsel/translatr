@@ -14,7 +14,7 @@ export class DashboardEffects {
     DashboardActionTypes.LoadActivities,
     {
       run: (action: LoadActivities, state: DashboardPartialState) => {
-        return this.activityService.activityList(action.payload)
+        return this.activityService.find(action.payload)
           .pipe(map((result: PagedList<Activity>) => new ActivitiesLoaded(result)));
       },
 

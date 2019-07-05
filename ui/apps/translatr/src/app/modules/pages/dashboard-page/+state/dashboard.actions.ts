@@ -11,7 +11,7 @@ export enum DashboardActionTypes {
 export class LoadActivities implements Action {
   readonly type = DashboardActionTypes.LoadActivities;
 
-  constructor(public payload: ActivityCriteria) {
+  constructor(public payload?: ActivityCriteria) {
   }
 }
 

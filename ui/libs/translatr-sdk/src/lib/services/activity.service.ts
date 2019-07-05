@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { Activity, Aggregate, PagedList } from '@dev/translatr-model';
+import { Activity, Aggregate, PagedList, RequestCriteria } from '@dev/translatr-model';
 
 export interface ActivityCriteria {
   userId?: string;
@@ -19,7 +19,7 @@ export interface ActivityCriteria {
 export class ActivityService {
   constructor(private readonly http: HttpClient) {}
 
-  activityList(criteria: ActivityCriteria): Observable<PagedList<Activity>> {
+  find(criteria?: ActivityCriteria): Observable<PagedList<Activity>> {
     return this.http.get<PagedList<Activity>>('/api/activities', {
       params: criteria as { [param: string]: string | string[] }
     });

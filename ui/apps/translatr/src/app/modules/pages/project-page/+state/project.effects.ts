@@ -109,7 +109,7 @@ export class ProjectEffects {
       run: (action: LoadProjectActivities, state: ProjectPartialState) => {
         const payload = action.payload;
         return this.activityService
-          .activityList(payload)
+          .find(payload)
           .pipe(
             map((p: PagedList<Activity>) => new ProjectActivitiesLoaded(p))
           );

@@ -8,3 +8,17 @@
   font-size: 14px;
   margin-left: 4px;
 }
+
+.empty-view {
+  padding: 8px;
+  min-height: 96px;
+
+  .mat-icon {
+    height: 64px;
+    width: 64px;
+    font-size: 64px;
+    opacity: 0.25;
+    float: left;
+    margin-right: 8px;
+  }
+}

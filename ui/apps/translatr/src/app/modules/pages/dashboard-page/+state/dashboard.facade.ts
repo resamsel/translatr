@@ -4,8 +4,8 @@ import { select, Store } from '@ngrx/store';
 
 import { DashboardPartialState } from './dashboard.reducer';
 import { dashboardQuery } from './dashboard.selectors';
-import { LoadActivities, LoadDashboard } from './dashboard.actions';
-import { ActivityService } from '@dev/translatr-sdk';
+import { LoadActivities } from './dashboard.actions';
+import { ActivityCriteria, ActivityService } from '@dev/translatr-sdk';
 
 @Injectable()
 export class DashboardFacade {
@@ -17,7 +17,7 @@ export class DashboardFacade {
   ) {
   }
 
-  loadProjectActivities(projectOwnerId: string) {
-    this.store.dispatch(new LoadActivities({projectOwnerId}));
+  loadActivities(payload?: ActivityCriteria) {
+    this.store.dispatch(new LoadActivities(payload));
   }
 }

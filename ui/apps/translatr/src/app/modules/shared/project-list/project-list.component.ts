@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { PagedList, Project } from '@dev/translatr-model';
 import { firstChar } from '@dev/translatr-sdk';
 
@@ -10,6 +10,13 @@ import { firstChar } from '@dev/translatr-sdk';
 })
 export class ProjectListComponent {
   @Input() projects: PagedList<Project>;
+  @Input() allowProjectCreation = false;
+
+  @Output() onCreate = new EventEmitter<void>();
 
   firstChar = firstChar;
+
+  onCreateProject(): void {
+    this.onCreate.emit();
+  }
 }
