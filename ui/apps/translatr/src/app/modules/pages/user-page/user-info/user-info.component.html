@@ -1,6 +1,6 @@
 <section>
   <h2>Active Projects</h2>
-  <div class="flex-stretch">
+  <div class="project-list flex-stretch">
     <app-project-card-link
       *ngFor="let project of (projects$ | async)?.list.slice(0, 3)"
       [project]="project"

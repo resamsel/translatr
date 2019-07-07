@@ -8,80 +8,56 @@
 </ng-container>
 <ng-container [ngSwitch]="contentType">
   <span *ngSwitchCase="'project'" class="content-type" i18n>
-    <a
-      [routerLink]="['/', project?.ownerUsername, project?.name]"
+    <a *ngIf="linkToProject(project) as projectLink"
+      [routerLink]="projectLink"
       class="link"
-      >{{ project?.name }}</a
+      >{{ project.name }}</a
     >
   </span>
   <span *ngSwitchCase="'locale'" class="content-type" i18n>
-    <a
-      [routerLink]="[
-        '/',
-        locale?.projectOwnerUsername,
-        locale?.projectName,
-        'locales',
-        locale?.name
-      ]"
+    <a *ngIf="linkToLocale(locale) as localeLink"
+      [routerLink]="localeLink"
       class="link"
-      >{{ locale?.displayName }}</a
+      >{{ locale.displayName }}</a
     >
     in project
-    <a
-      [routerLink]="['/', locale?.projectOwnerUsername, locale?.projectName]"
+    <a *ngIf="linkToProjectOf(locale) as projectLink"
+      [routerLink]="projectLink"
       class="link"
-      >{{ locale?.projectName }}</a
+      >{{ locale.projectName }}</a
     >
   </span>
   <span *ngSwitchCase="'key'" class="content-type" i18n>
-    <a
-      [routerLink]="[
-        '/',
-        key?.projectOwnerUsername,
-        key?.projectName,
-        'keys',
-        key?.name
-      ]"
+    <a *ngIf="linkToKey(key) as keyLink"
+      [routerLink]="keyLink"
       class="link"
-      >{{ key?.name }}</a
+      >{{ key.name }}</a
     >
     in project
-    <a
-      [routerLink]="['/', key?.projectOwnerUsername, key?.projectName]"
+    <a *ngIf="linkToProjectOf(key) as projectLink"
+      [routerLink]="projectLink"
       class="link"
-      >{{ key?.projectName }}</a
+      >{{ key.projectName }}</a
     >
   </span>
   <span *ngSwitchCase="'message'" class="content-type" i18n>
     for key
-    <a
-      [routerLink]="[
-        '/',
-        message?.projectOwnerUsername,
-        message?.projectName,
-        'keys',
-        message?.keyName
-      ]"
+    <a *ngIf="linkToKeyMessage(message) as messageLink"
+      [routerLink]="messageLink"
       class="link"
-      >{{ message?.keyName }}</a
+      >{{ message.keyName }}</a
     >
     of
-    <a
-      [routerLink]="[
-        '/',
-        message?.projectOwnerUsername,
-        message?.projectName,
-        'locales',
-        message?.localeName
-      ]"
+    <a *ngIf="linkToLocaleMessage(message) as messageLink"
+      [routerLink]="messageLink"
       class="link"
       >{{ message?.localeDisplayName }}</a
     >
     in project
-    <a
-      [routerLink]="['/', message?.projectOwnerUsername, message?.projectName]"
+    <a *ngIf="linkToProjectOf(message) as projectLink"
+      [routerLink]="message"
       class="link"
-      >{{ message?.projectName }}</a
+      >{{ message.projectName }}</a
     >
   </span>
 </ng-container>

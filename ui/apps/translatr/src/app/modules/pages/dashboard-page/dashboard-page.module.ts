@@ -15,6 +15,7 @@ import { ProjectsPageModule } from '../projects-page/projects-page.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
 import { ProjectCreationDialogComponent } from '../../shared/project-creation-dialog/project-creation-dialog.component';
 import { ProjectCreationDialogModule } from '../../shared/project-creation-dialog/project-creation-dialog.module';
+import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
 
 @NgModule({
   declarations: [DashboardPageComponent],
@@ -33,7 +34,8 @@ import { ProjectCreationDialogModule } from '../../shared/project-creation-dialo
       initialState: dashboardInitialState
     }),
     EffectsModule.forFeature([DashboardEffects]),
-    ActivityListModule
+    ActivityListModule,
+    ProjectCardListModule
   ],
   providers: [DashboardFacade]
 })

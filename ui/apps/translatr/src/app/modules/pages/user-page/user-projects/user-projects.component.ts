@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PagedList, Project, User } from '@dev/translatr-model';
 import { ProjectService } from '@dev/translatr-sdk';
 import { Observable } from 'rxjs';
-import { ProjectCreationDialogComponent } from '../../../shared/project-creation-dialog/project-creation-dialog.component';
+import { openProjectCreationDialog } from '../../../shared/project-creation-dialog/project-creation-dialog.component';
 import { take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 
@@ -20,7 +20,8 @@ export class UserProjectsComponent implements OnInit {
     private readonly projectService: ProjectService,
     private readonly route: ActivatedRoute,
     private readonly dialog: MatDialog
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.route.parent.data.subscribe((data: { user: User }) => {
@@ -38,8 +39,7 @@ export class UserProjectsComponent implements OnInit {
   }
 
   openProjectCreationDialog(): void {
-    const ref = this.dialog.open(ProjectCreationDialogComponent);
-    ref
+    openProjectCreationDialog(this.dialog)
       .afterClosed()
       .pipe(take(1))
       .subscribe(() => this.loadProjects());

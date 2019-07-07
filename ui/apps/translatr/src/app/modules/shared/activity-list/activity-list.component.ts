@@ -4,7 +4,8 @@ import { Activity, PagedList } from '@dev/translatr-model';
 @Component({
   selector: 'app-activity-list',
   templateUrl: './activity-list.component.html',
-  styleUrls: ['./activity-list.component.scss']
+  styleUrls: ['./activity-list.component.scss'],
+  preserveWhitespaces: true
 })
 export class ActivityListComponent implements OnInit {
   @Input() activities: PagedList<Activity>;

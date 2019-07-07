@@ -20,7 +20,7 @@ export class UsersPageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.onLoadUsers(20);
+    this.onLoadUsers(8);
   }
 
   ngOnDestroy(): void {

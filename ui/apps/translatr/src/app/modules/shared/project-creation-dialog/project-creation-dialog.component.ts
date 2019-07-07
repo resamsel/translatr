@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { ProjectService } from '@dev/translatr-sdk';
 import { Project } from '@dev/translatr-model';
 import { take } from 'rxjs/operators';
@@ -20,6 +20,10 @@ interface Error {
     violations: Violation[];
   };
 }
+
+export const openProjectCreationDialog = (dialog: MatDialog) => {
+  return dialog.open<ProjectCreationDialogComponent, void, Project>(ProjectCreationDialogComponent);
+};
 
 @Component({
   selector: 'app-protect-creation-dialog',

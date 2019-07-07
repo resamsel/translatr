@@ -4,13 +4,14 @@ import { firstChar } from '@dev/translatr-sdk';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-project-list',
-  templateUrl: './project-list.component.html',
-  styleUrls: ['./project-list.component.scss']
+  selector: 'app-project-card-list',
+  templateUrl: './project-card-list.component.html',
+  styleUrls: ['./project-card-list.component.scss']
 })
-export class ProjectListComponent {
+export class ProjectCardListComponent {
   @Input() projects: PagedList<Project>;
   @Input() allowProjectCreation = false;
+  @Input() showMore = true;
 
   @Output() onCreate = new EventEmitter<void>();
 

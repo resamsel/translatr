@@ -1,5 +1,17 @@
 @import "mixins";
 
+@mixin project-card-theme($theme) {
+  $accent: map-get($theme, accent);
+  $accent-color: mat-color($accent);
+  $accent-color2: mat-color($accent, default, 0.96);
+
+  :host {
+    .mat-card-image {
+      background-image: linear-gradient(45deg, $accent-color2, $accent-color);
+    }
+  }
+}
+
 $size: 64px;
 $size-large: 160px;
 
@@ -44,3 +56,5 @@ h2 {
     font-size: $size-large/2;
   }
 }
+
+//@include project-card-theme($app-theme);

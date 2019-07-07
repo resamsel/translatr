@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProjectsPageComponent } from './projects-page.component';
 import { ProjectsPageRoutingModule } from './projects-page-routing.module';
-import { MatIconModule } from '@angular/material';
+import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { ProjectListModule } from '../../shared/project-list/project-list.module';
 import { StoreModule } from '@ngrx/store';
@@ -12,6 +12,7 @@ import { ProjectsEffects } from './+state/projects.effects';
 import { ProjectsFacade } from './+state/projects.facade';
 import { ProjectCardModule } from '../../shared/project-card/project-card.module';
 import { GravatarModule } from 'ngx-gravatar';
+import { ProjectCreationDialogModule } from '../../shared/project-creation-dialog/project-creation-dialog.module';
 
 @NgModule({
   declarations: [ProjectsPageComponent],
@@ -21,7 +22,12 @@ import { GravatarModule } from 'ngx-gravatar';
     SidenavModule,
     ProjectListModule,
     ProjectCardModule,
+    ProjectCreationDialogModule,
+
     MatIconModule,
+    MatDialogModule,
+    MatButtonModule,
+
     GravatarModule,
     StoreModule.forFeature(PROJECTS_FEATURE_KEY, projectsReducer, {
       initialState: projectsInitialState
@@ -30,4 +36,5 @@ import { GravatarModule } from 'ngx-gravatar';
   ],
   providers: [ProjectsFacade]
 })
-export class ProjectsPageModule {}
+export class ProjectsPageModule {
+}

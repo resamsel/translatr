@@ -1,0 +1,23 @@
+<app-nav-list
+  [pagedList]="projects"
+  [template]="template"
+  [empty]="empty"
+  direction="row"
+  [showMore]="showMore">
+  <ng-template #template let-project>
+    <app-project-card-link [project]="project"></app-project-card-link>
+  </ng-template>
+  <ng-template #empty>
+    <div class="empty-view">
+      <mat-icon>book</mat-icon>
+      <p>You don't have any projects yet, you might want to create one of your own.</p>
+      <button *ngIf="allowProjectCreation"
+              mat-raised-button
+              color="accent"
+              class="action"
+              (click)="onCreateProject()"
+      >Start new project
+      </button>
+    </div>
+  </ng-template>
+</app-nav-list>

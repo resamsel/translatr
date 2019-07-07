@@ -1,5 +1,5 @@
 <mat-nav-list *ngIf="pagedList; else loading">
-  <ng-container *ngIf="pagedList.list.length > 0; else empty">
+  <div *ngIf="pagedList.list.length > 0; else empty" [class.flex-stretch]="direction === 'row'">
     <ng-content></ng-content>
     <ng-container *ngFor="let item of pagedList.list; trackBy: trackByFn">
       <ng-container
@@ -9,13 +9,13 @@
     <a
       mat-list-item
       class="more"
-      *ngIf="pagedList?.hasNext"
+      *ngIf="showMore && pagedList?.hasNext"
       (click)="loadMore()"
       i18n
     >
       <i>Load more</i>
     </a>
-  </ng-container>
+  </div>
 </mat-nav-list>
 
 <ng-template #loading>

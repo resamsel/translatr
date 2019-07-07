@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AppFacade } from '../../../+state/app.facade';
 import { ProjectsFacade } from '../projects-page/+state/projects.facade';
-import { filter, switchMap, take, tap } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { Project, User } from '@dev/translatr-model';
 import { DashboardFacade } from './+state/dashboard.facade';
-import { ProjectCreationDialogComponent } from '../../shared/project-creation-dialog/project-creation-dialog.component';
+import { openProjectCreationDialog } from '../../shared/project-creation-dialog/project-creation-dialog.component';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 
@@ -37,16 +37,15 @@ export class DashboardPageComponent implements OnInit {
         this.loadProjects(user);
         this.dashboardFacade.loadActivities({
           projectOwnerId: user.id,
-          limit: 5
+          limit: 4
         });
       });
   }
 
   openProjectCreationDialog(): void {
-    const ref = this.dialog.open<ProjectCreationDialogComponent, void, Project>(ProjectCreationDialogComponent);
-    ref
+    openProjectCreationDialog(this.dialog)
       .afterClosed()
-      .pipe(tap(console.log), take(1))
+      .pipe(take(1))
       .subscribe((project: Project) =>
         this.router.navigate(['/', project.ownerUsername, project.name]));
   }
@@ -54,7 +53,8 @@ export class DashboardPageComponent implements OnInit {
   private loadProjects(user: User): void {
     this.projectsFacade.loadProjects({
       owner: user.username,
-      limit: '5'
+      limit: '4',
+      order: 'whenUpdated desc'
     });
   }
 }

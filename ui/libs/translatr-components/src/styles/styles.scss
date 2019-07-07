@@ -226,6 +226,7 @@ pre[class*="language-"]:before {
 
   @include medium {
     margin: -8px;
+    padding-bottom: 16px;
 
     .mat-card {
       flex-direction: column;

@@ -1,6 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ProjectsFacade } from './+state/projects.facade';
 import { AppFacade } from '../../../+state/app.facade';
+import { openProjectCreationDialog } from '../../shared/project-creation-dialog/project-creation-dialog.component';
+import { MatDialog } from '@angular/material';
+import { take } from 'rxjs/operators';
+import { Project } from '@dev/translatr-model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-projects-page',
@@ -13,8 +18,11 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly facade: ProjectsFacade,
-    private readonly appFacade: AppFacade
-  ) {}
+    private readonly appFacade: AppFacade,
+    private readonly dialog: MatDialog,
+    private readonly router: Router
+  ) {
+  }
 
   ngOnInit() {
     this.onLoadProjects(20);
@@ -26,5 +34,13 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
 
   onLoadProjects(limit: number) {
     this.facade.loadProjects({ order: 'whenUpdated desc', limit: `${limit}` });
+  }
+
+  openProjectCreationDialog() {
+    openProjectCreationDialog(this.dialog)
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((project: Project) =>
+        this.router.navigate(['/', project.ownerUsername, project.name]));
   }
 }

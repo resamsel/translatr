@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { PagedList } from '@dev/translatr-model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-nav-list',
   templateUrl: './nav-list.component.html',
   styleUrls: ['./nav-list.component.scss']
@@ -12,6 +13,8 @@ export class NavListComponent implements OnInit {
   @Input() showLoadingAvatar = true;
   @Input() template: TemplateRef<any>;
   @Input() empty: TemplateRef<any>;
+  @Input() direction: 'column' | 'row' = 'column';
+  @Input() showMore = true;
 
   @Output() more = new EventEmitter<number>();
 

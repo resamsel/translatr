@@ -11,7 +11,6 @@
       <a [routerLink]="['/', activity.userUsername]" class="link user-name">{{
         activity.userName
       }}</a>
-
       <ng-container [ngSwitch]="activity.type">
         <span *ngSwitchCase="'Create'" class="type" i18n>
           <app-tag>created</app-tag>
