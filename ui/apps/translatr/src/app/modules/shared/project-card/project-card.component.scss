@@ -1,4 +1,5 @@
 @import "mixins";
+@import "theme";
 
 @mixin project-card-theme($theme) {
   $accent: map-get($theme, accent);
@@ -57,4 +58,4 @@ h2 {
   }
 }
 
-//@include project-card-theme($app-theme);
+@include project-card-theme($app-theme);
