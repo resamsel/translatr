@@ -3,8 +3,8 @@
 
 @mixin project-card-theme($theme) {
   $accent: map-get($theme, accent);
-  $accent-color: mat-color($accent);
-  $accent-color2: mat-color($accent, default, 0.96);
+  $accent-color: mat-color($accent, 700);
+  $accent-color2: mat-color($accent, 600);
 
   :host {
     .mat-card-image {
@@ -41,7 +41,6 @@ h2 {
 .mat-card-image {
   display: block;
   text-align: center;
-  background-image: linear-gradient(45deg, rgba(255, 168, 0, 0.96), rgba(255, 168, 0, 1));
   color: #fff;
   text-transform: capitalize;
 

@@ -2,6 +2,9 @@
 @import '../../../../node_modules/@angular/material/theming';
 @import "mixins";
 
+//@import "../../../../node_modules/codemirror/lib/codemirror.css";
+//@import "../../../../node_modules/codemirror/theme/idea.css";
+
 @mixin translatr-theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
