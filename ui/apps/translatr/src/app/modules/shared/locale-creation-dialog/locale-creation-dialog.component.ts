@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/
 import { Locale } from '@dev/translatr-model';
 import { LocaleService } from '@dev/translatr-sdk';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AbstractCreationDialog } from '../creation-dialog/abstract-creation-dialog';
+import { AbstractCreationDialogComponent } from '../creation-dialog/abstract-creation-dialog-component';
 
 export const openLocaleCreationDialog = (dialog: MatDialog, projectId: string) => {
   return dialog.open
@@ -15,7 +15,7 @@ export const openLocaleCreationDialog = (dialog: MatDialog, projectId: string) =
   templateUrl: './locale-creation-dialog.component.html'
 })
 export class LocaleCreationDialogComponent
-  extends AbstractCreationDialog<LocaleCreationDialogComponent, Locale> {
+  extends AbstractCreationDialogComponent<LocaleCreationDialogComponent, Locale> {
 
   public get nameFormControl() {
     return this.form.get('name');

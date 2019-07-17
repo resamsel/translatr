@@ -7,7 +7,7 @@ import { FormGroup } from '@angular/forms';
 
 const ENTER_KEYCODE = 'Enter';
 
-export abstract class AbstractCreationDialog<T, R> {
+export abstract class AbstractCreationDialogComponent<T, R> {
 
   processing = false;
   log = console.log;

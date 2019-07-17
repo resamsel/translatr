@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PagedList, Project, User } from '@dev/translatr-model';
 import { ProjectService } from '@dev/translatr-sdk';
 import { Observable } from 'rxjs';
 import { openProjectCreationDialog } from '../../../shared/project-creation-dialog/project-creation-dialog.component';
-import { take } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 
 @Component({
@@ -18,6 +18,7 @@ export class UserProjectsComponent implements OnInit {
 
   constructor(
     private readonly projectService: ProjectService,
+    private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly dialog: MatDialog
   ) {
@@ -41,7 +42,11 @@ export class UserProjectsComponent implements OnInit {
   openProjectCreationDialog(): void {
     openProjectCreationDialog(this.dialog)
       .afterClosed()
-      .pipe(take(1))
-      .subscribe(() => this.loadProjects());
+      .pipe(
+        take(1),
+        filter(project => !!project)
+      )
+      .subscribe((project => this.router
+        .navigate([project.ownerUsername, project.name])));
   }
 }

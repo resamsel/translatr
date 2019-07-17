@@ -1,13 +1,4 @@
-<app-sidenav [me]="me$ | async">
-  <header class="with-separator">
-    <div class="container">
-      <div class="breadcrumbs">
-        <mat-icon>library_books</mat-icon>
-        <span>Projects</span>
-      </div>
-    </div>
-  </header>
-
+<app-sidenav [me]="me$ | async" page="Projects">
   <button
     mat-fab
     color="accent"

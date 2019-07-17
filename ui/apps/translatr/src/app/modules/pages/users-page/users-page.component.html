@@ -1,13 +1,4 @@
-<app-sidenav [me]="me$ | async">
-  <header class="with-separator">
-    <div class="container">
-      <div class="breadcrumbs">
-        <mat-icon>group</mat-icon>
-        <span>Contributors</span>
-      </div>
-    </div>
-  </header>
-
+<app-sidenav [me]="me$ | async" page="Contributors">
   <div class="container">
     <section>
       <h2>Top Contributors</h2>

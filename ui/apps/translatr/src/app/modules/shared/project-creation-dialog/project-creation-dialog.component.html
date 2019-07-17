@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Create Project</h1>
 <div mat-dialog-content>
-  <div>
+  <form [formGroup]="form">
     <mat-form-field class="name">
       <input
         matInput
@@ -9,18 +9,18 @@
         placeholder="Project name"
         i18n-placeholder="@@project.name"
         cdkFocusInitial
-        [formControl]="nameFormControl"
+        formControlName="name"
       />
       <mat-error
         *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern"
         >Must match pattern [a-zA-Z0-9_.-]*</mat-error
       >
       <mat-error
-        *ngIf="nameFormControl.invalid && nameFormControl.errors['']"
-        >{{ nameFormControl.errors[''] }}</mat-error
+        *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
+        >{{ nameFormControl.errors['violation'] }}</mat-error
       >
     </mat-form-field>
-  </div>
+  </form>
 </div>
 <div mat-dialog-actions class="mat-dialog-actions">
   <button mat-button mat-dialog-close>Cancel</button>

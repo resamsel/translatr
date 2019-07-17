@@ -1,13 +1,4 @@
-<app-sidenav [me]="me$ | async">
-  <header class="with-separator">
-    <div class="container">
-      <div class="breadcrumbs">
-        <mat-icon>view_quilt</mat-icon>
-        <span>Dashboard</span>
-      </div>
-    </div>
-  </header>
-
+<app-sidenav [me]="me$ | async" page="Dashboard">
   <div class="container">
     <section>
       <h2>My Projects</h2>

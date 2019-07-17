@@ -1,25 +1,9 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { ProjectService } from '@dev/translatr-sdk';
 import { Project } from '@dev/translatr-model';
-import { take } from 'rxjs/operators';
-
-const ENTER_KEYCODE = 'Enter';
-
-interface Violation {
-  message: string;
-  field: string;
-  invalidValue: object;
-}
-
-interface Error {
-  error: {
-    type: string;
-    message: string;
-    violations: Violation[];
-  };
-}
+import { AbstractCreationDialogComponent } from '../creation-dialog/abstract-creation-dialog-component';
 
 export const openProjectCreationDialog = (dialog: MatDialog) => {
   return dialog.open<ProjectCreationDialogComponent, void, Project>(ProjectCreationDialogComponent);
@@ -30,72 +14,28 @@ export const openProjectCreationDialog = (dialog: MatDialog) => {
   templateUrl: './project-creation-dialog.component.html',
   styleUrls: ['./project-creation-dialog.component.scss']
 })
-export class ProjectCreationDialogComponent implements OnInit {
+export class ProjectCreationDialogComponent
+  extends AbstractCreationDialogComponent<ProjectCreationDialogComponent, Project> {
   public get nameFormControl() {
     return this.form.get('name');
   }
 
   constructor(
-    private readonly snackBar: MatSnackBar,
-    private readonly projectService: ProjectService,
-    private readonly dialogRef: MatDialogRef<ProjectCreationDialogComponent>
+    readonly snackBar: MatSnackBar,
+    readonly projectService: ProjectService,
+    readonly dialogRef: MatDialogRef<ProjectCreationDialogComponent, Project>
   ) {
-  }
-
-  @ViewChild('name') nameField: ElementRef;
-
-  form = new FormGroup({
-    name: new FormControl('', [
-      Validators.required,
-      Validators.pattern('[^\\s/]+')
-    ])
-  });
-  public processing = false;
-
-  log = console.log;
-
-  ngOnInit() {
-    this.nameFormControl.statusChanges.subscribe(status =>
-      console.log('status', status, this.processing)
+    super(
+      snackBar,
+      dialogRef,
+      new FormGroup({
+        name: new FormControl('', [
+          Validators.required,
+          Validators.pattern('[^\\s/]+')
+        ])
+      }),
+      (project: Project) => projectService.create(project),
+      (project: Project) => `Project ${project.name} has been created`
     );
-  }
-
-  public onSave(): void {
-    this.processing = true;
-    this.projectService.create(this.form.value)
-      .pipe(take(1))
-      .subscribe(
-        (project: Project) => this.onCreated(project),
-        (res: { error: Error }) => {
-          console.error(res);
-          this.processing = false;
-
-          this.nameFormControl.setErrors(
-            res.error.error.violations.reduce(
-              (prev: ValidationErrors, violation: Violation) => ({
-                ...prev,
-                [violation.field]: violation.message
-              }),
-              {}
-            )
-          );
-          this.nameFormControl.markAsTouched();
-        }
-      );
-  }
-
-  private onCreated(project: Project): void {
-    this.processing = false;
-    this.dialogRef.close(project);
-    this.snackBar.open(`Project ${project.name} has been created`, 'Dismiss', {
-      duration: 3000
-    });
-  }
-
-  @HostListener('window:keyup', ['$event'])
-  public onHotkey(event: KeyboardEvent) {
-    if (event.key === ENTER_KEYCODE && this.form.valid && !this.processing) {
-      this.onSave();
-    }
   }
 }

@@ -45,9 +45,12 @@ export class DashboardPageComponent implements OnInit {
   openProjectCreationDialog(): void {
     openProjectCreationDialog(this.dialog)
       .afterClosed()
-      .pipe(take(1))
-      .subscribe((project: Project) =>
-        this.router.navigate(['/', project.ownerUsername, project.name]));
+      .pipe(
+        take(1),
+        filter(project => !!project)
+      )
+      .subscribe((project => this.router
+        .navigate([project.ownerUsername, project.name])));
   }
 
   private loadProjects(user: User): void {

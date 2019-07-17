@@ -3,7 +3,7 @@ import { ProjectsFacade } from './+state/projects.facade';
 import { AppFacade } from '../../../+state/app.facade';
 import { openProjectCreationDialog } from '../../shared/project-creation-dialog/project-creation-dialog.component';
 import { MatDialog } from '@angular/material';
-import { take } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { Project } from '@dev/translatr-model';
 import { Router } from '@angular/router';
 
@@ -39,8 +39,11 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
   openProjectCreationDialog() {
     openProjectCreationDialog(this.dialog)
       .afterClosed()
-      .pipe(take(1))
-      .subscribe((project: Project) =>
-        this.router.navigate(['/', project.ownerUsername, project.name]));
+      .pipe(
+        take(1),
+        filter(project => !!project)
+      )
+      .subscribe((project => this.router
+        .navigate([project.ownerUsername, project.name])));
   }
 }
