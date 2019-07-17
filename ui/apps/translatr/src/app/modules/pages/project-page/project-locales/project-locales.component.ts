@@ -53,7 +53,10 @@ export class ProjectLocalesComponent {
   openLocaleCreationDialog(project: Project): void {
     openLocaleCreationDialog(this.dialog, project.id)
       .afterClosed()
-      .pipe(filter(locale => locale !== undefined))
+      .pipe(
+        take(1),
+        filter(locale => !!locale)
+      )
       .subscribe((locale => this.router
         .navigate([locale.name], { relativeTo: this.route })));
   }
