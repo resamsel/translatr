@@ -34,6 +34,7 @@ import { ProjectEffects } from './+state/project.effects';
 import { ProjectFacade } from './+state/project.facade';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavListModule } from '../../shared/nav-list/nav-list.module';
+import { LocaleCreationDialogModule } from '../../shared/locale-creation-dialog/locale-creation-dialog.module';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,8 @@ import { NavListModule } from '../../shared/nav-list/nav-list.module';
     ActivityModule,
     ActivityListModule,
     NavListModule,
+    LocaleCreationDialogModule,
+
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -76,4 +79,5 @@ import { NavListModule } from '../../shared/nav-list/nav-list.module';
   ],
   providers: [ProjectFacade]
 })
-export class ProjectPageModule {}
+export class ProjectPageModule {
+}

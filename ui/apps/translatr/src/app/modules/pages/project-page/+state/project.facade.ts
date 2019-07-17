@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-
 import { select, Store } from '@ngrx/store';
-
 import { ProjectPartialState } from './project.reducer';
 import { projectQuery } from './project.selectors';
 import {

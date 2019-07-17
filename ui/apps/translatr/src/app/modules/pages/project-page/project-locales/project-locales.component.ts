@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { take, tap } from 'rxjs/operators';
+import { filter, take, tap } from 'rxjs/operators';
 import { Locale, Project } from '@dev/translatr-model';
-import { MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { openLocaleCreationDialog } from '../../../shared/locale-creation-dialog/locale-creation-dialog.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-project-locales',
   templateUrl: './project-locales.component.html',
   styleUrls: ['./project-locales.component.scss']
 })
-export class ProjectLocalesComponent implements OnInit {
+export class ProjectLocalesComponent {
   project$ = this.facade.project$.pipe(
     tap((project: Project) => {
       if (!!project) {
@@ -21,10 +23,12 @@ export class ProjectLocalesComponent implements OnInit {
 
   constructor(
     private readonly facade: ProjectFacade,
-    private readonly snackBar: MatSnackBar
-  ) {}
-
-  ngOnInit() {}
+    private readonly snackBar: MatSnackBar,
+    private readonly dialog: MatDialog,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
+  ) {
+  }
 
   onMore(limit: number) {
     this.facade.project$
@@ -44,5 +48,13 @@ export class ProjectLocalesComponent implements OnInit {
     this.snackBar.open(`Delete locale ${locale.displayName}`, 'Undo', {
       duration: 2000
     });
+  }
+
+  openLocaleCreationDialog(project: Project): void {
+    openLocaleCreationDialog(this.dialog, project.id)
+      .afterClosed()
+      .pipe(filter(locale => locale !== undefined))
+      .subscribe((locale => this.router
+        .navigate([locale.name], { relativeTo: this.route })));
   }
 }
