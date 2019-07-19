@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { take, tap } from 'rxjs/operators';
+import { filter, take, tap } from 'rxjs/operators';
 import { Key, Project } from '@dev/translatr-model';
-import { MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { openKeyCreationDialog } from '../../../shared/key-creation-dialog/key-creation-dialog.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,10 +24,15 @@ export class ProjectKeysComponent implements OnInit {
 
   constructor(
     private readonly facade: ProjectFacade,
-    private readonly snackBar: MatSnackBar
-  ) {}
+    private readonly snackBar: MatSnackBar,
+    private readonly dialog: MatDialog,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
+  ) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   onMore(limit: number) {
     this.facade.project$
@@ -41,5 +48,16 @@ export class ProjectKeysComponent implements OnInit {
 
   onDelete(key: Key) {
     this.snackBar.open(`Delete key ${key.name}`, 'Undo', { duration: 2000 });
+  }
+
+  openKeyCreationDialog(project: Project): void {
+    openKeyCreationDialog(this.dialog, project.id)
+      .afterClosed()
+      .pipe(
+        take(1),
+        filter(key => !!key)
+      )
+      .subscribe((key => this.router
+        .navigate([key.name], { relativeTo: this.route })));
   }
 }

@@ -1,11 +1,7 @@
 <app-sidenav
   class="flat"
   page="{{ name }}"
-  [backLink]="
-    ownerName && projectName
-      ? { routerLink: ['/', ownerName, projectName], name: projectName }
-      : undefined
-  "
+  [backLink]="backLink"
   [me]="me"
 >
   <ng-container ngProjectAs="app-search-bar">

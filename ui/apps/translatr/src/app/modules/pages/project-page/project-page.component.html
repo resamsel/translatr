@@ -1,42 +1,5 @@
-<app-sidenav [me]="me$ | async">
+<app-sidenav [me]="me$ | async" page="{{(project$ | async)?.ownerName}} – {{(project$ | async)?.name}}">
   <header>
-    <div class="container">
-      <div class="breadcrumbs" *ngIf="project$ | async as project">
-        <mat-icon>book</mat-icon>
-        <a class="link" [routerLink]="['/', project?.ownerUsername]">{{
-          project?.ownerUsername
-        }}</a>
-        <span>/</span>
-        <mat-form-field [ngClass]="{ dirty: nameFormControl.dirty }">
-          <input
-            matInput
-            #name
-            type="text"
-            [formControl]="nameFormControl"
-            (keyup.enter)="onSaveName()"
-          />
-          <button matSuffix mat-icon-button>
-            <mat-icon>mode_edit</mat-icon>
-          </button>
-          <button matSuffix mat-button color="primary" (click)="onSaveName()">
-            Save
-          </button>
-          <mat-error
-            *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern"
-            >Must match pattern [^\s/]*
-          </mat-error>
-          <mat-error
-            *ngIf="nameFormControl.invalid && nameFormControl.errors['']"
-            >{{ nameFormControl.errors[''] }}</mat-error
-          >
-        </mat-form-field>
-      </div>
-
-      <div *ngIf="(project$ | async)?.description">
-        {{ (project$ | async)?.description }}
-      </div>
-    </div>
-
     <nav mat-tab-nav-bar color="accent" *ngIf="project$ | async as project">
       <div class="container dense" routerLinkActive>
         <a

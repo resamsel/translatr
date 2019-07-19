@@ -7,3 +7,12 @@
     (delete)="onDelete($event)"
   ></app-key-list>
 </div>
+
+<button *ngIf="project$ | async as project"
+        mat-fab
+        color="accent"
+        class="floating-action-btn pin-bottom"
+        (click)="openKeyCreationDialog(project)"
+>
+  <mat-icon>add</mat-icon>
+</button>

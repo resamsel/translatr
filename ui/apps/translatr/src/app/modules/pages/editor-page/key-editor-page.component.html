@@ -2,6 +2,7 @@
   [me]="me$ | async"
   [ownerName]="(key$ | async)?.projectOwnerUsername"
   [projectName]="(key$ | async)?.projectName"
+  [backLink]="backLink(key$ | async)"
   name="Key Editor"
   i18n-name="@@key.editor"
   [message]="selectedMessage$ | async"

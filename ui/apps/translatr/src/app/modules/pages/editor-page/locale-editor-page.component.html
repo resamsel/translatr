@@ -2,6 +2,7 @@
   [me]="me$ | async"
   [ownerName]="(locale$ | async)?.projectOwnerUsername"
   [projectName]="(locale$ | async)?.projectName"
+  [backLink]="backLink(locale$ | async)"
   name="Language Editor"
   i18n-name="@@locale.editor"
   [message]="selectedMessage$ | async"

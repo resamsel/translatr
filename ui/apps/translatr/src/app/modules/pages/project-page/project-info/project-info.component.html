@@ -6,13 +6,17 @@
         Created: {{ project?.whenCreated | amTimeAgo }}, updated:
         {{ project?.whenUpdated | amTimeAgo }}
       </p>
+      <p *ngIf="(project$ | async)?.description">
+        {{ (project$ | async)?.description }}
+      </p>
       <mat-chip-list>
         <mat-chip i18n="@@members.summary"
           >{{ project?.members?.length }} members</mat-chip
         >
-        <mat-chip *ngFor="let member of project?.members"
-          >{{ member.userName }} ({{ member.role }})</mat-chip
-        >
+        <a *ngFor="let member of project?.members"
+           mat-chip
+           [routerLink]="['/', member.userUsername]"
+          >{{ member.userName }} ({{ member.role }})</a>
       </mat-chip-list>
     </mat-card-content>
   </mat-card>

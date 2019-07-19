@@ -35,6 +35,7 @@ import { ProjectFacade } from './+state/project.facade';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { LocaleCreationDialogModule } from '../../shared/locale-creation-dialog/locale-creation-dialog.module';
+import { KeyCreationDialogModule } from '../../shared/key-creation-dialog/key-creation-dialog.module';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { LocaleCreationDialogModule } from '../../shared/locale-creation-dialog/
     ActivityListModule,
     NavListModule,
     LocaleCreationDialogModule,
+    KeyCreationDialogModule,
 
     MatToolbarModule,
     MatButtonModule,

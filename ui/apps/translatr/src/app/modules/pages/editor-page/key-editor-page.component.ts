@@ -5,6 +5,7 @@ import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
+import { Link } from '../../nav/sidenav/sidenav.component';
 
 @Component({
   selector: 'app-key-editor-page',
@@ -98,5 +99,16 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
       queryParamsHandling: 'preserve',
       relativeTo: this.route
     });
+  }
+
+  backLink(key: Key): Link | undefined {
+    if (key === undefined) {
+      return undefined;
+    }
+
+    return {
+      routerLink: ['..'],
+      name: key.name
+    };
   }
 }

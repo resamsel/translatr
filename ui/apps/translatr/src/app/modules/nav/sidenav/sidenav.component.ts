@@ -5,6 +5,11 @@ import { map } from 'rxjs/operators';
 import { User, UserRole } from '@dev/translatr-model';
 import { environment } from '../../../../environments/environment';
 
+export interface Link {
+  routerLink: string[];
+  name: string;
+};
+
 @Component({
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
@@ -12,7 +17,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class SidenavComponent {
   @Input() page: string;
-  @Input() backLink: { routerLink: string[]; name: string };
+  @Input() backLink: Link;
   @Input() me: User | undefined;
 
   readonly endpointUrl = environment.endpointUrl;
@@ -21,7 +26,8 @@ export class SidenavComponent {
     .observe(Breakpoints.Handset)
     .pipe(map(result => result.matches));
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(private breakpointObserver: BreakpointObserver) {
+  }
 
   isAdmin(me: User | undefined): boolean {
     return !!me && me.role === UserRole.Admin;

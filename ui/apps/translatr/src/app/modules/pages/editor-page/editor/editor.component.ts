@@ -1,8 +1,9 @@
-import { AfterViewChecked, ChangeDetectionStrategy, Component, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectionStrategy, Component, HostListener, Input, ViewChild } from '@angular/core';
 import { Message, User } from '@dev/translatr-model';
 import { EditorFacade } from '../+state/editor.facade';
 import { MatTabGroup } from '@angular/material';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
+import { Link } from '../../../nav/sidenav/sidenav.component';
 
 @Component({
   selector: 'app-editor',
@@ -10,17 +11,31 @@ import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
   styleUrls: ['./editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditorComponent implements OnInit, AfterViewChecked {
+export class EditorComponent implements AfterViewChecked {
   @Input() me: User;
   @Input() ownerName: string;
   @Input() projectName: string;
   @Input() name: string;
-  @Input() message: Message;
+
+  @Input() set message(message: Message) {
+    this._message = { ...message };
+  }
+
   @Input() messages: Array<Message>;
+
+  @Input()
+  set backLink(backLink: Link) {
+    this._backLink = backLink;
+  }
 
   @ViewChild('editor', { read: CodemirrorComponent })
   private editor: CodemirrorComponent;
   @ViewChild('tabs', { read: MatTabGroup }) private tabs: MatTabGroup;
+
+  private _message: Message;
+  get message(): Message {
+    return this._message;
+  }
 
   readonly options = {
     mode: 'xml',
@@ -30,9 +45,24 @@ export class EditorComponent implements OnInit, AfterViewChecked {
     htmlMode: true
   };
 
-  constructor(private readonly facade: EditorFacade) {}
+  private _backLink: Link | undefined;
+  get backLink(): Link {
+    if (this._backLink) {
+      return this._backLink;
+    }
 
-  ngOnInit() {}
+    if (!this.ownerName || !this.projectName) {
+      return undefined;
+    }
+
+    return {
+      routerLink: ['/', this.ownerName, this.projectName],
+      name: this.projectName
+    };
+  }
+
+  constructor(private readonly facade: EditorFacade) {
+  }
 
   ngAfterViewChecked(): void {
     if (this.editor) {

@@ -68,7 +68,18 @@ function updateKeysWithMessage(
 
   const index = keys.list.findIndex((k: Key) => k.id === message.keyId);
   if (index !== -1) {
-    keys.list[index].messages[locale.name] = message;
+    const list = [...keys.list];
+    list[index] = {
+      ...list[index],
+      messages: {
+        ...list[index].messages,
+        [locale.name]: message
+      }
+    };
+    return {
+      ...keys,
+      list
+    };
   }
   return keys;
 }
@@ -86,8 +97,20 @@ function updateLocalesWithMessage(
     (l: Locale) => l.id === message.localeId
   );
   if (index !== -1) {
-    locales.list[index].messages[key.name] = message;
+    const list = [...locales.list];
+    list[index] = {
+      ...list[index],
+      messages: {
+        ...list[index].messages,
+        [key.name]: message
+      }
+    };
+    return {
+      ...locales,
+      list
+    };
   }
+
   return locales;
 }
 

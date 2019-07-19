@@ -5,6 +5,7 @@ import { filter, take, takeUntil } from 'rxjs/operators';
 import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { combineLatest } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
+import { Link } from '../../nav/sidenav/sidenav.component';
 
 @Component({
   selector: 'app-locale-editor-page',
@@ -90,5 +91,16 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     }
 
     return Object.keys(key.messages).map((k: string) => key.messages[k]);
+  }
+
+  backLink(locale: Locale): Link | undefined {
+    if (locale === undefined) {
+      return undefined;
+    }
+
+    return {
+      routerLink: ['..'],
+      name: locale.displayName
+    };
   }
 }
