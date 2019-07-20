@@ -5,17 +5,16 @@ import { LocaleService } from '@dev/translatr-sdk';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractCreationDialogComponent } from '../creation-dialog/abstract-creation-dialog-component';
 
-export const openLocaleCreationDialog = (dialog: MatDialog, projectId: string) => {
-  return dialog.open
-  < LocaleCreationDialogComponent, { projectId: string }, Locale >
-  (LocaleCreationDialogComponent, { data: { projectId } });
+export const openLocaleEditDialog = (dialog: MatDialog, locale: Partial<Locale>) => {
+  return dialog.open<LocaleEditDialogComponent, Partial<Locale>, Locale>(
+    LocaleEditDialogComponent, { data: locale });
 };
 
 @Component({
-  templateUrl: './locale-creation-dialog.component.html'
+  templateUrl: './locale-edit-dialog.component.html'
 })
-export class LocaleCreationDialogComponent
-  extends AbstractCreationDialogComponent<LocaleCreationDialogComponent, Locale> {
+export class LocaleEditDialogComponent
+  extends AbstractCreationDialogComponent<LocaleEditDialogComponent, Locale> {
 
   public get nameFormControl() {
     return this.form.get('name');
@@ -23,9 +22,9 @@ export class LocaleCreationDialogComponent
 
   constructor(
     readonly snackBar: MatSnackBar,
-    readonly dialogRef: MatDialogRef<LocaleCreationDialogComponent, Locale>,
+    readonly dialogRef: MatDialogRef<LocaleEditDialogComponent, Locale>,
     readonly localeService: LocaleService,
-    @Inject(MAT_DIALOG_DATA) readonly data: { projectId: string }
+    @Inject(MAT_DIALOG_DATA) readonly data: Locale
   ) {
     super(
       snackBar,
@@ -37,8 +36,10 @@ export class LocaleCreationDialogComponent
           Validators.pattern('[^\\s/]+')
         ])
       }),
+      data,
       (locale: Locale) => localeService.create(locale),
-      (locale: Locale) => `Locale ${locale.name} has been created`
+      (locale: Locale) => localeService.update(locale),
+      (locale: Locale) => `Locale ${locale.name} has been saved`
     );
   }
 }

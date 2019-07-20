@@ -4,7 +4,7 @@ import { filter, take, tap } from 'rxjs/operators';
 import { Key, Project } from '@dev/translatr-model';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { openKeyCreationDialog } from '../../../shared/key-creation-dialog/key-creation-dialog.component';
+import { openKeyEditDialog } from '../../../shared/key-edit-dialog/key-edit-dialog.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,7 +51,7 @@ export class ProjectKeysComponent implements OnInit {
   }
 
   openKeyCreationDialog(project: Project): void {
-    openKeyCreationDialog(this.dialog, project.id)
+    openKeyEditDialog(this.dialog, { projectId: project.id })
       .afterClosed()
       .pipe(
         take(1),

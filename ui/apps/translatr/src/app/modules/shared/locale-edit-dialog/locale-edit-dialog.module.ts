@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSnackBarModule } from '@angular/material';
-import { KeyCreationDialogComponent } from './key-creation-dialog.component';
+import { LocaleEditDialogComponent } from './locale-edit-dialog.component';
 
 @NgModule({
-  declarations: [KeyCreationDialogComponent],
+  declarations: [LocaleEditDialogComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -17,7 +17,7 @@ import { KeyCreationDialogComponent } from './key-creation-dialog.component';
     MatButtonModule,
     MatInputModule
   ],
-  entryComponents: [KeyCreationDialogComponent]
+  entryComponents: [LocaleEditDialogComponent]
 })
-export class KeyCreationDialogModule {
+export class LocaleEditDialogModule {
 }

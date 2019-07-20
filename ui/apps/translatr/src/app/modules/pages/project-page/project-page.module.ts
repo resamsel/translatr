@@ -34,8 +34,8 @@ import { ProjectEffects } from './+state/project.effects';
 import { ProjectFacade } from './+state/project.facade';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavListModule } from '../../shared/nav-list/nav-list.module';
-import { LocaleCreationDialogModule } from '../../shared/locale-creation-dialog/locale-creation-dialog.module';
-import { KeyCreationDialogModule } from '../../shared/key-creation-dialog/key-creation-dialog.module';
+import { LocaleEditDialogModule } from '../../shared/locale-edit-dialog/locale-edit-dialog.module';
+import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialog.module';
 
 @NgModule({
   declarations: [
@@ -58,8 +58,8 @@ import { KeyCreationDialogModule } from '../../shared/key-creation-dialog/key-cr
     ActivityModule,
     ActivityListModule,
     NavListModule,
-    LocaleCreationDialogModule,
-    KeyCreationDialogModule,
+    LocaleEditDialogModule,
+    KeyEditDialogModule,
 
     MatToolbarModule,
     MatButtonModule,

@@ -2,12 +2,13 @@ import { Observable } from 'rxjs';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { take } from 'rxjs/operators';
 import { ConstraintViolation, Error, Locale } from '@dev/translatr-model';
-import { HostListener } from '@angular/core';
+import { HostListener, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 const ENTER_KEYCODE = 'Enter';
 
-export abstract class AbstractCreationDialogComponent<T, R> {
+export abstract class AbstractCreationDialogComponent<T, R extends { id?: number | string }>
+  implements OnInit {
 
   processing = false;
   log = console.log;
@@ -16,18 +17,26 @@ export abstract class AbstractCreationDialogComponent<T, R> {
     protected readonly snackBar: MatSnackBar,
     protected readonly dialogRef: MatDialogRef<T, R>,
     protected readonly form: FormGroup,
-    protected readonly creator: (r: R) => Observable<R>,
+    protected readonly data: Partial<R>,
+    protected readonly create: (r: R) => Observable<R>,
+    protected readonly update: (r: R) => Observable<R>,
     protected readonly messageProvider: (r: R) => string
   ) {
+  }
+
+  ngOnInit(): void {
+    this.form.setValue(this.data);
   }
 
   public onSave(): void {
     this.processing = true;
 
-    this.create()
+    const value: R = this.form.value;
+    const consume$ = value.id ? this.update(value) : this.create(value);
+    consume$
       .pipe(take(1))
       .subscribe(
-        (r: R) => this.onCreated(r),
+        (r: R) => this.onSuccess(r),
         (res: { error: Error }) => this.onError(res.error)
       );
   }
@@ -36,11 +45,7 @@ export abstract class AbstractCreationDialogComponent<T, R> {
     return this.form.valid;
   }
 
-  protected create(): Observable<R> {
-    return this.creator(this.form.value);
-  }
-
-  protected onCreated(r: R): void {
+  protected onSuccess(r: R): void {
     this.processing = false;
     this.dialogRef.close(r);
     this.snackBar.open(

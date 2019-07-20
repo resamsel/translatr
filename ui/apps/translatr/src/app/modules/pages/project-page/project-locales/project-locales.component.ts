@@ -3,7 +3,7 @@ import { ProjectFacade } from '../+state/project.facade';
 import { filter, take, tap } from 'rxjs/operators';
 import { Locale, Project } from '@dev/translatr-model';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { openLocaleCreationDialog } from '../../../shared/locale-creation-dialog/locale-creation-dialog.component';
+import { openLocaleEditDialog } from '../../../shared/locale-edit-dialog/locale-edit-dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -51,7 +51,7 @@ export class ProjectLocalesComponent {
   }
 
   openLocaleCreationDialog(project: Project): void {
-    openLocaleCreationDialog(this.dialog, project.id)
+    openLocaleEditDialog(this.dialog, { projectId: project.id })
       .afterClosed()
       .pipe(
         take(1),

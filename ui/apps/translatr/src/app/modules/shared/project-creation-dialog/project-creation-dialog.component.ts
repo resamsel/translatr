@@ -34,7 +34,9 @@ export class ProjectCreationDialogComponent
           Validators.pattern('[^\\s/]+')
         ])
       }),
+      {},
       (project: Project) => projectService.create(project),
+      (project: Project) => projectService.update(project),
       (project: Project) => `Project ${project.name} has been created`
     );
   }

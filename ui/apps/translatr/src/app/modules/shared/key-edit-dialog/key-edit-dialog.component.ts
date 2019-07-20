@@ -5,15 +5,16 @@ import { KeyService } from '@dev/translatr-sdk';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractCreationDialogComponent } from '../creation-dialog/abstract-creation-dialog-component';
 
-export const openKeyCreationDialog = (dialog: MatDialog, projectId: string) => {
-  return dialog.open<KeyCreationDialogComponent, { projectId: string }, Key>(KeyCreationDialogComponent, { data: { projectId } });
+export const openKeyEditDialog = (dialog: MatDialog, key: Partial<Key>) => {
+  return dialog.open<KeyEditDialogComponent, Partial<Key>, Key>(
+    KeyEditDialogComponent, { data: key });
 };
 
 @Component({
-  templateUrl: './key-creation-dialog.component.html'
+  templateUrl: './key-edit-dialog.component.html'
 })
-export class KeyCreationDialogComponent
-  extends AbstractCreationDialogComponent<KeyCreationDialogComponent, Key> {
+export class KeyEditDialogComponent
+  extends AbstractCreationDialogComponent<KeyEditDialogComponent, Key> {
 
   public get nameFormControl() {
     return this.form.get('name');
@@ -21,22 +22,24 @@ export class KeyCreationDialogComponent
 
   constructor(
     readonly snackBar: MatSnackBar,
-    readonly dialogRef: MatDialogRef<KeyCreationDialogComponent, Key>,
+    readonly dialogRef: MatDialogRef<KeyEditDialogComponent, Key>,
     readonly keyService: KeyService,
-    @Inject(MAT_DIALOG_DATA) readonly data: { projectId: string }
+    @Inject(MAT_DIALOG_DATA) readonly data: Key
   ) {
     super(
       snackBar,
       dialogRef,
       new FormGroup({
         projectId: new FormControl(data.projectId),
-        name: new FormControl('', [
+        name: new FormControl(data.name || '', [
           Validators.required,
           Validators.pattern('[^\\s/]+')
         ])
       }),
+      data,
       (key: Key) => keyService.create(key),
-      (key: Key) => `Key ${key.name} has been created`
+      (key: Key) => keyService.update(key),
+      (key: Key) => `Key ${key.name} has been saved`
     );
   }
 }

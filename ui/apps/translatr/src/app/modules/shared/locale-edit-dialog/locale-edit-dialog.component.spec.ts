@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { LocaleCreationDialogComponent } from './locale-creation-dialog.component';
+import { LocaleEditDialogComponent } from './locale-edit-dialog.component';
 
 describe('LocaleCreationDialogComponent', () => {
-  let component: LocaleCreationDialogComponent;
-  let fixture: ComponentFixture<LocaleCreationDialogComponent>;
+  let component: LocaleEditDialogComponent;
+  let fixture: ComponentFixture<LocaleEditDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [LocaleCreationDialogComponent]
+      declarations: [LocaleEditDialogComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LocaleCreationDialogComponent);
+    fixture = TestBed.createComponent(LocaleEditDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
