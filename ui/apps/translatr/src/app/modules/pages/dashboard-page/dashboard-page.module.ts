@@ -13,8 +13,8 @@ import { DashboardEffects } from './+state/dashboard.effects';
 import { DashboardFacade } from './+state/dashboard.facade';
 import { ProjectsPageModule } from '../projects-page/projects-page.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
-import { ProjectCreationDialogComponent } from '../../shared/project-creation-dialog/project-creation-dialog.component';
-import { ProjectCreationDialogModule } from '../../shared/project-creation-dialog/project-creation-dialog.module';
+import { ProjectEditDialogComponent } from '../../shared/project-creation-dialog/project-edit-dialog.component';
+import { ProjectEditDialogModule } from '../../shared/project-creation-dialog/project-edit-dialog.module';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
 
 @NgModule({
@@ -24,7 +24,7 @@ import { ProjectCardListModule } from '../../shared/project-card-list/project-ca
     ProjectsPageModule,
     SidenavModule,
     ProjectListModule,
-    ProjectCreationDialogModule,
+    ProjectEditDialogModule,
 
     CommonModule,
     MatIconModule,

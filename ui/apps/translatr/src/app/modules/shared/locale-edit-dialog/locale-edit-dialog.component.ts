@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/
 import { Locale } from '@dev/translatr-model';
 import { LocaleService } from '@dev/translatr-sdk';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AbstractCreationDialogComponent } from '../creation-dialog/abstract-creation-dialog-component';
+import { AbstractEditDialogComponent } from '../creation-dialog/abstract-edit-dialog-component';
 
 export const openLocaleEditDialog = (dialog: MatDialog, locale: Partial<Locale>) => {
   return dialog.open<LocaleEditDialogComponent, Partial<Locale>, Locale>(
@@ -14,7 +14,7 @@ export const openLocaleEditDialog = (dialog: MatDialog, locale: Partial<Locale>)
   templateUrl: './locale-edit-dialog.component.html'
 })
 export class LocaleEditDialogComponent
-  extends AbstractCreationDialogComponent<LocaleEditDialogComponent, Locale> {
+  extends AbstractEditDialogComponent<LocaleEditDialogComponent, Locale> {
 
   public get nameFormControl() {
     return this.form.get('name');

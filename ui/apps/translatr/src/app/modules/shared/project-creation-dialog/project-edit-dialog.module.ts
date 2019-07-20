@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProjectCreationDialogComponent } from './project-creation-dialog.component';
+import { ProjectEditDialogComponent } from './project-edit-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatFormFieldModule, MatInputModule, MatSnackBarModule } from '@angular/material';
 
 @NgModule({
-  declarations: [ProjectCreationDialogComponent],
+  declarations: [ProjectEditDialogComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -15,7 +15,7 @@ import { MatButtonModule, MatFormFieldModule, MatInputModule, MatSnackBarModule 
     MatButtonModule,
     MatInputModule
   ],
-  exports: [ProjectCreationDialogComponent],
-  entryComponents: [ProjectCreationDialogComponent]
+  exports: [ProjectEditDialogComponent],
+  entryComponents: [ProjectEditDialogComponent]
 })
-export class ProjectCreationDialogModule {}
+export class ProjectEditDialogModule {}

@@ -4,7 +4,7 @@ import { ProjectsFacade } from '../projects-page/+state/projects.facade';
 import { filter, take } from 'rxjs/operators';
 import { Project, User } from '@dev/translatr-model';
 import { DashboardFacade } from './+state/dashboard.facade';
-import { openProjectCreationDialog } from '../../shared/project-creation-dialog/project-creation-dialog.component';
+import { openProjectEditDialog } from '../../shared/project-creation-dialog/project-edit-dialog.component';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 
@@ -43,7 +43,7 @@ export class DashboardPageComponent implements OnInit {
   }
 
   openProjectCreationDialog(): void {
-    openProjectCreationDialog(this.dialog)
+    openProjectEditDialog(this.dialog, {})
       .afterClosed()
       .pipe(
         take(1),

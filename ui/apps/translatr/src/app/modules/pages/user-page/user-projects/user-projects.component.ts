@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PagedList, Project, User } from '@dev/translatr-model';
 import { ProjectService } from '@dev/translatr-sdk';
 import { Observable } from 'rxjs';
-import { openProjectCreationDialog } from '../../../shared/project-creation-dialog/project-creation-dialog.component';
+import { openProjectEditDialog } from '../../../shared/project-creation-dialog/project-edit-dialog.component';
 import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 
@@ -40,7 +40,7 @@ export class UserProjectsComponent implements OnInit {
   }
 
   openProjectCreationDialog(): void {
-    openProjectCreationDialog(this.dialog)
+    openProjectEditDialog(this.dialog, {})
       .afterClosed()
       .pipe(
         take(1),

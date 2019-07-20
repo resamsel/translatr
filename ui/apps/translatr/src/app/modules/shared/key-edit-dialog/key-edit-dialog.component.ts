@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/
 import { Key } from '@dev/translatr-model';
 import { KeyService } from '@dev/translatr-sdk';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AbstractCreationDialogComponent } from '../creation-dialog/abstract-creation-dialog-component';
+import { AbstractEditDialogComponent } from '../creation-dialog/abstract-edit-dialog-component';
 
 export const openKeyEditDialog = (dialog: MatDialog, key: Partial<Key>) => {
   return dialog.open<KeyEditDialogComponent, Partial<Key>, Key>(
@@ -14,7 +14,7 @@ export const openKeyEditDialog = (dialog: MatDialog, key: Partial<Key>) => {
   templateUrl: './key-edit-dialog.component.html'
 })
 export class KeyEditDialogComponent
-  extends AbstractCreationDialogComponent<KeyEditDialogComponent, Key> {
+  extends AbstractEditDialogComponent<KeyEditDialogComponent, Key> {
 
   public get nameFormControl() {
     return this.form.get('name');

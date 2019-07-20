@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ProjectsFacade } from './+state/projects.facade';
 import { AppFacade } from '../../../+state/app.facade';
-import { openProjectCreationDialog } from '../../shared/project-creation-dialog/project-creation-dialog.component';
+import { openProjectEditDialog } from '../../shared/project-creation-dialog/project-edit-dialog.component';
 import { MatDialog } from '@angular/material';
 import { filter, take } from 'rxjs/operators';
 import { Project } from '@dev/translatr-model';
@@ -37,7 +37,7 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
   }
 
   openProjectCreationDialog() {
-    openProjectCreationDialog(this.dialog)
+    openProjectEditDialog(this.dialog, {})
       .afterClosed()
       .pipe(
         take(1),

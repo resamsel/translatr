@@ -23,7 +23,7 @@ import { ActivityModule } from '../../shared/activity/activity.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
 import { UserActivityComponent } from './user-activity/user-activity.component';
 import { UserCardModule } from '@dev/translatr-components';
-import { ProjectCreationDialogModule } from '../../shared/project-creation-dialog/project-creation-dialog.module';
+import { ProjectEditDialogModule } from '../../shared/project-creation-dialog/project-edit-dialog.module';
 import { ProjectCardModule } from '../../shared/project-card/project-card.module';
 import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';
 import { StoreModule } from '@ngrx/store';
@@ -51,7 +51,7 @@ import { NavListModule } from '../../shared/nav-list/nav-list.module';
     ActivityModule,
     UserCardModule,
     ProjectCardModule,
-    ProjectCreationDialogModule,
+    ProjectEditDialogModule,
     NavListModule,
 
     MatIconModule,
