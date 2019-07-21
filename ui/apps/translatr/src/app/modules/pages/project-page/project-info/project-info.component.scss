@@ -1,7 +1,17 @@
 @import "mixins";
 
+.mat-card-title .sub-title {
+  font-size: 14px;
+  font-weight: 400;
+}
+
 .info {
   margin-bottom: 16px;
+}
+
+.mat-card.info,
+.mat-card.activity {
+  box-shadow: none;
 }
 
 .mat-card-image {

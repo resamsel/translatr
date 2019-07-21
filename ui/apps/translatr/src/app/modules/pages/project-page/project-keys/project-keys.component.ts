@@ -12,14 +12,8 @@ import { openKeyEditDialog } from '../../../shared/key-edit-dialog/key-edit-dial
   templateUrl: './project-keys.component.html',
   styleUrls: ['./project-keys.component.scss']
 })
-export class ProjectKeysComponent implements OnInit {
-  project$ = this.facade.project$.pipe(
-    tap((project: Project) => {
-      if (!!project) {
-        this.facade.loadKeys(project.id);
-      }
-    })
-  );
+export class ProjectKeysComponent {
+  project$ = this.facade.project$;
   keys$ = this.facade.keys$;
 
   constructor(
@@ -31,11 +25,8 @@ export class ProjectKeysComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
-  }
-
   onMore(limit: number) {
-    this.facade.project$
+    this.project$
       .pipe(take(1))
       .subscribe((project: Project) =>
         this.facade.loadKeys(project.id, { limit: `${limit}` })
@@ -43,11 +34,19 @@ export class ProjectKeysComponent implements OnInit {
   }
 
   onEdit(key: Key) {
-    this.snackBar.open(`Edit key ${key.name}`, 'Dismiss', { duration: 2000 });
+    this.snackBar.open(
+      `Edit key ${key.name}`,
+      'Dismiss',
+      { duration: 2000 }
+    );
   }
 
   onDelete(key: Key) {
-    this.snackBar.open(`Delete key ${key.name}`, 'Undo', { duration: 2000 });
+    this.snackBar.open(
+      `Delete key ${key.name}`,
+      'Undo',
+      { duration: 2000 }
+    );
   }
 
   openKeyCreationDialog(project: Project): void {

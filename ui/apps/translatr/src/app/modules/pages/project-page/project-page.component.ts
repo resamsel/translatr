@@ -32,7 +32,8 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     private readonly snackBar: MatSnackBar,
     private readonly facade: ProjectFacade,
     private readonly appFacade: AppFacade
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
@@ -46,7 +47,11 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
         filter(project => !!project),
         take(1)
       )
-      .subscribe(project => this.nameFormControl.setValue(project.name));
+      .subscribe(project => {
+        this.nameFormControl.setValue(project.name);
+        this.facade.loadLocales(project.id, {});
+        this.facade.loadKeys(project.id, {});
+      });
   }
 
   ngOnDestroy(): void {

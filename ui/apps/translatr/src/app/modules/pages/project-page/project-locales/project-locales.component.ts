@@ -12,13 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./project-locales.component.scss']
 })
 export class ProjectLocalesComponent {
-  project$ = this.facade.project$.pipe(
-    tap((project: Project) => {
-      if (!!project) {
-        this.facade.loadLocales(project.id);
-      }
-    })
-  );
+  project$ = this.facade.project$;
   locales$ = this.facade.locales$;
 
   constructor(
@@ -31,23 +25,28 @@ export class ProjectLocalesComponent {
   }
 
   onMore(limit: number) {
-    this.facade.project$
+    this.project$
       .pipe(take(1))
       .subscribe((project: Project) =>
+        // FIXME: may interfere with loaded locales from entry point (page)
         this.facade.loadLocales(project.id, { limit: `${limit}` })
       );
   }
 
   onEdit(locale: Locale) {
-    this.snackBar.open(`Edit locale ${locale.displayName}`, 'Dismiss', {
-      duration: 2000
-    });
+    this.snackBar.open(
+      `Edit locale ${locale.displayName}`,
+      'Dismiss',
+      { duration: 2000 }
+    );
   }
 
   onDelete(locale: Locale) {
-    this.snackBar.open(`Delete locale ${locale.displayName}`, 'Undo', {
-      duration: 2000
-    });
+    this.snackBar.open(
+      `Delete locale ${locale.displayName}`,
+      'Undo',
+      { duration: 2000 }
+    );
   }
 
   openLocaleCreationDialog(project: Project): void {

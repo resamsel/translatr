@@ -1,15 +1,30 @@
-<section>
-  <h2>Active Projects</h2>
-  <div class="project-list flex-stretch">
-    <app-project-card-link
-      *ngFor="let project of (projects$ | async)?.list.slice(0, 3)"
-      [project]="project"
-    ></app-project-card-link>
-  </div>
-  <div class="clearfix"></div>
-</section>
+<user-card [user]="user">
+  <p class="email ellipsis">
+    <mat-icon inline="true">email</mat-icon>
+    <span [title]="user?.email">{{ user?.email }}</span>
+  </p>
+  <p class="when-created ellipsis">
+    <mat-icon inline="true">access_time</mat-icon>
+    <span [title]="user?.whenCreated | date">{{
+      user?.whenCreated | amTimeAgo
+      }}</span>
+  </p>
+</user-card>
 
-<section>
-  <h2 i18n="@@activity">Activity</h2>
-  <app-activity [activity]="activity$ | async"></app-activity>
-</section>
+<div class="content">
+  <section>
+    <h2>Active Projects</h2>
+    <div class="project-list flex-stretch">
+      <app-project-card-link
+        *ngFor="let project of (projects$ | async)?.list.slice(0, 3)"
+        [project]="project"
+      ></app-project-card-link>
+    </div>
+    <div class="clearfix"></div>
+  </section>
+
+  <section>
+    <h2 i18n="@@activity">Activity</h2>
+    <app-activity [activity]="activity$ | async"></app-activity>
+  </section>
+</div>

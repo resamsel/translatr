@@ -1,12 +1,5 @@
-<app-sidenav [me]="me$ | async">
+<app-sidenav [me]="me$ | async" [page]="user.name">
   <header>
-    <div class="container">
-      <div class="breadcrumbs">
-        <mat-icon>account_circle</mat-icon>
-        <span>{{ user?.username }}</span>
-      </div>
-    </div>
-
     <nav mat-tab-nav-bar color="accent">
       <div class="container dense" routerLinkActive>
         <ng-container *ngFor="let child of children">
@@ -28,19 +21,6 @@
   </header>
 
   <div class="container">
-    <user-card [user]="user">
-      <p class="email ellipsis">
-        <mat-icon inline="true">email</mat-icon>
-        <span [title]="user?.email">{{ user?.email }}</span>
-      </p>
-      <p class="when-created ellipsis">
-        <mat-icon inline="true">access_time</mat-icon>
-        <span [title]="user?.whenCreated | date">{{
-          user?.whenCreated | amTimeAgo
-        }}</span>
-      </p>
-    </user-card>
-
     <div class="content">
       <router-outlet></router-outlet>
     </div>

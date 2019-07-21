@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Key, Locale, Project } from '@dev/translatr-model';
+import { Key, Locale, PagedList, Project } from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
 import { filter, map, pluck, switchMapTo } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
@@ -13,9 +13,9 @@ import { EMPTY } from 'rxjs';
 export class ProjectInfoComponent implements OnInit {
   project$ = this.facade.project$;
   activity$ = this.facade.activityAggregated$;
-  latestLocales$ = this.project$.pipe(
-    filter(project => !!project && !!project.locales),
-    pluck<Project, Locale[]>('locales'),
+  latestLocales$ = this.facade.locales$.pipe(
+    filter(pagedList => !!pagedList && !!pagedList.list),
+    pluck('list'),
     map((locales: Locale[]) => {
       return locales
         .sort(
@@ -25,9 +25,9 @@ export class ProjectInfoComponent implements OnInit {
         .slice(0, 3);
     })
   );
-  latestKeys$ = this.project$.pipe(
-    filter(project => !!project && !!project.keys),
-    pluck('keys'),
+  latestKeys$ = this.facade.keys$.pipe(
+    filter(pagedList => !!pagedList && !!pagedList.list),
+    pluck('list'),
     map((keys: Key[]) => {
       return keys
         .sort(
