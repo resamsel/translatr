@@ -2,7 +2,7 @@
   <ng-template #template let-accessToken>
     <a
       mat-list-item
-      [routerLink]="['/', user.username, 'access-token', accessToken.id]"
+      [routerLink]="['/', user.username, 'access-tokens', accessToken.id]"
     >
       <mat-icon matListIcon class="circle">vpn_key</mat-icon>
       <h3 matLine>{{ accessToken.name }}</h3>
@@ -12,3 +12,12 @@
     </a>
   </ng-template>
 </app-nav-list>
+
+<button
+  mat-fab
+  color="accent"
+  class="floating-action-btn pin-bottom"
+  (click)="openAccessTokenCreationDialog()"
+>
+  <mat-icon>add</mat-icon>
+</button>

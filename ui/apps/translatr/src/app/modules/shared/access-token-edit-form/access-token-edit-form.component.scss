@@ -1,0 +1,22 @@
+@import "mixins";
+
+.mat-form-field {
+  display: block;
+}
+
+.scopes > div {
+  display: flex;
+  flex-flow: row wrap;
+  padding-bottom: 1.25em;
+
+  .scope {
+    @include medium {
+      width: 25%;
+
+      .mat-checkbox {
+        display: block;
+        width: 160px;
+      }
+    }
+  }
+}

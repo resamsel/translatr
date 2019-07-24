@@ -12,7 +12,7 @@ import { ProjectsEffects } from './+state/projects.effects';
 import { ProjectsFacade } from './+state/projects.facade';
 import { ProjectCardModule } from '../../shared/project-card/project-card.module';
 import { GravatarModule } from 'ngx-gravatar';
-import { ProjectEditDialogModule } from '../../shared/project-creation-dialog/project-edit-dialog.module';
+import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
 
 @NgModule({
   declarations: [ProjectsPageComponent],

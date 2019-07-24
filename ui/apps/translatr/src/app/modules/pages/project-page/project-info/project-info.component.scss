@@ -1,3 +1,4 @@
+@import '~@angular/material/theming';
 @import "mixins";
 
 .mat-card-title .sub-title {
@@ -7,11 +8,6 @@
 
 .info {
   margin-bottom: 16px;
-}
-
-.mat-card.info,
-.mat-card.activity {
-  box-shadow: none;
 }
 
 .mat-card-image {

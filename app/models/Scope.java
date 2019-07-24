@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author resamsel
@@ -79,5 +80,9 @@ public enum Scope {
   @Override
   public String toString() {
     return String.format("%s:%s", type.name().toLowerCase(), section.name().toLowerCase());
+  }
+
+  public static void main(String[] args) {
+    Stream.of(Scope.values()).forEach(scope -> System.out.printf("Scope.%s,%n", scope.name()));
   }
 }

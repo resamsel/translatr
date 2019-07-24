@@ -1,5 +1,5 @@
 <div class="container flex" *ngIf="project$ | async as project">
-  <mat-card class="info">
+  <mat-card class="info mat-elevation-z0">
     <mat-card-title>
       {{ project?.name }}
       <span class="sub-title" i18n="@@temporal.info">
@@ -8,14 +8,13 @@
       </span>
     </mat-card-title>
     <mat-card-content>
-      <p *ngIf="(project$ | async)?.description">
-        {{ (project$ | async)?.description }}
+      <p *ngIf="project?.description">
+        {{ project.description }}
       </p>
       <mat-chip-list>
-        <mat-chip i18n="@@members.summary"
-        >{{ project?.members?.length }} members
-        </mat-chip
-        >
+        <mat-chip i18n="@@members.summary">{{ project?.members?.length }} members</mat-chip>
+        <mat-chip *ngIf="(locales$ | async)?.list as locales" i18n="@@locales.summary">{{ locales.length }} languages</mat-chip>
+        <mat-chip *ngIf="(keys$ | async)?.list as keys" i18n="@@keys.summary">{{ keys.length }} keys</mat-chip>
         <a *ngFor="let member of project?.members"
            mat-chip
            [routerLink]="['/', member.userUsername]"
@@ -24,15 +23,14 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="activity">
+  <mat-card class="activity mat-elevation-z0">
     <mat-card-title i18n="@@activity">Activity</mat-card-title>
     <mat-card-content>
       <app-activity [activity]="activity$ | async"></app-activity>
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="small locales">
-    <div mat-card-image></div>
+  <mat-card class="small locales mat-elevation-z0">
     <mat-card-title i18n="@@locales.latest">Latest Languages</mat-card-title>
     <mat-card-content>
       <div *ngIf="latestLocales$ | async; else localesEmpty">
@@ -49,8 +47,7 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="small keys">
-    <div mat-card-image></div>
+  <mat-card class="small keys mat-elevation-z0">
     <mat-card-title i18n="@@keys.latest">Latest Keys</mat-card-title>
     <mat-card-content>
       <div *ngIf="latestKeys$ | async; else keysEmpty">
@@ -63,8 +60,7 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="small messages">
-    <div mat-card-image></div>
+  <mat-card class="small messages mat-elevation-z0">
     <mat-card-title i18n="@@translations.latest"
     >Latest Translations
     </mat-card-title

@@ -13,8 +13,7 @@ import { DashboardEffects } from './+state/dashboard.effects';
 import { DashboardFacade } from './+state/dashboard.facade';
 import { ProjectsPageModule } from '../projects-page/projects-page.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
-import { ProjectEditDialogComponent } from '../../shared/project-creation-dialog/project-edit-dialog.component';
-import { ProjectEditDialogModule } from '../../shared/project-creation-dialog/project-edit-dialog.module';
+import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
 
 @NgModule({

@@ -1,31 +1,30 @@
 import { Observable } from 'rxjs';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { take } from 'rxjs/operators';
-import { ConstraintViolation, Error, Locale } from '@dev/translatr-model';
-import { HostListener, OnInit } from '@angular/core';
+import { ConstraintViolation, Error } from '@dev/translatr-model';
+import { EventEmitter, HostListener, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 const ENTER_KEYCODE = 'Enter';
 
-export abstract class AbstractEditDialogComponent<T, R extends { id?: number | string }>
-  implements OnInit {
+export abstract class AbstractEditDialogComponent<T, R extends { id?: number | string }> {
 
   processing = false;
   log = console.log;
 
+  @Output() save = new EventEmitter<R>();
+  @Output() error = new EventEmitter<Error>();
+
   constructor(
     protected readonly snackBar: MatSnackBar,
     protected readonly dialogRef: MatDialogRef<T, R>,
-    protected readonly form: FormGroup,
+    public readonly form: FormGroup,
     protected readonly data: Partial<R>,
     protected readonly create: (r: R) => Observable<R>,
     protected readonly update: (r: R) => Observable<R>,
     protected readonly messageProvider: (r: R) => string
   ) {
-  }
-
-  ngOnInit(): void {
-    this.form.setValue(this.data);
+    this.form.patchValue(this.data);
   }
 
   public onSave(): void {
@@ -47,7 +46,9 @@ export abstract class AbstractEditDialogComponent<T, R extends { id?: number | s
 
   protected onSuccess(r: R): void {
     this.processing = false;
-    this.dialogRef.close(r);
+    if (this.dialogRef !== undefined) {
+      this.dialogRef.close(r);
+    }
     this.snackBar.open(
       this.messageProvider(r),
       'Dismiss',
@@ -58,12 +59,15 @@ export abstract class AbstractEditDialogComponent<T, R extends { id?: number | s
   protected onError(error: Error): void {
     this.processing = false;
     error.error.violations.forEach((violation: ConstraintViolation) => {
+      console.log('violation', violation);
       const control = this.form.get(violation.field);
+      console.log('control', control);
       if (!!control) {
         control.setErrors({ violation: violation.message });
         control.markAsTouched();
       }
     });
+    this.error.emit(error);
   }
 
   @HostListener('window:keyup', ['$event'])

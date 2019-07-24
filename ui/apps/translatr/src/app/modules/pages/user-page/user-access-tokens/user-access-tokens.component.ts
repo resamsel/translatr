@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { UserFacade } from '../+state/user.facade';
 import { AccessToken, PagedList, User } from '@dev/translatr-model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
+import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
 
 @Component({
   selector: 'app-user-access-tokens',
@@ -14,16 +17,29 @@ export class UserAccessTokensComponent implements OnInit {
   accessTokens$: Observable<PagedList<AccessToken> | undefined>;
 
   constructor(
+    private readonly facade: UserFacade,
+    private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly facade: UserFacade
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit() {
-    this.route.parent.data.subscribe((data: { user: User }) => {
+    this.route.parent.parent.data.subscribe((data: { user: User }) => {
       this.user = data.user;
       this.accessTokens$ = this.facade.loadAccessTokens({
         userId: data.user.id
       });
     });
+  }
+
+  openAccessTokenCreationDialog(): void {
+    openAccessTokenEditDialog(this.dialog, {})
+      .afterClosed()
+      .pipe(
+        take(1),
+        filter(accessToken => !!accessToken)
+      )
+      .subscribe((accessToken => this.router
+        .navigate([accessToken.id], {relativeTo: this.route})));
   }
 }

@@ -1,0 +1,41 @@
+<form [formGroup]="form">
+  <section class="name">
+    <mat-form-field>
+      <h2>Name</h2>
+      <input
+        matInput
+        type="text"
+        cdkFocusInitial
+        formControlName="name">
+      <mat-error
+        *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern">
+        Must match pattern [a-zA-Z0-9_.-]*</mat-error>
+      <mat-error
+        *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']">
+        {{ nameFormControl.errors['violation'] }}</mat-error>
+    </mat-form-field>
+  </section>
+
+  <section class="key">
+    <mat-form-field>
+      <h2>Key</h2>
+      <input type="text" matInput formControlName="key">
+    </mat-form-field>
+  </section>
+
+  <section class="scopes">
+    <h2>Scopes</h2>
+    <div>
+      <div *ngFor="let scopeType of scopeTypes" class="scope">
+        <h3>{{scopeType}}</h3>
+        <p>
+          <mat-checkbox *ngFor="let scope of scopeMap[scopeType]"
+                        (change)="onChangeScope(scope, $event)"
+                        [checked]="activeScopeMap[scope]">{{scopePermission(scope)}}</mat-checkbox>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <ng-content></ng-content>
+</form>

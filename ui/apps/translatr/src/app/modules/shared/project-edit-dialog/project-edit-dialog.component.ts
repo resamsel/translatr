@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { ProjectService } from '@dev/translatr-sdk';
-import { Key, Project } from '@dev/translatr-model';
+import { Project } from '@dev/translatr-model';
 import { AbstractEditDialogComponent } from '../creation-dialog/abstract-edit-dialog-component';
 
 export const openProjectEditDialog = (dialog: MatDialog, project: Partial<Project>) => {

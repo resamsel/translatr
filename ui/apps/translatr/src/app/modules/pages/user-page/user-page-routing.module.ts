@@ -8,6 +8,7 @@ import { UserActivityComponent } from './user-activity/user-activity.component';
 import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';
 import { USER_ROUTES } from './user-page.token';
 import { MyselfGuard } from '../../../guards/myself.guard';
+import { UserAccessTokenComponent } from './user-access-token/user-access-token.component';
 
 const routes: Routes = [
   {
@@ -45,12 +46,23 @@ const routes: Routes = [
       },
       {
         path: 'access-tokens',
-        component: UserAccessTokensComponent,
-        canActivate: [MyselfGuard],
         data: {
           icon: 'vpn_key',
           name: 'Access Tokens'
-        }
+        },
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            component: UserAccessTokensComponent,
+            canActivate: [MyselfGuard],
+          },
+          {
+            path: ':id',
+            component: UserAccessTokenComponent,
+            canActivate: [MyselfGuard]
+          }
+        ]
       }
     ]
   }

@@ -26,7 +26,7 @@ public class ConstraintViolation implements Serializable {
     Object iv = violation.getInvalidValue();
     if (iv != null)
       this.invalidValue = Json.parse(MessageFormat.format("'{'\"{0}\": {1}'}'",
-          iv.getClass().getSimpleName().toLowerCase(), iv));
+          iv.getClass().getSimpleName().toLowerCase(), Json.toJson(iv)));
   }
 
   /**

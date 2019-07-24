@@ -1,0 +1,18 @@
+<mat-card *ngIf="accessToken$ | async as accessToken">
+  <mat-card-title>Access Token</mat-card-title>
+  <mat-card-content>
+    <app-access-token-edit-form
+      #form
+      [accessToken]="accessToken"
+      (save)="onSaved($event)">
+      <div class="actions">
+        <button mat-flat-button
+                color="primary"
+                (click)="form.onSave()"
+                [disabled]="form.form.invalid || !form.dirty"
+                i18n>Save</button>
+        <a routerLink=".." mat-button>Cancel</a>
+      </div>
+    </app-access-token-edit-form>
+  </mat-card-content>
+</mat-card>

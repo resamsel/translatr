@@ -82,7 +82,8 @@ public class AccessTokenRepositoryImpl extends
   @Override
   protected void preSave(AccessToken t, boolean update) {
     User loggedInUser = User.loggedInUser();
-    if (t.user == null || (loggedInUser != null && t.user.id != loggedInUser.id && loggedInUser.role != UserRole.Admin)) {
+    if (t.user == null || t.user.id == null
+        || (loggedInUser != null && t.user.id != loggedInUser.id && loggedInUser.role != UserRole.Admin)) {
       // only allow admins to create access tokens for other users
       t.user = loggedInUser;
     }

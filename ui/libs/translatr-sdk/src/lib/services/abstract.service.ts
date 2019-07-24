@@ -57,7 +57,7 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
       );
   }
 
-  get(id: string, criteria?: CRITERIA): Observable<DTO> {
+  get(id: string | number, criteria?: CRITERIA): Observable<DTO> {
     const path = `${this.entityPath}/${id}`;
     return this.http
       .get<DTO>(path, {

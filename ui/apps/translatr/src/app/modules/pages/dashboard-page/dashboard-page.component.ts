@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AppFacade } from '../../../+state/app.facade';
 import { ProjectsFacade } from '../projects-page/+state/projects.facade';
 import { filter, take } from 'rxjs/operators';
-import { Project, User } from '@dev/translatr-model';
+import { User } from '@dev/translatr-model';
 import { DashboardFacade } from './+state/dashboard.facade';
-import { openProjectEditDialog } from '../../shared/project-creation-dialog/project-edit-dialog.component';
+import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 

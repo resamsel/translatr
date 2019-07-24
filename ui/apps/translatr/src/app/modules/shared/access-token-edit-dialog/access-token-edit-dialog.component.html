@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Create Access Token</h1>
+<div mat-dialog-content>
+  <app-access-token-edit-form [accessToken]="data" #form></app-access-token-edit-form>
+</div>
+<div mat-dialog-actions class="mat-dialog-actions">
+  <button
+    mat-flat-button
+    (click)="onSave()"
+    color="primary"
+    [disabled]="form.form.invalid || form.processing"
+  >
+    Save
+  </button>
+  <button mat-button mat-dialog-close>Cancel</button>
+</div>
