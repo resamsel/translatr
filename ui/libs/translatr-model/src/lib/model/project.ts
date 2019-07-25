@@ -17,4 +17,5 @@ export interface Project {
   keys?: Array<Key>;
   members?: Array<Member>;
   messages?: Array<Message>;
+  wordCount?: number;
 }

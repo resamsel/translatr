@@ -26,4 +26,6 @@ public class Project extends Dto {
   public List<Locale> locales;
   public List<Message> messages;
   public List<ProjectUser> members;
+
+  public Integer wordCount;
 }

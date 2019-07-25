@@ -1,4 +1,14 @@
 <div class="container">
+  <app-list-header (add)="openLocaleCreationDialog(project)" *ngIf="project$ | async as project">
+    <ng-container *ngIf="(locales$ | async) as locales">
+      {locales.list.length,
+        plural,
+        =0 {No keys}
+        =1 {One key}
+        other {{{locales.list.length}} keys}}
+    </ng-container>
+  </app-list-header>
+
   <app-locale-list
     [project]="project$ | async"
     [locales]="locales$ | async"
@@ -7,12 +17,3 @@
     (delete)="onDelete($event)"
   ></app-locale-list>
 </div>
-
-<button *ngIf="project$ | async as project"
-        mat-fab
-        color="accent"
-        class="floating-action-btn pin-bottom"
-        (click)="openLocaleCreationDialog(project)"
->
-  <mat-icon>add</mat-icon>
-</button>

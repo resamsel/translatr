@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractEditDialogComponent } from '../creation-dialog/abstract-edit-dialog-component';
 import { AccessToken, Scope, scopes } from '@dev/translatr-model';
-import { MatCheckboxChange, MatSnackBar } from '@angular/material';
+import { MatCheckboxChange, MatDialogRef, MatSnackBar } from '@angular/material';
 import { AccessTokenService } from '@dev/translatr-sdk';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
@@ -28,6 +28,8 @@ export class AccessTokenEditFormComponent
   @Input() set accessToken(accessToken: AccessToken) {
     this.updateValue(accessToken);
   }
+
+  @Input() dialogRef: MatDialogRef<any, AccessToken>;
 
   scopeTypes = scopes.map(scopeType).filter(distinct);
   scopeMap = scopes.reduce((acc, curr) => {

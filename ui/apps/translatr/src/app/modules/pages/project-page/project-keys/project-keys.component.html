@@ -1,4 +1,14 @@
 <div class="container">
+  <app-list-header (add)="openKeyCreationDialog(project)" *ngIf="project$ | async as project">
+    <ng-container *ngIf="(keys$ | async) as keys">
+      {keys.list.length,
+        plural,
+        =0 {No keys}
+        =1 {One key}
+        other {{{keys.list.length}} keys}}
+    </ng-container>
+  </app-list-header>
+
   <app-key-list
     [project]="project$ | async"
     [keys]="keys$ | async"
@@ -7,12 +17,3 @@
     (delete)="onDelete($event)"
   ></app-key-list>
 </div>
-
-<button *ngIf="project$ | async as project"
-        mat-fab
-        color="accent"
-        class="floating-action-btn pin-bottom"
-        (click)="openKeyCreationDialog(project)"
->
-  <mat-icon>add</mat-icon>
-</button>

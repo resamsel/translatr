@@ -36,6 +36,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { LocaleEditDialogModule } from '../../shared/locale-edit-dialog/locale-edit-dialog.module';
 import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialog.module';
+import { UserCardModule } from '@dev/translatr-components';
+import { ListHeaderModule } from '../../shared/list-header/list-header.module';
 
 @NgModule({
   declarations: [
@@ -77,7 +79,9 @@ import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialo
       initialState: projectInitialState
     }),
     EffectsModule.forFeature([ProjectEffects]),
-    MatFormFieldModule
+    MatFormFieldModule,
+    UserCardModule,
+    ListHeaderModule
   ],
   providers: [ProjectFacade]
 })

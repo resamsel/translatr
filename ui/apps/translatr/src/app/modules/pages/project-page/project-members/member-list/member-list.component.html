@@ -1,4 +1,12 @@
-<mat-nav-list *ngIf="members">
+<app-list-header (add)="onAdd()" (remove)="onRemove()" *ngIf="members">
+  {members.length,
+    plural,
+    =0 {No members}
+    =1 {One member}
+    other {{{members.length}} members}}
+</app-list-header>
+
+<mat-nav-list>
   <a
     mat-list-item
     *ngFor="let member of members"

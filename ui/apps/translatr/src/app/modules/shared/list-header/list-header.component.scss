@@ -1,0 +1,22 @@
+@import '~@angular/material/theming';
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 16px;
+
+  .title {
+    flex-grow: 1;
+    margin-bottom: 0;
+  }
+
+  button:hover:not([disabled]) {
+    @include mat-elevation(4);
+    @include mat-elevation-transition();
+  }
+
+  button + button {
+    margin-left: 8px;
+  }
+}

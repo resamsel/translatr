@@ -18,19 +18,25 @@ export abstract class AbstractEditDialogComponent<T, R extends { id?: number | s
   constructor(
     protected readonly snackBar: MatSnackBar,
     protected readonly dialogRef: MatDialogRef<T, R>,
-    public readonly form: FormGroup,
+    protected readonly form: FormGroup,
     protected readonly data: Partial<R>,
     protected readonly create: (r: R) => Observable<R>,
     protected readonly update: (r: R) => Observable<R>,
     protected readonly messageProvider: (r: R) => string
   ) {
-    this.form.patchValue(this.data);
+    console.log('const', data)
+    this.form.patchValue(data);
+  }
+
+  get invalid(): boolean {
+    return this.form.invalid;
   }
 
   public onSave(): void {
     this.processing = true;
 
     const value: R = this.form.value;
+    console.log('onSave', this.form.value);
     const consume$ = value.id ? this.update(value) : this.create(value);
     consume$
       .pipe(take(1))
