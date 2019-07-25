@@ -16,3 +16,4 @@ data
 bin
 jmeter.log
 /public/ui
+/public/admin

@@ -3,9 +3,9 @@
     <ng-container *ngIf="(locales$ | async) as locales">
       {locales.list.length,
         plural,
-        =0 {No keys}
-        =1 {One key}
-        other {{{locales.list.length}} keys}}
+        =0 {No locales}
+        =1 {One locale}
+        other {{{locales.list.length}} locales}}
     </ng-container>
   </app-list-header>
 
