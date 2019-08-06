@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractEditDialogComponent } from '../creation-dialog/abstract-edit-dialog-component';
+import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
 import { AccessToken, Scope, scopes } from '@dev/translatr-model';
 import { MatCheckboxChange, MatDialogRef, MatSnackBar } from '@angular/material';
 import { AccessTokenService } from '@dev/translatr-sdk';
@@ -20,7 +20,7 @@ const scopePermission = scope => scope.split(':')[0];
   styleUrls: ['./access-token-edit-form.component.scss']
 })
 export class AccessTokenEditFormComponent
-  extends AbstractEditDialogComponent<AccessTokenEditFormComponent, AccessToken>
+  extends AbstractEditFormComponent<AccessTokenEditFormComponent, AccessToken>
   implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
@@ -93,7 +93,9 @@ export class AccessTokenEditFormComponent
   private updateValue(accessToken: AccessToken): void {
     this.form.patchValue(accessToken);
     if (accessToken.scope !== undefined) {
-      accessToken.scope.split(',').forEach(scope => this.activeScopeMap[scope] = true);
+      accessToken.scope
+        .split(',')
+        .forEach(scope => this.activeScopeMap[scope] = true);
     }
   }
 }

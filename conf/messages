@@ -85,6 +85,7 @@ error.nameunique = Name must be unique
 error.nameunique.ownerchange = Project with same name exists for new owner
 error.projectnameunique = Project name must be unique
 error.projectname.invalid = Invalid value for project name (invalid values: {0})
+error.projectuserunique = User already exists in project
 error.restricted.content = Access was denied to the requested resource. Signing in might resolve that issue for you.
 error.restricted.title = Access restricted
 error.userbyusername = Could not find user by given username

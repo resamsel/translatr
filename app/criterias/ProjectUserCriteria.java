@@ -1,6 +1,7 @@
 package criterias;
 
 import forms.SearchForm;
+import play.mvc.Http;
 
 /**
  * @author resamsel
@@ -14,6 +15,10 @@ public class ProjectUserCriteria extends AbstractProjectSearchCriteria<ProjectUs
 
   public static ProjectUserCriteria from(SearchForm search) {
     return new ProjectUserCriteria().with(search);
+  }
+
+  public static ProjectUserCriteria from(Http.Request request) {
+    return new ProjectUserCriteria().with(request);
   }
 
   @Override

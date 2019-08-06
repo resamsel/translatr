@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { convertTemporals, convertTemporalsList } from '../shared/mapper-utils';
-import { Aggregate, PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
+import { Aggregate, Member, PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
 import { AbstractService } from './abstract.service';
 import { Router } from '@angular/router';
 import { LOGIN_URL } from '@translatr/utils';
@@ -34,8 +34,8 @@ export class ProjectService extends AbstractService<Project, ProjectCriteria> {
       params?:
         | HttpParams
         | {
-            [param: string]: string | string[];
-          };
+        [param: string]: string | string[];
+      };
     }
   ): Observable<Project | undefined> {
     return this.http
@@ -47,5 +47,21 @@ export class ProjectService extends AbstractService<Project, ProjectCriteria> {
     return this.http.get<PagedList<Aggregate>>(
       `/api/project/${projectId}/activity`
     );
+  }
+
+  addMember(member: Member): Observable<Member> {
+    return this.http.post<Member>(
+      `/api/project/${member.projectId}/members`,
+      member
+    )
+      .pipe(map(convertTemporals));
+  }
+
+  updateMember(member: Member): Observable<Member> {
+    return this.http.put<Member>(
+      `/api/project/${member.projectId}/members`,
+      member
+    )
+      .pipe(map(convertTemporals));
   }
 }

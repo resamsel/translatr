@@ -1,6 +1,14 @@
-<div class="container">
+<div class="container" *ngIf="(project$ | async) as project">
+  <app-list-header (add)="onAdd(project)" (remove)="onRemove()">
+    {project.members.length,
+      plural,
+      =0 {No members}
+      =1 {One member}
+      other {{{project.members.length}} members}}
+  </app-list-header>
+
   <app-member-list
-    [project]="project$ | async"
-    [members]="(project$ | async)?.members"
+    [project]="project"
+    [members]="project.members"
   ></app-member-list>
 </div>

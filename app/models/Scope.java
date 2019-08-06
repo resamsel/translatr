@@ -35,6 +35,10 @@ public enum Scope {
 
   MessageWrite(ScopeSection.Message, ScopeType.Write),
 
+  MemberRead(ScopeSection.Member, ScopeType.Read),
+
+  MemberWrite(ScopeSection.Member, ScopeType.Write),
+
   NotificationRead(ScopeSection.Notification, ScopeType.Read),
 
   NotificationWrite(ScopeSection.Notification, ScopeType.Write);

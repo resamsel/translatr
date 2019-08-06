@@ -12,6 +12,7 @@ export * from './key-criteria';
 export * from './locale';
 export * from './locale-criteria';
 export * from './member';
+export * from './member-criteria';
 export * from './member-role';
 export * from './message';
 export * from './not-found-error-info';

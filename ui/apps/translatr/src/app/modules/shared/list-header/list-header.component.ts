@@ -7,7 +7,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class ListHeaderComponent {
 
+  @Input() addVisible = true;
   @Input() addEnabled = true;
+  @Input() removeVisible = false;
   @Input() removeEnabled = false;
   @Output() add = new EventEmitter<void>();
   @Output() remove = new EventEmitter<void>();

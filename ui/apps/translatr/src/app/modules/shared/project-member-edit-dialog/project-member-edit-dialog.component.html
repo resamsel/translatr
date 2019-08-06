@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Add Project Member</h1>
+<div mat-dialog-content>
+  <app-project-member-edit-form
+    [member]="data"
+    [dialogRef]="dialogRef"
+    [users]="users$ | async"
+    (userFilter)="onUserFilter($event)"
+    #form></app-project-member-edit-form>
+</div>
+<div mat-dialog-actions class="mat-dialog-actions">
+  <button
+    mat-flat-button
+    (click)="form.onSave()"
+    color="primary"
+    [disabled]="form.invalid || form.processing"
+  >
+    Save
+  </button>
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+</div>

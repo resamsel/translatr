@@ -9,23 +9,4 @@ import { Member, Project, User, UserRole } from '@dev/translatr-model';
 export class MemberListComponent {
   @Input() project: Project;
   @Input() members: Array<Member>;
-
-  asUser(member: Member): User {
-    return {
-      id: member.userId,
-      name: member.userName,
-      username: member.userUsername,
-      email: member.userEmail,
-
-      role: UserRole.User
-    };
-  }
-
-  onAdd(): void {
-    console.log('add member');
-  }
-
-  onRemove(): void {
-    console.log('remove member');
-  }
 }

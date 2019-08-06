@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { ProjectService } from '@dev/translatr-sdk';
 import { Project } from '@dev/translatr-model';
-import { AbstractEditDialogComponent } from '../creation-dialog/abstract-edit-dialog-component';
+import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
 
 export const openProjectEditDialog = (dialog: MatDialog, project: Partial<Project>) => {
   return dialog.open<ProjectEditDialogComponent, Partial<Project>, Project>(
@@ -16,7 +16,7 @@ export const openProjectEditDialog = (dialog: MatDialog, project: Partial<Projec
   styleUrls: ['./project-edit-dialog.component.scss']
 })
 export class ProjectEditDialogComponent
-  extends AbstractEditDialogComponent<ProjectEditDialogComponent, Project> {
+  extends AbstractEditFormComponent<ProjectEditDialogComponent, Project> {
   public get nameFormControl() {
     return this.form.get('name');
   }

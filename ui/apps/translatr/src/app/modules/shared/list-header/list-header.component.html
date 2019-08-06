@@ -1,5 +1,5 @@
 <div class="actions">
   <h3 class="title"><ng-content></ng-content></h3>
-  <button mat-icon-button [disabled]="!addEnabled" (click)="add.emit()"><mat-icon>add</mat-icon></button>
-  <button mat-icon-button [disabled]="!removeEnabled" (click)="remove.emit()"><mat-icon>remove</mat-icon></button>
+  <button mat-stroked-button *ngIf="addVisible" [disabled]="!addEnabled" (click)="add.emit()" i18n>add</button>
+  <button mat-stroked-button *ngIf="removeVisible" [disabled]="!removeEnabled" (click)="remove.emit()" i18n>remove</button>
 </div>

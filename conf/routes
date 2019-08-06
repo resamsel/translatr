@@ -38,6 +38,12 @@ POST	/api/message				controllers.TranslationsApi.create
 PUT		/api/message				controllers.TranslationsApi.update
 DELETE	/api/message/:messageId		controllers.TranslationsApi.delete(messageId: java.util.UUID)
 
+GET		/api/members/:projectId		controllers.MembersApi.find(projectId: java.util.UUID)
+GET		/api/member/:memberId		controllers.MembersApi.get(memberId: java.lang.Long, fetch: String ?= "")
+POST	/api/member					controllers.MembersApi.create
+PUT		/api/member					controllers.MembersApi.update
+DELETE	/api/member/:memberId		controllers.MembersApi.delete(memberId: java.lang.Long)
+
 GET		/api/users					controllers.UsersApi.find
 GET     /api/me                     controllers.UsersApi.me
 GET		/api/user/:userId			controllers.UsersApi.get(userId: java.util.UUID)

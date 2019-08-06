@@ -7,7 +7,7 @@ export interface User {
   whenUpdated?: Date;
   name: string;
   username: string;
-  email: string;
-  role: UserRole;
+  email?: string;
+  role?: UserRole;
   memberships?: Member[];
 }

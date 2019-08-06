@@ -11,6 +11,8 @@ export enum Scope {
   KeyWrite = 'write:key',
   MessageRead = 'read:message',
   MessageWrite = 'write:message',
+  MemberRead = 'read:member',
+  MemberWrite = 'write:member',
   NotificationRead = 'read:notification',
   NotificationWrite = 'write:notification'
 }
@@ -28,6 +30,8 @@ export const scopes = [
   Scope.KeyWrite,
   Scope.MessageRead,
   Scope.MessageWrite,
+  Scope.MemberRead,
+  Scope.MemberWrite,
   Scope.NotificationRead,
   Scope.NotificationWrite
 ];

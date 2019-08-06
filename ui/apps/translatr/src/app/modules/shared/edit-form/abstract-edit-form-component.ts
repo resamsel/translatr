@@ -7,8 +7,11 @@ import { FormGroup } from '@angular/forms';
 
 const ENTER_KEYCODE = 'Enter';
 
-export abstract class AbstractEditDialogComponent<T, R extends { id?: number | string }> {
+export interface Identifiable {
+  id?: number | string;
+}
 
+export abstract class AbstractEditFormComponent<T, F extends Identifiable, R extends Identifiable = F> {
   processing = false;
   log = console.log;
 
@@ -19,12 +22,12 @@ export abstract class AbstractEditDialogComponent<T, R extends { id?: number | s
     protected readonly snackBar: MatSnackBar,
     protected readonly dialogRef: MatDialogRef<T, R>,
     protected readonly form: FormGroup,
-    protected readonly data: Partial<R>,
-    protected readonly create: (r: R) => Observable<R>,
-    protected readonly update: (r: R) => Observable<R>,
+    protected readonly data: Partial<F>,
+    protected readonly create: (r: F) => Observable<R>,
+    protected readonly update: (r: F) => Observable<R>,
     protected readonly messageProvider: (r: R) => string
   ) {
-    console.log('const', data)
+    console.log('const', data);
     this.form.patchValue(data);
   }
 
@@ -35,7 +38,7 @@ export abstract class AbstractEditDialogComponent<T, R extends { id?: number | s
   public onSave(): void {
     this.processing = true;
 
-    const value: R = this.form.value;
+    const value: F = this.form.value;
     console.log('onSave', this.form.value);
     const consume$ = value.id ? this.update(value) : this.create(value);
     consume$
@@ -64,21 +67,26 @@ export abstract class AbstractEditDialogComponent<T, R extends { id?: number | s
 
   protected onError(error: Error): void {
     this.processing = false;
-    error.error.violations.forEach((violation: ConstraintViolation) => {
-      console.log('violation', violation);
-      const control = this.form.get(violation.field);
-      console.log('control', control);
-      if (!!control) {
-        control.setErrors({ violation: violation.message });
-        control.markAsTouched();
-      }
-    });
+    console.error('onError', error);
+    if (error.error.violations) {
+      error.error.violations.forEach((violation: ConstraintViolation) => {
+        console.log('violation', violation);
+        const control = this.form.get(violation.field);
+        console.log('control', control);
+        if (!!control) {
+          control.setErrors({ violation: violation.message });
+          control.markAsTouched();
+        }
+      });
+    }
     this.error.emit(error);
   }
 
   @HostListener('window:keyup', ['$event'])
   protected onHotkey(event: KeyboardEvent) {
-    if (event.key === ENTER_KEYCODE && this.isValid() && !this.processing) {
+    if (event.key === ENTER_KEYCODE
+      && event.ctrlKey === true
+      && this.isValid() && !this.processing) {
       this.onSave();
     }
   }

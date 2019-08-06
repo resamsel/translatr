@@ -38,6 +38,7 @@ import { LocaleEditDialogModule } from '../../shared/locale-edit-dialog/locale-e
 import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialog.module';
 import { UserCardModule } from '@dev/translatr-components';
 import { ListHeaderModule } from '../../shared/list-header/list-header.module';
+import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { ListHeaderModule } from '../../shared/list-header/list-header.module';
     NavListModule,
     LocaleEditDialogModule,
     KeyEditDialogModule,
+    ProjectMemberEditDialogModule,
 
     MatToolbarModule,
     MatButtonModule,

@@ -1,6 +1,13 @@
 export enum MemberRole {
-  Owner,
-  Manager,
-  Developer,
-  Translator
+  Owner = 'Owner',
+  Manager = 'Manager',
+  Developer = 'Developer',
+  Translator = 'Translator'
 }
+
+export const memberRoles = [
+  MemberRole.Owner,
+  MemberRole.Manager,
+  MemberRole.Developer,
+  MemberRole.Translator
+];
