@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ProjectsFacade } from './+state/projects.facade';
 import { AppFacade } from '../../../+state/app.facade';
 import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { filter, take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 

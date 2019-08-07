@@ -2,7 +2,8 @@ import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, O
 import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
 import { Member, MemberRole, memberRoles, User } from '@dev/translatr-model';
 import { Observable, Subject } from 'rxjs';
-import { MatDialogRef, MatOptionSelectionChange, MatSnackBar } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
 import { MemberService } from '@translatr/translatr-sdk/src/lib/services/member.service';

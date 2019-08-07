@@ -1,7 +1,7 @@
 import { AfterViewChecked, ChangeDetectionStrategy, Component, HostListener, Input, ViewChild } from '@angular/core';
 import { Message, User } from '@dev/translatr-model';
 import { EditorFacade } from '../+state/editor.facade';
-import { MatTabGroup } from '@angular/material';
+import { MatTabGroup } from '@angular/material/tabs';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Link } from '../../../nav/sidenav/sidenav.component';
 
@@ -28,9 +28,9 @@ export class EditorComponent implements AfterViewChecked {
     this._backLink = backLink;
   }
 
-  @ViewChild('editor', { read: CodemirrorComponent })
+  @ViewChild('editor', { read: CodemirrorComponent, static: false })
   private editor: CodemirrorComponent;
-  @ViewChild('tabs', { read: MatTabGroup }) private tabs: MatTabGroup;
+  @ViewChild('tabs', { read: MatTabGroup, static: true }) private tabs: MatTabGroup;
 
   private _message: Message;
   get message(): Message {

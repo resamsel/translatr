@@ -33,7 +33,7 @@ import { filter, map, take } from 'rxjs/operators';
 import { combineLatest, Observable } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { EditorFacade } from './editor.facade';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class EditorEffects {

@@ -3,7 +3,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ProjectFacade } from './+state/project.facade';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { filter, switchMapTo, take, tap } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppFacade } from '../../../+state/app.facade';
 
 @Component({

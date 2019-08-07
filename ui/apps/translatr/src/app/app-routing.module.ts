@@ -4,39 +4,39 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: 'login',
-    loadChildren: '@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module#LoginPageModule'
+    loadChildren: () => import('@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module').then(m => m.LoginPageModule)
   },
   {
     path: 'dashboard',
-    loadChildren: './modules/pages/dashboard-page/dashboard-page.module#DashboardPageModule'
+    loadChildren: () => import('./modules/pages/dashboard-page/dashboard-page.module').then(m => m.DashboardPageModule)
   },
   {
     path: 'users',
-    loadChildren: './modules/pages/users-page/users-page.module#UsersPageModule'
+    loadChildren: () => import('./modules/pages/users-page/users-page.module').then(m => m.UsersPageModule)
   },
   {
     path: 'projects',
     loadChildren:
-      './modules/pages/projects-page/projects-page.module#ProjectsPageModule'
+      () => import('./modules/pages/projects-page/projects-page.module').then(m => m.ProjectsPageModule)
   },
   {
     path: '',
     pathMatch: 'full',
-    loadChildren: './modules/pages/main-page/main-page.module#MainPageModule'
+    loadChildren: () => import('./modules/pages/main-page/main-page.module').then(m => m.MainPageModule)
   },
   {
     path: '',
-    loadChildren: './modules/pages/user-page/user-page.module#UserPageModule'
-  },
-  {
-    path: '',
-    loadChildren:
-      './modules/pages/project-page/project-page.module#ProjectPageModule'
+    loadChildren: () => import('./modules/pages/user-page/user-page.module').then(m => m.UserPageModule)
   },
   {
     path: '',
     loadChildren:
-      './modules/pages/editor-page/editor-page.module#EditorPageModule'
+      () => import('./modules/pages/project-page/project-page.module').then(m => m.ProjectPageModule)
+  },
+  {
+    path: '',
+    loadChildren:
+      () => import('./modules/pages/editor-page/editor-page.module').then(m => m.EditorPageModule)
   }
 ];
 

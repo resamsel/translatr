@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { take } from 'rxjs/operators';
 import { ConstraintViolation, Error } from '@dev/translatr-model';
 import { EventEmitter, HostListener, Output } from '@angular/core';

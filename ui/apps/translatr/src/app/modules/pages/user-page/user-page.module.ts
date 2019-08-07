@@ -4,15 +4,13 @@ import { CommonModule } from '@angular/common';
 import { UserPageRoutingModule } from './user-page-routing.module';
 import { UserPageComponent } from './user-page.component';
 import { UserProjectsComponent } from './user-projects/user-projects.component';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatChipsModule,
-  MatDialogModule,
-  MatIconModule,
-  MatListModule,
-  MatTabsModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { MomentModule } from 'ngx-moment';

@@ -5,7 +5,7 @@ import { ProjectService } from '@dev/translatr-sdk';
 import { Observable } from 'rxjs';
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
 import { filter, take } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-projects',

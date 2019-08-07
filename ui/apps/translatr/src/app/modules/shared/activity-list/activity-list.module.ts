@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatChipsModule, MatIconModule, MatListModule } from '@angular/material';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MomentModule } from 'ngx-moment';
 import { GravatarModule } from 'ngx-gravatar';
 import { ActivityListComponent } from './activity-list.component';

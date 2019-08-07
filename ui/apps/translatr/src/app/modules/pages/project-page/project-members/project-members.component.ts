@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
 import { openProjectMemberEditDialog } from '../../../shared/project-member-edit-dialog/project-member-edit-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Project } from '@dev/translatr-model';
 import { filter, switchMapTo, take } from 'rxjs/operators';
 

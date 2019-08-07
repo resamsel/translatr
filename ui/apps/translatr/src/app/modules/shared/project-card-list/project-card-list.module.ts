@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProjectCardListComponent } from './project-card-list.component';
-import { MatIconModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
 import { NavListModule } from '../nav-list/nav-list.module';
 import { RouterModule } from '@angular/router';
 import { MomentModule } from 'ngx-moment';

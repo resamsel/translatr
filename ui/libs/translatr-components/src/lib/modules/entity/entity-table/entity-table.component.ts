@@ -11,7 +11,8 @@ import {
   ViewChild
 } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatColumnDef, MatTable, PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
+import { MatColumnDef, MatTable } from '@angular/material/table';
 import { PagedList, RequestCriteria } from '@dev/translatr-model';
 import { merge, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, scan, shareReplay, take } from 'rxjs/operators';
@@ -50,7 +51,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   @Output() readonly criteria = new EventEmitter<RequestCriteria>();
   @Output() readonly selected = new EventEmitter<Entity[]>();
 
-  @ViewChild(MatTable) private table: MatTable<Entity>;
+  @ViewChild(MatTable, { static: true }) private table: MatTable<Entity>;
 
   @ContentChildren(MatColumnDef) protected columns: QueryList<MatColumnDef>;
 

@@ -1,9 +1,8 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Member } from '@dev/translatr-model';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
-import { filter, map } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export const openProjectMemberEditDialog = (dialog: MatDialog, member: Partial<Member>) => {
   return dialog.open<ProjectMemberEditDialogComponent, Partial<Member>, Member>(

@@ -3,7 +3,8 @@ import { AppFacade } from '../../../../+state/app.facade';
 import { Project, RequestCriteria } from '@dev/translatr-model';
 import { Observable, of } from 'rxjs';
 import { AppActionTypes, ProjectDeleted, ProjectDeleteError, ProjectsDeleted, ProjectsDeleteError } from '../../../../+state/app.actions';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { errorMessage, hasDeleteAllProjectsPermission, hasDeleteProjectPermission, hasEditProjectPermission } from '@dev/translatr-sdk';
 import { Entity, notifyEvent, ProjectEditDialogComponent } from '@dev/translatr-components';
 

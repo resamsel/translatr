@@ -5,7 +5,7 @@ import { filter, take } from 'rxjs/operators';
 import { User } from '@dev/translatr-model';
 import { DashboardFacade } from './+state/dashboard.facade';
 import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 @Component({
