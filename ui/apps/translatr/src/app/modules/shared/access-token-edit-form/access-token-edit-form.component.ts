@@ -88,7 +88,7 @@ export class AccessTokenEditFormComponent
   onChangeScope(scope: Scope, event: MatCheckboxChange) {
     this.activeScopeMap[scope] = event.checked;
     this.form.get('scope')
-      .setValue(scopes.filter(scope => this.activeScopeMap[scope]).join(','));
+      .setValue(scopes.filter(s => this.activeScopeMap[s]).join(','));
     this.form.get('scope').markAsDirty();
   }
 

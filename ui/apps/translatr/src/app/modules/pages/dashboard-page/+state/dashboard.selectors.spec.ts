@@ -1,4 +1,4 @@
-import { Entity, DashboardState } from './dashboard.reducer';
+import { Entity } from './dashboard.reducer';
 import { dashboardQuery } from './dashboard.selectors';
 
 describe('Dashboard Selectors', () => {
@@ -42,13 +42,13 @@ describe('Dashboard Selectors', () => {
       expect(selId).toBe('PRODUCT-BBB');
     });
 
-    it("getLoaded() should return the current 'loaded' status", () => {
+    it('getLoaded() should return the current \'loaded\' status', () => {
       const result = dashboardQuery.getLoaded(storeState);
 
       expect(result).toBe(true);
     });
 
-    it("getError() should return the current 'error' storeState", () => {
+    it('getError() should return the current \'error\' storeState', () => {
       const result = dashboardQuery.getError(storeState);
 
       expect(result).toBe(ERROR_MSG);

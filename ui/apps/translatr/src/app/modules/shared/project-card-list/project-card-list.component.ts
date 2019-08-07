@@ -13,11 +13,11 @@ export class ProjectCardListComponent {
   @Input() allowProjectCreation = false;
   @Input() showMore = true;
 
-  @Output() onCreate = new EventEmitter<void>();
+  @Output() readonly create = new EventEmitter<void>();
 
   firstChar = firstChar;
 
   onCreateProject(): void {
-    this.onCreate.emit();
+    this.create.emit();
   }
 }

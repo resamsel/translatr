@@ -2,11 +2,6 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AccessToken } from '@dev/translatr-model';
 
-export const openAccessTokenEditDialog = (dialog: MatDialog, accessToken: Partial<AccessToken>) => {
-  return dialog.open<AccessTokenEditDialogComponent, Partial<AccessToken>, AccessToken>(
-    AccessTokenEditDialogComponent, { data: accessToken });
-};
-
 @Component({
   selector: 'app-protect-creation-dialog',
   templateUrl: './access-token-edit-dialog.component.html',
@@ -19,3 +14,8 @@ export class AccessTokenEditDialogComponent {
   ) {
   }
 }
+
+export const openAccessTokenEditDialog = (dialog: MatDialog, accessToken: Partial<AccessToken>) => {
+  return dialog.open<AccessTokenEditDialogComponent, Partial<AccessToken>, AccessToken>(
+    AccessTokenEditDialogComponent, { data: accessToken });
+};

@@ -4,9 +4,8 @@ const tsconfigToReadFromRoot = "./";
 // Makes it work with play method
 const aliasRegister = TSModuleAlias.play(tsconfigToReadFromRoot);
 
-import Command, { flags } from "@oclif/command";
-import { Generator, GeneratorConfig } from "@translatr/generator";
-import { envAsNumber, envAsString } from "@translatr/node-utils";
+import Command, { flags } from '@oclif/command';
+import { Generator, GeneratorConfig } from '@translatr/generator';
 
 // Alias map loaded to nodejs from typescript paths (optional)
 //console.log('aliasMap', aliasRegister.nodeRegister.aliasMap);

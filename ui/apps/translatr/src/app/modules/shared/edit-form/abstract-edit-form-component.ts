@@ -22,13 +22,12 @@ export abstract class AbstractEditFormComponent<T, F extends Identifiable, R ext
   constructor(
     protected readonly snackBar: MatSnackBar,
     protected readonly dialogRef: MatDialogRef<T, R>,
-    protected readonly form: FormGroup,
+    readonly form: FormGroup,
     protected readonly data: Partial<F>,
     protected readonly create: (r: F) => Observable<R>,
     protected readonly update: (r: F) => Observable<R>,
     protected readonly messageProvider: (r: R) => string
   ) {
-    console.log('const', data);
     this.form.patchValue(data);
   }
 
@@ -40,7 +39,6 @@ export abstract class AbstractEditFormComponent<T, F extends Identifiable, R ext
     this.processing = true;
 
     const value: F = this.form.value;
-    console.log('onSave', this.form.value);
     const consume$ = value.id ? this.update(value) : this.create(value);
     consume$
       .pipe(take(1))

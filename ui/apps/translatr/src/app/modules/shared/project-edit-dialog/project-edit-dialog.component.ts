@@ -6,11 +6,6 @@ import { ProjectService } from '@dev/translatr-sdk';
 import { Project } from '@dev/translatr-model';
 import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
 
-export const openProjectEditDialog = (dialog: MatDialog, project: Partial<Project>) => {
-  return dialog.open<ProjectEditDialogComponent, Partial<Project>, Project>(
-    ProjectEditDialogComponent, { data: project });
-};
-
 @Component({
   selector: 'app-protect-creation-dialog',
   templateUrl: './project-edit-dialog.component.html',
@@ -44,3 +39,8 @@ export class ProjectEditDialogComponent
     );
   }
 }
+
+export const openProjectEditDialog = (dialog: MatDialog, project: Partial<Project>) => {
+  return dialog.open<ProjectEditDialogComponent, Partial<Project>, Project>(
+    ProjectEditDialogComponent, { data: project });
+};

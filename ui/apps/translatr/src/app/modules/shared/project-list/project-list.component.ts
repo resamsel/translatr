@@ -12,11 +12,11 @@ export class ProjectListComponent {
   @Input() projects: PagedList<Project>;
   @Input() allowProjectCreation = false;
 
-  @Output() onCreate = new EventEmitter<void>();
+  @Output() create = new EventEmitter<void>();
 
   firstChar = firstChar;
 
   onCreateProject(): void {
-    this.onCreate.emit();
+    this.create.emit();
   }
 }

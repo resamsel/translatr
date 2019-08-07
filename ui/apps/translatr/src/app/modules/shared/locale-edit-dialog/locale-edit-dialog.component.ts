@@ -6,11 +6,6 @@ import { LocaleService } from '@dev/translatr-sdk';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
 
-export const openLocaleEditDialog = (dialog: MatDialog, locale: Partial<Locale>) => {
-  return dialog.open<LocaleEditDialogComponent, Partial<Locale>, Locale>(
-    LocaleEditDialogComponent, { data: locale });
-};
-
 @Component({
   templateUrl: './locale-edit-dialog.component.html'
 })
@@ -44,3 +39,8 @@ export class LocaleEditDialogComponent
     );
   }
 }
+
+export const openLocaleEditDialog = (dialog: MatDialog, locale: Partial<Locale>) => {
+  return dialog.open<LocaleEditDialogComponent, Partial<Locale>, Locale>(
+    LocaleEditDialogComponent, { data: locale });
+};

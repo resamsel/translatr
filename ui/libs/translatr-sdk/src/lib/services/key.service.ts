@@ -14,8 +14,8 @@ import { LOGIN_URL } from '@translatr/utils';
 export class KeyService extends AbstractService<Key, KeyCriteria> {
   constructor(
     http: HttpClient,
-    router: Router = undefined,
-    @Inject(LOGIN_URL) @Optional() loginUrl: string = undefined
+    router?: Router,
+    @Inject(LOGIN_URL) @Optional() loginUrl?: string
   ) {
     super(
       http,

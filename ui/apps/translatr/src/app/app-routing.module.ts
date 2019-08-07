@@ -4,7 +4,8 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: 'login',
-    loadChildren: () => import('@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module').then(m => m.LoginPageModule)
+    loadChildren: () => import('@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module')
+      .then(m => m.LoginPageModule)
   },
   {
     path: 'dashboard',

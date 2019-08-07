@@ -27,7 +27,7 @@ export class ProjectMembersComponent implements OnInit {
     openProjectMemberEditDialog(this.dialog, {projectId: project.id})
       .afterClosed()
       .pipe(filter(x => !!x), switchMapTo(this.project$), take(1))
-      .subscribe(project => this.facade.loadProject(project.ownerUsername, project.name));
+      .subscribe(p => this.facade.loadProject(p.ownerUsername, p.name));
   }
 
   onRemove(): void {

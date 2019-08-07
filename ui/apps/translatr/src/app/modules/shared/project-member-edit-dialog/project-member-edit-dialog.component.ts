@@ -4,11 +4,6 @@ import { Member } from '@dev/translatr-model';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { map } from 'rxjs/operators';
 
-export const openProjectMemberEditDialog = (dialog: MatDialog, member: Partial<Member>) => {
-  return dialog.open<ProjectMemberEditDialogComponent, Partial<Member>, Member>(
-    ProjectMemberEditDialogComponent, { data: member });
-};
-
 @Component({
   selector: 'app-project-member-edit-dialog',
   templateUrl: './project-member-edit-dialog.component.html',
@@ -32,3 +27,8 @@ export class ProjectMemberEditDialogComponent {
     }
   }
 }
+
+export const openProjectMemberEditDialog = (dialog: MatDialog, member: Partial<Member>) => {
+  return dialog.open<ProjectMemberEditDialogComponent, Partial<Member>, Member>(
+    ProjectMemberEditDialogComponent, { data: member });
+};

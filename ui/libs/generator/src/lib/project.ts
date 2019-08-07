@@ -1,15 +1,15 @@
-import { Injector } from "@angular/core";
-import { combineLatest, Observable, of } from "rxjs";
-import { State } from "./state";
-import { getRandomUserAccessToken } from "./user";
-import { AccessToken, Key, Locale, Message, PagedList, Project, User, UserRole } from "@dev/translatr-model";
-import { catchError, concatMap, filter, map, mapTo } from "rxjs/operators";
-import * as randomName from "random-name";
-import { HttpErrorResponse } from "@angular/common/http";
-import { errorMessage, MessageService, ProjectService } from "@dev/translatr-sdk";
-import { pickRandomly } from "@translatr/utils";
-import * as _ from "underscore";
-import { createKey, createLocale, keyNames, localeNames } from "@translatr/generator";
+import { Injector } from '@angular/core';
+import { combineLatest, Observable, of } from 'rxjs';
+import { State } from './state';
+import { getRandomUserAccessToken } from './user';
+import { AccessToken, Key, Locale, Message, PagedList, Project, User, UserRole } from '@dev/translatr-model';
+import { catchError, concatMap, filter, map, mapTo } from 'rxjs/operators';
+import * as randomName from 'random-name';
+import { HttpErrorResponse } from '@angular/common/http';
+import { errorMessage, MessageService, ProjectService } from '@dev/translatr-sdk';
+import { pickRandomly } from '@translatr/utils';
+import * as _ from 'underscore';
+import { createKey, createLocale, keyNames, localeNames } from '@translatr/generator';
 
 const createProject = (
   project: Project,

@@ -6,11 +6,6 @@ import { KeyService } from '@dev/translatr-sdk';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
 
-export const openKeyEditDialog = (dialog: MatDialog, key: Partial<Key>) => {
-  return dialog.open<KeyEditDialogComponent, Partial<Key>, Key>(
-    KeyEditDialogComponent, { data: key });
-};
-
 @Component({
   templateUrl: './key-edit-dialog.component.html'
 })
@@ -44,3 +39,8 @@ export class KeyEditDialogComponent
     );
   }
 }
+
+export const openKeyEditDialog = (dialog: MatDialog, key: Partial<Key>) => {
+  return dialog.open<KeyEditDialogComponent, Partial<Key>, Key>(
+    KeyEditDialogComponent, { data: key });
+};

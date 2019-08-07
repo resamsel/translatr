@@ -84,9 +84,9 @@ export class ProjectMemberEditFormComponent
       .subscribe(() => this.changeDetectorRef.markForCheck());
     this.userFormControl.valueChanges
       .pipe(
-        takeUntil(this.destroy$),
         debounceTime(200),
-        map(value => typeof value === 'string' ? value : value.username)
+        map(value => typeof value === 'string' ? value : value.username),
+        takeUntil(this.destroy$)
       )
       .subscribe(value => this.userFilter.emit(value));
   }
