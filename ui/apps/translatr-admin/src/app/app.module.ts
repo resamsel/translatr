@@ -14,7 +14,6 @@ import { NxModule } from '@nrwl/nx';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
-import { storeFreeze } from 'ngrx-store-freeze';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ENDPOINT_URL, LOGIN_URL } from '@translatr/utils';
 import { LoginPageModule } from '@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module';
@@ -34,12 +33,13 @@ import { LoginPageModule } from '@translatr/translatr-components/src/lib/modules
       { app: appReducer },
       {
         initialState: { app: appInitialState },
-        metaReducers: !environment.production ? [storeFreeze] : []
+        metaReducers: [],
+        runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true }
       }
     ),
     EffectsModule.forRoot([AppEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    StoreRouterConnectingModule
+    StoreRouterConnectingModule.forRoot()
   ],
   providers: [
     AppFacade,

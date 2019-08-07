@@ -16,7 +16,6 @@ import { appReducer, initialState as appInitialState } from './+state/app.reduce
 import { AppEffects } from './+state/app.effects';
 import { AppFacade } from './+state/app.facade';
 import { environment } from '../environments/environment';
-import { storeFreeze } from 'ngrx-store-freeze';
 import { ENDPOINT_URL, LOGIN_URL } from '@translatr/utils';
 
 @NgModule({
@@ -38,7 +37,8 @@ import { ENDPOINT_URL, LOGIN_URL } from '@translatr/utils';
       { app: appReducer },
       {
         initialState: { app: appInitialState },
-        metaReducers: !environment.production ? [storeFreeze] : []
+        metaReducers: [],
+        runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true }
       }
     ),
     EffectsModule.forRoot([AppEffects]),
