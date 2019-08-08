@@ -90,6 +90,9 @@
     "@angular/compiler-cli": "^8.2.0",
     "@angular/language-service": "~8.2.0",
     "@ngrx/store-devtools": "8.2.0",
+    "@nrwl/cypress": "8.4.4",
+    "@nrwl/jest": "8.4.4",
+    "@nrwl/workspace": "8.4.4",
     "@schuchard/prettier": "^3.0.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
@@ -97,6 +100,7 @@
     "@types/jquery": "3.3.6",
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.1",
+    "cypress": "^3.4.1",
     "dateformat": "^3.0.3",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -117,10 +121,6 @@
     "tslint": "~5.11.0",
     "tslint-config-prettier": "1.18.0",
     "typescript": "~3.5.3",
-    "xmlhttprequest": "^1.8.0",
-    "@nrwl/workspace": "8.4.4",
-    "@nrwl/jest": "8.4.4",
-    "@nrwl/cypress": "8.4.4",
-    "cypress": "3.4.0"
+    "xmlhttprequest": "^1.8.0"
   }
 }
