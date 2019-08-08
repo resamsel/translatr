@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Key, Locale, Project } from '@dev/translatr-model';
+import { Key, Locale, Message, Project } from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
 import { filter, map, pluck, switchMapTo } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +19,7 @@ export class ProjectInfoComponent implements OnInit {
     pluck('list'),
     map((locales: Locale[]) => {
       return locales
+        .slice()
         .sort(
           (a: Locale, b: Locale) =>
             b.whenUpdated.getTime() - a.whenUpdated.getTime()
@@ -31,14 +32,16 @@ export class ProjectInfoComponent implements OnInit {
     filter(pagedList => !!pagedList && !!pagedList.list),
     pluck('list'),
     map((keys: Key[]) => {
+      console.log('keys', keys);
       return keys
+        .slice()
         .sort(
           (a: Key, b: Key) => b.whenUpdated.getTime() - a.whenUpdated.getTime()
         )
         .slice(0, 3);
     })
   );
-  latestMessages$ = this.project$.pipe(switchMapTo(EMPTY));
+  latestMessages$: Observable<Message[]> = this.project$.pipe(switchMapTo(EMPTY));
 
   constructor(private readonly facade: ProjectFacade) {}
 
