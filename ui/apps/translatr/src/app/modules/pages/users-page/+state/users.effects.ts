@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/nx';
+import { DataPersistence } from '@nrwl/angular';
 import { UsersPartialState } from './users.reducer';
-import { LoadUsers, UsersActionTypes, UsersLoaded, UsersLoadError } from './users.actions';
+import {
+  LoadUsers,
+  UsersActionTypes,
+  UsersLoaded,
+  UsersLoadError
+} from './users.actions';
 import { PagedList, User } from '@dev/translatr-model';
 import { map } from 'rxjs/operators';
 import { UserService } from '@dev/translatr-sdk';

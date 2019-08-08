@@ -232,7 +232,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/builders:jest",
+          "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/translatr-admin/jest.config.js",
             "tsConfig": "apps/translatr-admin/tsconfig.spec.json",
@@ -247,7 +247,7 @@
       "prefix": "",
       "architect": {
         "e2e": {
-          "builder": "@nrwl/builders:cypress",
+          "builder": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/translatr-admin-e2e/cypress.json",
             "tsConfig": "apps/translatr-admin-e2e/tsconfig.e2e.json",
@@ -285,7 +285,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/builders:jest",
+          "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/translatr-sdk/jest.config.js",
             "tsConfig": "libs/translatr-sdk/tsconfig.spec.json"
@@ -323,7 +323,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/builders:jest",
+          "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/translatr-components/jest.config.js",
             "tsConfig": "libs/translatr-components/tsconfig.spec.json"
@@ -353,7 +353,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/builders:jest",
+          "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/translatr-model/jest.config.js",
             "tsConfig": "libs/translatr-model/tsconfig.spec.json",
@@ -380,7 +380,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/builders:jest",
+          "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/generator/jest.config.js",
             "tsConfig": "libs/generator/tsconfig.spec.json",
@@ -407,7 +407,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/builders:jest",
+          "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/utils/jest.config.js",
             "tsConfig": "libs/utils/tsconfig.spec.json"
@@ -433,7 +433,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/builders:jest",
+          "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/node-utils/jest.config.js",
             "tsConfig": "libs/node-utils/tsconfig.spec.json"
@@ -445,6 +445,6 @@
   },
   "defaultProject": "translatr",
   "cli": {
-    "defaultCollection": "@nrwl/schematics"
+    "defaultCollection": "@nrwl/angular"
   }
 }

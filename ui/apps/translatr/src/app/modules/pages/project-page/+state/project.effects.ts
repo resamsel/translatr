@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/nx';
+import { DataPersistence } from '@nrwl/angular';
 import { PROJECT_FEATURE_KEY, ProjectPartialState } from './project.reducer';
 import {
   KeysLoaded,
@@ -20,9 +20,21 @@ import {
   ProjectSaved,
   SaveProject
 } from './project.actions';
-import { ActivityService, KeyService, LocaleService, ProjectService } from '@dev/translatr-sdk';
+import {
+  ActivityService,
+  KeyService,
+  LocaleService,
+  ProjectService
+} from '@dev/translatr-sdk';
 import { map } from 'rxjs/operators';
-import { Activity, Aggregate, Key, Locale, PagedList, Project } from '@dev/translatr-model';
+import {
+  Activity,
+  Aggregate,
+  Key,
+  Locale,
+  PagedList,
+  Project
+} from '@dev/translatr-model';
 import { Observable } from 'rxjs';
 import { Action } from '@ngrx/store';
 

@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { readFirst } from '@nrwl/nx/testing';
+import { readFirst } from '@nrwl/angular/testing';
 
 import { EffectsModule } from '@ngrx/effects';
 import { Store, StoreModule } from '@ngrx/store';
 
-import { NxModule } from '@nrwl/nx';
+import { NxModule } from '@nrwl/angular';
 
 import { UserEffects } from './user.effects';
 import { UserFacade } from './user.facade';

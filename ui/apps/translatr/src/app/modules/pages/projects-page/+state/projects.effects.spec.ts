@@ -6,9 +6,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { provideMockActions } from '@ngrx/effects/testing';
 
-import { NxModule } from '@nrwl/nx';
-import { DataPersistence } from '@nrwl/nx';
-import { hot } from '@nrwl/nx/testing';
+import { NxModule } from '@nrwl/angular';
+import { DataPersistence } from '@nrwl/angular';
+import { hot } from '@nrwl/angular/testing';
 
 import { ProjectsEffects } from './projects.effects';
 import { LoadProjects, ProjectsLoaded } from './projects.actions';

@@ -7,10 +7,13 @@ import { SidenavModule } from './modules/nav/sidenav/sidenav.module';
 import { DashboardPageModule } from './modules/pages/dashboard-page/dashboard-page.module';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { appReducer, initialState as appInitialState } from './+state/app.reducer';
+import {
+  appReducer,
+  initialState as appInitialState
+} from './+state/app.reducer';
 import { AppEffects } from './+state/app.effects';
 import { AppFacade } from './+state/app.facade';
-import { NxModule } from '@nrwl/nx';
+import { NxModule } from '@nrwl/angular';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
@@ -34,7 +37,10 @@ import { LoginPageModule } from '@translatr/translatr-components/src/lib/modules
       {
         initialState: { app: appInitialState },
         metaReducers: [],
-        runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true }
+        runtimeChecks: {
+          strictStateImmutability: true,
+          strictActionImmutability: true
+        }
       }
     ),
     EffectsModule.forRoot([AppEffects]),
@@ -48,5 +54,4 @@ import { LoginPageModule } from '@translatr/translatr-components/src/lib/modules
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

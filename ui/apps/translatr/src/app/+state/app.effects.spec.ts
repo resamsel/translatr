@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { Observable } from 'rxjs';
 
@@ -6,12 +6,11 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { provideMockActions } from '@ngrx/effects/testing';
 
-import { NxModule } from '@nrwl/nx';
-import { DataPersistence } from '@nrwl/nx';
-import { hot } from '@nrwl/nx/testing';
+import { DataPersistence, NxModule } from '@nrwl/angular';
+import { hot } from '@nrwl/angular/testing';
 
 import { AppEffects } from './app.effects';
-import { LoadMe, AppLoaded } from './app.actions';
+import { AppLoaded, LoadMe } from './app.actions';
 
 describe('AppEffects', () => {
   let actions: Observable<any>;

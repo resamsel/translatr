@@ -6,8 +6,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { provideMockActions } from '@ngrx/effects/testing';
 
-import { DataPersistence, NxModule } from '@nrwl/nx';
-import { hot } from '@nrwl/nx/testing';
+import { DataPersistence, NxModule } from '@nrwl/angular';
+import { hot } from '@nrwl/angular/testing';
 
 import { UserEffects } from './user.effects';
 import { LoadUser, UserLoaded } from './user.actions';

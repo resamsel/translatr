@@ -7,12 +7,15 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { SidenavModule } from './modules/nav/sidenav/sidenav.module';
-import { NxModule } from '@nrwl/nx';
+import { NxModule } from '@nrwl/angular';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { TranslatrSdkModule } from '@dev/translatr-sdk';
-import { appReducer, initialState as appInitialState } from './+state/app.reducer';
+import {
+  appReducer,
+  initialState as appInitialState
+} from './+state/app.reducer';
 import { AppEffects } from './+state/app.effects';
 import { AppFacade } from './+state/app.facade';
 import { environment } from '../environments/environment';
@@ -38,7 +41,10 @@ import { ENDPOINT_URL, LOGIN_URL } from '@translatr/utils';
       {
         initialState: { app: appInitialState },
         metaReducers: [],
-        runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true }
+        runtimeChecks: {
+          strictStateImmutability: true,
+          strictActionImmutability: true
+        }
       }
     ),
     EffectsModule.forRoot([AppEffects]),

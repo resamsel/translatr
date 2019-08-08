@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/nx';
+import { DataPersistence } from '@nrwl/angular';
 import { AppPartialState } from './app.reducer';
 import {
   AccessTokenDeleted,
@@ -50,7 +50,11 @@ import {
 import { AccessToken, PagedList, Project, User } from '@dev/translatr-model';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { AccessTokenService, ProjectService, UserService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 
 @Injectable()
 export class AppEffects {

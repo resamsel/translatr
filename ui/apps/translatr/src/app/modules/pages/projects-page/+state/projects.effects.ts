@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/nx';
+import { DataPersistence } from '@nrwl/angular';
 import { ProjectsPartialState } from './projects.reducer';
-import { LoadProjects, ProjectsActionTypes, ProjectsLoaded, ProjectsLoadError } from './projects.actions';
+import {
+  LoadProjects,
+  ProjectsActionTypes,
+  ProjectsLoaded,
+  ProjectsLoadError
+} from './projects.actions';
 import { ProjectService } from '@dev/translatr-sdk';
 import { map } from 'rxjs/operators';
 import { PagedList, Project } from '@dev/translatr-model';

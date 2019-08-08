@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/nx';
+import { DataPersistence } from '@nrwl/angular';
 import { EDITOR_FEATURE_KEY, EditorPartialState } from './editor.reducer';
 import {
   EditorActionTypes,

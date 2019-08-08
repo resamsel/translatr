@@ -1,8 +1,6 @@
 {
-  "extends": [
-    "rxjs-tslint-rules"
-  ],
-  "rulesDirectory": ["codelyzer", "node_modules/@nrwl/schematics/src/tslint"],
+  "extends": ["rxjs-tslint-rules"],
+  "rulesDirectory": ["codelyzer", "node_modules/@nrwl/workspace/src/tslint"],
   "rules": {
     "arrow-return-shorthand": true,
     "callable-types": true,
