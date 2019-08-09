@@ -1,31 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/angular';
-
-import { UserPartialState } from './user.reducer';
-import {
-  LoadUser,
-  UserActionTypes,
-  UserLoaded,
-  UserLoadError
-} from './user.actions';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { LoadUser, UserActionTypes, UserLoaded, UserLoadError } from './user.actions';
+import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable()
 export class UserEffects {
-  @Effect() loadUser$ = this.dataPersistence.fetch(UserActionTypes.LoadUser, {
-    run: (action: LoadUser, state: UserPartialState) => {
-      // Your custom REST 'load' logic goes here. For now just return an empty list...
-      return new UserLoaded([]);
-    },
+  @Effect() loadUser$ = this.actions$.pipe(
+    ofType<LoadUser>(UserActionTypes.LoadUser),
+    map((action: LoadUser) => new UserLoaded([]),
+      catchError(error => of(new UserLoadError(error)))
+    )
+  );
 
-    onError: (action: LoadUser, error) => {
-      console.error('Error', error);
-      return new UserLoadError(error);
-    }
-  });
-
-  constructor(
-    private actions$: Actions,
-    private dataPersistence: DataPersistence<UserPartialState>
-  ) {}
+  constructor(private actions$: Actions) {
+  }
 }

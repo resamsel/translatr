@@ -1,41 +1,27 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/angular';
-
-import { DashboardPartialState } from './dashboard.reducer';
-import {
-  ActivitiesLoaded,
-  ActivitiesLoadError,
-  DashboardActionTypes,
-  LoadActivities
-} from './dashboard.actions';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { ActivitiesLoaded, ActivitiesLoadError, DashboardActionTypes, LoadActivities } from './dashboard.actions';
 import { ActivityService } from '@dev/translatr-sdk';
-import { map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { Activity, PagedList } from '@dev/translatr-model';
+import { of } from 'rxjs';
 
 @Injectable()
 export class DashboardEffects {
-  @Effect() loadActivities$ = this.dataPersistence.fetch(
-    DashboardActionTypes.LoadActivities,
-    {
-      run: (action: LoadActivities, state: DashboardPartialState) => {
-        return this.activityService
-          .find(action.payload)
-          .pipe(
-            map((result: PagedList<Activity>) => new ActivitiesLoaded(result))
-          );
-      },
-
-      onError: (action: LoadActivities, error) => {
-        console.error('Error', error);
-        return new ActivitiesLoadError(error);
-      }
-    }
+  @Effect() loadActivities$ = this.actions$.pipe(
+    ofType(DashboardActionTypes.LoadActivities),
+    switchMap((action: LoadActivities) =>
+      this.activityService
+        .find(action.payload)
+        .pipe(
+          map((result: PagedList<Activity>) => new ActivitiesLoaded(result)),
+          catchError(error => of(new ActivitiesLoadError(error)))
+        ))
   );
 
   constructor(
     private actions$: Actions,
-    private dataPersistence: DataPersistence<DashboardPartialState>,
     private readonly activityService: ActivityService
-  ) {}
+  ) {
+  }
 }

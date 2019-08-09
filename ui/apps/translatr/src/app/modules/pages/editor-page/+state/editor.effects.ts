@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/angular';
-import { EDITOR_FEATURE_KEY, EditorPartialState } from './editor.reducer';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import {
   EditorActionTypes,
   KeyLoaded,
@@ -28,228 +26,173 @@ import {
   SelectLocale
 } from './editor.actions';
 import { KeyService, LocaleService, MessageService } from '@dev/translatr-sdk';
-import { Key, Locale, Message, PagedList } from '@dev/translatr-model';
-import { filter, map, take } from 'rxjs/operators';
-import { combineLatest, Observable } from 'rxjs';
-import { Action } from '@ngrx/store';
+import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
+import { catchError, filter, map, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
+import { combineLatest, Observable, of, throwError } from 'rxjs';
+import { select, Store } from '@ngrx/store';
 import { EditorFacade } from './editor.facade';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AppPartialState } from '../../../../+state/app.reducer';
+import { editorQuery } from './editor.selectors';
 
 @Injectable()
 export class EditorEffects {
-  @Effect() loadLocale$ = this.dataPersistence.fetch(
-    EditorActionTypes.LoadLocale,
-    {
-      run: (action: LoadLocale) => {
-        // Your custom REST 'load' logic goes here. For now just return an empty list...
-        return this.localeService
-          .byOwnerAndProjectNameAndName(action.payload)
-          .pipe(map((locale: Locale) => new LocaleLoaded({ locale })));
-      },
-
-      onError: (action: LoadLocale, error) => {
-        console.error('Error', error);
-        return new LocaleLoadError(error);
-      }
-    }
+  @Effect() loadLocale$ = this.actions$.pipe(
+    ofType(EditorActionTypes.LoadLocale),
+    switchMap((action: LoadLocale) =>
+      this.localeService
+        .byOwnerAndProjectNameAndName(action.payload)
+        .pipe(
+          map((locale: Locale) => new LocaleLoaded({ locale })),
+          catchError(error => of(new LocaleLoadError(error))))
+    )
   );
 
-  @Effect() loadLocaleSearch$ = this.dataPersistence.fetch(
-    EditorActionTypes.LoadLocaleSearch,
-    {
-      run: (
-        action: LoadLocaleSearch,
-        state?: EditorPartialState
-      ): Observable<Action> | Action | void => {
-        const key = state[EDITOR_FEATURE_KEY].key;
-        if (key === undefined) {
-          return;
-        }
-
-        return new LoadLocalesBy(action.payload);
-      }
-    }
+  @Effect() loadLocaleSearch$ = this.actions$.pipe(
+    ofType<LoadLocaleSearch>(EditorActionTypes.LoadLocaleSearch),
+    withLatestFrom(this.store.pipe(select(editorQuery.getKey))),
+    filter(([action, key]) => key !== undefined),
+    map(([action, key]: [LoadLocaleSearch, Key]) =>
+      new LoadLocalesBy(action.payload))
   );
 
-  @Effect() loadKeys$ = this.dataPersistence.fetch(EditorActionTypes.LoadKeys, {
-    run: (action: LoadKeys, state?: EditorPartialState) => {
-      return this.keyService
+  @Effect() loadKeys$ = this.actions$.pipe(
+    ofType<LoadKeys>(EditorActionTypes.LoadKeys),
+    withLatestFrom(this.store.pipe(select(editorQuery.getSearch))),
+    switchMap(([action, search]: [LoadKeys, RequestCriteria]) =>
+      this.keyService
         .find({
-          ...state[EDITOR_FEATURE_KEY].search,
+          ...search,
           ...action.payload
         })
-        .pipe(map((payload: PagedList<Key>) => new KeysLoaded(payload)));
-    },
+        .pipe(
+          map((payload: PagedList<Key>) => new KeysLoaded(payload)),
+          catchError(error => of(new KeysLoadError(error)))
+        )
+    )
+  );
 
-    onError: (action: LoadKeys, error: any): Observable<any> | any => {
-      console.error('Error', error);
-      return new KeysLoadError(error);
-    }
-  });
-
-  @Effect() loadKey$ = this.dataPersistence.fetch(EditorActionTypes.LoadKey, {
-    run: (action: LoadKey) => {
-      // Your custom REST 'load' logic goes here. For now just return an empty list...
-      return this.keyService
+  @Effect() loadKey$ = this.actions$.pipe(
+    ofType<LoadKey>(EditorActionTypes.LoadKey),
+    switchMap((action: LoadKey) =>
+      this.keyService
         .byOwnerAndProjectNameAndName(action.payload)
-        .pipe(map((key: Key) => new KeyLoaded(key)));
-    },
-
-    onError: (action: LoadKey, error) => {
-      console.error('Error', error);
-      return new KeyLoadError(error);
-    }
-  });
-
-  @Effect() loadKeySearch$ = this.dataPersistence.fetch(
-    EditorActionTypes.LoadKeySearch,
-    {
-      run: (
-        action: LoadKeySearch,
-        state?: EditorPartialState
-      ): Observable<Action> | Action | void => {
-        const locale = state[EDITOR_FEATURE_KEY].locale;
-        if (locale === undefined) {
-          return;
-        }
-
-        return new LoadKeysBy(action.payload);
-      }
-    }
+        .pipe(
+          map((key: Key) => new KeyLoaded(key)),
+          catchError(error => of(new KeyLoadError(error)))
+        )
+    )
   );
 
-  @Effect() loadKeysAfterLocaleLoaded$ = this.dataPersistence.fetch(
-    EditorActionTypes.LocaleLoaded,
-    {
-      run: (action: LocaleLoaded) =>
-        new LoadKeys({
-          ...action.payload.params,
-          projectId: action.payload.locale.projectId
-        })
-    }
+  @Effect() loadKeySearch$ = this.actions$.pipe(
+    ofType<LoadKeySearch>(EditorActionTypes.LoadKeySearch),
+    withLatestFrom(this.store.pipe(select(editorQuery.getLocale))),
+    filter(([action, locale]) => locale !== undefined),
+    map(([action, locale]) => new LoadKeysBy(action.payload))
   );
 
-  @Effect() loadLocalesAfterLocaleLoaded$ = this.dataPersistence.fetch(
-    EditorActionTypes.LocaleLoaded,
-    {
-      run: (action: LocaleLoaded) =>
-        new LoadLocales({
-          ...action.payload.params,
-          projectId: action.payload.locale.projectId
-        })
-    }
+  @Effect() loadKeysAfterLocaleLoaded$ = this.actions$.pipe(
+    ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
+    map((action: LocaleLoaded) =>
+      new LoadKeys({
+        ...action.payload.params,
+        projectId: action.payload.locale.projectId
+      })
+    )
   );
 
-  @Effect() loadLocalesAfterKeyLoaded$ = this.dataPersistence.fetch(
-    EditorActionTypes.KeyLoaded,
-    {
-      run: (action: KeyLoaded) =>
-        new LoadLocales({
-          projectId: action.payload.projectId,
-          fetch: 'messages'
-        })
-    }
+  @Effect() loadLocalesAfterLocaleLoaded$ = this.actions$.pipe(
+    ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
+    map((action: LocaleLoaded) =>
+      new LoadLocales({
+        ...action.payload.params,
+        projectId: action.payload.locale.projectId
+      })
+    )
   );
 
-  @Effect() loadKeysAfterKeyLoaded$ = this.dataPersistence.fetch(
-    EditorActionTypes.KeyLoaded,
-    {
-      run: (action: KeyLoaded) =>
-        new LoadKeys({
-          projectId: action.payload.projectId
-        })
-    }
+  @Effect() loadLocalesAfterKeyLoaded$ = this.actions$.pipe(
+    ofType<KeyLoaded>(EditorActionTypes.KeyLoaded),
+    map((action: KeyLoaded) =>
+      new LoadLocales({
+        projectId: action.payload.projectId,
+        fetch: 'messages'
+      })
+    )
   );
 
-  @Effect() loadLocales$ = this.dataPersistence.fetch(
-    EditorActionTypes.LoadLocales,
-    {
-      run: (action: LoadLocales) => {
-        return this.localeService
-          .find(action.payload)
-          .pipe(
-            map((payload: PagedList<Locale>) => new LocalesLoaded(payload))
-          );
-      },
-
-      onError: (action: LoadLocales, error: any): Observable<any> | any => {
-        console.error('Error', error);
-        return new LocalesLoadError(error);
-      }
-    }
+  @Effect() loadKeysAfterKeyLoaded$ = this.actions$.pipe(
+    ofType<KeyLoaded>(EditorActionTypes.KeyLoaded),
+    map((action: KeyLoaded) =>
+      new LoadKeys({
+        projectId: action.payload.projectId
+      })
+    )
   );
 
-  @Effect() selectLocaleAfterKeyChanged$ = this.dataPersistence.fetch(
-    EditorActionTypes.KeyLoaded,
-    {
-      run: (
-        action: KeyLoaded,
-        state?: EditorPartialState
-      ): Observable<Action> | Action | void => {
+  @Effect() loadLocales$ = this.actions$.pipe(
+    ofType<LoadLocales>(EditorActionTypes.LoadLocales),
+    switchMap((action: LoadLocales) =>
+      this.localeService
+        .find(action.payload)
+        .pipe(
+          map((payload: PagedList<Locale>) => new LocalesLoaded(payload)),
+          catchError(error => of(new LocalesLoadError(error)))
+        )
+    )
+  );
+
+  @Effect() selectLocaleAfterKeyChanged$ = this.actions$.pipe(
+    ofType<KeyLoaded>(EditorActionTypes.KeyLoaded),
+    withLatestFrom(this.store.pipe(select(editorQuery.getSelectedLocale))),
+    map(([action, selectedLocale]: [KeyLoaded, string]) => {
+      console.log(
+        `Dispatching SelectKey(${selectedLocale}): selectLocaleAfterKeyChanged$`
+      );
+      return new SelectLocale({
+        locale: selectedLocale
+      });
+    })
+  );
+
+  @Effect() selectKeyAfterLocaleChanged$ = this.actions$.pipe(
+    ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
+    withLatestFrom(this.store.pipe(select(editorQuery.getSelectedKey))),
+    map(([action, selectedKey]: [LocaleLoaded, string]) => {
+      console.log(
+        `Dispatching SelectKey(${
+          selectedKey
+        }): selectKeyAfterLocaleChanged$`
+      );
+      return new SelectKey({ key: selectedKey });
+    })
+  );
+
+  @Effect() selectLocaleAfterLocalesLoaded$ = this.actions$.pipe(
+    ofType<LocalesLoaded>(EditorActionTypes.LocalesLoaded),
+    withLatestFrom(this.store.pipe(select(editorQuery.getSelectedLocale))),
+    map(([action, selectedLocale]: [LocalesLoaded, string]) =>
+      new SelectLocale({
+        locale: selectedLocale
+      })
+    )
+  );
+
+  @Effect() selectKeyAfterKeysLoaded$ = this.actions$.pipe(
+    ofType<KeysLoaded>(EditorActionTypes.KeysLoaded),
+    withLatestFrom(this.store.pipe(select(editorQuery.getSelectedKey))),
+    map(([action, selectedKey]: [KeysLoaded, string]) => {
         console.log(
-          `Dispatching SelectKey(${
-            state[EDITOR_FEATURE_KEY].selectedLocale
-          }): selectLocaleAfterKeyChanged$`
+          `Dispatching SelectKey(${selectedKey}): selectKeyAfterKeysLoaded$`
         );
-        return new SelectLocale({
-          locale: state[EDITOR_FEATURE_KEY].selectedLocale
-        });
+        return new SelectKey({ key: selectedKey });
       }
-    }
+    )
   );
 
-  @Effect() selectKeyAfterLocaleChanged$ = this.dataPersistence.fetch(
-    EditorActionTypes.LocaleLoaded,
-    {
-      run: (
-        action: LocaleLoaded,
-        state?: EditorPartialState
-      ): Observable<Action> | Action | void => {
-        console.log(
-          `Dispatching SelectKey(${
-            state[EDITOR_FEATURE_KEY].selectedKey
-          }): selectKeyAfterLocaleChanged$`
-        );
-        return new SelectKey({ key: state[EDITOR_FEATURE_KEY].selectedKey });
-      }
-    }
-  );
-
-  @Effect() selectLocaleAfterLocalesLoaded$ = this.dataPersistence.fetch(
-    EditorActionTypes.LocalesLoaded,
-    {
-      run: (
-        action: LocalesLoaded,
-        state: EditorPartialState
-      ): Observable<Action> | Action | void => {
-        return new SelectLocale({
-          locale: state[EDITOR_FEATURE_KEY].selectedLocale
-        });
-      }
-    }
-  );
-
-  @Effect() selectKeyAfterKeysLoaded$ = this.dataPersistence.fetch(
-    EditorActionTypes.KeysLoaded,
-    {
-      run: (
-        action: KeysLoaded,
-        state?: EditorPartialState
-      ): Observable<Action> | Action | void => {
-        console.log(
-          `Dispatching SelectKey(${
-            state[EDITOR_FEATURE_KEY].selectedKey
-          }): selectKeyAfterKeysLoaded$`
-        );
-        return new SelectKey({ key: state[EDITOR_FEATURE_KEY].selectedKey });
-      }
-    }
-  );
-
-  @Effect() selectMessageByKey$ = this.dataPersistence.fetch(
-    EditorActionTypes.SelectKey,
-    {
-      run: (action: SelectKey): Observable<Action> | Action | void => {
+  @Effect() selectMessageByKey$ = this.actions$.pipe(
+    ofType<SelectKey>(EditorActionTypes.SelectKey),
+    map((action: SelectKey) => {
         if (action.payload.key === undefined) {
           console.log('Key empty in action', action);
           return new MessageSelected({});
@@ -289,21 +232,16 @@ export class EditorEffects {
               };
             }
             return new MessageSelected({ message });
-          })
+          }),
+          catchError(error => of(new MessageSelectError(error)))
         );
-      },
-
-      onError: (action: SelectKey, error: any): Observable<any> | any => {
-        console.error('Error while selecting message', error);
-        return new MessageSelectError(error);
       }
-    }
+    )
   );
 
-  @Effect() selectMessageByLocale$ = this.dataPersistence.fetch(
-    EditorActionTypes.SelectLocale,
-    {
-      run: (action: SelectLocale): Observable<Action> | Action | void => {
+  @Effect() selectMessageByLocale$ = this.actions$.pipe(
+    ofType<SelectLocale>(EditorActionTypes.SelectLocale),
+    map((action: SelectLocale) => {
         if (action.payload.locale === undefined) {
           console.log('Locale empty in action', action);
           return new MessageSelected({});
@@ -343,57 +281,42 @@ export class EditorEffects {
               };
             }
             return new MessageSelected({ message });
-          })
+          }),
+          catchError(error => of(new MessageSelectError(error)))
         );
-      },
-
-      onError: (action: SelectLocale, error: any): Observable<any> | any => {
-        console.error('Error while selecting message', error);
-        return new MessageSelectError(error);
       }
-    }
+    )
   );
 
-  @Effect() loadLocalesBy = this.dataPersistence.fetch(
-    EditorActionTypes.LoadLocalesBy,
-    {
-      run: (action: LoadLocalesBy, state?: EditorPartialState) => {
-        return new LoadLocales({
-          ...{ limit: '25', order: 'name', fetch: 'messages' },
-          ...action.payload,
-          projectId: state[EDITOR_FEATURE_KEY].key.projectId
-        });
-      },
-
-      onError: (action: LoadLocalesBy, error: any): Observable<any> | any => {
-        console.error('Error while loading locales by', action, error);
-        return new LocalesLoadError(error);
-      }
-    }
+  @Effect() loadLocalesBy = this.actions$.pipe(
+    ofType<LoadLocalesBy>(EditorActionTypes.LoadLocalesBy),
+    withLatestFrom(this.store.pipe(select(editorQuery.getKey))),
+    map(([action, key]: [LoadLocalesBy, Key]) =>
+      new LoadLocales({
+        ...{ limit: '25', order: 'name', fetch: 'messages' },
+        ...action.payload,
+        projectId: key.projectId
+      })
+    ),
+    catchError(error => of(new LocalesLoadError(error)))
   );
 
-  @Effect() loadKeysBy = this.dataPersistence.fetch(
-    EditorActionTypes.LoadKeysBy,
-    {
-      run: (action: LoadKeysBy, state?: EditorPartialState) => {
-        return new LoadKeys({
-          ...{ limit: '25', order: 'name', fetch: 'messages' },
-          ...action.payload,
-          projectId: state[EDITOR_FEATURE_KEY].locale.projectId
-        });
-      },
-
-      onError: (action: LoadKeysBy, error: any): Observable<any> | any => {
-        console.error('Error while loading keys by', action, error);
-        return new KeysLoadError(error);
-      }
-    }
+  @Effect() loadKeysBy = this.actions$.pipe(
+    ofType<LoadKeysBy>(EditorActionTypes.LoadKeysBy),
+    withLatestFrom(this.store.pipe(select(editorQuery.getLocale))),
+    map(([action, locale]: [LoadKeysBy, Locale]) =>
+      new LoadKeys({
+        ...{ limit: '25', order: 'name', fetch: 'messages' },
+        ...action.payload,
+        projectId: locale.projectId
+      })
+    ),
+    catchError(error => of(new KeysLoadError(error)))
   );
 
-  @Effect() saveMessage$ = this.dataPersistence.fetch(
-    EditorActionTypes.SaveMessage,
-    {
-      run: (action: SaveMessage) => {
+  @Effect() saveMessage$ = this.actions$.pipe(
+    ofType<SaveMessage>(EditorActionTypes.SaveMessage),
+    switchMap((action: SaveMessage) => {
         let observable: Observable<Message>;
         if (action.payload.id === undefined) {
           observable = this.messageService.create(action.payload);
@@ -402,16 +325,20 @@ export class EditorEffects {
         }
 
         return observable.pipe(
-          map((message: Message) => new MessageSaved(message))
+          map((message: Message) => new MessageSaved(message)),
+          catchError(error => {
+            console.error('Error while saving message', error);
+            return throwError(error);
+          })
         );
       }
-    }
+    )
   );
 
-  @Effect() messageSaved$ = this.dataPersistence.fetch(
-    EditorActionTypes.MessageSaved,
-    {
-      run: (action: MessageSaved) => {
+  @Effect({ dispatch: false })
+  messageSaved$ = this.actions$.pipe(
+    ofType<MessageSaved>(EditorActionTypes.MessageSaved),
+    tap((action: MessageSaved) => {
         this.snackBar.open(
           `Translation has been saved for key ${
             action.payload.keyName
@@ -422,16 +349,17 @@ export class EditorEffects {
           }
         );
       }
-    }
+    )
   );
 
   constructor(
-    private actions$: Actions,
-    private dataPersistence: DataPersistence<EditorPartialState>,
+    private readonly store: Store<AppPartialState>,
+    private readonly actions$: Actions,
     private readonly facade: EditorFacade,
     private readonly localeService: LocaleService,
     private readonly keyService: KeyService,
     private readonly messageService: MessageService,
     private readonly snackBar: MatSnackBar
-  ) {}
+  ) {
+  }
 }

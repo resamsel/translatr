@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { DataPersistence } from '@nrwl/angular';
-import { AppPartialState } from './app.reducer';
 import {
   AccessTokenDeleted,
   AccessTokenDeleteError,
@@ -50,31 +48,20 @@ import {
 import { AccessToken, PagedList, Project, User } from '@dev/translatr-model';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import {
-  AccessTokenService,
-  ProjectService,
-  UserService
-} from '@dev/translatr-sdk';
+import { AccessTokenService, ProjectService, UserService } from '@dev/translatr-sdk';
 
 @Injectable()
 export class AppEffects {
   // Users
 
-  @Effect() loadLoggedInUser$ = this.dataPersistence.fetch(
-    AppActionTypes.LoadLoggedInUser,
-    {
-      run: (action: LoadLoggedInUser, state: AppPartialState) => {
-        // Your custom REST 'load' logic goes here. For now just return an empty list...
-        return this.userService
-          .me()
-          .pipe(map(user => new LoggedInUserLoaded(user)));
-      },
-
-      onError: (action: LoadLoggedInUser, error) => {
-        console.error('Error', error);
-        return new LoggedInUserLoadError(error);
-      }
-    }
+  @Effect() loadLoggedInUser$ = this.actions$.pipe(
+    ofType(AppActionTypes.LoadLoggedInUser),
+    switchMap((action: LoadLoggedInUser) =>
+      this.userService.me().pipe(
+        map(user => new LoggedInUserLoaded(user)),
+        catchError(error => of(new LoggedInUserLoadError(error)))
+      )
+    )
   );
 
   @Effect() loadUsers$ = this.actions$.pipe(
@@ -223,9 +210,9 @@ export class AppEffects {
 
   constructor(
     private actions$: Actions,
-    private dataPersistence: DataPersistence<AppPartialState>,
     private readonly userService: UserService,
     private readonly projectService: ProjectService,
     private readonly accessTokenService: AccessTokenService
-  ) {}
+  ) {
+  }
 }
