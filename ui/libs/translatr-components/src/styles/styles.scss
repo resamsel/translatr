@@ -94,6 +94,19 @@ a .mat-card:not([class*='mat-elevation-z']) {
     height: 32px;
     color: #fff;
     text-align: center;
+
+    &.locale {
+      background-color: #2196F3;
+    }
+
+    &.key {
+      background-color: #8bc34a;
+    }
+
+  }
+
+  &[dense] .mat-list-icon.mat-icon {
+    line-height: 20px;
   }
 }
 

@@ -13,7 +13,8 @@
       </p>
       <mat-chip-list>
         <mat-chip i18n="@@members.summary">{{ project?.members?.length }} members</mat-chip>
-        <mat-chip *ngIf="(locales$ | async)?.list as locales" i18n="@@locales.summary">{{ locales.length }} languages</mat-chip>
+        <mat-chip *ngIf="(locales$ | async)?.list as locales" i18n="@@locales.summary">{{ locales.length }}languages
+        </mat-chip>
         <mat-chip *ngIf="(keys$ | async)?.list as keys" i18n="@@keys.summary">{{ keys.length }} keys</mat-chip>
         <a *ngFor="let member of project?.members"
            mat-chip
@@ -33,38 +34,41 @@
   <mat-card class="small locales mat-elevation-z0">
     <mat-card-title i18n="@@locales.latest">Latest Languages</mat-card-title>
     <mat-card-content>
-      <div *ngIf="latestLocales$ | async; else localesEmpty">
-        <ng-container
-          *ngFor="let locale of latestLocales$ | async; let i = index"
-        >
-          <span *ngIf="i > 0">, </span>
-          <a class="link" [routerLink]="['locales', locale.name]"
-          >{{ locale.name }} — {{ locale.displayName }}</a
-          >
-        </ng-container>
-      </div>
-      <ng-template #localesEmpty>No languages yet.</ng-template>
+      <mat-list *ngIf="latestLocales$ | async; else localesEmpty" dense>
+        <a *ngFor="let locale of latestLocales$ | async"
+           mat-list-item
+           [routerLink]="['locales', locale.name]">
+          <mat-icon matListIcon class="locale circle">language</mat-icon>
+          <h3 matLine>{{ locale.name }} — {{ locale.displayName }}</h3>
+          <p matLine title="{{locale.whenCreated | date:'full'}}">{{locale.whenCreated | amTimeAgo}}</p>
+        </a>
+      </mat-list>
+      <ng-template #localesEmpty>
+        <div class="empty">No languages yet.</div>
+      </ng-template>
     </mat-card-content>
   </mat-card>
 
   <mat-card class="small keys mat-elevation-z0">
     <mat-card-title i18n="@@keys.latest">Latest Keys</mat-card-title>
     <mat-card-content>
-      <div *ngIf="latestKeys$ | async; else keysEmpty">
-        <ng-container *ngFor="let key of latestKeys$ | async; let i = index">
-          <span *ngIf="i > 0">, </span>
-          <a class="link" [routerLink]="['keys', key.name]">{{ key.name }}</a>
-        </ng-container>
-      </div>
-      <ng-template #keysEmpty>No keys yet.</ng-template>
+      <mat-list *ngIf="latestKeys$ | async; else keysEmpty" dense>
+        <a *ngFor="let key of latestKeys$ | async"
+           mat-list-item
+           [routerLink]="['keys', key.name]">
+          <mat-icon matListIcon class="key circle">vpn_key</mat-icon>
+          <h3 matLine>{{ key.name }}</h3>
+          <p matLine title="{{key.whenCreated | date:'full'}}">{{key.whenCreated | amTimeAgo}}</p>
+        </a>
+      </mat-list>
+      <ng-template #keysEmpty>
+        <div class="empty">No keys yet.</div>
+      </ng-template>
     </mat-card-content>
   </mat-card>
 
   <mat-card class="small messages mat-elevation-z0">
-    <mat-card-title i18n="@@translations.latest"
-    >Latest Translations
-    </mat-card-title
-    >
+    <mat-card-title i18n="@@translations.latest">Latest Translations</mat-card-title>
     <mat-card-content>
       <div *ngIf="latestMessages$ | async; else messagesEmpty">
         <ng-container
@@ -76,7 +80,9 @@
             }}</a>
         </ng-container>
       </div>
-      <ng-template #messagesEmpty>No translations yet.</ng-template>
+      <ng-template #messagesEmpty>
+        <h3 class="empty">No translations yet.</h3>
+      </ng-template>
     </mat-card-content>
   </mat-card>
 
