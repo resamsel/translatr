@@ -13,6 +13,10 @@
       width: 65%;
       max-width: 480px;
     }
+
+    > * {
+      margin: 0 4px;
+    }
   }
 
   .flex {
@@ -21,11 +25,7 @@
       width: 25%;
     }
 
-    > .small:not(:last-child) {
-      margin-right: 8px;
-    }
-
-    > .tile {
+    > .metric {
       flex: 1 auto;
       width: 45%;
     }
@@ -59,14 +59,14 @@
     &:not(.dense) > :not(:last-child) {
       margin-bottom: 16px;
     }
+
+    > * {
+      margin: 0 8px;
+    }
   }
 
   .flex {
-    > .small:not(:last-child) {
-      margin-right: 16px;
-    }
-
-    > .tile {
+    > .metric {
       width: 20%;
     }
   }

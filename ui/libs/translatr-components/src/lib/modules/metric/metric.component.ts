@@ -2,14 +2,15 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'tile',
-  templateUrl: './tile.component.html',
-  styleUrls: ['./tile.component.scss'],
+  selector: 'metric',
+  templateUrl: './metric.component.html',
+  styleUrls: ['./metric.component.scss'],
   host: {
-    class: 'tile'
+    class: 'metric'
   }
 })
-export class TileComponent {
+export class MetricComponent {
+  @Input() routerLink: any[] | string;
   @Input() value: any;
   @Input() name: string;
   @Input() icon: string;

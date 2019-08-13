@@ -1,0 +1,14 @@
+<a *ngIf="routerLink; else metric" [routerLink]="routerLink">
+  <ng-container [ngTemplateOutlet]="metric"></ng-container>
+</a>
+<ng-template #metric>
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>{{ icon }}</mat-icon>
+      </div>
+      <mat-card-title>{{ value }}</mat-card-title>
+      <mat-card-subtitle>{{ name }}</mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+</ng-template>

@@ -6,4 +6,4 @@ export * from './pages';
 export * from './pipes';
 export * from './project';
 export * from './user';
-export * from './tile';
+export * from './metric';
