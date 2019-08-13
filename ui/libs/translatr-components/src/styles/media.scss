@@ -24,6 +24,11 @@
     > .small:not(:last-child) {
       margin-right: 8px;
     }
+
+    > .tile {
+      flex: 1 auto;
+      width: 45%;
+    }
   }
 
   .mat-sidenav.mat-drawer:not(.mat-drawer-side) {
@@ -59,6 +64,10 @@
   .flex {
     > .small:not(:last-child) {
       margin-right: 16px;
+    }
+
+    > .tile {
+      width: 20%;
     }
   }
 }

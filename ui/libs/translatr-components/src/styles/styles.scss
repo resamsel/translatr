@@ -43,9 +43,8 @@ a.link:hover {
   text-decoration: underline;
 }
 
-a .mat-card:not([class*='mat-elevation-z']) {
+a .mat-card {
   @include mat-elevation-transition;
-  @include mat-elevation(2);
 
   &:hover {
     @include mat-elevation(4);

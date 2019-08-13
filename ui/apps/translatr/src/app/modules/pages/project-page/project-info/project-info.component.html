@@ -1,26 +1,49 @@
 <div class="container flex" *ngIf="project$ | async as project">
+  <tile-link
+    [link]="['/', project.ownerUsername]"
+    name="Owner"
+    [value]="project.ownerName"
+    icon="account_circle"
+    class="owner"></tile-link>
+
+  <tile-link
+    link="locales"
+    name="Languages"
+    [value]="(locales$ | async)?.list?.length"
+    icon="language"
+    class="locale-count"></tile-link>
+
+  <tile-link
+    link="keys"
+    name="Keys"
+    [value]="(keys$ | async)?.list?.length"
+    icon="vpn_key"
+    class="key-count"></tile-link>
+
+  <tile-link
+    link="members"
+    name="Members"
+    [value]="project.members?.length"
+    icon="group"
+    class="member-count"></tile-link>
+
   <mat-card class="info mat-elevation-z0">
-    <mat-card-title>
-      {{ project?.name }}
-      <span class="sub-title" i18n="@@temporal.info">
+    <mat-card-header>
+      <mat-card-title>
+        {{ project?.name }}
+      </mat-card-title>
+      <mat-card-subtitle i18n="@@temporal.info">
         Created {{ project?.whenCreated | amTimeAgo }}, updated
         {{ project?.whenUpdated | amTimeAgo }}
-      </span>
-    </mat-card-title>
+      </mat-card-subtitle>
+    </mat-card-header>
     <mat-card-content>
-      <p *ngIf="project?.description">
+      <p *ngIf="project?.description; else descriptionMissing">
         {{ project.description }}
       </p>
-      <mat-chip-list>
-        <mat-chip i18n="@@members.summary">{{ project?.members?.length }} members</mat-chip>
-        <mat-chip *ngIf="(locales$ | async)?.list as locales" i18n="@@locales.summary">{{ locales.length }}languages
-        </mat-chip>
-        <mat-chip *ngIf="(keys$ | async)?.list as keys" i18n="@@keys.summary">{{ keys.length }} keys</mat-chip>
-        <a *ngFor="let member of project?.members"
-           mat-chip
-           [routerLink]="['/', member.userUsername]"
-        >{{ member.userName }} ({{ member.role }})</a>
-      </mat-chip-list>
+      <ng-template #descriptionMissing>
+        <p class="missing" i18n="@@description.missing">No description available.</p>
+      </ng-template>
     </mat-card-content>
   </mat-card>
 

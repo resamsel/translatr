@@ -7,7 +7,7 @@
 #
 
 # Swagger Specification
-GET		/api/swagger.json			controllers.ApiHelpController.getResources
+# GET		/api/swagger.json			controllers.ApiHelpController.getResources
 
 GET		/projects/search			controllers.Projects.search
 GET		/api/projects				controllers.ProjectsApi.find
@@ -74,7 +74,7 @@ GET		/api/:username/:projectName/locales/:localeName     controllers.LocalesApi.
 GET		/api/:username/:projectName/locales/:localeName/export/:fileType		controllers.LocalesApi.downloadBy(username: String, projectName: String, localeName: String, fileType: String)
 GET		/api/:username/:projectName/keys/:keyName     controllers.KeysApi.byOwnerAndProjectNameAndName(username: String, projectName: String, keyName: String, fetch: String ?= "")
 
-GET		/api/*file					controllers.ApiDocs.versioned(path="/public/lib/swagger-ui", file: String)
+# GET		/api/*file					controllers.ApiDocs.versioned(path="/public/lib/swagger-ui", file: String)
 
 #
 # WEB

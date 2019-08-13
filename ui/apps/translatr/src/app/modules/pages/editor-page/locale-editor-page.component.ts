@@ -86,7 +86,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     }
 
     const key = keys.list.find((k: Key) => k.name === keyName);
-    if (key === undefined) {
+    if (key === undefined || key.messages === undefined) {
       return [];
     }
 

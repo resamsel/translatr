@@ -38,7 +38,7 @@
   }
 }
 
-.show-on-small {
+.hide-on-medium-up {
   @include medium {
     display: none;
   }

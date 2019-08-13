@@ -192,10 +192,10 @@ export class EditorEffects {
 
   @Effect() selectMessageByKey$ = this.actions$.pipe(
     ofType<SelectKey>(EditorActionTypes.SelectKey),
-    map((action: SelectKey) => {
+    switchMap((action: SelectKey) => {
         if (action.payload.key === undefined) {
           console.log('Key empty in action', action);
-          return new MessageSelected({});
+          return of(new MessageSelected({}));
         }
 
         console.log('Key exists in action', action);
@@ -241,10 +241,10 @@ export class EditorEffects {
 
   @Effect() selectMessageByLocale$ = this.actions$.pipe(
     ofType<SelectLocale>(EditorActionTypes.SelectLocale),
-    map((action: SelectLocale) => {
+    switchMap((action: SelectLocale) => {
         if (action.payload.locale === undefined) {
           console.log('Locale empty in action', action);
-          return new MessageSelected({});
+          return of(new MessageSelected({}));
         }
 
         console.log('Locale exists in action', action);

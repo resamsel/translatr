@@ -64,7 +64,8 @@
       >
         <h3 matLine>{{ key.name }}</h3>
         <p matLine class="translation">
-          {{ key.messages[((locale$ | async)?.name)]?.value }}
+          <span *ngIf="key.messages; else translationMissing">{{ key.messages[((locale$ | async)?.name)]?.value }}</span>
+          <ng-template #translationMissing>-</ng-template>
         </p>
       </a>
     </ng-template>
