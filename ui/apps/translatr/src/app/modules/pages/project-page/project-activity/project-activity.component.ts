@@ -12,6 +12,7 @@ import { filter } from 'rxjs/operators';
 export class ProjectActivityComponent implements OnInit {
   project$ = this.facade.project$;
   activities$ = this.facade.activities$;
+  activity$ = this.facade.activityAggregated$;
   private criteria: ActivityCriteria;
 
   constructor(private readonly facade: ProjectFacade) {}
@@ -24,6 +25,7 @@ export class ProjectActivityComponent implements OnInit {
           projectId: project.id,
           limit: 10
         };
+        this.facade.loadActivityAggregated(project.id);
         this.loadActivities();
       });
   }

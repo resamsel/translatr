@@ -10,9 +10,8 @@ import { EMPTY, Observable } from 'rxjs';
   templateUrl: './project-info.component.html',
   styleUrls: ['./project-info.component.scss']
 })
-export class ProjectInfoComponent implements OnInit {
+export class ProjectInfoComponent {
   project$ = this.facade.project$;
-  activity$ = this.facade.activityAggregated$;
   locales$ = this.facade.locales$;
   latestLocales$ = this.locales$.pipe(
     filter(pagedList => !!pagedList && !!pagedList.list),
@@ -44,12 +43,4 @@ export class ProjectInfoComponent implements OnInit {
   latestMessages$: Observable<Message[]> = this.project$.pipe(switchMapTo(EMPTY));
 
   constructor(private readonly facade: ProjectFacade) {}
-
-  ngOnInit() {
-    this.project$
-      .pipe(filter((project?: Project) => !!project && !!project.id))
-      .subscribe((project: Project) => {
-        this.facade.loadActivityAggregated(project.id);
-      });
-  }
 }

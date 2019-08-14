@@ -1,31 +1,31 @@
 <div class="container flex" *ngIf="project$ | async as project">
-  <metric
+  <app-metric
     [routerLink]="['/', project.ownerUsername]"
     name="Owner"
     [value]="project.ownerName"
     icon="account_circle"
-    class="owner"></metric>
+    class="owner"></app-metric>
 
-  <metric
+  <app-metric
     routerLink="locales"
     name="Languages"
     [value]="(locales$ | async)?.list?.length"
     icon="language"
-    class="locale-count"></metric>
+    class="locale-count"></app-metric>
 
-  <metric
+  <app-metric
     routerLink="keys"
     name="Keys"
     [value]="(keys$ | async)?.list?.length"
     icon="vpn_key"
-    class="key-count"></metric>
+    class="key-count"></app-metric>
 
-  <metric
+  <app-metric
     routerLink="members"
     name="Members"
     [value]="project.members?.length"
     icon="group"
-    class="member-count"></metric>
+    class="member-count"></app-metric>
 
   <mat-card class="info mat-elevation-z0">
     <mat-card-header>
@@ -47,17 +47,10 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="activity mat-elevation-z0">
-    <mat-card-title i18n="@@activity">Activity</mat-card-title>
-    <mat-card-content>
-      <app-activity [activity]="activity$ | async"></app-activity>
-    </mat-card-content>
-  </mat-card>
-
   <mat-card class="small locales mat-elevation-z0">
     <mat-card-title i18n="@@locales.latest">Latest Languages</mat-card-title>
     <mat-card-content>
-      <mat-list *ngIf="latestLocales$ | async; else localesEmpty" dense>
+      <mat-nav-list *ngIf="latestLocales$ | async; else localesEmpty" dense>
         <a *ngFor="let locale of latestLocales$ | async"
            mat-list-item
            [routerLink]="['locales', locale.name]">
@@ -65,9 +58,12 @@
           <h3 matLine>{{ locale.name }} — {{ locale.displayName }}</h3>
           <p matLine title="{{locale.whenCreated | date:'full'}}">{{locale.whenCreated | amTimeAgo}}</p>
         </a>
-      </mat-list>
+      </mat-nav-list>
       <ng-template #localesEmpty>
-        <div class="empty">No languages yet.</div>
+        <h3 class="empty">
+          <mat-icon class="locale circle">language</mat-icon>
+          No languages yet.
+        </h3>
       </ng-template>
     </mat-card-content>
   </mat-card>
@@ -75,17 +71,20 @@
   <mat-card class="small keys mat-elevation-z0">
     <mat-card-title i18n="@@keys.latest">Latest Keys</mat-card-title>
     <mat-card-content>
-      <mat-list *ngIf="latestKeys$ | async; else keysEmpty" dense>
-        <a *ngFor="let key of latestKeys$ | async"
+      <mat-nav-list *ngIf="latestKeys$ | async as latestKeys; else keysEmpty" dense>
+        <a *ngFor="let key of latestKeys"
            mat-list-item
            [routerLink]="['keys', key.name]">
           <mat-icon matListIcon class="key circle">vpn_key</mat-icon>
           <h3 matLine>{{ key.name }}</h3>
           <p matLine title="{{key.whenCreated | date:'full'}}">{{key.whenCreated | amTimeAgo}}</p>
         </a>
-      </mat-list>
+      </mat-nav-list>
       <ng-template #keysEmpty>
-        <div class="empty">No keys yet.</div>
+        <h3 class="empty">
+          <mat-icon class="key circle">vpn_key</mat-icon>
+          No keys yet.
+        </h3>
       </ng-template>
     </mat-card-content>
   </mat-card>
@@ -93,9 +92,9 @@
   <mat-card class="small messages mat-elevation-z0">
     <mat-card-title i18n="@@translations.latest">Latest Translations</mat-card-title>
     <mat-card-content>
-      <div *ngIf="latestMessages$ | async; else messagesEmpty">
+      <div *ngIf="latestMessages$ | async as latestMessages; else messagesEmpty">
         <ng-container
-          *ngFor="let message of latestMessages$ | async; let i = index"
+          *ngFor="let message of latestMessages; let i = index"
         >
           <span *ngIf="i > 0">, </span>
           <a class="link" [routerLink]="['keys', message.localeName]">{{
@@ -104,7 +103,10 @@
         </ng-container>
       </div>
       <ng-template #messagesEmpty>
-        <h3 class="empty">No translations yet.</h3>
+        <h3 class="empty">
+          <mat-icon class="message circle">language</mat-icon>
+          <span>No translations yet.</span>
+        </h3>
       </ng-template>
     </mat-card-content>
   </mat-card>

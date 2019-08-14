@@ -86,26 +86,30 @@ a .mat-card {
     padding-top: 0;
   }
 
-  .mat-list-icon.mat-icon.circle {
-    font-size: 18px;
-    line-height: 32px;
-    width: 32px;
-    height: 32px;
-    color: #fff;
-    text-align: center;
-
-    &.locale {
-      background-color: #2196F3;
-    }
-
-    &.key {
-      background-color: #8bc34a;
-    }
-
-  }
-
   &[dense] .mat-list-icon.mat-icon {
     line-height: 20px;
+  }
+}
+
+.mat-icon.circle {
+  font-size: 18px;
+  line-height: 32px;
+  width: 32px;
+  height: 32px;
+  color: #fff;
+  text-align: center;
+  border-radius: 50%;
+
+  &.locale {
+    background-color: #2196F3;
+  }
+
+  &.key {
+    background-color: #8bc34a;
+  }
+
+  &.message {
+    background-color: #8bc34a;
   }
 }
 
