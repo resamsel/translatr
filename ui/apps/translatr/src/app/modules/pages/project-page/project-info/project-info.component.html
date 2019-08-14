@@ -1,31 +1,31 @@
 <div class="container flex" *ngIf="project$ | async as project">
-  <app-metric
+  <dev-metric
     [routerLink]="['/', project.ownerUsername]"
     name="Owner"
     [value]="project.ownerName"
     icon="account_circle"
-    class="owner"></app-metric>
+    class="owner"></dev-metric>
 
-  <app-metric
+  <dev-metric
     routerLink="locales"
     name="Languages"
     [value]="(locales$ | async)?.list?.length"
     icon="language"
-    class="locale-count"></app-metric>
+    class="locale-count"></dev-metric>
 
-  <app-metric
+  <dev-metric
     routerLink="keys"
     name="Keys"
     [value]="(keys$ | async)?.list?.length"
     icon="vpn_key"
-    class="key-count"></app-metric>
+    class="key-count"></dev-metric>
 
-  <app-metric
+  <dev-metric
     routerLink="members"
     name="Members"
     [value]="project.members?.length"
     icon="group"
-    class="member-count"></app-metric>
+    class="member-count"></dev-metric>
 
   <mat-card class="info mat-elevation-z0">
     <mat-card-header>
