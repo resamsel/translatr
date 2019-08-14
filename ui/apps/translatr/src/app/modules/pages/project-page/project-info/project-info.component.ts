@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Key, Locale, Message, Project } from '@dev/translatr-model';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Key, Locale, Message } from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
 import { filter, map, pluck, switchMapTo } from 'rxjs/operators';
 import { EMPTY, Observable } from 'rxjs';
