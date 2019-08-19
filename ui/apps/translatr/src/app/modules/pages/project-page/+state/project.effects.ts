@@ -5,10 +5,12 @@ import {
   KeysLoaded,
   LoadKeys,
   LoadLocales,
+  LoadMessages,
   LoadProject,
   LoadProjectActivities,
   LoadProjectActivityAggregated,
   LocalesLoaded,
+  MessagesLoaded,
   ProjectActionTypes,
   ProjectActivitiesLoaded,
   ProjectActivitiesLoadError,
@@ -19,12 +21,13 @@ import {
   ProjectSaved,
   SaveProject
 } from './project.actions';
-import { ActivityService, KeyService, LocaleService, ProjectService } from '@dev/translatr-sdk';
+import { ActivityService, KeyService, LocaleService, MessageService, ProjectService } from '@dev/translatr-sdk';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
-import { Activity, Aggregate, Key, KeyCriteria, Locale, LocaleCriteria, PagedList, Project } from '@dev/translatr-model';
+import { Activity, Aggregate, Key, KeyCriteria, Locale, LocaleCriteria, Message, PagedList, Project } from '@dev/translatr-model';
 import { of } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { projectQuery } from './project.selectors';
+import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 
 @Injectable()
 export class ProjectEffects {
@@ -73,6 +76,19 @@ export class ProjectEffects {
     )
   );
 
+  @Effect() loadMessages$ = this.actions$.pipe(
+    ofType<LoadMessages>(ProjectActionTypes.LoadMessages),
+    withLatestFrom(this.store.pipe(select(projectQuery.getMessagesSearch))),
+    switchMap(([action, messagesSearch]: [LoadMessages, MessageCriteria]) =>
+      this.messageService
+        .find({
+          ...messagesSearch,
+          ...action.payload
+        })
+        .pipe(map((payload: PagedList<Message>) => new MessagesLoaded(payload)))
+    )
+  );
+
   @Effect() loadProjectActivity$ = this.actions$.pipe(
     ofType<LoadProjectActivityAggregated>(ProjectActionTypes.LoadProjectActivityAggregated),
     switchMap((action: LoadProjectActivityAggregated) => {
@@ -117,6 +133,7 @@ export class ProjectEffects {
     private readonly projectService: ProjectService,
     private readonly localeService: LocaleService,
     private readonly keyService: KeyService,
+    private readonly messageService: MessageService,
     private readonly activityService: ActivityService
   ) {
   }

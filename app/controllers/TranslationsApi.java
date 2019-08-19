@@ -8,7 +8,14 @@ import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import io.swagger.annotations.AuthorizationScope;
 import models.ProjectRole;
 import models.User;
 import play.inject.Injector;
@@ -51,13 +58,6 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
   private static final String KEY_NAME = "The name of the key";
   private static final String PARAM_KEY_NAME = "keyName";
 
-  /**
-   * @param injector
-   * @param cache
-   * @param auth
-   * @param userService
-   * @param logEntryService
-   */
   @Inject
   public TranslationsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
                          MessageApiService messageApiService) {

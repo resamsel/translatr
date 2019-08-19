@@ -1,5 +1,5 @@
 import { ProjectAction, ProjectActionTypes } from './project.actions';
-import { Activity, Aggregate, Key, Locale, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
+import { Activity, Aggregate, Key, Locale, Message, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 
 export const PROJECT_FEATURE_KEY = 'project';
 
@@ -9,6 +9,8 @@ export interface ProjectState {
   localesSearch: RequestCriteria;
   keys?: PagedList<Key>;
   keysSearch: RequestCriteria;
+  messages?: PagedList<Message>;
+  messagesSearch: RequestCriteria;
   activityAggregated?: PagedList<Aggregate>;
   activities?: PagedList<Activity>;
   loading: boolean;
@@ -29,6 +31,11 @@ export const initialState: ProjectState = {
     limit: '50',
     offset: '0',
     order: 'name asc'
+  },
+  messagesSearch: {
+    limit: '50',
+    offset: '0',
+    order: 'k.when_updated asc'
   },
   loading: false
 };
@@ -74,6 +81,11 @@ export function projectReducer(
       return {
         ...state,
         keys: action.payload
+      };
+    case ProjectActionTypes.MessagesLoaded:
+      return {
+        ...state,
+        messages: action.payload
       };
     case ProjectActionTypes.ProjectActivityAggregatedLoaded:
       return {

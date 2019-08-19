@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
-import { Activity, Aggregate, Key, KeyCriteria, Locale, LocaleCriteria, PagedList, Project } from '@dev/translatr-model';
+import { Activity, Aggregate, Key, KeyCriteria, Locale, LocaleCriteria, Message, PagedList, Project } from '@dev/translatr-model';
 import { ActivityCriteria } from '@dev/translatr-sdk';
+import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 
 export enum ProjectActionTypes {
   LoadProject = '[Project Page] Load Project',
@@ -14,9 +15,15 @@ export enum ProjectActionTypes {
   LoadKeys = '[Project Page] Load Keys',
   KeysLoaded = '[Projects API] Keys Loaded',
   KeysLoadError = '[Projects API] Keys Load Error',
+
+  LoadMessages = '[Project Page] Load Messages',
+  MessagesLoaded = '[Projects API] Messages Loaded',
+  MessagesLoadError = '[Projects API] Messages Load Error',
+
   LoadProjectActivityAggregated = '[Project Page] Load Project Activity Aggregated',
   ProjectActivityAggregatedLoaded = '[Projects API] Project Activity Aggregated Loaded',
   ProjectActivityAggregatedLoadError = '[Projects API] Project Activity Aggregated Load Error',
+
   LoadProjectActivities = '[Project Page] Load Project Activities',
   ProjectActivitiesLoaded = '[Projects API] Project Activities Loaded',
   ProjectActivitiesLoadError = '[Projects API] Project Activities Load Error',
@@ -90,6 +97,27 @@ export class KeysLoaded implements Action {
   }
 }
 
+export class LoadMessages implements Action {
+  readonly type = ProjectActionTypes.LoadMessages;
+
+  constructor(public payload: MessageCriteria) {
+  }
+}
+
+export class MessagesLoadError implements Action {
+  readonly type = ProjectActionTypes.MessagesLoadError;
+
+  constructor(public payload: any) {
+  }
+}
+
+export class MessagesLoaded implements Action {
+  readonly type = ProjectActionTypes.MessagesLoaded;
+
+  constructor(public payload: PagedList<Message>) {
+  }
+}
+
 export class LoadProjectActivityAggregated implements Action {
   readonly type = ProjectActionTypes.LoadProjectActivityAggregated;
 
@@ -160,6 +188,9 @@ export type ProjectAction =
   | LoadKeys
   | KeysLoaded
   | KeysLoadError
+  | LoadMessages
+  | MessagesLoaded
+  | MessagesLoadError
   | LoadProjectActivityAggregated
   | ProjectActivityAggregatedLoaded
   | ProjectActivityAggregatedLoadError

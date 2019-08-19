@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Key, Locale, Message } from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
-import { filter, map, pluck, switchMapTo } from 'rxjs/operators';
-import { EMPTY, Observable } from 'rxjs';
+import { filter, map, pluck } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -11,7 +11,7 @@ import { EMPTY, Observable } from 'rxjs';
   styleUrls: ['./project-info.component.scss']
 })
 export class ProjectInfoComponent {
-  project$ = this.facade.project$;
+  project$ = this.facade.project$.pipe(filter(x => !!x));
   locales$ = this.facade.locales$;
   latestLocales$ = this.locales$.pipe(
     filter(pagedList => !!pagedList && !!pagedList.list),
@@ -27,7 +27,7 @@ export class ProjectInfoComponent {
     })
   );
   keys$ = this.facade.keys$;
-  latestKeys$ = this.keys$.pipe(
+  latestKeys$: Observable<Key[]> = this.keys$.pipe(
     filter(pagedList => !!pagedList && !!pagedList.list),
     pluck('list'),
     map((keys: Key[]) => {
@@ -40,7 +40,19 @@ export class ProjectInfoComponent {
         .slice(0, 3);
     })
   );
-  latestMessages$: Observable<Message[]> = this.project$.pipe(switchMapTo(EMPTY));
+  latestMessages$: Observable<Message[]> = this.facade.messages$.pipe(
+    filter(pagedList => !!pagedList && !!pagedList.list),
+    pluck('list'),
+    map((messages: Message[]) => {
+      console.log('messages', messages);
+      return messages
+        .slice()
+        .sort(
+          (a: Message, b: Message) => b.whenUpdated.getTime() - a.whenUpdated.getTime()
+        )
+        .slice(0, 3);
+    })
+  );
 
   constructor(private readonly facade: ProjectFacade) {}
 }

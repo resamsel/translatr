@@ -5,6 +5,7 @@ import { projectQuery } from './project.selectors';
 import {
   LoadKeys,
   LoadLocales,
+  LoadMessages,
   LoadProject,
   LoadProjectActivities,
   LoadProjectActivityAggregated,
@@ -36,6 +37,10 @@ export class ProjectFacade {
     select(projectQuery.getKeys),
     takeUntil(this.unload$)
   );
+  messages$ = this.store.pipe(
+    select(projectQuery.getMessages),
+    takeUntil(this.unload$)
+  );
 
   activityAggregated$ = this.store.pipe(
     select(projectQuery.getActivityAggregated),
@@ -58,6 +63,10 @@ export class ProjectFacade {
 
   loadKeys(projectId: string, criteria?: RequestCriteria) {
     this.store.dispatch(new LoadKeys({ ...criteria, projectId }));
+  }
+
+  loadMessages(projectId: string, criteria?: RequestCriteria) {
+    this.store.dispatch(new LoadMessages({ ...criteria, projectId }));
   }
 
   loadActivityAggregated(projectId: string) {

@@ -31,7 +31,10 @@ public class DtoPagedList<MODEL, DTO extends Dto> extends Dto implements PagedLi
    */
   public DtoPagedList(PagedList<MODEL> delegate, Function<MODEL, DTO> mapper) {
     this.delegate = delegate;
-    this.list = delegate.getList().stream().map(mapper).collect(toList());
+    this.list = delegate.getList()
+        .stream()
+        .map(mapper)
+        .collect(toList());
 
     if (delegate instanceof HasNextPagedList)
       this.offset = ((HasNextPagedList<?>) delegate).getOffset();

@@ -51,6 +51,8 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
         this.nameFormControl.setValue(project.name);
         this.facade.loadLocales(project.id, {});
         this.facade.loadKeys(project.id, {});
+        this.facade.loadMessages(project.id, {});
+        this.facade.loadActivityAggregated(project.id);
       });
   }
 

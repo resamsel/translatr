@@ -86,6 +86,10 @@ a .mat-card {
     padding-top: 0;
   }
 
+  .mat-list-icon.mat-icon {
+    line-height: 24px;
+  }
+
   &[dense] .mat-list-icon.mat-icon {
     line-height: 20px;
   }
@@ -101,15 +105,19 @@ a .mat-card {
   border-radius: 50%;
 
   &.locale {
-    background-color: #2196F3;
+    background-color: #42A5F5;
   }
 
   &.key {
-    background-color: #8bc34a;
+    background-color: #9ccc65;
   }
 
   &.message {
-    background-color: #8bc34a;
+    background-color: #ef5350;
+  }
+
+  &.member {
+    background-color: #FFA726;
   }
 }
 

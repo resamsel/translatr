@@ -40,6 +40,16 @@ const getKeysSearch = createSelector(
   (state: ProjectState) => state.keysSearch
 );
 
+const getMessages = createSelector(
+  getProjectState,
+  (state: ProjectState) => state.messages
+);
+
+const getMessagesSearch = createSelector(
+  getProjectState,
+  (state: ProjectState) => state.messagesSearch
+);
+
 const getActivityAggregated = createSelector(
   getProjectState,
   (state: ProjectState) => state.activityAggregated
@@ -58,6 +68,8 @@ export const projectQuery = {
   getLocalesSearch,
   getKeys,
   getKeysSearch,
+  getMessages,
+  getMessagesSearch,
   getActivityAggregated,
   getActivities
 };

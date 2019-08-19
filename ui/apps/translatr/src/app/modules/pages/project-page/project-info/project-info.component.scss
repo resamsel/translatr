@@ -6,12 +6,8 @@
   font-weight: 400;
 }
 
-.info {
-  margin-bottom: 16px;
-
-  ::ng-deep .mat-card-header-text {
-    margin-left: 0;
-  }
+.mat-card-header ::ng-deep .mat-card-header-text {
+  margin-left: 0;
 }
 
 .empty {
@@ -42,34 +38,27 @@
   }
 }
 
-.locales > .mat-card-image {
-  background-image: linear-gradient(45deg, rgba(33, 150, 243, 0.9), rgba(33, 150, 243, 1));
-}
-
-.keys > .mat-card-image {
-  background-image: linear-gradient(45deg, rgba(139, 195, 74, 0.9), rgba(139, 195, 74, 1));
-}
-
-.messages > .mat-card-image {
-  background-image: linear-gradient(45deg, rgba(244, 67, 54, 0.9), rgba(244, 67, 54, 1));
-}
-
 .owner ::ng-deep .mat-card {
-  background: #7E57C2;
+  background: #ab47bc;
   color: white;
 }
 
-.member-count ::ng-deep .mat-card {
+.member ::ng-deep .mat-card {
   background: #FFA726;
   color: white;
 }
 
-.locale-count ::ng-deep .mat-card {
+.locale ::ng-deep .mat-card {
   background: #42A5F5;
   color: white;
 }
 
-.key-count ::ng-deep .mat-card {
-  background: #8BC34A;
+.key ::ng-deep .mat-card {
+  background: #9ccc65;
+  color: white;
+}
+
+.message ::ng-deep .mat-card {
+  background: #ef5350;
   color: white;
 }

@@ -25,7 +25,6 @@ export class ProjectActivityComponent implements OnInit {
           projectId: project.id,
           limit: 10
         };
-        this.facade.loadActivityAggregated(project.id);
         this.loadActivities();
       });
   }
