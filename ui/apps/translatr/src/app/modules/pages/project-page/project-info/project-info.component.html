@@ -71,11 +71,15 @@
         </a>
       </mat-nav-list>
       <ng-template #localesEmpty>
-        <h3 class="empty">
+        <div class="empty">
           <mat-icon class="locale circle">language</mat-icon>
-          <p>No languages yet.</p>
-          <button mat-button>Create language</button>
-        </h3>
+          <h3>No languages yet.</h3>
+          <button
+            (click)="openLocaleCreationDialog(project)"
+            i18n="@@locale.create"
+            mat-stroked-button>Add language
+          </button>
+        </div>
       </ng-template>
     </mat-card-content>
   </mat-card>
@@ -95,11 +99,15 @@
         </a>
       </mat-nav-list>
       <ng-template #keysEmpty>
-        <h3 class="empty">
+        <div class="empty">
           <mat-icon class="key circle">vpn_key</mat-icon>
-          <p>No keys yet.</p>
-          <button mat-button>Create key</button>
-        </h3>
+          <h3>No keys yet.</h3>
+          <button
+            (click)="openKeyCreationDialog(project)"
+            i18n="@@key.create"
+            mat-stroked-button>Add key
+          </button>
+        </div>
       </ng-template>
     </mat-card-content>
   </mat-card>
@@ -120,10 +128,10 @@
         </a>
       </mat-nav-list>
       <ng-template #messagesEmpty>
-        <h3 class="empty">
+        <div class="empty">
           <mat-icon class="message circle">language</mat-icon>
-          <span>No translations yet.</span>
-        </h3>
+          <h3>No translations yet.</h3>
+        </div>
       </ng-template>
     </mat-card-content>
   </mat-card>

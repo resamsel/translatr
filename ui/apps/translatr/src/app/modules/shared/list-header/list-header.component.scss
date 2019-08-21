@@ -4,11 +4,12 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 
   .title {
     flex-grow: 1;
     margin-bottom: 0;
+    margin-left: 16px;
   }
 
   button + button {

@@ -1,14 +1,4 @@
 <div class="container">
-  <app-list-header (add)="openKeyCreationDialog(project)" *ngIf="project$ | async as project">
-    <ng-container *ngIf="(keys$ | async) as keys">
-      {keys.list.length,
-        plural,
-        =0 {No keys}
-        =1 {One key}
-        other {{{keys.list.length}} keys}}
-    </ng-container>
-  </app-list-header>
-
   <app-key-list
     [project]="project$ | async"
     [keys]="keys$ | async"

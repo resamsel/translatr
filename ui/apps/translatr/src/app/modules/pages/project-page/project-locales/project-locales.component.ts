@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { filter, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { Locale, Project } from '@dev/translatr-model';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { openLocaleEditDialog } from '../../../shared/locale-edit-dialog/locale-edit-dialog.component';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-project-locales',
@@ -18,10 +15,7 @@ export class ProjectLocalesComponent {
 
   constructor(
     private readonly facade: ProjectFacade,
-    private readonly snackBar: MatSnackBar,
-    private readonly dialog: MatDialog,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly snackBar: MatSnackBar
   ) {
   }
 
@@ -48,16 +42,5 @@ export class ProjectLocalesComponent {
       'Undo',
       { duration: 2000 }
     );
-  }
-
-  openLocaleCreationDialog(project: Project): void {
-    openLocaleEditDialog(this.dialog, { projectId: project.id })
-      .afterClosed()
-      .pipe(
-        take(1),
-        filter(locale => !!locale)
-      )
-      .subscribe((locale => this.router
-        .navigate([locale.name], { relativeTo: this.route })));
   }
 }

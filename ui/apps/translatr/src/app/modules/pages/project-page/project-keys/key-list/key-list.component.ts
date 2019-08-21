@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Key, PagedList, Project } from '@dev/translatr-model';
+import { openKeyEditDialog } from '../../../../shared/key-edit-dialog/key-edit-dialog.component';
+import { filter, take } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-key-list',
@@ -13,6 +17,13 @@ export class KeyListComponent {
   @Output() edit = new EventEmitter<Key>();
   @Output() delete = new EventEmitter<Key>();
 
+  constructor(
+    private readonly dialog: MatDialog,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
+  ) {
+  }
+
   onEdit(key: Key, event: MouseEvent) {
     this.edit.emit(key);
     event.stopPropagation();
@@ -25,5 +36,16 @@ export class KeyListComponent {
     event.stopPropagation();
     event.preventDefault();
     return false;
+  }
+
+  openKeyCreationDialog(project: Project): void {
+    openKeyEditDialog(this.dialog, { projectId: project.id })
+      .afterClosed()
+      .pipe(
+        take(1),
+        filter(key => !!key)
+      )
+      .subscribe((key => this.router
+        .navigate([key.name], { relativeTo: this.route })));
   }
 }

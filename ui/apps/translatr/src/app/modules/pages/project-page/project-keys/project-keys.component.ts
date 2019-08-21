@@ -1,11 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { filter, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { Key, Project } from '@dev/translatr-model';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { openKeyEditDialog } from '../../../shared/key-edit-dialog/key-edit-dialog.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,10 +16,7 @@ export class ProjectKeysComponent {
 
   constructor(
     private readonly facade: ProjectFacade,
-    private readonly snackBar: MatSnackBar,
-    private readonly dialog: MatDialog,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly snackBar: MatSnackBar
   ) {
   }
 
@@ -48,16 +42,5 @@ export class ProjectKeysComponent {
       'Undo',
       { duration: 2000 }
     );
-  }
-
-  openKeyCreationDialog(project: Project): void {
-    openKeyEditDialog(this.dialog, { projectId: project.id })
-      .afterClosed()
-      .pipe(
-        take(1),
-        filter(key => !!key)
-      )
-      .subscribe((key => this.router
-        .navigate([key.name], { relativeTo: this.route })));
   }
 }

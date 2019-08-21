@@ -1,19 +1,10 @@
 <div class="container">
-  <app-list-header (add)="openLocaleCreationDialog(project)" *ngIf="project$ | async as project">
-    <ng-container *ngIf="(locales$ | async) as locales">
-      {locales.list.length,
-        plural,
-        =0 {No locales}
-        =1 {One locale}
-        other {{{locales.list.length}} locales}}
-    </ng-container>
-  </app-list-header>
-
   <app-locale-list
     [project]="project$ | async"
     [locales]="locales$ | async"
     (more)="onMore($event)"
     (edit)="onEdit($event)"
     (delete)="onDelete($event)"
-  ></app-locale-list>
+  >
+  </app-locale-list>
 </div>
