@@ -7,7 +7,10 @@ import org.joda.time.DateTime;
 import play.mvc.Call;
 import utils.CacheUtils;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
@@ -16,9 +19,6 @@ public class LinkedAccount implements Model<LinkedAccount, Long> {
   @Id
   @GeneratedValue
   public Long id;
-
-  @Version
-  public Long version;
 
   @CreatedTimestamp
   public DateTime whenCreated;

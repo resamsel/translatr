@@ -10,7 +10,13 @@ import play.mvc.Call;
 import utils.CacheUtils;
 import validators.LocaleKeyCheck;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,9 +28,6 @@ public class Message implements Model<Message, UUID> {
   @Id
   @GeneratedValue
   public UUID id;
-
-  @Version
-  public Long version;
 
   @CreatedTimestamp
   public DateTime whenCreated;

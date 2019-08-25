@@ -49,12 +49,7 @@ export class ProjectInfoComponent {
     pluck('list'),
     map((messages: Message[]) => {
       console.log('messages', messages);
-      return messages
-        .slice()
-        .sort(
-          (a: Message, b: Message) => b.whenUpdated.getTime() - a.whenUpdated.getTime()
-        )
-        .slice(0, 3);
+      return messages.slice(0, 3);
     })
   );
 

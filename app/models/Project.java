@@ -22,8 +22,23 @@ import validators.NameUnique;
 import validators.ProjectName;
 import validators.ProjectNameUniqueChecker;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.*;
@@ -40,9 +55,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   @Id
   @GeneratedValue
   public UUID id;
-
-  @Version
-  public Long version;
 
   public boolean deleted;
 

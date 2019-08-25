@@ -10,7 +10,10 @@ import utils.CacheUtils;
 import validators.AccessTokenNameUniqueChecker;
 import validators.NameUnique;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,9 +33,6 @@ public class AccessToken implements Model<AccessToken, Long> {
   @Id
   @GeneratedValue
   public Long id;
-
-  @Version
-  public Long version;
 
   @CreatedTimestamp
   public DateTime whenCreated;

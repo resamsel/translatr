@@ -30,11 +30,12 @@
   <mat-card class="info">
     <mat-card-header>
       <mat-card-title>
-        {{ project?.name }}
+        {{ project.name }}
+        <span class="sub-title">{{ project.id}}</span>
       </mat-card-title>
       <mat-card-subtitle i18n="@@temporal.info">
-        Created {{ project?.whenCreated | amTimeAgo }}, updated
-        {{ project?.whenUpdated | amTimeAgo }}
+        Created {{ project.whenCreated | amTimeAgo }}, updated
+        {{ project.whenUpdated | amTimeAgo }}
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
