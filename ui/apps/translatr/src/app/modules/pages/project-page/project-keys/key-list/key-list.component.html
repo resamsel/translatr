@@ -1,11 +1,11 @@
-<ng-container *ngIf="keys?.list?.length > 0; else empty">
+<ng-container *ngIf="keys?.total > 0; else empty">
   <app-list-header (add)="openKeyCreationDialog(project)" *ngIf="project">
     <ng-container *ngIf="keys">
-      {keys.list.length,
+      {keys.total,
         plural,
         =0 {No keys}
         =1 {One key}
-        other {{{keys.list.length}} keys}}
+        other {{{keys.total}} keys}}
     </ng-container>
   </app-list-header>
 

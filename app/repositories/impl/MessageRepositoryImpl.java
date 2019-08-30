@@ -11,10 +11,14 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
-import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
+import criterias.PagedListFactory;
 import mappers.MessageMapper;
-import models.*;
+import models.ActionType;
+import models.Key;
+import models.Message;
+import models.Project;
+import models.User;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +30,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -79,7 +88,7 @@ public class MessageRepositoryImpl extends
 
     criteria.paged(query);
 
-    return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
+    return log(() -> PagedListFactory.create(query), LOGGER, "findBy");
   }
 
   @Override
@@ -96,7 +105,7 @@ public class MessageRepositoryImpl extends
   }
 
   private Query<Message> fetch(List<String> fetches) {
-    return fetch(fetches.toArray(new String[fetches.size()]));
+    return fetch(fetches.toArray(new String[0]));
   }
 
   private Query<Message> fetch(String... fetches) {

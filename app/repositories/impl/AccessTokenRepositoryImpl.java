@@ -8,7 +8,7 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import criterias.AccessTokenCriteria;
-import criterias.HasNextPagedList;
+import criterias.PagedListFactory;
 import mappers.AccessTokenMapper;
 import models.AccessToken;
 import models.ActionType;
@@ -54,7 +54,7 @@ public class AccessTokenRepositoryImpl extends
 
     criteria.paged(query);
 
-    return HasNextPagedList.create(query);
+    return PagedListFactory.create(query);
   }
 
   @Override

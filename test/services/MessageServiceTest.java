@@ -1,20 +1,7 @@
 package services;
 
-import static assertions.MessageAssert.assertThat;
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-import static utils.MessageRepositoryMock.createMessage;
-
-import criterias.HasNextPagedList;
 import criterias.MessageCriteria;
-import java.util.UUID;
-import javax.validation.Validator;
+import criterias.PagedListFactory;
 import models.Message;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +12,16 @@ import repositories.MessageRepository;
 import services.impl.CacheServiceImpl;
 import services.impl.MessageServiceImpl;
 import utils.CacheApiMock;
+
+import javax.validation.Validator;
+import java.util.UUID;
+
+import static assertions.MessageAssert.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static utils.MessageRepositoryMock.createMessage;
 
 public class MessageServiceTest {
 
@@ -104,7 +101,7 @@ public class MessageServiceTest {
   private Message persist(InvocationOnMock a) {
     Message t = a.getArgument(0);
     when(messageRepository.byId(eq(t.id), any())).thenReturn(t);
-    when(messageRepository.findBy(any())).thenReturn(HasNextPagedList.create(t));
+    when(messageRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
     return t;
   }
 }

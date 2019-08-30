@@ -1,23 +1,7 @@
 package services;
 
-import static assertions.UserAssert.assertThat;
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-import static utils.UserRepositoryMock.createUser;
-
-import criterias.HasNextPagedList;
+import criterias.PagedListFactory;
 import criterias.UserCriteria;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import javax.validation.Validator;
 import models.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +12,17 @@ import repositories.UserRepository;
 import services.impl.CacheServiceImpl;
 import services.impl.UserServiceImpl;
 import utils.CacheApiMock;
+
+import javax.validation.Validator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static assertions.UserAssert.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static utils.UserRepositoryMock.createUser;
 
 public class UserServiceTest {
 
@@ -207,11 +202,11 @@ public class UserServiceTest {
     when(userRepository.update(any())).then(this::persist);
     when(userRepository.save((User) any())).then(this::persist);
     when(userRepository.save(anyList())).then(this::persistList);
-    when(linkedAccountService.findBy(any())).thenReturn(HasNextPagedList.create());
-    when(accessTokenService.findBy(any())).thenReturn(HasNextPagedList.create());
-    when(projectService.findBy(any())).thenReturn(HasNextPagedList.create());
-    when(projecUserService.findBy(any())).thenReturn(HasNextPagedList.create());
-    when(logEntryService.findBy(any())).thenReturn(HasNextPagedList.create());
+    when(linkedAccountService.findBy(any())).thenReturn(PagedListFactory.create());
+    when(accessTokenService.findBy(any())).thenReturn(PagedListFactory.create());
+    when(projectService.findBy(any())).thenReturn(PagedListFactory.create());
+    when(projecUserService.findBy(any())).thenReturn(PagedListFactory.create());
+    when(logEntryService.findBy(any())).thenReturn(PagedListFactory.create());
   }
 
   private User updateMocks(User t) {
@@ -223,7 +218,7 @@ public class UserServiceTest {
     t.linkedAccounts = new ArrayList<>(t.linkedAccounts);
 
     when(userRepository.byId(eq(t.id), any())).thenReturn(t);
-    when(userRepository.findBy(any())).thenReturn(HasNextPagedList.create(t));
+    when(userRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
 
     return t;
   }
@@ -235,7 +230,7 @@ public class UserServiceTest {
   private List<User> persistList(InvocationOnMock a) {
     List<User> t = a.getArgument(0);
     t.forEach(this::updateMocks);
-    when(userRepository.findBy(any())).thenReturn(HasNextPagedList.create(t));
+    when(userRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
     return t;
   }
 

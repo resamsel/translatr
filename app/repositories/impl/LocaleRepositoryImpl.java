@@ -8,9 +8,9 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
-import criterias.HasNextPagedList;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
+import criterias.PagedListFactory;
 import dto.PermissionException;
 import mappers.LocaleMapper;
 import models.ActionType;
@@ -54,9 +54,9 @@ public class LocaleRepositoryImpl extends
   private final PermissionService permissionService;
 
   @Inject
-  public LocaleRepositoryImpl(Validator validator,
-      @Named(ActivityActor.NAME) ActorRef activityActor, MessageRepository messageRepository,
-      PermissionService permissionService) {
+  public LocaleRepositoryImpl(
+      Validator validator, @Named(ActivityActor.NAME) ActorRef activityActor,
+      MessageRepository messageRepository, PermissionService permissionService) {
     super(validator, activityActor);
 
     this.messageRepository = messageRepository;
@@ -68,7 +68,7 @@ public class LocaleRepositoryImpl extends
     Query<Locale> q = fetch();
 
     if (StringUtils.isEmpty(criteria.getMessagesKeyName()) && !criteria.getFetches().isEmpty()) {
-      q = QueryUtils.fetch(q, QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
+      QueryUtils.fetch(q, QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
           FETCH_MAP);
     }
 
@@ -92,7 +92,7 @@ public class LocaleRepositoryImpl extends
 
     criteria.paged(query);
 
-    return log(() -> fetch(HasNextPagedList.create(query), criteria), LOGGER, "findBy");
+    return log(() -> fetch(PagedListFactory.create(query), criteria), LOGGER, "findBy");
   }
 
   @Override
@@ -106,8 +106,7 @@ public class LocaleRepositoryImpl extends
         QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 
-  private HasNextPagedList<Locale> fetch(HasNextPagedList<Locale> paged,
-      LocaleCriteria criteria) {
+  private PagedList<Locale> fetch(PagedList<Locale> paged, LocaleCriteria criteria) {
     if (StringUtils.isNotEmpty(criteria.getMessagesKeyName())
         && criteria.getFetches().contains("messages")) {
       // Retrieve messages that match the given keyName and locales retrieved
@@ -148,7 +147,7 @@ public class LocaleRepositoryImpl extends
 
   @Override
   public Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
-      String... fetches) {
+                                         String... fetches) {
     return fetch(fetches)
         .where()
         .eq("project.owner.username", username)

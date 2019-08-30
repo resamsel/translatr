@@ -1,10 +1,10 @@
-<ng-container *ngIf="locales?.list?.length > 0; else empty">
+<ng-container *ngIf="locales?.total > 0; else empty">
   <app-list-header (add)="openLocaleCreationDialog(project)" *ngIf="project">
-    {locales.list.length,
+    {locales.total,
       plural,
       =0 {No locales}
       =1 {One locale}
-      other {{{locales.list.length}} locales}}
+      other {{{locales.total}} locales}}
   </app-list-header>
 
   <app-nav-list

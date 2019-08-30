@@ -9,11 +9,16 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
-import criterias.HasNextPagedList;
 import criterias.KeyCriteria;
+import criterias.PagedListFactory;
 import dto.PermissionException;
 import mappers.KeyMapper;
-import models.*;
+import models.ActionType;
+import models.Key;
+import models.Message;
+import models.Project;
+import models.ProjectRole;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
@@ -99,7 +104,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
     criteria.paged(query);
 
-    return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
+    return log(() -> PagedListFactory.create(query), LOGGER, "findBy");
   }
 
   @Override
@@ -138,7 +143,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   }
 
   private Query<Key> fetch(List<String> fetches) {
-    return fetch(fetches.toArray(new String[fetches.size()]));
+    return fetch(fetches.toArray(new String[0]));
   }
 
   private Query<Key> fetch(String... fetches) {

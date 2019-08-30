@@ -1,20 +1,7 @@
 package services;
 
-import static assertions.AccessTokenAssert.assertThat;
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-import static utils.AccessTokenRepositoryMock.createAccessToken;
-
 import criterias.AccessTokenCriteria;
-import criterias.HasNextPagedList;
-import java.util.concurrent.ThreadLocalRandom;
-import javax.validation.Validator;
+import criterias.PagedListFactory;
 import models.AccessToken;
 import models.User;
 import org.junit.Before;
@@ -27,6 +14,16 @@ import services.impl.AccessTokenServiceImpl;
 import services.impl.CacheServiceImpl;
 import utils.CacheApiMock;
 import utils.UserRepositoryMock;
+
+import javax.validation.Validator;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static assertions.AccessTokenAssert.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static utils.AccessTokenRepositoryMock.createAccessToken;
 
 public class AccessTokenServiceTest {
 
@@ -111,7 +108,7 @@ public class AccessTokenServiceTest {
   private AccessToken persist(InvocationOnMock a) {
     AccessToken t = a.getArgument(0);
     when(accessTokenRepository.byId(eq(t.id), any())).thenReturn(t);
-    when(accessTokenRepository.findBy(any())).thenReturn(HasNextPagedList.create(t));
+    when(accessTokenRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
     return t;
   }
 }

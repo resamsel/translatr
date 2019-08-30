@@ -9,14 +9,14 @@
   <dev-metric
     routerLink="locales"
     name="Languages"
-    [value]="(locales$ | async)?.list?.length"
+    [value]="(locales$ | async)?.total"
     icon="language"
     class="locale count"></dev-metric>
 
   <dev-metric
     routerLink="keys"
     name="Keys"
-    [value]="(keys$ | async)?.list?.length"
+    [value]="(keys$ | async)?.total"
     icon="vpn_key"
     class="key count"></dev-metric>
 

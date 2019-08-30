@@ -8,7 +8,7 @@ import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
-import criterias.HasNextPagedList;
+import criterias.PagedListFactory;
 import criterias.ProjectUserCriteria;
 import mappers.ProjectUserMapper;
 import models.ActionType;
@@ -49,7 +49,7 @@ public class ProjectUserRepositoryImpl extends
 
   @Override
   public PagedList<ProjectUser> findBy(ProjectUserCriteria criteria) {
-    return log(() -> HasNextPagedList.create(findQuery(criteria).query()), LOGGER,
+    return log(() -> PagedListFactory.create(findQuery(criteria).query()), LOGGER,
         "findBy");
   }
 

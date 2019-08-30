@@ -1,20 +1,7 @@
 package services;
 
-import static assertions.KeyAssert.assertThat;
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-import static utils.KeyRepositoryMock.createKey;
-
-import criterias.HasNextPagedList;
 import criterias.KeyCriteria;
-import java.util.UUID;
-import javax.validation.Validator;
+import criterias.PagedListFactory;
 import models.Key;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +14,16 @@ import services.impl.CacheServiceImpl;
 import services.impl.KeyServiceImpl;
 import utils.CacheApiMock;
 import utils.ProjectRepositoryMock;
+
+import javax.validation.Validator;
+import java.util.UUID;
+
+import static assertions.KeyAssert.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static utils.KeyRepositoryMock.createKey;
 
 public class KeyServiceTest {
 
@@ -147,7 +144,7 @@ public class KeyServiceTest {
     LOGGER.debug("mock: persisting {} - {}", t.getClass(), Json.toJson(t));
     when(keyRepository.byId(eq(t.id), any())).thenReturn(t);
     when(keyRepository.byProjectAndName(eq(t.project), eq(t.name))).thenReturn(t);
-    when(keyRepository.findBy(any())).thenReturn(HasNextPagedList.create(t));
+    when(keyRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
     return t;
   }
 }

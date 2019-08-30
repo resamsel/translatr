@@ -8,7 +8,7 @@ import { PagedList } from '@dev/translatr-model';
   styleUrls: ['./nav-list.component.scss']
 })
 export class NavListComponent implements OnInit {
-  @Input() pagedList: PagedList<{ id: string }> | undefined;
+  @Input() pagedList: PagedList<{ id?: string | number }> | undefined;
   @Input() loadingListLength = 5;
   @Input() showLoadingAvatar = true;
   @Input() template: TemplateRef<any>;

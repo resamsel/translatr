@@ -4,4 +4,5 @@ export interface PagedList<T> {
   hasPrev: boolean;
   limit: number;
   offset: number;
+  total?: number;
 }

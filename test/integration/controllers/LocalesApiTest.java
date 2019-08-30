@@ -2,7 +2,7 @@ package integration.controllers;
 
 import controllers.LocalesApi;
 import controllers.routes;
-import criterias.HasNextPagedList;
+import criterias.PagedListFactory;
 import dto.NotFoundException;
 import mappers.LocaleMapper;
 import models.AccessToken;
@@ -97,7 +97,7 @@ public class LocalesApiTest extends ApiControllerTest {
 
     when(accessTokenService.byKey(eq(accessToken.key))).thenReturn(accessToken);
     when(projectUserService.findBy(any()))
-        .thenReturn(HasNextPagedList.create(project1.members));
+        .thenReturn(PagedListFactory.create(project1.members));
     when(localeApiService
         .byOwnerAndProjectAndName(eq(johnSmith.username), eq(project1.name), eq(locale.name)))
         .thenReturn(LocaleMapper.toDto(locale));

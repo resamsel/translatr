@@ -7,16 +7,8 @@ import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
-import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
-
-import java.util.Collection;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.validation.Validator;
-
+import criterias.PagedListFactory;
 import models.LogEntry;
 import models.Project;
 import models.User;
@@ -26,6 +18,13 @@ import org.slf4j.LoggerFactory;
 import repositories.LogEntryRepository;
 import utils.ContextKey;
 import utils.QueryUtils;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.Collection;
+import java.util.UUID;
 
 @Singleton
 public class LogEntryRepositoryImpl extends
@@ -59,7 +58,7 @@ public class LogEntryRepositoryImpl extends
 
     criteria.paged(query);
 
-    return HasNextPagedList.create(query.query().fetch("user").fetch("project"));
+    return PagedListFactory.create(query.query().fetch("user").fetch("project"));
   }
 
   @Override

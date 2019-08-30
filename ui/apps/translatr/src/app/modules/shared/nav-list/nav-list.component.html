@@ -1,5 +1,5 @@
 <mat-nav-list *ngIf="pagedList; else loading">
-  <div *ngIf="pagedList.list.length > 0; else empty" [class.flex-stretch]="direction === 'row'">
+  <div *ngIf="pagedList.total > 0; else empty" [class.flex-stretch]="direction === 'row'">
     <ng-content></ng-content>
     <ng-container *ngFor="let item of pagedList.list; trackBy: trackByFn">
       <ng-container

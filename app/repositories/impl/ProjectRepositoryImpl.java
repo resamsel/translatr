@@ -8,12 +8,16 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
-import criterias.HasNextPagedList;
+import criterias.PagedListFactory;
 import criterias.ProjectCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
 import mappers.ProjectMapper;
-import models.*;
+import models.ActionType;
+import models.Project;
+import models.ProjectRole;
+import models.ProjectUser;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
@@ -103,7 +107,7 @@ public class ProjectRepositoryImpl extends
 
     criteria.paged(query);
 
-    return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
+    return log(() -> PagedListFactory.create(query), LOGGER, "findBy");
   }
 
   @Override

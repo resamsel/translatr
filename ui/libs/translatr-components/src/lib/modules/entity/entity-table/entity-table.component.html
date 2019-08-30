@@ -65,7 +65,7 @@
 </table>
 
 <mat-paginator
-  [length]="dataSource?.offset + dataSource?.list.length + (dataSource?.hasNext ? 1 : 0)"
+  [length]="dataSource?.total"
   [pageIndex]="dataSource?.offset / dataSource?.limit"
   [pageSize]="dataSource?.limit"
   (page)="onPage($event)"

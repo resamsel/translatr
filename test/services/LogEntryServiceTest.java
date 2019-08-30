@@ -1,20 +1,7 @@
 package services;
 
-import static assertions.LogEntryAssert.assertThat;
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-import static utils.LogEntryRepositoryMock.createLogEntry;
-
-import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
-import java.util.UUID;
-import javax.validation.Validator;
+import criterias.PagedListFactory;
 import models.LogEntry;
 import models.Project;
 import models.User;
@@ -29,6 +16,16 @@ import services.impl.LogEntryServiceImpl;
 import utils.CacheApiMock;
 import utils.ProjectRepositoryMock;
 import utils.UserRepositoryMock;
+
+import javax.validation.Validator;
+import java.util.UUID;
+
+import static assertions.LogEntryAssert.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static utils.LogEntryRepositoryMock.createLogEntry;
 
 public class LogEntryServiceTest {
 
@@ -114,7 +111,7 @@ public class LogEntryServiceTest {
   private LogEntry persist(InvocationOnMock a) {
     LogEntry t = a.getArgument(0);
     when(logEntryRepository.byId(eq(t.id), any())).thenReturn(t);
-    when(logEntryRepository.findBy(any())).thenReturn(HasNextPagedList.create(t));
+    when(logEntryRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
     return t;
   }
 }

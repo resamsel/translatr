@@ -7,7 +7,7 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.user.AuthUserIdentity;
-import criterias.HasNextPagedList;
+import criterias.PagedListFactory;
 import criterias.UserCriteria;
 import mappers.UserMapper;
 import models.ActionType;
@@ -55,7 +55,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
     criteria.paged(query);
 
-    return log(() -> HasNextPagedList.create(query), LOGGER, "findBy");
+    return log(() -> PagedListFactory.create(query), LOGGER, "findBy");
   }
 
   @Override

@@ -1,26 +1,7 @@
 package services;
 
-import static assertions.ProjectAssert.assertThat;
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-import static utils.ProjectRepositoryMock.createProject;
-
-import criterias.HasNextPagedList;
+import criterias.PagedListFactory;
 import criterias.ProjectCriteria;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import models.Project;
 import models.User;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
@@ -36,6 +17,22 @@ import services.impl.ProjectServiceImpl;
 import utils.CacheApiMock;
 import utils.UserRepositoryMock;
 import validators.ProjectNameUniqueChecker;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import static assertions.ProjectAssert.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static utils.ProjectRepositoryMock.createProject;
 
 public class ProjectServiceTest {
 
@@ -254,7 +251,7 @@ public class ProjectServiceTest {
 
     when(projectRepository.byId(eq(p.id), any())).thenReturn(p);
     when(projectRepository.byOwnerAndName(eq(p.owner.username), eq(p.name))).thenReturn(p);
-    when(projectRepository.findBy(any())).thenReturn(HasNextPagedList.create(p));
+    when(projectRepository.findBy(any())).thenReturn(PagedListFactory.create(p));
     return p;
   }
 }

@@ -1,21 +1,7 @@
 package services;
 
-import static assertions.LinkedAccountAssert.assertThat;
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-import static utils.LinkedAccountRepositoryMock.createLinkedAccount;
-
-import criterias.HasNextPagedList;
 import criterias.LinkedAccountCriteria;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-import javax.validation.Validator;
+import criterias.PagedListFactory;
 import models.LinkedAccount;
 import models.User;
 import org.junit.Before;
@@ -28,6 +14,17 @@ import services.impl.CacheServiceImpl;
 import services.impl.LinkedAccountServiceImpl;
 import utils.CacheApiMock;
 import utils.UserRepositoryMock;
+
+import javax.validation.Validator;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static assertions.LinkedAccountAssert.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static utils.LinkedAccountRepositoryMock.createLinkedAccount;
 
 public class LinkedAccountServiceTest {
 
@@ -116,7 +113,7 @@ public class LinkedAccountServiceTest {
   private LinkedAccount persist(InvocationOnMock a) {
     LinkedAccount t = a.getArgument(0);
     when(linkedAccountRepository.byId(eq(t.id), any())).thenReturn(t);
-    when(linkedAccountRepository.findBy(any())).thenReturn(HasNextPagedList.create(t));
+    when(linkedAccountRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
     return t;
   }
 }

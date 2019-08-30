@@ -5,14 +5,15 @@ import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
-import criterias.HasNextPagedList;
 import criterias.LinkedAccountCriteria;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.validation.Validator;
+import criterias.PagedListFactory;
 import models.LinkedAccount;
 import repositories.LinkedAccountRepository;
 import utils.QueryUtils;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.validation.Validator;
 
 public class LinkedAccountRepositoryImpl extends
     AbstractModelRepository<LinkedAccount, Long, LinkedAccountCriteria> implements
@@ -44,7 +45,7 @@ public class LinkedAccountRepositoryImpl extends
 
     criteria.paged(query);
 
-    return HasNextPagedList.create(query);
+    return PagedListFactory.create(query);
   }
 
   @Override

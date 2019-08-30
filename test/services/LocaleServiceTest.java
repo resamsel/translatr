@@ -1,20 +1,7 @@
 package services;
 
-import static assertions.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-import static utils.LocaleRepositoryMock.createLocale;
-
-import criterias.HasNextPagedList;
 import criterias.LocaleCriteria;
-import java.util.UUID;
-import javax.validation.Validator;
+import criterias.PagedListFactory;
 import models.Locale;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +13,16 @@ import repositories.ProjectRepository;
 import services.impl.CacheServiceImpl;
 import services.impl.LocaleServiceImpl;
 import utils.CacheApiMock;
+
+import javax.validation.Validator;
+import java.util.UUID;
+
+import static assertions.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static utils.LocaleRepositoryMock.createLocale;
 
 public class LocaleServiceTest {
 
@@ -106,7 +103,7 @@ public class LocaleServiceTest {
   private Locale persist(InvocationOnMock a) {
     Locale t = a.getArgument(0);
     when(localeRepository.byId(eq(t.id), any())).thenReturn(t);
-    when(localeRepository.findBy(any())).thenReturn(HasNextPagedList.create(t));
+    when(localeRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
     return t;
   }
 }
