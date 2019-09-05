@@ -21,6 +21,10 @@ public class PagedListFactory {
       return pagedList;
     }
 
+    if (query.getMaxRows() <= 0) {
+      query.setMaxRows(200);
+    }
+
     return Ebean.getDefaultServer().findPagedList(query, Ebean.currentTransaction());
   }
 
