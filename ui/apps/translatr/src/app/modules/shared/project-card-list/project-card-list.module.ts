@@ -6,6 +6,7 @@ import { NavListModule } from '../nav-list/nav-list.module';
 import { RouterModule } from '@angular/router';
 import { MomentModule } from 'ngx-moment';
 import { ProjectCardModule } from '../project-card/project-card.module';
+import { MatButtonModule } from '@angular/material';
 
 @NgModule({
   declarations: [ProjectCardListComponent],
@@ -14,10 +15,14 @@ import { ProjectCardModule } from '../project-card/project-card.module';
   ],
   imports: [
     CommonModule,
+    RouterModule,
+
     MatIconModule,
     NavListModule,
-    RouterModule,
+    MatButtonModule,
+
     MomentModule,
+
     ProjectCardModule
   ]
 })
