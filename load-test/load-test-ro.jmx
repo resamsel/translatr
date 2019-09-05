@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="3.2" jmeter="3.2 r1790748">
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.1.1 r1855137">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -101,7 +101,7 @@
         <hashTree>
           <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor projectId" enabled="true">
             <stringProp name="JSONPostProcessor.referenceNames">projectId</stringProp>
-            <stringProp name="JSONPostProcessor.jsonPathExprs">$..id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.list[0].id</stringProp>
             <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             <stringProp name="Scope.variable"></stringProp>
             <stringProp name="JSONPostProcessor.defaultValues">-</stringProp>
@@ -109,7 +109,7 @@
           <hashTree/>
           <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor projectName" enabled="true">
             <stringProp name="JSONPostProcessor.referenceNames">projectName</stringProp>
-            <stringProp name="JSONPostProcessor.jsonPathExprs">$..name</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.list[0].name</stringProp>
             <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
           </JSONPostProcessor>
           <hashTree/>
@@ -469,7 +469,7 @@
         <hashTree>
           <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor userId" enabled="true">
             <stringProp name="JSONPostProcessor.referenceNames">userId</stringProp>
-            <stringProp name="JSONPostProcessor.jsonPathExprs">$..id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.list[*].id</stringProp>
             <stringProp name="JSONPostProcessor.match_numbers">-1</stringProp>
             <stringProp name="Scope.variable"></stringProp>
             <stringProp name="JSONPostProcessor.defaultValues">-</stringProp>
@@ -478,7 +478,7 @@
           <hashTree/>
           <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor userName" enabled="true">
             <stringProp name="JSONPostProcessor.referenceNames">userName</stringProp>
-            <stringProp name="JSONPostProcessor.jsonPathExprs">$..name</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.list[*].name</stringProp>
             <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
           </JSONPostProcessor>
           <hashTree/>
@@ -711,9 +711,5 @@
       </ResultCollector>
       <hashTree/>
     </hashTree>
-    <WorkBench guiclass="WorkBenchGui" testclass="WorkBench" testname="WorkBench" enabled="true">
-      <boolProp name="WorkBench.save">true</boolProp>
-    </WorkBench>
-    <hashTree/>
   </hashTree>
 </jmeterTestPlan>
