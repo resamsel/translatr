@@ -9,7 +9,7 @@ DIST_DIR="$TARGET_DIR/universal"
 LOAD_TEST_DIR="$TARGET_DIR/load-test"
 LOG_FILE="/tmp/load-test.log"
 JMETER="$(which jmeter)"
-JMETER_VERSION="apache-jmeter-3.2"
+JMETER_VERSION="apache-jmeter-5.1.1"
 JMETER_URL="http://www.apache.org/dist/jmeter/binaries/$JMETER_VERSION.zip"
 export JMETER_OPTS="-Xmx1024m"
 

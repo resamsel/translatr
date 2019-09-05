@@ -116,7 +116,12 @@ public class ProjectRepositoryImpl extends
       return null;
     }
     return QueryUtils
-        .fetch(find.setId(id), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
+        .fetch(
+            find.query().setDisableLazyLoading(true),
+            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches),
+            FETCH_MAP
+        )
+        .setId(id)
         .findUnique();
   }
 

@@ -6,11 +6,11 @@ PERSONAS = Margaret Armin Anne Martin Marie Roberto Peter
 THREADS = 20
 LOOPS = 25
 Armin_THREADS = 50
-Armin_LOOPS = 300
+Armin_LOOPS = 30
 Roberto_THREADS = 10
 Roberto_LOOPS = 15
 Peter_THREADS = 10
-Peter_LOOPS = 50000
+Peter_LOOPS = 100
 
 log = $(shell echo "$@" | tee -a "$(LOG_FILE)")
 log_start = $(call log,$(1))
