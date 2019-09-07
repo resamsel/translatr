@@ -3,20 +3,21 @@ package repositories.impl;
 import akka.actor.ActorRef;
 import com.avaje.ebean.Ebean;
 import criterias.AbstractSearchCriteria;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
-import javax.validation.Validator;
 import models.Model;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.ModelRepository;
 import utils.TransactionUtils;
+
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+import javax.validation.Validator;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author resamsel
@@ -26,6 +27,8 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
     implements ModelRepository<MODEL, ID, CRITERIA> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelRepository.class);
+
+  protected static final String FETCH_COUNT = "count";
 
   protected final Validator validator;
   final ActorRef activityActor;

@@ -2,7 +2,7 @@ LOG_FILE = /tmp/load-test.log
 TARGET = target/load-test
 CSV_HEADER = Id,Name,Username,ProjectId,ProjectName,AccessToken
 
-PERSONAS = Margaret Armin Anne Martin Marie Roberto Peter
+PERSONAS = Margaret Armin Anne Martin Marie Roberto Peter Sophia
 THREADS = 20
 LOOPS = 25
 Armin_THREADS = 50
@@ -11,6 +11,8 @@ Roberto_THREADS = 10
 Roberto_LOOPS = 15
 Peter_THREADS = 10
 Peter_LOOPS = 100
+Sophia_THREADS = 10
+Sophia_LOOPS = 250
 
 log = $(shell echo "$@" | tee -a "$(LOG_FILE)")
 log_start = $(call log,$(1))

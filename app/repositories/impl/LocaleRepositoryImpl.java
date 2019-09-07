@@ -13,12 +13,8 @@ import criterias.MessageCriteria;
 import criterias.PagedListFactory;
 import dto.PermissionException;
 import mappers.LocaleMapper;
-import models.ActionType;
 import models.Locale;
-import models.Message;
-import models.Project;
-import models.ProjectRole;
-import models.User;
+import models.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,11 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -92,7 +84,11 @@ public class LocaleRepositoryImpl extends
 
     criteria.paged(query);
 
-    return log(() -> fetch(PagedListFactory.create(query), criteria), LOGGER, "findBy");
+    return log(
+        () -> fetch(PagedListFactory.create(query, criteria.getFetches().contains(FETCH_COUNT)), criteria),
+        LOGGER,
+        "findBy"
+    );
   }
 
   @Override
