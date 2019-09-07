@@ -3,6 +3,7 @@
 SELF=$0
 
 PSQL="docker exec -i translatr_db-translatr_1 psql -U postgres"
+VERSION="2.3.0-SNAPSHOT"
 MAIN_DIR="$(cd $PWD; echo $PWD)"
 TARGET_DIR="$MAIN_DIR/target"
 DIST_DIR="$TARGET_DIR/universal"
@@ -65,7 +66,7 @@ clean_dist() {
 }
 
 build_dist() {
-	if ! ls $DIST_DIR/translatr-*.zip > /dev/null 2>&1; then
+	if ! ls $DIST_DIR/translatr-$VERSION.zip > /dev/null 2>&1; then
 		cd "$MAIN_DIR"
 		log_start Building translatr
 		bin/activator dist -J-Xmx1024m >> "$LOG_FILE"
@@ -74,21 +75,21 @@ build_dist() {
 }
 
 unzip_dist() {
-	if ! ls $DIST_DIR/translatr-*/ > /dev/null 2>&1; then
+	if ! ls $DIST_DIR/translatr-$VERSION/ > /dev/null 2>&1; then
 		cd "$DIST_DIR"
 		log_start Installing translatr
-		unzip translatr-*.zip >> "$LOG_FILE"
+		unzip translatr-$VERSION.zip >> "$LOG_FILE"
 		log_end
 	fi
 }
 
 start_translatr() {
-	cd "$DIST_DIR/translatr-"*/
+	cd "$DIST_DIR/translatr-$VERSION/"
 	log_start Starting translatr
 	bin/translatr \
 		-Dconfig.file="$MAIN_DIR/load-test/load-test.conf" \
-		-Dplay.crypto.secret="$SECRET" >> "$DIST_DIR/load-test.log" \
-		2>&1 &
+		-Dlogger.file="$MAIN_DIR/load-test/logback.xml" \
+		-Dplay.crypto.secret="$SECRET" >> /dev/null &
 	while ! nc -z localhost 9000; do
 		sleep 1
 	done >> "$LOG_FILE" 2>&1
@@ -98,17 +99,18 @@ start_translatr() {
 init_database() {
 	cd "$MAIN_DIR"
 	log_start Initialising database
-	make clean target/load-test/init.sql >> "$LOG_FILE"
-	cat "$LOAD_TEST_DIR/init.sql" | $PSQL translatr-load-test >> "$LOG_FILE"
+  make clean target/load-test/init.sql >> "$LOG_FILE"
+  cat "$LOAD_TEST_DIR/init.sql" | $PSQL translatr-load-test >> "$LOG_FILE"
 	log_end
 }
 
 stop_translatr() {
 	log_start Stopping translatr
-	pkill -f translatr- && log_end || log not running
-	while pgrep -f translatr-; do
+	pkill -f translatr-$VERSION && log_end || log not running
+	while pgrep -f translatr-$VERSION; do
 		sleep 1
 	done >> "$LOG_FILE" 2>&1
+	rm -f "$DIST_DIR/translatr-$VERSION/RUNNING_PID"
 }
 
 prepare_jmeter() {
@@ -127,10 +129,7 @@ prepare_jmeter() {
 }
 
 run_translatr() {
-	if pgrep -f translatr- > /dev/null 2>&1; then
-		stop_translatr
-	fi
-
+	stop_translatr
 	clean_database
 	build_dist
 	unzip_dist
@@ -166,10 +165,6 @@ load_test() {
 	log Prepare and run load tests
 
 	[ "$CLEAN" = "clean" ] && clean_dist
-
-	# log_start Cleaning test data
-	# make clean >> "$LOG_FILE"
-	# log_end
 
 #	run_load_test load-test
 	run_load_test load-test-ro
