@@ -5,6 +5,8 @@ CSV_HEADER = Id,Name,Username,ProjectId,ProjectName,AccessToken
 PERSONAS = Margaret Armin Anne Martin Marie Roberto Peter Sophia
 THREADS = 20
 LOOPS = 25
+KEY_FACTOR = 1
+
 Armin_THREADS = 50
 Armin_LOOPS = 30
 Roberto_THREADS = 10
@@ -12,7 +14,8 @@ Roberto_LOOPS = 15
 Peter_THREADS = 10
 Peter_LOOPS = 100
 Sophia_THREADS = 10
-Sophia_LOOPS = 250
+Sophia_LOOPS = 10
+Sophia_KEY_FACTOR = 10000
 
 log = $(shell echo "$@" | tee -a "$(LOG_FILE)")
 log_start = $(call log,$(1))
@@ -27,8 +30,9 @@ $(TARGET)/%.sql: $(TARGET)/load-test.properties
 	$(eval PERSONA := $(@:$(TARGET)/%.sql=%))
 	$(eval T := $(or $($(PERSONA)_THREADS),$($(PERSONA)_THREADS),$(THREADS)))
 	$(eval L := $(or $($(PERSONA)_LOOPS),$($(PERSONA)_LOOPS),$(LOOPS)))
+	$(eval K := $(or $($(PERSONA)_KEY_FACTOR),$($(PERSONA)_KEY_FACTOR),$(KEY_FACTOR)))
 	for i in `seq 1 $(T)`; do \
-		load-test/user-template.sh $(@:$(TARGET)/%.sql=%) $$i ; \
+		KEY_FACTOR=$(K) load-test/user-template.sh $(@:$(TARGET)/%.sql=%) $$i ; \
 	done >> $@
 
 	echo >> $<

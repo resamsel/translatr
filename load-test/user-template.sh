@@ -12,6 +12,7 @@ ACCESS_TOKEN=$(uuidgen | base64)
 NOW="$(date '+%Y-%m-%d %H:%M:%S')"
 LOCALE_NAMES="nl nl-NL en en-NZ en-GB en-US fr fr-FR de de-AT"
 KEY_NAMES="a b c d e f g h i j"
+KEY_INDICES="$(seq -s' ' 1 ${KEY_FACTOR:-1})"
 
 cat <<EOF
 -- $USER_ID,$USER_NAME,$USER_USERNAME,$PROJECT_ID,$PROJECT_NAME,$ACCESS_TOKEN
@@ -34,8 +35,8 @@ cat <<-EOF
 EOF
 cat <<-EOF
   INSERT INTO key (id,project_id,name,when_created,when_updated)
-    select uuid_generate_v1(), '$PROJECT_ID', k, current_timestamp, current_timestamp
-      from regexp_split_to_table('$KEY_NAMES', ' ') k;
+    select uuid_generate_v1(), '$PROJECT_ID', k || ki, current_timestamp, current_timestamp
+      from regexp_split_to_table('$KEY_NAMES', ' ') k, regexp_split_to_table('$KEY_INDICES', ' ') ki;
 EOF
 
 cat <<-EOF
