@@ -4,6 +4,8 @@ import { combineLatest, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { PagedList, RequestCriteria } from '@dev/translatr-model';
 import { Router } from '@angular/router';
+import { DefaultErrorHandler } from '@translatr/translatr-sdk/src/lib/services/default-error-handler';
+import { ErrorHandler } from '@angular/core';
 
 export interface RequestOptions {
   params: {
@@ -12,6 +14,8 @@ export interface RequestOptions {
 }
 
 export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
+  private errorHandler: ErrorHandler;
+
   constructor(
     protected readonly http: HttpClient,
     protected readonly router: Router,
@@ -19,6 +23,7 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
     private readonly listPath: (criteria: CRITERIA) => string,
     private readonly entityPath: string
   ) {
+    this.errorHandler = new DefaultErrorHandler(router, loginUrl);
   }
 
   find(criteria?: CRITERIA): Observable<PagedList<DTO> | undefined> {
@@ -39,17 +44,7 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
           );
 
           if (err.status >= 400) {
-            console.log('redirect', this.loginUrl);
-            if (this.router !== undefined
-              && this.loginUrl !== undefined
-              && this.loginUrl !== null) {
-              this.router.navigate([this.loginUrl])
-                .then((navigated: boolean) => {
-                  if (!navigated) {
-                    window.location.href = `${this.loginUrl}?redirect_uri=${window.location.href}`;
-                  }
-                });
-            }
+            this.errorHandler.handleError(err);
           }
 
           return throwError(err);

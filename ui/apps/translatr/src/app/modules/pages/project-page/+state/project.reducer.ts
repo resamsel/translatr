@@ -25,17 +25,20 @@ export const initialState: ProjectState = {
   localesSearch: {
     limit: '50',
     offset: '0',
-    order: 'name asc'
+    order: 'name asc',
+    fetch: 'count'
   },
   keysSearch: {
     limit: '50',
     offset: '0',
-    order: 'name asc'
+    order: 'name asc',
+    fetch: 'count'
   },
   messagesSearch: {
     limit: '50',
     offset: '0',
-    order: 'k.when_updated asc'
+    order: 'k.when_updated asc',
+    fetch: 'count'
   },
   loading: false
 };
