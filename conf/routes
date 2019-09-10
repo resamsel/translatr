@@ -18,6 +18,7 @@ POST	/api/project				controllers.ProjectsApi.create
 PUT		/api/project				controllers.ProjectsApi.update
 DELETE	/api/project/:projectId		controllers.ProjectsApi.delete(projectId: java.util.UUID)
 
+GET		/api/project/:projectId/locales controllers.LocalesApi.find(projectId: java.util.UUID)
 GET		/api/locales/:projectId		controllers.LocalesApi.find(projectId: java.util.UUID)
 GET		/api/locale/:localeId		controllers.LocalesApi.get(localeId: java.util.UUID)
 POST	/api/locale					controllers.LocalesApi.create
@@ -26,18 +27,21 @@ DELETE	/api/locale/:localeId		controllers.LocalesApi.delete(localeId: java.util.
 POST	/api/locale/:localeId/import	controllers.LocalesApi.upload(localeId: java.util.UUID)
 GET		/api/locale/:localeId/export/:fileType	controllers.LocalesApi.download(localeId: java.util.UUID, fileType: String)
 
+GET		/api/project/:projectId/keys controllers.KeysApi.find(projectId: java.util.UUID)
 GET		/api/keys/:projectId		controllers.KeysApi.find(projectId: java.util.UUID)
 GET		/api/key/:keyId				controllers.KeysApi.get(keyId: java.util.UUID, fetch: String ?= "")
 POST	/api/key					controllers.KeysApi.create
 PUT		/api/key					controllers.KeysApi.update
 DELETE	/api/key/:keyId				controllers.KeysApi.delete(keyId: java.util.UUID)
 
+GET		/api/project/:projectId/messages controllers.TranslationsApi.find(projectId: java.util.UUID)
 GET		/api/messages/:projectId	controllers.TranslationsApi.find(projectId: java.util.UUID)
 GET		/api/message/:messageId		controllers.TranslationsApi.get(messageId: java.util.UUID)
 POST	/api/message				controllers.TranslationsApi.create
 PUT		/api/message				controllers.TranslationsApi.update
 DELETE	/api/message/:messageId		controllers.TranslationsApi.delete(messageId: java.util.UUID)
 
+GET		/api/project/:projectId/members controllers.MembersApi.find(projectId: java.util.UUID)
 GET		/api/members/:projectId		controllers.MembersApi.find(projectId: java.util.UUID)
 GET		/api/member/:memberId		controllers.MembersApi.get(memberId: java.lang.Long, fetch: String ?= "")
 POST	/api/member					controllers.MembersApi.create

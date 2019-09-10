@@ -21,7 +21,7 @@ export class KeyService extends AbstractService<Key, KeyCriteria> {
       http,
       router,
       loginUrl,
-      (criteria: KeyCriteria) => `/api/keys/${criteria.projectId}`,
+      (criteria: KeyCriteria) => `/api/project/${criteria.projectId}/keys`,
       '/api/key'
     );
   }

@@ -18,7 +18,7 @@ export class MemberService extends AbstractService<Member, MemberCriteria> {
       http,
       router,
       loginUrl,
-      (criteria: MemberCriteria) => `/api/members/${criteria.projectId}`,
+      (criteria: MemberCriteria) => `/api/project/${criteria.projectId}/members`,
       '/api/member'
     );
   }

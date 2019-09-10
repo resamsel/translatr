@@ -21,7 +21,7 @@ export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
       http,
       router,
       loginUrl,
-      (criteria: LocaleCriteria) => `/api/locales/${criteria.projectId}`,
+      (criteria: LocaleCriteria) => `/api/project/${criteria.projectId}/locales`,
       '/api/locale'
     );
   }

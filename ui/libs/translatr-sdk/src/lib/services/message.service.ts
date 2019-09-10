@@ -15,6 +15,12 @@ export class MessageService extends AbstractService<Message, MessageCriteria> {
     router?: Router,
     @Inject(LOGIN_URL) @Optional() loginUrl?: string
   ) {
-    super(http, router, loginUrl, (criteria: MessageCriteria) => `/api/messages/${criteria.projectId}`, '/api/message');
+    super(
+      http,
+      router,
+      loginUrl,
+      (criteria: MessageCriteria) => `/api/project/${criteria.projectId}/messages`,
+      '/api/message'
+    );
   }
 }
