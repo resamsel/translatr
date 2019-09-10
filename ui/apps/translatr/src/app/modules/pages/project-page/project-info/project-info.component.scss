@@ -24,28 +24,3 @@
     height: 64px;
   }
 }
-
-.owner ::ng-deep .mat-card {
-  background: #ab47bc;
-  color: white;
-}
-
-.member ::ng-deep .mat-card {
-  background: #FFA726;
-  color: white;
-}
-
-.locale ::ng-deep .mat-card {
-  background: #42A5F5;
-  color: white;
-}
-
-.key ::ng-deep .mat-card {
-  background: #9ccc65;
-  color: white;
-}
-
-.message ::ng-deep .mat-card {
-  background: #ef5350;
-  color: white;
-}

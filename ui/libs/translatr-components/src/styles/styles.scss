@@ -95,29 +95,66 @@ a .mat-card {
   }
 }
 
-.mat-icon.circle {
-  font-size: 18px;
-  line-height: 32px;
-  width: 32px;
-  height: 32px;
-  color: #fff;
-  text-align: center;
-  border-radius: 50%;
-
-  &.locale {
-    background-color: #42A5F5;
+.light-theme {
+  .project .mat-card {
+    background: #fbc02d;
+    color: white;
   }
 
-  &.key {
-    background-color: #9ccc65;
+  .owner .mat-card {
+    background: #ab47bc;
+    color: white;
   }
 
-  &.message {
-    background-color: #ef5350;
+  .member .mat-card {
+    background: #FFA726;
+    color: white;
   }
 
-  &.member {
-    background-color: #FFA726;
+  .locale .mat-card {
+    background: #42A5F5;
+    color: white;
+  }
+
+  .key .mat-card {
+    background: #9ccc65;
+    color: white;
+  }
+
+  .message .mat-card {
+    background: #ef5350;
+    color: white;
+  }
+
+  .activity .mat-card {
+    background: #78909c;
+    color: white;
+  }
+
+  .mat-icon.circle {
+    font-size: 18px;
+    line-height: 32px;
+    width: 32px;
+    height: 32px;
+    color: #fff;
+    text-align: center;
+    border-radius: 50%;
+
+    &.locale {
+      background-color: #42A5F5;
+    }
+
+    &.key {
+      background-color: #9ccc65;
+    }
+
+    &.message {
+      background-color: #ef5350;
+    }
+
+    &.member {
+      background-color: #FFA726;
+    }
   }
 }
 
