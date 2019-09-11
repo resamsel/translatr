@@ -17,6 +17,6 @@ export class AppFacade {
   }
 
   loadUsers(criteria: RequestCriteria) {
-    this.store.dispatch(new LoadUsers(criteria))
+    this.store.dispatch(new LoadUsers(criteria));
   }
 }
