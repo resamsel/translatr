@@ -20,8 +20,14 @@ const getAllProjects = createSelector(
   (state: ProjectsState) => state.pagedList
 );
 
+const getMyProjects = createSelector(
+  getProjectsState,
+  (state: ProjectsState) => state.myPagedList
+);
+
 export const projectsQuery = {
   getLoading,
   getError,
-  getAllProjects
+  getAllProjects,
+  getMyProjects
 };

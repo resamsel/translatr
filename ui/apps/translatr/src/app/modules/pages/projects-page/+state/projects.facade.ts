@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { ProjectsPartialState } from './projects.reducer';
 import { projectsQuery } from './projects.selectors';
-import { LoadProjects } from './projects.actions';
+import { LoadMyProjects, LoadProjects } from './projects.actions';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ProjectCriteria } from '@dev/translatr-model';
@@ -11,15 +11,24 @@ import { ProjectCriteria } from '@dev/translatr-model';
 export class ProjectsFacade {
   private unload$ = new Subject<void>();
 
+  myProjects$ = this.store.pipe(
+    select(projectsQuery.getMyProjects),
+    takeUntil(this.unload$)
+  );
+
   allProjects$ = this.store.pipe(
     select(projectsQuery.getAllProjects),
-    takeUntil(this.unload$.asObservable())
+    takeUntil(this.unload$)
   );
 
   constructor(private store: Store<ProjectsPartialState>) {}
 
   loadProjects(criteria?: ProjectCriteria) {
     this.store.dispatch(new LoadProjects(criteria));
+  }
+
+  loadMyProjects(criteria?: ProjectCriteria) {
+    this.store.dispatch(new LoadMyProjects(criteria));
   }
 
   unloadProjects() {

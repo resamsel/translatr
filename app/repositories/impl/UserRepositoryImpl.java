@@ -6,6 +6,7 @@ import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
+import com.avaje.ebean.Query;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import criterias.PagedListFactory;
 import criterias.UserCriteria;
@@ -44,7 +45,14 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
   @Override
   public PagedList<User> findBy(UserCriteria criteria) {
-    ExpressionList<User> query = QueryUtils.fetch(find.query(), criteria.getFetches()).where();
+    Query<User> q = find.query().setDisableLazyLoading(true);
+
+    if (!criteria.getFetches().isEmpty()) {
+      QueryUtils.fetch(q, QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
+          FETCH_MAP);
+    }
+
+    ExpressionList<User> query = q.where();
 
     query.eq("active", true);
 
@@ -55,7 +63,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
     criteria.paged(query);
 
-    return log(() -> PagedListFactory.create(query), LOGGER, "findBy");
+    return log(() -> PagedListFactory.create(query, criteria.getFetches().contains(FETCH_COUNT)), LOGGER, "findBy");
   }
 
   @Override

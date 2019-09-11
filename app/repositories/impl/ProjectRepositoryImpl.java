@@ -13,11 +13,7 @@ import criterias.ProjectCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
 import mappers.ProjectMapper;
-import models.ActionType;
-import models.Project;
-import models.ProjectRole;
-import models.ProjectUser;
-import models.User;
+import models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
@@ -67,7 +63,8 @@ public class ProjectRepositoryImpl extends
   public PagedList<Project> findBy(ProjectCriteria criteria) {
     ExpressionList<Project> query = QueryUtils.fetch(
         find.query().setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches())
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
+        FETCH_MAP
     ).where();
 
     query.eq("deleted", false);

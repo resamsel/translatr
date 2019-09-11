@@ -9,6 +9,12 @@ const getMe = createSelector(
   (state: AppState) => state.me
 );
 
+const getUsers = createSelector(
+  getAppState,
+  (state: AppState) => state.users
+);
+
 export const appQuery = {
-  getMe
+  getMe,
+  getUsers
 };

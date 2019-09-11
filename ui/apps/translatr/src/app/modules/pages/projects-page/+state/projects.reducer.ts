@@ -5,6 +5,7 @@ export const PROJECTS_FEATURE_KEY = 'projects';
 
 export interface ProjectsState {
   pagedList?: PagedList<Project>;
+  myPagedList?: PagedList<Project>;
   selectedId?: string | number; // which Projects record has been selected
   loading: boolean; // has the Projects list been loaded
   error?: any; // last none error (if any)
@@ -35,6 +36,22 @@ export function projectsReducer(
         loading: false
       };
     case ProjectsActionTypes.ProjectsLoadError:
+      return {
+        ...state,
+        error: action.payload
+      };
+    case ProjectsActionTypes.LoadMyProjects:
+      return {
+        ...state,
+        loading: true
+      };
+    case ProjectsActionTypes.MyProjectsLoaded:
+      return {
+        ...state,
+        myPagedList: action.payload,
+        loading: false
+      };
+    case ProjectsActionTypes.MyProjectsLoadError:
       return {
         ...state,
         error: action.payload

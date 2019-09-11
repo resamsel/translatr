@@ -19,6 +19,8 @@ public interface UserRepository extends ModelRepository<User, UUID, UserCriteria
   String FETCH_MEMBERSHIPS = "memberships";
   String FETCH_ACTIVITIES = "activities";
 
+  String[] PROPERTIES_TO_FETCH = {};
+
   Map<String, List<String>> FETCH_MAP = ImmutableMap.of(
       FETCH_PROJECTS, Collections.singletonList(FETCH_PROJECTS));
 

@@ -1,5 +1,5 @@
 import { AppAction, AppActionTypes } from './app.actions';
-import { User } from '@dev/translatr-model';
+import { PagedList, User } from '@dev/translatr-model';
 
 export const APP_FEATURE_KEY = 'app';
 
@@ -13,6 +13,7 @@ export const APP_FEATURE_KEY = 'app';
 
 export interface AppState {
   me?: User;
+  users?: PagedList<User>;
 }
 
 export interface AppPartialState {
@@ -30,6 +31,12 @@ export function appReducer(
       return {
         ...state,
         me: action.payload
+      };
+    }
+    case AppActionTypes.UsersLoaded: {
+      return {
+        ...state,
+        users: action.payload
       };
     }
     default:

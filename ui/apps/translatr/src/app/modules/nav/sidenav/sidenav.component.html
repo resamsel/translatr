@@ -15,22 +15,6 @@
       <span class="text">Dashboard</span>
     </a>
 
-    <a mat-icon-button routerLink="/projects" class="hide-on-medium-up">
-      <mat-icon>library_books</mat-icon>
-    </a>
-    <a mat-button routerLink="/projects">
-      <mat-icon>library_books</mat-icon>
-      <span class="text">Projects</span>
-    </a>
-
-    <a mat-icon-button routerLink="/users" class="hide-on-medium-up">
-      <mat-icon>group</mat-icon>
-    </a>
-    <a mat-button routerLink="/users">
-      <mat-icon>group</mat-icon>
-      <span class="text">Contributors</span>
-    </a>
-
     <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
       <a mat-menu-item *ngIf="me" [routerLink]="['/', me.username]">
         Profile

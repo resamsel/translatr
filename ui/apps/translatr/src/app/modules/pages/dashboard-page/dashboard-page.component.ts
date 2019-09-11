@@ -15,8 +15,10 @@ import { Router } from '@angular/router';
 })
 export class DashboardPageComponent implements OnInit {
   readonly me$ = this.appFacade.me$;
-  readonly projects$ = this.projectsFacade.allProjects$;
+  readonly myProjects$ = this.projectsFacade.myProjects$;
   readonly activities$ = this.dashboardFacade.activities$;
+  readonly projects$ = this.projectsFacade.allProjects$;
+  readonly users$ = this.appFacade.users$;
 
   constructor(
     private readonly appFacade: AppFacade,
@@ -28,13 +30,15 @@ export class DashboardPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.projectsFacade.loadProjects({ limit: '1', fetch: 'count' });
+    this.appFacade.loadUsers({ limit: '1', fetch: 'count' });
     this.me$
       .pipe(
         filter(me => me !== undefined),
         take(1)
       )
       .subscribe((user: User) => {
-        this.loadProjects(user);
+        this.loadMyProjects(user);
         this.dashboardFacade.loadActivities({
           projectOwnerId: user.id,
           limit: 4
@@ -53,8 +57,8 @@ export class DashboardPageComponent implements OnInit {
         .navigate([project.ownerUsername, project.name])));
   }
 
-  private loadProjects(user: User): void {
-    this.projectsFacade.loadProjects({
+  private loadMyProjects(user: User): void {
+    this.projectsFacade.loadMyProjects({
       owner: user.username,
       limit: '4',
       order: 'whenUpdated desc'

@@ -1,22 +1,36 @@
 <app-sidenav [me]="me$ | async" page="Dashboard">
   <div class="container flex">
     <dev-metric
+      *ngIf="me$ | async"
       [routerLink]="['/', (me$ | async)?.username, 'projects']"
       name="My Projects"
-      [value]="(projects$ | async)?.total"
+      [value]="(myProjects$ | async)?.total"
       icon="library_books"
       class="project count"></dev-metric>
     <dev-metric
+      *ngIf="me$ | async"
       [routerLink]="['/', (me$ | async)?.username, 'activity']"
       name="My Activities"
       [value]="(activities$ | async)?.total"
       icon="change_history"
       class="activity count"></dev-metric>
+    <dev-metric
+      routerLink="/projects"
+      name="Projects"
+      [value]="(projects$ | async)?.total"
+      icon="library_books"
+      class="project count"></dev-metric>
+    <dev-metric
+      routerLink="/users"
+      name="Contributors"
+      [value]="(users$ | async)?.total"
+      icon="group"
+      class="user count"></dev-metric>
 
     <section>
       <h2>My Projects</h2>
       <app-project-card-list
-        [projects]="projects$ | async"
+        [projects]="myProjects$ | async"
         allowProjectCreation="true"
         showMore="false"
         (create)="openProjectCreationDialog()"></app-project-card-list>
