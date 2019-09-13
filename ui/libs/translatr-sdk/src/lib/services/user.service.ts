@@ -1,12 +1,11 @@
-import { Inject, Injectable, Optional } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { Aggregate, PagedList, RequestCriteria, User } from '@dev/translatr-model';
 import { AbstractService } from './abstract.service';
-import { Router } from '@angular/router';
-import { LOGIN_URL } from '@translatr/utils';
+import { ErrorHandler } from './error-handler';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +13,9 @@ import { LOGIN_URL } from '@translatr/utils';
 export class UserService extends AbstractService<User, RequestCriteria> {
   constructor(
     http: HttpClient,
-    router?: Router,
-    @Inject(LOGIN_URL) @Optional() loginUrl?: string
+    errorHandler: ErrorHandler
   ) {
-    super(http, router, loginUrl, () => '/api/users', '/api/user');
+    super(http, errorHandler, () => '/api/users', '/api/user');
   }
 
   byUsername(
