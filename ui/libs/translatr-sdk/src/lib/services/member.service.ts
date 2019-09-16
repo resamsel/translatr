@@ -1,9 +1,8 @@
-import { Inject, Injectable, Optional } from '@angular/core';
-import { AbstractService } from '@dev/translatr-sdk';
+import { Injectable } from '@angular/core';
+import { AbstractService } from './abstract.service';
+import { ErrorHandler } from './error-handler';
 import { Member, MemberCriteria } from '@dev/translatr-model';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { LOGIN_URL } from '@translatr/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -11,15 +10,8 @@ import { LOGIN_URL } from '@translatr/utils';
 export class MemberService extends AbstractService<Member, MemberCriteria> {
   constructor(
     http: HttpClient,
-    router?: Router,
-    @Inject(LOGIN_URL) @Optional() loginUrl?: string
+    errorHandler: ErrorHandler
   ) {
-    super(
-      http,
-      router,
-      loginUrl,
-      (criteria: MemberCriteria) => `/api/project/${criteria.projectId}/members`,
-      '/api/member'
-    );
+    super(http, errorHandler, (criteria: MemberCriteria) => `/api/project/${criteria.projectId}/members`, '/api/member');
   }
 }

@@ -1,11 +1,20 @@
 import { HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injector, StaticProvider } from '@angular/core';
-import { AccessTokenService, KeyService, LocaleService, MessageService, ProjectService, UserService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  ErrorHandler,
+  KeyService,
+  LocaleService,
+  MessageService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 import { XMLHttpRequest } from 'xmlhttprequest';
 
 export class BrowserXhr implements XhrFactory {
-  constructor() {}
+  constructor() {
+  }
 
   build(): any {
     return <any>new XMLHttpRequest();
@@ -45,35 +54,36 @@ const providers: StaticProvider[] = [
     deps: [HttpHandler]
   },
   { provide: XhrFactory, useValue: new BrowserXhr() },
+  { provide: ErrorHandler, useValue: new ErrorHandler() },
   {
     provide: UserService,
-    useFactory: (client: HttpClient) => new UserService(client),
-    deps: [HttpClient]
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new UserService(client, errorHandler),
+    deps: [HttpClient, ErrorHandler]
   },
   {
     provide: ProjectService,
-    useFactory: (client: HttpClient) => new ProjectService(client),
-    deps: [HttpClient]
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new ProjectService(client, errorHandler),
+    deps: [HttpClient, ErrorHandler]
   },
   {
     provide: LocaleService,
-    useFactory: (client: HttpClient) => new LocaleService(client),
-    deps: [HttpClient]
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new LocaleService(client, errorHandler),
+    deps: [HttpClient, ErrorHandler]
   },
   {
     provide: KeyService,
-    useFactory: (client: HttpClient) => new KeyService(client),
-    deps: [HttpClient]
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new KeyService(client, errorHandler),
+    deps: [HttpClient, ErrorHandler]
   },
   {
     provide: MessageService,
-    useFactory: (client: HttpClient) => new MessageService(client),
-    deps: [HttpClient]
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new MessageService(client, errorHandler),
+    deps: [HttpClient, ErrorHandler]
   },
   {
     provide: AccessTokenService,
-    useFactory: (client: HttpClient) => new AccessTokenService(client),
-    deps: [HttpClient]
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new AccessTokenService(client, errorHandler),
+    deps: [HttpClient, ErrorHandler]
   }
 ];
 

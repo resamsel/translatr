@@ -1,11 +1,9 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { convertTemporals, convertTemporalsList } from '../shared';
-import { combineLatest, Observable, throwError } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { PagedList, RequestCriteria } from '@dev/translatr-model';
-import { Router } from '@angular/router';
-import { DefaultErrorHandler } from '@translatr/translatr-sdk/src/lib/services/default-error-handler';
-import { ErrorHandler } from '@angular/core';
+import { ErrorHandler } from './error-handler';
 
 export interface RequestOptions {
   params: {
@@ -14,16 +12,15 @@ export interface RequestOptions {
 }
 
 export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
-  private errorHandler: ErrorHandler;
-
   constructor(
     protected readonly http: HttpClient,
-    protected readonly router: Router,
-    private readonly loginUrl: string,
+    private readonly errorHandler: ErrorHandler,
     private readonly listPath: (criteria: CRITERIA) => string,
     private readonly entityPath: string
   ) {
-    this.errorHandler = new DefaultErrorHandler(router, loginUrl);
+    if (errorHandler === undefined) {
+      this.errorHandler = new ErrorHandler();
+    }
   }
 
   find(criteria?: CRITERIA): Observable<PagedList<DTO> | undefined> {
@@ -36,19 +33,8 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
           ...list,
           list: convertTemporalsList(list.list)
         })),
-        catchError((err: HttpErrorResponse) => {
-          console.error(
-            `Error while finding ${this.listPath(criteria)}`,
-            err,
-            criteria
-          );
-
-          if (err.status >= 400) {
-            this.errorHandler.handleError(err);
-          }
-
-          return throwError(err);
-        })
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err))
       );
   }
 
@@ -60,40 +46,24 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
       })
       .pipe(
         map(convertTemporals),
-        catchError(err => {
-          console.error(`Error while getting ${path}`, err, id, criteria);
-          return throwError(err);
-        })
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err))
       );
   }
 
   create(dto: DTO, options?: RequestOptions): Observable<DTO | undefined> {
     return this.http.post<DTO>(this.entityPath, dto, options).pipe(
       map(convertTemporals),
-      catchError(err => {
-        console.error(
-          `Error while creating ${this.entityPath}`,
-          err,
-          dto,
-          options
-        );
-        return throwError(err);
-      })
+      catchError((err: HttpErrorResponse) =>
+        this.errorHandler.handleError(err))
     );
   }
 
   update(dto: DTO, options?: RequestOptions): Observable<DTO | undefined> {
     return this.http.put<DTO>(this.entityPath, dto, options).pipe(
       map(convertTemporals),
-      catchError(err => {
-        console.error(
-          `Error while updating ${this.entityPath}`,
-          err,
-          dto,
-          options
-        );
-        return throwError(err);
-      })
+      catchError((err: HttpErrorResponse) =>
+        this.errorHandler.handleError(err))
     );
   }
 
@@ -104,10 +74,8 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
     const path = `${this.entityPath}/${id}`;
     return this.http.delete<DTO>(path, options).pipe(
       map(convertTemporals),
-      catchError(err => {
-        console.error(`Error while deleting ${path}`, err, id, options);
-        return throwError(err);
-      })
+      catchError((err: HttpErrorResponse) =>
+        this.errorHandler.handleError(err))
     );
   }
 
