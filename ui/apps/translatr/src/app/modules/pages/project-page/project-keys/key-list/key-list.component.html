@@ -1,59 +1,51 @@
-<ng-container *ngIf="keys?.total > 0; else empty">
-  <app-list-header (add)="openKeyCreationDialog(project)" *ngIf="project">
-    <ng-container *ngIf="keys">
-      {keys.total,
-        plural,
-        =0 {No keys}
-        =1 {One key}
-        other {{{keys.total}} keys}}
-    </ng-container>
-  </app-list-header>
-
-  <app-nav-list
-    (more)="more.emit($event)"
-    [pagedList]="keys"
-    [template]="template"
-  >
-    <ng-template #template let-key>
-      <a
-        [routerLink]="[
+<app-nav-list
+  (add)="openKeyCreationDialog(project)"
+  (filter)="onFilter($event)"
+  (more)="more.emit($event)"
+  [criteria]="criteria"
+  [empty]="empty"
+  [nothingFound]="nothingFound"
+  [pagedList]="keys"
+  showFilter="true"
+>
+  <a
+    *ngFor="let key of keys?.list; trackBy: trackByFn"
+    [routerLink]="[
         '/',
         project.ownerUsername,
         project.name,
         'keys',
         key.name
       ]"
-        mat-list-item
-      >
-        <mat-icon class="key circle" matListIcon>vpn_key</mat-icon>
-        <h3 matLine>{{ key.name }}</h3>
-        <p
-          [title]="key?.whenUpdated | date: 'full'"
-          i18n="@@updated.when"
-          matLine
-        >
-          Updated {{ key?.whenUpdated | amTimeAgo }}
-        </p>
-        <button
-          (click)="onEdit(key, $event)"
-          i18n-title="@@button.edit"
-          mat-icon-button
-          title="Edit"
-        >
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button
-          (click)="onDelete(key, $event)"
-          i18n-title="@@button.delete"
-          mat-icon-button
-          title="Delete"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-      </a>
-    </ng-template>
-  </app-nav-list>
-</ng-container>
+    mat-list-item
+  >
+    <mat-icon class="key circle" matListIcon>vpn_key</mat-icon>
+    <h3 matLine>{{ key.name }}</h3>
+    <p
+      [title]="key?.whenUpdated | date: 'full'"
+      i18n="@@updated.when"
+      matLine
+    >
+      Updated {{ key?.whenUpdated | amTimeAgo }}
+    </p>
+    <button
+      (click)="onEdit(key, $event)"
+      i18n-title="@@button.edit"
+      mat-icon-button
+      title="Edit"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      (click)="onDelete(key, $event)"
+      i18n-title="@@button.delete"
+      mat-icon-button
+      title="Delete"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </a>
+</app-nav-list>
 
 <ng-template #empty>
   <div class="empty large">
@@ -65,5 +57,12 @@
       i18n="@@key.create"
       mat-stroked-button>Add key
     </button>
+  </div>
+</ng-template>
+
+<ng-template #nothingFound>
+  <div class="empty large">
+    <mat-icon class="key circle">vpn_key</mat-icon>
+    <h3 i18n="@@keys.empty">No keys found.</h3>
   </div>
 </ng-template>

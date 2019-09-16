@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Activity, Key, Locale, Message, Project } from '@dev/translatr-model';
 
 @Component({
@@ -7,7 +7,7 @@ import { Activity, Key, Locale, Message, Project } from '@dev/translatr-model';
   templateUrl: './activity-content.component.html',
   styleUrls: ['./activity-content.component.scss']
 })
-export class ActivityContentComponent implements OnInit {
+export class ActivityContentComponent {
   @Input() activity: Activity;
 
   get contentType(): string {
@@ -19,10 +19,6 @@ export class ActivityContentComponent implements OnInit {
   }
 
   constructor() {
-  }
-
-  ngOnInit() {
-    console.log('activity', this.activity);
   }
 
   get project(): Project | undefined {

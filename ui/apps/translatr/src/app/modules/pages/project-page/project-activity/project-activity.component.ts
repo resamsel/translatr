@@ -37,4 +37,14 @@ export class ProjectActivityComponent implements OnInit {
     this.criteria = { ...this.criteria, limit: this.criteria.limit * 2 };
     this.loadActivities();
   }
+
+  onFilter(search: string) {
+    if (!!search) {
+      this.criteria = { ...this.criteria, search };
+    } else {
+      delete this.criteria.search;
+    }
+
+    this.loadActivities();
+  }
 }

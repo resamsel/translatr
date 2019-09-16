@@ -1,5 +1,10 @@
-<mat-list *ngIf="activities; else empty">
-  <mat-list-item *ngFor="let activity of activities.list; trackBy: trackByFn">
+<app-nav-list
+  (filter)="onFilter($event)"
+  (more)="loadMore()"
+  [empty]="empty"
+  [pagedList]="activities"
+  [showMore]="showMore">
+  <mat-list-item *ngFor="let activity of activities?.list; trackBy: trackByFn">
     <img
       [email]="activity.userEmail"
       class="icon"
@@ -10,7 +15,7 @@
     <h3 matLine>
       <a [routerLink]="['/', activity.userUsername]" class="link user-name">{{
         activity.userName
-      }}</a>
+        }}</a>
       <ng-container [ngSwitch]="activity.type">
         <span *ngSwitchCase="'Create'" class="type" i18n>
           <app-tag>created</app-tag>
@@ -33,18 +38,10 @@
       </ng-container>
       <span [title]="activity.whenCreated | date: 'full'">{{
         activity.whenCreated | amTimeAgo
-      }}</span>
+        }}</span>
     </h3>
   </mat-list-item>
-  <a
-    (click)="loadMore()"
-    *ngIf="activities?.hasNext"
-    class="more"
-    mat-list-item
-  >
-    More
-  </a>
-</mat-list>
+</app-nav-list>
 
 <ng-template #empty>
   <mat-list class="empty">

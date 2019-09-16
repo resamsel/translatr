@@ -6,6 +6,7 @@ import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr
 import { combineLatest } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
 import { Link } from '../../nav/sidenav/sidenav.component';
+import { trackByFn } from '@translatr/utils';
 
 @Component({
   selector: 'app-locale-editor-page',
@@ -22,12 +23,15 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   search$ = this.facade.search$;
   message: Message;
 
+  trackByFn = trackByFn;
+
   constructor(
     private readonly appFacade: AppFacade,
     private readonly facade: EditorFacade,
     private readonly route: ActivatedRoute,
     private readonly router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.route.paramMap

@@ -1,30 +1,30 @@
 <app-nav-list
   [pagedList]="users"
-  [template]="template"
   (more)="more.emit($event)"
 >
-  <ng-template #template let-user>
-    <a mat-list-item [routerLink]="['/', user.username]">
-      <img
-        class="icon"
-        matListIcon
-        ngxGravatar
-        [email]="user.email"
-        size="36"
-      />
-      <h3 matLine>
-        {{ user.name }} <span class="username">{{ user.username }}</span>
-      </h3>
-      <p matLine>
+  <a
+    *ngFor="let user of users?.list; trackBy: trackByFn"
+    [routerLink]="['/', user.username]"
+    mat-list-item>
+    <img
+      [email]="user.email"
+      class="icon"
+      matListIcon
+      ngxGravatar
+      size="36"
+    />
+    <h3 matLine>
+      {{ user.name }} <span class="username">{{ user.username }}</span>
+    </h3>
+    <p matLine>
         <span i18n="@@user.memberships"
-          >{user.memberships?.length || 0, plural, =0 {Not contributing at the
+        >{user.memberships?.length || 0, plural, =0 {Not contributing at the
           moment} =1 {Contributing to one project} other {Contributing to
           {{ user.memberships.length }} projects}}</span
         >
-      </p>
-      <p matLine>
-        <span i18n>Joined {{ user.whenCreated | amTimeAgo }}</span>
-      </p>
-    </a>
-  </ng-template>
+    </p>
+    <p matLine>
+      <span i18n>Joined {{ user.whenCreated | amTimeAgo }}</span>
+    </p>
+  </a>
 </app-nav-list>

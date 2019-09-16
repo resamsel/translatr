@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Key, PagedList, Project } from '@dev/translatr-model';
+import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { Key, KeyCriteria, PagedList, Project } from '@dev/translatr-model';
 import { openKeyEditDialog } from '../../../../shared/key-edit-dialog/key-edit-dialog.component';
 import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
+import { trackByFn } from '@translatr/utils';
 
 @Component({
   selector: 'app-key-list',
@@ -13,9 +14,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class KeyListComponent {
   @Input() project: Project;
   @Input() keys: PagedList<Key>;
+  @Input() criteria: KeyCriteria | undefined;
+  @Output() load = new EventEmitter<KeyCriteria>();
   @Output() more = new EventEmitter<number>();
   @Output() edit = new EventEmitter<Key>();
   @Output() delete = new EventEmitter<Key>();
+  trackByFn = trackByFn;
+  @HostBinding('style.display') private readonly display = 'block';
 
   constructor(
     private readonly dialog: MatDialog,
@@ -24,7 +29,15 @@ export class KeyListComponent {
   ) {
   }
 
-  onEdit(key: Key, event: MouseEvent) {
+  onLoad(criteria: KeyCriteria): void {
+    this.load.emit(criteria);
+  }
+
+  onFilter(search: string): void {
+    this.load.emit({ search });
+  }
+
+  onEdit(key: Key, event: MouseEvent): boolean {
     this.edit.emit(key);
     event.stopPropagation();
     event.preventDefault();

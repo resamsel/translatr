@@ -66,12 +66,9 @@ export abstract class AbstractEditFormComponent<T, F extends Identifiable, R ext
 
   protected onError(error: Error): void {
     this.processing = false;
-    console.error('onError', error);
     if (error.error.violations) {
       error.error.violations.forEach((violation: ConstraintViolation) => {
-        console.log('violation', violation);
         const control = this.form.get(violation.field);
-        console.log('control', control);
         if (!!control) {
           control.setErrors({ violation: violation.message });
           control.markAsTouched();

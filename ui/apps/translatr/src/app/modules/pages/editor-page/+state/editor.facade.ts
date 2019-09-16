@@ -113,7 +113,6 @@ export class EditorFacade {
   }
 
   selectKey(key?: string): void {
-    console.log(`Dispatching SelectKey(${key})`);
     this.store.dispatch(new SelectKey({ key }));
   }
 

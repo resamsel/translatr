@@ -16,10 +16,7 @@ export class AppEffects {
         .me()
         .pipe(map((user: User) => new MeLoaded(user)));
     }),
-    catchError(error => {
-      console.error('Error', error);
-      return of(new MeLoadError(error));
-    })
+    catchError(error => of(new MeLoadError(error)))
   );
 
   @Effect() loadUsers$ = this.actions$.pipe(
@@ -29,10 +26,7 @@ export class AppEffects {
         .find(action.payload)
         .pipe(map((pagedList: PagedList<User>) => new UsersLoaded(pagedList)));
     }),
-    catchError(error => {
-      console.error('Error', error);
-      return of(new UsersLoadError(error));
-    })
+    catchError(error => of(new UsersLoadError(error)))
   );
 
   constructor(

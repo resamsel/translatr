@@ -131,31 +131,31 @@ a .mat-card {
     background: #66bb6a;
     color: white;
   }
+}
 
-  .mat-icon.circle {
-    font-size: 18px;
-    line-height: 32px;
-    width: 32px;
-    height: 32px;
-    color: #fff;
-    text-align: center;
-    border-radius: 50%;
+.mat-icon.circle {
+  font-size: 18px;
+  line-height: 32px;
+  width: 32px;
+  height: 32px;
+  color: #fff;
+  text-align: center;
+  border-radius: 50%;
 
-    &.locale {
-      background-color: #42A5F5;
-    }
+  &.locale {
+    background-color: #42A5F5;
+  }
 
-    &.key {
-      background-color: #9ccc65;
-    }
+  &.key {
+    background-color: #9ccc65;
+  }
 
-    &.message {
-      background-color: #ef5350;
-    }
+  &.message {
+    background-color: #ef5350;
+  }
 
-    &.member {
-      background-color: #FFA726;
-    }
+  &.member {
+    background-color: #FFA726;
   }
 }
 

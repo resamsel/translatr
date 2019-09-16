@@ -39,10 +39,7 @@ export class ProjectEffects {
           .getProjectByOwnerAndName(payload.username, payload.projectName)
           .pipe(
             map((p: Project) => new ProjectLoaded(p)),
-            catchError(error => {
-              console.error('Error', error);
-              return of(new ProjectLoadError(error));
-            })
+            catchError(error => of(new ProjectLoadError(error)))
           );
       }
     )

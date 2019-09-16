@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PagedList, Project, User } from '@dev/translatr-model';
+import { PagedList, Project, ProjectCriteria, User } from '@dev/translatr-model';
 import { ProjectService } from '@dev/translatr-sdk';
 import { Observable } from 'rxjs';
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
@@ -15,6 +15,10 @@ import { MatDialog } from '@angular/material/dialog';
 export class UserProjectsComponent implements OnInit {
   user: User;
   projects$: Observable<PagedList<Project>>;
+  criteria: ProjectCriteria = {
+    order: 'whenUpdated desc',
+    limit: '10'
+  };
 
   constructor(
     private readonly projectService: ProjectService,
@@ -26,17 +30,19 @@ export class UserProjectsComponent implements OnInit {
 
   ngOnInit() {
     this.route.parent.data.subscribe((data: { user: User }) => {
-      this.user = data.user;
+      this.criteria.owner = data.user.username;
       this.loadProjects();
     });
   }
 
-  private loadProjects(): void {
-    this.projects$ = this.projectService.find({
-      owner: this.user.username,
-      order: 'whenUpdated desc',
-      limit: '10'
-    });
+  onFilter(search: string) {
+    if (!!search) {
+      this.criteria.search = search;
+    } else {
+      delete this.criteria.search;
+    }
+
+    this.loadProjects();
   }
 
   openProjectCreationDialog(): void {
@@ -48,5 +54,14 @@ export class UserProjectsComponent implements OnInit {
       )
       .subscribe((project => this.router
         .navigate([project.ownerUsername, project.name])));
+  }
+
+  onMore(limit: number) {
+    this.criteria.limit = `${limit}`;
+    this.loadProjects();
+  }
+
+  private loadProjects(): void {
+    this.projects$ = this.projectService.find(this.criteria);
   }
 }

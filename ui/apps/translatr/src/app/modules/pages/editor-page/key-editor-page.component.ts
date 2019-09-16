@@ -6,6 +6,7 @@ import { filter, take, takeUntil } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
 import { Link } from '../../nav/sidenav/sidenav.component';
+import { trackByFn } from '@translatr/utils';
 
 @Component({
   selector: 'app-key-editor-page',
@@ -21,12 +22,15 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   selectedLocale$ = this.facade.selectedLocale$;
   search$ = this.facade.search$;
 
+  trackByFn = trackByFn;
+
   constructor(
     private readonly appFacade: AppFacade,
     private readonly facade: EditorFacade,
     private readonly route: ActivatedRoute,
     private readonly router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.route.paramMap

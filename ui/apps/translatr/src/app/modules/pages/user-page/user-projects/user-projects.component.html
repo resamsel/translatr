@@ -1,4 +1,8 @@
-<app-project-list [projects]="projects$ | async"></app-project-list>
+<app-project-list
+  (filter)="onFilter($event)"
+  (more)="onMore($event)"
+  [projects]="projects$ | async"
+  showFilter="true"></app-project-list>
 
 <button
   mat-fab

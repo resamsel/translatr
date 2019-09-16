@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { PagedList, User } from '@dev/translatr-model';
+import { trackByFn } from '@translatr/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -7,11 +8,9 @@ import { PagedList, User } from '@dev/translatr-model';
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss']
 })
-export class UserListComponent implements OnInit {
+export class UserListComponent {
   @Input() users: PagedList<User>;
   @Output() readonly more = new EventEmitter<number>();
 
-  constructor() {}
-
-  ngOnInit() {}
+  trackByFn = trackByFn;
 }

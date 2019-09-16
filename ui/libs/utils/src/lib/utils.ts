@@ -34,3 +34,7 @@ export function cartesianProduct<T>(arr: T[][]): T[][] {
     [[]] as T[][]
   );
 }
+
+export const trackByFn =
+  (index: number, item: { id?: string | number }): string =>
+    `${item.id}`;

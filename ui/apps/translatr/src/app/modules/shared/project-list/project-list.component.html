@@ -1,31 +1,39 @@
-<app-nav-list [pagedList]="projects" [template]="template" [empty]="empty">
-  <ng-template #template let-project>
-    <a mat-list-item [routerLink]="['/', project.ownerUsername, project.name]">
+<app-nav-list
+  (filter)="filter.emit($event)"
+  (more)="more.emit($event)"
+  [empty]="empty"
+  [pagedList]="projects"
+  [showFilter]="showFilter"
+  [showMore]="showMore">
+  <a
+    *ngFor="let project of projects?.list; trackBy: trackByFn"
+    [routerLink]="['/', project.ownerUsername, project.name]"
+    mat-list-item>
       <span matListIcon class="mat-icon circle">{{
         firstChar(project.name)
-      }}</span>
-      <h3 matLine>
-        {{ project.name }} <span class="owner">{{ project.ownerName }}</span>
-      </h3>
-      <p
-        matLine
-        i18n="@@added.when"
-        [title]="project.whenCreated | date: 'full'"
-      >
-        {{ project.whenCreated | amTimeAgo }}
-      </p>
-    </a>
-  </ng-template>
+        }}</span>
+    <h3 matLine>
+      {{ project.name }} <span class="owner">{{ project.ownerName }}</span>
+    </h3>
+    <p
+      [title]="project.whenCreated | date: 'full'"
+      i18n="@@added.when"
+      matLine
+    >
+      {{ project.whenCreated | amTimeAgo }}
+    </p>
+  </a>
   <ng-template #empty>
     <div class="empty-view">
       <mat-icon>book</mat-icon>
       <p>You don't have any projects yet, you might want to create one of your own.</p>
       <button *ngIf="allowProjectCreation"
-        mat-raised-button
-        color="accent"
-        class="action"
-        (click)="onCreateProject()"
-      >Start new project</button>
+              (click)="onCreateProject()"
+              class="action"
+              color="accent"
+              mat-raised-button
+      >Start new project
+      </button>
     </div>
   </ng-template>
 </app-nav-list>

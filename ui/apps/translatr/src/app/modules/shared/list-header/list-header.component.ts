@@ -13,4 +13,5 @@ export class ListHeaderComponent {
   @Input() removeEnabled = false;
   @Output() add = new EventEmitter<void>();
   @Output() remove = new EventEmitter<void>();
+  @Output() filter = new EventEmitter<string>();
 }

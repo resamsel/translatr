@@ -8,7 +8,12 @@
       [value]="(commands$ | async).search || ''"
       (keyup.enter)="onFilter($event.target.value)"
     />
-    <button *ngIf="input.value" matSuffix mat-icon-button aria-label="Clear" (click)="input.value = ''; onFilter('')">
+    <button
+      (click)="input.value = ''; onFilter('')"
+      *ngIf="input.value"
+      aria-label="Clear"
+      mat-icon-button
+      matSuffix>
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>

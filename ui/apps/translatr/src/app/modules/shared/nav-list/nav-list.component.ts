@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
-import { PagedList } from '@dev/translatr-model';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { PagedList, RequestCriteria } from '@dev/translatr-model';
+import { trackByFn } from '@translatr/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -7,24 +8,22 @@ import { PagedList } from '@dev/translatr-model';
   templateUrl: './nav-list.component.html',
   styleUrls: ['./nav-list.component.scss']
 })
-export class NavListComponent implements OnInit {
+export class NavListComponent {
   @Input() pagedList: PagedList<{ id?: string | number }> | undefined;
+  @Input() criteria: RequestCriteria | undefined;
   @Input() loadingListLength = 5;
   @Input() showLoadingAvatar = true;
-  @Input() template: TemplateRef<any>;
   @Input() empty: TemplateRef<any>;
+  @Input() nothingFound: TemplateRef<any>;
   @Input() direction: 'column' | 'row' = 'column';
   @Input() showMore = true;
+  @Input() showFilter = false;
 
   @Output() more = new EventEmitter<number>();
+  @Output() add = new EventEmitter<void>();
+  @Output() filter = new EventEmitter<string>();
 
-  constructor() {}
-
-  ngOnInit() {}
-
-  trackByFn(index: number, item: { id: string }): string {
-    return item.id;
-  }
+  trackByFn = trackByFn;
 
   get loadingList(): number[] {
     return Array(this.loadingListLength).map(

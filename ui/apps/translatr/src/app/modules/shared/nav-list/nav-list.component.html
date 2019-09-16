@@ -1,11 +1,13 @@
+<app-list-header
+  (add)="add.emit()"
+  (filter)="filter.emit($event)"
+  *ngIf="showFilter"
+></app-list-header>
+
 <mat-nav-list *ngIf="pagedList; else loading">
-  <div *ngIf="pagedList.total > 0; else empty" [class.flex-stretch]="direction === 'row'">
+  <div *ngIf="pagedList.total > 0; else noResults" [class.flex-stretch]="direction === 'row'">
     <ng-content></ng-content>
-    <ng-container *ngFor="let item of pagedList.list; trackBy: trackByFn">
-      <ng-container
-        *ngTemplateOutlet="template; context: { $implicit: item }"
-      ></ng-container>
-    </ng-container>
+
     <a
       mat-list-item
       class="more"
@@ -31,4 +33,10 @@
       <p matLine class="subtitle"></p>
     </mat-list-item>
   </mat-list>
+</ng-template>
+
+<ng-template #noResults>
+  <ng-container *ngIf="criteria?.search; else empty">
+    <ng-container *ngTemplateOutlet="nothingFound"></ng-container>
+  </ng-container>
 </ng-template>

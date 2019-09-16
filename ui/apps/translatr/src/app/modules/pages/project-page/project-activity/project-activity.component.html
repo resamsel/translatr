@@ -4,6 +4,7 @@
   </div>
   <app-activity-list
     [activities]="activities$ | async"
+    (filter)="onFilter($event)"
     (more)="onMore()"
   ></app-activity-list>
 </div>

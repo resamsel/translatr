@@ -13,9 +13,10 @@ import {
   UnloadProject
 } from './project.actions';
 import { ActivityCriteria } from '@dev/translatr-sdk';
-import { Observable, Subject } from 'rxjs';
-import { Project, RequestCriteria } from '@dev/translatr-model';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { KeyCriteria, LocaleCriteria, Project } from '@dev/translatr-model';
 import { takeUntil } from 'rxjs/operators';
+import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 
 @Injectable()
 export class ProjectFacade {
@@ -33,10 +34,12 @@ export class ProjectFacade {
     select(projectQuery.getLocales),
     takeUntil(this.unload$)
   );
+  localesCriteria$ = new BehaviorSubject<LocaleCriteria | undefined>(undefined);
   keys$ = this.store.pipe(
     select(projectQuery.getKeys),
     takeUntil(this.unload$)
   );
+  keysCriteria$ = new BehaviorSubject<KeyCriteria | undefined>(undefined);
   messages$ = this.store.pipe(
     select(projectQuery.getMessages),
     takeUntil(this.unload$)
@@ -51,21 +54,24 @@ export class ProjectFacade {
     takeUntil(this.unload$)
   );
 
-  constructor(private store: Store<ProjectPartialState>) {}
+  constructor(private store: Store<ProjectPartialState>) {
+  }
 
   loadProject(username: string, projectName: string) {
     this.store.dispatch(new LoadProject({ username, projectName }));
   }
 
-  loadLocales(projectId: string, criteria?: RequestCriteria) {
+  loadLocales(projectId: string, criteria?: LocaleCriteria) {
+    this.localesCriteria$.next(criteria);
     this.store.dispatch(new LoadLocales({ ...criteria, projectId }));
   }
 
-  loadKeys(projectId: string, criteria?: RequestCriteria) {
+  loadKeys(projectId: string, criteria?: KeyCriteria) {
+    this.keysCriteria$.next(criteria);
     this.store.dispatch(new LoadKeys({ ...criteria, projectId }));
   }
 
-  loadMessages(projectId: string, criteria?: RequestCriteria) {
+  loadMessages(projectId: string, criteria?: MessageCriteria) {
     this.store.dispatch(new LoadMessages({ ...criteria, projectId }));
   }
 

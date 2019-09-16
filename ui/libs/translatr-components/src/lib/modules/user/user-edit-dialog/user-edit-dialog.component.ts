@@ -59,7 +59,6 @@ export class UserEditDialogComponent {
   }
 
   private setErrors(error: ConstraintViolationErrorInfo) {
-    console.log(error);
     if (error.type === 'ConstraintViolationException') {
       error.violations
         .filter(

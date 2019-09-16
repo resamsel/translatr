@@ -1,12 +1,11 @@
 <app-nav-list
   [pagedList]="projects"
-  [template]="template"
   [empty]="empty"
   direction="row"
   [showMore]="showMore">
-  <ng-template #template let-project>
-    <app-project-card-link [project]="project"></app-project-card-link>
-  </ng-template>
+  <app-project-card-link
+    *ngFor="let project of projects?.list; trackBy: trackByFn"
+    [project]="project"></app-project-card-link>
   <ng-template #empty>
     <div class="empty-view">
       <mat-icon>book</mat-icon>

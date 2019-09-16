@@ -1,57 +1,49 @@
-<ng-container *ngIf="locales?.total > 0; else empty">
-  <app-list-header (add)="openLocaleCreationDialog(project)" *ngIf="project">
-    {locales.total,
-      plural,
-      =0 {No locales}
-      =1 {One locale}
-      other {{{locales.total}} locales}}
-  </app-list-header>
-
-  <app-nav-list
-    (more)="more.emit($event)"
-    [pagedList]="locales"
-    [template]="template"
-  >
-    <ng-template #template let-locale>
-      <a
-        [routerLink]="[
+<app-nav-list
+  (add)="openLocaleCreationDialog(project)"
+  (filter)="onFilter($event)"
+  (more)="more.emit($event)"
+  [empty]="empty"
+  [pagedList]="locales"
+  showFilter="true"
+>
+  <a
+    *ngFor="let locale of locales?.list; trackBy: trackByFn"
+    [routerLink]="[
         '/',
         project.ownerUsername,
         project.name,
         'locales',
         locale.name
       ]"
-        mat-list-item
-      >
-        <mat-icon class="locale circle" matListIcon>language</mat-icon>
-        <h3 matLine>{{ locale.displayName }} ({{ locale.name }})</h3>
-        <p
-          [title]="locale?.whenUpdated | date: 'full'"
-          i18n="@@updated.when"
-          matLine
-        >
-          Updated {{ locale?.whenUpdated | amTimeAgo }}
-        </p>
-        <button
-          (click)="onEdit(locale, $event)"
-          i18n-title="@@button.edit"
-          mat-icon-button
-          title="Edit"
-        >
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button
-          (click)="onDelete(locale, $event)"
-          i18n-title="@@button.delete"
-          mat-icon-button
-          title="Delete"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-      </a>
-    </ng-template>
-  </app-nav-list>
-</ng-container>
+    mat-list-item
+  >
+    <mat-icon class="locale circle" matListIcon>language</mat-icon>
+    <h3 matLine>{{ locale.displayName }} ({{ locale.name }})</h3>
+    <p
+      [title]="locale?.whenUpdated | date: 'full'"
+      i18n="@@updated.when"
+      matLine
+    >
+      Updated {{ locale?.whenUpdated | amTimeAgo }}
+    </p>
+    <button
+      (click)="onEdit(locale, $event)"
+      i18n-title="@@button.edit"
+      mat-icon-button
+      title="Edit"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      (click)="onDelete(locale, $event)"
+      i18n-title="@@button.delete"
+      mat-icon-button
+      title="Delete"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </a>
+</app-nav-list>
 
 <ng-template #empty>
   <div class="empty large">

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Activity, PagedList } from '@dev/translatr-model';
 
 @Component({
@@ -7,13 +7,12 @@ import { Activity, PagedList } from '@dev/translatr-model';
   styleUrls: ['./activity-list.component.scss'],
   preserveWhitespaces: true
 })
-export class ActivityListComponent implements OnInit {
+export class ActivityListComponent {
   @Input() activities: PagedList<Activity>;
+  @Input() showMore = true;
+
+  @Output() filter = new EventEmitter<string>();
   @Output() more = new EventEmitter<void>();
-
-  constructor() {}
-
-  ngOnInit() {}
 
   trackByFn(index, item: Activity): string {
     return item.id;
@@ -21,5 +20,9 @@ export class ActivityListComponent implements OnInit {
 
   loadMore(): void {
     this.more.emit();
+  }
+
+  onFilter(search: string) {
+    this.filter.emit(search);
   }
 }

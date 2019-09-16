@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { take } from 'rxjs/operators';
-import { Locale, Project } from '@dev/translatr-model';
+import { pluck, take } from 'rxjs/operators';
+import { Locale, LocaleCriteria, Project } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -12,11 +12,21 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class ProjectLocalesComponent {
   project$ = this.facade.project$;
   locales$ = this.facade.locales$;
+  search$ = this.facade.localesCriteria$.pipe(
+    pluck('search')
+  );
 
   constructor(
     private readonly facade: ProjectFacade,
     private readonly snackBar: MatSnackBar
   ) {
+  }
+
+  onLoad(criteria: LocaleCriteria) {
+    this.project$
+      .pipe(take(1))
+      .subscribe((project: Project) =>
+        this.facade.loadLocales(project.id, criteria));
   }
 
   onMore(limit: number) {

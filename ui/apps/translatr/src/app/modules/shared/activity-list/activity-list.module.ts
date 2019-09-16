@@ -9,6 +9,7 @@ import { ActivityListComponent } from './activity-list.component';
 import { RouterModule } from '@angular/router';
 import { ActivityContentModule } from '../activity-content/activity-content.module';
 import { TagModule } from '@translatr/translatr-components/src/lib/modules/tag/tag.module';
+import { NavListModule } from '../nav-list/nav-list.module';
 
 @NgModule({
   declarations: [ActivityListComponent],
@@ -24,7 +25,8 @@ import { TagModule } from '@translatr/translatr-components/src/lib/modules/tag/t
     GravatarModule,
 
     ActivityContentModule,
-    TagModule
+    TagModule,
+    NavListModule
   ],
   exports: [ActivityListComponent]
 })

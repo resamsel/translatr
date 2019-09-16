@@ -152,7 +152,6 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   }
 
   onPage(event: PageEvent) {
-    console.log('onPage', event);
     this.offset$.next(event.pageIndex * event.pageSize);
   }
 }

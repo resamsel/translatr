@@ -1,5 +1,33 @@
 <div class="actions">
-  <h3 class="title"><ng-content></ng-content></h3>
-  <button mat-stroked-button *ngIf="addVisible" [disabled]="!addEnabled" (click)="add.emit()" i18n>add</button>
-  <button mat-stroked-button *ngIf="removeVisible" [disabled]="!removeEnabled" (click)="remove.emit()" i18n>remove</button>
+  <mat-form-field appearance="outline">
+    <mat-icon matPrefix>search</mat-icon>
+    <mat-label i18n="@@search.label">Filter list</mat-label>
+    <input
+      #search
+      (blur)="filter.emit($event.target.value)"
+      (keyup.enter)="filter.emit($event.target.value)"
+      autocomplete="off"
+      matInput
+      placeholder="Filter">
+    <button
+      (click)="search.value = ''; filter.emit('')"
+      *ngIf="search.value"
+      aria-label="Clear"
+      mat-icon-button
+      matSuffix>
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <button
+    (click)="add.emit()"
+    *ngIf="addVisible"
+    [disabled]="!addEnabled"
+    class="floating-action-btn pin-bottom"
+    color="accent"
+    mat-fab>
+    <mat-icon>add</mat-icon>
+  </button>
+  <button (click)="remove.emit()" *ngIf="removeVisible" [disabled]="!removeEnabled" i18n mat-icon-button>
+    <mat-icon>remove</mat-icon>
+  </button>
 </div>

@@ -34,23 +34,17 @@ export class ProjectInfoComponent {
   latestKeys$: Observable<Key[]> = this.keys$.pipe(
     filter(pagedList => !!pagedList && !!pagedList.list),
     pluck('list'),
-    map((keys: Key[]) => {
-      console.log('keys', keys);
-      return keys
+    map((keys: Key[]) => keys
         .slice()
         .sort(
           (a: Key, b: Key) => b.whenUpdated.getTime() - a.whenUpdated.getTime()
         )
-        .slice(0, 3);
-    })
+      .slice(0, 3))
   );
   latestMessages$: Observable<Message[]> = this.facade.messages$.pipe(
     filter(pagedList => !!pagedList && !!pagedList.list),
     pluck('list'),
-    map((messages: Message[]) => {
-      console.log('messages', messages);
-      return messages.slice(0, 3);
-    })
+    map((messages: Message[]) => messages.slice(0, 3))
   );
 
   constructor(

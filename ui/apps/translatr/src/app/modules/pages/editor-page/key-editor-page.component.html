@@ -44,25 +44,23 @@
 
   <app-nav-list
     [pagedList]="locales$ | async"
-    [template]="template"
     [showLoadingAvatar]="false"
     [loadingListLength]="10"
     (more)="onLoadMore($event)"
   >
-    <ng-template #template let-locale>
-      <a
-        mat-list-item
-        [routerLink]="[]"
-        [queryParams]="{ locale: locale.name }"
-        queryParamsHandling="merge"
-        [class.active]="(selectedMessage$ | async)?.localeName === locale.name"
-      >
-        <h3 matLine>{{ locale.displayName }}</h3>
-        <p matLine class="translation">
-          <span *ngIf="locale.messages; else translationMissing">{{locale.messages[((key$ | async)?.name)]?.value}}</span>
-          <ng-template #translationMissing>-</ng-template>
-        </p>
-      </a>
-    </ng-template>
+    <a
+      *ngFor="let locale of (locales$ | async)?.list; trackBy: trackByFn"
+      [class.active]="(selectedMessage$ | async)?.localeName === locale.name"
+      [queryParams]="{ locale: locale.name }"
+      [routerLink]="[]"
+      mat-list-item
+      queryParamsHandling="merge"
+    >
+      <h3 matLine>{{ locale.displayName }}</h3>
+      <p class="translation" matLine>
+        <span *ngIf="locale.messages; else translationMissing">{{locale.messages[((key$ | async)?.name)]?.value}}</span>
+        <ng-template #translationMissing>-</ng-template>
+      </p>
+    </a>
   </app-nav-list>
 </app-editor>

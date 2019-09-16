@@ -61,7 +61,6 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
   }
 
   onSaveName() {
-    console.log('save');
     this.project$
       .pipe(
         take(1),

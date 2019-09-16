@@ -146,9 +146,6 @@ export class EditorEffects {
     ofType<KeyLoaded>(EditorActionTypes.KeyLoaded),
     withLatestFrom(this.store.pipe(select(editorQuery.getSelectedLocale))),
     map(([action, selectedLocale]: [KeyLoaded, string]) => {
-      console.log(
-        `Dispatching SelectKey(${selectedLocale}): selectLocaleAfterKeyChanged$`
-      );
       return new SelectLocale({
         locale: selectedLocale
       });
@@ -159,11 +156,6 @@ export class EditorEffects {
     ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
     withLatestFrom(this.store.pipe(select(editorQuery.getSelectedKey))),
     map(([action, selectedKey]: [LocaleLoaded, string]) => {
-      console.log(
-        `Dispatching SelectKey(${
-          selectedKey
-        }): selectKeyAfterLocaleChanged$`
-      );
       return new SelectKey({ key: selectedKey });
     })
   );
@@ -182,9 +174,6 @@ export class EditorEffects {
     ofType<KeysLoaded>(EditorActionTypes.KeysLoaded),
     withLatestFrom(this.store.pipe(select(editorQuery.getSelectedKey))),
     map(([action, selectedKey]: [KeysLoaded, string]) => {
-        console.log(
-          `Dispatching SelectKey(${selectedKey}): selectKeyAfterKeysLoaded$`
-        );
         return new SelectKey({ key: selectedKey });
       }
     )
@@ -194,11 +183,8 @@ export class EditorEffects {
     ofType<SelectKey>(EditorActionTypes.SelectKey),
     switchMap((action: SelectKey) => {
         if (action.payload.key === undefined) {
-          console.log('Key empty in action', action);
           return of(new MessageSelected({}));
         }
-
-        console.log('Key exists in action', action);
 
         return combineLatest([
           this.facade.locale$,
@@ -215,7 +201,6 @@ export class EditorEffects {
               (k: Key) => k.name === action.payload.key
             );
             if (key === undefined) {
-              console.log('Key not found in key list', keys);
               return new MessageSelected({});
             }
 
@@ -243,11 +228,8 @@ export class EditorEffects {
     ofType<SelectLocale>(EditorActionTypes.SelectLocale),
     switchMap((action: SelectLocale) => {
         if (action.payload.locale === undefined) {
-          console.log('Locale empty in action', action);
           return of(new MessageSelected({}));
         }
-
-        console.log('Locale exists in action', action);
 
         return combineLatest([
           this.facade.key$,
@@ -264,7 +246,6 @@ export class EditorEffects {
               (l: Locale) => l.name === action.payload.locale
             );
             if (locale === undefined) {
-              console.log('Locale not found in locale list', locales);
               return new MessageSelected({});
             }
 
@@ -326,10 +307,7 @@ export class EditorEffects {
 
         return observable.pipe(
           map((message: Message) => new MessageSaved(message)),
-          catchError(error => {
-            console.error('Error while saving message', error);
-            return throwError(error);
-          })
+          catchError(error => throwError(error))
         );
       }
     )

@@ -7,15 +7,6 @@ import { User } from '@dev/translatr-model';
   styleUrls: ['./auth-bar-item.component.scss']
 })
 export class AuthBarItemComponent {
-  private _me: User;
-
-  @Input() set me(me: User) {
-    console.log('me', me);
-    this._me = me;
-  }
+  @Input() me: User;
   @Input() endpointUrl: string;
-
-  get me(): User {
-    return this._me;
-  }
 }

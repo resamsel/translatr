@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
+import { trackByFn } from '@translatr/utils';
 
 @Component({
   selector: 'app-user-access-tokens',
@@ -16,18 +17,21 @@ export class UserAccessTokensComponent implements OnInit {
   user: User;
   accessTokens$: Observable<PagedList<AccessToken> | undefined>;
 
+  trackByFn = trackByFn;
+
   constructor(
     private readonly facade: UserFacade,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly dialog: MatDialog
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.route.parent.parent.data.subscribe((data: { user: User }) => {
       this.user = data.user;
       this.accessTokens$ = this.facade.loadAccessTokens({
-        userId: data.user.id
+        userId: this.user.id
       });
     });
   }
@@ -40,6 +44,13 @@ export class UserAccessTokensComponent implements OnInit {
         filter(accessToken => !!accessToken)
       )
       .subscribe((accessToken => this.router
-        .navigate([accessToken.id], {relativeTo: this.route})));
+        .navigate([accessToken.id], { relativeTo: this.route })));
+  }
+
+  onFilter(search: string) {
+    this.accessTokens$ = this.facade.loadAccessTokens({
+      userId: this.user.id,
+      search: search
+    });
   }
 }

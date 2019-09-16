@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { PagedList, Project } from '@dev/translatr-model';
 import { firstChar } from '@dev/translatr-sdk';
+import { trackByFn } from '@translatr/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -11,10 +12,15 @@ import { firstChar } from '@dev/translatr-sdk';
 export class ProjectListComponent {
   @Input() projects: PagedList<Project>;
   @Input() allowProjectCreation = false;
+  @Input() showFilter = false;
+  @Input() showMore = true;
 
   @Output() create = new EventEmitter<void>();
+  @Output() filter = new EventEmitter<string>();
+  @Output() more = new EventEmitter<number>();
 
   firstChar = firstChar;
+  trackByFn = trackByFn;
 
   onCreateProject(): void {
     this.create.emit();
