@@ -1,6 +1,5 @@
 package dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.joda.time.DateTime;
 
@@ -12,9 +11,7 @@ public class Message extends Dto {
 
   public UUID id;
 
-  @JsonIgnore
   public DateTime whenCreated;
-  @JsonIgnore
   public DateTime whenUpdated;
 
   public UUID localeId;
