@@ -1,7 +1,7 @@
 export interface RequestCriteria {
   access_token?: string;
-  offset?: string;
-  limit?: string;
+  offset?: number;
+  limit?: number;
   order?: string;
   search?: string;
   fetch?: string;

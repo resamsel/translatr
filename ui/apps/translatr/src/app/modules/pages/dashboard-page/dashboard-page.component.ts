@@ -30,8 +30,8 @@ export class DashboardPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.projectsFacade.loadProjects({ limit: '1', fetch: 'count' });
-    this.appFacade.loadUsers({ limit: '1', fetch: 'count' });
+    this.projectsFacade.loadProjects({ limit: 1, fetch: 'count' });
+    this.appFacade.loadUsers({ limit: 1, fetch: 'count' });
     this.me$
       .pipe(
         filter(me => me !== undefined),
@@ -60,7 +60,7 @@ export class DashboardPageComponent implements OnInit {
   private loadMyProjects(user: User): void {
     this.projectsFacade.loadMyProjects({
       owner: user.username,
-      limit: '4',
+      limit: 4,
       order: 'whenUpdated desc'
     });
   }

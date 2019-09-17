@@ -122,6 +122,7 @@ a .mat-card {
     color: white;
   }
 
+  .access-token .mat-card,
   .message .mat-card {
     background: #ef5350;
     color: white;
@@ -150,6 +151,7 @@ a .mat-card {
     background-color: #9ccc65;
   }
 
+  &.access-token,
   &.message {
     background-color: #ef5350;
   }

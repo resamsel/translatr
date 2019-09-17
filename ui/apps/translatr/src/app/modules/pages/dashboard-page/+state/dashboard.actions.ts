@@ -1,6 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Activity, PagedList } from '@dev/translatr-model';
-import { ActivityCriteria } from '@dev/translatr-sdk';
+import { Activity, ActivityCriteria, PagedList } from '@dev/translatr-model';
 
 export enum DashboardActionTypes {
   LoadActivities = '[Dashboard] Load Activities',

@@ -23,20 +23,20 @@ export interface ProjectPartialState {
 
 export const initialState: ProjectState = {
   localesSearch: {
-    limit: '50',
-    offset: '0',
+    limit: 50,
+    offset: 0,
     order: 'name asc',
     fetch: 'count'
   },
   keysSearch: {
-    limit: '50',
-    offset: '0',
+    limit: 50,
+    offset: 0,
     order: 'name asc',
     fetch: 'count'
   },
   messagesSearch: {
-    limit: '50',
-    offset: '0',
+    limit: 50,
+    offset: 0,
     order: 'k.when_updated asc',
     fetch: 'count'
   },

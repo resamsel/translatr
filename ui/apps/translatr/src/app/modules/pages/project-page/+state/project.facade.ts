@@ -12,9 +12,8 @@ import {
   SaveProject,
   UnloadProject
 } from './project.actions';
-import { ActivityCriteria } from '@dev/translatr-sdk';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { KeyCriteria, LocaleCriteria, Project } from '@dev/translatr-model';
+import { ActivityCriteria, KeyCriteria, LocaleCriteria, Project } from '@dev/translatr-model';
 import { takeUntil } from 'rxjs/operators';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 

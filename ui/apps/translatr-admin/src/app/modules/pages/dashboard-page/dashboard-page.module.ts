@@ -24,6 +24,7 @@ import {
   ButtonModule,
   EllipsisModule,
   EntityTableModule,
+  MetricModule,
   ProjectEditDialogModule,
   UserCardModule,
   UserEditDialogModule
@@ -70,7 +71,8 @@ import { DashboardUserComponent } from './dashboard-user/dashboard-user.componen
     EntityTableModule,
     MatListModule,
     MatSidenavModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MetricModule
   ]
 })
 export class DashboardPageModule {}

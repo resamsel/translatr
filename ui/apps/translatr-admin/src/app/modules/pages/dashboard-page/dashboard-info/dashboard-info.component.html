@@ -1,3 +1,26 @@
-<div class="container">
-  dashboard-info works!
+<div class="container flex">
+  <dev-metric
+    routerLink="/users"
+    name="Users"
+    [value]="(users$ | async)?.total"
+    icon="group"
+    class="user count"></dev-metric>
+  <dev-metric
+    routerLink="/projects"
+    name="Projects"
+    [value]="(projects$ | async)?.total"
+    icon="library_books"
+    class="project count"></dev-metric>
+  <dev-metric
+    routerLink="/accesstokens"
+    name="Access Tokens"
+    [value]="(accessTokens$ | async)?.total"
+    icon="vpn_key"
+    class="access-token count"></dev-metric>
+  <dev-metric
+    name="Activity"
+    [value]="(activities$ | async)?.total"
+    icon="change_history"
+    class="activity count"></dev-metric>
 </div>
+

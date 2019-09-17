@@ -81,7 +81,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onLoadMore(limit: number): void {
-    this.facade.loadKeysBy({ limit: `${limit + 25}` });
+    this.facade.loadKeysBy({ limit: limit + 25 });
   }
 
   messagesOfKey(keys?: PagedList<Key>, keyName?: string): Array<Message> {

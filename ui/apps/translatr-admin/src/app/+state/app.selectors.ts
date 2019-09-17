@@ -34,10 +34,16 @@ const getAccessTokens = createSelector(
   (state: AppState) => state.accessTokens
 );
 
+const getActivities = createSelector(
+  getAppState,
+  (state: AppState) => state.activities
+);
+
 export const appQuery = {
   getLoggedInUser,
   getUsers,
   getUser,
   getProjects,
-  getAccessTokens
+  getAccessTokens,
+  getActivities
 };

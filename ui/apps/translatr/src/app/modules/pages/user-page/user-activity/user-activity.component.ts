@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Activity, PagedList, User } from '@dev/translatr-model';
+import { Activity, ActivityCriteria, PagedList, User } from '@dev/translatr-model';
 import { ActivatedRoute } from '@angular/router';
-import { ActivityCriteria, ActivityService } from '@dev/translatr-sdk';
+import { ActivityService } from '@dev/translatr-sdk';
 
 @Component({
   selector: 'app-user-activity',
@@ -16,7 +16,8 @@ export class UserActivityComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly activityService: ActivityService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.route.parent.data.subscribe((data: { user: User }) => {

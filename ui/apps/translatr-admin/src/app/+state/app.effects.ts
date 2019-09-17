@@ -7,6 +7,8 @@ import {
   AccessTokensDeleteError,
   AccessTokensLoaded,
   AccessTokensLoadError,
+  ActivitiesLoaded,
+  ActivitiesLoadError,
   AppActionTypes,
   CreateUser,
   DeleteAccessToken,
@@ -16,6 +18,7 @@ import {
   DeleteUser,
   DeleteUsers,
   LoadAccessTokens,
+  LoadActivities,
   LoadLoggedInUser,
   LoadProjects,
   LoadUser,
@@ -45,10 +48,10 @@ import {
   UserUpdated,
   UserUpdateError
 } from './app.actions';
-import { AccessToken, PagedList, Project, User } from '@dev/translatr-model';
+import { AccessToken, Activity, PagedList, Project, User } from '@dev/translatr-model';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { AccessTokenService, ProjectService, UserService } from '@dev/translatr-sdk';
+import { AccessTokenService, ActivityService, ProjectService, UserService } from '@dev/translatr-sdk';
 
 @Injectable()
 export class AppEffects {
@@ -208,11 +211,23 @@ export class AppEffects {
     )
   );
 
+  // Activity
+
+  @Effect() loadActivities$ = this.actions$.pipe(
+    ofType(AppActionTypes.LoadActivities),
+    switchMap((action: LoadActivities) =>
+      this.activityService.find(action.payload).pipe(
+        map((payload: PagedList<Activity>) => new ActivitiesLoaded(payload)),
+        catchError(error => of(new ActivitiesLoadError(error)))
+      ))
+  );
+
   constructor(
     private actions$: Actions,
     private readonly userService: UserService,
     private readonly projectService: ProjectService,
-    private readonly accessTokenService: AccessTokenService
+    private readonly accessTokenService: AccessTokenService,
+    private readonly activityService: ActivityService
   ) {
   }
 }

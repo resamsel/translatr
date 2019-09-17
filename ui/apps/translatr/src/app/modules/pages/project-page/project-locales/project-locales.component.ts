@@ -34,7 +34,7 @@ export class ProjectLocalesComponent {
       .pipe(take(1))
       .subscribe((project: Project) =>
         // FIXME: may interfere with loaded locales from entry point (page)
-        this.facade.loadLocales(project.id, { limit: `${limit}` })
+        this.facade.loadLocales(project.id, { limit })
       );
   }
 

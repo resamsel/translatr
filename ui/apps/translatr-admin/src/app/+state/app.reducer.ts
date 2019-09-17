@@ -1,5 +1,5 @@
 import { AppAction, AppActionTypes } from './app.actions';
-import { AccessToken, PagedList, Project, User } from '@dev/translatr-model';
+import { AccessToken, Activity, PagedList, Project, User } from '@dev/translatr-model';
 
 export const APP_FEATURE_KEY = 'app';
 
@@ -8,6 +8,7 @@ export interface AppState {
   users?: PagedList<User>;
   projects?: PagedList<Project>;
   accessTokens?: PagedList<AccessToken>;
+  activities?: PagedList<Activity>;
 }
 
 export interface AppPartialState {
@@ -37,12 +38,12 @@ export function appReducer(
         users: state.users
           ? { ...state.users, list: [...state.users.list, action.payload] }
           : {
-              list: [action.payload],
-              hasNext: false,
-              hasPrev: false,
-              offset: 0,
-              limit: 1
-            }
+            list: [action.payload],
+            hasNext: false,
+            hasPrev: false,
+            offset: 0,
+            limit: 1
+          }
       };
     case AppActionTypes.UserCreated:
       return {
@@ -149,6 +150,14 @@ export function appReducer(
             )
           )
         }
+      };
+
+    // Activity
+
+    case AppActionTypes.ActivitiesLoaded:
+      return {
+        ...state,
+        activities: action.payload
       };
 
     default:

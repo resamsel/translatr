@@ -21,7 +21,7 @@ export const getRandomUser = (
   filterFn: (user: User) => boolean
 ): Observable<User> =>
   userService
-    .find({ limit: '20', order: 'whenUpdated asc' })
+    .find({ limit: 20, order: 'whenUpdated asc' })
     .pipe(
       map((pagedList: PagedList<User>) =>
         pickRandomly(pagedList.list.filter(filterFn))
@@ -119,7 +119,7 @@ export const updateRandomUser = (
 ): Observable<Partial<State>> => {
   return getRandomUser(
     userService,
-    { limit: '20', order: 'whenUpdated asc' },
+    { limit: 20, order: 'whenUpdated asc' },
     (user: User) => user.role === UserRole.User
   ).pipe(
     filter((user: User) => !!user),
@@ -151,7 +151,7 @@ export const deleteRandomUser = (
 ): Observable<Partial<State>> => {
   return getRandomUser(
     userService,
-    { limit: '20', order: 'whenUpdated asc' },
+    { limit: 20, order: 'whenUpdated asc' },
     (user: User) => user.role === UserRole.User
   ).pipe(
     filter((user: User) => user !== undefined),

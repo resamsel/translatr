@@ -122,7 +122,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
     this.commands$
       .pipe(take(1))
       .subscribe((criteria: RequestCriteria) =>
-        this.limit$.next(parseInt(criteria.limit, 10) * 2)
+        this.limit$.next(criteria.limit * 2)
       );
   }
 

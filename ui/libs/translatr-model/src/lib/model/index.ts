@@ -1,5 +1,6 @@
 export * from './access-token';
 export * from './activity';
+export * from './activity-criteria';
 export * from './aggregate';
 export * from './constraint-violation';
 export * from './constraint-violation-error-info';

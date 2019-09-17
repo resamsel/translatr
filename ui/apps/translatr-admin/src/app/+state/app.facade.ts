@@ -12,6 +12,7 @@ import {
   DeleteUser,
   DeleteUsers,
   LoadAccessTokens,
+  LoadActivities,
   LoadLoggedInUser,
   LoadProjects,
   LoadUser,
@@ -19,7 +20,7 @@ import {
   UpdateProject,
   UpdateUser
 } from './app.actions';
-import { AccessToken, Project, ProjectCriteria, RequestCriteria, User } from '@dev/translatr-model';
+import { AccessToken, ActivityCriteria, Project, ProjectCriteria, RequestCriteria, User } from '@dev/translatr-model';
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -109,6 +110,10 @@ export class AppFacade {
     takeUntil(this.unloadProjects$.asObservable())
   );
 
+  // Activity
+
+  activities$ = this.store.pipe(select(appQuery.getActivities));
+
   user$(userId: string): Observable<User | undefined> {
     return this.store.pipe(select(appQuery.getUser(userId)));
   }
@@ -116,7 +121,8 @@ export class AppFacade {
   constructor(
     private readonly store: Store<AppPartialState>,
     private readonly actions$: Actions
-  ) {}
+  ) {
+  }
 
   // Users
 
@@ -186,5 +192,11 @@ export class AppFacade {
 
   deleteAccessTokens(accessTokens: AccessToken[]) {
     this.store.dispatch(new DeleteAccessTokens(accessTokens));
+  }
+
+  // Activity
+
+  loadActivities(criteria: ActivityCriteria) {
+    this.store.dispatch(new LoadActivities(criteria));
   }
 }

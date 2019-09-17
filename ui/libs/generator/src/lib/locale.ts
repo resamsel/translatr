@@ -19,11 +19,21 @@ export const localeNames = [
   'cs',
   'es',
   'pl',
-  'gr',
+  'el',
+  'el_GR',
   'en-US',
   'en-UK',
   'de-AT',
-  'de-DE'
+  'de-DE',
+  'ar',
+  'ro',
+  'es',
+  'sw',
+  'th',
+  'ja',
+  'zh',
+  'ca',
+  'ko'
 ];
 
 export const createLocale = (

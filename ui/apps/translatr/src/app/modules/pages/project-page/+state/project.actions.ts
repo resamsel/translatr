@@ -1,6 +1,16 @@
 import { Action } from '@ngrx/store';
-import { Activity, Aggregate, Key, KeyCriteria, Locale, LocaleCriteria, Message, PagedList, Project } from '@dev/translatr-model';
-import { ActivityCriteria } from '@dev/translatr-sdk';
+import {
+  Activity,
+  ActivityCriteria,
+  Aggregate,
+  Key,
+  KeyCriteria,
+  Locale,
+  LocaleCriteria,
+  Message,
+  PagedList,
+  Project
+} from '@dev/translatr-model';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 
 export enum ProjectActionTypes {

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Project } from '@dev/translatr-model';
-import { ActivityCriteria } from '@dev/translatr-sdk';
+import { ActivityCriteria, Project } from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
 import { filter } from 'rxjs/operators';
 
@@ -15,7 +14,8 @@ export class ProjectActivityComponent implements OnInit {
   activity$ = this.facade.activityAggregated$;
   private criteria: ActivityCriteria;
 
-  constructor(private readonly facade: ProjectFacade) {}
+  constructor(private readonly facade: ProjectFacade) {
+  }
 
   ngOnInit() {
     this.project$

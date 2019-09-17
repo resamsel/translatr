@@ -17,7 +17,7 @@ export class UserProjectsComponent implements OnInit {
   projects$: Observable<PagedList<Project>>;
   criteria: ProjectCriteria = {
     order: 'whenUpdated desc',
-    limit: '10'
+    limit: 10
   };
 
   constructor(
@@ -57,7 +57,7 @@ export class UserProjectsComponent implements OnInit {
   }
 
   onMore(limit: number) {
-    this.criteria.limit = `${limit}`;
+    this.criteria.limit = limit;
     this.loadProjects();
   }
 

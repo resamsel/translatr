@@ -274,7 +274,7 @@ export class EditorEffects {
     withLatestFrom(this.store.pipe(select(editorQuery.getKey))),
     map(([action, key]: [LoadLocalesBy, Key]) =>
       new LoadLocales({
-        ...{ limit: '25', order: 'name', fetch: 'messages' },
+        ...{ limit: 25, order: 'name', fetch: 'messages' },
         ...action.payload,
         projectId: key.projectId
       })
@@ -287,7 +287,7 @@ export class EditorEffects {
     withLatestFrom(this.store.pipe(select(editorQuery.getLocale))),
     map(([action, locale]: [LoadKeysBy, Locale]) =>
       new LoadKeys({
-        ...{ limit: '25', order: 'name', fetch: 'messages' },
+        ...{ limit: 25, order: 'name', fetch: 'messages' },
         ...action.payload,
         projectId: locale.projectId
       })

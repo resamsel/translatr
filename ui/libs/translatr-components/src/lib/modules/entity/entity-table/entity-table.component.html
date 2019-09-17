@@ -5,12 +5,13 @@
       #input
       matInput
       placeholder="Filter"
+      autocomplete="off"
       [value]="(commands$ | async).search || ''"
       (keyup.enter)="onFilter($event.target.value)"
     />
     <button
-      (click)="input.value = ''; onFilter('')"
       *ngIf="input.value"
+      (click)="input.value = ''; onFilter('')"
       aria-label="Clear"
       mat-icon-button
       matSuffix>

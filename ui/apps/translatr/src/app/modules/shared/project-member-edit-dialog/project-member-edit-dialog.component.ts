@@ -23,7 +23,7 @@ export class ProjectMemberEditDialogComponent {
 
   onUserFilter(search: string): void {
     if (!!search) {
-      this.facade.loadUsers({ search, limit: '8', order: 'username asc' });
+      this.facade.loadUsers({ search, limit: 8, order: 'username asc' });
     }
   }
 }

@@ -2,17 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { Activity, Aggregate, PagedList } from '@dev/translatr-model';
-
-export interface ActivityCriteria {
-  userId?: string;
-  projectId?: string;
-  projectOwnerId?: string;
-  limit?: number;
-  offset?: number;
-  order?: string;
-  search?: string;
-}
+import { Activity, ActivityCriteria, Aggregate, PagedList } from '@dev/translatr-model';
 
 @Injectable({
   providedIn: 'root'

@@ -28,6 +28,6 @@ export class UsersPageComponent implements OnInit, OnDestroy {
   }
 
   onLoadUsers(limit: number) {
-    this.facade.loadUsers({ order: 'whenUpdated desc', limit: `${limit}` });
+    this.facade.loadUsers({ order: 'whenUpdated desc', limit });
   }
 }

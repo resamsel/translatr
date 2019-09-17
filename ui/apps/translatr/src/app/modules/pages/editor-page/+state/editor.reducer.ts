@@ -39,7 +39,7 @@ export interface EditorPartialState {
 
 export const initialState: EditorState = {
   search: {
-    limit: '25',
+    limit: 25,
     order: 'name',
     fetch: 'messages'
   },

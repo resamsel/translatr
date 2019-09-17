@@ -32,7 +32,7 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
   }
 
   onLoadProjects(limit: number) {
-    this.facade.loadProjects({ order: 'whenUpdated desc', limit: `${limit}` });
+    this.facade.loadProjects({ order: 'whenUpdated desc', limit });
   }
 
   openProjectCreationDialog() {

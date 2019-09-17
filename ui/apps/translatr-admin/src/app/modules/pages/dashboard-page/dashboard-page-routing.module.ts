@@ -6,20 +6,21 @@ import { DashboardProjectsComponent } from './dashboard-projects/dashboard-proje
 import { DASHBOARD_ROUTES } from './dashboard-page.token';
 import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
 import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
+import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
 
 export const routes: Routes = [
   {
     component: DashboardPageComponent,
     path: '',
     children: [
-      // {
-      //   component: DashboardInfoComponent,
-      //   path: '',
-      //   data: {
-      //     icon: 'view_quilt',
-      //     name: 'Dashboard'
-      //   }
-      // },
+      {
+        component: DashboardInfoComponent,
+        path: '',
+        data: {
+          icon: 'view_quilt',
+          name: 'Dashboard'
+        }
+      },
       {
         path: 'users',
         data: {
@@ -62,4 +63,5 @@ export const routes: Routes = [
   exports: [RouterModule],
   providers: [{ provide: DASHBOARD_ROUTES, useValue: routes }]
 })
-export class DashboardPageRoutingModule {}
+export class DashboardPageRoutingModule {
+}

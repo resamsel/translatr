@@ -22,7 +22,7 @@ export class ProjectKeysComponent {
   }
 
   onMore(limit: number) {
-    this.onLoad({ limit: `${limit}` });
+    this.onLoad({ limit });
   }
 
   onLoad(criteria: KeyCriteria) {

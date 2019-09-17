@@ -7,12 +7,22 @@ import { State } from '@translatr/generator';
 
 export const featureNames = [
   'user',
+  'users',
   'project',
+  'projects',
   'locale',
+  'locales',
   'key',
+  'keys',
   'message',
+  'messages',
   'accessToken',
+  'accessTokens',
   'member',
+  'members',
+  'activity',
+  'activities',
+  'dashboard',
   'admin'
 ];
 export const keySuffixes = [
@@ -27,7 +37,12 @@ export const keySuffixes = [
   'permission',
   'find',
   'search',
-  'sell'
+  'sell',
+  'confirm',
+  'allow',
+  'restricted',
+  'filter',
+  'clear'
 ];
 export const keyNames = cartesianProduct([featureNames, keySuffixes]).map(
   (values: string[]) => values.join('.')

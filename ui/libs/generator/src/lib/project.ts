@@ -37,7 +37,7 @@ export const createRandomProject = (
   // Randomly choose user, create project for that user with random name
   return getRandomUserAccessToken(
     injector,
-    { limit: '10' },
+    { limit: 10 },
     (user: User) => user.role === UserRole.User
   ).pipe(
     filter(
@@ -145,7 +145,7 @@ export const updateRandomProject = (
   // Randomly choose user, update project of that user randomly
   return getRandomUserAccessToken(
     injector,
-    { limit: '10' },
+    { limit: 10 },
     (user: User) => user.role === UserRole.User
   ).pipe(
     filter(
@@ -223,7 +223,7 @@ export const deleteRandomProject = (
   // Randomly choose user, delete project of that user randomly
   return getRandomUserAccessToken(
     injector,
-    { limit: '10' },
+    { limit: 10 },
     (user: User) => user.role === UserRole.User
   )
     .pipe(
