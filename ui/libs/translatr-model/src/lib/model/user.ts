@@ -1,13 +1,12 @@
-import { Member } from './member';
-import { UserRole } from './user-role';
+import { Member, Temporal, UserRole } from '.';
 
-export interface User {
+export interface User extends Temporal {
   id?: string;
-  whenCreated?: Date;
-  whenUpdated?: Date;
+
   name: string;
   username: string;
   email?: string;
   role?: UserRole;
+
   memberships?: Member[];
 }

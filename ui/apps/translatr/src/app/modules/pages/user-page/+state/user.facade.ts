@@ -5,9 +5,9 @@ import { select, Store } from '@ngrx/store';
 import { UserPartialState } from './user.reducer';
 import { userQuery } from './user.selectors';
 import { LoadUser } from './user.actions';
-import { AccessTokenCriteria, AccessTokenService } from '@dev/translatr-sdk';
+import { AccessTokenService } from '@dev/translatr-sdk';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AccessToken } from '@dev/translatr-model';
+import { AccessToken, AccessTokenCriteria } from '@dev/translatr-model';
 import { take } from 'rxjs/operators';
 
 @Injectable()

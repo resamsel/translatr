@@ -1,4 +1,5 @@
 export * from './access-token';
+export * from './access-token-criteria';
 export * from './activity';
 export * from './activity-criteria';
 export * from './aggregate';
@@ -24,5 +25,6 @@ export * from './project-criteria';
 export * from './project-embedded';
 export * from './request-criteria';
 export * from './scope';
+export * from './temporal';
 export * from './user';
 export * from './user-role';

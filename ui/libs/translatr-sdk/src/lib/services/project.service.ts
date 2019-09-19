@@ -22,7 +22,12 @@ export class ProjectService extends AbstractService<Project, ProjectCriteria> {
     http: HttpClient,
     errorHandler: ErrorHandler
   ) {
-    super(http, errorHandler, () => '/api/projects', '/api/project');
+    super(
+      http,
+      errorHandler,
+      () => '/api/projects',
+      '/api/project'
+    );
   }
 
   getProjectByOwnerAndName(

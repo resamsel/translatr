@@ -1,10 +1,8 @@
 import { MemberRole } from './member-role';
-import { ProjectEmbedded } from '@dev/translatr-model';
+import { ProjectEmbedded, Temporal } from '@dev/translatr-model';
 
-export interface Member extends ProjectEmbedded {
+export interface Member extends ProjectEmbedded, Temporal {
   id: number;
-  whenCreated?: Date;
-  whenUpdated?: Date;
 
   role: MemberRole;
 

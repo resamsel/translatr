@@ -15,7 +15,12 @@ export class KeyService extends AbstractService<Key, KeyCriteria> {
     http: HttpClient,
     errorHandler: ErrorHandler
   ) {
-    super(http, errorHandler, (criteria: KeyCriteria) => `/api/project/${criteria.projectId}/keys`, '/api/key');
+    super(
+      http,
+      errorHandler,
+      (criteria: KeyCriteria) => `/api/project/${criteria.projectId}/keys`,
+      '/api/key'
+    );
   }
 
   byOwnerAndProjectNameAndName(options: {
@@ -25,8 +30,8 @@ export class KeyService extends AbstractService<Key, KeyCriteria> {
     params?:
       | HttpParams
       | {
-          [param: string]: string | string[];
-        };
+      [param: string]: string | string[];
+    };
   }): Observable<Key> {
     return this.http
       .get<Key>(

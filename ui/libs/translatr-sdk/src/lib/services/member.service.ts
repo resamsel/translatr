@@ -12,6 +12,11 @@ export class MemberService extends AbstractService<Member, MemberCriteria> {
     http: HttpClient,
     errorHandler: ErrorHandler
   ) {
-    super(http, errorHandler, (criteria: MemberCriteria) => `/api/project/${criteria.projectId}/members`, '/api/member');
+    super(
+      http,
+      errorHandler,
+      (criteria: MemberCriteria) => `/api/project/${criteria.projectId}/members`,
+      '/api/member'
+    );
   }
 }

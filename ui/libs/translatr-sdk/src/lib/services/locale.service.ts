@@ -15,7 +15,12 @@ export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
     http: HttpClient,
     errorHandler: ErrorHandler
   ) {
-    super(http, errorHandler, (criteria: LocaleCriteria) => `/api/project/${criteria.projectId}/locales`, '/api/locale');
+    super(
+      http,
+      errorHandler,
+      (criteria: LocaleCriteria) => `/api/project/${criteria.projectId}/locales`,
+      '/api/locale'
+    );
   }
 
   byOwnerAndProjectNameAndName(options: {
@@ -25,8 +30,8 @@ export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
     params?:
       | HttpParams
       | {
-          [param: string]: string | string[];
-        };
+      [param: string]: string | string[];
+    };
   }): Observable<Locale> {
     return this.http
       .get<Locale>(

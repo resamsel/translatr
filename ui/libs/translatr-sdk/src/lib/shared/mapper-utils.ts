@@ -1,9 +1,9 @@
-export interface Temporal {
+export interface DateStringTemporal {
   whenCreated?: Date | string;
   whenUpdated?: Date | string;
-}
+};
 
-export const convertTemporals = <T extends Temporal>(t: T): T => {
+export const convertTemporals = <T extends DateStringTemporal>(t: T): T => {
   if (!t) {
     return t;
   }
@@ -15,7 +15,7 @@ export const convertTemporals = <T extends Temporal>(t: T): T => {
   } as T;
 };
 
-export const convertTemporalsList = <T extends Temporal>(
+export const convertTemporalsList = <T extends DateStringTemporal>(
   list?: Array<T>
 ): Array<T> | undefined => {
   if (!list) {

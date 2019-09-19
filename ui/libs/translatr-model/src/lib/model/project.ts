@@ -1,21 +1,20 @@
-import { Member } from './member';
-import { Locale } from './locale';
-import { Key } from './key';
-import { Message } from './message';
+import { Key, Locale, Member, Message, Temporal } from '.';
 
-export interface Project {
+export interface Project extends Temporal {
   id?: string;
-  whenCreated?: Date;
-  whenUpdated?: Date;
+
   name: string;
   description?: string;
+
   ownerId?: string;
   ownerName?: string;
   ownerUsername?: string;
   ownerEmail?: string;
+
   locales?: Array<Locale>;
   keys?: Array<Key>;
   members?: Array<Member>;
   messages?: Array<Message>;
+
   wordCount?: number;
 }

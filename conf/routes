@@ -35,6 +35,7 @@ PUT		/api/key					controllers.KeysApi.update
 DELETE	/api/key/:keyId				controllers.KeysApi.delete(keyId: java.util.UUID)
 
 GET		/api/project/:projectId/messages controllers.TranslationsApi.find(projectId: java.util.UUID)
+GET		/api/messages           	controllers.TranslationsApi.find(projectId: java.util.UUID = null)
 GET		/api/messages/:projectId	controllers.TranslationsApi.find(projectId: java.util.UUID)
 GET		/api/message/:messageId		controllers.TranslationsApi.get(messageId: java.util.UUID)
 POST	/api/message				controllers.TranslationsApi.create

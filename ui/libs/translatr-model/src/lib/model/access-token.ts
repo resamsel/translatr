@@ -1,7 +1,7 @@
-export interface AccessToken {
+import { Temporal } from '.';
+
+export interface AccessToken extends Temporal {
   id?: number;
-  whenCreated?: Date;
-  whenUpdated?: Date;
 
   userId: string;
   userName?: string;

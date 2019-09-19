@@ -15,7 +15,12 @@ export class UserService extends AbstractService<User, RequestCriteria> {
     http: HttpClient,
     errorHandler: ErrorHandler
   ) {
-    super(http, errorHandler, () => '/api/users', '/api/user');
+    super(
+      http,
+      errorHandler,
+      () => '/api/users',
+      '/api/user'
+    );
   }
 
   byUsername(

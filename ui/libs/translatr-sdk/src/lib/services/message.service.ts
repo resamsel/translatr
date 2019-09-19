@@ -13,6 +13,11 @@ export class MessageService extends AbstractService<Message, MessageCriteria> {
     http: HttpClient,
     errorHandler: ErrorHandler
   ) {
-    super(http, errorHandler, (criteria: MessageCriteria) => `/api/project/${criteria.projectId}/messages`, '/api/message');
+    super(
+      http,
+      errorHandler,
+      (criteria: MessageCriteria) => `/api/project/${criteria.projectId}/messages`,
+      '/api/message'
+    );
   }
 }
