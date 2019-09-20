@@ -7,6 +7,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class ListHeaderComponent {
 
+  @Input() search: string;
   @Input() addVisible = true;
   @Input() addEnabled = true;
   @Input() removeVisible = false;

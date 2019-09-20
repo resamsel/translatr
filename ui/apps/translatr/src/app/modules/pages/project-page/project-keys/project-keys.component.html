@@ -2,9 +2,9 @@
   <app-key-list
     [project]="project$ | async"
     [keys]="keys$ | async"
+    [criteria]="criteria$ | async"
     (load)="onLoad($event)"
     (more)="onMore($event)"
-    [criteria]="criteria$ | async"
     (edit)="onEdit($event)"
     (delete)="onDelete($event)"
   ></app-key-list>

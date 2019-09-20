@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { KeyCriteria, Locale, PagedList, Project } from '@dev/translatr-model';
+import { KeyCriteria, Locale, LocaleCriteria, PagedList, Project } from '@dev/translatr-model';
 import { openLocaleEditDialog } from '../../../../shared/locale-edit-dialog/locale-edit-dialog.component';
 import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
@@ -14,6 +14,7 @@ import { trackByFn } from '@translatr/utils';
 export class LocaleListComponent {
   @Input() project: Project;
   @Input() locales: PagedList<Locale>;
+  @Input() criteria: LocaleCriteria | undefined;
   @Input() search: string;
 
   @Output() load = new EventEmitter<KeyCriteria>();

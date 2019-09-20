@@ -1,12 +1,12 @@
 <app-nav-list
-  (add)="openKeyCreationDialog(project)"
-  (filter)="onFilter($event)"
-  (more)="more.emit($event)"
+  [pagedList]="keys"
   [criteria]="criteria"
   [empty]="empty"
   [nothingFound]="nothingFound"
-  [pagedList]="keys"
   showFilter="true"
+  (add)="openKeyCreationDialog(project)"
+  (filter)="onFilter($event)"
+  (more)="more.emit($event)"
 >
   <a
     *ngFor="let key of keys?.list; trackBy: trackByFn"
@@ -63,6 +63,6 @@
 <ng-template #nothingFound>
   <div class="empty large">
     <mat-icon class="key circle">vpn_key</mat-icon>
-    <h3 i18n="@@keys.empty">No keys found.</h3>
+    <h3 i18n="@@keys.notfound">No keys found.</h3>
   </div>
 </ng-template>

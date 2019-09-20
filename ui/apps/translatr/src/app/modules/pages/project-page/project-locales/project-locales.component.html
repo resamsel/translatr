@@ -2,8 +2,8 @@
   <app-locale-list
     [project]="project$ | async"
     [locales]="locales$ | async"
+    [criteria]="criteria$ | async"
     (load)="onLoad($event)"
-    [search]="search$ | async"
     (more)="onMore($event)"
     (edit)="onEdit($event)"
     (delete)="onDelete($event)"

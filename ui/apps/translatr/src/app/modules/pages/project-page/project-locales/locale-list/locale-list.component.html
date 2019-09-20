@@ -1,10 +1,12 @@
 <app-nav-list
+  [pagedList]="locales"
+  [criteria]="criteria"
+  [empty]="empty"
+  [nothingFound]="nothingFound"
+  showFilter="true"
   (add)="openLocaleCreationDialog(project)"
   (filter)="onFilter($event)"
   (more)="more.emit($event)"
-  [empty]="empty"
-  [pagedList]="locales"
-  showFilter="true"
 >
   <a
     *ngFor="let locale of locales?.list; trackBy: trackByFn"
@@ -55,5 +57,12 @@
       i18n="@@locale.create"
       mat-stroked-button>Add language
     </button>
+  </div>
+</ng-template>
+
+<ng-template #nothingFound>
+  <div class="empty large">
+    <mat-icon class="locale circle">language</mat-icon>
+    <h3 i18n="@@locales.notfound">No languages found.</h3>
   </div>
 </ng-template>

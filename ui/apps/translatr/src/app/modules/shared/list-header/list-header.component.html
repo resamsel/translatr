@@ -3,15 +3,16 @@
     <mat-icon matPrefix>search</mat-icon>
     <mat-label i18n="@@search.label">Filter list</mat-label>
     <input
-      #search
+      #searchField
       (blur)="filter.emit($event.target.value)"
       (keyup.enter)="filter.emit($event.target.value)"
       autocomplete="off"
       matInput
+      [value]="search ? search : ''"
       placeholder="Filter">
     <button
-      (click)="search.value = ''; filter.emit('')"
-      *ngIf="search.value"
+      (click)="searchField.value = ''; filter.emit('')"
+      *ngIf="searchField.value"
       aria-label="Clear"
       mat-icon-button
       matSuffix>
