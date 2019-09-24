@@ -34,6 +34,10 @@
   display: flex;
   flex-direction: column;
 
+  ::ng-deep .mat-form-field-infix {
+    width: auto;
+  }
+
   a {
     .translation {
       overflow: hidden;
