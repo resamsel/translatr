@@ -24,7 +24,6 @@ import play.mvc.Result;
 import play.mvc.With;
 import services.CacheService;
 import services.api.MessageApiService;
-import utils.JsonUtils;
 
 import javax.inject.Inject;
 import java.util.UUID;
@@ -56,7 +55,9 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
   private static final String SEARCH = "Part of the value of the message";
   private static final String NOT_FOUND_ERROR = "Message not found";
   private static final String KEY_NAME = "The name of the key";
-  private static final String PARAM_KEY_NAME = "keyName";
+  public static final String PARAM_LOCALE_ID = "localeId";
+  public static final String PARAM_LOCALE_IDS = "localeIds";
+  public static final String PARAM_KEY_NAME = "keyName";
 
   @Inject
   public TranslationsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
@@ -78,6 +79,8 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
           dataType = "string", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LOCALE_ID, value = LOCALE_ID, dataType = "java.util.UUID",
           paramType = "query"),
+      @ApiImplicitParam(name = PARAM_LOCALE_IDS, value = LOCALE_IDS, dataType = "string",
+          paramType = "query"),
       @ApiImplicitParam(name = PARAM_KEY_NAME, value = KEY_NAME, dataType = "string",
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
@@ -86,10 +89,7 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
     return toJsons(() -> api.find(
-        MessageCriteria.from(request())
-            .withProjectId(projectId)
-            .withLocaleId(JsonUtils.getUuid(request().getQueryString("localeId")))
-            .withKeyName(request().getQueryString(PARAM_KEY_NAME)),
+        MessageCriteria.from(request()).withProjectId(projectId),
         criteria -> checkProjectRole(
             projectId,
             User.loggedInUser(),

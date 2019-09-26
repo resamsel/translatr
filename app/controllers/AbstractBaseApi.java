@@ -46,6 +46,7 @@ public class AbstractBaseApi extends AbstractController {
   static final String PROJECT_ID = "The project ID";
   static final String PROJECT_NAME = "The project name";
   static final String LOCALE_ID = "The locale ID";
+  static final String LOCALE_IDS = "The locale IDs";
   static final String PARAM_LOCALE_ID = "localeId";
   static final String KEY_ID = "The key ID";
   static final String MESSAGE_ID = "The message ID";

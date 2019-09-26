@@ -1,9 +1,12 @@
 package criterias;
 
 import play.mvc.Http.Request;
+import utils.JsonUtils;
 
 import java.util.List;
 import java.util.UUID;
+
+import static controllers.TranslationsApi.*;
 
 /**
  * @author resamsel
@@ -86,6 +89,9 @@ public class MessageCriteria extends AbstractProjectSearchCriteria<MessageCriter
   }
 
   public static MessageCriteria from(Request request) {
-    return new MessageCriteria().with(request);
+    return new MessageCriteria().with(request)
+        .withLocaleId(JsonUtils.getUuid(request.getQueryString(PARAM_LOCALE_ID)))
+        .withLocaleIds(JsonUtils.getUuids(request.getQueryString(PARAM_LOCALE_IDS)))
+        .withKeyName(request.getQueryString(PARAM_KEY_NAME));
   }
 }
