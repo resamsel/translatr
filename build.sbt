@@ -2,7 +2,7 @@
 
 name := """translatr"""
 
-version := "2.3.0-SNAPSHOT"
+version := "3.0.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).
 	enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin).

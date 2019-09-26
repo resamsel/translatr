@@ -1,6 +1,6 @@
 {
   "name": "translatr",
-  "version": "2.3.0-SNAPSHOT",
+  "version": "3.0.0-SNAPSHOT",
   "description": "A modern and intuitive i18n tool. Translatr simplifies i18n for developers and translators.",
   "directories": {
     "test": "test"
