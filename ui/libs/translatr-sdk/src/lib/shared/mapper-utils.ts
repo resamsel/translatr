@@ -1,7 +1,7 @@
 export interface DateStringTemporal {
   whenCreated?: Date | string;
   whenUpdated?: Date | string;
-};
+}
 
 export const convertTemporals = <T extends DateStringTemporal>(t: T): T => {
   if (!t) {
