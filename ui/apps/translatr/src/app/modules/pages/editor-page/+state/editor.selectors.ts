@@ -1,5 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { EDITOR_FEATURE_KEY, EditorState, LoadingState } from './editor.reducer';
+import { Key, Locale, Message, PagedList } from '@dev/translatr-model';
+import { MessageItem } from '../message-item';
 
 // Lookup the 'Editor' feature state managed by NgRx
 const getEditorState = createFeatureSelector<EditorState>(EDITOR_FEATURE_KEY);
@@ -44,14 +46,44 @@ const getKeysLoading = createSelector(
   (state: LoadingState<EditorState>) => state.keys
 );
 
-const getSelectedLocale = createSelector(
+const getSelectedLocaleName = createSelector(
   getEditorState,
-  (state: EditorState) => state.selectedLocale
+  (state: EditorState) => state.selectedLocaleName
+);
+
+const getSelectedLocale = createSelector(
+  getLocales,
+  getSelectedLocaleName,
+  (locales: PagedList<Locale> | undefined, localeName: string | undefined) => {
+    if (locales === undefined || localeName === undefined) {
+      return undefined;
+    }
+
+    const selectedLocales = locales.list
+      .filter(locale => locale.name === localeName);
+
+    return selectedLocales.length === 1 ? selectedLocales[0] : undefined;
+  }
+);
+
+const getSelectedKeyName = createSelector(
+  getEditorState,
+  (state: EditorState) => state.selectedKey
 );
 
 const getSelectedKey = createSelector(
-  getEditorState,
-  (state: EditorState) => state.selectedKey
+  getKeys,
+  getSelectedKeyName,
+  (keys: PagedList<Key> | undefined, keyName: string | undefined) => {
+    if (keys === undefined || keyName === undefined) {
+      return undefined;
+    }
+
+    const selectedKeys = keys.list
+      .filter(key => key.name === keyName);
+
+    return selectedKeys.length === 1 ? selectedKeys[0] : undefined;
+  }
 );
 
 const getSelectedMessage = createSelector(
@@ -64,6 +96,141 @@ const getSearch = createSelector(
   (state: EditorState) => state.search
 );
 
+const getMessages = createSelector(
+  getEditorState,
+  (state: EditorState) => state.messages
+);
+
+const getLocaleSelectedMessage = createSelector(
+  getLocale,
+  getMessages,
+  getSelectedKey,
+  (
+    locale: Locale | undefined,
+    messages: PagedList<Message> | undefined,
+    selectedKey: Key | undefined
+  ) => {
+    if (locale === undefined || messages === undefined || selectedKey === undefined) {
+      return undefined;
+    }
+
+    console.log('messages', messages, selectedKey);
+
+    const selectedMessages = messages.list
+      .filter((message: Message) => message.keyId === selectedKey.id);
+
+    console.log('selected messages', selectedMessages);
+
+    return selectedMessages.length === 1
+      // selected locale has a translation
+      ? selectedMessages[0]
+      // selected locale has no translation
+      : {
+        localeId: locale.id,
+        localeName: locale.name,
+        keyId: selectedKey.id,
+        keyName: selectedKey.name,
+        value: ''
+      };
+  }
+);
+
+const getLocaleMessageItems = createSelector(
+  getLocale,
+  getKeys,
+  getMessages,
+  getSelectedKeyName,
+  (
+    locale: Locale | undefined,
+    keys: PagedList<Key> | undefined,
+    messages: PagedList<Message> | undefined,
+    selectedKeyName: string | undefined
+  ): PagedList<MessageItem> => {
+    if (locale === undefined || keys === undefined || messages === undefined) {
+      return undefined;
+    }
+
+    const messageMap = messages.list
+      .reduce((acc, msg) => ({ ...acc, [msg.keyId]: msg }), {});
+
+    return {
+      ...keys,
+      list: keys.list
+        .map((key: Key) => ({
+          locale,
+          key,
+          message: messageMap[key.id]
+            ? messageMap[key.id] : undefined,
+          selected: key.name === selectedKeyName
+        }))
+    };
+  });
+
+const getKeySelectedMessage = createSelector(
+  getKey,
+  getMessages,
+  getSelectedLocale,
+  (
+    key: Key | undefined,
+    messages: PagedList<Message> | undefined,
+    selectedLocale: Locale | undefined
+  ) => {
+    if (key === undefined || messages === undefined || selectedLocale === undefined) {
+      return undefined;
+    }
+
+    console.log('messages', messages, selectedLocale);
+
+    const selectedMessages = messages.list
+      .filter((message: Message) => message.localeName === selectedLocale.name);
+
+    console.log('selected messages', selectedMessages);
+
+    return selectedMessages.length === 1
+      // selected locale has a translation
+      ? selectedMessages[0]
+      // selected locale has no translation
+      : {
+        localeId: selectedLocale.id,
+        localeName: selectedLocale.name,
+        keyId: key.id,
+        keyName: key.name,
+        value: ''
+      };
+  }
+);
+
+const getKeyMessageItems = createSelector(
+  getKey,
+  getLocales,
+  getMessages,
+  getSelectedLocaleName,
+  (
+    key: Key | undefined,
+    locales: PagedList<Locale> | undefined,
+    messages: PagedList<Message> | undefined,
+    selectedLocale: string | undefined
+  ): PagedList<MessageItem> => {
+    if (key === undefined || locales === undefined || messages === undefined) {
+      return undefined;
+    }
+
+    const messageMap = messages.list
+      .reduce((acc, msg) => ({ ...acc, [msg.localeId]: msg }), {});
+
+    return {
+      ...locales,
+      list: locales.list
+        .map((locale: Locale) => ({
+          key,
+          locale,
+          message: messageMap[locale.id]
+            ? messageMap[locale.id] : undefined,
+          selected: locale.name === selectedLocale
+        }))
+    };
+  });
+
 export const editorQuery = {
   getError,
   getLocale,
@@ -72,8 +239,13 @@ export const editorQuery = {
   getKey,
   getKeys,
   getKeysLoading,
-  getSelectedLocale,
-  getSelectedKey,
+  getSelectedLocaleName,
+  getSelectedKeyName,
   getSelectedMessage,
-  getSearch
+  getSearch,
+  getMessages,
+  getLocaleMessageItems,
+  getLocaleSelectedMessage,
+  getKeyMessageItems,
+  getKeySelectedMessage
 };

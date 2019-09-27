@@ -7,7 +7,7 @@ import { environment } from '../../../../environments/environment';
 
 export interface Link {
   routerLink: string[];
-  name: string;
+  name?: string;
 }
 
 @Component({

@@ -2,11 +2,11 @@
   [me]="me$ | async"
   [ownerName]="(key$ | async)?.projectOwnerUsername"
   [projectName]="(key$ | async)?.projectName"
-  [backLink]="backLink(key$ | async)"
+  [backLink]="backLink"
   name="Key Editor"
   i18n-name="@@key.editor"
   [message]="selectedMessage$ | async"
-  [messages]="messagesOfLocale(locales$ | async, selectedLocale$ | async)"
+  [messages]="toMessages(messageItems$ | async)"
 >
   <app-search-bar
     [criteria]="search$ | async"
@@ -20,8 +20,8 @@
         #keyInput
         [value]="(key$ | async)?.name"
         (keydown.enter)="onKeyChange(keyInput.value)"
+        [readonly]="true"
       />
-      <mat-icon matPrefix>vpn_key</mat-icon>
     </mat-form-field>
     <div class="flex-spacer"></div>
     <a
@@ -43,22 +43,22 @@
   </app-editor-selector>
 
   <app-nav-list
-    [pagedList]="locales$ | async"
+    [pagedList]="messageItems$ | async"
     [showLoadingAvatar]="false"
     [loadingListLength]="10"
     (more)="onLoadMore($event)"
   >
     <a
-      *ngFor="let locale of (locales$ | async)?.list; trackBy: trackByFn"
-      [class.active]="(selectedMessage$ | async)?.localeName === locale.name"
-      [queryParams]="{ locale: locale.name }"
+      *ngFor="let item of (messageItems$ | async)?.list; trackBy: trackByFn"
+      [class.active]="item.selected"
+      [queryParams]="{ locale: item.locale.name }"
       [routerLink]="[]"
       mat-list-item
       queryParamsHandling="merge"
     >
-      <h3 matLine>{{ locale.displayName }}</h3>
+      <h3 matLine>{{ item.locale.displayName }}</h3>
       <p class="translation" matLine>
-        <span *ngIf="locale.messages; else translationMissing">{{locale.messages[((key$ | async)?.name)]?.value}}</span>
+        <span *ngIf="item.message; else translationMissing">{{item.message.value}}</span>
         <ng-template #translationMissing>-</ng-template>
       </p>
     </a>

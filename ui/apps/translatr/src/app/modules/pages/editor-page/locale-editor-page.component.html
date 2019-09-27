@@ -2,11 +2,11 @@
   [me]="me$ | async"
   [ownerName]="(locale$ | async)?.projectOwnerUsername"
   [projectName]="(locale$ | async)?.projectName"
-  [backLink]="backLink(locale$ | async)"
+  [backLink]="backLink"
   name="Language Editor"
   i18n-name="@@locale.editor"
   [message]="selectedMessage$ | async"
-  [messages]="messagesOfKey(keys$ | async, selectedKey$ | async)"
+  [messages]="toMessages(messageItems$ | async)"
 >
   <app-search-bar
     [criteria]="search$ | async"
@@ -29,13 +29,11 @@
     <div class="flex-spacer"></div>
     <a
       mat-icon-button
-      *ngIf="selectedKey$ | async; else disabledLink"
-      [routerLink]="['../..', 'keys', selectedKey$ | async]"
+      *ngIf="selectedMessage$ | async as selectedMessage; else disabledLink"
       [queryParams]="{
-        locale: (locale$ | async)?.name,
-        search: (locale$ | async)?.name
+        locale: (locale$ | async)?.name
       }"
-      [disabled]="!(selectedKey$ | async)"
+      [routerLink]="['../..', 'keys', selectedMessage.keyName]"
     >
       <mat-icon>compare_arrows</mat-icon>
     </a>
@@ -47,22 +45,22 @@
   </app-editor-selector>
 
   <app-nav-list
-    [pagedList]="keys$ | async"
+    [pagedList]="messageItems$ | async"
     [showLoadingAvatar]="false"
     [loadingListLength]="10"
     (more)="onLoadMore($event)"
   >
     <a
-      *ngFor="let key of (keys$ | async)?.list; trackBy: trackByFn"
-      [class.active]="(selectedMessage$ | async)?.keyName === key.name"
-      [queryParams]="{ key: key.name }"
+      *ngFor="let item of (messageItems$ | async)?.list; trackBy: trackByFn"
+      [class.active]="item.selected"
+      [queryParams]="{ key: item.key.name }"
       [routerLink]="[]"
       mat-list-item
       queryParamsHandling="merge"
     >
-      <h3 matLine>{{ key.name }}</h3>
+      <h3 matLine>{{ item.key.name }}</h3>
       <p class="translation" matLine>
-        <span *ngIf="key.messages; else translationMissing">{{ key.messages[((locale$ | async)?.name)]?.value }}</span>
+        <span *ngIf="item.message; else translationMissing">{{ item.message.value }}</span>
         <ng-template #translationMissing>-</ng-template>
       </p>
     </a>

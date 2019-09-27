@@ -58,6 +58,7 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
   public static final String PARAM_LOCALE_ID = "localeId";
   public static final String PARAM_LOCALE_IDS = "localeIds";
   public static final String PARAM_KEY_NAME = "keyName";
+  public static final String PARAM_KEY_IDS = "keyIds";
 
   @Inject
   public TranslationsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
@@ -82,6 +83,8 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
       @ApiImplicitParam(name = PARAM_LOCALE_IDS, value = LOCALE_IDS, dataType = "string",
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_KEY_NAME, value = KEY_NAME, dataType = "string",
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_KEY_IDS, value = KEY_IDS, dataType = "string",
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
           paramType = "query"),

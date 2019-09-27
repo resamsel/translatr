@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EditorFacade } from './+state/editor.facade';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
-import { filter, take, takeUntil } from 'rxjs/operators';
-import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
-import { combineLatest } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { AppFacade } from '../../../+state/app.facade';
-import { Link } from '../../nav/sidenav/sidenav.component';
 import { trackByFn } from '@translatr/utils';
+import { MessageItem } from './message-item';
 
 @Component({
   selector: 'app-locale-editor-page',
@@ -17,11 +16,17 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
   locale$ = this.facade.locale$;
   locales$ = this.facade.locales$;
-  keys$ = this.facade.keys$;
-  selectedMessage$ = this.facade.selectedMessage$;
+  messageItems$ = this.facade.localeEditorMessageItems$;
+  selectedMessage$ = this.facade.localeSelectedMessage$
+    .pipe(map((message: Message | undefined) =>
+      message !== undefined ? { ...message } : undefined));
   selectedKey$ = this.facade.selectedKey$;
   search$ = this.facade.search$;
   message: Message;
+
+  backLink = {
+    routerLink: ['..']
+  };
 
   trackByFn = trackByFn;
 
@@ -49,24 +54,6 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
         this.facade.updateKeySearch(params);
         this.facade.selectKey(params.key);
       });
-    this.selectedMessage$.subscribe((message: Message) => {
-      if (message === undefined) {
-        combineLatest([this.locale$, this.facade.keysLoading$])
-          .pipe(
-            take(1),
-            filter(
-              ([locale, loading]: [Locale, boolean]) =>
-                locale !== undefined && !loading
-            )
-          )
-          .subscribe(() =>
-            this.router.navigate([], {
-              queryParamsHandling: 'merge',
-              queryParams: { key: null }
-            })
-          );
-      }
-    });
   }
 
   ngOnDestroy(): void {
@@ -84,27 +71,11 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     this.facade.loadKeysBy({ limit: limit + 25 });
   }
 
-  messagesOfKey(keys?: PagedList<Key>, keyName?: string): Array<Message> {
-    if (keys === undefined || keyName === undefined) {
+  toMessages(messageItems: PagedList<MessageItem>): Array<Message> {
+    if (messageItems === undefined) {
       return [];
     }
 
-    const key = keys.list.find((k: Key) => k.name === keyName);
-    if (key === undefined || key.messages === undefined) {
-      return [];
-    }
-
-    return Object.keys(key.messages).map((k: string) => key.messages[k]);
-  }
-
-  backLink(locale: Locale): Link | undefined {
-    if (locale === undefined) {
-      return undefined;
-    }
-
-    return {
-      routerLink: ['..'],
-      name: locale.displayName
-    };
+    return messageItems.list.filter(i => !!i.message).map(i => i.message);
   }
 }

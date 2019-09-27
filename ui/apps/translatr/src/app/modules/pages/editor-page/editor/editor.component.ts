@@ -16,10 +16,7 @@ export class EditorComponent implements AfterViewChecked {
   @Input() ownerName: string;
   @Input() projectName: string;
   @Input() name: string;
-
-  @Input() set message(message: Message) {
-    this._message = { ...message };
-  }
+  @Input() message: Message;
 
   @Input() messages: Array<Message>;
 
@@ -32,11 +29,6 @@ export class EditorComponent implements AfterViewChecked {
   private editor: CodemirrorComponent;
   @ViewChild('tabs', { read: MatTabGroup, static: true }) private tabs: MatTabGroup;
 
-  private _message: Message;
-  get message(): Message {
-    return this._message;
-  }
-
   readonly options = {
     mode: 'xml',
     lineNumbers: true,
@@ -48,7 +40,14 @@ export class EditorComponent implements AfterViewChecked {
   private _backLink: Link | undefined;
   get backLink(): Link {
     if (this._backLink) {
-      return this._backLink;
+      if (this._backLink.name) {
+        return this._backLink;
+      }
+
+      return {
+        ...this._backLink,
+        name: this.name
+      };
     }
 
     if (!this.ownerName || !this.projectName) {

@@ -8,27 +8,23 @@ import {
   KeysLoadError,
   LoadKey,
   LoadKeys,
-  LoadKeysBy,
-  LoadKeySearch,
   LoadLocale,
   LoadLocales,
-  LoadLocalesBy,
   LoadLocaleSearch,
+  LoadMessages,
   LocaleLoaded,
   LocaleLoadError,
   LocalesLoaded,
   LocalesLoadError,
   MessageSaved,
-  MessageSelected,
-  MessageSelectError,
-  SaveMessage,
-  SelectKey,
-  SelectLocale
+  MessagesLoaded,
+  MessagesLoadError,
+  SaveMessage
 } from './editor.actions';
 import { KeyService, LocaleService, MessageService } from '@dev/translatr-sdk';
 import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
-import { catchError, filter, map, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
-import { combineLatest, Observable, of, throwError } from 'rxjs';
+import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { EditorFacade } from './editor.facade';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -37,6 +33,20 @@ import { editorQuery } from './editor.selectors';
 
 @Injectable()
 export class EditorEffects {
+  // Editor
+
+  @Effect() loadLocales$ = this.actions$.pipe(
+    ofType<LoadLocales>(EditorActionTypes.LoadLocales),
+    switchMap((action: LoadLocales) =>
+      this.localeService
+        .find(action.payload)
+        .pipe(
+          map((payload: PagedList<Locale>) => new LocalesLoaded(payload)),
+          catchError(error => of(new LocalesLoadError(error)))
+        )
+    )
+  );
+
   @Effect() loadLocale$ = this.actions$.pipe(
     ofType(EditorActionTypes.LoadLocale),
     switchMap((action: LoadLocale) =>
@@ -46,14 +56,6 @@ export class EditorEffects {
           map((locale: Locale) => new LocaleLoaded({ locale })),
           catchError(error => of(new LocaleLoadError(error))))
     )
-  );
-
-  @Effect() loadLocaleSearch$ = this.actions$.pipe(
-    ofType<LoadLocaleSearch>(EditorActionTypes.LoadLocaleSearch),
-    withLatestFrom(this.store.pipe(select(editorQuery.getKey))),
-    filter(([action, key]) => key !== undefined),
-    map(([action, key]: [LoadLocaleSearch, Key]) =>
-      new LoadLocalesBy(action.payload))
   );
 
   @Effect() loadKeys$ = this.actions$.pipe(
@@ -84,215 +86,16 @@ export class EditorEffects {
     )
   );
 
-  @Effect() loadKeySearch$ = this.actions$.pipe(
-    ofType<LoadKeySearch>(EditorActionTypes.LoadKeySearch),
-    withLatestFrom(this.store.pipe(select(editorQuery.getLocale))),
-    filter(([action, locale]) => locale !== undefined),
-    map(([action, locale]) => new LoadKeysBy(action.payload))
-  );
-
-  @Effect() loadKeysAfterLocaleLoaded$ = this.actions$.pipe(
-    ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
-    map((action: LocaleLoaded) =>
-      new LoadKeys({
-        ...action.payload.params,
-        projectId: action.payload.locale.projectId
-      })
-    )
-  );
-
-  @Effect() loadLocalesAfterLocaleLoaded$ = this.actions$.pipe(
-    ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
-    map((action: LocaleLoaded) =>
-      new LoadLocales({
-        ...action.payload.params,
-        projectId: action.payload.locale.projectId
-      })
-    )
-  );
-
-  @Effect() loadLocalesAfterKeyLoaded$ = this.actions$.pipe(
-    ofType<KeyLoaded>(EditorActionTypes.KeyLoaded),
-    map((action: KeyLoaded) =>
-      new LoadLocales({
-        projectId: action.payload.projectId,
-        fetch: 'messages'
-      })
-    )
-  );
-
-  @Effect() loadKeysAfterKeyLoaded$ = this.actions$.pipe(
-    ofType<KeyLoaded>(EditorActionTypes.KeyLoaded),
-    map((action: KeyLoaded) =>
-      new LoadKeys({
-        projectId: action.payload.projectId
-      })
-    )
-  );
-
-  @Effect() loadLocales$ = this.actions$.pipe(
-    ofType<LoadLocales>(EditorActionTypes.LoadLocales),
-    switchMap((action: LoadLocales) =>
-      this.localeService
+  @Effect() loadMessages$ = this.actions$.pipe(
+    ofType<LoadMessages>(EditorActionTypes.LoadMessages),
+    switchMap((action: LoadMessages) =>
+      this.messageService
         .find(action.payload)
         .pipe(
-          map((payload: PagedList<Locale>) => new LocalesLoaded(payload)),
-          catchError(error => of(new LocalesLoadError(error)))
+          map((payload: PagedList<Message>) => new MessagesLoaded(payload)),
+          catchError(error => of(new MessagesLoadError(error)))
         )
     )
-  );
-
-  @Effect() selectLocaleAfterKeyChanged$ = this.actions$.pipe(
-    ofType<KeyLoaded>(EditorActionTypes.KeyLoaded),
-    withLatestFrom(this.store.pipe(select(editorQuery.getSelectedLocale))),
-    map(([action, selectedLocale]: [KeyLoaded, string]) => {
-      return new SelectLocale({
-        locale: selectedLocale
-      });
-    })
-  );
-
-  @Effect() selectKeyAfterLocaleChanged$ = this.actions$.pipe(
-    ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
-    withLatestFrom(this.store.pipe(select(editorQuery.getSelectedKey))),
-    map(([action, selectedKey]: [LocaleLoaded, string]) => {
-      return new SelectKey({ key: selectedKey });
-    })
-  );
-
-  @Effect() selectLocaleAfterLocalesLoaded$ = this.actions$.pipe(
-    ofType<LocalesLoaded>(EditorActionTypes.LocalesLoaded),
-    withLatestFrom(this.store.pipe(select(editorQuery.getSelectedLocale))),
-    map(([action, selectedLocale]: [LocalesLoaded, string]) =>
-      new SelectLocale({
-        locale: selectedLocale
-      })
-    )
-  );
-
-  @Effect() selectKeyAfterKeysLoaded$ = this.actions$.pipe(
-    ofType<KeysLoaded>(EditorActionTypes.KeysLoaded),
-    withLatestFrom(this.store.pipe(select(editorQuery.getSelectedKey))),
-    map(([action, selectedKey]: [KeysLoaded, string]) => {
-        return new SelectKey({ key: selectedKey });
-      }
-    )
-  );
-
-  @Effect() selectMessageByKey$ = this.actions$.pipe(
-    ofType<SelectKey>(EditorActionTypes.SelectKey),
-    switchMap((action: SelectKey) => {
-        if (action.payload.key === undefined) {
-          return of(new MessageSelected({}));
-        }
-
-        return combineLatest([
-          this.facade.locale$,
-          this.facade.keys$,
-          this.facade.keysLoading$
-        ]).pipe(
-          filter(
-            ([locale, keys, loading]: [Locale, PagedList<Key>, boolean]) =>
-              !loading && locale !== undefined && keys !== undefined
-          ),
-          take(1),
-          map(([locale, keys]: [Locale, PagedList<Key>, boolean]) => {
-            const key = keys.list.find(
-              (k: Key) => k.name === action.payload.key
-            );
-            if (key === undefined) {
-              return new MessageSelected({});
-            }
-
-            let message: Message;
-            if (key.messages && key.messages[locale.name] !== undefined) {
-              message = key.messages[locale.name];
-            } else {
-              message = {
-                localeId: locale.id,
-                localeName: locale.name,
-                keyId: key.id,
-                keyName: key.name,
-                value: ''
-              };
-            }
-            return new MessageSelected({ message });
-          }),
-          catchError(error => of(new MessageSelectError(error)))
-        );
-      }
-    )
-  );
-
-  @Effect() selectMessageByLocale$ = this.actions$.pipe(
-    ofType<SelectLocale>(EditorActionTypes.SelectLocale),
-    switchMap((action: SelectLocale) => {
-        if (action.payload.locale === undefined) {
-          return of(new MessageSelected({}));
-        }
-
-        return combineLatest([
-          this.facade.key$,
-          this.facade.locales$,
-          this.facade.localesLoading$
-        ]).pipe(
-          filter(
-            ([key, locales, loading]: [Key, PagedList<Locale>, boolean]) =>
-              !loading && key !== undefined && locales !== undefined
-          ),
-          take(1),
-          map(([key, locales]: [Key, PagedList<Locale>, boolean]) => {
-            const locale = locales.list.find(
-              (l: Locale) => l.name === action.payload.locale
-            );
-            if (locale === undefined) {
-              return new MessageSelected({});
-            }
-
-            let message: Message;
-            if (locale.messages && locale.messages[key.name] !== undefined) {
-              message = locale.messages[key.name];
-            } else {
-              message = {
-                localeId: locale.id,
-                localeName: locale.name,
-                keyId: key.id,
-                keyName: key.name,
-                value: ''
-              };
-            }
-            return new MessageSelected({ message });
-          }),
-          catchError(error => of(new MessageSelectError(error)))
-        );
-      }
-    )
-  );
-
-  @Effect() loadLocalesBy = this.actions$.pipe(
-    ofType<LoadLocalesBy>(EditorActionTypes.LoadLocalesBy),
-    withLatestFrom(this.store.pipe(select(editorQuery.getKey))),
-    map(([action, key]: [LoadLocalesBy, Key]) =>
-      new LoadLocales({
-        ...{ limit: 25, order: 'name', fetch: 'messages' },
-        ...action.payload,
-        projectId: key.projectId
-      })
-    ),
-    catchError(error => of(new LocalesLoadError(error)))
-  );
-
-  @Effect() loadKeysBy = this.actions$.pipe(
-    ofType<LoadKeysBy>(EditorActionTypes.LoadKeysBy),
-    withLatestFrom(this.store.pipe(select(editorQuery.getLocale))),
-    map(([action, locale]: [LoadKeysBy, Locale]) =>
-      new LoadKeys({
-        ...{ limit: 25, order: 'name', fetch: 'messages' },
-        ...action.payload,
-        projectId: locale.projectId
-      })
-    ),
-    catchError(error => of(new KeysLoadError(error)))
   );
 
   @Effect() saveMessage$ = this.actions$.pipe(
@@ -327,6 +130,83 @@ export class EditorEffects {
           }
         );
       }
+    )
+  );
+
+  // Locale Editor
+
+  @Effect() localeLoaded$ = this.actions$.pipe(
+    ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
+    withLatestFrom(
+      this.store.pipe(select(editorQuery.getSearch))
+    ),
+    tap(([action, search]) => console.log('localeLoaded$', action, search)),
+    switchMap(([action, search]) =>
+      of(
+        new LoadKeys({
+          ...search,
+          projectId: action.payload.locale.projectId
+        }),
+        new LoadLocales({
+          projectId: action.payload.locale.projectId
+        })
+      )
+    )
+  );
+
+  @Effect() localeAndKeysLoaded$ = this.actions$.pipe(
+    ofType<KeysLoaded>(EditorActionTypes.KeysLoaded),
+    withLatestFrom(
+      this.store.pipe(select(editorQuery.getLocale)),
+      this.store.pipe(select(editorQuery.getKeys))
+    ),
+    filter(([action, locale, keys]) =>
+      locale !== undefined && keys !== undefined),
+    map(([action, locale, keys]:
+           [KeysLoaded, Locale, PagedList<Key>]) =>
+      new LoadMessages({
+        projectId: locale.projectId,
+        localeId: locale.id,
+        keyIds: keys.list.map((key) => key.id).join(',')
+      })
+    )
+  );
+
+  // Key Editor
+
+  @Effect() keyLoaded$ = this.actions$.pipe(
+    ofType<KeyLoaded | LoadLocaleSearch>(
+      EditorActionTypes.KeyLoaded,
+      EditorActionTypes.LoadLocaleSearch
+    ),
+    withLatestFrom(
+      this.store.select(editorQuery.getKey),
+      this.store.select(editorQuery.getSearch)
+    ),
+    filter(([, key, search]) => key !== undefined),
+    map(([, key, search]) =>
+      new LoadLocales({
+        ...search,
+        projectId: key.projectId
+      })
+    )
+  );
+
+  @Effect() keyAndLocalesLoaded$ = this.actions$.pipe(
+    ofType<LocalesLoaded>(EditorActionTypes.LocalesLoaded),
+    withLatestFrom(
+      this.store.pipe(select(editorQuery.getKey)),
+      this.store.pipe(select(editorQuery.getLocales))
+    ),
+    filter(([action, key, locales]) =>
+      key !== undefined && locales !== undefined),
+    map(([action, key, locales]:
+           [LocalesLoaded, Key, PagedList<Locale>]) =>
+      new LoadMessages({
+        projectId: key.projectId,
+        keyName: key.name,
+        localeIds: locales.list.map((locale) => locale.id).join(',')
+      })
     )
   );
 

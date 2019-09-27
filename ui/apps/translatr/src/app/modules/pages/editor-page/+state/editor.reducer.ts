@@ -22,7 +22,9 @@ export interface EditorState {
   key?: Key;
   keys?: PagedList<Key>;
 
-  selectedLocale?: string;
+  messages?: PagedList<Message>;
+
+  selectedLocaleName?: string;
   selectedKey?: string;
   selectedMessage?: Message;
 
@@ -48,7 +50,7 @@ export const initialState: EditorState = {
     locales: false,
     key: false,
     keys: false,
-    selectedLocale: false,
+    selectedLocaleName: false,
     selectedKey: false,
     selectedMessage: false,
     loading: false,
@@ -112,6 +114,34 @@ function updateLocalesWithMessage(
   }
 
   return locales;
+}
+
+function updateMessagesWithMessage(
+  messages: PagedList<Message>,
+  message: Message
+): PagedList<Message> {
+  if (messages === undefined || message === undefined) {
+    return messages;
+  }
+
+  const index = messages.list.findIndex(
+    (m: Message) => m.id === message.id
+  );
+  if (index !== -1) {
+    // already in list, updating list
+    const list = [...messages.list];
+    list[index] = message;
+    return {
+      ...messages,
+      list
+    };
+  }
+
+  // not yet in message list, appending
+  return {
+    ...messages,
+    list: [...messages.list, message]
+  };
 }
 
 function activateLoading<K extends keyof EditorState>(
@@ -188,21 +218,31 @@ export function editorReducer(
       return placePayload(state, 'keys', action.payload);
 
     case EditorActionTypes.SelectLocale:
-      return placePayload(state, 'selectedLocale', action.payload.locale);
+      return placePayload(state, 'selectedLocaleName', action.payload.locale);
     case EditorActionTypes.SelectKey:
       return placePayload(state, 'selectedKey', action.payload.key);
     case EditorActionTypes.MessageSelected:
       return placePayload(state, 'selectedMessage', action.payload.message);
 
+    case EditorActionTypes.LoadMessages:
+      return activateLoading(state, 'messages');
+    case EditorActionTypes.MessagesLoaded:
+      return placePayload(state, 'messages', action.payload);
+
     case EditorActionTypes.MessageSaved:
       return {
         ...state,
-        keys: updateKeysWithMessage(state.keys, state.locale, action.payload),
+        keys: updateKeysWithMessage(
+          state.keys,
+          state.locale,
+          action.payload
+        ),
         locales: updateLocalesWithMessage(
           state.locales,
           state.key,
           action.payload
         ),
+        messages: updateMessagesWithMessage(state.messages, action.payload),
         selectedMessage:
           state.selectedMessage.id === action.payload.id
             ? action.payload

@@ -82,6 +82,10 @@ public class MessageRepositoryImpl extends
       query.eq("key.name", criteria.getKeyName());
     }
 
+    if (criteria.getKeyIds() != null) {
+      query.in("key.id", criteria.getKeyIds());
+    }
+
     if (StringUtils.isNotEmpty(criteria.getSearch())) {
       query.ilike("value", "%" + criteria.getSearch() + "%");
     }

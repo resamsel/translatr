@@ -1,6 +1,6 @@
 <app-sidenav
   class="flat"
-  page="{{ name }}"
+  [page]="_backLink.name ? name : undefined"
   [backLink]="backLink"
   [me]="me"
 >

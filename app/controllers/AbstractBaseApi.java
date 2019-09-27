@@ -49,6 +49,7 @@ public class AbstractBaseApi extends AbstractController {
   static final String LOCALE_IDS = "The locale IDs";
   static final String PARAM_LOCALE_ID = "localeId";
   static final String KEY_ID = "The key ID";
+  static final String KEY_IDS = "The key IDs";
   static final String MESSAGE_ID = "The message ID";
   static final String USER_ID = "The user ID";
   static final String USER_USERNAME = "The user username";
