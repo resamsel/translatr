@@ -9,6 +9,7 @@ import {
   KeyService,
   LocaleService,
   MessageService,
+  NotificationService,
   ProjectService,
   UserService
 } from './services';
@@ -28,8 +29,12 @@ import { LOGIN_URL } from '@translatr/utils';
     UserService,
     {
       provide: ErrorHandler,
-      useFactory: (router: Router, loginUrl: string) => new DefaultErrorHandler(router, loginUrl),
-      deps: [Router, LOGIN_URL]
+      useFactory: (
+        router: Router,
+        notificationService: NotificationService,
+        loginUrl: string
+      ) => new DefaultErrorHandler(router, notificationService, loginUrl),
+      deps: [Router, NotificationService, LOGIN_URL]
     }
   ]
 })

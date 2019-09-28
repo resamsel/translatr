@@ -6,5 +6,6 @@ export * from './error-handler';
 export * from './key.service';
 export * from './locale.service';
 export * from './message.service';
+export * from './notification.service';
 export * from './project.service';
 export * from './user.service';

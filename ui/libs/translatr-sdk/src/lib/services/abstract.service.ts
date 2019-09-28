@@ -14,7 +14,7 @@ export interface RequestOptions {
 export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
   constructor(
     protected readonly http: HttpClient,
-    private readonly errorHandler: ErrorHandler,
+    protected readonly errorHandler: ErrorHandler,
     private readonly listPath: (criteria: CRITERIA) => string,
     private readonly entityPath: string
   ) {

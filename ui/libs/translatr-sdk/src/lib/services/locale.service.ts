@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { AbstractService } from './abstract.service';
 import { Locale, LocaleCriteria } from '@dev/translatr-model';
@@ -40,6 +40,10 @@ export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
         }`,
         { params: options.params }
       )
-      .pipe(map((locale: Locale) => convertTemporals(locale)));
+      .pipe(
+        map((locale: Locale) => convertTemporals(locale)),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err))
+      );
   }
 }

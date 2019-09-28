@@ -11,15 +11,14 @@ import { NxModule } from '@nrwl/angular';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { TranslatrSdkModule } from '@dev/translatr-sdk';
-import {
-  appReducer,
-  initialState as appInitialState
-} from './+state/app.reducer';
+import { NotificationService, TranslatrSdkModule } from '@dev/translatr-sdk';
+import { appReducer, initialState as appInitialState } from './+state/app.reducer';
 import { AppEffects } from './+state/app.effects';
 import { AppFacade } from './+state/app.facade';
 import { environment } from '../environments/environment';
 import { ENDPOINT_URL, LOGIN_URL } from '@translatr/utils';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material';
+import { MatNotificationService } from './services/mat-notification-service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,6 +33,7 @@ import { ENDPOINT_URL, LOGIN_URL } from '@translatr/utils';
 
     MatToolbarModule,
     MatButtonModule,
+    MatSnackBarModule,
 
     NxModule.forRoot(),
     StoreModule.forRoot(
@@ -53,8 +53,15 @@ import { ENDPOINT_URL, LOGIN_URL } from '@translatr/utils';
   providers: [
     AppFacade,
     { provide: ENDPOINT_URL, useValue: environment.endpointUrl },
-    { provide: LOGIN_URL, useValue: '/login' }
+    { provide: LOGIN_URL, useValue: '/login' },
+    {
+      provide: NotificationService,
+      useFactory: (snackBar: MatSnackBar) => new MatNotificationService(snackBar),
+      deps: [MatSnackBar]
+    }
+
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

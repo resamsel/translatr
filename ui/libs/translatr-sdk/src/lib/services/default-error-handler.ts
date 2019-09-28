@@ -2,6 +2,7 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { ErrorHandler } from './error-handler';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NotificationService } from '@translatr/translatr-sdk/src/lib/services/notification.service';
 
 const errorMessage = (err: HttpErrorResponse): string => {
   let type = 'Error';
@@ -23,6 +24,7 @@ const errorMessage = (err: HttpErrorResponse): string => {
 export class DefaultErrorHandler extends ErrorHandler {
   constructor(
     private readonly router: Router,
+    private readonly notificationService: NotificationService,
     private readonly loginUrl: string
   ) {
     super();
@@ -32,21 +34,21 @@ export class DefaultErrorHandler extends ErrorHandler {
     console.log('%s (HTTP code: %d, URL: %s)',
       errorMessage(err), err.status, err.url);
 
-    if (err.status >= 400) {
-      if (this.router !== undefined
-        && this.loginUrl !== undefined
-        && this.loginUrl !== null) {
-        console.log('%s: redirecting to %s', err.statusText, this.loginUrl);
-        this.router.navigate([this.loginUrl])
-          .then((navigated: boolean) => {
-            if (!navigated) {
-              window.location.href = `${this.loginUrl}?redirect_uri=${window.location.href}`;
-            }
-          });
-      }
+    if (err.status === 401 || err.status === 403) {
+      console.log('%s: redirecting to %s', err.statusText, this.loginUrl);
+      this.router.navigate([this.loginUrl])
+        .then((navigated: boolean) => {
+          if (!navigated) {
+            window.location.href = `${this.loginUrl}?redirect_uri=${window.location.href}`;
+          }
+        });
 
       return throwError(true);
     }
+
+    this.notificationService.notify(
+      `Received error message: ${errorMessage(err)}`
+    );
 
     return throwError(err);
   }
