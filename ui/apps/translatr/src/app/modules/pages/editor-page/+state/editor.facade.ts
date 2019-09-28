@@ -88,13 +88,6 @@ export class EditorFacade {
     takeUntil(this.unloadEditor$)
   );
 
-  get selectedMessage$(): Observable<Message> {
-    return this.store.pipe(
-      select(editorQuery.getSelectedMessage),
-      takeUntil(this.unloadEditor$)
-    );
-  }
-
   constructor(private store: Store<EditorPartialState>) {
   }
 

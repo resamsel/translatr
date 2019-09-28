@@ -140,7 +140,6 @@ export class EditorEffects {
     withLatestFrom(
       this.store.pipe(select(editorQuery.getSearch))
     ),
-    tap(([action, search]) => console.log('localeLoaded$', action, search)),
     switchMap(([action, search]) =>
       of(
         new LoadKeys({

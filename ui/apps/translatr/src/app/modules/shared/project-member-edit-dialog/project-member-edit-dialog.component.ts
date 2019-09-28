@@ -18,7 +18,6 @@ export class ProjectMemberEditDialogComponent {
     @Inject(MAT_DIALOG_DATA) readonly data: Member,
     readonly facade: UsersFacade
   ) {
-    console.log('constructor', data);
   }
 
   onUserFilter(search: string): void {

@@ -86,11 +86,6 @@ const getSelectedKey = createSelector(
   }
 );
 
-const getSelectedMessage = createSelector(
-  getEditorState,
-  (state: EditorState) => state.selectedMessage
-);
-
 const getSearch = createSelector(
   getEditorState,
   (state: EditorState) => state.search
@@ -114,12 +109,8 @@ const getLocaleSelectedMessage = createSelector(
       return undefined;
     }
 
-    console.log('messages', messages, selectedKey);
-
     const selectedMessages = messages.list
       .filter((message: Message) => message.keyId === selectedKey.id);
-
-    console.log('selected messages', selectedMessages);
 
     return selectedMessages.length === 1
       // selected locale has a translation
@@ -179,12 +170,8 @@ const getKeySelectedMessage = createSelector(
       return undefined;
     }
 
-    console.log('messages', messages, selectedLocale);
-
     const selectedMessages = messages.list
       .filter((message: Message) => message.localeName === selectedLocale.name);
-
-    console.log('selected messages', selectedMessages);
 
     return selectedMessages.length === 1
       // selected locale has a translation
@@ -241,7 +228,6 @@ export const editorQuery = {
   getKeysLoading,
   getSelectedLocaleName,
   getSelectedKeyName,
-  getSelectedMessage,
   getSearch,
   getMessages,
   getLocaleMessageItems,

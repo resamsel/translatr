@@ -26,8 +26,6 @@ export enum EditorActionTypes {
   LoadMessages = '[Editor Page] Load Messages',
   MessagesLoaded = '[Messages API] Messages Loaded',
   MessagesLoadError = '[Messages API] Messages Load Error',
-  MessageSelected = '[Editor Page] Message Selected',
-  MessageSelectError = '[Editor Page] Message Select Error',
   SaveMessage = '[Editor Page] Save Message',
   MessageSaved = '[Messages API] Message Saved',
 
@@ -161,20 +159,6 @@ export class MessagesLoadError implements Action {
   }
 }
 
-export class MessageSelected implements Action {
-  readonly type = EditorActionTypes.MessageSelected;
-
-  constructor(public payload: { message?: Message }) {
-  }
-}
-
-export class MessageSelectError implements Action {
-  readonly type = EditorActionTypes.MessageSelectError;
-
-  constructor(public payload: any) {
-  }
-}
-
 export class SaveMessage implements Action {
   readonly type = EditorActionTypes.SaveMessage;
 
@@ -241,8 +225,6 @@ export type EditorAction =
   | LoadMessages
   | MessagesLoaded
   | MessagesLoadError
-  | MessageSelected
-  | MessageSelectError
   | SaveMessage
   | MessageSaved
   | LoadLocaleSearch

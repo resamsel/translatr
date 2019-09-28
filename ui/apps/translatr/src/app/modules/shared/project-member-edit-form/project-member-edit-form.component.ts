@@ -24,7 +24,6 @@ const memberToUser = (member: Member): User => {
 };
 
 const formToMember = (form: MemberForm): Member => {
-  console.log('formToMember', form);
   return {
     id: form.id,
     projectId: form.projectId,
@@ -109,7 +108,6 @@ export class ProjectMemberEditFormComponent
   }
 
   private updateValue(member: Member): void {
-    console.log('updateValue', member);
     this.form.patchValue({
       projectId: member.projectId,
       user: memberToUser(member),

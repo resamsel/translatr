@@ -26,7 +26,6 @@ export interface EditorState {
 
   selectedLocaleName?: string;
   selectedKey?: string;
-  selectedMessage?: Message;
 
   search?: RequestCriteria;
 
@@ -42,8 +41,7 @@ export interface EditorPartialState {
 export const initialState: EditorState = {
   search: {
     limit: 25,
-    order: 'name',
-    fetch: 'messages'
+    order: 'name'
   },
   loading: {
     locale: false,
@@ -52,7 +50,6 @@ export const initialState: EditorState = {
     keys: false,
     selectedLocaleName: false,
     selectedKey: false,
-    selectedMessage: false,
     loading: false,
     error: false
   },
@@ -221,8 +218,6 @@ export function editorReducer(
       return placePayload(state, 'selectedLocaleName', action.payload.locale);
     case EditorActionTypes.SelectKey:
       return placePayload(state, 'selectedKey', action.payload.key);
-    case EditorActionTypes.MessageSelected:
-      return placePayload(state, 'selectedMessage', action.payload.message);
 
     case EditorActionTypes.LoadMessages:
       return activateLoading(state, 'messages');
@@ -242,11 +237,7 @@ export function editorReducer(
           state.key,
           action.payload
         ),
-        messages: updateMessagesWithMessage(state.messages, action.payload),
-        selectedMessage:
-          state.selectedMessage.id === action.payload.id
-            ? action.payload
-            : state.selectedMessage
+        messages: updateMessagesWithMessage(state.messages, action.payload)
       };
     case EditorActionTypes.UnloadEditor:
       return { ...initialState };
