@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { MatDialog } from '@angular/material/dialog';
 import { map, pluck } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 
@@ -12,10 +11,10 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 export class ProjectMembersComponent {
   project$ = this.facade.project$;
   memberFilter$ = new BehaviorSubject<string>('');
-  members$ = combineLatest(
+  members$ = combineLatest([
     this.project$.pipe(pluck('members')),
     this.memberFilter$.pipe(map(s => s.toLocaleLowerCase()))
-  ).pipe(
+  ]).pipe(
     map(([members, search]) => members
       .slice()
       .filter(member => member.userName
@@ -26,10 +25,7 @@ export class ProjectMembersComponent {
           .includes(search)))
   );
 
-  constructor(
-    private readonly facade: ProjectFacade,
-    private readonly dialog: MatDialog
-  ) {
+  constructor(private readonly facade: ProjectFacade) {
   }
 
   onFilter(search: string): void {
