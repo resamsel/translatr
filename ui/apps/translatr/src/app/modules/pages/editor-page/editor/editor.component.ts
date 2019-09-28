@@ -37,7 +37,7 @@ export class EditorComponent implements AfterViewChecked {
     htmlMode: true
   };
 
-  private _backLink: Link | undefined;
+  _backLink: Link | undefined;
   get backLink(): Link {
     if (this._backLink) {
       if (this._backLink.name) {
