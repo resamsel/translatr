@@ -56,7 +56,7 @@ export class AccessTokenEditFormComponent
       new FormGroup({
         id: new FormControl(''),
         name: new FormControl('', Validators.required),
-        key: new FormControl({ value: '', disabled: true }),
+        key: new FormControl({ value: '' }),
         scope: new FormControl('')
       }),
       { key: '', name: '', scope: '' },
