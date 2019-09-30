@@ -37,6 +37,8 @@ public class ActivityApiServiceImpl extends
 
   @Override
   public PagedList<dto.Aggregate> getAggregates(LogEntryCriteria criteria) {
+    permissionService.checkPermissionAll("Access token not allowed", readScopes);
+
     return new DtoPagedList<>(service.getAggregates(criteria), AggregateMapper::toDto);
   }
 

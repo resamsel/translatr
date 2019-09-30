@@ -73,7 +73,7 @@ public class ProjectApiServiceImpl extends
   @Override
   public dto.Project byOwnerAndName(String username, String name, String... fetches) {
     permissionService
-        .checkPermissionAll("Access token not allowed", Scope.ProjectRead);
+        .checkPermissionAll("Access token not allowed", readScopes);
 
     return Optional.ofNullable(service.byOwnerAndName(username, name, fetches))
             .map(dtoMapper)
@@ -82,6 +82,9 @@ public class ProjectApiServiceImpl extends
 
   @Override
   public PagedList<dto.Aggregate> activity(UUID id) {
+    permissionService
+        .checkPermissionAll("Access token not allowed", readScopes);
+
     return new DtoPagedList<>(
         logEntryService.getAggregates(new LogEntryCriteria().withProjectId(id)),
         AggregateMapper::toDto);

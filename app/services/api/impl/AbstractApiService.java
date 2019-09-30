@@ -6,13 +6,14 @@ import criterias.AbstractSearchCriteria;
 import dto.Dto;
 import dto.DtoPagedList;
 import dto.NotFoundException;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import models.Model;
 import models.Scope;
 import services.ModelService;
 import services.PermissionService;
 import services.api.ApiService;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author resamsel
@@ -52,11 +53,11 @@ public abstract class AbstractApiService
 
   @Override
   public PagedList<DTO> find(CRITERIA criteria, Consumer<CRITERIA> validator) {
+    permissionService.checkPermissionAll("Access token not allowed", readScopes);
+
     if (validator != null) {
       validator.accept(criteria);
     }
-
-    permissionService.checkPermissionAll("Access token not allowed", readScopes);
 
     return new DtoPagedList<>(service.findBy(criteria), dtoMapper);
   }

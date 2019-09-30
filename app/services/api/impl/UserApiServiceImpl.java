@@ -45,11 +45,15 @@ public class UserApiServiceImpl extends
 
   @Override
   public dto.User byUsername(String username, String... propertiesToFetch) {
+    permissionService.checkPermissionAll("Access token not allowed", readScopes);
+
     return dtoMapper.apply(service.byUsername(username, propertiesToFetch));
   }
 
   @Override
   public PagedList<dto.Aggregate> activity(UUID id) {
+    permissionService.checkPermissionAll("Access token not allowed", readScopes);
+
     return new DtoPagedList<>(
         logEntryService.getAggregates(new LogEntryCriteria().withUserId(id)),
         AggregateMapper::toDto);
