@@ -179,11 +179,6 @@ export function editorReducer(
     case EditorActionTypes.LocaleLoaded:
       return placePayload(state, 'locale', action.payload.locale);
 
-    case EditorActionTypes.LoadLocalesBy:
-      return placePayload(state, 'search', {
-        ...state.search,
-        ...action.payload
-      });
     case EditorActionTypes.LoadLocaleSearch:
       return placePayload(state, 'search', {
         ...state.search,
@@ -199,11 +194,6 @@ export function editorReducer(
     case EditorActionTypes.KeyLoaded:
       return placePayload(state, 'key', action.payload);
 
-    case EditorActionTypes.LoadKeysBy:
-      return placePayload(state, 'search', {
-        ...state.search,
-        ...action.payload
-      });
     case EditorActionTypes.LoadKeySearch:
       return placePayload(state, 'search', {
         ...state.search,

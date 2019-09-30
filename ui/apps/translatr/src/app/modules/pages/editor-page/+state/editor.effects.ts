@@ -159,10 +159,12 @@ export class EditorEffects {
       this.store.pipe(select(editorQuery.getLocale)),
       this.store.pipe(select(editorQuery.getKeys))
     ),
-    filter(([action, locale, keys]) =>
+    filter(([, locale, keys]) =>
       locale !== undefined && keys !== undefined),
-    map(([action, locale, keys]:
+    map(([, locale, keys]:
            [KeysLoaded, Locale, PagedList<Key>]) =>
+      // FIXME: overload prevention! URI too long needs to be prevented, only
+      // load a max of 100 messages?
       new LoadMessages({
         projectId: locale.projectId,
         localeId: locale.id,
@@ -182,7 +184,7 @@ export class EditorEffects {
       this.store.select(editorQuery.getKey),
       this.store.select(editorQuery.getSearch)
     ),
-    filter(([, key, search]) => key !== undefined),
+    filter(([, key]) => key !== undefined),
     map(([, key, search]) =>
       new LoadLocales({
         ...search,
@@ -197,10 +199,12 @@ export class EditorEffects {
       this.store.pipe(select(editorQuery.getKey)),
       this.store.pipe(select(editorQuery.getLocales))
     ),
-    filter(([action, key, locales]) =>
+    filter(([, key, locales]) =>
       key !== undefined && locales !== undefined),
-    map(([action, key, locales]:
+    map(([, key, locales]:
            [LocalesLoaded, Key, PagedList<Locale>]) =>
+      // FIXME: overload prevention! URI too long needs to be prevented, only
+      // load a max of 100 messages?
       new LoadMessages({
         projectId: key.projectId,
         keyName: key.name,

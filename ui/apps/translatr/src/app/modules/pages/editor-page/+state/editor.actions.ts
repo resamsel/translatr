@@ -4,7 +4,6 @@ import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/messag
 
 export enum EditorActionTypes {
   LoadLocales = '[Editor Page] Load Locales',
-  LoadLocalesBy = '[Editor Page] Load Locales By',
   LoadLocaleSearch = '[Editor Page] Load Locale Search',
   LocalesLoaded = '[Locales API] Locales Loaded',
   LocalesLoadError = '[Locales API] Locales Load Error',
@@ -14,7 +13,6 @@ export enum EditorActionTypes {
   SelectLocale = '[Editor Page] Select Locale',
 
   LoadKeys = '[Editor Page] Load Keys',
-  LoadKeysBy = '[Editor Page] Load Keys By',
   LoadKeySearch = '[Editor Page] Load Key Search',
   KeysLoaded = '[Keys API] Keys Loaded',
   KeysLoadError = '[Keys API] Keys Load Error',
@@ -173,20 +171,6 @@ export class MessageSaved implements Action {
   }
 }
 
-export class LoadKeysBy implements Action {
-  readonly type = EditorActionTypes.LoadKeysBy;
-
-  constructor(public payload: RequestCriteria) {
-  }
-}
-
-export class LoadLocalesBy implements Action {
-  readonly type = EditorActionTypes.LoadLocalesBy;
-
-  constructor(public payload: RequestCriteria) {
-  }
-}
-
 export class LoadLocaleSearch implements Action {
   readonly type = EditorActionTypes.LoadLocaleSearch;
 
@@ -207,14 +191,12 @@ export class UnloadEditor implements Action {
 
 export type EditorAction =
   | LoadLocales
-  | LoadLocalesBy
   | LocalesLoaded
   | LocalesLoadError
   | LoadLocale
   | LocaleLoaded
   | LocaleLoadError
   | LoadKeys
-  | LoadKeysBy
   | KeysLoaded
   | KeysLoadError
   | LoadKey

@@ -4,9 +4,10 @@ import { EditorPartialState } from './editor.reducer';
 import { editorQuery } from './editor.selectors';
 import {
   LoadKey,
-  LoadKeysBy,
+  LoadKeys,
   LoadKeySearch,
   LoadLocale,
+  LoadLocales,
   LoadLocaleSearch,
   SaveMessage,
   SelectKey,
@@ -15,27 +16,20 @@ import {
 } from './editor.actions';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
+import { KeyCriteria, LocaleCriteria, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { MessageItem } from '../message-item';
 
 @Injectable()
 export class EditorFacade {
-  unloadEditor$ = new Subject<void>();
+  readonly unloadEditor$ = new Subject<void>();
 
-  get locale$(): Observable<Locale> {
-    return this.store.pipe(
-      select(editorQuery.getLocale),
-      takeUntil(this.unloadEditor$)
-    );
-  }
-
-  locales$ = this.store.pipe(
-    select(editorQuery.getLocales),
+  locale$ = this.store.pipe(
+    select(editorQuery.getLocale),
     takeUntil(this.unloadEditor$)
   );
 
-  messages$ = this.store.pipe(
-    select(editorQuery.getMessages),
+  locales$ = this.store.pipe(
+    select(editorQuery.getLocales),
     takeUntil(this.unloadEditor$)
   );
 
@@ -51,33 +45,10 @@ export class EditorFacade {
       takeUntil(this.unloadEditor$)
     );
 
-  get localesLoading$(): Observable<boolean> {
-    return this.store.pipe(
-      select(editorQuery.getLocalesLoading),
-      takeUntil(this.unloadEditor$)
-    );
-  }
-
-  get key$(): Observable<Key> {
-    return this.store.pipe(
-      select(editorQuery.getKey),
-      takeUntil(this.unloadEditor$)
-    );
-  }
-
-  get keys$(): Observable<PagedList<Key>> {
-    return this.store.pipe(
-      select(editorQuery.getKeys),
-      takeUntil(this.unloadEditor$)
-    );
-  }
-
-  get keysLoading$(): Observable<boolean> {
-    return this.store.pipe(
-      select(editorQuery.getKeysLoading),
-      takeUntil(this.unloadEditor$)
-    );
-  }
+  key$ = this.store.pipe(
+    select(editorQuery.getKey),
+    takeUntil(this.unloadEditor$)
+  );
 
   localeSelectedMessage$ = this.store.pipe(
     select(editorQuery.getLocaleSelectedMessage),
@@ -88,28 +59,17 @@ export class EditorFacade {
     takeUntil(this.unloadEditor$)
   );
 
+  selectedLocale$ = this.store.pipe(
+    select(editorQuery.getSelectedLocaleName),
+    takeUntil(this.unloadEditor$)
+  );
+
+  search$ = this.store.pipe(
+    select(editorQuery.getSearch),
+    takeUntil(this.unloadEditor$)
+  );
+
   constructor(private store: Store<EditorPartialState>) {
-  }
-
-  get selectedLocale$(): Observable<string> {
-    return this.store.pipe(
-      select(editorQuery.getSelectedLocaleName),
-      takeUntil(this.unloadEditor$)
-    );
-  }
-
-  get search$(): Observable<RequestCriteria> {
-    return this.store.pipe(
-      select(editorQuery.getSearch),
-      takeUntil(this.unloadEditor$)
-    );
-  }
-
-  get selectedKey$(): Observable<string> {
-    return this.store.pipe(
-      select(editorQuery.getSelectedKeyName),
-      takeUntil(this.unloadEditor$)
-    );
   }
 
   loadLocaleEditor(
@@ -145,8 +105,12 @@ export class EditorFacade {
     this.store.dispatch(new SaveMessage(message));
   }
 
-  loadKeysBy(criteria: RequestCriteria) {
-    this.store.dispatch(new LoadKeysBy(criteria));
+  loadLocales(criteria: LocaleCriteria) {
+    this.store.dispatch(new LoadLocales(criteria));
+  }
+
+  loadKeys(criteria: KeyCriteria) {
+    this.store.dispatch(new LoadKeys(criteria));
   }
 
   updateLocaleSearch(criteria: RequestCriteria) {

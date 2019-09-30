@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EditorFacade } from './+state/editor.facade';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { map, takeUntil } from 'rxjs/operators';
-import { Message, PagedList, RequestCriteria } from '@dev/translatr-model';
+import { Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { AppFacade } from '../../../+state/app.facade';
 import { trackByFn } from '@translatr/utils';
 import { MessageItem } from './message-item';
@@ -13,22 +13,21 @@ import { MessageItem } from './message-item';
   styleUrls: ['./locale-editor-page.component.scss']
 })
 export class LocaleEditorPageComponent implements OnInit, OnDestroy {
-  me$ = this.appFacade.me$;
-  locale$ = this.facade.locale$;
-  locales$ = this.facade.locales$;
-  messageItems$ = this.facade.localeEditorMessageItems$;
-  selectedMessage$ = this.facade.localeSelectedMessage$
+  readonly me$ = this.appFacade.me$.pipe(takeUntil(this.facade.unloadEditor$));
+  readonly locale$ = this.facade.locale$;
+  readonly locales$ = this.facade.locales$;
+  readonly messageItems$ = this.facade.localeEditorMessageItems$;
+  readonly selectedMessage$ = this.facade.localeSelectedMessage$
     .pipe(map((message: Message | undefined) =>
       message !== undefined ? { ...message } : undefined));
-  selectedKey$ = this.facade.selectedKey$;
-  search$ = this.facade.search$;
-  message: Message;
+  readonly search$ = this.facade.search$;
+  readonly message: Message;
 
-  backLink = {
+  readonly backLink = {
     routerLink: ['..']
   };
 
-  trackByFn = trackByFn;
+  readonly trackByFn = trackByFn;
 
   constructor(
     private readonly appFacade: AppFacade,
@@ -68,7 +67,11 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onLoadMore(limit: number): void {
-    this.facade.loadKeysBy({ limit: limit + 25 });
+    this.locale$.subscribe((locale: Locale) =>
+      this.facade.loadKeys({
+        projectId: locale.projectId,
+        limit: limit + 25
+      }));
   }
 
   toMessages(messageItems: PagedList<MessageItem>): Array<Message> {

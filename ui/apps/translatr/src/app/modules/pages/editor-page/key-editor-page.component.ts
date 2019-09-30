@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Message, PagedList, RequestCriteria } from '@dev/translatr-model';
+import { Key, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { EditorFacade } from './+state/editor.facade';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
 import { trackByFn } from '@translatr/utils';
 import { MessageItem } from './message-item';
@@ -13,21 +13,20 @@ import { MessageItem } from './message-item';
   styleUrls: ['./key-editor-page.component.scss']
 })
 export class KeyEditorPageComponent implements OnInit, OnDestroy {
-  me$ = this.appFacade.me$;
-  key$ = this.facade.key$;
-  messageItems$ = this.facade.keyEditorMessageItems$;
-  keys$ = this.facade.keys$;
-  selectedMessage$ = this.facade.keySelectedMessage$
+  readonly me$ = this.appFacade.me$.pipe(takeUntil(this.facade.unloadEditor$));
+  readonly key$ = this.facade.key$;
+  readonly messageItems$ = this.facade.keyEditorMessageItems$;
+  readonly selectedMessage$ = this.facade.keySelectedMessage$
     .pipe(map((message: Message | undefined) =>
       message !== undefined ? { ...message } : undefined));
-  selectedLocale$ = this.facade.selectedLocale$;
-  search$ = this.facade.search$;
+  readonly selectedLocale$ = this.facade.selectedLocale$;
+  readonly search$ = this.facade.search$;
 
-  backLink = {
+  readonly backLink = {
     routerLink: ['..']
   };
 
-  trackByFn = trackByFn;
+  readonly trackByFn = trackByFn;
 
   constructor(
     private readonly appFacade: AppFacade,
@@ -67,7 +66,12 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onLoadMore(limit: number): void {
-    // this.facade.loadLocalesBy({limit: `${limit + 25}`});
+    this.key$.pipe(take(1))
+      .subscribe((key: Key) =>
+        this.facade.loadLocales({
+          projectId: key.projectId,
+          limit: limit + 25
+        }));
   }
 
   onKeyChange(value: string) {
