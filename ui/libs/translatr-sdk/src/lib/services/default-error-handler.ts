@@ -35,13 +35,10 @@ export class DefaultErrorHandler extends ErrorHandler {
       errorMessage(err), err.status, err.url);
 
     if (err.status === 401 || err.status === 403) {
-      console.log('%s: redirecting to %s', err.statusText, this.loginUrl);
-      this.router.navigate([this.loginUrl])
-        .then((navigated: boolean) => {
-          if (!navigated) {
-            window.location.href = `${this.loginUrl}?redirect_uri=${window.location.href}`;
-          }
-        });
+      const redirectUrl = `${this.loginUrl}?redirect_uri=${window.location.href}`;
+      console.log('%s: redirecting to %s', err.statusText, redirectUrl);
+
+      window.location.href = redirectUrl;
 
       return throwError(true);
     }

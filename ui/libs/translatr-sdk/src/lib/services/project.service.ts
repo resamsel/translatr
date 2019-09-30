@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { catchError, map } from 'rxjs/operators';
 import { convertTemporals, convertTemporalsList } from '../shared/mapper-utils';
 import { Aggregate, Member, PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
 import { AbstractService } from './abstract.service';
@@ -43,7 +43,11 @@ export class ProjectService extends AbstractService<Project, ProjectCriteria> {
   ): Observable<Project | undefined> {
     return this.http
       .get<Project>(`/api/${username}/${projectName}`, options)
-      .pipe(map(projectMapper));
+      .pipe(
+        map(projectMapper),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err))
+      );
   }
 
   activity(projectId: string): Observable<PagedList<Aggregate>> {
@@ -57,7 +61,11 @@ export class ProjectService extends AbstractService<Project, ProjectCriteria> {
       `/api/project/${member.projectId}/members`,
       member
     )
-      .pipe(map(convertTemporals));
+      .pipe(
+        map(convertTemporals),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err))
+      );
   }
 
   updateMember(member: Member): Observable<Member> {
@@ -65,6 +73,10 @@ export class ProjectService extends AbstractService<Project, ProjectCriteria> {
       `/api/project/${member.projectId}/members`,
       member
     )
-      .pipe(map(convertTemporals));
+      .pipe(
+        map(convertTemporals),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err))
+      );
   }
 }

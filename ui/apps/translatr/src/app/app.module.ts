@@ -53,7 +53,7 @@ import { MatNotificationService } from './services/mat-notification-service';
   providers: [
     AppFacade,
     { provide: ENDPOINT_URL, useValue: environment.endpointUrl },
-    { provide: LOGIN_URL, useValue: '/login' },
+    { provide: LOGIN_URL, useValue: `${environment.endpointUrl}/login` },
     {
       provide: NotificationService,
       useFactory: (snackBar: MatSnackBar) => new MatNotificationService(snackBar),

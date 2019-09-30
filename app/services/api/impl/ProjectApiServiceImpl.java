@@ -15,13 +15,22 @@ import forms.SearchForm;
 import mappers.AggregateMapper;
 import mappers.ProjectMapper;
 import mappers.SuggestionMapper;
-import models.*;
+import models.Key;
+import models.Locale;
+import models.Project;
+import models.ProjectRole;
+import models.Scope;
+import models.Suggestable;
 import models.Suggestable.Data;
 import play.Configuration;
 import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Http.Context;
-import services.*;
+import services.KeyService;
+import services.LocaleService;
+import services.LogEntryService;
+import services.PermissionService;
+import services.ProjectService;
 import services.api.ProjectApiService;
 
 import javax.inject.Inject;
@@ -63,6 +72,9 @@ public class ProjectApiServiceImpl extends
 
   @Override
   public dto.Project byOwnerAndName(String username, String name, String... fetches) {
+    permissionService
+        .checkPermissionAll("Access token not allowed", Scope.ProjectRead);
+
     return Optional.ofNullable(service.byOwnerAndName(username, name, fetches))
             .map(dtoMapper)
             .orElse(null);
