@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserFacade } from '../+state/user.facade';
-import { AccessToken, PagedList, User } from '@dev/translatr-model';
+import { User } from '@dev/translatr-model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
@@ -14,8 +13,8 @@ import { trackByFn } from '@translatr/utils';
   styleUrls: ['./user-access-tokens.component.scss']
 })
 export class UserAccessTokensComponent implements OnInit {
-  user: User;
-  accessTokens$: Observable<PagedList<AccessToken> | undefined>;
+  user$ = this.facade.user$;
+  accessTokens$ = this.facade.accessTokens$;
 
   trackByFn = trackByFn;
 
@@ -28,12 +27,10 @@ export class UserAccessTokensComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.parent.parent.data.subscribe((data: { user: User }) => {
-      this.user = data.user;
-      this.accessTokens$ = this.facade.loadAccessTokens({
-        userId: this.user.id
-      });
-    });
+    this.user$
+      .pipe(filter(user => !!user))
+      .subscribe((user: User) =>
+        this.facade.loadAccessTokens({ userId: user.id }));
   }
 
   openAccessTokenCreationDialog(): void {
@@ -48,9 +45,10 @@ export class UserAccessTokensComponent implements OnInit {
   }
 
   onFilter(search: string) {
-    this.accessTokens$ = this.facade.loadAccessTokens({
-      userId: this.user.id,
-      search: search
-    });
+    this.user$.subscribe((user: User) =>
+      this.facade.loadAccessTokens({
+        userId: user.id,
+        search
+      }));
   }
 }

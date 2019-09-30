@@ -87,7 +87,7 @@ public class AccessTokenRepositoryImpl extends
       // only allow admins to create access tokens for other users
       t.user = loggedInUser;
     }
-    if (t.key == null) {
+    if (StringUtils.isBlank(t.key)) {
       t.key = generateKey(AccessToken.KEY_LENGTH);
     }
   }

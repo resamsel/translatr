@@ -1,12 +1,12 @@
-<user-card [user]="user">
+<user-card [user]="user$ | async">
   <p class="email ellipsis">
     <mat-icon inline="true">email</mat-icon>
-    <span [title]="user?.email">{{ user?.email }}</span>
+    <span [title]="(user$ | async)?.email">{{ (user$ | async)?.email }}</span>
   </p>
   <p class="when-created ellipsis">
     <mat-icon inline="true">access_time</mat-icon>
-    <span [title]="user?.whenCreated | date">{{
-      user?.whenCreated | amTimeAgo
+    <span [title]="(user$ | async)?.whenCreated | date">{{
+      (user$ | async)?.whenCreated | amTimeAgo
       }}</span>
   </p>
 </user-card>
@@ -25,6 +25,6 @@
 
   <section>
     <h2 i18n="@@activity">Activity</h2>
-    <app-activity [activity]="activity$ | async"></app-activity>
+    <app-activity [activity]="activities$ | async"></app-activity>
   </section>
 </div>

@@ -1,11 +1,12 @@
-import { Component, Inject, Injector, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Route } from '@angular/router';
+import { Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Params, Route } from '@angular/router';
 import { User } from '@dev/translatr-model';
 import { NameIconRoute } from '@translatr/utils';
 import { USER_ROUTES } from './user-page.token';
 import { AppFacade } from '../../../+state/app.facade';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { UserFacade } from './+state/user.facade';
 
 class DummyRoute extends ActivatedRouteSnapshot {
   constructor(public readonly routeConfig: any) {
@@ -18,30 +19,40 @@ class DummyRoute extends ActivatedRouteSnapshot {
   templateUrl: './user-page.component.html',
   styleUrls: ['./user-page.component.scss']
 })
-export class UserPageComponent implements OnInit {
-  me$ = this.appFacade.me$;
-  user: User;
+export class UserPageComponent implements OnInit, OnDestroy {
+  readonly me$ = this.appFacade.me$;
+  readonly user$ = this.facade.user$;
+
   children: NameIconRoute[] = this.routes[0].children;
 
   constructor(
     private readonly appFacade: AppFacade,
+    private readonly facade: UserFacade,
     private readonly injector: Injector,
     private readonly route: ActivatedRoute,
     @Inject(USER_ROUTES) private routes: { children: NameIconRoute[] }[]
-  ) {}
-
-  ngOnInit(): void {
-    this.route.data.subscribe((data: { user: User }) => {
-      this.user = data.user;
-    });
+  ) {
   }
 
-  routerLink(route: Route) {
-    if (route === '') {
-      return `/${this.user.username}`;
+  ngOnInit(): void {
+    this.route.params.subscribe((params: Params) =>
+      this.facade.loadUser(params.username));
+  }
+
+  ngOnDestroy(): void {
+    this.facade.unload();
+  }
+
+  routerLink(user: User | undefined, route: Route): string | undefined {
+    if (user === undefined) {
+      return undefined;
     }
 
-    return `/${this.user.username}/${route.path}`;
+    if (route === '') {
+      return `/${user.username}`;
+    }
+
+    return `/${user.username}/${route.path}`;
   }
 
   canActivate$(route: NameIconRoute): Observable<boolean> {

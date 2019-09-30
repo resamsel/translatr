@@ -4,38 +4,65 @@ import { USER_FEATURE_KEY, UserState } from './user.reducer';
 // Lookup the 'User' feature state managed by NgRx
 const getUserState = createFeatureSelector<UserState>(USER_FEATURE_KEY);
 
-const getLoaded = createSelector(
+const getUser = createSelector(
   getUserState,
-  (state: UserState) => state.loaded
+  (state: UserState) => state.user
 );
+
 const getError = createSelector(
   getUserState,
   (state: UserState) => state.error
 );
 
-const getAllUser = createSelector(
+const getProjects = createSelector(
   getUserState,
-  getLoaded,
-  (state: UserState, isLoaded) => {
-    return isLoaded ? state.list : [];
-  }
+  (state: UserState) => state.projects
 );
-const getSelectedId = createSelector(
+
+const getProjectsError = createSelector(
   getUserState,
-  (state: UserState) => state.selectedId
+  (state: UserState) => state.projectsError
 );
-const getSelectedUser = createSelector(
-  getAllUser,
-  getSelectedId,
-  (user, id) => {
-    const result = user.find(it => it['id'] === id);
-    return result ? Object.assign({}, result) : undefined;
-  }
+
+const getActivities = createSelector(
+  getUserState,
+  (state: UserState) => state.activities
+);
+
+const getActivitiesError = createSelector(
+  getUserState,
+  (state: UserState) => state.activitiesError
+);
+
+const getAccessTokens = createSelector(
+  getUserState,
+  (state: UserState) => state.accessTokens
+);
+
+const getAccessTokensError = createSelector(
+  getUserState,
+  (state: UserState) => state.accessTokensError
+);
+
+const getAccessToken = createSelector(
+  getUserState,
+  (state: UserState) => state.accessToken
+);
+
+const getAccessTokenError = createSelector(
+  getUserState,
+  (state: UserState) => state.accessTokenError
 );
 
 export const userQuery = {
-  getLoaded,
+  getUser,
   getError,
-  getAllUser,
-  getSelectedUser
+  getProjects,
+  getProjectsError,
+  getActivities,
+  getActivitiesError,
+  getAccessTokens,
+  getAccessTokensError,
+  getAccessToken,
+  getAccessTokenError
 };

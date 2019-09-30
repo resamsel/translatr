@@ -12,14 +12,14 @@ export class ActivityListComponent {
   @Input() showMore = true;
 
   @Output() filter = new EventEmitter<string>();
-  @Output() more = new EventEmitter<void>();
+  @Output() more = new EventEmitter<number>();
 
   trackByFn(index, item: Activity): string {
     return item.id;
   }
 
   loadMore(): void {
-    this.more.emit();
+    this.more.emit(this.activities.limit * 2);
   }
 
   onFilter(search: string) {

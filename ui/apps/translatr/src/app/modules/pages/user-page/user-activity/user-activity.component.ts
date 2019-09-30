@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Activity, ActivityCriteria, PagedList, User } from '@dev/translatr-model';
-import { ActivatedRoute } from '@angular/router';
-import { ActivityService } from '@dev/translatr-sdk';
+import { User } from '@dev/translatr-model';
+import { UserFacade } from '../+state/user.facade';
+import { filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-activity',
@@ -10,31 +9,25 @@ import { ActivityService } from '@dev/translatr-sdk';
   styleUrls: ['./user-activity.component.scss']
 })
 export class UserActivityComponent implements OnInit {
-  activities$: Observable<PagedList<Activity> | undefined>;
-  private criteria: ActivityCriteria;
+  readonly activities$ = this.facade.activities$;
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly activityService: ActivityService
-  ) {
+  constructor(private readonly facade: UserFacade) {
   }
 
   ngOnInit() {
-    this.route.parent.data.subscribe((data: { user: User }) => {
-      this.criteria = {
-        userId: data.user.id,
-        limit: 10
-      };
-      this.loadActivities();
-    });
+    this.facade.user$
+      .pipe(filter(user => !!user))
+      .subscribe((user: User) =>
+        this.facade.loadActivities({ userId: user.id, limit: 10 }));
   }
 
-  private loadActivities(): void {
-    this.activities$ = this.activityService.find(this.criteria);
-  }
-
-  onMore(): void {
-    this.criteria = { ...this.criteria, limit: this.criteria.limit * 2 };
-    this.loadActivities();
+  onMore(limit: number): void {
+    this.facade.user$.pipe(take(1))
+      .subscribe((user: User) =>
+        this.facade.loadActivities({
+          userId: user.id,
+          limit
+        })
+      );
   }
 }

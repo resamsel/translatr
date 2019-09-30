@@ -13,7 +13,7 @@
     </mat-form-field>
   </section>
 
-  <section class="key">
+  <section *ngIf="form.value.id" class="key">
     <mat-form-field>
       <h2>Key</h2>
       <input [readonly]="true" formControlName="key" matInput type="text">

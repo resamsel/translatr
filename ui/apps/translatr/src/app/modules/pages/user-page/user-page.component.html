@@ -1,12 +1,12 @@
-<app-sidenav [me]="me$ | async" [page]="user.name">
+<app-sidenav [me]="me$ | async" [page]="(user$ | async)?.name">
   <header>
-    <nav mat-tab-nav-bar color="accent">
+    <nav *ngIf="user$ | async as user" color="accent" mat-tab-nav-bar>
       <div class="container dense" routerLinkActive>
         <ng-container *ngFor="let child of children">
           <a
             mat-tab-link
             *ngIf="canActivate$(child) | async"
-            [routerLink]="routerLink(child)"
+            [routerLink]="routerLink(user, child)"
             routerLinkActive
             [routerLinkActiveOptions]="{ exact: child.path === '' }"
             #link="routerLinkActive"

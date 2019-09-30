@@ -1,7 +1,10 @@
-<app-nav-list (filter)="onFilter($event)" [pagedList]="accessTokens$ | async" showFilter="true">
+<app-nav-list
+  (filter)="onFilter($event)"
+  [pagedList]="accessTokens$ | async"
+  showFilter="true">
   <a
     *ngFor="let accessToken of (accessTokens$ | async)?.list; trackBy: trackByFn"
-    [routerLink]="['/', user.username, 'access-tokens', accessToken.id]"
+    [routerLink]="['/', (user$ | async)?.username, 'access-tokens', accessToken.id]"
     mat-list-item
   >
     <mat-icon class="circle access-token" matListIcon>vpn_key</mat-icon>

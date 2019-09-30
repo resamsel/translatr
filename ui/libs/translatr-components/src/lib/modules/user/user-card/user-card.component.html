@@ -1,8 +1,9 @@
 <mat-card class="info">
   <img
+    *ngIf="user"
     mat-card-image
     ngxGravatar
-    [email]="user?.email"
+    [email]="user.email"
     [round]="false"
     [size]="180"
   />

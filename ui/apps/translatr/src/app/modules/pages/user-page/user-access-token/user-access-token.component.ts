@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserFacade } from '../+state/user.facade';
 import { filter, take } from 'rxjs/operators';
@@ -15,8 +15,9 @@ const scopePermission = scope => scope.split(':')[0];
   templateUrl: './user-access-token.component.html',
   styleUrls: ['./user-access-token.component.scss']
 })
-export class UserAccessTokenComponent implements OnInit, OnDestroy {
-  accessToken$ = this.facade.accessToken$.pipe(filter(x => x !== undefined));
+export class UserAccessTokenComponent implements OnInit {
+  accessToken$ = this.facade.accessToken$
+    .pipe(filter(x => !!x));
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -30,11 +31,6 @@ export class UserAccessTokenComponent implements OnInit, OnDestroy {
       .subscribe(params => this.facade.loadAccessToken(params.id));
   }
 
-  ngOnDestroy(): void {
-    this.facade.accessToken$.next(undefined);
-  }
-
   onSaved(accessToken: AccessToken) {
-    this.facade.accessToken$.next(accessToken);
   }
 }

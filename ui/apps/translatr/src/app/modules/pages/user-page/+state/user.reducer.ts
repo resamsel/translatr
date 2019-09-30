@@ -1,47 +1,87 @@
-import { UserAction, UserActionTypes } from './user.actions';
+import {
+  accessTokenLoaded,
+  accessTokenLoadError,
+  accessTokensLoaded,
+  accessTokensLoadError,
+  activitiesLoaded,
+  activitiesLoadError,
+  projectsLoaded,
+  projectsLoadError,
+  userLoaded,
+  userLoadError
+} from './user.actions';
+import { AccessToken, Activity, PagedList, Project, User } from '@dev/translatr-model';
+import { Action, createReducer, on } from '@ngrx/store';
 
 export const USER_FEATURE_KEY = 'user';
 
-/**
- * Interface for the 'User' data used in
- *  - UserState, and
- *  - userReducer
- *
- *  Note: replace if already defined in another module
- */
-
-/* tslint:disable:no-empty-interface */
-export interface Entity {}
-
 export interface UserState {
-  list: Entity[]; // list of User; analogous to a sql normalized table
-  selectedId?: string | number; // which User record has been selected
-  loaded: boolean; // has the User list been loaded
-  error?: any; // last none error (if any)
+  user?: User;
+  error?: any;
+
+  projects?: PagedList<Project>;
+  projectsError?: any;
+
+  activities?: PagedList<Activity>;
+  activitiesError?: any;
+
+  accessTokens?: PagedList<AccessToken>;
+  accessTokensError?: any;
+
+  accessToken?: AccessToken;
+  accessTokenError?: any;
 }
 
 export interface UserPartialState {
   readonly [USER_FEATURE_KEY]: UserState;
 }
 
-export const initialState: UserState = {
-  list: [],
-  loaded: false
-};
+export const initialState: UserState = {};
 
-export function userReducer(
-  state: UserState = initialState,
-  action: UserAction
-): UserState {
-  switch (action.type) {
-    case UserActionTypes.UserLoaded: {
-      state = {
-        ...state,
-        list: action.payload,
-        loaded: true
-      };
-      break;
-    }
-  }
-  return state;
+const reducer = createReducer(
+  initialState,
+  on(
+    userLoaded,
+    (state, { user }) => ({ ...state, user })
+  ),
+  on(
+    userLoadError,
+    (state, { error }) => ({ ...state, error })
+  ),
+  on(
+    projectsLoaded,
+    (state, { pagedList }) => ({ ...state, projects: pagedList })
+  ),
+  on(
+    projectsLoadError,
+    (state, { error }) => ({ ...state, projectsError: error })
+  ),
+  on(
+    activitiesLoaded,
+    (state, { pagedList }) => ({ ...state, activities: pagedList })
+  ),
+  on(
+    activitiesLoadError,
+    (state, { error }) => ({ ...state, activitiesError: error })
+  ),
+  on(
+    accessTokensLoaded,
+    (state, { pagedList }) => ({ ...state, accessTokens: pagedList })
+  ),
+  on(
+    accessTokensLoadError,
+    (state, { error }) => ({ ...state, accessTokensError: error })
+  ),
+  on(
+    accessTokenLoaded,
+    (state, { accessToken }) => ({ ...state, accessToken })
+  ),
+  on(
+    accessTokenLoadError,
+    (state, { error }) => ({ ...state, accessTokenError: error })
+  )
+);
+
+export function userReducer(state: UserState | undefined, action: Action) {
+  return reducer(state, action);
 }

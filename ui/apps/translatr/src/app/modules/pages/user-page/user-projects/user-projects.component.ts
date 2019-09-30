@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PagedList, Project, ProjectCriteria, User } from '@dev/translatr-model';
-import { ProjectService } from '@dev/translatr-sdk';
-import { Observable } from 'rxjs';
+import { ProjectCriteria, User } from '@dev/translatr-model';
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
-import { filter, take } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
+import { UserFacade } from '../+state/user.facade';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-user-projects',
@@ -13,15 +13,15 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./user-projects.component.scss']
 })
 export class UserProjectsComponent implements OnInit {
-  user: User;
-  projects$: Observable<PagedList<Project>>;
-  criteria: ProjectCriteria = {
-    order: 'whenUpdated desc',
-    limit: 10
-  };
+  projects$ = this.facade.projects$;
+  criteria$: Subject<ProjectCriteria> =
+    new BehaviorSubject<ProjectCriteria>({
+      order: 'whenUpdated desc',
+      limit: 10
+    });
 
   constructor(
-    private readonly projectService: ProjectService,
+    private readonly facade: UserFacade,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly dialog: MatDialog
@@ -29,20 +29,37 @@ export class UserProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.parent.data.subscribe((data: { user: User }) => {
-      this.criteria.owner = data.user.username;
-      this.loadProjects();
-    });
+    this.facade.user$
+      .pipe(filter(user => !!user))
+      .subscribe((user: User) => {
+        this.updateCriteria({ owner: user.username });
+
+        this.criteria$.pipe(takeUntil(this.facade.destroy$))
+          .subscribe((criteria) => this.facade.loadProjects(criteria));
+      });
   }
 
   onFilter(search: string) {
-    if (!!search) {
-      this.criteria.search = search;
-    } else {
-      delete this.criteria.search;
-    }
+    this.updateCriteria({ search });
+  }
 
-    this.loadProjects();
+  onMore(limit: number) {
+    this.updateCriteria({ limit });
+  }
+
+  updateCriteria(updatedCriteria: Partial<ProjectCriteria>): void {
+    this.criteria$
+      .asObservable()
+      .pipe(take(1))
+      .subscribe((criteria) => {
+        if (!!updatedCriteria.search) {
+          criteria.search = updatedCriteria.search;
+        } else {
+          delete criteria.search;
+        }
+
+        this.criteria$.next({ ...criteria, ...updatedCriteria });
+      });
   }
 
   openProjectCreationDialog(): void {
@@ -54,14 +71,5 @@ export class UserProjectsComponent implements OnInit {
       )
       .subscribe((project => this.router
         .navigate([project.ownerUsername, project.name])));
-  }
-
-  onMore(limit: number) {
-    this.criteria.limit = limit;
-    this.loadProjects();
-  }
-
-  private loadProjects(): void {
-    this.projects$ = this.projectService.find(this.criteria);
   }
 }
