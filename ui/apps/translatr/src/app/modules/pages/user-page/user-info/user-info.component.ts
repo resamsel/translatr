@@ -1,19 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@dev/translatr-model';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectService, UserService } from '@dev/translatr-sdk';
 import { UserFacade } from '../+state/user.facade';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-user-info',
   templateUrl: './user-info.component.html',
   styleUrls: ['./user-info.component.scss']
 })
-export class UserInfoComponent implements OnInit {
-  user$ = this.facade.user$;
-  projects$ = this.facade.projects$;
-  activities$ = this.facade.activities$;
+export class UserInfoComponent implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>();
+
+  user$ = this.facade.user$
+    .pipe(takeUntil(this.destroy$.asObservable()));
+  projects$ = this.facade.projects$
+    .pipe(takeUntil(this.destroy$.asObservable()));
+  activities$ = this.facade.activities$
+    .pipe(takeUntil(this.destroy$.asObservable()));
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -24,7 +30,7 @@ export class UserInfoComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.facade.user$
+    this.user$
       .pipe(filter(user => !!user))
       .subscribe((user: User) => {
         this.facade.loadProjects({
@@ -35,5 +41,10 @@ export class UserInfoComponent implements OnInit {
           userId: user.id
         });
       });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

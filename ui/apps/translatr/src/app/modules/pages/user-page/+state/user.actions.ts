@@ -24,7 +24,7 @@ export const userLoadError = createAction(
 );
 
 export const loadProjects = createAction(
-  '[User Page] Load Access Tokens',
+  '[User Page] Load Projects',
   props<ProjectCriteria>()
 );
 export const projectsLoaded = createAction(
