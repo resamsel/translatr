@@ -10,74 +10,76 @@
 # GET		/api/swagger.json			controllers.ApiHelpController.getResources
 
 GET		/projects/search			controllers.Projects.search
-GET		/api/projects				controllers.ProjectsApi.find
-GET		/api/project/:id/search		controllers.ProjectsApi.search(id: java.util.UUID)
-GET		/api/project/:projectId		controllers.ProjectsApi.get(projectId: java.util.UUID, fetch: String ?= "")
-GET     /api/project/:projectId/activity  controllers.ProjectsApi.activity(projectId: java.util.UUID)
-POST	/api/project				controllers.ProjectsApi.create
-PUT		/api/project				controllers.ProjectsApi.update
-DELETE	/api/project/:projectId		controllers.ProjectsApi.delete(projectId: java.util.UUID)
+GET           /api/projects                                                           controllers.ProjectsApi.find
+GET           /api/project/:id/search                                                 controllers.ProjectsApi.search(id: java.util.UUID)
+GET           /api/project/:projectId                                                 controllers.ProjectsApi.get(projectId: java.util.UUID, fetch: String ?= "")
+GET           /api/project/:projectId/activity                                        controllers.ProjectsApi.activity(projectId: java.util.UUID)
+POST          /api/project                                                            controllers.ProjectsApi.create
+PUT           /api/project                                                            controllers.ProjectsApi.update
+DELETE        /api/project/:projectId                                                 controllers.ProjectsApi.delete(projectId: java.util.UUID)
 
-GET		/api/project/:projectId/locales controllers.LocalesApi.find(projectId: java.util.UUID)
-GET		/api/locales/:projectId		controllers.LocalesApi.find(projectId: java.util.UUID)
-GET		/api/locale/:localeId		controllers.LocalesApi.get(localeId: java.util.UUID)
-POST	/api/locale					controllers.LocalesApi.create
-PUT		/api/locale					controllers.LocalesApi.update
-DELETE	/api/locale/:localeId		controllers.LocalesApi.delete(localeId: java.util.UUID)
-POST	/api/locale/:localeId/import	controllers.LocalesApi.upload(localeId: java.util.UUID)
-GET		/api/locale/:localeId/export/:fileType	controllers.LocalesApi.download(localeId: java.util.UUID, fileType: String)
+GET           /api/project/:projectId/locales                                         controllers.LocalesApi.find(projectId: java.util.UUID)
+GET           /api/locales/:projectId                                                 controllers.LocalesApi.find(projectId: java.util.UUID)
+GET           /api/locale/:localeId                                                   controllers.LocalesApi.get(localeId: java.util.UUID)
+POST          /api/locale                                                             controllers.LocalesApi.create
+PUT           /api/locale                                                             controllers.LocalesApi.update
+DELETE        /api/locale/:localeId                                                   controllers.LocalesApi.delete(localeId: java.util.UUID)
+POST          /api/locale/:localeId/import                                            controllers.LocalesApi.upload(localeId: java.util.UUID)
+GET           /api/locale/:localeId/export/:fileType                                  controllers.LocalesApi.download(localeId: java.util.UUID, fileType: String)
 
-GET		/api/project/:projectId/keys controllers.KeysApi.find(projectId: java.util.UUID)
-GET		/api/keys/:projectId		controllers.KeysApi.find(projectId: java.util.UUID)
-GET		/api/key/:keyId				controllers.KeysApi.get(keyId: java.util.UUID, fetch: String ?= "")
-POST	/api/key					controllers.KeysApi.create
-PUT		/api/key					controllers.KeysApi.update
-DELETE	/api/key/:keyId				controllers.KeysApi.delete(keyId: java.util.UUID)
+GET           /api/project/:projectId/keys                                            controllers.KeysApi.find(projectId: java.util.UUID)
+GET           /api/keys/:projectId                                                    controllers.KeysApi.find(projectId: java.util.UUID)
+GET           /api/key/:keyId                                                         controllers.KeysApi.get(keyId: java.util.UUID, fetch: String ?= "")
+POST          /api/key                                                                controllers.KeysApi.create
+PUT           /api/key                                                                controllers.KeysApi.update
+DELETE        /api/key/:keyId                                                         controllers.KeysApi.delete(keyId: java.util.UUID)
 
-GET		/api/project/:projectId/messages controllers.TranslationsApi.find(projectId: java.util.UUID)
-GET		/api/messages           	controllers.TranslationsApi.find(projectId: java.util.UUID = null)
-GET		/api/messages/:projectId	controllers.TranslationsApi.find(projectId: java.util.UUID)
-GET		/api/message/:messageId		controllers.TranslationsApi.get(messageId: java.util.UUID)
-POST	/api/message				controllers.TranslationsApi.create
-PUT		/api/message				controllers.TranslationsApi.update
-DELETE	/api/message/:messageId		controllers.TranslationsApi.delete(messageId: java.util.UUID)
+GET           /api/project/:projectId/messages                                        controllers.TranslationsApi.findByProject(projectId: java.util.UUID)
+GET           /api/messages                                                           controllers.TranslationsApi.find()
+GET           /api/messages/:projectId                                                controllers.TranslationsApi.findByProject(projectId: java.util.UUID)
+GET           /api/message/:messageId                                                 controllers.TranslationsApi.get(messageId: java.util.UUID)
+POST          /api/message                                                            controllers.TranslationsApi.create
+PUT           /api/message                                                            controllers.TranslationsApi.update
+DELETE        /api/message/:messageId                                                 controllers.TranslationsApi.delete(messageId: java.util.UUID)
 
-GET		/api/project/:projectId/members controllers.MembersApi.find(projectId: java.util.UUID)
-GET		/api/members/:projectId		controllers.MembersApi.find(projectId: java.util.UUID)
-GET		/api/member/:memberId		controllers.MembersApi.get(memberId: java.lang.Long, fetch: String ?= "")
-POST	/api/member					controllers.MembersApi.create
-PUT		/api/member					controllers.MembersApi.update
-DELETE	/api/member/:memberId		controllers.MembersApi.delete(memberId: java.lang.Long)
+GET           /api/project/:projectId/members                                         controllers.MembersApi.find(projectId: java.util.UUID)
+GET           /api/members/:projectId                                                 controllers.MembersApi.find(projectId: java.util.UUID)
+GET           /api/member/:memberId                                                   controllers.MembersApi.get(memberId: java.lang.Long, fetch: String ?= "")
+POST          /api/member                                                             controllers.MembersApi.create
+PUT           /api/member                                                             controllers.MembersApi.update
+DELETE        /api/member/:memberId                                                   controllers.MembersApi.delete(memberId: java.lang.Long)
 
-GET		/api/users					controllers.UsersApi.find
-GET     /api/me                     controllers.UsersApi.me
-GET		/api/user/:userId			controllers.UsersApi.get(userId: java.util.UUID)
-POST    /api/user       			controllers.UsersApi.create
-PUT     /api/user       			controllers.UsersApi.update
-DELETE  /api/user/:userId			controllers.UsersApi.delete(userId: java.util.UUID)
-GET     /api/user/:userId/activity  controllers.UsersApi.activity(userId: java.util.UUID)
+GET           /api/users                                                              controllers.UsersApi.find
+GET           /api/me                                                                 controllers.UsersApi.me
+GET           /api/user/:userId                                                       controllers.UsersApi.get(userId: java.util.UUID)
+POST          /api/user                                                               controllers.UsersApi.create
+PUT           /api/user                                                               controllers.UsersApi.update
+DELETE        /api/user/:userId                                                       controllers.UsersApi.delete(userId: java.util.UUID)
+GET           /api/user/:userId/activity                                              controllers.UsersApi.activity(userId: java.util.UUID)
 
-GET		/api/accesstokens			controllers.AccessTokensApi.find
-GET		/api/accesstoken/:accessTokenId	controllers.AccessTokensApi.get(accessTokenId: Long)
-POST    /api/accesstoken       		controllers.AccessTokensApi.create
-PUT     /api/accesstoken       		controllers.AccessTokensApi.update
-DELETE  /api/accesstoken/:accessTokenId	controllers.AccessTokensApi.delete(accessTokenId: Long)
+GET           /api/accesstokens                                                       controllers.AccessTokensApi.find
+GET           /api/accesstoken/:accessTokenId                                         controllers.AccessTokensApi.get(accessTokenId: Long)
+POST          /api/accesstoken                                                        controllers.AccessTokensApi.create
+PUT           /api/accesstoken                                                        controllers.AccessTokensApi.update
+DELETE        /api/accesstoken/:accessTokenId                                         controllers.AccessTokensApi.delete(accessTokenId: Long)
 
-GET		/api/notifications			controllers.NotificationsApi.find
+GET           /api/notifications                                                      controllers.NotificationsApi.find
 
-GET		/api/activities 			controllers.ActivitiesApi.find
-GET		/api/activities/aggregated	controllers.ActivitiesApi.activity
+GET           /api/activities                                                         controllers.ActivitiesApi.find
+GET           /api/activities/aggregated                                              controllers.ActivitiesApi.activity
+
+GET           /api/authproviders                                                      controllers.AuthProvidersApi.find
 
 # Map static resources from the /public folder to the /assets URL path
-GET		/assets/*file				controllers.Assets.versioned(path="/public", file: Asset)
-GET		/api/docs					controllers.ApiDocs.index()
+GET           /assets/*file                                                           controllers.Assets.versioned(path="/public", file: Asset)
+GET           /api/docs                                                               controllers.ApiDocs.index()
 
 # Generic mappings based on username, project name, ...
-GET     /api/:username              controllers.UsersApi.byName(username: String, fetch: String ?= "")
-GET     /api/:username/:projectName controllers.ProjectsApi.byOwnerAndName(username: String, projectName: String, fetch: String ?= "")
-GET		/api/:username/:projectName/locales/:localeName     controllers.LocalesApi.byOwnerAndProjectNameAndName(username: String, projectName: String, localeName: String, fetch: String ?= "")
-GET		/api/:username/:projectName/locales/:localeName/export/:fileType		controllers.LocalesApi.downloadBy(username: String, projectName: String, localeName: String, fileType: String)
-GET		/api/:username/:projectName/keys/:keyName     controllers.KeysApi.byOwnerAndProjectNameAndName(username: String, projectName: String, keyName: String, fetch: String ?= "")
+GET           /api/:username                                                          controllers.UsersApi.byName(username: String, fetch: String ?= "")
+GET           /api/:username/:projectName                                             controllers.ProjectsApi.byOwnerAndName(username: String, projectName: String, fetch: String ?= "")
+GET           /api/:username/:projectName/locales/:localeName                         controllers.LocalesApi.byOwnerAndProjectNameAndName(username: String, projectName: String, localeName: String, fetch: String ?= "")
+GET           /api/:username/:projectName/locales/:localeName/export/:fileType        controllers.LocalesApi.downloadBy(username: String, projectName: String, localeName: String, fileType: String)
+GET           /api/:username/:projectName/keys/:keyName                               controllers.KeysApi.byOwnerAndProjectNameAndName(username: String, projectName: String, keyName: String, fetch: String ?= "")
 
 # GET		/api/*file					controllers.ApiDocs.versioned(path="/public/lib/swagger-ui", file: String)
 
@@ -85,63 +87,63 @@ GET		/api/:username/:projectName/keys/:keyName     controllers.KeysApi.byOwnerAn
 # WEB
 #
 
-GET		/							controllers.Application.index
-GET		/ui                         controllers.Application.indexUi
-GET     /ui/                        controllers.Default.redirect(to = "/ui")
-GET		/admin                      controllers.Application.indexAdmin
-GET     /admin/                     controllers.Default.redirect(to = "/admin")
+GET           /                                                                       controllers.Application.index
+GET           /ui                                                                     controllers.Application.indexUi
+GET           /ui/                                                                    controllers.Default.redirect(to = "/ui")
+GET           /admin                                                                  controllers.Application.indexAdmin
+GET           /admin/                                                                 controllers.Default.redirect(to = "/admin")
 
 # Activity
-GET		/activity/csv				controllers.Application.activityCsv
+GET           /activity/csv                                                           controllers.Application.activityCsv
 
 # Authentication
-GET		/login						controllers.Application.login
-GET		/logout						controllers.Application.logout
-GET		/authenticate/:provider		com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
-GET		/authenticate/:provider/denied	controllers.Application.oAuthDenied(provider: String)
+GET           /login                                                                  controllers.Application.login
+GET           /logout                                                                 controllers.Application.logout
+GET           /authenticate/:provider                                                 com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
+GET           /authenticate/:provider/denied                                          controllers.Application.oAuthDenied(provider: String)
 
 # Commands
-GET		/command/:key/execute		controllers.Application.commandExecute(key: String)
+GET           /command/:key/execute                                                   controllers.Application.commandExecute(key: String)
 
-GET		/javascriptRoutes			controllers.Application.javascriptRoutes
+GET           /javascriptRoutes                                                       controllers.Application.javascriptRoutes
 
 # Serve static assets under public directory
-GET     /ui/*file                   controllers.Application.assetOrDefaultUi(file: String)
-GET     /admin/*file                controllers.Application.assetOrDefaultAdmin(file: String)
+GET           /ui/*file                                                               controllers.Application.assetOrDefaultUi(file: String)
+GET           /admin/*file                                                            controllers.Application.assetOrDefaultAdmin(file: String)
 
 # Users
-GET		/users						controllers.Users.index
+GET           /users                                                                  controllers.Users.index
 
 # Profiles
-GET		/profile					controllers.Profiles.profile
-GET		/profile/projects			controllers.Profiles.projects
-GET		/profile/linkedAccounts		controllers.Profiles.linkedAccounts
-GET		/profile/accessTokens		controllers.Profiles.accessTokens
-GET		/profile/activity			controllers.Profiles.activity
-GET		/profile/edit				controllers.Profiles.edit
-POST	/profile/edit				controllers.Profiles.doEdit
-GET		/profile/link				controllers.Profiles.askLink
-POST	/profile/link				controllers.Profiles.doLink
-GET		/profile/merge				controllers.Profiles.askMerge
-POST	/profile/merge				controllers.Profiles.doMerge
-GET		/profile/accessTokens/create	controllers.Profiles.accessTokenCreate
-POST	/profile/accessTokens/create	controllers.Profiles.doAccessTokenCreate
-GET		/profile/notifications/reset	controllers.Profiles.resetNotifications
+GET           /profile                                                                controllers.Profiles.profile
+GET           /profile/projects                                                       controllers.Profiles.projects
+GET           /profile/linkedAccounts                                                 controllers.Profiles.linkedAccounts
+GET           /profile/accessTokens                                                   controllers.Profiles.accessTokens
+GET           /profile/activity                                                       controllers.Profiles.activity
+GET           /profile/edit                                                           controllers.Profiles.edit
+POST          /profile/edit                                                           controllers.Profiles.doEdit()
+GET           /profile/link                                                           controllers.Profiles.askLink
+POST          /profile/link                                                           controllers.Profiles.doLink()
+GET           /profile/merge                                                          controllers.Profiles.askMerge
+POST          /profile/merge                                                          controllers.Profiles.doMerge()
+GET           /profile/accessTokens/create                                            controllers.Profiles.accessTokenCreate
+POST          /profile/accessTokens/create                                            controllers.Profiles.doAccessTokenCreate()
+GET           /profile/notifications/reset                                            controllers.Profiles.resetNotifications
 
 # Projects
-GET		/projects					controllers.Projects.index(search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET		/projects/create/$projectName<.+>	controllers.Projects.createImmediately(projectName: String)
+GET           /projects                                                               controllers.Projects.index(search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
+GET           /projects/create/$projectName<.+>                                       controllers.Projects.createImmediately(projectName: String)
 
 # User
-GET		/:username					controllers.Users.user(username: String)
-GET		/:username/projects			controllers.Users.projects(username: String)
-GET		/:username/activity/csv		controllers.Users.activityCsv(username: String)
-GET		/:username/activity			controllers.Users.activity(username: String)
-GET		/:username/linkedAccounts	controllers.Users.linkedAccounts(username: String)
-GET		/:username/linkedAccounts/:linkedAccountId/remove	controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
-GET		/:username/accessTokens		controllers.Users.accessTokens(username: String)
-GET		/:username/accessTokens/:accessTokenId/edit	controllers.Users.accessTokenEdit(username: String, accessTokenId: Long)
-POST	/:username/accessTokens/:accessTokenId/edit	controllers.Users.doAccessTokenEdit(username: String, accessTokenId: Long)
+GET           /:username                                                              controllers.Users.user(username: String)
+GET           /:username/projects                                                     controllers.Users.projects(username: String)
+GET           /:username/activity/csv                                                 controllers.Users.activityCsv(username: String)
+GET           /:username/activity                                                     controllers.Users.activity(username: String)
+GET           /:username/linkedAccounts                                               controllers.Users.linkedAccounts(username: String)
+GET           /:username/linkedAccounts/:linkedAccountId/remove                       controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
+GET           /:username/accessTokens                                                 controllers.Users.accessTokens(username: String)
+GET           /:username/accessTokens/:accessTokenId/edit                             controllers.Users.accessTokenEdit(username: String, accessTokenId: Long)
+POST          /:username/accessTokens/:accessTokenId/edit                             controllers.Users.doAccessTokenEdit(username: String, accessTokenId: Long)
 GET		/:username/accessTokens/:accessTokenId/remove	controllers.Users.accessTokenRemove(username: String, accessTokenId: Long)
 
 # Project

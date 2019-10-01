@@ -17,6 +17,7 @@ import utils.ErrorUtils;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -91,6 +92,13 @@ public class AbstractBaseApi extends AbstractController {
   <T> CompletionStage<Result> toJsons(Supplier<PagedList<T>> supplier) {
     return CompletableFuture.supplyAsync(supplier, executionContext.current())
         .thenApply(out -> ok(Json.toJson(out))).exceptionally(this::handleException);
+  }
+
+  <T> CompletionStage<Result> toJsonList(Supplier<List<T>> supplier) {
+    return CompletableFuture
+        .supplyAsync(supplier, executionContext.current())
+        .thenApply(out -> ok(Json.toJson(out)))
+        .exceptionally(this::handleException);
   }
 
   CompletionStage<Result> toJsonSearch(Supplier<SearchResponse> supplier) {

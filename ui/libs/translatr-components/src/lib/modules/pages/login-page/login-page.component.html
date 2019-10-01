@@ -4,14 +4,15 @@
   <div class="login">
     <div class="info">
       <mat-icon>account_circle</mat-icon>
-      Sign in with any of the given services
+      Sign in with any of the given providers
     </div>
     <div class="options">
-      <a mat-button class="keycloak" href="{{endpointUrl}}/authenticate/keycloak">Keycloak</a>
-      <a mat-button class="google" href="{{endpointUrl}}/authenticate/google">Google</a>
-      <a mat-button class="github" href="{{endpointUrl}}/authenticate/github">Github</a>
-      <a mat-button class="facebook" href="{{endpointUrl}}/authenticate/facebook">Facebook</a>
-      <a mat-button class="twitter" href="{{endpointUrl}}/authenticate/twitter">Twitter</a>
+      <a
+        *ngFor="let provider of providers$ | async"
+        [ngClass]="provider.key"
+        href="{{endpointUrl}}{{provider.url}}"
+        mat-button
+      >{{names[provider.key]}}</a>
     </div>
   </div>
 </div>

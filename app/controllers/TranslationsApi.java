@@ -90,7 +90,35 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
-  public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
+  public CompletionStage<Result> find() {
+    return findByProject(null);
+  }
+
+  @ApiOperation(value = FIND,
+      authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {
+              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+              @AuthorizationScope(scope = MESSAGE_READ, description = MESSAGE_READ_DESCRIPTION)}))
+  @ApiResponses({
+      @ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.MessagesPaged.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({
+      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+          dataType = "string", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_LOCALE_ID, value = LOCALE_ID, dataType = "java.util.UUID",
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_LOCALE_IDS, value = LOCALE_IDS, dataType = "string",
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_KEY_NAME, value = KEY_NAME, dataType = "string",
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_KEY_IDS, value = KEY_IDS, dataType = "string",
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
+  public CompletionStage<Result> findByProject(@ApiParam(value = PROJECT_ID) UUID projectId) {
     return toJsons(() -> api.find(
         MessageCriteria.from(request()).withProjectId(projectId),
         criteria -> checkProjectRole(
