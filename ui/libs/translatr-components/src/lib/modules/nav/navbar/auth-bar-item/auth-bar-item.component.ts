@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostBinding, Input } from '@angular/core';
 import { User } from '@dev/translatr-model';
 
 @Component({
@@ -9,4 +9,7 @@ import { User } from '@dev/translatr-model';
 export class AuthBarItemComponent {
   @Input() me: User;
   @Input() endpointUrl: string;
+
+  // @ts-ignore
+  @HostBinding('class') private readonly clazz = 'auth-bar-item';
 }

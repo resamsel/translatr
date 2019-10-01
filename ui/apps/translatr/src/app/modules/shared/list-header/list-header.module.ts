@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ListHeaderComponent } from './list-header.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatFormFieldModule, MatInputModule, MatTooltipModule } from '@angular/material';
 
 @NgModule({
   declarations: [ListHeaderComponent],
@@ -15,7 +15,8 @@ import { MatFormFieldModule, MatInputModule } from '@angular/material';
     MatIconModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatTooltipModule
   ]
 })
 export class ListHeaderModule { }

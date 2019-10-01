@@ -17,29 +17,7 @@
   z-index: 1;
 }
 
-.mat-button {
-  display: none;
-
-  @include medium {
-    display: block;
-
-    .text {
-      display: inline;
-    }
-    .mat-icon {
-      display: none;
-    }
-  }
-
-  @include large {
-    .mat-icon {
-      display: inline-block;
-    }
-  }
-}
-
-.hide-on-medium-up {
-  @include medium {
-    display: none;
-  }
+.mat-icon-button,
+.auth-bar-item {
+  margin-left: 8px;
 }

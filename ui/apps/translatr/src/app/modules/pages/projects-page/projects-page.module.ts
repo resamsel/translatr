@@ -15,6 +15,7 @@ import { ProjectsFacade } from './+state/projects.facade';
 import { ProjectCardModule } from '../../shared/project-card/project-card.module';
 import { GravatarModule } from 'ngx-gravatar';
 import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
+import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
   declarations: [ProjectsPageComponent],
@@ -34,7 +35,8 @@ import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/projec
     StoreModule.forFeature(PROJECTS_FEATURE_KEY, projectsReducer, {
       initialState: projectsInitialState
     }),
-    EffectsModule.forFeature([ProjectsEffects])
+    EffectsModule.forFeature([ProjectsEffects]),
+    MatTooltipModule
   ],
   providers: [ProjectsFacade]
 })

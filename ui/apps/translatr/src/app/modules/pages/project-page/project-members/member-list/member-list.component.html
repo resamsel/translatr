@@ -1,4 +1,6 @@
 <app-list-header
+  addTooltip="Add member"
+  i18n-addTooltip="@@member.create.tooltip"
   (add)="onAdd(project)"
   (filter)="onFilter($event)"
   (remove)="onRemove($event)"
@@ -24,7 +26,7 @@
       size="36"
     />
     <h3 matLine>{{ member.userName }} — {{ member.role }}</h3>
-    <p matLine i18n="@@added.when" [title]="member?.whenCreated | date: 'full'">
+    <p [matTooltip]="member?.whenCreated | date: 'full'" i18n="@@added.when" matLine>
       Added {{ member?.whenCreated | amTimeAgo }}
     </p>
   </a>

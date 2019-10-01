@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserFacade } from '../+state/user.facade';
-import { User } from '@dev/translatr-model';
+import { AccessToken, PagedList, User } from '@dev/translatr-model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
 import { trackByFn } from '@translatr/utils';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-user-access-tokens',
@@ -19,9 +19,10 @@ export class UserAccessTokensComponent implements OnInit, OnDestroy {
   user$ = this.facade.user$.pipe(
     takeUntil(this.destroy$.asObservable())
   );
-  accessTokens$ = this.facade.accessTokens$.pipe(
-    takeUntil(this.destroy$.asObservable())
-  );
+  accessTokens$: Observable<PagedList<AccessToken> | undefined> =
+    this.facade.accessTokens$.pipe(
+      takeUntil(this.destroy$.asObservable())
+    );
 
   trackByFn = trackByFn;
 

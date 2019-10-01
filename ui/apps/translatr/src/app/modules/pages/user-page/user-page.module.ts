@@ -33,6 +33,7 @@ import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { AccessTokenEditDialogModule } from '../../shared/access-token-edit-dialog/access-token-edit-dialog.module';
 import { UserAccessTokenComponent } from './user-access-token/user-access-token.component';
 import { AccessTokenEditFormModule } from '../../shared/access-token-edit-form/access-token-edit-form.module';
+import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { AccessTokenEditFormModule } from '../../shared/access-token-edit-form/a
       initialState: userInitialState
     }),
     EffectsModule.forFeature([UserEffects]),
-    AccessTokenEditFormModule
+    AccessTokenEditFormModule,
+    MatTooltipModule
   ],
   providers: [UserFacade]
 })

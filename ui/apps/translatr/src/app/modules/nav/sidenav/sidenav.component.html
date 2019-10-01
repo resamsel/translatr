@@ -7,12 +7,12 @@
       <ng-content select="mat-toolbar-row"></ng-content>
     </ng-container>
 
-    <a mat-icon-button routerLink="/dashboard" class="hide-on-medium-up">
+    <a
+      i18n-matTooltip="@@dashboard.title"
+      mat-icon-button
+      matTooltip="Dashboard"
+      routerLink="/dashboard">
       <mat-icon>view_quilt</mat-icon>
-    </a>
-    <a mat-button routerLink="/dashboard">
-      <mat-icon>view_quilt</mat-icon>
-      <span class="text">Dashboard</span>
     </a>
 
     <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">

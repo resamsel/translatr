@@ -1,11 +1,11 @@
 <user-card [user]="user$ | async">
   <p class="email ellipsis">
     <mat-icon inline="true">email</mat-icon>
-    <span [title]="(user$ | async)?.email">{{ (user$ | async)?.email }}</span>
+    <span [matTooltip]="(user$ | async)?.email">{{ (user$ | async)?.email }}</span>
   </p>
   <p class="when-created ellipsis">
     <mat-icon inline="true">access_time</mat-icon>
-    <span [title]="(user$ | async)?.whenCreated | date">{{
+    <span [matTooltip]="(user$ | async)?.whenCreated | date">{{
       (user$ | async)?.whenCreated | amTimeAgo
       }}</span>
   </p>

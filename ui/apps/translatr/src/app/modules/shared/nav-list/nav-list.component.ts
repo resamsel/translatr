@@ -18,6 +18,7 @@ export class NavListComponent {
   @Input() direction: 'column' | 'row' = 'column';
   @Input() showMore = true;
   @Input() showFilter = false;
+  @Input() addTooltip: string;
 
   @Output() more = new EventEmitter<number>();
   @Output() add = new EventEmitter<void>();

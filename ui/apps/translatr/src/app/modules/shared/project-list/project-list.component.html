@@ -16,7 +16,7 @@
       {{ project.name }} <span class="owner">{{ project.ownerName }}</span>
     </h3>
     <p
-      [title]="project.whenCreated | date: 'full'"
+      [matTooltip]="project.whenCreated | date: 'full'"
       i18n="@@added.when"
       matLine
     >

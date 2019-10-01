@@ -9,7 +9,7 @@
   >
     <mat-icon class="circle access-token" matListIcon>vpn_key</mat-icon>
     <h3 matLine>{{ accessToken.name }}</h3>
-    <p [title]="accessToken.whenCreated | date" matLine>
+    <p [matTooltip]="accessToken.whenCreated | date" matLine>
       {{ accessToken.whenCreated | amTimeAgo }}
     </p>
   </a>
@@ -20,6 +20,8 @@
   color="accent"
   class="floating-action-btn pin-bottom"
   (click)="openAccessTokenCreationDialog()"
+  i18n-matTooltip="@@accessToken.create.tooltip"
+  matTooltip="Create an access token"
 >
   <mat-icon>add</mat-icon>
 </button>

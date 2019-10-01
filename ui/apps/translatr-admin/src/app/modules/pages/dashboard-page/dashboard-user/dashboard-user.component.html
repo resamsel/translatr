@@ -2,17 +2,17 @@
   <user-card [user]="user">
     <p class="email ellipsis">
       <mat-icon inline="true">email</mat-icon>
-      <span [title]="user?.email">{{ user?.email }}</span>
+      <span [matTooltip]="user?.email">{{ user?.email }}</span>
     </p>
     <p class="when-created ellipsis">
       <mat-icon inline="true">access_time</mat-icon>
-      <span [title]="user?.whenCreated | date"
+      <span [matTooltip]="user?.whenCreated | date"
         >Joined {{ user?.whenCreated | amTimeAgo }}</span
       >
     </p>
     <p class="when-updated ellipsis">
       <mat-icon inline="true">access_time</mat-icon>
-      <span [title]="user?.whenUpdated | date"
+      <span [matTooltip]="user?.whenUpdated | date"
         >Updated {{ user?.whenUpdated | amTimeAgo }}</span
       >
     </p>

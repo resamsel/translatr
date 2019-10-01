@@ -10,6 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MainPageRoutingModule } from './main-page-routing.module';
 import { NavbarModule } from '@dev/translatr-components';
+import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
   declarations: [MainPageComponent],
@@ -23,7 +24,8 @@ import { NavbarModule } from '@dev/translatr-components';
     MatButtonModule,
     MatMenuModule,
     LayoutModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTooltipModule
   ]
 })
 export class MainPageModule {}

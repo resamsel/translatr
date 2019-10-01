@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { ActivityContentModule } from '../activity-content/activity-content.module';
 import { TagModule } from '@translatr/translatr-components/src/lib/modules/tag/tag.module';
 import { NavListModule } from '../nav-list/nav-list.module';
+import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
   declarations: [ActivityListComponent],
@@ -26,7 +27,8 @@ import { NavListModule } from '../nav-list/nav-list.module';
 
     ActivityContentModule,
     TagModule,
-    NavListModule
+    NavListModule,
+    MatTooltipModule
   ],
   exports: [ActivityListComponent]
 })

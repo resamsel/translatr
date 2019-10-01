@@ -34,6 +34,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
 import { GravatarModule } from 'ngx-gravatar';
 import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
+import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { DashboardUserComponent } from './dashboard-user/dashboard-user.componen
     MatListModule,
     MatSidenavModule,
     MatToolbarModule,
-    MetricModule
+    MetricModule,
+    MatTooltipModule
   ]
 })
 export class DashboardPageModule {}

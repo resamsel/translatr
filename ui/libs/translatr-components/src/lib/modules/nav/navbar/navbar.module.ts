@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { GravatarModule } from 'ngx-gravatar';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
   declarations: [NavbarComponent, AuthBarItemComponent, SearchBarComponent],
@@ -27,7 +28,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatFormFieldModule,
     ReactiveFormsModule,
     RouterModule,
-    GravatarModule
+    GravatarModule,
+    MatTooltipModule
   ],
   exports: [NavbarComponent, SearchBarComponent, AuthBarItemComponent]
 })

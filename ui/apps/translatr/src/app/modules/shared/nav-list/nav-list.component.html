@@ -1,6 +1,7 @@
 <app-list-header
   *ngIf="showFilter"
   [search]="criteria?.search"
+  [addTooltip]="addTooltip"
   (add)="add.emit()"
   (filter)="filter.emit($event)"
 ></app-list-header>

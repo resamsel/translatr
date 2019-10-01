@@ -36,7 +36,7 @@
           <app-tag>logged out</app-tag></span
         >
       </ng-container>
-      <span [title]="activity.whenCreated | date: 'full'">{{
+      <span [matTooltip]="activity.whenCreated | date: 'full'">{{
         activity.whenCreated | amTimeAgo
         }}</span>
     </h3>

@@ -10,6 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { SidenavComponent } from './sidenav.component';
 import { RouterModule } from '@angular/router';
 import { FooterModule, NavbarModule } from '@dev/translatr-components';
+import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
   declarations: [SidenavComponent],
@@ -25,7 +26,8 @@ import { FooterModule, NavbarModule } from '@dev/translatr-components';
     MatButtonModule,
     MatListModule,
     MatMenuModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTooltipModule
   ],
   exports: [SidenavComponent]
 })

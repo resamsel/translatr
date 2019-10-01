@@ -8,6 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavListModule } from '../nav-list/nav-list.module';
 import { MomentModule } from 'ngx-moment';
+import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
   declarations: [ProjectListComponent],
@@ -19,7 +20,8 @@ import { MomentModule } from 'ngx-moment';
     MatIconModule,
     MatToolbarModule,
     MatListModule,
-    MomentModule
+    MomentModule,
+    MatTooltipModule
   ],
   exports: [ProjectListComponent]
 })

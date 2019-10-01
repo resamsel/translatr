@@ -8,12 +8,12 @@
         [email]="project?.ownerEmail"
         size="36"
         class="user-icon"
-        [title]="project?.ownerName"
+        [matTooltip]="project?.ownerName"
       />
       <span class="owner">{{ project?.ownerName }}</span>
       <span
         class="when-created"
-        [title]="project?.whenCreated | date: 'full'"
+        [matTooltip]="project?.whenCreated | date: 'full'"
         >{{ project?.whenCreated | amTimeAgo }}</span
       >
     </p>

@@ -37,6 +37,7 @@ import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialo
 import { MetricModule, UserCardModule } from '@dev/translatr-components';
 import { ListHeaderModule } from '../../shared/list-header/list-header.module';
 import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
+import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-
     MatFormFieldModule,
     UserCardModule,
     ListHeaderModule,
-    MetricModule
+    MetricModule,
+    MatTooltipModule
   ],
   providers: [ProjectFacade]
 })

@@ -4,6 +4,8 @@
   [empty]="empty"
   [nothingFound]="nothingFound"
   showFilter="true"
+  addTooltip="Add new language"
+  i18n-addTooltip="@@locale.create.tooltip"
   (add)="openLocaleCreationDialog(project)"
   (filter)="onFilter($event)"
   (more)="more.emit($event)"
@@ -22,7 +24,7 @@
     <mat-icon class="locale circle" matListIcon>language</mat-icon>
     <h3 matLine>{{ locale.displayName }} ({{ locale.name }})</h3>
     <p
-      [title]="locale?.whenUpdated | date: 'full'"
+      [matTooltip]="locale?.whenUpdated | date: 'full'"
       i18n="@@updated.when"
       matLine
     >
@@ -30,17 +32,17 @@
     </p>
     <button
       (click)="onEdit(locale, $event)"
-      i18n-title="@@button.edit"
       mat-icon-button
-      title="Edit"
+      i18n-matTooltip="@@button.edit"
+      matTooltip="Edit"
     >
       <mat-icon>edit</mat-icon>
     </button>
     <button
       (click)="onDelete(locale, $event)"
-      i18n-title="@@button.delete"
       mat-icon-button
-      title="Delete"
+      i18n-matTooltip="@@button.delete"
+      matTooltip="Delete"
     >
       <mat-icon>delete</mat-icon>
     </button>

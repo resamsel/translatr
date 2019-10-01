@@ -39,7 +39,7 @@
         <td
           mat-cell
           *matCellDef="let element"
-          [title]="element.whenCreated | date: 'full'"
+          [matTooltip]="element.whenCreated | date: 'full'"
         >
           {{ element.whenCreated | amTimeAgo }}
         </td>
@@ -50,14 +50,17 @@
         <td mat-cell *matCellDef="let element" class="actions">
           <button
             mat-icon-button
+            i18n-matTooltip="@@button.edit"
+            matTooltip="Edit"
             [disabled]="!(allowEdit$(element) | async)"
             (click)="onEdit(element)"
           >
             <mat-icon>edit</mat-icon>
           </button>
           <confirm-button
-            title="Delete"
             icon="delete"
+            i18n-matTooltip="@@button.delete"
+            matTooltip="Delete"
             [disabled]="!(allowDelete$(element) | async)"
             (confirm)="onDelete(element)"
           >
@@ -67,8 +70,9 @@
 
       <selection-actions>
         <confirm-button
-          title="Delete selected"
           icon="delete"
+          i18n-matTooltip="@@button.delete"
+          matTooltip="Delete"
           [disabled]="!(allowDeleteAll$(selected) | async)"
           (confirm)="onDeleteAll(selected)"
         ></confirm-button>

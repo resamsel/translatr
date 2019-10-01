@@ -20,12 +20,14 @@
     </button>
   </mat-form-field>
   <button
-    (click)="add.emit()"
     *ngIf="addVisible"
-    [disabled]="!addEnabled"
+    (click)="add.emit()"
     class="floating-action-btn pin-bottom"
     color="accent"
-    mat-fab>
+    [disabled]="!addEnabled"
+    [matTooltip]="addTooltip"
+    mat-fab
+  >
     <mat-icon>add</mat-icon>
   </button>
   <button (click)="remove.emit()" *ngIf="removeVisible" [disabled]="!removeEnabled" i18n mat-icon-button>

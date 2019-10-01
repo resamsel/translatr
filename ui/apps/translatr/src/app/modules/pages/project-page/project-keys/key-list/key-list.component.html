@@ -4,6 +4,8 @@
   [empty]="empty"
   [nothingFound]="nothingFound"
   showFilter="true"
+  addTooltip="Add new key"
+  i18n-addTooltip="@@key.create.tooltip"
   (add)="openKeyCreationDialog(project)"
   (filter)="onFilter($event)"
   (more)="more.emit($event)"
@@ -22,25 +24,25 @@
     <mat-icon class="key circle" matListIcon>vpn_key</mat-icon>
     <h3 matLine>{{ key.name }}</h3>
     <p
-      [title]="key?.whenUpdated | date: 'full'"
-      i18n="@@updated.when"
       matLine
+      [matTooltip]="key?.whenUpdated | date: 'full'"
+      i18n="@@updated.when"
     >
       Updated {{ key?.whenUpdated | amTimeAgo }}
     </p>
     <button
       (click)="onEdit(key, $event)"
-      i18n-title="@@button.edit"
       mat-icon-button
-      title="Edit"
+      i18n-matTooltip="@@button.edit"
+      matTooltip="Edit"
     >
       <mat-icon>edit</mat-icon>
     </button>
     <button
       (click)="onDelete(key, $event)"
-      i18n-title="@@button.delete"
       mat-icon-button
-      title="Delete"
+      i18n-matTooltip="@@button.delete"
+      matTooltip="Delete"
     >
       <mat-icon>delete</mat-icon>
     </button>
