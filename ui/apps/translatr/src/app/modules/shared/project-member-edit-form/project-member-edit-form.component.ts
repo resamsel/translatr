@@ -60,7 +60,7 @@ export class ProjectMemberEditFormComponent
     readonly memberService: MemberService,
     readonly snackBar: MatSnackBar,
     readonly changeDetectorRef: ChangeDetectorRef,
-    private readonly fb: FormBuilder
+    readonly fb: FormBuilder
   ) {
     super(
       snackBar,

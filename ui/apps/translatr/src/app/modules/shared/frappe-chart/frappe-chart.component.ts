@@ -21,7 +21,7 @@ export class FrappeChartComponent {
       return;
     }
 
-    this.chart = new Heatmap('#chart', {
+    const chart = new Heatmap('#chart', {
       title: this.title,
       data: data,
       type: 'heatmap',
@@ -29,12 +29,10 @@ export class FrappeChartComponent {
       colors: ['#dedede', '#d9e38c', '#9bc26d', '#669f4b', '#3d662e'],
       discreteDomains: 0
     });
-    // this.chart.svg.setAttribute('viewBox', `0 0 716 160`);
-    // this.chart.svg.setAttribute('width', '100%');
-    // this.chart.svg.setAttribute('height', '100%');
+    chart.svg.setAttribute('viewBox', `0 0 716 160`);
+    chart.svg.setAttribute('width', '100%');
+    chart.svg.setAttribute('height', '100%');
   }
-
-  private chart: Heatmap;
 
   @HostBinding('class') clazz = 'app-frappe-chart';
 }

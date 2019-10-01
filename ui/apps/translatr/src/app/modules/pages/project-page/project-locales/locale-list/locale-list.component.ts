@@ -22,6 +22,7 @@ export class LocaleListComponent {
   @Output() edit = new EventEmitter<Locale>();
   @Output() delete = new EventEmitter<Locale>();
   trackByFn = trackByFn;
+  // @ts-ignore
   @HostBinding('style.display') private readonly display = 'block';
 
   constructor(

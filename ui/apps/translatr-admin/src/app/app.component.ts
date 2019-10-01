@@ -9,7 +9,7 @@ import { AppFacade } from './+state/app.facade';
 export class AppComponent {
   title = 'translatr-admin';
 
-  constructor(private readonly facade: AppFacade) {
+  constructor(readonly facade: AppFacade) {
     facade.loadLoggedInUser();
   }
 }

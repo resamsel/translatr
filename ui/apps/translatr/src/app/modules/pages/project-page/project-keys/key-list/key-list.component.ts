@@ -20,6 +20,7 @@ export class KeyListComponent {
   @Output() edit = new EventEmitter<Key>();
   @Output() delete = new EventEmitter<Key>();
   trackByFn = trackByFn;
+  // @ts-ignore
   @HostBinding('style.display') private readonly display = 'block';
 
   constructor(

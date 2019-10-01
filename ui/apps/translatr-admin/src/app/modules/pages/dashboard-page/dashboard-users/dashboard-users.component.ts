@@ -65,7 +65,7 @@ export class DashboardUsersComponent implements OnDestroy {
   constructor(
     private readonly facade: AppFacade,
     private readonly dialog: MatDialog,
-    private readonly snackBar: MatSnackBar
+    readonly snackBar: MatSnackBar
   ) {
     this.facade.userDeleted$.subscribe(
       (action: UserDeleted | UserDeleteError) => {

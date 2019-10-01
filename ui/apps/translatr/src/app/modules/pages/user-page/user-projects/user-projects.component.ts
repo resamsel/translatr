@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ProjectCriteria, User } from '@dev/translatr-model';
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
 import { filter, take, takeUntil } from 'rxjs/operators';
@@ -23,7 +23,6 @@ export class UserProjectsComponent implements OnInit {
   constructor(
     private readonly facade: UserFacade,
     private readonly router: Router,
-    private readonly route: ActivatedRoute,
     private readonly dialog: MatDialog
   ) {
   }

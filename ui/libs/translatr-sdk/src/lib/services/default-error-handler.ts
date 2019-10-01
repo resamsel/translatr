@@ -1,4 +1,3 @@
-import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { ErrorHandler } from './error-handler';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -23,7 +22,6 @@ const errorMessage = (err: HttpErrorResponse): string => {
 
 export class DefaultErrorHandler extends ErrorHandler {
   constructor(
-    private readonly router: Router,
     private readonly notificationService: NotificationService,
     private readonly loginUrl: string
   ) {

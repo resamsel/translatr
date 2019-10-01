@@ -23,6 +23,7 @@
       "@translatr/utils": ["libs/utils/src/index.ts"],
       "@translatr/node-utils": ["libs/node-utils/src/index.ts"]
     },
-    "rootDir": "."
+    "rootDir": ".",
+    "noUnusedLocals": true
   }
 }

@@ -16,7 +16,6 @@ import {
   AccessTokensDeleteError,
   AppActionTypes
 } from '../../../../+state/app.actions';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { mapTo } from 'rxjs/operators';
 import { ofType } from '@ngrx/effects';
@@ -47,8 +46,7 @@ export class DashboardAccessTokensComponent {
 
   constructor(
     private readonly facade: AppFacade,
-    private readonly dialog: MatDialog,
-    private readonly snackBar: MatSnackBar
+    readonly snackBar: MatSnackBar
   ) {
     notifyEvent(
       snackBar,
@@ -83,6 +81,7 @@ export class DashboardAccessTokensComponent {
   }
 
   onEdit(accessToken: AccessToken) {
+    console.log('edit', accessToken);
     // this.facade.deleteAccessToken(accessToken);
   }
 

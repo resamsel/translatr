@@ -17,6 +17,7 @@ export class MemberListComponent {
   @Output() filter = new EventEmitter<string>();
 
   project$ = this.facade.project$;
+  // @ts-ignore
   @HostBinding('style.display') private readonly display = 'block';
 
   constructor(
@@ -33,7 +34,7 @@ export class MemberListComponent {
   }
 
   onRemove(member: any): void {
-    console.log('remove member');
+    console.log('remove member', member);
   }
 
   onFilter(search: string): void {

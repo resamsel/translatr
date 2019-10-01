@@ -3,17 +3,13 @@ import { select, Store } from '@ngrx/store';
 import { DashboardPartialState } from './dashboard.reducer';
 import { dashboardQuery } from './dashboard.selectors';
 import { LoadActivities } from './dashboard.actions';
-import { ActivityService } from '@dev/translatr-sdk';
 import { ActivityCriteria } from '@dev/translatr-model';
 
 @Injectable()
 export class DashboardFacade {
   activities$ = this.store.pipe(select(dashboardQuery.getActivities));
 
-  constructor(
-    private store: Store<DashboardPartialState>,
-    private readonly activityService: ActivityService
-  ) {
+  constructor(private readonly store: Store<DashboardPartialState>) {
   }
 
   loadActivities(payload?: ActivityCriteria) {

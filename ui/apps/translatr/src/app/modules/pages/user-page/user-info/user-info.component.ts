@@ -1,7 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@dev/translatr-model';
-import { ActivatedRoute } from '@angular/router';
-import { ProjectService, UserService } from '@dev/translatr-sdk';
 import { UserFacade } from '../+state/user.facade';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -21,12 +19,7 @@ export class UserInfoComponent implements OnInit, OnDestroy {
   activities$ = this.facade.activities$
     .pipe(takeUntil(this.destroy$.asObservable()));
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly facade: UserFacade,
-    private readonly userService: UserService,
-    private readonly projectService: ProjectService
-  ) {
+  constructor(private readonly facade: UserFacade) {
   }
 
   ngOnInit() {

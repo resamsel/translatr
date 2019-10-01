@@ -1,8 +1,8 @@
 <app-navbar>
   <app-auth-bar-item [me]="me$ | async" [endpointUrl]="endpointUrl">
     <a
-      mat-menu-item
       *ngIf="me$ | async as me"
+      mat-menu-item
       [routerLink]="['/', me.username]"
     >
       Profile

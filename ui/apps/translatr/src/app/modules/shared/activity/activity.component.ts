@@ -1,18 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Aggregate, PagedList } from '@dev/translatr-model';
 import { HeatmapData } from '../frappe-chart/frappe-chart.component';
-
-interface DataPoint {
-  name: string;
-  date: string;
-  value: number;
-}
-
-interface Data {
-  date: string;
-  total: number;
-  details: Array<DataPoint>;
-}
 
 const minusOneYear = (date: Date): Date => {
   const d = new Date(date.getTime());
@@ -26,7 +14,7 @@ const minusOneYear = (date: Date): Date => {
   templateUrl: './activity.component.html',
   styleUrls: ['./activity.component.scss']
 })
-export class ActivityComponent implements OnInit {
+export class ActivityComponent {
   @Input() set activity(activity: PagedList<Aggregate> | undefined) {
     if (!activity) {
       this.data = undefined;
@@ -47,8 +35,4 @@ export class ActivityComponent implements OnInit {
   }
 
   data: HeatmapData;
-
-  constructor() {}
-
-  ngOnInit() {}
 }

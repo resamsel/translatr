@@ -6,7 +6,7 @@ import { AppFacade } from './+state/app.facade';
   template: '<router-outlet></router-outlet>'
 })
 export class AppComponent {
-  constructor(private readonly facade: AppFacade) {
+  constructor(readonly facade: AppFacade) {
     facade.loadMe();
   }
 }

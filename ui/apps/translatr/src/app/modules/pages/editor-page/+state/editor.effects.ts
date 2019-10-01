@@ -26,7 +26,6 @@ import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr
 import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { Observable, of, throwError } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { EditorFacade } from './editor.facade';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppPartialState } from '../../../../+state/app.reducer';
 import { editorQuery } from './editor.selectors';
@@ -216,7 +215,6 @@ export class EditorEffects {
   constructor(
     private readonly store: Store<AppPartialState>,
     private readonly actions$: Actions,
-    private readonly facade: EditorFacade,
     private readonly localeService: LocaleService,
     private readonly keyService: KeyService,
     private readonly messageService: MessageService,
