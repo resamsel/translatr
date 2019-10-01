@@ -1,10 +1,6 @@
 @import '~@angular/material/theming';
 @import 'mixins';
 
-.flat ::ng-deep .mat-toolbar {
-  box-shadow: none;
-}
-
 .main {
   flex-grow: 1;
   background: rgba(0, 0, 0, 0.06);

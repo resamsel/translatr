@@ -1,4 +1,4 @@
-<app-navbar>
+<app-navbar [elevated]="false">
   <app-auth-bar-item [me]="me$ | async" [endpointUrl]="endpointUrl">
     <a
       *ngIf="me$ | async as me"

@@ -1,18 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
+
+export interface Link {
+  routerLink: string[];
+  name?: string;
+}
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   @Input() title = 'Translatr';
   @Input() sidenav: MatDrawer;
-  @Input() backLink: { routerLink: string[]; name: string };
+  @Input() backLink: Link;
   @Input() page: string;
-
-  constructor() {}
-
-  ngOnInit() {}
+  @Input() elevated = true;
 }

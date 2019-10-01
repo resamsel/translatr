@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { User } from '@dev/translatr-model';
 import { environment } from '../../../../environments/environment';
 import { MatDrawer } from '@angular/material/sidenav';
+import { Link } from '@dev/translatr-components';
 
 @Component({
   selector: 'app-sidenav',
@@ -13,7 +14,7 @@ import { MatDrawer } from '@angular/material/sidenav';
 })
 export class SidenavComponent {
   @Input() page: string;
-  @Input() backLink: { routerLink: string[]; name: string };
+  @Input() backLink: Link;
   @Input() me: User | undefined;
   @Input() sidenav: MatDrawer;
 

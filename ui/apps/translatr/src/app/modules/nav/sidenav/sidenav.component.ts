@@ -4,11 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User, UserRole } from '@dev/translatr-model';
 import { environment } from '../../../../environments/environment';
-
-export interface Link {
-  routerLink: string[];
-  name?: string;
-}
+import { Link } from '@dev/translatr-components';
 
 @Component({
   selector: 'app-sidenav',
@@ -19,6 +15,7 @@ export class SidenavComponent {
   @Input() page: string;
   @Input() backLink: Link;
   @Input() me: User | undefined;
+  @Input() elevated = true;
 
   readonly endpointUrl = environment.endpointUrl;
 

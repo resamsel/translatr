@@ -1,8 +1,8 @@
 <app-sidenav
-  class="flat"
   [page]="_backLink.name ? name : undefined"
   [backLink]="backLink"
   [me]="me"
+  [elevated]="false"
 >
   <ng-container ngProjectAs="app-search-bar">
     <ng-content select="app-search-bar"></ng-content>

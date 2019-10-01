@@ -59,7 +59,8 @@
 
   <mat-card class="metric locales">
     <mat-card-header>
-      <mat-card-title i18n="@@locales.latest">Latest Languages</mat-card-title>
+      <mat-card-title i18n="@@locales.latest">Recent Languages</mat-card-title>
+      <mat-card-subtitle>Latest additions to this projects' languages.</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content *ngIf="latestLocales$ | async as latestLocales">
       <mat-nav-list *ngIf="latestLocales.length; else localesEmpty">
@@ -87,7 +88,8 @@
 
   <mat-card class="metric keys">
     <mat-card-header>
-      <mat-card-title i18n="@@keys.latest">Latest Keys</mat-card-title>
+      <mat-card-title i18n="@@keys.latest">Recent Keys</mat-card-title>
+      <mat-card-subtitle>Latest additions to this projects' keys.</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content *ngIf="latestKeys$ | async as latestKeys">
       <mat-nav-list *ngIf="latestKeys.length > 0; else keysEmpty">
@@ -115,7 +117,8 @@
 
   <mat-card class="metric messages">
     <mat-card-header>
-      <mat-card-title i18n="@@translations.latest">Latest Translations</mat-card-title>
+      <mat-card-title i18n="@@translations.latest">Recent Translations</mat-card-title>
+      <mat-card-subtitle>Latest translations of this project.</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content *ngIf="latestMessages$ | async as latestMessages">
       <mat-nav-list *ngIf="latestMessages.length > 0; else messagesEmpty">

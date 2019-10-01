@@ -3,7 +3,7 @@ import { Message, User } from '@dev/translatr-model';
 import { EditorFacade } from '../+state/editor.facade';
 import { MatTabGroup } from '@angular/material/tabs';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
-import { Link } from '../../../nav/sidenav/sidenav.component';
+import { Link } from '@dev/translatr-components';
 
 @Component({
   selector: 'app-editor',

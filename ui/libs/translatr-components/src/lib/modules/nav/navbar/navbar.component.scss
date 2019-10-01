@@ -1,3 +1,4 @@
+@import '~@angular/material/theming';
 @import "mixins";
 
 :host {
@@ -7,6 +8,10 @@
 
 .mat-toolbar {
   z-index: 2;
+}
+
+.elevated .mat-toolbar-row {
+  @include mat-elevation(2);
 }
 
 .title {
