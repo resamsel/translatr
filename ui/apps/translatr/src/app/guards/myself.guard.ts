@@ -5,6 +5,19 @@ import { AppFacade } from '../+state/app.facade';
 import { map } from 'rxjs/operators';
 import { User, UserRole } from '@dev/translatr-model';
 
+function findParam(next: ActivatedRouteSnapshot, param: string): string | undefined {
+  let current = next;
+  while (!!current) {
+    if (current.params[param]) {
+      return current.params[param];
+    }
+
+    current = current.parent;
+  }
+
+  return undefined;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,7 +25,8 @@ export class MyselfGuard implements CanActivate {
   constructor(
     private readonly appFacade: AppFacade,
     private readonly router: Router
-  ) {}
+  ) {
+  }
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -27,7 +41,7 @@ export class MyselfGuard implements CanActivate {
 
         if (
           me.role !== UserRole.Admin &&
-          me.username !== next.parent.params.username
+          me.username !== findParam(next, 'username')
         ) {
           if (next.data.redirectUri) {
             this.router.navigate(next.data.redirectUri);
