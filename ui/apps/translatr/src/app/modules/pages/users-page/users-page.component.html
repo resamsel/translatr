@@ -1,21 +1,14 @@
-<app-sidenav [me]="me$ | async" page="Contributors">
+<app-sidenav [me]="me$ | async" page="Top Contributors">
   <div class="container">
-    <section>
-      <h2>Top Contributors</h2>
       <div class="flex-stretch">
         <app-user-card-link
           *ngFor="let user of (users$ | async)?.list.slice(0, 4)"
           [user]="user"
         ></app-user-card-link>
       </div>
-    </section>
-
-    <section>
-      <h2>All Contributors</h2>
       <app-user-list
-        [users]="users$ | async"
+        [users]="usersTail$ | async"
         (more)="onLoadUsers($event)"
       ></app-user-list>
-    </section>
   </div>
 </app-sidenav>

@@ -4,6 +4,7 @@ import forms.SearchForm;
 import models.User;
 import models.UserRole;
 import play.mvc.Http.Request;
+import utils.JsonUtils;
 
 import java.util.UUID;
 
@@ -123,7 +124,8 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
   public static ProjectCriteria from(Request request) {
     ProjectCriteria criteria = new ProjectCriteria()
         .with(request)
-        .withOwnerUsername(request.getQueryString("owner"));
+        .withOwnerUsername(request.getQueryString("owner"))
+        .withMemberId(JsonUtils.getUuid(request.getQueryString("memberId")));
 
     User loggedInUser = User.loggedInUser();
     if (loggedInUser != null && loggedInUser.role != UserRole.Admin) {

@@ -1,4 +1,4 @@
-<app-sidenav [me]="me$ | async" page="Projects">
+<app-sidenav [me]="me$ | async" page="Contributing Projects">
   <button
     mat-fab
     color="accent"
@@ -12,19 +12,13 @@
 
   <div class="container">
     <section>
-      <h2>Active Projects</h2>
       <div class="flex-stretch">
         <app-project-card-link
           *ngFor="let project of (projects$ | async)?.list.slice(0, 4)"
           [project]="project"
         ></app-project-card-link>
       </div>
-      <div class="clearfix"></div>
-    </section>
-
-    <section>
-      <h2>All Projects</h2>
-      <app-project-list [projects]="projects$ | async"></app-project-list>
+      <app-project-list [projects]="projectsTail$ | async"></app-project-list>
     </section>
   </div>
 </app-sidenav>

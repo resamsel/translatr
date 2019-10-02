@@ -2,9 +2,9 @@ package criterias;
 
 import forms.ActivitySearchForm;
 import play.mvc.Http;
+import utils.JsonUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -14,6 +14,7 @@ import java.util.UUID;
 public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCriteria> {
 
   private List<UUID> ids;
+  private UUID projectMemberId;
 
   public LogEntryCriteria() {
     super("activity");
@@ -38,13 +39,25 @@ public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCrit
     return this;
   }
 
+  public UUID getProjectMemberId() {
+    return projectMemberId;
+  }
+
+  private void setProjectMemberId(UUID projectMemberId) {
+    this.projectMemberId = projectMemberId;
+  }
+
+  public LogEntryCriteria withProjectMemberId(UUID projectMemberId) {
+    setProjectMemberId(projectMemberId);
+    return this;
+  }
+
   @Override
   public LogEntryCriteria with(Http.Request request) {
     return super
         .with(request)
-        .withUserId(Optional.ofNullable(request.getQueryString("userId"))
-            .map(UUID::fromString)
-            .orElse(null));
+        .withUserId(JsonUtils.getUuid(request.getQueryString("userId")))
+        .withProjectMemberId(JsonUtils.getUuid(request.getQueryString("projectMemberId")));
   }
 
   public static LogEntryCriteria from(ActivitySearchForm form) {
@@ -57,6 +70,6 @@ public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCrit
 
   @Override
   protected String getCacheKeyParticle() {
-    return String.format("%s", ids);
+    return String.format("%s:%s", ids, projectMemberId);
   }
 }

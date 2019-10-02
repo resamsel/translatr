@@ -4,4 +4,5 @@ export interface ActivityCriteria extends RequestCriteria {
   userId?: string;
   projectId?: string;
   projectOwnerId?: string;
+  projectMemberId?: string;
 }

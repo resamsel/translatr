@@ -28,16 +28,16 @@
       class="user count"></dev-metric>
 
     <section>
-      <h2>My Projects</h2>
+      <h2>Contributing Projects</h2>
       <app-project-card-list
-        [projects]="myProjects$ | async"
+        [projects]="projects$ | async"
         allowProjectCreation="true"
         [showMore]="false"
         (create)="openProjectCreationDialog()"></app-project-card-list>
     </section>
 
     <section>
-      <h2>Activity on my Projects</h2>
+      <h2>Activity on contributing Projects</h2>
       <app-activity-list [activities]="activities$ | async" [showMore]="false"></app-activity-list>
     </section>
   </div>
