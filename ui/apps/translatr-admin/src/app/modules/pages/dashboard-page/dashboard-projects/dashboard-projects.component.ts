@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { errorMessage, hasDeleteAllProjectsPermission, hasDeleteProjectPermission, hasEditProjectPermission } from '@dev/translatr-sdk';
 import { Entity, notifyEvent, ProjectEditDialogComponent } from '@dev/translatr-components';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'dev-dashboard-projects',
@@ -27,6 +28,8 @@ export class DashboardProjectsComponent implements OnDestroy {
   load$ = of({ limit: '20', order: 'name asc' });
 
   selected: Project[] = [];
+
+  uiUrl = environment.uiUrl;
 
   constructor(
     private readonly facade: AppFacade,
