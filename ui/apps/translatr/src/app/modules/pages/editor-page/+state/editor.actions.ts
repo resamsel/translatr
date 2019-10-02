@@ -24,6 +24,9 @@ export enum EditorActionTypes {
   LoadMessages = '[Editor Page] Load Messages',
   MessagesLoaded = '[Messages API] Messages Loaded',
   MessagesLoadError = '[Messages API] Messages Load Error',
+  LoadMessagesOfKey = '[Editor Page] Load Messages Of Key',
+  MessagesOfKeyLoaded = '[Messages API] Messages Of Key Loaded',
+  MessagesOfKeyLoadError = '[Messages API] Messages Of Key Load Error',
   SaveMessage = '[Editor Page] Save Message',
   MessageSaved = '[Messages API] Message Saved',
 
@@ -157,6 +160,27 @@ export class MessagesLoadError implements Action {
   }
 }
 
+export class LoadMessagesOfKey implements Action {
+  readonly type = EditorActionTypes.LoadMessagesOfKey;
+
+  constructor(public payload: MessageCriteria) {
+  }
+}
+
+export class MessagesOfKeyLoaded implements Action {
+  readonly type = EditorActionTypes.MessagesOfKeyLoaded;
+
+  constructor(public payload: PagedList<Message>) {
+  }
+}
+
+export class MessagesOfKeyLoadError implements Action {
+  readonly type = EditorActionTypes.MessagesOfKeyLoadError;
+
+  constructor(public payload: any) {
+  }
+}
+
 export class SaveMessage implements Action {
   readonly type = EditorActionTypes.SaveMessage;
 
@@ -207,6 +231,9 @@ export type EditorAction =
   | LoadMessages
   | MessagesLoaded
   | MessagesLoadError
+  | LoadMessagesOfKey
+  | MessagesOfKeyLoaded
+  | MessagesOfKeyLoadError
   | SaveMessage
   | MessageSaved
   | LoadLocaleSearch

@@ -9,6 +9,7 @@ import {
   LoadLocale,
   LoadLocales,
   LoadLocaleSearch,
+  LoadMessagesOfKey,
   SaveMessage,
   SelectKey,
   SelectLocale,
@@ -18,6 +19,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { KeyCriteria, LocaleCriteria, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { MessageItem } from '../message-item';
+import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 
 @Injectable()
 export class EditorFacade {
@@ -69,6 +71,11 @@ export class EditorFacade {
     takeUntil(this.unloadEditor$)
   );
 
+  messagesOfKey$ = this.store.pipe(
+    select(editorQuery.getMessagesOfKey),
+    takeUntil(this.unloadEditor$)
+  );
+
   constructor(private store: Store<EditorPartialState>) {
   }
 
@@ -111,6 +118,10 @@ export class EditorFacade {
 
   loadKeys(criteria: KeyCriteria) {
     this.store.dispatch(new LoadKeys(criteria));
+  }
+
+  loadMessagesOfKey(criteria: MessageCriteria): void {
+    this.store.dispatch(new LoadMessagesOfKey(criteria));
   }
 
   updateLocaleSearch(criteria: RequestCriteria) {

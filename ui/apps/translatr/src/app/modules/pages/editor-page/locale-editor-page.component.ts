@@ -2,10 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EditorFacade } from './+state/editor.facade';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { map, takeUntil } from 'rxjs/operators';
-import { Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
+import { Locale, Message, RequestCriteria } from '@dev/translatr-model';
 import { AppFacade } from '../../../+state/app.facade';
 import { trackByFn } from '@translatr/utils';
-import { MessageItem } from './message-item';
 
 @Component({
   selector: 'app-locale-editor-page',
@@ -21,6 +20,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     .pipe(map((message: Message | undefined) =>
       message !== undefined ? { ...message } : undefined));
   readonly search$ = this.facade.search$;
+  readonly messages$ = this.facade.messagesOfKey$;
   readonly message: Message;
 
   readonly backLink = {
@@ -72,13 +72,5 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
         projectId: locale.projectId,
         limit: limit + 25
       }));
-  }
-
-  toMessages(messageItems: PagedList<MessageItem>): Array<Message> {
-    if (messageItems === undefined) {
-      return [];
-    }
-
-    return messageItems.list.filter(i => !!i.message).map(i => i.message);
   }
 }

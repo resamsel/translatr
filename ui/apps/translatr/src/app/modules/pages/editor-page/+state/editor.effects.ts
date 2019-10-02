@@ -12,6 +12,7 @@ import {
   LoadLocales,
   LoadLocaleSearch,
   LoadMessages,
+  LoadMessagesOfKey,
   LocaleLoaded,
   LocaleLoadError,
   LocalesLoaded,
@@ -19,7 +20,10 @@ import {
   MessageSaved,
   MessagesLoaded,
   MessagesLoadError,
-  SaveMessage
+  MessagesOfKeyLoaded,
+  MessagesOfKeyLoadError,
+  SaveMessage,
+  SelectKey
 } from './editor.actions';
 import { KeyService, LocaleService, MessageService } from '@dev/translatr-sdk';
 import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
@@ -97,6 +101,18 @@ export class EditorEffects {
     )
   );
 
+  @Effect() loadMessagesOfKey$ = this.actions$.pipe(
+    ofType<LoadMessagesOfKey>(EditorActionTypes.LoadMessagesOfKey),
+    switchMap((action: LoadMessagesOfKey) =>
+      this.messageService
+        .find(action.payload)
+        .pipe(
+          map((payload: PagedList<Message>) => new MessagesOfKeyLoaded(payload)),
+          catchError(error => of(new MessagesOfKeyLoadError(error)))
+        )
+    )
+  );
+
   @Effect() saveMessage$ = this.actions$.pipe(
     ofType<SaveMessage>(EditorActionTypes.SaveMessage),
     switchMap((action: SaveMessage) => {
@@ -160,16 +176,34 @@ export class EditorEffects {
     ),
     filter(([, locale, keys]) =>
       locale !== undefined && keys !== undefined),
-    map(([, locale, keys]:
-           [KeysLoaded, Locale, PagedList<Key>]) =>
-      // FIXME: overload prevention! URI too long needs to be prevented, only
-      // load a max of 100 messages?
+    map(([, locale, keys]: [KeysLoaded, Locale, PagedList<Key>]) =>
+      // Overload prevention - URI too long needs to be prevented, only
+      // load a max of 100 messages
       new LoadMessages({
         projectId: locale.projectId,
         localeId: locale.id,
-        keyIds: keys.list.map((key) => key.id).join(',')
+        keyIds: keys.list
+          .slice(0, 100)
+          .map((key) => key.id)
+          .join(',')
       })
     )
+  );
+
+  @Effect() localeKeySelected$ = this.actions$.pipe(
+    ofType<SelectKey | LocaleLoaded>(
+      EditorActionTypes.SelectKey,
+      EditorActionTypes.LocaleLoaded
+    ),
+    withLatestFrom(
+      this.store.pipe(select(editorQuery.getSelectedKeyName)),
+      this.store.pipe(select(editorQuery.getLocale))
+    ),
+    filter(([, keyName, locale]) => !!keyName && !!locale),
+    map(([, keyName, locale]) => new LoadMessagesOfKey({
+      projectId: locale.projectId,
+      keyName
+    }))
   );
 
   // Key Editor

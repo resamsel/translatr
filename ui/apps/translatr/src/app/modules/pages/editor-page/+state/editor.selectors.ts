@@ -96,6 +96,11 @@ const getMessages = createSelector(
   (state: EditorState) => state.messages
 );
 
+const getMessagesOfKey = createSelector(
+  getEditorState,
+  (state: EditorState) => state.messagesOfKey
+);
+
 const getLocaleSelectedMessage = createSelector(
   getLocale,
   getMessages,
@@ -229,7 +234,7 @@ export const editorQuery = {
   getSelectedLocaleName,
   getSelectedKeyName,
   getSearch,
-  getMessages,
+  getMessagesOfKey,
   getLocaleMessageItems,
   getLocaleSelectedMessage,
   getKeyMessageItems,

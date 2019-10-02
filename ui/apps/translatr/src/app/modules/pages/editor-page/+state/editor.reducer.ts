@@ -23,6 +23,7 @@ export interface EditorState {
   keys?: PagedList<Key>;
 
   messages?: PagedList<Message>;
+  messagesOfKey?: PagedList<Message>;
 
   selectedLocaleName?: string;
   selectedKey?: string;
@@ -213,6 +214,8 @@ export function editorReducer(
       return activateLoading(state, 'messages');
     case EditorActionTypes.MessagesLoaded:
       return placePayload(state, 'messages', action.payload);
+    case EditorActionTypes.MessagesOfKeyLoaded:
+      return placePayload(state, 'messagesOfKey', action.payload);
 
     case EditorActionTypes.MessageSaved:
       return {

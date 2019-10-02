@@ -6,7 +6,7 @@
   name="Language Editor"
   i18n-name="@@locale.editor"
   [message]="selectedMessage$ | async"
-  [messages]="toMessages(messageItems$ | async)"
+  [messages]="(messages$ | async)?.list"
 >
   <app-search-bar
     [criteria]="search$ | async"
