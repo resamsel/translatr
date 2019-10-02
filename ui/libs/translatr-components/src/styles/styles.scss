@@ -134,6 +134,15 @@ a .mat-card {
   }
 }
 
+.empty.large {
+  .mat-icon {
+    opacity: 0.5;
+    height: 64px;
+    width: 64px;
+    font-size: 64px;
+  }
+}
+
 .mat-icon.circle {
   font-size: 18px;
   line-height: 32px;
