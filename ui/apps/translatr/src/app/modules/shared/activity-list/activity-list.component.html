@@ -45,12 +45,7 @@
 
 <ng-template #empty>
   <mat-list class="empty">
-    <mat-list-item *ngFor="let index of [0, 1, 2]">
-      <mat-icon class="icon" matListIcon>account_circle</mat-icon>
-      <h3 matLine>
-        <span class="title item-{{ index }}"></span>
-      </h3>
-      <p class="subtitle" matLine></p>
-    </mat-list-item>
+    <mat-icon class="activity circle">change_history</mat-icon>
+    <h3 i18n="@@activity.empty">No activity yet.</h3>
   </mat-list>
 </ng-template>
