@@ -3,21 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { readFirst } from '@nrwl/angular/testing';
 
 import { EffectsModule } from '@ngrx/effects';
-import { StoreModule, Store } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 
 import { NxModule } from '@nrwl/angular';
 
 import { ProjectsEffects } from './projects.effects';
 import { ProjectsFacade } from './projects.facade';
-
-import { projectsQuery } from './projects.selectors';
-import { LoadProjects, ProjectsLoaded } from './projects.actions';
-import {
-  ProjectsState,
-  Entity,
-  initialState,
-  projectsReducer
-} from './projects.reducer';
+import { ProjectsLoaded } from './projects.actions';
+import { Entity, initialState, projectsReducer, ProjectsState } from './projects.reducer';
 
 interface TestSchema {
   projects: ProjectsState;
@@ -66,7 +59,7 @@ describe('ProjectsFacade', () => {
      */
     it('loadAll() should return empty list with loaded == true', async done => {
       try {
-        let list = await readFirst(facade.allProjects$);
+        let list = await readFirst(facade.projects$);
         let isLoaded = await readFirst(facade.loaded$);
 
         expect(list.length).toBe(0);
@@ -74,7 +67,7 @@ describe('ProjectsFacade', () => {
 
         facade.loadAll();
 
-        list = await readFirst(facade.allProjects$);
+        list = await readFirst(facade.projects$);
         isLoaded = await readFirst(facade.loaded$);
 
         expect(list.length).toBe(0);
@@ -91,7 +84,7 @@ describe('ProjectsFacade', () => {
      */
     it('allProjects$ should return the loaded list; and loaded flag == true', async done => {
       try {
-        let list = await readFirst(facade.allProjects$);
+        let list = await readFirst(facade.projects$);
         let isLoaded = await readFirst(facade.loaded$);
 
         expect(list.length).toBe(0);
@@ -101,7 +94,7 @@ describe('ProjectsFacade', () => {
           new ProjectsLoaded([createProjects('AAA'), createProjects('BBB')])
         );
 
-        list = await readFirst(facade.allProjects$);
+        list = await readFirst(facade.projects$);
         isLoaded = await readFirst(facade.loaded$);
 
         expect(list.length).toBe(2);

@@ -17,7 +17,7 @@ export class DashboardPageComponent implements OnInit {
   readonly me$ = this.appFacade.me$;
   readonly myProjects$ = this.projectsFacade.myProjects$;
   readonly activities$ = this.dashboardFacade.activities$;
-  readonly projects$ = this.projectsFacade.allProjects$;
+  readonly projects$ = this.projectsFacade.projects$;
   readonly users$ = this.appFacade.users$;
 
   constructor(
@@ -40,7 +40,7 @@ export class DashboardPageComponent implements OnInit {
         this.loadMyProjects(user);
         this.projectsFacade.loadProjects({
           memberId: user.id,
-          limit: 1,
+          limit: 4,
           fetch: 'count'
         });
         this.dashboardFacade.loadActivities({

@@ -14,7 +14,7 @@ import { PagedList, Project, User } from '@dev/translatr-model';
 })
 export class ProjectsPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
-  projects$ = this.facade.allProjects$;
+  projects$ = this.facade.projects$;
   projectsTail$ = this.projects$.pipe(
     filter(pagedList => !!pagedList),
     map((pagedList: PagedList<Project>) => ({

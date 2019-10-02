@@ -28,7 +28,7 @@ describe('Projects Selectors', () => {
 
   describe('Projects Selectors', () => {
     it('getAllProjects() should return the list of Projects', () => {
-      const results = projectsQuery.getAllProjects(storeState);
+      const results = projectsQuery.getProjects(storeState);
       const selId = getProjectsId(results[1]);
 
       expect(results.length).toBe(3);

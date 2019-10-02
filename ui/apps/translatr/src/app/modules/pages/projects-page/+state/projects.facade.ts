@@ -16,8 +16,8 @@ export class ProjectsFacade {
     takeUntil(this.unload$)
   );
 
-  allProjects$ = this.store.pipe(
-    select(projectsQuery.getAllProjects),
+  projects$ = this.store.pipe(
+    select(projectsQuery.getProjects),
     takeUntil(this.unload$)
   );
 

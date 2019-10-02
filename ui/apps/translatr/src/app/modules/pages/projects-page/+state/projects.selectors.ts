@@ -15,7 +15,7 @@ const getError = createSelector(
   (state: ProjectsState) => state.error
 );
 
-const getAllProjects = createSelector(
+const getProjects = createSelector(
   getProjectsState,
   (state: ProjectsState) => state.pagedList
 );
@@ -28,6 +28,6 @@ const getMyProjects = createSelector(
 export const projectsQuery = {
   getLoading,
   getError,
-  getAllProjects,
+  getProjects,
   getMyProjects
 };
