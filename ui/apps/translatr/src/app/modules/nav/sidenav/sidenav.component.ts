@@ -18,6 +18,7 @@ export class SidenavComponent {
   @Input() elevated = true;
 
   readonly endpointUrl = environment.endpointUrl;
+  readonly adminUrl = environment.adminUrl;
 
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -28,9 +29,5 @@ export class SidenavComponent {
 
   isAdmin(me: User | undefined): boolean {
     return !!me && me.role === UserRole.Admin;
-  }
-
-  adminRoute(): string {
-    return environment.adminUrl;
   }
 }

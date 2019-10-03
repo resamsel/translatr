@@ -19,6 +19,7 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { mapTo } from 'rxjs/operators';
 import { ofType } from '@ngrx/effects';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'dev-dashboard-access-tokens',
@@ -43,6 +44,8 @@ export class DashboardAccessTokensComponent {
   );
 
   selected: AccessToken[] = [];
+
+  readonly uiUrl = environment.uiUrl;
 
   constructor(
     private readonly facade: AppFacade,

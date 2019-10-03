@@ -19,15 +19,12 @@ export class SidenavComponent {
   @Input() sidenav: MatDrawer;
 
   readonly endpointUrl = environment.endpointUrl;
+  readonly uiUrl = environment.uiUrl;
 
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
     .pipe(map(result => result.matches));
 
   constructor(private breakpointObserver: BreakpointObserver) {
-  }
-
-  uiRoute(): string {
-    return environment.uiUrl;
   }
 }

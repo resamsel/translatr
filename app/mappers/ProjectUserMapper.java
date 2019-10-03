@@ -12,7 +12,10 @@ public class ProjectUserMapper {
         .withId(in.projectId)
         .withName(in.projectName)
         .withOwner(new User().withUsername(in.projectOwnerUsername));
-    out.user = new User().withId(in.userId).withUsername(in.userUsername);
+    out.user = new User()
+        .withId(in.userId)
+        .withUsername(in.userUsername)
+        .withName(in.userName);
     out.role = ProjectRoleMapper.toModel(in.role);
     out.whenCreated = in.whenCreated;
     out.whenUpdated = in.whenUpdated;

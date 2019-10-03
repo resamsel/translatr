@@ -27,6 +27,7 @@ public class AccessTokenMapper {
 
     out.id = in.id;
     out.userId = in.user.id;
+    out.userUsername = in.user.username;
     out.userName = in.user.name;
     out.name = in.name;
     out.key = in.key;

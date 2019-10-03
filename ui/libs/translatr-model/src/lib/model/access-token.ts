@@ -4,8 +4,8 @@ export interface AccessToken extends Temporal {
   id?: number;
 
   userId: string;
-  userName?: string;
   userUsername?: string;
+  userName?: string;
 
   name: string;
   key?: string;

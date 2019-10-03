@@ -5,6 +5,7 @@ import actors.ActivityProtocol.Activity;
 import actors.NotificationActor;
 import actors.NotificationProtocol.FollowNotification;
 import akka.actor.ActorRef;
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -104,6 +105,7 @@ public class ProjectUserRepositoryImpl extends
   @Override
   protected void postSave(ProjectUser t, boolean update) {
     if (!update) {
+      Ebean.refresh(t.user);
       activityActor.tell(
           new Activity<>(
               ActionType.Create, User.loggedInUser(), t.project, dto.ProjectUser.class, null, toDto(t)

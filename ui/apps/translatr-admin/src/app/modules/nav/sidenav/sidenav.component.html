@@ -5,8 +5,8 @@
 
   <mat-sidenav-content>
     <app-navbar
-      i18n-matTooltip="@@admin.title"
-      matTooltip="Translatr Admin"
+      i18n-title="@@admin.title"
+      title="Translatr Admin"
       [page]="page"
       [backLink]="backLink"
       [sidenav]="sidenav"
@@ -16,7 +16,10 @@
       </ng-container>
 
       <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
-        <a mat-menu-item [href]="uiRoute()">UI</a>
+        <a mat-menu-item [href]="uiUrl" target="_blank">
+          UI
+          <mat-icon [inline]="true">launch</mat-icon>
+        </a>
       </app-auth-bar-item>
     </app-navbar>
 

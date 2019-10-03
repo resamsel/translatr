@@ -74,7 +74,7 @@ export class ProjectMemberEditFormComponent
       {},
       (form: MemberForm) => memberService.create(formToMember(form)),
       (form: MemberForm) => memberService.update(formToMember(form)),
-      (member: Member) => `Member ${member.userName} has been saved as ${member.role}`
+      (member: Member) => `${member.userName} is now ${member.role}`
     );
   }
 

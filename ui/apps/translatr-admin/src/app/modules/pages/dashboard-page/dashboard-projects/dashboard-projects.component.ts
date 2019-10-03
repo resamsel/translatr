@@ -29,7 +29,7 @@ export class DashboardProjectsComponent implements OnDestroy {
 
   selected: Project[] = [];
 
-  uiUrl = environment.uiUrl;
+  readonly uiUrl = environment.uiUrl;
 
   constructor(
     private readonly facade: AppFacade,

@@ -26,8 +26,8 @@
       size="36"
     />
     <h3 matLine>{{ member.userName }} — {{ member.role }}</h3>
-    <p [matTooltip]="member?.whenCreated | date: 'full'" i18n="@@added.when" matLine>
-      Added {{ member?.whenCreated | amTimeAgo }}
+    <p i18n="@@added.when" matLine>
+      Added <span [matTooltip]="member?.whenCreated | date: 'full'">{{ member?.whenCreated | amTimeAgo }}</span>
     </p>
   </a>
 </mat-nav-list>

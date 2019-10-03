@@ -21,7 +21,10 @@
       </a>
       <ng-container *ngIf="isAdmin(me)">
         <mat-divider></mat-divider>
-        <a mat-menu-item [href]="adminRoute()">Admin</a>
+        <a mat-menu-item [href]="adminUrl" target="_blank">
+          Admin
+          <mat-icon [inline]="true">launch</mat-icon>
+        </a>
       </ng-container>
     </app-auth-bar-item>
   </app-navbar>

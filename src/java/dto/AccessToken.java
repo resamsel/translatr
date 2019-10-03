@@ -10,6 +10,7 @@ public class AccessToken extends Dto {
   public Long id;
 
   public UUID userId;
+  public String userUsername;
   public String userName;
 
   public DateTime whenCreated;
