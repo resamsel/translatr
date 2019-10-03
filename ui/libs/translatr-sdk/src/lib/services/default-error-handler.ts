@@ -32,19 +32,24 @@ export class DefaultErrorHandler extends ErrorHandler {
     console.log('%s (HTTP code: %d, URL: %s)',
       errorMessage(err), err.status, err.url);
 
-    if (err.status === 401 || err.status === 403) {
-      const redirectUrl = `${this.loginUrl}?redirect_uri=${window.location.href}`;
-      console.log('%s: redirecting to %s', err.statusText, redirectUrl);
+    switch (err.status) {
+      case 400:
+        // Bad request, should be handled by UI code
+        return throwError(err);
+      case 401:
+      case 403:
+        const redirectUrl = `${this.loginUrl}?redirect_uri=${window.location.href}`;
+        console.log('%s: redirecting to %s', err.statusText, redirectUrl);
 
-      window.location.href = redirectUrl;
+        window.location.href = redirectUrl;
 
-      return throwError(true);
+        return throwError(true);
+      default:
+        this.notificationService.notify(
+          `Received error message: ${errorMessage(err)}`
+        );
+
+        return throwError(err);
     }
-
-    this.notificationService.notify(
-      `Received error message: ${errorMessage(err)}`
-    );
-
-    return throwError(err);
   }
 }
