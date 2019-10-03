@@ -3,6 +3,7 @@ package controllers;
 import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.feth.play.module.pa.PlayAuthenticate;
+import dto.AuthorizationException;
 import dto.NotFoundException;
 import dto.PermissionException;
 import dto.SearchResponse;
@@ -110,6 +111,8 @@ public class AbstractBaseApi extends AbstractController {
   protected Result handleException(Throwable t) {
     try {
       throw ExceptionUtils.getRootCause(t);
+    } catch (AuthorizationException e) {
+      return unauthorized(ErrorUtils.toJson(e));
     } catch (PermissionException e) {
       return forbidden(ErrorUtils.toJson(e));
     } catch (NotFoundException e) {

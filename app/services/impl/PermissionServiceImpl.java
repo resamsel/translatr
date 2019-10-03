@@ -1,6 +1,7 @@
 package services.impl;
 
 import criterias.ProjectUserCriteria;
+import dto.AuthorizationException;
 import dto.PermissionException;
 import models.*;
 import org.slf4j.Logger;
@@ -110,7 +111,12 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public void checkPermissionAll(String errorMessage, Scope... scopes) {
-    if (!hasPermissionAll(scopes)) {
+    AccessToken accessToken = ContextKey.AccessToken.get();
+    if (accessToken == null && User.loggedInUser() == null) {
+      throw new AuthorizationException();
+    }
+
+    if (!hasPermissionAll(accessToken, scopes)) {
       throw new PermissionException(
           errorMessage,
           Arrays.stream(scopes)
