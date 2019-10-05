@@ -36,10 +36,12 @@
           <app-tag>logged out</app-tag></span
         >
       </ng-container>
+    </h3>
+    <p matLine>
       <span [matTooltip]="activity.whenCreated | date: 'full'">{{
         activity.whenCreated | amTimeAgo
         }}</span>
-    </h3>
+    </p>
   </mat-list-item>
 </app-nav-list>
 

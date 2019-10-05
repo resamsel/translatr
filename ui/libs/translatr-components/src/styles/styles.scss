@@ -290,32 +290,53 @@ pre[class*="language-"]:before {
     margin-bottom: 8px;
   }
 
-  .mat-card {
-    display: flex;
-
-    .mat-card-image {
-      width: calc(100% + 32px);
-      //border-radius: 50%;
-      //margin: auto 16px auto 0;
-
-      @include medium {
-        //margin: auto auto 16px;
-      }
-    }
-  }
-
   @include medium {
     margin: -8px;
     padding-bottom: 16px;
-
-    .mat-card {
-      flex-direction: column;
-    }
 
     > * {
       width: 192px;
       flex: 0 0;
       margin: 8px;
+    }
+  }
+}
+
+.portrait {
+  &.mat-card,
+  .mat-card {
+    display: flex;
+    flex-direction: row;
+
+    @include medium {
+      flex-direction: column;
+    }
+
+    $size: 128px;
+    $size-large: 160px;
+
+    .mat-card-image {
+      display: block;
+      text-align: center;
+      width: $size;
+      height: $size;
+      line-height: $size;
+      font-size: $size/2;
+      margin: -16px 16px -16px -16px;
+      border-radius: 4px 0 0 4px !important;
+
+      @include medium {
+        width: $size-large;
+        height: $size-large;
+        line-height: $size-large;
+        font-size: $size-large/2;
+        margin: -16px -16px 16px -16px;
+        border-radius: 4px 4px 0 0 !important;
+      }
+    }
+
+    .mat-card-content {
+      flex-grow: 1;
     }
   }
 }

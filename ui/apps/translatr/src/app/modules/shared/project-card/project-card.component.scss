@@ -13,9 +13,6 @@
   }
 }
 
-$size: 64px;
-$size-large: 160px;
-
 .info {
   .owner {
     display: block;
@@ -28,10 +25,6 @@ $size-large: 160px;
     margin-top: 4px;
     float: left;
   }
-
-  @include medium {
-    width: $size-large;
-  }
 }
 
 h2 {
@@ -39,22 +32,9 @@ h2 {
 }
 
 .mat-card-image {
-  display: block;
   text-align: center;
   color: #fff;
   text-transform: capitalize;
-
-  width: $size;
-  height: $size;
-  line-height: $size;
-  font-size: $size/2;
-
-  @include medium {
-    width: $size-large;
-    height: $size-large;
-    line-height: $size-large;
-    font-size: $size-large/2;
-  }
 }
 
 @include project-card-theme($app-theme);
