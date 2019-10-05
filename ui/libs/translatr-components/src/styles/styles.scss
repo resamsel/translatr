@@ -303,6 +303,14 @@ pre[class*="language-"]:before {
 }
 
 .portrait {
+  $size: 128px;
+  $size-large: 192px;
+
+  @include medium {
+    height: calc(100% - 32px);
+    width: $size-large - 32px;
+  }
+
   &.mat-card,
   .mat-card {
     display: flex;
@@ -311,9 +319,6 @@ pre[class*="language-"]:before {
     @include medium {
       flex-direction: column;
     }
-
-    $size: 128px;
-    $size-large: 160px;
 
     .mat-card-image {
       display: block;
