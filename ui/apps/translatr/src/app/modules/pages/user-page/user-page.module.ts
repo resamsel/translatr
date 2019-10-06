@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { UserPageRoutingModule } from './user-page-routing.module';
 import { UserPageComponent } from './user-page.component';
 import { UserProjectsComponent } from './user-projects/user-projects.component';
@@ -20,7 +19,7 @@ import { UserInfoComponent } from './user-info/user-info.component';
 import { ActivityModule } from '../../shared/activity/activity.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
 import { UserActivityComponent } from './user-activity/user-activity.component';
-import { UserCardModule } from '@dev/translatr-components';
+import { EmptyViewModule, UserCardModule } from '@dev/translatr-components';
 import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
 import { ProjectCardModule } from '../../shared/project-card/project-card.module';
 import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';
@@ -34,6 +33,7 @@ import { AccessTokenEditDialogModule } from '../../shared/access-token-edit-dial
 import { UserAccessTokenComponent } from './user-access-token/user-access-token.component';
 import { AccessTokenEditFormModule } from '../../shared/access-token-edit-form/access-token-edit-form.module';
 import { MatTooltipModule } from '@angular/material';
+import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
 
 @NgModule({
   declarations: [
@@ -73,8 +73,11 @@ import { MatTooltipModule } from '@angular/material';
     }),
     EffectsModule.forFeature([UserEffects]),
     AccessTokenEditFormModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ProjectCardListModule,
+    EmptyViewModule
   ],
   providers: [UserFacade]
 })
-export class UserPageModule {}
+export class UserPageModule {
+}

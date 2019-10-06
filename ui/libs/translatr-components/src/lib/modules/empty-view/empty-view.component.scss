@@ -1,0 +1,19 @@
+@import 'mixins';
+
+:host {
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: row;
+
+  .mat-icon {
+    height: 64px;
+    width: 64px;
+    font-size: 64px;
+    opacity: 0.25;
+    margin-right: 8px;
+
+    @include medium {
+      margin-right: 16px;
+    }
+  }
+}

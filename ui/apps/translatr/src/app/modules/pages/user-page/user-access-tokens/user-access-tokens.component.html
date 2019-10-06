@@ -1,7 +1,7 @@
 <app-nav-list
   (filter)="onFilter($event)"
   [pagedList]="accessTokens$ | async"
-  showFilter="true">
+  [empty]="empty" showFilter="true">
   <a
     *ngFor="let accessToken of (accessTokens$ | async)?.list; trackBy: trackByFn"
     [routerLink]="['/', (user$ | async)?.username, 'access-tokens', accessToken.id]"
@@ -14,6 +14,18 @@
     </p>
   </a>
 </app-nav-list>
+
+<ng-template #empty>
+  <dev-empty-view icon="vpn_key">
+    <p>You don't have any access tokens yet, how about creating one?</p>
+    <button (click)="openAccessTokenCreationDialog()"
+            class="action"
+            color="accent"
+            mat-raised-button
+    >Create access token
+    </button>
+  </dev-empty-view>
+</ng-template>
 
 <button
   mat-fab

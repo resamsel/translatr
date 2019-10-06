@@ -1,8 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { User } from '@dev/translatr-model';
+import { PagedList, Project, User } from '@dev/translatr-model';
 import { UserFacade } from '../+state/user.facade';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
+import { MatDialog } from '@angular/material';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-info',
@@ -15,11 +18,23 @@ export class UserInfoComponent implements OnInit, OnDestroy {
   user$ = this.facade.user$
     .pipe(takeUntil(this.destroy$.asObservable()));
   projects$ = this.facade.projects$
-    .pipe(takeUntil(this.destroy$.asObservable()));
+    .pipe(
+      map((pagedList: PagedList<Project>) => !!pagedList
+        ? {
+          ...pagedList,
+          list: pagedList.list.slice(0, 3)
+        }
+        : pagedList),
+      takeUntil(this.destroy$.asObservable())
+    );
   activities$ = this.facade.activities$
     .pipe(takeUntil(this.destroy$.asObservable()));
 
-  constructor(private readonly facade: UserFacade) {
+  constructor(
+    private readonly facade: UserFacade,
+    private readonly dialog: MatDialog,
+    private readonly router: Router
+  ) {
   }
 
   ngOnInit() {
@@ -39,5 +54,16 @@ export class UserInfoComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  openProjectCreationDialog(): void {
+    openProjectEditDialog(this.dialog, {})
+      .afterClosed()
+      .pipe(
+        take(1),
+        filter(project => !!project)
+      )
+      .subscribe((project => this.router
+        .navigate([project.ownerUsername, project.name])));
   }
 }

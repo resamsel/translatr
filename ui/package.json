@@ -29,7 +29,7 @@
     "lint": "./node_modules/.bin/nx workspace-lint && ng lint",
     "lint:fix": "./node_modules/.bin/nx lint --fix && ng lint --fix",
     "e2e": "ng e2e",
-    "precommit": "npm run lint && npm run build:prod",
+    "precommit": "npm run build:prod",
     "affected:apps": "./node_modules/.bin/nx affected:apps",
     "affected:libs": "./node_modules/.bin/nx affected:libs",
     "affected:build": "./node_modules/.bin/nx affected:build",

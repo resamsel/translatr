@@ -14,11 +14,12 @@
 <div class="content">
   <section>
     <h2>Recent Projects</h2>
-    <div class="project-list flex-stretch">
-      <app-project-card-link
-        *ngFor="let project of (projects$ | async)?.list.slice(0, 3)"
-        [project]="project"
-      ></app-project-card-link>
+    <div class="project-list">
+      <app-project-card-list
+        (create)="openProjectCreationDialog()"
+        [projects]="projects$ | async"
+        [showMore]="false"
+        allowProjectCreation="true"></app-project-card-list>
     </div>
     <div class="clearfix"></div>
   </section>

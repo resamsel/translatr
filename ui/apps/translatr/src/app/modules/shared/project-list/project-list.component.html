@@ -24,9 +24,8 @@
     </p>
   </a>
   <ng-template #empty>
-    <div class="empty-view">
-      <mat-icon>book</mat-icon>
-      <p>You don't have any projects yet, you might want to create one of your own.</p>
+    <dev-empty-view icon="book">
+      <p>You don't have any projects yet, how about creating one of your own?</p>
       <button *ngIf="allowProjectCreation"
               (click)="onCreateProject()"
               class="action"
@@ -34,6 +33,6 @@
               mat-raised-button
       >Start new project
       </button>
-    </div>
+    </dev-empty-view>
   </ng-template>
 </app-nav-list>
