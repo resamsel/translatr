@@ -12,13 +12,14 @@
 
   <div class="container">
     <section>
-      <div class="flex-stretch">
-        <app-project-card-link
-          *ngFor="let project of (projects$ | async)?.list.slice(0, 4)"
-          [project]="project"
-        ></app-project-card-link>
-      </div>
-      <app-project-list [projects]="projectsTail$ | async"></app-project-list>
+      <app-project-card-list
+        (create)="openProjectCreationDialog()"
+        [projects]="projects$ | async"
+        [showMore]="false"
+        allowProjectCreation="true"></app-project-card-list>
+      <app-project-list
+        *ngIf="(projectsTail$ | async)?.list.length > 0"
+        [projects]="projectsTail$ | async"></app-project-list>
     </section>
   </div>
 </app-sidenav>

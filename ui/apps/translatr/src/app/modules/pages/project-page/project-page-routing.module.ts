@@ -6,11 +6,13 @@ import { ProjectKeysComponent } from './project-keys/project-keys.component';
 import { ProjectLocalesComponent } from './project-locales/project-locales.component';
 import { ProjectMembersComponent } from './project-members/project-members.component';
 import { ProjectActivityComponent } from './project-activity/project-activity.component';
+import { AuthGuard } from '../../../guards/auth.guard';
 
 const routes: Routes = [
   {
     path: ':username/:projectName',
     component: ProjectPageComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -40,4 +42,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ProjectPageRoutingModule {}
+export class ProjectPageRoutingModule {
+}

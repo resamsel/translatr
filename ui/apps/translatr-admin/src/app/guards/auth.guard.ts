@@ -25,6 +25,7 @@ export class AuthGuard implements CanActivate {
       tap((authenticated: boolean) => {
         if (!authenticated) {
           const url = new URL(this.loginUrl);
+          // TODO: redirect to admin page!
           url.searchParams.set('redirect_uri', state.url);
           this.window.location.href = url.toString();
           return false;

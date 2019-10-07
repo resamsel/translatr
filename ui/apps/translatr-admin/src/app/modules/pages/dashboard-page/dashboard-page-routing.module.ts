@@ -7,11 +7,13 @@ import { DASHBOARD_ROUTES } from './dashboard-page.token';
 import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
 import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
 import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
+import { AuthGuard } from '../../../guards/auth.guard';
 
 export const routes: Routes = [
   {
     component: DashboardPageComponent,
     path: '',
+    canActivate: [AuthGuard],
     children: [
       {
         component: DashboardInfoComponent,

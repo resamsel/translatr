@@ -16,7 +16,7 @@ import { appReducer, initialState as appInitialState } from './+state/app.reduce
 import { AppEffects } from './+state/app.effects';
 import { AppFacade } from './+state/app.facade';
 import { environment } from '../environments/environment';
-import { ENDPOINT_URL, LOGIN_URL } from '@translatr/utils';
+import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material';
 import { MatNotificationService } from './services/mat-notification-service';
 
@@ -52,6 +52,7 @@ import { MatNotificationService } from './services/mat-notification-service';
   ],
   providers: [
     AppFacade,
+    { provide: WINDOW, useFactory: () => window },
     { provide: ENDPOINT_URL, useValue: environment.endpointUrl },
     { provide: LOGIN_URL, useValue: `${environment.endpointUrl}/login` },
     {

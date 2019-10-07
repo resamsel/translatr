@@ -16,6 +16,7 @@ import { ProjectCardModule } from '../../shared/project-card/project-card.module
 import { GravatarModule } from 'ngx-gravatar';
 import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
 import { MatTooltipModule } from '@angular/material';
+import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
 
 @NgModule({
   declarations: [ProjectsPageComponent],
@@ -36,7 +37,8 @@ import { MatTooltipModule } from '@angular/material';
       initialState: projectsInitialState
     }),
     EffectsModule.forFeature([ProjectsEffects]),
-    MatTooltipModule
+    MatTooltipModule,
+    ProjectCardListModule
   ],
   providers: [ProjectsFacade]
 })

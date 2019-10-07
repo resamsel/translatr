@@ -74,8 +74,7 @@ public class Application extends AbstractController {
           .asList(StringUtils.split(configuration.getString(ConfigKey.AuthProviders.key()), ","));
 
       if (providers.size() == 1) {
-        return redirect(
-            com.feth.play.module.pa.controllers.routes.Authenticate.authenticate(providers.get(0)));
+        return redirect(auth.getResolver().auth(providers.get(0)));
       }
 
       return ok(views.html.login.render(createTemplate(), providers));

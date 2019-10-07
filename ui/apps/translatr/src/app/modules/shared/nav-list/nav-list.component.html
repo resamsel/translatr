@@ -21,7 +21,7 @@
     </a>
   </div>
 
-  <ng-container *ngIf="pagedList?.list?.length <= 0">
+  <ng-container *ngIf="pagedList?.list?.length <= 0 && pagedList?.total === 0">
     <ng-container *ngIf="criteria?.search; else empty">
       <ng-container *ngTemplateOutlet="nothingFound"></ng-container>
     </ng-container>
