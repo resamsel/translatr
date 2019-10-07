@@ -1,5 +1,5 @@
 import { Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Params, Route } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Data, Params, Route } from '@angular/router';
 import { User } from '@dev/translatr-model';
 import { NameIconRoute } from '@translatr/utils';
 import { USER_ROUTES } from './user-page.token';
@@ -9,7 +9,11 @@ import { map } from 'rxjs/operators';
 import { UserFacade } from './+state/user.facade';
 
 class DummyRoute extends ActivatedRouteSnapshot {
-  constructor(public readonly routeConfig: any) {
+  constructor(
+    public readonly routeConfig: any,
+    public readonly params: Params,
+    public readonly data: Data
+  ) {
     super();
   }
 }
@@ -60,7 +64,11 @@ export class UserPageComponent implements OnInit, OnDestroy {
       return of(true);
     }
 
-    const r = new DummyRoute(route);
+    const r = new DummyRoute(
+      route,
+      this.route.snapshot.params,
+      { redirect: false }
+    );
 
     return combineLatest(
       route.canActivate

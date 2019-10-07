@@ -7,7 +7,7 @@ import { User, UserRole } from '@dev/translatr-model';
 
 function findParam(next: ActivatedRouteSnapshot, param: string): string | undefined {
   let current = next;
-  while (!!current) {
+  while (!!current && !!current.params) {
     if (current.params[param]) {
       return current.params[param];
     }
@@ -41,10 +41,16 @@ export class MyselfGuard implements CanActivate {
 
         const username = findParam(next, 'username');
         if (me.role !== UserRole.Admin && me.username !== username) {
-          if (next.data.redirectUri) {
+          if (next.data !== undefined && !next.data.redirect) {
+            return false;
+          }
+
+          if (next.data !== undefined && next.data.redirectUri) {
             this.router.navigate(next.data.redirectUri);
-          } else {
+          } else if (username !== undefined) {
             this.router.navigate(['/', username]);
+          } else {
+            this.router.navigate(['/dashboard']);
           }
 
           return false;

@@ -36,6 +36,7 @@ const routes: Routes = [
       {
         path: 'activity',
         component: UserActivityComponent,
+        canActivate: [MyselfGuard],
         data: {
           icon: 'change_history',
           name: 'Activity'
@@ -43,17 +44,13 @@ const routes: Routes = [
       },
       {
         path: 'access-tokens',
+        component: UserAccessTokensComponent,
+        canActivate: [MyselfGuard],
         data: {
           icon: 'vpn_key',
           name: 'Access Tokens'
         },
         children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            component: UserAccessTokensComponent,
-            canActivate: [MyselfGuard],
-          },
           {
             path: ':id',
             component: UserAccessTokenComponent,
@@ -70,4 +67,5 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [{ provide: USER_ROUTES, useValue: routes }]
 })
-export class UserPageRoutingModule {}
+export class UserPageRoutingModule {
+}
