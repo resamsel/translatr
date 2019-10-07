@@ -39,14 +39,12 @@ export class MyselfGuard implements CanActivate {
           return false;
         }
 
-        if (
-          me.role !== UserRole.Admin &&
-          me.username !== findParam(next, 'username')
-        ) {
+        const username = findParam(next, 'username');
+        if (me.role !== UserRole.Admin && me.username !== username) {
           if (next.data.redirectUri) {
             this.router.navigate(next.data.redirectUri);
           } else {
-            this.router.navigate(['/', next.parent.params.username]);
+            this.router.navigate(['/', username]);
           }
 
           return false;
