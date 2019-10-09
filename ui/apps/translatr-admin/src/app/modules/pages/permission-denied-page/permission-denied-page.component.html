@@ -1,0 +1,11 @@
+<app-sidenav [me]="me$ | async">
+  <div class="container">
+    <mat-card>
+      <mat-card-title>Permission denied</mat-card-title>
+      <mat-card-content>
+        {{(me$ | async)?.name}} with role {{(me$ | async)?.role}} has no access to
+        <strong>{{(route.queryParams | async)?.path}}</strong>.
+      </mat-card-content>
+    </mat-card>
+  </div>
+</app-sidenav>

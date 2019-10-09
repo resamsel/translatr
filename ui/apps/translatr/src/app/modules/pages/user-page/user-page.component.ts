@@ -1,4 +1,4 @@
-import { Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Data, Params, Route } from '@angular/router';
 import { User } from '@dev/translatr-model';
 import { NameIconRoute } from '@translatr/utils';
@@ -23,7 +23,7 @@ class DummyRoute extends ActivatedRouteSnapshot {
   templateUrl: './user-page.component.html',
   styleUrls: ['./user-page.component.scss']
 })
-export class UserPageComponent implements OnInit, OnDestroy {
+export class UserPageComponent implements OnDestroy {
   readonly me$ = this.appFacade.me$;
   readonly user$ = this.facade.user$;
 
@@ -36,11 +36,6 @@ export class UserPageComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     @Inject(USER_ROUTES) private routes: { children: NameIconRoute[] }[]
   ) {
-  }
-
-  ngOnInit(): void {
-    this.route.params.subscribe((params: Params) =>
-      this.facade.loadUser(params.username));
   }
 
   ngOnDestroy(): void {

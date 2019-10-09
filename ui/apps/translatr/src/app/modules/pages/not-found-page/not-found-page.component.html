@@ -1,0 +1,14 @@
+<app-sidenav [me]="me$ | async">
+  <div class="container">
+    <mat-card>
+      <mat-card-title>Not found</mat-card-title>
+      <mat-card-content>
+        Could not find {{(route.queryParams | async)?.model}} <strong>{{(route.queryParams | async)?.id}}</strong>.
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions>
+        <a color="primary" mat-button routerLink="/">Translatr Home</a>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</app-sidenav>

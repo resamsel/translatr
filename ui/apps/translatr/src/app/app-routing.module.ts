@@ -21,6 +21,10 @@ const routes: Routes = [
       () => import('./modules/pages/projects-page/projects-page.module').then(m => m.ProjectsPageModule)
   },
   {
+    path: 'not-found',
+    loadChildren: () => import('./modules/pages/not-found-page/not-found-page.module').then(m => m.NotFoundPageModule)
+  },
+  {
     path: '',
     pathMatch: 'full',
     loadChildren: () => import('./modules/pages/main-page/main-page.module').then(m => m.MainPageModule)
@@ -45,4 +49,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

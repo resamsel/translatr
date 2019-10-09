@@ -10,7 +10,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
-import { RouterModule } from '@angular/router';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { MomentModule } from 'ngx-moment';
 import { ProjectListModule } from '../../shared/project-list/project-list.module';
@@ -34,6 +33,7 @@ import { UserAccessTokenComponent } from './user-access-token/user-access-token.
 import { AccessTokenEditFormModule } from '../../shared/access-token-edit-form/access-token-edit-form.module';
 import { MatTooltipModule } from '@angular/material';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
+import { UserGuard } from './user.guard';
 
 @NgModule({
   declarations: [
@@ -46,7 +46,6 @@ import { ProjectCardListModule } from '../../shared/project-card-list/project-ca
   ],
   imports: [
     CommonModule,
-    RouterModule,
     UserPageRoutingModule,
     SidenavModule,
     ProjectListModule,
@@ -57,6 +56,9 @@ import { ProjectCardListModule } from '../../shared/project-card-list/project-ca
     ProjectEditDialogModule,
     AccessTokenEditDialogModule,
     NavListModule,
+    AccessTokenEditFormModule,
+    ProjectCardListModule,
+    EmptyViewModule,
 
     MatIconModule,
     MatTabsModule,
@@ -67,17 +69,14 @@ import { ProjectCardListModule } from '../../shared/project-card-list/project-ca
     GravatarModule,
     MatDialogModule,
     MatListModule,
+    MatTooltipModule,
 
     StoreModule.forFeature(USER_FEATURE_KEY, userReducer, {
       initialState: userInitialState
     }),
-    EffectsModule.forFeature([UserEffects]),
-    AccessTokenEditFormModule,
-    MatTooltipModule,
-    ProjectCardListModule,
-    EmptyViewModule
+    EffectsModule.forFeature([UserEffects])
   ],
-  providers: [UserFacade]
+  providers: [UserFacade, UserGuard]
 })
 export class UserPageModule {
 }

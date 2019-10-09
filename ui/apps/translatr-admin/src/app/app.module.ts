@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
-import { RouterModule } from '@angular/router';
 import { TranslatrSdkModule } from '@dev/translatr-sdk';
 import { SidenavModule } from './modules/nav/sidenav/sidenav.module';
 import { DashboardPageModule } from './modules/pages/dashboard-page/dashboard-page.module';
@@ -17,6 +16,7 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { LoginPageModule } from '@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,7 +25,7 @@ import { LoginPageModule } from '@translatr/translatr-components/src/lib/modules
     BrowserAnimationsModule,
     TranslatrSdkModule,
     SidenavModule,
-    RouterModule.forRoot([], { initialNavigation: 'enabled' }),
+    AppRoutingModule,
     DashboardPageModule,
     LoginPageModule,
     NxModule.forRoot(),
@@ -52,4 +52,5 @@ import { LoginPageModule } from '@translatr/translatr-components/src/lib/modules
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

@@ -1,8 +1,9 @@
 <button
+  *ngIf="me"
   mat-icon-button
   class="account-button"
   [matMenuTriggerFor]="userMenu"
-  *ngIf="me"
+  [matTooltip]="me?.name"
 >
   <img class="icon" ngxGravatar [email]="me.email" size="36"/>
 </button>

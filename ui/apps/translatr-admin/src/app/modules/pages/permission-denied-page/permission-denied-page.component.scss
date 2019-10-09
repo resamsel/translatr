@@ -1,0 +1,7 @@
+@import 'mixins';
+
+@include medium {
+  .mat-card {
+    margin: 128px 0;
+  }
+}

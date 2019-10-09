@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { AppFacade } from './+state/app.facade';
 
 @Component({
   selector: 'dev-root',
@@ -8,8 +7,4 @@ import { AppFacade } from './+state/app.facade';
 })
 export class AppComponent {
   title = 'translatr-admin';
-
-  constructor(readonly facade: AppFacade) {
-    facade.loadLoggedInUser();
-  }
 }

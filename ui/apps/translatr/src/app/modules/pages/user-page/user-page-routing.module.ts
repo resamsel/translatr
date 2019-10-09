@@ -9,12 +9,13 @@ import { USER_ROUTES } from './user-page.token';
 import { MyselfGuard } from '../../../guards/myself.guard';
 import { UserAccessTokenComponent } from './user-access-token/user-access-token.component';
 import { AuthGuard } from '../../../guards/auth.guard';
+import { UserGuard } from './user.guard';
 
 const routes: Routes = [
   {
     path: ':username',
     component: UserPageComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, UserGuard],
     children: [
       {
         path: '',

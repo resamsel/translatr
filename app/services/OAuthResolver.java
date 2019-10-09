@@ -36,6 +36,10 @@ public class OAuthResolver extends Resolver {
       return call;
     }
 
+    if (redirectUri.startsWith("http://") || redirectUri.startsWith("https://")) {
+      return new play.api.mvc.Call(call.method(), redirectUri, null);
+    }
+
     return new play.api.mvc.Call(call.method(), call.url() + redirectUri, null);
   }
 

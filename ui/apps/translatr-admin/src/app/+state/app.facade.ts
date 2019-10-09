@@ -126,7 +126,7 @@ export class AppFacade {
 
   // Users
 
-  loadLoggedInUser() {
+  loadMe() {
     this.store.dispatch(new LoadLoggedInUser());
   }
 
