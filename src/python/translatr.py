@@ -255,7 +255,7 @@ def read_config():
 	yaml.add_constructor('!envvar', envvar_constructor)
 	try:
 		with open('.translatr.yml') as f:
-			return yaml.load(f)['translatr']
+			return yaml.safe_load(f)['translatr']
 	except IOError as e:
 		raise Exception(TRANSLATR_YML_NOT_FOUND)
 
