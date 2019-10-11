@@ -1,8 +1,8 @@
 package criterias;
 
 import play.mvc.Http;
+import utils.JsonUtils;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.apache.commons.lang3.StringUtils.join;
@@ -66,12 +66,8 @@ public abstract class AbstractProjectSearchCriteria<T extends AbstractProjectSea
   @Override
   public T with(Http.Request request) {
     return super.with(request)
-        .withProjectId(Optional.ofNullable(request.getQueryString("projectId"))
-            .map(UUID::fromString)
-            .orElse(null))
-        .withProjectOwnerId(Optional.ofNullable(request.getQueryString("projectOwnerId"))
-            .map(UUID::fromString)
-            .orElse(null));
+        .withProjectId(JsonUtils.getUuid(request.getQueryString("projectId")))
+        .withProjectOwnerId(JsonUtils.getUuid(request.getQueryString("projectOwnerId")));
   }
 
   /**

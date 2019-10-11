@@ -10,6 +10,7 @@ import criterias.LocaleCriteria;
 import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import dto.DtoPagedList;
+import dto.NotFoundException;
 import dto.SearchResponse;
 import forms.SearchForm;
 import mappers.AggregateMapper;
@@ -33,12 +34,16 @@ import services.PermissionService;
 import services.ProjectService;
 import services.api.ProjectApiService;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
+
+import static utils.FunctionalUtils.peek;
 
 /**
  * @author resamsel
@@ -71,13 +76,16 @@ public class ProjectApiServiceImpl extends
   }
 
   @Override
-  public dto.Project byOwnerAndName(String username, String name, String... fetches) {
+  public dto.Project byOwnerAndName(String username, String name, @Nonnull Consumer<Project> validator, String... fetches) {
     permissionService
         .checkPermissionAll("Access token not allowed", readScopes);
 
-    return Optional.ofNullable(service.byOwnerAndName(username, name, fetches))
-            .map(dtoMapper)
-            .orElse(null);
+    Project project = service.byOwnerAndName(username, name, fetches);
+
+    return Optional.ofNullable(project)
+        .map(peek(validator))
+        .map(dtoMapper)
+        .orElseThrow(() -> new NotFoundException(dto.Project.class.getSimpleName(), username + "/" + name));
   }
 
   @Override

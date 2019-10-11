@@ -1,7 +1,12 @@
 package services;
 
 import com.google.inject.ImplementedBy;
-import models.*;
+import models.AccessToken;
+import models.Project;
+import models.ProjectRole;
+import models.ProjectUser;
+import models.Scope;
+import models.User;
 import services.impl.PermissionServiceImpl;
 
 import java.util.Collection;
@@ -12,6 +17,8 @@ import java.util.UUID;
 public interface PermissionService {
 
   boolean hasPermissionAny(Project project, ProjectRole... roles);
+
+  boolean hasPermissionAny(Project project, User user, ProjectRole... roles);
 
   boolean hasPermissionAny(UUID projectId, ProjectRole... roles);
 

@@ -4,6 +4,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.AbstractSearchCriteria;
 import dto.Dto;
 import dto.PermissionException;
+import models.Project;
 import models.ProjectRole;
 import models.User;
 import play.Configuration;
@@ -28,6 +29,11 @@ public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends Abstract
 
   protected void checkProjectRole(UUID projectId, User user, ProjectRole... roles) {
     if (!permissionService.hasPermissionAny(projectId, user, roles))
+      throw new PermissionException("User not allowed in project");
+  }
+
+  protected void checkProjectRole(Project project, User user, ProjectRole... roles) {
+    if (!permissionService.hasPermissionAny(project, user, roles))
       throw new PermissionException("User not allowed in project");
   }
 }

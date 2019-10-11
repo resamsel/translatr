@@ -3,13 +3,19 @@ package services.impl;
 import criterias.ProjectUserCriteria;
 import dto.AuthorizationException;
 import dto.PermissionException;
-import models.*;
+import models.AccessToken;
+import models.Project;
+import models.ProjectRole;
+import models.ProjectUser;
+import models.Scope;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.PermissionService;
 import services.ProjectUserService;
 import utils.ContextKey;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Arrays;
@@ -30,12 +36,17 @@ public class PermissionServiceImpl implements PermissionService {
   }
 
   @Override
-  public boolean hasPermissionAny(Project project, ProjectRole... roles) {
+  public boolean hasPermissionAny(@Nonnull Project project, ProjectRole... roles) {
+    return hasPermissionAny(project, User.loggedInUser(), roles);
+  }
+
+  @Override
+  public boolean hasPermissionAny(@Nonnull Project project, User user, ProjectRole... roles) {
     if (project.members != null) {
-      return hasPermissionAny(project.members, User.loggedInUser(), Arrays.asList(roles));
+      return hasPermissionAny(project.members, user, Arrays.asList(roles));
     }
 
-    return hasPermissionAny(project.id, User.loggedInUser(), roles);
+    return hasPermissionAny(project.id, user, roles);
   }
 
   @Override

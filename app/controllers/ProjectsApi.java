@@ -16,6 +16,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
+import models.ProjectRole;
+import models.User;
 import org.apache.commons.lang3.StringUtils;
 import play.data.FormFactory;
 import play.inject.Injector;
@@ -122,7 +124,12 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
       @ApiParam(value = USER_USERNAME) String username,
       @ApiParam(value = PROJECT_NAME) String projectName,
       @ApiParam(value = FETCH) String fetch) {
-    return toJson(() -> api.byOwnerAndName(username, projectName, StringUtils.split(fetch, ",")));
+    return toJson(() -> api.byOwnerAndName(
+        username,
+        projectName,
+        project -> checkProjectRole(project, User.loggedInUser(), ProjectRole.values()),
+        StringUtils.split(fetch, ","))
+    );
   }
 
   /**

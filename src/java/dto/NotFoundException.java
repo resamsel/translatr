@@ -6,7 +6,7 @@ package dto;
  */
 public class NotFoundException extends RuntimeException {
   private static final long serialVersionUID = 944214728665880687L;
-  private static final String MESSAGE_FORMAT = "%s with ID '%s' not found";
+  private static final String MESSAGE_FORMAT = "%s '%s' not found";
   public String type;
   public String id;
 

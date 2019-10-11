@@ -7,8 +7,10 @@ import dto.Aggregate;
 import dto.Project;
 import dto.SearchResponse;
 import forms.SearchForm;
-import java.util.UUID;
 import services.api.impl.ProjectApiServiceImpl;
+
+import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * @author resamsel
@@ -17,7 +19,7 @@ import services.api.impl.ProjectApiServiceImpl;
 @ImplementedBy(ProjectApiServiceImpl.class)
 public interface ProjectApiService extends ApiService<Project, UUID, ProjectCriteria> {
 
-  Project byOwnerAndName(String username, String name, String... fetches);
+  Project byOwnerAndName(String username, String name, Consumer<models.Project> validator, String... fetches);
 
   PagedList<Aggregate> activity(UUID userId);
 
