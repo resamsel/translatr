@@ -16,7 +16,7 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { ActivityCriteria, KeyCriteria, LocaleCriteria, MemberRole, Project, User } from '@dev/translatr-model';
 import { map, takeUntil } from 'rxjs/operators';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
-import { AppFacade } from 'apps/translatr/src/app/+state/app.facade';
+import { AppFacade } from '../../../../+state/app.facade';
 
 const hasRolesAny = (project: Project, user: User, ...roles: MemberRole[]): boolean => {
   if (project === undefined || user === undefined) {
