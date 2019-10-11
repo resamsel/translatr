@@ -3,6 +3,7 @@
   [criteria]="criteria"
   [empty]="empty"
   [nothingFound]="nothingFound"
+  [canCreate]="canCreate"
   showFilter="true"
   addTooltip="Add new key"
   i18n-addTooltip="@@key.create.tooltip"
@@ -54,6 +55,7 @@
     <mat-icon class="key circle">vpn_key</mat-icon>
     <h3 i18n="@@keys.empty">No keys yet.</h3>
     <button
+      *ngIf="allowCreate"
       (click)="openKeyCreationDialog(project)"
       color="primary"
       i18n="@@key.create"

@@ -13,6 +13,7 @@ export class ProjectLocalesComponent {
   project$ = this.facade.project$;
   locales$ = this.facade.locales$;
   criteria$ = this.facade.keysCriteria$;
+  canCreate$ = this.facade.canCreateLocale$;
 
   constructor(
     private readonly facade: ProjectFacade,

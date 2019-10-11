@@ -3,6 +3,7 @@
     [project]="project$ | async"
     [locales]="locales$ | async"
     [criteria]="criteria$ | async"
+    [canCreate]="canCreate$ | async"
     (load)="onLoad($event)"
     (more)="onMore($event)"
     (edit)="onEdit($event)"

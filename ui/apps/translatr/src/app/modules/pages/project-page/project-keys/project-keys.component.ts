@@ -14,6 +14,7 @@ export class ProjectKeysComponent {
   project$ = this.facade.project$;
   keys$ = this.facade.keys$;
   criteria$ = this.facade.keysCriteria$;
+  canCreate$ = this.facade.canCreateKey$;
 
   constructor(
     private readonly facade: ProjectFacade,

@@ -1,7 +1,8 @@
 <div class="container" *ngIf="(project$ | async) as project">
   <app-member-list
     [project]="project"
-    (filter)="onFilter($event)"
     [members]="members$ | async"
+    (filter)="onFilter($event)"
+    [canCreate]="canCreate$ | async"
   ></app-member-list>
 </div>

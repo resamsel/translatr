@@ -1,6 +1,7 @@
 <app-list-header
   addTooltip="Add member"
   i18n-addTooltip="@@member.create.tooltip"
+  [addEnabled]="canCreate"
   (add)="onAdd(project)"
   (filter)="onFilter($event)"
   (remove)="onRemove($event)"

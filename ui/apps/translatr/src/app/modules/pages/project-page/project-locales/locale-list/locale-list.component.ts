@@ -16,6 +16,7 @@ export class LocaleListComponent {
   @Input() locales: PagedList<Locale>;
   @Input() criteria: LocaleCriteria | undefined;
   @Input() search: string;
+  @Input() canCreate = false;
 
   @Output() load = new EventEmitter<KeyCriteria>();
   @Output() more = new EventEmitter<number>();

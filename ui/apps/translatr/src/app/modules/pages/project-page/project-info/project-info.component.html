@@ -77,6 +77,7 @@
           <mat-icon class="locale circle">language</mat-icon>
           <h3>No languages yet.</h3>
           <button
+            *ngIf="canCreateLocale$ | async"
             (click)="openLocaleCreationDialog(project)"
             i18n="@@locale.create"
             mat-stroked-button>Add language
@@ -106,6 +107,7 @@
           <mat-icon class="key circle">vpn_key</mat-icon>
           <h3>No keys yet.</h3>
           <button
+            *ngIf="canCreateKey$ | async"
             (click)="openKeyCreationDialog(project)"
             i18n="@@key.create"
             mat-stroked-button>Add key

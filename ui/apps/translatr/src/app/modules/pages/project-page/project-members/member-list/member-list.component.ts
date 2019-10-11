@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material';
 export class MemberListComponent {
   @Input() project: Project;
   @Input() members: Array<Member>;
+  @Input() canCreate = false;
 
   @Output() filter = new EventEmitter<string>();
 

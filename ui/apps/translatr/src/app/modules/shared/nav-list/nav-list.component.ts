@@ -19,6 +19,7 @@ export class NavListComponent {
   @Input() showMore = true;
   @Input() showFilter = false;
   @Input() addTooltip: string;
+  @Input() canCreate = false;
 
   @Output() more = new EventEmitter<number>();
   @Output() add = new EventEmitter<void>();

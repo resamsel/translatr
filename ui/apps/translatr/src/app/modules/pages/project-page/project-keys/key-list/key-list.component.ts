@@ -15,6 +15,8 @@ export class KeyListComponent {
   @Input() project: Project;
   @Input() keys: PagedList<Key>;
   @Input() criteria: KeyCriteria | undefined;
+  @Input() canCreate = false;
+
   @Output() load = new EventEmitter<KeyCriteria>();
   @Output() more = new EventEmitter<number>();
   @Output() edit = new EventEmitter<Key>();

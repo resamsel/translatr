@@ -30,6 +30,8 @@ export class ProjectInfoComponent {
         .slice(0, 3);
     })
   );
+  canCreateLocale$ = this.facade.canCreateLocale$;
+
   keys$ = this.facade.keys$;
   latestKeys$: Observable<Key[]> = this.keys$.pipe(
     filter(pagedList => !!pagedList && !!pagedList.list),
@@ -41,6 +43,8 @@ export class ProjectInfoComponent {
         )
       .slice(0, 3))
   );
+  canCreateKey$ = this.facade.canCreateKey$;
+
   latestMessages$: Observable<Message[]> = this.facade.messages$.pipe(
     filter(pagedList => !!pagedList && !!pagedList.list),
     pluck('list'),

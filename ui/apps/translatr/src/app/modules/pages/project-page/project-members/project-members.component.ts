@@ -24,6 +24,7 @@ export class ProjectMembersComponent {
           .toLocaleLowerCase()
           .includes(search)))
   );
+  canCreate$ = this.facade.canCreateMember$;
 
   constructor(private readonly facade: ProjectFacade) {
   }
