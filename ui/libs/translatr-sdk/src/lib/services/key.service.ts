@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { AbstractService } from './abstract.service';
 import { Key, KeyCriteria } from '@dev/translatr-model';
@@ -40,6 +40,10 @@ export class KeyService extends AbstractService<Key, KeyCriteria> {
         }`,
         options
       )
-      .pipe(map(convertTemporals));
+      .pipe(
+        map(convertTemporals),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err))
+      );
   }
 }

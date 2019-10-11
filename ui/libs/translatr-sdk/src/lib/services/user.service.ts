@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { Aggregate, PagedList, RequestCriteria, User } from '@dev/translatr-model';
 import { AbstractService } from './abstract.service';
@@ -35,14 +35,27 @@ export class UserService extends AbstractService<User, RequestCriteria> {
   ): Observable<User | undefined> {
     return this.http
       .get<User>(`/api/${username}`, options)
-      .pipe(map(convertTemporals));
+      .pipe(
+        map(convertTemporals),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err))
+      );
   }
 
   me(): Observable<User | undefined> {
-    return this.http.get<User>('/api/me').pipe(map(convertTemporals));
+    return this.http.get<User>('/api/me')
+      .pipe(
+        map(convertTemporals),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err))
+      );
   }
 
   activity(userId: string): Observable<PagedList<Aggregate> | undefined> {
-    return this.http.get<PagedList<Aggregate>>(`/api/user/${userId}/activity`);
+    return this.http.get<PagedList<Aggregate>>(`/api/user/${userId}/activity`)
+      .pipe(
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err))
+      );
   }
 }

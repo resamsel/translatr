@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PermissionDeniedPageComponent } from './modules/pages/permission-denied-page/permission-denied-page.component';
-import { PermissionDeniedPageModule } from './modules/pages/permission-denied-page/permission-denied-page.module';
+import { ForbiddenPageComponent } from './modules/pages/forbidden-page/forbidden-page.component';
+import { ForbiddenPageModule } from './modules/pages/forbidden-page/forbidden-page.module';
 
 const routes: Routes = [
   {
-    path: 'permission-denied',
-    component: PermissionDeniedPageComponent
+    path: 'forbidden',
+    component: ForbiddenPageComponent
   }
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes),
-    PermissionDeniedPageModule
+    ForbiddenPageModule
   ],
   exports: [RouterModule]
 })

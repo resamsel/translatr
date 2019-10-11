@@ -1,22 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NotFoundPageComponent } from './not-found-page.component';
-import { NotFoundPageRoutingModule } from './not-found-page-routing.module';
+import { ForbiddenPageComponent } from './forbidden-page.component';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
-import { MatButtonModule, MatCardModule, MatDividerModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatDividerModule, MatIconModule } from '@angular/material';
+import { RouterModule } from '@angular/router';
 import { ErrorPageModule } from '@dev/translatr-components';
 
 @NgModule({
-  declarations: [NotFoundPageComponent],
+  declarations: [ForbiddenPageComponent],
   imports: [
     CommonModule,
-    NotFoundPageRoutingModule,
     SidenavModule,
     MatCardModule,
     MatDividerModule,
     MatButtonModule,
+    RouterModule,
+    MatIconModule,
     ErrorPageModule
   ]
 })
-export class NotFoundPageModule {
+export class ForbiddenPageModule {
 }

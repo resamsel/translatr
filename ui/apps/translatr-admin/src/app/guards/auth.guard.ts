@@ -30,14 +30,20 @@ export class AuthGuard implements CanActivate {
       map((user: User) => {
         if (!user) {
           const url = new URL(this.loginUrl);
-          // TODO: redirect to admin page!
           url.searchParams.set('redirect_uri', environment.adminUrl + state.url);
           this.window.location.href = url.toString();
           return false;
         }
 
         if (user.role !== UserRole.Admin) {
-          this.router.navigate(['/permission-denied'], { queryParams: { path: state.url } });
+          this.router.navigate(
+            ['/forbidden'],
+            {
+              queryParams: {
+                path: state.url
+              }
+            }
+          );
           return false;
         }
 

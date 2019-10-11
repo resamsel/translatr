@@ -53,6 +53,9 @@ export class ProjectService extends AbstractService<Project, ProjectCriteria> {
   activity(projectId: string): Observable<PagedList<Aggregate>> {
     return this.http.get<PagedList<Aggregate>>(
       `/api/project/${projectId}/activity`
+    ).pipe(
+      catchError((err: HttpErrorResponse) =>
+        this.errorHandler.handleError(err))
     );
   }
 

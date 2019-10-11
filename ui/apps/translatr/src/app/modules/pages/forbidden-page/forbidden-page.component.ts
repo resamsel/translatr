@@ -3,11 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { AppFacade } from '../../../+state/app.facade';
 
 @Component({
-  selector: 'dev-not-allowed-page',
-  templateUrl: './permission-denied-page.component.html',
-  styleUrls: ['./permission-denied-page.component.scss']
+  selector: 'app-forbidden-page',
+  templateUrl: './forbidden-page.component.html',
+  styleUrls: ['./forbidden-page.component.scss']
 })
-export class PermissionDeniedPageComponent {
+export class ForbiddenPageComponent {
   me$ = this.facade.me$;
 
   constructor(

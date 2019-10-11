@@ -17,6 +17,7 @@ export class SidenavComponent {
   @Input() backLink: Link;
   @Input() me: User | undefined;
   @Input() sidenav: MatDrawer;
+  @Input() showFooter = true;
 
   readonly endpointUrl = environment.endpointUrl;
   readonly uiUrl = environment.uiUrl;

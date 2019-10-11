@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PermissionDeniedPageComponent } from './permission-denied-page.component';
+import { ForbiddenPageComponent } from './forbidden-page.component';
 
 describe('NotAllowedPageComponent', () => {
-  let component: PermissionDeniedPageComponent;
-  let fixture: ComponentFixture<PermissionDeniedPageComponent>;
+  let component: ForbiddenPageComponent;
+  let fixture: ComponentFixture<ForbiddenPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PermissionDeniedPageComponent]
+      declarations: [ForbiddenPageComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PermissionDeniedPageComponent);
+    fixture = TestBed.createComponent(ForbiddenPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

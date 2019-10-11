@@ -27,6 +27,6 @@
       <ng-content></ng-content>
     </div>
 
-    <app-footer></app-footer>
+    <app-footer *ngIf="showFooter"></app-footer>
   </mat-sidenav-content>
 </mat-sidenav-container>

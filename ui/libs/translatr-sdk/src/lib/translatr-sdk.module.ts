@@ -14,6 +14,7 @@ import {
   UserService
 } from './services';
 import { LOGIN_URL } from '@translatr/utils';
+import { Router } from '@angular/router';
 
 @NgModule({
   declarations: [],
@@ -30,9 +31,10 @@ import { LOGIN_URL } from '@translatr/utils';
       provide: ErrorHandler,
       useFactory: (
         notificationService: NotificationService,
+        router: Router,
         loginUrl: string
-      ) => new DefaultErrorHandler(notificationService, loginUrl),
-      deps: [NotificationService, LOGIN_URL]
+      ) => new DefaultErrorHandler(notificationService, router, loginUrl),
+      deps: [NotificationService, Router, LOGIN_URL]
     }
   ]
 })

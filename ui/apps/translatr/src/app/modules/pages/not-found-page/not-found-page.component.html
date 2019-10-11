@@ -1,14 +1,7 @@
-<app-sidenav [me]="me$ | async">
-  <div class="container">
-    <mat-card>
-      <mat-card-title>Not found</mat-card-title>
-      <mat-card-content>
-        Could not find {{(route.queryParams | async)?.model}} <strong>{{(route.queryParams | async)?.id}}</strong>.
-      </mat-card-content>
-      <mat-divider></mat-divider>
-      <mat-card-actions>
-        <a color="primary" mat-button routerLink="/dashboard">Dashboard</a>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-</app-sidenav>
+<dev-error-page icon="error_outline">
+  <dev-error-page-header>Page not found</dev-error-page-header>
+  <dev-error-page-message>
+    Could not find {{(route.queryParams | async)?.model}} <strong>{{(route.queryParams | async)?.id}}</strong>.
+  </dev-error-page-message>
+  <a mat-raised-button routerLink="/dashboard">Dashboard</a>
+</dev-error-page>

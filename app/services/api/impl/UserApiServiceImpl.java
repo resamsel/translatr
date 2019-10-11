@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import criterias.LogEntryCriteria;
 import criterias.UserCriteria;
 import dto.DtoPagedList;
+import dto.NotFoundException;
 import mappers.AggregateMapper;
 import mappers.UserMapper;
 import models.Scope;
@@ -17,6 +18,7 @@ import services.api.UserApiService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -47,7 +49,9 @@ public class UserApiServiceImpl extends
   public dto.User byUsername(String username, String... propertiesToFetch) {
     permissionService.checkPermissionAll("Access token not allowed", readScopes);
 
-    return dtoMapper.apply(service.byUsername(username, propertiesToFetch));
+    return Optional.ofNullable(service.byUsername(username, propertiesToFetch))
+        .map(dtoMapper)
+        .orElseThrow(() -> new NotFoundException(dto.User.class.getSimpleName(), username));
   }
 
   @Override
