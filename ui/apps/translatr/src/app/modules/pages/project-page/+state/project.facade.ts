@@ -33,10 +33,10 @@ const hasRolesAny = (project: Project, user: User, ...roles: MemberRole[]): bool
     .length > 0;
 };
 
-const canEdit = (project: Project, me: User): boolean =>
-  hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
-const canDelete = (project: Project, me: User): boolean =>
-  hasRolesAny(project, me, MemberRole.Owner);
+// const canEdit = (project: Project, me: User): boolean =>
+//   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
+// const canDelete = (project: Project, me: User): boolean =>
+//   hasRolesAny(project, me, MemberRole.Owner);
 const canCreateKey = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Developer);
 const canCreateLocale = (project: Project, me: User): boolean =>
@@ -57,12 +57,12 @@ export class ProjectFacade {
     takeUntil(this.unload$)
   );
   permission$ = combineLatest([this.project$, this.appFacade.me$]);
-  canEdit$ = this.permission$.pipe(
-    map(([project, me]) => canEdit(project, me))
-  );
-  canDelete$ = this.permission$.pipe(
-    map(([project, me]) => canDelete(project, me))
-  );
+  // canEdit$ = this.permission$.pipe(
+  //   map(([project, me]) => canEdit(project, me))
+  // );
+  // canDelete$ = this.permission$.pipe(
+  //   map(([project, me]) => canDelete(project, me))
+  // );
 
   locales$ = this.store.pipe(
     select(projectQuery.getLocales),
