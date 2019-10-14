@@ -13,7 +13,11 @@ import criterias.ProjectCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
 import mappers.ProjectMapper;
-import models.*;
+import models.ActionType;
+import models.Project;
+import models.ProjectRole;
+import models.ProjectUser;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
@@ -112,6 +116,7 @@ public class ProjectRepositoryImpl extends
     if (id == null) {
       return null;
     }
+
     return QueryUtils
         .fetch(
             find.query().setDisableLazyLoading(true),

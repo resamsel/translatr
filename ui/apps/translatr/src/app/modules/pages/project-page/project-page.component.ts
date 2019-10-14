@@ -1,10 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, CanActivate, Route } from '@angular/router';
 import { ProjectFacade } from './+state/project.facade';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { filter, switchMapTo, take, tap } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { filter, take } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
+import { canActivate$, NameIconRoute } from '@translatr/utils';
+import { PROJECT_ROUTES } from './project-page.token';
+import { Observable } from 'rxjs';
+import { Project } from '@dev/translatr-model';
 
 @Component({
   selector: 'app-project-page',
@@ -14,6 +17,8 @@ import { AppFacade } from '../../../+state/app.facade';
 export class ProjectPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
   project$ = this.facade.project$;
+
+  children: NameIconRoute[] = this.routes[0].children;
 
   form = new FormGroup({
     name: new FormControl('', [
@@ -27,21 +32,15 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private readonly injector: Injector,
     private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly snackBar: MatSnackBar,
     private readonly facade: ProjectFacade,
-    private readonly appFacade: AppFacade
+    private readonly appFacade: AppFacade,
+    @Inject(PROJECT_ROUTES) private routes: { children: NameIconRoute[] }[]
   ) {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.facade.loadProject(
-        params.get('username'),
-        params.get('projectName')
-      );
-    });
     this.project$
       .pipe(
         filter(project => !!project),
@@ -60,29 +59,23 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     this.facade.unloadProject();
   }
 
-  onSaveName() {
-    this.project$
-      .pipe(
-        take(1),
-        tap(project =>
-          this.facade.save({
-            ...project,
-            name: this.nameFormControl.value as string
-          })
-        ),
-        switchMapTo(
-          this.facade.project$.pipe(
-            filter(project => project.name === this.nameFormControl.value),
-            take(1)
-          )
-        )
-      )
-      .subscribe(project => {
-        this.router.navigate([project.ownerUsername, project.name]).then(() =>
-          this.snackBar.open('Name has been updated', 'Dismiss', {
-            duration: 2000
-          })
-        );
-      });
+  routerLink(project: Project | undefined, route: Route): string | undefined {
+    if (project === undefined) {
+      return undefined;
+    }
+
+    if (route === '') {
+      return `/${project.ownerUsername}/${project.name}`;
+    }
+
+    return `/${project.ownerUsername}/${project.name}/${route.path}`;
+  }
+
+  canActivate$(route: NameIconRoute): Observable<boolean> {
+    return canActivate$(
+      route,
+      this.route,
+      (guard: any) => this.injector.get<CanActivate>(guard)
+    );
   }
 }

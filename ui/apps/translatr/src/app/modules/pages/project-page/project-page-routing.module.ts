@@ -7,32 +7,66 @@ import { ProjectLocalesComponent } from './project-locales/project-locales.compo
 import { ProjectMembersComponent } from './project-members/project-members.component';
 import { ProjectActivityComponent } from './project-activity/project-activity.component';
 import { AuthGuard } from '../../../guards/auth.guard';
+import { ProjectSettingsComponent } from './project-settings/project-settings.component';
+import { PROJECT_ROUTES } from './project-page.token';
+import { ProjectGuard } from './project.guard';
+import { ProjectEditGuard } from './project-edit.guard';
+import { ProjectAccessGuard } from './project-access.guard';
 
 const routes: Routes = [
   {
     path: ':username/:projectName',
     component: ProjectPageComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, ProjectGuard, ProjectAccessGuard],
     children: [
       {
         path: '',
-        component: ProjectInfoComponent
+        component: ProjectInfoComponent,
+        data: {
+          icon: 'book',
+          name: 'Project'
+        }
       },
       {
         path: 'locales',
-        component: ProjectLocalesComponent
+        component: ProjectLocalesComponent,
+        data: {
+          icon: 'language',
+          name: 'Languages'
+        }
       },
       {
         path: 'keys',
-        component: ProjectKeysComponent
+        component: ProjectKeysComponent,
+        data: {
+          icon: 'vpn_key',
+          name: 'Keys'
+        }
       },
       {
         path: 'members',
-        component: ProjectMembersComponent
+        component: ProjectMembersComponent,
+        data: {
+          icon: 'group',
+          name: 'Members'
+        }
       },
       {
         path: 'activity',
-        component: ProjectActivityComponent
+        component: ProjectActivityComponent,
+        data: {
+          icon: 'change_history',
+          name: 'Activity'
+        }
+      },
+      {
+        path: 'settings',
+        component: ProjectSettingsComponent,
+        canActivate: [ProjectEditGuard],
+        data: {
+          icon: 'settings',
+          name: 'Settings'
+        }
       }
     ]
   }
@@ -40,7 +74,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [{ provide: PROJECT_ROUTES, useValue: routes }]
 })
 export class ProjectPageRoutingModule {
 }

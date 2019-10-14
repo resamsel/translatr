@@ -2,7 +2,7 @@
 <div mat-dialog-content>
   <app-access-token-edit-form [accessToken]="data" [dialogRef]="dialogRef" #form></app-access-token-edit-form>
 </div>
-<div mat-dialog-actions class="mat-dialog-actions">
+<div class="dialog-actions" mat-dialog-actions>
   <button
     mat-flat-button
     (click)="form.onSave()"

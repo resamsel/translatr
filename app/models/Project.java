@@ -75,6 +75,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   @Column(nullable = false)
   @Required
   @Constraints.Pattern("[^\\s/]*")
+  @Constraints.MaxLength(255)
   @ProjectName
   public String name;
 
@@ -233,7 +234,11 @@ public class Project implements Model<Project, UUID>, Suggestable {
   @Override
   public Project updateFrom(Project in) {
     name = in.name;
-    owner = in.owner;
+    description = in.description;
+
+    if (in.owner != null && in.owner.username != null) {
+      owner = in.owner;
+    }
 
     return this;
   }

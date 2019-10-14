@@ -38,6 +38,10 @@ import { EmptyViewModule, MetricModule, UserCardModule } from '@dev/translatr-co
 import { ListHeaderModule } from '../../shared/list-header/list-header.module';
 import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
 import { MatTooltipModule } from '@angular/material';
+import { ProjectSettingsComponent } from './project-settings/project-settings.component';
+import { ProjectGuard } from './project.guard';
+import { ProjectAccessGuard } from './project-access.guard';
+import { ProjectEditGuard } from './project-edit.guard';
 
 @NgModule({
   declarations: [
@@ -49,7 +53,8 @@ import { MatTooltipModule } from '@angular/material';
     LocaleListComponent,
     ProjectMembersComponent,
     MemberListComponent,
-    ProjectActivityComponent
+    ProjectActivityComponent,
+    ProjectSettingsComponent
   ],
   imports: [
     ProjectPageRoutingModule,
@@ -87,7 +92,12 @@ import { MatTooltipModule } from '@angular/material';
     MatTooltipModule,
     EmptyViewModule
   ],
-  providers: [ProjectFacade]
+  providers: [
+    ProjectFacade,
+    ProjectGuard,
+    ProjectAccessGuard,
+    ProjectEditGuard
+  ]
 })
 export class ProjectPageModule {
 }

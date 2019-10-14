@@ -54,14 +54,18 @@ export abstract class AbstractEditFormComponent<T, F extends Identifiable, R ext
 
   protected onSuccess(r: R): void {
     this.processing = false;
-    if (this.dialogRef !== undefined) {
-      this.dialogRef.close(r);
-    }
     this.snackBar.open(
       this.messageProvider(r),
       'Dismiss',
       { duration: 3000 }
     );
+    this.onSaved(r);
+  }
+
+  protected onSaved(r: R): void {
+    if (this.dialogRef !== undefined) {
+      this.dialogRef.close(r);
+    }
   }
 
   protected onError(error: Error): void {

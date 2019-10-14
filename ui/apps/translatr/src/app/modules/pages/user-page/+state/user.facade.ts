@@ -15,11 +15,10 @@ import {
   ProjectCriteria,
   User
 } from '@dev/translatr-model';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
 
 const canCreateProject = (user: User, me: User): boolean => {
-  console.log('canCreateProject', user, me);
   return user.id === me.id;
 };
 
@@ -39,7 +38,6 @@ export class UserFacade {
       takeUntil(this.destroy$.asObservable())
     );
   canCreateProject$ = this.permission$.pipe(
-    tap(console.log),
     map(([user, me]) => canCreateProject(user, me))
   );
 

@@ -1,63 +1,21 @@
 <app-sidenav [me]="me$ | async" page="{{(project$ | async)?.ownerName}} – {{(project$ | async)?.name}}">
   <header>
     <nav mat-tab-nav-bar color="accent" *ngIf="project$ | async as project">
-      <div class="container dense" routerLinkActive>
-        <a
-          mat-tab-link
-          [routerLink]="['/', project?.ownerUsername, project?.name]"
-          routerLinkActive
-          [routerLinkActiveOptions]="{ exact: true }"
-          #projectLink="routerLinkActive"
-          [active]="projectLink.isActive"
-        >
-          <mat-icon>book</mat-icon>
-          <span>Project</span>
-        </a>
-        <a
-          mat-tab-link
-          [routerLink]="['/', project?.ownerUsername, project?.name, 'locales']"
-          routerLinkActive
-          #localesLink="routerLinkActive"
-          [active]="localesLink.isActive"
-        >
-          <mat-icon>language</mat-icon>
-          <span>Languages</span>
-        </a>
-        <a
-          mat-tab-link
-          [routerLink]="['/', project?.ownerUsername, project?.name, 'keys']"
-          routerLinkActive
-          #keysLink="routerLinkActive"
-          [active]="keysLink.isActive"
-        >
-          <mat-icon>vpn_key</mat-icon>
-          <span>Keys</span>
-        </a>
-        <a
-          mat-tab-link
-          [routerLink]="['/', project?.ownerUsername, project?.name, 'members']"
-          routerLinkActive
-          #membersLink="routerLinkActive"
-          [active]="membersLink.isActive"
-        >
-          <mat-icon>group</mat-icon>
-          <span>Members</span>
-        </a>
-        <a
-          mat-tab-link
-          [routerLink]="[
-            '/',
-            project?.ownerUsername,
-            project?.name,
-            'activity'
-          ]"
-          routerLinkActive
-          #activityLink="routerLinkActive"
-          [active]="activityLink.isActive"
-        >
-          <mat-icon>change_history</mat-icon>
-          <span>Activity</span>
-        </a>
+      <div class="container dense">
+        <ng-container *ngFor="let child of children">
+          <a
+            #link="routerLinkActive"
+            *ngIf="canActivate$(child) | async"
+            [active]="link.isActive"
+            [routerLinkActiveOptions]="{ exact: child.path === '' }"
+            [routerLink]="routerLink(project, child)"
+            mat-tab-link
+            routerLinkActive
+          >
+            <mat-icon>{{ child.data.icon }}</mat-icon>
+            <span>{{ child.data.name }}</span>
+          </a>
+        </ng-container>
       </div>
     </nav>
   </header>

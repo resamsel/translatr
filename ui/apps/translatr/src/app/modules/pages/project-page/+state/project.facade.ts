@@ -9,12 +9,13 @@ import {
   LoadProject,
   LoadProjectActivities,
   LoadProjectActivityAggregated,
+  ProjectLoaded,
   SaveProject,
   UnloadProject
 } from './project.actions';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { ActivityCriteria, KeyCriteria, LocaleCriteria, MemberRole, Project, User } from '@dev/translatr-model';
-import { map, takeUntil } from 'rxjs/operators';
+import { ActivityCriteria, KeyCriteria, LocaleCriteria, MemberRole, memberRoles, Project, User } from '@dev/translatr-model';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 import { AppFacade } from '../../../../+state/app.facade';
 
@@ -33,8 +34,10 @@ const hasRolesAny = (project: Project, user: User, ...roles: MemberRole[]): bool
     .length > 0;
 };
 
-// const canEdit = (project: Project, me: User): boolean =>
-//   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
+const canAccess = (project: Project, me: User): boolean =>
+  hasRolesAny(project, me, ...memberRoles);
+const canEdit = (project: Project, me: User): boolean =>
+  hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
 // const canDelete = (project: Project, me: User): boolean =>
 //   hasRolesAny(project, me, MemberRole.Owner);
 const canCreateKey = (project: Project, me: User): boolean =>
@@ -57,9 +60,13 @@ export class ProjectFacade {
     takeUntil(this.unload$)
   );
   permission$ = combineLatest([this.project$, this.appFacade.me$]);
-  // canEdit$ = this.permission$.pipe(
-  //   map(([project, me]) => canEdit(project, me))
-  // );
+  canAccess$ = this.permission$.pipe(
+    filter(([project, me]) => !!project),
+    map(([project, me]) => canAccess(project, me))
+  );
+  canEdit$ = this.permission$.pipe(
+    map(([project, me]) => canEdit(project, me))
+  );
   // canDelete$ = this.permission$.pipe(
   //   map(([project, me]) => canDelete(project, me))
   // );
@@ -138,11 +145,10 @@ export class ProjectFacade {
   }
 
   save(project: Project) {
-    this.store.dispatch(
-      new SaveProject({
-        id: project.id,
-        name: project.name
-      })
-    );
+    this.store.dispatch(new SaveProject(project));
+  }
+
+  projectLoaded(project: Project) {
+    this.store.dispatch(new ProjectLoaded(project));
   }
 }
