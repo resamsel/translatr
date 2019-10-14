@@ -2,7 +2,7 @@
   (filter)="onFilter($event)"
   (more)="onMore($event)"
   [projects]="projects$ | async"
-  [allowProjectCreation]="true"
+  [canCreate]="canCreateProject$ | async"
   showFilter="true"></app-project-list>
 
 <button

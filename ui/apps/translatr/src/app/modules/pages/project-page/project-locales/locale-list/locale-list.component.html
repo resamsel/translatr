@@ -51,21 +51,20 @@
 </app-nav-list>
 
 <ng-template #empty>
-  <div class="empty large">
-    <mat-icon class="locale circle">language</mat-icon>
-    <h3 i18n="@@locales.empty">No languages yet.</h3>
+  <dev-empty-view icon="vpn_key">
+    <p>It seems there are no languages defined, yet - would you like to add one now?</p>
     <button
+      *ngIf="canCreate"
       (click)="openLocaleCreationDialog(project)"
-      color="primary"
+      color="accent"
       i18n="@@locale.create"
-      mat-stroked-button>Add language
+      mat-raised-button>Add language
     </button>
-  </div>
+  </dev-empty-view>
 </ng-template>
 
 <ng-template #nothingFound>
-  <div class="empty large">
-    <mat-icon class="locale circle">language</mat-icon>
-    <h3 i18n="@@locales.notfound">No languages found.</h3>
-  </div>
+  <dev-empty-view icon="language" vertical="true">
+    <p i18n="@@locales.notfound">No languages found.</p>
+  </dev-empty-view>
 </ng-template>

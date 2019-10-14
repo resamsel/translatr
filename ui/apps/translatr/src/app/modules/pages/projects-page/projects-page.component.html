@@ -16,7 +16,7 @@
         (create)="openProjectCreationDialog()"
         [projects]="projects$ | async"
         [showMore]="false"
-        allowProjectCreation="true"></app-project-card-list>
+        canCreate="true"></app-project-card-list>
       <app-project-list
         *ngIf="(projectsTail$ | async)?.list.length > 0"
         [projects]="projectsTail$ | async"></app-project-list>

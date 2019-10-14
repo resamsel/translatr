@@ -24,15 +24,9 @@
     </p>
   </a>
   <ng-template #empty>
-    <dev-empty-view icon="book">
-      <p>You don't have any projects yet, how about creating one of your own?</p>
-      <button *ngIf="allowProjectCreation"
-              (click)="onCreateProject()"
-              class="action"
-              color="accent"
-              mat-raised-button
-      >Start new project
-      </button>
-    </dev-empty-view>
+    <app-project-empty-view
+      (create)="create.emit()"
+      [canCreate]="canCreate"
+    ></app-project-empty-view>
   </ng-template>
 </app-nav-list>

@@ -1,5 +1,5 @@
 <app-list-header
-  *ngIf="showFilter"
+  *ngIf="showFilter && (pagedList?.list.length > 0 || criteria?.search?.length > 0)"
   [search]="criteria?.search"
   [addTooltip]="addTooltip"
   [addEnabled]="canCreate"

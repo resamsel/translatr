@@ -10,6 +10,7 @@ import { NavListModule } from '../nav-list/nav-list.module';
 import { MomentModule } from 'ngx-moment';
 import { MatTooltipModule } from '@angular/material';
 import { EmptyViewModule } from '@translatr/translatr-components/src/lib/modules/empty-view/empty-view.module';
+import { ProjectEmptyViewModule } from '../project-empty-view/project-empty-view.module';
 
 @NgModule({
   declarations: [ProjectListComponent],
@@ -23,7 +24,8 @@ import { EmptyViewModule } from '@translatr/translatr-components/src/lib/modules
     MatListModule,
     MomentModule,
     MatTooltipModule,
-    EmptyViewModule
+    EmptyViewModule,
+    ProjectEmptyViewModule
   ],
   exports: [ProjectListComponent]
 })

@@ -31,7 +31,7 @@
       <h2>Contributing Projects</h2>
       <app-project-card-list
         [projects]="projects$ | async"
-        allowProjectCreation="true"
+        canCreate="true"
         [showMore]="false"
         (create)="openProjectCreationDialog()"></app-project-card-list>
     </section>

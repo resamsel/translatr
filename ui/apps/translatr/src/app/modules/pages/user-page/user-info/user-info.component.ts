@@ -27,6 +27,7 @@ export class UserInfoComponent implements OnInit, OnDestroy {
         : pagedList),
       takeUntil(this.destroy$.asObservable())
     );
+  canCreateProject$ = this.facade.canCreateProject$;
   activities$ = this.facade.activities$
     .pipe(takeUntil(this.destroy$.asObservable()));
 

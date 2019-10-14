@@ -4,16 +4,41 @@
   padding: 16px 8px;
   display: flex;
   flex-direction: row;
+  align-items: center;
 
   .mat-icon {
-    height: 64px;
-    width: 64px;
-    font-size: 64px;
+    height: 72px;
+    width: 72px;
+    font-size: 72px;
     opacity: 0.25;
-    margin-right: 8px;
+  }
 
-    @include medium {
-      margin-right: 16px;
+  &[vertical="true"] {
+    flex-direction: column;
+    padding: 64px 0;
+
+    .mat-icon,
+    .content {
+      text-align: center;
+    }
+
+    .mat-icon {
+      height: 96px;
+      width: 96px;
+    }
+  }
+
+  &:not([vertical="true"]) {
+    .mat-icon {
+      margin-right: 8px;
+
+      @include medium {
+        margin-right: 16px;
+      }
+    }
+
+    .content {
+      padding: 8px 0;
     }
   }
 }

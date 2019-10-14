@@ -11,7 +11,7 @@ import { trackByFn } from '@translatr/utils';
 })
 export class ProjectCardListComponent {
   @Input() projects: PagedList<Project>;
-  @Input() allowProjectCreation = false;
+  @Input() canCreate = false;
   @Input() showMore = true;
 
   @Output() readonly create = new EventEmitter<void>();

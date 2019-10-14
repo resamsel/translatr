@@ -8,6 +8,7 @@ import { MomentModule } from 'ngx-moment';
 import { ProjectCardModule } from '../project-card/project-card.module';
 import { MatButtonModule } from '@angular/material';
 import { EmptyViewModule } from '@dev/translatr-components';
+import { ProjectEmptyViewModule } from '../project-empty-view/project-empty-view.module';
 
 @NgModule({
   declarations: [ProjectCardListComponent],
@@ -25,7 +26,8 @@ import { EmptyViewModule } from '@dev/translatr-components';
     MomentModule,
 
     ProjectCardModule,
-    EmptyViewModule
+    EmptyViewModule,
+    ProjectEmptyViewModule
   ]
 })
 export class ProjectCardListModule { }

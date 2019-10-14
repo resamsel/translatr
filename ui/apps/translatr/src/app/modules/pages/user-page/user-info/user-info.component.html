@@ -19,7 +19,7 @@
         (create)="openProjectCreationDialog()"
         [projects]="projects$ | async"
         [showMore]="false"
-        allowProjectCreation="true"></app-project-card-list>
+        [canCreate]="canCreateProject$ | async"></app-project-card-list>
     </div>
     <div class="clearfix"></div>
   </section>

@@ -22,6 +22,7 @@ export class UserProjectsComponent implements OnInit {
         }
         : pagedList)
     );
+  canCreateProject$ = this.facade.canCreateProject$;
   criteria$: Subject<ProjectCriteria> =
     new BehaviorSubject<ProjectCriteria>({
       order: 'whenUpdated desc',

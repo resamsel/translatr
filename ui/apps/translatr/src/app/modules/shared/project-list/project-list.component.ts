@@ -11,7 +11,7 @@ import { trackByFn } from '@translatr/utils';
 })
 export class ProjectListComponent {
   @Input() projects: PagedList<Project>;
-  @Input() allowProjectCreation = false;
+  @Input() canCreate = false;
   @Input() showFilter = false;
   @Input() showMore = true;
 

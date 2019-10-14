@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class ProjectLocalesComponent {
   project$ = this.facade.project$;
   locales$ = this.facade.locales$;
-  criteria$ = this.facade.keysCriteria$;
+  criteria$ = this.facade.localesCriteria$;
   canCreate$ = this.facade.canCreateLocale$;
 
   constructor(

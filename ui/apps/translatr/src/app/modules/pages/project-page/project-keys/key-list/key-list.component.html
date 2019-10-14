@@ -51,22 +51,20 @@
 </app-nav-list>
 
 <ng-template #empty>
-  <div class="empty large">
-    <mat-icon class="key circle">vpn_key</mat-icon>
-    <h3 i18n="@@keys.empty">No keys yet.</h3>
+  <dev-empty-view icon="vpn_key">
+    <p>It seems there are no keys defined, yet - would you like to add one now?</p>
     <button
-      *ngIf="allowCreate"
+      *ngIf="canCreate"
       (click)="openKeyCreationDialog(project)"
-      color="primary"
+      color="accent"
       i18n="@@key.create"
-      mat-stroked-button>Add key
+      mat-raised-button>Add key
     </button>
-  </div>
+  </dev-empty-view>
 </ng-template>
 
 <ng-template #nothingFound>
-  <div class="empty large">
-    <mat-icon class="key circle">vpn_key</mat-icon>
-    <h3 i18n="@@keys.notfound">No keys found.</h3>
-  </div>
+  <dev-empty-view icon="vpn_key" vertical="true">
+    <p i18n="@@keys.notfound">No keys found.</p>
+  </dev-empty-view>
 </ng-template>

@@ -4,9 +4,24 @@ import { UserPartialState } from './user.reducer';
 import { userQuery } from './user.selectors';
 import { loadAccessToken, loadAccessTokens, loadActivities, loadProjects, loadUser } from './user.actions';
 import { AccessTokenService } from '@dev/translatr-sdk';
-import { Observable, Subject } from 'rxjs';
-import { AccessToken, AccessTokenCriteria, Activity, ActivityCriteria, PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
-import { takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import {
+  AccessToken,
+  AccessTokenCriteria,
+  Activity,
+  ActivityCriteria,
+  PagedList,
+  Project,
+  ProjectCriteria,
+  User
+} from '@dev/translatr-model';
+import { map, takeUntil, tap } from 'rxjs/operators';
+import { AppFacade } from '../../../../+state/app.facade';
+
+const canCreateProject = (user: User, me: User): boolean => {
+  console.log('canCreateProject', user, me);
+  return user.id === me.id;
+};
 
 @Injectable()
 export class UserFacade {
@@ -16,12 +31,17 @@ export class UserFacade {
     select(userQuery.getUser),
     takeUntil(this.destroy$.asObservable())
   );
+  permission$ = combineLatest([this.user$, this.appFacade.me$]);
 
   projects$: Observable<PagedList<Project> | undefined> =
     this.store.pipe(
       select(userQuery.getProjects),
       takeUntil(this.destroy$.asObservable())
     );
+  canCreateProject$ = this.permission$.pipe(
+    tap(console.log),
+    map(([user, me]) => canCreateProject(user, me))
+  );
 
   activities$: Observable<PagedList<Activity> | undefined> =
     this.store.pipe(
@@ -41,6 +61,7 @@ export class UserFacade {
 
   constructor(
     private store: Store<UserPartialState>,
+    private readonly appFacade: AppFacade,
     private readonly accessTokenService: AccessTokenService
   ) {
   }
