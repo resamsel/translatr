@@ -20,7 +20,7 @@ public class Project extends Dto {
   public UUID ownerId;
   public String ownerName;
   public String ownerUsername;
-  public String ownerEmail;
+  public String ownerEmailHash;
 
   public List<Key> keys;
   public List<Locale> locales;

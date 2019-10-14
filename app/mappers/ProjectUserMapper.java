@@ -3,6 +3,7 @@ package mappers;
 import dto.ProjectUser;
 import models.Project;
 import models.User;
+import utils.EmailUtils;
 
 public class ProjectUserMapper {
   public static models.ProjectUser toModel(ProjectUser in) {
@@ -40,7 +41,7 @@ public class ProjectUserMapper {
     out.userId = in.user.id;
     out.userName = in.user.name;
     out.userUsername = in.user.username;
-    out.userEmail = in.user.email;
+    out.userEmailHash = EmailUtils.hashEmail(in.user.email);
 
     return out;
   }

@@ -5,7 +5,7 @@
     <p class="members">
       <img
         ngxGravatar
-        [email]="project?.ownerEmail"
+        [md5Hash]="project?.ownerEmailHash"
         size="36"
         class="user-icon"
         [matTooltip]="project?.ownerName"

@@ -3,7 +3,7 @@
     *ngIf="user"
     mat-card-image
     ngxGravatar
-    [email]="user.email"
+    [md5Hash]="user.emailHash"
     [round]="false"
     [size]="192"
   />

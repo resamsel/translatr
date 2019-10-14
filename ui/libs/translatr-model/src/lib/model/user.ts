@@ -6,6 +6,7 @@ export interface User extends Temporal {
   name: string;
   username: string;
   email?: string;
+  emailHash?: string;
   role?: UserRole;
 
   memberships?: Member[];

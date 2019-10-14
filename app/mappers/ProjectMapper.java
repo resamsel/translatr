@@ -10,6 +10,7 @@ import models.User;
 import services.KeyService;
 import services.LocaleService;
 import services.MessageService;
+import utils.EmailUtils;
 
 import static java.util.stream.Collectors.toList;
 
@@ -74,7 +75,7 @@ public class ProjectMapper {
       out.ownerId = in.owner.id;
       out.ownerName = in.owner.name;
       out.ownerUsername = in.owner.username;
-      out.ownerEmail = in.owner.email;
+      out.ownerEmailHash = EmailUtils.hashEmail(in.owner.email);
     }
 
     if (in.keys != null && !in.keys.isEmpty()) {

@@ -9,5 +9,5 @@ export interface Member extends ProjectEmbedded, Temporal {
   userName?: string;
   userId: string;
   userUsername?: string;
-  userEmail?: string;
+  userEmailHash?: string;
 }

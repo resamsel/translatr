@@ -3,6 +3,7 @@ package mappers;
 import dto.ActionType;
 import dto.Activity;
 import models.LogEntry;
+import utils.EmailUtils;
 
 public class ActivityMapper {
   public static Activity toDto(LogEntry in) {
@@ -16,7 +17,7 @@ public class ActivityMapper {
       out.userId = in.user.id;
       out.userName = in.user.name;
       out.userUsername = in.user.username;
-      out.userEmail = in.user.email;
+      out.userEmailHash = EmailUtils.hashEmail(in.user.email);
     }
     if (in.project != null) {
       out.projectId = in.project.id;

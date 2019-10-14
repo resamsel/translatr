@@ -7,7 +7,7 @@
     [routerLink]="['/', user.username]"
     mat-list-item>
     <img
-      [email]="user.email"
+      [md5Hash]="user.emailHash"
       class="icon"
       matListIcon
       ngxGravatar

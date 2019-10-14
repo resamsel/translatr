@@ -1,6 +1,7 @@
 package mappers;
 
 import dto.User;
+import utils.EmailUtils;
 
 import java.util.stream.Collectors;
 
@@ -18,10 +19,6 @@ public class UserMapper {
     return out;
   }
 
-  /**
-   * @param in
-   * @return
-   */
   public static User toDto(models.User in) {
     if (in == null) {
       return null;
@@ -35,6 +32,7 @@ public class UserMapper {
     out.name = in.name;
     out.username = in.username;
     out.email = in.email;
+    out.emailHash = EmailUtils.hashEmail(in.email);
     out.role = UserRoleMapper.toDto(in.role);
 
     if (in.memberships != null && !in.memberships.isEmpty()) {

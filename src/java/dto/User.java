@@ -19,6 +19,7 @@ public class User extends Dto {
   public String username;
 
   public String email;
+  public String emailHash;
 
   public UserRole role;
 

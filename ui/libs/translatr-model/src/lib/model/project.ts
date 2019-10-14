@@ -9,7 +9,7 @@ export interface Project extends Temporal {
   ownerId?: string;
   ownerName?: string;
   ownerUsername?: string;
-  ownerEmail?: string;
+  ownerEmailHash?: string;
 
   locales?: Array<Locale>;
   keys?: Array<Key>;

@@ -12,7 +12,7 @@ public class Activity extends Dto {
   public UUID userId;
   public String userName;
   public String userUsername;
-  public String userEmail;
+  public String userEmailHash;
   public UUID projectId;
   public String projectName;
   public String before;

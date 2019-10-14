@@ -6,7 +6,7 @@
   [showMore]="showMore">
   <mat-list-item *ngFor="let activity of activities?.list; trackBy: trackByFn">
     <img
-      [email]="activity.userEmail"
+      [md5Hash]="activity.userEmailHash"
       class="icon"
       matListIcon
       ngxGravatar

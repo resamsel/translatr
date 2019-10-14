@@ -31,9 +31,14 @@ public abstract class AbstractApiService
   private Scope[] writeScopes;
   protected final PermissionService permissionService;
 
-  protected AbstractApiService(SERVICE service, Class<DTO> dtoClass,
-      Function<MODEL, DTO> dtoMapper, Scope[] readScopes, Scope[] writeScopes,
-      PermissionService permissionService) {
+  protected AbstractApiService(
+      SERVICE service,
+      Class<DTO> dtoClass,
+      Function<MODEL, DTO> dtoMapper,
+      Scope[] readScopes,
+      Scope[] writeScopes,
+      PermissionService permissionService
+  ) {
 
     this.service = service;
     this.dtoClass = dtoClass;
@@ -41,6 +46,15 @@ public abstract class AbstractApiService
     this.readScopes = readScopes;
     this.writeScopes = writeScopes;
     this.permissionService = permissionService;
+  }
+
+  /**
+   * May be overridden to prepare the wrapper for dealing with the current request.
+   *
+   * @return the DTO mapper
+   */
+  protected Function<MODEL, DTO> getDtoMapper() {
+    return dtoMapper;
   }
 
   /**
@@ -59,7 +73,7 @@ public abstract class AbstractApiService
       validator.accept(criteria);
     }
 
-    return new DtoPagedList<>(service.findBy(criteria), dtoMapper);
+    return new DtoPagedList<>(service.findBy(criteria), getDtoMapper());
   }
 
   /**
@@ -75,7 +89,7 @@ public abstract class AbstractApiService
       throw new NotFoundException(dtoClass.getSimpleName(), id);
     }
 
-    return dtoMapper.apply(obj);
+    return getDtoMapper().apply(obj);
   }
 
   /**
@@ -85,7 +99,7 @@ public abstract class AbstractApiService
   public DTO create(JsonNode in) {
     permissionService.checkPermissionAll("Access token not allowed", writeScopes);
 
-    return dtoMapper.apply(service.create(toModel(in)));
+    return getDtoMapper().apply(service.create(toModel(in)));
   }
 
   /**
@@ -95,7 +109,7 @@ public abstract class AbstractApiService
   public DTO update(JsonNode in) {
     permissionService.checkPermissionAll("Access token not allowed", writeScopes);
 
-    return dtoMapper.apply(service.update(toModel(in)));
+    return getDtoMapper().apply(service.update(toModel(in)));
   }
 
   /**
@@ -111,7 +125,7 @@ public abstract class AbstractApiService
       throw new NotFoundException(dtoClass.getSimpleName(), id);
     }
 
-    DTO out = dtoMapper.apply(m);
+    DTO out = getDtoMapper().apply(m);
 
     service.delete(m);
 

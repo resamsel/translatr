@@ -23,7 +23,7 @@
       class="icon"
       matListIcon
       ngxGravatar
-      [email]="member.userEmail"
+      [md5Hash]="member.userEmailHash"
       size="36"
     />
     <h3 matLine>{{ member.userName }} — {{ member.role }}</h3>

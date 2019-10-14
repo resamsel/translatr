@@ -8,6 +8,7 @@ import dto.DtoPagedList;
 import dto.NotFoundException;
 import mappers.AggregateMapper;
 import mappers.UserMapper;
+import mappers.UserObfuscatorMapper;
 import models.Scope;
 import models.User;
 import play.libs.Json;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
 /**
  * @author resamsel
@@ -46,11 +48,17 @@ public class UserApiServiceImpl extends
   }
 
   @Override
+  protected Function<User, dto.User> getDtoMapper() {
+    return super.getDtoMapper()
+        .andThen(UserObfuscatorMapper.of(User.loggedInUser()));
+  }
+
+  @Override
   public dto.User byUsername(String username, String... propertiesToFetch) {
     permissionService.checkPermissionAll("Access token not allowed", readScopes);
 
     return Optional.ofNullable(service.byUsername(username, propertiesToFetch))
-        .map(dtoMapper)
+        .map(getDtoMapper())
         .orElseThrow(() -> new NotFoundException(dto.User.class.getSimpleName(), username));
   }
 
