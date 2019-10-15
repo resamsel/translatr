@@ -1,12 +1,10 @@
-import { Component, Input } from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { User, UserRole } from '@dev/translatr-model';
 import { environment } from '../../../../environments/environment';
 import { Link } from '@dev/translatr-components';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss']
@@ -19,13 +17,6 @@ export class SidenavComponent {
 
   readonly endpointUrl = environment.endpointUrl;
   readonly adminUrl = environment.adminUrl;
-
-  isHandset$: Observable<boolean> = this.breakpointObserver
-    .observe(Breakpoints.Handset)
-    .pipe(map(result => result.matches));
-
-  constructor(private breakpointObserver: BreakpointObserver) {
-  }
 
   isAdmin(me: User | undefined): boolean {
     return !!me && me.role === UserRole.Admin;

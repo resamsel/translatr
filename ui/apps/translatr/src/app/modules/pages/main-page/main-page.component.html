@@ -1,4 +1,4 @@
-<app-navbar [elevated]="false">
+<app-navbar [elevated]="false" i18n-page="@@home.title" page="Home">
   <app-auth-bar-item [me]="me$ | async" [endpointUrl]="endpointUrl">
     <a
       *ngIf="me$ | async as me"

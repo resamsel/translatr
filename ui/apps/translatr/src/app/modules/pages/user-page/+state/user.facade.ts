@@ -30,7 +30,8 @@ export class UserFacade {
     select(userQuery.getUser),
     takeUntil(this.destroy$.asObservable())
   );
-  permission$ = combineLatest([this.user$, this.appFacade.me$]);
+  permission$ = combineLatest([this.user$, this.appFacade.me$])
+    .pipe(takeUntil(this.destroy$.asObservable()));
 
   projects$: Observable<PagedList<Project> | undefined> =
     this.store.pipe(

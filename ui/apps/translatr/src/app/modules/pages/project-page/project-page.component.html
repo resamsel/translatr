@@ -1,4 +1,4 @@
-<app-sidenav [me]="me$ | async" page="{{(project$ | async)?.ownerName}} – {{(project$ | async)?.name}}">
+<app-sidenav [me]="me$ | async" [page]="(project$ | async)?.name">
   <header>
     <nav mat-tab-nav-bar color="accent" *ngIf="project$ | async as project">
       <div class="container dense">
