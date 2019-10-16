@@ -14,7 +14,7 @@ import {
   UnloadProject
 } from './project.actions';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { ActivityCriteria, KeyCriteria, LocaleCriteria, MemberRole, memberRoles, Project, User } from '@dev/translatr-model';
+import { ActivityCriteria, KeyCriteria, LocaleCriteria, MemberRole, memberRoles, Project, User, UserRole } from '@dev/translatr-model';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 import { AppFacade } from '../../../../+state/app.facade';
@@ -22,6 +22,10 @@ import { AppFacade } from '../../../../+state/app.facade';
 const hasRolesAny = (project: Project, user: User, ...roles: MemberRole[]): boolean => {
   if (project === undefined || user === undefined) {
     return false;
+  }
+
+  if (user.role === UserRole.Admin) {
+    return true;
   }
 
   if (project.ownerId === user.id) {
@@ -38,8 +42,8 @@ const canAccess = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, ...memberRoles);
 const canEdit = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
-// const canDelete = (project: Project, me: User): boolean =>
-//   hasRolesAny(project, me, MemberRole.Owner);
+const canDelete = (project: Project, me: User): boolean =>
+  hasRolesAny(project, me, MemberRole.Owner);
 const canCreateKey = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Developer);
 const canCreateLocale = (project: Project, me: User): boolean =>
@@ -59,17 +63,18 @@ export class ProjectFacade {
     select(projectQuery.getProject),
     takeUntil(this.unload$)
   );
-  permission$ = combineLatest([this.project$, this.appFacade.me$]);
+  permission$ = combineLatest([this.project$, this.appFacade.me$])
+    .pipe(takeUntil(this.unload$));
   canAccess$ = this.permission$.pipe(
-    filter(([project, me]) => !!project),
+    filter(([project]) => !!project),
     map(([project, me]) => canAccess(project, me))
   );
   canEdit$ = this.permission$.pipe(
     map(([project, me]) => canEdit(project, me))
   );
-  // canDelete$ = this.permission$.pipe(
-  //   map(([project, me]) => canDelete(project, me))
-  // );
+  canDelete$ = this.permission$.pipe(
+    map(([project, me]) => canDelete(project, me))
+  );
 
   locales$ = this.store.pipe(
     select(projectQuery.getLocales),

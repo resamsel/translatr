@@ -19,7 +19,12 @@ export class ProjectCardListComponent {
   firstChar = firstChar;
   trackByFn = trackByFn;
 
+  constructor() {
+    this.create.subscribe(() => console.log('ProjectCardList.create'));
+  }
+
   onCreateProject(): void {
+    console.log('onCreateProject');
     this.create.emit();
   }
 }

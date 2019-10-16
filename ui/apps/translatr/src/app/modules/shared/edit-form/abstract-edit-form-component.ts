@@ -68,9 +68,9 @@ export abstract class AbstractEditFormComponent<T, F extends Identifiable, R ext
     }
   }
 
-  protected onError(error: Error): void {
+  protected onError(error: Error | undefined): void {
     this.processing = false;
-    if (error.error.violations) {
+    if (error && error.error.violations) {
       error.error.violations.forEach((violation: ConstraintViolation) => {
         const control = this.form.get(violation.field);
         if (!!control) {

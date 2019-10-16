@@ -21,11 +21,15 @@ export class NavListComponent {
   @Input() addTooltip: string;
   @Input() canCreate = false;
 
-  @Output() more = new EventEmitter<number>();
-  @Output() add = new EventEmitter<void>();
-  @Output() filter = new EventEmitter<string>();
+  @Output() readonly more = new EventEmitter<number>();
+  @Output() readonly create = new EventEmitter<void>();
+  @Output() readonly filter = new EventEmitter<string>();
 
   trackByFn = trackByFn;
+
+  constructor() {
+    this.create.subscribe(() => console.log('NavList.create'));
+  }
 
   get loadingList(): number[] {
     return Array(this.loadingListLength).map(

@@ -1,5 +1,5 @@
 <div class="actions">
-  <mat-form-field appearance="outline">
+  <mat-form-field *ngIf="searchEnabled" appearance="outline">
     <mat-icon matPrefix>search</mat-icon>
     <mat-label i18n="@@search.label">Filter list</mat-label>
     <input
@@ -19,18 +19,19 @@
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
-  <button
-    *ngIf="addVisible"
-    (click)="add.emit()"
-    class="floating-action-btn pin-bottom"
-    color="accent"
-    [disabled]="!addEnabled"
-    [matTooltip]="addTooltip"
-    mat-fab
-  >
-    <mat-icon>add</mat-icon>
-  </button>
   <button (click)="remove.emit()" *ngIf="removeVisible" [disabled]="!removeEnabled" i18n mat-icon-button>
     <mat-icon>remove</mat-icon>
   </button>
 </div>
+
+<button
+  (click)="add.emit()"
+  *ngIf="addVisible"
+  [attr.disabled]="!addEnabled"
+  [matTooltip]="addTooltip"
+  class="floating-action-btn pin-bottom"
+  color="accent"
+  mat-fab
+>
+  <mat-icon>add</mat-icon>
+</button>

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { TitleService } from '@translatr/utils/src/lib/services/title.service';
 
@@ -8,6 +8,7 @@ export interface Link {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']

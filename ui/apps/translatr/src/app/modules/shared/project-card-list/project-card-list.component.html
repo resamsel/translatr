@@ -2,6 +2,8 @@
   [pagedList]="projects"
   [empty]="empty"
   direction="row"
+  (create)="create.emit()"
+  [canCreate]="canCreate"
   [showMore]="showMore">
   <app-project-card-link
     *ngFor="let project of projects?.list; trackBy: trackByFn"

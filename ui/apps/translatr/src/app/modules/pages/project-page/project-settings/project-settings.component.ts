@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
-import { filter } from 'rxjs/operators';
+import { filter, switchMap, take } from 'rxjs/operators';
 import { ProjectFacade } from '../+state/project.facade';
 import { AbstractEditFormComponent } from '../../../shared/edit-form/abstract-edit-form-component';
 import { Project } from '@dev/translatr-model';
-import { MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { ProjectService } from '@dev/translatr-sdk';
 import { ActivatedRoute, Router } from '@angular/router';
+import { openProjectDeleteDialog } from '../../../shared/project-delete-dialog/project-delete-dialog.component';
 
 @Component({
   selector: 'app-project-settings',
@@ -19,11 +20,17 @@ export class ProjectSettingsComponent
 
   project$ = this.facade.project$.pipe(filter(x => !!x));
 
+  canDelete$ = this.facade.canDelete$;
+
+  // Feature flag for transferring ownership
+  transferOwnershipEnabled = false;
+
   constructor(
     readonly fb: FormBuilder,
     readonly snackBar: MatSnackBar,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
+    private readonly dialog: MatDialog,
     private readonly facade: ProjectFacade,
     private readonly projectService: ProjectService
   ) {
@@ -56,7 +63,14 @@ export class ProjectSettingsComponent
   }
 
   onDelete() {
-    // TODO: implement!
+    this.project$
+      .pipe(
+        take(1),
+        switchMap((project) =>
+          openProjectDeleteDialog(this.dialog, project).afterClosed()),
+        filter(project => !!project)
+      )
+      .subscribe(() => this.router.navigate(['/dashboard']));
   }
 
   protected onSaved(project: Project): void {

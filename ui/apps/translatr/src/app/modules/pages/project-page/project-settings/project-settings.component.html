@@ -63,11 +63,33 @@
     </form>
   </section>
 
-  <section *ngIf="false">
+  <section>
     <h2>Danger Zone</h2>
-    <p>Delete this project.</p>
-    <div class="dialog-actions">
-      <button (click)="onDelete()" color="warn" mat-raised-button>Delete project</button>
-    </div>
+
+    <dev-empty-view *ngIf="transferOwnershipEnabled"> icon="swap_horiz">
+      <p i18n="@@project.owner.change.description">Transfer the ownership of the project to a managing member. Project
+        ownership can only be changed by its owner.</p>
+      <button
+        (click)="onDelete()"
+        [disabled]="!(canDelete$ | async)"
+        color="warn"
+        mat-raised-button
+      >
+        Transfer ownership
+      </button>
+    </dev-empty-view>
+
+    <dev-empty-view icon="delete">
+      <p i18n="@@project.delete.description">Delete this project and its contents. Keep in mind that once you've deleted
+        the project you <strong>cannot</strong> undo this action. Projects can only be deleted by its owner.</p>
+      <button
+        (click)="onDelete()"
+        [disabled]="!(canDelete$ | async)"
+        color="warn"
+        mat-raised-button
+      >
+        Delete project
+      </button>
+    </dev-empty-view>
   </section>
 </div>

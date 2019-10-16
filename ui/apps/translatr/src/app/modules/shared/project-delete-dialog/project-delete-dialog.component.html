@@ -1,0 +1,35 @@
+<h1 mat-dialog-title>Delete Project</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <p>This action <strong>cannot</strong> be undone. This will remove the project permanently.</p>
+    <p>Please type in the name of the project to confirm.</p>
+    <mat-form-field appearance="outline" class="name">
+      <mat-label>Confirm project name</mat-label>
+      <input
+        #name
+        cdkFocusInitial
+        formControlName="name"
+        i18n-placeholder="@@project.name"
+        matInput
+        placeholder="Project name"
+        type="text"
+      />
+      <mat-error
+        *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
+      >
+        {{ nameFormControl.errors['violation'] }}
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div class="dialog-actions" mat-dialog-actions>
+  <button
+    (click)="onDelete()"
+    [disabled]="form.invalid || processing"
+    color="primary"
+    mat-raised-button
+  >
+    I understand the consequences, delete this project
+  </button>
+  <button mat-button mat-dialog-close>Cancel</button>
+</div>

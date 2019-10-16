@@ -51,7 +51,7 @@
 </app-nav-list>
 
 <ng-template #empty>
-  <dev-empty-view icon="vpn_key">
+  <dev-empty-view icon="vpn_key" justifyContent="center">
     <p>It seems there are no keys defined, yet - would you like to add one now?</p>
     <button
       *ngIf="canCreate"
@@ -64,7 +64,7 @@
 </ng-template>
 
 <ng-template #nothingFound>
-  <dev-empty-view icon="vpn_key" vertical="true">
+  <dev-empty-view alignment="vertical" icon="vpn_key">
     <p i18n="@@keys.notfound">No keys found.</p>
   </dev-empty-view>
 </ng-template>

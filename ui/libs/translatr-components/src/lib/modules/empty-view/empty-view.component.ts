@@ -7,5 +7,6 @@ import { Component, Input } from '@angular/core';
 })
 export class EmptyViewComponent {
   @Input() icon: string;
-  @Input() vertical = false;
+  @Input() justifyContent: 'start' | 'center' = 'start';
+  @Input() alignment: 'horizontal' | 'vertical' = 'horizontal';
 }
