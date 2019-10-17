@@ -121,9 +121,10 @@
       "prefix": "",
       "architect": {
         "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
+          "builder": "@nrwl/cypress:cypress",
           "options": {
-            "protractorConfig": "apps/translatr-e2e/protractor.conf.js",
+            "cypressConfig": "apps/translatr-e2e/cypress.json",
+            "tsConfig": "apps/translatr-e2e/tsconfig.e2e.json",
             "devServerTarget": "translatr:serve"
           },
           "configurations": {
@@ -133,9 +134,12 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:lint",
           "options": {
-            "tsConfig": "apps/translatr-e2e/tsconfig.e2e.json",
+            "linter": "tslint",
+            "tsConfig": [
+              "apps/translatr-e2e/tsconfig.e2e.json"
+            ],
             "exclude": ["**/node_modules/**", "!apps/translatr-e2e/**"]
           }
         }
@@ -446,5 +450,14 @@
   "defaultProject": "translatr",
   "cli": {
     "defaultCollection": "@nrwl/angular"
+  },
+  "schematics": {
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    }
   }
 }

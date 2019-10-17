@@ -1,0 +1,24 @@
+import { AppPage } from '../../support/app.po';
+
+describe('workspace-project App', () => {
+  let page: AppPage;
+
+  beforeEach(() => {
+    page = new AppPage();
+
+    cy.clearCookies();
+    cy.server();
+  });
+
+  it('should have page name Home', () => {
+    // given
+    cy.route('/api/me', 'fixture:me');
+
+    // when
+    page.navigateTo();
+
+    // then
+    page.getPageName()
+      .should('have.text', 'Home');
+  });
+});
