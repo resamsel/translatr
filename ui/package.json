@@ -30,6 +30,7 @@
     "lint:fix": "./node_modules/.bin/nx lint --fix && ng lint --fix",
     "e2e": "ng e2e",
     "e2e:ui": "ng e2e translatr-e2e --watch",
+    "e2e:ui:prod": "ng e2e translatr-e2e --headless --prod",
     "precommit": "npm run build:prod",
     "affected:apps": "./node_modules/.bin/nx affected:apps",
     "affected:libs": "./node_modules/.bin/nx affected:libs",
