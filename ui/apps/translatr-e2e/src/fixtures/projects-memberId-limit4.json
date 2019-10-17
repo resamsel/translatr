@@ -1,0 +1,189 @@
+{
+  "list": [
+    {
+      "id": "050c41ea-97ad-484f-ba04-1bae34b797bf",
+      "whenCreated": "2019-08-25T12:52:12.444Z",
+      "whenUpdated": "2019-10-15T18:56:06.101Z",
+      "name": "translatr",
+      "description": "Sample project displaying the abilities of Translatr.",
+      "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+      "ownerName": "René Panzar",
+      "ownerUsername": "repanzar",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21238,
+          "whenCreated": "2019-08-25T12:52:12.476Z",
+          "whenUpdated": "2019-08-25T12:52:12.476Z",
+          "role": "Owner",
+          "projectId": "050c41ea-97ad-484f-ba04-1bae34b797bf",
+          "projectName": "translatr",
+          "projectOwnerUsername": "repanzar",
+          "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+          "userName": "René Panzar",
+          "userUsername": "repanzar",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        },
+        {
+          "id": 22050,
+          "whenCreated": "2019-10-01T11:16:26.951Z",
+          "whenUpdated": "2019-10-01T11:16:26.951Z",
+          "role": "Developer",
+          "projectId": "050c41ea-97ad-484f-ba04-1bae34b797bf",
+          "projectName": "translatr",
+          "projectOwnerUsername": "repanzar",
+          "userId": "8b2c41f3-6ac5-4fd6-a6a8-3509addd4698",
+          "userName": "Mark Dev",
+          "userUsername": "markdev",
+          "userEmailHash": "3adef3fe1773625e8365f5ea48139660"
+        }
+      ],
+      "wordCount": 22
+    },
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "two",
+      "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+      "ownerName": "René Panzar",
+      "ownerUsername": "repanzar",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21202,
+          "whenCreated": "2019-07-05T20:09:08.268Z",
+          "whenUpdated": "2019-07-05T20:09:08.268Z",
+          "role": "Owner",
+          "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+          "projectName": "two",
+          "projectOwnerUsername": "repanzar",
+          "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+          "userName": "René Panzar",
+          "userUsername": "repanzar",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    },
+    {
+      "id": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+      "whenCreated": "2019-07-20T05:36:18.934Z",
+      "whenUpdated": "2019-08-19T22:07:14.735Z",
+      "name": "nine",
+      "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+      "ownerName": "René Panzar",
+      "ownerUsername": "repanzar",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21223,
+          "whenCreated": "2019-07-20T05:36:18.947Z",
+          "whenUpdated": "2019-07-20T05:36:18.947Z",
+          "role": "Owner",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "repanzar",
+          "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+          "userName": "René Panzar",
+          "userUsername": "repanzar",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        },
+        {
+          "id": 21228,
+          "whenCreated": "2019-08-02T18:31:36.362Z",
+          "whenUpdated": "2019-08-02T18:31:36.362Z",
+          "role": "Manager",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "repanzar",
+          "userId": "4206b5b8-c69a-4be5-8a24-bf315be940c7",
+          "userName": "Lillian Porte",
+          "userUsername": "lillianporte",
+          "userEmailHash": "5a4007f01562cd81f10ab218ebe1f7d3"
+        },
+        {
+          "id": 21229,
+          "whenCreated": "2019-08-02T18:32:40.108Z",
+          "whenUpdated": "2019-08-02T18:32:40.108Z",
+          "role": "Developer",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "repanzar",
+          "userId": "36916b28-77a5-4b83-97b7-515f25929dd8",
+          "userName": "Jena Markos!",
+          "userUsername": "jenamarkos",
+          "userEmailHash": "27734035daaaec856db43c9903d05551"
+        },
+        {
+          "id": 21230,
+          "whenCreated": "2019-08-05T18:41:08.216Z",
+          "whenUpdated": "2019-08-05T18:41:08.216Z",
+          "role": "Translator",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "repanzar",
+          "userId": "33c818ca-862b-4455-8cca-ec31bba23d32",
+          "userName": "Lillian Guild",
+          "userUsername": "lillianguild",
+          "userEmailHash": "759ee224c0506f5cbfa7fcff5ecf5b6b"
+        },
+        {
+          "id": 21235,
+          "whenCreated": "2019-08-06T18:57:34.171Z",
+          "whenUpdated": "2019-08-06T18:57:34.171Z",
+          "role": "Manager",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "repanzar",
+          "userId": "00035869-bc10-424a-88b7-0e7e8b56871c",
+          "userName": "Lillian Ruby",
+          "userUsername": "lillianruby",
+          "userEmailHash": "6e792bede1cea3ae53b198d69ff82a79"
+        },
+        {
+          "id": 21236,
+          "whenCreated": "2019-08-06T19:00:56.926Z",
+          "whenUpdated": "2019-08-06T19:00:56.926Z",
+          "role": "Owner",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "repanzar",
+          "userId": "70277c14-3913-4478-aa9c-49a269747f6c",
+          "userName": "Janenna Guild!",
+          "userUsername": "janennaguild",
+          "userEmailHash": "8a5574cdc8a368c7e677415bd61b642d"
+        }
+      ]
+    },
+    {
+      "id": "4173e88a-8d76-4350-9ad1-42039f8759cf",
+      "whenCreated": "2019-07-05T20:17:08.800Z",
+      "whenUpdated": "2019-07-05T20:17:08.800Z",
+      "name": "four",
+      "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+      "ownerName": "René Panzar",
+      "ownerUsername": "repanzar",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21204,
+          "whenCreated": "2019-07-05T20:17:08.804Z",
+          "whenUpdated": "2019-07-05T20:17:08.804Z",
+          "role": "Owner",
+          "projectId": "4173e88a-8d76-4350-9ad1-42039f8759cf",
+          "projectName": "four",
+          "projectOwnerUsername": "repanzar",
+          "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+          "userName": "René Panzar",
+          "userUsername": "repanzar",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    }
+  ],
+  "offset": 0,
+  "limit": 4,
+  "total": 13,
+  "hasPrev": false,
+  "hasNext": true
+}

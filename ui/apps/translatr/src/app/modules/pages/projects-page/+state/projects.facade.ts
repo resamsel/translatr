@@ -3,20 +3,20 @@ import { select, Store } from '@ngrx/store';
 import { ProjectsPartialState } from './projects.reducer';
 import { projectsQuery } from './projects.selectors';
 import { LoadMyProjects, LoadProjects } from './projects.actions';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ProjectCriteria } from '@dev/translatr-model';
+import { PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
 
 @Injectable()
 export class ProjectsFacade {
   private unload$ = new Subject<void>();
 
-  myProjects$ = this.store.pipe(
+  myProjects$: Observable<PagedList<Project>> = this.store.pipe(
     select(projectsQuery.getMyProjects),
     takeUntil(this.unload$)
   );
 
-  projects$ = this.store.pipe(
+  projects$: Observable<PagedList<Project>> = this.store.pipe(
     select(projectsQuery.getProjects),
     takeUntil(this.unload$)
   );
