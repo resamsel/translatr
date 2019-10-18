@@ -2,7 +2,7 @@
   [search]="criteria?.search"
   (add)="create.emit()"
   [addTooltip]="addTooltip"
-  [addEnabled]="canCreate"
+  [addVisible]="canCreate"
   [searchEnabled]="showFilter && (pagedList?.list.length > 0 || criteria?.search?.length > 0)"
   (filter)="filter.emit($event)"
 ></app-list-header>
