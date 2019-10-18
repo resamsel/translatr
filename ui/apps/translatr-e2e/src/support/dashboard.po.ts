@@ -10,8 +10,16 @@ export class DashboardPage extends Page {
     return cy.get('app-project-card-link');
   }
 
+  getProjectEmptyView(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('app-project-empty-view');
+  }
+
   getMetric(kind: string): Cypress.Chainable<JQuery<HTMLElement>> {
     return cy.get(`dev-metric.${kind}.count`);
+  }
+
+  getProjectCreationDialog(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('app-protect-creation-dialog');
   }
 }
 
