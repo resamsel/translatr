@@ -17,7 +17,7 @@ export abstract class AbstractEditFormComponent<T, F extends Identifiable, R ext
   log = console.log;
 
   @Output() save = new EventEmitter<R>();
-  @Output() error = new EventEmitter<Error>();
+  @Output() failure = new EventEmitter<Error>();
 
   constructor(
     protected readonly snackBar: MatSnackBar,
@@ -79,7 +79,7 @@ export abstract class AbstractEditFormComponent<T, F extends Identifiable, R ext
         }
       });
     }
-    this.error.emit(error);
+    this.failure.emit(error);
   }
 
   @HostListener('window:keyup', ['$event'])

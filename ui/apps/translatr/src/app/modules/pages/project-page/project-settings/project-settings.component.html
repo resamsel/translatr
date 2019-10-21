@@ -71,7 +71,7 @@
         ownership can only be changed by its owner.</p>
       <button
         (click)="onDelete()"
-        [disabled]="!(canDelete$ | async)"
+        [disabled]="(canDelete$ | async) === false"
         color="warn"
         mat-raised-button
       >
@@ -84,7 +84,7 @@
         the project you <strong>cannot</strong> undo this action. Projects can only be deleted by its owner.</p>
       <button
         (click)="onDelete()"
-        [disabled]="!(canDelete$ | async)"
+        [disabled]="(canDelete$ | async) === false"
         color="warn"
         mat-raised-button
       >
