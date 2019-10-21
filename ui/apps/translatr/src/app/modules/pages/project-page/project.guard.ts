@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ProjectFacade } from './+state/project.facade';
 
 @Injectable({
@@ -15,6 +15,6 @@ export class ProjectGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     this.facade.loadProject(route.params.username, route.params.projectName);
-    return true;
+    return of(true);
   }
 }

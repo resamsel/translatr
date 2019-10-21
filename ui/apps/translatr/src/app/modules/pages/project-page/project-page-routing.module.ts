@@ -9,8 +9,8 @@ import { ProjectActivityComponent } from './project-activity/project-activity.co
 import { AuthGuard } from '../../../guards/auth.guard';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { PROJECT_ROUTES } from './project-page.token';
-import { ProjectGuard } from './project.guard';
 import { ProjectEditGuard } from './project-edit.guard';
+import { ProjectGuard } from './project.guard';
 
 const routes: Routes = [
   {

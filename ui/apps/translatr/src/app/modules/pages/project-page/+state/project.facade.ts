@@ -70,6 +70,7 @@ export class ProjectFacade {
     map(([project, me]) => canAccess(project, me))
   );
   canEdit$ = this.permission$.pipe(
+    filter(([project, me]) => !!project),
     map(([project, me]) => canEdit(project, me))
   );
   canDelete$ = this.permission$.pipe(

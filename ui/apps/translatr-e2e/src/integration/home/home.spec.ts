@@ -1,6 +1,6 @@
 import { AppPage } from '../../support/app.po';
 
-describe('workspace-project App', () => {
+describe('Translatr Home', () => {
   let page: AppPage;
 
   beforeEach(() => {

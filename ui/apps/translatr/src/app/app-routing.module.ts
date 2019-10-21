@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { environment } from '../environments/environment';
 
 const routes: Routes = [
   {
     path: 'login',
     loadChildren:
       () => import('@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module')
-      .then(m => m.LoginPageModule)
+        .then(m => m.LoginPageModule)
   },
   {
     path: 'dashboard',
@@ -66,7 +67,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, { enableTracing: !environment.production })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {
