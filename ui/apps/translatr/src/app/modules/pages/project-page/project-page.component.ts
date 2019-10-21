@@ -1,8 +1,7 @@
 import { Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, CanActivate, Route } from '@angular/router';
+import { ActivatedRoute, CanActivate, Params, Route } from '@angular/router';
 import { ProjectFacade } from './+state/project.facade';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { filter, take } from 'rxjs/operators';
+import { filter, takeUntil, tap } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
 import { PROJECT_ROUTES } from './project-page.token';
@@ -16,20 +15,17 @@ import { Project } from '@dev/translatr-model';
 })
 export class ProjectPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
-  project$ = this.facade.project$;
+  project$ = this.facade.project$.pipe(
+    filter(project => !!project),
+    tap((project: Project) => {
+      this.facade.loadLocales(project.id, {});
+      this.facade.loadKeys(project.id, {});
+      this.facade.loadMessages(project.id, { order: 'whenCreated desc' });
+      this.facade.loadActivityAggregated(project.id);
+    })
+  );
 
   children: NameIconRoute[] = this.routes[0].children;
-
-  form = new FormGroup({
-    name: new FormControl('', [
-      Validators.required,
-      Validators.pattern('[^\\s/]+')
-    ])
-  });
-
-  public get nameFormControl() {
-    return this.form.get('name');
-  }
 
   constructor(
     private readonly injector: Injector,
@@ -41,18 +37,10 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.project$
-      .pipe(
-        filter(project => !!project),
-        take(1)
-      )
-      .subscribe(project => {
-        this.nameFormControl.setValue(project.name);
-        this.facade.loadLocales(project.id, {});
-        this.facade.loadKeys(project.id, {});
-        this.facade.loadMessages(project.id, { order: 'whenCreated desc' });
-        this.facade.loadActivityAggregated(project.id);
-      });
+    this.route.params
+      .pipe(takeUntil(this.facade.unload$))
+      .subscribe((params: Params) =>
+        this.facade.loadProject(params.username, params.projectName));
   }
 
   ngOnDestroy(): void {

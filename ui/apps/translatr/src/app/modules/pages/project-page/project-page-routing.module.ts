@@ -11,13 +11,12 @@ import { ProjectSettingsComponent } from './project-settings/project-settings.co
 import { PROJECT_ROUTES } from './project-page.token';
 import { ProjectGuard } from './project.guard';
 import { ProjectEditGuard } from './project-edit.guard';
-import { ProjectAccessGuard } from './project-access.guard';
 
 const routes: Routes = [
   {
     path: ':username/:projectName',
     component: ProjectPageComponent,
-    canActivate: [AuthGuard, ProjectGuard, ProjectAccessGuard],
+    canActivate: [AuthGuard, ProjectGuard],
     children: [
       {
         path: '',

@@ -73,7 +73,8 @@ export class DefaultErrorHandler extends ErrorHandler {
         this.router.navigate(['/forbidden'], {
           queryParams: {
             message
-          }
+          },
+          skipLocationChange: true
         });
 
         return throwError(true);
@@ -83,7 +84,8 @@ export class DefaultErrorHandler extends ErrorHandler {
           queryParams: {
             model: errorEntity(err),
             id: errorId(err)
-          }
+          },
+          skipLocationChange: true
         });
 
         return throwError(true);
