@@ -46,7 +46,7 @@
             mat-icon-button
             i18n-matTooltip="@@button.edit"
             matTooltip="Edit"
-            [disabled]="!(allowEdit$(element) | async)"
+            [disabled]="(allowEdit$(element) | async) === false"
             (click)="onEdit(element)"
           >
             <mat-icon>edit</mat-icon>
@@ -55,7 +55,7 @@
             icon="delete"
             i18n-matTooltip="@@button.delete"
             matTooltip="Delete"
-            [disabled]="!(allowDelete$(element) | async)"
+            [disabled]="(allowDelete$(element) | async) === false"
             (confirm)="onDelete(element)"
           >
           </confirm-button>
@@ -67,7 +67,7 @@
           icon="delete"
           i18n-matTooltip="@@button.delete.selected"
           matTooltip="Delete selected"
-          [disabled]="!(allowDeleteAll$(selected) | async)"
+          [disabled]="(allowDeleteAll$(selected) | async) === false"
           (confirm)="onDeleteAll(selected)"
         ></confirm-button>
       </selection-actions>
