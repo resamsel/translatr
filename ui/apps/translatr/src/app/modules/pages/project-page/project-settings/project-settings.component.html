@@ -1,7 +1,7 @@
 <div class="container narrow">
   <section>
     <h2>Project</h2>
-    <form [formGroup]="form" class="form">
+    <form [formGroup]="form" class="form update-project">
       <mat-form-field appearance="outline" class="name">
         <mat-label i18n="@@name">Name</mat-label>
         <input
@@ -55,6 +55,7 @@
           (click)="onSave()"
           [disabled]="form.invalid || processing"
           color="primary"
+          class="save"
           mat-raised-button
         >
           Save
@@ -66,12 +67,12 @@
   <section>
     <h2>Danger Zone</h2>
 
-    <dev-empty-view *ngIf="transferOwnershipEnabled"> icon="swap_horiz">
+    <dev-empty-view *ngIf="transferOwnershipEnabled" icon="swap_horiz">
       <p i18n="@@project.owner.change.description">Transfer the ownership of the project to a managing member. Project
         ownership can only be changed by its owner.</p>
       <button
         (click)="onDelete()"
-        [disabled]="!(canDelete$ | async)"
+        [disabled]="(canDelete$ | async) === false"
         color="warn"
         mat-raised-button
       >
@@ -79,14 +80,15 @@
       </button>
     </dev-empty-view>
 
-    <dev-empty-view icon="delete">
+    <dev-empty-view class="delete-project" icon="delete">
       <p i18n="@@project.delete.description">Delete this project and its contents. Keep in mind that once you've deleted
         the project you <strong>cannot</strong> undo this action. Projects can only be deleted by its owner.</p>
       <button
         (click)="onDelete()"
-        [disabled]="!(canDelete$ | async)"
+        [disabled]="(canDelete$ | async) === false"
         color="warn"
         mat-raised-button
+        class="delete"
       >
         Delete project
       </button>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { ProjectFacade } from '../+state/project.facade';
 import { AbstractEditFormComponent } from '../../../shared/edit-form/abstract-edit-form-component';
@@ -25,6 +25,9 @@ export class ProjectSettingsComponent
   // Feature flag for transferring ownership
   transferOwnershipEnabled = false;
 
+  readonly nameFormControl = this.form.get('name');
+  readonly descriptionFormControl = this.form.get('description');
+
   constructor(
     readonly fb: FormBuilder,
     readonly snackBar: MatSnackBar,
@@ -39,8 +42,11 @@ export class ProjectSettingsComponent
       undefined,
       fb.group({
         'id': fb.control(''),
-        'name': fb.control('',
-          [Validators.required, Validators.maxLength(255)]),
+        'name': fb.control('', [
+          Validators.required,
+          Validators.pattern('[^\\s/]+'),
+          Validators.maxLength(255)
+        ]),
         'description': fb.control('', Validators.maxLength(2000))
       }),
       {},
@@ -48,14 +54,6 @@ export class ProjectSettingsComponent
       (project: Project) => this.projectService.update(project),
       (project: Project) => `Project ${project.name} saved`
     );
-  }
-
-  get nameFormControl(): AbstractControl {
-    return this.form.get('name');
-  }
-
-  get descriptionFormControl(): AbstractControl {
-    return this.form.get('description');
   }
 
   ngOnInit() {

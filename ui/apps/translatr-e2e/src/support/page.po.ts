@@ -4,6 +4,6 @@ export class Page {
   }
 
   getFloatingActionButton(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.floating-action-button');
+    return cy.get('.floating-action-btn');
   }
 }

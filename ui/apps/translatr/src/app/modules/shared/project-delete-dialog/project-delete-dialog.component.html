@@ -24,12 +24,13 @@
 </div>
 <div class="dialog-actions" mat-dialog-actions>
   <button
+    class="delete"
     (click)="onDelete()"
     [disabled]="form.invalid || processing"
-    color="primary"
     mat-raised-button
+    color="primary"
   >
     I understand the consequences, delete this project
   </button>
-  <button mat-button mat-dialog-close>Cancel</button>
+  <button class="cancel" mat-button mat-dialog-close>Cancel</button>
 </div>

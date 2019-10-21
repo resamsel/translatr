@@ -1,0 +1,26 @@
+{
+  "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+  "whenCreated": "2019-07-05T20:09:08.247Z",
+  "whenUpdated": "2019-07-05T20:09:08.247Z",
+  "name": "p2",
+  "description": "p2d",
+  "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+  "ownerName": "John Doe",
+  "ownerUsername": "johndoe",
+  "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+  "members": [
+    {
+      "id": 21202,
+      "whenCreated": "2019-07-05T20:09:08.268Z",
+      "whenUpdated": "2019-07-05T20:09:08.268Z",
+      "role": "Owner",
+      "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "projectName": "p1",
+      "projectOwnerUsername": "johndoe",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+      "userName": "John Doe",
+      "userUsername": "johndoe",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+    }
+  ]
+}

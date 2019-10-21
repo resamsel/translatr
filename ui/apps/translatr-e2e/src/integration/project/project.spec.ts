@@ -1,10 +1,10 @@
-import { ProjectSettingsPage } from '../../../support/project-settings.po';
+import { ProjectPage } from '../../support/project-page.po';
 
 describe('Translatr Project Settings', () => {
-  let page: ProjectSettingsPage;
+  let page: ProjectPage;
 
   beforeEach(() => {
-    page = new ProjectSettingsPage('johndoe', 'p1');
+    page = new ProjectPage('johndoe', 'p1');
 
     cy.clearCookies();
     cy.server();
@@ -18,7 +18,7 @@ describe('Translatr Project Settings', () => {
       'fixture:project/johndoe-p1-activities-aggregated');
   });
 
-  it('should have page name Project Settings', () => {
+  it('should have page name p1', () => {
     // given
 
     // when
@@ -27,18 +27,5 @@ describe('Translatr Project Settings', () => {
     // then
     page.getPageName()
       .should('have.text', 'p1');
-  });
-
-  it('should have name and description set', () => {
-    // given
-
-    // when
-    page.navigateTo();
-
-    // then
-    page.getNameField()
-      .should('have.value', 'p1');
-    page.getDescriptionField()
-      .should('have.value', 'p1d');
   });
 });
