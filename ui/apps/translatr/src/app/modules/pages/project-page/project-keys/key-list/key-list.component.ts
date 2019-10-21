@@ -17,7 +17,7 @@ export class KeyListComponent {
   @Input() criteria: KeyCriteria | undefined;
   @Input() canCreate = false;
 
-  @Output() load = new EventEmitter<KeyCriteria>();
+  @Output() fetch = new EventEmitter<KeyCriteria>();
   @Output() more = new EventEmitter<number>();
   @Output() edit = new EventEmitter<Key>();
   @Output() delete = new EventEmitter<Key>();
@@ -32,12 +32,8 @@ export class KeyListComponent {
   ) {
   }
 
-  onLoad(criteria: KeyCriteria): void {
-    this.load.emit(criteria);
-  }
-
   onFilter(search: string): void {
-    this.load.emit({ search });
+    this.fetch.emit({ search });
   }
 
   onEdit(key: Key, event: MouseEvent): boolean {

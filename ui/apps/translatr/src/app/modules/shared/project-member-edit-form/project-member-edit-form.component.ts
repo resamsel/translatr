@@ -79,7 +79,7 @@ export class ProjectMemberEditFormComponent
   }
 
   ngOnInit(): void {
-    this.error.pipe(takeUntil(this.destroy$))
+    this.failure.pipe(takeUntil(this.destroy$))
       .subscribe(() => this.changeDetectorRef.markForCheck());
     this.userFormControl.valueChanges
       .pipe(

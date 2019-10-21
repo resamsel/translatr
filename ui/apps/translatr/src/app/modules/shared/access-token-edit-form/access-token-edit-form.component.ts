@@ -68,7 +68,7 @@ export class AccessTokenEditFormComponent
   }
 
   ngOnInit(): void {
-    this.error.pipe(takeUntil(this.destroy$))
+    this.failure.pipe(takeUntil(this.destroy$))
       .subscribe(() => this.changeDetectorRef.markForCheck());
   }
 

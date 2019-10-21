@@ -18,7 +18,7 @@ export class LocaleListComponent {
   @Input() search: string;
   @Input() canCreate = false;
 
-  @Output() load = new EventEmitter<KeyCriteria>();
+  @Output() fetch = new EventEmitter<KeyCriteria>();
   @Output() more = new EventEmitter<number>();
   @Output() edit = new EventEmitter<Locale>();
   @Output() delete = new EventEmitter<Locale>();
@@ -34,7 +34,7 @@ export class LocaleListComponent {
   }
 
   onFilter(search: string): void {
-    this.load.emit({ search });
+    this.fetch.emit({ search });
   }
 
   onEdit(locale: Locale, event: MouseEvent) {
