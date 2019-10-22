@@ -12,9 +12,7 @@ import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-compo
 export class LocaleEditDialogComponent
   extends AbstractEditFormComponent<LocaleEditDialogComponent, Locale> {
 
-  public get nameFormControl() {
-    return this.form.get('name');
-  }
+  readonly nameFormControl = this.form.get('name');
 
   constructor(
     readonly snackBar: MatSnackBar,
@@ -26,13 +24,15 @@ export class LocaleEditDialogComponent
       snackBar,
       dialogRef,
       new FormGroup({
+        id: new FormControl(data.id),
         projectId: new FormControl(data.projectId),
-        name: new FormControl('', [
+        name: new FormControl(data.name, [
           Validators.required,
           Validators.pattern('[^\\s/]+')
         ])
       }),
       data,
+      // FIXME: this works around the store, integrate it into the store instead!
       (locale: Locale) => localeService.create(locale),
       (locale: Locale) => localeService.update(locale),
       (locale: Locale) => `Locale ${locale.name} has been saved`

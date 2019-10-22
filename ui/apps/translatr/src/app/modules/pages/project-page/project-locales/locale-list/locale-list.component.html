@@ -7,7 +7,8 @@
   showFilter="true"
   addTooltip="Add new language"
   i18n-addTooltip="@@locale.create.tooltip"
-  (add)="openLocaleCreationDialog(project)"
+  (create)="openLocaleDialog({projectId: project.id})"
+  (edit)="openLocaleDialog($event)"
   (filter)="onFilter($event)"
   (more)="more.emit($event)"
 >
@@ -34,6 +35,7 @@
     <button
       (click)="onEdit(locale, $event)"
       mat-icon-button
+      *ngIf="canCreate"
       i18n-matTooltip="@@button.edit"
       matTooltip="Edit"
     >
@@ -42,8 +44,9 @@
     <button
       (click)="onDelete(locale, $event)"
       mat-icon-button
-      i18n-matTooltip="@@button.delete"
       matTooltip="Delete"
+      *ngIf="canDelete"
+      i18n-matTooltip="@@button.delete"
     >
       <mat-icon>delete</mat-icon>
     </button>
@@ -55,7 +58,7 @@
     <p>It seems there are no languages defined, yet - would you like to add one now?</p>
     <button
       *ngIf="canCreate"
-      (click)="openLocaleCreationDialog(project)"
+      (click)="openLocaleDialog({projectId: project.id})"
       color="accent"
       i18n="@@locale.create"
       mat-raised-button>Add language

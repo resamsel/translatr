@@ -30,7 +30,7 @@ export class ProjectInfoComponent {
         .slice(0, 3);
     })
   );
-  canCreateLocale$ = this.facade.canCreateLocale$;
+  canCreateLocale$ = this.facade.canModifyLocale$;
 
   keys$ = this.facade.keys$;
   latestKeys$: Observable<Key[]> = this.keys$.pipe(

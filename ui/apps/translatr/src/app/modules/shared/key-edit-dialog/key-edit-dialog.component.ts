@@ -12,9 +12,7 @@ import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-compo
 export class KeyEditDialogComponent
   extends AbstractEditFormComponent<KeyEditDialogComponent, Key> {
 
-  public get nameFormControl() {
-    return this.form.get('name');
-  }
+  readonly nameFormControl = this.form.get('name');
 
   constructor(
     readonly snackBar: MatSnackBar,

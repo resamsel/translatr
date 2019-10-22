@@ -4,7 +4,7 @@ import { Member, MemberRole, memberRoles, User } from '@dev/translatr-model';
 import { Observable, Subject } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AbstractControl, FormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
 import { MemberService } from '@translatr/translatr-sdk/src/lib/services/member.service';
 
@@ -103,9 +103,7 @@ export class ProjectMemberEditFormComponent
     return this.form.dirty;
   }
 
-  public get userFormControl(): AbstractControl {
-    return this.form.get('user');
-  }
+  readonly userFormControl = this.form.get('user');
 
   private updateValue(member: Member): void {
     this.form.patchValue({

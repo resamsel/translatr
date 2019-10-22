@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { take } from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 import { Locale, LocaleCriteria, Project } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -13,7 +13,7 @@ export class ProjectLocalesComponent {
   project$ = this.facade.project$;
   locales$ = this.facade.locales$;
   criteria$ = this.facade.localesCriteria$;
-  canCreate$ = this.facade.canCreateLocale$;
+  canModify$ = this.facade.canModifyLocale$;
 
   constructor(
     private readonly facade: ProjectFacade,
@@ -21,7 +21,7 @@ export class ProjectLocalesComponent {
   ) {
   }
 
-  onLoad(criteria: LocaleCriteria) {
+  onFetch(criteria: LocaleCriteria) {
     this.project$
       .pipe(take(1))
       .subscribe((project: Project) =>
@@ -46,10 +46,15 @@ export class ProjectLocalesComponent {
   }
 
   onDelete(locale: Locale) {
-    this.snackBar.open(
-      `Delete locale ${locale.displayName}`,
-      'Undo',
-      { duration: 2000 }
-    );
+    this.facade.deleteLocale(locale.id);
+    this.facade.localeDeleted$
+      .pipe(skip(1), take(1))
+      .subscribe((l) =>
+        this.snackBar.open(
+          `Language ${l.displayName} deleted`,
+          'Dismiss',
+          { duration: 5000 }
+        )
+      );
   }
 }

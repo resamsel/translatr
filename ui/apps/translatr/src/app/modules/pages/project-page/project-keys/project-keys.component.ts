@@ -23,10 +23,10 @@ export class ProjectKeysComponent {
   }
 
   onMore(limit: number) {
-    this.onLoad({ limit });
+    this.onFetch({ limit });
   }
 
-  onLoad(criteria: KeyCriteria) {
+  onFetch(criteria: KeyCriteria) {
     this.project$
       .pipe(take(1))
       .subscribe((project: Project) =>

@@ -30,6 +30,11 @@ const getLocalesSearch = createSelector(
   (state: ProjectState) => state.localesSearch
 );
 
+const getLocaleDeleted = createSelector(
+  getProjectState,
+  (state: ProjectState) => state.localeDeleted
+);
+
 const getKeys = createSelector(
   getProjectState,
   (state: ProjectState) => state.keys
@@ -66,6 +71,7 @@ export const projectQuery = {
   getProject,
   getLocales,
   getLocalesSearch,
+  getLocaleDeleted,
   getKeys,
   getKeysSearch,
   getMessages,

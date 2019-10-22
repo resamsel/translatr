@@ -18,6 +18,7 @@ export * from './member';
 export * from './member-criteria';
 export * from './member-role';
 export * from './message';
+export * from './message-criteria';
 export * from './not-found-error-info';
 export * from './paged-list';
 export * from './permission-error-info';

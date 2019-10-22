@@ -81,9 +81,7 @@ export class AccessTokenEditFormComponent
     return this.form.dirty;
   }
 
-  public get nameFormControl() {
-    return this.form.get('name');
-  }
+  readonly nameFormControl = this.form.get('name');
 
   onChangeScope(scope: Scope, event: MatCheckboxChange) {
     this.activeScopeMap[scope] = event.checked;

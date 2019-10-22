@@ -1,128 +1,146 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { ProjectPartialState } from './project.reducer';
 import {
-  KeysLoaded,
-  LoadKeys,
-  LoadLocales,
-  LoadMessages,
-  LoadProject,
-  LoadProjectActivities,
-  LoadProjectActivityAggregated,
-  LocalesLoaded,
-  MessagesLoaded,
-  ProjectActionTypes,
-  ProjectActivitiesLoaded,
-  ProjectActivitiesLoadError,
-  ProjectActivityAggregatedLoaded,
-  ProjectActivityAggregatedLoadError,
-  ProjectLoaded,
-  ProjectLoadError,
-  ProjectSaved,
-  SaveProject
+  deleteLocale,
+  keysLoaded,
+  loadKeys,
+  loadLocales,
+  loadMessages,
+  loadProject,
+  loadProjectActivities,
+  loadProjectActivityAggregated,
+  localeDeleted,
+  localeDeleteError,
+  localesLoaded,
+  messagesLoaded,
+  projectActivitiesLoaded,
+  projectActivitiesLoadError,
+  projectActivityAggregatedLoaded,
+  projectActivityAggregatedLoadError,
+  projectLoaded,
+  projectLoadError,
+  projectSaved,
+  saveProject
 } from './project.actions';
 import { ActivityService, KeyService, LocaleService, MessageService, ProjectService } from '@dev/translatr-sdk';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
-import { Activity, Aggregate, Key, KeyCriteria, Locale, LocaleCriteria, Message, PagedList, Project } from '@dev/translatr-model';
+import { Activity, Aggregate, Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
 import { of } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { projectQuery } from './project.selectors';
-import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 
 @Injectable()
 export class ProjectEffects {
-  @Effect() loadProject$ = this.actions$.pipe(
-    ofType<LoadProject>(ProjectActionTypes.LoadProject),
-    switchMap((action: LoadProject) => {
+  loadProject$ = createEffect(() => this.actions$.pipe(
+    ofType(loadProject),
+    switchMap((action) => {
         const payload = action.payload;
         return this.projectService
           .getProjectByOwnerAndName(payload.username, payload.projectName)
           .pipe(
-            map((p: Project) => new ProjectLoaded(p)),
-            catchError(error => of(new ProjectLoadError(error)))
+            map((p: Project) => projectLoaded({ payload: p })),
+            catchError(error => of(projectLoadError({ error })))
           );
       }
     )
-  );
+  ));
 
-  @Effect() loadLocales$ = this.actions$.pipe(
-    ofType<LoadLocales>(ProjectActionTypes.LoadLocales),
+  loadLocales$ = createEffect(() => this.actions$.pipe(
+    ofType(loadLocales),
     withLatestFrom(this.store.pipe(select(projectQuery.getLocalesSearch))),
-    switchMap(([action, localesSearch]: [LoadLocales, LocaleCriteria]) =>
+    switchMap(([action, localesSearch]) =>
       this.localeService
         .find({
           ...localesSearch,
           ...action.payload
         })
         .pipe(
-          map((payload: PagedList<Locale>) => new LocalesLoaded(payload))
+          map((payload: PagedList<Locale>) => localesLoaded({ payload }))
         )
     )
-  );
+  ));
 
-  @Effect() loadKeys$ = this.actions$.pipe(
-    ofType<LoadKeys>(ProjectActionTypes.LoadKeys),
+  loadKeys$ = createEffect(() => this.actions$.pipe(
+    ofType(loadKeys),
     withLatestFrom(this.store.pipe(select(projectQuery.getKeysSearch))),
-    switchMap(([action, keysSearch]: [LoadKeys, KeyCriteria]) =>
+    switchMap(([action, keysSearch]) =>
       this.keyService
         .find({
           ...keysSearch,
           ...action.payload
         })
-        .pipe(map((payload: PagedList<Key>) => new KeysLoaded(payload)))
+        .pipe(map((payload: PagedList<Key>) => keysLoaded({ payload })))
     )
-  );
+  ));
 
-  @Effect() loadMessages$ = this.actions$.pipe(
-    ofType<LoadMessages>(ProjectActionTypes.LoadMessages),
+  loadMessages$ = createEffect(() => this.actions$.pipe(
+    ofType(loadMessages),
     withLatestFrom(this.store.pipe(select(projectQuery.getMessagesSearch))),
-    switchMap(([action, messagesSearch]: [LoadMessages, MessageCriteria]) =>
+    switchMap(([action, messagesSearch]) =>
       this.messageService
         .find({
           ...messagesSearch,
           ...action.payload
         })
-        .pipe(map((payload: PagedList<Message>) => new MessagesLoaded(payload)))
+        .pipe(map((payload: PagedList<Message>) => messagesLoaded({ payload })))
     )
-  );
+  ));
 
-  @Effect() loadProjectActivity$ = this.actions$.pipe(
-    ofType<LoadProjectActivityAggregated>(ProjectActionTypes.LoadProjectActivityAggregated),
-    switchMap((action: LoadProjectActivityAggregated) => {
+  loadProjectActivity$ = createEffect(() => this.actions$.pipe(
+    ofType(loadProjectActivityAggregated),
+    switchMap((action) => {
       return this.activityService
           .aggregated({ projectId: action.payload.id })
           .pipe(
             map(
-              (p: PagedList<Aggregate>) =>
-                new ProjectActivityAggregatedLoaded(p)
+              (payload: PagedList<Aggregate>) =>
+                projectActivityAggregatedLoaded({ payload })
             ),
-            catchError(error => of(new ProjectActivityAggregatedLoadError(error)))
+            catchError(error =>
+              of(projectActivityAggregatedLoadError({ error })))
           );
       }
     )
-  );
+  ));
 
-  @Effect() loadProjectActivities$ = this.actions$.pipe(
-    ofType<LoadProjectActivities>(ProjectActionTypes.LoadProjectActivities),
-    switchMap((action: LoadProjectActivities) => {
+  loadProjectActivities$ = createEffect(() => this.actions$.pipe(
+    ofType(loadProjectActivities),
+    switchMap((action) => {
       return this.activityService
           .find(action.payload)
           .pipe(
-            map((p: PagedList<Activity>) => new ProjectActivitiesLoaded(p)),
-            catchError(error => of(new ProjectActivitiesLoadError(error)))
+            map((payload: PagedList<Activity>) =>
+              projectActivitiesLoaded({ payload })),
+            catchError(error =>
+              of(projectActivitiesLoadError({ error })))
           );
       }
     )
-  );
+  ));
 
-  @Effect() saveProject$ = this.actions$.pipe(
-    ofType<SaveProject>(ProjectActionTypes.SaveProject),
-    switchMap((action: SaveProject) =>
+  saveProject$ = createEffect(() => this.actions$.pipe(
+    ofType(saveProject),
+    switchMap((action) =>
       this.projectService
         .update(action.payload)
-        .pipe(map((payload: Project) => new ProjectSaved(payload)))
+        .pipe(map((payload: Project) => projectSaved({ payload })))
     )
-  );
+  ));
+
+  // Locales
+
+  deleteLocale$ = createEffect(() => this.actions$.pipe(
+    ofType(deleteLocale),
+    switchMap((action) =>
+      this.localeService
+        .delete(action.payload.id)
+        .pipe(
+          map((payload: Locale) => localeDeleted({ payload })),
+          catchError(error => of(localeDeleteError({ error })))
+        )
+    )
+  ));
 
   constructor(
     private readonly actions$: Actions,

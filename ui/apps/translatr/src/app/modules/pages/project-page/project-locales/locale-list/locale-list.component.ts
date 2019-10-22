@@ -17,6 +17,7 @@ export class LocaleListComponent {
   @Input() criteria: LocaleCriteria | undefined;
   @Input() search: string;
   @Input() canCreate = false;
+  @Input() canDelete = false;
 
   @Output() fetch = new EventEmitter<KeyCriteria>();
   @Output() more = new EventEmitter<number>();
@@ -38,6 +39,7 @@ export class LocaleListComponent {
   }
 
   onEdit(locale: Locale, event: MouseEvent) {
+    this.openLocaleDialog(locale);
     this.edit.emit(locale);
     event.stopPropagation();
     event.preventDefault();
@@ -51,14 +53,14 @@ export class LocaleListComponent {
     return false;
   }
 
-  openLocaleCreationDialog(project: Project): void {
-    openLocaleEditDialog(this.dialog, { projectId: project.id })
+  openLocaleDialog(locale: Partial<Locale>): void {
+    openLocaleEditDialog(this.dialog, { ...locale })
       .afterClosed()
       .pipe(
         take(1),
-        filter(locale => !!locale)
+        filter(l => !!l && locale.id === undefined)
       )
-      .subscribe((locale => this.router
-        .navigate([locale.name], { relativeTo: this.route })));
+      .subscribe((l => this.router
+        .navigate([l.name], { relativeTo: this.route })));
   }
 }

@@ -1,12 +1,29 @@
-import { ProjectAction, ProjectActionTypes } from './project.actions';
+import {
+  keysLoaded,
+  loadKeys,
+  loadLocales,
+  loadProject,
+  localesLoaded,
+  messagesLoaded,
+  projectActivitiesLoaded,
+  projectActivityAggregatedLoaded,
+  projectLoaded,
+  projectSaved,
+  unloadProject
+} from './project.actions';
 import { Activity, Aggregate, Key, Locale, Message, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
+import { Action, createReducer, on } from '@ngrx/store';
 
 export const PROJECT_FEATURE_KEY = 'project';
 
 export interface ProjectState {
   project?: Project;
+
   locales?: PagedList<Locale>;
   localesSearch: RequestCriteria;
+  localeDeleted?: Locale;
+  localeDeleteError?: any;
+
   keys?: PagedList<Key>;
   keysSearch: RequestCriteria;
   messages?: PagedList<Message>;
@@ -43,71 +60,67 @@ export const initialState: ProjectState = {
   loading: false
 };
 
-export function projectReducer(
-  state: ProjectState = initialState,
-  action: ProjectAction
-): ProjectState {
-  switch (action.type) {
-    case ProjectActionTypes.LoadProject:
-      return {
-        ...state,
-        loading: true
-      };
-    case ProjectActionTypes.ProjectLoaded:
-      return {
-        ...state,
-        project: action.payload,
-        loading: false
-      };
-    case ProjectActionTypes.LoadLocales:
-      return {
-        ...state,
-        localesSearch: {
-          ...state.localesSearch,
-          ...(action.payload ? action.payload : {})
-        }
-      };
-    case ProjectActionTypes.LocalesLoaded:
-      return {
-        ...state,
-        locales: action.payload
-      };
-    case ProjectActionTypes.LoadKeys:
-      return {
-        ...state,
-        keysSearch: {
-          ...state.keysSearch,
-          ...(action.payload ? action.payload : {})
-        }
-      };
-    case ProjectActionTypes.KeysLoaded:
-      return {
-        ...state,
-        keys: action.payload
-      };
-    case ProjectActionTypes.MessagesLoaded:
-      return {
-        ...state,
-        messages: action.payload
-      };
-    case ProjectActionTypes.ProjectActivityAggregatedLoaded:
-      return {
-        ...state,
-        activityAggregated: action.payload
-      };
-    case ProjectActionTypes.ProjectActivitiesLoaded:
-      return {
-        ...state,
-        activities: action.payload
-      };
-    case ProjectActionTypes.ProjectSaved:
-      return {
-        ...state,
-        project: action.payload,
-        loading: false
-      };
-    case ProjectActionTypes.UnloadProject:
-      return { ...initialState };
-  }
-  return state;
+const reducer = createReducer(
+  initialState,
+  on(
+    loadProject,
+    (state, action) => ({ ...state, loading: true })
+  ),
+  on(
+    projectLoaded,
+    (state, { payload }) => ({ ...state, project: payload, loading: false })
+  ),
+  on(
+    loadLocales,
+    (state, { payload }) => ({
+      ...state,
+      localesSearch: {
+        ...state.localesSearch,
+        ...(payload ? payload : {})
+      }
+    })
+  ),
+  on(
+    localesLoaded,
+    (state, { payload }) => ({ ...state, locales: payload })
+  ),
+  on(
+    loadKeys,
+    (state, { payload }) => ({
+      ...state,
+      keysSearch: {
+        ...state.keysSearch,
+        ...(payload ? payload : {})
+      }
+    })
+  ),
+  on(
+    keysLoaded,
+    (state, { payload }) => ({ ...state, keys: payload })
+  ),
+  on(
+    messagesLoaded,
+    (state, { payload }) => ({ ...state, messages: payload })
+  ),
+  on(
+    projectActivityAggregatedLoaded,
+    (state, { payload }) => ({ ...state, activityAggregated: payload })
+  ),
+  on(
+    projectActivitiesLoaded,
+    (state, { payload }) => ({ ...state, activities: payload })
+  ),
+  on(
+    projectSaved,
+    (state, { payload }) => ({ ...state, project: payload, loading: false })
+  ),
+  on(
+    unloadProject,
+    (state) => ({ ...initialState })
+  )
+);
+
+export function projectReducer(state: ProjectState | undefined, action: Action):
+  ProjectState {
+  return reducer(state, action);
 }

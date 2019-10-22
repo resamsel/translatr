@@ -3,15 +3,16 @@ import { select, Store } from '@ngrx/store';
 import { ProjectPartialState } from './project.reducer';
 import { projectQuery } from './project.selectors';
 import {
-  LoadKeys,
-  LoadLocales,
-  LoadMessages,
-  LoadProject,
-  LoadProjectActivities,
-  LoadProjectActivityAggregated,
-  ProjectLoaded,
-  SaveProject,
-  UnloadProject
+  deleteLocale,
+  loadKeys,
+  loadLocales,
+  loadMessages,
+  loadProject,
+  loadProjectActivities,
+  loadProjectActivityAggregated,
+  projectLoaded,
+  saveProject,
+  unloadProject
 } from './project.actions';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { ActivityCriteria, KeyCriteria, LocaleCriteria, MemberRole, memberRoles, Project, User, UserRole } from '@dev/translatr-model';
@@ -46,7 +47,7 @@ const canDelete = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner);
 const canCreateKey = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Developer);
-const canCreateLocale = (project: Project, me: User): boolean =>
+const canModifyLocale = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Translator);
 const canCreateMember = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
@@ -82,8 +83,12 @@ export class ProjectFacade {
     takeUntil(this.unload$)
   );
   localesCriteria$ = new BehaviorSubject<LocaleCriteria | undefined>(undefined);
-  canCreateLocale$ = this.permission$.pipe(
-    map(([project, me]) => canCreateLocale(project, me))
+  localeDeleted$ = this.store.pipe(
+    select(projectQuery.getLocaleDeleted),
+    takeUntil(this.unload$)
+  );
+  canModifyLocale$ = this.permission$.pipe(
+    map(([project, me]) => canModifyLocale(project, me))
   );
 
   keys$ = this.store.pipe(
@@ -120,41 +125,45 @@ export class ProjectFacade {
   }
 
   loadProject(username: string, projectName: string) {
-    this.store.dispatch(new LoadProject({ username, projectName }));
+    this.store.dispatch(loadProject({ payload: { username, projectName } }));
   }
 
   loadLocales(projectId: string, criteria?: LocaleCriteria) {
     this.localesCriteria$.next(criteria);
-    this.store.dispatch(new LoadLocales({ ...criteria, projectId }));
+    this.store.dispatch(loadLocales({ payload: { ...criteria, projectId } }));
   }
 
   loadKeys(projectId: string, criteria?: KeyCriteria) {
     this.keysCriteria$.next(criteria);
-    this.store.dispatch(new LoadKeys({ ...criteria, projectId }));
+    this.store.dispatch(loadKeys({ payload: { ...criteria, projectId } }));
   }
 
   loadMessages(projectId: string, criteria?: MessageCriteria) {
-    this.store.dispatch(new LoadMessages({ ...criteria, projectId }));
+    this.store.dispatch(loadMessages({ payload: { ...criteria, projectId } }));
   }
 
   loadActivityAggregated(projectId: string) {
-    this.store.dispatch(new LoadProjectActivityAggregated({ id: projectId }));
+    this.store.dispatch(loadProjectActivityAggregated({ payload: { id: projectId } }));
   }
 
   loadActivities(criteria: ActivityCriteria) {
-    this.store.dispatch(new LoadProjectActivities(criteria));
+    this.store.dispatch(loadProjectActivities({ payload: criteria }));
   }
 
   unloadProject() {
     this._unload$.next();
-    this.store.dispatch(new UnloadProject());
+    this.store.dispatch(unloadProject());
   }
 
   save(project: Project) {
-    this.store.dispatch(new SaveProject(project));
+    this.store.dispatch(saveProject({ payload: project }));
   }
 
   projectLoaded(project: Project) {
-    this.store.dispatch(new ProjectLoaded(project));
+    this.store.dispatch(projectLoaded({ payload: project }));
+  }
+
+  deleteLocale(id: string) {
+    this.store.dispatch(deleteLocale({ payload: { id } }));
   }
 }

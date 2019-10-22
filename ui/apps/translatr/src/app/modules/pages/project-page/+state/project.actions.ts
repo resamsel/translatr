@@ -1,4 +1,4 @@
-import { Action } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import {
   Activity,
   ActivityCriteria,
@@ -8,205 +8,126 @@ import {
   Locale,
   LocaleCriteria,
   Message,
+  MessageCriteria,
   PagedList,
   Project
 } from '@dev/translatr-model';
-import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 
-export enum ProjectActionTypes {
-  LoadProject = '[Project Page] Load Project',
-  ProjectLoaded = '[Projects API] Project Loaded',
-  ProjectLoadError = '[Projects API] Project Load Error',
+export const loadProject = createAction(
+  '[Project Page] LoadProject',
+  props<{ payload: { username: string; projectName: string } }>()
+);
 
-  LoadLocales = '[Project Page] Load Locales',
-  LocalesLoaded = '[Projects API] Locales Loaded',
-  LocalesLoadError = '[Projects API] Locales Load Error',
+export const projectLoadError = createAction(
+  '[Projects API] Project Load Error',
+  props<{ error: any }>()
+);
 
-  LoadKeys = '[Project Page] Load Keys',
-  KeysLoaded = '[Projects API] Keys Loaded',
-  KeysLoadError = '[Projects API] Keys Load Error',
+export const projectLoaded = createAction(
+  '[Projects API] Project Loaded',
+  props<{ payload: Project }>()
+);
 
-  LoadMessages = '[Project Page] Load Messages',
-  MessagesLoaded = '[Projects API] Messages Loaded',
-  MessagesLoadError = '[Projects API] Messages Load Error',
+export const loadLocales = createAction(
+  '[Project Page] Load Locales',
+  props<{ payload: LocaleCriteria }>()
+);
 
-  LoadProjectActivityAggregated = '[Project Page] Load Project Activity Aggregated',
-  ProjectActivityAggregatedLoaded = '[Projects API] Project Activity Aggregated Loaded',
-  ProjectActivityAggregatedLoadError = '[Projects API] Project Activity Aggregated Load Error',
+export const localesLoadError = createAction(
+  '[Locales API] Locales Load Error',
+  props<{ error: any }>()
+);
 
-  LoadProjectActivities = '[Project Page] Load Project Activities',
-  ProjectActivitiesLoaded = '[Projects API] Project Activities Loaded',
-  ProjectActivitiesLoadError = '[Projects API] Project Activities Load Error',
+export const localesLoaded = createAction(
+  '[Locales API] Locales Loaded',
+  props<{ payload: PagedList<Locale> }>()
+);
 
-  SaveProject = '[Project Page] Save Project',
-  ProjectSaved = '[Projects API] Project Saved',
+export const deleteLocale = createAction(
+  '[Project Page] Delete Locale',
+  props<{ payload: { id: string } }>()
+);
 
-  UnloadProject = '[Project Page] Unload Project'
-}
+export const localeDeleted = createAction(
+  '[Locales API] Locale Deleted',
+  props<{ payload: Locale }>()
+);
 
-export class LoadProject implements Action {
-  readonly type = ProjectActionTypes.LoadProject;
+export const localeDeleteError = createAction(
+  '[Locales API] Locale Delete Error',
+  props<{ error: any }>()
+);
 
-  constructor(public payload: { username: string; projectName: string }) {
-  }
-}
+export const loadKeys = createAction(
+  '[Project Page] Load Keys',
+  props<{ payload: KeyCriteria }>()
+);
 
-export class ProjectLoadError implements Action {
-  readonly type = ProjectActionTypes.ProjectLoadError;
+export const keysLoadError = createAction(
+  '[Keys API] Keys Load Error',
+  props<{ error: any }>()
+);
 
-  constructor(public payload: any) {
-  }
-}
+export const keysLoaded = createAction(
+  '[Keys API] Keys Loaded',
+  props<{ payload: PagedList<Key> }>()
+);
 
-export class ProjectLoaded implements Action {
-  readonly type = ProjectActionTypes.ProjectLoaded;
+export const loadMessages = createAction(
+  '[Project Page] Load Messages',
+  props<{ payload: MessageCriteria }>()
+);
 
-  constructor(public payload: Project) {
-  }
-}
+export const messagesLoadError = createAction(
+  '[Messages API] Messages Load Error',
+  props<{ error: any }>()
+);
 
-export class LoadLocales implements Action {
-  readonly type = ProjectActionTypes.LoadLocales;
+export const messagesLoaded = createAction(
+  '[Messages API] Messages Loaded',
+  props<{ payload: PagedList<Message> }>()
+);
 
-  constructor(public payload: LocaleCriteria) {
-  }
-}
+export const loadProjectActivityAggregated = createAction(
+  '[Project Page] Load Project Activity Aggregated',
+  props<{ payload: { id: string } }>()
+);
 
-export class LocalesLoadError implements Action {
-  readonly type = ProjectActionTypes.LocalesLoadError;
+export const projectActivityAggregatedLoadError = createAction(
+  '[Projects API] Project Activity Aggregated Load Error',
+  props<{ error: any }>()
+);
 
-  constructor(public payload: any) {
-  }
-}
+export const projectActivityAggregatedLoaded = createAction(
+  '[Projects API] Project Activity Aggregated Loaded',
+  props<{ payload: PagedList<Aggregate> }>()
+);
 
-export class LocalesLoaded implements Action {
-  readonly type = ProjectActionTypes.LocalesLoaded;
+export const loadProjectActivities = createAction(
+  '[Project Page] Load Project Activities',
+  props<{ payload: ActivityCriteria }>()
+);
 
-  constructor(public payload: PagedList<Locale>) {
-  }
-}
+export const projectActivitiesLoadError = createAction(
+  '[Projects API] Project Activities Load Error',
+  props<{ error: any }>()
+);
 
-export class LoadKeys implements Action {
-  readonly type = ProjectActionTypes.LoadKeys;
+export const projectActivitiesLoaded = createAction(
+  '[Projects API] Project Activities Loaded',
+  props<{ payload: PagedList<Activity> }>()
+);
 
-  constructor(public payload: KeyCriteria) {
-  }
-}
+export const saveProject = createAction(
+  '[Project Page] Save Project',
+  props<{ payload: Project }>()
+);
 
-export class KeysLoadError implements Action {
-  readonly type = ProjectActionTypes.KeysLoadError;
+export const projectSaved = createAction(
+  '[Projects API] Project Saved',
+  props<{ payload: Project }>()
+);
 
-  constructor(public payload: any) {
-  }
-}
-
-export class KeysLoaded implements Action {
-  readonly type = ProjectActionTypes.KeysLoaded;
-
-  constructor(public payload: PagedList<Key>) {
-  }
-}
-
-export class LoadMessages implements Action {
-  readonly type = ProjectActionTypes.LoadMessages;
-
-  constructor(public payload: MessageCriteria) {
-  }
-}
-
-export class MessagesLoadError implements Action {
-  readonly type = ProjectActionTypes.MessagesLoadError;
-
-  constructor(public payload: any) {
-  }
-}
-
-export class MessagesLoaded implements Action {
-  readonly type = ProjectActionTypes.MessagesLoaded;
-
-  constructor(public payload: PagedList<Message>) {
-  }
-}
-
-export class LoadProjectActivityAggregated implements Action {
-  readonly type = ProjectActionTypes.LoadProjectActivityAggregated;
-
-  constructor(public payload: { id: string }) {
-  }
-}
-
-export class ProjectActivityAggregatedLoadError implements Action {
-  readonly type = ProjectActionTypes.ProjectActivityAggregatedLoadError;
-
-  constructor(public payload: any) {
-  }
-}
-
-export class ProjectActivityAggregatedLoaded implements Action {
-  readonly type = ProjectActionTypes.ProjectActivityAggregatedLoaded;
-
-  constructor(public payload: PagedList<Aggregate>) {
-  }
-}
-
-export class LoadProjectActivities implements Action {
-  readonly type = ProjectActionTypes.LoadProjectActivities;
-
-  constructor(public payload: ActivityCriteria) {
-  }
-}
-
-export class ProjectActivitiesLoadError implements Action {
-  readonly type = ProjectActionTypes.ProjectActivitiesLoadError;
-
-  constructor(public payload: any) {
-  }
-}
-
-export class ProjectActivitiesLoaded implements Action {
-  readonly type = ProjectActionTypes.ProjectActivitiesLoaded;
-
-  constructor(public payload: PagedList<Activity>) {
-  }
-}
-
-export class SaveProject implements Action {
-  readonly type = ProjectActionTypes.SaveProject;
-
-  constructor(public payload: Project) {
-  }
-}
-
-export class ProjectSaved implements Action {
-  readonly type = ProjectActionTypes.ProjectSaved;
-
-  constructor(public payload: Project) {
-  }
-}
-
-export class UnloadProject implements Action {
-  readonly type = ProjectActionTypes.UnloadProject;
-}
-
-export type ProjectAction =
-  | LoadProject
-  | ProjectLoaded
-  | ProjectLoadError
-  | LoadLocales
-  | LocalesLoaded
-  | LocalesLoadError
-  | LoadKeys
-  | KeysLoaded
-  | KeysLoadError
-  | LoadMessages
-  | MessagesLoaded
-  | MessagesLoadError
-  | LoadProjectActivityAggregated
-  | ProjectActivityAggregatedLoaded
-  | ProjectActivityAggregatedLoadError
-  | LoadProjectActivities
-  | ProjectActivitiesLoaded
-  | ProjectActivitiesLoadError
-  | SaveProject
-  | ProjectSaved
-  | UnloadProject;
+export const unloadProject = createAction(
+  '[Projects Page] Unload Project'
+);
