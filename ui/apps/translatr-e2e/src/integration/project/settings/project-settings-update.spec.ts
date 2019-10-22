@@ -1,4 +1,4 @@
-import { ProjectSettingsPage } from '../../../support/project-settings.po';
+import { ProjectSettingsPage } from '../../../support/project/project-settings-page.po';
 
 describe('Translatr Project Settings Update', () => {
   let page: ProjectSettingsPage;

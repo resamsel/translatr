@@ -1,10 +1,10 @@
-import { AppPage } from '../../support/app.po';
+import { HomePage } from '../../support/app.po';
 
 describe('Translatr Home', () => {
-  let page: AppPage;
+  let page: HomePage;
 
   beforeEach(() => {
-    page = new AppPage();
+    page = new HomePage();
 
     cy.clearCookies();
     cy.server();

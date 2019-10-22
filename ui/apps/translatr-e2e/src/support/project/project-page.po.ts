@@ -1,5 +1,5 @@
-import { Page } from './page.po';
-import { ProjectSettingsPage } from './project-settings.po';
+import { Page } from '../page.po';
+import { ProjectSettingsPage } from './project-settings-page.po';
 
 export class ProjectPage extends Page {
   constructor(

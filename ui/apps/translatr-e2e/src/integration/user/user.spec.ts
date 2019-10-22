@@ -1,4 +1,4 @@
-import { UserPage } from '../../support/user-page.po';
+import { UserPage } from '../../support/user/user-page.po';
 
 describe('Translatr User Page', () => {
   let page: UserPage;

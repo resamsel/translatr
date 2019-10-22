@@ -49,7 +49,7 @@
     "workspace-schematic": "./node_modules/.bin/nx workspace-schematic",
     "help": "./node_modules/.bin/nx help",
     "tools:generatr": "ts-node --project tools/generatr/tsconfig.json -r tsconfig-paths/register tools/generatr/generatr.ts",
-    "kill:server": "fuser 4210/tcp -k; fuser 4211/tcp -k; echo 'ports freed'",
+    "kill:server": "fuser 4200/tcp -k; fuser 4211/tcp -k; fuser 4211/tcp -k; echo 'ports freed'",
     "nx": "nx"
   },
   "private": true,

@@ -1,4 +1,4 @@
-import { Page } from './page.po';
+import { Page } from '../page.po';
 
 export class UserPage extends Page {
   constructor(private readonly username: string) {

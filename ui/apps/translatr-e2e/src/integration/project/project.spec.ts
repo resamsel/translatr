@@ -1,4 +1,4 @@
-import { ProjectPage } from '../../support/project-page.po';
+import { ProjectPage } from '../../support/project/project-page.po';
 
 describe('Translatr Project', () => {
   let page: ProjectPage;

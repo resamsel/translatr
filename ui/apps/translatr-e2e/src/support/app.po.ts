@@ -1,10 +1,8 @@
 import { DashboardPage } from './dashboard.po';
 import { Page } from './page.po';
 
-export const getGreeting = () => cy.get('h1');
-
-export class AppPage extends Page {
-  navigateTo(): AppPage {
+export class HomePage extends Page {
+  navigateTo(): HomePage {
     cy.visit('/');
     return this;
   }

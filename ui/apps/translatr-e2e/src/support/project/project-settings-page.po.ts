@@ -1,4 +1,4 @@
-import { Page } from './page.po';
+import { Page } from '../page.po';
 
 export class ProjectSettingsPage extends Page {
   constructor(
