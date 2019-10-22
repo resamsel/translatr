@@ -122,17 +122,21 @@
 
   .translation {
     height: auto;
-    min-height: 72px;
-    max-height: 216px;
-    overflow: hidden;
+    margin: 8px;
 
-    ::ng-deep .mat-line {
-      white-space: normal;
+    .mat-card-content {
+      max-height: 216px;
+      overflow: hidden;
+      overflow-y: auto;
     }
   }
 
   @include large {
     width: 25%;
+
+    .translation {
+      margin: 16px;
+    }
   }
 }
 

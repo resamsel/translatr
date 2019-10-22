@@ -39,17 +39,21 @@
     <div class="meta">
       <mat-tab-group #tabs>
         <mat-tab label="Preview" i18n-label="@@preview">
-          <div class="preview">
-            <p [innerHTML]="message?.value"></p>
-          </div>
+          <mat-card class="translation">
+            <mat-card-content [innerHTML]="message?.value"></mat-card-content>
+          </mat-card>
         </mat-tab>
         <mat-tab label="Translations" i18n-label="@@translations">
-          <mat-list>
-            <mat-list-item *ngFor="let message of messages" class="translation">
-              <h3 matLine>{{ message.localeName }}</h3>
-              <p matLine [innerHTML]="message.value"></p>
-            </mat-list-item>
-          </mat-list>
+          <mat-card *ngFor="let message of messages" class="translation">
+            <mat-card-title>{{ message.localeName }}</mat-card-title>
+            <mat-card-content [innerHTML]="message.value"></mat-card-content>
+            <mat-card-actions>
+              <button (click)="onUseMessage(message)" mat-button>
+                <mat-icon [inline]="true">file_copy</mat-icon>
+                <span> Use this translation</span>
+              </button>
+            </mat-card-actions>
+          </mat-card>
         </mat-tab>
       </mat-tab-group>
     </div>

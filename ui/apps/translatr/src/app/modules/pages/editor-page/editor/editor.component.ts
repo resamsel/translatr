@@ -76,4 +76,8 @@ export class EditorComponent implements AfterViewChecked {
   onSave(): void {
     this.facade.saveMessage(this.message);
   }
+
+  onUseMessage(message: Message) {
+    this.message.value = message.value;
+  }
 }
