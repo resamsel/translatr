@@ -24,6 +24,7 @@ import { EditorComponent } from './editor/editor.component';
 import { EditorSelectorComponent } from './editor/editor-selector.component';
 import { KeyEditorPageComponent } from './key-editor-page.component';
 import { NavbarModule } from '@dev/translatr-components';
+import { MatCardModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { NavbarModule } from '@dev/translatr-components';
     MatTabsModule,
     MatIconModule,
     MatSnackBarModule,
+    MatCardModule,
     CodemirrorModule,
     StoreModule.forFeature(EDITOR_FEATURE_KEY, editorReducer, {
       initialState: editorInitialState
