@@ -141,8 +141,6 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
     }
 
     cache.removeByPrefix("locale:criteria:" + t.project.id);
-
-    projectRepository.save(t.project);
   }
 
   @Override
@@ -151,8 +149,6 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
 
     // When locale has been updated, the locale cache needs to be invalidated
     cache.removeByPrefix("locale:criteria:" + t.project.id);
-
-    projectRepository.save(t.project);
   }
 
   /**
@@ -168,7 +164,5 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
 
     // When locale has been deleted, the locale cache needs to be invalidated
     cache.removeByPrefix("locale:criteria:" + t.project.id);
-
-    projectRepository.save(t.project);
   }
 }

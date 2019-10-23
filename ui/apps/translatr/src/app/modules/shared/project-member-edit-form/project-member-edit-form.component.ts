@@ -56,6 +56,8 @@ export class ProjectMemberEditFormComponent
   filteredOptions: Observable<User[]>;
   roles = memberRoles;
 
+  readonly userFormControl = this.form.get('user');
+
   constructor(
     readonly memberService: MemberService,
     readonly snackBar: MatSnackBar,
@@ -102,8 +104,6 @@ export class ProjectMemberEditFormComponent
   get dirty(): boolean {
     return this.form.dirty;
   }
-
-  readonly userFormControl = this.form.get('user');
 
   private updateValue(member: Member): void {
     this.form.patchValue({

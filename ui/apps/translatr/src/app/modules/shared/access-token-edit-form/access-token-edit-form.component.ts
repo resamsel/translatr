@@ -45,6 +45,8 @@ export class AccessTokenEditFormComponent
   scopePermission = scopePermission;
   activeScopeMap = scopes.reduce((acc, curr) => ({ ...acc, [curr]: false }), {});
 
+  readonly nameFormControl = this.form.get('name');
+
   constructor(
     readonly snackBar: MatSnackBar,
     readonly accessTokenService: AccessTokenService,
@@ -80,8 +82,6 @@ export class AccessTokenEditFormComponent
   get dirty(): boolean {
     return this.form.dirty;
   }
-
-  readonly nameFormControl = this.form.get('name');
 
   onChangeScope(scope: Scope, event: MatCheckboxChange) {
     this.activeScopeMap[scope] = event.checked;

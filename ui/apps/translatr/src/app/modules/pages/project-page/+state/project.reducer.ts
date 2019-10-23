@@ -1,8 +1,12 @@
 import {
+  deleteKey,
+  deleteLocale,
+  keyDeleted,
   keysLoaded,
   loadKeys,
   loadLocales,
   loadProject,
+  localeDeleted,
   localesLoaded,
   messagesLoaded,
   projectActivitiesLoaded,
@@ -26,6 +30,9 @@ export interface ProjectState {
 
   keys?: PagedList<Key>;
   keysSearch: RequestCriteria;
+  keyDeleted?: Key;
+  keyDeleteError?: any;
+
   messages?: PagedList<Message>;
   messagesSearch: RequestCriteria;
   activityAggregated?: PagedList<Aggregate>;
@@ -85,6 +92,21 @@ const reducer = createReducer(
     (state, { payload }) => ({ ...state, locales: payload })
   ),
   on(
+    deleteLocale,
+    (state, { payload }) => ({ ...state, localeDeleted: undefined })
+  ),
+  on(
+    localeDeleted,
+    (state, { payload }) => ({
+      ...state,
+      localeDeleted: payload,
+      locales: {
+        ...state.locales,
+        list: state.locales.list.filter(i => i.id !== payload.id)
+      }
+    })
+  ),
+  on(
     loadKeys,
     (state, { payload }) => ({
       ...state,
@@ -97,6 +119,21 @@ const reducer = createReducer(
   on(
     keysLoaded,
     (state, { payload }) => ({ ...state, keys: payload })
+  ),
+  on(
+    deleteKey,
+    (state, { payload }) => ({ ...state, keyDeleted: undefined })
+  ),
+  on(
+    keyDeleted,
+    (state, { payload }) => ({
+      ...state,
+      keyDeleted: payload,
+      keys: {
+        ...state.keys,
+        list: state.keys.list.filter(i => i.id !== payload.id)
+      }
+    })
   ),
   on(
     messagesLoaded,

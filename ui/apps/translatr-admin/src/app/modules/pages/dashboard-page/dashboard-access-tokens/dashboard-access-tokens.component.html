@@ -53,8 +53,8 @@
           </button>
           <confirm-button
             icon="delete"
-            i18n-matTooltip="@@button.delete"
-            matTooltip="Delete"
+            i18n-tooltip="@@button.delete"
+            tooltip="Delete"
             [disabled]="(allowDelete$(element) | async) === false"
             (confirm)="onDelete(element)"
           >
@@ -65,8 +65,8 @@
       <selection-actions>
         <confirm-button
           icon="delete"
-          i18n-matTooltip="@@button.delete.selected"
-          matTooltip="Delete selected"
+          i18n-tooltip="@@button.delete.selected"
+          tooltip="Delete selected"
           [disabled]="(allowDeleteAll$(selected) | async) === false"
           (confirm)="onDeleteAll(selected)"
         ></confirm-button>

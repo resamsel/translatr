@@ -33,23 +33,21 @@
       Updated {{ locale?.whenUpdated | amTimeAgo }}
     </p>
     <button
-      (click)="onEdit(locale, $event)"
-      mat-icon-button
       *ngIf="canCreate"
-      i18n-matTooltip="@@button.edit"
+      (click)="onEdit(locale, $event)"
       matTooltip="Edit"
+      i18n-matTooltip="@@button.edit"
+      mat-icon-button
     >
       <mat-icon>edit</mat-icon>
     </button>
-    <button
-      (click)="onDelete(locale, $event)"
-      mat-icon-button
-      matTooltip="Delete"
+    <confirm-button
       *ngIf="canDelete"
-      i18n-matTooltip="@@button.delete"
-    >
-      <mat-icon>delete</mat-icon>
-    </button>
+      (confirm)="onDelete(locale)"
+      i18n-tooltip="@@button.delete"
+      icon="delete"
+      tooltip="Delete"
+    ></confirm-button>
   </a>
 </app-nav-list>
 

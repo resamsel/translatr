@@ -39,14 +39,12 @@
     >
       <mat-icon>edit</mat-icon>
     </button>
-    <button
-      (click)="onDelete(key, $event)"
-      mat-icon-button
-      i18n-matTooltip="@@button.delete"
-      matTooltip="Delete"
-    >
-      <mat-icon>delete</mat-icon>
-    </button>
+    <confirm-button
+      (confirm)="onDelete(key)"
+      i18n-tooltip="@@button.delete"
+      icon="delete"
+      tooltip="Delete"
+    ></confirm-button>
   </a>
 </app-nav-list>
 

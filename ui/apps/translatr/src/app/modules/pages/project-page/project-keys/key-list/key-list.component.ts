@@ -16,6 +16,7 @@ export class KeyListComponent {
   @Input() keys: PagedList<Key>;
   @Input() criteria: KeyCriteria | undefined;
   @Input() canCreate = false;
+  @Input() canDelete = false;
 
   @Output() fetch = new EventEmitter<KeyCriteria>();
   @Output() more = new EventEmitter<number>();
@@ -43,11 +44,8 @@ export class KeyListComponent {
     return false;
   }
 
-  onDelete(key: Key, event: MouseEvent) {
+  onDelete(key: Key): void {
     this.delete.emit(key);
-    event.stopPropagation();
-    event.preventDefault();
-    return false;
   }
 
   openKeyCreationDialog(project: Project): void {

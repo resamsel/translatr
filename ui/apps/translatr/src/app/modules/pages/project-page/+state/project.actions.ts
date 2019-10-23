@@ -73,6 +73,21 @@ export const keysLoaded = createAction(
   props<{ payload: PagedList<Key> }>()
 );
 
+export const deleteKey = createAction(
+  '[Project Page] Delete Key',
+  props<{ payload: { id: string } }>()
+);
+
+export const keyDeleted = createAction(
+  '[Keys API] Key Deleted',
+  props<{ payload: Key }>()
+);
+
+export const keyDeleteError = createAction(
+  '[Keys API] Key Delete Error',
+  props<{ error: any }>()
+);
+
 export const loadMessages = createAction(
   '[Project Page] Load Messages',
   props<{ payload: MessageCriteria }>()

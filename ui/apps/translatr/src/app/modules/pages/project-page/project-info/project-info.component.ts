@@ -43,7 +43,7 @@ export class ProjectInfoComponent {
         )
       .slice(0, 3))
   );
-  canCreateKey$ = this.facade.canCreateKey$;
+  canCreateKey$ = this.facade.canModifyKey$;
 
   latestMessages$: Observable<Message[]> = this.facade.messages$.pipe(
     filter(pagedList => !!pagedList && !!pagedList.list),

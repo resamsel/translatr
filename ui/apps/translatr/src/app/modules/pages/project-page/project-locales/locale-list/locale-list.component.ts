@@ -46,11 +46,8 @@ export class LocaleListComponent {
     return false;
   }
 
-  onDelete(locale: Locale, event: MouseEvent) {
+  onDelete(locale: Locale): void {
     this.delete.emit(locale);
-    event.stopPropagation();
-    event.preventDefault();
-    return false;
   }
 
   openLocaleDialog(locale: Partial<Locale>): void {

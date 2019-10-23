@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { ProjectPartialState } from './project.reducer';
 import {
+  deleteKey,
   deleteLocale,
+  keyDeleted,
+  keyDeleteError,
   keysLoaded,
   loadKeys,
   loadLocales,
@@ -138,6 +141,20 @@ export class ProjectEffects {
         .pipe(
           map((payload: Locale) => localeDeleted({ payload })),
           catchError(error => of(localeDeleteError({ error })))
+        )
+    )
+  ));
+
+  // Keys
+
+  deleteKey$ = createEffect(() => this.actions$.pipe(
+    ofType(deleteKey),
+    switchMap((action) =>
+      this.keyService
+        .delete(action.payload.id)
+        .pipe(
+          map((payload: Key) => keyDeleted({ payload })),
+          catchError(error => of(keyDeleteError({ error })))
         )
     )
   ));

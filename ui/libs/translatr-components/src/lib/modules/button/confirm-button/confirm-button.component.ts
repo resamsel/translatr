@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -7,12 +7,19 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
   styleUrls: ['./confirm-button.component.css']
 })
 export class ConfirmButtonComponent {
-  @Input() title: string;
+  @Input() tooltip: string;
   @Input() icon: string;
   @Input() disabled = false;
   @Output() readonly confirm = new EventEmitter<void>();
 
-  onConfirm() {
+  onConfirm(): void {
     this.confirm.emit();
+  }
+
+  @HostListener('click', ['$event'])
+  onClick(event: MouseEvent): boolean {
+    event.stopPropagation();
+    event.preventDefault();
+    return false;
   }
 }

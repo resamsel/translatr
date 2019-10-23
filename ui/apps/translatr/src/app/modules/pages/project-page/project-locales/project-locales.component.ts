@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { skip, take } from 'rxjs/operators';
+import { filter, skip, take } from 'rxjs/operators';
 import { Locale, LocaleCriteria, Project } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -10,7 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./project-locales.component.scss']
 })
 export class ProjectLocalesComponent {
-  project$ = this.facade.project$;
+  project$ = this.facade.project$.pipe(filter(x => !!x));
   locales$ = this.facade.locales$;
   criteria$ = this.facade.localesCriteria$;
   canModify$ = this.facade.canModifyLocale$;

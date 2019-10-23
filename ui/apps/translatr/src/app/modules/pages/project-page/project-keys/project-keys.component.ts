@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { take } from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 import { Key, KeyCriteria, Project } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -14,7 +14,7 @@ export class ProjectKeysComponent {
   project$ = this.facade.project$;
   keys$ = this.facade.keys$;
   criteria$ = this.facade.keysCriteria$;
-  canCreate$ = this.facade.canCreateKey$;
+  canModify$ = this.facade.canModifyKey$;
 
   constructor(
     private readonly facade: ProjectFacade,
@@ -42,10 +42,15 @@ export class ProjectKeysComponent {
   }
 
   onDelete(key: Key) {
-    this.snackBar.open(
-      `Delete key ${key.name}`,
-      'Undo',
-      { duration: 2000 }
-    );
+    this.facade.deleteKey(key.id);
+    this.facade.keyDeleted$
+      .pipe(skip(1), take(1))
+      .subscribe((k) =>
+        this.snackBar.open(
+          `Key ${k.name} deleted`,
+          'Dismiss',
+          { duration: 5000 }
+        )
+      );
   }
 }

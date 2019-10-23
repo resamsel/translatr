@@ -34,7 +34,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { LocaleEditDialogModule } from '../../shared/locale-edit-dialog/locale-edit-dialog.module';
 import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialog.module';
-import { EmptyViewModule, MetricModule, UserCardModule } from '@dev/translatr-components';
+import { ButtonModule, EmptyViewModule, MetricModule, UserCardModule } from '@dev/translatr-components';
 import { ListHeaderModule } from '../../shared/list-header/list-header.module';
 import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
 import { MatTooltipModule } from '@angular/material';
@@ -92,7 +92,8 @@ import { ProjectDeleteDialogModule } from '../../shared/project-delete-dialog/pr
     ListHeaderModule,
     MetricModule,
     MatTooltipModule,
-    EmptyViewModule
+    EmptyViewModule,
+    ButtonModule
   ],
   providers: [
     ProjectFacade,

@@ -2,10 +2,10 @@
   mat-icon-button
   [mat-menu-trigger-for]="menu"
   [disabled]="disabled"
-  [matTooltip]="title"
+  [matTooltip]="tooltip"
 >
   <mat-icon>{{ icon }}</mat-icon>
 </button>
 <mat-menu #menu="matMenu" xPosition="before" overlapTrigger="true">
-  <button mat-menu-item (click)="onConfirm()">{{ title }}</button>
+  <button (click)="onConfirm()" mat-menu-item>{{ tooltip }}</button>
 </mat-menu>

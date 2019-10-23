@@ -3,6 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { ProjectPartialState } from './project.reducer';
 import { projectQuery } from './project.selectors';
 import {
+  deleteKey,
   deleteLocale,
   loadKeys,
   loadLocales,
@@ -45,7 +46,7 @@ const canEdit = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
 const canDelete = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner);
-const canCreateKey = (project: Project, me: User): boolean =>
+const canModifyKey = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Developer);
 const canModifyLocale = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Translator);
@@ -96,8 +97,12 @@ export class ProjectFacade {
     takeUntil(this.unload$)
   );
   keysCriteria$ = new BehaviorSubject<KeyCriteria | undefined>(undefined);
-  canCreateKey$ = this.permission$.pipe(
-    map(([project, me]) => canCreateKey(project, me))
+  keyDeleted$ = this.store.pipe(
+    select(projectQuery.getKeyDeleted),
+    takeUntil(this.unload$)
+  );
+  canModifyKey$ = this.permission$.pipe(
+    map(([project, me]) => canModifyKey(project, me))
   );
 
   messages$ = this.store.pipe(
@@ -165,5 +170,9 @@ export class ProjectFacade {
 
   deleteLocale(id: string) {
     this.store.dispatch(deleteLocale({ payload: { id } }));
+  }
+
+  deleteKey(id: string) {
+    this.store.dispatch(deleteKey({ payload: { id } }));
   }
 }
