@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { TitleService } from '@translatr/utils/src/lib/services/title.service';
 
@@ -13,24 +13,24 @@ export interface Link {
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
+
   @Input() title = 'Translatr';
-  @Input() sidenav: MatDrawer;
+  @Input() page: string;
   @Input() backLink: Link;
+  @Input() sidenav: MatDrawer;
+  @Input() elevated = true;
 
   constructor(private readonly titleService: TitleService) {
   }
 
-  private _page: string;
-
-  get page(): string {
-    return this._page;
-  }
-
-  @Input() elevated = true;
-
-  @Input() set page(page: string) {
-    this.titleService.setTitle(page);
-    this._page = page;
+  ngOnInit(): void {
+    if (this.page) {
+      this.titleService.setTitle(this.page);
+    } else if (this.backLink && this.backLink.name) {
+      this.titleService.setTitle(this.backLink.name);
+    } else {
+      this.titleService.setTitle(undefined);
+    }
   }
 }

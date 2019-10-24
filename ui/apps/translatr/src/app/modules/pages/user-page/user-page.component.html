@@ -1,4 +1,4 @@
-<app-sidenav [me]="me$ | async" [page]="(user$ | async)?.name">
+<app-sidenav [me]="me$ | async" [page]="(user$ | async)?.name" [showDashboardLink]="true">
   <header>
     <nav *ngIf="user$ | async as user" color="accent" mat-tab-nav-bar>
       <div class="container dense" routerLinkActive>

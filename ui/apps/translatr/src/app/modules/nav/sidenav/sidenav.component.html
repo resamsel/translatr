@@ -8,9 +8,10 @@
     </ng-container>
 
     <a
-      i18n-matTooltip="@@dashboard.title"
+      *ngIf="showDashboardLink"
       mat-icon-button
       matTooltip="Dashboard"
+      i18n-matTooltip="@@dashboard.title"
       routerLink="/dashboard">
       <mat-icon>view_quilt</mat-icon>
     </a>

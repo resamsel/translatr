@@ -39,11 +39,11 @@
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <p *ngIf="project.description; else descriptionMissing">
+      <p *ngIf="project.description; else descriptionMissing" class="description">
         {{ project.description }}
       </p>
       <ng-template #descriptionMissing>
-        <p class="missing" i18n="@@description.missing">No description available.</p>
+        <p class="description missing" i18n="@@description.missing">No description available.</p>
       </ng-template>
     </mat-card-content>
   </mat-card>

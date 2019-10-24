@@ -1,4 +1,5 @@
 import { ProjectSettingsPage } from '../../../support/project/project-settings-page.po';
+import { ProjectPage } from '../../../support/project/project-page.po';
 
 describe('Translatr Project Settings Update', () => {
   let page: ProjectSettingsPage;
@@ -36,6 +37,12 @@ describe('Translatr Project Settings Update', () => {
     page.getSaveButton().click();
 
     cy.url().should('contain', 'johndoe/p2/settings');
+
+    const projectPage: ProjectPage = new ProjectPage('johndoe', 'p2')
+      .navigateTo();
+
+    projectPage.getDescription()
+      .should('have.text', ' p2d ');
   });
 
   it('should persist with 255 chars name on save', () => {

@@ -1,4 +1,5 @@
 <app-nav-list
+  *ngIf="project"
   [pagedList]="keys"
   [criteria]="criteria"
   [empty]="empty"
@@ -13,6 +14,7 @@
 >
   <a
     *ngFor="let key of keys?.list; trackBy: trackByFn"
+    mat-list-item
     [routerLink]="[
         '/',
         project.ownerUsername,
@@ -20,7 +22,6 @@
         'keys',
         key.name
       ]"
-    mat-list-item
   >
     <mat-icon class="key circle" matListIcon>vpn_key</mat-icon>
     <h3 matLine>{{ key.name }}</h3>

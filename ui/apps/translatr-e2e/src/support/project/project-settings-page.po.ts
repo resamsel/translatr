@@ -1,4 +1,5 @@
 import { Page } from '../page.po';
+import { ProjectPage } from './project-page.po';
 
 export class ProjectSettingsPage extends Page {
   constructor(
@@ -11,6 +12,10 @@ export class ProjectSettingsPage extends Page {
   navigateTo(): ProjectSettingsPage {
     cy.visit(`/${this.username}/${this.projectName}/settings`);
     return this;
+  }
+
+  navigateToProjectPage() {
+    return new ProjectPage(this.username, this.projectName).navigateTo();
   }
 
   getNameField(): Cypress.Chainable<JQuery<HTMLElement>> {

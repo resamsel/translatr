@@ -10,6 +10,10 @@ export class TitleService {
   }
 
   setTitle(title: string): void {
-    this.titleService.setTitle(`${title} - Translatr`);
+    if (!!title) {
+      this.titleService.setTitle(`${title} - Translatr`);
+    } else {
+      this.titleService.setTitle('Translatr');
+    }
   }
 }

@@ -1,8 +1,41 @@
 {
-  "list": [],
+  "list": [
+    {
+      "id": "2b42c511-f3e5-4d24-ae25-d3df79dcdb39",
+      "whenCreated": "2019-09-11T07:34:31.921Z",
+      "whenUpdated": "2019-09-11T07:34:32.112Z",
+      "localeId": "cc186dbe-57b4-4a52-99f1-856d20e3ac2b",
+      "localeName": "default",
+      "localeDisplayName": "default",
+      "localePathName": "default",
+      "keyId": "b4acfe72-d86e-46de-92e9-4efc950cd691",
+      "keyName": "k1",
+      "keyPathName": "k1",
+      "projectId": "1a9d9b95-e959-4b26-ae61-b71fd220e351",
+      "projectName": "p1",
+      "projectOwnerUsername": "johndoe",
+      "value": "Key One"
+    },
+    {
+      "id": "2b42c511-f3e5-4d24-ae25-d3df79ecdb39",
+      "whenCreated": "2019-09-11T07:34:31.921Z",
+      "whenUpdated": "2019-09-11T07:34:32.112Z",
+      "localeId": "e62648f1-e56a-400c-ba13-28e06c6711f9",
+      "localeName": "de",
+      "localeDisplayName": "German",
+      "localePathName": "de",
+      "keyId": "b4acfe72-d86e-46de-92e9-4efc950cd691",
+      "keyName": "k1",
+      "keyPathName": "k1",
+      "projectId": "1a9d9b95-e959-4b26-ae61-b71fd220e351",
+      "projectName": "p1",
+      "projectOwnerUsername": "johndoe",
+      "value": "Schlüssel 1"
+    }
+  ],
   "offset": 0,
   "limit": 20,
-  "total": 0,
+  "total": 1,
   "hasPrev": false,
   "hasNext": false
 }

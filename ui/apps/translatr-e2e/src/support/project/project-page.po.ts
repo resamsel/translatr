@@ -18,4 +18,8 @@ export class ProjectPage extends Page {
     return new ProjectSettingsPage(this.username, this.projectName)
       .navigateTo();
   }
+
+  getDescription(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('.description');
+  }
 }

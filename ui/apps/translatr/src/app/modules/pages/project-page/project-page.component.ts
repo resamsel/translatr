@@ -1,7 +1,7 @@
-import { Component, Inject, Injector, OnDestroy } from '@angular/core';
+import { Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, CanActivate, Route } from '@angular/router';
 import { ProjectFacade } from './+state/project.facade';
-import { filter, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, pluck, takeUntil, tap } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
 import { PROJECT_ROUTES } from './project-page.token';
@@ -13,16 +13,10 @@ import { Project } from '@dev/translatr-model';
   templateUrl: './project-page.component.html',
   styleUrls: ['./project-page.component.scss']
 })
-export class ProjectPageComponent implements OnDestroy {
+export class ProjectPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
   project$ = this.facade.project$.pipe(
-    filter(project => !!project),
-    tap((project: Project) => {
-      this.facade.loadLocales(project.id, {});
-      this.facade.loadKeys(project.id, {});
-      this.facade.loadMessages(project.id, { order: 'whenCreated desc' });
-      this.facade.loadActivityAggregated(project.id);
-    })
+    filter(project => !!project)
   );
 
   children: NameIconRoute[] = this.routes[0].children;
@@ -34,6 +28,20 @@ export class ProjectPageComponent implements OnDestroy {
     private readonly appFacade: AppFacade,
     @Inject(PROJECT_ROUTES) private routes: { children: NameIconRoute[] }[]
   ) {
+  }
+
+  ngOnInit(): void {
+    this.project$.pipe(
+      pluck('id'),
+      distinctUntilChanged(),
+      tap((projectId: string) => {
+        this.facade.loadLocales(projectId, {});
+        this.facade.loadKeys(projectId, {});
+        this.facade.loadMessages(projectId, { order: 'whenCreated desc' });
+        this.facade.loadActivityAggregated(projectId);
+      }),
+      takeUntil(this.facade.unload$)
+    ).subscribe();
   }
 
   ngOnDestroy(): void {
