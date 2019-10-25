@@ -10,9 +10,9 @@ describe('Translatr User Page', () => {
     cy.server();
 
     cy.route('/api/me', 'fixture:me');
-    cy.route('/api/johndoe', 'fixture:user/johndoe');
-    cy.route('/api/projects*', 'fixture:user/johndoe-projects');
-    cy.route('/api/activities*', 'fixture:user/johndoe-activities');
+    cy.route('/api/johndoe', 'fixture:johndoe');
+    cy.route('/api/projects*', 'fixture:johndoe/projects');
+    cy.route('/api/activities*', 'fixture:johndoe/activities');
   });
 
   it('should show user page', () => {

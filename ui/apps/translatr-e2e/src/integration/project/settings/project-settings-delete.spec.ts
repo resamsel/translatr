@@ -10,12 +10,12 @@ describe('Translatr Project Settings Delete', () => {
     cy.server();
 
     cy.route('/api/me', 'fixture:me');
-    cy.route('/api/johndoe/p1', 'fixture:project/johndoe-p1');
-    cy.route('/api/project/*/locales*', 'fixture:project/johndoe-p1-locales');
-    cy.route('/api/project/*/keys*', 'fixture:project/johndoe-p1-keys');
-    cy.route('/api/project/*/messages*', 'fixture:project/johndoe-p1-messages');
+    cy.route('/api/johndoe/p1', 'fixture:johndoe/p1');
+    cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
+    cy.route('/api/project/*/keys*', 'fixture:johndoe/p1/keys');
+    cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
     cy.route('/api/activities/aggregated*',
-      'fixture:project/johndoe-p1-activities-aggregated');
+      'fixture:johndoe/p1/activities-aggregated');
   });
 
   it('should show the delete project button', () => {
@@ -82,7 +82,7 @@ describe('Translatr Project Settings Delete', () => {
 
   it('should hide the delete project dialog on successful delete', () => {
     // given
-    cy.route('DELETE', '/api/project/*', 'fixture:project/johndoe-p1');
+    cy.route('DELETE', '/api/project/*', 'fixture:johndoe/p1');
 
     // dashboard
     cy.route('/api/users?limit=1&fetch=count', 'fixture:dashboard/users-limit1');

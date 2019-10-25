@@ -1,7 +1,7 @@
-import { Page } from '../page.po';
 import { ProjectKeysPage } from './project-keys-page.po';
+import { EditorPage } from './editor-page.po';
 
-export class KeyEditorPage extends Page {
+export class KeyEditorPage extends EditorPage {
   constructor(
     public readonly username: string,
     public readonly projectName: string,
@@ -20,19 +20,7 @@ export class KeyEditorPage extends Page {
       .navigateTo();
   }
 
-  getNavList(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.nav-list');
-  }
-
   getSelectedKeyField(): Cypress.Chainable<JQuery<HTMLElement>> {
     return cy.get('.selector input.selected-key');
-  }
-
-  getEditor(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.editor');
-  }
-
-  getMeta(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.meta');
   }
 }

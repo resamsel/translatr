@@ -1,0 +1,14 @@
+{
+  "list": [
+    {
+      "date": "2019-10-24T22:00:00.000Z",
+      "millis": 1571954400000,
+      "value": 9
+    }
+  ],
+  "offset": 0,
+  "limit": 1000,
+  "total": 1,
+  "hasPrev": false,
+  "hasNext": false
+}

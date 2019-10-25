@@ -10,10 +10,10 @@ describe('Translatr Project Key Editor', () => {
     cy.server();
 
     cy.route('/api/me', 'fixture:me');
-    cy.route('/api/johndoe/p1', 'fixture:project/johndoe-p1');
-    cy.route('/api/johndoe/p1/keys/k1', 'fixture:project/johndoe-p1-keys-k1');
-    cy.route('/api/project/*/locales*', 'fixture:project/johndoe-p1-locales');
-    cy.route('/api/project/*/messages*', 'fixture:project/johndoe-p1-messages');
+    cy.route('/api/johndoe/p1', 'fixture:johndoe/p1');
+    cy.route('/api/johndoe/p1/keys/k1', 'fixture:johndoe/p1/keys/k1');
+    cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
+    cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
   });
 
   it('should have page title Key Editor', () => {
@@ -73,7 +73,8 @@ describe('Translatr Project Key Editor', () => {
       .find('.mat-list-item.locale:first-of-type')
       .should('not.have.class', 'active');
     page.getNavList()
-      .find('.mat-list-item.locale:first-of-type')
+      .find('.mat-list-item.locale')
+      .first()
       .click()
       .should('have.class', 'active');
   });
@@ -86,7 +87,8 @@ describe('Translatr Project Key Editor', () => {
 
     // then
     page.getNavList()
-      .find('.mat-list-item.locale:first-of-type')
+      .find('.mat-list-item.locale')
+      .first()
       .click();
 
     page.getEditor()
@@ -101,10 +103,73 @@ describe('Translatr Project Key Editor', () => {
 
     // then
     page.getNavList()
-      .find('.mat-list-item.locale:first-of-type')
+      .find('.mat-list-item.locale')
+      .first()
       .click();
 
     page.getMeta()
       .should('be.visible');
   });
-});
+
+  it('should show preview when locale activated in sidebar', () => {
+    // given
+
+    // when
+    page.navigateTo();
+
+    // then
+    page.getNavList()
+      .find('.mat-list-item.locale')
+      .first()
+      .click();
+
+
+    page.getPreviewContents()
+      .should('have.text', 'Schlüssel 1');
+  });
+
+  it('should show existing translations when translations tab selected', () => {
+    // given
+
+    // when
+    page.navigateTo();
+
+    // then
+    page.getNavList()
+      .find('.mat-list-item.locale')
+      .first()
+      .click();
+
+    page.getMeta()
+      .find('#mat-tab-label-0-1')
+      .click();
+    page.getMeta()
+      .find('#mat-tab-content-0-1 .mat-card')
+      .should('have.length', 2);
+  });
+
+  it('should use translation when use translation is clicked', () => {
+    // given
+
+    // when
+    page.navigateTo();
+
+    // then
+    page.getNavList()
+      .find('.mat-list-item.locale')
+      .first()
+      .click();
+
+    page.getMeta().within((el) => {
+      el.find('#mat-tab-label-0-1')
+        .click();
+      el.find('#mat-tab-content-0-1 .mat-card button.use-value')
+        .last()
+        .click();
+    });
+
+    page.getEditorContents()
+      .should('have.text', 'Key One');
+  });
+})
+;

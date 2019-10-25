@@ -11,18 +11,18 @@ describe('Translatr Project Settings Update', () => {
     cy.server();
 
     cy.route('/api/me', 'fixture:me');
-    cy.route('/api/johndoe/p1', 'fixture:project/johndoe-p1');
-    cy.route('/api/project/*/locales*', 'fixture:project/johndoe-p1-locales');
-    cy.route('/api/project/*/keys*', 'fixture:project/johndoe-p1-keys');
-    cy.route('/api/project/*/messages*', 'fixture:project/johndoe-p1-messages');
+    cy.route('/api/johndoe/p1', 'fixture:johndoe/p1');
+    cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
+    cy.route('/api/project/*/keys*', 'fixture:johndoe/p1/keys');
+    cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
     cy.route('/api/activities/aggregated*',
-      'fixture:project/johndoe-p1-activities-aggregated');
+      'fixture:johndoe/p1/activities-aggregated');
   });
 
   it('should persist on save', () => {
     // given
-    cy.route('PUT', '/api/project', 'fixture:project/johndoe-p2');
-    cy.route('/api/johndoe/p2', 'fixture:project/johndoe-p2');
+    cy.route('PUT', '/api/project', 'fixture:johndoe/p2');
+    cy.route('/api/johndoe/p2', 'fixture:johndoe/p2');
 
     // when
     page.navigateTo();
@@ -48,8 +48,8 @@ describe('Translatr Project Settings Update', () => {
   it('should persist with 255 chars name on save', () => {
     // given
     const name = `2${'p2'.repeat(127)}`;
-    cy.route('PUT', '/api/project', 'fixture:project/johndoe-p2-name-255');
-    cy.route(`/api/johndoe/${name}`, 'fixture:project/johndoe-p2-name-255');
+    cy.route('PUT', '/api/project', 'fixture:johndoe/p2-name-255');
+    cy.route(`/api/johndoe/${name}`, 'fixture:johndoe/p2-name-255');
 
     // when
     page.navigateTo();
@@ -69,7 +69,7 @@ describe('Translatr Project Settings Update', () => {
       method: 'PUT',
       url: '/api/project',
       status: 400,
-      response: 'fixture:project/johndoe-p2-not-unique'
+      response: 'fixture:johndoe/p2-not-unique'
     });
 
     // when
