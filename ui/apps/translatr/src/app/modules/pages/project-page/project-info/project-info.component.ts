@@ -37,10 +37,10 @@ export class ProjectInfoComponent {
     filter(pagedList => !!pagedList && !!pagedList.list),
     pluck('list'),
     map((keys: Key[]) => keys
-        .slice()
-        .sort(
-          (a: Key, b: Key) => b.whenUpdated.getTime() - a.whenUpdated.getTime()
-        )
+      .slice()
+      .sort(
+        (a: Key, b: Key) => b.whenUpdated.getTime() - a.whenUpdated.getTime()
+      )
       .slice(0, 3))
   );
   canCreateKey$ = this.facade.canModifyKey$;
@@ -60,7 +60,14 @@ export class ProjectInfoComponent {
   }
 
   openLocaleCreationDialog(project: Project): void {
-    openLocaleEditDialog(this.dialog, { projectId: project.id })
+    openLocaleEditDialog(
+      this.dialog,
+      { projectId: project.id },
+      (l) => this.facade.createLocale(l),
+      (l) => this.facade.updateLocale(l),
+      this.facade.localeModified$,
+      this.facade.localeModified$
+    )
       .afterClosed()
       .pipe(
         take(1),
