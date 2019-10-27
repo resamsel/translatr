@@ -29,6 +29,7 @@
       Updated <span [matTooltip]="key?.whenUpdated | date: 'full'">{{ key?.whenUpdated | amTimeAgo }}</span>
     </p>
     <button
+      *ngIf="canCreate"
       mat-icon-button
       matTooltip="Edit"
       (click)="onEdit(key, $event)"
@@ -38,6 +39,7 @@
       <mat-icon>edit</mat-icon>
     </button>
     <confirm-button
+      *ngIf="canDelete"
       icon="delete"
       tooltip="Delete"
       (confirm)="onDelete(key)"
