@@ -43,6 +43,36 @@ export const localesLoaded = createAction(
   props<{ payload: PagedList<Locale> }>()
 );
 
+export const createLocale = createAction(
+  '[Project Page] Create Locale',
+  props<{ payload: Locale }>()
+);
+
+export const localeCreated = createAction(
+  '[Locales API] Locale Created',
+  props<{ payload: Locale }>()
+);
+
+export const localeCreateError = createAction(
+  '[Locales API] Locale Create Error',
+  props<{ error: any }>()
+);
+
+export const updateLocale = createAction(
+  '[Project Page] Update Locale',
+  props<{ payload: Locale }>()
+);
+
+export const localeUpdated = createAction(
+  '[Locales API] Locale Updated',
+  props<{ payload: Locale }>()
+);
+
+export const localeUpdateError = createAction(
+  '[Locales API] Locale Update Error',
+  props<{ error: any }>()
+);
+
 export const deleteLocale = createAction(
   '[Project Page] Delete Locale',
   props<{ payload: { id: string } }>()
@@ -71,6 +101,36 @@ export const keysLoadError = createAction(
 export const keysLoaded = createAction(
   '[Keys API] Keys Loaded',
   props<{ payload: PagedList<Key> }>()
+);
+
+export const createKey = createAction(
+  '[Project Page] Create Key',
+  props<{ payload: Key }>()
+);
+
+export const keyCreated = createAction(
+  '[Keys API] Key Created',
+  props<{ payload: Key }>()
+);
+
+export const keyCreateError = createAction(
+  '[Keys API] Key Create Error',
+  props<{ error: any }>()
+);
+
+export const updateKey = createAction(
+  '[Project Page] Update Key',
+  props<{ payload: Key }>()
+);
+
+export const keyUpdated = createAction(
+  '[Keys API] Key Updated',
+  props<{ payload: Key }>()
+);
+
+export const keyUpdateError = createAction(
+  '[Keys API] Key Update Error',
+  props<{ error: any }>()
 );
 
 export const deleteKey = createAction(

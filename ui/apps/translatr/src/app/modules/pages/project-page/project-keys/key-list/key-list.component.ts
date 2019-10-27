@@ -5,6 +5,7 @@ import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trackByFn } from '@translatr/utils';
+import { ProjectFacade } from '../../+state/project.facade';
 
 @Component({
   selector: 'app-key-list',
@@ -29,7 +30,8 @@ export class KeyListComponent {
   constructor(
     private readonly dialog: MatDialog,
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly facade: ProjectFacade
   ) {
   }
 
@@ -38,6 +40,7 @@ export class KeyListComponent {
   }
 
   onEdit(key: Key, event: MouseEvent): boolean {
+    this.openKeyEditDialog(key);
     this.edit.emit(key);
     event.stopPropagation();
     event.preventDefault();
@@ -48,14 +51,21 @@ export class KeyListComponent {
     this.delete.emit(key);
   }
 
-  openKeyCreationDialog(project: Project): void {
-    openKeyEditDialog(this.dialog, { projectId: project.id })
+  openKeyEditDialog(key: Partial<Key>): void {
+    openKeyEditDialog(
+      this.dialog,
+      key,
+      (k) => this.facade.createKey(k),
+      (k) => this.facade.updateKey(k),
+      this.facade.keyModified$,
+      this.facade.keyModifiedError$
+    )
       .afterClosed()
       .pipe(
         take(1),
-        filter(key => !!key)
+        filter(k => !!k && key.id === undefined)
       )
-      .subscribe((key => this.router
-        .navigate([key.name], { relativeTo: this.route })));
+      .subscribe((k => this.router
+        .navigate([k.name], { relativeTo: this.route })));
   }
 }

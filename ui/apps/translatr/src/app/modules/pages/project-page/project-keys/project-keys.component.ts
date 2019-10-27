@@ -43,7 +43,7 @@ export class ProjectKeysComponent {
 
   onDelete(key: Key) {
     this.facade.deleteKey(key.id);
-    this.facade.keyDeleted$
+    this.facade.keyModified$
       .pipe(skip(1), take(1))
       .subscribe((k) =>
         this.snackBar.open(

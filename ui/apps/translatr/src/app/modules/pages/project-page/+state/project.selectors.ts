@@ -20,6 +20,16 @@ const getProject = createSelector(
   (state: ProjectState) => state.project
 );
 
+const getLocale = createSelector(
+  getProjectState,
+  (state: ProjectState) => state.locale
+);
+
+const getLocaleError = createSelector(
+  getProjectState,
+  (state: ProjectState) => state.localeError
+);
+
 const getLocales = createSelector(
   getProjectState,
   (state: ProjectState) => state.locales
@@ -30,9 +40,14 @@ const getLocalesSearch = createSelector(
   (state: ProjectState) => state.localesSearch
 );
 
-const getLocaleDeleted = createSelector(
+const getKey = createSelector(
   getProjectState,
-  (state: ProjectState) => state.localeDeleted
+  (state: ProjectState) => state.key
+);
+
+const getKeyError = createSelector(
+  getProjectState,
+  (state: ProjectState) => state.keyError
 );
 
 const getKeys = createSelector(
@@ -43,11 +58,6 @@ const getKeys = createSelector(
 const getKeysSearch = createSelector(
   getProjectState,
   (state: ProjectState) => state.keysSearch
-);
-
-const getKeyDeleted = createSelector(
-  getProjectState,
-  (state: ProjectState) => state.keyDeleted
 );
 
 const getMessages = createSelector(
@@ -74,10 +84,12 @@ export const projectQuery = {
   getLoading,
   getError,
   getProject,
+  getLocale,
+  getLocaleError,
   getLocales,
   getLocalesSearch,
-  getLocaleDeleted,
-  getKeyDeleted,
+  getKey,
+  getKeyError,
   getKeys,
   getKeysSearch,
   getMessages,
