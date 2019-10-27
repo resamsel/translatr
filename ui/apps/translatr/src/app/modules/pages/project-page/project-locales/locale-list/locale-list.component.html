@@ -26,12 +26,8 @@
   >
     <mat-icon class="locale circle" matListIcon>language</mat-icon>
     <h3 matLine>{{ locale.displayName }} ({{ locale.name }})</h3>
-    <p
-      [matTooltip]="locale?.whenUpdated | date: 'full'"
-      i18n="@@updated.when"
-      matLine
-    >
-      Updated {{ locale?.whenUpdated | amTimeAgo }}
+    <p i18n="@@updated.when" matLine>
+      Updated <span [matTooltip]="locale?.whenUpdated | date: 'full'">{{ locale?.whenUpdated | amTimeAgo }}</span>
     </p>
     <button
       *ngIf="canCreate"
@@ -44,10 +40,10 @@
     </button>
     <confirm-button
       *ngIf="canDelete"
-      (confirm)="onDelete(locale)"
-      i18n-tooltip="@@button.delete"
       icon="delete"
       tooltip="Delete"
+      (confirm)="onDelete(locale)"
+      i18n-tooltip="@@button.delete"
     ></confirm-button>
   </a>
 </app-nav-list>

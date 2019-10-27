@@ -71,7 +71,14 @@ export class ProjectInfoComponent {
   }
 
   openKeyCreationDialog(project: Project): void {
-    openKeyEditDialog(this.dialog, { projectId: project.id })
+    openKeyEditDialog(
+      this.dialog,
+      { projectId: project.id },
+      (k) => this.facade.createKey(k),
+      (k) => this.facade.updateKey(k),
+      this.facade.keyModified$,
+      this.facade.keyModifiedError$
+    )
       .afterClosed()
       .pipe(
         take(1),

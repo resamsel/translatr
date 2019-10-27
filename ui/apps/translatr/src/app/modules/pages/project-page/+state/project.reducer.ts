@@ -1,22 +1,31 @@
 import {
+  createKey,
+  createLocale,
   deleteKey,
   deleteLocale,
+  keyCreated,
   keyDeleted,
   keysLoaded,
+  keyUpdated,
   loadKeys,
   loadLocales,
   loadProject,
+  localeCreated,
   localeDeleted,
   localesLoaded,
+  localeUpdated,
   messagesLoaded,
   projectActivitiesLoaded,
   projectActivityAggregatedLoaded,
   projectLoaded,
   projectSaved,
-  unloadProject
+  unloadProject,
+  updateKey,
+  updateLocale
 } from './project.actions';
 import { Activity, Aggregate, Key, Locale, Message, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { Action, createReducer, on } from '@ngrx/store';
+import { Identifiable } from '../../../shared/edit-form/abstract-edit-form-component';
 
 export const PROJECT_FEATURE_KEY = 'project';
 
@@ -25,13 +34,13 @@ export interface ProjectState {
 
   locales?: PagedList<Locale>;
   localesSearch: RequestCriteria;
-  localeDeleted?: Locale;
-  localeDeleteError?: any;
+  locale?: Locale;
+  localeError?: any;
 
   keys?: PagedList<Key>;
   keysSearch: RequestCriteria;
-  keyDeleted?: Key;
-  keyDeleteError?: any;
+  key?: Key;
+  keyError?: any;
 
   messages?: PagedList<Message>;
   messagesSearch: RequestCriteria;
@@ -67,6 +76,36 @@ export const initialState: ProjectState = {
   loading: false
 };
 
+const pagedListInsert = <T extends Identifiable>(
+  pagedList: PagedList<T>, payload: T): PagedList<T> => ({
+  ...pagedList,
+  list: [...pagedList.list, payload]
+});
+
+const pagedListUpdate = <T extends Identifiable>(
+  pagedList: PagedList<T>, payload: T): PagedList<T> => ({
+  ...pagedList,
+  list: pagedList.list.map(i => i.id === payload.id ? payload : i)
+});
+
+const pagedListDelete = <T extends Identifiable>(
+  pagedList: PagedList<T>, payload: T): PagedList<T> => ({
+  ...pagedList,
+  list: pagedList.list.filter(i => i.id !== payload.id)
+});
+
+const resetLocale = (state: ProjectState): ProjectState => ({
+  ...state,
+  locale: undefined,
+  localeError: undefined
+});
+
+const resetKey = (state: ProjectState): ProjectState => ({
+  ...state,
+  key: undefined,
+  keyError: undefined
+});
+
 const reducer = createReducer(
   initialState,
   on(
@@ -92,18 +131,39 @@ const reducer = createReducer(
     (state, { payload }) => ({ ...state, locales: payload })
   ),
   on(
+    createLocale,
+    (state, { payload }) => resetLocale(state)
+  ),
+  on(
+    localeCreated,
+    (state, { payload }) => ({
+      ...state,
+      locale: payload,
+      locales: pagedListInsert(state.locales, payload)
+    })
+  ),
+  on(
+    updateLocale,
+    (state, { payload }) => resetLocale(state)
+  ),
+  on(
+    localeUpdated,
+    (state, { payload }) => ({
+      ...state,
+      locale: payload,
+      locales: pagedListUpdate(state.locales, payload)
+    })
+  ),
+  on(
     deleteLocale,
-    (state, { payload }) => ({ ...state, localeDeleted: undefined })
+    (state, { payload }) => resetLocale(state)
   ),
   on(
     localeDeleted,
     (state, { payload }) => ({
       ...state,
-      localeDeleted: payload,
-      locales: {
-        ...state.locales,
-        list: state.locales.list.filter(i => i.id !== payload.id)
-      }
+      locale: payload,
+      locales: pagedListDelete(state.locales, payload)
     })
   ),
   on(
@@ -121,18 +181,39 @@ const reducer = createReducer(
     (state, { payload }) => ({ ...state, keys: payload })
   ),
   on(
+    createKey,
+    (state, { payload }) => resetKey(state)
+  ),
+  on(
+    keyCreated,
+    (state, { payload }) => ({
+      ...state,
+      key: payload,
+      keys: pagedListInsert(state.keys, payload)
+    })
+  ),
+  on(
+    updateKey,
+    (state, { payload }) => resetKey(state)
+  ),
+  on(
+    keyUpdated,
+    (state, { payload }) => ({
+      ...state,
+      key: payload,
+      keys: pagedListUpdate(state.keys, payload)
+    })
+  ),
+  on(
     deleteKey,
-    (state, { payload }) => ({ ...state, keyDeleted: undefined })
+    (state, { payload }) => resetKey(state)
   ),
   on(
     keyDeleted,
     (state, { payload }) => ({
       ...state,
-      keyDeleted: payload,
-      keys: {
-        ...state.keys,
-        list: state.keys.list.filter(i => i.id !== payload.id)
-      }
+      key: payload,
+      keys: pagedListDelete(state.keys, payload)
     })
   ),
   on(

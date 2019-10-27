@@ -8,7 +8,7 @@
   showFilter="true"
   addTooltip="Add new key"
   i18n-addTooltip="@@key.create.tooltip"
-  (create)="openKeyCreationDialog(project)"
+  (create)="openKeyEditDialog({projectId: project.id})"
   (filter)="onFilter($event)"
   (more)="more.emit($event)"
 >
@@ -25,26 +25,24 @@
   >
     <mat-icon class="key circle" matListIcon>vpn_key</mat-icon>
     <h3 matLine>{{ key.name }}</h3>
-    <p
-      matLine
-      [matTooltip]="key?.whenUpdated | date: 'full'"
-      i18n="@@updated.when"
-    >
-      Updated {{ key?.whenUpdated | amTimeAgo }}
+    <p i18n="@@updated.when" matLine>
+      Updated <span [matTooltip]="key?.whenUpdated | date: 'full'">{{ key?.whenUpdated | amTimeAgo }}</span>
     </p>
     <button
-      (click)="onEdit(key, $event)"
       mat-icon-button
-      i18n-matTooltip="@@button.edit"
       matTooltip="Edit"
+      (click)="onEdit(key, $event)"
+      class="edit-key"
+      i18n-matTooltip="@@button.edit"
     >
       <mat-icon>edit</mat-icon>
     </button>
     <confirm-button
-      (confirm)="onDelete(key)"
-      i18n-tooltip="@@button.delete"
       icon="delete"
       tooltip="Delete"
+      (confirm)="onDelete(key)"
+      class="delete-key"
+      i18n-tooltip="@@button.delete"
     ></confirm-button>
   </a>
 </app-nav-list>
@@ -54,10 +52,11 @@
     <p>It seems there are no keys defined, yet - would you like to add one now?</p>
     <button
       *ngIf="canCreate"
-      (click)="openKeyCreationDialog(project)"
+      (click)="openKeyEditDialog({projectId: project.id})"
       color="accent"
       i18n="@@key.create"
-      mat-raised-button>Add key
+      mat-raised-button
+    >Add key
     </button>
   </dev-empty-view>
 </ng-template>

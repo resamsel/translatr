@@ -3,6 +3,8 @@ import { select, Store } from '@ngrx/store';
 import { ProjectPartialState } from './project.reducer';
 import { projectQuery } from './project.selectors';
 import {
+  createKey,
+  createLocale,
   deleteKey,
   deleteLocale,
   loadKeys,
@@ -13,10 +15,23 @@ import {
   loadProjectActivityAggregated,
   projectLoaded,
   saveProject,
-  unloadProject
+  unloadProject,
+  updateKey,
+  updateLocale
 } from './project.actions';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { ActivityCriteria, KeyCriteria, LocaleCriteria, MemberRole, memberRoles, Project, User, UserRole } from '@dev/translatr-model';
+import {
+  ActivityCriteria,
+  Key,
+  KeyCriteria,
+  Locale,
+  LocaleCriteria,
+  MemberRole,
+  memberRoles,
+  Project,
+  User,
+  UserRole
+} from '@dev/translatr-model';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 import { AppFacade } from '../../../../+state/app.facade';
@@ -84,8 +99,12 @@ export class ProjectFacade {
     takeUntil(this.unload$)
   );
   localesCriteria$ = new BehaviorSubject<LocaleCriteria | undefined>(undefined);
-  localeDeleted$ = this.store.pipe(
-    select(projectQuery.getLocaleDeleted),
+  localeModified$ = this.store.pipe(
+    select(projectQuery.getLocale),
+    takeUntil(this.unload$)
+  );
+  localeModifiedError$ = this.store.pipe(
+    select(projectQuery.getLocaleError),
     takeUntil(this.unload$)
   );
   canModifyLocale$ = this.permission$.pipe(
@@ -97,8 +116,12 @@ export class ProjectFacade {
     takeUntil(this.unload$)
   );
   keysCriteria$ = new BehaviorSubject<KeyCriteria | undefined>(undefined);
-  keyDeleted$ = this.store.pipe(
-    select(projectQuery.getKeyDeleted),
+  keyModified$ = this.store.pipe(
+    select(projectQuery.getKey),
+    takeUntil(this.unload$)
+  );
+  keyModifiedError$ = this.store.pipe(
+    select(projectQuery.getKeyError),
     takeUntil(this.unload$)
   );
   canModifyKey$ = this.permission$.pipe(
@@ -168,8 +191,24 @@ export class ProjectFacade {
     this.store.dispatch(projectLoaded({ payload: project }));
   }
 
+  createLocale(locale: Locale) {
+    this.store.dispatch(createLocale({ payload: locale }));
+  }
+
+  updateLocale(locale: Locale) {
+    this.store.dispatch(updateLocale({ payload: locale }));
+  }
+
   deleteLocale(id: string) {
     this.store.dispatch(deleteLocale({ payload: { id } }));
+  }
+
+  createKey(key: Key) {
+    this.store.dispatch(createKey({ payload: key }));
+  }
+
+  updateKey(key: Key) {
+    this.store.dispatch(updateKey({ payload: key }));
   }
 
   deleteKey(id: string) {

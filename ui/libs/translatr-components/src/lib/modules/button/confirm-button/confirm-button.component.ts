@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -11,6 +11,8 @@ export class ConfirmButtonComponent {
   @Input() icon: string;
   @Input() disabled = false;
   @Output() readonly confirm = new EventEmitter<void>();
+
+  @HostBinding('class') clazz = 'confirm-button';
 
   onConfirm(): void {
     this.confirm.emit();

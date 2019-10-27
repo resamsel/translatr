@@ -7,5 +7,9 @@
   <mat-icon>{{ icon }}</mat-icon>
 </button>
 <mat-menu #menu="matMenu" xPosition="before" overlapTrigger="true">
-  <button (click)="onConfirm()" mat-menu-item>{{ tooltip }}</button>
+  <button
+    (click)="onConfirm()"
+    class="confirm"
+    mat-menu-item
+  >{{ tooltip }}</button>
 </mat-menu>

@@ -2,20 +2,30 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { ProjectPartialState } from './project.reducer';
 import {
+  createKey,
+  createLocale,
   deleteKey,
   deleteLocale,
+  keyCreated,
+  keyCreateError,
   keyDeleted,
   keyDeleteError,
   keysLoaded,
+  keyUpdated,
+  keyUpdateError,
   loadKeys,
   loadLocales,
   loadMessages,
   loadProject,
   loadProjectActivities,
   loadProjectActivityAggregated,
+  localeCreated,
+  localeCreateError,
   localeDeleted,
   localeDeleteError,
   localesLoaded,
+  localeUpdated,
+  localeUpdateError,
   messagesLoaded,
   projectActivitiesLoaded,
   projectActivitiesLoadError,
@@ -24,7 +34,9 @@ import {
   projectLoaded,
   projectLoadError,
   projectSaved,
-  saveProject
+  saveProject,
+  updateKey,
+  updateLocale
 } from './project.actions';
 import { ActivityService, KeyService, LocaleService, MessageService, ProjectService } from '@dev/translatr-sdk';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
@@ -133,6 +145,30 @@ export class ProjectEffects {
 
   // Locales
 
+  createLocale$ = createEffect(() => this.actions$.pipe(
+    ofType(createLocale),
+    switchMap((action) =>
+      this.localeService
+        .create(action.payload)
+        .pipe(
+          map((payload: Locale) => localeCreated({ payload })),
+          catchError(error => of(localeCreateError({ error })))
+        )
+    )
+  ));
+
+  updateLocale$ = createEffect(() => this.actions$.pipe(
+    ofType(updateLocale),
+    switchMap((action) =>
+      this.localeService
+        .update(action.payload)
+        .pipe(
+          map((payload: Locale) => localeUpdated({ payload })),
+          catchError(error => of(localeUpdateError({ error })))
+        )
+    )
+  ));
+
   deleteLocale$ = createEffect(() => this.actions$.pipe(
     ofType(deleteLocale),
     switchMap((action) =>
@@ -146,6 +182,30 @@ export class ProjectEffects {
   ));
 
   // Keys
+
+  createKey$ = createEffect(() => this.actions$.pipe(
+    ofType(createKey),
+    switchMap((action) =>
+      this.keyService
+        .create(action.payload)
+        .pipe(
+          map((payload: Key) => keyCreated({ payload })),
+          catchError(error => of(keyCreateError({ error })))
+        )
+    )
+  ));
+
+  updateKey$ = createEffect(() => this.actions$.pipe(
+    ofType(updateKey),
+    switchMap((action) =>
+      this.keyService
+        .update(action.payload)
+        .pipe(
+          map((payload: Key) => keyUpdated({ payload })),
+          catchError(error => of(keyUpdateError({ error })))
+        )
+    )
+  ));
 
   deleteKey$ = createEffect(() => this.actions$.pipe(
     ofType(deleteKey),

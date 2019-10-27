@@ -47,7 +47,7 @@ export class ProjectLocalesComponent {
 
   onDelete(locale: Locale) {
     this.facade.deleteLocale(locale.id);
-    this.facade.localeDeleted$
+    this.facade.localeModified$
       .pipe(skip(1), take(1))
       .subscribe((l) =>
         this.snackBar.open(
