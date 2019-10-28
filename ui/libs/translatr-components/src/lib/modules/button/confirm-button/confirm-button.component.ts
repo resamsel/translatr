@@ -12,7 +12,7 @@ export class ConfirmButtonComponent {
   @Input() disabled = false;
   @Output() readonly confirm = new EventEmitter<void>();
 
-  @HostBinding('class') clazz = 'confirm-button';
+  @HostBinding('class.confirm-button') clazz = true;
 
   onConfirm(): void {
     this.confirm.emit();

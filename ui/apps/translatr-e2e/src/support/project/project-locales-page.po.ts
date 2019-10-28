@@ -12,4 +12,8 @@ export class ProjectLocalesPage extends Page {
     cy.visit(`/${this.username}/${this.projectName}/locales`);
     return this;
   }
+
+  getLocaleList(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('app-locale-list .mat-nav-list');
+  }
 }

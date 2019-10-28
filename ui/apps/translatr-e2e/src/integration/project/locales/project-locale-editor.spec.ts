@@ -1,4 +1,4 @@
-import { LocaleEditorPage } from '../../../../support/project/locale-editor-page.po';
+import { LocaleEditorPage } from '../../../support/project/locale-editor-page.po';
 
 describe('Translatr Project Locale Editor', () => {
   let page: LocaleEditorPage;
