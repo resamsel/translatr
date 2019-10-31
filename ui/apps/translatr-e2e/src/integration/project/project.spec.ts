@@ -1,6 +1,6 @@
 import { ProjectPage } from '../../support/project/project-page.po';
 
-describe('Translatr Project', () => {
+describe('Project', () => {
   let page: ProjectPage;
 
   beforeEach(() => {

@@ -1,6 +1,6 @@
 import { DashboardPage } from '../../support/dashboard.po';
 
-describe('Translatr Dashboard Empty', () => {
+describe('Dashboard Empty', () => {
   let page: DashboardPage;
 
   beforeEach(() => {

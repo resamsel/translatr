@@ -1,6 +1,6 @@
 import { ProjectSettingsPage } from '../../../support/project/project-settings-page.po';
 
-describe('Translatr Project Settings', () => {
+describe('Project Settings', () => {
   let page: ProjectSettingsPage;
 
   beforeEach(() => {

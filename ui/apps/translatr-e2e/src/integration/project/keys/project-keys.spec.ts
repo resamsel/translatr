@@ -1,6 +1,6 @@
 import { ProjectKeysPage } from '../../../support/project/project-keys-page.po';
 
-describe('Translatr Project Keys', () => {
+describe('Project Keys', () => {
   let page: ProjectKeysPage;
 
   beforeEach(() => {

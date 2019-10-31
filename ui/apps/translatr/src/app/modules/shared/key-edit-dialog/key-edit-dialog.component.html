@@ -1,4 +1,5 @@
-<h1 mat-dialog-title>Add Key</h1>
+<h1 *ngIf="!form.value.id" mat-dialog-title>Add Key</h1>
+<h1 *ngIf="form.value.id" mat-dialog-title>Edit Key</h1>
 <div mat-dialog-content>
   <form [formGroup]="form">
     <mat-form-field class="name">
@@ -24,12 +25,13 @@
   </form>
 </div>
 <div class="dialog-actions" mat-dialog-actions>
-  <button mat-button mat-dialog-close>Cancel</button>
+  <button class="cancel" mat-button mat-dialog-close>Cancel</button>
   <button
     mat-button
-    (click)="onSave()"
     color="primary"
     [disabled]="form.invalid || processing"
+    (click)="onSave()"
+    class="save"
   >
     Save
   </button>

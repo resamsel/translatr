@@ -1,6 +1,6 @@
 import { HomePage } from '../../support/app.po';
 
-describe('Translatr Home', () => {
+describe('Home', () => {
   let page: HomePage;
 
   beforeEach(() => {

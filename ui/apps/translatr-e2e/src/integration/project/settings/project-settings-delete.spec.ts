@@ -1,6 +1,6 @@
 import { ProjectSettingsPage } from '../../../support/project/project-settings-page.po';
 
-describe('Translatr Project Settings Delete', () => {
+describe('Project Settings Delete', () => {
   let page: ProjectSettingsPage;
 
   beforeEach(() => {
@@ -33,9 +33,9 @@ describe('Translatr Project Settings Delete', () => {
 
     // when
     page.navigateTo();
+    page.getDeleteProjectButton().click();
 
     // then
-    page.getDeleteProjectButton().click();
     page.getDeleteProjectDialog().should('have.length', 1);
   });
 
@@ -44,10 +44,10 @@ describe('Translatr Project Settings Delete', () => {
 
     // when
     page.navigateTo();
-
-    // then
     page.getDeleteProjectButton().click();
     page.getCancelProjectDeleteDialogButton().click();
+
+    // then
     page.getDeleteProjectDialog().should('have.length', 0);
   });
 
@@ -56,9 +56,9 @@ describe('Translatr Project Settings Delete', () => {
 
     // when
     page.navigateTo();
+    page.getDeleteProjectButton().click();
 
     // then
-    page.getDeleteProjectButton().click();
     page.getDeleteProjectDialog()
       .find('button.delete')
       .should('be.disabled');
@@ -69,12 +69,12 @@ describe('Translatr Project Settings Delete', () => {
 
     // when
     page.navigateTo();
-
-    // then
     page.getDeleteProjectButton().click();
     page.getDeleteProjectDialog()
       .find('input')
       .type('INCORRECT');
+
+    // then
     page.getDeleteProjectDialog()
       .find('button.delete')
       .should('be.disabled');
@@ -92,8 +92,6 @@ describe('Translatr Project Settings Delete', () => {
 
     // when
     page.navigateTo();
-
-    // then
     page.getDeleteProjectButton().click();
     page.getDeleteProjectDialog()
       .find('input')
@@ -101,6 +99,8 @@ describe('Translatr Project Settings Delete', () => {
     page.getDeleteProjectDialog()
       .find('button.delete')
       .click();
+
+    // then
     page.getDeleteProjectDialog().should('have.length', 0);
 
     cy.url().should('contain', '/dashboard');

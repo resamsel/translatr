@@ -1,6 +1,6 @@
 import { KeyEditorPage } from '../../../support/project/key-editor-page.po';
 
-describe('Translatr Project Key Editor', () => {
+describe('Project Key Editor', () => {
   let page: KeyEditorPage;
 
   beforeEach(() => {

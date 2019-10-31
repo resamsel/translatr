@@ -12,4 +12,8 @@ export class ProjectKeysPage extends Page {
     cy.visit(`/${this.username}/${this.projectName}/keys`);
     return this;
   }
+
+  getKeyList(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('app-key-list .mat-nav-list');
+  }
 }

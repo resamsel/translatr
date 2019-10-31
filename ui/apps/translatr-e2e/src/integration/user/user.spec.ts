@@ -1,6 +1,6 @@
 import { UserPage } from '../../support/user/user-page.po';
 
-describe('Translatr User Page', () => {
+describe('User Page', () => {
   let page: UserPage;
 
   beforeEach(() => {
