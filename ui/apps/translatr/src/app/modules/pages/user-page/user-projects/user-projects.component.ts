@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PagedList, Project, ProjectCriteria, User } from '@dev/translatr-model';
+import { ProjectCriteria, User } from '@dev/translatr-model';
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
-import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { UserFacade } from '../+state/user.facade';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -13,15 +13,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
   styleUrls: ['./user-projects.component.scss']
 })
 export class UserProjectsComponent implements OnInit {
-  projects$ = this.facade.projects$
-    .pipe(
-      map((pagedList: PagedList<Project>) => !!pagedList
-        ? {
-          ...pagedList,
-          list: pagedList.list.slice(0, 3)
-        }
-        : pagedList)
-    );
+  projects$ = this.facade.projects$;
   canCreateProject$ = this.facade.canCreateProject$;
   criteria$: Subject<ProjectCriteria> =
     new BehaviorSubject<ProjectCriteria>({
@@ -38,7 +30,7 @@ export class UserProjectsComponent implements OnInit {
 
   ngOnInit() {
     this.facade.user$
-      .pipe(filter(user => !!user))
+      .pipe(filter(user => !!user), take(1))
       .subscribe((user: User) => {
         this.updateCriteria({ owner: user.username });
 

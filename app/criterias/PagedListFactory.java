@@ -18,7 +18,12 @@ public class PagedListFactory {
         query.setMaxRows(200);
       }
 
-      return Ebean.getDefaultServer().findPagedList(query, Ebean.currentTransaction());
+      PagedList<T> pagedList = Ebean.getDefaultServer().findPagedList(query, Ebean.currentTransaction());
+
+      pagedList.getList();
+      pagedList.loadCount();
+
+      return pagedList;
     }
 
     HasNextPagedList<T> pagedList = new HasNextPagedList<>(query);
