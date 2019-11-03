@@ -36,7 +36,7 @@ export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
     return this.http
       .get<Locale>(
         `/api/${options.username}/${options.projectName}/locales/${
-          options.localeName
+          encodeURI(options.localeName)
         }`,
         { params: options.params }
       )

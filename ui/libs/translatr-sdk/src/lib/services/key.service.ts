@@ -36,7 +36,7 @@ export class KeyService extends AbstractService<Key, KeyCriteria> {
     return this.http
       .get<Key>(
         `/api/${options.username}/${options.projectName}/keys/${
-          options.keyName
+          encodeURI(options.keyName)
         }`,
         options
       )
