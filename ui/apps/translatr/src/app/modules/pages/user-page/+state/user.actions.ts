@@ -23,6 +23,19 @@ export const userLoadError = createAction(
   props<{ error: any }>()
 );
 
+export const updateUser = createAction(
+  '[User Page] Update User',
+  props<{ payload: User }>()
+);
+export const userUpdated = createAction(
+  '[User API] User Updated',
+  props<{ user: User }>()
+);
+export const userUpdateError = createAction(
+  '[User API] User Update Error',
+  props<{ error: any }>()
+);
+
 export const loadProjects = createAction(
   '[User Page] Load Projects',
   props<ProjectCriteria>()

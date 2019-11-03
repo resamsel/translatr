@@ -31,9 +31,11 @@ import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { AccessTokenEditDialogModule } from '../../shared/access-token-edit-dialog/access-token-edit-dialog.module';
 import { UserAccessTokenComponent } from './user-access-token/user-access-token.component';
 import { AccessTokenEditFormModule } from '../../shared/access-token-edit-form/access-token-edit-form.module';
-import { MatTooltipModule } from '@angular/material';
+import { MatFormFieldModule, MatInputModule, MatTooltipModule } from '@angular/material';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
 import { UserGuard } from './user.guard';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,8 @@ import { UserGuard } from './user.guard';
     UserInfoComponent,
     UserActivityComponent,
     UserAccessTokensComponent,
-    UserAccessTokenComponent
+    UserAccessTokenComponent,
+    UserSettingsComponent
   ],
   imports: [
     CommonModule,
@@ -70,6 +73,9 @@ import { UserGuard } from './user.guard';
     MatDialogModule,
     MatListModule,
     MatTooltipModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
 
     StoreModule.forFeature(USER_FEATURE_KEY, userReducer, {
       initialState: userInitialState

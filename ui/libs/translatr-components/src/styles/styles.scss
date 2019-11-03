@@ -134,6 +134,48 @@ a .mat-card {
   }
 }
 
+.mat-tab-nav-bar {
+  .container {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+
+    @include medium {
+      flex-grow: initial;
+      justify-content: flex-start;
+    }
+  }
+
+  a.mat-tab-link {
+    padding: 0 8px;
+    min-width: auto;
+
+    > span {
+      display: none;
+    }
+
+    @include medium {
+      padding: 0 12px;
+
+      > .mat-icon {
+        display: none;
+      }
+      > span {
+        display: inline;
+      }
+    }
+
+    @include large {
+      min-width: 120px;
+      padding: 0 24px;
+
+      > .mat-icon {
+        display: inline-block;
+      }
+    }
+  }
+}
+
 .empty.large {
   .mat-icon {
     opacity: 0.5;

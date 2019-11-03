@@ -8,7 +8,9 @@ import {
   projectsLoaded,
   projectsLoadError,
   userLoaded,
-  userLoadError
+  userLoadError,
+  userUpdated,
+  userUpdateError
 } from './user.actions';
 import { AccessToken, Activity, PagedList, Project, User } from '@dev/translatr-model';
 import { Action, createReducer, on } from '@ngrx/store';
@@ -46,6 +48,14 @@ const reducer = createReducer(
   ),
   on(
     userLoadError,
+    (state, { error }) => ({ ...state, error })
+  ),
+  on(
+    userUpdated,
+    (state, { user }) => ({ ...state, user })
+  ),
+  on(
+    userUpdateError,
     (state, { error }) => ({ ...state, error })
   ),
   on(

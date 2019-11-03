@@ -21,7 +21,7 @@
         <mat-error
           *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern"
         >
-          Must match pattern [a-zA-Z0-9_.-]*
+          Must match pattern [^\s/]*
         </mat-error>
         <mat-error
           *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"

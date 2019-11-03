@@ -10,6 +10,7 @@ import { MyselfGuard } from '../../../guards/myself.guard';
 import { UserAccessTokenComponent } from './user-access-token/user-access-token.component';
 import { AuthGuard } from '../../../guards/auth.guard';
 import { UserGuard } from './user.guard';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 
 const routes: Routes = [
   {
@@ -58,6 +59,15 @@ const routes: Routes = [
             canActivate: [MyselfGuard]
           }
         ]
+      },
+      {
+        path: 'settings',
+        component: UserSettingsComponent,
+        canActivate: [MyselfGuard],
+        data: {
+          icon: 'settings',
+          name: 'Settings'
+        }
       }
     ]
   }

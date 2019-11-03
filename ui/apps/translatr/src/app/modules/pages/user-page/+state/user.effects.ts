@@ -18,8 +18,11 @@ import {
   loadUser,
   projectsLoaded,
   projectsLoadError,
+  updateUser,
   userLoaded,
-  userLoadError
+  userLoadError,
+  userUpdated,
+  userUpdateError
 } from './user.actions';
 
 @Injectable()
@@ -31,6 +34,17 @@ export class UserEffects {
       .pipe(
         map((user: User) => userLoaded({ user })),
         catchError(error => of(userLoadError(error)))
+      )
+    )
+  ));
+
+  updateUser$ = createEffect(() => this.actions$.pipe(
+    ofType(updateUser),
+    switchMap((action) => this.userService
+      .update(action.payload)
+      .pipe(
+        map((user: User) => userUpdated({ user })),
+        catchError(error => of(userUpdateError({ error })))
       )
     )
   ));

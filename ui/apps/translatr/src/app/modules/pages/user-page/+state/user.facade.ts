@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { UserPartialState } from './user.reducer';
 import { userQuery } from './user.selectors';
-import { loadAccessToken, loadAccessTokens, loadActivities, loadProjects, loadUser } from './user.actions';
+import { loadAccessToken, loadAccessTokens, loadActivities, loadProjects, loadUser, updateUser } from './user.actions';
 import { AccessTokenService } from '@dev/translatr-sdk';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import {
@@ -28,6 +28,10 @@ export class UserFacade {
 
   user$ = this.store.pipe(
     select(userQuery.getUser),
+    takeUntil(this.destroy$.asObservable())
+  );
+  error$ = this.store.pipe(
+    select(userQuery.getError),
     takeUntil(this.destroy$.asObservable())
   );
   permission$ = combineLatest([this.user$, this.appFacade.me$])
@@ -67,6 +71,10 @@ export class UserFacade {
 
   loadUser(username: string): void {
     this.store.dispatch(loadUser({ username }));
+  }
+
+  updateUser(user: User): void {
+    this.store.dispatch(updateUser({ payload: user }));
   }
 
   loadProjects(criteria: ProjectCriteria): void {

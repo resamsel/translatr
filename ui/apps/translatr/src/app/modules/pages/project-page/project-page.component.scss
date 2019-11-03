@@ -1,45 +1,5 @@
 @import "mixins";
 
-.mat-tab-nav-bar .container {
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-
-  @include medium {
-    flex-grow: initial;
-    justify-content: flex-start;
-  }
-}
-
-a.mat-tab-link {
-  min-width: auto;
-  padding: 0 8px;
-
-  > span {
-    display: none;
-  }
-
-  @include medium {
-    padding: 0 12px;
-
-    > .mat-icon {
-      display: none;
-    }
-    > span {
-      display: inline;
-    }
-  }
-
-  @include large {
-    min-width: 120px;
-    padding: 0 24px;
-
-    > .mat-icon {
-      display: inline-block;
-    }
-  }
-}
-
 .mat-form-field {
   ::ng-deep {
     .mat-form-field-wrapper {

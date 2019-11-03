@@ -9,12 +9,14 @@ public class UserMapper {
   public static models.User toModel(User in, models.User user) {
     models.User out = user != null ? user : new models.User();
 
-    out.whenCreated = in.whenCreated;
-    out.whenUpdated = in.whenUpdated;
     out.name = in.name;
     out.username = in.username;
-    out.email = in.email;
-    out.role = UserRoleMapper.toModel(in.role);
+    if (in.email != null) {
+      out.email = in.email;
+    }
+    if (in.role != null) {
+      out.role = UserRoleMapper.toModel(in.role);
+    }
 
     return out;
   }
