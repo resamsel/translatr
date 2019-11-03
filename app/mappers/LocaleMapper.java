@@ -1,5 +1,6 @@
 package mappers;
 
+import com.google.common.base.Strings;
 import criterias.MessageCriteria;
 import dto.Locale;
 import dto.Message;
@@ -55,6 +56,9 @@ public class LocaleMapper {
     out.name = in.name;
     out.pathName = in.getPathName();
     out.displayName = FormatUtils.formatDisplayName(in);
+    if (Strings.isNullOrEmpty(out.displayName)) {
+      out.displayName = in.name;
+    }
 
     if (in.messages != null && !in.messages.isEmpty()) {
       out.messages =
