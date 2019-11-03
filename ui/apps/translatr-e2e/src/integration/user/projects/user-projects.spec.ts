@@ -1,10 +1,10 @@
-import { UserPage } from '../../support/user/user-page.po';
+import { UserProjectsPage } from '../../../support/user/user-projects-page.po';
 
-describe('User', () => {
-  let page: UserPage;
+describe('User Projects', () => {
+  let page: UserProjectsPage;
 
   beforeEach(() => {
-    page = new UserPage('johndoe');
+    page = new UserProjectsPage('johndoe');
 
     cy.clearCookies();
     cy.server();
@@ -15,7 +15,7 @@ describe('User', () => {
     cy.route('/api/activities*', 'fixture:johndoe/activities');
   });
 
-  it('should show user page', () => {
+  it('should show user projects', () => {
     // given
 
     // when
@@ -24,5 +24,15 @@ describe('User', () => {
     // then
     page.getPageName()
       .should('have.text', 'John Doe');
+  });
+
+  it('should not show more button', () => {
+    // given
+
+    // when
+    page.navigateTo();
+
+    // then
+    cy.get('a.more').should('have.length', 0);
   });
 });
