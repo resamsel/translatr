@@ -67,7 +67,7 @@ export class UserSettingsComponent
   }
 
   protected onSaved(user: User): void {
-    if (user.username !== this.route.snapshot.params.username) {
+    if (user.username !== this.route.parent.snapshot.params.username) {
       this.router.navigate(['/', user.username, 'settings']);
     }
   }

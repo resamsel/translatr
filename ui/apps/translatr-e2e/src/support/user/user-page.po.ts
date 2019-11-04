@@ -9,4 +9,8 @@ export class UserPage extends Page {
     cy.visit(`/${this.username}`);
     return this;
   }
+
+  getName(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('.name');
+  }
 }

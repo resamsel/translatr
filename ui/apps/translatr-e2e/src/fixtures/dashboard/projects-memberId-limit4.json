@@ -7,8 +7,8 @@
       "name": "translatr",
       "description": "Sample project displaying the abilities of Translatr.",
       "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
-      "ownerName": "René Panzar",
-      "ownerUsername": "repanzar",
+      "ownerName": "John Doe",
+      "ownerUsername": "johndoe",
       "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
       "members": [
         {
@@ -18,10 +18,10 @@
           "role": "Owner",
           "projectId": "050c41ea-97ad-484f-ba04-1bae34b797bf",
           "projectName": "translatr",
-          "projectOwnerUsername": "repanzar",
+          "projectOwnerUsername": "johndoe",
           "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
-          "userName": "René Panzar",
-          "userUsername": "repanzar",
+          "userName": "John Doe",
+          "userUsername": "johndoe",
           "userEmailHash": "6d041874043a1820c908f747e8a608bc"
         },
         {
@@ -31,7 +31,7 @@
           "role": "Developer",
           "projectId": "050c41ea-97ad-484f-ba04-1bae34b797bf",
           "projectName": "translatr",
-          "projectOwnerUsername": "repanzar",
+          "projectOwnerUsername": "johndoe",
           "userId": "8b2c41f3-6ac5-4fd6-a6a8-3509addd4698",
           "userName": "Mark Dev",
           "userUsername": "markdev",
@@ -46,8 +46,8 @@
       "whenUpdated": "2019-07-05T20:09:08.247Z",
       "name": "two",
       "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
-      "ownerName": "René Panzar",
-      "ownerUsername": "repanzar",
+      "ownerName": "John Doe",
+      "ownerUsername": "johndoe",
       "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
       "members": [
         {
@@ -57,10 +57,10 @@
           "role": "Owner",
           "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
           "projectName": "two",
-          "projectOwnerUsername": "repanzar",
+          "projectOwnerUsername": "johndoe",
           "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
-          "userName": "René Panzar",
-          "userUsername": "repanzar",
+          "userName": "John Doe",
+          "userUsername": "johndoe",
           "userEmailHash": "6d041874043a1820c908f747e8a608bc"
         }
       ]
@@ -71,8 +71,8 @@
       "whenUpdated": "2019-08-19T22:07:14.735Z",
       "name": "nine",
       "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
-      "ownerName": "René Panzar",
-      "ownerUsername": "repanzar",
+      "ownerName": "John Doe",
+      "ownerUsername": "johndoe",
       "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
       "members": [
         {
@@ -82,10 +82,10 @@
           "role": "Owner",
           "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
           "projectName": "nine",
-          "projectOwnerUsername": "repanzar",
+          "projectOwnerUsername": "johndoe",
           "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
-          "userName": "René Panzar",
-          "userUsername": "repanzar",
+          "userName": "John Doe",
+          "userUsername": "johndoe",
           "userEmailHash": "6d041874043a1820c908f747e8a608bc"
         },
         {
@@ -95,7 +95,7 @@
           "role": "Manager",
           "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
           "projectName": "nine",
-          "projectOwnerUsername": "repanzar",
+          "projectOwnerUsername": "johndoe",
           "userId": "4206b5b8-c69a-4be5-8a24-bf315be940c7",
           "userName": "Lillian Porte",
           "userUsername": "lillianporte",
@@ -108,7 +108,7 @@
           "role": "Developer",
           "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
           "projectName": "nine",
-          "projectOwnerUsername": "repanzar",
+          "projectOwnerUsername": "johndoe",
           "userId": "36916b28-77a5-4b83-97b7-515f25929dd8",
           "userName": "Jena Markos!",
           "userUsername": "jenamarkos",
@@ -121,7 +121,7 @@
           "role": "Translator",
           "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
           "projectName": "nine",
-          "projectOwnerUsername": "repanzar",
+          "projectOwnerUsername": "johndoe",
           "userId": "33c818ca-862b-4455-8cca-ec31bba23d32",
           "userName": "Lillian Guild",
           "userUsername": "lillianguild",
@@ -134,7 +134,7 @@
           "role": "Manager",
           "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
           "projectName": "nine",
-          "projectOwnerUsername": "repanzar",
+          "projectOwnerUsername": "johndoe",
           "userId": "00035869-bc10-424a-88b7-0e7e8b56871c",
           "userName": "Lillian Ruby",
           "userUsername": "lillianruby",
@@ -147,7 +147,7 @@
           "role": "Owner",
           "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
           "projectName": "nine",
-          "projectOwnerUsername": "repanzar",
+          "projectOwnerUsername": "johndoe",
           "userId": "70277c14-3913-4478-aa9c-49a269747f6c",
           "userName": "Janenna Guild!",
           "userUsername": "janennaguild",
@@ -161,8 +161,8 @@
       "whenUpdated": "2019-07-05T20:17:08.800Z",
       "name": "four",
       "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
-      "ownerName": "René Panzar",
-      "ownerUsername": "repanzar",
+      "ownerName": "John Doe",
+      "ownerUsername": "johndoe",
       "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
       "members": [
         {
@@ -172,10 +172,10 @@
           "role": "Owner",
           "projectId": "4173e88a-8d76-4350-9ad1-42039f8759cf",
           "projectName": "four",
-          "projectOwnerUsername": "repanzar",
+          "projectOwnerUsername": "johndoe",
           "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
-          "userName": "René Panzar",
-          "userUsername": "repanzar",
+          "userName": "John Doe",
+          "userUsername": "johndoe",
           "userEmailHash": "6d041874043a1820c908f747e8a608bc"
         }
       ]

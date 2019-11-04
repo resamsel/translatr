@@ -1,0 +1,23 @@
+{
+  "error": {
+    "type": "ConstraintViolationException",
+    "message": "Constraint violations detected",
+    "violations": [
+      {
+        "message": "Username must be unique",
+        "field": "name",
+        "invalidValue": {
+          "id": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+          "whenCreated": "2019-09-05T15:57:47.691Z",
+          "whenUpdated": "2019-09-05T15:57:47.691Z",
+          "name": "John Doe",
+          "username": "janesmith",
+          "email": "john.doe@gmail.com",
+          "emailHash": "6d041874043a1820c908f747e8a608bc",
+          "role": "User",
+          "memberships": []
+        }
+      }
+    ]
+  }
+}

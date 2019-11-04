@@ -35,7 +35,6 @@ import {
   projectLoadError,
   projectSaved,
   saveProject,
-  updateKey,
   updateLocale
 } from './project.actions';
 import { ActivityService, KeyService, LocaleService, MessageService, ProjectService } from '@dev/translatr-sdk';

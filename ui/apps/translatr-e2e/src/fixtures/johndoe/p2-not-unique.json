@@ -15,9 +15,9 @@
               "whenCreated": "2019-05-10T20:18:47.691Z",
               "whenUpdated": "2019-05-10T20:25:36.988Z",
               "active": true,
-              "username": "repanzar",
-              "name": "René Panzar",
-              "email": "rene.panzar@gmail.com",
+              "username": "johndoe",
+              "name": "John Doe",
+              "email": "john.doe@gmail.com",
               "emailValidated": false,
               "role": "Admin",
               "roles": [
