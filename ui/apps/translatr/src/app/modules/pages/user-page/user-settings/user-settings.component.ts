@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserFacade } from '../+state/user.facade';
 import { merge, throwError } from 'rxjs';
 import { filter, skip, switchMap } from 'rxjs/operators';
+import { findParam } from '@translatr/utils';
 
 @Component({
   selector: 'app-user-settings',
@@ -67,7 +68,7 @@ export class UserSettingsComponent
   }
 
   protected onSaved(user: User): void {
-    if (user.username !== this.route.parent.snapshot.params.username) {
+    if (user.username !== findParam(this.route.snapshot, 'username')) {
       this.router.navigate(['/', user.username, 'settings']);
     }
   }

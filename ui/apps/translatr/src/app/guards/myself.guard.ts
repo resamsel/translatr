@@ -4,19 +4,7 @@ import { Observable } from 'rxjs';
 import { AppFacade } from '../+state/app.facade';
 import { map } from 'rxjs/operators';
 import { User, UserRole } from '@dev/translatr-model';
-
-function findParam(next: ActivatedRouteSnapshot, param: string): string | undefined {
-  let current = next;
-  while (!!current && !!current.params) {
-    if (current.params[param]) {
-      return current.params[param];
-    }
-
-    current = current.parent;
-  }
-
-  return undefined;
-}
+import { findParam } from '@translatr/utils';
 
 @Injectable({
   providedIn: 'root'

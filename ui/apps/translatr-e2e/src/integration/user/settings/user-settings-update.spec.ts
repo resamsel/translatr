@@ -9,7 +9,7 @@ describe('User Settings Update', () => {
     cy.clearCookies();
     cy.server();
 
-    cy.route('/api/me', 'fixture:me');
+    cy.route('/api/me', 'fixture:johndoe');
     cy.route('/api/johndoe', 'fixture:johndoe');
     cy.route('/api/projects*', 'fixture:johndoe/projects');
     cy.route('/api/activities*', 'fixture:johndoe/activities');
