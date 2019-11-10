@@ -8,10 +8,11 @@
   [message]="selectedMessage$ | async"
   [messages]="(messages$ | async)?.list"
 >
-  <app-search-bar
-    [criteria]="search$ | async"
-    (search)="onSearch($event)"
-  ></app-search-bar>
+  <dev-filter-field
+    (selected)="onSelected($event)"
+    [filters]="filters"
+    [selection]="selection$ | async"
+  ></dev-filter-field>
 
   <app-editor-selector>
     <button mat-button [matMenuTriggerFor]="localeSelector">

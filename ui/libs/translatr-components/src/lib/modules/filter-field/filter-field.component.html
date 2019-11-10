@@ -1,0 +1,84 @@
+<mat-form-field [appearance]="appearance" [color]="color" class="search">
+  <mat-chip-list #chipList>
+    <mat-basic-chip
+      (removed)="onRemoved(option)"
+      *ngFor="let option of options"
+      [removable]="true"
+      [selectable]="false"
+      class="option"
+    >
+      <span class="ellipsis" matTooltip="{{option.title || option.key}}: {{option.value}}">
+        <ng-container *ngIf="option.title; else selectedKeyValue">
+          <span class="{{option.type === 'boolean' ? 'value' : 'type'}}">{{option.title}}</span>
+          <span
+            *ngIf="option.value !== undefined && option.value !== null && !option.allowEmpty"
+            class="value"
+          >{{option.value.toString()}}</span>
+        </ng-container>
+        <ng-template #selectedKeyValue>
+          <span class="type">{{option.key}}</span>
+          <span
+            *ngIf="option.value !== undefined && option.value !== null"
+            class="value"
+          >{{option.value.toString()}}</span>
+        </ng-template>
+      </span>
+      <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-basic-chip>
+    <ng-content></ng-content>
+    <input
+      #autocompleteInput
+      [formControl]="filterControl"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipList"
+      autocomplete="off"
+      matInput
+      placeholder="Filter"
+      type="search"
+    />
+    <button
+      (click)="autocompleteTrigger.openPanel()"
+      *ngIf="autocompleteTrigger && !autocompleteTrigger.panelOpen && autocompleteOptions.length > 0"
+      aria-label="Expand filter bar"
+      mat-icon-button
+      matSuffix
+    >
+      <mat-icon>expand_more</mat-icon>
+    </button>
+    <button
+      (click)="autocompleteTrigger.closePanel()"
+      *ngIf="autocompleteTrigger && autocompleteTrigger.panelOpen"
+      aria-label="Collapse filter bar"
+      mat-icon-button
+      matSuffix
+    >
+      <mat-icon>expand_less</mat-icon>
+    </button>
+  </mat-chip-list>
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    [autoActiveFirstOption]="true"
+    [displayWith]="displayFn"
+  >
+    <mat-option
+      (onSelectionChange)="onAutocompleteSelected($event)"
+      *ngFor="let option of autocompleteOptions"
+      [value]="option"
+      class="option"
+    >
+      <ng-container *ngIf="option.title; else autocompleteKeyValue">
+        <span>{{option.title}}</span>
+        <span
+          *ngIf="option.value !== undefined
+              && option.value !== null
+              && option.value !== ''
+              && !option.allowEmpty"
+        >: {{option.value.toString()}}</span>
+      </ng-container>
+      <ng-template #autocompleteKeyValue>
+        <span class="type">{{option.key}}</span>
+        <span class="value">{{option.value.toString()}}</span>
+      </ng-template>
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

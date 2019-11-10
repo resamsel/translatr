@@ -109,8 +109,8 @@ public class KeyCriteria extends AbstractProjectSearchCriteria<KeyCriteria> {
   }
 
   public static KeyCriteria from(Request request) {
-    return new KeyCriteria().with(request).withMissing(Boolean
-        .parseBoolean(request.queryString().getOrDefault("missing", new String[]{"false"})[0]))
+    return new KeyCriteria().with(request)
+        .withMissing(Boolean.parseBoolean(request.queryString().getOrDefault("missing", new String[]{"false"})[0]))
         .withLocaleId(request.queryString().getOrDefault("localeId", new String[]{null})[0]);
   }
 }

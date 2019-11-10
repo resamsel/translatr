@@ -1,5 +1,15 @@
 <div class="actions">
-  <mat-form-field *ngIf="searchEnabled" appearance="outline">
+  <dev-filter-field
+    (selected)="onSelected($event)"
+    *ngIf="searchEnabled"
+    [filters]="filters"
+    [selection]="selection"
+    appearance="standard"
+    color="accent"
+  >
+    <mat-icon matPrefix>search</mat-icon>
+  </dev-filter-field>
+  <mat-form-field *ngIf="false && searchEnabled" appearance="outline">
     <mat-icon matPrefix>search</mat-icon>
     <mat-label i18n="@@search.label">Filter list</mat-label>
     <input

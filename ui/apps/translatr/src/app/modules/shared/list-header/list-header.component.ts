@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { FilterFieldFilter, FilterFieldSelection } from '@dev/translatr-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -7,8 +8,33 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
   styleUrls: ['./list-header.component.scss']
 })
 export class ListHeaderComponent {
+  selection: Array<FilterFieldFilter> = [];
+  filters = [{
+    key: 'search',
+    type: 'string',
+    title: 'Search',
+    value: ''
+  }];
 
-  @Input() search: string;
+  private _search: string;
+
+  get search(): string {
+    return this._search;
+  }
+
+  @Input() set search(search: string) {
+    console.log('list header search', search);
+    if (search === undefined || search === null || search.length === 0) {
+      if (this.selection.length !== 0) {
+        this.selection = [];
+      }
+    } else if (search !== this._search) {
+      this.selection = [{ key: 'search', value: search, type: 'string' }];
+    }
+
+    this._search = search;
+  }
+
   @Input() searchEnabled = true;
   @Input() addVisible = true;
   @Input() addEnabled = true;
@@ -16,11 +42,20 @@ export class ListHeaderComponent {
   @Input() removeVisible = false;
   @Input() removeEnabled = false;
   @Input() removeTooltip = 'Remove';
+
   @Output() readonly add = new EventEmitter<void>();
   @Output() readonly remove = new EventEmitter<void>();
   @Output() readonly filter = new EventEmitter<string>();
 
   constructor() {
     this.add.subscribe(() => console.log('ListHeader.add'));
+  }
+
+  onSelected(selected: ReadonlyArray<FilterFieldSelection>) {
+    if (selected.length > 0) {
+      this.filter.emit(selected[0].value);
+    } else {
+      this.filter.emit('');
+    }
   }
 }

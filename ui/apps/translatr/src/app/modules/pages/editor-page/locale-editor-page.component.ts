@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EditorFacade } from './+state/editor.facade';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
-import { map, takeUntil } from 'rxjs/operators';
-import { Locale, Message, RequestCriteria } from '@dev/translatr-model';
+import { distinctUntilChanged, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { Locale, Message } from '@dev/translatr-model';
 import { AppFacade } from '../../../+state/app.facade';
 import { trackByFn } from '@translatr/utils';
+import { combineLatest, Observable } from 'rxjs';
+import { FilterFieldFilter, FilterFieldSelection } from '@dev/translatr-components';
 
 @Component({
   selector: 'app-locale-editor-page',
@@ -20,6 +22,30 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     .pipe(map((message: Message | undefined) =>
       message !== undefined ? { ...message } : undefined));
   readonly search$ = this.facade.search$;
+  readonly filters: ReadonlyArray<FilterFieldFilter> = [
+    {
+      key: 'search',
+      title: 'Search',
+      type: 'string',
+      value: ''
+    },
+    {
+      key: 'missing',
+      title: 'Missing translation',
+      type: 'boolean',
+      value: true,
+      allowEmpty: true
+    }
+  ];
+  readonly selection$: Observable<ReadonlyArray<FilterFieldSelection>> =
+    this.route.queryParams.pipe(
+      map((params: Params) => this.filters
+        .filter(f => params[f.key] !== undefined && params[f.key] !== '')
+        .map(f => ({ ...f, value: params[f.key] }))
+      ),
+      tap(console.log),
+      distinctUntilChanged((a, b) => a.length === b.length)
+    );
   readonly messages$ = this.facade.messagesOfKey$;
   readonly message: Message;
 
@@ -47,10 +73,20 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
           params.get('localeName')
         );
       });
-    this.route.queryParams
-      .pipe(takeUntil(this.facade.unloadEditor$))
-      .subscribe((params: Params) => {
-        this.facade.updateKeySearch(params);
+    combineLatest([
+      this.route.queryParams,
+      this.locale$.pipe(filter(x => !!x))
+    ])
+      .pipe(
+        takeUntil(this.facade.unloadEditor$)
+      )
+      .subscribe(([params, locale]: [Params, Locale]) => {
+        console.log('queryParams', params);
+        this.facade.loadKeys({
+          ...params,
+          projectId: locale.projectId,
+          localeId: locale.id
+        });
         this.facade.selectKey(params.key);
       });
   }
@@ -59,10 +95,22 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     this.facade.unloadEditor();
   }
 
-  onSearch(criteria: RequestCriteria) {
+  onSelected(selected: ReadonlyArray<FilterFieldSelection>): void {
+    const params: Params = this.filters.map(f => f.key)
+      .reduce(
+        (agg, key) => {
+          const selection = selected.find(s => s.key === key);
+          return {
+            ...agg,
+            [key]: selection ? selection.value : null
+          };
+        },
+        {}
+      );
+
     this.router.navigate([], {
       queryParamsHandling: 'merge',
-      queryParams: criteria
+      queryParams: params
     });
   }
 

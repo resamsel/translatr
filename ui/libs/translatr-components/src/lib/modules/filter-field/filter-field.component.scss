@@ -1,0 +1,71 @@
+@import '~@angular/material/theming';
+
+.mat-form-field {
+  width: 100%;
+
+  ::ng-deep {
+    .mat-form-field-wrapper {
+      padding-bottom: 1em;
+    }
+
+    .mat-form-field-infix {
+      width: auto;
+      border-top-width: .2em;
+      padding: .6em 0;
+    }
+
+    .mat-chip-list-wrapper {
+      flex-wrap: nowrap;
+      min-height: 40px;
+    }
+  }
+
+  input.mat-chip-input {
+    width: 80px;
+    flex: 1 0 80px;
+  }
+
+  &.mat-form-field-appearance-outline ::ng-deep {
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+  }
+}
+
+.option {
+  &.mat-chip.mat-basic-chip {
+    @include mat-elevation(1);
+    display: inline-flex;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.87);
+    background-color: rgba(255, 255, 255, 0.87);
+    //border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    margin-left: 4px;
+    padding: 4px 6px;
+
+    .mat-icon {
+      width: 18px;
+      height: 18px;
+      margin-left: 4px;
+      opacity: .4;
+      cursor: pointer;
+
+      &:hover {
+        opacity: .8;
+      }
+    }
+  }
+
+  .type {
+    opacity: .6;
+  }
+
+  .type + .value {
+    &::before {
+      content: ':';
+      opacity: .6;
+      padding-right: .2em;
+    }
+  }
+}
