@@ -1,34 +1,14 @@
 <div class="actions">
   <dev-filter-field
-    (selected)="onSelected($event)"
     *ngIf="searchEnabled"
     [filters]="filters"
     [selection]="selection"
     appearance="elevate"
     color="accent"
+    (selected)="onSelected($event)"
   >
     <mat-icon matPrefix>search</mat-icon>
   </dev-filter-field>
-  <mat-form-field *ngIf="false && searchEnabled" appearance="outline">
-    <mat-icon matPrefix>search</mat-icon>
-    <mat-label i18n="@@search.label">Filter list</mat-label>
-    <input
-      #searchField
-      (blur)="filter.emit($event.target.value)"
-      (keyup.enter)="filter.emit($event.target.value)"
-      autocomplete="off"
-      matInput
-      [value]="search ? search : ''"
-      placeholder="Filter">
-    <button
-      (click)="searchField.value = ''; filter.emit('')"
-      *ngIf="searchField.value"
-      aria-label="Clear"
-      mat-icon-button
-      matSuffix>
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-form-field>
   <button (click)="remove.emit()" *ngIf="removeVisible" [disabled]="!removeEnabled" i18n mat-icon-button>
     <mat-icon>remove</mat-icon>
   </button>
