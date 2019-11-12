@@ -13,6 +13,7 @@
     "prestart": "npm run buildinfo",
     "start": "ng serve --host 0.0.0.0 --port 4210",
     "start:admin": "ng serve translatr-admin --host 0.0.0.0 --port 4211",
+    "start:docs": "ng serve docs --host 0.0.0.0 --port 4212",
     "test": "ng test",
     "test:ci": "ng test --watch=false --browsers ChromeHeadless",
     "test:coverage": "ng test --watch=true --code-coverage=true",

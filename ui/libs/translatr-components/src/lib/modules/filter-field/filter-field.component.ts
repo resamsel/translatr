@@ -1,7 +1,13 @@
-import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FilterFieldFilter, FilterFieldSelection } from '@translatr/translatr-components/src';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { FilterFieldFilter } from '@translatr/translatr-components/src';
 import { FormControl } from '@angular/forms';
-import { MatAutocompleteTrigger, MatOptionSelectionChange, ThemePalette } from '@angular/material';
+import {
+  MatAutocompleteTrigger,
+  MatCheckboxChange,
+  MatFormFieldAppearance,
+  MatOptionSelectionChange,
+  ThemePalette
+} from '@angular/material';
 
 const lowerCaseIncludes = (s: string, search: string): boolean =>
   s.toLowerCase().includes(search.toLowerCase());
@@ -14,9 +20,9 @@ const lowerCaseIncludes = (s: string, search: string): boolean =>
 })
 export class FilterFieldComponent implements OnInit {
   @Input() filters: ReadonlyArray<FilterFieldFilter>;
-  @Input() appearance: 'standard' | 'outline' = 'standard';
+  @Input() appearance: MatFormFieldAppearance | 'elevate' = 'standard';
   @Input() color: ThemePalette = 'primary';
-  @Output() selected = new EventEmitter<ReadonlyArray<FilterFieldSelection>>();
+  @Output() selected = new EventEmitter<ReadonlyArray<FilterFieldFilter>>();
   @ViewChild('autocompleteInput', { static: false }) autocompleteInput: ElementRef;
   @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
   filterControl = new FormControl('');
@@ -46,6 +52,9 @@ export class FilterFieldComponent implements OnInit {
     this.selected.emit(options);
   }
 
+  constructor(public readonly renderer: Renderer2) {
+  }
+
   ngOnInit() {
     this.filterControl.valueChanges
       .subscribe((value: string | FilterFieldFilter) => {
@@ -67,10 +76,10 @@ export class FilterFieldComponent implements OnInit {
     return option ? option.title : option;
   }
 
-  onRemoved(option: FilterFieldSelection) {
-    console.log('removed', option);
-    this.removeOption(option.key);
-    if (option.key === 'search') {
+  onRemoved(key: string) {
+    console.log('removed', key);
+    this.removeOption(key);
+    if (key === 'search') {
       this.filterControl.setValue('');
     }
   }
@@ -98,6 +107,14 @@ export class FilterFieldComponent implements OnInit {
     this.updateAutocompleteOptions();
   }
 
+  onSelected(filter: FilterFieldFilter, change: MatCheckboxChange) {
+    if (change.checked) {
+      this.updateOption(filter);
+    } else {
+      this.removeOption(filter.key);
+    }
+  }
+
   private updateAutocompleteOptions(option?: FilterFieldFilter): void {
     console.log('updateAutocompleteOptions', option);
     const booleans = this.options
@@ -112,7 +129,7 @@ export class FilterFieldComponent implements OnInit {
           (option.value !== '' && !o.allowEmpty)
           || (option.value === '' && o.allowEmpty)
           || (option.value !== '' && lowerCaseIncludes(o.title, option.value.toString())))
-        .filter(o => o.type !== 'number' || !isNaN(option.value))
+        .filter(o => o.type !== 'number' || typeof option.value === 'number' && !isNaN(option.value))
         .map((o) => ({
             ...o,
             value: o.type !== 'boolean' ? option.value : o.value

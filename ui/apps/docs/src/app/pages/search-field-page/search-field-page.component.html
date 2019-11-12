@@ -1,0 +1,23 @@
+<div class="container">
+  <section *ngFor="let appearance of appearances">
+    <h2>Appearance: {{appearance}}</h2>
+    <dev-filter-field
+      [appearance]="appearance"
+      [filters]="filters"
+      [selection]="selection"
+    >
+      <mat-icon matPrefix>search</mat-icon>
+    </dev-filter-field>
+
+    <mat-toolbar color="primary">
+      <dev-filter-field
+        [appearance]="appearance"
+        [filters]="filters"
+        [selection]="selection"
+        style="flex-grow: 1"
+      >
+        <mat-icon matPrefix>search</mat-icon>
+      </dev-filter-field>
+    </mat-toolbar>
+  </section>
+</div>

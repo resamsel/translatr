@@ -4,10 +4,12 @@ import { FilterFieldComponent } from './filter-field.component';
 import {
   MatAutocompleteModule,
   MatButtonModule,
+  MatCheckboxModule,
   MatChipsModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
+  MatMenuModule,
   MatTooltipModule
 } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -27,7 +29,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatAutocompleteModule,
     MatButtonModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatMenuModule,
+    MatCheckboxModule
   ]
 })
 export class FilterFieldModule {

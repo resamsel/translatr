@@ -18,6 +18,7 @@ describe('Project Locale Editor', () => {
     cy.route('/api/project/*/messages?*keyName=k1', 'fixture:johndoe/p1/messages-key-k1');
   });
 
+
   it('should have page title Language Editor', () => {
     // given
 

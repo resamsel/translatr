@@ -12,7 +12,10 @@
     (selected)="onSelected($event)"
     [filters]="filters"
     [selection]="selection$ | async"
-  ></dev-filter-field>
+    appearance="elevate"
+  >
+    <mat-icon matPrefix>search</mat-icon>
+  </dev-filter-field>
 
   <app-editor-selector>
     <button mat-button [matMenuTriggerFor]="localeSelector">

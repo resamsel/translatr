@@ -1,7 +1,13 @@
-<mat-form-field [appearance]="appearance" [color]="color" class="search">
+<mat-form-field
+  #formField
+  [appearance]="appearance"
+  [color]="color"
+  class="search search-field-{{appearance}}"
+>
+  <ng-content select="[matPrefix]"></ng-content>
   <mat-chip-list #chipList>
-    <mat-basic-chip
-      (removed)="onRemoved(option)"
+    <mat-chip
+      (removed)="onRemoved(option.key)"
       *ngFor="let option of options"
       [removable]="true"
       [selectable]="false"
@@ -23,16 +29,16 @@
           >{{option.value.toString()}}</span>
         </ng-template>
       </span>
-      <mat-icon matChipRemove>cancel</mat-icon>
-    </mat-basic-chip>
+      <mat-icon matChipRemove>close</mat-icon>
+    </mat-chip>
     <ng-content></ng-content>
     <input
       #autocompleteInput
+      matInput
       [formControl]="filterControl"
       [matAutocomplete]="auto"
       [matChipInputFor]="chipList"
       autocomplete="off"
-      matInput
       placeholder="Filter"
       type="search"
     />
@@ -59,6 +65,9 @@
     #auto="matAutocomplete"
     [autoActiveFirstOption]="true"
     [displayWith]="displayFn"
+    (closed)="renderer.removeClass(formField._elementRef.nativeElement, 'autocomplete-open')"
+    (opened)="renderer.addClass(formField._elementRef.nativeElement, 'autocomplete-open')"
+    class="mat-elevation-z1"
   >
     <mat-option
       (onSelectionChange)="onAutocompleteSelected($event)"

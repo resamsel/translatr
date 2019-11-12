@@ -1,6 +1,9 @@
 @import '~@angular/material/theming';
 
-.mat-form-field {
+.search-field-standard,
+.search-field-outline,
+.search-field-fill,
+.search-field-legacy {
   width: 100%;
 
   ::ng-deep {
@@ -13,32 +16,93 @@
       border-top-width: .2em;
       padding: .6em 0;
     }
-
-    .mat-chip-list-wrapper {
-      flex-wrap: nowrap;
-      min-height: 40px;
-    }
-  }
-
-  input.mat-chip-input {
-    width: 80px;
-    flex: 1 0 80px;
   }
 
   &.mat-form-field-appearance-outline ::ng-deep {
     .mat-form-field-wrapper {
       padding-bottom: 0;
     }
+
+    .mat-form-field-flex {
+      padding: 0 .6em 0 .6em;
+    }
+
+    .mat-form-field-infix {
+      display: flex;
+      padding: .4em 0;
+    }
+  }
+
+  .option.mat-chip.mat-basic-chip {
+    @include mat-elevation(1);
+  }
+}
+
+.search-field-elevate {
+  color: rgba(0, 0, 0, .87);
+
+  .mat-chip-list {
+    line-height: 20px;
+  }
+
+  ::ng-deep {
+    &.mat-icon[matPrefix] {
+      margin-left: 4px;
+    }
+
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    .mat-form-field-flex {
+      background-color: #f1f3f4;
+      border-radius: 8px;
+      padding: 4px 8px;
+    }
+
+    .mat-form-field-infix {
+      display: flex;
+      align-items: center;
+      padding: 4px 0;
+      border-top-width: 0;
+    }
+
+    .mat-chip-list-wrapper {
+      min-height: 40px;
+    }
+  }
+
+  &.autocomplete-open {
+    ::ng-deep .mat-form-field-flex {
+      border-radius: 8px 8px 0 0;
+    }
+  }
+
+  &.mat-focused {
+    color: rgba(0, 0, 0, 0.87);
+
+    ::ng-deep .mat-form-field-flex {
+      @include mat-elevation(2);
+      background-color: #fff;
+    }
   }
 }
 
 .option {
+  &.mat-chip .mat-icon {
+    border-radius: 9px;
+
+    &:hover {
+      color: #fff;
+      background-color: rgba(0, 0, 0, .6);
+    }
+  }
+
   &.mat-chip.mat-basic-chip {
-    @include mat-elevation(1);
     display: inline-flex;
     align-items: center;
     color: rgba(0, 0, 0, 0.87);
-    background-color: rgba(255, 255, 255, 0.87);
+    background-color: #f5f5f5;
     //border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     margin-left: 4px;
@@ -68,4 +132,24 @@
       padding-right: .2em;
     }
   }
+}
+
+:host ::ng-deep .mat-icon[matPrefix] {
+  margin-right: 8px;
+}
+
+.mat-chip-list {
+  flex-grow: 1;
+  flex-wrap: nowrap;
+  max-width: 100%;
+
+  ::ng-deep .mat-chip-list-wrapper {
+    flex-wrap: nowrap;
+  }
+}
+
+input.mat-chip-input {
+  width: 80px;
+  flex: 1 0 80px;
+  margin-left: 8px;
 }

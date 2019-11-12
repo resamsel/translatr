@@ -9,34 +9,65 @@
   },
   "projects": {
     "translatr": {
-      "tags": ["app"]
+      "tags": [
+        "app"
+      ]
     },
     "translatr-e2e": {
-      "tags": ["e2e"]
+      "tags": [
+        "e2e"
+      ]
     },
     "translatr-admin": {
-      "tags": ["app"]
+      "tags": [
+        "app"
+      ]
     },
     "translatr-admin-e2e": {
-      "tags": ["e2e"]
+      "tags": [
+        "e2e"
+      ]
+    },
+    "docs-e2e": {
+      "tags": [
+        "e2e"
+      ]
+    },
+    "docs": {
+      "tags": [
+        "app"
+      ]
     },
     "translatr-sdk": {
-      "tags": ["lib", "api"]
+      "tags": [
+        "lib",
+        "api"
+      ]
     },
     "translatr-components": {
-      "tags": ["lib"]
+      "tags": [
+        "lib"
+      ]
     },
     "translatr-model": {
-      "tags": ["lib"]
+      "tags": [
+        "lib"
+      ]
     },
     "generator": {
-      "tags": ["lib"]
+      "tags": [
+        "lib"
+      ]
     },
     "utils": {
-      "tags": ["utils"]
+      "tags": [
+        "utils"
+      ]
     },
     "node-utils": {
-      "tags": ["utils"]
+      "tags": [
+        "utils"
+      ]
     }
   }
 }
