@@ -31,8 +31,11 @@ import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/op
 import { Observable, of, throwError } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AppPartialState } from '../../../../+state/app.reducer';
+import { AppState } from '../../../../+state/app.reducer';
 import { editorQuery } from './editor.selectors';
+import { Params } from '@angular/router';
+import { routerQuery } from '../../../../+state/router.selectors';
+import { pickKeys } from '@translatr/utils';
 
 @Injectable()
 export class EditorEffects {
@@ -63,11 +66,16 @@ export class EditorEffects {
 
   @Effect() loadKeys$ = this.actions$.pipe(
     ofType<LoadKeys>(EditorActionTypes.LoadKeys),
-    withLatestFrom(this.store.pipe(select(editorQuery.getSearch))),
-    switchMap(([action, search]: [LoadKeys, RequestCriteria]) =>
+    withLatestFrom(
+      this.store.pipe(select(editorQuery.getSearch)),
+      this.store.pipe(select(routerQuery.selectQueryParams))
+    ),
+    tap(a => console.log('loadKeys', a)),
+    switchMap(([action, search, params]: [LoadKeys, RequestCriteria, Params]) =>
       this.keyService
         .find({
           ...search,
+          ...pickKeys(params, ['key', 'order', 'limit', 'offset', 'search', 'missing']),
           ...action.payload
         })
         .pipe(
@@ -215,12 +223,14 @@ export class EditorEffects {
     ),
     withLatestFrom(
       this.store.select(editorQuery.getKey),
-      this.store.select(editorQuery.getSearch)
+      this.store.select(editorQuery.getSearch),
+      this.store.pipe(select(routerQuery.selectQueryParams))
     ),
     filter(([, key]) => key !== undefined),
-    map(([, key, search]) =>
+    map(([, key, search, queryParams]) =>
       new LoadLocales({
         ...search,
+        ...pickKeys(queryParams, ['search', 'missing']),
         projectId: key.projectId
       })
     )
@@ -247,7 +257,7 @@ export class EditorEffects {
   );
 
   constructor(
-    private readonly store: Store<AppPartialState>,
+    private readonly store: Store<AppState>,
     private readonly actions$: Actions,
     private readonly localeService: LocaleService,
     private readonly keyService: KeyService,

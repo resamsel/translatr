@@ -162,10 +162,10 @@ describe('Project Key Editor', () => {
 
     page.getMeta().within((el) => {
       el.find('#mat-tab-label-0-1')
-        .click();
+        .trigger('click');
       el.find('#mat-tab-content-0-1 .mat-card button.use-value')
         .last()
-        .click();
+        .trigger('click');
     });
 
     page.getEditorContents()

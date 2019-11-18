@@ -1,5 +1,6 @@
 import { AppAction, AppActionTypes } from './app.actions';
 import { PagedList, User } from '@dev/translatr-model';
+import * as fromRouter from '@ngrx/router-store';
 
 export const APP_FEATURE_KEY = 'app';
 
@@ -14,6 +15,7 @@ export const APP_FEATURE_KEY = 'app';
 export interface AppState {
   me?: User;
   users?: PagedList<User>;
+  router?: fromRouter.RouterReducerState<any>;
 }
 
 export interface AppPartialState {

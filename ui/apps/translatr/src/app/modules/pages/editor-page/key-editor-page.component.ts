@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Key, Message, PagedList } from '@dev/translatr-model';
 import { EditorFacade } from './+state/editor.facade';
-import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, take, takeUntil, tap } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
-import { trackByFn } from '@translatr/utils';
+import { pickKeys, trackByFn } from '@translatr/utils';
 import { MessageItem } from './message-item';
 import { FilterFieldFilter, FilterFieldSelection } from '@dev/translatr-components';
 import { combineLatest, Observable } from 'rxjs';
@@ -18,10 +18,10 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   readonly me$ = this.appFacade.me$.pipe(takeUntil(this.facade.unloadEditor$));
   readonly key$ = this.facade.key$;
   readonly messageItems$ = this.facade.keyEditorMessageItems$;
+  readonly selectedLocaleName$ = this.facade.selectedLocaleName$;
   readonly selectedMessage$ = this.facade.keySelectedMessage$
     .pipe(map((message: Message | undefined) =>
       message !== undefined ? { ...message } : undefined));
-  readonly selectedLocale$ = this.facade.selectedLocale$;
   readonly search$ = this.facade.search$;
   readonly filters: ReadonlyArray<FilterFieldFilter> = [
     {
@@ -39,7 +39,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
     }
   ];
   readonly selection$: Observable<ReadonlyArray<FilterFieldSelection>> =
-    this.route.queryParams.pipe(
+    this.appFacade.queryParams$.pipe(
       map((params: Params) => this.filters
         .filter(f => params[f.key] !== undefined && params[f.key] !== '')
         .map(f => ({ ...f, value: params[f.key] }))
@@ -63,17 +63,18 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.route.paramMap
+    this.appFacade.routeParams$
       .pipe(takeUntil(this.facade.unloadEditor$))
-      .subscribe((params: ParamMap) => {
+      .subscribe((params: Params) => {
         this.facade.loadKeyEditor(
-          params.get('username'),
-          params.get('projectName'),
-          params.get('keyName')
+          params.username,
+          params.projectName,
+          params.keyName
         );
       });
     combineLatest([
-      this.route.queryParams,
+      this.appFacade.queryParams$
+        .pipe(filter(x => x.locale !== undefined)),
       this.key$.pipe(filter(x => !!x))
     ])
       .pipe(
@@ -82,10 +83,11 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
       .subscribe(([params, key]: [Params, Key]) => {
         console.log('queryParams', params);
         this.facade.loadLocales({
-          ...params,
+          ...pickKeys(params, ['search', 'missing']),
           projectId: key.projectId,
           keyId: key.id
         });
+        // TODO: let locale be selected in effects?
         this.facade.selectLocale(params.locale);
       });
   }

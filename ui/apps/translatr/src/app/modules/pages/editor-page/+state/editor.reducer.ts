@@ -25,9 +25,6 @@ export interface EditorState {
   messages?: PagedList<Message>;
   messagesOfKey?: PagedList<Message>;
 
-  selectedLocaleName?: string;
-  selectedKey?: string;
-
   search?: RequestCriteria;
 
   loading: LoadingState<EditorState>;
@@ -49,8 +46,6 @@ export const initialState: EditorState = {
     locales: false,
     key: false,
     keys: false,
-    selectedLocaleName: false,
-    selectedKey: false,
     loading: false,
     error: false
   },
@@ -204,11 +199,6 @@ export function editorReducer(
       return activateLoading(state, 'keys');
     case EditorActionTypes.KeysLoaded:
       return placePayload(state, 'keys', action.payload);
-
-    case EditorActionTypes.SelectLocale:
-      return placePayload(state, 'selectedLocaleName', action.payload.locale);
-    case EditorActionTypes.SelectKey:
-      return placePayload(state, 'selectedKey', action.payload.key);
 
     case EditorActionTypes.LoadMessages:
       return activateLoading(state, 'messages');

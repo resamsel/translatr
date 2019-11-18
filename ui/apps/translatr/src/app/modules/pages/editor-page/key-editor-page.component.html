@@ -28,8 +28,8 @@
     <div class="flex-spacer"></div>
     <a
       mat-icon-button
-      *ngIf="selectedLocale$ | async; else disabledLink"
-      [routerLink]="['../..', 'locales', selectedLocale$ | async]"
+      *ngIf="selectedLocaleName$ | async; else disabledLink"
+      [routerLink]="['../..', 'locales', selectedLocaleName$ | async]"
       [queryParams]="{
         key: (key$ | async)?.name,
         search: (key$ | async)?.name

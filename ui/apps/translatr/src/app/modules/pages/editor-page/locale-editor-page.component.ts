@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EditorFacade } from './+state/editor.facade';
-import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
-import { distinctUntilChanged, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { Params, Router } from '@angular/router';
+import { distinctUntilChanged, filter, map, take, takeUntil, tap } from 'rxjs/operators';
 import { Locale, Message } from '@dev/translatr-model';
 import { AppFacade } from '../../../+state/app.facade';
 import { trackByFn } from '@translatr/utils';
@@ -18,6 +18,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   readonly locale$ = this.facade.locale$;
   readonly locales$ = this.facade.locales$;
   readonly messageItems$ = this.facade.localeEditorMessageItems$;
+  readonly selectedKeyName$ = this.facade.selectedKeyName$;
   readonly selectedMessage$ = this.facade.localeSelectedMessage$
     .pipe(map((message: Message | undefined) =>
       message !== undefined ? { ...message } : undefined));
@@ -38,7 +39,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     }
   ];
   readonly selection$: Observable<ReadonlyArray<FilterFieldSelection>> =
-    this.route.queryParams.pipe(
+    this.appFacade.queryParams$.pipe(
       map((params: Params) => this.filters
         .filter(f => params[f.key] !== undefined && params[f.key] !== '')
         .map(f => ({ ...f, value: params[f.key] }))
@@ -58,36 +59,34 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   constructor(
     private readonly appFacade: AppFacade,
     private readonly facade: EditorFacade,
-    private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {
   }
 
   ngOnInit() {
-    this.route.paramMap
+    this.appFacade.routeParams$
       .pipe(takeUntil(this.facade.unloadEditor$))
-      .subscribe((params: ParamMap) => {
+      .subscribe((params: Params) => {
         this.facade.loadLocaleEditor(
-          params.get('username'),
-          params.get('projectName'),
-          params.get('localeName')
+          params.username,
+          params.projectName,
+          params.localeName
         );
       });
     combineLatest([
-      this.route.queryParams,
+      this.selectedKeyName$.pipe(filter(x => !!x)),
       this.locale$.pipe(filter(x => !!x))
     ])
       .pipe(
         takeUntil(this.facade.unloadEditor$)
       )
-      .subscribe(([params, locale]: [Params, Locale]) => {
-        console.log('queryParams', params);
+      .subscribe(([selectedKeyName, locale]: [string, Locale]) => {
         this.facade.loadKeys({
-          ...params,
           projectId: locale.projectId,
           localeId: locale.id
         });
-        this.facade.selectKey(params.key);
+        // TODO: let key be selected in effects?
+        this.facade.selectKey(selectedKeyName);
       });
   }
 
@@ -115,10 +114,12 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onLoadMore(limit: number): void {
-    this.locale$.subscribe((locale: Locale) =>
-      this.facade.loadKeys({
-        projectId: locale.projectId,
-        limit: limit + 25
-      }));
+    this.locale$
+      .pipe(take(1))
+      .subscribe((locale: Locale) =>
+        this.facade.loadKeys({
+          projectId: locale.projectId,
+          limit: limit + 25
+        }));
   }
 }

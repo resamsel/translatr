@@ -12,13 +12,14 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { NotificationService, TranslatrSdkModule } from '@dev/translatr-sdk';
-import { appReducer, initialState as appInitialState } from './+state/app.reducer';
+import { appReducer } from './+state/app.reducer';
 import { AppEffects } from './+state/app.effects';
 import { AppFacade } from './+state/app.facade';
 import { environment } from '../environments/environment';
 import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material';
 import { MatNotificationService } from './services/mat-notification-service';
+import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,9 +38,11 @@ import { MatNotificationService } from './services/mat-notification-service';
 
     NxModule.forRoot(),
     StoreModule.forRoot(
-      { app: appReducer },
       {
-        initialState: { app: appInitialState },
+        app: appReducer,
+        router: routerReducer
+      },
+      {
         metaReducers: [],
         runtimeChecks: {
           strictStateImmutability: true,
@@ -48,7 +51,8 @@ import { MatNotificationService } from './services/mat-notification-service';
       }
     ),
     EffectsModule.forRoot([AppEffects]),
-    !environment.production ? StoreDevtoolsModule.instrument() : []
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    StoreRouterConnectingModule.forRoot()
   ],
   providers: [
     AppFacade,

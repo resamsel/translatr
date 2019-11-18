@@ -1,16 +1,23 @@
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { AppPartialState } from './app.reducer';
+import { AppState } from './app.reducer';
 import { appQuery } from './app.selectors';
 import { LoadMe, LoadUsers } from './app.actions';
 import { RequestCriteria } from '@dev/translatr-model';
+import { routerQuery } from './router.selectors';
+import { Observable } from 'rxjs';
+import { Params } from '@angular/router';
 
 @Injectable()
 export class AppFacade {
   me$ = this.store.pipe(select(appQuery.getMe));
   users$ = this.store.pipe(select(appQuery.getUsers));
 
-  constructor(private store: Store<AppPartialState>) {}
+  routeParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectRouteParams));
+  queryParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectQueryParams));
+
+  constructor(private store: Store<AppState>) {
+  }
 
   loadMe() {
     this.store.dispatch(new LoadMe());

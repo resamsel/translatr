@@ -2,6 +2,8 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { EDITOR_FEATURE_KEY, EditorState, LoadingState } from './editor.reducer';
 import { Key, Locale, Message, PagedList } from '@dev/translatr-model';
 import { MessageItem } from '../message-item';
+import { routerQuery } from '../../../../+state/router.selectors';
+import { Params } from '@angular/router';
 
 // Lookup the 'Editor' feature state managed by NgRx
 const getEditorState = createFeatureSelector<EditorState>(EDITOR_FEATURE_KEY);
@@ -47,8 +49,8 @@ const getKeysLoading = createSelector(
 );
 
 const getSelectedLocaleName = createSelector(
-  getEditorState,
-  (state: EditorState) => state.selectedLocaleName
+  routerQuery.selectQueryParams,
+  (params: Params) => params !== undefined ? params.locale : undefined
 );
 
 const getSelectedLocale = createSelector(
@@ -67,8 +69,8 @@ const getSelectedLocale = createSelector(
 );
 
 const getSelectedKeyName = createSelector(
-  getEditorState,
-  (state: EditorState) => state.selectedKey
+  routerQuery.selectQueryParams,
+  (params: Params) => params !== undefined ? params.key : undefined
 );
 
 const getSelectedKey = createSelector(

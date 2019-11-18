@@ -16,10 +16,12 @@ import {
   UnloadEditor
 } from './editor.actions';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { KeyCriteria, LocaleCriteria, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { MessageItem } from '../message-item';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
+import { Params } from '@angular/router';
+import { AppFacade } from '../../../../+state/app.facade';
 
 @Injectable()
 export class EditorFacade {
@@ -28,6 +30,9 @@ export class EditorFacade {
   locale$ = this.store.pipe(
     select(editorQuery.getLocale),
     takeUntil(this.unloadEditor$)
+  );
+  selectedLocaleName$ = this.appFacade.queryParams$.pipe(
+    map((params: Params) => params !== undefined ? params.locale : undefined)
   );
 
   locales$ = this.store.pipe(
@@ -51,6 +56,9 @@ export class EditorFacade {
     select(editorQuery.getKey),
     takeUntil(this.unloadEditor$)
   );
+  selectedKeyName$ = this.appFacade.queryParams$.pipe(
+    map((params: Params) => params !== undefined ? params.key : undefined)
+  );
 
   localeSelectedMessage$ = this.store.pipe(
     select(editorQuery.getLocaleSelectedMessage),
@@ -58,11 +66,6 @@ export class EditorFacade {
   );
   keySelectedMessage$ = this.store.pipe(
     select(editorQuery.getKeySelectedMessage),
-    takeUntil(this.unloadEditor$)
-  );
-
-  selectedLocale$ = this.store.pipe(
-    select(editorQuery.getSelectedLocaleName),
     takeUntil(this.unloadEditor$)
   );
 
@@ -76,7 +79,10 @@ export class EditorFacade {
     takeUntil(this.unloadEditor$)
   );
 
-  constructor(private store: Store<EditorPartialState>) {
+  constructor(
+    private readonly store: Store<EditorPartialState>,
+    private readonly appFacade: AppFacade
+  ) {
   }
 
   loadLocaleEditor(
