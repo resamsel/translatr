@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { FilterFieldFilter, FilterFieldSelection } from '@dev/translatr-components';
+import { FilterFieldFilter } from '@dev/translatr-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,8 +51,8 @@ export class ListHeaderComponent {
     this.add.subscribe(() => console.log('ListHeader.add'));
   }
 
-  onSelected(selected: ReadonlyArray<FilterFieldSelection>) {
-    if (selected.length > 0) {
+  onSelected(selected: ReadonlyArray<FilterFieldFilter>) {
+    if (selected.length > 0 && typeof selected[0].value === 'string') {
       this.filter.emit(selected[0].value);
     } else {
       this.filter.emit('');

@@ -29,11 +29,28 @@
     <p i18n="@@updated.when" matLine>
       Updated <span [matTooltip]="locale?.whenUpdated | date: 'full'">{{ locale?.whenUpdated | amTimeAgo }}</span>
     </p>
+    <a
+      (click)="$event.stopPropagation(); $event.preventDefault()"
+      [matMenuTriggerFor]="menu"
+      class="download"
+      i18n-matTooltip="@@button.download"
+      mat-icon-button
+      matTooltip="Download"
+    >
+      <mat-icon>cloud_download</mat-icon>
+    </a>
+    <mat-menu #menu="matMenu">
+      <a
+        *ngFor="let fileType of fileTypes"
+        href="/api/locale/{{locale.id}}/export/{{fileType.type}}"
+        mat-menu-item
+      >{{fileType.name}}</a>
+    </mat-menu>
     <button
       *ngIf="canCreate"
       (click)="onEdit(locale, $event)"
-      matTooltip="Edit"
       class="edit"
+      matTooltip="Edit"
       i18n-matTooltip="@@button.edit"
       mat-icon-button
     >

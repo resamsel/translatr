@@ -25,7 +25,7 @@ class MyHttpHandler implements HttpHandler {
   private handler: HttpXhrBackend;
 
   constructor(
-    private readonly xhrFactory: XhrFactory,
+    readonly xhrFactory: XhrFactory,
     private readonly baseUrl: string,
     private readonly accessToken: string
   ) {

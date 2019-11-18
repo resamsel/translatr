@@ -27,6 +27,11 @@ export class LocaleListComponent {
   trackByFn = trackByFn;
   // @ts-ignore
   @HostBinding('style.display') private readonly display = 'block';
+  readonly fileTypes: Array<{ type: string; name: string; }> = [
+    { type: 'java_properties', name: 'Java Properties' },
+    { type: 'play_messages', name: 'Play Messages' },
+    { type: 'gettext', name: 'Gettext' }
+  ];
 
   constructor(
     private readonly dialog: MatDialog,

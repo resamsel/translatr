@@ -12,7 +12,11 @@ import services.KeyService;
 import services.MessageService;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -59,10 +63,21 @@ public abstract class AbstractImporter implements Importer {
   protected abstract Properties retrieveProperties(File file, Locale locale) throws Exception;
 
   protected void load(Locale locale, Collection<String> keyNames) {
-    keys = keyService.findBy(new KeyCriteria().withProjectId(locale.project.id).withNames(keyNames))
-        .getList().stream().collect(toMap(k -> k.name, a -> a));
-    messages = messageService.findBy(new MessageCriteria().withLocaleId(locale.id)).getList()
-        .stream().collect(toMap(m -> m.key.name, a -> a));
+    keys = keyService.findBy(
+        new KeyCriteria()
+            .withLimit(Integer.MAX_VALUE)
+            .withProjectId(locale.project.id)
+            .withNames(keyNames))
+        .getList()
+        .stream()
+        .collect(toMap(k -> k.name, a -> a));
+    messages = messageService.findBy(
+        new MessageCriteria()
+            .withLimit(Integer.MAX_VALUE)
+            .withLocaleId(locale.id))
+        .getList()
+        .stream()
+        .collect(toMap(m -> m.key.name, a -> a));
   }
 
   void saveKeys(Locale locale, Properties properties) {
