@@ -1,5 +1,7 @@
 import { EditorAction, EditorActionTypes } from './editor.actions';
 import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
+import * as fromRouter from '@ngrx/router-store';
+import { ROUTER_FEATURE_KEY } from '../../../../+state/router.selectors';
 
 export const EDITOR_FEATURE_KEY = 'editor';
 
@@ -34,6 +36,7 @@ export interface EditorState {
 
 export interface EditorPartialState {
   readonly [EDITOR_FEATURE_KEY]: EditorState;
+  readonly [ROUTER_FEATURE_KEY]: fromRouter.RouterReducerState<any>;
 }
 
 export const initialState: EditorState = {

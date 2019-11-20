@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Key, Message, PagedList } from '@dev/translatr-model';
+import { Message, PagedList } from '@dev/translatr-model';
 import { EditorFacade } from './+state/editor.facade';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { distinctUntilChanged, filter, map, take, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, takeUntil, tap } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
-import { pickKeys, trackByFn } from '@translatr/utils';
+import { trackByFn } from '@translatr/utils';
 import { MessageItem } from './message-item';
 import { FilterFieldFilter, FilterFieldSelection } from '@dev/translatr-components';
-import { combineLatest, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-key-editor-page',
@@ -64,7 +64,14 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.appFacade.routeParams$
-      .pipe(takeUntil(this.facade.unloadEditor$))
+      .pipe(
+        filter(p =>
+          p.username !== undefined
+          && p.projectName !== undefined
+          && p.keyName !== undefined
+        ),
+        takeUntil(this.facade.unloadEditor$)
+      )
       .subscribe((params: Params) => {
         this.facade.loadKeyEditor(
           params.username,
@@ -72,24 +79,10 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
           params.keyName
         );
       });
-    combineLatest([
-      this.appFacade.queryParams$
-        .pipe(filter(x => x.locale !== undefined)),
-      this.key$.pipe(filter(x => !!x))
-    ])
-      .pipe(
-        takeUntil(this.facade.unloadEditor$)
-      )
-      .subscribe(([params, key]: [Params, Key]) => {
-        console.log('queryParams', params);
-        this.facade.loadLocales({
-          ...pickKeys(params, ['search', 'missing']),
-          projectId: key.projectId,
-          keyId: key.id
-        });
-        // TODO: let locale be selected in effects?
-        this.facade.selectLocale(params.locale);
-      });
+    // TODO: let locale be selected in effects?
+    this.selectedLocaleName$.pipe(filter(x => !!x))
+      .subscribe((selectedLocaleName: string) =>
+        this.facade.selectLocale(selectedLocaleName));
   }
 
   ngOnDestroy(): void {
@@ -116,12 +109,10 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onLoadMore(limit: number): void {
-    this.key$.pipe(take(1))
-      .subscribe((key: Key) =>
-        this.facade.loadLocales({
-          projectId: key.projectId,
-          limit: limit + 25
-        }));
+    this.router.navigate([], {
+      queryParamsHandling: 'merge',
+      queryParams: { limit }
+    });
   }
 
   onKeyChange(value: string) {

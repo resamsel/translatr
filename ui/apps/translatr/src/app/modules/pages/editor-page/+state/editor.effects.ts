@@ -161,12 +161,14 @@ export class EditorEffects {
   @Effect() localeLoaded$ = this.actions$.pipe(
     ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
     withLatestFrom(
-      this.store.pipe(select(editorQuery.getSearch))
+      this.store.pipe(select(editorQuery.getSearch)),
+      this.store.select(routerQuery.selectQueryParams)
     ),
-    switchMap(([action, search]) =>
+    switchMap(([action, search, queryParams]) =>
       of(
         new LoadKeys({
           ...search,
+          ...pickKeys(queryParams, ['search', 'missing', 'limit', 'order']),
           projectId: action.payload.locale.projectId
         }),
         new LoadLocales({
@@ -224,13 +226,13 @@ export class EditorEffects {
     withLatestFrom(
       this.store.select(editorQuery.getKey),
       this.store.select(editorQuery.getSearch),
-      this.store.pipe(select(routerQuery.selectQueryParams))
+      this.store.select(routerQuery.selectQueryParams)
     ),
     filter(([, key]) => key !== undefined),
     map(([, key, search, queryParams]) =>
       new LoadLocales({
         ...search,
-        ...pickKeys(queryParams, ['search', 'missing']),
+        ...pickKeys(queryParams, ['search', 'missing', 'limit', 'order']),
         projectId: key.projectId
       })
     )
