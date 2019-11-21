@@ -32,7 +32,9 @@
               "libs/translatr-components/src/styles/media.scss"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["libs/translatr-components/src/styles"]
+              "includePaths": [
+                "libs/translatr-components/src/styles"
+              ]
             },
             "scripts": [],
             "baseHref": "/ui/",
@@ -109,7 +111,10 @@
               "apps/translatr/tsconfig.app.json",
               "apps/translatr/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/translatr/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/translatr/**"
+            ]
           }
         }
       }
@@ -133,13 +138,15 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "linter": "tslint",
             "tsConfig": [
               "apps/translatr-e2e/tsconfig.e2e.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/translatr-e2e/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/translatr-e2e/**"
+            ]
           }
         }
       }
@@ -173,7 +180,9 @@
               "libs/translatr-components/src/styles/media.scss"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["libs/translatr-components/src/styles"]
+              "includePaths": [
+                "libs/translatr-components/src/styles"
+              ]
             },
             "scripts": [],
             "baseHref": "/admin/",
@@ -231,7 +240,10 @@
               "apps/translatr-admin/tsconfig.app.json",
               "apps/translatr-admin/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/translatr-admin/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/translatr-admin/**"
+            ]
           }
         },
         "test": {
@@ -266,7 +278,10 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "apps/translatr-admin-e2e/tsconfig.e2e.json",
-            "exclude": ["**/node_modules/**", "!apps/translatr-admin-e2e/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/translatr-admin-e2e/**"
+            ]
           }
         }
       }
@@ -284,7 +299,10 @@
               "libs/translatr-sdk/tsconfig.lib.json",
               "libs/translatr-sdk/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/translatr-sdk/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/translatr-sdk/**"
+            ]
           }
         },
         "test": {
@@ -311,7 +329,9 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "stylePreprocessorOptions": {
-              "includePaths": ["libs/translatr-components/src/styles"]
+              "includePaths": [
+                "libs/translatr-components/src/styles"
+              ]
             }
           }
         },
@@ -322,7 +342,10 @@
               "libs/translatr-components/tsconfig.lib.json",
               "libs/translatr-components/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/translatr-components/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/translatr-components/**"
+            ]
           }
         },
         "test": {
@@ -352,7 +375,10 @@
               "libs/translatr-model/tsconfig.lib.json",
               "libs/translatr-model/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/translatr-model/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/translatr-model/**"
+            ]
           }
         },
         "test": {
@@ -379,7 +405,10 @@
               "libs/generator/tsconfig.lib.json",
               "libs/generator/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/generator/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/generator/**"
+            ]
           }
         },
         "test": {
@@ -406,7 +435,10 @@
               "libs/utils/tsconfig.lib.json",
               "libs/utils/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/utils/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/utils/**"
+            ]
           }
         },
         "test": {
@@ -432,7 +464,10 @@
               "libs/node-utils/tsconfig.lib.json",
               "libs/node-utils/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/node-utils/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/node-utils/**"
+            ]
           }
         },
         "test": {
@@ -567,9 +602,8 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "linter": "tslint",
             "tsConfig": [
               "apps/docs-e2e/tsconfig.e2e.json"
             ],
@@ -577,6 +611,50 @@
               "**/node_modules/**",
               "!apps/docs-e2e/**"
             ]
+          }
+        }
+      }
+    },
+    "translatr-cli": {
+      "root": "apps/translatr-cli",
+      "sourceRoot": "apps/translatr-cli/src",
+      "projectType": "application",
+      "prefix": "translatr-cli",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/translatr-cli",
+            "main": "apps/translatr-cli/src/main.ts",
+            "tsConfig": "apps/translatr-cli/tsconfig.app.json"
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/translatr-cli/tsconfig.app.json",
+              "apps/translatr-cli/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/translatr-cli/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/translatr-cli/jest.config.js",
+            "tsConfig": "apps/translatr-cli/tsconfig.spec.json"
           }
         }
       }

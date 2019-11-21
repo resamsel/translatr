@@ -15,13 +15,17 @@
     "typeRoots": ["node_modules/@types", "typings.d.ts"],
     "lib": ["es2018", "dom"],
     "paths": {
-      "@translatr/*": ["libs/*"],
       "@dev/translatr-sdk": ["libs/translatr-sdk/src/index.ts"],
       "@dev/translatr-components": ["libs/translatr-components/src/index.ts"],
       "@dev/translatr-model": ["libs/translatr-model/src/index.ts"],
       "@translatr/generator": ["libs/generator/src/index.ts"],
       "@translatr/utils": ["libs/utils/src/index.ts"],
-      "@translatr/node-utils": ["libs/node-utils/src/index.ts"]
+      "@translatr/node-utils": [
+        "libs/node-utils/src/index.ts"
+      ],
+      "@translatr/*": [
+        "libs/*"
+      ]
     },
     "rootDir": ".",
     "noUnusedLocals": true

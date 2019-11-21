@@ -68,6 +68,11 @@
       "tags": [
         "utils"
       ]
+    },
+    "translatr-cli": {
+      "tags": [
+        "app"
+      ]
     }
   }
 }
