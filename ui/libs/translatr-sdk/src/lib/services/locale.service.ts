@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
-import { AbstractService } from './abstract.service';
+import { AbstractService, encodePathParam } from './abstract.service';
 import { Locale, LocaleCriteria } from '@dev/translatr-model';
 import { ErrorHandler } from './error-handler';
 
@@ -35,8 +35,12 @@ export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
   }): Observable<Locale> {
     return this.http
       .get<Locale>(
-        `/api/${options.username}/${options.projectName}/locales/${
-          encodeURI(options.localeName)
+        `/api/${
+          encodePathParam(options.username)
+        }/${
+          encodePathParam(options.projectName)
+        }/locales/${
+          encodePathParam(options.localeName)
         }`,
         { params: options.params }
       )

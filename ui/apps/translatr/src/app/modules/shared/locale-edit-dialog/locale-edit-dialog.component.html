@@ -13,14 +13,8 @@
         formControlName="name"
       />
       <mat-error
-        *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern"
-      >Must match pattern [a-zA-Z0-9_.-]*
-      </mat-error
-      >
-      <mat-error
         *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
-      >{{ nameFormControl.errors['violation'] }}</mat-error
-      >
+      >{{ nameFormControl.errors['violation'] }}</mat-error>
     </mat-form-field>
   </form>
 </div>

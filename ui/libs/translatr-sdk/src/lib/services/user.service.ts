@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { Aggregate, PagedList, RequestCriteria, User } from '@dev/translatr-model';
-import { AbstractService } from './abstract.service';
+import { AbstractService, encodePathParam } from './abstract.service';
 import { ErrorHandler } from './error-handler';
 
 @Injectable({
@@ -34,7 +34,7 @@ export class UserService extends AbstractService<User, RequestCriteria> {
     }
   ): Observable<User | undefined> {
     return this.http
-      .get<User>(`/api/${username}`, options)
+      .get<User>(`/api/${encodePathParam(username)}`, options)
       .pipe(
         map(convertTemporals),
         catchError((err: HttpErrorResponse) =>

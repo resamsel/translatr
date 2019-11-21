@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
-import { AbstractService } from './abstract.service';
+import { AbstractService, encodePathParam } from './abstract.service';
 import { Key, KeyCriteria } from '@dev/translatr-model';
 import { ErrorHandler } from './error-handler';
 
@@ -36,7 +36,7 @@ export class KeyService extends AbstractService<Key, KeyCriteria> {
     return this.http
       .get<Key>(
         `/api/${options.username}/${options.projectName}/keys/${
-          encodeURI(options.keyName)
+          encodePathParam(options.keyName)
         }`,
         options
       )

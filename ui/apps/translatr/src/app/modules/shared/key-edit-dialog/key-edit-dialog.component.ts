@@ -33,10 +33,7 @@ export class KeyEditDialogComponent
       new FormGroup({
         id: new FormControl(d.key.id),
         projectId: new FormControl(d.key.projectId),
-        name: new FormControl(d.key.name || '', [
-          Validators.required,
-          Validators.pattern('[^\\s/]+')
-        ])
+        name: new FormControl(d.key.name || '', Validators.required)
       }),
       d.key,
       (key: Key) => {

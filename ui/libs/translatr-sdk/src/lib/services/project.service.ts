@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { catchError, map } from 'rxjs/operators';
 import { convertTemporals, convertTemporalsList } from '../shared/mapper-utils';
 import { Aggregate, Member, PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
-import { AbstractService } from './abstract.service';
+import { AbstractService, encodePathParam } from './abstract.service';
 import { ErrorHandler } from './error-handler';
 
 const projectMapper = (project: Project) => ({
@@ -42,7 +42,10 @@ export class ProjectService extends AbstractService<Project, ProjectCriteria> {
     }
   ): Observable<Project | undefined> {
     return this.http
-      .get<Project>(`/api/${username}/${projectName}`, options)
+      .get<Project>(
+        `/api/${encodePathParam(username)}/${encodePathParam(projectName)}`,
+        options
+      )
       .pipe(
         map(projectMapper),
         catchError((err: HttpErrorResponse) =>

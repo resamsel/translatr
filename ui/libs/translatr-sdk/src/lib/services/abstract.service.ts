@@ -11,6 +11,14 @@ export interface RequestOptions {
   };
 }
 
+export const encodePathParam = (param: string | number): string | number => {
+  if (typeof param === 'string') {
+    return encodeURIComponent(param);
+  }
+
+  return param;
+};
+
 export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
   constructor(
     protected readonly http: HttpClient,
@@ -39,7 +47,8 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
   }
 
   get(id: string | number, criteria?: CRITERIA): Observable<DTO> {
-    const path = `${this.entityPath}/${id}`;
+    const path = `${this.entityPath}/${encodePathParam(id)}`;
+    console.log('path', path);
     return this.http
       .get<DTO>(path, {
         params: { ...(criteria ? ((criteria as unknown) as object) : {}) }
@@ -71,7 +80,7 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
     id: string | number,
     options?: RequestOptions
   ): Observable<DTO | undefined> {
-    const path = `${this.entityPath}/${id}`;
+    const path = `${this.entityPath}/${encodePathParam(id)}`;
     return this.http.delete<DTO>(path, options).pipe(
       map(convertTemporals),
       catchError((err: HttpErrorResponse) =>

@@ -33,10 +33,7 @@ export class LocaleEditDialogComponent
       new FormGroup({
         id: new FormControl(d.locale.id),
         projectId: new FormControl(d.locale.projectId),
-        name: new FormControl(d.locale.name, [
-          Validators.required,
-          Validators.pattern('[^\\s/]+')
-        ])
+        name: new FormControl(d.locale.name, Validators.required)
       }),
       d.locale,
       (locale: Locale) => {
