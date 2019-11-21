@@ -27,10 +27,6 @@ export class NavListComponent {
 
   trackByFn = trackByFn;
 
-  constructor() {
-    this.create.subscribe(() => console.log('NavList.create'));
-  }
-
   get loadingList(): number[] {
     return Array(this.loadingListLength).map(
       (value: number, index: number) => index

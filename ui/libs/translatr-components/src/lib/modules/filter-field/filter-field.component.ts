@@ -35,7 +35,6 @@ export class FilterFieldComponent implements OnInit {
   }
 
   @Input() set selection(selection: ReadonlyArray<FilterFieldFilter>) {
-    console.log('selection', selection);
     this._selection = selection;
     this._options = selection;
   }
@@ -48,7 +47,6 @@ export class FilterFieldComponent implements OnInit {
 
   set options(options: ReadonlyArray<FilterFieldFilter>) {
     this._options = options;
-    console.log('emitting', options);
     this.selected.emit(options);
   }
 
@@ -58,7 +56,6 @@ export class FilterFieldComponent implements OnInit {
   ngOnInit() {
     this.filterControl.valueChanges
       .subscribe((value: string | FilterFieldFilter) => {
-        console.log('valueChange', value);
         if (typeof value === 'string') {
           this.updateAutocompleteOptions({
             ...this.filters.find(f => f.key === 'search'),
@@ -77,7 +74,6 @@ export class FilterFieldComponent implements OnInit {
   }
 
   onRemoved(key: string) {
-    console.log('removed', key);
     this.removeOption(key);
     if (key === 'search') {
       this.filterControl.setValue('');
@@ -85,7 +81,6 @@ export class FilterFieldComponent implements OnInit {
   }
 
   onAutocompleteSelected(selection: MatOptionSelectionChange) {
-    console.log('autocompleteSelected', selection);
     this.autocompleteInput.nativeElement.focus();
     this.autocompleteInput.nativeElement.value = '';
     this.filterControl.setValue('');
@@ -93,7 +88,6 @@ export class FilterFieldComponent implements OnInit {
   }
 
   private updateOption(option: FilterFieldFilter): void {
-    console.log('updateOption', option);
     this.options = [
       ...this.options.filter(o => o.key !== option.key),
       option
@@ -102,7 +96,6 @@ export class FilterFieldComponent implements OnInit {
   }
 
   private removeOption(key: string): void {
-    console.log('removeOption', key, this.options);
     this.options = this.options.filter(o => o.key !== key);
     this.updateAutocompleteOptions();
   }
@@ -116,7 +109,6 @@ export class FilterFieldComponent implements OnInit {
   }
 
   private updateAutocompleteOptions(option?: FilterFieldFilter): void {
-    console.log('updateAutocompleteOptions', option);
     const booleans = this.options
       .filter(s => s.type === 'boolean')
       .map(s => s.key);

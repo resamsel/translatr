@@ -23,7 +23,6 @@ export class ListHeaderComponent {
   }
 
   @Input() set search(search: string) {
-    console.log('list header search', search);
     if (search === undefined || search === null || search.length === 0) {
       if (this.selection.length !== 0) {
         this.selection = [];
@@ -46,10 +45,6 @@ export class ListHeaderComponent {
   @Output() readonly add = new EventEmitter<void>();
   @Output() readonly remove = new EventEmitter<void>();
   @Output() readonly filter = new EventEmitter<string>();
-
-  constructor() {
-    this.add.subscribe(() => console.log('ListHeader.add'));
-  }
 
   onSelected(selected: ReadonlyArray<FilterFieldFilter>) {
     if (selected.length > 0 && typeof selected[0].value === 'string') {

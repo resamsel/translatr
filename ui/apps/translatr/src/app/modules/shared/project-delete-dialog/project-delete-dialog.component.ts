@@ -41,7 +41,6 @@ export class ProjectDeleteDialogComponent {
   }
 
   onDelete(): void {
-    console.log('onDelete', this.form.value);
     if (this.form.valid && !this.processing) {
       this.processing = true;
 
@@ -56,7 +55,6 @@ export class ProjectDeleteDialogComponent {
   }
 
   private onSuccess(project: Project) {
-    console.log('onSuccess', project);
     this.processing = false;
     this.snackBar.open(
       `Project ${project.name} was deleted`,
@@ -67,7 +65,6 @@ export class ProjectDeleteDialogComponent {
   }
 
   private onError(error: Error) {
-    console.log('onError', error);
     this.processing = false;
     if (error && error.error.violations) {
       error.error.violations.forEach((violation: ConstraintViolation) => {
