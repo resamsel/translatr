@@ -70,7 +70,6 @@ export class EditorEffects {
       this.store.pipe(select(editorQuery.getSearch)),
       this.store.pipe(select(routerQuery.selectQueryParams))
     ),
-    tap(a => console.log('loadKeys', a)),
     switchMap(([action, search, params]: [LoadKeys, RequestCriteria, Params]) =>
       this.keyService
         .find({

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Message, PagedList } from '@dev/translatr-model';
 import { EditorFacade } from './+state/editor.facade';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { distinctUntilChanged, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
 import { trackByFn } from '@translatr/utils';
 import { MessageItem } from './message-item';
@@ -44,7 +44,6 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
         .filter(f => params[f.key] !== undefined && params[f.key] !== '')
         .map(f => ({ ...f, value: params[f.key] }))
       ),
-      tap(console.log),
       distinctUntilChanged((a, b) => a.length === b.length)
     );
 

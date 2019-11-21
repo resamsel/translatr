@@ -47,7 +47,6 @@ export class SearchBarComponent implements OnInit {
       criteria.search = '';
     }
 
-    console.log('emitting', criteria);
     this.search.emit({
       ...this._criteria,
       ...criteria
@@ -58,7 +57,6 @@ export class SearchBarComponent implements OnInit {
 
   @Input() set criteria(criteria: RequestCriteria) {
     this._criteria = criteria;
-    console.log('criteria', criteria);
     if (criteria !== undefined) {
       if (criteria.search && criteria.search.length > 0) {
         this.updateOption({
@@ -73,7 +71,6 @@ export class SearchBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchControl.valueChanges.subscribe((value: string) => {
-      console.log('valueChange', value);
       if (value && value.length > 0) {
         this.updateAutocompleteOptions(value);
       }
@@ -95,7 +92,6 @@ export class SearchBarComponent implements OnInit {
   }
 
   onRemoved(option: Option) {
-    console.log('removed', option);
     this.removeOption(option.type);
     if (option.type === 'search') {
       this.searchControl.setValue('');
@@ -103,7 +99,6 @@ export class SearchBarComponent implements OnInit {
   }
 
   onAutocompleteSelected(selection: MatOptionSelectionChange) {
-    console.log('autocompleteSelected', selection);
     this.updateOption(selection.source.value);
     this.searchControl.setValue('');
   }

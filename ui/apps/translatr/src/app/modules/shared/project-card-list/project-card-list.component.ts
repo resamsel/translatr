@@ -24,7 +24,6 @@ export class ProjectCardListComponent {
   }
 
   onCreateProject(): void {
-    console.log('onCreateProject');
     this.create.emit();
   }
 }

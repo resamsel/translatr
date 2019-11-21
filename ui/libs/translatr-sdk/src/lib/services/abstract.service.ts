@@ -48,7 +48,6 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
 
   get(id: string | number, criteria?: CRITERIA): Observable<DTO> {
     const path = `${this.entityPath}/${encodePathParam(id)}`;
-    console.log('path', path);
     return this.http
       .get<DTO>(path, {
         params: { ...(criteria ? ((criteria as unknown) as object) : {}) }
