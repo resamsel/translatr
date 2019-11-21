@@ -46,13 +46,18 @@ const routes: Routes = [
       },
       {
         path: 'access-tokens',
-        component: UserAccessTokensComponent,
         canActivate: [MyselfGuard],
         data: {
           icon: 'vpn_key',
           name: 'Access Tokens'
         },
         children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            component: UserAccessTokensComponent,
+            canActivate: [MyselfGuard]
+          },
           {
             path: ':id',
             component: UserAccessTokenComponent,
