@@ -2,11 +2,12 @@ import { Injector } from '@angular/core';
 import { AccessToken, Locale, PagedList, Project, User, UserRole } from '@dev/translatr-model';
 import { Observable, of } from 'rxjs';
 import { errorMessage, LocaleService } from '@dev/translatr-sdk';
-import { getRandomProject, getRandomUserAccessToken, State } from '.';
-import { catchError, concatMap, map } from 'rxjs/operators';
+import { getRandomProject } from './project/get';
+import { getRandomUserAccessToken } from './user';
+import { State } from './state';
+import { catchError, concatMap, filter, map } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { pickRandomly } from '@translatr/utils';
-import { filter } from 'rxjs/internal/operators/filter';
 import * as _ from 'underscore';
 
 export const localeNames = [

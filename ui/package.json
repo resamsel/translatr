@@ -7,9 +7,6 @@
     "url": "https://github.com/resamsel/translatr/issues"
   },
   "homepage": "https://github.com/resamsel/translatr#readme",
-  "bin": {
-    "translatr": "./apps/translatr-cli/bin/run"
-  },
   "scripts": {
     "ng": "ng",
     "prettier": "prettier --write \"**/*.{js,json,css,md,ts,html,component.html}\"",
@@ -17,7 +14,7 @@
     "start": "ng serve --host 0.0.0.0 --port 4210",
     "start:admin": "ng serve translatr-admin --host 0.0.0.0 --port 4211",
     "start:docs": "ng serve docs --host 0.0.0.0 --port 4212",
-    "cli": "apps/translatr-cli/bin/run",
+    "generate": "dist/lets-generate",
     "test": "ng test",
     "test:ci": "ng test --watch=false --browsers ChromeHeadless",
     "test:coverage": "ng test --watch=true --code-coverage=true",
@@ -30,8 +27,10 @@
     "build:admin:prod": "ng build translatr-admin --prod --output-path ../public/admin",
     "prebuild:prod": "npm run buildinfo",
     "build:prod": "npm run lint && npm run build:ui:prod && npm run build:admin:prod",
-    "build:cli": "ng build translatr-cli && oclif-dev manifest",
-    "build:cli:prod": "ng build translatr-cli --prod && oclif-dev manifest",
+    "build:generate": "ng build cli-generate",
+    "postbuild:generate": "tools/make-command.js dist/apps/cli-generate/main.js dist/lets-generate",
+    "build:generate:prod": "ng build cli-generate --prod",
+    "postbuild:generate:prod": "tools/make-command.js dist/apps/cli-generate/main.js dist/lets-generate",
     "buildinfo": "node tools/build-info.js",
     "lint": "./node_modules/.bin/nx workspace-lint && ng lint",
     "lint:fix": "./node_modules/.bin/nx lint --fix && ng lint --fix",
@@ -55,7 +54,6 @@
     "dep-graph": "./node_modules/.bin/nx dep-graph",
     "workspace-schematic": "./node_modules/.bin/nx workspace-schematic",
     "help": "./node_modules/.bin/nx help",
-    "tools:generatr": "ts-node --project tools/generatr/tsconfig.json -r tsconfig-paths/register tools/generatr/generatr.ts",
     "kill:server": "fuser 4200/tcp -k; fuser 4211/tcp -k; fuser 4211/tcp -k; echo 'ports freed'",
     "nx": "nx"
   },
@@ -141,12 +139,10 @@
     "xmlhttprequest": "^1.8.0"
   },
   "files": [
-    "./apps/translatr-cli/bin",
-    "./apps/translatr-cli/src",
-    "./oclif.manifest.json"
+    "/dist/lets-generate"
   ],
   "oclif": {
-    "commands": "./apps/translatr-cli/src/commands",
+    "commands": "./apps/cli-generate/src/commands",
     "bin": "translatr",
     "plugins": [
       "@oclif/plugin-help"

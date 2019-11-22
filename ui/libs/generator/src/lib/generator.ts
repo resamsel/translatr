@@ -1,8 +1,10 @@
 import { interval, merge, Observable, of, Subject } from 'rxjs';
 import { mapTo, scan, startWith, withLatestFrom } from 'rxjs/operators';
 import { Injector } from '@angular/core';
-import { Action, Command, createInjector, GeneratorConfig, GeneratorIntervals, handleCommand, State } from '.';
 import * as dateformat from 'dateformat';
+import { Action, Command, GeneratorConfig, GeneratorIntervals, State } from './state';
+import { createInjector } from './api';
+import { handleCommand } from './handler';
 
 export class Generator {
   readonly stateCommand$ = new Subject<Partial<State>>();

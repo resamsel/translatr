@@ -615,19 +615,19 @@
         }
       }
     },
-    "translatr-cli": {
-      "root": "apps/translatr-cli",
-      "sourceRoot": "apps/translatr-cli/src",
+    "cli-generate": {
+      "root": "apps/cli-generate",
+      "sourceRoot": "apps/cli-generate/src",
       "projectType": "application",
-      "prefix": "translatr-cli",
+      "prefix": "cli-generate",
       "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
           "options": {
-            "outputPath": "dist/apps/translatr-cli",
-            "main": "apps/translatr-cli/src/main.ts",
-            "tsConfig": "apps/translatr-cli/tsconfig.app.json"
+            "outputPath": "dist/apps/cli-generate",
+            "main": "apps/cli-generate/src/main.ts",
+            "tsConfig": "apps/cli-generate/tsconfig.app.json"
           },
           "configurations": {
             "production": {
@@ -641,20 +641,20 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "apps/translatr-cli/tsconfig.app.json",
-              "apps/translatr-cli/tsconfig.spec.json"
+              "apps/cli-generate/tsconfig.app.json",
+              "apps/cli-generate/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**",
-              "!apps/translatr-cli/**"
+              "!apps/cli-generate/**"
             ]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "apps/translatr-cli/jest.config.js",
-            "tsConfig": "apps/translatr-cli/tsconfig.spec.json"
+            "jestConfig": "apps/cli-generate/jest.config.js",
+            "tsConfig": "apps/cli-generate/tsconfig.spec.json"
           }
         }
       }

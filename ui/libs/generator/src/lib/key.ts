@@ -3,7 +3,7 @@ import { AccessToken, Key } from '@dev/translatr-model';
 import { Observable, of } from 'rxjs';
 import { KeyService } from '@dev/translatr-sdk';
 import { cartesianProduct } from '@translatr/utils';
-import { State } from '@translatr/generator';
+import { State } from './state';
 
 export const featureNames = [
   'user',

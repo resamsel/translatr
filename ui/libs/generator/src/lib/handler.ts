@@ -1,22 +1,11 @@
 import { Injector } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { UserService } from '@dev/translatr-sdk';
-import {
-  Action,
-  Command,
-  createRandomKey,
-  createRandomLocale,
-  createRandomProject,
-  createRandomUser,
-  deleteRandomKey,
-  deleteRandomLocale,
-  deleteRandomProject,
-  deleteRandomUser,
-  me,
-  State,
-  updateRandomProject,
-  updateRandomUser
-} from '@translatr/generator';
+import { Action, Command, State } from './state';
+import { createRandomProject, deleteRandomProject, updateRandomProject } from './project';
+import { createRandomUser, deleteRandomUser, me, updateRandomUser } from './user';
+import { createRandomLocale, deleteRandomLocale } from './locale';
+import { createRandomKey, deleteRandomKey } from './key';
 import { concatMap } from 'rxjs/operators';
 
 export const handleCommand = (injector: Injector) =>

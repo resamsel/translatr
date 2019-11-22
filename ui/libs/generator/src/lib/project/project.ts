@@ -1,7 +1,7 @@
 import { Injector } from '@angular/core';
 import { combineLatest, Observable, of } from 'rxjs';
-import { State } from './state';
-import { getRandomUserAccessToken } from './user';
+import { State } from '../state';
+import { getRandomUserAccessToken } from '../user';
 import { AccessToken, Key, Locale, Message, PagedList, Project, User, UserRole } from '@dev/translatr-model';
 import { catchError, concatMap, filter, map, mapTo } from 'rxjs/operators';
 import * as randomName from 'random-name';
@@ -9,7 +9,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { errorMessage, MessageService, ProjectService } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import * as _ from 'underscore';
-import { createKey, createLocale, keyNames, localeNames } from '@translatr/generator';
+import { createLocale, localeNames } from '../locale';
+import { createKey, keyNames } from '../key';
+import { getRandomProject } from './get';
 
 const createProject = (
   project: Project,
@@ -201,20 +203,6 @@ export const updateRandomProject = (
     })),
     catchError((err: HttpErrorResponse) => of({ message: errorMessage(err) }))
   );
-};
-
-export const getRandomProject = (
-  injector: Injector,
-  user: User,
-  accessToken: AccessToken
-): Observable<Project> => {
-  const projectService = injector.get(ProjectService);
-  return projectService
-    .find({
-      owner: user.username,
-      access_token: accessToken.key
-    })
-    .pipe(map((pagedList: PagedList<Project>) => pickRandomly(pagedList.list)));
 };
 
 export const deleteRandomProject = (
