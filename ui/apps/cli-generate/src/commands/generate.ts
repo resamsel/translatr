@@ -1,3 +1,5 @@
+require('@momothepug/tsmodule-alias').play('./');
+
 import Command, { flags } from '@oclif/command';
 import { Generator, GeneratorConfig } from '@translatr/generator';
 

@@ -173,10 +173,15 @@ describe('Project Locale Editor', () => {
     // when
     page.navigateTo();
 
-    page.getFilterField()
-      .focus();
+    page.getFilterField().focus();
     cy.get('.autocomplete-option')
       .first()
       .trigger('click');
+
+    // then
+    cy.get('.selected-option').should('have.length', 1);
+    page.getNavList()
+      .find('.mat-list-item.key')
+      .should('have.length', 1);
   });
 });

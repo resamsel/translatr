@@ -11,7 +11,7 @@
       *ngFor="let option of options"
       [removable]="true"
       [selectable]="false"
-      class="option"
+      class="option selected-option"
     >
       <span class="ellipsis" matTooltip="{{option.title || option.key}}: {{option.value}}">
         <ng-container *ngIf="option.title; else selectedKeyValue">
