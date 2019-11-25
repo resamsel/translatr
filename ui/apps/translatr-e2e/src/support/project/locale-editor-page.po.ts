@@ -23,4 +23,8 @@ export class LocaleEditorPage extends EditorPage {
   getSelectedLocaleField(): Cypress.Chainable<JQuery<HTMLElement>> {
     return cy.get('.selector .selected-locale');
   }
+
+  getFilterField(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('#mat-input-0');
+  }
 }

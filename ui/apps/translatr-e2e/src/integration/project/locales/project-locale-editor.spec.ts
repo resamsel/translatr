@@ -14,8 +14,10 @@ describe('Project Locale Editor', () => {
     cy.route('/api/johndoe/p1/locales/default', 'fixture:johndoe/p1/locales/default');
     cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
     cy.route('/api/project/*/keys*', 'fixture:johndoe/p1/keys');
+    cy.route('/api/project/*/keys?*missing=true*', 'fixture:johndoe/p1/keys-missing');
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages-locale-default');
     cy.route('/api/project/*/messages?*keyName=k1', 'fixture:johndoe/p1/messages-key-k1');
+    cy.route('/api/project/*/messages?*keyIds=*', 'fixture:johndoe/p1/messages-missing');
   });
 
 
@@ -150,8 +152,6 @@ describe('Project Locale Editor', () => {
 
     // when
     page.navigateTo();
-
-    // then
     page.getNavList()
       .find('.mat-list-item.key')
       .first()
@@ -163,6 +163,20 @@ describe('Project Locale Editor', () => {
       .first()
       .click();
 
+    // then
     page.getEditorContents().should('have.text', 'Schlüssel 1');
+  });
+
+  it('should only show keys with missing translations when filtered by those', () => {
+    // given
+
+    // when
+    page.navigateTo();
+
+    page.getFilterField()
+      .focus();
+    cy.get('.autocomplete-option')
+      .first()
+      .trigger('click');
   });
 });

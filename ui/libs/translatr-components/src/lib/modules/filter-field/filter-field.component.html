@@ -73,7 +73,7 @@
       (onSelectionChange)="onAutocompleteSelected($event)"
       *ngFor="let option of autocompleteOptions"
       [value]="option"
-      class="option"
+      class="option autocomplete-option"
     >
       <ng-container *ngIf="option.title; else autocompleteKeyValue">
         <span>{{option.title}}</span>

@@ -1,9 +1,3 @@
-const TSModuleAlias = require('@momothepug/tsmodule-alias');
-// Path from package.json to your tsconfig.json file
-const tsconfigToReadFromRoot = './';
-// Makes it work with play method
-TSModuleAlias.play(tsconfigToReadFromRoot);
-
 import Command, { flags } from '@oclif/command';
 import { Generator, GeneratorConfig } from '@translatr/generator';
 
