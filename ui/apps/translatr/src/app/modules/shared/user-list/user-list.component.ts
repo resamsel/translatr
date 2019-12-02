@@ -10,7 +10,9 @@ import { trackByFn } from '@translatr/utils';
 })
 export class UserListComponent {
   @Input() users: PagedList<User>;
+
   @Output() readonly more = new EventEmitter<number>();
+  @Output() readonly filter = new EventEmitter<string>();
 
   trackByFn = trackByFn;
 }

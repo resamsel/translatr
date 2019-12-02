@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { PagedList, User } from '@dev/translatr-model';
 import { UsersFacade } from './+state/users.facade';
 import { AppFacade } from '../../../+state/app.facade';
-import { filter, map } from 'rxjs/operators';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
+import { Params, Router } from '@angular/router';
+import { UserCriteria } from './+state/users.actions';
 
 @Component({
   selector: 'app-projects-page',
@@ -12,22 +13,30 @@ import { filter, map } from 'rxjs/operators';
 export class UsersPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
   users$ = this.facade.users$;
-  usersTail$ = this.users$.pipe(
-    filter(pagedList => !!pagedList),
-    map((pagedList: PagedList<User>) => ({
-      ...pagedList,
-      list: pagedList.list.slice(4)
-    }))
+
+  criteria$ = this.appFacade.queryParams$.pipe(
+    map((params: Params) => ['search', 'limit', 'offset']
+      .filter(f => params[f] !== undefined && params[f] !== '')
+      .reduce((acc, curr) => ({ ...acc, [curr]: params[curr] }), {})
+    ),
+    distinctUntilChanged((a: UserCriteria, b: UserCriteria) =>
+      a.search === b.search && a.limit === b.limit && a.offset === b.offset)
   );
 
   constructor(
     private readonly appFacade: AppFacade,
-    private readonly facade: UsersFacade
+    private readonly facade: UsersFacade,
+    private readonly router: Router
   ) {
   }
 
   ngOnInit() {
-    this.onLoadUsers(8);
+    this.criteria$.pipe(takeUntil(this.facade.unload$))
+      .subscribe((criteria: UserCriteria) => this.facade.loadUsers({
+        limit: 8,
+        order: 'whenUpdated desc',
+        ...criteria
+      }));
   }
 
   ngOnDestroy(): void {
@@ -35,6 +44,20 @@ export class UsersPageComponent implements OnInit, OnDestroy {
   }
 
   onLoadUsers(limit: number) {
-    this.facade.loadUsers({ order: 'whenUpdated desc', limit });
+    if (limit === undefined) {
+      limit = null;
+    }
+    return this.navigate({ limit });
+  }
+
+  onSearch(search: string) {
+    if (search === undefined || search === '') {
+      search = null;
+    }
+    return this.navigate({ search });
+  }
+
+  navigate(criteria: Partial<UserCriteria>): Promise<boolean> {
+    return this.router.navigate([], { queryParamsHandling: 'merge', skipLocationChange: true, queryParams: criteria });
   }
 }

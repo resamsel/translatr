@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 
 @Injectable()
 export class UsersFacade {
-  private unload$ = new Subject<void>();
+  unload$ = new Subject<void>();
 
   users$ = this.store.pipe(
     select(usersQuery.getUsers),

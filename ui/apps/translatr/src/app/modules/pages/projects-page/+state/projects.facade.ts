@@ -9,7 +9,7 @@ import { PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
 
 @Injectable()
 export class ProjectsFacade {
-  private unload$ = new Subject<void>();
+  unload$ = new Subject<void>();
 
   myProjects$: Observable<PagedList<Project>> = this.store.pipe(
     select(projectsQuery.getMyProjects),

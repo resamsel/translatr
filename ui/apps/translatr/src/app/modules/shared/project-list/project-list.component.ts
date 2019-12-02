@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { PagedList, Project } from '@dev/translatr-model';
+import { PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { firstChar } from '@dev/translatr-sdk';
 import { trackByFn } from '@translatr/utils';
 
@@ -14,6 +14,7 @@ export class ProjectListComponent {
   @Input() canCreate = false;
   @Input() showFilter = false;
   @Input() showMore = true;
+  @Input() criteria: RequestCriteria | undefined;
 
   @Output() create = new EventEmitter<void>();
   @Output() filter = new EventEmitter<string>();

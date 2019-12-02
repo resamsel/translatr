@@ -12,14 +12,14 @@
 
   <div class="container">
     <section>
-      <app-project-card-list
-        (create)="openProjectCreationDialog()"
-        [projects]="projects$ | async"
-        [showMore]="false"
-        canCreate="true"></app-project-card-list>
       <app-project-list
-        *ngIf="(projectsTail$ | async)?.list.length > 0"
-        [projects]="projectsTail$ | async"></app-project-list>
+        (create)="openProjectCreationDialog()"
+        (filter)="onSearch($event)"
+        [canCreate]="true"
+        [criteria]="criteria$ | async"
+        [projects]="projects$ | async"
+        [showFilter]="true"
+      ></app-project-list>
     </section>
   </div>
 </app-sidenav>

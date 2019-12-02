@@ -56,7 +56,7 @@
 
     .mat-form-field-flex {
       background-color: #f1f3f4;
-      border-radius: 8px;
+      border-radius: 4px;
       padding: 4px 8px;
     }
 
@@ -74,17 +74,17 @@
 
   &.autocomplete-open {
     ::ng-deep .mat-form-field-flex {
-      border-radius: 8px 8px 0 0;
+      border-radius: 4px 4px 0 0;
     }
+  }
+
+  ::ng-deep .mat-form-field-flex {
+    @include mat-elevation(2);
+    background-color: #fff;
   }
 
   &.mat-focused {
     color: rgba(0, 0, 0, 0.87);
-
-    ::ng-deep .mat-form-field-flex {
-      @include mat-elevation(2);
-      background-color: #fff;
-    }
   }
 }
 

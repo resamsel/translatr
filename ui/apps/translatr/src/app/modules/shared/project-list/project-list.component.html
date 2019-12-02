@@ -1,10 +1,12 @@
 <app-nav-list
-  (filter)="filter.emit($event)"
-  (more)="more.emit($event)"
   [empty]="empty"
   [pagedList]="projects"
   [showFilter]="showFilter"
-  [showMore]="showMore">
+  (filter)="filter.emit($event)"
+  (more)="more.emit($event)"
+  [criteria]="criteria"
+  [showMore]="showMore"
+>
   <a
     *ngFor="let project of projects?.list; trackBy: trackByFn"
     [routerLink]="['/', project.ownerUsername, project.name]"

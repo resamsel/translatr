@@ -3,9 +3,10 @@ import { ProjectsFacade } from './+state/projects.facade';
 import { AppFacade } from '../../../+state/app.facade';
 import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, map, take } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { PagedList, Project, User } from '@dev/translatr-model';
+import { distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs/operators';
+import { Params, Router } from '@angular/router';
+import { ProjectCriteria, User } from '@dev/translatr-model';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-projects-page',
@@ -15,13 +16,17 @@ import { PagedList, Project, User } from '@dev/translatr-model';
 export class ProjectsPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
   projects$ = this.facade.projects$;
-  projectsTail$ = this.projects$.pipe(
-    filter(pagedList => !!pagedList),
-    map((pagedList: PagedList<Project>) => ({
-      ...pagedList,
-      list: pagedList.list.slice(4)
-    }))
+
+  criteria$ = this.appFacade.queryParams$.pipe(
+    map((params: Params) => ['search', 'limit', 'offset']
+      .filter(f => params[f] !== undefined && params[f] !== '')
+      .reduce((acc, curr) => ({ ...acc, [curr]: params[curr] }), {})
+    ),
+    distinctUntilChanged((a: ProjectCriteria, b: ProjectCriteria) =>
+      a.search === b.search && a.limit === b.limit && a.offset === b.offset)
   );
+  private loadProjects$ = combineLatest([this.me$.pipe(filter(user => !!user)), this.criteria$])
+    .pipe(takeUntil(this.facade.unload$));
 
   constructor(
     private readonly facade: ProjectsFacade,
@@ -32,23 +37,17 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.onLoadProjects(20);
+    this.loadProjects$.subscribe(([user, criteria]: [User, ProjectCriteria]) =>
+      this.facade.loadProjects({
+        memberId: user.id,
+        order: 'whenUpdated desc',
+        limit: 20,
+        ...criteria
+      }));
   }
 
   ngOnDestroy(): void {
     this.facade.unloadProjects();
-  }
-
-  onLoadProjects(limit: number) {
-    this.me$.pipe(
-      filter(user => !!user),
-      take(1)
-    ).subscribe((user: User) =>
-      this.facade.loadProjects({
-        memberId: user.id,
-        order: 'whenUpdated desc',
-        limit
-      }));
   }
 
   openProjectCreationDialog() {
@@ -60,5 +59,12 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
       )
       .subscribe((project => this.router
         .navigate([project.ownerUsername, project.name])));
+  }
+
+  onSearch(search: string) {
+    if (search === undefined || search === '') {
+      search = null;
+    }
+    this.router.navigate([], { queryParamsHandling: 'merge', skipLocationChange: true, queryParams: { search } });
   }
 }
