@@ -1,8 +1,9 @@
 <app-nav-list
   [pagedList]="users"
+  [criteria]="criteria"
+  [showFilter]="true"
   (more)="more.emit($event)"
   (filter)="filter.emit($event)"
-  [showFilter]="true"
 >
   <a
     *ngFor="let user of users?.list; trackBy: trackByFn"

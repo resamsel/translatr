@@ -6,7 +6,7 @@
 >
   <ng-content select="[matPrefix]"></ng-content>
   <mat-chip-list #chipList>
-    <mat-chip
+    <mat-basic-chip
       (removed)="onRemoved(option.key)"
       *ngFor="let option of options"
       [removable]="true"
@@ -29,8 +29,15 @@
           >{{option.value.toString()}}</span>
         </ng-template>
       </span>
-      <mat-icon matChipRemove>close</mat-icon>
-    </mat-chip>
+      <mat-icon
+        aria-label="Remove"
+        i18n-aria-label="@@button.remove.tooltip"
+        i18n-matTooltip="@@button.remove.tooltip"
+        matChipRemove
+        matTooltip="Remove"
+      >close
+      </mat-icon>
+    </mat-basic-chip>
     <ng-content></ng-content>
     <input
       #autocompleteInput

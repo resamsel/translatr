@@ -16,26 +16,28 @@
       <a [routerLink]="['/', activity.userUsername]" class="link user-name">{{
         activity.userName
         }}</a>
-      <ng-container [ngSwitch]="activity.type">
-        <span *ngSwitchCase="'Create'" class="type" i18n>
-          <app-tag>created</app-tag>
-          <app-activity-content [activity]="activity"></app-activity-content>
-        </span>
-        <span *ngSwitchCase="'Update'" class="type" i18n>
-          <app-tag>updated</app-tag>
-          <app-activity-content [activity]="activity"></app-activity-content>
-        </span>
-        <span *ngSwitchCase="'Delete'" class="type" i18n>
-          <app-tag>deleted</app-tag>
-          <app-activity-content [activity]="activity"></app-activity-content>
-        </span>
-        <span *ngSwitchCase="'Login'" class="type" i18n>
-          <app-tag>logged in</app-tag></span
-        >
-        <span *ngSwitchCase="'Logout'" class="type" i18n>
-          <app-tag>logged out</app-tag></span
-        >
-      </ng-container>
+      <span class="sub-title">
+        <ng-container [ngSwitch]="activity.type">
+          <span *ngSwitchCase="'Create'" class="type" i18n>
+            <app-tag>created</app-tag>
+            <app-activity-content [activity]="activity"></app-activity-content>
+          </span>
+          <span *ngSwitchCase="'Update'" class="type" i18n>
+            <app-tag>updated</app-tag>
+            <app-activity-content [activity]="activity"></app-activity-content>
+          </span>
+          <span *ngSwitchCase="'Delete'" class="type" i18n>
+            <app-tag>deleted</app-tag>
+            <app-activity-content [activity]="activity"></app-activity-content>
+          </span>
+          <span *ngSwitchCase="'Login'" class="type" i18n>
+            <app-tag>logged in</app-tag></span
+          >
+          <span *ngSwitchCase="'Logout'" class="type" i18n>
+            <app-tag>logged out</app-tag></span
+          >
+        </ng-container>
+      </span>
     </h3>
     <p matLine>
       <span [matTooltip]="activity.whenCreated | date: 'full'">{{

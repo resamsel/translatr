@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { skip, take } from 'rxjs/operators';
+import { skip, take, takeUntil } from 'rxjs/operators';
 import { Key, KeyCriteria, Project } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { navigate } from '@translatr/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,19 +20,25 @@ export class ProjectKeysComponent {
 
   constructor(
     private readonly facade: ProjectFacade,
-    private readonly snackBar: MatSnackBar
+    private readonly snackBar: MatSnackBar,
+    private readonly router: Router
   ) {
+    this.criteria$
+      .pipe(takeUntil(this.facade.unload$))
+      .subscribe((criteria: KeyCriteria) =>
+        this.project$
+          .pipe(take(1))
+          .subscribe((project: Project) =>
+            this.facade.loadKeys(project.id, criteria))
+      );
   }
 
   onMore(limit: number) {
-    this.onFetch({ limit });
+    navigate(this.router, { limit });
   }
 
   onFetch(criteria: KeyCriteria) {
-    this.project$
-      .pipe(take(1))
-      .subscribe((project: Project) =>
-        this.facade.loadKeys(project.id, criteria));
+    navigate(this.router, criteria);
   }
 
   onEdit(key: Key) {

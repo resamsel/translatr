@@ -68,7 +68,7 @@
            mat-list-item
            [routerLink]="['locales', locale.name]">
           <mat-icon matListIcon class="locale circle">language</mat-icon>
-          <h3 matLine>{{ locale.name }} — {{ locale.displayName }}</h3>
+          <h3 matLine>{{ locale.name }} <span class="sub-title">{{ locale.displayName }}</span></h3>
           <p [matTooltip]="locale.whenCreated | date:'full'" matLine>{{locale.whenCreated | amTimeAgo}}</p>
         </a>
       </mat-nav-list>
@@ -129,7 +129,7 @@
            [routerLink]="['keys', message.keyName]"
            mat-list-item>
           <mat-icon class="message circle" matListIcon>message</mat-icon>
-          <h3 matLine>{{ message.keyName }} - {{ message.localeName }}</h3>
+          <h3 matLine>{{ message.keyName }} <span class="sub-title">{{ message.localeDisplayName }}</span></h3>
           <p [matTooltip]="message.whenCreated | date:'full'" matLine>{{message.whenCreated | amTimeAgo}}</p>
         </a>
       </mat-nav-list>

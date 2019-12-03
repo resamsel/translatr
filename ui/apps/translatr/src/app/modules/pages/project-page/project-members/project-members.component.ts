@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
 import { map, pluck } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { combineLatest } from 'rxjs';
+import { navigate } from '@translatr/utils';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-project-members',
@@ -10,10 +12,11 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 })
 export class ProjectMembersComponent {
   project$ = this.facade.project$;
-  memberFilter$ = new BehaviorSubject<string>('');
+  criteria$ = this.facade.criteria$;
+  memberFilter$ = this.criteria$.pipe(pluck('search'));
   members$ = combineLatest([
     this.project$.pipe(pluck('members')),
-    this.memberFilter$.pipe(map(s => s.toLocaleLowerCase()))
+    this.memberFilter$.pipe(map(s => !!s ? s.toLocaleLowerCase() : ''))
   ]).pipe(
     map(([members, search]) => members
       .slice()
@@ -26,10 +29,13 @@ export class ProjectMembersComponent {
   );
   canCreate$ = this.facade.canCreateMember$;
 
-  constructor(private readonly facade: ProjectFacade) {
+  constructor(
+    private readonly facade: ProjectFacade,
+    private readonly router: Router
+  ) {
   }
 
   onFilter(search: string): void {
-    this.memberFilter$.next(search);
+    navigate(this.router, { search });
   }
 }

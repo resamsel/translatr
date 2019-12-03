@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { filter, skip, take } from 'rxjs/operators';
+import { filter, skip, take, takeUntil } from 'rxjs/operators';
 import { Locale, LocaleCriteria, Project } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { navigate } from '@translatr/utils';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-project-locales',
@@ -17,24 +19,25 @@ export class ProjectLocalesComponent {
 
   constructor(
     private readonly facade: ProjectFacade,
-    private readonly snackBar: MatSnackBar
+    private readonly snackBar: MatSnackBar,
+    private readonly router: Router
   ) {
+    this.criteria$
+      .pipe(takeUntil(this.facade.unload$))
+      .subscribe((criteria: LocaleCriteria) =>
+        this.project$
+          .pipe(take(1))
+          .subscribe((project: Project) =>
+            this.facade.loadLocales(project.id, criteria))
+      );
   }
 
   onFetch(criteria: LocaleCriteria) {
-    this.project$
-      .pipe(take(1))
-      .subscribe((project: Project) =>
-        this.facade.loadLocales(project.id, criteria));
+    navigate(this.router, criteria);
   }
 
   onMore(limit: number) {
-    this.project$
-      .pipe(take(1))
-      .subscribe((project: Project) =>
-        // FIXME: may interfere with loaded locales from entry point (page)
-        this.facade.loadLocales(project.id, { limit })
-      );
+    navigate(this.router, { limit });
   }
 
   onEdit(locale: Locale) {

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { PagedList, User } from '@dev/translatr-model';
+import { PagedList, RequestCriteria, User } from '@dev/translatr-model';
 import { trackByFn } from '@translatr/utils';
 
 @Component({
@@ -10,6 +10,7 @@ import { trackByFn } from '@translatr/utils';
 })
 export class UserListComponent {
   @Input() users: PagedList<User>;
+  @Input() criteria: RequestCriteria | undefined;
 
   @Output() readonly more = new EventEmitter<number>();
   @Output() readonly filter = new EventEmitter<string>();

@@ -1,9 +1,12 @@
 <app-sidenav [me]="me$ | async" [showDashboardLink]="true" i18n-page="@@users.title" page="Contributors">
   <div class="container">
+    <section>
       <app-user-list
+        [criteria]="criteria$ | async"
+        [users]="users$ | async"
         (filter)="onSearch($event)"
         (more)="onLoadUsers($event)"
-        [users]="users$ | async"
       ></app-user-list>
+    </section>
   </div>
 </app-sidenav>

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { Member, Project } from '@dev/translatr-model';
+import { Member, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { openProjectMemberEditDialog } from '../../../../shared/project-member-edit-dialog/project-member-edit-dialog.component';
 import { filter, switchMapTo, take } from 'rxjs/operators';
 import { ProjectFacade } from '../../+state/project.facade';
@@ -11,9 +11,30 @@ import { MatDialog } from '@angular/material';
   styleUrls: ['./member-list.component.scss']
 })
 export class MemberListComponent {
+  memberList: PagedList<Member>;
+  @Input() criteria: RequestCriteria;
+
   @Input() project: Project;
-  @Input() members: Array<Member>;
+
+  private _members: Array<Member>;
+
+  get members(): Array<Member> {
+    return this._members;
+  }
+
   @Input() canCreate = false;
+
+  @Input() set members(members: Array<Member>) {
+    this._members = members;
+    this.memberList = {
+      list: members,
+      total: members.length,
+      hasNext: false,
+      hasPrev: false,
+      limit: -1,
+      offset: 0
+    };
+  }
 
   @Output() filter = new EventEmitter<string>();
 

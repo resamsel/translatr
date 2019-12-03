@@ -1,4 +1,29 @@
 @import '~@angular/material/theming';
+@import 'theme';
+
+@mixin filter-field-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $accent-color: mat-color($accent, 700);
+  $accent-darker-color: mat-color($accent, 800);
+  $accent-contrast-color: mat-color($primary, default-contrast);
+
+  :host {
+    .mat-chip {
+      &.mat-basic-chip {
+        background-color: $accent-color;
+        color: $accent-contrast-color;
+      }
+
+      .mat-icon:hover {
+        background-color: $accent-darker-color;
+        color: $accent-contrast-color;
+      }
+    }
+  }
+}
+
+$border-radius: 2px;
 
 .search-field-standard,
 .search-field-outline,
@@ -56,7 +81,7 @@
 
     .mat-form-field-flex {
       background-color: #f1f3f4;
-      border-radius: 4px;
+      border-radius: $border-radius;
       padding: 4px 8px;
     }
 
@@ -74,12 +99,12 @@
 
   &.autocomplete-open {
     ::ng-deep .mat-form-field-flex {
-      border-radius: 4px 4px 0 0;
+      border-radius: $border-radius $border-radius 0 0;
     }
   }
 
   ::ng-deep .mat-form-field-flex {
-    @include mat-elevation(2);
+    @include mat-elevation(1);
     background-color: #fff;
   }
 
@@ -91,20 +116,12 @@
 .option {
   &.mat-chip .mat-icon {
     border-radius: 9px;
-
-    &:hover {
-      color: #fff;
-      background-color: rgba(0, 0, 0, .6);
-    }
   }
 
   &.mat-chip.mat-basic-chip {
     display: inline-flex;
     align-items: center;
-    color: rgba(0, 0, 0, 0.87);
-    background-color: #f5f5f5;
-    //border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
+    border-radius: $border-radius;
     margin-left: 4px;
     padding: 4px 6px;
 
@@ -112,7 +129,7 @@
       width: 18px;
       height: 18px;
       margin-left: 4px;
-      opacity: .4;
+      opacity: .6;
       cursor: pointer;
 
       &:hover {
@@ -122,13 +139,13 @@
   }
 
   .type {
-    opacity: .6;
+    opacity: .8;
   }
 
   .type + .value {
     &::before {
       content: ':';
-      opacity: .6;
+      opacity: .8;
       padding-right: .2em;
     }
   }
@@ -153,3 +170,5 @@ input.mat-chip-input {
   flex: 1 0 80px;
   margin-left: 8px;
 }
+
+@include filter-field-theme($app-theme)

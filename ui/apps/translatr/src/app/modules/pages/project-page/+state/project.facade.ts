@@ -19,7 +19,7 @@ import {
   updateKey,
   updateLocale
 } from './project.actions';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import {
   ActivityCriteria,
   Key,
@@ -29,12 +29,14 @@ import {
   MemberRole,
   memberRoles,
   Project,
+  RequestCriteria,
   User,
   UserRole
 } from '@dev/translatr-model';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 import { AppFacade } from '../../../../+state/app.facade';
+import { Params } from '@angular/router';
 
 const hasRolesAny = (project: Project, user: User, ...roles: MemberRole[]): boolean => {
   if (project === undefined || user === undefined) {
@@ -94,11 +96,20 @@ export class ProjectFacade {
     map(([project, me]) => canDelete(project, me))
   );
 
+  criteria$ = this.appFacade.queryParams$.pipe(
+    map((params: Params) => ['search', 'limit', 'offset']
+      .filter(f => params[f] !== undefined && params[f] !== '')
+      .reduce((acc, curr) => ({ ...acc, [curr]: params[curr] }), {})
+    ),
+    distinctUntilChanged((a: RequestCriteria, b: RequestCriteria) =>
+      a.search === b.search && a.limit === b.limit && a.offset === b.offset)
+  );
+
   locales$ = this.store.pipe(
     select(projectQuery.getLocales),
     takeUntil(this.unload$)
   );
-  localesCriteria$ = new BehaviorSubject<LocaleCriteria | undefined>(undefined);
+  localesCriteria$ = this.criteria$;
   localeModified$ = this.store.pipe(
     select(projectQuery.getLocale),
     takeUntil(this.unload$)
@@ -115,7 +126,7 @@ export class ProjectFacade {
     select(projectQuery.getKeys),
     takeUntil(this.unload$)
   );
-  keysCriteria$ = new BehaviorSubject<KeyCriteria | undefined>(undefined);
+  keysCriteria$ = this.criteria$;
   keyModified$ = this.store.pipe(
     select(projectQuery.getKey),
     takeUntil(this.unload$)
@@ -157,12 +168,10 @@ export class ProjectFacade {
   }
 
   loadLocales(projectId: string, criteria?: LocaleCriteria) {
-    this.localesCriteria$.next(criteria);
     this.store.dispatch(loadLocales({ payload: { ...criteria, projectId } }));
   }
 
   loadKeys(projectId: string, criteria?: KeyCriteria) {
-    this.keysCriteria$.next(criteria);
     this.store.dispatch(loadKeys({ payload: { ...criteria, projectId } }));
   }
 

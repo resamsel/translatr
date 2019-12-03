@@ -7,8 +7,6 @@ import {
   keyDeleted,
   keysLoaded,
   keyUpdated,
-  loadKeys,
-  loadLocales,
   loadProject,
   localeCreated,
   localeDeleted,
@@ -117,16 +115,6 @@ const reducer = createReducer(
     (state, { payload }) => ({ ...state, project: payload, loading: false })
   ),
   on(
-    loadLocales,
-    (state, { payload }) => ({
-      ...state,
-      localesSearch: {
-        ...state.localesSearch,
-        ...(payload ? payload : {})
-      }
-    })
-  ),
-  on(
     localesLoaded,
     (state, { payload }) => ({ ...state, locales: payload })
   ),
@@ -164,16 +152,6 @@ const reducer = createReducer(
       ...state,
       locale: payload,
       locales: pagedListDelete(state.locales, payload)
-    })
-  ),
-  on(
-    loadKeys,
-    (state, { payload }) => ({
-      ...state,
-      keysSearch: {
-        ...state.keysSearch,
-        ...(payload ? payload : {})
-      }
     })
   ),
   on(

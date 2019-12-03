@@ -7,6 +7,7 @@ import { distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs/operato
 import { Params, Router } from '@angular/router';
 import { ProjectCriteria, User } from '@dev/translatr-model';
 import { combineLatest } from 'rxjs';
+import { navigate } from '@translatr/utils';
 
 @Component({
   selector: 'app-projects-page',
@@ -62,9 +63,6 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
   }
 
   onSearch(search: string) {
-    if (search === undefined || search === '') {
-      search = null;
-    }
-    this.router.navigate([], { queryParamsHandling: 'merge', skipLocationChange: true, queryParams: { search } });
+    return navigate(this.router, { search });
   }
 }

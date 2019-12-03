@@ -2,10 +2,10 @@
   [empty]="empty"
   [pagedList]="projects"
   [showFilter]="showFilter"
-  (filter)="filter.emit($event)"
-  (more)="more.emit($event)"
   [criteria]="criteria"
   [showMore]="showMore"
+  (filter)="filter.emit($event)"
+  (more)="more.emit($event)"
 >
   <a
     *ngFor="let project of projects?.list; trackBy: trackByFn"

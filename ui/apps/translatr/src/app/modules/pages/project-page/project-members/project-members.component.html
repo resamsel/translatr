@@ -2,7 +2,8 @@
   <app-member-list
     [project]="project"
     [members]="members$ | async"
-    (filter)="onFilter($event)"
     [canCreate]="canCreate$ | async"
+    (filter)="onFilter($event)"
+    [criteria]="criteria$ | async"
   ></app-member-list>
 </div>

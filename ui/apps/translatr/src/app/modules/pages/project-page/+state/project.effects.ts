@@ -104,33 +104,31 @@ export class ProjectEffects {
 
   loadProjectActivity$ = createEffect(() => this.actions$.pipe(
     ofType(loadProjectActivityAggregated),
-    switchMap((action) => {
-      return this.activityService
-          .aggregated({ projectId: action.payload.id })
-          .pipe(
-            map(
-              (payload: PagedList<Aggregate>) =>
-                projectActivityAggregatedLoaded({ payload })
-            ),
-            catchError(error =>
-              of(projectActivityAggregatedLoadError({ error })))
-          );
-      }
+    switchMap((action) =>
+      this.activityService
+        .aggregated({ projectId: action.payload.id })
+        .pipe(
+          map(
+            (payload: PagedList<Aggregate>) =>
+              projectActivityAggregatedLoaded({ payload })
+          ),
+          catchError(error =>
+            of(projectActivityAggregatedLoadError({ error })))
+        )
     )
   ));
 
   loadProjectActivities$ = createEffect(() => this.actions$.pipe(
     ofType(loadProjectActivities),
-    switchMap((action) => {
-      return this.activityService
-          .find(action.payload)
-          .pipe(
-            map((payload: PagedList<Activity>) =>
-              projectActivitiesLoaded({ payload })),
-            catchError(error =>
-              of(projectActivitiesLoadError({ error })))
-          );
-      }
+    switchMap((action) =>
+      this.activityService
+        .find(action.payload)
+        .pipe(
+          map((payload: PagedList<Activity>) =>
+            projectActivitiesLoaded({ payload })),
+          catchError(error =>
+            of(projectActivitiesLoadError({ error })))
+        )
     )
   ));
 

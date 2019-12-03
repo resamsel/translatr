@@ -4,6 +4,7 @@ import { AppFacade } from '../../../+state/app.facade';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { Params, Router } from '@angular/router';
 import { UserCriteria } from './+state/users.actions';
+import { navigate } from '@translatr/utils';
 
 @Component({
   selector: 'app-projects-page',
@@ -44,20 +45,14 @@ export class UsersPageComponent implements OnInit, OnDestroy {
   }
 
   onLoadUsers(limit: number) {
-    if (limit === undefined) {
-      limit = null;
-    }
     return this.navigate({ limit });
   }
 
   onSearch(search: string) {
-    if (search === undefined || search === '') {
-      search = null;
-    }
     return this.navigate({ search });
   }
 
   navigate(criteria: Partial<UserCriteria>): Promise<boolean> {
-    return this.router.navigate([], { queryParamsHandling: 'merge', skipLocationChange: true, queryParams: criteria });
+    return navigate(this.router, criteria);
   }
 }

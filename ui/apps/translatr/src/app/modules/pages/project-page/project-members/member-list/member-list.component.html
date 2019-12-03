@@ -1,19 +1,14 @@
-<app-list-header
+<app-nav-list
+  (create)="onAdd(project)"
+  *ngIf="project"
+  [canCreate]="canCreate"
+  [criteria]="criteria"
+  [pagedList]="memberList"
   addTooltip="Add member"
   i18n-addTooltip="@@member.create.tooltip"
-  [addEnabled]="canCreate"
-  (add)="onAdd(project)"
+  showFilter="true"
   (filter)="onFilter($event)"
-  (remove)="onRemove($event)"
 >
-  {project.members.length,
-    plural,
-    =0 {No members}
-    =1 {One member}
-    other {{{project.members.length}} members}}
-</app-list-header>
-
-<mat-nav-list>
   <a
     mat-list-item
     *ngFor="let member of members"
@@ -26,9 +21,9 @@
       [md5Hash]="member.userEmailHash"
       size="36"
     />
-    <h3 matLine>{{ member.userName }} — {{ member.role }}</h3>
+    <h3 matLine>{{ member.userName }} <span class="sub-title">{{ member.role }}</span></h3>
     <p i18n="@@added.when" matLine>
       Added <span [matTooltip]="member?.whenCreated | date: 'full'">{{ member?.whenCreated | amTimeAgo }}</span>
     </p>
   </a>
-</mat-nav-list>
+</app-nav-list>

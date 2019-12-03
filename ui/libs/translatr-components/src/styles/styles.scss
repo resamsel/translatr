@@ -94,6 +94,12 @@ a .mat-card {
   &[dense] .mat-list-icon.mat-icon {
     line-height: 20px;
   }
+
+  .mat-line .sub-title {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    margin-left: 4px;
+  }
 }
 
 .light-theme {
