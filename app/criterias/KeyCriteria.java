@@ -3,9 +3,13 @@ package criterias;
 import forms.KeySearchForm;
 import forms.SearchForm;
 import play.mvc.Http.Request;
+import utils.JsonUtils;
 
 import java.util.Collection;
 import java.util.UUID;
+
+import static controllers.AbstractBaseApi.PARAM_LOCALE_ID;
+import static controllers.AbstractBaseApi.PARAM_MISSING;
 
 /**
  * @author resamsel
@@ -61,11 +65,10 @@ public class KeyCriteria extends AbstractProjectSearchCriteria<KeyCriteria> {
     this.localeId = localeId;
   }
 
-  private KeyCriteria withLocaleId(String localeId) {
-    if (localeId != null) {
-      setLocaleId(UUID.fromString(localeId));
-    }
-    return this;
+  public static KeyCriteria from(Request request) {
+    return new KeyCriteria().with(request)
+        .withMissing(Boolean.parseBoolean(request.queryString().getOrDefault(PARAM_MISSING, new String[]{"false"})[0]))
+        .withLocaleId(JsonUtils.getUuid(request.getQueryString(PARAM_LOCALE_ID)));
   }
 
   public String getProjectOwnerUsername() {
@@ -108,9 +111,8 @@ public class KeyCriteria extends AbstractProjectSearchCriteria<KeyCriteria> {
     return new KeyCriteria().with(form).withMissing(form.missing);
   }
 
-  public static KeyCriteria from(Request request) {
-    return new KeyCriteria().with(request)
-        .withMissing(Boolean.parseBoolean(request.queryString().getOrDefault("missing", new String[]{"false"})[0]))
-        .withLocaleId(request.queryString().getOrDefault("localeId", new String[]{null})[0]);
+  private KeyCriteria withLocaleId(UUID localeId) {
+    setLocaleId(localeId);
+    return this;
   }
 }

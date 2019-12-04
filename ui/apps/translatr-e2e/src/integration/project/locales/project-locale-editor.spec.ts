@@ -17,9 +17,8 @@ describe('Project Locale Editor', () => {
     cy.route('/api/project/*/keys?*missing=true*', 'fixture:johndoe/p1/keys-missing');
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages-locale-default');
     cy.route('/api/project/*/messages?*keyName=k1', 'fixture:johndoe/p1/messages-key-k1');
-    cy.route('/api/project/*/messages?*keyIds=*', 'fixture:johndoe/p1/messages-missing');
+    cy.route('/api/project/*/messages?*keyIds=*', 'fixture:johndoe/p1/messages');
   });
-
 
   it('should have page title Language Editor', () => {
     // given
@@ -116,16 +115,16 @@ describe('Project Locale Editor', () => {
 
   it('should show preview when key activated in sidebar', () => {
     // given
+    cy.route('/api/project/*/messages?*keyIds=*', 'fixture:johndoe/p1/messages-locale-default');
 
     // when
     page.navigateTo();
-
-    // then
     page.getNavList()
       .find('.mat-list-item.key')
       .first()
       .click();
 
+    // then
     page.getPreviewContents().should('have.text', 'Key One');
   });
 
@@ -169,6 +168,7 @@ describe('Project Locale Editor', () => {
 
   it('should only show keys with missing translations when filtered by those', () => {
     // given
+    cy.route('/api/project/*/messages?*keyIds=*', 'fixture:johndoe/p1/messages-missing');
 
     // when
     page.navigateTo();

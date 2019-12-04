@@ -49,13 +49,15 @@ public class AbstractBaseApi extends AbstractController {
   static final String PROJECT_NAME = "The project name";
   static final String LOCALE_ID = "The locale ID";
   static final String LOCALE_IDS = "The locale IDs";
-  static final String PARAM_LOCALE_ID = "localeId";
+  public static final String PARAM_LOCALE_ID = "localeId";
   static final String KEY_ID = "The key ID";
   static final String KEY_IDS = "The key IDs";
+  public static final String PARAM_KEY_ID = "keyId";
   static final String MESSAGE_ID = "The message ID";
   static final String USER_ID = "The user ID";
   static final String USER_USERNAME = "The user username";
   static final String ACCESS_TOKEN_ID = "The access token ID";
+  public static final String PARAM_MISSING = "missing";
 
   static final String AUTHORIZATION = "scopes";
 

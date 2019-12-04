@@ -119,6 +119,7 @@ const getLocaleSelectedMessage = createSelector(
     const selectedMessages = messages.list
       .filter((message: Message) => message.keyId === selectedKey.id);
 
+    console.log('selectedMessages', selectedMessages, messages.list, selectedKey.id);
     return selectedMessages.length === 1
       // selected locale has a translation
       ? selectedMessages[0]

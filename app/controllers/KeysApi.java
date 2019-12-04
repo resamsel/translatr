@@ -9,7 +9,14 @@ import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import io.swagger.annotations.AuthorizationScope;
 import models.ProjectRole;
 import models.User;
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +61,8 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
   private static final String NOT_FOUND_ERROR = "Key not found";
 
   private static final String KEY_NAME = "The name of the key";
+  private static final String MISSING = "Whether or not keys with missing messages should be fetched - use in" +
+      " combination with localeId to retrieve missing messages for a certain locale";
 
   @Inject
   public KeysApi(Injector injector, CacheService cache, PlayAuthenticate auth,
@@ -77,7 +86,11 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string",
-          paramType = "query")})
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_LOCALE_ID, value = LOCALE_ID,
+          dataType = "string", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_MISSING, value = MISSING,
+          dataType = "string", paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
     return toJsons(() -> api.find(
         KeyCriteria.from(request()).withProjectId(projectId),

@@ -168,6 +168,7 @@ export class EditorEffects {
         new LoadKeys({
           ...search,
           ...pickKeys(queryParams, ['search', 'missing', 'limit', 'order']),
+          localeId: action.payload.locale.id,
           projectId: action.payload.locale.projectId
         }),
         new LoadLocales({
@@ -232,6 +233,7 @@ export class EditorEffects {
       new LoadLocales({
         ...search,
         ...pickKeys(queryParams, ['search', 'missing', 'limit', 'order']),
+        keyId: key.id,
         projectId: key.projectId
       })
     )

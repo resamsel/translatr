@@ -2,6 +2,12 @@ package criterias;
 
 import forms.LocaleSearchForm;
 import play.mvc.Http.Request;
+import utils.JsonUtils;
+
+import java.util.UUID;
+
+import static controllers.AbstractBaseApi.PARAM_KEY_ID;
+import static controllers.AbstractBaseApi.PARAM_MISSING;
 
 /**
  * @author resamsel
@@ -13,6 +19,8 @@ public class LocaleCriteria extends AbstractProjectSearchCriteria<LocaleCriteria
   public static final String PARAM_MESSAGES_KEY_NAME = "messages.keyName";
 
   private Boolean missing;
+
+  private UUID keyId;
 
   private String localeName;
 
@@ -33,6 +41,23 @@ public class LocaleCriteria extends AbstractProjectSearchCriteria<LocaleCriteria
   private LocaleCriteria withMissing(Boolean missing) {
     setMissing(missing);
     return this;
+  }
+
+  public static LocaleCriteria from(Request request) {
+    return new LocaleCriteria()
+        .with(request)
+        .withLocaleName(request.getQueryString(PARAM_LOCALE_NAME))
+        .withMissing(Boolean.parseBoolean(request.queryString().getOrDefault(PARAM_MISSING, new String[]{"false"})[0]))
+        .withKeyId(JsonUtils.getUuid(request.getQueryString(PARAM_KEY_ID)))
+        .withMessagesKeyName(request.getQueryString(PARAM_MESSAGES_KEY_NAME));
+  }
+
+  public UUID getKeyId() {
+    return keyId;
+  }
+
+  public void setKeyId(UUID keyId) {
+    this.keyId = keyId;
   }
 
   public String getLocaleName() {
@@ -74,9 +99,8 @@ public class LocaleCriteria extends AbstractProjectSearchCriteria<LocaleCriteria
     return new LocaleCriteria().with(form).withMissing(form.missing);
   }
 
-  public static LocaleCriteria from(Request request) {
-    return new LocaleCriteria().with(request)
-        .withLocaleName(request.getQueryString(PARAM_LOCALE_NAME))
-        .withMessagesKeyName(request.getQueryString(PARAM_MESSAGES_KEY_NAME));
+  private LocaleCriteria withKeyId(UUID keyId) {
+    setKeyId(keyId);
+    return this;
   }
 }

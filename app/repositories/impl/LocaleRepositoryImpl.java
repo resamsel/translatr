@@ -4,6 +4,7 @@ import actors.ActivityActor;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
 import akka.actor.ActorRef;
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -86,6 +87,17 @@ public class LocaleRepositoryImpl extends
       query.ilike("name", "%" + criteria.getSearch() + "%");
     }
 
+    if (Boolean.TRUE.equals(criteria.getMissing())) {
+      ExpressionList<Message> messageQuery =
+          Ebean.createQuery(Message.class).where().raw("locale.id = l.id");
+
+      if (criteria.getKeyId() != null) {
+        messageQuery.eq("key.id", criteria.getKeyId());
+      }
+
+      query.notExists(messageQuery.query());
+    }
+
     if (criteria.getOrder() != null) {
       query.setOrderBy(criteria.getOrder());
     }
@@ -106,7 +118,7 @@ public class LocaleRepositoryImpl extends
   }
 
   private Query<Locale> fetch(String... fetches) {
-    return QueryUtils.fetch(find.query().setDisableLazyLoading(true),
+    return QueryUtils.fetch(find.query().alias("l").setDisableLazyLoading(true),
         QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 

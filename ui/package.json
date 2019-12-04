@@ -55,7 +55,7 @@
     "dep-graph": "./node_modules/.bin/nx dep-graph",
     "workspace-schematic": "./node_modules/.bin/nx workspace-schematic",
     "help": "./node_modules/.bin/nx help",
-    "kill:server": "fuser 4200/tcp -k; fuser 4211/tcp -k; fuser 4211/tcp -k; echo 'ports freed'",
+    "kill:server": "fuser 9000/tcp -k; fuser 4200/tcp -k; fuser 4211/tcp -k; fuser 4211/tcp -k; echo 'ports freed'",
     "nx": "nx"
   },
   "private": true,

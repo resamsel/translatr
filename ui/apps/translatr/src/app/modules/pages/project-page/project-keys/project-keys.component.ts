@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { skip, take, takeUntil } from 'rxjs/operators';
+import { filter, skip, take, takeUntil } from 'rxjs/operators';
 import { Key, KeyCriteria, Project } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -13,7 +13,7 @@ import { navigate } from '@translatr/utils';
   styleUrls: ['./project-keys.component.scss']
 })
 export class ProjectKeysComponent {
-  project$ = this.facade.project$;
+  project$ = this.facade.project$.pipe(filter(x => !!x));
   keys$ = this.facade.keys$;
   criteria$ = this.facade.keysCriteria$;
   canModify$ = this.facade.canModifyKey$;
