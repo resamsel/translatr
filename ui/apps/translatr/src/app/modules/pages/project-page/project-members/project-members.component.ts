@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { map, pluck, skip, take } from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
+import { filter, map, pluck, skip, take } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
 import { navigate } from '@translatr/utils';
 import { Router } from '@angular/router';
-import { Member } from '@dev/translatr-model';
+import { Member, User } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material';
+import { AppFacade } from '../../../../+state/app.facade';
 
 @Component({
   selector: 'app-project-members',
@@ -30,9 +31,18 @@ export class ProjectMembersComponent {
           .includes(search)))
   );
   canModify$ = this.facade.canModifyMember$;
+  canModifyOwner$: Observable<boolean> = combineLatest([
+    this.project$.pipe(pluck('members')),
+    this.appFacade.me$.pipe(filter(x => !!x))
+  ]).pipe(
+    map(([members, me]: [Array<Member>, User]) =>
+      members.find(m => m.userId === me.id)),
+    map((member: Member | undefined) => member !== undefined ? member.role === 'Owner' : false)
+  );
 
   constructor(
     private readonly facade: ProjectFacade,
+    private readonly appFacade: AppFacade,
     private readonly router: Router,
     private readonly snackBar: MatSnackBar
   ) {

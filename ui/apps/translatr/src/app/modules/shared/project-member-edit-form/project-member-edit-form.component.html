@@ -7,7 +7,8 @@
         type="text"
         cdkFocusInitial
         formControlName="user"
-        [matAutocomplete]="auto">
+        [matAutocomplete]="auto"
+        [readonly]="userFormControl.value.id !== undefined">
       <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
         <mat-option *ngFor="let user of users" [value]="user">
           {{ user.username }} -- {{ user.name }}
@@ -19,8 +20,9 @@
     </mat-form-field>
     <mat-form-field>
       <mat-label>Role</mat-label>
-      <mat-select formControlName="role">
-        <mat-option *ngFor="let role of roles" [value]="role">{{role}}</mat-option>
+      <mat-select [disabled]="userFormControl.value.role === 'Owner' && !canModifyOwner" formControlName="role">
+        <mat-option *ngFor="let role of roles" [disabled]="role === 'Owner' && !canModifyOwner"
+                    [value]="role">{{role}}</mat-option>
       </mat-select>
     </mat-form-field>
   </section>

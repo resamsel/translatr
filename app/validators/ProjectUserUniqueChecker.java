@@ -2,12 +2,12 @@ package validators;
 
 import com.avaje.ebean.PagedList;
 import criterias.ProjectUserCriteria;
-import models.Locale;
 import models.ProjectUser;
 import repositories.ProjectUserRepository;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Objects;
 
 /**
  * @author resamsel
@@ -36,6 +36,6 @@ public class ProjectUserUniqueChecker implements NameUniqueChecker {
     PagedList<ProjectUser> existing = projectUserRepository.findBy(
         new ProjectUserCriteria().withProjectId(t.project.id).withUserId(t.user.id));
 
-    return existing == null || existing.getList().size() == 0 || !existing.getList().get(0).equals(t);
+    return existing == null || existing.getList().size() == 0 || Objects.equals(existing.getList().get(0).id, t.id);
   }
 }

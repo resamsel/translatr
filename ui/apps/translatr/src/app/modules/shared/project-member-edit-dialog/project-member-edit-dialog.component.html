@@ -1,11 +1,14 @@
-<h1 mat-dialog-title>Add Project Member</h1>
+<h1 *ngIf="data.member.id === undefined" mat-dialog-title>Add Project Member</h1>
+<h1 *ngIf="data.member.id !== undefined" mat-dialog-title>Edit Project Member</h1>
 <div mat-dialog-content>
   <app-project-member-edit-form
-    [member]="data"
+    #form
+    [canModifyOwner]="data.canModifyOwner"
+    [member]="data.member"
     [dialogRef]="dialogRef"
     [users]="users$ | async"
     (userFilter)="onUserFilter($event)"
-    #form></app-project-member-edit-form>
+  ></app-project-member-edit-form>
 </div>
 <div class="dialog-actions" mat-dialog-actions>
   <button

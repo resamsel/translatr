@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
 import { Member, MemberRole, memberRoles, User } from '@dev/translatr-model';
-import { Observable, Subject } from 'rxjs';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder } from '@angular/forms';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
@@ -48,12 +48,11 @@ export class ProjectMemberEditFormComponent
   }
 
   @Input() users: User[];
-
   @Input() dialogRef: MatDialogRef<any, Member>;
+  @Input() canModifyOwner = false;
 
   @Output() userFilter = new EventEmitter<string | undefined>();
 
-  filteredOptions: Observable<User[]>;
   roles = memberRoles;
 
   readonly userFormControl = this.form.get('user');
@@ -62,7 +61,8 @@ export class ProjectMemberEditFormComponent
     readonly memberService: MemberService,
     readonly snackBar: MatSnackBar,
     readonly changeDetectorRef: ChangeDetectorRef,
-    readonly fb: FormBuilder
+    readonly fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) readonly data: Member
   ) {
     super(
       snackBar,
@@ -73,7 +73,7 @@ export class ProjectMemberEditFormComponent
         user: [{}],
         role: ['']
       }),
-      {},
+      data,
       (form: MemberForm) => memberService.create(formToMember(form)),
       (form: MemberForm) => memberService.update(formToMember(form)),
       (member: Member) => `${member.userName} is now ${member.role}`
@@ -107,6 +107,7 @@ export class ProjectMemberEditFormComponent
 
   private updateValue(member: Member): void {
     this.form.patchValue({
+      id: member.id,
       projectId: member.projectId,
       user: memberToUser(member),
       role: member.role

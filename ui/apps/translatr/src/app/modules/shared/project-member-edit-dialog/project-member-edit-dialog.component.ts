@@ -3,6 +3,12 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { Member } from '@dev/translatr-model';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { map } from 'rxjs/operators';
+import { AppFacade } from '../../../+state/app.facade';
+
+interface Data {
+  member: Partial<Member>;
+  canModifyOwner: boolean;
+}
 
 @Component({
   selector: 'app-project-member-edit-dialog',
@@ -15,8 +21,9 @@ export class ProjectMemberEditDialogComponent {
 
   constructor(
     readonly dialogRef: MatDialogRef<ProjectMemberEditDialogComponent, Member>,
-    @Inject(MAT_DIALOG_DATA) readonly data: Member,
-    readonly facade: UsersFacade
+    @Inject(MAT_DIALOG_DATA) readonly data: Data,
+    readonly facade: UsersFacade,
+    readonly appFacade: AppFacade
   ) {
   }
 
@@ -27,7 +34,7 @@ export class ProjectMemberEditDialogComponent {
   }
 }
 
-export const openProjectMemberEditDialog = (dialog: MatDialog, member: Partial<Member>) => {
-  return dialog.open<ProjectMemberEditDialogComponent, Partial<Member>, Member>(
-    ProjectMemberEditDialogComponent, { data: member });
+export const openProjectMemberEditDialog = (dialog: MatDialog, member: Partial<Member>, canModifyOwner: boolean) => {
+  return dialog.open<ProjectMemberEditDialogComponent, Data, Member>(
+    ProjectMemberEditDialogComponent, { data: { member, canModifyOwner } });
 };

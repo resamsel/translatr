@@ -25,9 +25,20 @@
     <p i18n="@@added.when" matLine>
       Added <span [matTooltip]="member?.whenCreated | date: 'full'">{{ member?.whenCreated | amTimeAgo }}</span>
     </p>
+
+    <button
+      (click)="onEdit(member, $event)"
+      *ngIf="canCreate && (member.role !== 'Owner' || canModifyOwner)"
+      class="edit"
+      i18n-matTooltip="@@button.edit"
+      mat-icon-button
+      matTooltip="Edit"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
     <confirm-button
       (confirm)="onDelete(member)"
-      *ngIf="canDelete"
+      *ngIf="canDelete && (member.role !== 'Owner' || canModifyOwner)"
       class="delete"
       i18n-tooltip="@@button.delete"
       icon="delete"

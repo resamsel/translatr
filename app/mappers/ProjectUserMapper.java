@@ -9,6 +9,7 @@ public class ProjectUserMapper {
   public static models.ProjectUser toModel(ProjectUser in) {
     models.ProjectUser out = new models.ProjectUser();
 
+    out.id = in.id;
     out.project = new Project()
         .withId(in.projectId)
         .withName(in.projectName)

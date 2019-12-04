@@ -24,6 +24,7 @@ export class MemberListComponent {
 
   @Input() canCreate = false;
   @Input() canDelete = false;
+  @Input() canModifyOwner = false;
 
   @Input() set members(members: Array<Member>) {
     this._members = members;
@@ -38,6 +39,7 @@ export class MemberListComponent {
   }
 
   @Output() filter = new EventEmitter<string>();
+  @Output() edit = new EventEmitter<Member>();
   @Output() delete = new EventEmitter<Member>();
 
   project$ = this.facade.project$;
@@ -51,12 +53,22 @@ export class MemberListComponent {
   }
 
   onAdd(project: Project): void {
-    openProjectMemberEditDialog(this.dialog, { projectId: project.id })
+    openProjectMemberEditDialog(this.dialog, { projectId: project.id }, this.canModifyOwner)
       .afterClosed()
       .pipe(filter(x => !!x), switchMapTo(this.project$), take(1))
       .subscribe(p => this.facade.loadProject(p.ownerUsername, p.name));
   }
 
+  onEdit(member: Member, event: MouseEvent): boolean {
+    openProjectMemberEditDialog(this.dialog, member, this.canModifyOwner)
+      .afterClosed()
+      .pipe(filter(x => !!x), switchMapTo(this.project$), take(1))
+      .subscribe(p => this.facade.loadProject(p.ownerUsername, p.name));
+    this.edit.emit(member);
+    event.stopPropagation();
+    event.preventDefault();
+    return false;
+  }
 
   onDelete(member: Member): void {
     this.delete.emit(member);
