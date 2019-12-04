@@ -81,6 +81,8 @@ import { ProjectDeleteDialogModule } from '../../shared/project-delete-dialog/pr
     MatInputModule,
     MatFormFieldModule,
     MatSnackBarModule,
+    MatTooltipModule,
+
     MomentModule,
     GravatarModule,
     StoreModule.forFeature(PROJECT_FEATURE_KEY, projectReducer, {
