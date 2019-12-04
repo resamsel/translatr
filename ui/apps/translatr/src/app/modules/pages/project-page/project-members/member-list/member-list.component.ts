@@ -23,6 +23,7 @@ export class MemberListComponent {
   }
 
   @Input() canCreate = false;
+  @Input() canDelete = false;
 
   @Input() set members(members: Array<Member>) {
     this._members = members;
@@ -37,6 +38,7 @@ export class MemberListComponent {
   }
 
   @Output() filter = new EventEmitter<string>();
+  @Output() delete = new EventEmitter<Member>();
 
   project$ = this.facade.project$;
   // @ts-ignore
@@ -55,8 +57,9 @@ export class MemberListComponent {
       .subscribe(p => this.facade.loadProject(p.ownerUsername, p.name));
   }
 
-  onRemove(member: any): void {
-    console.log('remove member', member);
+
+  onDelete(member: Member): void {
+    this.delete.emit(member);
   }
 
   onFilter(search: string): void {

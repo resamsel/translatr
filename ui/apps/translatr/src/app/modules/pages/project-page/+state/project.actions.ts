@@ -7,6 +7,7 @@ import {
   KeyCriteria,
   Locale,
   LocaleCriteria,
+  Member,
   Message,
   MessageCriteria,
   PagedList,
@@ -145,6 +146,21 @@ export const keyDeleted = createAction(
 
 export const keyDeleteError = createAction(
   '[Keys API] Key Delete Error',
+  props<{ error: any }>()
+);
+
+export const deleteMember = createAction(
+  '[Project Page] Delete Member',
+  props<{ payload: { id: number } }>()
+);
+
+export const memberDeleted = createAction(
+  '[Members API] Member Deleted',
+  props<{ payload: Member }>()
+);
+
+export const memberDeleteError = createAction(
+  '[Members API] Member Delete Error',
   props<{ error: any }>()
 );
 

@@ -2,8 +2,10 @@
   <app-member-list
     [project]="project"
     [members]="members$ | async"
-    [canCreate]="canCreate$ | async"
+    (delete)="onDelete($event)"
     (filter)="onFilter($event)"
     [criteria]="criteria$ | async"
+    [canCreate]="canModify$ | async"
+    [canDelete]="canModify$ | async"
   ></app-member-list>
 </div>

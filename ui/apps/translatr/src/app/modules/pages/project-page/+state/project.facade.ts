@@ -7,6 +7,7 @@ import {
   createLocale,
   deleteKey,
   deleteLocale,
+  deleteMember,
   loadKeys,
   loadLocales,
   loadMessages,
@@ -67,7 +68,7 @@ const canModifyKey = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Developer);
 const canModifyLocale = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Translator);
-const canCreateMember = (project: Project, me: User): boolean =>
+const canModifyMember = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
 
 @Injectable()
@@ -144,8 +145,12 @@ export class ProjectFacade {
     takeUntil(this.unload$)
   );
 
-  canCreateMember$ = this.permission$.pipe(
-    map(([project, me]) => canCreateMember(project, me))
+  canModifyMember$ = this.permission$.pipe(
+    map(([project, me]) => canModifyMember(project, me))
+  );
+  memberModified$ = this.store.pipe(
+    select(projectQuery.getMember),
+    takeUntil(this.unload$)
   );
 
   activityAggregated$ = this.store.pipe(
@@ -222,5 +227,9 @@ export class ProjectFacade {
 
   deleteKey(id: string) {
     this.store.dispatch(deleteKey({ payload: { id } }));
+  }
+
+  deleteMember(id: number): void {
+    this.store.dispatch(deleteMember({ payload: { id } }));
   }
 }

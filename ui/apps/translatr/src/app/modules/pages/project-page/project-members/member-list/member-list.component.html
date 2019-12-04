@@ -25,5 +25,13 @@
     <p i18n="@@added.when" matLine>
       Added <span [matTooltip]="member?.whenCreated | date: 'full'">{{ member?.whenCreated | amTimeAgo }}</span>
     </p>
+    <confirm-button
+      (confirm)="onDelete(member)"
+      *ngIf="canDelete"
+      class="delete"
+      i18n-tooltip="@@button.delete"
+      icon="delete"
+      tooltip="Delete"
+    ></confirm-button>
   </a>
 </app-nav-list>

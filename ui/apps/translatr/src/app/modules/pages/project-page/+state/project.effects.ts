@@ -6,6 +6,7 @@ import {
   createLocale,
   deleteKey,
   deleteLocale,
+  deleteMember,
   keyCreated,
   keyCreateError,
   keyDeleted,
@@ -26,6 +27,8 @@ import {
   localesLoaded,
   localeUpdated,
   localeUpdateError,
+  memberDeleted,
+  memberDeleteError,
   messagesLoaded,
   projectActivitiesLoaded,
   projectActivitiesLoadError,
@@ -40,10 +43,11 @@ import {
 } from './project.actions';
 import { ActivityService, KeyService, LocaleService, MessageService, ProjectService } from '@dev/translatr-sdk';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
-import { Activity, Aggregate, Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
+import { Activity, Aggregate, Key, Locale, Member, Message, PagedList, Project } from '@dev/translatr-model';
 import { of } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { projectQuery } from './project.selectors';
+import { MemberService } from '@translatr/translatr-sdk/src/lib/services/member.service';
 
 @Injectable()
 export class ProjectEffects {
@@ -217,12 +221,27 @@ export class ProjectEffects {
     )
   ));
 
+  // Members
+
+  deleteMember$ = createEffect(() => this.actions$.pipe(
+    ofType(deleteMember),
+    switchMap((action) =>
+      this.memberService
+        .delete(action.payload.id)
+        .pipe(
+          map((payload: Member) => memberDeleted({ payload })),
+          catchError(error => of(memberDeleteError({ error })))
+        )
+    )
+  ));
+
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store<ProjectPartialState>,
     private readonly projectService: ProjectService,
     private readonly localeService: LocaleService,
     private readonly keyService: KeyService,
+    private readonly memberService: MemberService,
     private readonly messageService: MessageService,
     private readonly activityService: ActivityService
   ) {

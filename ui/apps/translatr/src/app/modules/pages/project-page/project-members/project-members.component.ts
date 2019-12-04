@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { map, pluck } from 'rxjs/operators';
+import { map, pluck, skip, take } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import { navigate } from '@translatr/utils';
 import { Router } from '@angular/router';
+import { Member } from '@dev/translatr-model';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-project-members',
@@ -27,15 +29,29 @@ export class ProjectMembersComponent {
           .toLocaleLowerCase()
           .includes(search)))
   );
-  canCreate$ = this.facade.canCreateMember$;
+  canModify$ = this.facade.canModifyMember$;
 
   constructor(
     private readonly facade: ProjectFacade,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly snackBar: MatSnackBar
   ) {
   }
 
   onFilter(search: string): void {
     navigate(this.router, { search });
+  }
+
+  onDelete(member: Member) {
+    this.facade.deleteMember(member.id);
+    this.facade.memberModified$
+      .pipe(skip(1), take(1))
+      .subscribe((m: Member) =>
+        this.snackBar.open(
+          `Member ${m.userName} removed from project`,
+          'Dismiss',
+          { duration: 5000 }
+        )
+      );
   }
 }

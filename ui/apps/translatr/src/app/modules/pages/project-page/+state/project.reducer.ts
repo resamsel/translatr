@@ -3,6 +3,7 @@ import {
   createLocale,
   deleteKey,
   deleteLocale,
+  deleteMember,
   keyCreated,
   keyDeleted,
   keysLoaded,
@@ -12,6 +13,7 @@ import {
   localeDeleted,
   localesLoaded,
   localeUpdated,
+  memberDeleted,
   messagesLoaded,
   projectActivitiesLoaded,
   projectActivityAggregatedLoaded,
@@ -21,7 +23,7 @@ import {
   updateKey,
   updateLocale
 } from './project.actions';
-import { Activity, Aggregate, Key, Locale, Message, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
+import { Activity, Aggregate, Key, Locale, Member, Message, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { Action, createReducer, on } from '@ngrx/store';
 import { Identifiable } from '../../../shared/edit-form/abstract-edit-form-component';
 
@@ -42,8 +44,13 @@ export interface ProjectState {
 
   messages?: PagedList<Message>;
   messagesSearch: RequestCriteria;
+
+  member?: Member;
+  memberError?: any;
+
   activityAggregated?: PagedList<Aggregate>;
   activities?: PagedList<Activity>;
+
   loading: boolean;
   error?: any; // last none error (if any)
 }
@@ -102,6 +109,12 @@ const resetKey = (state: ProjectState): ProjectState => ({
   ...state,
   key: undefined,
   keyError: undefined
+});
+
+const resetMember = (state: ProjectState): ProjectState => ({
+  ...state,
+  member: undefined,
+  memberError: undefined
 });
 
 const reducer = createReducer(
@@ -192,6 +205,21 @@ const reducer = createReducer(
       ...state,
       key: payload,
       keys: pagedListDelete(state.keys, payload)
+    })
+  ),
+  on(
+    deleteMember,
+    (state, { payload }) => resetMember(state)
+  ),
+  on(
+    memberDeleted,
+    (state, { payload }) => ({
+      ...state,
+      member: payload,
+      project: {
+        ...state.project,
+        members: state.project.members.filter(m => m.id !== payload.id)
+      }
     })
   ),
   on(
