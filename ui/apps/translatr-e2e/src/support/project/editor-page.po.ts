@@ -37,4 +37,8 @@ export class EditorPage extends Page {
   getTranslationsBody(): Cypress.Chainable<JQuery<HTMLElement>> {
     return cy.get('#mat-tab-content-0-1');
   }
+
+  getFilterField(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('dev-filter-field input');
+  }
 }
