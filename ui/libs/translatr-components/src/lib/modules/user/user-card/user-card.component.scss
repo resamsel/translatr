@@ -1,3 +1,11 @@
 h2 {
   margin-bottom: 0;
 }
+
+.image {
+  flex-shrink: 0;
+}
+
+.mat-card-content {
+  overflow: hidden;
+}
