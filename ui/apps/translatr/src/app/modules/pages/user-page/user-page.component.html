@@ -1,19 +1,19 @@
 <app-sidenav [me]="me$ | async" [page]="(user$ | async)?.name" [showDashboardLink]="true">
   <header>
     <nav *ngIf="user$ | async as user" color="accent" mat-tab-nav-bar>
-      <div class="container dense" routerLinkActive>
+      <div class="container dense">
         <ng-container *ngFor="let child of children">
           <a
-            mat-tab-link
-            *ngIf="canActivate$(child) | async"
-            [routerLink]="routerLink(user, child)"
-            routerLinkActive
-            [routerLinkActiveOptions]="{ exact: child.path === '' }"
             #link="routerLinkActive"
+            *ngIf="canActivate$(child) | async"
+            mat-tab-link
+            [routerLinkActiveOptions]="{ exact: child.path === '' }"
+            routerLinkActive
+            [routerLink]="routerLink(user, child)"
             [active]="link.isActive"
           >
             <mat-icon>{{ child.data.icon }}</mat-icon>
-            {{ child.data.name }}
+            <span>{{ child.data.name }}</span>
           </a>
         </ng-container>
       </div>

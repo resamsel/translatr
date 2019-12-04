@@ -4,13 +4,13 @@
       <div class="container dense">
         <ng-container *ngFor="let child of children">
           <a
-            #link="routerLinkActive"
             *ngIf="canActivate$(child) | async"
-            [active]="link.isActive"
+            #link="routerLinkActive"
             [routerLinkActiveOptions]="{ exact: child.path === '' }"
             [routerLink]="routerLink(project, child)"
             mat-tab-link
             routerLinkActive
+            [active]="link.isActive"
           >
             <mat-icon>{{ child.data.icon }}</mat-icon>
             <span>{{ child.data.name }}</span>
