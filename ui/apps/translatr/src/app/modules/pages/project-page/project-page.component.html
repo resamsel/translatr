@@ -1,5 +1,11 @@
 <app-sidenav [me]="me$ | async" [page]="(project$ | async)?.name" [showDashboardLink]="true">
-  <header>
+  <header class="header">
+    <div class="container title">
+      <div class="content">
+        <h1>{{(project$ | async)?.ownerUsername}}/{{(project$ | async)?.name}}</h1>
+        <p>{{(project$ | async)?.description}}</p>
+      </div>
+    </div>
     <nav mat-tab-nav-bar color="accent" *ngIf="project$ | async as project">
       <div class="container dense">
         <ng-container *ngFor="let child of children">

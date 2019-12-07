@@ -1,5 +1,41 @@
 @import "mixins";
 
+.header {
+  height: 128px;
+  background: no-repeat url(assets/headers/waves.png);
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+
+  @include medium {
+    height: 150px;
+  }
+
+  @include large {
+    height: 180px;
+  }
+
+  .title {
+    flex-grow: 1;
+    display: flex;
+    align-items: flex-end;
+    padding: 0;
+
+    .content {
+      flex-grow: 1;
+      padding: 0 8px;
+
+      h1 {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .mat-tab-nav-bar {
+    background-color: rgba(255, 255, 255, 0.67);
+  }
+}
+
 .mat-form-field {
   ::ng-deep {
     .mat-form-field-wrapper {
