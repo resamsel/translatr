@@ -1,18 +1,22 @@
 @import "mixins";
 
 .header {
-  height: 128px;
-  background: no-repeat url(assets/headers/waves.png);
+  height: 150px;
+  background-image: url(assets/headers/waves.png);
+  background-repeat: no-repeat;
   background-size: cover;
+  background-position: left bottom;
+  color: white;
   display: flex;
   flex-direction: column;
 
   @include medium {
-    height: 150px;
+    height: 180px;
+    background-position: left center;
   }
 
   @include large {
-    height: 180px;
+    height: 240px;
   }
 
   .title {
@@ -32,7 +36,11 @@
   }
 
   .mat-tab-nav-bar {
-    background-color: rgba(255, 255, 255, 0.67);
+    background-color: rgba(27, 94, 32, 0.87);
+
+    .mat-tab-label, .mat-tab-link {
+      color: rgba(255, 255, 255, 0.87);
+    }
   }
 }
 
