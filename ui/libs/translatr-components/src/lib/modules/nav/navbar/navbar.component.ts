@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { TitleService } from '@translatr/utils/src/lib/services/title.service';
 
@@ -19,7 +19,8 @@ export class NavbarComponent implements OnInit {
   @Input() page: string;
   @Input() backLink: Link;
   @Input() sidenav: MatDrawer;
-  @Input() elevated = true;
+  @Input() elevated = false;
+  @HostBinding('class.overlay') @Input() overlay = true;
 
   constructor(private readonly titleService: TitleService) {
   }

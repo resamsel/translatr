@@ -1,4 +1,4 @@
-<app-sidenav [me]="me$ | async" [page]="(project$ | async)?.name" [showDashboardLink]="true">
+<app-sidenav [elevated]="false" [me]="me$ | async" [overlay]="true" [showDashboardLink]="true">
   <header class="header">
     <div *ngIf="project$ | async as project" class="container title">
       <div class="content">

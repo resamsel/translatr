@@ -1,3 +1,35 @@
+.header {
+  background-image: url(assets/headers/rhombus.png);
+
+  .mat-tab-nav-bar {
+    background-color: rgba(171, 71, 188, 0.87);
+
+    .mat-tab-label,
+    .mat-tab-link {
+      color: white;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 16px 0;
+
+    .text {
+      margin-left: 8px;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .image {
+      border: 2px solid white;
+    }
+  }
+}
+
 h2 {
   margin: 0;
 }

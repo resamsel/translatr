@@ -14,6 +14,7 @@ export class SidenavComponent {
   @Input() backLink: Link;
   @Input() me: User | undefined;
   @Input() elevated = true;
+  @Input() overlay = false;
   @Input() showDashboardLink = false;
 
   readonly endpointUrl = environment.endpointUrl;

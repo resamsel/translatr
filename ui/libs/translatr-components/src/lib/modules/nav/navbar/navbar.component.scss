@@ -4,6 +4,17 @@
 :host {
   z-index: 1;
   position: relative;
+
+  &.overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    .mat-toolbar {
+      background-color: transparent;
+      color: rgba(0, 0, 0, 0.67);
+    }
+  }
 }
 
 .mat-toolbar {

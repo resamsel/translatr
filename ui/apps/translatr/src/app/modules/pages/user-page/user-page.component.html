@@ -1,5 +1,23 @@
-<app-sidenav [me]="me$ | async" [page]="(user$ | async)?.name" [showDashboardLink]="true">
-  <header>
+<app-sidenav [elevated]="false" [me]="me$ | async" [overlay]="true"
+             [showDashboardLink]="true">
+  <header class="header">
+    <div *ngIf="user$ | async as user" class="container title">
+      <div class="content">
+        <img
+          *ngIf="user"
+          [md5Hash]="user.emailHash"
+          [size]="40"
+          borderColor="white"
+          borderWidth="2px"
+          class="image"
+          ngxGravatar
+        />
+        <div class="text">
+          <h1>{{user?.name}}</h1>
+          <p>{{user?.username}}</p>
+        </div>
+      </div>
+    </div>
     <nav *ngIf="user$ | async as user" color="accent" mat-tab-nav-bar>
       <div class="container dense">
         <ng-container *ngFor="let child of children">

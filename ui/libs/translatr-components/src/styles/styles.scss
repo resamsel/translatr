@@ -434,6 +434,37 @@ pre[class*="language-"]:before {
   }
 }
 
+.header {
+  height: 216px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: left bottom;
+  color: white;
+  display: flex;
+  flex-direction: column;
+
+  .title {
+    flex-grow: 1;
+    display: flex;
+    align-items: flex-end;
+    padding: 0;
+
+    .content {
+      flex-grow: 1;
+      padding: 0 8px;
+
+      h1 {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  @include medium {
+    height: 240px;
+    background-position: left center;
+  }
+}
+
 @keyframes opacityPulse {
   0% {
     opacity: 0.4;
