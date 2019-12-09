@@ -1,0 +1,12 @@
+.header {
+  background-image: url(assets/headers/waves.png);
+
+  .mat-tab-nav-bar {
+    background-color: rgba(255, 143, 0, 0.87);
+
+    .mat-tab-label,
+    .mat-tab-link {
+      color: rgba(255, 255, 255, 1);
+    }
+  }
+}

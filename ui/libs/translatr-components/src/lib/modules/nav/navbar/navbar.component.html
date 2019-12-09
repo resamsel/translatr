@@ -19,7 +19,7 @@
         >
           <mat-icon>arrow_back</mat-icon>
         </a>
-        <a [routerLink]="backLink.routerLink" class="title" [class.has-page]="page">
+        <a [class.has-page]="!overlay && page" [routerLink]="backLink.routerLink" class="title">
           <span>{{ backLink.name }}</span>
         </a>
       </ng-container>
@@ -27,11 +27,11 @@
         <a *ngIf="!sidenav" mat-icon-button routerLink="/" class="logo">
           <mat-icon>translate</mat-icon>
         </a>
-        <a routerLink="/" class="title" [class.has-page]="page">
+        <a [class.has-page]="!overlay && page" class="title" routerLink="/">
           <span>{{ title }}</span>
         </a>
       </ng-template>
-      <span *ngIf="page" class="page">{{ page }}</span>
+      <span *ngIf="!overlay && page" class="page">{{ page }}</span>
 
       <ng-content select="app-search-bar"></ng-content>
       <ng-content select="dev-filter-field"></ng-content>

@@ -1,4 +1,13 @@
-<app-sidenav [me]="me$ | async" [showDashboardLink]="true" page="Contributing Projects">
+<app-sidenav [elevated]="false" [me]="me$ | async" [overlay]="true" [showDashboardLink]="true"
+             page="Contributing Projects">
+  <header class="header">
+    <div class="container title">
+      <div class="content">
+        <h1>Contributing Projects</h1>
+        <p>Projects that you help improve</p>
+      </div>
+    </div>
+  </header>
   <button
     mat-fab
     color="accent"

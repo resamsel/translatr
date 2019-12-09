@@ -19,8 +19,8 @@ export class NavbarComponent implements OnInit {
   @Input() page: string;
   @Input() backLink: Link;
   @Input() sidenav: MatDrawer;
-  @Input() elevated = false;
-  @HostBinding('class.overlay') @Input() overlay = true;
+  @Input() elevated = true;
+  @HostBinding('class.overlay') @Input() overlay = false;
 
   constructor(private readonly titleService: TitleService) {
   }

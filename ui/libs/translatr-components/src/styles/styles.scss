@@ -104,17 +104,17 @@ a .mat-card {
 
 .light-theme {
   .project .mat-card {
-    background: #ffc107;
+    background: #ffa000;
     color: white;
   }
 
-  .owner .mat-card {
+  .owner .mat-card,
+  .user .mat-card {
     background: #ab47bc;
     color: white;
   }
 
-  .member .mat-card,
-  .user .mat-card {
+  .member .mat-card {
     background: #ff7043;
     color: white;
   }
