@@ -1,4 +1,4 @@
-<app-sidenav [me]="me$ | async" [sidenav]="sidenav" [page]="activePage()">
+<app-sidenav [me]="me$ | async" [overlay]="true" [page]="activePage()" [sidenav]="sidenav">
   <mat-sidenav #sidenav mode="side" class="sidenav">
     <mat-toolbar>
       <button

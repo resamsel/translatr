@@ -1,3 +1,8 @@
+:host {
+  display: block;
+  margin-top: 64px;
+}
+
 .mat-form-field,
 table,
 .mat-button {
