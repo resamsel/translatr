@@ -12,6 +12,14 @@ public class PagedListFactory {
 
   private static final boolean includeCount = true;
 
+  public <T> PagedList<T> createPagedList(Query<T> query, boolean includeCount) {
+    return create(query, includeCount);
+  }
+
+  public <T> PagedList<T> createPagedList(Query<T> query) {
+    return create(query, includeCount);
+  }
+
   public static <T> PagedList<T> create(Query<T> query, boolean includeCount) {
     if (includeCount) {
       if (query.getMaxRows() <= 0) {

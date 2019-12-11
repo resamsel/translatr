@@ -17,7 +17,9 @@ import models.ProjectUser;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import repositories.PagedListFactoryProvider;
 import repositories.ProjectUserRepository;
+import repositories.RepositoryProvider;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
@@ -34,29 +36,32 @@ public class ProjectUserRepositoryImpl extends
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectUserRepositoryImpl.class);
 
-  private final Find<Long, ProjectUser> find = new Find<Long, ProjectUser>() {
-  };
-
+  private final Find<Long, ProjectUser> repository;
   private final ActorRef notificationActor;
+  private final PagedListFactory pagedListFactory;
 
   @Inject
   public ProjectUserRepositoryImpl(Validator validator,
-      @Named(ActivityActor.NAME) ActorRef activityActor,
-      @Named(NotificationActor.NAME) ActorRef notificationActor) {
+                                   @Named(ActivityActor.NAME) ActorRef activityActor,
+                                   @Named(NotificationActor.NAME) ActorRef notificationActor,
+                                   RepositoryProvider repositoryProvider,
+                                   PagedListFactoryProvider pagedListFactoryProvider) {
     super(validator, activityActor);
 
+    this.repository = repositoryProvider.getProjectUserRepository();
     this.notificationActor = notificationActor;
+    this.pagedListFactory = pagedListFactoryProvider.get();
   }
 
   @Override
   public PagedList<ProjectUser> findBy(ProjectUserCriteria criteria) {
-    return log(() -> PagedListFactory.create(findQuery(criteria).query()), LOGGER,
+    return log(() -> pagedListFactory.createPagedList(findQuery(criteria).query()), LOGGER,
         "findBy");
   }
 
   @Override
   public ProjectUser byId(Long id, String... propertiesToFetch) {
-    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where().idEq(id)
+    return QueryUtils.fetch(repository.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where().idEq(id)
         .findUnique();
   }
 
@@ -67,7 +72,7 @@ public class ProjectUserRepositoryImpl extends
 
   private ExpressionList<ProjectUser> findQuery(ProjectUserCriteria criteria) {
     ExpressionList<ProjectUser> query = QueryUtils
-        .fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where();
+        .fetch(repository.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where();
 
     query.eq("project.deleted", false);
 
