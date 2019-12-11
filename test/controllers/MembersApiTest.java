@@ -60,7 +60,7 @@ public class MembersApiTest {
     // given
     UUID projectId = UUID.randomUUID();
 
-    when(projectUserApiService.find(any())).thenReturn(PagedListFactory.create(Collections.emptyList()));
+    when(projectUserApiService.find(any(), any())).thenReturn(PagedListFactory.create(Collections.emptyList()));
 
     // when
     Result actual = target.find(projectId).toCompletableFuture().get();
