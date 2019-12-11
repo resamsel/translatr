@@ -59,7 +59,7 @@ export class ProjectMembersComponent {
       .pipe(skip(1), take(1))
       .subscribe((m: Member) =>
         this.snackBar.open(
-          `Member ${m.userName} removed from project`,
+          `${m.userName} removed from project`,
           'Dismiss',
           { duration: 5000 }
         )

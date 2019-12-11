@@ -1,13 +1,14 @@
 package integration.controllers;
 
-import static assertions.ResultAssert.assertThat;
-import static play.test.Helpers.route;
-
 import controllers.Projects;
-import java.net.URISyntaxException;
 import org.apache.http.client.utils.URIBuilder;
 import play.mvc.Call;
 import play.mvc.Http.RequestBuilder;
+
+import java.net.URISyntaxException;
+
+import static assertions.CustomAssertions.assertThat;
+import static play.test.Helpers.route;
 
 abstract class ApiControllerTest extends ControllerTest {
 

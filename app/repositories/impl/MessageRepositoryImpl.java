@@ -1,6 +1,6 @@
 package repositories.impl;
 
-import actors.ActivityActor;
+import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
 import actors.MessageWordCountActor;
@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
+import repositories.Persistence;
 import utils.MessageUtils;
 import utils.QueryUtils;
 
@@ -54,10 +55,11 @@ public class MessageRepositoryImpl extends
   };
 
   @Inject
-  public MessageRepositoryImpl(Validator validator,
-      @Named(ActivityActor.NAME) ActorRef activityActor,
-      @Named(MessageWordCountActor.NAME) ActorRef messageWordCountActor) {
-    super(validator, activityActor);
+  public MessageRepositoryImpl(Persistence persistence,
+                               Validator validator,
+                               ActivityActorRef activityActor,
+                               @Named(MessageWordCountActor.NAME) ActorRef messageWordCountActor) {
+    super(persistence, validator, activityActor);
 
     this.messageWordCountActor = messageWordCountActor;
   }

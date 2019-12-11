@@ -69,4 +69,11 @@ public interface UserService extends ModelService<User, UUID, UserCriteria> {
    * @return
    */
   UserStats getUserStats(UUID userId);
+
+  /**
+   * Retrieves the logged-in user.
+   *
+   * @return the logged-in user, or null, if unauthenticated
+   */
+  User loggedInUser();
 }

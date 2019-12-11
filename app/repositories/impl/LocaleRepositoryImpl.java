@@ -1,9 +1,8 @@
 package repositories.impl;
 
-import actors.ActivityActor;
+import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
-import akka.actor.ActorRef;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
@@ -25,11 +24,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LocaleRepository;
 import repositories.MessageRepository;
+import repositories.Persistence;
 import services.PermissionService;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.util.Collection;
@@ -55,10 +54,12 @@ public class LocaleRepositoryImpl extends
   private final PermissionService permissionService;
 
   @Inject
-  public LocaleRepositoryImpl(
-      Validator validator, @Named(ActivityActor.NAME) ActorRef activityActor,
-      MessageRepository messageRepository, PermissionService permissionService) {
-    super(validator, activityActor);
+  public LocaleRepositoryImpl(Persistence persistence,
+                              Validator validator,
+                              ActivityActorRef activityActor,
+                              MessageRepository messageRepository,
+                              PermissionService permissionService) {
+    super(persistence, validator, activityActor);
 
     this.messageRepository = messageRepository;
     this.permissionService = permissionService;

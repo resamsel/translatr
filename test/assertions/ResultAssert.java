@@ -11,12 +11,8 @@ public class ResultAssert extends AbstractGenericAssert<ResultAssert, Result> {
 
   private String content;
 
-  private ResultAssert(Result actual) {
+  ResultAssert(Result actual) {
     super("result", actual, ResultAssert.class);
-  }
-
-  public static ResultAssert assertThat(Result actual) {
-    return new ResultAssert(actual);
   }
 
   public ResultAssert statusIsEqualTo(int expected) {

@@ -1,9 +1,8 @@
 package repositories.impl;
 
-import actors.ActivityActor;
+import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
-import akka.actor.ActorRef;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
@@ -22,12 +21,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
 import repositories.LocaleRepository;
+import repositories.Persistence;
 import repositories.ProjectRepository;
 import services.PermissionService;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.util.ArrayList;
@@ -53,10 +52,13 @@ public class ProjectRepositoryImpl extends
   };
 
   @Inject
-  public ProjectRepositoryImpl(Validator validator,
-                               @Named(ActivityActor.NAME) ActorRef activityActor, LocaleRepository localeRepository,
-                               KeyRepository keyRepository, PermissionService permissionService) {
-    super(validator, activityActor);
+  public ProjectRepositoryImpl(Persistence persistence,
+                               Validator validator,
+                               ActivityActorRef activityActor,
+                               LocaleRepository localeRepository,
+                               KeyRepository keyRepository,
+                               PermissionService permissionService) {
+    super(persistence, validator, activityActor);
 
     this.localeRepository = localeRepository;
     this.keyRepository = keyRepository;

@@ -1,7 +1,6 @@
 package repositories.impl;
 
-import actors.ActivityActor;
-import akka.actor.ActorRef;
+import actors.ActivityActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -9,12 +8,14 @@ import criterias.LinkedAccountCriteria;
 import criterias.PagedListFactory;
 import models.LinkedAccount;
 import repositories.LinkedAccountRepository;
+import repositories.Persistence;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
-import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.validation.Validator;
 
+@Singleton
 public class LinkedAccountRepositoryImpl extends
     AbstractModelRepository<LinkedAccount, Long, LinkedAccountCriteria> implements
     LinkedAccountRepository {
@@ -23,9 +24,10 @@ public class LinkedAccountRepositoryImpl extends
   };
 
   @Inject
-  public LinkedAccountRepositoryImpl(Validator validator,
-      @Named(ActivityActor.NAME) ActorRef activityActor) {
-    super(validator, activityActor);
+  public LinkedAccountRepositoryImpl(Persistence persistence,
+                                     Validator validator,
+                                     ActivityActorRef activityActor) {
+    super(persistence, validator, activityActor);
   }
 
   @Override

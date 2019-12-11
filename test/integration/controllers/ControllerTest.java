@@ -1,13 +1,12 @@
 package integration.controllers;
 
-import static assertions.ResultAssert.assertThat;
-import static play.test.Helpers.route;
-
 import controllers.Projects;
-import java.net.URISyntaxException;
 import play.mvc.Call;
 import play.mvc.Http.RequestBuilder;
 import tests.AbstractTest;
+
+import static assertions.CustomAssertions.assertThat;
+import static play.test.Helpers.route;
 
 /**
  * Created by resamsel on 24/07/2017.

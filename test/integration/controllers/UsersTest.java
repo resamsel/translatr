@@ -1,13 +1,5 @@
 package integration.controllers;
 
-import static assertions.ResultAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-import static utils.TestFactory.requestAsJohnSmith;
-import static utils.UserRepositoryMock.byUsername;
-
 import controllers.Projects;
 import controllers.routes;
 import models.User;
@@ -15,6 +7,12 @@ import org.junit.Test;
 import play.cache.CacheApi;
 import play.mvc.Result;
 import play.test.Helpers;
+
+import static assertions.CustomAssertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static utils.TestFactory.requestAsJohnSmith;
+import static utils.UserRepositoryMock.byUsername;
 
 /**
  * Created by resamsel on 10/07/2017.

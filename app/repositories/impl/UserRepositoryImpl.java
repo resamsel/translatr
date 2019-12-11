@@ -1,8 +1,7 @@
 package repositories.impl;
 
-import actors.ActivityActor;
+import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activity;
-import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -16,11 +15,11 @@ import models.User;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import repositories.Persistence;
 import repositories.UserRepository;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.util.UUID;
@@ -38,9 +37,10 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   };
 
   @Inject
-  public UserRepositoryImpl(Validator validator,
-      @Named(ActivityActor.NAME) ActorRef activityActor) {
-    super(validator, activityActor);
+  public UserRepositoryImpl(Persistence persistence,
+                            Validator validator,
+                            ActivityActorRef activityActor) {
+    super(persistence, validator, activityActor);
   }
 
   @Override

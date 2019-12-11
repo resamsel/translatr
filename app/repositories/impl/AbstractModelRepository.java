@@ -1,14 +1,13 @@
 package repositories.impl;
 
-import akka.actor.ActorRef;
-import com.avaje.ebean.Ebean;
+import actors.ActivityActorRef;
 import criterias.AbstractSearchCriteria;
 import models.Model;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.ModelRepository;
-import utils.TransactionUtils;
+import repositories.Persistence;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
@@ -30,10 +29,12 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
   protected static final String FETCH_COUNT = "count";
 
+  final ActivityActorRef activityActor;
   protected final Validator validator;
-  final ActorRef activityActor;
+  private final Persistence persistence;
 
-  AbstractModelRepository(Validator validator, ActorRef activityActor) {
+  AbstractModelRepository(Persistence persistence, Validator validator, ActivityActorRef activityActor) {
+    this.persistence = persistence;
     this.validator = validator;
     this.activityActor = activityActor;
   }
@@ -89,7 +90,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
   @Override
   public MODEL save(MODEL t) {
-    boolean update = !Ebean.getBeanState(t).isNew();
+    boolean update = !persistence.isNew(t);
 
     preSave(t, update);
 
@@ -106,8 +107,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
   @Override
   public MODEL persist(MODEL t) {
-    Ebean.save(t);
-    // Ebean.refresh(t);
+    persistence.save(t);
     return t;
   }
 
@@ -135,7 +135,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
   }
 
   protected Collection<MODEL> persist(Collection<MODEL> t) throws Exception {
-    TransactionUtils.batchExecute((tx) -> Ebean.saveAll(t));
+    persistence.batchExecute((tx) -> persistence.saveAll(t));
 
     return t;
   }
@@ -149,7 +149,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
   @Override
   public void delete(MODEL t) {
     preDelete(t);
-    Ebean.delete(t);
+    persistence.delete(t);
     postDelete(t);
   }
 
@@ -163,7 +163,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
   public void delete(Collection<MODEL> t) {
     try {
       preDelete(t);
-      TransactionUtils.batchExecute((tx) -> Ebean.deleteAll(t));
+      persistence.batchExecute((tx) -> persistence.deleteAll(t));
       postDelete(t);
     } catch (Exception e) {
       LOGGER.error("Error while batch deleting entities", e);

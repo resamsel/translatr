@@ -1,7 +1,6 @@
 package controllers;
 
 import actions.ApiAction;
-import com.fasterxml.jackson.databind.node.NullNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.ProjectUserCriteria;
 import dto.ProjectUser;
@@ -19,21 +18,19 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
 import models.ProjectRole;
-import models.User;
 import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
-import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
 import services.CacheService;
+import services.ContextProvider;
 import services.api.ProjectUserApiService;
 
 import javax.inject.Inject;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
 
 /**
  * @author resamsel
@@ -68,10 +65,17 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
   private static final String MEMBER_WRITE = "member:write";
   private static final String MEMBER_WRITE_DESCRIPTION = "Write member";
 
+  private final ContextProvider contextProvider;
+
   @Inject
   public MembersApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-                    ProjectUserApiService projectUserApiService) {
+                    ProjectUserApiService projectUserApiService, ContextProvider contextProvider) {
     super(injector, cache, auth, projectUserApiService);
+    this.contextProvider = contextProvider;
+  }
+
+  private Http.Request req() {
+    return contextProvider.get().request();
   }
 
   @ApiOperation(value = FIND,
@@ -93,10 +97,10 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
           paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
     return toJsons(() -> api.find(
-        ProjectUserCriteria.from(request()).withProjectId(projectId),
+        ProjectUserCriteria.from(req()).withProjectId(projectId),
         criteria -> checkProjectRole(
             projectId,
-            User.loggedInUser(),
+            userService.loggedInUser(),
             ProjectRole.Owner,
             ProjectRole.Manager,
             ProjectRole.Translator,
@@ -143,7 +147,7 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
           dataType = "string", paramType = "query")})
   @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> create() {
-    return toJson(() -> api.create(request().body().asJson()));
+    return toJson(() -> api.create(req().body().asJson()));
   }
 
   /**
@@ -166,7 +170,7 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
           dataType = "string", paramType = "query")})
   @BodyParser.Of(BodyParser.Json.class)
   public CompletionStage<Result> update() {
-    return toJson(() -> api.update(request().body().asJson()));
+    return toJson(() -> api.update(req().body().asJson()));
   }
 
   /**

@@ -23,7 +23,7 @@ import services.ProjectUserService;
 
 import java.util.Collections;
 
-import static assertions.ResultAssert.assertThat;
+import static assertions.CustomAssertions.assertThat;
 import static controllers.AbstractController.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;

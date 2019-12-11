@@ -1,8 +1,7 @@
 package repositories.impl;
 
-import actors.ActivityActor;
+import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activity;
-import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -16,10 +15,10 @@ import models.User;
 import models.UserRole;
 import org.apache.commons.lang3.StringUtils;
 import repositories.AccessTokenRepository;
+import repositories.Persistence;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.nio.charset.StandardCharsets;
@@ -33,12 +32,6 @@ public class AccessTokenRepositoryImpl extends
 
   public final Find<Long, AccessToken> find = new Find<Long, AccessToken>() {
   };
-
-  @Inject
-  public AccessTokenRepositoryImpl(Validator validator,
-                                   @Named(ActivityActor.NAME) ActorRef activityActor) {
-    super(validator, activityActor);
-  }
 
   @Override
   public PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
@@ -55,6 +48,13 @@ public class AccessTokenRepositoryImpl extends
     criteria.paged(query);
 
     return PagedListFactory.create(query);
+  }
+
+  @Inject
+  public AccessTokenRepositoryImpl(Persistence persistence,
+                                   Validator validator,
+                                   ActivityActorRef activityActor) {
+    super(persistence, validator, activityActor);
   }
 
   @Override

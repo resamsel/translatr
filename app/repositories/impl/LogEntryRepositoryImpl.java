@@ -1,6 +1,6 @@
 package repositories.impl;
 
-import actors.ActivityActor;
+import actors.ActivityActorRef;
 import actors.NotificationActor;
 import actors.NotificationProtocol.PublishNotification;
 import akka.actor.ActorRef;
@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LogEntryRepository;
+import repositories.Persistence;
 import utils.ContextKey;
 import utils.QueryUtils;
 
@@ -38,10 +39,11 @@ public class LogEntryRepositoryImpl extends
   private final ActorRef notificationActor;
 
   @Inject
-  public LogEntryRepositoryImpl(Validator validator,
-                                @Named(ActivityActor.NAME) ActorRef activityActor,
+  public LogEntryRepositoryImpl(Persistence persistence,
+                                Validator validator,
+                                ActivityActorRef activityActor,
                                 @Named(NotificationActor.NAME) ActorRef notificationActor) {
-    super(validator, activityActor);
+    super(persistence, validator, activityActor);
 
     this.notificationActor = notificationActor;
   }

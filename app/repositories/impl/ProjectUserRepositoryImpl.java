@@ -1,10 +1,9 @@
 package repositories.impl;
 
-import actors.ActivityActor;
+import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activity;
-import actors.NotificationActor;
+import actors.NotificationActorRef;
 import actors.NotificationProtocol.FollowNotification;
-import akka.actor.ActorRef;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
@@ -18,12 +17,11 @@ import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.PagedListFactoryProvider;
+import repositories.Persistence;
 import repositories.ProjectUserRepository;
-import repositories.RepositoryProvider;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 
@@ -37,18 +35,18 @@ public class ProjectUserRepositoryImpl extends
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectUserRepositoryImpl.class);
 
   private final Find<Long, ProjectUser> repository;
-  private final ActorRef notificationActor;
+  private final NotificationActorRef notificationActor;
   private final PagedListFactory pagedListFactory;
 
   @Inject
-  public ProjectUserRepositoryImpl(Validator validator,
-                                   @Named(ActivityActor.NAME) ActorRef activityActor,
-                                   @Named(NotificationActor.NAME) ActorRef notificationActor,
-                                   RepositoryProvider repositoryProvider,
+  public ProjectUserRepositoryImpl(Persistence persistence,
+                                   Validator validator,
+                                   ActivityActorRef activityActor,
+                                   NotificationActorRef notificationActor,
                                    PagedListFactoryProvider pagedListFactoryProvider) {
-    super(validator, activityActor);
+    super(persistence, validator, activityActor);
 
-    this.repository = repositoryProvider.getProjectUserRepository();
+    this.repository = persistence.getRepositoryProvider().getProjectUserRepository();
     this.notificationActor = notificationActor;
     this.pagedListFactory = pagedListFactoryProvider.get();
   }

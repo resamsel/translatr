@@ -1,19 +1,38 @@
 package services.impl;
 
-import com.feth.play.module.pa.user.*;
-import criterias.*;
+import com.feth.play.module.pa.user.AuthUserIdentity;
+import com.feth.play.module.pa.user.EmailIdentity;
+import com.feth.play.module.pa.user.NameIdentity;
+import com.feth.play.module.pa.user.PreferredUsernameIdentity;
+import com.feth.play.module.pa.user.UserRoleIdentity;
+import criterias.AccessTokenCriteria;
+import criterias.LinkedAccountCriteria;
+import criterias.LogEntryCriteria;
+import criterias.ProjectCriteria;
+import criterias.ProjectUserCriteria;
+import criterias.UserCriteria;
 import models.LinkedAccount;
 import models.User;
 import models.UserStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.UserRepository;
-import services.*;
+import services.AccessTokenService;
+import services.CacheService;
+import services.LinkedAccountService;
+import services.LogEntryService;
+import services.ProjectService;
+import services.ProjectUserService;
+import services.UserService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
@@ -203,6 +222,11 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
         ),
         LOGGER,
         "getUserStats");
+  }
+
+  @Override
+  public User loggedInUser() {
+    return User.loggedInUser();
   }
 
   @Override

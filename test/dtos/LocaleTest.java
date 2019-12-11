@@ -1,6 +1,6 @@
 package dtos;
 
-import assertions.Assertions;
+import assertions.CustomAssertions;
 import mappers.LocaleMapper;
 import org.junit.Test;
 import tests.AbstractLocaleTest;
@@ -13,6 +13,6 @@ public class LocaleTest extends AbstractLocaleTest {
 
     models.Locale model = new models.Locale();
     model.name = "de";
-    Assertions.assertThat(LocaleMapper.toDto(model)).displayNameIsEqualTo("Deutsch");
+    CustomAssertions.assertThat(LocaleMapper.toDto(model)).displayNameIsEqualTo("Deutsch");
   }
 }

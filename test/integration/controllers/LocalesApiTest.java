@@ -25,7 +25,7 @@ import utils.ProjectRepositoryMock;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static assertions.ResultAssert.assertThat;
+import static assertions.CustomAssertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
