@@ -3,6 +3,7 @@ package models;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import controllers.routes;
+import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import play.data.validation.Constraints.MaxLength;
 import play.mvc.Call;
@@ -79,8 +80,8 @@ public class AccessToken implements Model<AccessToken, Long> {
    */
   @Override
   public AccessToken updateFrom(AccessToken in) {
-    user = in.user;
-    name = in.name;
+    user = user.updateFrom(in.user);
+    name = ObjectUtils.firstNonNull(in.name, name);
     key = in.key;
     scope = in.scope;
 

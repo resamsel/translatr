@@ -5,7 +5,14 @@ import org.joda.time.DateTime;
 import play.libs.Json;
 import utils.CacheUtils;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 /**
@@ -88,8 +95,8 @@ public class LogEntry implements Model<LogEntry, UUID> {
   public LogEntry updateFrom(LogEntry in) {
     type = in.type;
     contentType = in.contentType;
-    user = in.user;
-    project = in.project;
+    user = user.updateFrom(in.user);
+    project = project.updateFrom(in.project);
     before = in.before;
     after = in.after;
 

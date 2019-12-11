@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { Member, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
+import { Member, MemberRole, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { openProjectMemberEditDialog } from '../../../../shared/project-member-edit-dialog/project-member-edit-dialog.component';
 import { filter, switchMapTo, take } from 'rxjs/operators';
 import { ProjectFacade } from '../../+state/project.facade';
@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material';
 })
 export class MemberListComponent {
   memberList: PagedList<Member>;
+  ownerCount: number;
   @Input() criteria: RequestCriteria;
 
   @Input() project: Project;
@@ -36,6 +37,7 @@ export class MemberListComponent {
       limit: -1,
       offset: 0
     };
+    this.ownerCount = members.filter(m => m.role === MemberRole.Owner).length;
   }
 
   @Output() filter = new EventEmitter<string>();

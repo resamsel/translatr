@@ -28,7 +28,7 @@
 
     <button
       (click)="onEdit(member, $event)"
-      *ngIf="canCreate && (member.role !== 'Owner' || canModifyOwner)"
+      *ngIf="canCreate && (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1))"
       class="edit"
       i18n-matTooltip="@@button.edit"
       mat-icon-button
@@ -38,7 +38,7 @@
     </button>
     <confirm-button
       (confirm)="onDelete(member)"
-      *ngIf="canDelete && (member.role !== 'Owner' || canModifyOwner)"
+      *ngIf="canDelete && (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1))"
       class="delete"
       i18n-tooltip="@@button.delete"
       icon="delete"

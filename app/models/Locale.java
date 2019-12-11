@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import controllers.AbstractController;
 import controllers.Locales;
 import controllers.routes;
+import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import play.api.mvc.Call;
 import play.libs.Json;
@@ -94,8 +95,8 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
 
   @Override
   public Locale updateFrom(Locale in) {
-    project = in.project;
-    name = in.name;
+    project = project.updateFrom(in.project);
+    name = ObjectUtils.firstNonNull(in.name, name);
 
     return this;
   }

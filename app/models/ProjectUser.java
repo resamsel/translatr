@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 import play.mvc.Call;
 import utils.CacheUtils;
 import validators.NameUnique;
+import validators.ProjectUserOwnerExists;
 import validators.ProjectUserUniqueChecker;
 
 import javax.persistence.Column;
@@ -29,11 +30,13 @@ import java.util.Objects;
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "user_id"})})
 @NameUnique(checker = ProjectUserUniqueChecker.class, field = "user", message = "error.projectuserunique")
+@ProjectUserOwnerExists
 public class ProjectUser implements Model<ProjectUser, Long> {
 
   private static final int ROLE_LENGTH = 16;
 
   public static final String FETCH_PROJECT = "project";
+  public static final String FETCH_USER = "user";
 
   @Id
   @GeneratedValue
@@ -113,8 +116,8 @@ public class ProjectUser implements Model<ProjectUser, Long> {
    */
   @Override
   public ProjectUser updateFrom(ProjectUser in) {
-    project = in.project;
-    user = in.user;
+    project = project.updateFrom(in.project);
+    user = user.updateFrom(in.user);
     role = in.role;
 
     return this;

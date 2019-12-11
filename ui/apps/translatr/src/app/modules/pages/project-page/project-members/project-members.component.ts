@@ -37,7 +37,8 @@ export class ProjectMembersComponent {
   ]).pipe(
     map(([members, me]: [Array<Member>, User]) =>
       members.find(m => m.userId === me.id)),
-    map((member: Member | undefined) => member !== undefined ? member.role === 'Owner' : false)
+    map((member: Member | undefined) =>
+      member !== undefined ? member.role === 'Owner' : false)
   );
 
   constructor(

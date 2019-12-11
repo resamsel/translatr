@@ -68,6 +68,8 @@ public class Message implements Model<Message, UUID> {
    */
   @Override
   public Message updateFrom(Message in) {
+    locale = locale.updateFrom(in.locale);
+    key = key.updateFrom(in.key);
     value = in.value;
 
     return this;

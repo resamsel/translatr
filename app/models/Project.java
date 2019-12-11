@@ -5,6 +5,7 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import controllers.AbstractController;
 import criterias.MessageCriteria;
+import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,12 +234,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   @Override
   public Project updateFrom(Project in) {
-    name = in.name;
+    name = ObjectUtils.firstNonNull(in.name, name);
     description = in.description;
-
-    if (in.owner != null && in.owner.username != null) {
-      owner = in.owner;
-    }
+    owner = owner.updateFrom(in.owner);
 
     return this;
   }

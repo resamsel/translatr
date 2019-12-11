@@ -56,6 +56,7 @@ export class ProjectMemberEditFormComponent
   roles = memberRoles;
 
   readonly userFormControl = this.form.get('user');
+  readonly roleFormControl = this.form.get('role');
 
   constructor(
     readonly memberService: MemberService,

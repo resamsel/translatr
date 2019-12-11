@@ -1,17 +1,15 @@
 package services.impl;
 
 import criterias.ProjectUserCriteria;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Validator;
-import models.Key;
-import models.Project;
 import models.ProjectUser;
-import play.cache.CacheApi;
 import repositories.ProjectUserRepository;
 import services.CacheService;
 import services.LogEntryService;
 import services.ProjectUserService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
 
 /**
  * @author resamsel
@@ -44,6 +42,11 @@ public class ProjectUserServiceImpl extends
     super.postCreate(t);
 
     cache.removeByPrefix("member:criteria:" + t.project.id);
+  }
+
+  @Override
+  protected void preCreate(ProjectUser t) {
+    super.preCreate(t);
   }
 
   @Override

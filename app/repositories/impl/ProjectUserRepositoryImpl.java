@@ -79,6 +79,10 @@ public class ProjectUserRepositoryImpl extends
       query.eq("user.id", criteria.getUserId());
     }
 
+    if (!criteria.getRoles().isEmpty()) {
+      query.in("role", criteria.getRoles());
+    }
+
     criteria.paged(query);
 
     return query;

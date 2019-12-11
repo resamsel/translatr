@@ -5,6 +5,7 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import controllers.Keys;
 import controllers.routes;
+import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import play.api.mvc.Call;
 import play.libs.Json;
@@ -95,8 +96,8 @@ public class Key implements Model<Key, UUID>, Suggestable {
    */
   @Override
   public Key updateFrom(Key in) {
-    project = in.project;
-    name = in.name;
+    project = project.updateFrom(in.project);
+    name = ObjectUtils.firstNonNull(in.name, name);
 
     return this;
   }

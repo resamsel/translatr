@@ -8,6 +8,7 @@ import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUser;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -167,9 +168,9 @@ public class User implements Model<User, UUID>, Subject {
   @Override
   public User updateFrom(User in) {
     active = in.active;
-    username = in.username;
-    name = in.name;
-    email = in.email;
+    username = ObjectUtils.firstNonNull(in.username, username);
+    name = ObjectUtils.firstNonNull(in.name, name);
+    email = ObjectUtils.firstNonNull(in.email, email);
     emailValidated = in.emailValidated;
     role = in.role;
 
