@@ -1,4 +1,4 @@
-<app-navbar [elevated]="false" i18n-page="@@home.title" page="Home">
+<app-navbar [elevated]="false" [overlay]="true" i18n-page="@@home.title" page="Home">
   <app-auth-bar-item [me]="me$ | async" [endpointUrl]="endpointUrl">
     <a
       *ngIf="me$ | async as me"
@@ -14,7 +14,7 @@
   </app-auth-bar-item>
 </app-navbar>
 
-<div class="section green">
+<div class="section green header">
   <div class="container">
     <div class="row">
       <div class="col s12">
