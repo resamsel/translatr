@@ -463,6 +463,14 @@ pre[class*="language-"]:before {
     height: 240px;
     background-position: left center;
   }
+
+  @include large {
+    height: 280px;
+  }
+
+  @include extra-large {
+    height: 320px;
+  }
 }
 
 @keyframes opacityPulse {

@@ -11,13 +11,13 @@
 }
 
 @mixin large() {
-  @media screen and (min-width: 992px) {
+  @media screen and (min-width: 960px) {
     @content;
   }
 }
 
 @mixin extra-large() {
-  @media screen and (min-width: 1200px) {
+  @media screen and (min-width: 1280px) {
     @content;
   }
 }
