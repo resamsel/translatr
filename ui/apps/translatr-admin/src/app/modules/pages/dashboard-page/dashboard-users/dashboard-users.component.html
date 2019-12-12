@@ -1,15 +1,10 @@
-<button
-  mat-fab
-  color="accent"
-  class="floating-action-btn pin-bottom"
-  *ngIf="allowCreate$ | async"
-  (click)="onCreate()"
-  i18n-matTooltip="@@user.create.tooltip"
-  matTooltip="Create a user"
->
-  <mat-icon>add</mat-icon>
-</button>
-
+<header class="header">
+  <div class="container title">
+    <div class="content">
+      <h1>Users</h1>
+    </div>
+  </div>
+</header>
 <div class="container">
   <div>
     <entity-table
@@ -88,3 +83,15 @@
     </entity-table>
   </div>
 </div>
+
+<button
+  (click)="onCreate()"
+  *ngIf="allowCreate$ | async"
+  class="floating-action-btn pin-bottom"
+  color="accent"
+  i18n-matTooltip="@@user.create.tooltip"
+  mat-fab
+  matTooltip="Create a user"
+>
+  <mat-icon>add</mat-icon>
+</button>

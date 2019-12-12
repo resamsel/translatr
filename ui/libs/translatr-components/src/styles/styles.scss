@@ -110,33 +110,43 @@ a .mat-card {
 
   .owner .mat-card,
   .user .mat-card {
-    background: #ab47bc;
+    background: #1976d2;
     color: white;
   }
 
-  .member .mat-card {
+  .member .mat-card,
+  .mat-icon.circle.member {
     background: #ff7043;
     color: white;
   }
 
-  .locale .mat-card {
-    background: #42A5F5;
+  .locale .mat-card,
+  .mat-icon.circle.locale {
+    background: #0097a7;
     color: white;
   }
 
-  .key .mat-card {
-    background: #9ccc65;
+  .key .mat-card,
+  .mat-icon.circle.key {
+    background: #689f38;
     color: white;
   }
 
   .access-token .mat-card,
-  .message .mat-card {
+  .mat-icon.circle.access-token {
+    background-color: #7b1fa2;
+    color: white;
+  }
+
+  .message .mat-card,
+  .mat-icon.circle.message {
     background: #ef5350;
     color: white;
   }
 
-  .activity .mat-card {
-    background: #66bb6a;
+  .activity .mat-card,
+  .mat-icon.circle.activity {
+    background: #388e3c;
     color: white;
   }
 }
@@ -202,27 +212,6 @@ a .mat-card {
   color: #fff;
   text-align: center;
   border-radius: 50%;
-
-  &.locale {
-    background-color: #42A5F5;
-  }
-
-  &.key {
-    background-color: #9ccc65;
-  }
-
-  &.access-token,
-  &.message {
-    background-color: #ef5350;
-  }
-
-  &.member {
-    background-color: #ff7043;
-  }
-
-  &.activity {
-    background-color: #66bb6a;
-  }
 }
 
 //p {
