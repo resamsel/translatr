@@ -16,6 +16,10 @@ table {
   display: flex;
   justify-content: center;
 
+  .filter-field {
+    flex-grow: 1;
+  }
+
   .mat-form-field {
     flex-grow: 1;
 

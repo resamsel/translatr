@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { FilterFieldFilter, FilterFieldSelection } from '@dev/translatr-components';
+import { FilterFieldFilter } from '@dev/translatr-components';
 import { MatFormFieldAppearance } from '@angular/material';
 
 @Component({
@@ -24,9 +24,10 @@ export class SearchFieldPageComponent implements OnInit {
       value: true
     }
   ];
-  readonly selection: Array<FilterFieldSelection> = [
+  readonly selection: Array<FilterFieldFilter> = [
     {
       key: 'search',
+      type: 'string',
       value: 'foobar'
     }
   ];

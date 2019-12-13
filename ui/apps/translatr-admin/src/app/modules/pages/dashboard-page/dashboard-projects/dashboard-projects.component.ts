@@ -27,6 +27,18 @@ export class DashboardProjectsComponent implements OnDestroy {
   projects$ = this.facade.projects$;
   load$ = of({ limit: '20', order: 'name asc' });
 
+  filters = [{
+    key: 'search',
+    type: 'string',
+    title: 'Search',
+    value: ''
+  }, {
+    key: 'owner',
+    type: 'string',
+    title: 'Owner',
+    value: ''
+  }];
+
   selected: Project[] = [];
 
   readonly uiUrl = environment.uiUrl;

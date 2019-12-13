@@ -14,9 +14,10 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { PageEvent } from '@angular/material/paginator';
 import { MatColumnDef, MatTable } from '@angular/material/table';
 import { PagedList, RequestCriteria } from '@dev/translatr-model';
-import { merge, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, scan, shareReplay, take } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, map, take, tap } from 'rxjs/operators';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { FilterFieldFilter, handleFilterFieldSelection } from '../../filter-field';
 
 export interface Entity {
   id: string | number;
@@ -48,6 +49,13 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
     this.selection.clear();
   }
 
+  @Input() filters: Array<FilterFieldFilter> = [{
+    key: 'search',
+    type: 'string',
+    title: 'Search',
+    value: ''
+  }];
+
   @Output() readonly criteria = new EventEmitter<RequestCriteria>();
   @Output() readonly selected = new EventEmitter<Entity[]>();
 
@@ -59,50 +67,30 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   search$ = new Subject<string>();
   limit$ = new Subject<number>();
   offset$ = new Subject<number>();
-  commands$ = merge(
-    this.init$.asObservable(),
-    this.search$.asObservable().pipe(
-      distinctUntilChanged(),
-      debounceTime(200),
-      map((search: string) => ({ search }))
-    ),
-    this.limit$.asObservable().pipe(
-      distinctUntilChanged(),
-      map((limit: number) => ({ limit: `${limit}` }))
-    ),
-    this.offset$.asObservable().pipe(
-      distinctUntilChanged(),
-      map((offset: number) => ({ offset: `${offset}` }))
-    ),
-    this.route.queryParams.pipe(
-      map((params: Params) => ({
-        ...params
-      }))
-    )
-  ).pipe(
-    scan((acc: RequestCriteria, value: RequestCriteria) => ({
-      ...acc,
-      ...value
-    })),
-    shareReplay(1)
-  );
+  commands$ = this.route.queryParams;
 
   selection = new SelectionModel<Entity>(true, []);
+
+  readonly filterSelection$: Observable<ReadonlyArray<FilterFieldFilter>> =
+    this.route.queryParams.pipe(
+      map((params: Params) => this.filters
+        .filter(f => params[f.key] !== undefined && params[f.key] !== '')
+        .map(f => ({ ...f, value: params[f.key] }))
+      ),
+      tap(console.log),
+      distinctUntilChanged((a, b) => a.length === b.length)
+    );
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {
-    this.commands$.subscribe((criteria: RequestCriteria) => {
-      this.criteria.emit(criteria);
-      this.router.navigate([], {
-        relativeTo: route,
-        queryParams: criteria
-      });
-    });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.route.queryParams
+      .subscribe((criteria: RequestCriteria) => this.criteria.emit(criteria));
+  }
 
   ngAfterContentInit(): void {
     this.columns.forEach((column: MatColumnDef) =>
@@ -119,10 +107,13 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   }
 
   onLoadMore() {
-    this.commands$
+    this.route.queryParams
       .pipe(take(1))
       .subscribe((criteria: RequestCriteria) =>
-        this.limit$.next(criteria.limit * 2)
+        this.router.navigate([], {
+          queryParamsHandling: 'merge',
+          queryParams: { limit: criteria.limit * 2 }
+        })
       );
   }
 
@@ -153,5 +144,9 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
 
   onPage(event: PageEvent) {
     this.offset$.next(event.pageIndex * event.pageSize);
+  }
+
+  onFilterSelected(selected: ReadonlyArray<FilterFieldFilter>): Promise<boolean> {
+    return handleFilterFieldSelection(this.router, this.filters, selected);
   }
 }

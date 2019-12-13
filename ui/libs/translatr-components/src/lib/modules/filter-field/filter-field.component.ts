@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnInit,
+  Output,
+  Renderer2,
+  ViewChild
+} from '@angular/core';
 import { FilterFieldFilter } from '@translatr/translatr-components/src';
 import { FormControl } from '@angular/forms';
 import {
@@ -8,6 +19,7 @@ import {
   MatOptionSelectionChange,
   ThemePalette
 } from '@angular/material';
+import { isArray } from 'util';
 
 const lowerCaseIncludes = (s: string, search: string): boolean =>
   s.toLowerCase().includes(search.toLowerCase());
@@ -25,6 +37,10 @@ export class FilterFieldComponent implements OnInit {
   @Output() selected = new EventEmitter<ReadonlyArray<FilterFieldFilter>>();
   @ViewChild('autocompleteInput', { static: false }) autocompleteInput: ElementRef;
   @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+
+  // @ts-ignore
+  @HostBinding('class') private readonly clazz = 'filter-field';
+
   filterControl = new FormControl('');
   autocompleteOptions: Array<FilterFieldFilter> = [];
 
@@ -36,7 +52,7 @@ export class FilterFieldComponent implements OnInit {
 
   @Input() set selection(selection: ReadonlyArray<FilterFieldFilter>) {
     this._selection = selection;
-    this._options = selection;
+    this._options = isArray(selection) ? selection : [];
   }
 
   private _options: ReadonlyArray<FilterFieldFilter> = [];

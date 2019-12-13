@@ -11,6 +11,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { ButtonModule } from '../../button';
 import { SelectionActionsComponent } from './selection-actions.component';
+import { FilterFieldModule } from '../../filter-field';
 
 @NgModule({
   declarations: [EntityTableComponent, SelectionActionsComponent],
@@ -25,7 +26,8 @@ import { SelectionActionsComponent } from './selection-actions.component';
     MatInputModule,
     MatFormFieldModule,
     MatPaginatorModule,
-    MatDividerModule
+    MatDividerModule,
+    FilterFieldModule
   ]
 })
 export class EntityTableModule {

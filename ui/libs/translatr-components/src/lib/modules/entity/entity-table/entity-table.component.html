@@ -1,23 +1,13 @@
 <div class="controls">
-  <mat-form-field appearance="outline">
+  <dev-filter-field
+    (selected)="onFilterSelected($event)"
+    [filters]="filters"
+    [selection]="filterSelection$ | async"
+    appearance="elevate"
+    color="accent"
+  >
     <mat-icon matPrefix>search</mat-icon>
-    <input
-      #input
-      matInput
-      placeholder="Filter"
-      autocomplete="off"
-      [value]="(commands$ | async).search || ''"
-      (keyup.enter)="onFilter($event.target.value)"
-    />
-    <button
-      *ngIf="input.value"
-      (click)="input.value = ''; onFilter('')"
-      aria-label="Clear"
-      mat-icon-button
-      matSuffix>
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-form-field>
+  </dev-filter-field>
 </div>
 
 <table mat-table [dataSource]="dataSource?.list" [trackBy]="trackByFn">

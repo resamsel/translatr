@@ -11,6 +11,7 @@
       [dataSource]="projects$ | async"
       [displayedColumns]="displayedColumns"
       [load]="load$ | async"
+      [filters]="filters"
       (criteria)="onCriteriaChanged($event)"
       (selected)="onSelected($event)"
     >

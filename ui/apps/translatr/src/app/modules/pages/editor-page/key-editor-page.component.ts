@@ -6,7 +6,7 @@ import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
 import { trackByFn } from '@translatr/utils';
 import { MessageItem } from './message-item';
-import { FilterFieldFilter, FilterFieldSelection } from '@dev/translatr-components';
+import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -38,7 +38,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
       allowEmpty: true
     }
   ];
-  readonly selection$: Observable<ReadonlyArray<FilterFieldSelection>> =
+  readonly selection$: Observable<ReadonlyArray<FilterFieldFilter>> =
     this.appFacade.queryParams$.pipe(
       map((params: Params) => this.filters
         .filter(f => params[f.key] !== undefined && params[f.key] !== '')
@@ -88,23 +88,8 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
     this.facade.unloadEditor();
   }
 
-  onSelected(selected: ReadonlyArray<FilterFieldSelection>): void {
-    const params: Params = this.filters.map(f => f.key)
-      .reduce(
-        (agg, key) => {
-          const selection = selected.find(s => s.key === key);
-          return {
-            ...agg,
-            [key]: selection ? selection.value : null
-          };
-        },
-        {}
-      );
-
-    this.router.navigate([], {
-      queryParamsHandling: 'merge',
-      queryParams: params
-    });
+  onSelected(selected: ReadonlyArray<FilterFieldFilter>): Promise<boolean> {
+    return handleFilterFieldSelection(this.router, this.filters, selected);
   }
 
   onLoadMore(limit: number): void {
