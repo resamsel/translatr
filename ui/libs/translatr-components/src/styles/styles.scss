@@ -432,13 +432,17 @@ pre[class*="language-"]:before {
 }
 
 .header {
-  height: 160px;
+  height: 180px;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: left bottom;
   color: white;
   display: flex;
   flex-direction: column;
+
+  &:not(.section) {
+    @include mat-elevation(2);
+  }
 
   .title {
     flex-grow: 1;
@@ -457,10 +461,6 @@ pre[class*="language-"]:before {
   }
 
   @include medium {
-    height: 180px;
-  }
-
-  @include large {
     height: 216px;
   }
 }
