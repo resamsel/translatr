@@ -1,5 +1,18 @@
 @import '~@angular/material/theming';
+@import 'theme';
 @import 'mixins';
+
+@mixin editor-theme($theme) {
+  $accent: map-get($theme, accent);
+  $accent-color: mat-color($accent);
+
+  :host {
+    .sidebar .nav-list ::ng-deep a.active {
+      background: $accent-color;
+      color: white;
+    }
+  }
+}
 
 .main {
   flex-grow: 1;
@@ -32,11 +45,6 @@
   .nav-list {
     max-height: 100%;
     overflow-x: hidden;
-
-    ::ng-deep a.active {
-      background: #8BC34A;
-      color: #fff;
-    }
   }
 
   @include medium {
@@ -175,3 +183,5 @@
     }
   }
 }
+
+@include editor-theme($app-theme)

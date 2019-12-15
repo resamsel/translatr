@@ -121,13 +121,15 @@ a .mat-card {
   }
 
   .locale .mat-card,
-  .mat-icon.circle.locale {
+  .mat-icon.circle.locale,
+  .locale-editor .mat-toolbar.mat-primary {
     background: #0097a7;
     color: white;
   }
 
   .key .mat-card,
-  .mat-icon.circle.key {
+  .mat-icon.circle.key,
+  .key-editor .mat-toolbar.mat-primary {
     background: #689f38;
     color: white;
   }
@@ -424,7 +426,7 @@ pre[class*="language-"]:before {
 }
 
 .header {
-  height: 216px;
+  height: 160px;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: left bottom;
@@ -449,16 +451,11 @@ pre[class*="language-"]:before {
   }
 
   @include medium {
-    height: 240px;
-    background-position: left center;
+    height: 180px;
   }
 
   @include large {
-    height: 280px;
-  }
-
-  @include extra-large {
-    height: 320px;
+    height: 216px;
   }
 }
 

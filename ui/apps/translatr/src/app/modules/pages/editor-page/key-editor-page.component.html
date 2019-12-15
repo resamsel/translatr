@@ -3,10 +3,11 @@
   [ownerName]="(key$ | async)?.projectOwnerUsername"
   [projectName]="(key$ | async)?.projectName"
   [backLink]="backLink"
-  name="Key Editor"
-  i18n-name="@@key.editor"
   [message]="selectedMessage$ | async"
   [messages]="toMessages(messageItems$ | async)"
+  name="Key Editor"
+  i18n-name="@@key.editor"
+  class="key-editor"
 >
   <dev-filter-field
     (selected)="onSelected($event)"
