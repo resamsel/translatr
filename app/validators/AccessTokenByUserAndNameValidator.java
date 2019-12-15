@@ -1,9 +1,9 @@
 package validators;
 
-import models.User;
 import play.data.validation.Constraints;
 import play.libs.F.Tuple;
 import repositories.AccessTokenRepository;
+import services.AuthProvider;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
@@ -18,10 +18,13 @@ public class AccessTokenByUserAndNameValidator extends Constraints.Validator<Obj
   public static final String MESSAGE = "error.accesstokenbyuserandname";
 
   private final AccessTokenRepository accessTokenRepository;
+  private final AuthProvider authProvider;
 
   @Inject
-  public AccessTokenByUserAndNameValidator(AccessTokenRepository accessTokenRepository) {
+  public AccessTokenByUserAndNameValidator(AccessTokenRepository accessTokenRepository,
+                                           AuthProvider authProvider) {
     this.accessTokenRepository = accessTokenRepository;
+    this.authProvider = authProvider;
   }
 
   /**
@@ -37,7 +40,7 @@ public class AccessTokenByUserAndNameValidator extends Constraints.Validator<Obj
   @Override
   public boolean isValid(Object object) {
     return object != null && object instanceof String
-        && accessTokenRepository.byUserAndName(User.loggedInUserId(), (String) object) == null;
+        && accessTokenRepository.byUserAndName(authProvider.loggedInUserId(), (String) object) == null;
   }
 
   /**

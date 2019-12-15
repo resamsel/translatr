@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.Persistence;
 import repositories.UserRepository;
+import services.AuthProvider;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
@@ -35,12 +36,15 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
   private final Find<UUID, User> find = new Find<UUID, User>() {
   };
+  private final AuthProvider authProvider;
 
   @Inject
   public UserRepositoryImpl(Persistence persistence,
                             Validator validator,
+                            AuthProvider authProvider,
                             ActivityActorRef activityActor) {
-    super(persistence, validator, activityActor);
+    super(persistence, validator, authProvider, activityActor);
+    this.authProvider = authProvider;
   }
 
   @Override
@@ -161,7 +165,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   protected void prePersist(User t, boolean update) {
     if (update) {
       activityActor.tell(
-          new Activity<>(ActionType.Update, User.loggedInUser(), null, dto.User.class, toDto(byId(t.id)), toDto(t)),
+          new Activity<>(ActionType.Update, authProvider.loggedInUser(), null, dto.User.class, toDto(byId(t.id)), toDto(t)),
           null
       );
     }

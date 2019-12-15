@@ -18,13 +18,13 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
 import models.ProjectRole;
-import models.User;
 import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import services.AuthProvider;
 import services.CacheService;
 import services.api.LocaleApiService;
 
@@ -76,8 +76,8 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
 
   @Inject
   public LocalesApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-                    LocaleApiService localeApiService) {
-    super(injector, cache, auth, localeApiService);
+                    AuthProvider authProvider, LocaleApiService localeApiService) {
+    super(injector, cache, auth, authProvider, localeApiService);
   }
 
   @ApiOperation(value = FIND,
@@ -111,7 +111,7 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
         LocaleCriteria.from(request()).withProjectId(projectId),
         criteria -> checkProjectRole(
             projectId,
-            User.loggedInUser(),
+            authProvider.loggedInUser(),
             ProjectRole.Owner,
             ProjectRole.Manager,
             ProjectRole.Translator,
@@ -288,7 +288,7 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
     return tryCatch(() -> {
       Locale locale = api.byOwnerAndProjectAndName(username, projectName, localeName, fetches);
 
-      checkProjectRole(locale.projectId, User.loggedInUser(), ProjectRole.Owner,
+      checkProjectRole(locale.projectId, authProvider.loggedInUser(), ProjectRole.Owner,
           ProjectRole.Manager, ProjectRole.Developer, ProjectRole.Translator);
 
       return processor.apply(locale);

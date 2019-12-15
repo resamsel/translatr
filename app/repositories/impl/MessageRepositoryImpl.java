@@ -18,12 +18,12 @@ import models.ActionType;
 import models.Key;
 import models.Message;
 import models.Project;
-import models.User;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
 import repositories.Persistence;
+import services.AuthProvider;
 import utils.MessageUtils;
 import utils.QueryUtils;
 
@@ -57,9 +57,10 @@ public class MessageRepositoryImpl extends
   @Inject
   public MessageRepositoryImpl(Persistence persistence,
                                Validator validator,
+                               AuthProvider authProvider,
                                ActivityActorRef activityActor,
                                @Named(MessageWordCountActor.NAME) ActorRef messageWordCountActor) {
-    super(persistence, validator, activityActor);
+    super(persistence, validator, authProvider, activityActor);
 
     this.messageWordCountActor = messageWordCountActor;
   }
@@ -249,7 +250,7 @@ public class MessageRepositoryImpl extends
   @Override
   public void preDelete(Message t) {
     activityActor.tell(
-        new Activity<>(ActionType.Delete, User.loggedInUser(), t.key.project, dto.Message.class, MessageMapper.toDto(t),
+        new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t.key.project, dto.Message.class, MessageMapper.toDto(t),
             null),
         null
     );
@@ -261,7 +262,7 @@ public class MessageRepositoryImpl extends
   @Override
   protected void preDelete(Collection<Message> t) {
     activityActor.tell(
-        new Activities<>(t.stream().map(m -> new Activity<>(ActionType.Delete, User.loggedInUser(), m.key.project,
+        new Activities<>(t.stream().map(m -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), m.key.project,
             dto.Message.class, MessageMapper.toDto(m), null)).collect(toList())),
         null
     );
@@ -297,7 +298,7 @@ public class MessageRepositoryImpl extends
   private Activity<dto.Message> logEntryCreate(Message message) {
     return new Activity<>(
         ActionType.Create,
-        User.loggedInUser(),
+        authProvider.loggedInUser(),
         message.key.project,
         dto.Message.class,
         null,
@@ -308,7 +309,7 @@ public class MessageRepositoryImpl extends
   private Activity<dto.Message> logEntryUpdate(Message message, Message previous) {
     return new Activity<>(
         ActionType.Update,
-        User.loggedInUser(),
+        authProvider.loggedInUser(),
         message.key.project,
         dto.Message.class,
         MessageMapper.toDto(previous),

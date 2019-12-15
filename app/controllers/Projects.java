@@ -8,12 +8,29 @@ import com.google.common.collect.ImmutableMap;
 import commands.RevertDeleteProjectCommand;
 import commands.RevertDeleteProjectUserCommand;
 import converters.ActivityCsvConverter;
-import criterias.*;
+import criterias.KeyCriteria;
+import criterias.LocaleCriteria;
+import criterias.LogEntryCriteria;
+import criterias.ProjectCriteria;
+import criterias.ProjectUserCriteria;
 import dto.SearchResponse;
-import forms.*;
+import forms.ActivitySearchForm;
+import forms.KeySearchForm;
+import forms.LocaleSearchForm;
+import forms.ProjectForm;
+import forms.ProjectOwnerForm;
+import forms.ProjectUserForm;
+import forms.SearchForm;
 import mappers.SuggestionMapper;
-import models.*;
+import models.Key;
+import models.Locale;
+import models.LogEntry;
+import models.Project;
+import models.ProjectRole;
+import models.ProjectUser;
+import models.Suggestable;
 import models.Suggestable.Data;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
@@ -24,7 +41,13 @@ import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
-import services.*;
+import services.AuthProvider;
+import services.CacheService;
+import services.KeyService;
+import services.LocaleService;
+import services.MessageService;
+import services.ProjectService;
+import services.ProjectUserService;
 import utils.FormUtils;
 import utils.FormUtils.Search;
 import utils.Template;
@@ -48,6 +71,7 @@ public class Projects extends AbstractController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Projects.class);
 
+  private final AuthProvider authProvider;
   private final ProjectService projectService;
   private final LocaleService localeService;
   private final KeyService keyService;
@@ -61,13 +85,14 @@ public class Projects extends AbstractController {
    */
   @Inject
   public Projects(Injector injector, CacheService cache, FormFactory formFactory,
-      PlayAuthenticate auth,
-      ProjectService projectService, LocaleService localeService, KeyService keyService,
-      MessageService messageService, ProjectUserService projectUserService,
-      Configuration configuration) {
+                  PlayAuthenticate auth, AuthProvider authProvider,
+                  ProjectService projectService, LocaleService localeService, KeyService keyService,
+                  MessageService messageService, ProjectUserService projectUserService,
+                  Configuration configuration) {
     super(injector, cache, auth);
 
     this.formFactory = formFactory;
+    this.authProvider = authProvider;
     this.projectService = projectService;
     this.localeService = localeService;
     this.keyService = keyService;
@@ -83,7 +108,7 @@ public class Projects extends AbstractController {
       search.update(s, order, limit, offset);
 
       PagedList<Project> projects =
-          projectService.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
+          projectService.findBy(ProjectCriteria.from(search).withMemberId(authProvider.loggedInUserId()));
 
       search.pager(projects);
 
@@ -235,7 +260,7 @@ public class Projects extends AbstractController {
   }
 
   public CompletionStage<Result> localesBy(String username, String projectName, String s,
-      String order, int limit, int offset) {
+                                           String order, int limit, int offset) {
     return project(username, projectName, (user, project) -> {
       Form<LocaleSearchForm> form =
           FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration);
@@ -256,7 +281,7 @@ public class Projects extends AbstractController {
   }
 
   public CompletionStage<Result> keysBy(String username, String projectName, String s, String order,
-      int limit, int offset) {
+                                        int limit, int offset) {
     return project(username, projectName, (user, project) -> {
       Form<KeySearchForm> form = FormUtils.KeySearch.bindFromRequest(formFactory, configuration);
       KeySearchForm search = form.get();
@@ -275,7 +300,7 @@ public class Projects extends AbstractController {
   }
 
   public CompletionStage<Result> membersBy(String username, String projectName, String s,
-      String order, int limit, int offset) {
+                                           String order, int limit, int offset) {
     return project(username, projectName, (user, project) -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
@@ -317,7 +342,7 @@ public class Projects extends AbstractController {
   }
 
   public CompletionStage<Result> memberRemoveBy(String username, String projectName,
-      Long memberId) {
+                                                Long memberId) {
     return project(username, projectName, (user, project) -> {
       ProjectUser member = projectUserService.byId(memberId);
 
@@ -377,7 +402,7 @@ public class Projects extends AbstractController {
   }
 
   public CompletionStage<Result> activityBy(String username, String projectName, String s,
-      String order, int limit, int offset) {
+                                            String order, int limit, int offset) {
     return project(username, projectName, (user, project) -> {
       Form<ActivitySearchForm> form =
           FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);

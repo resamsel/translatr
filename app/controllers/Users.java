@@ -7,11 +7,19 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import commands.RevertDeleteAccessTokenCommand;
 import commands.RevertDeleteLinkedAccountCommand;
 import converters.ActivityCsvConverter;
-import criterias.*;
+import criterias.AccessTokenCriteria;
+import criterias.LinkedAccountCriteria;
+import criterias.LogEntryCriteria;
+import criterias.ProjectCriteria;
+import criterias.UserCriteria;
 import forms.AccessTokenForm;
 import forms.ActivitySearchForm;
 import forms.SearchForm;
-import models.*;
+import models.AccessToken;
+import models.LinkedAccount;
+import models.LogEntry;
+import models.Project;
+import models.User;
 import play.Configuration;
 import play.data.Form;
 import play.data.FormFactory;
@@ -20,6 +28,7 @@ import play.mvc.Result;
 import play.mvc.With;
 import repositories.UserRepository;
 import services.AccessTokenService;
+import services.AuthProvider;
 import services.CacheService;
 import services.LinkedAccountService;
 import services.ProjectService;
@@ -40,6 +49,7 @@ import static java.util.stream.Collectors.toMap;
 @SubjectPresent(forceBeforeAuthCheck = true)
 public class Users extends AbstractController {
 
+  private final AuthProvider authProvider;
   private final FormFactory formFactory;
 
   private final Configuration configuration;
@@ -52,11 +62,13 @@ public class Users extends AbstractController {
 
   @Inject
   public Users(Injector injector, CacheService cache, PlayAuthenticate auth,
-      FormFactory formFactory,
-      Configuration configuration, ProjectService projectService,
-      LinkedAccountService linkedAccountService, AccessTokenService accessTokenService) {
+               AuthProvider authProvider,
+               FormFactory formFactory,
+               Configuration configuration, ProjectService projectService,
+               LinkedAccountService linkedAccountService, AccessTokenService accessTokenService) {
     super(injector, cache, auth);
 
+    this.authProvider = authProvider;
     this.formFactory = formFactory;
     this.configuration = configuration;
     this.projectService = projectService;
@@ -97,7 +109,7 @@ public class Users extends AbstractController {
       }
 
       PagedList<Project> projects =
-          projectService.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
+          projectService.findBy(ProjectCriteria.from(search).withMemberId(authProvider.loggedInUserId()));
 
       search.pager(projects);
 

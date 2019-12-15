@@ -18,13 +18,13 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
 import models.ProjectRole;
-import models.User;
 import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import services.AuthProvider;
 import services.CacheService;
 import services.api.KeyApiService;
 
@@ -66,8 +66,8 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
 
   @Inject
   public KeysApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-                 KeyApiService keyApiService) {
-    super(injector, cache, auth, keyApiService);
+                 AuthProvider authProvider, KeyApiService keyApiService) {
+    super(injector, cache, auth, authProvider, keyApiService);
   }
 
   @ApiOperation(value = FIND,
@@ -96,7 +96,7 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
         KeyCriteria.from(request()).withProjectId(projectId),
         criteria -> checkProjectRole(
             projectId,
-            User.loggedInUser(),
+            authProvider.loggedInUser(),
             ProjectRole.Owner,
             ProjectRole.Manager,
             ProjectRole.Translator,
@@ -220,7 +220,7 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
     return tryCatch(() -> {
       Key key = api.byOwnerAndProjectAndName(username, projectName, keyName, fetches);
 
-      checkProjectRole(key.projectId, User.loggedInUser(), ProjectRole.Owner,
+      checkProjectRole(key.projectId, authProvider.loggedInUser(), ProjectRole.Owner,
           ProjectRole.Manager, ProjectRole.Developer, ProjectRole.Translator);
 
       return processor.apply(key);

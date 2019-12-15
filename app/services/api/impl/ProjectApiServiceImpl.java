@@ -23,10 +23,13 @@ import models.ProjectRole;
 import models.Scope;
 import models.Suggestable;
 import models.Suggestable.Data;
+import models.User;
+import models.UserRole;
 import play.Configuration;
 import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Http.Context;
+import services.AuthProvider;
 import services.KeyService;
 import services.LocaleService;
 import services.LogEntryService;
@@ -58,12 +61,13 @@ public class ProjectApiServiceImpl extends
   private final LocaleService localeService;
   private final KeyService keyService;
   private final LogEntryService logEntryService;
+  private final AuthProvider authProvider;
 
   @Inject
   protected ProjectApiServiceImpl(
       Configuration configuration, ProjectService projectService,
       LocaleService localeService, KeyService keyService, LogEntryService logEntryService,
-      PermissionService permissionService) {
+      PermissionService permissionService, AuthProvider authProvider) {
     super(projectService, dto.Project.class, ProjectMapper::toDto,
         new Scope[]{Scope.ProjectRead},
         new Scope[]{Scope.ProjectWrite},
@@ -73,6 +77,17 @@ public class ProjectApiServiceImpl extends
     this.localeService = localeService;
     this.keyService = keyService;
     this.logEntryService = logEntryService;
+    this.authProvider = authProvider;
+  }
+
+  @Override
+  public PagedList<dto.Project> find(ProjectCriteria criteria) {
+    User loggedInUser = authProvider.loggedInUser();
+    if (loggedInUser != null && loggedInUser.role != UserRole.Admin) {
+      criteria.withMemberId(loggedInUser.id);
+    }
+
+    return super.find(criteria);
   }
 
   @Override

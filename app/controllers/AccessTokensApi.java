@@ -8,10 +8,18 @@ import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import io.swagger.annotations.AuthorizationScope;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.AuthProvider;
 import services.CacheService;
 import services.api.AccessTokenApiService;
 
@@ -41,8 +49,10 @@ public class AccessTokensApi extends AbstractApi<AccessToken, Long, AccessTokenC
   private static final String NOT_FOUND_ERROR = "Access token not found";
 
   @Inject
-  public AccessTokensApi(Injector injector, CacheService cache, PlayAuthenticate auth, AccessTokenApiService accessTokenApiService) {
-    super(injector, cache, auth, accessTokenApiService);
+  public AccessTokensApi(
+      Injector injector, CacheService cache, PlayAuthenticate auth, AuthProvider authProvider,
+      AccessTokenApiService accessTokenApiService) {
+    super(injector, cache, auth, authProvider, accessTokenApiService);
   }
 
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,

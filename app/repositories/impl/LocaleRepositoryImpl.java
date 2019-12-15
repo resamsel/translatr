@@ -18,13 +18,13 @@ import models.Locale;
 import models.Message;
 import models.Project;
 import models.ProjectRole;
-import models.User;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LocaleRepository;
 import repositories.MessageRepository;
 import repositories.Persistence;
+import services.AuthProvider;
 import services.PermissionService;
 import utils.QueryUtils;
 
@@ -56,10 +56,11 @@ public class LocaleRepositoryImpl extends
   @Inject
   public LocaleRepositoryImpl(Persistence persistence,
                               Validator validator,
+                              AuthProvider authProvider,
                               ActivityActorRef activityActor,
                               MessageRepository messageRepository,
                               PermissionService permissionService) {
-    super(persistence, validator, activityActor);
+    super(persistence, validator, authProvider, activityActor);
 
     this.messageRepository = messageRepository;
     this.permissionService = permissionService;
@@ -180,7 +181,7 @@ public class LocaleRepositoryImpl extends
   protected void prePersist(Locale t, boolean update) {
     if (update) {
       activityActor.tell(
-          new Activity<>(ActionType.Update, User.loggedInUser(), t.project, dto.Locale.class,
+          new Activity<>(ActionType.Update, authProvider.loggedInUser(), t.project, dto.Locale.class,
               LocaleMapper.toDto(byId(t.id)), LocaleMapper.toDto(t)),
           null
       );
@@ -194,7 +195,7 @@ public class LocaleRepositoryImpl extends
   protected void postSave(Locale t, boolean update) {
     if (!update) {
       activityActor.tell(
-          new Activity<>(ActionType.Create, User.loggedInUser(), t.project, dto.Locale.class, null, LocaleMapper.toDto(t)),
+          new Activity<>(ActionType.Create, authProvider.loggedInUser(), t.project, dto.Locale.class, null, LocaleMapper.toDto(t)),
           null
       );
     }
@@ -206,13 +207,13 @@ public class LocaleRepositoryImpl extends
   @Override
   public void preDelete(Locale t) {
     if (!permissionService
-        .hasPermissionAny(t.project.id, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
+        .hasPermissionAny(t.project.id, authProvider.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
             ProjectRole.Translator)) {
       throw new PermissionException("User not allowed in project");
     }
 
     activityActor.tell(
-        new Activity<>(ActionType.Delete, User.loggedInUser(), t.project, dto.Locale.class, LocaleMapper.toDto(t), null),
+        new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t.project, dto.Locale.class, LocaleMapper.toDto(t), null),
         null
     );
 
@@ -225,7 +226,7 @@ public class LocaleRepositoryImpl extends
   @Override
   public void preDelete(Collection<Locale> t) {
     activityActor.tell(
-        new Activities<>(t.stream().map(l -> new Activity<>(ActionType.Delete, User.loggedInUser(), l.project,
+        new Activities<>(t.stream().map(l -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), l.project,
             dto.Locale.class, LocaleMapper.toDto(l), null)).collect(Collectors.toList())),
         null
     );

@@ -12,6 +12,7 @@ import mappers.UserObfuscatorMapper;
 import models.Scope;
 import models.User;
 import play.libs.Json;
+import services.AuthProvider;
 import services.LogEntryService;
 import services.PermissionService;
 import services.UserService;
@@ -32,11 +33,13 @@ public class UserApiServiceImpl extends
     AbstractApiService<User, UUID, UserCriteria, UserService, dto.User>
     implements UserApiService {
 
+  private final AuthProvider authProvider;
   private final LogEntryService logEntryService;
 
   @Inject
   protected UserApiServiceImpl(
       UserService userService,
+      AuthProvider authProvider,
       PermissionService permissionService,
       LogEntryService logEntryService) {
     super(userService, dto.User.class, UserMapper::toDto,
@@ -44,13 +47,14 @@ public class UserApiServiceImpl extends
         new Scope[]{Scope.UserWrite},
         permissionService);
 
+    this.authProvider = authProvider;
     this.logEntryService = logEntryService;
   }
 
   @Override
   protected Function<User, dto.User> getDtoMapper() {
     return super.getDtoMapper()
-        .andThen(UserObfuscatorMapper.of(User.loggedInUser()));
+        .andThen(UserObfuscatorMapper.of(authProvider.loggedInUser()));
   }
 
   @Override
@@ -73,7 +77,7 @@ public class UserApiServiceImpl extends
 
   @Override
   public dto.User me() {
-    return dtoMapper.apply(User.loggedInUser());
+    return dtoMapper.apply(authProvider.loggedInUser());
   }
 
   /**

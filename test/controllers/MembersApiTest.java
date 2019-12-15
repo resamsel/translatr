@@ -12,6 +12,7 @@ import play.inject.Injector;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Http;
 import play.mvc.Result;
+import services.AuthProvider;
 import services.CacheService;
 import services.ContextProvider;
 import services.api.ProjectUserApiService;
@@ -44,6 +45,8 @@ public class MembersApiTest {
   private ContextProvider contextProvider;
   @Mock
   private Http.Request request;
+  @Mock
+  private AuthProvider authProvider;
 
   @Before
   public void setUp() {
@@ -52,7 +55,7 @@ public class MembersApiTest {
     when(contextProvider.get()).thenReturn(context);
     when(context.request()).thenReturn(request);
 
-    target = new MembersApi(injector, cache, auth, projectUserApiService, contextProvider);
+    target = new MembersApi(injector, cache, auth, authProvider, projectUserApiService, contextProvider);
   }
 
   @Test

@@ -1,14 +1,7 @@
 package services.impl;
 
-import static utils.Stopwatch.log;
-
 import com.avaje.ebean.PagedList;
 import criterias.AccessTokenCriteria;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Validator;
-
 import models.AccessToken;
 import models.User;
 import models.UserRole;
@@ -16,8 +9,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.AccessTokenRepository;
 import services.AccessTokenService;
+import services.AuthProvider;
 import services.CacheService;
 import services.LogEntryService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+
+import static utils.Stopwatch.log;
 
 /**
  * @author resamsel
@@ -30,20 +30,23 @@ public class AccessTokenServiceImpl extends
   private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenServiceImpl.class);
 
   private final CacheService cache;
+  private final AuthProvider authProvider;
   private final AccessTokenRepository accessTokenRepository;
 
   @Inject
-  public AccessTokenServiceImpl(Validator validator, CacheService cache,
-                                AccessTokenRepository accessTokenRepository, LogEntryService logEntryService) {
+  public AccessTokenServiceImpl(
+      Validator validator, CacheService cache, AuthProvider authProvider,
+      AccessTokenRepository accessTokenRepository, LogEntryService logEntryService) {
     super(validator, cache, accessTokenRepository, AccessToken::getCacheKey, logEntryService);
 
     this.cache = cache;
+    this.authProvider = authProvider;
     this.accessTokenRepository = accessTokenRepository;
   }
 
   @Override
   public PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
-    User loggedInUser = User.loggedInUser();
+    User loggedInUser = authProvider.loggedInUser();
     if (loggedInUser != null && loggedInUser.role != UserRole.Admin) {
       criteria.setUserId(loggedInUser.id);
     }

@@ -23,6 +23,7 @@ import repositories.KeyRepository;
 import repositories.LocaleRepository;
 import repositories.Persistence;
 import repositories.ProjectRepository;
+import services.AuthProvider;
 import services.PermissionService;
 import utils.QueryUtils;
 
@@ -54,11 +55,12 @@ public class ProjectRepositoryImpl extends
   @Inject
   public ProjectRepositoryImpl(Persistence persistence,
                                Validator validator,
+                               AuthProvider authProvider,
                                ActivityActorRef activityActor,
                                LocaleRepository localeRepository,
                                KeyRepository keyRepository,
                                PermissionService permissionService) {
-    super(persistence, validator, activityActor);
+    super(persistence, validator, authProvider, activityActor);
 
     this.localeRepository = localeRepository;
     this.keyRepository = keyRepository;
@@ -150,7 +152,7 @@ public class ProjectRepositoryImpl extends
   protected void preSave(Project t, boolean update) {
     Ebean.markAsDirty(t);
     if (t.owner == null || t.owner.id == null) {
-      t.owner = User.loggedInUser();
+      t.owner = authProvider.loggedInUser();
     }
     if (t.members == null) {
       t.members = new ArrayList<>();
@@ -164,7 +166,7 @@ public class ProjectRepositoryImpl extends
   protected void prePersist(Project t, boolean update) {
     if (update) {
       activityActor.tell(
-          new Activity<>(ActionType.Update, User.loggedInUser(), t, dto.Project.class, toDto(byId(t.id)), toDto(t)),
+          new Activity<>(ActionType.Update, authProvider.loggedInUser(), t, dto.Project.class, toDto(byId(t.id)), toDto(t)),
           null
       );
     }
@@ -177,7 +179,7 @@ public class ProjectRepositoryImpl extends
   protected void postSave(Project t, boolean update) {
     if (!update) {
       activityActor.tell(
-          new Activity<>(ActionType.Create, User.loggedInUser(), t, dto.Project.class, null, toDto(t)),
+          new Activity<>(ActionType.Create, authProvider.loggedInUser(), t, dto.Project.class, null, toDto(t)),
           null
       );
     }
@@ -192,7 +194,7 @@ public class ProjectRepositoryImpl extends
       throw new NotFoundException(dto.Project.class.getSimpleName(), t != null ? t.id : null);
     }
     if (!permissionService
-        .hasPermissionAny(t.id, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager)) {
+        .hasPermissionAny(t.id, authProvider.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager)) {
       throw new PermissionException("User not allowed in project");
     }
 
@@ -200,7 +202,7 @@ public class ProjectRepositoryImpl extends
     keyRepository.delete(t.keys);
 
     activityActor.tell(
-        new Activity<>(ActionType.Delete, User.loggedInUser(), t, dto.Project.class, toDto(t), null),
+        new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t, dto.Project.class, toDto(t), null),
         null
     );
 
@@ -212,7 +214,7 @@ public class ProjectRepositoryImpl extends
    */
   @Override
   public void delete(Collection<Project> t) {
-    User loggedInUser = User.loggedInUser();
+    User loggedInUser = authProvider.loggedInUser();
     for (Project p : t) {
       if (p == null || p.deleted) {
         throw new NotFoundException(dto.Project.class.getSimpleName(), p != null ? p.id : null);
@@ -231,7 +233,7 @@ public class ProjectRepositoryImpl extends
 
     activityActor.tell(
         new Activities<>(t.stream()
-            .map(p -> new Activity<>(ActionType.Delete, User.loggedInUser(), p, dto.Project.class, toDto(p), null))
+            .map(p -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), p, dto.Project.class, toDto(p), null))
             .collect(Collectors.toList())),
         null
     );

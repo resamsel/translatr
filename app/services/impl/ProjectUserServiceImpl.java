@@ -23,7 +23,7 @@ public class ProjectUserServiceImpl extends
 
   @Inject
   public ProjectUserServiceImpl(Validator validator, CacheService cache,
-      ProjectUserRepository projectUserRepository, LogEntryService logEntryService) {
+                                ProjectUserRepository projectUserRepository, LogEntryService logEntryService) {
     super(validator, cache, projectUserRepository, ProjectUser::getCacheKey, logEntryService);
 
     this.projectUserRepository = projectUserRepository;
@@ -42,11 +42,6 @@ public class ProjectUserServiceImpl extends
     super.postCreate(t);
 
     cache.removeByPrefix("member:criteria:" + t.project.id);
-  }
-
-  @Override
-  protected void preCreate(ProjectUser t) {
-    super.preCreate(t);
   }
 
   @Override

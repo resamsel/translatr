@@ -6,10 +6,17 @@ import criterias.LogEntryCriteria;
 import dto.Activity;
 import dto.errors.GenericError;
 import dto.errors.PermissionError;
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import io.swagger.annotations.AuthorizationScope;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.AuthProvider;
 import services.CacheService;
 import services.api.ActivityApiService;
 
@@ -29,8 +36,9 @@ public class ActivitiesApi extends AbstractApi<Activity, UUID, LogEntryCriteria,
 
   @Inject
   protected ActivitiesApi(
-      Injector injector, CacheService cache, PlayAuthenticate auth, ActivityApiService activityApiService) {
-    super(injector, cache, auth, activityApiService);
+      Injector injector, CacheService cache, PlayAuthenticate auth, AuthProvider authProvider,
+      ActivityApiService activityApiService) {
+    super(injector, cache, auth, authProvider, activityApiService);
   }
 
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,

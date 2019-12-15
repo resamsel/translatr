@@ -1,9 +1,7 @@
 @(template: utils.Template)(nav: Html = Html(""))(tabs: Html = Html(""))(content: Html)
 
-@import com.feth.play.module.pa.views.html._
-
-<!DOCTYPE html>
-<html lang="@ctx.lang().locale" class="template-@template.name">
+  @<!DOCTYPE html>
+  <html lang="@ctx.lang().locale" class="template-@template.name">
 <head>
 
 <meta charset="utf-8">
@@ -151,16 +149,16 @@
 					</ul>
 				</div>
 			</div>
-		</div>
-		<div class="footer-copyright grey-text text-darken-1">
-			<div class="container">
-				@Html(Messages("copyright", buildinfo.BuildInfo.version, buildinfo.BuildInfo.builtAtString))
-			</div>
-		</div>
-	</footer>
+    </div>
+    <div class="footer-copyright grey-text text-darken-1">
+      <div class="container">
+      @Html(Messages("copyright", buildinfo.BuildInfo.version, buildinfo.BuildInfo.builtAtString))
+      </div>
+    </div>
+  </footer>
 
-	@tags.messages()
-	@tags.undo()
-	@tags.undefined()
+  @tags.messages()
+  @tags.undo()
+  @tags.undefined(template)
 </body>
-</html>
+  </html>

@@ -16,13 +16,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class AuthenticateServiceImpl extends AbstractUserService {
+public class AuthenticateUserServiceImpl extends AbstractUserService {
   private final UserService userService;
   private final LogEntryService logEntryService;
 
   @Inject
-  public AuthenticateServiceImpl(final PlayAuthenticate auth, final UserService userService,
-      final LogEntryService logEntryService) {
+  public AuthenticateUserServiceImpl(final PlayAuthenticate auth, final UserService userService,
+                                     final LogEntryService logEntryService) {
     super(auth);
     this.userService = userService;
     this.logEntryService = logEntryService;

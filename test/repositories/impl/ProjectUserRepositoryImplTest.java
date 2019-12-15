@@ -22,6 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import repositories.PagedListFactoryProvider;
 import repositories.Persistence;
 import repositories.RepositoryProvider;
+import services.AuthProvider;
 
 import javax.validation.ValidationException;
 import javax.validation.Validator;
@@ -39,6 +40,8 @@ public class ProjectUserRepositoryImplTest {
   private ProjectUserRepositoryImpl target;
   @Mock
   private Persistence persistence;
+  @Mock
+  private AuthProvider authProvider;
   @Mock
   private Validator validator;
   @Mock
@@ -71,7 +74,7 @@ public class ProjectUserRepositoryImplTest {
     when(pagedListFactoryProvider.get()).thenReturn(pagedListFactory);
 
     target = new ProjectUserRepositoryImpl(
-        persistence, validator, activityActor, notificationActor, pagedListFactoryProvider);
+        persistence, validator, authProvider, activityActor, notificationActor, pagedListFactoryProvider);
   }
 
   @Test

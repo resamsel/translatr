@@ -14,6 +14,7 @@ import play.api.mvc.Call;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
+import play.mvc.Http;
 import play.mvc.Http.Context;
 import services.MessageService;
 import services.ProjectService;
@@ -271,21 +272,20 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return null;
   }
 
-  public static UUID brandProjectId() {
-    UUID brandProjectId = ContextKey.BrandProjectId.get();
+  public static UUID brandProjectId(User loggedInUser, Http.Context ctx) {
+    UUID brandProjectId = ContextKey.BrandProjectId.get(ctx);
     if (brandProjectId != null) {
       return brandProjectId;
     }
 
-    User user = User.loggedInUser();
-    if (user == null) {
+    if (loggedInUser == null) {
       return null;
     }
 
     Project brandProject = null;
     try {
       brandProject = Play.current().injector().instanceOf(ProjectService.class)
-          .byOwnerAndName(user.username, "Translatr");
+          .byOwnerAndName(loggedInUser.username, "Translatr");
     } catch (Exception e) {
       LOGGER.warn("Error while retrieving brand project", e);
     }
@@ -294,7 +294,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
       return null;
     }
 
-    ContextKey.BrandProjectId.put(Context.current(), brandProject.id);
+    ContextKey.BrandProjectId.put(ctx, brandProject.id);
 
     return brandProject.id;
   }

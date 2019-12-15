@@ -1,8 +1,6 @@
 package criterias;
 
 import forms.SearchForm;
-import models.User;
-import models.UserRole;
 import play.mvc.Http.Request;
 import utils.JsonUtils;
 
@@ -126,11 +124,6 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
         .with(request)
         .withOwnerUsername(request.getQueryString("owner"))
         .withMemberId(JsonUtils.getUuid(request.getQueryString("memberId")));
-
-    User loggedInUser = User.loggedInUser();
-    if (loggedInUser != null && loggedInUser.role != UserRole.Admin) {
-      return criteria.withMemberId(loggedInUser.id);
-    }
 
     return criteria;
   }

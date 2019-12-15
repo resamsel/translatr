@@ -11,12 +11,13 @@ import criterias.LogEntryCriteria;
 import criterias.PagedListFactory;
 import models.LogEntry;
 import models.Project;
-import models.User;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LogEntryRepository;
 import repositories.Persistence;
+import services.AuthProvider;
+import services.ContextProvider;
 import utils.ContextKey;
 import utils.QueryUtils;
 
@@ -36,15 +37,19 @@ public class LogEntryRepositoryImpl extends
   private final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>() {
   };
 
+  private final ContextProvider contextProvider;
   private final ActorRef notificationActor;
 
   @Inject
   public LogEntryRepositoryImpl(Persistence persistence,
                                 Validator validator,
+                                AuthProvider authProvider,
+                                ContextProvider contextProvider,
                                 ActivityActorRef activityActor,
                                 @Named(NotificationActor.NAME) ActorRef notificationActor) {
-    super(persistence, validator, activityActor);
+    super(persistence, validator, authProvider, activityActor);
 
+    this.contextProvider = contextProvider;
     this.notificationActor = notificationActor;
   }
 
@@ -111,7 +116,7 @@ public class LogEntryRepositoryImpl extends
   @Override
   public void preSave(LogEntry t, boolean update) {
     if (t.user == null) {
-      t.user = User.loggedInUser();
+      t.user = authProvider.loggedInUser();
       LOGGER.debug("preSave(): user of log entry is {}", t.user);
     }
   }
@@ -119,7 +124,7 @@ public class LogEntryRepositoryImpl extends
   @Override
   protected void prePersist(LogEntry t, boolean update) {
     if (t.project == null) {
-      UUID projectId = ContextKey.ProjectId.get();
+      UUID projectId = ContextKey.ProjectId.get(contextProvider.getOrNull());
       if (projectId != null) {
         t.project = new Project().withId(projectId);
       }

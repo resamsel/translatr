@@ -13,12 +13,12 @@ import criterias.ProjectUserCriteria;
 import mappers.ProjectUserMapper;
 import models.ActionType;
 import models.ProjectUser;
-import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.PagedListFactoryProvider;
 import repositories.Persistence;
 import repositories.ProjectUserRepository;
+import services.AuthProvider;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
@@ -41,10 +41,11 @@ public class ProjectUserRepositoryImpl extends
   @Inject
   public ProjectUserRepositoryImpl(Persistence persistence,
                                    Validator validator,
+                                   AuthProvider authProvider,
                                    ActivityActorRef activityActor,
                                    NotificationActorRef notificationActor,
                                    PagedListFactoryProvider pagedListFactoryProvider) {
-    super(persistence, validator, activityActor);
+    super(persistence, validator, authProvider, activityActor);
 
     this.repository = persistence.getRepositoryProvider().getProjectUserRepository();
     this.notificationActor = notificationActor;
@@ -99,7 +100,7 @@ public class ProjectUserRepositoryImpl extends
     if (update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Update, User.loggedInUser(), t.project, dto.ProjectUser.class, toDto(byId(t.id)), toDto(t)
+              ActionType.Update, authProvider.loggedInUser(), t.project, dto.ProjectUser.class, toDto(byId(t.id)), toDto(t)
           ),
           null
       );
@@ -115,7 +116,7 @@ public class ProjectUserRepositoryImpl extends
       Ebean.refresh(t.user);
       activityActor.tell(
           new Activity<>(
-              ActionType.Create, User.loggedInUser(), t.project, dto.ProjectUser.class, null, toDto(t)
+              ActionType.Create, authProvider.loggedInUser(), t.project, dto.ProjectUser.class, null, toDto(t)
           ),
           null
       );
@@ -131,7 +132,7 @@ public class ProjectUserRepositoryImpl extends
   public void preDelete(ProjectUser t) {
     activityActor.tell(
         new Activity<>(
-            ActionType.Delete, User.loggedInUser(), t.project, dto.ProjectUser.class, toDto(t), null
+            ActionType.Delete, authProvider.loggedInUser(), t.project, dto.ProjectUser.class, toDto(t), null
         ),
         null
     );

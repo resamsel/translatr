@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.ModelRepository;
 import repositories.Persistence;
+import services.AuthProvider;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
@@ -29,13 +30,15 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
   protected static final String FETCH_COUNT = "count";
 
-  final ActivityActorRef activityActor;
-  protected final Validator validator;
   private final Persistence persistence;
+  protected final Validator validator;
+  protected final AuthProvider authProvider;
+  final ActivityActorRef activityActor;
 
-  AbstractModelRepository(Persistence persistence, Validator validator, ActivityActorRef activityActor) {
+  AbstractModelRepository(Persistence persistence, Validator validator, AuthProvider authProvider, ActivityActorRef activityActor) {
     this.persistence = persistence;
     this.validator = validator;
+    this.authProvider = authProvider;
     this.activityActor = activityActor;
   }
 

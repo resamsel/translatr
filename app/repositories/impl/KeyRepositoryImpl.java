@@ -17,12 +17,12 @@ import models.Key;
 import models.Message;
 import models.Project;
 import models.ProjectRole;
-import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
 import repositories.MessageRepository;
 import repositories.Persistence;
+import services.AuthProvider;
 import services.PermissionService;
 import utils.QueryUtils;
 
@@ -51,10 +51,11 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   @Inject
   public KeyRepositoryImpl(Persistence persistence,
                            Validator validator,
+                           AuthProvider authProvider,
                            ActivityActorRef activityActor,
                            MessageRepository messageRepository,
                            PermissionService permissionService) {
-    super(persistence, validator, activityActor);
+    super(persistence, validator, authProvider, activityActor);
 
     this.messageRepository = messageRepository;
     this.permissionService = permissionService;
@@ -161,7 +162,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
     if (update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Update, User.loggedInUser(), t.project, dto.Key.class,
+              ActionType.Update, authProvider.loggedInUser(), t.project, dto.Key.class,
               KeyMapper.toDto(byId(t.id)), KeyMapper.toDto(t)),
           null
       );
@@ -175,7 +176,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   protected void postSave(Key t, boolean update) {
     if (!update) {
       activityActor.tell(
-          new Activity<>(ActionType.Create, User.loggedInUser(), t.project, dto.Key.class, null, KeyMapper.toDto(t)),
+          new Activity<>(ActionType.Create, authProvider.loggedInUser(), t.project, dto.Key.class, null, KeyMapper.toDto(t)),
           null
       );
     }
@@ -187,13 +188,13 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   @Override
   protected void preDelete(Key t) {
     if (!permissionService
-        .hasPermissionAny(t.project.id, User.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
+        .hasPermissionAny(t.project.id, authProvider.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
             ProjectRole.Developer)) {
       throw new PermissionException("User not allowed in project");
     }
 
     activityActor.tell(
-        new Activity<>(ActionType.Delete, User.loggedInUser(), t.project, dto.Key.class, KeyMapper.toDto(t), null),
+        new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t.project, dto.Key.class, KeyMapper.toDto(t), null),
         null
     );
 
@@ -208,7 +209,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
     activityActor.tell(
         new Activities<>(
             t.stream()
-                .map(k -> new Activity<>(ActionType.Delete, User.loggedInUser(), k.project, dto.Key.class,
+                .map(k -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), k.project, dto.Key.class,
                     KeyMapper.toDto(k), null))
                 .collect(Collectors.toList())),
         null

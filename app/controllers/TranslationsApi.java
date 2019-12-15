@@ -17,11 +17,11 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
 import models.ProjectRole;
-import models.User;
 import play.inject.Injector;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import services.AuthProvider;
 import services.CacheService;
 import services.api.MessageApiService;
 
@@ -62,8 +62,8 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
 
   @Inject
   public TranslationsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-                         MessageApiService messageApiService) {
-    super(injector, cache, auth, messageApiService);
+                         AuthProvider authProvider, MessageApiService messageApiService) {
+    super(injector, cache, auth, authProvider, messageApiService);
   }
 
   @ApiOperation(value = FIND,
@@ -123,7 +123,7 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
         MessageCriteria.from(request()).withProjectId(projectId),
         criteria -> checkProjectRole(
             projectId,
-            User.loggedInUser(),
+            authProvider.loggedInUser(),
             ProjectRole.Owner,
             ProjectRole.Manager,
             ProjectRole.Translator,

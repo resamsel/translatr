@@ -7,4 +7,6 @@ import services.impl.ContextProviderImpl;
 @ImplementedBy(ContextProviderImpl.class)
 public interface ContextProvider {
   Http.Context get();
+
+  Http.Context getOrNull();
 }

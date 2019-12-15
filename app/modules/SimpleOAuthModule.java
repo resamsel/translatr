@@ -14,7 +14,7 @@ import play.api.inject.Module;
 import scala.Option;
 import scala.collection.Seq;
 import services.OAuthResolver;
-import services.impl.AuthenticateServiceImpl;
+import services.impl.AuthenticateUserServiceImpl;
 import utils.ConfigKey;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class SimpleOAuthModule extends Module {
     List<Binding<?>> bindings = new ArrayList<>();
 
     bindings.add(bind(Resolver.class).to(OAuthResolver.class));
-    bindings.add(bind(AuthenticateServiceImpl.class).toSelf().eagerly());
+    bindings.add(bind(AuthenticateUserServiceImpl.class).toSelf().eagerly());
 
     Option<String> providersOption =
         configuration.getString(ConfigKey.AuthProviders.key(), Option.empty());

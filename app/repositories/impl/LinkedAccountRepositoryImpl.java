@@ -9,6 +9,7 @@ import criterias.PagedListFactory;
 import models.LinkedAccount;
 import repositories.LinkedAccountRepository;
 import repositories.Persistence;
+import services.AuthProvider;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
@@ -26,8 +27,9 @@ public class LinkedAccountRepositoryImpl extends
   @Inject
   public LinkedAccountRepositoryImpl(Persistence persistence,
                                      Validator validator,
+                                     AuthProvider authProvider,
                                      ActivityActorRef activityActor) {
-    super(persistence, validator, activityActor);
+    super(persistence, validator, authProvider, activityActor);
   }
 
   @Override

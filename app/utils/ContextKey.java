@@ -23,11 +23,19 @@ public enum ContextKey {
 
   public <T> T get() {
     try {
-      return get(Context.current(), key);
+      return get(Context.current());
     } catch (RuntimeException e) {
       // There is no HTTP Context available from here
       return null;
     }
+  }
+
+  public <T> T get(Context ctx) {
+    if (ctx == null) {
+      return null;
+    }
+
+    return get(ctx, key);
   }
 
   public <T> T put(T value) {

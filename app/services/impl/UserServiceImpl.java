@@ -225,11 +225,6 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   }
 
   @Override
-  public User loggedInUser() {
-    return User.loggedInUser();
-  }
-
-  @Override
   protected void preCreate(User t) {
     User cached = cache.get(User.getCacheKey(t.getId()));
     if (cached != null) {

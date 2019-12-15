@@ -95,6 +95,7 @@ public class AccessTokenServiceTest {
     accessTokenService = new AccessTokenServiceImpl(
         mock(Validator.class),
         cacheService,
+        mock(AuthProvider.class),
         accessTokenRepository,
         mock(LogEntryService.class)
     );

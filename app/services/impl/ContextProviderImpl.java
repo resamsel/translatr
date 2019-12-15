@@ -8,4 +8,15 @@ public class ContextProviderImpl implements ContextProvider {
   public Http.Context get() {
     return Http.Context.current();
   }
+
+  @Override
+  public Http.Context getOrNull() {
+    Http.Context ctx = Http.Context.current.get();
+
+    if (ctx != null) {
+      return ctx;
+    }
+
+    return null;
+  }
 }

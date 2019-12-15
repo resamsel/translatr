@@ -19,7 +19,13 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Call;
 import play.mvc.Controller;
 import play.mvc.Result;
-import services.*;
+import services.AuthProvider;
+import services.CacheService;
+import services.LogEntryService;
+import services.NotificationService;
+import services.PermissionService;
+import services.ProjectService;
+import services.UserService;
 import utils.CheckedSupplier;
 import utils.ContextKey;
 import utils.Template;
@@ -71,6 +77,8 @@ public abstract class AbstractController extends Controller {
 
   protected final PermissionService permissionService;
 
+  private final AuthProvider authProvider;
+
   protected AbstractController(Injector injector, CacheService cache, PlayAuthenticate auth) {
     this.injector = injector;
     this.cache = cache;
@@ -82,6 +90,7 @@ public abstract class AbstractController extends Controller {
     this.logEntryService = injector.instanceOf(LogEntryService.class);
     this.notificationService = injector.instanceOf(NotificationService.class);
     this.permissionService = injector.instanceOf(PermissionService.class);
+    this.authProvider = injector.instanceOf(AuthProvider.class);
   }
 
   <T> CompletionStage<T> tryCatch(CheckedSupplier<T> supplier) {
@@ -89,7 +98,7 @@ public abstract class AbstractController extends Controller {
   }
 
   private Result userNotFound(String username) {
-    return redirectWithError(Projects.indexRoute(),"user.notFoundBy", username);
+    return redirectWithError(Projects.indexRoute(), "user.notFoundBy", username);
   }
 
   private Result projectNotFound(String username, String projectName) {
@@ -161,7 +170,7 @@ public abstract class AbstractController extends Controller {
   }
 
   protected Template createTemplate() {
-    User user = User.loggedInUser();
+    User user = authProvider.loggedInUser();
 
     Template template = Template.create(auth, user);
 
@@ -190,16 +199,16 @@ public abstract class AbstractController extends Controller {
   }
 
   protected CompletionStage<Result> loggedInUser(Function<User, Result> processor) {
-    return tryCatch(User::loggedInUser).thenApply(processor);
+    return tryCatch(authProvider::loggedInUser).thenApply(processor);
   }
 
   protected CompletionStage<Result> user(String username, Function<User, Result> processor,
-      String... fetches) {
+                                         String... fetches) {
     return user(username, processor, false, fetches);
   }
 
   protected CompletionStage<Result> user(String username, Function<User, Result> processor,
-      boolean restrict, String... fetches) {
+                                         boolean restrict, String... fetches) {
     return tryCatch(() -> processor.apply(user(username, restrict, fetches)))
         .exceptionally(e -> {
           e = ExceptionUtils.getRootCause(e);
@@ -222,7 +231,7 @@ public abstract class AbstractController extends Controller {
       throw new UserNotFoundException(message("user.notFound", username), username);
     }
 
-    if (restrict && !user.id.equals(User.loggedInUserId())) {
+    if (restrict && !user.id.equals(authProvider.loggedInUserId())) {
       throw new PermissionException("user.notFound");
     }
 
@@ -230,12 +239,12 @@ public abstract class AbstractController extends Controller {
   }
 
   protected CompletionStage<Result> project(String username, String projectName,
-      BiFunction<User, Project, Result> processor, String... fetches) {
+                                            BiFunction<User, Project, Result> processor, String... fetches) {
     return project(username, projectName, processor, false, fetches);
   }
 
   protected CompletionStage<Result> project(String username, String projectName,
-      BiFunction<User, Project, Result> processor, boolean restrict, String... fetches) {
+                                            BiFunction<User, Project, Result> processor, boolean restrict, String... fetches) {
     return tryCatch(() -> {
       Project project = project(username, projectName, restrict, fetches);
 
@@ -250,14 +259,14 @@ public abstract class AbstractController extends Controller {
   }
 
   protected Project project(String username, String projectName, boolean restrict,
-      String... fetches) throws ProjectNotFoundException {
+                            String... fetches) throws ProjectNotFoundException {
     Project project = projectService.byOwnerAndName(username, projectName, fetches);
     if (project == null) {
       throw new ProjectNotFoundException(message("project.notFound", username, projectName),
           username, projectName);
     }
 
-    if (restrict && !project.owner.id.equals(User.loggedInUserId())) {
+    if (restrict && !project.owner.id.equals(authProvider.loggedInUserId())) {
       throw new PermissionException(message("access.denied"), Scope.ProjectRead.name());
     }
 

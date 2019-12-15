@@ -25,8 +25,6 @@ public class ProjectMapper {
     out.description = in.description;
     if (in.ownerId != null) {
       out.owner = new User().withId(in.ownerId);
-    } else {
-      out.owner = User.loggedInUser();
     }
 
     return out;

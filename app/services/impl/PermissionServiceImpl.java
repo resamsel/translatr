@@ -11,6 +11,8 @@ import models.Scope;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import services.AuthProvider;
+import services.ContextProvider;
 import services.PermissionService;
 import services.ProjectUserService;
 import utils.ContextKey;
@@ -29,15 +31,20 @@ public class PermissionServiceImpl implements PermissionService {
   private static final Logger LOGGER = LoggerFactory.getLogger(PermissionServiceImpl.class);
 
   private final ProjectUserService projectUserService;
+  private final AuthProvider authProvider;
+  private final ContextProvider contextProvider;
 
   @Inject
-  public PermissionServiceImpl(ProjectUserService projectUserService) {
+  public PermissionServiceImpl(ProjectUserService projectUserService, AuthProvider authProvider,
+                               ContextProvider contextProvider) {
     this.projectUserService = projectUserService;
+    this.authProvider = authProvider;
+    this.contextProvider = contextProvider;
   }
 
   @Override
   public boolean hasPermissionAny(@Nonnull Project project, ProjectRole... roles) {
-    return hasPermissionAny(project, User.loggedInUser(), roles);
+    return hasPermissionAny(project, authProvider.loggedInUser(), roles);
   }
 
   @Override
@@ -51,7 +58,7 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public boolean hasPermissionAny(UUID projectId, ProjectRole... roles) {
-    return hasPermissionAny(projectId, User.loggedInUser(), roles);
+    return hasPermissionAny(projectId, authProvider.loggedInUser(), roles);
   }
 
   @Override
@@ -72,7 +79,7 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public boolean hasPermissionAll(Scope... scopes) {
-    return hasPermissionAll(ContextKey.AccessToken.get(), scopes);
+    return hasPermissionAll(ContextKey.AccessToken.get(contextProvider.getOrNull()), scopes);
   }
 
   @Override
@@ -81,7 +88,7 @@ public class PermissionServiceImpl implements PermissionService {
         accessToken != null ? accessToken.getScopeList() : "-", scopes);
 
     if (accessToken == null) {
-      return User.loggedInUser() != null;
+      return authProvider.loggedInUser() != null;
     }
 
     // TODO: allow admin scopes also
@@ -122,8 +129,8 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public void checkPermissionAll(String errorMessage, Scope... scopes) {
-    AccessToken accessToken = ContextKey.AccessToken.get();
-    if (accessToken == null && User.loggedInUser() == null) {
+    AccessToken accessToken = ContextKey.AccessToken.get(contextProvider.getOrNull());
+    if (accessToken == null && authProvider.loggedInUser() == null) {
       throw new AuthorizationException();
     }
 

@@ -6,24 +6,12 @@ import be.objectify.deadbolt.java.models.Subject;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.feth.play.module.pa.PlayAuthenticate;
-import com.feth.play.module.pa.user.AuthUser;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import play.api.Play;
-import play.api.inject.Injector;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.mvc.Call;
-import play.mvc.Http.Context;
-import play.mvc.Http.Session;
-import services.UserService;
 import utils.CacheUtils;
-import utils.ConfigKey;
-import utils.ContextKey;
 import validators.NameUnique;
 import validators.UserUsernameUniqueChecker;
 import validators.Username;
@@ -38,7 +26,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -56,8 +43,6 @@ import static play.libs.Json.toJson;
 @Table(name = "user_")
 @NameUnique(checker = UserUsernameUniqueChecker.class, field = "username", message = "error.usernameunique")
 public class User implements Model<User, UUID>, Subject {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
 
   public static final int USERNAME_LENGTH = 32;
 
@@ -175,67 +160,6 @@ public class User implements Model<User, UUID>, Subject {
     role = in.role;
 
     return this;
-  }
-
-  private static AuthUser loggedInAuthUser() {
-    Injector injector = Play.current().injector();
-    Session session = Context.current().session();
-    String provider = session.get("pa.p.id");
-    List<String> authProviders =
-        Arrays.asList(StringUtils.split(injector.instanceOf(play.Application.class).configuration()
-            .getString(ConfigKey.AuthProviders.key()), ","));
-
-    LOGGER.debug("Auth providers: {}", authProviders);
-
-    if (provider != null && !authProviders.contains(provider))
-    // Prevent NPE when using an unavailable auth provider
-    {
-      session.clear();
-    }
-
-    PlayAuthenticate auth = injector.instanceOf(PlayAuthenticate.class);
-
-    return auth.getUser(session);
-  }
-
-  public static User loggedInUser() {
-    Context ctx = ContextKey.context();
-    if (ctx == null) {
-      LOGGER.debug("Context is null");
-      return null;
-    }
-
-    // Logged-in via access_token?
-    AccessToken accessToken = ContextKey.AccessToken.get();
-    if (accessToken != null) {
-      return accessToken.user;
-    }
-
-    // Logged-in via auth plugin?
-    AuthUser authUser = loggedInAuthUser();
-    if (authUser != null) {
-      User user = ContextKey.get(ctx, authUser.toString());
-      if (user != null) {
-        return user;
-      }
-
-      LOGGER.debug("Auth user not in context");
-      return ContextKey.put(ctx, authUser.toString(),
-          Play.current().injector().instanceOf(UserService.class).getLocalUser(authUser));
-    }
-
-    LOGGER.debug("Not logged-in");
-    return null;
-  }
-
-  public static UUID loggedInUserId() {
-    User loggedInUser = loggedInUser();
-
-    if (loggedInUser == null) {
-      return null;
-    }
-
-    return loggedInUser.id;
   }
 
   /**

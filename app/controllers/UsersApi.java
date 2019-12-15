@@ -8,11 +8,19 @@ import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import io.swagger.annotations.AuthorizationScope;
 import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.AuthProvider;
 import services.CacheService;
 import services.api.UserApiService;
 
@@ -48,8 +56,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
 
   @Inject
   public UsersApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-                  UserApiService userApiService) {
-    super(injector, cache, auth, userApiService);
+                  AuthProvider authProvider, UserApiService userApiService) {
+    super(injector, cache, auth, authProvider, userApiService);
   }
 
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,

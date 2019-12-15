@@ -24,6 +24,7 @@ import play.mvc.BodyParser;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
+import services.AuthProvider;
 import services.CacheService;
 import services.ContextProvider;
 import services.api.ProjectUserApiService;
@@ -66,12 +67,15 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
   private static final String MEMBER_WRITE_DESCRIPTION = "Write member";
 
   private final ContextProvider contextProvider;
+  private final AuthProvider authProvider;
 
   @Inject
-  public MembersApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-                    ProjectUserApiService projectUserApiService, ContextProvider contextProvider) {
-    super(injector, cache, auth, projectUserApiService);
+  public MembersApi(
+      Injector injector, CacheService cache, PlayAuthenticate auth, AuthProvider authProvider,
+      ProjectUserApiService projectUserApiService, ContextProvider contextProvider) {
+    super(injector, cache, auth, authProvider, projectUserApiService);
     this.contextProvider = contextProvider;
+    this.authProvider = authProvider;
   }
 
   private Http.Request req() {
@@ -100,7 +104,7 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
         ProjectUserCriteria.from(req()).withProjectId(projectId),
         criteria -> checkProjectRole(
             projectId,
-            userService.loggedInUser(),
+            authProvider.loggedInUser(),
             ProjectRole.Owner,
             ProjectRole.Manager,
             ProjectRole.Translator,
