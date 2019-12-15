@@ -27,22 +27,34 @@
     </p>
 
     <button
-      (click)="onEdit(member, $event)"
-      *ngIf="canCreate && (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1))"
+      (click)="onTransferOwnership($event)"
+      *ngIf="canTransferOwnership && member.userId === project.ownerId && ownerCount > 1; else modify"
       class="edit"
-      i18n-matTooltip="@@button.edit"
+      i18n-matTooltip="@@button.transferOwnership"
       mat-icon-button
-      matTooltip="Edit"
+      matTooltip="Transfer project ownership"
     >
-      <mat-icon>edit</mat-icon>
+      <mat-icon>swap_horiz</mat-icon>
     </button>
-    <confirm-button
-      (confirm)="onDelete(member)"
-      *ngIf="canDelete && (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1))"
-      class="delete"
-      i18n-tooltip="@@button.delete"
-      icon="delete"
-      tooltip="Delete"
-    ></confirm-button>
+    <ng-template #modify>
+      <button
+        (click)="onEdit(member, $event)"
+        *ngIf="canCreate && (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1)) && (canTransferOwnership || member.userId !== project.ownerId)"
+        class="edit"
+        i18n-matTooltip="@@button.edit"
+        mat-icon-button
+        matTooltip="Edit"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <confirm-button
+        (confirm)="onDelete(member)"
+        *ngIf="canDelete && (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1)) && (canTransferOwnership || member.userId !== project.ownerId)"
+        class="delete"
+        i18n-tooltip="@@button.delete"
+        icon="delete"
+        tooltip="Delete"
+      ></confirm-button>
+    </ng-template>
   </a>
 </app-nav-list>

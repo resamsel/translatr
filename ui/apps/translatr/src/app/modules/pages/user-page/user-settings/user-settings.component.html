@@ -1,69 +1,73 @@
 <div class="container narrow">
-  <section>
-    <h2>User</h2>
-    <form [formGroup]="form" class="form update-user">
-      <mat-form-field appearance="outline" class="name">
-        <mat-label i18n="@@name">Name</mat-label>
-        <input
-          autocomplete="off"
-          cdkFocusInitial
-          formControlName="name"
-          i18n-placeholder="@@user.name"
-          matInput
-          placeholder="Name"
-          type="text"
-        />
-        <mat-error
-          *ngIf="nameFormControl.invalid && nameFormControl.errors.maxlength"
-        >
-          {{ nameFormControl.errors.maxlength.actualLength }} characters exceeds limit
-          of {{ nameFormControl.errors.maxlength.requiredLength }} characters.
-        </mat-error>
-        <mat-error
-          *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
-        >
-          {{ nameFormControl.errors['violation'] }}
-        </mat-error>
-      </mat-form-field>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>User</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form" class="form update-user">
+        <mat-form-field appearance="outline" class="name">
+          <mat-label i18n="@@name">Name</mat-label>
+          <input
+            autocomplete="off"
+            cdkFocusInitial
+            formControlName="name"
+            i18n-placeholder="@@user.name"
+            matInput
+            placeholder="Name"
+            type="text"
+          />
+          <mat-error
+            *ngIf="nameFormControl.invalid && nameFormControl.errors.maxlength"
+          >
+            {{ nameFormControl.errors.maxlength.actualLength }} characters exceeds limit
+            of {{ nameFormControl.errors.maxlength.requiredLength }} characters.
+          </mat-error>
+          <mat-error
+            *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
+          >
+            {{ nameFormControl.errors['violation'] }}
+          </mat-error>
+        </mat-form-field>
 
-      <mat-form-field appearance="outline" class="username">
-        <mat-label i18n="@@username">Username</mat-label>
-        <input
-          autocomplete="off"
-          formControlName="username"
-          i18n-placeholder="@@user.username"
-          matInput
-          placeholder="Username"
-          type="text"
-        />
-        <mat-error
-          *ngIf="usernameFormControl.invalid && usernameFormControl.errors.maxlength"
-        >
-          {{ usernameFormControl.errors.maxlength.actualLength }} characters exceeds limit
-          of {{ usernameFormControl.errors.maxlength.requiredLength }} characters.
-        </mat-error>
-        <mat-error
-          *ngIf="usernameFormControl.invalid && usernameFormControl.errors.pattern"
-        >
-          Must match pattern [a-zA-Z0-9_.-]*
-        </mat-error>
-        <mat-error
-          *ngIf="usernameFormControl.invalid && usernameFormControl.errors['violation']"
-        >
-          {{ usernameFormControl.errors['violation'] }}
-        </mat-error>
-      </mat-form-field>
-      <div class="dialog-actions">
-        <button
-          (click)="onSave()"
-          [disabled]="form.invalid || processing"
-          class="save"
-          color="primary"
-          mat-raised-button
-        >
-          Save
-        </button>
-      </div>
-    </form>
-  </section>
+        <mat-form-field appearance="outline" class="username">
+          <mat-label i18n="@@username">Username</mat-label>
+          <input
+            autocomplete="off"
+            formControlName="username"
+            i18n-placeholder="@@user.username"
+            matInput
+            placeholder="Username"
+            type="text"
+          />
+          <mat-error
+            *ngIf="usernameFormControl.invalid && usernameFormControl.errors.maxlength"
+          >
+            {{ usernameFormControl.errors.maxlength.actualLength }} characters exceeds limit
+            of {{ usernameFormControl.errors.maxlength.requiredLength }} characters.
+          </mat-error>
+          <mat-error
+            *ngIf="usernameFormControl.invalid && usernameFormControl.errors.pattern"
+          >
+            Must match pattern [a-zA-Z0-9_.-]*
+          </mat-error>
+          <mat-error
+            *ngIf="usernameFormControl.invalid && usernameFormControl.errors['violation']"
+          >
+            {{ usernameFormControl.errors['violation'] }}
+          </mat-error>
+        </mat-form-field>
+        <div class="dialog-actions">
+          <button
+            (click)="onSave()"
+            [disabled]="form.invalid || processing"
+            class="save"
+            color="primary"
+            mat-raised-button
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

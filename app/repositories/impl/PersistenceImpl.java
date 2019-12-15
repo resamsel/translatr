@@ -54,4 +54,9 @@ public class PersistenceImpl implements Persistence {
   public int deleteAll(Collection<?> t) {
     return Ebean.deleteAll(t);
   }
+
+  @Override
+  public void markAsDirty(Object t) {
+    Ebean.markAsDirty(t);
+  }
 }

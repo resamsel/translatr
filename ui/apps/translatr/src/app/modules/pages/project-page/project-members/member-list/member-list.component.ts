@@ -1,9 +1,11 @@
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { Member, MemberRole, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { openProjectMemberEditDialog } from '../../../../shared/project-member-edit-dialog/project-member-edit-dialog.component';
+import { openProjectOwnerEditDialog } from '../../../../shared/project-owner-edit-dialog/project-owner-edit-dialog.component';
 import { filter, switchMapTo, take } from 'rxjs/operators';
 import { ProjectFacade } from '../../+state/project.facade';
 import { MatDialog } from '@angular/material';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-member-list',
@@ -26,6 +28,7 @@ export class MemberListComponent {
   @Input() canCreate = false;
   @Input() canDelete = false;
   @Input() canModifyOwner = false;
+  @Input() canTransferOwnership = false;
 
   @Input() set members(members: Array<Member>) {
     this._members = members;
@@ -50,6 +53,7 @@ export class MemberListComponent {
 
   constructor(
     private readonly facade: ProjectFacade,
+    private readonly router: Router,
     private readonly dialog: MatDialog
   ) {
   }
@@ -74,6 +78,17 @@ export class MemberListComponent {
 
   onDelete(member: Member): void {
     this.delete.emit(member);
+  }
+
+  onTransferOwnership(event: MouseEvent): boolean {
+    openProjectOwnerEditDialog(this.dialog, this.project)
+      .afterClosed()
+      .pipe(filter(x => !!x))
+      .subscribe(p =>
+        this.router.navigate(['/', p.ownerUsername, p.name, 'members']));
+    event.stopPropagation();
+    event.preventDefault();
+    return false;
   }
 
   onFilter(search: string): void {

@@ -1,6 +1,7 @@
 package repositories.impl;
 
 import actors.ActivityActorRef;
+import com.avaje.ebean.Ebean;
 import criterias.AbstractSearchCriteria;
 import models.Model;
 import org.postgresql.util.PSQLException;
@@ -30,7 +31,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
   protected static final String FETCH_COUNT = "count";
 
-  private final Persistence persistence;
+  protected final Persistence persistence;
   protected final Validator validator;
   protected final AuthProvider authProvider;
   final ActivityActorRef activityActor;

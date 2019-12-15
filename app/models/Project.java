@@ -237,7 +237,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public Project updateFrom(Project in) {
     name = ObjectUtils.firstNonNull(in.name, name);
     description = in.description;
-    owner = owner.updateFrom(in.owner);
+    owner = ObjectUtils.firstNonNull(in.owner, owner);
 
     return this;
   }

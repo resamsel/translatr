@@ -43,6 +43,7 @@ import { ProjectGuard } from './project.guard';
 import { ProjectAccessGuard } from './project-access.guard';
 import { ProjectEditGuard } from './project-edit.guard';
 import { ProjectDeleteDialogModule } from '../../shared/project-delete-dialog/project-delete-dialog.module';
+import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.module';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { ProjectDeleteDialogModule } from '../../shared/project-delete-dialog/pr
     KeyEditDialogModule,
     ProjectMemberEditDialogModule,
     ProjectDeleteDialogModule,
+    ProjectOwnerEditDialogModule,
 
     MatToolbarModule,
     MatButtonModule,

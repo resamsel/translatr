@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { filter, map, pluck, skip, take } from 'rxjs/operators';
+import { filter, map, pluck, skip, take, withLatestFrom } from 'rxjs/operators';
 import { combineLatest, Observable } from 'rxjs';
 import { navigate } from '@translatr/utils';
 import { Router } from '@angular/router';
@@ -40,6 +40,12 @@ export class ProjectMembersComponent {
     map((member: Member | undefined) =>
       member !== undefined ? member.role === 'Owner' : false)
   );
+  canTransferOwnership$: Observable<boolean> = combineLatest([
+    this.project$.pipe(pluck('ownerId')),
+    this.appFacade.me$.pipe(filter(x => !!x))
+  ]).pipe(
+    map(([ownerId, me]: [string, User]) => ownerId === me.id)
+  );
 
   constructor(
     private readonly facade: ProjectFacade,
@@ -56,13 +62,17 @@ export class ProjectMembersComponent {
   onDelete(member: Member) {
     this.facade.deleteMember(member.id);
     this.facade.memberModified$
-      .pipe(skip(1), take(1))
-      .subscribe((m: Member) =>
+      .pipe(skip(1), take(1), withLatestFrom(this.appFacade.me$))
+      .subscribe(([m, me]: [Member, User]) => {
         this.snackBar.open(
           `${m.userName} removed from project`,
           'Dismiss',
           { duration: 5000 }
-        )
-      );
+        );
+        if (m.userId === me.id) {
+          // I have removed myself from the project, go to dashboard
+          this.router.navigate(['/dashboard']);
+        }
+      });
   }
 }

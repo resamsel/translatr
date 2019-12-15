@@ -150,7 +150,7 @@ public class ProjectRepositoryImpl extends
    */
   @Override
   protected void preSave(Project t, boolean update) {
-    Ebean.markAsDirty(t);
+    persistence.markAsDirty(t);
     if (t.owner == null || t.owner.id == null) {
       t.owner = authProvider.loggedInUser();
     }
@@ -177,6 +177,10 @@ public class ProjectRepositoryImpl extends
    */
   @Override
   protected void postSave(Project t, boolean update) {
+    super.postSave(t, update);
+    Ebean.refresh(t);
+    Ebean.refresh(t.owner);
+
     if (!update) {
       activityActor.tell(
           new Activity<>(ActionType.Create, authProvider.loggedInUser(), t, dto.Project.class, null, toDto(t)),

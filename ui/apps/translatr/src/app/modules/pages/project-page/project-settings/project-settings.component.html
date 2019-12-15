@@ -1,71 +1,77 @@
 <div class="container narrow">
-  <section>
-    <h2>Project</h2>
-    <form [formGroup]="form" class="form update-project">
-      <mat-form-field appearance="outline" class="name">
-        <mat-label i18n="@@name">Name</mat-label>
-        <input
-          cdkFocusInitial
-          formControlName="name"
-          i18n-placeholder="@@project.name"
-          matInput
-          placeholder="Name"
-          type="text"
-        />
-        <mat-error
-          *ngIf="nameFormControl.invalid && nameFormControl.errors.maxlength"
-        >
-          {{ nameFormControl.errors.maxlength.actualLength }} characters exceeds limit
-          of {{ nameFormControl.errors.maxlength.requiredLength }} characters.
-        </mat-error>
-        <mat-error
-          *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern"
-        >
-          Must match pattern [^\s/]*
-        </mat-error>
-        <mat-error
-          *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
-        >
-          {{ nameFormControl.errors['violation'] }}
-        </mat-error>
-      </mat-form-field>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Project</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form" class="form update-project">
+        <mat-form-field appearance="outline" class="name">
+          <mat-label i18n="@@name">Name</mat-label>
+          <input
+            cdkFocusInitial
+            formControlName="name"
+            i18n-placeholder="@@project.name"
+            matInput
+            placeholder="Name"
+            type="text"
+          />
+          <mat-error
+            *ngIf="nameFormControl.invalid && nameFormControl.errors.maxlength"
+          >
+            {{ nameFormControl.errors.maxlength.actualLength }} characters exceeds limit
+            of {{ nameFormControl.errors.maxlength.requiredLength }} characters.
+          </mat-error>
+          <mat-error
+            *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern"
+          >
+            Must match pattern [^\s/]*
+          </mat-error>
+          <mat-error
+            *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
+          >
+            {{ nameFormControl.errors['violation'] }}
+          </mat-error>
+        </mat-form-field>
 
-      <mat-form-field appearance="outline" class="description">
-        <mat-label i18n="@@description">Description</mat-label>
-        <textarea
-          formControlName="description"
-          i18n-placeholder="@@project.description"
-          matInput
-          placeholder="Description"
-        ></textarea>
-        <mat-error
-          *ngIf="descriptionFormControl.invalid && descriptionFormControl.errors.maxlength"
-        >
-          {{ descriptionFormControl.errors.maxlength.actualLength }} characters exceeds limit
-          of {{ descriptionFormControl.errors.maxlength.requiredLength }} characters.
-        </mat-error>
-        <mat-error
-          *ngIf="descriptionFormControl.invalid && descriptionFormControl.errors['violation']"
-        >
-          {{ descriptionFormControl.errors['violation'] }}
-        </mat-error>
-      </mat-form-field>
-      <div class="dialog-actions">
-        <button
-          (click)="onSave()"
-          [disabled]="form.invalid || processing"
-          color="primary"
-          class="save"
-          mat-raised-button
-        >
-          Save
-        </button>
-      </div>
-    </form>
-  </section>
+        <mat-form-field appearance="outline" class="description">
+          <mat-label i18n="@@description">Description</mat-label>
+          <textarea
+            formControlName="description"
+            i18n-placeholder="@@project.description"
+            matInput
+            placeholder="Description"
+          ></textarea>
+          <mat-error
+            *ngIf="descriptionFormControl.invalid && descriptionFormControl.errors.maxlength"
+          >
+            {{ descriptionFormControl.errors.maxlength.actualLength }} characters exceeds limit
+            of {{ descriptionFormControl.errors.maxlength.requiredLength }} characters.
+          </mat-error>
+          <mat-error
+            *ngIf="descriptionFormControl.invalid && descriptionFormControl.errors['violation']"
+          >
+            {{ descriptionFormControl.errors['violation'] }}
+          </mat-error>
+        </mat-form-field>
+        <div class="dialog-actions">
+          <button
+            (click)="onSave()"
+            [disabled]="form.invalid || processing"
+            color="primary"
+            class="save"
+            mat-raised-button
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 
-  <section>
-    <h2>Danger Zone</h2>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Danger Zone</mat-card-title>
+    </mat-card-header>
 
     <dev-empty-view *ngIf="transferOwnershipEnabled" icon="swap_horiz">
       <p i18n="@@project.owner.change.description">Transfer the ownership of the project to a managing member. Project
@@ -93,5 +99,5 @@
         Delete project
       </button>
     </dev-empty-view>
-  </section>
+  </mat-card>
 </div>
