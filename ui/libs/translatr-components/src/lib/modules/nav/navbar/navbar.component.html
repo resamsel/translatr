@@ -24,10 +24,10 @@
         </a>
       </ng-container>
       <ng-template #logo>
-        <a *ngIf="!sidenav" mat-icon-button routerLink="/" class="logo">
+        <a *ngIf="showLogo && !sidenav" class="logo" mat-icon-button routerLink="/">
           <mat-icon>translate</mat-icon>
         </a>
-        <a [class.has-page]="!overlay && page" class="title" routerLink="/">
+        <a *ngIf="showLogo" [class.has-page]="!overlay && page" class="title" routerLink="/">
           <span>{{ title }}</span>
         </a>
       </ng-template>

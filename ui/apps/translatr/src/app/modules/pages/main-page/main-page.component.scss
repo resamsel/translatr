@@ -1,3 +1,5 @@
+@import "mixins";
+
 .header {
   background-image: url(assets/headers/hexagon.png);
   height: 360px;
@@ -24,6 +26,10 @@
 
 .section.green {
   background-color: #43a047;
+
+  .col {
+    align-items: center;
+  }
 
   .main-header {
     color: #fff;
@@ -53,6 +59,20 @@
 
 .row {
   display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  @include medium {
+    flex-direction: row;
+  }
+}
+
+.col {
+  &.s12 {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
 }
 
 .center {
@@ -74,7 +94,7 @@
 h1 {
   font-size: 4.2rem;
   line-height: 110%;
-  margin: 2.1rem 0 1.68rem 0;
+  margin: 2.1rem 0 .68rem 0;
 
   .material-icons {
     float: left;
@@ -93,7 +113,7 @@ h3 {
 h4 {
   font-size: 2.28rem;
   line-height: 110%;
-  margin: 1.14rem 0 .912rem 0;
+  margin: .6rem 0 1.5rem 0;
 }
 
 h5 {

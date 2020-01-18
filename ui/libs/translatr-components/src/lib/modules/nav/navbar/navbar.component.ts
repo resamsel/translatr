@@ -20,6 +20,7 @@ export class NavbarComponent implements OnInit {
   @Input() backLink: Link;
   @Input() sidenav: MatDrawer;
   @Input() elevated = true;
+  @Input() showLogo = true;
   @HostBinding('class.overlay') @Input() overlay = false;
 
   constructor(private readonly titleService: TitleService) {

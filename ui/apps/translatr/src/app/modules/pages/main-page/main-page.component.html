@@ -1,4 +1,4 @@
-<app-navbar [elevated]="false" [overlay]="true" i18n-page="@@home.title" page="Home">
+<app-navbar [elevated]="false" [overlay]="true" [showLogo]="false" i18n-page="@@home.title" page="Home">
   <app-auth-bar-item [me]="me$ | async" [endpointUrl]="endpointUrl">
     <a
       *ngIf="me$ | async as me"
@@ -18,11 +18,11 @@
   <div class="container">
     <div class="row">
       <div class="col s12">
-        <h1 class="main-header light white-text center-on-small-only">
+        <h1 class="main-header light white-text">
           <i class="material-icons left">translate</i>
           Translatr
         </h1>
-        <h4 class="light green-text text-lighten-4 center-on-small-only">
+        <h4 class="light green-text text-lighten-4 center">
           Ein modernes und intuitives I18n-Werkzeug
         </h4>
       </div>
@@ -152,7 +152,7 @@
           Lege einen neuen Zugangsschlüssel (Access-Token) an und trage den
           Schlüssel in .translatr.yml ein:
           <a [routerLink]="['profile', 'accessToken', 'create']"
-            >Zugangsschlüssel</a
+          >Zugangsschlüssel</a
           >.
         </p>
 
@@ -160,8 +160,8 @@
           Danach lege ein Projekt über die Weboberfläche an und trage die
           Projekt-ID (40 Zeichen UUID in der URL, z.B.
           http://localhost:9000/project/<strong
-            >6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong
-          >
+        >6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong
+        >
           -&gt; Projekt-ID:
           <strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong>) ein.
         </p>
