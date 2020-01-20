@@ -49,24 +49,6 @@
       placeholder="Filter"
       type="search"
     />
-    <button
-      (click)="autocompleteTrigger.openPanel()"
-      *ngIf="autocompleteTrigger && !autocompleteTrigger.panelOpen && autocompleteOptions.length > 0"
-      aria-label="Expand filter bar"
-      mat-icon-button
-      matSuffix
-    >
-      <mat-icon>expand_more</mat-icon>
-    </button>
-    <button
-      (click)="autocompleteTrigger.closePanel()"
-      *ngIf="autocompleteTrigger && autocompleteTrigger.panelOpen"
-      aria-label="Collapse filter bar"
-      mat-icon-button
-      matSuffix
-    >
-      <mat-icon>expand_less</mat-icon>
-    </button>
   </mat-chip-list>
   <mat-autocomplete
     #auto="matAutocomplete"
@@ -93,7 +75,7 @@
       </ng-container>
       <ng-template #autocompleteKeyValue>
         <span class="type">{{option.key}}</span>
-        <span class="value">{{option.value.toString()}}</span>
+        <span *ngIf="option.value !== undefined" class="value">{{option.value.toString()}}</span>
       </ng-template>
     </mat-option>
   </mat-autocomplete>

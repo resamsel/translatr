@@ -1,5 +1,10 @@
 :host {
   ::ng-deep {
+    .mat-card {
+      background-color: inherit;
+      color: white;
+    }
+
     .mat-card-header {
       flex-direction: row-reverse;
     }

@@ -4,10 +4,11 @@
 <ng-template #metric>
   <mat-card>
     <mat-card-header>
-      <div mat-card-avatar>
+      <div *ngIf="icon !== undefined" mat-card-avatar>
         <mat-icon>{{ icon }}</mat-icon>
       </div>
-      <mat-card-title>{{ value }}</mat-card-title>
+      <mat-card-title *ngIf="value !== undefined">{{ value }}</mat-card-title>
+      <mat-card-title *ngIf="value === undefined">-</mat-card-title>
       <mat-card-subtitle>{{ name }}</mat-card-subtitle>
     </mat-card-header>
   </mat-card>

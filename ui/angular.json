@@ -27,7 +27,6 @@
               "apps/translatr/src/assets"
             ],
             "styles": [
-              "libs/translatr-components/src/styles/styles.scss",
               "libs/translatr-components/src/styles/theme.scss",
               "libs/translatr-components/src/styles/media.scss"
             ],
@@ -93,7 +92,6 @@
             "tsConfig": "apps/translatr/tsconfig.spec.json",
             "karmaConfig": "apps/translatr/karma.conf.js",
             "styles": [
-              "libs/translatr-components/src/styles/styles.scss",
               "libs/translatr-components/src/styles/theme.scss",
               "libs/translatr-components/src/styles/media.scss"
             ],
@@ -175,7 +173,6 @@
               "apps/translatr-admin/src/assets"
             ],
             "styles": [
-              "libs/translatr-components/src/styles/styles.scss",
               "libs/translatr-components/src/styles/theme.scss",
               "libs/translatr-components/src/styles/media.scss"
             ],
@@ -505,7 +502,6 @@
               "apps/docs/src/assets"
             ],
             "styles": [
-              "libs/translatr-components/src/styles/styles.scss",
               "libs/translatr-components/src/styles/theme.scss",
               "libs/translatr-components/src/styles/media.scss"
             ],
