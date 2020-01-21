@@ -25,9 +25,6 @@
   >
     <mat-icon class="key circle" matListIcon>vpn_key</mat-icon>
     <h3 matLine>{{ key.name }}</h3>
-    <p i18n="@@updated.when" matLine>
-      Updated <span [matTooltip]="key?.whenUpdated | date: 'full'">{{ key?.whenUpdated | amTimeAgo }}</span>
-    </p>
     <mat-progress-bar
       *ngIf="key.progress !== undefined"
       mode="determinate"

@@ -25,9 +25,6 @@
   >
     <mat-icon class="locale circle" matListIcon>language</mat-icon>
     <h3 matLine>{{ locale.displayName }} <span class="sub-title">{{ locale.name }}</span></h3>
-    <p i18n="@@updated.when" matLine>
-      Updated <span [matTooltip]="locale?.whenUpdated | date: 'full'">{{ locale?.whenUpdated | amTimeAgo }}</span>
-    </p>
     <mat-progress-bar
       *ngIf="locale.progress !== undefined"
       mode="determinate"
