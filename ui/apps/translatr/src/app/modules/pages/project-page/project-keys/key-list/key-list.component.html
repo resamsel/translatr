@@ -28,6 +28,15 @@
     <p i18n="@@updated.when" matLine>
       Updated <span [matTooltip]="key?.whenUpdated | date: 'full'">{{ key?.whenUpdated | amTimeAgo }}</span>
     </p>
+    <mat-progress-bar
+      *ngIf="key.progress !== undefined"
+      mode="determinate"
+      color="accent"
+      [value]="key.progress * 100"
+      matTooltip="{{key.progress * 100 | number:'1.0-1'}}% of languages translated"
+      i18n-matTooltip="@@key.progress.tooltip"
+      matLine
+    ></mat-progress-bar>
     <button
       *ngIf="canCreate"
       mat-icon-button

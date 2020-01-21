@@ -37,7 +37,7 @@ import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialo
 import { ButtonModule, EmptyViewModule, MetricModule, UserCardModule } from '@dev/translatr-components';
 import { ListHeaderModule } from '../../shared/list-header/list-header.module';
 import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
-import { MatMenuModule, MatTooltipModule } from '@angular/material';
+import { MatMenuModule, MatTooltipModule, MatProgressBarModule } from '@angular/material';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectGuard } from './project.guard';
 import { ProjectAccessGuard } from './project-access.guard';
@@ -98,7 +98,8 @@ import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-di
     MatTooltipModule,
     EmptyViewModule,
     ButtonModule,
-    MatMenuModule
+    MatMenuModule,
+    MatProgressBarModule
   ],
   providers: [
     ProjectFacade,

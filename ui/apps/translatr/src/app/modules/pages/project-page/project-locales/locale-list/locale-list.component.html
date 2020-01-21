@@ -28,6 +28,15 @@
     <p i18n="@@updated.when" matLine>
       Updated <span [matTooltip]="locale?.whenUpdated | date: 'full'">{{ locale?.whenUpdated | amTimeAgo }}</span>
     </p>
+    <mat-progress-bar
+      *ngIf="locale.progress !== undefined"
+      mode="determinate"
+      color="accent"
+      [value]="locale.progress * 100"
+      matTooltip="{{locale.progress * 100 | number:'1.0-1'}}% of keys translated"
+      i18n-matTooltip="@@locale.progress.tooltip"
+      matLine
+    ></mat-progress-bar>
     <a
       (click)="$event.stopPropagation(); $event.preventDefault()"
       [matMenuTriggerFor]="menu"

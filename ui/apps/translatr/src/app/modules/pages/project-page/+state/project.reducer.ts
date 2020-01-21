@@ -64,13 +64,13 @@ export const initialState: ProjectState = {
     limit: 50,
     offset: 0,
     order: 'name asc',
-    fetch: 'count'
+    fetch: 'count,progress'
   },
   keysSearch: {
     limit: 50,
     offset: 0,
     order: 'name asc',
-    fetch: 'count'
+    fetch: 'count,progress'
   },
   messagesSearch: {
     limit: 50,
