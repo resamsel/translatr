@@ -59,6 +59,7 @@ public class LocaleMapper {
     if (Strings.isNullOrEmpty(out.displayName)) {
       out.displayName = in.name;
     }
+    out.progress = in.progress;
 
     if (in.messages != null && !in.messages.isEmpty()) {
       out.messages =

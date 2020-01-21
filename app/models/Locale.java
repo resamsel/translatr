@@ -23,6 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -57,6 +58,9 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   public String name;
 
   public Integer wordCount;
+
+  @Transient
+  public Double progress;
 
   @JsonIgnore
   @OneToMany

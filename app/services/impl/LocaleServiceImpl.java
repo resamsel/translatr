@@ -1,11 +1,9 @@
 package services.impl;
 
 import com.avaje.ebean.Ebean;
-import com.avaje.ebean.RawSqlBuilder;
 import criterias.LocaleCriteria;
 import models.Locale;
 import models.Project;
-import models.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LocaleRepository;
@@ -20,7 +18,6 @@ import javax.validation.Validator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static utils.Stopwatch.log;
 
@@ -77,19 +74,8 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
    * {@inheritDoc}
    */
   @Override
-  public Map<UUID, Double> progress(List<UUID> localeIds, long keysSize) {
-    List<Stat> stats = log(
-        () -> Ebean.find(Stat.class)
-            .setRawSql(RawSqlBuilder
-                .parse("SELECT m.locale_id, count(m.id) FROM message m GROUP BY m.locale_id")
-                .columnMapping("m.locale_id", "id").columnMapping("count(m.id)", "count").create())
-            .where().in("m.locale_id", localeIds).findList(),
-        LOGGER,
-        "Retrieving locale progress"
-    );
-
-    return stats.stream().collect(Collectors.groupingBy(k -> k.id,
-        Collectors.averagingDouble(t -> (double) t.count / (double) keysSize)));
+  public Map<UUID, Double> progress(List<UUID> localeIds) {
+    return localeRepository.progress(localeIds);
   }
 
   /**

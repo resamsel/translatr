@@ -21,7 +21,7 @@ public interface LocaleService extends ModelService<Locale, UUID, LocaleCriteria
 
   Locale byProjectAndName(Project project, String name);
 
-  Map<UUID, Double> progress(List<UUID> localeIds, long keysSize);
+  Map<UUID, Double> progress(List<UUID> localeIds);
 
   void increaseWordCountBy(UUID localeId, int wordCountDiff);
 

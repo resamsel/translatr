@@ -274,8 +274,7 @@ public class Projects extends AbstractController {
 
       return ok(views.html.projects.locales.render(createTemplate(), project, locales,
           localeService.progress(
-              locales.getList().stream().map(l -> l.id).collect(Collectors.toList()),
-              project.keys.size()),
+              locales.getList().stream().map(l -> l.id).collect(Collectors.toList())),
           form));
     });
   }

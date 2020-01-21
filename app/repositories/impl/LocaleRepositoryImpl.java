@@ -8,6 +8,7 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
+import com.avaje.ebean.RawSqlBuilder;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
 import criterias.PagedListFactory;
@@ -18,6 +19,7 @@ import models.Locale;
 import models.Message;
 import models.Project;
 import models.ProjectRole;
+import models.Stat;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,7 +142,43 @@ public class LocaleRepositoryImpl extends
       }
     }
 
+    if (criteria.getFetches().contains(FETCH_PROGRESS)) {
+      Map<UUID, Double> progress = progress(
+          paged.getList()
+              .stream()
+              .map(Locale::getId)
+              .collect(toList())
+      );
+
+      paged.getList()
+          .forEach(l -> l.progress = progress.getOrDefault(l.id, 0.0));
+    }
+
     return paged;
+  }
+
+  @Override
+  public Map<UUID, Double> progress(List<UUID> localeIds) {
+    List<Stat> stats = log(
+        () -> Ebean.find(Stat.class)
+            .setRawSql(RawSqlBuilder
+                .parse("SELECT" +
+                    " l.id, cast(count(distinct m.id) as decimal)/cast(count(distinct k.id) as decimal)" +
+                    " FROM locale l" +
+                    " LEFT OUTER JOIN message m ON m.locale_id = l.id" +
+                    " LEFT OUTER JOIN key k ON l.project_id = k.project_id" +
+                    " GROUP BY l.id")
+                .columnMapping("l.id", "id")
+                .columnMapping("cast(count(distinct m.id) as decimal)/cast(count(distinct k.id) as decimal)", "count")
+                .create())
+            .where()
+            .in("m.locale_id", localeIds)
+            .findList(),
+        LOGGER,
+        "Retrieving locale progress"
+    );
+
+    return stats.stream().collect(Collectors.toMap(stat -> stat.id, stat -> stat.count));
   }
 
   @Override

@@ -24,6 +24,7 @@ public class Locale extends Dto {
   public String name;
   public String displayName;
   public String pathName;
+  public Double progress;
 
   public Map<String, Message> messages;
 }

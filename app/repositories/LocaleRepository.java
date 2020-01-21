@@ -19,6 +19,8 @@ public interface LocaleRepository extends ModelRepository<Locale, UUID, LocaleCr
 
   String FETCH_MESSAGES = "messages";
 
+  String FETCH_PROGRESS = "progress";
+
   String[] PROPERTIES_TO_FETCH = {FETCH_PROJECT};
 
   Map<String, List<String>> FETCH_MAP =
@@ -31,5 +33,7 @@ public interface LocaleRepository extends ModelRepository<Locale, UUID, LocaleCr
   Locale byProjectAndName(Project project, String name);
 
   Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
-      String... fetches);
+                                  String... fetches);
+
+  Map<UUID, Double> progress(List<UUID> localeIds);
 }

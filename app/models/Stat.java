@@ -12,9 +12,8 @@ import java.util.UUID;
  */
 @Entity
 @Sql
-public class Stat
-{
+public class Stat {
 	public UUID id;
 
-	public Long count;
+	public Double count;
 }
