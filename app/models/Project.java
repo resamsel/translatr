@@ -86,6 +86,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   public Integer wordCount;
 
+  @Transient
+  public Double progress;
+
   @JsonIgnore
   @OneToMany
   public List<Locale> locales;

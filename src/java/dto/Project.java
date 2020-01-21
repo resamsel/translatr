@@ -16,6 +16,7 @@ public class Project extends Dto {
 
   public String name;
   public String description;
+  public Double progress;
 
   public UUID ownerId;
   public String ownerName;

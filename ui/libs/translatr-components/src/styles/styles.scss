@@ -100,6 +100,10 @@ a .mat-card {
     font-size: 14px;
     margin-left: 4px;
   }
+
+  .mat-list-item .mat-progress-bar.mat-line {
+    margin: 8px 0;
+  }
 }
 
 .light-theme {
@@ -452,7 +456,11 @@ pre[class*="language-"]:before {
 
     .content {
       flex-grow: 1;
-      padding: 0 8px;
+      padding: 0 16px;
+
+      @include medium {
+        padding: 0;
+      }
 
       h1:not(:last-child) {
         margin-bottom: 0;

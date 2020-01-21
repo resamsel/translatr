@@ -7,6 +7,7 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
+import com.avaje.ebean.RawSqlBuilder;
 import criterias.PagedListFactory;
 import criterias.ProjectCriteria;
 import dto.NotFoundException;
@@ -16,6 +17,7 @@ import models.ActionType;
 import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
+import models.Stat;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +35,12 @@ import javax.validation.Validator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
 
 @Singleton
@@ -44,6 +49,8 @@ public class ProjectRepositoryImpl extends
     ProjectRepository {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectRepositoryImpl.class);
+  private static final String PROGRESS_COLUMN_ID = "p.id";
+  private static final String PROGRESS_COLUMN_COUNT = "cast(count(distinct m.id) as decimal)/cast(count(distinct l.id)*count(distinct k.id) as decimal)";
 
   private final LocaleRepository localeRepository;
   private final KeyRepository keyRepository;
@@ -112,7 +119,46 @@ public class ProjectRepositoryImpl extends
 
     criteria.paged(query);
 
-    return log(() -> PagedListFactory.create(query), LOGGER, "findBy");
+    return fetch(
+        log(() -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)), LOGGER, "findBy"),
+        criteria
+    );
+  }
+
+  private PagedList<Project> fetch(PagedList<Project> paged, ProjectCriteria criteria) {
+    if (criteria.hasFetch(FETCH_PROGRESS)) {
+      Map<UUID, Double> progressMap = progress(paged.getList().stream().map(Project::getId).collect(toList()));
+
+      paged.getList()
+          .forEach(p -> p.progress = progressMap.getOrDefault(p.id, 0.0));
+    }
+
+    return paged;
+  }
+
+  @Override
+  public Map<UUID, Double> progress(List<UUID> projectIds) {
+    List<Stat> stats = log(
+        () -> Ebean.find(Stat.class)
+            .setRawSql(RawSqlBuilder
+                .parse("SELECT " +
+                    PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +
+                    " FROM project p" +
+                    " JOIN locale l ON l.project_id = p.id" +
+                    " JOIN key k ON k.project_id = p.id" +
+                    " LEFT OUTER JOIN message m ON m.key_id = k.id" +
+                    " GROUP BY " + PROGRESS_COLUMN_ID)
+                .columnMapping(PROGRESS_COLUMN_ID, "id")
+                .columnMapping(PROGRESS_COLUMN_COUNT, "count")
+                .create())
+            .where()
+            .in("p.id", projectIds)
+            .findList(),
+        LOGGER,
+        "Retrieving project progress"
+    );
+
+    return stats.stream().collect(Collectors.toMap(stat -> stat.id, stat -> stat.count));
   }
 
   @Override
@@ -231,20 +277,20 @@ public class ProjectRepositoryImpl extends
 
     keyRepository
         .delete(
-            t.stream().map(p -> p.keys).flatMap(Collection::stream).collect(Collectors.toList()));
+            t.stream().map(p -> p.keys).flatMap(Collection::stream).collect(toList()));
     localeRepository.delete(
-        t.stream().map(p -> p.locales).flatMap(Collection::stream).collect(Collectors.toList()));
+        t.stream().map(p -> p.locales).flatMap(Collection::stream).collect(toList()));
 
     activityActor.tell(
         new Activities<>(t.stream()
             .map(p -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), p, dto.Project.class, toDto(p), null))
-            .collect(Collectors.toList())),
+            .collect(toList())),
         null
     );
 
     super.save(
         t.stream().map(p -> p.withName(String.format("%s-%s", p.id, p.name)).withDeleted(true))
-            .collect(Collectors.toList()));
+            .collect(toList()));
   }
 
   private dto.Project toDto(Project t) {

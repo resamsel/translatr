@@ -66,7 +66,8 @@ export class DashboardPageComponent implements OnInit {
     this.projectsFacade.loadMyProjects({
       owner: user.username,
       limit: 4,
-      order: 'whenUpdated desc'
+      order: 'whenUpdated desc',
+      fetch: 'count'
     });
   }
 }

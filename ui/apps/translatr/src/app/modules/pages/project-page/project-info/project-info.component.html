@@ -47,8 +47,16 @@
            mat-list-item
            [routerLink]="['locales', locale.name]">
           <mat-icon matListIcon class="locale circle">language</mat-icon>
-          <h3 matLine>{{ locale.name }} <span class="sub-title">{{ locale.displayName }}</span></h3>
-          <p [matTooltip]="locale.whenCreated | date:'full'" matLine>{{locale.whenCreated | amTimeAgo}}</p>
+          <h3 matLine>{{ locale.displayName }} <span class="sub-title">{{ locale.name }}</span></h3>
+          <mat-progress-bar
+            *ngIf="locale.progress !== undefined"
+            mode="determinate"
+            color="accent"
+            [value]="locale.progress * 100"
+            matTooltip="{{locale.progress * 100 | number:'1.0-1'}}% translated"
+            i18n-matTooltip="@@locale.progress.tooltip"
+            matLine
+          ></mat-progress-bar>
         </a>
       </mat-nav-list>
       <ng-template #localesEmpty>
@@ -78,7 +86,15 @@
            [routerLink]="['keys', key.name]">
           <mat-icon matListIcon class="key circle">vpn_key</mat-icon>
           <h3 matLine>{{ key.name }}</h3>
-          <p [matTooltip]="key.whenCreated | date:'full'" matLine>{{key.whenCreated | amTimeAgo}}</p>
+          <mat-progress-bar
+            *ngIf="key.progress !== undefined"
+            mode="determinate"
+            color="accent"
+            [value]="key.progress * 100"
+            matTooltip="{{key.progress * 100 | number:'1.0-1'}}% translated"
+            i18n-matTooltip="@@key.progress.tooltip"
+            matLine
+          ></mat-progress-bar>
         </a>
       </mat-nav-list>
       <ng-template #keysEmpty>
@@ -109,7 +125,7 @@
            mat-list-item>
           <mat-icon class="message circle" matListIcon>message</mat-icon>
           <h3 matLine>{{ message.keyName }} <span class="sub-title">{{ message.localeDisplayName }}</span></h3>
-          <p [matTooltip]="message.whenCreated | date:'full'" matLine>{{message.whenCreated | amTimeAgo}}</p>
+          <p matLine i18n="@@message.wordCount">{{message.wordCount}} words</p>
         </a>
       </mat-nav-list>
       <ng-template #messagesEmpty>

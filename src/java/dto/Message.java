@@ -28,4 +28,5 @@ public class Message extends Dto {
   public String projectOwnerUsername;
 
   public String value;
+  public Integer wordCount;
 }

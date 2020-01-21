@@ -20,6 +20,7 @@ public interface ProjectRepository extends ModelRepository<Project, UUID, Projec
     String FETCH_OWNER = "owner";
     String FETCH_LOCALES = "locales";
     String FETCH_KEYS = "keys";
+    String FETCH_PROGRESS = "progress";
 
     String[] PROPERTIES_TO_FETCH = {FETCH_OWNER, FETCH_MEMBERS};
 
@@ -32,4 +33,6 @@ public interface ProjectRepository extends ModelRepository<Project, UUID, Projec
             );
 
     Project byOwnerAndName(String username, String name, String... fetches);
+
+    Map<UUID, Double> progress(List<UUID> projectIds);
 }

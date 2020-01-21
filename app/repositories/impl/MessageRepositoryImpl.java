@@ -168,9 +168,8 @@ public class MessageRepositoryImpl extends
   protected void prePersist(Message t, boolean update) {
     if (update) {
       Message existing = byId(t.id);
-      if (!Objects.equals(t.value, existing.value))
-      // Only track changes of message´s value
-      {
+      if (!Objects.equals(t.value, existing.value)) {
+        // Only track changes of message´s value
         activityActor.tell(logEntryUpdate(t, existing), null);
       }
     }
@@ -181,17 +180,30 @@ public class MessageRepositoryImpl extends
    */
   @Override
   protected void preSave(Collection<Message> t) {
-    Map<UUID, ChangeMessageWordCount> wordCount = t.stream().filter(m -> m.id != null).map(m -> {
-      int wc = MessageUtils.wordCount(m);
-      return new ChangeMessageWordCount(m.id, m.locale.project.id, m.locale.id, m.key.id, wc,
-          wc - (m.wordCount != null ? m.wordCount : 0));
-    }).collect(toMap(wc -> wc.messageId, wc -> wc, (a, b) -> a));
+    Map<UUID, ChangeMessageWordCount> wordCount = t.stream()
+        .filter(m -> m.id != null)
+        .map(m -> {
+          int wc = MessageUtils.wordCount(m);
+          return new ChangeMessageWordCount(
+              m.id,
+              m.locale.project.id,
+              m.locale.id,
+              m.key.id,
+              wc,
+              wc - (m.wordCount != null ? m.wordCount : 0));
+        })
+        .collect(toMap(wc -> wc.messageId, wc -> wc, (a, b) -> a));
 
     messageWordCountActor.tell(wordCount.values(), null);
 
     // Update model
-    t.stream().filter(m -> m.id != null).forEach(m -> m.wordCount = wordCount.getOrDefault(m.id,
-        new ChangeMessageWordCount(null, null, null, null, 0, 0)).wordCount);
+    t.stream()
+        .filter(m -> m.id != null)
+        .forEach(m -> m.wordCount = wordCount.getOrDefault(m.id,
+            new ChangeMessageWordCount(null, null, null, null, 0, 0)).wordCount);
+    t.stream()
+        .filter(m -> m.id == null)
+        .forEach(m -> m.wordCount = MessageUtils.wordCount(m));
 
     List<UUID> ids = t.stream().filter(m -> m.id != null).map(m -> m.id).collect(toList());
     Map<UUID, Message> messages = ids.size() > 0 ? byIds(ids) : Collections.emptyMap();

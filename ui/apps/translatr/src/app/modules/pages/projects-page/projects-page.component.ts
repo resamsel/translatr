@@ -43,6 +43,7 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
         memberId: user.id,
         order: 'whenUpdated desc',
         limit: 20,
+        fetch: 'count,progress',
         ...criteria
       }));
   }

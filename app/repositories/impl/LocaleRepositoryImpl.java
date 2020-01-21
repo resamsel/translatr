@@ -111,10 +111,9 @@ public class LocaleRepositoryImpl extends
 
     criteria.paged(query);
 
-    return log(
-        () -> fetch(PagedListFactory.create(query, criteria.getFetches().contains(FETCH_COUNT)), criteria),
-        LOGGER,
-        "findBy"
+    return fetch(
+        log(() -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)), LOGGER, "findBy"),
+        criteria
     );
   }
 
@@ -131,7 +130,7 @@ public class LocaleRepositoryImpl extends
 
   private PagedList<Locale> fetch(@Nonnull PagedList<Locale> paged, @Nonnull LocaleCriteria criteria) {
     if (StringUtils.isNotEmpty(criteria.getMessagesKeyName())
-        && criteria.getFetches().contains("messages")) {
+        && criteria.hasFetch("messages")) {
       // Retrieve messages that match the given keyName and locales retrieved
       Map<UUID, Message> messages = messageRepository
           .findBy(new MessageCriteria().withKeyName(criteria.getMessagesKeyName())
@@ -145,7 +144,7 @@ public class LocaleRepositoryImpl extends
       }
     }
 
-    if (criteria.getFetches().contains(FETCH_PROGRESS)) {
+    if (criteria.hasFetch(FETCH_PROGRESS)) {
       Map<UUID, Double> progressMap = progress(criteria.getProjectId());
 
       paged.getList()

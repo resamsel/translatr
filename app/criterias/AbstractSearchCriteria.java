@@ -151,6 +151,10 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
     return self;
   }
 
+  public boolean hasFetch(String fetch) {
+    return fetches.contains(fetch);
+  }
+
   public T with(SearchForm form) {
     return self.withSearch(form.search).withOffset(form.offset).withLimit(form.limit)
         .withOrder(form.order);

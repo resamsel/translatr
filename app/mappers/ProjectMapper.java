@@ -69,6 +69,8 @@ public class ProjectMapper {
     out.name = in.name;
     out.description = in.description;
     out.wordCount = in.wordCount;
+    out.progress = in.progress;
+
     if (in.owner != null) {
       out.ownerId = in.owner.id;
       out.ownerName = in.owner.name;

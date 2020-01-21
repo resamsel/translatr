@@ -67,7 +67,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
     criteria.paged(query);
 
-    return log(() -> PagedListFactory.create(query, criteria.getFetches().contains(FETCH_COUNT)), LOGGER, "findBy");
+    return log(() -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)), LOGGER, "findBy");
   }
 
   @Override

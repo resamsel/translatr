@@ -17,13 +17,16 @@
     <h3 matLine>
       {{ project.name }} <span class="owner">{{ project.ownerName }}</span>
     </h3>
-    <p
-      [matTooltip]="project.whenCreated | date: 'full'"
-      i18n="@@added.when"
+    <mat-progress-bar
+      *ngIf="project.progress !== undefined"
+      mode="determinate"
+      color="accent"
+      [value]="project.progress * 100"
+      class="limit-width"
+      matTooltip="{{project.progress * 100 | number:'1.0-1'}}% translated"
+      i18n-matTooltip="@@project.progress.tooltip"
       matLine
-    >
-      {{ project.whenCreated | amTimeAgo }}
-    </p>
+    ></mat-progress-bar>
   </a>
   <ng-template #empty>
     <app-project-empty-view

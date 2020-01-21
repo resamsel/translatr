@@ -18,7 +18,8 @@ export class UserProjectsComponent implements OnInit {
   criteria$: Subject<ProjectCriteria> =
     new BehaviorSubject<ProjectCriteria>({
       order: 'whenUpdated desc',
-      limit: 10
+      limit: 10,
+      fetch: 'progress'
     });
 
   constructor(

@@ -12,4 +12,5 @@ export interface Message extends ProjectEmbedded, Temporal {
   keyName?: string;
 
   value: string;
+  wordCount?: number;
 }

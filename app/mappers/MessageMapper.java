@@ -30,6 +30,7 @@ public class MessageMapper {
     out.whenCreated = in.whenCreated;
     out.whenUpdated = in.whenUpdated;
     out.value = in.value;
+    out.wordCount = in.wordCount;
 
     if (in.locale != null) {
       out.localeId = in.locale.id;

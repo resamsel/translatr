@@ -5,6 +5,7 @@ export interface Project extends Temporal {
 
   name: string;
   description?: string;
+  progress?: number;
 
   ownerId?: string;
   ownerName?: string;
