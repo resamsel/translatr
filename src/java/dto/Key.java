@@ -25,5 +25,7 @@ public class Key extends Dto {
 
   public String pathName;
 
+  public Double progress;
+
   public Map<String, Message> messages;
 }

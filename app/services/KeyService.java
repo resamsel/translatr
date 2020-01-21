@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 @ImplementedBy(KeyServiceImpl.class)
 public interface KeyService extends ModelService<Key, UUID, KeyCriteria> {
-  Map<UUID, Double> progress(List<UUID> keyIds, long localesSize);
+  Map<UUID, Double> progress(UUID projectId);
 
   void increaseWordCountBy(UUID keyId, int wordCountDiff);
 

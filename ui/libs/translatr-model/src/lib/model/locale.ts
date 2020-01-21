@@ -7,6 +7,7 @@ export interface Locale extends ProjectEmbedded, Temporal {
 
   name: string;
   displayName?: string;
+  progress: number;
 
   messages?: { [key: string]: Message };
 }

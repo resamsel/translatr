@@ -18,6 +18,8 @@ public interface KeyRepository extends ModelRepository<Key, UUID, KeyCriteria> {
       ImmutableMap.of("project", Arrays.asList("project", "project.owner"), "messages",
           Arrays.asList("messages", "messages.locale"));
 
+  String FETCH_PROGRESS = "progress";
+
   String[] PROPERTIES_TO_FETCH = {"project"};
 
   List<Key> latest(Project project, int limit);
@@ -26,4 +28,6 @@ public interface KeyRepository extends ModelRepository<Key, UUID, KeyCriteria> {
 
   Key byOwnerAndProjectAndName(String username, String projectName, String keyName,
                                String... fetches);
+
+  Map<UUID, Double> progress(UUID projectId);
 }

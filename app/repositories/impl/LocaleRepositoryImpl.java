@@ -30,6 +30,7 @@ import services.AuthProvider;
 import services.PermissionService;
 import utils.QueryUtils;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
@@ -49,6 +50,8 @@ public class LocaleRepositoryImpl extends
     AbstractModelRepository<Locale, UUID, LocaleCriteria> implements LocaleRepository {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleRepositoryImpl.class);
+  private static final String PROGRESS_COLUMN_ID = "l.id";
+  private static final String PROGRESS_COLUMN_COUNT = "cast(count(distinct m.id) as decimal)/cast(count(distinct k.id) as decimal)";
 
   private final Find<UUID, Locale> find = new Find<UUID, Locale>() {
   };
@@ -126,7 +129,7 @@ public class LocaleRepositoryImpl extends
         QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 
-  private PagedList<Locale> fetch(PagedList<Locale> paged, LocaleCriteria criteria) {
+  private PagedList<Locale> fetch(@Nonnull PagedList<Locale> paged, @Nonnull LocaleCriteria criteria) {
     if (StringUtils.isNotEmpty(criteria.getMessagesKeyName())
         && criteria.getFetches().contains("messages")) {
       // Retrieve messages that match the given keyName and locales retrieved
@@ -143,36 +146,31 @@ public class LocaleRepositoryImpl extends
     }
 
     if (criteria.getFetches().contains(FETCH_PROGRESS)) {
-      Map<UUID, Double> progress = progress(
-          paged.getList()
-              .stream()
-              .map(Locale::getId)
-              .collect(toList())
-      );
+      Map<UUID, Double> progressMap = progress(criteria.getProjectId());
 
       paged.getList()
-          .forEach(l -> l.progress = progress.getOrDefault(l.id, 0.0));
+          .forEach(l -> l.progress = progressMap.getOrDefault(l.id, 0.0));
     }
 
     return paged;
   }
 
   @Override
-  public Map<UUID, Double> progress(List<UUID> localeIds) {
+  public Map<UUID, Double> progress(UUID projectId) {
     List<Stat> stats = log(
         () -> Ebean.find(Stat.class)
             .setRawSql(RawSqlBuilder
-                .parse("SELECT" +
-                    " l.id, cast(count(distinct m.id) as decimal)/cast(count(distinct k.id) as decimal)" +
+                .parse("SELECT " +
+                    PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +
                     " FROM locale l" +
                     " LEFT OUTER JOIN message m ON m.locale_id = l.id" +
-                    " LEFT OUTER JOIN key k ON l.project_id = k.project_id" +
-                    " GROUP BY l.id")
-                .columnMapping("l.id", "id")
-                .columnMapping("cast(count(distinct m.id) as decimal)/cast(count(distinct k.id) as decimal)", "count")
+                    " LEFT OUTER JOIN key k ON k.project_id = l.project_id" +
+                    " GROUP BY " + PROGRESS_COLUMN_ID)
+                .columnMapping(PROGRESS_COLUMN_ID, "id")
+                .columnMapping(PROGRESS_COLUMN_COUNT, "count")
                 .create())
             .where()
-            .in("m.locale_id", localeIds)
+            .eq("l.project_id", projectId)
             .findList(),
         LOGGER,
         "Retrieving locale progress"

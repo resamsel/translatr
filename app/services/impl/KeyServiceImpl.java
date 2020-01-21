@@ -1,28 +1,23 @@
 package services.impl;
 
-import static java.util.stream.Collectors.averagingDouble;
-import static java.util.stream.Collectors.groupingBy;
-import static utils.Stopwatch.log;
-
 import com.avaje.ebean.Ebean;
-import com.avaje.ebean.RawSqlBuilder;
 import criterias.KeyCriteria;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.validation.Validator;
-
 import models.Key;
 import models.Project;
-import models.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
 import services.CacheService;
 import services.KeyService;
 import services.LogEntryService;
+
+import javax.inject.Inject;
+import javax.validation.Validator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static utils.Stopwatch.log;
 
 /**
  * @author resamsel
@@ -50,19 +45,8 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
    * {@inheritDoc}
    */
   @Override
-  public Map<UUID, Double> progress(List<UUID> keyIds, long localesSize) {
-    List<Stat> stats = log(() -> Ebean.find(Stat.class)
-        .setRawSql(
-            RawSqlBuilder.parse("SELECT m.key_id, count(m.id) FROM message m GROUP BY m.key_id")
-                .columnMapping("m.key_id", "id").columnMapping("count(m.id)", "count").create())
-        .where().in("m.key_id", keyIds).findList(), LOGGER, "Retrieving key progress");
-
-    return stats.stream().collect(
-        groupingBy(
-            k -> k.id,
-            averagingDouble(t -> (double) t.count / (double) localesSize)
-        )
-    );
+  public Map<UUID, Double> progress(UUID projectId) {
+    return keyRepository.progress(projectId);
   }
 
   /**

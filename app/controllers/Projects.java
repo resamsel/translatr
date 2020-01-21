@@ -56,10 +56,7 @@ import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
 
 /**
  * @author resamsel
@@ -272,10 +269,8 @@ public class Projects extends AbstractController {
 
       search.pager(locales);
 
-      return ok(views.html.projects.locales.render(createTemplate(), project, locales,
-          localeService.progress(
-              locales.getList().stream().map(l -> l.id).collect(Collectors.toList())),
-          form));
+      return ok(views.html.projects.locales.render(
+          createTemplate(), project, locales, localeService.progress(project.id), form));
     });
   }
 
@@ -290,11 +285,8 @@ public class Projects extends AbstractController {
 
       search.pager(keys);
 
-      Map<UUID, Double> progress =
-          keyService.progress(keys.getList().stream().map(k -> k.id).collect(Collectors.toList()),
-              project.locales.size());
-
-      return ok(views.html.projects.keys.render(createTemplate(), project, keys, progress, form));
+      return ok(views.html.projects.keys.render(
+          createTemplate(), project, keys, keyService.progress(project.id), form));
     });
   }
 

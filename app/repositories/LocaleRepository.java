@@ -35,5 +35,5 @@ public interface LocaleRepository extends ModelRepository<Locale, UUID, LocaleCr
   Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
                                   String... fetches);
 
-  Map<UUID, Double> progress(List<UUID> localeIds);
+  Map<UUID, Double> progress(UUID projectId);
 }

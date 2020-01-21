@@ -11,6 +11,7 @@ import java.util.List;
 public class PagedListFactory {
 
   private static final boolean includeCount = true;
+  private static final int DEFAULT_LIMIT = 200;
 
   public <T> PagedList<T> createPagedList(Query<T> query, boolean includeCount) {
     return create(query, includeCount);
@@ -21,11 +22,11 @@ public class PagedListFactory {
   }
 
   public static <T> PagedList<T> create(Query<T> query, boolean includeCount) {
-    if (includeCount) {
-      if (query.getMaxRows() <= 0) {
-        query.setMaxRows(200);
-      }
+    if (query.getMaxRows() <= 0) {
+      query.setMaxRows(DEFAULT_LIMIT);
+    }
 
+    if (includeCount) {
       PagedList<T> pagedList = Ebean.getDefaultServer().findPagedList(query, Ebean.currentTransaction());
 
       pagedList.getList();

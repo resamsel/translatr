@@ -8,6 +8,7 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
+import com.avaje.ebean.RawSqlBuilder;
 import criterias.KeyCriteria;
 import criterias.PagedListFactory;
 import dto.PermissionException;
@@ -17,6 +18,7 @@ import models.Key;
 import models.Message;
 import models.Project;
 import models.ProjectRole;
+import models.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
@@ -26,11 +28,13 @@ import services.AuthProvider;
 import services.PermissionService;
 import utils.QueryUtils;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -41,6 +45,8 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
     KeyRepository {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyRepositoryImpl.class);
+  private static final String PROGRESS_COLUMN_ID = "k.id";
+  private static final String PROGRESS_COLUMN_COUNT = "cast(count(distinct m.id) as decimal)/cast(count(distinct l.id) as decimal)";
 
   private final Find<UUID, Key> find = new Find<UUID, Key>() {
   };
@@ -107,7 +113,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
     criteria.paged(query);
 
-    return log(() -> PagedListFactory.create(query), LOGGER, "findBy");
+    return log(() -> fetch(PagedListFactory.create(query), criteria), LOGGER, "findBy");
   }
 
   @Override
@@ -152,6 +158,41 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   private Query<Key> fetch(String... fetches) {
     return QueryUtils.fetch(find.query().alias("k").setDisableLazyLoading(true),
         QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
+  }
+
+  private PagedList<Key> fetch(@Nonnull PagedList<Key> paged, @Nonnull KeyCriteria criteria) {
+    if (criteria.getFetches().contains(FETCH_PROGRESS)) {
+      Map<UUID, Double> progressMap = progress(criteria.getProjectId());
+
+      paged.getList()
+          .forEach(l -> l.progress = progressMap.getOrDefault(l.id, 0.0));
+    }
+
+    return paged;
+  }
+
+  @Override
+  public Map<UUID, Double> progress(UUID projectId) {
+    List<Stat> stats = log(
+        () -> Ebean.find(Stat.class)
+            .setRawSql(RawSqlBuilder
+                .parse("SELECT " +
+                    PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +
+                    " FROM key k" +
+                    " LEFT OUTER JOIN message m ON m.key_id = k.id" +
+                    " LEFT OUTER JOIN locale l ON l.project_id = k.project_id" +
+                    " GROUP BY " + PROGRESS_COLUMN_ID)
+                .columnMapping(PROGRESS_COLUMN_ID, "id")
+                .columnMapping(PROGRESS_COLUMN_COUNT, "count")
+                .create())
+            .where()
+            .eq("k.project_id", projectId)
+            .findList(),
+        LOGGER,
+        "Retrieving key progress"
+    );
+
+    return stats.stream().collect(Collectors.toMap(stat -> stat.id, stat -> stat.count));
   }
 
   /**

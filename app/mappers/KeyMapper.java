@@ -47,6 +47,7 @@ public class KeyMapper {
     out.projectOwnerUsername = in.project.owner.username;
     out.name = in.name;
     out.pathName = in.getPathName();
+    out.progress = in.progress;
 
     if (in.messages != null && !in.messages.isEmpty()) {
       out.messages =

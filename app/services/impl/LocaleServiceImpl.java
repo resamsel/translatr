@@ -7,7 +7,6 @@ import models.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LocaleRepository;
-import repositories.ProjectRepository;
 import services.CacheService;
 import services.LocaleService;
 import services.LogEntryService;
@@ -32,16 +31,13 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
 
   private final LocaleRepository localeRepository;
-  private final ProjectRepository projectRepository;
 
   @Inject
   public LocaleServiceImpl(Validator validator, CacheService cache,
-                           LocaleRepository localeRepository, LogEntryService logEntryService,
-                           ProjectRepository projectRepository) {
+                           LocaleRepository localeRepository, LogEntryService logEntryService) {
     super(validator, cache, localeRepository, Locale::getCacheKey, logEntryService);
 
     this.localeRepository = localeRepository;
-    this.projectRepository = projectRepository;
   }
 
   @Override
@@ -74,8 +70,8 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
    * {@inheritDoc}
    */
   @Override
-  public Map<UUID, Double> progress(List<UUID> localeIds) {
-    return localeRepository.progress(localeIds);
+  public Map<UUID, Double> progress(UUID projectId) {
+    return localeRepository.progress(projectId);
   }
 
   /**
