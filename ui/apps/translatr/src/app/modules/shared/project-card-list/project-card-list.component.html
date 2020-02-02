@@ -4,7 +4,9 @@
   direction="row"
   (create)="create.emit()"
   [canCreate]="canCreate"
-  [showMore]="showMore">
+  [loadingListLength]="3"
+  [showMore]="showMore"
+>
   <app-project-card-link
     *ngFor="let project of projects?.list; trackBy: trackByFn"
     [project]="project"></app-project-card-link>

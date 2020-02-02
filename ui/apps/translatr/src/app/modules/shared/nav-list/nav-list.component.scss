@@ -1,49 +1,57 @@
-.loading ::ng-deep .mat-list-item {
-  opacity: 0.4;
-  animation: opacityPulse 2s infinite;
+.loading {
+  .mat-list-item,
+  .mat-card {
+    opacity: 0.4;
+    animation: opacityPulse 2s infinite;
 
-  .icon {
-    color: #e0e0e0;
-    font-size: 36px;
-    width: 36px;
-    height: 36px;
-  }
+    .icon {
+      color: #e0e0e0;
+    }
 
-  .title,
-  .subtitle {
-    display: inline-block;
-    background: #e0e0e0;
-    height: 16px;
-  }
+    .title,
+    .subtitle {
+      display: inline-block;
+      background: #e0e0e0;
+      height: 16px;
+    }
 
-  .subtitle {
-    width: 64px;
-  }
+    .subtitle {
+      width: 64%;
+    }
 
-  @for $i from 1 through 20 {
-    &:nth-child(#{$i}) {
-      animation-delay: #{$i/10}s;
+    @for $i from 1 through 20 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i/10}s;
+      }
+    }
+
+    &:nth-child(1n) .title {
+      width: 60%;
+    }
+
+    &:nth-child(2n) .title {
+      width: 42%;
+    }
+
+    &:nth-child(3n) .title {
+      width: 82%;
+    }
+
+    &:nth-child(4n) .title {
+      width: 48%;
+    }
+
+    &:nth-child(5n) .title {
+      width: 66%;
     }
   }
 
-  &:nth-child(1n) .title {
-    width: 214px;
-  }
-
-  &:nth-child(2n) .title {
-    width: 192px;
-  }
-
-  &:nth-child(3n) .title {
-    width: 160px;
-  }
-
-  &:nth-child(4n) .title {
-    width: 184px;
-  }
-
-  &:nth-child(5n) .title {
-    width: 176px;
+  .mat-list-item {
+    .icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+    }
   }
 }
 

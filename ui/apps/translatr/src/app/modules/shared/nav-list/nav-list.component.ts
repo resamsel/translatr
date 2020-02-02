@@ -11,11 +11,15 @@ import { trackByFn } from '@translatr/utils';
 export class NavListComponent {
   @Input() pagedList: PagedList<{ id?: string | number }> | undefined;
   @Input() criteria: RequestCriteria | undefined;
+  @Input() direction: 'column' | 'row' = 'column';
+
   @Input() loadingListLength = 5;
   @Input() showLoadingAvatar = true;
+  @Input() loadingIcon = 'account_circle';
+
   @Input() empty: TemplateRef<any>;
   @Input() nothingFound: TemplateRef<any>;
-  @Input() direction: 'column' | 'row' = 'column';
+
   @Input() showMore = true;
   @Input() showFilter = false;
   @Input() addTooltip: string;

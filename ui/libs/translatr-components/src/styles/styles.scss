@@ -444,10 +444,6 @@ pre[class*="language-"]:before {
   display: flex;
   flex-direction: column;
 
-  &:not(.section) {
-    @include mat-elevation(2);
-  }
-
   .title {
     flex-grow: 1;
     display: flex;

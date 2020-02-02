@@ -31,15 +31,33 @@
 
 <ng-template #loading>
   <mat-list class="loading">
-    <mat-list-item *ngFor="let i of loadingList" class="item">
-      <mat-icon *ngIf="showLoadingAvatar" matListIcon class="icon"
-      >account_circle
-      </mat-icon
-      >
-      <h3 matLine>
-        <span class="title"></span>
-      </h3>
-      <p matLine class="subtitle"></p>
-    </mat-list-item>
+    <ng-container *ngIf="direction === 'column'; else rowLoading">
+      <mat-list-item *ngFor="let i of loadingList" class="item">
+        <mat-icon *ngIf="showLoadingAvatar" class="icon" matListIcon
+        >{{loadingIcon}}
+        </mat-icon>
+        <h3 matLine>
+          <span class="title"></span>
+        </h3>
+        <p class="subtitle" matLine></p>
+      </mat-list-item>
+    </ng-container>
+    <ng-template #rowLoading>
+      <div [class.flex-stretch]="direction === 'row'">
+        <mat-card *ngFor="let i of loadingList" class="portrait">
+          <mat-icon
+            *ngIf="showLoadingAvatar"
+            class="icon"
+            matCardImage>{{loadingIcon}}
+          </mat-icon>
+          <mat-card-content>
+            <h2>
+              <span class="title"></span>
+            </h2>
+            <p class="members subtitle"></p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </ng-template>
   </mat-list>
 </ng-template>

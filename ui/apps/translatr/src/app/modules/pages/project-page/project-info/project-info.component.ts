@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Key, Locale, Message, Project } from '@dev/translatr-model';
+import { Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
-import { filter, map, pluck, take } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { openLocaleEditDialog } from '../../../shared/locale-edit-dialog/locale-edit-dialog.component';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { openKeyEditDialog } from '../../../shared/key-edit-dialog/key-edit-dialog.component';
+import { slicePagedList } from '@translatr/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,37 +19,26 @@ export class ProjectInfoComponent {
   project$ = this.facade.project$.pipe(filter(x => !!x));
   locales$ = this.facade.locales$;
   latestLocales$ = this.locales$.pipe(
-    filter(pagedList => !!pagedList && !!pagedList.list),
-    pluck('list'),
-    map((locales: Locale[]) => {
-      return locales
-        .slice()
-        .sort(
-          (a: Locale, b: Locale) =>
-            b.whenUpdated.getTime() - a.whenUpdated.getTime()
-        )
-        .slice(0, 3);
-    })
+    map((pagedList: PagedList<Locale> | undefined) =>
+      slicePagedList(pagedList, 3, (a: Locale, b: Locale) =>
+        b.whenUpdated.getTime() - a.whenUpdated.getTime())
+    )
   );
   canCreateLocale$ = this.facade.canModifyLocale$;
 
   keys$ = this.facade.keys$;
-  latestKeys$: Observable<Key[]> = this.keys$.pipe(
-    filter(pagedList => !!pagedList && !!pagedList.list),
-    pluck('list'),
-    map((keys: Key[]) => keys
-      .slice()
-      .sort(
-        (a: Key, b: Key) => b.whenUpdated.getTime() - a.whenUpdated.getTime()
-      )
-      .slice(0, 3))
+  latestKeys$: Observable<PagedList<Key>> = this.keys$.pipe(
+    map((pagedList: PagedList<Key> | undefined) =>
+      slicePagedList(pagedList, 3, (a: Key, b: Key) =>
+        b.whenUpdated.getTime() - a.whenUpdated.getTime())
+    )
   );
   canCreateKey$ = this.facade.canModifyKey$;
 
-  latestMessages$: Observable<Message[]> = this.facade.messages$.pipe(
-    filter(pagedList => !!pagedList && !!pagedList.list),
-    pluck('list'),
-    map((messages: Message[]) => messages.slice(0, 3))
+  latestMessages$: Observable<PagedList<Message>> = this.facade.messages$.pipe(
+    map((pagedList: PagedList<Message> | undefined) =>
+      slicePagedList(pagedList, 3)
+    )
   );
 
   constructor(

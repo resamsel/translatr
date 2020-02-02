@@ -41,9 +41,15 @@
       <mat-card-title i18n="@@locales.latest">Recent Languages</mat-card-title>
       <mat-card-subtitle>Latest additions to this projects' languages.</mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content *ngIf="latestLocales$ | async as latestLocales">
-      <mat-nav-list *ngIf="latestLocales.length; else localesEmpty">
-        <a *ngFor="let locale of latestLocales"
+    <mat-card-content>
+      <app-nav-list
+        [empty]="localesEmpty"
+        [loadingListLength]="3"
+        [pagedList]="latestLocales$ | async"
+        [showMore]="false"
+        loadingIcon="language"
+      >
+        <a *ngFor="let locale of (latestLocales$ | async)?.list"
            mat-list-item
            [routerLink]="['locales', locale.name]">
           <mat-icon matListIcon class="locale circle">language</mat-icon>
@@ -58,7 +64,7 @@
             matLine
           ></mat-progress-bar>
         </a>
-      </mat-nav-list>
+      </app-nav-list>
       <ng-template #localesEmpty>
         <div class="empty">
           <mat-icon class="locale circle">language</mat-icon>
@@ -79,9 +85,15 @@
       <mat-card-title i18n="@@keys.latest">Recent Keys</mat-card-title>
       <mat-card-subtitle>Latest additions to this projects' keys.</mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content *ngIf="latestKeys$ | async as latestKeys">
-      <mat-nav-list *ngIf="latestKeys.length > 0; else keysEmpty">
-        <a *ngFor="let key of latestKeys"
+    <mat-card-content>
+      <app-nav-list
+        [empty]="keysEmpty"
+        [loadingListLength]="3"
+        [pagedList]="latestKeys$ | async"
+        [showMore]="false"
+        loadingIcon="vpn_key"
+      >
+        <a *ngFor="let key of (latestKeys$ | async)?.list"
            mat-list-item
            [routerLink]="['keys', key.name]">
           <mat-icon matListIcon class="key circle">vpn_key</mat-icon>
@@ -96,7 +108,7 @@
             matLine
           ></mat-progress-bar>
         </a>
-      </mat-nav-list>
+      </app-nav-list>
       <ng-template #keysEmpty>
         <div class="empty">
           <mat-icon class="key circle">vpn_key</mat-icon>
@@ -117,9 +129,15 @@
       <mat-card-title i18n="@@translations.latest">Recent Translations</mat-card-title>
       <mat-card-subtitle>Latest translations of this project.</mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content *ngIf="latestMessages$ | async as latestMessages">
-      <mat-nav-list *ngIf="latestMessages.length > 0; else messagesEmpty">
-        <a *ngFor="let message of latestMessages"
+    <mat-card-content>
+      <app-nav-list
+        [empty]="messagesEmpty"
+        [loadingListLength]="3"
+        [pagedList]="latestMessages$ | async"
+        [showMore]="false"
+        loadingIcon="message"
+      >
+        <a *ngFor="let message of (latestMessages$ | async)?.list"
            [queryParams]="{locale: message.localeName}"
            [routerLink]="['keys', message.keyName]"
            mat-list-item>
@@ -127,7 +145,7 @@
           <h3 matLine>{{ message.keyName }} <span class="sub-title">{{ message.localeDisplayName }}</span></h3>
           <p matLine i18n="@@message.wordCount">{{message.wordCount}} words</p>
         </a>
-      </mat-nav-list>
+      </app-nav-list>
       <ng-template #messagesEmpty>
         <div class="empty">
           <mat-icon class="message circle">language</mat-icon>
