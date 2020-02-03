@@ -12,7 +12,8 @@ const info = {
   homepage,
   bugsUrl: bugs.url,
   buildDate: now,
-  buildVersion: `${version}-${dateFormat('yyyymmddhhMMss')}`
+  buildVersion: `${version}-${dateFormat('yyyymmddhhMMss')}`,
+  copyrightYear: now.getFullYear()
 };
 
 const file = resolve(
@@ -35,6 +36,7 @@ export interface BuildInfo {
   bugsUrl: string;
   buildDate: string;
   buildVersion: string;
+  copyrightYear: number;
 }
 export const BUILD_INFO: BuildInfo = ${JSON.stringify(info, null, 2)};
 /* tslint:enable */

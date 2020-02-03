@@ -1,34 +1,42 @@
 <footer>
   <div class="container">
     <div class="copyright">
-      © 2019
-      <a class="link" href="https://twitter.com/resamsel" target="_blank">{{
-        buildInfo.author
-      }}</a>
-      (<span [matTooltip]="buildInfo.buildDate">{{ buildInfo.version }}</span
-      >)
+      © {{buildInfo.copyrightYear}}
+      <a
+        class="link"
+        href="https://twitter.com/resamsel"
+        target="_blank"
+      >{{buildInfo.author}}</a>
+      (<span [matTooltip]="buildInfo.buildDate">{{ buildInfo.version }}</span>)
     </div>
     <div class="links">
       <ul>
         <li>
-          <a class="link" href="https://twitter.com/resamsel" target="_blank"
-            >Twitter</a
-          >
+          <a
+            class="link"
+            href="https://twitter.com/resamsel"
+            target="_blank"
+          >Twitter</a>
         </li>
         <li>
-          <a class="link" [href]="buildInfo.homepage" target="_blank">GitHub</a>
+          <a
+            [href]="buildInfo.homepage"
+            class="link"
+            target="_blank"
+          >GitHub</a>
         </li>
         <li>
-          <a class="link" [href]="buildInfo.bugsUrl" target="_blank"
-            >Feedback</a
-          >
+          <a
+            [href]="buildInfo.bugsUrl"
+            class="link"
+            target="_blank"
+          >Feedback</a>
         </li>
         <li>
           <a
             class="link"
             href="https://github.com/resamsel/translatr/blob/master/LICENSE"
-            >License</a
-          >
+          >License</a>
         </li>
       </ul>
     </div>
