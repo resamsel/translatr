@@ -31,13 +31,6 @@ public class Stopwatch {
     return String.format("%d ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
-  /**
-   * @param supplier
-   * @param logger
-   * @param message
-   * @return
-   * @throws Exception
-   */
   public static <T> T log(Supplier<T> supplier, Logger logger, String format, Object... args) {
     Stopwatch stopwatch = createStarted();
     try {

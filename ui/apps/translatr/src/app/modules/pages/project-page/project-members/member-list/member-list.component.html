@@ -1,18 +1,19 @@
 <app-nav-list
-  (create)="onAdd(project)"
   *ngIf="project"
   [canCreate]="canCreate"
   [criteria]="criteria"
-  [pagedList]="memberList"
+  (create)="onAdd(project)"
+  [filters]="filters"
+  [pagedList]="members"
   addTooltip="Add member"
   i18n-addTooltip="@@member.create.tooltip"
-  showFilter="true"
+  [showFilter]="true"
   (filter)="onFilter($event)"
 >
   <a
-    mat-list-item
-    *ngFor="let member of members"
+    *ngFor="let member of members?.list"
     [routerLink]="['/', member.userUsername]"
+    mat-list-item
   >
     <img
       class="icon"

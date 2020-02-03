@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
-import { PagedList, RequestCriteria } from '@dev/translatr-model';
+import { PagedList } from '@dev/translatr-model';
 import { trackByFn } from '@translatr/utils';
+import { defaultFilters, FilterCriteria } from '../list-header/list-header.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -9,8 +10,17 @@ import { trackByFn } from '@translatr/utils';
   styleUrls: ['./nav-list.component.scss']
 })
 export class NavListComponent {
-  @Input() pagedList: PagedList<{ id?: string | number }> | undefined;
-  @Input() criteria: RequestCriteria | undefined;
+  @Input() filters = defaultFilters;
+  @Output() readonly filter = new EventEmitter<FilterCriteria>();
+  queryParams: {};
+  searchEnabled = false;
+
+  private _criteria: FilterCriteria | undefined;
+
+  get criteria(): FilterCriteria | undefined {
+    return this._criteria;
+  }
+
   @Input() direction: 'column' | 'row' = 'column';
 
   @Input() loadingListLength = 5;
@@ -25,11 +35,31 @@ export class NavListComponent {
   @Input() addTooltip: string;
   @Input() canCreate = false;
 
-  @Output() readonly more = new EventEmitter<number>();
+  @Input() set criteria(criteria: FilterCriteria | undefined) {
+    this._criteria = criteria;
+
+    this.updateSearchEnabled();
+  }
+
   @Output() readonly create = new EventEmitter<void>();
-  @Output() readonly filter = new EventEmitter<string>();
+
+  private _pagedList: PagedList<{ id?: string | number }> | undefined;
 
   trackByFn = trackByFn;
+
+  get pagedList(): PagedList<{ id?: string | number }> | undefined {
+    return this._pagedList;
+  }
+
+  @Input() set pagedList(pagedList: PagedList<{ id?: string | number }> | undefined) {
+    this._pagedList = pagedList;
+
+    this.queryParams = pagedList !== undefined
+      ? { limit: pagedList.limit * 2 }
+      : {};
+
+    this.updateSearchEnabled();
+  }
 
   get loadingList(): number[] {
     return Array(this.loadingListLength).map(
@@ -37,9 +67,19 @@ export class NavListComponent {
     );
   }
 
-  loadMore(): void {
-    if (this.pagedList !== undefined) {
-      this.more.emit(this.pagedList.limit * 2);
-    }
+  onFilter(criteria: FilterCriteria): void {
+    this.filter.emit(criteria);
+  }
+
+  private updateSearchEnabled(): void {
+    this.searchEnabled = this.showFilter && (
+      this.pagedList === undefined
+      || this.pagedList.list.length > 0
+      || (
+        this._criteria !== undefined
+        && this._criteria.search !== undefined
+        && this._criteria.search.length > 0
+      )
+    );
   }
 }

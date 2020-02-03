@@ -23,7 +23,7 @@
   <dev-metric
     routerLink="members"
     name="Members"
-    [value]="project.members?.length"
+    [value]="(members$ | async)?.total"
     icon="group"
     class="member count"></dev-metric>
 

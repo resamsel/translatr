@@ -61,7 +61,11 @@ export class UserEffects {
   loadProjects = createEffect(() => this.actions$.pipe(
     ofType(loadProjects),
     switchMap((action) => this.projectService
-      .find(action)
+      .find({
+        limit: 10,
+        order: 'name asc',
+        ...action
+      })
       .pipe(
         map((pagedList: PagedList<Project>) =>
           projectsLoaded({ pagedList })),

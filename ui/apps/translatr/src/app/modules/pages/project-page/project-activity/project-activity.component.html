@@ -2,9 +2,5 @@
   <div>
     <app-activity [activity]="activity$ | async"></app-activity>
   </div>
-  <app-activity-list
-    [activities]="activities$ | async"
-    (filter)="onFilter($event)"
-    (more)="onMore()"
-  ></app-activity-list>
+  <app-activity-list [activities]="activities$ | async"></app-activity-list>
 </div>

@@ -92,11 +92,4 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   onSelected(selected: ReadonlyArray<FilterFieldFilter>): Promise<boolean> {
     return handleFilterFieldSelection(this.router, this.filters, selected);
   }
-
-  onLoadMore(limit: number): void {
-    this.router.navigate([], {
-      queryParamsHandling: 'merge',
-      queryParams: { limit }
-    });
-  }
 }

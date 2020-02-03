@@ -61,6 +61,7 @@ export class UserFacade {
     select(userQuery.getAccessToken),
     takeUntil(this.destroy$.asObservable())
   );
+  projectsCriteria$ = this.appFacade.criteria$();
 
   constructor(
     private store: Store<UserPartialState>,

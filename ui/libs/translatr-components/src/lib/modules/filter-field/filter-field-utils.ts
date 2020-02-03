@@ -18,7 +18,6 @@ export const handleFilterFieldSelection = (
       {}
     );
 
-  console.log('params', params);
   return router.navigate([], {
     queryParamsHandling: 'merge',
     queryParams: params

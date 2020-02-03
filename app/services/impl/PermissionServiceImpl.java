@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import static repositories.ProjectRepository.FETCH_MEMBERS;
+
 @Singleton
 public class PermissionServiceImpl implements PermissionService {
 
@@ -49,7 +51,7 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public boolean hasPermissionAny(@Nonnull Project project, User user, ProjectRole... roles) {
-    if (project.members != null) {
+    if (project.members != null && !project.members.isEmpty()) {
       return hasPermissionAny(project.members, user, Arrays.asList(roles));
     }
 
@@ -73,8 +75,13 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     return hasPermissionAny(
-        projectUserService.findBy(new ProjectUserCriteria().withProjectId(projectId))
-            .getList(), user, roles);
+        projectUserService.findBy(
+            new ProjectUserCriteria()
+                .withProjectId(projectId)
+                .withFetches(FETCH_MEMBERS))
+            .getList(),
+        user,
+        roles);
   }
 
   @Override

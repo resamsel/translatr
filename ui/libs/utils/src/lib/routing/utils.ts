@@ -17,6 +17,12 @@ export const navigate = <T>(router: Router, criteria: Partial<T>): Promise<boole
   router.navigate([], {
     queryParamsHandling: 'merge',
     replaceUrl: true,
-    queryParams: Object.keys(criteria).reduce((acc, curr) => ({ ...acc, [curr]: !!criteria[curr] ? criteria[curr] : null }), {})
+    queryParams: Object.keys(criteria)
+      .reduce((acc, curr) => ({
+          ...acc,
+          [curr]: !!criteria[curr] ? criteria[curr] : null
+        }),
+        {}
+      )
   });
 

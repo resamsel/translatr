@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static controllers.MembersApi.PARAM_ROLES;
+
 /**
  * @author resamsel
  * @version 5 Oct 2016
@@ -38,7 +40,9 @@ public class ProjectUserCriteria extends AbstractProjectSearchCriteria<ProjectUs
   }
 
   public static ProjectUserCriteria from(Http.Request request) {
-    return new ProjectUserCriteria().with(request);
+    return new ProjectUserCriteria()
+        .with(request)
+        .withRoles(ProjectRole.fromQueryParam(request.getQueryString(PARAM_ROLES)));
   }
 
   @Override

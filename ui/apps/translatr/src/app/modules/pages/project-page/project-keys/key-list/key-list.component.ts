@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trackByFn } from '@translatr/utils';
 import { ProjectFacade } from '../../+state/project.facade';
+import { FilterCriteria } from '../../../../shared/list-header/list-header.component';
 
 @Component({
   selector: 'app-key-list',
@@ -20,7 +21,6 @@ export class KeyListComponent {
   @Input() canDelete = false;
 
   @Output() fetch = new EventEmitter<KeyCriteria>();
-  @Output() more = new EventEmitter<number>();
   @Output() edit = new EventEmitter<Key>();
   @Output() delete = new EventEmitter<Key>();
   trackByFn = trackByFn;
@@ -35,8 +35,8 @@ export class KeyListComponent {
   ) {
   }
 
-  onFilter(search: string): void {
-    this.fetch.emit({ search });
+  onFilter(criteria: FilterCriteria): void {
+    this.fetch.emit(criteria);
   }
 
   onEdit(key: Key, event: MouseEvent): boolean {

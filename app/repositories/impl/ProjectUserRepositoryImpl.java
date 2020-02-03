@@ -87,6 +87,13 @@ public class ProjectUserRepositoryImpl extends
       query.in("role", criteria.getRoles());
     }
 
+    if (criteria.getSearch() != null) {
+      query.disjunction()
+          .ilike("user.name", "%" + criteria.getSearch() + "%")
+          .ilike("user.username", "%" + criteria.getSearch() + "%")
+          .endJunction();
+    }
+
     criteria.paged(query);
 
     return query;

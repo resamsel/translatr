@@ -1,10 +1,11 @@
 <app-list-header
-  [search]="criteria?.search"
+  (filter)="onFilter($event)"
   (add)="create.emit()"
   [addTooltip]="addTooltip"
   [addVisible]="canCreate"
-  [searchEnabled]="showFilter && (pagedList?.list.length > 0 || criteria?.search?.length > 0)"
-  (filter)="filter.emit($event)"
+  [criteria]="criteria"
+  [filters]="filters"
+  [searchEnabled]="searchEnabled"
 ></app-list-header>
 
 <mat-nav-list *ngIf="pagedList; else loading">
@@ -12,10 +13,11 @@
     <ng-content></ng-content>
 
     <a
+      *ngIf="showMore && pagedList?.hasNext"
       mat-list-item
       class="more"
-      *ngIf="showMore && pagedList?.hasNext"
-      (click)="loadMore()"
+      [queryParams]="queryParams"
+      [routerLink]="[]"
       i18n
     >
       <i>Load more</i>

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { firstChar } from '@dev/translatr-sdk';
 import { trackByFn } from '@translatr/utils';
+import { FilterCriteria } from '../list-header/list-header.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,8 +18,7 @@ export class ProjectListComponent {
   @Input() criteria: RequestCriteria | undefined;
 
   @Output() create = new EventEmitter<void>();
-  @Output() filter = new EventEmitter<string>();
-  @Output() more = new EventEmitter<number>();
+  @Output() filter = new EventEmitter<FilterCriteria>();
 
   firstChar = firstChar;
   trackByFn = trackByFn;

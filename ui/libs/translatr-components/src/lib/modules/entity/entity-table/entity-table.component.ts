@@ -15,7 +15,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatColumnDef, MatTable } from '@angular/material/table';
 import { PagedList, RequestCriteria } from '@dev/translatr-model';
 import { Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, map, take, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FilterFieldFilter, handleFilterFieldSelection } from '../../filter-field';
 
@@ -77,7 +77,6 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
         .filter(f => params[f.key] !== undefined && params[f.key] !== '')
         .map(f => ({ ...f, value: params[f.key] }))
       ),
-      tap(console.log),
       distinctUntilChanged((a, b) => a.length === b.length)
     );
 

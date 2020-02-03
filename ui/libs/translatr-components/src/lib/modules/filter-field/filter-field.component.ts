@@ -76,7 +76,7 @@ export class FilterFieldComponent implements OnInit {
           this.updateAutocompleteOptions({
             ...this.filters.find(f => f.key === 'search'),
             key: 'search',
-            value
+            value: value.trim()
           });
         } else {
           this.updateAutocompleteOptions(value);

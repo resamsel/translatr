@@ -16,7 +16,9 @@ import {
   keyUpdateError,
   loadKeys,
   loadLocales,
+  loadMembers,
   loadMessages,
+  loadModifiers,
   loadProject,
   loadProjectActivities,
   loadProjectActivityAggregated,
@@ -29,7 +31,9 @@ import {
   localeUpdateError,
   memberDeleted,
   memberDeleteError,
+  membersLoaded,
   messagesLoaded,
+  modifiersLoaded,
   projectActivitiesLoaded,
   projectActivitiesLoadError,
   projectActivityAggregatedLoaded,
@@ -93,6 +97,28 @@ export class ProjectEffects {
     )
   ));
 
+  loadMembers$ = createEffect(() => this.actions$.pipe(
+    ofType(loadMembers),
+    withLatestFrom(this.store.pipe(select(projectQuery.getMembersSearch))),
+    switchMap(([action, membersSearch]) =>
+      this.memberService
+        .find({
+          ...membersSearch,
+          ...action.payload
+        })
+        .pipe(map((payload: PagedList<Member>) => membersLoaded({ payload })))
+    )
+  ));
+
+  loadModifiers$ = createEffect(() => this.actions$.pipe(
+    ofType(loadModifiers),
+    switchMap((action) =>
+      this.memberService
+        .find(action.payload)
+        .pipe(map((payload: PagedList<Member>) => modifiersLoaded({ payload })))
+    )
+  ));
+
   loadMessages$ = createEffect(() => this.actions$.pipe(
     ofType(loadMessages),
     withLatestFrom(this.store.pipe(select(projectQuery.getMessagesSearch))),
@@ -126,7 +152,10 @@ export class ProjectEffects {
     ofType(loadProjectActivities),
     switchMap((action) =>
       this.activityService
-        .find(action.payload)
+        .find({
+          limit: 20,
+          ...action.payload
+        })
         .pipe(
           map((payload: PagedList<Activity>) =>
             projectActivitiesLoaded({ payload })),

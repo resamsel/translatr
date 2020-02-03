@@ -66,6 +66,8 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
   private static final String MEMBER_WRITE = "member:write";
   private static final String MEMBER_WRITE_DESCRIPTION = "Write member";
 
+  public static final String PARAM_ROLES = "roles";
+
   private final ContextProvider contextProvider;
   private final AuthProvider authProvider;
 
@@ -98,6 +100,8 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string",
+          paramType = "query"),
+      @ApiImplicitParam(name = PARAM_ROLES, value = FETCH, dataType = "string",
           paramType = "query")})
   public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
     return toJsons(() -> api.find(

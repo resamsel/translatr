@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { filter, skip, take, takeUntil } from 'rxjs/operators';
+import { filter, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { Key, KeyCriteria, Project } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -24,12 +24,12 @@ export class ProjectKeysComponent {
     private readonly router: Router
   ) {
     this.criteria$
-      .pipe(takeUntil(this.facade.unload$))
-      .subscribe((criteria: KeyCriteria) =>
-        this.project$
-          .pipe(take(1))
-          .subscribe((project: Project) =>
-            this.facade.loadKeys(project.id, criteria))
+      .pipe(
+        withLatestFrom(this.project$.pipe(filter(x => !!x))),
+        takeUntil(this.facade.unload$)
+      )
+      .subscribe(([criteria, project]: [KeyCriteria, Project]) =>
+        this.facade.loadKeys(project.id, criteria)
       );
   }
 

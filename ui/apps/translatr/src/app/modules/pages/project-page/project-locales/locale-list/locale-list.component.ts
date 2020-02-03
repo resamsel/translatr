@@ -1,11 +1,12 @@
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { KeyCriteria, Locale, LocaleCriteria, PagedList, Project } from '@dev/translatr-model';
+import { Locale, LocaleCriteria, PagedList, Project } from '@dev/translatr-model';
 import { openLocaleEditDialog } from '../../../../shared/locale-edit-dialog/locale-edit-dialog.component';
 import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trackByFn } from '@translatr/utils';
 import { ProjectFacade } from '../../+state/project.facade';
+import { FilterCriteria } from '../../../../shared/list-header/list-header.component';
 
 @Component({
   selector: 'app-locale-list',
@@ -20,8 +21,7 @@ export class LocaleListComponent {
   @Input() canCreate = false;
   @Input() canDelete = false;
 
-  @Output() fetch = new EventEmitter<KeyCriteria>();
-  @Output() more = new EventEmitter<number>();
+  @Output() fetch = new EventEmitter<LocaleCriteria>();
   @Output() edit = new EventEmitter<Locale>();
   @Output() delete = new EventEmitter<Locale>();
   trackByFn = trackByFn;
@@ -41,8 +41,8 @@ export class LocaleListComponent {
   ) {
   }
 
-  onFilter(search: string): void {
-    this.fetch.emit({ search });
+  onFilter(criteria: FilterCriteria): void {
+    this.fetch.emit(criteria);
   }
 
   onEdit(locale: Locale, event: MouseEvent) {

@@ -52,7 +52,6 @@
     [pagedList]="messageItems$ | async"
     [showLoadingAvatar]="false"
     [loadingListLength]="10"
-    (more)="onLoadMore($event)"
   >
     <a
       *ngFor="let item of (messageItems$ | async)?.list; trackBy: trackByFn"

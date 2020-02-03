@@ -5,6 +5,7 @@ import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { Params, Router } from '@angular/router';
 import { UserCriteria } from './+state/users.actions';
 import { navigate } from '@translatr/utils';
+import { FilterCriteria } from '../../shared/list-header/list-header.component';
 
 @Component({
   selector: 'app-projects-page',
@@ -44,15 +45,7 @@ export class UsersPageComponent implements OnInit, OnDestroy {
     this.facade.unload();
   }
 
-  onLoadUsers(limit: number) {
-    return this.navigate({ limit });
-  }
-
-  onSearch(search: string) {
-    return this.navigate({ search });
-  }
-
-  navigate(criteria: Partial<UserCriteria>): Promise<boolean> {
+  onFilter(criteria: FilterCriteria): Promise<boolean> {
     return navigate(this.router, criteria);
   }
 }

@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectCriteria, User } from '@dev/translatr-model';
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { UserFacade } from '../+state/user.facade';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { FilterCriteria } from '../../../shared/list-header/list-header.component';
+import { navigate } from '@translatr/utils';
 
 @Component({
   selector: 'app-user-projects',
@@ -15,12 +16,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 export class UserProjectsComponent implements OnInit {
   projects$ = this.facade.projects$;
   canCreateProject$ = this.facade.canCreateProject$;
-  criteria$: Subject<ProjectCriteria> =
-    new BehaviorSubject<ProjectCriteria>({
-      order: 'whenUpdated desc',
-      limit: 10,
-      fetch: 'progress'
-    });
+  criteria$ = this.facade.projectsCriteria$;
 
   constructor(
     private readonly facade: UserFacade,
@@ -30,37 +26,21 @@ export class UserProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.facade.user$
-      .pipe(filter(user => !!user), take(1))
-      .subscribe((user: User) => {
-        this.updateCriteria({ owner: user.username });
-
-        this.criteria$.pipe(takeUntil(this.facade.destroy$))
-          .subscribe((criteria) => this.facade.loadProjects(criteria));
-      });
-  }
-
-  onFilter(search: string) {
-    this.updateCriteria({ search });
-  }
-
-  onMore(limit: number) {
-    this.updateCriteria({ limit });
-  }
-
-  updateCriteria(updatedCriteria: Partial<ProjectCriteria>): void {
     this.criteria$
-      .asObservable()
-      .pipe(take(1))
-      .subscribe((criteria) => {
-        if (!!updatedCriteria.search) {
-          criteria.search = updatedCriteria.search;
-        } else {
-          delete criteria.search;
-        }
-
-        this.criteria$.next({ ...criteria, ...updatedCriteria });
+      .pipe(
+        withLatestFrom(this.facade.user$.pipe(filter(x => !!x))),
+        takeUntil(this.facade.destroy$)
+      )
+      .subscribe(([criteria, user]: [ProjectCriteria, User]) => {
+        this.facade.loadProjects({
+          owner: user.username,
+          ...criteria
+        });
       });
+  }
+
+  onFilter(criteria: FilterCriteria): void {
+    navigate(this.router, criteria);
   }
 
   openProjectCreationDialog(): void {

@@ -14,7 +14,9 @@ import {
   localesLoaded,
   localeUpdated,
   memberDeleted,
+  membersLoaded,
   messagesLoaded,
+  modifiersLoaded,
   projectActivitiesLoaded,
   projectActivityAggregatedLoaded,
   projectLoaded,
@@ -45,6 +47,9 @@ export interface ProjectState {
   messages?: PagedList<Message>;
   messagesSearch: RequestCriteria;
 
+  members?: PagedList<Member>;
+  modifiers?: PagedList<Member>;
+  membersSearch: RequestCriteria;
   member?: Member;
   memberError?: any;
 
@@ -71,6 +76,10 @@ export const initialState: ProjectState = {
     offset: 0,
     order: 'name asc',
     fetch: 'count,progress'
+  },
+  membersSearch: {
+    limit: 1000,
+    offset: 0
   },
   messagesSearch: {
     limit: 50,
@@ -208,6 +217,14 @@ const reducer = createReducer(
     })
   ),
   on(
+    membersLoaded,
+    (state, { payload }) => ({ ...state, members: payload })
+  ),
+  on(
+    modifiersLoaded,
+    (state, { payload }) => ({ ...state, modifiers: payload })
+  ),
+  on(
     deleteMember,
     (state, { payload }) => resetMember(state)
   ),
@@ -216,10 +233,8 @@ const reducer = createReducer(
     (state, { payload }) => ({
       ...state,
       member: payload,
-      project: {
-        ...state.project,
-        members: state.project.members.filter(m => m.id !== payload.id)
-      }
+      members: pagedListDelete(state.members, payload),
+      modifiers: pagedListDelete(state.modifiers, payload)
     })
   ),
   on(

@@ -1,5 +1,3 @@
-import { PagedList } from '@dev/translatr-model';
-
 export const pickRandomly = <T>(options: Array<T>): T => {
   return options[Math.ceil(Math.random() * options.length) - 1];
 };
@@ -52,11 +50,11 @@ export const pickKeys = <T>(obj: T, keys: (keyof T)[]): {} => {
     }, {});
 };
 
-export const slicePagedList = <T>(
-  pagedList: PagedList<T> | undefined,
+export const slicePagedList = <T, U extends { list: T[] }>(
+  pagedList: U | undefined,
   endExclusive: number,
   compareFn: (a: T, b: T) => number = () => 0
-): PagedList<T> | undefined => {
+): U | undefined => {
   if (!pagedList || !pagedList.list) {
     return undefined;
   }
@@ -66,4 +64,3 @@ export const slicePagedList = <T>(
     list: pagedList.list.slice().sort(compareFn).slice(0, endExclusive)
   };
 };
-

@@ -6,6 +6,7 @@ import { filter, switchMapTo, take } from 'rxjs/operators';
 import { ProjectFacade } from '../../+state/project.facade';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
+import { defaultFilters, FilterCriteria } from '../../../../shared/list-header/list-header.component';
 
 @Component({
   selector: 'app-member-list',
@@ -13,43 +14,48 @@ import { Router } from '@angular/router';
   styleUrls: ['./member-list.component.scss']
 })
 export class MemberListComponent {
-  memberList: PagedList<Member>;
   ownerCount: number;
-  @Input() criteria: RequestCriteria;
 
+  @Input() criteria: RequestCriteria;
   @Input() project: Project;
 
-  private _members: Array<Member>;
-
-  get members(): Array<Member> {
-    return this._members;
-  }
+  @Output() filter = new EventEmitter<FilterCriteria>();
+  filters = defaultFilters;
 
   @Input() canCreate = false;
   @Input() canDelete = false;
   @Input() canModifyOwner = false;
   @Input() canTransferOwnership = false;
 
-  @Input() set members(members: Array<Member>) {
-    this._members = members;
-    this.memberList = {
-      list: members,
-      total: members.length,
-      hasNext: false,
-      hasPrev: false,
-      limit: -1,
-      offset: 0
-    };
-    this.ownerCount = members.filter(m => m.role === MemberRole.Owner).length;
+  private _members: PagedList<Member>;
+
+  get members(): PagedList<Member> {
+    return this._members;
   }
 
-  @Output() filter = new EventEmitter<string>();
   @Output() edit = new EventEmitter<Member>();
   @Output() delete = new EventEmitter<Member>();
 
   project$ = this.facade.project$;
   // @ts-ignore
   @HostBinding('style.display') private readonly display = 'block';
+
+  @Input() set members(members: PagedList<Member>) {
+    this._members = members;
+    this.ownerCount = members !== undefined
+      ? members.list.filter(m => m.role === MemberRole.Owner).length
+      : 0;
+  }
+
+  // filters = [
+  //   ...defaultFilters,
+  //   {
+  //     key: 'roles',
+  //     type: 'string',
+  //     title: 'Role',
+  //     value: ''
+  //   }
+  // ];
 
   constructor(
     private readonly facade: ProjectFacade,
@@ -91,7 +97,7 @@ export class MemberListComponent {
     return false;
   }
 
-  onFilter(search: string): void {
-    this.filter.emit(search);
+  onFilter(criteria: FilterCriteria): void {
+    this.filter.emit(criteria);
   }
 }

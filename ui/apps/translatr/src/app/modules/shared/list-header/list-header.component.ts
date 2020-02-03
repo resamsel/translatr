@@ -1,5 +1,16 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FilterFieldFilter } from '@dev/translatr-components';
+import { RequestCriteria } from '@dev/translatr-model';
+
+export const defaultFilters: FilterFieldFilter[] = [{
+  key: 'search',
+  type: 'string',
+  title: 'Search',
+  value: ''
+}];
+
+export type FilterCriteria =
+  RequestCriteria & Record<string, string | number | boolean | undefined>;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -7,31 +18,16 @@ import { FilterFieldFilter } from '@dev/translatr-components';
   templateUrl: './list-header.component.html',
   styleUrls: ['./list-header.component.scss']
 })
-export class ListHeaderComponent {
+export class ListHeaderComponent implements OnInit {
   selection: Array<FilterFieldFilter> = [];
-  filters = [{
-    key: 'search',
-    type: 'string',
-    title: 'Search',
-    value: ''
-  }];
 
-  private _search: string;
+  @Input() filters = defaultFilters;
+  @Output() readonly filter = new EventEmitter<FilterCriteria>();
 
-  get search(): string {
-    return this._search;
-  }
+  private _criteria: FilterCriteria;
 
-  @Input() set search(search: string) {
-    if (search === undefined || search === null || search.length === 0) {
-      if (this.selection.length !== 0) {
-        this.selection = [];
-      }
-    } else if (search !== this._search) {
-      this.selection = [{ key: 'search', value: search, type: 'string' }];
-    }
-
-    this._search = search;
+  get criteria(): FilterCriteria {
+    return this._criteria;
   }
 
   @Input() searchEnabled = true;
@@ -44,13 +40,43 @@ export class ListHeaderComponent {
 
   @Output() readonly add = new EventEmitter<void>();
   @Output() readonly remove = new EventEmitter<void>();
-  @Output() readonly filter = new EventEmitter<string>();
 
-  onSelected(selected: ReadonlyArray<FilterFieldFilter>) {
-    if (selected.length > 0 && typeof selected[0].value === 'string') {
-      this.filter.emit(selected[0].value);
+  @Input() set criteria(criteria: FilterCriteria) {
+    this._criteria = criteria;
+
+    this.updateCriteria();
+  }
+
+  ngOnInit(): void {
+    this.updateCriteria();
+  }
+
+  onSelected(selected: ReadonlyArray<FilterFieldFilter>): void {
+    if (selected === undefined || selected === null) {
+      selected = [];
+    }
+
+    const selection = selected.reduce((agg, curr) => ({
+      ...agg,
+      [curr.key]: curr.value
+    }), {});
+    this.filter.emit(this.filters.reduce((agg, curr) => ({
+      ...agg,
+      [curr.key]: selection[curr.key]
+    }), {}));
+  }
+
+  private updateCriteria(): void {
+    if (!!this.criteria) {
+      this.selection = this.filters
+        .filter(filter => this.criteria[filter.key] !== undefined)
+        .map(filter => ({
+          key: filter.key,
+          value: this.criteria[filter.key],
+          type: filter.type
+        }));
     } else {
-      this.filter.emit('');
+      this.selection = [];
     }
   }
 }

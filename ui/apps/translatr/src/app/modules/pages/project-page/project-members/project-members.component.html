@@ -1,13 +1,13 @@
-<div class="container" *ngIf="(project$ | async) as project">
+<div class="container">
   <app-member-list
-    [project]="project"
-    [members]="members$ | async"
     (delete)="onDelete($event)"
-    (filter)="onFilter($event)"
+    [members]="members$ | async"
     [criteria]="criteria$ | async"
     [canCreate]="canModify$ | async"
     [canDelete]="canModify$ | async"
     [canModifyOwner]="canModifyOwner$ | async"
     [canTransferOwnership]="canTransferOwnership$ | async"
+    (filter)="onFilter($event)"
+    [project]="project$ | async"
   ></app-member-list>
 </div>

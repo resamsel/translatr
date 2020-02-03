@@ -122,7 +122,3 @@ h5 {
   line-height: 110%;
   margin: .82rem 0 .656rem 0;
 }
-
-.header:not(.section) {
-  @include mat-elevation(2);
-}

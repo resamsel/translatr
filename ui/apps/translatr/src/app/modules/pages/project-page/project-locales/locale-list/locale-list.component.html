@@ -10,7 +10,6 @@
   i18n-addTooltip="@@locale.create.tooltip"
   (create)="openLocaleDialog({projectId: project.id})"
   (filter)="onFilter($event)"
-  (more)="more.emit($event)"
 >
   <a
     *ngFor="let locale of locales?.list; trackBy: trackByFn"

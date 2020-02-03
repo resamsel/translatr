@@ -18,8 +18,7 @@
       <app-user-list
         [criteria]="criteria$ | async"
         [users]="users$ | async"
-        (filter)="onSearch($event)"
-        (more)="onLoadUsers($event)"
+        (filter)="onFilter($event)"
       ></app-user-list>
     </section>
   </div>

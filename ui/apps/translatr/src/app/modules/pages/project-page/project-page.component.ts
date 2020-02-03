@@ -35,10 +35,13 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
       pluck('id'),
       distinctUntilChanged(),
       tap((projectId: string) => {
+        this.facade.loadModifiers(projectId);
         this.facade.loadLocales(projectId, {});
         this.facade.loadKeys(projectId, {});
+        this.facade.loadMembers(projectId, {});
         this.facade.loadMessages(projectId, { order: 'whenCreated desc' });
         this.facade.loadActivityAggregated(projectId);
+        this.facade.loadActivities(projectId);
       }),
       takeUntil(this.facade.unload$)
     ).subscribe();

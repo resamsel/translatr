@@ -92,13 +92,6 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
     return handleFilterFieldSelection(this.router, this.filters, selected);
   }
 
-  onLoadMore(limit: number): void {
-    this.router.navigate([], {
-      queryParamsHandling: 'merge',
-      queryParams: { limit }
-    });
-  }
-
   onKeyChange(value: string) {
     this.router.navigate(['..', value], {
       queryParamsHandling: 'preserve',

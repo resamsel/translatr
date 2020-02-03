@@ -15,34 +15,60 @@
       height: 16px;
     }
 
-    .subtitle {
-      width: 64%;
-    }
-
     @for $i from 1 through 20 {
       &:nth-child(#{$i}) {
         animation-delay: #{$i/10}s;
       }
     }
 
-    &:nth-child(1n) .title {
-      width: 60%;
+    &:nth-child(1n) {
+      .title {
+        width: 42%;
+      }
+
+      .subtitle {
+        width: 38%;
+      }
     }
 
-    &:nth-child(2n) .title {
-      width: 42%;
+    &:nth-child(2n) {
+      .title {
+        width: 28%;
+      }
+
+      .subtitle {
+        width: 18%;
+      }
     }
 
-    &:nth-child(3n) .title {
-      width: 82%;
+    &:nth-child(3n) {
+      .title {
+        width: 48%;
+      }
+
+      .subtitle {
+        width: 28%;
+      }
     }
 
-    &:nth-child(4n) .title {
-      width: 48%;
+    &:nth-child(4n) {
+      .title {
+        width: 32%;
+      }
+
+      .subtitle {
+        width: 38%;
+      }
     }
 
-    &:nth-child(5n) .title {
-      width: 66%;
+    &:nth-child(5n) {
+      .title {
+        width: 44%;
+      }
+
+      .subtitle {
+        width: 32%;
+      }
     }
   }
 

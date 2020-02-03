@@ -1,9 +1,9 @@
 <app-project-list
-  (filter)="onFilter($event)"
-  (more)="onMore($event)"
   [projects]="projects$ | async"
   [canCreate]="canCreateProject$ | async"
-  showFilter="true"></app-project-list>
+  (filter)="onFilter($event)"
+  [showFilter]="true"
+></app-project-list>
 
 <button
   mat-fab

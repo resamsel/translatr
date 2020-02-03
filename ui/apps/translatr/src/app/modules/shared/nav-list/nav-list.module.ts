@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { ListHeaderModule } from '../list-header/list-header.module';
 import { MatCardModule } from '@angular/material';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [NavListComponent],
@@ -14,7 +15,8 @@ import { MatCardModule } from '@angular/material';
 
     MatListModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    RouterModule
   ],
   exports: [NavListComponent]
 })

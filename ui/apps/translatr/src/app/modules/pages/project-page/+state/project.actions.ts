@@ -8,6 +8,7 @@ import {
   Locale,
   LocaleCriteria,
   Member,
+  MemberCriteria,
   Message,
   MessageCriteria,
   PagedList,
@@ -147,6 +148,38 @@ export const keyDeleted = createAction(
 export const keyDeleteError = createAction(
   '[Keys API] Key Delete Error',
   props<{ error: any }>()
+);
+
+// Members
+
+export const loadMembers = createAction(
+  '[Project Page] Load Members',
+  props<{ payload: MemberCriteria }>()
+);
+
+export const membersLoadError = createAction(
+  '[Members API] Members Load Error',
+  props<{ error: any }>()
+);
+
+export const membersLoaded = createAction(
+  '[Members API] Members Loaded',
+  props<{ payload: PagedList<Member> }>()
+);
+
+export const loadModifiers = createAction(
+  '[Project Page] Load Modifiers',
+  props<{ payload: MemberCriteria }>()
+);
+
+export const modifiersLoadError = createAction(
+  '[Modifiers API] Modifiers Load Error',
+  props<{ error: any }>()
+);
+
+export const modifiersLoaded = createAction(
+  '[Modifiers API] Modifiers Loaded',
+  props<{ payload: PagedList<Member> }>()
 );
 
 export const deleteMember = createAction(

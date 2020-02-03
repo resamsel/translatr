@@ -41,6 +41,8 @@ export class ProjectInfoComponent {
     )
   );
 
+  members$ = this.facade.members$;
+
   constructor(
     private readonly facade: ProjectFacade,
     private readonly dialog: MatDialog,

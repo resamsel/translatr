@@ -10,7 +10,6 @@
   i18n-addTooltip="@@key.create.tooltip"
   (create)="openKeyEditDialog({projectId: project.id})"
   (filter)="onFilter($event)"
-  (more)="more.emit($event)"
 >
   <a
     *ngFor="let key of keys?.list; trackBy: trackByFn"

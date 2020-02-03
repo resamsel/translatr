@@ -107,6 +107,10 @@ a .mat-card {
 }
 
 .light-theme {
+  .mat-nav-list .mat-list-item:hover {
+    border-radius: 2px;
+  }
+
   .project .mat-card {
     background: #ffa000;
     color: white;
@@ -319,10 +323,6 @@ pre[class*="language-"]:before {
   padding-bottom: 8px;
 }
 
-.mat-list-item:not(:last-child) {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-}
-
 .clearfix {
   clear: both;
 }
@@ -443,6 +443,10 @@ pre[class*="language-"]:before {
   color: white;
   display: flex;
   flex-direction: column;
+
+  &:not(.section) {
+    @include mat-elevation(4);
+  }
 
   .title {
     flex-grow: 1;

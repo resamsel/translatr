@@ -10,7 +10,9 @@ import {
   deleteMember,
   loadKeys,
   loadLocales,
+  loadMembers,
   loadMessages,
+  loadModifiers,
   loadProject,
   loadProjectActivities,
   loadProjectActivityAggregated,
@@ -27,19 +29,24 @@ import {
   KeyCriteria,
   Locale,
   LocaleCriteria,
+  Member,
+  MemberCriteria,
   MemberRole,
   memberRoles,
   Project,
-  RequestCriteria,
   User,
   UserRole
 } from '@dev/translatr-model';
-import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
-import { AppFacade } from '../../../../+state/app.facade';
-import { Params } from '@angular/router';
+import { AppFacade, defaultParams } from '../../../../+state/app.facade';
 
-const hasRolesAny = (project: Project, user: User, ...roles: MemberRole[]): boolean => {
+const hasRolesAny = (
+  project: Project,
+  members: Member[],
+  user: User,
+  ...roles: MemberRole[]
+): boolean => {
   if (project === undefined || user === undefined) {
     return false;
   }
@@ -52,27 +59,32 @@ const hasRolesAny = (project: Project, user: User, ...roles: MemberRole[]): bool
     return true;
   }
 
-  return project.members
+  if (members === undefined) {
+    return false;
+  }
+
+  return members
     .filter((member) => member.userId === user.id)
     .filter((member) => roles.includes(member.role))
     .length > 0;
 };
 
-const canAccess = (project: Project, me: User): boolean =>
-  hasRolesAny(project, me, ...memberRoles);
-const canEdit = (project: Project, me: User): boolean =>
-  hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
-const canDelete = (project: Project, me: User): boolean =>
-  hasRolesAny(project, me, MemberRole.Owner);
-const canModifyKey = (project: Project, me: User): boolean =>
-  hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Developer);
-const canModifyLocale = (project: Project, me: User): boolean =>
-  hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Translator);
-const canModifyMember = (project: Project, me: User): boolean =>
-  hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
+const canAccess = (project: Project, members: Member[], me: User): boolean =>
+  hasRolesAny(project, members, me, ...memberRoles);
+const canEdit = (project: Project, members: Member[], me: User): boolean =>
+  hasRolesAny(project, members, me, MemberRole.Owner, MemberRole.Manager);
+const canDelete = (project: Project, members: Member[], me: User): boolean =>
+  hasRolesAny(project, members, me, MemberRole.Owner);
+const canModifyKey = (project: Project, members: Member[], me: User): boolean =>
+  hasRolesAny(project, members, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Developer);
+const canModifyLocale = (project: Project, members: Member[], me: User): boolean =>
+  hasRolesAny(project, members, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Translator);
+const canModifyMember = (project: Project, members: Member[], me: User): boolean =>
+  hasRolesAny(project, members, me, MemberRole.Owner, MemberRole.Manager);
 
 @Injectable()
 export class ProjectFacade {
+
   private _unload$ = new Subject<void>();
 
   get unload$(): Observable<void> {
@@ -83,34 +95,12 @@ export class ProjectFacade {
     select(projectQuery.getProject),
     takeUntil(this.unload$)
   );
-  permission$ = combineLatest([this.project$, this.appFacade.me$])
-    .pipe(takeUntil(this.unload$));
-  canAccess$ = this.permission$.pipe(
-    filter(([project]) => !!project),
-    map(([project, me]) => canAccess(project, me))
-  );
-  canEdit$ = this.permission$.pipe(
-    filter(([project, me]) => !!project),
-    map(([project, me]) => canEdit(project, me))
-  );
-  canDelete$ = this.permission$.pipe(
-    map(([project, me]) => canDelete(project, me))
-  );
-
-  criteria$ = this.appFacade.queryParams$.pipe(
-    map((params: Params) => ['search', 'limit', 'offset']
-      .filter(f => params[f] !== undefined && params[f] !== '')
-      .reduce((acc, curr) => ({ ...acc, [curr]: params[curr] }), {})
-    ),
-    distinctUntilChanged((a: RequestCriteria, b: RequestCriteria) =>
-      a.search === b.search && a.limit === b.limit && a.offset === b.offset)
-  );
 
   locales$ = this.store.pipe(
     select(projectQuery.getLocales),
     takeUntil(this.unload$)
   );
-  localesCriteria$ = this.criteria$;
+  localesCriteria$ = this.appFacade.criteria$();
   localeModified$ = this.store.pipe(
     select(projectQuery.getLocale),
     takeUntil(this.unload$)
@@ -119,15 +109,12 @@ export class ProjectFacade {
     select(projectQuery.getLocaleError),
     takeUntil(this.unload$)
   );
-  canModifyLocale$ = this.permission$.pipe(
-    map(([project, me]) => canModifyLocale(project, me))
-  );
 
   keys$ = this.store.pipe(
     select(projectQuery.getKeys),
     takeUntil(this.unload$)
   );
-  keysCriteria$ = this.criteria$;
+  keysCriteria$ = this.appFacade.criteria$();
   keyModified$ = this.store.pipe(
     select(projectQuery.getKey),
     takeUntil(this.unload$)
@@ -136,18 +123,21 @@ export class ProjectFacade {
     select(projectQuery.getKeyError),
     takeUntil(this.unload$)
   );
-  canModifyKey$ = this.permission$.pipe(
-    map(([project, me]) => canModifyKey(project, me))
-  );
 
   messages$ = this.store.pipe(
     select(projectQuery.getMessages),
     takeUntil(this.unload$)
   );
 
-  canModifyMember$ = this.permission$.pipe(
-    map(([project, me]) => canModifyMember(project, me))
+  members$ = this.store.pipe(
+    select(projectQuery.getMembers),
+    takeUntil(this.unload$)
   );
+  modifiers$ = this.store.pipe(
+    select(projectQuery.getModifiers),
+    takeUntil(this.unload$)
+  );
+  membersCriteria$ = this.appFacade.criteria$([...defaultParams, 'roles']);
   memberModified$ = this.store.pipe(
     select(projectQuery.getMember),
     takeUntil(this.unload$)
@@ -160,6 +150,38 @@ export class ProjectFacade {
   activities$ = this.store.pipe(
     select(projectQuery.getActivities),
     takeUntil(this.unload$)
+  );
+  activitiesCriteria$ = this.appFacade.criteria$();
+
+  permission$ = combineLatest([
+    this.project$.pipe(filter(x => !!x)),
+    this.modifiers$.pipe(filter(x => !!x)),
+    this.appFacade.me$
+  ])
+    .pipe(takeUntil(this.unload$));
+  canAccess$ = this.permission$.pipe(
+    map(([project, members, me]) =>
+      canAccess(project, members.list, me))
+  );
+  canEdit$ = this.permission$.pipe(
+    map(([project, members, me]) =>
+      canEdit(project, members.list, me))
+  );
+  canDelete$ = this.permission$.pipe(
+    map(([project, members, me]) =>
+      canDelete(project, members.list, me))
+  );
+  canModifyLocale$ = this.permission$.pipe(
+    map(([project, members, me]) =>
+      canModifyLocale(project, members.list, me))
+  );
+  canModifyKey$ = this.permission$.pipe(
+    map(([project, members, me]) =>
+      canModifyKey(project, members.list, me))
+  );
+  canModifyMember$ = this.permission$.pipe(
+    map(([project, members, me]) =>
+      canModifyMember(project, members.list, me))
   );
 
   constructor(
@@ -180,6 +202,20 @@ export class ProjectFacade {
     this.store.dispatch(loadKeys({ payload: { ...criteria, projectId } }));
   }
 
+  loadMembers(projectId: string, criteria?: MemberCriteria) {
+    this.store.dispatch(loadMembers({ payload: { ...criteria, projectId } }));
+  }
+
+  loadModifiers(projectId: string) {
+    this.store.dispatch(loadModifiers({
+      payload: {
+        projectId,
+        limit: 1000,
+        roles: 'Owner,Manager'
+      }
+    }));
+  }
+
   loadMessages(projectId: string, criteria?: MessageCriteria) {
     this.store.dispatch(loadMessages({ payload: { ...criteria, projectId } }));
   }
@@ -188,8 +224,8 @@ export class ProjectFacade {
     this.store.dispatch(loadProjectActivityAggregated({ payload: { id: projectId } }));
   }
 
-  loadActivities(criteria: ActivityCriteria) {
-    this.store.dispatch(loadProjectActivities({ payload: criteria }));
+  loadActivities(projectId: string, criteria?: ActivityCriteria) {
+    this.store.dispatch(loadProjectActivities({ payload: { ...criteria, projectId } }));
   }
 
   unloadProject() {

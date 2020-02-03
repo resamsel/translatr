@@ -1,9 +1,9 @@
 <app-nav-list
-  (filter)="onFilter($event)"
-  (more)="loadMore()"
   [empty]="empty"
   [pagedList]="activities"
-  [showMore]="showMore">
+  (filter)="onFilter($event)"
+  [showMore]="showMore"
+>
   <mat-list-item *ngFor="let activity of activities?.list; trackBy: trackByFn">
     <img
       [md5Hash]="activity.userEmailHash"

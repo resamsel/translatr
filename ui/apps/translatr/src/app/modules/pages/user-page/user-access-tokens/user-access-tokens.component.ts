@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
 import { trackByFn } from '@translatr/utils';
 import { Observable, Subject } from 'rxjs';
+import { FilterCriteria } from '../../../shared/list-header/list-header.component';
 
 @Component({
   selector: 'app-user-access-tokens',
@@ -57,12 +58,12 @@ export class UserAccessTokensComponent implements OnInit, OnDestroy {
         .navigate([accessToken.id], { relativeTo: this.route })));
   }
 
-  onFilter(search: string) {
+  onFilter(criteria: FilterCriteria): void {
     this.user$.pipe(take(1))
       .subscribe((user: User) =>
         this.facade.loadAccessTokens({
           userId: user.id,
-          search
+          ...criteria
         }));
   }
 }

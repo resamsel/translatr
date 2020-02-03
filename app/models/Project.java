@@ -24,7 +24,6 @@ import validators.NameUnique;
 import validators.ProjectName;
 import validators.ProjectNameUniqueChecker;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
@@ -98,7 +96,8 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public List<Key> keys;
 
   @JsonIgnore
-  @OneToMany(cascade = CascadeType.PERSIST)
+//  @OneToMany(cascade = CascadeType.PERSIST)
+  @OneToMany
   public List<ProjectUser> members;
 
   @Transient
@@ -267,12 +266,11 @@ public class Project implements Model<Project, UUID>, Suggestable {
       return ProjectRole.Owner;
     }
 
-    Optional<ProjectUser> member = members.stream().filter(m -> user.equals(m.user)).findFirst();
-    if (member.isPresent()) {
-      return member.get().role;
-    }
-
-    return null;
+    return members.stream()
+        .filter(m -> user.equals(m.user))
+        .findFirst()
+        .map(projectUser -> projectUser.role)
+        .orElse(null);
   }
 
   public static UUID brandProjectId(User loggedInUser, Http.Context ctx) {

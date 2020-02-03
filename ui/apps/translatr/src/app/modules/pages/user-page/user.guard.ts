@@ -22,7 +22,6 @@ export class UserGuard implements CanActivate {
       skip(1),
       map((user: User) => !!user),
       tap((found: boolean) => {
-        console.log('UserGuard: found?', found);
         if (!found) {
           this.router.navigate(
             ['/not-found'],

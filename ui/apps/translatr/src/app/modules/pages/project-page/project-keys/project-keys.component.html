@@ -6,7 +6,6 @@
     [canCreate]="canModify$ | async"
     [canDelete]="canModify$ | async"
     (fetch)="onFetch($event)"
-    (more)="onMore($event)"
     (edit)="onEdit($event)"
     (delete)="onDelete($event)"
   ></app-key-list>
