@@ -23,7 +23,7 @@
     <section>
       <app-project-list
         (create)="openProjectCreationDialog()"
-        (filter)="onSearch($event)"
+        (filter)="onFilter($event)"
         [canCreate]="true"
         [criteria]="criteria$ | async"
         [projects]="projects$ | async"

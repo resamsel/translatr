@@ -8,6 +8,7 @@ import { Params, Router } from '@angular/router';
 import { ProjectCriteria, User } from '@dev/translatr-model';
 import { combineLatest } from 'rxjs';
 import { navigate } from '@translatr/utils';
+import { FilterCriteria } from '../../shared/list-header/list-header.component';
 
 @Component({
   selector: 'app-projects-page',
@@ -63,7 +64,7 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
         .navigate([project.ownerUsername, project.name])));
   }
 
-  onSearch(search: string) {
-    return navigate(this.router, { search });
+  onFilter(criteria: FilterCriteria): void {
+    navigate(this.router, criteria);
   }
 }
