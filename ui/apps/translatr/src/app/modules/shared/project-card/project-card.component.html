@@ -10,7 +10,7 @@
         class="user-icon"
         [matTooltip]="project?.ownerName"
       />
-      <span class="owner">{{ project?.ownerName }}</span>
+      <span class="owner ellipsis">{{ project?.ownerName }}</span>
       <span
         class="when-created"
         [matTooltip]="project?.whenCreated | date: 'full'"
