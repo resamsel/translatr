@@ -85,21 +85,11 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@nrwl/jest:jest",
           "options": {
-            "main": "apps/translatr/src/test.ts",
-            "polyfills": "apps/translatr/src/polyfills.ts",
+            "jestConfig": "apps/translatr/jest.config.js",
             "tsConfig": "apps/translatr/tsconfig.spec.json",
-            "karmaConfig": "apps/translatr/karma.conf.js",
-            "styles": [
-              "libs/translatr-components/src/styles/theme.scss",
-              "libs/translatr-components/src/styles/media.scss"
-            ],
-            "scripts": [],
-            "assets": [
-              "apps/translatr/src/favicon.png",
-              "apps/translatr/src/assets"
-            ]
+            "setupFile": "apps/translatr/src/test-setup.ts"
           }
         },
         "lint": {
