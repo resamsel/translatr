@@ -1,12 +1,12 @@
 package services.impl;
 
-import com.avaje.ebean.Ebean;
 import criterias.KeyCriteria;
 import models.Key;
 import models.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
+import repositories.Persistence;
 import services.CacheService;
 import services.KeyService;
 import services.LogEntryService;
@@ -29,16 +29,18 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyServiceImpl.class);
 
   private final KeyRepository keyRepository;
+  private final Persistence persistence;
 
   private final CacheService cache;
 
   @Inject
   public KeyServiceImpl(Validator validator, CacheService cache, KeyRepository keyRepository,
-                        LogEntryService logEntryService) {
+                        LogEntryService logEntryService, Persistence persistence) {
     super(validator, cache, keyRepository, Key::getCacheKey, logEntryService);
 
     this.cache = cache;
     this.keyRepository = keyRepository;
+    this.persistence = persistence;
   }
 
   /**
@@ -84,7 +86,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
   @Override
   public void resetWordCount(UUID projectId) {
     try {
-      Ebean.createSqlUpdate("update key set word_count = null where project_id = :projectId")
+      persistence.createSqlUpdate("update key set word_count = null where project_id = :projectId")
           .setParameter("projectId", projectId).execute();
     } catch (Exception e) {
       LOGGER.error("Error while resetting word count", e);

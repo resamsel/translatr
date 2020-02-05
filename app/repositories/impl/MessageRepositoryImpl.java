@@ -211,9 +211,9 @@ public class MessageRepositoryImpl extends
     activityActor.tell(
         new Activities<>(t.stream().filter(
             // Only track changes of message´s value
-            m -> Ebean.getBeanState(m).isNew() || !Objects
+            m -> persistence.isNew(m) || !Objects
                 .equals(m.value, messages.get(m.id).value))
-            .map(m -> Ebean.getBeanState(m).isNew() ? logEntryCreate(m)
+            .map(m -> persistence.isNew(m) ? logEntryCreate(m)
                 : logEntryUpdate(m, messages.get(m.id)))
             .collect(toList())),
         null

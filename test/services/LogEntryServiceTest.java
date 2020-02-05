@@ -1,5 +1,6 @@
 package services;
 
+import com.avaje.ebean.Ebean;
 import criterias.LogEntryCriteria;
 import criterias.PagedListFactory;
 import models.LogEntry;
@@ -11,6 +12,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LogEntryRepository;
+import repositories.Persistence;
 import services.impl.CacheServiceImpl;
 import services.impl.LogEntryServiceImpl;
 import utils.CacheApiMock;
@@ -34,6 +36,7 @@ public class LogEntryServiceTest {
   private LogEntryRepository logEntryRepository;
   private LogEntryService logEntryService;
   private CacheService cacheService;
+  private Persistence persistence;
   private User johnSmith;
   private User janeDoe;
   private Project project1;
@@ -94,10 +97,12 @@ public class LogEntryServiceTest {
     logEntryRepository = mock(LogEntryRepository.class,
         withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
     cacheService = new CacheServiceImpl(new CacheApiMock());
+    persistence = mock(Persistence.class);
     logEntryService = new LogEntryServiceImpl(
         mock(Validator.class),
         cacheService,
-        logEntryRepository
+        logEntryRepository,
+        persistence
     );
 
     johnSmith = UserRepositoryMock.byUsername("johnsmith");
@@ -106,6 +111,7 @@ public class LogEntryServiceTest {
 
     when(logEntryRepository.create(any())).then(this::persist);
     when(logEntryRepository.update(any())).then(this::persist);
+    when(persistence.createQuery(any())).then(invocation -> Ebean.createQuery(invocation.getArgument(0)));
   }
 
   private LogEntry persist(InvocationOnMock a) {

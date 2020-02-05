@@ -3,7 +3,6 @@ package repositories.impl;
 import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -96,7 +95,7 @@ public class LocaleRepositoryImpl extends
 
     if (Boolean.TRUE.equals(criteria.getMissing())) {
       ExpressionList<Message> messageQuery =
-          Ebean.createQuery(Message.class).where().raw("locale.id = l.id");
+          persistence.createQuery(Message.class).where().raw("locale.id = l.id");
 
       if (criteria.getKeyId() != null) {
         messageQuery.eq("key.id", criteria.getKeyId());
@@ -157,7 +156,7 @@ public class LocaleRepositoryImpl extends
   @Override
   public Map<UUID, Double> progress(UUID projectId) {
     List<Stat> stats = log(
-        () -> Ebean.find(Stat.class)
+        () -> persistence.createQuery(Stat.class)
             .setRawSql(RawSqlBuilder
                 .parse("SELECT " +
                     PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +

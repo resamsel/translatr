@@ -3,7 +3,6 @@ package repositories.impl;
 import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -139,7 +138,7 @@ public class ProjectRepositoryImpl extends
   @Override
   public Map<UUID, Double> progress(List<UUID> projectIds) {
     List<Stat> stats = log(
-        () -> Ebean.find(Stat.class)
+        () -> persistence.createQuery(Stat.class)
             .setRawSql(RawSqlBuilder
                 .parse("SELECT " +
                     PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +
@@ -224,8 +223,8 @@ public class ProjectRepositoryImpl extends
   @Override
   protected void postSave(Project t, boolean update) {
     super.postSave(t, update);
-    Ebean.refresh(t);
-    Ebean.refresh(t.owner);
+    persistence.refresh(t);
+    persistence.refresh(t.owner);
 
     if (!update) {
       activityActor.tell(

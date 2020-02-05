@@ -1,6 +1,8 @@
 package repositories.impl;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Query;
+import com.avaje.ebean.SqlUpdate;
 import com.avaje.ebean.Transaction;
 import repositories.Persistence;
 import repositories.RepositoryProvider;
@@ -58,5 +60,25 @@ public class PersistenceImpl implements Persistence {
   @Override
   public void markAsDirty(Object t) {
     Ebean.markAsDirty(t);
+  }
+
+  @Override
+  public void refresh(Object t) {
+    Ebean.refresh(t);
+  }
+
+  @Override
+  public <T> Query<T> createQuery(Class<T> clazz) {
+    return Ebean.createQuery(clazz);
+  }
+
+  @Override
+  public String getDatabasePlatformName() {
+    return Ebean.getDefaultServer().getPluginApi().getDatabasePlatform().getName();
+  }
+
+  @Override
+  public SqlUpdate createSqlUpdate(String sql) {
+    return Ebean.createSqlUpdate(sql);
   }
 }

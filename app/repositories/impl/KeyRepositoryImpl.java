@@ -3,7 +3,6 @@ package repositories.impl;
 import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -83,8 +82,11 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
     if (criteria.getSearch() != null) {
       query.disjunction().ilike("name", "%" + criteria.getSearch() + "%")
-          .exists(Ebean.createQuery(Message.class).where().raw("key.id = k.id")
-              .ilike("value", "%" + criteria.getSearch() + "%").query())
+          .exists(persistence.createQuery(Message.class)
+              .where()
+              .raw("key.id = k.id")
+              .ilike("value", "%" + criteria.getSearch() + "%")
+              .query())
           .endJunction();
     }
 
@@ -98,7 +100,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
     if (Boolean.TRUE.equals(criteria.getMissing())) {
       ExpressionList<Message> messageQuery =
-          Ebean.createQuery(Message.class).where().raw("key.id = k.id");
+          persistence.createQuery(Message.class).where().raw("key.id = k.id");
 
       if (criteria.getLocaleId() != null) {
         messageQuery.eq("locale.id", criteria.getLocaleId());
@@ -177,7 +179,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   @Override
   public Map<UUID, Double> progress(UUID projectId) {
     List<Stat> stats = log(
-        () -> Ebean.find(Stat.class)
+        () -> persistence.createQuery(Stat.class)
             .setRawSql(RawSqlBuilder
                 .parse("SELECT " +
                     PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +

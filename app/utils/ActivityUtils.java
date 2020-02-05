@@ -152,19 +152,19 @@ public class ActivityUtils {
       return null;
 
     switch (activity.contentType) {
-      case "Project":
+      case "dto.Project":
         return PROJECT_COLOR;
-      case "Locale":
+      case "dto.Locale":
         return LOCALE_COLOR;
-      case "Key":
+      case "dto.Key":
         return KEY_COLOR;
-      case "Message":
+      case "dto.Message":
         return MESSAGE_COLOR;
-      case "User":
+      case "dto.User":
         return USER_COLOR;
-      case "AccessToken":
+      case "dto.AccessToken":
         return ACCESS_TOKEN_COLOR;
-      case "ProjectUser":
+      case "dto.ProjectUser":
         return PROJECT_USER_COLOR;
       default:
         return "";

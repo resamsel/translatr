@@ -1,12 +1,12 @@
 package services.impl;
 
-import com.avaje.ebean.Ebean;
 import criterias.LocaleCriteria;
 import models.Locale;
 import models.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LocaleRepository;
+import repositories.Persistence;
 import services.CacheService;
 import services.LocaleService;
 import services.LogEntryService;
@@ -31,13 +31,16 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
 
   private final LocaleRepository localeRepository;
+  private final Persistence persistence;
 
   @Inject
   public LocaleServiceImpl(Validator validator, CacheService cache,
-                           LocaleRepository localeRepository, LogEntryService logEntryService) {
+                           LocaleRepository localeRepository, LogEntryService logEntryService,
+                           Persistence persistence) {
     super(validator, cache, localeRepository, Locale::getCacheKey, logEntryService);
 
     this.localeRepository = localeRepository;
+    this.persistence = persistence;
   }
 
   @Override
@@ -104,7 +107,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   @Override
   public void resetWordCount(UUID projectId) {
     try {
-      Ebean.createSqlUpdate("update locale set word_count = null where project_id = :projectId")
+      persistence.createSqlUpdate("update locale set word_count = null where project_id = :projectId")
           .setParameter("projectId", projectId).execute();
     } catch (Exception e) {
       LOGGER.error("Error while resetting word count", e);

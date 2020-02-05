@@ -4,7 +4,6 @@ import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activity;
 import actors.NotificationActorRef;
 import actors.NotificationProtocol.FollowNotification;
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -120,7 +119,7 @@ public class ProjectUserRepositoryImpl extends
   @Override
   protected void postSave(ProjectUser t, boolean update) {
     if (!update) {
-      Ebean.refresh(t.user);
+      persistence.refresh(t.user);
       activityActor.tell(
           new Activity<>(
               ActionType.Create, authProvider.loggedInUser(), t.project, dto.ProjectUser.class, null, toDto(t)

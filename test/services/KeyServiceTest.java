@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.libs.Json;
 import repositories.KeyRepository;
+import repositories.Persistence;
 import services.impl.CacheServiceImpl;
 import services.impl.KeyServiceImpl;
 import utils.CacheApiMock;
@@ -129,7 +130,8 @@ public class KeyServiceTest {
         mock(Validator.class),
         cacheService,
         keyRepository,
-        mock(LogEntryService.class)
+        mock(LogEntryService.class),
+        mock(Persistence.class)
     );
 
     when(keyRepository.save((Key) any())).then(this::persist);

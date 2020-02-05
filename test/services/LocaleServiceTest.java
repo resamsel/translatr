@@ -9,7 +9,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LocaleRepository;
-import repositories.ProjectRepository;
+import repositories.Persistence;
 import services.impl.CacheServiceImpl;
 import services.impl.LocaleServiceImpl;
 import utils.CacheApiMock;
@@ -18,7 +18,6 @@ import javax.validation.Validator;
 import java.util.UUID;
 
 import static assertions.CustomAssertions.assertThat;
-import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -93,7 +92,7 @@ public class LocaleServiceTest {
         cacheService,
         localeRepository,
         mock(LogEntryService.class),
-        mock(ProjectRepository.class)
+        mock(Persistence.class)
     );
 
     when(localeRepository.create(any())).then(this::persist);
