@@ -24,7 +24,10 @@ public class ProjectMapper {
     out.name = in.name;
     out.description = in.description;
     if (in.ownerId != null) {
-      out.owner = new User().withId(in.ownerId);
+      out.owner = new User()
+          .withId(in.ownerId)
+          .withUsername(in.ownerUsername)
+          .withName(in.ownerName);
     }
 
     return out;

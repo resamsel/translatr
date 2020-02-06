@@ -1,10 +1,10 @@
 package assertions;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
-import org.fest.assertions.api.AbstractAssert;
+import org.assertj.core.api.AbstractAssert;
 
 /**
  * Created by resamsel on 24/07/2017.

@@ -3,6 +3,7 @@ package mappers;
 import dto.Key;
 import dto.Message;
 import models.Project;
+import models.User;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -32,6 +33,16 @@ public class KeyMapper {
 
     out.id = in.keyId;
     out.name = in.keyName;
+
+    if (in.projectId != null) {
+      out.project = new Project()
+          .withId(in.projectId)
+          .withName(in.projectName);
+
+      if (in.projectOwnerUsername != null) {
+        out.project.owner = new User().withUsername(in.projectOwnerUsername);
+      }
+    }
 
     return out;
   }

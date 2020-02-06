@@ -42,8 +42,7 @@ libraryDependencies ++= Seq(
 	"io.swagger" %% "swagger-play2" % "1.5.3",
 	"org.webjars" % "swagger-ui" % "2.2.10",
 
-	// https://mvnrepository.com/artifact/org.easytesting/fest-assert-core
-	"org.easytesting" % "fest-assert-core" % "2.0M10" % "test",
+	"org.assertj" % "assertj-core" % "3.15.0" % "test",
 	"org.mockito" % "mockito-core" % "2.8.47" % "test"
 )
 

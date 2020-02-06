@@ -12,7 +12,7 @@ import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
 import models.User;
-import org.fest.assertions.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;

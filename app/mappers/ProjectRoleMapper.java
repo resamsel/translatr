@@ -8,6 +8,10 @@ public class ProjectRoleMapper {
   }
 
   public static models.ProjectRole toModel(ProjectRole in) {
+    if (in == null) {
+      return null;
+    }
+
     return models.ProjectRole.valueOf(in.name());
   }
 }

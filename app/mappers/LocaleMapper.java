@@ -5,6 +5,7 @@ import criterias.MessageCriteria;
 import dto.Locale;
 import dto.Message;
 import models.Project;
+import models.User;
 import services.MessageService;
 import utils.FormatUtils;
 
@@ -36,6 +37,16 @@ public class LocaleMapper {
 
     out.id = in.localeId;
     out.name = in.localeName;
+
+    if (in.projectId != null) {
+      out.project = new Project()
+          .withId(in.projectId)
+          .withName(in.projectName);
+
+      if (in.projectOwnerUsername != null) {
+        out.project.owner = new User().withUsername(in.projectOwnerUsername);
+      }
+    }
 
     return out;
   }

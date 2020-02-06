@@ -2,7 +2,7 @@ package assertions;
 
 import models.Locale;
 import models.ProjectUser;
-import org.fest.assertions.api.Assertions;
+import org.assertj.core.api.Assertions;
 import play.mvc.Result;
 
 public class CustomAssertions extends Assertions {

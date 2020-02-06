@@ -45,7 +45,7 @@ public class ActivityUtils {
 
     JsonNode node = parse(activity);
 
-    switch (activity.contentType) {
+    switch (contentTypeOf(activity)) {
       case "User":
       case "Project":
       case "Locale":
@@ -71,7 +71,7 @@ public class ActivityUtils {
     JsonNode node = parse(activity);
     Long id = JsonUtils.getId(node);
 
-    switch (activity.contentType) {
+    switch (contentTypeOf(activity)) {
       case "User": {
         String name = JsonUtils.getAsText(node, "username");
         if (name != null)
@@ -126,7 +126,7 @@ public class ActivityUtils {
     if (activity == null)
       return null;
 
-    switch (activity.contentType) {
+    switch (contentTypeOf(activity)) {
       case "Project":
         return PROJECT_ICON;
       case "Locale":
@@ -151,24 +151,30 @@ public class ActivityUtils {
     if (activity == null)
       return null;
 
-    switch (activity.contentType) {
-      case "dto.Project":
+    switch (contentTypeOf(activity)) {
+      case "Project":
         return PROJECT_COLOR;
-      case "dto.Locale":
+      case "Locale":
         return LOCALE_COLOR;
-      case "dto.Key":
+      case "Key":
         return KEY_COLOR;
-      case "dto.Message":
+      case "Message":
         return MESSAGE_COLOR;
-      case "dto.User":
+      case "User":
         return USER_COLOR;
-      case "dto.AccessToken":
+      case "AccessToken":
         return ACCESS_TOKEN_COLOR;
-      case "dto.ProjectUser":
+      case "ProjectUser":
         return PROJECT_USER_COLOR;
       default:
         return "";
     }
+  }
+
+  static String contentTypeOf(LogEntry activity) {
+    String contentType = activity.contentType;
+
+    return contentType.substring(contentType.lastIndexOf(".") + 1);
   }
 
   public static String titleOf(LogEntry logEntry) {
