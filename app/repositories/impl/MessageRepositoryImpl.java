@@ -6,7 +6,6 @@ import actors.ActivityProtocol.Activity;
 import actors.MessageWordCountActor;
 import actors.WordCountProtocol.ChangeMessageWordCount;
 import akka.actor.ActorRef;
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -100,8 +99,10 @@ public class MessageRepositoryImpl extends
 
   @Override
   public Message byId(UUID id, String... fetches) {
-    return QueryUtils
-        .fetch(find.setId(id), QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
+    return QueryUtils.fetch(
+        find.setId(id).setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches),
+        FETCH_MAP)
         .findUnique();
   }
 

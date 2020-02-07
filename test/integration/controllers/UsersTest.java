@@ -3,6 +3,7 @@ package integration.controllers;
 import controllers.Projects;
 import controllers.routes;
 import models.User;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.cache.CacheApi;
 import play.mvc.Result;
@@ -17,6 +18,7 @@ import static utils.UserRepositoryMock.byUsername;
 /**
  * Created by resamsel on 10/07/2017.
  */
+@Ignore("Not necessary any longer, as the existing views will be replaced by the Angular UI")
 public class UsersTest extends ControllerTest {
 
   private User johnSmith;

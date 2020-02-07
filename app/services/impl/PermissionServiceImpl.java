@@ -70,6 +70,10 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public boolean hasPermissionAny(UUID projectId, User user, Collection<ProjectRole> roles) {
+    if (user == null) {
+      return false;
+    }
+
     if (user.isAdmin()) {
       return true;
     }

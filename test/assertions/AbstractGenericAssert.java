@@ -1,10 +1,11 @@
 package assertions;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.AbstractAssert;
+
+import java.util.Collection;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by resamsel on 24/07/2017.
@@ -85,6 +86,19 @@ public abstract class AbstractGenericAssert<S extends AbstractGenericAssert<S, A
     assertThat(actual)
         .overridingErrorMessage("Expected %s's %s to have a size of <%d> but was <%d> (%s)", name,
             field, expected, actual.size(), descriptionText()).hasSize(expected);
+    return myself;
+  }
+
+  protected <T> S contains(String field, T expected, Collection<T> actual) {
+    assertThat(actual)
+        .overridingErrorMessage(
+            "Expected %s's %s to contain <%s> but it did not <%s> (%s)",
+            name,
+            field,
+            expected,
+            actual,
+            descriptionText())
+        .contains(expected);
     return myself;
   }
 }

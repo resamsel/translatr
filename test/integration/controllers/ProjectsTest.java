@@ -1,6 +1,5 @@
 package integration.controllers;
 
-import assertions.ProjectAssert;
 import com.google.common.collect.ImmutableMap;
 import controllers.Projects;
 import controllers.routes;
@@ -10,6 +9,7 @@ import models.Project;
 import models.ProjectRole;
 import models.User;
 import org.apache.commons.lang3.ArrayUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +36,7 @@ import static utils.UserRepositoryMock.byUsername;
 /**
  * Created by resamsel on 10/07/2017.
  */
+@Ignore("Not necessary any longer, as the existing views will be replaced by the Angular UI")
 public class ProjectsTest extends ControllerTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectsTest.class);
@@ -260,7 +261,7 @@ public class ProjectsTest extends ControllerTest {
         .as("project do owner change view")
         .statusIsEqualTo(Projects.BAD_REQUEST);
 
-    ProjectAssert.assertThat(project1).ownerIsEqualTo(johnSmith);
+    assertThat(project1).ownerIsEqualTo(johnSmith);
 
     verify(projectService, never()).create(any());
   }
@@ -284,7 +285,7 @@ public class ProjectsTest extends ControllerTest {
             .membersBy(janeDoe.username, "project2", DEFAULT_SEARCH, DEFAULT_ORDER,
                 DEFAULT_LIMIT, DEFAULT_OFFSET).url());
 
-    ProjectAssert.assertThat(project1).ownerIsEqualTo(janeDoe);
+    assertThat(project1).ownerIsEqualTo(janeDoe);
 
     spy(projectService).create(any());
 

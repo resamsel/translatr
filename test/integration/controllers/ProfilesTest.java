@@ -12,6 +12,7 @@ import models.AccessToken;
 import models.LogEntry;
 import models.User;
 import org.apache.commons.lang3.ArrayUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ import static play.test.Helpers.route;
 import static utils.TestFactory.requestAs;
 import static utils.UserRepositoryMock.byUsername;
 
+@Ignore("Not necessary any longer, as the existing views will be replaced by the Angular UI")
 public class ProfilesTest extends ControllerTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProfilesTest.class);

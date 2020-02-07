@@ -67,6 +67,11 @@ public class ProjectUserModifyAllowedValidator implements ConstraintValidator<Pr
     }
 
     User loggedInUser = authProvider.loggedInUser();
+    if (loggedInUser == null) {
+      // Anonymous users are allowed to do nothing
+      return false;
+    }
+
     if (loggedInUser.isAdmin()) {
       // Admins are free to do anything
       return true;

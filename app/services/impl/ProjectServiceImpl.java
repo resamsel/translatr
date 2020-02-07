@@ -1,21 +1,11 @@
 package services.impl;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static utils.Stopwatch.log;
-
 import criterias.ProjectCriteria;
-import java.util.List;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Validator;
 import models.Locale;
 import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
 import models.User;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
@@ -27,6 +17,16 @@ import services.LogEntryService;
 import services.MessageService;
 import services.ProjectService;
 import services.ProjectUserService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.List;
+import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static utils.Stopwatch.log;
 
 /**
  * @author resamsel
@@ -47,9 +47,9 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
   @Inject
   public ProjectServiceImpl(Validator validator, CacheService cache,
-      ProjectRepository projectRepository, LocaleService localeService, KeyService keyService,
-      MessageService messageService, MessageRepository messageRepository,
-      ProjectUserService projectUserService, LogEntryService logEntryService) {
+                            ProjectRepository projectRepository, LocaleService localeService, KeyService keyService,
+                            MessageService messageService, MessageRepository messageRepository,
+                            ProjectUserService projectUserService, LogEntryService logEntryService) {
     super(validator, cache, projectRepository, Project::getCacheKey, logEntryService);
 
     this.projectRepository = projectRepository;
@@ -161,6 +161,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   @Override
   protected void postCreate(Project t) {
     super.postCreate(t);
+
+    projectUserService.create(new ProjectUser().withProject(t).withUser(t.owner).withRole(ProjectRole.Owner));
 
     // When project has been created, the project cache needs to be invalidated
     cache.removeByPrefix("project:criteria:");
