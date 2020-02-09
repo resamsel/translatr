@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
 import { Member, MemberRole, memberRoles, User } from '@dev/translatr-model';
 import { Subject } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder } from '@angular/forms';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
-import { MemberService } from '@translatr/translatr-sdk/src/lib/services/member.service';
+import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
+import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
 
 interface MemberForm {
   id?: number;
@@ -38,7 +38,7 @@ const formToMember = (form: MemberForm): Member => {
   styleUrls: ['./project-member-edit-form.component.scss']
 })
 export class ProjectMemberEditFormComponent
-  extends AbstractEditFormComponent<ProjectMemberEditFormComponent, MemberForm, Member>
+  extends BaseEditFormComponent<ProjectMemberEditFormComponent, MemberForm, Member>
   implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
@@ -59,7 +59,7 @@ export class ProjectMemberEditFormComponent
   readonly roleFormControl = this.form.get('role');
 
   constructor(
-    readonly memberService: MemberService,
+    readonly facade: ProjectFacade,
     readonly snackBar: MatSnackBar,
     readonly changeDetectorRef: ChangeDetectorRef,
     readonly fb: FormBuilder,
@@ -75,8 +75,9 @@ export class ProjectMemberEditFormComponent
         role: ['']
       }),
       data,
-      (form: MemberForm) => memberService.create(formToMember(form)),
-      (form: MemberForm) => memberService.update(formToMember(form)),
+      (form: MemberForm) => facade.createMember(formToMember(form)),
+      (form: MemberForm) => facade.updateMember(formToMember(form)),
+      facade.memberModified$,
       (member: Member) => `${member.userName} is now ${member.role}`
     );
   }

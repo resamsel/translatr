@@ -5,6 +5,7 @@ import { projectQuery } from './project.selectors';
 import {
   createKey,
   createLocale,
+  createMember,
   deleteKey,
   deleteLocale,
   deleteMember,
@@ -20,9 +21,10 @@ import {
   saveProject,
   unloadProject,
   updateKey,
-  updateLocale
+  updateLocale,
+  updateMember
 } from './project.actions';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, merge, Observable, Subject } from 'rxjs';
 import {
   ActivityCriteria,
   Key,
@@ -138,10 +140,11 @@ export class ProjectFacade {
     takeUntil(this.unload$)
   );
   membersCriteria$ = this.appFacade.criteria$([...defaultParams, 'roles']);
-  memberModified$ = this.store.pipe(
-    select(projectQuery.getMember),
-    takeUntil(this.unload$)
-  );
+  memberModified$ = merge(
+    this.store.pipe(select(projectQuery.getMember)),
+    this.store.pipe(select(projectQuery.getMemberError))
+  )
+    .pipe(takeUntil(this.unload$));
 
   activityAggregated$ = this.store.pipe(
     select(projectQuery.getActivityAggregated),
@@ -263,6 +266,14 @@ export class ProjectFacade {
 
   deleteKey(id: string) {
     this.store.dispatch(deleteKey({ payload: { id } }));
+  }
+
+  createMember(member: Member) {
+    this.store.dispatch(createMember({ payload: member }));
+  }
+
+  updateMember(member: Member) {
+    this.store.dispatch(updateMember({ payload: member }));
   }
 
   deleteMember(id: number): void {

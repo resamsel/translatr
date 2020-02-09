@@ -4,6 +4,7 @@ import { ProjectPartialState } from './project.reducer';
 import {
   createKey,
   createLocale,
+  createMember,
   deleteKey,
   deleteLocale,
   deleteMember,
@@ -29,9 +30,13 @@ import {
   localesLoaded,
   localeUpdated,
   localeUpdateError,
+  memberCreated,
+  memberCreateError,
   memberDeleted,
   memberDeleteError,
   membersLoaded,
+  memberUpdated,
+  memberUpdateError,
   messagesLoaded,
   modifiersLoaded,
   projectActivitiesLoaded,
@@ -43,7 +48,8 @@ import {
   projectSaved,
   saveProject,
   updateKey,
-  updateLocale
+  updateLocale,
+  updateMember
 } from './project.actions';
 import { ActivityService, KeyService, LocaleService, MessageService, ProjectService } from '@dev/translatr-sdk';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
@@ -251,6 +257,30 @@ export class ProjectEffects {
   ));
 
   // Members
+
+  createMember$ = createEffect(() => this.actions$.pipe(
+    ofType(createMember),
+    switchMap((action) =>
+      this.memberService
+        .create(action.payload)
+        .pipe(
+          map((payload: Member) => memberCreated({ payload })),
+          catchError(error => of(memberCreateError({ error })))
+        )
+    )
+  ));
+
+  updateMember$ = createEffect(() => this.actions$.pipe(
+    ofType(updateMember),
+    switchMap((action) =>
+      this.memberService
+        .update(action.payload)
+        .pipe(
+          map((payload: Member) => memberUpdated({ payload })),
+          catchError(error => of(memberUpdateError({ error })))
+        )
+    )
+  ));
 
   deleteMember$ = createEffect(() => this.actions$.pipe(
     ofType(deleteMember),

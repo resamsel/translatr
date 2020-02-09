@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { filter, map, pluck, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, map, pluck, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { combineLatest, Observable } from 'rxjs';
 import { navigate } from '@translatr/utils';
 import { Router } from '@angular/router';
@@ -61,17 +61,22 @@ export class ProjectMembersComponent {
   onDelete(member: Member) {
     this.facade.deleteMember(member.id);
     this.facade.memberModified$
-      .pipe(skip(1), take(1), withLatestFrom(this.appFacade.me$))
+      .pipe(
+        filter(x => !!x),
+        take(1),
+        withLatestFrom(this.appFacade.me$)
+      )
       .subscribe(([m, me]: [Member, User]) => {
+        if (m.userId === me.id) {
+          // I have removed myself from the project, go to dashboard
+          this.router.navigate(['/dashboard']);
+        }
+
         this.snackBar.open(
           `${m.userName} removed from project`,
           'Dismiss',
           { duration: 5000 }
         );
-        if (m.userId === me.id) {
-          // I have removed myself from the project, go to dashboard
-          this.router.navigate(['/dashboard']);
-        }
       });
   }
 }

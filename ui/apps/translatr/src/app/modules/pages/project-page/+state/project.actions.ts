@@ -182,6 +182,36 @@ export const modifiersLoaded = createAction(
   props<{ payload: PagedList<Member> }>()
 );
 
+export const createMember = createAction(
+  '[Project Page] Create Member',
+  props<{ payload: Member }>()
+);
+
+export const memberCreated = createAction(
+  '[Members API] Member Created',
+  props<{ payload: Member }>()
+);
+
+export const memberCreateError = createAction(
+  '[Members API] Member Create Error',
+  props<{ error: any }>()
+);
+
+export const updateMember = createAction(
+  '[Project Page] Update Member',
+  props<{ payload: Member }>()
+);
+
+export const memberUpdated = createAction(
+  '[Members API] Member Updated',
+  props<{ payload: Member }>()
+);
+
+export const memberUpdateError = createAction(
+  '[Members API] Member Update Error',
+  props<{ error: any }>()
+);
+
 export const deleteMember = createAction(
   '[Project Page] Delete Member',
   props<{ payload: { id: number } }>()

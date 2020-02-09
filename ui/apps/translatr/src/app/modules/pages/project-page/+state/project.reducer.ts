@@ -1,6 +1,7 @@
 import {
   createKey,
   createLocale,
+  createMember,
   deleteKey,
   deleteLocale,
   deleteMember,
@@ -13,8 +14,11 @@ import {
   localeDeleted,
   localesLoaded,
   localeUpdated,
+  memberCreated,
+  memberCreateError,
   memberDeleted,
   membersLoaded,
+  memberUpdated,
   messagesLoaded,
   modifiersLoaded,
   projectActivitiesLoaded,
@@ -23,7 +27,8 @@ import {
   projectSaved,
   unloadProject,
   updateKey,
-  updateLocale
+  updateLocale,
+  updateMember
 } from './project.actions';
 import { Activity, Aggregate, Key, Locale, Member, Message, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { Action, createReducer, on } from '@ngrx/store';
@@ -223,6 +228,37 @@ const reducer = createReducer(
   on(
     modifiersLoaded,
     (state, { payload }) => ({ ...state, modifiers: payload })
+  ),
+  on(
+    createMember,
+    (state, { payload }) => resetMember(state)
+  ),
+  on(
+    memberCreated,
+    (state, { payload }) => ({
+      ...state,
+      member: payload,
+      members: pagedListInsert(state.members, payload)
+    })
+  ),
+  on(
+    memberCreateError,
+    (state, error) => ({
+      ...state,
+      memberError: error
+    })
+  ),
+  on(
+    updateMember,
+    (state, { payload }) => resetMember(state)
+  ),
+  on(
+    memberUpdated,
+    (state, { payload }) => ({
+      ...state,
+      member: payload,
+      members: pagedListUpdate(state.members, payload)
+    })
   ),
   on(
     deleteMember,

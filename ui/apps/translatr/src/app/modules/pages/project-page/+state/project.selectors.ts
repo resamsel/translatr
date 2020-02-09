@@ -90,6 +90,11 @@ const getMember = createSelector(
   (state: ProjectState) => state.member
 );
 
+const getMemberError = createSelector(
+  getProjectState,
+  (state: ProjectState) => state.memberError
+);
+
 const getActivityAggregated = createSelector(
   getProjectState,
   (state: ProjectState) => state.activityAggregated
@@ -115,6 +120,7 @@ export const projectQuery = {
   getMessages,
   getMessagesSearch,
   getMember,
+  getMemberError,
   getMembers,
   getModifiers,
   getMembersSearch,
