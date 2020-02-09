@@ -144,7 +144,8 @@ jacoco.excludes in jacoco.Config := Seq(
 	"router.*",
 	"views.html.*", // should probably not be excluded
 	"*.Reverse*",
-	"*.routes"
+	"*.routes",
+	"*.scala"
 )
 
 //
