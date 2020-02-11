@@ -52,32 +52,20 @@ export class ProjectInfoComponent {
   }
 
   openLocaleCreationDialog(project: Project): void {
-    openLocaleEditDialog(
-      this.dialog,
-      { projectId: project.id },
-      (l) => this.facade.createLocale(l),
-      (l) => this.facade.updateLocale(l),
-      this.facade.localeModified$,
-      this.facade.localeModified$
-    )
+    openLocaleEditDialog(this.dialog, { projectId: project.id })
       .afterClosed()
       .pipe(
         take(1),
-        filter(locale => !!locale)
-      )
-      .subscribe((locale => this.router
-        .navigate([locale.name], { relativeTo: this.route })));
+        filter(locale => !!locale);
+    3;
+  )
+  .
+    subscribe((locale => this.router
+      .navigate([locale.name], { relativeTo: this.route })));
   }
 
   openKeyCreationDialog(project: Project): void {
-    openKeyEditDialog(
-      this.dialog,
-      { projectId: project.id },
-      (k) => this.facade.createKey(k),
-      (k) => this.facade.updateKey(k),
-      this.facade.keyModified$,
-      this.facade.keyModifiedError$
-    )
+    openKeyEditDialog(this.dialog, { projectId: project.id })
       .afterClosed()
       .pipe(
         take(1),

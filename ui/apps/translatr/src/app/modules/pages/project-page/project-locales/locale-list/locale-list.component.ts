@@ -5,7 +5,6 @@ import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trackByFn } from '@translatr/utils';
-import { ProjectFacade } from '../../+state/project.facade';
 import { FilterCriteria } from '../../../../shared/list-header/list-header.component';
 
 @Component({
@@ -36,8 +35,7 @@ export class LocaleListComponent {
   constructor(
     private readonly dialog: MatDialog,
     private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly facade: ProjectFacade
+    private readonly route: ActivatedRoute
   ) {
   }
 
@@ -58,14 +56,7 @@ export class LocaleListComponent {
   }
 
   openLocaleDialog(locale: Partial<Locale>): void {
-    openLocaleEditDialog(
-      this.dialog,
-      { ...locale },
-      (l) => this.facade.createLocale(l),
-      (l) => this.facade.updateLocale(l),
-      this.facade.localeModified$,
-      this.facade.localeModified$
-    )
+    openLocaleEditDialog(this.dialog, { ...locale })
       .afterClosed()
       .pipe(
         take(1),

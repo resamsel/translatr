@@ -3,28 +3,25 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Key } from '@dev/translatr-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
-import { merge, Observable } from 'rxjs';
-import { filter, skip } from 'rxjs/operators';
+import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
+import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
 
 interface Data {
   key: Partial<Key>;
-  creator: (Key) => void;
-  updater: (Key) => void;
-  result$: Observable<Key | any>;
 }
 
 @Component({
   templateUrl: './key-edit-dialog.component.html'
 })
 export class KeyEditDialogComponent
-  extends AbstractEditFormComponent<KeyEditDialogComponent, Key> {
+  extends BaseEditFormComponent<KeyEditDialogComponent, Key, Key> {
 
   readonly nameFormControl = this.form.get('name');
 
   constructor(
     readonly snackBar: MatSnackBar,
     readonly dialogRef: MatDialogRef<KeyEditDialogComponent, Key>,
+    readonly facade: ProjectFacade,
     @Inject(MAT_DIALOG_DATA) readonly d: Data
   ) {
     super(
@@ -36,37 +33,16 @@ export class KeyEditDialogComponent
         name: new FormControl(d.key.name || '', Validators.required)
       }),
       d.key,
-      (key: Key) => {
-        d.creator(key);
-        return d.result$;
-      },
-      (key: Key) => {
-        d.updater(key);
-        return d.result$;
-      },
+      (key: Key) => facade.createKey(key),
+      (key: Key) => facade.updateKey(key),
+      facade.keyModified$,
       (key: Key) => `Key ${key.name} has been saved`
     );
   }
 }
 
-export const openKeyEditDialog = (
-  dialog: MatDialog,
-  key: Partial<Key>,
-  creator: (Key) => void,
-  updater: (Key) => void,
-  result$: Observable<Key>,
-  error$: Observable<any>
-) => {
-  return dialog.open<KeyEditDialogComponent, Data, Key>(
-    KeyEditDialogComponent, {
-      data: {
-        key,
-        creator,
-        updater,
-        result$: merge(
-          result$.pipe(skip(1), filter(x => !!x)),
-          error$.pipe(skip(1), filter(x => !!x))
-        )
-      }
-    });
-};
+export const openKeyEditDialog = (dialog: MatDialog, key: Partial<Key>) =>
+  dialog.open<KeyEditDialogComponent, Data, Key>(
+    KeyEditDialogComponent,
+    { data: { key } }
+  );

@@ -5,7 +5,6 @@ import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trackByFn } from '@translatr/utils';
-import { ProjectFacade } from '../../+state/project.facade';
 import { FilterCriteria } from '../../../../shared/list-header/list-header.component';
 
 @Component({
@@ -30,8 +29,7 @@ export class KeyListComponent {
   constructor(
     private readonly dialog: MatDialog,
     private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly facade: ProjectFacade
+    private readonly route: ActivatedRoute
   ) {
   }
 
@@ -52,14 +50,7 @@ export class KeyListComponent {
   }
 
   openKeyEditDialog(key: Partial<Key>): void {
-    openKeyEditDialog(
-      this.dialog,
-      key,
-      (k) => this.facade.createKey(k),
-      (k) => this.facade.updateKey(k),
-      this.facade.keyModified$,
-      this.facade.keyModifiedError$
-    )
+    openKeyEditDialog(this.dialog, key)
       .afterClosed()
       .pipe(
         take(1),
