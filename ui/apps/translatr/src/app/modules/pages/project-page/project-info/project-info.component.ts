@@ -56,12 +56,10 @@ export class ProjectInfoComponent {
       .afterClosed()
       .pipe(
         take(1),
-        filter(locale => !!locale);
-    3;
-  )
-  .
-    subscribe((locale => this.router
-      .navigate([locale.name], { relativeTo: this.route })));
+        filter(locale => !!locale)
+      )
+      .subscribe((locale => this.router
+        .navigate([locale.name], { relativeTo: this.route })));
   }
 
   openKeyCreationDialog(project: Project): void {
