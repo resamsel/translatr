@@ -5,12 +5,17 @@ import { of } from 'rxjs';
 import { AccessTokenService, ActivityService, ProjectService, UserService } from '@dev/translatr-sdk';
 import { AccessToken, Activity, PagedList, Project, User } from '@dev/translatr-model';
 import {
+  accessTokenCreated,
+  accessTokenCreateError,
   accessTokenLoaded,
   accessTokenLoadError,
   accessTokensLoaded,
   accessTokensLoadError,
+  accessTokenUpdated,
+  accessTokenUpdateError,
   activitiesLoaded,
   activitiesLoadError,
+  createAccessToken,
   loadAccessToken,
   loadAccessTokens,
   loadActivities,
@@ -18,6 +23,7 @@ import {
   loadUser,
   projectsLoaded,
   projectsLoadError,
+  updateAccessToken,
   updateUser,
   userLoaded,
   userLoadError,
@@ -106,6 +112,30 @@ export class UserEffects {
         map((accessToken: AccessToken) =>
           accessTokenLoaded({ accessToken })),
         catchError(error => of(accessTokenLoadError(error)))
+      )
+    )
+  ));
+
+  createAccessToken = createEffect(() => this.actions$.pipe(
+    ofType(createAccessToken),
+    switchMap((action) => this.accessTokenService
+      .create(action.payload)
+      .pipe(
+        map((accessToken: AccessToken) =>
+          accessTokenCreated({ payload: accessToken })),
+        catchError(error => of(accessTokenCreateError(error)))
+      )
+    )
+  ));
+
+  updateAccessToken = createEffect(() => this.actions$.pipe(
+    ofType(updateAccessToken),
+    switchMap((action) => this.accessTokenService
+      .update(action.payload)
+      .pipe(
+        map((accessToken: AccessToken) =>
+          accessTokenUpdated({ payload: accessToken })),
+        catchError(error => of(accessTokenUpdateError(error)))
       )
     )
   ));

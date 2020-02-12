@@ -36,15 +36,6 @@ const routes: Routes = [
         }
       },
       {
-        path: 'activity',
-        component: UserActivityComponent,
-        canActivate: [MyselfGuard],
-        data: {
-          icon: 'change_history',
-          name: 'Activity'
-        }
-      },
-      {
         path: 'access-tokens',
         canActivate: [MyselfGuard],
         data: {
@@ -64,6 +55,15 @@ const routes: Routes = [
             canActivate: [MyselfGuard]
           }
         ]
+      },
+      {
+        path: 'activity',
+        component: UserActivityComponent,
+        canActivate: [MyselfGuard],
+        data: {
+          icon: 'change_history',
+          name: 'Activity'
+        }
       },
       {
         path: 'settings',

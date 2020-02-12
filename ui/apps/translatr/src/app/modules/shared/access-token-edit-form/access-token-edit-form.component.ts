@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
 import { AccessToken, Scope, scopes } from '@dev/translatr-model';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AccessTokenService } from '@dev/translatr-sdk';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
+import { UserFacade } from '../../pages/user-page/+state/user.facade';
 
 const distinct = <T>(value: T, index: number, self: Array<T>) =>
   self.indexOf(value) === index;
@@ -22,7 +22,7 @@ const scopePermission = scope => scope.split(':')[0];
   styleUrls: ['./access-token-edit-form.component.scss']
 })
 export class AccessTokenEditFormComponent
-  extends AbstractEditFormComponent<AccessTokenEditFormComponent, AccessToken>
+  extends BaseEditFormComponent<AccessTokenEditFormComponent, AccessToken>
   implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
@@ -43,13 +43,14 @@ export class AccessTokenEditFormComponent
     return acc;
   }, {});
   scopePermission = scopePermission;
-  activeScopeMap = scopes.reduce((acc, curr) => ({ ...acc, [curr]: false }), {});
+  activeScopeMap = scopes.reduce((acc, curr) =>
+    ({ ...acc, [curr]: false }), {});
 
   readonly nameFormControl = this.form.get('name');
 
   constructor(
     readonly snackBar: MatSnackBar,
-    readonly accessTokenService: AccessTokenService,
+    readonly facade: UserFacade,
     readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(
@@ -62,11 +63,11 @@ export class AccessTokenEditFormComponent
         scope: new FormControl('')
       }),
       { key: '', name: '', scope: '' },
-      (accessToken: AccessToken) => accessTokenService.create(accessToken),
-      (accessToken: AccessToken) => accessTokenService.update(accessToken),
+      (accessToken: AccessToken) => facade.createAccessToken(accessToken),
+      (accessToken: AccessToken) => facade.updateAccessToken(accessToken),
+      facade.accessToken$,
       (accessToken: AccessToken) => `AccessToken ${accessToken.name} has been saved`
     );
-
   }
 
   ngOnInit(): void {

@@ -1,8 +1,10 @@
 import {
+  accessTokenCreated,
   accessTokenLoaded,
   accessTokenLoadError,
   accessTokensLoaded,
   accessTokensLoadError,
+  accessTokenUpdated,
   activitiesLoaded,
   activitiesLoadError,
   projectsLoaded,
@@ -89,6 +91,14 @@ const reducer = createReducer(
   on(
     accessTokenLoadError,
     (state, { error }) => ({ ...state, accessTokenError: error })
+  ),
+  on(
+    accessTokenCreated,
+    (state, { payload: accessToken }) => ({ ...state, accessToken })
+  ),
+  on(
+    accessTokenUpdated,
+    (state, { payload: accessToken }) => ({ ...state, accessToken })
   )
 );
 

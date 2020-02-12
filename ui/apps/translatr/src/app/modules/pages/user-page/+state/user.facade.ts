@@ -2,8 +2,16 @@ import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { UserPartialState } from './user.reducer';
 import { userQuery } from './user.selectors';
-import { loadAccessToken, loadAccessTokens, loadActivities, loadProjects, loadUser, updateUser } from './user.actions';
-import { AccessTokenService } from '@dev/translatr-sdk';
+import {
+  createAccessToken,
+  loadAccessToken,
+  loadAccessTokens,
+  loadActivities,
+  loadProjects,
+  loadUser,
+  updateAccessToken,
+  updateUser
+} from './user.actions';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import {
   AccessToken,
@@ -65,8 +73,7 @@ export class UserFacade {
 
   constructor(
     private store: Store<UserPartialState>,
-    private readonly appFacade: AppFacade,
-    private readonly accessTokenService: AccessTokenService
+    private readonly appFacade: AppFacade
   ) {
   }
 
@@ -94,8 +101,12 @@ export class UserFacade {
     this.store.dispatch(loadAccessToken({ id }));
   }
 
-  saveAccessToken(accessToken: AccessToken): Observable<AccessToken> {
-    return this.accessTokenService.update(accessToken);
+  createAccessToken(accessToken: AccessToken): void {
+    this.store.dispatch(createAccessToken({ payload: accessToken }));
+  }
+
+  updateAccessToken(accessToken: AccessToken): void {
+    this.store.dispatch(updateAccessToken({ payload: accessToken }));
   }
 
   unload(): void {
