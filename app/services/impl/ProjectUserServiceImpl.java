@@ -3,6 +3,7 @@ package services.impl;
 import criterias.ProjectUserCriteria;
 import models.ProjectUser;
 import repositories.ProjectUserRepository;
+import services.AuthProvider;
 import services.CacheService;
 import services.LogEntryService;
 import services.ProjectUserService;
@@ -23,8 +24,9 @@ public class ProjectUserServiceImpl extends
 
   @Inject
   public ProjectUserServiceImpl(Validator validator, CacheService cache,
-                                ProjectUserRepository projectUserRepository, LogEntryService logEntryService) {
-    super(validator, cache, projectUserRepository, ProjectUser::getCacheKey, logEntryService);
+                                ProjectUserRepository projectUserRepository, LogEntryService logEntryService,
+                                AuthProvider authProvider) {
+    super(validator, cache, projectUserRepository, ProjectUser::getCacheKey, logEntryService, authProvider);
 
     this.projectUserRepository = projectUserRepository;
   }

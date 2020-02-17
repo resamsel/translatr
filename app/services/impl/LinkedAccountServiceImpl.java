@@ -1,14 +1,16 @@
 package services.impl;
 
 import criterias.LinkedAccountCriteria;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Validator;
 import models.LinkedAccount;
 import repositories.LinkedAccountRepository;
+import services.AuthProvider;
 import services.CacheService;
 import services.LinkedAccountService;
 import services.LogEntryService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
 
 /**
  * @author resamsel
@@ -21,8 +23,9 @@ public class LinkedAccountServiceImpl
 
   @Inject
   public LinkedAccountServiceImpl(Validator validator, CacheService cache,
-      LinkedAccountRepository linkedAccountRepository, LogEntryService logEntryService) {
-    super(validator, cache, linkedAccountRepository, LinkedAccount::getCacheKey, logEntryService);
+                                  LinkedAccountRepository linkedAccountRepository, LogEntryService logEntryService,
+                                  AuthProvider authProvider) {
+    super(validator, cache, linkedAccountRepository, LinkedAccount::getCacheKey, logEntryService, authProvider);
   }
 
   /**

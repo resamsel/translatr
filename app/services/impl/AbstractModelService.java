@@ -6,6 +6,7 @@ import models.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.ModelRepository;
+import services.AuthProvider;
 import services.CacheService;
 import services.LogEntryService;
 import services.ModelService;
@@ -27,18 +28,21 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
 
   protected final Validator validator;
   protected final LogEntryService logEntryService;
+  protected final AuthProvider authProvider;
   protected final CacheService cache;
   final ModelRepository<MODEL, ID, CRITERIA> modelRepository;
   private final BiFunction<ID, String[], String> cacheKeyGetter;
 
   public AbstractModelService(Validator validator, CacheService cache,
-      ModelRepository<MODEL, ID, CRITERIA> modelRepository,
-      BiFunction<ID, String[], String> cacheKeyGetter, LogEntryService logEntryService) {
+                              ModelRepository<MODEL, ID, CRITERIA> modelRepository,
+                              BiFunction<ID, String[], String> cacheKeyGetter, LogEntryService logEntryService,
+                              AuthProvider authProvider) {
     this.validator = validator;
     this.cache = cache;
     this.modelRepository = modelRepository;
     this.cacheKeyGetter = cacheKeyGetter;
     this.logEntryService = logEntryService;
+    this.authProvider = authProvider;
   }
 
   /**
@@ -46,6 +50,8 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
    */
   @Override
   public PagedList<MODEL> findBy(CRITERIA criteria) {
+    criteria.setLoggedInUserId(authProvider.loggedInUserId());
+
     return cache.getOrElse(
         requireNonNull(criteria, "criteria is null").getCacheKey(),
         () -> modelRepository.findBy(criteria),

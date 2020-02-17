@@ -6,9 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import play.mvc.Http.Request;
 import utils.NumberUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,11 +13,9 @@ import java.util.UUID;
  * @version 31 Aug 2016
  */
 public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>>
-    implements SearchCriteria {
+    extends AbstractFetchCriteria<T> implements SearchCriteria {
 
   protected final String type;
-
-  protected T self;
 
   private Integer offset;
 
@@ -32,15 +27,13 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
 
   private UUID userId;
 
-  private final List<String> fetches = new ArrayList<>();
+  private UUID loggedInUserId;
 
   /**
    *
    */
-  @SuppressWarnings("unchecked")
   public AbstractSearchCriteria(String type) {
     this.type = type;
-    this.self = (T) this;
   }
 
   public UUID getUserId() {
@@ -56,9 +49,23 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
     return self;
   }
 
+  public UUID getLoggedInUserId() {
+    return loggedInUserId;
+  }
+
+  public void setLoggedInUserId(UUID loggedInUserId) {
+    this.loggedInUserId = loggedInUserId;
+  }
+
+  public T withLoggedInUserId(UUID loggedInUserId) {
+    setLoggedInUserId(loggedInUserId);
+    return self;
+  }
+
   /**
    * @return the limit
    */
+  @Override
   public Integer getLimit() {
     return limit;
   }
@@ -78,6 +85,7 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
   /**
    * @return the order
    */
+  @Override
   public String getOrder() {
     return order;
   }
@@ -97,6 +105,7 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
   /**
    * @return the offset
    */
+  @Override
   public Integer getOffset() {
     return offset;
   }
@@ -116,6 +125,7 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
   /**
    * @return the search
    */
+  @Override
   public String getSearch() {
     return search;
   }
@@ -130,29 +140,6 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
   public T withSearch(String search) {
     setSearch(search);
     return self;
-  }
-
-  /**
-   * @return the fetches
-   */
-  public List<String> getFetches() {
-    return fetches;
-  }
-
-  private T withFetches(List<String> fetches) {
-    this.fetches.addAll(fetches);
-    return self;
-  }
-
-  public T withFetches(String... fetches) {
-    if (fetches != null) {
-      return withFetches(Arrays.asList(fetches));
-    }
-    return self;
-  }
-
-  public boolean hasFetch(String fetch) {
-    return fetches.contains(fetch);
   }
 
   public T with(SearchForm form) {

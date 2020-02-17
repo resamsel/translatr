@@ -232,7 +232,8 @@ public class ProjectServiceTest {
         mock(MessageService.class),
         mock(MessageRepository.class),
         mock(ProjectUserService.class),
-        mock(LogEntryService.class)
+        mock(LogEntryService.class),
+        mock(AuthProvider.class)
     );
     johnSmith = UserRepositoryMock.byUsername("johnsmith");
     janeDoe = UserRepositoryMock.byUsername("janedoe");

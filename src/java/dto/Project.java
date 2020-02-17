@@ -29,4 +29,6 @@ public class Project extends Dto {
   public List<ProjectUser> members;
 
   public Integer wordCount;
+
+  public ProjectRole myRole;
 }

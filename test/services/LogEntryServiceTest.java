@@ -102,7 +102,8 @@ public class LogEntryServiceTest {
         mock(Validator.class),
         cacheService,
         logEntryRepository,
-        persistence
+        persistence,
+        mock(AuthProvider.class)
     );
 
     johnSmith = UserRepositoryMock.byUsername("johnsmith");

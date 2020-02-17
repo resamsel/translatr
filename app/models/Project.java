@@ -26,6 +26,8 @@ import validators.ProjectNameUniqueChecker;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -99,6 +101,10 @@ public class Project implements Model<Project, UUID>, Suggestable {
 //  @OneToMany(cascade = CascadeType.PERSIST)
   @OneToMany
   public List<ProjectUser> members;
+
+  @Transient
+  @Enumerated(EnumType.STRING)
+  public ProjectRole myRole;
 
   @Transient
   private List<Message> messages;

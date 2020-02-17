@@ -6,9 +6,14 @@ import actors.ActivityProtocol.Activity;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
+import com.avaje.ebean.Query;
 import com.avaje.ebean.RawSqlBuilder;
+import criterias.DefaultFetchCriteria;
+import criterias.FetchCriteria;
+import criterias.GetCriteria;
 import criterias.PagedListFactory;
 import criterias.ProjectCriteria;
+import criterias.DefaultGetCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
 import mappers.ProjectMapper;
@@ -39,7 +44,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static utils.Stopwatch.log;
 
 @Singleton
@@ -75,11 +82,7 @@ public class ProjectRepositoryImpl extends
 
   @Override
   public PagedList<Project> findBy(ProjectCriteria criteria) {
-    ExpressionList<Project> query = QueryUtils.fetch(
-        find.query().setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
-        FETCH_MAP
-    ).where();
+    ExpressionList<Project> query = createQuery(criteria).where();
 
     query.eq("deleted", false);
 
@@ -132,7 +135,31 @@ public class ProjectRepositoryImpl extends
           .forEach(p -> p.progress = progressMap.getOrDefault(p.id, 0.0));
     }
 
+    if (criteria.hasFetch(FETCH_MYROLE) && criteria.getLoggedInUserId() != null) {
+      Map<UUID, ProjectRole> roleMap = roles(paged.getList().stream().map(Project::getId).collect(toList()), criteria.getLoggedInUserId());
+
+      paged.getList()
+          .forEach(p -> p.myRole = roleMap.getOrDefault(p.id, null));
+    }
+
     return paged;
+  }
+
+  @Override
+  protected Project fetch(Project project, GetCriteria<UUID> criteria) {
+    if (criteria.hasFetch(FETCH_PROGRESS)) {
+      Map<UUID, Double> progressMap = progress(singletonList(project.id));
+
+      project.progress = progressMap.getOrDefault(project.id, 0.0);
+    }
+
+    if (criteria.hasFetch(FETCH_MYROLE) && criteria.getLoggedInUserId() != null) {
+      Map<UUID, ProjectRole> roleMap = roles(singletonList(project.id), criteria.getLoggedInUserId());
+
+      project.myRole = roleMap.getOrDefault(project.id, null);
+    }
+
+    return project;
   }
 
   @Override
@@ -166,24 +193,12 @@ public class ProjectRepositoryImpl extends
       return null;
     }
 
-    return QueryUtils
-        .fetch(
-            find.query().setDisableLazyLoading(true),
-            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches),
-            FETCH_MAP
-        )
-        .setId(id)
-        .findUnique();
+    return byId(new DefaultGetCriteria<>(id).withFetches(fetches).withLoggedInUserId(authProvider.loggedInUserId()));
   }
 
   @Override
   public Project byOwnerAndName(String username, String name, String... fetches) {
-    return QueryUtils
-        .fetch(
-            find.query().setDisableLazyLoading(true),
-            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches),
-            FETCH_MAP
-        )
+    return createQuery(new DefaultFetchCriteria(fetches))
         .where()
         .eq("owner.username", username)
         .eq("name", name)
@@ -292,6 +307,15 @@ public class ProjectRepositoryImpl extends
             .collect(toList()));
   }
 
+  @Override
+  protected Query<Project> createQuery(FetchCriteria criteria) {
+    return QueryUtils.fetch(
+        find.query().setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
+        FETCH_MAP
+    );
+  }
+
   private dto.Project toDto(Project t) {
     dto.Project out = ProjectMapper.toDto(t);
 
@@ -300,5 +324,19 @@ public class ProjectRepositoryImpl extends
     out.messages = Collections.emptyList();
 
     return out;
+  }
+
+  private Map<UUID, ProjectRole> roles(List<UUID> projectIds, UUID userId) {
+    List<ProjectUser> results = log(
+        () -> persistence.createQuery(ProjectUser.class)
+            .where()
+            .in("project_id", projectIds)
+            .eq("user_id", userId)
+            .findList(),
+        LOGGER,
+        "Retrieving project roles"
+    );
+
+    return results.stream().collect(toMap(r -> r.project.id, r -> r.role));
   }
 }

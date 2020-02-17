@@ -1,4 +1,4 @@
-import { Key, Locale, Member, Message, Temporal } from '.';
+import { Key, Locale, Member, MemberRole, Message, Temporal } from '.';
 
 export interface Project extends Temporal {
   id?: string;
@@ -18,4 +18,5 @@ export interface Project extends Temporal {
   messages?: Array<Message>;
 
   wordCount?: number;
+  myRole?: MemberRole;
 }

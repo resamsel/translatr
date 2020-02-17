@@ -91,7 +91,8 @@ public class MessageServiceTest {
         mock(Validator.class),
         cacheService,
         messageRepository,
-        mock(LogEntryService.class)
+        mock(LogEntryService.class),
+        mock(AuthProvider.class)
     );
 
     when(messageRepository.create(any())).then(this::persist);
