@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
 import repositories.Persistence;
+import services.AuthProvider;
 import services.CacheService;
 import services.KeyService;
 import services.LogEntryService;
@@ -35,8 +36,8 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
   @Inject
   public KeyServiceImpl(Validator validator, CacheService cache, KeyRepository keyRepository,
-                        LogEntryService logEntryService, Persistence persistence) {
-    super(validator, cache, keyRepository, Key::getCacheKey, logEntryService);
+                        LogEntryService logEntryService, Persistence persistence, AuthProvider authProvider) {
+    super(validator, cache, keyRepository, Key::getCacheKey, logEntryService, authProvider);
 
     this.cache = cache;
     this.keyRepository = keyRepository;

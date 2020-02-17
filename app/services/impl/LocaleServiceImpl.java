@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LocaleRepository;
 import repositories.Persistence;
+import services.AuthProvider;
 import services.CacheService;
 import services.LocaleService;
 import services.LogEntryService;
@@ -36,8 +37,8 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   @Inject
   public LocaleServiceImpl(Validator validator, CacheService cache,
                            LocaleRepository localeRepository, LogEntryService logEntryService,
-                           Persistence persistence) {
-    super(validator, cache, localeRepository, Locale::getCacheKey, logEntryService);
+                           Persistence persistence, AuthProvider authProvider) {
+    super(validator, cache, localeRepository, Locale::getCacheKey, logEntryService, authProvider);
 
     this.localeRepository = localeRepository;
     this.persistence = persistence;

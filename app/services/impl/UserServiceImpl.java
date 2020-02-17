@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.UserRepository;
 import services.AccessTokenService;
+import services.AuthProvider;
 import services.CacheService;
 import services.LinkedAccountService;
 import services.LogEntryService;
@@ -55,10 +56,10 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
   @Inject
   public UserServiceImpl(Validator validator, CacheService cache, UserRepository userRepository,
-      LinkedAccountService linkedAccountService, AccessTokenService accessTokenService,
-      ProjectService projectService, ProjectUserService projectUserService,
-      LogEntryService logEntryService) {
-    super(validator, cache, userRepository, User::getCacheKey, logEntryService);
+                         LinkedAccountService linkedAccountService, AccessTokenService accessTokenService,
+                         ProjectService projectService, ProjectUserService projectUserService,
+                         LogEntryService logEntryService, AuthProvider authProvider) {
+    super(validator, cache, userRepository, User::getCacheKey, logEntryService, authProvider);
 
     this.userRepository = userRepository;
     this.linkedAccountService = linkedAccountService;

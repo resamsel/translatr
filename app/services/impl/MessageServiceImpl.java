@@ -1,22 +1,24 @@
 package services.impl;
 
-import static utils.Stopwatch.log;
-
 import com.avaje.ebean.Ebean;
 import criterias.MessageCriteria;
-import java.util.List;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Validator;
 import models.Message;
 import models.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
+import services.AuthProvider;
 import services.CacheService;
 import services.LogEntryService;
 import services.MessageService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.List;
+import java.util.UUID;
+
+import static utils.Stopwatch.log;
 
 /**
  * @author resamsel
@@ -32,8 +34,9 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
 
   @Inject
   public MessageServiceImpl(Validator validator, CacheService cache,
-      MessageRepository messageRepository, LogEntryService logEntryService) {
-    super(validator, cache, messageRepository, Message::getCacheKey, logEntryService);
+                            MessageRepository messageRepository, LogEntryService logEntryService,
+                            AuthProvider authProvider) {
+    super(validator, cache, messageRepository, Message::getCacheKey, logEntryService, authProvider);
 
     this.messageRepository = messageRepository;
   }

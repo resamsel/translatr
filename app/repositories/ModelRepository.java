@@ -2,6 +2,7 @@ package repositories;
 
 import com.avaje.ebean.PagedList;
 import criterias.AbstractSearchCriteria;
+import criterias.GetCriteria;
 import models.Model;
 
 import java.util.Collection;
@@ -9,7 +10,13 @@ import java.util.Collection;
 public interface ModelRepository<T extends Model<T, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>> {
   PagedList<T> findBy(CRITERIA criteria);
 
+  /**
+   * @deprecated use byId(GetCriteria) instead
+   */
+  @Deprecated
   T byId(ID id, String... propertiesToFetch);
+
+  T byId(GetCriteria<ID> criteria);
 
   T create(T model);
 

@@ -30,17 +30,15 @@ public class AccessTokenServiceImpl extends
   private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenServiceImpl.class);
 
   private final CacheService cache;
-  private final AuthProvider authProvider;
   private final AccessTokenRepository accessTokenRepository;
 
   @Inject
   public AccessTokenServiceImpl(
       Validator validator, CacheService cache, AuthProvider authProvider,
       AccessTokenRepository accessTokenRepository, LogEntryService logEntryService) {
-    super(validator, cache, accessTokenRepository, AccessToken::getCacheKey, logEntryService);
+    super(validator, cache, accessTokenRepository, AccessToken::getCacheKey, logEntryService, authProvider);
 
     this.cache = cache;
-    this.authProvider = authProvider;
     this.accessTokenRepository = accessTokenRepository;
   }
 

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LogEntryRepository;
 import repositories.Persistence;
+import services.AuthProvider;
 import services.CacheService;
 import services.LogEntryService;
 
@@ -39,8 +40,8 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
 
   @Inject
   public LogEntryServiceImpl(Validator validator, CacheService cache,
-                             LogEntryRepository logEntryRepository, Persistence persistence) {
-    super(validator, cache, logEntryRepository, LogEntry::getCacheKey, null);
+                             LogEntryRepository logEntryRepository, Persistence persistence, AuthProvider authProvider) {
+    super(validator, cache, logEntryRepository, LogEntry::getCacheKey, null, authProvider);
 
     this.logEntryRepository = logEntryRepository;
     this.persistence = persistence;

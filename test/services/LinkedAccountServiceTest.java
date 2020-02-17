@@ -101,7 +101,8 @@ public class LinkedAccountServiceTest {
         mock(Validator.class),
         cacheService,
         linkedAccountRepository,
-        mock(LogEntryService.class)
+        mock(LogEntryService.class),
+        mock(AuthProvider.class)
     );
 
     johnSmith = UserRepositoryMock.byUsername("johnsmith");

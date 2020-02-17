@@ -1,9 +1,12 @@
 package repositories.impl;
 
 import actors.ActivityActorRef;
-import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Query;
 import criterias.AbstractSearchCriteria;
+import criterias.FetchCriteria;
+import criterias.GetCriteria;
 import models.Model;
+import org.apache.commons.lang3.NotImplementedException;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +44,29 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
     this.validator = validator;
     this.authProvider = authProvider;
     this.activityActor = activityActor;
+  }
+
+  public MODEL byId(GetCriteria<ID> criteria) {
+    return fetch(
+        createQuery(criteria)
+            .setId(criteria.getId())
+            .findUnique(),
+        criteria
+    );
+  }
+
+  /**
+   * Creates the query given on the info of this fetch criteria.
+   */
+  protected Query<MODEL> createQuery(FetchCriteria criteria) {
+    throw new NotImplementedException("fetchQuery(FetchCriteria)");
+  }
+
+  /**
+   * Additional fetches for this model as listed in the criteria.
+   */
+  protected MODEL fetch(MODEL model, GetCriteria<ID> criteria) {
+    return model;
   }
 
   /**

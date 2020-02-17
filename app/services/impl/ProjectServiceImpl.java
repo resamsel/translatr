@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
 import repositories.ProjectRepository;
+import services.AuthProvider;
 import services.CacheService;
 import services.KeyService;
 import services.LocaleService;
@@ -49,8 +50,9 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   public ProjectServiceImpl(Validator validator, CacheService cache,
                             ProjectRepository projectRepository, LocaleService localeService, KeyService keyService,
                             MessageService messageService, MessageRepository messageRepository,
-                            ProjectUserService projectUserService, LogEntryService logEntryService) {
-    super(validator, cache, projectRepository, Project::getCacheKey, logEntryService);
+                            ProjectUserService projectUserService, LogEntryService logEntryService,
+                            AuthProvider authProvider) {
+    super(validator, cache, projectRepository, Project::getCacheKey, logEntryService, authProvider);
 
     this.projectRepository = projectRepository;
     this.localeService = localeService;

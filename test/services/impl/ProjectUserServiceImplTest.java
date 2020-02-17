@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import repositories.ProjectUserRepository;
+import services.AuthProvider;
 import services.CacheService;
 import services.LogEntryService;
 
@@ -30,12 +31,14 @@ public class ProjectUserServiceImplTest {
   private ProjectUserRepository projectUserRepository;
   @Mock
   private LogEntryService logEntryService;
+  @Mock
+  private AuthProvider authProvider;
 
   private ProjectUserServiceImpl target;
 
   @Before
   public void setUp() {
-    target = new ProjectUserServiceImpl(validator, cache, projectUserRepository, logEntryService);
+    target = new ProjectUserServiceImpl(validator, cache, projectUserRepository, logEntryService, authProvider);
   }
 
   @Test

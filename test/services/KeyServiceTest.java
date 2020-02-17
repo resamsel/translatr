@@ -131,7 +131,8 @@ public class KeyServiceTest {
         cacheService,
         keyRepository,
         mock(LogEntryService.class),
-        mock(Persistence.class)
+        mock(Persistence.class),
+        mock(AuthProvider.class)
     );
 
     when(keyRepository.save((Key) any())).then(this::persist);

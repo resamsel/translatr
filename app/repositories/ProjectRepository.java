@@ -21,6 +21,7 @@ public interface ProjectRepository extends ModelRepository<Project, UUID, Projec
     String FETCH_LOCALES = "locales";
     String FETCH_KEYS = "keys";
     String FETCH_PROGRESS = "progress";
+    String FETCH_MYROLE = "myrole";
 
     String[] PROPERTIES_TO_FETCH = {FETCH_OWNER};
 

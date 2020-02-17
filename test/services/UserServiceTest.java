@@ -195,7 +195,8 @@ public class UserServiceTest {
         accessTokenService,
         projectService,
         projecUserService,
-        logEntryService
+        logEntryService,
+        mock(AuthProvider.class)
     );
 
     when(userRepository.create(any())).then(this::persist);

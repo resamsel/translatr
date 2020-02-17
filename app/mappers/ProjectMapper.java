@@ -73,6 +73,7 @@ public class ProjectMapper {
     out.description = in.description;
     out.wordCount = in.wordCount;
     out.progress = in.progress;
+    out.myRole = ProjectRoleMapper.toDto(in.myRole);
 
     if (in.owner != null) {
       out.ownerId = in.owner.id;

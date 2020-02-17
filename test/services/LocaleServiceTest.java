@@ -92,7 +92,8 @@ public class LocaleServiceTest {
         cacheService,
         localeRepository,
         mock(LogEntryService.class),
-        mock(Persistence.class)
+        mock(Persistence.class),
+        mock(AuthProvider.class)
     );
 
     when(localeRepository.create(any())).then(this::persist);
