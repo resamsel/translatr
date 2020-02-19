@@ -19,8 +19,6 @@ import {
   loadLocales,
   loadMembers,
   loadMessages,
-  loadModifiers,
-  loadProject,
   loadProjectActivities,
   loadProjectActivityAggregated,
   localeCreated,
@@ -38,22 +36,17 @@ import {
   memberUpdated,
   memberUpdateError,
   messagesLoaded,
-  modifiersLoaded,
   projectActivitiesLoaded,
   projectActivitiesLoadError,
   projectActivityAggregatedLoaded,
   projectActivityAggregatedLoadError,
-  projectLoaded,
-  projectLoadError,
-  projectSaved,
-  saveProject,
   updateKey,
   updateLocale,
   updateMember
 } from './project.actions';
-import { ActivityService, KeyService, LocaleService, MessageService, ProjectService } from '@dev/translatr-sdk';
+import { ActivityService, KeyService, LocaleService, MessageService } from '@dev/translatr-sdk';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
-import { Activity, Aggregate, Key, Locale, Member, Message, PagedList, Project } from '@dev/translatr-model';
+import { Activity, Aggregate, Key, Locale, Member, Message, PagedList } from '@dev/translatr-model';
 import { of } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { projectQuery } from './project.selectors';
@@ -61,20 +54,6 @@ import { MemberService } from '@translatr/translatr-sdk/src/lib/services/member.
 
 @Injectable()
 export class ProjectEffects {
-  loadProject$ = createEffect(() => this.actions$.pipe(
-    ofType(loadProject),
-    switchMap((action) => {
-        const payload = action.payload;
-        return this.projectService
-          .getProjectByOwnerAndName(payload.username, payload.projectName)
-          .pipe(
-            map((p: Project) => projectLoaded({ payload: p })),
-            catchError(error => of(projectLoadError({ error })))
-          );
-      }
-    )
-  ));
-
   loadLocales$ = createEffect(() => this.actions$.pipe(
     ofType(loadLocales),
     withLatestFrom(this.store.pipe(select(projectQuery.getLocalesSearch))),
@@ -113,15 +92,6 @@ export class ProjectEffects {
           ...action.payload
         })
         .pipe(map((payload: PagedList<Member>) => membersLoaded({ payload })))
-    )
-  ));
-
-  loadModifiers$ = createEffect(() => this.actions$.pipe(
-    ofType(loadModifiers),
-    switchMap((action) =>
-      this.memberService
-        .find(action.payload)
-        .pipe(map((payload: PagedList<Member>) => modifiersLoaded({ payload })))
     )
   ));
 
@@ -168,15 +138,6 @@ export class ProjectEffects {
           catchError(error =>
             of(projectActivitiesLoadError({ error })))
         )
-    )
-  ));
-
-  saveProject$ = createEffect(() => this.actions$.pipe(
-    ofType(saveProject),
-    switchMap((action) =>
-      this.projectService
-        .update(action.payload)
-        .pipe(map((payload: Project) => projectSaved({ payload })))
     )
   ));
 
@@ -297,7 +258,6 @@ export class ProjectEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store<ProjectPartialState>,
-    private readonly projectService: ProjectService,
     private readonly localeService: LocaleService,
     private readonly keyService: KeyService,
     private readonly memberService: MemberService,

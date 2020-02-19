@@ -16,7 +16,7 @@
       <div class="container dense">
         <ng-container *ngFor="let child of children">
           <a
-            *ngIf="canActivate$(child) | async"
+            *ngIf="(childrenActive$ | async)[child.path]"
             #link="routerLinkActive"
             [routerLinkActiveOptions]="{ exact: child.path === '' }"
             [routerLink]="routerLink(project, child)"

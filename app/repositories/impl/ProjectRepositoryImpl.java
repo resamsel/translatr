@@ -8,12 +8,11 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import com.avaje.ebean.RawSqlBuilder;
-import criterias.DefaultFetchCriteria;
-import criterias.FetchCriteria;
-import criterias.GetCriteria;
+import criterias.ContextCriteria;
+import criterias.DefaultContextCriteria;
+import criterias.DefaultGetCriteria;
 import criterias.PagedListFactory;
 import criterias.ProjectCriteria;
-import criterias.DefaultGetCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
 import mappers.ProjectMapper;
@@ -146,7 +145,7 @@ public class ProjectRepositoryImpl extends
   }
 
   @Override
-  protected Project fetch(Project project, GetCriteria<UUID> criteria) {
+  protected Project fetch(Project project, ContextCriteria criteria) {
     if (criteria.hasFetch(FETCH_PROGRESS)) {
       Map<UUID, Double> progressMap = progress(singletonList(project.id));
 
@@ -198,11 +197,18 @@ public class ProjectRepositoryImpl extends
 
   @Override
   public Project byOwnerAndName(String username, String name, String... fetches) {
-    return createQuery(new DefaultFetchCriteria(fetches))
-        .where()
-        .eq("owner.username", username)
-        .eq("name", name)
-        .findUnique();
+    ContextCriteria criteria = new DefaultContextCriteria()
+        .withLoggedInUserId(authProvider.loggedInUserId())
+        .withFetches(fetches);
+
+    return fetch(
+        createQuery(criteria)
+            .where()
+            .eq("owner.username", username)
+            .eq("name", name)
+            .findUnique(),
+        criteria
+    );
   }
 
   /**
@@ -308,7 +314,7 @@ public class ProjectRepositoryImpl extends
   }
 
   @Override
-  protected Query<Project> createQuery(FetchCriteria criteria) {
+  protected Query<Project> createQuery(ContextCriteria criteria) {
     return QueryUtils.fetch(
         find.query().setDisableLazyLoading(true),
         QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),

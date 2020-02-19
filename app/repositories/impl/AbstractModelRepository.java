@@ -3,7 +3,7 @@ package repositories.impl;
 import actors.ActivityActorRef;
 import com.avaje.ebean.Query;
 import criterias.AbstractSearchCriteria;
-import criterias.FetchCriteria;
+import criterias.ContextCriteria;
 import criterias.GetCriteria;
 import models.Model;
 import org.apache.commons.lang3.NotImplementedException;
@@ -58,14 +58,14 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
   /**
    * Creates the query given on the info of this fetch criteria.
    */
-  protected Query<MODEL> createQuery(FetchCriteria criteria) {
+  protected Query<MODEL> createQuery(ContextCriteria criteria) {
     throw new NotImplementedException("fetchQuery(FetchCriteria)");
   }
 
   /**
    * Additional fetches for this model as listed in the criteria.
    */
-  protected MODEL fetch(MODEL model, GetCriteria<ID> criteria) {
+  protected MODEL fetch(MODEL model, ContextCriteria criteria) {
     return model;
   }
 

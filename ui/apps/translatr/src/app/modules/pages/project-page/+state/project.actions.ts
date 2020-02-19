@@ -11,24 +11,8 @@ import {
   MemberCriteria,
   Message,
   MessageCriteria,
-  PagedList,
-  Project
+  PagedList
 } from '@dev/translatr-model';
-
-export const loadProject = createAction(
-  '[Project Page] LoadProject',
-  props<{ payload: { username: string; projectName: string } }>()
-);
-
-export const projectLoadError = createAction(
-  '[Projects API] Project Load Error',
-  props<{ error: any }>()
-);
-
-export const projectLoaded = createAction(
-  '[Projects API] Project Loaded',
-  props<{ payload: Project }>()
-);
 
 export const loadLocales = createAction(
   '[Project Page] Load Locales',
@@ -167,21 +151,6 @@ export const membersLoaded = createAction(
   props<{ payload: PagedList<Member> }>()
 );
 
-export const loadModifiers = createAction(
-  '[Project Page] Load Modifiers',
-  props<{ payload: MemberCriteria }>()
-);
-
-export const modifiersLoadError = createAction(
-  '[Modifiers API] Modifiers Load Error',
-  props<{ error: any }>()
-);
-
-export const modifiersLoaded = createAction(
-  '[Modifiers API] Modifiers Loaded',
-  props<{ payload: PagedList<Member> }>()
-);
-
 export const createMember = createAction(
   '[Project Page] Create Member',
   props<{ payload: Member }>()
@@ -270,16 +239,6 @@ export const projectActivitiesLoadError = createAction(
 export const projectActivitiesLoaded = createAction(
   '[Projects API] Project Activities Loaded',
   props<{ payload: PagedList<Activity> }>()
-);
-
-export const saveProject = createAction(
-  '[Project Page] Save Project',
-  props<{ payload: Project }>()
-);
-
-export const projectSaved = createAction(
-  '[Projects API] Project Saved',
-  props<{ payload: Project }>()
 );
 
 export const unloadProject = createAction(

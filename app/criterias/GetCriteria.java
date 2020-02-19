@@ -1,13 +1,8 @@
 package criterias;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
-public interface GetCriteria<T> extends FetchCriteria {
+public interface GetCriteria<T> extends ContextCriteria {
   @Nonnull
   T getId();
-
-  @CheckForNull
-  UUID getLoggedInUserId();
 }

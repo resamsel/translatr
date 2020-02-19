@@ -37,13 +37,14 @@ import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialo
 import { ButtonModule, EmptyViewModule, MetricModule, UserCardModule } from '@dev/translatr-components';
 import { ListHeaderModule } from '../../shared/list-header/list-header.module';
 import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
-import { MatMenuModule, MatTooltipModule, MatProgressBarModule } from '@angular/material';
+import { MatMenuModule, MatProgressBarModule, MatTooltipModule } from '@angular/material';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectGuard } from './project.guard';
 import { ProjectAccessGuard } from './project-access.guard';
 import { ProjectEditGuard } from './project-edit.guard';
 import { ProjectDeleteDialogModule } from '../../shared/project-delete-dialog/project-delete-dialog.module';
 import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.module';
+import { AppFacade } from '../../../+state/app.facade';
 
 @NgModule({
   declarations: [
@@ -102,6 +103,7 @@ import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-di
     MatProgressBarModule
   ],
   providers: [
+    AppFacade,
     ProjectFacade,
     ProjectGuard,
     ProjectAccessGuard,

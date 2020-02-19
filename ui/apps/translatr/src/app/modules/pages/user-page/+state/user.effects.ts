@@ -30,7 +30,7 @@ import {
   userUpdated,
   userUpdateError
 } from './user.actions';
-import { MeLoaded } from '../../../../+state/app.actions';
+import { meLoaded } from '../../../../+state/app.actions';
 import { AppFacade } from '../../../../+state/app.facade';
 
 @Injectable()
@@ -54,7 +54,7 @@ export class UserEffects {
         withLatestFrom(this.appFacade.me$),
         switchMap(([user, me]: [User, User]) => {
           if (user.id === me.id) {
-            return of(new MeLoaded(user), userUpdated({ user }));
+            return of(meLoaded({ payload: user }), userUpdated({ user }));
           }
 
           return of(userUpdated({ user }));

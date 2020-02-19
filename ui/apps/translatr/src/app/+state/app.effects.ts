@@ -1,36 +1,97 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { AppActionTypes, LoadMe, LoadUsers, MeLoaded, MeLoadError, UsersLoaded, UsersLoadError } from './app.actions';
-import { PagedList, User } from '@dev/translatr-model';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import {
+  createProject,
+  loadMe,
+  loadProject,
+  loadUsers,
+  meLoaded,
+  meLoadError,
+  projectCreated,
+  projectCreateError,
+  projectLoaded,
+  projectLoadError,
+  projectUpdated,
+  projectUpdateError,
+  updateProject,
+  usersLoaded,
+  usersLoadError
+} from './app.actions';
+import { PagedList, Project, User } from '@dev/translatr-model';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
-import { UserService } from '@dev/translatr-sdk';
+import { ProjectService, UserService } from '@dev/translatr-sdk';
 
 @Injectable()
 export class AppEffects {
-  @Effect() loadMe$ = this.actions$.pipe(
-    ofType(AppActionTypes.LoadMe),
-    switchMap((action: LoadMe) => {
+  loadMe$ = createEffect(() => this.actions$.pipe(
+    ofType(loadMe),
+    switchMap((action) => {
       return this.userService
         .me()
-        .pipe(map((user: User) => new MeLoaded(user)));
+        .pipe(map((user: User) => meLoaded({ payload: user })));
     }),
-    catchError(error => of(new MeLoadError(error)))
-  );
+    catchError(error => of(meLoadError(error)))
+  ));
 
-  @Effect() loadUsers$ = this.actions$.pipe(
-    ofType(AppActionTypes.LoadUsers),
-    switchMap((action: LoadUsers) => {
+  loadUsers$ = createEffect(() => this.actions$.pipe(
+    ofType(loadUsers),
+    switchMap((action) => {
       return this.userService
         .find(action.payload)
-        .pipe(map((pagedList: PagedList<User>) => new UsersLoaded(pagedList)));
+        .pipe(map((pagedList: PagedList<User>) =>
+          usersLoaded({ payload: pagedList })));
     }),
-    catchError(error => of(new UsersLoadError(error)))
-  );
+    catchError(error => of(usersLoadError(error)))
+  ));
+
+  loadProject$ = createEffect(() => this.actions$.pipe(
+    ofType(loadProject),
+    switchMap((action) => {
+        const payload = action.payload;
+        return this.projectService
+          .byOwnerAndName(
+            payload.username,
+            payload.projectName,
+            { params: { fetch: 'myrole' } }
+          )
+          .pipe(
+            map((p: Project) => projectLoaded({ payload: p })),
+            catchError(error => of(projectLoadError({ error })))
+          );
+      }
+    )
+  ));
+
+  createProject$ = createEffect(() => this.actions$.pipe(
+    ofType(createProject),
+    switchMap((action) =>
+      this.projectService
+        .create(action.payload)
+        .pipe(
+          map((payload: Project) => projectCreated({ payload })),
+          catchError(error => of(projectCreateError({ error })))
+        )
+    )
+  ));
+
+  updateProject$ = createEffect(() => this.actions$.pipe(
+    ofType(updateProject),
+    switchMap((action) =>
+      this.projectService
+        .update(action.payload)
+        .pipe(
+          map((payload: Project) => projectUpdated({ payload })),
+          catchError(error => of(projectUpdateError({ error })))
+        )
+    )
+  ));
 
   constructor(
     private actions$: Actions,
-    private readonly userService: UserService
-  ) {}
+    private readonly userService: UserService,
+    private readonly projectService: ProjectService
+  ) {
+  }
 }

@@ -3,10 +3,10 @@ import { Member, MemberRole, PagedList, Project, RequestCriteria } from '@dev/tr
 import { openProjectMemberEditDialog } from '../../../../shared/project-member-edit-dialog/project-member-edit-dialog.component';
 import { openProjectOwnerEditDialog } from '../../../../shared/project-owner-edit-dialog/project-owner-edit-dialog.component';
 import { filter, switchMapTo, take } from 'rxjs/operators';
-import { ProjectFacade } from '../../+state/project.facade';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { defaultFilters, FilterCriteria } from '../../../../shared/list-header/list-header.component';
+import { AppFacade } from '../../../../../+state/app.facade';
 
 @Component({
   selector: 'app-member-list',
@@ -58,7 +58,7 @@ export class MemberListComponent {
   // ];
 
   constructor(
-    private readonly facade: ProjectFacade,
+    private readonly facade: AppFacade,
     private readonly router: Router,
     private readonly dialog: MatDialog
   ) {

@@ -55,8 +55,8 @@ export class DashboardPageComponent implements OnInit {
     openProjectEditDialog(this.dialog, {})
       .afterClosed()
       .pipe(
-        take(1),
-        filter(project => !!project)
+        filter(project => !!project),
+        take(1)
       )
       .subscribe((project => this.router
         .navigate([project.ownerUsername, project.name])));

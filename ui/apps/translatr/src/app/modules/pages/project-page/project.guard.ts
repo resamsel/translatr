@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { ProjectFacade } from './+state/project.facade';
+import { AppFacade } from '../../../+state/app.facade';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectGuard implements CanActivate {
-  constructor(private readonly facade: ProjectFacade) {
+  constructor(private readonly facade: AppFacade) {
   }
 
   canActivate(

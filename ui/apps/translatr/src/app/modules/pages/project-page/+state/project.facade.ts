@@ -13,12 +13,8 @@ import {
   loadLocales,
   loadMembers,
   loadMessages,
-  loadModifiers,
-  loadProject,
   loadProjectActivities,
   loadProjectActivityAggregated,
-  projectLoaded,
-  saveProject,
   unloadProject,
   updateKey,
   updateLocale,
@@ -45,7 +41,6 @@ import { AppFacade, defaultParams } from '../../../../+state/app.facade';
 
 const hasRolesAny = (
   project: Project,
-  members: Member[],
   user: User,
   ...roles: MemberRole[]
 ): boolean => {
@@ -61,28 +56,25 @@ const hasRolesAny = (
     return true;
   }
 
-  if (members === undefined) {
-    return false;
+  if (project.myRole !== undefined) {
+    return roles.includes(project.myRole);
   }
 
-  return members
-    .filter((member) => member.userId === user.id)
-    .filter((member) => roles.includes(member.role))
-    .length > 0;
+  return false;
 };
 
-const canAccess = (project: Project, members: Member[], me: User): boolean =>
-  hasRolesAny(project, members, me, ...memberRoles);
-const canEdit = (project: Project, members: Member[], me: User): boolean =>
-  hasRolesAny(project, members, me, MemberRole.Owner, MemberRole.Manager);
-const canDelete = (project: Project, members: Member[], me: User): boolean =>
-  hasRolesAny(project, members, me, MemberRole.Owner);
-const canModifyKey = (project: Project, members: Member[], me: User): boolean =>
-  hasRolesAny(project, members, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Developer);
-const canModifyLocale = (project: Project, members: Member[], me: User): boolean =>
-  hasRolesAny(project, members, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Translator);
-const canModifyMember = (project: Project, members: Member[], me: User): boolean =>
-  hasRolesAny(project, members, me, MemberRole.Owner, MemberRole.Manager);
+const canAccess = (project: Project, me: User): boolean =>
+  hasRolesAny(project, me, ...memberRoles);
+const canEdit = (project: Project, me: User): boolean =>
+  hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
+const canDelete = (project: Project, me: User): boolean =>
+  hasRolesAny(project, me, MemberRole.Owner);
+const canModifyKey = (project: Project, me: User): boolean =>
+  hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Developer);
+const canModifyLocale = (project: Project, me: User): boolean =>
+  hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager, MemberRole.Translator);
+const canModifyMember = (project: Project, me: User): boolean =>
+  hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
 
 @Injectable()
 export class ProjectFacade {
@@ -93,8 +85,7 @@ export class ProjectFacade {
     return this._unload$.asObservable();
   }
 
-  project$ = this.store.pipe(
-    select(projectQuery.getProject),
+  project$ = this.appFacade.project$.pipe(
     takeUntil(this.unload$)
   );
 
@@ -135,10 +126,6 @@ export class ProjectFacade {
     select(projectQuery.getMembers),
     takeUntil(this.unload$)
   );
-  modifiers$ = this.store.pipe(
-    select(projectQuery.getModifiers),
-    takeUntil(this.unload$)
-  );
   membersCriteria$ = this.appFacade.criteria$([...defaultParams, 'roles']);
   memberModified$ = merge(
     this.store.pipe(select(projectQuery.getMember)),
@@ -158,43 +145,32 @@ export class ProjectFacade {
 
   permission$ = combineLatest([
     this.project$.pipe(filter(x => !!x)),
-    this.modifiers$.pipe(filter(x => !!x)),
     this.appFacade.me$
   ])
     .pipe(takeUntil(this.unload$));
   canAccess$ = this.permission$.pipe(
-    map(([project, members, me]) =>
-      canAccess(project, members.list, me))
+    map(([project, me]) => canAccess(project, me))
   );
   canEdit$ = this.permission$.pipe(
-    map(([project, members, me]) =>
-      canEdit(project, members.list, me))
+    map(([project, me]) => canEdit(project, me))
   );
   canDelete$ = this.permission$.pipe(
-    map(([project, members, me]) =>
-      canDelete(project, members.list, me))
+    map(([project, me]) => canDelete(project, me))
   );
   canModifyLocale$ = this.permission$.pipe(
-    map(([project, members, me]) =>
-      canModifyLocale(project, members.list, me))
+    map(([project, me]) => canModifyLocale(project, me))
   );
   canModifyKey$ = this.permission$.pipe(
-    map(([project, members, me]) =>
-      canModifyKey(project, members.list, me))
+    map(([project, me]) => canModifyKey(project, me))
   );
   canModifyMember$ = this.permission$.pipe(
-    map(([project, members, me]) =>
-      canModifyMember(project, members.list, me))
+    map(([project, me]) => canModifyMember(project, me))
   );
 
   constructor(
     private readonly store: Store<ProjectPartialState>,
     private readonly appFacade: AppFacade
   ) {
-  }
-
-  loadProject(username: string, projectName: string) {
-    this.store.dispatch(loadProject({ payload: { username, projectName } }));
   }
 
   loadLocales(projectId: string, criteria?: LocaleCriteria) {
@@ -207,16 +183,6 @@ export class ProjectFacade {
 
   loadMembers(projectId: string, criteria?: MemberCriteria) {
     this.store.dispatch(loadMembers({ payload: { ...criteria, projectId } }));
-  }
-
-  loadModifiers(projectId: string) {
-    this.store.dispatch(loadModifiers({
-      payload: {
-        projectId,
-        limit: 1000,
-        roles: 'Owner,Manager'
-      }
-    }));
   }
 
   loadMessages(projectId: string, criteria?: MessageCriteria) {
@@ -234,14 +200,6 @@ export class ProjectFacade {
   unloadProject() {
     this._unload$.next();
     this.store.dispatch(unloadProject());
-  }
-
-  save(project: Project) {
-    this.store.dispatch(saveProject({ payload: project }));
-  }
-
-  projectLoaded(project: Project) {
-    this.store.dispatch(projectLoaded({ payload: project }));
   }
 
   createLocale(locale: Locale) {

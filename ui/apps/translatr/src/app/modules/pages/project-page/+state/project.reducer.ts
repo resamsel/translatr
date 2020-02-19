@@ -9,7 +9,6 @@ import {
   keyDeleted,
   keysLoaded,
   keyUpdated,
-  loadProject,
   localeCreated,
   localeDeleted,
   localesLoaded,
@@ -20,25 +19,19 @@ import {
   membersLoaded,
   memberUpdated,
   messagesLoaded,
-  modifiersLoaded,
   projectActivitiesLoaded,
   projectActivityAggregatedLoaded,
-  projectLoaded,
-  projectSaved,
-  unloadProject,
   updateKey,
   updateLocale,
   updateMember
 } from './project.actions';
-import { Activity, Aggregate, Key, Locale, Member, Message, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
+import { Activity, Aggregate, Key, Locale, Member, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { Action, createReducer, on } from '@ngrx/store';
 import { Identifiable } from '../../../shared/edit-form/abstract-edit-form-component';
 
 export const PROJECT_FEATURE_KEY = 'project';
 
 export interface ProjectState {
-  project?: Project;
-
   locales?: PagedList<Locale>;
   localesSearch: RequestCriteria;
   locale?: Locale;
@@ -53,7 +46,6 @@ export interface ProjectState {
   messagesSearch: RequestCriteria;
 
   members?: PagedList<Member>;
-  modifiers?: PagedList<Member>;
   membersSearch: RequestCriteria;
   member?: Member;
   memberError?: any;
@@ -133,14 +125,6 @@ const resetMember = (state: ProjectState): ProjectState => ({
 
 const reducer = createReducer(
   initialState,
-  on(
-    loadProject,
-    (state, action) => ({ ...state, loading: true })
-  ),
-  on(
-    projectLoaded,
-    (state, { payload }) => ({ ...state, project: payload, loading: false })
-  ),
   on(
     localesLoaded,
     (state, { payload }) => ({ ...state, locales: payload })
@@ -226,10 +210,6 @@ const reducer = createReducer(
     (state, { payload }) => ({ ...state, members: payload })
   ),
   on(
-    modifiersLoaded,
-    (state, { payload }) => ({ ...state, modifiers: payload })
-  ),
-  on(
     createMember,
     (state, { payload }) => resetMember(state)
   ),
@@ -269,8 +249,7 @@ const reducer = createReducer(
     (state, { payload }) => ({
       ...state,
       member: payload,
-      members: pagedListDelete(state.members, payload),
-      modifiers: pagedListDelete(state.modifiers, payload)
+      members: pagedListDelete(state.members, payload)
     })
   ),
   on(
@@ -284,14 +263,6 @@ const reducer = createReducer(
   on(
     projectActivitiesLoaded,
     (state, { payload }) => ({ ...state, activities: payload })
-  ),
-  on(
-    projectSaved,
-    (state, { payload }) => ({ ...state, project: payload, loading: false })
-  ),
-  on(
-    unloadProject,
-    (state) => ({ ...initialState })
   )
 );
 

@@ -15,11 +15,6 @@ const getError = createSelector(
   (state: ProjectState) => state.error
 );
 
-const getProject = createSelector(
-  getProjectState,
-  (state: ProjectState) => state.project
-);
-
 const getLocale = createSelector(
   getProjectState,
   (state: ProjectState) => state.locale
@@ -80,11 +75,6 @@ const getMembers = createSelector(
   (state: ProjectState) => state.members
 );
 
-const getModifiers = createSelector(
-  getProjectState,
-  (state: ProjectState) => state.modifiers
-);
-
 const getMember = createSelector(
   getProjectState,
   (state: ProjectState) => state.member
@@ -108,7 +98,6 @@ const getActivities = createSelector(
 export const projectQuery = {
   getLoading,
   getError,
-  getProject,
   getLocale,
   getLocaleError,
   getLocales,
@@ -122,7 +111,6 @@ export const projectQuery = {
   getMember,
   getMemberError,
   getMembers,
-  getModifiers,
   getMembersSearch,
   getActivityAggregated,
   getActivities

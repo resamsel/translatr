@@ -1,25 +1,48 @@
-import { Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { ActivatedRoute, CanActivate, Route } from '@angular/router';
 import { ProjectFacade } from './+state/project.facade';
-import { distinctUntilChanged, filter, pluck, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, scan, take, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
 import { PROJECT_ROUTES } from './project-page.token';
-import { Observable } from 'rxjs';
+import { merge, Observable } from 'rxjs';
 import { Project } from '@dev/translatr-model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-project-page',
   templateUrl: './project-page.component.html',
   styleUrls: ['./project-page.component.scss']
 })
-export class ProjectPageComponent implements OnInit, OnDestroy {
+export class ProjectPageComponent implements OnDestroy {
   me$ = this.appFacade.me$;
+  // TODO: put this logic somewhere else, i.e. each page should only load
+  //  what it needs, but cache it for other usages
   project$ = this.facade.project$.pipe(
-    filter(project => !!project)
+    filter(project => !!project),
+    scan((previous, project: Project) => {
+      if (previous === undefined || previous.id !== project.id) {
+        this.facade.loadLocales(project.id, {});
+        this.facade.loadKeys(project.id, {});
+        this.facade.loadMembers(project.id, {});
+        this.facade.loadMessages(project.id, { order: 'whenCreated desc' });
+        this.facade.loadActivityAggregated(project.id);
+        this.facade.loadActivities(project.id);
+      }
+
+      return project;
+    }),
+    takeUntil(this.facade.unload$)
   );
 
   children: NameIconRoute[] = this.routes[0].children;
+  childrenActive$ = merge(...this.children.map(child => this.canActivate$(child).pipe(
+    take(1),
+    map((can) => ({ [child.path]: can }))
+  )))
+    .pipe(
+      scan((acc, curr) => ({ ...acc, ...curr }), {})
+    );
 
   constructor(
     private readonly injector: Injector,
@@ -28,23 +51,6 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     private readonly appFacade: AppFacade,
     @Inject(PROJECT_ROUTES) private routes: { children: NameIconRoute[] }[]
   ) {
-  }
-
-  ngOnInit(): void {
-    this.project$.pipe(
-      pluck('id'),
-      distinctUntilChanged(),
-      tap((projectId: string) => {
-        this.facade.loadModifiers(projectId);
-        this.facade.loadLocales(projectId, {});
-        this.facade.loadKeys(projectId, {});
-        this.facade.loadMembers(projectId, {});
-        this.facade.loadMessages(projectId, { order: 'whenCreated desc' });
-        this.facade.loadActivityAggregated(projectId);
-        this.facade.loadActivities(projectId);
-      }),
-      takeUntil(this.facade.unload$)
-    ).subscribe();
   }
 
   ngOnDestroy(): void {

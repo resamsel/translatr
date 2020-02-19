@@ -2,9 +2,9 @@ import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ProjectService } from '@dev/translatr-sdk';
 import { Project } from '@dev/translatr-model';
-import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
+import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
+import { AppFacade } from '../../../+state/app.facade';
 
 @Component({
   selector: 'app-protect-creation-dialog',
@@ -12,14 +12,14 @@ import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-compo
   styleUrls: ['./project-edit-dialog.component.scss']
 })
 export class ProjectEditDialogComponent
-  extends AbstractEditFormComponent<ProjectEditDialogComponent, Project> {
+  extends BaseEditFormComponent<ProjectEditDialogComponent, Project> {
   public get nameFormControl() {
     return this.form.get('name');
   }
 
   constructor(
     readonly snackBar: MatSnackBar,
-    readonly projectService: ProjectService,
+    readonly facade: AppFacade,
     readonly dialogRef: MatDialogRef<ProjectEditDialogComponent, Project>,
     @Inject(MAT_DIALOG_DATA) readonly data: Project
   ) {
@@ -33,9 +33,10 @@ export class ProjectEditDialogComponent
         ])
       }),
       data,
-      (project: Project) => projectService.create(project),
-      (project: Project) => projectService.update(project),
-      (project: Project) => `Project ${project.name} has been created`
+      (project: Project) => facade.createProject(project),
+      (project: Project) => facade.updateProject(project),
+      facade.project$,
+      (project: Project) => `Project ${project.name} has been saved`
     );
   }
 }

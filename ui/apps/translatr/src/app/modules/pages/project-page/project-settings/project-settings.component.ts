@@ -75,6 +75,5 @@ export class ProjectSettingsComponent
     if (project.name !== this.route.snapshot.params.projectName) {
       this.router.navigate(['/', project.ownerUsername, project.name, 'settings']);
     }
-    this.facade.projectLoaded(project);
   }
 }

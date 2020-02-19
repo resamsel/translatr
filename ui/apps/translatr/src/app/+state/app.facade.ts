@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { AppState } from './app.reducer';
 import { appQuery } from './app.selectors';
-import { LoadMe, LoadUsers } from './app.actions';
-import { RequestCriteria } from '@dev/translatr-model';
+import { createProject, loadMe, loadProject, loadUsers, updateProject } from './app.actions';
+import { Project, RequestCriteria } from '@dev/translatr-model';
 import { routerQuery } from './router.selectors';
 import { Observable } from 'rxjs';
 import { Params } from '@angular/router';
@@ -15,6 +15,9 @@ export const defaultParams = ['search', 'limit', 'offset'];
 export class AppFacade {
   me$ = this.store.pipe(select(appQuery.getMe));
   users$ = this.store.pipe(select(appQuery.getUsers));
+  project$ = this.store.pipe(
+    select(appQuery.getProject)
+  );
 
   routeParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectRouteParams));
   queryParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectQueryParams));
@@ -34,10 +37,22 @@ export class AppFacade {
   }
 
   loadMe() {
-    this.store.dispatch(new LoadMe());
+    this.store.dispatch(loadMe());
   }
 
   loadUsers(criteria: RequestCriteria) {
-    this.store.dispatch(new LoadUsers(criteria));
+    this.store.dispatch(loadUsers({ payload: criteria }));
+  }
+
+  loadProject(username: string, projectName: string) {
+    this.store.dispatch(loadProject({ payload: { username, projectName } }));
+  }
+
+  createProject(project: Project): void {
+    this.store.dispatch(createProject({ payload: project }));
+  }
+
+  updateProject(project: Project): void {
+    this.store.dispatch(updateProject({ payload: project }));
   }
 }

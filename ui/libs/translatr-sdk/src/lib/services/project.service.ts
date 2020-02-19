@@ -30,7 +30,7 @@ export class ProjectService extends AbstractService<Project, ProjectCriteria> {
     );
   }
 
-  getProjectByOwnerAndName(
+  byOwnerAndName(
     username: string,
     projectName: string,
     options?: {

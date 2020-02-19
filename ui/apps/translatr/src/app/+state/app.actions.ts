@@ -1,54 +1,80 @@
-import { Action } from '@ngrx/store';
-import { PagedList, RequestCriteria, User } from '@dev/translatr-model';
+import { createAction, props } from '@ngrx/store';
+import { PagedList, Project, RequestCriteria, User } from '@dev/translatr-model';
 
-export enum AppActionTypes {
-  LoadMe = '[Main Page] Load Me',
-  MeLoaded = '[User API] Me Loaded',
-  MeLoadError = '[User API] Me Load Error',
+export const loadMe = createAction(
+  '[Main Page] Load Me'
+);
 
-  LoadUsers = '[Main Page] Load Users',
-  UsersLoaded = '[User API] Users Loaded',
-  UsersLoadError = '[User API] Users Load Error'
-}
+export const meLoaded = createAction(
+  '[User API] Me Loaded',
+  props<{ payload: User }>()
+);
 
-export class LoadMe implements Action {
-  readonly type = AppActionTypes.LoadMe;
-}
+export const meLoadError = createAction(
+  '[User API] Me Load Error',
+  props<{ payload: any }>()
+);
 
-export class MeLoadError implements Action {
-  readonly type = AppActionTypes.MeLoadError;
+export const loadUsers = createAction(
+  '[Main Page] Load Users',
+  props<{ payload: RequestCriteria }>()
+);
 
-  constructor(public payload: any) {
-  }
-}
+export const usersLoaded = createAction(
+  '[User API] Users Loaded',
+  props<{ payload: PagedList<User> }>()
+);
 
-export class MeLoaded implements Action {
-  readonly type = AppActionTypes.MeLoaded;
+export const usersLoadError = createAction(
+  '[User API] Users Load Error',
+  props<{ payload: any }>()
+);
 
-  constructor(public payload: User) {
-  }
-}
+export const loadProject = createAction(
+  '[Project Page] LoadProject',
+  props<{ payload: { username: string; projectName: string } }>()
+);
 
-export class LoadUsers implements Action {
-  readonly type = AppActionTypes.LoadUsers;
+export const projectLoadError = createAction(
+  '[Projects API] Project Load Error',
+  props<{ error: any }>()
+);
 
-  constructor(public readonly payload: RequestCriteria) {
-  }
-}
+export const projectLoaded = createAction(
+  '[Projects API] Project Loaded',
+  props<{ payload: Project }>()
+);
 
-export class UsersLoadError implements Action {
-  readonly type = AppActionTypes.UsersLoadError;
+export const createProject = createAction(
+  '[Project Page] Create Project',
+  props<{ payload: Project }>()
+);
 
-  constructor(public payload: any) {
-  }
-}
+export const projectCreated = createAction(
+  '[Projects API] Project Created',
+  props<{ payload: Project }>()
+);
 
-export class UsersLoaded implements Action {
-  readonly type = AppActionTypes.UsersLoaded;
+export const projectCreateError = createAction(
+  '[Projects API] Project Create Error',
+  props<{ error: any }>()
+);
 
-  constructor(public payload: PagedList<User>) {
-  }
-}
+export const updateProject = createAction(
+  '[Project Page] Update Project',
+  props<{ payload: Project }>()
+);
 
-export type AppAction = LoadMe | MeLoaded | MeLoadError
-  | LoadUsers | UsersLoaded | UsersLoadError;
+export const projectUpdated = createAction(
+  '[Projects API] Project Updated',
+  props<{ payload: Project }>()
+);
+
+export const projectUpdateError = createAction(
+  '[Projects API] Project Update Error',
+  props<{ error: any }>()
+);
+
+export const unloadProject = createAction(
+  '[Projects Page] Unload Project'
+);
