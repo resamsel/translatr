@@ -214,14 +214,15 @@ a .mat-card {
   }
 }
 
+.mat-list-base .mat-list-item .mat-list-icon.circle,
 .mat-icon.circle {
-  font-size: 18px;
-  line-height: 32px;
-  width: 32px;
-  height: 32px;
+  font-size: 22px;
+  line-height: 24px;
+  width: 24px;
+  height: 24px;
   color: #fff;
   text-align: center;
-  border-radius: 50%;
+  border-radius: 2px;
 }
 
 //p {
