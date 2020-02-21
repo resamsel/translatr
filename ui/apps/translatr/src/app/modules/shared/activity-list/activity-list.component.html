@@ -4,17 +4,15 @@
   (filter)="onFilter($event)"
   [showMore]="showMore"
 >
-  <mat-list-item *ngFor="let activity of activities?.list; trackBy: trackByFn">
-    <img
-      [md5Hash]="activity.userEmailHash"
-      class="icon"
+  <mat-list-item
+    *ngFor="let activity of activities?.list; trackBy: trackByFn"
+    [ngClass]="iconType(activity.contentType)"
+  >
+    <mat-icon
+      [ngClass]="iconType(activity.contentType)"
+      class="circle"
       matListIcon
-      ngxGravatar
-      size="36"
-      [round]="false"
-      cornerRadius="6"
-
-    />
+    >{{icon(activity.contentType)}}</mat-icon>
     <h3 matLine>
       <a [routerLink]="['/', activity.userUsername]" class="link user-name">{{
         activity.userName
@@ -22,22 +20,22 @@
       <span class="sub-title">
         <ng-container [ngSwitch]="activity.type">
           <span *ngSwitchCase="'Create'" class="type" i18n>
-            <app-tag>created</app-tag>
+            <span>created</span>
             <app-activity-content [activity]="activity"></app-activity-content>
           </span>
           <span *ngSwitchCase="'Update'" class="type" i18n>
-            <app-tag>updated</app-tag>
+            <span>updated</span>
             <app-activity-content [activity]="activity"></app-activity-content>
           </span>
           <span *ngSwitchCase="'Delete'" class="type" i18n>
-            <app-tag>deleted</app-tag>
+            <span>deleted</span>
             <app-activity-content [activity]="activity"></app-activity-content>
           </span>
           <span *ngSwitchCase="'Login'" class="type" i18n>
-            <app-tag>logged in</app-tag></span
+            <span>logged in</span></span
           >
           <span *ngSwitchCase="'Logout'" class="type" i18n>
-            <app-tag>logged out</app-tag></span
+            <span>logged out</span></span
           >
         </ng-container>
       </span>

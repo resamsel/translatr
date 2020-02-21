@@ -111,21 +111,36 @@ a .mat-card {
     border-radius: 2px;
   }
 
-  .project .mat-card {
+  .project .mat-card,
+  .mat-icon.circle.project {
     background: #ffa000;
     color: white;
   }
 
+  .project.mat-list-item:before {
+    border-left-color: #ffa000;
+  }
+
   .owner .mat-card,
-  .user .mat-card {
+  .user .mat-card,
+  .mat-icon.circle.user {
     background: #1976d2;
     color: white;
+  }
+
+  .owner.mat-list-item:before,
+  .user.mat-list-item:before {
+    border-left-color: #1976d2;
   }
 
   .member .mat-card,
   .mat-icon.circle.member {
     background: #ff7043;
     color: white;
+  }
+
+  .member.mat-list-item:before {
+    border-left-color: #ff7043;
   }
 
   .locale .mat-card,
@@ -135,11 +150,19 @@ a .mat-card {
     color: white;
   }
 
+  .locale.mat-list-item:before {
+    border-left-color: #0097a7;
+  }
+
   .key .mat-card,
   .mat-icon.circle.key,
   .key-editor .mat-toolbar.mat-primary {
     background: #689f38;
     color: white;
+  }
+
+  .key.mat-list-item:before {
+    border-left-color: #689f38;
   }
 
   .access-token .mat-card,
@@ -148,16 +171,28 @@ a .mat-card {
     color: white;
   }
 
+  .access-token.mat-list-item:before {
+    border-left-color: #7b1fa2;
+  }
+
   .message .mat-card,
   .mat-icon.circle.message {
     background: #ef5350;
     color: white;
   }
 
+  .message.mat-list-item:before {
+    border-left-color: #ef5350;
+  }
+
   .activity .mat-card,
   .mat-icon.circle.activity {
     background: #388e3c;
     color: white;
+  }
+
+  .activity.mat-list-item:before {
+    border-left-color: #388e3c;
   }
 }
 

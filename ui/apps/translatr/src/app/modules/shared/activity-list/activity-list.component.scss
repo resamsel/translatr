@@ -1,0 +1,17 @@
+.mat-list-item {
+  position: relative;
+
+  &:before {
+    content: '';
+    height: calc(100% - 36px);
+    border-left: 2px solid black;
+    position: absolute;
+    left: 32px;
+    top: 44px;
+  }
+
+  .mat-icon {
+    align-self: flex-start;
+    margin-top: 10px;
+  }
+}

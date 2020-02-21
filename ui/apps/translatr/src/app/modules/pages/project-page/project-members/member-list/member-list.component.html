@@ -21,6 +21,8 @@
       ngxGravatar
       [md5Hash]="member.userEmailHash"
       size="36"
+      [round]="false"
+      cornerRadius="6"
     />
     <h3 matLine>{{ member.userName }} <span class="sub-title">{{ member.role }}</span></h3>
     <p i18n="@@added.when" matLine>

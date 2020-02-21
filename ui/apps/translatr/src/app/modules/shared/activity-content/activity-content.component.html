@@ -2,6 +2,9 @@
   <span *ngSwitchCase="'message'" class="content-type" i18n>
     translation
   </span>
+  <span *ngSwitchCase="'projectuser'" class="content-type" i18n>
+    member
+  </span>
   <span *ngSwitchDefault class="content-type" i18n>
     {{ contentType }}
   </span>
@@ -9,9 +12,9 @@
 <ng-container [ngSwitch]="contentType">
   <span *ngSwitchCase="'project'" class="content-type" i18n>
     <a *ngIf="linkToProject(project) as projectLink"
-      [routerLink]="projectLink"
-      class="link"
-      >{{ project.name }}</a
+       [routerLink]="projectLink"
+       class="link"
+    >{{ project.name }}</a
     >
   </span>
   <span *ngSwitchCase="'locale'" class="content-type" i18n>
