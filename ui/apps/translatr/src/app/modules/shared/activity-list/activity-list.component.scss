@@ -1,17 +1,22 @@
-.mat-list-item {
+.activity-list-item.mat-list-item {
   position: relative;
+  padding-left: 140px;
 
   &:before {
     content: '';
     height: calc(100% - 36px);
-    border-left: 2px solid black;
+    border-left-width: 2px;
+    border-left-style: solid;
     position: absolute;
-    left: 32px;
-    top: 44px;
+    left: 172px;
+    top: 54px;
   }
 
-  .mat-icon {
-    align-self: flex-start;
-    margin-top: 10px;
+  p.mat-line {
+    position: absolute;
+    left: -140px;
+    width: 140px;
+    text-align: right;
+    top: 26px;
   }
 }

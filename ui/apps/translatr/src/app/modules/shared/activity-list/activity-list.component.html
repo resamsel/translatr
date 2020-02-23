@@ -7,6 +7,7 @@
   <mat-list-item
     *ngFor="let activity of activities?.list; trackBy: trackByFn"
     [ngClass]="iconType(activity.contentType)"
+    class="activity-list-item"
   >
     <mat-icon
       [ngClass]="iconType(activity.contentType)"
