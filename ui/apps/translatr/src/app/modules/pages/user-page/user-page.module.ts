@@ -18,7 +18,7 @@ import { UserInfoComponent } from './user-info/user-info.component';
 import { ActivityModule } from '../../shared/activity/activity.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
 import { UserActivityComponent } from './user-activity/user-activity.component';
-import { EmptyViewModule, UserCardModule } from '@dev/translatr-components';
+import { EmptyViewModule, MetricModule, UserCardModule } from '@dev/translatr-components';
 import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
 import { ProjectCardModule } from '../../shared/project-card/project-card.module';
 import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';
@@ -80,7 +80,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     StoreModule.forFeature(USER_FEATURE_KEY, userReducer, {
       initialState: userInitialState
     }),
-    EffectsModule.forFeature([UserEffects])
+    EffectsModule.forFeature([UserEffects]),
+    MetricModule
   ],
   providers: [UserFacade, UserGuard]
 })

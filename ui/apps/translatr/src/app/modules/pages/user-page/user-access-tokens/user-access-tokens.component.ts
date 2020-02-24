@@ -1,12 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserFacade } from '../+state/user.facade';
-import { AccessToken, PagedList, User } from '@dev/translatr-model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
-import { trackByFn } from '@translatr/utils';
-import { Observable, Subject } from 'rxjs';
+import { navigate, trackByFn } from '@translatr/utils';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
 
 @Component({
@@ -14,18 +12,12 @@ import { FilterCriteria } from '../../../shared/list-header/list-header.componen
   templateUrl: './user-access-tokens.component.html',
   styleUrls: ['./user-access-tokens.component.scss']
 })
-export class UserAccessTokensComponent implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
+export class UserAccessTokensComponent implements OnInit {
+  readonly user$ = this.facade.user$;
+  readonly criteria$ = this.facade.criteria$;
+  readonly accessTokens$ = this.facade.accessTokens$;
 
-  user$ = this.facade.user$.pipe(
-    takeUntil(this.destroy$.asObservable())
-  );
-  accessTokens$: Observable<PagedList<AccessToken> | undefined> =
-    this.facade.accessTokens$.pipe(
-      takeUntil(this.destroy$.asObservable())
-    );
-
-  trackByFn = trackByFn;
+  readonly trackByFn = trackByFn;
 
   constructor(
     private readonly facade: UserFacade,
@@ -36,15 +28,13 @@ export class UserAccessTokensComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.user$
-      .pipe(filter(user => !!user))
-      .subscribe((user: User) =>
-        this.facade.loadAccessTokens({ userId: user.id }));
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.criteria$
+      .pipe(
+        withLatestFrom(this.facade.user$.pipe(filter(x => !!x))),
+        takeUntil(this.facade.destroy$)
+      )
+      .subscribe(([criteria, user]) =>
+        this.facade.loadAccessTokens({ userId: user.id, ...criteria }));
   }
 
   openAccessTokenCreationDialog(): void {
@@ -59,11 +49,6 @@ export class UserAccessTokensComponent implements OnInit, OnDestroy {
   }
 
   onFilter(criteria: FilterCriteria): void {
-    this.user$.pipe(take(1))
-      .subscribe((user: User) =>
-        this.facade.loadAccessTokens({
-          userId: user.id,
-          ...criteria
-        }));
+    navigate(this.router, criteria);
   }
 }

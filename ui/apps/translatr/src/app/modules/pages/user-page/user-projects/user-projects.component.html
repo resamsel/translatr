@@ -6,6 +6,7 @@
 ></app-project-list>
 
 <button
+  *ngIf="canCreateProject$ | async"
   mat-fab
   color="accent"
   class="floating-action-btn pin-bottom"

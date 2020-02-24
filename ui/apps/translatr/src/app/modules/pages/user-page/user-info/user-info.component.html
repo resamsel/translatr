@@ -11,7 +11,23 @@
   </p>
 </user-card>
 
-<div class="content">
+<div class="content flex">
+  <dev-metric
+    name="Projects"
+    routerLink="projects"
+    [value]="(projects$ | async)?.total"
+    icon="library_books"
+    class="project count"
+  ></dev-metric>
+
+  <dev-metric
+    name="Activity"
+    [routerLink]="activityLink$ | async"
+    [value]="(activities$ | async)?.total"
+    icon="change_history"
+    class="activity count"
+  ></dev-metric>
+
   <section>
     <h2>Recent Projects</h2>
     <div class="project-list">
@@ -22,10 +38,5 @@
         [canCreate]="canCreateProject$ | async"></app-project-card-list>
     </div>
     <div class="clearfix"></div>
-  </section>
-
-  <section>
-    <h2 i18n="@@activity">Activity</h2>
-    <app-activity [activity]="activities$ | async"></app-activity>
   </section>
 </div>
