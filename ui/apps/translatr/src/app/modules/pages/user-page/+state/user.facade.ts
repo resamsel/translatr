@@ -32,23 +32,19 @@ const canCreateProject = (user: User, me: User): boolean => {
 
 @Injectable()
 export class UserFacade {
-  readonly destroy$ = new Subject<void>();
+  private readonly destroySubject$ = new Subject<void>();
+  readonly destroy$ = this.destroySubject$.asObservable();
 
-  user$ = this.store.pipe(
-    select(userQuery.getUser),
-    takeUntil(this.destroy$.asObservable())
-  );
-  error$ = this.store.pipe(
-    select(userQuery.getError),
-    takeUntil(this.destroy$.asObservable())
-  );
+  user$ = this.store.pipe(select(userQuery.getUser));
+  error$ = this.store.pipe(select(userQuery.getError));
   permission$ = combineLatest([this.user$, this.appFacade.me$])
-    .pipe(takeUntil(this.destroy$.asObservable()));
+    .pipe(takeUntil(this.destroy$));
+  criteria$ = this.appFacade.criteria$();
 
   projects$: Observable<PagedList<Project> | undefined> =
     this.store.pipe(
       select(userQuery.getProjects),
-      takeUntil(this.destroy$.asObservable())
+      takeUntil(this.destroy$)
     );
   canCreateProject$ = this.permission$.pipe(
     map(([user, me]) => canCreateProject(user, me))
@@ -56,18 +52,17 @@ export class UserFacade {
 
   activities$: Observable<PagedList<Activity> | undefined> =
     this.store.pipe(
-      select(userQuery.getActivities),
-      takeUntil(this.destroy$.asObservable())
+      select(userQuery.getActivities)
     );
 
   accessTokens$: Observable<PagedList<AccessToken> | undefined> =
     this.store.pipe(
       select(userQuery.getAccessTokens),
-      takeUntil(this.destroy$.asObservable())
+      takeUntil(this.destroy$)
     );
   accessToken$ = this.store.pipe(
     select(userQuery.getAccessToken),
-    takeUntil(this.destroy$.asObservable())
+    takeUntil(this.destroy$)
   );
   projectsCriteria$ = this.appFacade.criteria$();
 
@@ -110,7 +105,7 @@ export class UserFacade {
   }
 
   unload(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
   }
 }
