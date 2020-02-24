@@ -11,10 +11,14 @@
 <mat-nav-list *ngIf="pagedList; else loading">
   <div [class.flex-stretch]="direction === 'row'">
     <ng-content></ng-content>
+  </div>
 
+  <div
+    *ngIf="showMore && pagedList?.hasNext"
+    class="more"
+  >
     <a
-      *ngIf="showMore && pagedList?.hasNext"
-      mat-list-item
+      mat-raised-button
       class="more"
       [queryParams]="queryParams"
       [routerLink]="[]"

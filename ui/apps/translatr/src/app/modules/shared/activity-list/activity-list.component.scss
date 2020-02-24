@@ -1,6 +1,5 @@
 .activity-list-item.mat-list-item {
   position: relative;
-  padding-left: 140px;
 
   &:before {
     content: '';
@@ -8,15 +7,15 @@
     border-left-width: 2px;
     border-left-style: solid;
     position: absolute;
-    left: 172px;
-    top: 54px;
+    left: 170px;
+    top: 46px;
   }
 
-  p.mat-line {
-    position: absolute;
-    left: -140px;
-    width: 140px;
+  .timestamp {
+    order: -1;
+    width: 120px;
     text-align: right;
-    top: 26px;
+    padding-right: 16px;
+    flex-shrink: 0;
   }
 }

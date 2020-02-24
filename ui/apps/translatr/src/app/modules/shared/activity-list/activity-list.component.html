@@ -9,6 +9,11 @@
     [ngClass]="iconType(activity.contentType)"
     class="activity-list-item"
   >
+    <div class="timestamp sub-title">
+      <span [matTooltip]="activity.whenCreated | date: 'full'">{{
+        activity.whenCreated | amTimeAgo
+        }}</span>
+    </div>
     <mat-icon
       [ngClass]="iconType(activity.contentType)"
       class="circle"
@@ -41,11 +46,6 @@
         </ng-container>
       </span>
     </h3>
-    <p matLine>
-      <span [matTooltip]="activity.whenCreated | date: 'full'">{{
-        activity.whenCreated | amTimeAgo
-        }}</span>
-    </p>
   </mat-list-item>
 </app-nav-list>
 
