@@ -1,15 +1,17 @@
 version: "2"
 volumes:
-    pg-data:
+  pg-data:
 services:
-    db-translatr:
-        image: postgres
-        ports:
-            - "5432:5432"
-        volumes:
-            - pg-data:/var/lib/postgresql/data
-            - ./docker/entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    redis-translatr:
-        image: redis
-        ports:
-            - "6379:6379"
+  db-translatr:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - ./docker/entrypoint-initdb.d:/docker-entrypoint-initdb.d
+  redis-translatr:
+    image: redis
+    ports:
+      - "6379:6379"

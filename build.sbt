@@ -10,7 +10,7 @@ lazy val root = (project in file(".")).
 		buildInfoKeys := Seq[BuildInfoKey](name, version)
 	)
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.11.12"
 
 libraryDependencies ++= Seq(
 	javaJdbc,

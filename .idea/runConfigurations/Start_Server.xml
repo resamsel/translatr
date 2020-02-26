@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Start Server" type="SbtRunConfiguration" factoryName="sbt Task" show_console_on_std_err="false" show_console_on_std_out="false">
+    <option name="allowRunningInParallel" value="false" />
+    <option name="tasks" value="~run" />
+    <option name="useSbtShell" value="false" />
+    <option name="vmparams" value="-Xms512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled -Dconfig.file=dev.conf" />
+    <option name="workingDir" value="$PROJECT_DIR$" />
+    <envs>
+      <env name="KEYCLOAK_CLIENT_ID" value="translatr-localhost" />
+      <env name="KEYCLOAK_CLIENT_SECRET" value="98e21465-90b8-4390-9006-c94cd4bad36c" />
+      <env name="AUTH_PROVIDERS" value="keycloak" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>
