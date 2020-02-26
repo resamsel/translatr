@@ -155,5 +155,38 @@
     </mat-card-content>
   </mat-card>
 
+  <mat-card style="display: none">
+    <mat-card-header>
+      <mat-card-title i18n="@@cli.integration.title">CLI Integration</mat-card-title>
+      <mat-card-subtitle i18n="@@cli.integration.subtitle"
+      >Sample <strong>.translatr.yml</strong> file to be used with the Translatr CLI.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field appearance="outline">
+        <mat-label>File type</mat-label>
+        <mat-select [(value)]="fileType">
+          <mat-option value="play_messages">Play messages</mat-option>
+          <mat-option value="java_properties">Java properties</mat-option>
+          <mat-option value="gettext">Gettext (PO)</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <pre>
+        <code>
+translatr:
+  endpoint: {{endpointUrl}}
+  access_token: ${{ '{' }}ACCESS_TOKEN}
+  project_id: {{project.id}}
+  pull:
+    file_type: {{fileType}}
+    target: conf/messages.?{{ '{' }}locale.name}
+  push:
+    file_type: {{fileType}}
+    target: conf/messages.?{{ '{' }}locale.name}
+          </code>
+      </pre>
+    </mat-card-content>
+  </mat-card>
+
   <div></div>
 </div>

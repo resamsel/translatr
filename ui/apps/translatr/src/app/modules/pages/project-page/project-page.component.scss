@@ -4,49 +4,11 @@
   background-image: url(assets/headers/waves.png);
 
   .mat-tab-nav-bar {
-    background-color: rgba(255, 143, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
 
     .mat-tab-label,
     .mat-tab-link {
       color: rgba(255, 255, 255, 1);
-    }
-  }
-}
-
-.mat-form-field {
-  ::ng-deep {
-    .mat-form-field-wrapper {
-      padding-bottom: 0;
-    }
-
-    .mat-form-field-infix {
-      padding: 0;
-      border-top-width: 0;
-    }
-
-    .mat-form-field-underline {
-      background-color: transparent;
-      bottom: 0;
-    }
-  }
-
-  .mat-button {
-    display: none;
-    line-height: 28px;
-  }
-
-  &.mat-focused,
-  &.dirty {
-    ::ng-deep .mat-form-field-underline {
-      background-color: #fff;
-    }
-
-    .mat-button {
-      display: initial;
-    }
-
-    .mat-icon-button {
-      display: none;
     }
   }
 }

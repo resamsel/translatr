@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
 import { filter, map, take } from 'rxjs/operators';
@@ -7,7 +7,11 @@ import { openLocaleEditDialog } from '../../../shared/locale-edit-dialog/locale-
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { openKeyEditDialog } from '../../../shared/key-edit-dialog/key-edit-dialog.component';
-import { slicePagedList } from '@translatr/utils';
+import { slicePagedList, WINDOW } from '@translatr/utils';
+
+function endpointFromLocation(location: Location) {
+  return `${location.protocol}//${location.host}`;
+}
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,13 +45,16 @@ export class ProjectInfoComponent {
     )
   );
 
-  members$ = this.facade.members$;
+  readonly members$ = this.facade.members$;
+  readonly endpointUrl = endpointFromLocation(this.window.location);
+  fileType = 'play_messages';
 
   constructor(
     private readonly facade: ProjectFacade,
     private readonly dialog: MatDialog,
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    @Inject(WINDOW) private readonly window: Window
   ) {
   }
 
