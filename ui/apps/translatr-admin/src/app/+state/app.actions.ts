@@ -1,5 +1,15 @@
 import { Action } from '@ngrx/store';
-import { AccessToken, Activity, ActivityCriteria, PagedList, Project, ProjectCriteria, RequestCriteria, User } from '@dev/translatr-model';
+import {
+  AccessToken,
+  Activity,
+  ActivityCriteria, FeatureFlagCriteria,
+  PagedList,
+  Project,
+  ProjectCriteria,
+  RequestCriteria,
+  User,
+  UserFeatureFlag
+} from '@dev/translatr-model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export enum AppActionTypes {
@@ -69,7 +79,21 @@ export enum AppActionTypes {
 
   LoadActivities = '[Activities Page] Load Activities',
   ActivitiesLoaded = '[Translatr API] Activities Loaded',
-  ActivitiesLoadError = '[Translatr API] Activities Load Error'
+  ActivitiesLoadError = '[Translatr API] Activities Load Error',
+
+  // Feature Flags
+
+  LoadFeatureFlags = '[FeatureFlags Page] Load FeatureFlags',
+  FeatureFlagsLoaded = '[Translatr API] FeatureFlags Loaded',
+  FeatureFlagsLoadError = '[Translatr API] FeatureFlags Load Error',
+
+  DeleteFeatureFlag = '[FeatureFlags Page] Delete FeatureFlag',
+  FeatureFlagDeleted = '[Translatr API] FeatureFlag Deleted',
+  FeatureFlagDeleteError = '[Translatr API] FeatureFlag Delete Error',
+
+  DeleteFeatureFlags = '[FeatureFlags Page] Delete FeatureFlags',
+  FeatureFlagsDeleted = '[Translatr API] FeatureFlags Deleted',
+  FeatureFlagsDeleteError = '[Translatr API] FeatureFlags Delete Error'
 }
 
 // Users
@@ -392,6 +416,71 @@ export class ActivitiesLoaded implements Action {
   }
 }
 
+// Feature Flags
+
+export class LoadFeatureFlags implements Action {
+  readonly type = AppActionTypes.LoadFeatureFlags;
+
+  constructor(public payload?: FeatureFlagCriteria) {
+  }
+}
+
+export class FeatureFlagsLoadError implements Action {
+  readonly type = AppActionTypes.FeatureFlagsLoadError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class FeatureFlagsLoaded implements Action {
+  readonly type = AppActionTypes.FeatureFlagsLoaded;
+
+  constructor(public payload: PagedList<UserFeatureFlag>) {
+  }
+}
+
+export class DeleteFeatureFlag implements Action {
+  readonly type = AppActionTypes.DeleteFeatureFlag;
+
+  constructor(public payload: UserFeatureFlag) {
+  }
+}
+
+export class FeatureFlagDeleteError implements Action {
+  readonly type = AppActionTypes.FeatureFlagDeleteError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class FeatureFlagDeleted implements Action {
+  readonly type = AppActionTypes.FeatureFlagDeleted;
+
+  constructor(public payload: UserFeatureFlag) {
+  }
+}
+
+export class DeleteFeatureFlags implements Action {
+  readonly type = AppActionTypes.DeleteFeatureFlags;
+
+  constructor(public payload: UserFeatureFlag[]) {
+  }
+}
+
+export class FeatureFlagsDeleteError implements Action {
+  readonly type = AppActionTypes.FeatureFlagsDeleteError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class FeatureFlagsDeleted implements Action {
+  readonly type = AppActionTypes.FeatureFlagsDeleted;
+
+  constructor(public payload: UserFeatureFlag[]) {
+  }
+}
+
 export type AppAction =
 // Users
   | LoadLoggedInUser
@@ -441,4 +530,14 @@ export type AppAction =
   // Activity
   | LoadActivities
   | ActivitiesLoaded
-  | ActivitiesLoadError;
+  | ActivitiesLoadError
+  // Feature Flags
+  | LoadFeatureFlags
+  | FeatureFlagsLoaded
+  | FeatureFlagsLoadError
+  | DeleteFeatureFlag
+  | FeatureFlagDeleted
+  | FeatureFlagDeleteError
+  | DeleteFeatureFlags
+  | FeatureFlagsDeleted
+  | FeatureFlagsDeleteError;

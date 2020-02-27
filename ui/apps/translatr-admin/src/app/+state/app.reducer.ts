@@ -1,5 +1,5 @@
 import { AppAction, AppActionTypes } from './app.actions';
-import { AccessToken, Activity, PagedList, Project, User } from '@dev/translatr-model';
+import { AccessToken, Activity, PagedList, Project, User, UserFeatureFlag } from '@dev/translatr-model';
 
 export const APP_FEATURE_KEY = 'app';
 
@@ -9,6 +9,7 @@ export interface AppState {
   projects?: PagedList<Project>;
   accessTokens?: PagedList<AccessToken>;
   activities?: PagedList<Activity>;
+  featureFlags?: PagedList<UserFeatureFlag>;
 }
 
 export interface AppPartialState {
@@ -158,6 +159,36 @@ export function appReducer(
       return {
         ...state,
         activities: action.payload
+      };
+
+    // Feature Flags
+
+    case AppActionTypes.FeatureFlagsLoaded:
+      return {
+        ...state,
+        featureFlags: action.payload
+      };
+    case AppActionTypes.FeatureFlagDeleted:
+      return {
+        ...state,
+        featureFlags: {
+          ...state.featureFlags,
+          list: state.featureFlags.list.filter(
+            (featureFlag: UserFeatureFlag) => featureFlag.id !== action.payload.id
+          )
+        }
+      };
+    case AppActionTypes.FeatureFlagsDeleted:
+      return {
+        ...state,
+        featureFlags: {
+          ...state.featureFlags,
+          list: state.featureFlags.list.filter((featureFlag: UserFeatureFlag) =>
+            action.payload.find(
+              (deleted: UserFeatureFlag) => featureFlag.id !== deleted.id
+            )
+          )
+        }
       };
 
     default:

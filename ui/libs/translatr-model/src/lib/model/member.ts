@@ -1,13 +1,8 @@
 import { MemberRole } from './member-role';
-import { ProjectEmbedded, Temporal } from '@dev/translatr-model';
+import { ProjectEmbedded, Temporal, UserEmbedded } from '@dev/translatr-model';
 
-export interface Member extends ProjectEmbedded, Temporal {
+export interface Member extends ProjectEmbedded, UserEmbedded, Temporal {
   id: number;
 
   role: MemberRole;
-
-  userName?: string;
-  userId: string;
-  userUsername?: string;
-  userEmailHash?: string;
 }

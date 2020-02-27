@@ -2,6 +2,7 @@ export * from './abstract.service';
 export * from './access-token.service';
 export * from './activity.service';
 export * from './default-error-handler';
+export * from './feature-flag.service';
 export * from './error-handler';
 export * from './key.service';
 export * from './locale.service';

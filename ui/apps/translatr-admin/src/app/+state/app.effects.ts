@@ -13,12 +13,21 @@ import {
   CreateUser,
   DeleteAccessToken,
   DeleteAccessTokens,
+  DeleteFeatureFlag,
+  DeleteFeatureFlags,
   DeleteProject,
   DeleteProjects,
   DeleteUser,
   DeleteUsers,
+  FeatureFlagDeleted,
+  FeatureFlagDeleteError,
+  FeatureFlagsDeleted,
+  FeatureFlagsDeleteError,
+  FeatureFlagsLoaded,
+  FeatureFlagsLoadError,
   LoadAccessTokens,
   LoadActivities,
+  LoadFeatureFlags,
   LoadLoggedInUser,
   LoadProjects,
   LoadUser,
@@ -48,10 +57,10 @@ import {
   UserUpdated,
   UserUpdateError
 } from './app.actions';
-import { AccessToken, Activity, PagedList, Project, User } from '@dev/translatr-model';
+import { AccessToken, Activity, PagedList, Project, User, UserFeatureFlag } from '@dev/translatr-model';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { AccessTokenService, ActivityService, ProjectService, UserService } from '@dev/translatr-sdk';
+import { AccessTokenService, ActivityService, ProjectService, UserService, FeatureFlagService } from '@dev/translatr-sdk';
 
 @Injectable()
 export class AppEffects {
@@ -222,12 +231,51 @@ export class AppEffects {
       ))
   );
 
+  // Feature Flags
+
+  @Effect() loadFeatureFlags$ = this.actions$.pipe(
+    ofType(AppActionTypes.LoadFeatureFlags),
+    switchMap((action: LoadFeatureFlags) =>
+      this.featureFlagService.find(action.payload).pipe(
+        map(
+          (payload: PagedList<UserFeatureFlag>) => new FeatureFlagsLoaded(payload)
+        ),
+        catchError(error => of(new FeatureFlagsLoadError(error)))
+      )
+    )
+  );
+
+  @Effect() deleteFeatureFlag$ = this.actions$.pipe(
+    ofType(AppActionTypes.DeleteFeatureFlag),
+    switchMap((action: DeleteFeatureFlag) =>
+      this.featureFlagService.delete(action.payload.id).pipe(
+        map((payload: UserFeatureFlag) => new FeatureFlagDeleted(payload)),
+        catchError(error => of(new FeatureFlagDeleteError(error)))
+      )
+    )
+  );
+
+  @Effect() deleteFeatureFlags$ = this.actions$.pipe(
+    ofType(AppActionTypes.DeleteFeatureFlags),
+    switchMap((action: DeleteFeatureFlags) =>
+      this.featureFlagService
+        .deleteAll(
+          action.payload.map((featureFlag: UserFeatureFlag) => featureFlag.id)
+        )
+        .pipe(
+          map((payload: UserFeatureFlag[]) => new FeatureFlagsDeleted(payload)),
+          catchError(error => of(new FeatureFlagsDeleteError(error)))
+        )
+    )
+  );
+
   constructor(
     private actions$: Actions,
     private readonly userService: UserService,
     private readonly projectService: ProjectService,
     private readonly accessTokenService: AccessTokenService,
-    private readonly activityService: ActivityService
+    private readonly activityService: ActivityService,
+    private readonly featureFlagService: FeatureFlagService
   ) {
   }
 }

@@ -1,7 +1,5 @@
 package dto;
 
-import org.joda.time.DateTime;
-
 import java.util.UUID;
 
 public class UserFeatureFlag extends Dto {
@@ -12,9 +10,6 @@ public class UserFeatureFlag extends Dto {
   public UUID userId;
   public String userUsername;
   public String userName;
-
-  public DateTime whenCreated;
-  public DateTime whenUpdated;
 
   public String featureFlag;
   public boolean enabled;

@@ -35,6 +35,7 @@ import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashbo
 import { GravatarModule } from 'ngx-gravatar';
 import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
 import { MatTooltipModule } from '@angular/material';
+import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { MatTooltipModule } from '@angular/material';
     DashboardInfoComponent,
     DashboardProjectsComponent,
     DashboardAccessTokensComponent,
-    DashboardUserComponent
+    DashboardUserComponent,
+    DashboardFeatureFlagsComponent
   ],
   imports: [
     CommonModule,

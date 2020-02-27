@@ -39,11 +39,17 @@ const getActivities = createSelector(
   (state: AppState) => state.activities
 );
 
+const getFeatureFlags = createSelector(
+  getAppState,
+  (state: AppState) => state.featureFlags
+);
+
 export const appQuery = {
   getLoggedInUser,
   getUsers,
   getUser,
   getProjects,
   getAccessTokens,
-  getActivities
+  getActivities,
+  getFeatureFlags
 };

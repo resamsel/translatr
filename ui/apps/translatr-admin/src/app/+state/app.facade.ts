@@ -7,12 +7,15 @@ import {
   CreateUser,
   DeleteAccessToken,
   DeleteAccessTokens,
+  DeleteFeatureFlag,
+  DeleteFeatureFlags,
   DeleteProject,
   DeleteProjects,
   DeleteUser,
   DeleteUsers,
   LoadAccessTokens,
   LoadActivities,
+  LoadFeatureFlags,
   LoadLoggedInUser,
   LoadProjects,
   LoadUser,
@@ -20,7 +23,16 @@ import {
   UpdateProject,
   UpdateUser
 } from './app.actions';
-import { AccessToken, ActivityCriteria, Project, ProjectCriteria, RequestCriteria, User } from '@dev/translatr-model';
+import {
+  AccessToken,
+  ActivityCriteria,
+  FeatureFlagCriteria,
+  Project,
+  ProjectCriteria,
+  RequestCriteria,
+  User,
+  UserFeatureFlag
+} from '@dev/translatr-model';
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -114,6 +126,24 @@ export class AppFacade {
 
   activities$ = this.store.pipe(select(appQuery.getActivities));
 
+  // Feature Flags
+
+  featureFlags$ = this.store.pipe(select(appQuery.getFeatureFlags));
+  featureFlagDeleted$ = this.actions$.pipe(
+    ofType(
+      AppActionTypes.FeatureFlagDeleted,
+      AppActionTypes.FeatureFlagDeleteError
+    ),
+    takeUntil(this.unloadProjects$.asObservable())
+  );
+  featureFlagsDeleted$ = this.actions$.pipe(
+    ofType(
+      AppActionTypes.FeatureFlagsDeleted,
+      AppActionTypes.FeatureFlagsDeleteError
+    ),
+    takeUntil(this.unloadProjects$.asObservable())
+  );
+
   user$(userId: string): Observable<User | undefined> {
     return this.store.pipe(select(appQuery.getUser(userId)));
   }
@@ -198,5 +228,19 @@ export class AppFacade {
 
   loadActivities(criteria: ActivityCriteria) {
     this.store.dispatch(new LoadActivities(criteria));
+  }
+
+  // Feature Flags
+
+  loadFeatureFlags(criteria: FeatureFlagCriteria) {
+    this.store.dispatch(new LoadFeatureFlags(criteria));
+  }
+
+  deleteFeatureFlag(featureFlag: UserFeatureFlag) {
+    this.store.dispatch(new DeleteFeatureFlag(featureFlag));
+  }
+
+  deleteFeatureFlags(featureFlags: UserFeatureFlag[]) {
+    this.store.dispatch(new DeleteFeatureFlags(featureFlags));
   }
 }

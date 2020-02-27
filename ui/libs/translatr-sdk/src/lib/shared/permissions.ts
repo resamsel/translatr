@@ -1,4 +1,4 @@
-import { AccessToken, Project, User, UserRole } from '@dev/translatr-model';
+import { AccessToken, Project, User, UserFeatureFlag, UserRole } from '@dev/translatr-model';
 import { map } from 'rxjs/operators';
 
 // General
@@ -72,6 +72,35 @@ export const hasDeleteAllAccessTokensPermission = (
     accessTokens
       .map((accessToken: AccessToken) =>
         hasUserPermissionToDeleteAccessToken(me, accessToken)
+      )
+      .reduce((acc: boolean, next: boolean) => acc && next, true)
+  );
+
+// Feature Flags
+
+export const hasUserPermissionToEditFeatureFlag = (
+  me: User,
+  featureFlag: UserFeatureFlag
+) => (me !== undefined && me.id === featureFlag.userId) || isAdmin(me);
+
+export const hasUserPermissionToDeleteFeatureFlag = (
+  me: User,
+  featureFlag: UserFeatureFlag
+) => (me !== undefined && me.id === featureFlag.userId) || isAdmin(me);
+
+export const hasEditFeatureFlagPermission = (featureFlag: UserFeatureFlag) =>
+  map((me?: User) => hasUserPermissionToEditFeatureFlag(me, featureFlag));
+
+export const hasDeleteFeatureFlagPermission = (featureFlag: UserFeatureFlag) =>
+  map((me?: User) => hasUserPermissionToDeleteFeatureFlag(me, featureFlag));
+
+export const hasDeleteAllFeatureFlagsPermission = (
+  featureFlags: UserFeatureFlag[]
+) =>
+  map((me?: User) =>
+    featureFlags
+      .map((featureFlag: UserFeatureFlag) =>
+        hasUserPermissionToDeleteFeatureFlag(me, featureFlag)
       )
       .reduce((acc: boolean, next: boolean) => acc && next, true)
   );

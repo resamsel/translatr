@@ -8,6 +8,7 @@ import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashbo
 import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
 import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
 import { AuthGuard } from '../../../guards/auth.guard';
+import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
 
 export const routes: Routes = [
   {
@@ -54,6 +55,14 @@ export const routes: Routes = [
         data: {
           icon: 'vpn_key',
           name: 'Access Tokens'
+        }
+      },
+      {
+        component: DashboardFeatureFlagsComponent,
+        path: 'featureflags',
+        data: {
+          icon: 'flag',
+          name: 'Feature Flags'
         }
       }
     ]
