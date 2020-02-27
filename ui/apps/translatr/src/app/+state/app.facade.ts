@@ -1,14 +1,14 @@
-import {Injectable} from '@angular/core';
-import {select, Store} from '@ngrx/store';
-import {AppState} from './app.reducer';
-import {appQuery} from './app.selectors';
-import {createProject, loadMe, loadProject, loadUsers, updateProject} from './app.actions';
-import {Project, RequestCriteria} from '@dev/translatr-model';
-import {routerQuery} from './router.selectors';
-import {Observable} from 'rxjs';
-import {Params} from '@angular/router';
-import {distinctUntilChanged, filter, map} from 'rxjs/operators';
-import {coerceArray} from "@angular/cdk/coercion";
+import { Injectable } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { AppState } from './app.reducer';
+import { appQuery } from './app.selectors';
+import { createProject, loadMe, loadProject, loadUsers, updateProject } from './app.actions';
+import { Project, RequestCriteria } from '@dev/translatr-model';
+import { routerQuery } from './router.selectors';
+import { Observable } from 'rxjs';
+import { Params } from '@angular/router';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { coerceArray } from '@angular/cdk/coercion';
 
 export const defaultParams = ['search', 'limit', 'offset'];
 

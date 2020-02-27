@@ -45,8 +45,8 @@ import { ProjectEditGuard } from './project-edit.guard';
 import { ProjectDeleteDialogModule } from '../../shared/project-delete-dialog/project-delete-dialog.module';
 import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.module';
 import { AppFacade } from '../../../+state/app.facade';
-import { MatSelectModule } from "@angular/material/select";
-import {FeatureFlagModule} from "../../shared/feature-flag/feature-flag.module";
+import { MatSelectModule } from '@angular/material/select';
+import { FeatureFlagModule } from '../../shared/feature-flag/feature-flag.module';
 
 @NgModule({
   declarations: [

@@ -1,6 +1,6 @@
-import {Directive, Input, OnInit, TemplateRef, ViewContainerRef} from '@angular/core';
-import {AppFacade} from "../../../+state/app.facade";
-import {filter, take} from "rxjs/operators";
+import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { AppFacade } from '../../../+state/app.facade';
+import { filter, take } from 'rxjs/operators';
 
 @Directive({
   selector: '[featureFlag]'
