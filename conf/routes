@@ -63,6 +63,12 @@ POST          /api/accesstoken                                                  
 PUT           /api/accesstoken                                                        controllers.AccessTokensApi.update
 DELETE        /api/accesstoken/:accessTokenId                                         controllers.AccessTokensApi.delete(accessTokenId: Long)
 
+GET           /api/featureflags                                                       controllers.FeatureFlagsApi.find
+GET           /api/featureflag/:featureFlagId                                         controllers.FeatureFlagsApi.get(featureFlagId: java.util.UUID)
+POST          /api/featureflag                                                        controllers.FeatureFlagsApi.create
+PUT           /api/featureflag                                                        controllers.FeatureFlagsApi.update
+DELETE        /api/featureflag/:featureFlagId                                         controllers.FeatureFlagsApi.delete(featureFlagId: java.util.UUID)
+
 GET           /api/notifications                                                      controllers.NotificationsApi.find
 
 GET           /api/activities                                                         controllers.ActivitiesApi.find

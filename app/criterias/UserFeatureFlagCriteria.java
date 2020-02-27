@@ -26,7 +26,7 @@ public class UserFeatureFlagCriteria extends AbstractSearchCriteria<UserFeatureF
    */
   @Override
   public <U> ExpressionList<U> paged(ExpressionList<U> query) {
-    query.order("whenCreated");
+    query.order("featureFlag");
 
     return super.paged(query);
   }

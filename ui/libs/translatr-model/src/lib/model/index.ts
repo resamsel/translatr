@@ -11,6 +11,7 @@ export * from './error-action';
 export * from './error-info';
 export * from './error-infos';
 export * from './feature-flag';
+export * from './feature-flag-criteria';
 export * from './key';
 export * from './key-criteria';
 export * from './locale';

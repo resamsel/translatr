@@ -41,7 +41,11 @@ public enum Scope {
 
   NotificationRead(ScopeSection.Notification, ScopeType.Read),
 
-  NotificationWrite(ScopeSection.Notification, ScopeType.Write);
+  NotificationWrite(ScopeSection.Notification, ScopeType.Write),
+
+  FeatureFlagRead(ScopeSection.FeatureFlag, ScopeType.Read),
+
+  FeatureFlagWrite(ScopeSection.FeatureFlag, ScopeType.Write);
 
   private static final Map<String, Scope> MAP = new HashMap<>();
 

@@ -30,4 +30,8 @@ public class UserFeatureFlag implements Model<UserFeatureFlag, UUID> {
 
     return this;
   }
+
+  public static String getCacheKey(UUID uuid, String... fetches) {
+    return String.format("userFeatureFlag:%s:%s", uuid, fetches);
+  }
 }

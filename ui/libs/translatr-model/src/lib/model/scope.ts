@@ -14,7 +14,9 @@ export enum Scope {
   MemberRead = 'read:member',
   MemberWrite = 'write:member',
   NotificationRead = 'read:notification',
-  NotificationWrite = 'write:notification'
+  NotificationWrite = 'write:notification',
+  FeatureFlagRead = 'read:featureflag',
+  FeatureFlagWrite = 'write:featureflag'
 }
 
 export const scopes = [
@@ -33,5 +35,7 @@ export const scopes = [
   Scope.MemberRead,
   Scope.MemberWrite,
   Scope.NotificationRead,
-  Scope.NotificationWrite
+  Scope.NotificationWrite,
+  Scope.FeatureFlagRead,
+  Scope.FeatureFlagWrite
 ];

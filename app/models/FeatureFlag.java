@@ -2,23 +2,35 @@ package models;
 
 import com.avaje.ebean.annotation.DbEnumValue;
 
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toMap;
+
 public enum FeatureFlag {
-    ProjectCliCard("project-cli-card", false);
+  ProjectCliCard("project-cli-card", false);
 
-    private final String name;
-    private final boolean enabled;
+  private static final Map<String, FeatureFlag> MAP = Stream.of(FeatureFlag.values())
+          .collect(toMap(FeatureFlag::getName, x -> x));
 
-    FeatureFlag(String name, boolean enabled) {
-        this.name = name;
-        this.enabled = enabled;
-    }
+  private final String name;
+  private final boolean enabled;
 
-    @DbEnumValue
-    public String getName() {
-        return name;
-    }
+  FeatureFlag(String name, boolean enabled) {
+    this.name = name;
+    this.enabled = enabled;
+  }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
+  @DbEnumValue
+  public String getName() {
+    return name;
+  }
+
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  public static FeatureFlag of(String featureFlagName) {
+    return MAP.get(featureFlagName);
+  }
 }
