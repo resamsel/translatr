@@ -3,7 +3,10 @@ package mappers;
 import dto.User;
 import utils.EmailUtils;
 
+import java.util.HashMap;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 public class UserMapper {
   public static models.User toModel(User in, models.User user) {
@@ -41,6 +44,11 @@ public class UserMapper {
       out.memberships = in.memberships.stream()
           .map(ProjectUserMapper::toDto)
           .collect(Collectors.toList());
+    }
+
+    if (in.featureFlags != null && !in.featureFlags.isEmpty()) {
+      out.featureFlags = in.featureFlags.stream()
+              .collect(toMap(ff -> ff.featureFlag.getName(), ff -> ff.enabled));
     }
 
     return out;

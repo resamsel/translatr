@@ -1,13 +1,14 @@
-import { Injectable } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { AppState } from './app.reducer';
-import { appQuery } from './app.selectors';
-import { createProject, loadMe, loadProject, loadUsers, updateProject } from './app.actions';
-import { Project, RequestCriteria } from '@dev/translatr-model';
-import { routerQuery } from './router.selectors';
-import { Observable } from 'rxjs';
-import { Params } from '@angular/router';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {select, Store} from '@ngrx/store';
+import {AppState} from './app.reducer';
+import {appQuery} from './app.selectors';
+import {createProject, loadMe, loadProject, loadUsers, updateProject} from './app.actions';
+import {Project, RequestCriteria} from '@dev/translatr-model';
+import {routerQuery} from './router.selectors';
+import {Observable} from 'rxjs';
+import {Params} from '@angular/router';
+import {distinctUntilChanged, filter, map} from 'rxjs/operators';
+import {coerceArray} from "@angular/cdk/coercion";
 
 export const defaultParams = ['search', 'limit', 'offset'];
 
@@ -29,7 +30,7 @@ export class AppFacade {
     return this.queryParams$.pipe(
       map((params: Params) => includes
         .filter(f => params[f] !== undefined && params[f] !== '')
-        .reduce((acc, curr) => ({ ...acc, [curr]: params[curr] }), {})
+        .reduce((acc, curr) => ({...acc, [curr]: params[curr]}), {})
       ),
       distinctUntilChanged((a: RequestCriteria, b: RequestCriteria) =>
         includes.filter(key => a[key] !== b[key]).length === 0)
@@ -41,18 +42,28 @@ export class AppFacade {
   }
 
   loadUsers(criteria: RequestCriteria) {
-    this.store.dispatch(loadUsers({ payload: criteria }));
+    this.store.dispatch(loadUsers({payload: criteria}));
   }
 
   loadProject(username: string, projectName: string) {
-    this.store.dispatch(loadProject({ payload: { username, projectName } }));
+    this.store.dispatch(loadProject({payload: {username, projectName}}));
   }
 
   createProject(project: Project): void {
-    this.store.dispatch(createProject({ payload: project }));
+    this.store.dispatch(createProject({payload: project}));
   }
 
   updateProject(project: Project): void {
-    this.store.dispatch(updateProject({ payload: project }));
+    this.store.dispatch(updateProject({payload: project}));
+  }
+
+  hasFlags$(flags: string | string[]): Observable<boolean> {
+    return this.me$.pipe(
+      filter(x => !!x),
+      map(user => user.featureFlags
+        ? coerceArray(flags).every(flag => user.featureFlags[flag])
+        : false
+      )
+    );
   }
 }

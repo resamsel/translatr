@@ -155,7 +155,7 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card style="display: none">
+  <mat-card *featureFlag="FeatureFlag.ProjectCliCard">
     <mat-card-header>
       <mat-card-title i18n="@@cli.integration.title">CLI Integration</mat-card-title>
       <mat-card-subtitle i18n="@@cli.integration.subtitle"

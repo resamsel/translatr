@@ -76,8 +76,8 @@ public class UserApiServiceImpl extends
   }
 
   @Override
-  public dto.User me() {
-    return dtoMapper.apply(authProvider.loggedInUser());
+  public dto.User me(String... propertiesToFetch) {
+    return dtoMapper.apply(service.byId(authProvider.loggedInUserId(), propertiesToFetch));
   }
 
   /**

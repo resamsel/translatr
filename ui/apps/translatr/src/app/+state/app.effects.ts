@@ -29,7 +29,7 @@ export class AppEffects {
     ofType(loadMe),
     switchMap((action) => {
       return this.userService
-        .me()
+        .me({fetch: 'featureFlags'})
         .pipe(map((user: User) => meLoaded({ payload: user })));
     }),
     catchError(error => of(meLoadError(error)))

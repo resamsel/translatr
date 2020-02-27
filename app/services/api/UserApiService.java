@@ -18,5 +18,5 @@ public interface UserApiService extends ApiService<User, UUID, UserCriteria> {
 
     PagedList<Aggregate> activity(UUID userId);
 
-    User me();
+    User me(String... propertiesToFetch);
 }

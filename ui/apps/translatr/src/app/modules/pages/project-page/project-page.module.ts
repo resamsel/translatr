@@ -46,6 +46,7 @@ import { ProjectDeleteDialogModule } from '../../shared/project-delete-dialog/pr
 import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.module';
 import { AppFacade } from '../../../+state/app.facade';
 import { MatSelectModule } from "@angular/material/select";
+import {FeatureFlagModule} from "../../shared/feature-flag/feature-flag.module";
 
 @NgModule({
   declarations: [
@@ -102,7 +103,8 @@ import { MatSelectModule } from "@angular/material/select";
     ButtonModule,
     MatMenuModule,
     MatProgressBarModule,
-    MatSelectModule
+    MatSelectModule,
+    FeatureFlagModule
   ],
   providers: [
     AppFacade,

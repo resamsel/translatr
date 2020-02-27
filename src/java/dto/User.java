@@ -3,6 +3,7 @@ package dto;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class User extends Dto {
@@ -24,4 +25,6 @@ public class User extends Dto {
   public UserRole role;
 
   public List<ProjectUser> memberships;
+
+  public Map<String, Boolean> featureFlags;
 }

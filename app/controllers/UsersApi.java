@@ -133,8 +133,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> me() {
-    return toJson(api::me);
+  public CompletionStage<Result> me(@ApiParam(value = FETCH) String fetch) {
+    return toJson(() -> api.me(StringUtils.split(fetch, ",")));
   }
 
   /**

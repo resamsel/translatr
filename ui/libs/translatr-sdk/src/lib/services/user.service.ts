@@ -42,8 +42,8 @@ export class UserService extends AbstractService<User, RequestCriteria> {
       );
   }
 
-  me(): Observable<User | undefined> {
-    return this.http.get<User>('/api/me')
+  me(params: Record<string, string> = {}): Observable<User | undefined> {
+    return this.http.get<User>('/api/me', {params})
       .pipe(
         map(convertTemporals),
         catchError((err: HttpErrorResponse) =>

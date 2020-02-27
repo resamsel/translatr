@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
+import {FeatureFlag, Key, Locale, Message, PagedList, Project} from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
 import { filter, map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -48,6 +48,8 @@ export class ProjectInfoComponent {
   readonly members$ = this.facade.members$;
   readonly endpointUrl = endpointFromLocation(this.window.location);
   fileType = 'play_messages';
+
+  readonly FeatureFlag = FeatureFlag;
 
   constructor(
     private readonly facade: ProjectFacade,

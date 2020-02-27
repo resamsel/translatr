@@ -10,4 +10,6 @@ export interface User extends Temporal {
   role?: UserRole;
 
   memberships?: Member[];
+
+  featureFlags?: Record<string, boolean>;
 }
