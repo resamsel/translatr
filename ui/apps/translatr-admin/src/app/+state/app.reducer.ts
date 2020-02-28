@@ -168,6 +168,17 @@ export function appReducer(
         ...state,
         featureFlags: action.payload
       };
+    case AppActionTypes.FeatureFlagUpdated:
+      return {
+        ...state,
+        featureFlags: {
+          ...state.featureFlags,
+          list: state.featureFlags.list.map(
+            (featureFlag: UserFeatureFlag) =>
+              featureFlag.id === action.payload.id ? action.payload : featureFlag
+          )
+        }
+      };
     case AppActionTypes.FeatureFlagDeleted:
       return {
         ...state,

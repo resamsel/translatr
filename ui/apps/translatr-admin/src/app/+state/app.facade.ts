@@ -20,6 +20,7 @@ import {
   LoadProjects,
   LoadUser,
   LoadUsers,
+  UpdateFeatureFlag,
   UpdateProject,
   UpdateUser
 } from './app.actions';
@@ -234,6 +235,10 @@ export class AppFacade {
 
   loadFeatureFlags(criteria: FeatureFlagCriteria) {
     this.store.dispatch(new LoadFeatureFlags(criteria));
+  }
+
+  updateFeatureFlag(featureFlag: UserFeatureFlag): void {
+    this.store.dispatch(new UpdateFeatureFlag(featureFlag));
   }
 
   deleteFeatureFlag(featureFlag: UserFeatureFlag) {

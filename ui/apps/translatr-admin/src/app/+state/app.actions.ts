@@ -87,6 +87,10 @@ export enum AppActionTypes {
   FeatureFlagsLoaded = '[Translatr API] FeatureFlags Loaded',
   FeatureFlagsLoadError = '[Translatr API] FeatureFlags Load Error',
 
+  UpdateFeatureFlag = '[FeatureFlags Page] Update FeatureFlag',
+  FeatureFlagUpdated = '[Translatr API] FeatureFlag Updated',
+  FeatureFlagUpdateError = '[Translatr API] FeatureFlag Update Error',
+
   DeleteFeatureFlag = '[FeatureFlags Page] Delete FeatureFlag',
   FeatureFlagDeleted = '[Translatr API] FeatureFlag Deleted',
   FeatureFlagDeleteError = '[Translatr API] FeatureFlag Delete Error',
@@ -439,6 +443,27 @@ export class FeatureFlagsLoaded implements Action {
   }
 }
 
+export class UpdateFeatureFlag implements Action {
+  readonly type = AppActionTypes.UpdateFeatureFlag;
+
+  constructor(public payload: UserFeatureFlag) {
+  }
+}
+
+export class FeatureFlagUpdateError implements Action {
+  readonly type = AppActionTypes.FeatureFlagUpdateError;
+
+  constructor(public payload: HttpErrorResponse) {
+  }
+}
+
+export class FeatureFlagUpdated implements Action {
+  readonly type = AppActionTypes.FeatureFlagUpdated;
+
+  constructor(public payload: UserFeatureFlag) {
+  }
+}
+
 export class DeleteFeatureFlag implements Action {
   readonly type = AppActionTypes.DeleteFeatureFlag;
 
@@ -535,6 +560,9 @@ export type AppAction =
   | LoadFeatureFlags
   | FeatureFlagsLoaded
   | FeatureFlagsLoadError
+  | UpdateFeatureFlag
+  | FeatureFlagUpdated
+  | FeatureFlagUpdateError
   | DeleteFeatureFlag
   | FeatureFlagDeleted
   | FeatureFlagDeleteError

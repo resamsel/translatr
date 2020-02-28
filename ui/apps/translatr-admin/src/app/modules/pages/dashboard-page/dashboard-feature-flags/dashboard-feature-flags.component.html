@@ -31,8 +31,24 @@
       <ng-container matColumnDef="enabled">
         <th mat-header-cell *matHeaderCellDef>State</th>
         <td mat-cell *matCellDef="let element" class="scope">
-          <span *ngIf="element.enabled">On</span>
-          <span *ngIf="!element.enabled">Off</span>
+          <button
+            *ngIf="element.enabled"
+            mat-icon-button
+            class="enabled"
+            matTooltip="Enabled, toggle to disable"
+            (click)="onDisable(element)"
+          >
+            <mat-icon>toggle_on</mat-icon>
+          </button>
+          <button
+            *ngIf="!element.enabled"
+            mat-icon-button
+            class="disabled"
+            matTooltip="Disabled, toggle to enable"
+            (click)="onEnable(element)"
+          >
+            <mat-icon>toggle_off</mat-icon>
+          </button>
         </td>
       </ng-container>
 

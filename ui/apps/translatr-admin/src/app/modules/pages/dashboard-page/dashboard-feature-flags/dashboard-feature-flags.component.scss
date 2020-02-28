@@ -1,0 +1,31 @@
+@import 'theme';
+@import 'mixins';
+
+@mixin feature-flags-theme($theme) {
+  $accent: map-get($theme, accent);
+  $accent-color: mat-color($accent, 500);
+
+  :host {
+    .enabled {
+      color: $accent-color;
+    }
+  }
+}
+
+.header {
+  background-image: url(assets/headers/rhombus.png);
+}
+
+.mat-form-field,
+table,
+.mat-button {
+  width: 100%;
+}
+
+.actions {
+  text-align: center;
+  width: 1px;
+  white-space: nowrap;
+}
+
+@include feature-flags-theme($app-theme)

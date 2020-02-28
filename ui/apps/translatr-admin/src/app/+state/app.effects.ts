@@ -25,6 +25,8 @@ import {
   FeatureFlagsDeleteError,
   FeatureFlagsLoaded,
   FeatureFlagsLoadError,
+  FeatureFlagUpdated,
+  FeatureFlagUpdateError,
   LoadAccessTokens,
   LoadActivities,
   LoadFeatureFlags,
@@ -42,6 +44,7 @@ import {
   ProjectsLoadError,
   ProjectUpdated,
   ProjectUpdateError,
+  UpdateFeatureFlag,
   UpdateProject,
   UpdateUser,
   UserCreated,
@@ -60,7 +63,7 @@ import {
 import { AccessToken, Activity, PagedList, Project, User, UserFeatureFlag } from '@dev/translatr-model';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { AccessTokenService, ActivityService, ProjectService, UserService, FeatureFlagService } from '@dev/translatr-sdk';
+import { AccessTokenService, ActivityService, FeatureFlagService, ProjectService, UserService } from '@dev/translatr-sdk';
 
 @Injectable()
 export class AppEffects {
@@ -241,6 +244,16 @@ export class AppEffects {
           (payload: PagedList<UserFeatureFlag>) => new FeatureFlagsLoaded(payload)
         ),
         catchError(error => of(new FeatureFlagsLoadError(error)))
+      )
+    )
+  );
+
+  @Effect() updateFeatureFlag$ = this.actions$.pipe(
+    ofType(AppActionTypes.UpdateFeatureFlag),
+    switchMap((action: UpdateFeatureFlag) =>
+      this.featureFlagService.update(action.payload).pipe(
+        map((payload: UserFeatureFlag) => new FeatureFlagUpdated(payload)),
+        catchError(error => of(new FeatureFlagUpdateError(error)))
       )
     )
   );

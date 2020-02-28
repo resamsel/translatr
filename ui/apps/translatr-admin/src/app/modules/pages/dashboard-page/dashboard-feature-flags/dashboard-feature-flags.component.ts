@@ -24,7 +24,7 @@ import {
 @Component({
   selector: 'dev-dashboard-feature-flags',
   templateUrl: './dashboard-feature-flags.component.html',
-  styleUrls: ['./dashboard-feature-flags.component.css']
+  styleUrls: ['./dashboard-feature-flags.component.scss']
 })
 export class DashboardFeatureFlagsComponent {
   displayedColumns = ['user', 'featureFlag', 'enabled', 'actions'];
@@ -102,5 +102,19 @@ export class DashboardFeatureFlagsComponent {
 
   onDeleteAll(featureFlags: UserFeatureFlag[]) {
     this.facade.deleteFeatureFlags(featureFlags);
+  }
+
+  onEnable(featureFlag: UserFeatureFlag): void {
+    this.facade.updateFeatureFlag({
+      ...featureFlag,
+      enabled: true
+    });
+  }
+
+  onDisable(featureFlag: UserFeatureFlag): void {
+    this.facade.updateFeatureFlag({
+      ...featureFlag,
+      enabled: false
+    });
   }
 }
