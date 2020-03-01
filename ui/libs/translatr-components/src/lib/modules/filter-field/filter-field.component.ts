@@ -24,6 +24,16 @@ import { isArray } from 'util';
 const lowerCaseIncludes = (s: string, search: string): boolean =>
   s.toLowerCase().includes(search.toLowerCase());
 
+const valueOf = (option: FilterFieldFilter, definition: FilterFieldFilter): string | number | boolean => {
+  switch (definition.type) {
+    case 'option':
+    case 'boolean':
+      return definition.value;
+    default:
+      return option.value;
+  }
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-filter-field',
@@ -140,7 +150,7 @@ export class FilterFieldComponent implements OnInit {
         .filter(o => o.type !== 'number' || typeof option.value === 'number' && !isNaN(option.value))
         .map((o) => ({
             ...o,
-            value: o.type !== 'boolean' ? option.value : o.value
+          value: valueOf(option, o)
           })
         );
     } else {

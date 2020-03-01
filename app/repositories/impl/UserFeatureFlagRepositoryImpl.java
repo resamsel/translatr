@@ -45,8 +45,12 @@ public class UserFeatureFlagRepositoryImpl extends
       query.eq("user.id", criteria.getUserId());
     }
 
+    if (criteria.getFeatureFlag() != null) {
+      query.eq("featureFlag", criteria.getFeatureFlag());
+    }
+
     if (StringUtils.isNoneEmpty(criteria.getSearch())) {
-      query.ilike("name", "%" + criteria.getSearch() + "%");
+      query.ilike("featureFlag", "%" + criteria.getSearch() + "%");
     }
 
     criteria.paged(query);

@@ -7,14 +7,30 @@ import utils.JsonUtils;
 
 public class UserFeatureFlagCriteria extends AbstractSearchCriteria<UserFeatureFlagCriteria> {
 
+  private String featureFlag;
+
   public UserFeatureFlagCriteria() {
     super("userFeatureFlag");
   }
 
   public static UserFeatureFlagCriteria from(Http.Request request) {
     return new UserFeatureFlagCriteria()
-            .with(request)
-            .withUserId(JsonUtils.getUuid(request.getQueryString("userId")));
+        .with(request)
+        .withUserId(JsonUtils.getUuid(request.getQueryString("userId")))
+        .withFeatureFlag(request.getQueryString("featureFlag"));
+  }
+
+  public String getFeatureFlag() {
+    return featureFlag;
+  }
+
+  public void setFeatureFlag(String featureFlag) {
+    this.featureFlag = featureFlag;
+  }
+
+  public UserFeatureFlagCriteria withFeatureFlag(String featureFlag) {
+    setFeatureFlag(featureFlag);
+    return this;
   }
 
   public static UserFeatureFlagCriteria from(SearchForm form) {

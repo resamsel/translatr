@@ -6,13 +6,8 @@ import { RequestCriteria, UserFeatureFlag } from '@dev/translatr-model';
 import { environment } from '../../../../../environments/environment';
 import { AppFacade } from '../../../../+state/app.facade';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Entity, notifyEvent } from '@dev/translatr-components';
-import {
-  errorMessage,
-  hasDeleteAllFeatureFlagsPermission,
-  hasDeleteFeatureFlagPermission,
-  hasEditFeatureFlagPermission
-} from '@dev/translatr-sdk';
+import { Entity, FilterFieldFilter, notifyEvent } from '@dev/translatr-components';
+import { errorMessage, hasDeleteAllFeatureFlagsPermission, hasDeleteFeatureFlagPermission } from '@dev/translatr-sdk';
 import {
   AppActionTypes,
   FeatureFlagDeleted,
@@ -47,6 +42,13 @@ export class DashboardFeatureFlagsComponent {
 
   readonly uiUrl = environment.uiUrl;
 
+  readonly filters: Array<FilterFieldFilter> = [{
+    key: 'featureFlag',
+    type: 'option',
+    title: 'Feature flag',
+    value: 'project-cli-card'
+  }];
+
   constructor(
     private readonly facade: AppFacade,
     readonly snackBar: MatSnackBar
@@ -77,15 +79,6 @@ export class DashboardFeatureFlagsComponent {
 
   onCriteriaChanged(criteria: RequestCriteria) {
     this.facade.loadFeatureFlags(criteria);
-  }
-
-  allowEdit$(featureFlag: UserFeatureFlag): Observable<boolean> {
-    return this.me$.pipe(hasEditFeatureFlagPermission(featureFlag));
-  }
-
-  onEdit(featureFlag: UserFeatureFlag) {
-    console.log('edit', featureFlag);
-    // this.facade.editFeatureFlag(featureFlag);
   }
 
   allowDelete$(featureFlag: UserFeatureFlag): Observable<boolean> {

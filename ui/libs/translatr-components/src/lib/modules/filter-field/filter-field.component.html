@@ -64,19 +64,27 @@
       [value]="option"
       class="option autocomplete-option"
     >
-      <ng-container *ngIf="option.title; else autocompleteKeyValue">
-        <span>{{option.title}}</span>
-        <span
-          *ngIf="option.value !== undefined
+      <ng-container [ngSwitch]="option.type">
+        <ng-container *ngSwitchCase="'option'">
+          <span>{{option.title}}</span>
+          <span>: {{option.value.toString()}}</span>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <ng-container *ngIf="option.title; else autocompleteKeyValue">
+            <span>{{option.title}}</span>
+            <span
+              *ngIf="option.value !== undefined
               && option.value !== null
               && option.value !== ''
               && !option.allowEmpty"
-        >: {{option.value.toString()}}</span>
+            >: {{option.value.toString()}}</span>
+          </ng-container>
+          <ng-template #autocompleteKeyValue>
+            <span class="type">{{option.key}}</span>
+            <span *ngIf="option.value !== undefined" class="value">{{option.value.toString()}}</span>
+          </ng-template>
+        </ng-container>
       </ng-container>
-      <ng-template #autocompleteKeyValue>
-        <span class="type">{{option.key}}</span>
-        <span *ngIf="option.value !== undefined" class="value">{{option.value.toString()}}</span>
-      </ng-template>
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>
