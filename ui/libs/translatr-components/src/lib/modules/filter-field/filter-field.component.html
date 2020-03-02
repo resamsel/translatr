@@ -14,20 +14,27 @@
       class="option selected-option"
     >
       <span class="ellipsis" matTooltip="{{option.title || option.key}}: {{option.value}}">
-        <ng-container *ngIf="option.title; else selectedKeyValue">
-          <span class="{{option.type === 'boolean' ? 'value' : 'type'}}">{{option.title}}</span>
-          <span
-            *ngIf="option.value !== undefined && option.value !== null && !option.allowEmpty"
-            class="value"
-          >{{option.value.toString()}}</span>
+        <ng-container [ngSwitch]="option.type">
+          <ng-container *ngSwitchCase="'option'">
+            <span class="value">{{option.title}}</span>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <ng-container *ngIf="option.title; else selectedKeyValue">
+              <span class="{{option.type === 'boolean' ? 'value' : 'type'}}">{{option.title}}</span>
+              <span
+                *ngIf="option.value !== undefined && option.value !== null && !option.allowEmpty"
+                class="value"
+              >{{option.value.toString()}}</span>
+            </ng-container>
+            <ng-template #selectedKeyValue>
+              <span class="type">{{option.key}}</span>
+              <span
+                *ngIf="option.value !== undefined && option.value !== null"
+                class="value"
+              >{{option.value.toString()}}</span>
+            </ng-template>
+          </ng-container>
         </ng-container>
-        <ng-template #selectedKeyValue>
-          <span class="type">{{option.key}}</span>
-          <span
-            *ngIf="option.value !== undefined && option.value !== null"
-            class="value"
-          >{{option.value.toString()}}</span>
-        </ng-template>
       </span>
       <mat-icon
         aria-label="Remove"
@@ -67,7 +74,6 @@
       <ng-container [ngSwitch]="option.type">
         <ng-container *ngSwitchCase="'option'">
           <span>{{option.title}}</span>
-          <span>: {{option.value.toString()}}</span>
         </ng-container>
         <ng-container *ngSwitchDefault>
           <ng-container *ngIf="option.title; else autocompleteKeyValue">

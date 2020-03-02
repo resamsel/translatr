@@ -7,6 +7,7 @@ import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import criterias.PagedListFactory;
 import criterias.UserFeatureFlagCriteria;
+import models.FeatureFlag;
 import models.User;
 import models.UserFeatureFlag;
 import models.UserRole;
@@ -61,6 +62,15 @@ public class UserFeatureFlagRepositoryImpl extends
   @Override
   public UserFeatureFlag byId(UUID id, String... fetches) {
     return fetch().setId(id).findUnique();
+  }
+
+  @Override
+  public UserFeatureFlag byUserIdAndFeature(UUID userId, FeatureFlag featureFlag) {
+    return fetch()
+            .where()
+            .eq("user.id", userId)
+            .eq("featureFlag", featureFlag.getName())
+            .findUnique();
   }
 
   private Query<UserFeatureFlag> fetch() {

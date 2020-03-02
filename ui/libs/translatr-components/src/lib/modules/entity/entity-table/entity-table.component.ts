@@ -23,6 +23,19 @@ export interface Entity {
   id: string | number;
 }
 
+const filterParam = (f: FilterFieldFilter, params: Params): boolean => {
+  if (params[f.key] === undefined) {
+    return false;
+  }
+
+  switch (f.type) {
+    case 'option':
+      return params[f.key] === f.value;
+    default:
+      return params[f.key] !== '';
+  }
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'entity-table',
@@ -59,7 +72,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   @Output() readonly criteria = new EventEmitter<RequestCriteria>();
   @Output() readonly selected = new EventEmitter<Entity[]>();
 
-  @ViewChild(MatTable, { static: true }) private table: MatTable<Entity>;
+  @ViewChild(MatTable, {static: true}) private table: MatTable<Entity>;
 
   @ContentChildren(MatColumnDef) protected columns: QueryList<MatColumnDef>;
 
@@ -74,8 +87,8 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   readonly filterSelection$: Observable<ReadonlyArray<FilterFieldFilter>> =
     this.route.queryParams.pipe(
       map((params: Params) => this.filters
-        .filter(f => params[f.key] !== undefined && params[f.key] !== '')
-        .map(f => ({ ...f, value: params[f.key] }))
+        .filter(f => filterParam(f, params))
+        .map(f => ({...f, value: params[f.key]}))
       ),
       distinctUntilChanged((a, b) => a.length === b.length)
     );
@@ -111,7 +124,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
       .subscribe((criteria: RequestCriteria) =>
         this.router.navigate([], {
           queryParamsHandling: 'merge',
-          queryParams: { limit: criteria.limit * 2 }
+          queryParams: {limit: criteria.limit * 2}
         })
       );
   }

@@ -140,6 +140,8 @@ GET           /profile/notifications/reset                                      
 GET           /projects                                                               controllers.Projects.index(search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
 GET           /projects/create/$projectName<.+>                                       controllers.Projects.createImmediately(projectName: String)
 
+GET           /metrics                                                                controllers.Metrics.metrics
+
 # User
 GET           /:username                                                              controllers.Users.user(username: String)
 GET           /:username/projects                                                     controllers.Users.projects(username: String)

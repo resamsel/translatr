@@ -34,6 +34,17 @@ const valueOf = (option: FilterFieldFilter, definition: FilterFieldFilter): stri
   }
 };
 
+const filterOption = (option: FilterFieldFilter, definition: FilterFieldFilter): boolean => {
+  switch (definition.type) {
+    case 'number':
+      return typeof option.value === 'number' && !isNaN(option.value);
+    case 'option':
+      return option.key === definition.key && option.value === definition.value;
+    default:
+      return true;
+  }
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-filter-field',
@@ -62,6 +73,7 @@ export class FilterFieldComponent implements OnInit {
 
   @Input() set selection(selection: ReadonlyArray<FilterFieldFilter>) {
     this._selection = selection;
+    console.log('selection', selection);
     this._options = isArray(selection) ? selection : [];
   }
 
@@ -147,7 +159,7 @@ export class FilterFieldComponent implements OnInit {
           (option.value !== '' && !o.allowEmpty)
           || (option.value === '' && o.allowEmpty)
           || (option.value !== '' && lowerCaseIncludes(o.title, option.value.toString())))
-        .filter(o => o.type !== 'number' || typeof option.value === 'number' && !isNaN(option.value))
+        .filter(o => filterOption(o, option))
         .map((o) => ({
             ...o,
           value: valueOf(option, o)

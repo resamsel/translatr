@@ -37,6 +37,9 @@ libraryDependencies ++= Seq(
 	// https://mvnrepository.com/artifact/org.jsoup/jsoup
 	"org.jsoup" % "jsoup" % "1.10.3",
 
+	"io.prometheus" % "simpleclient_common" % "0.8.1",
+	"io.prometheus" % "simpleclient_hotspot" % "0.8.1",
+
 	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
 
 	"io.swagger" %% "swagger-play2" % "1.5.3",

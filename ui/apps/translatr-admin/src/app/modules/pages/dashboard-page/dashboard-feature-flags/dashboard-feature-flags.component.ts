@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { merge, Observable, of } from 'rxjs';
 import { ofType } from '@ngrx/effects';
 import { mapTo } from 'rxjs/operators';
-import { RequestCriteria, UserFeatureFlag } from '@dev/translatr-model';
+import { featureFlags, RequestCriteria, UserFeatureFlag } from '@dev/translatr-model';
 import { environment } from '../../../../../environments/environment';
 import { AppFacade } from '../../../../+state/app.facade';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -42,12 +42,12 @@ export class DashboardFeatureFlagsComponent {
 
   readonly uiUrl = environment.uiUrl;
 
-  readonly filters: Array<FilterFieldFilter> = [{
+  readonly filters: Array<FilterFieldFilter> = featureFlags.map(featureFlag => ({
     key: 'featureFlag',
     type: 'option',
-    title: 'Feature flag',
-    value: 'project-cli-card'
-  }];
+    title: `Feature ${featureFlag}`,
+    value: featureFlag
+  }));
 
   constructor(
     private readonly facade: AppFacade,
@@ -89,12 +89,12 @@ export class DashboardFeatureFlagsComponent {
     this.facade.deleteFeatureFlag(featureFlag);
   }
 
-  allowDeleteAll$(featureFlags: UserFeatureFlag[]): Observable<boolean> {
-    return this.me$.pipe(hasDeleteAllFeatureFlagsPermission(featureFlags));
+  allowDeleteAll$(featureFlagList: UserFeatureFlag[]): Observable<boolean> {
+    return this.me$.pipe(hasDeleteAllFeatureFlagsPermission(featureFlagList));
   }
 
-  onDeleteAll(featureFlags: UserFeatureFlag[]) {
-    this.facade.deleteFeatureFlags(featureFlags);
+  onDeleteAll(featureFlagList: UserFeatureFlag[]) {
+    this.facade.deleteFeatureFlags(featureFlagList);
   }
 
   onEnable(featureFlag: UserFeatureFlag): void {

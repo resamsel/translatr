@@ -8,7 +8,8 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toMap;
 
 public enum FeatureFlag {
-  ProjectCliCard("project-cli-card", false);
+  ProjectCliCard("project-cli-card", false),
+  HeaderGraphic("header-graphic", false);
 
   private static final Map<String, FeatureFlag> MAP = Stream.of(FeatureFlag.values())
           .collect(toMap(FeatureFlag::getName, x -> x));

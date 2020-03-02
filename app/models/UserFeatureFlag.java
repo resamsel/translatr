@@ -1,14 +1,28 @@
 package models;
 
+import com.avaje.ebean.annotation.CreatedTimestamp;
+import com.avaje.ebean.annotation.UpdatedTimestamp;
+import org.joda.time.DateTime;
+import validators.FeatureFlagByUserAndFeature;
+import validators.NameUnique;
+import validators.ProjectUserUniqueChecker;
+
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "feature_flag"})})
+@FeatureFlagByUserAndFeature
 public class UserFeatureFlag implements Model<UserFeatureFlag, UUID> {
   @Id
   @GeneratedValue
   public UUID id;
+
+  @CreatedTimestamp
+  public DateTime whenCreated;
+
+  @UpdatedTimestamp
+  public DateTime whenUpdated;
 
   @ManyToOne
   public User user;
