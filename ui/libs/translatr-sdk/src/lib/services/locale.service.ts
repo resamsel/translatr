@@ -33,21 +33,24 @@ export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
       [param: string]: string | string[];
     };
   }): Observable<Locale> {
+    const path = `/api/${
+      encodePathParam(options.username)
+    }/${
+      encodePathParam(options.projectName)
+    }/locales/${
+      encodePathParam(options.localeName)
+    }`;
     return this.http
-      .get<Locale>(
-        `/api/${
-          encodePathParam(options.username)
-        }/${
-          encodePathParam(options.projectName)
-        }/locales/${
-          encodePathParam(options.localeName)
-        }`,
-        { params: options.params }
-      )
+      .get<Locale>(path, { params: options.params })
       .pipe(
         map((locale: Locale) => convertTemporals(locale)),
         catchError((err: HttpErrorResponse) =>
-          this.errorHandler.handleError(err))
+          this.errorHandler.handleError(err, {
+            name: 'byOwnerAndProjectNameAndName',
+            params: [options],
+            method: 'get',
+            path
+          }))
       );
   }
 }

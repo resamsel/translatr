@@ -12,26 +12,26 @@
       *ngIf="me$ | async"
       [routerLink]="['/', (me$ | async)?.username, 'projects']"
       name="My Projects"
-      [value]="(myProjects$ | async)?.total"
+      [value]="(myProjects$ | async)?.total | shortNumber"
       icon="library_books"
       class="my project count"></dev-metric>
     <dev-metric
       *ngIf="me$ | async"
       [routerLink]="['/', (me$ | async)?.username, 'activity']"
       name="My Activities"
-      [value]="(activities$ | async)?.total"
+      [value]="(activities$ | async)?.total | shortNumber"
       icon="change_history"
       class="my activity count"></dev-metric>
     <dev-metric
       routerLink="/projects"
       name="Projects"
-      [value]="(projects$ | async)?.total"
+      [value]="(projects$ | async)?.total | shortNumber"
       icon="library_books"
       class="all project count"></dev-metric>
     <dev-metric
       routerLink="/users"
       name="Contributors"
-      [value]="(users$ | async)?.total"
+      [value]="(users$ | async)?.total | shortNumber"
       icon="group"
       class="user count"></dev-metric>
 

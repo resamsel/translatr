@@ -9,24 +9,24 @@
   <dev-metric
     routerLink="/users"
     name="Users"
-    [value]="(users$ | async)?.total"
+    [value]="(users$ | async)?.total | shortNumber"
     icon="group"
     class="user count"></dev-metric>
   <dev-metric
     routerLink="/projects"
     name="Projects"
-    [value]="(projects$ | async)?.total"
+    [value]="(projects$ | async)?.total | shortNumber"
     icon="library_books"
     class="project count"></dev-metric>
   <dev-metric
     routerLink="/accesstokens"
     name="Access Tokens"
-    [value]="(accessTokens$ | async)?.total"
+    [value]="(accessTokens$ | async)?.total | shortNumber"
     icon="vpn_key"
     class="access-token count"></dev-metric>
   <dev-metric
     name="Activity"
-    [value]="(activities$ | async)?.total"
+    [value]="(activities$ | async)?.total | shortNumber"
     icon="change_history"
     class="activity count"></dev-metric>
 </div>

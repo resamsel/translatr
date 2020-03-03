@@ -33,17 +33,20 @@ export class KeyService extends AbstractService<Key, KeyCriteria> {
       [param: string]: string | string[];
     };
   }): Observable<Key> {
+    const path = `/api/${options.username}/${options.projectName}/keys/${
+      encodePathParam(options.keyName)
+    }`;
     return this.http
-      .get<Key>(
-        `/api/${options.username}/${options.projectName}/keys/${
-          encodePathParam(options.keyName)
-        }`,
-        options
-      )
+      .get<Key>(path, options)
       .pipe(
         map(convertTemporals),
         catchError((err: HttpErrorResponse) =>
-          this.errorHandler.handleError(err))
+          this.errorHandler.handleError(err, {
+            name: 'byOwnerAndProjectNameAndName',
+            params: [options],
+            method: 'get',
+            path
+          }))
       );
   }
 }

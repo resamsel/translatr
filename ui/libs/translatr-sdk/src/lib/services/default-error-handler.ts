@@ -1,5 +1,5 @@
 import { Observable, throwError } from 'rxjs';
-import { ErrorHandler } from './error-handler';
+import { ErrorHandler, RestRequest } from './error-handler';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '@translatr/translatr-sdk/src/lib/services/notification.service';
 import { Router } from '@angular/router';
@@ -51,7 +51,7 @@ export class DefaultErrorHandler extends ErrorHandler {
     super();
   }
 
-  handleError(err: HttpErrorResponse): Observable<never> {
+  handleError(err: HttpErrorResponse, request?: RestRequest): Observable<never> {
     const message = errorMessage(err);
     console.log('%s (HTTP code: %d, URL: %s)',
       message, err.status, err.url);

@@ -10,7 +10,11 @@ public class NoMetricServiceImpl implements MetricService {
   }
 
   @Override
-  public <T> T time(Callable<T> callable) throws Exception {
-    return callable.call();
+  public <T> T time(Callable<T> callable) {
+    try {
+      return callable.call();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 }

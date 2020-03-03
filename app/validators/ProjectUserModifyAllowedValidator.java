@@ -18,6 +18,7 @@ import javax.inject.Singleton;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * @author resamsel
@@ -74,6 +75,11 @@ public class ProjectUserModifyAllowedValidator implements ConstraintValidator<Pr
 
     if (loggedInUser.isAdmin()) {
       // Admins are free to do anything
+      return true;
+    }
+
+    if (value.project.owner != null && Objects.equals(loggedInUser.id, value.project.owner.id)) {
+      // loggedInUser is owner
       return true;
     }
 

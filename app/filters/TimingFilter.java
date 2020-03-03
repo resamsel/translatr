@@ -32,19 +32,21 @@ public class TimingFilter extends Filter {
    */
   @Override
   public CompletionStage<Result> apply(
-          Function<RequestHeader, CompletionStage<Result>> next, RequestHeader rh) {
+      Function<RequestHeader, CompletionStage<Result>> next, RequestHeader rh) {
     Stopwatch stopwatch = Stopwatch.createStarted();
-    return metricService.time(() -> next.apply(rh).thenApply(result -> {
-      metricService.consumeRequest(rh.method(), result.status());
-
-      if (!rh.uri().startsWith("/assets/")) {
-        LOGGER.info("{} {} took {} and returned {}", rh.method(), rh.uri(), stopwatch,
+    return metricService.time(() -> next.apply(rh)
+        .thenApply(result -> {
+          if (!rh.uri().startsWith("/assets/")) {
+            LOGGER.info("{} {} took {} and returned {}", rh.method(), rh.uri(), stopwatch,
                 result.status());
 
-        return result.withHeader("X-Timing", stopwatch.toString());
-      }
+            return result.withHeader("X-Timing", stopwatch.toString());
+          }
 
-      return result;
-    }));
+          return result;
+        })
+        .whenComplete((result, thrown) ->
+            metricService.consumeRequest(rh.method(), result.status()))
+    );
   }
 }

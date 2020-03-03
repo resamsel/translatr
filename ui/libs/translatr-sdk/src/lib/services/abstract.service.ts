@@ -32,8 +32,9 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
   }
 
   find(criteria?: CRITERIA): Observable<PagedList<DTO> | undefined> {
+    const path = this.listPath(criteria);
     return this.http
-      .get<PagedList<DTO>>(this.listPath(criteria), {
+      .get<PagedList<DTO>>(path, {
         params: { ...(criteria ? ((criteria as unknown) as object) : {}) }
       })
       .pipe(
@@ -42,7 +43,12 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
           list: convertTemporalsList(list.list)
         })),
         catchError((err: HttpErrorResponse) =>
-          this.errorHandler.handleError(err))
+          this.errorHandler.handleError(err, {
+            name: 'find',
+            params: [criteria],
+            method: 'get',
+            path
+          }))
       );
   }
 
@@ -55,7 +61,12 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
       .pipe(
         map(convertTemporals),
         catchError((err: HttpErrorResponse) =>
-          this.errorHandler.handleError(err))
+          this.errorHandler.handleError(err, {
+            name: 'get',
+            params: [id, criteria],
+            method: 'get',
+            path
+          }))
       );
   }
 
@@ -63,7 +74,12 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
     return this.http.post<DTO>(this.entityPath, dto, options).pipe(
       map(convertTemporals),
       catchError((err: HttpErrorResponse) =>
-        this.errorHandler.handleError(err))
+        this.errorHandler.handleError(err, {
+          name: 'create',
+          params: [dto, options],
+          method: 'post',
+          path: this.entityPath
+        }))
     );
   }
 
@@ -71,7 +87,12 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
     return this.http.put<DTO>(this.entityPath, dto, options).pipe(
       map(convertTemporals),
       catchError((err: HttpErrorResponse) =>
-        this.errorHandler.handleError(err))
+        this.errorHandler.handleError(err, {
+          name: 'update',
+          params: [dto, options],
+          method: 'put',
+          path: this.entityPath
+        }))
     );
   }
 
@@ -83,7 +104,12 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
     return this.http.delete<DTO>(path, options).pipe(
       map(convertTemporals),
       catchError((err: HttpErrorResponse) =>
-        this.errorHandler.handleError(err))
+        this.errorHandler.handleError(err, {
+          name: 'delete',
+          params: [id, options],
+          method: 'delete',
+          path
+        }))
     );
   }
 

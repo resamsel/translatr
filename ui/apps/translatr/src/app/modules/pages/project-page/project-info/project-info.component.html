@@ -9,21 +9,21 @@
   <dev-metric
     routerLink="locales"
     name="Languages"
-    [value]="(locales$ | async)?.total"
+    [value]="(locales$ | async)?.total | shortNumber"
     icon="language"
     class="locale count"></dev-metric>
 
   <dev-metric
     routerLink="keys"
     name="Keys"
-    [value]="(keys$ | async)?.total"
+    [value]="(keys$ | async)?.total | shortNumber"
     icon="vpn_key"
     class="key count"></dev-metric>
 
   <dev-metric
     routerLink="members"
     name="Members"
-    [value]="(members$ | async)?.total"
+    [value]="(members$ | async)?.total | shortNumber"
     icon="group"
     class="member count"></dev-metric>
 

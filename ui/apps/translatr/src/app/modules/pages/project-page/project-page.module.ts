@@ -34,7 +34,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { LocaleEditDialogModule } from '../../shared/locale-edit-dialog/locale-edit-dialog.module';
 import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialog.module';
-import { ButtonModule, EmptyViewModule, FeatureFlagModule, MetricModule, UserCardModule } from '@dev/translatr-components';
+import {
+  ButtonModule,
+  EmptyViewModule,
+  FeatureFlagModule,
+  MetricModule,
+  ShortNumberModule,
+  UserCardModule
+} from '@dev/translatr-components';
 import { ListHeaderModule } from '../../shared/list-header/list-header.module';
 import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
 import { MatMenuModule, MatProgressBarModule, MatTooltipModule } from '@angular/material';
@@ -103,7 +110,8 @@ import { MatSelectModule } from '@angular/material/select';
     StoreModule.forFeature(PROJECT_FEATURE_KEY, projectReducer, {
       initialState: projectInitialState
     }),
-    EffectsModule.forFeature([ProjectEffects])
+    EffectsModule.forFeature([ProjectEffects]),
+    ShortNumberModule
   ],
   providers: [
     AppFacade,

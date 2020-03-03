@@ -28,6 +28,7 @@ import {
   FeatureFlagModule,
   MetricModule,
   ProjectEditDialogModule,
+  ShortNumberModule,
   UserCardModule,
   UserEditDialogModule
 } from '@dev/translatr-components';
@@ -80,7 +81,8 @@ import { AppFacade } from '../../../+state/app.facade';
     MatSidenavModule,
     MatToolbarModule,
     MetricModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ShortNumberModule
   ],
   providers: [
     { provide: FeatureFlagFacade, useClass: AppFacade }

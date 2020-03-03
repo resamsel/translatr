@@ -33,29 +33,47 @@ export class UserService extends AbstractService<User, RequestCriteria> {
       };
     }
   ): Observable<User | undefined> {
+    const path = `/api/${encodePathParam(username)}`;
     return this.http
-      .get<User>(`/api/${encodePathParam(username)}`, options)
+      .get<User>(path, options)
       .pipe(
         map(convertTemporals),
         catchError((err: HttpErrorResponse) =>
-          this.errorHandler.handleError(err))
+          this.errorHandler.handleError(err, {
+            name: 'byUsername',
+            params: [username, options],
+            method: 'get',
+            path
+          }))
       );
   }
 
   me(params: Record<string, string> = {}): Observable<User | undefined> {
-    return this.http.get<User>('/api/me', {params})
+    const path = '/api/me';
+    return this.http.get<User>(path, { params })
       .pipe(
         map(convertTemporals),
         catchError((err: HttpErrorResponse) =>
-          this.errorHandler.handleError(err))
+          this.errorHandler.handleError(err, {
+            name: 'me',
+            params: [params],
+            method: 'get',
+            path
+          }))
       );
   }
 
   activity(userId: string): Observable<PagedList<Aggregate> | undefined> {
-    return this.http.get<PagedList<Aggregate>>(`/api/user/${userId}/activity`)
+    const path = `/api/user/${userId}/activity`;
+    return this.http.get<PagedList<Aggregate>>(path)
       .pipe(
         catchError((err: HttpErrorResponse) =>
-          this.errorHandler.handleError(err))
+          this.errorHandler.handleError(err, {
+            name: 'activity',
+            params: [userId],
+            method: 'get',
+            path
+          }))
       );
   }
 }
