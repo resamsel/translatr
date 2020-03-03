@@ -29,6 +29,7 @@ import repositories.LocaleRepository;
 import repositories.Persistence;
 import repositories.ProjectRepository;
 import services.AuthProvider;
+import services.MetricService;
 import services.PermissionService;
 import utils.QueryUtils;
 
@@ -60,6 +61,7 @@ public class ProjectRepositoryImpl extends
   private final LocaleRepository localeRepository;
   private final KeyRepository keyRepository;
   private final PermissionService permissionService;
+  private final MetricService metricService;
 
   private final Find<UUID, Project> find = new Find<UUID, Project>() {
   };
@@ -71,12 +73,14 @@ public class ProjectRepositoryImpl extends
                                ActivityActorRef activityActor,
                                LocaleRepository localeRepository,
                                KeyRepository keyRepository,
-                               PermissionService permissionService) {
+                               PermissionService permissionService,
+                               MetricService metricService) {
     super(persistence, validator, authProvider, activityActor);
 
     this.localeRepository = localeRepository;
     this.keyRepository = keyRepository;
     this.permissionService = permissionService;
+    this.metricService = metricService;
   }
 
   @Override
@@ -252,7 +256,14 @@ public class ProjectRepositoryImpl extends
           new Activity<>(ActionType.Create, authProvider.loggedInUser(), t, dto.Project.class, null, toDto(t)),
           null
       );
+      metricService.consumeProject(t);
     }
+  }
+
+  @Override
+  protected void postSave(Collection<Project> t) {
+    super.postSave(t);
+    t.forEach(metricService::consumeProject);
   }
 
   /**

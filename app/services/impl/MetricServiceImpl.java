@@ -6,6 +6,8 @@ import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
 import io.prometheus.client.Summary;
 import io.prometheus.client.hotspot.DefaultExports;
+import models.Project;
+import models.User;
 import services.MetricService;
 
 import javax.inject.Singleton;
@@ -30,6 +32,16 @@ public class MetricServiceImpl implements MetricService {
       .quantile(0.99, 0.001)
       .register(registry);
 
+  private final Counter projects = Counter.build()
+      .name("translatr_projects_total")
+      .help("The total number of created projects")
+      .register(registry);
+
+  private final Counter users = Counter.build()
+      .name("translatr_users_total")
+      .help("The total number of created users")
+      .register(registry);
+
   public MetricServiceImpl() {
     DefaultExports.register(registry);
 
@@ -42,13 +54,23 @@ public class MetricServiceImpl implements MetricService {
   }
 
   @Override
+  public <T> T time(String method, Callable<T> callable) {
+    return requestDuration.labels(method.toLowerCase()).time(callable);
+  }
+
+  @Override
   public void consumeRequest(String method, int status) {
     requests.labels(method.toLowerCase(), String.valueOf(status)).inc();
   }
 
   @Override
-  public <T> T time(String method, Callable<T> callable) {
-    return requestDuration.labels(method.toLowerCase()).time(callable);
+  public void consumeUser(User user) {
+    users.inc();
+  }
+
+  @Override
+  public void consumeProject(Project project) {
+    projects.inc();
   }
 
   @Override

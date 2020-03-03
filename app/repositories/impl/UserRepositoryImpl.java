@@ -18,11 +18,13 @@ import org.slf4j.LoggerFactory;
 import repositories.Persistence;
 import repositories.UserRepository;
 import services.AuthProvider;
+import services.MetricService;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -37,14 +39,18 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   private final Find<UUID, User> find = new Find<UUID, User>() {
   };
   private final AuthProvider authProvider;
+  private final MetricService metricService;
 
   @Inject
   public UserRepositoryImpl(Persistence persistence,
                             Validator validator,
                             AuthProvider authProvider,
-                            ActivityActorRef activityActor) {
+                            ActivityActorRef activityActor,
+                            MetricService metricService) {
     super(persistence, validator, authProvider, activityActor);
+
     this.authProvider = authProvider;
+    this.metricService = metricService;
   }
 
   @Override
@@ -169,6 +175,20 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
           null
       );
     }
+  }
+
+  @Override
+  protected void postSave(User t, boolean update) {
+    super.postSave(t, update);
+    if (!update) {
+      metricService.consumeUser(t);
+    }
+  }
+
+  @Override
+  protected void postSave(Collection<User> t) {
+    super.postSave(t);
+    t.forEach(metricService::consumeUser);
   }
 
   private dto.User toDto(User t) {
