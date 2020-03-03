@@ -27,7 +27,6 @@ export class UserInfoComponent implements OnInit {
     );
   readonly canCreateProject$ = this.facade.canCreateProject$;
   readonly activities$ = this.facade.activities$;
-  readonly permissions$ = this.facade.permission$;
 
   readonly activityRoute: NameIconRoute | undefined = this.routes[0].children
     .find(route => route.path === 'activity');
@@ -57,7 +56,8 @@ export class UserInfoComponent implements OnInit {
           fetch: 'count'
         });
         this.facade.loadActivities({
-          userId: user.id
+          userId: user.id,
+          types: 'Create,Update,Delete'
         });
       });
   }
@@ -83,9 +83,5 @@ export class UserInfoComponent implements OnInit {
       this.route,
       (guard: any) => this.injector.get<CanActivate>(guard)
     );
-  }
-
-  linkToActivity(active: boolean): string | undefined {
-    return active ? 'activity' : undefined;
   }
 }

@@ -9,5 +9,5 @@ import java.util.concurrent.Callable;
 public interface MetricService {
   void consumeRequest(String method, int status);
 
-  <T> T time(Callable<T> callable);
+  <T> T time(Callable<T> callable) throws Exception;
 }

@@ -1,15 +1,16 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { AppFacade } from '../../../+state/app.facade';
 import { Route, Router } from '@angular/router';
 import { DASHBOARD_ROUTES } from './dashboard-page.token';
 import { NameIconRoute } from '@translatr/utils';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-dashboard-page',
   templateUrl: './dashboard-page.component.html',
   styleUrls: ['./dashboard-page.component.scss']
 })
-export class DashboardPageComponent implements OnInit {
+export class DashboardPageComponent {
   me$ = this.facade.me$;
   children: NameIconRoute[] = this.routes[0].children;
 
@@ -18,9 +19,6 @@ export class DashboardPageComponent implements OnInit {
     private readonly router: Router,
     @Inject(DASHBOARD_ROUTES) private routes: { children: NameIconRoute[] }[]
   ) {
-  }
-
-  ngOnInit() {
   }
 
   routerLink(route: Route) {

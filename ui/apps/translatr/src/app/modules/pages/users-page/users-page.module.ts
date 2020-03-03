@@ -5,7 +5,7 @@ import { UsersPageRoutingModule } from './users-page-routing.module';
 import { MatIconModule } from '@angular/material/icon';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { UserListModule } from '../../shared/user-list/user-list.module';
-import { UserCardModule } from '@dev/translatr-components';
+import { FeatureFlagModule, UserCardModule } from '@dev/translatr-components';
 import { UsersModule } from './+state/users.module';
 
 @NgModule({
@@ -18,6 +18,7 @@ import { UsersModule } from './+state/users.module';
     UserCardModule,
     UsersModule,
     MatIconModule,
+    FeatureFlagModule
   ]
 })
 export class UsersPageModule {}

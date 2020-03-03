@@ -26,6 +26,7 @@ export class UserActivityComponent implements OnInit {
         this.facade.loadActivities({
           userId: user.id,
           limit: 10,
+          types: 'Create,Update,Delete',
           ...criteria
         }));
   }

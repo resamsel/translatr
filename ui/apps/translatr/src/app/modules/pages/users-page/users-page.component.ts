@@ -6,6 +6,7 @@ import { Params, Router } from '@angular/router';
 import { UserCriteria } from './+state/users.actions';
 import { navigate } from '@translatr/utils';
 import { FilterCriteria } from '../../shared/list-header/list-header.component';
+import { FeatureFlag } from '@dev/translatr-model';
 
 @Component({
   selector: 'app-projects-page',
@@ -24,6 +25,8 @@ export class UsersPageComponent implements OnInit, OnDestroy {
     distinctUntilChanged((a: UserCriteria, b: UserCriteria) =>
       a.search === b.search && a.limit === b.limit && a.offset === b.offset)
   );
+
+  readonly FeatureFlag = FeatureFlag;
 
   constructor(
     private readonly appFacade: AppFacade,

@@ -57,6 +57,10 @@ public class LogEntryRepositoryImpl extends
   public PagedList<LogEntry> findBy(LogEntryCriteria criteria) {
     ExpressionList<LogEntry> query = findQuery(criteria);
 
+    if (criteria.getTypes() != null && !criteria.getTypes().isEmpty()) {
+      query.in("type", criteria.getTypes());
+    }
+
     if (criteria.getOrder() != null) {
       query.order(criteria.getOrder());
     } else {

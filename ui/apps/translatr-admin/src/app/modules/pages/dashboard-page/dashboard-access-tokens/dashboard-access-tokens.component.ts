@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { merge, Observable, of } from 'rxjs';
-import { AccessToken, RequestCriteria } from '@dev/translatr-model';
+import { AccessToken, FeatureFlag, RequestCriteria } from '@dev/translatr-model';
 import { AppFacade } from '../../../../+state/app.facade';
 import { Entity, notifyEvent } from '@dev/translatr-components';
 import {
@@ -22,9 +22,10 @@ import { ofType } from '@ngrx/effects';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-dashboard-access-tokens',
   templateUrl: './dashboard-access-tokens.component.html',
-  styleUrls: ['./dashboard-access-tokens.component.css']
+  styleUrls: ['./dashboard-access-tokens.component.scss']
 })
 export class DashboardAccessTokensComponent {
   displayedColumns = ['name', 'user', 'scopes', 'when_created', 'actions'];
@@ -46,6 +47,8 @@ export class DashboardAccessTokensComponent {
   selected: AccessToken[] = [];
 
   readonly uiUrl = environment.uiUrl;
+
+  readonly FeatureFlag = FeatureFlag;
 
   constructor(
     private readonly facade: AppFacade,

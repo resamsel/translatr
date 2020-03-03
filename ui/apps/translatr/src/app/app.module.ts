@@ -20,6 +20,7 @@ import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material';
 import { MatNotificationService } from './services/mat-notification-service';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
+import { FeatureFlagFacade, FeatureFlagModule } from '@dev/translatr-components';
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,6 +32,7 @@ import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
     TranslatrSdkModule,
     SidenavModule,
     LayoutModule,
+    FeatureFlagModule,
 
     MatToolbarModule,
     MatButtonModule,
@@ -56,6 +58,7 @@ import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
   ],
   providers: [
     AppFacade,
+    { provide: FeatureFlagFacade, useClass: AppFacade },
     { provide: WINDOW, useFactory: () => window },
     { provide: ENDPOINT_URL, useValue: environment.endpointUrl },
     { provide: LOGIN_URL, useValue: `${environment.endpointUrl}/login` },

@@ -2,6 +2,7 @@ export * from './button';
 export * from './empty-view';
 export * from './entity';
 export * from './events';
+export * from './feature-flag';
 export * from './filter-field';
 export * from './nav';
 export * from './pages';

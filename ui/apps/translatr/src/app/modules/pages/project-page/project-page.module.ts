@@ -34,7 +34,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { LocaleEditDialogModule } from '../../shared/locale-edit-dialog/locale-edit-dialog.module';
 import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialog.module';
-import { ButtonModule, EmptyViewModule, MetricModule, UserCardModule } from '@dev/translatr-components';
+import { ButtonModule, EmptyViewModule, FeatureFlagModule, MetricModule, UserCardModule } from '@dev/translatr-components';
 import { ListHeaderModule } from '../../shared/list-header/list-header.module';
 import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
 import { MatMenuModule, MatProgressBarModule, MatTooltipModule } from '@angular/material';
@@ -46,7 +46,6 @@ import { ProjectDeleteDialogModule } from '../../shared/project-delete-dialog/pr
 import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.module';
 import { AppFacade } from '../../../+state/app.facade';
 import { MatSelectModule } from '@angular/material/select';
-import { FeatureFlagModule } from '../../shared/feature-flag/feature-flag.module';
 
 @NgModule({
   declarations: [
@@ -75,6 +74,12 @@ import { FeatureFlagModule } from '../../shared/feature-flag/feature-flag.module
     ProjectMemberEditDialogModule,
     ProjectDeleteDialogModule,
     ProjectOwnerEditDialogModule,
+    FeatureFlagModule,
+    UserCardModule,
+    ListHeaderModule,
+    MetricModule,
+    EmptyViewModule,
+    ButtonModule,
 
     MatToolbarModule,
     MatButtonModule,
@@ -87,24 +92,18 @@ import { FeatureFlagModule } from '../../shared/feature-flag/feature-flag.module
     MatFormFieldModule,
     MatSnackBarModule,
     MatTooltipModule,
+    MatTooltipModule,
+    MatFormFieldModule,
+    MatMenuModule,
+    MatProgressBarModule,
+    MatSelectModule,
 
     MomentModule,
     GravatarModule,
     StoreModule.forFeature(PROJECT_FEATURE_KEY, projectReducer, {
       initialState: projectInitialState
     }),
-    EffectsModule.forFeature([ProjectEffects]),
-    MatFormFieldModule,
-    UserCardModule,
-    ListHeaderModule,
-    MetricModule,
-    MatTooltipModule,
-    EmptyViewModule,
-    ButtonModule,
-    MatMenuModule,
-    MatProgressBarModule,
-    MatSelectModule,
-    FeatureFlagModule
+    EffectsModule.forFeature([ProjectEffects])
   ],
   providers: [
     AppFacade,

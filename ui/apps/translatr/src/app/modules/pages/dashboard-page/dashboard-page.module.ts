@@ -16,7 +16,7 @@ import { ProjectsPageModule } from '../projects-page/projects-page.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
 import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
-import { MetricModule } from '@dev/translatr-components';
+import { FeatureFlagModule, MetricModule } from '@dev/translatr-components';
 
 @NgModule({
   declarations: [DashboardPageComponent],
@@ -37,8 +37,10 @@ import { MetricModule } from '@dev/translatr-components';
     EffectsModule.forFeature([DashboardEffects]),
     ActivityListModule,
     ProjectCardListModule,
-    MetricModule
+    MetricModule,
+    FeatureFlagModule
   ],
   providers: [DashboardFacade]
 })
-export class DashboardPageModule {}
+export class DashboardPageModule {
+}

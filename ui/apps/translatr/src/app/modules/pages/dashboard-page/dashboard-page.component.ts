@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { AppFacade } from '../../../+state/app.facade';
 import { ProjectsFacade } from '../projects-page/+state/projects.facade';
 import { filter, take } from 'rxjs/operators';
-import { User } from '@dev/translatr-model';
+import { FeatureFlag, User } from '@dev/translatr-model';
 import { DashboardFacade } from './+state/dashboard.facade';
 import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard-page',
   templateUrl: './dashboard-page.component.html',
   styleUrls: ['./dashboard-page.component.scss']
@@ -19,6 +20,8 @@ export class DashboardPageComponent implements OnInit {
   readonly activities$ = this.dashboardFacade.activities$;
   readonly projects$ = this.projectsFacade.projects$;
   readonly users$ = this.appFacade.users$;
+
+  readonly FeatureFlag = FeatureFlag;
 
   constructor(
     private readonly appFacade: AppFacade,
@@ -45,8 +48,9 @@ export class DashboardPageComponent implements OnInit {
         });
         this.dashboardFacade.loadActivities({
           userId: user.id,
-          limit: 4,
-          fetch: 'count'
+          limit: 10,
+          fetch: 'count',
+          types: 'Create,Update,Delete'
         });
       });
   }

@@ -27,6 +27,7 @@ import {
 import {
   AccessToken,
   ActivityCriteria,
+  FeatureFlag,
   FeatureFlagCriteria,
   Project,
   ProjectCriteria,
@@ -36,10 +37,12 @@ import {
 } from '@dev/translatr-model';
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { FeatureFlagFacade } from '@dev/translatr-components';
+import { coerceArray } from '@angular/cdk/coercion';
 
 @Injectable()
-export class AppFacade {
+export class AppFacade extends FeatureFlagFacade {
   me$ = this.store.pipe(select(appQuery.getLoggedInUser));
 
   // Users
@@ -153,6 +156,7 @@ export class AppFacade {
     private readonly store: Store<AppPartialState>,
     private readonly actions$: Actions
   ) {
+    super();
   }
 
   // Users
@@ -247,5 +251,15 @@ export class AppFacade {
 
   deleteFeatureFlags(featureFlags: UserFeatureFlag[]) {
     this.store.dispatch(new DeleteFeatureFlags(featureFlags));
+  }
+
+  hasFlags$(flags: FeatureFlag | FeatureFlag[]): Observable<boolean> {
+    return this.me$.pipe(
+      filter(x => !!x),
+      map(user => user.featureFlags
+        ? coerceArray(flags).every(flag => user.featureFlags[flag])
+        : false
+      )
+    );
   }
 }

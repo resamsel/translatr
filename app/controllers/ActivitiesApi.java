@@ -32,7 +32,10 @@ public class ActivitiesApi extends AbstractApi<Activity, UUID, LogEntryCriteria,
   private static final String ACTIVITY = "Find aggregated activites";
   private static final String ACTIVITY_RESPONSE = "Found aggregated activities";
 
+  public static final String PARAM_TYPES = "types";
+
   private static final String SEARCH = "Part of the contents of the activity";
+  private static final String TYPES = "List of types the activities need to match";
 
   @Inject
   protected ActivitiesApi(
@@ -52,7 +55,9 @@ public class ActivitiesApi extends AbstractApi<Activity, UUID, LogEntryCriteria,
       @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
-      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
+      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query"),
+      @ApiImplicitParam(name = PARAM_TYPES, value = TYPES, dataType = "string",
+          paramType = "query")})
   public CompletionStage<Result> find() {
     return toJsons(() -> api.find(LogEntryCriteria.from(request())));
   }

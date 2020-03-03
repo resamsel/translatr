@@ -24,6 +24,8 @@ import {
   ButtonModule,
   EllipsisModule,
   EntityTableModule,
+  FeatureFlagFacade,
+  FeatureFlagModule,
   MetricModule,
   ProjectEditDialogModule,
   UserCardModule,
@@ -36,6 +38,7 @@ import { GravatarModule } from 'ngx-gravatar';
 import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
 import { MatTooltipModule } from '@angular/material';
 import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
+import { AppFacade } from '../../../+state/app.facade';
 
 @NgModule({
   declarations: [
@@ -56,6 +59,7 @@ import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashbo
     ButtonModule,
     UserCardModule,
     EllipsisModule,
+    FeatureFlagModule,
 
     ReactiveFormsModule,
     MatIconModule,
@@ -77,6 +81,10 @@ import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashbo
     MatToolbarModule,
     MetricModule,
     MatTooltipModule
+  ],
+  providers: [
+    { provide: FeatureFlagFacade, useClass: AppFacade }
   ]
 })
-export class DashboardPageModule {}
+export class DashboardPageModule {
+}

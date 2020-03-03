@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { merge, Observable, of } from 'rxjs';
 import { ofType } from '@ngrx/effects';
 import { mapTo } from 'rxjs/operators';
-import { featureFlags, RequestCriteria, UserFeatureFlag } from '@dev/translatr-model';
+import { FeatureFlag, featureFlags, RequestCriteria, UserFeatureFlag } from '@dev/translatr-model';
 import { environment } from '../../../../../environments/environment';
 import { AppFacade } from '../../../../+state/app.facade';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -17,6 +17,7 @@ import {
 } from '../../../../+state/app.actions';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-dashboard-feature-flags',
   templateUrl: './dashboard-feature-flags.component.html',
   styleUrls: ['./dashboard-feature-flags.component.scss']
@@ -48,6 +49,8 @@ export class DashboardFeatureFlagsComponent {
     title: `Feature ${featureFlag}`,
     value: featureFlag
   }));
+
+  readonly FeatureFlag = FeatureFlag;
 
   constructor(
     private readonly facade: AppFacade,

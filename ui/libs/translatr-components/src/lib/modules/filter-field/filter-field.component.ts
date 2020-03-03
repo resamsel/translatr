@@ -73,7 +73,6 @@ export class FilterFieldComponent implements OnInit {
 
   @Input() set selection(selection: ReadonlyArray<FilterFieldFilter>) {
     this._selection = selection;
-    console.log('selection', selection);
     this._options = isArray(selection) ? selection : [];
   }
 

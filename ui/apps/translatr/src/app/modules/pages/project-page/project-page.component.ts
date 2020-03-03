@@ -6,7 +6,7 @@ import { AppFacade } from '../../../+state/app.facade';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
 import { PROJECT_ROUTES } from './project-page.token';
 import { merge, Observable } from 'rxjs';
-import { Project } from '@dev/translatr-model';
+import { FeatureFlag, Project } from '@dev/translatr-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +31,8 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
       scan((acc, curr) => ({ ...acc, ...curr }), {})
     );
 
+  readonly FeatureFlag = FeatureFlag;
+
   constructor(
     private readonly injector: Injector,
     private readonly route: ActivatedRoute,
@@ -44,7 +46,6 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     this.project$.pipe(
       distinctUntilKeyChanged('id'),
       tap((project: Project) => {
-        console.log('project', project);
         this.facade.loadLocales(project.id, {});
         this.facade.loadKeys(project.id, {});
         this.facade.loadMembers(project.id, {});

@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AppFacade } from '../../../../+state/app.facade';
+import { FeatureFlag } from '@dev/translatr-model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-dashboard-info',
   templateUrl: './dashboard-info.component.html',
-  styleUrls: ['./dashboard-info.component.css']
+  styleUrls: ['./dashboard-info.component.scss']
 })
 export class DashboardInfoComponent {
   users$ = this.facade.users$;
@@ -12,10 +14,12 @@ export class DashboardInfoComponent {
   accessTokens$ = this.facade.accessTokens$;
   activities$ = this.facade.activities$;
 
+  readonly FeatureFlag = FeatureFlag;
+
   constructor(private readonly facade: AppFacade) {
-    facade.loadUsers({ limit: 1, fetch: 'count' });
-    facade.loadProjects({ limit: 1, fetch: 'count' });
-    facade.loadAccessTokens({ limit: 1, fetch: 'count' });
-    facade.loadActivities({ limit: 1, fetch: 'count' });
+    facade.loadUsers({ limit: 1, fetch: 'count', order: 'whenCreated desc' });
+    facade.loadProjects({ limit: 1, fetch: 'count', order: 'whenCreated desc' });
+    facade.loadAccessTokens({ limit: 1, fetch: 'count', order: 'whenCreated desc' });
+    facade.loadActivities({ limit: 1, fetch: 'count', order: 'whenCreated desc' });
   }
 }

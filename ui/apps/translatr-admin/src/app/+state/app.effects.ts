@@ -72,10 +72,12 @@ export class AppEffects {
   @Effect() loadLoggedInUser$ = this.actions$.pipe(
     ofType(AppActionTypes.LoadLoggedInUser),
     switchMap((action: LoadLoggedInUser) =>
-      this.userService.me().pipe(
-        map(user => new LoggedInUserLoaded(user)),
-        catchError(error => of(new LoggedInUserLoadError(error)))
-      )
+      this.userService
+        .me({ fetch: 'featureFlags' })
+        .pipe(
+          map(user => new LoggedInUserLoaded(user)),
+          catchError(error => of(new LoggedInUserLoadError(error)))
+        )
     )
   );
 
