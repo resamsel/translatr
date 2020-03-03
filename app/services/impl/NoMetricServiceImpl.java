@@ -1,7 +1,10 @@
 package services.impl;
 
+import io.prometheus.client.Collector;
 import services.MetricService;
 
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.concurrent.Callable;
 
 public class NoMetricServiceImpl implements MetricService {
@@ -16,5 +19,10 @@ public class NoMetricServiceImpl implements MetricService {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public Enumeration<Collector.MetricFamilySamples> metricFamilySamples() {
+    return Collections.emptyEnumeration();
   }
 }
