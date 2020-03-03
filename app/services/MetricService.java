@@ -11,7 +11,7 @@ import java.util.concurrent.Callable;
 public interface MetricService {
   void consumeRequest(String method, int status);
 
-  <T> T time(Callable<T> callable);
+  <T> T time(String method, Callable<T> callable);
 
   Enumeration<Collector.MetricFamilySamples> metricFamilySamples();
 }

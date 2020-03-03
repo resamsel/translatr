@@ -20,9 +20,10 @@ public class MetricServiceImpl implements MetricService {
       .help("The total number of HTTP requests")
       .labelNames("method", "code")
       .register(registry);
-  private final Summary requestTiming = Summary.build()
+  private final Summary requestDuration = Summary.build()
       .name("http_request_duration_seconds")
       .help("HTTP request duration in seconds")
+      .labelNames("method")
       .quantile(0.5, 0.05)
       .quantile(0.9, 0.02)
       .quantile(0.95, 0.01)
@@ -46,8 +47,8 @@ public class MetricServiceImpl implements MetricService {
   }
 
   @Override
-  public <T> T time(Callable<T> callable) {
-    return requestTiming.time(callable);
+  public <T> T time(String method, Callable<T> callable) {
+    return requestDuration.labels(method.toLowerCase()).time(callable);
   }
 
   @Override

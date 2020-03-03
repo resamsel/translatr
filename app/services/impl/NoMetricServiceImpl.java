@@ -13,7 +13,7 @@ public class NoMetricServiceImpl implements MetricService {
   }
 
   @Override
-  public <T> T time(Callable<T> callable) {
+  public <T> T time(String method, Callable<T> callable) {
     try {
       return callable.call();
     } catch (Exception e) {

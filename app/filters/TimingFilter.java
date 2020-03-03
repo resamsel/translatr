@@ -34,7 +34,7 @@ public class TimingFilter extends Filter {
   public CompletionStage<Result> apply(
       Function<RequestHeader, CompletionStage<Result>> next, RequestHeader rh) {
     Stopwatch stopwatch = Stopwatch.createStarted();
-    return metricService.time(() -> next.apply(rh)
+    return metricService.time(rh.method(), () -> next.apply(rh)
         .thenApply(result -> {
           if (!rh.uri().startsWith("/assets/")) {
             LOGGER.info("{} {} took {} and returned {}", rh.method(), rh.uri(), stopwatch,
