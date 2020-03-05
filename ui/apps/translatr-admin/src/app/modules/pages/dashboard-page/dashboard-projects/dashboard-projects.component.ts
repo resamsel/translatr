@@ -26,7 +26,7 @@ export class DashboardProjectsComponent implements OnDestroy {
 
   me$ = this.facade.me$;
   projects$ = this.facade.projects$;
-  load$ = of({ limit: '20', order: 'name asc' });
+  load$ = of({ limit: '20', order: 'whenCreated desc' });
 
   filters = [{
     key: 'search',

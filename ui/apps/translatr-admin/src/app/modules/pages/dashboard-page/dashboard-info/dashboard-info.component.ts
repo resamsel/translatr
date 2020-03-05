@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AppFacade } from '../../../../+state/app.facade';
-import { Feature } from '@dev/translatr-model';
+import { Feature, User } from '@dev/translatr-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,5 +21,13 @@ export class DashboardInfoComponent {
     facade.loadProjects({ limit: 1, fetch: 'count', order: 'whenCreated desc' });
     facade.loadAccessTokens({ limit: 1, fetch: 'count', order: 'whenCreated desc' });
     facade.loadActivities({ limit: 1, fetch: 'count', order: 'whenCreated desc' });
+  }
+
+  userLink(user: User | undefined | null): string[] | undefined {
+    if (user === undefined || user === null) {
+      return undefined;
+    }
+
+    return ['users', user.id];
   }
 }

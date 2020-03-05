@@ -122,6 +122,7 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
   public static ProjectCriteria from(Request request) {
     ProjectCriteria criteria = new ProjectCriteria()
         .with(request)
+        .withOwnerId(JsonUtils.getUuid(request.getQueryString("ownerId")))
         .withOwnerUsername(request.getQueryString("owner"))
         .withMemberId(JsonUtils.getUuid(request.getQueryString("memberId")));
 

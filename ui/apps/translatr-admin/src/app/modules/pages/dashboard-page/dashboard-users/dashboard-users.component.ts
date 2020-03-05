@@ -58,7 +58,7 @@ export class DashboardUsersComponent implements OnDestroy {
     )
   ).pipe(
     mapTo({}),
-    startWith({ limit: '20', order: 'name asc', fetch: 'count' })
+    startWith({ limit: '20', order: 'whenCreated desc', fetch: 'count' })
   );
 
   selected: User[] = [];

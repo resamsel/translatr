@@ -29,5 +29,27 @@
     [value]="(activities$ | async)?.total | shortNumber"
     icon="change_history"
     class="activity count"></dev-metric>
+
+  <dev-metric
+    [routerLink]="userLink((users$ | async)?.list[0])"
+    [value]="(users$ | async)?.list[0]?.name"
+    class="user count"
+    icon="group"
+    name="Latest user"></dev-metric>
+  <dev-metric
+    [value]="(projects$ | async)?.list[0]?.name"
+    class="project count"
+    icon="library_books"
+    name="Latest project"></dev-metric>
+  <dev-metric
+    [value]="(accessTokens$ | async)?.list[0]?.name"
+    class="access-token count"
+    icon="vpn_key"
+    name="Latest access token"></dev-metric>
+  <dev-metric
+    [value]="(activities$ | async)?.list[0]?.type"
+    class="activity count"
+    icon="change_history"
+    name="Latest activity"></dev-metric>
 </div>
 

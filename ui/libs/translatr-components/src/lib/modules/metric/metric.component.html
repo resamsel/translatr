@@ -1,4 +1,4 @@
-<a *ngIf="routerLink; else metric" [routerLink]="routerLink">
+<a *ngIf="routerLink; else metric" [queryParams]="queryParams" [routerLink]="routerLink">
   <ng-container [ngTemplateOutlet]="metric"></ng-container>
 </a>
 <ng-template #metric>

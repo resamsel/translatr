@@ -9,6 +9,7 @@ import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular
 export class MetricComponent {
   @HostBinding('class.metric') metric = true;
   @Input() routerLink: any[] | string;
+  @Input() queryParams: { [p: string]: any } = {};
   @Input() value: any;
   @Input() name: string;
   @Input() icon: string;

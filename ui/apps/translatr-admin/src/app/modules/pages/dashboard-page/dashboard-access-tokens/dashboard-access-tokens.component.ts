@@ -33,7 +33,7 @@ export class DashboardAccessTokensComponent {
   me$ = this.facade.me$;
   accessTokens$ = this.facade.accessTokens$;
   load$ = merge(
-    of({ limit: '20', order: 'name asc' }),
+    of({ limit: '20', order: 'whenCreated desc' }),
     this.facade.accessTokenDeleted$.pipe(
       ofType(AppActionTypes.AccessTokenDeleted),
       mapTo({})
