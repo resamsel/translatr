@@ -7,7 +7,7 @@ import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import criterias.PagedListFactory;
 import criterias.UserFeatureFlagCriteria;
-import models.FeatureFlag;
+import models.Feature;
 import models.User;
 import models.UserFeatureFlag;
 import models.UserRole;
@@ -46,12 +46,12 @@ public class UserFeatureFlagRepositoryImpl extends
       query.eq("user.id", criteria.getUserId());
     }
 
-    if (criteria.getFeatureFlag() != null) {
-      query.eq("featureFlag", criteria.getFeatureFlag());
+    if (criteria.getFeature() != null) {
+      query.eq("feature", criteria.getFeature());
     }
 
     if (StringUtils.isNoneEmpty(criteria.getSearch())) {
-      query.ilike("featureFlag", "%" + criteria.getSearch() + "%");
+      query.ilike("feature", "%" + criteria.getSearch() + "%");
     }
 
     criteria.paged(query);
@@ -65,12 +65,12 @@ public class UserFeatureFlagRepositoryImpl extends
   }
 
   @Override
-  public UserFeatureFlag byUserIdAndFeature(UUID userId, FeatureFlag featureFlag) {
+  public UserFeatureFlag byUserIdAndFeature(UUID userId, Feature feature) {
     return fetch()
-            .where()
-            .eq("user.id", userId)
-            .eq("featureFlag", featureFlag.getName())
-            .findUnique();
+        .where()
+        .eq("user.id", userId)
+        .eq("feature", feature.getName())
+        .findUnique();
   }
 
   private Query<UserFeatureFlag> fetch() {

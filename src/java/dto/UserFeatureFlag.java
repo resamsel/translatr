@@ -1,5 +1,7 @@
 package dto;
 
+import play.data.validation.Constraints;
+
 import java.util.UUID;
 
 public class UserFeatureFlag extends Dto {
@@ -7,10 +9,13 @@ public class UserFeatureFlag extends Dto {
 
   public UUID id;
 
+  @Constraints.Required
   public UUID userId;
   public String userUsername;
   public String userName;
 
-  public String featureFlag;
+  @Constraints.Required
+  public Feature feature;
+  @Constraints.Required
   public boolean enabled;
 }

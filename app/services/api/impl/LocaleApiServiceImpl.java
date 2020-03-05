@@ -1,6 +1,5 @@
 package services.api.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import criterias.LocaleCriteria;
 import dto.NotFoundException;
 import exporters.Exporter;
@@ -20,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.data.FormFactory;
 import play.inject.Injector;
-import play.libs.Json;
 import play.mvc.Http.Context;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
@@ -35,6 +33,7 @@ import services.api.LocaleApiService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.ValidationException;
+import javax.validation.Validator;
 import java.io.File;
 import java.util.UUID;
 
@@ -53,12 +52,14 @@ public class LocaleApiServiceImpl extends
   private final Injector injector;
 
   @Inject
-  protected LocaleApiServiceImpl(LocaleService localeService, ProjectService projectService,
-      Injector injector, PermissionService permissionService) {
+  protected LocaleApiServiceImpl(
+      LocaleService localeService, ProjectService projectService,
+      Injector injector, PermissionService permissionService, Validator validator) {
     super(localeService, dto.Locale.class, LocaleMapper::toDto,
         new Scope[]{Scope.ProjectRead, Scope.LocaleRead},
         new Scope[]{Scope.ProjectRead, Scope.LocaleWrite},
-        permissionService);
+        permissionService,
+        validator);
 
     this.projectService = projectService;
     this.injector = injector;
@@ -66,7 +67,7 @@ public class LocaleApiServiceImpl extends
 
   @Override
   public dto.Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
-      String... fetches) {
+                                             String... fetches) {
     permissionService
         .checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
             Scope.MessageRead);
@@ -172,9 +173,7 @@ public class LocaleApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected Locale toModel(JsonNode json) {
-    dto.Locale dto = Json.fromJson(json, dto.Locale.class);
-
+  protected Locale toModel(dto.Locale dto) {
     return LocaleMapper.toModel(dto, projectService.byId(dto.projectId));
   }
 }

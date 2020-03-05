@@ -6,7 +6,7 @@ import { AppFacade } from '../../../+state/app.facade';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
 import { PROJECT_ROUTES } from './project-page.token';
 import { merge, Observable } from 'rxjs';
-import { FeatureFlag, Project } from '@dev/translatr-model';
+import { Feature, Project } from '@dev/translatr-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,7 +31,7 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
       scan((acc, curr) => ({ ...acc, ...curr }), {})
     );
 
-  readonly FeatureFlag = FeatureFlag;
+  readonly Feature = Feature;
 
   constructor(
     private readonly injector: Injector,

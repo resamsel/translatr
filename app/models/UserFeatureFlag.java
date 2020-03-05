@@ -4,14 +4,17 @@ import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import org.joda.time.DateTime;
 import validators.FeatureFlagByUserAndFeature;
-import validators.NameUnique;
-import validators.ProjectUserUniqueChecker;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.util.UUID;
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "feature_flag"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "feature"})})
 @FeatureFlagByUserAndFeature
 public class UserFeatureFlag implements Model<UserFeatureFlag, UUID> {
   @Id
@@ -28,7 +31,7 @@ public class UserFeatureFlag implements Model<UserFeatureFlag, UUID> {
   public User user;
 
   @ManyToOne
-  public FeatureFlag featureFlag;
+  public Feature feature;
 
   public boolean enabled;
 

@@ -1,6 +1,6 @@
 import { Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { ActivatedRoute, CanActivate, Route } from '@angular/router';
-import { FeatureFlag, User } from '@dev/translatr-model';
+import { Feature, User } from '@dev/translatr-model';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
 import { USER_ROUTES } from './user-page.token';
 import { AppFacade } from '../../../+state/app.facade';
@@ -18,7 +18,7 @@ export class UserPageComponent implements OnDestroy {
 
   children: NameIconRoute[] = this.routes[0].children;
 
-  readonly FeatureFlag = FeatureFlag;
+  readonly Feature = Feature;
 
   constructor(
     private readonly appFacade: AppFacade,

@@ -155,11 +155,12 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card *featureFlag="FeatureFlag.ProjectCliCard">
+  <mat-card *featureFlag="Feature.ProjectCliCard">
     <mat-card-header>
       <mat-card-title i18n="@@cli.integration.title">CLI Integration</mat-card-title>
       <mat-card-subtitle i18n="@@cli.integration.subtitle"
-      >Sample <strong>.translatr.yml</strong> file to be used with the Translatr CLI.</mat-card-subtitle>
+      >Sample <strong>.translatr.yml</strong> file to be used with the Translatr CLI.
+      </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <mat-form-field appearance="outline">

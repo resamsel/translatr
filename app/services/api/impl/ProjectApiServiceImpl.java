@@ -1,7 +1,6 @@
 package services.api.impl;
 
 import com.avaje.ebean.PagedList;
-import com.fasterxml.jackson.databind.JsonNode;
 import controllers.Keys;
 import controllers.Locales;
 import controllers.routes;
@@ -27,7 +26,6 @@ import models.User;
 import models.UserRole;
 import play.Configuration;
 import play.i18n.Messages;
-import play.libs.Json;
 import play.mvc.Http.Context;
 import services.AuthProvider;
 import services.KeyService;
@@ -40,6 +38,7 @@ import services.api.ProjectApiService;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.Validator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,11 +66,12 @@ public class ProjectApiServiceImpl extends
   protected ProjectApiServiceImpl(
       Configuration configuration, ProjectService projectService,
       LocaleService localeService, KeyService keyService, LogEntryService logEntryService,
-      PermissionService permissionService, AuthProvider authProvider) {
+      PermissionService permissionService, AuthProvider authProvider, Validator validator) {
     super(projectService, dto.Project.class, ProjectMapper::toDto,
         new Scope[]{Scope.ProjectRead},
         new Scope[]{Scope.ProjectWrite},
-        permissionService);
+        permissionService,
+        validator);
 
     this.configuration = configuration;
     this.localeService = localeService;
@@ -197,7 +197,7 @@ public class ProjectApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected Project toModel(JsonNode json) {
-    return ProjectMapper.toModel(Json.fromJson(json, dto.Project.class));
+  protected Project toModel(dto.Project dto) {
+    return ProjectMapper.toModel(dto);
   }
 }

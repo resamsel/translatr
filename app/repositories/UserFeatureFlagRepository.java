@@ -2,7 +2,7 @@ package repositories;
 
 import com.google.inject.ImplementedBy;
 import criterias.UserFeatureFlagCriteria;
-import models.FeatureFlag;
+import models.Feature;
 import models.UserFeatureFlag;
 import repositories.impl.UserFeatureFlagRepositoryImpl;
 
@@ -16,5 +16,5 @@ public interface UserFeatureFlagRepository extends
 
   String[] PROPERTIES_TO_FETCH = new String[]{FETCH_USER};
 
-  UserFeatureFlag byUserIdAndFeature(UUID id, FeatureFlag featureFlag);
+  UserFeatureFlag byUserIdAndFeature(UUID id, Feature feature);
 }

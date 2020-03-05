@@ -5,7 +5,7 @@
   [page]="(project$ | async)?.name"
   [showDashboardLink]="true"
 >
-  <header [featureFlagClass]="{'header-graphic': FeatureFlag.HeaderGraphic}" class="header">
+  <header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
     <div *ngIf="project$ | async as project" class="container title">
       <div class="content">
         <h1>{{project?.ownerUsername}}/{{project?.name}}</h1>

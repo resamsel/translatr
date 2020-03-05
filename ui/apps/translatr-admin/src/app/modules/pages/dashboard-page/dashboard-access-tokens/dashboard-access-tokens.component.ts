@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { merge, Observable, of } from 'rxjs';
-import { AccessToken, FeatureFlag, RequestCriteria } from '@dev/translatr-model';
+import { AccessToken, Feature, RequestCriteria } from '@dev/translatr-model';
 import { AppFacade } from '../../../../+state/app.facade';
 import { Entity, notifyEvent } from '@dev/translatr-components';
 import {
@@ -48,7 +48,7 @@ export class DashboardAccessTokensComponent {
 
   readonly uiUrl = environment.uiUrl;
 
-  readonly FeatureFlag = FeatureFlag;
+  readonly Feature = Feature;
 
   constructor(
     private readonly facade: AppFacade,

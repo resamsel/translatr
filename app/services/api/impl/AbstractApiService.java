@@ -8,12 +8,18 @@ import dto.DtoPagedList;
 import dto.NotFoundException;
 import models.Model;
 import models.Scope;
+import play.libs.Json;
 import services.ModelService;
 import services.PermissionService;
 import services.api.ApiService;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author resamsel
@@ -30,6 +36,7 @@ public abstract class AbstractApiService
   Scope[] readScopes;
   private Scope[] writeScopes;
   protected final PermissionService permissionService;
+  private final Validator validator;
 
   protected AbstractApiService(
       SERVICE service,
@@ -37,15 +44,16 @@ public abstract class AbstractApiService
       Function<MODEL, DTO> dtoMapper,
       Scope[] readScopes,
       Scope[] writeScopes,
-      PermissionService permissionService
+      PermissionService permissionService,
+      Validator validator
   ) {
-
     this.service = service;
     this.dtoClass = dtoClass;
     this.dtoMapper = dtoMapper;
     this.readScopes = readScopes;
     this.writeScopes = writeScopes;
     this.permissionService = permissionService;
+    this.validator = validator;
   }
 
   /**
@@ -99,7 +107,7 @@ public abstract class AbstractApiService
   public DTO create(JsonNode in) {
     permissionService.checkPermissionAll("Access token not allowed", writeScopes);
 
-    return getDtoMapper().apply(service.create(toModel(in)));
+    return getDtoMapper().apply(service.create(toModel(toDto(in))));
   }
 
   /**
@@ -109,7 +117,7 @@ public abstract class AbstractApiService
   public DTO update(JsonNode in) {
     permissionService.checkPermissionAll("Access token not allowed", writeScopes);
 
-    return getDtoMapper().apply(service.update(toModel(in)));
+    return getDtoMapper().apply(service.update(toModel(toDto(in))));
   }
 
   /**
@@ -132,5 +140,21 @@ public abstract class AbstractApiService
     return out;
   }
 
-  protected abstract MODEL toModel(JsonNode json);
+  private DTO toDto(JsonNode json) {
+    DTO dto = Json.fromJson(json, dtoClass);
+
+    Set<ConstraintViolation<DTO>> violations = validator.validate(dto);
+
+    if (!violations.isEmpty()) {
+      throw new ConstraintViolationException(
+          "Constraint violations detected: " + violations.stream().map(Object::toString).collect(
+              Collectors.joining(",")),
+          violations
+      );
+    }
+
+    return dto;
+  }
+
+  protected abstract MODEL toModel(DTO dto);
 }

@@ -18,7 +18,7 @@ public interface UserRepository extends ModelRepository<User, UUID, UserCriteria
   String FETCH_PROJECTS = "projects";
   String FETCH_MEMBERSHIPS = "memberships";
   String FETCH_ACTIVITIES = "activities";
-  String FETCH_FEATURE_FLAGS = "featureFlags";
+  String FETCH_FEATURES = "features";
 
   String[] PROPERTIES_TO_FETCH = {};
 

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AppFacade } from '../../../../+state/app.facade';
-import { FeatureFlag } from '@dev/translatr-model';
+import { Feature } from '@dev/translatr-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,7 +14,7 @@ export class DashboardInfoComponent {
   accessTokens$ = this.facade.accessTokens$;
   activities$ = this.facade.activities$;
 
-  readonly FeatureFlag = FeatureFlag;
+  readonly Feature = Feature;
 
   constructor(private readonly facade: AppFacade) {
     facade.loadUsers({ limit: 1, fetch: 'count', order: 'whenCreated desc' });

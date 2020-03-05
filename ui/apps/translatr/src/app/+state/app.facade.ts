@@ -3,7 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { AppState } from './app.reducer';
 import { appQuery } from './app.selectors';
 import { createProject, loadMe, loadProject, loadUsers, updateProject } from './app.actions';
-import { FeatureFlag, Project, RequestCriteria } from '@dev/translatr-model';
+import { Feature, Project, RequestCriteria } from '@dev/translatr-model';
 import { routerQuery } from './router.selectors';
 import { Observable } from 'rxjs';
 import { Params } from '@angular/router';
@@ -59,11 +59,11 @@ export class AppFacade extends FeatureFlagFacade {
     this.store.dispatch(updateProject({payload: project}));
   }
 
-  hasFlags$(flags: FeatureFlag | FeatureFlag[]): Observable<boolean> {
+  hasFeatures$(flags: Feature | Feature[]): Observable<boolean> {
     return this.me$.pipe(
       filter(x => !!x),
-      map(user => user.featureFlags
-        ? coerceArray(flags).every(flag => user.featureFlags[flag])
+      map(user => user.features
+        ? coerceArray(flags).every(flag => user.features[flag])
         : false
       )
     );

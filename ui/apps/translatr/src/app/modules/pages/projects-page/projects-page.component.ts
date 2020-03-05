@@ -5,7 +5,7 @@ import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-
 import { MatDialog } from '@angular/material/dialog';
 import { distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs/operators';
 import { Params, Router } from '@angular/router';
-import { FeatureFlag, ProjectCriteria, User } from '@dev/translatr-model';
+import { Feature, ProjectCriteria, User } from '@dev/translatr-model';
 import { combineLatest } from 'rxjs';
 import { navigate } from '@translatr/utils';
 import { FilterCriteria } from '../../shared/list-header/list-header.component';
@@ -30,7 +30,7 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
   private loadProjects$ = combineLatest([this.me$.pipe(filter(user => !!user)), this.criteria$])
     .pipe(takeUntil(this.facade.unload$));
 
-  readonly FeatureFlag = FeatureFlag;
+  readonly Feature = Feature;
 
   constructor(
     private readonly facade: ProjectsFacade,

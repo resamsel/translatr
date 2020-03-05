@@ -1,14 +1,14 @@
 import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
 import { filter, take } from 'rxjs/operators';
 import { FeatureFlagFacade } from './feature-flag.facade';
-import { FeatureFlag } from '@dev/translatr-model';
+import { Feature } from '@dev/translatr-model';
 
 @Directive({
   selector: '[featureFlag]'
 })
 export class FeatureFlagDirective implements OnInit {
 
-  @Input() featureFlag: FeatureFlag | FeatureFlag[];
+  @Input() featureFlag: Feature | Feature[];
 
   constructor(
     private readonly viewContainerRef: ViewContainerRef,
@@ -18,7 +18,7 @@ export class FeatureFlagDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    this.facade.hasFlags$(this.featureFlag)
+    this.facade.hasFeatures$(this.featureFlag)
       .pipe(take(1), filter(enabled => enabled))
       .subscribe(() =>
         this.viewContainerRef.createEmbeddedView(this.templateRef));

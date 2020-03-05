@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { AppFacade } from '../../../../+state/app.facade';
-import { FeatureFlag, Project, RequestCriteria } from '@dev/translatr-model';
+import { Feature, Project, RequestCriteria } from '@dev/translatr-model';
 import { Observable, of } from 'rxjs';
 import { AppActionTypes, ProjectDeleted, ProjectDeleteError, ProjectsDeleted, ProjectsDeleteError } from '../../../../+state/app.actions';
 import { MatDialog } from '@angular/material/dialog';
@@ -44,7 +44,7 @@ export class DashboardProjectsComponent implements OnDestroy {
 
   readonly uiUrl = environment.uiUrl;
 
-  readonly FeatureFlag = FeatureFlag;
+  readonly Feature = Feature;
 
   constructor(
     private readonly facade: AppFacade,

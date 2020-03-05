@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { merge, Observable, of } from 'rxjs';
 import { ofType } from '@ngrx/effects';
 import { mapTo } from 'rxjs/operators';
-import { FeatureFlag, featureFlags, RequestCriteria, UserFeatureFlag } from '@dev/translatr-model';
+import { Feature, features, RequestCriteria, UserFeatureFlag } from '@dev/translatr-model';
 import { environment } from '../../../../../environments/environment';
 import { AppFacade } from '../../../../+state/app.facade';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -23,12 +23,12 @@ import {
   styleUrls: ['./dashboard-feature-flags.component.scss']
 })
 export class DashboardFeatureFlagsComponent {
-  displayedColumns = ['user', 'featureFlag', 'enabled', 'actions'];
+  displayedColumns = ['user', 'feature', 'enabled', 'actions'];
 
   me$ = this.facade.me$;
   featureFlags$ = this.facade.featureFlags$;
   load$ = merge(
-    of({limit: '20', order: 'featureFlag asc'}),
+    of({ limit: '20', order: 'feature asc' }),
     this.facade.featureFlagDeleted$.pipe(
       ofType(AppActionTypes.FeatureFlagDeleted),
       mapTo({})
@@ -43,14 +43,14 @@ export class DashboardFeatureFlagsComponent {
 
   readonly uiUrl = environment.uiUrl;
 
-  readonly filters: Array<FilterFieldFilter> = featureFlags.map(featureFlag => ({
-    key: 'featureFlag',
+  readonly filters: Array<FilterFieldFilter> = features.map(feature => ({
+    key: 'feature',
     type: 'option',
-    title: `Feature ${featureFlag}`,
-    value: featureFlag
+    title: `Feature ${feature}`,
+    value: feature
   }));
 
-  readonly FeatureFlag = FeatureFlag;
+  readonly Feature = Feature;
 
   constructor(
     private readonly facade: AppFacade,
@@ -61,7 +61,7 @@ export class DashboardFeatureFlagsComponent {
       facade.featureFlagDeleted$,
       AppActionTypes.FeatureFlagDeleted,
       (action: FeatureFlagDeleted) =>
-        `Feature flag ${action.payload.featureFlag} has been deleted`,
+        `Feature flag ${action.payload.feature} has been deleted`,
       (action: FeatureFlagDeleteError) =>
         `Feature flag could not be deleted: ${errorMessage(action.payload)}`
     );

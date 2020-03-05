@@ -3,7 +3,6 @@ package mappers;
 import dto.User;
 import utils.EmailUtils;
 
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -46,9 +45,9 @@ public class UserMapper {
           .collect(Collectors.toList());
     }
 
-    if (in.featureFlags != null && !in.featureFlags.isEmpty()) {
-      out.featureFlags = in.featureFlags.stream()
-              .collect(toMap(ff -> ff.featureFlag.getName(), ff -> ff.enabled));
+    if (in.features != null && !in.features.isEmpty()) {
+      out.features = in.features.stream()
+          .collect(toMap(ff -> ff.feature.getName(), ff -> ff.enabled));
     }
 
     return out;

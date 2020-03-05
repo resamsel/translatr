@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { AppFacade } from '../../../../+state/app.facade';
-import { FeatureFlag, RequestCriteria, User, UserRole } from '@dev/translatr-model';
+import { Feature, RequestCriteria, User, UserRole } from '@dev/translatr-model';
 import { map, mapTo, startWith, take } from 'rxjs/operators';
 import { UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError } from '../../../../+state/app.actions';
 import { Entity, UserEditDialogComponent, UserEditDialogConfig } from '@dev/translatr-components';
@@ -63,7 +63,7 @@ export class DashboardUsersComponent implements OnDestroy {
 
   selected: User[] = [];
 
-  readonly FeatureFlag = FeatureFlag;
+  readonly Feature = Feature;
 
   constructor(
     private readonly facade: AppFacade,

@@ -1,7 +1,7 @@
-<header [featureFlagClass]="{'header-graphic': FeatureFlag.HeaderGraphic}" class="header">
+<header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
   <div class="container title">
     <div class="content">
-      <h1>Feature Flags</h1>
+      <h1>Features</h1>
     </div>
   </div>
 </header>
@@ -24,9 +24,9 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="featureFlag">
-        <th mat-header-cell *matHeaderCellDef>Feature Flag</th>
-        <td mat-cell *matCellDef="let element">{{ element.featureFlag }}</td>
+      <ng-container matColumnDef="feature">
+        <th *matHeaderCellDef mat-header-cell>Feature</th>
+        <td *matCellDef="let element" mat-cell>{{ element.feature }}</td>
       </ng-container>
 
       <ng-container matColumnDef="enabled">

@@ -1,6 +1,6 @@
 package validators;
 
-import models.FeatureFlag;
+import models.Feature;
 import models.User;
 import models.UserFeatureFlag;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class FeatureFlagByUserAndFeatureValidatorTest {
   public void isValidWithNewFeatureFlag() {
     // given
     UserFeatureFlag featureFlag = new UserFeatureFlag();
-    featureFlag.featureFlag = FeatureFlag.ProjectCliCard;
+    featureFlag.feature = Feature.ProjectCliCard;
     featureFlag.user = new User().withId(UUID.randomUUID());
 
     // when
@@ -48,11 +48,11 @@ public class FeatureFlagByUserAndFeatureValidatorTest {
   public void isValidWithExistingFeatureFlag() {
     // given
     UserFeatureFlag featureFlag = new UserFeatureFlag();
-    featureFlag.featureFlag = FeatureFlag.ProjectCliCard;
+    featureFlag.feature = Feature.ProjectCliCard;
     featureFlag.user = new User().withId(UUID.randomUUID());
     UserFeatureFlag existing = new UserFeatureFlag();
     existing.id = UUID.randomUUID();
-    existing.featureFlag = FeatureFlag.ProjectCliCard;
+    existing.feature = Feature.ProjectCliCard;
     existing.user = new User().withId(featureFlag.user.id);
 
     when(userFeatureFlagRepository.byUserIdAndFeature(any(), any())).thenReturn(existing);
@@ -69,11 +69,11 @@ public class FeatureFlagByUserAndFeatureValidatorTest {
     // given
     UserFeatureFlag featureFlag = new UserFeatureFlag();
     featureFlag.id = UUID.randomUUID();
-    featureFlag.featureFlag = FeatureFlag.ProjectCliCard;
+    featureFlag.feature = Feature.ProjectCliCard;
     featureFlag.user = new User().withId(UUID.randomUUID());
     UserFeatureFlag existing = new UserFeatureFlag();
     existing.id = featureFlag.id;
-    existing.featureFlag = FeatureFlag.ProjectCliCard;
+    existing.feature = Feature.ProjectCliCard;
     existing.user = new User().withId(featureFlag.user.id);
 
     when(userFeatureFlagRepository.byUserIdAndFeature(any(), any())).thenReturn(existing);

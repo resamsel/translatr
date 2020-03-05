@@ -1,7 +1,6 @@
 package services.api.impl;
 
 import com.avaje.ebean.PagedList;
-import com.fasterxml.jackson.databind.JsonNode;
 import criterias.LogEntryCriteria;
 import criterias.UserCriteria;
 import dto.DtoPagedList;
@@ -11,7 +10,6 @@ import mappers.UserMapper;
 import mappers.UserObfuscatorMapper;
 import models.Scope;
 import models.User;
-import play.libs.Json;
 import services.AuthProvider;
 import services.LogEntryService;
 import services.PermissionService;
@@ -20,6 +18,7 @@ import services.api.UserApiService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.Validator;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -41,11 +40,13 @@ public class UserApiServiceImpl extends
       UserService userService,
       AuthProvider authProvider,
       PermissionService permissionService,
-      LogEntryService logEntryService) {
+      LogEntryService logEntryService, Validator validator) {
     super(userService, dto.User.class, UserMapper::toDto,
         new Scope[]{Scope.UserRead},
         new Scope[]{Scope.UserWrite},
-        permissionService);
+        permissionService,
+        validator
+    );
 
     this.authProvider = authProvider;
     this.logEntryService = logEntryService;
@@ -84,9 +85,7 @@ public class UserApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected User toModel(JsonNode json) {
-    dto.User dto = Json.fromJson(json, dto.User.class);
-
+  protected User toModel(dto.User dto) {
     return UserMapper.toModel(dto, service.byId(dto.id));
   }
 }

@@ -4,7 +4,6 @@ import models.UserFeatureFlag;
 import play.data.validation.Constraints;
 import play.libs.F.Tuple;
 import repositories.UserFeatureFlagRepository;
-import services.AuthProvider;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
@@ -40,7 +39,7 @@ public class FeatureFlagByUserAndFeatureValidator extends Constraints.Validator<
 
     UserFeatureFlag featureFlag = (UserFeatureFlag) object;
 
-    UserFeatureFlag existing = userFeatureFlagRepository.byUserIdAndFeature(featureFlag.user.id, featureFlag.featureFlag);
+    UserFeatureFlag existing = userFeatureFlagRepository.byUserIdAndFeature(featureFlag.user.id, featureFlag.feature);
 
     if (featureFlag.id == null && existing == null) {
       // given feature flag doesn't have an ID, and combination user/feature doesn't exist: OK

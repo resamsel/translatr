@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { AppFacade } from '../../../+state/app.facade';
 import { ProjectsFacade } from '../projects-page/+state/projects.facade';
 import { filter, take } from 'rxjs/operators';
-import { FeatureFlag, User } from '@dev/translatr-model';
+import { Feature, User } from '@dev/translatr-model';
 import { DashboardFacade } from './+state/dashboard.facade';
 import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,7 +21,7 @@ export class DashboardPageComponent implements OnInit {
   readonly projects$ = this.projectsFacade.projects$;
   readonly users$ = this.appFacade.users$;
 
-  readonly FeatureFlag = FeatureFlag;
+  readonly Feature = Feature;
 
   constructor(
     private readonly appFacade: AppFacade,

@@ -5,7 +5,7 @@
   [page]="(user$ | async)?.name"
   [showDashboardLink]="true"
 >
-  <header [featureFlagClass]="{'header-graphic': FeatureFlag.HeaderGraphic}" class="header">
+  <header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
     <div *ngIf="user$ | async as user" class="container title">
       <div class="content">
         <img

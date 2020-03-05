@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
-import { FeatureFlag } from '@dev/translatr-model';
+import { Feature } from '@dev/translatr-model';
 import { filter, take } from 'rxjs/operators';
 import { FeatureFlagFacade } from './feature-flag.facade';
 
@@ -8,7 +8,7 @@ import { FeatureFlagFacade } from './feature-flag.facade';
 })
 export class FeatureFlagClassDirective implements OnInit {
 
-  @Input() featureFlagClass: Record<string, FeatureFlag>;
+  @Input() featureFlagClass: Record<string, Feature>;
 
   constructor(
     private readonly renderer: Renderer2,
@@ -20,7 +20,7 @@ export class FeatureFlagClassDirective implements OnInit {
   ngOnInit(): void {
     Object.keys(this.featureFlagClass)
       .forEach(className =>
-        this.facade.hasFlags$(this.featureFlagClass[className])
+        this.facade.hasFeatures$(this.featureFlagClass[className])
           .pipe(take(1), filter(enabled => enabled))
           .subscribe(() =>
             this.renderer.addClass(this.el.nativeElement, className)));

@@ -1,7 +1,7 @@
-import { FeatureFlag, UserEmbedded } from '@translatr/translatr-model/src';
+import { Feature, UserEmbedded } from '@translatr/translatr-model/src';
 
 export interface UserFeatureFlag extends UserEmbedded {
   id: string;
-  featureFlag: FeatureFlag;
+  feature: Feature;
   enabled: boolean;
 }

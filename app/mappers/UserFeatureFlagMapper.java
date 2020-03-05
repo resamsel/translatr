@@ -1,7 +1,6 @@
 package mappers;
 
 import dto.UserFeatureFlag;
-import models.FeatureFlag;
 import models.User;
 
 public class UserFeatureFlagMapper {
@@ -14,7 +13,7 @@ public class UserFeatureFlagMapper {
 
     out.id = in.id;
     out.user = new User().withId(in.userId);
-    out.featureFlag = FeatureFlag.of(in.featureFlag);
+    out.feature = FeatureMapper.toModel(in.feature);
     out.enabled = in.enabled;
 
     return out;
@@ -27,7 +26,7 @@ public class UserFeatureFlagMapper {
     out.userId = in.user.id;
     out.userUsername = in.user.username;
     out.userName = in.user.name;
-    out.featureFlag = in.featureFlag.getName();
+    out.feature = FeatureMapper.toDto(in.feature);
     out.enabled = in.enabled;
 
     return out;

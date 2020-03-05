@@ -7,7 +7,7 @@ import utils.JsonUtils;
 
 public class UserFeatureFlagCriteria extends AbstractSearchCriteria<UserFeatureFlagCriteria> {
 
-  private String featureFlag;
+  private String feature;
 
   public UserFeatureFlagCriteria() {
     super("userFeatureFlag");
@@ -17,19 +17,19 @@ public class UserFeatureFlagCriteria extends AbstractSearchCriteria<UserFeatureF
     return new UserFeatureFlagCriteria()
         .with(request)
         .withUserId(JsonUtils.getUuid(request.getQueryString("userId")))
-        .withFeatureFlag(request.getQueryString("featureFlag"));
+        .withFeature(request.getQueryString("feature"));
   }
 
-  public String getFeatureFlag() {
-    return featureFlag;
+  public String getFeature() {
+    return feature;
   }
 
-  public void setFeatureFlag(String featureFlag) {
-    this.featureFlag = featureFlag;
+  public void setFeature(String feature) {
+    this.feature = feature;
   }
 
-  public UserFeatureFlagCriteria withFeatureFlag(String featureFlag) {
-    setFeatureFlag(featureFlag);
+  public UserFeatureFlagCriteria withFeature(String feature) {
+    setFeature(feature);
     return this;
   }
 
@@ -42,7 +42,7 @@ public class UserFeatureFlagCriteria extends AbstractSearchCriteria<UserFeatureF
    */
   @Override
   public <U> ExpressionList<U> paged(ExpressionList<U> query) {
-    query.order("featureFlag");
+    query.order("feature");
 
     return super.paged(query);
   }

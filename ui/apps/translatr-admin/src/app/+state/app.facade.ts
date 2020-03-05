@@ -27,7 +27,7 @@ import {
 import {
   AccessToken,
   ActivityCriteria,
-  FeatureFlag,
+  Feature,
   FeatureFlagCriteria,
   Project,
   ProjectCriteria,
@@ -253,11 +253,11 @@ export class AppFacade extends FeatureFlagFacade {
     this.store.dispatch(new DeleteFeatureFlags(featureFlags));
   }
 
-  hasFlags$(flags: FeatureFlag | FeatureFlag[]): Observable<boolean> {
+  hasFeatures$(flags: Feature | Feature[]): Observable<boolean> {
     return this.me$.pipe(
       filter(x => !!x),
-      map(user => user.featureFlags
-        ? coerceArray(flags).every(flag => user.featureFlags[flag])
+      map(user => user.features
+        ? coerceArray(flags).every(flag => user.features[flag])
         : false
       )
     );

@@ -1,20 +1,19 @@
 package services.api.impl;
 
 import com.avaje.ebean.PagedList;
-import com.fasterxml.jackson.databind.JsonNode;
 import criterias.LogEntryCriteria;
 import dto.DtoPagedList;
 import mappers.ActivityMapper;
 import mappers.AggregateMapper;
 import models.LogEntry;
 import models.Scope;
-import play.libs.Json;
 import services.LogEntryService;
 import services.PermissionService;
 import services.api.ActivityApiService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.Validator;
 import java.util.UUID;
 
 /**
@@ -28,11 +27,12 @@ public class ActivityApiServiceImpl extends
 
   @Inject
   protected ActivityApiServiceImpl(
-      LogEntryService logEntryService, PermissionService permissionService) {
+      LogEntryService logEntryService, PermissionService permissionService, Validator validator) {
     super(logEntryService, dto.Activity.class, ActivityMapper::toDto,
         new Scope[]{Scope.ProjectRead},
         new Scope[]{Scope.ProjectWrite},
-        permissionService);
+        permissionService,
+        validator);
   }
 
   @Override
@@ -46,9 +46,7 @@ public class ActivityApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected LogEntry toModel(JsonNode json) {
-    dto.Activity dto = Json.fromJson(json, dto.Activity.class);
-
+  protected LogEntry toModel(dto.Activity dto) {
     return ActivityMapper.toModel(dto, service.byId(dto.id));
   }
 }
