@@ -1,5 +1,6 @@
 package utils;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import dto.NotFoundException;
 import dto.PermissionException;
@@ -33,7 +34,15 @@ public class ErrorUtils {
     return Json.toJson(new ConstraintViolationError(e));
   }
 
+  public static JsonNode toJson(JsonMappingException e) {
+    return Json.toJson(new ConstraintViolationError(e));
+  }
+
   public static JsonNode toJson(Throwable t) {
-    return Json.toJson(new dto.errors.GenericError(t.getMessage()));
+    return toJson(t.getMessage());
+  }
+
+  public static JsonNode toJson(String errorMessage) {
+    return Json.toJson(new dto.errors.GenericError(errorMessage));
   }
 }

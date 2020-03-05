@@ -1,5 +1,7 @@
 package dto.errors;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import javax.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,6 +41,13 @@ public class ConstraintViolationErrorInfo extends GenericErrorInfo {
 
   public ConstraintViolationErrorInfo(ValidationException e) {
     super("ConstraintViolationException", "Constraint violations detected");
+
+    if (e != null)
+      this.violations = Collections.singletonList(new ConstraintViolation(e));
+  }
+
+  public ConstraintViolationErrorInfo(JsonMappingException e) {
+    super("JsonMappingException", "Invalid JSON mapping");
 
     if (e != null)
       this.violations = Collections.singletonList(new ConstraintViolation(e));

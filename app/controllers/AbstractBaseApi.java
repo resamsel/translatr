@@ -1,6 +1,7 @@
 package controllers;
 
 import com.avaje.ebean.PagedList;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 import dto.AuthorizationException;
@@ -120,10 +121,10 @@ public class AbstractBaseApi extends AbstractController {
     } catch (NotFoundException e) {
       return notFound(ErrorUtils.toJson(e));
     } catch (ConstraintViolationException e) {
-      LOGGER.debug("Handling constraint violation", t);
       return badRequest(ErrorUtils.toJson(e));
     } catch (ValidationException e) {
-      LOGGER.debug("Handling validation", t);
+      return badRequest(ErrorUtils.toJson(e));
+    } catch (JsonMappingException e) {
       return badRequest(ErrorUtils.toJson(e));
     } catch (Throwable e) {
       LOGGER.error("Error while processing API request", e);

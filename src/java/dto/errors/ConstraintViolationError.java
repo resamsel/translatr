@@ -1,5 +1,7 @@
 package dto.errors;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 
@@ -18,10 +20,11 @@ public class ConstraintViolationError extends Error {
     this.error = new ConstraintViolationErrorInfo(e.getConstraintViolations());
   }
 
-  /**
-   * @param e
-   */
   public ConstraintViolationError(ValidationException e) {
+    this.error = new ConstraintViolationErrorInfo(e);
+  }
+
+  public ConstraintViolationError(JsonMappingException e) {
     this.error = new ConstraintViolationErrorInfo(e);
   }
 }
