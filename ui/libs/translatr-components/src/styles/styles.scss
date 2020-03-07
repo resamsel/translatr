@@ -68,6 +68,12 @@ a .mat-card {
   }
 }
 
+.container-inner {
+  &:not(.dense) > :not(:last-child) {
+    margin-bottom: 8px;
+  }
+}
+
 .flex-spacer {
   flex-grow: 1;
 }

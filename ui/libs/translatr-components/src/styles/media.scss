@@ -19,6 +19,12 @@
     }
   }
 
+  .container-inner {
+    > * {
+      margin: 0 4px;
+    }
+  }
+
   .flex {
     > .small {
       flex: 1 auto;
@@ -56,6 +62,16 @@
       width: 70%;
     }
 
+    &:not(.dense) > :not(:last-child) {
+      margin-bottom: 16px;
+    }
+
+    > * {
+      margin: 0 8px;
+    }
+  }
+
+  .container-inner {
     &:not(.dense) > :not(:last-child) {
       margin-bottom: 16px;
     }
