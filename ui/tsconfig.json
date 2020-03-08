@@ -1,25 +1,42 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": ".",
-    "downlevelIteration": true,
-    "outDir": "./dist/out-tsc",
+    "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
-    "module": "esnext",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es2015",
-    "typeRoots": ["node_modules/@types", "typings.d.ts"],
-    "lib": ["es2018", "dom"],
+    "module": "esnext",
+    "typeRoots": [
+      "node_modules/@types",
+      "typings.d.ts"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
     "paths": {
-      "@dev/translatr-sdk": ["libs/translatr-sdk/src/index.ts"],
-      "@dev/translatr-components": ["libs/translatr-components/src/index.ts"],
-      "@dev/translatr-model": ["libs/translatr-model/src/index.ts"],
-      "@translatr/generator": ["libs/generator/src/index.ts"],
-      "@translatr/utils": ["libs/utils/src/index.ts"],
+      "@dev/translatr-sdk": [
+        "libs/translatr-sdk/src/index.ts"
+      ],
+      "@dev/translatr-components": [
+        "libs/translatr-components/src/index.ts"
+      ],
+      "@dev/translatr-model": [
+        "libs/translatr-model/src/index.ts"
+      ],
+      "@translatr/generator": [
+        "libs/generator/src/index.ts"
+      ],
+      "@translatr/utils": [
+        "libs/utils/src/index.ts"
+      ],
       "@translatr/node-utils": [
         "libs/node-utils/src/index.ts"
       ],
@@ -27,7 +44,10 @@
         "libs/*"
       ]
     },
-    "rootDir": ".",
     "noUnusedLocals": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

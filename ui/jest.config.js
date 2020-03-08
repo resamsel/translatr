@@ -1,9 +1,10 @@
 module.exports = {
-  roots: ['.'],
+  testMatch: ['**/+(*.)+(spec|test).+(ts|js)?(x)'],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest'
+    '^.+\\.(ts|js|html)$': 'ts-jest'
   },
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  setupFilesAfterEnv: ['./src/test-setup.ts']
+  resolver: '@nrwl/jest/plugins/resolver',
+  moduleFileExtensions: ['ts', 'js', 'html'],
+  coverageReporters: ['html'],
+  setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts']
 };

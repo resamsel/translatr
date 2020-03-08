@@ -1,16 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-
-import { Observable } from 'rxjs';
-
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
-
-import { DataPersistence, NxModule } from '@nrwl/angular';
-import { hot } from '@nrwl/angular/testing';
-
 import { AppEffects } from './app.effects';
-import { AppLoaded, LoadMe } from './app.actions';
+import { loadMe, meLoaded } from './app.actions';
+import { User } from '@dev/translatr-model';
+import { ProjectService, UserService } from '@dev/translatr-sdk';
 
 describe('AppEffects', () => {
   let actions: Observable<any>;
@@ -18,14 +12,10 @@ describe('AppEffects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NxModule.forRoot(),
-        StoreModule.forRoot({}),
-        EffectsModule.forRoot([])
-      ],
       providers: [
         AppEffects,
-        DataPersistence,
+        { provide: UserService, useFactory: () => ({ me: jest.fn() }) },
+        { provide: ProjectService, useFactory: () => ({}) },
         provideMockActions(() => actions)
       ]
     });
@@ -33,12 +23,22 @@ describe('AppEffects', () => {
     effects = TestBed.get(AppEffects);
   });
 
-  describe('loadApp$', () => {
-    it('should work', () => {
-      actions = hot('-a-|', { a: new LoadMe() });
-      expect(effects.loadApp$).toBeObservable(
-        hot('-a-|', { a: new AppLoaded([]) })
-      );
+  describe('loadMe$', () => {
+    it('should work', (done) => {
+      // given
+      actions = of(loadMe());
+      const user: User = { id: '1', name: 'user', username: 'username' };
+      const userService = TestBed.get(UserService);
+      userService.me.mockReturnValueOnce(of(user));
+
+      // when
+      const actual$ = effects.loadMe$;
+
+      // then
+      actual$.subscribe(actual => {
+        expect(actual).toStrictEqual(meLoaded({ payload: user }));
+        done();
+      });
     });
   });
 });

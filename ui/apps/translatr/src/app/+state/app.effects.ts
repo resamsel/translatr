@@ -18,20 +18,18 @@ import {
   usersLoadError
 } from './app.actions';
 import { PagedList, Project, User } from '@dev/translatr-model';
-import { switchMap } from 'rxjs/internal/operators/switchMap';
-import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs/internal/observable/of';
+import { of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { ProjectService, UserService } from '@dev/translatr-sdk';
 
 @Injectable()
 export class AppEffects {
   loadMe$ = createEffect(() => this.actions$.pipe(
     ofType(loadMe),
-    switchMap((action) => {
-      return this.userService
-        .me({ fetch: 'features' })
-        .pipe(map((user: User) => meLoaded({ payload: user })));
-    }),
+    switchMap(() => this.userService
+      .me({ fetch: 'features' })
+      .pipe(map((user: User) => meLoaded({ payload: user })))
+    ),
     catchError(error => of(meLoadError(error)))
   ));
 
