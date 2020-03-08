@@ -3,8 +3,11 @@ module.exports = {
   preset: '../../jest.config.js',
   coverageDirectory: '../../coverage/apps/translatr',
   snapshotSerializers: [
-    'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
-    'jest-preset-angular/build/AngularSnapshotSerializer.js',
-    'jest-preset-angular/build/HTMLCommentSerializer.js'
+    // TODO: replace these commented serializers with the ones below after switching to Angular 9
+    // 'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
+    // 'jest-preset-angular/build/AngularSnapshotSerializer.js',
+    // 'jest-preset-angular/build/HTMLCommentSerializer.js'
+    'jest-preset-angular/AngularSnapshotSerializer.js',
+    'jest-preset-angular/HTMLCommentSerializer.js'
   ]
 };
