@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.feth.play.module.pa.PlayAuthenticate;
 import dto.AuthorizationException;
+import dto.Dto;
 import dto.NotFoundException;
 import dto.PermissionException;
 import dto.SearchResponse;
@@ -14,16 +15,18 @@ import org.slf4j.LoggerFactory;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
+import play.mvc.Results;
 import services.CacheService;
 import utils.ErrorUtils;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
+
+import static java.util.Optional.ofNullable;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
  * @author resamsel
@@ -87,27 +90,34 @@ public class AbstractBaseApi extends AbstractController {
     super(injector, cache, auth);
   }
 
-  protected <IN> CompletionStage<Result> toJson(Supplier<IN> supplier) {
-    return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Optional.ofNullable(out).map(Json::toJson).orElse(NullNode.getInstance())))
+  protected <IN extends Dto> CompletionStage<Result> toJson(Supplier<IN> supplier) {
+    return supplyAsync(supplier, executionContext.current())
+        .thenApply(out -> ofNullable(out)
+            .map(Json::toJson)
+            .orElse(NullNode.getInstance()))
+        .thenApply(Results::ok)
         .exceptionally(this::handleException);
   }
 
-  <T> CompletionStage<Result> toJsons(Supplier<PagedList<T>> supplier) {
-    return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out))).exceptionally(this::handleException);
+  <IN extends Dto> CompletionStage<Result> toJsons(Supplier<PagedList<IN>> supplier) {
+    return supplyAsync(supplier, executionContext.current())
+        .thenApply(Json::toJson)
+        .thenApply(Results::ok)
+        .exceptionally(this::handleException);
   }
 
   <T> CompletionStage<Result> toJsonList(Supplier<List<T>> supplier) {
-    return CompletableFuture
-        .supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out)))
+    return supplyAsync(supplier, executionContext.current())
+        .thenApply(Json::toJson)
+        .thenApply(Results::ok)
         .exceptionally(this::handleException);
   }
 
   CompletionStage<Result> toJsonSearch(Supplier<SearchResponse> supplier) {
-    return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out))).exceptionally(this::handleException);
+    return supplyAsync(supplier, executionContext.current())
+        .thenApply(Json::toJson)
+        .thenApply(Results::ok)
+        .exceptionally(this::handleException);
   }
 
   @Override
