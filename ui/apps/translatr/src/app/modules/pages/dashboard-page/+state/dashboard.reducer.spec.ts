@@ -1,44 +1,38 @@
-import { DashboardLoaded } from './dashboard.actions';
-import {
-  DashboardState,
-  Entity,
-  initialState,
-  dashboardReducer
-} from './dashboard.reducer';
+import { dashboardReducer, initialState } from './dashboard.reducer';
+import { ActivitiesLoaded } from './dashboard.actions';
+import { Activity, PagedList } from '@dev/translatr-model';
 
 describe('Dashboard Reducer', () => {
-  const getDashboardId = it => it['id'];
-  let createDashboard;
-
-  beforeEach(() => {
-    createDashboard = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
-    });
-  });
-
   describe('valid Dashboard actions ', () => {
-    it('should return set the list of known Dashboard', () => {
-      const dashboards = [
-        createDashboard('PRODUCT-AAA'),
-        createDashboard('PRODUCT-zzz')
-      ];
-      const action = new DashboardLoaded(dashboards);
-      const result: DashboardState = dashboardReducer(initialState, action);
-      const selId: string = getDashboardId(result.list[1]);
+    it('should include given user on activitiesLoaded', () => {
+      // given
+      const payload: PagedList<Activity> = {
+        list: [],
+        hasNext: false,
+        hasPrev: false,
+        limit: 20,
+        offset: 0
+      };
+      const action = new ActivitiesLoaded(payload);
 
-      expect(result.loaded).toBe(true);
-      expect(result.list.length).toBe(2);
-      expect(selId).toBe('PRODUCT-zzz');
+      // when
+      const actual = dashboardReducer(initialState, action);
+
+      // then
+      expect(actual.activities).toBeDefined();
     });
   });
 
   describe('unknown action', () => {
     it('should return the initial state', () => {
+      // given
       const action = {} as any;
-      const result = dashboardReducer(initialState, action);
 
-      expect(result).toBe(initialState);
+      // when
+      const actual = dashboardReducer(initialState, action);
+
+      // then
+      expect(actual).toBe(initialState);
     });
   });
 });

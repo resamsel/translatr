@@ -1,56 +1,48 @@
 import { appQuery } from './app.selectors';
+import { APP_FEATURE_KEY, AppState } from './app.reducer';
 
 describe('App Selectors', () => {
-  const ERROR_MSG = 'No Error Available';
-  const getAppId = it => it['id'];
-
-  let storeState;
+  let storeState: { [APP_FEATURE_KEY]: AppState; };
 
   beforeEach(() => {
-    const createApp = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
-    });
     storeState = {
-      app: {
-        list: [
-          createApp('PRODUCT-AAA'),
-          createApp('PRODUCT-BBB'),
-          createApp('PRODUCT-CCC')
-        ],
-        selectedId: 'PRODUCT-BBB',
-        error: ERROR_MSG,
-        loaded: true
+      [APP_FEATURE_KEY]: {
+        me: { id: '1', name: 'user', username: 'username' },
+        project: { name: 'A' },
+        users: {
+          list: [{ id: '1', name: 'user', username: 'username' }],
+          hasNext: false,
+          hasPrev: false,
+          limit: 20,
+          offset: 0
+        }
       }
     };
   });
 
   describe('App Selectors', () => {
-    it('getAllApp() should return the list of App', () => {
-      const results = appQuery.getAllApp(storeState);
-      const selId = getAppId(results[1]);
+    it('getMe() should return the list of App', () => {
+      // given, when
+      const actual = appQuery.getMe(storeState);
 
-      expect(results.length).toBe(3);
-      expect(selId).toBe('PRODUCT-BBB');
+      // then
+      expect(actual).toBe(storeState[APP_FEATURE_KEY].me);
     });
 
-    it('getSelectedApp() should return the selected Entity', () => {
-      const result = appQuery.getSelectedApp(storeState);
-      const selId = getAppId(result);
+    it('getUsers() should return the list of App', () => {
+      // given, when
+      const actual = appQuery.getUsers(storeState);
 
-      expect(selId).toBe('PRODUCT-BBB');
+      // then
+      expect(actual).toBe(storeState[APP_FEATURE_KEY].users);
     });
 
-    it('getLoaded() should return the current \'loaded\' status', () => {
-      const result = appQuery.getLoaded(storeState);
+    it('getProject() should return the list of App', () => {
+      // given, when
+      const actual = appQuery.getProject(storeState);
 
-      expect(result).toBe(true);
-    });
-
-    it('getError() should return the current \'error\' storeState', () => {
-      const result = appQuery.getError(storeState);
-
-      expect(result).toBe(ERROR_MSG);
+      // then
+      expect(actual).toBe(storeState[APP_FEATURE_KEY].project);
     });
   });
 });

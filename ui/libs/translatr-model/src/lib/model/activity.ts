@@ -10,13 +10,13 @@ export interface Activity {
   id: string;
   type: ActionType;
   contentType: string;
-  whenCreated: Date;
+  whenCreated?: Date;
   userId: string;
-  userName: string;
-  userUsername: string;
-  userEmailHash: string;
-  projectId: string;
-  projectName: string;
-  before: string;
-  after: string;
+  userName?: string;
+  userUsername?: string;
+  userEmailHash?: string;
+  projectId?: string;
+  projectName?: string;
+  before?: string;
+  after?: string;
 }

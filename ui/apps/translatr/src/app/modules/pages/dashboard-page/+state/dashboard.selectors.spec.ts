@@ -1,57 +1,33 @@
-import { Entity } from './dashboard.reducer';
+import { DASHBOARD_FEATURE_KEY, DashboardState } from './dashboard.reducer';
 import { dashboardQuery } from './dashboard.selectors';
+import { ActionType } from '@dev/translatr-model';
 
 describe('Dashboard Selectors', () => {
-  const ERROR_MSG = 'No Error Available';
-  const getDashboardId = it => it['id'];
-
-  let storeState;
+  let storeState: { [DASHBOARD_FEATURE_KEY]: DashboardState; };
 
   beforeEach(() => {
-    const createDashboard = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
-    });
     storeState = {
-      dashboard: {
-        list: [
-          createDashboard('PRODUCT-AAA'),
-          createDashboard('PRODUCT-BBB'),
-          createDashboard('PRODUCT-CCC')
-        ],
-        selectedId: 'PRODUCT-BBB',
-        error: ERROR_MSG,
-        loaded: true
+      [DASHBOARD_FEATURE_KEY]: {
+        activities: {
+          list: [
+            { id: '1', type: ActionType.Create, contentType: 'dto.Project', userId: '1' }
+          ],
+          hasNext: false,
+          hasPrev: false,
+          limit: 20,
+          offset: 0
+        }
       }
     };
   });
 
-  describe('Dashboard Selectors', () => {
-    it('getAllDashboard() should return the list of Dashboard', () => {
-      const results = dashboardQuery.getAllDashboard(storeState);
-      const selId = getDashboardId(results[1]);
+  describe('App Selectors', () => {
+    it('getActivities() should return the list of App', () => {
+      // given, when
+      const actual = dashboardQuery.getActivities(storeState);
 
-      expect(results.length).toBe(3);
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getSelectedDashboard() should return the selected Entity', () => {
-      const result = dashboardQuery.getSelectedDashboard(storeState);
-      const selId = getDashboardId(result);
-
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getLoaded() should return the current \'loaded\' status', () => {
-      const result = dashboardQuery.getLoaded(storeState);
-
-      expect(result).toBe(true);
-    });
-
-    it('getError() should return the current \'error\' storeState', () => {
-      const result = dashboardQuery.getError(storeState);
-
-      expect(result).toBe(ERROR_MSG);
+      // then
+      expect(actual).toBe(storeState[DASHBOARD_FEATURE_KEY].activities);
     });
   });
 });

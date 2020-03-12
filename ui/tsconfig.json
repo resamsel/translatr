@@ -28,6 +28,9 @@
       "@dev/translatr-components": [
         "libs/translatr-components/src/index.ts"
       ],
+      "@translatr/components/testing": [
+        "libs/translatr-components/src/testing.ts"
+      ],
       "@dev/translatr-model": [
         "libs/translatr-model/src/index.ts"
       ],

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { DashboardPageRoutingModule } from './dashboard-page-routing.module';
 import { DashboardPageComponent } from './dashboard-page.component';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
@@ -26,6 +25,11 @@ import { FeatureFlagModule, MetricModule, ShortNumberModule } from '@dev/transla
     SidenavModule,
     ProjectListModule,
     ProjectEditDialogModule,
+    ActivityListModule,
+    ProjectCardListModule,
+    MetricModule,
+    FeatureFlagModule,
+    ShortNumberModule,
 
     CommonModule,
     MatIconModule,
@@ -34,12 +38,7 @@ import { FeatureFlagModule, MetricModule, ShortNumberModule } from '@dev/transla
     StoreModule.forFeature(DASHBOARD_FEATURE_KEY, dashboardReducer, {
       initialState: dashboardInitialState
     }),
-    EffectsModule.forFeature([DashboardEffects]),
-    ActivityListModule,
-    ProjectCardListModule,
-    MetricModule,
-    FeatureFlagModule,
-    ShortNumberModule
+    EffectsModule.forFeature([DashboardEffects])
   ],
   providers: [DashboardFacade]
 })

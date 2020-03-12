@@ -1,45 +1,59 @@
-import { TestBed, async } from '@angular/core/testing';
-
-import { Observable } from 'rxjs';
-
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
-import { provideMockActions } from '@ngrx/effects/testing';
-
-import { NxModule } from '@nrwl/angular';
-import { DataPersistence } from '@nrwl/angular';
-import { hot } from '@nrwl/angular/testing';
-
+import { TestBed } from '@angular/core/testing';
+import { BehaviorSubject, of, Subject } from 'rxjs';
+import { Actions } from '@ngrx/effects';
 import { DashboardEffects } from './dashboard.effects';
-import { LoadDashboard, DashboardLoaded } from './dashboard.actions';
+import { ActivityService } from '@dev/translatr-sdk';
+import { Activity, PagedList } from '@dev/translatr-model';
+import { ActivitiesLoaded, LoadActivities } from './dashboard.actions';
 
 describe('DashboardEffects', () => {
-  let actions: Observable<any>;
+  let actions: Subject<any>;
   let effects: DashboardEffects;
+  let activityService: ActivityService & {
+    me: jest.Mock;
+    find: jest.Mock;
+  };
 
   beforeEach(() => {
+    actions = new BehaviorSubject(undefined);
     TestBed.configureTestingModule({
-      imports: [
-        NxModule.forRoot(),
-        StoreModule.forRoot({}),
-        EffectsModule.forRoot([])
-      ],
       providers: [
         DashboardEffects,
-        DataPersistence,
-        provideMockActions(() => actions)
+        {
+          provide: ActivityService, useFactory: () => ({
+            find: jest.fn()
+          })
+        },
+        { provide: Actions, useValue: actions }
       ]
     });
 
     effects = TestBed.get(DashboardEffects);
+    activityService = TestBed.get(ActivityService);
   });
 
-  describe('loadDashboard$', () => {
-    it('should work', () => {
-      actions = hot('-a-|', { a: new LoadDashboard() });
-      expect(effects.loadDashboard$).toBeObservable(
-        hot('-a-|', { a: new DashboardLoaded([]) })
-      );
+  describe('loadActivities$', () => {
+    it('should work', (done) => {
+      // given
+      const payload: PagedList<Activity> = {
+        list: [],
+        hasNext: false,
+        hasPrev: false,
+        limit: 20,
+        offset: 0
+      };
+      activityService.find.mockReturnValueOnce(of(payload));
+      const target$ = effects.loadActivities$;
+
+      // when
+      actions.next(new LoadActivities());
+
+      // then
+      target$.subscribe(actual => {
+        expect(actual).toStrictEqual(new ActivitiesLoaded(payload));
+        expect(activityService.find.mock.calls.length).toBe(1);
+        done();
+      });
     });
   });
 });

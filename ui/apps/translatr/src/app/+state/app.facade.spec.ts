@@ -1,109 +1,89 @@
-import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { readFirst } from '@nrwl/angular/testing';
-
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule, Store } from '@ngrx/store';
-
-import { NxModule } from '@nrwl/angular';
-
-import { AppEffects } from './app.effects';
+import { Store } from '@ngrx/store';
 import { AppFacade } from './app.facade';
-
-import { appQuery } from './app.selectors';
-import { LoadMe, AppLoaded } from './app.actions';
-import { AppState, Entity, initialState, appReducer } from './app.reducer';
-
-interface TestSchema {
-  app: AppState;
-}
+import { AppState } from './app.reducer';
 
 describe('AppFacade', () => {
   let facade: AppFacade;
-  let store: Store<TestSchema>;
-  let createApp;
+  let store: Store<AppState> & { dispatch: jest.Mock; pipe: jest.Mock; };
 
   beforeEach(() => {
-    createApp = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
+    TestBed.configureTestingModule({
+      providers: [
+        AppFacade,
+        {
+          provide: Store, useFactory: () => ({
+            dispatch: jest.fn(),
+            pipe: jest.fn()
+          })
+        }
+      ]
+    });
+
+    store = TestBed.get(Store);
+    facade = TestBed.get(AppFacade);
+  });
+
+  describe('loadMe', () => {
+    it('dispatches an action', () => {
+      // given, when
+      facade.loadMe();
+
+      // then
+      expect(store.dispatch.mock.calls.length).toBe(1);
     });
   });
 
-  describe('used in NgModule', () => {
-    beforeEach(() => {
-      @NgModule({
-        imports: [
-          StoreModule.forFeature('app', appReducer, { initialState }),
-          EffectsModule.forFeature([AppEffects])
-        ],
-        providers: [AppFacade]
-      })
-      class CustomFeatureModule {}
+  describe('loadUsers', () => {
+    it('dispatches an action', () => {
+      // given
+      const criteria = {};
 
-      @NgModule({
-        imports: [
-          NxModule.forRoot(),
-          StoreModule.forRoot({}),
-          EffectsModule.forRoot([]),
-          CustomFeatureModule
-        ]
-      })
-      class RootModule {}
-      TestBed.configureTestingModule({ imports: [RootModule] });
+      // when
+      facade.loadUsers(criteria);
 
-      store = TestBed.get(Store);
-      facade = TestBed.get(AppFacade);
+      // then
+      expect(store.dispatch.mock.calls.length).toBe(1);
     });
+  });
 
-    /**
-     * The initially generated facade::loadAll() returns empty array
-     */
-    it('loadAll() should return empty list with loaded == true', async done => {
-      try {
-        let list = await readFirst(facade.allApp$);
-        let isLoaded = await readFirst(facade.loaded$);
+  describe('loadProject', () => {
+    it('dispatches an action', () => {
+      // given
+      const username = 'a';
+      const projectName = 'A';
 
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(false);
+      // when
+      facade.loadProject(username, projectName);
 
-        facade.loadAll();
-
-        list = await readFirst(facade.allApp$);
-        isLoaded = await readFirst(facade.loaded$);
-
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(true);
-
-        done();
-      } catch (err) {
-        done.fail(err);
-      }
+      // then
+      expect(store.dispatch.mock.calls.length).toBe(1);
     });
+  });
 
-    /**
-     * Use `AppLoaded` to manually submit list for state management
-     */
-    it('allApp$ should return the loaded list; and loaded flag == true', async done => {
-      try {
-        let list = await readFirst(facade.allApp$);
-        let isLoaded = await readFirst(facade.loaded$);
+  describe('createProject', () => {
+    it('dispatches an action', () => {
+      // given
+      const project = { name: 'A' };
 
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(false);
+      // when
+      facade.createProject(project);
 
-        store.dispatch(new AppLoaded([createApp('AAA'), createApp('BBB')]));
+      // then
+      expect(store.dispatch.mock.calls.length).toBe(1);
+    });
+  });
 
-        list = await readFirst(facade.allApp$);
-        isLoaded = await readFirst(facade.loaded$);
+  describe('updateProject', () => {
+    it('dispatches an action', () => {
+      // given
+      const project = { name: 'A' };
 
-        expect(list.length).toBe(2);
-        expect(isLoaded).toBe(true);
+      // when
+      facade.updateProject(project);
 
-        done();
-      } catch (err) {
-        done.fail(err);
-      }
+      // then
+      expect(store.dispatch.mock.calls.length).toBe(1);
     });
   });
 });

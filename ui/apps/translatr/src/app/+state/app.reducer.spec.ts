@@ -1,27 +1,85 @@
-import { AppLoaded } from './app.actions';
-import { AppState, Entity, initialState, appReducer } from './app.reducer';
+import { appReducer, initialState } from './app.reducer';
+import { meLoaded, projectCreated, projectLoaded, projectUpdated, usersLoaded } from './app.actions';
+import { PagedList, Project, User } from '@dev/translatr-model';
 
 describe('App Reducer', () => {
-  const getAppId = it => it['id'];
-  let createApp;
+  describe('valid actions ', () => {
+    it('should include given user on meLoaded', () => {
+      // given
+      const payload = { id: '1', name: 'user', username: 'username' };
+      const action = meLoaded({ payload });
 
-  beforeEach(() => {
-    createApp = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
+      // when
+      const actual = appReducer(initialState, action);
+
+      // then
+      expect(actual.me).toBeDefined();
     });
-  });
 
-  describe('valid App actions ', () => {
-    it('should return set the list of known App', () => {
-      const apps = [createApp('PRODUCT-AAA'), createApp('PRODUCT-zzz')];
-      const action = new AppLoaded(apps);
-      const result: AppState = appReducer(initialState, action);
-      const selId: string = getAppId(result.list[1]);
+    it('should include given users on usersLoaded', () => {
+      // given
+      const payload: PagedList<User> = {
+        list: [{ id: '1', name: 'user', username: 'username' }],
+        hasNext: false,
+        hasPrev: false,
+        limit: 20,
+        offset: 0
+      };
+      const action = usersLoaded({ payload });
 
-      expect(result.loaded).toBe(true);
-      expect(result.list.length).toBe(2);
-      expect(selId).toBe('PRODUCT-zzz');
+      // when
+      const actual = appReducer(initialState, action);
+
+      // then
+      expect(actual.users).toBe(payload);
+    });
+
+    it('should include given project on projectLoaded', () => {
+      // given
+      const payload: Project = { name: 'A' };
+      const action = projectLoaded({ payload });
+
+      // when
+      const actual = appReducer(initialState, action);
+
+      // then
+      expect(actual.project).toBe(payload);
+    });
+
+    it('should include given project on projectCreated', () => {
+      // given
+      const payload: Project = { name: 'A' };
+      const action = projectCreated({ payload });
+
+      // when
+      const actual = appReducer(initialState, action);
+
+      // then
+      expect(actual.project).toBe(payload);
+    });
+
+    it('should include given project on projectCreated', () => {
+      // given
+      const payload: Project = { name: 'A' };
+      const action = projectCreated({ payload });
+
+      // when
+      const actual = appReducer(initialState, action);
+
+      // then
+      expect(actual.project).toBe(payload);
+    });
+
+    it('should include given project on projectUpdated', () => {
+      // given
+      const payload: Project = { name: 'A' };
+      const action = projectUpdated({ payload });
+
+      // when
+      const actual = appReducer(initialState, action);
+
+      // then
+      expect(actual.project).toBe(payload);
     });
   });
 

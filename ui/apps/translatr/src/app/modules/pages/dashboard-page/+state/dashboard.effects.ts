@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { ActivitiesLoaded, ActivitiesLoadError, DashboardActionTypes, LoadActivities } from './dashboard.actions';
 import { ActivityService } from '@dev/translatr-sdk';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 
 @Injectable()
 export class DashboardEffects {
-  @Effect() loadActivities$ = this.actions$.pipe(
+  loadActivities$ = createEffect(() => this.actions$.pipe(
     ofType(DashboardActionTypes.LoadActivities),
     switchMap((action: LoadActivities) =>
       this.activityService
@@ -17,7 +17,7 @@ export class DashboardEffects {
           map((result: PagedList<Activity>) => new ActivitiesLoaded(result)),
           catchError(error => of(new ActivitiesLoadError(error)))
         ))
-  );
+  ));
 
   constructor(
     private actions$: Actions,
