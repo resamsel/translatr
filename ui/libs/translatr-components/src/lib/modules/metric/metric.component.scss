@@ -1,11 +1,7 @@
 :host {
   ::ng-deep {
-    .mat-card {
-      background-color: inherit;
-      color: white;
-    }
-
     .mat-card-header {
+      z-index: 1;
       flex-direction: row-reverse;
     }
 
@@ -17,11 +13,6 @@
       overflow: hidden;
     }
 
-    .mat-card-subtitle,
-    .mat-card-avatar {
-      color: rgba(255, 255, 255, 0.9);
-    }
-
     .mat-card-subtitle {
       margin-bottom: 0;
     }
@@ -30,9 +21,16 @@
       align-self: center;
 
       .mat-icon {
+        position: absolute;
+        top: 0;
+        right: 0;
         height: 100%;
-        width: 100%;
-        font-size: 40px;
+        width: 100px;
+        font-size: 120px;
+        line-height: 76px;
+        opacity: 0.4;
+        z-index: 0;
+        overflow: hidden;
       }
     }
   }
