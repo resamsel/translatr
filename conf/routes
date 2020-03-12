@@ -83,9 +83,9 @@ GET           /api/docs                                                         
 # Generic mappings based on username, project name, ...
 GET           /api/:username                                                          controllers.UsersApi.byName(username: String, fetch: String ?= "")
 GET           /api/:username/:projectName                                             controllers.ProjectsApi.byOwnerAndName(username: String, projectName: String, fetch: String ?= "")
-GET           /api/:username/:projectName/locales/:localeName                         controllers.LocalesApi.byOwnerAndProjectNameAndName(username: String, projectName: String, localeName: String, fetch: String ?= "")
-GET           /api/:username/:projectName/locales/:localeName/export/:fileType        controllers.LocalesApi.downloadBy(username: String, projectName: String, localeName: String, fileType: String)
-GET           /api/:username/:projectName/keys/:keyName                               controllers.KeysApi.byOwnerAndProjectNameAndName(username: String, projectName: String, keyName: String, fetch: String ?= "")
+GET        /api/:username/:projectName/locales/:localeName                         controllers.LocalesApi.byOwnerAndProjectNameAndName(username: String, projectName: String, localeName: String, fetch: String ?= "")
+GET        /api/:username/:projectName/locales/:localeName/export/:fileType        controllers.LocalesApi.downloadBy(username: String, projectName: String, localeName: String, fileType: String)
+GET        /api/:username/:projectName/keys/:keyName                               controllers.KeysApi.byOwnerAndProjectNameAndName(username: String, projectName: String, keyName: String, fetch: String ?= "")
 
 # GET		/api/*file					controllers.ApiDocs.versioned(path="/public/lib/swagger-ui", file: String)
 
@@ -93,18 +93,18 @@ GET           /api/:username/:projectName/keys/:keyName                         
 # WEB
 #
 
-GET           /                                                                       controllers.Application.index
-GET           /ui                                                                     controllers.Application.indexUi
-GET           /ui/                                                                    controllers.Default.redirect(to = "/ui")
-GET           /admin                                                                  controllers.Application.indexAdmin
-GET           /admin/                                                                 controllers.Default.redirect(to = "/admin")
+GET        /                                                                       controllers.Default.redirect(to = "/ui")
+GET        /ui                                                                     controllers.Application.indexUi
+GET        /ui/                                                                    controllers.Default.redirect(to = "/ui")
+GET        /admin                                                                  controllers.Application.indexAdmin
+GET        /admin/                                                                 controllers.Default.redirect(to = "/admin")
 
 # Activity
-GET           /activity/csv                                                           controllers.Application.activityCsv
+GET        /activity/csv                                                           controllers.Application.activityCsv
 
 # Authentication
-GET           /login                                                                  controllers.Application.login
-GET           /logout                                                                 controllers.Application.logout
+GET        /login                                                                  controllers.Application.login
+GET        /logout                                                                 controllers.Application.logout
 GET           /authenticate/:provider                                                 com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
 GET           /authenticate/:provider/denied                                          controllers.Application.oAuthDenied(provider: String)
 
