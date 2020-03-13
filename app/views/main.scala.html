@@ -40,16 +40,16 @@
 						<a href="#" class="button-collapse" data-activates="sidenav">
 							<i class="material-icons">menu</i>
 						</a>
-						<a class="button-collapse backlink hide-on-med-and-down show-on-large" href="@routes.Application.indexUi">
+						<a class="button-collapse backlink hide-on-med-and-down show-on-large" href="@routes.Application.index">
 							<i class="material-icons">language</i>
 						</a>
 						<div class="brand-logo page-title light">
-						@if(template.title != null) {
-							<span class="hide-on-med-and-down">Translatr – </span>
-							<span class="hide-on-small-only">@template.title</span>
-						} else {
-							<span class="hide-on-small-only">Translatr</span>
-						}
+							@if(template.title != null) {
+								<span class="hide-on-med-and-down">Translatr – </span>
+								<span class="hide-on-small-only">@template.title</span>
+							} else {
+								<span class="hide-on-small-only">Translatr</span>
+							}
 						</div>
 					}
 
