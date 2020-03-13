@@ -13,6 +13,7 @@ import play.inject.Injector;
 import play.mvc.Call;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.Results;
 import play.mvc.With;
 import play.routing.JavaScriptReverseRouter;
 import services.CacheService;
@@ -35,7 +36,7 @@ public class Application extends AbstractController {
 
   @Inject
   public Application(Injector injector, Configuration configuration, CacheService cache,
-      PlayAuthenticate auth, Assets assets) {
+                     PlayAuthenticate auth, Assets assets) {
     super(injector, cache, auth);
 
     this.configuration = configuration;
@@ -43,7 +44,7 @@ public class Application extends AbstractController {
   }
 
   public CompletionStage<Result> index() {
-    return tryCatch(() -> ok(views.html.index.render(createTemplate())));
+    return tryCatch(routes.Application::indexUi).thenApply(Results::redirect);
   }
 
   public Action<AnyContent> indexUi() {
