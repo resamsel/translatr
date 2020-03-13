@@ -180,14 +180,19 @@ translatr:
   project_id: {{project.id}}
   pull:
     file_type: {{fileType}}
-    target: conf/messages.?{{ '{' }}locale.name}
+          target: conf/messages.?{{ '{' }}locale.name}
   push:
     file_type: {{fileType}}
-    target: conf/messages.?{{ '{' }}locale.name}
+          target: conf/messages.?{{ '{' }}locale.name}
           </code>
       </pre>
     </mat-card-content>
   </mat-card>
+
+  <section>
+    <h2>Activity</h2>
+    <app-activity-list [activities]="activities$ | async" [showMore]="false"></app-activity-list>
+  </section>
 
   <div></div>
 </div>

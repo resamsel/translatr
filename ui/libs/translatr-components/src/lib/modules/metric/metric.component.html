@@ -2,7 +2,7 @@
   <ng-container [ngTemplateOutlet]="metric"></ng-container>
 </a>
 <ng-template #metric>
-  <mat-card>
+  <mat-card [class.icon]="icon !== undefined">
     <mat-card-header>
       <mat-card-title
         *ngIf="value !== undefined"

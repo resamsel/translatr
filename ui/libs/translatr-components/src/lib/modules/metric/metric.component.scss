@@ -4,7 +4,7 @@ $subtitle-size: 24px;
 $icon-size: $metric-size + $padding + $subtitle-size;
 
 :host {
-  .mat-card {
+  .mat-card.icon {
     min-height: $icon-size - $padding;
   }
 

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { Feature, Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
+import { Activity, Feature, Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
 import { filter, map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -42,6 +42,12 @@ export class ProjectInfoComponent {
   latestMessages$: Observable<PagedList<Message>> = this.facade.messages$.pipe(
     map((pagedList: PagedList<Message> | undefined) =>
       slicePagedList(pagedList, 3)
+    )
+  );
+
+  readonly activities$ = this.facade.activities$.pipe(
+    map((pagedList: PagedList<Activity> | undefined) =>
+      slicePagedList(pagedList, 8)
     )
   );
 
