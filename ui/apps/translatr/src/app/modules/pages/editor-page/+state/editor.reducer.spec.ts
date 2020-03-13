@@ -1,44 +1,38 @@
-import { LocaleLoaded } from './editor.actions';
-import {
-  EditorState,
-  Entity,
-  initialState,
-  editorReducer
-} from './editor.reducer';
+import { editorReducer, initialState } from './editor.reducer';
+import { Locale, PagedList } from '@dev/translatr-model';
+import { LocalesLoaded } from './editor.actions';
 
 describe('Editor Reducer', () => {
-  const getEditorId = it => it['id'];
-  let createEditor;
-
-  beforeEach(() => {
-    createEditor = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
-    });
-  });
-
   describe('valid Editor actions ', () => {
-    it('should return set the list of known Editor', () => {
-      const editors = [
-        createEditor('PRODUCT-AAA'),
-        createEditor('PRODUCT-zzz')
-      ];
-      const action = new LocaleLoaded(editors);
-      const result: EditorState = editorReducer(initialState, action);
-      const selId: string = getEditorId(result.list[1]);
+    it('should include given user on localesLoaded', () => {
+      // given
+      const payload: PagedList<Locale> = {
+        list: [],
+        hasNext: false,
+        hasPrev: false,
+        limit: 20,
+        offset: 0
+      };
+      const action = new LocalesLoaded(payload);
 
-      expect(result.loaded).toBe(true);
-      expect(result.list.length).toBe(2);
-      expect(selId).toBe('PRODUCT-zzz');
+      // when
+      const actual = editorReducer(initialState, action);
+
+      // then
+      expect(actual.locales).toStrictEqual(payload);
     });
   });
 
   describe('unknown action', () => {
     it('should return the initial state', () => {
+      // given
       const action = {} as any;
-      const result = editorReducer(initialState, action);
 
-      expect(result).toBe(initialState);
+      // when
+      const actual = editorReducer(initialState, action);
+
+      // then
+      expect(actual).toBe(initialState);
     });
   });
 });

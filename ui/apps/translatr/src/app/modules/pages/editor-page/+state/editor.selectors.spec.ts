@@ -1,57 +1,33 @@
-import { Entity } from './editor.reducer';
+import { EDITOR_FEATURE_KEY, EditorState, initialState } from './editor.reducer';
 import { editorQuery } from './editor.selectors';
 
 describe('Editor Selectors', () => {
-  const ERROR_MSG = 'No Error Available';
-  const getEditorId = it => it['id'];
-
-  let storeState;
+  let storeState: { [EDITOR_FEATURE_KEY]: EditorState; };
 
   beforeEach(() => {
-    const createEditor = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
-    });
     storeState = {
-      editor: {
-        list: [
-          createEditor('PRODUCT-AAA'),
-          createEditor('PRODUCT-BBB'),
-          createEditor('PRODUCT-CCC')
-        ],
-        selectedId: 'PRODUCT-BBB',
-        error: ERROR_MSG,
-        loaded: true
+      [EDITOR_FEATURE_KEY]: {
+        ...initialState,
+        locales: {
+          list: [
+            { id: '1', name: 'en' }
+          ],
+          hasNext: false,
+          hasPrev: false,
+          limit: 20,
+          offset: 0
+        }
       }
     };
   });
 
-  describe('Editor Selectors', () => {
-    it('getAllEditor() should return the list of Editor', () => {
-      const results = editorQuery.getAllEditor(storeState);
-      const selId = getEditorId(results[1]);
+  describe('App Selectors', () => {
+    it('getLocales() should return the list of locales', () => {
+      // given, when
+      const actual = editorQuery.getLocales(storeState);
 
-      expect(results.length).toBe(3);
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getSelectedEditor() should return the selected Entity', () => {
-      const result = editorQuery.getSelectedEditor(storeState);
-      const selId = getEditorId(result);
-
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getLoaded() should return the current \'loaded\' status', () => {
-      const result = editorQuery.getLoaded(storeState);
-
-      expect(result).toBe(true);
-    });
-
-    it('getError() should return the current \'error\' storeState', () => {
-      const result = editorQuery.getError(storeState);
-
-      expect(result).toBe(ERROR_MSG);
+      // then
+      expect(actual).toBe(storeState[EDITOR_FEATURE_KEY].locales);
     });
   });
 });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
   EditorActionTypes,
   KeyLoaded,
@@ -25,12 +25,11 @@ import {
   SaveMessage,
   SelectKey
 } from './editor.actions';
-import { KeyService, LocaleService, MessageService } from '@dev/translatr-sdk';
+import { KeyService, LocaleService, MessageService, NotificationService } from '@dev/translatr-sdk';
 import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { Observable, of, throwError } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppState } from '../../../../+state/app.reducer';
 import { editorQuery } from './editor.selectors';
 import { Params } from '@angular/router';
@@ -41,7 +40,7 @@ import { pickKeys } from '@translatr/utils';
 export class EditorEffects {
   // Editor
 
-  @Effect() loadLocales$ = this.actions$.pipe(
+  loadLocales$ = createEffect(() => this.actions$.pipe(
     ofType<LoadLocales>(EditorActionTypes.LoadLocales),
     switchMap((action: LoadLocales) =>
       this.localeService
@@ -51,9 +50,9 @@ export class EditorEffects {
           catchError(error => of(new LocalesLoadError(error)))
         )
     )
-  );
+  ));
 
-  @Effect() loadLocale$ = this.actions$.pipe(
+  loadLocale$ = createEffect(() => this.actions$.pipe(
     ofType(EditorActionTypes.LoadLocale),
     switchMap((action: LoadLocale) =>
       this.localeService
@@ -62,9 +61,9 @@ export class EditorEffects {
           map((locale: Locale) => new LocaleLoaded({ locale })),
           catchError(error => of(new LocaleLoadError(error))))
     )
-  );
+  ));
 
-  @Effect() loadKeys$ = this.actions$.pipe(
+  loadKeys$ = createEffect(() => this.actions$.pipe(
     ofType<LoadKeys>(EditorActionTypes.LoadKeys),
     withLatestFrom(
       this.store.pipe(select(editorQuery.getSearch)),
@@ -82,9 +81,9 @@ export class EditorEffects {
           catchError(error => of(new KeysLoadError(error)))
         )
     )
-  );
+  ));
 
-  @Effect() loadKey$ = this.actions$.pipe(
+  loadKey$ = createEffect(() => this.actions$.pipe(
     ofType<LoadKey>(EditorActionTypes.LoadKey),
     switchMap((action: LoadKey) =>
       this.keyService
@@ -94,9 +93,9 @@ export class EditorEffects {
           catchError(error => of(new KeyLoadError(error)))
         )
     )
-  );
+  ));
 
-  @Effect() loadMessages$ = this.actions$.pipe(
+  loadMessages$ = createEffect(() => this.actions$.pipe(
     ofType<LoadMessages>(EditorActionTypes.LoadMessages),
     switchMap((action: LoadMessages) =>
       this.messageService
@@ -106,9 +105,9 @@ export class EditorEffects {
           catchError(error => of(new MessagesLoadError(error)))
         )
     )
-  );
+  ));
 
-  @Effect() loadMessagesOfKey$ = this.actions$.pipe(
+  loadMessagesOfKey$ = createEffect(() => this.actions$.pipe(
     ofType<LoadMessagesOfKey>(EditorActionTypes.LoadMessagesOfKey),
     switchMap((action: LoadMessagesOfKey) =>
       this.messageService
@@ -118,9 +117,9 @@ export class EditorEffects {
           catchError(error => of(new MessagesOfKeyLoadError(error)))
         )
     )
-  );
+  ));
 
-  @Effect() saveMessage$ = this.actions$.pipe(
+  saveMessage$ = createEffect(() => this.actions$.pipe(
     ofType<SaveMessage>(EditorActionTypes.SaveMessage),
     switchMap((action: SaveMessage) => {
         let observable: Observable<Message>;
@@ -136,13 +135,12 @@ export class EditorEffects {
         );
       }
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  messageSaved$ = this.actions$.pipe(
+  messageSaved$ = createEffect(() => this.actions$.pipe(
     ofType<MessageSaved>(EditorActionTypes.MessageSaved),
     tap((action: MessageSaved) => {
-        this.snackBar.open(
+        this.notificationService.notify(
           `Translation has been saved for key ${
             action.payload.keyName
           } and language ${action.payload.localeName}`,
@@ -153,11 +151,11 @@ export class EditorEffects {
         );
       }
     )
-  );
+  ), { dispatch: false });
 
   // Locale Editor
 
-  @Effect() localeLoaded$ = this.actions$.pipe(
+  localeLoaded$ = createEffect(() => this.actions$.pipe(
     ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
     withLatestFrom(
       this.store.pipe(select(editorQuery.getSearch)),
@@ -176,9 +174,9 @@ export class EditorEffects {
         })
       )
     )
-  );
+  ));
 
-  @Effect() localeAndKeysLoaded$ = this.actions$.pipe(
+  localeAndKeysLoaded$ = createEffect(() => this.actions$.pipe(
     ofType<KeysLoaded>(EditorActionTypes.KeysLoaded),
     withLatestFrom(
       this.store.pipe(select(editorQuery.getLocale)),
@@ -198,9 +196,9 @@ export class EditorEffects {
           .join(',')
       })
     )
-  );
+  ));
 
-  @Effect() localeKeySelected$ = this.actions$.pipe(
+  localeKeySelected$ = createEffect(() => this.actions$.pipe(
     ofType<SelectKey | LocaleLoaded>(
       EditorActionTypes.SelectKey,
       EditorActionTypes.LocaleLoaded
@@ -214,11 +212,11 @@ export class EditorEffects {
       projectId: locale.projectId,
       keyName
     }))
-  );
+  ));
 
   // Key Editor
 
-  @Effect() keyLoaded$ = this.actions$.pipe(
+  keyLoaded$ = createEffect(() => this.actions$.pipe(
     ofType<KeyLoaded | LoadLocaleSearch>(
       EditorActionTypes.KeyLoaded,
       EditorActionTypes.LoadLocaleSearch
@@ -237,9 +235,9 @@ export class EditorEffects {
         projectId: key.projectId
       })
     )
-  );
+  ));
 
-  @Effect() keyAndLocalesLoaded$ = this.actions$.pipe(
+  keyAndLocalesLoaded$ = createEffect(() => this.actions$.pipe(
     ofType<LocalesLoaded>(EditorActionTypes.LocalesLoaded),
     withLatestFrom(
       this.store.pipe(select(editorQuery.getKey)),
@@ -257,7 +255,7 @@ export class EditorEffects {
         localeIds: locales.list.map((locale) => locale.id).join(',')
       })
     )
-  );
+  ));
 
   constructor(
     private readonly store: Store<AppState>,
@@ -265,7 +263,7 @@ export class EditorEffects {
     private readonly localeService: LocaleService,
     private readonly keyService: KeyService,
     private readonly messageService: MessageService,
-    private readonly snackBar: MatSnackBar
+    private readonly notificationService: NotificationService
   ) {
   }
 }
