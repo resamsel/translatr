@@ -100,7 +100,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   }
 
   toMessages(messageItems: PagedList<MessageItem>): Array<Message> {
-    if (messageItems === undefined) {
+    if (messageItems === undefined || messageItems === null) {
       return [];
     }
 

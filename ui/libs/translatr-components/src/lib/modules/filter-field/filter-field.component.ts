@@ -55,15 +55,6 @@ export class FilterFieldComponent implements OnInit {
   @Input() filters: ReadonlyArray<FilterFieldFilter>;
   @Input() appearance: MatFormFieldAppearance | 'elevate' = 'standard';
   @Input() color: ThemePalette = 'primary';
-  @Output() selected = new EventEmitter<ReadonlyArray<FilterFieldFilter>>();
-  @ViewChild('autocompleteInput', { static: false }) autocompleteInput: ElementRef;
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-
-  // @ts-ignore
-  @HostBinding('class') private readonly clazz = 'filter-field';
-
-  filterControl = new FormControl('');
-  autocompleteOptions: Array<FilterFieldFilter> = [];
 
   private _selection: ReadonlyArray<FilterFieldFilter>;
 
@@ -75,6 +66,17 @@ export class FilterFieldComponent implements OnInit {
     this._selection = selection;
     this._options = isArray(selection) ? selection : [];
   }
+
+  @Output() selected = new EventEmitter<ReadonlyArray<FilterFieldFilter>>();
+
+  @ViewChild('autocompleteInput', { static: false }) autocompleteInput: ElementRef;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+
+  // @ts-ignore
+  @HostBinding('class') private readonly clazz = 'filter-field';
+
+  filterControl = new FormControl('');
+  autocompleteOptions: Array<FilterFieldFilter> = [];
 
   private _options: ReadonlyArray<FilterFieldFilter> = [];
 

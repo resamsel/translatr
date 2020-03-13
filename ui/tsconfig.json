@@ -40,6 +40,9 @@
       "@translatr/utils": [
         "libs/utils/src/index.ts"
       ],
+      "@translatr/utils/testing": [
+        "libs/utils/src/testing.ts"
+      ],
       "@translatr/node-utils": [
         "libs/node-utils/src/index.ts"
       ],
