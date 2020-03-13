@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MetricComponent } from './metric.component';
-import { MatCardModule, MatIconModule } from '@angular/material';
+import { MatCardModule, MatIconModule, MatTooltipModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
@@ -10,7 +10,8 @@ import { RouterModule } from '@angular/router';
     CommonModule,
     RouterModule,
     MatCardModule,
-    MatIconModule
+    MatIconModule,
+    MatTooltipModule
   ],
   exports: [MetricComponent]
 })

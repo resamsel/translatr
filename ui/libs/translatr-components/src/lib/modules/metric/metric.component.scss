@@ -1,35 +1,51 @@
-:host {
-  ::ng-deep {
-    .mat-card-header {
-      z-index: 1;
-      flex-direction: row-reverse;
-    }
+$padding: 32px;
+$metric-size: 36px;
+$subtitle-size: 24px;
+$icon-size: $metric-size + $padding + $subtitle-size;
 
-    .mat-card-header-text {
-      margin: 0 16px 0 0;
-      flex-grow: 1;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
+:host {
+  .mat-card {
+    min-height: $icon-size - $padding;
+  }
+
+  .mat-card-header {
+    z-index: 1;
+    flex-direction: row-reverse;
+
+    .mat-card-title  {
+      font-size: $metric-size;
+      line-height: $metric-size;
+      font-weight: 300;
     }
 
     .mat-card-subtitle {
       margin-bottom: 0;
     }
+  }
 
-    .mat-card-avatar {
-      .mat-icon {
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 100%;
-        width: 100px;
-        font-size: 120px;
-        line-height: 76px;
-        opacity: 0.4;
-        z-index: 0;
-        overflow: hidden;
-      }
+  .metric-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: $icon-size;
+    width: $icon-size;
+    opacity: 0.4;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: 0;
+
+    .mat-icon {
+      height: 100%;
+      width: 100%;
+      line-height: $icon-size;
+      font-size: 120px;
+    }
+  }
+
+  ::ng-deep {
+    .mat-card-header-text {
+      flex-grow: 1;
+      overflow: hidden;
     }
   }
 }
