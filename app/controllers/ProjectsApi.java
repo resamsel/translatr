@@ -144,7 +144,7 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> activity(@ApiParam(value = PROJECT_ID) UUID id) {
-    return toJson(() -> api.activity(id));
+    return toJsons(() -> api.activity(id));
   }
 
   /**
