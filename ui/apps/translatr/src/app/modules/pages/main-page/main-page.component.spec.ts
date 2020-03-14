@@ -8,6 +8,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 
 import { MainPageComponent } from './main-page.component';
+import { FooterTestingModule, NavbarTestingModule } from '@translatr/components/testing';
+import { MatDividerModule, MatTooltipModule } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppFacade } from '../../../+state/app.facade';
+import { mockObservable } from '@translatr/utils/testing';
 
 describe('MainPageComponent', () => {
   let component: MainPageComponent;
@@ -17,13 +22,26 @@ describe('MainPageComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MainPageComponent],
       imports: [
+        NavbarTestingModule,
+        FooterTestingModule,
+
         NoopAnimationsModule,
+        RouterTestingModule,
         LayoutModule,
         MatButtonModule,
         MatCardModule,
         MatGridListModule,
         MatIconModule,
-        MatMenuModule
+        MatMenuModule,
+        MatDividerModule,
+        MatTooltipModule
+      ],
+      providers: [
+        {
+          provide: AppFacade, useFactory: () => ({
+            me$: mockObservable()
+          })
+        }
       ]
     }).compileComponents();
   }));
