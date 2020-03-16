@@ -120,6 +120,7 @@ For development you'll need the following dependencies.
     export AUTH_PROVIDERS=keycloak
     export KEYCLOAK_CLIENT_ID=translatr-localhost
     export KEYCLOAK_CLIENT_SECRET=$YOUR_KEYCLOAK_CLIENT_SECRET
+    export REDIRECT_BASE=http://localhost:4210
     bin/activator ~run -Dconfig.file=dev.conf
     ```
 

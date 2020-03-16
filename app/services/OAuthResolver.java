@@ -6,8 +6,10 @@ import com.feth.play.module.pa.exceptions.AuthException;
 import com.feth.play.module.pa.providers.oauth2.OAuth2AuthProvider;
 import controllers.routes;
 import org.apache.commons.lang3.StringUtils;
+import play.Configuration;
 import play.mvc.Call;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,6 +21,15 @@ import static play.mvc.Http.Context.Implicit.request;
  */
 @Singleton
 public class OAuthResolver extends Resolver {
+  private static final String REDIRECT_BASE = "translatr.redirectBase";
+
+  private final Configuration configuration;
+
+  @Inject
+  public OAuthResolver(Configuration configuration) {
+    this.configuration = configuration;
+  }
+
   @Override
   public Call login() {
     // Your login page
@@ -40,7 +51,8 @@ public class OAuthResolver extends Resolver {
       return new play.api.mvc.Call(call.method(), redirectUri, null);
     }
 
-    return new play.api.mvc.Call(call.method(), call.url() + redirectUri, null);
+    String redirectBase = configuration.getString(REDIRECT_BASE, "");
+    return new play.api.mvc.Call(call.method(), redirectBase + call.url() + redirectUri, null);
   }
 
   @Override

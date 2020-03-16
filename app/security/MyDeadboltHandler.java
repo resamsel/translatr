@@ -5,24 +5,24 @@ import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Subject;
 import com.feth.play.module.pa.PlayAuthenticate;
-import com.feth.play.module.pa.user.AuthUserIdentity;
-import controllers.AbstractController;
 import play.mvc.Http;
 import play.mvc.Http.Session;
 import play.mvc.Result;
 import services.UserService;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+
+import static controllers.AbstractController.redirectWithError;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 public class MyDeadboltHandler extends AbstractDeadboltHandler {
   private final PlayAuthenticate auth;
 
   private final UserService userService;
 
-  public MyDeadboltHandler(final PlayAuthenticate auth,
-      final ExecutionContextProvider exContextProvider, final UserService userService) {
+  public MyDeadboltHandler(
+      final PlayAuthenticate auth, final ExecutionContextProvider exContextProvider, final UserService userService) {
     super(exContextProvider);
     this.auth = auth;
     this.userService = userService;
@@ -32,7 +32,7 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler {
   public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context) {
     if (auth.isLoggedIn(context.session())) {
       // user is logged in
-      return CompletableFuture.completedFuture(Optional.empty());
+      return completedFuture(Optional.empty());
     } else {
       // user is not logged in
 
@@ -44,36 +44,36 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler {
 
       // Re-try login, if possible
       Session session = context.session();
-      if (session.containsKey("pa.p.id") && auth.getProvider(session.get("pa.p.id")) != null)
-        return CompletableFuture.completedFuture(Optional.ofNullable(
-            AbstractController.redirect(auth.getResolver().auth(session.get("pa.p.id")))));
+      if (session.containsKey("pa.p.id") && auth.getProvider(session.get("pa.p.id")) != null) {
+        return completedFuture(redirect(auth.getResolver().auth(session.get("pa.p.id"))))
+            .thenApply(Optional::of);
+      }
 
-      return CompletableFuture.completedFuture(Optional.ofNullable(AbstractController
-          .redirectWithError(auth.getResolver().login(), "error.restricted.content", originalUrl)));
+      return completedFuture(redirectWithError(auth.getResolver().login(), "error.restricted.content", originalUrl))
+          .thenApply(Optional::of);
     }
   }
 
   @Override
   public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context) {
-    final AuthUserIdentity u = auth.getUser(context);
-
-    return CompletableFuture.completedFuture(Optional.ofNullable(userService.getLocalUser(u)));
+    return completedFuture(auth.getUser(context))
+        .thenApply(userService::getLocalUser)
+        .thenApply(Optional::ofNullable);
   }
 
   @Override
   public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(
       final Http.Context context) {
-    return CompletableFuture.completedFuture(Optional.empty());
+    return completedFuture(Optional.empty());
   }
 
   @Override
-  public CompletionStage<Result> onAuthFailure(final Http.Context context,
-      final Optional<String> content) {
+  public CompletionStage<Result> onAuthFailure(
+      final Http.Context context, final Optional<String> content) {
     // if the user has a cookie with a valid user and the local user has
     // been deactivated/deleted in between, it is possible that this gets
     // shown. You might want to consider to sign the user out in this case.
 
-    return CompletableFuture.completedFuture(AbstractController
-        .redirectWithError(auth.getResolver().login(), "error.restricted.content"));
+    return completedFuture(redirectWithError(auth.getResolver().login(), "error.restricted.content"));
   }
 }

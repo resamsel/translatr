@@ -9,6 +9,7 @@
       <env name="KEYCLOAK_CLIENT_ID" value="translatr-localhost" />
       <env name="KEYCLOAK_CLIENT_SECRET" value="98e21465-90b8-4390-9006-c94cd4bad36c" />
       <env name="AUTH_PROVIDERS" value="keycloak" />
+      <env name="REDIRECT_BASE" value="http://localhost:4210" />
     </envs>
     <method v="2" />
   </configuration>
