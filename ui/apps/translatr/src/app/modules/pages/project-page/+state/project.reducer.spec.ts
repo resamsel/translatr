@@ -1,44 +1,38 @@
-import { ProjectLoaded } from './project.actions';
-import {
-  ProjectState,
-  Entity,
-  initialState,
-  projectReducer
-} from './project.reducer';
+import { localesLoaded } from './project.actions';
+import { initialState, projectReducer } from './project.reducer';
+import { Locale, PagedList } from '@dev/translatr-model';
 
 describe('Project Reducer', () => {
-  const getProjectId = it => it['id'];
-  let createProject;
+  describe('valid Editor actions ', () => {
+    it('should include given user on localesLoaded', () => {
+      // given
+      const payload: PagedList<Locale> = {
+        list: [],
+        hasNext: false,
+        hasPrev: false,
+        limit: 20,
+        offset: 0
+      };
+      const action = localesLoaded({ payload });
 
-  beforeEach(() => {
-    createProject = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
-    });
-  });
+      // when
+      const actual = projectReducer(initialState, action);
 
-  describe('valid Project actions ', () => {
-    it('should return set the list of known Project', () => {
-      const projects = [
-        createProject('PRODUCT-AAA'),
-        createProject('PRODUCT-zzz')
-      ];
-      const action = new ProjectLoaded(projects);
-      const result: ProjectState = projectReducer(initialState, action);
-      const selId: string = getProjectId(result.list[1]);
-
-      expect(result.loaded).toBe(true);
-      expect(result.list.length).toBe(2);
-      expect(selId).toBe('PRODUCT-zzz');
+      // then
+      expect(actual.locales).toStrictEqual(payload);
     });
   });
 
   describe('unknown action', () => {
     it('should return the initial state', () => {
+      // given
       const action = {} as any;
-      const result = projectReducer(initialState, action);
 
-      expect(result).toBe(initialState);
+      // when
+      const actual = projectReducer(initialState, action);
+
+      // then
+      expect(actual).toBe(initialState);
     });
   });
 });

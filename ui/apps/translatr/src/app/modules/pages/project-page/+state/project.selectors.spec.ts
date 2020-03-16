@@ -1,57 +1,33 @@
-import { Entity } from './project.reducer';
 import { projectQuery } from './project.selectors';
+import { initialState, PROJECT_FEATURE_KEY, ProjectState } from './project.reducer';
 
 describe('Project Selectors', () => {
-  const ERROR_MSG = 'No Error Available';
-  const getProjectId = it => it['id'];
-
-  let storeState;
+  let storeState: { [PROJECT_FEATURE_KEY]: ProjectState; };
 
   beforeEach(() => {
-    const createProject = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
-    });
     storeState = {
-      project: {
-        list: [
-          createProject('PRODUCT-AAA'),
-          createProject('PRODUCT-BBB'),
-          createProject('PRODUCT-CCC')
-        ],
-        selectedId: 'PRODUCT-BBB',
-        error: ERROR_MSG,
-        loaded: true
+      [PROJECT_FEATURE_KEY]: {
+        ...initialState,
+        locales: {
+          list: [
+            { id: '1', name: 'en' }
+          ],
+          hasNext: false,
+          hasPrev: false,
+          limit: 20,
+          offset: 0
+        }
       }
     };
   });
 
-  describe('Project Selectors', () => {
-    it('getAllProject() should return the list of Project', () => {
-      const results = projectQuery.getAllProject(storeState);
-      const selId = getProjectId(results[1]);
+  describe('App Selectors', () => {
+    it('getLocales() should return the list of locales', () => {
+      // given, when
+      const actual = projectQuery.getLocales(storeState);
 
-      expect(results.length).toBe(3);
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getSelectedProject() should return the selected Entity', () => {
-      const result = projectQuery.getSelectedProject(storeState);
-      const selId = getProjectId(result);
-
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getLoaded() should return the current \'loaded\' status', () => {
-      const result = projectQuery.getLoaded(storeState);
-
-      expect(result).toBe(true);
-    });
-
-    it('getError() should return the current \'error\' storeState', () => {
-      const result = projectQuery.getError(storeState);
-
-      expect(result).toBe(ERROR_MSG);
+      // then
+      expect(actual).toBe(storeState[PROJECT_FEATURE_KEY].locales);
     });
   });
 });
