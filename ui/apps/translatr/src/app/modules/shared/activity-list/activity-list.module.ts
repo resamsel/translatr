@@ -7,7 +7,6 @@ import { MomentModule } from 'ngx-moment';
 import { GravatarModule } from 'ngx-gravatar';
 import { ActivityListComponent } from './activity-list.component';
 import { RouterModule } from '@angular/router';
-import { ActivityContentModule } from '../activity-content/activity-content.module';
 import { TagModule } from '@translatr/translatr-components/src/lib/modules/tag/tag.module';
 import { NavListModule } from '../nav-list/nav-list.module';
 import { MatTooltipModule } from '@angular/material';
@@ -32,17 +31,16 @@ import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/a
     CommonModule,
     RouterModule,
 
+    TagModule,
+    NavListModule,
+
     MatListModule,
     MatIconModule,
     MatChipsModule,
+    MatTooltipModule,
 
     MomentModule,
-    GravatarModule,
-
-    ActivityContentModule,
-    TagModule,
-    NavListModule,
-    MatTooltipModule
+    GravatarModule
   ],
   exports: [ActivityListComponent]
 })
