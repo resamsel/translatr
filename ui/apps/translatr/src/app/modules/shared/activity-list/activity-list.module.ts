@@ -11,9 +11,23 @@ import { ActivityContentModule } from '../activity-content/activity-content.modu
 import { TagModule } from '@translatr/translatr-components/src/lib/modules/tag/tag.module';
 import { NavListModule } from '../nav-list/nav-list.module';
 import { MatTooltipModule } from '@angular/material';
+import { ActivityProjectLinkComponent } from './activity-project-link/activity-project-link.component';
+import { ActivityLocaleLinkComponent } from './activity-locale-link/activity-locale-link.component';
+import { ActivityKeyLinkComponent } from './activity-key-link/activity-key-link.component';
+import { ActivityMemberLinkComponent } from './activity-member-link/activity-member-link.component';
+import { ActivityMessageLinkComponent } from './activity-message-link/activity-message-link.component';
+import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/activity-access-token-link.component';
 
 @NgModule({
-  declarations: [ActivityListComponent],
+  declarations: [
+    ActivityListComponent,
+    ActivityProjectLinkComponent,
+    ActivityLocaleLinkComponent,
+    ActivityKeyLinkComponent,
+    ActivityMemberLinkComponent,
+    ActivityMessageLinkComponent,
+    ActivityAccessTokenLinkComponent
+  ],
   imports: [
     CommonModule,
     RouterModule,
@@ -32,4 +46,5 @@ import { MatTooltipModule } from '@angular/material';
   ],
   exports: [ActivityListComponent]
 })
-export class ActivityListModule {}
+export class ActivityListModule {
+}

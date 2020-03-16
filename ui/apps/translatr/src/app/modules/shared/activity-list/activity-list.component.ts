@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { Activity, PagedList } from '@dev/translatr-model';
+import { AccessToken, Activity, Key, Locale, Member, Message, PagedList, Project } from '@dev/translatr-model';
 import { FilterCriteria } from '../list-header/list-header.component';
 
 @Component({
@@ -12,6 +12,7 @@ import { FilterCriteria } from '../list-header/list-header.component';
 export class ActivityListComponent {
   @Input() activities: PagedList<Activity>;
   @Input() showMore = true;
+  @Input() relativeTo: 'user' | 'project' | undefined;
 
   @Output() filter = new EventEmitter<FilterCriteria>();
   @Output() more = new EventEmitter<number>();
@@ -35,6 +36,9 @@ export class ActivityListComponent {
     }
   }
 
+  constructor() {
+  }
+
   icon(contentType: string) {
     switch (contentType) {
       case 'dto.Project':
@@ -47,8 +51,103 @@ export class ActivityListComponent {
         return 'message';
       case 'dto.ProjectUser':
         return 'group';
+      case 'dto.User':
+        return 'group';
       default:
         return 'vpn_key';
     }
+  }
+
+  contentTypeOf(activity: Activity | undefined): string | undefined {
+    if (!activity) {
+      return undefined;
+    }
+
+    return activity.contentType.replace('dto.', '').toLowerCase();
+  }
+
+  projectOf(e: Locale | Key | Message | Member): Project | undefined {
+    if (!e || !e.projectOwnerUsername || !e.projectName) {
+      return undefined;
+    }
+
+    return {
+      id: e.projectId,
+      ownerUsername: e.projectOwnerUsername,
+      name: e.projectName
+    };
+  }
+
+  project(activity: Activity | undefined): Project | undefined {
+    return this.parse(activity);
+  }
+
+  locale(activity: Activity | undefined): Locale | undefined {
+    return this.parse(activity);
+  }
+
+  key(activity: Activity | undefined): Key | undefined {
+    return this.parse(activity);
+  }
+
+  message(activity: Activity | undefined): Message | undefined {
+    return this.parse(activity);
+  }
+
+  member(activity: Activity | undefined): Member | undefined {
+    return this.parse(activity);
+  }
+
+  accessToken(activity: Activity | undefined): AccessToken | undefined {
+    return this.parse(activity);
+  }
+
+  parse<T>(activity: Activity | undefined): T | undefined {
+    if (!activity || (!activity.after && !activity.before)) {
+      return undefined;
+    }
+
+    if (activity.after) {
+      return JSON.parse(activity.after);
+    }
+
+    // for deleted objects
+    return JSON.parse(activity.before);
+  }
+
+  linkToKeyMessage(message: Message): string[] | undefined {
+    return this.linkToMessage(message, 'keys', message.keyName);
+  }
+
+  linkToLocaleMessage(message: Message): string[] | undefined {
+    return this.linkToMessage(message, 'locales', message.localeName);
+  }
+
+  linkToMessage(message: Message, subpath: string, name: string): string[] | undefined {
+    if (!message || !message.projectOwnerUsername || !message.projectName || !name) {
+      return undefined;
+    }
+
+    return [
+      '/',
+      message.projectOwnerUsername,
+      message.projectName,
+      subpath,
+      name
+    ];
+  }
+
+  linkToAccessToken(accessToken: AccessToken | undefined): string[] | undefined {
+    console.log('linkToAccessToken', accessToken);
+    if (!accessToken || !accessToken.userUsername) {
+      return undefined;
+    }
+
+    return [
+      '/',
+      accessToken.userUsername,
+      'access-tokens',
+      accessToken.id.toString()
+    ];
   }
 }

@@ -1,0 +1,12 @@
+<ng-container *ngIf="messageLink">
+  <ng-container [ngSwitch]="target">
+    <ng-container *ngSwitchCase="'locale'">
+      Locale:
+      <a [routerLink]="messageLink" class="link">{{ message.localeDisplayName }} ({{ message.localeName }})</a>
+    </ng-container>
+    <ng-container *ngSwitchCase="'key'">
+      Key:
+      <a [routerLink]="messageLink" class="link">{{ message.keyName }}</a>
+    </ng-container>
+  </ng-container>
+</ng-container>

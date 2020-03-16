@@ -39,4 +39,13 @@
     </div>
     <div class="clearfix"></div>
   </section>
+
+  <section *ngIf="canReadActivity$ | async">
+    <h2>Activity</h2>
+    <app-activity-list
+      [activities]="activities$ | async"
+      [showMore]="false"
+      relativeTo="user"
+    ></app-activity-list>
+  </section>
 </div>

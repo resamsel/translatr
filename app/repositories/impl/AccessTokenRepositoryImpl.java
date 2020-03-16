@@ -24,6 +24,7 @@ import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 @Singleton
@@ -34,9 +35,17 @@ public class AccessTokenRepositoryImpl extends
   public final Find<Long, AccessToken> find = new Find<Long, AccessToken>() {
   };
 
+  @Inject
+  public AccessTokenRepositoryImpl(Persistence persistence,
+                                   Validator validator,
+                                   AuthProvider authProvider,
+                                   ActivityActorRef activityActor) {
+    super(persistence, validator, authProvider, activityActor);
+  }
+
   @Override
   public PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
-    ExpressionList<AccessToken> query = fetch().where();
+    ExpressionList<AccessToken> query = fetch(criteria.getFetches()).where();
 
     if (criteria.getUserId() != null) {
       query.eq("user.id", criteria.getUserId());
@@ -51,17 +60,9 @@ public class AccessTokenRepositoryImpl extends
     return PagedListFactory.create(query);
   }
 
-  @Inject
-  public AccessTokenRepositoryImpl(Persistence persistence,
-                                   Validator validator,
-                                   AuthProvider authProvider,
-                                   ActivityActorRef activityActor) {
-    super(persistence, validator, authProvider, activityActor);
-  }
-
   @Override
   public AccessToken byId(Long id, String... fetches) {
-    return fetch().setId(id).findUnique();
+    return fetch(fetches).setId(id).findUnique();
   }
 
   @Override
@@ -74,8 +75,13 @@ public class AccessTokenRepositoryImpl extends
     return find.where().eq("user.id", userId).eq("name", name).findUnique();
   }
 
-  private Query<AccessToken> fetch() {
-    return QueryUtils.fetch(find.query().setDisableLazyLoading(true), PROPERTIES_TO_FETCH);
+  private Query<AccessToken> fetch(List<String> fetches) {
+    return fetch(fetches.toArray(new String[0]));
+  }
+
+  private Query<AccessToken> fetch(String... fetches) {
+    return QueryUtils.fetch(find.query().setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 
   /**

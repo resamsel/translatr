@@ -1,0 +1,4 @@
+<ng-container *ngIf="projectLink">
+  Project:
+  <a *ngIf="projectLink" [routerLink]="projectLink" class="link">{{ project.name }}</a>
+</ng-container>

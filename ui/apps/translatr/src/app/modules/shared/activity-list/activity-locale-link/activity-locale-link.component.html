@@ -1,0 +1,4 @@
+<ng-container *ngIf="localeLink">
+  Locale:
+  <a [routerLink]="localeLink" class="link">{{ locale.displayName }} ({{ locale.name }})</a>
+</ng-container>

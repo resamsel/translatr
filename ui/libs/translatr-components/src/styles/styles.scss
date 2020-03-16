@@ -197,7 +197,8 @@ a .mat-card {
     color: white;
   }
 
-  .access-token.mat-list-item:before {
+  .access-token.mat-list-item:before,
+  .accesstoken.mat-list-item:before {
     border-left-color: #7b1fa2;
   }
 

@@ -21,13 +21,18 @@ import {
   PagedList,
   Project,
   ProjectCriteria,
-  User
+  User,
+  UserRole
 } from '@dev/translatr-model';
 import { map, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
 
 const canCreateProject = (user: User, me: User): boolean => {
   return user.id === me.id;
+};
+
+const canReadActivities = (user: User, me: User): boolean => {
+  return user.id === me.id || me.role === UserRole.Admin;
 };
 
 @Injectable()
@@ -54,6 +59,9 @@ export class UserFacade {
     this.store.pipe(
       select(userQuery.getActivities)
     );
+  readonly canReadActivity$ = this.permission$.pipe(
+    map(([user, me]) => canReadActivities(user, me))
+  );
 
   accessTokens$: Observable<PagedList<AccessToken> | undefined> =
     this.store.pipe(

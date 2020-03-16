@@ -1,8 +1,8 @@
 <app-nav-list
   [empty]="empty"
   [pagedList]="activities"
-  (filter)="onFilter($event)"
   [showMore]="showMore"
+  (filter)="onFilter($event)"
 >
   <mat-list-item
     *ngFor="let activity of activities?.list; trackBy: trackByFn"
@@ -19,32 +19,112 @@
       class="circle"
       matListIcon
     >{{icon(activity.contentType)}}</mat-icon>
-    <h3 matLine>
-      <a [routerLink]="['/', activity.userUsername]" class="link user-name">{{
-        activity.userName
-        }}</a>
-      <span class="sub-title">
-        <ng-container [ngSwitch]="activity.type">
-          <span *ngSwitchCase="'Create'" class="type" i18n>
-            <span>created</span>
-            <app-activity-content [activity]="activity"></app-activity-content>
-          </span>
-          <span *ngSwitchCase="'Update'" class="type" i18n>
+    <h3 class="ellipsis" matLine>
+      <a
+        *ngIf="relativeTo !== 'user'"
+        [routerLink]="['/', activity.userUsername]"
+        class="link user-name"
+      >{{activity.userName}}</a>
+      <ng-container [ngSwitch]="activity.type">
+        <span *ngSwitchCase="'Create'" class="type" i18n>
+          <span>created</span>
+        </span>
+        <span *ngSwitchCase="'Update'" class="type" i18n>
             <span>updated</span>
-            <app-activity-content [activity]="activity"></app-activity-content>
           </span>
-          <span *ngSwitchCase="'Delete'" class="type" i18n>
+        <span *ngSwitchCase="'Delete'" class="type" i18n>
             <span>deleted</span>
-            <app-activity-content [activity]="activity"></app-activity-content>
           </span>
-          <span *ngSwitchCase="'Login'" class="type" i18n>
+        <span *ngSwitchCase="'Login'" class="type" i18n>
             <span>logged in</span></span
-          >
-          <span *ngSwitchCase="'Logout'" class="type" i18n>
+        >
+        <span *ngSwitchCase="'Logout'" class="type" i18n>
             <span>logged out</span></span
-          >
+        >
+      </ng-container>
+      <ng-container *ngIf="contentTypeOf(activity) as contentType">
+        <ng-container [ngSwitch]="contentType">
+          <span *ngSwitchCase="'message'" class="content-type" i18n>
+            translation
+          </span>
+          <span *ngSwitchCase="'projectuser'" class="content-type" i18n>
+            member
+          </span>
+          <span *ngSwitchCase="'accesstoken'" class="content-type" i18n>
+            access token
+          </span>
+          <span *ngSwitchDefault class="content-type" i18n>
+            {{ contentType }}
+          </span>
         </ng-container>
-      </span>
+      </ng-container>
+      <ng-container *ngIf="contentTypeOf(activity) as contentType">
+        <ng-container [ngSwitch]="contentType">
+          <ng-container *ngSwitchCase="'project'">
+            <app-activity-project-link
+              *ngIf="relativeTo !== 'project'"
+              [project]="project(activity)"
+              matLine
+            ></app-activity-project-link>
+          </ng-container>
+          <ng-container *ngSwitchCase="'locale'">
+            <app-activity-project-link
+              *ngIf="relativeTo !== 'project'"
+              [project]="projectOf(locale(activity))"
+              matLine
+            ></app-activity-project-link>
+            <app-activity-locale-link
+              [locale]="locale(activity)"
+              matLine
+            ></app-activity-locale-link>
+          </ng-container>
+          <ng-container *ngSwitchCase="'key'">
+            <app-activity-project-link
+              *ngIf="relativeTo !== 'project'"
+              [project]="projectOf(key(activity))"
+              matLine
+            ></app-activity-project-link>
+            <app-activity-key-link
+              [key]="key(activity)"
+              matLine
+            ></app-activity-key-link>
+          </ng-container>
+          <ng-container *ngSwitchCase="'message'">
+            <app-activity-project-link
+              *ngIf="relativeTo !== 'project'"
+              [project]="projectOf(message(activity))"
+              matLine
+            ></app-activity-project-link>
+            <app-activity-message-link
+              [message]="message(activity)"
+              matLine
+              target="key"
+            ></app-activity-message-link>
+            <app-activity-message-link
+              [message]="message(activity)"
+              matLine
+              target="locale"
+            ></app-activity-message-link>
+          </ng-container>
+          <ng-container *ngSwitchCase="'projectuser'">
+            <app-activity-project-link
+              *ngIf="relativeTo !== 'project'"
+              [project]="projectOf(member(activity))"
+              matLine
+            ></app-activity-project-link>
+            <app-activity-member-link
+              [member]="member(activity)"
+              matLine
+            ></app-activity-member-link>
+          </ng-container>
+          <ng-container *ngSwitchCase="'accesstoken'">
+            <app-activity-access-token-link
+              [accessToken]="accessToken(activity)"
+              matLine
+            ></app-activity-access-token-link>
+          </ng-container>
+        </ng-container>
+      </ng-container>
     </h3>
   </mat-list-item>
 </app-nav-list>

@@ -5,7 +5,7 @@ import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, CanActivate, Router } from '@angular/router';
-import { canActivate$, NameIconRoute } from '@translatr/utils';
+import { canActivate$, NameIconRoute, slicePagedList } from '@translatr/utils';
 import { USER_ROUTES } from '../user-page.token';
 import { Observable, of } from 'rxjs';
 
@@ -26,10 +26,12 @@ export class UserInfoComponent implements OnInit {
         : pagedList)
     );
   readonly canCreateProject$ = this.facade.canCreateProject$;
-  readonly activities$ = this.facade.activities$;
+  readonly activities$ = this.facade.activities$
+    .pipe(map(pagedList => slicePagedList(pagedList, 8)));
 
   readonly activityRoute: NameIconRoute | undefined = this.routes[0].children
     .find(route => route.path === 'activity');
+  readonly canReadActivity$ = this.facade.canReadActivity$;
   readonly activityLink$ = this.canActivate$(this.activityRoute)
     .pipe(map(active => active ? 'activity' : undefined));
 

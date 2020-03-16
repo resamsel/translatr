@@ -191,7 +191,11 @@ translatr:
 
   <section>
     <h2>Activity</h2>
-    <app-activity-list [activities]="activities$ | async" [showMore]="false"></app-activity-list>
+    <app-activity-list
+      [activities]="activities$ | async"
+      [showMore]="false"
+      relativeTo="project"
+    ></app-activity-list>
   </section>
 
   <div></div>
