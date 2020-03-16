@@ -8,6 +8,7 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import play.mvc.Http;
 import play.mvc.Http.Session;
 import play.mvc.Result;
+import play.mvc.Results;
 import services.UserService;
 
 import java.util.Optional;
@@ -45,7 +46,8 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler {
       // Re-try login, if possible
       Session session = context.session();
       if (session.containsKey("pa.p.id") && auth.getProvider(session.get("pa.p.id")) != null) {
-        return completedFuture(redirect(auth.getResolver().auth(session.get("pa.p.id"))))
+        return completedFuture(auth.getResolver().auth(session.get("pa.p.id")))
+            .thenApply(Results::redirect)
             .thenApply(Optional::of);
       }
 
