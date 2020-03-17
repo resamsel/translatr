@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
   LoadMyProjects,
   LoadProjects,
@@ -16,7 +16,7 @@ import { of } from 'rxjs';
 
 @Injectable()
 export class ProjectsEffects {
-  @Effect() loadProjects$ = this.actions$.pipe(
+  loadProjects$ = createEffect(() => this.actions$.pipe(
     ofType<LoadProjects>(ProjectsActionTypes.LoadProjects),
     switchMap((action: LoadProjects) =>
       this.projectService
@@ -26,9 +26,9 @@ export class ProjectsEffects {
           catchError(error => of(new ProjectsLoadError(error)))
         )
     )
-  );
+  ));
 
-  @Effect() loadMyProjects$ = this.actions$.pipe(
+  loadMyProjects$ = createEffect(() => this.actions$.pipe(
     ofType<LoadMyProjects>(ProjectsActionTypes.LoadMyProjects),
     switchMap((action: LoadMyProjects) =>
       this.projectService
@@ -38,7 +38,7 @@ export class ProjectsEffects {
           catchError(error => of(new MyProjectsLoadError(error)))
         )
     )
-  );
+  ));
 
   constructor(
     private actions$: Actions,

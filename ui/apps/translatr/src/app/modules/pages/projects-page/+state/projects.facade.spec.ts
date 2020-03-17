@@ -1,109 +1,39 @@
-import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { readFirst } from '@nrwl/angular/testing';
-
-import { EffectsModule } from '@ngrx/effects';
-import { Store, StoreModule } from '@ngrx/store';
-
-import { NxModule } from '@nrwl/angular';
-
-import { ProjectsEffects } from './projects.effects';
+import { Store } from '@ngrx/store';
 import { ProjectsFacade } from './projects.facade';
-import { ProjectsLoaded } from './projects.actions';
-import { Entity, initialState, projectsReducer, ProjectsState } from './projects.reducer';
-
-interface TestSchema {
-  projects: ProjectsState;
-}
+import { ProjectsState } from './projects.reducer';
 
 describe('ProjectsFacade', () => {
   let facade: ProjectsFacade;
-  let store: Store<TestSchema>;
-  let createProjects;
+  let store: Store<ProjectsState> & { dispatch: jest.Mock; pipe: jest.Mock; };
 
   beforeEach(() => {
-    createProjects = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
+    TestBed.configureTestingModule({
+      providers: [
+        ProjectsFacade,
+        {
+          provide: Store, useFactory: () => ({
+            dispatch: jest.fn(),
+            pipe: jest.fn()
+          })
+        }
+      ]
     });
+
+    store = TestBed.get(Store);
+    facade = TestBed.get(ProjectsFacade);
   });
 
-  describe('used in NgModule', () => {
-    beforeEach(() => {
-      @NgModule({
-        imports: [
-          StoreModule.forFeature('projects', projectsReducer, { initialState }),
-          EffectsModule.forFeature([ProjectsEffects])
-        ],
-        providers: [ProjectsFacade]
-      })
-      class CustomFeatureModule {}
+  describe('loadProjects', () => {
+    it('dispatches an action', () => {
+      // given
+      const criteria = {};
 
-      @NgModule({
-        imports: [
-          NxModule.forRoot(),
-          StoreModule.forRoot({}),
-          EffectsModule.forRoot([]),
-          CustomFeatureModule
-        ]
-      })
-      class RootModule {}
-      TestBed.configureTestingModule({ imports: [RootModule] });
+      // when
+      facade.loadProjects(criteria);
 
-      store = TestBed.get(Store);
-      facade = TestBed.get(ProjectsFacade);
-    });
-
-    /**
-     * The initially generated facade::loadAll() returns empty array
-     */
-    it('loadAll() should return empty list with loaded == true', async done => {
-      try {
-        let list = await readFirst(facade.projects$);
-        let isLoaded = await readFirst(facade.loaded$);
-
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(false);
-
-        facade.loadAll();
-
-        list = await readFirst(facade.projects$);
-        isLoaded = await readFirst(facade.loaded$);
-
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(true);
-
-        done();
-      } catch (err) {
-        done.fail(err);
-      }
-    });
-
-    /**
-     * Use `ProjectsLoaded` to manually submit list for state management
-     */
-    it('allProjects$ should return the loaded list; and loaded flag == true', async done => {
-      try {
-        let list = await readFirst(facade.projects$);
-        let isLoaded = await readFirst(facade.loaded$);
-
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(false);
-
-        store.dispatch(
-          new ProjectsLoaded([createProjects('AAA'), createProjects('BBB')])
-        );
-
-        list = await readFirst(facade.projects$);
-        isLoaded = await readFirst(facade.loaded$);
-
-        expect(list.length).toBe(2);
-        expect(isLoaded).toBe(true);
-
-        done();
-      } catch (err) {
-        done.fail(err);
-      }
+      // then
+      expect(store.dispatch.mock.calls.length).toBe(1);
     });
   });
 });
