@@ -1,6 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MemberListComponent } from './member-list.component';
+import { NavListTestingModule } from '../../../../shared/nav-list/testing';
+import { ButtonTestingModule, EmptyViewTestingModule } from '@translatr/components/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MatButtonModule, MatDialogModule, MatIconModule, MatListModule, MatProgressBarModule, MatTooltipModule } from '@angular/material';
+import { GravatarModule } from 'ngx-gravatar';
+import { MomentModule } from 'ngx-moment';
+import { AppFacade } from '../../../../../+state/app.facade';
 
 describe('MemberListComponent', () => {
   let component: MemberListComponent;
@@ -8,7 +15,27 @@ describe('MemberListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MemberListComponent]
+      declarations: [MemberListComponent],
+      imports: [
+        NavListTestingModule,
+        ButtonTestingModule,
+        EmptyViewTestingModule,
+
+        RouterTestingModule,
+
+        MatDialogModule,
+        MatListModule,
+        MatIconModule,
+        MatProgressBarModule,
+        MatTooltipModule,
+        MatButtonModule,
+
+        GravatarModule,
+        MomentModule
+      ],
+      providers: [
+        { provide: AppFacade, useFactory: () => ({}) }
+      ]
     }).compileComponents();
   }));
 
