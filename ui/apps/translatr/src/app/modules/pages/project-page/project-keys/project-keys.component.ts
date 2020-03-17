@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
 import { filter, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { Key, KeyCriteria, Project } from '@dev/translatr-model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { navigate } from '@translatr/utils';
 
