@@ -1,41 +1,38 @@
 import { UsersLoaded } from './users.actions';
-import {
-  UsersState,
-  Entity,
-  initialState,
-  usersReducer
-} from './users.reducer';
+import { initialState, usersReducer } from './users.reducer';
+import { PagedList, User } from '@dev/translatr-model';
 
 describe('Users Reducer', () => {
-  const getUsersId = it => it['id'];
-  let createUsers;
+  describe('valid Editor actions ', () => {
+    it('should include given user on localesLoaded', () => {
+      // given
+      const payload: PagedList<User> = {
+        list: [],
+        hasNext: false,
+        hasPrev: false,
+        limit: 20,
+        offset: 0
+      };
+      const action = new UsersLoaded(payload);
 
-  beforeEach(() => {
-    createUsers = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
-    });
-  });
+      // when
+      const actual = usersReducer(initialState, action);
 
-  describe('valid Users actions ', () => {
-    it('should return set the list of known Users', () => {
-      const userss = [createUsers('PRODUCT-AAA'), createUsers('PRODUCT-zzz')];
-      const action = new UsersLoaded(userss);
-      const result: UsersState = usersReducer(initialState, action);
-      const selId: string = getUsersId(result.list[1]);
-
-      expect(result.loaded).toBe(true);
-      expect(result.list.length).toBe(2);
-      expect(selId).toBe('PRODUCT-zzz');
+      // then
+      expect(actual.list).toStrictEqual(payload);
     });
   });
 
   describe('unknown action', () => {
     it('should return the initial state', () => {
+      // given
       const action = {} as any;
-      const result = usersReducer(initialState, action);
 
-      expect(result).toBe(initialState);
+      // when
+      const actual = usersReducer(initialState, action);
+
+      // then
+      expect(actual).toBe(initialState);
     });
   });
 });

@@ -1,57 +1,33 @@
-import { Entity } from './users.reducer';
+import { initialState, USERS_FEATURE_KEY, UsersState } from './users.reducer';
 import { usersQuery } from './users.selectors';
 
 describe('Users Selectors', () => {
-  const ERROR_MSG = 'No Error Available';
-  const getUsersId = it => it['id'];
-
-  let storeState;
+  let storeState: { [USERS_FEATURE_KEY]: UsersState; };
 
   beforeEach(() => {
-    const createUsers = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
-    });
     storeState = {
-      users: {
-        list: [
-          createUsers('PRODUCT-AAA'),
-          createUsers('PRODUCT-BBB'),
-          createUsers('PRODUCT-CCC')
-        ],
-        selectedId: 'PRODUCT-BBB',
-        error: ERROR_MSG,
-        loaded: true
+      [USERS_FEATURE_KEY]: {
+        ...initialState,
+        list: {
+          list: [
+            { id: '1', name: 'name', username: 'username' }
+          ],
+          hasNext: false,
+          hasPrev: false,
+          limit: 20,
+          offset: 0
+        }
       }
     };
   });
 
-  describe('Users Selectors', () => {
-    it('getAllUsers() should return the list of Users', () => {
-      const results = usersQuery.getAllUsers(storeState);
-      const selId = getUsersId(results[1]);
+  describe('App Selectors', () => {
+    it('getUsers() should return the list of users', () => {
+      // given, when
+      const actual = usersQuery.getUsers(storeState);
 
-      expect(results.length).toBe(3);
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getSelectedUsers() should return the selected Entity', () => {
-      const result = usersQuery.getSelectedUsers(storeState);
-      const selId = getUsersId(result);
-
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getLoaded() should return the current \'loaded\' status', () => {
-      const result = usersQuery.getLoaded(storeState);
-
-      expect(result).toBe(true);
-    });
-
-    it('getError() should return the current \'error\' storeState', () => {
-      const result = usersQuery.getError(storeState);
-
-      expect(result).toBe(ERROR_MSG);
+      // then
+      expect(actual).toBe(storeState[USERS_FEATURE_KEY].list);
     });
   });
 });
