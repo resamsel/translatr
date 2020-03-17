@@ -35,7 +35,7 @@ import { AppFacade } from '../../../../+state/app.facade';
 
 @Injectable()
 export class UserEffects {
-  loadUser = createEffect(() => this.actions$.pipe(
+  loadUser$ = createEffect(() => this.actions$.pipe(
     ofType(loadUser),
     switchMap((action) => this.userService
       .byUsername(action.username)

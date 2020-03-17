@@ -1,57 +1,29 @@
-import { Entity } from './user.reducer';
 import { userQuery } from './user.selectors';
+import { initialState, USER_FEATURE_KEY, UserState } from './user.reducer';
 
 describe('User Selectors', () => {
-  const ERROR_MSG = 'No Error Available';
-  const getUserId = it => it['id'];
-
-  let storeState;
+  let storeState: { [USER_FEATURE_KEY]: UserState; };
 
   beforeEach(() => {
-    const createUser = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
-    });
     storeState = {
-      user: {
-        list: [
-          createUser('PRODUCT-AAA'),
-          createUser('PRODUCT-BBB'),
-          createUser('PRODUCT-CCC')
-        ],
-        selectedId: 'PRODUCT-BBB',
-        error: ERROR_MSG,
-        loaded: true
+      [USER_FEATURE_KEY]: {
+        ...initialState,
+        user: {
+          id: '1',
+          name: 'Name',
+          username: 'username'
+        }
       }
     };
   });
 
-  describe('User Selectors', () => {
-    it('getAllUser() should return the list of User', () => {
-      const results = userQuery.getAllUser(storeState);
-      const selId = getUserId(results[1]);
+  describe('App Selectors', () => {
+    it('getUser() should return the user', () => {
+      // given, when
+      const actual = userQuery.getUser(storeState);
 
-      expect(results.length).toBe(3);
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getSelectedUser() should return the selected Entity', () => {
-      const result = userQuery.getSelectedUser(storeState);
-      const selId = getUserId(result);
-
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getLoaded() should return the current \'loaded\' status', () => {
-      const result = userQuery.getLoaded(storeState);
-
-      expect(result).toBe(true);
-    });
-
-    it('getError() should return the current \'error\' storeState', () => {
-      const result = userQuery.getError(storeState);
-
-      expect(result).toBe(ERROR_MSG);
+      // then
+      expect(actual).toBe(storeState[USER_FEATURE_KEY].user);
     });
   });
 });

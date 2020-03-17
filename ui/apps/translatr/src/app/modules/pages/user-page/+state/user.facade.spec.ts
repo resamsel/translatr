@@ -1,107 +1,50 @@
-import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { readFirst } from '@nrwl/angular/testing';
-
-import { EffectsModule } from '@ngrx/effects';
-import { Store, StoreModule } from '@ngrx/store';
-
-import { NxModule } from '@nrwl/angular';
-
-import { UserEffects } from './user.effects';
+import { Store } from '@ngrx/store';
 import { UserFacade } from './user.facade';
-import { UserLoaded } from './user.actions';
-import { Entity, initialState, userReducer, UserState } from './user.reducer';
-
-interface TestSchema {
-  user: UserState;
-}
+import { UserState } from './user.reducer';
+import { AppFacade } from '../../../../+state/app.facade';
+import { mockObservable } from '@translatr/utils/testing';
 
 describe('UserFacade', () => {
   let facade: UserFacade;
-  let store: Store<TestSchema>;
-  let createUser;
+  let store: Store<UserState> & { dispatch: jest.Mock; pipe: jest.Mock; };
 
   beforeEach(() => {
-    createUser = (id: string, name = ''): Entity => ({
-      id,
-      name: name || `name-${id}`
+    TestBed.configureTestingModule({
+      providers: [
+        UserFacade,
+        {
+          provide: AppFacade,
+          useFactory: () => ({
+            me$: mockObservable(),
+            user$: mockObservable(),
+            criteria$: jest.fn()
+          })
+        },
+        {
+          provide: Store, useFactory: () => ({
+            dispatch: jest.fn(),
+            pipe: jest.fn()
+          })
+        }
+      ]
     });
+
+    store = TestBed.get(Store);
+    store.pipe.mockReturnValue(mockObservable());
+    facade = TestBed.get(UserFacade);
   });
 
-  describe('used in NgModule', () => {
-    beforeEach(() => {
-      @NgModule({
-        imports: [
-          StoreModule.forFeature('user', userReducer, { initialState }),
-          EffectsModule.forFeature([UserEffects])
-        ],
-        providers: [UserFacade]
-      })
-      class CustomFeatureModule {}
+  describe('loadUser', () => {
+    it('dispatches an action', () => {
+      // given
+      const username = 'username';
 
-      @NgModule({
-        imports: [
-          NxModule.forRoot(),
-          StoreModule.forRoot({}),
-          EffectsModule.forRoot([]),
-          CustomFeatureModule
-        ]
-      })
-      class RootModule {}
-      TestBed.configureTestingModule({ imports: [RootModule] });
+      // when
+      facade.loadUser(username);
 
-      store = TestBed.get(Store);
-      facade = TestBed.get(UserFacade);
-    });
-
-    /**
-     * The initially generated facade::loadAll() returns empty array
-     */
-    it('loadAll() should return empty list with loaded == true', async done => {
-      try {
-        let list = await readFirst(facade.allUser$);
-        let isLoaded = await readFirst(facade.loaded$);
-
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(false);
-
-        facade.loadAll();
-
-        list = await readFirst(facade.allUser$);
-        isLoaded = await readFirst(facade.loaded$);
-
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(true);
-
-        done();
-      } catch (err) {
-        done.fail(err);
-      }
-    });
-
-    /**
-     * Use `UserLoaded` to manually submit list for state management
-     */
-    it('allUser$ should return the loaded list; and loaded flag == true', async done => {
-      try {
-        let list = await readFirst(facade.allUser$);
-        let isLoaded = await readFirst(facade.loaded$);
-
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(false);
-
-        store.dispatch(new UserLoaded([createUser('AAA'), createUser('BBB')]));
-
-        list = await readFirst(facade.allUser$);
-        isLoaded = await readFirst(facade.loaded$);
-
-        expect(list.length).toBe(2);
-        expect(isLoaded).toBe(true);
-
-        done();
-      } catch (err) {
-        done.fail(err);
-      }
+      // then
+      expect(store.dispatch.mock.calls.length).toBe(1);
     });
   });
 });
