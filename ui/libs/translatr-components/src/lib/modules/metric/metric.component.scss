@@ -1,7 +1,8 @@
 $padding: 32px;
 $metric-size: 36px;
+$metric-line-height: $metric-size + 6px;
 $subtitle-size: 24px;
-$icon-size: $metric-size + $padding + $subtitle-size;
+$icon-size: $metric-line-height + $padding + $subtitle-size;
 
 :host {
   .mat-card.icon {
@@ -12,9 +13,9 @@ $icon-size: $metric-size + $padding + $subtitle-size;
     z-index: 1;
     flex-direction: row-reverse;
 
-    .mat-card-title  {
+    .mat-card-title {
       font-size: $metric-size;
-      line-height: $metric-size;
+      line-height: $metric-line-height;
       font-weight: 300;
     }
 
