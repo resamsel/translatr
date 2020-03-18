@@ -6,12 +6,14 @@
 		converterClass="play.api.libs.logback.ColoredLevel" />
 
 	<appender
-		name="FILE"
-		class="ch.qos.logback.core.FileAppender">
+			name="FILE"
+			class="ch.qos.logback.core.FileAppender"
+			level="WARN">
 		<file>${application.home:-.}/logs/application.log</file>
 		<encoder>
 			<pattern>%date [%level] from %logger in %thread -
-				%message%n%xException</pattern>
+				%message%n%xException
+			</pattern>
 		</encoder>
 	</appender>
 
