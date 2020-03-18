@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NavListComponent } from './nav-list.component';
+import { ListHeaderTestingModule } from '../list-header/testing';
+import { MatButtonModule, MatCardModule, MatIconModule, MatListModule } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('NavListComponent', () => {
   let component: NavListComponent;
@@ -8,7 +11,17 @@ describe('NavListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [NavListComponent]
+      declarations: [NavListComponent],
+      imports: [
+        ListHeaderTestingModule,
+
+        RouterTestingModule,
+
+        MatListModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule
+      ]
     }).compileComponents();
   }));
 
