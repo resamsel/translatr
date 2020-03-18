@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ProjectOwnerEditDialogComponent } from './project-owner-edit-dialog.component';
+import { MAT_DIALOG_DATA, MatButtonModule, MatDialogModule, MatDialogRef } from '@angular/material';
+import { UsersFacade } from '../../pages/users-page/+state/users.facade';
+import { mockObservable } from '@translatr/utils/testing';
+import { ProjectOwnerEditFormTestingModule } from '../testing';
+import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
 
 describe('ProjectMemberEditDialogComponent', () => {
   let component: ProjectOwnerEditDialogComponent;
@@ -8,9 +12,32 @@ describe('ProjectMemberEditDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProjectOwnerEditDialogComponent ]
+      declarations: [ProjectOwnerEditDialogComponent],
+      imports: [
+        ProjectOwnerEditFormTestingModule,
+
+        MatDialogModule,
+        MatButtonModule
+      ],
+      providers: [
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+        {
+          provide: UsersFacade,
+          useFactory: () => ({
+            users$: mockObservable()
+          })
+        },
+        {
+          provide: ProjectFacade,
+          useFactory: () => ({
+            members$: mockObservable(),
+            loadMembers: jest.fn()
+          })
+        }
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,8 +1,8 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Member, MemberRole, Project } from '@dev/translatr-model';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { MemberRole, Project } from '@dev/translatr-model';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
-import { AppFacade } from '../../../+state/app.facade';
+import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
 
 @Component({
   selector: 'app-project-owner-edit-dialog',
@@ -10,14 +10,15 @@ import { AppFacade } from '../../../+state/app.facade';
   styleUrls: ['./project-owner-edit-dialog.component.scss']
 })
 export class ProjectOwnerEditDialogComponent {
-  users = this.data.members.filter(member => member.role === MemberRole.Owner);
+  owners$ = this.projectFacade.members$;
 
   constructor(
-    readonly dialogRef: MatDialogRef<ProjectOwnerEditDialogComponent, Member>,
+    readonly dialogRef: MatDialogRef<ProjectOwnerEditDialogComponent, Project>,
     @Inject(MAT_DIALOG_DATA) readonly data: Project,
     readonly facade: UsersFacade,
-    readonly appFacade: AppFacade
+    readonly projectFacade: ProjectFacade
   ) {
+    projectFacade.loadMembers(data.id, { roles: MemberRole.Owner });
   }
 
   onUserFilter(search: string): void {

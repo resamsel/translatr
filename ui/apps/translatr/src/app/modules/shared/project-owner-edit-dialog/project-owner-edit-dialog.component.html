@@ -4,7 +4,7 @@
     #form
     [dialogRef]="dialogRef"
     [project]="data"
-    [users]="users"
+    [users]="(owners$ | async)?.list"
     (userFilter)="onUserFilter($event)"
   ></app-project-owner-edit-form>
 </div>
