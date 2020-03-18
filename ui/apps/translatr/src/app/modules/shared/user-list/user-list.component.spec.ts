@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserListComponent } from './user-list.component';
+import { NavListTestingModule } from '../nav-list/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MatListModule, MatProgressBarModule, MatTooltipModule } from '@angular/material';
+import { GravatarModule } from 'ngx-gravatar';
+import { MomentModule } from 'ngx-moment';
 
 describe('UserListComponent', () => {
   let component: UserListComponent;
@@ -8,7 +13,18 @@ describe('UserListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [UserListComponent]
+      declarations: [UserListComponent],
+      imports: [
+        NavListTestingModule,
+
+        RouterTestingModule,
+        GravatarModule,
+        MomentModule,
+
+        MatListModule,
+        MatProgressBarModule,
+        MatTooltipModule
+      ]
     }).compileComponents();
   }));
 
