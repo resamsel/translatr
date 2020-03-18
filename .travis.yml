@@ -32,8 +32,5 @@ jobs:
 
     - language: node_js
       node_js: "10.9"
-      before_script:
+      before_install:
         - cd ui
-        - npm install
-      script:
-        - npm run build:prod

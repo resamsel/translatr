@@ -15,7 +15,7 @@
     "start:admin": "ng serve translatr-admin --host 0.0.0.0 --port 4211",
     "start:docs": "ng serve docs --host 0.0.0.0 --port 4212",
     "generate": "dist/lets-generate",
-    "test": "ng test",
+    "test": "ng test translatr --watch=false --code-coverage=true",
     "test:ci": "ng test --watch=false",
     "test:coverage": "ng test --watch=true --code-coverage=true",
     "test:coverage:ci": "ng test --watch=false --code-coverage=true",
