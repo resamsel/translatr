@@ -52,7 +52,7 @@ export class ActivityListComponent {
       case 'dto.ProjectUser':
         return 'group';
       case 'dto.User':
-        return 'group';
+        return 'account_circle';
       default:
         return 'vpn_key';
     }
