@@ -22,7 +22,6 @@ import { LocaleListComponent } from './project-locales/locale-list/locale-list.c
 import { ProjectMembersComponent } from './project-members/project-members.component';
 import { MemberListComponent } from './project-members/member-list/member-list.component';
 import { GravatarModule } from 'ngx-gravatar';
-import { ActivityModule } from '../../shared/activity/activity.module';
 import { ProjectActivityComponent } from './project-activity/project-activity.component';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
 import { StoreModule } from '@ngrx/store';
@@ -73,7 +72,6 @@ import { MatSelectModule } from '@angular/material/select';
     FormsModule,
     ReactiveFormsModule,
     SidenavModule,
-    ActivityModule,
     ActivityListModule,
     NavListModule,
     LocaleEditDialogModule,

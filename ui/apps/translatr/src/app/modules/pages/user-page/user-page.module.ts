@@ -15,7 +15,6 @@ import { MomentModule } from 'ngx-moment';
 import { ProjectListModule } from '../../shared/project-list/project-list.module';
 import { GravatarModule } from 'ngx-gravatar';
 import { UserInfoComponent } from './user-info/user-info.component';
-import { ActivityModule } from '../../shared/activity/activity.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
 import { UserActivityComponent } from './user-activity/user-activity.component';
 import { EmptyViewModule, FeatureFlagModule, MetricModule, ShortNumberModule, UserCardModule } from '@dev/translatr-components';
@@ -53,7 +52,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     SidenavModule,
     ProjectListModule,
     ActivityListModule,
-    ActivityModule,
     UserCardModule,
     ProjectCardModule,
     ProjectEditDialogModule,

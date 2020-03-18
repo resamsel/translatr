@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProjectsResolverService } from '../../shared/resolver/projects-resolver.service';
 import { ProjectsPageComponent } from './projects-page.component';
 import { AuthGuard } from '../../../guards/auth.guard';
 
@@ -14,7 +13,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-  providers: [ProjectsResolverService]
+  exports: [RouterModule]
 })
 export class ProjectsPageRoutingModule {}
