@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ProjectCardListComponent } from './project-card-list.component';
+import { NavListTestingModule, ProjectCardTestingModule, ProjectEmptyViewTestingModule } from '../testing';
 
 describe('ProjectCardListComponent', () => {
   let component: ProjectCardListComponent;
@@ -8,7 +8,12 @@ describe('ProjectCardListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProjectCardListComponent ]
+      declarations: [ProjectCardListComponent],
+      imports: [
+        NavListTestingModule,
+        ProjectCardTestingModule,
+        ProjectEmptyViewTestingModule
+      ]
     })
     .compileComponents();
   }));

@@ -4,5 +4,6 @@ export * from './list-header/testing';
 export * from './nav-list/testing';
 export * from './project-card/testing';
 export * from './project-card-list/testing';
+export * from './project-empty-view/testing';
 export * from './project-list/testing';
 export * from './user-list/testing';
