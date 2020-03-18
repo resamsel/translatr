@@ -1,32 +1,38 @@
-sudo: required
 dist: trusty
+os: linux
 services:
   - docker
-language: java
-addons:
-  postgresql: "9.4"
-jdk:
-  - oraclejdk8
 
-before_install:
-  - npm i -g npm@10.9
-before_script:
-  - psql -V
-  - psql -c 'create user translatr;' -U postgres
-  - psql -c 'create database "translatr-test";' -U postgres
-  - psql -c 'grant all privileges on database "translatr-test" TO translatr;' -U postgres
-script:
-  - bin/activator clean jacoco:cover -Dconfig.file=test.conf
-  - cd ui && npm install && npm run build:prod
-after_success:
-  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - bin/activator docker:publish
-cache:
-  timeout: 86400
-  directories:
-    - $HOME/.ivy2/cache
-    - $HOME/.sbt
-before_cache:
-  # Cleanup the cached directories to avoid unnecessary cache updates
-  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
-  - find $HOME/.sbt        -name "*.lock"               -print -delete
+jobs:
+  include:
+    - language: java
+      addons:
+        postgresql: "9.4"
+      jdk: oraclejdk8
+
+      before_script:
+        - psql -V
+        - psql -c 'create user translatr;' -U postgres
+        - psql -c 'create database "translatr-test";' -U postgres
+        - psql -c 'grant all privileges on database "translatr-test" TO translatr;' -U postgres
+      script:
+        - bin/activator clean jacoco:cover -Dconfig.file=test.conf
+      after_success:
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+        - bin/activator docker:publish
+      cache:
+        timeout: 86400
+        directories:
+          - $HOME/.ivy2/cache
+          - $HOME/.sbt
+      before_cache:
+        # Cleanup the cached directories to avoid unnecessary cache updates
+        - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+        - find $HOME/.sbt        -name "*.lock"               -print -delete
+
+    - language: node_js
+      node_js: "10.9"
+      before_script:
+        - cd ui
+      script:
+        - npm run build:prod
