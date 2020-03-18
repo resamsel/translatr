@@ -15,7 +15,7 @@ interface MemberForm {
   role: MemberRole;
 }
 
-const memberToUser = (member: Member): User => {
+const memberToUser = (member: Partial<Member>): User => {
   return {
     id: member.userId,
     name: member.userName,
@@ -43,7 +43,7 @@ export class ProjectMemberEditFormComponent
 
   private destroy$ = new Subject<void>();
 
-  @Input() set member(member: Member) {
+  @Input() set member(member: Partial<Member>) {
     this.updateValue(member);
   }
 
@@ -103,11 +103,7 @@ export class ProjectMemberEditFormComponent
     return user ? user.username : undefined;
   }
 
-  get dirty(): boolean {
-    return this.form.dirty;
-  }
-
-  private updateValue(member: Member): void {
+  private updateValue(member: Partial<Member>): void {
     this.form.patchValue({
       id: member.id,
       projectId: member.projectId,
