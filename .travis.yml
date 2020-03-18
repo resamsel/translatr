@@ -14,7 +14,7 @@ before_script:
   - psql -c 'grant all privileges on database "translatr-test" TO translatr;' -U postgres
 script:
   - bin/activator clean jacoco:cover -Dconfig.file=test.conf
-  - cd ui && npm run build:prod
+  - cd ui && npm install && npm run build:prod
 after_success:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - bin/activator docker:publish
@@ -23,6 +23,7 @@ cache:
   directories:
     - $HOME/.ivy2/cache
     - $HOME/.sbt
+    - ui/node_modules
 before_cache:
   # Cleanup the cached directories to avoid unnecessary cache updates
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
