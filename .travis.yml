@@ -7,6 +7,9 @@ addons:
   postgresql: "9.4"
 jdk:
   - oraclejdk8
+
+before_install:
+  - npm i -g npm@10.9
 before_script:
   - psql -V
   - psql -c 'create user translatr;' -U postgres
@@ -23,7 +26,6 @@ cache:
   directories:
     - $HOME/.ivy2/cache
     - $HOME/.sbt
-    - ui/node_modules
 before_cache:
   # Cleanup the cached directories to avoid unnecessary cache updates
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
