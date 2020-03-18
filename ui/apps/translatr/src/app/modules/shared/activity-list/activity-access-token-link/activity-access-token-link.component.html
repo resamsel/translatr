@@ -1,7 +1,7 @@
 <ng-container *ngIf="accessTokenLink; else accessTokenPlain">
   Access token:
-  <a [routerLink]="accessTokenLink" class="link">{{ accessToken.name }}</a>
+  <a [routerLink]="accessTokenLink" class="link">{{ accessToken?.name }}</a>
 </ng-container>
 <ng-template #accessTokenPlain>
-  Access token: {{ accessToken.name }}
+  Access token: {{ accessToken?.name }}
 </ng-template>
