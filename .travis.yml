@@ -1,7 +1,5 @@
 dist: trusty
 os: linux
-services:
-  - docker
 
 jobs:
   include:
@@ -9,6 +7,8 @@ jobs:
       addons:
         postgresql: "9.4"
       jdk: oraclejdk8
+      services:
+        - docker
 
       before_script:
         - psql -V
@@ -34,5 +34,6 @@ jobs:
       node_js: "10.9"
       before_script:
         - cd ui
+        - npm install
       script:
         - npm run build:prod
