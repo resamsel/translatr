@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Project } from '@dev/translatr-model';
 
 @Component({
@@ -7,10 +7,6 @@ import { Project } from '@dev/translatr-model';
   templateUrl: './project-card-link.component.html',
   styleUrls: ['./project-card-link.component.scss']
 })
-export class ProjectCardLinkComponent implements OnInit {
+export class ProjectCardLinkComponent {
   @Input() project: Project;
-
-  constructor() {}
-
-  ngOnInit() {}
 }

@@ -9,8 +9,6 @@ import { firstChar } from '@dev/translatr-sdk';
   styleUrls: ['./project-card.component.scss']
 })
 export class ProjectCardComponent {
-  constructor() {}
-
   @Input() project: Project;
 
   firstChar = firstChar;
