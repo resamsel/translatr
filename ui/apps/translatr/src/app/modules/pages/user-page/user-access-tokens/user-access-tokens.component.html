@@ -1,7 +1,9 @@
 <app-nav-list
   (filter)="onFilter($event)"
   [pagedList]="accessTokens$ | async"
-  [empty]="empty" showFilter="true">
+  [empty]="empty"
+  showFilter="true"
+>
   <a
     *ngFor="let accessToken of (accessTokens$ | async)?.list; trackBy: trackByFn"
     [routerLink]="['/', (user$ | async)?.username, 'access-tokens', accessToken.id]"

@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserAccessTokenComponent } from './user-access-token.component';
+import { AccessTokenEditFormTestingModule } from '../../../shared/access-token-edit-form/testing';
+import { MatButtonModule, MatCardModule } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
+import { UserFacade } from '../+state/user.facade';
+import { mockObservable } from '@translatr/utils/testing';
 
 describe('UserAccessTokenComponent', () => {
   let component: UserAccessTokenComponent;
@@ -8,9 +13,25 @@ describe('UserAccessTokenComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserAccessTokenComponent ]
+      declarations: [UserAccessTokenComponent],
+      imports: [
+        AccessTokenEditFormTestingModule,
+
+        RouterTestingModule,
+
+        MatCardModule,
+        MatButtonModule
+      ],
+      providers: [
+        {
+          provide: UserFacade,
+          useFactory: () => ({
+            accessToken$: mockObservable()
+          })
+        }
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

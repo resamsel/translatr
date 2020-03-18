@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ProjectCriteria, User } from '@dev/translatr-model';
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
 import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material';
 import { UserFacade } from '../+state/user.facade';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
 import { navigate } from '@translatr/utils';

@@ -29,7 +29,6 @@ describe('ProjectSettingsComponent', () => {
         MatCardModule,
         MatFormFieldModule,
         MatInputModule
-
       ],
       providers: [
         { provide: MatSnackBar, useFactory: () => ({}) },

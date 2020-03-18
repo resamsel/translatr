@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserProjectsComponent } from './user-projects.component';
+import { UserFacade } from '../+state/user.facade';
+import { mockObservable } from '@translatr/utils/testing';
+import { MatButtonModule, MatDialog, MatIconModule, MatTooltipModule } from '@angular/material';
+import { ProjectListTestingModule } from '../../../shared/project-list/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('UserProjectsComponent', () => {
   let component: UserProjectsComponent;
@@ -8,7 +13,27 @@ describe('UserProjectsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [UserProjectsComponent]
+      declarations: [UserProjectsComponent],
+      imports: [
+        ProjectListTestingModule,
+
+        RouterTestingModule,
+
+        MatTooltipModule,
+        MatButtonModule,
+        MatIconModule
+      ],
+      providers: [
+        {
+          provide: UserFacade,
+          useFactory: () => ({
+            projectsCriteria$: mockObservable(),
+            user$: mockObservable(),
+            destroy$: mockObservable()
+          })
+        },
+        { provide: MatDialog, useFactory: () => ({}) }
+      ]
     }).compileComponents();
   }));
 
