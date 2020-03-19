@@ -30,7 +30,6 @@ import {
   LoadAccessTokens,
   LoadActivities,
   LoadFeatureFlags,
-  LoadLoggedInUser,
   LoadProjects,
   LoadUser,
   LoadUsers,
@@ -69,9 +68,9 @@ import { AccessTokenService, ActivityService, FeatureFlagService, ProjectService
 export class AppEffects {
   // Users
 
-  @Effect() loadLoggedInUser$ = this.actions$.pipe(
+  @Effect() loadMe$ = this.actions$.pipe(
     ofType(AppActionTypes.LoadLoggedInUser),
-    switchMap((action: LoadLoggedInUser) =>
+    switchMap(() =>
       this.userService
         .me({ fetch: 'featureFlags' })
         .pipe(

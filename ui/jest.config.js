@@ -5,7 +5,7 @@ module.exports = {
   },
   resolver: '@nrwl/jest/plugins/resolver',
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageReporters: ['html', 'lcov'],
+  coverageReporters: ['html', 'lcov', 'text'],
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {

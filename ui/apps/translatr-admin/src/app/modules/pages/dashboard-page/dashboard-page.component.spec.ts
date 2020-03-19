@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DashboardPageComponent } from './dashboard-page.component';
+import { AppFacade } from '../../../+state/app.facade';
+import { RouterTestingModule } from '@angular/router/testing';
+import { DASHBOARD_ROUTES } from './dashboard-page.token';
+import { MatButtonModule, MatIconModule, MatListModule, MatSidenavModule, MatToolbarModule } from '@angular/material';
+import { SidenavTestingModule } from '../../testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('DashboardPageComponent', () => {
   let component: DashboardPageComponent;
@@ -8,7 +13,28 @@ describe('DashboardPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DashboardPageComponent]
+      declarations: [DashboardPageComponent],
+      imports: [
+        SidenavTestingModule,
+
+        RouterTestingModule,
+        NoopAnimationsModule,
+
+        MatSidenavModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatIconModule,
+        MatListModule
+      ],
+      providers: [
+        { provide: AppFacade, useFactory: () => ({}) },
+        {
+          provide: DASHBOARD_ROUTES,
+          useValue: ([
+            { children: [] }
+          ])
+        }
+      ]
     }).compileComponents();
   }));
 

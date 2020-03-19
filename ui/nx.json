@@ -28,16 +28,6 @@
         "e2e"
       ]
     },
-    "docs-e2e": {
-      "tags": [
-        "e2e"
-      ]
-    },
-    "docs": {
-      "tags": [
-        "app"
-      ]
-    },
     "translatr-sdk": {
       "tags": [
         "lib",

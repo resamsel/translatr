@@ -1,45 +1,75 @@
-import { TestBed, async } from '@angular/core/testing';
-
-import { Observable } from 'rxjs';
-
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
-import { provideMockActions } from '@ngrx/effects/testing';
-
-import { NxModule } from '@nrwl/angular';
-import { DataPersistence } from '@nrwl/angular';
-import { hot } from '@nrwl/angular/testing';
-
+import { TestBed } from '@angular/core/testing';
+import { BehaviorSubject, of, Subject } from 'rxjs';
+import { Actions } from '@ngrx/effects';
 import { AppEffects } from './app.effects';
-import { LoadAdmin, AdminLoaded } from './app.actions';
+import { AccessTokenService, ActivityService, FeatureFlagService, ProjectService, UserService } from '@dev/translatr-sdk';
+import { User } from '@dev/translatr-model';
+import { LoadLoggedInUser, LoggedInUserLoaded } from './app.actions';
 
-describe('AdminEffects', () => {
-  let actions: Observable<any>;
+describe('AppEffects', () => {
+  let actions: Subject<any>;
   let effects: AppEffects;
+  let userService: UserService & {
+    me: jest.Mock;
+    find: jest.Mock;
+  };
 
   beforeEach(() => {
+    actions = new BehaviorSubject(undefined);
     TestBed.configureTestingModule({
-      imports: [
-        NxModule.forRoot(),
-        StoreModule.forRoot({}),
-        EffectsModule.forRoot([])
-      ],
       providers: [
         AppEffects,
-        DataPersistence,
-        provideMockActions(() => actions)
+        {
+          provide: UserService,
+          useFactory: () => ({
+            me: jest.fn(),
+            find: jest.fn()
+          })
+        },
+        {
+          provide: ProjectService,
+          useFactory: () => ({
+            byOwnerAndName: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn()
+          })
+        },
+        {
+          provide: AccessTokenService,
+          useFactory: () => ({})
+        },
+        {
+          provide: ActivityService,
+          useFactory: () => ({})
+        },
+        {
+          provide: FeatureFlagService,
+          useFactory: () => ({})
+        },
+        { provide: Actions, useValue: actions }
       ]
     });
 
     effects = TestBed.get(AppEffects);
+    userService = TestBed.get(UserService);
   });
 
-  describe('loadAdmin$', () => {
-    it('should work', () => {
-      actions = hot('-a-|', { a: new LoadAdmin() });
-      expect(effects.loadAdmin$).toBeObservable(
-        hot('-a-|', { a: new AdminLoaded([]) })
-      );
+  describe('loadMe$', () => {
+    it('should work', (done) => {
+      // given
+      const user: User = { id: '1', name: 'user', username: 'username' };
+      userService.me.mockReturnValueOnce(of(user));
+      const target$ = effects.loadMe$;
+
+      // when
+      actions.next(new LoadLoggedInUser());
+
+      // then
+      target$.subscribe(actual => {
+        expect(actual).toStrictEqual(new LoggedInUserLoaded(user));
+        expect(userService.me.mock.calls.length).toBe(1);
+        done();
+      });
     });
   });
 });

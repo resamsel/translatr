@@ -1,6 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardAccessTokensComponent } from './dashboard-access-tokens.component';
+import { AppFacade } from '../../../../+state/app.facade';
+import { MatButtonModule, MatIconModule, MatSnackBar, MatTableModule, MatTooltipModule } from '@angular/material';
+import { ButtonTestingModule, EntityTableTestingModule, FeatureFlagTestingModule } from '@translatr/components/testing';
+import { MomentModule } from 'ngx-moment';
+import { RouterTestingModule } from '@angular/router/testing';
+import { EllipsisModule } from '@dev/translatr-components';
+import { mockObservable } from '@translatr/utils/testing';
 
 describe('DashboardAccessTokensComponent', () => {
   let component: DashboardAccessTokensComponent;
@@ -8,7 +15,35 @@ describe('DashboardAccessTokensComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DashboardAccessTokensComponent]
+      declarations: [DashboardAccessTokensComponent],
+      imports: [
+        FeatureFlagTestingModule,
+        EntityTableTestingModule,
+        ButtonTestingModule,
+        EllipsisModule,
+
+        RouterTestingModule,
+        MomentModule,
+
+        MatTableModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatIconModule
+      ],
+      providers: [
+        {
+          provide: AppFacade,
+          useFactory: () => ({
+            me$: mockObservable(),
+            accessTokenDeleted$: mockObservable(),
+            accessTokensDeleted$: mockObservable()
+          })
+        },
+        {
+          provide: MatSnackBar,
+          useFactory: () => ({})
+        }
+      ]
     }).compileComponents();
   }));
 
