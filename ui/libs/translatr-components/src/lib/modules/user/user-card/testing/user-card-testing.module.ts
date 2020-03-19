@@ -5,13 +5,21 @@ import { User } from '@dev/translatr-model';
   selector: 'user-card',
   template: ''
 })
-class MockUserCardComponent {
+export class MockUserCardComponent {
+  @Input() user: User;
+}
+
+@Component({
+  selector: 'app-user-card-link',
+  template: ''
+})
+export class MockUserCardLinkComponent {
   @Input() user: User;
 }
 
 @NgModule({
-  declarations: [MockUserCardComponent],
-  exports: [MockUserCardComponent]
+  declarations: [MockUserCardComponent, MockUserCardLinkComponent],
+  exports: [MockUserCardComponent, MockUserCardLinkComponent]
 })
 export class UserCardTestingModule {
 }

@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ErrorPageComponent } from './error-page.component';
+import { ErrorPageHeaderComponent } from '@translatr/translatr-components/src/lib/modules/pages/error-page/error-page-header.component';
+import { ErrorPageMessageComponent } from '@translatr/translatr-components/src/lib/modules/pages/error-page/error-page-message.component';
+import { MatIconModule } from '@angular/material';
 
 describe('ErrorPageComponent', () => {
   let component: ErrorPageComponent;
@@ -8,7 +11,14 @@ describe('ErrorPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ErrorPageComponent]
+      declarations: [
+        ErrorPageComponent,
+        ErrorPageHeaderComponent,
+        ErrorPageMessageComponent
+      ],
+      imports: [
+        MatIconModule
+      ]
     })
       .compileComponents();
   }));

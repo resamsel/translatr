@@ -151,8 +151,9 @@ export class FilterFieldComponent implements OnInit {
     const booleans = this.options
       .filter(s => s.type === 'boolean')
       .map(s => s.key);
-    const filters = this.filters
-      .filter(f => !booleans.includes(f.key));
+    const filters = this.filters !== undefined
+      ? this.filters.filter(f => !booleans.includes(f.key))
+      : [];
 
     if (option !== undefined) {
       this.autocompleteOptions = filters
@@ -163,7 +164,7 @@ export class FilterFieldComponent implements OnInit {
         .filter(o => filterOption(o, option))
         .map((o) => ({
             ...o,
-          value: valueOf(option, o)
+            value: valueOf(option, o)
           })
         );
     } else {

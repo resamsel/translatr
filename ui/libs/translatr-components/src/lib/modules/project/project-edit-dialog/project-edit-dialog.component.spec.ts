@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ProjectEditDialogComponent } from './project-edit-dialog.component';
+import { ProjectEditDialogComponent } from '@dev/translatr-components';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, MatFormFieldModule, MatInputModule } from '@angular/material';
+import { mockObservable } from '@translatr/utils/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ProjectEditDialogComponent', () => {
   let component: ProjectEditDialogComponent;
@@ -8,7 +11,30 @@ describe('ProjectEditDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ProjectEditDialogComponent]
+      declarations: [ProjectEditDialogComponent],
+      imports: [
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+
+        MatFormFieldModule,
+        MatDialogModule,
+        MatInputModule
+      ],
+      providers: [
+        {
+          provide: MatDialogRef,
+          useFactory: () => ({
+            afterClosed: () => mockObservable()
+          })
+        },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            success$: mockObservable(),
+            error$: mockObservable()
+          }
+        }
+      ]
     }).compileComponents();
   }));
 

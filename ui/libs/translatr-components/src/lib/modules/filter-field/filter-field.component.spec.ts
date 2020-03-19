@@ -1,6 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FilterFieldComponent } from './filter-field.component';
+import { Renderer2 } from '@angular/core';
+import {
+  MatAutocompleteModule,
+  MatChipsModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
+  MatOptionModule,
+  MatTooltipModule
+} from '@angular/material';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('FilterFieldComponent', () => {
   let component: FilterFieldComponent;
@@ -8,7 +20,22 @@ describe('FilterFieldComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [FilterFieldComponent]
+      declarations: [FilterFieldComponent],
+      imports: [
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+
+        MatFormFieldModule,
+        MatChipsModule,
+        MatTooltipModule,
+        MatIconModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatOptionModule
+      ],
+      providers: [
+        { provide: Renderer2, useFactory: () => ({}) }
+      ]
     })
       .compileComponents();
   }));

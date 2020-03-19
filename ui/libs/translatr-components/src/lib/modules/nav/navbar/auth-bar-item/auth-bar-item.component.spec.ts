@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AuthBarItemComponent } from './auth-bar-item.component';
+import { MatButtonModule, MatDividerModule, MatIconModule, MatMenuModule, MatTooltipModule } from '@angular/material';
+import { GravatarModule } from 'ngx-gravatar';
 
 describe('AuthBarItemComponent', () => {
   let component: AuthBarItemComponent;
@@ -8,7 +10,16 @@ describe('AuthBarItemComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AuthBarItemComponent]
+      declarations: [AuthBarItemComponent],
+      imports: [
+        GravatarModule,
+
+        MatIconModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatMenuModule,
+        MatDividerModule
+      ]
     }).compileComponents();
   }));
 

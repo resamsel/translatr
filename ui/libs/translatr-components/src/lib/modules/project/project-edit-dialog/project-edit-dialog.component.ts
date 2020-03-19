@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { takeUntil } from 'rxjs/operators';
 import { ConstraintViolation, ConstraintViolationErrorInfo, ErrorAction, Project } from '@dev/translatr-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';

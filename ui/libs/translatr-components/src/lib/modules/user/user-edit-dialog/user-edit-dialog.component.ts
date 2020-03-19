@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ConstraintViolation, ConstraintViolationErrorInfo, ErrorAction, User, UserRole } from '@dev/translatr-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -32,7 +32,6 @@ export class UserEditDialogComponent {
     email: new FormControl()
   });
   roles: UserRole[] = [UserRole.Admin, UserRole.User];
-
   constructor(
     public dialogRef: MatDialogRef<UserEditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: UserEditDialogConfig
@@ -56,6 +55,12 @@ export class UserEditDialogComponent {
 
   onSubmit() {
     this.data.onSubmit(this.form.value);
+  }
+
+  hasRole(role: UserRole): boolean {
+    return this.data.allowedRoles !== undefined
+      ? this.data.allowedRoles.indexOf(role) !== -1
+      : false;
   }
 
   private setErrors(error: ConstraintViolationErrorInfo) {

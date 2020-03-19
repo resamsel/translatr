@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EntityTableComponent } from './entity-table.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FilterFieldTestingModule } from '@translatr/components/testing';
+import { MatCheckboxModule, MatIconModule, MatPaginatorModule, MatTableModule } from '@angular/material';
 
 describe('EntityTableComponent', () => {
   let component: EntityTableComponent;
@@ -8,7 +11,17 @@ describe('EntityTableComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [EntityTableComponent]
+      declarations: [EntityTableComponent],
+      imports: [
+        FilterFieldTestingModule,
+
+        RouterTestingModule,
+
+        MatIconModule,
+        MatTableModule,
+        MatCheckboxModule,
+        MatPaginatorModule
+      ]
     }).compileComponents();
   }));
 

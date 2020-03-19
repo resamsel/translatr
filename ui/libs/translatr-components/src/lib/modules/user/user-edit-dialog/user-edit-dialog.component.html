@@ -23,7 +23,7 @@
       <mat-option
         *ngFor="let role of roles"
         [value]="role"
-        [disabled]="data.allowedRoles.indexOf(role) === -1"
+        [disabled]="!hasRole(role)"
         >{{ role }}</mat-option
       >
     </mat-select>

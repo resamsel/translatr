@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
-import { UserService } from './user.service';
 import { HttpClient } from '@angular/common/http';
-import { ErrorHandler } from '@dev/translatr-sdk';
+import { ErrorHandler, FeatureFlagService } from '@dev/translatr-sdk';
 
-describe('UserService', () => {
+describe('FeatureFlagService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       { provide: HttpClient, useFactory: () => ({}) },
@@ -13,7 +12,7 @@ describe('UserService', () => {
   }));
 
   it('should be created', () => {
-    const service: UserService = TestBed.get(UserService);
+    const service: FeatureFlagService = TestBed.get(FeatureFlagService);
     expect(service).toBeTruthy();
   });
 });

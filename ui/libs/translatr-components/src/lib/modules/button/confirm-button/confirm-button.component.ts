@@ -3,8 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, HostList
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'confirm-button',
-  templateUrl: './confirm-button.component.html',
-  styleUrls: ['./confirm-button.component.css']
+  templateUrl: './confirm-button.component.html'
 })
 export class ConfirmButtonComponent {
   @Input() tooltip: string;
