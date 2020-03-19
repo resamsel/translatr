@@ -36,3 +36,4 @@ jobs:
         - cd ui
       script:
         - npm run build:prod
+        - npm run coveralls
