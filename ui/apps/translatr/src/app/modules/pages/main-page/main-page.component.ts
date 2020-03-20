@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { AppFacade } from '../../../+state/app.facade';
-import { User, UserRole } from '@dev/translatr-model';
+import { Aggregate, PagedList, User, UserRole } from '@dev/translatr-model';
 import { environment } from '../../../../environments/environment';
+import { ActivityService } from '@dev/translatr-sdk';
+import { pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'app-main-page',
@@ -13,8 +15,14 @@ export class MainPageComponent {
 
   readonly adminUrl = environment.adminUrl;
   readonly endpointUrl = environment.endpointUrl;
+  readonly aggregatedActivity$ = this.activityService
+    .aggregated({})
+    .pipe(pluck<PagedList<Aggregate>, Aggregate[]>('list'));
 
-  constructor(private readonly facade: AppFacade) {
+  constructor(
+    private readonly facade: AppFacade,
+    private readonly activityService: ActivityService
+  ) {
   }
 
   isAdmin(me: User | undefined): boolean {

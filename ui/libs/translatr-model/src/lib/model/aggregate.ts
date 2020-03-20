@@ -1,6 +1,6 @@
 export interface Aggregate {
   date: Date;
   millis: number;
-  key: string;
+  key?: string;
   value: number;
 }

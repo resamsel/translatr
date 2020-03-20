@@ -92,7 +92,9 @@
     <h3 class="main-header center" i18n="@@activity">Activity</h3>
 
     <!-- TODO: fix me! -->
-    <div class="svg-container"></div>
+    <div class="svg-container">
+      <dev-activity-graph [data]="aggregatedActivity$ | async"></dev-activity-graph>
+    </div>
 
     <div i18n="@@activity.content">
       <p>The activity graph shows the usage of Translatr. The change history contains contributions to users,

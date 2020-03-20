@@ -1,3 +1,4 @@
+export * from './activity-graph';
 export * from './button';
 export * from './empty-view';
 export * from './entity';
