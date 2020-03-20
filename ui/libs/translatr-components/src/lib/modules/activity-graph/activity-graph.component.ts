@@ -26,12 +26,12 @@ const defaultDirectionConfig: DirectionConfig = {
 };
 
 const cellPosition = (date: Date, width: number, cellSize: number, offset: DirectionConfig): [number, number] => {
-  const offsetTop = { ...defaultDirectionConfig, ...offset }.top;
+  offset = { ...defaultDirectionConfig, ...offset };
   const weekDiff = d3.timeMonday.count(date, new Date());
 
   return [
-    width - (cellSize * (weekDiff + 1)),
-    dayOfWeek(date) * cellSize + offsetTop
+    width - (cellSize * (weekDiff + 1)) - offset.right,
+    dayOfWeek(date) * cellSize + offset.top
   ];
 };
 
@@ -45,7 +45,7 @@ export class ActivityGraphComponent implements OnInit {
   @Input() cellInnerSize = 16;
   @Input() cellPadding = 1;
   @Input() offsetTop = 20;
-  @Input() offsetRight = 0;
+  @Input() offsetRight = 16;
   @Input() offsetBottom = 20;
   @Input() offsetLeft = 50;
   @Input() weekdays = [['Tue', 2], ['Thu', 4], ['Sat', 6]];
@@ -80,6 +80,12 @@ export class ActivityGraphComponent implements OnInit {
     const cellSize = this.cellInnerSize + this.cellPadding * 2;
     const width = this.offsetLeft + (this.weeks + 1) * cellSize + this.offsetRight;
     const height = cellSize * 7 + this.offsetTop + this.offsetBottom;
+    const offset = {
+      top: this.offsetTop,
+      right: this.offsetRight,
+      bottom: this.offsetBottom,
+      left: this.offsetLeft
+    };
 
     this.svg = d3.select(this.hostElement)
       .append('svg')
@@ -98,7 +104,7 @@ export class ActivityGraphComponent implements OnInit {
     const data = this.data.filter((aggregate: Aggregate) => aggregate.date.getTime() > aYearAgo.getTime());
 
     d3.timeMonths(aYearAgo, today).forEach((date: Date) => {
-      const [x] = cellPosition(date, width, cellSize, { top: this.offsetTop });
+      const [x] = cellPosition(date, width, cellSize, offset);
 
       this.createText(x, 12, monthFormat(date), 'month');
     });
@@ -109,7 +115,7 @@ export class ActivityGraphComponent implements OnInit {
     });
 
     d3.timeDays(aYearAgo, today).forEach((date: Date) => {
-      const [x, y] = cellPosition(date, width, cellSize, { top: this.offsetTop });
+      const [x, y] = cellPosition(date, width, cellSize, offset);
 
       this.createRect(x, y, this.cellInnerSize, this.cellInnerSize, 'day')
         .append('title')
@@ -119,7 +125,7 @@ export class ActivityGraphComponent implements OnInit {
     const maxValue = data.reduce((max, curr) => Math.max(max, curr.value), 0);
 
     data.forEach((aggregate) => {
-      const [x, y] = cellPosition(aggregate.date, width, cellSize, { top: this.offsetTop });
+      const [x, y] = cellPosition(aggregate.date, width, cellSize, offset);
 
       this.createRect(x, y, this.cellInnerSize, this.cellInnerSize, `day q${color(aggregate.value / maxValue)}`)
         .append('title')
@@ -127,7 +133,7 @@ export class ActivityGraphComponent implements OnInit {
     });
 
     Array(numberOfColors + 1).fill(0).forEach((_: number, i, arr) => {
-      const x = width - (3 + arr.length) * cellSize + i * cellSize;
+      const x = width - (3 + arr.length) * cellSize + i * cellSize - offset.right;
       const y = height - cellSize;
       const clazz = i === 0 ? '' : `q${color((i - 1) / numberOfColors)}`;
 
@@ -135,14 +141,14 @@ export class ActivityGraphComponent implements OnInit {
     });
 
     this.createText(
-      width - (3 + numberOfColors + 1) * cellSize - 8,
+      width - (3 + numberOfColors + 1) * cellSize - 8 - offset.right,
       height - 4,
       'Less',
       'weekday'
     )
       .attr('text-anchor', 'end');
     this.createText(
-      width - 3 * cellSize + 4,
+      width - 3 * cellSize + 4 - offset.right,
       height - 4,
       'More',
       'weekday'
