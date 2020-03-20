@@ -109,8 +109,8 @@ export class ActivityGraphComponent implements OnInit {
       this.createText(x, 12, monthFormat(date), 'month');
     });
 
-    this.weekdays.forEach(([weekday, offset]: [string, number]) => {
-      this.createText(this.offsetLeft - 8, this.offsetTop + offset * cellSize - 4, weekday, 'weekday')
+    this.weekdays.forEach(([weekday, off]: [string, number]) => {
+      this.createText(this.offsetLeft - 8, this.offsetTop + off * cellSize - 4, weekday, 'weekday')
         .attr('text-anchor', 'end');
     });
 
