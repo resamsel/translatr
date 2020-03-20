@@ -16,6 +16,10 @@
 
     > * {
       margin: 0 4px;
+
+      &.mat-card {
+        max-width: calc(100% - 32px - 8px);
+      }
     }
   }
 
@@ -68,6 +72,10 @@
 
     > * {
       margin: 0 8px;
+
+      &.mat-card {
+        max-width: calc(100% - 32px - 16px);
+      }
     }
   }
 

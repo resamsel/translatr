@@ -45,4 +45,20 @@ describe('ProjectFacade', () => {
       expect(store.dispatch.mock.calls.length).toBe(1);
     });
   });
+
+  describe('loadAccessTokens', () => {
+    it('dispatches an action', () => {
+      // given
+      const criteria = {
+        userId: '1'
+      };
+
+      // when
+      facade.loadAccessTokens(criteria);
+
+      // then
+      expect(store.dispatch.mock.calls.length).toBe(1);
+      expect(store.dispatch.mock.calls[0][0].payload).toBe(criteria);
+    });
+  });
 });

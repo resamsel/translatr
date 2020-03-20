@@ -9,6 +9,7 @@ import {
   deleteKey,
   deleteLocale,
   deleteMember,
+  loadAccessTokens,
   loadKeys,
   loadLocales,
   loadMembers,
@@ -22,6 +23,7 @@ import {
 } from './project.actions';
 import { combineLatest, merge, Observable, Subject } from 'rxjs';
 import {
+  AccessTokenCriteria,
   ActivityCriteria,
   Key,
   KeyCriteria,
@@ -143,6 +145,8 @@ export class ProjectFacade {
   );
   activitiesCriteria$ = this.appFacade.criteria$();
 
+  accessTokens$ = this.store.pipe(select(projectQuery.getAccessTokens));
+
   permission$ = combineLatest([
     this.project$.pipe(filter(x => !!x)),
     this.appFacade.me$
@@ -195,6 +199,10 @@ export class ProjectFacade {
 
   loadActivities(projectId: string, criteria?: ActivityCriteria) {
     this.store.dispatch(loadProjectActivities({ payload: { ...criteria, projectId } }));
+  }
+
+  loadAccessTokens(criteria?: AccessTokenCriteria) {
+    this.store.dispatch(loadAccessTokens({ payload: criteria }));
   }
 
   unloadProject() {

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { ProjectPartialState } from './project.reducer';
 import {
+  accessTokensLoaded,
+  accessTokensLoadError,
   createKey,
   createLocale,
   createMember,
@@ -15,6 +17,7 @@ import {
   keysLoaded,
   keyUpdated,
   keyUpdateError,
+  loadAccessTokens,
   loadKeys,
   loadLocales,
   loadMembers,
@@ -44,9 +47,9 @@ import {
   updateLocale,
   updateMember
 } from './project.actions';
-import { ActivityService, KeyService, LocaleService, MessageService } from '@dev/translatr-sdk';
+import { AccessTokenService, ActivityService, KeyService, LocaleService, MessageService } from '@dev/translatr-sdk';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
-import { Activity, Aggregate, Key, Locale, Member, Message, PagedList } from '@dev/translatr-model';
+import { AccessToken, Activity, Aggregate, Key, Locale, Member, Message, PagedList } from '@dev/translatr-model';
 import { of } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { projectQuery } from './project.selectors';
@@ -255,6 +258,20 @@ export class ProjectEffects {
     )
   ));
 
+  // Access Tokens
+
+  loadAccessTokens$ = createEffect(() => this.actions$.pipe(
+    ofType(loadAccessTokens),
+    switchMap((action) =>
+      this.accessTokenService
+        .find(action.payload)
+        .pipe(
+          map((payload: PagedList<AccessToken>) => accessTokensLoaded({ payload })),
+          catchError(error => of(accessTokensLoadError({ error })))
+        )
+    )
+  ));
+
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store<ProjectPartialState>,
@@ -262,7 +279,8 @@ export class ProjectEffects {
     private readonly keyService: KeyService,
     private readonly memberService: MemberService,
     private readonly messageService: MessageService,
-    private readonly activityService: ActivityService
+    private readonly activityService: ActivityService,
+    private readonly accessTokenService: AccessTokenService
   ) {
   }
 }

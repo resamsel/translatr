@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { Activity, Feature, Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
+import { AccessToken, Activity, Feature, Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
-import { filter, map, take } from 'rxjs/operators';
+import { filter, map, pluck, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { openLocaleEditDialog } from '../../../shared/locale-edit-dialog/locale-edit-dialog.component';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { openKeyEditDialog } from '../../../shared/key-edit-dialog/key-edit-dialog.component';
 import { slicePagedList, WINDOW } from '@translatr/utils';
+import { AppFacade } from '../../../../+state/app.facade';
 
 function endpointFromLocation(location: Location) {
   return `${location.protocol}//${location.host}`;
@@ -52,18 +53,38 @@ export class ProjectInfoComponent {
   );
 
   readonly members$ = this.facade.members$;
+
+  readonly accessTokens$ = this.facade.accessTokens$.pipe(
+    filter(x => !!x),
+    pluck<PagedList<AccessToken>, AccessToken[]>('list')
+  );
+
   readonly endpointUrl = endpointFromLocation(this.window.location);
   fileType = 'play_messages';
+  accessTokenKey = '${TRANSLATR_ACCESS_TOKEN}';
+
+  readonly targets = {
+    'play_messages': 'conf/messages.?{locale.name}',
+    'java_properties': 'src/main/resources/messages_?{locale.name}.properties',
+    'gettext': 'locale/{locale.name}/LC_MESSAGES/main.po'
+  };
 
   readonly Feature = Feature;
 
   constructor(
     private readonly facade: ProjectFacade,
+    readonly appFacade: AppFacade,
     private readonly dialog: MatDialog,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     @Inject(WINDOW) private readonly window: Window
   ) {
+    appFacade.me$
+      .pipe(
+        filter(x => !!x),
+        take(1)
+      )
+      .subscribe(me => facade.loadAccessTokens({ userId: me.id }));
   }
 
   openLocaleCreationDialog(project: Project): void {

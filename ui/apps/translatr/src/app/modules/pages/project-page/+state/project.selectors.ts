@@ -95,6 +95,11 @@ const getActivities = createSelector(
   (state: ProjectState) => state.activities
 );
 
+const getAccessTokens = createSelector(
+  getProjectState,
+  (state: ProjectState) => state.accessTokens
+);
+
 export const projectQuery = {
   getLoading,
   getError,
@@ -113,5 +118,6 @@ export const projectQuery = {
   getMembers,
   getMembersSearch,
   getActivityAggregated,
-  getActivities
+  getActivities,
+  getAccessTokens
 };

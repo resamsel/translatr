@@ -1,4 +1,5 @@
 import {
+  accessTokensLoaded,
   createKey,
   createLocale,
   createMember,
@@ -25,7 +26,7 @@ import {
   updateLocale,
   updateMember
 } from './project.actions';
-import { Activity, Aggregate, Key, Locale, Member, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
+import { AccessToken, Activity, Aggregate, Key, Locale, Member, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { Action, createReducer, on } from '@ngrx/store';
 import { Identifiable } from '../../../shared/edit-form/abstract-edit-form-component';
 
@@ -52,6 +53,8 @@ export interface ProjectState {
 
   activityAggregated?: PagedList<Aggregate>;
   activities?: PagedList<Activity>;
+
+  accessTokens?: PagedList<AccessToken>;
 
   loading: boolean;
   error?: any; // last none error (if any)
@@ -131,7 +134,7 @@ const reducer = createReducer(
   ),
   on(
     createLocale,
-    (state, { payload }) => resetLocale(state)
+    (state) => resetLocale(state)
   ),
   on(
     localeCreated,
@@ -143,7 +146,7 @@ const reducer = createReducer(
   ),
   on(
     updateLocale,
-    (state, { payload }) => resetLocale(state)
+    (state) => resetLocale(state)
   ),
   on(
     localeUpdated,
@@ -155,7 +158,7 @@ const reducer = createReducer(
   ),
   on(
     deleteLocale,
-    (state, { payload }) => resetLocale(state)
+    (state) => resetLocale(state)
   ),
   on(
     localeDeleted,
@@ -171,7 +174,7 @@ const reducer = createReducer(
   ),
   on(
     createKey,
-    (state, { payload }) => resetKey(state)
+    (state) => resetKey(state)
   ),
   on(
     keyCreated,
@@ -183,7 +186,7 @@ const reducer = createReducer(
   ),
   on(
     updateKey,
-    (state, { payload }) => resetKey(state)
+    (state) => resetKey(state)
   ),
   on(
     keyUpdated,
@@ -195,7 +198,7 @@ const reducer = createReducer(
   ),
   on(
     deleteKey,
-    (state, { payload }) => resetKey(state)
+    (state) => resetKey(state)
   ),
   on(
     keyDeleted,
@@ -211,7 +214,7 @@ const reducer = createReducer(
   ),
   on(
     createMember,
-    (state, { payload }) => resetMember(state)
+    (state) => resetMember(state)
   ),
   on(
     memberCreated,
@@ -230,7 +233,7 @@ const reducer = createReducer(
   ),
   on(
     updateMember,
-    (state, { payload }) => resetMember(state)
+    (state) => resetMember(state)
   ),
   on(
     memberUpdated,
@@ -242,7 +245,7 @@ const reducer = createReducer(
   ),
   on(
     deleteMember,
-    (state, { payload }) => resetMember(state)
+    (state) => resetMember(state)
   ),
   on(
     memberDeleted,
@@ -263,6 +266,10 @@ const reducer = createReducer(
   on(
     projectActivitiesLoaded,
     (state, { payload }) => ({ ...state, activities: payload })
+  ),
+  on(
+    accessTokensLoaded,
+    (state, { payload }) => ({ ...state, accessTokens: payload })
   )
 );
 

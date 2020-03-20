@@ -1,5 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import {
+  AccessToken,
+  AccessTokenCriteria,
   Activity,
   ActivityCriteria,
   Aggregate,
@@ -239,6 +241,21 @@ export const projectActivitiesLoadError = createAction(
 export const projectActivitiesLoaded = createAction(
   '[Projects API] Project Activities Loaded',
   props<{ payload: PagedList<Activity> }>()
+);
+
+export const loadAccessTokens = createAction(
+  '[Project Page] Load Access Tokens',
+  props<{ payload: AccessTokenCriteria }>()
+);
+
+export const accessTokensLoadError = createAction(
+  '[Access Tokens API] Access Tokens Load Error',
+  props<{ error: any }>()
+);
+
+export const accessTokensLoaded = createAction(
+  '[Access Tokens API] Access Tokens Loaded',
+  props<{ payload: PagedList<AccessToken> }>()
 );
 
 export const unloadProject = createAction(

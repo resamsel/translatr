@@ -4,31 +4,32 @@
       *ngIf="me$ | async as me"
       mat-menu-item
       [routerLink]="['/', me.username]"
+      i18n="@@user.profile"
     >
       Profile
     </a>
     <ng-container *ngIf="isAdmin(me$ | async)">
       <mat-divider></mat-divider>
-      <a mat-menu-item [href]="adminUrl">Admin</a>
+      <a [href]="adminUrl" i18n="@@admin.title" mat-menu-item>Admin</a>
     </ng-container>
   </app-auth-bar-item>
 </app-navbar>
 
-<div class="section green header">
+<header class="section green header">
   <div class="container">
     <div class="row">
       <div class="col s12">
         <h1 class="main-header light white-text">
           <i class="material-icons left">translate</i>
-          Translatr
+          <span i18n="@@main.title">Translatr</span>
         </h1>
-        <h4 class="light green-text text-lighten-4 center">
-          Ein modernes und intuitives I18n-Werkzeug
+        <h4 class="light green-text text-lighten-4 center" i18n="@@main.subtitle">
+          A modern and intuitive i18n tool
         </h4>
       </div>
     </div>
   </div>
-</div>
+</header>
 
 <a
   *ngIf="me$ | async"
@@ -46,159 +47,126 @@
   <section class="section intro">
     <div class="row">
       <div class="col s12">
-        <h3 class="main-header center">
-          Translatr vereinfacht den Umgang mit Übersetzungen für Entwickler und
-          Übersetzer
+        <h3 class="main-header center" i18n="@intro.title">
+          Translatr simplifies i18n for developers and translators
         </h3>
       </div>
     </div>
     <div class="row">
-      <div class="col s12 m4">
+      <div class="col">
         <div class="center promo">
-          <i class="material-icons">flash_on</i>
-          <p class="promo-caption">Beschleunigt die Entwicklung</p>
-          <p class="light center">
-            Die Vorschau, der schnelle Wechsel zwischen Sprachen und die
-            Möglichkeit zur Integration in das Build-System ermöglichen eine
-            schnellere Entwicklung.
+          <i class="material-icons" i18n="@@promo1.icon">flash_on</i>
+          <p class="promo-caption" i18n="@@promo1.title">Speeds up development</p>
+          <p class="light center" i18n="@@promo1.content">
+            Preview, quick switching between locales, and the possibility of build system integration allow faster
+            development.
           </p>
         </div>
       </div>
-      <div class="col s12 m4">
+      <div class="col">
         <div class="center promo">
-          <i class="material-icons">group</i>
-          <p class="promo-caption">Fokussiert auf das Nutzungserlebnis</p>
-          <p class="light center">
-            Die Benutzung wird durch die Fokussierung auf die beiden
-            Anwendungszwecke - Entwicklung und Übersetzung - so angenehm wie
-            möglich gemacht.
+          <i class="material-icons" i18n="@@promo2.icon">group</i>
+          <p class="promo-caption" i18n="@@promo2.title">User experience focused</p>
+          <p class="light center" i18n="@@promo2.content">
+            Using the application is made as comfortable as possible because of focussing on both main use cases -
+            development and translation.
           </p>
         </div>
       </div>
-      <div class="col s12 m4">
+      <div class="col">
         <div class="center promo">
-          <i class="material-icons">settings</i>
-          <p class="promo-caption">Einfach zu benutzen</p>
-          <p class="light center">
-            Alle Elemente - Suche, Erzeugung von Inhalten, Benachrichtigungen -
-            folgen den Konzepten des Material-Design, um eine möglichst einfache
-            und intuitive Nutzung zu bieten.
+          <i class="material-icons" i18n="@@promo3.icon">settings</i>
+          <p class="promo-caption" i18n="@@promo3.title">Easy to work with</p>
+          <p class="light center" i18n="@@promo3.content">
+            All elements - search, content creation, notifications, ... - follow the concepts of Material Design to
+            allow the easiest and most intuitive use possible.
           </p>
         </div>
       </div>
     </div>
   </section>
-  <div class="divider"></div>
+
+  <mat-divider></mat-divider>
+
   <section class="section cli">
-    <div class="row">
-      <div class="col s12">
-        <h3 class="main-header center">Aktivität</h3>
+    <h3 class="main-header center" i18n="@@activity">Activity</h3>
 
-        <div class="svg-container"></div>
+    <!-- TODO: fix me! -->
+    <div class="svg-container"></div>
 
-        <p>
-          Die Aktivität zeigt an, wie aktiv Translatr genutzt wird. Dabei wird
-          die Änderungshistorie genutzt, in der sich Beiträge für Benutzer,
-          Projekte, Sprachen, Schlüssel, und Übersetzungen befinden. So kann die
-          Aktivität eines Projekts bestimmt werden, oder auch die eines
-          Benutzers.
-        </p>
-      </div>
+    <div i18n="@@activity.content">
+      <p>The activity graph shows the usage of Translatr. The change history contains contributions to users,
+        projects, locales, keys, and translations. That way the activity of a project can be estimated, as well as
+        the activity of individual users.</p>
     </div>
   </section>
-  <div class="divider"></div>
-  <div class="section cli">
-    <div class="row">
-      <div class="col s12">
-        <h3 class="main-header center">Command Line Interface</h3>
 
-        <p>
-          Das Command Line Interface ermöglicht die Verwaltung der Übersetzungen
-          über die Kommandozeile. Die Operationen können dadurch in
-          Build-Skripten genutzt werden, um automatisiert aktuelle Übersetzungen
-          zu erhalten.
-        </p>
+  <mat-divider></mat-divider>
 
-        <h4 class="main-header">Installation</h4>
+  <section class="section cli">
+    <h3 class="main-header center" i18n="@@cli.title">Command Line Interface</h3>
 
-        <p>Füge folgendes im Terminal ein:</p>
+    <div i18n="@@cli.content">
+      <p>The Command Line Interface allows to manage translations through the command line. Operations can be used
+        in build scripts to automatically retrieve the latest translations.</p>
+    </div>
 
-        <pre
-          class="language-bash"
-        ><code>curl -fsSL https://raw.githubusercontent.com/resamsel/translatr/master/install.sh | bash</code></pre>
+    <h4 class="main-header" i18n="@@cli.install.title">Installation</h4>
 
-        <h4 class="main-header">Nutzung</h4>
+    <div i18n="@@cli.install.content">
+      <p>Paste this at a terminal prompt:</p>
 
-        <p>
-          Um Translatr CLI nutzen zu können, brauchen wir eine .translatr.yml
-          Konfigurationsdatei. Lege diese Datei im Verzeichnis an, für das CLI
-          werden soll. Translatr benutzt diese Datei als Konfiguration.
-        </p>
+      <pre class="language-bash"><code>curl -fsSL https://raw.githubusercontent.com/resamsel/translatr/master/install.sh | bash</code></pre>
+    </div>
 
-        <h5 class="main-header">Beispiel .translatr.yml für Play messages</h5>
+    <h4 class="main-header" i18n="@@cli.usage.title">Usage</h4>
 
-        <pre class="language-yml"><code>translatr:
-  endpoint: <script>document.write(window.location.href);</script>http://localhost:9000/
-  access_token: &lt;Zugangsschlüssel&gt;
-  project_id: &lt;Projekt-ID&gt;
+    <div i18n="@@cli.usage.content">
+      <p>To use Translatr CLI we need a .translatr.yml config file. Create one in any directory that you want to
+        enable the CLI. Translatr will then use that file as configuration.</p>
+
+      <h5 class="header">Example
+        .translatr.yml for Play messages</h5>
+
+      <pre class="language-yml"><code>translatr:
+  endpoint: {{endpointUrl}}
+        access_token: &lt;access token&gt;
+  project_id: &lt;project ID&gt;
   pull:
     file_type: play_messages
-    target: conf/messages.?{{ '{' }}locale.name}
+    target: conf/messages.?{{'{'}}locale.name}
   push:
     file_type: play_messages
-    target: conf/messages.?{{ '{' }}locale.name}</code></pre>
+    target: conf/messages.?{{'{'}}locale.name}</code></pre>
 
-        <p>
-          Lege einen neuen Zugangsschlüssel (Access-Token) an und trage den
-          Schlüssel in .translatr.yml ein:
-          <a [routerLink]="['profile', 'accessToken', 'create']"
-          >Zugangsschlüssel</a
-          >.
-        </p>
+      <p>Create a new access token and enter it in the .translatr.yml: <a *ngIf="me$ | async as me"
+                                                                          [routerLink]="['/', me.username, 'access-tokens']">create
+        an access token</a>.</p>
 
-        <p>
-          Danach lege ein Projekt über die Weboberfläche an und trage die
-          Projekt-ID (40 Zeichen UUID in der URL, z.B.
-          http://localhost:9000/project/<strong
-        >6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong
-        >
-          -&gt; Projekt-ID:
-          <strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong>) ein.
-        </p>
+      <p>Then, create a project in the web GUI and enter the project ID (40 character
+        UUID in the URL, i.e. http://localhost:9000/project/<strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong> ->
+        project ID: <strong>6f1ee0a7-b5d1-4c7f-8e4d-46c09fece220</strong>) in the .translatr.yml.</p>
 
-        <h5 class="main-header">Hochladen</h5>
+      <h5 class="header">Pushing</h5>
 
-        <p>
-          Mit der <strong>push</strong>-Operation werden die passenden
-          messages-Dateien zum angegebenen Endpunkt hochzuladen. Sprachen werden
-          dabei angelegt, falls notwendig.
-        </p>
+      <p>By pushing you send the matching messages files to the given endpoint,
+        creating locales if needed.</p>
 
-        <pre class="language-bash"><code>translatr push</code></pre>
+      <pre class="language-bash"><code>translatr push</code></pre>
 
-        <p>
-          Dadurch werden bestehende Nachrichten mit den Werten in den
-          messages-Dateien überschrieben. Existierende Schlüssel und Sprachen
-          bleiben bestehen, diese Operation ist keine Synchronisierung.
-        </p>
+      <p>This will overwrite all existing messages, if any. No existing keys/locales will be removed, this is
+        not a sync operation.</p>
 
-        <h5 class="main-header">Herunterladen</h5>
+      <h5 class="header">Pulling</h5>
 
-        <p>
-          Mit der <strong>pull</strong>-Operation werden alle Sprachen in die
-          konfigurierten Dateien heruntergeladen (Konfiguration:
-          translatr.pull.target).
-        </p>
+      <p>By pulling you download all locales into
+        separate files into the configured files (translatr.pull.target key).</p>
 
-        <pre class="language-bash"><code>translatr pull</code></pre>
+      <pre class="language-bash"><code>translatr pull</code></pre>
 
-        <p>
-          Dadurch werden bestehende lokale Dateien überschrieben. Alle bekannten
-          Sprachen werden heruntergeladen.
-        </p>
-      </div>
+      <p>This will overwrite any existing files locally. All known locales will be downloaded.</p>
     </div>
-  </div>
+  </section>
 </div>
 
 <app-footer></app-footer>

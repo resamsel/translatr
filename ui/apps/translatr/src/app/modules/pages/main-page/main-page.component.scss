@@ -1,7 +1,7 @@
 @import '~@angular/material/theming';
 @import "mixins";
 
-.header {
+header.header {
   background-image: url(assets/headers/hexagon.png);
   height: 360px;
   justify-content: flex-end;
@@ -69,11 +69,10 @@
 }
 
 .col {
-  &.s12 {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-  }
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-width: 100%;
 }
 
 .center {
@@ -122,3 +121,4 @@ h5 {
   line-height: 110%;
   margin: .82rem 0 .656rem 0;
 }
+

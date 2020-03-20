@@ -20,6 +20,7 @@ import { NavListTestingModule } from '../../../shared/nav-list/testing';
 import { ActivityListTestingModule } from '../../../shared/activity-list/testing';
 import { ShortNumberModule } from '@dev/translatr-components';
 import { mockObservable } from '@translatr/utils/testing';
+import { AppFacade } from '../../../../+state/app.facade';
 
 describe('ProjectInfoComponent', () => {
   let component: ProjectInfoComponent;
@@ -55,7 +56,14 @@ describe('ProjectInfoComponent', () => {
             locales$: mockObservable(),
             keys$: mockObservable(),
             messages$: mockObservable(),
-            activities$: mockObservable()
+            activities$: mockObservable(),
+            accessTokens$: mockObservable()
+          })
+        },
+        {
+          provide: AppFacade,
+          useFactory: () => ({
+            me$: mockObservable()
           })
         },
         { provide: WINDOW, useValue: { location: {} } }

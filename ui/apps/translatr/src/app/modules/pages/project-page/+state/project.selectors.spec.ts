@@ -16,6 +16,13 @@ describe('Project Selectors', () => {
           hasPrev: false,
           limit: 20,
           offset: 0
+        },
+        accessTokens: {
+          list: [],
+          hasNext: false,
+          hasPrev: false,
+          limit: 20,
+          offset: 0
         }
       }
     };
@@ -28,6 +35,14 @@ describe('Project Selectors', () => {
 
       // then
       expect(actual).toBe(storeState[PROJECT_FEATURE_KEY].locales);
+    });
+
+    it('getAccessTokens() should return the list of access tokens', () => {
+      // given, when
+      const actual = projectQuery.getAccessTokens(storeState);
+
+      // then
+      expect(actual).toBe(storeState[PROJECT_FEATURE_KEY].accessTokens);
     });
   });
 });

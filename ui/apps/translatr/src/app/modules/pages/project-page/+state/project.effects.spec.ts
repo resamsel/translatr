@@ -3,9 +3,9 @@ import { BehaviorSubject, of, Subject } from 'rxjs';
 import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ProjectEffects } from './project.effects';
-import { ActivityService, KeyService, LocaleService, MessageService } from '@dev/translatr-sdk';
-import { Locale, PagedList } from '@dev/translatr-model';
-import { loadLocales, localesLoaded } from './project.actions';
+import { AccessTokenService, ActivityService, KeyService, LocaleService, MessageService } from '@dev/translatr-sdk';
+import { AccessToken, Locale, PagedList } from '@dev/translatr-model';
+import { accessTokensLoaded, loadAccessTokens, loadLocales, localesLoaded } from './project.actions';
 import { MemberService } from '@translatr/translatr-sdk/src/lib/services/member.service';
 import { ProjectState } from './project.reducer';
 
@@ -17,6 +17,9 @@ describe('ProjectEffects', () => {
     select: jest.Mock;
   };
   let localeService: LocaleService & {
+    find: jest.Mock;
+  };
+  let accessTokenService: AccessTokenService & {
     find: jest.Mock;
   };
 
@@ -47,6 +50,12 @@ describe('ProjectEffects', () => {
           provide: ActivityService,
           useFactory: () => ({})
         },
+        {
+          provide: AccessTokenService,
+          useFactory: () => ({
+            find: jest.fn()
+          })
+        },
         { provide: Actions, useValue: actions },
         {
           provide: Store, useFactory: () => ({
@@ -61,6 +70,7 @@ describe('ProjectEffects', () => {
     store = TestBed.get(Store);
     store.pipe.mockReturnValue(of({}));
     localeService = TestBed.get(LocaleService);
+    accessTokenService = TestBed.get(AccessTokenService);
   });
 
   describe('loadLocales$', () => {
@@ -75,7 +85,7 @@ describe('ProjectEffects', () => {
       };
       const criteria = {};
       localeService.find.mockReturnValueOnce(of(payload));
-      const effects = TestBed.get(ProjectEffects);
+      const effects: ProjectEffects = TestBed.get(ProjectEffects);
       const target$ = effects.loadLocales$;
 
       // when
@@ -85,6 +95,33 @@ describe('ProjectEffects', () => {
       target$.subscribe(actual => {
         expect(actual).toStrictEqual(localesLoaded({ payload }));
         expect(localeService.find.mock.calls.length).toBe(1);
+        done();
+      });
+    });
+  });
+
+  describe('loadAccessTokens$', () => {
+    it('should work', (done) => {
+      // given
+      const payload: PagedList<AccessToken> = {
+        list: [],
+        hasNext: false,
+        hasPrev: false,
+        limit: 20,
+        offset: 0
+      };
+      const criteria = {};
+      accessTokenService.find.mockReturnValueOnce(of(payload));
+      const effects: ProjectEffects = TestBed.get(ProjectEffects);
+      const target$ = effects.loadAccessTokens$;
+
+      // when
+      actions.next(loadAccessTokens({ payload: criteria }));
+
+      // then
+      target$.subscribe(actual => {
+        expect(actual).toStrictEqual(accessTokensLoaded({ payload }));
+        expect(accessTokenService.find.mock.calls.length).toBe(1);
         done();
       });
     });

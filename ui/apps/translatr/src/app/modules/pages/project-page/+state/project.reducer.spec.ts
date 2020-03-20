@@ -1,6 +1,6 @@
-import { localesLoaded } from './project.actions';
+import { accessTokensLoaded, localesLoaded } from './project.actions';
 import { initialState, projectReducer } from './project.reducer';
-import { Locale, PagedList } from '@dev/translatr-model';
+import { AccessToken, Locale, PagedList } from '@dev/translatr-model';
 
 describe('Project Reducer', () => {
   describe('valid Editor actions ', () => {
@@ -20,6 +20,24 @@ describe('Project Reducer', () => {
 
       // then
       expect(actual.locales).toStrictEqual(payload);
+    });
+
+    it('should include given access tokens on accessTokensLoaded', () => {
+      // given
+      const payload: PagedList<AccessToken> = {
+        list: [],
+        hasNext: false,
+        hasPrev: false,
+        limit: 20,
+        offset: 0
+      };
+      const action = accessTokensLoaded({ payload });
+
+      // when
+      const actual = projectReducer(initialState, action);
+
+      // then
+      expect(actual.accessTokens).toStrictEqual(payload);
     });
   });
 
