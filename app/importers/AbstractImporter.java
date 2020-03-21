@@ -12,6 +12,8 @@ import services.KeyService;
 import services.MessageService;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -50,7 +52,7 @@ public abstract class AbstractImporter implements Importer {
   public void apply(File file, Locale locale) throws Exception {
     LOGGER.debug("Importing from file {}", file.getName());
 
-    Properties properties = retrieveProperties(file, locale);
+    Properties properties = retrieveProperties(new FileInputStream(file), locale);
 
     load(locale, properties.stringPropertyNames());
 
@@ -60,7 +62,7 @@ public abstract class AbstractImporter implements Importer {
     LOGGER.debug("Imported from file {}", file.getName());
   }
 
-  protected abstract Properties retrieveProperties(File file, Locale locale) throws Exception;
+  abstract Properties retrieveProperties(InputStream stream, Locale locale) throws Exception;
 
   protected void load(Locale locale, Collection<String> keyNames) {
     keys = keyService.findBy(

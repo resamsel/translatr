@@ -157,9 +157,10 @@
       <mat-form-field appearance="outline">
         <mat-label>File type</mat-label>
         <mat-select [(value)]="fileType">
-          <mat-option value="play_messages">Play messages</mat-option>
-          <mat-option value="java_properties">Java properties</mat-option>
-          <mat-option value="gettext">Gettext (PO)</mat-option>
+          <mat-option [value]="FileType.PlayMessages">Play messages</mat-option>
+          <mat-option [value]="FileType.JavaProperties">Java properties</mat-option>
+          <mat-option [value]="FileType.Gettext">Gettext (PO)</mat-option>
+          <mat-option [value]="FileType.Json">JSON</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="outline">

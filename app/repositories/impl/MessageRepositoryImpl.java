@@ -181,6 +181,8 @@ public class MessageRepositoryImpl extends
    */
   @Override
   protected void preSave(Collection<Message> t) {
+    super.preSave(t);
+
     Map<UUID, ChangeMessageWordCount> wordCount = t.stream()
         .filter(m -> m.id != null)
         .map(m -> {

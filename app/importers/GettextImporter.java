@@ -6,9 +6,9 @@ import services.KeyService;
 import services.MessageService;
 
 import javax.inject.Inject;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -20,10 +20,6 @@ import java.util.ResourceBundle;
  */
 public class GettextImporter extends AbstractImporter implements Importer
 {
-	/**
-	 * @param keyService
-	 * @param messageService
-	 */
 	@Inject
 	public GettextImporter(KeyService keyService, MessageService messageService)
 	{
@@ -34,10 +30,10 @@ public class GettextImporter extends AbstractImporter implements Importer
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Properties retrieveProperties(File file, Locale locale) throws Exception
+	Properties retrieveProperties(InputStream inputStream, Locale locale)
 	{
 		GettextResourceBundle bundle =
-					new GettextResourceBundle(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+					new GettextResourceBundle(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
 		return convert(bundle);
 	}

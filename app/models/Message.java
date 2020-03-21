@@ -18,7 +18,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
+
+import static java.util.Optional.ofNullable;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"locale_id", "key_id"})})
@@ -68,8 +71,9 @@ public class Message implements Model<Message, UUID> {
    */
   @Override
   public Message updateFrom(Message in) {
-    locale = locale.updateFrom(in.locale);
-    key = key.updateFrom(in.key);
+    id = ofNullable(in.id).orElse(id);
+    locale = ofNullable(locale).map(l -> l.updateFrom(in.locale)).orElse(in.locale);
+    key = ofNullable(key).map(k -> k.updateFrom(in.key)).orElse(in.key);
     value = in.value;
 
     return this;

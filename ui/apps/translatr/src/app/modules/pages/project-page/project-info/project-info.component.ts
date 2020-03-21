@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { AccessToken, Activity, Feature, Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
+import { AccessToken, Activity, Feature, FileType, Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
 import { filter, map, pluck, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -60,13 +60,14 @@ export class ProjectInfoComponent {
   );
 
   readonly endpointUrl = endpointFromLocation(this.window.location);
-  fileType = 'play_messages';
+  readonly FileType = FileType;
+  fileType = FileType.PlayMessages;
   accessTokenKey = '${TRANSLATR_ACCESS_TOKEN}';
 
   readonly targets = {
     'play_messages': 'conf/messages.?{locale.name}',
     'java_properties': 'src/main/resources/messages_?{locale.name}.properties',
-    'gettext': 'locale/{locale.name}/LC_MESSAGES/main.po'
+    'gettext': 'locale/{locale.name}/LC_MESSAGES/message.po'
   };
 
   readonly Feature = Feature;

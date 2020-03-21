@@ -171,6 +171,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
   }
 
   protected void preSave(Collection<MODEL> t) {
+    t.forEach(persistence::markAsDirty);
   }
 
   protected void postSave(Collection<MODEL> t) {
