@@ -1,6 +1,6 @@
 import { initialState, userReducer } from './user.reducer';
-import { User } from '@dev/translatr-model';
-import { userLoaded } from './user.actions';
+import { Aggregate, PagedList, User } from '@dev/translatr-model';
+import { activityAggregatedLoaded, userLoaded } from './user.actions';
 
 describe('User Reducer', () => {
   describe('valid Editor actions ', () => {
@@ -18,6 +18,24 @@ describe('User Reducer', () => {
 
       // then
       expect(actual.user).toStrictEqual(user);
+    });
+
+    it('should include given activity aggregated on activityAggregatedLoaded', () => {
+      // given
+      const payload: PagedList<Aggregate> = {
+        list: [],
+        hasNext: false,
+        hasPrev: false,
+        limit: 20,
+        offset: 0
+      };
+      const action = activityAggregatedLoaded({ pagedList: payload });
+
+      // when
+      const actual = userReducer(initialState, action);
+
+      // then
+      expect(actual.activityAggregated).toStrictEqual(payload);
     });
   });
 

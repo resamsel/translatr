@@ -3,7 +3,7 @@ import {
   AccessToken,
   AccessTokenCriteria,
   Activity,
-  ActivityCriteria,
+  ActivityCriteria, Aggregate,
   PagedList,
   Project,
   ProjectCriteria,
@@ -59,6 +59,19 @@ export const activitiesLoaded = createAction(
 );
 export const activitiesLoadError = createAction(
   '[Activity API] Activities Load Error',
+  props<{ error: any }>()
+);
+
+export const loadActivityAggregated = createAction(
+  '[User Page] Load Activity Aggregated',
+  props<ActivityCriteria>()
+);
+export const activityAggregatedLoaded = createAction(
+  '[Activity API] Activity Aggregated Loaded',
+  props<{ pagedList: PagedList<Aggregate> }>()
+);
+export const activityAggregatedLoadError = createAction(
+  '[Activity API] Activity Aggregated Load Error',
   props<{ error: any }>()
 );
 

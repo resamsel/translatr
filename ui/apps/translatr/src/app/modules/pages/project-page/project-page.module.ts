@@ -34,6 +34,7 @@ import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { LocaleEditDialogModule } from '../../shared/locale-edit-dialog/locale-edit-dialog.module';
 import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialog.module';
 import {
+  ActivityGraphModule,
   ButtonModule,
   EmptyViewModule,
   FeatureFlagModule,
@@ -109,7 +110,8 @@ import { MatSelectModule } from '@angular/material/select';
       initialState: projectInitialState
     }),
     EffectsModule.forFeature([ProjectEffects]),
-    ShortNumberModule
+    ShortNumberModule,
+    ActivityGraphModule
   ],
   providers: [
     AppFacade,

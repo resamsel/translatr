@@ -6,7 +6,7 @@ import {
   createAccessToken,
   loadAccessToken,
   loadAccessTokens,
-  loadActivities,
+  loadActivities, loadActivityAggregated,
   loadProjects,
   loadUser,
   updateAccessToken,
@@ -17,7 +17,7 @@ import {
   AccessToken,
   AccessTokenCriteria,
   Activity,
-  ActivityCriteria,
+  ActivityCriteria, Aggregate,
   PagedList,
   Project,
   ProjectCriteria,
@@ -62,6 +62,10 @@ export class UserFacade {
   readonly canReadActivity$ = this.permission$.pipe(
     map(([user, me]) => canReadActivities(user, me))
   );
+  activityAggregated$: Observable<PagedList<Aggregate> | undefined> =
+    this.store.pipe(
+      select(userQuery.getActivityAggregated)
+    );
 
   accessTokens$: Observable<PagedList<AccessToken> | undefined> =
     this.store.pipe(
@@ -94,6 +98,10 @@ export class UserFacade {
 
   loadActivities(criteria: ActivityCriteria): void {
     this.store.dispatch(loadActivities(criteria));
+  }
+
+  loadActivityAggregated(criteria: ActivityCriteria): void {
+    this.store.dispatch(loadActivityAggregated(criteria));
   }
 
   loadAccessTokens(criteria: AccessTokenCriteria): void {

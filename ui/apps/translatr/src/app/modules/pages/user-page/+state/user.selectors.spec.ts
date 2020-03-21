@@ -12,6 +12,13 @@ describe('User Selectors', () => {
           id: '1',
           name: 'Name',
           username: 'username'
+        },
+        activityAggregated: {
+          list: [],
+          hasNext: false,
+          hasPrev: false,
+          limit: 20,
+          offset: 0
         }
       }
     };
@@ -24,6 +31,14 @@ describe('User Selectors', () => {
 
       // then
       expect(actual).toBe(storeState[USER_FEATURE_KEY].user);
+    });
+
+    it('getActivityAggregated() should return the user', () => {
+      // given, when
+      const actual = userQuery.getActivityAggregated(storeState);
+
+      // then
+      expect(actual).toBe(storeState[USER_FEATURE_KEY].activityAggregated);
     });
   });
 });

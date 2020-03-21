@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AccessTokenService, ActivityService, ProjectService, UserService } from '@dev/translatr-sdk';
-import { AccessToken, Activity, PagedList, Project, User } from '@dev/translatr-model';
+import { AccessToken, Activity, Aggregate, PagedList, Project, User } from '@dev/translatr-model';
 import {
   accessTokenCreated,
   accessTokenCreateError,
@@ -14,11 +14,11 @@ import {
   accessTokenUpdated,
   accessTokenUpdateError,
   activitiesLoaded,
-  activitiesLoadError,
+  activitiesLoadError, activityAggregatedLoaded, activityAggregatedLoadError,
   createAccessToken,
   loadAccessToken,
   loadAccessTokens,
-  loadActivities,
+  loadActivities, loadActivityAggregated,
   loadProjects,
   loadUser,
   projectsLoaded,
@@ -88,6 +88,18 @@ export class UserEffects {
         map((pagedList: PagedList<Activity>) =>
           activitiesLoaded({ pagedList })),
         catchError(error => of(activitiesLoadError(error)))
+      )
+    )
+  ));
+
+  loadActivityAggregated$ = createEffect(() => this.actions$.pipe(
+    ofType(loadActivityAggregated),
+    switchMap((action) => this.activityService
+      .aggregated(action)
+      .pipe(
+        map((pagedList: PagedList<Aggregate>) =>
+          activityAggregatedLoaded({ pagedList })),
+        catchError(error => of(activityAggregatedLoadError(error)))
       )
     )
   ));

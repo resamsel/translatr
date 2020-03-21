@@ -34,6 +34,11 @@ const getActivitiesError = createSelector(
   (state: UserState) => state.activitiesError
 );
 
+const getActivityAggregated = createSelector(
+  getUserState,
+  (state: UserState) => state.activityAggregated
+);
+
 const getAccessTokens = createSelector(
   getUserState,
   (state: UserState) => state.accessTokens
@@ -61,6 +66,7 @@ export const userQuery = {
   getProjectsError,
   getActivities,
   getActivitiesError,
+  getActivityAggregated,
   getAccessTokens,
   getAccessTokensError,
   getAccessToken,

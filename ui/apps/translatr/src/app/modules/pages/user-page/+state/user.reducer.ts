@@ -6,7 +6,7 @@ import {
   accessTokensLoadError,
   accessTokenUpdated,
   activitiesLoaded,
-  activitiesLoadError,
+  activitiesLoadError, activityAggregatedLoaded, activityAggregatedLoadError,
   projectsLoaded,
   projectsLoadError,
   userLoaded,
@@ -14,7 +14,7 @@ import {
   userUpdated,
   userUpdateError
 } from './user.actions';
-import { AccessToken, Activity, PagedList, Project, User } from '@dev/translatr-model';
+import { AccessToken, Activity, Aggregate, PagedList, Project, User } from '@dev/translatr-model';
 import { Action, createReducer, on } from '@ngrx/store';
 
 export const USER_FEATURE_KEY = 'user';
@@ -28,6 +28,9 @@ export interface UserState {
 
   activities?: PagedList<Activity>;
   activitiesError?: any;
+
+  activityAggregated?: PagedList<Aggregate>;
+  activityAggregatedError?: any;
 
   accessTokens?: PagedList<AccessToken>;
   accessTokensError?: any;
@@ -75,6 +78,14 @@ const reducer = createReducer(
   on(
     activitiesLoadError,
     (state, { error }) => ({ ...state, activitiesError: error })
+  ),
+  on(
+    activityAggregatedLoaded,
+    (state, { pagedList }) => ({ ...state, activityAggregated: pagedList })
+  ),
+  on(
+    activityAggregatedLoadError,
+    (state, { error }) => ({ ...state, activityAggregatedError: error })
   ),
   on(
     accessTokensLoaded,

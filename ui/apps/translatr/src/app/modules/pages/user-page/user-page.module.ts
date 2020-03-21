@@ -17,7 +17,14 @@ import { GravatarModule } from 'ngx-gravatar';
 import { UserInfoComponent } from './user-info/user-info.component';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
 import { UserActivityComponent } from './user-activity/user-activity.component';
-import { EmptyViewModule, FeatureFlagModule, MetricModule, ShortNumberModule, UserCardModule } from '@dev/translatr-components';
+import {
+  ActivityGraphModule,
+  EmptyViewModule,
+  FeatureFlagModule,
+  MetricModule,
+  ShortNumberModule,
+  UserCardModule
+} from '@dev/translatr-components';
 import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
 import { ProjectCardModule } from '../../shared/project-card/project-card.module';
 import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';
@@ -81,7 +88,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     }),
     EffectsModule.forFeature([UserEffects]),
     MetricModule,
-    ShortNumberModule
+    ShortNumberModule,
+    ActivityGraphModule
   ],
   providers: [UserFacade, UserGuard]
 })

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { filter, pluck, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, map, pluck, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { Project } from '@dev/translatr-model';
 
 @Component({
@@ -11,7 +11,8 @@ import { Project } from '@dev/translatr-model';
 export class ProjectActivityComponent implements OnInit {
   project$ = this.facade.project$;
   activities$ = this.facade.activities$;
-  activity$ = this.facade.activityAggregated$;
+  aggregated$ = this.facade.activityAggregated$
+    .pipe(map(pagedList => !!pagedList ? pagedList.list : []));
   criteria$ = this.facade.activitiesCriteria$;
 
   constructor(private readonly facade: ProjectFacade) {

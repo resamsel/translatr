@@ -47,4 +47,17 @@ describe('UserFacade', () => {
       expect(store.dispatch.mock.calls.length).toBe(1);
     });
   });
+
+  describe('loadActivityAggregated', () => {
+    it('dispatches an action', () => {
+      // given
+      const criteria = {};
+
+      // when
+      facade.loadActivityAggregated(criteria);
+
+      // then
+      expect(store.dispatch.mock.calls.length).toBe(1);
+    });
+  });
 });

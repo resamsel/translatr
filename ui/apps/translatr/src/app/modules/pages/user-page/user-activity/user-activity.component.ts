@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '@dev/translatr-model';
 import { UserFacade } from '../+state/user.facade';
-import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { UserCriteria } from '../../users-page/+state/users.actions';
 
 @Component({
@@ -12,6 +12,8 @@ import { UserCriteria } from '../../users-page/+state/users.actions';
 export class UserActivityComponent implements OnInit {
   readonly criteria$ = this.facade.criteria$;
   readonly activities$ = this.facade.activities$;
+  readonly aggregated$ = this.facade.activityAggregated$
+    .pipe(map(pagedList => !!pagedList ? pagedList.list : []));
 
   constructor(private readonly facade: UserFacade) {
   }
