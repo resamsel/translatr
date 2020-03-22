@@ -34,18 +34,6 @@ public class JsonExporterTest {
   }
 
   @Test
-  public void applyWithNullMessages() {
-    // given
-    Locale locale = new Locale();
-
-    // when
-    byte[] actual = target.apply(locale);
-
-    // then
-    assertThat(actual).isEqualTo(new byte[]{});
-  }
-
-  @Test
   public void applyWithNoMessages() {
     // given
     Locale locale = new Locale();
