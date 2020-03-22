@@ -9,5 +9,12 @@ export const fileTypes = [
   FileType.JavaProperties,
   FileType.PlayMessages,
   FileType.Gettext,
-  FileType.Json,
+  FileType.Json
 ];
+
+export const fileTypeNames = {
+  [FileType.JavaProperties]: 'Java Properties',
+  [FileType.PlayMessages]: 'Play Messages',
+  [FileType.Gettext]: 'Gettext',
+  [FileType.Json]: 'JSON'
+};

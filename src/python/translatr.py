@@ -288,6 +288,7 @@ def init(args):
 					pull:
 						file_type: {pull_file_type}
 						target: {pull_target}
+						default_locale: {pull_default_locale}
 			""").strip().format(**args.__dict__).replace('\t', '  '))
 		print('Config initialised into .translatr.yml')
 	except IOError as e:
@@ -448,18 +449,27 @@ def users(args):
 	print(tabulate([(u.id, u.name, u.username) for u in users], tablefmt="plain"))
 
 
+def pull_target_from_locale(config, locale):
+	if locale.name == 'default' and not re.search(r'.\?', config['pull']['target']):
+		locale = Locale()
+		locale.name = config['pull']['default_locale']
+	target = '{pull[target]}'.format(**config).format(locale=locale)
+	if locale.name == 'default':
+		target = re.sub(r'.\?default', '', target)
+	else:
+		target = target.replace('?', '')
+
+	return target
+
+
 def pull(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'pull.target', 'pull.file_type')
+	assert_exists(config, 'pull.target', 'pull.file_type', 'pull.default_locale')
 
 	api = Api(config)
 	for locale in api.locales():
-		target = '{pull[target]}'.format(**config).format(locale=locale)
-		if locale.name == 'default':
-			target = re.sub(r'.\?default', '', target)
-		else:
-			target = target.replace('?', '')
+		target = pull_target_from_locale(config, locale)
 
 		download(
 			api.locale_export(locale.id, config['pull']['file_type']),
@@ -561,6 +571,11 @@ def create_parser_init(subparsers):
 		'--pull-target',
 		default='conf/messages.?{locale.name}',
 		help='the location format of the downloaded files (default: %(default)s)'
+	)
+	parser_init.add_argument(
+		'--pull-default-locale',
+		default='en',
+		help='the default locale name for the target (default: %(default)s)'
 	)
 	parser_init.add_argument(
 		'--push-file-type',
@@ -829,7 +844,8 @@ def main():
 		args.func(args)
 	except Exception as e:
 		logger.exception(e)
-		eprint(e.args[0])
+		eprint(str(e.args))
+		raise e
 	except BaseException as e:
 		logger.exception(e)
 		eprint(str(e))

@@ -1,5 +1,17 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { AccessToken, Activity, Feature, FileType, Key, Locale, Message, PagedList, Project } from '@dev/translatr-model';
+import {
+  AccessToken,
+  Activity,
+  Feature,
+  FileType,
+  fileTypeNames,
+  Key,
+  Locale,
+  Message,
+  PagedList,
+  Project,
+  fileTypes
+} from '@dev/translatr-model';
 import { ProjectFacade } from '../+state/project.facade';
 import { filter, map, pluck, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -64,10 +76,13 @@ export class ProjectInfoComponent {
   fileType = FileType.PlayMessages;
   accessTokenKey = '${TRANSLATR_ACCESS_TOKEN}';
 
+  readonly fileTypes = fileTypes.map(fileType => ({ type: fileType, name: fileTypeNames[fileType] }));
+
   readonly targets = {
-    'play_messages': 'conf/messages.?{locale.name}',
-    'java_properties': 'src/main/resources/messages_?{locale.name}.properties',
-    'gettext': 'locale/{locale.name}/LC_MESSAGES/message.po'
+    [FileType.PlayMessages]: 'conf/messages.?{locale.name}',
+    [FileType.JavaProperties]: 'src/main/resources/messages_?{locale.name}.properties',
+    [FileType.Gettext]: 'locale/{locale.name}/LC_MESSAGES/message.po',
+    [FileType.Json]: 'assets/i18n/{locale.name}.json'
   };
 
   readonly Feature = Feature;

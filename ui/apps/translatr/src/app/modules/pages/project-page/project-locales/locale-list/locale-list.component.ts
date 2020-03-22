@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { FileType, Locale, LocaleCriteria, PagedList, Project } from '@dev/translatr-model';
+import { fileTypeNames, fileTypes, Locale, LocaleCriteria, PagedList, Project } from '@dev/translatr-model';
 import { openLocaleEditDialog } from '../../../../shared/locale-edit-dialog/locale-edit-dialog.component';
 import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
@@ -26,12 +26,8 @@ export class LocaleListComponent {
   trackByFn = trackByFn;
   // @ts-ignore
   @HostBinding('style.display') private readonly display = 'block';
-  readonly fileTypes: Array<{ type: string; name: string; }> = [
-    { type: FileType.JavaProperties, name: 'Java Properties' },
-    { type: FileType.PlayMessages, name: 'Play Messages' },
-    { type: FileType.Gettext, name: 'Gettext' },
-    { type: FileType.Json, name: 'JSON' }
-  ];
+  readonly fileTypes: Array<{ type: string; name: string; }> =
+    fileTypes.map(fileType => ({type: fileType, name: fileTypeNames[fileType]}));
 
   constructor(
     private readonly dialog: MatDialog,
