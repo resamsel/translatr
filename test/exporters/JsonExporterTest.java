@@ -43,7 +43,7 @@ public class JsonExporterTest {
     byte[] actual = target.apply(locale);
 
     // then
-    assertThat(actual).isEqualTo("{}".getBytes());
+    assertThat(new String(actual)).isEqualTo("{ }");
   }
 
   @Test
@@ -60,7 +60,7 @@ public class JsonExporterTest {
     byte[] actual = target.apply(locale);
 
     // then
-    assertThat(actual).isEqualTo("{\n\t\"a\": \"1\"\n}".getBytes());
+    assertThat(new String(actual)).isEqualTo("{\n  \"a\" : \"1\"\n}");
   }
 
   @Test
@@ -81,6 +81,6 @@ public class JsonExporterTest {
     byte[] actual = target.apply(locale);
 
     // then
-    assertThat(actual).isEqualTo("{\"a\":\"a1\",\"b\":\"b1\",\"c\":\"c1\"}".getBytes());
+    assertThat(new String(actual)).isEqualTo("{\n  \"a\" : \"a1\",\n  \"b\" : \"b1\",\n  \"c\" : \"c1\"\n}");
   }
 }
