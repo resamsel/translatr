@@ -24,10 +24,15 @@ export class AuthGuard implements CanActivate {
       map(x => !!x),
       tap((authenticated: boolean) => {
         if (!authenticated) {
-          const url = new URL(this.loginUrl);
-          url.searchParams.set('redirect_uri', state.url);
-          this.window.location.href = url.toString();
-          return false;
+          try {
+            const url = new URL(this.loginUrl);
+            url.searchParams.set('redirect_uri', state.url);
+            this.window.location.href = url.toString();
+            return false;
+          } catch (e) {
+            console.log('Error while parsing login URL', this.loginUrl, e);
+            return false;
+          }
         }
       })
     );

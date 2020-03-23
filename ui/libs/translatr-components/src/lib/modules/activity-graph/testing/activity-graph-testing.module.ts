@@ -7,8 +7,6 @@ import { Aggregate } from '@dev/translatr-model';
 })
 class MockActivityGraphComponent {
   @Input() data: Aggregate[];
-
-  @Input() weeks = 52;
   @Input() cellInnerSize = 16;
   @Input() cellPadding = 1;
   @Input() offsetTop = 20;
