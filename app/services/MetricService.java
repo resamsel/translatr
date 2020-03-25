@@ -2,8 +2,8 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import io.prometheus.client.Collector;
-import models.Project;
-import models.User;
+import models.ActionType;
+import models.Model;
 import services.impl.MetricServiceImpl;
 
 import java.util.Enumeration;
@@ -15,9 +15,7 @@ public interface MetricService {
 
   void consumeRequest(String method, int status);
 
-  void consumeUser(User user);
-
-  void consumeProject(Project project);
+  void logEvent(Class<? extends Model<?, ?>> subject, ActionType action);
 
   Enumeration<Collector.MetricFamilySamples> metricFamilySamples();
 }

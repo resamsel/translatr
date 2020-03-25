@@ -14,6 +14,7 @@ import repositories.ProjectUserRepository;
 import services.AuthProvider;
 import services.CacheService;
 import services.LogEntryService;
+import services.MetricService;
 
 import javax.validation.Validator;
 import java.util.UUID;
@@ -33,37 +34,40 @@ public class ProjectUserServiceImplTest {
   private LogEntryService logEntryService;
   @Mock
   private AuthProvider authProvider;
+  @Mock
+  private MetricService metricService;
 
   private ProjectUserServiceImpl target;
 
   @Before
   public void setUp() {
-    target = new ProjectUserServiceImpl(validator, cache, projectUserRepository, logEntryService, authProvider);
+    target = new ProjectUserServiceImpl(
+            validator, cache, projectUserRepository, logEntryService, authProvider, metricService);
   }
 
   @Test
   public void createAsAdmin() {
     // given
     ProjectUser model = new ProjectUser()
-        .withUser(new User().withId(UUID.randomUUID()))
-        .withProject(new Project().withId(UUID.randomUUID()))
-        .withRole(ProjectRole.Owner);
+            .withUser(new User().withId(UUID.randomUUID()))
+            .withProject(new Project().withId(UUID.randomUUID()))
+            .withRole(ProjectRole.Owner);
     Long id = 1L;
 
     Mockito.when(projectUserRepository.save(model))
-        .thenReturn(new ProjectUser()
-            .withId(id)
-            .withUser(model.user)
-            .withProject(model.project)
-            .withRole(model.role));
+            .thenReturn(new ProjectUser()
+                    .withId(id)
+                    .withUser(model.user)
+                    .withProject(model.project)
+                    .withRole(model.role));
 
     // when
     ProjectUser actual = target.create(model);
 
     // then
     assertThat(actual)
-        .userIdIsEqualTo(model.user.id)
-        .projectIdIsEqualTo(model.project.id)
-        .roleIsEqualTo(ProjectRole.Owner);
+            .userIdIsEqualTo(model.user.id)
+            .projectIdIsEqualTo(model.project.id)
+            .roleIsEqualTo(ProjectRole.Owner);
   }
 }

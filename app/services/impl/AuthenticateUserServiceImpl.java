@@ -10,6 +10,7 @@ import models.ActionType;
 import models.LogEntry;
 import models.User;
 import services.LogEntryService;
+import services.MetricService;
 import services.UserService;
 
 import javax.inject.Inject;
@@ -19,13 +20,15 @@ import javax.inject.Singleton;
 public class AuthenticateUserServiceImpl extends AbstractUserService {
   private final UserService userService;
   private final LogEntryService logEntryService;
+  private final MetricService metricService;
 
   @Inject
   public AuthenticateUserServiceImpl(final PlayAuthenticate auth, final UserService userService,
-                                     final LogEntryService logEntryService) {
+                                     final LogEntryService logEntryService, final MetricService metricService) {
     super(auth);
     this.userService = userService;
     this.logEntryService = logEntryService;
+    this.metricService = metricService;
   }
 
   @Override
@@ -77,8 +80,10 @@ public class AuthenticateUserServiceImpl extends AbstractUserService {
       }
     }
 
+    metricService.logEvent(User.class, ActionType.Create);
+
     logEntryService.create(
-        LogEntry.from(ActionType.Login, user, null, dto.User.class, null, UserMapper.toDto(user)));
+            LogEntry.from(ActionType.Login, user, null, dto.User.class, null, UserMapper.toDto(user)));
 
     return knownUser;
   }

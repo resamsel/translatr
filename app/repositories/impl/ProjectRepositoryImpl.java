@@ -8,20 +8,11 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import com.avaje.ebean.RawSqlBuilder;
-import criterias.ContextCriteria;
-import criterias.DefaultContextCriteria;
-import criterias.DefaultGetCriteria;
-import criterias.PagedListFactory;
-import criterias.ProjectCriteria;
+import criterias.*;
 import dto.NotFoundException;
 import dto.PermissionException;
 import mappers.ProjectMapper;
-import models.ActionType;
-import models.Project;
-import models.ProjectRole;
-import models.ProjectUser;
-import models.Stat;
-import models.User;
+import models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
@@ -29,19 +20,13 @@ import repositories.LocaleRepository;
 import repositories.Persistence;
 import repositories.ProjectRepository;
 import services.AuthProvider;
-import services.MetricService;
 import services.PermissionService;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
@@ -61,7 +46,6 @@ public class ProjectRepositoryImpl extends
   private final LocaleRepository localeRepository;
   private final KeyRepository keyRepository;
   private final PermissionService permissionService;
-  private final MetricService metricService;
 
   private final Find<UUID, Project> find = new Find<UUID, Project>() {
   };
@@ -73,14 +57,12 @@ public class ProjectRepositoryImpl extends
                                ActivityActorRef activityActor,
                                LocaleRepository localeRepository,
                                KeyRepository keyRepository,
-                               PermissionService permissionService,
-                               MetricService metricService) {
+                               PermissionService permissionService) {
     super(persistence, validator, authProvider, activityActor);
 
     this.localeRepository = localeRepository;
     this.keyRepository = keyRepository;
     this.permissionService = permissionService;
-    this.metricService = metricService;
   }
 
   @Override
@@ -256,14 +238,7 @@ public class ProjectRepositoryImpl extends
           new Activity<>(ActionType.Create, authProvider.loggedInUser(), t, dto.Project.class, null, toDto(t)),
           null
       );
-      metricService.consumeProject(t);
     }
-  }
-
-  @Override
-  protected void postSave(Collection<Project> t) {
-    super.postSave(t);
-    t.forEach(metricService::consumeProject);
   }
 
   /**

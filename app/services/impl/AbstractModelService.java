@@ -52,11 +52,15 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   public PagedList<MODEL> findBy(CRITERIA criteria) {
     criteria.setLoggedInUserId(authProvider.loggedInUserId());
 
-    return cache.getOrElse(
-        requireNonNull(criteria, "criteria is null").getCacheKey(),
-        () -> modelRepository.findBy(criteria),
-        60
-    );
+    return postFind(cache.getOrElse(
+            requireNonNull(criteria, "criteria is null").getCacheKey(),
+            () -> modelRepository.findBy(criteria),
+            60
+    ));
+  }
+
+  protected PagedList<MODEL> postFind(PagedList<MODEL> pagedList) {
+    return pagedList;
   }
 
   @Override
@@ -65,11 +69,15 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
       return null;
     }
 
-    return cache.getOrElse(
-        cacheKeyGetter.apply(id, fetches),
-        () -> modelRepository.byId(id, fetches),
-        60
-    );
+    return postGet(cache.getOrElse(
+            cacheKeyGetter.apply(id, fetches),
+            () -> modelRepository.byId(id, fetches),
+            60
+    ));
+  }
+
+  protected MODEL postGet(MODEL model) {
+    return model;
   }
 
   /**

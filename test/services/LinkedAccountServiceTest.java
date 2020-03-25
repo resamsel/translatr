@@ -31,7 +31,7 @@ public class LinkedAccountServiceTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(LinkedAccountServiceTest.class);
 
   private LinkedAccountRepository linkedAccountRepository;
-  private LinkedAccountService linkedAccountService;
+  private LinkedAccountService target;
   private CacheService cacheService;
   private User johnSmith;
 
@@ -44,22 +44,22 @@ public class LinkedAccountServiceTest {
 
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet()).doesNotContain("linkedAccount:id:" + linkedAccount.id);
-    assertThat(linkedAccountService.byId(linkedAccount.id))
+    assertThat(target.byId(linkedAccount.id))
         .providerKeyIsEqualTo(linkedAccount.providerKey);
     verify(linkedAccountRepository, times(1)).byId(eq(linkedAccount.id));
 
     // This invocation should use the cache, not the repository
     assertThat(cacheService.keys().keySet()).contains("linkedAccount:id:" + linkedAccount.id);
-    assertThat(linkedAccountService.byId(linkedAccount.id))
+    assertThat(target.byId(linkedAccount.id))
         .providerKeyIsEqualTo(linkedAccount.providerKey);
     verify(linkedAccountRepository, times(1)).byId(eq(linkedAccount.id));
 
     // This should trigger cache invalidation
-    linkedAccountService
+    target
         .update(createLinkedAccount(linkedAccount, "facebook", UUID.randomUUID().toString()));
 
     assertThat(cacheService.keys().keySet()).contains("linkedAccount:id:" + linkedAccount.id);
-    assertThat(linkedAccountService.byId(linkedAccount.id)).providerKeyIsEqualTo("facebook");
+    assertThat(target.byId(linkedAccount.id)).providerKeyIsEqualTo("facebook");
     verify(linkedAccountRepository, times(1)).byId(eq(linkedAccount.id));
   }
 
@@ -72,21 +72,21 @@ public class LinkedAccountServiceTest {
 
     // This invocation should feed the cache
     LinkedAccountCriteria criteria = new LinkedAccountCriteria().withUserId(linkedAccount.user.id);
-    assertThat(linkedAccountService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached")
         .providerKeyIsEqualTo(linkedAccount.providerKey);
     verify(linkedAccountRepository, times(1)).findBy(eq(criteria));
     // This invocation should use the cache, not the repository
-    assertThat(linkedAccountService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("cached")
         .providerKeyIsEqualTo(linkedAccount.providerKey);
     verify(linkedAccountRepository, times(1)).findBy(eq(criteria));
 
     // This should trigger cache invalidation
-    linkedAccountService
+    target
         .update(createLinkedAccount(linkedAccount, "facebook", UUID.randomUUID().toString()));
 
-    assertThat(linkedAccountService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached (invalidated)")
         .providerKeyIsEqualTo("facebook");
     verify(linkedAccountRepository, times(2)).findBy(eq(criteria));
@@ -95,14 +95,15 @@ public class LinkedAccountServiceTest {
   @Before
   public void before() {
     linkedAccountRepository = mock(LinkedAccountRepository.class,
-        withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
+            withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
     cacheService = new CacheServiceImpl(new CacheApiMock());
-    linkedAccountService = new LinkedAccountServiceImpl(
-        mock(Validator.class),
-        cacheService,
-        linkedAccountRepository,
-        mock(LogEntryService.class),
-        mock(AuthProvider.class)
+    target = new LinkedAccountServiceImpl(
+            mock(Validator.class),
+            cacheService,
+            linkedAccountRepository,
+            mock(LogEntryService.class),
+            mock(AuthProvider.class),
+            mock(MetricService.class)
     );
 
     johnSmith = UserRepositoryMock.byUsername("johnsmith");

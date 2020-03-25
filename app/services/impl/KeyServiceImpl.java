@@ -1,16 +1,15 @@
 package services.impl;
 
+import com.avaje.ebean.PagedList;
 import criterias.KeyCriteria;
+import models.ActionType;
 import models.Key;
 import models.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
 import repositories.Persistence;
-import services.AuthProvider;
-import services.CacheService;
-import services.KeyService;
-import services.LogEntryService;
+import services.*;
 
 import javax.inject.Inject;
 import javax.validation.Validator;
@@ -31,17 +30,20 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
   private final KeyRepository keyRepository;
   private final Persistence persistence;
+  private final MetricService metricService;
 
   private final CacheService cache;
 
   @Inject
   public KeyServiceImpl(Validator validator, CacheService cache, KeyRepository keyRepository,
-                        LogEntryService logEntryService, Persistence persistence, AuthProvider authProvider) {
+                        LogEntryService logEntryService, Persistence persistence, AuthProvider authProvider,
+                        MetricService metricService) {
     super(validator, cache, keyRepository, Key::getCacheKey, logEntryService, authProvider);
 
     this.cache = cache;
     this.keyRepository = keyRepository;
     this.persistence = persistence;
+    this.metricService = metricService;
   }
 
   /**
@@ -96,34 +98,56 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
   @Override
   public List<Key> latest(Project project, int limit) {
-    return cache.getOrElse(
-        String.format("project:id:%s:latest:keys:%d", project.id, limit),
-        () -> keyRepository.latest(project, limit),
-        60
-    );
+    return postFind(cache.getOrElse(
+            String.format("project:id:%s:latest:keys:%d", project.id, limit),
+            () -> keyRepository.latest(project, limit),
+            60
+    ));
   }
 
   @Override
   public Key byProjectAndName(Project project, String name) {
-    return cache.getOrElse(
-        getCacheKey(project.id, name),
-        () -> keyRepository.byProjectAndName(project, name),
-        60
-    );
+    return postGet(cache.getOrElse(
+            getCacheKey(project.id, name),
+            () -> keyRepository.byProjectAndName(project, name),
+            60
+    ));
   }
 
   @Override
   public Key byOwnerAndProjectAndName(String username, String projectName, String keyName, String... fetches) {
-    return cache.getOrElse(
-        String.format("key:owner:%s:projectName:%s:name:%s", username, projectName, keyName),
-        () -> keyRepository.byOwnerAndProjectAndName(username, projectName, keyName, fetches),
-        60
-    );
+    return postGet(cache.getOrElse(
+            String.format("key:owner:%s:projectName:%s:name:%s", username, projectName, keyName),
+            () -> keyRepository.byOwnerAndProjectAndName(username, projectName, keyName, fetches),
+            60
+    ));
+  }
+
+  @Override
+  protected PagedList<Key> postFind(PagedList<Key> pagedList) {
+    metricService.logEvent(Key.class, ActionType.Read);
+
+    return super.postFind(pagedList);
+  }
+
+  protected List<Key> postFind(List<Key> list) {
+    metricService.logEvent(Key.class, ActionType.Read);
+
+    return list;
+  }
+
+  @Override
+  protected Key postGet(Key key) {
+    metricService.logEvent(Key.class, ActionType.Read);
+
+    return super.postGet(key);
   }
 
   @Override
   protected void postCreate(Key t) {
     super.postCreate(t);
+
+    metricService.logEvent(Key.class, ActionType.Create);
 
     // When key has been created, the project cache needs to be invalidated
     cache.remove(Project.getCacheKey(t.project.id));
@@ -137,6 +161,8 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
   @Override
   protected void postUpdate(Key t) {
+    metricService.logEvent(Key.class, ActionType.Update);
+
     Key existing = cache.get(Key.getCacheKey(t.id));
     if (existing != null) {
       cache.removeByPrefix(getCacheKey(existing.project.id, existing.name));
@@ -155,6 +181,8 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
    */
   @Override
   protected void postDelete(Key t) {
+    metricService.logEvent(Key.class, ActionType.Delete);
+
     Key existing = byId(t.id);
     if (existing != null) {
       cache.removeByPrefix(getCacheKey(existing.project.id, existing.name));

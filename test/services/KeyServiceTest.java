@@ -31,7 +31,7 @@ public class KeyServiceTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyServiceTest.class);
 
   private KeyRepository keyRepository;
-  private KeyService keyService;
+  private KeyService target;
   private CacheService cacheService;
 
   @Test
@@ -42,19 +42,19 @@ public class KeyServiceTest {
 
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet()).doesNotContain("key:id:" + key.id);
-    assertThat(keyService.byId(key.id)).nameIsEqualTo("a");
+    assertThat(target.byId(key.id)).nameIsEqualTo("a");
     verify(keyRepository, times(1)).byId(eq(key.id));
 
     // This invocation should use the cache, not the repository
     assertThat(cacheService.keys().keySet()).contains("key:id:" + key.id);
-    assertThat(keyService.byId(key.id)).nameIsEqualTo("a");
+    assertThat(target.byId(key.id)).nameIsEqualTo("a");
     verify(keyRepository, times(1)).byId(eq(key.id));
 
     // This should trigger cache invalidation
-    keyService.update(createKey(key, "ab"));
+    target.update(createKey(key, "ab"));
 
     assertThat(cacheService.keys().keySet()).contains("key:id:" + key.id);
-    assertThat(keyService.byId(key.id)).nameIsEqualTo("ab");
+    assertThat(target.byId(key.id)).nameIsEqualTo("ab");
     verify(keyRepository, times(1)).byId(eq(key.id));
   }
 
@@ -66,20 +66,20 @@ public class KeyServiceTest {
 
     // This invocation should feed the cache
     KeyCriteria criteria = new KeyCriteria().withProjectId(key.project.id);
-    assertThat(keyService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached")
         .nameIsEqualTo("a");
     verify(keyRepository, times(1)).findBy(eq(criteria));
     // This invocation should use the cache, not the repository
-    assertThat(keyService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("cached")
         .nameIsEqualTo("a");
     verify(keyRepository, times(1)).findBy(eq(criteria));
 
     // This should trigger cache invalidation
-    keyService.update(createKey(key, "ab"));
+    target.update(createKey(key, "ab"));
 
-    assertThat(keyService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached (invalidated)")
         .nameIsEqualTo("ab");
     verify(keyRepository, times(2)).findBy(eq(criteria));
@@ -87,10 +87,10 @@ public class KeyServiceTest {
     LOGGER.debug("Cache keys before key creation: {}", cacheService.keys().keySet());
     LOGGER.debug("Project ID: {}", key.project.id);
     // This should trigger cache invalidation
-    keyService.create(createKey(UUID.randomUUID(), key.project.id, "c"));
+    target.create(createKey(UUID.randomUUID(), key.project.id, "c"));
     LOGGER.debug("Cache keys after key creation: {}", cacheService.keys().keySet());
 
-    assertThat(keyService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached (invalidated after creation)")
         .nameIsEqualTo("c");
     verify(keyRepository, times(3)).findBy(eq(criteria));
@@ -104,35 +104,36 @@ public class KeyServiceTest {
     keyRepository.create(key);
 
     // This invocation should feed the cache
-    assertThat(keyService.byProjectAndName(key.project, key.name)).nameIsEqualTo("a");
+    assertThat(target.byProjectAndName(key.project, key.name)).nameIsEqualTo("a");
     verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
 
     // This invocation should use the cache, not the repository
-    assertThat(keyService.byProjectAndName(key.project, key.name)).nameIsEqualTo("a");
+    assertThat(target.byProjectAndName(key.project, key.name)).nameIsEqualTo("a");
     verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
 
     // This should trigger cache invalidation
     key = createKey(key, "ab");
-    keyService.update(key);
+    target.update(key);
 
     assertThat(cacheService.keys().keySet())
-        .doesNotContain("key:project:" + key.project.id + ":name:a");
-    assertThat(keyService.byProjectAndName(key.project, key.name)).nameIsEqualTo("ab");
+            .doesNotContain("key:project:" + key.project.id + ":name:a");
+    assertThat(target.byProjectAndName(key.project, key.name)).nameIsEqualTo("ab");
     verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
   }
 
   @Before
   public void before() {
     keyRepository = mock(KeyRepository.class,
-        withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
+            withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
     cacheService = new CacheServiceImpl(new CacheApiMock());
-    keyService = new KeyServiceImpl(
-        mock(Validator.class),
-        cacheService,
-        keyRepository,
-        mock(LogEntryService.class),
-        mock(Persistence.class),
-        mock(AuthProvider.class)
+    target = new KeyServiceImpl(
+            mock(Validator.class),
+            cacheService,
+            keyRepository,
+            mock(LogEntryService.class),
+            mock(Persistence.class),
+            mock(AuthProvider.class),
+            mock(MetricService.class)
     );
 
     when(keyRepository.save((Key) any())).then(this::persist);

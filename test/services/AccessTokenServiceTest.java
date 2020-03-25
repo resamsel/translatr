@@ -30,7 +30,7 @@ public class AccessTokenServiceTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenServiceTest.class);
 
   private AccessTokenRepository accessTokenRepository;
-  private AccessTokenService accessTokenService;
+  private AccessTokenService target;
   private CacheService cacheService;
   private User johnSmith;
 
@@ -43,19 +43,19 @@ public class AccessTokenServiceTest {
 
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet()).doesNotContain("accessToken:id:" + accessToken.id);
-    assertThat(accessTokenService.byId(accessToken.id)).nameIsEqualTo("de");
+    assertThat(target.byId(accessToken.id)).nameIsEqualTo("de");
     verify(accessTokenRepository, times(1)).byId(eq(accessToken.id));
 
     // This invocation should use the cache, not the repository
     assertThat(cacheService.keys().keySet()).contains("accessToken:id:" + accessToken.id);
-    assertThat(accessTokenService.byId(accessToken.id)).nameIsEqualTo("de");
+    assertThat(target.byId(accessToken.id)).nameIsEqualTo("de");
     verify(accessTokenRepository, times(1)).byId(eq(accessToken.id));
 
     // This should trigger cache invalidation
-    accessTokenService.update(createAccessToken(accessToken, "de-AT"));
+    target.update(createAccessToken(accessToken, "de-AT"));
 
     assertThat(cacheService.keys().keySet()).contains("accessToken:id:" + accessToken.id);
-    assertThat(accessTokenService.byId(accessToken.id)).nameIsEqualTo("de-AT");
+    assertThat(target.byId(accessToken.id)).nameIsEqualTo("de-AT");
     verify(accessTokenRepository, times(1)).byId(eq(accessToken.id));
   }
 
@@ -68,20 +68,20 @@ public class AccessTokenServiceTest {
 
     // This invocation should feed the cache
     AccessTokenCriteria criteria = new AccessTokenCriteria().withUserId(accessToken.user.id);
-    assertThat(accessTokenService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached")
         .nameIsEqualTo("de");
     verify(accessTokenRepository, times(1)).findBy(eq(criteria));
     // This invocation should use the cache, not the repository
-    assertThat(accessTokenService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("cached")
         .nameIsEqualTo("de");
     verify(accessTokenRepository, times(1)).findBy(eq(criteria));
 
     // This should trigger cache invalidation
-    accessTokenService.update(createAccessToken(accessToken, "de-AT"));
+    target.update(createAccessToken(accessToken, "de-AT"));
 
-    assertThat(accessTokenService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached (invalidated)")
         .nameIsEqualTo("de-AT");
     verify(accessTokenRepository, times(2)).findBy(eq(criteria));
@@ -90,14 +90,15 @@ public class AccessTokenServiceTest {
   @Before
   public void before() {
     accessTokenRepository = mock(AccessTokenRepository.class,
-        withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
+            withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
     cacheService = new CacheServiceImpl(new CacheApiMock());
-    accessTokenService = new AccessTokenServiceImpl(
-        mock(Validator.class),
-        cacheService,
-        mock(AuthProvider.class),
-        accessTokenRepository,
-        mock(LogEntryService.class)
+    target = new AccessTokenServiceImpl(
+            mock(Validator.class),
+            cacheService,
+            mock(AuthProvider.class),
+            accessTokenRepository,
+            mock(LogEntryService.class),
+            mock(MetricService.class)
     );
 
     johnSmith = UserRepositoryMock.byUsername("johnsmith");

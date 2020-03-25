@@ -3,15 +3,13 @@ package services.impl;
 import com.avaje.ebean.PagedList;
 import criterias.AccessTokenCriteria;
 import models.AccessToken;
+import models.ActionType;
 import models.User;
 import models.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.AccessTokenRepository;
-import services.AccessTokenService;
-import services.AuthProvider;
-import services.CacheService;
-import services.LogEntryService;
+import services.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,15 +29,18 @@ public class AccessTokenServiceImpl extends
 
   private final CacheService cache;
   private final AccessTokenRepository accessTokenRepository;
+  private final MetricService metricService;
 
   @Inject
   public AccessTokenServiceImpl(
-      Validator validator, CacheService cache, AuthProvider authProvider,
-      AccessTokenRepository accessTokenRepository, LogEntryService logEntryService) {
+          Validator validator, CacheService cache, AuthProvider authProvider,
+          AccessTokenRepository accessTokenRepository, LogEntryService logEntryService,
+          MetricService metricService) {
     super(validator, cache, accessTokenRepository, AccessToken::getCacheKey, logEntryService, authProvider);
 
     this.cache = cache;
     this.accessTokenRepository = accessTokenRepository;
+    this.metricService = metricService;
   }
 
   @Override
@@ -52,18 +53,42 @@ public class AccessTokenServiceImpl extends
     return super.findBy(criteria);
   }
 
+  @Override
+  protected PagedList<AccessToken> postFind(PagedList<AccessToken> pagedList) {
+    metricService.logEvent(AccessToken.class, ActionType.Read);
+
+    return super.postFind(pagedList);
+  }
+
+  @Override
+  protected AccessToken postGet(AccessToken accessToken) {
+    metricService.logEvent(AccessToken.class, ActionType.Read);
+
+    return super.postGet(accessToken);
+  }
+
   /**
    * {@inheritDoc}
    */
   @Override
   public AccessToken byKey(String accessTokenKey) {
-    return log(() -> cache.getOrElse(AccessToken.getCacheKey(accessTokenKey),
-        () -> accessTokenRepository.byKey(accessTokenKey), 60), LOGGER, "getByKey");
+    metricService.logEvent(AccessToken.class, ActionType.Read);
+
+    return log(
+            () -> postGet(cache.getOrElse(AccessToken.getCacheKey(accessTokenKey),
+                    () -> accessTokenRepository.byKey(accessTokenKey),
+                    60
+            )),
+            LOGGER,
+            "getByKey"
+    );
   }
 
   @Override
   protected void postCreate(AccessToken t) {
     super.postCreate(t);
+
+    metricService.logEvent(AccessToken.class, ActionType.Create);
 
     // When user has been created
     cache.removeByPrefix("accessToken:criteria:");
@@ -72,6 +97,8 @@ public class AccessTokenServiceImpl extends
   @Override
   protected void postUpdate(AccessToken t) {
     super.postUpdate(t);
+
+    metricService.logEvent(AccessToken.class, ActionType.Update);
 
     // When user has been updated, the user cache needs to be invalidated
     cache.removeByPrefix("accessToken:criteria:" + t.user.id);
@@ -83,6 +110,8 @@ public class AccessTokenServiceImpl extends
   @Override
   protected void postDelete(AccessToken t) {
     super.postDelete(t);
+
+    metricService.logEvent(AccessToken.class, ActionType.Delete);
 
     // When locale has been deleted, the locale cache needs to be invalidated
     cache.removeByPrefix("accessToken:criteria:");

@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import static assertions.CustomAssertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -39,7 +38,7 @@ public class ProjectServiceTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectServiceTest.class);
 
   private ProjectRepository projectRepository;
-  private ProjectService projectService;
+  private ProjectService target;
   private CacheService cacheService;
   private User johnSmith;
   private User janeDoe;
@@ -53,20 +52,20 @@ public class ProjectServiceTest {
 
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet()).doesNotContain("project:id:" + project.id);
-    assertThat(projectService.byId(project.id)).nameIsEqualTo("name");
+    assertThat(target.byId(project.id)).nameIsEqualTo("name");
     verify(projectRepository, times(1)).byId(eq(project.id));
 
     // This invocation should use the cache, not the repository
     assertThat(cacheService.keys().keySet()).contains("project:id:" + project.id);
-    assertThat(projectService.byId(project.id)).nameIsEqualTo("name");
+    assertThat(target.byId(project.id)).nameIsEqualTo("name");
     verify(projectRepository, times(1)).byId(eq(project.id));
 
     // This should trigger cache invalidation
     project = createProject(project, "name2");
-    projectService.update(project);
+    target.update(project);
 
     assertThat(cacheService.keys().keySet()).contains("project:id:" + project.id);
-    assertThat(projectService.byId(project.id)).nameIsEqualTo("name2");
+    assertThat(target.byId(project.id)).nameIsEqualTo("name2");
     verify(projectRepository, times(1)).byId(eq(project.id));
   }
 
@@ -78,21 +77,21 @@ public class ProjectServiceTest {
 
     // This invocation should feed the cache
     ProjectCriteria criteria = new ProjectCriteria().withSearch("name");
-    assertThat(projectService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached")
         .nameIsEqualTo("name");
     verify(projectRepository, times(1)).findBy(eq(criteria));
     // This invocation should use the cache, not the repository
-    assertThat(projectService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("cached")
         .nameIsEqualTo("name");
     verify(projectRepository, times(1)).findBy(eq(criteria));
 
     // This should trigger cache invalidation
     project = createProject(project, "name3");
-    projectService.update(project);
+    target.update(project);
 
-    assertThat(projectService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached (invalidated)")
         .nameIsEqualTo("name3");
     verify(projectRepository, times(2)).findBy(eq(criteria));
@@ -107,7 +106,7 @@ public class ProjectServiceTest {
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet())
         .doesNotContain("project:owner:" + project.owner.username + ":" + project.name);
-    assertThat(projectService.byOwnerAndName(project.owner.username, project.name))
+    assertThat(target.byOwnerAndName(project.owner.username, project.name))
         .nameIsEqualTo("name");
     verify(projectRepository, times(1))
         .byOwnerAndName(eq(project.owner.username), eq(project.name));
@@ -115,18 +114,18 @@ public class ProjectServiceTest {
     // This invocation should use the cache, not the repository
     assertThat(cacheService.keys().keySet())
         .contains("project:owner:" + project.owner.username + ":" + project.name);
-    assertThat(projectService.byOwnerAndName(project.owner.username, project.name))
+    assertThat(target.byOwnerAndName(project.owner.username, project.name))
         .nameIsEqualTo("name");
     verify(projectRepository, times(1))
         .byOwnerAndName(eq(project.owner.username), eq(project.name));
 
     // This should trigger cache invalidation
     project = createProject(project, "name2");
-    projectService.update(project);
+    target.update(project);
 
     assertThat(cacheService.keys().keySet())
         .doesNotContain("project:owner:" + project.owner.username + ":" + project.name);
-    assertThat(projectService.byOwnerAndName(project.owner.username, project.name))
+    assertThat(target.byOwnerAndName(project.owner.username, project.name))
         .nameIsEqualTo("name2");
     verify(projectRepository, times(1))
         .byOwnerAndName(eq(project.owner.username), eq(project.name));
@@ -138,12 +137,12 @@ public class ProjectServiceTest {
     Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
     projectRepository.create(project);
 
-    assertThat(projectService.byId(project.id)).wordCountIsNull();
+    assertThat(target.byId(project.id)).wordCountIsNull();
 
     // This should trigger cache invalidation
-    projectService.increaseWordCountBy(project.id, 1);
+    target.increaseWordCountBy(project.id, 1);
 
-    assertThat(projectService.byId(project.id)).wordCountIsEqualTo(1);
+    assertThat(target.byId(project.id)).wordCountIsEqualTo(1);
     verify(projectRepository, times(1)).byId(eq(project.id));
   }
 
@@ -154,12 +153,12 @@ public class ProjectServiceTest {
     project.wordCount = 100;
     projectRepository.create(project);
 
-    assertThat(projectService.byId(project.id)).wordCountIsEqualTo(100);
+    assertThat(target.byId(project.id)).wordCountIsEqualTo(100);
 
     // This should trigger cache invalidation
-    projectService.resetWordCount(project.id);
+    target.resetWordCount(project.id);
 
-    assertThat(projectService.byId(project.id)).wordCountIsNull();
+    assertThat(target.byId(project.id)).wordCountIsNull();
     verify(projectRepository, times(1)).byId(eq(project.id));
   }
 
@@ -171,29 +170,29 @@ public class ProjectServiceTest {
     Project projectJane = createProject(UUID.randomUUID(), "name", janeDoe.username);
     projectRepository.create(projectJane);
 
-    assertThat(projectService.byId(projectJohn.id))
+    assertThat(target.byId(projectJohn.id))
         .ownerIsEqualTo(johnSmith)
         .nameIsEqualTo(projectJohn.name);
-    assertThat(projectService.byId(projectJane.id))
+    assertThat(target.byId(projectJane.id))
         .ownerIsEqualTo(janeDoe)
         .nameIsEqualTo(projectJane.name);
 
     when(validator.validate(any())).thenAnswer(a -> {
       Project p = a.getArgument(0);
 
-      if (!new ProjectNameUniqueChecker(projectService).isValid(p)) {
+      if (!new ProjectNameUniqueChecker(target).isValid(p)) {
         return new HashSet<>(Collections.singletonList(
-            ConstraintViolationImpl.forBeanValidation(
-                "",
-                Collections.emptyMap(),
-                "",
-                Project.class,
-                p,
-                null,
-                null,
-                null,
-                null,
-                null)
+                ConstraintViolationImpl.forBeanValidation(
+                        "",
+                        Collections.emptyMap(),
+                        "",
+                        Project.class,
+                        p,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null)
         ));
       }
 
@@ -201,16 +200,16 @@ public class ProjectServiceTest {
     });
 
     try {
-      projectService.changeOwner(projectJohn, janeDoe);
+      target.changeOwner(projectJohn, janeDoe);
       failBecauseExceptionWasNotThrown(ConstraintViolationException.class);
     } catch (Exception e) {
       assertThat(e).isInstanceOf(ConstraintViolationException.class);
     }
 
     // This should trigger cache invalidation
-    projectService.changeOwner(projectJohn.withName("name2"), janeDoe);
+    target.changeOwner(projectJohn.withName("name2"), janeDoe);
 
-    assertThat(projectService.byId(projectJohn.id)).ownerIsEqualTo(janeDoe).nameIsEqualTo("name2");
+    assertThat(target.byId(projectJohn.id)).ownerIsEqualTo(janeDoe).nameIsEqualTo("name2");
     verify(projectRepository, times(1)).byId(eq(projectJohn.id));
   }
 
@@ -219,21 +218,22 @@ public class ProjectServiceTest {
   public void before() {
     validator = mock(Validator.class);
     projectRepository = mock(
-        ProjectRepository.class,
-        withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation()))
+            ProjectRepository.class,
+            withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation()))
     );
     cacheService = new CacheServiceImpl(new CacheApiMock());
-    projectService = new ProjectServiceImpl(
-        validator,
-        cacheService,
-        projectRepository,
-        mock(LocaleService.class),
-        mock(KeyService.class),
-        mock(MessageService.class),
-        mock(MessageRepository.class),
-        mock(ProjectUserService.class),
-        mock(LogEntryService.class),
-        mock(AuthProvider.class)
+    target = new ProjectServiceImpl(
+            validator,
+            cacheService,
+            projectRepository,
+            mock(LocaleService.class),
+            mock(KeyService.class),
+            mock(MessageService.class),
+            mock(MessageRepository.class),
+            mock(ProjectUserService.class),
+            mock(LogEntryService.class),
+            mock(AuthProvider.class),
+            mock(MetricService.class)
     );
     johnSmith = UserRepositoryMock.byUsername("johnsmith");
     janeDoe = UserRepositoryMock.byUsername("janedoe");

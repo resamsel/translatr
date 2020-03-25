@@ -28,7 +28,7 @@ public class MessageServiceTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceTest.class);
 
   private MessageRepository messageRepository;
-  private MessageService messageService;
+  private MessageService target;
   private CacheService cacheService;
 
   @Test
@@ -39,19 +39,19 @@ public class MessageServiceTest {
 
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet()).doesNotContain("message:id:" + message.id);
-    assertThat(messageService.byId(message.id)).valueIsEqualTo("value");
+    assertThat(target.byId(message.id)).valueIsEqualTo("value");
     verify(messageRepository, times(1)).byId(eq(message.id));
 
     // This invocation should use the cache, not the repository
     assertThat(cacheService.keys().keySet()).contains("message:id:" + message.id);
-    assertThat(messageService.byId(message.id)).valueIsEqualTo("value");
+    assertThat(target.byId(message.id)).valueIsEqualTo("value");
     verify(messageRepository, times(1)).byId(eq(message.id));
 
     // This should trigger cache invalidation
-    messageService.update(createMessage(message, "value2"));
+    target.update(createMessage(message, "value2"));
 
     assertThat(cacheService.keys().keySet()).contains("message:id:" + message.id);
-    assertThat(messageService.byId(message.id)).valueIsEqualTo("value2");
+    assertThat(target.byId(message.id)).valueIsEqualTo("value2");
     verify(messageRepository, times(1)).byId(eq(message.id));
   }
 
@@ -63,20 +63,20 @@ public class MessageServiceTest {
 
     // This invocation should feed the cache
     MessageCriteria criteria = new MessageCriteria().withProjectId(message.key.project.id);
-    assertThat(messageService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached")
         .valueIsEqualTo("value");
     verify(messageRepository, times(1)).findBy(eq(criteria));
     // This invocation should use the cache, not the repository
-    assertThat(messageService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("cached")
         .valueIsEqualTo("value");
     verify(messageRepository, times(1)).findBy(eq(criteria));
 
     // This should trigger cache invalidation
-    messageService.update(createMessage(message, "value3"));
+    target.update(createMessage(message, "value3"));
 
-    assertThat(messageService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached (invalidated)")
         .valueIsEqualTo("value3");
     verify(messageRepository, times(2)).findBy(eq(criteria));
@@ -85,14 +85,15 @@ public class MessageServiceTest {
   @Before
   public void before() {
     messageRepository = mock(MessageRepository.class,
-        withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
+            withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
     cacheService = new CacheServiceImpl(new CacheApiMock());
-    messageService = new MessageServiceImpl(
-        mock(Validator.class),
-        cacheService,
-        messageRepository,
-        mock(LogEntryService.class),
-        mock(AuthProvider.class)
+    target = new MessageServiceImpl(
+            mock(Validator.class),
+            cacheService,
+            messageRepository,
+            mock(LogEntryService.class),
+            mock(AuthProvider.class),
+            mock(MetricService.class)
     );
 
     when(messageRepository.create(any())).then(this::persist);

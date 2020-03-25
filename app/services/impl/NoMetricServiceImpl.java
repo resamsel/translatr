@@ -1,8 +1,8 @@
 package services.impl;
 
 import io.prometheus.client.Collector;
-import models.Project;
-import models.User;
+import models.ActionType;
+import models.Model;
 import services.MetricService;
 
 import java.util.Collections;
@@ -24,11 +24,7 @@ public class NoMetricServiceImpl implements MetricService {
   }
 
   @Override
-  public void consumeUser(User user) {
-  }
-
-  @Override
-  public void consumeProject(Project project) {
+  public void logEvent(Class<? extends Model<?, ?>> subject, ActionType action) {
   }
 
   @Override

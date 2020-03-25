@@ -1,39 +1,21 @@
 package services.impl;
 
-import com.feth.play.module.pa.user.AuthUserIdentity;
-import com.feth.play.module.pa.user.EmailIdentity;
-import com.feth.play.module.pa.user.NameIdentity;
-import com.feth.play.module.pa.user.PreferredUsernameIdentity;
-import com.feth.play.module.pa.user.UserRoleIdentity;
-import criterias.AccessTokenCriteria;
-import criterias.LinkedAccountCriteria;
-import criterias.LogEntryCriteria;
-import criterias.ProjectCriteria;
-import criterias.ProjectUserCriteria;
-import criterias.UserCriteria;
+import com.avaje.ebean.PagedList;
+import com.feth.play.module.pa.user.*;
+import criterias.*;
+import models.ActionType;
 import models.LinkedAccount;
 import models.User;
 import models.UserStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.UserRepository;
-import services.AccessTokenService;
-import services.AuthProvider;
-import services.CacheService;
-import services.LinkedAccountService;
-import services.LogEntryService;
-import services.ProjectService;
-import services.ProjectUserService;
-import services.UserService;
+import services.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static utils.Stopwatch.log;
@@ -44,7 +26,7 @@ import static utils.Stopwatch.log;
  */
 @Singleton
 public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriteria>
-    implements UserService {
+        implements UserService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -53,12 +35,13 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   private final AccessTokenService accessTokenService;
   private final ProjectService projectService;
   private final ProjectUserService projectUserService;
+  private final MetricService metricService;
 
   @Inject
   public UserServiceImpl(Validator validator, CacheService cache, UserRepository userRepository,
                          LinkedAccountService linkedAccountService, AccessTokenService accessTokenService,
                          ProjectService projectService, ProjectUserService projectUserService,
-                         LogEntryService logEntryService, AuthProvider authProvider) {
+                         LogEntryService logEntryService, AuthProvider authProvider, MetricService metricService) {
     super(validator, cache, userRepository, User::getCacheKey, logEntryService, authProvider);
 
     this.userRepository = userRepository;
@@ -66,6 +49,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     this.accessTokenService = accessTokenService;
     this.projectService = projectService;
     this.projectUserService = projectUserService;
+    this.metricService = metricService;
   }
 
   @Override
@@ -88,19 +72,19 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     if (authUser instanceof NameIdentity) {
       final NameIdentity identity = (NameIdentity) authUser;
       Optional.ofNullable(identity.getName())
-          .ifPresent(name -> user.name = name);
+              .ifPresent(name -> user.name = name);
     }
 
     if (authUser instanceof UserRoleIdentity) {
       final UserRoleIdentity identity = (UserRoleIdentity) authUser;
       Optional.ofNullable(identity.getUserRole())
-          .ifPresent(role -> user.role = role);
+              .ifPresent(role -> user.role = role);
     }
 
     if (authUser instanceof PreferredUsernameIdentity) {
       final PreferredUsernameIdentity identity = (PreferredUsernameIdentity) authUser;
       Optional.ofNullable(identity.getPreferredUsername())
-          .ifPresent(preferredUsername -> user.username = userRepository.uniqueUsername(preferredUsername));
+              .ifPresent(preferredUsername -> user.username = userRepository.uniqueUsername(preferredUsername));
     }
 
     return create(user);
@@ -120,13 +104,13 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     }
 
     return log(
-        () -> cache.getOrElse(
-            String.format("%s:%s", authUser.getProvider(), authUser.getId()),
-            () -> userRepository.findByAuthUserIdentity(authUser),
-            10 * 60
-        ),
-        LOGGER,
-        "getLocalUser"
+            () -> cache.getOrElse(
+                    String.format("%s:%s", authUser.getProvider(), authUser.getId()),
+                    () -> userRepository.findByAuthUserIdentity(authUser),
+                    10 * 60
+            ),
+            LOGGER,
+            "getLocalUser"
     );
   }
 
@@ -153,41 +137,41 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
   /**
    * Do merging stuff here - like resources, etc.
-   *
+   * <p>
    * {@inheritDoc}
    */
   @Override
   public User merge(final User user, final User otherUser) {
     linkedAccountService.save(
-        linkedAccountService.findBy(new LinkedAccountCriteria()
-            .withUserId(Objects.requireNonNull(otherUser, "other user").id))
-            .getList()
-            .stream()
-            .map(linkedAccount -> linkedAccount.withUser(user))
-            .collect(toList())
+            linkedAccountService.findBy(new LinkedAccountCriteria()
+                    .withUserId(Objects.requireNonNull(otherUser, "other user").id))
+                    .getList()
+                    .stream()
+                    .map(linkedAccount -> linkedAccount.withUser(user))
+                    .collect(toList())
     );
     otherUser.linkedAccounts.clear();
 
     accessTokenService
-        .save(accessTokenService.findBy(new AccessTokenCriteria().withUserId(otherUser.id))
-            .getList().stream().map(accessToken -> accessToken.withUser(user)).collect(toList()));
+            .save(accessTokenService.findBy(new AccessTokenCriteria().withUserId(otherUser.id))
+                    .getList().stream().map(accessToken -> accessToken.withUser(user)).collect(toList()));
 
     logEntryService
-        .save(logEntryService.findBy(new LogEntryCriteria().withUserId(otherUser.id)).getList()
-            .stream().filter(logEntry -> !logEntry.contentType.equals("User"))
-            .map(logEntry -> logEntry.withUser(user)).collect(toList()));
+            .save(logEntryService.findBy(new LogEntryCriteria().withUserId(otherUser.id)).getList()
+                    .stream().filter(logEntry -> !logEntry.contentType.equals("User"))
+                    .map(logEntry -> logEntry.withUser(user)).collect(toList()));
 
     projectService
-        .save(
-            projectService.findBy(new ProjectCriteria().withOwnerId(otherUser.id)).getList()
-                .stream()
-                .map(project -> project.withOwner(user)
-                    .withName(String.format("%s (%s)", project.name, user.email)))
-                .collect(toList()));
+            .save(
+                    projectService.findBy(new ProjectCriteria().withOwnerId(otherUser.id)).getList()
+                            .stream()
+                            .map(project -> project.withOwner(user)
+                                    .withName(String.format("%s (%s)", project.name, user.email)))
+                            .collect(toList()));
 
     projectUserService
-        .save(projectUserService.findBy(new ProjectUserCriteria().withUserId(otherUser.id))
-            .getList().stream().map(member -> member.withUser(user)).collect(toList()));
+            .save(projectUserService.findBy(new ProjectUserCriteria().withUserId(otherUser.id))
+                    .getList().stream().map(member -> member.withUser(user)).collect(toList()));
 
     // deactivate the merged user that got added to this one
     otherUser.active = false;
@@ -201,10 +185,10 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    */
   @Override
   public User byUsername(String username, String... fetches) {
-    return cache.getOrElse(
-        User.getCacheKey(username, fetches),
-        () -> userRepository.byUsername(username, fetches),
-        60);
+    return postGet(cache.getOrElse(
+            User.getCacheKey(username, fetches),
+            () -> userRepository.byUsername(username, fetches),
+            60));
   }
 
   /**
@@ -213,16 +197,30 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   @Override
   public UserStats getUserStats(UUID userId) {
     return log(
-        () -> cache.getOrElse(
-            String.format("user:stats:%s", userId),
-            () -> UserStats.create(
-                projectUserService.countBy(new ProjectUserCriteria().withUserId(userId)),
-                logEntryService.countBy(new LogEntryCriteria().withUserId(userId))
+            () -> cache.getOrElse(
+                    String.format("user:stats:%s", userId),
+                    () -> UserStats.create(
+                            projectUserService.countBy(new ProjectUserCriteria().withUserId(userId)),
+                            logEntryService.countBy(new LogEntryCriteria().withUserId(userId))
+                    ),
+                    60
             ),
-            60
-        ),
-        LOGGER,
-        "getUserStats");
+            LOGGER,
+            "getUserStats");
+  }
+
+  @Override
+  protected PagedList<User> postFind(PagedList<User> pagedList) {
+    metricService.logEvent(User.class, ActionType.Read);
+
+    return super.postFind(pagedList);
+  }
+
+  @Override
+  protected User postGet(User user) {
+    metricService.logEvent(User.class, ActionType.Read);
+
+    return super.postGet(user);
   }
 
   @Override
@@ -237,6 +235,8 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   protected void postCreate(User t) {
     super.postCreate(t);
 
+    metricService.logEvent(User.class, ActionType.Create);
+
     // When user has been created
     cache.removeByPrefix("user:criteria:");
   }
@@ -244,6 +244,8 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   @Override
   protected void postUpdate(User t) {
     super.postUpdate(t);
+
+    metricService.logEvent(User.class, ActionType.Update);
 
     // When user has been updated, the user cache needs to be invalidated
     cache.removeByPrefix("user:criteria:");
@@ -255,6 +257,8 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   @Override
   protected void postDelete(User t) {
     super.postDelete(t);
+
+    metricService.logEvent(User.class, ActionType.Delete);
 
     // When locale has been deleted, the locale cache needs to be invalidated
     cache.removeByPrefix("user:criteria:");

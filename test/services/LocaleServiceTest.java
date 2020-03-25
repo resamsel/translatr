@@ -28,7 +28,7 @@ public class LocaleServiceTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceTest.class);
 
   private LocaleRepository localeRepository;
-  private LocaleService localeService;
+  private LocaleService target;
   private CacheService cacheService;
 
   @Test
@@ -39,19 +39,19 @@ public class LocaleServiceTest {
 
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet()).doesNotContain("locale:id:" + locale.id);
-    assertThat(localeService.byId(locale.id)).nameIsEqualTo("de");
+    assertThat(target.byId(locale.id)).nameIsEqualTo("de");
     verify(localeRepository, times(1)).byId(eq(locale.id));
 
     // This invocation should use the cache, not the repository
     assertThat(cacheService.keys().keySet()).contains("locale:id:" + locale.id);
-    assertThat(localeService.byId(locale.id)).nameIsEqualTo("de");
+    assertThat(target.byId(locale.id)).nameIsEqualTo("de");
     verify(localeRepository, times(1)).byId(eq(locale.id));
 
     // This should trigger cache invalidation
-    localeService.update(createLocale(locale, "de-AT"));
+    target.update(createLocale(locale, "de-AT"));
 
     assertThat(cacheService.keys().keySet()).contains("locale:id:" + locale.id);
-    assertThat(localeService.byId(locale.id)).nameIsEqualTo("de-AT");
+    assertThat(target.byId(locale.id)).nameIsEqualTo("de-AT");
     verify(localeRepository, times(1)).byId(eq(locale.id));
   }
 
@@ -63,20 +63,20 @@ public class LocaleServiceTest {
 
     // This invocation should feed the cache
     LocaleCriteria criteria = new LocaleCriteria().withProjectId(locale.project.id);
-    assertThat(localeService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached")
         .nameIsEqualTo("de");
     verify(localeRepository, times(1)).findBy(eq(criteria));
     // This invocation should use the cache, not the repository
-    assertThat(localeService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("cached")
         .nameIsEqualTo("de");
     verify(localeRepository, times(1)).findBy(eq(criteria));
 
     // This should trigger cache invalidation
-    localeService.update(createLocale(locale, "de-AT"));
+    target.update(createLocale(locale, "de-AT"));
 
-    assertThat(localeService.findBy(criteria).getList().get(0))
+    assertThat(target.findBy(criteria).getList().get(0))
         .as("uncached (invalidated)")
         .nameIsEqualTo("de-AT");
     verify(localeRepository, times(2)).findBy(eq(criteria));
@@ -85,15 +85,16 @@ public class LocaleServiceTest {
   @Before
   public void before() {
     localeRepository = mock(LocaleRepository.class,
-        withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
+            withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
     cacheService = new CacheServiceImpl(new CacheApiMock());
-    localeService = new LocaleServiceImpl(
-        mock(Validator.class),
-        cacheService,
-        localeRepository,
-        mock(LogEntryService.class),
-        mock(Persistence.class),
-        mock(AuthProvider.class)
+    target = new LocaleServiceImpl(
+            mock(Validator.class),
+            cacheService,
+            localeRepository,
+            mock(LogEntryService.class),
+            mock(Persistence.class),
+            mock(AuthProvider.class),
+            mock(MetricService.class)
     );
 
     when(localeRepository.create(any())).then(this::persist);
