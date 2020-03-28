@@ -282,13 +282,13 @@ def init(args):
 					endpoint: {endpoint}
 					access_token: {access_token}
 					project_id: {project_id}
+                    default_locale: {default_locale}
 					push:
 						file_type: {push_file_type}
 						target: {push_target}
 					pull:
 						file_type: {pull_file_type}
 						target: {pull_target}
-						default_locale: {pull_default_locale}
 			""").strip().format(**args.__dict__).replace('\t', '  '))
 		print('Config initialised into .translatr.yml')
 	except IOError as e:
@@ -450,14 +450,19 @@ def users(args):
 
 
 def pull_target_from_locale(config, locale):
-	if locale.name == 'default' and not re.search(r'.\?', config['pull']['target']):
+	default_locale_name = config['default_locale']
+	pull_target = config['pull']['target']
+
+	is_default_locale = locale.name == default_locale_name
+	if is_default_locale and not re.search(r'.\?', pull_target):
 		locale = Locale()
-		locale.name = config['pull']['default_locale']
-	target = '{pull[target]}'.format(**config).format(locale=locale)
-	if locale.name == 'default':
-		target = re.sub(r'.\?default', '', target)
-	else:
-		target = target.replace('?', '')
+		locale.name = default_locale_name
+	target = pull_target
+	if is_default_locale:
+		# we don't need the .?{locale.name} part of the defined pull target
+		target = re.sub(r'.\?\{locale\.name\}', '', target)
+
+	target = target.replace('?{locale.name}', '{locale.name}').format(locale=locale)
 
 	return target
 
@@ -465,7 +470,7 @@ def pull_target_from_locale(config, locale):
 def pull(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'pull.target', 'pull.file_type', 'pull.default_locale')
+	assert_exists(config, 'pull.target', 'pull.file_type', 'default_locale')
 
 	api = Api(config)
 	for locale in api.locales():
@@ -482,12 +487,12 @@ def pull(args):
 def push(args):
 	config = read_config_merge(args)
 
-	assert_exists(config, 'push.target', 'push.file_type')
+	assert_exists(config, 'push.target', 'push.file_type', 'default_locale')
 
 	api = Api(config)
 	locales = dict([(l.name, l) for l in api.locales()])
 
-	target = '{push[target]}'.format(**config)
+	target = config['push']['target']
 	file_filter = re.sub(r'(.\?)?\{locale.name\}', r'*', target)
 	logger.debug('Filter: %s', file_filter)
 	pattern = target_pattern(target)
@@ -505,7 +510,7 @@ def push(args):
 		if 'locale_name' in groups:
 			localeName = groups['locale_name']
 		if localeName == '':
-			localeName = 'default'
+			localeName = config['default_locale']
 
 		logger.debug('Locale name: %s', localeName)
 
@@ -571,11 +576,6 @@ def create_parser_init(subparsers):
 		'--pull-target',
 		default='conf/messages.?{locale.name}',
 		help='the location format of the downloaded files (default: %(default)s)'
-	)
-	parser_init.add_argument(
-		'--pull-default-locale',
-		default='en',
-		help='the default locale name for the target (default: %(default)s)'
 	)
 	parser_init.add_argument(
 		'--push-file-type',
@@ -791,6 +791,11 @@ def create_parser():
 		'-t',
 		'--access-token',
 		help='the access token to be used (default: from .translatr.yml)'
+	)
+	parser.add_argument(
+		'--default-locale',
+		default='en',
+		help='the default locale name for the target (default: %(default)s)'
 	)
 
 	subparsers = parser.add_subparsers(
