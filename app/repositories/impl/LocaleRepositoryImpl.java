@@ -8,17 +8,14 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import com.avaje.ebean.RawSqlBuilder;
+import com.google.common.collect.ImmutableMap;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
 import criterias.PagedListFactory;
 import dto.PermissionException;
 import mappers.LocaleMapper;
-import models.ActionType;
 import models.Locale;
-import models.Message;
-import models.Project;
-import models.ProjectRole;
-import models.Stat;
+import models.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,24 +30,27 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static utils.QueryUtils.mapOrder;
 import static utils.Stopwatch.log;
 
 @Singleton
 public class LocaleRepositoryImpl extends
-    AbstractModelRepository<Locale, UUID, LocaleCriteria> implements LocaleRepository {
+        AbstractModelRepository<Locale, UUID, LocaleCriteria> implements LocaleRepository {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleRepositoryImpl.class);
   private static final String PROGRESS_COLUMN_ID = "l.id";
   private static final String PROGRESS_COLUMN_COUNT = "cast(count(distinct m.id) as decimal)/cast(count(distinct k.id) as decimal)";
+
+  private static final Map<String, String> ORDER_MAP = ImmutableMap.<String, String>builder()
+          .put("name", "l.name")
+          .put("whenCreated", "l.whenCreated")
+          .put("whenUpdated", "l.whenUpdated")
+          .build();
 
   private final Find<UUID, Locale> find = new Find<UUID, Locale>() {
   };
@@ -95,7 +95,7 @@ public class LocaleRepositoryImpl extends
 
     if (Boolean.TRUE.equals(criteria.getMissing())) {
       ExpressionList<Message> messageQuery =
-          persistence.createQuery(Message.class).where().raw("locale.id = l.id");
+              persistence.createQuery(Message.class).where().raw("locale.id = l.id");
 
       if (criteria.getKeyId() != null) {
         messageQuery.eq("key.id", criteria.getKeyId());
@@ -104,15 +104,16 @@ public class LocaleRepositoryImpl extends
       query.notExists(messageQuery.query());
     }
 
-    if (criteria.getOrder() != null) {
-      query.setOrderBy(criteria.getOrder());
+    String mappedOrder = mapOrder(criteria.getOrder(), ORDER_MAP);
+    if (mappedOrder != null) {
+      query.setOrderBy(mappedOrder);
     }
 
     criteria.paged(query);
 
     return fetch(
-        log(() -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)), LOGGER, "findBy"),
-        criteria
+            log(() -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)), LOGGER, "findBy"),
+            criteria
     );
   }
 

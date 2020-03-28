@@ -16,22 +16,8 @@ import validators.NameUnique;
 import validators.UserUsernameUniqueChecker;
 import validators.Username;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import javax.persistence.*;
+import java.util.*;
 
 import static play.libs.Json.toJson;
 
@@ -51,6 +37,8 @@ public class User implements Model<User, UUID>, Subject {
   public static final int EMAIL_LENGTH = 255;
 
   private static final int ROLE_LENGTH = 16;
+
+  private static final int LOCALE_LENGTH = 16;
 
   @Id
   @GeneratedValue
@@ -81,6 +69,9 @@ public class User implements Model<User, UUID>, Subject {
   @Enumerated(EnumType.STRING)
   @Column(length = ROLE_LENGTH)
   public UserRole role = UserRole.User;
+
+  @Column(length = LOCALE_LENGTH)
+  public java.util.Locale preferredLocale;
 
   @JsonIgnore
   @OneToMany
@@ -162,6 +153,7 @@ public class User implements Model<User, UUID>, Subject {
     email = ObjectUtils.firstNonNull(in.email, email);
     emailValidated = in.emailValidated;
     role = in.role;
+    preferredLocale = in.preferredLocale;
 
     return this;
   }

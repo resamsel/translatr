@@ -24,6 +24,8 @@ public class User extends Dto {
 
   public UserRole role;
 
+  public String preferredLanguage;
+
   public List<ProjectUser> memberships;
 
   public Map<String, Boolean> features;

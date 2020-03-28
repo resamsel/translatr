@@ -8,16 +8,12 @@ import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import com.avaje.ebean.RawSqlBuilder;
+import com.google.common.collect.ImmutableMap;
 import criterias.KeyCriteria;
 import criterias.PagedListFactory;
 import dto.PermissionException;
 import mappers.KeyMapper;
-import models.ActionType;
-import models.Key;
-import models.Message;
-import models.Project;
-import models.ProjectRole;
-import models.Stat;
+import models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
@@ -37,15 +33,22 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static utils.QueryUtils.mapOrder;
 import static utils.Stopwatch.log;
 
 @Singleton
 public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCriteria> implements
-    KeyRepository {
+        KeyRepository {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyRepositoryImpl.class);
   private static final String PROGRESS_COLUMN_ID = "k.id";
   private static final String PROGRESS_COLUMN_COUNT = "cast(count(distinct m.id) as decimal)/cast(count(distinct l.id) as decimal)";
+
+  private static final Map<String, String> ORDER_MAP = ImmutableMap.<String, String>builder()
+          .put("name", "k.name")
+          .put("whenCreated", "k.whenCreated")
+          .put("whenUpdated", "k.whenUpdated")
+          .build();
 
   private final Find<UUID, Key> find = new Find<UUID, Key>() {
   };
@@ -100,7 +103,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
     if (Boolean.TRUE.equals(criteria.getMissing())) {
       ExpressionList<Message> messageQuery =
-          persistence.createQuery(Message.class).where().raw("key.id = k.id");
+              persistence.createQuery(Message.class).where().raw("key.id = k.id");
 
       if (criteria.getLocaleId() != null) {
         messageQuery.eq("locale.id", criteria.getLocaleId());
@@ -109,15 +112,16 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
       query.notExists(messageQuery.query());
     }
 
-    if (criteria.getOrder() != null) {
-      query.setOrderBy(criteria.getOrder());
+    String mappedOrder = mapOrder(criteria.getOrder(), ORDER_MAP);
+    if (mappedOrder != null) {
+      query.setOrderBy(mappedOrder);
     }
 
     criteria.paged(query);
 
     return fetch(
-        log(() -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)), LOGGER, "findBy"),
-        criteria
+            log(() -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)), LOGGER, "findBy"),
+            criteria
     );
   }
 
