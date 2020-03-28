@@ -1,4 +1,4 @@
-import { Component, Input, NgModule } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
 import { Link } from '@dev/translatr-components';
 import { User } from '@dev/translatr-model';
 
@@ -13,6 +13,8 @@ class MockSidenavComponent {
   @Input() elevated = true;
   @Input() overlay = false;
   @Input() showDashboardLink = false;
+
+  @Output() languageSwitch = new EventEmitter<string>();
 }
 
 @NgModule({

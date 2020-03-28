@@ -5,6 +5,7 @@ import { NotFoundPageRoutingModule } from './not-found-page-routing.module';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { MatButtonModule, MatCardModule, MatDividerModule } from '@angular/material';
 import { ErrorPageModule } from '@dev/translatr-components';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [NotFoundPageComponent],
@@ -15,6 +16,7 @@ import { ErrorPageModule } from '@dev/translatr-components';
     MatCardModule,
     MatDividerModule,
     MatButtonModule,
+    TranslocoModule,
     ErrorPageModule
   ]
 })

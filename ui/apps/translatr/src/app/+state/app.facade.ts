@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { AppState } from './app.reducer';
 import { appQuery } from './app.selectors';
-import { createProject, loadMe, loadProject, loadUsers, updateProject } from './app.actions';
+import { createProject, loadMe, loadProject, loadUsers, updatePreferredLanguage, updateProject } from './app.actions';
 import { Feature, Project, RequestCriteria } from '@dev/translatr-model';
 import { routerQuery } from './router.selectors';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { coerceArray } from '@angular/cdk/coercion';
 import { FeatureFlagFacade } from '@dev/translatr-components';
 
-export const defaultParams = ['search', 'limit', 'offset'];
+export const defaultParams = ['search', 'limit', 'offset', 'order'];
 
 @Injectable()
 export class AppFacade extends FeatureFlagFacade {
@@ -67,5 +67,9 @@ export class AppFacade extends FeatureFlagFacade {
         : false
       )
     );
+  }
+
+  updatePreferredLanguage(language: string) {
+    this.store.dispatch(updatePreferredLanguage({payload: language}));
   }
 }

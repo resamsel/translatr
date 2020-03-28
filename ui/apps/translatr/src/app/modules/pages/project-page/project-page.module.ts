@@ -53,6 +53,7 @@ import { ProjectDeleteDialogModule } from '../../shared/project-delete-dialog/pr
 import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.module';
 import { AppFacade } from '../../../+state/app.facade';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [
@@ -69,9 +70,6 @@ import { MatSelectModule } from '@angular/material/select';
   ],
   imports: [
     ProjectPageRoutingModule,
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
     SidenavModule,
     ActivityListModule,
     NavListModule,
@@ -86,6 +84,13 @@ import { MatSelectModule } from '@angular/material/select';
     MetricModule,
     EmptyViewModule,
     ButtonModule,
+    ShortNumberModule,
+    ActivityGraphModule,
+    TranslocoModule,
+
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
 
     MatToolbarModule,
     MatButtonModule,
@@ -109,9 +114,7 @@ import { MatSelectModule } from '@angular/material/select';
     StoreModule.forFeature(PROJECT_FEATURE_KEY, projectReducer, {
       initialState: projectInitialState
     }),
-    EffectsModule.forFeature([ProjectEffects]),
-    ShortNumberModule,
-    ActivityGraphModule
+    EffectsModule.forFeature([ProjectEffects])
   ],
   providers: [
     AppFacade,

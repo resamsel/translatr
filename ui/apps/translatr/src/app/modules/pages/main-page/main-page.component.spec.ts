@@ -8,12 +8,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 
 import { MainPageComponent } from './main-page.component';
-import { ActivityGraphTestingModule, FooterTestingModule, NavbarTestingModule } from '@translatr/components/testing';
+import {
+  ActivityGraphTestingModule,
+  FeatureFlagTestingModule,
+  FooterTestingModule,
+  NavbarTestingModule
+} from '@translatr/components/testing';
 import { MatDividerModule, MatTooltipModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { mockObservable } from '@translatr/utils/testing';
 import { ActivityService } from '@dev/translatr-sdk';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('MainPageComponent', () => {
   let component: MainPageComponent;
@@ -26,10 +32,13 @@ describe('MainPageComponent', () => {
         NavbarTestingModule,
         FooterTestingModule,
         ActivityGraphTestingModule,
+        FeatureFlagTestingModule,
 
         NoopAnimationsModule,
         RouterTestingModule,
         LayoutModule,
+        TranslocoTestingModule,
+
         MatButtonModule,
         MatCardModule,
         MatGridListModule,

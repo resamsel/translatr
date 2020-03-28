@@ -21,6 +21,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material';
 import { MatNotificationService } from './services/mat-notification-service';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { FeatureFlagFacade, FeatureFlagModule } from '@dev/translatr-components';
+import { HttpClientModule } from '@angular/common/http';
+import { TranslocoRootModule } from './transloco-root.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -54,7 +56,9 @@ import { FeatureFlagFacade, FeatureFlagModule } from '@dev/translatr-components'
     ),
     EffectsModule.forRoot([AppEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    StoreRouterConnectingModule.forRoot()
+    StoreRouterConnectingModule.forRoot(),
+    HttpClientModule,
+    TranslocoRootModule
   ],
   providers: [
     AppFacade,

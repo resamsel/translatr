@@ -14,9 +14,16 @@ import { GravatarModule } from 'ngx-gravatar';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatChipsModule, MatOptionModule, MatTooltipModule } from '@angular/material';
+import { AuthBarLanguageSwitcherComponent } from './auth-bar-language-switcher/auth-bar-language-switcher.component';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
-  declarations: [NavbarComponent, AuthBarItemComponent, SearchBarComponent],
+  declarations: [
+    NavbarComponent,
+    AuthBarItemComponent,
+    SearchBarComponent,
+    AuthBarLanguageSwitcherComponent
+  ],
   imports: [
     CommonModule,
     MatIconModule,
@@ -32,9 +39,15 @@ import { MatAutocompleteModule, MatChipsModule, MatOptionModule, MatTooltipModul
     MatTooltipModule,
     MatChipsModule,
     MatAutocompleteModule,
-    MatOptionModule
+    MatOptionModule,
+    TranslocoModule
   ],
-  exports: [NavbarComponent, SearchBarComponent, AuthBarItemComponent]
+  exports: [
+    NavbarComponent,
+    SearchBarComponent,
+    AuthBarItemComponent,
+    AuthBarLanguageSwitcherComponent
+  ]
 })
 export class NavbarModule {
 }

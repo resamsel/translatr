@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
-import { filter, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, skip, take, takeUntil } from 'rxjs/operators';
 import { Key, KeyCriteria, Project } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { navigate } from '@translatr/utils';
+import { combineLatest } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,24 +14,21 @@ import { navigate } from '@translatr/utils';
   styleUrls: ['./project-keys.component.scss']
 })
 export class ProjectKeysComponent {
-  project$ = this.facade.project$.pipe(filter(x => !!x));
-  keys$ = this.facade.keys$;
-  criteria$ = this.facade.keysCriteria$;
-  canModify$ = this.facade.canModifyKey$;
+  readonly project$ = this.facade.project$.pipe(filter(x => !!x));
+  readonly keys$ = this.facade.keys$;
+  readonly criteria$ = this.facade.keysCriteria$;
+  readonly canModify$ = this.facade.canModifyKey$;
+  private readonly context$ = combineLatest([this.criteria$, this.project$])
+    .pipe(takeUntil(this.facade.unload$));
 
   constructor(
     private readonly facade: ProjectFacade,
     private readonly snackBar: MatSnackBar,
     private readonly router: Router
   ) {
-    this.criteria$
-      .pipe(
-        withLatestFrom(this.project$.pipe(filter(x => !!x))),
-        takeUntil(this.facade.unload$)
-      )
-      .subscribe(([criteria, project]: [KeyCriteria, Project]) =>
-        this.facade.loadKeys(project.id, criteria)
-      );
+    this.context$.subscribe(([criteria, project]: [KeyCriteria, Project]) =>
+      this.facade.loadKeys(project.id, criteria)
+    );
   }
 
   onMore(limit: number) {

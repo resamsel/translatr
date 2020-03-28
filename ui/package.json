@@ -74,6 +74,7 @@
     "@angular/router": "^8.2.14",
     "@ctrl/ngx-codemirror": "2.1.1",
     "@momothepug/tsmodule-alias": "^1.0.0",
+    "@ngneat/transloco": "^2.14.0",
     "@ngrx/effects": "^8.6.0",
     "@ngrx/entity": "^8.6.0",
     "@ngrx/router-store": "^8.6.0",

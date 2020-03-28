@@ -79,46 +79,56 @@ header.header {
   text-align: center;
 }
 
-.promo .material-icons {
-  margin: 40px 0;
-  color: #43A047;
-  font-size: 7rem;
-  display: block;
-}
-
-.main-header {
-  color: #43A047;
-  font-weight: 300;
-}
-
-h1 {
-  font-size: 4.2rem;
-  line-height: 110%;
-  margin: 2.1rem 0 .68rem 0;
-
+.promo {
   .material-icons {
-    float: left;
-    line-height: 110%;
-    font-size: 4.2rem;
-    margin-right: 3px;
+    margin: 40px 0;
+    color: #43A047;
+    font-size: 7rem;
+    display: block;
+  }
+
+  @include medium {
+    padding: 0 8px;
   }
 }
 
-h3 {
-  font-size: 2.92rem;
-  line-height: 110%;
-  margin: 1.46rem 0 1.168rem 0;
-}
+:host ::ng-deep {
+  font-size: 120%;
+  line-height: 120%;
 
-h4 {
-  font-size: 2.28rem;
-  line-height: 110%;
-  margin: .6rem 0 1.5rem 0;
-}
+  .header {
+    color: #43A047;
+    font-weight: 300;
+  }
 
-h5 {
-  font-size: 1.64rem;
-  line-height: 110%;
-  margin: .82rem 0 .656rem 0;
-}
+  h1 {
+    font-size: 4.2rem;
+    line-height: 110%;
+    margin: 2.1rem 0 .68rem 0;
 
+    .material-icons {
+      float: left;
+      line-height: 110%;
+      font-size: 4.2rem;
+      margin-right: 3px;
+    }
+  }
+
+  h3 {
+    font-size: 2.92rem;
+    line-height: 110%;
+    margin: 1.46rem 0 1.168rem 0;
+  }
+
+  h4 {
+    font-size: 2.28rem;
+    line-height: 110%;
+    margin: .6rem 0 1.5rem 0;
+  }
+
+  h5 {
+    font-size: 1.64rem;
+    line-height: 110%;
+    margin: .82rem 0 .656rem 0;
+  }
+}

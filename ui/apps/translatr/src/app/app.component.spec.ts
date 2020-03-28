@@ -2,16 +2,19 @@ import { async, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { AppFacade } from './+state/app.facade';
+import { TranslocoTestingModule } from '@ngneat/transloco';
+import { mockObservable } from '@translatr/utils/testing';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, TranslocoTestingModule],
       declarations: [AppComponent],
       providers: [
         {
           provide: AppFacade, useFactory: () => ({
-            loadMe: jest.fn()
+            loadMe: jest.fn(),
+            me$: mockObservable()
           })
         }
       ]

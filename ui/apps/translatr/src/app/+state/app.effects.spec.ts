@@ -10,19 +10,25 @@ import {
   projectCreated,
   projectLoaded,
   projectUpdated,
+  updatePreferredLanguage,
   updateProject,
   usersLoaded
 } from './app.actions';
 import { PagedList, Project, User } from '@dev/translatr-model';
 import { ProjectService, UserService } from '@dev/translatr-sdk';
 import { Actions } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { AppState } from './app.reducer';
 
 describe('AppEffects', () => {
   let actions: Subject<any>;
-  let effects: AppEffects;
+  let store: Store<AppState> & {
+    select: jest.Mock;
+  };
   let userService: UserService & {
     me: jest.Mock;
     find: jest.Mock;
+    update: jest.Mock;
   };
   let projectService: ProjectService & {
     byOwnerAndName: jest.Mock;
@@ -38,7 +44,8 @@ describe('AppEffects', () => {
         {
           provide: UserService, useFactory: () => ({
             me: jest.fn(),
-            find: jest.fn()
+            find: jest.fn(),
+            update: jest.fn()
           })
         },
         {
@@ -48,11 +55,16 @@ describe('AppEffects', () => {
             update: jest.fn()
           })
         },
-        { provide: Actions, useValue: actions }
+        {provide: Actions, useValue: actions},
+        {
+          provide: Store, useFactory: () => ({
+            select: jest.fn()
+          })
+        }
       ]
     });
 
-    effects = TestBed.get(AppEffects);
+    store = TestBed.get(Store);
     userService = TestBed.get(UserService);
     projectService = TestBed.get(ProjectService);
   });
@@ -62,6 +74,7 @@ describe('AppEffects', () => {
       // given
       const user: User = { id: '1', name: 'user', username: 'username' };
       userService.me.mockReturnValueOnce(of(user));
+      const effects: AppEffects = TestBed.get(AppEffects);
       const target$ = effects.loadMe$;
 
       // when
@@ -69,8 +82,29 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(meLoaded({ payload: user }));
+        expect(actual).toStrictEqual(meLoaded({payload: user}));
         expect(userService.me.mock.calls.length).toBe(1);
+        done();
+      });
+    });
+  });
+
+  describe('updatePreferredLanguage$', () => {
+    it('should work', (done) => {
+      // given
+      const user: User = {id: '1', name: 'user', username: 'username', preferredLanguage: 'de'};
+      userService.update.mockReturnValue(of(user));
+      store.select.mockReturnValue(of(user));
+      const effects: AppEffects = TestBed.get(AppEffects);
+      const target$ = effects.updatePreferredLanguage$;
+
+      // when
+      actions.next(updatePreferredLanguage({payload: 'de'}));
+
+      // then
+      target$.subscribe(actual => {
+        expect(actual).toStrictEqual(meLoaded({payload: user}));
+        expect(userService.update.mock.calls.length).toBe(1);
         done();
       });
     });
@@ -80,13 +114,14 @@ describe('AppEffects', () => {
     it('should work', (done) => {
       // given
       const payload: PagedList<User> = {
-        list: [{ id: '1', name: 'user', username: 'username' }],
+        list: [{id: '1', name: 'user', username: 'username'}],
         hasNext: false,
         hasPrev: false,
         limit: 20,
         offset: 0
       };
       userService.find.mockReturnValueOnce(of(payload));
+      const effects: AppEffects = TestBed.get(AppEffects);
       const target$ = effects.loadUsers$;
 
       // when
@@ -106,6 +141,7 @@ describe('AppEffects', () => {
       // given
       const payload: Project = { name: 'A' };
       projectService.byOwnerAndName.mockReturnValueOnce(of(payload));
+      const effects: AppEffects = TestBed.get(AppEffects);
       const target$ = effects.loadProject$;
 
       // when
@@ -125,6 +161,7 @@ describe('AppEffects', () => {
       // given
       const payload: Project = { name: 'A' };
       projectService.create.mockReturnValueOnce(of(payload));
+      const effects: AppEffects = TestBed.get(AppEffects);
       const target$ = effects.createProject$;
 
       // when
@@ -144,6 +181,7 @@ describe('AppEffects', () => {
       // given
       const payload: Project = { name: 'A' };
       projectService.update.mockReturnValueOnce(of(payload));
+      const effects: AppEffects = TestBed.get(AppEffects);
       const target$ = effects.updateProject$;
 
       // when

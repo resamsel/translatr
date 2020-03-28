@@ -15,6 +15,11 @@ export const meLoadError = createAction(
   props<{ payload: any }>()
 );
 
+export const updatePreferredLanguage = createAction(
+  '[Main Page] Update Preferred Language',
+  props<{ payload: string }>()
+);
+
 export const loadUsers = createAction(
   '[Main Page] Load Users',
   props<{ payload: RequestCriteria }>()

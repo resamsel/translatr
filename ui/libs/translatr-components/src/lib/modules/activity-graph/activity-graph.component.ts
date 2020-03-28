@@ -69,8 +69,6 @@ export class ActivityGraphComponent implements OnChanges {
       return;
     }
 
-    console.log('drawing...');
-
     d3.select(this.hostElement).select('svg').remove();
 
     const today = d3.timeDay.ceil(new Date());

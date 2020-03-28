@@ -1,9 +1,16 @@
-<app-sidenav [elevated]="false" [me]="me$ | async" [overlay]="true" page="Dashboard">
+<app-sidenav
+  *transloco="let t"
+  [elevated]="false"
+  [me]="me$ | async"
+  [overlay]="true"
+  [page]="t('dashboard.title')"
+  (languageSwitch)="onLanguageSwitch($event)"
+>
   <header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
     <div class="container title">
       <div class="content">
-        <h1>Dashboard</h1>
-        <p>The world that dwells around you</p>
+        <h1 transloco="dashboard.title">Dashboard</h1>
+        <p transloco="dashboard.text">The world that dwells around you</p>
       </div>
     </div>
   </header>
@@ -11,32 +18,32 @@
     <dev-metric
       *ngIf="me$ | async"
       [routerLink]="['/', (me$ | async)?.username, 'projects']"
-      name="My Projects"
+      [name]="t('projects.my.title')"
       [value]="(myProjects$ | async)?.total | shortNumber"
       icon="library_books"
       class="my project count"></dev-metric>
     <dev-metric
       *ngIf="me$ | async"
       [routerLink]="['/', (me$ | async)?.username, 'activity']"
-      name="My Activities"
+      [name]="t('activity.my.title')"
       [value]="(activities$ | async)?.total | shortNumber"
       icon="change_history"
       class="my activity count"></dev-metric>
     <dev-metric
       routerLink="/projects"
-      name="Projects"
+      [name]="t('projects.title')"
       [value]="(projects$ | async)?.total | shortNumber"
       icon="library_books"
       class="all project count"></dev-metric>
     <dev-metric
       routerLink="/users"
-      name="Contributors"
+      [name]="t('users.title')"
       [value]="(users$ | async)?.total | shortNumber"
       icon="group"
       class="user count"></dev-metric>
 
     <section>
-      <h2>Contributing Projects</h2>
+      <h2 transloco="projects.contributing.title">Contributing Projects</h2>
       <app-project-card-list
         [projects]="projects$ | async"
         [canCreate]="true"
@@ -45,7 +52,7 @@
     </section>
 
     <section>
-      <h2>Activity on contributing Projects</h2>
+      <h2 transloco="activity.projects.contributing.title">Activity on contributing Projects</h2>
       <app-activity-list [activities]="activities$ | async" [showMore]="false"></app-activity-list>
     </section>
   </div>

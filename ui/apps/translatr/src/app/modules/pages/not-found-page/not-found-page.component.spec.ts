@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ErrorPageTestingModule } from '@translatr/components/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { mockObservable } from '@translatr/utils/testing';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('NotFoundPageComponent', () => {
   let component: NotFoundPageComponent;
@@ -13,8 +14,10 @@ describe('NotFoundPageComponent', () => {
     TestBed.configureTestingModule({
       declarations: [NotFoundPageComponent],
       imports: [
+        ErrorPageTestingModule,
+
         RouterTestingModule,
-        ErrorPageTestingModule
+        TranslocoTestingModule
       ],
       providers: [{
         provide: AppFacade, useFactory: () => ({

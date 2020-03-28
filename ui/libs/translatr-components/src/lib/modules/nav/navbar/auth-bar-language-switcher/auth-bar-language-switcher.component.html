@@ -1,0 +1,10 @@
+<button [mat-menu-trigger-for]="languageSelector" mat-icon-button>
+  <mat-icon>language</mat-icon>
+</button>
+<mat-menu #languageSelector>
+  <button
+    *ngFor="let language of availableLanguages"
+    mat-menu-item
+    (click)="onSwitchLanguage(language)"
+  >{{'language.' + language + '.name' | transloco:params:language}}</button>
+</mat-menu>

@@ -22,6 +22,7 @@ import {
   messagesLoaded,
   projectActivitiesLoaded,
   projectActivityAggregatedLoaded,
+  unloadProject,
   updateKey,
   updateLocale,
   updateMember
@@ -261,15 +262,19 @@ const reducer = createReducer(
   ),
   on(
     projectActivityAggregatedLoaded,
-    (state, { payload }) => ({ ...state, activityAggregated: payload })
+    (state, {payload}) => ({...state, activityAggregated: payload})
   ),
   on(
     projectActivitiesLoaded,
-    (state, { payload }) => ({ ...state, activities: payload })
+    (state, {payload}) => ({...state, activities: payload})
   ),
   on(
     accessTokensLoaded,
-    (state, { payload }) => ({ ...state, accessTokens: payload })
+    (state, {payload}) => ({...state, accessTokens: payload})
+  ),
+  on(
+    unloadProject,
+    () => initialState
   )
 );
 

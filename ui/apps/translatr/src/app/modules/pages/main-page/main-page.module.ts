@@ -9,8 +9,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MainPageRoutingModule } from './main-page-routing.module';
-import { ActivityGraphModule, FooterModule, NavbarModule } from '@dev/translatr-components';
+import { ActivityGraphModule, FeatureFlagModule, FooterModule, NavbarModule } from '@dev/translatr-components';
 import { MatTooltipModule } from '@angular/material';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [MainPageComponent],
@@ -27,7 +28,9 @@ import { MatTooltipModule } from '@angular/material';
     MatDividerModule,
     MatTooltipModule,
     FooterModule,
-    ActivityGraphModule
+    ActivityGraphModule,
+    TranslocoModule,
+    FeatureFlagModule
   ]
 })
 export class MainPageModule {}

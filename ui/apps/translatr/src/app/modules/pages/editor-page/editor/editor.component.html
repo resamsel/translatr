@@ -49,7 +49,7 @@
             <mat-card-title>{{ message.localeDisplayName }}</mat-card-title>
             <mat-card-content [innerHTML]="message.value"></mat-card-content>
             <mat-card-actions>
-              <button (click)="onUseMessage(message)" class="use-value" mat-button>
+              <button (click)="onUseMessage(message)" class="use-value" mat-stroked-button>
                 <mat-icon [inline]="true">file_copy</mat-icon>&nbsp;
                 <span i18n="@@editor.translation.usevalue.button">Use this value</span>
               </button>

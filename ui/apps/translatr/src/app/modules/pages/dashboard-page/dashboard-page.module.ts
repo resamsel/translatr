@@ -16,6 +16,7 @@ import { ActivityListModule } from '../../shared/activity-list/activity-list.mod
 import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
 import { FeatureFlagModule, MetricModule, ShortNumberModule } from '@dev/translatr-components';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [DashboardPageComponent],
@@ -32,6 +33,8 @@ import { FeatureFlagModule, MetricModule, ShortNumberModule } from '@dev/transla
     ShortNumberModule,
 
     CommonModule,
+    TranslocoModule,
+
     MatIconModule,
     MatDialogModule,
 

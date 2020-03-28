@@ -9,7 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FooterTestingModule, NavbarTestingModule } from '@translatr/components/testing';
+import { FeatureFlagTestingModule, FooterTestingModule, NavbarTestingModule } from '@translatr/components/testing';
 
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
@@ -25,6 +25,7 @@ describe('SidenavComponent', () => {
         RouterTestingModule,
         NavbarTestingModule,
         FooterTestingModule,
+        FeatureFlagTestingModule,
 
         MatToolbarModule,
         MatIconModule,

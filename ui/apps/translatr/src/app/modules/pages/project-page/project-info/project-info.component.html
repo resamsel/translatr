@@ -68,6 +68,14 @@
           </button>
         </div>
       </ng-template>
+      <div *ngIf="(latestLocales$ | async)?.list.length > 0" class="actions">
+        <a
+          mat-stroked-button
+          [routerLink]="['locales']"
+          [queryParams]="{order: 'whenUpdated desc'}"
+          transloco="locales.recent.button"
+        >Show languages</a>
+      </div>
     </mat-card-content>
   </mat-card>
 
@@ -112,6 +120,14 @@
           </button>
         </div>
       </ng-template>
+      <div *ngIf="(latestKeys$ | async)?.list.length > 0" class="actions">
+        <a
+          mat-stroked-button
+          [routerLink]="['keys']"
+          [queryParams]="{order: 'whenUpdated desc'}"
+          transloco="keys.recent.button"
+        >Show keys</a>
+      </div>
     </mat-card-content>
   </mat-card>
 
@@ -174,14 +190,14 @@
       <!-- @formatter:off -->
       <pre class="language-yml"><code>translatr:
   endpoint: {{endpointUrl}}
-  project_id: {{project.id}}
-  access_token: {{accessTokenKey}}
-  pull:
+        project_id: {{project.id}}
+        access_token: {{accessTokenKey}}
+        pull:
     file_type: {{fileType}}
-    target: {{targets[fileType]}}
-  push:
+        target: {{targets[fileType]}}
+        push:
     file_type: {{fileType}}
-    target: {{targets[fileType]}}</code></pre>
+        target: {{targets[fileType]}}</code></pre>
       <!-- @formatter:on -->
     </mat-card-content>
   </mat-card>

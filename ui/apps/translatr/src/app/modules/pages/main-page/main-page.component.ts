@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AppFacade } from '../../../+state/app.facade';
-import { Aggregate, PagedList, User, UserRole } from '@dev/translatr-model';
+import { Aggregate, Feature, PagedList, User, UserRole } from '@dev/translatr-model';
 import { environment } from '../../../../environments/environment';
 import { ActivityService } from '@dev/translatr-sdk';
 import { pluck } from 'rxjs/operators';
@@ -19,6 +19,8 @@ export class MainPageComponent {
     .aggregated({})
     .pipe(pluck<PagedList<Aggregate>, Aggregate[]>('list'));
 
+  readonly Feature = Feature;
+
   constructor(
     private readonly facade: AppFacade,
     private readonly activityService: ActivityService
@@ -27,5 +29,9 @@ export class MainPageComponent {
 
   isAdmin(me: User | undefined): boolean {
     return !!me && me.role === UserRole.Admin;
+  }
+
+  onLanguageSwitch(language: string): void {
+    this.facade.updatePreferredLanguage(language);
   }
 }

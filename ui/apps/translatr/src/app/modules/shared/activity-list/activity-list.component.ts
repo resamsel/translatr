@@ -138,7 +138,6 @@ export class ActivityListComponent {
   }
 
   linkToAccessToken(accessToken: AccessToken | undefined): string[] | undefined {
-    console.log('linkToAccessToken', accessToken);
     if (!accessToken || !accessToken.userUsername) {
       return undefined;
     }

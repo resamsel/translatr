@@ -19,6 +19,10 @@
       <mat-icon>view_quilt</mat-icon>
     </a>
 
+    <app-auth-bar-language-switcher
+      *featureFlag="Feature.LanguageSwitcher"
+      (languageSwitch)="languageSwitch.emit($event)"
+    ></app-auth-bar-language-switcher>
     <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
       <a mat-menu-item *ngIf="me" [routerLink]="['/', me.username]" i18n="@@user.profile">
         Profile

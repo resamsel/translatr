@@ -83,7 +83,7 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
     );
   }
 
-  update(dto: DTO, options?: RequestOptions): Observable<DTO | undefined> {
+  update(dto: Partial<DTO>, options?: RequestOptions): Observable<DTO | undefined> {
     return this.http.put<DTO>(this.entityPath, dto, options).pipe(
       map(convertTemporals),
       catchError((err: HttpErrorResponse) =>
