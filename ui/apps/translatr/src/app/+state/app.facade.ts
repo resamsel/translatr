@@ -3,13 +3,12 @@ import { select, Store } from '@ngrx/store';
 import { AppState } from './app.reducer';
 import { appQuery } from './app.selectors';
 import { createProject, loadMe, loadProject, loadUsers, updatePreferredLanguage, updateProject } from './app.actions';
-import { Feature, Project, RequestCriteria } from '@dev/translatr-model';
+import { Feature, FeatureFlagFacade, Project, RequestCriteria } from '@dev/translatr-model';
 import { routerQuery } from './router.selectors';
 import { Observable } from 'rxjs';
 import { Params } from '@angular/router';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { coerceArray } from '@angular/cdk/coercion';
-import { FeatureFlagFacade } from '@dev/translatr-components';
 
 export const defaultParams = ['search', 'limit', 'offset', 'order'];
 
@@ -69,7 +68,7 @@ export class AppFacade extends FeatureFlagFacade {
     );
   }
 
-  updatePreferredLanguage(language: string) {
+  updatePreferredLanguage(language: string): void {
     this.store.dispatch(updatePreferredLanguage({payload: language}));
   }
 }

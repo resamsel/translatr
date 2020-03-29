@@ -4,7 +4,6 @@
   [me]="me$ | async"
   [overlay]="true"
   [page]="t('dashboard.title')"
-  (languageSwitch)="onLanguageSwitch($event)"
 >
   <header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
     <div class="container title">

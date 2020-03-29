@@ -1,7 +1,6 @@
 import { Directive, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
-import { Feature } from '@dev/translatr-model';
+import { Feature, FeatureFlagFacade } from '@dev/translatr-model';
 import { filter, take } from 'rxjs/operators';
-import { FeatureFlagFacade } from './feature-flag.facade';
 
 @Directive({
   selector: '[featureFlagClass]'

@@ -12,13 +12,14 @@ import { MainPageRoutingModule } from './main-page-routing.module';
 import { ActivityGraphModule, FeatureFlagModule, FooterModule, NavbarModule } from '@dev/translatr-components';
 import { MatTooltipModule } from '@angular/material';
 import { TranslocoModule } from '@ngneat/transloco';
+import { AppFacade } from '../../../+state/app.facade';
 
 @NgModule({
   declarations: [MainPageComponent],
   imports: [
     MainPageRoutingModule,
     CommonModule,
-    NavbarModule,
+    NavbarModule.forRoot(AppFacade),
     MatGridListModule,
     MatCardModule,
     MatIconModule,

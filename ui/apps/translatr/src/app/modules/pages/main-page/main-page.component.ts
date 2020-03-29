@@ -30,8 +30,4 @@ export class MainPageComponent {
   isAdmin(me: User | undefined): boolean {
     return !!me && me.role === UserRole.Admin;
   }
-
-  onLanguageSwitch(language: string): void {
-    this.facade.updatePreferredLanguage(language);
-  }
 }

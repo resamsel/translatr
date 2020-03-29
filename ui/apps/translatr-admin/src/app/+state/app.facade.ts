@@ -29,6 +29,7 @@ import {
   ActivityCriteria,
   Feature,
   FeatureFlagCriteria,
+  FeatureFlagFacade,
   Project,
   ProjectCriteria,
   RequestCriteria,
@@ -38,7 +39,6 @@ import {
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { FeatureFlagFacade } from '@dev/translatr-components';
 import { coerceArray } from '@angular/cdk/coercion';
 
 @Injectable()

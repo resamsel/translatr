@@ -6,7 +6,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { SidenavModule } from './modules/nav/sidenav/sidenav.module';
 import { NxModule } from '@nrwl/angular';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -20,9 +19,10 @@ import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material';
 import { MatNotificationService } from './services/mat-notification-service';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
-import { FeatureFlagFacade, FeatureFlagModule } from '@dev/translatr-components';
+import { FeatureFlagModule } from '@dev/translatr-components';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslocoRootModule } from './transloco-root.module';
+import { FeatureFlagFacade } from '@dev/translatr-model';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,7 +32,6 @@ import { TranslocoRootModule } from './transloco-root.module';
 
     AppRoutingModule,
     TranslatrSdkModule,
-    SidenavModule,
     LayoutModule,
     FeatureFlagModule,
 

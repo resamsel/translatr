@@ -1,4 +1,8 @@
-<button [mat-menu-trigger-for]="languageSelector" mat-icon-button>
+<button
+  *ngIf="active"
+  [mat-menu-trigger-for]="languageSelector"
+  mat-icon-button
+>
   <mat-icon>language</mat-icon>
 </button>
 <mat-menu #languageSelector>

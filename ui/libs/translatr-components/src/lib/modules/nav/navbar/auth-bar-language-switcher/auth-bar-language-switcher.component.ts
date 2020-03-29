@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, Optional } from '@angular/core';
 import { TranslocoService } from '@ngneat/transloco';
+import { LanguageSwicher } from '../language-swicher';
 
 @Component({
   selector: 'app-auth-bar-language-switcher',
@@ -7,15 +8,21 @@ import { TranslocoService } from '@ngneat/transloco';
   styleUrls: ['./auth-bar-language-switcher.component.css']
 })
 export class AuthBarLanguageSwitcherComponent {
-  @Output() readonly languageSwitch = new EventEmitter<string>();
   readonly availableLanguages = this.translocoService.getAvailableLangs();
-  readonly activeLang = this.translocoService.getActiveLang();
+  readonly active = this.languageSwicher !== null;
+  activeLang = this.translocoService.getActiveLang();
 
-  constructor(private readonly translocoService: TranslocoService) {
+  constructor(
+    private readonly translocoService: TranslocoService,
+    @Optional() private readonly languageSwicher: LanguageSwicher
+  ) {
   }
 
   onSwitchLanguage(language: string): void {
-    this.translocoService.setActiveLang(language);
-    this.languageSwitch.emit(language);
+    if (this.activeLang !== language) {
+      this.translocoService.setActiveLang(language);
+      this.activeLang = this.translocoService.getActiveLang();
+      this.languageSwicher.updatePreferredLanguage(language);
+    }
   }
 }

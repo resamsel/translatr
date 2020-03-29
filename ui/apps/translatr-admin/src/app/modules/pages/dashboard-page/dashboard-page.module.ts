@@ -24,7 +24,6 @@ import {
   ButtonModule,
   EllipsisModule,
   EntityTableModule,
-  FeatureFlagFacade,
   FeatureFlagModule,
   MetricModule,
   ProjectEditDialogModule,
@@ -40,6 +39,7 @@ import { DashboardUserComponent } from './dashboard-user/dashboard-user.componen
 import { MatTooltipModule } from '@angular/material';
 import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
 import { AppFacade } from '../../../+state/app.facade';
+import { FeatureFlagFacade } from '@dev/translatr-model';
 
 @NgModule({
   declarations: [

@@ -74,8 +74,4 @@ export class DashboardPageComponent implements OnInit {
       fetch: 'count'
     });
   }
-
-  onLanguageSwitch(language: string) {
-    this.appFacade.updatePreferredLanguage(language);
-  }
 }

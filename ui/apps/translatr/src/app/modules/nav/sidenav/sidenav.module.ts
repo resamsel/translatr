@@ -11,6 +11,7 @@ import { SidenavComponent } from './sidenav.component';
 import { RouterModule } from '@angular/router';
 import { FeatureFlagModule, FooterModule, NavbarModule } from '@dev/translatr-components';
 import { MatTooltipModule } from '@angular/material';
+import { AppFacade } from '../../../+state/app.facade';
 
 @NgModule({
   declarations: [SidenavComponent],
@@ -18,7 +19,7 @@ import { MatTooltipModule } from '@angular/material';
     CommonModule,
     RouterModule,
     FooterModule,
-    NavbarModule,
+    NavbarModule.forRoot(AppFacade),
 
     MatSidenavModule,
     MatToolbarModule,

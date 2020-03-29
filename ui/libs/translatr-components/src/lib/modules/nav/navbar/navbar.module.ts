@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ModuleWithProviders, NgModule, Optional, SkipSelf, Type } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './navbar.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +16,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatChipsModule, MatOptionModule, MatTooltipModule } from '@angular/material';
 import { AuthBarLanguageSwitcherComponent } from './auth-bar-language-switcher/auth-bar-language-switcher.component';
 import { TranslocoModule } from '@ngneat/transloco';
+import { LanguageSwicher } from './language-swicher';
 
 @NgModule({
   declarations: [
@@ -50,4 +51,19 @@ import { TranslocoModule } from '@ngneat/transloco';
   ]
 })
 export class NavbarModule {
+  constructor(@Optional() @SkipSelf() parentModule?: NavbarModule) {
+    if (parentModule) {
+      throw new Error(
+        'NavbarModule is already loaded. Import it in the page modules only.');
+    }
+  }
+
+  static forRoot(languageSwitcher: Type<LanguageSwicher>): ModuleWithProviders {
+    return {
+      ngModule: NavbarModule,
+      providers: [
+        {provide: LanguageSwicher, useClass: languageSwitcher}
+      ]
+    };
+  }
 }

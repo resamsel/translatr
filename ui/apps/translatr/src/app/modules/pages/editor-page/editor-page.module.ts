@@ -25,6 +25,7 @@ import { EditorSelectorComponent } from './editor/editor-selector.component';
 import { KeyEditorPageComponent } from './key-editor-page.component';
 import { FilterFieldModule, NavbarModule } from '@dev/translatr-components';
 import { MatCardModule } from '@angular/material';
+import { AppFacade } from '../../../+state/app.facade';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import { MatCardModule } from '@angular/material';
     CommonModule,
     EditorPageRoutingModule,
     SidenavModule,
-    NavbarModule,
+    NavbarModule.forRoot(AppFacade),
     FormsModule,
     NavListModule,
     FilterFieldModule,
