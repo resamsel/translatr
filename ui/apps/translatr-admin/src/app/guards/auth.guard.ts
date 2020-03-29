@@ -29,7 +29,13 @@ export class AuthGuard implements CanActivate {
       skip(1),
       map((user: User) => {
         if (!user) {
-          const url = new URL(this.loginUrl);
+          let url;
+          if (this.loginUrl.startsWith('http://') || this.loginUrl.startsWith('https://')) {
+            url = new URL(this.loginUrl);
+          } else {
+            url = new URL(this.window.location.href);
+            url.pathname = this.loginUrl;
+          }
           url.searchParams.set('redirect_uri', environment.adminUrl + state.url);
           this.window.location.href = url.toString();
           return false;

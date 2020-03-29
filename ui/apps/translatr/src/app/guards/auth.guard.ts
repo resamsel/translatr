@@ -25,12 +25,18 @@ export class AuthGuard implements CanActivate {
       tap((authenticated: boolean) => {
         if (!authenticated) {
           try {
-            const url = new URL(this.loginUrl);
+            let url;
+            if (this.loginUrl.startsWith('http://') || this.loginUrl.startsWith('https://')) {
+              url = new URL(this.loginUrl);
+            } else {
+              url = new URL(this.window.location.href);
+              url.pathname = this.loginUrl;
+            }
             url.searchParams.set('redirect_uri', state.url);
             this.window.location.href = url.toString();
             return false;
           } catch (e) {
-            console.log('Error while parsing login URL', this.loginUrl, e);
+            console.log('Error while parsing login URL', this.loginUrl, this.window.location.href, e);
             return false;
           }
         }
