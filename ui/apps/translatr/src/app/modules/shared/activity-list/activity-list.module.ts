@@ -16,6 +16,7 @@ import { ActivityKeyLinkComponent } from './activity-key-link/activity-key-link.
 import { ActivityMemberLinkComponent } from './activity-member-link/activity-member-link.component';
 import { ActivityMessageLinkComponent } from './activity-message-link/activity-message-link.component';
 import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/activity-access-token-link.component';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/a
     MatTooltipModule,
 
     MomentModule,
-    GravatarModule
+    GravatarModule,
+    TranslocoModule
   ],
   exports: [ActivityListComponent]
 })

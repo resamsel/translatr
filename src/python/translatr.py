@@ -270,6 +270,8 @@ def read_config_merge(args):
 
 	if 'endpoint' in config:
 		config['endpoint'] = config['endpoint'].strip('/')
+	if 'default_locale' not in config:
+		config['default_locale'] = 'default'
 
 	return config
 
@@ -282,7 +284,7 @@ def init(args):
 					endpoint: {endpoint}
 					access_token: {access_token}
 					project_id: {project_id}
-                    default_locale: {default_locale}
+					default_locale: {default_locale}
 					push:
 						file_type: {push_file_type}
 						target: {push_target}
@@ -794,7 +796,6 @@ def create_parser():
 	)
 	parser.add_argument(
 		'--default-locale',
-		default='en',
 		help='the default locale name for the target (default: %(default)s)'
 	)
 

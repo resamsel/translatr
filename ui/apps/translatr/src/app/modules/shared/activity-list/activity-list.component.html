@@ -25,39 +25,7 @@
         [routerLink]="['/', activity.userUsername]"
         class="link user-name"
       >{{activity.userName}}</a>
-      <ng-container [ngSwitch]="activity.type">
-        <span *ngSwitchCase="'Create'" class="type" i18n>
-          <span>created</span>
-        </span>
-        <span *ngSwitchCase="'Update'" class="type" i18n>
-            <span>updated</span>
-          </span>
-        <span *ngSwitchCase="'Delete'" class="type" i18n>
-            <span>deleted</span>
-          </span>
-        <span *ngSwitchCase="'Login'" class="type" i18n>
-            <span>logged in</span></span
-        >
-        <span *ngSwitchCase="'Logout'" class="type" i18n>
-            <span>logged out</span></span
-        >
-      </ng-container>
-      <ng-container *ngIf="contentTypeOf(activity) as contentType">
-        <ng-container [ngSwitch]="contentType">
-          <span *ngSwitchCase="'message'" class="content-type" i18n>
-            translation
-          </span>
-          <span *ngSwitchCase="'projectuser'" class="content-type" i18n>
-            member
-          </span>
-          <span *ngSwitchCase="'accesstoken'" class="content-type" i18n>
-            access token
-          </span>
-          <span *ngSwitchDefault class="content-type" i18n>
-            {{ contentType }}
-          </span>
-        </ng-container>
-      </ng-container>
+      <span transloco="activity.{{contentTypeOf(activity)}}.{{activity.type.toLowerCase()}}"></span>
       <ng-container *ngIf="contentTypeOf(activity) as contentType">
         <ng-container [ngSwitch]="contentType">
           <ng-container *ngSwitchCase="'project'">
@@ -132,6 +100,6 @@
 <ng-template #empty>
   <mat-list class="empty large">
     <mat-icon class="activity">change_history</mat-icon>
-    <h3 i18n="@@activity.empty">No activity yet.</h3>
+    <h3 transloco="activity.empty">No activity yet.</h3>
   </mat-list>
 </ng-template>

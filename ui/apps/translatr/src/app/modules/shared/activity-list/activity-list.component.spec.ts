@@ -15,6 +15,7 @@ import { ActivityKeyLinkComponent } from './activity-key-link/activity-key-link.
 import { ActivityMemberLinkComponent } from './activity-member-link/activity-member-link.component';
 import { ActivityMessageLinkComponent } from './activity-message-link/activity-message-link.component';
 import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/activity-access-token-link.component';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ActivityListComponent', () => {
   let component: ActivityListComponent;
@@ -35,6 +36,7 @@ describe('ActivityListComponent', () => {
         NavListTestingModule,
 
         RouterTestingModule,
+        TranslocoTestingModule,
 
         TagModule,
 
