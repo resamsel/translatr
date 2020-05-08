@@ -42,6 +42,7 @@ import { ProjectCardListModule } from '../../shared/project-card-list/project-ca
 import { UserGuard } from './user.guard';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     EffectsModule.forFeature([UserEffects]),
     MetricModule,
     ShortNumberModule,
-    ActivityGraphModule
+    ActivityGraphModule,
+    TranslocoModule
   ],
   providers: [UserFacade, UserGuard]
 })

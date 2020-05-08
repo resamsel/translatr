@@ -284,6 +284,7 @@
   "projects.contributing.title": "Mitwirkende Projekte",
   "projects.empty": "<i class=\"material-icons xlarge grey-text text-lighten-1\">view_quilt</i><br/>\nNoch keine Projekte.",
   "projects.my.title": "Meine Projekte",
+  "projects.recent.title": "Neueste Projekte",
   "projects.title": "Projekte",
   "projects.tooltip": "Projekte öffnen",
   "promo1.content": "Die Vorschau, der schnelle Wechsel zwischen Sprachen und die Möglichkeit zur Integration in das Build-System ermöglichen eine schnellere Entwicklung.",

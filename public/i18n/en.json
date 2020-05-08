@@ -284,6 +284,7 @@
   "projects.contributing.title": "Contributing Projects",
   "projects.empty": "<i class=\"material-icons xlarge grey-text text-lighten-1\">view_quilt</i><br/>\nNo projects yet.",
   "projects.my.title": "My Projects",
+  "projects.recent.title": "Recent Projects",
   "projects.title": "Projects",
   "projects.tooltip": "Open projects",
   "promo1.content": "Preview, quick switching between locales, and the possibility of build system integration allow faster development.",
