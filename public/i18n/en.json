@@ -300,6 +300,7 @@
   "row.actions": "Actions",
   "search": "Search...",
   "search.filter": "Filter",
+  "settings.title": "Settings",
   "sort.by": "Sort by...",
   "timeline": "Timeline",
   "timestamps.info": "Created {0}, last updated {1}",

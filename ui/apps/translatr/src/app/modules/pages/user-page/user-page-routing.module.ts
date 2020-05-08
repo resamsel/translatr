@@ -24,7 +24,7 @@ const routes: Routes = [
         component: UserInfoComponent,
         data: {
           icon: 'info',
-          name: 'Info'
+          name: 'info'
         }
       },
       {
@@ -32,7 +32,7 @@ const routes: Routes = [
         component: UserProjectsComponent,
         data: {
           icon: 'library_books',
-          name: 'Projects'
+          name: 'projects.title'
         }
       },
       {
@@ -40,7 +40,7 @@ const routes: Routes = [
         canActivate: [MyselfGuard],
         data: {
           icon: 'vpn_key',
-          name: 'Access Tokens'
+          name: 'accessTokens'
         },
         children: [
           {
@@ -62,7 +62,7 @@ const routes: Routes = [
         canActivate: [MyselfGuard],
         data: {
           icon: 'change_history',
-          name: 'Activity'
+          name: 'activity'
         }
       },
       {
@@ -71,7 +71,7 @@ const routes: Routes = [
         canActivate: [MyselfGuard],
         data: {
           icon: 'settings',
-          name: 'Settings'
+          name: 'settings.title'
         }
       }
     ]
