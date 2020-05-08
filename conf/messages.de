@@ -11,6 +11,7 @@ accessToken.key=Schlüssel
 accessToken.name=Name
 accessToken.notFound=Zugangsschlüssel wurde nicht gefunden
 accessToken.scopes=Scopes
+accessToken.teaser.text=Du hast noch keine Zugangsschlüssel, möchtest du einen anlegen?
 accessTokens=Zugangsschlüssel
 accessTokens.empty=<i class="material-icons xlarge grey-text text-lighten-1">vpn_key</i><br/>\nNoch keine Zugangsschlüssel vorhanden.
 activity=Aktivität
@@ -283,6 +284,7 @@ projects.amount={0} Projekte
 projects.contributing.title=Mitwirkende Projekte
 projects.empty=<i class="material-icons xlarge grey-text text-lighten-1">view_quilt</i><br/>\nNoch keine Projekte.
 projects.my.title=Meine Projekte
+projects.recent.title=Neueste Projekte
 projects.title=Projekte
 projects.tooltip=Projekte öffnen
 promo1.content=Die Vorschau, der schnelle Wechsel zwischen Sprachen und die Möglichkeit zur Integration in das Build-System ermöglichen eine schnellere Entwicklung.
@@ -298,6 +300,7 @@ providers.empty=Keine Anbieter gefunden
 row.actions=Aktionen
 search=Suchen...
 search.filter=Filter
+settings.title=Einstellungen
 sort.by=Sortieren nach...
 timeline=Zeitlinie
 timestamps.info=Angelegt {0}, zuletzt aktualisiert {1}

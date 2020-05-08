@@ -12,6 +12,7 @@
   "accessToken.name": "Name",
   "accessToken.notFound": "Zugangsschlüssel wurde nicht gefunden",
   "accessToken.scopes": "Scopes",
+  "accessToken.teaser.text": "Du hast noch keine Zugangsschlüssel, möchtest du einen anlegen?",
   "accessTokens": "Zugangsschlüssel",
   "accessTokens.empty": "<i class=\"material-icons xlarge grey-text text-lighten-1\">vpn_key</i><br/>\nNoch keine Zugangsschlüssel vorhanden.",
   "activity": "Aktivität",

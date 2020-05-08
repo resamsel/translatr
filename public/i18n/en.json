@@ -12,6 +12,7 @@
   "accessToken.name": "Name",
   "accessToken.notFound": "Access token was not found",
   "accessToken.scopes": "Scopes",
+  "accessToken.teaser.text": "You don't have any access tokens yet, how about creating one?",
   "accessTokens": "Access Tokens",
   "accessTokens.empty": "<i class=\"material-icons xlarge grey-text text-lighten-1\">vpn_key</i><br/>\nNo access tokens yet.",
   "activity": "Activity",

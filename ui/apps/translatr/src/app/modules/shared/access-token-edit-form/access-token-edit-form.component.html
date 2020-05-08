@@ -1,7 +1,7 @@
 <form [formGroup]="form">
   <section class="name">
     <mat-form-field>
-      <h2>Name</h2>
+      <h2 transloco="accessToken.name">Name</h2>
       <input
         matInput
         type="text"
@@ -15,13 +15,13 @@
 
   <section *ngIf="form.value.id" class="key">
     <mat-form-field>
-      <h2>Key</h2>
+      <h2 transloco="accessToken.key">Key</h2>
       <input [readonly]="true" formControlName="key" matInput type="text">
     </mat-form-field>
   </section>
 
   <section class="scopes">
-    <h2>Scopes</h2>
+    <h2 transloco="accessToken.scopes">Scopes</h2>
     <div>
       <div *ngFor="let scopeType of scopeTypes" class="scope">
         <h3>{{scopeType}}</h3>
