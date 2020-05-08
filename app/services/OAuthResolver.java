@@ -41,17 +41,17 @@ public class OAuthResolver extends Resolver {
     // The user will be redirected to this page after authentication
     // if no original URL was saved
     play.api.mvc.Call call = routes.Application.indexUi();
+    String redirectBase = configuration.getString(REDIRECT_BASE, "");
 
     String redirectUri = request().getQueryString(OAuth2AuthProvider.Constants.REDIRECT_URI);
     if (StringUtils.isEmpty(redirectUri)) {
-      return call;
+      return new play.api.mvc.Call(call.method(), redirectBase + call.url(), null);
     }
 
     if (redirectUri.startsWith("http://") || redirectUri.startsWith("https://")) {
       return new play.api.mvc.Call(call.method(), redirectUri, null);
     }
 
-    String redirectBase = configuration.getString(REDIRECT_BASE, "");
     return new play.api.mvc.Call(call.method(), redirectBase + call.url() + redirectUri, null);
   }
 
