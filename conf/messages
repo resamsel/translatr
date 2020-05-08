@@ -322,6 +322,7 @@ user.notLinked=not linked
 user.profile=Profile
 user.username=Username
 user.username.duplicate=Username not available
+user.username.error.pattern=Must match pattern [a-zA-Z0-9_.-]*
 users=Contributors
 users.empty=<i class="material-icons xlarge grey-text text-lighten-1">group</i><br/>\nNo users yet.
 users.title=Contributors

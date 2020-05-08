@@ -323,6 +323,7 @@
   "user.profile": "Profil",
   "user.username": "Benutzername",
   "user.username.duplicate": "Benutzername wird bereits verwendet",
+  "user.username.error.pattern": "Muss diesem Muster entsprechen: [a-zA-Z0-9_.-]*",
   "users": "Mitwirkende",
   "users.empty": "<i class=\"material-icons xlarge grey-text text-lighten-1\">group</i><br/>\nNoch keine Benutzer.",
   "users.title": "Mitwirkende",

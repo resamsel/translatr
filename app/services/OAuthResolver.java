@@ -6,6 +6,8 @@ import com.feth.play.module.pa.exceptions.AuthException;
 import com.feth.play.module.pa.providers.oauth2.OAuth2AuthProvider;
 import controllers.routes;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.mvc.Call;
 
@@ -21,6 +23,8 @@ import static play.mvc.Http.Context.Implicit.request;
  */
 @Singleton
 public class OAuthResolver extends Resolver {
+  private static final Logger LOGGER = LoggerFactory.getLogger(OAuthResolver.class);
+
   private static final String REDIRECT_BASE = "translatr.redirectBase";
 
   private final Configuration configuration;
@@ -45,7 +49,9 @@ public class OAuthResolver extends Resolver {
 
     String redirectUri = request().getQueryString(OAuth2AuthProvider.Constants.REDIRECT_URI);
     if (StringUtils.isEmpty(redirectUri)) {
-      return new play.api.mvc.Call(call.method(), redirectBase + call.url(), null);
+      play.api.mvc.Call rewritten = new play.api.mvc.Call(call.method(), redirectBase + call.url(), null);
+      LOGGER.debug("Rewritten to ''{}'' (was ''{}'')", rewritten, call);
+      return rewritten;
     }
 
     if (redirectUri.startsWith("http://") || redirectUri.startsWith("https://")) {
