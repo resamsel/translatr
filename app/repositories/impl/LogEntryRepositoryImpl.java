@@ -69,7 +69,7 @@ public class LogEntryRepositoryImpl extends
 
     criteria.paged(query);
 
-    return PagedListFactory.create(query.query().fetch("user").fetch("project"));
+    return PagedListFactory.create(query.query().fetch("user").fetch("project"), criteria.hasFetch(FETCH_COUNT));
   }
 
   @Override

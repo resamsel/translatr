@@ -32,7 +32,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelRepository.class);
 
-  protected static final String FETCH_COUNT = "count";
+  public static final String FETCH_COUNT = "count";
 
   protected final Persistence persistence;
   protected final Validator validator;

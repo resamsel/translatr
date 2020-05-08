@@ -5,6 +5,7 @@ import com.avaje.ebean.PagedList;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
 import criterias.LogEntryCriteria;
+import criterias.PagedListFactory;
 import models.Aggregate;
 import models.LogEntry;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import javax.validation.Validator;
 import java.util.Optional;
 import java.util.UUID;
 
+import static repositories.impl.AbstractModelRepository.FETCH_COUNT;
 import static utils.Stopwatch.log;
 
 /**
@@ -76,12 +78,11 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
     String cacheKey =
         String.format("activity:aggregates:%s:%s", criteria.getUserId(), criteria.getProjectId());
 
-    // TODO: config cache duration
     return log(
         () -> cache.getOrElse(
-            cacheKey,
-            query::findPagedList,
-            60
+                cacheKey,
+                () -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)),
+                60
         ),
         LOGGER,
         "Retrieving log entry aggregates"

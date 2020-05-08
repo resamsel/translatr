@@ -19,7 +19,7 @@ public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCrit
 
   private List<UUID> ids;
   private UUID projectMemberId;
-  private List<ActionType> types = new ArrayList<>();
+  private final List<ActionType> types = new ArrayList<>();
 
   public LogEntryCriteria() {
     super("activity");

@@ -2,7 +2,9 @@ package services.api.impl;
 
 import com.avaje.ebean.PagedList;
 import criterias.LogEntryCriteria;
+import dto.AuthorizationException;
 import dto.DtoPagedList;
+import dto.PermissionException;
 import mappers.ActivityMapper;
 import mappers.AggregateMapper;
 import models.LogEntry;
@@ -37,7 +39,12 @@ public class ActivityApiServiceImpl extends
 
   @Override
   public PagedList<dto.Aggregate> getAggregates(LogEntryCriteria criteria) {
-    permissionService.checkPermissionAll("Access token not allowed", readScopes);
+    try {
+      permissionService.checkPermissionAll("Access token not allowed", readScopes);
+    } catch (AuthorizationException | PermissionException e) {
+      // Disallow custom criteria when not logged-in
+      criteria = new LogEntryCriteria().withLimit(1000);
+    }
 
     return new DtoPagedList<>(service.getAggregates(criteria), AggregateMapper::toDto);
   }
