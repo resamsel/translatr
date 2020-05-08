@@ -6,6 +6,7 @@ import { MatListModule } from '@angular/material/list';
 import { ListHeaderModule } from '../list-header/list-header.module';
 import { MatButtonModule, MatCardModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [NavListComponent],
@@ -17,7 +18,8 @@ import { RouterModule } from '@angular/router';
     MatIconModule,
     MatCardModule,
     RouterModule,
-    MatButtonModule
+    MatButtonModule,
+    TranslocoModule
   ],
   exports: [NavListComponent]
 })

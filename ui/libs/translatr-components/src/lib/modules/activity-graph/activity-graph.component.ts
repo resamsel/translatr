@@ -1,15 +1,17 @@
-import { Component, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import * as d3 from 'd3';
 import { BaseType, Selection } from 'd3';
 import { Aggregate } from '@dev/translatr-model';
+import { TranslocoService } from '@ngneat/transloco';
+import moment from 'moment';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 const dayOfWeek = (d: Date) => (d.getDay() + 6) % 7;
 const numberOfColors = 4;
 const color = d3.scaleQuantize()
   .domain([0, 1])
   .range(d3.range(numberOfColors));
-const dateFormat = d3.timeFormat('%B %d, %Y');
-const monthFormat = d3.timeFormat('%b');
 
 interface DirectionConfig {
   top?: number;
@@ -35,12 +37,35 @@ const cellPosition = (date: Date, width: number, cellSize: number, offset: Direc
   ];
 };
 
+const locales = {
+  en: {
+    'dateTime': '%x, %X',
+    'date': '%-m/%-d/%Y',
+    'time': '%-I:%M:%S %p',
+    'periods': ['AM', 'PM'],
+    'days': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    'shortDays': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    'months': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    'shortMonths': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  },
+  de: {
+    'dateTime': '%A, der %e. %B %Y, %X',
+    'date': '%d.%m.%Y',
+    'time': '%H:%M:%S',
+    'periods': ['AM', 'PM'],
+    'days': ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+    'shortDays': ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+    'months': ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+    'shortMonths': ['Jan', 'Feb', 'Mrz', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
+  }
+};
+
 @Component({
   selector: 'dev-activity-graph',
   templateUrl: './activity-graph.component.html',
   styleUrls: ['./activity-graph.component.scss']
 })
-export class ActivityGraphComponent implements OnChanges {
+export class ActivityGraphComponent implements OnChanges, OnDestroy {
   @Input() data: Aggregate[];
   @Input() cellInnerSize = 16;
   @Input() cellPadding = 1;
@@ -48,20 +73,43 @@ export class ActivityGraphComponent implements OnChanges {
   @Input() offsetRight = 16;
   @Input() offsetBottom = 20;
   @Input() offsetLeft = 50;
-  @Input() weekdays = [['Tue', 2], ['Thu', 4], ['Sat', 6]];
+  @Input() weekdays = [2, 4, 6];
 
   private hostElement: any;
   private svg: Selection<BaseType, unknown, HTMLElement, any>;
   private g: Selection<SVGGElement, unknown, HTMLElement, undefined>;
 
-  constructor(readonly elRef: ElementRef) {
+  private monthFormat: (date: Date) => string;
+  private dateFormat: (date: Date) => string;
+  private weekdayFormat: (date: Date) => string;
+
+  private readonly destroy$: Subject<void> = new Subject<void>();
+
+  constructor(readonly elRef: ElementRef, private readonly translocoService: TranslocoService) {
     this.hostElement = elRef.nativeElement;
+    translocoService.langChanges$
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(language => this.updateLanguage(language));
+  }
+
+  private updateLanguage(language: string) {
+    console.log('updateLanguage', language);
+    const timeFormat = d3.timeFormatDefaultLocale(locales[language]);
+    this.dateFormat = timeFormat.format('%B %d, %Y');
+    this.monthFormat = timeFormat.format('%b');
+    this.weekdayFormat = timeFormat.format('%a');
+    this.drawGraph();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.data && changes.data.currentValue) {
       this.drawGraph();
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private drawGraph() {
@@ -97,11 +145,16 @@ export class ActivityGraphComponent implements OnChanges {
     d3.timeMonths(aYearAgo, today).forEach((date: Date) => {
       const [x] = cellPosition(date, width, cellSize, offset);
 
-      this.createText(x, 12, monthFormat(date), 'month');
+      this.createText(x, 12, this.monthFormat(date), 'month');
     });
 
-    this.weekdays.forEach(([weekday, off]: [string, number]) => {
-      this.createText(this.offsetLeft - 8, this.offsetTop + off * cellSize - 4, weekday, 'weekday')
+    this.weekdays.forEach((weekday: number) => {
+      this.createText(
+        this.offsetLeft - 8,
+        this.offsetTop + weekday * cellSize - 4,
+        this.weekdayFormat(moment().weekday(weekday).toDate()),
+        'weekday'
+      )
         .attr('text-anchor', 'end');
     });
 
@@ -110,7 +163,7 @@ export class ActivityGraphComponent implements OnChanges {
 
       this.createRect(x, y, this.cellInnerSize, this.cellInnerSize, 'day')
         .append('title')
-        .text(dateFormat(date));
+        .text(this.dateFormat(date));
     });
 
     const maxValue = data.reduce((max, curr) => Math.max(max, curr.value), 0);
@@ -120,7 +173,7 @@ export class ActivityGraphComponent implements OnChanges {
 
       this.createRect(x, y, this.cellInnerSize, this.cellInnerSize, `day q${color(aggregate.value / maxValue)}`)
         .append('title')
-        .text(`${dateFormat(aggregate.date)}: ${aggregate.value}`);
+        .text(`${this.dateFormat(aggregate.date)}: ${aggregate.value}`);
     });
 
     Array(numberOfColors + 1).fill(0).forEach((_: number, i, arr) => {
@@ -134,14 +187,14 @@ export class ActivityGraphComponent implements OnChanges {
     this.createText(
       width - (3 + numberOfColors + 1) * cellSize - 8 - offset.right,
       height - 4,
-      'Less',
+      this.translocoService.translate('contributions.legend.less'),
       'weekday'
     )
       .attr('text-anchor', 'end');
     this.createText(
       width - 3 * cellSize + 4 - offset.right,
       height - 4,
-      'More',
+      this.translocoService.translate('contributions.legend.more'),
       'weekday'
     );
   }

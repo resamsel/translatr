@@ -1,19 +1,18 @@
-<div class="container narrow">
+<div *transloco="let t" class="container narrow">
   <mat-card>
     <mat-card-header>
-      <mat-card-title>User</mat-card-title>
+      <mat-card-title transloco="user">User</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="form" class="form update-user">
         <mat-form-field appearance="outline" class="name">
-          <mat-label i18n="@@name">Name</mat-label>
+          <mat-label transloco="user.name">Name</mat-label>
           <input
             autocomplete="off"
             cdkFocusInitial
             formControlName="name"
-            i18n-placeholder="@@user.name"
             matInput
-            placeholder="Name"
+            [placeholder]="t('user.name')"
             type="text"
           />
           <mat-error
@@ -30,13 +29,12 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="username">
-          <mat-label i18n="@@username">Username</mat-label>
+          <mat-label transloco="user.username">Username</mat-label>
           <input
             autocomplete="off"
             formControlName="username"
-            i18n-placeholder="@@user.username"
+            [placeholder]="t('user.username')"
             matInput
-            placeholder="Username"
             type="text"
           />
           <mat-error
@@ -47,6 +45,7 @@
           </mat-error>
           <mat-error
             *ngIf="usernameFormControl.invalid && usernameFormControl.errors.pattern"
+            transloco="user.username.error.pattern"
           >
             Must match pattern [a-zA-Z0-9_.-]*
           </mat-error>
@@ -63,6 +62,7 @@
             class="save"
             color="primary"
             mat-raised-button
+            transloco="button.save"
           >
             Save
           </button>

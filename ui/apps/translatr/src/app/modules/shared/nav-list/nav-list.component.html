@@ -22,10 +22,8 @@
       class="more"
       [queryParams]="queryParams"
       [routerLink]="[]"
-      i18n
-    >
-      <i>Load more</i>
-    </a>
+      transloco="button.more"
+    >Load more</a>
   </div>
 
   <ng-container *ngIf="pagedList?.list?.length <= 0 && pagedList?.total === 0">
