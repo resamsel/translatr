@@ -1,15 +1,16 @@
 <dev-empty-view icon="book">
   <ng-container *ngIf="canCreate; else noProjects">
-    <p>You don't have any projects, yet - how about creating one?</p>
+    <p transloco="project.teaser.text">You don't have any projects, yet - how about creating one?</p>
     <button
       (click)="create.emit()"
       class="action"
       color="accent"
       mat-raised-button
+      transloco="project.create.button"
     >Start new project
     </button>
   </ng-container>
   <ng-template #noProjects>
-    <p>There are no projects visible.</p>
+    <p transloco="projects.empty.text">There are no projects visible.</p>
   </ng-template>
 </dev-empty-view>

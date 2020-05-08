@@ -1,18 +1,19 @@
-<app-project-list
-  [projects]="projects$ | async"
-  [canCreate]="canCreateProject$ | async"
-  (filter)="onFilter($event)"
-  [showFilter]="true"
-></app-project-list>
+<ng-container *transloco="let t">
+  <app-project-list
+    [projects]="projects$ | async"
+    [canCreate]="canCreateProject$ | async"
+    (filter)="onFilter($event)"
+    [showFilter]="true"
+  ></app-project-list>
 
-<button
-  *ngIf="canCreateProject$ | async"
-  mat-fab
-  color="accent"
-  class="floating-action-btn pin-bottom"
-  (click)="openProjectCreationDialog()"
-  i18n-matTooltip="@@project.create.tooltip"
-  matTooltip="Create a project"
->
-  <mat-icon>add</mat-icon>
-</button>
+  <button
+    *ngIf="canCreateProject$ | async"
+    mat-fab
+    color="accent"
+    class="floating-action-btn pin-bottom"
+    (click)="openProjectCreationDialog()"
+    [matTooltip]="t('project.create.tooltip')"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</ng-container>

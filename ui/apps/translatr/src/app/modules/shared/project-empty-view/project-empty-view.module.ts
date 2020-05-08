@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ProjectEmptyViewComponent } from './project-empty-view.component';
 import { EmptyViewModule } from '@dev/translatr-components';
 import { MatButtonModule } from '@angular/material';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [ProjectEmptyViewComponent],
   imports: [
     CommonModule,
     EmptyViewModule,
-    MatButtonModule
+    MatButtonModule,
+    TranslocoModule
   ],
   exports: [ProjectEmptyViewComponent]
 })
