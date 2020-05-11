@@ -69,7 +69,7 @@ auth.keycloak=Keycloak
 auth.login=Anmelden
 auth.login.content=<i class="material-icons xlarge grey-text text-lighten-1">account_circle</i><br/>\nMelde dich mit einem der Services an
 auth.login.title=Anmeldung
-auth.logout=Abmelden
+auth.logout={{name}} abmelden
 auth.twitter=Twitter
 button.cancel=Abbrechen
 button.close=Schließen

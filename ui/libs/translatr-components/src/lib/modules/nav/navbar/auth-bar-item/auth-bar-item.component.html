@@ -10,10 +10,20 @@
 <mat-menu #userMenu="matMenu" xPosition="before">
   <ng-content></ng-content>
   <mat-divider></mat-divider>
-  <a mat-menu-item *ngIf="me" href="{{endpointUrl}}/logout"> Logout {{ me.name }} </a>
+  <a
+    *ngIf="me"
+    mat-menu-item
+    href="{{endpointUrl}}/logout"
+    transloco="auth.logout"
+    [translocoParams]="{name: me.name}"
+  >Logout {{ me.name }} </a>
 </mat-menu>
 
-<a href="{{endpointUrl}}/login" mat-button *ngIf="!me">
+<a
+  *ngIf="!me"
+  href="{{endpointUrl}}/login"
+  mat-button
+>
   <mat-icon>group</mat-icon>
-  Sign in
+  <span transloco="auth.login">Sign in</span>
 </a>

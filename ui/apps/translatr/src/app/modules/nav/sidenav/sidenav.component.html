@@ -1,4 +1,4 @@
-<div class="sidenav-content">
+<div *transloco="let t" class="sidenav-content">
   <app-navbar [backLink]="backLink" [elevated]="elevated" [overlay]="overlay" [page]="page">
     <ng-container ngProjectAs="app-search-bar">
       <ng-content select="app-search-bar"></ng-content>
@@ -13,21 +13,20 @@
     <a
       *ngIf="showDashboardLink"
       mat-icon-button
-      matTooltip="Dashboard"
-      i18n-matTooltip="@@dashboard.title"
+      [matTooltip]="t('dashboard.title')"
       routerLink="/dashboard">
       <mat-icon>view_quilt</mat-icon>
     </a>
 
     <app-auth-bar-language-switcher *featureFlag="Feature.LanguageSwitcher"></app-auth-bar-language-switcher>
     <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
-      <a mat-menu-item *ngIf="me" [routerLink]="['/', me.username]" i18n="@@user.profile">
+      <a mat-menu-item *ngIf="me" [routerLink]="['/', me.username]" transloco="user.profile">
         Profile
       </a>
       <ng-container *ngIf="isAdmin(me)">
         <mat-divider></mat-divider>
         <a mat-menu-item [href]="adminUrl" target="_blank">
-          <span i18n="@@admin.title">Admin</span>
+          <span transloco="admin.title">Admin</span>
           <mat-icon [inline]="true">launch</mat-icon>
         </a>
       </ng-container>

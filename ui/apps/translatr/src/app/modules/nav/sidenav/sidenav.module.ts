@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 import { FeatureFlagModule, FooterModule, NavbarModule } from '@dev/translatr-components';
 import { MatTooltipModule } from '@angular/material';
 import { AppFacade } from '../../../+state/app.facade';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [SidenavComponent],
@@ -29,7 +30,8 @@ import { AppFacade } from '../../../+state/app.facade';
     MatMenuModule,
     MatDividerModule,
     MatTooltipModule,
-    FeatureFlagModule
+    FeatureFlagModule,
+    TranslocoModule
   ],
   exports: [SidenavComponent]
 })

@@ -10,6 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureFlagTestingModule, FooterTestingModule, NavbarTestingModule } from '@translatr/components/testing';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
@@ -23,6 +24,8 @@ describe('SidenavComponent', () => {
       imports: [
         CommonModule,
         RouterTestingModule,
+        TranslocoTestingModule,
+
         NavbarTestingModule,
         FooterTestingModule,
         FeatureFlagTestingModule,
