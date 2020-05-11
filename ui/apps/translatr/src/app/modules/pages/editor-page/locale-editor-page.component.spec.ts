@@ -9,6 +9,7 @@ import { MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule } from
 import { AppFacade } from '../../../+state/app.facade';
 import { EditorFacade } from './+state/editor.facade';
 import { mockObservable } from '@translatr/utils/testing';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('LocaleEditorPageComponent', () => {
   let component: LocaleEditorPageComponent;
@@ -24,6 +25,7 @@ describe('LocaleEditorPageComponent', () => {
         NavListTestingModule,
 
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatFormFieldModule,
         MatInputModule,

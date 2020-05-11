@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, MatFormFieldModule, MatInputModule, MatSnackBar } from '@angular/material';
 import { ProjectService } from '@dev/translatr-sdk';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ProjectDeleteDialogComponent', () => {
   let component: ProjectDeleteDialogComponent;
@@ -16,6 +17,7 @@ describe('ProjectDeleteDialogComponent', () => {
       imports: [
         ReactiveFormsModule,
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatDialogModule,
         MatFormFieldModule,

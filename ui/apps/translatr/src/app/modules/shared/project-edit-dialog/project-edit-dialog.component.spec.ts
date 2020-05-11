@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, MatFormFieldModule, MatInputModule, MatSnackBar } from '@angular/material';
 import { AppFacade } from '../../../+state/app.facade';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ProjectCreationDialogComponent', () => {
   let component: ProjectEditDialogComponent;
@@ -16,6 +17,7 @@ describe('ProjectCreationDialogComponent', () => {
       imports: [
         ReactiveFormsModule,
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatDialogModule,
         MatFormFieldModule,

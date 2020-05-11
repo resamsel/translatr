@@ -9,6 +9,7 @@ import { MatFormFieldModule, MatIconModule, MatInputModule } from '@angular/mate
 import { NavListTestingModule } from '../../testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { mockObservable } from '@translatr/utils/testing';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('KeyEditorPageComponent', () => {
   let component: KeyEditorPageComponent;
@@ -24,6 +25,7 @@ describe('KeyEditorPageComponent', () => {
         NavListTestingModule,
 
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatFormFieldModule,
         MatInputModule,

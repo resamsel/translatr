@@ -7,18 +7,20 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [ProjectEditDialogComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSnackBarModule,
-    MatButtonModule,
-    MatInputModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSnackBarModule,
+        MatButtonModule,
+        MatInputModule,
+        TranslocoModule
+    ],
   exports: [ProjectEditDialogComponent],
   providers: [ProjectFacade],
   entryComponents: [ProjectEditDialogComponent]
