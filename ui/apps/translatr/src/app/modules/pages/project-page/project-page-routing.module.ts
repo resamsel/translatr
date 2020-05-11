@@ -23,7 +23,7 @@ const routes: Routes = [
         component: ProjectInfoComponent,
         data: {
           icon: 'book',
-          name: 'Project'
+          name: 'project'
         }
       },
       {
@@ -31,7 +31,7 @@ const routes: Routes = [
         component: ProjectLocalesComponent,
         data: {
           icon: 'language',
-          name: 'Languages'
+          name: 'locales'
         }
       },
       {
@@ -39,7 +39,7 @@ const routes: Routes = [
         component: ProjectKeysComponent,
         data: {
           icon: 'vpn_key',
-          name: 'Keys'
+          name: 'keys'
         }
       },
       {
@@ -47,7 +47,7 @@ const routes: Routes = [
         component: ProjectMembersComponent,
         data: {
           icon: 'group',
-          name: 'Members'
+          name: 'members'
         }
       },
       {
@@ -55,7 +55,7 @@ const routes: Routes = [
         component: ProjectActivityComponent,
         data: {
           icon: 'change_history',
-          name: 'Activity'
+          name: 'activity'
         }
       },
       {
@@ -64,7 +64,7 @@ const routes: Routes = [
         canActivate: [ProjectEditGuard],
         data: {
           icon: 'settings',
-          name: 'Settings'
+          name: 'settings.title'
         }
       }
     ]

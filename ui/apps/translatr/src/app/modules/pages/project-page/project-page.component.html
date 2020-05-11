@@ -1,4 +1,5 @@
 <app-sidenav
+  *transloco="let t"
   [elevated]="false"
   [me]="me$ | async"
   [overlay]="true"
@@ -25,7 +26,7 @@
             [active]="link.isActive"
           >
             <mat-icon>{{ child.data.icon }}</mat-icon>
-            <span>{{ child.data.name }}</span>
+            <span>{{ t(child.data.name) }}</span>
           </a>
         </ng-container>
       </div>
