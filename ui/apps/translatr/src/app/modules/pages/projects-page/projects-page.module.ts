@@ -18,6 +18,7 @@ import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/projec
 import { MatTooltipModule } from '@angular/material';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
 import { FeatureFlagModule } from '@dev/translatr-components';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [ProjectsPageComponent],
@@ -40,7 +41,8 @@ import { FeatureFlagModule } from '@dev/translatr-components';
     EffectsModule.forFeature([ProjectsEffects]),
     MatTooltipModule,
     ProjectCardListModule,
-    FeatureFlagModule
+    FeatureFlagModule,
+    TranslocoModule
   ],
   providers: [ProjectsFacade]
 })

@@ -1,4 +1,5 @@
 <app-nav-list
+  *transloco="let t"
   [empty]="empty"
   [pagedList]="projects"
   [showFilter]="showFilter"
@@ -22,8 +23,7 @@
       color="accent"
       [value]="project.progress * 100"
       class="limit-width"
-      matTooltip="{{project.progress * 100 | number:'1.0-1'}}% translated"
-      i18n-matTooltip="@@project.progress.tooltip"
+      [matTooltip]="t('project.progress.tooltip', {progress: project.progress * 100 | number:'1.0-1'})"
       matLine
     ></mat-progress-bar>
   </a>

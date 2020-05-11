@@ -11,6 +11,7 @@ import { MomentModule } from 'ngx-moment';
 import { MatProgressBarModule, MatTooltipModule } from '@angular/material';
 import { EmptyViewModule } from '@translatr/translatr-components/src/lib/modules/empty-view/empty-view.module';
 import { ProjectEmptyViewModule } from '../project-empty-view/project-empty-view.module';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [ProjectListComponent],
@@ -26,7 +27,8 @@ import { ProjectEmptyViewModule } from '../project-empty-view/project-empty-view
     MatTooltipModule,
     EmptyViewModule,
     ProjectEmptyViewModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    TranslocoModule
   ],
   exports: [ProjectListComponent]
 })

@@ -298,6 +298,7 @@ project.owner.change.denied=Besitzerwechsel für Project {0} wurde verweigert
 project.owner.change.info=Um den Besitzer des Projekts zu wechseln, muss ein anderer Mitwirkender ausgewählt werden. Bitte füge zuerst einen Mitwirkenden hinzu.
 project.owner.info=Projektbesitzer
 project.owner.new=Neuer Projektbesitzer
+project.progress.tooltip={{progress}}% übersetzt
 project.remove.tooltip=Projekt entfernen
 project.role.Developer=Entwickler
 project.role.Manager=Manager
@@ -310,6 +311,7 @@ project.wordCount.reset=Die Anzahl der Wörter wurde zurückgesetzt und wird neu
 project.wordCount.reset.tooltip=Wortanzahl neu berechnen
 projects=Projekte
 projects.amount={0} Projekte
+projects.contributing.text=Projekte, die du aktiv verbesserst
 projects.contributing.title=Mitwirkende Projekte
 projects.empty=<i class="material-icons xlarge grey-text text-lighten-1">view_quilt</i><br/>\nNoch keine Projekte.
 projects.empty.text=Es sind keine Projekte sichtbar.

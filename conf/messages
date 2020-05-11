@@ -298,6 +298,7 @@ project.owner.change.denied=Ownership change for project {0} denied
 project.owner.change.info=Changing ownership of this project requires another contributor to be selected. Please add a contributor first.
 project.owner.info=Project owner
 project.owner.new=New project owner
+project.progress.tooltip={{progress}}% translated
 project.remove.tooltip=Remove project
 project.role.Developer=Developer
 project.role.Manager=Manager
@@ -310,6 +311,7 @@ project.wordCount.reset=The word count has been reset and will be re-calculatedâ
 project.wordCount.reset.tooltip=Re-calculate word count
 projects=Projects
 projects.amount={0} projects
+projects.contributing.text=Project that you help improve
 projects.contributing.title=Contributing Projects
 projects.empty=<i class="material-icons xlarge grey-text text-lighten-1">view_quilt</i><br/>\nNo projects yet.
 projects.empty.text=There are no projects visible.

@@ -1,10 +1,10 @@
 <app-sidenav [elevated]="false" [me]="me$ | async" [overlay]="true" [showDashboardLink]="true"
-             page="Contributing Projects">
+             [page]="'projects.contributing.title' | transloco">
   <header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
     <div class="container title">
       <div class="content">
-        <h1>Contributing Projects</h1>
-        <p>Projects that you help improve</p>
+        <h1 transloco="projects.contributing.title">Contributing Projects</h1>
+        <p transloco="projects.contributing.text">Projects that you help improve</p>
       </div>
     </div>
   </header>
@@ -13,8 +13,7 @@
     color="accent"
     class="floating-action-btn pin-bottom"
     (click)="openProjectCreationDialog()"
-    i18n-matTooltip="@@project.create.tooltip"
-    matTooltip="Create a project"
+    [matTooltip]="'project.create.tooltip' | transloco"
   >
     <mat-icon>add</mat-icon>
   </button>
