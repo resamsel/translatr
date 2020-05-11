@@ -1,91 +1,99 @@
-<app-nav-list
-  *ngIf="project"
-  [pagedList]="locales"
-  [criteria]="criteria"
-  [empty]="empty"
-  [nothingFound]="nothingFound"
-  [canCreate]="canCreate"
-  showFilter="true"
-  addTooltip="Add new language"
-  i18n-addTooltip="@@locale.create.tooltip"
-  (create)="openLocaleDialog({projectId: project.id})"
-  (filter)="onFilter($event)"
->
-  <a
-    *ngFor="let locale of locales?.list; trackBy: trackByFn"
-    [routerLink]="[
+<ng-container *transloco="let t">
+  <app-nav-list
+    *ngIf="project"
+    [pagedList]="locales"
+    [criteria]="criteria"
+    [empty]="empty"
+    [nothingFound]="nothingFound"
+    [canCreate]="canCreate"
+    showFilter="true"
+    [addTooltip]="t('locale.create.tooltip')"
+    (create)="openLocaleDialog({projectId: project.id})"
+    (filter)="onFilter($event)"
+  >
+    <a
+      *ngFor="let locale of locales?.list; trackBy: trackByFn"
+      [routerLink]="[
         '/',
         project.ownerUsername,
         project.name,
         'locales',
         locale.name
       ]"
-    mat-list-item
-  >
-    <mat-icon class="locale circle" matListIcon>language</mat-icon>
-    <h3 matLine>{{ locale.displayName }} <span class="sub-title">{{ locale.name }}</span></h3>
-    <mat-progress-bar
-      *ngIf="locale.progress !== undefined"
-      mode="determinate"
-      color="accent"
-      [value]="locale.progress * 100"
-      matTooltip="{{locale.progress * 100 | number:'1.0-1'}}% translated"
-      i18n-matTooltip="@@locale.progress.tooltip"
-      matLine
-    ></mat-progress-bar>
-    <a
-      (click)="$event.stopPropagation(); $event.preventDefault()"
-      [matMenuTriggerFor]="menu"
-      class="download"
-      i18n-matTooltip="@@button.download"
-      mat-icon-button
-      matTooltip="Download"
+      mat-list-item
     >
-      <mat-icon>cloud_download</mat-icon>
-    </a>
-    <mat-menu #menu="matMenu">
+      <mat-icon class="locale circle" matListIcon>language</mat-icon>
+      <h3 matLine>{{ locale.displayName }} <span class="sub-title">{{ locale.name }}</span></h3>
+      <mat-progress-bar
+        *ngIf="locale.progress !== undefined"
+        mode="determinate"
+        color="accent"
+        [value]="locale.progress * 100"
+        matTooltip="{{locale.progress * 100 | number:'1.0-1'}}% translated"
+        i18n-matTooltip="@@locale.progress.tooltip"
+        matLine
+      ></mat-progress-bar>
       <a
-        *ngFor="let fileType of fileTypes"
-        href="/api/locale/{{locale.id}}/export/{{fileType.type}}"
-        mat-menu-item
-      >{{fileType.name}}</a>
-    </mat-menu>
-    <button
-      *ngIf="canCreate"
-      (click)="onEdit(locale, $event)"
-      class="edit"
-      matTooltip="Edit"
-      i18n-matTooltip="@@button.edit"
-      mat-icon-button
-    >
-      <mat-icon>edit</mat-icon>
-    </button>
-    <confirm-button
-      *ngIf="canDelete"
-      icon="delete"
-      tooltip="Delete"
-      class="delete"
-      i18n-tooltip="@@button.delete"
-      (confirm)="onDelete(locale)"
-    ></confirm-button>
-  </a>
-</app-nav-list>
+        (click)="$event.stopPropagation(); $event.preventDefault()"
+        [matMenuTriggerFor]="menu"
+        [matTooltip]="t('locale.download.button')"
+        class="download"
+        mat-icon-button
+      >
+        <mat-icon>cloud_download</mat-icon>
+      </a>
+      <mat-menu #menu="matMenu">
+        <a
+          *ngFor="let fileType of fileTypes"
+          href="/api/locale/{{locale.id}}/export/{{fileType.type}}"
+          mat-menu-item
+        >{{fileType.name}}</a>
+      </mat-menu>
+      <button
+        *ngIf="canCreate"
+        (click)="onEdit(locale, $event)"
+        class="edit"
+        [matTooltip]="t('button.edit')"
+        mat-icon-button
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <confirm-button
+        *ngIf="canDelete"
+        [tooltip]="t('button.delete')"
+        icon="delete"
+        class="delete"
+        (confirm)="onDelete(locale)"
+      ></confirm-button>
+    </a>
+  </app-nav-list>
 
-<ng-template #empty>
-  <dev-empty-view icon="language" justifyContent="center">
-    <p>It seems there are no languages defined, yet - would you like to add one now?</p>
-    <button
-      *ngIf="canCreate"
-      (click)="openLocaleDialog({projectId: project.id})"
-      color="accent"
-      i18n="@@locale.create"
-      mat-raised-button>Add language
-    </button>
-  </dev-empty-view>
-</ng-template>
+  <ng-template #empty>
+    <dev-empty-view icon="language" justifyContent="center">
+      <p transloco="locales.teaser.text">It seems there are no languages defined, yet - would you like to add one
+        now?</p>
+      <button
+        *ngIf="canCreate"
+        (click)="openLocaleDialog({projectId: project.id})"
+        color="accent"
+        transloco="locale.create.button"
+        mat-raised-button
+      >Add language
+      </button>
+    </dev-empty-view>
+  </ng-template>
 
-<ng-template #nothingFound>
-  <dev-empty-view alignment="vertical" icon="language">
-    <p i18n="@@locales.notfound">No languages found.</p>
-  </dev-empty-view>
-</ng-template>
+  <ng-template #nothingFound>
+    <dev-empty-view icon="language" justifyContent="center">
+      <p transloco="locales.notfound">No languages found.</p>
+      <button
+        *ngIf="canCreate && criteria.search"
+        (click)="openLocaleDialog({projectId: project.id, name: criteria.search})"
+        color="accent"
+        transloco="locale.create.button"
+        mat-raised-button
+      >Add language
+      </button>
+    </dev-empty-view>
+  </ng-template>
+</ng-container>
