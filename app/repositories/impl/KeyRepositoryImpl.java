@@ -42,7 +42,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyRepositoryImpl.class);
   private static final String PROGRESS_COLUMN_ID = "k.id";
-  private static final String PROGRESS_COLUMN_COUNT = "cast(count(distinct m.id) as decimal)/cast(count(distinct l.id) as decimal)";
+  private static final String PROGRESS_COLUMN_COUNT = "cast(count(distinct m.id) as decimal)/greatest(cast(count(distinct l.id) as decimal), 1)";
 
   private static final Map<String, String> ORDER_MAP = ImmutableMap.<String, String>builder()
           .put("name", "k.name")

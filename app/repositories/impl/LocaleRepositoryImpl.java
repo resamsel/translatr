@@ -44,7 +44,7 @@ public class LocaleRepositoryImpl extends
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleRepositoryImpl.class);
   private static final String PROGRESS_COLUMN_ID = "l.id";
-  private static final String PROGRESS_COLUMN_COUNT = "cast(count(distinct m.id) as decimal)/cast(count(distinct k.id) as decimal)";
+  private static final String PROGRESS_COLUMN_COUNT = "cast(count(distinct m.id) as decimal)/greatest(cast(count(distinct k.id) as decimal), 1)";
 
   private static final Map<String, String> ORDER_MAP = ImmutableMap.<String, String>builder()
           .put("name", "l.name")

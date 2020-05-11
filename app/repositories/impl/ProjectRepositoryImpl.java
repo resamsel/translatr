@@ -41,7 +41,7 @@ public class ProjectRepositoryImpl extends
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectRepositoryImpl.class);
   private static final String PROGRESS_COLUMN_ID = "p.id";
-  private static final String PROGRESS_COLUMN_COUNT = "cast(count(distinct m.id) as decimal)/cast(count(distinct l.id)*count(distinct k.id) as decimal)";
+  private static final String PROGRESS_COLUMN_COUNT = "cast(count(distinct m.id) as decimal)/greatest(cast(count(distinct l.id)*count(distinct k.id) as decimal), 1)";
 
   private final LocaleRepository localeRepository;
   private final KeyRepository keyRepository;
