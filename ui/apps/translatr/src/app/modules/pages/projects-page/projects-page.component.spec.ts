@@ -8,6 +8,7 @@ import { mockObservable } from '@translatr/utils/testing';
 import { FeatureFlagTestingModule } from '@translatr/components/testing';
 import { ProjectListTestingModule, SidenavTestingModule } from '../../testing';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('UsersPageComponent', () => {
   let component: ProjectsPageComponent;
@@ -22,6 +23,7 @@ describe('UsersPageComponent', () => {
         ProjectListTestingModule,
 
         RouterTestingModule,
+        TranslocoTestingModule,
 
         MatButtonModule,
         MatTooltipModule,

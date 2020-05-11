@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MatListModule, MatProgressBarModule, MatTooltipModule } from '@angular/material';
 import { GravatarModule } from 'ngx-gravatar';
 import { MomentModule } from 'ngx-moment';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('UserListComponent', () => {
   let component: UserListComponent;
@@ -20,6 +21,7 @@ describe('UserListComponent', () => {
         RouterTestingModule,
         GravatarModule,
         MomentModule,
+        TranslocoTestingModule,
 
         MatListModule,
         MatProgressBarModule,

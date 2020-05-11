@@ -9,6 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { EmptyViewTestingModule } from '@translatr/components/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ProjectSettingsComponent', () => {
   let component: ProjectSettingsComponent;
@@ -24,6 +25,7 @@ describe('ProjectSettingsComponent', () => {
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatDialogModule,
         MatCardModule,
