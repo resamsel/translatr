@@ -26,6 +26,7 @@ import { KeyEditorPageComponent } from './key-editor-page.component';
 import { FilterFieldModule, NavbarModule } from '@dev/translatr-components';
 import { MatCardModule } from '@angular/material';
 import { AppFacade } from '../../../+state/app.facade';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { AppFacade } from '../../../+state/app.facade';
     StoreModule.forFeature(EDITOR_FEATURE_KEY, editorReducer, {
       initialState: editorInitialState
     }),
-    EffectsModule.forFeature([EditorEffects])
+    EffectsModule.forFeature([EditorEffects]),
+    TranslocoModule
   ],
   providers: [EditorFacade]
 })

@@ -5,8 +5,7 @@
   [backLink]="backLink"
   [message]="selectedMessage$ | async"
   [messages]="(messages$ | async)?.list"
-  name="Language Editor"
-  i18n-name="@@locale.editor"
+  [name]="'locale.editor' | transloco"
   class="locale-editor"
 >
   <dev-filter-field

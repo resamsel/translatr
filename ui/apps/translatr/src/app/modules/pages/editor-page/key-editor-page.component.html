@@ -5,8 +5,7 @@
   [backLink]="backLink"
   [message]="selectedMessage$ | async"
   [messages]="toMessages(messageItems$ | async)"
-  name="Key Editor"
-  i18n-name="@@key.editor"
+  [name]="'key.editor' | transloco"
   class="key-editor"
 >
   <dev-filter-field

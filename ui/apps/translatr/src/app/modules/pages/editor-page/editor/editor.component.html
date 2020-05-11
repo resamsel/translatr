@@ -1,4 +1,5 @@
 <app-sidenav
+  *transloco="let t"
   [page]="_backLink?.name ? name : undefined"
   [backLink]="backLink"
   [me]="me"
@@ -23,9 +24,13 @@
     </div>
     <div class="editor">
       <div class="buttons">
-        <a mat-button [routerLink]="[]">Cancel</a>
-        <button mat-raised-button color="primary" (click)="onSave()">
-          Save
+        <a mat-button [routerLink]="[]" transloco="button.cancel">Cancel</a>
+        <button
+          mat-raised-button
+          color="primary"
+          transloco="button.save"
+          (click)="onSave()"
+        >Save
         </button>
       </div>
       <mat-divider></mat-divider>
@@ -41,17 +46,20 @@
     </div>
     <div class="meta">
       <mat-tab-group #tabs>
-        <mat-tab class="preview" i18n-label="@@preview" label="Preview">
+        <mat-tab class="preview" [label]="t('message.preview')">
           <p [innerHTML]="message?.value" class="translation"></p>
         </mat-tab>
-        <mat-tab i18n-label="@@translations.label" label="Translations">
+        <mat-tab [label]="t('messages.tab')">
           <mat-card *ngFor="let message of messages" class="translation">
-            <mat-card-title>{{ message.localeDisplayName }}</mat-card-title>
+            <mat-card-title
+              transloco="locale.displayName"
+              [translocoParams]="{name: message.localeName, displayName: message.localeDisplayName}"
+            >{{ message.localeDisplayName }}</mat-card-title>
             <mat-card-content [innerHTML]="message.value"></mat-card-content>
             <mat-card-actions>
               <button (click)="onUseMessage(message)" class="use-value" mat-stroked-button>
                 <mat-icon [inline]="true">file_copy</mat-icon>&nbsp;
-                <span i18n="@@editor.translation.usevalue.button">Use this value</span>
+                <span transloco="editor.usevalue.button">Use this value</span>
               </button>
             </mat-card-actions>
           </mat-card>
