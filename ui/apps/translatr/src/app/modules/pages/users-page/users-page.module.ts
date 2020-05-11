@@ -7,6 +7,7 @@ import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { UserListModule } from '../../shared/user-list/user-list.module';
 import { FeatureFlagModule, UserCardModule } from '@dev/translatr-components';
 import { UsersModule } from './+state/users.module';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [UsersPageComponent],
@@ -18,7 +19,8 @@ import { UsersModule } from './+state/users.module';
     UserCardModule,
     UsersModule,
     MatIconModule,
-    FeatureFlagModule
+    FeatureFlagModule,
+    TranslocoModule
   ]
 })
 export class UsersPageModule {}

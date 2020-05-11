@@ -23,6 +23,7 @@ import { FeatureFlagModule } from '@dev/translatr-components';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslocoRootModule } from './transloco-root.module';
 import { FeatureFlagFacade } from '@dev/translatr-model';
+import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
 
 @NgModule({
   declarations: [AppComponent],
@@ -57,7 +58,8 @@ import { FeatureFlagFacade } from '@dev/translatr-model';
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     StoreRouterConnectingModule.forRoot(),
     HttpClientModule,
-    TranslocoRootModule
+    TranslocoRootModule,
+    TranslocoMessageFormatModule.init()
   ],
   providers: [
     AppFacade,

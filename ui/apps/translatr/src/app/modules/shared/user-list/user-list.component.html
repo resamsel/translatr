@@ -21,11 +21,10 @@
       {{ user.name }} <span class="username">{{ user.username }}</span>
     </h3>
     <p matLine>
-        <span i18n="@@user.memberships"
+        <span transloco="user.memberships" [translocoParams]="{memberships: user.memberships?.length || 0}"
         >{user.memberships?.length || 0, plural, =0 {Not contributing at the
           moment} =1 {Contributing to one project} other {Contributing to
-          {{ user.memberships.length }} projects}}</span
-        >
+          {{ user.memberships.length }} projects}}</span>
     </p>
     <p matLine>
       <span i18n>Joined {{ user.whenCreated | amTimeAgo }}</span>

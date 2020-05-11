@@ -23,8 +23,8 @@ const routes: Routes = [
         pathMatch: 'full',
         component: UserInfoComponent,
         data: {
-          icon: 'info',
-          name: 'info'
+          icon: 'account_circle',
+          name: 'user'
         }
       },
       {

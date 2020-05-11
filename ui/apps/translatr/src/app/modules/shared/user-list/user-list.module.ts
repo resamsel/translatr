@@ -8,6 +8,7 @@ import { MomentModule } from 'ngx-moment';
 import { RouterModule } from '@angular/router';
 import { NavListModule } from '../nav-list/nav-list.module';
 import { UserCardModule } from '@dev/translatr-components';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [UserListComponent],
@@ -19,7 +20,8 @@ import { UserCardModule } from '@dev/translatr-components';
     MatListModule,
     MatIconModule,
     GravatarModule,
-    MomentModule
+    MomentModule,
+    TranslocoModule
   ],
   exports: [UserListComponent]
 })

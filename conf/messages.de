@@ -109,7 +109,7 @@ contributions.amount={0} Beiträge
 contributions.legend.less=Weniger
 contributions.legend.more=Mehr
 contributions.legend.tooltip=Relative Aktivität: {0}-{1}% (log(n)/log(max))
-copyright=© 2020 René Panzar (<span title="{1}">{0}</span>)\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
+copyright=© 2017 René Panzar (<span title="{1}">{0}</span>)\n\n<a\n	class="grey-text text-darken-1 right"\n	href="https://github.com/resamsel/translatr/blob/master/LICENSE">\n	GPLv3 License\n</a>
 dangerzone.title=Gefahrenbereich
 dashboard.text=Die Welt, die sich rund um dich entwickelt
 dashboard.title=Dashboard
@@ -238,7 +238,7 @@ message=Übersetzung
 message.any=Alle zeigen
 message.untranslated=Übersetzung fehlt
 message.updated=Übersetzung wurde aktualisiert
-message.wordCount={{wordCount}} Wörter
+message.wordCount={wordCount, plural, =0 {Keine Wörter} =1 {Ein Wort} other {# Wörter}}
 messages=Übersetzungen
 messages.empty=Keine Übersetzungen gefunden
 messages.missing={0,choice,0#keine fehlenden Übersetzungen|1#eine Übersetzung fehlt|1<{0} Übersetzungen fehlen}
@@ -344,6 +344,7 @@ user.incomplete=Dein Profil ist unvollständig, bitte fülle die fehlenden Felde
 user.linkWith=Konto verknüpfen
 user.linked=verknüpft
 user.me=ich
+user.memberships={memberships, plural, =0 {Wirkt aktuell nicht mit} =1 {Wirkt an einem Projekt} other {Wirkt an # Projekten mit}}
 user.name=Name
 user.notFound=Benutzer konnte nicht gefunden werden
 user.notLinked=nicht verknüpft
@@ -353,6 +354,7 @@ user.username.duplicate=Benutzername wird bereits verwendet
 user.username.error.pattern=Muss diesem Muster entsprechen: [a-zA-Z0-9_.-]*
 users=Mitwirkende
 users.empty=<i class="material-icons xlarge grey-text text-lighten-1">group</i><br/>\nNoch keine Benutzer.
+users.text=Wunderbare Menschen, die diese Welt zu einer besseren machen
 users.title=Mitwirkende
 validation.optional=optional
 value.copy=Wert übernehmen

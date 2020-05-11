@@ -3,13 +3,13 @@
   [me]="me$ | async"
   [overlay]="true"
   [showDashboardLink]="true"
-  page="Contributors"
+  [page]="'users' | transloco"
 >
   <header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
     <div class="container title">
       <div class="content">
-        <h1>Contributors</h1>
-        <p>Wonderful people making the world a better place</p>
+        <h1 transloco="users">Contributors</h1>
+        <p transloco="users.text">Wonderful people making the world a better place</p>
       </div>
     </div>
   </header>
