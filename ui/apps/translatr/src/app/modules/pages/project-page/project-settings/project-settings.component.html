@@ -1,18 +1,17 @@
-<div class="container narrow">
+<div *transloco="let t" class="container narrow">
   <mat-card>
     <mat-card-header>
-      <mat-card-title>Project</mat-card-title>
+      <mat-card-title transloco="project">Project</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="form" class="form update-project">
         <mat-form-field appearance="outline" class="name">
-          <mat-label i18n="@@name">Name</mat-label>
+          <mat-label transloco="project.name">Name</mat-label>
           <input
+            [placeholder]="t('project.name')"
             cdkFocusInitial
             formControlName="name"
-            i18n-placeholder="@@project.name"
             matInput
-            placeholder="Name"
             type="text"
           />
           <mat-error
@@ -23,6 +22,7 @@
           </mat-error>
           <mat-error
             *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern"
+            transloco="project.name.error.pattern"
           >
             Must match pattern [^\s/]*
           </mat-error>
@@ -34,15 +34,16 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="description">
-          <mat-label i18n="@@description">Description</mat-label>
+          <mat-label transloco="project.description">Description</mat-label>
           <textarea
+            [placeholder]="t('project.description')"
             formControlName="description"
-            i18n-placeholder="@@project.description"
             matInput
-            placeholder="Description"
           ></textarea>
           <mat-error
             *ngIf="descriptionFormControl.invalid && descriptionFormControl.errors.maxlength"
+            transloco="project.description.error.maxlength"
+            [translocoParams]="{maxlength: descriptionFormControl.errors.maxlength.requiredLength, actual: descriptionFormControl.errors.maxlength.actualLength}"
           >
             {{ descriptionFormControl.errors.maxlength.actualLength }} characters exceeds limit
             of {{ descriptionFormControl.errors.maxlength.requiredLength }} characters.
@@ -55,13 +56,13 @@
         </mat-form-field>
         <div class="dialog-actions">
           <button
-            (click)="onSave()"
             [disabled]="form.invalid || processing"
             color="primary"
             class="save"
             mat-raised-button
-          >
-            Save
+            transloco="button.save"
+            (click)="onSave()"
+          >Save
           </button>
         </div>
       </form>
@@ -70,33 +71,36 @@
 
   <mat-card>
     <mat-card-header>
-      <mat-card-title>Danger Zone</mat-card-title>
+      <mat-card-title transloco="dangerzone.title">Danger Zone</mat-card-title>
     </mat-card-header>
 
     <dev-empty-view *ngIf="transferOwnershipEnabled" icon="swap_horiz">
-      <p i18n="@@project.owner.change.description">Transfer the ownership of the project to a managing member. Project
+      <p transloco="project.transferOwnership.description">Transfer the ownership of the project to a managing member.
+        Project
         ownership can only be changed by its owner.</p>
       <button
-        (click)="onDelete()"
         [disabled]="(canDelete$ | async) === false"
         color="warn"
         mat-raised-button
+        transloco="project.transferOwnership.button"
+        (click)="onDelete()"
       >
         Transfer ownership
       </button>
     </dev-empty-view>
 
     <dev-empty-view class="delete-project" icon="delete">
-      <p i18n="@@project.delete.description">Delete this project and its contents. Keep in mind that once you've deleted
+      <p [innerHTML]="'project.delete.text' | transloco">Delete this project and its contents. Keep in mind that once
+        you've deleted
         the project you <strong>cannot</strong> undo this action. Projects can only be deleted by its owner.</p>
       <button
-        (click)="onDelete()"
         [disabled]="(canDelete$ | async) === false"
         color="warn"
         mat-raised-button
         class="delete"
-      >
-        Delete project
+        transloco="project.delete.button"
+        (click)="onDelete()"
+      >Delete project
       </button>
     </dev-empty-view>
   </mat-card>

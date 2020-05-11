@@ -29,8 +29,7 @@
         mode="determinate"
         color="accent"
         [value]="locale.progress * 100"
-        matTooltip="{{locale.progress * 100 | number:'1.0-1'}}% translated"
-        i18n-matTooltip="@@locale.progress.tooltip"
+        [matTooltip]="t('locale.progress.tooltip', {progress: locale.progress * 100 | number:'1.0-1'})"
         matLine
       ></mat-progress-bar>
       <a
