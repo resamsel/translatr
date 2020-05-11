@@ -298,6 +298,7 @@ project.role.Manager=Manager
 project.role.Owner=Owner
 project.role.Translator=Translator
 project.teaser.text=You don't have any projects, yet - how about creating one?
+project.transferOwnership.button=Transfer project ownership
 project.wordCount.reset=The word count has been reset and will be re-calculated—this might take a few minutes to complete.
 project.wordCount.reset.tooltip=Re-calculate word count
 projects=Projects
@@ -348,6 +349,7 @@ users.empty=<i class="material-icons xlarge grey-text text-lighten-1">group</i><
 users.title=Contributors
 validation.optional=optional
 value.copy=Copy value
+when.added=Added
 when.created=created {0}
 when.created.asc=creation ascending
 when.created.desc=creation descending
