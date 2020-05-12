@@ -58,7 +58,9 @@
     "workspace-schematic": "./node_modules/.bin/nx workspace-schematic",
     "help": "./node_modules/.bin/nx help",
     "kill:server": "fuser -k 9000/tcp 4200/tcp 4211/tcp 4211/tcp; echo 'ports freed'",
-    "nx": "nx"
+    "nx": "nx",
+    "prebundle-report": "ng build --prod --stats-json",
+    "bundle-report": "webpack-bundle-analyzer dist/apps/translatr/stats-es2015.json"
   },
   "private": true,
   "dependencies": {
@@ -140,6 +142,7 @@
     "tslint": "~5.11.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "3.5.3",
+    "webpack-bundle-analyzer": "3.7.0",
     "xmlhttprequest": "^1.8.0"
   },
   "files": [
