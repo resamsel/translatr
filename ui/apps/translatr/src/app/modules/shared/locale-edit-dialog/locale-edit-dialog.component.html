@@ -1,5 +1,5 @@
-<h1 *ngIf="!form.value.id" mat-dialog-title>Add Locale</h1>
-<h1 *ngIf="form.value.id" mat-dialog-title>Edit Locale</h1>
+<h1 *ngIf="!form.value.id" mat-dialog-title transloco="locale.create.title">Add Locale</h1>
+<h1 *ngIf="form.value.id" mat-dialog-title transloco="locale.edit.title">Edit Locale</h1>
 <div mat-dialog-content>
   <form [formGroup]="form">
     <mat-form-field class="name">
@@ -7,8 +7,7 @@
         matInput
         #name
         type="text"
-        placeholder="Locale name"
-        i18n-placeholder="@@locale.name"
+        [placeholder]="'locale.name' | transloco"
         cdkFocusInitial
         formControlName="name"
       />
@@ -19,14 +18,14 @@
   </form>
 </div>
 <div class="dialog-actions" mat-dialog-actions>
-  <button class="cancel" mat-button mat-dialog-close>Cancel</button>
+  <button class="cancel" mat-button mat-dialog-close transloco="button.cancel">Cancel</button>
   <button
-    mat-button
-    (click)="onSave()"
-    color="primary"
     [disabled]="form.invalid || processing"
+    mat-button
+    color="primary"
     class="save"
-  >
-    Save
+    transloco="button.save"
+    (click)="onSave()"
+  >Save
   </button>
 </div>

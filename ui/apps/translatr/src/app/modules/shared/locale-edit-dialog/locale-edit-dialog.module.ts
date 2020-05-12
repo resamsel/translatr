@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { LocaleEditDialogComponent } from './locale-edit-dialog.component';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [LocaleEditDialogComponent],
@@ -19,7 +20,8 @@ import { LocaleEditDialogComponent } from './locale-edit-dialog.component';
     MatFormFieldModule,
     MatSnackBarModule,
     MatButtonModule,
-    MatInputModule
+    MatInputModule,
+    TranslocoModule
   ],
   entryComponents: [LocaleEditDialogComponent]
 })

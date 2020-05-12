@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, MatFormFieldModule, MatInputModule, MatSnackBar } from '@angular/material';
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('LocaleCreationDialogComponent', () => {
   let component: LocaleEditDialogComponent;
@@ -15,6 +16,7 @@ describe('LocaleCreationDialogComponent', () => {
       imports: [
         ReactiveFormsModule,
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatDialogModule,
         MatFormFieldModule,

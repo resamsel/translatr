@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, MatFormFieldModule, MatInputModule, MatSnackBar } from '@angular/material';
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('KeyCreationDialogComponent', () => {
   let component: KeyEditDialogComponent;
@@ -15,6 +16,7 @@ describe('KeyCreationDialogComponent', () => {
       imports: [
         ReactiveFormsModule,
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatDialogModule,
         MatFormFieldModule,
