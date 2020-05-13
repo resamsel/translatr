@@ -24,11 +24,15 @@
     <h2 transloco="accessToken.scopes">Scopes</h2>
     <div>
       <div *ngFor="let scopeType of scopeTypes" class="scope">
-        <h3>{{scopeType}}</h3>
+        <h3 transloco="scope.type" [translocoParams]="{type: scopeType}">{{scopeType}}</h3>
         <p>
-          <mat-checkbox *ngFor="let scope of scopeMap[scopeType]"
-                        (change)="onChangeScope(scope, $event)"
-                        [checked]="activeScopeMap[scope]">{{scopePermission(scope)}}</mat-checkbox>
+          <mat-checkbox
+            *ngFor="let scope of scopeMap[scopeType]"
+            [checked]="activeScopeMap[scope]"
+            (change)="onChangeScope(scope, $event)"
+          ><span transloco="scope.permission"
+                 [translocoParams]="{permission: scopePermission(scope)}">{{scopePermission(scope)}}</span>
+          </mat-checkbox>
         </p>
       </div>
     </div>

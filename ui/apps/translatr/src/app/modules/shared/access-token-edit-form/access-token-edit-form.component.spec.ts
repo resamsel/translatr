@@ -6,6 +6,7 @@ import { UserFacade } from '../../pages/user-page/+state/user.facade';
 import { ChangeDetectorRef } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('AccessTokenEditFormComponent', () => {
   let component: AccessTokenEditFormComponent;
@@ -17,6 +18,7 @@ describe('AccessTokenEditFormComponent', () => {
       imports: [
         ReactiveFormsModule,
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatFormFieldModule,
         MatInputModule,
