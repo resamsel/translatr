@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ActivityAccessTokenLinkComponent } from './activity-access-token-link.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ActivityAccessTokenLinkComponent', () => {
   let component: ActivityAccessTokenLinkComponent;
@@ -10,7 +11,7 @@ describe('ActivityAccessTokenLinkComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ActivityAccessTokenLinkComponent],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule, TranslocoTestingModule]
     })
       .compileComponents();
   }));

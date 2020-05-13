@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ActivityMemberLinkComponent } from './activity-member-link.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ActivityMemberLinkComponent', () => {
   let component: ActivityMemberLinkComponent;
@@ -10,7 +11,7 @@ describe('ActivityMemberLinkComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ActivityMemberLinkComponent],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule, TranslocoTestingModule]
     })
       .compileComponents();
   }));

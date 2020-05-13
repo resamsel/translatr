@@ -6,6 +6,7 @@ import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { AppFacade } from '../../../+state/app.facade';
 import { ProjectMemberEditFormTestingModule } from '../testing';
 import { mockObservable } from '@translatr/utils/testing';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ProjectMemberEditDialogComponent', () => {
   let component: ProjectMemberEditDialogComponent;
@@ -16,6 +17,7 @@ describe('ProjectMemberEditDialogComponent', () => {
       declarations: [ProjectMemberEditDialogComponent],
       imports: [
         ProjectMemberEditFormTestingModule,
+        TranslocoTestingModule,
 
         MatDialogModule,
         MatButtonModule

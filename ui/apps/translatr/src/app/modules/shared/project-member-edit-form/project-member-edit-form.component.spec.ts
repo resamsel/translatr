@@ -13,6 +13,7 @@ import {
 } from '@angular/material';
 import { ChangeDetectorRef } from '@angular/core';
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ProjectMemberEditFormComponent', () => {
   let component: ProjectMemberEditFormComponent;
@@ -24,6 +25,7 @@ describe('ProjectMemberEditFormComponent', () => {
       imports: [
         ReactiveFormsModule,
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatFormFieldModule,
         MatInputModule,

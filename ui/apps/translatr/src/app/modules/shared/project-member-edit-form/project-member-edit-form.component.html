@@ -1,7 +1,7 @@
 <form [formGroup]="form">
   <section class="user">
     <mat-form-field>
-      <mat-label>User</mat-label>
+      <mat-label transloco="user">User</mat-label>
       <input
         matInput
         type="text"
@@ -19,10 +19,15 @@
         {{ userFormControl.errors['violation'] }}</mat-error>
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Role</mat-label>
+      <mat-label transloco="member.role">Role</mat-label>
       <mat-select [disabled]="roleFormControl.value === 'Owner' && !canModifyOwner" formControlName="role">
-        <mat-option *ngFor="let role of roles" [disabled]="role === 'Owner' && !canModifyOwner"
-                    [value]="role">{{role}}</mat-option>
+        <mat-option
+          *ngFor="let role of roles"
+          [disabled]="role === 'Owner' && !canModifyOwner"
+          [value]="role"
+          transloco="member.role.value"
+          [translocoParams]="{role: role}"
+        >{{role}}</mat-option>
       </mat-select>
       <mat-error
         *ngIf="roleFormControl.invalid && roleFormControl.errors['violation']"

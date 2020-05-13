@@ -8,6 +8,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule, MatListModule, MatProg
 import { GravatarModule } from 'ngx-gravatar';
 import { MomentModule } from 'ngx-moment';
 import { AppFacade } from '../../../../../+state/app.facade';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('MemberListComponent', () => {
   let component: MemberListComponent;
@@ -22,6 +23,7 @@ describe('MemberListComponent', () => {
         EmptyViewTestingModule,
 
         RouterTestingModule,
+        TranslocoTestingModule,
 
         MatDialogModule,
         MatListModule,
