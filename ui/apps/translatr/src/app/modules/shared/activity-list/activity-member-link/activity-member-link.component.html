@@ -1,7 +1,7 @@
 <ng-container *ngIf="memberLink; else memberPlain">
-  Member:
+  <span transloco="member">Member</span>:
   <a [routerLink]="memberLink" class="link">{{ member?.userName }} ({{member?.role}})</a>
 </ng-container>
 <ng-template #memberPlain>
-  Member: {{ member?.userName }} ({{member?.role}})
+  <span transloco="member">Member</span>: {{ member?.userName }} ({{member?.role}})
 </ng-template>
