@@ -10,6 +10,7 @@ import { ProjectMemberEditFormModule } from '../project-member-edit-form/project
 import { UsersModule } from '../../pages/users-page/+state/users.module';
 import { ProjectOwnerEditFormModule } from '../project-owner-edit-form/project-owner-edit-form.module';
 import { MatDialogModule } from '@angular/material';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [ProjectOwnerEditDialogComponent],
@@ -24,7 +25,8 @@ import { MatDialogModule } from '@angular/material';
 
     ProjectMemberEditFormModule,
     UsersModule,
-    ProjectOwnerEditFormModule
+    ProjectOwnerEditFormModule,
+    TranslocoModule
   ],
   entryComponents: [ProjectOwnerEditDialogComponent]
 })

@@ -13,6 +13,7 @@ import {
 } from '@angular/material';
 import { ChangeDetectorRef } from '@angular/core';
 import { ProjectService } from '@dev/translatr-sdk';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ProjectMemberEditFormComponent', () => {
   let component: ProjectOwnerEditFormComponent;
@@ -24,6 +25,7 @@ describe('ProjectMemberEditFormComponent', () => {
       imports: [
         ReactiveFormsModule,
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatFormFieldModule,
         MatInputModule,

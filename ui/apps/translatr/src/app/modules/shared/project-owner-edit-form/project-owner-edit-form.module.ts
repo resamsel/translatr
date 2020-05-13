@@ -8,6 +8,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [ProjectOwnerEditFormComponent],
@@ -23,7 +24,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatCheckboxModule,
     MatButtonModule,
     MatAutocompleteModule,
-    MatSelectModule
+    MatSelectModule,
+    TranslocoModule
   ]
 })
 export class ProjectOwnerEditFormModule { }

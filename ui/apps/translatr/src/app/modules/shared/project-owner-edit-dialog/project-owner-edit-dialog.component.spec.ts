@@ -5,6 +5,7 @@ import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { mockObservable } from '@translatr/utils/testing';
 import { ProjectOwnerEditFormTestingModule } from '../testing';
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ProjectMemberEditDialogComponent', () => {
   let component: ProjectOwnerEditDialogComponent;
@@ -15,6 +16,8 @@ describe('ProjectMemberEditDialogComponent', () => {
       declarations: [ProjectOwnerEditDialogComponent],
       imports: [
         ProjectOwnerEditFormTestingModule,
+
+        TranslocoTestingModule,
 
         MatDialogModule,
         MatButtonModule

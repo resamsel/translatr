@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Transfer Project Ownership</h1>
+<h1 mat-dialog-title transloco="project.transferOwnership.title">Transfer Project Ownership</h1>
 <div mat-dialog-content>
   <app-project-owner-edit-form
     #form
@@ -10,12 +10,12 @@
 </div>
 <div class="dialog-actions" mat-dialog-actions>
   <button
-    mat-flat-button
-    (click)="form.onSave()"
-    color="primary"
     [disabled]="form.invalid || form.processing"
-  >
-    Save
+    mat-flat-button
+    color="primary"
+    transloco="button.save"
+    (click)="form.onSave()"
+  >Save
   </button>
-  <button mat-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-button (click)="dialogRef.close()" transloco="button.cancel">Cancel</button>
 </div>
