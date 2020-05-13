@@ -382,6 +382,7 @@ when.added=Hinzugefügt
 when.created=angelegt {0}
 when.created.asc=Erzeugung aufsteigend
 when.created.desc=Erzeugung absteigend
+when.joined=Beigetreten
 when.updated=aktualisiert {0}
 when.updated.asc=Aktualisierung aufsteigend
 when.updated.desc=Aktualisierung absteigend

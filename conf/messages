@@ -382,6 +382,7 @@ when.added=Added
 when.created=created {0}
 when.created.asc=creation ascending
 when.created.desc=creation descending
+when.joined=Joined
 when.updated=updated {0}
 when.updated.asc=updated ascending
 when.updated.desc=updated descending

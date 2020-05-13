@@ -27,7 +27,7 @@
           {{ user.memberships.length }} projects}}</span>
     </p>
     <p matLine>
-      <span i18n>Joined {{ user.whenCreated | amTimeAgo }}</span>
+      <span transloco="when.joined">Joined</span> <span>{{ user.whenCreated | amTimeAgo }}</span>
     </p>
   </a>
 </app-nav-list>
