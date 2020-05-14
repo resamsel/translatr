@@ -13,14 +13,18 @@
       [selectable]="false"
       class="option selected-option"
     >
-      <span class="ellipsis" matTooltip="{{option.title || option.key}}: {{option.value}}">
+      <span class="ellipsis"
+            matTooltip="{{(option.title || option.key) | transloco:{value: option.value} }}: {{option.value}}">
         <ng-container [ngSwitch]="option.type">
           <ng-container *ngSwitchCase="'option'">
-            <span class="value">{{option.title}}</span>
+            <span class="value">{{option.title | transloco:{value: option.value} }}</span>
           </ng-container>
           <ng-container *ngSwitchDefault>
             <ng-container *ngIf="option.title; else selectedKeyValue">
-              <span class="{{option.type === 'boolean' ? 'value' : 'type'}}">{{option.title}}</span>
+              <span
+                class="{{option.type === 'boolean' ? 'value' : 'type'}}"
+              >{{option.title | transloco:{value: option.value} }}
+              </span>
               <span
                 *ngIf="option.value !== undefined && option.value !== null && !option.allowEmpty"
                 class="value"
@@ -37,11 +41,8 @@
         </ng-container>
       </span>
       <mat-icon
-        aria-label="Remove"
-        i18n-aria-label="@@button.remove.tooltip"
-        i18n-matTooltip="@@button.remove.tooltip"
         matChipRemove
-        matTooltip="Remove"
+        [matTooltip]="'button.remove' | transloco"
       >close
       </mat-icon>
     </mat-basic-chip>
@@ -53,7 +54,7 @@
       [matAutocomplete]="auto"
       [matChipInputFor]="chipList"
       autocomplete="off"
-      placeholder="Filter"
+      [placeholder]="'search.filter' | transloco"
       type="search"
     />
   </mat-chip-list>
@@ -73,11 +74,11 @@
     >
       <ng-container [ngSwitch]="option.type">
         <ng-container *ngSwitchCase="'option'">
-          <span>{{option.title}}</span>
+          <span>{{option.title | transloco:{value: option.value} }}</span>
         </ng-container>
         <ng-container *ngSwitchDefault>
           <ng-container *ngIf="option.title; else autocompleteKeyValue">
-            <span>{{option.title}}</span>
+            <span>{{option.title | transloco:{value: option.value} }}</span>
             <span
               *ngIf="option.value !== undefined
               && option.value !== null

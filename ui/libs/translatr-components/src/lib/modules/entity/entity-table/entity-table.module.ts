@@ -12,6 +12,7 @@ import { MatTableModule } from '@angular/material/table';
 import { ButtonModule } from '../../button';
 import { SelectionActionsComponent } from './selection-actions.component';
 import { FilterFieldModule } from '../../filter-field';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [EntityTableComponent, SelectionActionsComponent],
@@ -27,7 +28,8 @@ import { FilterFieldModule } from '../../filter-field';
     MatFormFieldModule,
     MatPaginatorModule,
     MatDividerModule,
-    FilterFieldModule
+    FilterFieldModule,
+    TranslocoModule
   ]
 })
 export class EntityTableModule {

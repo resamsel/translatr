@@ -13,6 +13,7 @@ import {
   MatTooltipModule
 } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslocoModule } from '@ngneat/transloco';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     MatTooltipModule,
     MatMenuModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    TranslocoModule
   ]
 })
 export class FilterFieldModule {

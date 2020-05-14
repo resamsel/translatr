@@ -19,9 +19,8 @@ import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material';
 import { MatNotificationService } from './services/mat-notification-service';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
-import { FeatureFlagModule } from '@dev/translatr-components';
+import { FeatureFlagModule, TranslocoRootModule } from '@dev/translatr-components';
 import { HttpClientModule } from '@angular/common/http';
-import { TranslocoRootModule } from './transloco-root.module';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
 
@@ -58,7 +57,7 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     StoreRouterConnectingModule.forRoot(),
     HttpClientModule,
-    TranslocoRootModule,
+    TranslocoRootModule.forRoot(environment.production),
     TranslocoMessageFormatModule.init()
   ],
   providers: [

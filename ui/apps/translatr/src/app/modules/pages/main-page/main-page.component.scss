@@ -1,6 +1,11 @@
 @import '~@angular/material/theming';
 @import "mixins";
 
+:host {
+  position: relative;
+  display: block;
+}
+
 header.header {
   background-image: url(assets/headers/hexagon.svg);
   height: 360px;

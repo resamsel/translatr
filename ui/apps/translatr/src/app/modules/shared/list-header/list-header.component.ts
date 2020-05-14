@@ -5,7 +5,7 @@ import { RequestCriteria } from '@dev/translatr-model';
 export const defaultFilters: FilterFieldFilter[] = [{
   key: 'search',
   type: 'string',
-  title: 'Search',
+  title: 'search',
   value: ''
 }];
 

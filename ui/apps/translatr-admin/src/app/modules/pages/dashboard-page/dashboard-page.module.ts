@@ -38,8 +38,6 @@ import { GravatarModule } from 'ngx-gravatar';
 import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
 import { MatTooltipModule } from '@angular/material';
 import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
-import { AppFacade } from '../../../+state/app.facade';
-import { FeatureFlagFacade } from '@dev/translatr-model';
 
 @NgModule({
   declarations: [
@@ -85,7 +83,6 @@ import { FeatureFlagFacade } from '@dev/translatr-model';
     ShortNumberModule
   ],
   providers: [
-    { provide: FeatureFlagFacade, useClass: AppFacade }
   ]
 })
 export class DashboardPageModule {

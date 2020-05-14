@@ -4,6 +4,7 @@ import { EntityTableComponent } from './entity-table.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FilterFieldTestingModule } from '@translatr/components/testing';
 import { MatCheckboxModule, MatIconModule, MatPaginatorModule, MatTableModule } from '@angular/material';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('EntityTableComponent', () => {
   let component: EntityTableComponent;
@@ -16,6 +17,7 @@ describe('EntityTableComponent', () => {
         FilterFieldTestingModule,
 
         RouterTestingModule,
+        TranslocoTestingModule,
 
         MatIconModule,
         MatTableModule,

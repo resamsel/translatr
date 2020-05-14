@@ -31,8 +31,13 @@
   </ng-container>
 
   <ng-container matColumnDef="selected">
-    <th mat-header-cell *matHeaderCellDef class="selection-header">
-      {{ selection.selected.length }} selected
+    <th
+      *matHeaderCellDef
+      mat-header-cell
+      class="selection-header"
+      transloco="selection.selected"
+      [translocoParams]="{total: selection.selected.length}"
+    >{{ selection.selected.length }} selected
     </th>
   </ng-container>
 

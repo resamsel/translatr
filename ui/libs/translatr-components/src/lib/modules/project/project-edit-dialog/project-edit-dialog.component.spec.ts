@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, MatFormFieldModule, Mat
 import { mockObservable } from '@translatr/utils/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ProjectEditDialogComponent', () => {
   let component: ProjectEditDialogComponent;
@@ -15,6 +16,7 @@ describe('ProjectEditDialogComponent', () => {
       imports: [
         ReactiveFormsModule,
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatFormFieldModule,
         MatDialogModule,

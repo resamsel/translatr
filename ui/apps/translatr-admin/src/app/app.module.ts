@@ -17,6 +17,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { LoginPageModule } from '@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module';
 import { AppRoutingModule } from './app-routing.module';
+import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
+import { FeatureFlagModule, TranslocoRootModule } from '@dev/translatr-components';
+import { FeatureFlagFacade } from '@dev/translatr-model';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,11 +31,12 @@ import { AppRoutingModule } from './app-routing.module';
     AppRoutingModule,
     DashboardPageModule,
     LoginPageModule,
+    FeatureFlagModule,
     NxModule.forRoot(),
     StoreModule.forRoot(
-      { app: appReducer },
+      {app: appReducer},
       {
-        initialState: { app: appInitialState },
+        initialState: {app: appInitialState},
         metaReducers: [],
         runtimeChecks: {
           strictStateImmutability: true,
@@ -42,13 +46,16 @@ import { AppRoutingModule } from './app-routing.module';
     ),
     EffectsModule.forRoot([AppEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    StoreRouterConnectingModule.forRoot()
+    StoreRouterConnectingModule.forRoot(),
+    TranslocoRootModule.forRoot(environment.production),
+    TranslocoMessageFormatModule.init()
   ],
   providers: [
     AppFacade,
-    { provide: WINDOW, useFactory: () => window },
-    { provide: ENDPOINT_URL, useValue: environment.endpointUrl },
-    { provide: LOGIN_URL, useValue: `${environment.endpointUrl}/login` }
+    {provide: FeatureFlagFacade, useClass: AppFacade},
+    {provide: WINDOW, useFactory: () => window},
+    {provide: ENDPOINT_URL, useValue: environment.endpointUrl},
+    {provide: LOGIN_URL, useValue: `${environment.endpointUrl}/login`}
   ],
   bootstrap: [AppComponent]
 })

@@ -13,7 +13,7 @@ class MockEntityTableComponent {
   @Input() filters: Array<FilterFieldFilter> = [{
     key: 'search',
     type: 'string',
-    title: 'Search',
+    title: 'search',
     value: ''
   }];
 

@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
 import { SidenavComponent } from './sidenav.component';
-import { FooterTestingModule, NavbarTestingModule } from '@translatr/components/testing';
+import { FeatureFlagTestingModule, FooterTestingModule, NavbarTestingModule } from '@translatr/components/testing';
 
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
@@ -17,6 +17,7 @@ describe('SidenavComponent', () => {
       imports: [
         NavbarTestingModule,
         FooterTestingModule,
+        FeatureFlagTestingModule,
 
         NoopAnimationsModule,
 

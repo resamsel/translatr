@@ -8,7 +8,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { SidenavComponent } from './sidenav.component';
 import { RouterModule } from '@angular/router';
-import { FooterModule, NavbarModule } from '@dev/translatr-components';
+import { FeatureFlagModule, FooterModule, NavbarModule } from '@dev/translatr-components';
 import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
@@ -18,6 +18,7 @@ import { MatTooltipModule } from '@angular/material';
     RouterModule,
     FooterModule,
     NavbarModule,
+    FeatureFlagModule,
 
     MatSidenavModule,
     MatToolbarModule,
@@ -29,4 +30,5 @@ import { MatTooltipModule } from '@angular/material';
   ],
   exports: [SidenavComponent]
 })
-export class SidenavModule {}
+export class SidenavModule {
+}

@@ -4,10 +4,11 @@ import { FooterComponent } from './footer.component';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { MatTooltipModule } from '@angular/material';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [FooterComponent],
-  imports: [CommonModule, RouterModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, RouterModule, MatIconModule, MatTooltipModule, TranslocoModule],
   exports: [FooterComponent]
 })
 export class FooterModule {}

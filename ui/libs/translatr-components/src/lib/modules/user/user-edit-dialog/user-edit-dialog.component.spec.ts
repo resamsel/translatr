@@ -12,6 +12,7 @@ import {
   MatSelectModule
 } from '@angular/material';
 import { mockObservable } from '@translatr/utils/testing';
+import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('UserEditDialogComponent', () => {
   let component: UserEditDialogComponent;
@@ -23,6 +24,7 @@ describe('UserEditDialogComponent', () => {
       imports: [
         ReactiveFormsModule,
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatFormFieldModule,
         MatDialogModule,

@@ -26,13 +26,13 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   readonly filters: ReadonlyArray<FilterFieldFilter> = [
     {
       key: 'search',
-      title: 'Search',
+      title: 'search',
       type: 'string',
       value: ''
     },
     {
       key: 'missing',
-      title: 'Missing translation',
+      title: 'message.missing',
       type: 'boolean',
       value: true,
       allowEmpty: true

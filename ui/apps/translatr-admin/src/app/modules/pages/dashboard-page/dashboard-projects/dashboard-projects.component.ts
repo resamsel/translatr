@@ -30,12 +30,12 @@ export class DashboardProjectsComponent implements OnDestroy {
   filters = [{
     key: 'search',
     type: 'string',
-    title: 'Search',
+    title: 'search',
     value: ''
   }, {
     key: 'owner',
     type: 'string',
-    title: 'Owner',
+    title: 'project.owner',
     value: ''
   }];
 
