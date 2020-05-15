@@ -61,8 +61,8 @@
     "nx": "nx",
     "prebundle-report": "ng build --prod --stats-json",
     "bundle-report": "webpack-bundle-analyzer dist/apps/translatr/stats-es2015.json",
-    "i18n:extract": "transloco-keys-manager extract --input apps --output ../public/i18n/ --translations-path ../public/i18n/ --sort",
-    "i18n:find": "transloco-keys-manager find --input apps --output ../public/i18n/ --translations-path ../public/i18n/ --sort"
+    "i18n:extract": "transloco-keys-manager extract",
+    "i18n:find": "transloco-keys-manager find"
   },
   "private": true,
   "dependencies": {
