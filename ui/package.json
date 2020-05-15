@@ -60,7 +60,9 @@
     "kill:server": "fuser -k 9000/tcp 4200/tcp 4211/tcp 4211/tcp; echo 'ports freed'",
     "nx": "nx",
     "prebundle-report": "ng build --prod --stats-json",
-    "bundle-report": "webpack-bundle-analyzer dist/apps/translatr/stats-es2015.json"
+    "bundle-report": "webpack-bundle-analyzer dist/apps/translatr/stats-es2015.json",
+    "i18n:extract": "transloco-keys-manager extract --input apps/translatr --output ../public/i18n/ -p ../public/i18n/ -s",
+    "i18n:find": "transloco-keys-manager find"
   },
   "private": true,
   "dependencies": {
@@ -142,7 +144,9 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "3.5.3",
     "webpack-bundle-analyzer": "3.7.0",
-    "xmlhttprequest": "^1.8.0"
+    "xmlhttprequest": "^1.8.0",
+    "ngx-build-plus": "^9.0.2",
+    "@ngneat/transloco-keys-manager": "^1.0.0"
   },
   "files": [
     "/dist/lets-generate"

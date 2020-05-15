@@ -53,7 +53,7 @@
         </button>
         <confirm-button
           *ngIf="canDelete && (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1)) && (canTransferOwnership || member.userId !== project.ownerId)"
-          [tooltip]="t('button.remove')"
+          [tooltip]="t('button.delete')"
           class="delete"
           icon="delete"
           (confirm)="onDelete(member)"
