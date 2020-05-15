@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
 import {
   AccessTokenDeleted,
   AccessTokenDeleteError,
@@ -44,6 +44,7 @@ import {
   ProjectUpdated,
   ProjectUpdateError,
   UpdateFeatureFlag,
+  UpdatePreferredLanguage,
   UpdateProject,
   UpdateUser,
   UserCreated,
@@ -60,9 +61,12 @@ import {
   UserUpdateError
 } from './app.actions';
 import { AccessToken, Activity, PagedList, Project, User, UserFeatureFlag } from '@dev/translatr-model';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AccessTokenService, ActivityService, FeatureFlagService, ProjectService, UserService } from '@dev/translatr-sdk';
+import { Store } from '@ngrx/store';
+import { AppState } from './app.reducer';
+import { appQuery } from './app.selectors';
 
 @Injectable()
 export class AppEffects {
@@ -72,7 +76,7 @@ export class AppEffects {
     ofType(AppActionTypes.LoadLoggedInUser),
     switchMap(() =>
       this.userService
-        .me({ fetch: 'featureFlags' })
+        .me({fetch: 'featureFlags'})
         .pipe(
           map(user => new LoggedInUserLoaded(user)),
           catchError(error => of(new LoggedInUserLoadError(error)))
@@ -283,8 +287,19 @@ export class AppEffects {
     )
   );
 
+  updatePreferredLanguage$ = createEffect(() => this.actions$.pipe(
+    ofType(AppActionTypes.UpdatePreferredLanguage),
+    withLatestFrom(this.store.select(appQuery.getLoggedInUser)),
+    switchMap(([action, me]: [UpdatePreferredLanguage, User]) => this.userService
+      .update({id: me.id, preferredLanguage: action.payload})
+      .pipe(map((user: User) => new LoggedInUserLoaded(user)))
+    ),
+    catchError(error => of(new LoggedInUserLoadError(error)))
+  ));
+
   constructor(
-    private actions$: Actions,
+    private readonly actions$: Actions,
+    private readonly store: Store<AppState>,
     private readonly userService: UserService,
     private readonly projectService: ProjectService,
     private readonly accessTokenService: AccessTokenService,

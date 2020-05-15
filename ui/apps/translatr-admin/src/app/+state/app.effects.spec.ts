@@ -5,6 +5,7 @@ import { AppEffects } from './app.effects';
 import { AccessTokenService, ActivityService, FeatureFlagService, ProjectService, UserService } from '@dev/translatr-sdk';
 import { User } from '@dev/translatr-model';
 import { LoadLoggedInUser, LoggedInUserLoaded } from './app.actions';
+import { Store } from '@ngrx/store';
 
 describe('AppEffects', () => {
   let actions: Subject<any>;
@@ -46,7 +47,12 @@ describe('AppEffects', () => {
           provide: FeatureFlagService,
           useFactory: () => ({})
         },
-        { provide: Actions, useValue: actions }
+        {provide: Actions, useValue: actions},
+        {
+          provide: Store, useFactory: () => ({
+            select: jest.fn()
+          })
+        }
       ]
     });
 

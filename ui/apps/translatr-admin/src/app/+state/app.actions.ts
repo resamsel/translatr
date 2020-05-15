@@ -2,7 +2,8 @@ import { Action } from '@ngrx/store';
 import {
   AccessToken,
   Activity,
-  ActivityCriteria, FeatureFlagCriteria,
+  ActivityCriteria,
+  FeatureFlagCriteria,
   PagedList,
   Project,
   ProjectCriteria,
@@ -97,7 +98,9 @@ export enum AppActionTypes {
 
   DeleteFeatureFlags = '[FeatureFlags Page] Delete FeatureFlags',
   FeatureFlagsDeleted = '[Translatr API] FeatureFlags Deleted',
-  FeatureFlagsDeleteError = '[Translatr API] FeatureFlags Delete Error'
+  FeatureFlagsDeleteError = '[Translatr API] FeatureFlags Delete Error',
+
+  UpdatePreferredLanguage = '[Admin Page] Update Preferred Language',
 }
 
 // Users
@@ -506,6 +509,13 @@ export class FeatureFlagsDeleted implements Action {
   }
 }
 
+export class UpdatePreferredLanguage implements Action {
+  readonly type = AppActionTypes.UpdatePreferredLanguage;
+
+  constructor(public payload: string) {
+  }
+}
+
 export type AppAction =
 // Users
   | LoadLoggedInUser
@@ -568,4 +578,5 @@ export type AppAction =
   | FeatureFlagDeleteError
   | DeleteFeatureFlags
   | FeatureFlagsDeleted
-  | FeatureFlagsDeleteError;
+  | FeatureFlagsDeleteError
+  | UpdatePreferredLanguage;

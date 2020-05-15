@@ -21,6 +21,7 @@ import {
   LoadUser,
   LoadUsers,
   UpdateFeatureFlag,
+  UpdatePreferredLanguage,
   UpdateProject,
   UpdateUser
 } from './app.actions';
@@ -261,5 +262,9 @@ export class AppFacade extends FeatureFlagFacade {
         : false
       )
     );
+  }
+
+  updatePreferredLanguage(language: string): void {
+    this.store.dispatch(new UpdatePreferredLanguage(language));
   }
 }
