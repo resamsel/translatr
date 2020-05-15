@@ -2,6 +2,19 @@ import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, O
 import { AccessToken, Activity, Key, Locale, Member, Message, PagedList, Project } from '@dev/translatr-model';
 import { FilterCriteria } from '../list-header/list-header.component';
 
+const contentTypeToIconMap = {
+  'dto.Project': 'view_quilt',
+  'dto.Locale': 'language',
+  'dto.Key': 'vpn_key',
+  'dto.Message': 'message',
+  'dto.ProjectUser': 'group',
+  'dto.User': 'account_circle'
+};
+
+const contentTypeToIconTypeMap = {
+  'dto.ProjectUser': 'member'
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-activity-list',
@@ -19,6 +32,9 @@ export class ActivityListComponent {
 
   @HostBinding('class') clazz = 'activity-list';
 
+  constructor() {
+  }
+
   trackByFn(index, item: Activity): string {
     return item.id;
   }
@@ -28,34 +44,19 @@ export class ActivityListComponent {
   }
 
   iconType(contentType: string) {
-    switch (contentType) {
-      case 'dto.ProjectUser':
-        return 'member';
-      default:
-        return contentType.substr(contentType.indexOf('.') + 1).toLowerCase();
+    if (contentTypeToIconTypeMap[contentType] !== undefined) {
+      return contentTypeToIconTypeMap[contentType];
     }
-  }
 
-  constructor() {
+    return contentType.substr(contentType.indexOf('.') + 1).toLowerCase();
   }
 
   icon(contentType: string) {
-    switch (contentType) {
-      case 'dto.Project':
-        return 'view_quilt';
-      case 'dto.Locale':
-        return 'language';
-      case 'dto.Key':
-        return 'vpn_key';
-      case 'dto.Message':
-        return 'message';
-      case 'dto.ProjectUser':
-        return 'group';
-      case 'dto.User':
-        return 'account_circle';
-      default:
-        return 'vpn_key';
+    if (contentTypeToIconMap[contentType] !== undefined) {
+      return contentTypeToIconMap[contentType];
     }
+
+    return 'vpn_key';
   }
 
   contentTypeOf(activity: Activity | undefined): string | undefined {
