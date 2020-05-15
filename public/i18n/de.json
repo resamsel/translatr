@@ -62,6 +62,7 @@
   "activity.user.login": "Benutzer angemeldet",
   "activity.user.logout": "Benutzer abgemeldet",
   "activity.user.update": "Benutzer aktualisiert",
+  "activity.{{contentTypeOf(activity)}}.{{activity.type.toLowerCase()}}": "Missing value for 'activity.{{contentTypeOf(activity)}}.{{activity.type.toLowerCase()}}'",
   "admin.title": "Admin",
   "auth.as": "Angemeldet als <strong>{0}</strong>",
   "auth.facebook": "Facebook",

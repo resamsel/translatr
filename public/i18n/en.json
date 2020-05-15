@@ -62,6 +62,7 @@
   "activity.user.login": "user logged-in",
   "activity.user.logout": "user logged-out",
   "activity.user.update": "user updated",
+  "activity.{{contentTypeOf(activity)}}.{{activity.type.toLowerCase()}}": "Missing value for 'activity.{{contentTypeOf(activity)}}.{{activity.type.toLowerCase()}}'",
   "admin.title": "Admin",
   "auth.as": "Signed in as <strong>{0}</strong>",
   "auth.facebook": "Facebook",

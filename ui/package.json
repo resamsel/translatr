@@ -61,8 +61,8 @@
     "nx": "nx",
     "prebundle-report": "ng build --prod --stats-json",
     "bundle-report": "webpack-bundle-analyzer dist/apps/translatr/stats-es2015.json",
-    "i18n:extract": "transloco-keys-manager extract --input apps/translatr --output ../public/i18n/ -p ../public/i18n/ -s",
-    "i18n:find": "transloco-keys-manager find"
+    "i18n:extract": "transloco-keys-manager extract --input apps --output ../public/i18n/ --translations-path ../public/i18n/ --sort",
+    "i18n:find": "transloco-keys-manager find --input apps --output ../public/i18n/ --translations-path ../public/i18n/ --sort"
   },
   "private": true,
   "dependencies": {
@@ -110,6 +110,8 @@
     "@angular/cli": "8.3.26",
     "@angular/compiler-cli": "^8.2.14",
     "@angular/language-service": "^8.2.14",
+    "@ngneat/transloco-keys-manager": "^1.0.0",
+    "@ngneat/transloco-validator": "1.0.0",
     "@ngrx/store-devtools": "^8.6.0",
     "@nrwl/cypress": "8.12.11",
     "@nrwl/jest": "8.12.11",
@@ -132,9 +134,11 @@
     "coveralls": "3.1.0",
     "cypress": "^3.8.3",
     "dateformat": "^3.0.3",
+    "husky": "4.2.5",
     "jest": "^24.9.0",
     "jest-preset-angular": "7.1.1",
-    "lint-staged": "^9.5.0",
+    "lint-staged": "9.5.0",
+    "ngx-build-plus": "^9.0.2",
     "prettier": "^1.19.1",
     "rxjs-tslint-rules": "4.32.0",
     "ts-jest": "^24.3.0",
@@ -144,9 +148,7 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "3.5.3",
     "webpack-bundle-analyzer": "3.7.0",
-    "xmlhttprequest": "^1.8.0",
-    "ngx-build-plus": "^9.0.2",
-    "@ngneat/transloco-keys-manager": "^1.0.0"
+    "xmlhttprequest": "^1.8.0"
   },
   "files": [
     "/dist/lets-generate"
@@ -156,6 +158,16 @@
     "bin": "translatr",
     "plugins": [
       "@oclif/plugin-help"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "../public/i18n/*.json": [
+      "transloco-validator"
     ]
   }
 }
