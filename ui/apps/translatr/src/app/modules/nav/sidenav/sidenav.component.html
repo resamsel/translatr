@@ -18,7 +18,10 @@
       <mat-icon>view_quilt</mat-icon>
     </a>
 
-    <app-auth-bar-language-switcher *featureFlag="Feature.LanguageSwitcher"></app-auth-bar-language-switcher>
+    <app-auth-bar-language-switcher
+      *featureFlag="Feature.LanguageSwitcher"
+      [matTooltip]="'language.switcher' | transloco"
+    ></app-auth-bar-language-switcher>
     <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
       <a mat-menu-item *ngIf="me" [routerLink]="['/', me.username]" transloco="user.profile">
         Profile

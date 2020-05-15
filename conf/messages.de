@@ -185,6 +185,7 @@ keys.size={0,choice,0#noch keine Schlüssel|1#ein Schlüssel|1<{0} Schlüssel}
 keys.teaser.text=Sieht so aus, als ob noch keine Schlüssel existieren - möchtest du jetzt einen anlegen?
 language.de.name=Deutsch
 language.en.name=Englisch
+language.switcher=Sprache wechseln
 latest=Zuletzt
 license.title=Lizenz
 linkedAccount=Verknüpftes Konto

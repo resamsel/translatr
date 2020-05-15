@@ -1,13 +1,15 @@
 <app-navbar [elevated]="false" [overlay]="true" [showLogo]="false" [page]="'home.title' | transloco">
-  <app-auth-bar-language-switcher *featureFlag="Feature.LanguageSwitcher"></app-auth-bar-language-switcher>
+  <app-auth-bar-language-switcher
+    *featureFlag="Feature.LanguageSwitcher"
+    [matTooltip]="'language.switcher' | transloco"
+  ></app-auth-bar-language-switcher>
   <app-auth-bar-item [me]="me$ | async" [endpointUrl]="endpointUrl">
     <a
       *ngIf="me$ | async as me"
       mat-menu-item
       [routerLink]="['/', me.username]"
       transloco="user.profile"
-    >
-      Profile
+    >Profile
     </a>
     <ng-container *ngIf="isAdmin(me$ | async)">
       <mat-divider></mat-divider>

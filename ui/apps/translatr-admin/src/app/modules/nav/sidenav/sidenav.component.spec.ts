@@ -6,6 +6,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 
 import { SidenavComponent } from './sidenav.component';
 import { FeatureFlagTestingModule, FooterTestingModule, NavbarTestingModule } from '@translatr/components/testing';
+import { TranslocoTestingModule } from '@ngneat/transloco';
+import { MatTooltipModule } from '@angular/material';
 
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
@@ -20,10 +22,12 @@ describe('SidenavComponent', () => {
         FeatureFlagTestingModule,
 
         NoopAnimationsModule,
+        TranslocoTestingModule,
 
         MatButtonModule,
         MatIconModule,
-        MatSidenavModule
+        MatSidenavModule,
+        MatTooltipModule
       ]
     }).compileComponents();
   }));

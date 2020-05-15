@@ -17,7 +17,10 @@
         <ng-content select="app-search-bar"></ng-content>
       </ng-container>
 
-      <app-auth-bar-language-switcher *featureFlag="Feature.LanguageSwitcher"></app-auth-bar-language-switcher>
+      <app-auth-bar-language-switcher
+        *featureFlag="Feature.LanguageSwitcher"
+        [matTooltip]="'language.switcher' | transloco"
+      ></app-auth-bar-language-switcher>
       <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
         <a mat-menu-item [href]="uiUrl" target="_blank">
           UI
