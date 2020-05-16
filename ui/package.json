@@ -62,7 +62,11 @@
     "prebundle-report": "ng build --prod --stats-json",
     "bundle-report": "webpack-bundle-analyzer dist/apps/translatr/stats-es2015.json",
     "i18n:extract": "transloco-keys-manager extract",
-    "i18n:find": "transloco-keys-manager find"
+    "i18n:find": "transloco-keys-manager find",
+    "i18n:pull": "npm run i18n:pull:backend && npm run i18n:pull:ui && npm run i18n:pull:admin",
+    "i18n:pull:backend": "cd .. && translatr pull",
+    "i18n:pull:ui": "cd apps/translatr && translatr pull",
+    "i18n:pull:admin": "cd apps/translatr-admin && translatr pull"
   },
   "private": true,
   "dependencies": {
@@ -166,7 +170,7 @@
     }
   },
   "lint-staged": {
-    "../public/i18n/*.json": [
+    "apps/translatr*/src/assets/i18n/*.json": [
       "transloco-validator"
     ]
   }

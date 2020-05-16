@@ -1,9 +1,9 @@
 module.exports = {
-  rootTranslationsPath: '../public/i18n/',
+  rootTranslationsPath: 'assets/i18n/',
   langs: ['en', 'de'],
   keysManager: {
     input: 'apps',
-    output: '../public/i18n',
+    output: 'assets/i18n',
     sort: true
   }
 };

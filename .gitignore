@@ -156,3 +156,4 @@ jmeter.log
 
 .idea/*
 !.idea/runConfigurations/
+/venv2.7/
