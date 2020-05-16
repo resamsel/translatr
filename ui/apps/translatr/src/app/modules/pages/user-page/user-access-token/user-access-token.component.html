@@ -4,9 +4,9 @@
     <app-access-token-edit-form
       #form
       [accessToken]="accessToken">
-      <div class="actions">
+      <div class="dialog-actions">
         <button
-          mat-flat-button
+          mat-raised-button
           color="primary"
           (click)="form.onSave()"
           [disabled]="form.form.invalid || !form.dirty"

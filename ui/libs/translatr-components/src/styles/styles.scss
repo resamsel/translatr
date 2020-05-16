@@ -231,6 +231,16 @@ a .mat-card {
   .activity.mat-list-item:before {
     border-left-color: #388e3c;
   }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-start;
+    padding-bottom: 8px;
+
+    .mat-raised-button.mat-primary {
+      color: #fff;
+    }
+  }
 }
 
 .mat-tab-nav-bar {
@@ -389,12 +399,6 @@ pre[class*="language-"]:before {
   > a:last-child {
     font-weight: 500;
   }
-}
-
-.dialog-actions {
-  display: flex;
-  justify-content: flex-start;
-  padding-bottom: 8px;
 }
 
 .clearfix {

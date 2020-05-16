@@ -18,14 +18,14 @@
   </form>
 </div>
 <div class="dialog-actions" mat-dialog-actions>
-  <button class="cancel" mat-button mat-dialog-close transloco="button.cancel">Cancel</button>
   <button
     [disabled]="form.invalid || processing"
-    mat-button
+    mat-raised-button
     color="primary"
     class="save"
     transloco="button.save"
     (click)="onSave()"
   >Save
   </button>
+  <button class="cancel" mat-button mat-dialog-close transloco="button.cancel">Cancel</button>
 </div>

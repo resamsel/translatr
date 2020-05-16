@@ -23,8 +23,7 @@
       </div>
     </div>
     <div class="editor">
-      <div class="buttons">
-        <a mat-button [routerLink]="[]" transloco="button.cancel">Cancel</a>
+      <div class="buttons dialog-actions">
         <button
           mat-raised-button
           color="primary"
@@ -32,6 +31,7 @@
           (click)="onSave()"
         >Save
         </button>
+        <a mat-button [routerLink]="[]" transloco="button.cancel">Cancel</a>
       </div>
       <mat-divider></mat-divider>
       <div class="content">
