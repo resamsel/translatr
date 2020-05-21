@@ -9,8 +9,8 @@
   <header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
     <div *ngIf="project$ | async as project" class="container title">
       <div class="content">
-        <h1>{{project?.ownerUsername}}/{{project?.name}}</h1>
-        <p>{{project?.description}}</p>
+        <h1 class="page">{{project?.ownerUsername}}/{{project?.name}}</h1>
+        <p class="description">{{project?.description}}</p>
       </div>
     </div>
     <nav mat-tab-nav-bar color="accent" *ngIf="project$ | async as project">

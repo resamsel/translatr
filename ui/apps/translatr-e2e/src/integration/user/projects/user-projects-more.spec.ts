@@ -9,7 +9,7 @@ describe('User Projects More', () => {
     cy.clearCookies();
     cy.server();
 
-    cy.route('/api/me', 'fixture:me');
+    cy.route('/api/me?fetch=features', 'fixture:me');
     cy.route('/api/janesmith', 'fixture:janesmith');
     cy.route('/api/projects*', 'fixture:janesmith/projects');
     cy.route('/api/activities*', 'fixture:johndoe/activities');

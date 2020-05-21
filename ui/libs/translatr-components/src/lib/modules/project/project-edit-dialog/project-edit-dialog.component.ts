@@ -40,10 +40,6 @@ export class ProjectEditDialogComponent {
       );
   }
 
-  onCancel() {
-    this.dialogRef.close();
-  }
-
   onSubmit() {
     this.data.onSubmit(this.form.value);
   }

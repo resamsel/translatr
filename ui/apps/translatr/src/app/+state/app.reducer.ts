@@ -1,4 +1,14 @@
-import { loadProject, meLoaded, projectCreated, projectLoaded, projectUpdated, usersLoaded } from './app.actions';
+import {
+  loadProject,
+  meLoaded,
+  projectCreated,
+  projectCreateError,
+  projectLoaded,
+  projectUpdated,
+  projectUpdateError,
+  unloadProject,
+  usersLoaded
+} from './app.actions';
 import { PagedList, Project, User } from '@dev/translatr-model';
 import * as fromRouter from '@ngrx/router-store';
 import { Action, createReducer, on } from '@ngrx/store';
@@ -17,6 +27,7 @@ export interface AppState {
   me?: User;
   users?: PagedList<User>;
   project?: Project;
+  projectError?: any;
   router?: fromRouter.RouterReducerState<any>;
 }
 
@@ -48,7 +59,7 @@ const reducer = createReducer(
   ),
   on(
     projectLoaded,
-    (state, { payload }) => ({ ...state, project: payload })
+    (state, {payload}) => ({...state, project: payload})
   ),
   on(
     projectCreated,
@@ -56,6 +67,22 @@ const reducer = createReducer(
     (state, action) => ({
       ...state,
       project: action.payload
+    })
+  ),
+  on(
+    projectCreateError,
+    projectUpdateError,
+    (state, action) => ({
+      ...state,
+      projectError: action.error
+    })
+  ),
+  on(
+    unloadProject,
+    (state, action) => ({
+      ...state,
+      project: undefined,
+      projectError: undefined
     })
   )
 );

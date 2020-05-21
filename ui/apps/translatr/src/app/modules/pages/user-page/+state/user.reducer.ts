@@ -1,12 +1,16 @@
 import {
   accessTokenCreated,
+  accessTokenCreateError,
   accessTokenLoaded,
   accessTokenLoadError,
   accessTokensLoaded,
   accessTokensLoadError,
   accessTokenUpdated,
+  accessTokenUpdateError,
   activitiesLoaded,
-  activitiesLoadError, activityAggregatedLoaded, activityAggregatedLoadError,
+  activitiesLoadError,
+  activityAggregatedLoaded,
+  activityAggregatedLoadError,
   projectsLoaded,
   projectsLoadError,
   userLoaded,
@@ -97,19 +101,21 @@ const reducer = createReducer(
   ),
   on(
     accessTokenLoaded,
-    (state, { accessToken }) => ({ ...state, accessToken })
+    (state, {accessToken}) => ({...state, accessToken})
   ),
   on(
     accessTokenLoadError,
-    (state, { error }) => ({ ...state, accessTokenError: error })
+    (state, {error}) => ({...state, accessTokenError: error})
   ),
   on(
     accessTokenCreated,
-    (state, { payload: accessToken }) => ({ ...state, accessToken })
+    accessTokenUpdated,
+    (state, {payload: accessToken}) => ({...state, accessToken})
   ),
   on(
-    accessTokenUpdated,
-    (state, { payload: accessToken }) => ({ ...state, accessToken })
+    accessTokenCreateError,
+    accessTokenUpdateError,
+    (state, {error}) => ({...state, accessTokenError: error})
   )
 );
 

@@ -48,11 +48,11 @@ export class ProjectLocalesComponent {
     this.facade.deleteLocale(locale.id);
     this.facade.localeModified$
       .pipe(skip(1), take(1))
-      .subscribe((l) =>
+      .subscribe(([l]) =>
         this.snackBar.open(
           `Language ${l.displayName} deleted`,
           'Dismiss',
-          { duration: 5000 }
+          {duration: 5000}
         )
       );
   }

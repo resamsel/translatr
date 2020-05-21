@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { AppFacade } from './app.facade';
 import { AppState } from './app.reducer';
+import { mockObservable } from '@translatr/utils/testing';
 
 describe('AppFacade', () => {
   let facade: AppFacade;
@@ -12,15 +13,17 @@ describe('AppFacade', () => {
       providers: [
         AppFacade,
         {
-          provide: Store, useFactory: () => ({
+          provide: Store,
+          useFactory: () => ({
             dispatch: jest.fn(),
             pipe: jest.fn()
-          })
+          }),
         }
       ]
     });
 
     store = TestBed.get(Store);
+    store.pipe.mockReturnValue(mockObservable());
     facade = TestBed.get(AppFacade);
   });
 

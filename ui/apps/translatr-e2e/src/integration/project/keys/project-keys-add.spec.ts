@@ -9,11 +9,13 @@ describe('Project Keys Add Key', () => {
     cy.clearCookies();
     cy.server();
 
-    cy.route('/api/me', 'fixture:me');
-    cy.route('/api/johndoe/p1', 'fixture:johndoe/p1');
+    cy.route('/api/me?fetch=features', 'fixture:me');
+    cy.route('/api/johndoe/p1*', 'fixture:johndoe/p1');
     cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
     cy.route('/api/project/*/keys*', 'fixture:johndoe/p1/keys');
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
+    cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
+    cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
     cy.route('/api/activities/aggregated*',
       'fixture:johndoe/p1/activities-aggregated');
   });
@@ -58,25 +60,5 @@ describe('Project Keys Add Key', () => {
 
     // then
     page.getDialog().should('have.length', 0);
-  });
-
-  it('should show error for name when using invalid characters', () => {
-    // given
-
-    // when
-    page.navigateTo();
-    page.getFloatingActionButton().click();
-    page.getDialog()
-      .find('.mat-form-field.name input')
-      .type('{selectall}de space')
-      .blur();
-
-    // then
-    page.getDialog()
-      .find('.mat-form-field.name mat-error')
-      .should('be.visible');
-    page.getDialog()
-      .find('button.save')
-      .should('be.disabled');
   });
 });

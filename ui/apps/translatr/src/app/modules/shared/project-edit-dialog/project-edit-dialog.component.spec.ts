@@ -6,8 +6,9 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, MatFormFieldModule, MatInputModule, MatSnackBar } from '@angular/material';
 import { AppFacade } from '../../../+state/app.facade';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { mockObservable } from '@translatr/utils/testing';
 
-describe('ProjectCreationDialogComponent', () => {
+describe('ProjectEditDialogComponent', () => {
   let component: ProjectEditDialogComponent;
   let fixture: ComponentFixture<ProjectEditDialogComponent>;
 
@@ -27,7 +28,7 @@ describe('ProjectCreationDialogComponent', () => {
         { provide: MatSnackBar, useValue: {} },
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: { locale: {} } },
-        { provide: AppFacade, useFactory: () => ({}) }
+        {provide: AppFacade, useFactory: () => ({projectModified$: mockObservable()})}
       ]
     }).compileComponents();
   }));

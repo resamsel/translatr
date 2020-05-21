@@ -6,10 +6,10 @@
     <option name="vmparams" value="-Xms512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled -Dconfig.file=dev.conf" />
     <option name="workingDir" value="$PROJECT_DIR$" />
     <envs>
+      <env name="REDIRECT_BASE_OFF" value="http://localhost:4210" />
       <env name="KEYCLOAK_CLIENT_ID" value="translatr-localhost" />
       <env name="KEYCLOAK_CLIENT_SECRET" value="98e21465-90b8-4390-9006-c94cd4bad36c" />
       <env name="AUTH_PROVIDERS" value="keycloak" />
-      <env name="REDIRECT_BASE" value="http://localhost:4210" />
     </envs>
     <method v="2" />
   </configuration>

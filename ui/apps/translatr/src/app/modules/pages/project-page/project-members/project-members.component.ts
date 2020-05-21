@@ -62,6 +62,7 @@ export class ProjectMembersComponent {
     this.facade.deleteMember(member.id);
     this.facade.memberModified$
       .pipe(
+        map(([a]) => a),
         filter(x => !!x),
         take(1),
         withLatestFrom(this.appFacade.me$)

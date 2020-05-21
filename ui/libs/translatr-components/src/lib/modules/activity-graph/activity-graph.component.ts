@@ -93,7 +93,6 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
   }
 
   private updateLanguage(language: string) {
-    console.log('updateLanguage', language);
     const timeFormat = d3.timeFormatDefaultLocale(locales[language]);
     this.dateFormat = timeFormat.format('%B %d, %Y');
     this.monthFormat = timeFormat.format('%b');

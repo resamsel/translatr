@@ -9,12 +9,14 @@ describe('Project Key Editor', () => {
     cy.clearCookies();
     cy.server();
 
-    cy.route('/api/me', 'fixture:me');
-    cy.route('/api/johndoe/p1', 'fixture:johndoe/p1');
+    cy.route('/api/me?fetch=features', 'fixture:me');
+    cy.route('/api/johndoe/p1*', 'fixture:johndoe/p1');
     cy.route('/api/johndoe/p1/keys/k1', 'fixture:johndoe/p1/keys/k1');
     cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
     cy.route('/api/project/*/locales?*missing=true*', 'fixture:johndoe/p1/locales-missing');
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
+    cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
+    cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
   });
 
   it('should have page title Key Editor', () => {

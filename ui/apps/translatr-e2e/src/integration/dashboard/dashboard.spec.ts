@@ -9,7 +9,7 @@ describe('Dashboard', () => {
     cy.clearCookies();
     cy.server();
 
-    cy.route('/api/me', 'fixture:me');
+    cy.route('/api/me?fetch=features', 'fixture:me');
     cy.route('/api/users?limit=1&fetch=count', 'fixture:dashboard/users-limit1');
     cy.route('/api/projects?owner=*', 'fixture:dashboard/projects-owner-limit4');
     cy.route('/api/projects?memberId=*', 'fixture:dashboard/projects-memberId-limit4');
@@ -43,12 +43,12 @@ describe('Dashboard', () => {
       .should('have.text', '11');
     page.getMetric('my.activity')
       .find('.mat-card-title')
-      .should('have.text', '1627');
+      .should('have.text', '1.6k');
     page.getMetric('all.project')
       .find('.mat-card-title')
       .should('have.text', '13');
     page.getMetric('user')
       .find('.mat-card-title')
-      .should('have.text', '10352');
+      .should('have.text', '10.4k');
   });
 });

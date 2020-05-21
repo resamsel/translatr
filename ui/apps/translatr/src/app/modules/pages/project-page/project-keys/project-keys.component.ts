@@ -51,11 +51,11 @@ export class ProjectKeysComponent {
     this.facade.deleteKey(key.id);
     this.facade.keyModified$
       .pipe(skip(1), take(1))
-      .subscribe((k) =>
+      .subscribe(([k]) =>
         this.snackBar.open(
           `Key ${k.name} deleted`,
           'Dismiss',
-          { duration: 5000 }
+          {duration: 5000}
         )
       );
   }

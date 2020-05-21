@@ -10,6 +10,7 @@ import { mockObservable } from '@translatr/utils/testing';
 import { EmptyViewTestingModule } from '@translatr/components/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { AppFacade } from '../../../../+state/app.facade';
 
 describe('ProjectSettingsComponent', () => {
   let component: ProjectSettingsComponent;
@@ -33,14 +34,21 @@ describe('ProjectSettingsComponent', () => {
         MatInputModule
       ],
       providers: [
-        { provide: MatSnackBar, useFactory: () => ({}) },
+        {provide: MatSnackBar, useFactory: () => ({})},
         {
           provide: ProjectFacade,
           useFactory: () => ({
-            project$: mockObservable()
+            canDelete$: mockObservable()
           })
         },
-        { provide: ProjectService, useFactory: () => ({}) }
+        {
+          provide: AppFacade,
+          useFactory: () => ({
+            project$: mockObservable(),
+            projectModified$: mockObservable()
+          })
+        },
+        {provide: ProjectService, useFactory: () => ({})}
       ]
     })
       .compileComponents();

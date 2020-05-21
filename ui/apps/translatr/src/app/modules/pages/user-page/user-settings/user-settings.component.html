@@ -57,14 +57,13 @@
         </mat-form-field>
         <div class="dialog-actions">
           <button
-            (click)="onSave()"
             [disabled]="form.invalid || processing"
             class="save"
             color="primary"
             mat-raised-button
             transloco="button.save"
-          >
-            Save
+            (click)="onSave()"
+          >Save
           </button>
         </div>
       </form>

@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { AppState } from './app.reducer';
 import { appQuery } from './app.selectors';
-import { createProject, loadMe, loadProject, loadUsers, updatePreferredLanguage, updateProject } from './app.actions';
+import { createProject, loadMe, loadProject, loadUsers, unloadProject, updatePreferredLanguage, updateProject } from './app.actions';
 import { Feature, FeatureFlagFacade, Project, RequestCriteria } from '@dev/translatr-model';
 import { routerQuery } from './router.selectors';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { Params } from '@angular/router';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { coerceArray } from '@angular/cdk/coercion';
+import { mergeWithError } from '@translatr/utils';
 
 export const defaultParams = ['search', 'limit', 'offset', 'order'];
 
@@ -16,12 +17,18 @@ export const defaultParams = ['search', 'limit', 'offset', 'order'];
 export class AppFacade extends FeatureFlagFacade {
   me$ = this.store.pipe(select(appQuery.getMe));
   users$ = this.store.pipe(select(appQuery.getUsers));
-  project$ = this.store.pipe(
-    select(appQuery.getProject)
-  );
+
+  project$ = this.store.pipe(select(appQuery.getProject));
+  projectError$ = this.store.pipe(select(appQuery.getProjectError));
+  projectModified$ = mergeWithError(this.project$, this.projectError$);
 
   routeParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectRouteParams));
   queryParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectQueryParams));
+
+  permission$ = combineLatest([
+    this.project$.pipe(filter(x => !!x)),
+    this.me$
+  ]);
 
   constructor(private store: Store<AppState>) {
     super();
@@ -70,5 +77,9 @@ export class AppFacade extends FeatureFlagFacade {
 
   updatePreferredLanguage(language: string): void {
     this.store.dispatch(updatePreferredLanguage({payload: language}));
+  }
+
+  unloadProject(): void {
+    this.store.dispatch(unloadProject());
   }
 }

@@ -14,6 +14,7 @@ import {
 import { ChangeDetectorRef } from '@angular/core';
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { mockObservable } from '@translatr/utils/testing';
 
 describe('ProjectMemberEditFormComponent', () => {
   let component: ProjectMemberEditFormComponent;
@@ -33,10 +34,10 @@ describe('ProjectMemberEditFormComponent', () => {
         MatAutocompleteModule
       ],
       providers: [
-        { provide: MatSnackBar, useValue: {} },
-        { provide: ProjectFacade, useFactory: () => ({}) },
-        { provide: ChangeDetectorRef, useFactory: () => ({}) },
-        { provide: MAT_DIALOG_DATA, useValue: {} }
+        {provide: MatSnackBar, useValue: {}},
+        {provide: ProjectFacade, useFactory: () => ({memberModified$: mockObservable()})},
+        {provide: ChangeDetectorRef, useFactory: () => ({})},
+        {provide: MAT_DIALOG_DATA, useValue: {}}
       ]
     })
       .compileComponents();

@@ -1,9 +1,9 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { filter, take } from 'rxjs/operators';
-import { ConstraintViolation, Error } from '@dev/translatr-model';
-import { EventEmitter, HostListener, Output } from '@angular/core';
+import { filter, takeUntil } from 'rxjs/operators';
+import { ConstraintViolation, ConstraintViolationErrorInfo, Error } from '@dev/translatr-model';
+import { ChangeDetectorRef, EventEmitter, HostListener, OnDestroy, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 const ENTER_KEYCODE = 'Enter';
@@ -12,24 +12,51 @@ export interface Identifiable {
   id?: number | string;
 }
 
-export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends Identifiable = F> {
+const getViolations = (error: Error | ConstraintViolationErrorInfo | undefined): Array<ConstraintViolation> | undefined => {
+  if (error !== undefined) {
+    if ('error' in error) {
+      return error.error.violations;
+    }
+
+    return error.violations;
+  }
+  return undefined;
+};
+
+export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends Identifiable = F>
+  implements OnDestroy {
   processing = false;
-  log = console.log;
+
+  protected readonly destroy$ = new Subject<void>();
 
   @Output() save = new EventEmitter<R>();
-  @Output() failure = new EventEmitter<Error>();
 
-  constructor(
+  protected constructor(
     protected readonly snackBar: MatSnackBar,
     protected readonly dialogRef: MatDialogRef<T, R>,
     readonly form: FormGroup,
     protected readonly data: Partial<F>,
     protected readonly create: (r: F) => void,
     protected readonly update: (r: F) => void,
-    protected readonly result$: Observable<R>,
-    protected readonly messageProvider: (r: R) => string
+    protected readonly result$: Observable<[R, undefined] | [undefined, any]>,
+    protected readonly messageProvider: (r: R) => string,
+    protected readonly changeDetectorRef: ChangeDetectorRef
   ) {
     this.form.patchValue(data);
+    result$
+      .pipe(
+        filter(([result, error]) => !!result || !!error),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(
+        ([r, error]: [R, { error: Error }]) => {
+          console.log('result$', r, error);
+          if (error !== undefined) {
+            return this.onError(error.error);
+          }
+          return this.onSuccess(r);
+        }
+      );
   }
 
   get invalid(): boolean {
@@ -40,12 +67,6 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
     this.processing = true;
 
     const value: F = this.form.value;
-    this.result$
-      .pipe(filter(x => !!x), take(1))
-      .subscribe(
-        (r: R) => this.onSuccess(r),
-        (res: { error: Error }) => this.onError(res.error)
-      );
 
     if (value.id) {
       this.update(value);
@@ -65,7 +86,7 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
     this.snackBar.open(
       this.messageProvider(r),
       'Dismiss',
-      { duration: 3000 }
+      {duration: 3000}
     );
   }
 
@@ -75,18 +96,30 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
     }
   }
 
-  protected onError(error: Error | undefined): void {
+  protected onError(error: Error | ConstraintViolationErrorInfo | undefined): void {
     this.processing = false;
-    if (error && error.error.violations) {
-      error.error.violations.forEach((violation: ConstraintViolation) => {
+    const violations = getViolations(error);
+    if (violations !== undefined) {
+      violations.forEach((violation: ConstraintViolation) => {
         const control = this.form.get(violation.field);
         if (!!control) {
-          control.setErrors({ violation: violation.message });
+          control.setErrors({violation: violation.message});
           control.markAsTouched();
         }
       });
     }
-    this.failure.emit(error);
+    this.onInvalid(error);
+  }
+
+  protected onInvalid(error: Error | ConstraintViolationErrorInfo | undefined): void {
+    if (this.changeDetectorRef !== undefined) {
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   @HostListener('window:keyup', ['$event'])

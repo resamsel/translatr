@@ -60,13 +60,13 @@
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onCancel()" transloco="button.cancel">Cancel</button>
   <button
-    mat-button
+    mat-raised-button
     color="primary"
     (click)="onSubmit()"
     [disabled]="form.invalid"
     transloco="button.save"
   >Save
   </button>
+  <button mat-button (click)="onCancel()" transloco="button.cancel">Cancel</button>
 </div>

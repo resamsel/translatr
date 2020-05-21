@@ -5,8 +5,9 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, MatFormFieldModule, Mat
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { mockObservable } from '@translatr/utils/testing';
 
-describe('KeyCreationDialogComponent', () => {
+describe('KeyEditDialogComponent', () => {
   let component: KeyEditDialogComponent;
   let fixture: ComponentFixture<KeyEditDialogComponent>;
 
@@ -23,10 +24,10 @@ describe('KeyCreationDialogComponent', () => {
         MatInputModule
       ],
       providers: [
-        { provide: MatSnackBar, useValue: {} },
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: { key: {} } },
-        { provide: ProjectFacade, useFactory: () => ({}) }
+        {provide: MatSnackBar, useValue: {}},
+        {provide: MatDialogRef, useValue: {}},
+        {provide: MAT_DIALOG_DATA, useValue: {key: {}}},
+        {provide: ProjectFacade, useFactory: () => ({keyModified$: mockObservable()})}
       ]
     })
       .compileComponents();

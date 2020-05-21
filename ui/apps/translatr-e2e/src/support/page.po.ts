@@ -3,6 +3,10 @@ export class Page {
     return cy.get('.page');
   }
 
+  getTitle(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('title');
+  }
+
   getPageTitle(): Cypress.Chainable<JQuery<HTMLElement>> {
     return cy.get('.title > span');
   }

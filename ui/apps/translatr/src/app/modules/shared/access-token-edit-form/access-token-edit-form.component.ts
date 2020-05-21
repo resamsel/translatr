@@ -1,10 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { AccessToken, Scope, scopes } from '@dev/translatr-model';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
 import { UserFacade } from '../../pages/user-page/+state/user.facade';
 
@@ -21,10 +19,7 @@ const scopePermission = scope => scope.split(':')[0];
   styleUrls: ['./access-token-edit-form.component.scss']
 })
 export class AccessTokenEditFormComponent
-  extends BaseEditFormComponent<AccessTokenEditFormComponent, AccessToken>
-  implements OnInit, OnDestroy {
-
-  private destroy$ = new Subject<void>();
+  extends BaseEditFormComponent<AccessTokenEditFormComponent, AccessToken> {
 
   @Input() set accessToken(accessToken: AccessToken) {
     this.updateValue(accessToken);
@@ -58,25 +53,16 @@ export class AccessTokenEditFormComponent
       new FormGroup({
         id: new FormControl(''),
         name: new FormControl('', Validators.required),
-        key: new FormControl({ value: '' }),
+        key: new FormControl({value: ''}),
         scope: new FormControl('')
       }),
-      { key: '', name: '', scope: '' },
+      {key: '', name: '', scope: ''},
       (accessToken: AccessToken) => facade.createAccessToken(accessToken),
       (accessToken: AccessToken) => facade.updateAccessToken(accessToken),
-      facade.accessToken$,
-      (accessToken: AccessToken) => `AccessToken ${accessToken.name} has been saved`
+      facade.accessTokenModified$,
+      (accessToken: AccessToken) => `AccessToken ${accessToken.name} has been saved`,
+      changeDetectorRef
     );
-  }
-
-  ngOnInit(): void {
-    this.failure.pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.changeDetectorRef.markForCheck());
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   get dirty(): boolean {

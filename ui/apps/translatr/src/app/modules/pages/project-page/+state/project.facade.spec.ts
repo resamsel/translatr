@@ -17,6 +17,7 @@ describe('ProjectFacade', () => {
           provide: AppFacade,
           useFactory: () => ({
             project$: mockObservable(),
+            permission$: mockObservable(),
             criteria$: jest.fn()
           })
         },
@@ -30,6 +31,7 @@ describe('ProjectFacade', () => {
     });
 
     store = TestBed.get(Store);
+    store.pipe.mockReturnValue(mockObservable());
     facade = TestBed.get(ProjectFacade);
   });
 

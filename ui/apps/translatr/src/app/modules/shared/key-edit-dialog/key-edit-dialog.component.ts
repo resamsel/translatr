@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Key } from '@dev/translatr-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -21,6 +21,7 @@ export class KeyEditDialogComponent
     readonly snackBar: MatSnackBar,
     readonly dialogRef: MatDialogRef<KeyEditDialogComponent, Key>,
     readonly facade: ProjectFacade,
+    readonly changeDetectorRef: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) readonly d: Data
   ) {
     super(
@@ -35,7 +36,8 @@ export class KeyEditDialogComponent
       (key: Key) => facade.createKey(key),
       (key: Key) => facade.updateKey(key),
       facade.keyModified$,
-      (key: Key) => `Key ${key.name} has been saved`
+      (key: Key) => `Key ${key.name} has been saved`,
+      changeDetectorRef
     );
   }
 }

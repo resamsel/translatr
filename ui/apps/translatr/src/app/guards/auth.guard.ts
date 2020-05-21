@@ -36,7 +36,7 @@ export class AuthGuard implements CanActivate {
             this.window.location.href = url.toString();
             return false;
           } catch (e) {
-            console.log('Error while parsing login URL', this.loginUrl, this.window.location.href, e);
+            console.error('Error while parsing login URL', this.loginUrl, this.window.location.href, e);
             return false;
           }
         }

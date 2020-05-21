@@ -4,6 +4,7 @@
   "whenUpdated": "2019-10-25T12:29:24.479Z",
   "name": "p1",
   "description": "p1d",
+  "myRole": "Manager",
   "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
   "ownerName": "John Doe",
   "ownerUsername": "johndoe",

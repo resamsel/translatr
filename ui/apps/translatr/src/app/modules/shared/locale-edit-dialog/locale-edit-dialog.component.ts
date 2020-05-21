@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Locale } from '@dev/translatr-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -21,6 +21,7 @@ export class LocaleEditDialogComponent
     readonly snackBar: MatSnackBar,
     readonly dialogRef: MatDialogRef<LocaleEditDialogComponent, Locale>,
     readonly facade: ProjectFacade,
+    readonly changeDetectorRef: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) readonly d: Data
   ) {
     super(
@@ -35,7 +36,8 @@ export class LocaleEditDialogComponent
       (locale: Locale) => facade.createLocale(locale),
       (locale: Locale) => facade.updateLocale(locale),
       facade.localeModified$,
-      (locale: Locale) => `Locale ${locale.name} has been saved`
+      (locale: Locale) => `Locale ${locale.name} has been saved`,
+      changeDetectorRef
     );
   }
 }

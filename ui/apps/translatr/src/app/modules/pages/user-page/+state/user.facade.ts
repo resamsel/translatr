@@ -6,7 +6,8 @@ import {
   createAccessToken,
   loadAccessToken,
   loadAccessTokens,
-  loadActivities, loadActivityAggregated,
+  loadActivities,
+  loadActivityAggregated,
   loadProjects,
   loadUser,
   updateAccessToken,
@@ -17,7 +18,8 @@ import {
   AccessToken,
   AccessTokenCriteria,
   Activity,
-  ActivityCriteria, Aggregate,
+  ActivityCriteria,
+  Aggregate,
   PagedList,
   Project,
   ProjectCriteria,
@@ -26,6 +28,7 @@ import {
 } from '@dev/translatr-model';
 import { map, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
+import { mergeWithError } from '@translatr/utils';
 
 const canCreateProject = (user: User, me: User): boolean => {
   return user.id === me.id;
@@ -76,6 +79,9 @@ export class UserFacade {
     select(userQuery.getAccessToken),
     takeUntil(this.destroy$)
   );
+  accessTokenError$ = this.store.pipe(select(userQuery.getAccessTokenError));
+  accessTokenModified$ = mergeWithError(this.accessToken$, this.accessTokenError$);
+
   projectsCriteria$ = this.appFacade.criteria$();
 
   constructor(
@@ -85,11 +91,11 @@ export class UserFacade {
   }
 
   loadUser(username: string): void {
-    this.store.dispatch(loadUser({ username }));
+    this.store.dispatch(loadUser({username}));
   }
 
   updateUser(user: User): void {
-    this.store.dispatch(updateUser({ payload: user }));
+    this.store.dispatch(updateUser({payload: user}));
   }
 
   loadProjects(criteria: ProjectCriteria): void {
@@ -109,15 +115,15 @@ export class UserFacade {
   }
 
   loadAccessToken(id: number): void {
-    this.store.dispatch(loadAccessToken({ id }));
+    this.store.dispatch(loadAccessToken({id}));
   }
 
   createAccessToken(accessToken: AccessToken): void {
-    this.store.dispatch(createAccessToken({ payload: accessToken }));
+    this.store.dispatch(createAccessToken({payload: accessToken}));
   }
 
   updateAccessToken(accessToken: AccessToken): void {
-    this.store.dispatch(updateAccessToken({ payload: accessToken }));
+    this.store.dispatch(updateAccessToken({payload: accessToken}));
   }
 
   unload(): void {

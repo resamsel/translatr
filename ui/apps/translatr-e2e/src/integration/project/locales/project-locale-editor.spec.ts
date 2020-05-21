@@ -9,8 +9,8 @@ describe('Project Locale Editor', () => {
     cy.clearCookies();
     cy.server();
 
-    cy.route('/api/me', 'fixture:me');
-    cy.route('/api/johndoe/p1', 'fixture:johndoe/p1');
+    cy.route('/api/me?fetch=features', 'fixture:me');
+    cy.route('/api/johndoe/p1*', 'fixture:johndoe/p1');
     cy.route('/api/johndoe/p1/locales/default', 'fixture:johndoe/p1/locales/default');
     cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
     cy.route('/api/project/*/keys*', 'fixture:johndoe/p1/keys');
@@ -18,6 +18,8 @@ describe('Project Locale Editor', () => {
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages-locale-default');
     cy.route('/api/project/*/messages?*keyName=k1', 'fixture:johndoe/p1/messages-key-k1');
     cy.route('/api/project/*/messages?*keyIds=*', 'fixture:johndoe/p1/messages');
+    cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
+    cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
   });
 
   it('should have page title Language Editor', () => {

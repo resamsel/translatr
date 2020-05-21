@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { filter, switchMap, take } from 'rxjs/operators';
-import { ProjectFacade } from '../+state/project.facade';
-import { AbstractEditFormComponent } from '../../../shared/edit-form/abstract-edit-form-component';
+import { filter, skip, switchMap, take, takeUntil } from 'rxjs/operators';
 import { Project } from '@dev/translatr-model';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { ProjectService } from '@dev/translatr-sdk';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { openProjectDeleteDialog } from '../../../shared/project-delete-dialog/project-delete-dialog.component';
+import { BaseEditFormComponent } from '../../../shared/edit-form/base-edit-form-component';
+import { AppFacade } from '../../../../+state/app.facade';
+import { ProjectFacade } from '../+state/project.facade';
 
 @Component({
   selector: 'app-project-settings',
@@ -15,10 +15,10 @@ import { openProjectDeleteDialog } from '../../../shared/project-delete-dialog/p
   styleUrls: ['./project-settings.component.scss']
 })
 export class ProjectSettingsComponent
-  extends AbstractEditFormComponent<ProjectSettingsComponent, Project>
+  extends BaseEditFormComponent<ProjectSettingsComponent, Project>
   implements OnInit {
 
-  project$ = this.facade.project$.pipe(filter(x => !!x));
+  project$ = this.appFacade.project$.pipe(filter(x => !!x));
 
   canDelete$ = this.facade.canDelete$;
 
@@ -32,10 +32,11 @@ export class ProjectSettingsComponent
     readonly fb: FormBuilder,
     readonly snackBar: MatSnackBar,
     private readonly router: Router,
-    private readonly route: ActivatedRoute,
+    // private readonly route: ActivatedRoute,
     private readonly dialog: MatDialog,
     private readonly facade: ProjectFacade,
-    private readonly projectService: ProjectService
+    readonly appFacade: AppFacade,
+    readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(
       snackBar,
@@ -50,14 +51,20 @@ export class ProjectSettingsComponent
         'description': fb.control('', Validators.maxLength(2000))
       }),
       {},
-      (project: Project) => this.projectService.create(project),
-      (project: Project) => this.projectService.update(project),
-      (project: Project) => `Project ${project.name} saved`
+      (project: Project) => appFacade.createProject(project),
+      (project: Project) => appFacade.updateProject(project),
+      appFacade.projectModified$.pipe(skip(1)),
+      (project: Project) => `Project ${project.name} saved`,
+      changeDetectorRef
     );
   }
 
   ngOnInit() {
-    this.project$.subscribe((project) => this.form.patchValue(project));
+    this.project$.pipe(takeUntil(this.destroy$)).subscribe((project) => this.form.patchValue(project));
+  }
+
+  protected onSaved(project: Project): void {
+    this.router.navigate(['/', project.ownerUsername, project.name, 'settings']);
   }
 
   onDelete() {
@@ -69,11 +76,5 @@ export class ProjectSettingsComponent
         filter(project => !!project)
       )
       .subscribe(() => this.router.navigate(['/dashboard']));
-  }
-
-  protected onSaved(project: Project): void {
-    if (project.name !== this.route.snapshot.params.projectName) {
-      this.router.navigate(['/', project.ownerUsername, project.name, 'settings']);
-    }
   }
 }

@@ -17,9 +17,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { LoginPageModule } from '@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module';
 import { AppRoutingModule } from './app-routing.module';
-import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
-import { FeatureFlagModule, TranslocoRootModule } from '@dev/translatr-components';
+import { FeatureFlagModule } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
+import { TranslocoRootModule } from './modules/transloco';
 
 @NgModule({
   declarations: [AppComponent],
@@ -47,8 +47,7 @@ import { FeatureFlagFacade } from '@dev/translatr-model';
     EffectsModule.forRoot([AppEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     StoreRouterConnectingModule.forRoot(),
-    TranslocoRootModule.forRoot(environment.production),
-    TranslocoMessageFormatModule.init()
+    TranslocoRootModule
   ],
   providers: [
     AppFacade,

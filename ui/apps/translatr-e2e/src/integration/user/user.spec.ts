@@ -9,7 +9,7 @@ describe('User', () => {
     cy.clearCookies();
     cy.server();
 
-    cy.route('/api/me', 'fixture:me');
+    cy.route('/api/me?fetch=features', 'fixture:me');
     cy.route('/api/johndoe', 'fixture:johndoe');
     cy.route('/api/projects*', 'fixture:johndoe/projects');
     cy.route('/api/activities*', 'fixture:johndoe/activities');
@@ -22,7 +22,7 @@ describe('User', () => {
     page.navigateTo();
 
     // then
-    page.getPageName()
-      .should('have.text', 'John Doe');
+    page.getTitle()
+      .should('have.text', 'John Doe - Translatr');
   });
 });

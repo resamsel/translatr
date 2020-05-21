@@ -9,7 +9,7 @@ describe('Dashboard Empty', () => {
     cy.clearCookies();
     cy.server();
 
-    cy.route('/api/me', 'fixture:me');
+    cy.route('/api/me?fetch=features', 'fixture:me');
     cy.route('/api/users?limit=1&fetch=count', 'fixture:dashboard/empty/users-limit1');
     cy.route('/api/projects?owner=*', 'fixture:dashboard/empty/projects-owner-limit4');
     cy.route('/api/projects?memberId=*', 'fixture:dashboard/empty/projects-memberId-limit4');

@@ -19,8 +19,14 @@ const getProject = createSelector(
   (state: AppState) => state.project
 );
 
+const getProjectError = createSelector(
+  getAppState,
+  (state: AppState) => state.projectError
+);
+
 export const appQuery = {
   getMe,
   getUsers,
-  getProject
+  getProject,
+  getProjectError
 };

@@ -20,6 +20,6 @@ export class ProjectPage extends Page {
   }
 
   getDescription(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.description');
+    return cy.get('p.description');
   }
 }

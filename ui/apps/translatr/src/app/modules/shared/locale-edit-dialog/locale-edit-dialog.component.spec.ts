@@ -5,8 +5,9 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, MatFormFieldModule, MatInputModule, MatSnackBar } from '@angular/material';
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { mockObservable } from '@translatr/utils/testing';
 
-describe('LocaleCreationDialogComponent', () => {
+describe('LocaleEditDialogComponent', () => {
   let component: LocaleEditDialogComponent;
   let fixture: ComponentFixture<LocaleEditDialogComponent>;
 
@@ -26,7 +27,7 @@ describe('LocaleCreationDialogComponent', () => {
         { provide: MatSnackBar, useValue: {} },
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: { locale: {} } },
-        { provide: ProjectFacade, useFactory: () => ({}) }
+        {provide: ProjectFacade, useFactory: () => ({localeModified$: mockObservable()})}
       ]
     })
       .compileComponents();

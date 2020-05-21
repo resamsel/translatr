@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Project } from '@dev/translatr-model';
@@ -20,6 +20,7 @@ export class ProjectEditDialogComponent
     readonly snackBar: MatSnackBar,
     readonly facade: AppFacade,
     readonly dialogRef: MatDialogRef<ProjectEditDialogComponent, Project>,
+    readonly changeDetectorRef: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) readonly data: Project
   ) {
     super(
@@ -34,8 +35,9 @@ export class ProjectEditDialogComponent
       data,
       (project: Project) => facade.createProject(project),
       (project: Project) => facade.updateProject(project),
-      facade.project$,
-      (project: Project) => `Project ${project.name} has been saved`
+      facade.projectModified$,
+      (project: Project) => `Project ${project.name} has been saved`,
+      changeDetectorRef
     );
   }
 }

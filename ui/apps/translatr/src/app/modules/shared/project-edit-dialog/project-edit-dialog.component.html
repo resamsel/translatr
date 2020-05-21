@@ -24,13 +24,13 @@
   </form>
 </div>
 <div class="dialog-actions" mat-dialog-actions>
-  <button mat-button mat-dialog-close transloco="button.cancel">Cancel</button>
   <button
     [disabled]="form.invalid || processing"
-    mat-button
+    mat-raised-button
     color="primary"
     transloco="button.save"
     (click)="onSave()"
   >Save
   </button>
+  <button mat-button transloco="button.cancel" (click)="dialogRef.close()">Cancel</button>
 </div>

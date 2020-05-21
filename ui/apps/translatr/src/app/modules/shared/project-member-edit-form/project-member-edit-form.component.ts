@@ -1,6 +1,5 @@
-import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { Member, MemberRole, memberRoles, User } from '@dev/translatr-model';
-import { Subject } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormBuilder } from '@angular/forms';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
@@ -38,9 +37,7 @@ const formToMember = (form: MemberForm): Member => {
 })
 export class ProjectMemberEditFormComponent
   extends BaseEditFormComponent<ProjectMemberEditFormComponent, MemberForm, Member>
-  implements OnInit, OnDestroy {
-
-  private destroy$ = new Subject<void>();
+  implements OnInit {
 
   @Input() set member(member: Partial<Member>) {
     this.updateValue(member);
@@ -77,13 +74,12 @@ export class ProjectMemberEditFormComponent
       (form: MemberForm) => facade.createMember(formToMember(form)),
       (form: MemberForm) => facade.updateMember(formToMember(form)),
       facade.memberModified$,
-      (member: Member) => `${member.userName} is now ${member.role}`
+      (member: Member) => `${member.userName} is now ${member.role}`,
+      changeDetectorRef
     );
   }
 
   ngOnInit(): void {
-    this.failure.pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.changeDetectorRef.markForCheck());
     this.userFormControl.valueChanges
       .pipe(
         debounceTime(200),
@@ -91,11 +87,6 @@ export class ProjectMemberEditFormComponent
         takeUntil(this.destroy$)
       )
       .subscribe(value => this.userFilter.emit(value));
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   displayFn(user?: User): string | undefined {
