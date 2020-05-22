@@ -34,6 +34,7 @@ export class UserProjectsComponent implements OnInit {
       .subscribe(([criteria, user]: [ProjectCriteria, User]) => {
         this.facade.loadProjects({
           owner: user.username,
+          fetch: 'progress',
           ...criteria
         });
       });

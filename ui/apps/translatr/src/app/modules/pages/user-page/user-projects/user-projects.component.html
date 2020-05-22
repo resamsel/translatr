@@ -3,6 +3,7 @@
     [projects]="projects$ | async"
     [canCreate]="canCreateProject$ | async"
     (filter)="onFilter($event)"
+    [criteria]="criteria$ | async"
     [showFilter]="true"
   ></app-project-list>
 
