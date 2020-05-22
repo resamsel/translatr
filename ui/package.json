@@ -26,6 +26,7 @@
     "coveralls": "cat ./coverage/*/*/lcov.info | coveralls",
     "prebuild:ci": "npm run buildinfo",
     "build:ci": "npm run lint && npm run test:ci && npm run e2e:ci && npm run build:prod",
+    "prebuild:prod": "npm run buildinfo",
     "build:prod": "npm run build:ui:prod && npm run build:admin:prod",
     "build:ui:prod": "ng build translatr --prod --output-path ../public/ui",
     "build:admin:prod": "ng build translatr-admin --prod --output-path ../public/admin",
