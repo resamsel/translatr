@@ -6,15 +6,13 @@ import commands.Command;
 import converters.ActivityCsvConverter;
 import criterias.LogEntryCriteria;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.api.mvc.Action;
 import play.api.mvc.AnyContent;
 import play.inject.Injector;
-import play.mvc.Call;
-import play.mvc.Http;
-import play.mvc.Result;
-import play.mvc.Results;
-import play.mvc.With;
+import play.mvc.*;
 import play.routing.JavaScriptReverseRouter;
 import services.CacheService;
 import utils.ConfigKey;
@@ -30,6 +28,8 @@ import java.util.concurrent.CompletionStage;
  */
 @With(ContextAction.class)
 public class Application extends AbstractController {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
   private final Configuration configuration;
   private final Assets assets;
@@ -52,9 +52,12 @@ public class Application extends AbstractController {
   }
 
   public Action<AnyContent> assetOrDefaultUi(String resource) {
-    if (resource.matches("[^/]+(\\.[^/]+)+")) {
+    if (resource.matches("([^/]+|assets/i18n/[^\\.]+)(\\.[^/]+)+")) {
       return assets.at("/public/ui", resource, false);
     }
+
+    LOGGER.debug("Asset ''{}'' does not match regex, loading /ui", resource);
+
     return indexUi();
   }
 
@@ -63,16 +66,19 @@ public class Application extends AbstractController {
   }
 
   public Action<AnyContent> assetOrDefaultAdmin(String resource) {
-    if (resource.matches("[^/]+(\\.[^/]+)+")) {
+    if (resource.matches("([^/]+|assets/i18n/[^\\.]+)(\\.[^/]+)+")) {
       return assets.at("/public/admin", resource, false);
     }
+
+    LOGGER.debug("Asset ''{}'' does not match regex, loading /admin", resource);
+
     return indexAdmin();
   }
 
   public CompletionStage<Result> login() {
     return tryCatch(() -> {
       List<String> providers = Arrays
-          .asList(StringUtils.split(configuration.getString(ConfigKey.AuthProviders.key()), ","));
+              .asList(StringUtils.split(configuration.getString(ConfigKey.AuthProviders.key()), ","));
 
       if (providers.size() == 1) {
         return redirect(auth.getResolver().auth(providers.get(0)));
@@ -99,7 +105,7 @@ public class Application extends AbstractController {
 
   public CompletionStage<Result> activityCsv() {
     return tryCatch(() -> ok(
-        new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria()).getList())));
+            new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria()).getList())));
   }
 
   public CompletionStage<Result> commandExecute(String commandKey) {
@@ -134,14 +140,14 @@ public class Application extends AbstractController {
 
   public CompletionStage<Result> javascriptRoutes() {
     return tryCatch(() -> ok(
-        JavaScriptReverseRouter.create("jsRoutes", routes.javascript.Application.activityCsv(),
-            routes.javascript.Users.activityCsv(), routes.javascript.Users.activity(),
-            routes.javascript.Profiles.resetNotifications(), routes.javascript.Projects.search(),
-            routes.javascript.ProjectsApi.search(), routes.javascript.Locales.localeBy(),
-            routes.javascript.Keys.keyBy(), routes.javascript.Keys.createImmediatelyBy(),
-            routes.javascript.LocalesApi.find(), routes.javascript.KeysApi.find(),
-            routes.javascript.TranslationsApi.create(), routes.javascript.TranslationsApi.update(),
-            routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find())));
+            JavaScriptReverseRouter.create("jsRoutes", routes.javascript.Application.activityCsv(),
+                    routes.javascript.Users.activityCsv(), routes.javascript.Users.activity(),
+                    routes.javascript.Profiles.resetNotifications(), routes.javascript.Projects.search(),
+                    routes.javascript.ProjectsApi.search(), routes.javascript.Locales.localeBy(),
+                    routes.javascript.Keys.keyBy(), routes.javascript.Keys.createImmediatelyBy(),
+                    routes.javascript.LocalesApi.find(), routes.javascript.KeysApi.find(),
+                    routes.javascript.TranslationsApi.create(), routes.javascript.TranslationsApi.update(),
+                    routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find())));
   }
 
   /**
