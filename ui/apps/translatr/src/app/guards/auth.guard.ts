@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AppFacade } from '../+state/app.facade';
-import { map, tap } from 'rxjs/operators';
+import { filter, map, tap } from 'rxjs/operators';
 import { LOGIN_URL, WINDOW } from '@translatr/utils';
 
 @Injectable({
@@ -21,7 +21,8 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     return this.facade.me$.pipe(
-      map(x => !!x),
+      filter(x => x !== undefined), // skip default value
+      map(x => x !== null), // null means unauthenticated
       tap((authenticated: boolean) => {
         if (!authenticated) {
           try {
