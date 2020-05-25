@@ -112,6 +112,7 @@
     "@angular/cli": "8.3.26",
     "@angular/compiler-cli": "^8.2.14",
     "@angular/language-service": "^8.2.14",
+    "@ngneat/spectator": "5.8.0",
     "@ngneat/transloco-keys-manager": "^1.0.0",
     "@ngneat/transloco-optimize": "1.0.1",
     "@ngneat/transloco-validator": "1.0.0",

@@ -1,29 +1,44 @@
-import { async, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { AppFacade } from './+state/app.facade';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { mockObservable } from '@translatr/utils/testing';
+import { createComponentFactory, mockProvider } from '@ngneat/spectator/jest';
 
 describe('AppComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule, TranslocoTestingModule],
-      declarations: [AppComponent],
-      providers: [
-        {
-          provide: AppFacade, useFactory: () => ({
-            loadMe: jest.fn(),
-            me$: mockObservable()
-          })
-        }
-      ]
-    }).compileComponents();
-  }));
+  const createComponent = createComponentFactory({
+    component: AppComponent,
+    imports: [RouterTestingModule, TranslocoTestingModule],
+    declarations: [AppComponent],
+    providers: [
+      mockProvider(AppFacade, {
+        me$: mockObservable()
+      })
+    ]
+  });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+    // given, when
+    const spectator = createComponent();
+
+    // then
+    expect(spectator.component).toBeTruthy();
+  });
+
+  it('should invoke loadMe on the facade', () => {
+    // given, when
+    const spectator = createComponent();
+    const facade = spectator.inject(AppFacade);
+
+    // then
+    expect(facade.loadMe.mock.calls.length).toBe(1);
+  });
+
+  it('should include router-outlet', () => {
+    // given, when
+    const spectator = createComponent();
+
+    // then
+    expect(spectator.query('router-outlet')).toExist();
   });
 });

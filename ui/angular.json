@@ -11,6 +11,9 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
+        },
+        "@ngneat/spectator:spectator-component": {
+          "jest": true
         }
       },
       "architect": {
@@ -152,6 +155,9 @@
       "schematics": {
         "@nrwl/schematics:component": {
           "styleext": "scss"
+        },
+        "@ngneat/spectator:spectator-component": {
+          "jest": true
         }
       },
       "architect": {
