@@ -58,7 +58,7 @@ export class NavbarModule {
     }
   }
 
-  static forRoot(languageSwitcher: Type<LanguageSwicher>): ModuleWithProviders {
+  static forRoot(languageSwitcher: Type<LanguageSwicher>): ModuleWithProviders<NavbarModule> {
     return {
       ngModule: NavbarModule,
       providers: [
