@@ -36,7 +36,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
 import { GravatarModule } from 'ngx-gravatar';
 import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
-import { MatTooltipModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
 
 @NgModule({

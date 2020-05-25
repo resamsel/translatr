@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { Member, MemberRole, memberRoles, User } from '@dev/translatr-model';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder } from '@angular/forms';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';

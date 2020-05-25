@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserFacade } from '../+state/user.facade';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
 import { navigate, trackByFn } from '@translatr/utils';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';

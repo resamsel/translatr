@@ -2,7 +2,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectSettingsComponent } from './project-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSnackBar } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProjectFacade } from '../+state/project.facade';
 import { ProjectService } from '@dev/translatr-sdk';
 import { RouterTestingModule } from '@angular/router/testing';

@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Locale } from '@dev/translatr-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';

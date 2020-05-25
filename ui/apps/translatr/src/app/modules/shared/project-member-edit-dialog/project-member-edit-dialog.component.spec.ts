@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectMemberEditDialogComponent } from './project-member-edit-dialog.component';
-import { MAT_DIALOG_DATA, MatButtonModule, MatDialogModule, MatDialogRef } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { AppFacade } from '../../../+state/app.facade';
 import { ProjectMemberEditFormTestingModule } from '../testing';

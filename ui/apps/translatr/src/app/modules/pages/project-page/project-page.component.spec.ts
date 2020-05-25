@@ -8,7 +8,8 @@ import { AppFacade } from '../../../+state/app.facade';
 import { PROJECT_ROUTES } from './project-page.token';
 import { SidenavTestingModule } from '../../nav/sidenav/testing';
 import { FeatureFlagTestingModule } from '@translatr/components/testing';
-import { MatIconModule, MatTabsModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 import { mockObservable } from '@translatr/utils/testing';
 
 describe('ProjectPageComponent', () => {

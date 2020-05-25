@@ -44,7 +44,9 @@ import {
 } from '@dev/translatr-components';
 import { ListHeaderModule } from '../../shared/list-header/list-header.module';
 import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
-import { MatMenuModule, MatProgressBarModule, MatTooltipModule } from '@angular/material';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectGuard } from './project.guard';
 import { ProjectAccessGuard } from './project-access.guard';

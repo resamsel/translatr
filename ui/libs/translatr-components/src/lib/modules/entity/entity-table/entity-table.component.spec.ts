@@ -3,7 +3,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { EntityTableComponent } from './entity-table.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FilterFieldTestingModule } from '@translatr/components/testing';
-import { MatCheckboxModule, MatIconModule, MatPaginatorModule, MatTableModule } from '@angular/material';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('EntityTableComponent', () => {

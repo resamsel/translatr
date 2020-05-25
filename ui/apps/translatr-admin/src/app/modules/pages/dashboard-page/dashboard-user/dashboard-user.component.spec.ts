@@ -5,7 +5,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppFacade } from '../../../../+state/app.facade';
 import { FeatureFlagTestingModule, MetricTestingModule, UserCardTestingModule } from '@translatr/components/testing';
 import { GravatarModule } from 'ngx-gravatar';
-import { MatIconModule, MatTooltipModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MomentModule } from 'ngx-moment';
 import { ShortNumberModule } from '@dev/translatr-components';
 

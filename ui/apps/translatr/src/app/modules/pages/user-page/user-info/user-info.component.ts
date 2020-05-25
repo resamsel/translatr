@@ -3,7 +3,7 @@ import { PagedList, Project, User } from '@dev/translatr-model';
 import { UserFacade } from '../+state/user.facade';
 import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, CanActivate, Router } from '@angular/router';
 import { canActivate$, NameIconRoute, slicePagedList } from '@translatr/utils';
 import { USER_ROUTES } from '../user-page.token';

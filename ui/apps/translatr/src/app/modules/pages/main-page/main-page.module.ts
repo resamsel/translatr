@@ -10,7 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MainPageRoutingModule } from './main-page-routing.module';
 import { ActivityGraphModule, FeatureFlagModule, FooterModule, NavbarModule } from '@dev/translatr-components';
-import { MatTooltipModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AppFacade } from '../../../+state/app.facade';
 

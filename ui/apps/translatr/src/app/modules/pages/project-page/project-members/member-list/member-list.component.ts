@@ -3,7 +3,7 @@ import { Member, MemberRole, PagedList, Project, RequestCriteria } from '@dev/tr
 import { openProjectMemberEditDialog } from '../../../../shared/project-member-edit-dialog/project-member-edit-dialog.component';
 import { openProjectOwnerEditDialog } from '../../../../shared/project-owner-edit-dialog/project-owner-edit-dialog.component';
 import { filter, switchMapTo, take } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { defaultFilters, FilterCriteria } from '../../../../shared/list-header/list-header.component';
 import { AppFacade } from '../../../../../+state/app.facade';

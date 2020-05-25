@@ -3,7 +3,7 @@ import { ProjectLocalesComponent } from './project-locales.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ProjectFacade } from '../+state/project.facade';
 import { mockObservable } from '@translatr/utils/testing';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { LocaleListTestingModule } from './locale-list/testing';
 
 describe('ProjectLocalesComponent', () => {

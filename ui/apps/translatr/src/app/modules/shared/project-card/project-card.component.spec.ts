@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectCardComponent } from './project-card.component';
-import { MatCardModule, MatTooltipModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { GravatarModule } from 'ngx-gravatar';
 import { MomentModule } from 'ngx-moment';
 

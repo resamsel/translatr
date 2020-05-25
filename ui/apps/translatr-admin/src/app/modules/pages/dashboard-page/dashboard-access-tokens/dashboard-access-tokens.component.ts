@@ -16,7 +16,7 @@ import {
   AccessTokensDeleteError,
   AppActionTypes
 } from '../../../../+state/app.actions';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { mapTo } from 'rxjs/operators';
 import { ofType } from '@ngrx/effects';
 import { environment } from '../../../../../environments/environment';

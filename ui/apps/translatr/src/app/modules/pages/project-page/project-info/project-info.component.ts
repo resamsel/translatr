@@ -16,7 +16,7 @@ import { ProjectFacade } from '../+state/project.facade';
 import { filter, map, pluck, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { openLocaleEditDialog } from '../../../shared/locale-edit-dialog/locale-edit-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { openKeyEditDialog } from '../../../shared/key-edit-dialog/key-edit-dialog.component';
 import { slicePagedList, WINDOW } from '@translatr/utils';

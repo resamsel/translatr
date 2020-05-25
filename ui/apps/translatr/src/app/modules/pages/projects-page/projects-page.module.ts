@@ -15,7 +15,7 @@ import { ProjectsFacade } from './+state/projects.facade';
 import { ProjectCardModule } from '../../shared/project-card/project-card.module';
 import { GravatarModule } from 'ngx-gravatar';
 import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
-import { MatTooltipModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
 import { FeatureFlagModule } from '@dev/translatr-components';
 import { TranslocoModule } from '@ngneat/transloco';

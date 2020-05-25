@@ -4,7 +4,8 @@ import { Feature, RequestCriteria, User, UserRole } from '@dev/translatr-model';
 import { map, mapTo, startWith, take } from 'rxjs/operators';
 import { UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError } from '../../../../+state/app.actions';
 import { Entity, UserEditDialogComponent, UserEditDialogConfig } from '@dev/translatr-components';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { filter } from 'rxjs/internal/operators/filter';
 import { merge, Observable } from 'rxjs';
 import {

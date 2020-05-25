@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivityListComponent } from './activity-list.component';
 import { NavListTestingModule } from '../nav-list/testing';
-import { MatTooltipModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TagModule } from '@translatr/translatr-components/src/lib/modules/tag/tag.module';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';

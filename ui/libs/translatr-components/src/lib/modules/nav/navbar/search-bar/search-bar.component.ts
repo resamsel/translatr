@@ -1,7 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { RequestCriteria } from '@dev/translatr-model';
-import { MatAutocompleteTrigger, MatOptionSelectionChange } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatOptionSelectionChange } from '@angular/material/core';
 
 type OptionType = keyof RequestCriteria | 'missing';
 

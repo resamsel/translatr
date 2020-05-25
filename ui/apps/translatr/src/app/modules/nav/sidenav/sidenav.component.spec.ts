@@ -7,7 +7,7 @@ import { SidenavComponent } from './sidenav.component';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatTooltipModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureFlagTestingModule, FooterTestingModule, NavbarTestingModule } from '@translatr/components/testing';
 import { TranslocoTestingModule } from '@ngneat/transloco';

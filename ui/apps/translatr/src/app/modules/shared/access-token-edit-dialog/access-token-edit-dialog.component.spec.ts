@@ -2,7 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccessTokenEditDialogComponent } from './access-token-edit-dialog.component';
 import { AccessTokenEditFormTestingModule } from '../access-token-edit-form/testing';
-import { MAT_DIALOG_DATA, MatButtonModule, MatDialogModule, MatDialogRef } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('ProjectCreationDialogComponent', () => {

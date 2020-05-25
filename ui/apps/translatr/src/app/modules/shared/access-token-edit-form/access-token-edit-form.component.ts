@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { AccessToken, Scope, scopes } from '@dev/translatr-model';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
 import { UserFacade } from '../../pages/user-page/+state/user.facade';

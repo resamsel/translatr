@@ -2,7 +2,7 @@ import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/co
 import { Key, KeyCriteria, PagedList, Project } from '@dev/translatr-model';
 import { openKeyEditDialog } from '../../../../shared/key-edit-dialog/key-edit-dialog.component';
 import { filter, take } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trackByFn } from '@translatr/utils';
 import { FilterCriteria } from '../../../../shared/list-header/list-header.component';

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
 import { FilterFieldFilter } from '@dev/translatr-components';
-import { MatFormFieldAppearance, ThemePalette } from '@angular/material';
+import { ThemePalette } from '@angular/material/core';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
 
 @Component({
   selector: 'dev-filter-field',

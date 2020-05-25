@@ -9,7 +9,7 @@ import { ActivityListComponent } from './activity-list.component';
 import { RouterModule } from '@angular/router';
 import { TagModule } from '@translatr/translatr-components/src/lib/modules/tag/tag.module';
 import { NavListModule } from '../nav-list/nav-list.module';
-import { MatTooltipModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivityProjectLinkComponent } from './activity-project-link/activity-project-link.component';
 import { ActivityLocaleLinkComponent } from './activity-locale-link/activity-locale-link.component';
 import { ActivityKeyLinkComponent } from './activity-key-link/activity-key-link.component';

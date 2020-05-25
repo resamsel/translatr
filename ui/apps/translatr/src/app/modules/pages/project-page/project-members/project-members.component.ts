@@ -5,7 +5,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { navigate } from '@translatr/utils';
 import { Router } from '@angular/router';
 import { Member, MemberCriteria, Project, User } from '@dev/translatr-model';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppFacade } from '../../../../+state/app.facade';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
 

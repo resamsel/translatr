@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginPageComponent } from './login-page.component';
-import { MatIconModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
 import { NavbarTestingModule } from '@translatr/components/testing';
 import { AuthProviderService } from '@translatr/translatr-sdk/src/lib/services/auth-provider.service';
 import { ENDPOINT_URL } from '@translatr/utils';

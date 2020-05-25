@@ -5,7 +5,7 @@ import { mapTo } from 'rxjs/operators';
 import { Feature, features, RequestCriteria, UserFeatureFlag } from '@dev/translatr-model';
 import { environment } from '../../../../../environments/environment';
 import { AppFacade } from '../../../../+state/app.facade';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Entity, FilterFieldFilter, notifyEvent } from '@dev/translatr-components';
 import { errorMessage, hasDeleteAllFeatureFlagsPermission, hasDeleteFeatureFlagPermission } from '@dev/translatr-sdk';
 import {

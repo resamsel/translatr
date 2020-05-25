@@ -3,14 +3,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProjectOwnerEditFormComponent } from './project-owner-edit-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import {
-  MAT_DIALOG_DATA,
-  MatAutocompleteModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatSelectModule,
-  MatSnackBar
-} from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChangeDetectorRef } from '@angular/core';
 import { ProjectService } from '@dev/translatr-sdk';
 import { TranslocoTestingModule } from '@ngneat/transloco';

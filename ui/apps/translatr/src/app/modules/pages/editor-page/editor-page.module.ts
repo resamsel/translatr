@@ -24,7 +24,7 @@ import { EditorComponent } from './editor/editor.component';
 import { EditorSelectorComponent } from './editor/editor-selector.component';
 import { KeyEditorPageComponent } from './key-editor-page.component';
 import { FilterFieldModule, NavbarModule } from '@dev/translatr-components';
-import { MatCardModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
 import { AppFacade } from '../../../+state/app.facade';
 import { TranslocoModule } from '@ngneat/transloco';
 

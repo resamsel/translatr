@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { GravatarModule } from 'ngx-gravatar';
 import { MomentModule } from 'ngx-moment';
 import { ProjectCardLinkComponent } from './project-card-link.component';
-import { MatTooltipModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [ProjectCardComponent, ProjectCardLinkComponent],

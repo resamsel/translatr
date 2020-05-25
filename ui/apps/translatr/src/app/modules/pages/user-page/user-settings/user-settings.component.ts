@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractEditFormComponent } from '../../../shared/edit-form/abstract-edit-form-component';
 import { User } from '@dev/translatr-model';
 import { FormBuilder, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserFacade } from '../+state/user.facade';
 import { merge, throwError } from 'rxjs';

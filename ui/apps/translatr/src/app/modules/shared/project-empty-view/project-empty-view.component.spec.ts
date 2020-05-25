@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectEmptyViewComponent } from './project-empty-view.component';
 import { EmptyViewTestingModule } from '@translatr/components/testing';
-import { MatButtonModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
 
 describe('ProjectEmptyViewComponent', () => {
   let component: ProjectEmptyViewComponent;

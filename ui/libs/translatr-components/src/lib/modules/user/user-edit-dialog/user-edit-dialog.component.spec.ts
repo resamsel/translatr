@@ -2,15 +2,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserEditDialogComponent } from '@dev/translatr-components';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-  MatFormFieldModule,
-  MatInputModule,
-  MatOptionModule,
-  MatSelectModule
-} from '@angular/material';
+import { MatOptionModule } from '@angular/material/core';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { mockObservable } from '@translatr/utils/testing';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 

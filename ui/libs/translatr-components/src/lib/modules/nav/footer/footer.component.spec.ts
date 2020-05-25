@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FooterComponent } from './footer.component';
-import { MatIconModule, MatTooltipModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('FooterComponent', () => {

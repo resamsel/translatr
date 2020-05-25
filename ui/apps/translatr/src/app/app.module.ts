@@ -16,7 +16,7 @@ import { AppEffects } from './+state/app.effects';
 import { AppFacade } from './+state/app.facade';
 import { environment } from '../environments/environment';
 import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatNotificationService } from './services/mat-notification-service';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { FeatureFlagModule } from '@dev/translatr-components';

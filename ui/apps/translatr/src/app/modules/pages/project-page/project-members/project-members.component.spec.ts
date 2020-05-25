@@ -4,7 +4,7 @@ import { ProjectMembersComponent } from './project-members.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ProjectFacade } from '../+state/project.facade';
 import { mockObservable } from '@translatr/utils/testing';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MemberListTestingModule } from './member-list/testing';
 import { AppFacade } from '../../../../+state/app.facade';
 

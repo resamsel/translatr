@@ -6,7 +6,7 @@ import { NavListModule } from '../nav-list/nav-list.module';
 import { RouterModule } from '@angular/router';
 import { MomentModule } from 'ngx-moment';
 import { ProjectCardModule } from '../project-card/project-card.module';
-import { MatButtonModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
 import { EmptyViewModule } from '@dev/translatr-components';
 import { ProjectEmptyViewModule } from '../project-empty-view/project-empty-view.module';
 

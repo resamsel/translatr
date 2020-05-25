@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { ConstraintViolation, Error, Project } from '@dev/translatr-model';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProjectService } from '@dev/translatr-sdk';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { take } from 'rxjs/operators';

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ProjectFacade } from '../+state/project.facade';
 import { filter, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { Locale, LocaleCriteria, Project } from '@dev/translatr-model';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { navigate } from '@translatr/utils';
 import { Router } from '@angular/router';
 

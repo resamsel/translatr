@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Member } from '@dev/translatr-model';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { map } from 'rxjs/operators';

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ErrorPageComponent } from './error-page.component';
-import { MatIconModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
 import { ErrorPageHeaderComponent } from './error-page-header.component';
 import { ErrorPageMessageComponent } from './error-page-message.component';
 

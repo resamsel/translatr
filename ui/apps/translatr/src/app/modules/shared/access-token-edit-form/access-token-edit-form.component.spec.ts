@@ -1,7 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccessTokenEditFormComponent } from './access-token-edit-form.component';
-import { MatCheckboxModule, MatFormFieldModule, MatInputModule, MatSnackBar } from '@angular/material';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserFacade } from '../../pages/user-page/+state/user.facade';
 import { ChangeDetectorRef } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';

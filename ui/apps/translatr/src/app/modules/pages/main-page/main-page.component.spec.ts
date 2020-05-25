@@ -14,7 +14,8 @@ import {
   FooterTestingModule,
   NavbarTestingModule
 } from '@translatr/components/testing';
-import { MatDividerModule, MatTooltipModule } from '@angular/material';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { mockObservable } from '@translatr/utils/testing';

@@ -2,7 +2,7 @@ import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/co
 import { fileTypeNames, fileTypes, Locale, LocaleCriteria, PagedList, Project } from '@dev/translatr-model';
 import { openLocaleEditDialog } from '../../../../shared/locale-edit-dialog/locale-edit-dialog.component';
 import { filter, take } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trackByFn } from '@translatr/utils';
 import { FilterCriteria } from '../../../../shared/list-header/list-header.component';

@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ProjectMemberEditFormModule } from '../project-member-edit-form/project-member-edit-form.module';
 import { UsersModule } from '../../pages/users-page/+state/users.module';
-import { MatDialogModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
 import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({

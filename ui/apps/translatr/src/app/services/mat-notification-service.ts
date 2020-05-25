@@ -1,5 +1,5 @@
 import { NotificationService } from '@dev/translatr-sdk';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 export class MatNotificationService extends NotificationService {
   constructor(private readonly snackBar: MatSnackBar) {
