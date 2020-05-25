@@ -12,5 +12,8 @@
     "**/*.spec.ts",
     "**/testing.ts",
     "**/testing/*"
+  ],
+  "include": [
+    "apps/translatr/src/**/*.d.ts"
   ]
 }

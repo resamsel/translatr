@@ -20,6 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/apps/translatr",
             "index": "apps/translatr/src/index.html",
             "main": "apps/translatr/src/main.ts",
@@ -164,6 +165,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/apps/translatr-admin",
             "index": "apps/translatr-admin/src/index.html",
             "main": "apps/translatr-admin/src/main.ts",
@@ -208,6 +210,10 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }
@@ -326,6 +332,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "stylePreprocessorOptions": {
               "includePaths": [
                 "libs/translatr-components/src/styles"
