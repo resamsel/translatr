@@ -21,7 +21,7 @@ describe('Admin Reducer', () => {
       const action = {} as any;
       const result = appReducer(initialState, action);
 
-      expect(result).toBe(initialState);
+      expect(result).toEqual(initialState);
     });
   });
 });

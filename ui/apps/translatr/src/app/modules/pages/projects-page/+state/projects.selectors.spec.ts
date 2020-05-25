@@ -27,7 +27,7 @@ describe('Projects Selectors', () => {
       const actual = projectsQuery.getProjects(storeState);
 
       // then
-      expect(actual).toBe(storeState[PROJECTS_FEATURE_KEY].pagedList);
+      expect(actual).toEqual(storeState[PROJECTS_FEATURE_KEY].pagedList);
     });
   });
 });

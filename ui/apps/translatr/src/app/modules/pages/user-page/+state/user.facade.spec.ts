@@ -44,7 +44,7 @@ describe('UserFacade', () => {
       facade.loadUser(username);
 
       // then
-      expect(store.dispatch.mock.calls.length).toBe(1);
+      expect(store.dispatch.mock.calls.length).toEqual(1);
     });
   });
 
@@ -57,7 +57,7 @@ describe('UserFacade', () => {
       facade.loadActivityAggregated(criteria);
 
       // then
-      expect(store.dispatch.mock.calls.length).toBe(1);
+      expect(store.dispatch.mock.calls.length).toEqual(1);
     });
   });
 });

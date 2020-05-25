@@ -33,7 +33,7 @@ describe('UsersFacade', () => {
       facade.loadUsers(criteria);
 
       // then
-      expect(store.dispatch.mock.calls.length).toBe(1);
+      expect(store.dispatch.mock.calls.length).toEqual(1);
     });
   });
 });

@@ -50,8 +50,8 @@ describe('UsersEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(new UsersLoaded(payload));
-        expect(userService.find.mock.calls.length).toBe(1);
+        expect(actual).toEqual(new UsersLoaded(payload));
+        expect(userService.find.mock.calls.length).toEqual(1);
         done();
       });
     });

@@ -31,7 +31,7 @@ describe('AppComponent', () => {
     const facade = spectator.inject(AppFacade);
 
     // then
-    expect(facade.loadMe.mock.calls.length).toBe(1);
+    expect(facade.loadMe.mock.calls.length).toEqual(1);
   });
 
   it('should include router-outlet', () => {

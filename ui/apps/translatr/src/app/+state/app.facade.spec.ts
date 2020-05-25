@@ -33,7 +33,7 @@ describe('AppFacade', () => {
       facade.loadMe();
 
       // then
-      expect(store.dispatch.mock.calls.length).toBe(1);
+      expect(store.dispatch.mock.calls.length).toEqual(1);
     });
   });
 
@@ -46,7 +46,7 @@ describe('AppFacade', () => {
       facade.loadUsers(criteria);
 
       // then
-      expect(store.dispatch.mock.calls.length).toBe(1);
+      expect(store.dispatch.mock.calls.length).toEqual(1);
     });
   });
 
@@ -60,7 +60,7 @@ describe('AppFacade', () => {
       facade.loadProject(username, projectName);
 
       // then
-      expect(store.dispatch.mock.calls.length).toBe(1);
+      expect(store.dispatch.mock.calls.length).toEqual(1);
     });
   });
 
@@ -73,7 +73,7 @@ describe('AppFacade', () => {
       facade.createProject(project);
 
       // then
-      expect(store.dispatch.mock.calls.length).toBe(1);
+      expect(store.dispatch.mock.calls.length).toEqual(1);
     });
   });
 
@@ -86,7 +86,7 @@ describe('AppFacade', () => {
       facade.updateProject(project);
 
       // then
-      expect(store.dispatch.mock.calls.length).toBe(1);
+      expect(store.dispatch.mock.calls.length).toEqual(1);
     });
   });
 });

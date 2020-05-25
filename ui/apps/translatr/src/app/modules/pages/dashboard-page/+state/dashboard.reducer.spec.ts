@@ -32,7 +32,7 @@ describe('Dashboard Reducer', () => {
       const actual = dashboardReducer(initialState, action);
 
       // then
-      expect(actual).toBe(initialState);
+      expect(actual).toEqual(initialState);
     });
   });
 });

@@ -19,7 +19,7 @@ describe('Editor Reducer', () => {
       const actual = editorReducer(initialState, action);
 
       // then
-      expect(actual.locales).toStrictEqual(payload);
+      expect(actual.locales).toEqual(payload);
     });
   });
 
@@ -32,7 +32,7 @@ describe('Editor Reducer', () => {
       const actual = editorReducer(initialState, action);
 
       // then
-      expect(actual).toBe(initialState);
+      expect(actual).toEqual(initialState);
     });
   });
 });

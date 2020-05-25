@@ -30,7 +30,7 @@ describe('User Selectors', () => {
       const actual = userQuery.getUser(storeState);
 
       // then
-      expect(actual).toBe(storeState[USER_FEATURE_KEY].user);
+      expect(actual).toEqual(storeState[USER_FEATURE_KEY].user);
     });
 
     it('getActivityAggregated() should return the user', () => {
@@ -38,7 +38,7 @@ describe('User Selectors', () => {
       const actual = userQuery.getActivityAggregated(storeState);
 
       // then
-      expect(actual).toBe(storeState[USER_FEATURE_KEY].activityAggregated);
+      expect(actual).toEqual(storeState[USER_FEATURE_KEY].activityAggregated);
     });
   });
 });

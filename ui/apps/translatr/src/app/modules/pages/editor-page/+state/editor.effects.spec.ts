@@ -68,8 +68,8 @@ describe('EditorEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(new LocalesLoaded(payload));
-        expect(localeService.find.mock.calls.length).toBe(1);
+        expect(actual).toEqual(new LocalesLoaded(payload));
+        expect(localeService.find.mock.calls.length).toEqual(1);
         done();
       });
     });

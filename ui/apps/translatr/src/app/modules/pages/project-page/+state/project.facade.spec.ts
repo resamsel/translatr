@@ -44,7 +44,7 @@ describe('ProjectFacade', () => {
       facade.loadLocales(projectId);
 
       // then
-      expect(store.dispatch.mock.calls.length).toBe(1);
+      expect(store.dispatch.mock.calls.length).toEqual(1);
     });
   });
 
@@ -59,8 +59,8 @@ describe('ProjectFacade', () => {
       facade.loadAccessTokens(criteria);
 
       // then
-      expect(store.dispatch.mock.calls.length).toBe(1);
-      expect(store.dispatch.mock.calls[0][0].payload).toBe(criteria);
+      expect(store.dispatch.mock.calls.length).toEqual(1);
+      expect(store.dispatch.mock.calls[0][0].payload).toEqual(criteria);
     });
   });
 });

@@ -19,7 +19,7 @@ describe('Project Reducer', () => {
       const actual = projectReducer(initialState, action);
 
       // then
-      expect(actual.locales).toStrictEqual(payload);
+      expect(actual.locales).toEqual(payload);
     });
 
     it('should include given access tokens on accessTokensLoaded', () => {
@@ -37,7 +37,7 @@ describe('Project Reducer', () => {
       const actual = projectReducer(initialState, action);
 
       // then
-      expect(actual.accessTokens).toStrictEqual(payload);
+      expect(actual.accessTokens).toEqual(payload);
     });
   });
 
@@ -50,7 +50,7 @@ describe('Project Reducer', () => {
       const actual = projectReducer(initialState, action);
 
       // then
-      expect(actual).toBe(initialState);
+      expect(actual).toEqual(initialState);
     });
   });
 });

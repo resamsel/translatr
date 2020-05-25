@@ -93,8 +93,8 @@ describe('ProjectEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(localesLoaded({ payload }));
-        expect(localeService.find.mock.calls.length).toBe(1);
+        expect(actual).toEqual(localesLoaded({payload}));
+        expect(localeService.find.mock.calls.length).toEqual(1);
         done();
       });
     });
@@ -120,8 +120,8 @@ describe('ProjectEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(accessTokensLoaded({ payload }));
-        expect(accessTokenService.find.mock.calls.length).toBe(1);
+        expect(actual).toEqual(accessTokensLoaded({payload}));
+        expect(accessTokenService.find.mock.calls.length).toEqual(1);
         done();
       });
     });

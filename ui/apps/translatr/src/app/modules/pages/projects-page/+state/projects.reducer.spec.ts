@@ -19,7 +19,7 @@ describe('Projects Reducer', () => {
       const actual = projectsReducer(initialState, action);
 
       // then
-      expect(actual.pagedList).toStrictEqual(payload);
+      expect(actual.pagedList).toEqual(payload);
     });
   });
 
@@ -32,7 +32,7 @@ describe('Projects Reducer', () => {
       const actual = projectsReducer(initialState, action);
 
       // then
-      expect(actual).toBe(initialState);
+      expect(actual).toEqual(initialState);
     });
   });
 });

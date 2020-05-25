@@ -34,7 +34,7 @@ describe('Project Selectors', () => {
       const actual = projectQuery.getLocales(storeState);
 
       // then
-      expect(actual).toBe(storeState[PROJECT_FEATURE_KEY].locales);
+      expect(actual).toEqual(storeState[PROJECT_FEATURE_KEY].locales);
     });
 
     it('getAccessTokens() should return the list of access tokens', () => {
@@ -42,7 +42,7 @@ describe('Project Selectors', () => {
       const actual = projectQuery.getAccessTokens(storeState);
 
       // then
-      expect(actual).toBe(storeState[PROJECT_FEATURE_KEY].accessTokens);
+      expect(actual).toEqual(storeState[PROJECT_FEATURE_KEY].accessTokens);
     });
   });
 });

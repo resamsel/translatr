@@ -31,7 +31,7 @@ describe('App Reducer', () => {
       const actual = appReducer(initialState, action);
 
       // then
-      expect(actual.users).toBe(payload);
+      expect(actual.users).toEqual(payload);
     });
 
     it('should include given project on projectLoaded', () => {
@@ -43,7 +43,7 @@ describe('App Reducer', () => {
       const actual = appReducer(initialState, action);
 
       // then
-      expect(actual.project).toBe(payload);
+      expect(actual.project).toEqual(payload);
     });
 
     it('should include given project on projectCreated', () => {
@@ -55,7 +55,7 @@ describe('App Reducer', () => {
       const actual = appReducer(initialState, action);
 
       // then
-      expect(actual.project).toBe(payload);
+      expect(actual.project).toEqual(payload);
     });
 
     it('should include given project on projectCreated', () => {
@@ -67,7 +67,7 @@ describe('App Reducer', () => {
       const actual = appReducer(initialState, action);
 
       // then
-      expect(actual.project).toBe(payload);
+      expect(actual.project).toEqual(payload);
     });
 
     it('should include given project on projectUpdated', () => {
@@ -79,7 +79,7 @@ describe('App Reducer', () => {
       const actual = appReducer(initialState, action);
 
       // then
-      expect(actual.project).toBe(payload);
+      expect(actual.project).toEqual(payload);
     });
   });
 
@@ -88,7 +88,7 @@ describe('App Reducer', () => {
       const action = {} as any;
       const result = appReducer(initialState, action);
 
-      expect(result).toBe(initialState);
+      expect(result).toEqual(initialState);
     });
   });
 });

@@ -72,8 +72,8 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(new LoggedInUserLoaded(user));
-        expect(userService.me.mock.calls.length).toBe(1);
+        expect(actual).toEqual(new LoggedInUserLoaded(user));
+        expect(userService.me.mock.calls.length).toEqual(1);
         done();
       });
     });

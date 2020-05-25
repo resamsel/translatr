@@ -26,7 +26,7 @@ describe('App Selectors', () => {
       const actual = appQuery.getMe(storeState);
 
       // then
-      expect(actual).toBe(storeState[APP_FEATURE_KEY].me);
+      expect(actual).toEqual(storeState[APP_FEATURE_KEY].me);
     });
 
     it('getUsers() should return the list of App', () => {
@@ -34,7 +34,7 @@ describe('App Selectors', () => {
       const actual = appQuery.getUsers(storeState);
 
       // then
-      expect(actual).toBe(storeState[APP_FEATURE_KEY].users);
+      expect(actual).toEqual(storeState[APP_FEATURE_KEY].users);
     });
 
     it('getProject() should return the list of App', () => {
@@ -42,7 +42,7 @@ describe('App Selectors', () => {
       const actual = appQuery.getProject(storeState);
 
       // then
-      expect(actual).toBe(storeState[APP_FEATURE_KEY].project);
+      expect(actual).toEqual(storeState[APP_FEATURE_KEY].project);
     });
   });
 });

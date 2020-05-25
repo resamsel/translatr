@@ -17,7 +17,7 @@ describe('User Reducer', () => {
       const actual = userReducer(initialState, action);
 
       // then
-      expect(actual.user).toStrictEqual(user);
+      expect(actual.user).toEqual(user);
     });
 
     it('should include given activity aggregated on activityAggregatedLoaded', () => {
@@ -35,7 +35,7 @@ describe('User Reducer', () => {
       const actual = userReducer(initialState, action);
 
       // then
-      expect(actual.activityAggregated).toStrictEqual(payload);
+      expect(actual.activityAggregated).toEqual(payload);
     });
   });
 
@@ -48,7 +48,7 @@ describe('User Reducer', () => {
       const actual = userReducer(initialState, action);
 
       // then
-      expect(actual).toBe(initialState);
+      expect(actual).toEqual(initialState);
     });
   });
 });

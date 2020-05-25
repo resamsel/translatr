@@ -82,8 +82,8 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(meLoaded({payload: user}));
-        expect(userService.me.mock.calls.length).toBe(1);
+        expect(actual).toEqual(meLoaded({payload: user}));
+        expect(userService.me.mock.calls.length).toEqual(1);
         done();
       });
     });
@@ -103,8 +103,8 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(meLoaded({payload: user}));
-        expect(userService.update.mock.calls.length).toBe(1);
+        expect(actual).toEqual(meLoaded({payload: user}));
+        expect(userService.update.mock.calls.length).toEqual(1);
         done();
       });
     });
@@ -129,8 +129,8 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(usersLoaded({ payload }));
-        expect(userService.find.mock.calls.length).toBe(1);
+        expect(actual).toEqual(usersLoaded({payload}));
+        expect(userService.find.mock.calls.length).toEqual(1);
         done();
       });
     });
@@ -149,8 +149,8 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(projectLoaded({ payload }));
-        expect(projectService.byOwnerAndName.mock.calls.length).toBe(1);
+        expect(actual).toEqual(projectLoaded({payload}));
+        expect(projectService.byOwnerAndName.mock.calls.length).toEqual(1);
         done();
       });
     });
@@ -169,8 +169,8 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(projectCreated({ payload }));
-        expect(projectService.create.mock.calls.length).toBe(1);
+        expect(actual).toEqual(projectCreated({payload}));
+        expect(projectService.create.mock.calls.length).toEqual(1);
         done();
       });
     });
@@ -189,8 +189,8 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(projectUpdated({ payload }));
-        expect(projectService.update.mock.calls.length).toBe(1);
+        expect(actual).toEqual(projectUpdated({payload}));
+        expect(projectService.update.mock.calls.length).toEqual(1);
         done();
       });
     });

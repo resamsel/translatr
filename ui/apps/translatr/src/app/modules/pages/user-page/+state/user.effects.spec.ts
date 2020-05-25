@@ -68,8 +68,8 @@ describe('UserEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(userLoaded({ user }));
-        expect(userService.byUsername.mock.calls.length).toBe(1);
+        expect(actual).toEqual(userLoaded({user}));
+        expect(userService.byUsername.mock.calls.length).toEqual(1);
         done();
       });
     });
@@ -94,8 +94,8 @@ describe('UserEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(activityAggregatedLoaded({ pagedList: payload }));
-        expect(activityService.aggregated.mock.calls.length).toBe(1);
+        expect(actual).toEqual(activityAggregatedLoaded({pagedList: payload}));
+        expect(activityService.aggregated.mock.calls.length).toEqual(1);
         done();
       });
     });

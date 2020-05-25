@@ -27,7 +27,7 @@ describe('Dashboard Selectors', () => {
       const actual = dashboardQuery.getActivities(storeState);
 
       // then
-      expect(actual).toBe(storeState[DASHBOARD_FEATURE_KEY].activities);
+      expect(actual).toEqual(storeState[DASHBOARD_FEATURE_KEY].activities);
     });
   });
 });

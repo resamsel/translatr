@@ -27,7 +27,7 @@ describe('Users Selectors', () => {
       const actual = usersQuery.getUsers(storeState);
 
       // then
-      expect(actual).toBe(storeState[USERS_FEATURE_KEY].list);
+      expect(actual).toEqual(storeState[USERS_FEATURE_KEY].list);
     });
   });
 });

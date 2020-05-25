@@ -50,8 +50,8 @@ describe('DashboardEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(new ActivitiesLoaded(payload));
-        expect(activityService.find.mock.calls.length).toBe(1);
+        expect(actual).toEqual(new ActivitiesLoaded(payload));
+        expect(activityService.find.mock.calls.length).toEqual(1);
         done();
       });
     });

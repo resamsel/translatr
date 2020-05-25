@@ -27,7 +27,7 @@ describe('Editor Selectors', () => {
       const actual = editorQuery.getLocales(storeState);
 
       // then
-      expect(actual).toBe(storeState[EDITOR_FEATURE_KEY].locales);
+      expect(actual).toEqual(storeState[EDITOR_FEATURE_KEY].locales);
     });
   });
 });

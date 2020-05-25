@@ -19,7 +19,7 @@ describe('Users Reducer', () => {
       const actual = usersReducer(initialState, action);
 
       // then
-      expect(actual.list).toStrictEqual(payload);
+      expect(actual.list).toEqual(payload);
     });
   });
 
@@ -32,7 +32,7 @@ describe('Users Reducer', () => {
       const actual = usersReducer(initialState, action);
 
       // then
-      expect(actual).toBe(initialState);
+      expect(actual).toEqual(initialState);
     });
   });
 });

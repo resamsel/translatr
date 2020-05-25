@@ -10,7 +10,7 @@ describe('utils', () => {
       const actual = envAsString('__A', defaultValue);
 
       // then
-      expect(actual).toBe(defaultValue);
+      expect(actual).toEqual(defaultValue);
     });
   });
 });

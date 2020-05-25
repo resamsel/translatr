@@ -25,7 +25,7 @@ describe('Admin Selectors', () => {
       const actual = appQuery.getLoggedInUser(storeState);
 
       // then
-      expect(actual).toBe(storeState[APP_FEATURE_KEY].me);
+      expect(actual).toEqual(storeState[APP_FEATURE_KEY].me);
     });
   });
 });

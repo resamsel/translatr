@@ -14,7 +14,7 @@ describe('utils', () => {
 
       // then
       merged$.subscribe(([entity, error]) => {
-        expect(entity).toBe('first');
+        expect(entity).toEqual('first');
         expect(error).toBeUndefined();
         done();
       });
@@ -32,7 +32,7 @@ describe('utils', () => {
       // then
       merged$.subscribe(([entity, error]) => {
         expect(entity).toBeUndefined();
-        expect(error).toBe(1);
+        expect(error).toEqual(1);
         done();
       });
     });
@@ -52,7 +52,7 @@ describe('utils', () => {
       merged$.subscribe(([entity, error]) => {
         count++;
         expect(entity).toBeUndefined();
-        expect(error).toBe(count);
+        expect(error).toEqual(count);
         if (count === 2) {
           done();
         }

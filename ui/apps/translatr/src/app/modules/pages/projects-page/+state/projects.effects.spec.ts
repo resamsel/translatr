@@ -50,8 +50,8 @@ describe('ProjectsEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toStrictEqual(new ProjectsLoaded(payload));
-        expect(projectService.find.mock.calls.length).toBe(1);
+        expect(actual).toEqual(new ProjectsLoaded(payload));
+        expect(projectService.find.mock.calls.length).toEqual(1);
         done();
       });
     });
