@@ -25,7 +25,7 @@ export class EditorComponent implements AfterViewChecked {
     this._backLink = backLink;
   }
 
-  @ViewChild('editor', { read: CodemirrorComponent, static: false })
+  @ViewChild('editor', { read: CodemirrorComponent })
   private editor: CodemirrorComponent;
   @ViewChild('tabs', { read: MatTabGroup, static: true }) private tabs: MatTabGroup;
 

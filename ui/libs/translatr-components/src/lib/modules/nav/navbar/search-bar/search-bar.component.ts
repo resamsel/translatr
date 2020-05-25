@@ -23,8 +23,8 @@ const defaultAutocompleteOptions: Array<Option> = [
 })
 export class SearchBarComponent implements OnInit {
   searchControl = new FormControl('');
-  @ViewChild('autocompleteInput', { static: false }) autocompleteInput: ElementRef;
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild('autocompleteInput') autocompleteInput: ElementRef;
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
   autocompleteOptions: Array<Option> = [];
 
   @Output() search = new EventEmitter<RequestCriteria>();

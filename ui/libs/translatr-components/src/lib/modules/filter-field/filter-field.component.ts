@@ -69,8 +69,8 @@ export class FilterFieldComponent implements OnInit {
 
   @Output() selected = new EventEmitter<ReadonlyArray<FilterFieldFilter>>();
 
-  @ViewChild('autocompleteInput', { static: false }) autocompleteInput: ElementRef;
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild('autocompleteInput') autocompleteInput: ElementRef;
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
   // @ts-ignore
   @HostBinding('class') private readonly clazz = 'filter-field';
