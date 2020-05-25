@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { take } from 'rxjs/operators';
 import { ConstraintViolation, Error } from '@dev/translatr-model';
-import { EventEmitter, HostListener, Output, Directive } from '@angular/core';
+import { EventEmitter, HostListener } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 const ENTER_KEYCODE = 'Enter';
@@ -15,15 +15,13 @@ export interface Identifiable {
 /**
  * deprecated: Use BaseEditFormComponent instead!
  */
-@Directive()
 export abstract class AbstractEditFormComponent<T, F extends Identifiable, R extends Identifiable = F> {
   processing = false;
   log = console.log;
 
-  @Output() save = new EventEmitter<R>();
-  @Output() failure = new EventEmitter<Error>();
+  failure = new EventEmitter<Error>();
 
-  constructor(
+  protected constructor(
     protected readonly snackBar: MatSnackBar,
     protected readonly dialogRef: MatDialogRef<T, R>,
     readonly form: FormGroup,
