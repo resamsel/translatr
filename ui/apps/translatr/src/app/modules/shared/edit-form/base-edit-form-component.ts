@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { filter, takeUntil } from 'rxjs/operators';
 import { ConstraintViolation, ConstraintViolationErrorInfo, Error } from '@dev/translatr-model';
-import { ChangeDetectorRef, EventEmitter, HostListener, OnDestroy, Output } from '@angular/core';
+import { ChangeDetectorRef, EventEmitter, HostListener, OnDestroy, Output, Directive } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 const ENTER_KEYCODE = 'Enter';
@@ -23,6 +23,7 @@ const getViolations = (error: Error | ConstraintViolationErrorInfo | undefined):
   return undefined;
 };
 
+@Directive()
 export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends Identifiable = F>
   implements OnDestroy {
   processing = false;
