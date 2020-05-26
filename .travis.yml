@@ -31,7 +31,7 @@ jobs:
         - find $HOME/.sbt        -name "*.lock"               -print -delete
 
     - language: node_js
-      node_js: "10.9"
+      node_js: "12.0"
       before_install:
         - cd ui
       script:
