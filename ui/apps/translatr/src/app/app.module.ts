@@ -18,7 +18,7 @@ import { environment } from '../environments/environment';
 import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatNotificationService } from './services/mat-notification-service';
-import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
+import { routerReducer, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { FeatureFlagModule } from '@dev/translatr-components';
 import { HttpClientModule } from '@angular/common/http';
 import { FeatureFlagFacade } from '@dev/translatr-model';
@@ -55,7 +55,7 @@ import { TranslocoRootModule } from './modules/shared/transloco';
     ),
     EffectsModule.forRoot([AppEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    StoreRouterConnectingModule.forRoot(),
+    StoreRouterConnectingModule.forRoot({routerState: RouterState.Minimal}),
     HttpClientModule,
     TranslocoRootModule
   ],

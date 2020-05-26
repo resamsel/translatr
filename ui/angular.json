@@ -32,7 +32,8 @@
             ],
             "styles": [
               "libs/translatr-components/src/styles/theme.scss",
-              "libs/translatr-components/src/styles/media.scss"
+              "libs/translatr-components/src/styles/media.scss",
+              "libs/translatr-components/src/styles/addons.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -177,7 +178,8 @@
             ],
             "styles": [
               "libs/translatr-components/src/styles/theme.scss",
-              "libs/translatr-components/src/styles/media.scss"
+              "libs/translatr-components/src/styles/media.scss",
+              "libs/translatr-components/src/styles/addons.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [

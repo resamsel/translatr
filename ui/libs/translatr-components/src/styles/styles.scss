@@ -1,17 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import '../../../../node_modules/@angular/material/theming';
 @import "mixins";
-
-//@import "../../../../node_modules/codemirror/lib/codemirror.css";
-//@import "../../../../node_modules/codemirror/theme/idea.css";
-
-@mixin translatr-theme($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $foreground: map-get($theme, foreground);
-  $background: map-get($theme, background);
-
-}
 
 body {
   margin: 0;
