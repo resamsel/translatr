@@ -59,7 +59,8 @@ export class UserInfoComponent implements OnInit {
         });
         this.facade.loadActivities({
           userId: user.id,
-          types: 'Create,Update,Delete'
+          types: 'Create,Update,Delete',
+          fetch: 'count'
         });
       });
   }
