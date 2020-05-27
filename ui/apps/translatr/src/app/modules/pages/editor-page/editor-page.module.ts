@@ -27,6 +27,7 @@ import { FilterFieldModule, NavbarModule } from '@dev/translatr-components';
 import { MatCardModule } from '@angular/material/card';
 import { AppFacade } from '../../../+state/app.facade';
 import { TranslocoModule } from '@ngneat/transloco';
+import { HotkeysModule } from '@ngneat/hotkeys';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,9 @@ import { TranslocoModule } from '@ngneat/transloco';
       initialState: editorInitialState
     }),
     EffectsModule.forFeature([EditorEffects]),
-    TranslocoModule
+    TranslocoModule,
+
+    HotkeysModule
   ],
   providers: [EditorFacade]
 })

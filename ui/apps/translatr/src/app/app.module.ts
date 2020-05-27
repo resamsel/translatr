@@ -70,7 +70,6 @@ import { TranslocoRootModule } from './modules/shared/transloco';
       useFactory: (snackBar: MatSnackBar) => new MatNotificationService(snackBar),
       deps: [MatSnackBar]
     }
-
   ],
   bootstrap: [AppComponent]
 })

@@ -7,6 +7,8 @@
   [messages]="(messages$ | async)?.list"
   [name]="'locale.editor' | transloco"
   class="locale-editor"
+  (nextItem)="onNextItem()"
+  (previousItem)="onPreviousItem()"
 >
   <dev-filter-field
     (selected)="onSelected($event)"

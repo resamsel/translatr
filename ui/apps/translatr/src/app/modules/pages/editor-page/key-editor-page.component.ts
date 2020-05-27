@@ -8,6 +8,7 @@ import { trackByFn } from '@translatr/utils';
 import { MessageItem } from './message-item';
 import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
 import { Observable } from 'rxjs';
+import { navigateItems } from './navigate-utils';
 
 @Component({
   selector: 'app-key-editor-page',
@@ -21,7 +22,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   readonly selectedLocaleName$ = this.facade.selectedLocaleName$;
   readonly selectedMessage$ = this.facade.keySelectedMessage$
     .pipe(map((message: Message | undefined) =>
-      message !== undefined ? { ...message } : undefined));
+      message !== undefined ? {...message} : undefined));
   readonly search$ = this.facade.search$;
   readonly filters: ReadonlyArray<FilterFieldFilter> = [
     {
@@ -42,7 +43,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
     this.appFacade.queryParams$.pipe(
       map((params: Params) => this.filters
         .filter(f => params[f.key] !== undefined && params[f.key] !== '')
-        .map(f => ({ ...f, value: params[f.key] }))
+        .map(f => ({...f, value: params[f.key]}))
       ),
       distinctUntilChanged((a, b) => a.length === b.length)
     );
@@ -105,5 +106,31 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
     }
 
     return messageItems.list.filter(i => !!i.message).map(i => i.message);
+  }
+
+  onNextItem(): void {
+    console.log('next item');
+    navigateItems(
+      this.messageItems$,
+      this.selectedLocaleName$,
+      (messageItem, selected) => messageItem.locale.name === selected,
+      () => 0,
+      index => (index ?? 0) + 1
+    )
+      .then(messageItem => this.router.navigate([], {queryParams: {locale: messageItem.locale.name}}))
+      .catch();
+  }
+
+  onPreviousItem(): void {
+    console.log('previous item');
+    navigateItems(
+      this.messageItems$,
+      this.selectedLocaleName$,
+      (messageItem, selected) => messageItem.locale.name === selected,
+      length => length - 1,
+      index => (index ?? 0) - 1
+    )
+      .then(messageItem => this.router.navigate([], {queryParams: {locale: messageItem.locale.name}}))
+      .catch();
   }
 }

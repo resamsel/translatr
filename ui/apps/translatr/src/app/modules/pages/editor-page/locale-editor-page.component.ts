@@ -7,6 +7,7 @@ import { AppFacade } from '../../../+state/app.facade';
 import { trackByFn } from '@translatr/utils';
 import { Observable } from 'rxjs';
 import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
+import { navigateItems } from './navigate-utils';
 
 @Component({
   selector: 'app-locale-editor-page',
@@ -91,5 +92,31 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
 
   onSelected(selected: ReadonlyArray<FilterFieldFilter>): Promise<boolean> {
     return handleFilterFieldSelection(this.router, this.filters, selected);
+  }
+
+  onNextItem(): void {
+    console.log('next item');
+    navigateItems(
+      this.messageItems$,
+      this.selectedKeyName$,
+      (messageItem, selected) => messageItem.key.name === selected,
+      () => 0,
+      index => (index ?? 0) + 1
+    )
+      .then(messageItem => this.router.navigate([], {queryParams: {key: messageItem.key.name}}))
+      .catch();
+  }
+
+  onPreviousItem(): void {
+    console.log('previous item');
+    navigateItems(
+      this.messageItems$,
+      this.selectedKeyName$,
+      (messageItem, selected) => messageItem.key.name === selected,
+      length => length - 1,
+      index => (index ?? 0) - 1
+    )
+      .then(messageItem => this.router.navigate([], {queryParams: {key: messageItem.key.name}}))
+      .catch();
   }
 }

@@ -1,9 +1,11 @@
-import { AfterViewChecked, ChangeDetectionStrategy, Component, HostListener, Input, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { Message, User } from '@dev/translatr-model';
 import { EditorFacade } from '../+state/editor.facade';
 import { MatTabGroup } from '@angular/material/tabs';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Link } from '@dev/translatr-components';
+import { HotkeysService } from '@ngneat/hotkeys';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-editor',
@@ -11,7 +13,7 @@ import { Link } from '@dev/translatr-components';
   styleUrls: ['./editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditorComponent implements AfterViewChecked {
+export class EditorComponent implements AfterViewChecked, OnDestroy {
   @Input() me: User;
   @Input() ownerName: string;
   @Input() projectName: string;
@@ -25,10 +27,14 @@ export class EditorComponent implements AfterViewChecked {
     this._backLink = backLink;
   }
 
-  @ViewChild('editor', { read: CodemirrorComponent })
-  private editor: CodemirrorComponent;
-  @ViewChild('tabs', { read: MatTabGroup, static: true }) private tabs: MatTabGroup;
+  @Output() readonly nextItem = new EventEmitter<void>();
+  @Output() readonly previousItem = new EventEmitter<void>();
 
+  @ViewChild('editor', {read: CodemirrorComponent})
+  private editor: CodemirrorComponent;
+  @ViewChild('tabs', {read: MatTabGroup, static: true}) private tabs: MatTabGroup;
+
+  private readonly subscriptions: Subscription[] = [];
   readonly options = {
     mode: 'xml',
     lineNumbers: true,
@@ -60,7 +66,16 @@ export class EditorComponent implements AfterViewChecked {
     };
   }
 
-  constructor(private readonly facade: EditorFacade) {
+  constructor(
+    private readonly facade: EditorFacade,
+    private readonly hotkeysService: HotkeysService
+  ) {
+    this.subscriptions.push(this.hotkeysService.addShortcut({keys: 'control.arrowdown'})
+      .subscribe(() => this.nextItem.emit()));
+    this.subscriptions.push(this.hotkeysService.addShortcut({keys: 'control.arrowup'})
+      .subscribe(() => this.previousItem.emit()));
+    this.subscriptions.push(this.hotkeysService.addShortcut({keys: 'control.enter'})
+      .subscribe(() => this.onSave()));
   }
 
   ngAfterViewChecked(): void {
@@ -72,7 +87,10 @@ export class EditorComponent implements AfterViewChecked {
     }
   }
 
-  @HostListener('keydown.control.enter')
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
   onSave(): void {
     this.facade.saveMessage(this.message);
   }

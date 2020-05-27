@@ -12,6 +12,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { HotkeysModule } from '@ngneat/hotkeys';
 
 describe('EditorComponent', () => {
   let component: EditorComponent;
@@ -27,6 +28,7 @@ describe('EditorComponent', () => {
         FormsModule,
         NoopAnimationsModule,
         TranslocoTestingModule,
+        HotkeysModule,
 
         MatButtonModule,
         MatDividerModule,

@@ -79,6 +79,7 @@
     "@angular/router": "^9.1.9",
     "@ctrl/ngx-codemirror": "2.1.1",
     "@momothepug/tsmodule-alias": "^1.0.0",
+    "@ngneat/hotkeys": "1.0.1",
     "@ngneat/transloco": "2.17.1",
     "@ngneat/transloco-locale": "1.2.2",
     "@ngneat/transloco-messageformat": "1.2.1",
