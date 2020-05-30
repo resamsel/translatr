@@ -13,13 +13,15 @@ import {
   SaveMessage,
   SelectKey,
   SelectLocale,
-  UnloadEditor
+  UnloadEditor,
+  UpdateSaveBehavior
 } from './editor.actions';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { KeyCriteria, LocaleCriteria, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { MessageItem } from '../message-item';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
+import { SaveBehavior } from '../save-behavior';
 
 @Injectable()
 export class EditorFacade {
@@ -73,10 +75,14 @@ export class EditorFacade {
     takeUntil(this.unloadEditor$)
   );
 
+  message$ = this.store.pipe(select(editorQuery.getMessage));
+
   messagesOfKey$ = this.store.pipe(
     select(editorQuery.getMessagesOfKey),
     takeUntil(this.unloadEditor$)
   );
+
+  readonly saveBehavior$ = this.store.pipe(select(editorQuery.getSaveBehavior));
 
   constructor(private readonly store: Store<EditorPartialState>) {
   }
@@ -87,13 +93,13 @@ export class EditorFacade {
     localeName: string
   ): void {
     this.store.dispatch(
-      new LoadLocale({ username, projectName, localeName })
+      new LoadLocale({username, projectName, localeName})
     );
   }
 
   loadKeyEditor(username: string, projectName: string, keyName: string): void {
     this.store.dispatch(
-      new LoadKey({ username, projectName, keyName: keyName })
+      new LoadKey({username, projectName, keyName: keyName})
     );
   }
 
@@ -103,15 +109,20 @@ export class EditorFacade {
   }
 
   selectKey(key?: string): void {
-    this.store.dispatch(new SelectKey({ key }));
+    this.store.dispatch(new SelectKey({key}));
   }
 
   selectLocale(locale?: string): void {
-    this.store.dispatch(new SelectLocale({ locale }));
+    this.store.dispatch(new SelectLocale({locale}));
   }
 
   saveMessage(message: Message): void {
     this.store.dispatch(new SaveMessage(message));
+  }
+
+  saveMessageLocally(message: Message): void {
+    console.log('dispatch savemessage');
+    this.store.dispatch(new SaveMessage(message, false));
   }
 
   loadLocales(criteria: LocaleCriteria) {
@@ -132,5 +143,9 @@ export class EditorFacade {
 
   updateKeySearch(criteria: RequestCriteria) {
     this.store.dispatch(new LoadKeySearch(criteria));
+  }
+
+  updateSaveBehavior(behavior: SaveBehavior) {
+    this.store.dispatch(new UpdateSaveBehavior(behavior));
   }
 }

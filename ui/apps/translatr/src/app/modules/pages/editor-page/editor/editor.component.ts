@@ -6,6 +6,10 @@ import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Link } from '@dev/translatr-components';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { Subscription } from 'rxjs';
+import { SaveBehavior } from '../save-behavior';
+import { filter, skip, take } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslocoService } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-editor',
@@ -14,11 +18,21 @@ import { Subscription } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditorComponent implements AfterViewChecked, OnDestroy {
+  private _message: Message;
+  private _originalValue: string;
   @Input() me: User;
   @Input() ownerName: string;
   @Input() projectName: string;
   @Input() name: string;
-  @Input() message: Message;
+
+  get message(): Message {
+    return this._message;
+  }
+
+  @Input() set message(message: Message) {
+    this._message = message;
+    this._originalValue = message !== undefined ? message.value : undefined;
+  }
 
   @Input() messages: Array<Message>;
 
@@ -66,21 +80,44 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
     };
   }
 
+  readonly saveBehavior$ = this.facade.saveBehavior$;
+  readonly SaveBehavior = SaveBehavior;
+
   constructor(
     private readonly facade: EditorFacade,
-    private readonly hotkeysService: HotkeysService
+    private readonly hotkeysService: HotkeysService,
+    private readonly snackBar: MatSnackBar,
+    private readonly translocoService: TranslocoService
   ) {
-    this.subscriptions.push(this.hotkeysService.addShortcut({keys: 'control.arrowdown'})
-      .subscribe(() => this.nextItem.emit()));
-    this.subscriptions.push(this.hotkeysService.addShortcut({keys: 'control.arrowup'})
-      .subscribe(() => this.previousItem.emit()));
-    this.subscriptions.push(this.hotkeysService.addShortcut({keys: 'control.enter'})
+    this.subscriptions.push(this.hotkeysService.addShortcut({
+      keys: 'control.arrowdown',
+      description: 'Go to next item',
+      group: 'Navigation'
+    })
+      .subscribe(() => this.onNextItem()));
+    this.subscriptions.push(this.hotkeysService.addShortcut({
+      keys: 'control.arrowup',
+      description: 'Go to previous item',
+      group: 'Navigation'
+    })
+      .subscribe(() => this.onPreviousItem()));
+    this.subscriptions.push(this.hotkeysService.addShortcut({
+      keys: 'control.enter',
+      description: 'Save translation',
+      group: 'Saving'
+    })
       .subscribe(() => this.onSave()));
+    this.subscriptions.push(this.hotkeysService.addShortcut({
+      keys: 'control.shift.enter',
+      description: 'Save and go to next item',
+      group: 'Saving'
+    }).subscribe(() => this.onSave(SaveBehavior.SaveAndNext)));
   }
 
   ngAfterViewChecked(): void {
     if (this.editor) {
       this.editor.codeMirror.refresh();
+      this.editor.registerOnChange(() => this.facade.saveMessageLocally(this.message));
     }
     if (this.tabs) {
       this.tabs.realignInkBar();
@@ -91,11 +128,74 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  onSave(): void {
+  onUnsavedChanges(): void {
+    this.snackBar.open(
+      this.translocoService.translate('editor.changes.unsaved'),
+      this.translocoService.translate('button.dismiss'),
+      {duration: 3000}
+    );
+  }
+
+  onNextItem(check: boolean = true): void {
+    if (check && this.message !== undefined) {
+      if (this.message.value === this._originalValue) {
+        // only navigate away when translation hasn't changed
+        this.nextItem.emit();
+      } else {
+        this.onUnsavedChanges();
+      }
+    } else {
+      this.nextItem.emit();
+    }
+  }
+
+  onPreviousItem(check: boolean = true): void {
+    if (check && this.message !== undefined) {
+      if (this.message.value === this._originalValue) {
+        // only navigate away when translation hasn't changed
+        this.previousItem.emit();
+      } else {
+        this.onUnsavedChanges();
+      }
+    } else {
+      this.previousItem.emit();
+    }
+  }
+
+  onSave(behavior?: SaveBehavior): void {
     this.facade.saveMessage(this.message);
+    // wait for successfully saving message
+    this.facade.message$.pipe(
+      skip(1),
+      take(1)
+    )
+      .subscribe(() => {
+        if (behavior !== undefined) {
+          if (behavior === SaveBehavior.SaveAndNext) {
+            this.onNextItem(false);
+          }
+        } else {
+          this.saveBehavior$
+            .pipe(
+              take(1),
+              filter(b => b === SaveBehavior.SaveAndNext)
+            )
+            .subscribe(() => this.onNextItem(false));
+        }
+      });
   }
 
   onUseMessage(message: Message) {
-    this.message.value = message.value;
+    this._message.value = message.value;
+  }
+
+  onSaveBehavior() {
+    this.onSave(SaveBehavior.Save);
+    this.facade.updateSaveBehavior(SaveBehavior.Save);
+  }
+
+  onSaveAndNextBehavior() {
+    this.onSave(SaveBehavior.SaveAndNext);
+    this.facade.updateSaveBehavior(SaveBehavior.SaveAndNext);
   }
 }

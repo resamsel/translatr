@@ -542,6 +542,10 @@ header.header {
   }
 }
 
+kbd {
+  white-space: nowrap;
+}
+
 @keyframes opacityPulse {
   0% {
     opacity: 0.4;

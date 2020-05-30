@@ -93,6 +93,11 @@ const getSearch = createSelector(
   (state: EditorState) => state.search
 );
 
+const getMessage = createSelector(
+  getEditorState,
+  (state: EditorState) => state.message
+);
+
 const getMessages = createSelector(
   getEditorState,
   (state: EditorState) => state.messages
@@ -225,6 +230,11 @@ const getKeyMessageItems = createSelector(
     };
   });
 
+const getSaveBehavior = createSelector(
+  getEditorState,
+  (state: EditorState) => state.saveBehavior
+);
+
 export const editorQuery = {
   getError,
   getLocale,
@@ -236,9 +246,11 @@ export const editorQuery = {
   getSelectedLocaleName,
   getSelectedKeyName,
   getSearch,
+  getMessage,
   getMessagesOfKey,
   getLocaleMessageItems,
   getLocaleSelectedMessage,
   getKeyMessageItems,
-  getKeySelectedMessage
+  getKeySelectedMessage,
+  getSaveBehavior
 };

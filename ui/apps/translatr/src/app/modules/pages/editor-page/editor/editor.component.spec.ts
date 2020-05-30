@@ -13,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { HotkeysModule } from '@ngneat/hotkeys';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('EditorComponent', () => {
   let component: EditorComponent;
@@ -35,6 +37,8 @@ describe('EditorComponent', () => {
         MatTabsModule,
         MatCardModule,
         MatIconModule,
+        MatMenuModule,
+        MatSnackBarModule,
 
         CodemirrorModule
       ],

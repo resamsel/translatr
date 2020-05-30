@@ -24,13 +24,39 @@
     </div>
     <div class="editor">
       <div class="buttons dialog-actions">
-        <button
-          mat-raised-button
-          color="primary"
-          transloco="button.save"
-          (click)="onSave()"
-        >Save
-        </button>
+        <mat-menu #saveMenu="matMenu" xPosition="before" yPosition="above" overlapTrigger="false">
+          <button
+            *ngIf="(saveBehavior$ | async) !== SaveBehavior.Save"
+            mat-menu-item
+            transloco="button.save"
+            (click)="onSaveBehavior()"
+          >Save
+          </button>
+          <button
+            *ngIf="(saveBehavior$ | async) !== SaveBehavior.SaveAndNext"
+            mat-menu-item
+            transloco="button.saveandnext"
+            (click)="onSaveAndNextBehavior()"
+          >Save and next
+          </button>
+        </mat-menu>
+        <div class="button-group">
+          <button
+            mat-raised-button
+            color="primary"
+            [transloco]="saveBehavior$ | async"
+            (click)="onSave()"
+          >Save
+          </button>
+          <button
+            mat-raised-button
+            [mat-menu-trigger-for]="saveMenu"
+            color="primary"
+            class="menu-button"
+          >
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+        </div>
         <a mat-button [routerLink]="[]" transloco="button.cancel">Cancel</a>
       </div>
       <mat-divider></mat-divider>

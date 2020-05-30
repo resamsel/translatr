@@ -1,7 +1,8 @@
-import { EditorAction, EditorActionTypes } from './editor.actions';
+import { EditorAction, EditorActionTypes, MessageSaved } from './editor.actions';
 import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import * as fromRouter from '@ngrx/router-store';
 import { ROUTER_FEATURE_KEY } from '../../../../+state/router.selectors';
+import { SaveBehavior } from '../save-behavior';
 
 export const EDITOR_FEATURE_KEY = 'editor';
 
@@ -24,6 +25,7 @@ export interface EditorState {
   key?: Key;
   keys?: PagedList<Key>;
 
+  message?: Message;
   messages?: PagedList<Message>;
   messagesOfKey?: PagedList<Message>;
 
@@ -32,6 +34,8 @@ export interface EditorState {
   loading: LoadingState<EditorState>;
 
   error: ErrorState<EditorState>;
+
+  saveBehavior: SaveBehavior;
 }
 
 export interface EditorPartialState {
@@ -50,9 +54,11 @@ export const initialState: EditorState = {
     key: false,
     keys: false,
     loading: false,
-    error: false
+    error: false,
+    saveBehavior: false
   },
-  error: {}
+  error: {},
+  saveBehavior: SaveBehavior.Save
 };
 
 function updateKeysWithMessage(
@@ -210,7 +216,14 @@ export function editorReducer(
     case EditorActionTypes.MessagesOfKeyLoaded:
       return placePayload(state, 'messagesOfKey', action.payload);
 
+    case EditorActionTypes.SaveMessage:
+      if (!action.publish) {
+        console.log('SaveMessage', action);
+        return editorReducer(state, new MessageSaved(action.payload));
+      }
+      break;
     case EditorActionTypes.MessageSaved:
+      console.log('MessageSaved', action);
       return {
         ...state,
         keys: updateKeysWithMessage(
@@ -223,10 +236,18 @@ export function editorReducer(
           state.key,
           action.payload
         ),
-        messages: updateMessagesWithMessage(state.messages, action.payload)
+        messages: updateMessagesWithMessage(state.messages, action.payload),
+        message: action.payload
       };
+
+    case EditorActionTypes.UpdateSaveBehavior:
+      return {
+        ...state,
+        saveBehavior: action.payload
+      };
+
     case EditorActionTypes.UnloadEditor:
-      return { ...initialState };
+      return {...initialState};
   }
   return state;
 }

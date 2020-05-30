@@ -23,6 +23,8 @@ import { FeatureFlagModule } from '@dev/translatr-components';
 import { HttpClientModule } from '@angular/common/http';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { TranslocoRootModule } from './modules/shared/transloco';
+import { HotkeysModule } from '@ngneat/hotkeys';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,6 +40,7 @@ import { TranslocoRootModule } from './modules/shared/transloco';
     MatToolbarModule,
     MatButtonModule,
     MatSnackBarModule,
+    MatDialogModule,
 
     NxModule.forRoot(),
     StoreModule.forRoot(
@@ -57,7 +60,8 @@ import { TranslocoRootModule } from './modules/shared/transloco';
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     StoreRouterConnectingModule.forRoot({routerState: RouterState.Minimal}),
     HttpClientModule,
-    TranslocoRootModule
+    TranslocoRootModule,
+    HotkeysModule
   ],
   providers: [
     AppFacade,

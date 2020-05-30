@@ -59,7 +59,7 @@
 }
 
 .editor {
-  @include mat-elevation(8);
+  //@include mat-elevation(2);
   display: none;
   flex: 1 1 100%;
   flex-direction: column;
@@ -79,6 +79,29 @@
     .mat-raised-button {
       margin-left: 8px;
     }
+
+    .button-group {
+      border-radius: 4px;
+      @include mat-elevation(2);
+
+      .mat-button-base {
+        margin-left: 0;
+        box-shadow: none;
+
+        &:first-of-type {
+          border-radius: 4px 0 0 4px;
+        }
+
+        &:last-of-type {
+          border-radius: 0 4px 4px 0;
+        }
+      }
+
+      .menu-button {
+        padding: 0;
+        min-width: auto;
+      }
+    }
   }
 
   .content {
@@ -86,6 +109,8 @@
     flex-grow: 1;
     max-height: 100%;
     overflow: hidden;
+    border: solid rgba(0, 0, 0, 0.1);
+    border-width: 1px 0;
 
     ::ng-deep .CodeMirror {
       min-height: 100%;
@@ -94,6 +119,14 @@
         border-right: none;
         //background: transparent;
       }
+    }
+  }
+
+  @include medium {
+    background-color: #f7f7f7;
+
+    .mat-divider {
+      display: none;
     }
   }
 

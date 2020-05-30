@@ -5,9 +5,15 @@ import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 import { Message } from '@dev/translatr-model';
 import { AppFacade } from '../../../+state/app.facade';
 import { trackByFn } from '@translatr/utils';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
 import { navigateItems } from './navigate-utils';
+
+const localeComparator = (a: Params, b: Params): boolean =>
+  a.username === b.username && a.projectName === b.projectName && a.localeName === b.localeName;
+
+const filterComparator = (a: Params, b: Params): boolean =>
+  a.search === b.search && a.missing === b.missing;
 
 @Component({
   selector: 'app-locale-editor-page',
@@ -22,7 +28,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   readonly selectedKeyName$ = this.facade.selectedKeyName$;
   readonly selectedMessage$ = this.facade.localeSelectedMessage$
     .pipe(map((message: Message | undefined) =>
-      message !== undefined ? { ...message } : undefined));
+      message !== undefined ? {...message} : undefined));
   readonly search$ = this.facade.search$;
   readonly filters: ReadonlyArray<FilterFieldFilter> = [
     {
@@ -43,12 +49,25 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     this.appFacade.queryParams$.pipe(
       map((params: Params) => this.filters
         .filter(f => params[f.key] !== undefined && params[f.key] !== '')
-        .map(f => ({ ...f, value: params[f.key] }))
+        .map(f => ({...f, value: params[f.key]}))
       ),
       distinctUntilChanged((a, b) => a.length === b.length)
     );
   readonly messages$ = this.facade.messagesOfKey$;
   readonly message: Message;
+  readonly params$ = combineLatest([
+    this.appFacade.routeParams$
+      .pipe(
+        filter(p =>
+          p.username !== undefined
+          && p.projectName !== undefined
+          && p.localeName !== undefined
+        ),
+        distinctUntilChanged(localeComparator)
+      ),
+    this.appFacade.queryParams$
+      .pipe(distinctUntilChanged(filterComparator))
+  ]);
 
   readonly backLink = {
     routerLink: ['..']
@@ -64,16 +83,8 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.appFacade.routeParams$
-      .pipe(
-        filter(p =>
-          p.username !== undefined
-          && p.projectName !== undefined
-          && p.localeName !== undefined
-        ),
-        takeUntil(this.facade.unloadEditor$)
-      )
-      .subscribe((params: Params) => {
+    this.params$.pipe(takeUntil(this.facade.unloadEditor$))
+      .subscribe(([params,]: [Params, Params]) => {
         this.facade.loadLocaleEditor(
           params.username,
           params.projectName,
@@ -91,6 +102,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onSelected(selected: ReadonlyArray<FilterFieldFilter>): Promise<boolean> {
+    console.log('onSelected', selected);
     return handleFilterFieldSelection(this.router, this.filters, selected);
   }
 

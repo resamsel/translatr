@@ -28,7 +28,7 @@ import {
 import { KeyService, LocaleService, MessageService, NotificationService } from '@dev/translatr-sdk';
 import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
-import { Observable, of, throwError } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../../+state/app.reducer';
 import { editorQuery } from './editor.selectors';
@@ -58,7 +58,7 @@ export class EditorEffects {
       this.localeService
         .byOwnerAndProjectNameAndName(action.payload)
         .pipe(
-          map((locale: Locale) => new LocaleLoaded({ locale })),
+          map((locale: Locale) => new LocaleLoaded({locale})),
           catchError(error => of(new LocaleLoadError(error))))
     )
   ));
@@ -122,15 +122,19 @@ export class EditorEffects {
   saveMessage$ = createEffect(() => this.actions$.pipe(
     ofType<SaveMessage>(EditorActionTypes.SaveMessage),
     switchMap((action: SaveMessage) => {
-        let observable: Observable<Message>;
-        if (action.payload.id === undefined) {
-          observable = this.messageService.create(action.payload);
-        } else {
-          observable = this.messageService.update(action.payload);
-        }
+      if (!action.publish) {
+        return EMPTY;
+      }
 
-        return observable.pipe(
-          map((message: Message) => new MessageSaved(message)),
+      let observable: Observable<Message>;
+      if (action.payload.id === undefined) {
+        observable = this.messageService.create(action.payload);
+      } else {
+        observable = this.messageService.update(action.payload);
+      }
+
+      return observable.pipe(
+        map((message: Message) => new MessageSaved(message)),
           catchError(error => throwError(error))
         );
       }
@@ -151,7 +155,7 @@ export class EditorEffects {
         );
       }
     )
-  ), { dispatch: false });
+  ), {dispatch: false});
 
   // Locale Editor
 
