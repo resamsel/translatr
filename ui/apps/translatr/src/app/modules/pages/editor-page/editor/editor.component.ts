@@ -19,7 +19,6 @@ import { TranslocoService } from '@ngneat/transloco';
 })
 export class EditorComponent implements AfterViewChecked, OnDestroy {
   private _message: Message;
-  private _originalValue: string;
   @Input() me: User;
   @Input() ownerName: string;
   @Input() projectName: string;
@@ -31,7 +30,6 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
 
   @Input() set message(message: Message) {
     this._message = message;
-    this._originalValue = message !== undefined ? message.value : undefined;
   }
 
   @Input() messages: Array<Message>;
@@ -117,7 +115,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
   ngAfterViewChecked(): void {
     if (this.editor) {
       this.editor.codeMirror.refresh();
-      this.editor.registerOnChange(() => this.facade.saveMessageLocally(this.message));
+      this.editor.registerOnChange((value) => this.onChanged(value));
     }
     if (this.tabs) {
       this.tabs.realignInkBar();
@@ -136,30 +134,12 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
     );
   }
 
-  onNextItem(check: boolean = true): void {
-    if (check && this.message !== undefined) {
-      if (this.message.value === this._originalValue) {
-        // only navigate away when translation hasn't changed
-        this.nextItem.emit();
-      } else {
-        this.onUnsavedChanges();
-      }
-    } else {
-      this.nextItem.emit();
-    }
+  onNextItem(): void {
+    this.nextItem.emit();
   }
 
-  onPreviousItem(check: boolean = true): void {
-    if (check && this.message !== undefined) {
-      if (this.message.value === this._originalValue) {
-        // only navigate away when translation hasn't changed
-        this.previousItem.emit();
-      } else {
-        this.onUnsavedChanges();
-      }
-    } else {
-      this.previousItem.emit();
-    }
+  onPreviousItem(): void {
+    this.previousItem.emit();
   }
 
   onSave(behavior?: SaveBehavior): void {
@@ -172,7 +152,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
       .subscribe(() => {
         if (behavior !== undefined) {
           if (behavior === SaveBehavior.SaveAndNext) {
-            this.onNextItem(false);
+            this.onNextItem();
           }
         } else {
           this.saveBehavior$
@@ -180,13 +160,28 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
               take(1),
               filter(b => b === SaveBehavior.SaveAndNext)
             )
-            .subscribe(() => this.onNextItem(false));
+            .subscribe(() => this.onNextItem());
         }
       });
   }
 
+  onChanged(value?: string, dirty: boolean = true): void {
+    this.facade.saveMessageLocally({
+      ...this.message,
+      value,
+      dirty,
+      originalValue: dirty
+        ? this.message.originalValue ?? this.message.value
+        : undefined
+    });
+  }
+
+  onReset(): void {
+    this.onChanged(this._message.originalValue, false);
+  }
+
   onUseMessage(message: Message) {
-    this._message.value = message.value;
+    this.onChanged(message.value, this.message.id !== message.id);
   }
 
   onSaveBehavior() {

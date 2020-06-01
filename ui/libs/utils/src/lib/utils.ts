@@ -1,5 +1,5 @@
 import { merge, Observable } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 
 export const pickRandomly = <T>(options: Array<T>): T => {
   return options[Math.ceil(Math.random() * options.length) - 1];
@@ -76,7 +76,6 @@ export const mergeWithError = <T, E>(entity$: Observable<T>, error$: Observable<
     ),
     error$.pipe(
       filter(x => !!x),
-      tap(error => console.log('error$', error)),
       map<E, [undefined, E]>((error: E) => [undefined, error])
     )
   );

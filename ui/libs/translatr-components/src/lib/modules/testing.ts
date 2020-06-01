@@ -1,5 +1,6 @@
 export * from './activity-graph/testing';
 export * from './button/testing';
+export * from './disable-control/testing';
 export * from './empty-view/testing';
 export * from './entity/testing';
 export * from './feature-flag/testing';

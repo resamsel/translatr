@@ -59,6 +59,7 @@
       [class.active]="item.selected"
       [queryParams]="{ locale: item.locale.name }"
       [routerLink]="[]"
+      [ngClass]="{warning: item.message?.dirty}"
       mat-list-item
       queryParamsHandling="merge"
       class="locale"

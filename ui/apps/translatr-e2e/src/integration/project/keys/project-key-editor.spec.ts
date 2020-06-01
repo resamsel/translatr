@@ -98,6 +98,21 @@ describe('Project Key Editor', () => {
       .should('be.visible');
   });
 
+  it('should show translation when locale activated in sidebar', () => {
+    // given
+
+    // when
+    page.navigateTo();
+    page.getNavList()
+      .find('.mat-list-item.locale')
+      .first()
+      .click();
+
+    // then
+    page.getEditorContents()
+      .should('have.text', 'Schlüssel 1');
+  });
+
   it('should show meta when locale activated in sidebar', () => {
     // given
 

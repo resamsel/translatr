@@ -12,6 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
+import { DisableControlModule } from '../disable-control';
 
 @NgModule({
   declarations: [FilterFieldComponent],
@@ -22,6 +23,8 @@ import { TranslocoModule } from '@ngneat/transloco';
     CommonModule,
     ReactiveFormsModule,
     TranslocoModule,
+
+    DisableControlModule,
 
     MatIconModule,
     MatFormFieldModule,

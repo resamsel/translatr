@@ -55,7 +55,7 @@ export class NavListComponent {
     this._pagedList = pagedList;
 
     this.queryParams = pagedList !== undefined
-      ? { limit: pagedList.limit * 2 }
+      ? {limit: pagedList.limit * 2}
       : {};
 
     this.updateSearchEnabled();

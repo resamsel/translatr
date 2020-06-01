@@ -57,7 +57,13 @@
             <mat-icon>arrow_drop_down</mat-icon>
           </button>
         </div>
-        <a mat-button [routerLink]="[]" transloco="button.cancel">Cancel</a>
+        <a mat-button [routerLink]="[]" transloco="button.close">Close</a>
+        <a
+          mat-button
+          [disabled]="!message?.dirty"
+          transloco="button.reset"
+          (click)="onReset()"
+        >Reset</a>
       </div>
       <mat-divider></mat-divider>
       <div class="content">

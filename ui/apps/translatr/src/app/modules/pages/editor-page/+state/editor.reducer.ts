@@ -218,12 +218,10 @@ export function editorReducer(
 
     case EditorActionTypes.SaveMessage:
       if (!action.publish) {
-        console.log('SaveMessage', action);
         return editorReducer(state, new MessageSaved(action.payload));
       }
       break;
     case EditorActionTypes.MessageSaved:
-      console.log('MessageSaved', action);
       return {
         ...state,
         keys: updateKeysWithMessage(

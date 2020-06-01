@@ -1,6 +1,7 @@
 <div class="actions">
   <dev-filter-field
-    *ngIf="searchEnabled"
+    *ngIf="searchVisible"
+    [enabled]="searchEnabled"
     [filters]="filters"
     [selection]="selection"
     appearance="elevate"

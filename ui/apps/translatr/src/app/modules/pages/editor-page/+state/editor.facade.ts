@@ -121,7 +121,6 @@ export class EditorFacade {
   }
 
   saveMessageLocally(message: Message): void {
-    console.log('dispatch savemessage');
     this.store.dispatch(new SaveMessage(message, false));
   }
 

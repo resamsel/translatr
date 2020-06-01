@@ -1,3 +1,26 @@
+@import 'theme';
+
+@mixin nav-list-theme($theme) {
+  $warning: map-get($theme, warn);
+  $warning-color: mat-color($warning);
+  $warning-background-color: mat-color($warning, 50);
+
+  :host ::ng-deep .mat-list-item.warning {
+    border-left-color: $warning-color;
+    background-color: $warning-background-color;
+  }
+}
+
+:host ::ng-deep {
+  .mat-list-item {
+    border-left: 4px solid transparent;
+
+    .mat-list-item-content {
+      margin-left: -4px;
+    }
+  }
+}
+
 .loading {
   .mat-list-item,
   .mat-card {
@@ -85,3 +108,5 @@
   text-align: center;
   margin-top: 8px;
 }
+
+@include nav-list-theme($app-theme)

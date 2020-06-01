@@ -49,6 +49,7 @@ const filterOption = (option: FilterFieldFilter, definition: FilterFieldFilter):
   styleUrls: ['./filter-field.component.scss']
 })
 export class FilterFieldComponent implements OnInit {
+  @Input() enabled = true;
   @Input() filters: ReadonlyArray<FilterFieldFilter>;
   @Input() appearance: MatFormFieldAppearance | 'elevate' = 'standard';
   @Input() color: ThemePalette = 'primary';

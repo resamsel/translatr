@@ -121,7 +121,6 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onNextItem(): void {
-    console.log('next item');
     navigateItems(
       this.messageItems$,
       this.selectedLocaleName$,
@@ -134,7 +133,6 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onPreviousItem(): void {
-    console.log('previous item');
     navigateItems(
       this.messageItems$,
       this.selectedLocaleName$,

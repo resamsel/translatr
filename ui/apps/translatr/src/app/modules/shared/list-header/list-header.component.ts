@@ -30,6 +30,7 @@ export class ListHeaderComponent implements OnInit {
     return this._criteria;
   }
 
+  @Input() searchVisible = true;
   @Input() searchEnabled = true;
   @Input() addVisible = true;
   @Input() addEnabled = true;

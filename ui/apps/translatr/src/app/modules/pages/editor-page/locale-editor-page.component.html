@@ -60,6 +60,7 @@
       [class.active]="item.selected"
       [queryParams]="{ key: item.key.name }"
       [routerLink]="[]"
+      [ngClass]="{warning: item.message?.dirty}"
       mat-list-item
       queryParamsHandling="merge"
       class="key"

@@ -1,11 +1,12 @@
 <app-list-header
-  (filter)="onFilter($event)"
-  (add)="create.emit()"
+  [searchVisible]="showFilter"
+  [searchEnabled]="searchEnabled"
   [addTooltip]="addTooltip"
   [addVisible]="canCreate"
   [criteria]="criteria"
   [filters]="filters"
-  [searchEnabled]="searchEnabled"
+  (filter)="onFilter($event)"
+  (add)="create.emit()"
 ></app-list-header>
 
 <mat-nav-list *ngIf="pagedList; else loading">

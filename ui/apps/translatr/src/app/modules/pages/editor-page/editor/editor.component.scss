@@ -16,7 +16,6 @@
 
 .main {
   flex-grow: 1;
-  background: rgba(0, 0, 0, 0.06);
   max-width: 100%;
 
   @include medium {
@@ -123,8 +122,6 @@
   }
 
   @include medium {
-    background-color: #f7f7f7;
-
     .mat-divider {
       display: none;
     }

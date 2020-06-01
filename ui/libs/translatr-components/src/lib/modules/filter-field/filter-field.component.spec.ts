@@ -12,6 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { DisableControlTestingModule } from '@translatr/components/testing';
 
 describe('FilterFieldComponent', () => {
   let component: FilterFieldComponent;
@@ -24,6 +25,8 @@ describe('FilterFieldComponent', () => {
         ReactiveFormsModule,
         NoopAnimationsModule,
         TranslocoTestingModule,
+
+        DisableControlTestingModule,
 
         MatFormFieldModule,
         MatChipsModule,

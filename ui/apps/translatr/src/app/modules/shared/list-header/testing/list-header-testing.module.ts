@@ -7,6 +7,7 @@ import { defaultFilters, FilterCriteria } from '../list-header.component';
 })
 class MockListHeaderComponent {
   @Input() filters = defaultFilters;
+  @Input() searchVisible = true;
   @Input() searchEnabled = true;
   @Input() addVisible = true;
   @Input() addEnabled = true;

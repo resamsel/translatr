@@ -1,5 +1,6 @@
 export * from './activity-graph';
 export * from './button';
+export * from './disable-control';
 export * from './empty-view';
 export * from './entity';
 export * from './events';

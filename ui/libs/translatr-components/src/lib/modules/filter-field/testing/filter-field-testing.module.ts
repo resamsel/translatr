@@ -8,6 +8,7 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
   template: ''
 })
 class MockFilterFieldComponent {
+  @Input() enabled: boolean;
   @Input() filters: ReadonlyArray<FilterFieldFilter>;
   @Input() appearance: MatFormFieldAppearance | 'elevate' = 'standard';
   @Input() color: ThemePalette = 'primary';

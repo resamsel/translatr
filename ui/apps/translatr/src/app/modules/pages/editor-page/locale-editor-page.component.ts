@@ -102,12 +102,10 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onSelected(selected: ReadonlyArray<FilterFieldFilter>): Promise<boolean> {
-    console.log('onSelected', selected);
     return handleFilterFieldSelection(this.router, this.filters, selected);
   }
 
   onNextItem(): void {
-    console.log('next item');
     navigateItems(
       this.messageItems$,
       this.selectedKeyName$,
@@ -120,7 +118,6 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   }
 
   onPreviousItem(): void {
-    console.log('previous item');
     navigateItems(
       this.messageItems$,
       this.selectedKeyName$,

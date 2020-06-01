@@ -17,7 +17,7 @@ describe('Project Locale Editor', () => {
     cy.route('/api/project/*/keys?*missing=true*', 'fixture:johndoe/p1/keys-missing');
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages-locale-default');
     cy.route('/api/project/*/messages?*keyName=k1', 'fixture:johndoe/p1/messages-key-k1');
-    cy.route('/api/project/*/messages?*keyIds=*', 'fixture:johndoe/p1/messages');
+    cy.route('/api/project/*/messages?*keyIds=*', 'fixture:johndoe/p1/messages-locale-default');
     cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
     cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
   });
@@ -100,6 +100,21 @@ describe('Project Locale Editor', () => {
     page.getEditor().should('be.visible');
   });
 
+  it('should show translation when key activated in sidebar', () => {
+    // given
+
+    // when
+    page.navigateTo();
+    page.getNavList()
+      .find('.mat-list-item.key')
+      .first()
+      .click();
+
+    // then
+    page.getEditorContents()
+      .should('have.text', 'Key One');
+  });
+
   it('should show meta when key activated in sidebar', () => {
     // given
 
@@ -158,14 +173,17 @@ describe('Project Locale Editor', () => {
       .first()
       .click();
 
-    page.getTranslationsTab().click();
-    page.getTranslationsBody()
-      .find('.mat-card button.use-value')
-      .first()
-      .click();
+    page.getMeta().within((el) => {
+      el.find('#mat-tab-label-0-1')
+        .trigger('click');
+      el.find('#mat-tab-content-0-1 .mat-card button.use-value')
+        .first()
+        .trigger('click');
+    });
 
     // then
-    page.getEditorContents().should('have.text', 'Schlüssel 1');
+    page.getEditorContents()
+      .should('have.text', 'Schlüssel 1');
   });
 
   it('should only show keys with missing translations when filtered by those', () => {
