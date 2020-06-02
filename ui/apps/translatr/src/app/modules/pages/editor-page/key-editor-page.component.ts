@@ -84,7 +84,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.params$
       .pipe(takeUntil(this.facade.unloadEditor$))
-      .subscribe(([params,]: [Params, Params]) => {
+      .subscribe(([params, _]: [Params, Params]) => {
         this.facade.loadKeyEditor(
           params.username,
           params.projectName,

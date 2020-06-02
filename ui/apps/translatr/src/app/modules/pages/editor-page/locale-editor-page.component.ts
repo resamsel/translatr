@@ -84,7 +84,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.params$.pipe(takeUntil(this.facade.unloadEditor$))
-      .subscribe(([params,]: [Params, Params]) => {
+      .subscribe(([params, _]: [Params, Params]) => {
         this.facade.loadLocaleEditor(
           params.username,
           params.projectName,
