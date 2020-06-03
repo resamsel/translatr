@@ -19,8 +19,6 @@ import validators.Username;
 
 import javax.persistence.*;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static play.libs.Json.toJson;
 
@@ -152,11 +150,6 @@ public class User implements Model<User, UUID>, Subject {
   public User withSettings(Map<String, String> settings) {
     this.settings = new HashMap<>(settings);
     return this;
-  }
-
-  public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-    final Set<Object> seen = new HashSet<>();
-    return t -> seen.add(keyExtractor.apply(t));
   }
 
   /**

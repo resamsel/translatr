@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { EditorFacade } from './editor.facade';
 import { EditorState } from './editor.reducer';
+import { AppFacade } from '../../../../+state/app.facade';
+import { mockObservable } from '@translatr/utils/testing';
 
 describe('EditorFacade', () => {
   let facade: EditorFacade;
@@ -16,12 +18,17 @@ describe('EditorFacade', () => {
             dispatch: jest.fn(),
             pipe: jest.fn()
           })
+        },
+        {
+          provide: AppFacade, useFactory: () => ({
+            settings$: mockObservable()
+          })
         }
       ]
     });
 
-    store = TestBed.get(Store);
-    facade = TestBed.get(EditorFacade);
+    store = TestBed.inject(Store) as Store<EditorState> & { dispatch: jest.Mock; pipe: jest.Mock; };
+    facade = TestBed.inject(EditorFacade);
   });
 
   describe('loadLocales', () => {

@@ -30,6 +30,7 @@ describe('AppEffects', () => {
     me: jest.Mock;
     find: jest.Mock;
     update: jest.Mock;
+    updateSettings: jest.Mock;
   };
   let projectService: ProjectService & {
     byOwnerAndName: jest.Mock;
@@ -46,7 +47,8 @@ describe('AppEffects', () => {
           provide: UserService, useFactory: () => ({
             me: jest.fn(),
             find: jest.fn(),
-            update: jest.fn()
+            update: jest.fn(),
+            updateSettings: jest.fn()
           })
         },
         {
@@ -115,9 +117,9 @@ describe('AppEffects', () => {
     it('should work', (done) => {
       // given
       const user: User = {id: '1', name: 'user', username: 'username', preferredLanguage: 'de'};
-      userService.update.mockReturnValue(of(user));
+      userService.updateSettings.mockReturnValue(of(user));
       store.select.mockReturnValue(of(user));
-      const effects: AppEffects = TestBed.get(AppEffects);
+      const effects = TestBed.inject(AppEffects);
       const target$ = effects.updateSettings$;
 
       // when
@@ -126,8 +128,9 @@ describe('AppEffects', () => {
       // then
       target$.subscribe(actual => {
         expect(actual).toEqual(meLoaded({payload: user}));
-        expect(userService.update.mock.calls.length).toEqual(1);
-        expect(userService.update.mock.calls[0][0]).toEqual({id: '1', settings: {a: 'A'}});
+        expect(userService.updateSettings.mock.calls.length).toEqual(1);
+        expect(userService.updateSettings.mock.calls[0][0]).toEqual(user.id);
+        expect(userService.updateSettings.mock.calls[0][1]).toEqual({a: 'A'});
         done();
       });
     });
