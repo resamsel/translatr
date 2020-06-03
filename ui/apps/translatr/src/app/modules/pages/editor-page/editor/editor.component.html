@@ -44,7 +44,7 @@
           <button
             mat-raised-button
             color="primary"
-            [transloco]="saveBehavior$ | async"
+            [transloco]="'button.' + (saveBehavior$ | async)"
             (click)="onSave()"
           >Save
           </button>

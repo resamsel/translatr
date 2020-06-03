@@ -179,7 +179,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   }
 
   @Override
-  protected void postUpdate(Project t) {
+  protected Project postUpdate(Project t) {
     metricService.logEvent(Project.class, ActionType.Update);
 
     // When project has been updated, the project cache needs to be invalidated
@@ -198,7 +198,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
       ));
     }
 
-    super.postUpdate(t);
+    return super.postUpdate(t);
   }
 
   /**

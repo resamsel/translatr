@@ -64,13 +64,15 @@ public class ProjectUserServiceImpl extends
   }
 
   @Override
-  protected void postUpdate(ProjectUser t) {
+  protected ProjectUser postUpdate(ProjectUser t) {
     super.postUpdate(t);
 
     metricService.logEvent(ProjectUser.class, ActionType.Update);
 
     // When locale has been updated, the locale cache needs to be invalidated
     cache.removeByPrefix("member:criteria:" + t.project.id);
+
+    return t;
   }
 
   /**

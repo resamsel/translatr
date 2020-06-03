@@ -53,8 +53,8 @@ export class DefaultErrorHandler extends ErrorHandler {
 
   handleError(err: HttpErrorResponse, request?: RestRequest): Observable<never> {
     const message = errorMessage(err);
-    console.log('%s (HTTP code: %d, URL: %s)',
-      message, err.status, err.url);
+    // tslint:disable-next-line:no-console
+    console.log('%s (HTTP code: %d, URL: %s)', message, err.status, err.url);
 
     switch (err.status) {
       case HTTP_STATUS_BAD_REQUEST:
@@ -63,6 +63,7 @@ export class DefaultErrorHandler extends ErrorHandler {
       case HTTP_STATUS_UNAUTHORIZED:
         // Unauthorized, redirecting to login page
         const redirectUrl = `${this.loginUrl}?redirect_uri=${window.location.href}`;
+        // tslint:disable-next-line:no-console
         console.log('%s: redirecting to %s', err.statusText, redirectUrl);
 
         window.location.href = redirectUrl;

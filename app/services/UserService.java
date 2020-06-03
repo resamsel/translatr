@@ -7,6 +7,7 @@ import models.User;
 import models.UserStats;
 import services.impl.UserServiceImpl;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -69,4 +70,14 @@ public interface UserService extends ModelService<User, UUID, UserCriteria> {
    * @return
    */
   UserStats getUserStats(UUID userId);
+
+  /**
+   * Replace user settings with given settings.
+   */
+  User saveSettings(UUID userId, Map<String, String> settings);
+
+  /**
+   * Add to or update user settings with given settings.
+   */
+  User updateSettings(UUID userId, Map<String, String> settings);
 }

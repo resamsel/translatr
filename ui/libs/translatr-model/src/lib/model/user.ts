@@ -1,4 +1,4 @@
-import { Feature, Member, Temporal, UserRole } from '.';
+import { Feature, Member, Setting, Temporal, UserRole } from '.';
 
 export interface User extends Temporal {
   id?: string;
@@ -13,4 +13,5 @@ export interface User extends Temporal {
   memberships?: Member[];
 
   features?: Record<Feature, boolean>;
+  settings?: Record<Setting, string>;
 }

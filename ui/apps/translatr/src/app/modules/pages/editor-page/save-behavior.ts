@@ -1,4 +1,4 @@
 export enum SaveBehavior {
-  Save = 'button.save',
-  SaveAndNext = 'button.saveandnext'
+  Save = 'save',
+  SaveAndNext = 'saveandnext'
 }

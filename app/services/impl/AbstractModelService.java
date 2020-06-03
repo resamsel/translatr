@@ -117,9 +117,11 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
     return m;
   }
 
-  protected void postUpdate(MODEL t) {
+  protected MODEL postUpdate(MODEL t) {
     cache.removeByPrefix(cacheKeyGetter.apply(t.getId(), new String[0]));
     cache.set(cacheKeyGetter.apply(t.getId(), new String[0]), t, 60);
+
+    return t;
   }
 
   @Override

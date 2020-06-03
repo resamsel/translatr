@@ -1,7 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Key, KeyCriteria, Locale, LocaleCriteria, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
-import { SaveBehavior } from '../save-behavior';
 
 export enum EditorActionTypes {
   LoadLocales = '[Editor Page] Load Locales',
@@ -30,8 +29,6 @@ export enum EditorActionTypes {
   MessagesOfKeyLoadError = '[Messages API] Messages Of Key Load Error',
   SaveMessage = '[Editor Page] Save Message',
   MessageSaved = '[Messages API] Message Saved',
-
-  UpdateSaveBehavior = '[Editor Page] Update Save Behavior',
 
   UnloadEditor = '[Editor Page] Unload Editor'
 }
@@ -212,13 +209,6 @@ export class LoadKeySearch implements Action {
   }
 }
 
-export class UpdateSaveBehavior implements Action {
-  readonly type = EditorActionTypes.UpdateSaveBehavior;
-
-  constructor(public payload: SaveBehavior) {
-  }
-}
-
 export class UnloadEditor implements Action {
   readonly type = EditorActionTypes.UnloadEditor;
 }
@@ -248,5 +238,4 @@ export type EditorAction =
   | MessageSaved
   | LoadLocaleSearch
   | LoadKeySearch
-  | UpdateSaveBehavior
   | UnloadEditor;

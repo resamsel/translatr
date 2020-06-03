@@ -3,10 +3,7 @@ package services.impl;
 import com.avaje.ebean.PagedList;
 import com.feth.play.module.pa.user.*;
 import criterias.*;
-import models.ActionType;
-import models.LinkedAccount;
-import models.User;
-import models.UserStats;
+import models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.UserRepository;
@@ -18,6 +15,7 @@ import javax.validation.Validator;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static utils.Stopwatch.log;
 
 /**
@@ -191,6 +189,24 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
             60));
   }
 
+  @Override
+  public User saveSettings(UUID userId, Map<String, String> settings) {
+    return postUpdate(userRepository.saveSettings(userId, cleanSettings(settings)));
+  }
+
+  @Override
+  public User updateSettings(UUID userId, Map<String, String> settings) {
+
+    return postUpdate(userRepository.updateSettings(userId, cleanSettings(settings)));
+  }
+
+  private Map<String, String> cleanSettings(Map<String, String> settings) {
+    return settings.entrySet()
+            .stream()
+            .filter(setting -> Setting.of(setting.getKey()) != null)
+            .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -242,13 +258,15 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   }
 
   @Override
-  protected void postUpdate(User t) {
+  protected User postUpdate(User t) {
     super.postUpdate(t);
 
     metricService.logEvent(User.class, ActionType.Update);
 
     // When user has been updated, the user cache needs to be invalidated
     cache.removeByPrefix("user:criteria:");
+
+    return byId(t.id).updateFrom(t);
   }
 
   /**

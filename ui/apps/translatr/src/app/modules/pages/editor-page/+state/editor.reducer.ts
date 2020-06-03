@@ -2,7 +2,6 @@ import { EditorAction, EditorActionTypes, MessageSaved } from './editor.actions'
 import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import * as fromRouter from '@ngrx/router-store';
 import { ROUTER_FEATURE_KEY } from '../../../../+state/router.selectors';
-import { SaveBehavior } from '../save-behavior';
 
 export const EDITOR_FEATURE_KEY = 'editor';
 
@@ -34,8 +33,6 @@ export interface EditorState {
   loading: LoadingState<EditorState>;
 
   error: ErrorState<EditorState>;
-
-  saveBehavior: SaveBehavior;
 }
 
 export interface EditorPartialState {
@@ -54,11 +51,9 @@ export const initialState: EditorState = {
     key: false,
     keys: false,
     loading: false,
-    error: false,
-    saveBehavior: false
+    error: false
   },
-  error: {},
-  saveBehavior: SaveBehavior.Save
+  error: {}
 };
 
 function updateKeysWithMessage(
@@ -236,12 +231,6 @@ export function editorReducer(
         ),
         messages: updateMessagesWithMessage(state.messages, action.payload),
         message: action.payload
-      };
-
-    case EditorActionTypes.UpdateSaveBehavior:
-      return {
-        ...state,
-        saveBehavior: action.payload
       };
 
     case EditorActionTypes.UnloadEditor:

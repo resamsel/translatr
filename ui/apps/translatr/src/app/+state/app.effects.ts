@@ -15,6 +15,7 @@ import {
   projectUpdateError,
   updatePreferredLanguage,
   updateProject,
+  updateSettings,
   usersLoaded,
   usersLoadError
 } from './app.actions';
@@ -42,6 +43,16 @@ export class AppEffects {
     withLatestFrom(this.store.select(appQuery.getMe)),
     switchMap(([action, me]) => this.userService
       .update({id: me.id, preferredLanguage: action.payload})
+      .pipe(map((user: User) => meLoaded({payload: user})))
+    ),
+    catchError(error => of(meLoadError(error)))
+  ));
+
+  updateSettings$ = createEffect(() => this.actions$.pipe(
+    ofType(updateSettings),
+    withLatestFrom(this.store.select(appQuery.getMe)),
+    switchMap(([action, me]) => this.userService
+      .updateSettings(me.id, action.payload)
       .pipe(map((user: User) => meLoaded({payload: user})))
     ),
     catchError(error => of(meLoadError(error)))

@@ -19,6 +19,8 @@ public interface Persistence {
 
   int saveAll(Collection<?> t);
 
+  <T> T update(T t);
+
   void batchExecute(Consumer<Transaction> consumer) throws Exception;
 
   boolean delete(Object t);

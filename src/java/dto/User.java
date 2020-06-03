@@ -29,4 +29,6 @@ public class User extends Dto {
   public List<ProjectUser> memberships;
 
   public Map<String, Boolean> features;
+
+  public Map<String, String> settings;
 }

@@ -4,6 +4,7 @@ import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
 import com.avaje.ebean.annotation.CreatedTimestamp;
+import com.avaje.ebean.annotation.DbJsonB;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.ObjectUtils;
@@ -18,6 +19,8 @@ import validators.Username;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static play.libs.Json.toJson;
 
@@ -94,6 +97,10 @@ public class User implements Model<User, UUID>, Subject {
   @OneToMany
   public List<UserFeatureFlag> features;
 
+  @JsonIgnore
+  @DbJsonB
+  public Map<String, String> settings;
+
   /**
    * {@inheritDoc}
    */
@@ -142,6 +149,16 @@ public class User implements Model<User, UUID>, Subject {
     return this;
   }
 
+  public User withSettings(Map<String, String> settings) {
+    this.settings = new HashMap<>(settings);
+    return this;
+  }
+
+  public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+    final Set<Object> seen = new HashSet<>();
+    return t -> seen.add(keyExtractor.apply(t));
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -154,6 +171,14 @@ public class User implements Model<User, UUID>, Subject {
     emailValidated = in.emailValidated;
     role = in.role;
     preferredLocale = in.preferredLocale;
+
+    if (in.settings != null) {
+      if (settings == null) {
+        settings = new HashMap<>();
+      }
+
+      settings.putAll(in.settings);
+    }
 
     return this;
   }

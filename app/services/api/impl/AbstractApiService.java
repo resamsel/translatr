@@ -31,10 +31,10 @@ public abstract class AbstractApiService
     implements ApiService<DTO, ID, CRITERIA> {
 
   protected SERVICE service;
-  private Class<DTO> dtoClass;
+  private final Class<DTO> dtoClass;
   Function<MODEL, DTO> dtoMapper;
   Scope[] readScopes;
-  private Scope[] writeScopes;
+  private final Scope[] writeScopes;
   protected final PermissionService permissionService;
   private final Validator validator;
 

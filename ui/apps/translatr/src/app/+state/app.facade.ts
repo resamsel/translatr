@@ -2,7 +2,16 @@ import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { AppState } from './app.reducer';
 import { appQuery } from './app.selectors';
-import { createProject, loadMe, loadProject, loadUsers, unloadProject, updatePreferredLanguage, updateProject } from './app.actions';
+import {
+  createProject,
+  loadMe,
+  loadProject,
+  loadUsers,
+  unloadProject,
+  updatePreferredLanguage,
+  updateProject,
+  updateSettings
+} from './app.actions';
 import { Feature, FeatureFlagFacade, Project, RequestCriteria } from '@dev/translatr-model';
 import { routerQuery } from './router.selectors';
 import { combineLatest, Observable } from 'rxjs';
@@ -16,6 +25,7 @@ export const defaultParams = ['search', 'limit', 'offset', 'order'];
 @Injectable()
 export class AppFacade extends FeatureFlagFacade {
   me$ = this.store.pipe(select(appQuery.getMe));
+  settings$ = this.store.pipe(select(appQuery.getSettings));
   users$ = this.store.pipe(select(appQuery.getUsers));
 
   project$ = this.store.pipe(select(appQuery.getProject));
@@ -77,6 +87,10 @@ export class AppFacade extends FeatureFlagFacade {
 
   updatePreferredLanguage(language: string): void {
     this.store.dispatch(updatePreferredLanguage({payload: language}));
+  }
+
+  updateSettings(settings: Record<string, string>): void {
+    this.store.dispatch(updateSettings({payload: settings}));
   }
 
   unloadProject(): void {

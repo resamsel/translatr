@@ -81,6 +81,7 @@
 
     .button-group {
       border-radius: 4px;
+      white-space: nowrap;
       @include mat-elevation(2);
 
       .mat-button-base {

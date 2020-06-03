@@ -8,14 +8,7 @@ import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
 import play.mvc.Result;
@@ -48,6 +41,12 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
   private static final String UPDATE = "Update user";
   private static final String UPDATE_RESPONSE = "Updated user";
   private static final String UPDATE_REQUEST = "The user to update";
+  private static final String UPDATE_SETTINGS = "Update user settings";
+  private static final String UPDATE_SETTINGS_RESPONSE = "Updated user settings";
+  private static final String UPDATE_SETTINGS_REQUEST = "The user settings to update";
+  private static final String PATCH_SETTINGS = "Patch user settings";
+  private static final String PATCH_SETTINGS_RESPONSE = "Patch user settings";
+  private static final String PATCH_SETTINGS_REQUEST = "The user settings to patch";
   private static final String DELETE = "Delete user";
   private static final String DELETE_RESPONSE = "Deleted user";
 
@@ -178,14 +177,52 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
    * {@inheritDoc}
    */
   @ApiOperation(value = DELETE, authorizations = @Authorization(value = AUTHORIZATION,
-      scopes = {@AuthorizationScope(scope = USER_WRITE, description = USER_WRITE_DESCRIPTION)}))
+          scopes = {@AuthorizationScope(scope = USER_WRITE, description = USER_WRITE_DESCRIPTION)}))
   @ApiResponses({@ApiResponse(code = 200, message = DELETE_RESPONSE, response = dto.User.class),
-      @ApiResponse(code = 403, message = INPUT_ERROR, response = PermissionError.class),
-      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
-      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+          @ApiResponse(code = 403, message = INPUT_ERROR, response = PermissionError.class),
+          @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+          @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
-      required = true, dataType = "string", paramType = "query")})
+          required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> delete(@ApiParam(value = PROJECT_ID) UUID id) {
     return toJson(() -> api.delete(id));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = UPDATE_SETTINGS, authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {@AuthorizationScope(scope = USER_WRITE, description = USER_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = UPDATE_SETTINGS_RESPONSE, response = dto.User.class),
+          @ApiResponse(code = 400, message = INPUT_ERROR, response = ConstraintViolationError.class),
+          @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+          @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+          @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({
+          @ApiImplicitParam(name = "body", value = UPDATE_SETTINGS_REQUEST, required = true, dataType = TYPE,
+                  paramType = "body"),
+          @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+                  dataType = "string", paramType = "query")})
+  public CompletionStage<Result> saveSettings(@ApiParam(value = USER_ID) UUID id) {
+    return toJson(() -> api.saveSettings(id, request().body().asJson()));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = PATCH_SETTINGS, authorizations = @Authorization(value = AUTHORIZATION,
+          scopes = {@AuthorizationScope(scope = USER_WRITE, description = USER_WRITE_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = PATCH_SETTINGS_RESPONSE, response = dto.User.class),
+          @ApiResponse(code = 400, message = INPUT_ERROR, response = ConstraintViolationError.class),
+          @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+          @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+          @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({
+          @ApiImplicitParam(name = "body", value = PATCH_SETTINGS_REQUEST, required = true, dataType = TYPE,
+                  paramType = "body"),
+          @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+                  dataType = "string", paramType = "query")})
+  public CompletionStage<Result> updateSettings(@ApiParam(value = USER_ID) UUID id) {
+    return toJson(() -> api.updateSettings(id, request().body().asJson()));
   }
 }

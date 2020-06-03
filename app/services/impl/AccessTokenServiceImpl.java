@@ -95,13 +95,15 @@ public class AccessTokenServiceImpl extends
   }
 
   @Override
-  protected void postUpdate(AccessToken t) {
+  protected AccessToken postUpdate(AccessToken t) {
     super.postUpdate(t);
 
     metricService.logEvent(AccessToken.class, ActionType.Update);
 
     // When user has been updated, the user cache needs to be invalidated
     cache.removeByPrefix("accessToken:criteria:" + t.user.id);
+
+    return t;
   }
 
   /**

@@ -43,6 +43,13 @@ public class PersistenceImpl implements Persistence {
   }
 
   @Override
+  public <T> T update(T t) {
+    Ebean.update(t);
+
+    return t;
+  }
+
+  @Override
   public void batchExecute(Consumer<Transaction> consumer) throws Exception {
     TransactionUtils.batchExecute(consumer);
   }

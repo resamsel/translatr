@@ -1,6 +1,7 @@
 package services.api.impl;
 
 import com.avaje.ebean.PagedList;
+import com.fasterxml.jackson.databind.JsonNode;
 import criterias.LogEntryCriteria;
 import criterias.UserCriteria;
 import dto.DtoPagedList;
@@ -10,6 +11,7 @@ import mappers.UserMapper;
 import mappers.UserObfuscatorMapper;
 import models.Scope;
 import models.User;
+import play.libs.Json;
 import services.AuthProvider;
 import services.LogEntryService;
 import services.PermissionService;
@@ -19,6 +21,7 @@ import services.api.UserApiService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -72,13 +75,23 @@ public class UserApiServiceImpl extends
     permissionService.checkPermissionAll("Access token not allowed", readScopes);
 
     return new DtoPagedList<>(
-        logEntryService.getAggregates(new LogEntryCriteria().withUserId(id)),
-        AggregateMapper::toDto);
+            logEntryService.getAggregates(new LogEntryCriteria().withUserId(id)),
+            AggregateMapper::toDto);
   }
 
   @Override
   public dto.User me(String... propertiesToFetch) {
     return dtoMapper.apply(service.byId(authProvider.loggedInUserId(), propertiesToFetch));
+  }
+
+  @Override
+  public dto.User saveSettings(UUID userId, JsonNode json) {
+    return dtoMapper.apply(service.saveSettings(userId, Json.fromJson(json, Map.class)));
+  }
+
+  @Override
+  public dto.User updateSettings(UUID userId, JsonNode json) {
+    return dtoMapper.apply(service.updateSettings(userId, Json.fromJson(json, Map.class)));
   }
 
   /**

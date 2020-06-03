@@ -118,11 +118,13 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
   }
 
   @Override
-  protected void postUpdate(LogEntry t) {
+  protected LogEntry postUpdate(LogEntry t) {
     super.postUpdate(t);
 
     // When user has been updated, the user cache needs to be invalidated
     cache.removeByPrefix("activity:criteria:");
+
+    return t;
   }
 
   /**

@@ -3,6 +3,7 @@ package mappers;
 import dto.User;
 import utils.EmailUtils;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,9 @@ public class UserMapper {
     if (in.preferredLanguage != null) {
       out.preferredLocale = new Locale(in.preferredLanguage);
     }
+    if (in.settings != null && !in.settings.isEmpty()) {
+      out.settings = new HashMap<>(in.settings);
+    }
 
     return out;
   }
@@ -42,6 +46,7 @@ public class UserMapper {
     out.email = in.email;
     out.emailHash = EmailUtils.hashEmail(in.email);
     out.role = UserRoleMapper.toDto(in.role);
+
     if (in.preferredLocale != null) {
       out.preferredLanguage = in.preferredLocale.getLanguage();
     }
@@ -55,6 +60,10 @@ public class UserMapper {
     if (in.features != null && !in.features.isEmpty()) {
       out.features = in.features.stream()
               .collect(toMap(ff -> ff.feature.getName(), ff -> ff.enabled));
+    }
+
+    if (in.settings != null && !in.settings.isEmpty()) {
+      out.settings = new HashMap<>(in.settings);
     }
 
     return out;

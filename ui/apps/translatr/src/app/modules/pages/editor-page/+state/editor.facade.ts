@@ -13,15 +13,15 @@ import {
   SaveMessage,
   SelectKey,
   SelectLocale,
-  UnloadEditor,
-  UpdateSaveBehavior
+  UnloadEditor
 } from './editor.actions';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { KeyCriteria, LocaleCriteria, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
+import { map, takeUntil } from 'rxjs/operators';
+import { KeyCriteria, LocaleCriteria, Message, PagedList, RequestCriteria, Setting } from '@dev/translatr-model';
 import { MessageItem } from '../message-item';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 import { SaveBehavior } from '../save-behavior';
+import { AppFacade } from '../../../../+state/app.facade';
 
 @Injectable()
 export class EditorFacade {
@@ -82,9 +82,14 @@ export class EditorFacade {
     takeUntil(this.unloadEditor$)
   );
 
-  readonly saveBehavior$ = this.store.pipe(select(editorQuery.getSaveBehavior));
+  readonly saveBehavior$ = this.appFacade.settings$.pipe(
+    map(settings => (settings ?? {})[Setting.SaveBehavior] ?? 'save')
+  );
 
-  constructor(private readonly store: Store<EditorPartialState>) {
+  constructor(
+    private readonly store: Store<EditorPartialState>,
+    private readonly appFacade: AppFacade
+  ) {
   }
 
   loadLocaleEditor(
@@ -145,6 +150,6 @@ export class EditorFacade {
   }
 
   updateSaveBehavior(behavior: SaveBehavior) {
-    this.store.dispatch(new UpdateSaveBehavior(behavior));
+    this.appFacade.updateSettings({[Setting.SaveBehavior]: behavior});
   }
 }

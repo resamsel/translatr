@@ -17,7 +17,6 @@ export interface Identifiable {
  */
 export abstract class AbstractEditFormComponent<T, F extends Identifiable, R extends Identifiable = F> {
   processing = false;
-  log = console.log;
 
   failure = new EventEmitter<Error>();
 

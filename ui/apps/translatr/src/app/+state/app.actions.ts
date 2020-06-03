@@ -20,6 +20,11 @@ export const updatePreferredLanguage = createAction(
   props<{ payload: string }>()
 );
 
+export const updateSettings = createAction(
+  '[Main Page] Update Settings',
+  props<{ payload: Record<string, string> }>()
+);
+
 export const loadUsers = createAction(
   '[Main Page] Load Users',
   props<{ payload: RequestCriteria }>()

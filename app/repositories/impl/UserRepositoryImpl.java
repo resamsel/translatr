@@ -9,6 +9,7 @@ import com.avaje.ebean.Query;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import criterias.PagedListFactory;
 import criterias.UserCriteria;
+import dto.NotFoundException;
 import mappers.UserMapper;
 import models.ActionType;
 import models.User;
@@ -23,6 +24,7 @@ import utils.QueryUtils;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -30,7 +32,7 @@ import static utils.Stopwatch.log;
 
 @Singleton
 public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, UserCriteria> implements
-    UserRepository {
+        UserRepository {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
@@ -54,7 +56,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
     if (!criteria.getFetches().isEmpty()) {
       QueryUtils.fetch(q, QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
-          FETCH_MAP);
+              FETCH_MAP);
     }
 
     ExpressionList<User> query = q.where();
@@ -63,7 +65,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
     if (criteria.getSearch() != null) {
       query.disjunction().ilike("name", "%" + criteria.getSearch() + "%")
-          .ilike("username", "%" + criteria.getSearch() + "%").endJunction();
+              .ilike("username", "%" + criteria.getSearch() + "%").endJunction();
     }
 
     criteria.paged(query);
@@ -79,14 +81,14 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   @Override
   public User byUsername(String username, String... fetches) {
     return QueryUtils.fetch(find.query(), fetches, FETCH_MAP).where().eq("username", username)
-        .findUnique();
+            .findUnique();
   }
 
   private ExpressionList<User> getAuthUserFind(final AuthUserIdentity identity) {
     return find.where()
-        .eq("active", true)
-        .eq("linkedAccounts.providerUserId", identity.getId())
-        .eq("linkedAccounts.providerKey", identity.getProvider());
+            .eq("active", true)
+            .eq("linkedAccounts.providerUserId", identity.getId())
+            .eq("linkedAccounts.providerKey", identity.getProvider());
   }
 
   @Override
@@ -143,6 +145,39 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
     return String.format("%s%s", prefix, suffix);
   }
 
+  @Override
+  public User saveSettings(UUID userId, Map<String, String> settings) {
+    return persistSettings(userId, settings, true);
+  }
+
+  @Override
+  public User updateSettings(UUID userId, Map<String, String> settings) {
+    return persistSettings(userId, settings, false);
+  }
+
+  /**
+   * Replaces or updates existing settings based on the given replace flag.
+   */
+  private User persistSettings(UUID userId, Map<String, String> settings, boolean replace) {
+    User user = byId(userId);
+
+    if (user == null) {
+      throw new NotFoundException(User.class.getSimpleName(), userId);
+    }
+
+    if (settings.isEmpty()) {
+      // No update necessary
+      return user;
+    }
+
+    if (replace) {
+      user.settings.clear();
+    }
+    user.settings.putAll(settings);
+
+    return persistence.update(user);
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -166,8 +201,8 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   protected void prePersist(User t, boolean update) {
     if (update) {
       activityActor.tell(
-          new Activity<>(ActionType.Update, authProvider.loggedInUser(), null, dto.User.class, toDto(byId(t.id)), toDto(t)),
-          null
+              new Activity<>(ActionType.Update, authProvider.loggedInUser(), null, dto.User.class, toDto(byId(t.id)), toDto(t)),
+              null
       );
     }
   }

@@ -48,7 +48,6 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
       )
       .subscribe(
         ([r, error]: [R, { error: Error }]) => {
-          console.log('result$', r, error);
           if (error !== undefined) {
             return this.onError(error.error);
           }

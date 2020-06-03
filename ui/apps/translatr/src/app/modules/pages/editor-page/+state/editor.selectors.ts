@@ -230,11 +230,6 @@ const getKeyMessageItems = createSelector(
     };
   });
 
-const getSaveBehavior = createSelector(
-  getEditorState,
-  (state: EditorState) => state.saveBehavior
-);
-
 export const editorQuery = {
   getError,
   getLocale,
@@ -251,6 +246,5 @@ export const editorQuery = {
   getLocaleMessageItems,
   getLocaleSelectedMessage,
   getKeyMessageItems,
-  getKeySelectedMessage,
-  getSaveBehavior
+  getKeySelectedMessage
 };

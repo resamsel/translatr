@@ -3,8 +3,8 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
-import { Aggregate, PagedList, RequestCriteria, User } from '@dev/translatr-model';
-import { AbstractService, encodePathParam } from './abstract.service';
+import { Aggregate, PagedList, RequestCriteria, Setting, User } from '@dev/translatr-model';
+import { AbstractService, encodePathParam, RequestOptions } from './abstract.service';
 import { ErrorHandler } from './error-handler';
 
 @Injectable({
@@ -50,7 +50,7 @@ export class UserService extends AbstractService<User, RequestCriteria> {
 
   me(params: Record<string, string> = {}): Observable<User | undefined> {
     const path = '/api/me';
-    return this.http.get<User>(path, { params })
+    return this.http.get<User>(path, {params})
       .pipe(
         map(convertTemporals),
         catchError((err: HttpErrorResponse) =>
@@ -75,5 +75,19 @@ export class UserService extends AbstractService<User, RequestCriteria> {
             path
           }))
       );
+  }
+
+  updateSettings(userId: string, settings: Record<Setting, string>, options?: RequestOptions): Observable<User | undefined> {
+    const path = `/api/user/${userId}/settings`;
+    return this.http.patch<User>(path, settings, options).pipe(
+      map(convertTemporals),
+      catchError((err: HttpErrorResponse) =>
+        this.errorHandler.handleError(err, {
+          name: 'updateSettings',
+          params: [userId, settings, options],
+          method: 'patch',
+          path
+        }))
+    );
   }
 }

@@ -61,10 +61,12 @@ public class UserFeatureFlagServiceImpl extends
   }
 
   @Override
-  protected void postUpdate(UserFeatureFlag t) {
+  protected UserFeatureFlag postUpdate(UserFeatureFlag t) {
     super.postUpdate(t);
 
     metricService.logEvent(UserFeatureFlag.class, ActionType.Update);
+
+    return t;
   }
 
   @Override

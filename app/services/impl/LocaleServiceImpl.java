@@ -153,13 +153,15 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   }
 
   @Override
-  protected void postUpdate(Locale t) {
+  protected Locale postUpdate(Locale t) {
     super.postUpdate(t);
 
     metricService.logEvent(Locale.class, ActionType.Update);
 
     // When locale has been updated, the locale cache needs to be invalidated
     cache.removeByPrefix("locale:criteria:" + t.project.id);
+
+    return t;
   }
 
   /**

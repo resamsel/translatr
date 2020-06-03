@@ -68,13 +68,15 @@ public class LinkedAccountServiceImpl
   }
 
   @Override
-  protected void postUpdate(LinkedAccount t) {
+  protected LinkedAccount postUpdate(LinkedAccount t) {
     super.postUpdate(t);
 
     metricService.logEvent(LinkedAccount.class, ActionType.Update);
 
     // When linked account has been updated, the linked account cache needs to be invalidated
     cache.removeByPrefix("linkedAccount:criteria:" + t.user.id);
+
+    return t;
   }
 
   /**

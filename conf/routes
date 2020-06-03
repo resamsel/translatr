@@ -56,6 +56,8 @@ POST          /api/user                                                         
 PUT           /api/user                                                               controllers.UsersApi.update
 DELETE        /api/user/:userId                                                       controllers.UsersApi.delete(userId: java.util.UUID)
 GET           /api/user/:userId/activity                                              controllers.UsersApi.activity(userId: java.util.UUID)
+PUT           /api/user/:userId/settings                                              controllers.UsersApi.saveSettings(userId: java.util.UUID)
+PATCH         /api/user/:userId/settings                                              controllers.UsersApi.updateSettings(userId: java.util.UUID)
 
 GET           /api/accesstokens                                                       controllers.AccessTokensApi.find
 GET           /api/accesstoken/:accessTokenId                                         controllers.AccessTokensApi.get(accessTokenId: Long)

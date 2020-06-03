@@ -12,6 +12,7 @@ import {
   projectUpdated,
   updatePreferredLanguage,
   updateProject,
+  updateSettings,
   usersLoaded
 } from './app.actions';
 import { PagedList, Project, User } from '@dev/translatr-model';
@@ -105,6 +106,28 @@ describe('AppEffects', () => {
       target$.subscribe(actual => {
         expect(actual).toEqual(meLoaded({payload: user}));
         expect(userService.update.mock.calls.length).toEqual(1);
+        done();
+      });
+    });
+  });
+
+  describe('updateSettings$', () => {
+    it('should work', (done) => {
+      // given
+      const user: User = {id: '1', name: 'user', username: 'username', preferredLanguage: 'de'};
+      userService.update.mockReturnValue(of(user));
+      store.select.mockReturnValue(of(user));
+      const effects: AppEffects = TestBed.get(AppEffects);
+      const target$ = effects.updateSettings$;
+
+      // when
+      actions.next(updateSettings({payload: {a: 'A'}}));
+
+      // then
+      target$.subscribe(actual => {
+        expect(actual).toEqual(meLoaded({payload: user}));
+        expect(userService.update.mock.calls.length).toEqual(1);
+        expect(userService.update.mock.calls[0][0]).toEqual({id: '1', settings: {a: 'A'}});
         done();
       });
     });

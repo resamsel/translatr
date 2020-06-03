@@ -87,7 +87,7 @@ export class DashboardAccessTokensComponent {
   }
 
   onEdit(accessToken: AccessToken) {
-    console.log('edit', accessToken);
+    // TODO: implement
     // this.facade.deleteAccessToken(accessToken);
   }
 

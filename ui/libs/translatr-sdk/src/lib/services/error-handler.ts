@@ -4,13 +4,13 @@ import { Observable, throwError } from 'rxjs';
 export interface RestRequest {
   name: string;
   params: any[];
-  method: 'get' | 'post' | 'put' | 'delete';
+  method: 'get' | 'post' | 'put' | 'patch' | 'delete';
   path: string;
 }
 
 export class ErrorHandler {
   handleError(error: HttpErrorResponse, request?: RestRequest): Observable<never> {
-    console.log(
+    console.warn(
       'Handling error for %s:\n%s',
       JSON.stringify(request),
       JSON.stringify(error)

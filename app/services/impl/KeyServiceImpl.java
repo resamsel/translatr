@@ -160,7 +160,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
   }
 
   @Override
-  protected void postUpdate(Key t) {
+  protected Key postUpdate(Key t) {
     metricService.logEvent(Key.class, ActionType.Update);
 
     Key existing = cache.get(Key.getCacheKey(t.id));
@@ -174,6 +174,8 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
     // When locale has been updated, the locale cache needs to be invalidated
     cache.removeByPrefix("key:criteria:" + t.project.id);
+
+    return t;
   }
 
   /**

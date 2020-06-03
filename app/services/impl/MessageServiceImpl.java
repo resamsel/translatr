@@ -110,7 +110,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
   }
 
   @Override
-  protected void postUpdate(Message t) {
+  protected Message postUpdate(Message t) {
     super.postUpdate(t);
 
     metricService.logEvent(Message.class, ActionType.Update);
@@ -119,6 +119,8 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
     cache.removeByPrefix(String.format("message:criteria:%s", t.key.project.id));
     cache.removeByPrefix(String.format("locale:criteria:%s", t.key.project.id));
     cache.removeByPrefix(String.format("key:criteria:%s", t.key.project.id));
+
+    return t;
   }
 
   @Override

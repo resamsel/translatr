@@ -30,6 +30,7 @@ export * from './project-criteria';
 export * from './project-embedded';
 export * from './request-criteria';
 export * from './scope';
+export * from './setting';
 export * from './temporal';
 export * from './user';
 export * from './user-embedded';
