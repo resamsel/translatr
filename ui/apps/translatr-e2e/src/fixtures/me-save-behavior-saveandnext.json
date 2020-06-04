@@ -9,6 +9,6 @@
   "role": "User",
   "memberships": [],
   "settings": {
-    "save-behavior": "save"
+    "save-behavior": "saveandnext"
   }
 }

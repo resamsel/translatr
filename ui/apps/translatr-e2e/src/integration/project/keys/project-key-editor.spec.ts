@@ -208,4 +208,56 @@ describe('Project Key Editor', () => {
       .find('.mat-list-item.locale')
       .should('have.length', 1);
   });
+
+  it('should display "Save" button when user settings say so', () => {
+    // given, when
+    page.navigateTo();
+    page.getNavList()
+      .find('.mat-list-item.locale')
+      .first()
+      .click();
+
+    // then
+    cy.get('.save-button').should('have.text', 'Save');
+  });
+
+  it('should display "Save and next" button when user settings say so', () => {
+    // given
+    cy.route('/api/me?fetch=features', 'fixture:me-save-behavior-saveandnext');
+
+    // when
+    page.navigateTo();
+    page.getNavList()
+      .find('.mat-list-item.locale')
+      .first()
+      .click();
+
+    // then
+    cy.get('.save-button').should('have.text', 'Save and next');
+  });
+
+  it('should call updateSettings on "Save and next"', () => {
+    // given
+    cy.route('PUT', '/api/message', 'fixture:johndoe/p1/message');
+    cy.route('PATCH', '/api/user/*/settings', 'fixture:me-save-behavior-saveandnext')
+      .as('updateSettings');
+
+    // when
+    page.navigateTo();
+    page.getNavList()
+      .find('.mat-list-item.locale')
+      .first()
+      .click();
+    cy.get('.menu-button').click();
+    cy.get('.save-behavior-saveandnext').click();
+
+    // then
+    cy.wait('@updateSettings').then(xhr => {
+      expect(xhr.request.body).to.deep.equal({'save-behavior': 'saveandnext'});
+    });
+    page.getNavList()
+      .find('.mat-list-item.locale')
+      .eq(1)
+      .should('have.class', 'active');
+  });
 });

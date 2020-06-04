@@ -29,6 +29,7 @@
             *ngIf="(saveBehavior$ | async) !== SaveBehavior.Save"
             mat-menu-item
             transloco="button.save"
+            class="save-behavior-save"
             (click)="onSaveBehavior()"
           >Save
           </button>
@@ -36,6 +37,7 @@
             *ngIf="(saveBehavior$ | async) !== SaveBehavior.SaveAndNext"
             mat-menu-item
             transloco="button.saveandnext"
+            class="save-behavior-saveandnext"
             (click)="onSaveAndNextBehavior()"
           >Save and next
           </button>
@@ -44,6 +46,7 @@
           <button
             mat-raised-button
             color="primary"
+            class="save-button"
             [transloco]="'button.' + (saveBehavior$ | async)"
             (click)="onSave()"
           >Save
