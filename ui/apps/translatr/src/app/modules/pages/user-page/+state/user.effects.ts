@@ -41,10 +41,10 @@ export class UserEffects {
   loadUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadUser),
-      switchMap(action =>
+      switchMap((action) =>
         this.userService.byUsername(action.username).pipe(
           map((user: User) => userLoaded({ user })),
-          catchError(error => of(userLoadError(error)))
+          catchError((error) => of(userLoadError(error)))
         )
       )
     )
@@ -53,7 +53,7 @@ export class UserEffects {
   updateUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateUser),
-      switchMap(action =>
+      switchMap((action) =>
         this.userService.update(action.payload).pipe(
           withLatestFrom(this.appFacade.me$),
           switchMap(([user, me]: [User, User]) => {
@@ -63,7 +63,7 @@ export class UserEffects {
 
             return of(userUpdated({ user }));
           }),
-          catchError(error => of(userUpdateError({ error })))
+          catchError((error) => of(userUpdateError({ error })))
         )
       )
     )
@@ -72,7 +72,7 @@ export class UserEffects {
   loadProjects = createEffect(() =>
     this.actions$.pipe(
       ofType(loadProjects),
-      switchMap(action =>
+      switchMap((action) =>
         this.projectService
           .find({
             limit: 10,
@@ -81,7 +81,7 @@ export class UserEffects {
           })
           .pipe(
             map((pagedList: PagedList<Project>) => projectsLoaded({ pagedList })),
-            catchError(error => of(projectsLoadError(error)))
+            catchError((error) => of(projectsLoadError(error)))
           )
       )
     )
@@ -90,10 +90,10 @@ export class UserEffects {
   loadActivities = createEffect(() =>
     this.actions$.pipe(
       ofType(loadActivities),
-      switchMap(action =>
+      switchMap((action) =>
         this.activityService.find(action).pipe(
           map((pagedList: PagedList<Activity>) => activitiesLoaded({ pagedList })),
-          catchError(error => of(activitiesLoadError(error)))
+          catchError((error) => of(activitiesLoadError(error)))
         )
       )
     )
@@ -102,10 +102,10 @@ export class UserEffects {
   loadActivityAggregated$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadActivityAggregated),
-      switchMap(action =>
+      switchMap((action) =>
         this.activityService.aggregated(action).pipe(
           map((pagedList: PagedList<Aggregate>) => activityAggregatedLoaded({ pagedList })),
-          catchError(error => of(activityAggregatedLoadError(error)))
+          catchError((error) => of(activityAggregatedLoadError(error)))
         )
       )
     )
@@ -114,10 +114,10 @@ export class UserEffects {
   loadAccessTokens = createEffect(() =>
     this.actions$.pipe(
       ofType(loadAccessTokens),
-      switchMap(action =>
+      switchMap((action) =>
         this.accessTokenService.find(action).pipe(
           map((pagedList: PagedList<AccessToken>) => accessTokensLoaded({ pagedList })),
-          catchError(error => of(accessTokensLoadError(error)))
+          catchError((error) => of(accessTokensLoadError(error)))
         )
       )
     )
@@ -126,10 +126,10 @@ export class UserEffects {
   loadAccessToken = createEffect(() =>
     this.actions$.pipe(
       ofType(loadAccessToken),
-      switchMap(action =>
+      switchMap((action) =>
         this.accessTokenService.get(action.id).pipe(
           map((accessToken: AccessToken) => accessTokenLoaded({ accessToken })),
-          catchError(error => of(accessTokenLoadError(error)))
+          catchError((error) => of(accessTokenLoadError(error)))
         )
       )
     )
@@ -138,10 +138,10 @@ export class UserEffects {
   createAccessToken = createEffect(() =>
     this.actions$.pipe(
       ofType(createAccessToken),
-      switchMap(action =>
+      switchMap((action) =>
         this.accessTokenService.create(action.payload).pipe(
           map((accessToken: AccessToken) => accessTokenCreated({ payload: accessToken })),
-          catchError(error => of(accessTokenCreateError(error)))
+          catchError((error) => of(accessTokenCreateError(error)))
         )
       )
     )
@@ -150,10 +150,10 @@ export class UserEffects {
   updateAccessToken = createEffect(() =>
     this.actions$.pipe(
       ofType(updateAccessToken),
-      switchMap(action =>
+      switchMap((action) =>
         this.accessTokenService.update(action.payload).pipe(
           map((accessToken: AccessToken) => accessTokenUpdated({ payload: accessToken })),
-          catchError(error => of(accessTokenUpdateError(error)))
+          catchError((error) => of(accessTokenUpdateError(error)))
         )
       )
     )

@@ -1,5 +1,5 @@
-import { appReducer, initialState } from './app.reducer';
 import { LoggedInUserLoaded } from './app.actions';
+import { appReducer, initialState } from './app.reducer';
 
 describe('Admin Reducer', () => {
   describe('valid actions ', () => {

@@ -67,7 +67,7 @@ export class EditorFacade {
   );
 
   readonly saveBehavior$ = this.appFacade.settings$.pipe(
-    map(settings => (settings ?? {})[Setting.SaveBehavior] ?? 'save')
+    map((settings) => (settings ?? {})[Setting.SaveBehavior] ?? 'save')
   );
 
   constructor(
@@ -80,7 +80,7 @@ export class EditorFacade {
   }
 
   loadKeyEditor(username: string, projectName: string, keyName: string): void {
-    this.store.dispatch(new LoadKey({ username, projectName, keyName: keyName }));
+    this.store.dispatch(new LoadKey({ username, projectName, keyName }));
   }
 
   unloadEditor(): void {

@@ -22,20 +22,20 @@ export class ProjectMembersComponent {
   canModify$ = this.facade.canModifyMember$;
   canModifyOwner$: Observable<boolean> = combineLatest([
     this.facade.members$.pipe(
-      filter(x => !!x),
+      filter((x) => !!x),
       pluck('list')
     ),
-    this.appFacade.me$.pipe(filter(x => !!x))
+    this.appFacade.me$.pipe(filter((x) => !!x))
   ]).pipe(
-    map(([members, me]: [Array<Member>, User]) => members.find(m => m.userId === me.id)),
+    map(([members, me]: [Member[], User]) => members.find((m) => m.userId === me.id)),
     map((member: Member | undefined) => (member !== undefined ? member.role === 'Owner' : false))
   );
   canTransferOwnership$: Observable<boolean> = combineLatest([
     this.project$.pipe(
-      filter(x => !!x),
+      filter((x) => !!x),
       pluck<Project, string>('ownerId')
     ),
-    this.appFacade.me$.pipe(filter(x => !!x))
+    this.appFacade.me$.pipe(filter((x) => !!x))
   ]).pipe(map(([ownerId, me]: [string, User]) => ownerId === me.id));
 
   constructor(
@@ -48,7 +48,7 @@ export class ProjectMembersComponent {
       .pipe(
         withLatestFrom(
           this.project$.pipe(
-            filter(x => !!x),
+            filter((x) => !!x),
             take(1)
           )
         ),
@@ -68,7 +68,7 @@ export class ProjectMembersComponent {
     this.facade.memberModified$
       .pipe(
         map(([a]) => a),
-        filter(x => !!x),
+        filter((x) => !!x),
         take(1),
         withLatestFrom(this.appFacade.me$)
       )

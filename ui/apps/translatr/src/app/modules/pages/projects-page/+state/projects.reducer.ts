@@ -1,5 +1,5 @@
-import { ProjectsAction, ProjectsActionTypes } from './projects.actions';
 import { PagedList, Project } from '@dev/translatr-model';
+import { ProjectsAction, ProjectsActionTypes } from './projects.actions';
 
 export const PROJECTS_FEATURE_KEY = 'projects';
 

@@ -1,5 +1,5 @@
-import { ProjectEmbedded } from './project-embedded';
 import { Temporal } from '@translatr/translatr-model/src';
+import { ProjectEmbedded } from './project-embedded';
 
 export interface Message extends ProjectEmbedded, Temporal {
   id?: string;

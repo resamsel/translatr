@@ -62,7 +62,7 @@ describe('AppEffects', () => {
   });
 
   describe('loadMe$', () => {
-    it('should work', done => {
+    it('should work', (done) => {
       // given
       const user: User = { id: '1', name: 'user', username: 'username' };
       userService.me.mockReturnValueOnce(of(user));
@@ -72,7 +72,7 @@ describe('AppEffects', () => {
       actions.next(new LoadLoggedInUser());
 
       // then
-      target$.subscribe(actual => {
+      target$.subscribe((actual) => {
         expect(actual).toEqual(new LoggedInUserLoaded(user));
         expect(userService.me.mock.calls.length).toEqual(1);
         done();

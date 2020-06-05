@@ -19,6 +19,7 @@ import { SaveBehavior } from '../save-behavior';
 })
 export class EditorComponent implements AfterViewChecked, OnDestroy {
   private _message: Message;
+  _backLink: Link | undefined;
   @Input() me: User;
   @Input() ownerName: string;
   @Input() projectName: string;
@@ -32,30 +33,8 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
     this._message = message;
   }
 
-  @Input() messages: Array<Message>;
+  @Input() messages: Message[];
 
-  @Input()
-  set backLink(backLink: Link) {
-    this._backLink = backLink;
-  }
-
-  @Output() readonly nextItem = new EventEmitter<void>();
-  @Output() readonly previousItem = new EventEmitter<void>();
-
-  @ViewChild('editor', { read: CodemirrorComponent })
-  private editor: CodemirrorComponent;
-  @ViewChild('tabs', { read: MatTabGroup, static: true }) private tabs: MatTabGroup;
-
-  private readonly subscriptions: Subscription[] = [];
-  readonly options = {
-    mode: 'xml',
-    lineNumbers: true,
-    lineWrapping: true,
-    styleActiveLine: true,
-    htmlMode: true
-  };
-
-  _backLink: Link | undefined;
   get backLink(): Link {
     if (this._backLink) {
       if (this._backLink.name) {
@@ -77,6 +56,27 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
       name: this.projectName
     };
   }
+
+  @Input()
+  set backLink(backLink: Link) {
+    this._backLink = backLink;
+  }
+
+  @Output() readonly nextItem = new EventEmitter<void>();
+  @Output() readonly previousItem = new EventEmitter<void>();
+
+  @ViewChild('editor', { read: CodemirrorComponent })
+  private editor: CodemirrorComponent;
+  @ViewChild('tabs', { read: MatTabGroup, static: true }) private tabs: MatTabGroup;
+
+  private readonly subscriptions: Subscription[] = [];
+  readonly options = {
+    mode: 'xml',
+    lineNumbers: true,
+    lineWrapping: true,
+    styleActiveLine: true,
+    htmlMode: true
+  };
 
   readonly saveBehavior$ = this.facade.saveBehavior$;
   readonly SaveBehavior = SaveBehavior;
@@ -128,7 +128,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
   ngAfterViewChecked(): void {
     if (this.editor) {
       this.editor.codeMirror.refresh();
-      this.editor.registerOnChange(value => this.onChanged(value));
+      this.editor.registerOnChange((value) => this.onChanged(value));
     }
     if (this.tabs) {
       this.tabs.realignInkBar();
@@ -136,7 +136,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   onUnsavedChanges(): void {
@@ -167,7 +167,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
         this.saveBehavior$
           .pipe(
             take(1),
-            filter(b => b === SaveBehavior.SaveAndNext)
+            filter((b) => b === SaveBehavior.SaveAndNext)
           )
           .subscribe(() => this.onNextItem());
       }

@@ -46,7 +46,7 @@ export class EditorEffects {
       switchMap((action: LoadLocales) =>
         this.localeService.find(action.payload).pipe(
           map((payload: PagedList<Locale>) => new LocalesLoaded(payload)),
-          catchError(error => of(new LocalesLoadError(error)))
+          catchError((error) => of(new LocalesLoadError(error)))
         )
       )
     )
@@ -58,7 +58,7 @@ export class EditorEffects {
       switchMap((action: LoadLocale) =>
         this.localeService.byOwnerAndProjectNameAndName(action.payload).pipe(
           map((locale: Locale) => new LocaleLoaded({ locale })),
-          catchError(error => of(new LocaleLoadError(error)))
+          catchError((error) => of(new LocaleLoadError(error)))
         )
       )
     )
@@ -80,7 +80,7 @@ export class EditorEffects {
           })
           .pipe(
             map((payload: PagedList<Key>) => new KeysLoaded(payload)),
-            catchError(error => of(new KeysLoadError(error)))
+            catchError((error) => of(new KeysLoadError(error)))
           )
       )
     )
@@ -92,7 +92,7 @@ export class EditorEffects {
       switchMap((action: LoadKey) =>
         this.keyService.byOwnerAndProjectNameAndName(action.payload).pipe(
           map((key: Key) => new KeyLoaded(key)),
-          catchError(error => of(new KeyLoadError(error)))
+          catchError((error) => of(new KeyLoadError(error)))
         )
       )
     )
@@ -104,7 +104,7 @@ export class EditorEffects {
       switchMap((action: LoadMessages) =>
         this.messageService.find(action.payload).pipe(
           map((payload: PagedList<Message>) => new MessagesLoaded(payload)),
-          catchError(error => of(new MessagesLoadError(error)))
+          catchError((error) => of(new MessagesLoadError(error)))
         )
       )
     )
@@ -116,7 +116,7 @@ export class EditorEffects {
       switchMap((action: LoadMessagesOfKey) =>
         this.messageService.find(action.payload).pipe(
           map((payload: PagedList<Message>) => new MessagesOfKeyLoaded(payload)),
-          catchError(error => of(new MessagesOfKeyLoadError(error)))
+          catchError((error) => of(new MessagesOfKeyLoadError(error)))
         )
       )
     )
@@ -139,7 +139,7 @@ export class EditorEffects {
 
         return observable.pipe(
           map((message: Message) => new MessageSaved(message)),
-          catchError(error => throwError(error))
+          catchError((error) => throwError(error))
         );
       })
     )
@@ -204,7 +204,7 @@ export class EditorEffects {
             localeId: locale.id,
             keyIds: keys.list
               .slice(0, 100)
-              .map(key => key.id)
+              .map((key) => key.id)
               .join(',')
           })
       )
@@ -270,7 +270,7 @@ export class EditorEffects {
           new LoadMessages({
             projectId: key.projectId,
             keyName: key.name,
-            localeIds: locales.list.map(locale => locale.id).join(',')
+            localeIds: locales.list.map((locale) => locale.id).join(',')
           })
       )
     )

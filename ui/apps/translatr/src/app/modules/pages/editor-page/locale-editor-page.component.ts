@@ -50,8 +50,8 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   > = this.appFacade.queryParams$.pipe(
     map((params: Params) =>
       this.filters
-        .filter(f => params[f.key] !== undefined && params[f.key] !== '')
-        .map(f => ({ ...f, value: params[f.key] }))
+        .filter((f) => params[f.key] !== undefined && params[f.key] !== '')
+        .map((f) => ({ ...f, value: params[f.key] }))
     ),
     distinctUntilChanged((a, b) => a.length === b.length)
   );
@@ -60,7 +60,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   readonly params$ = combineLatest([
     this.appFacade.routeParams$.pipe(
       filter(
-        p => p.username !== undefined && p.projectName !== undefined && p.localeName !== undefined
+        (p) => p.username !== undefined && p.projectName !== undefined && p.localeName !== undefined
       ),
       distinctUntilChanged(localeComparator)
     ),
@@ -87,7 +87,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
       });
     // TODO: let key be selected in effects?
     this.selectedKeyName$
-      .pipe(filter(x => !!x))
+      .pipe(filter((x) => !!x))
       .subscribe((selectedKeyName: string) => this.facade.selectKey(selectedKeyName));
   }
 
@@ -105,9 +105,9 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
       this.selectedKeyName$,
       (messageItem, selected) => messageItem.key.name === selected,
       () => 0,
-      index => (index ?? 0) + 1
+      (index) => (index ?? 0) + 1
     )
-      .then(messageItem => this.router.navigate([], { queryParams: { key: messageItem.key.name } }))
+      .then((messageItem) => this.router.navigate([], { queryParams: { key: messageItem.key.name } }))
       .catch();
   }
 
@@ -116,10 +116,10 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
       this.messageItems$,
       this.selectedKeyName$,
       (messageItem, selected) => messageItem.key.name === selected,
-      length => length - 1,
-      index => (index ?? 0) - 1
+      (length) => length - 1,
+      (index) => (index ?? 0) - 1
     )
-      .then(messageItem => this.router.navigate([], { queryParams: { key: messageItem.key.name } }))
+      .then((messageItem) => this.router.navigate([], { queryParams: { key: messageItem.key.name } }))
       .catch();
   }
 }

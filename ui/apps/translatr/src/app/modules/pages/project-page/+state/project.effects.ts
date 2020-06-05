@@ -120,10 +120,10 @@ export class ProjectEffects {
   loadProjectActivity$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadProjectActivityAggregated),
-      switchMap(action =>
+      switchMap((action) =>
         this.activityService.aggregated({ projectId: action.payload.id }).pipe(
           map((payload: PagedList<Aggregate>) => projectActivityAggregatedLoaded({ payload })),
-          catchError(error => of(projectActivityAggregatedLoadError({ error })))
+          catchError((error) => of(projectActivityAggregatedLoadError({ error })))
         )
       )
     )
@@ -132,7 +132,7 @@ export class ProjectEffects {
   loadProjectActivities$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadProjectActivities),
-      switchMap(action =>
+      switchMap((action) =>
         this.activityService
           .find({
             limit: 20,
@@ -140,7 +140,7 @@ export class ProjectEffects {
           })
           .pipe(
             map((payload: PagedList<Activity>) => projectActivitiesLoaded({ payload })),
-            catchError(error => of(projectActivitiesLoadError({ error })))
+            catchError((error) => of(projectActivitiesLoadError({ error })))
           )
       )
     )
@@ -151,10 +151,10 @@ export class ProjectEffects {
   createLocale$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createLocale),
-      switchMap(action =>
+      switchMap((action) =>
         this.localeService.create(action.payload).pipe(
           map((payload: Locale) => localeCreated({ payload })),
-          catchError(error => of(localeCreateError({ error })))
+          catchError((error) => of(localeCreateError({ error })))
         )
       )
     )
@@ -163,10 +163,10 @@ export class ProjectEffects {
   updateLocale$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateLocale),
-      switchMap(action =>
+      switchMap((action) =>
         this.localeService.update(action.payload).pipe(
           map((payload: Locale) => localeUpdated({ payload })),
-          catchError(error => of(localeUpdateError({ error })))
+          catchError((error) => of(localeUpdateError({ error })))
         )
       )
     )
@@ -175,10 +175,10 @@ export class ProjectEffects {
   deleteLocale$ = createEffect(() =>
     this.actions$.pipe(
       ofType(deleteLocale),
-      switchMap(action =>
+      switchMap((action) =>
         this.localeService.delete(action.payload.id).pipe(
           map((payload: Locale) => localeDeleted({ payload })),
-          catchError(error => of(localeDeleteError({ error })))
+          catchError((error) => of(localeDeleteError({ error })))
         )
       )
     )
@@ -189,10 +189,10 @@ export class ProjectEffects {
   createKey$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createKey),
-      switchMap(action =>
+      switchMap((action) =>
         this.keyService.create(action.payload).pipe(
           map((payload: Key) => keyCreated({ payload })),
-          catchError(error => of(keyCreateError({ error })))
+          catchError((error) => of(keyCreateError({ error })))
         )
       )
     )
@@ -201,10 +201,10 @@ export class ProjectEffects {
   updateKey$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateKey),
-      switchMap(action =>
+      switchMap((action) =>
         this.keyService.update(action.payload).pipe(
           map((payload: Key) => keyUpdated({ payload })),
-          catchError(error => of(keyUpdateError({ error })))
+          catchError((error) => of(keyUpdateError({ error })))
         )
       )
     )
@@ -213,10 +213,10 @@ export class ProjectEffects {
   deleteKey$ = createEffect(() =>
     this.actions$.pipe(
       ofType(deleteKey),
-      switchMap(action =>
+      switchMap((action) =>
         this.keyService.delete(action.payload.id).pipe(
           map((payload: Key) => keyDeleted({ payload })),
-          catchError(error => of(keyDeleteError({ error })))
+          catchError((error) => of(keyDeleteError({ error })))
         )
       )
     )
@@ -227,10 +227,10 @@ export class ProjectEffects {
   createMember$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createMember),
-      switchMap(action =>
+      switchMap((action) =>
         this.memberService.create(action.payload).pipe(
           map((payload: Member) => memberCreated({ payload })),
-          catchError(error => of(memberCreateError({ error })))
+          catchError((error) => of(memberCreateError({ error })))
         )
       )
     )
@@ -239,10 +239,10 @@ export class ProjectEffects {
   updateMember$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateMember),
-      switchMap(action =>
+      switchMap((action) =>
         this.memberService.update(action.payload).pipe(
           map((payload: Member) => memberUpdated({ payload })),
-          catchError(error => of(memberUpdateError({ error })))
+          catchError((error) => of(memberUpdateError({ error })))
         )
       )
     )
@@ -251,10 +251,10 @@ export class ProjectEffects {
   deleteMember$ = createEffect(() =>
     this.actions$.pipe(
       ofType(deleteMember),
-      switchMap(action =>
+      switchMap((action) =>
         this.memberService.delete(action.payload.id).pipe(
           map((payload: Member) => memberDeleted({ payload })),
-          catchError(error => of(memberDeleteError({ error })))
+          catchError((error) => of(memberDeleteError({ error })))
         )
       )
     )
@@ -265,10 +265,10 @@ export class ProjectEffects {
   loadAccessTokens$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadAccessTokens),
-      switchMap(action =>
+      switchMap((action) =>
         this.accessTokenService.find(action.payload).pipe(
           map((payload: PagedList<AccessToken>) => accessTokensLoaded({ payload })),
-          catchError(error => of(accessTokensLoadError({ error })))
+          catchError((error) => of(accessTokensLoadError({ error })))
         )
       )
     )

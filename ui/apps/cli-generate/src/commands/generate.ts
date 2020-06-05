@@ -7,7 +7,7 @@ export class GenerateCommand extends Command {
   static description = 'Generate data (users, projects, locales, keys) by using the API';
 
   static flags = {
-    endpoint: flags.string({
+    'endpoint': flags.string({
       description: 'The endpoint of the REST API to communicate with.',
       char: 'e',
       env: 'ENDPOINT',

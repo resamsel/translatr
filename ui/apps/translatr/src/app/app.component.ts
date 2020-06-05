@@ -18,8 +18,8 @@ export class AppComponent implements AfterViewInit {
   ) {
     facade.loadMe();
     facade.me$
-      .pipe(filter(x => !!x && !!x.preferredLanguage))
-      .subscribe(me => translocoService.setActiveLang(me.preferredLanguage));
+      .pipe(filter((x) => !!x && !!x.preferredLanguage))
+      .subscribe((me) => translocoService.setActiveLang(me.preferredLanguage));
   }
 
   ngAfterViewInit(): void {

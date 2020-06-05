@@ -1,5 +1,5 @@
-import { Action } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 export const notifyEvent = <O extends Action, E extends Action>(

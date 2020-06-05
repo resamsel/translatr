@@ -15,12 +15,12 @@ export class FeatureFlagClassDirective implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    Object.keys(this.featureFlagClass).forEach(className =>
+    Object.keys(this.featureFlagClass).forEach((className) =>
       this.facade
         .hasFeatures$(this.featureFlagClass[className])
         .pipe(
           take(1),
-          filter(enabled => enabled)
+          filter((enabled) => enabled)
         )
         .subscribe(() => this.renderer.addClass(this.el.nativeElement, className))
     );

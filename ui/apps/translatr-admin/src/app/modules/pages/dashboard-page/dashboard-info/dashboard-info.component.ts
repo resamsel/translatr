@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AppFacade } from '../../../../+state/app.facade';
 import { Feature, User } from '@dev/translatr-model';
+import { AppFacade } from '../../../../+state/app.facade';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

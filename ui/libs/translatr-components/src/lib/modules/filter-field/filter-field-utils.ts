@@ -7,9 +7,9 @@ export const handleFilterFieldSelection = (
   selected: ReadonlyArray<FilterFieldFilter>
 ): Promise<boolean> => {
   const params: Params = filters
-    .map(f => f.key)
+    .map((f) => f.key)
     .reduce((agg, key) => {
-      const selection = selected.find(s => s.key === key);
+      const selection = selected.find((s) => s.key === key);
       return {
         ...agg,
         [key]: selection ? selection.value : null

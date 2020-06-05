@@ -22,7 +22,7 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
   criteria$ = this.appFacade.queryParams$.pipe(
     map((params: Params) =>
       ['search', 'limit', 'offset']
-        .filter(f => params[f] !== undefined && params[f] !== '')
+        .filter((f) => params[f] !== undefined && params[f] !== '')
         .reduce((acc, curr) => ({ ...acc, [curr]: params[curr] }), {})
     ),
     distinctUntilChanged(
@@ -31,7 +31,7 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
     )
   );
   private loadProjects$ = combineLatest([
-    this.me$.pipe(filter(user => !!user)),
+    this.me$.pipe(filter((user) => !!user)),
     this.criteria$
   ]).pipe(takeUntil(this.facade.unload$));
 
@@ -65,9 +65,9 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
       .afterClosed()
       .pipe(
         take(1),
-        filter(project => !!project)
+        filter((project) => !!project)
       )
-      .subscribe(project => this.router.navigate([project.ownerUsername, project.name]));
+      .subscribe((project) => this.router.navigate([project.ownerUsername, project.name]));
   }
 
   onFilter(criteria: FilterCriteria): void {

@@ -238,8 +238,8 @@ export class AppFacade extends FeatureFlagFacade {
 
   hasFeatures$(flags: Feature | Feature[]): Observable<boolean> {
     return this.me$.pipe(
-      filter(x => !!x),
-      map(user => (user.features ? coerceArray(flags).every(flag => user.features[flag]) : false))
+      filter((x) => !!x),
+      map((user) => (user.features ? coerceArray(flags).every((flag) => user.features[flag]) : false))
     );
   }
 

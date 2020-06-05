@@ -11,7 +11,7 @@ export class AppComponent {
   constructor(readonly facade: AppFacade, readonly translocoService: TranslocoService) {
     facade.loadMe();
     facade.me$
-      .pipe(filter(x => !!x && !!x.preferredLanguage))
-      .subscribe(me => translocoService.setActiveLang(me.preferredLanguage));
+      .pipe(filter((x) => !!x && !!x.preferredLanguage))
+      .subscribe((me) => translocoService.setActiveLang(me.preferredLanguage));
   }
 }

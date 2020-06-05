@@ -1,3 +1,4 @@
+/* tslint:disable:max-classes-per-file */
 import { Activity, ActivityCriteria, PagedList } from '@dev/translatr-model';
 import { Action } from '@ngrx/store';
 

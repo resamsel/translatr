@@ -25,7 +25,7 @@ export class UserPageComponent implements OnDestroy {
     private readonly facade: UserFacade,
     private readonly injector: Injector,
     private readonly route: ActivatedRoute,
-    @Inject(USER_ROUTES) private routes: { children: NameIconRoute[] }[]
+    @Inject(USER_ROUTES) private routes: Array<{ children: NameIconRoute[] }>
   ) {}
 
   ngOnDestroy(): void {

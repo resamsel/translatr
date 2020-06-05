@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AuthBarItemComponent } from './auth-bar-item.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { GravatarModule } from 'ngx-gravatar';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { GravatarModule } from 'ngx-gravatar';
+import { AuthBarItemComponent } from './auth-bar-item.component';
 
 describe('AuthBarItemComponent', () => {
   let component: AuthBarItemComponent;

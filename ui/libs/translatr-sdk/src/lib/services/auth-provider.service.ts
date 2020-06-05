@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class AuthProviderService {
   constructor(private readonly http: HttpClient) {}
 
-  find(): Observable<Array<AuthProvider>> {
-    return this.http.get<Array<AuthProvider>>('/api/authproviders');
+  find(): Observable<AuthProvider[]> {
+    return this.http.get<AuthProvider[]>('/api/authproviders');
   }
 }

@@ -20,8 +20,8 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     return this.facade.me$.pipe(
-      filter(x => x !== undefined), // skip default value
-      map(x => x !== null), // null means unauthenticated
+      filter((x) => x !== undefined), // skip default value
+      map((x) => x !== null), // null means unauthenticated
       tap((authenticated: boolean) => {
         if (!authenticated) {
           try {

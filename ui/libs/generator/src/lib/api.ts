@@ -1,3 +1,4 @@
+/* tslint:disable:max-classes-per-file */
 import { HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory } from '@angular/common/http';
 import { Injector, StaticProvider } from '@angular/core';
 import {
@@ -16,7 +17,7 @@ export class BrowserXhr implements XhrFactory {
   constructor() {}
 
   build(): any {
-    return <any>new XMLHttpRequest();
+    return new XMLHttpRequest() as any;
   }
 }
 

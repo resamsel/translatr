@@ -28,15 +28,15 @@ export class UserInfoComponent implements OnInit {
   );
   readonly canCreateProject$ = this.facade.canCreateProject$;
   readonly activities$ = this.facade.activities$.pipe(
-    map(pagedList => slicePagedList(pagedList, 8))
+    map((pagedList) => slicePagedList(pagedList, 8))
   );
 
   readonly activityRoute: NameIconRoute | undefined = this.routes[0].children.find(
-    route => route.path === 'activity'
+    (route) => route.path === 'activity'
   );
   readonly canReadActivity$ = this.facade.canReadActivity$;
   readonly activityLink$ = this.canActivate$(this.activityRoute).pipe(
-    map(active => (active ? 'activity' : undefined))
+    map((active) => (active ? 'activity' : undefined))
   );
 
   constructor(
@@ -45,13 +45,13 @@ export class UserInfoComponent implements OnInit {
     private readonly router: Router,
     private readonly injector: Injector,
     private readonly route: ActivatedRoute,
-    @Inject(USER_ROUTES) private routes: { children: NameIconRoute[] }[]
+    @Inject(USER_ROUTES) private routes: Array<{ children: NameIconRoute[] }>
   ) {}
 
   ngOnInit() {
     this.user$
       .pipe(
-        filter(user => !!user),
+        filter((user) => !!user),
         takeUntil(this.facade.destroy$)
       )
       .subscribe((user: User) => {
@@ -73,9 +73,9 @@ export class UserInfoComponent implements OnInit {
       .afterClosed()
       .pipe(
         take(1),
-        filter(project => !!project)
+        filter((project) => !!project)
       )
-      .subscribe(project => this.router.navigate([project.ownerUsername, project.name]));
+      .subscribe((project) => this.router.navigate([project.ownerUsername, project.name]));
   }
 
   canActivate$(route: NameIconRoute): Observable<boolean> {

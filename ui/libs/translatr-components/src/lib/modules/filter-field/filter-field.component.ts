@@ -77,7 +77,7 @@ export class FilterFieldComponent implements OnInit {
   @HostBinding('class') private readonly clazz = 'filter-field';
 
   filterControl = new FormControl('');
-  autocompleteOptions: Array<FilterFieldFilter> = [];
+  autocompleteOptions: FilterFieldFilter[] = [];
 
   private _options: ReadonlyArray<FilterFieldFilter> = [];
 
@@ -96,7 +96,7 @@ export class FilterFieldComponent implements OnInit {
     this.filterControl.valueChanges.subscribe((value: string | FilterFieldFilter) => {
       if (typeof value === 'string') {
         this.updateAutocompleteOptions({
-          ...this.filters.find(f => f.key === 'search'),
+          ...this.filters.find((f) => f.key === 'search'),
           key: 'search',
           value: value.trim()
         });
@@ -126,12 +126,12 @@ export class FilterFieldComponent implements OnInit {
   }
 
   private updateOption(option: FilterFieldFilter): void {
-    this.options = [...this.options.filter(o => o.key !== option.key), option];
+    this.options = [...this.options.filter((o) => o.key !== option.key), option];
     this.updateAutocompleteOptions();
   }
 
   private removeOption(key: string): void {
-    this.options = this.options.filter(o => o.key !== key);
+    this.options = this.options.filter((o) => o.key !== key);
     this.updateAutocompleteOptions();
   }
 
@@ -144,25 +144,25 @@ export class FilterFieldComponent implements OnInit {
   }
 
   private updateAutocompleteOptions(option?: FilterFieldFilter): void {
-    const booleans = this.options.filter(s => s.type === 'boolean').map(s => s.key);
+    const booleans = this.options.filter((s) => s.type === 'boolean').map((s) => s.key);
     const filters =
-      this.filters !== undefined ? this.filters.filter(f => !booleans.includes(f.key)) : [];
+      this.filters !== undefined ? this.filters.filter((f) => !booleans.includes(f.key)) : [];
 
     if (option !== undefined) {
       this.autocompleteOptions = filters
         .filter(
-          o =>
+          (o) =>
             (option.value !== '' && !o.allowEmpty) ||
             (option.value === '' && o.allowEmpty) ||
             (option.value !== '' && lowerCaseIncludes(o.title, option.value.toString()))
         )
-        .filter(o => filterOption(o, option))
-        .map(o => ({
+        .filter((o) => filterOption(o, option))
+        .map((o) => ({
           ...o,
           value: valueOf(option, o)
         }));
     } else {
-      this.autocompleteOptions = filters.filter(o => o.allowEmpty);
+      this.autocompleteOptions = filters.filter((o) => o.allowEmpty);
     }
   }
 }

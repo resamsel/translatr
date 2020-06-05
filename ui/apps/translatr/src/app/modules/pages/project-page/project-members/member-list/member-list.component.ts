@@ -33,18 +33,18 @@ export class MemberListComponent {
     return this._members;
   }
 
+  @Input() set members(members: PagedList<Member>) {
+    this._members = members;
+    this.ownerCount =
+      members !== undefined ? members.list.filter((m) => m.role === MemberRole.Owner).length : 0;
+  }
+
   @Output() edit = new EventEmitter<Member>();
   @Output() delete = new EventEmitter<Member>();
 
   project$ = this.facade.project$;
   // @ts-ignore
   @HostBinding('style.display') private readonly display = 'block';
-
-  @Input() set members(members: PagedList<Member>) {
-    this._members = members;
-    this.ownerCount =
-      members !== undefined ? members.list.filter(m => m.role === MemberRole.Owner).length : 0;
-  }
 
   // filters = [
   //   ...defaultFilters,
@@ -66,22 +66,22 @@ export class MemberListComponent {
     openProjectMemberEditDialog(this.dialog, { projectId: project.id }, this.canModifyOwner)
       .afterClosed()
       .pipe(
-        filter(x => !!x),
+        filter((x) => !!x),
         switchMapTo(this.project$),
         take(1)
       )
-      .subscribe(p => this.facade.loadProject(p.ownerUsername, p.name));
+      .subscribe((p) => this.facade.loadProject(p.ownerUsername, p.name));
   }
 
   onEdit(member: Member, event: MouseEvent): boolean {
     openProjectMemberEditDialog(this.dialog, member, this.canModifyOwner)
       .afterClosed()
       .pipe(
-        filter(x => !!x),
+        filter((x) => !!x),
         switchMapTo(this.project$),
         take(1)
       )
-      .subscribe(p => this.facade.loadProject(p.ownerUsername, p.name));
+      .subscribe((p) => this.facade.loadProject(p.ownerUsername, p.name));
     this.edit.emit(member);
     event.stopPropagation();
     event.preventDefault();
@@ -95,8 +95,8 @@ export class MemberListComponent {
   onTransferOwnership(event: MouseEvent): boolean {
     openProjectOwnerEditDialog(this.dialog, this.project)
       .afterClosed()
-      .pipe(filter(x => !!x))
-      .subscribe(p => this.router.navigate(['/', p.ownerUsername, p.name, 'members']));
+      .pipe(filter((x) => !!x))
+      .subscribe((p) => this.router.navigate(['/', p.ownerUsername, p.name, 'members']));
     event.stopPropagation();
     event.preventDefault();
     return false;

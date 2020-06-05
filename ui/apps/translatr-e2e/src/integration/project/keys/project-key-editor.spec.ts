@@ -183,7 +183,7 @@ describe('Project Key Editor', () => {
       .first()
       .click();
 
-    page.getMeta().within(el => {
+    page.getMeta().within((el) => {
       el.find('#mat-tab-label-0-1').trigger('click');
       el.find('#mat-tab-content-0-1 .mat-card button.use-value')
         .last()
@@ -260,7 +260,7 @@ describe('Project Key Editor', () => {
     cy.get('.save-behavior-saveandnext').click();
 
     // then
-    cy.wait('@updateSettings').then(xhr => {
+    cy.wait('@updateSettings').then((xhr) => {
       expect(xhr.request.body).to.deep.equal({ 'save-behavior': 'saveandnext' });
     });
     page

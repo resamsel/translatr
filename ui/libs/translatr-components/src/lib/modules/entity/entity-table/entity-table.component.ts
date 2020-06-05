@@ -62,7 +62,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
     this.selection.clear();
   }
 
-  @Input() filters: Array<FilterFieldFilter> = [
+  @Input() filters: FilterFieldFilter[] = [
     {
       key: 'search',
       type: 'string',
@@ -90,7 +90,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
     ReadonlyArray<FilterFieldFilter>
   > = this.route.queryParams.pipe(
     map((params: Params) =>
-      this.filters.filter(f => filterParam(f, params)).map(f => ({ ...f, value: params[f.key] }))
+      this.filters.filter((f) => filterParam(f, params)).map((f) => ({ ...f, value: params[f.key] }))
     ),
     distinctUntilChanged((a, b) => a.length === b.length)
   );
@@ -139,7 +139,7 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
   masterToggle() {
     this.isAllSelected()
       ? this.selection.clear()
-      : this.dataSource.list.forEach(row => this.selection.select(row));
+      : this.dataSource.list.forEach((row) => this.selection.select(row));
   }
 
   onSelectionChange(element: Entity) {

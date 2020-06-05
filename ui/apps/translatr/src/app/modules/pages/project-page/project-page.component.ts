@@ -18,14 +18,14 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
   // TODO: put this logic somewhere else, i.e. each page should only load
   //  what it needs, but cache it for other usages
-  project$ = this.facade.project$.pipe(filter(project => !!project));
+  project$ = this.facade.project$.pipe(filter((project) => !!project));
 
   children: NameIconRoute[] = this.routes[0].children;
   childrenActive$ = merge(
-    ...this.children.map(child =>
+    ...this.children.map((child) =>
       this.canActivate$(child).pipe(
         take(1),
-        map(can => ({ [child.path]: can }))
+        map((can) => ({ [child.path]: can }))
       )
     )
   ).pipe(scan((acc, curr) => ({ ...acc, ...curr }), {}));
@@ -37,7 +37,7 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly facade: ProjectFacade,
     private readonly appFacade: AppFacade,
-    @Inject(PROJECT_ROUTES) private routes: { children: NameIconRoute[] }[]
+    @Inject(PROJECT_ROUTES) private routes: Array<{ children: NameIconRoute[] }>
   ) {}
 
   ngOnInit(): void {

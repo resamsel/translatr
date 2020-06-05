@@ -1,5 +1,6 @@
-import { Action } from '@ngrx/store';
+/* tslint:disable:max-classes-per-file */
 import { PagedList, RequestCriteria, User } from '@dev/translatr-model';
+import { Action } from '@ngrx/store';
 
 export interface UserCriteria extends RequestCriteria {
   userId?: string;

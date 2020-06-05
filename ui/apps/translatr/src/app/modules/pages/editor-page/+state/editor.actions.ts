@@ -1,3 +1,4 @@
+/* tslint:disable:max-classes-per-file */
 import { Key, KeyCriteria, Locale, LocaleCriteria, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import { Action } from '@ngrx/store';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';

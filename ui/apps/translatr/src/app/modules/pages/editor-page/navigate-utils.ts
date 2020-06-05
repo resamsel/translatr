@@ -26,7 +26,7 @@ export const navigateItems = (
           return resolve(messageItems.list[i]);
         }
         const index = nextIndex(
-          messageItems.list.findIndex(messageItem => matcher(messageItem, selected))
+          messageItems.list.findIndex((messageItem) => matcher(messageItem, selected))
         );
         if (index !== undefined && index >= 0 && index < messageItems.list.length) {
           return resolve(messageItems.list[index]);

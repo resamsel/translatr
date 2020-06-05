@@ -14,7 +14,7 @@ export class DashboardEffects {
       switchMap((action: LoadActivities) =>
         this.activityService.find(action.payload).pipe(
           map((result: PagedList<Activity>) => new ActivitiesLoaded(result)),
-          catchError(error => of(new ActivitiesLoadError(error)))
+          catchError((error) => of(new ActivitiesLoadError(error)))
         )
       )
     )

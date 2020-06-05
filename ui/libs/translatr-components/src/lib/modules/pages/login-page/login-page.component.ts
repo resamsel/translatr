@@ -29,10 +29,10 @@ export class LoginPageComponent implements OnInit {
     this.providers$
       .pipe(
         take(1),
-        filter(providers => providers.length === 1)
+        filter((providers) => providers.length === 1)
       )
       .subscribe(
-        (providers: Array<AuthProvider>) =>
+        (providers: AuthProvider[]) =>
           (window.location.href = `${this.endpointUrl}${providers[0].url}`)
       );
   }

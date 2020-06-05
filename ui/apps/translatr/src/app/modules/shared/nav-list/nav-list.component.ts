@@ -21,6 +21,12 @@ export class NavListComponent {
     return this._criteria;
   }
 
+  @Input() set criteria(criteria: FilterCriteria | undefined) {
+    this._criteria = criteria;
+
+    this.updateSearchEnabled();
+  }
+
   @Input() direction: 'column' | 'row' = 'column';
 
   @Input() loadingListLength = 5;
@@ -34,12 +40,6 @@ export class NavListComponent {
   @Input() showFilter = false;
   @Input() addTooltip: string;
   @Input() canCreate = false;
-
-  @Input() set criteria(criteria: FilterCriteria | undefined) {
-    this._criteria = criteria;
-
-    this.updateSearchEnabled();
-  }
 
   @Output() readonly create = new EventEmitter<void>();
 

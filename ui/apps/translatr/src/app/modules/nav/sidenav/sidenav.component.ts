@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Link } from '@dev/translatr-components';
 import { Feature, User, UserRole } from '@dev/translatr-model';
 import { environment } from '../../../../environments/environment';
-import { Link } from '@dev/translatr-components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

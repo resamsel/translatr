@@ -147,7 +147,7 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
     this.hostElement = elRef.nativeElement;
     translocoService.langChanges$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(language => this.updateLanguage(language));
+      .subscribe((language) => this.updateLanguage(language));
   }
 
   private updateLanguage(language: string) {
@@ -232,7 +232,7 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
 
     const maxValue = data.reduce((max, curr) => Math.max(max, curr.value), 0);
 
-    data.forEach(aggregate => {
+    data.forEach((aggregate) => {
       const [x, y] = cellPosition(aggregate.date, width, cellSize, offset);
 
       this.createRect(

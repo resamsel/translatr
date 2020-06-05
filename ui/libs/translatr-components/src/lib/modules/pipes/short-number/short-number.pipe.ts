@@ -27,12 +27,12 @@ export class ShortNumberPipe implements PipeTransform {
 
     let abs = Math.abs(value);
     let key = '';
-    for (let i = 0; i < powers.length; i++) {
-      let reduced = abs / powers[i].value;
+    for (const power of powers) {
+      let reduced = abs / power.value;
       reduced = Math.round(reduced * rounder) / rounder;
       if (reduced >= 1) {
         abs = reduced;
-        key = powers[i].key;
+        key = power.key;
         break;
       }
     }

@@ -10,7 +10,7 @@ class MockEntityTableComponent {
   @Input() dataSource: PagedList<Entity>;
   @Input() displayedColumns: string[];
   @Input() load: RequestCriteria;
-  @Input() filters: Array<FilterFieldFilter> = [
+  @Input() filters: FilterFieldFilter[] = [
     {
       key: 'search',
       type: 'string',

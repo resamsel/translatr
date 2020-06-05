@@ -17,7 +17,7 @@ export class DashboardPageComponent {
   constructor(
     private readonly facade: AppFacade,
     private readonly router: Router,
-    @Inject(DASHBOARD_ROUTES) private routes: { children: NameIconRoute[] }[]
+    @Inject(DASHBOARD_ROUTES) private routes: Array<{ children: NameIconRoute[] }>
   ) {}
 
   routerLink(route: Route) {
@@ -35,7 +35,7 @@ export class DashboardPageComponent {
   }
 
   activePage(): string | undefined {
-    const activeRoutes = this.children.filter(route => this.isLinkActive(this.routerLink(route)));
+    const activeRoutes = this.children.filter((route) => this.isLinkActive(this.routerLink(route)));
     if (activeRoutes.length === 0) {
       return undefined;
     }

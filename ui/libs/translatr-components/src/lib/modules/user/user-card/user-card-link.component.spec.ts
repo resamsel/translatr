@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { UserCardLinkComponent } from '@dev/translatr-components';
 import { MockUserCardComponent } from '@translatr/components/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 
 describe('UserCardLinkComponent', () => {
   let component: UserCardLinkComponent;

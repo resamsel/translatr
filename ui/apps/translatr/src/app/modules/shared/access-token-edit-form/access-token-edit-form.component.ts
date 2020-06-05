@@ -7,10 +7,10 @@ import { AccessToken, Scope, scopes } from '@dev/translatr-model';
 import { UserFacade } from '../../pages/user-page/+state/user.facade';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
 
-const distinct = <T>(value: T, index: number, self: Array<T>) => self.indexOf(value) === index;
+const distinct = <T>(value: T, index: number, self: T[]) => self.indexOf(value) === index;
 
-const scopeType = scope => scope.split(':')[1];
-const scopePermission = scope => scope.split(':')[0];
+const scopeType = (scope) => scope.split(':')[1];
+const scopePermission = (scope) => scope.split(':')[0];
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,14 +71,14 @@ export class AccessTokenEditFormComponent extends BaseEditFormComponent<
 
   onChangeScope(scope: Scope, event: MatCheckboxChange) {
     this.activeScopeMap[scope] = event.checked;
-    this.form.get('scope').setValue(scopes.filter(s => this.activeScopeMap[s]).join(','));
+    this.form.get('scope').setValue(scopes.filter((s) => this.activeScopeMap[s]).join(','));
     this.form.get('scope').markAsDirty();
   }
 
   private updateValue(accessToken: AccessToken): void {
     this.form.patchValue(accessToken);
     if (accessToken.scope !== undefined) {
-      accessToken.scope.split(',').forEach(scope => (this.activeScopeMap[scope] = true));
+      accessToken.scope.split(',').forEach((scope) => (this.activeScopeMap[scope] = true));
     }
   }
 }

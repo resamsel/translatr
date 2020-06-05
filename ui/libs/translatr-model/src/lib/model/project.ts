@@ -12,10 +12,10 @@ export interface Project extends Temporal {
   ownerUsername?: string;
   ownerEmailHash?: string;
 
-  locales?: Array<Locale>;
-  keys?: Array<Key>;
-  members?: Array<Member>;
-  messages?: Array<Message>;
+  locales?: Locale[];
+  keys?: Key[];
+  members?: Member[];
+  messages?: Message[];
 
   wordCount?: number;
   myRole?: MemberRole;

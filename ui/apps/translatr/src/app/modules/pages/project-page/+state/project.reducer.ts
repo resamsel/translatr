@@ -104,7 +104,7 @@ const pagedListUpdate = <T extends Identifiable>(
   payload: T
 ): PagedList<T> => ({
   ...pagedList,
-  list: pagedList.list.map(i => (i.id === payload.id ? payload : i))
+  list: pagedList.list.map((i) => (i.id === payload.id ? payload : i))
 });
 
 const pagedListDelete = <T extends Identifiable>(
@@ -112,7 +112,7 @@ const pagedListDelete = <T extends Identifiable>(
   payload: T
 ): PagedList<T> => ({
   ...pagedList,
-  list: pagedList.list.filter(i => i.id !== payload.id)
+  list: pagedList.list.filter((i) => i.id !== payload.id)
 });
 
 const resetLocale = (state: ProjectState): ProjectState => ({
@@ -136,45 +136,45 @@ const resetMember = (state: ProjectState): ProjectState => ({
 const reducer = createReducer(
   initialState,
   on(localesLoaded, (state, { payload }) => ({ ...state, locales: payload })),
-  on(createLocale, state => resetLocale(state)),
+  on(createLocale, (state) => resetLocale(state)),
   on(localeCreated, (state, { payload }) => ({
     ...state,
     locale: payload,
     locales: pagedListInsert(state.locales, payload)
   })),
-  on(updateLocale, state => resetLocale(state)),
+  on(updateLocale, (state) => resetLocale(state)),
   on(localeUpdated, (state, { payload }) => ({
     ...state,
     locale: payload,
     locales: pagedListUpdate(state.locales, payload)
   })),
-  on(deleteLocale, state => resetLocale(state)),
+  on(deleteLocale, (state) => resetLocale(state)),
   on(localeDeleted, (state, { payload }) => ({
     ...state,
     locale: payload,
     locales: pagedListDelete(state.locales, payload)
   })),
   on(keysLoaded, (state, { payload }) => ({ ...state, keys: payload })),
-  on(createKey, state => resetKey(state)),
+  on(createKey, (state) => resetKey(state)),
   on(keyCreated, (state, { payload }) => ({
     ...state,
     key: payload,
     keys: pagedListInsert(state.keys, payload)
   })),
-  on(updateKey, state => resetKey(state)),
+  on(updateKey, (state) => resetKey(state)),
   on(keyUpdated, (state, { payload }) => ({
     ...state,
     key: payload,
     keys: pagedListUpdate(state.keys, payload)
   })),
-  on(deleteKey, state => resetKey(state)),
+  on(deleteKey, (state) => resetKey(state)),
   on(keyDeleted, (state, { payload }) => ({
     ...state,
     key: payload,
     keys: pagedListDelete(state.keys, payload)
   })),
   on(membersLoaded, (state, { payload }) => ({ ...state, members: payload })),
-  on(createMember, state => resetMember(state)),
+  on(createMember, (state) => resetMember(state)),
   on(memberCreated, (state, { payload }) => ({
     ...state,
     member: payload,
@@ -184,13 +184,13 @@ const reducer = createReducer(
     ...state,
     memberError: error
   })),
-  on(updateMember, state => resetMember(state)),
+  on(updateMember, (state) => resetMember(state)),
   on(memberUpdated, (state, { payload }) => ({
     ...state,
     member: payload,
     members: pagedListUpdate(state.members, payload)
   })),
-  on(deleteMember, state => resetMember(state)),
+  on(deleteMember, (state) => resetMember(state)),
   on(memberDeleted, (state, { payload }) => ({
     ...state,
     member: payload,

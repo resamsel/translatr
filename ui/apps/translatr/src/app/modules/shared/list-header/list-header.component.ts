@@ -21,16 +21,12 @@ export type FilterCriteria = RequestCriteria &
   styleUrls: ['./list-header.component.scss']
 })
 export class ListHeaderComponent implements OnInit {
-  selection: Array<FilterFieldFilter> = [];
+  selection: FilterFieldFilter[] = [];
 
   @Input() filters = defaultFilters;
   @Output() readonly filter = new EventEmitter<FilterCriteria>();
 
   private _criteria: FilterCriteria;
-
-  get criteria(): FilterCriteria {
-    return this._criteria;
-  }
 
   @Input() searchVisible = true;
   @Input() searchEnabled = true;
@@ -43,6 +39,10 @@ export class ListHeaderComponent implements OnInit {
 
   @Output() readonly add = new EventEmitter<void>();
   @Output() readonly remove = new EventEmitter<void>();
+
+  get criteria(): FilterCriteria {
+    return this._criteria;
+  }
 
   @Input() set criteria(criteria: FilterCriteria) {
     this._criteria = criteria;
@@ -80,8 +80,8 @@ export class ListHeaderComponent implements OnInit {
   private updateCriteria(): void {
     if (!!this.criteria) {
       this.selection = this.filters
-        .filter(filter => this.criteria[filter.key] !== undefined)
-        .map(filter => ({
+        .filter((filter) => this.criteria[filter.key] !== undefined)
+        .map((filter) => ({
           key: filter.key,
           value: this.criteria[filter.key],
           type: filter.type

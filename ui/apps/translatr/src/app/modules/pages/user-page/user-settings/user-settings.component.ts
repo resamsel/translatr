@@ -20,12 +20,12 @@ export class UserSettingsComponent extends AbstractEditFormComponent<UserSetting
   result$ = merge(
     this.facade.user$.pipe(
       skip(1),
-      filter(x => !!x)
+      filter((x) => !!x)
     ),
     this.facade.error$.pipe(
       skip(1),
-      filter(x => !!x),
-      switchMap(e => throwError(e))
+      filter((x) => !!x),
+      switchMap((e) => throwError(e))
     )
   );
 
@@ -62,7 +62,7 @@ export class UserSettingsComponent extends AbstractEditFormComponent<UserSetting
   }
 
   ngOnInit() {
-    this.user$.subscribe(i => this.form.patchValue(i));
+    this.user$.subscribe((i) => this.form.patchValue(i));
   }
 
   protected onSaved(user: User): void {

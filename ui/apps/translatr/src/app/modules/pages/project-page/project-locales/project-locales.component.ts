@@ -12,7 +12,7 @@ import { ProjectFacade } from '../+state/project.facade';
   styleUrls: ['./project-locales.component.scss']
 })
 export class ProjectLocalesComponent {
-  project$ = this.facade.project$.pipe(filter(x => !!x));
+  project$ = this.facade.project$.pipe(filter((x) => !!x));
   locales$ = this.facade.locales$;
   criteria$ = this.facade.localesCriteria$;
   canModify$ = this.facade.canModifyLocale$;
@@ -23,7 +23,7 @@ export class ProjectLocalesComponent {
     private readonly router: Router
   ) {
     this.criteria$
-      .pipe(withLatestFrom(this.project$.pipe(filter(x => !!x))), takeUntil(this.facade.unload$))
+      .pipe(withLatestFrom(this.project$.pipe(filter((x) => !!x))), takeUntil(this.facade.unload$))
       .subscribe(([criteria, project]: [LocaleCriteria, Project]) =>
         this.facade.loadLocales(project.id, criteria)
       );

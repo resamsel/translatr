@@ -37,7 +37,7 @@ export class DashboardFeatureFlagsComponent {
 
   readonly uiUrl = environment.uiUrl;
 
-  readonly filters: Array<FilterFieldFilter> = features.map(feature => ({
+  readonly filters: FilterFieldFilter[] = features.map((feature) => ({
     key: 'feature',
     type: 'option',
     title: 'feature.filter',

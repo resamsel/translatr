@@ -26,7 +26,7 @@ export class LocaleListComponent {
   trackByFn = trackByFn;
   // @ts-ignore
   @HostBinding('style.display') private readonly display = 'block';
-  readonly fileTypes: Array<{ type: string; name: string }> = fileTypes.map(fileType => ({
+  readonly fileTypes: Array<{ type: string; name: string }> = fileTypes.map((fileType) => ({
     type: fileType,
     name: fileTypeNames[fileType]
   }));
@@ -58,8 +58,8 @@ export class LocaleListComponent {
       .afterClosed()
       .pipe(
         take(1),
-        filter(l => !!l && locale.id === undefined)
+        filter((l) => !!l && locale.id === undefined)
       )
-      .subscribe(l => this.router.navigate([l.name], { relativeTo: this.route }));
+      .subscribe((l) => this.router.navigate([l.name], { relativeTo: this.route }));
   }
 }

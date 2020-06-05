@@ -120,7 +120,7 @@ export const updateRandomUser = (userService: UserService): Observable<Partial<S
         )
       );
     }),
-    catchError(err => of(`Error while retrieving random user (${errorMessage(err)})`)),
+    catchError((err) => of(`Error while retrieving random user (${errorMessage(err)})`)),
     map((message: string) => ({ message }))
   );
 };
@@ -140,7 +140,7 @@ export const deleteRandomUser = (userService: UserService): Observable<Partial<S
         )
       )
     ),
-    catchError(err => of(`Error while retrieving random user (${errorMessage(err)})`)),
+    catchError((err) => of(`Error while retrieving random user (${errorMessage(err)})`)),
     map((message: string) => ({ message }))
   );
 };

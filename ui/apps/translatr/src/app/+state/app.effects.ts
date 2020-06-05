@@ -37,7 +37,7 @@ export class AppEffects {
           .me({ fetch: 'features' })
           .pipe(map((user: User) => meLoaded({ payload: user })))
       ),
-      catchError(error => of(meLoadError(error)))
+      catchError((error) => of(meLoadError(error)))
     )
   );
 
@@ -50,7 +50,7 @@ export class AppEffects {
           .update({ id: me.id, preferredLanguage: action.payload })
           .pipe(map((user: User) => meLoaded({ payload: user })))
       ),
-      catchError(error => of(meLoadError(error)))
+      catchError((error) => of(meLoadError(error)))
     )
   );
 
@@ -63,32 +63,32 @@ export class AppEffects {
           .updateSettings(me.id, action.payload)
           .pipe(map((user: User) => meLoaded({ payload: user })))
       ),
-      catchError(error => of(meLoadError(error)))
+      catchError((error) => of(meLoadError(error)))
     )
   );
 
   loadUsers$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadUsers),
-      switchMap(action => {
+      switchMap((action) => {
         return this.userService
           .find(action.payload)
           .pipe(map((pagedList: PagedList<User>) => usersLoaded({ payload: pagedList })));
       }),
-      catchError(error => of(usersLoadError(error)))
+      catchError((error) => of(usersLoadError(error)))
     )
   );
 
   loadProject$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadProject),
-      switchMap(action => {
+      switchMap((action) => {
         const payload = action.payload;
         return this.projectService
           .byOwnerAndName(payload.username, payload.projectName, { params: { fetch: 'myrole' } })
           .pipe(
             map((p: Project) => projectLoaded({ payload: p })),
-            catchError(error => of(projectLoadError({ error })))
+            catchError((error) => of(projectLoadError({ error })))
           );
       })
     )
@@ -97,10 +97,10 @@ export class AppEffects {
   createProject$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createProject),
-      switchMap(action =>
+      switchMap((action) =>
         this.projectService.create(action.payload).pipe(
           map((payload: Project) => projectCreated({ payload })),
-          catchError(error => of(projectCreateError({ error })))
+          catchError((error) => of(projectCreateError({ error })))
         )
       )
     )
@@ -109,10 +109,10 @@ export class AppEffects {
   updateProject$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateProject),
-      switchMap(action =>
+      switchMap((action) =>
         this.projectService.update(action.payload).pipe(
           map((payload: Project) => projectUpdated({ payload })),
-          catchError(error => of(projectUpdateError({ error })))
+          catchError((error) => of(projectUpdateError({ error })))
         )
       )
     )

@@ -3,7 +3,7 @@ import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 
 describe('utils', () => {
   describe('mergeWithError', () => {
-    it('should emit entity with single item input', done => {
+    it('should emit entity with single item input', (done) => {
       // given
       const entity$ = new BehaviorSubject<string>(undefined);
       const error$ = new Subject<number>();
@@ -20,7 +20,7 @@ describe('utils', () => {
       });
     });
 
-    it('should throw error with error input', done => {
+    it('should throw error with error input', (done) => {
       // given
       const entity$ = new BehaviorSubject<string>(undefined);
       const error$ = new BehaviorSubject<number>(undefined);
@@ -37,7 +37,7 @@ describe('utils', () => {
       });
     });
 
-    it('should throw two errors with two error inputs', done => {
+    it('should throw two errors with two error inputs', (done) => {
       // given
       const entity$ = new BehaviorSubject<string>(undefined);
       const error$ = new ReplaySubject<number>();

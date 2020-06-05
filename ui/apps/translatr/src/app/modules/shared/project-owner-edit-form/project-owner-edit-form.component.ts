@@ -82,10 +82,10 @@ export class ProjectOwnerEditFormComponent
     this.userFormControl.valueChanges
       .pipe(
         debounceTime(200),
-        map(value => (typeof value === 'string' ? value : value.username)),
+        map((value) => (typeof value === 'string' ? value : value.username)),
         takeUntil(this.destroy$)
       )
-      .subscribe(value => this.userFilter.emit(value));
+      .subscribe((value) => this.userFilter.emit(value));
   }
 
   ngOnDestroy(): void {

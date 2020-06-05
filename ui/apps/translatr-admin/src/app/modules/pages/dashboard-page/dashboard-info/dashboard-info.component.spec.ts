@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DashboardInfoComponent } from './dashboard-info.component';
-import { FeatureFlagTestingModule, MetricTestingModule } from '@translatr/components/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AppFacade } from '../../../../+state/app.facade';
 import { ShortNumberModule } from '@dev/translatr-components';
+import { FeatureFlagTestingModule, MetricTestingModule } from '@translatr/components/testing';
+import { AppFacade } from '../../../../+state/app.facade';
+import { DashboardInfoComponent } from './dashboard-info.component';
 
 describe('DashboardInfoComponent', () => {
   let component: DashboardInfoComponent;

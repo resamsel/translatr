@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
+import { PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
 import { select, Store } from '@ngrx/store';
-import { ProjectsPartialState } from './projects.reducer';
-import { projectsQuery } from './projects.selectors';
-import { LoadMyProjects, LoadProjects } from './projects.actions';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
+import { LoadMyProjects, LoadProjects } from './projects.actions';
+import { ProjectsPartialState } from './projects.reducer';
+import { projectsQuery } from './projects.selectors';
 
 @Injectable()
 export class ProjectsFacade {

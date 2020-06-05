@@ -14,7 +14,7 @@ export interface Identifiable {
 
 const getViolations = (
   error: Error | ConstraintViolationErrorInfo | undefined
-): Array<ConstraintViolation> | undefined => {
+): ConstraintViolation[] | undefined => {
   if (error !== undefined) {
     if ('error' in error) {
       return error.error.violations;

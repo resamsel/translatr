@@ -42,7 +42,7 @@ const getSelectedLocale = createSelector(
       return undefined;
     }
 
-    const selectedLocales = locales.list.filter(locale => locale.name === localeName);
+    const selectedLocales = locales.list.filter((locale) => locale.name === localeName);
 
     return selectedLocales.length === 1 ? selectedLocales[0] : undefined;
   }
@@ -60,7 +60,7 @@ const getSelectedKey = createSelector(
       return undefined;
     }
 
-    const selectedKeys = keys.list.filter(key => key.name === keyName);
+    const selectedKeys = keys.list.filter((key) => key.name === keyName);
 
     return selectedKeys.length === 1 ? selectedKeys[0] : undefined;
   }
