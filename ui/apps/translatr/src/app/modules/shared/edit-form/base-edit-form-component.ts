@@ -1,10 +1,10 @@
-import { Observable, Subject } from 'rxjs';
-import { MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { filter, takeUntil } from 'rxjs/operators';
-import { ConstraintViolation, ConstraintViolationErrorInfo, Error } from '@dev/translatr-model';
 import { ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConstraintViolation, ConstraintViolationErrorInfo, Error } from '@dev/translatr-model';
+import { Observable, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 const ENTER_KEYCODE = 'Enter';
 
@@ -12,7 +12,9 @@ export interface Identifiable {
   id?: number | string;
 }
 
-const getViolations = (error: Error | ConstraintViolationErrorInfo | undefined): Array<ConstraintViolation> | undefined => {
+const getViolations = (
+  error: Error | ConstraintViolationErrorInfo | undefined
+): Array<ConstraintViolation> | undefined => {
   if (error !== undefined) {
     if ('error' in error) {
       return error.error.violations;
@@ -46,14 +48,12 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
         filter(([result, error]) => !!result || !!error),
         takeUntil(this.destroy$)
       )
-      .subscribe(
-        ([r, error]: [R, { error: Error }]) => {
-          if (error !== undefined) {
-            return this.onError(error.error);
-          }
-          return this.onSuccess(r);
+      .subscribe(([r, error]: [R, { error: Error }]) => {
+        if (error !== undefined) {
+          return this.onError(error.error);
         }
-      );
+        return this.onSuccess(r);
+      });
   }
 
   get invalid(): boolean {
@@ -80,11 +80,7 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
     this.processing = false;
     this.onSaved(r);
 
-    this.snackBar.open(
-      this.messageProvider(r),
-      'Dismiss',
-      {duration: 3000}
-    );
+    this.snackBar.open(this.messageProvider(r), 'Dismiss', { duration: 3000 });
   }
 
   protected onSaved(r: R): void {
@@ -100,7 +96,7 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
       violations.forEach((violation: ConstraintViolation) => {
         const control = this.form.get(violation.field);
         if (!!control) {
-          control.setErrors({violation: violation.message});
+          control.setErrors({ violation: violation.message });
           control.markAsTouched();
         }
       });
@@ -121,9 +117,12 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
 
   @HostListener('window:keyup', ['$event'])
   protected onHotkey(event: KeyboardEvent) {
-    if (event.key === ENTER_KEYCODE
-      && event.ctrlKey === true
-      && this.isValid() && !this.processing) {
+    if (
+      event.key === ENTER_KEYCODE &&
+      event.ctrlKey === true &&
+      this.isValid() &&
+      !this.processing
+    ) {
       this.onSave();
     }
   }

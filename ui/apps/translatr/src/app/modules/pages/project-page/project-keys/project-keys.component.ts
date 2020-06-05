@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ProjectFacade } from '../+state/project.facade';
-import { filter, skip, take, takeUntil } from 'rxjs/operators';
-import { Key, KeyCriteria, Project } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { Key, KeyCriteria, Project } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
 import { combineLatest } from 'rxjs';
+import { filter, skip, take, takeUntil } from 'rxjs/operators';
+import { ProjectFacade } from '../+state/project.facade';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,8 +18,9 @@ export class ProjectKeysComponent {
   readonly keys$ = this.facade.keys$;
   readonly criteria$ = this.facade.keysCriteria$;
   readonly canModify$ = this.facade.canModifyKey$;
-  private readonly context$ = combineLatest([this.criteria$, this.project$])
-    .pipe(takeUntil(this.facade.unload$));
+  private readonly context$ = combineLatest([this.criteria$, this.project$]).pipe(
+    takeUntil(this.facade.unload$)
+  );
 
   constructor(
     private readonly facade: ProjectFacade,
@@ -40,11 +41,7 @@ export class ProjectKeysComponent {
   }
 
   onEdit(key: Key) {
-    this.snackBar.open(
-      `Edit key ${key.name}`,
-      'Dismiss',
-      { duration: 2000 }
-    );
+    this.snackBar.open(`Edit key ${key.name}`, 'Dismiss', { duration: 2000 });
   }
 
   onDelete(key: Key) {
@@ -52,11 +49,7 @@ export class ProjectKeysComponent {
     this.facade.keyModified$
       .pipe(skip(1), take(1))
       .subscribe(([k]) =>
-        this.snackBar.open(
-          `Key ${k.name} deleted`,
-          'Dismiss',
-          {duration: 5000}
-        )
+        this.snackBar.open(`Key ${k.name} deleted`, 'Dismiss', { duration: 5000 })
       );
   }
 }

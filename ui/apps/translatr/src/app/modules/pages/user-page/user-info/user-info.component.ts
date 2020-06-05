@@ -1,13 +1,13 @@
 import { Component, Inject, Injector, OnInit } from '@angular/core';
-import { PagedList, Project, User } from '@dev/translatr-model';
-import { UserFacade } from '../+state/user.facade';
-import { filter, map, take, takeUntil } from 'rxjs/operators';
-import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, CanActivate, Router } from '@angular/router';
+import { PagedList, Project, User } from '@dev/translatr-model';
 import { canActivate$, NameIconRoute, slicePagedList } from '@translatr/utils';
-import { USER_ROUTES } from '../user-page.token';
 import { Observable, of } from 'rxjs';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { UserFacade } from '../+state/user.facade';
+import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
+import { USER_ROUTES } from '../user-page.token';
 
 @Component({
   selector: 'app-user-info',
@@ -16,24 +16,28 @@ import { Observable, of } from 'rxjs';
 })
 export class UserInfoComponent implements OnInit {
   readonly user$ = this.facade.user$;
-  readonly projects$ = this.facade.projects$
-    .pipe(
-      map((pagedList: PagedList<Project>) => !!pagedList
+  readonly projects$ = this.facade.projects$.pipe(
+    map((pagedList: PagedList<Project>) =>
+      !!pagedList
         ? {
-          ...pagedList,
-          list: pagedList.list.slice(0, 3)
-        }
-        : pagedList)
-    );
+            ...pagedList,
+            list: pagedList.list.slice(0, 3)
+          }
+        : pagedList
+    )
+  );
   readonly canCreateProject$ = this.facade.canCreateProject$;
-  readonly activities$ = this.facade.activities$
-    .pipe(map(pagedList => slicePagedList(pagedList, 8)));
+  readonly activities$ = this.facade.activities$.pipe(
+    map(pagedList => slicePagedList(pagedList, 8))
+  );
 
-  readonly activityRoute: NameIconRoute | undefined = this.routes[0].children
-    .find(route => route.path === 'activity');
+  readonly activityRoute: NameIconRoute | undefined = this.routes[0].children.find(
+    route => route.path === 'activity'
+  );
   readonly canReadActivity$ = this.facade.canReadActivity$;
-  readonly activityLink$ = this.canActivate$(this.activityRoute)
-    .pipe(map(active => active ? 'activity' : undefined));
+  readonly activityLink$ = this.canActivate$(this.activityRoute).pipe(
+    map(active => (active ? 'activity' : undefined))
+  );
 
   constructor(
     private readonly facade: UserFacade,
@@ -42,8 +46,7 @@ export class UserInfoComponent implements OnInit {
     private readonly injector: Injector,
     private readonly route: ActivatedRoute,
     @Inject(USER_ROUTES) private routes: { children: NameIconRoute[] }[]
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.user$
@@ -72,8 +75,7 @@ export class UserInfoComponent implements OnInit {
         take(1),
         filter(project => !!project)
       )
-      .subscribe((project => this.router
-        .navigate([project.ownerUsername, project.name])));
+      .subscribe(project => this.router.navigate([project.ownerUsername, project.name]));
   }
 
   canActivate$(route: NameIconRoute): Observable<boolean> {
@@ -81,10 +83,6 @@ export class UserInfoComponent implements OnInit {
       return of(false);
     }
 
-    return canActivate$(
-      route,
-      this.route,
-      (guard: any) => this.injector.get<CanActivate>(guard)
-    );
+    return canActivate$(route, this.route, (guard: any) => this.injector.get<CanActivate>(guard));
   }
 }

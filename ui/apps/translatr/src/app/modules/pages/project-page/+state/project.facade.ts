@@ -1,7 +1,25 @@
 import { Injectable } from '@angular/core';
+import {
+  AccessTokenCriteria,
+  ActivityCriteria,
+  Key,
+  KeyCriteria,
+  Locale,
+  LocaleCriteria,
+  Member,
+  MemberCriteria,
+  MemberRole,
+  memberRoles,
+  Project,
+  User,
+  UserRole
+} from '@dev/translatr-model';
 import { select, Store } from '@ngrx/store';
-import { ProjectPartialState } from './project.reducer';
-import { projectQuery } from './project.selectors';
+import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
+import { mergeWithError } from '@translatr/utils';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { AppFacade, defaultParams } from '../../../../+state/app.facade';
 import {
   createKey,
   createLocale,
@@ -21,32 +39,10 @@ import {
   updateLocale,
   updateMember
 } from './project.actions';
-import { Observable, Subject } from 'rxjs';
-import {
-  AccessTokenCriteria,
-  ActivityCriteria,
-  Key,
-  KeyCriteria,
-  Locale,
-  LocaleCriteria,
-  Member,
-  MemberCriteria,
-  MemberRole,
-  memberRoles,
-  Project,
-  User,
-  UserRole
-} from '@dev/translatr-model';
-import { map, takeUntil } from 'rxjs/operators';
-import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
-import { AppFacade, defaultParams } from '../../../../+state/app.facade';
-import { mergeWithError } from '@translatr/utils';
+import { ProjectPartialState } from './project.reducer';
+import { projectQuery } from './project.selectors';
 
-const hasRolesAny = (
-  project: Project,
-  user: User,
-  ...roles: MemberRole[]
-): boolean => {
+const hasRolesAny = (project: Project, user: User, ...roles: MemberRole[]): boolean => {
   if (project === undefined || user === undefined) {
     return false;
   }
@@ -66,8 +62,7 @@ const hasRolesAny = (
   return false;
 };
 
-const canAccess = (project: Project, me: User): boolean =>
-  hasRolesAny(project, me, ...memberRoles);
+const canAccess = (project: Project, me: User): boolean => hasRolesAny(project, me, ...memberRoles);
 const canEdit = (project: Project, me: User): boolean =>
   hasRolesAny(project, me, MemberRole.Owner, MemberRole.Manager);
 const canDelete = (project: Project, me: User): boolean =>
@@ -81,44 +76,29 @@ const canModifyMember = (project: Project, me: User): boolean =>
 
 @Injectable()
 export class ProjectFacade {
-
   private _unload$ = new Subject<void>();
 
   get unload$(): Observable<void> {
     return this._unload$.asObservable();
   }
 
-  project$ = this.appFacade.project$.pipe(
-    takeUntil(this.unload$)
-  );
+  project$ = this.appFacade.project$.pipe(takeUntil(this.unload$));
 
-  locales$ = this.store.pipe(
-    select(projectQuery.getLocales),
-    takeUntil(this.unload$)
-  );
+  locales$ = this.store.pipe(select(projectQuery.getLocales), takeUntil(this.unload$));
   localesCriteria$ = this.appFacade.criteria$();
   locale$ = this.store.pipe(select(projectQuery.getLocale));
   localeError$ = this.store.pipe(select(projectQuery.getLocaleError));
   localeModified$ = mergeWithError(this.locale$, this.localeError$);
 
-  keys$ = this.store.pipe(
-    select(projectQuery.getKeys),
-    takeUntil(this.unload$)
-  );
+  keys$ = this.store.pipe(select(projectQuery.getKeys), takeUntil(this.unload$));
   keysCriteria$ = this.appFacade.criteria$();
   key$ = this.store.pipe(select(projectQuery.getKey));
   keyError$ = this.store.pipe(select(projectQuery.getKeyError));
   keyModified$ = mergeWithError(this.key$, this.keyError$);
 
-  messages$ = this.store.pipe(
-    select(projectQuery.getMessages),
-    takeUntil(this.unload$)
-  );
+  messages$ = this.store.pipe(select(projectQuery.getMessages), takeUntil(this.unload$));
 
-  members$ = this.store.pipe(
-    select(projectQuery.getMembers),
-    takeUntil(this.unload$)
-  );
+  members$ = this.store.pipe(select(projectQuery.getMembers), takeUntil(this.unload$));
   membersCriteria$ = this.appFacade.criteria$([...defaultParams, 'roles']);
   member$ = this.store.pipe(select(projectQuery.getMember));
   memberError$ = this.store.pipe(select(projectQuery.getMemberError));
@@ -128,23 +108,14 @@ export class ProjectFacade {
     select(projectQuery.getActivityAggregated),
     takeUntil(this.unload$)
   );
-  activities$ = this.store.pipe(
-    select(projectQuery.getActivities),
-    takeUntil(this.unload$)
-  );
+  activities$ = this.store.pipe(select(projectQuery.getActivities), takeUntil(this.unload$));
   activitiesCriteria$ = this.appFacade.criteria$();
 
   accessTokens$ = this.store.pipe(select(projectQuery.getAccessTokens));
 
-  canAccess$ = this.appFacade.permission$.pipe(
-    map(([project, me]) => canAccess(project, me))
-  );
-  canEdit$ = this.appFacade.permission$.pipe(
-    map(([project, me]) => canEdit(project, me))
-  );
-  canDelete$ = this.appFacade.permission$.pipe(
-    map(([project, me]) => canDelete(project, me))
-  );
+  canAccess$ = this.appFacade.permission$.pipe(map(([project, me]) => canAccess(project, me)));
+  canEdit$ = this.appFacade.permission$.pipe(map(([project, me]) => canEdit(project, me)));
+  canDelete$ = this.appFacade.permission$.pipe(map(([project, me]) => canDelete(project, me)));
   canModifyLocale$ = this.appFacade.permission$.pipe(
     map(([project, me]) => canModifyLocale(project, me))
   );
@@ -158,35 +129,34 @@ export class ProjectFacade {
   constructor(
     private readonly store: Store<ProjectPartialState>,
     private readonly appFacade: AppFacade
-  ) {
-  }
+  ) {}
 
   loadLocales(projectId: string, criteria?: LocaleCriteria) {
-    this.store.dispatch(loadLocales({payload: {...criteria, projectId}}));
+    this.store.dispatch(loadLocales({ payload: { ...criteria, projectId } }));
   }
 
   loadKeys(projectId: string, criteria?: KeyCriteria) {
-    this.store.dispatch(loadKeys({payload: {...criteria, projectId}}));
+    this.store.dispatch(loadKeys({ payload: { ...criteria, projectId } }));
   }
 
   loadMembers(projectId: string, criteria?: MemberCriteria) {
-    this.store.dispatch(loadMembers({payload: {...criteria, projectId}}));
+    this.store.dispatch(loadMembers({ payload: { ...criteria, projectId } }));
   }
 
   loadMessages(projectId: string, criteria?: MessageCriteria) {
-    this.store.dispatch(loadMessages({payload: {...criteria, projectId}}));
+    this.store.dispatch(loadMessages({ payload: { ...criteria, projectId } }));
   }
 
   loadActivityAggregated(projectId: string) {
-    this.store.dispatch(loadProjectActivityAggregated({payload: {id: projectId}}));
+    this.store.dispatch(loadProjectActivityAggregated({ payload: { id: projectId } }));
   }
 
   loadActivities(projectId: string, criteria?: ActivityCriteria) {
-    this.store.dispatch(loadProjectActivities({payload: {...criteria, projectId}}));
+    this.store.dispatch(loadProjectActivities({ payload: { ...criteria, projectId } }));
   }
 
   loadAccessTokens(criteria?: AccessTokenCriteria) {
-    this.store.dispatch(loadAccessTokens({payload: criteria}));
+    this.store.dispatch(loadAccessTokens({ payload: criteria }));
   }
 
   unloadProject() {
@@ -196,38 +166,38 @@ export class ProjectFacade {
   }
 
   createLocale(locale: Locale) {
-    this.store.dispatch(createLocale({payload: locale}));
+    this.store.dispatch(createLocale({ payload: locale }));
   }
 
   updateLocale(locale: Locale) {
-    this.store.dispatch(updateLocale({payload: locale}));
+    this.store.dispatch(updateLocale({ payload: locale }));
   }
 
   deleteLocale(id: string) {
-    this.store.dispatch(deleteLocale({payload: {id}}));
+    this.store.dispatch(deleteLocale({ payload: { id } }));
   }
 
   createKey(key: Key) {
-    this.store.dispatch(createKey({payload: key}));
+    this.store.dispatch(createKey({ payload: key }));
   }
 
   updateKey(key: Key) {
-    this.store.dispatch(updateKey({payload: key}));
+    this.store.dispatch(updateKey({ payload: key }));
   }
 
   deleteKey(id: string) {
-    this.store.dispatch(deleteKey({payload: {id}}));
+    this.store.dispatch(deleteKey({ payload: { id } }));
   }
 
   createMember(member: Member) {
-    this.store.dispatch(createMember({payload: member}));
+    this.store.dispatch(createMember({ payload: member }));
   }
 
   updateMember(member: Member) {
-    this.store.dispatch(updateMember({payload: member}));
+    this.store.dispatch(updateMember({ payload: member }));
   }
 
   deleteMember(id: number): void {
-    this.store.dispatch(deleteMember({payload: {id}}));
+    this.store.dispatch(deleteMember({ payload: { id } }));
   }
 }

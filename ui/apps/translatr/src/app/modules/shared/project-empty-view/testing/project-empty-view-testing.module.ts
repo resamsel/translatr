@@ -13,5 +13,4 @@ class MockProjectEmptyViewComponent {
   declarations: [MockProjectEmptyViewComponent],
   exports: [MockProjectEmptyViewComponent]
 })
-export class ProjectEmptyViewTestingModule {
-}
+export class ProjectEmptyViewTestingModule {}

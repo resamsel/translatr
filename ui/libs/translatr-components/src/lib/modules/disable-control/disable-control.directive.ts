@@ -12,8 +12,7 @@ export class DisableControlDirective implements AfterViewInit {
     this.updateControl(disabled);
   }
 
-  constructor(private readonly ngControl: NgControl) {
-  }
+  constructor(private readonly ngControl: NgControl) {}
 
   ngAfterViewInit(): void {
     this.updateControl(this._disabled);

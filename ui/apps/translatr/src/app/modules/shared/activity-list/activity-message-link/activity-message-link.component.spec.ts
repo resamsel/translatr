@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ActivityMessageLinkComponent } from './activity-message-link.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+
+import { ActivityMessageLinkComponent } from './activity-message-link.component';
 
 describe('ActivityMessageLinkComponent', () => {
   let component: ActivityMessageLinkComponent;
@@ -12,8 +12,7 @@ describe('ActivityMessageLinkComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ActivityMessageLinkComponent],
       imports: [RouterTestingModule, TranslocoTestingModule]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

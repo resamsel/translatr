@@ -11,5 +11,4 @@ export class MockDisableControlDirective {
   declarations: [MockDisableControlDirective],
   exports: [MockDisableControlDirective]
 })
-export class DisableControlTestingModule {
-}
+export class DisableControlTestingModule {}

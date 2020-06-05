@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
-import { Member, MemberRole, Project } from '@dev/translatr-model';
-import { Subject } from 'rxjs';
+import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormBuilder } from '@angular/forms';
-import { debounceTime, map, takeUntil } from 'rxjs/operators';
+import { Member, MemberRole, Project } from '@dev/translatr-model';
 import { ProjectService } from '@dev/translatr-sdk';
+import { Subject } from 'rxjs';
+import { debounceTime, map, takeUntil } from 'rxjs/operators';
+import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
 
 interface ProjectForm {
   id: string;
@@ -40,7 +40,6 @@ const formToModel = (form: ProjectForm): Project => ({
 export class ProjectOwnerEditFormComponent
   extends AbstractEditFormComponent<ProjectOwnerEditFormComponent, ProjectForm, Project>
   implements OnInit, OnDestroy {
-
   private destroy$ = new Subject<void>();
 
   @Input() set project(project: Project) {
@@ -77,12 +76,13 @@ export class ProjectOwnerEditFormComponent
   }
 
   ngOnInit(): void {
-    this.failure.pipe(takeUntil(this.destroy$))
+    this.failure
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.changeDetectorRef.markForCheck());
     this.userFormControl.valueChanges
       .pipe(
         debounceTime(200),
-        map(value => typeof value === 'string' ? value : value.username),
+        map(value => (typeof value === 'string' ? value : value.username)),
         takeUntil(this.destroy$)
       )
       .subscribe(value => this.userFilter.emit(value));

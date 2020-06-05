@@ -17,5 +17,4 @@ class MockProjectCardListComponent {
   declarations: [MockProjectCardListComponent],
   exports: [MockProjectCardListComponent]
 })
-export class ProjectCardListTestingModule {
-}
+export class ProjectCardListTestingModule {}

@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ForbiddenPageComponent } from './forbidden-page.component';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ErrorPageTestingModule } from '@translatr/components/testing';
 import { AppFacade } from '../../../+state/app.facade';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ForbiddenPageComponent } from './forbidden-page.component';
 
 describe('ForbiddenPageComponent', () => {
   let component: ForbiddenPageComponent;
@@ -11,11 +11,7 @@ describe('ForbiddenPageComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ForbiddenPageComponent],
-      imports: [
-        ErrorPageTestingModule,
-
-        RouterTestingModule
-      ],
+      imports: [ErrorPageTestingModule, RouterTestingModule],
       providers: [
         {
           provide: AppFacade,
@@ -24,8 +20,7 @@ describe('ForbiddenPageComponent', () => {
           })
         }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

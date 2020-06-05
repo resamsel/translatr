@@ -7,12 +7,12 @@ import { ProjectFacade } from './+state/project.facade';
   providedIn: 'root'
 })
 export class ProjectAccessGuard implements CanActivate {
-  constructor(private readonly facade: ProjectFacade) {
-  }
+  constructor(private readonly facade: ProjectFacade) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    state: RouterStateSnapshot
+  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.facade.canAccess$;
   }
 }

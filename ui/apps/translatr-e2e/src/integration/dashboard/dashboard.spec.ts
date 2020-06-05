@@ -23,8 +23,7 @@ describe('Dashboard', () => {
     page.navigateTo();
 
     // then
-    page.getPageName()
-      .should('have.text', 'Dashboard');
+    page.getPageName().should('have.text', 'Dashboard');
   });
 
   it('should have metrics values', () => {
@@ -34,20 +33,22 @@ describe('Dashboard', () => {
     page.navigateTo();
 
     // then
-    page.getProjectCardLinks()
-      .should('have.length', 4);
-    page.getProjectEmptyView()
-      .should('have.length', 0);
-    page.getMetric('my.project')
+    page.getProjectCardLinks().should('have.length', 4);
+    page.getProjectEmptyView().should('have.length', 0);
+    page
+      .getMetric('my.project')
       .find('.mat-card-title')
       .should('have.text', '11');
-    page.getMetric('my.activity')
+    page
+      .getMetric('my.activity')
       .find('.mat-card-title')
       .should('have.text', '1.6k');
-    page.getMetric('all.project')
+    page
+      .getMetric('all.project')
       .find('.mat-card-title')
       .should('have.text', '13');
-    page.getMetric('user')
+    page
+      .getMetric('user')
       .find('.mat-card-title')
       .should('have.text', '10.4k');
   });

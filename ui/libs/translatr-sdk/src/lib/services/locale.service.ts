@@ -1,20 +1,17 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Locale, LocaleCriteria } from '@dev/translatr-model';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { AbstractService, encodePathParam } from './abstract.service';
-import { Locale, LocaleCriteria } from '@dev/translatr-model';
 import { ErrorHandler } from './error-handler';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
-  constructor(
-    http: HttpClient,
-    errorHandler: ErrorHandler
-  ) {
+  constructor(http: HttpClient, errorHandler: ErrorHandler) {
     super(
       http,
       errorHandler,
@@ -30,16 +27,12 @@ export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
     params?:
       | HttpParams
       | {
-      [param: string]: string | string[];
-    };
+          [param: string]: string | string[];
+        };
   }): Observable<Locale> {
-    const path = `/api/${
-      encodePathParam(options.username)
-    }/${
-      encodePathParam(options.projectName)
-    }/locales/${
-      encodePathParam(options.localeName)
-    }`;
+    const path = `/api/${encodePathParam(options.username)}/${encodePathParam(
+      options.projectName
+    )}/locales/${encodePathParam(options.localeName)}`;
     return this.http
       .get<Locale>(path, { params: options.params })
       .pipe(
@@ -50,7 +43,8 @@ export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
             params: [options],
             method: 'get',
             path
-          }))
+          })
+        )
       );
   }
 }

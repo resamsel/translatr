@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ProjectMemberEditDialogComponent } from './project-member-edit-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { UsersFacade } from '../../pages/users-page/+state/users.facade';
-import { AppFacade } from '../../../+state/app.facade';
-import { ProjectMemberEditFormTestingModule } from '../testing';
-import { mockObservable } from '@translatr/utils/testing';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { mockObservable } from '@translatr/utils/testing';
+import { AppFacade } from '../../../+state/app.facade';
+import { UsersFacade } from '../../pages/users-page/+state/users.facade';
+import { ProjectMemberEditFormTestingModule } from '../testing';
+
+import { ProjectMemberEditDialogComponent } from './project-member-edit-dialog.component';
 
 describe('ProjectMemberEditDialogComponent', () => {
   let component: ProjectMemberEditDialogComponent;
@@ -34,8 +34,7 @@ describe('ProjectMemberEditDialogComponent', () => {
         },
         { provide: AppFacade, useFactory: () => ({}) }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

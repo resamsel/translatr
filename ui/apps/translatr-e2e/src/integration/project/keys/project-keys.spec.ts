@@ -16,8 +16,7 @@ describe('Project Keys', () => {
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
     cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
     cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
-    cy.route('/api/activities/aggregated*',
-      'fixture:johndoe/p1/activities-aggregated');
+    cy.route('/api/activities/aggregated*', 'fixture:johndoe/p1/activities-aggregated');
   });
 
   it('should have page name Project Keys', () => {
@@ -27,7 +26,6 @@ describe('Project Keys', () => {
     page.navigateTo();
 
     // then
-    page.getPageName()
-      .should('have.text', 'johndoe/p1');
+    page.getPageName().should('have.text', 'johndoe/p1');
   });
 });

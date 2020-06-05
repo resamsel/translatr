@@ -12,19 +12,20 @@ class MockErrorPageComponent {
   selector: 'dev-error-page-header',
   template: ''
 })
-class MockErrorPageHeaderComponent {
-}
+class MockErrorPageHeaderComponent {}
 
 @Component({
   selector: 'dev-error-page-message',
   template: ''
 })
-class MockErrorPageMessageComponent {
-}
+class MockErrorPageMessageComponent {}
 
 @NgModule({
-  declarations: [MockErrorPageComponent, MockErrorPageHeaderComponent, MockErrorPageMessageComponent],
+  declarations: [
+    MockErrorPageComponent,
+    MockErrorPageHeaderComponent,
+    MockErrorPageMessageComponent
+  ],
   exports: [MockErrorPageComponent, MockErrorPageHeaderComponent, MockErrorPageMessageComponent]
 })
-export class ErrorPageTestingModule {
-}
+export class ErrorPageTestingModule {}

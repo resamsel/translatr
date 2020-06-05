@@ -1,17 +1,18 @@
 import { Component, Inject } from '@angular/core';
-import { ConstraintViolation, Error, Project } from '@dev/translatr-model';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConstraintViolation, Error, Project } from '@dev/translatr-model';
 import { ProjectService } from '@dev/translatr-sdk';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
-export const equalValidator =
-  (expected: string): (control: AbstractControl) => ValidationErrors | null => {
-    return (control: AbstractControl): ValidationErrors | null => {
-      return control.value === expected ? null : { invalid: true };
-    };
+export const equalValidator = (
+  expected: string
+): ((control: AbstractControl) => ValidationErrors | null) => {
+  return (control: AbstractControl): ValidationErrors | null => {
+    return control.value === expected ? null : { invalid: true };
   };
+};
 
 @Component({
   selector: 'app-project-delete-dialog',
@@ -19,7 +20,6 @@ export const equalValidator =
   styleUrls: ['./project-delete-dialog.component.scss']
 })
 export class ProjectDeleteDialogComponent {
-
   form = new FormGroup({
     id: new FormControl(''),
     name: new FormControl('')
@@ -46,7 +46,8 @@ export class ProjectDeleteDialogComponent {
       this.processing = true;
 
       const value: Project = this.form.value;
-      this.projectService.delete(value.id)
+      this.projectService
+        .delete(value.id)
         .pipe(take(1))
         .subscribe(
           (res: Project) => this.onSuccess(res),
@@ -57,11 +58,7 @@ export class ProjectDeleteDialogComponent {
 
   private onSuccess(project: Project) {
     this.processing = false;
-    this.snackBar.open(
-      `Project ${project.name} was deleted`,
-      'Dismiss',
-      { duration: 3000 }
-    );
+    this.snackBar.open(`Project ${project.name} was deleted`, 'Dismiss', { duration: 3000 });
     this.dialogRef.close(project);
   }
 
@@ -79,6 +76,8 @@ export class ProjectDeleteDialogComponent {
   }
 }
 
-export const openProjectDeleteDialog = (dialog: MatDialog, project: Partial<Project>):
-  MatDialogRef<ProjectDeleteDialogComponent, Project> =>
+export const openProjectDeleteDialog = (
+  dialog: MatDialog,
+  project: Partial<Project>
+): MatDialogRef<ProjectDeleteDialogComponent, Project> =>
   dialog.open(ProjectDeleteDialogComponent, { data: project });

@@ -4,5 +4,4 @@ import { Component } from '@angular/core';
   selector: 'dev-error-page-header',
   template: '<ng-content></ng-content>'
 })
-export class ErrorPageHeaderComponent {
-}
+export class ErrorPageHeaderComponent {}

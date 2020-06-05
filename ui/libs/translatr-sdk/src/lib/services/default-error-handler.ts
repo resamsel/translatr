@@ -1,8 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { NotificationService } from '@translatr/translatr-sdk/src/lib/services/notification.service';
 import { Observable, throwError } from 'rxjs';
 import { ErrorHandler, RestRequest } from './error-handler';
-import { HttpErrorResponse } from '@angular/common/http';
-import { NotificationService } from '@translatr/translatr-sdk/src/lib/services/notification.service';
-import { Router } from '@angular/router';
 
 const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_UNAUTHORIZED = 401;
@@ -91,9 +91,7 @@ export class DefaultErrorHandler extends ErrorHandler {
 
         return throwError(true);
       default:
-        this.notificationService.notify(
-          `Received error message: ${errorMessage(err)}`
-        );
+        this.notificationService.notify(`Received error message: ${errorMessage(err)}`);
 
         return throwError(err);
     }

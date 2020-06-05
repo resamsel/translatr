@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { ShortNumberPipe } from './short-number.pipe';
 
 @NgModule({
@@ -7,5 +7,4 @@ import { ShortNumberPipe } from './short-number.pipe';
   exports: [ShortNumberPipe],
   imports: [CommonModule]
 })
-export class ShortNumberModule {
-}
+export class ShortNumberModule {}

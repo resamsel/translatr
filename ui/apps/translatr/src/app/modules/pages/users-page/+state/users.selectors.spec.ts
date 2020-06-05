@@ -2,16 +2,14 @@ import { initialState, USERS_FEATURE_KEY, UsersState } from './users.reducer';
 import { usersQuery } from './users.selectors';
 
 describe('Users Selectors', () => {
-  let storeState: { [USERS_FEATURE_KEY]: UsersState; };
+  let storeState: { [USERS_FEATURE_KEY]: UsersState };
 
   beforeEach(() => {
     storeState = {
       [USERS_FEATURE_KEY]: {
         ...initialState,
         list: {
-          list: [
-            { id: '1', name: 'name', username: 'username' }
-          ],
+          list: [{ id: '1', name: 'name', username: 'username' }],
           hasNext: false,
           hasPrev: false,
           limit: 20,

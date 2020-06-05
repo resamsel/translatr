@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
-import { Member, MemberRole, memberRoles, User } from '@dev/translatr-model';
+import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormBuilder } from '@angular/forms';
+import { Member, MemberRole, memberRoles, User } from '@dev/translatr-model';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
-import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
 
 interface MemberForm {
   id?: number;
@@ -39,7 +39,6 @@ const formToMember = (form: MemberForm): Member => {
 export class ProjectMemberEditFormComponent
   extends BaseEditFormComponent<ProjectMemberEditFormComponent, MemberForm, Member>
   implements OnInit {
-
   @Input() set member(member: Partial<Member>) {
     this.updateValue(member);
   }
@@ -84,7 +83,7 @@ export class ProjectMemberEditFormComponent
     this.userFormControl.valueChanges
       .pipe(
         debounceTime(200),
-        map(value => typeof value === 'string' ? value : value.username),
+        map(value => (typeof value === 'string' ? value : value.username)),
         takeUntil(this.destroy$)
       )
       .subscribe(value => this.userFilter.emit(value));

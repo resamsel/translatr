@@ -4,5 +4,4 @@ import { Component } from '@angular/core';
   selector: 'dev-error-page-message',
   template: '<ng-content></ng-content>'
 })
-export class ErrorPageMessageComponent {
-}
+export class ErrorPageMessageComponent {}

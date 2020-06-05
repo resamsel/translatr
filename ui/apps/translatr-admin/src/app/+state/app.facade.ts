@@ -1,7 +1,21 @@
+import { coerceArray } from '@angular/cdk/coercion';
 import { Injectable } from '@angular/core';
+import {
+  AccessToken,
+  ActivityCriteria,
+  Feature,
+  FeatureFlagCriteria,
+  FeatureFlagFacade,
+  Project,
+  ProjectCriteria,
+  RequestCriteria,
+  User,
+  UserFeatureFlag
+} from '@dev/translatr-model';
+import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { AppPartialState } from './app.reducer';
-import { appQuery } from './app.selectors';
+import { Observable, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import {
   AppActionTypes,
   CreateUser,
@@ -25,22 +39,8 @@ import {
   UpdateProject,
   UpdateUser
 } from './app.actions';
-import {
-  AccessToken,
-  ActivityCriteria,
-  Feature,
-  FeatureFlagCriteria,
-  FeatureFlagFacade,
-  Project,
-  ProjectCriteria,
-  RequestCriteria,
-  User,
-  UserFeatureFlag
-} from '@dev/translatr-model';
-import { Actions, ofType } from '@ngrx/effects';
-import { Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
-import { coerceArray } from '@angular/cdk/coercion';
+import { AppPartialState } from './app.reducer';
+import { appQuery } from './app.selectors';
 
 @Injectable()
 export class AppFacade extends FeatureFlagFacade {
@@ -50,10 +50,7 @@ export class AppFacade extends FeatureFlagFacade {
 
   unloadUsers$ = new Subject<void>();
 
-  users$ = this.store.pipe(
-    select(appQuery.getUsers),
-    takeUntil(this.unloadUsers$.asObservable())
-  );
+  users$ = this.store.pipe(select(appQuery.getUsers), takeUntil(this.unloadUsers$.asObservable()));
 
   userCreated$ = this.actions$.pipe(
     ofType(AppActionTypes.UserCreated),
@@ -113,17 +110,11 @@ export class AppFacade extends FeatureFlagFacade {
 
   accessTokens$ = this.store.pipe(select(appQuery.getAccessTokens));
   accessTokenDeleted$ = this.actions$.pipe(
-    ofType(
-      AppActionTypes.AccessTokenDeleted,
-      AppActionTypes.AccessTokenDeleteError
-    ),
+    ofType(AppActionTypes.AccessTokenDeleted, AppActionTypes.AccessTokenDeleteError),
     takeUntil(this.unloadProjects$.asObservable())
   );
   accessTokensDeleted$ = this.actions$.pipe(
-    ofType(
-      AppActionTypes.AccessTokensDeleted,
-      AppActionTypes.AccessTokensDeleteError
-    ),
+    ofType(AppActionTypes.AccessTokensDeleted, AppActionTypes.AccessTokensDeleteError),
     takeUntil(this.unloadProjects$.asObservable())
   );
 
@@ -135,17 +126,11 @@ export class AppFacade extends FeatureFlagFacade {
 
   featureFlags$ = this.store.pipe(select(appQuery.getFeatureFlags));
   featureFlagDeleted$ = this.actions$.pipe(
-    ofType(
-      AppActionTypes.FeatureFlagDeleted,
-      AppActionTypes.FeatureFlagDeleteError
-    ),
+    ofType(AppActionTypes.FeatureFlagDeleted, AppActionTypes.FeatureFlagDeleteError),
     takeUntil(this.unloadProjects$.asObservable())
   );
   featureFlagsDeleted$ = this.actions$.pipe(
-    ofType(
-      AppActionTypes.FeatureFlagsDeleted,
-      AppActionTypes.FeatureFlagsDeleteError
-    ),
+    ofType(AppActionTypes.FeatureFlagsDeleted, AppActionTypes.FeatureFlagsDeleteError),
     takeUntil(this.unloadProjects$.asObservable())
   );
 
@@ -153,10 +138,7 @@ export class AppFacade extends FeatureFlagFacade {
     return this.store.pipe(select(appQuery.getUser(userId)));
   }
 
-  constructor(
-    private readonly store: Store<AppPartialState>,
-    private readonly actions$: Actions
-  ) {
+  constructor(private readonly store: Store<AppPartialState>, private readonly actions$: Actions) {
     super();
   }
 
@@ -257,10 +239,7 @@ export class AppFacade extends FeatureFlagFacade {
   hasFeatures$(flags: Feature | Feature[]): Observable<boolean> {
     return this.me$.pipe(
       filter(x => !!x),
-      map(user => user.features
-        ? coerceArray(flags).every(flag => user.features[flag])
-        : false
-      )
+      map(user => (user.features ? coerceArray(flags).every(flag => user.features[flag]) : false))
     );
   }
 

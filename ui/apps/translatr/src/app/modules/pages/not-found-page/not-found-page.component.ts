@@ -10,10 +10,7 @@ import { AppFacade } from '../../../+state/app.facade';
 export class NotFoundPageComponent {
   me$ = this.facade.me$;
 
-  constructor(
-    private readonly facade: AppFacade,
-    readonly route: ActivatedRoute
-  ) {
+  constructor(private readonly facade: AppFacade, readonly route: ActivatedRoute) {
     facade.loadMe();
   }
 }

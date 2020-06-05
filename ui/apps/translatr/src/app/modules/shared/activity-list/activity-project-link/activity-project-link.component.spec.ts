@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ActivityProjectLinkComponent } from './activity-project-link.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+
+import { ActivityProjectLinkComponent } from './activity-project-link.component';
 
 describe('ActivityProjectLinkComponent', () => {
   let component: ActivityProjectLinkComponent;
@@ -12,8 +12,7 @@ describe('ActivityProjectLinkComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ActivityProjectLinkComponent],
       imports: [RouterTestingModule, TranslocoTestingModule]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -16,8 +16,7 @@ describe('Project Locales Edit Locale', () => {
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
     cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
     cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
-    cy.route('/api/activities/aggregated*',
-      'fixture:johndoe/p1/activities-aggregated');
+    cy.route('/api/activities/aggregated*', 'fixture:johndoe/p1/activities-aggregated');
   });
 
   it('should show locale edit button', () => {
@@ -27,7 +26,8 @@ describe('Project Locales Edit Locale', () => {
     page.navigateTo();
 
     // then
-    page.getLocaleList()
+    page
+      .getLocaleList()
       .find('button.edit')
       .should('be.visible');
   });
@@ -37,17 +37,20 @@ describe('Project Locales Edit Locale', () => {
 
     // when
     page.navigateTo();
-    page.getLocaleList()
+    page
+      .getLocaleList()
       .find('button.edit')
       .first()
       .click();
 
     // then
     page.getDialog().should('be.visible');
-    page.getDialog()
+    page
+      .getDialog()
       .find('.mat-dialog-title')
       .should('have.text', 'Edit Locale');
-    page.getDialog()
+    page
+      .getDialog()
       .find('.mat-form-field.name input')
       .should('have.value', 'de');
   });
@@ -57,11 +60,13 @@ describe('Project Locales Edit Locale', () => {
 
     // when
     page.navigateTo();
-    page.getLocaleList()
+    page
+      .getLocaleList()
       .find('button.edit')
       .first()
       .click();
-    page.getDialog()
+    page
+      .getDialog()
       .find('button.cancel')
       .click();
 

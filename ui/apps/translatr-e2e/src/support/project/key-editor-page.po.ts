@@ -1,5 +1,5 @@
-import { ProjectKeysPage } from './project-keys-page.po';
 import { EditorPage } from './editor-page.po';
+import { ProjectKeysPage } from './project-keys-page.po';
 
 export class KeyEditorPage extends EditorPage {
   constructor(
@@ -16,8 +16,7 @@ export class KeyEditorPage extends EditorPage {
   }
 
   navigateToKeys(): ProjectKeysPage {
-    return new ProjectKeysPage(this.username, this.projectName)
-      .navigateTo();
+    return new ProjectKeysPage(this.username, this.projectName).navigateTo();
   }
 
   getSelectedKeyField(): Cypress.Chainable<JQuery<HTMLElement>> {

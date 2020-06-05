@@ -1,20 +1,16 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AppFacade } from '../+state/app.facade';
-import { map } from 'rxjs/operators';
 import { User, UserRole } from '@dev/translatr-model';
 import { findParam } from '@translatr/utils';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AppFacade } from '../+state/app.facade';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MyselfGuard implements CanActivate {
-  constructor(
-    private readonly appFacade: AppFacade,
-    private readonly router: Router
-  ) {
-  }
+  constructor(private readonly appFacade: AppFacade, private readonly router: Router) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,

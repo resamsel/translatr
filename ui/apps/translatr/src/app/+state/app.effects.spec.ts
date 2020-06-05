@@ -1,6 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { PagedList, Project, User } from '@dev/translatr-model';
+import { ProjectService, UserService } from '@dev/translatr-sdk';
+import { Actions } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { BehaviorSubject, of, Subject } from 'rxjs';
-import { AppEffects } from './app.effects';
 import {
   createProject,
   loadMe,
@@ -15,10 +18,7 @@ import {
   updateSettings,
   usersLoaded
 } from './app.actions';
-import { PagedList, Project, User } from '@dev/translatr-model';
-import { ProjectService, UserService } from '@dev/translatr-sdk';
-import { Actions } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
+import { AppEffects } from './app.effects';
 import { AppState } from './app.reducer';
 
 describe('AppEffects', () => {
@@ -44,7 +44,8 @@ describe('AppEffects', () => {
       providers: [
         AppEffects,
         {
-          provide: UserService, useFactory: () => ({
+          provide: UserService,
+          useFactory: () => ({
             me: jest.fn(),
             find: jest.fn(),
             update: jest.fn(),
@@ -52,15 +53,17 @@ describe('AppEffects', () => {
           })
         },
         {
-          provide: ProjectService, useFactory: () => ({
+          provide: ProjectService,
+          useFactory: () => ({
             byOwnerAndName: jest.fn(),
             create: jest.fn(),
             update: jest.fn()
           })
         },
-        {provide: Actions, useValue: actions},
+        { provide: Actions, useValue: actions },
         {
-          provide: Store, useFactory: () => ({
+          provide: Store,
+          useFactory: () => ({
             select: jest.fn()
           })
         }
@@ -73,7 +76,7 @@ describe('AppEffects', () => {
   });
 
   describe('loadMe$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
       const user: User = { id: '1', name: 'user', username: 'username' };
       userService.me.mockReturnValueOnce(of(user));
@@ -85,7 +88,7 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toEqual(meLoaded({payload: user}));
+        expect(actual).toEqual(meLoaded({ payload: user }));
         expect(userService.me.mock.calls.length).toEqual(1);
         done();
       });
@@ -93,20 +96,20 @@ describe('AppEffects', () => {
   });
 
   describe('updatePreferredLanguage$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
-      const user: User = {id: '1', name: 'user', username: 'username', preferredLanguage: 'de'};
+      const user: User = { id: '1', name: 'user', username: 'username', preferredLanguage: 'de' };
       userService.update.mockReturnValue(of(user));
       store.select.mockReturnValue(of(user));
       const effects: AppEffects = TestBed.get(AppEffects);
       const target$ = effects.updatePreferredLanguage$;
 
       // when
-      actions.next(updatePreferredLanguage({payload: 'de'}));
+      actions.next(updatePreferredLanguage({ payload: 'de' }));
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toEqual(meLoaded({payload: user}));
+        expect(actual).toEqual(meLoaded({ payload: user }));
         expect(userService.update.mock.calls.length).toEqual(1);
         done();
       });
@@ -114,33 +117,33 @@ describe('AppEffects', () => {
   });
 
   describe('updateSettings$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
-      const user: User = {id: '1', name: 'user', username: 'username', preferredLanguage: 'de'};
+      const user: User = { id: '1', name: 'user', username: 'username', preferredLanguage: 'de' };
       userService.updateSettings.mockReturnValue(of(user));
       store.select.mockReturnValue(of(user));
       const effects = TestBed.inject(AppEffects);
       const target$ = effects.updateSettings$;
 
       // when
-      actions.next(updateSettings({payload: {a: 'A'}}));
+      actions.next(updateSettings({ payload: { a: 'A' } }));
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toEqual(meLoaded({payload: user}));
+        expect(actual).toEqual(meLoaded({ payload: user }));
         expect(userService.updateSettings.mock.calls.length).toEqual(1);
         expect(userService.updateSettings.mock.calls[0][0]).toEqual(user.id);
-        expect(userService.updateSettings.mock.calls[0][1]).toEqual({a: 'A'});
+        expect(userService.updateSettings.mock.calls[0][1]).toEqual({ a: 'A' });
         done();
       });
     });
   });
 
   describe('loadUsers$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
       const payload: PagedList<User> = {
-        list: [{id: '1', name: 'user', username: 'username'}],
+        list: [{ id: '1', name: 'user', username: 'username' }],
         hasNext: false,
         hasPrev: false,
         limit: 20,
@@ -155,7 +158,7 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toEqual(usersLoaded({payload}));
+        expect(actual).toEqual(usersLoaded({ payload }));
         expect(userService.find.mock.calls.length).toEqual(1);
         done();
       });
@@ -163,7 +166,7 @@ describe('AppEffects', () => {
   });
 
   describe('loadProject$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
       const payload: Project = { name: 'A' };
       projectService.byOwnerAndName.mockReturnValueOnce(of(payload));
@@ -175,7 +178,7 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toEqual(projectLoaded({payload}));
+        expect(actual).toEqual(projectLoaded({ payload }));
         expect(projectService.byOwnerAndName.mock.calls.length).toEqual(1);
         done();
       });
@@ -183,7 +186,7 @@ describe('AppEffects', () => {
   });
 
   describe('createProject$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
       const payload: Project = { name: 'A' };
       projectService.create.mockReturnValueOnce(of(payload));
@@ -195,7 +198,7 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toEqual(projectCreated({payload}));
+        expect(actual).toEqual(projectCreated({ payload }));
         expect(projectService.create.mock.calls.length).toEqual(1);
         done();
       });
@@ -203,7 +206,7 @@ describe('AppEffects', () => {
   });
 
   describe('updateProject$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
       const payload: Project = { name: 'A' };
       projectService.update.mockReturnValueOnce(of(payload));
@@ -215,7 +218,7 @@ describe('AppEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toEqual(projectUpdated({payload}));
+        expect(actual).toEqual(projectUpdated({ payload }));
         expect(projectService.update.mock.calls.length).toEqual(1);
         done();
       });

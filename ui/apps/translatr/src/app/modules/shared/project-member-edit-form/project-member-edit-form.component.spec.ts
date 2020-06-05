@@ -1,18 +1,18 @@
+import { ChangeDetectorRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ProjectMemberEditFormComponent } from './project-member-edit-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ChangeDetectorRef } from '@angular/core';
-import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { mockObservable } from '@translatr/utils/testing';
+import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+
+import { ProjectMemberEditFormComponent } from './project-member-edit-form.component';
 
 describe('ProjectMemberEditFormComponent', () => {
   let component: ProjectMemberEditFormComponent;
@@ -32,13 +32,12 @@ describe('ProjectMemberEditFormComponent', () => {
         MatAutocompleteModule
       ],
       providers: [
-        {provide: MatSnackBar, useValue: {}},
-        {provide: ProjectFacade, useFactory: () => ({memberModified$: mockObservable()})},
-        {provide: ChangeDetectorRef, useFactory: () => ({})},
-        {provide: MAT_DIALOG_DATA, useValue: {}}
+        { provide: MatSnackBar, useValue: {} },
+        { provide: ProjectFacade, useFactory: () => ({ memberModified$: mockObservable() }) },
+        { provide: ChangeDetectorRef, useFactory: () => ({}) },
+        { provide: MAT_DIALOG_DATA, useValue: {} }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

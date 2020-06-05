@@ -10,8 +10,4 @@ $light-accent: mat-palette($mat-amber, 500);
 $light-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$light-theme: mat-light-theme(
-    $light-primary,
-    $light-accent,
-    $light-warn
-);
+$light-theme: mat-light-theme($light-primary, $light-accent, $light-warn);

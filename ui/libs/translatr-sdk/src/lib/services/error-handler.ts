@@ -10,11 +10,7 @@ export interface RestRequest {
 
 export class ErrorHandler {
   handleError(error: HttpErrorResponse, request?: RestRequest): Observable<never> {
-    console.warn(
-      'Handling error for %s:\n%s',
-      JSON.stringify(request),
-      JSON.stringify(error)
-    );
+    console.warn('Handling error for %s:\n%s', JSON.stringify(request), JSON.stringify(error));
     return throwError(error);
   }
 }

@@ -23,13 +23,7 @@ export class ActivityKeyLinkComponent {
     if (!key || !key.projectOwnerUsername || !key.projectName || !key.name) {
       this.keyLink = undefined;
     } else {
-      this.keyLink = [
-        '/',
-        key.projectOwnerUsername,
-        key.projectName,
-        'keys',
-        key.name
-      ];
+      this.keyLink = ['/', key.projectOwnerUsername, key.projectName, 'keys', key.name];
     }
   }
 }

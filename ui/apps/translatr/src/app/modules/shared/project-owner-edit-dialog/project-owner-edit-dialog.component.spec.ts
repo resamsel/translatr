@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ProjectOwnerEditDialogComponent } from './project-owner-edit-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { UsersFacade } from '../../pages/users-page/+state/users.facade';
-import { mockObservable } from '@translatr/utils/testing';
-import { ProjectOwnerEditFormTestingModule } from '../testing';
-import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { mockObservable } from '@translatr/utils/testing';
+import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { UsersFacade } from '../../pages/users-page/+state/users.facade';
+import { ProjectOwnerEditFormTestingModule } from '../testing';
+import { ProjectOwnerEditDialogComponent } from './project-owner-edit-dialog.component';
 
 describe('ProjectMemberEditDialogComponent', () => {
   let component: ProjectOwnerEditDialogComponent;
@@ -40,8 +40,7 @@ describe('ProjectMemberEditDialogComponent', () => {
           })
         }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

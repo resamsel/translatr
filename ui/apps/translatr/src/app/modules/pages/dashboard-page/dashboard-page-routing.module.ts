@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardPageComponent } from './dashboard-page.component';
 import { AuthGuard } from '../../../guards/auth.guard';
+import { DashboardPageComponent } from './dashboard-page.component';
 
 const routes: Routes = [
   {
@@ -15,5 +15,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class DashboardPageRoutingModule {
-}
+export class DashboardPageRoutingModule {}

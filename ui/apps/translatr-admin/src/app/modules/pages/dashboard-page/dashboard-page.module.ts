@@ -1,7 +1,6 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DashboardPageRoutingModule } from './dashboard-page-routing.module';
-import { DashboardPageComponent } from './dashboard-page.component';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -16,10 +15,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
-import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
-import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
-import { MomentModule } from 'ngx-moment';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   ButtonModule,
   EllipsisModule,
@@ -31,13 +27,17 @@ import {
   UserCardModule,
   UserEditDialogModule
 } from '@dev/translatr-components';
-import { DashboardProjectsComponent } from './dashboard-projects/dashboard-projects.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
 import { GravatarModule } from 'ngx-gravatar';
-import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MomentModule } from 'ngx-moment';
+import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
 import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
+import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
+import { DashboardPageRoutingModule } from './dashboard-page-routing.module';
+import { DashboardPageComponent } from './dashboard-page.component';
+import { DashboardProjectsComponent } from './dashboard-projects/dashboard-projects.component';
+import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
+import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
 
 @NgModule({
   declarations: [
@@ -82,8 +82,6 @@ import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashbo
     MatTooltipModule,
     ShortNumberModule
   ],
-  providers: [
-  ]
+  providers: []
 })
-export class DashboardPageModule {
-}
+export class DashboardPageModule {}

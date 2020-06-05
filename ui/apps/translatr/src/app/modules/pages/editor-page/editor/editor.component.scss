@@ -189,7 +189,6 @@
   }
 
   .sidebar {
-
   }
 
   .mat-tab-group {
@@ -213,4 +212,4 @@
   }
 }
 
-@include editor-theme($app-theme)
+@include editor-theme($app-theme);

@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
+import { mockObservable } from '@translatr/utils/testing';
+import { AppFacade } from '../../../../+state/app.facade';
 import { ProjectFacade } from './project.facade';
 import { ProjectState } from './project.reducer';
-import { AppFacade } from '../../../../+state/app.facade';
-import { mockObservable } from '@translatr/utils/testing';
 
 describe('ProjectFacade', () => {
   let facade: ProjectFacade;
-  let store: Store<ProjectState> & { dispatch: jest.Mock; pipe: jest.Mock; };
+  let store: Store<ProjectState> & { dispatch: jest.Mock; pipe: jest.Mock };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -22,7 +22,8 @@ describe('ProjectFacade', () => {
           })
         },
         {
-          provide: Store, useFactory: () => ({
+          provide: Store,
+          useFactory: () => ({
             dispatch: jest.fn(),
             pipe: jest.fn()
           })

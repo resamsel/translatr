@@ -4,5 +4,4 @@ import { Component } from '@angular/core';
   selector: 'selection-actions',
   template: '<ng-content></ng-content>'
 })
-export class SelectionActionsComponent {
-}
+export class SelectionActionsComponent {}

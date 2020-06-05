@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UserPageComponent } from './user-page.component';
-import { UserProjectsComponent } from './user-projects/user-projects.component';
-import { UserInfoComponent } from './user-info/user-info.component';
-import { UserActivityComponent } from './user-activity/user-activity.component';
-import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';
-import { USER_ROUTES } from './user-page.token';
+import { AuthGuard } from '../../../guards/auth.guard';
 import { MyselfGuard } from '../../../guards/myself.guard';
 import { UserAccessTokenComponent } from './user-access-token/user-access-token.component';
-import { AuthGuard } from '../../../guards/auth.guard';
-import { UserGuard } from './user.guard';
+import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';
+import { UserActivityComponent } from './user-activity/user-activity.component';
+import { UserInfoComponent } from './user-info/user-info.component';
+import { UserPageComponent } from './user-page.component';
+import { USER_ROUTES } from './user-page.token';
+import { UserProjectsComponent } from './user-projects/user-projects.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { UserGuard } from './user.guard';
 
 const routes: Routes = [
   {
@@ -83,5 +83,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [{ provide: USER_ROUTES, useValue: routes }]
 })
-export class UserPageRoutingModule {
-}
+export class UserPageRoutingModule {}

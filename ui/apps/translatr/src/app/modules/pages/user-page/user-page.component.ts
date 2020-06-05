@@ -2,10 +2,10 @@ import { Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { ActivatedRoute, CanActivate, Route } from '@angular/router';
 import { Feature, User } from '@dev/translatr-model';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
-import { USER_ROUTES } from './user-page.token';
-import { AppFacade } from '../../../+state/app.facade';
 import { Observable } from 'rxjs';
+import { AppFacade } from '../../../+state/app.facade';
 import { UserFacade } from './+state/user.facade';
+import { USER_ROUTES } from './user-page.token';
 
 @Component({
   selector: 'app-user-page',
@@ -26,8 +26,7 @@ export class UserPageComponent implements OnDestroy {
     private readonly injector: Injector,
     private readonly route: ActivatedRoute,
     @Inject(USER_ROUTES) private routes: { children: NameIconRoute[] }[]
-  ) {
-  }
+  ) {}
 
   ngOnDestroy(): void {
     this.facade.unload();
@@ -46,10 +45,6 @@ export class UserPageComponent implements OnDestroy {
   }
 
   canActivate$(route: NameIconRoute): Observable<boolean> {
-    return canActivate$(
-      route,
-      this.route,
-      (guard: any) => this.injector.get<CanActivate>(guard)
-    );
+    return canActivate$(route, this.route, (guard: any) => this.injector.get<CanActivate>(guard));
   }
 }

@@ -11,8 +11,7 @@ describe('ActivityGraphComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ActivityGraphComponent],
       imports: [TranslocoTestingModule]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

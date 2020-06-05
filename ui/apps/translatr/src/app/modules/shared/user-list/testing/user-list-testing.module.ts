@@ -17,5 +17,4 @@ class MockUserListComponent {
   declarations: [MockUserListComponent],
   exports: [MockUserListComponent]
 })
-export class UserListTestingModule {
-}
+export class UserListTestingModule {}

@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject, of, Subject } from 'rxjs';
-import { Actions } from '@ngrx/effects';
-import { EditorEffects } from './editor.effects';
-import { KeyService, LocaleService, MessageService, NotificationService } from '@dev/translatr-sdk';
 import { Locale, PagedList } from '@dev/translatr-model';
-import { LoadLocales, LocalesLoaded } from './editor.actions';
+import { KeyService, LocaleService, MessageService, NotificationService } from '@dev/translatr-sdk';
+import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
+import { BehaviorSubject, of, Subject } from 'rxjs';
+import { LoadLocales, LocalesLoaded } from './editor.actions';
+import { EditorEffects } from './editor.effects';
 
 describe('EditorEffects', () => {
   let actions: Subject<any>;
@@ -36,7 +36,8 @@ describe('EditorEffects', () => {
         },
         { provide: Actions, useValue: actions },
         {
-          provide: Store, useFactory: () => ({
+          provide: Store,
+          useFactory: () => ({
             dispatch: jest.fn(),
             pipe: jest.fn(),
             select: jest.fn()
@@ -50,7 +51,7 @@ describe('EditorEffects', () => {
   });
 
   describe('loadLocales$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
       const payload: PagedList<Locale> = {
         list: [],

@@ -1,10 +1,10 @@
-import { interval, merge, Observable, of, Subject } from 'rxjs';
-import { mapTo, scan, startWith, withLatestFrom } from 'rxjs/operators';
 import { Injector } from '@angular/core';
 import * as dateformat from 'dateformat';
-import { Action, Command, GeneratorConfig, GeneratorIntervals, State } from './state';
+import { interval, merge, Observable, of, Subject } from 'rxjs';
+import { mapTo, scan, startWith, withLatestFrom } from 'rxjs/operators';
 import { createInjector } from './api';
 import { handleCommand } from './handler';
+import { Action, Command, GeneratorConfig, GeneratorIntervals, State } from './state';
 
 export class Generator {
   readonly stateCommand$ = new Subject<Partial<State>>();
@@ -16,9 +16,7 @@ export class Generator {
   readonly commands$: Observable<Command> = merge(
     of({ type: Action.ShowConfig }),
 
-    interval(this.intervals.me / this.intervals.stressFactor).pipe(
-      mapTo({ type: Action.Me })
-    ),
+    interval(this.intervals.me / this.intervals.stressFactor).pipe(mapTo({ type: Action.Me })),
     interval(this.intervals.createUser / this.intervals.stressFactor).pipe(
       mapTo({ type: Action.CreateRandomUser })
     ),
@@ -70,10 +68,7 @@ export class Generator {
   constructor(public readonly config: GeneratorConfig) {}
 
   execute() {
-    const injector: Injector = createInjector(
-      this.config.baseUrl,
-      this.config.accessToken
-    );
+    const injector: Injector = createInjector(this.config.baseUrl, this.config.accessToken);
 
     this.commands$
       .pipe(
@@ -82,15 +77,10 @@ export class Generator {
         //  tap((state: State) => stateCommand$.next(state))
       )
       .subscribe(
-        (state: State) =>
-          console.log(
-            `${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message}`
-          ),
+        (state: State) => console.log(`${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message}`),
         (state: State) =>
           console.error(
-            `${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${
-              state.message
-            } (state: ${state})`
+            `${dateformat('yyyy-mm-dd hh:MM:ss.l')}: ${state.message} (state: ${state})`
           )
       );
   }

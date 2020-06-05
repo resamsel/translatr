@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ProjectDeleteDialogComponent } from './project-delete-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ProjectService } from '@dev/translatr-sdk';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+
+import { ProjectDeleteDialogComponent } from './project-delete-dialog.component';
 
 describe('ProjectDeleteDialogComponent', () => {
   let component: ProjectDeleteDialogComponent;
@@ -32,8 +32,7 @@ describe('ProjectDeleteDialogComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: ProjectService, useFactory: () => ({}) }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ProjectCriteria, User } from '@dev/translatr-model';
-import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
+import { navigate } from '@translatr/utils';
 import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
 import { UserFacade } from '../+state/user.facade';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
-import { navigate } from '@translatr/utils';
+import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
 
 @Component({
   selector: 'app-user-projects',
@@ -22,8 +22,7 @@ export class UserProjectsComponent implements OnInit {
     private readonly facade: UserFacade,
     private readonly router: Router,
     private readonly dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.criteria$
@@ -51,7 +50,6 @@ export class UserProjectsComponent implements OnInit {
         take(1),
         filter(project => !!project)
       )
-      .subscribe((project => this.router
-        .navigate([project.ownerUsername, project.name])));
+      .subscribe(project => this.router.navigate([project.ownerUsername, project.name]));
   }
 }

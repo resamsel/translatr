@@ -1,7 +1,7 @@
 import { Component, Input, NgModule } from '@angular/core';
+import { MatDrawer } from '@angular/material/sidenav';
 import { Link } from '@dev/translatr-components';
 import { MockAuthBarItemComponent } from '../auth-bar-item/testing';
-import { MatDrawer } from '@angular/material/sidenav';
 import { MockAuthBarLanguageSwitcherComponent } from '../auth-bar-language-switcher/testing';
 
 @Component({
@@ -19,8 +19,11 @@ class MockNavbarComponent {
 }
 
 @NgModule({
-  declarations: [MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent],
+  declarations: [
+    MockNavbarComponent,
+    MockAuthBarItemComponent,
+    MockAuthBarLanguageSwitcherComponent
+  ],
   exports: [MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent]
 })
-export class NavbarTestingModule {
-}
+export class NavbarTestingModule {}

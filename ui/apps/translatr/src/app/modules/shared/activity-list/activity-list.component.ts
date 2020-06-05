@@ -32,8 +32,7 @@ export class ActivityListComponent {
 
   @HostBinding('class') clazz = 'activity-list';
 
-  constructor() {
-  }
+  constructor() {}
 
   trackByFn(index, item: Activity): string {
     return item.id;
@@ -129,13 +128,7 @@ export class ActivityListComponent {
       return undefined;
     }
 
-    return [
-      '/',
-      message.projectOwnerUsername,
-      message.projectName,
-      subpath,
-      name
-    ];
+    return ['/', message.projectOwnerUsername, message.projectName, subpath, name];
   }
 
   linkToAccessToken(accessToken: AccessToken | undefined): string[] | undefined {
@@ -143,11 +136,6 @@ export class ActivityListComponent {
       return undefined;
     }
 
-    return [
-      '/',
-      accessToken.userUsername,
-      'access-tokens',
-      accessToken.id.toString()
-    ];
+    return ['/', accessToken.userUsername, 'access-tokens', accessToken.id.toString()];
   }
 }

@@ -1,30 +1,30 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { NxModule } from '@nrwl/angular';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FeatureFlagModule } from '@dev/translatr-components';
+import { FeatureFlagFacade } from '@dev/translatr-model';
 import { NotificationService, TranslatrSdkModule } from '@dev/translatr-sdk';
-import { appReducer } from './+state/app.reducer';
+import { HotkeysModule } from '@ngneat/hotkeys';
+import { EffectsModule } from '@ngrx/effects';
+import { routerReducer, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { NxModule } from '@nrwl/angular';
+import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
+import { environment } from '../environments/environment';
 import { AppEffects } from './+state/app.effects';
 import { AppFacade } from './+state/app.facade';
-import { environment } from '../environments/environment';
-import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatNotificationService } from './services/mat-notification-service';
-import { routerReducer, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
-import { FeatureFlagModule } from '@dev/translatr-components';
-import { HttpClientModule } from '@angular/common/http';
-import { FeatureFlagFacade } from '@dev/translatr-model';
+import { appReducer } from './+state/app.reducer';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { TranslocoRootModule } from './modules/shared/transloco';
-import { HotkeysModule } from '@ngneat/hotkeys';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatNotificationService } from './services/mat-notification-service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -58,7 +58,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     ),
     EffectsModule.forRoot([AppEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    StoreRouterConnectingModule.forRoot({routerState: RouterState.Minimal}),
+    StoreRouterConnectingModule.forRoot({ routerState: RouterState.Minimal }),
     HttpClientModule,
     TranslocoRootModule,
     HotkeysModule
@@ -77,5 +77,4 @@ import { MatDialogModule } from '@angular/material/dialog';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
+import { KeyCriteria, LocaleCriteria, Message, PagedList, RequestCriteria, Setting } from '@dev/translatr-model';
 import { select, Store } from '@ngrx/store';
-import { EditorPartialState } from './editor.reducer';
-import { editorQuery } from './editor.selectors';
+import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { AppFacade } from '../../../../+state/app.facade';
+import { MessageItem } from '../message-item';
+import { SaveBehavior } from '../save-behavior';
 import {
   LoadKey,
   LoadKeys,
@@ -15,47 +20,29 @@ import {
   SelectLocale,
   UnloadEditor
 } from './editor.actions';
-import { Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
-import { KeyCriteria, LocaleCriteria, Message, PagedList, RequestCriteria, Setting } from '@dev/translatr-model';
-import { MessageItem } from '../message-item';
-import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
-import { SaveBehavior } from '../save-behavior';
-import { AppFacade } from '../../../../+state/app.facade';
+import { EditorPartialState } from './editor.reducer';
+import { editorQuery } from './editor.selectors';
 
 @Injectable()
 export class EditorFacade {
   readonly unloadEditor$ = new Subject<void>();
 
-  locale$ = this.store.pipe(
-    select(editorQuery.getLocale),
-    takeUntil(this.unloadEditor$)
-  );
-  selectedLocaleName$ = this.store.pipe(
-    select(editorQuery.getSelectedLocaleName)
-  );
+  locale$ = this.store.pipe(select(editorQuery.getLocale), takeUntil(this.unloadEditor$));
+  selectedLocaleName$ = this.store.pipe(select(editorQuery.getSelectedLocaleName));
 
-  locales$ = this.store.pipe(
-    select(editorQuery.getLocales),
+  locales$ = this.store.pipe(select(editorQuery.getLocales), takeUntil(this.unloadEditor$));
+
+  localeEditorMessageItems$: Observable<PagedList<MessageItem>> = this.store.pipe(
+    select(editorQuery.getLocaleMessageItems),
     takeUntil(this.unloadEditor$)
   );
 
-  localeEditorMessageItems$: Observable<PagedList<MessageItem>> =
-    this.store.pipe(
-      select(editorQuery.getLocaleMessageItems),
-      takeUntil(this.unloadEditor$)
-    );
-
-  keyEditorMessageItems$: Observable<PagedList<MessageItem>> =
-    this.store.pipe(
-      select(editorQuery.getKeyMessageItems),
-      takeUntil(this.unloadEditor$)
-    );
-
-  key$ = this.store.pipe(
-    select(editorQuery.getKey),
+  keyEditorMessageItems$: Observable<PagedList<MessageItem>> = this.store.pipe(
+    select(editorQuery.getKeyMessageItems),
     takeUntil(this.unloadEditor$)
   );
+
+  key$ = this.store.pipe(select(editorQuery.getKey), takeUntil(this.unloadEditor$));
   selectedKeyName$ = this.store.pipe(
     select(editorQuery.getSelectedKeyName),
     takeUntil(this.unloadEditor$)
@@ -70,10 +57,7 @@ export class EditorFacade {
     takeUntil(this.unloadEditor$)
   );
 
-  search$ = this.store.pipe(
-    select(editorQuery.getSearch),
-    takeUntil(this.unloadEditor$)
-  );
+  search$ = this.store.pipe(select(editorQuery.getSearch), takeUntil(this.unloadEditor$));
 
   message$ = this.store.pipe(select(editorQuery.getMessage));
 
@@ -89,23 +73,14 @@ export class EditorFacade {
   constructor(
     private readonly store: Store<EditorPartialState>,
     private readonly appFacade: AppFacade
-  ) {
-  }
+  ) {}
 
-  loadLocaleEditor(
-    username: string,
-    projectName: string,
-    localeName: string
-  ): void {
-    this.store.dispatch(
-      new LoadLocale({username, projectName, localeName})
-    );
+  loadLocaleEditor(username: string, projectName: string, localeName: string): void {
+    this.store.dispatch(new LoadLocale({ username, projectName, localeName }));
   }
 
   loadKeyEditor(username: string, projectName: string, keyName: string): void {
-    this.store.dispatch(
-      new LoadKey({username, projectName, keyName: keyName})
-    );
+    this.store.dispatch(new LoadKey({ username, projectName, keyName: keyName }));
   }
 
   unloadEditor(): void {
@@ -114,11 +89,11 @@ export class EditorFacade {
   }
 
   selectKey(key?: string): void {
-    this.store.dispatch(new SelectKey({key}));
+    this.store.dispatch(new SelectKey({ key }));
   }
 
   selectLocale(locale?: string): void {
-    this.store.dispatch(new SelectLocale({locale}));
+    this.store.dispatch(new SelectLocale({ locale }));
   }
 
   saveMessage(message: Message): void {
@@ -150,6 +125,6 @@ export class EditorFacade {
   }
 
   updateSaveBehavior(behavior: SaveBehavior) {
-    this.appFacade.updateSettings({[Setting.SaveBehavior]: behavior});
+    this.appFacade.updateSettings({ [Setting.SaveBehavior]: behavior });
   }
 }

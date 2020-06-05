@@ -1,10 +1,10 @@
-import { Observable } from 'rxjs';
-import { MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { take } from 'rxjs/operators';
-import { ConstraintViolation, Error } from '@dev/translatr-model';
 import { EventEmitter, HostListener } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConstraintViolation, Error } from '@dev/translatr-model';
+import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 const ENTER_KEYCODE = 'Enter';
 
@@ -15,7 +15,11 @@ export interface Identifiable {
 /**
  * deprecated: Use BaseEditFormComponent instead!
  */
-export abstract class AbstractEditFormComponent<T, F extends Identifiable, R extends Identifiable = F> {
+export abstract class AbstractEditFormComponent<
+  T,
+  F extends Identifiable,
+  R extends Identifiable = F
+> {
   processing = false;
 
   failure = new EventEmitter<Error>();
@@ -41,12 +45,10 @@ export abstract class AbstractEditFormComponent<T, F extends Identifiable, R ext
 
     const value: F = this.form.value;
     const consume$ = value.id ? this.update(value) : this.create(value);
-    consume$
-      .pipe(take(1))
-      .subscribe(
-        (r: R) => this.onSuccess(r),
-        (res: { error: Error }) => this.onError(res.error)
-      );
+    consume$.pipe(take(1)).subscribe(
+      (r: R) => this.onSuccess(r),
+      (res: { error: Error }) => this.onError(res.error)
+    );
   }
 
   protected isValid(): boolean {
@@ -55,11 +57,7 @@ export abstract class AbstractEditFormComponent<T, F extends Identifiable, R ext
 
   protected onSuccess(r: R): void {
     this.processing = false;
-    this.snackBar.open(
-      this.messageProvider(r),
-      'Dismiss',
-      { duration: 3000 }
-    );
+    this.snackBar.open(this.messageProvider(r), 'Dismiss', { duration: 3000 });
     this.onSaved(r);
   }
 
@@ -85,9 +83,12 @@ export abstract class AbstractEditFormComponent<T, F extends Identifiable, R ext
 
   @HostListener('window:keyup', ['$event'])
   protected onHotkey(event: KeyboardEvent) {
-    if (event.key === ENTER_KEYCODE
-      && event.ctrlKey === true
-      && this.isValid() && !this.processing) {
+    if (
+      event.key === ENTER_KEYCODE &&
+      event.ctrlKey === true &&
+      this.isValid() &&
+      !this.processing
+    ) {
       this.onSave();
     }
   }

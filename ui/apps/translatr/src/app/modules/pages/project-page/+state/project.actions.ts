@@ -1,4 +1,3 @@
-import { createAction, props } from '@ngrx/store';
 import {
   AccessToken,
   AccessTokenCriteria,
@@ -15,6 +14,7 @@ import {
   MessageCriteria,
   PagedList
 } from '@dev/translatr-model';
+import { createAction, props } from '@ngrx/store';
 
 export const loadLocales = createAction(
   '[Project Page] Load Locales',
@@ -76,65 +76,35 @@ export const localeDeleteError = createAction(
   props<{ error: any }>()
 );
 
-export const loadKeys = createAction(
-  '[Project Page] Load Keys',
-  props<{ payload: KeyCriteria }>()
-);
+export const loadKeys = createAction('[Project Page] Load Keys', props<{ payload: KeyCriteria }>());
 
-export const keysLoadError = createAction(
-  '[Keys API] Keys Load Error',
-  props<{ error: any }>()
-);
+export const keysLoadError = createAction('[Keys API] Keys Load Error', props<{ error: any }>());
 
 export const keysLoaded = createAction(
   '[Keys API] Keys Loaded',
   props<{ payload: PagedList<Key> }>()
 );
 
-export const createKey = createAction(
-  '[Project Page] Create Key',
-  props<{ payload: Key }>()
-);
+export const createKey = createAction('[Project Page] Create Key', props<{ payload: Key }>());
 
-export const keyCreated = createAction(
-  '[Keys API] Key Created',
-  props<{ payload: Key }>()
-);
+export const keyCreated = createAction('[Keys API] Key Created', props<{ payload: Key }>());
 
-export const keyCreateError = createAction(
-  '[Keys API] Key Create Error',
-  props<{ error: any }>()
-);
+export const keyCreateError = createAction('[Keys API] Key Create Error', props<{ error: any }>());
 
-export const updateKey = createAction(
-  '[Project Page] Update Key',
-  props<{ payload: Key }>()
-);
+export const updateKey = createAction('[Project Page] Update Key', props<{ payload: Key }>());
 
-export const keyUpdated = createAction(
-  '[Keys API] Key Updated',
-  props<{ payload: Key }>()
-);
+export const keyUpdated = createAction('[Keys API] Key Updated', props<{ payload: Key }>());
 
-export const keyUpdateError = createAction(
-  '[Keys API] Key Update Error',
-  props<{ error: any }>()
-);
+export const keyUpdateError = createAction('[Keys API] Key Update Error', props<{ error: any }>());
 
 export const deleteKey = createAction(
   '[Project Page] Delete Key',
   props<{ payload: { id: string } }>()
 );
 
-export const keyDeleted = createAction(
-  '[Keys API] Key Deleted',
-  props<{ payload: Key }>()
-);
+export const keyDeleted = createAction('[Keys API] Key Deleted', props<{ payload: Key }>());
 
-export const keyDeleteError = createAction(
-  '[Keys API] Key Delete Error',
-  props<{ error: any }>()
-);
+export const keyDeleteError = createAction('[Keys API] Key Delete Error', props<{ error: any }>());
 
 // Members
 
@@ -258,6 +228,4 @@ export const accessTokensLoaded = createAction(
   props<{ payload: PagedList<AccessToken> }>()
 );
 
-export const unloadProject = createAction(
-  '[Projects Page] Unload Project'
-);
+export const unloadProject = createAction('[Projects Page] Unload Project');

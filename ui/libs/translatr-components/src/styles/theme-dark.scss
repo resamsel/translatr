@@ -4,14 +4,10 @@
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://www.google.com/design/spec/style/color.html
 $dark-primary: mat-palette($mat-blue, 700, 500, 900);
-$dark-accent:  mat-palette($mat-pink, A200, A100, A400);
+$dark-accent: mat-palette($mat-pink, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$dark-warn:    mat-palette($mat-deep-orange);
+$dark-warn: mat-palette($mat-deep-orange);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$dark-theme: mat-dark-theme(
-    $dark-primary,
-    $dark-accent,
-    $dark-warn
-);
+$dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);

@@ -1,15 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DashboardPageComponent } from './dashboard-page.component';
-import { AppFacade } from '../../../+state/app.facade';
-import { RouterTestingModule } from '@angular/router/testing';
-import { DASHBOARD_ROUTES } from './dashboard-page.token';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { SidenavTestingModule } from '../../testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppFacade } from '../../../+state/app.facade';
+import { SidenavTestingModule } from '../../testing';
+import { DashboardPageComponent } from './dashboard-page.component';
+import { DASHBOARD_ROUTES } from './dashboard-page.token';
 
 describe('DashboardPageComponent', () => {
   let component: DashboardPageComponent;
@@ -34,9 +34,7 @@ describe('DashboardPageComponent', () => {
         { provide: AppFacade, useFactory: () => ({}) },
         {
           provide: DASHBOARD_ROUTES,
-          useValue: ([
-            { children: [] }
-          ])
+          useValue: [{ children: [] }]
         }
       ]
     }).compileComponents();

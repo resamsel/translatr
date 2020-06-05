@@ -5,14 +5,15 @@ import { UsersState } from './users.reducer';
 
 describe('UsersFacade', () => {
   let facade: UsersFacade;
-  let store: Store<UsersState> & { dispatch: jest.Mock; pipe: jest.Mock; };
+  let store: Store<UsersState> & { dispatch: jest.Mock; pipe: jest.Mock };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         UsersFacade,
         {
-          provide: Store, useFactory: () => ({
+          provide: Store,
+          useFactory: () => ({
             dispatch: jest.fn(),
             pipe: jest.fn()
           })

@@ -11,11 +11,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
-    ForbiddenPageModule
-  ],
+  imports: [RouterModule.forRoot(routes), ForbiddenPageModule],
   exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { convertTemporals, convertTemporalsList } from '../shared';
+import { PagedList, RequestCriteria } from '@dev/translatr-model';
 import { combineLatest, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { PagedList, RequestCriteria } from '@dev/translatr-model';
+import { convertTemporals, convertTemporalsList } from '../shared';
 import { ErrorHandler } from './error-handler';
 
 export interface RequestOptions {
@@ -48,7 +48,8 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
             params: [criteria],
             method: 'get',
             path
-          }))
+          })
+        )
       );
   }
 
@@ -66,7 +67,8 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
             params: [id, criteria],
             method: 'get',
             path
-          }))
+          })
+        )
       );
   }
 
@@ -79,7 +81,8 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
           params: [dto, options],
           method: 'post',
           path: this.entityPath
-        }))
+        })
+      )
     );
   }
 
@@ -92,14 +95,12 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
           params: [dto, options],
           method: 'put',
           path: this.entityPath
-        }))
+        })
+      )
     );
   }
 
-  delete(
-    id: string | number,
-    options?: RequestOptions
-  ): Observable<DTO | undefined> {
+  delete(id: string | number, options?: RequestOptions): Observable<DTO | undefined> {
     const path = `${this.entityPath}/${encodePathParam(id)}`;
     return this.http.delete<DTO>(path, options).pipe(
       map(convertTemporals),
@@ -109,7 +110,8 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
           params: [id, options],
           method: 'delete',
           path
-        }))
+        })
+      )
     );
   }
 

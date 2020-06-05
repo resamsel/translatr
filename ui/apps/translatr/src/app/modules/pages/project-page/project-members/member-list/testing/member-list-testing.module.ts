@@ -24,5 +24,4 @@ class MockMemberListComponent {
   declarations: [MockMemberListComponent],
   exports: [MockMemberListComponent]
 })
-export class MemberListTestingModule {
-}
+export class MemberListTestingModule {}

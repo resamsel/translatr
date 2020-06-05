@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { map, switchMap } from 'rxjs/operators';
 import { ActivatedRoute, Params } from '@angular/router';
-import { AppFacade } from '../../../../+state/app.facade';
 import { Feature } from '@dev/translatr-model';
+import { map, switchMap } from 'rxjs/operators';
+import { AppFacade } from '../../../../+state/app.facade';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,11 +18,7 @@ export class DashboardUserComponent implements OnInit {
 
   readonly Feature = Feature;
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly facade: AppFacade
-  ) {
-  }
+  constructor(private readonly route: ActivatedRoute, private readonly facade: AppFacade) {}
 
   ngOnInit() {
     this.userId$.subscribe((userId: string) => {

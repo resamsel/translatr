@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { EmptyViewTestingModule } from '@translatr/components/testing';
 
 import { ProjectEmptyViewComponent } from './project-empty-view.component';
-import { EmptyViewTestingModule } from '@translatr/components/testing';
-import { MatButtonModule } from '@angular/material/button';
 
 describe('ProjectEmptyViewComponent', () => {
   let component: ProjectEmptyViewComponent;
@@ -11,13 +11,8 @@ describe('ProjectEmptyViewComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ProjectEmptyViewComponent],
-      imports: [
-        EmptyViewTestingModule,
-
-        MatButtonModule
-      ]
-    })
-      .compileComponents();
+      imports: [EmptyViewTestingModule, MatButtonModule]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

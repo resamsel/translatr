@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { LocaleEditDialogComponent } from './locale-edit-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { mockObservable } from '@translatr/utils/testing';
+import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { LocaleEditDialogComponent } from './locale-edit-dialog.component';
 
 describe('LocaleEditDialogComponent', () => {
   let component: LocaleEditDialogComponent;
@@ -30,10 +30,9 @@ describe('LocaleEditDialogComponent', () => {
         { provide: MatSnackBar, useValue: {} },
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: { locale: {} } },
-        {provide: ProjectFacade, useFactory: () => ({localeModified$: mockObservable()})}
+        { provide: ProjectFacade, useFactory: () => ({ localeModified$: mockObservable() }) }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -22,4 +22,3 @@ export class DashboardPage extends Page {
     return cy.get('app-protect-creation-dialog');
   }
 }
-

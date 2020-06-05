@@ -1,3 +1,5 @@
+import { AccessToken, Activity, Aggregate, PagedList, Project, User } from '@dev/translatr-model';
+import { Action, createReducer, on } from '@ngrx/store';
 import {
   accessTokenCreated,
   accessTokenCreateError,
@@ -18,8 +20,6 @@ import {
   userUpdated,
   userUpdateError
 } from './user.actions';
-import { AccessToken, Activity, Aggregate, PagedList, Project, User } from '@dev/translatr-model';
-import { Action, createReducer, on } from '@ngrx/store';
 
 export const USER_FEATURE_KEY = 'user';
 
@@ -51,72 +51,34 @@ export const initialState: UserState = {};
 
 const reducer = createReducer(
   initialState,
-  on(
-    userLoaded,
-    (state, { user }) => ({ ...state, user })
-  ),
-  on(
-    userLoadError,
-    (state, { error }) => ({ ...state, error })
-  ),
-  on(
-    userUpdated,
-    (state, { user }) => ({ ...state, user })
-  ),
-  on(
-    userUpdateError,
-    (state, { error }) => ({ ...state, error })
-  ),
-  on(
-    projectsLoaded,
-    (state, { pagedList }) => ({ ...state, projects: pagedList })
-  ),
-  on(
-    projectsLoadError,
-    (state, { error }) => ({ ...state, projectsError: error })
-  ),
-  on(
-    activitiesLoaded,
-    (state, { pagedList }) => ({ ...state, activities: pagedList })
-  ),
-  on(
-    activitiesLoadError,
-    (state, { error }) => ({ ...state, activitiesError: error })
-  ),
-  on(
-    activityAggregatedLoaded,
-    (state, { pagedList }) => ({ ...state, activityAggregated: pagedList })
-  ),
-  on(
-    activityAggregatedLoadError,
-    (state, { error }) => ({ ...state, activityAggregatedError: error })
-  ),
-  on(
-    accessTokensLoaded,
-    (state, { pagedList }) => ({ ...state, accessTokens: pagedList })
-  ),
-  on(
-    accessTokensLoadError,
-    (state, { error }) => ({ ...state, accessTokensError: error })
-  ),
-  on(
-    accessTokenLoaded,
-    (state, {accessToken}) => ({...state, accessToken})
-  ),
-  on(
-    accessTokenLoadError,
-    (state, {error}) => ({...state, accessTokenError: error})
-  ),
-  on(
-    accessTokenCreated,
-    accessTokenUpdated,
-    (state, {payload: accessToken}) => ({...state, accessToken})
-  ),
-  on(
-    accessTokenCreateError,
-    accessTokenUpdateError,
-    (state, {error}) => ({...state, accessTokenError: error})
-  )
+  on(userLoaded, (state, { user }) => ({ ...state, user })),
+  on(userLoadError, (state, { error }) => ({ ...state, error })),
+  on(userUpdated, (state, { user }) => ({ ...state, user })),
+  on(userUpdateError, (state, { error }) => ({ ...state, error })),
+  on(projectsLoaded, (state, { pagedList }) => ({ ...state, projects: pagedList })),
+  on(projectsLoadError, (state, { error }) => ({ ...state, projectsError: error })),
+  on(activitiesLoaded, (state, { pagedList }) => ({ ...state, activities: pagedList })),
+  on(activitiesLoadError, (state, { error }) => ({ ...state, activitiesError: error })),
+  on(activityAggregatedLoaded, (state, { pagedList }) => ({
+    ...state,
+    activityAggregated: pagedList
+  })),
+  on(activityAggregatedLoadError, (state, { error }) => ({
+    ...state,
+    activityAggregatedError: error
+  })),
+  on(accessTokensLoaded, (state, { pagedList }) => ({ ...state, accessTokens: pagedList })),
+  on(accessTokensLoadError, (state, { error }) => ({ ...state, accessTokensError: error })),
+  on(accessTokenLoaded, (state, { accessToken }) => ({ ...state, accessToken })),
+  on(accessTokenLoadError, (state, { error }) => ({ ...state, accessTokenError: error })),
+  on(accessTokenCreated, accessTokenUpdated, (state, { payload: accessToken }) => ({
+    ...state,
+    accessToken
+  })),
+  on(accessTokenCreateError, accessTokenUpdateError, (state, { error }) => ({
+    ...state,
+    accessTokenError: error
+  }))
 );
 
 export function userReducer(state: UserState | undefined, action: Action) {

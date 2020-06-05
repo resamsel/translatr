@@ -1,19 +1,13 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProjectEmptyViewComponent } from './project-empty-view.component';
-import { EmptyViewModule } from '@dev/translatr-components';
+import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { EmptyViewModule } from '@dev/translatr-components';
 import { TranslocoModule } from '@ngneat/transloco';
+import { ProjectEmptyViewComponent } from './project-empty-view.component';
 
 @NgModule({
   declarations: [ProjectEmptyViewComponent],
-  imports: [
-    CommonModule,
-    EmptyViewModule,
-    MatButtonModule,
-    TranslocoModule
-  ],
+  imports: [CommonModule, EmptyViewModule, MatButtonModule, TranslocoModule],
   exports: [ProjectEmptyViewComponent]
 })
-export class ProjectEmptyViewModule {
-}
+export class ProjectEmptyViewModule {}

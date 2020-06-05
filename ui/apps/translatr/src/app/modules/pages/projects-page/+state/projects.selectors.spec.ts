@@ -2,16 +2,14 @@ import { initialState, PROJECTS_FEATURE_KEY, ProjectsState } from './projects.re
 import { projectsQuery } from './projects.selectors';
 
 describe('Projects Selectors', () => {
-  let storeState: { [PROJECTS_FEATURE_KEY]: ProjectsState; };
+  let storeState: { [PROJECTS_FEATURE_KEY]: ProjectsState };
 
   beforeEach(() => {
     storeState = {
       [PROJECTS_FEATURE_KEY]: {
         ...initialState,
         pagedList: {
-          list: [
-            { id: '1', name: 'en' }
-          ],
+          list: [{ id: '1', name: 'en' }],
           hasNext: false,
           hasPrev: false,
           limit: 20,

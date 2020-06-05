@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Member } from '@dev/translatr-model';
-import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { map } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
+import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 
 interface Data {
   member: Partial<Member>;
@@ -16,16 +16,14 @@ interface Data {
   styleUrls: ['./project-member-edit-dialog.component.scss']
 })
 export class ProjectMemberEditDialogComponent {
-  users$ = this.facade.users$
-    .pipe(map(users => !!users ? users.list : []));
+  users$ = this.facade.users$.pipe(map(users => (!!users ? users.list : [])));
 
   constructor(
     readonly dialogRef: MatDialogRef<ProjectMemberEditDialogComponent, Member>,
     @Inject(MAT_DIALOG_DATA) readonly data: Data,
     readonly facade: UsersFacade,
     readonly appFacade: AppFacade
-  ) {
-  }
+  ) {}
 
   onUserFilter(search: string): void {
     if (!!search) {
@@ -34,7 +32,13 @@ export class ProjectMemberEditDialogComponent {
   }
 }
 
-export const openProjectMemberEditDialog = (dialog: MatDialog, member: Partial<Member>, canModifyOwner: boolean) => {
+export const openProjectMemberEditDialog = (
+  dialog: MatDialog,
+  member: Partial<Member>,
+  canModifyOwner: boolean
+) => {
   return dialog.open<ProjectMemberEditDialogComponent, Data, Member>(
-    ProjectMemberEditDialogComponent, { data: { member, canModifyOwner } });
+    ProjectMemberEditDialogComponent,
+    { data: { member, canModifyOwner } }
+  );
 };

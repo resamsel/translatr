@@ -7,8 +7,7 @@ import { AppFacade } from '../../../+state/app.facade';
   providedIn: 'root'
 })
 export class ProjectGuard implements CanActivate {
-  constructor(private readonly facade: AppFacade) {
-  }
+  constructor(private readonly facade: AppFacade) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,

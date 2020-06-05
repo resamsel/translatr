@@ -10,8 +10,7 @@ export class EditorPage extends Page {
   }
 
   getEditorContents(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return this.getEditor()
-      .find('.CodeMirror-code .CodeMirror-line span[role="presentation"]');
+    return this.getEditor().find('.CodeMirror-code .CodeMirror-line span[role="presentation"]');
   }
 
   getMeta(): Cypress.Chainable<JQuery<HTMLElement>> {

@@ -3,8 +3,7 @@ import { map } from 'rxjs/operators';
 
 // General
 
-export const isAdmin = (user?: User): boolean =>
-  user !== undefined && user.role === UserRole.Admin;
+export const isAdmin = (user?: User): boolean => user !== undefined && user.role === UserRole.Admin;
 
 // Users
 
@@ -32,10 +31,7 @@ export const hasUserPermissionToDeleteProject = (me: User, project: Project) =>
   (me !== undefined && me.id === project.ownerId) || isAdmin(me);
 
 export const hasEditProjectPermission = (project: Project) =>
-  map(
-    (me?: User) =>
-      (me !== undefined && me.id === project.ownerId) || isAdmin(me)
-  );
+  map((me?: User) => (me !== undefined && me.id === project.ownerId) || isAdmin(me));
 
 export const hasDeleteProjectPermission = (project: Project) =>
   map((me?: User) => hasUserPermissionToDeleteProject(me, project));
@@ -49,15 +45,11 @@ export const hasDeleteAllProjectsPermission = (projects: Project[]) =>
 
 // Access Tokens
 
-export const hasUserPermissionToEditAccessToken = (
-  me: User,
-  accessToken: AccessToken
-) => (me !== undefined && me.id === accessToken.userId) || isAdmin(me);
+export const hasUserPermissionToEditAccessToken = (me: User, accessToken: AccessToken) =>
+  (me !== undefined && me.id === accessToken.userId) || isAdmin(me);
 
-export const hasUserPermissionToDeleteAccessToken = (
-  me: User,
-  accessToken: AccessToken
-) => (me !== undefined && me.id === accessToken.userId) || isAdmin(me);
+export const hasUserPermissionToDeleteAccessToken = (me: User, accessToken: AccessToken) =>
+  (me !== undefined && me.id === accessToken.userId) || isAdmin(me);
 
 export const hasEditAccessTokenPermission = (accessToken: AccessToken) =>
   map((me?: User) => hasUserPermissionToEditAccessToken(me, accessToken));
@@ -65,28 +57,20 @@ export const hasEditAccessTokenPermission = (accessToken: AccessToken) =>
 export const hasDeleteAccessTokenPermission = (accessToken: AccessToken) =>
   map((me?: User) => hasUserPermissionToDeleteAccessToken(me, accessToken));
 
-export const hasDeleteAllAccessTokensPermission = (
-  accessTokens: AccessToken[]
-) =>
+export const hasDeleteAllAccessTokensPermission = (accessTokens: AccessToken[]) =>
   map((me?: User) =>
     accessTokens
-      .map((accessToken: AccessToken) =>
-        hasUserPermissionToDeleteAccessToken(me, accessToken)
-      )
+      .map((accessToken: AccessToken) => hasUserPermissionToDeleteAccessToken(me, accessToken))
       .reduce((acc: boolean, next: boolean) => acc && next, true)
   );
 
 // Feature Flags
 
-export const hasUserPermissionToEditFeatureFlag = (
-  me: User,
-  featureFlag: UserFeatureFlag
-) => (me !== undefined && me.id === featureFlag.userId) || isAdmin(me);
+export const hasUserPermissionToEditFeatureFlag = (me: User, featureFlag: UserFeatureFlag) =>
+  (me !== undefined && me.id === featureFlag.userId) || isAdmin(me);
 
-export const hasUserPermissionToDeleteFeatureFlag = (
-  me: User,
-  featureFlag: UserFeatureFlag
-) => (me !== undefined && me.id === featureFlag.userId) || isAdmin(me);
+export const hasUserPermissionToDeleteFeatureFlag = (me: User, featureFlag: UserFeatureFlag) =>
+  (me !== undefined && me.id === featureFlag.userId) || isAdmin(me);
 
 export const hasEditFeatureFlagPermission = (featureFlag: UserFeatureFlag) =>
   map((me?: User) => hasUserPermissionToEditFeatureFlag(me, featureFlag));
@@ -94,13 +78,9 @@ export const hasEditFeatureFlagPermission = (featureFlag: UserFeatureFlag) =>
 export const hasDeleteFeatureFlagPermission = (featureFlag: UserFeatureFlag) =>
   map((me?: User) => hasUserPermissionToDeleteFeatureFlag(me, featureFlag));
 
-export const hasDeleteAllFeatureFlagsPermission = (
-  featureFlags: UserFeatureFlag[]
-) =>
+export const hasDeleteAllFeatureFlagsPermission = (featureFlags: UserFeatureFlag[]) =>
   map((me?: User) =>
     featureFlags
-      .map((featureFlag: UserFeatureFlag) =>
-        hasUserPermissionToDeleteFeatureFlag(me, featureFlag)
-      )
+      .map((featureFlag: UserFeatureFlag) => hasUserPermissionToDeleteFeatureFlag(me, featureFlag))
       .reduce((acc: boolean, next: boolean) => acc && next, true)
   );

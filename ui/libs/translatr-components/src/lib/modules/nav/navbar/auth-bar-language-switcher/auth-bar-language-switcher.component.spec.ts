@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { AuthBarLanguageSwitcherComponent } from './auth-bar-language-switcher.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+
+import { AuthBarLanguageSwitcherComponent } from './auth-bar-language-switcher.component';
 
 describe('AuthBarLanguageSwitcherComponent', () => {
   let component: AuthBarLanguageSwitcherComponent;
@@ -12,14 +12,8 @@ describe('AuthBarLanguageSwitcherComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [AuthBarLanguageSwitcherComponent],
-      imports: [
-        TranslocoTestingModule,
-
-        MatMenuModule,
-        MatIconModule
-      ]
-    })
-      .compileComponents();
+      imports: [TranslocoTestingModule, MatMenuModule, MatIconModule]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,7 +1,7 @@
-import { EditorAction, EditorActionTypes, MessageSaved } from './editor.actions';
 import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
 import * as fromRouter from '@ngrx/router-store';
 import { ROUTER_FEATURE_KEY } from '../../../../+state/router.selectors';
+import { EditorAction, EditorActionTypes, MessageSaved } from './editor.actions';
 
 export const EDITOR_FEATURE_KEY = 'editor';
 
@@ -92,9 +92,7 @@ function updateLocalesWithMessage(
     return locales;
   }
 
-  const index = locales.list.findIndex(
-    (l: Locale) => l.id === message.localeId
-  );
+  const index = locales.list.findIndex((l: Locale) => l.id === message.localeId);
   if (index !== -1) {
     const list = [...locales.list];
     list[index] = {
@@ -121,9 +119,7 @@ function updateMessagesWithMessage(
     return messages;
   }
 
-  const index = messages.list.findIndex(
-    (m: Message) => m.id === message.id
-  );
+  const index = messages.list.findIndex((m: Message) => m.id === message.id);
   if (index !== -1) {
     // already in list, updating list
     const list = [...messages.list];
@@ -141,10 +137,7 @@ function updateMessagesWithMessage(
   };
 }
 
-function activateLoading<K extends keyof EditorState>(
-  state: EditorState,
-  key: K
-) {
+function activateLoading<K extends keyof EditorState>(state: EditorState, key: K) {
   return {
     ...state,
     loading: {
@@ -219,22 +212,14 @@ export function editorReducer(
     case EditorActionTypes.MessageSaved:
       return {
         ...state,
-        keys: updateKeysWithMessage(
-          state.keys,
-          state.locale,
-          action.payload
-        ),
-        locales: updateLocalesWithMessage(
-          state.locales,
-          state.key,
-          action.payload
-        ),
+        keys: updateKeysWithMessage(state.keys, state.locale, action.payload),
+        locales: updateLocalesWithMessage(state.locales, state.key, action.payload),
         messages: updateMessagesWithMessage(state.messages, action.payload),
         message: action.payload
       };
 
     case EditorActionTypes.UnloadEditor:
-      return {...initialState};
+      return { ...initialState };
   }
   return state;
 }

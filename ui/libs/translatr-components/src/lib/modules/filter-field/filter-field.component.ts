@@ -10,18 +10,21 @@ import {
   Renderer2,
   ViewChild
 } from '@angular/core';
-import { FilterFieldFilter } from '@translatr/translatr-components/src';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatOptionSelectionChange, ThemePalette } from '@angular/material/core';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { FilterFieldFilter } from '@translatr/translatr-components/src';
 import { isArray } from 'util';
 
 const lowerCaseIncludes = (s: string, search: string): boolean =>
   s.toLowerCase().includes(search.toLowerCase());
 
-const valueOf = (option: FilterFieldFilter, definition: FilterFieldFilter): string | number | boolean => {
+const valueOf = (
+  option: FilterFieldFilter,
+  definition: FilterFieldFilter
+): string | number | boolean => {
   switch (definition.type) {
     case 'option':
     case 'boolean':
@@ -87,22 +90,20 @@ export class FilterFieldComponent implements OnInit {
     this.selected.emit(options);
   }
 
-  constructor(public readonly renderer: Renderer2) {
-  }
+  constructor(public readonly renderer: Renderer2) {}
 
   ngOnInit() {
-    this.filterControl.valueChanges
-      .subscribe((value: string | FilterFieldFilter) => {
-        if (typeof value === 'string') {
-          this.updateAutocompleteOptions({
-            ...this.filters.find(f => f.key === 'search'),
-            key: 'search',
-            value: value.trim()
-          });
-        } else {
-          this.updateAutocompleteOptions(value);
-        }
-      });
+    this.filterControl.valueChanges.subscribe((value: string | FilterFieldFilter) => {
+      if (typeof value === 'string') {
+        this.updateAutocompleteOptions({
+          ...this.filters.find(f => f.key === 'search'),
+          key: 'search',
+          value: value.trim()
+        });
+      } else {
+        this.updateAutocompleteOptions(value);
+      }
+    });
     this.updateAutocompleteOptions();
   }
 
@@ -125,10 +126,7 @@ export class FilterFieldComponent implements OnInit {
   }
 
   private updateOption(option: FilterFieldFilter): void {
-    this.options = [
-      ...this.options.filter(o => o.key !== option.key),
-      option
-    ];
+    this.options = [...this.options.filter(o => o.key !== option.key), option];
     this.updateAutocompleteOptions();
   }
 
@@ -146,28 +144,25 @@ export class FilterFieldComponent implements OnInit {
   }
 
   private updateAutocompleteOptions(option?: FilterFieldFilter): void {
-    const booleans = this.options
-      .filter(s => s.type === 'boolean')
-      .map(s => s.key);
-    const filters = this.filters !== undefined
-      ? this.filters.filter(f => !booleans.includes(f.key))
-      : [];
+    const booleans = this.options.filter(s => s.type === 'boolean').map(s => s.key);
+    const filters =
+      this.filters !== undefined ? this.filters.filter(f => !booleans.includes(f.key)) : [];
 
     if (option !== undefined) {
       this.autocompleteOptions = filters
-        .filter(o =>
-          (option.value !== '' && !o.allowEmpty)
-          || (option.value === '' && o.allowEmpty)
-          || (option.value !== '' && lowerCaseIncludes(o.title, option.value.toString())))
+        .filter(
+          o =>
+            (option.value !== '' && !o.allowEmpty) ||
+            (option.value === '' && o.allowEmpty) ||
+            (option.value !== '' && lowerCaseIncludes(o.title, option.value.toString()))
+        )
         .filter(o => filterOption(o, option))
-        .map((o) => ({
-            ...o,
-            value: valueOf(option, o)
-          })
-        );
+        .map(o => ({
+          ...o,
+          value: valueOf(option, o)
+        }));
     } else {
-      this.autocompleteOptions = filters
-        .filter(o => o.allowEmpty);
+      this.autocompleteOptions = filters.filter(o => o.allowEmpty);
     }
   }
 }

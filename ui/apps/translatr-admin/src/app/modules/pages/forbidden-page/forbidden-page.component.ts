@@ -12,10 +12,7 @@ export class ForbiddenPageComponent {
   me$ = this.facade.me$;
   uiUrl = environment.uiUrl;
 
-  constructor(
-    private readonly facade: AppFacade,
-    readonly route: ActivatedRoute
-  ) {
+  constructor(private readonly facade: AppFacade, readonly route: ActivatedRoute) {
     facade.loadMe();
   }
 }

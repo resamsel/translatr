@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Locale } from '@dev/translatr-model';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
 
 interface Data {
   locale: Partial<Locale>;
@@ -13,9 +13,10 @@ interface Data {
 @Component({
   templateUrl: './locale-edit-dialog.component.html'
 })
-export class LocaleEditDialogComponent
-  extends BaseEditFormComponent<LocaleEditDialogComponent, Locale> {
-
+export class LocaleEditDialogComponent extends BaseEditFormComponent<
+  LocaleEditDialogComponent,
+  Locale
+> {
   readonly nameFormControl = this.form.get('name');
 
   constructor(
@@ -44,6 +45,7 @@ export class LocaleEditDialogComponent
 }
 
 export const openLocaleEditDialog = (dialog: MatDialog, locale: Partial<Locale>) => {
-  return dialog.open<LocaleEditDialogComponent, Data, Locale>(
-    LocaleEditDialogComponent, { data: { locale } });
+  return dialog.open<LocaleEditDialogComponent, Data, Locale>(LocaleEditDialogComponent, {
+    data: { locale }
+  });
 };

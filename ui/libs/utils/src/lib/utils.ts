@@ -38,9 +38,7 @@ export function cartesianProduct<T>(arr: T[][]): T[][] {
   );
 }
 
-export const trackByFn =
-  (index: number, item: { id?: string | number }): string =>
-    `${item.id}`;
+export const trackByFn = (index: number, item: { id?: string | number }): string => `${item.id}`;
 
 export const pickKeys = <T>(obj: T, keys: (keyof T)[]): {} => {
   return Object.keys(obj)
@@ -64,11 +62,17 @@ export const slicePagedList = <T, U extends { list: T[] }>(
 
   return {
     ...pagedList,
-    list: pagedList.list.slice().sort(compareFn).slice(0, endExclusive)
+    list: pagedList.list
+      .slice()
+      .sort(compareFn)
+      .slice(0, endExclusive)
   };
 };
 
-export const mergeWithError = <T, E>(entity$: Observable<T>, error$: Observable<E>): Observable<[T, undefined] | [undefined, E]> => {
+export const mergeWithError = <T, E>(
+  entity$: Observable<T>,
+  error$: Observable<E>
+): Observable<[T, undefined] | [undefined, E]> => {
   return merge(
     entity$.pipe(
       filter(x => !!x),

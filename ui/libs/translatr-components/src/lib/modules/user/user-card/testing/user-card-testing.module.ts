@@ -21,5 +21,4 @@ export class MockUserCardLinkComponent {
   declarations: [MockUserCardComponent, MockUserCardLinkComponent],
   exports: [MockUserCardComponent, MockUserCardLinkComponent]
 })
-export class UserCardTestingModule {
-}
+export class UserCardTestingModule {}

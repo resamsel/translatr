@@ -1,5 +1,5 @@
-import { ProjectSettingsPage } from '../../../support/project/project-settings-page.po';
 import { ProjectPage } from '../../../support/project/project-page.po';
+import { ProjectSettingsPage } from '../../../support/project/project-settings-page.po';
 
 describe('Project Settings Update', () => {
   let page: ProjectSettingsPage;
@@ -17,8 +17,7 @@ describe('Project Settings Update', () => {
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
     cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
     cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
-    cy.route('/api/activities/aggregated*',
-      'fixture:johndoe/p1/activities-aggregated');
+    cy.route('/api/activities/aggregated*', 'fixture:johndoe/p1/activities-aggregated');
   });
 
   it('should persist on save', () => {
@@ -30,21 +29,21 @@ describe('Project Settings Update', () => {
     page.navigateTo();
 
     // then
-    page.getNameField()
+    page
+      .getNameField()
       .type('{selectall}p2')
       .should('have.value', 'p2');
-    page.getDescriptionField()
+    page
+      .getDescriptionField()
       .type('{selectall}p2d')
       .should('have.value', 'p2d');
     page.getSaveButton().click();
 
     // cy.url().should('contain', 'johndoe/p2/settings');
 
-    const projectPage: ProjectPage = new ProjectPage('johndoe', 'p2')
-      .navigateTo();
+    const projectPage: ProjectPage = new ProjectPage('johndoe', 'p2').navigateTo();
 
-    projectPage.getDescription()
-      .should('have.text', 'p2d');
+    projectPage.getDescription().should('have.text', 'p2d');
   });
 
   it('should persist with 255 chars name on save', () => {
@@ -57,8 +56,9 @@ describe('Project Settings Update', () => {
     page.navigateTo();
 
     // then
-    page.getNameField()
-      .type(`{selectall}${name}`, {delay: 0})
+    page
+      .getNameField()
+      .type(`{selectall}${name}`, { delay: 0 })
       .should('have.value', name);
     page.getSaveButton().click();
 
@@ -79,7 +79,8 @@ describe('Project Settings Update', () => {
     page.navigateTo();
 
     // then
-    page.getNameField()
+    page
+      .getNameField()
       .type('{selectall}p2')
       .should('have.value', 'p2');
     page.getSaveButton().click();
@@ -95,12 +96,12 @@ describe('Project Settings Update', () => {
     page.navigateTo();
 
     // then
-    page.getNameField()
+    page
+      .getNameField()
       .type('{selectall}p2 d2')
       .should('have.value', 'p2 d2')
       .blur();
-    page.getSaveButton()
-      .should('be.disabled');
+    page.getSaveButton().should('be.disabled');
 
     page.getNameFieldError().should('be.visible');
   });
@@ -118,7 +119,8 @@ describe('Project Settings Update', () => {
     page.navigateTo();
 
     // then
-    page.getNameField()
+    page
+      .getNameField()
       .type('{selectall}' + 'p2'.repeat(128), { delay: 0 })
       .should('have.value', 'p2'.repeat(128));
     page.getSaveButton().should('be.disabled');
@@ -132,7 +134,8 @@ describe('Project Settings Update', () => {
     page.navigateTo();
 
     // then
-    page.getDescriptionField()
+    page
+      .getDescriptionField()
       .type(`{selectall}${name}`, { delay: 0.1 })
       .should('have.value', name);
     page.getSaveButton().should('be.disabled');

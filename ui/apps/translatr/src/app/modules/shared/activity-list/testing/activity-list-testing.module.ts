@@ -18,5 +18,4 @@ class MockActivityListComponent {
   declarations: [MockActivityListComponent],
   exports: [MockActivityListComponent]
 })
-export class ActivityListTestingModule {
-}
+export class ActivityListTestingModule {}

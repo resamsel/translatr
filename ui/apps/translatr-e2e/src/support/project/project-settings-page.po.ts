@@ -2,10 +2,7 @@ import { Page } from '../page.po';
 import { ProjectPage } from './project-page.po';
 
 export class ProjectSettingsPage extends Page {
-  constructor(
-    private readonly username: string,
-    private readonly projectName: string
-  ) {
+  constructor(private readonly username: string, private readonly projectName: string) {
     super();
   }
 

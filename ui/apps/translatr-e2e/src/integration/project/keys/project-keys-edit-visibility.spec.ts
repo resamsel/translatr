@@ -14,8 +14,7 @@ describe('Project Keys Edit Key Visibility', () => {
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
     cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
     cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
-    cy.route('/api/activities/aggregated*',
-      'fixture:johndoe/p1/activities-aggregated');
+    cy.route('/api/activities/aggregated*', 'fixture:johndoe/p1/activities-aggregated');
   });
 
   it('should show key delete button for member role Developer', () => {
@@ -27,7 +26,8 @@ describe('Project Keys Edit Key Visibility', () => {
     page.navigateTo();
 
     // then
-    page.getKeyList()
+    page
+      .getKeyList()
       .find('button.edit')
       .should('have.length', 2);
   });
@@ -41,7 +41,8 @@ describe('Project Keys Edit Key Visibility', () => {
     page.navigateTo();
 
     // then
-    page.getKeyList()
+    page
+      .getKeyList()
       .find('button.edit')
       .should('have.length', 0);
   });
@@ -55,7 +56,8 @@ describe('Project Keys Edit Key Visibility', () => {
     page.navigateTo();
 
     // then
-    page.getKeyList()
+    page
+      .getKeyList()
       .find('button.edit')
       .should('have.length', 2);
   });
@@ -69,7 +71,8 @@ describe('Project Keys Edit Key Visibility', () => {
     page.navigateTo();
 
     // then
-    page.getKeyList()
+    page
+      .getKeyList()
       .find('button.edit')
       .should('have.length', 2);
   });

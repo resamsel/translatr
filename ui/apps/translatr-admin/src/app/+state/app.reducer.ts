@@ -1,5 +1,5 @@
-import { AppAction, AppActionTypes } from './app.actions';
 import { AccessToken, Activity, PagedList, Project, User, UserFeatureFlag } from '@dev/translatr-model';
+import { AppAction, AppActionTypes } from './app.actions';
 
 export const APP_FEATURE_KEY = 'app';
 
@@ -18,10 +18,7 @@ export interface AppPartialState {
 
 export const initialState: AppState = {};
 
-export function appReducer(
-  state: AppState = initialState,
-  action: AppAction
-): AppState {
+export function appReducer(state: AppState = initialState, action: AppAction): AppState {
   switch (action.type) {
     case AppActionTypes.LoggedInUserLoaded:
       return {
@@ -39,12 +36,12 @@ export function appReducer(
         users: state.users
           ? { ...state.users, list: [...state.users.list, action.payload] }
           : {
-            list: [action.payload],
-            hasNext: false,
-            hasPrev: false,
-            offset: 0,
-            limit: 1
-          }
+              list: [action.payload],
+              hasNext: false,
+              hasPrev: false,
+              offset: 0,
+              limit: 1
+            }
       };
     case AppActionTypes.UserCreated:
       return {
@@ -69,9 +66,7 @@ export function appReducer(
         ...state,
         users: {
           ...state.users,
-          list: state.users.list.filter(
-            (user: User) => user.id !== action.payload.id
-          )
+          list: state.users.list.filter((user: User) => user.id !== action.payload.id)
         }
       };
     case AppActionTypes.UsersDeleted:
@@ -107,9 +102,7 @@ export function appReducer(
         ...state,
         projects: {
           ...state.projects,
-          list: state.projects.list.filter(
-            (project: Project) => project.id !== action.payload.id
-          )
+          list: state.projects.list.filter((project: Project) => project.id !== action.payload.id)
         }
       };
     case AppActionTypes.ProjectsDeleted:
@@ -146,9 +139,7 @@ export function appReducer(
         accessTokens: {
           ...state.accessTokens,
           list: state.accessTokens.list.filter((accessToken: AccessToken) =>
-            action.payload.find(
-              (deleted: AccessToken) => accessToken.id !== deleted.id
-            )
+            action.payload.find((deleted: AccessToken) => accessToken.id !== deleted.id)
           )
         }
       };
@@ -173,9 +164,8 @@ export function appReducer(
         ...state,
         featureFlags: {
           ...state.featureFlags,
-          list: state.featureFlags.list.map(
-            (featureFlag: UserFeatureFlag) =>
-              featureFlag.id === action.payload.id ? action.payload : featureFlag
+          list: state.featureFlags.list.map((featureFlag: UserFeatureFlag) =>
+            featureFlag.id === action.payload.id ? action.payload : featureFlag
           )
         }
       };
@@ -195,9 +185,7 @@ export function appReducer(
         featureFlags: {
           ...state.featureFlags,
           list: state.featureFlags.list.filter((featureFlag: UserFeatureFlag) =>
-            action.payload.find(
-              (deleted: UserFeatureFlag) => featureFlag.id !== deleted.id
-            )
+            action.payload.find((deleted: UserFeatureFlag) => featureFlag.id !== deleted.id)
           )
         }
       };

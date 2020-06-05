@@ -23,10 +23,8 @@ describe('Dashboard Empty', () => {
     page.navigateTo();
 
     // then
-    page.getProjectCardLinks()
-      .should('have.length', 0);
-    page.getProjectEmptyView()
-      .should('have.length', 1);
+    page.getProjectCardLinks().should('have.length', 0);
+    page.getProjectEmptyView().should('have.length', 1);
   });
 
   it('should show dialog when using teaser button', () => {
@@ -36,11 +34,11 @@ describe('Dashboard Empty', () => {
     page.navigateTo();
 
     // then
-    page.getProjectEmptyView()
+    page
+      .getProjectEmptyView()
       .find('button')
       .click();
-    page.getProjectCreationDialog()
-      .should('be.visible');
+    page.getProjectCreationDialog().should('be.visible');
   });
 
   it('should show dialog when using floating action button', () => {
@@ -50,9 +48,7 @@ describe('Dashboard Empty', () => {
     page.navigateTo();
 
     // then
-    page.getFloatingActionButton()
-      .click();
-    page.getProjectCreationDialog()
-      .should('be.visible');
+    page.getFloatingActionButton().click();
+    page.getProjectCreationDialog().should('be.visible');
   });
 });

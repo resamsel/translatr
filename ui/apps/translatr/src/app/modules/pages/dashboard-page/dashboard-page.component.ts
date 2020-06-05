@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AppFacade } from '../../../+state/app.facade';
-import { ProjectsFacade } from '../projects-page/+state/projects.facade';
-import { filter, take } from 'rxjs/operators';
-import { Feature, User } from '@dev/translatr-model';
-import { DashboardFacade } from './+state/dashboard.facade';
-import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { Feature, User } from '@dev/translatr-model';
+import { filter, take } from 'rxjs/operators';
+import { AppFacade } from '../../../+state/app.facade';
+import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
+import { ProjectsFacade } from '../projects-page/+state/projects.facade';
+import { DashboardFacade } from './+state/dashboard.facade';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,8 +29,7 @@ export class DashboardPageComponent implements OnInit {
     private readonly projectsFacade: ProjectsFacade,
     private readonly dialog: MatDialog,
     private readonly router: Router
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.appFacade.loadUsers({ limit: 1, fetch: 'count' });
@@ -62,8 +61,7 @@ export class DashboardPageComponent implements OnInit {
         filter(project => !!project),
         take(1)
       )
-      .subscribe((project => this.router
-        .navigate([project.ownerUsername, project.name])));
+      .subscribe(project => this.router.navigate([project.ownerUsername, project.name]));
   }
 
   private loadMyProjects(user: User): void {

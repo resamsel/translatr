@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { UserFacade } from '../+state/user.facade';
-import { ActivatedRoute, Router } from '@angular/router';
-import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
-import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
+import { ActivatedRoute, Router } from '@angular/router';
 import { navigate, trackByFn } from '@translatr/utils';
+import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { UserFacade } from '../+state/user.facade';
+import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
 
 @Component({
@@ -24,8 +24,7 @@ export class UserAccessTokensComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.criteria$
@@ -34,7 +33,8 @@ export class UserAccessTokensComponent implements OnInit {
         takeUntil(this.facade.destroy$)
       )
       .subscribe(([criteria, user]) =>
-        this.facade.loadAccessTokens({ userId: user.id, ...criteria }));
+        this.facade.loadAccessTokens({ userId: user.id, ...criteria })
+      );
   }
 
   openAccessTokenCreationDialog(): void {
@@ -44,8 +44,7 @@ export class UserAccessTokensComponent implements OnInit {
         take(1),
         filter(accessToken => !!accessToken)
       )
-      .subscribe((accessToken => this.router
-        .navigate([accessToken.id], { relativeTo: this.route })));
+      .subscribe(accessToken => this.router.navigate([accessToken.id], { relativeTo: this.route }));
   }
 
   onFilter(criteria: FilterCriteria): void {

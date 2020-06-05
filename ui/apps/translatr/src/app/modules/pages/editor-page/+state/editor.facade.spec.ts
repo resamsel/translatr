@@ -1,33 +1,35 @@
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
+import { mockObservable } from '@translatr/utils/testing';
+import { AppFacade } from '../../../../+state/app.facade';
 import { EditorFacade } from './editor.facade';
 import { EditorState } from './editor.reducer';
-import { AppFacade } from '../../../../+state/app.facade';
-import { mockObservable } from '@translatr/utils/testing';
 
 describe('EditorFacade', () => {
   let facade: EditorFacade;
-  let store: Store<EditorState> & { dispatch: jest.Mock; pipe: jest.Mock; };
+  let store: Store<EditorState> & { dispatch: jest.Mock; pipe: jest.Mock };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         EditorFacade,
         {
-          provide: Store, useFactory: () => ({
+          provide: Store,
+          useFactory: () => ({
             dispatch: jest.fn(),
             pipe: jest.fn()
           })
         },
         {
-          provide: AppFacade, useFactory: () => ({
+          provide: AppFacade,
+          useFactory: () => ({
             settings$: mockObservable()
           })
         }
       ]
     });
 
-    store = TestBed.inject(Store) as Store<EditorState> & { dispatch: jest.Mock; pipe: jest.Mock; };
+    store = TestBed.inject(Store) as Store<EditorState> & { dispatch: jest.Mock; pipe: jest.Mock };
     facade = TestBed.inject(EditorFacade);
   });
 

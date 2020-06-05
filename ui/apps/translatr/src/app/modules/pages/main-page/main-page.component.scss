@@ -1,5 +1,5 @@
 @import '~@angular/material/theming';
-@import "mixins";
+@import 'mixins';
 
 :host {
   position: relative;
@@ -52,15 +52,16 @@ header.header {
 }
 
 .green-text.text-lighten-4 {
-  color: #C8E6C9 !important;
+  color: #c8e6c9 !important;
 }
 
-.light, .page-footer .footer-copyright {
+.light,
+.page-footer .footer-copyright {
   font-weight: 300;
 }
 
 .green-text {
-  color: #4CAF50;
+  color: #4caf50;
 }
 
 .row {
@@ -87,7 +88,7 @@ header.header {
 .promo {
   .material-icons {
     margin: 40px 0;
-    color: #43A047;
+    color: #43a047;
     font-size: 7rem;
     display: block;
   }
@@ -102,14 +103,14 @@ header.header {
   line-height: 120%;
 
   .header {
-    color: #43A047;
+    color: #43a047;
     font-weight: 300;
   }
 
   h1 {
     font-size: 4.2rem;
     line-height: 110%;
-    margin: 2.1rem 0 .68rem 0;
+    margin: 2.1rem 0 0.68rem 0;
 
     .material-icons {
       float: left;
@@ -128,12 +129,12 @@ header.header {
   h4 {
     font-size: 2.28rem;
     line-height: 110%;
-    margin: .6rem 0 1.5rem 0;
+    margin: 0.6rem 0 1.5rem 0;
   }
 
   h5 {
     font-size: 1.64rem;
     line-height: 110%;
-    margin: .82rem 0 .656rem 0;
+    margin: 0.82rem 0 0.656rem 0;
   }
 }

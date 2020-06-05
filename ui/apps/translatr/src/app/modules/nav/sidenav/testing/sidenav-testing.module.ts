@@ -19,5 +19,4 @@ class MockSidenavComponent {
   declarations: [MockSidenavComponent],
   exports: [MockSidenavComponent]
 })
-export class SidenavTestingModule {
-}
+export class SidenavTestingModule {}

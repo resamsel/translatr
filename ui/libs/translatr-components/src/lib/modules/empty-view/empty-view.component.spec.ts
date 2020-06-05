@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatIconModule } from '@angular/material/icon';
 
 import { EmptyViewComponent } from './empty-view.component';
-import { MatIconModule } from '@angular/material/icon';
 
 describe('EmptyViewComponent', () => {
   let component: EmptyViewComponent;
@@ -10,11 +10,8 @@ describe('EmptyViewComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [EmptyViewComponent],
-      imports: [
-        MatIconModule
-      ]
-    })
-      .compileComponents();
+      imports: [MatIconModule]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

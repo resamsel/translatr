@@ -1,17 +1,14 @@
 import { inject, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppFacade } from '../+state/app.facade';
 
 import { MyselfGuard } from './myself.guard';
-import { AppFacade } from '../+state/app.facade';
-import { RouterTestingModule } from '@angular/router/testing';
 
 describe('MyselfGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [
-        MyselfGuard,
-        { provide: AppFacade, useFactory: () => ({}) }
-      ]
+      providers: [MyselfGuard, { provide: AppFacade, useFactory: () => ({}) }]
     });
   });
 

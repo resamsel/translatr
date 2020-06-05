@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ProjectFacade } from '../+state/project.facade';
-import { filter, map, pluck, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { Project } from '@dev/translatr-model';
+import { filter, map, pluck, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { ProjectFacade } from '../+state/project.facade';
 
 @Component({
   selector: 'app-project-activity',
@@ -11,20 +11,22 @@ import { Project } from '@dev/translatr-model';
 export class ProjectActivityComponent implements OnInit {
   project$ = this.facade.project$;
   activities$ = this.facade.activities$;
-  aggregated$ = this.facade.activityAggregated$
-    .pipe(map(pagedList => !!pagedList ? pagedList.list : []));
+  aggregated$ = this.facade.activityAggregated$.pipe(
+    map(pagedList => (!!pagedList ? pagedList.list : []))
+  );
   criteria$ = this.facade.activitiesCriteria$;
 
-  constructor(private readonly facade: ProjectFacade) {
-  }
+  constructor(private readonly facade: ProjectFacade) {}
 
   ngOnInit() {
     this.criteria$
       .pipe(
-        withLatestFrom(this.project$.pipe(
-          filter(x => !!x),
-          pluck<Project, string>('id')
-        )),
+        withLatestFrom(
+          this.project$.pipe(
+            filter(x => !!x),
+            pluck<Project, string>('id')
+          )
+        ),
         takeUntil(this.facade.unload$)
       )
       .subscribe(([criteria, projectId]) => {

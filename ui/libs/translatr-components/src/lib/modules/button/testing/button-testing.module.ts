@@ -5,5 +5,4 @@ import { MockConfirmButtonComponent } from '../confirm-button/testing';
   declarations: [MockConfirmButtonComponent],
   exports: [MockConfirmButtonComponent]
 })
-export class ButtonTestingModule {
-}
+export class ButtonTestingModule {}

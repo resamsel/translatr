@@ -19,5 +19,4 @@ export class MockFeatureFlagClassDirective {
   declarations: [MockFeatureFlagDirective, MockFeatureFlagClassDirective],
   exports: [MockFeatureFlagDirective, MockFeatureFlagClassDirective]
 })
-export class FeatureFlagTestingModule {
-}
+export class FeatureFlagTestingModule {}

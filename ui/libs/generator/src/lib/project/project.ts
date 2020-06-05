@@ -1,16 +1,16 @@
-import { Injector } from '@angular/core';
-import { combineLatest, Observable, of } from 'rxjs';
-import { State } from '../state';
-import { getRandomUserAccessToken } from '../user';
-import { AccessToken, Key, Locale, Message, PagedList, Project, User, UserRole } from '@dev/translatr-model';
-import { catchError, concatMap, filter, map, mapTo } from 'rxjs/operators';
-import * as randomName from 'random-name';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Injector } from '@angular/core';
+import { AccessToken, Key, Locale, Message, PagedList, Project, User, UserRole } from '@dev/translatr-model';
 import { errorMessage, MessageService, ProjectService } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
+import * as randomName from 'random-name';
+import { combineLatest, Observable, of } from 'rxjs';
+import { catchError, concatMap, filter, map, mapTo } from 'rxjs/operators';
 import * as _ from 'underscore';
-import { createLocale, localeNames } from '../locale';
 import { createKey, keyNames } from '../key';
+import { createLocale, localeNames } from '../locale';
+import { State } from '../state';
+import { getRandomUserAccessToken } from '../user';
 import { getRandomProject } from './get';
 
 const createProject = (
@@ -33,9 +33,7 @@ const createMessage = (
     .create(message, { params: { access_token: accessToken.key } });
 };
 
-export const createRandomProject = (
-  injector: Injector
-): Observable<Partial<State>> => {
+export const createRandomProject = (injector: Injector): Observable<Partial<State>> => {
   // Randomly choose user, create project for that user with random name
   return getRandomUserAccessToken(
     injector,
@@ -44,10 +42,7 @@ export const createRandomProject = (
   ).pipe(
     filter(
       (payload: { user: User; accessToken: AccessToken }) =>
-        !!payload.user &&
-        !!payload.user.id &&
-        !!payload.accessToken &&
-        !!payload.accessToken.key
+        !!payload.user && !!payload.user.id && !!payload.accessToken && !!payload.accessToken.key
     ),
     concatMap((payload: { user: User; accessToken: AccessToken }) =>
       createProject(
@@ -60,41 +55,32 @@ export const createRandomProject = (
         injector.get(ProjectService)
       ).pipe(map((project: Project) => ({ ...payload, project })))
     ),
-    concatMap(
-      (payload: { user: User; project: Project; accessToken: AccessToken }) => {
-        return combineLatest(
-          _.sample(localeNames, Math.ceil(Math.random() * 12)).map(
-            (localeName: string) =>
-              createLocale(
-                injector,
-                {
-                  name: localeName,
-                  projectId: payload.project.id
-                },
-                payload.accessToken
-              )
+    concatMap((payload: { user: User; project: Project; accessToken: AccessToken }) => {
+      return combineLatest(
+        _.sample(localeNames, Math.ceil(Math.random() * 12)).map((localeName: string) =>
+          createLocale(
+            injector,
+            {
+              name: localeName,
+              projectId: payload.project.id
+            },
+            payload.accessToken
           )
-        ).pipe(map((locales: Locale[]) => ({ ...payload, locales })));
-      }
-    ),
+        )
+      ).pipe(map((locales: Locale[]) => ({ ...payload, locales })));
+    }),
     concatMap(
-      (payload: {
-        user: User;
-        project: Project;
-        locales: Locale[];
-        accessToken: AccessToken;
-      }) => {
+      (payload: { user: User; project: Project; locales: Locale[]; accessToken: AccessToken }) => {
         return combineLatest(
-          _.sample(keyNames, Math.ceil(Math.random() * 50)).map(
-            (keyName: string) =>
-              createKey(
-                injector,
-                {
-                  name: keyName,
-                  projectId: payload.project.id
-                },
-                payload.accessToken
-              )
+          _.sample(keyNames, Math.ceil(Math.random() * 50)).map((keyName: string) =>
+            createKey(
+              injector,
+              {
+                name: keyName,
+                projectId: payload.project.id
+              },
+              payload.accessToken
+            )
           )
         ).pipe(map((keys: Key[]) => ({ ...payload, keys })));
       }
@@ -123,26 +109,15 @@ export const createRandomProject = (
         ).pipe(mapTo(payload));
       }
     ),
-    map(
-      (payload: {
-        user: User;
-        project: Project;
-        locales: Locale[];
-        keys: Key[];
-      }) => ({
-        message: `${payload.user.name} created project ${
-          payload.project.name
-        } with \
+    map((payload: { user: User; project: Project; locales: Locale[]; keys: Key[] }) => ({
+      message: `${payload.user.name} created project ${payload.project.name} with \
         ${payload.locales.length} languages and ${payload.keys.length} keys`
-      })
-    ),
+    })),
     catchError((err: HttpErrorResponse) => of({ message: errorMessage(err) }))
   );
 };
 
-export const updateRandomProject = (
-  injector: Injector
-): Observable<Partial<State>> => {
+export const updateRandomProject = (injector: Injector): Observable<Partial<State>> => {
   const projectService = injector.get(ProjectService);
   // Randomly choose user, update project of that user randomly
   return getRandomUserAccessToken(
@@ -152,52 +127,43 @@ export const updateRandomProject = (
   ).pipe(
     filter(
       (payload: { user: User; accessToken: AccessToken }) =>
-        !!payload.user &&
-        !!payload.user.id &&
-        !!payload.accessToken &&
-        !!payload.accessToken.key
+        !!payload.user && !!payload.user.id && !!payload.accessToken && !!payload.accessToken.key
     ),
     concatMap((payload: { user: User; accessToken: AccessToken }) =>
-      projectService
-        .find({ owner: payload.user.id, access_token: payload.accessToken.key })
-        .pipe(
-          map((pagedList: PagedList<Project>) => ({
-            user: payload.user,
-            project: pickRandomly(pagedList.list),
-            accessToken: payload.accessToken
-          }))
-        )
+      projectService.find({ owner: payload.user.id, access_token: payload.accessToken.key }).pipe(
+        map((pagedList: PagedList<Project>) => ({
+          user: payload.user,
+          project: pickRandomly(pagedList.list),
+          accessToken: payload.accessToken
+        }))
+      )
     ),
-    concatMap(
-      (payload: { user: User; project: Project; accessToken: AccessToken }) => {
-        if (!!payload.project) {
-          return of(payload);
-        }
+    concatMap((payload: { user: User; project: Project; accessToken: AccessToken }) => {
+      if (!!payload.project) {
+        return of(payload);
+      }
 
-        const project: Project = {
-          name: randomName.place().replace(' ', ''),
-          description: 'Generated'
-        };
-        return createProject(project, payload.accessToken, projectService).pipe(
-          map((p: Project) => ({ ...payload, project: p }))
-        );
-      }
-    ),
-    concatMap(
-      (payload: { user: User; project: Project; accessToken: AccessToken }) => {
-        return projectService
-          .update(
-            {
-              ...payload.project,
-              description: payload.project.description.endsWith('!')
-                ? payload.project.description.replace('!', '')
-                : `${payload.project.description}!`
-            },
-            { params: { access_token: payload.accessToken.key } }
-          )
-          .pipe(map((project: Project) => ({ ...payload, project })));
-      }
-    ),
+      const project: Project = {
+        name: randomName.place().replace(' ', ''),
+        description: 'Generated'
+      };
+      return createProject(project, payload.accessToken, projectService).pipe(
+        map((p: Project) => ({ ...payload, project: p }))
+      );
+    }),
+    concatMap((payload: { user: User; project: Project; accessToken: AccessToken }) => {
+      return projectService
+        .update(
+          {
+            ...payload.project,
+            description: payload.project.description.endsWith('!')
+              ? payload.project.description.replace('!', '')
+              : `${payload.project.description}!`
+          },
+          { params: { access_token: payload.accessToken.key } }
+        )
+        .pipe(map((project: Project) => ({ ...payload, project })));
+    }),
     map((payload: { user: User; project: Project }) => ({
       message: `${payload.user.name} updated project ${payload.project.name}`
     })),
@@ -205,9 +171,7 @@ export const updateRandomProject = (
   );
 };
 
-export const deleteRandomProject = (
-  injector: Injector
-): Observable<Partial<State>> => {
+export const deleteRandomProject = (injector: Injector): Observable<Partial<State>> => {
   // Randomly choose user, delete project of that user randomly
   return getRandomUserAccessToken(
     injector,
@@ -217,10 +181,7 @@ export const deleteRandomProject = (
     .pipe(
       filter(
         (payload: { user: User; accessToken: AccessToken }) =>
-          !!payload.user &&
-          !!payload.user.id &&
-          !!payload.accessToken &&
-          !!payload.accessToken.key
+          !!payload.user && !!payload.user.id && !!payload.accessToken && !!payload.accessToken.key
       ),
       concatMap((payload: { user: User; accessToken: AccessToken }) =>
         getRandomProject(injector, payload.user, payload.accessToken).pipe(
@@ -231,27 +192,18 @@ export const deleteRandomProject = (
         (payload: { user: User; accessToken: AccessToken; project: Project }) =>
           payload.project !== undefined
       ),
-      concatMap(
-        (payload: { user: User; accessToken: AccessToken; project: Project }) =>
-          injector
-            .get(ProjectService)
-            .delete(payload.project.id, {
-              params: { access_token: payload.accessToken.key }
-            })
-            .pipe(mapTo(payload))
+      concatMap((payload: { user: User; accessToken: AccessToken; project: Project }) =>
+        injector
+          .get(ProjectService)
+          .delete(payload.project.id, {
+            params: { access_token: payload.accessToken.key }
+          })
+          .pipe(mapTo(payload))
       )
     )
     .pipe(
-      map(
-        (payload: {
-          user: User;
-          accessToken: AccessToken;
-          project: Project;
-        }) => ({
-          message: `${payload.user.name} deleted project ${
-            payload.project.name
-          }`
-        })
-      )
+      map((payload: { user: User; accessToken: AccessToken; project: Project }) => ({
+        message: `${payload.user.name} deleted project ${payload.project.name}`
+      }))
     );
 };

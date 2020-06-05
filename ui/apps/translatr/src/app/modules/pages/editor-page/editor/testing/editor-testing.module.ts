@@ -1,6 +1,6 @@
 import { Component, Input, NgModule } from '@angular/core';
-import { Message, User } from '@dev/translatr-model';
 import { Link } from '@dev/translatr-components';
+import { Message, User } from '@dev/translatr-model';
 
 @Component({
   selector: 'app-editor',
@@ -20,12 +20,10 @@ class MockEditorComponent {
   selector: 'app-editor-selector',
   template: ''
 })
-class MockEditorSelectorComponent {
-}
+class MockEditorSelectorComponent {}
 
 @NgModule({
   declarations: [MockEditorComponent, MockEditorSelectorComponent],
   exports: [MockEditorComponent, MockEditorSelectorComponent]
 })
-export class EditorTestingModule {
-}
+export class EditorTestingModule {}

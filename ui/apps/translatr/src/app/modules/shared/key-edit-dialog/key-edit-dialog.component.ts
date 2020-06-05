@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Key } from '@dev/translatr-model';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
 
 interface Data {
   key: Partial<Key>;
@@ -13,9 +13,11 @@ interface Data {
 @Component({
   templateUrl: './key-edit-dialog.component.html'
 })
-export class KeyEditDialogComponent
-  extends BaseEditFormComponent<KeyEditDialogComponent, Key, Key> {
-
+export class KeyEditDialogComponent extends BaseEditFormComponent<
+  KeyEditDialogComponent,
+  Key,
+  Key
+> {
   readonly nameFormControl = this.form.get('name');
 
   constructor(
@@ -44,7 +46,4 @@ export class KeyEditDialogComponent
 }
 
 export const openKeyEditDialog = (dialog: MatDialog, key: Partial<Key>) =>
-  dialog.open<KeyEditDialogComponent, Data, Key>(
-    KeyEditDialogComponent,
-    { data: { key } }
-  );
+  dialog.open<KeyEditDialogComponent, Data, Key>(KeyEditDialogComponent, { data: { key } });

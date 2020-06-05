@@ -1,8 +1,8 @@
-import { userQuery } from './user.selectors';
 import { initialState, USER_FEATURE_KEY, UserState } from './user.reducer';
+import { userQuery } from './user.selectors';
 
 describe('User Selectors', () => {
-  let storeState: { [USER_FEATURE_KEY]: UserState; };
+  let storeState: { [USER_FEATURE_KEY]: UserState };
 
   beforeEach(() => {
     storeState = {

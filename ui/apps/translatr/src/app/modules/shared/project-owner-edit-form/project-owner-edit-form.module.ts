@@ -1,6 +1,5 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProjectOwnerEditFormComponent } from './project-owner-edit-form.component';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,12 +8,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslocoModule } from '@ngneat/transloco';
+import { ProjectOwnerEditFormComponent } from './project-owner-edit-form.component';
 
 @NgModule({
   declarations: [ProjectOwnerEditFormComponent],
-  exports: [
-    ProjectOwnerEditFormComponent
-  ],
+  exports: [ProjectOwnerEditFormComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -28,4 +26,4 @@ import { TranslocoModule } from '@ngneat/transloco';
     TranslocoModule
   ]
 })
-export class ProjectOwnerEditFormModule { }
+export class ProjectOwnerEditFormModule {}

@@ -12,7 +12,6 @@ const powers = [
   name: 'shortNumber'
 })
 export class ShortNumberPipe implements PipeTransform {
-
   transform(value: any, ...args: any[]): any {
     if (value === null) {
       return null;

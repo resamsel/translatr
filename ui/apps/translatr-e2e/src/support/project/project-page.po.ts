@@ -2,10 +2,7 @@ import { Page } from '../page.po';
 import { ProjectSettingsPage } from './project-settings-page.po';
 
 export class ProjectPage extends Page {
-  constructor(
-    public readonly username: string,
-    public readonly projectName: string
-  ) {
+  constructor(public readonly username: string, public readonly projectName: string) {
     super();
   }
 
@@ -15,8 +12,7 @@ export class ProjectPage extends Page {
   }
 
   navigateToSettings(): ProjectSettingsPage {
-    return new ProjectSettingsPage(this.username, this.projectName)
-      .navigateTo();
+    return new ProjectSettingsPage(this.username, this.projectName).navigateTo();
   }
 
   getDescription(): Cypress.Chainable<JQuery<HTMLElement>> {

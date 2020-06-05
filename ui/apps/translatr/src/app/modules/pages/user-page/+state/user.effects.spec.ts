@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject, of, Subject } from 'rxjs';
-import { Actions } from '@ngrx/effects';
-import { UserEffects } from './user.effects';
-import { AccessTokenService, ActivityService, ProjectService, UserService } from '@dev/translatr-sdk';
 import { Aggregate, PagedList, User } from '@dev/translatr-model';
-import { activityAggregatedLoaded, loadActivityAggregated, loadUser, userLoaded } from './user.actions';
+import { AccessTokenService, ActivityService, ProjectService, UserService } from '@dev/translatr-sdk';
+import { Actions } from '@ngrx/effects';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { AppFacade } from '../../../../+state/app.facade';
+import { activityAggregatedLoaded, loadActivityAggregated, loadUser, userLoaded } from './user.actions';
+import { UserEffects } from './user.effects';
 
 describe('UserEffects', () => {
   let actions: Subject<any>;
@@ -51,7 +51,7 @@ describe('UserEffects', () => {
   });
 
   describe('loadLocales$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
       const username = 'username';
       const user: User = {
@@ -68,7 +68,7 @@ describe('UserEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toEqual(userLoaded({user}));
+        expect(actual).toEqual(userLoaded({ user }));
         expect(userService.byUsername.mock.calls.length).toEqual(1);
         done();
       });
@@ -76,7 +76,7 @@ describe('UserEffects', () => {
   });
 
   describe('loadActivityAggregated$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
       const payload: PagedList<Aggregate> = {
         list: [],
@@ -94,7 +94,7 @@ describe('UserEffects', () => {
 
       // then
       target$.subscribe(actual => {
-        expect(actual).toEqual(activityAggregatedLoaded({pagedList: payload}));
+        expect(actual).toEqual(activityAggregatedLoaded({ pagedList: payload }));
         expect(activityService.aggregated.mock.calls.length).toEqual(1);
         done();
       });

@@ -21,5 +21,4 @@ class MockKeyListComponent {
   declarations: [MockKeyListComponent],
   exports: [MockKeyListComponent]
 })
-export class KeyListTestingModule {
-}
+export class KeyListTestingModule {}

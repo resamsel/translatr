@@ -1,10 +1,7 @@
 import { Page } from '../page.po';
 
 export class ProjectMembersPage extends Page {
-  constructor(
-    private readonly username: string,
-    private readonly projectName: string
-  ) {
+  constructor(private readonly username: string, private readonly projectName: string) {
     super();
   }
 

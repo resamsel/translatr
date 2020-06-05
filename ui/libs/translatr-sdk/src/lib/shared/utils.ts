@@ -1,4 +1,3 @@
-import * as runes from 'runes';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ConstraintViolation,
@@ -7,6 +6,7 @@ import {
   NotFoundErrorInfo,
   PermissionErrorInfo
 } from '@dev/translatr-model';
+import * as runes from 'runes';
 
 export const firstChar = (name: string): string => {
   if (name === undefined || name === null || name.length === 0) {
@@ -15,9 +15,7 @@ export const firstChar = (name: string): string => {
   return runes.substr(name, 0, 1);
 };
 
-export const errorMessage = (
-  error: HttpErrorResponse | ErrorInfos | Error
-): string => {
+export const errorMessage = (error: HttpErrorResponse | ErrorInfos | Error): string => {
   if (error instanceof HttpErrorResponse) {
     if (!!error.error && !!error.error.error) {
       return errorMessage(error.error.error);
@@ -36,9 +34,7 @@ export const errorMessage = (
         .map((v: ConstraintViolation) => `${v.field}: ${v.message}`)
         .join(', ');
     case 'PermissionError':
-      return `${error.type}: Scopes needed: ${
-        (error as PermissionErrorInfo).scopes
-      }`;
+      return `${error.type}: Scopes needed: ${(error as PermissionErrorInfo).scopes}`;
     case 'NotFoundError':
       return `${error.type}: ${(error as NotFoundErrorInfo).entity} with ID '${
         (error as NotFoundErrorInfo).id

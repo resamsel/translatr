@@ -1,15 +1,15 @@
+import { Injector } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { UserPageComponent } from './user-page.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { SidenavTestingModule } from '../../nav/sidenav/testing';
-import { FeatureFlagTestingModule } from '@translatr/components/testing';
-import { GravatarModule } from 'ngx-gravatar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Injector } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureFlagTestingModule } from '@translatr/components/testing';
+import { GravatarModule } from 'ngx-gravatar';
 import { AppFacade } from '../../../+state/app.facade';
+import { SidenavTestingModule } from '../../nav/sidenav/testing';
 import { UserFacade } from './+state/user.facade';
+
+import { UserPageComponent } from './user-page.component';
 import { USER_ROUTES } from './user-page.token';
 
 describe('UserPageComponent', () => {
@@ -38,9 +38,7 @@ describe('UserPageComponent', () => {
         { provide: AppFacade, useFactory: () => ({}) },
         {
           provide: USER_ROUTES,
-          useValue: ([
-            { children: [] }
-          ])
+          useValue: [{ children: [] }]
         }
       ]
     }).compileComponents();

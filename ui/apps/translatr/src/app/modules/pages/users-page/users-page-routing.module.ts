@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UsersPageComponent } from './users-page.component';
 import { AuthGuard } from '../../../guards/auth.guard';
+import { UsersPageComponent } from './users-page.component';
 
 const routes: Routes = [
   {
@@ -15,5 +15,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class UsersPageRoutingModule {
-}
+export class UsersPageRoutingModule {}

@@ -1,17 +1,17 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DashboardAccessTokensComponent } from './dashboard-access-tokens.component';
-import { AppFacade } from '../../../../+state/app.facade';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ButtonTestingModule, EntityTableTestingModule, FeatureFlagTestingModule } from '@translatr/components/testing';
-import { MomentModule } from 'ngx-moment';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EllipsisModule } from '@dev/translatr-components';
+import { ButtonTestingModule, EntityTableTestingModule, FeatureFlagTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
+import { MomentModule } from 'ngx-moment';
+import { AppFacade } from '../../../../+state/app.facade';
+
+import { DashboardAccessTokensComponent } from './dashboard-access-tokens.component';
 
 describe('DashboardAccessTokensComponent', () => {
   let component: DashboardAccessTokensComponent;

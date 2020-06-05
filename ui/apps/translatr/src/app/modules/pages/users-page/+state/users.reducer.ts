@@ -1,5 +1,5 @@
-import { UsersAction, UsersActionTypes } from './users.actions';
 import { PagedList, User } from '@dev/translatr-model';
+import { UsersAction, UsersActionTypes } from './users.actions';
 
 export const USERS_FEATURE_KEY = 'users';
 
@@ -21,10 +21,7 @@ export interface UsersPartialState {
 
 export const initialState: UsersState = {};
 
-export function usersReducer(
-  state: UsersState = initialState,
-  action: UsersAction
-): UsersState {
+export function usersReducer(state: UsersState = initialState, action: UsersAction): UsersState {
   switch (action.type) {
     case UsersActionTypes.UsersLoaded: {
       return {

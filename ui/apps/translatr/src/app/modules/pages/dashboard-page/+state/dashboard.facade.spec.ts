@@ -5,14 +5,15 @@ import { DashboardState } from './dashboard.reducer';
 
 describe('DashboardFacade', () => {
   let facade: DashboardFacade;
-  let store: Store<DashboardState> & { dispatch: jest.Mock; pipe: jest.Mock; };
+  let store: Store<DashboardState> & { dispatch: jest.Mock; pipe: jest.Mock };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         DashboardFacade,
         {
-          provide: Store, useFactory: () => ({
+          provide: Store,
+          useFactory: () => ({
             dispatch: jest.fn(),
             pipe: jest.fn()
           })

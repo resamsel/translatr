@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
-import { Member, Project } from '@dev/translatr-model';
 import { MatDialogRef } from '@angular/material/dialog';
+import { Member, Project } from '@dev/translatr-model';
 
 @Component({
   selector: 'app-project-owner-edit-form',
@@ -16,13 +16,11 @@ class MockProjectOwnerEditFormComponent {
   invalid: boolean;
   processing: boolean;
 
-  onSave() {
-  }
+  onSave() {}
 }
 
 @NgModule({
   declarations: [MockProjectOwnerEditFormComponent],
   exports: [MockProjectOwnerEditFormComponent]
 })
-export class ProjectOwnerEditFormTestingModule {
-}
+export class ProjectOwnerEditFormTestingModule {}

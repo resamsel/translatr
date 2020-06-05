@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { LoginPageComponent } from './login-page.component';
 import { MatIconModule } from '@angular/material/icon';
 import { NavbarTestingModule } from '@translatr/components/testing';
 import { AuthProviderService } from '@translatr/translatr-sdk/src/lib/services/auth-provider.service';
 import { ENDPOINT_URL } from '@translatr/utils';
 import { mockObservable } from '@translatr/utils/testing';
+
+import { LoginPageComponent } from './login-page.component';
 
 describe('LoginPageComponent', () => {
   let component: LoginPageComponent;
@@ -15,11 +15,7 @@ describe('LoginPageComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [LoginPageComponent],
-      imports: [
-        NavbarTestingModule,
-
-        MatIconModule
-      ],
+      imports: [NavbarTestingModule, MatIconModule],
       providers: [
         {
           provide: AuthProviderService,
@@ -29,8 +25,7 @@ describe('LoginPageComponent', () => {
         },
         { provide: ENDPOINT_URL, useValue: '' }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

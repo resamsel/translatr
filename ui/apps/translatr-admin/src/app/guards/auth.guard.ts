@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AppFacade } from '../+state/app.facade';
-import { map, skip } from 'rxjs/operators';
-import { LOGIN_URL, WINDOW } from '@translatr/utils';
-import { environment } from '../../environments/environment';
 import { User, UserRole } from '@dev/translatr-model';
+import { LOGIN_URL, WINDOW } from '@translatr/utils';
+import { Observable } from 'rxjs';
+import { map, skip } from 'rxjs/operators';
+import { AppFacade } from '../+state/app.facade';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +16,7 @@ export class AuthGuard implements CanActivate {
     private readonly router: Router,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(LOGIN_URL) private readonly loginUrl: string
-  ) {
-  }
+  ) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -42,14 +41,11 @@ export class AuthGuard implements CanActivate {
         }
 
         if (user.role !== UserRole.Admin) {
-          this.router.navigate(
-            ['/forbidden'],
-            {
-              queryParams: {
-                path: state.url
-              }
+          this.router.navigate(['/forbidden'], {
+            queryParams: {
+              path: state.url
             }
-          );
+          });
           return false;
         }
 

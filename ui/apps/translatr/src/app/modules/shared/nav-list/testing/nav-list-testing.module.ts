@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, NgModule, Output, TemplateRef } from '@angular/core';
-import { defaultFilters, FilterCriteria } from '../../list-header/list-header.component';
 import { PagedList } from '@dev/translatr-model';
+import { defaultFilters, FilterCriteria } from '../../list-header/list-header.component';
 
 @Component({
   selector: 'app-nav-list',
@@ -29,5 +29,4 @@ class MockNavListComponent {
   declarations: [MockNavListComponent],
   exports: [MockNavListComponent]
 })
-export class NavListTestingModule {
-}
+export class NavListTestingModule {}

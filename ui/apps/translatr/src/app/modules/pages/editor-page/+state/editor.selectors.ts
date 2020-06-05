@@ -1,56 +1,37 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { EDITOR_FEATURE_KEY, EditorState, LoadingState } from './editor.reducer';
-import { Key, Locale, Message, PagedList } from '@dev/translatr-model';
-import { MessageItem } from '../message-item';
-import { routerQuery } from '../../../../+state/router.selectors';
 import { Params } from '@angular/router';
+import { Key, Locale, Message, PagedList } from '@dev/translatr-model';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { routerQuery } from '../../../../+state/router.selectors';
+import { MessageItem } from '../message-item';
+import { EDITOR_FEATURE_KEY, EditorState, LoadingState } from './editor.reducer';
 
 // Lookup the 'Editor' feature state managed by NgRx
 const getEditorState = createFeatureSelector<EditorState>(EDITOR_FEATURE_KEY);
 
-const getLoadingState = createSelector(
-  getEditorState,
-  (state: EditorState) => state.loading
-);
+const getLoadingState = createSelector(getEditorState, (state: EditorState) => state.loading);
 
-const getError = createSelector(
-  getEditorState,
-  (state: EditorState) => state.error
-);
+const getError = createSelector(getEditorState, (state: EditorState) => state.error);
 
-const getLocale = createSelector(
-  getEditorState,
-  (state: EditorState) => state.locale
-);
+const getLocale = createSelector(getEditorState, (state: EditorState) => state.locale);
 
-const getLocales = createSelector(
-  getEditorState,
-  (state: EditorState) => state.locales
-);
+const getLocales = createSelector(getEditorState, (state: EditorState) => state.locales);
 
 const getLocalesLoading = createSelector(
   getLoadingState,
   (state: LoadingState<EditorState>) => state.locales
 );
 
-const getKey = createSelector(
-  getEditorState,
-  (state: EditorState) => state.key
-);
+const getKey = createSelector(getEditorState, (state: EditorState) => state.key);
 
-const getKeys = createSelector(
-  getEditorState,
-  (state: EditorState) => state.keys
-);
+const getKeys = createSelector(getEditorState, (state: EditorState) => state.keys);
 
 const getKeysLoading = createSelector(
   getLoadingState,
   (state: LoadingState<EditorState>) => state.keys
 );
 
-const getSelectedLocaleName = createSelector(
-  routerQuery.selectQueryParams,
-  (params: Params) => params !== undefined ? params.locale : undefined
+const getSelectedLocaleName = createSelector(routerQuery.selectQueryParams, (params: Params) =>
+  params !== undefined ? params.locale : undefined
 );
 
 const getSelectedLocale = createSelector(
@@ -61,16 +42,14 @@ const getSelectedLocale = createSelector(
       return undefined;
     }
 
-    const selectedLocales = locales.list
-      .filter(locale => locale.name === localeName);
+    const selectedLocales = locales.list.filter(locale => locale.name === localeName);
 
     return selectedLocales.length === 1 ? selectedLocales[0] : undefined;
   }
 );
 
-const getSelectedKeyName = createSelector(
-  routerQuery.selectQueryParams,
-  (params: Params) => params !== undefined ? params.key : undefined
+const getSelectedKeyName = createSelector(routerQuery.selectQueryParams, (params: Params) =>
+  params !== undefined ? params.key : undefined
 );
 
 const getSelectedKey = createSelector(
@@ -81,27 +60,17 @@ const getSelectedKey = createSelector(
       return undefined;
     }
 
-    const selectedKeys = keys.list
-      .filter(key => key.name === keyName);
+    const selectedKeys = keys.list.filter(key => key.name === keyName);
 
     return selectedKeys.length === 1 ? selectedKeys[0] : undefined;
   }
 );
 
-const getSearch = createSelector(
-  getEditorState,
-  (state: EditorState) => state.search
-);
+const getSearch = createSelector(getEditorState, (state: EditorState) => state.search);
 
-const getMessage = createSelector(
-  getEditorState,
-  (state: EditorState) => state.message
-);
+const getMessage = createSelector(getEditorState, (state: EditorState) => state.message);
 
-const getMessages = createSelector(
-  getEditorState,
-  (state: EditorState) => state.messages
-);
+const getMessages = createSelector(getEditorState, (state: EditorState) => state.messages);
 
 const getMessagesOfKey = createSelector(
   getEditorState,
@@ -121,20 +90,21 @@ const getLocaleSelectedMessage = createSelector(
       return undefined;
     }
 
-    const selectedMessages = messages.list
-      .filter((message: Message) => message.keyId === selectedKey.id);
+    const selectedMessages = messages.list.filter(
+      (message: Message) => message.keyId === selectedKey.id
+    );
 
     return selectedMessages.length === 1
-      // selected locale has a translation
-      ? selectedMessages[0]
-      // selected locale has no translation
-      : {
-        localeId: locale.id,
-        localeName: locale.name,
-        keyId: selectedKey.id,
-        keyName: selectedKey.name,
-        value: ''
-      };
+      ? // selected locale has a translation
+        selectedMessages[0]
+      : // selected locale has no translation
+        {
+          localeId: locale.id,
+          localeName: locale.name,
+          keyId: selectedKey.id,
+          keyName: selectedKey.name,
+          value: ''
+        };
   }
 );
 
@@ -153,21 +123,19 @@ const getLocaleMessageItems = createSelector(
       return undefined;
     }
 
-    const messageMap = messages.list
-      .reduce((acc, msg) => ({ ...acc, [msg.keyId]: msg }), {});
+    const messageMap = messages.list.reduce((acc, msg) => ({ ...acc, [msg.keyId]: msg }), {});
 
     return {
       ...keys,
-      list: keys.list
-        .map((key: Key) => ({
-          locale,
-          key,
-          message: messageMap[key.id]
-            ? messageMap[key.id] : undefined,
-          selected: key.name === selectedKeyName
-        }))
+      list: keys.list.map((key: Key) => ({
+        locale,
+        key,
+        message: messageMap[key.id] ? messageMap[key.id] : undefined,
+        selected: key.name === selectedKeyName
+      }))
     };
-  });
+  }
+);
 
 const getKeySelectedMessage = createSelector(
   getKey,
@@ -182,20 +150,21 @@ const getKeySelectedMessage = createSelector(
       return undefined;
     }
 
-    const selectedMessages = messages.list
-      .filter((message: Message) => message.localeName === selectedLocale.name);
+    const selectedMessages = messages.list.filter(
+      (message: Message) => message.localeName === selectedLocale.name
+    );
 
     return selectedMessages.length === 1
-      // selected locale has a translation
-      ? selectedMessages[0]
-      // selected locale has no translation
-      : {
-        localeId: selectedLocale.id,
-        localeName: selectedLocale.name,
-        keyId: key.id,
-        keyName: key.name,
-        value: ''
-      };
+      ? // selected locale has a translation
+        selectedMessages[0]
+      : // selected locale has no translation
+        {
+          localeId: selectedLocale.id,
+          localeName: selectedLocale.name,
+          keyId: key.id,
+          keyName: key.name,
+          value: ''
+        };
   }
 );
 
@@ -214,21 +183,19 @@ const getKeyMessageItems = createSelector(
       return undefined;
     }
 
-    const messageMap = messages.list
-      .reduce((acc, msg) => ({ ...acc, [msg.localeId]: msg }), {});
+    const messageMap = messages.list.reduce((acc, msg) => ({ ...acc, [msg.localeId]: msg }), {});
 
     return {
       ...locales,
-      list: locales.list
-        .map((locale: Locale) => ({
-          key,
-          locale,
-          message: messageMap[locale.id]
-            ? messageMap[locale.id] : undefined,
-          selected: locale.name === selectedLocale
-        }))
+      list: locales.list.map((locale: Locale) => ({
+        key,
+        locale,
+        message: messageMap[locale.id] ? messageMap[locale.id] : undefined,
+        selected: locale.name === selectedLocale
+      }))
     };
-  });
+  }
+);
 
 export const editorQuery = {
   getError,

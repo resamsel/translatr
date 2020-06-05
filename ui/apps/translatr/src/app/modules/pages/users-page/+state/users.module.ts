@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StoreModule } from '@ngrx/store';
-import { initialState as usersInitialState, USERS_FEATURE_KEY, usersReducer } from './users.reducer';
+import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { UsersEffects } from './users.effects';
 import { UsersFacade } from './users.facade';
+import { initialState as usersInitialState, USERS_FEATURE_KEY, usersReducer } from './users.reducer';
 
 @NgModule({
   declarations: [],
@@ -17,4 +17,4 @@ import { UsersFacade } from './users.facade';
   ],
   providers: [UsersFacade]
 })
-export class UsersModule { }
+export class UsersModule {}

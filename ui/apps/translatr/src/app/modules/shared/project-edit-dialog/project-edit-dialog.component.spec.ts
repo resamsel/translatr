@@ -1,15 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ProjectEditDialogComponent } from './project-edit-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AppFacade } from '../../../+state/app.facade';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { mockObservable } from '@translatr/utils/testing';
+import { AppFacade } from '../../../+state/app.facade';
+
+import { ProjectEditDialogComponent } from './project-edit-dialog.component';
 
 describe('ProjectEditDialogComponent', () => {
   let component: ProjectEditDialogComponent;
@@ -31,7 +31,7 @@ describe('ProjectEditDialogComponent', () => {
         { provide: MatSnackBar, useValue: {} },
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: { locale: {} } },
-        {provide: AppFacade, useFactory: () => ({projectModified$: mockObservable()})}
+        { provide: AppFacade, useFactory: () => ({ projectModified$: mockObservable() }) }
       ]
     }).compileComponents();
   }));

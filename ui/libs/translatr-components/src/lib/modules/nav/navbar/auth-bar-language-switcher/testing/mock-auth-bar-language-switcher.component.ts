@@ -4,5 +4,4 @@ import { Component } from '@angular/core';
   selector: 'app-auth-bar-language-switcher',
   template: ''
 })
-export class MockAuthBarLanguageSwitcherComponent {
-}
+export class MockAuthBarLanguageSwitcherComponent {}

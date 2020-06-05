@@ -1,7 +1,11 @@
+import { coerceArray } from '@angular/cdk/coercion';
 import { Injectable } from '@angular/core';
+import { Params } from '@angular/router';
+import { Feature, FeatureFlagFacade, Project, RequestCriteria } from '@dev/translatr-model';
 import { select, Store } from '@ngrx/store';
-import { AppState } from './app.reducer';
-import { appQuery } from './app.selectors';
+import { mergeWithError } from '@translatr/utils';
+import { combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import {
   createProject,
   loadMe,
@@ -12,13 +16,9 @@ import {
   updateProject,
   updateSettings
 } from './app.actions';
-import { Feature, FeatureFlagFacade, Project, RequestCriteria } from '@dev/translatr-model';
+import { AppState } from './app.reducer';
+import { appQuery } from './app.selectors';
 import { routerQuery } from './router.selectors';
-import { combineLatest, Observable } from 'rxjs';
-import { Params } from '@angular/router';
-import { distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { coerceArray } from '@angular/cdk/coercion';
-import { mergeWithError } from '@translatr/utils';
 
 export const defaultParams = ['search', 'limit', 'offset', 'order'];
 
@@ -35,10 +35,7 @@ export class AppFacade extends FeatureFlagFacade {
   routeParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectRouteParams));
   queryParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectQueryParams));
 
-  permission$ = combineLatest([
-    this.project$.pipe(filter(x => !!x)),
-    this.me$
-  ]);
+  permission$ = combineLatest([this.project$.pipe(filter(x => !!x)), this.me$]);
 
   constructor(private store: Store<AppState>) {
     super();
@@ -46,12 +43,15 @@ export class AppFacade extends FeatureFlagFacade {
 
   criteria$(includes: string[] = defaultParams): Observable<RequestCriteria> {
     return this.queryParams$.pipe(
-      map((params: Params) => includes
-        .filter(f => params[f] !== undefined && params[f] !== '')
-        .reduce((acc, curr) => ({...acc, [curr]: params[curr]}), {})
+      map((params: Params) =>
+        includes
+          .filter(f => params[f] !== undefined && params[f] !== '')
+          .reduce((acc, curr) => ({ ...acc, [curr]: params[curr] }), {})
       ),
-      distinctUntilChanged((a: RequestCriteria, b: RequestCriteria) =>
-        includes.filter(key => a[key] !== b[key]).length === 0)
+      distinctUntilChanged(
+        (a: RequestCriteria, b: RequestCriteria) =>
+          includes.filter(key => a[key] !== b[key]).length === 0
+      )
     );
   }
 
@@ -60,37 +60,34 @@ export class AppFacade extends FeatureFlagFacade {
   }
 
   loadUsers(criteria: RequestCriteria) {
-    this.store.dispatch(loadUsers({payload: criteria}));
+    this.store.dispatch(loadUsers({ payload: criteria }));
   }
 
   loadProject(username: string, projectName: string) {
-    this.store.dispatch(loadProject({payload: {username, projectName}}));
+    this.store.dispatch(loadProject({ payload: { username, projectName } }));
   }
 
   createProject(project: Project): void {
-    this.store.dispatch(createProject({payload: project}));
+    this.store.dispatch(createProject({ payload: project }));
   }
 
   updateProject(project: Project): void {
-    this.store.dispatch(updateProject({payload: project}));
+    this.store.dispatch(updateProject({ payload: project }));
   }
 
   hasFeatures$(flags: Feature | Feature[]): Observable<boolean> {
     return this.me$.pipe(
       filter(x => !!x),
-      map(user => user.features
-        ? coerceArray(flags).every(flag => user.features[flag])
-        : false
-      )
+      map(user => (user.features ? coerceArray(flags).every(flag => user.features[flag]) : false))
     );
   }
 
   updatePreferredLanguage(language: string): void {
-    this.store.dispatch(updatePreferredLanguage({payload: language}));
+    this.store.dispatch(updatePreferredLanguage({ payload: language }));
   }
 
   updateSettings(settings: Record<string, string>): void {
-    this.store.dispatch(updateSettings({payload: settings}));
+    this.store.dispatch(updateSettings({ payload: settings }));
   }
 
   unloadProject(): void {

@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { AppFacade } from '../../../../+state/app.facade';
-import { Feature, Project, RequestCriteria } from '@dev/translatr-model';
-import { Observable, of } from 'rxjs';
-import { AppActionTypes, ProjectDeleted, ProjectDeleteError, ProjectsDeleted, ProjectsDeleteError } from '../../../../+state/app.actions';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { errorMessage, hasDeleteAllProjectsPermission, hasDeleteProjectPermission, hasEditProjectPermission } from '@dev/translatr-sdk';
 import { Entity, notifyEvent, ProjectEditDialogComponent } from '@dev/translatr-components';
+import { Feature, Project, RequestCriteria } from '@dev/translatr-model';
+import { errorMessage, hasDeleteAllProjectsPermission, hasDeleteProjectPermission, hasEditProjectPermission } from '@dev/translatr-sdk';
+import { Observable, of } from 'rxjs';
+import { AppActionTypes, ProjectDeleted, ProjectDeleteError, ProjectsDeleted, ProjectsDeleteError } from '../../../../+state/app.actions';
+import { AppFacade } from '../../../../+state/app.facade';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -16,29 +16,26 @@ import { environment } from '../../../../../environments/environment';
   styleUrls: ['./dashboard-projects.component.scss']
 })
 export class DashboardProjectsComponent implements OnDestroy {
-  displayedColumns = [
-    'name',
-    'description',
-    'owner',
-    'when_created',
-    'actions'
-  ];
+  displayedColumns = ['name', 'description', 'owner', 'when_created', 'actions'];
 
   me$ = this.facade.me$;
   projects$ = this.facade.projects$;
   load$ = of({ limit: '20', order: 'whenCreated desc' });
 
-  filters = [{
-    key: 'search',
-    type: 'string',
-    title: 'search',
-    value: ''
-  }, {
-    key: 'owner',
-    type: 'string',
-    title: 'project.owner',
-    value: ''
-  }];
+  filters = [
+    {
+      key: 'search',
+      type: 'string',
+      title: 'search',
+      value: ''
+    },
+    {
+      key: 'owner',
+      type: 'string',
+      title: 'project.owner',
+      value: ''
+    }
+  ];
 
   selected: Project[] = [];
 
@@ -55,8 +52,7 @@ export class DashboardProjectsComponent implements OnDestroy {
       snackBar,
       facade.projectDeleted$,
       AppActionTypes.ProjectDeleted,
-      (action: ProjectDeleted) =>
-        `Project ${action.payload.name} has been deleted`,
+      (action: ProjectDeleted) => `Project ${action.payload.name} has been deleted`,
       (action: ProjectDeleteError) =>
         `Project could not be deleted: ${errorMessage(action.payload)}`
     );
@@ -64,8 +60,7 @@ export class DashboardProjectsComponent implements OnDestroy {
       snackBar,
       facade.projectsDeleted$,
       AppActionTypes.ProjectsDeleted,
-      (action: ProjectsDeleted) =>
-        `${action.payload.length} projects have been deleted`,
+      (action: ProjectsDeleted) => `${action.payload.length} projects have been deleted`,
       (action: ProjectsDeleteError) =>
         `Projects could not be deleted: ${errorMessage(action.payload)}`
     );

@@ -1,17 +1,17 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags.component';
-import { ButtonTestingModule, EntityTableTestingModule, FeatureFlagTestingModule } from '@translatr/components/testing';
-import { EllipsisModule } from '@dev/translatr-components';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MomentModule } from 'ngx-moment';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AppFacade } from '../../../../+state/app.facade';
+import { RouterTestingModule } from '@angular/router/testing';
+import { EllipsisModule } from '@dev/translatr-components';
+import { ButtonTestingModule, EntityTableTestingModule, FeatureFlagTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
+import { MomentModule } from 'ngx-moment';
+import { AppFacade } from '../../../../+state/app.facade';
+
+import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags.component';
 
 describe('DashboardFeatureFlagsComponent', () => {
   let component: DashboardFeatureFlagsComponent;
@@ -48,8 +48,7 @@ describe('DashboardFeatureFlagsComponent', () => {
           useFactory: () => ({})
         }
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

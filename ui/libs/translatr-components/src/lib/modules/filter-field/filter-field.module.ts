@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FilterFieldComponent } from './filter-field.component';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -10,15 +10,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ReactiveFormsModule } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
 import { DisableControlModule } from '../disable-control';
+import { FilterFieldComponent } from './filter-field.component';
 
 @NgModule({
   declarations: [FilterFieldComponent],
-  exports: [
-    FilterFieldComponent
-  ],
+  exports: [FilterFieldComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -37,5 +35,4 @@ import { DisableControlModule } from '../disable-control';
     MatCheckboxModule
   ]
 })
-export class FilterFieldModule {
-}
+export class FilterFieldModule {}

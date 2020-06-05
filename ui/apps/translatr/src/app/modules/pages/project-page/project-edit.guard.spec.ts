@@ -1,14 +1,11 @@
 import { inject, TestBed } from '@angular/core/testing';
-import { ProjectEditGuard } from './project-edit.guard';
 import { ProjectFacade } from './+state/project.facade';
+import { ProjectEditGuard } from './project-edit.guard';
 
 describe('ProjectEditGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        ProjectEditGuard,
-        { provide: ProjectFacade, useFactory: () => ({}) }
-      ]
+      providers: [ProjectEditGuard, { provide: ProjectFacade, useFactory: () => ({}) }]
     });
   });
 

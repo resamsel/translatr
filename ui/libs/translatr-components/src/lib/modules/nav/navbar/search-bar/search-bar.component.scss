@@ -55,7 +55,7 @@
   }
 
   .type {
-    opacity: .4;
+    opacity: 0.4;
 
     &::after {
       content: ':';
@@ -63,6 +63,6 @@
   }
 
   .value {
-    margin-left: .2em;
+    margin-left: 0.2em;
   }
 }

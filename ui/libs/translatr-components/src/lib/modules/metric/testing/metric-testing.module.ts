@@ -16,5 +16,4 @@ class MockMetricComponent {
   declarations: [MockMetricComponent],
   exports: [MockMetricComponent]
 })
-export class MetricTestingModule {
-}
+export class MetricTestingModule {}

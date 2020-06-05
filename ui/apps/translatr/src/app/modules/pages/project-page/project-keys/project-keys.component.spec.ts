@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ProjectKeysComponent } from './project-keys.component';
-import { ProjectFacade } from '../+state/project.facade';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { mockObservable } from '@translatr/utils/testing';
+import { ProjectFacade } from '../+state/project.facade';
 import { KeyListTestingModule } from './key-list/testing';
+
+import { ProjectKeysComponent } from './project-keys.component';
 
 describe('ProjectKeysComponent', () => {
   let component: ProjectKeysComponent;
@@ -14,11 +14,7 @@ describe('ProjectKeysComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ProjectKeysComponent],
-      imports: [
-        KeyListTestingModule,
-
-        RouterTestingModule
-      ],
+      imports: [KeyListTestingModule, RouterTestingModule],
       providers: [
         {
           provide: ProjectFacade,

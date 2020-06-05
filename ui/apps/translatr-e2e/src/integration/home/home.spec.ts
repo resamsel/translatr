@@ -18,7 +18,6 @@ describe('Home', () => {
     page.navigateTo();
 
     // then
-    page.getPageName()
-      .should('have.text', 'Translatr');
+    page.getPageName().should('have.text', 'Translatr');
   });
 });

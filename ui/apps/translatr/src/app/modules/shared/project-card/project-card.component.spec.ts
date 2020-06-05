@@ -1,10 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ProjectCardComponent } from './project-card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GravatarModule } from 'ngx-gravatar';
 import { MomentModule } from 'ngx-moment';
+
+import { ProjectCardComponent } from './project-card.component';
 
 describe('ProjectCardComponent', () => {
   let component: ProjectCardComponent;
@@ -13,13 +13,7 @@ describe('ProjectCardComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ProjectCardComponent],
-      imports: [
-        GravatarModule,
-        MomentModule,
-
-        MatCardModule,
-        MatTooltipModule
-      ]
+      imports: [GravatarModule, MomentModule, MatCardModule, MatTooltipModule]
     }).compileComponents();
   }));
 

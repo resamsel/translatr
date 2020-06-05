@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
+import { AccessToken, Activity, PagedList, Project, User, UserFeatureFlag } from '@dev/translatr-model';
+import { AccessTokenService, ActivityService, FeatureFlagService, ProjectService, UserService } from '@dev/translatr-sdk';
 import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
+import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import {
   AccessTokenDeleted,
   AccessTokenDeleteError,
@@ -60,11 +65,6 @@ import {
   UserUpdated,
   UserUpdateError
 } from './app.actions';
-import { AccessToken, Activity, PagedList, Project, User, UserFeatureFlag } from '@dev/translatr-model';
-import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { AccessTokenService, ActivityService, FeatureFlagService, ProjectService, UserService } from '@dev/translatr-sdk';
-import { Store } from '@ngrx/store';
 import { AppState } from './app.reducer';
 import { appQuery } from './app.selectors';
 
@@ -75,12 +75,10 @@ export class AppEffects {
   @Effect() loadMe$ = this.actions$.pipe(
     ofType(AppActionTypes.LoadLoggedInUser),
     switchMap(() =>
-      this.userService
-        .me({fetch: 'featureFlags'})
-        .pipe(
-          map(user => new LoggedInUserLoaded(user)),
-          catchError(error => of(new LoggedInUserLoadError(error)))
-        )
+      this.userService.me({ fetch: 'featureFlags' }).pipe(
+        map(user => new LoggedInUserLoaded(user)),
+        catchError(error => of(new LoggedInUserLoadError(error)))
+      )
     )
   );
 
@@ -137,12 +135,10 @@ export class AppEffects {
   @Effect() deleteUsers$ = this.actions$.pipe(
     ofType(AppActionTypes.DeleteUsers),
     switchMap((action: DeleteUsers) =>
-      this.userService
-        .deleteAll(action.payload.map((user: User) => user.id))
-        .pipe(
-          map((payload: User[]) => new UsersDeleted(payload)),
-          catchError(error => of(new UsersDeleteError(error)))
-        )
+      this.userService.deleteAll(action.payload.map((user: User) => user.id)).pipe(
+        map((payload: User[]) => new UsersDeleted(payload)),
+        catchError(error => of(new UsersDeleteError(error)))
+      )
     )
   );
 
@@ -181,12 +177,10 @@ export class AppEffects {
   @Effect() deleteProjects$ = this.actions$.pipe(
     ofType(AppActionTypes.DeleteProjects),
     switchMap((action: DeleteProjects) =>
-      this.projectService
-        .deleteAll(action.payload.map((project: Project) => project.id))
-        .pipe(
-          map((payload: Project[]) => new ProjectsDeleted(payload)),
-          catchError(error => of(new ProjectsDeleteError(error)))
-        )
+      this.projectService.deleteAll(action.payload.map((project: Project) => project.id)).pipe(
+        map((payload: Project[]) => new ProjectsDeleted(payload)),
+        catchError(error => of(new ProjectsDeleteError(error)))
+      )
     )
   );
 
@@ -196,9 +190,7 @@ export class AppEffects {
     ofType(AppActionTypes.LoadAccessTokens),
     switchMap((action: LoadAccessTokens) =>
       this.accessTokenService.find(action.payload).pipe(
-        map(
-          (payload: PagedList<AccessToken>) => new AccessTokensLoaded(payload)
-        ),
+        map((payload: PagedList<AccessToken>) => new AccessTokensLoaded(payload)),
         catchError(error => of(new AccessTokensLoadError(error)))
       )
     )
@@ -218,9 +210,7 @@ export class AppEffects {
     ofType(AppActionTypes.DeleteAccessTokens),
     switchMap((action: DeleteAccessTokens) =>
       this.accessTokenService
-        .deleteAll(
-          action.payload.map((accessToken: AccessToken) => accessToken.id)
-        )
+        .deleteAll(action.payload.map((accessToken: AccessToken) => accessToken.id))
         .pipe(
           map((payload: AccessToken[]) => new AccessTokensDeleted(payload)),
           catchError(error => of(new AccessTokensDeleteError(error)))
@@ -236,7 +226,8 @@ export class AppEffects {
       this.activityService.find(action.payload).pipe(
         map((payload: PagedList<Activity>) => new ActivitiesLoaded(payload)),
         catchError(error => of(new ActivitiesLoadError(error)))
-      ))
+      )
+    )
   );
 
   // Feature Flags
@@ -245,9 +236,7 @@ export class AppEffects {
     ofType(AppActionTypes.LoadFeatureFlags),
     switchMap((action: LoadFeatureFlags) =>
       this.featureFlagService.find(action.payload).pipe(
-        map(
-          (payload: PagedList<UserFeatureFlag>) => new FeatureFlagsLoaded(payload)
-        ),
+        map((payload: PagedList<UserFeatureFlag>) => new FeatureFlagsLoaded(payload)),
         catchError(error => of(new FeatureFlagsLoadError(error)))
       )
     )
@@ -277,9 +266,7 @@ export class AppEffects {
     ofType(AppActionTypes.DeleteFeatureFlags),
     switchMap((action: DeleteFeatureFlags) =>
       this.featureFlagService
-        .deleteAll(
-          action.payload.map((featureFlag: UserFeatureFlag) => featureFlag.id)
-        )
+        .deleteAll(action.payload.map((featureFlag: UserFeatureFlag) => featureFlag.id))
         .pipe(
           map((payload: UserFeatureFlag[]) => new FeatureFlagsDeleted(payload)),
           catchError(error => of(new FeatureFlagsDeleteError(error)))
@@ -287,15 +274,18 @@ export class AppEffects {
     )
   );
 
-  updatePreferredLanguage$ = createEffect(() => this.actions$.pipe(
-    ofType(AppActionTypes.UpdatePreferredLanguage),
-    withLatestFrom(this.store.select(appQuery.getLoggedInUser)),
-    switchMap(([action, me]: [UpdatePreferredLanguage, User]) => this.userService
-      .update({id: me.id, preferredLanguage: action.payload})
-      .pipe(map((user: User) => new LoggedInUserLoaded(user)))
-    ),
-    catchError(error => of(new LoggedInUserLoadError(error)))
-  ));
+  updatePreferredLanguage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.UpdatePreferredLanguage),
+      withLatestFrom(this.store.select(appQuery.getLoggedInUser)),
+      switchMap(([action, me]: [UpdatePreferredLanguage, User]) =>
+        this.userService
+          .update({ id: me.id, preferredLanguage: action.payload })
+          .pipe(map((user: User) => new LoggedInUserLoaded(user)))
+      ),
+      catchError(error => of(new LoggedInUserLoadError(error)))
+    )
+  );
 
   constructor(
     private readonly actions$: Actions,
@@ -305,6 +295,5 @@ export class AppEffects {
     private readonly accessTokenService: AccessTokenService,
     private readonly activityService: ActivityService,
     private readonly featureFlagService: FeatureFlagService
-  ) {
-  }
+  ) {}
 }

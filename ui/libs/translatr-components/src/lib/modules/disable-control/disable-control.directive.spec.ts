@@ -1,5 +1,5 @@
-import { DisableControlDirective } from './disable-control.directive';
 import { NgControl } from '@angular/forms';
+import { DisableControlDirective } from './disable-control.directive';
 
 interface ControlMock {
   control: {
@@ -15,12 +15,12 @@ describe('DisableControlDirective', () => {
   });
 
   it('should invoke default state on control on ngAfterViewInit', () => {
-    const mockControl: NgControl & ControlMock = {
+    const mockControl: NgControl & ControlMock = ({
       control: {
         enable: jest.fn(),
         disable: jest.fn()
       }
-    } as unknown as NgControl & ControlMock;
+    } as unknown) as NgControl & ControlMock;
     const target = new DisableControlDirective(mockControl);
 
     // when
@@ -32,12 +32,12 @@ describe('DisableControlDirective', () => {
   });
 
   it('should invoke enable on control', () => {
-    const mockControl: NgControl & ControlMock = {
+    const mockControl: NgControl & ControlMock = ({
       control: {
         enable: jest.fn(),
         disable: jest.fn()
       }
-    } as unknown as NgControl & ControlMock;
+    } as unknown) as NgControl & ControlMock;
     const target = new DisableControlDirective(mockControl);
 
     // when
@@ -49,12 +49,12 @@ describe('DisableControlDirective', () => {
   });
 
   it('should invoke disable on control', () => {
-    const mockControl: NgControl & ControlMock = {
+    const mockControl: NgControl & ControlMock = ({
       control: {
         enable: jest.fn(),
         disable: jest.fn()
       }
-    } as unknown as NgControl & ControlMock;
+    } as unknown) as NgControl & ControlMock;
     const target = new DisableControlDirective(mockControl);
 
     // when

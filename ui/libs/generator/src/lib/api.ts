@@ -1,5 +1,4 @@
 import { HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Injector, StaticProvider } from '@angular/core';
 import {
   AccessTokenService,
@@ -10,11 +9,11 @@ import {
   ProjectService,
   UserService
 } from '@dev/translatr-sdk';
+import { Observable } from 'rxjs';
 import { XMLHttpRequest } from 'xmlhttprequest';
 
 export class BrowserXhr implements XhrFactory {
-  constructor() {
-  }
+  constructor() {}
 
   build(): any {
     return <any>new XMLHttpRequest();
@@ -57,47 +56,49 @@ const providers: StaticProvider[] = [
   { provide: ErrorHandler, useValue: new ErrorHandler() },
   {
     provide: UserService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new UserService(client, errorHandler),
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
+      new UserService(client, errorHandler),
     deps: [HttpClient, ErrorHandler]
   },
   {
     provide: ProjectService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new ProjectService(client, errorHandler),
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
+      new ProjectService(client, errorHandler),
     deps: [HttpClient, ErrorHandler]
   },
   {
     provide: LocaleService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new LocaleService(client, errorHandler),
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
+      new LocaleService(client, errorHandler),
     deps: [HttpClient, ErrorHandler]
   },
   {
     provide: KeyService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new KeyService(client, errorHandler),
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
+      new KeyService(client, errorHandler),
     deps: [HttpClient, ErrorHandler]
   },
   {
     provide: MessageService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new MessageService(client, errorHandler),
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
+      new MessageService(client, errorHandler),
     deps: [HttpClient, ErrorHandler]
   },
   {
     provide: AccessTokenService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) => new AccessTokenService(client, errorHandler),
+    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
+      new AccessTokenService(client, errorHandler),
     deps: [HttpClient, ErrorHandler]
   }
 ];
 
-export const createInjector = (
-  baseUrl: string,
-  accessToken: string
-): Injector => {
+export const createInjector = (baseUrl: string, accessToken: string): Injector => {
   return Injector.create({
     providers: [
       ...providers,
       {
         provide: HttpHandler,
-        useFactory: (xhrFactory: XhrFactory) =>
-          new MyHttpHandler(xhrFactory, baseUrl, accessToken),
+        useFactory: (xhrFactory: XhrFactory) => new MyHttpHandler(xhrFactory, baseUrl, accessToken),
         deps: [XhrFactory]
       }
     ]

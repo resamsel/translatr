@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { ProjectFacade } from '../+state/project.facade';
-import { filter, map, pluck, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { combineLatest, Observable } from 'rxjs';
-import { navigate } from '@translatr/utils';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Member, MemberCriteria, Project, User } from '@dev/translatr-model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { navigate } from '@translatr/utils';
+import { combineLatest, Observable } from 'rxjs';
+import { filter, map, pluck, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { ProjectFacade } from '../+state/project.facade';
 import { AppFacade } from '../../../../+state/app.facade';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
 
@@ -21,22 +21,22 @@ export class ProjectMembersComponent {
 
   canModify$ = this.facade.canModifyMember$;
   canModifyOwner$: Observable<boolean> = combineLatest([
-    this.facade.members$.pipe(filter(x => !!x), pluck('list')),
+    this.facade.members$.pipe(
+      filter(x => !!x),
+      pluck('list')
+    ),
     this.appFacade.me$.pipe(filter(x => !!x))
-  ])
-    .pipe(
-      map(([members, me]: [Array<Member>, User]) =>
-        members.find(m => m.userId === me.id)),
-      map((member: Member | undefined) =>
-        member !== undefined ? member.role === 'Owner' : false)
-    );
+  ]).pipe(
+    map(([members, me]: [Array<Member>, User]) => members.find(m => m.userId === me.id)),
+    map((member: Member | undefined) => (member !== undefined ? member.role === 'Owner' : false))
+  );
   canTransferOwnership$: Observable<boolean> = combineLatest([
-    this.project$.pipe(filter(x => !!x), pluck<Project, string>('ownerId')),
+    this.project$.pipe(
+      filter(x => !!x),
+      pluck<Project, string>('ownerId')
+    ),
     this.appFacade.me$.pipe(filter(x => !!x))
-  ])
-    .pipe(
-      map(([ownerId, me]: [string, User]) => ownerId === me.id)
-    );
+  ]).pipe(map(([ownerId, me]: [string, User]) => ownerId === me.id));
 
   constructor(
     private readonly facade: ProjectFacade,
@@ -46,7 +46,12 @@ export class ProjectMembersComponent {
   ) {
     this.criteria$
       .pipe(
-        withLatestFrom(this.project$.pipe(filter(x => !!x), take(1))),
+        withLatestFrom(
+          this.project$.pipe(
+            filter(x => !!x),
+            take(1)
+          )
+        ),
         takeUntil(this.facade.unload$)
       )
       .subscribe(([criteria, project]: [MemberCriteria, Project]) =>
@@ -73,11 +78,7 @@ export class ProjectMembersComponent {
           this.router.navigate(['/dashboard']);
         }
 
-        this.snackBar.open(
-          `${m.userName} removed from project`,
-          'Dismiss',
-          { duration: 5000 }
-        );
+        this.snackBar.open(`${m.userName} removed from project`, 'Dismiss', { duration: 5000 });
       });
   }
 }

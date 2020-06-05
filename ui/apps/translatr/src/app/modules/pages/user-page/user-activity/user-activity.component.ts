@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '@dev/translatr-model';
-import { UserFacade } from '../+state/user.facade';
 import { filter, map, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { UserFacade } from '../+state/user.facade';
 import { UserCriteria } from '../../users-page/+state/users.actions';
 
 @Component({
@@ -12,11 +12,11 @@ import { UserCriteria } from '../../users-page/+state/users.actions';
 export class UserActivityComponent implements OnInit {
   readonly criteria$ = this.facade.criteria$;
   readonly activities$ = this.facade.activities$;
-  readonly aggregated$ = this.facade.activityAggregated$
-    .pipe(map(pagedList => !!pagedList ? pagedList.list : []));
+  readonly aggregated$ = this.facade.activityAggregated$.pipe(
+    map(pagedList => (!!pagedList ? pagedList.list : []))
+  );
 
-  constructor(private readonly facade: UserFacade) {
-  }
+  constructor(private readonly facade: UserFacade) {}
 
   ngOnInit() {
     this.criteria$
@@ -30,6 +30,7 @@ export class UserActivityComponent implements OnInit {
           limit: 10,
           types: 'Create,Update,Delete',
           ...criteria
-        }));
+        })
+      );
   }
 }

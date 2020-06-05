@@ -1,13 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Translation, TRANSLOCO_CONFIG, TRANSLOCO_LOADER, translocoConfig, TranslocoLoader, TranslocoModule } from '@ngneat/transloco';
 import { Injectable, NgModule } from '@angular/core';
+import { Translation, TRANSLOCO_CONFIG, TRANSLOCO_LOADER, translocoConfig, TranslocoLoader, TranslocoModule } from '@ngneat/transloco';
 import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
 import { environment } from '../../../../environments/environment';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class TranslocoHttpLoader implements TranslocoLoader {
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   getTranslation(lang: string) {
     return this.http.get<Translation>(`./assets/i18n/${lang}.json`);
@@ -15,14 +14,8 @@ export class TranslocoHttpLoader implements TranslocoLoader {
 }
 
 @NgModule({
-  imports: [
-    TranslocoModule,
-    TranslocoMessageFormatModule.init()
-  ],
-  exports: [
-    TranslocoModule,
-    TranslocoMessageFormatModule
-  ],
+  imports: [TranslocoModule, TranslocoMessageFormatModule.init()],
+  exports: [TranslocoModule, TranslocoMessageFormatModule],
   providers: [
     {
       provide: TRANSLOCO_CONFIG,
@@ -37,8 +30,7 @@ export class TranslocoHttpLoader implements TranslocoLoader {
         prodMode: environment.production
       })
     },
-    {provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader}
+    { provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader }
   ]
 })
-export class TranslocoRootModule {
-}
+export class TranslocoRootModule {}

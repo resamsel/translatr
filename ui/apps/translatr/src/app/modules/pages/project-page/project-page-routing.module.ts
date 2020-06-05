@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProjectPageComponent } from './project-page.component';
+import { AuthGuard } from '../../../guards/auth.guard';
+import { ProjectActivityComponent } from './project-activity/project-activity.component';
+import { ProjectEditGuard } from './project-edit.guard';
 import { ProjectInfoComponent } from './project-info/project-info.component';
 import { ProjectKeysComponent } from './project-keys/project-keys.component';
 import { ProjectLocalesComponent } from './project-locales/project-locales.component';
 import { ProjectMembersComponent } from './project-members/project-members.component';
-import { ProjectActivityComponent } from './project-activity/project-activity.component';
-import { AuthGuard } from '../../../guards/auth.guard';
-import { ProjectSettingsComponent } from './project-settings/project-settings.component';
+import { ProjectPageComponent } from './project-page.component';
 import { PROJECT_ROUTES } from './project-page.token';
-import { ProjectEditGuard } from './project-edit.guard';
+import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectGuard } from './project.guard';
 
 const routes: Routes = [
@@ -76,5 +76,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [{ provide: PROJECT_ROUTES, useValue: routes }]
 })
-export class ProjectPageRoutingModule {
-}
+export class ProjectPageRoutingModule {}

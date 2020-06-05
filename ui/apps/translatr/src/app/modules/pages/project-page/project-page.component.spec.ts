@@ -1,16 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ProjectPageComponent } from './project-page.component';
 import { Injector } from '@angular/core';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ProjectFacade } from './+state/project.facade';
-import { AppFacade } from '../../../+state/app.facade';
-import { PROJECT_ROUTES } from './project-page.token';
-import { SidenavTestingModule } from '../../nav/sidenav/testing';
-import { FeatureFlagTestingModule } from '@translatr/components/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureFlagTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
+import { AppFacade } from '../../../+state/app.facade';
+import { SidenavTestingModule } from '../../nav/sidenav/testing';
+import { ProjectFacade } from './+state/project.facade';
+
+import { ProjectPageComponent } from './project-page.component';
+import { PROJECT_ROUTES } from './project-page.token';
 
 describe('ProjectPageComponent', () => {
   let component: ProjectPageComponent;
@@ -39,9 +39,7 @@ describe('ProjectPageComponent', () => {
         { provide: AppFacade, useFactory: () => ({}) },
         {
           provide: PROJECT_ROUTES,
-          useValue: ([
-            { children: [] }
-          ])
+          useValue: [{ children: [] }]
         }
       ]
     }).compileComponents();

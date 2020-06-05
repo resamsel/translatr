@@ -1,14 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { filter, skip, switchMap, take, takeUntil } from 'rxjs/operators';
-import { Project } from '@dev/translatr-model';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { openProjectDeleteDialog } from '../../../shared/project-delete-dialog/project-delete-dialog.component';
-import { BaseEditFormComponent } from '../../../shared/edit-form/base-edit-form-component';
-import { AppFacade } from '../../../../+state/app.facade';
+import { Project } from '@dev/translatr-model';
+import { filter, skip, switchMap, take, takeUntil } from 'rxjs/operators';
 import { ProjectFacade } from '../+state/project.facade';
+import { AppFacade } from '../../../../+state/app.facade';
+import { BaseEditFormComponent } from '../../../shared/edit-form/base-edit-form-component';
+import { openProjectDeleteDialog } from '../../../shared/project-delete-dialog/project-delete-dialog.component';
 
 @Component({
   selector: 'app-project-settings',
@@ -18,7 +18,6 @@ import { ProjectFacade } from '../+state/project.facade';
 export class ProjectSettingsComponent
   extends BaseEditFormComponent<ProjectSettingsComponent, Project>
   implements OnInit {
-
   project$ = this.appFacade.project$.pipe(filter(x => !!x));
 
   canDelete$ = this.facade.canDelete$;
@@ -43,13 +42,13 @@ export class ProjectSettingsComponent
       snackBar,
       undefined,
       fb.group({
-        'id': fb.control(''),
-        'name': fb.control('', [
+        id: fb.control(''),
+        name: fb.control('', [
           Validators.required,
           Validators.pattern('[^\\s/]+'),
           Validators.maxLength(255)
         ]),
-        'description': fb.control('', Validators.maxLength(2000))
+        description: fb.control('', Validators.maxLength(2000))
       }),
       {},
       (project: Project) => appFacade.createProject(project),
@@ -61,7 +60,9 @@ export class ProjectSettingsComponent
   }
 
   ngOnInit() {
-    this.project$.pipe(takeUntil(this.destroy$)).subscribe((project) => this.form.patchValue(project));
+    this.project$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(project => this.form.patchValue(project));
   }
 
   protected onSaved(project: Project): void {
@@ -72,8 +73,7 @@ export class ProjectSettingsComponent
     this.project$
       .pipe(
         take(1),
-        switchMap((project) =>
-          openProjectDeleteDialog(this.dialog, project).afterClosed()),
+        switchMap(project => openProjectDeleteDialog(this.dialog, project).afterClosed()),
         filter(project => !!project)
       )
       .subscribe(() => this.router.navigate(['/dashboard']));

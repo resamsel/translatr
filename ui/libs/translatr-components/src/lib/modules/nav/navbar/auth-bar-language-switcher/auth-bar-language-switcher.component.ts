@@ -15,8 +15,7 @@ export class AuthBarLanguageSwitcherComponent {
   constructor(
     private readonly translocoService: TranslocoService,
     @Optional() private readonly languageSwicher: LanguageSwicher
-  ) {
-  }
+  ) {}
 
   onSwitchLanguage(language: string): void {
     if (this.activeLang !== language) {

@@ -4,8 +4,4 @@ export enum Feature {
   LanguageSwitcher = 'language-switcher'
 }
 
-export const features = [
-  Feature.ProjectCliCard,
-  Feature.HeaderGraphic,
-  Feature.LanguageSwitcher
-];
+export const features = [Feature.ProjectCliCard, Feature.HeaderGraphic, Feature.LanguageSwitcher];

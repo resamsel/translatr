@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { AppFacade } from '../../../+state/app.facade';
 import { Aggregate, Feature, PagedList, User, UserRole } from '@dev/translatr-model';
-import { environment } from '../../../../environments/environment';
 import { ActivityService } from '@dev/translatr-sdk';
 import { pluck } from 'rxjs/operators';
+import { AppFacade } from '../../../+state/app.facade';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-main-page',
@@ -24,8 +24,7 @@ export class MainPageComponent {
   constructor(
     private readonly facade: AppFacade,
     private readonly activityService: ActivityService
-  ) {
-  }
+  ) {}
 
   isAdmin(me: User | undefined): boolean {
     return !!me && me.role === UserRole.Admin;

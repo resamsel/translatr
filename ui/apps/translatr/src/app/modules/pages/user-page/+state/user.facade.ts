@@ -1,19 +1,4 @@
 import { Injectable } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { UserPartialState } from './user.reducer';
-import { userQuery } from './user.selectors';
-import {
-  createAccessToken,
-  loadAccessToken,
-  loadAccessTokens,
-  loadActivities,
-  loadActivityAggregated,
-  loadProjects,
-  loadUser,
-  updateAccessToken,
-  updateUser
-} from './user.actions';
-import { combineLatest, Observable, Subject } from 'rxjs';
 import {
   AccessToken,
   AccessTokenCriteria,
@@ -26,9 +11,24 @@ import {
   User,
   UserRole
 } from '@dev/translatr-model';
+import { select, Store } from '@ngrx/store';
+import { mergeWithError } from '@translatr/utils';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
-import { mergeWithError } from '@translatr/utils';
+import {
+  createAccessToken,
+  loadAccessToken,
+  loadAccessTokens,
+  loadActivities,
+  loadActivityAggregated,
+  loadProjects,
+  loadUser,
+  updateAccessToken,
+  updateUser
+} from './user.actions';
+import { UserPartialState } from './user.reducer';
+import { userQuery } from './user.selectors';
 
 const canCreateProject = (user: User, me: User): boolean => {
   return user.id === me.id;
@@ -45,57 +45,43 @@ export class UserFacade {
 
   user$ = this.store.pipe(select(userQuery.getUser));
   error$ = this.store.pipe(select(userQuery.getError));
-  permission$ = combineLatest([this.user$, this.appFacade.me$])
-    .pipe(takeUntil(this.destroy$));
+  permission$ = combineLatest([this.user$, this.appFacade.me$]).pipe(takeUntil(this.destroy$));
   criteria$ = this.appFacade.criteria$();
 
-  projects$: Observable<PagedList<Project> | undefined> =
-    this.store.pipe(
-      select(userQuery.getProjects),
-      takeUntil(this.destroy$)
-    );
-  canCreateProject$ = this.permission$.pipe(
-    map(([user, me]) => canCreateProject(user, me))
+  projects$: Observable<PagedList<Project> | undefined> = this.store.pipe(
+    select(userQuery.getProjects),
+    takeUntil(this.destroy$)
   );
+  canCreateProject$ = this.permission$.pipe(map(([user, me]) => canCreateProject(user, me)));
 
-  activities$: Observable<PagedList<Activity> | undefined> =
-    this.store.pipe(
-      select(userQuery.getActivities)
-    );
+  activities$: Observable<PagedList<Activity> | undefined> = this.store.pipe(
+    select(userQuery.getActivities)
+  );
   readonly canReadActivity$ = this.permission$.pipe(
     map(([user, me]) => canReadActivities(user, me))
   );
-  activityAggregated$: Observable<PagedList<Aggregate> | undefined> =
-    this.store.pipe(
-      select(userQuery.getActivityAggregated)
-    );
+  activityAggregated$: Observable<PagedList<Aggregate> | undefined> = this.store.pipe(
+    select(userQuery.getActivityAggregated)
+  );
 
-  accessTokens$: Observable<PagedList<AccessToken> | undefined> =
-    this.store.pipe(
-      select(userQuery.getAccessTokens),
-      takeUntil(this.destroy$)
-    );
-  accessToken$ = this.store.pipe(
-    select(userQuery.getAccessToken),
+  accessTokens$: Observable<PagedList<AccessToken> | undefined> = this.store.pipe(
+    select(userQuery.getAccessTokens),
     takeUntil(this.destroy$)
   );
+  accessToken$ = this.store.pipe(select(userQuery.getAccessToken), takeUntil(this.destroy$));
   accessTokenError$ = this.store.pipe(select(userQuery.getAccessTokenError));
   accessTokenModified$ = mergeWithError(this.accessToken$, this.accessTokenError$);
 
   projectsCriteria$ = this.appFacade.criteria$();
 
-  constructor(
-    private store: Store<UserPartialState>,
-    private readonly appFacade: AppFacade
-  ) {
-  }
+  constructor(private store: Store<UserPartialState>, private readonly appFacade: AppFacade) {}
 
   loadUser(username: string): void {
-    this.store.dispatch(loadUser({username}));
+    this.store.dispatch(loadUser({ username }));
   }
 
   updateUser(user: User): void {
-    this.store.dispatch(updateUser({payload: user}));
+    this.store.dispatch(updateUser({ payload: user }));
   }
 
   loadProjects(criteria: ProjectCriteria): void {
@@ -115,15 +101,15 @@ export class UserFacade {
   }
 
   loadAccessToken(id: number): void {
-    this.store.dispatch(loadAccessToken({id}));
+    this.store.dispatch(loadAccessToken({ id }));
   }
 
   createAccessToken(accessToken: AccessToken): void {
-    this.store.dispatch(createAccessToken({payload: accessToken}));
+    this.store.dispatch(createAccessToken({ payload: accessToken }));
   }
 
   updateAccessToken(accessToken: AccessToken): void {
-    this.store.dispatch(updateAccessToken({payload: accessToken}));
+    this.store.dispatch(updateAccessToken({ payload: accessToken }));
   }
 
   unload(): void {

@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DashboardPageComponent } from './dashboard-page.component';
-import { ActivityListTestingModule, ProjectCardListTestingModule, SidenavTestingModule } from '../../testing';
-import { ShortNumberModule } from '@dev/translatr-components';
-import { FeatureFlagTestingModule, MetricTestingModule } from '@translatr/components/testing';
-import { AppFacade } from '../../../+state/app.facade';
-import { DashboardFacade } from './+state/dashboard.facade';
-import { ProjectsFacade } from '../projects-page/+state/projects.facade';
 import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ShortNumberModule } from '@dev/translatr-components';
+import { FeatureFlagTestingModule, MetricTestingModule } from '@translatr/components/testing';
 import { of } from 'rxjs';
+import { AppFacade } from '../../../+state/app.facade';
+import { ActivityListTestingModule, ProjectCardListTestingModule, SidenavTestingModule } from '../../testing';
+import { ProjectsFacade } from '../projects-page/+state/projects.facade';
+import { DashboardFacade } from './+state/dashboard.facade';
+import { DashboardPageComponent } from './dashboard-page.component';
 
 describe('DashboardPageComponent', () => {
   let component: DashboardPageComponent;

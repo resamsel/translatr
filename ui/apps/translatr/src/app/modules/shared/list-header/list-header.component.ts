@@ -2,15 +2,17 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { FilterFieldFilter } from '@dev/translatr-components';
 import { RequestCriteria } from '@dev/translatr-model';
 
-export const defaultFilters: FilterFieldFilter[] = [{
-  key: 'search',
-  type: 'string',
-  title: 'search',
-  value: ''
-}];
+export const defaultFilters: FilterFieldFilter[] = [
+  {
+    key: 'search',
+    type: 'string',
+    title: 'search',
+    value: ''
+  }
+];
 
-export type FilterCriteria =
-  RequestCriteria & Record<string, string | number | boolean | undefined>;
+export type FilterCriteria = RequestCriteria &
+  Record<string, string | number | boolean | undefined>;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,14 +59,22 @@ export class ListHeaderComponent implements OnInit {
       selected = [];
     }
 
-    const selection = selected.reduce((agg, curr) => ({
-      ...agg,
-      [curr.key]: curr.value
-    }), {});
-    this.filter.emit(this.filters.reduce((agg, curr) => ({
-      ...agg,
-      [curr.key]: selection[curr.key]
-    }), {}));
+    const selection = selected.reduce(
+      (agg, curr) => ({
+        ...agg,
+        [curr.key]: curr.value
+      }),
+      {}
+    );
+    this.filter.emit(
+      this.filters.reduce(
+        (agg, curr) => ({
+          ...agg,
+          [curr.key]: selection[curr.key]
+        }),
+        {}
+      )
+    );
   }
 
   private updateCriteria(): void {

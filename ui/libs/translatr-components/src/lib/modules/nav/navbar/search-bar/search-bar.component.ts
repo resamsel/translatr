@@ -1,8 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { RequestCriteria } from '@dev/translatr-model';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatOptionSelectionChange } from '@angular/material/core';
+import { RequestCriteria } from '@dev/translatr-model';
 
 type OptionType = keyof RequestCriteria | 'missing';
 
@@ -105,10 +105,7 @@ export class SearchBarComponent implements OnInit {
   }
 
   private updateOption(option: Option): void {
-    this.options = [
-      ...this.options.filter(o => o.type !== option.type),
-      option
-    ];
+    this.options = [...this.options.filter(o => o.type !== option.type), option];
   }
 
   private removeOption(type: OptionType): void {
@@ -118,7 +115,7 @@ export class SearchBarComponent implements OnInit {
   private updateAutocompleteOptions(value: string): void {
     this.autocompleteOptions = defaultAutocompleteOptions
       .filter(o => o.type !== 'search' || !!value)
-      .map((o) => {
+      .map(o => {
         if (o.type === 'search') {
           o.value = value;
         }

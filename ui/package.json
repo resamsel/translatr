@@ -9,7 +9,7 @@
   "homepage": "https://github.com/resamsel/translatr#readme",
   "scripts": {
     "ng": "ng",
-    "prettier": "prettier --write \"**/*.{js,json,css,md,ts,html,component.html}\"",
+    "prettier": "prettier --write \"{apps,libs}/**/*.{ts,css,scss}\"",
     "prestart": "npm run buildinfo",
     "start": "ng serve --host 0.0.0.0 --port 4210",
     "start:admin": "ng serve translatr-admin --host 0.0.0.0 --port 4211",

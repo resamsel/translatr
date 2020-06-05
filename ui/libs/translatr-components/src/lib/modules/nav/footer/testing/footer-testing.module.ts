@@ -4,12 +4,10 @@ import { Component, NgModule } from '@angular/core';
   selector: 'app-footer',
   template: ''
 })
-class MockFooterComponent {
-}
+class MockFooterComponent {}
 
 @NgModule({
   declarations: [MockFooterComponent],
   exports: [MockFooterComponent]
 })
-export class FooterTestingModule {
-}
+export class FooterTestingModule {}

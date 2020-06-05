@@ -29,8 +29,7 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
 
     // then
-    page.getPageTitle()
-      .should('have.text', 'Language Editor');
+    page.getPageTitle().should('have.text', 'Language Editor');
   });
 
   it('should have locale default selected in sidebar', () => {
@@ -40,8 +39,7 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
 
     // then
-    page.getSelectedLocaleField()
-      .should('have.text', 'default');
+    page.getSelectedLocaleField().should('have.text', 'default');
   });
 
   it('should have two keys in sidebar', () => {
@@ -51,7 +49,8 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item')
       .should('have.length', 2);
   });
@@ -63,7 +62,8 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.active')
       .should('have.length', 0);
   });
@@ -75,10 +75,12 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key:first-of-type')
       .should('not.have.class', 'active');
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .first()
       .click()
@@ -92,7 +94,8 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .first()
       .click();
@@ -105,14 +108,14 @@ describe('Project Locale Editor', () => {
 
     // when
     page.navigateTo();
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .first()
       .click();
 
     // then
-    page.getEditorContents()
-      .should('have.text', 'Key One');
+    page.getEditorContents().should('have.text', 'Key One');
   });
 
   it('should show meta when key activated in sidebar', () => {
@@ -122,7 +125,8 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .first()
       .click();
@@ -136,7 +140,8 @@ describe('Project Locale Editor', () => {
 
     // when
     page.navigateTo();
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .first()
       .click();
@@ -152,13 +157,15 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .first()
       .click();
 
     page.getTranslationsTab().click();
-    page.getTranslationsBody()
+    page
+      .getTranslationsBody()
       .find('.mat-card')
       .should('have.length', 2);
   });
@@ -168,22 +175,21 @@ describe('Project Locale Editor', () => {
 
     // when
     page.navigateTo();
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .first()
       .click();
 
-    page.getMeta().within((el) => {
-      el.find('#mat-tab-label-0-1')
-        .trigger('click');
+    page.getMeta().within(el => {
+      el.find('#mat-tab-label-0-1').trigger('click');
       el.find('#mat-tab-content-0-1 .mat-card button.use-value')
         .first()
         .trigger('click');
     });
 
     // then
-    page.getEditorContents()
-      .should('have.text', 'Schlüssel 1');
+    page.getEditorContents().should('have.text', 'Schlüssel 1');
   });
 
   it('should only show keys with missing translations when filtered by those', () => {
@@ -200,7 +206,8 @@ describe('Project Locale Editor', () => {
 
     // then
     cy.get('.selected-option').should('have.length', 1);
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .should('have.length', 1);
   });
@@ -208,7 +215,8 @@ describe('Project Locale Editor', () => {
   it('should display "Save" button when user settings say so', () => {
     // given, when
     page.navigateTo();
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .first()
       .click();
@@ -223,7 +231,8 @@ describe('Project Locale Editor', () => {
 
     // when
     page.navigateTo();
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .first()
       .click();
@@ -235,12 +244,14 @@ describe('Project Locale Editor', () => {
   it('should call updateSettings on "Save and next"', () => {
     // given
     cy.route('PUT', '/api/message', 'fixture:johndoe/p1/message');
-    cy.route('PATCH', '/api/user/*/settings', 'fixture:me-save-behavior-saveandnext')
-      .as('updateSettings');
+    cy.route('PATCH', '/api/user/*/settings', 'fixture:me-save-behavior-saveandnext').as(
+      'updateSettings'
+    );
 
     // when
     page.navigateTo();
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .first()
       .click();
@@ -249,9 +260,10 @@ describe('Project Locale Editor', () => {
 
     // then
     cy.wait('@updateSettings').then(xhr => {
-      expect(xhr.request.body).to.deep.equal({'save-behavior': 'saveandnext'});
+      expect(xhr.request.body).to.deep.equal({ 'save-behavior': 'saveandnext' });
     });
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.key')
       .eq(1)
       .should('have.class', 'active');

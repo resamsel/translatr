@@ -14,7 +14,6 @@ export interface Link {
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-
   @Input() title = 'Translatr';
   @Input() page: string;
   @Input() backLink: Link;
@@ -23,8 +22,7 @@ export class NavbarComponent implements OnInit {
   @Input() showLogo = true;
   @HostBinding('class.overlay') @Input() overlay = false;
 
-  constructor(private readonly titleService: TitleService) {
-  }
+  constructor(private readonly titleService: TitleService) {}
 
   ngOnInit(): void {
     if (this.page) {

@@ -1,22 +1,16 @@
+import { MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AppComponent } from './app.component';
-import { AppFacade } from './+state/app.facade';
+import { HotkeysModule } from '@ngneat/hotkeys';
+import { createComponentFactory, mockProvider } from '@ngneat/spectator/jest';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { mockObservable } from '@translatr/utils/testing';
-import { createComponentFactory, mockProvider } from '@ngneat/spectator/jest';
-import { MatDialogModule } from '@angular/material/dialog';
-import { HotkeysModule } from '@ngneat/hotkeys';
+import { AppFacade } from './+state/app.facade';
+import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   const createComponent = createComponentFactory({
     component: AppComponent,
-    imports: [
-      RouterTestingModule,
-      TranslocoTestingModule,
-      HotkeysModule,
-
-      MatDialogModule
-    ],
+    imports: [RouterTestingModule, TranslocoTestingModule, HotkeysModule, MatDialogModule],
     declarations: [AppComponent],
     providers: [
       mockProvider(AppFacade, {

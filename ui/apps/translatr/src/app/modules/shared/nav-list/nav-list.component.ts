@@ -54,17 +54,13 @@ export class NavListComponent {
   @Input() set pagedList(pagedList: PagedList<{ id?: string | number }> | undefined) {
     this._pagedList = pagedList;
 
-    this.queryParams = pagedList !== undefined
-      ? {limit: pagedList.limit * 2}
-      : {};
+    this.queryParams = pagedList !== undefined ? { limit: pagedList.limit * 2 } : {};
 
     this.updateSearchEnabled();
   }
 
   get loadingList(): number[] {
-    return Array(this.loadingListLength).map(
-      (value: number, index: number) => index
-    );
+    return Array(this.loadingListLength).map((value: number, index: number) => index);
   }
 
   onFilter(criteria: FilterCriteria): void {
@@ -72,14 +68,12 @@ export class NavListComponent {
   }
 
   private updateSearchEnabled(): void {
-    this.searchEnabled = this.showFilter && (
-      this.pagedList === undefined
-      || this.pagedList.list.length > 0
-      || (
-        this._criteria !== undefined
-        && this._criteria.search !== undefined
-        && this._criteria.search.length > 0
-      )
-    );
+    this.searchEnabled =
+      this.showFilter &&
+      (this.pagedList === undefined ||
+        this.pagedList.list.length > 0 ||
+        (this._criteria !== undefined &&
+          this._criteria.search !== undefined &&
+          this._criteria.search.length > 0));
   }
 }

@@ -6,17 +6,15 @@ export const handleFilterFieldSelection = (
   filters: ReadonlyArray<FilterFieldFilter>,
   selected: ReadonlyArray<FilterFieldFilter>
 ): Promise<boolean> => {
-  const params: Params = filters.map(f => f.key)
-    .reduce(
-      (agg, key) => {
-        const selection = selected.find(s => s.key === key);
-        return {
-          ...agg,
-          [key]: selection ? selection.value : null
-        };
-      },
-      {}
-    );
+  const params: Params = filters
+    .map(f => f.key)
+    .reduce((agg, key) => {
+      const selection = selected.find(s => s.key === key);
+      return {
+        ...agg,
+        [key]: selection ? selection.value : null
+      };
+    }, {});
 
   return router.navigate([], {
     queryParamsHandling: 'merge',

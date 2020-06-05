@@ -1,8 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MemberRole, Project } from '@dev/translatr-model';
-import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 
 @Component({
   selector: 'app-project-owner-edit-dialog',
@@ -30,5 +30,7 @@ export class ProjectOwnerEditDialogComponent {
 
 export const openProjectOwnerEditDialog = (dialog: MatDialog, project: Project) => {
   return dialog.open<ProjectOwnerEditDialogComponent, Project, Project>(
-    ProjectOwnerEditDialogComponent, { data: project });
+    ProjectOwnerEditDialogComponent,
+    { data: project }
+  );
 };

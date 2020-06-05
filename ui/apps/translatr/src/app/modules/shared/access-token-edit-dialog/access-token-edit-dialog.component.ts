@@ -11,11 +11,12 @@ export class AccessTokenEditDialogComponent {
   constructor(
     readonly dialogRef: MatDialogRef<AccessTokenEditDialogComponent, AccessToken>,
     @Inject(MAT_DIALOG_DATA) readonly data: AccessToken
-  ) {
-  }
+  ) {}
 }
 
 export const openAccessTokenEditDialog = (dialog: MatDialog, accessToken: Partial<AccessToken>) => {
   return dialog.open<AccessTokenEditDialogComponent, Partial<AccessToken>, AccessToken>(
-    AccessTokenEditDialogComponent, { data: accessToken });
+    AccessTokenEditDialogComponent,
+    { data: accessToken }
+  );
 };

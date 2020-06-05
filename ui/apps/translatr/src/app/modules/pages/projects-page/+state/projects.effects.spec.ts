@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject, of, Subject } from 'rxjs';
-import { Actions } from '@ngrx/effects';
-import { ProjectsEffects } from './projects.effects';
-import { ProjectService } from '@dev/translatr-sdk';
 import { PagedList, Project } from '@dev/translatr-model';
+import { ProjectService } from '@dev/translatr-sdk';
+import { Actions } from '@ngrx/effects';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { LoadProjects, ProjectsLoaded } from './projects.actions';
+import { ProjectsEffects } from './projects.effects';
 
 describe('ProjectsEffects', () => {
   let actions: Subject<any>;
@@ -31,7 +31,7 @@ describe('ProjectsEffects', () => {
   });
 
   describe('loadProjects$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
       const payload: PagedList<Project> = {
         list: [],

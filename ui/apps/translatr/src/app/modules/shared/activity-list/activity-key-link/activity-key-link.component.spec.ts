@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ActivityKeyLinkComponent } from './activity-key-link.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+
+import { ActivityKeyLinkComponent } from './activity-key-link.component';
 
 describe('ActivityKeyLinkComponent', () => {
   let component: ActivityKeyLinkComponent;
@@ -12,8 +12,7 @@ describe('ActivityKeyLinkComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ActivityKeyLinkComponent],
       imports: [RouterTestingModule, TranslocoTestingModule]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

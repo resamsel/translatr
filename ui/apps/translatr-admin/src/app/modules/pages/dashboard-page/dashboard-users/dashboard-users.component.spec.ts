@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DashboardUsersComponent } from './dashboard-users.component';
-import { ButtonTestingModule, EntityTableTestingModule, FeatureFlagTestingModule } from '@translatr/components/testing';
-import { EllipsisModule } from '@dev/translatr-components';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MomentModule } from 'ngx-moment';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AppFacade } from '../../../../+state/app.facade';
+import { RouterTestingModule } from '@angular/router/testing';
+import { EllipsisModule } from '@dev/translatr-components';
+import { ButtonTestingModule, EntityTableTestingModule, FeatureFlagTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
+import { MomentModule } from 'ngx-moment';
+import { AppFacade } from '../../../../+state/app.facade';
+
+import { DashboardUsersComponent } from './dashboard-users.component';
 
 describe('UsersComponent', () => {
   let component: DashboardUsersComponent;

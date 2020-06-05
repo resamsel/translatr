@@ -5,8 +5,8 @@
 // Be sure that you only ever include this mixin once!
 @include mat-core();
 
-@import "~codemirror/lib/codemirror";
-@import "~codemirror/theme/idea";
+@import '~codemirror/lib/codemirror';
+@import '~codemirror/theme/idea';
 
 @import 'styles';
 @import 'theme';

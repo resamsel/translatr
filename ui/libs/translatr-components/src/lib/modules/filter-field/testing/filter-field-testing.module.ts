@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
-import { FilterFieldFilter } from '@dev/translatr-components';
 import { ThemePalette } from '@angular/material/core';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { FilterFieldFilter } from '@dev/translatr-components';
 
 @Component({
   selector: 'dev-filter-field',
@@ -21,5 +21,4 @@ class MockFilterFieldComponent {
   declarations: [MockFilterFieldComponent],
   exports: [MockFilterFieldComponent]
 })
-export class FilterFieldTestingModule {
-}
+export class FilterFieldTestingModule {}

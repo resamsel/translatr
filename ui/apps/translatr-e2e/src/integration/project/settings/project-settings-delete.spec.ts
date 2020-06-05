@@ -16,8 +16,7 @@ describe('Project Settings Delete', () => {
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
     cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
     cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
-    cy.route('/api/activities/aggregated*',
-      'fixture:johndoe/p1/activities-aggregated');
+    cy.route('/api/activities/aggregated*', 'fixture:johndoe/p1/activities-aggregated');
   });
 
   it('should show the delete project button', () => {
@@ -61,7 +60,8 @@ describe('Project Settings Delete', () => {
     page.getDeleteProjectButton().click();
 
     // then
-    page.getDeleteProjectDialog()
+    page
+      .getDeleteProjectDialog()
       .find('button.delete')
       .should('be.disabled');
   });
@@ -72,12 +72,14 @@ describe('Project Settings Delete', () => {
     // when
     page.navigateTo();
     page.getDeleteProjectButton().click();
-    page.getDeleteProjectDialog()
+    page
+      .getDeleteProjectDialog()
       .find('input')
       .type('INCORRECT');
 
     // then
-    page.getDeleteProjectDialog()
+    page
+      .getDeleteProjectDialog()
       .find('button.delete')
       .should('be.disabled');
   });
@@ -95,10 +97,12 @@ describe('Project Settings Delete', () => {
     // when
     page.navigateTo();
     page.getDeleteProjectButton().click();
-    page.getDeleteProjectDialog()
+    page
+      .getDeleteProjectDialog()
       .find('input')
       .type('p1');
-    page.getDeleteProjectDialog()
+    page
+      .getDeleteProjectDialog()
       .find('button.delete')
       .click();
 

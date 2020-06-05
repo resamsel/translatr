@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject, of, Subject } from 'rxjs';
-import { Actions } from '@ngrx/effects';
-import { AppEffects } from './app.effects';
-import { AccessTokenService, ActivityService, FeatureFlagService, ProjectService, UserService } from '@dev/translatr-sdk';
 import { User } from '@dev/translatr-model';
-import { LoadLoggedInUser, LoggedInUserLoaded } from './app.actions';
+import { AccessTokenService, ActivityService, FeatureFlagService, ProjectService, UserService } from '@dev/translatr-sdk';
+import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
+import { BehaviorSubject, of, Subject } from 'rxjs';
+import { LoadLoggedInUser, LoggedInUserLoaded } from './app.actions';
+import { AppEffects } from './app.effects';
 
 describe('AppEffects', () => {
   let actions: Subject<any>;
@@ -47,9 +47,10 @@ describe('AppEffects', () => {
           provide: FeatureFlagService,
           useFactory: () => ({})
         },
-        {provide: Actions, useValue: actions},
+        { provide: Actions, useValue: actions },
         {
-          provide: Store, useFactory: () => ({
+          provide: Store,
+          useFactory: () => ({
             select: jest.fn()
           })
         }
@@ -61,7 +62,7 @@ describe('AppEffects', () => {
   });
 
   describe('loadMe$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
       const user: User = { id: '1', name: 'user', username: 'username' };
       userService.me.mockReturnValueOnce(of(user));

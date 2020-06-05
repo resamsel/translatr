@@ -26,8 +26,7 @@ describe('Project Key Editor', () => {
     page.navigateTo();
 
     // then
-    page.getPageTitle()
-      .should('have.text', 'Key Editor');
+    page.getPageTitle().should('have.text', 'Key Editor');
   });
 
   it('should have key k1 selected in sidebar', () => {
@@ -37,8 +36,7 @@ describe('Project Key Editor', () => {
     page.navigateTo();
 
     // then
-    page.getSelectedKeyField()
-      .should('have.value', 'k1');
+    page.getSelectedKeyField().should('have.value', 'k1');
   });
 
   it('should have two locales in sidebar', () => {
@@ -48,7 +46,8 @@ describe('Project Key Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item')
       .should('have.length', 2);
   });
@@ -60,7 +59,8 @@ describe('Project Key Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.active')
       .should('have.length', 0);
   });
@@ -72,10 +72,12 @@ describe('Project Key Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale:first-of-type')
       .should('not.have.class', 'active');
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .first()
       .click()
@@ -89,13 +91,13 @@ describe('Project Key Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .first()
       .click();
 
-    page.getEditor()
-      .should('be.visible');
+    page.getEditor().should('be.visible');
   });
 
   it('should show translation when locale activated in sidebar', () => {
@@ -103,14 +105,14 @@ describe('Project Key Editor', () => {
 
     // when
     page.navigateTo();
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .first()
       .click();
 
     // then
-    page.getEditorContents()
-      .should('have.text', 'Schlüssel 1');
+    page.getEditorContents().should('have.text', 'Schlüssel 1');
   });
 
   it('should show meta when locale activated in sidebar', () => {
@@ -120,13 +122,13 @@ describe('Project Key Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .first()
       .click();
 
-    page.getMeta()
-      .should('be.visible');
+    page.getMeta().should('be.visible');
   });
 
   it('should show preview when locale activated in sidebar', () => {
@@ -136,14 +138,13 @@ describe('Project Key Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .first()
       .click();
 
-
-    page.getPreviewContents()
-      .should('have.text', 'Schlüssel 1');
+    page.getPreviewContents().should('have.text', 'Schlüssel 1');
   });
 
   it('should show existing translations when translations tab selected', () => {
@@ -153,15 +154,18 @@ describe('Project Key Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .first()
       .click();
 
-    page.getMeta()
+    page
+      .getMeta()
       .find('#mat-tab-label-0-1')
       .click();
-    page.getMeta()
+    page
+      .getMeta()
       .find('#mat-tab-content-0-1 .mat-card')
       .should('have.length', 2);
   });
@@ -173,21 +177,20 @@ describe('Project Key Editor', () => {
     page.navigateTo();
 
     // then
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .first()
       .click();
 
-    page.getMeta().within((el) => {
-      el.find('#mat-tab-label-0-1')
-        .trigger('click');
+    page.getMeta().within(el => {
+      el.find('#mat-tab-label-0-1').trigger('click');
       el.find('#mat-tab-content-0-1 .mat-card button.use-value')
         .last()
         .trigger('click');
     });
 
-    page.getEditorContents()
-      .should('have.text', 'Key One');
+    page.getEditorContents().should('have.text', 'Key One');
   });
 
   it('should only show locales with missing translations when filtered by those', () => {
@@ -204,7 +207,8 @@ describe('Project Key Editor', () => {
 
     // then
     cy.get('.selected-option').should('have.length', 1);
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .should('have.length', 1);
   });
@@ -212,7 +216,8 @@ describe('Project Key Editor', () => {
   it('should display "Save" button when user settings say so', () => {
     // given, when
     page.navigateTo();
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .first()
       .click();
@@ -227,7 +232,8 @@ describe('Project Key Editor', () => {
 
     // when
     page.navigateTo();
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .first()
       .click();
@@ -239,12 +245,14 @@ describe('Project Key Editor', () => {
   it('should call updateSettings on "Save and next"', () => {
     // given
     cy.route('PUT', '/api/message', 'fixture:johndoe/p1/message');
-    cy.route('PATCH', '/api/user/*/settings', 'fixture:me-save-behavior-saveandnext')
-      .as('updateSettings');
+    cy.route('PATCH', '/api/user/*/settings', 'fixture:me-save-behavior-saveandnext').as(
+      'updateSettings'
+    );
 
     // when
     page.navigateTo();
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .first()
       .click();
@@ -253,9 +261,10 @@ describe('Project Key Editor', () => {
 
     // then
     cy.wait('@updateSettings').then(xhr => {
-      expect(xhr.request.body).to.deep.equal({'save-behavior': 'saveandnext'});
+      expect(xhr.request.body).to.deep.equal({ 'save-behavior': 'saveandnext' });
     });
-    page.getNavList()
+    page
+      .getNavList()
       .find('.mat-list-item.locale')
       .eq(1)
       .should('have.class', 'active');

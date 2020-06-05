@@ -1,45 +1,28 @@
-import { createAction, props } from '@ngrx/store';
 import {
   AccessToken,
   AccessTokenCriteria,
   Activity,
-  ActivityCriteria, Aggregate,
+  ActivityCriteria,
+  Aggregate,
   PagedList,
   Project,
   ProjectCriteria,
   User
 } from '@dev/translatr-model';
+import { createAction, props } from '@ngrx/store';
 
-export const loadUser = createAction(
-  '[User Page] Load User',
-  props<{ username: string }>()
-);
-export const userLoaded = createAction(
-  '[User API] User Loaded',
-  props<{ user?: User }>()
-);
-export const userLoadError = createAction(
-  '[User API] User Load Error',
-  props<{ error: any }>()
-);
+export const loadUser = createAction('[User Page] Load User', props<{ username: string }>());
+export const userLoaded = createAction('[User API] User Loaded', props<{ user?: User }>());
+export const userLoadError = createAction('[User API] User Load Error', props<{ error: any }>());
 
-export const updateUser = createAction(
-  '[User Page] Update User',
-  props<{ payload: User }>()
-);
-export const userUpdated = createAction(
-  '[User API] User Updated',
-  props<{ user: User }>()
-);
+export const updateUser = createAction('[User Page] Update User', props<{ payload: User }>());
+export const userUpdated = createAction('[User API] User Updated', props<{ user: User }>());
 export const userUpdateError = createAction(
   '[User API] User Update Error',
   props<{ error: any }>()
 );
 
-export const loadProjects = createAction(
-  '[User Page] Load Projects',
-  props<ProjectCriteria>()
-);
+export const loadProjects = createAction('[User Page] Load Projects', props<ProjectCriteria>());
 export const projectsLoaded = createAction(
   '[Project API] Projects Loaded',
   props<{ pagedList: PagedList<Project> }>()

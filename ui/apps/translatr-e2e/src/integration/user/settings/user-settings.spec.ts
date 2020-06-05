@@ -22,8 +22,7 @@ describe('User Settings', () => {
     page.navigateTo();
 
     // then
-    page.getPageName()
-      .should('have.text', 'John Doe');
+    page.getPageName().should('have.text', 'John Doe');
   });
 
   it('should have name and username set', () => {

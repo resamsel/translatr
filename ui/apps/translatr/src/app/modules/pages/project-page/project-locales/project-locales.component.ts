@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { ProjectFacade } from '../+state/project.facade';
-import { filter, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { Locale, LocaleCriteria, Project } from '@dev/translatr-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { navigate } from '@translatr/utils';
 import { Router } from '@angular/router';
+import { Locale, LocaleCriteria, Project } from '@dev/translatr-model';
+import { navigate } from '@translatr/utils';
+import { filter, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { ProjectFacade } from '../+state/project.facade';
 
 @Component({
   selector: 'app-project-locales',
@@ -23,10 +23,7 @@ export class ProjectLocalesComponent {
     private readonly router: Router
   ) {
     this.criteria$
-      .pipe(
-        withLatestFrom(this.project$.pipe(filter(x => !!x))),
-        takeUntil(this.facade.unload$)
-      )
+      .pipe(withLatestFrom(this.project$.pipe(filter(x => !!x))), takeUntil(this.facade.unload$))
       .subscribe(([criteria, project]: [LocaleCriteria, Project]) =>
         this.facade.loadLocales(project.id, criteria)
       );
@@ -37,11 +34,7 @@ export class ProjectLocalesComponent {
   }
 
   onEdit(locale: Locale) {
-    this.snackBar.open(
-      `Edit locale ${locale.displayName}`,
-      'Dismiss',
-      { duration: 2000 }
-    );
+    this.snackBar.open(`Edit locale ${locale.displayName}`, 'Dismiss', { duration: 2000 });
   }
 
   onDelete(locale: Locale) {
@@ -49,11 +42,7 @@ export class ProjectLocalesComponent {
     this.facade.localeModified$
       .pipe(skip(1), take(1))
       .subscribe(([l]) =>
-        this.snackBar.open(
-          `Language ${l.displayName} deleted`,
-          'Dismiss',
-          {duration: 5000}
-        )
+        this.snackBar.open(`Language ${l.displayName} deleted`, 'Dismiss', { duration: 5000 })
       );
   }
 }

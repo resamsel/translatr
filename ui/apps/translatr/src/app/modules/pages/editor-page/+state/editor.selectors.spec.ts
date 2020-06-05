@@ -2,16 +2,14 @@ import { EDITOR_FEATURE_KEY, EditorState, initialState } from './editor.reducer'
 import { editorQuery } from './editor.selectors';
 
 describe('Editor Selectors', () => {
-  const initialStoreState: { [EDITOR_FEATURE_KEY]: EditorState; } = {
+  const initialStoreState: { [EDITOR_FEATURE_KEY]: EditorState } = {
     [EDITOR_FEATURE_KEY]: initialState
   };
-  const storeState: { [EDITOR_FEATURE_KEY]: EditorState; } = {
+  const storeState: { [EDITOR_FEATURE_KEY]: EditorState } = {
     [EDITOR_FEATURE_KEY]: {
       ...initialState,
       locales: {
-        list: [
-          {id: '1', name: 'en'}
-        ],
+        list: [{ id: '1', name: 'en' }],
         hasNext: false,
         hasPrev: false,
         limit: 20,
@@ -20,7 +18,7 @@ describe('Editor Selectors', () => {
       message: {
         localeId: 'l1',
         keyId: 'k1',
-        value: 'v',
+        value: 'v'
       }
     }
   };

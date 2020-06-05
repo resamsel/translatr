@@ -42,8 +42,8 @@ $border-radius: 2px;
 
     .mat-form-field-infix {
       width: auto;
-      border-top-width: .2em;
-      padding: .6em 0;
+      border-top-width: 0.2em;
+      padding: 0.6em 0;
     }
   }
 
@@ -53,12 +53,12 @@ $border-radius: 2px;
     }
 
     .mat-form-field-flex {
-      padding: 0 .6em 0 .6em;
+      padding: 0 0.6em 0 0.6em;
     }
 
     .mat-form-field-infix {
       display: flex;
-      padding: .4em 0;
+      padding: 0.4em 0;
     }
   }
 
@@ -68,7 +68,7 @@ $border-radius: 2px;
 }
 
 .search-field-elevate {
-  color: rgba(0, 0, 0, .87);
+  color: rgba(0, 0, 0, 0.87);
 
   .mat-chip-list {
     line-height: 20px;
@@ -133,24 +133,24 @@ $border-radius: 2px;
       width: 18px;
       height: 18px;
       margin-left: 4px;
-      opacity: .6;
+      opacity: 0.6;
       cursor: pointer;
 
       &:hover {
-        opacity: .8;
+        opacity: 0.8;
       }
     }
   }
 
   .type {
-    opacity: .8;
+    opacity: 0.8;
   }
 
   .type + .value {
     &::before {
       content: ':';
-      opacity: .8;
-      padding-right: .2em;
+      opacity: 0.8;
+      padding-right: 0.2em;
     }
   }
 }
@@ -175,4 +175,4 @@ input.mat-chip-input {
   margin-left: 8px;
 }
 
-@include filter-field-theme($app-theme)
+@include filter-field-theme($app-theme);

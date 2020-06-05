@@ -7,13 +7,11 @@ interface RouterPartialState {
   readonly [ROUTER_FEATURE_KEY]?: fromRouter.RouterReducerState<any>;
 }
 
-const selectRouter = createFeatureSelector<RouterPartialState,
-  fromRouter.RouterReducerState<any>>(ROUTER_FEATURE_KEY);
+const selectRouter = createFeatureSelector<RouterPartialState, fromRouter.RouterReducerState<any>>(
+  ROUTER_FEATURE_KEY
+);
 
-const {
-  selectQueryParams,
-  selectRouteParams
-} = fromRouter.getSelectors(selectRouter);
+const { selectQueryParams, selectRouteParams } = fromRouter.getSelectors(selectRouter);
 
 export const routerQuery = {
   selectQueryParams,

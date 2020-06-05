@@ -21,5 +21,4 @@ export class MockProjectCardLinkComponent {
   declarations: [MockProjectCardComponent, MockProjectCardLinkComponent],
   exports: [MockProjectCardComponent, MockProjectCardLinkComponent]
 })
-export class ProjectCardTestingModule {
-}
+export class ProjectCardTestingModule {}

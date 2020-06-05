@@ -1,7 +1,7 @@
 import { Component, Input, NgModule } from '@angular/core';
+import { MatDrawer } from '@angular/material/sidenav';
 import { Link } from '@dev/translatr-components';
 import { User } from '@dev/translatr-model';
-import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-sidenav',
@@ -20,5 +20,4 @@ class MockSidenavComponent {
   declarations: [MockSidenavComponent],
   exports: [MockSidenavComponent]
 })
-export class SidenavTestingModule {
-}
+export class SidenavTestingModule {}

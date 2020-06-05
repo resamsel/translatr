@@ -1,19 +1,11 @@
-import { createAction, props } from '@ngrx/store';
 import { PagedList, Project, RequestCriteria, User } from '@dev/translatr-model';
+import { createAction, props } from '@ngrx/store';
 
-export const loadMe = createAction(
-  '[Main Page] Load Me'
-);
+export const loadMe = createAction('[Main Page] Load Me');
 
-export const meLoaded = createAction(
-  '[User API] Me Loaded',
-  props<{ payload: User }>()
-);
+export const meLoaded = createAction('[User API] Me Loaded', props<{ payload: User }>());
 
-export const meLoadError = createAction(
-  '[User API] Me Load Error',
-  props<{ payload: any }>()
-);
+export const meLoadError = createAction('[User API] Me Load Error', props<{ payload: any }>());
 
 export const updatePreferredLanguage = createAction(
   '[Main Page] Update Preferred Language',
@@ -85,6 +77,4 @@ export const projectUpdateError = createAction(
   props<{ error: any }>()
 );
 
-export const unloadProject = createAction(
-  '[Projects Page] Unload Project'
-);
+export const unloadProject = createAction('[Projects Page] Unload Project');

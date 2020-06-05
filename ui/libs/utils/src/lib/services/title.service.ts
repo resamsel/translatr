@@ -5,9 +5,7 @@ import { Title } from '@angular/platform-browser';
   providedIn: 'root'
 })
 export class TitleService {
-
-  constructor(private readonly titleService: Title) {
-  }
+  constructor(private readonly titleService: Title) {}
 
   setTitle(title: string): void {
     if (!!title) {

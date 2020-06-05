@@ -1,6 +1,6 @@
 import { Component, Input, NgModule } from '@angular/core';
-import { AccessToken } from '@dev/translatr-model';
 import { MatDialogRef } from '@angular/material/dialog';
+import { AccessToken } from '@dev/translatr-model';
 
 @Component({
   selector: 'app-access-token-edit-form',
@@ -15,5 +15,4 @@ export class MockAccessTokenEditFormComponent {
   declarations: [MockAccessTokenEditFormComponent],
   exports: [MockAccessTokenEditFormComponent]
 })
-export class AccessTokenEditFormTestingModule {
-}
+export class AccessTokenEditFormTestingModule {}

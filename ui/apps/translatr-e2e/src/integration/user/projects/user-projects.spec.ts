@@ -22,8 +22,7 @@ describe('User Projects', () => {
     page.navigateTo();
 
     // then
-    page.getPageName()
-      .should('have.text', 'John Doe');
+    page.getPageName().should('have.text', 'John Doe');
   });
 
   it('should not show more button', () => {

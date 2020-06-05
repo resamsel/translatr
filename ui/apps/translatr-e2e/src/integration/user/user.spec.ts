@@ -22,7 +22,6 @@ describe('User', () => {
     page.navigateTo();
 
     // then
-    page.getTitle()
-      .should('have.text', 'John Doe - Translatr');
+    page.getTitle().should('have.text', 'John Doe - Translatr');
   });
 });

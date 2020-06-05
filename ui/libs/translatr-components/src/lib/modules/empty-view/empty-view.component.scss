@@ -12,11 +12,11 @@
     opacity: 0.4;
   }
 
-  &[justifyContent="center"] {
+  &[justifyContent='center'] {
     justify-content: center;
   }
 
-  &[alignment="vertical"] {
+  &[alignment='vertical'] {
     flex-direction: column;
     padding: 64px 0;
 
@@ -31,7 +31,7 @@
     }
   }
 
-  &:not([alignment="vertical"]) {
+  &:not([alignment='vertical']) {
     .mat-icon {
       margin-right: 8px;
 

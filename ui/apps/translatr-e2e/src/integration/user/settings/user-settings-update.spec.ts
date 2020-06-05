@@ -69,7 +69,8 @@ describe('User Settings Update', () => {
 
     // when
     page.navigateTo();
-    page.getUsernameField()
+    page
+      .getUsernameField()
       .type('{selectall}john doe')
       .blur();
 

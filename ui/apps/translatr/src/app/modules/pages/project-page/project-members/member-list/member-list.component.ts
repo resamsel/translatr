@@ -1,12 +1,12 @@
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { Member, MemberRole, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
-import { openProjectMemberEditDialog } from '../../../../shared/project-member-edit-dialog/project-member-edit-dialog.component';
-import { openProjectOwnerEditDialog } from '../../../../shared/project-owner-edit-dialog/project-owner-edit-dialog.component';
-import { filter, switchMapTo, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { defaultFilters, FilterCriteria } from '../../../../shared/list-header/list-header.component';
+import { Member, MemberRole, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
+import { filter, switchMapTo, take } from 'rxjs/operators';
 import { AppFacade } from '../../../../../+state/app.facade';
+import { defaultFilters, FilterCriteria } from '../../../../shared/list-header/list-header.component';
+import { openProjectMemberEditDialog } from '../../../../shared/project-member-edit-dialog/project-member-edit-dialog.component';
+import { openProjectOwnerEditDialog } from '../../../../shared/project-owner-edit-dialog/project-owner-edit-dialog.component';
 
 @Component({
   selector: 'app-member-list',
@@ -42,9 +42,8 @@ export class MemberListComponent {
 
   @Input() set members(members: PagedList<Member>) {
     this._members = members;
-    this.ownerCount = members !== undefined
-      ? members.list.filter(m => m.role === MemberRole.Owner).length
-      : 0;
+    this.ownerCount =
+      members !== undefined ? members.list.filter(m => m.role === MemberRole.Owner).length : 0;
   }
 
   // filters = [
@@ -61,20 +60,27 @@ export class MemberListComponent {
     private readonly facade: AppFacade,
     private readonly router: Router,
     private readonly dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   onAdd(project: Project): void {
     openProjectMemberEditDialog(this.dialog, { projectId: project.id }, this.canModifyOwner)
       .afterClosed()
-      .pipe(filter(x => !!x), switchMapTo(this.project$), take(1))
+      .pipe(
+        filter(x => !!x),
+        switchMapTo(this.project$),
+        take(1)
+      )
       .subscribe(p => this.facade.loadProject(p.ownerUsername, p.name));
   }
 
   onEdit(member: Member, event: MouseEvent): boolean {
     openProjectMemberEditDialog(this.dialog, member, this.canModifyOwner)
       .afterClosed()
-      .pipe(filter(x => !!x), switchMapTo(this.project$), take(1))
+      .pipe(
+        filter(x => !!x),
+        switchMapTo(this.project$),
+        take(1)
+      )
       .subscribe(p => this.facade.loadProject(p.ownerUsername, p.name));
     this.edit.emit(member);
     event.stopPropagation();
@@ -90,8 +96,7 @@ export class MemberListComponent {
     openProjectOwnerEditDialog(this.dialog, this.project)
       .afterClosed()
       .pipe(filter(x => !!x))
-      .subscribe(p =>
-        this.router.navigate(['/', p.ownerUsername, p.name, 'members']));
+      .subscribe(p => this.router.navigate(['/', p.ownerUsername, p.name, 'members']));
     event.stopPropagation();
     event.preventDefault();
     return false;

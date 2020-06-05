@@ -16,8 +16,7 @@ describe('Project Keys Add Key', () => {
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
     cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
     cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
-    cy.route('/api/activities/aggregated*',
-      'fixture:johndoe/p1/activities-aggregated');
+    cy.route('/api/activities/aggregated*', 'fixture:johndoe/p1/activities-aggregated');
   });
 
   it('should show key add button', () => {
@@ -27,8 +26,7 @@ describe('Project Keys Add Key', () => {
     page.navigateTo();
 
     // then
-    page.getFloatingActionButton()
-      .should('be.visible');
+    page.getFloatingActionButton().should('be.visible');
   });
 
   it('should show key add dialog on clicking add button', () => {
@@ -40,10 +38,12 @@ describe('Project Keys Add Key', () => {
 
     // then
     page.getDialog().should('be.visible');
-    page.getDialog()
+    page
+      .getDialog()
       .find('.mat-form-field.name input')
       .should('have.value', '');
-    page.getDialog()
+    page
+      .getDialog()
       .find('.mat-dialog-title')
       .should('have.text', 'Add Key');
   });
@@ -54,7 +54,8 @@ describe('Project Keys Add Key', () => {
     // when
     page.navigateTo();
     page.getFloatingActionButton().click();
-    page.getDialog()
+    page
+      .getDialog()
       .find('button.cancel')
       .click();
 

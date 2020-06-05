@@ -16,8 +16,7 @@ describe('Project Keys Delete Key', () => {
     cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
     cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
     cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
-    cy.route('/api/activities/aggregated*',
-      'fixture:johndoe/p1/activities-aggregated');
+    cy.route('/api/activities/aggregated*', 'fixture:johndoe/p1/activities-aggregated');
   });
 
   it('should show key delete button', () => {
@@ -27,7 +26,8 @@ describe('Project Keys Delete Key', () => {
     page.navigateTo();
 
     // then
-    page.getKeyList()
+    page
+      .getKeyList()
       .find('confirm-button.delete')
       .should('be.visible');
   });
@@ -37,14 +37,14 @@ describe('Project Keys Delete Key', () => {
 
     // when
     page.navigateTo();
-    page.getKeyList()
+    page
+      .getKeyList()
       .find('confirm-button.delete')
       .first()
       .click();
 
     // then
-    cy.get('.mat-menu-panel button.confirm')
-      .should('have.text', 'Remove');
+    cy.get('.mat-menu-panel button.confirm').should('have.text', 'Remove');
   });
 
   it('should delete key clicking delete button', () => {
@@ -53,15 +53,16 @@ describe('Project Keys Delete Key', () => {
 
     // when
     page.navigateTo();
-    page.getKeyList()
+    page
+      .getKeyList()
       .find('confirm-button.delete')
       .first()
       .click();
-    cy.get('.mat-menu-panel button.confirm')
-      .click();
+    cy.get('.mat-menu-panel button.confirm').click();
 
     // then
-    page.getKeyList()
+    page
+      .getKeyList()
       .find('.mat-list-item')
       .should('have.length', 1);
   });

@@ -32,4 +32,4 @@ table,
   white-space: nowrap;
 }
 
-@include feature-flags-theme($app-theme)
+@include feature-flags-theme($app-theme);

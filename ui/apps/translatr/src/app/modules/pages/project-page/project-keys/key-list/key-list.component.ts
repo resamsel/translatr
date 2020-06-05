@@ -1,10 +1,10 @@
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { Key, KeyCriteria, PagedList, Project } from '@dev/translatr-model';
-import { openKeyEditDialog } from '../../../../shared/key-edit-dialog/key-edit-dialog.component';
-import { filter, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Key, KeyCriteria, PagedList, Project } from '@dev/translatr-model';
 import { trackByFn } from '@translatr/utils';
+import { filter, take } from 'rxjs/operators';
+import { openKeyEditDialog } from '../../../../shared/key-edit-dialog/key-edit-dialog.component';
 import { FilterCriteria } from '../../../../shared/list-header/list-header.component';
 
 @Component({
@@ -30,8 +30,7 @@ export class KeyListComponent {
     private readonly dialog: MatDialog,
     private readonly router: Router,
     private readonly route: ActivatedRoute
-  ) {
-  }
+  ) {}
 
   onFilter(criteria: FilterCriteria): void {
     this.fetch.emit(criteria);
@@ -56,7 +55,6 @@ export class KeyListComponent {
         take(1),
         filter(k => !!k && key.id === undefined)
       )
-      .subscribe((k => this.router
-        .navigate([k.name], { relativeTo: this.route })));
+      .subscribe(k => this.router.navigate([k.name], { relativeTo: this.route }));
   }
 }

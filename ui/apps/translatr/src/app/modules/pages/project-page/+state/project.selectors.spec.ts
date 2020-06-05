@@ -1,17 +1,15 @@
-import { projectQuery } from './project.selectors';
 import { initialState, PROJECT_FEATURE_KEY, ProjectState } from './project.reducer';
+import { projectQuery } from './project.selectors';
 
 describe('Project Selectors', () => {
-  let storeState: { [PROJECT_FEATURE_KEY]: ProjectState; };
+  let storeState: { [PROJECT_FEATURE_KEY]: ProjectState };
 
   beforeEach(() => {
     storeState = {
       [PROJECT_FEATURE_KEY]: {
         ...initialState,
         locales: {
-          list: [
-            { id: '1', name: 'en' }
-          ],
+          list: [{ id: '1', name: 'en' }],
           hasNext: false,
           hasPrev: false,
           limit: 20,

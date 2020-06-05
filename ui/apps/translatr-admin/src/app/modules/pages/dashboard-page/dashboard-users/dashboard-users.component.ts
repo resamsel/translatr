@@ -1,12 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { AppFacade } from '../../../../+state/app.facade';
-import { Feature, RequestCriteria, User, UserRole } from '@dev/translatr-model';
-import { filter, map, mapTo, startWith, take } from 'rxjs/operators';
-import { UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError } from '../../../../+state/app.actions';
-import { Entity, UserEditDialogComponent, UserEditDialogConfig } from '@dev/translatr-components';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { merge, Observable } from 'rxjs';
+import { Entity, UserEditDialogComponent, UserEditDialogConfig } from '@dev/translatr-components';
+import { Feature, RequestCriteria, User, UserRole } from '@dev/translatr-model';
 import {
   hasCreateUserPermission,
   hasDeleteAllUsersPermission,
@@ -14,14 +10,13 @@ import {
   hasEditUserPermission,
   isAdmin
 } from '@dev/translatr-sdk';
+import { merge, Observable } from 'rxjs';
+import { filter, map, mapTo, startWith, take } from 'rxjs/operators';
+import { UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError } from '../../../../+state/app.actions';
+import { AppFacade } from '../../../../+state/app.facade';
 
 export const mapToAllowedRoles = () =>
-  map(
-    (me?: User): UserRole[] => [
-      UserRole.User,
-      ...(isAdmin(me) ? [UserRole.Admin] : [])
-    ]
-  );
+  map((me?: User): UserRole[] => [UserRole.User, ...(isAdmin(me) ? [UserRole.Admin] : [])]);
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,14 +25,7 @@ export const mapToAllowedRoles = () =>
   styleUrls: ['./dashboard-users.component.scss']
 })
 export class DashboardUsersComponent implements OnDestroy {
-  readonly displayedColumns = [
-    'name',
-    'username',
-    'email',
-    'when_created',
-    'role',
-    'actions'
-  ];
+  readonly displayedColumns = ['name', 'username', 'email', 'when_created', 'role', 'actions'];
 
   me$ = this.facade.me$;
   users$ = this.facade.users$;
@@ -45,20 +33,12 @@ export class DashboardUsersComponent implements OnDestroy {
 
   load$ = merge(
     this.facade.userDeleted$.pipe(
-      filter(
-        (action: UserDeleted | UserDeleteError) => action instanceof UserDeleted
-      )
+      filter((action: UserDeleted | UserDeleteError) => action instanceof UserDeleted)
     ),
     this.facade.usersDeleted$.pipe(
-      filter(
-        (action: UsersDeleted | UsersDeleteError) =>
-          action instanceof UsersDeleted
-      )
+      filter((action: UsersDeleted | UsersDeleteError) => action instanceof UsersDeleted)
     )
-  ).pipe(
-    mapTo({}),
-    startWith({ limit: '20', order: 'whenCreated desc', fetch: 'count' })
-  );
+  ).pipe(mapTo({}), startWith({ limit: '20', order: 'whenCreated desc', fetch: 'count' }));
 
   selected: User[] = [];
 
@@ -69,40 +49,28 @@ export class DashboardUsersComponent implements OnDestroy {
     private readonly dialog: MatDialog,
     readonly snackBar: MatSnackBar
   ) {
-    this.facade.userDeleted$.subscribe(
-      (action: UserDeleted | UserDeleteError) => {
-        if (action instanceof UserDeleted) {
-          snackBar.open(
-            `User ${action.payload.username} has been deleted`,
-            'Dismiss',
-            { duration: 3000 }
-          );
-        } else {
-          snackBar.open(
-            `User could not be deleted: ${action.payload.error.error}`,
-            'Dismiss',
-            { duration: 8000 }
-          );
-        }
+    this.facade.userDeleted$.subscribe((action: UserDeleted | UserDeleteError) => {
+      if (action instanceof UserDeleted) {
+        snackBar.open(`User ${action.payload.username} has been deleted`, 'Dismiss', {
+          duration: 3000
+        });
+      } else {
+        snackBar.open(`User could not be deleted: ${action.payload.error.error}`, 'Dismiss', {
+          duration: 8000
+        });
       }
-    );
-    this.facade.usersDeleted$.subscribe(
-      (action: UsersDeleted | UsersDeleteError) => {
-        if (action instanceof UsersDeleted) {
-          snackBar.open(
-            `${action.payload.length} users have been deleted`,
-            'Dismiss',
-            { duration: 3000 }
-          );
-        } else {
-          snackBar.open(
-            `Users could not be deleted: ${action.payload.error.error}`,
-            'Dismiss',
-            { duration: 8000 }
-          );
-        }
+    });
+    this.facade.usersDeleted$.subscribe((action: UsersDeleted | UsersDeleteError) => {
+      if (action instanceof UsersDeleted) {
+        snackBar.open(`${action.payload.length} users have been deleted`, 'Dismiss', {
+          duration: 3000
+        });
+      } else {
+        snackBar.open(`Users could not be deleted: ${action.payload.error.error}`, 'Dismiss', {
+          duration: 8000
+        });
       }
-    );
+    });
   }
 
   onSelected(entities: Entity[]) {
@@ -126,42 +94,32 @@ export class DashboardUsersComponent implements OnDestroy {
   }
 
   onCreate() {
-    this.me$
-      .pipe(
-        take(1),
-        mapToAllowedRoles()
-      )
-      .subscribe((allowedRoles: UserRole[]) => {
-        this.dialog.open(UserEditDialogComponent, {
-          data: {
-            type: 'create',
-            allowedRoles,
-            onSubmit: (user: User) => this.facade.createUser(user),
-            success$: this.facade.userCreated$,
-            error$: this.facade.userCreateError$
-          } as UserEditDialogConfig
-        });
+    this.me$.pipe(take(1), mapToAllowedRoles()).subscribe((allowedRoles: UserRole[]) => {
+      this.dialog.open(UserEditDialogComponent, {
+        data: {
+          type: 'create',
+          allowedRoles,
+          onSubmit: (user: User) => this.facade.createUser(user),
+          success$: this.facade.userCreated$,
+          error$: this.facade.userCreateError$
+        } as UserEditDialogConfig
       });
+    });
   }
 
   onEdit(user: User) {
-    this.me$
-      .pipe(
-        take(1),
-        mapToAllowedRoles()
-      )
-      .subscribe((allowedRoles: UserRole[]) => {
-        this.dialog.open(UserEditDialogComponent, {
-          data: {
-            type: 'update',
-            allowedRoles,
-            user,
-            onSubmit: (u: User) => this.facade.updateUser(u),
-            success$: this.facade.userUpdated$,
-            error$: this.facade.userUpdateError$
-          }
-        });
+    this.me$.pipe(take(1), mapToAllowedRoles()).subscribe((allowedRoles: UserRole[]) => {
+      this.dialog.open(UserEditDialogComponent, {
+        data: {
+          type: 'update',
+          allowedRoles,
+          user,
+          onSubmit: (u: User) => this.facade.updateUser(u),
+          success$: this.facade.userUpdated$,
+          error$: this.facade.userUpdateError$
+        }
       });
+    });
   }
 
   onDelete(user: User) {

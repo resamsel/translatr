@@ -27,11 +27,11 @@
     }
 
     .info {
-      color: rgba(0,0,0,0.6);
+      color: rgba(0, 0, 0, 0.6);
 
       .mat-icon {
         font-size: 128px;
-        color: rgba(0,0,0,0.3);
+        color: rgba(0, 0, 0, 0.3);
         display: block;
         height: 128px;
         width: 128px;
@@ -57,13 +57,13 @@
         }
 
         &.keycloak {
-          background: #393F44;
+          background: #393f44;
         }
-        
+
         &.github {
           background: #444;
         }
-        
+
         &.facebook {
           background: #3b5998;
         }

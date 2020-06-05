@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { KeyEditDialogComponent } from './key-edit-dialog.component';
 import { TranslocoModule } from '@ngneat/transloco';
+import { KeyEditDialogComponent } from './key-edit-dialog.component';
 
 @NgModule({
   declarations: [KeyEditDialogComponent],
@@ -25,5 +25,4 @@ import { TranslocoModule } from '@ngneat/transloco';
   ],
   entryComponents: [KeyEditDialogComponent]
 })
-export class KeyEditDialogModule {
-}
+export class KeyEditDialogModule {}

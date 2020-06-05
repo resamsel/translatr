@@ -22,5 +22,4 @@ class MockLocaleListComponent {
   declarations: [MockLocaleListComponent],
   exports: [MockLocaleListComponent]
 })
-export class LocaleListTestingModule {
-}
+export class LocaleListTestingModule {}

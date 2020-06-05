@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { AppFacade } from '../../../+state/app.facade';
 import { Route, Router } from '@angular/router';
-import { DASHBOARD_ROUTES } from './dashboard-page.token';
 import { NameIconRoute } from '@translatr/utils';
+import { AppFacade } from '../../../+state/app.facade';
+import { DASHBOARD_ROUTES } from './dashboard-page.token';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,8 +18,7 @@ export class DashboardPageComponent {
     private readonly facade: AppFacade,
     private readonly router: Router,
     @Inject(DASHBOARD_ROUTES) private routes: { children: NameIconRoute[] }[]
-  ) {
-  }
+  ) {}
 
   routerLink(route: Route) {
     if (route === '') {
@@ -32,11 +31,11 @@ export class DashboardPageComponent {
   isLinkActive(url) {
     const charPos = this.router.url.indexOf('?');
     const cleanUrl = charPos !== -1 ? this.router.url.slice(0, charPos) : this.router.url;
-    return (cleanUrl === url);
+    return cleanUrl === url;
   }
 
   activePage(): string | undefined {
-    const activeRoutes = this.children.filter((route) => this.isLinkActive(this.routerLink(route)));
+    const activeRoutes = this.children.filter(route => this.isLinkActive(this.routerLink(route)));
     if (activeRoutes.length === 0) {
       return undefined;
     }

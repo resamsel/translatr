@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AppFacade } from '../+state/app.facade';
-import { filter, map, tap } from 'rxjs/operators';
 import { LOGIN_URL, WINDOW } from '@translatr/utils';
+import { Observable } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
+import { AppFacade } from '../+state/app.facade';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,7 @@ export class AuthGuard implements CanActivate {
     private readonly facade: AppFacade,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(LOGIN_URL) private readonly loginUrl: string
-  ) {
-  }
+  ) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -37,7 +36,12 @@ export class AuthGuard implements CanActivate {
             this.window.location.href = url.toString();
             return false;
           } catch (e) {
-            console.error('Error while parsing login URL', this.loginUrl, this.window.location.href, e);
+            console.error(
+              'Error while parsing login URL',
+              this.loginUrl,
+              this.window.location.href,
+              e
+            );
             return false;
           }
         }

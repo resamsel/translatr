@@ -20,12 +20,10 @@ class MockListHeaderComponent {
   @Output() readonly filter = new EventEmitter<FilterCriteria>();
   @Output() readonly add = new EventEmitter<void>();
   @Output() readonly remove = new EventEmitter<void>();
-
 }
 
 @NgModule({
   declarations: [MockListHeaderComponent],
   exports: [MockListHeaderComponent]
 })
-export class ListHeaderTestingModule {
-}
+export class ListHeaderTestingModule {}

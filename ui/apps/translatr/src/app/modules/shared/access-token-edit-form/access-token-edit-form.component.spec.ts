@@ -1,16 +1,16 @@
+import { ChangeDetectorRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { AccessTokenEditFormComponent } from './access-token-edit-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { UserFacade } from '../../pages/user-page/+state/user.facade';
-import { ChangeDetectorRef } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { mockObservable } from '@translatr/utils/testing';
+import { UserFacade } from '../../pages/user-page/+state/user.facade';
+
+import { AccessTokenEditFormComponent } from './access-token-edit-form.component';
 
 describe('AccessTokenEditFormComponent', () => {
   let component: AccessTokenEditFormComponent;
@@ -29,12 +29,11 @@ describe('AccessTokenEditFormComponent', () => {
         MatCheckboxModule
       ],
       providers: [
-        {provide: MatSnackBar, useValue: {}},
-        {provide: UserFacade, useFactory: () => ({accessTokenModified$: mockObservable()})},
-        {provide: ChangeDetectorRef, useFactory: () => ({})}
+        { provide: MatSnackBar, useValue: {} },
+        { provide: UserFacade, useFactory: () => ({ accessTokenModified$: mockObservable() }) },
+        { provide: ChangeDetectorRef, useFactory: () => ({}) }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

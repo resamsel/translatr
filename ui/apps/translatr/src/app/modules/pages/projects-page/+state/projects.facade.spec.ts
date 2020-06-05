@@ -5,14 +5,15 @@ import { ProjectsState } from './projects.reducer';
 
 describe('ProjectsFacade', () => {
   let facade: ProjectsFacade;
-  let store: Store<ProjectsState> & { dispatch: jest.Mock; pipe: jest.Mock; };
+  let store: Store<ProjectsState> & { dispatch: jest.Mock; pipe: jest.Mock };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         ProjectsFacade,
         {
-          provide: Store, useFactory: () => ({
+          provide: Store,
+          useFactory: () => ({
             dispatch: jest.fn(),
             pipe: jest.fn()
           })

@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { merge, Observable, of } from 'rxjs';
-import { AccessToken, Feature, RequestCriteria } from '@dev/translatr-model';
-import { AppFacade } from '../../../../+state/app.facade';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Entity, notifyEvent } from '@dev/translatr-components';
+import { AccessToken, Feature, RequestCriteria } from '@dev/translatr-model';
 import {
   errorMessage,
   hasDeleteAccessTokenPermission,
   hasDeleteAllAccessTokensPermission,
   hasEditAccessTokenPermission
 } from '@dev/translatr-sdk';
+import { ofType } from '@ngrx/effects';
+import { merge, Observable, of } from 'rxjs';
+import { mapTo } from 'rxjs/operators';
 import {
   AccessTokenDeleted,
   AccessTokenDeleteError,
@@ -16,9 +18,7 @@ import {
   AccessTokensDeleteError,
   AppActionTypes
 } from '../../../../+state/app.actions';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { mapTo } from 'rxjs/operators';
-import { ofType } from '@ngrx/effects';
+import { AppFacade } from '../../../../+state/app.facade';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -34,14 +34,8 @@ export class DashboardAccessTokensComponent {
   accessTokens$ = this.facade.accessTokens$;
   load$ = merge(
     of({ limit: '20', order: 'whenCreated desc' }),
-    this.facade.accessTokenDeleted$.pipe(
-      ofType(AppActionTypes.AccessTokenDeleted),
-      mapTo({})
-    ),
-    this.facade.accessTokensDeleted$.pipe(
-      ofType(AppActionTypes.AccessTokensDeleted),
-      mapTo({})
-    )
+    this.facade.accessTokenDeleted$.pipe(ofType(AppActionTypes.AccessTokenDeleted), mapTo({})),
+    this.facade.accessTokensDeleted$.pipe(ofType(AppActionTypes.AccessTokensDeleted), mapTo({}))
   );
 
   selected: AccessToken[] = [];
@@ -50,16 +44,12 @@ export class DashboardAccessTokensComponent {
 
   readonly Feature = Feature;
 
-  constructor(
-    private readonly facade: AppFacade,
-    readonly snackBar: MatSnackBar
-  ) {
+  constructor(private readonly facade: AppFacade, readonly snackBar: MatSnackBar) {
     notifyEvent(
       snackBar,
       facade.accessTokenDeleted$,
       AppActionTypes.AccessTokenDeleted,
-      (action: AccessTokenDeleted) =>
-        `Access token ${action.payload.name} has been deleted`,
+      (action: AccessTokenDeleted) => `Access token ${action.payload.name} has been deleted`,
       (action: AccessTokenDeleteError) =>
         `Access token could not be deleted: ${errorMessage(action.payload)}`
     );
@@ -67,8 +57,7 @@ export class DashboardAccessTokensComponent {
       snackBar,
       facade.accessTokensDeleted$,
       AppActionTypes.AccessTokensDeleted,
-      (action: AccessTokensDeleted) =>
-        `${action.payload.length} access tokens have been deleted`,
+      (action: AccessTokensDeleted) => `${action.payload.length} access tokens have been deleted`,
       (action: AccessTokensDeleteError) =>
         `Access tokens could not be deleted: ${errorMessage(action.payload)}`
     );

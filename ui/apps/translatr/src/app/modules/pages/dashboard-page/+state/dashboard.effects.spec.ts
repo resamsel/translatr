@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject, of, Subject } from 'rxjs';
-import { Actions } from '@ngrx/effects';
-import { DashboardEffects } from './dashboard.effects';
-import { ActivityService } from '@dev/translatr-sdk';
 import { Activity, PagedList } from '@dev/translatr-model';
+import { ActivityService } from '@dev/translatr-sdk';
+import { Actions } from '@ngrx/effects';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { ActivitiesLoaded, LoadActivities } from './dashboard.actions';
+import { DashboardEffects } from './dashboard.effects';
 
 describe('DashboardEffects', () => {
   let actions: Subject<any>;
@@ -20,7 +20,8 @@ describe('DashboardEffects', () => {
       providers: [
         DashboardEffects,
         {
-          provide: ActivityService, useFactory: () => ({
+          provide: ActivityService,
+          useFactory: () => ({
             find: jest.fn()
           })
         },
@@ -33,7 +34,7 @@ describe('DashboardEffects', () => {
   });
 
   describe('loadActivities$', () => {
-    it('should work', (done) => {
+    it('should work', done => {
       // given
       const payload: PagedList<Activity> = {
         list: [],

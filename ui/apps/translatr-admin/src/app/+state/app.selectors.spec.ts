@@ -1,8 +1,8 @@
-import { appQuery } from './app.selectors';
 import { APP_FEATURE_KEY, AppState } from './app.reducer';
+import { appQuery } from './app.selectors';
 
 describe('Admin Selectors', () => {
-  let storeState: { [APP_FEATURE_KEY]: AppState; };
+  let storeState: { [APP_FEATURE_KEY]: AppState };
 
   beforeEach(() => {
     storeState = {

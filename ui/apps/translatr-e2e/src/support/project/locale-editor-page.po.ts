@@ -1,5 +1,5 @@
-import { ProjectLocalesPage } from './project-locales-page.po';
 import { EditorPage } from './editor-page.po';
+import { ProjectLocalesPage } from './project-locales-page.po';
 
 export class LocaleEditorPage extends EditorPage {
   constructor(
@@ -16,8 +16,7 @@ export class LocaleEditorPage extends EditorPage {
   }
 
   navigateToLocales(): ProjectLocalesPage {
-    return new ProjectLocalesPage(this.username, this.projectName)
-      .navigateTo();
+    return new ProjectLocalesPage(this.username, this.projectName).navigateTo();
   }
 
   getSelectedLocaleField(): Cypress.Chainable<JQuery<HTMLElement>> {

@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { RouterTestingModule } from '@angular/router/testing';
+import { mockObservable } from '@translatr/utils/testing';
+import { ProjectFacade } from '../+state/project.facade';
+import { AppFacade } from '../../../../+state/app.facade';
+import { MemberListTestingModule } from './member-list/testing';
 
 import { ProjectMembersComponent } from './project-members.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ProjectFacade } from '../+state/project.facade';
-import { mockObservable } from '@translatr/utils/testing';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MemberListTestingModule } from './member-list/testing';
-import { AppFacade } from '../../../../+state/app.facade';
 
 describe('ProjectMembersComponent', () => {
   let component: ProjectMembersComponent;
@@ -15,11 +15,7 @@ describe('ProjectMembersComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ProjectMembersComponent],
-      imports: [
-        MemberListTestingModule,
-
-        RouterTestingModule
-      ],
+      imports: [MemberListTestingModule, RouterTestingModule],
       providers: [
         {
           provide: ProjectFacade,

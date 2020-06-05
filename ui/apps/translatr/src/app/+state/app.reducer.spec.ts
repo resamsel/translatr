@@ -1,6 +1,6 @@
-import { appReducer, initialState } from './app.reducer';
-import { meLoaded, projectCreated, projectLoaded, projectUpdated, usersLoaded } from './app.actions';
 import { PagedList, Project, User } from '@dev/translatr-model';
+import { meLoaded, projectCreated, projectLoaded, projectUpdated, usersLoaded } from './app.actions';
+import { appReducer, initialState } from './app.reducer';
 
 describe('App Reducer', () => {
   describe('valid actions ', () => {

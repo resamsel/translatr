@@ -3,16 +3,18 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Project } from '@dev/translatr-model';
-import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
 import { AppFacade } from '../../../+state/app.facade';
+import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
 
 @Component({
   selector: 'app-protect-creation-dialog',
   templateUrl: './project-edit-dialog.component.html',
   styleUrls: ['./project-edit-dialog.component.scss']
 })
-export class ProjectEditDialogComponent
-  extends BaseEditFormComponent<ProjectEditDialogComponent, Project> {
+export class ProjectEditDialogComponent extends BaseEditFormComponent<
+  ProjectEditDialogComponent,
+  Project
+> {
   public get nameFormControl() {
     return this.form.get('name');
   }
@@ -28,10 +30,7 @@ export class ProjectEditDialogComponent
       snackBar,
       dialogRef,
       new FormGroup({
-        name: new FormControl('', [
-          Validators.required,
-          Validators.pattern('[^\\s/]+')
-        ])
+        name: new FormControl('', [Validators.required, Validators.pattern('[^\\s/]+')])
       }),
       data,
       (project: Project) => facade.createProject(project),
@@ -45,5 +44,7 @@ export class ProjectEditDialogComponent
 
 export const openProjectEditDialog = (dialog: MatDialog, project: Partial<Project>) => {
   return dialog.open<ProjectEditDialogComponent, Partial<Project>, Project>(
-    ProjectEditDialogComponent, { data: project });
+    ProjectEditDialogComponent,
+    { data: project }
+  );
 };

@@ -1,15 +1,15 @@
 import { AfterViewChecked, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
-import { Message, User } from '@dev/translatr-model';
-import { EditorFacade } from '../+state/editor.facade';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabGroup } from '@angular/material/tabs';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Link } from '@dev/translatr-components';
+import { Message, User } from '@dev/translatr-model';
 import { HotkeysService } from '@ngneat/hotkeys';
-import { Subscription } from 'rxjs';
-import { SaveBehavior } from '../save-behavior';
-import { filter, skip, take } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslocoService } from '@ngneat/transloco';
+import { Subscription } from 'rxjs';
+import { filter, skip, take } from 'rxjs/operators';
+import { EditorFacade } from '../+state/editor.facade';
+import { SaveBehavior } from '../save-behavior';
 
 @Component({
   selector: 'app-editor',
@@ -42,9 +42,9 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
   @Output() readonly nextItem = new EventEmitter<void>();
   @Output() readonly previousItem = new EventEmitter<void>();
 
-  @ViewChild('editor', {read: CodemirrorComponent})
+  @ViewChild('editor', { read: CodemirrorComponent })
   private editor: CodemirrorComponent;
-  @ViewChild('tabs', {read: MatTabGroup, static: true}) private tabs: MatTabGroup;
+  @ViewChild('tabs', { read: MatTabGroup, static: true }) private tabs: MatTabGroup;
 
   private readonly subscriptions: Subscription[] = [];
   readonly options = {
@@ -87,35 +87,48 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
     private readonly snackBar: MatSnackBar,
     private readonly translocoService: TranslocoService
   ) {
-    this.subscriptions.push(this.hotkeysService.addShortcut({
-      keys: 'control.arrowdown',
-      description: 'Go to next item',
-      group: 'Navigation'
-    })
-      .subscribe(() => this.onNextItem()));
-    this.subscriptions.push(this.hotkeysService.addShortcut({
-      keys: 'control.arrowup',
-      description: 'Go to previous item',
-      group: 'Navigation'
-    })
-      .subscribe(() => this.onPreviousItem()));
-    this.subscriptions.push(this.hotkeysService.addShortcut({
-      keys: 'control.enter',
-      description: 'Save translation',
-      group: 'Saving'
-    })
-      .subscribe(() => this.onSave()));
-    this.subscriptions.push(this.hotkeysService.addShortcut({
-      keys: 'control.shift.enter',
-      description: 'Save and go to next item',
-      group: 'Saving'
-    }).subscribe(() => this.onSave(SaveBehavior.SaveAndNext)));
+    this.subscriptions.push(
+      this.hotkeysService
+        .addShortcut({
+          keys: 'control.arrowdown',
+          description: 'Go to next item',
+          group: 'Navigation'
+        })
+        .subscribe(() => this.onNextItem())
+    );
+    this.subscriptions.push(
+      this.hotkeysService
+        .addShortcut({
+          keys: 'control.arrowup',
+          description: 'Go to previous item',
+          group: 'Navigation'
+        })
+        .subscribe(() => this.onPreviousItem())
+    );
+    this.subscriptions.push(
+      this.hotkeysService
+        .addShortcut({
+          keys: 'control.enter',
+          description: 'Save translation',
+          group: 'Saving'
+        })
+        .subscribe(() => this.onSave())
+    );
+    this.subscriptions.push(
+      this.hotkeysService
+        .addShortcut({
+          keys: 'control.shift.enter',
+          description: 'Save and go to next item',
+          group: 'Saving'
+        })
+        .subscribe(() => this.onSave(SaveBehavior.SaveAndNext))
+    );
   }
 
   ngAfterViewChecked(): void {
     if (this.editor) {
       this.editor.codeMirror.refresh();
-      this.editor.registerOnChange((value) => this.onChanged(value));
+      this.editor.registerOnChange(value => this.onChanged(value));
     }
     if (this.tabs) {
       this.tabs.realignInkBar();
@@ -130,7 +143,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
     this.snackBar.open(
       this.translocoService.translate('editor.changes.unsaved'),
       this.translocoService.translate('button.dismiss'),
-      {duration: 3000}
+      { duration: 3000 }
     );
   }
 
@@ -145,24 +158,20 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
   onSave(behavior?: SaveBehavior): void {
     this.facade.saveMessage(this.message);
     // wait for successfully saving message
-    this.facade.message$.pipe(
-      skip(1),
-      take(1)
-    )
-      .subscribe(() => {
-        if (behavior !== undefined) {
-          if (behavior === SaveBehavior.SaveAndNext) {
-            this.onNextItem();
-          }
-        } else {
-          this.saveBehavior$
-            .pipe(
-              take(1),
-              filter(b => b === SaveBehavior.SaveAndNext)
-            )
-            .subscribe(() => this.onNextItem());
+    this.facade.message$.pipe(skip(1), take(1)).subscribe(() => {
+      if (behavior !== undefined) {
+        if (behavior === SaveBehavior.SaveAndNext) {
+          this.onNextItem();
         }
-      });
+      } else {
+        this.saveBehavior$
+          .pipe(
+            take(1),
+            filter(b => b === SaveBehavior.SaveAndNext)
+          )
+          .subscribe(() => this.onNextItem());
+      }
+    });
   }
 
   onChanged(value?: string, dirty: boolean = true): void {
@@ -170,9 +179,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
       ...this.message,
       value,
       dirty,
-      originalValue: dirty
-        ? this.message.originalValue ?? this.message.value
-        : undefined
+      originalValue: dirty ? this.message.originalValue ?? this.message.value : undefined
     });
   }
 
