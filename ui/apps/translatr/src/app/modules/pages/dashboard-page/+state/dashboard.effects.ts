@@ -4,7 +4,12 @@ import { ActivityService } from '@dev/translatr-sdk';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { ActivitiesLoaded, ActivitiesLoadError, DashboardActionTypes, LoadActivities } from './dashboard.actions';
+import {
+  ActivitiesLoaded,
+  ActivitiesLoadError,
+  DashboardActionTypes,
+  LoadActivities
+} from './dashboard.actions';
 
 @Injectable()
 export class DashboardEffects {
@@ -14,7 +19,7 @@ export class DashboardEffects {
       switchMap((action: LoadActivities) =>
         this.activityService.find(action.payload).pipe(
           map((result: PagedList<Activity>) => new ActivitiesLoaded(result)),
-          catchError((error) => of(new ActivitiesLoadError(error)))
+          catchError(error => of(new ActivitiesLoadError(error)))
         )
       )
     )

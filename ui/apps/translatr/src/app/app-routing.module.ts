@@ -8,57 +8,57 @@ const routes: Routes = [
     loadChildren: () =>
       import(
         '@translatr/translatr-components/src/lib/modules/pages/login-page/login-page.module'
-      ).then((m) => m.LoginPageModule)
+      ).then(m => m.LoginPageModule)
   },
   {
     path: 'dashboard',
     loadChildren: () =>
       import('./modules/pages/dashboard-page/dashboard-page.module').then(
-        (m) => m.DashboardPageModule
+        m => m.DashboardPageModule
       )
   },
   {
     path: 'users',
     loadChildren: () =>
-      import('./modules/pages/users-page/users-page.module').then((m) => m.UsersPageModule)
+      import('./modules/pages/users-page/users-page.module').then(m => m.UsersPageModule)
   },
   {
     path: 'projects',
     loadChildren: () =>
-      import('./modules/pages/projects-page/projects-page.module').then((m) => m.ProjectsPageModule)
+      import('./modules/pages/projects-page/projects-page.module').then(m => m.ProjectsPageModule)
   },
   {
     path: 'not-found',
     loadChildren: () =>
-      import('./modules/pages/not-found-page/not-found-page.module').then((m) => m.NotFoundPageModule)
+      import('./modules/pages/not-found-page/not-found-page.module').then(m => m.NotFoundPageModule)
   },
   {
     path: 'forbidden',
     loadChildren: () =>
       import('./modules/pages/forbidden-page/forbidden-page.module').then(
-        (m) => m.ForbiddenPageModule
+        m => m.ForbiddenPageModule
       )
   },
   {
     path: '',
     pathMatch: 'full',
     loadChildren: () =>
-      import('./modules/pages/main-page/main-page.module').then((m) => m.MainPageModule)
+      import('./modules/pages/main-page/main-page.module').then(m => m.MainPageModule)
   },
   {
     path: '',
     loadChildren: () =>
-      import('./modules/pages/user-page/user-page.module').then((m) => m.UserPageModule)
+      import('./modules/pages/user-page/user-page.module').then(m => m.UserPageModule)
   },
   {
     path: '',
     loadChildren: () =>
-      import('./modules/pages/project-page/project-page.module').then((m) => m.ProjectPageModule)
+      import('./modules/pages/project-page/project-page.module').then(m => m.ProjectPageModule)
   },
   {
     path: '',
     loadChildren: () =>
-      import('./modules/pages/editor-page/editor-page.module').then((m) => m.EditorPageModule)
+      import('./modules/pages/editor-page/editor-page.module').then(m => m.EditorPageModule)
   }
 ];
 

@@ -1,7 +1,14 @@
 /* tslint:disable:max-classes-per-file */
 import { HttpClient } from '@angular/common/http';
 import { Injectable, NgModule } from '@angular/core';
-import { Translation, TRANSLOCO_CONFIG, TRANSLOCO_LOADER, translocoConfig, TranslocoLoader, TranslocoModule } from '@ngneat/transloco';
+import {
+  Translation,
+  TRANSLOCO_CONFIG,
+  TRANSLOCO_LOADER,
+  translocoConfig,
+  TranslocoLoader,
+  TranslocoModule
+} from '@ngneat/transloco';
 import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
 import { environment } from '../../../../environments/environment';
 

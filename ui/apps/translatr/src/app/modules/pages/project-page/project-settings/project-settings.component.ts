@@ -18,7 +18,7 @@ import { openProjectDeleteDialog } from '../../../shared/project-delete-dialog/p
 export class ProjectSettingsComponent
   extends BaseEditFormComponent<ProjectSettingsComponent, Project>
   implements OnInit {
-  project$ = this.appFacade.project$.pipe(filter((x) => !!x));
+  project$ = this.appFacade.project$.pipe(filter(x => !!x));
 
   canDelete$ = this.facade.canDelete$;
 
@@ -62,7 +62,7 @@ export class ProjectSettingsComponent
   ngOnInit() {
     this.project$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((project) => this.form.patchValue(project));
+      .subscribe(project => this.form.patchValue(project));
   }
 
   protected onSaved(project: Project): void {
@@ -73,8 +73,8 @@ export class ProjectSettingsComponent
     this.project$
       .pipe(
         take(1),
-        switchMap((project) => openProjectDeleteDialog(this.dialog, project).afterClosed()),
-        filter((project) => !!project)
+        switchMap(project => openProjectDeleteDialog(this.dialog, project).afterClosed()),
+        filter(project => !!project)
       )
       .subscribe(() => this.router.navigate(['/dashboard']));
   }

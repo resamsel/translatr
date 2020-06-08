@@ -14,7 +14,7 @@ import { ProjectFacade } from '../+state/project.facade';
   styleUrls: ['./project-keys.component.scss']
 })
 export class ProjectKeysComponent {
-  readonly project$ = this.facade.project$.pipe(filter((x) => !!x));
+  readonly project$ = this.facade.project$.pipe(filter(x => !!x));
   readonly keys$ = this.facade.keys$;
   readonly criteria$ = this.facade.keysCriteria$;
   readonly canModify$ = this.facade.canModifyKey$;

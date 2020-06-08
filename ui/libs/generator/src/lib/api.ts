@@ -1,5 +1,12 @@
 /* tslint:disable:max-classes-per-file */
-import { HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpEvent,
+  HttpHandler,
+  HttpRequest,
+  HttpXhrBackend,
+  XhrFactory
+} from '@angular/common/http';
 import { Injector, StaticProvider } from '@angular/core';
 import {
   AccessTokenService,

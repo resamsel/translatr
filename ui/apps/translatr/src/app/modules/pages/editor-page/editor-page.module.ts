@@ -22,7 +22,11 @@ import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { EditorEffects } from './+state/editor.effects';
 import { EditorFacade } from './+state/editor.facade';
-import { EDITOR_FEATURE_KEY, editorReducer, initialState as editorInitialState } from './+state/editor.reducer';
+import {
+  EDITOR_FEATURE_KEY,
+  editorReducer,
+  initialState as editorInitialState
+} from './+state/editor.reducer';
 import { EditorPageRoutingModule } from './editor-page-routing.module';
 import { EditorSelectorComponent } from './editor/editor-selector.component';
 import { EditorComponent } from './editor/editor.component';

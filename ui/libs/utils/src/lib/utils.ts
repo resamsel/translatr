@@ -27,8 +27,8 @@ export function cartesianProduct<T>(arr: T[][]): T[][] {
   return arr.reduce(
     (a, b) => {
       return a
-        .map((x) => {
-          return b.map((y) => {
+        .map(x => {
+          return b.map(y => {
             return x.concat(y);
           });
         })
@@ -42,7 +42,7 @@ export const trackByFn = (index: number, item: { id?: string | number }): string
 
 export const pickKeys = <T>(obj: T, keys: Array<keyof T>): {} => {
   return Object.keys(obj)
-    .filter((key) => keys.includes(key as keyof T))
+    .filter(key => keys.includes(key as keyof T))
     .reduce((o, key) => {
       return {
         ...o,
@@ -75,11 +75,11 @@ export const mergeWithError = <T, E>(
 ): Observable<[T, undefined] | [undefined, E]> => {
   return merge(
     entity$.pipe(
-      filter((x) => !!x),
+      filter(x => !!x),
       map<T, [T, undefined]>((entity: T) => [entity, undefined])
     ),
     error$.pipe(
-      filter((x) => !!x),
+      filter(x => !!x),
       map<E, [undefined, E]>((error: E) => [undefined, error])
     )
   );

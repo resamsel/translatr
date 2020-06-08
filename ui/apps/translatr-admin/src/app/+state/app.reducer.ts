@@ -1,4 +1,11 @@
-import { AccessToken, Activity, PagedList, Project, User, UserFeatureFlag } from '@dev/translatr-model';
+import {
+  AccessToken,
+  Activity,
+  PagedList,
+  Project,
+  User,
+  UserFeatureFlag
+} from '@dev/translatr-model';
 import { AppAction, AppActionTypes } from './app.actions';
 
 export const APP_FEATURE_KEY = 'app';

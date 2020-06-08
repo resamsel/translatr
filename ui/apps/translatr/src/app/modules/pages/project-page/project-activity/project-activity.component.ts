@@ -12,7 +12,7 @@ export class ProjectActivityComponent implements OnInit {
   project$ = this.facade.project$;
   activities$ = this.facade.activities$;
   aggregated$ = this.facade.activityAggregated$.pipe(
-    map((pagedList) => (!!pagedList ? pagedList.list : []))
+    map(pagedList => (!!pagedList ? pagedList.list : []))
   );
   criteria$ = this.facade.activitiesCriteria$;
 
@@ -23,7 +23,7 @@ export class ProjectActivityComponent implements OnInit {
       .pipe(
         withLatestFrom(
           this.project$.pipe(
-            filter((x) => !!x),
+            filter(x => !!x),
             pluck<Project, string>('id')
           )
         ),

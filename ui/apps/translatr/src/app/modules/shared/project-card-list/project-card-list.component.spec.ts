@@ -1,5 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NavListTestingModule, ProjectCardTestingModule, ProjectEmptyViewTestingModule } from '../testing';
+import {
+  NavListTestingModule,
+  ProjectCardTestingModule,
+  ProjectEmptyViewTestingModule
+} from '../testing';
 import { ProjectCardListComponent } from './project-card-list.component';
 
 describe('ProjectCardListComponent', () => {

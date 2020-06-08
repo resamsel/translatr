@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
-import { KeyCriteria, LocaleCriteria, Message, PagedList, RequestCriteria, Setting } from '@dev/translatr-model';
+import {
+  KeyCriteria,
+  LocaleCriteria,
+  Message,
+  PagedList,
+  RequestCriteria,
+  Setting
+} from '@dev/translatr-model';
 import { select, Store } from '@ngrx/store';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 import { Observable, Subject } from 'rxjs';
@@ -67,7 +74,7 @@ export class EditorFacade {
   );
 
   readonly saveBehavior$ = this.appFacade.settings$.pipe(
-    map((settings) => (settings ?? {})[Setting.SaveBehavior] ?? 'save')
+    map(settings => (settings ?? {})[Setting.SaveBehavior] ?? 'save')
   );
 
   constructor(

@@ -13,7 +13,7 @@ export class UserActivityComponent implements OnInit {
   readonly criteria$ = this.facade.criteria$;
   readonly activities$ = this.facade.activities$;
   readonly aggregated$ = this.facade.activityAggregated$.pipe(
-    map((pagedList) => (!!pagedList ? pagedList.list : []))
+    map(pagedList => (!!pagedList ? pagedList.list : []))
   );
 
   constructor(private readonly facade: UserFacade) {}
@@ -21,7 +21,7 @@ export class UserActivityComponent implements OnInit {
   ngOnInit() {
     this.criteria$
       .pipe(
-        withLatestFrom(this.facade.user$.pipe(filter((x) => !!x))),
+        withLatestFrom(this.facade.user$.pipe(filter(x => !!x))),
         takeUntil(this.facade.destroy$)
       )
       .subscribe(([criteria, user]: [UserCriteria, User]) =>

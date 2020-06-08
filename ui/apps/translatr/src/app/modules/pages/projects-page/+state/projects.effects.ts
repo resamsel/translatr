@@ -22,7 +22,7 @@ export class ProjectsEffects {
       switchMap((action: LoadProjects) =>
         this.projectService.find(action.payload).pipe(
           map((payload: PagedList<Project>) => new ProjectsLoaded(payload)),
-          catchError((error) => of(new ProjectsLoadError(error)))
+          catchError(error => of(new ProjectsLoadError(error)))
         )
       )
     )
@@ -34,7 +34,7 @@ export class ProjectsEffects {
       switchMap((action: LoadMyProjects) =>
         this.projectService.find(action.payload).pipe(
           map((payload: PagedList<Project>) => new MyProjectsLoaded(payload)),
-          catchError((error) => of(new MyProjectsLoadError(error)))
+          catchError(error => of(new MyProjectsLoadError(error)))
         )
       )
     )

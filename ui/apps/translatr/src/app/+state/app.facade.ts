@@ -35,7 +35,7 @@ export class AppFacade extends FeatureFlagFacade {
   routeParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectRouteParams));
   queryParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectQueryParams));
 
-  permission$ = combineLatest([this.project$.pipe(filter((x) => !!x)), this.me$]);
+  permission$ = combineLatest([this.project$.pipe(filter(x => !!x)), this.me$]);
 
   constructor(private store: Store<AppState>) {
     super();
@@ -45,12 +45,12 @@ export class AppFacade extends FeatureFlagFacade {
     return this.queryParams$.pipe(
       map((params: Params) =>
         includes
-          .filter((f) => params[f] !== undefined && params[f] !== '')
+          .filter(f => params[f] !== undefined && params[f] !== '')
           .reduce((acc, curr) => ({ ...acc, [curr]: params[curr] }), {})
       ),
       distinctUntilChanged(
         (a: RequestCriteria, b: RequestCriteria) =>
-          includes.filter((key) => a[key] !== b[key]).length === 0
+          includes.filter(key => a[key] !== b[key]).length === 0
       )
     );
   }
@@ -77,8 +77,8 @@ export class AppFacade extends FeatureFlagFacade {
 
   hasFeatures$(flags: Feature | Feature[]): Observable<boolean> {
     return this.me$.pipe(
-      filter((x) => !!x),
-      map((user) => (user.features ? coerceArray(flags).every((flag) => user.features[flag]) : false))
+      filter(x => !!x),
+      map(user => (user.features ? coerceArray(flags).every(flag => user.features[flag]) : false))
     );
   }
 

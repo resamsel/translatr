@@ -1,5 +1,21 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { AccessToken, Activity, Key, Locale, Member, Message, PagedList, Project } from '@dev/translatr-model';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  HostBinding,
+  Input,
+  Output
+} from '@angular/core';
+import {
+  AccessToken,
+  Activity,
+  Key,
+  Locale,
+  Member,
+  Message,
+  PagedList,
+  Project
+} from '@dev/translatr-model';
 import { FilterCriteria } from '../list-header/list-header.component';
 
 const contentTypeToIconMap = {

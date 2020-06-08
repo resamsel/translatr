@@ -1,7 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ConstraintViolation, ConstraintViolationErrorInfo, ErrorAction, User, UserRole } from '@dev/translatr-model';
+import {
+  ConstraintViolation,
+  ConstraintViolationErrorInfo,
+  ErrorAction,
+  User,
+  UserRole
+} from '@dev/translatr-model';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 

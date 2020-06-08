@@ -1,6 +1,15 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
-import { AccessToken, Key, Locale, Message, PagedList, Project, User, UserRole } from '@dev/translatr-model';
+import {
+  AccessToken,
+  Key,
+  Locale,
+  Message,
+  PagedList,
+  Project,
+  User,
+  UserRole
+} from '@dev/translatr-model';
 import { errorMessage, MessageService, ProjectService } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';

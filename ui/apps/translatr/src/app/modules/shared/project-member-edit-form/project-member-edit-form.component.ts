@@ -1,4 +1,12 @@
-import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -83,10 +91,10 @@ export class ProjectMemberEditFormComponent
     this.userFormControl.valueChanges
       .pipe(
         debounceTime(200),
-        map((value) => (typeof value === 'string' ? value : value.username)),
+        map(value => (typeof value === 'string' ? value : value.username)),
         takeUntil(this.destroy$)
       )
-      .subscribe((value) => this.userFilter.emit(value));
+      .subscribe(value => this.userFilter.emit(value));
   }
 
   displayFn(user?: User): string | undefined {

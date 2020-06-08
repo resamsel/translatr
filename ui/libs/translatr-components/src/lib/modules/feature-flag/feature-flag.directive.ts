@@ -19,7 +19,7 @@ export class FeatureFlagDirective implements OnInit {
       .hasFeatures$(this.featureFlag)
       .pipe(
         take(1),
-        filter((enabled) => enabled)
+        filter(enabled => enabled)
       )
       .subscribe(() => this.viewContainerRef.createEmbeddedView(this.templateRef));
   }

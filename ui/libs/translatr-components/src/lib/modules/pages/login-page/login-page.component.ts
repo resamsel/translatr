@@ -29,7 +29,7 @@ export class LoginPageComponent implements OnInit {
     this.providers$
       .pipe(
         take(1),
-        filter((providers) => providers.length === 1)
+        filter(providers => providers.length === 1)
       )
       .subscribe(
         (providers: AuthProvider[]) =>

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { FilterFieldFilter } from '@dev/translatr-components';
 import { RequestCriteria } from '@dev/translatr-model';
 
@@ -80,8 +87,8 @@ export class ListHeaderComponent implements OnInit {
   private updateCriteria(): void {
     if (!!this.criteria) {
       this.selection = this.filters
-        .filter((filter) => this.criteria[filter.key] !== undefined)
-        .map((filter) => ({
+        .filter(filter => this.criteria[filter.key] !== undefined)
+        .map(filter => ({
           key: filter.key,
           value: this.criteria[filter.key],
           type: filter.type

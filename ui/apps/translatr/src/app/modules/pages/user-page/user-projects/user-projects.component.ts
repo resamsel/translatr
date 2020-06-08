@@ -27,7 +27,7 @@ export class UserProjectsComponent implements OnInit {
   ngOnInit() {
     this.criteria$
       .pipe(
-        withLatestFrom(this.facade.user$.pipe(filter((x) => !!x))),
+        withLatestFrom(this.facade.user$.pipe(filter(x => !!x))),
         takeUntil(this.facade.destroy$)
       )
       .subscribe(([criteria, user]: [ProjectCriteria, User]) => {
@@ -48,8 +48,8 @@ export class UserProjectsComponent implements OnInit {
       .afterClosed()
       .pipe(
         take(1),
-        filter((project) => !!project)
+        filter(project => !!project)
       )
-      .subscribe((project) => this.router.navigate([project.ownerUsername, project.name]));
+      .subscribe(project => this.router.navigate([project.ownerUsername, project.name]));
   }
 }

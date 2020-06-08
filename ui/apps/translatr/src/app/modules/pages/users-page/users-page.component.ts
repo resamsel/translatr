@@ -20,7 +20,7 @@ export class UsersPageComponent implements OnInit, OnDestroy {
   criteria$ = this.appFacade.queryParams$.pipe(
     map((params: Params) =>
       ['search', 'limit', 'offset']
-        .filter((f) => params[f] !== undefined && params[f] !== '')
+        .filter(f => params[f] !== undefined && params[f] !== '')
         .reduce((acc, curr) => ({ ...acc, [curr]: params[curr] }), {})
     ),
     distinctUntilChanged(

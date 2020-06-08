@@ -1,6 +1,19 @@
 import { Injectable } from '@angular/core';
-import { AccessToken, Activity, PagedList, Project, User, UserFeatureFlag } from '@dev/translatr-model';
-import { AccessTokenService, ActivityService, FeatureFlagService, ProjectService, UserService } from '@dev/translatr-sdk';
+import {
+  AccessToken,
+  Activity,
+  PagedList,
+  Project,
+  User,
+  UserFeatureFlag
+} from '@dev/translatr-model';
+import {
+  AccessTokenService,
+  ActivityService,
+  FeatureFlagService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
@@ -76,8 +89,8 @@ export class AppEffects {
     ofType(AppActionTypes.LoadLoggedInUser),
     switchMap(() =>
       this.userService.me({ fetch: 'featureFlags' }).pipe(
-        map((user) => new LoggedInUserLoaded(user)),
-        catchError((error) => of(new LoggedInUserLoadError(error)))
+        map(user => new LoggedInUserLoaded(user)),
+        catchError(error => of(new LoggedInUserLoadError(error)))
       )
     )
   );
@@ -87,7 +100,7 @@ export class AppEffects {
     switchMap((action: LoadUsers) =>
       this.userService.find(action.payload).pipe(
         map((payload: PagedList<User>) => new UsersLoaded(payload)),
-        catchError((error) => of(new UsersLoadError(error)))
+        catchError(error => of(new UsersLoadError(error)))
       )
     )
   );
@@ -97,7 +110,7 @@ export class AppEffects {
     switchMap((action: LoadUser) =>
       this.userService.get(action.payload.userId).pipe(
         map((payload: User) => new UserLoaded(payload)),
-        catchError((error) => of(new UserLoadError(error)))
+        catchError(error => of(new UserLoadError(error)))
       )
     )
   );
@@ -107,7 +120,7 @@ export class AppEffects {
     switchMap((action: CreateUser) =>
       this.userService.create(action.payload).pipe(
         map((payload: User) => new UserCreated(payload)),
-        catchError((error) => of(new UserCreateError(error)))
+        catchError(error => of(new UserCreateError(error)))
       )
     )
   );
@@ -117,7 +130,7 @@ export class AppEffects {
     switchMap((action: UpdateUser) =>
       this.userService.update(action.payload).pipe(
         map((payload: User) => new UserUpdated(payload)),
-        catchError((error) => of(new UserUpdateError(error)))
+        catchError(error => of(new UserUpdateError(error)))
       )
     )
   );
@@ -127,7 +140,7 @@ export class AppEffects {
     switchMap((action: DeleteUser) =>
       this.userService.delete(action.payload.id).pipe(
         map((payload: User) => new UserDeleted(payload)),
-        catchError((error) => of(new UserDeleteError(error)))
+        catchError(error => of(new UserDeleteError(error)))
       )
     )
   );
@@ -137,7 +150,7 @@ export class AppEffects {
     switchMap((action: DeleteUsers) =>
       this.userService.deleteAll(action.payload.map((user: User) => user.id)).pipe(
         map((payload: User[]) => new UsersDeleted(payload)),
-        catchError((error) => of(new UsersDeleteError(error)))
+        catchError(error => of(new UsersDeleteError(error)))
       )
     )
   );
@@ -149,7 +162,7 @@ export class AppEffects {
     switchMap((action: LoadProjects) =>
       this.projectService.find(action.payload).pipe(
         map((payload: PagedList<Project>) => new ProjectsLoaded(payload)),
-        catchError((error) => of(new ProjectsLoadError(error)))
+        catchError(error => of(new ProjectsLoadError(error)))
       )
     )
   );
@@ -159,7 +172,7 @@ export class AppEffects {
     switchMap((action: UpdateProject) =>
       this.projectService.update(action.payload).pipe(
         map((payload: Project) => new ProjectUpdated(payload)),
-        catchError((error) => of(new ProjectUpdateError(error)))
+        catchError(error => of(new ProjectUpdateError(error)))
       )
     )
   );
@@ -169,7 +182,7 @@ export class AppEffects {
     switchMap((action: DeleteProject) =>
       this.projectService.delete(action.payload.id).pipe(
         map((payload: Project) => new ProjectDeleted(payload)),
-        catchError((error) => of(new ProjectDeleteError(error)))
+        catchError(error => of(new ProjectDeleteError(error)))
       )
     )
   );
@@ -179,7 +192,7 @@ export class AppEffects {
     switchMap((action: DeleteProjects) =>
       this.projectService.deleteAll(action.payload.map((project: Project) => project.id)).pipe(
         map((payload: Project[]) => new ProjectsDeleted(payload)),
-        catchError((error) => of(new ProjectsDeleteError(error)))
+        catchError(error => of(new ProjectsDeleteError(error)))
       )
     )
   );
@@ -191,7 +204,7 @@ export class AppEffects {
     switchMap((action: LoadAccessTokens) =>
       this.accessTokenService.find(action.payload).pipe(
         map((payload: PagedList<AccessToken>) => new AccessTokensLoaded(payload)),
-        catchError((error) => of(new AccessTokensLoadError(error)))
+        catchError(error => of(new AccessTokensLoadError(error)))
       )
     )
   );
@@ -201,7 +214,7 @@ export class AppEffects {
     switchMap((action: DeleteAccessToken) =>
       this.accessTokenService.delete(action.payload.id).pipe(
         map((payload: AccessToken) => new AccessTokenDeleted(payload)),
-        catchError((error) => of(new AccessTokenDeleteError(error)))
+        catchError(error => of(new AccessTokenDeleteError(error)))
       )
     )
   );
@@ -213,7 +226,7 @@ export class AppEffects {
         .deleteAll(action.payload.map((accessToken: AccessToken) => accessToken.id))
         .pipe(
           map((payload: AccessToken[]) => new AccessTokensDeleted(payload)),
-          catchError((error) => of(new AccessTokensDeleteError(error)))
+          catchError(error => of(new AccessTokensDeleteError(error)))
         )
     )
   );
@@ -225,7 +238,7 @@ export class AppEffects {
     switchMap((action: LoadActivities) =>
       this.activityService.find(action.payload).pipe(
         map((payload: PagedList<Activity>) => new ActivitiesLoaded(payload)),
-        catchError((error) => of(new ActivitiesLoadError(error)))
+        catchError(error => of(new ActivitiesLoadError(error)))
       )
     )
   );
@@ -237,7 +250,7 @@ export class AppEffects {
     switchMap((action: LoadFeatureFlags) =>
       this.featureFlagService.find(action.payload).pipe(
         map((payload: PagedList<UserFeatureFlag>) => new FeatureFlagsLoaded(payload)),
-        catchError((error) => of(new FeatureFlagsLoadError(error)))
+        catchError(error => of(new FeatureFlagsLoadError(error)))
       )
     )
   );
@@ -247,7 +260,7 @@ export class AppEffects {
     switchMap((action: UpdateFeatureFlag) =>
       this.featureFlagService.update(action.payload).pipe(
         map((payload: UserFeatureFlag) => new FeatureFlagUpdated(payload)),
-        catchError((error) => of(new FeatureFlagUpdateError(error)))
+        catchError(error => of(new FeatureFlagUpdateError(error)))
       )
     )
   );
@@ -257,7 +270,7 @@ export class AppEffects {
     switchMap((action: DeleteFeatureFlag) =>
       this.featureFlagService.delete(action.payload.id).pipe(
         map((payload: UserFeatureFlag) => new FeatureFlagDeleted(payload)),
-        catchError((error) => of(new FeatureFlagDeleteError(error)))
+        catchError(error => of(new FeatureFlagDeleteError(error)))
       )
     )
   );
@@ -269,7 +282,7 @@ export class AppEffects {
         .deleteAll(action.payload.map((featureFlag: UserFeatureFlag) => featureFlag.id))
         .pipe(
           map((payload: UserFeatureFlag[]) => new FeatureFlagsDeleted(payload)),
-          catchError((error) => of(new FeatureFlagsDeleteError(error)))
+          catchError(error => of(new FeatureFlagsDeleteError(error)))
         )
     )
   );
@@ -283,7 +296,7 @@ export class AppEffects {
           .update({ id: me.id, preferredLanguage: action.payload })
           .pipe(map((user: User) => new LoggedInUserLoaded(user)))
       ),
-      catchError((error) => of(new LoggedInUserLoadError(error)))
+      catchError(error => of(new LoggedInUserLoadError(error)))
     )
   );
 

@@ -14,7 +14,11 @@ import { ProjectListModule } from '../../shared/project-list/project-list.module
 import { ProjectsPageModule } from '../projects-page/projects-page.module';
 import { DashboardEffects } from './+state/dashboard.effects';
 import { DashboardFacade } from './+state/dashboard.facade';
-import { DASHBOARD_FEATURE_KEY, dashboardReducer, initialState as dashboardInitialState } from './+state/dashboard.reducer';
+import {
+  DASHBOARD_FEATURE_KEY,
+  dashboardReducer,
+  initialState as dashboardInitialState
+} from './+state/dashboard.reducer';
 import { DashboardPageRoutingModule } from './dashboard-page-routing.module';
 import { DashboardPageComponent } from './dashboard-page.component';
 

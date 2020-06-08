@@ -50,15 +50,15 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   > = this.appFacade.queryParams$.pipe(
     map((params: Params) =>
       this.filters
-        .filter((f) => params[f.key] !== undefined && params[f.key] !== '')
-        .map((f) => ({ ...f, value: params[f.key] }))
+        .filter(f => params[f.key] !== undefined && params[f.key] !== '')
+        .map(f => ({ ...f, value: params[f.key] }))
     ),
     distinctUntilChanged((a, b) => a.length === b.length)
   );
   readonly params$ = combineLatest([
     this.appFacade.routeParams$.pipe(
       filter(
-        (p) => p.username !== undefined && p.projectName !== undefined && p.keyName !== undefined
+        p => p.username !== undefined && p.projectName !== undefined && p.keyName !== undefined
       ),
       distinctUntilChanged(keyComparator)
     ),
@@ -86,7 +86,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
       });
     // TODO: let locale be selected in effects?
     this.selectedLocaleName$
-      .pipe(filter((x) => !!x))
+      .pipe(filter(x => !!x))
       .subscribe((selectedLocaleName: string) => this.facade.selectLocale(selectedLocaleName));
   }
 
@@ -110,7 +110,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
       return [];
     }
 
-    return messageItems.list.filter((i) => !!i.message).map((i) => i.message);
+    return messageItems.list.filter(i => !!i.message).map(i => i.message);
   }
 
   onNextItem(): void {
@@ -119,9 +119,9 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
       this.selectedLocaleName$,
       (messageItem, selected) => messageItem.locale.name === selected,
       () => 0,
-      (index) => (index ?? 0) + 1
+      index => (index ?? 0) + 1
     )
-      .then((messageItem) =>
+      .then(messageItem =>
         this.router.navigate([], { queryParams: { locale: messageItem.locale.name } })
       )
       .catch();
@@ -132,10 +132,10 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
       this.messageItems$,
       this.selectedLocaleName$,
       (messageItem, selected) => messageItem.locale.name === selected,
-      (length) => length - 1,
-      (index) => (index ?? 0) - 1
+      length => length - 1,
+      index => (index ?? 0) - 1
     )
-      .then((messageItem) =>
+      .then(messageItem =>
         this.router.navigate([], { queryParams: { locale: messageItem.locale.name } })
       )
       .catch();

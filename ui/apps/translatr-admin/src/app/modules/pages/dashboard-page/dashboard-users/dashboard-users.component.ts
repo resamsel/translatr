@@ -12,7 +12,12 @@ import {
 } from '@dev/translatr-sdk';
 import { merge, Observable } from 'rxjs';
 import { filter, map, mapTo, startWith, take } from 'rxjs/operators';
-import { UserDeleted, UserDeleteError, UsersDeleted, UsersDeleteError } from '../../../../+state/app.actions';
+import {
+  UserDeleted,
+  UserDeleteError,
+  UsersDeleted,
+  UsersDeleteError
+} from '../../../../+state/app.actions';
 import { AppFacade } from '../../../../+state/app.facade';
 
 export const mapToAllowedRoles = () =>

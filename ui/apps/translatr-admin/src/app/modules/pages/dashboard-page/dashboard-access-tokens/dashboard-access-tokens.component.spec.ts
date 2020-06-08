@@ -6,7 +6,11 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EllipsisModule } from '@dev/translatr-components';
-import { ButtonTestingModule, EntityTableTestingModule, FeatureFlagTestingModule } from '@translatr/components/testing';
+import {
+  ButtonTestingModule,
+  EntityTableTestingModule,
+  FeatureFlagTestingModule
+} from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { MomentModule } from 'ngx-moment';
 import { AppFacade } from '../../../../+state/app.facade';

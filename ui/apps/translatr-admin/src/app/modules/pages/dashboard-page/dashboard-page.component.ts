@@ -35,7 +35,7 @@ export class DashboardPageComponent {
   }
 
   activePage(): string | undefined {
-    const activeRoutes = this.children.filter((route) => this.isLinkActive(this.routerLink(route)));
+    const activeRoutes = this.children.filter(route => this.isLinkActive(this.routerLink(route)));
     if (activeRoutes.length === 0) {
       return undefined;
     }

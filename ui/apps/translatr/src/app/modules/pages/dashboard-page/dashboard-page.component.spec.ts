@@ -5,7 +5,11 @@ import { ShortNumberModule } from '@dev/translatr-components';
 import { FeatureFlagTestingModule, MetricTestingModule } from '@translatr/components/testing';
 import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
-import { ActivityListTestingModule, ProjectCardListTestingModule, SidenavTestingModule } from '../../testing';
+import {
+  ActivityListTestingModule,
+  ProjectCardListTestingModule,
+  SidenavTestingModule
+} from '../../testing';
 import { ProjectsFacade } from '../projects-page/+state/projects.facade';
 import { DashboardFacade } from './+state/dashboard.facade';
 import { DashboardPageComponent } from './dashboard-page.component';

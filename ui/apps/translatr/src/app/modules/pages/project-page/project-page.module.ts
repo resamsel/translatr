@@ -41,7 +41,11 @@ import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-
 import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.module';
 import { ProjectEffects } from './+state/project.effects';
 import { ProjectFacade } from './+state/project.facade';
-import { initialState as projectInitialState, PROJECT_FEATURE_KEY, projectReducer } from './+state/project.reducer';
+import {
+  initialState as projectInitialState,
+  PROJECT_FEATURE_KEY,
+  projectReducer
+} from './+state/project.reducer';
 import { ProjectAccessGuard } from './project-access.guard';
 import { ProjectActivityComponent } from './project-activity/project-activity.component';
 import { ProjectEditGuard } from './project-edit.guard';

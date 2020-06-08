@@ -1,4 +1,12 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatOptionSelectionChange } from '@angular/material/core';
@@ -41,7 +49,7 @@ export class SearchBarComponent implements OnInit {
 
     const criteria: RequestCriteria = {};
 
-    const search = options.find((o) => o.type === 'search');
+    const search = options.find(o => o.type === 'search');
     if (search && typeof search.value === 'string') {
       criteria.search = search.value;
     } else {
@@ -105,17 +113,17 @@ export class SearchBarComponent implements OnInit {
   }
 
   private updateOption(option: Option): void {
-    this.options = [...this.options.filter((o) => o.type !== option.type), option];
+    this.options = [...this.options.filter(o => o.type !== option.type), option];
   }
 
   private removeOption(type: OptionType): void {
-    this.options = this.options.filter((o) => o.type !== type);
+    this.options = this.options.filter(o => o.type !== type);
   }
 
   private updateAutocompleteOptions(value: string): void {
     this.autocompleteOptions = defaultAutocompleteOptions
-      .filter((o) => o.type !== 'search' || !!value)
-      .map((o) => {
+      .filter(o => o.type !== 'search' || !!value)
+      .map(o => {
         if (o.type === 'search') {
           o.value = value;
         }

@@ -16,7 +16,11 @@ import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/projec
 import { ProjectListModule } from '../../shared/project-list/project-list.module';
 import { ProjectsEffects } from './+state/projects.effects';
 import { ProjectsFacade } from './+state/projects.facade';
-import { initialState as projectsInitialState, PROJECTS_FEATURE_KEY, projectsReducer } from './+state/projects.reducer';
+import {
+  initialState as projectsInitialState,
+  PROJECTS_FEATURE_KEY,
+  projectsReducer
+} from './+state/projects.reducer';
 import { ProjectsPageRoutingModule } from './projects-page-routing.module';
 import { ProjectsPageComponent } from './projects-page.component';
 

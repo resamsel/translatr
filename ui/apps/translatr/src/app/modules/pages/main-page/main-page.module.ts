@@ -8,7 +8,12 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivityGraphModule, FeatureFlagModule, FooterModule, NavbarModule } from '@dev/translatr-components';
+import {
+  ActivityGraphModule,
+  FeatureFlagModule,
+  FooterModule,
+  NavbarModule
+} from '@dev/translatr-components';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AppFacade } from '../../../+state/app.facade';
 import { MainPageRoutingModule } from './main-page-routing.module';

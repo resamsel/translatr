@@ -35,7 +35,7 @@ export class DashboardPageComponent implements OnInit {
     this.appFacade.loadUsers({ limit: 1, fetch: 'count' });
     this.me$
       .pipe(
-        filter((me) => me !== undefined),
+        filter(me => me !== undefined),
         take(1)
       )
       .subscribe((user: User) => {
@@ -58,10 +58,10 @@ export class DashboardPageComponent implements OnInit {
     openProjectEditDialog(this.dialog, {})
       .afterClosed()
       .pipe(
-        filter((project) => !!project),
+        filter(project => !!project),
         take(1)
       )
-      .subscribe((project) => this.router.navigate([project.ownerUsername, project.name]));
+      .subscribe(project => this.router.navigate([project.ownerUsername, project.name]));
   }
 
   private loadMyProjects(user: User): void {

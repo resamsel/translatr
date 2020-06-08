@@ -33,7 +33,7 @@ function endpointFromLocation(location: Location) {
   styleUrls: ['./project-info.component.scss']
 })
 export class ProjectInfoComponent {
-  project$ = this.facade.project$.pipe(filter((x) => !!x));
+  project$ = this.facade.project$.pipe(filter(x => !!x));
   locales$ = this.facade.locales$;
   latestLocales$ = this.locales$.pipe(
     map((pagedList: PagedList<Locale> | undefined) =>
@@ -69,7 +69,7 @@ export class ProjectInfoComponent {
   readonly members$ = this.facade.members$;
 
   readonly accessTokens$ = this.facade.accessTokens$.pipe(
-    filter((x) => !!x),
+    filter(x => !!x),
     pluck<PagedList<AccessToken>, AccessToken[]>('list')
   );
 
@@ -78,7 +78,7 @@ export class ProjectInfoComponent {
   fileType = FileType.PlayMessages;
   accessTokenKey = '${TRANSLATR_ACCESS_TOKEN}';
 
-  readonly fileTypes = fileTypes.map((fileType) => ({
+  readonly fileTypes = fileTypes.map(fileType => ({
     type: fileType,
     name: fileTypeNames[fileType]
   }));
@@ -102,10 +102,10 @@ export class ProjectInfoComponent {
   ) {
     appFacade.me$
       .pipe(
-        filter((x) => !!x),
+        filter(x => !!x),
         take(1)
       )
-      .subscribe((me) => facade.loadAccessTokens({ userId: me.id }));
+      .subscribe(me => facade.loadAccessTokens({ userId: me.id }));
   }
 
   openLocaleCreationDialog(project: Project): void {
@@ -113,9 +113,9 @@ export class ProjectInfoComponent {
       .afterClosed()
       .pipe(
         take(1),
-        filter((locale) => !!locale)
+        filter(locale => !!locale)
       )
-      .subscribe((locale) => this.router.navigate([locale.name], { relativeTo: this.route }));
+      .subscribe(locale => this.router.navigate([locale.name], { relativeTo: this.route }));
   }
 
   openKeyCreationDialog(project: Project): void {
@@ -123,8 +123,8 @@ export class ProjectInfoComponent {
       .afterClosed()
       .pipe(
         take(1),
-        filter((key) => !!key)
+        filter(key => !!key)
       )
-      .subscribe((key) => this.router.navigate([key.name], { relativeTo: this.route }));
+      .subscribe(key => this.router.navigate([key.name], { relativeTo: this.route }));
   }
 }

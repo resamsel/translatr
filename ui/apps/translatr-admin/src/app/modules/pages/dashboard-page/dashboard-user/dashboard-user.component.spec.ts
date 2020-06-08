@@ -3,7 +3,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ShortNumberModule } from '@dev/translatr-components';
-import { FeatureFlagTestingModule, MetricTestingModule, UserCardTestingModule } from '@translatr/components/testing';
+import {
+  FeatureFlagTestingModule,
+  MetricTestingModule,
+  UserCardTestingModule
+} from '@translatr/components/testing';
 import { GravatarModule } from 'ngx-gravatar';
 import { MomentModule } from 'ngx-moment';
 import { AppFacade } from '../../../../+state/app.facade';

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef
+} from '@angular/core';
 import { PagedList } from '@dev/translatr-model';
 import { trackByFn } from '@translatr/utils';
 import { defaultFilters, FilterCriteria } from '../list-header/list-header.component';

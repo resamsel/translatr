@@ -15,9 +15,7 @@ export const convertTemporals = <T extends DateStringTemporal>(t: T): T => {
   } as T;
 };
 
-export const convertTemporalsList = <T extends DateStringTemporal>(
-  list?: T[]
-): T[] | undefined => {
+export const convertTemporalsList = <T extends DateStringTemporal>(list?: T[]): T[] | undefined => {
   if (!list) {
     return list;
   }

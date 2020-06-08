@@ -1,11 +1,22 @@
 import { TestBed } from '@angular/core/testing';
 import { AccessToken, Locale, PagedList } from '@dev/translatr-model';
-import { AccessTokenService, ActivityService, KeyService, LocaleService, MessageService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  ActivityService,
+  KeyService,
+  LocaleService,
+  MessageService
+} from '@dev/translatr-sdk';
 import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { MemberService } from '@translatr/translatr-sdk/src/lib/services/member.service';
 import { BehaviorSubject, of, Subject } from 'rxjs';
-import { accessTokensLoaded, loadAccessTokens, loadLocales, localesLoaded } from './project.actions';
+import {
+  accessTokensLoaded,
+  loadAccessTokens,
+  loadLocales,
+  localesLoaded
+} from './project.actions';
 import { ProjectEffects } from './project.effects';
 import { ProjectState } from './project.reducer';
 

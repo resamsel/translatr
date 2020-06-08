@@ -35,7 +35,11 @@ import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/projec
 import { ProjectListModule } from '../../shared/project-list/project-list.module';
 import { UserEffects } from './+state/user.effects';
 import { UserFacade } from './+state/user.facade';
-import { initialState as userInitialState, USER_FEATURE_KEY, userReducer } from './+state/user.reducer';
+import {
+  initialState as userInitialState,
+  USER_FEATURE_KEY,
+  userReducer
+} from './+state/user.reducer';
 import { UserAccessTokenComponent } from './user-access-token/user-access-token.component';
 import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';
 import { UserActivityComponent } from './user-activity/user-activity.component';

@@ -1,4 +1,13 @@
-import { AfterViewChecked, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewChecked,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabGroup } from '@angular/material/tabs';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
@@ -128,7 +137,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
   ngAfterViewChecked(): void {
     if (this.editor) {
       this.editor.codeMirror.refresh();
-      this.editor.registerOnChange((value) => this.onChanged(value));
+      this.editor.registerOnChange(value => this.onChanged(value));
     }
     if (this.tabs) {
       this.tabs.realignInkBar();
@@ -136,7 +145,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   onUnsavedChanges(): void {
@@ -167,7 +176,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
         this.saveBehavior$
           .pipe(
             take(1),
-            filter((b) => b === SaveBehavior.SaveAndNext)
+            filter(b => b === SaveBehavior.SaveAndNext)
           )
           .subscribe(() => this.onNextItem());
       }

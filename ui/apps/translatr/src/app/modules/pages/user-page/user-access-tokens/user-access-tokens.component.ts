@@ -29,7 +29,7 @@ export class UserAccessTokensComponent implements OnInit {
   ngOnInit() {
     this.criteria$
       .pipe(
-        withLatestFrom(this.facade.user$.pipe(filter((x) => !!x))),
+        withLatestFrom(this.facade.user$.pipe(filter(x => !!x))),
         takeUntil(this.facade.destroy$)
       )
       .subscribe(([criteria, user]) =>
@@ -42,9 +42,9 @@ export class UserAccessTokensComponent implements OnInit {
       .afterClosed()
       .pipe(
         take(1),
-        filter((accessToken) => !!accessToken)
+        filter(accessToken => !!accessToken)
       )
-      .subscribe((accessToken) => this.router.navigate([accessToken.id], { relativeTo: this.route }));
+      .subscribe(accessToken => this.router.navigate([accessToken.id], { relativeTo: this.route }));
   }
 
   onFilter(criteria: FilterCriteria): void {

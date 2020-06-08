@@ -36,7 +36,7 @@
     "postbuild:generate:prod": "tools/make-command.js dist/apps/cli-generate/main.js dist/lets-generate",
     "buildinfo": "node tools/build-info.js",
     "postpull": "npm install",
-    "precommit": "npm run build:ci",
+    "precommit": "pretty-quick --pattern='ui/{apps,libs}/**/*.{ts,css,scss}' && npm run build:ci",
     "affected:apps": "./node_modules/.bin/nx affected:apps",
     "affected:libs": "./node_modules/.bin/nx affected:libs",
     "affected:build": "./node_modules/.bin/nx affected:build",
@@ -153,6 +153,7 @@
     "tslint": "~5.11.0",
     "tslint-angular": "3.0.2",
     "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "2.3.0",
     "typescript": "3.8.3",
     "webpack-bundle-analyzer": "3.7.0",
     "xmlhttprequest": "^1.8.0"

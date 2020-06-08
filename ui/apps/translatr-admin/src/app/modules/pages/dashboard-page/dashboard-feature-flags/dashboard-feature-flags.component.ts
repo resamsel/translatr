@@ -2,7 +2,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Entity, FilterFieldFilter, notifyEvent } from '@dev/translatr-components';
 import { Feature, features, RequestCriteria, UserFeatureFlag } from '@dev/translatr-model';
-import { errorMessage, hasDeleteAllFeatureFlagsPermission, hasDeleteFeatureFlagPermission } from '@dev/translatr-sdk';
+import {
+  errorMessage,
+  hasDeleteAllFeatureFlagsPermission,
+  hasDeleteFeatureFlagPermission
+} from '@dev/translatr-sdk';
 import { ofType } from '@ngrx/effects';
 import { merge, Observable, of } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
@@ -37,7 +41,7 @@ export class DashboardFeatureFlagsComponent {
 
   readonly uiUrl = environment.uiUrl;
 
-  readonly filters: FilterFieldFilter[] = features.map((feature) => ({
+  readonly filters: FilterFieldFilter[] = features.map(feature => ({
     key: 'feature',
     type: 'option',
     title: 'feature.filter',

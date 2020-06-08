@@ -13,7 +13,7 @@ export class UsersEffects {
     switchMap((action: LoadUsers) =>
       this.userService.find(action.payload).pipe(
         map((payload: PagedList<User>) => new UsersLoaded(payload)),
-        catchError((error) => of(new UsersLoadError(error)))
+        catchError(error => of(new UsersLoadError(error)))
       )
     )
   );

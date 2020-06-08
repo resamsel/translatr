@@ -9,7 +9,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@ngneat/transloco';
-import { FeatureFlagTestingModule, FooterTestingModule, NavbarTestingModule } from '@translatr/components/testing';
+import {
+  FeatureFlagTestingModule,
+  FooterTestingModule,
+  NavbarTestingModule
+} from '@translatr/components/testing';
 import { SidenavComponent } from './sidenav.component';
 
 describe('SidenavComponent', () => {

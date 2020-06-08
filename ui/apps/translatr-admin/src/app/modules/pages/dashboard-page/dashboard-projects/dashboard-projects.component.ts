@@ -3,9 +3,20 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Entity, notifyEvent, ProjectEditDialogComponent } from '@dev/translatr-components';
 import { Feature, Project, RequestCriteria } from '@dev/translatr-model';
-import { errorMessage, hasDeleteAllProjectsPermission, hasDeleteProjectPermission, hasEditProjectPermission } from '@dev/translatr-sdk';
+import {
+  errorMessage,
+  hasDeleteAllProjectsPermission,
+  hasDeleteProjectPermission,
+  hasEditProjectPermission
+} from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
-import { AppActionTypes, ProjectDeleted, ProjectDeleteError, ProjectsDeleted, ProjectsDeleteError } from '../../../../+state/app.actions';
+import {
+  AppActionTypes,
+  ProjectDeleted,
+  ProjectDeleteError,
+  ProjectsDeleted,
+  ProjectsDeleteError
+} from '../../../../+state/app.actions';
 import { AppFacade } from '../../../../+state/app.facade';
 import { environment } from '../../../../../environments/environment';
 

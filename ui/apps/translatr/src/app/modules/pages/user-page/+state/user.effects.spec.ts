@@ -1,10 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { Aggregate, PagedList, User } from '@dev/translatr-model';
-import { AccessTokenService, ActivityService, ProjectService, UserService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  ActivityService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 import { Actions } from '@ngrx/effects';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import { AppFacade } from '../../../../+state/app.facade';
-import { activityAggregatedLoaded, loadActivityAggregated, loadUser, userLoaded } from './user.actions';
+import {
+  activityAggregatedLoaded,
+  loadActivityAggregated,
+  loadUser,
+  userLoaded
+} from './user.actions';
 import { UserEffects } from './user.effects';
 
 describe('UserEffects', () => {

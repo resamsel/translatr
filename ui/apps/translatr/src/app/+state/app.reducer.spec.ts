@@ -1,5 +1,11 @@
 import { PagedList, Project, User } from '@dev/translatr-model';
-import { meLoaded, projectCreated, projectLoaded, projectUpdated, usersLoaded } from './app.actions';
+import {
+  meLoaded,
+  projectCreated,
+  projectLoaded,
+  projectUpdated,
+  usersLoaded
+} from './app.actions';
 import { appReducer, initialState } from './app.reducer';
 
 describe('App Reducer', () => {

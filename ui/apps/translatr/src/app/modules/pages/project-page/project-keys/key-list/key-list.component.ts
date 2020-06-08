@@ -53,8 +53,8 @@ export class KeyListComponent {
       .afterClosed()
       .pipe(
         take(1),
-        filter((k) => !!k && key.id === undefined)
+        filter(k => !!k && key.id === undefined)
       )
-      .subscribe((k) => this.router.navigate([k.name], { relativeTo: this.route }));
+      .subscribe(k => this.router.navigate([k.name], { relativeTo: this.route }));
   }
 }

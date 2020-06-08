@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Injector,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { ActivatedRoute, CanActivate, Route } from '@angular/router';
 import { Feature, Project } from '@dev/translatr-model';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
@@ -18,14 +25,14 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
   // TODO: put this logic somewhere else, i.e. each page should only load
   //  what it needs, but cache it for other usages
-  project$ = this.facade.project$.pipe(filter((project) => !!project));
+  project$ = this.facade.project$.pipe(filter(project => !!project));
 
   children: NameIconRoute[] = this.routes[0].children;
   childrenActive$ = merge(
-    ...this.children.map((child) =>
+    ...this.children.map(child =>
       this.canActivate$(child).pipe(
         take(1),
-        map((can) => ({ [child.path]: can }))
+        map(can => ({ [child.path]: can }))
       )
     )
   ).pipe(scan((acc, curr) => ({ ...acc, ...curr }), {}));
