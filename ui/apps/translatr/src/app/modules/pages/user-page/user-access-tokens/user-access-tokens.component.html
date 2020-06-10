@@ -1,9 +1,9 @@
 <ng-container *transloco="let t">
   <app-nav-list
-    (filter)="onFilter($event)"
     [pagedList]="accessTokens$ | async"
     [empty]="empty"
     showFilter="true"
+    (filter)="onFilter($event)"
   >
     <a
       *ngFor="let accessToken of (accessTokens$ | async)?.list; trackBy: trackByFn"
@@ -12,9 +12,16 @@
     >
       <mat-icon class="circle access-token" matListIcon>vpn_key</mat-icon>
       <h3 matLine>{{ accessToken.name }}</h3>
-      <p [matTooltip]="accessToken.whenCreated | date" matLine>
-        {{ accessToken.whenCreated | amTimeAgo }}
+      <p matLine>
+        <span [matTooltip]="accessToken.whenCreated | date">{{ accessToken.whenCreated | amTimeAgo }}</span>
       </p>
+      <confirm-button
+        *ngIf="canModify$ | async"
+        [tooltip]="t('button.delete')"
+        icon="delete"
+        class="delete"
+        (confirm)="onDelete(accessToken)"
+      ></confirm-button>
     </a>
   </app-nav-list>
 

@@ -83,16 +83,15 @@ export const accessTokenLoadError = createAction(
   '[Access Token API] Access Token Load Error',
   props<{ error: any }>()
 );
+
 export const createAccessToken = createAction(
   '[Access Token Page] Create AccessToken',
   props<{ payload: AccessToken }>()
 );
-
 export const accessTokenCreated = createAction(
   '[Access Token API] Access Token Created',
   props<{ payload: AccessToken }>()
 );
-
 export const accessTokenCreateError = createAction(
   '[Access Token API] Access Token Create Error',
   props<{ error: any }>()
@@ -102,13 +101,24 @@ export const updateAccessToken = createAction(
   '[Access Token Page] Update Access Token',
   props<{ payload: AccessToken }>()
 );
-
 export const accessTokenUpdated = createAction(
   '[Access Token API] Access Token Updated',
   props<{ payload: AccessToken }>()
 );
-
 export const accessTokenUpdateError = createAction(
   '[Access Token API] Access Token Update Error',
+  props<{ error: any }>()
+);
+
+export const deleteAccessToken = createAction(
+  '[Access Token Page] Delete Access Token',
+  props<{ payload: { id: number } }>()
+);
+export const accessTokenDeleted = createAction(
+  '[Access Token API] Access Token Deleted',
+  props<{ payload: AccessToken }>()
+);
+export const accessTokenDeleteError = createAction(
+  '[Access Token API] Access Token Delete Error',
   props<{ error: any }>()
 );

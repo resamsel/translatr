@@ -13,6 +13,7 @@ export * from './error-infos';
 export * from './feature';
 export * from './feature-flag-criteria';
 export * from './file-type';
+export * from './identifiable';
 export * from './key';
 export * from './key-criteria';
 export * from './locale';

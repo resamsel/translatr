@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserAccessTokensComponent } from './user-access-tokens.component';
 import { NavListTestingModule } from '../../../shared/nav-list/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MomentModule } from 'ngx-moment';
-import { EmptyViewTestingModule } from '@translatr/components/testing';
+import { ButtonTestingModule, EmptyViewTestingModule } from '@translatr/components/testing';
 import { UserFacade } from '../+state/user.facade';
 import { mockObservable } from '@translatr/utils/testing';
 
@@ -22,6 +22,7 @@ describe('UserAccessTokensComponent', () => {
       imports: [
         NavListTestingModule,
         EmptyViewTestingModule,
+        ButtonTestingModule,
 
         RouterTestingModule,
         MomentModule,
@@ -39,7 +40,8 @@ describe('UserAccessTokensComponent', () => {
             destroy$: mockObservable()
           })
         },
-        { provide: MatDialog, useValue: {} }
+        { provide: MatDialog, useValue: {} },
+        { provide: MatSnackBar, useValue: {} }
       ]
     }).compileComponents();
   }));

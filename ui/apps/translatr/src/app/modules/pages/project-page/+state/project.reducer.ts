@@ -10,7 +10,7 @@ import {
   RequestCriteria
 } from '@dev/translatr-model';
 import { Action, createReducer, on } from '@ngrx/store';
-import { Identifiable } from '../../../shared/edit-form/abstract-edit-form-component';
+import { pagedListDelete, pagedListInsert, pagedListUpdate } from '../../../../utils';
 import {
   accessTokensLoaded,
   createKey,
@@ -100,30 +100,6 @@ export const initialState: ProjectState = {
   },
   loading: false
 };
-
-const pagedListInsert = <T extends Identifiable>(
-  pagedList: PagedList<T>,
-  payload: T
-): PagedList<T> => ({
-  ...pagedList,
-  list: [...pagedList.list, payload]
-});
-
-const pagedListUpdate = <T extends Identifiable>(
-  pagedList: PagedList<T>,
-  payload: T
-): PagedList<T> => ({
-  ...pagedList,
-  list: pagedList.list.map(i => (i.id === payload.id ? payload : i))
-});
-
-const pagedListDelete = <T extends Identifiable>(
-  pagedList: PagedList<T>,
-  payload: T
-): PagedList<T> => ({
-  ...pagedList,
-  list: pagedList.list.filter(i => i.id !== payload.id)
-});
 
 const resetLocale = (state: ProjectState): ProjectState => ({
   ...state,

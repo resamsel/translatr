@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AccessToken } from '@dev/translatr-model';
 import { navigate, trackByFn } from '@translatr/utils';
-import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
 import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
@@ -16,6 +18,7 @@ export class UserAccessTokensComponent implements OnInit {
   readonly user$ = this.facade.user$;
   readonly criteria$ = this.facade.criteria$;
   readonly accessTokens$ = this.facade.accessTokens$;
+  readonly canModify$ = this.facade.canModifyAccessToken$;
 
   readonly trackByFn = trackByFn;
 
@@ -23,7 +26,8 @@ export class UserAccessTokensComponent implements OnInit {
     private readonly facade: UserFacade,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -49,5 +53,14 @@ export class UserAccessTokensComponent implements OnInit {
 
   onFilter(criteria: FilterCriteria): void {
     navigate(this.router, criteria);
+  }
+
+  onDelete(accessToken: AccessToken) {
+    this.facade.deleteAccessToken(accessToken.id);
+    this.facade.accessTokenModified$
+      .pipe(skip(1), take(1))
+      .subscribe(([a]) =>
+        this.snackBar.open(`Access token ${a.name} deleted`, 'Dismiss', { duration: 5000 })
+      );
   }
 }

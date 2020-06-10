@@ -1,6 +1,6 @@
 import { initialState, userReducer } from './user.reducer';
-import { Aggregate, PagedList, User } from '@dev/translatr-model';
-import { activityAggregatedLoaded, userLoaded } from './user.actions';
+import { AccessToken, Aggregate, PagedList, User } from '@dev/translatr-model';
+import { accessTokenDeleted, activityAggregatedLoaded, userLoaded } from './user.actions';
 
 describe('User Reducer', () => {
   describe('valid Editor actions ', () => {
@@ -36,6 +36,41 @@ describe('User Reducer', () => {
 
       // then
       expect(actual.activityAggregated).toEqual(payload);
+    });
+
+    it('should not include given access token on accessTokenDeleted', () => {
+      // given
+      const payload: AccessToken = {
+        id: 1,
+        name: 'A',
+        scope: 'a:A',
+        userId: '1'
+      };
+      const state = {
+        ...initialState,
+        accessTokens: {
+          list: [payload],
+          hasNext: false,
+          hasPrev: false,
+          total: 1,
+          limit: 20,
+          offset: 0
+        }
+      };
+      const action = accessTokenDeleted({ payload });
+
+      // when
+      const actual = userReducer(state, action);
+
+      // then
+      expect(actual.accessTokens).toEqual({
+        list: [],
+        hasNext: false,
+        hasPrev: false,
+        total: 0,
+        limit: 20,
+        offset: 0
+      });
     });
   });
 

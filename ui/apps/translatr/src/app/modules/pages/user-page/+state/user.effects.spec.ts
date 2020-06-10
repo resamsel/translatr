@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Aggregate, PagedList, User } from '@dev/translatr-model';
+import { AccessToken, Aggregate, PagedList, User } from '@dev/translatr-model';
 import {
   AccessTokenService,
   ActivityService,
@@ -10,7 +10,9 @@ import { Actions } from '@ngrx/effects';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import { AppFacade } from '../../../../+state/app.facade';
 import {
+  accessTokenDeleted,
   activityAggregatedLoaded,
+  deleteAccessToken,
   loadActivityAggregated,
   loadUser,
   userLoaded
@@ -24,6 +26,9 @@ describe('UserEffects', () => {
   };
   let activityService: ActivityService & {
     aggregated: jest.Mock;
+  };
+  let accessTokenService: AccessTokenService & {
+    delete: jest.Mock;
   };
 
   beforeEach(() => {
@@ -50,7 +55,9 @@ describe('UserEffects', () => {
         },
         {
           provide: AccessTokenService,
-          useFactory: () => ({})
+          useFactory: () => ({
+            delete: jest.fn()
+          })
         },
         { provide: Actions, useValue: actions }
       ]
@@ -58,6 +65,9 @@ describe('UserEffects', () => {
 
     userService = TestBed.get(UserService);
     activityService = TestBed.get(ActivityService);
+    accessTokenService = TestBed.inject(AccessTokenService) as AccessTokenService & {
+      delete: jest.Mock;
+    };
   });
 
   describe('loadLocales$', () => {
@@ -106,6 +116,31 @@ describe('UserEffects', () => {
       target$.subscribe(actual => {
         expect(actual).toEqual(activityAggregatedLoaded({ pagedList: payload }));
         expect(activityService.aggregated.mock.calls.length).toEqual(1);
+        done();
+      });
+    });
+  });
+
+  describe('deleteAccessToken$', () => {
+    it('should work', done => {
+      // given
+      const payload: AccessToken = {
+        id: 1,
+        name: 'A',
+        scope: 'a:A',
+        userId: '1'
+      };
+      accessTokenService.delete.mockReturnValueOnce(of(payload));
+      const effects: UserEffects = TestBed.get(UserEffects);
+      const target$ = effects.deleteAccessToken$;
+
+      // when
+      actions.next(deleteAccessToken({ payload: { id: 1 } }));
+
+      // then
+      target$.subscribe(actual => {
+        expect(actual).toEqual(accessTokenDeleted({ payload }));
+        expect(accessTokenService.delete.mock.calls.length).toEqual(1);
         done();
       });
     });

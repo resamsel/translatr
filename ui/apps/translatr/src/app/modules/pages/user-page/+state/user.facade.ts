@@ -18,6 +18,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
 import {
   createAccessToken,
+  deleteAccessToken,
   loadAccessToken,
   loadAccessTokens,
   loadActivities,
@@ -35,6 +36,10 @@ const canCreateProject = (user: User, me: User): boolean => {
 };
 
 const canReadActivities = (user: User, me: User): boolean => {
+  return user.id === me.id || me.role === UserRole.Admin;
+};
+
+const canModifyAccessToken = (user: User, me: User): boolean => {
   return user.id === me.id || me.role === UserRole.Admin;
 };
 
@@ -71,6 +76,9 @@ export class UserFacade {
   accessToken$ = this.store.pipe(select(userQuery.getAccessToken), takeUntil(this.destroy$));
   accessTokenError$ = this.store.pipe(select(userQuery.getAccessTokenError));
   accessTokenModified$ = mergeWithError(this.accessToken$, this.accessTokenError$);
+  canModifyAccessToken$ = this.permission$.pipe(
+    map(([user, me]) => canModifyAccessToken(user, me))
+  );
 
   projectsCriteria$ = this.appFacade.criteria$();
 
@@ -110,6 +118,10 @@ export class UserFacade {
 
   updateAccessToken(accessToken: AccessToken): void {
     this.store.dispatch(updateAccessToken({ payload: accessToken }));
+  }
+
+  deleteAccessToken(accessTokenId: number): void {
+    this.store.dispatch(deleteAccessToken({ payload: { id: accessTokenId } }));
   }
 
   unload(): void {

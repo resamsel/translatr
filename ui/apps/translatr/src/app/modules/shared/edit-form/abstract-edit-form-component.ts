@@ -2,15 +2,11 @@ import { EventEmitter, HostListener } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ConstraintViolation, Error } from '@dev/translatr-model';
+import { ConstraintViolation, Error, Identifiable } from '@dev/translatr-model';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 const ENTER_KEYCODE = 'Enter';
-
-export interface Identifiable {
-  id?: number | string;
-}
 
 /**
  * deprecated: Use BaseEditFormComponent instead!

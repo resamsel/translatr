@@ -1,8 +1,11 @@
 import { AccessToken, Activity, Aggregate, PagedList, Project, User } from '@dev/translatr-model';
 import { Action, createReducer, on } from '@ngrx/store';
+import { pagedListDelete } from '../../../../utils';
 import {
   accessTokenCreated,
   accessTokenCreateError,
+  accessTokenDeleted,
+  accessTokenDeleteError,
   accessTokenLoaded,
   accessTokenLoadError,
   accessTokensLoaded,
@@ -75,10 +78,19 @@ const reducer = createReducer(
     ...state,
     accessToken
   })),
-  on(accessTokenCreateError, accessTokenUpdateError, (state, { error }) => ({
+  on(accessTokenDeleted, (state, { payload: accessToken }) => ({
     ...state,
-    accessTokenError: error
-  }))
+    accessTokens: pagedListDelete(state.accessTokens, accessToken)
+  })),
+  on(
+    accessTokenCreateError,
+    accessTokenUpdateError,
+    accessTokenDeleteError,
+    (state, { error }) => ({
+      ...state,
+      accessTokenError: error
+    })
+  )
 );
 
 export function userReducer(state: UserState | undefined, action: Action) {

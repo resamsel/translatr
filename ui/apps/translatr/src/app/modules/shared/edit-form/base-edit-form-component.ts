@@ -2,15 +2,16 @@ import { ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ConstraintViolation, ConstraintViolationErrorInfo, Error } from '@dev/translatr-model';
+import {
+  ConstraintViolation,
+  ConstraintViolationErrorInfo,
+  Error,
+  Identifiable
+} from '@dev/translatr-model';
 import { Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 const ENTER_KEYCODE = 'Enter';
-
-export interface Identifiable {
-  id?: number | string;
-}
 
 const getViolations = (
   error: Error | ConstraintViolationErrorInfo | undefined

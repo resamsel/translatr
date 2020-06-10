@@ -13,6 +13,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   ActivityGraphModule,
+  ButtonModule,
   EmptyViewModule,
   FeatureFlagModule,
   MetricModule,
@@ -74,6 +75,7 @@ import { UserGuard } from './user.guard';
     AccessTokenEditFormModule,
     ProjectCardListModule,
     EmptyViewModule,
+    ButtonModule,
 
     MatIconModule,
     MatTabsModule,

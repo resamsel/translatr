@@ -14,6 +14,8 @@ import { AppFacade } from '../../../../+state/app.facade';
 import {
   accessTokenCreated,
   accessTokenCreateError,
+  accessTokenDeleted,
+  accessTokenDeleteError,
   accessTokenLoaded,
   accessTokenLoadError,
   accessTokensLoaded,
@@ -25,6 +27,7 @@ import {
   activityAggregatedLoaded,
   activityAggregatedLoadError,
   createAccessToken,
+  deleteAccessToken,
   loadAccessToken,
   loadAccessTokens,
   loadActivities,
@@ -159,6 +162,18 @@ export class UserEffects {
         this.accessTokenService.update(action.payload).pipe(
           map((accessToken: AccessToken) => accessTokenUpdated({ payload: accessToken })),
           catchError(error => of(accessTokenUpdateError(error)))
+        )
+      )
+    )
+  );
+
+  deleteAccessToken$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(deleteAccessToken),
+      switchMap(action =>
+        this.accessTokenService.delete(action.payload.id).pipe(
+          map((accessToken: AccessToken) => accessTokenDeleted({ payload: accessToken })),
+          catchError(error => of(accessTokenDeleteError(error)))
         )
       )
     )
