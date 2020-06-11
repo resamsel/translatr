@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccessToken } from '@dev/translatr-model';
 import { navigate, trackByFn } from '@translatr/utils';
-import { filter, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
 import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
@@ -58,7 +58,7 @@ export class UserAccessTokensComponent implements OnInit {
   onDelete(accessToken: AccessToken) {
     this.facade.deleteAccessToken(accessToken.id);
     this.facade.accessTokenModified$
-      .pipe(skip(1), take(1))
+      .pipe(take(1))
       .subscribe(([a]) =>
         this.snackBar.open(`Access token ${a.name} deleted`, 'Dismiss', { duration: 5000 })
       );

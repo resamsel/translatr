@@ -23,10 +23,12 @@ import {
   keyDeleted,
   keysLoaded,
   keyUpdated,
+  keyUpdateError,
   localeCreated,
   localeDeleted,
   localesLoaded,
   localeUpdated,
+  localeUpdateError,
   memberCreated,
   memberCreateError,
   memberDeleted,
@@ -68,7 +70,7 @@ export interface ProjectState {
   accessTokens?: PagedList<AccessToken>;
 
   loading: boolean;
-  error?: any; // last none error (if any)
+  error?: any; // last known error (if any)
 }
 
 export interface ProjectPartialState {
@@ -134,6 +136,7 @@ const reducer = createReducer(
     locale: payload,
     locales: pagedListUpdate(state.locales, payload)
   })),
+  on(localeUpdateError, (state, { error }) => ({ ...state, localeError: error })),
   on(deleteLocale, state => resetLocale(state)),
   on(localeDeleted, (state, { payload }) => ({
     ...state,
@@ -153,6 +156,7 @@ const reducer = createReducer(
     key: payload,
     keys: pagedListUpdate(state.keys, payload)
   })),
+  on(keyUpdateError, (state, { error }) => ({ ...state, keyError: error })),
   on(deleteKey, state => resetKey(state)),
   on(keyDeleted, (state, { payload }) => ({
     ...state,

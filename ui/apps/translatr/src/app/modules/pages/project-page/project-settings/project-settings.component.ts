@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Project } from '@dev/translatr-model';
-import { filter, skip, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 import { ProjectFacade } from '../+state/project.facade';
 import { AppFacade } from '../../../../+state/app.facade';
 import { BaseEditFormComponent } from '../../../shared/edit-form/base-edit-form-component';
@@ -53,7 +53,7 @@ export class ProjectSettingsComponent
       {},
       (project: Project) => appFacade.createProject(project),
       (project: Project) => appFacade.updateProject(project),
-      appFacade.projectModified$.pipe(skip(1)),
+      appFacade.projectModified$,
       (project: Project) => `Project ${project.name} saved`,
       changeDetectorRef
     );

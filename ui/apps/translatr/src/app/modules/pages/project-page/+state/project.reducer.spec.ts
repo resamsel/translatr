@@ -1,9 +1,14 @@
-import { accessTokensLoaded, localesLoaded } from './project.actions';
+import {
+  accessTokensLoaded,
+  keyUpdateError,
+  localesLoaded,
+  localeUpdateError
+} from './project.actions';
 import { initialState, projectReducer } from './project.reducer';
 import { AccessToken, Locale, PagedList } from '@dev/translatr-model';
 
 describe('Project Reducer', () => {
-  describe('valid Editor actions ', () => {
+  describe('localesLoaded', () => {
     it('should include given user on localesLoaded', () => {
       // given
       const payload: PagedList<Locale> = {
@@ -21,7 +26,9 @@ describe('Project Reducer', () => {
       // then
       expect(actual.locales).toEqual(payload);
     });
+  });
 
+  describe('accessTokensLoaded', () => {
     it('should include given access tokens on accessTokensLoaded', () => {
       // given
       const payload: PagedList<AccessToken> = {
@@ -38,6 +45,32 @@ describe('Project Reducer', () => {
 
       // then
       expect(actual.accessTokens).toEqual(payload);
+    });
+  });
+
+  describe('localeUpdateError', () => {
+    it('should include error on localeUpdateError', () => {
+      // given
+      const action = localeUpdateError({ error: 'whaaat!?' });
+
+      // when
+      const actual = projectReducer(initialState, action);
+
+      // then
+      expect(actual.localeError).toBe('whaaat!?');
+    });
+  });
+
+  describe('keyUpdateError', () => {
+    it('should include error on keyUpdateError', () => {
+      // given
+      const action = keyUpdateError({ error: 'whaaat!?' });
+
+      // when
+      const actual = projectReducer(initialState, action);
+
+      // then
+      expect(actual.keyError).toBe('whaaat!?');
     });
   });
 

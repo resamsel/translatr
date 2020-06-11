@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Locale, LocaleCriteria, Project } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
-import { filter, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { ProjectFacade } from '../+state/project.facade';
 
 @Component({
@@ -40,7 +40,7 @@ export class ProjectLocalesComponent {
   onDelete(locale: Locale) {
     this.facade.deleteLocale(locale.id);
     this.facade.localeModified$
-      .pipe(skip(1), take(1))
+      .pipe(take(1))
       .subscribe(([l]) =>
         this.snackBar.open(`Language ${l.displayName} deleted`, 'Dismiss', { duration: 5000 })
       );

@@ -1,15 +1,17 @@
 import { mergeWithError } from '@translatr/utils';
-import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 
 describe('utils', () => {
   describe('mergeWithError', () => {
     it('should emit entity with single item input', done => {
       // given
-      const entity$ = new BehaviorSubject<string>(undefined);
-      const error$ = new Subject<number>();
+      const entity$ = new ReplaySubject<string>();
+      const error$ = new ReplaySubject<number>();
       const merged$ = mergeWithError(entity$, error$);
 
       // when
+      entity$.next(undefined);
+      error$.next(undefined);
       entity$.next('first');
 
       // then
@@ -22,11 +24,13 @@ describe('utils', () => {
 
     it('should throw error with error input', done => {
       // given
-      const entity$ = new BehaviorSubject<string>(undefined);
-      const error$ = new BehaviorSubject<number>(undefined);
+      const entity$ = new ReplaySubject<string>();
+      const error$ = new ReplaySubject<number>();
       const merged$ = mergeWithError(entity$, error$);
 
       // when
+      entity$.next(undefined);
+      error$.next(undefined);
       error$.next(1);
 
       // then
@@ -39,12 +43,14 @@ describe('utils', () => {
 
     it('should throw two errors with two error inputs', done => {
       // given
-      const entity$ = new BehaviorSubject<string>(undefined);
+      const entity$ = new ReplaySubject<string>();
       const error$ = new ReplaySubject<number>();
       const merged$ = mergeWithError(entity$, error$);
       let count = 0;
 
       // when
+      entity$.next(undefined);
+      error$.next(undefined);
       error$.next(1);
       error$.next(2);
 

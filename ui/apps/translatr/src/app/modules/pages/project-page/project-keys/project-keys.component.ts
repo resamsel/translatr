@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Key, KeyCriteria, Project } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
 import { combineLatest } from 'rxjs';
-import { filter, skip, take, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { ProjectFacade } from '../+state/project.facade';
 
 @Component({
@@ -47,7 +47,7 @@ export class ProjectKeysComponent {
   onDelete(key: Key) {
     this.facade.deleteKey(key.id);
     this.facade.keyModified$
-      .pipe(skip(1), take(1))
+      .pipe(take(1))
       .subscribe(([k]) =>
         this.snackBar.open(`Key ${k.name} deleted`, 'Dismiss', { duration: 5000 })
       );

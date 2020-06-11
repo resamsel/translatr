@@ -80,6 +80,7 @@ const reducer = createReducer(
   })),
   on(accessTokenDeleted, (state, { payload: accessToken }) => ({
     ...state,
+    accessToken,
     accessTokens: pagedListDelete(state.accessTokens, accessToken)
   })),
   on(

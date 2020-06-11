@@ -63,6 +63,7 @@ describe('User Reducer', () => {
       const actual = userReducer(state, action);
 
       // then
+      expect(actual.accessToken).toEqual(payload);
       expect(actual.accessTokens).toEqual({
         list: [],
         hasNext: false,
