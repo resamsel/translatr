@@ -5,6 +5,10 @@ export class EditorPage extends Page {
     return cy.get('.nav-list');
   }
 
+  getNavListItems(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('.nav-list .mat-nav-list a');
+  }
+
   getEditor(): Cypress.Chainable<JQuery<HTMLElement>> {
     return cy.get('.editor');
   }

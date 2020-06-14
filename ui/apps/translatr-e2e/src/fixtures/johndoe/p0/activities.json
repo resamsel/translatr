@@ -1,0 +1,22 @@
+{
+  "list": [
+    {
+      "after": "{\"id\":\"fd617fc2-5ea9-42dd-9d60-bd22987f464c\",\"whenCreated\":\"2020-05-14T19:03:23.363Z\",\"whenUpdated\":\"2020-05-14T19:03:23.363Z\",\"projectId\":\"9ce8c31d-231a-4406-a3db-7b9a9ae82484\",\"projectName\":\"translatr\",\"projectOwnerUsername\":\"repanzar\",\"name\":\"user.edit.title\",\"pathName\":\"user.edit.title\"}"
+      "contentType": "dto.Key",
+      "id": "4c38abf8-40d5-49cc-9433-b937ba4ad0c4",
+      "projectId": "9ce8c31d-231a-4406-a3db-7b9a9ae82484",
+      "projectName": "translatr",
+      "type": "Create",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "userId": "384cf171-5816-4a93-bf7d-319ef8a94a33",
+      "userName": "René Panzar",
+      "userUsername": "repanzar",
+      "whenCreated": "2020-05-14T19:03:23.372Z"
+    }
+  ],
+  "offset": 0,
+  "limit": 1000,
+  "total": 1,
+  "hasPrev": false,
+  "hasNext": false
+}

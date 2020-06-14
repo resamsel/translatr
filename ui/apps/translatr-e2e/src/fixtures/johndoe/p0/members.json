@@ -1,0 +1,61 @@
+{
+  "list": [
+    {
+      "id": 1003,
+      "whenCreated": "2019-10-25T10:51:41.007Z",
+      "whenUpdated": "2019-10-25T10:51:41.007Z",
+      "role": "Owner",
+      "projectId": "bc5f3fa7-3d9f-4aee-9457-0f6c4d5f5486",
+      "projectName": "p0",
+      "projectOwnerUsername": "johndoe",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+      "userName": "John Doe",
+      "userUsername": "johndoe",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+    },
+    {
+      "id": 1004,
+      "whenCreated": "2019-10-25T10:51:41.007Z",
+      "whenUpdated": "2019-10-25T10:51:41.007Z",
+      "role": "Developer",
+      "projectId": "bc5f3fa7-3d9f-4aee-9457-0f6c4d5f5486",
+      "projectName": "p0",
+      "projectOwnerUsername": "johndoe",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "userName": "Jane Smith",
+      "userUsername": "janesmith",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+    },
+    {
+      "id": 1005,
+      "whenCreated": "2019-10-25T10:51:41.007Z",
+      "whenUpdated": "2019-10-25T10:51:41.007Z",
+      "role": "Translator",
+      "projectId": "bc5f3fa7-3d9f-4aee-9457-0f6c4d5f5486",
+      "projectName": "p0",
+      "projectOwnerUsername": "johndoe",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4533",
+      "userName": "Sophia O'Reilly",
+      "userUsername": "sophiaoreilly",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+    },
+    {
+      "id": 1006,
+      "whenCreated": "2019-10-25T10:51:41.007Z",
+      "whenUpdated": "2019-10-25T10:51:41.007Z",
+      "role": "Manager",
+      "projectId": "bc5f3fa7-3d9f-4aee-9457-0f6c4d5f5486",
+      "projectName": "p0",
+      "projectOwnerUsername": "johndoe",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4534",
+      "userName": "Ronny Lee",
+      "userUsername": "ronnylee",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+    }
+  ],
+  "offset": 0,
+  "limit": 50,
+  "total": 4,
+  "hasPrev": false,
+  "hasNext": false
+}
