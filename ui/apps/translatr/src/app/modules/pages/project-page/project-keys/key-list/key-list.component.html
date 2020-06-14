@@ -53,29 +53,39 @@
 
   <ng-template #empty>
     <dev-empty-view icon="vpn_key" justifyContent="center">
-      <p transloco="keys.teaser.text">It seems there are no keys defined, yet - would you like to add one now?</p>
-      <button
-        *ngIf="canCreate"
-        (click)="openKeyEditDialog({projectId: project.id})"
-        color="accent"
-        transloco="key.create.button"
-        mat-raised-button
-      >Add key
-      </button>
+      <dev-empty-view-header transloco="keys.teaser.title">No keys defined</dev-empty-view-header>
+      <dev-empty-view-content transloco="keys.teaser.text">
+        It seems there are no keys defined, yet - would you like to add one now?
+      </dev-empty-view-content>
+      <dev-empty-view-actions>
+        <button
+          *ngIf="canCreate"
+          (click)="openKeyEditDialog({projectId: project.id})"
+          color="accent"
+          transloco="key.create.button"
+          mat-raised-button
+        >Add key
+        </button>
+      </dev-empty-view-actions>
     </dev-empty-view>
   </ng-template>
 
   <ng-template #nothingFound>
     <dev-empty-view icon="vpn_key" justifyContent="center">
-      <p transloco="keys.notfound">No keys found.</p>
-      <button
-        *ngIf="canCreate && criteria.search"
-        (click)="openKeyEditDialog({projectId: project.id, name: criteria.search})"
-        color="accent"
-        transloco="key.create.button"
-        mat-raised-button
-      >Add key
-      </button>
+      <dev-empty-view-header transloco="keys.notfound.title">No keys found</dev-empty-view-header>
+      <dev-empty-view-content transloco="keys.notfound.text">
+        Could not find any keys with the given filter. Try removing some filters or create a new key.
+      </dev-empty-view-content>
+      <dev-empty-view-actions>
+        <button
+          *ngIf="canCreate && criteria.search"
+          (click)="openKeyEditDialog({projectId: project.id, name: criteria.search})"
+          color="accent"
+          transloco="key.create.button"
+          mat-raised-button
+        >Add key
+        </button>
+      </dev-empty-view-actions>
     </dev-empty-view>
   </ng-template>
 </ng-container>

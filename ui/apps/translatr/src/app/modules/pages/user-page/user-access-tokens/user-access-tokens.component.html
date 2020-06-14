@@ -2,6 +2,8 @@
   <app-nav-list
     [pagedList]="accessTokens$ | async"
     [empty]="empty"
+    [nothingFound]="nothingFound"
+    [criteria]="criteria$ | async"
     showFilter="true"
     (filter)="onFilter($event)"
   >
@@ -27,14 +29,41 @@
 
   <ng-template #empty>
     <dev-empty-view icon="vpn_key">
-      <p transloco="accessToken.teaser.text">You don't have any access tokens yet, how about creating one?</p>
-      <button (click)="openAccessTokenCreationDialog()"
-              class="action"
-              color="accent"
-              mat-raised-button
-              transloco="accessToken.create"
-      >Create access token
-      </button>
+      <dev-empty-view-header transloco="accessToken.teaser.title">
+        No access tokens defined
+      </dev-empty-view-header>
+      <dev-empty-view-content transloco="accessToken.teaser.text">
+        You don't have any access tokens yet, how about creating one?
+      </dev-empty-view-content>
+      <dev-empty-view-actions>
+        <button (click)="openAccessTokenCreationDialog()"
+                class="action"
+                color="accent"
+                mat-raised-button
+                transloco="accessToken.create"
+        >Create access token
+        </button>
+      </dev-empty-view-actions>
+    </dev-empty-view>
+  </ng-template>
+
+  <ng-template #nothingFound>
+    <dev-empty-view icon="vpn_key">
+      <dev-empty-view-header transloco="accessToken.notfound.title">
+        No access tokens found
+      </dev-empty-view-header>
+      <dev-empty-view-content transloco="accessToken.notfound.text">
+        You don't have any access tokens yet, how about creating one?
+      </dev-empty-view-content>
+      <dev-empty-view-actions>
+        <button (click)="openAccessTokenCreationDialog()"
+                class="action"
+                color="accent"
+                mat-raised-button
+                transloco="accessToken.create"
+        >Create access token
+        </button>
+      </dev-empty-view-actions>
     </dev-empty-view>
   </ng-template>
 

@@ -69,30 +69,39 @@
 
   <ng-template #empty>
     <dev-empty-view icon="language" justifyContent="center">
-      <p transloco="locales.teaser.text">It seems there are no languages defined, yet - would you like to add one
-        now?</p>
-      <button
-        *ngIf="canCreate"
-        (click)="openLocaleDialog({projectId: project.id})"
-        color="accent"
-        transloco="locale.create.button"
-        mat-raised-button
-      >Add language
-      </button>
+      <dev-empty-view-header transloco="locales.teaser.title">No languages defined</dev-empty-view-header>
+      <dev-empty-view-content transloco="locales.teaser.text">
+        It seems there are no languages defined, yet - would you like to add one now?
+      </dev-empty-view-content>
+      <dev-empty-view-actions>
+        <button
+          *ngIf="canCreate"
+          (click)="openLocaleDialog({projectId: project.id})"
+          color="accent"
+          transloco="locale.create.button"
+          mat-raised-button
+        >Add language
+        </button>
+      </dev-empty-view-actions>
     </dev-empty-view>
   </ng-template>
 
   <ng-template #nothingFound>
     <dev-empty-view icon="language" justifyContent="center">
-      <p transloco="locales.notfound">No languages found.</p>
-      <button
-        *ngIf="canCreate && criteria.search"
-        (click)="openLocaleDialog({projectId: project.id, name: criteria.search})"
-        color="accent"
-        transloco="locale.create.button"
-        mat-raised-button
-      >Add language
-      </button>
+      <dev-empty-view-header transloco="locales.notfound.title">No languages found</dev-empty-view-header>
+      <dev-empty-view-content transloco="locales.notfound.text">
+        Could not find any locales with the given filter. Try removing some filters or create a new language.
+      </dev-empty-view-content>
+      <dev-empty-view-actions>
+        <button
+          *ngIf="canCreate && criteria.search"
+          (click)="openLocaleDialog({projectId: project.id, name: criteria.search})"
+          color="accent"
+          transloco="locale.create.button"
+          mat-raised-button
+        >Add language
+        </button>
+      </dev-empty-view-actions>
     </dev-empty-view>
   </ng-template>
 </ng-container>
