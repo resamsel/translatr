@@ -12,8 +12,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Member, MemberRole, memberRoles, User } from '@dev/translatr-model';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
-import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
+import { ProjectFacade } from '../project-state/+state';
 
 interface MemberForm {
   id?: number;

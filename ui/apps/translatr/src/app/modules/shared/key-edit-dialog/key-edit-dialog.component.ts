@@ -3,8 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Key } from '@dev/translatr-model';
-import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
+import { ProjectFacade } from '../project-state/+state';
 
 interface Data {
   key: Partial<Key>;

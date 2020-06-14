@@ -66,7 +66,11 @@ const getSelectedKey = createSelector(
   }
 );
 
-const getSearch = createSelector(getEditorState, (state: EditorState) => state.search);
+const getSearch = createSelector(
+  getEditorState,
+  routerQuery.selectQueryParams,
+  (state: EditorState, params: Params) => ({ ...state.search, ...params })
+);
 
 const getMessage = createSelector(getEditorState, (state: EditorState) => state.message);
 
@@ -192,7 +196,8 @@ const getKeyMessageItems = createSelector(
         locale,
         message: messageMap[locale.id] ? messageMap[locale.id] : undefined,
         selected: locale.name === selectedLocale
-      }))
+      })),
+      total: locales.list.length
     };
   }
 );

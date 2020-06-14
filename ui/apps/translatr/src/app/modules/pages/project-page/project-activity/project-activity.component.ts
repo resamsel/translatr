@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Project } from '@dev/translatr-model';
 import { filter, map, pluck, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { ProjectFacade } from '../+state/project.facade';
+import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
   selector: 'app-project-activity',

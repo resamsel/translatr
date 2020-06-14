@@ -11,7 +11,7 @@ import { ProjectService } from '@dev/translatr-sdk';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { EmptyViewTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
-import { ProjectFacade } from '../+state/project.facade';
+import { ProjectFacade } from '../../../shared/project-state';
 import { AppFacade } from '../../../../+state/app.facade';
 
 import { ProjectSettingsComponent } from './project-settings.component';

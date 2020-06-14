@@ -17,10 +17,10 @@ import {
 import { slicePagedList, WINDOW } from '@translatr/utils';
 import { Observable } from 'rxjs';
 import { filter, map, pluck, take } from 'rxjs/operators';
-import { ProjectFacade } from '../+state/project.facade';
 import { AppFacade } from '../../../../+state/app.facade';
 import { openKeyEditDialog } from '../../../shared/key-edit-dialog/key-edit-dialog.component';
 import { openLocaleEditDialog } from '../../../shared/locale-edit-dialog/locale-edit-dialog.component';
+import { ProjectFacade } from '../../../shared/project-state';
 
 function endpointFromLocation(location: Location) {
   return `${location.protocol}//${location.host}`;

@@ -10,6 +10,7 @@
   "scripts": {
     "ng": "ng",
     "prettier": "prettier --write \"{apps,libs}/**/*.{ts,css,scss}\"",
+    "prettier:affected": "pretty-quick --pattern='ui/{apps,libs}/**/*.{ts,css,scss}'",
     "prestart": "npm run buildinfo",
     "start": "ng serve --host 0.0.0.0 --port 4210",
     "start:admin": "ng serve translatr-admin --host 0.0.0.0 --port 4211",
@@ -36,7 +37,7 @@
     "postbuild:generate:prod": "tools/make-command.js dist/apps/cli-generate/main.js dist/lets-generate",
     "buildinfo": "node tools/build-info.js",
     "postpull": "npm install",
-    "precommit": "pretty-quick --pattern='ui/{apps,libs}/**/*.{ts,css,scss}' && npm run build:ci",
+    "precommit": "npm run prettier:affected && npm run build:ci",
     "affected:apps": "./node_modules/.bin/nx affected:apps",
     "affected:libs": "./node_modules/.bin/nx affected:libs",
     "affected:build": "./node_modules/.bin/nx affected:build",

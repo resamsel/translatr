@@ -53,6 +53,9 @@
     [pagedList]="messageItems$ | async"
     [showLoadingAvatar]="false"
     [loadingListLength]="10"
+    [criteria]="search$ | async"
+    [empty]="empty"
+    [nothingFound]="nothingFound"
   >
     <a
       *ngFor="let item of (messageItems$ | async)?.list; trackBy: trackByFn"
@@ -70,5 +73,34 @@
         <ng-template #translationMissing>-</ng-template>
       </p>
     </a>
+    <ng-template #empty>
+      <dev-empty-view icon="language" alignment="vertical" *ngIf="key$ | async as key">
+        <p transloco="locales.teaser.text">It seems there are no languages defined, yet - would you like to add one
+          now?</p>
+        <button
+          *ngIf="canCreateLocale$ | async"
+          (click)="openLocaleDialog({projectId: key.projectId})"
+          color="accent"
+          transloco="locale.create.button"
+          mat-raised-button
+        >Add language
+        </button>
+      </dev-empty-view>
+    </ng-template>
+    <ng-template #nothingFound>
+      <dev-empty-view icon="language" alignment="vertical" *ngIf="key$ | async as key">
+        <p transloco="locales.notfound">No languages found.</p>
+        <ng-container *ngIf="search$ | async as criteria">
+          <button
+            *ngIf="(canCreateLocale$ | async) && criteria.search"
+            (click)="openLocaleDialog({projectId: key.projectId, name: criteria.search})"
+            color="accent"
+            transloco="locale.create.button"
+            mat-raised-button
+          >Add language
+          </button>
+        </ng-container>
+      </dev-empty-view>
+    </ng-template>
   </app-nav-list>
 </app-editor>

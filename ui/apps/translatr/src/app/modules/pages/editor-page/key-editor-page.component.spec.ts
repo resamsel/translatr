@@ -1,10 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ProjectFacade } from '../../shared/project-state/+state';
 import { KeyEditorPageComponent } from './key-editor-page.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { EditorFacade } from './+state/editor.facade';
 import { EditorTestingModule } from './editor/testing';
-import { FilterFieldTestingModule } from '@translatr/components/testing';
+import { EmptyViewTestingModule, FilterFieldTestingModule } from '@translatr/components/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -25,13 +27,15 @@ describe('KeyEditorPageComponent', () => {
         EditorTestingModule,
         FilterFieldTestingModule,
         NavListTestingModule,
+        EmptyViewTestingModule,
 
         NoopAnimationsModule,
         TranslocoTestingModule,
 
         MatFormFieldModule,
         MatInputModule,
-        MatIconModule
+        MatIconModule,
+        MatDialogModule
       ],
       providers: [
         {
@@ -49,6 +53,10 @@ describe('KeyEditorPageComponent', () => {
             keySelectedMessage$: mockObservable(),
             unloadEditor$: mockObservable()
           })
+        },
+        {
+          provide: ProjectFacade,
+          useFactory: () => ({})
         }
       ]
     }).compileComponents();

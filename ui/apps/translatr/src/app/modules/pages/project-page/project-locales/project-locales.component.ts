@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Locale, LocaleCriteria, Project } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
 import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { ProjectFacade } from '../+state/project.facade';
+import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
   selector: 'app-project-locales',

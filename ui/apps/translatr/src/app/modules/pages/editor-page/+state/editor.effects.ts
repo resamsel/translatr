@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Params } from '@angular/router';
-import { Key, Locale, Message, PagedList, RequestCriteria } from '@dev/translatr-model';
+import { Key, KeyCriteria, Locale, LocaleCriteria, Message, PagedList } from '@dev/translatr-model';
 import { KeyService, LocaleService, MessageService, NotificationService } from '@dev/translatr-sdk';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
@@ -8,7 +7,6 @@ import { pickKeys } from '@translatr/utils';
 import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '../../../../+state/app.reducer';
-import { routerQuery } from '../../../../+state/router.selectors';
 import {
   EditorActionTypes,
   KeyLoaded,
@@ -67,15 +65,11 @@ export class EditorEffects {
   loadKeys$ = createEffect(() =>
     this.actions$.pipe(
       ofType<LoadKeys>(EditorActionTypes.LoadKeys),
-      withLatestFrom(
-        this.store.pipe(select(editorQuery.getSearch)),
-        this.store.pipe(select(routerQuery.selectQueryParams))
-      ),
-      switchMap(([action, search, params]: [LoadKeys, RequestCriteria, Params]) =>
+      withLatestFrom(this.store.pipe(select(editorQuery.getSearch))),
+      switchMap(([action, search]: [LoadKeys, KeyCriteria]) =>
         this.keyService
           .find({
-            ...search,
-            ...pickKeys(params, ['key', 'order', 'limit', 'offset', 'search', 'missing']),
+            ...pickKeys(search, ['order', 'limit', 'offset', 'search', 'missing']),
             ...action.payload
           })
           .pipe(
@@ -167,15 +161,11 @@ export class EditorEffects {
   localeLoaded$ = createEffect(() =>
     this.actions$.pipe(
       ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
-      withLatestFrom(
-        this.store.pipe(select(editorQuery.getSearch)),
-        this.store.select(routerQuery.selectQueryParams)
-      ),
-      switchMap(([action, search, queryParams]) =>
+      withLatestFrom(this.store.pipe(select(editorQuery.getSearch))),
+      switchMap(([action, search]: [LocaleLoaded, LocaleCriteria]) =>
         of(
           new LoadKeys({
-            ...search,
-            ...pickKeys(queryParams, ['search', 'missing', 'limit', 'order']),
+            ...pickKeys(search, ['search', 'missing', 'limit', 'order']),
             localeId: action.payload.locale.id,
             projectId: action.payload.locale.projectId
           }),
@@ -239,15 +229,13 @@ export class EditorEffects {
       ),
       withLatestFrom(
         this.store.select(editorQuery.getKey),
-        this.store.select(editorQuery.getSearch),
-        this.store.select(routerQuery.selectQueryParams)
+        this.store.select(editorQuery.getSearch)
       ),
       filter(([, key]) => key !== undefined),
       map(
-        ([, key, search, queryParams]) =>
+        ([, key, search]: [unknown, Key, LocaleCriteria]) =>
           new LoadLocales({
-            ...search,
-            ...pickKeys(queryParams, ['search', 'missing', 'limit', 'order']),
+            ...pickKeys(search, ['search', 'missing', 'limit', 'order']),
             keyId: key.id,
             projectId: key.projectId
           })

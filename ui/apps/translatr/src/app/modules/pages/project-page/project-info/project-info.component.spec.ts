@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectInfoComponent } from './project-info.component';
-import { ProjectFacade } from '../+state/project.facade';
+import { ProjectFacade } from '../../../shared/project-state';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';

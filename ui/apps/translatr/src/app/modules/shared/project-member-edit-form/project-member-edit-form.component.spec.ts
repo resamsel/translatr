@@ -10,7 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { mockObservable } from '@translatr/utils/testing';
-import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { ProjectFacade } from '../project-state/+state';
 
 import { ProjectMemberEditFormComponent } from './project-member-edit-form.component';
 

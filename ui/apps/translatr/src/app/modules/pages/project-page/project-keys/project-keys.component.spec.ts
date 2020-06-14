@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { mockObservable } from '@translatr/utils/testing';
-import { ProjectFacade } from '../+state/project.facade';
+import { ProjectFacade } from '../../../shared/project-state';
 import { KeyListTestingModule } from './key-list/testing';
 
 import { ProjectKeysComponent } from './project-keys.component';

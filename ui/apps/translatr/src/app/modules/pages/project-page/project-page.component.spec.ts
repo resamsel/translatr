@@ -7,7 +7,7 @@ import { FeatureFlagTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { SidenavTestingModule } from '../../nav/sidenav/testing';
-import { ProjectFacade } from './+state/project.facade';
+import { ProjectFacade } from '../../shared/project-state';
 
 import { ProjectPageComponent } from './project-page.component';
 import { PROJECT_ROUTES } from './project-page.token';

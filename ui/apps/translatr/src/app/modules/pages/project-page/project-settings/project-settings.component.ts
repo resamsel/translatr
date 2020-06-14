@@ -5,10 +5,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Project } from '@dev/translatr-model';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
-import { ProjectFacade } from '../+state/project.facade';
 import { AppFacade } from '../../../../+state/app.facade';
 import { BaseEditFormComponent } from '../../../shared/edit-form/base-edit-form-component';
 import { openProjectDeleteDialog } from '../../../shared/project-delete-dialog/project-delete-dialog.component';
+import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
   selector: 'app-project-settings',

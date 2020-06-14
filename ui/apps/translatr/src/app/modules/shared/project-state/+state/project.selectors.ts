@@ -57,6 +57,7 @@ const getAccessTokens = createSelector(
 );
 
 export const projectQuery = {
+  getProjectState,
   getLoading,
   getError,
   getLocale,

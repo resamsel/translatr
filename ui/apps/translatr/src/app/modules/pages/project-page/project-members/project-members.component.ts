@@ -5,9 +5,9 @@ import { Member, MemberCriteria, Project, User } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, pluck, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { ProjectFacade } from '../+state/project.facade';
 import { AppFacade } from '../../../../+state/app.facade';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
+import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
   selector: 'app-project-members',

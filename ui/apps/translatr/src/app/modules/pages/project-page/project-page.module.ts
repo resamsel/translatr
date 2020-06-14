@@ -25,8 +25,6 @@ import {
   UserCardModule
 } from '@dev/translatr-components';
 import { TranslocoModule } from '@ngneat/transloco';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
 import { GravatarModule } from 'ngx-gravatar';
 import { MomentModule } from 'ngx-moment';
 import { AppFacade } from '../../../+state/app.facade';
@@ -39,13 +37,7 @@ import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { ProjectDeleteDialogModule } from '../../shared/project-delete-dialog/project-delete-dialog.module';
 import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
 import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.module';
-import { ProjectEffects } from './+state/project.effects';
-import { ProjectFacade } from './+state/project.facade';
-import {
-  initialState as projectInitialState,
-  PROJECT_FEATURE_KEY,
-  projectReducer
-} from './+state/project.reducer';
+import { ProjectStateModule } from '../../shared/project-state';
 import { ProjectAccessGuard } from './project-access.guard';
 import { ProjectActivityComponent } from './project-activity/project-activity.component';
 import { ProjectEditGuard } from './project-edit.guard';
@@ -97,6 +89,7 @@ import { ProjectGuard } from './project.guard';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    ProjectStateModule,
 
     MatToolbarModule,
     MatButtonModule,
@@ -116,12 +109,8 @@ import { ProjectGuard } from './project.guard';
     MatSelectModule,
 
     MomentModule,
-    GravatarModule,
-    StoreModule.forFeature(PROJECT_FEATURE_KEY, projectReducer, {
-      initialState: projectInitialState
-    }),
-    EffectsModule.forFeature([ProjectEffects])
+    GravatarModule
   ],
-  providers: [AppFacade, ProjectFacade, ProjectGuard, ProjectAccessGuard, ProjectEditGuard]
+  providers: [AppFacade, ProjectGuard, ProjectAccessGuard, ProjectEditGuard]
 })
 export class ProjectPageModule {}

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivityGraphTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
-import { ProjectFacade } from '../+state/project.facade';
+import { ProjectFacade } from '../../../shared/project-state';
 import { ActivityListTestingModule } from '../../../shared/activity-list/testing';
 import { ProjectActivityComponent } from './project-activity.component';
 

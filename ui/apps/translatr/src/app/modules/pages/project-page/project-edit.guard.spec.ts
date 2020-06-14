@@ -1,5 +1,5 @@
 import { inject, TestBed } from '@angular/core/testing';
-import { ProjectFacade } from './+state/project.facade';
+import { ProjectFacade } from '../../shared/project-state';
 import { ProjectEditGuard } from './project-edit.guard';
 
 describe('ProjectEditGuard', () => {

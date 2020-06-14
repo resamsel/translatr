@@ -1,11 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
-import { Message, PagedList } from '@dev/translatr-model';
+import { Locale, Message, PagedList } from '@dev/translatr-model';
 import { trackByFn } from '@translatr/utils';
-import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, of } from 'rxjs';
+import { distinctUntilChanged, filter, map, take, takeUntil, tap } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
+import { openLocaleEditDialog } from '../../shared/locale-edit-dialog/locale-edit-dialog.component';
+import { ProjectFacade } from '../../shared/project-state';
 import { EditorFacade } from './+state/editor.facade';
 import { MessageItem } from './message-item';
 import { navigateItems } from './navigate-utils';
@@ -64,6 +67,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
     ),
     this.appFacade.queryParams$.pipe(distinctUntilChanged(filterComparator))
   ]);
+  readonly canCreateLocale$ = of(true);
 
   readonly backLink = {
     routerLink: ['..']
@@ -74,8 +78,10 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
   constructor(
     private readonly appFacade: AppFacade,
     private readonly facade: EditorFacade,
+    private readonly projectFacade: ProjectFacade,
     private readonly route: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -139,5 +145,22 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
         this.router.navigate([], { queryParams: { locale: messageItem.locale.name } })
       )
       .catch();
+  }
+
+  openLocaleDialog(locale: Partial<Locale>): void {
+    openLocaleEditDialog(
+      this.dialog,
+      { ...locale },
+      l => this.projectFacade.createLocale(l),
+      l => this.projectFacade.updateLocale(l),
+      this.projectFacade.localeModified$
+    )
+      .afterClosed()
+      .pipe(
+        take(1),
+        filter(l => !!l && locale.id === undefined),
+        tap(l => this.facade.loadLocales({ projectId: l.projectId }))
+      )
+      .subscribe(l => this.router.navigate([], { queryParams: { locale: l.name } }));
   }
 }

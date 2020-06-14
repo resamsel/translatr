@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ProjectFacade } from './+state/project.facade';
+import { ProjectFacade } from '../../shared/project-state';
 
 @Injectable({
   providedIn: 'root'

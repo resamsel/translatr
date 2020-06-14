@@ -12,7 +12,7 @@ import { canActivate$, NameIconRoute } from '@translatr/utils';
 import { merge, Observable } from 'rxjs';
 import { distinctUntilKeyChanged, filter, map, scan, take, tap } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
-import { ProjectFacade } from './+state/project.facade';
+import { ProjectFacade } from '../../shared/project-state';
 import { PROJECT_ROUTES } from './project-page.token';
 
 @Component({

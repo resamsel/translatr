@@ -5,7 +5,7 @@ import { Key, KeyCriteria, Project } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
 import { combineLatest } from 'rxjs';
 import { filter, take, takeUntil } from 'rxjs/operators';
-import { ProjectFacade } from '../+state/project.facade';
+import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

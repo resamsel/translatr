@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslocoModule } from '@ngneat/transloco';
-import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { ProjectFacade } from '../project-state/+state';
 import { ProjectEditDialogComponent } from './project-edit-dialog.component';
 
 @NgModule({

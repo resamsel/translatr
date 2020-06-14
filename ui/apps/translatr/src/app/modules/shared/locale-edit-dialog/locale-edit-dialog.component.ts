@@ -1,13 +1,17 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, Optional } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Locale } from '@dev/translatr-model';
-import { ProjectFacade } from '../../pages/project-page/+state/project.facade';
+import { Observable } from 'rxjs';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
+import { ProjectFacade } from '../project-state/+state';
 
 interface Data {
   locale: Partial<Locale>;
+  create?: (r: Locale) => void;
+  update?: (r: Locale) => void;
+  result$?: Observable<[Locale, undefined] | [undefined, any]>;
 }
 
 @Component({
@@ -22,7 +26,7 @@ export class LocaleEditDialogComponent extends BaseEditFormComponent<
   constructor(
     readonly snackBar: MatSnackBar,
     readonly dialogRef: MatDialogRef<LocaleEditDialogComponent, Locale>,
-    readonly facade: ProjectFacade,
+    @Optional() readonly facade: ProjectFacade,
     readonly changeDetectorRef: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) readonly d: Data
   ) {
@@ -35,17 +39,23 @@ export class LocaleEditDialogComponent extends BaseEditFormComponent<
         name: new FormControl(d.locale.name, Validators.required)
       }),
       d.locale,
-      (locale: Locale) => facade.createLocale(locale),
-      (locale: Locale) => facade.updateLocale(locale),
-      facade.localeModified$,
+      d.create ?? ((locale: Locale) => facade.createLocale(locale)),
+      d.update ?? ((locale: Locale) => facade.updateLocale(locale)),
+      d.result$ ?? facade.localeModified$,
       (locale: Locale) => `Locale ${locale.name} has been saved`,
       changeDetectorRef
     );
   }
 }
 
-export const openLocaleEditDialog = (dialog: MatDialog, locale: Partial<Locale>) => {
+export const openLocaleEditDialog = (
+  dialog: MatDialog,
+  locale: Partial<Locale>,
+  create?: (r: Locale) => void,
+  update?: (r: Locale) => void,
+  result$?: Observable<[Locale, undefined] | [undefined, any]>
+) => {
   return dialog.open<LocaleEditDialogComponent, Data, Locale>(LocaleEditDialogComponent, {
-    data: { locale }
+    data: { locale, create, update, result$ }
   });
 };

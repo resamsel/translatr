@@ -41,6 +41,10 @@ export function cartesianProduct<T>(arr: T[][]): T[][] {
 export const trackByFn = (index: number, item: { id?: string | number }): string => `${item.id}`;
 
 export const pickKeys = <T>(obj: T, keys: Array<keyof T>): {} => {
+  if (obj === undefined || obj === null) {
+    return {};
+  }
+
   return Object.keys(obj)
     .filter(key => keys.includes(key as keyof T))
     .reduce((o, key) => {

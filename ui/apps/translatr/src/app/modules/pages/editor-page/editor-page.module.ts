@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
-import { FilterFieldModule, NavbarModule } from '@dev/translatr-components';
+import { EmptyViewModule, FilterFieldModule, NavbarModule } from '@dev/translatr-components';
 import { HotkeysModule } from '@ngneat/hotkeys';
 import { TranslocoModule } from '@ngneat/transloco';
 import { EffectsModule } from '@ngrx/effects';
@@ -20,6 +21,7 @@ import { StoreModule } from '@ngrx/store';
 import { AppFacade } from '../../../+state/app.facade';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { NavListModule } from '../../shared/nav-list/nav-list.module';
+import { ProjectStateModule } from '../../shared/project-state';
 import { EditorEffects } from './+state/editor.effects';
 import { EditorFacade } from './+state/editor.facade';
 import {
@@ -48,6 +50,8 @@ import { LocaleEditorPageComponent } from './locale-editor-page.component';
     FormsModule,
     NavListModule,
     FilterFieldModule,
+    EmptyViewModule,
+    ProjectStateModule,
 
     MatFormFieldModule,
     MatInputModule,
@@ -59,6 +63,7 @@ import { LocaleEditorPageComponent } from './locale-editor-page.component';
     MatIconModule,
     MatSnackBarModule,
     MatCardModule,
+    MatDialogModule,
 
     CodemirrorModule,
 
