@@ -39,7 +39,7 @@ export class ProjectInfoComponent {
     map((pagedList: PagedList<Locale> | undefined) =>
       slicePagedList(
         pagedList,
-        3,
+        5,
         (a: Locale, b: Locale) => b.whenUpdated.getTime() - a.whenUpdated.getTime()
       )
     )
@@ -51,7 +51,7 @@ export class ProjectInfoComponent {
     map((pagedList: PagedList<Key> | undefined) =>
       slicePagedList(
         pagedList,
-        3,
+        5,
         (a: Key, b: Key) => b.whenUpdated.getTime() - a.whenUpdated.getTime()
       )
     )
@@ -59,7 +59,7 @@ export class ProjectInfoComponent {
   canCreateKey$ = this.facade.canModifyKey$;
 
   latestMessages$: Observable<PagedList<Message>> = this.facade.messages$.pipe(
-    map((pagedList: PagedList<Message> | undefined) => slicePagedList(pagedList, 3))
+    map((pagedList: PagedList<Message> | undefined) => slicePagedList(pagedList, 5))
   );
 
   readonly activities$ = this.facade.activities$.pipe(

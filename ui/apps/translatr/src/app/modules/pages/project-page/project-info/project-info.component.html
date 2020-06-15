@@ -37,7 +37,7 @@
       <mat-card-content>
         <app-nav-list
           [empty]="localesEmpty"
-          [loadingListLength]="3"
+          [loadingListLength]="5"
           [pagedList]="latestLocales$ | async"
           [showMore]="false"
           loadingIcon="language"
@@ -58,27 +58,29 @@
           </a>
         </app-nav-list>
         <ng-template #localesEmpty>
-          <div class="empty">
-            <mat-icon class="locale circle">language</mat-icon>
-            <h3 transloco="locales.empty">No languages yet.</h3>
-            <button
-              *ngIf="canCreateLocale$ | async"
-              (click)="openLocaleCreationDialog(project)"
-              mat-stroked-button
-              transloco="locale.create.button"
-            >Add language
-            </button>
-          </div>
+          <dev-empty-view icon="language" alignment="vertical">
+            <dev-empty-view-header transloco="locales.empty">No languages yet.</dev-empty-view-header>
+            <dev-empty-view-actions>
+              <button
+                *ngIf="canCreateLocale$ | async"
+                mat-raised-button
+                color="accent"
+                transloco="locale.create.button"
+                (click)="openLocaleCreationDialog(project)"
+              >Add language
+              </button>
+            </dev-empty-view-actions>
+          </dev-empty-view>
         </ng-template>
-        <div *ngIf="(latestLocales$ | async)?.list.length > 0" class="actions">
-          <a
-            mat-stroked-button
-            [routerLink]="['locales']"
-            [queryParams]="{order: 'whenUpdated desc'}"
-            transloco="locales.recent.button"
-          >Show languages</a>
-        </div>
       </mat-card-content>
+      <mat-card-actions *ngIf="(latestLocales$ | async)?.list.length > 0">
+        <a
+          mat-stroked-button
+          [routerLink]="['locales']"
+          [queryParams]="{order: 'whenUpdated desc'}"
+          transloco="locales.recent.button"
+        >Show languages</a>
+      </mat-card-actions>
     </mat-card>
 
     <mat-card class="metric keys">
@@ -89,7 +91,7 @@
       <mat-card-content>
         <app-nav-list
           [empty]="keysEmpty"
-          [loadingListLength]="3"
+          [loadingListLength]="5"
           [pagedList]="latestKeys$ | async"
           [showMore]="false"
           loadingIcon="vpn_key"
@@ -110,27 +112,29 @@
           </a>
         </app-nav-list>
         <ng-template #keysEmpty>
-          <div class="empty">
-            <mat-icon class="key circle">vpn_key</mat-icon>
-            <h3 transloco="keys.empty">No keys yet.</h3>
-            <button
-              *ngIf="canCreateKey$ | async"
-              (click)="openKeyCreationDialog(project)"
-              mat-stroked-button
-              transloco="key.create.button"
-            >Add key
-            </button>
-          </div>
+          <dev-empty-view icon="vpn_key" alignment="vertical">
+            <dev-empty-view-header transloco="keys.empty">No keys yet.</dev-empty-view-header>
+            <dev-empty-view-actions>
+              <button
+                *ngIf="canCreateKey$ | async"
+                mat-raised-button
+                color="accent"
+                transloco="key.create.button"
+                (click)="openKeyCreationDialog(project)"
+              >Add key
+              </button>
+            </dev-empty-view-actions>
+          </dev-empty-view>
         </ng-template>
-        <div *ngIf="(latestKeys$ | async)?.list.length > 0" class="actions">
-          <a
-            mat-stroked-button
-            [routerLink]="['keys']"
-            [queryParams]="{order: 'whenUpdated desc'}"
-            transloco="keys.recent.button"
-          >Show keys</a>
-        </div>
       </mat-card-content>
+      <mat-card-actions *ngIf="(latestKeys$ | async)?.list.length > 0">
+        <a
+          mat-stroked-button
+          [routerLink]="['keys']"
+          [queryParams]="{order: 'whenUpdated desc'}"
+          transloco="keys.recent.button"
+        >Show keys</a>
+      </mat-card-actions>
     </mat-card>
 
     <mat-card class="metric messages">
@@ -141,7 +145,7 @@
       <mat-card-content>
         <app-nav-list
           [empty]="messagesEmpty"
-          [loadingListLength]="3"
+          [loadingListLength]="5"
           [pagedList]="latestMessages$ | async"
           [showMore]="false"
           loadingIcon="message"
@@ -152,14 +156,13 @@
              mat-list-item>
             <mat-icon class="message circle" matListIcon>message</mat-icon>
             <h3 matLine>{{ message.keyName }} <span class="sub-title">{{ message.localeDisplayName }}</span></h3>
-            <p matLine>{{t('message.wordCount', {wordCount: message.wordCount})}}</p>
+            <p matLine>{{t('message.wordCount', { wordCount: message.wordCount })}}</p>
           </a>
         </app-nav-list>
         <ng-template #messagesEmpty>
-          <div class="empty">
-            <mat-icon class="message circle">language</mat-icon>
-            <h3 transloco="messages.empty">No translations yet.</h3>
-          </div>
+          <dev-empty-view icon="message" alignment="vertical">
+            <dev-empty-view-header transloco="messages.empty">No translations yet.</dev-empty-view-header>
+          </dev-empty-view>
         </ng-template>
       </mat-card-content>
     </mat-card>

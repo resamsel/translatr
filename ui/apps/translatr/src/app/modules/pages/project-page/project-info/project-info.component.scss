@@ -1,24 +1,38 @@
 @import '~@angular/material/theming';
 @import 'mixins';
 
-.mat-card-title .sub-title {
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 14px;
-  font-weight: 400;
+.mat-card {
+  display: flex;
+  flex-direction: column;
+
+  .mat-card-title .sub-title {
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .mat-card-image {
+    display: block;
+    height: 48px;
+    color: #fff;
+
+    @include medium {
+      height: 64px;
+    }
+  }
+
+  .mat-card-content {
+    flex-grow: 1;
+  }
+
+  .mat-card-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
 .missing {
   font-style: italic;
-}
-
-.mat-card-image {
-  display: block;
-  height: 48px;
-  color: #fff;
-
-  @include medium {
-    height: 64px;
-  }
 }
 
 .mat-form-field + .mat-form-field {
@@ -27,11 +41,4 @@
 
 pre {
   margin: 0;
-}
-
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: 8px;
 }

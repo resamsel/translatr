@@ -31,9 +31,7 @@
               "apps/translatr/src/assets"
             ],
             "styles": [
-              "libs/translatr-components/src/styles/theme.scss",
-              "libs/translatr-components/src/styles/media.scss",
-              "libs/translatr-components/src/styles/addons.scss"
+              "libs/translatr-components/src/styles/main.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -176,9 +174,7 @@
               "apps/translatr-admin/src/assets"
             ],
             "styles": [
-              "libs/translatr-components/src/styles/theme.scss",
-              "libs/translatr-components/src/styles/media.scss",
-              "libs/translatr-components/src/styles/addons.scss"
+              "libs/translatr-components/src/styles/main.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [

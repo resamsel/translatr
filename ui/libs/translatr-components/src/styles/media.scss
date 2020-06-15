@@ -15,7 +15,7 @@
     }
 
     > * {
-      margin: 0 4px;
+      margin: 4px;
 
       &.mat-card {
         max-width: calc(100% - 32px - 8px);
@@ -25,7 +25,7 @@
 
   .container-inner {
     > * {
-      margin: 0 4px;
+      margin: 4px;
     }
   }
 
@@ -66,12 +66,8 @@
       width: 70%;
     }
 
-    &:not(.dense) > :not(:last-child) {
-      margin-bottom: 16px;
-    }
-
     > * {
-      margin: 0 8px;
+      margin: 8px;
 
       &.mat-card {
         max-width: calc(100% - 32px - 16px);
@@ -80,12 +76,8 @@
   }
 
   .container-inner {
-    &:not(.dense) > :not(:last-child) {
-      margin-bottom: 16px;
-    }
-
     > * {
-      margin: 0 8px;
+      margin: 8px;
     }
   }
 
