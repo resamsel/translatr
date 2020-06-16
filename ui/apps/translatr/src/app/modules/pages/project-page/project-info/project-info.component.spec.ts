@@ -13,7 +13,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { WINDOW } from '@translatr/utils';
-import { FeatureFlagTestingModule, MetricTestingModule } from '@translatr/components/testing';
+import {
+  EmptyViewTestingModule,
+  FeatureFlagTestingModule,
+  MetricTestingModule
+} from '@translatr/components/testing';
 import { NavListTestingModule } from '../../../shared/nav-list/testing';
 import { ActivityListTestingModule } from '../../../shared/activity-list/testing';
 import { ShortNumberModule } from '@dev/translatr-components';
@@ -33,6 +37,7 @@ describe('ProjectInfoComponent', () => {
         ActivityListTestingModule,
         ShortNumberModule,
         FeatureFlagTestingModule,
+        EmptyViewTestingModule,
 
         RouterTestingModule,
 
