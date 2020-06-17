@@ -48,7 +48,7 @@ describe('Project Locales Edit Locale', () => {
     page
       .getDialog()
       .find('.mat-dialog-title')
-      .should('have.text', 'Edit Locale');
+      .should('have.text', 'Edit Language');
     page
       .getDialog()
       .find('.mat-form-field.name input')
