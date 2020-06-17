@@ -63,6 +63,7 @@
     "i18n:pull": "npm run i18n:pull:backend && npm run i18n:pull:ui && npm run i18n:pull:admin",
     "i18n:pull:backend": "cd .. && translatr pull",
     "i18n:pull:ui": "cd apps/translatr && translatr pull",
+    "i18n:push:ui": "cd apps/translatr && translatr push",
     "i18n:pull:admin": "cd apps/translatr-admin && translatr pull"
   },
   "private": true,
