@@ -6,6 +6,7 @@ import { select, Store } from '@ngrx/store';
 import { pickKeys } from '@translatr/utils';
 import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { AppFacade } from '../../../../+state/app.facade';
 import { AppState } from '../../../../+state/app.reducer';
 import {
   EditorActionTypes,
@@ -162,6 +163,12 @@ export class EditorEffects {
     this.actions$.pipe(
       ofType<LocaleLoaded>(EditorActionTypes.LocaleLoaded),
       withLatestFrom(this.store.pipe(select(editorQuery.getSearch))),
+      tap(([action]: [LocaleLoaded, LocaleCriteria]) =>
+        this.appFacade.loadProject(
+          action.payload.locale.projectOwnerUsername,
+          action.payload.locale.projectName
+        )
+      ),
       switchMap(([action, search]: [LocaleLoaded, LocaleCriteria]) =>
         of(
           new LoadKeys({
@@ -232,6 +239,9 @@ export class EditorEffects {
         this.store.select(editorQuery.getSearch)
       ),
       filter(([, key]) => key !== undefined),
+      tap(([, key]: [unknown, Key, unknown]) =>
+        this.appFacade.loadProject(key.projectOwnerUsername, key.projectName)
+      ),
       map(
         ([, key, search]: [unknown, Key, LocaleCriteria]) =>
           new LoadLocales({
@@ -267,6 +277,7 @@ export class EditorEffects {
   constructor(
     private readonly store: Store<AppState>,
     private readonly actions$: Actions,
+    private readonly appFacade: AppFacade,
     private readonly localeService: LocaleService,
     private readonly keyService: KeyService,
     private readonly messageService: MessageService,

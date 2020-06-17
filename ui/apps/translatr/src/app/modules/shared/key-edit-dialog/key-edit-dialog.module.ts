@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslocoModule } from '@ngneat/transloco';
+import { ProjectStateModule } from '../project-state';
 import { KeyEditDialogComponent } from './key-edit-dialog.component';
 
 @NgModule({
@@ -15,6 +16,7 @@ import { KeyEditDialogComponent } from './key-edit-dialog.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    ProjectStateModule,
 
     MatDialogModule,
     MatFormFieldModule,

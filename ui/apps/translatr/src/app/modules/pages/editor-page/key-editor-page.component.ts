@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
 import { Locale, Message, PagedList } from '@dev/translatr-model';
 import { trackByFn } from '@translatr/utils';
-import { combineLatest, Observable, of } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, take, takeUntil, tap } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
 import { openLocaleEditDialog } from '../../shared/locale-edit-dialog/locale-edit-dialog.component';
@@ -67,7 +67,7 @@ export class KeyEditorPageComponent implements OnInit, OnDestroy {
     ),
     this.appFacade.queryParams$.pipe(distinctUntilChanged(filterComparator))
   ]);
-  readonly canCreateLocale$ = of(true);
+  readonly canCreateLocale$ = this.projectFacade.canModifyLocale$;
 
   readonly backLink = {
     routerLink: ['..']

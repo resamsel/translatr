@@ -1,18 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { LocaleEditorPageComponent } from './locale-editor-page.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { EditorTestingModule } from './editor/testing';
-import { FilterFieldTestingModule } from '@translatr/components/testing';
-import { NavListTestingModule } from '../../shared/nav-list/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { AppFacade } from '../../../+state/app.facade';
-import { EditorFacade } from './+state/editor.facade';
-import { mockObservable } from '@translatr/utils/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { EmptyViewTestingModule, FilterFieldTestingModule } from '@translatr/components/testing';
+import { mockObservable } from '@translatr/utils/testing';
+import { AppFacade } from '../../../+state/app.facade';
+import { NavListTestingModule } from '../../shared/nav-list/testing';
+import { ProjectFacade } from '../../shared/project-state/+state';
+import { EditorFacade } from './+state/editor.facade';
+import { EditorTestingModule } from './editor/testing';
+import { LocaleEditorPageComponent } from './locale-editor-page.component';
 
 describe('LocaleEditorPageComponent', () => {
   let component: LocaleEditorPageComponent;
@@ -26,6 +28,7 @@ describe('LocaleEditorPageComponent', () => {
         EditorTestingModule,
         FilterFieldTestingModule,
         NavListTestingModule,
+        EmptyViewTestingModule,
 
         NoopAnimationsModule,
         TranslocoTestingModule,
@@ -33,7 +36,8 @@ describe('LocaleEditorPageComponent', () => {
         MatFormFieldModule,
         MatInputModule,
         MatIconModule,
-        MatMenuModule
+        MatMenuModule,
+        MatDialogModule
       ],
       providers: [
         {
@@ -51,6 +55,10 @@ describe('LocaleEditorPageComponent', () => {
             localeSelectedMessage$: mockObservable(),
             unloadEditor$: mockObservable()
           })
+        },
+        {
+          provide: ProjectFacade,
+          useFactory: () => ({})
         }
       ]
     }).compileComponents();

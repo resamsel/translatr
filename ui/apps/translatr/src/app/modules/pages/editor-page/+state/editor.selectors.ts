@@ -136,7 +136,8 @@ const getLocaleMessageItems = createSelector(
         key,
         message: messageMap[key.id] ? messageMap[key.id] : undefined,
         selected: key.name === selectedKeyName
-      }))
+      })),
+      total: keys.list.length
     };
   }
 );

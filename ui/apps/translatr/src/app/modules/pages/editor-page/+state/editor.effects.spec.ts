@@ -4,6 +4,7 @@ import { KeyService, LocaleService, MessageService, NotificationService } from '
 import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, of, Subject } from 'rxjs';
+import { AppFacade } from '../../../../+state/app.facade';
 import { LoadLocales, LocalesLoaded } from './editor.actions';
 import { EditorEffects } from './editor.effects';
 
@@ -20,6 +21,10 @@ describe('EditorEffects', () => {
       providers: [
         EditorEffects,
         NotificationService,
+        {
+          provide: AppFacade,
+          useFactory: () => ({})
+        },
         {
           provide: LocaleService,
           useFactory: () => ({

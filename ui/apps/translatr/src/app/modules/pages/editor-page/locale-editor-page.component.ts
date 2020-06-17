@@ -1,11 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Params, Router } from '@angular/router';
 import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
-import { Message } from '@dev/translatr-model';
+import { Key, Message } from '@dev/translatr-model';
 import { trackByFn } from '@translatr/utils';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, take, takeUntil, tap } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
+import { openKeyEditDialog } from '../../shared/key-edit-dialog/key-edit-dialog.component';
+import { ProjectFacade } from '../../shared/project-state/+state';
 import { EditorFacade } from './+state/editor.facade';
 import { navigateItems } from './navigate-utils';
 
@@ -66,6 +69,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     ),
     this.appFacade.queryParams$.pipe(distinctUntilChanged(filterComparator))
   ]);
+  readonly canCreateKey$ = this.projectFacade.canModifyKey$;
 
   readonly backLink = {
     routerLink: ['..']
@@ -76,7 +80,9 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   constructor(
     private readonly appFacade: AppFacade,
     private readonly facade: EditorFacade,
-    private readonly router: Router
+    private readonly projectFacade: ProjectFacade,
+    private readonly router: Router,
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -121,5 +127,22 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     )
       .then(messageItem => this.router.navigate([], { queryParams: { key: messageItem.key.name } }))
       .catch();
+  }
+
+  openKeyDialog(key: Partial<Key>): void {
+    openKeyEditDialog(
+      this.dialog,
+      { ...key },
+      k => this.projectFacade.createKey(k),
+      k => this.projectFacade.updateKey(k),
+      this.projectFacade.keyModified$
+    )
+      .afterClosed()
+      .pipe(
+        take(1),
+        filter(k => !!k && key.id === undefined),
+        tap(k => this.facade.loadKeys({ projectId: k.projectId }))
+      )
+      .subscribe(k => this.router.navigate([], { queryParams: { key: k.name } }));
   }
 }
