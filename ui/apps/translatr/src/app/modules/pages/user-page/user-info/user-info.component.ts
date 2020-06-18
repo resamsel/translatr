@@ -21,7 +21,8 @@ export class UserInfoComponent implements OnInit {
       !!pagedList
         ? {
             ...pagedList,
-            list: pagedList.list.slice(0, 3)
+            list: pagedList.list.slice(0, 3),
+            hasNext: pagedList.total > 3
           }
         : pagedList
     )

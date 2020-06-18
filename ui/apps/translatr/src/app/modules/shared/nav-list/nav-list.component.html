@@ -12,27 +12,42 @@
 <mat-nav-list *ngIf="pagedList; else loading">
   <div [class.flex-stretch]="direction === 'row'">
     <ng-content></ng-content>
+    <div *ngIf="showMore && pagedList?.hasNext && direction === 'row'" class="more-row">
+      <ng-container *ngTemplateOutlet="more"></ng-container>
+    </div>
   </div>
 
   <div
-    *ngIf="showMore && pagedList?.hasNext"
-    class="more"
+    *ngIf="showMore && pagedList?.hasNext && direction === 'column'"
+    class="more-column"
   >
-    <a
-      mat-raised-button
-      class="more"
-      [queryParams]="queryParams"
-      [routerLink]="[]"
-      transloco="button.more"
-    >Load more</a>
+    <ng-container *ngTemplateOutlet="more"></ng-container>
   </div>
 
   <ng-container *ngIf="pagedList?.list?.length <= 0 && pagedList?.total === 0">
-    <ng-container *ngIf="criteria?.search; else empty">
+    <div *ngIf="criteria?.search; else empty">
       <ng-container *ngTemplateOutlet="nothingFound"></ng-container>
-    </ng-container>
+    </div>
   </ng-container>
 </mat-nav-list>
+
+<ng-template #more>
+  <a
+    *ngIf="showMoreLink !== undefined"
+    mat-stroked-button
+    class="more"
+    [routerLink]="showMoreLink"
+    transloco="button.more"
+  >Load more</a>
+  <a
+    *ngIf="showMoreLink === undefined"
+    mat-stroked-button
+    class="more"
+    [queryParams]="queryParams"
+    [routerLink]="[]"
+    transloco="button.more"
+  >Load more</a>
+</ng-template>
 
 <ng-template #loading>
   <mat-list class="loading">

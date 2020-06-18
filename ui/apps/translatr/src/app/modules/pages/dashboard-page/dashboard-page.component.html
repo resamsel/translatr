@@ -46,7 +46,7 @@
       <app-project-card-list
         [projects]="projects$ | async"
         [canCreate]="true"
-        [showMore]="false"
+        showMoreLink="/projects"
         (create)="openProjectCreationDialog()"></app-project-card-list>
     </section>
 

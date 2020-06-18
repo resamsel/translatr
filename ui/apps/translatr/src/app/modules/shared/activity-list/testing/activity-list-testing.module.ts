@@ -9,6 +9,7 @@ import { FilterCriteria } from '../../list-header/list-header.component';
 class MockActivityListComponent {
   @Input() activities: PagedList<Activity>;
   @Input() showMore = true;
+  @Input() showMoreLink: any[] | string | null | undefined;
 
   @Output() filter = new EventEmitter<FilterCriteria>();
   @Output() more = new EventEmitter<number>();

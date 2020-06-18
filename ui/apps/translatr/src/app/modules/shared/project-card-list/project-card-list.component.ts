@@ -13,6 +13,7 @@ export class ProjectCardListComponent {
   @Input() projects: PagedList<Project>;
   @Input() canCreate = false;
   @Input() showMore = true;
+  @Input() showMoreLink: any[] | string | null | undefined;
 
   @Output() readonly create = new EventEmitter<void>();
 

@@ -33,10 +33,11 @@
       <h2 transloco="projects.recent.title">Recent Projects</h2>
       <div class="project-list">
         <app-project-card-list
-          (create)="openProjectCreationDialog()"
           [projects]="projects$ | async"
-          [showMore]="false"
-          [canCreate]="canCreateProject$ | async"></app-project-card-list>
+          [canCreate]="canCreateProject$ | async"
+          showMoreLink="projects"
+          (create)="openProjectCreationDialog()"
+        ></app-project-card-list>
       </div>
       <div class="clearfix"></div>
     </section>
@@ -45,7 +46,7 @@
       <h2 transloco="activity">Activity</h2>
       <app-activity-list
         [activities]="activities$ | async"
-        [showMore]="false"
+        showMoreLink="activity"
         relativeTo="user"
       ></app-activity-list>
     </section>

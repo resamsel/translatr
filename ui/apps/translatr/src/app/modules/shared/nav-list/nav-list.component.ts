@@ -44,6 +44,7 @@ export class NavListComponent {
   @Input() nothingFound: TemplateRef<any>;
 
   @Input() showMore = true;
+  @Input() showMoreLink: any[] | string | null | undefined;
   @Input() showFilter = false;
   @Input() addTooltip: string;
   @Input() canCreate = false;

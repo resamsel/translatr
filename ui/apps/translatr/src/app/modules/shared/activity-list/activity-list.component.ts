@@ -41,6 +41,7 @@ const contentTypeToIconTypeMap = {
 export class ActivityListComponent {
   @Input() activities: PagedList<Activity>;
   @Input() showMore = true;
+  @Input() showMoreLink: string;
   @Input() relativeTo: 'user' | 'project' | undefined;
 
   @Output() filter = new EventEmitter<FilterCriteria>();

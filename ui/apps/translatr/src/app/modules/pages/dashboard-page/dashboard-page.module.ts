@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { FeatureFlagModule, MetricModule, ShortNumberModule } from '@dev/translatr-components';
@@ -41,6 +42,7 @@ import { DashboardPageComponent } from './dashboard-page.component';
 
     MatIconModule,
     MatDialogModule,
+    MatButtonModule,
 
     StoreModule.forFeature(DASHBOARD_FEATURE_KEY, dashboardReducer, {
       initialState: dashboardInitialState
