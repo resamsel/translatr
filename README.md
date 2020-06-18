@@ -2,9 +2,9 @@
 
 A modern and intuitive i18n tool. Translatr simplifies i18n for developers and translators. It uses the [Play Framework](http://www.playframework.com) to translate other projects. Importing conf/messages.locale (Play Framework), src/main/resources/messages_locale.properties (Java properties), and i18n/locale/main.po (Gettext) files allows easy locale management.
 
-[Demo Installation](http://translatr.resamsel.com/)
+[Demo](https://translatr.repanzar.com/)
 
-![Project Overview Example](https://github.com/resamsel/translatr/wiki/images/project.png "Project Overview Example")
+![Project Overview Example](doc/images/dashboard.png "Dashboard Example")
 
 ## Speeds up development
 
@@ -38,8 +38,8 @@ To use Translatr CLI we need a .translatr.yml config file. Create one in any dir
 
 ```
 translatr:
-  endpoint: http://localhost:9000
-  access_token: <access token>
+  endpoint: https://translatr.repanzar.com
+  access_token: $ACCESS_TOKEN
   project_id: <project ID>
   pull:
     file_type: play_messages
