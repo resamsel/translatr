@@ -9,8 +9,8 @@ import static java.util.stream.Collectors.toMap;
 
 public enum Feature {
   ProjectCliCard("project-cli-card", false),
-  HeaderGraphic("header-graphic", false),
-  LanguageSwitcher("language-switcher", false);
+  HeaderGraphic("header-graphic", true),
+  LanguageSwitcher("language-switcher", true);
 
   private static final Map<String, Feature> MAP = Stream.of(Feature.values())
           .collect(toMap(Feature::getName, x -> x));
