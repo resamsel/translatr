@@ -21,12 +21,12 @@
   <div class="container">
     <section>
       <app-project-list
-        (create)="openProjectCreationDialog()"
-        (filter)="onFilter($event)"
         [canCreate]="true"
         [criteria]="criteria$ | async"
         [projects]="projects$ | async"
         [showFilter]="true"
+        (create)="openProjectCreationDialog()"
+        (filter)="onFilter($event)"
       ></app-project-list>
     </section>
   </div>

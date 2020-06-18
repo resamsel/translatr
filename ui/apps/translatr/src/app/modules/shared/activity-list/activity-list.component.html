@@ -99,8 +99,7 @@
 </app-nav-list>
 
 <ng-template #empty>
-  <mat-list class="empty large">
-    <mat-icon class="activity">change_history</mat-icon>
-    <h3 transloco="activity.empty">No activity yet.</h3>
-  </mat-list>
+  <dev-empty-view icon="change_history">
+    <dev-empty-view-header transloco="activity.empty">No activity yet.</dev-empty-view-header>
+  </dev-empty-view>
 </ng-template>

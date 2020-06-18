@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { EmptyViewTestingModule } from '@translatr/components/testing';
 import { ActivityListComponent } from './activity-list.component';
 import { NavListTestingModule } from '../nav-list/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -37,6 +38,7 @@ describe('ActivityListComponent', () => {
 
         RouterTestingModule,
         TranslocoTestingModule,
+        EmptyViewTestingModule,
 
         TagModule,
 

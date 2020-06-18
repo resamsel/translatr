@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
+import { EmptyViewModule } from '@dev/translatr-components';
 import { TranslocoModule } from '@ngneat/transloco';
 import { TagModule } from '@translatr/translatr-components/src/lib/modules/tag/tag.module';
 import { GravatarModule } from 'ngx-gravatar';
@@ -34,6 +35,7 @@ import { ActivityProjectLinkComponent } from './activity-project-link/activity-p
 
     TagModule,
     NavListModule,
+    EmptyViewModule,
 
     MatListModule,
     MatIconModule,

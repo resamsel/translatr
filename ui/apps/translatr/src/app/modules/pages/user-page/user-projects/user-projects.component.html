@@ -2,9 +2,9 @@
   <app-project-list
     [projects]="projects$ | async"
     [canCreate]="canCreateProject$ | async"
-    (filter)="onFilter($event)"
     [criteria]="criteria$ | async"
     [showFilter]="true"
+    (filter)="onFilter($event)"
   ></app-project-list>
 
   <button

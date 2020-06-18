@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { EmptyViewTestingModule } from '@translatr/components/testing';
 
 import { ProjectListComponent } from './project-list.component';
 import { NavListTestingModule } from '../nav-list/testing';
@@ -18,6 +19,7 @@ describe('ProjectListComponent', () => {
       imports: [
         NavListTestingModule,
         ProjectEmptyViewTestingModule,
+        EmptyViewTestingModule,
 
         RouterTestingModule,
 
