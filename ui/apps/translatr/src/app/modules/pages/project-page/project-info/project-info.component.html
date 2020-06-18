@@ -156,7 +156,11 @@
              mat-list-item>
             <mat-icon class="message circle" matListIcon>message</mat-icon>
             <h3 matLine>{{ message.keyName }} <span class="sub-title">{{ message.localeDisplayName }}</span></h3>
-            <p matLine>{{t('message.wordCount', { wordCount: message.wordCount })}}</p>
+            <p
+              *ngIf="message.wordCount !== undefined"
+              matLine
+            >{{t('message.wordCount', { wordCount: message.wordCount })}}
+            </p>
           </a>
         </app-nav-list>
         <ng-template #messagesEmpty>
