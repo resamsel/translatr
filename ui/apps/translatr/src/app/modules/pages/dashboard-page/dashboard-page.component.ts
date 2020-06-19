@@ -42,11 +42,13 @@ export class DashboardPageComponent implements OnInit {
         this.loadMyProjects(user);
         this.projectsFacade.loadProjects({
           memberId: user.id,
+          order: 'whenUpdated desc',
           limit: 4,
           fetch: 'count'
         });
         this.dashboardFacade.loadActivities({
           userId: user.id,
+          order: 'whenCreated desc',
           limit: 10,
           fetch: 'count',
           types: 'Create,Update,Delete'

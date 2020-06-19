@@ -2,6 +2,7 @@
   [pagedList]="users"
   [criteria]="criteria"
   [showFilter]="true"
+  [nothingFound]="nothingFound"
   (filter)="filter.emit($event)"
 >
   <a
@@ -31,4 +32,12 @@
       <span transloco="when.joined">Joined</span>&nbsp;<span>{{ user.whenCreated | amTimeAgo }}</span>
     </p>
   </a>
+  <ng-template #nothingFound>
+    <dev-empty-view icon="account_circle">
+      <dev-empty-view-header transloco="users.notfound.title">No users found</dev-empty-view-header>
+      <dev-empty-view-content transloco="users.notfound.text">
+        Could not find any users with the given filter. Try removing some filters.
+      </dev-empty-view-content>
+    </dev-empty-view>
+  </ng-template>
 </app-nav-list>

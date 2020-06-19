@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostBinding, Input } from '@angular/core';
 
 @Component({
   selector: 'dev-empty-view',
@@ -7,6 +7,10 @@ import { Component, Input } from '@angular/core';
 })
 export class EmptyViewComponent {
   @Input() icon: string;
-  @Input() justifyContent: 'start' | 'center' = 'start';
-  @Input() alignment: 'horizontal' | 'vertical' = 'horizontal';
+  @HostBinding('class')
+  @Input()
+  justifyContent: 'start' | 'center' = 'start';
+  @HostBinding('class')
+  @Input()
+  alignment: 'horizontal' | 'vertical' = 'vertical';
 }

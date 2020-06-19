@@ -75,7 +75,7 @@
       </p>
     </a>
     <ng-template #empty>
-      <dev-empty-view icon="vpn_key" alignment="vertical" *ngIf="locale$ | async as locale">
+      <dev-empty-view icon="vpn_key" *ngIf="locale$ | async as locale">
         <dev-empty-view-header transloco="keys.teaser.title">No keys defined</dev-empty-view-header>
         <dev-empty-view-content transloco="keys.teaser.text" data-test="key-teaser">
           It seems there are no keys defined, yet - would you like to add one now?
@@ -93,7 +93,7 @@
       </dev-empty-view>
     </ng-template>
     <ng-template #nothingFound>
-      <dev-empty-view icon="vpn_key" alignment="vertical" *ngIf="locale$ | async as locale">
+      <dev-empty-view icon="vpn_key" *ngIf="locale$ | async as locale">
         <dev-empty-view-header transloco="keys.notfound.title">No keys found</dev-empty-view-header>
         <dev-empty-view-content transloco="keys.notfound.text" data-test="key-teaser">
           Could not find any keys with the given filter. Try removing some filters or create a new key.

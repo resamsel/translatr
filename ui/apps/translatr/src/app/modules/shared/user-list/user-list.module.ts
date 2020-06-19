@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
-import { UserCardModule } from '@dev/translatr-components';
+import { EmptyViewModule, UserCardModule } from '@dev/translatr-components';
 import { TranslocoModule } from '@ngneat/transloco';
 import { GravatarModule } from 'ngx-gravatar';
 import { MomentModule } from 'ngx-moment';
@@ -13,15 +13,18 @@ import { UserListComponent } from './user-list.component';
 @NgModule({
   declarations: [UserListComponent],
   imports: [
-    CommonModule,
-    RouterModule,
     NavListModule,
     UserCardModule,
-    MatListModule,
-    MatIconModule,
+    EmptyViewModule,
+
+    CommonModule,
+    RouterModule,
     GravatarModule,
+    TranslocoModule,
     MomentModule,
-    TranslocoModule
+
+    MatListModule,
+    MatIconModule
   ],
   exports: [UserListComponent]
 })

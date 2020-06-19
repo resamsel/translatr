@@ -402,6 +402,8 @@
   "user.username.error.pattern" : "Must match pattern [a-zA-Z0-9_.-]*",
   "users" : "Contributors",
   "users.empty" : "<i class=\"material-icons xlarge grey-text text-lighten-1\">group</i><br/>\nNo users yet.",
+  "users.notfound.text" : "Could not find any users with the given filter - try removing some filters.",
+  "users.notfound.title" : "Users not found",
   "users.text" : "Wonderful people making the world a better place",
   "users.title" : "Contributors",
   "validation.optional" : "optional",

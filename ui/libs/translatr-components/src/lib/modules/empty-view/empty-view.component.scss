@@ -12,11 +12,11 @@
     opacity: 0.4;
   }
 
-  &[justifyContent='center'] {
+  &.center {
     justify-content: center;
   }
 
-  &[alignment='vertical'] {
+  &.vertical {
     flex-direction: column;
     margin-bottom: 16px;
 
@@ -32,9 +32,13 @@
     .mat-icon {
       padding: 32px 16px;
     }
+
+    @include medium {
+      max-width: 400px;
+    }
   }
 
-  &:not([alignment='vertical']) {
+  &:not(.vertical) {
     .mat-icon {
       margin-right: 8px;
 
@@ -49,7 +53,6 @@
   }
 
   @include medium {
-    max-width: 600px;
     margin: 0 auto;
   }
 }

@@ -402,6 +402,8 @@
   "user.username.error.pattern" : "Muss diesem Muster entsprechen: [a-zA-Z0-9_.-]*",
   "users" : "Mitwirkende",
   "users.empty" : "<i class=\"material-icons xlarge grey-text text-lighten-1\">group</i><br/>\nNoch keine Benutzer.",
+  "users.notfound.text" : "Konnte keine Benutzer mit dem gegebenen Filter finden - versuche Filter zu entfernen.",
+  "users.notfound.title" : "Benutzer nicht gefunden",
   "users.text" : "Wunderbare Menschen, die diese Welt zu einer besseren machen",
   "users.title" : "Mitwirkende",
   "validation.optional" : "optional",

@@ -32,7 +32,7 @@
     <app-project-empty-view [canCreate]="canCreate" (create)="create.emit()"></app-project-empty-view>
   </ng-template>
   <ng-template #nothingFound>
-    <dev-empty-view icon="book" alignment="vertical">
+    <dev-empty-view icon="book">
       <dev-empty-view-header transloco="projects.notfound.title">No projects found</dev-empty-view-header>
       <dev-empty-view-content *ngIf="canCreate" transloco="projects.notfound.cancreate.text">
         Could not find any projects with the given filter. Try removing some filters or create a new project.

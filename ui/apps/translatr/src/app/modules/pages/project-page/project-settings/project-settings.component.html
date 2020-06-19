@@ -74,7 +74,7 @@
       <mat-card-title transloco="dangerzone.title">Danger Zone</mat-card-title>
     </mat-card-header>
 
-    <dev-empty-view *ngIf="transferOwnershipEnabled" icon="swap_horiz">
+    <dev-empty-view *ngIf="transferOwnershipEnabled" icon="swap_horiz" alignment="horizontal">
       <p transloco="project.transferOwnership.description">Transfer the ownership of the project to a managing member.
         Project
         ownership can only be changed by its owner.</p>
@@ -89,7 +89,7 @@
       </button>
     </dev-empty-view>
 
-    <dev-empty-view class="delete-project" icon="delete">
+    <dev-empty-view class="delete-project" icon="delete" alignment="horizontal">
       <p [innerHTML]="'project.delete.text' | transloco">Delete this project and its contents. Keep in mind that once
         you've deleted
         the project you <strong>cannot</strong> undo this action. Projects can only be deleted by its owner.</p>
