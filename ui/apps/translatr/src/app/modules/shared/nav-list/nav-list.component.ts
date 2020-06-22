@@ -10,6 +10,20 @@ import { PagedList } from '@dev/translatr-model';
 import { trackByFn } from '@translatr/utils';
 import { defaultFilters, FilterCriteria } from '../list-header/list-header.component';
 
+const pagingKeys = ['limit', 'offset', 'order'];
+
+const filterActive = (criteria: FilterCriteria): boolean => {
+  if (criteria === undefined) {
+    return false;
+  }
+
+  return (
+    Object.keys(criteria)
+      .filter(key => !pagingKeys.includes(key))
+      .find(key => criteria[key] !== undefined && criteria[key] !== '') !== undefined
+  );
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-nav-list',
@@ -75,13 +89,15 @@ export class NavListComponent {
     this.filter.emit(criteria);
   }
 
+  filterActive(criteria: FilterCriteria): boolean {
+    return filterActive(criteria);
+  }
+
   private updateSearchEnabled(): void {
     this.searchEnabled =
       this.showFilter &&
       (this.pagedList === undefined ||
         this.pagedList.list.length > 0 ||
-        (this._criteria !== undefined &&
-          this._criteria.search !== undefined &&
-          this._criteria.search.length > 0));
+        (this._criteria !== undefined && filterActive(this._criteria)));
   }
 }

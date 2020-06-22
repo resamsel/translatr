@@ -22,7 +22,7 @@
         <ng-content select="app-nav-list"></ng-content>
       </div>
     </div>
-    <div class="editor">
+    <div *ngIf="message; else noMessage" class="editor">
       <div class="buttons dialog-actions">
         <mat-menu #saveMenu="matMenu" xPosition="before" yPosition="above" overlapTrigger="false">
           <button
@@ -79,6 +79,14 @@
         ></ngx-codemirror>
       </div>
     </div>
+    <ng-template #noMessage>
+      <dev-empty-view icon="message" class="editor-empty">
+        <dev-empty-view-header transloco="selection.none.title">Nothing selected</dev-empty-view-header>
+        <dev-empty-view-content transloco="selection.none.text">
+          Selecting anything in the list opens the editor and additional options.
+        </dev-empty-view-content>
+      </dev-empty-view>
+    </ng-template>
     <div class="meta">
       <mat-tab-group #tabs>
         <mat-tab class="preview" [label]="t('message.preview')">

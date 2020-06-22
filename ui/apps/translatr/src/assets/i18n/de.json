@@ -374,6 +374,8 @@
   "scope.type" : "{type,\nselect,\nuser {Benutzer}\naccesstoken {Zugangsschlüssel}\nproject {Projekt}\nlocale {Sprache}\nkey {Schlüssel}\nmessage {Übersetzung}\nmember {Mitglied}\nnotification {Benachrichtigung}\nfeatureflag {Features}\nother { {{type}} }\n}",
   "search" : "Suchen",
   "search.filter" : "Filter",
+  "selection.none.text" : "Eine Auswahl in der Liste öffnet den Editor und bietet weitere Möglichkeiten.",
+  "selection.none.title" : "Keine Auswahl",
   "selection.selected" : "{{total}} ausgewählt",
   "settings.title" : "Einstellungen",
   "sort.by" : "Sortieren nach...",

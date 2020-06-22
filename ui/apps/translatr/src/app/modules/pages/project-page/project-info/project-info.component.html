@@ -37,7 +37,7 @@
       <mat-card-content>
         <app-nav-list
           [empty]="localesEmpty"
-          [loadingListLength]="5"
+          [loadingListLength]="numberOfRecentItems"
           [pagedList]="latestLocales$ | async"
           [showMore]="false"
           loadingIcon="language"
@@ -91,7 +91,7 @@
       <mat-card-content>
         <app-nav-list
           [empty]="keysEmpty"
-          [loadingListLength]="5"
+          [loadingListLength]="numberOfRecentItems"
           [pagedList]="latestKeys$ | async"
           [showMore]="false"
           loadingIcon="vpn_key"
@@ -145,7 +145,7 @@
       <mat-card-content>
         <app-nav-list
           [empty]="messagesEmpty"
-          [loadingListLength]="5"
+          [loadingListLength]="numberOfRecentItems"
           [pagedList]="latestMessages$ | async"
           [showMore]="false"
           loadingIcon="message"

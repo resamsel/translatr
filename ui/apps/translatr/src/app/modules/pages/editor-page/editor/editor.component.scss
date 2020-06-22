@@ -58,8 +58,7 @@
 }
 
 .editor {
-  //@include mat-elevation(2);
-  display: none;
+  display: flex;
   flex: 1 1 100%;
   flex-direction: column;
   z-index: 0;
@@ -133,6 +132,13 @@
   }
 }
 
+.editor-empty {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: column;
+  z-index: 0;
+}
+
 .meta {
   display: none;
   flex: 1 1 100%;
@@ -201,10 +207,6 @@
 }
 
 .selected {
-  .editor {
-    display: flex;
-  }
-
   @include large {
     .meta {
       display: flex;

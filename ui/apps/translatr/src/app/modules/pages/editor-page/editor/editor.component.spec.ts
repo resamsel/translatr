@@ -12,6 +12,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { HotkeysModule } from '@ngneat/hotkeys';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { EmptyViewTestingModule } from '@translatr/components/testing';
 import { EditorFacade } from '../+state/editor.facade';
 import { SidenavTestingModule } from '../../../nav/sidenav/testing';
 import { EditorComponent } from './editor.component';
@@ -31,6 +32,7 @@ describe('EditorComponent', () => {
         NoopAnimationsModule,
         TranslocoTestingModule,
         HotkeysModule,
+        EmptyViewTestingModule,
 
         MatButtonModule,
         MatDividerModule,
