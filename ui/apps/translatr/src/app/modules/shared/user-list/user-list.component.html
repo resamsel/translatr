@@ -21,14 +21,14 @@
     <h3 matLine>
       {{ user.name }} <span class="username">{{ user.username }}</span>
     </h3>
-    <p matLine>
+    <p class="sub-title" matLine>
         <span
           transloco="user.memberships"
           [translocoParams]="{memberships: user.memberships !== undefined ? user.memberships.length : 0}"
         >Contributing to {{ user.memberships?.length }} projects
         </span>
     </p>
-    <p matLine>
+    <p class="sub-title" matLine>
       <span transloco="when.joined">Joined</span>&nbsp;<span>{{ user.whenCreated | amTimeAgo }}</span>
     </p>
   </a>

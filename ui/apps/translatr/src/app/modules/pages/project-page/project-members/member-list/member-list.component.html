@@ -27,7 +27,7 @@
       <h3 matLine>{{ member.userName }}
         <span class="sub-title" transloco="member.role.value"
               [translocoParams]="{role: member.role.toString()}">{{ member.role }}</span></h3>
-      <p matLine>
+      <p class="sub-title" matLine>
         <span transloco="when.added">Added</span>&nbsp;
         <span [matTooltip]="member?.whenCreated | date: 'full'">{{ member?.whenCreated | amTimeAgo }}</span>
       </p>

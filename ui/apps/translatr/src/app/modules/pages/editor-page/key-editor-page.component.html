@@ -68,7 +68,7 @@
       class="locale"
     >
       <h3 matLine>{{ item.locale.displayName }}</h3>
-      <p class="translation" matLine>
+      <p class="sub-title translation" matLine>
         <span *ngIf="item.message; else translationMissing">{{item.message.value}}</span>
         <ng-template #translationMissing>-</ng-template>
       </p>

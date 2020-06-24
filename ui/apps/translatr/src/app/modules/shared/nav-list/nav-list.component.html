@@ -34,14 +34,16 @@
 <ng-template #more>
   <a
     *ngIf="showMoreLink !== undefined"
-    mat-stroked-button
+    mat-raised-button
+    color="accent"
     class="more"
     [routerLink]="showMoreLink"
     transloco="button.more"
   >Load more</a>
   <a
     *ngIf="showMoreLink === undefined"
-    mat-stroked-button
+    mat-raised-button
+    color="accent"
     class="more"
     [queryParams]="queryParams"
     [routerLink]="[]"
@@ -59,7 +61,7 @@
         <h3 matLine>
           <span class="title"></span>
         </h3>
-        <p class="subtitle" matLine></p>
+        <p class="sub-title" matLine></p>
       </mat-list-item>
     </ng-container>
     <ng-template #rowLoading>
@@ -74,7 +76,7 @@
             <h2>
               <span class="title"></span>
             </h2>
-            <p class="members subtitle"></p>
+            <p class="members sub-title"></p>
           </mat-card-content>
         </mat-card>
       </div>

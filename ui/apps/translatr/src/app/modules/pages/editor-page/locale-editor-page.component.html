@@ -69,7 +69,7 @@
       class="key"
     >
       <h3 matLine>{{ item.key.name }}</h3>
-      <p class="translation" matLine>
+      <p class="sub-title translation" matLine>
         <span *ngIf="item.message; else translationMissing">{{ item.message.value }}</span>
         <ng-template #translationMissing>-</ng-template>
       </p>

@@ -14,7 +14,7 @@
     >
       <mat-icon class="circle access-token" matListIcon>vpn_key</mat-icon>
       <h3 matLine>{{ accessToken.name }}</h3>
-      <p matLine>
+      <p class="sub-title" matLine>
         <span [matTooltip]="accessToken.whenCreated | date">{{ accessToken.whenCreated | amTimeAgo }}</span>
       </p>
       <confirm-button
