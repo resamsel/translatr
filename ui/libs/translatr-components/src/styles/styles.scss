@@ -244,8 +244,6 @@ a .mat-card {
 }
 
 .mat-tab-nav-bar {
-  background-color: white;
-
   .container {
     display: flex;
     flex-grow: 1;
@@ -374,8 +372,21 @@ pre[class*='language-']:before {
     margin-right: 8px;
   }
 
-  .mat-tab-label-active:not(.mat-tab-disabled) {
+  .mat-tab-link {
     opacity: 1;
+  }
+
+  .mat-tab-label-active:not(.mat-tab-disabled) {
+    color: white;
+  }
+}
+
+header {
+  .mat-tab-nav-bar {
+    .mat-tab-label,
+    .mat-tab-link {
+      color: rgba(255, 255, 255, 0.7);
+    }
   }
 }
 

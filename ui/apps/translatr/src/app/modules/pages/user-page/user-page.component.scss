@@ -5,15 +5,6 @@
     background-image: url(assets/headers/stripes.svg);
   }
 
-  .mat-tab-nav-bar {
-    background-color: rgba(25, 118, 210, 0.7);
-
-    .mat-tab-label,
-    .mat-tab-link {
-      color: white;
-    }
-  }
-
   .content {
     display: flex;
     flex-direction: row;
