@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toMap;
 
 public enum Feature {
-  ProjectCliCard("project-cli-card", false),
+  ProjectCliCard("project-cli-card", true),
   HeaderGraphic("header-graphic", true),
   LanguageSwitcher("language-switcher", true);
 

@@ -1,5 +1,10 @@
 @import 'mixins';
 
+:host {
+  display: block;
+  padding-bottom: 16px;
+}
+
 .activity-list-item.mat-list-item {
   position: relative;
 

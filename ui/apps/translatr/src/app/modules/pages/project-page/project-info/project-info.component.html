@@ -172,47 +172,6 @@
       </mat-card-content>
     </mat-card>
 
-    <mat-card *featureFlag="Feature.ProjectCliCard">
-      <mat-card-header>
-        <mat-card-title transloco="cli.integration.title">CLI Integration</mat-card-title>
-        <mat-card-subtitle [innerHTML]="t('cli.integration.text')"
-        >Sample <strong>.translatr.yml</strong> file to be used with the Translatr CLI.
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-form-field appearance="outline">
-          <mat-label transloco="filetype.label">File type</mat-label>
-          <mat-select [(value)]="fileType">
-            <mat-option *ngFor="let fileType of fileTypes" [value]="fileType.type">{{fileType.name}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label transloco="accessToken">Access token</mat-label>
-          <mat-select [(value)]="accessTokenKey">
-            <mat-option value="${TRANSLATR_ACCESS_TOKEN}" transloco="source.environment">From environment (secure)
-            </mat-option>
-            <mat-option
-              *ngFor="let accessToken of accessTokens$ | async"
-              value="{{accessToken.key}}"
-            >{{accessToken.name}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <!-- @formatter:off -->
-        <pre class="language-yml"><code>translatr:
-  endpoint: {{endpointUrl}}
-  project_id: {{project.id}}
-  access_token: {{accessTokenKey}}
-  pull:
-    file_type: {{fileType}}
-    target: {{targets[fileType]}}
-  push:
-    file_type: {{fileType}}
-    target: {{targets[fileType]}}</code></pre>
-        <!-- @formatter:on -->
-      </mat-card-content>
-    </mat-card>
-
     <section>
       <h2 transloco="activity">Activity</h2>
       <app-activity-list
@@ -220,6 +179,49 @@
         [showMore]="false"
         relativeTo="project"
       ></app-activity-list>
+    </section>
+
+    <section *featureFlag="Feature.ProjectCliCard">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title transloco="cli.integration.title">CLI Integration</mat-card-title>
+          <mat-card-subtitle [innerHTML]="t('cli.integration.text')"
+          >Sample <strong>.translatr.yml</strong> file to be used with the Translatr CLI.
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field appearance="outline">
+            <mat-label transloco="filetype.label">File type</mat-label>
+            <mat-select [(value)]="fileType">
+              <mat-option *ngFor="let fileType of fileTypes" [value]="fileType.type">{{fileType.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label transloco="accessToken">Access token</mat-label>
+            <mat-select [(value)]="accessTokenKey">
+              <mat-option value="${TRANSLATR_ACCESS_TOKEN}" transloco="source.environment">From environment (secure)
+              </mat-option>
+              <mat-option
+                *ngFor="let accessToken of accessTokens$ | async"
+                value="{{accessToken.key}}"
+              >{{accessToken.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- @formatter:off -->
+        <pre class="language-yml"><code>translatr:
+  endpoint: {{endpointUrl}}
+          project_id: {{project.id}}
+          access_token: {{accessTokenKey}}
+          pull:
+    file_type: {{fileType}}
+          target: {{targets[fileType]}}
+          push:
+    file_type: {{fileType}}
+          target: {{targets[fileType]}}</code></pre>
+        <!-- @formatter:on -->
+        </mat-card-content>
+      </mat-card>
     </section>
 
     <div></div>
