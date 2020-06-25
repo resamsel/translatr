@@ -123,7 +123,6 @@ a .mat-card {
   .dialog-actions {
     display: flex;
     justify-content: flex-start;
-    padding-bottom: 8px;
   }
 
   .project .mat-card {
@@ -236,8 +235,11 @@ a .mat-card {
     border-left-color: #388e3c;
   }
 
-  .dialog-actions .mat-raised-button.mat-primary {
-    color: #fff;
+  .dialog-actions .mat-primary {
+    &.mat-raised-button,
+    &.mat-flat-button {
+      color: #fff;
+    }
   }
 }
 

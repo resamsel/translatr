@@ -44,7 +44,7 @@
         </mat-menu>
         <div class="button-group">
           <button
-            mat-raised-button
+            mat-flat-button
             color="primary"
             class="save-button"
             [transloco]="'button.' + (saveBehavior$ | async)"
@@ -52,7 +52,7 @@
           >Save
           </button>
           <button
-            mat-raised-button
+            mat-flat-button
             [mat-menu-trigger-for]="saveMenu"
             color="primary"
             class="menu-button"
