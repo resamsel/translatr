@@ -1,8 +1,15 @@
 package criterias;
 
 import forms.ActivitySearchForm;
+import models.ActionType;
+import play.mvc.Http;
+import utils.JsonUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static controllers.ActivitiesApi.PARAM_TYPES;
 
 /**
  * @author resamsel
@@ -11,6 +18,8 @@ import java.util.UUID;
 public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCriteria> {
 
   private List<UUID> ids;
+  private UUID projectMemberId;
+  private final List<ActionType> types = new ArrayList<>();
 
   public LogEntryCriteria() {
     super("activity");
@@ -35,12 +44,47 @@ public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCrit
     return this;
   }
 
+  public UUID getProjectMemberId() {
+    return projectMemberId;
+  }
+
+  private void setProjectMemberId(UUID projectMemberId) {
+    this.projectMemberId = projectMemberId;
+  }
+
+  public LogEntryCriteria withProjectMemberId(UUID projectMemberId) {
+    setProjectMemberId(projectMemberId);
+    return this;
+  }
+
+  public List<ActionType> getTypes() {
+    return types;
+  }
+
+  public LogEntryCriteria withTypes(List<ActionType> types) {
+    this.types.addAll(types);
+    return this;
+  }
+
+  @Override
+  public LogEntryCriteria with(Http.Request request) {
+    return super
+        .with(request)
+        .withUserId(JsonUtils.getUuid(request.getQueryString("userId")))
+        .withProjectMemberId(JsonUtils.getUuid(request.getQueryString("projectMemberId")))
+        .withTypes(ActionType.fromQueryParam(request.getQueryString(PARAM_TYPES)));
+  }
+
   public static LogEntryCriteria from(ActivitySearchForm form) {
     return new LogEntryCriteria().with(form);
   }
 
+  public static LogEntryCriteria from(Http.Request request) {
+    return new LogEntryCriteria().with(request);
+  }
+
   @Override
   protected String getCacheKeyParticle() {
-    return String.format("%s", ids);
+    return String.format("%s:%s", ids, projectMemberId);
   }
 }

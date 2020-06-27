@@ -1,0 +1,20 @@
+<app-nav-list
+  [pagedList]="projects"
+  [empty]="empty"
+  direction="row"
+  (create)="create.emit()"
+  [canCreate]="canCreate"
+  [loadingListLength]="3"
+  [showMore]="showMore"
+  [showMoreLink]="showMoreLink"
+>
+  <app-project-card-link
+    *ngFor="let project of projects?.list; trackBy: trackByFn"
+    [project]="project"></app-project-card-link>
+  <ng-template #empty>
+    <app-project-empty-view
+      (create)="create.emit()"
+      [canCreate]="canCreate"
+    ></app-project-empty-view>
+  </ng-template>
+</app-nav-list>

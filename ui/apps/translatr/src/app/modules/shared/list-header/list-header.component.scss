@@ -1,0 +1,21 @@
+@import '~@angular/material/theming';
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 0.5em;
+
+  .mat-form-field,
+  dev-filter-field {
+    flex-grow: 1;
+  }
+
+  .mat-form-field + button {
+    margin-left: 16px;
+  }
+
+  button + button {
+    margin-left: 8px;
+  }
+}

@@ -3,17 +3,19 @@ package actions;
 import commands.Command;
 import controllers.AbstractController;
 import controllers.routes;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
 import models.User;
 import play.mvc.Action;
 import play.mvc.Http.Context;
 import play.mvc.Result;
+import services.AuthProvider;
 import services.CacheService;
 import utils.ContextKey;
+
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author resamsel
@@ -25,13 +27,15 @@ public class ContextAction extends Action.Simple {
       Arrays.asList(routes.Application.logout().path(), routes.Profiles.edit().path());
 
   private final CacheService cache;
+  private final AuthProvider authProvider;
 
   /**
    *
    */
   @Inject
-  public ContextAction(CacheService cache) {
+  public ContextAction(CacheService cache, AuthProvider authProvider) {
     this.cache = cache;
+    this.authProvider = authProvider;
   }
 
   /**
@@ -42,7 +46,7 @@ public class ContextAction extends Action.Simple {
     // DEBUG
     // AbstractController.addMessage(ctx.messages().at("user.incomplete"));
 
-    User user = User.loggedInUser();
+    User user = authProvider.loggedInUser();
     if (user != null && !user.isComplete() && !routeAllowed(ctx.request().path())) {
       AbstractController.addMessage(ctx.messages().at("user.incomplete"));
       return CompletableFuture.completedFuture(redirect(routes.Profiles.edit()));

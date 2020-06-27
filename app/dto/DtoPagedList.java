@@ -1,14 +1,15 @@
 package dto;
 
-import static java.util.stream.Collectors.toList;
-
 import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import criterias.HasNextPagedList;
+
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.function.Function;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author resamsel
@@ -24,17 +25,22 @@ public class DtoPagedList<MODEL, DTO extends Dto> extends Dto implements PagedLi
 
   private int offset;
   private int limit;
+  private int total;
 
   /**
-   * 
+   *
    */
   public DtoPagedList(PagedList<MODEL> delegate, Function<MODEL, DTO> mapper) {
     this.delegate = delegate;
-    this.list = delegate.getList().stream().map(mapper).collect(toList());
+    this.list = delegate.getList()
+        .stream()
+        .map(mapper)
+        .collect(toList());
 
     if (delegate instanceof HasNextPagedList)
       this.offset = ((HasNextPagedList<?>) delegate).getOffset();
     this.limit = delegate.getPageSize();
+    this.total = delegate.getTotalCount();
   }
 
   public int getOffset() {
@@ -45,17 +51,23 @@ public class DtoPagedList<MODEL, DTO extends Dto> extends Dto implements PagedLi
     return limit;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void loadCount() {}
+  public int getTotal() {
+    return total;
+  }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void loadRowCount() {}
+  public void loadCount() {
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void loadRowCount() {
+  }
 
   /**
    * {@inheritDoc}

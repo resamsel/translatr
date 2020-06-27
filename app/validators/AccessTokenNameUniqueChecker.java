@@ -1,9 +1,10 @@
 package validators;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import models.AccessToken;
 import repositories.AccessTokenRepository;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * @author resamsel
@@ -31,6 +32,6 @@ public class AccessTokenNameUniqueChecker implements NameUniqueChecker {
     AccessToken t = (AccessToken) o;
     AccessToken existing = accessTokenRepository.byUserAndName(t.user.id, t.name);
 
-    return existing == null || t.id == existing.id;
+    return existing == null || existing.id.equals(t.id);
   }
 }

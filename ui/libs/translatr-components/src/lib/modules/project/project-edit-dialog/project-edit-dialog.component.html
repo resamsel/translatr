@@ -1,0 +1,51 @@
+<h1
+  *ngIf="!data.project?.id"
+  mat-dialog-title
+  transloco="project.create.title"
+>Create project
+</h1>
+<h1
+  *ngIf="data.project?.id"
+  mat-dialog-title
+  transloco="project.edit.title"
+  [translocoParams]="{name: data.project.name}"
+>Edit {{ data.project.name }}
+</h1>
+<div mat-dialog-content [formGroup]="form">
+  <mat-error *ngIf="form.errors && form.errors['']">{{
+    form.errors['']
+    }}</mat-error>
+  <mat-form-field>
+    <input
+      matInput
+      required
+      [placeholder]="'project.name' | transloco"
+      formControlName="name"
+      cdkFocusInitial
+    />
+    <mat-error *ngIf="form.get('name').errors">{{
+      form.get('name').errors.violation
+    }}</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <textarea
+      matInput
+      [placeholder]="'project.description' | transloco"
+      formControlName="description"
+    ></textarea>
+    <mat-error *ngIf="form.get('description').errors">{{
+      form.get('description').errors.violation
+    }}</mat-error>
+  </mat-form-field>
+</div>
+<div class="dialog-actions" mat-dialog-actions>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onSubmit()"
+    [disabled]="form.invalid"
+    transloco="button.save"
+  >Save
+  </button>
+  <button mat-button transloco="button.cancel" (click)="dialogRef.close()">Cancel</button>
+</div>

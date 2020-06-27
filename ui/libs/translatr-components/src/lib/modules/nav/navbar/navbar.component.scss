@@ -1,0 +1,61 @@
+@import '~@angular/material/theming';
+@import 'mixins';
+
+:host {
+  z-index: 1;
+  position: relative;
+
+  &.overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    .mat-toolbar {
+      background-color: transparent;
+      color: white;
+    }
+  }
+}
+
+.mat-toolbar {
+  z-index: 2;
+}
+
+.elevated .mat-toolbar-row {
+  @include mat-elevation(2);
+}
+
+.title {
+  font-weight: 400;
+  display: none;
+  color: currentColor;
+
+  &.has-page {
+    @include large {
+      display: inline-block;
+    }
+  }
+
+  &:not(.has-page) {
+    @include medium {
+      display: inline-block;
+    }
+  }
+}
+
+.active {
+  display: none;
+}
+
+.page {
+  font-weight: 400;
+  height: 24px;
+  line-height: 24px;
+
+  @include large {
+    font-size: 18px;
+    margin-left: 16px;
+    padding: 0 16px;
+    border-left: 1px solid rgba(255, 255, 255, 0.6);
+  }
+}

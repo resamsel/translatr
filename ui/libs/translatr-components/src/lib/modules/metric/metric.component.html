@@ -1,0 +1,19 @@
+<a *ngIf="routerLink; else metric" [queryParams]="queryParams" [routerLink]="routerLink">
+  <ng-container [ngTemplateOutlet]="metric"></ng-container>
+</a>
+<ng-template #metric>
+  <mat-card [class.icon]="icon !== undefined">
+    <mat-card-header>
+      <mat-card-title
+        *ngIf="value !== undefined"
+        class="ellipsis"
+        [matTooltip]="value"
+      >{{ value }}</mat-card-title>
+      <mat-card-title *ngIf="value === undefined">-</mat-card-title>
+      <mat-card-subtitle>{{ name }}</mat-card-subtitle>
+    </mat-card-header>
+    <div *ngIf="icon !== undefined" class="metric-icon">
+      <mat-icon>{{ icon }}</mat-icon>
+    </div>
+  </mat-card>
+</ng-template>

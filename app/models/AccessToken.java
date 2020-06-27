@@ -3,16 +3,7 @@ package models;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import controllers.routes;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Version;
+import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import play.data.validation.Constraints.MaxLength;
 import play.mvc.Call;
@@ -20,8 +11,18 @@ import utils.CacheUtils;
 import validators.AccessTokenNameUniqueChecker;
 import validators.NameUnique;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Entity
-@NameUnique(checker = AccessTokenNameUniqueChecker.class)
+@NameUnique(checker = AccessTokenNameUniqueChecker.class, message = "error.accesstokennameunique")
 public class AccessToken implements Model<AccessToken, Long> {
 
   public static final int NAME_LENGTH = 32;
@@ -33,9 +34,6 @@ public class AccessToken implements Model<AccessToken, Long> {
   @Id
   @GeneratedValue
   public Long id;
-
-  @Version
-  public Long version;
 
   @CreatedTimestamp
   public DateTime whenCreated;
@@ -82,8 +80,8 @@ public class AccessToken implements Model<AccessToken, Long> {
    */
   @Override
   public AccessToken updateFrom(AccessToken in) {
-    user = in.user;
-    name = in.name;
+    user = user.updateFrom(in.user);
+    name = ObjectUtils.firstNonNull(in.name, name);
     key = in.key;
     scope = in.scope;
 

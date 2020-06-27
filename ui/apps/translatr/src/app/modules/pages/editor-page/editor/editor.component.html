@@ -1,0 +1,113 @@
+<app-sidenav
+  *transloco="let t"
+  [page]="_backLink?.name ? name : undefined"
+  [backLink]="backLink"
+  [me]="me"
+  [elevated]="false"
+>
+  <ng-container ngProjectAs="app-search-bar">
+    <ng-content select="app-search-bar"></ng-content>
+  </ng-container>
+  <ng-container ngProjectAs="dev-filter-field">
+    <ng-content select="dev-filter-field"></ng-content>
+  </ng-container>
+
+  <div class="main" [class.selected]="message">
+    <div class="sidebar">
+      <div class="selector">
+        <ng-content select="app-editor-selector"></ng-content>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="nav-list">
+        <ng-content select="app-nav-list"></ng-content>
+      </div>
+    </div>
+    <div *ngIf="message; else noMessage" class="editor">
+      <div class="buttons dialog-actions">
+        <mat-menu #saveMenu="matMenu" xPosition="before" yPosition="above" overlapTrigger="false">
+          <button
+            *ngIf="(saveBehavior$ | async) !== SaveBehavior.Save"
+            mat-menu-item
+            transloco="button.save"
+            class="save-behavior-save"
+            (click)="onSaveBehavior()"
+          >Save
+          </button>
+          <button
+            *ngIf="(saveBehavior$ | async) !== SaveBehavior.SaveAndNext"
+            mat-menu-item
+            transloco="button.saveandnext"
+            class="save-behavior-saveandnext"
+            (click)="onSaveAndNextBehavior()"
+          >Save and next
+          </button>
+        </mat-menu>
+        <div class="button-group">
+          <button
+            mat-flat-button
+            color="primary"
+            class="save-button"
+            [transloco]="'button.' + (saveBehavior$ | async)"
+            (click)="onSave()"
+          >Save
+          </button>
+          <button
+            mat-flat-button
+            [mat-menu-trigger-for]="saveMenu"
+            color="primary"
+            class="menu-button"
+          >
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+        </div>
+        <a mat-button [routerLink]="[]" transloco="button.close">Close</a>
+        <a
+          mat-button
+          [disabled]="!message?.dirty"
+          transloco="button.reset"
+          (click)="onReset()"
+        >Reset</a>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="content">
+        <ngx-codemirror
+          *ngIf="message"
+          #editor
+          [(ngModel)]="message.value"
+          [autoFocus]="true"
+          [options]="options"
+        ></ngx-codemirror>
+      </div>
+    </div>
+    <ng-template #noMessage>
+      <dev-empty-view icon="message" class="editor-empty">
+        <dev-empty-view-header transloco="selection.none.title">Nothing selected</dev-empty-view-header>
+        <dev-empty-view-content transloco="selection.none.text">
+          Selecting anything in the list opens the editor and additional options.
+        </dev-empty-view-content>
+      </dev-empty-view>
+    </ng-template>
+    <div class="meta">
+      <mat-tab-group #tabs>
+        <mat-tab class="preview" [label]="t('message.preview')">
+          <p [innerHTML]="message?.value" class="translation"></p>
+        </mat-tab>
+        <mat-tab [label]="t('messages.tab')">
+          <mat-card *ngFor="let message of messages" class="translation">
+            <mat-card-title
+              transloco="locale.displayName"
+              [translocoParams]="{name: message.localeName, displayName: message.localeDisplayName}"
+            >{{ message.localeDisplayName }}</mat-card-title>
+            <mat-card-content [innerHTML]="message.value"></mat-card-content>
+            <mat-card-actions>
+              <button (click)="onUseMessage(message)" class="use-value" mat-stroked-button>
+                <mat-icon [inline]="true">file_copy</mat-icon>&nbsp;
+                <span transloco="editor.usevalue.button">Use this value</span>
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</app-sidenav>

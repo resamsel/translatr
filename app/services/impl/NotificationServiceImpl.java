@@ -13,24 +13,21 @@ import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.service.AggregatedActivityServiceImpl;
 import io.getstream.client.service.FlatActivityServiceImpl;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import models.ActionType;
-import models.LogEntry;
-import models.Model;
-import models.Project;
-import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.libs.Json;
+import services.AuthProvider;
 import services.NotificationService;
-import utils.ActivityUtils;
 import utils.ConfigKey;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Singleton
 public class NotificationServiceImpl implements NotificationService {
@@ -42,12 +39,14 @@ public class NotificationServiceImpl implements NotificationService {
   private static final String FEED_GROUP_TIMELINE_AGGREGATED = "timeline_aggregated";
 
   private final StreamClient streamClient;
+  private final AuthProvider authProvider;
 
   @Inject
-  public NotificationServiceImpl(Configuration configuration) {
+  public NotificationServiceImpl(Configuration configuration, AuthProvider authProvider) {
     streamClient = new StreamClientImpl(new ClientConfiguration(),
         ConfigKey.StreamIOKey.getString(configuration),
         ConfigKey.StreamIOSecret.getString(configuration));
+    this.authProvider = authProvider;
   }
 
   /**
@@ -60,7 +59,7 @@ public class NotificationServiceImpl implements NotificationService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @throws StreamClientException
    * @throws IOException
    */
@@ -68,7 +67,7 @@ public class NotificationServiceImpl implements NotificationService {
   public StreamResponse<AggregatedActivity<SimpleActivity>> find(NotificationCriteria criteria)
       throws IOException, StreamClientException {
     Feed feed =
-        streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, User.loggedInUser().id.toString());
+        streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, authProvider.loggedInUser().id.toString());
     AggregatedActivityServiceImpl<SimpleActivity> activityService =
         feed.newAggregatedActivityService(SimpleActivity.class);
 
@@ -95,7 +94,7 @@ public class NotificationServiceImpl implements NotificationService {
   @Override
   public SimpleActivity publish(UUID id, ActionType type, String name, String contentId, UUID userId, UUID projectId)
       throws IOException, StreamClientException {
-  Feed userFeed = createFeed(userId);
+    Feed userFeed = createFeed(userId);
     FlatActivityServiceImpl<SimpleActivity> activityService =
         userFeed.newFlatActivityService(SimpleActivity.class);
 
@@ -122,10 +121,9 @@ public class NotificationServiceImpl implements NotificationService {
 
   /**
    * @param slug the entity type
-   * @param id the ID of the slug
-   * @return
+   * @param id   the ID of the slug
    */
   private String toId(String slug, UUID id) {
-    return String.format("%s:%s", slug, String.valueOf(id));
+    return String.format("%s:%s", slug, id);
   }
 }

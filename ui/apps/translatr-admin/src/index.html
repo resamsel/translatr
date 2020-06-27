@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Translatr Admin</title>
+    <base href="/" />
+
+    <style type="text/css">
+      body,
+      html {
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .app-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      .app-loading .material-icons {
+        opacity: 0.4;
+        font-size: 64px;
+      }
+
+      .app-loading .dots {
+        position: relative;
+        width: 40px;
+        padding: 4px;
+      }
+
+      .app-loading .dots .dot {
+        position: absolute;
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ccc;
+        animation: backforth 2s ease-in-out infinite;
+      }
+
+      .app-loading .dots .dot:nth-child(2) {
+        animation-delay: 150ms;
+        opacity: 0.5;
+      }
+
+      .app-loading .dots .dot:nth-child(3) {
+        animation-delay: 300ms;
+        opacity: 0.25;
+      }
+
+      @keyframes backforth {
+        0% {
+          left: 0;
+        }
+        50% {
+          left: calc(100% - 8px);
+        }
+        100% {
+          left: 0;
+        }
+      }
+    </style>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/png" href="favicon.png" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="mat-typography translatr light-theme">
+    <dev-root>
+      <div class="app-loading">
+        <i class="material-icons">translate</i>
+        <div class="dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+    </dev-root>
+  </body>
+</html>

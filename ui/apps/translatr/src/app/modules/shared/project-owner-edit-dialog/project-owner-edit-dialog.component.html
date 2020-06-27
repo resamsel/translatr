@@ -1,0 +1,21 @@
+<h1 mat-dialog-title transloco="project.transferOwnership.title">Transfer Project Ownership</h1>
+<div mat-dialog-content>
+  <app-project-owner-edit-form
+    #form
+    [dialogRef]="dialogRef"
+    [project]="data"
+    [users]="(owners$ | async)?.list"
+    (userFilter)="onUserFilter($event)"
+  ></app-project-owner-edit-form>
+</div>
+<div class="dialog-actions" mat-dialog-actions>
+  <button
+    [disabled]="form.invalid || form.processing"
+    mat-flat-button
+    color="primary"
+    transloco="button.save"
+    (click)="form.onSave()"
+  >Save
+  </button>
+  <button mat-button transloco="button.cancel" (click)="dialogRef.close()">Cancel</button>
+</div>

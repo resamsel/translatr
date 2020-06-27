@@ -1,0 +1,36 @@
+<h1 mat-dialog-title transloco="project.create.title">Add Project</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field class="name">
+      <input
+        matInput
+        #name
+        type="text"
+        [placeholder]="'project.name' | transloco"
+        cdkFocusInitial
+        formControlName="name"
+      />
+      <mat-error
+        *ngIf="nameFormControl.invalid && nameFormControl.errors.pattern"
+        transloco="project.name.error.pattern"
+      >Must match pattern [a-zA-Z0-9_.-]*
+      </mat-error
+      >
+      <mat-error
+        *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
+      >{{ nameFormControl.errors['violation'] }}</mat-error
+      >
+    </mat-form-field>
+  </form>
+</div>
+<div class="dialog-actions" mat-dialog-actions>
+  <button
+    [disabled]="form.invalid || processing"
+    mat-flat-button
+    color="primary"
+    transloco="button.save"
+    (click)="onSave()"
+  >Save
+  </button>
+  <button mat-button transloco="button.cancel" (click)="dialogRef.close()">Cancel</button>
+</div>

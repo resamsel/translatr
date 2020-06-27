@@ -2,10 +2,6 @@ package actions;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import dto.PermissionException;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
 import models.AccessToken;
 import play.mvc.Action;
 import play.mvc.Http.Context;
@@ -15,17 +11,23 @@ import services.AccessTokenService;
 import utils.ContextKey;
 import utils.ErrorUtils;
 
+import javax.inject.Inject;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
 /**
  * @author resamsel
  * @version 21 Oct 2016
  */
 public class ApiAction extends Action.Simple {
   private static final String ACCESS_TOKEN_PARAM = "access_token";
+  private static final String ACCESS_TOKEN_HEADER = "x-access-token";
 
   private final AccessTokenService accessTokenService;
 
   /**
-   * 
+   *
    */
   @Inject
   public ApiAction(AccessTokenService accessTokenService) {
@@ -38,6 +40,8 @@ public class ApiAction extends Action.Simple {
   @Override
   public CompletionStage<Result> call(Context ctx) {
     Request req = ctx.request();
+
+    changeLangFromHeader(ctx, req.headers());
 
     String accessToken = null;
     switch (req.method()) {
@@ -60,15 +64,30 @@ public class ApiAction extends Action.Simple {
         break;
     }
 
+    if (accessToken == null && req.hasHeader(ACCESS_TOKEN_HEADER))
+      accessToken = req.getHeader(ACCESS_TOKEN_HEADER);
+
     if (accessToken != null) {
       AccessToken token = accessTokenService.byKey(accessToken);
       if (token == null)
         return CompletableFuture.completedFuture(
-            forbidden(ErrorUtils.toJson(new PermissionException("Invalid access_token"))));
+                forbidden(ErrorUtils.toJson(new PermissionException("Invalid access_token"))));
 
       ContextKey.AccessToken.put(ctx, token);
     }
 
     return delegate.call(ctx);
+  }
+
+  public static void changeLangFromHeader(Context ctx, Map<String, String[]> headers) {
+    if (headers.containsKey("accept-language")) {
+      String[] langDefinitions = headers.get("accept-language")[0].split(",");
+      if (langDefinitions.length > 0 && langDefinitions[0].length() > 0) {
+        String lang = langDefinitions[0].split(";")[0];
+        if (!lang.equals(ctx.lang().code())) {
+          ctx.changeLang(lang);
+        }
+      }
+    }
   }
 }

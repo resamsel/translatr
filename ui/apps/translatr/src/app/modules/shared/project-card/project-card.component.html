@@ -1,0 +1,24 @@
+<mat-card class="info portrait">
+  <span mat-card-image>{{ firstChar(project?.name) }}</span>
+  <mat-card-content>
+    <h2 class="ellipsis">{{ project?.name }}</h2>
+    <p class="members">
+      <img
+        ngxGravatar
+        [md5Hash]="project?.ownerEmailHash"
+        size="36"
+        [round]="false"
+        cornerRadius="6"
+        class="user-icon"
+        [matTooltip]="project?.ownerName"
+      />
+      <span class="owner ellipsis">{{ project?.ownerName }}</span>
+      <span
+        class="when-created"
+        [matTooltip]="project?.whenCreated | date: 'full'"
+        >{{ project?.whenCreated | amTimeAgo }}</span
+      >
+    </p>
+    <ng-content></ng-content>
+  </mat-card-content>
+</mat-card>

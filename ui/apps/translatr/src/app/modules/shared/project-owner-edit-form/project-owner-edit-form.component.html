@@ -1,0 +1,23 @@
+<form [formGroup]="form">
+  <section class="user">
+    <mat-form-field>
+      <mat-label transloco="user">User</mat-label>
+      <input
+        matInput
+        type="text"
+        cdkFocusInitial
+        formControlName="user"
+        [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+        <mat-option *ngFor="let user of users" [value]="user">
+          {{ user.userUsername }} -- {{ user.userName }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error
+        *ngIf="userFormControl.invalid && userFormControl.errors['violation']">
+        {{ userFormControl.errors['violation'] }}</mat-error>
+    </mat-form-field>
+  </section>
+
+  <ng-content></ng-content>
+</form>

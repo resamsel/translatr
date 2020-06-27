@@ -1,16 +1,5 @@
 package integration.controllers;
 
-import static assertions.ResultAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-import static play.inject.Bindings.bind;
-import static play.test.Helpers.route;
-import static utils.TestFactory.requestAs;
-import static utils.UserRepositoryMock.byUsername;
-
 import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthInfo;
 import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthUser;
 import com.feth.play.module.pa.user.AuthUser;
@@ -18,14 +7,12 @@ import com.google.common.collect.ImmutableMap;
 import controllers.Profiles;
 import controllers.Projects;
 import controllers.routes;
-import criterias.HasNextPagedList;
-import java.util.ArrayList;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
+import criterias.PagedListFactory;
 import models.AccessToken;
 import models.LogEntry;
 import models.User;
 import org.apache.commons.lang3.ArrayUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
@@ -37,6 +24,20 @@ import repositories.AccessTokenRepository;
 import repositories.LogEntryRepository;
 import repositories.UserRepository;
 
+import java.util.ArrayList;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static assertions.CustomAssertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static play.inject.Bindings.bind;
+import static play.test.Helpers.route;
+import static utils.TestFactory.requestAs;
+import static utils.UserRepositoryMock.byUsername;
+
+@Ignore("Not necessary any longer, as the existing views will be replaced by the Angular UI")
 public class ProfilesTest extends ControllerTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProfilesTest.class);
@@ -380,7 +381,7 @@ public class ProfilesTest extends ControllerTest {
     t.linkedAccounts = new ArrayList<>(t.linkedAccounts);
 
     when(userRepository.byId(eq(t.id), any())).thenReturn(t);
-    when(userRepository.findBy(any())).thenReturn(HasNextPagedList.create(t));
+    when(userRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
 
     return t;
   }

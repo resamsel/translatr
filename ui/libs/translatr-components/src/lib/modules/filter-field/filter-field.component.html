@@ -1,0 +1,98 @@
+<mat-form-field
+  #formField
+  [appearance]="appearance"
+  [color]="color"
+  class="search search-field-{{appearance}}"
+>
+  <ng-content select="[matPrefix]"></ng-content>
+  <mat-chip-list #chipList>
+    <mat-basic-chip
+      (removed)="onRemoved(option.key)"
+      *ngFor="let option of options"
+      [removable]="true"
+      [selectable]="false"
+      class="option selected-option"
+    >
+      <span class="ellipsis"
+            matTooltip="{{(option.title || option.key) | transloco:{value: option.value} }}: {{option.value}}">
+        <ng-container [ngSwitch]="option.type">
+          <ng-container *ngSwitchCase="'option'">
+            <span class="value">{{option.title | transloco:{value: option.value} }}</span>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <ng-container *ngIf="option.title; else selectedKeyValue">
+              <span
+                class="{{option.type === 'boolean' ? 'value' : 'type'}}"
+              >{{option.title | transloco:{value: option.value} }}
+              </span>
+              <span
+                *ngIf="option.value !== undefined && option.value !== null && !option.allowEmpty"
+                class="value"
+              >{{option.value.toString()}}</span>
+            </ng-container>
+            <ng-template #selectedKeyValue>
+              <span class="type">{{option.key}}</span>
+              <span
+                *ngIf="option.value !== undefined && option.value !== null"
+                class="value"
+              >{{option.value.toString()}}</span>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+      </span>
+      <mat-icon
+        matChipRemove
+        [matTooltip]="'button.delete' | transloco"
+      >close
+      </mat-icon>
+    </mat-basic-chip>
+    <ng-content></ng-content>
+    <input
+      #autocompleteInput
+      matInput
+      [formControl]="filterControl"
+      [disableControl]="!enabled"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipList"
+      autocomplete="off"
+      [placeholder]="'search.filter' | transloco"
+      type="search"
+    />
+  </mat-chip-list>
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    [autoActiveFirstOption]="true"
+    [displayWith]="displayFn"
+    (closed)="renderer.removeClass(formField._elementRef.nativeElement, 'autocomplete-open')"
+    (opened)="renderer.addClass(formField._elementRef.nativeElement, 'autocomplete-open')"
+    class="mat-elevation-z1"
+  >
+    <mat-option
+      (onSelectionChange)="onAutocompleteSelected($event)"
+      *ngFor="let option of autocompleteOptions"
+      [value]="option"
+      class="option autocomplete-option"
+    >
+      <ng-container [ngSwitch]="option.type">
+        <ng-container *ngSwitchCase="'option'">
+          <span>{{option.title | transloco:{value: option.value} }}</span>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <ng-container *ngIf="option.title; else autocompleteKeyValue">
+            <span>{{option.title | transloco:{value: option.value} }}</span>
+            <span
+              *ngIf="option.value !== undefined
+              && option.value !== null
+              && option.value !== ''
+              && !option.allowEmpty"
+            >: {{option.value.toString()}}</span>
+          </ng-container>
+          <ng-template #autocompleteKeyValue>
+            <span class="type">{{option.key}}</span>
+            <span *ngIf="option.value !== undefined" class="value">{{option.value.toString()}}</span>
+          </ng-template>
+        </ng-container>
+      </ng-container>
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

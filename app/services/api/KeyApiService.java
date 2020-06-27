@@ -3,8 +3,9 @@ package services.api;
 import com.google.inject.ImplementedBy;
 import criterias.KeyCriteria;
 import dto.Key;
-import java.util.UUID;
 import services.api.impl.KeyApiServiceImpl;
+
+import java.util.UUID;
 
 /**
  * @author resamsel
@@ -12,4 +13,6 @@ import services.api.impl.KeyApiServiceImpl;
  */
 @ImplementedBy(KeyApiServiceImpl.class)
 public interface KeyApiService extends ApiService<Key, UUID, KeyCriteria> {
+
+  Key byOwnerAndProjectAndName(String username, String projectName, String keyName, String... fetches);
 }

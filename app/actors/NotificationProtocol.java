@@ -1,12 +1,13 @@
 package actors;
 
-import static java.util.Objects.requireNonNull;
-
-import java.util.UUID;
 import models.ActionType;
 import models.LogEntry;
 import play.libs.Json;
 import utils.ActivityUtils;
+
+import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
 
 public class NotificationProtocol {
 

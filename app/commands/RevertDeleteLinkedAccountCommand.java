@@ -2,6 +2,7 @@ package commands;
 
 import controllers.routes;
 import dto.LinkedAccount;
+import mappers.LinkedAccountMapper;
 import play.inject.Injector;
 import play.mvc.Call;
 import play.mvc.Http.Context;
@@ -18,13 +19,13 @@ public class RevertDeleteLinkedAccountCommand implements Command<models.LinkedAc
    */
   @Override
   public RevertDeleteLinkedAccountCommand with(models.LinkedAccount linkedAccount) {
-    this.linkedAccount = LinkedAccount.from(linkedAccount);
+    this.linkedAccount = LinkedAccountMapper.toDto(linkedAccount);
     return this;
   }
 
   @Override
   public void execute(Injector injector) {
-    injector.instanceOf(LinkedAccountService.class).update(linkedAccount.toModel());
+    injector.instanceOf(LinkedAccountService.class).update(LinkedAccountMapper.toModel(linkedAccount));
   }
 
   /**

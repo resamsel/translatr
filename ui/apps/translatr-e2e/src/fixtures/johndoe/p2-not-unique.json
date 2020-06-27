@@ -1,0 +1,42 @@
+{
+  "error": {
+    "type": "ConstraintViolationException",
+    "message": "Constraint violations detected",
+    "violations": [
+      {
+        "message": "Project name must be unique",
+        "field": "name",
+        "invalidValue": {
+          "project": {
+            "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+            "deleted": false,
+            "owner": {
+              "id": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+              "whenCreated": "2019-05-10T20:18:47.691Z",
+              "whenUpdated": "2019-05-10T20:25:36.988Z",
+              "active": true,
+              "username": "johndoe",
+              "name": "John Doe",
+              "email": "john.doe@gmail.com",
+              "emailValidated": false,
+              "role": "Admin",
+              "roles": [
+                "User"
+              ],
+              "admin": true,
+              "providers": [
+                "keycloak"
+              ],
+              "identifier": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+              "complete": true,
+              "permissions": []
+            },
+            "name": "nine",
+            "description": "",
+            "wordCount": null
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+<ng-container *transloco="let t">
+  <user-card [user]="user$ | async">
+    <p class="email ellipsis">
+      <mat-icon inline="true">email</mat-icon>
+      <span [matTooltip]="(user$ | async)?.email">{{ (user$ | async)?.email }}</span>
+    </p>
+    <p class="when-created ellipsis">
+      <mat-icon inline="true">access_time</mat-icon>
+      <span [matTooltip]="(user$ | async)?.whenCreated | date">{{
+        (user$ | async)?.whenCreated | amTimeAgo
+        }}</span>
+    </p>
+  </user-card>
+
+  <div class="container-inner flex">
+    <dev-metric
+      [name]="t('projects.title')"
+      routerLink="projects"
+      [value]="(projects$ | async)?.total | shortNumber"
+      icon="library_books"
+      class="project count"
+    ></dev-metric>
+
+    <dev-metric
+      [name]="t('activity')"
+      [routerLink]="activityLink$ | async"
+      [value]="(activities$ | async)?.total | shortNumber"
+      icon="change_history"
+      class="activity count"
+    ></dev-metric>
+
+    <section>
+      <h2 transloco="projects.recent.title">Recent Projects</h2>
+      <div class="project-list">
+        <app-project-card-list
+          [projects]="projects$ | async"
+          [canCreate]="canCreateProject$ | async"
+          showMoreLink="projects"
+          (create)="openProjectCreationDialog()"
+        ></app-project-card-list>
+      </div>
+      <div class="clearfix"></div>
+    </section>
+
+    <section *ngIf="canReadActivity$ | async">
+      <h2 transloco="activity">Activity</h2>
+      <app-activity-list
+        [activities]="activities$ | async"
+        showMoreLink="activity"
+        relativeTo="user"
+      ></app-activity-list>
+    </section>
+  </div>
+</ng-container>

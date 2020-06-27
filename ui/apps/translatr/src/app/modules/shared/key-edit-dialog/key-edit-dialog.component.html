@@ -1,0 +1,31 @@
+<h1 *ngIf="!form.value.id" mat-dialog-title transloco="key.create.title">Add Key</h1>
+<h1 *ngIf="form.value.id" mat-dialog-title transloco="key.edit.title">Edit Key</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field class="name">
+      <input
+        matInput
+        #name
+        type="text"
+        [placeholder]="'key.name' | transloco"
+        cdkFocusInitial
+        formControlName="name"
+      />
+      <mat-error
+        *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
+      >{{ nameFormControl.errors['violation'] }}</mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div class="dialog-actions" mat-dialog-actions>
+  <button
+    [disabled]="form.invalid || processing"
+    mat-flat-button
+    color="primary"
+    class="save"
+    transloco="button.save"
+    (click)="onSave()"
+  >Save
+  </button>
+  <button class="cancel" mat-button mat-dialog-close transloco="button.cancel">Cancel</button>
+</div>

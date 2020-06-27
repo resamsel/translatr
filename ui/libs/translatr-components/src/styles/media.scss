@@ -1,0 +1,98 @@
+@import 'mixins';
+
+/*
+ * Media query for medium screens
+ */
+@include medium {
+  .container {
+    padding: 16px;
+    margin: 0 auto;
+    width: 85%;
+
+    &.narrow {
+      width: 65%;
+      max-width: 480px;
+    }
+
+    > * {
+      margin: 4px;
+
+      &.mat-card {
+        max-width: calc(100% - 32px - 8px);
+      }
+    }
+  }
+
+  .container-inner {
+    > * {
+      margin: 4px;
+    }
+  }
+
+  .flex {
+    > .small {
+      flex: 1 auto;
+      width: 25%;
+    }
+
+    > .metric {
+      flex: 1 auto;
+      width: 45%;
+    }
+  }
+
+  .mat-sidenav.mat-drawer:not(.mat-drawer-side) {
+    z-index: 1;
+    box-shadow: none;
+    background: transparent;
+    top: 64px;
+  }
+
+  .light-theme .mat-drawer-backdrop.mat-drawer-shown {
+    display: none;
+  }
+}
+
+/*
+ * Media query for large screens
+ */
+@include large {
+  .container {
+    width: 90%;
+    max-width: 1024px;
+    padding: 16px 0;
+
+    &.narrow {
+      width: 70%;
+    }
+
+    > * {
+      margin: 8px;
+
+      &.mat-card {
+        max-width: calc(100% - 32px - 16px);
+      }
+    }
+  }
+
+  .container-inner {
+    > * {
+      margin: 8px;
+    }
+  }
+
+  .flex {
+    > .metric {
+      width: 20%;
+    }
+  }
+}
+
+/*
+ * Media query for extra large screens
+ */
+@include extra-large {
+  .container.narrow {
+    width: 50%;
+  }
+}

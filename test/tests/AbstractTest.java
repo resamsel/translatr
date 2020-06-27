@@ -15,6 +15,7 @@ import play.api.inject.Binding;
 import play.cache.CacheApi;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.test.WithApplication;
+import services.AuthProvider;
 import services.UserService;
 
 /**
@@ -25,6 +26,7 @@ public class AbstractTest extends WithApplication {
 
   protected UserService userService;
   protected CacheApi cache;
+  protected AuthProvider authProvider;
 
   protected User createUser(String name, String email) {
     return userService.create(new User().withName(name).withEmail(email).withActive(true));
@@ -38,10 +40,14 @@ public class AbstractTest extends WithApplication {
 
   protected Binding<?>[] createBindings() {
     cache = Mockito.mock(CacheApi.class);
+    authProvider = Mockito.mock(AuthProvider.class);
 
     prepareCache(cache);
 
-    return new Binding[]{bind(CacheApi.class).toInstance(cache)};
+    return new Binding[]{
+        bind(CacheApi.class).toInstance(cache),
+        bind(AuthProvider.class).toInstance(authProvider)
+    };
   }
 
   protected void prepareCache(CacheApi cache) {

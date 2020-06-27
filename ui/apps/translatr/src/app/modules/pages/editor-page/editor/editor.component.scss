@@ -1,0 +1,216 @@
+@import '~@angular/material/theming';
+@import 'theme';
+@import 'mixins';
+
+@mixin editor-theme($theme) {
+  $accent: map-get($theme, accent);
+  $accent-color: mat-color($accent);
+
+  :host {
+    .sidebar .nav-list ::ng-deep a.active {
+      background: $accent-color;
+      color: white;
+    }
+  }
+}
+
+.main {
+  flex-grow: 1;
+  max-width: 100%;
+
+  @include medium {
+    display: flex;
+    flex-direction: row;
+    max-height: calc(100vh - 64px);
+    overflow: hidden;
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+
+  ::ng-deep .mat-form-field-infix {
+    width: auto;
+  }
+
+  a {
+    .translation {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .nav-list {
+    max-height: 100%;
+    overflow-x: hidden;
+  }
+
+  @include medium {
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+    max-width: 33.33%;
+    flex: 1 1 100%;
+  }
+
+  @include large {
+    max-width: 16.67%;
+  }
+}
+
+.editor {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: column;
+  z-index: 0;
+
+  .buttons {
+    order: 2;
+    padding: 8px;
+    min-height: 36px;
+
+    h2 {
+      margin: 0 8px;
+      font-size: 14px;
+      line-height: 36px;
+    }
+
+    .mat-raised-button {
+      margin-left: 8px;
+    }
+
+    .button-group {
+      border-radius: 4px;
+      white-space: nowrap;
+
+      .mat-button-base {
+        margin-left: 0;
+        box-shadow: none;
+
+        &:first-of-type {
+          border-radius: 4px 0 0 4px;
+        }
+
+        &:last-of-type {
+          border-radius: 0 4px 4px 0;
+        }
+      }
+
+      .menu-button {
+        padding: 0;
+        min-width: auto;
+      }
+    }
+  }
+
+  .content {
+    background: #fff;
+    flex-grow: 1;
+    max-height: 100%;
+    overflow: hidden;
+    border: solid rgba(0, 0, 0, 0.1);
+    border-width: 1px 0;
+
+    ::ng-deep .CodeMirror {
+      min-height: 100%;
+
+      .CodeMirror-gutters {
+        border-right: none;
+        //background: transparent;
+      }
+    }
+  }
+
+  @include medium {
+    .mat-divider {
+      display: none;
+    }
+  }
+
+  @include large {
+    width: 25%;
+  }
+}
+
+.editor-empty {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: column;
+  z-index: 0;
+}
+
+.meta {
+  display: none;
+  flex: 1 1 100%;
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
+  width: 100%;
+
+  ::ng-deep .mat-tab-label {
+    height: 52px;
+  }
+
+  .mat-tab-group {
+    ::ng-deep {
+      .mat-tab-body-wrapper {
+        flex: 1 0 100%;
+      }
+    }
+  }
+
+  .preview {
+    p {
+      padding: 8px 16px;
+    }
+  }
+
+  .translation {
+    height: auto;
+    margin: 8px;
+
+    .mat-card-content {
+      max-height: 216px;
+      overflow: hidden;
+      overflow-y: auto;
+    }
+  }
+
+  @include large {
+    width: 25%;
+
+    .translation {
+      margin: 16px;
+    }
+  }
+}
+
+@include medium {
+  :host ::ng-deep {
+    .main-container {
+      display: flex;
+    }
+
+    app-footer {
+      display: none;
+    }
+  }
+
+  .sidebar {
+  }
+
+  .mat-tab-group {
+    flex-grow: 1;
+
+    ::ng-deep .mat-tab-body-content {
+      height: calc(100% - 53px);
+    }
+  }
+}
+
+.selected {
+  @include large {
+    .meta {
+      display: flex;
+    }
+  }
+}
+
+@include editor-theme($app-theme);

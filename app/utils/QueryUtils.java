@@ -1,12 +1,11 @@
 package utils;
 
 import com.avaje.ebean.Query;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.google.common.collect.ImmutableMap;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -14,9 +13,13 @@ import java.util.stream.Stream;
  * @version 24 Mar 2017
  */
 public class QueryUtils {
+  private static final Map<String, String> DIRECTION_MAP = ImmutableMap.of(
+          "asc", "asc",
+          "desc", "desc"
+  );
 
   public static <T> Query<T> fetch(Query<T> query, String[] propertiesToFetch,
-      Map<String, List<String>> fetchMap) {
+                                   Map<String, List<String>> fetchMap) {
     return fetch(query, Arrays.asList(propertiesToFetch), fetchMap);
   }
 
@@ -65,11 +68,49 @@ public class QueryUtils {
   }
 
   private static Set<String> mergeFetches(List<String> propertiesToFetch,
-      Collection<String> fetches) {
+                                          Collection<String> fetches) {
     HashSet<String> fetchSet = new HashSet<>(propertiesToFetch);
     if (fetches != null && fetches.size() > 0) {
       fetchSet.addAll(fetches);
     }
     return fetchSet;
+  }
+
+  /**
+   * Supports one single order column.
+   *
+   * @param order the order to map
+   * @return the mapped order string
+   */
+  @CheckForNull
+  public static String mapOrder(@CheckForNull String order, @Nonnull Map<String, String> orderMap) {
+    if (order == null) {
+      return null;
+    }
+
+    String[] parts = order.split(" ");
+
+    if (parts.length > 0) {
+      String column = orderMap.get(parts[0]);
+
+      if (column == null) {
+        // column not found or not allowed
+        return null;
+      }
+
+      String direction = "asc";
+      if (parts.length > 1) {
+        direction = DIRECTION_MAP.get(parts[1]);
+
+        if (direction == null) {
+          // direction not supported
+          return null;
+        }
+      }
+
+      return column + " " + direction;
+    }
+
+    return null;
   }
 }

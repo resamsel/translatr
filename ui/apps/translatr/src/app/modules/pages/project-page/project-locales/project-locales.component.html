@@ -1,0 +1,13 @@
+<div class="container">
+  <app-locale-list
+    [project]="project$ | async"
+    [locales]="locales$ | async"
+    [criteria]="criteria$ | async"
+    [canCreate]="canModify$ | async"
+    [canDelete]="canModify$ | async"
+    (fetch)="onFetch($event)"
+    (edit)="onEdit($event)"
+    (delete)="onDelete($event)"
+  >
+  </app-locale-list>
+</div>

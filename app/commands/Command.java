@@ -1,8 +1,9 @@
 package commands;
 
-import java.io.Serializable;
 import play.inject.Injector;
 import play.mvc.Call;
+
+import java.io.Serializable;
 
 public interface Command<T> extends Serializable {
   Command<T> with(T t);

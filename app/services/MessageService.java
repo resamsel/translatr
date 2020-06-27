@@ -2,11 +2,12 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import criterias.MessageCriteria;
-import java.util.List;
-import java.util.UUID;
 import models.Message;
 import models.Project;
 import services.impl.MessageServiceImpl;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  *

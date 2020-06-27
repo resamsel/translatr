@@ -5,12 +5,10 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.StreamResponse;
+import models.ActionType;
+
 import java.io.IOException;
 import java.util.UUID;
-import models.ActionType;
-import models.LogEntry;
-import models.Project;
-import models.User;
 
 public interface NotificationService {
   boolean isEnabled();

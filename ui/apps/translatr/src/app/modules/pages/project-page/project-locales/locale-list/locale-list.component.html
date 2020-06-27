@@ -1,0 +1,107 @@
+<ng-container *transloco="let t">
+  <app-nav-list
+    *ngIf="project"
+    [pagedList]="locales"
+    [criteria]="criteria"
+    [empty]="empty"
+    [nothingFound]="nothingFound"
+    [canCreate]="canCreate"
+    showFilter="true"
+    [addTooltip]="t('locale.create.tooltip')"
+    (create)="openLocaleDialog({projectId: project.id})"
+    (filter)="onFilter($event)"
+  >
+    <a
+      *ngFor="let locale of locales?.list; trackBy: trackByFn"
+      [routerLink]="[
+        '/',
+        project.ownerUsername,
+        project.name,
+        'locales',
+        locale.name
+      ]"
+      mat-list-item
+    >
+      <mat-icon class="locale circle" matListIcon>language</mat-icon>
+      <h3 matLine>{{ locale.displayName }} <span class="sub-title">{{ locale.name }}</span></h3>
+      <mat-progress-bar
+        *ngIf="locale.progress !== undefined"
+        mode="determinate"
+        color="accent"
+        [value]="locale.progress * 100"
+        [matTooltip]="t('locale.progress.tooltip', {progress: locale.progress * 100 | number:'1.0-1'})"
+        matLine
+      ></mat-progress-bar>
+      <a
+        (click)="$event.stopPropagation(); $event.preventDefault()"
+        [matMenuTriggerFor]="menu"
+        [matTooltip]="t('locale.download.button')"
+        class="download"
+        mat-icon-button
+      >
+        <mat-icon>cloud_download</mat-icon>
+      </a>
+      <mat-menu #menu="matMenu">
+        <a
+          *ngFor="let fileType of fileTypes"
+          href="/api/locale/{{locale.id}}/export/{{fileType.type}}"
+          mat-menu-item
+        >{{fileType.name}}</a>
+      </mat-menu>
+      <button
+        *ngIf="canCreate"
+        (click)="onEdit(locale, $event)"
+        class="edit"
+        [matTooltip]="t('button.edit')"
+        mat-icon-button
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <confirm-button
+        *ngIf="canDelete"
+        [tooltip]="t('button.delete')"
+        icon="delete"
+        class="delete"
+        (confirm)="onDelete(locale)"
+      ></confirm-button>
+    </a>
+  </app-nav-list>
+
+  <ng-template #empty>
+    <dev-empty-view icon="language" justifyContent="center">
+      <dev-empty-view-header transloco="locales.teaser.title">No languages defined</dev-empty-view-header>
+      <dev-empty-view-content transloco="locales.teaser.text">
+        It seems there are no languages defined, yet - would you like to add one now?
+      </dev-empty-view-content>
+      <dev-empty-view-actions>
+        <button
+          *ngIf="canCreate"
+          (click)="openLocaleDialog({projectId: project.id})"
+          color="accent"
+          transloco="locale.create.button"
+          mat-raised-button
+        >Add language
+        </button>
+      </dev-empty-view-actions>
+    </dev-empty-view>
+  </ng-template>
+
+  <ng-template #nothingFound>
+    <dev-empty-view icon="language" justifyContent="center">
+      <dev-empty-view-header transloco="locales.notfound.title">No languages found</dev-empty-view-header>
+      <dev-empty-view-content transloco="locales.notfound.text">
+        Could not find any locales with the given filter. Try removing some filters or create a new language.
+      </dev-empty-view-content>
+      <dev-empty-view-actions>
+        <button
+          *ngIf="canCreate && criteria.search"
+          (click)="openLocaleDialog({projectId: project.id, name: criteria.search})"
+          color="accent"
+          transloco="locale.create.button"
+          mat-raised-button
+        >Add language
+        </button>
+      </dev-empty-view-actions>
+    </dev-empty-view>
+  </ng-template>
+</ng-container>

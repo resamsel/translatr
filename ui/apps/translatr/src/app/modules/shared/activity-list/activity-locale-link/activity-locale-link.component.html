@@ -1,0 +1,9 @@
+<ng-container *ngIf="localeLink">
+  <span transloco="locale">Locale</span>:
+  <a
+    [routerLink]="localeLink"
+    class="link"
+    transloco="locale.displayName"
+    [translocoParams]="{name: locale.name, displayName: locale.displayName}"
+  >{{ locale.displayName }} ({{ locale.name }})</a>
+</ng-container>

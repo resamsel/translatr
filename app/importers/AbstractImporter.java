@@ -1,15 +1,7 @@
 package importers;
 
-import static java.util.stream.Collectors.toMap;
-
 import criterias.KeyCriteria;
 import criterias.MessageCriteria;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import models.Key;
 import models.Locale;
 import models.Message;
@@ -18,6 +10,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.KeyService;
 import services.MessageService;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author resamsel
@@ -49,7 +52,7 @@ public abstract class AbstractImporter implements Importer {
   public void apply(File file, Locale locale) throws Exception {
     LOGGER.debug("Importing from file {}", file.getName());
 
-    Properties properties = retrieveProperties(file, locale);
+    Properties properties = retrieveProperties(new FileInputStream(file), locale);
 
     load(locale, properties.stringPropertyNames());
 
@@ -59,13 +62,24 @@ public abstract class AbstractImporter implements Importer {
     LOGGER.debug("Imported from file {}", file.getName());
   }
 
-  protected abstract Properties retrieveProperties(File file, Locale locale) throws Exception;
+  abstract Properties retrieveProperties(InputStream stream, Locale locale) throws Exception;
 
   protected void load(Locale locale, Collection<String> keyNames) {
-    keys = keyService.findBy(new KeyCriteria().withProjectId(locale.project.id).withNames(keyNames))
-        .getList().stream().collect(toMap(k -> k.name, a -> a));
-    messages = messageService.findBy(new MessageCriteria().withLocaleId(locale.id)).getList()
-        .stream().collect(toMap(m -> m.key.name, a -> a));
+    keys = keyService.findBy(
+        new KeyCriteria()
+            .withLimit(Integer.MAX_VALUE)
+            .withProjectId(locale.project.id)
+            .withNames(keyNames))
+        .getList()
+        .stream()
+        .collect(toMap(k -> k.name, a -> a));
+    messages = messageService.findBy(
+        new MessageCriteria()
+            .withLimit(Integer.MAX_VALUE)
+            .withLocaleId(locale.id))
+        .getList()
+        .stream()
+        .collect(toMap(m -> m.key.name, a -> a));
   }
 
   void saveKeys(Locale locale, Properties properties) {

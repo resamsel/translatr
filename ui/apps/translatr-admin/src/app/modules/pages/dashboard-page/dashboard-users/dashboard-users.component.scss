@@ -1,0 +1,32 @@
+.header {
+  background-color: #1976d2;
+
+  &.header-graphic {
+    background-image: url(assets/headers/stripes.svg);
+  }
+}
+
+.mat-form-field,
+table,
+.mat-button {
+  width: 100%;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+
+  img {
+    margin-right: 4px;
+  }
+}
+
+.mat-form-field {
+  font-size: 14px;
+}
+
+.actions {
+  text-align: center;
+  width: 1px;
+  white-space: nowrap;
+}

@@ -1,0 +1,47 @@
+<mat-toolbar [class.mat-elevation-z2]="elevated" [color]="overlay ? undefined : 'primary'">
+  <ng-container>
+    <mat-toolbar-row>
+      <button
+        *ngIf="sidenav"
+        mat-icon-button
+        class="burger"
+        (click)="sidenav.toggle()"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+      <ng-container *ngIf="backLink; else logo">
+        <a
+          *ngIf="!sidenav"
+          mat-icon-button
+          [routerLink]="backLink.routerLink"
+          class="logo"
+          [matTooltip]="backLink.name"
+        >
+          <mat-icon>arrow_back</mat-icon>
+        </a>
+        <a [class.has-page]="!overlay && page" [routerLink]="backLink.routerLink" class="title">
+          <span>{{ backLink.name }}</span>
+        </a>
+      </ng-container>
+      <ng-template #logo>
+        <a *ngIf="showLogo && !sidenav" class="logo" mat-icon-button routerLink="/">
+          <mat-icon>translate</mat-icon>
+        </a>
+        <a *ngIf="showLogo" [class.has-page]="!overlay && page" class="title" routerLink="/">
+          <span>{{ title }}</span>
+        </a>
+      </ng-template>
+      <span *ngIf="!overlay && page" class="page">{{ page }}</span>
+
+      <ng-content select="app-search-bar"></ng-content>
+      <ng-content select="dev-filter-field"></ng-content>
+
+      <div class="flex-spacer"></div>
+
+      <ng-content></ng-content>
+    </mat-toolbar-row>
+  </ng-container>
+  <ng-container>
+    <ng-content select="mat-toolbar-row"></ng-content>
+  </ng-container>
+</mat-toolbar>

@@ -1,0 +1,64 @@
+<ng-container *transloco="let t">
+  <app-nav-list
+    *ngIf="project"
+    [canCreate]="canCreate"
+    [criteria]="criteria"
+    (create)="onAdd(project)"
+    [filters]="filters"
+    [pagedList]="members"
+    [addTooltip]="t('member.create.tooltip')"
+    [showFilter]="true"
+    (filter)="onFilter($event)"
+  >
+    <a
+      *ngFor="let member of members?.list"
+      [routerLink]="['/', member.userUsername]"
+      mat-list-item
+    >
+      <img
+        class="icon"
+        matListIcon
+        ngxGravatar
+        [md5Hash]="member.userEmailHash"
+        size="36"
+        [round]="false"
+        cornerRadius="6"
+      />
+      <h3 matLine>{{ member.userName }}
+        <span class="sub-title" transloco="member.role.value"
+              [translocoParams]="{role: member.role.toString()}">{{ member.role }}</span></h3>
+      <p class="sub-title" matLine>
+        <span transloco="when.added">Added</span>&nbsp;
+        <span [matTooltip]="member?.whenCreated | date: 'full'">{{ member?.whenCreated | amTimeAgo }}</span>
+      </p>
+
+      <button
+        *ngIf="canTransferOwnership && member.userId === project.ownerId && ownerCount > 1; else modify"
+        [matTooltip]="t('project.transferOwnership.button')"
+        class="edit"
+        mat-icon-button
+        (click)="onTransferOwnership($event)"
+      >
+        <mat-icon>swap_horiz</mat-icon>
+      </button>
+      <ng-template #modify>
+        <button
+          *ngIf="canCreate && (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1)) && (canTransferOwnership || member.userId !== project.ownerId)"
+          mat-icon-button
+          class="edit"
+          [matTooltip]="t('button.edit')"
+          (click)="onEdit(member, $event)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <confirm-button
+          *ngIf="canDelete && (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1)) && (canTransferOwnership || member.userId !== project.ownerId)"
+          [tooltip]="t('button.delete')"
+          class="delete"
+          icon="delete"
+          (confirm)="onDelete(member)"
+        ></confirm-button>
+      </ng-template>
+    </a>
+  </app-nav-list>
+</ng-container>

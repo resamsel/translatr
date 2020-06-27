@@ -1,22 +1,27 @@
 package repositories.impl;
 
-import akka.actor.ActorRef;
-import com.avaje.ebean.Ebean;
+import actors.ActivityActorRef;
+import com.avaje.ebean.Query;
 import criterias.AbstractSearchCriteria;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
+import criterias.ContextCriteria;
+import criterias.GetCriteria;
+import models.Model;
+import org.apache.commons.lang3.NotImplementedException;
+import org.postgresql.util.PSQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import repositories.ModelRepository;
+import repositories.Persistence;
+import services.AuthProvider;
+
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
-import models.Model;
-import org.postgresql.util.PSQLException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import repositories.ModelRepository;
-import utils.TransactionUtils;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author resamsel
@@ -27,12 +32,41 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelRepository.class);
 
-  protected final Validator validator;
-  final ActorRef activityActor;
+  public static final String FETCH_COUNT = "count";
 
-  AbstractModelRepository(Validator validator, ActorRef activityActor) {
+  protected final Persistence persistence;
+  protected final Validator validator;
+  protected final AuthProvider authProvider;
+  final ActivityActorRef activityActor;
+
+  AbstractModelRepository(Persistence persistence, Validator validator, AuthProvider authProvider, ActivityActorRef activityActor) {
+    this.persistence = persistence;
     this.validator = validator;
+    this.authProvider = authProvider;
     this.activityActor = activityActor;
+  }
+
+  public MODEL byId(GetCriteria<ID> criteria) {
+    return fetch(
+        createQuery(criteria)
+            .setId(criteria.getId())
+            .findUnique(),
+        criteria
+    );
+  }
+
+  /**
+   * Creates the query given on the info of this fetch criteria.
+   */
+  protected Query<MODEL> createQuery(ContextCriteria criteria) {
+    throw new NotImplementedException("fetchQuery(FetchCriteria)");
+  }
+
+  /**
+   * Additional fetches for this model as listed in the criteria.
+   */
+  protected MODEL fetch(MODEL model, ContextCriteria criteria) {
+    return model;
   }
 
   /**
@@ -86,7 +120,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
   @Override
   public MODEL save(MODEL t) {
-    boolean update = !Ebean.getBeanState(t).isNew();
+    boolean update = !persistence.isNew(t);
 
     preSave(t, update);
 
@@ -103,8 +137,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
   @Override
   public MODEL persist(MODEL t) {
-    Ebean.save(t);
-    // Ebean.refresh(t);
+    persistence.save(t);
     return t;
   }
 
@@ -132,12 +165,13 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
   }
 
   protected Collection<MODEL> persist(Collection<MODEL> t) throws Exception {
-    TransactionUtils.batchExecute((tx) -> Ebean.saveAll(t));
+    persistence.batchExecute((tx) -> persistence.saveAll(t));
 
     return t;
   }
 
   protected void preSave(Collection<MODEL> t) {
+    t.forEach(persistence::markAsDirty);
   }
 
   protected void postSave(Collection<MODEL> t) {
@@ -146,7 +180,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
   @Override
   public void delete(MODEL t) {
     preDelete(t);
-    Ebean.delete(t);
+    persistence.delete(t);
     postDelete(t);
   }
 
@@ -160,7 +194,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
   public void delete(Collection<MODEL> t) {
     try {
       preDelete(t);
-      TransactionUtils.batchExecute((tx) -> Ebean.deleteAll(t));
+      persistence.batchExecute((tx) -> persistence.deleteAll(t));
       postDelete(t);
     } catch (Exception e) {
       LOGGER.error("Error while batch deleting entities", e);

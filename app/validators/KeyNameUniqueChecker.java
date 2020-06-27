@@ -1,9 +1,10 @@
 package validators;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import models.Key;
 import repositories.KeyRepository;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * @author resamsel

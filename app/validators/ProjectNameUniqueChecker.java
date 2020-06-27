@@ -1,11 +1,12 @@
 package validators;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import models.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.ProjectService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * @author resamsel

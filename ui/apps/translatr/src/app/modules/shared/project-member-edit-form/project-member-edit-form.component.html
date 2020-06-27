@@ -1,0 +1,41 @@
+<form [formGroup]="form">
+  <section class="user">
+    <mat-form-field>
+      <mat-label transloco="user">User</mat-label>
+      <input
+        matInput
+        type="text"
+        cdkFocusInitial
+        formControlName="user"
+        [matAutocomplete]="auto"
+        [readonly]="userFormControl.value.id !== undefined">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+        <mat-option *ngFor="let user of users" [value]="user">
+          {{ user.username }} -- {{ user.name }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error
+        *ngIf="userFormControl.invalid && userFormControl.errors['violation']">
+        {{ userFormControl.errors['violation'] }}</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label transloco="member.role">Role</mat-label>
+      <mat-select [disabled]="roleFormControl.value === 'Owner' && !canModifyOwner" formControlName="role">
+        <mat-option
+          *ngFor="let role of roles"
+          [disabled]="role === 'Owner' && !canModifyOwner"
+          [value]="role"
+          transloco="member.role.value"
+          [translocoParams]="{role: role}"
+        >{{role}}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="roleFormControl.invalid && roleFormControl.errors['violation']"
+      >
+        {{ roleFormControl.errors['violation'] }}
+      </mat-error>
+    </mat-form-field>
+  </section>
+
+  <ng-content></ng-content>
+</form>

@@ -9,7 +9,12 @@ public class CacheUtils {
     }
 
     if (fetches.length > 0) {
-      return String.format("%s:%s:%s", prefix, String.valueOf(id), StringUtils.join(fetches, ":"));
+      return String.format(
+          "%s:%s:%s",
+          prefix,
+          String.valueOf(id),
+          StringUtils.join(fetches, ":")
+      );
     }
 
     return String.format("%s:%s", prefix, String.valueOf(id));

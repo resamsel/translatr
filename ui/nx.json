@@ -1,0 +1,68 @@
+{
+  "npmScope": "dev",
+  "implicitDependencies": {
+    "angular.json": "*",
+    "package.json": "*",
+    "tsconfig.json": "*",
+    "tslint.json": "*",
+    "nx.json": "*"
+  },
+  "projects": {
+    "translatr": {
+      "tags": [
+        "app"
+      ]
+    },
+    "translatr-e2e": {
+      "tags": [
+        "e2e"
+      ]
+    },
+    "translatr-admin": {
+      "tags": [
+        "app"
+      ]
+    },
+    "translatr-admin-e2e": {
+      "tags": [
+        "e2e"
+      ]
+    },
+    "translatr-sdk": {
+      "tags": [
+        "lib",
+        "api"
+      ]
+    },
+    "translatr-components": {
+      "tags": [
+        "lib"
+      ]
+    },
+    "translatr-model": {
+      "tags": [
+        "lib"
+      ]
+    },
+    "generator": {
+      "tags": [
+        "lib"
+      ]
+    },
+    "utils": {
+      "tags": [
+        "utils"
+      ]
+    },
+    "node-utils": {
+      "tags": [
+        "utils"
+      ]
+    },
+    "cli-generate": {
+      "tags": [
+        "app"
+      ]
+    }
+  }
+}

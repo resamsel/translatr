@@ -6,13 +6,20 @@ import criterias.AbstractSearchCriteria;
 import dto.Dto;
 import dto.DtoPagedList;
 import dto.NotFoundException;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import models.Model;
 import models.Scope;
+import play.libs.Json;
 import services.ModelService;
 import services.PermissionService;
 import services.api.ApiService;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author resamsel
@@ -24,22 +31,38 @@ public abstract class AbstractApiService
     implements ApiService<DTO, ID, CRITERIA> {
 
   protected SERVICE service;
-  private Class<DTO> dtoClass;
+  private final Class<DTO> dtoClass;
   Function<MODEL, DTO> dtoMapper;
   Scope[] readScopes;
-  private Scope[] writeScopes;
+  private final Scope[] writeScopes;
   protected final PermissionService permissionService;
+  private final Validator validator;
 
-  protected AbstractApiService(SERVICE service, Class<DTO> dtoClass,
-      Function<MODEL, DTO> dtoMapper, Scope[] readScopes, Scope[] writeScopes,
-      PermissionService permissionService) {
-
+  protected AbstractApiService(
+      SERVICE service,
+      Class<DTO> dtoClass,
+      Function<MODEL, DTO> dtoMapper,
+      Scope[] readScopes,
+      Scope[] writeScopes,
+      PermissionService permissionService,
+      Validator validator
+  ) {
     this.service = service;
     this.dtoClass = dtoClass;
     this.dtoMapper = dtoMapper;
     this.readScopes = readScopes;
     this.writeScopes = writeScopes;
     this.permissionService = permissionService;
+    this.validator = validator;
+  }
+
+  /**
+   * May be overridden to prepare the wrapper for dealing with the current request.
+   *
+   * @return the DTO mapper
+   */
+  protected Function<MODEL, DTO> getDtoMapper() {
+    return dtoMapper;
   }
 
   /**
@@ -52,13 +75,13 @@ public abstract class AbstractApiService
 
   @Override
   public PagedList<DTO> find(CRITERIA criteria, Consumer<CRITERIA> validator) {
+    permissionService.checkPermissionAll("Access token not allowed", readScopes);
+
     if (validator != null) {
       validator.accept(criteria);
     }
 
-    permissionService.checkPermissionAll("Access token not allowed", readScopes);
-
-    return new DtoPagedList<>(service.findBy(criteria), dtoMapper);
+    return new DtoPagedList<>(service.findBy(criteria), getDtoMapper());
   }
 
   /**
@@ -74,7 +97,7 @@ public abstract class AbstractApiService
       throw new NotFoundException(dtoClass.getSimpleName(), id);
     }
 
-    return dtoMapper.apply(obj);
+    return getDtoMapper().apply(obj);
   }
 
   /**
@@ -84,7 +107,7 @@ public abstract class AbstractApiService
   public DTO create(JsonNode in) {
     permissionService.checkPermissionAll("Access token not allowed", writeScopes);
 
-    return dtoMapper.apply(service.create(toModel(in)));
+    return getDtoMapper().apply(service.create(toModel(toDto(in))));
   }
 
   /**
@@ -94,7 +117,7 @@ public abstract class AbstractApiService
   public DTO update(JsonNode in) {
     permissionService.checkPermissionAll("Access token not allowed", writeScopes);
 
-    return dtoMapper.apply(service.update(toModel(in)));
+    return getDtoMapper().apply(service.update(toModel(toDto(in))));
   }
 
   /**
@@ -110,12 +133,28 @@ public abstract class AbstractApiService
       throw new NotFoundException(dtoClass.getSimpleName(), id);
     }
 
-    DTO out = dtoMapper.apply(m);
+    DTO out = getDtoMapper().apply(m);
 
     service.delete(m);
 
     return out;
   }
 
-  protected abstract MODEL toModel(JsonNode json);
+  private DTO toDto(JsonNode json) {
+    DTO dto = Json.fromJson(json, dtoClass);
+
+    Set<ConstraintViolation<DTO>> violations = validator.validate(dto);
+
+    if (!violations.isEmpty()) {
+      throw new ConstraintViolationException(
+          "Constraint violations detected: " + violations.stream().map(Object::toString).collect(
+              Collectors.joining(",")),
+          violations
+      );
+    }
+
+    return dto;
+  }
+
+  protected abstract MODEL toModel(DTO dto);
 }

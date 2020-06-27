@@ -5,22 +5,23 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import commands.Command;
 import converters.ActivityCsvConverter;
 import criterias.LogEntryCriteria;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.Configuration;
-import play.cache.CacheApi;
+import play.api.mvc.Action;
+import play.api.mvc.AnyContent;
 import play.inject.Injector;
-import play.mvc.Call;
-import play.mvc.Http;
-import play.mvc.Result;
-import play.mvc.With;
+import play.mvc.*;
 import play.routing.JavaScriptReverseRouter;
 import services.CacheService;
 import utils.ConfigKey;
 import utils.Template;
+
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 /**
  * This controller contains an action to handle HTTP requests to the application's home page.
@@ -28,30 +29,59 @@ import utils.Template;
 @With(ContextAction.class)
 public class Application extends AbstractController {
 
-  public static final String USER_ROLE = "user";
+  private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
   private final Configuration configuration;
+  private final Assets assets;
 
   @Inject
   public Application(Injector injector, Configuration configuration, CacheService cache,
-      PlayAuthenticate auth) {
+                     PlayAuthenticate auth, Assets assets) {
     super(injector, cache, auth);
 
     this.configuration = configuration;
+    this.assets = assets;
   }
 
   public CompletionStage<Result> index() {
-    return tryCatch(() -> ok(views.html.index.render(createTemplate())));
+    return tryCatch(routes.Application::indexUi).thenApply(Results::redirect);
+  }
+
+  public Action<AnyContent> indexUi() {
+    return assets.at("/public/ui", "index.html", false);
+  }
+
+  public Action<AnyContent> assetOrDefaultUi(String resource) {
+    if (resource.matches("([^/]+|assets/i18n/[^\\.]+)(\\.[^/]+)+")) {
+      return assets.at("/public/ui", resource, false);
+    }
+
+    LOGGER.debug("Asset ''{}'' does not match regex, loading /ui", resource);
+
+    return indexUi();
+  }
+
+  public Action<AnyContent> indexAdmin() {
+    return assets.at("/public/admin", "index.html", false);
+  }
+
+  public Action<AnyContent> assetOrDefaultAdmin(String resource) {
+    if (resource.matches("([^/]+|assets/i18n/[^\\.]+)(\\.[^/]+)+")) {
+      return assets.at("/public/admin", resource, false);
+    }
+
+    LOGGER.debug("Asset ''{}'' does not match regex, loading /admin", resource);
+
+    return indexAdmin();
   }
 
   public CompletionStage<Result> login() {
     return tryCatch(() -> {
       List<String> providers = Arrays
-          .asList(StringUtils.split(configuration.getString(ConfigKey.AuthProviders.key()), ","));
+              .asList(StringUtils.split(configuration.getString(ConfigKey.AuthProviders.key()), ","));
 
       if (providers.size() == 1) {
-        return redirect(
-            com.feth.play.module.pa.controllers.routes.Authenticate.authenticate(providers.get(0)));
+        return redirect(auth.getResolver().auth(providers.get(0)));
       }
 
       return ok(views.html.login.render(createTemplate(), providers));
@@ -75,7 +105,7 @@ public class Application extends AbstractController {
 
   public CompletionStage<Result> activityCsv() {
     return tryCatch(() -> ok(
-        new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria()))));
+            new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria()).getList())));
   }
 
   public CompletionStage<Result> commandExecute(String commandKey) {
@@ -110,14 +140,14 @@ public class Application extends AbstractController {
 
   public CompletionStage<Result> javascriptRoutes() {
     return tryCatch(() -> ok(
-        JavaScriptReverseRouter.create("jsRoutes", routes.javascript.Application.activityCsv(),
-            routes.javascript.Users.activityCsv(), routes.javascript.Users.activity(),
-            routes.javascript.Profiles.resetNotifications(), routes.javascript.Projects.search(),
-            routes.javascript.ProjectsApi.search(), routes.javascript.Locales.localeBy(),
-            routes.javascript.Keys.keyBy(), routes.javascript.Keys.createImmediatelyBy(),
-            routes.javascript.LocalesApi.find(), routes.javascript.KeysApi.find(),
-            routes.javascript.TranslationsApi.create(), routes.javascript.TranslationsApi.update(),
-            routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find())));
+            JavaScriptReverseRouter.create("jsRoutes", routes.javascript.Application.activityCsv(),
+                    routes.javascript.Users.activityCsv(), routes.javascript.Users.activity(),
+                    routes.javascript.Profiles.resetNotifications(), routes.javascript.Projects.search(),
+                    routes.javascript.ProjectsApi.search(), routes.javascript.Locales.localeBy(),
+                    routes.javascript.Keys.keyBy(), routes.javascript.Keys.createImmediatelyBy(),
+                    routes.javascript.LocalesApi.find(), routes.javascript.KeysApi.find(),
+                    routes.javascript.TranslationsApi.create(), routes.javascript.TranslationsApi.update(),
+                    routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find())));
   }
 
   /**

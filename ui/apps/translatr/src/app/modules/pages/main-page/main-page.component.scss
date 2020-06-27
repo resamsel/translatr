@@ -1,0 +1,140 @@
+@import '~@angular/material/theming';
+@import 'mixins';
+
+:host {
+  position: relative;
+  display: block;
+}
+
+header.header {
+  background-image: url(assets/headers/hexagon.svg);
+  height: 360px;
+  justify-content: flex-end;
+}
+
+.dashboard-card {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+}
+
+.more-button {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+.dashboard-card-content {
+  text-align: center;
+}
+
+.section.green {
+  background-color: #43a047;
+
+  .col {
+    align-items: center;
+  }
+
+  .main-header {
+    color: #fff;
+    font-weight: 300;
+  }
+}
+
+.light {
+  font-weight: 300;
+}
+
+.white-text {
+  color: #fff;
+}
+
+.green-text.text-lighten-4 {
+  color: #c8e6c9 !important;
+}
+
+.light,
+.page-footer .footer-copyright {
+  font-weight: 300;
+}
+
+.green-text {
+  color: #4caf50;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  @include medium {
+    flex-direction: row;
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-width: 100%;
+}
+
+.center {
+  text-align: center;
+}
+
+.promo {
+  .material-icons {
+    margin: 40px 0;
+    color: #43a047;
+    font-size: 7rem;
+    display: block;
+  }
+
+  @include medium {
+    padding: 0 8px;
+  }
+}
+
+:host ::ng-deep {
+  font-size: 120%;
+  line-height: 120%;
+
+  .header {
+    color: #43a047;
+    font-weight: 300;
+  }
+
+  h1 {
+    font-size: 4.2rem;
+    line-height: 110%;
+    margin: 2.1rem 0 0.68rem 0;
+
+    .material-icons {
+      float: left;
+      line-height: 110%;
+      font-size: 4.2rem;
+      margin-right: 3px;
+    }
+  }
+
+  h3 {
+    font-size: 2.92rem;
+    line-height: 110%;
+    margin: 1.46rem 0 1.168rem 0;
+  }
+
+  h4 {
+    font-size: 2.28rem;
+    line-height: 110%;
+    margin: 0.6rem 0 1.5rem 0;
+  }
+
+  h5 {
+    font-size: 1.64rem;
+    line-height: 110%;
+    margin: 0.82rem 0 0.656rem 0;
+  }
+}

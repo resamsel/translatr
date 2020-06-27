@@ -1,0 +1,19 @@
+{
+  "list": [
+    {
+      "id": "2ce77664-debe-4f94-bdb9-b36459755e91",
+      "whenCreated": "2019-04-16T18:29:27.109Z",
+      "whenUpdated": "2019-04-26T19:31:06.848Z",
+      "name": "Kala Rains!",
+      "username": "kalarains",
+      "email": "kala.rains@resamsel.com",
+      "emailHash": "7c82c564f516828cadefadeb8af971ba",
+      "role": "User"
+    }
+  ],
+  "offset": 0,
+  "limit": 1,
+  "total": 10352,
+  "hasPrev": false,
+  "hasNext": true
+}

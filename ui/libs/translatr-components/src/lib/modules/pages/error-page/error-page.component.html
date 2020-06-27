@@ -1,0 +1,16 @@
+<div class="main-container">
+  <div class="content">
+    <h2 class="error-code">
+      <mat-icon [inline]="true">{{icon}}</mat-icon>
+    </h2>
+    <h3 class="error-header">
+      <ng-content select="dev-error-page-header"></ng-content>
+    </h3>
+    <p class="error-message">
+      <ng-content select="dev-error-page-message"></ng-content>
+    </p>
+    <div class="buttons">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

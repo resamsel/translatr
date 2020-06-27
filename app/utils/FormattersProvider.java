@@ -1,14 +1,15 @@
 package utils;
 
-import java.text.ParseException;
-import java.util.Locale;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
 import org.joda.time.DateTime;
 import play.data.format.Formatters;
 import play.data.format.Formatters.SimpleFormatter;
 import play.i18n.MessagesApi;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+import java.text.ParseException;
+import java.util.Locale;
 
 /**
  * @author resamsel

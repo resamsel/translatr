@@ -1,0 +1,57 @@
+<header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
+  <div *ngIf="user$ | async as user" class="container title">
+    <div class="content">
+      <img
+        *ngIf="user"
+        [md5Hash]="user.emailHash"
+        [size]="40"
+        borderColor="white"
+        borderWidth="2px"
+        class="image"
+        ngxGravatar
+      />
+      <div class="text">
+        <h1 class="page">{{user?.name}}</h1>
+        <p class="description">{{user?.username}}</p>
+      </div>
+    </div>
+  </div>
+</header>
+<div *ngIf="user$ | async as user" class="container main">
+  <user-card [user]="user">
+    <p class="email ellipsis">
+      <mat-icon inline="true">email</mat-icon>
+      <span [matTooltip]="user?.email">{{ user?.email }}</span>
+    </p>
+    <p class="when-created ellipsis">
+      <mat-icon inline="true">access_time</mat-icon>
+      <span [matTooltip]="user?.whenCreated | date"
+      >Joined {{ user?.whenCreated | amTimeAgo }}</span
+      >
+    </p>
+    <p class="when-updated ellipsis">
+      <mat-icon inline="true">access_time</mat-icon>
+      <span [matTooltip]="user?.whenUpdated | date"
+      >Updated {{ user?.whenUpdated | amTimeAgo }}</span
+      >
+    </p>
+  </user-card>
+
+  <div class="content flex">
+    <dev-metric
+      [queryParams]="{owner: (user$ | async)?.username}"
+      [value]="(projects$ | async)?.total | shortNumber"
+      class="project count"
+      icon="library_books"
+      name="Projects"
+      routerLink="/projects"
+    ></dev-metric>
+
+    <dev-metric
+      [value]="(activities$ | async)?.total | shortNumber"
+      class="activity count"
+      icon="change_history"
+      name="Activity"
+    ></dev-metric>
+  </div>
+</div>

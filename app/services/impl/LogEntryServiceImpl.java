@@ -1,24 +1,29 @@
 package services.impl;
 
-import static utils.Stopwatch.log;
-
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
 import criterias.LogEntryCriteria;
-import java.util.List;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Validator;
+import criterias.PagedListFactory;
 import models.Aggregate;
 import models.LogEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.LogEntryRepository;
+import repositories.Persistence;
+import services.AuthProvider;
 import services.CacheService;
 import services.LogEntryService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.Optional;
+import java.util.UUID;
+
+import static repositories.impl.AbstractModelRepository.FETCH_COUNT;
+import static utils.Stopwatch.log;
 
 /**
  * @author resamsel
@@ -33,13 +38,15 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
   private static final String H2_COLUMN_MILLIS =
       "datediff('millisecond', timestamp '1970-01-01 00:00:00', parsedatetime(formatdatetime(when_created, 'yyyy-MM-dd HH:00:00'), 'yyyy-MM-dd HH:mm:ss'))*1000";
   private final LogEntryRepository logEntryRepository;
+  private final Persistence persistence;
 
   @Inject
   public LogEntryServiceImpl(Validator validator, CacheService cache,
-      LogEntryRepository logEntryRepository) {
-    super(validator, cache, logEntryRepository, LogEntry::getCacheKey, null);
+                             LogEntryRepository logEntryRepository, Persistence persistence, AuthProvider authProvider) {
+    super(validator, cache, logEntryRepository, LogEntry::getCacheKey, null, authProvider);
 
     this.logEntryRepository = logEntryRepository;
+    this.persistence = persistence;
   }
 
   @Override
@@ -52,9 +59,13 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
   }
 
   @Override
-  public List<Aggregate> getAggregates(LogEntryCriteria criteria) {
+  public PagedList<Aggregate> getAggregates(LogEntryCriteria criteria) {
     ExpressionList<Aggregate> query =
-        Ebean.find(Aggregate.class).setRawSql(getAggregatesRawSql()).where();
+        persistence.createQuery(Aggregate.class)
+            .setRawSql(getAggregatesRawSql())
+            .setMaxRows(Optional.ofNullable(criteria.getLimit()).orElse(1000))
+            .setFirstRow(Optional.ofNullable(criteria.getOffset()).orElse(0))
+            .where();
 
     if (criteria.getProjectId() != null) {
       query.eq("project_id", criteria.getProjectId());
@@ -67,12 +78,11 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
     String cacheKey =
         String.format("activity:aggregates:%s:%s", criteria.getUserId(), criteria.getProjectId());
 
-    // TODO: config cache duration
     return log(
         () -> cache.getOrElse(
-            cacheKey,
-            query::findList,
-            60
+                cacheKey,
+                () -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)),
+                60
         ),
         LOGGER,
         "Retrieving log entry aggregates"
@@ -80,7 +90,7 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
   }
 
   private RawSql getAggregatesRawSql() {
-    String dbpName = Ebean.getDefaultServer().getPluginApi().getDatabasePlatform().getName();
+    String dbpName = persistence.getDatabasePlatformName();
     if ("h2".equals(dbpName)) {
       return RawSqlBuilder
           .parse(String.format(
@@ -108,11 +118,13 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
   }
 
   @Override
-  protected void postUpdate(LogEntry t) {
+  protected LogEntry postUpdate(LogEntry t) {
     super.postUpdate(t);
 
     // When user has been updated, the user cache needs to be invalidated
     cache.removeByPrefix("activity:criteria:");
+
+    return t;
   }
 
   /**

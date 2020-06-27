@@ -1,0 +1,18 @@
+<button
+  *ngIf="active"
+  [mat-menu-trigger-for]="languageSelector"
+  mat-icon-button
+>
+  <mat-icon>language</mat-icon>
+</button>
+<mat-menu #languageSelector xPosition="before">
+  <button
+    *ngFor="let language of availableLanguages"
+    mat-menu-item
+    [class.active]="language === activeLang"
+    (click)="onSwitchLanguage(language)"
+  >
+    <mat-icon>radio_button_{{language === activeLang ? 'checked' : 'unchecked'}}</mat-icon>
+    {{'language.' + language + '.name' | transloco:params:language}}
+  </button>
+</mat-menu>

@@ -1,11 +1,12 @@
 package forms;
 
-import java.util.UUID;
 import play.data.Form;
 import play.data.FormFactory;
 import play.data.validation.Constraints;
 import validators.NameUnique;
 import validators.ProjectOwnerUniqueChecker;
+
+import java.util.UUID;
 
 /**
  * @author resamsel

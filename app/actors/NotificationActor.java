@@ -3,9 +3,10 @@ package actors;
 import actors.NotificationProtocol.FollowNotification;
 import actors.NotificationProtocol.PublishNotification;
 import akka.actor.UntypedActor;
+import services.NotificationService;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import services.NotificationService;
 
 @Singleton
 public class NotificationActor extends UntypedActor {

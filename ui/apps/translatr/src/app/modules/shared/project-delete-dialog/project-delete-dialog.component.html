@@ -1,0 +1,37 @@
+<h1 mat-dialog-title transloco="project.delete.title">Delete Project</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <div [innerHTML]="'project.delete.warning' | transloco">
+      <p>This action <strong>cannot</strong> be undone. This will remove the project permanently.</p>
+      <p>Please type in the name of the project to confirm.</p>
+    </div>
+    <mat-form-field appearance="outline" class="name">
+      <mat-label transloco="project.delete.confirm.name">Confirm project name</mat-label>
+      <input
+        #name
+        cdkFocusInitial
+        formControlName="name"
+        [placeholder]="'project.name' | transloco"
+        matInput
+        type="text"
+      />
+      <mat-error
+        *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
+      >
+        {{ nameFormControl.errors['violation'] }}
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div class="dialog-actions" mat-dialog-actions>
+  <button
+    class="delete"
+    [disabled]="form.invalid || processing"
+    mat-flat-button
+    color="primary"
+    transloco="project.delete.confirm.button"
+    (click)="onDelete()"
+  >I understand the consequences, delete this project
+  </button>
+  <button class="cancel" mat-button mat-dialog-close transloco="button.cancel">Cancel</button>
+</div>

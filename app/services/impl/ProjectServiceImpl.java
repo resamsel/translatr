@@ -1,31 +1,23 @@
 package services.impl;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static utils.Stopwatch.log;
-
+import com.avaje.ebean.PagedList;
 import criterias.ProjectCriteria;
-import java.util.List;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Validator;
-import models.Locale;
-import models.Project;
-import models.ProjectRole;
-import models.ProjectUser;
-import models.User;
+import models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
 import repositories.ProjectRepository;
-import services.CacheService;
-import services.KeyService;
-import services.LocaleService;
-import services.LogEntryService;
-import services.MessageService;
-import services.ProjectService;
-import services.ProjectUserService;
+import services.*;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.List;
+import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static utils.Stopwatch.log;
 
 /**
  * @author resamsel
@@ -43,13 +35,15 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   private final MessageService messageService;
   private final MessageRepository messageRepository;
   private final ProjectUserService projectUserService;
+  private final MetricService metricService;
 
   @Inject
   public ProjectServiceImpl(Validator validator, CacheService cache,
-      ProjectRepository projectRepository, LocaleService localeService, KeyService keyService,
-      MessageService messageService, MessageRepository messageRepository,
-      ProjectUserService projectUserService, LogEntryService logEntryService) {
-    super(validator, cache, projectRepository, Project::getCacheKey, logEntryService);
+                            ProjectRepository projectRepository, LocaleService localeService, KeyService keyService,
+                            MessageService messageService, MessageRepository messageRepository,
+                            ProjectUserService projectUserService, LogEntryService logEntryService,
+                            AuthProvider authProvider, MetricService metricService) {
+    super(validator, cache, projectRepository, Project::getCacheKey, logEntryService, authProvider);
 
     this.projectRepository = projectRepository;
     this.localeService = localeService;
@@ -57,6 +51,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     this.messageService = messageService;
     this.messageRepository = messageRepository;
     this.projectUserService = projectUserService;
+    this.metricService = metricService;
   }
 
   /**
@@ -65,13 +60,13 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   @Override
   public Project byOwnerAndName(String username, String name, String... fetches) {
     return log(
-        () -> cache.getOrElse(
-            Project.getCacheKey(username, name, fetches),
-            () -> projectRepository.byOwnerAndName(username, name, fetches),
-            10 * 30
-        ),
-        LOGGER,
-        "byOwnerAndName"
+            () -> postGet(cache.getOrElse(
+                    Project.getCacheKey(username, name, fetches),
+                    () -> projectRepository.byOwnerAndName(username, name, fetches),
+                    10 * 30
+            )),
+            LOGGER,
+            "byOwnerAndName"
     );
   }
 
@@ -96,7 +91,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
     project.wordCount += wordCountDiff;
 
     log(
-        () -> modelRepository.persist(project),
+        () -> modelRepository.save(project),
         LOGGER,
         "Increased word count by %d",
         wordCountDiff
@@ -115,7 +110,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
 
     project.wordCount = null;
 
-    modelRepository.persist(project);
+    modelRepository.save(project);
 
     postUpdate(project);
 
@@ -158,23 +153,43 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   }
 
   @Override
+  protected PagedList<Project> postFind(PagedList<Project> pagedList) {
+    metricService.logEvent(Project.class, ActionType.Read);
+
+    return super.postFind(pagedList);
+  }
+
+  @Override
+  protected Project postGet(Project project) {
+    metricService.logEvent(Project.class, ActionType.Read);
+
+    return super.postGet(project);
+  }
+
+  @Override
   protected void postCreate(Project t) {
     super.postCreate(t);
+
+    projectUserService.create(new ProjectUser().withProject(t).withUser(t.owner).withRole(ProjectRole.Owner));
+
+    metricService.logEvent(Project.class, ActionType.Create);
 
     // When project has been created, the project cache needs to be invalidated
     cache.removeByPrefix("project:criteria:");
   }
 
   @Override
-  protected void postUpdate(Project t) {
+  protected Project postUpdate(Project t) {
+    metricService.logEvent(Project.class, ActionType.Update);
+
     // When project has been updated, the project cache needs to be invalidated
     cache.removeByPrefix("project:criteria:");
 
     Project cached = cache.get(Project.getCacheKey(t.id));
     if (cached != null) {
       cache.removeByPrefix(Project.getCacheKey(
-          requireNonNull(cached.owner, "owner (cached)").username,
-          cached.name
+              requireNonNull(cached.owner, "owner (cached)").username,
+              cached.name
       ));
     } else {
       cache.removeByPrefix(Project.getCacheKey(
@@ -183,7 +198,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
       ));
     }
 
-    super.postUpdate(t);
+    return super.postUpdate(t);
   }
 
   /**
@@ -192,6 +207,8 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   @Override
   protected void postDelete(Project t) {
     super.postDelete(t);
+
+    metricService.logEvent(Project.class, ActionType.Delete);
 
     // When key has been deleted, the project cache needs to be invalidated
     cache.removeByPrefix("project:criteria:" + t.id);

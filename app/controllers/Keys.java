@@ -9,12 +9,6 @@ import criterias.KeyCriteria;
 import exceptions.KeyNotFoundException;
 import forms.KeyForm;
 import forms.LocaleSearchForm;
-import java.util.Collections;
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-import java.util.function.BiFunction;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
 import models.Key;
 import models.Locale;
 import models.Project;
@@ -33,6 +27,13 @@ import services.KeyService;
 import services.LocaleService;
 import utils.FormUtils;
 import utils.Template;
+
+import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
+import java.util.Collections;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
+import java.util.function.BiFunction;
 
 /**
  * @author resamsel

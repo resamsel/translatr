@@ -1,13 +1,8 @@
 package services.impl;
 
 import criterias.ProjectUserCriteria;
+import dto.AuthorizationException;
 import dto.PermissionException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import models.AccessToken;
 import models.Project;
 import models.ProjectRole;
@@ -16,9 +11,21 @@ import models.Scope;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import services.AuthProvider;
+import services.ContextProvider;
 import services.PermissionService;
 import services.ProjectUserService;
 import utils.ContextKey;
+
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+
+import static repositories.ProjectRepository.FETCH_MEMBERS;
 
 @Singleton
 public class PermissionServiceImpl implements PermissionService {
@@ -26,24 +33,34 @@ public class PermissionServiceImpl implements PermissionService {
   private static final Logger LOGGER = LoggerFactory.getLogger(PermissionServiceImpl.class);
 
   private final ProjectUserService projectUserService;
+  private final AuthProvider authProvider;
+  private final ContextProvider contextProvider;
 
   @Inject
-  public PermissionServiceImpl(ProjectUserService projectUserService) {
+  public PermissionServiceImpl(ProjectUserService projectUserService, AuthProvider authProvider,
+                               ContextProvider contextProvider) {
     this.projectUserService = projectUserService;
+    this.authProvider = authProvider;
+    this.contextProvider = contextProvider;
   }
 
   @Override
-  public boolean hasPermissionAny(Project project, ProjectRole... roles) {
-    if (project.members != null) {
-      return hasPermissionAny(project.members, User.loggedInUser(), Arrays.asList(roles));
+  public boolean hasPermissionAny(@Nonnull Project project, ProjectRole... roles) {
+    return hasPermissionAny(project, authProvider.loggedInUser(), roles);
+  }
+
+  @Override
+  public boolean hasPermissionAny(@Nonnull Project project, User user, ProjectRole... roles) {
+    if (project.members != null && !project.members.isEmpty()) {
+      return hasPermissionAny(project.members, user, Arrays.asList(roles));
     }
 
-    return hasPermissionAny(project.id, User.loggedInUser(), roles);
+    return hasPermissionAny(project.id, user, roles);
   }
 
   @Override
   public boolean hasPermissionAny(UUID projectId, ProjectRole... roles) {
-    return hasPermissionAny(projectId, User.loggedInUser(), roles);
+    return hasPermissionAny(projectId, authProvider.loggedInUser(), roles);
   }
 
   @Override
@@ -53,14 +70,27 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public boolean hasPermissionAny(UUID projectId, User user, Collection<ProjectRole> roles) {
+    if (user == null) {
+      return false;
+    }
+
+    if (user.isAdmin()) {
+      return true;
+    }
+
     return hasPermissionAny(
-        projectUserService.findBy(new ProjectUserCriteria().withProjectId(projectId))
-            .getList(), user, roles);
+        projectUserService.findBy(
+            new ProjectUserCriteria()
+                .withProjectId(projectId)
+                .withFetches(FETCH_MEMBERS))
+            .getList(),
+        user,
+        roles);
   }
 
   @Override
   public boolean hasPermissionAll(Scope... scopes) {
-    return hasPermissionAll(ContextKey.AccessToken.get(), scopes);
+    return hasPermissionAll(ContextKey.AccessToken.get(contextProvider.getOrNull()), scopes);
   }
 
   @Override
@@ -69,7 +99,7 @@ public class PermissionServiceImpl implements PermissionService {
         accessToken != null ? accessToken.getScopeList() : "-", scopes);
 
     if (accessToken == null) {
-      return User.loggedInUser() != null;
+      return authProvider.loggedInUser() != null;
     }
 
     // TODO: allow admin scopes also
@@ -96,7 +126,7 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public boolean hasPermissionAny(List<ProjectUser> members, User user,
-      Collection<ProjectRole> roles) {
+                                  Collection<ProjectRole> roles) {
     LOGGER.debug("Roles needed (any): {}", roles);
 
     for (ProjectUser member : members) {
@@ -110,8 +140,19 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public void checkPermissionAll(String errorMessage, Scope... scopes) {
-    if (!hasPermissionAll(scopes)) {
-      throw new PermissionException(errorMessage, scopes);
+    AccessToken accessToken = ContextKey.AccessToken.get(contextProvider.getOrNull());
+    if (accessToken == null && authProvider.loggedInUser() == null) {
+      throw new AuthorizationException();
+    }
+
+    if (!hasPermissionAll(accessToken, scopes)) {
+      throw new PermissionException(
+          errorMessage,
+          Arrays.stream(scopes)
+              .map(Enum::name)
+              .toArray(String[]::new
+              )
+      );
     }
   }
 }

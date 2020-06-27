@@ -1,0 +1,51 @@
+<footer>
+  <div class="container">
+    <div class="copyright">
+      © {{buildInfo.copyrightYear}}
+      <a
+        class="link"
+        href="https://twitter.com/resamsel"
+        target="_blank"
+      >{{buildInfo.author}}</a>
+      (<span [matTooltip]="buildInfo.buildDate">{{ buildInfo.version }}</span>)
+    </div>
+    <div class="links">
+      <ul>
+        <li>
+          <a
+            class="link"
+            href="https://twitter.com/resamsel"
+            target="_blank"
+          >Twitter</a>
+        </li>
+        <li>
+          <a
+            [href]="buildInfo.homepage"
+            class="link"
+            target="_blank"
+          >GitHub</a>
+        </li>
+        <li>
+          <a
+            [href]="buildInfo.bugsUrl"
+            class="link"
+            target="_blank"
+            transloco="feedback.title"
+          >Feedback</a>
+        </li>
+        <li>
+          <a
+            class="link"
+            href="https://github.com/resamsel/translatr/blob/master/LICENSE"
+            transloco="license.title"
+          >License</a>
+        </li>
+      </ul>
+    </div>
+    <div class="home">
+      <a class="link" routerLink="/">
+        <mat-icon>translate</mat-icon>
+      </a>
+    </div>
+  </div>
+</footer>

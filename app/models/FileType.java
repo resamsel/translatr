@@ -14,7 +14,9 @@ public enum FileType
 
 	PlayMessages("play_messages"),
 
-	Gettext("gettext");
+	Gettext("gettext"),
+
+	Json("json");
 
 	private static final Map<String, FileType> KEYMAP = new HashMap<>();
 
@@ -24,7 +26,7 @@ public enum FileType
 			KEYMAP.put(type.key, type);
 	}
 
-	private String key;
+	private final String key;
 
 	FileType(String key)
 	{

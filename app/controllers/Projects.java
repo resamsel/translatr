@@ -14,7 +14,6 @@ import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import criterias.ProjectUserCriteria;
 import dto.SearchResponse;
-import dto.Suggestion;
 import forms.ActivitySearchForm;
 import forms.KeySearchForm;
 import forms.LocaleSearchForm;
@@ -22,14 +21,7 @@ import forms.ProjectForm;
 import forms.ProjectOwnerForm;
 import forms.ProjectUserForm;
 import forms.SearchForm;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
+import mappers.SuggestionMapper;
 import models.Key;
 import models.Locale;
 import models.LogEntry;
@@ -49,6 +41,7 @@ import play.libs.Json;
 import play.mvc.Call;
 import play.mvc.Result;
 import play.mvc.With;
+import services.AuthProvider;
 import services.CacheService;
 import services.KeyService;
 import services.LocaleService;
@@ -58,6 +51,12 @@ import services.ProjectUserService;
 import utils.FormUtils;
 import utils.FormUtils.Search;
 import utils.Template;
+
+import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author resamsel
@@ -69,6 +68,7 @@ public class Projects extends AbstractController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Projects.class);
 
+  private final AuthProvider authProvider;
   private final ProjectService projectService;
   private final LocaleService localeService;
   private final KeyService keyService;
@@ -82,13 +82,14 @@ public class Projects extends AbstractController {
    */
   @Inject
   public Projects(Injector injector, CacheService cache, FormFactory formFactory,
-      PlayAuthenticate auth,
-      ProjectService projectService, LocaleService localeService, KeyService keyService,
-      MessageService messageService, ProjectUserService projectUserService,
-      Configuration configuration) {
+                  PlayAuthenticate auth, AuthProvider authProvider,
+                  ProjectService projectService, LocaleService localeService, KeyService keyService,
+                  MessageService messageService, ProjectUserService projectUserService,
+                  Configuration configuration) {
     super(injector, cache, auth);
 
     this.formFactory = formFactory;
+    this.authProvider = authProvider;
     this.projectService = projectService;
     this.localeService = localeService;
     this.keyService = keyService;
@@ -104,7 +105,7 @@ public class Projects extends AbstractController {
       search.update(s, order, limit, offset);
 
       PagedList<Project> projects =
-          projectService.findBy(ProjectCriteria.from(search).withMemberId(User.loggedInUserId()));
+          projectService.findBy(ProjectCriteria.from(search).withMemberId(authProvider.loggedInUserId()));
 
       search.pager(projects);
 
@@ -129,7 +130,7 @@ public class Projects extends AbstractController {
               "+++", controllers.routes.Projects.createImmediately(search.search).url())));
     }
 
-    return ok(Json.toJson(SearchResponse.from(Suggestion.from(suggestions))));
+    return ok(Json.toJson(SearchResponse.from(SuggestionMapper.toDto(suggestions))));
   }
 
   public CompletionStage<Result> projectBy(String username, String projectName) {
@@ -256,7 +257,7 @@ public class Projects extends AbstractController {
   }
 
   public CompletionStage<Result> localesBy(String username, String projectName, String s,
-      String order, int limit, int offset) {
+                                           String order, int limit, int offset) {
     return project(username, projectName, (user, project) -> {
       Form<LocaleSearchForm> form =
           FormUtils.LocaleSearch.bindFromRequest(formFactory, configuration);
@@ -268,16 +269,13 @@ public class Projects extends AbstractController {
 
       search.pager(locales);
 
-      return ok(views.html.projects.locales.render(createTemplate(), project, locales,
-          localeService.progress(
-              locales.getList().stream().map(l -> l.id).collect(Collectors.toList()),
-              project.keys.size()),
-          form));
+      return ok(views.html.projects.locales.render(
+          createTemplate(), project, locales, localeService.progress(project.id), form));
     });
   }
 
   public CompletionStage<Result> keysBy(String username, String projectName, String s, String order,
-      int limit, int offset) {
+                                        int limit, int offset) {
     return project(username, projectName, (user, project) -> {
       Form<KeySearchForm> form = FormUtils.KeySearch.bindFromRequest(formFactory, configuration);
       KeySearchForm search = form.get();
@@ -287,16 +285,13 @@ public class Projects extends AbstractController {
 
       search.pager(keys);
 
-      Map<UUID, Double> progress =
-          keyService.progress(keys.getList().stream().map(k -> k.id).collect(Collectors.toList()),
-              project.locales.size());
-
-      return ok(views.html.projects.keys.render(createTemplate(), project, keys, progress, form));
+      return ok(views.html.projects.keys.render(
+          createTemplate(), project, keys, keyService.progress(project.id), form));
     });
   }
 
   public CompletionStage<Result> membersBy(String username, String projectName, String s,
-      String order, int limit, int offset) {
+                                           String order, int limit, int offset) {
     return project(username, projectName, (user, project) -> {
       Form<SearchForm> form = FormUtils.Search.bindFromRequest(formFactory, configuration);
       SearchForm search = form.get();
@@ -338,7 +333,7 @@ public class Projects extends AbstractController {
   }
 
   public CompletionStage<Result> memberRemoveBy(String username, String projectName,
-      Long memberId) {
+                                                Long memberId) {
     return project(username, projectName, (user, project) -> {
       ProjectUser member = projectUserService.byId(memberId);
 
@@ -398,7 +393,7 @@ public class Projects extends AbstractController {
   }
 
   public CompletionStage<Result> activityBy(String username, String projectName, String s,
-      String order, int limit, int offset) {
+                                            String order, int limit, int offset) {
     return project(username, projectName, (user, project) -> {
       Form<ActivitySearchForm> form =
           FormUtils.ActivitySearch.bindFromRequest(formFactory, configuration);
@@ -415,7 +410,7 @@ public class Projects extends AbstractController {
 
   public CompletionStage<Result> activityCsvBy(String username, String projectName) {
     return project(username, projectName, (user, project) -> ok(new ActivityCsvConverter()
-        .apply(logEntryService.getAggregates(new LogEntryCriteria().withProjectId(project.id)))));
+        .apply(logEntryService.getAggregates(new LogEntryCriteria().withProjectId(project.id)).getList())));
   }
 
   public CompletionStage<Result> wordCountResetBy(String username, String projectName) {

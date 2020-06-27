@@ -1,0 +1,56 @@
+@import 'mixins';
+
+.header {
+  background-color: #1976d2;
+
+  &.header-graphic {
+    background-image: url(assets/headers/stripes.svg);
+  }
+
+  .content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 16px 8px;
+
+    .text {
+      margin-left: 8px;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .image {
+      border: 2px solid white;
+    }
+  }
+}
+
+.container.main {
+  display: flex;
+  flex-direction: column;
+
+  @include medium {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.user-card {
+  margin-bottom: 16px;
+
+  @include medium {
+    margin-right: 16px;
+  }
+}
+
+.content {
+  &.flex > * {
+    margin: 0 4px;
+  }
+
+  .mat-tab-nav-bar {
+    margin-bottom: 16px;
+  }
+}

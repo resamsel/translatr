@@ -1,0 +1,42 @@
+<form [formGroup]="form">
+  <section class="name">
+    <mat-form-field>
+      <h2 transloco="accessToken.name">Name</h2>
+      <input
+        matInput
+        type="text"
+        cdkFocusInitial
+        formControlName="name">
+      <mat-error
+        *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']">
+        {{ nameFormControl.errors['violation'] }}</mat-error>
+    </mat-form-field>
+  </section>
+
+  <section *ngIf="form.value.id" class="key">
+    <mat-form-field>
+      <h2 transloco="accessToken.key">Key</h2>
+      <input [readonly]="true" formControlName="key" matInput type="text">
+    </mat-form-field>
+  </section>
+
+  <section class="scopes">
+    <h2 transloco="accessToken.scopes">Scopes</h2>
+    <div>
+      <div *ngFor="let scopeType of scopeTypes" class="scope">
+        <h3 transloco="scope.type" [translocoParams]="{type: scopeType}">{{scopeType}}</h3>
+        <p>
+          <mat-checkbox
+            *ngFor="let scope of scopeMap[scopeType]"
+            [checked]="activeScopeMap[scope]"
+            (change)="onChangeScope(scope, $event)"
+          ><span transloco="scope.permission"
+                 [translocoParams]="{permission: scopePermission(scope)}">{{scopePermission(scope)}}</span>
+          </mat-checkbox>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <ng-content></ng-content>
+</form>

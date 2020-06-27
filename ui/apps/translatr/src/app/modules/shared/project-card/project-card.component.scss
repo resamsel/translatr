@@ -1,0 +1,27 @@
+.info {
+  .owner {
+    display: block;
+    margin-top: 8px;
+  }
+
+  .user-icon {
+    display: inline-block;
+    margin-right: 8px;
+    margin-top: 4px;
+    float: left;
+  }
+}
+
+h2 {
+  margin-bottom: 0;
+}
+
+.mat-card-image {
+  text-align: center;
+  color: #fff;
+  text-transform: capitalize;
+  background-image: url(assets/headers/waves.svg);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}

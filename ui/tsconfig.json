@@ -1,0 +1,60 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "typeRoots": [
+      "node_modules/@types",
+      "typings.d.ts"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@dev/translatr-sdk": [
+        "libs/translatr-sdk/src/index.ts"
+      ],
+      "@dev/translatr-components": [
+        "libs/translatr-components/src/index.ts"
+      ],
+      "@translatr/components/testing": [
+        "libs/translatr-components/src/testing.ts"
+      ],
+      "@dev/translatr-model": [
+        "libs/translatr-model/src/index.ts"
+      ],
+      "@translatr/generator": [
+        "libs/generator/src/index.ts"
+      ],
+      "@translatr/utils": [
+        "libs/utils/src/index.ts"
+      ],
+      "@translatr/utils/testing": [
+        "libs/utils/src/testing.ts"
+      ],
+      "@translatr/node-utils": [
+        "libs/node-utils/src/index.ts"
+      ],
+      "@translatr/*": [
+        "libs/*"
+      ]
+    },
+    "noUnusedLocals": true,
+    "esModuleInterop": true
+  },
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
+}

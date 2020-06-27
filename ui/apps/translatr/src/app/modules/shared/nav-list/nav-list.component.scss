@@ -1,0 +1,122 @@
+@import 'theme';
+
+@mixin nav-list-theme($theme) {
+  $warning: map-get($theme, warn);
+  $warning-color: mat-color($warning);
+  $warning-background-color: mat-color($warning, 50);
+
+  :host ::ng-deep .mat-list-item.warning {
+    border-left-color: $warning-color;
+    background-color: $warning-background-color;
+  }
+}
+
+:host ::ng-deep {
+  .mat-list-item {
+    border-left: 4px solid transparent;
+
+    .mat-list-item-content {
+      margin-left: -4px;
+    }
+  }
+}
+
+.more-row {
+  display: flex;
+  align-items: center;
+}
+
+.more-column {
+  display: flex;
+  justify-content: center;
+}
+
+.more {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.loading {
+  .mat-list-item,
+  .mat-card {
+    opacity: 0.4;
+    animation: opacityPulse 2s infinite;
+
+    .icon {
+      color: #e0e0e0;
+    }
+
+    .title,
+    .sub-title {
+      display: inline-block;
+      background: #e0e0e0;
+      height: 16px;
+    }
+
+    @for $i from 1 through 20 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i/10}s;
+      }
+    }
+
+    &:nth-child(1n) {
+      .title {
+        width: 42%;
+      }
+
+      .sub-title {
+        width: 38%;
+      }
+    }
+
+    &:nth-child(2n) {
+      .title {
+        width: 28%;
+      }
+
+      .sub-title {
+        width: 18%;
+      }
+    }
+
+    &:nth-child(3n) {
+      .title {
+        width: 48%;
+      }
+
+      .sub-title {
+        width: 28%;
+      }
+    }
+
+    &:nth-child(4n) {
+      .title {
+        width: 32%;
+      }
+
+      .sub-title {
+        width: 38%;
+      }
+    }
+
+    &:nth-child(5n) {
+      .title {
+        width: 44%;
+      }
+
+      .sub-title {
+        width: 32%;
+      }
+    }
+  }
+
+  .mat-list-item {
+    .icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+    }
+  }
+}
+
+@include nav-list-theme($app-theme);

@@ -1,0 +1,216 @@
+{
+  "list": [
+    {
+      "id": "050c41ea-97ad-484f-ba04-1bae34b797bf",
+      "whenCreated": "2019-08-25T12:52:12.444Z",
+      "whenUpdated": "2019-10-15T18:56:06.101Z",
+      "name": "translatr",
+      "description": "Sample project displaying the abilities of Translatr.",
+      "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+      "ownerName": "John Doe",
+      "ownerUsername": "johndoe",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21238,
+          "whenCreated": "2019-08-25T12:52:12.476Z",
+          "whenUpdated": "2019-08-25T12:52:12.476Z",
+          "role": "Owner",
+          "projectId": "050c41ea-97ad-484f-ba04-1bae34b797bf",
+          "projectName": "translatr",
+          "projectOwnerUsername": "johndoe",
+          "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+          "userName": "John Doe",
+          "userUsername": "johndoe",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        },
+        {
+          "id": 22050,
+          "whenCreated": "2019-10-01T11:16:26.951Z",
+          "whenUpdated": "2019-10-01T11:16:26.951Z",
+          "role": "Developer",
+          "projectId": "050c41ea-97ad-484f-ba04-1bae34b797bf",
+          "projectName": "translatr",
+          "projectOwnerUsername": "johndoe",
+          "userId": "8b2c41f3-6ac5-4fd6-a6a8-3509addd4698",
+          "userName": "Mark Dev",
+          "userUsername": "markdev",
+          "userEmailHash": "3adef3fe1773625e8365f5ea48139660"
+        }
+      ],
+      "wordCount": 22
+    },
+    {
+      "id": "a1b77034-3ec7-4bef-944e-162d2a2efa0b",
+      "whenCreated": "2019-08-30T15:58:07.733Z",
+      "whenUpdated": "2019-09-28T07:59:06.912Z",
+      "name": "asdf",
+      "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+      "ownerName": "John Doe",
+      "ownerUsername": "johndoe",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21239,
+          "whenCreated": "2019-08-30T15:58:07.763Z",
+          "whenUpdated": "2019-08-30T15:58:07.763Z",
+          "role": "Owner",
+          "projectId": "a1b77034-3ec7-4bef-944e-162d2a2efa0b",
+          "projectName": "asdf",
+          "projectOwnerUsername": "johndoe",
+          "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+          "userName": "John Doe",
+          "userUsername": "johndoe",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        },
+        {
+          "id": 22048,
+          "whenCreated": "2019-09-28T18:06:37.943Z",
+          "whenUpdated": "2019-09-28T18:06:37.943Z",
+          "role": "Developer",
+          "projectId": "a1b77034-3ec7-4bef-944e-162d2a2efa0b",
+          "projectName": "asdf",
+          "projectOwnerUsername": "johndoe",
+          "userId": "1a858fce-ee82-4052-86d2-4e90789932b3",
+          "userName": "Ada Crandall!",
+          "userUsername": "adacrandall",
+          "userEmailHash": "588e10a3df84885c1a0a7ce557e317d6"
+        }
+      ],
+      "wordCount": 21
+    },
+    {
+      "id": "a89f5cdf-857d-4f54-8d99-c43f74e767ad",
+      "whenCreated": "2019-07-17T21:21:57.947Z",
+      "whenUpdated": "2019-08-21T19:55:32.633Z",
+      "name": "seven",
+      "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+      "ownerName": "John Doe",
+      "ownerUsername": "johndoe",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21221,
+          "whenCreated": "2019-07-17T21:21:57.952Z",
+          "whenUpdated": "2019-07-17T21:21:57.952Z",
+          "role": "Owner",
+          "projectId": "a89f5cdf-857d-4f54-8d99-c43f74e767ad",
+          "projectName": "seven",
+          "projectOwnerUsername": "johndoe",
+          "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+          "userName": "John Doe",
+          "userUsername": "johndoe",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        },
+        {
+          "id": 21237,
+          "whenCreated": "2019-08-21T20:06:02.256Z",
+          "whenUpdated": "2019-08-21T20:06:02.256Z",
+          "role": "Manager",
+          "projectId": "a89f5cdf-857d-4f54-8d99-c43f74e767ad",
+          "projectName": "seven",
+          "projectOwnerUsername": "johndoe",
+          "userId": "224bf107-ac1f-4825-ba6c-2e45f9174453",
+          "userName": "Holly Goodyear",
+          "userUsername": "hollygoodyear",
+          "userEmailHash": "57f203c13356d2c8e642134337b9fa9f"
+        }
+      ]
+    },
+    {
+      "id": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+      "whenCreated": "2019-07-20T05:36:18.934Z",
+      "whenUpdated": "2019-08-19T22:07:14.735Z",
+      "name": "nine",
+      "ownerId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+      "ownerName": "John Doe",
+      "ownerUsername": "johndoe",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21223,
+          "whenCreated": "2019-07-20T05:36:18.947Z",
+          "whenUpdated": "2019-07-20T05:36:18.947Z",
+          "role": "Owner",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "johndoe",
+          "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+          "userName": "John Doe",
+          "userUsername": "johndoe",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        },
+        {
+          "id": 21228,
+          "whenCreated": "2019-08-02T18:31:36.362Z",
+          "whenUpdated": "2019-08-02T18:31:36.362Z",
+          "role": "Manager",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "johndoe",
+          "userId": "4206b5b8-c69a-4be5-8a24-bf315be940c7",
+          "userName": "Lillian Porte",
+          "userUsername": "lillianporte",
+          "userEmailHash": "5a4007f01562cd81f10ab218ebe1f7d3"
+        },
+        {
+          "id": 21229,
+          "whenCreated": "2019-08-02T18:32:40.108Z",
+          "whenUpdated": "2019-08-02T18:32:40.108Z",
+          "role": "Developer",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "johndoe",
+          "userId": "36916b28-77a5-4b83-97b7-515f25929dd8",
+          "userName": "Jena Markos!",
+          "userUsername": "jenamarkos",
+          "userEmailHash": "27734035daaaec856db43c9903d05551"
+        },
+        {
+          "id": 21230,
+          "whenCreated": "2019-08-05T18:41:08.216Z",
+          "whenUpdated": "2019-08-05T18:41:08.216Z",
+          "role": "Translator",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "johndoe",
+          "userId": "33c818ca-862b-4455-8cca-ec31bba23d32",
+          "userName": "Lillian Guild",
+          "userUsername": "lillianguild",
+          "userEmailHash": "759ee224c0506f5cbfa7fcff5ecf5b6b"
+        },
+        {
+          "id": 21235,
+          "whenCreated": "2019-08-06T18:57:34.171Z",
+          "whenUpdated": "2019-08-06T18:57:34.171Z",
+          "role": "Manager",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "johndoe",
+          "userId": "00035869-bc10-424a-88b7-0e7e8b56871c",
+          "userName": "Lillian Ruby",
+          "userUsername": "lillianruby",
+          "userEmailHash": "6e792bede1cea3ae53b198d69ff82a79"
+        },
+        {
+          "id": 21236,
+          "whenCreated": "2019-08-06T19:00:56.926Z",
+          "whenUpdated": "2019-08-06T19:00:56.926Z",
+          "role": "Owner",
+          "projectId": "2957f067-7fd6-4754-a8fb-4d2d391b3c20",
+          "projectName": "nine",
+          "projectOwnerUsername": "johndoe",
+          "userId": "70277c14-3913-4478-aa9c-49a269747f6c",
+          "userName": "Janenna Guild!",
+          "userUsername": "janennaguild",
+          "userEmailHash": "8a5574cdc8a368c7e677415bd61b642d"
+        }
+      ]
+    }
+  ],
+  "offset": 0,
+  "limit": 4,
+  "total": 11,
+  "hasPrev": false,
+  "hasNext": true
+}

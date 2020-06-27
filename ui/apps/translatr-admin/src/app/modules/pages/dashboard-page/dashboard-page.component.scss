@@ -1,0 +1,34 @@
+@import 'mixins';
+
+@include large {
+  ::ng-deep .main-container {
+    display: flex;
+  }
+
+  .sidenav {
+    display: flex;
+    width: 240px;
+
+    .mat-nav-list {
+      margin-top: 32px;
+      margin-right: 0;
+      width: 100%;
+
+      .mat-list-item {
+        color: rgba(0, 0, 0, 0.6);
+
+        &.list-item-active {
+          background: rgba(0, 0, 0, 0.04);
+        }
+      }
+    }
+  }
+
+  .topnav {
+    display: none;
+  }
+
+  .content {
+    flex-grow: 1;
+  }
+}

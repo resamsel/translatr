@@ -1,10 +1,11 @@
 package services;
 
 import com.google.inject.ImplementedBy;
-import java.util.Map;
-import java.util.function.Predicate;
 import play.cache.CacheApi;
 import services.impl.CacheServiceImpl;
+
+import java.util.Map;
+import java.util.function.Predicate;
 
 @ImplementedBy(CacheServiceImpl.class)
 public interface CacheService extends CacheApi {

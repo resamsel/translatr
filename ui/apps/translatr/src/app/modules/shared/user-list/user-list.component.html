@@ -1,0 +1,43 @@
+<app-nav-list
+  [pagedList]="users"
+  [criteria]="criteria"
+  [showFilter]="true"
+  [nothingFound]="nothingFound"
+  (filter)="filter.emit($event)"
+>
+  <a
+    *ngFor="let user of users?.list; trackBy: trackByFn"
+    [routerLink]="['/', user.username]"
+    mat-list-item>
+    <img
+      [md5Hash]="user.emailHash"
+      class="icon"
+      matListIcon
+      ngxGravatar
+      size="36"
+      [round]="false"
+      cornerRadius="6"
+    />
+    <h3 matLine>
+      {{ user.name }} <span class="username">{{ user.username }}</span>
+    </h3>
+    <p class="sub-title" matLine>
+        <span
+          transloco="user.memberships"
+          [translocoParams]="{memberships: user.memberships !== undefined ? user.memberships.length : 0}"
+        >Contributing to {{ user.memberships?.length }} projects
+        </span>
+    </p>
+    <p class="sub-title" matLine>
+      <span transloco="when.joined">Joined</span>&nbsp;<span>{{ user.whenCreated | amTimeAgo }}</span>
+    </p>
+  </a>
+  <ng-template #nothingFound>
+    <dev-empty-view icon="account_circle">
+      <dev-empty-view-header transloco="users.notfound.title">No users found</dev-empty-view-header>
+      <dev-empty-view-content transloco="users.notfound.text">
+        Could not find any users with the given filter. Try removing some filters.
+      </dev-empty-view-content>
+    </dev-empty-view>
+  </ng-template>
+</app-nav-list>

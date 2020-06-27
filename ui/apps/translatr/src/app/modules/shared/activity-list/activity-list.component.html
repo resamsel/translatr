@@ -1,0 +1,105 @@
+<app-nav-list
+  [empty]="empty"
+  [pagedList]="activities"
+  [showMore]="showMore"
+  [showMoreLink]="showMoreLink"
+  (filter)="onFilter($event)"
+>
+  <mat-list-item
+    *ngFor="let activity of activities?.list; trackBy: trackByFn"
+    [ngClass]="iconType(activity.contentType)"
+    class="activity-list-item"
+  >
+    <div class="timestamp sub-title">
+      <span [matTooltip]="activity.whenCreated | date: 'full'">{{
+        activity.whenCreated | amTimeAgo
+        }}</span>
+    </div>
+    <mat-icon
+      [ngClass]="iconType(activity.contentType)"
+      class="circle"
+      matListIcon
+    >{{icon(activity.contentType)}}</mat-icon>
+    <h3 class="ellipsis" matLine>
+      <a
+        *ngIf="relativeTo !== 'user'"
+        [routerLink]="['/', activity.userUsername]"
+        class="link user-name"
+      >{{activity.userName}}</a>
+      <span transloco="activity.{{contentTypeOf(activity)}}.{{activity.type.toLowerCase()}}"></span>
+      <ng-container *ngIf="contentTypeOf(activity) as contentType">
+        <ng-container [ngSwitch]="contentType">
+          <ng-container *ngSwitchCase="'project'">
+            <app-activity-project-link
+              *ngIf="relativeTo !== 'project'"
+              [project]="project(activity)"
+              matLine
+            ></app-activity-project-link>
+          </ng-container>
+          <ng-container *ngSwitchCase="'locale'">
+            <app-activity-project-link
+              *ngIf="relativeTo !== 'project'"
+              [project]="projectOf(locale(activity))"
+              matLine
+            ></app-activity-project-link>
+            <app-activity-locale-link
+              [locale]="locale(activity)"
+              matLine
+            ></app-activity-locale-link>
+          </ng-container>
+          <ng-container *ngSwitchCase="'key'">
+            <app-activity-project-link
+              *ngIf="relativeTo !== 'project'"
+              [project]="projectOf(key(activity))"
+              matLine
+            ></app-activity-project-link>
+            <app-activity-key-link
+              [key]="key(activity)"
+              matLine
+            ></app-activity-key-link>
+          </ng-container>
+          <ng-container *ngSwitchCase="'message'">
+            <app-activity-project-link
+              *ngIf="relativeTo !== 'project'"
+              [project]="projectOf(message(activity))"
+              matLine
+            ></app-activity-project-link>
+            <app-activity-message-link
+              [message]="message(activity)"
+              matLine
+              target="key"
+            ></app-activity-message-link>
+            <app-activity-message-link
+              [message]="message(activity)"
+              matLine
+              target="locale"
+            ></app-activity-message-link>
+          </ng-container>
+          <ng-container *ngSwitchCase="'projectuser'">
+            <app-activity-project-link
+              *ngIf="relativeTo !== 'project'"
+              [project]="projectOf(member(activity))"
+              matLine
+            ></app-activity-project-link>
+            <app-activity-member-link
+              [member]="member(activity)"
+              matLine
+            ></app-activity-member-link>
+          </ng-container>
+          <ng-container *ngSwitchCase="'accesstoken'">
+            <app-activity-access-token-link
+              [accessToken]="accessToken(activity)"
+              matLine
+            ></app-activity-access-token-link>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </h3>
+  </mat-list-item>
+</app-nav-list>
+
+<ng-template #empty>
+  <dev-empty-view icon="change_history">
+    <dev-empty-view-header transloco="activity.empty">No activity yet.</dev-empty-view-header>
+  </dev-empty-view>
+</ng-template>

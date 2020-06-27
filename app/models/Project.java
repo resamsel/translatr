@@ -1,34 +1,11 @@
 package models;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
-
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import controllers.AbstractController;
 import criterias.MessageCriteria;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
+import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +14,7 @@ import play.api.mvc.Call;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
+import play.mvc.Http;
 import play.mvc.Http.Context;
 import services.MessageService;
 import services.ProjectService;
@@ -46,9 +24,30 @@ import validators.NameUnique;
 import validators.ProjectName;
 import validators.ProjectNameUniqueChecker;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.*;
+
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
-@NameUnique(checker = ProjectNameUniqueChecker.class)
+@NameUnique(checker = ProjectNameUniqueChecker.class, message = "error.projectnameunique")
 public class Project implements Model<Project, UUID>, Suggestable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
@@ -58,9 +57,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
   @Id
   @GeneratedValue
   public UUID id;
-
-  @Version
-  public Long version;
 
   public boolean deleted;
 
@@ -73,17 +69,25 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public DateTime whenUpdated;
 
   @Column(nullable = false)
-  @Required
-  @Constraints.Pattern("[a-zA-Z0-9_\\.-]*")
-  @ProjectName
-  public String name;
-
   @ManyToOne
   @JoinColumn(name = "owner_id")
   @Required
   public User owner;
 
+  @Column(nullable = false)
+  @Required
+  @Constraints.Pattern("[^\\s/]*")
+  @Constraints.MaxLength(255)
+  @ProjectName
+  public String name;
+
+  @Constraints.MaxLength(2000)
+  public String description;
+
   public Integer wordCount;
+
+  @Transient
+  public Double progress;
 
   @JsonIgnore
   @OneToMany
@@ -94,8 +98,13 @@ public class Project implements Model<Project, UUID>, Suggestable {
   public List<Key> keys;
 
   @JsonIgnore
-  @OneToMany(cascade = CascadeType.PERSIST)
+//  @OneToMany(cascade = CascadeType.PERSIST)
+  @OneToMany
   public List<ProjectUser> members;
+
+  @Transient
+  @Enumerated(EnumType.STRING)
+  public ProjectRole myRole;
 
   @Transient
   private List<Message> messages;
@@ -234,8 +243,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   @Override
   public Project updateFrom(Project in) {
-    name = in.name;
-    owner = in.owner;
+    name = ObjectUtils.firstNonNull(in.name, name);
+    description = in.description;
+    owner = ObjectUtils.firstNonNull(in.owner, owner);
 
     return this;
   }
@@ -262,29 +272,27 @@ public class Project implements Model<Project, UUID>, Suggestable {
       return ProjectRole.Owner;
     }
 
-    Optional<ProjectUser> member = members.stream().filter(m -> user.equals(m.user)).findFirst();
-    if (member.isPresent()) {
-      return member.get().role;
-    }
-
-    return null;
+    return members.stream()
+        .filter(m -> user.equals(m.user))
+        .findFirst()
+        .map(projectUser -> projectUser.role)
+        .orElse(null);
   }
 
-  public static UUID brandProjectId() {
-    UUID brandProjectId = ContextKey.BrandProjectId.get();
+  public static UUID brandProjectId(User loggedInUser, Http.Context ctx) {
+    UUID brandProjectId = ContextKey.BrandProjectId.get(ctx);
     if (brandProjectId != null) {
       return brandProjectId;
     }
 
-    User user = User.loggedInUser();
-    if (user == null) {
+    if (loggedInUser == null) {
       return null;
     }
 
     Project brandProject = null;
     try {
       brandProject = Play.current().injector().instanceOf(ProjectService.class)
-          .byOwnerAndName(user.username, "Translatr");
+          .byOwnerAndName(loggedInUser.username, "Translatr");
     } catch (Exception e) {
       LOGGER.warn("Error while retrieving brand project", e);
     }
@@ -293,7 +301,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
       return null;
     }
 
-    ContextKey.BrandProjectId.put(Context.current(), brandProject.id);
+    ContextKey.BrandProjectId.put(ctx, brandProject.id);
 
     return brandProject.id;
   }
@@ -483,6 +491,19 @@ public class Project implements Model<Project, UUID>, Suggestable {
         .memberRemoveBy(Objects.requireNonNull(owner.username, "Owner username is null"),
             Objects.requireNonNull(name, "Name is null"),
             Objects.requireNonNull(memberId, "Member ID is null"));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Project project = (Project) o;
+    return id.equals(project.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 
   @Override

@@ -6,7 +6,12 @@ import org.joda.time.DateTime;
 import org.ocpsoft.prettytime.PrettyTime;
 import play.mvc.Http;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FormatUtils {
+
+  private static final Map<Http.Context, java.util.Locale> CONTEXT_LOCALE_MAP = new HashMap<>();
 
   public static final String pretty(java.util.Locale locale, DateTime dateTime) {
     return new PrettyTime(locale).format(dateTime.toDate());
@@ -38,6 +43,9 @@ public class FormatUtils {
       return l.getDisplayName();
     }
 
-    return l.getDisplayName(ctx.lang().locale());
+    java.util.Locale ctxLocale = CONTEXT_LOCALE_MAP
+        .computeIfAbsent(ctx, context -> context.lang().locale());
+
+    return l.getDisplayName(ctxLocale);
   }
 }

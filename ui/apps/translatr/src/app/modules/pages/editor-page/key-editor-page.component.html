@@ -1,0 +1,114 @@
+<app-editor
+  [me]="me$ | async"
+  [ownerName]="(key$ | async)?.projectOwnerUsername"
+  [projectName]="(key$ | async)?.projectName"
+  [backLink]="backLink"
+  [message]="selectedMessage$ | async"
+  [messages]="toMessages(messageItems$ | async)"
+  [name]="'key.editor' | transloco"
+  class="key-editor"
+  (nextItem)="onNextItem()"
+  (previousItem)="onPreviousItem()"
+>
+  <dev-filter-field
+    (selected)="onSelected($event)"
+    [filters]="filters"
+    [selection]="selection$ | async"
+    appearance="elevate"
+  >
+    <mat-icon matPrefix>search</mat-icon>
+  </dev-filter-field>
+
+  <app-editor-selector>
+    <mat-form-field class="selector">
+      <input
+        matInput
+        #keyInput
+        class="selected-key"
+        [value]="(key$ | async)?.name"
+        (keydown.enter)="onKeyChange(keyInput.value)"
+        [readonly]="true"
+      />
+    </mat-form-field>
+    <div class="flex-spacer"></div>
+    <a
+      mat-icon-button
+      *ngIf="selectedLocaleName$ | async; else disabledLink"
+      [routerLink]="['../..', 'locales', selectedLocaleName$ | async]"
+      [queryParams]="{
+        key: (key$ | async)?.name,
+        search: (key$ | async)?.name
+      }"
+    >
+      <mat-icon>compare_arrows</mat-icon>
+    </a>
+    <ng-template #disabledLink>
+      <button mat-icon-button [disabled]="true">
+        <mat-icon>compare_arrows</mat-icon>
+      </button>
+    </ng-template>
+  </app-editor-selector>
+
+  <app-nav-list
+    [pagedList]="messageItems$ | async"
+    [showLoadingAvatar]="false"
+    [loadingListLength]="10"
+    [criteria]="search$ | async"
+    [empty]="empty"
+    [nothingFound]="nothingFound"
+  >
+    <a
+      *ngFor="let item of (messageItems$ | async)?.list; trackBy: trackByFn"
+      [class.active]="item.selected"
+      [queryParams]="{ locale: item.locale.name }"
+      [routerLink]="[]"
+      [ngClass]="{warning: item.message?.dirty}"
+      mat-list-item
+      queryParamsHandling="merge"
+      class="locale"
+    >
+      <h3 matLine>{{ item.locale.displayName }}</h3>
+      <p class="sub-title translation" matLine>
+        <span *ngIf="item.message; else translationMissing">{{item.message.value}}</span>
+        <ng-template #translationMissing>-</ng-template>
+      </p>
+    </a>
+    <ng-template #empty>
+      <dev-empty-view icon="language" *ngIf="key$ | async as key">
+        <dev-empty-view-header transloco="locales.teaser.title">No languages defined</dev-empty-view-header>
+        <dev-empty-view-content transloco="locales.teaser.text" data-test="locale-teaser">
+          It seems there are no languages defined, yet - would you like to add one now?
+        </dev-empty-view-content>
+        <dev-empty-view-actions *ngIf="canCreateLocale$ | async">
+          <button
+            color="accent"
+            transloco="locale.create.button"
+            mat-raised-button
+            data-test="create-locale"
+            (click)="openLocaleDialog({projectId: key.projectId})"
+          >Add language
+          </button>
+        </dev-empty-view-actions>
+      </dev-empty-view>
+    </ng-template>
+    <ng-template #nothingFound>
+      <dev-empty-view icon="language" *ngIf="key$ | async as key">
+        <dev-empty-view-header transloco="locales.notfound.title">No languages found</dev-empty-view-header>
+        <dev-empty-view-content transloco="locales.notfound.text" data-test="locale-teaser">
+          Could not find any locales with the given filter. Try removing some filters or create a new language.
+        </dev-empty-view-content>
+        <dev-empty-view-actions *ngIf="search$ | async as criteria">
+          <button
+            *ngIf="(canCreateLocale$ | async) && criteria.search"
+            (click)="openLocaleDialog({projectId: key.projectId, name: criteria.search})"
+            color="accent"
+            transloco="locale.create.button"
+            mat-raised-button
+            data-test="create-locale"
+          >Add language
+          </button>
+        </dev-empty-view-actions>
+      </dev-empty-view>
+    </ng-template>
+  </app-nav-list>
+</app-editor>

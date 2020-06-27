@@ -1,21 +1,20 @@
 package services.api.impl;
 
 import com.avaje.ebean.PagedList;
-import com.fasterxml.jackson.databind.JsonNode;
 import controllers.Keys;
 import controllers.Locales;
 import controllers.routes;
 import criterias.KeyCriteria;
 import criterias.LocaleCriteria;
+import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
+import dto.DtoPagedList;
+import dto.NotFoundException;
 import dto.SearchResponse;
-import dto.Suggestion;
 import forms.SearchForm;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import mappers.AggregateMapper;
+import mappers.ProjectMapper;
+import mappers.SuggestionMapper;
 import models.Key;
 import models.Locale;
 import models.Project;
@@ -23,15 +22,30 @@ import models.ProjectRole;
 import models.Scope;
 import models.Suggestable;
 import models.Suggestable.Data;
+import models.User;
+import models.UserRole;
 import play.Configuration;
 import play.i18n.Messages;
-import play.libs.Json;
 import play.mvc.Http.Context;
+import services.AuthProvider;
 import services.KeyService;
 import services.LocaleService;
+import services.LogEntryService;
 import services.PermissionService;
 import services.ProjectService;
 import services.api.ProjectApiService;
+
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Consumer;
+
+import static utils.FunctionalUtils.peek;
 
 /**
  * @author resamsel
@@ -45,18 +59,58 @@ public class ProjectApiServiceImpl extends
   private final Configuration configuration;
   private final LocaleService localeService;
   private final KeyService keyService;
+  private final LogEntryService logEntryService;
+  private final AuthProvider authProvider;
 
   @Inject
-  protected ProjectApiServiceImpl(Configuration configuration, ProjectService projectService,
-      LocaleService localeService, KeyService keyService, PermissionService permissionService) {
-    super(projectService, dto.Project.class, dto.Project::from,
+  protected ProjectApiServiceImpl(
+      Configuration configuration, ProjectService projectService,
+      LocaleService localeService, KeyService keyService, LogEntryService logEntryService,
+      PermissionService permissionService, AuthProvider authProvider, Validator validator) {
+    super(projectService, dto.Project.class, ProjectMapper::toDto,
         new Scope[]{Scope.ProjectRead},
         new Scope[]{Scope.ProjectWrite},
-        permissionService);
+        permissionService,
+        validator);
 
     this.configuration = configuration;
     this.localeService = localeService;
     this.keyService = keyService;
+    this.logEntryService = logEntryService;
+    this.authProvider = authProvider;
+  }
+
+  @Override
+  public PagedList<dto.Project> find(ProjectCriteria criteria) {
+    User loggedInUser = authProvider.loggedInUser();
+    if (loggedInUser != null && loggedInUser.role != UserRole.Admin) {
+      criteria.withMemberId(loggedInUser.id);
+    }
+
+    return super.find(criteria);
+  }
+
+  @Override
+  public dto.Project byOwnerAndName(String username, String name, @Nonnull Consumer<Project> validator, String... fetches) {
+    permissionService
+        .checkPermissionAll("Access token not allowed", readScopes);
+
+    Project project = service.byOwnerAndName(username, name, fetches);
+
+    return Optional.ofNullable(project)
+        .map(peek(validator))
+        .map(dtoMapper)
+        .orElseThrow(() -> new NotFoundException(dto.Project.class.getSimpleName(), username + "/" + name));
+  }
+
+  @Override
+  public PagedList<dto.Aggregate> activity(UUID id) {
+    permissionService
+        .checkPermissionAll("Access token not allowed", readScopes);
+
+    return new DtoPagedList<>(
+        logEntryService.getAggregates(new LogEntryCriteria().withProjectId(id)),
+        AggregateMapper::toDto);
   }
 
   /**
@@ -136,14 +190,14 @@ public class ProjectApiServiceImpl extends
       }
     }
 
-    return SearchResponse.from(Suggestion.from(suggestions));
+    return SearchResponse.from(SuggestionMapper.toDto(suggestions));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected Project toModel(JsonNode json) {
-    return Json.fromJson(json, dto.Project.class).toModel();
+  protected Project toModel(dto.Project dto) {
+    return ProjectMapper.toModel(dto);
   }
 }

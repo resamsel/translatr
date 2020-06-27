@@ -1,0 +1,178 @@
+@import '~@angular/material/theming';
+@import 'theme';
+
+@mixin filter-field-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $accent-color: mat-color($accent, 700);
+  $accent-darker-color: mat-color($accent, 800);
+  $accent-contrast-color: mat-color($primary, default-contrast);
+
+  :host {
+    .mat-chip {
+      &.mat-basic-chip {
+        background-color: $accent-color;
+        color: $accent-contrast-color;
+      }
+
+      .mat-icon:hover {
+        background-color: $accent-darker-color;
+        color: $accent-contrast-color;
+      }
+    }
+  }
+}
+
+$border-radius: 2px;
+
+.mat-form-field {
+  display: block;
+}
+
+.search-field-standard,
+.search-field-outline,
+.search-field-fill,
+.search-field-legacy {
+  width: 100%;
+
+  ::ng-deep {
+    .mat-form-field-wrapper {
+      padding-bottom: 1em;
+    }
+
+    .mat-form-field-infix {
+      width: auto;
+      border-top-width: 0.2em;
+      padding: 0.6em 0;
+    }
+  }
+
+  &.mat-form-field-appearance-outline ::ng-deep {
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    .mat-form-field-flex {
+      padding: 0 0.6em 0 0.6em;
+    }
+
+    .mat-form-field-infix {
+      display: flex;
+      padding: 0.4em 0;
+    }
+  }
+
+  .option.mat-chip.mat-basic-chip {
+    @include mat-elevation(1);
+  }
+}
+
+.search-field-elevate {
+  color: rgba(0, 0, 0, 0.87);
+
+  .mat-chip-list {
+    line-height: 20px;
+  }
+
+  ::ng-deep {
+    &.mat-icon[matPrefix] {
+      margin-left: 4px;
+    }
+
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    .mat-form-field-flex {
+      background-color: #f1f3f4;
+      border-radius: $border-radius;
+      padding: 4px 8px;
+    }
+
+    .mat-form-field-infix {
+      display: flex;
+      align-items: center;
+      padding: 4px 0;
+      border-top-width: 0;
+    }
+
+    .mat-chip-list-wrapper {
+      min-height: 40px;
+    }
+  }
+
+  &.autocomplete-open {
+    ::ng-deep .mat-form-field-flex {
+      border-radius: $border-radius $border-radius 0 0;
+    }
+  }
+
+  ::ng-deep .mat-form-field-flex {
+    @include mat-elevation(1);
+    background-color: #fff;
+  }
+
+  &.mat-focused {
+    color: rgba(0, 0, 0, 0.87);
+  }
+}
+
+.option {
+  &.mat-chip .mat-icon {
+    border-radius: 9px;
+  }
+
+  &.mat-chip.mat-basic-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: $border-radius;
+    margin-left: 4px;
+    padding: 4px 6px;
+
+    .mat-icon {
+      width: 18px;
+      height: 18px;
+      margin-left: 4px;
+      opacity: 0.6;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .type {
+    opacity: 0.8;
+  }
+
+  .type + .value {
+    &::before {
+      content: ':';
+      opacity: 0.8;
+      padding-right: 0.2em;
+    }
+  }
+}
+
+:host ::ng-deep .mat-icon[matPrefix] {
+  margin-right: 8px;
+}
+
+.mat-chip-list {
+  flex-grow: 1;
+  flex-wrap: nowrap;
+  max-width: 100%;
+
+  ::ng-deep .mat-chip-list-wrapper {
+    flex-wrap: nowrap;
+  }
+}
+
+input.mat-chip-input {
+  width: 80px;
+  flex: 1 0 80px;
+  margin-left: 8px;
+}
+
+@include filter-field-theme($app-theme);

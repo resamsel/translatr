@@ -4,31 +4,40 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.AbstractSearchCriteria;
 import dto.Dto;
 import dto.PermissionException;
-import java.util.UUID;
+import models.Project;
 import models.ProjectRole;
 import models.User;
 import play.Configuration;
-import play.cache.CacheApi;
 import play.inject.Injector;
+import services.AuthProvider;
 import services.CacheService;
 import services.api.ApiService;
-import utils.PermissionUtils;
 
-public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>>
+import java.util.UUID;
+
+public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>, API extends ApiService<DTO, ID, CRITERIA>>
     extends AbstractBaseApi {
-  protected final ApiService<DTO, ID, CRITERIA> api;
+  protected final AuthProvider authProvider;
+  protected final API api;
   protected final Configuration configuration;
 
-  protected AbstractApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-      ApiService<DTO, ID, CRITERIA> api) {
+  protected AbstractApi(
+      Injector injector, CacheService cache, PlayAuthenticate auth,
+      AuthProvider authProvider, API api) {
     super(injector, cache, auth);
 
     this.configuration = injector.instanceOf(Configuration.class);
+    this.authProvider = authProvider;
     this.api = api;
   }
 
   protected void checkProjectRole(UUID projectId, User user, ProjectRole... roles) {
     if (!permissionService.hasPermissionAny(projectId, user, roles))
+      throw new PermissionException("User not allowed in project");
+  }
+
+  protected void checkProjectRole(Project project, User user, ProjectRole... roles) {
+    if (!permissionService.hasPermissionAny(project, user, roles))
       throw new PermissionException("User not allowed in project");
   }
 }

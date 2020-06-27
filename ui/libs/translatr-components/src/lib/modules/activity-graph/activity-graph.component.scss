@@ -1,0 +1,38 @@
+:host {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  vertical-align: middle;
+  overflow: hidden;
+  margin: 16px 0;
+
+  ::ng-deep {
+    svg {
+      text.legend,
+      .weekday,
+      .month {
+        fill: rgba(0, 0, 0, 0.6);
+      }
+
+      .day {
+        fill: rgba(0, 0, 0, 0.125);
+      }
+
+      .q0 {
+        fill: #d6e685;
+      }
+
+      .q1 {
+        fill: #8cc665;
+      }
+
+      .q2 {
+        fill: #44a340;
+      }
+
+      .q3 {
+        fill: #1e6823;
+      }
+    }
+  }
+}

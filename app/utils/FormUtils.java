@@ -1,18 +1,13 @@
 package utils;
 
-import forms.AccessTokenForm;
-import forms.ActivitySearchForm;
-import forms.KeyForm;
-import forms.KeySearchForm;
-import forms.LocaleForm;
-import forms.LocaleSearchForm;
-import forms.SearchForm;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
+import forms.*;
 import play.Configuration;
 import play.data.Form;
 import play.data.FormFactory;
 import play.data.validation.ValidationError;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 /**
  * @author resamsel

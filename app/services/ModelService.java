@@ -2,8 +2,9 @@ package services;
 
 import com.avaje.ebean.PagedList;
 import criterias.AbstractSearchCriteria;
-import java.util.Collection;
 import models.Model;
+
+import java.util.Collection;
 
 /**
  *
@@ -18,6 +19,8 @@ public interface ModelService<T extends Model<T, ID>, ID, CRITERIA extends Abstr
   T create(T model);
 
   T update(T model);
+
+  T save(T t);
 
   Collection<T> save(Collection<T> t);
 

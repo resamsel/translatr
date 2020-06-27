@@ -1,0 +1,24 @@
+<dev-empty-view icon="book">
+  <ng-container *ngIf="canCreate; else noProjects">
+    <dev-empty-view-header transloco="project.teaser.title">No project defined</dev-empty-view-header>
+    <dev-empty-view-content transloco="project.teaser.text">
+      No projects defined, yet - how about creating one?
+    </dev-empty-view-content>
+    <dev-empty-view-actions>
+      <button
+        (click)="create.emit()"
+        class="action"
+        color="accent"
+        mat-raised-button
+        transloco="project.create.button"
+      >Start new project
+      </button>
+    </dev-empty-view-actions>
+  </ng-container>
+  <ng-template #noProjects>
+    <dev-empty-view-header transloco="projects.empty.title">No projects visible</dev-empty-view-header>
+    <dev-empty-view-content transloco="projects.empty.text">
+      There are no projects visible to you.
+    </dev-empty-view-content>
+  </ng-template>
+</dev-empty-view>

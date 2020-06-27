@@ -1,0 +1,52 @@
+$padding: 32px;
+$metric-size: 36px;
+$metric-line-height: $metric-size + 6px;
+$subtitle-size: 24px;
+$icon-size: $metric-line-height + $padding + $subtitle-size;
+
+:host {
+  .mat-card.icon {
+    min-height: $icon-size - $padding;
+  }
+
+  .mat-card-header {
+    z-index: 1;
+    flex-direction: row-reverse;
+
+    .mat-card-title {
+      font-size: $metric-size;
+      line-height: $metric-line-height;
+      font-weight: 300;
+    }
+
+    .mat-card-subtitle {
+      margin-bottom: 0;
+    }
+  }
+
+  .metric-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: $icon-size;
+    width: $icon-size;
+    opacity: 0.4;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: 0;
+
+    .mat-icon {
+      height: 100%;
+      width: 100%;
+      line-height: $icon-size;
+      font-size: 120px;
+    }
+  }
+
+  ::ng-deep {
+    .mat-card-header-text {
+      flex-grow: 1;
+      overflow: hidden;
+    }
+  }
+}

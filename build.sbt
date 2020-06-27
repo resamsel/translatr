@@ -2,7 +2,7 @@
 
 name := """translatr"""
 
-version := "2.2.0"
+version := "3.0.0"
 
 lazy val root = (project in file(".")).
 	enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin).
@@ -10,7 +10,7 @@ lazy val root = (project in file(".")).
 		buildInfoKeys := Seq[BuildInfoKey](name, version)
 	)
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.11.12"
 
 libraryDependencies ++= Seq(
 	javaJdbc,
@@ -37,15 +37,19 @@ libraryDependencies ++= Seq(
 	// https://mvnrepository.com/artifact/org.jsoup/jsoup
 	"org.jsoup" % "jsoup" % "1.10.3",
 
+	"io.prometheus" % "simpleclient_common" % "0.8.1",
+	"io.prometheus" % "simpleclient_hotspot" % "0.8.1",
+
 	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
 
 	"io.swagger" %% "swagger-play2" % "1.5.3",
 	"org.webjars" % "swagger-ui" % "2.2.10",
 
-	// https://mvnrepository.com/artifact/org.easytesting/fest-assert-core
-	"org.easytesting" % "fest-assert-core" % "2.0M10" % "test",
+	"org.assertj" % "assertj-core" % "3.15.0" % "test",
 	"org.mockito" % "mockito-core" % "2.8.47" % "test"
 )
+
+unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "java"
 
 //
 // Eclipse
@@ -143,7 +147,8 @@ jacoco.excludes in jacoco.Config := Seq(
 	"router.*",
 	"views.html.*", // should probably not be excluded
 	"*.Reverse*",
-	"*.routes"
+	"*.routes",
+	"*.scala"
 )
 
 //

@@ -1,0 +1,5 @@
+<a *ngIf="user" [routerLink]="['/', user.username]">
+  <user-card [user]="user">
+    <ng-content></ng-content>
+  </user-card>
+</a>

@@ -1,7 +1,12 @@
 package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author resamsel
@@ -33,12 +38,18 @@ public class JsonUtils {
     }
   }
 
-  /**
-   * @param node
-   * @param fieldName
-   * @return
-   */
-  public static String getAsText(JsonNode node, String fieldName) {
+  public static List<UUID> getUuids(String uuids) {
+    if (uuids == null || uuids.trim().length() < 1) {
+      return null;
+    }
+
+    return Arrays.stream(uuids.split(","))
+        .map(JsonUtils::getUuid)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+  }
+
+  static String getAsText(JsonNode node, String fieldName) {
     if (!node.hasNonNull(fieldName)) {
       return null;
     }

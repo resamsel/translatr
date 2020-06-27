@@ -1,0 +1,51 @@
+@import 'theme';
+@import 'mixins';
+
+@mixin permission-denied-theme($theme) {
+  $primary: map-get($theme, primary);
+  $primary-color: mat-color($primary, 500);
+  $accent: map-get($theme, accent);
+  $accent-color: mat-color($accent, 500);
+
+  :host {
+    .main-container {
+      background-color: $primary-color;
+    }
+
+    .error-header {
+      color: $accent-color;
+    }
+  }
+}
+
+.main-container {
+  color: white;
+  height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  flex-grow: 1;
+  text-align: center;
+  padding-bottom: 32px;
+
+  .error-code {
+    font-size: 128px;
+    font-weight: 300;
+    line-height: 128px;
+    opacity: 0.6;
+  }
+
+  .error-header {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  .error-msg {
+    margin-bottom: 24px;
+  }
+}
+
+@include permission-denied-theme($app-theme);

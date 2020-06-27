@@ -4,7 +4,7 @@ import models.Locale;
 import org.junit.Test;
 import tests.AbstractLocaleTest;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static utils.FormatUtils.formatDisplayName;
 
 public class FormatUtilsTest extends AbstractLocaleTest {

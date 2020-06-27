@@ -1,0 +1,259 @@
+{
+  "list": [
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "js1",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "ownerName": "Jane Smith",
+      "ownerUsername": "janesmith",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21202,
+          "whenCreated": "2019-07-05T20:09:08.268Z",
+          "whenUpdated": "2019-07-05T20:09:08.268Z",
+          "role": "Owner",
+          "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+          "projectName": "p1",
+          "projectOwnerUsername": "janesmith",
+          "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+          "userName": "Jane Smith",
+          "userUsername": "janesmith",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    },
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "js2",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "ownerName": "Jane Smith",
+      "ownerUsername": "janesmith",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21202,
+          "whenCreated": "2019-07-05T20:09:08.268Z",
+          "whenUpdated": "2019-07-05T20:09:08.268Z",
+          "role": "Owner",
+          "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+          "projectName": "p1",
+          "projectOwnerUsername": "janesmith",
+          "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+          "userName": "Jane Smith",
+          "userUsername": "janesmith",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    },
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "js3",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "ownerName": "Jane Smith",
+      "ownerUsername": "janesmith",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21202,
+          "whenCreated": "2019-07-05T20:09:08.268Z",
+          "whenUpdated": "2019-07-05T20:09:08.268Z",
+          "role": "Owner",
+          "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+          "projectName": "p1",
+          "projectOwnerUsername": "janesmith",
+          "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+          "userName": "Jane Smith",
+          "userUsername": "janesmith",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    },
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "js4",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "ownerName": "Jane Smith",
+      "ownerUsername": "janesmith",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21202,
+          "whenCreated": "2019-07-05T20:09:08.268Z",
+          "whenUpdated": "2019-07-05T20:09:08.268Z",
+          "role": "Owner",
+          "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+          "projectName": "p1",
+          "projectOwnerUsername": "janesmith",
+          "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+          "userName": "Jane Smith",
+          "userUsername": "janesmith",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    },
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "js5",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "ownerName": "Jane Smith",
+      "ownerUsername": "janesmith",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21202,
+          "whenCreated": "2019-07-05T20:09:08.268Z",
+          "whenUpdated": "2019-07-05T20:09:08.268Z",
+          "role": "Owner",
+          "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+          "projectName": "p1",
+          "projectOwnerUsername": "janesmith",
+          "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+          "userName": "Jane Smith",
+          "userUsername": "janesmith",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    },
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "js6",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "ownerName": "Jane Smith",
+      "ownerUsername": "janesmith",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21202,
+          "whenCreated": "2019-07-05T20:09:08.268Z",
+          "whenUpdated": "2019-07-05T20:09:08.268Z",
+          "role": "Owner",
+          "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+          "projectName": "p1",
+          "projectOwnerUsername": "janesmith",
+          "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+          "userName": "Jane Smith",
+          "userUsername": "janesmith",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    },
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "js7",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "ownerName": "Jane Smith",
+      "ownerUsername": "janesmith",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21202,
+          "whenCreated": "2019-07-05T20:09:08.268Z",
+          "whenUpdated": "2019-07-05T20:09:08.268Z",
+          "role": "Owner",
+          "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+          "projectName": "p1",
+          "projectOwnerUsername": "janesmith",
+          "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+          "userName": "Jane Smith",
+          "userUsername": "janesmith",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    },
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "js8",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "ownerName": "Jane Smith",
+      "ownerUsername": "janesmith",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21202,
+          "whenCreated": "2019-07-05T20:09:08.268Z",
+          "whenUpdated": "2019-07-05T20:09:08.268Z",
+          "role": "Owner",
+          "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+          "projectName": "p1",
+          "projectOwnerUsername": "janesmith",
+          "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+          "userName": "Jane Smith",
+          "userUsername": "janesmith",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    },
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "js9",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "ownerName": "Jane Smith",
+      "ownerUsername": "janesmith",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21202,
+          "whenCreated": "2019-07-05T20:09:08.268Z",
+          "whenUpdated": "2019-07-05T20:09:08.268Z",
+          "role": "Owner",
+          "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+          "projectName": "p1",
+          "projectOwnerUsername": "janesmith",
+          "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+          "userName": "Jane Smith",
+          "userUsername": "janesmith",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    },
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "js10",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "ownerName": "Jane Smith",
+      "ownerUsername": "janesmith",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "members": [
+        {
+          "id": 21202,
+          "whenCreated": "2019-07-05T20:09:08.268Z",
+          "whenUpdated": "2019-07-05T20:09:08.268Z",
+          "role": "Owner",
+          "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+          "projectName": "p1",
+          "projectOwnerUsername": "janesmith",
+          "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+          "userName": "Jane Smith",
+          "userUsername": "janesmith",
+          "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+        }
+      ]
+    }
+  ],
+  "offset": 0,
+  "limit": 10,
+  "total": 11,
+  "hasPrev": false,
+  "hasNext": true
+}

@@ -1,48 +1,26 @@
 package models;
 
-import static play.libs.Json.toJson;
-
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
 import com.avaje.ebean.annotation.CreatedTimestamp;
+import com.avaje.ebean.annotation.DbJsonB;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.feth.play.module.pa.PlayAuthenticate;
-import com.feth.play.module.pa.user.AuthUser;
-import controllers.Application;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Version;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import play.api.Play;
-import play.api.inject.Injector;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.mvc.Call;
-import play.mvc.Http.Context;
-import play.mvc.Http.Session;
-import services.UserService;
 import utils.CacheUtils;
-import utils.ConfigKey;
-import utils.ContextKey;
+import validators.NameUnique;
+import validators.UserUsernameUniqueChecker;
 import validators.Username;
+
+import javax.persistence.*;
+import java.util.*;
+
+import static play.libs.Json.toJson;
 
 /**
  * @author René Panzar
@@ -50,9 +28,8 @@ import validators.Username;
  */
 @Entity
 @Table(name = "user_")
+@NameUnique(checker = UserUsernameUniqueChecker.class, field = "username", message = "error.usernameunique")
 public class User implements Model<User, UUID>, Subject {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
 
   public static final int USERNAME_LENGTH = 32;
 
@@ -60,12 +37,13 @@ public class User implements Model<User, UUID>, Subject {
 
   public static final int EMAIL_LENGTH = 255;
 
+  private static final int ROLE_LENGTH = 16;
+
+  private static final int LOCALE_LENGTH = 16;
+
   @Id
   @GeneratedValue
   public UUID id;
-
-  @Version
-  public Long version;
 
   @CreatedTimestamp
   public DateTime whenCreated;
@@ -73,7 +51,7 @@ public class User implements Model<User, UUID>, Subject {
   @UpdatedTimestamp
   public DateTime whenUpdated;
 
-  public boolean active;
+  public boolean active = true;
 
   @Column(nullable = false, length = USERNAME_LENGTH, unique = true)
   @Required
@@ -81,12 +59,20 @@ public class User implements Model<User, UUID>, Subject {
   @Username
   public String username;
 
+  @Required
   @Column(nullable = false, length = NAME_LENGTH)
   public String name;
 
   public String email;
 
   public boolean emailValidated;
+
+  @Enumerated(EnumType.STRING)
+  @Column(length = ROLE_LENGTH)
+  public UserRole role = UserRole.User;
+
+  @Column(length = LOCALE_LENGTH)
+  public java.util.Locale preferredLocale;
 
   @JsonIgnore
   @OneToMany
@@ -104,6 +90,14 @@ public class User implements Model<User, UUID>, Subject {
   @JsonIgnore
   @OneToMany
   public List<LogEntry> activities;
+
+  @JsonIgnore
+  @OneToMany
+  public List<UserFeatureFlag> features;
+
+  @JsonIgnore
+  @DbJsonB
+  public Map<String, String> settings;
 
   /**
    * {@inheritDoc}
@@ -148,79 +142,38 @@ public class User implements Model<User, UUID>, Subject {
     return this;
   }
 
+  public User withRole(UserRole role) {
+    this.role = role;
+    return this;
+  }
+
+  public User withSettings(Map<String, String> settings) {
+    this.settings = new HashMap<>(settings);
+    return this;
+  }
+
   /**
    * {@inheritDoc}
    */
   @Override
   public User updateFrom(User in) {
     active = in.active;
-    username = in.username;
-    name = in.name;
-    email = in.email;
+    username = ObjectUtils.firstNonNull(in.username, username);
+    name = ObjectUtils.firstNonNull(in.name, name);
+    email = ObjectUtils.firstNonNull(in.email, email);
     emailValidated = in.emailValidated;
+    role = in.role;
+    preferredLocale = in.preferredLocale;
 
-    return this;
-  }
-
-  private static AuthUser loggedInAuthUser() {
-    Injector injector = Play.current().injector();
-    Session session = Context.current().session();
-    String provider = session.get("pa.p.id");
-    List<String> authProviders =
-        Arrays.asList(StringUtils.split(injector.instanceOf(play.Application.class).configuration()
-            .getString(ConfigKey.AuthProviders.key()), ","));
-
-    LOGGER.debug("Auth providers: {}", authProviders);
-
-    if (provider != null && !authProviders.contains(provider))
-    // Prevent NPE when using an unavailable auth provider
-    {
-      session.clear();
-    }
-
-    PlayAuthenticate auth = injector.instanceOf(PlayAuthenticate.class);
-
-    return auth.getUser(session);
-  }
-
-  public static User loggedInUser() {
-    Context ctx = ContextKey.context();
-    if (ctx == null) {
-      LOGGER.debug("Context is null");
-      return null;
-    }
-
-    // Logged-in via access_token?
-    AccessToken accessToken = ContextKey.AccessToken.get();
-    if (accessToken != null) {
-      return accessToken.user;
-    }
-
-    // Logged-in via auth plugin?
-    AuthUser authUser = loggedInAuthUser();
-    if (authUser != null) {
-      User user = ContextKey.get(ctx, authUser.toString());
-      if (user != null) {
-        return user;
+    if (in.settings != null) {
+      if (settings == null) {
+        settings = new HashMap<>();
       }
 
-      LOGGER.debug("Auth user not in context");
-      return ContextKey.put(ctx, authUser.toString(),
-          Play.current().injector().instanceOf(UserService.class).getLocalUser(authUser));
+      settings.putAll(in.settings);
     }
 
-    LOGGER.debug("Not logged-in");
-    return null;
-  }
-
-  public static UUID loggedInUserId() {
-    User loggedInUser = loggedInUser();
-
-    if (loggedInUser == null) {
-      return null;
-    }
-
-    return loggedInUser.id;
+    return this;
   }
 
   /**
@@ -228,7 +181,7 @@ public class User implements Model<User, UUID>, Subject {
    */
   @Override
   public List<? extends Role> getRoles() {
-    return Collections.singletonList(UserRole.from(Application.USER_ROLE));
+    return Collections.singletonList(UserRole.User);
   }
 
   /**
@@ -251,6 +204,10 @@ public class User implements Model<User, UUID>, Subject {
     return username != null && name != null && email != null;
   }
 
+  public boolean isAdmin() {
+    return role == UserRole.Admin;
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -271,7 +228,7 @@ public class User implements Model<User, UUID>, Subject {
       return false;
     }
     User that = (User) obj;
-    return this.id == that.id || id != null && id.equals(that.id);
+    return Objects.equals(id, that.id);
   }
 
   /**

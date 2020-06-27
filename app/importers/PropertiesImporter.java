@@ -1,18 +1,14 @@
 package importers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.Properties;
 import models.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.KeyService;
 import services.MessageService;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 /**
  *
@@ -37,15 +33,11 @@ public abstract class PropertiesImporter extends AbstractImporter implements Imp
    * @throws UnsupportedEncodingException
    */
   @Override
-  protected Properties retrieveProperties(File file, Locale locale) throws IOException {
+  Properties retrieveProperties(InputStream inputStream, Locale locale) throws IOException {
     Properties properties = new Properties();
-    InputStreamReader reader =
-        new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
 
-    try {
+    try (InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
       properties.load(reader);
-    } finally {
-      reader.close();
     }
 
     return properties;
@@ -55,7 +47,7 @@ public abstract class PropertiesImporter extends AbstractImporter implements Imp
   public void apply(File file, Locale locale) throws Exception {
     LOGGER.debug("Importing from file {}", file.getName());
 
-    Properties properties = retrieveProperties(file, null);
+    Properties properties = retrieveProperties(new FileInputStream(file), null);
 
     load(locale, properties.stringPropertyNames());
 

@@ -7,10 +7,6 @@ import commands.RevertDeleteLocaleCommand;
 import exceptions.LocaleNotFoundException;
 import forms.KeySearchForm;
 import forms.LocaleForm;
-import java.util.concurrent.CompletionStage;
-import java.util.function.BiFunction;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
 import models.Locale;
 import models.Project;
 import org.slf4j.Logger;
@@ -30,6 +26,11 @@ import services.api.LocaleApiService;
 import utils.FormUtils;
 import utils.Template;
 import utils.TransactionUtils;
+
+import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
+import java.util.concurrent.CompletionStage;
+import java.util.function.BiFunction;
 
 /**
  * @author resamsel

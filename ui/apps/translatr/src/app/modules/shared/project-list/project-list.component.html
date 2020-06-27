@@ -1,0 +1,54 @@
+<app-nav-list
+  *transloco="let t"
+  [pagedList]="projects"
+  [showFilter]="showFilter"
+  [criteria]="criteria"
+  [showMore]="showMore"
+  [empty]="empty"
+  [nothingFound]="nothingFound"
+  (filter)="filter.emit($event)"
+>
+  <a
+    *ngFor="let project of projects?.list; trackBy: trackByFn"
+    [routerLink]="['/', project.ownerUsername, project.name]"
+    mat-list-item>
+      <span matListIcon class="mat-icon circle">{{
+        firstChar(project.name)
+        }}</span>
+    <h3 matLine>
+      {{ project.name }} <span class="owner">{{ project.ownerName }}</span>
+    </h3>
+    <mat-progress-bar
+      *ngIf="project.progress !== undefined"
+      mode="determinate"
+      color="accent"
+      [value]="project.progress * 100"
+      class="limit-width"
+      [matTooltip]="t('project.progress.tooltip', {progress: project.progress * 100 | number:'1.0-1'})"
+      matLine
+    ></mat-progress-bar>
+  </a>
+  <ng-template #empty>
+    <app-project-empty-view [canCreate]="canCreate" (create)="create.emit()"></app-project-empty-view>
+  </ng-template>
+  <ng-template #nothingFound>
+    <dev-empty-view icon="book">
+      <dev-empty-view-header transloco="projects.notfound.title">No projects found</dev-empty-view-header>
+      <dev-empty-view-content *ngIf="canCreate" transloco="projects.notfound.cancreate.text">
+        Could not find any projects with the given filter. Try removing some filters or create a new project.
+      </dev-empty-view-content>
+      <dev-empty-view-content *ngIf="!canCreate" transloco="projects.notfound.text">
+        Could not find any projects with the given filter. Try removing some filters.
+      </dev-empty-view-content>
+      <dev-empty-view-actions *ngIf="canCreate">
+        <button
+          mat-raised-button
+          color="accent"
+          transloco="project.create.button"
+          (click)="create.emit()"
+        >Create project
+        </button>
+      </dev-empty-view-actions>
+    </dev-empty-view>
+  </ng-template>
+</app-nav-list>

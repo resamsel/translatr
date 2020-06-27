@@ -2,12 +2,13 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import criterias.LocaleCriteria;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import models.Locale;
 import models.Project;
 import services.impl.LocaleServiceImpl;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author resamsel
@@ -20,7 +21,7 @@ public interface LocaleService extends ModelService<Locale, UUID, LocaleCriteria
 
   Locale byProjectAndName(Project project, String name);
 
-  Map<UUID, Double> progress(List<UUID> localeIds, long keysSize);
+  Map<UUID, Double> progress(UUID projectId);
 
   void increaseWordCountBy(UUID localeId, int wordCountDiff);
 

@@ -1,0 +1,38 @@
+<mat-sidenav-container [hasBackdrop]="true">
+  <ng-container ngProjectAs="mat-sidenav">
+    <ng-content select="mat-sidenav"></ng-content>
+  </ng-container>
+
+  <mat-sidenav-content>
+    <app-navbar
+      i18n-title="@@admin.title"
+      title="Translatr Admin"
+      [page]="page"
+      [backLink]="backLink"
+      [sidenav]="sidenav"
+      [elevated]="!overlay"
+      [overlay]="overlay"
+    >
+      <ng-container ngProjectAs="app-search-bar">
+        <ng-content select="app-search-bar"></ng-content>
+      </ng-container>
+
+      <app-auth-bar-language-switcher
+        *featureFlag="Feature.LanguageSwitcher"
+        [matTooltip]="'language.switcher' | transloco"
+      ></app-auth-bar-language-switcher>
+      <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
+        <a mat-menu-item [href]="uiUrl" target="_blank">
+          UI
+          <mat-icon [inline]="true">launch</mat-icon>
+        </a>
+      </app-auth-bar-item>
+    </app-navbar>
+
+    <div class="main-container">
+      <ng-content></ng-content>
+    </div>
+
+    <app-footer *ngIf="showFooter"></app-footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

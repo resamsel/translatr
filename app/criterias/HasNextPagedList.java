@@ -1,16 +1,15 @@
 package criterias;
 
-import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import com.avaje.ebeaninternal.api.Monitor;
+
+import javax.persistence.Transient;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Future;
-import javax.persistence.Transient;
 
 /**
  * @author resamsel
@@ -30,13 +29,13 @@ public class HasNextPagedList<T> implements PagedList<T>, Serializable {
   private List<T> list;
   private boolean hasNext;
 
-  private HasNextPagedList(Query<T> query) {
+  HasNextPagedList(Query<T> query) {
     this.query = query;
     this.maxRows = query.getMaxRows();
     this.firstRow = query.getFirstRow();
   }
 
-  private HasNextPagedList(List<T> list) {
+  HasNextPagedList(List<T> list) {
     this.list = Objects.requireNonNull(list, "List is null");
     this.query = null;
     this.maxRows = list.size();
@@ -165,26 +164,5 @@ public class HasNextPagedList<T> implements PagedList<T>, Serializable {
     int total = getTotalCount();
 
     return first + to + last + of + total;
-  }
-
-  public static <T> HasNextPagedList<T> create(Query<T> query) {
-    HasNextPagedList<T> pagedList = new HasNextPagedList<>(query);
-
-    pagedList.getList();
-
-    return pagedList;
-  }
-
-  public static <T> HasNextPagedList<T> create(ExpressionList<T> expressionList) {
-    return create(expressionList.query());
-  }
-
-  public static <T> HasNextPagedList<T> create(List<T> list) {
-    return new HasNextPagedList<>(list);
-  }
-
-  @SafeVarargs
-  public static <T> HasNextPagedList<T> create(T... a) {
-    return new HasNextPagedList<>(Arrays.asList(a));
   }
 }

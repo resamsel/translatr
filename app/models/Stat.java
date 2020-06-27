@@ -1,8 +1,9 @@
 package models;
 
 import com.avaje.ebean.annotation.Sql;
-import java.util.UUID;
+
 import javax.persistence.Entity;
+import java.util.UUID;
 
 /**
  *
@@ -11,9 +12,8 @@ import javax.persistence.Entity;
  */
 @Entity
 @Sql
-public class Stat
-{
+public class Stat {
 	public UUID id;
 
-	public Long count;
+	public Double count;
 }

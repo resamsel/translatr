@@ -1,8 +1,10 @@
 package models;
 
 import com.avaje.ebean.annotation.CreatedTimestamp;
-import dto.Dto;
-import java.util.UUID;
+import org.joda.time.DateTime;
+import play.libs.Json;
+import utils.CacheUtils;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,10 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import play.libs.Json;
-import utils.CacheUtils;
+import java.util.UUID;
 
 /**
  * @author resamsel
@@ -71,11 +70,6 @@ public class LogEntry implements Model<LogEntry, UUID> {
     return this;
   }
 
-  public static <T extends Dto> LogEntry from(ActionType type, Project project, Class<T> clazz,
-      T before, T after) {
-    return from(type, null, project, clazz, before, after);
-  }
-
   public static <T> LogEntry from(ActionType type, User user, Project project, Class<T> clazz,
       T before, T after) {
     LogEntry out = new LogEntry();
@@ -101,8 +95,8 @@ public class LogEntry implements Model<LogEntry, UUID> {
   public LogEntry updateFrom(LogEntry in) {
     type = in.type;
     contentType = in.contentType;
-    user = in.user;
-    project = in.project;
+    user = user.updateFrom(in.user);
+    project = project.updateFrom(in.project);
     before = in.before;
     after = in.after;
 

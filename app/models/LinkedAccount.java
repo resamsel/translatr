@@ -3,15 +3,15 @@ package models;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.feth.play.module.pa.user.AuthUserIdentity;
-import java.util.Objects;
+import org.joda.time.DateTime;
+import play.mvc.Call;
+import utils.CacheUtils;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Version;
-import org.joda.time.DateTime;
-import play.mvc.Call;
-import utils.CacheUtils;
+import java.util.Objects;
 
 @Entity
 public class LinkedAccount implements Model<LinkedAccount, Long> {
@@ -19,9 +19,6 @@ public class LinkedAccount implements Model<LinkedAccount, Long> {
   @Id
   @GeneratedValue
   public Long id;
-
-  @Version
-  public Long version;
 
   @CreatedTimestamp
   public DateTime whenCreated;

@@ -1,0 +1,83 @@
+<header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
+  <div class="container title">
+    <div class="content">
+      <h1 class="page">Access Tokens</h1>
+    </div>
+  </div>
+</header>
+<div class="container">
+  <div>
+    <entity-table
+      [dataSource]="accessTokens$ | async"
+      [displayedColumns]="displayedColumns"
+      [load]="load$ | async"
+      (criteria)="onCriteriaChanged($event)"
+      (selected)="onSelected($event)"
+    >
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="user">
+        <th mat-header-cell *matHeaderCellDef>User</th>
+        <td mat-cell *matCellDef="let element">
+          <a class="link" [routerLink]="['/users', element.userId]">{{
+            element.userName
+            }}</a>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="scopes">
+        <th mat-header-cell *matHeaderCellDef>Scope</th>
+        <td mat-cell *matCellDef="let element" class="scope">
+          {{ element.scope.split(',') | ellipsis }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="when_created">
+        <th mat-header-cell *matHeaderCellDef>Created</th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          [matTooltip]="element.whenCreated | date: 'full'"
+        >
+          {{ element.whenCreated | amTimeAgo }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="actions">Actions</th>
+        <td mat-cell *matCellDef="let element" class="actions">
+          <button
+            mat-icon-button
+            i18n-matTooltip="@@button.edit"
+            matTooltip="Edit"
+            [disabled]="(allowEdit$(element) | async) === false"
+            (click)="onEdit(element)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <confirm-button
+            icon="delete"
+            i18n-tooltip="@@button.delete"
+            tooltip="Delete"
+            [disabled]="(allowDelete$(element) | async) === false"
+            (confirm)="onDelete(element)"
+          >
+          </confirm-button>
+        </td>
+      </ng-container>
+
+      <selection-actions>
+        <confirm-button
+          icon="delete"
+          i18n-tooltip="@@button.delete.selected"
+          tooltip="Delete selected"
+          [disabled]="(allowDeleteAll$(selected) | async) === false"
+          (confirm)="onDeleteAll(selected)"
+        ></confirm-button>
+      </selection-actions>
+    </entity-table>
+  </div>
+</div>

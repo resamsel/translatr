@@ -1,26 +1,31 @@
 package repositories.impl;
 
-import actors.ActivityActor;
+import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activity;
-import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import criterias.AccessTokenCriteria;
-import criterias.HasNextPagedList;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.validation.Validator;
+import criterias.PagedListFactory;
+import mappers.AccessTokenMapper;
 import models.AccessToken;
 import models.ActionType;
+import models.User;
+import models.UserRole;
 import org.apache.commons.lang3.StringUtils;
 import repositories.AccessTokenRepository;
+import repositories.Persistence;
+import services.AuthProvider;
 import utils.QueryUtils;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
 
 @Singleton
 public class AccessTokenRepositoryImpl extends
@@ -31,14 +36,16 @@ public class AccessTokenRepositoryImpl extends
   };
 
   @Inject
-  public AccessTokenRepositoryImpl(Validator validator,
-      @Named(ActivityActor.NAME) ActorRef activityActor) {
-    super(validator, activityActor);
+  public AccessTokenRepositoryImpl(Persistence persistence,
+                                   Validator validator,
+                                   AuthProvider authProvider,
+                                   ActivityActorRef activityActor) {
+    super(persistence, validator, authProvider, activityActor);
   }
 
   @Override
   public PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
-    ExpressionList<AccessToken> query = fetch().where();
+    ExpressionList<AccessToken> query = fetch(criteria.getFetches()).where();
 
     if (criteria.getUserId() != null) {
       query.eq("user.id", criteria.getUserId());
@@ -50,12 +57,12 @@ public class AccessTokenRepositoryImpl extends
 
     criteria.paged(query);
 
-    return HasNextPagedList.create(query);
+    return PagedListFactory.create(query);
   }
 
   @Override
   public AccessToken byId(Long id, String... fetches) {
-    return fetch().setId(id).findUnique();
+    return fetch(fetches).setId(id).findUnique();
   }
 
   @Override
@@ -68,8 +75,13 @@ public class AccessTokenRepositoryImpl extends
     return find.where().eq("user.id", userId).eq("name", name).findUnique();
   }
 
-  private Query<AccessToken> fetch() {
-    return QueryUtils.fetch(find.query().setDisableLazyLoading(true), PROPERTIES_TO_FETCH);
+  private Query<AccessToken> fetch(List<String> fetches) {
+    return fetch(fetches.toArray(new String[0]));
+  }
+
+  private Query<AccessToken> fetch(String... fetches) {
+    return QueryUtils.fetch(find.query().setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 
   /**
@@ -77,7 +89,13 @@ public class AccessTokenRepositoryImpl extends
    */
   @Override
   protected void preSave(AccessToken t, boolean update) {
-    if (t.key == null) {
+    User loggedInUser = authProvider.loggedInUser();
+    if (t.user == null || t.user.id == null
+        || (loggedInUser != null && t.user.id != loggedInUser.id && loggedInUser.role != UserRole.Admin)) {
+      // only allow admins to create access tokens for other users
+      t.user = loggedInUser;
+    }
+    if (StringUtils.isBlank(t.key)) {
       t.key = generateKey(AccessToken.KEY_LENGTH);
     }
   }
@@ -87,8 +105,13 @@ public class AccessTokenRepositoryImpl extends
     if (update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Update, null, dto.AccessToken.class, dto.AccessToken.from(byId(t.id)),
-              dto.AccessToken.from(t)),
+              ActionType.Update,
+              authProvider.loggedInUser(),
+              null,
+              dto.AccessToken.class,
+              AccessTokenMapper.toDto(byId(t.id)),
+              AccessTokenMapper.toDto(t)
+          ),
           null
       );
     }
@@ -102,7 +125,13 @@ public class AccessTokenRepositoryImpl extends
     if (!update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Create, null, dto.AccessToken.class, null, dto.AccessToken.from(t)),
+              ActionType.Create,
+              authProvider.loggedInUser(),
+              null,
+              dto.AccessToken.class,
+              null,
+              AccessTokenMapper.toDto(t)
+          ),
           null
       );
     }

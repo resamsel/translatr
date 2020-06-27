@@ -1,0 +1,4 @@
+<div class="container">
+  <dev-activity-graph [data]="aggregated$ | async"></dev-activity-graph>
+  <app-activity-list [activities]="activities$ | async" relativeTo="project"></app-activity-list>
+</div>

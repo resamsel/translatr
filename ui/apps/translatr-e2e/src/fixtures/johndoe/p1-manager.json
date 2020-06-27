@@ -1,0 +1,12 @@
+{
+  "id": "bc5f3fa7-3d9f-4aee-9457-0f6c4d5f5486",
+  "whenCreated": "2019-10-25T10:51:40.995Z",
+  "whenUpdated": "2019-10-25T12:29:24.479Z",
+  "name": "p1",
+  "description": "p1d",
+  "myRole": "Manager",
+  "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+  "ownerName": "John Doe",
+  "ownerUsername": "johndoe",
+  "ownerEmailHash": "6d041874043a1820c908f747e8a608bc"
+}

@@ -88,7 +88,7 @@
 	<script>
 		$('ul.tabs').tabs();
 
-		var projectId = '@key.project.id';
+		var projectId = 'project.id';
 		var keyId = '@key.id';
 		var keyName = '@key.name';
 		var messages = {
@@ -96,7 +96,7 @@
 		};
 		var editor = new KeyEditor({
 			app: app,
-			project: new Project('@key.project.id'),
+			project: new Project('project.id'),
 			key: @Html(play.libs.Json.toJson(key).toString),
 			search: @Html(play.libs.Json.toJson(form.get()).toString)
 		});
@@ -110,20 +110,20 @@
 				var filterUntranslated = sb.dom.find('#field-untranslated');
 				var handleSearch = function(value) {
 					if(value !== '') {
-						sb.dom.find('a.locale').parent().hide();
+						sb.dom.find('locale').parent().hide();
 						if(filterUntranslated.is(':checked')) {
-							sb.dom.find('a.locale.no-message .name:contains("' + value + '"), a.locale.no-message .value:contains("' + value + '")')
+							sb.dom.find('locale.no-message .name:contains("' + value + '"), a.locale.no-message .value:contains("' + value + '")')
 							.parent().parent().show();
 						} else {
-							sb.dom.find('a.locale .name:contains("' + value + '"), a.locale .value:contains("' + value + '")')
+							sb.dom.find('locale .name:contains("' + value + '"), a.locale .value:contains("' + value + '")')
 							.parent().parent().show();
 						}
 					} else {
 						if(filterUntranslated.is(':checked')) {
-							sb.dom.find('a.locale').parent().hide();
-							sb.dom.find('a.locale.no-message').parent().show();
+							sb.dom.find('locale').parent().hide();
+							sb.dom.find('locale.no-message').parent().show();
 						} else {
-							sb.dom.find('a.locale').parent().show();
+							sb.dom.find('locale').parent().show();
 						}
 					}
 				}

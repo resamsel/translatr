@@ -3,19 +3,16 @@
  */
 package com.gettextresourcebundle;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.Reader;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.Reader;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Tom Schaible

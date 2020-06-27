@@ -1,10 +1,11 @@
 package validators;
 
-import javax.inject.Inject;
-import javax.validation.ConstraintValidator;
 import play.data.validation.Constraints;
 import play.libs.F.Tuple;
 import services.UserService;
+
+import javax.inject.Inject;
+import javax.validation.ConstraintValidator;
 
 /**
  * @author resamsel

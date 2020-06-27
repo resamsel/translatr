@@ -1,7 +1,7 @@
 package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.routes;
+import mappers.*;
 import models.LogEntry;
 import org.jetbrains.annotations.Contract;
 import play.i18n.Messages;
@@ -45,17 +45,17 @@ public class ActivityUtils {
 
     JsonNode node = parse(activity);
 
-    switch (activity.contentType) {
-      case "dto.User":
-      case "dto.Project":
-      case "dto.Locale":
-      case "dto.Key":
-      case "dto.AccessToken":
+    switch (contentTypeOf(activity)) {
+      case "User":
+      case "Project":
+      case "Locale":
+      case "Key":
+      case "AccessToken":
         return JsonUtils.getAsText(node, "name");
-      case "dto.Message":
+      case "Message":
         return String.format("%s (%s)", JsonUtils.getAsText(node, "keyName"),
             JsonUtils.getAsText(node, "localeName"));
-      case "dto.ProjectUser":
+      case "ProjectUser":
         return String.format("%s (%s)", JsonUtils.getAsText(node, "projectName"),
             JsonUtils.getAsText(node, "userName"));
       default:
@@ -71,44 +71,44 @@ public class ActivityUtils {
     JsonNode node = parse(activity);
     Long id = JsonUtils.getId(node);
 
-    switch (activity.contentType) {
-      case "dto.User": {
+    switch (contentTypeOf(activity)) {
+      case "User": {
         String name = JsonUtils.getAsText(node, "username");
         if (name != null)
           return controllers.routes.Users.user(JsonUtils.getAsText(node, "username"));
         break;
       }
-      case "dto.Project": {
+      case "Project": {
         dto.Project project = Json.fromJson(node, dto.Project.class);
         if (project != null)
-          return project.route();
+          return ProjectMapper.toModel(project).route();
         break;
       }
-      case "dto.Locale": {
+      case "Locale": {
         dto.Locale locale = Json.fromJson(node, dto.Locale.class);
         if (locale != null)
-          return locale.route();
+          return LocaleMapper.toModel(locale).route();
         break;
       }
-      case "dto.Key": {
+      case "Key": {
         dto.Key key = Json.fromJson(node, dto.Key.class);
         if (key != null)
-          return key.route();
+          return KeyMapper.toModel(key).route();
         break;
       }
-      case "dto.Message": {
+      case "Message": {
         dto.Message message = Json.fromJson(node, dto.Message.class);
         if (message != null)
-          return message.route();
+          return MessageMapper.toModel(message).route();
         break;
       }
-      case "dto.ProjectUser": {
+      case "ProjectUser": {
         dto.ProjectUser member = Json.fromJson(node, dto.ProjectUser.class);
         if (member != null)
-          return member.route();
+          return ProjectUserMapper.toModel(member).route();
         break;
       }
-      case "dto.AccessToken": {
+      case "AccessToken": {
         String name = JsonUtils.getAsText(node, "username");
         if (name != null && id != null)
           return controllers.routes.Users.accessTokenEdit(name, id);
@@ -126,20 +126,20 @@ public class ActivityUtils {
     if (activity == null)
       return null;
 
-    switch (activity.contentType) {
-      case "dto.Project":
+    switch (contentTypeOf(activity)) {
+      case "Project":
         return PROJECT_ICON;
-      case "dto.Locale":
+      case "Locale":
         return LOCALE_ICON;
-      case "dto.Key":
+      case "Key":
         return KEY_ICON;
-      case "dto.AccessToken":
+      case "AccessToken":
         return ACCESS_TOKEN_ICON;
-      case "dto.Message":
+      case "Message":
         return MESSAGE_ICON;
-      case "dto.User":
+      case "User":
         return USER_ICON;
-      case "dto.ProjectUser":
+      case "ProjectUser":
         return PROJECT_USER_ICON;
       default:
         return "";
@@ -151,24 +151,30 @@ public class ActivityUtils {
     if (activity == null)
       return null;
 
-    switch (activity.contentType) {
-      case "dto.Project":
+    switch (contentTypeOf(activity)) {
+      case "Project":
         return PROJECT_COLOR;
-      case "dto.Locale":
+      case "Locale":
         return LOCALE_COLOR;
-      case "dto.Key":
+      case "Key":
         return KEY_COLOR;
-      case "dto.Message":
+      case "Message":
         return MESSAGE_COLOR;
-      case "dto.User":
+      case "User":
         return USER_COLOR;
-      case "dto.AccessToken":
+      case "AccessToken":
         return ACCESS_TOKEN_COLOR;
-      case "dto.ProjectUser":
+      case "ProjectUser":
         return PROJECT_USER_COLOR;
       default:
         return "";
     }
+  }
+
+  static String contentTypeOf(LogEntry activity) {
+    String contentType = activity.contentType;
+
+    return contentType.substring(contentType.lastIndexOf(".") + 1);
   }
 
   public static String titleOf(LogEntry logEntry) {

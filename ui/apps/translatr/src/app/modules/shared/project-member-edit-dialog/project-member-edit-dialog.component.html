@@ -1,0 +1,23 @@
+<h1 *ngIf="data.member?.id === undefined" mat-dialog-title transloco="member.create.title">Add Project Member</h1>
+<h1 *ngIf="data.member?.id !== undefined" mat-dialog-title transloco="member.edit.title">Edit Project Member</h1>
+<div mat-dialog-content>
+  <app-project-member-edit-form
+    #form
+    [canModifyOwner]="data.canModifyOwner"
+    [member]="data.member"
+    [dialogRef]="dialogRef"
+    [users]="users$ | async"
+    (userFilter)="onUserFilter($event)"
+  ></app-project-member-edit-form>
+</div>
+<div class="dialog-actions" mat-dialog-actions>
+  <button
+    [disabled]="form.invalid || form.processing"
+    mat-flat-button
+    color="primary"
+    transloco="button.save"
+    (click)="form.onSave()"
+  >Save
+  </button>
+  <button mat-button transloco="button.cancel" (click)="dialogRef.close()">Cancel</button>
+</div>

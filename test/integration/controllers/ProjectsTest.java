@@ -1,37 +1,15 @@
 package integration.controllers;
 
-import static assertions.ResultAssert.assertThat;
-import static controllers.AbstractController.DEFAULT_LIMIT;
-import static controllers.AbstractController.DEFAULT_OFFSET;
-import static controllers.AbstractController.DEFAULT_ORDER;
-import static controllers.AbstractController.DEFAULT_SEARCH;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-import static play.inject.Bindings.bind;
-import static utils.ProjectRepositoryMock.byOwnerAndName;
-import static utils.ProjectUserRepositoryMock.by;
-import static utils.TestFactory.requestAsJohnSmith;
-import static utils.UserRepositoryMock.byUsername;
-
-import assertions.ProjectAssert;
 import com.google.common.collect.ImmutableMap;
 import controllers.Projects;
 import controllers.routes;
-import criterias.HasNextPagedList;
+import criterias.PagedListFactory;
 import criterias.ProjectCriteria;
-import java.util.Collections;
 import models.Project;
 import models.ProjectRole;
 import models.User;
 import org.apache.commons.lang3.ArrayUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +21,22 @@ import play.test.Helpers;
 import services.ProjectService;
 import services.ProjectUserService;
 
+import java.util.Collections;
+
+import static assertions.CustomAssertions.assertThat;
+import static controllers.AbstractController.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static play.inject.Bindings.bind;
+import static utils.ProjectRepositoryMock.byOwnerAndName;
+import static utils.ProjectUserRepositoryMock.by;
+import static utils.TestFactory.requestAsJohnSmith;
+import static utils.UserRepositoryMock.byUsername;
+
 /**
  * Created by resamsel on 10/07/2017.
  */
+@Ignore("Not necessary any longer, as the existing views will be replaced by the Angular UI")
 public class ProjectsTest extends ControllerTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectsTest.class);
@@ -270,7 +261,7 @@ public class ProjectsTest extends ControllerTest {
         .as("project do owner change view")
         .statusIsEqualTo(Projects.BAD_REQUEST);
 
-    ProjectAssert.assertThat(project1).ownerIsEqualTo(johnSmith);
+    assertThat(project1).ownerIsEqualTo(johnSmith);
 
     verify(projectService, never()).create(any());
   }
@@ -294,7 +285,7 @@ public class ProjectsTest extends ControllerTest {
             .membersBy(janeDoe.username, "project2", DEFAULT_SEARCH, DEFAULT_ORDER,
                 DEFAULT_LIMIT, DEFAULT_OFFSET).url());
 
-    ProjectAssert.assertThat(project1).ownerIsEqualTo(janeDoe);
+    assertThat(project1).ownerIsEqualTo(janeDoe);
 
     spy(projectService).create(any());
 
@@ -336,10 +327,10 @@ public class ProjectsTest extends ControllerTest {
     projectUserService = mock(ProjectUserService.class);
 
     when(projectService.findBy(any()))
-        .thenAnswer(a -> HasNextPagedList.create(project1));
+        .thenAnswer(a -> PagedListFactory.create(project1));
     when(projectService.findBy(
         eq(new ProjectCriteria().withOwnerId(janeDoe.id).withName("project2"))))
-        .thenAnswer(a -> HasNextPagedList.create(Collections.emptyList()));
+        .thenAnswer(a -> PagedListFactory.create(Collections.emptyList()));
     when(projectService.byOwnerAndName(eq(johnSmith.username), eq(project1.name)))
         .thenAnswer(a -> project1);
     when(projectService.create(any()))
@@ -354,7 +345,7 @@ public class ProjectsTest extends ControllerTest {
       return a;
     }).when(projectService).changeOwner(any(), any());
     when(projectUserService.findBy(any()))
-        .thenAnswer(a -> HasNextPagedList.create(
+        .thenAnswer(a -> PagedListFactory.create(
             by(project1, johnSmith, ProjectRole.Owner),
             by(project1, janeDoe, ProjectRole.Manager)));
     when(projectUserService.create(any()))

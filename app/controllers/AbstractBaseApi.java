@@ -1,23 +1,32 @@
 package controllers;
 
 import com.avaje.ebean.PagedList;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.feth.play.module.pa.PlayAuthenticate;
+import dto.AuthorizationException;
+import dto.Dto;
 import dto.NotFoundException;
 import dto.PermissionException;
 import dto.SearchResponse;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Supplier;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
+import play.mvc.Results;
 import services.CacheService;
 import utils.ErrorUtils;
+
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Supplier;
+
+import static java.util.Optional.ofNullable;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
  * @author resamsel
@@ -41,11 +50,18 @@ public class AbstractBaseApi extends AbstractController {
   static final String FETCH = "The fields to fetch additionally, separated by commas";
   static final String PARAM_FETCH = "fetch";
   static final String PROJECT_ID = "The project ID";
+  static final String PROJECT_NAME = "The project name";
   static final String LOCALE_ID = "The locale ID";
-  static final String PARAM_LOCALE_ID = "localeId";
+  static final String LOCALE_IDS = "The locale IDs";
+  public static final String PARAM_LOCALE_ID = "localeId";
   static final String KEY_ID = "The key ID";
+  static final String KEY_IDS = "The key IDs";
+  public static final String PARAM_KEY_ID = "keyId";
   static final String MESSAGE_ID = "The message ID";
   static final String USER_ID = "The user ID";
+  static final String USER_USERNAME = "The user username";
+  static final String ACCESS_TOKEN_ID = "The access token ID";
+  public static final String PARAM_MISSING = "missing";
 
   static final String AUTHORIZATION = "scopes";
 
@@ -74,34 +90,51 @@ public class AbstractBaseApi extends AbstractController {
     super(injector, cache, auth);
   }
 
-  protected <IN> CompletionStage<Result> toJson(Supplier<IN> supplier) {
-    return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out))).exceptionally(this::handleException);
+  protected <IN extends Dto> CompletionStage<Result> toJson(Supplier<IN> supplier) {
+    return supplyAsync(supplier, executionContext.current())
+        .thenApply(out -> ofNullable(out)
+            .map(Json::toJson)
+            .orElse(NullNode.getInstance()))
+        .thenApply(Results::ok)
+        .exceptionally(this::handleException);
   }
 
-  <T> CompletionStage<Result> toJsons(Supplier<PagedList<T>> supplier) {
-    return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out))).exceptionally(this::handleException);
+  <IN extends Dto> CompletionStage<Result> toJsons(Supplier<PagedList<IN>> supplier) {
+    return supplyAsync(supplier, executionContext.current())
+        .thenApply(Json::toJson)
+        .thenApply(Results::ok)
+        .exceptionally(this::handleException);
+  }
+
+  <T> CompletionStage<Result> toJsonList(Supplier<List<T>> supplier) {
+    return supplyAsync(supplier, executionContext.current())
+        .thenApply(Json::toJson)
+        .thenApply(Results::ok)
+        .exceptionally(this::handleException);
   }
 
   CompletionStage<Result> toJsonSearch(Supplier<SearchResponse> supplier) {
-    return CompletableFuture.supplyAsync(supplier, executionContext.current())
-        .thenApply(out -> ok(Json.toJson(out))).exceptionally(this::handleException);
+    return supplyAsync(supplier, executionContext.current())
+        .thenApply(Json::toJson)
+        .thenApply(Results::ok)
+        .exceptionally(this::handleException);
   }
 
   @Override
   protected Result handleException(Throwable t) {
     try {
       throw ExceptionUtils.getRootCause(t);
+    } catch (AuthorizationException e) {
+      return unauthorized(ErrorUtils.toJson(e));
     } catch (PermissionException e) {
       return forbidden(ErrorUtils.toJson(e));
     } catch (NotFoundException e) {
       return notFound(ErrorUtils.toJson(e));
     } catch (ConstraintViolationException e) {
-      LOGGER.debug("Handling constraint violation", t);
       return badRequest(ErrorUtils.toJson(e));
     } catch (ValidationException e) {
-      LOGGER.debug("Handling validation", t);
+      return badRequest(ErrorUtils.toJson(e));
+    } catch (JsonMappingException e) {
       return badRequest(ErrorUtils.toJson(e));
     } catch (Throwable e) {
       LOGGER.error("Error while processing API request", e);

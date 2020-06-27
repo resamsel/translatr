@@ -3,33 +3,21 @@ package models;
 import be.objectify.deadbolt.java.models.Role;
 
 /**
- *
  * @author resamsel
  * @version 3 Oct 2016
  */
-public class UserRole implements Role
-{
-	private String name;
+public enum UserRole implements Role {
+  Admin("admin"),
+  User("user");
 
-	/**
-	 * @param name
-	 */
-	public UserRole(String name)
-	{
-		this.name = name;
-	}
+  private String name;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getName()
-	{
-		return name;
-	}
+  UserRole(String name) {
+    this.name = name;
+  }
 
-	public static final UserRole from(String name)
-	{
-		return new UserRole(name);
-	}
+  @Override
+  public String getName() {
+    return name;
+  }
 }

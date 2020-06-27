@@ -1,19 +1,22 @@
 package repositories.impl;
 
-import actors.ActivityActor;
-import akka.actor.ActorRef;
+import actors.ActivityActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
-import criterias.HasNextPagedList;
 import criterias.LinkedAccountCriteria;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.validation.Validator;
+import criterias.PagedListFactory;
 import models.LinkedAccount;
 import repositories.LinkedAccountRepository;
+import repositories.Persistence;
+import services.AuthProvider;
 import utils.QueryUtils;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.Validator;
+
+@Singleton
 public class LinkedAccountRepositoryImpl extends
     AbstractModelRepository<LinkedAccount, Long, LinkedAccountCriteria> implements
     LinkedAccountRepository {
@@ -22,9 +25,11 @@ public class LinkedAccountRepositoryImpl extends
   };
 
   @Inject
-  public LinkedAccountRepositoryImpl(Validator validator,
-      @Named(ActivityActor.NAME) ActorRef activityActor) {
-    super(validator, activityActor);
+  public LinkedAccountRepositoryImpl(Persistence persistence,
+                                     Validator validator,
+                                     AuthProvider authProvider,
+                                     ActivityActorRef activityActor) {
+    super(persistence, validator, authProvider, activityActor);
   }
 
   @Override
@@ -44,7 +49,7 @@ public class LinkedAccountRepositoryImpl extends
 
     criteria.paged(query);
 
-    return HasNextPagedList.create(query);
+    return PagedListFactory.create(query);
   }
 
   @Override

@@ -3,16 +3,37 @@ package services;
 import com.feth.play.module.pa.Resolver;
 import com.feth.play.module.pa.exceptions.AccessDeniedException;
 import com.feth.play.module.pa.exceptions.AuthException;
-import controllers.Projects;
+import com.feth.play.module.pa.providers.oauth2.OAuth2AuthProvider;
 import controllers.routes;
-import javax.inject.Singleton;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import play.Configuration;
 import play.mvc.Call;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static play.mvc.Http.Context.Implicit.request;
 
 /**
  * Concrete Resolver implementation.
  */
 @Singleton
 public class OAuthResolver extends Resolver {
+  private static final Logger LOGGER = LoggerFactory.getLogger(OAuthResolver.class);
+
+  private static final String REDIRECT_BASE = "translatr.redirectBase";
+
+  private final Configuration configuration;
+
+  @Inject
+  public OAuthResolver(Configuration configuration) {
+    this.configuration = configuration;
+  }
+
   @Override
   public Call login() {
     // Your login page
@@ -23,7 +44,21 @@ public class OAuthResolver extends Resolver {
   public Call afterAuth() {
     // The user will be redirected to this page after authentication
     // if no original URL was saved
-    return Projects.indexRoute();
+    play.api.mvc.Call call = routes.Application.indexUi();
+    String redirectBase = configuration.getString(REDIRECT_BASE, "");
+
+    String redirectUri = request().getQueryString(OAuth2AuthProvider.Constants.REDIRECT_URI);
+    if (StringUtils.isEmpty(redirectUri)) {
+      play.api.mvc.Call rewritten = new play.api.mvc.Call(call.method(), redirectBase + call.url(), null);
+      LOGGER.debug("Rewritten to ''{}'' (was ''{}'')", rewritten, call);
+      return rewritten;
+    }
+
+    if (redirectUri.startsWith("http://") || redirectUri.startsWith("https://")) {
+      return new play.api.mvc.Call(call.method(), redirectUri, null);
+    }
+
+    return new play.api.mvc.Call(call.method(), redirectBase + call.url() + redirectUri, null);
   }
 
   @Override
@@ -35,7 +70,35 @@ public class OAuthResolver extends Resolver {
   public Call auth(final String provider) {
     // You can provide your own authentication implementation,
     // however the default should be sufficient for most cases
-    return com.feth.play.module.pa.controllers.routes.Authenticate.authenticate(provider);
+    play.api.mvc.Call redirectCall = com.feth.play.module.pa.controllers.routes.Authenticate.authenticate(provider);
+
+    String redirectUri = request().getQueryString(OAuth2AuthProvider.Constants.REDIRECT_URI);
+    if (StringUtils.isEmpty(redirectUri)) {
+      return redirectCall;
+    }
+
+    URI uri;
+    try {
+      uri = new URI(redirectCall.url());
+    } catch (URISyntaxException e) {
+      return redirectCall;
+    }
+    String queryParams = uri.getQuery();
+    if (queryParams == null) {
+      queryParams = "redirect_uri=" + redirectUri;
+    } else {
+      queryParams += "&redirect_uri=" + redirectUri;
+    }
+
+    try {
+      return new play.api.mvc.Call(
+          redirectCall.method(),
+          new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), queryParams, uri.getFragment()).toString(),
+          null
+      );
+    } catch (URISyntaxException e) {
+      return redirectCall;
+    }
   }
 
   @Override

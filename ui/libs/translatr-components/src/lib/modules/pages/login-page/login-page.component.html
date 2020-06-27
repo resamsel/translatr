@@ -1,0 +1,18 @@
+<app-navbar page="Login"></app-navbar>
+
+<div class="wrapper">
+  <div class="login">
+    <div class="info">
+      <mat-icon>account_circle</mat-icon>
+      Sign in with any of the given providers
+    </div>
+    <div class="options">
+      <a
+        *ngFor="let provider of providers$ | async"
+        [ngClass]="provider.key"
+        href="{{endpointUrl}}{{provider.url}}"
+        mat-button
+      >{{names[provider.key]}}</a>
+    </div>
+  </div>
+</div>

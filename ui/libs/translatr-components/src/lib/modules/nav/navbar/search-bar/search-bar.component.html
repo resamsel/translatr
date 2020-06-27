@@ -1,0 +1,41 @@
+<mat-form-field appearance="standard" class="search">
+  <mat-chip-list #chipList>
+    <mat-chip
+      (removed)="onRemoved(option)"
+      *ngFor="let option of options"
+      class="option"
+    >
+      <span class="type">{{option.type}}</span>
+      <span class="value">{{option.value}}</span>
+      <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+    <input
+      #autocompleteInput
+      (keydown.enter)="onEnter($event)"
+      [formControl]="searchControl"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipList"
+      autocomplete="off"
+      matInput
+      [placeholder]="'search.filter' | transloco"
+      type="search"
+    />
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      [displayWith]="displayFn"
+    >
+      <mat-option
+        (onSelectionChange)="onAutocompleteSelected($event)"
+        *ngFor="let option of autocompleteOptions"
+        [value]="option"
+      >{{option.type}}: {{option.value}}</mat-option>
+    </mat-autocomplete>
+  </mat-chip-list>
+  <button
+    mat-icon-button
+    matSuffix
+    (click)="autocompleteTrigger.openPanel()"
+  >
+    <mat-icon [inline]="true">expand_more</mat-icon>
+  </button>
+</mat-form-field>

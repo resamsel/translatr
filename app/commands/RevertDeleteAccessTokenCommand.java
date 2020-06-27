@@ -2,6 +2,7 @@ package commands;
 
 import controllers.routes;
 import dto.AccessToken;
+import mappers.AccessTokenMapper;
 import play.inject.Injector;
 import play.mvc.Call;
 import play.mvc.Http.Context;
@@ -18,13 +19,13 @@ public class RevertDeleteAccessTokenCommand implements Command<models.AccessToke
    */
   @Override
   public RevertDeleteAccessTokenCommand with(models.AccessToken accessToken) {
-    this.accessToken = AccessToken.from(accessToken);
+    this.accessToken = AccessTokenMapper.toDto(accessToken);
     return this;
   }
 
   @Override
   public void execute(Injector injector) {
-    injector.instanceOf(AccessTokenService.class).update(accessToken.toModel());
+    injector.instanceOf(AccessTokenService.class).update(AccessTokenMapper.toModel(accessToken));
   }
 
   /**

@@ -1,0 +1,54 @@
+@import 'mixins';
+
+.sidenav-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  z-index: 0;
+}
+
+.mat-sidenav-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+}
+
+.main-container {
+  flex-grow: 1;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.mat-button {
+  display: none;
+
+  @include medium {
+    display: block;
+
+    .text {
+      display: inline;
+    }
+    .mat-icon {
+      display: none;
+    }
+  }
+
+  @include large {
+    .mat-icon {
+      display: inline-block;
+    }
+  }
+}
+
+.hide-on-medium-up {
+  @include medium {
+    display: none;
+  }
+}

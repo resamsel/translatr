@@ -1,8 +1,10 @@
 package criterias;
 
 import forms.SearchForm;
-import java.util.UUID;
 import play.mvc.Http.Request;
+import utils.JsonUtils;
+
+import java.util.UUID;
 
 /**
  * @author resamsel
@@ -11,6 +13,8 @@ import play.mvc.Http.Request;
 public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriteria> {
 
   private UUID ownerId;
+
+  private String ownerUsername;
 
   private UUID memberId;
 
@@ -30,6 +34,19 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
 
   public ProjectCriteria withOwnerId(UUID ownerId) {
     setOwnerId(ownerId);
+    return this;
+  }
+
+  public String getOwnerUsername() {
+    return ownerUsername;
+  }
+
+  public void setOwnerUsername(String ownerUsername) {
+    this.ownerUsername = ownerUsername;
+  }
+
+  public ProjectCriteria withOwnerUsername(String ownerUsername) {
+    setOwnerUsername(ownerUsername);
     return this;
   }
 
@@ -61,7 +78,7 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
 
   @Override
   protected String getCacheKeyParticle() {
-    return String.format("%s:%s:%s", name, ownerId, memberId);
+    return String.format("%s:%s:%s:%s", name, ownerId, ownerUsername, memberId);
   }
 
   @Override
@@ -103,6 +120,12 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
   }
 
   public static ProjectCriteria from(Request request) {
-    return new ProjectCriteria().with(request);
+    ProjectCriteria criteria = new ProjectCriteria()
+        .with(request)
+        .withOwnerId(JsonUtils.getUuid(request.getQueryString("ownerId")))
+        .withOwnerUsername(request.getQueryString("owner"))
+        .withMemberId(JsonUtils.getUuid(request.getQueryString("memberId")));
+
+    return criteria;
   }
 }

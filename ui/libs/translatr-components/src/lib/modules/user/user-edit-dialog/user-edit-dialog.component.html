@@ -1,0 +1,72 @@
+<h1
+  *ngIf="!data.user?.id"
+  mat-dialog-title
+  transloco="user.create.title"
+>Create user
+</h1>
+<h1
+  *ngIf="data.user?.id"
+  mat-dialog-title
+  transloco="user.edit.title"
+  [translocoParams]="{name: data.user.name}"
+>Edit {{ data.user.name }}
+</h1>
+<div mat-dialog-content [formGroup]="form">
+  <mat-error *ngIf="form.errors && form.errors['']">{{
+    form.errors['']
+    }}</mat-error>
+  <mat-form-field>
+    <input
+      matInput
+      required
+      [placeholder]="'user.name' | transloco"
+      formControlName="name"
+      cdkFocusInitial
+    />
+    <mat-error *ngIf="form.get('name').errors">{{
+      form.get('name').errors.violation
+      }}</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label transloco="user.role">Role</mat-label>
+    <mat-select required formControlName="role">
+      <mat-option
+        *ngFor="let role of roles"
+        [value]="role"
+        [disabled]="!hasRole(role)"
+      >{{ role }}</mat-option
+      >
+    </mat-select>
+    <mat-error *ngIf="form.get('role').errors">{{
+      form.get('role').errors.violation
+      }}</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <input
+      matInput
+      required
+      [placeholder]="'user.username' | transloco"
+      formControlName="username"
+    />
+    <mat-error *ngIf="form.get('username').errors">{{
+      form.get('username').errors.violation
+      }}</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [placeholder]="'user.email' | transloco" formControlName="email"/>
+    <mat-error *ngIf="form.get('email').errors">{{
+      form.get('email').errors.violation
+      }}</mat-error>
+  </mat-form-field>
+</div>
+<div class="dialog-actions" mat-dialog-actions>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onSubmit()"
+    [disabled]="form.invalid"
+    transloco="button.save"
+  >Save
+  </button>
+  <button mat-button (click)="onCancel()" transloco="button.cancel">Cancel</button>
+</div>

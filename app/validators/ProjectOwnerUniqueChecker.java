@@ -1,16 +1,17 @@
 package validators;
 
-import static java.util.Objects.requireNonNull;
-
 import com.avaje.ebean.PagedList;
 import criterias.ProjectCriteria;
 import forms.ProjectOwnerForm;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import models.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.ProjectService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author resamsel

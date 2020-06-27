@@ -1,0 +1,32 @@
+@import '~@angular/material/theming';
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://www.google.com/design/spec/style/color.html
+$dark-primary: mat-palette($mat-green, 700, 500, 900);
+$dark-accent: mat-palette($mat-amber, 200);
+
+// The warn palette is optional (defaults to red).
+$dark-warn: mat-palette($mat-deep-orange);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+.dark-theme {
+  background-color: #121212;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: white;
+  }
+
+  .mat-card-title .sub-title,
+  .mat-list-item .sub-title,
+  .mat-line .sub-title {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}

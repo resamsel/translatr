@@ -1,16 +1,19 @@
 package validators;
 
+import play.i18n.Lang;
+import play.i18n.MessagesApi;
+import play.inject.Injector;
+import play.mvc.Http;
+
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import play.inject.Injector;
+import java.util.Locale;
 
 /**
  * @author resamsel
  * @version 6 Oct 2016
  */
-@Singleton
 public class NameUniqueValidator implements ConstraintValidator<NameUnique, Object> {
 
   public static final String MESSAGE = "error.nameunique";
@@ -18,6 +21,9 @@ public class NameUniqueValidator implements ConstraintValidator<NameUnique, Obje
   private final Injector injector;
 
   private NameUniqueChecker checker;
+  private NameUnique constraintAnnotation;
+  private MessagesApi messagesApi;
+  private Lang lang;
 
   @Inject
   public NameUniqueValidator(Injector injector) {
@@ -29,7 +35,14 @@ public class NameUniqueValidator implements ConstraintValidator<NameUnique, Obje
    */
   @Override
   public void initialize(NameUnique constraintAnnotation) {
+    this.constraintAnnotation = constraintAnnotation;
     this.checker = injector.instanceOf(constraintAnnotation.checker());
+    this.messagesApi = injector.instanceOf(MessagesApi.class);
+    if (Http.Context.current.get() != null) {
+      this.lang = Http.Context.current().lang();
+    } else {
+      this.lang = new Lang(Locale.ENGLISH);
+    }
   }
 
   /**
@@ -37,6 +50,16 @@ public class NameUniqueValidator implements ConstraintValidator<NameUnique, Obje
    */
   @Override
   public boolean isValid(Object object, ConstraintValidatorContext constraintContext) {
-    return object != null && checker.isValid(object);
+    if (object != null && checker.isValid(object)) {
+      return true;
+    }
+
+    constraintContext.disableDefaultConstraintViolation();
+    constraintContext
+        .buildConstraintViolationWithTemplate(messagesApi.get(lang, constraintAnnotation.message()))
+        .addPropertyNode(constraintAnnotation.field())
+        .addConstraintViolation();
+
+    return false;
   }
 }

@@ -1,0 +1,12 @@
+<div class="container">
+  <app-key-list
+    [project]="project$ | async"
+    [keys]="keys$ | async"
+    [criteria]="criteria$ | async"
+    [canCreate]="canModify$ | async"
+    [canDelete]="canModify$ | async"
+    (fetch)="onFetch($event)"
+    (edit)="onEdit($event)"
+    (delete)="onDelete($event)"
+  ></app-key-list>
+</div>

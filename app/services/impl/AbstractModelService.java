@@ -1,19 +1,21 @@
 package services.impl;
 
-import static java.util.Objects.requireNonNull;
-
 import com.avaje.ebean.PagedList;
 import criterias.AbstractSearchCriteria;
-import java.util.Collection;
-import java.util.function.BiFunction;
-import javax.validation.Validator;
 import models.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.ModelRepository;
+import services.AuthProvider;
 import services.CacheService;
 import services.LogEntryService;
 import services.ModelService;
+
+import javax.validation.Validator;
+import java.util.Collection;
+import java.util.function.BiFunction;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author resamsel
@@ -26,18 +28,21 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
 
   protected final Validator validator;
   protected final LogEntryService logEntryService;
+  protected final AuthProvider authProvider;
   protected final CacheService cache;
   final ModelRepository<MODEL, ID, CRITERIA> modelRepository;
   private final BiFunction<ID, String[], String> cacheKeyGetter;
 
   public AbstractModelService(Validator validator, CacheService cache,
-      ModelRepository<MODEL, ID, CRITERIA> modelRepository,
-      BiFunction<ID, String[], String> cacheKeyGetter, LogEntryService logEntryService) {
+                              ModelRepository<MODEL, ID, CRITERIA> modelRepository,
+                              BiFunction<ID, String[], String> cacheKeyGetter, LogEntryService logEntryService,
+                              AuthProvider authProvider) {
     this.validator = validator;
     this.cache = cache;
     this.modelRepository = modelRepository;
     this.cacheKeyGetter = cacheKeyGetter;
     this.logEntryService = logEntryService;
+    this.authProvider = authProvider;
   }
 
   /**
@@ -45,20 +50,34 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
    */
   @Override
   public PagedList<MODEL> findBy(CRITERIA criteria) {
-    return cache.getOrElse(
-        requireNonNull(criteria, "criteria is null").getCacheKey(),
-        () -> modelRepository.findBy(criteria),
-        60
-    );
+    criteria.setLoggedInUserId(authProvider.loggedInUserId());
+
+    return postFind(cache.getOrElse(
+            requireNonNull(criteria, "criteria is null").getCacheKey(),
+            () -> modelRepository.findBy(criteria),
+            60
+    ));
+  }
+
+  protected PagedList<MODEL> postFind(PagedList<MODEL> pagedList) {
+    return pagedList;
   }
 
   @Override
   public MODEL byId(ID id, String... fetches) {
-    return cache.getOrElse(
-        cacheKeyGetter.apply(id, fetches),
-        () -> modelRepository.byId(id, fetches),
-        60
-    );
+    if (id == null) {
+      return null;
+    }
+
+    return postGet(cache.getOrElse(
+            cacheKeyGetter.apply(id, fetches),
+            () -> modelRepository.byId(id, fetches),
+            60
+    ));
+  }
+
+  protected MODEL postGet(MODEL model) {
+    return model;
   }
 
   /**
@@ -98,9 +117,16 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
     return m;
   }
 
-  protected void postUpdate(MODEL t) {
+  protected MODEL postUpdate(MODEL t) {
     cache.removeByPrefix(cacheKeyGetter.apply(t.getId(), new String[0]));
     cache.set(cacheKeyGetter.apply(t.getId(), new String[0]), t, 60);
+
+    return t;
+  }
+
+  @Override
+  public MODEL save(MODEL t) {
+    return modelRepository.save(t);
   }
 
   @Override

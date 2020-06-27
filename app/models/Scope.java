@@ -1,8 +1,10 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author resamsel
@@ -12,6 +14,10 @@ public enum Scope {
   UserRead(ScopeSection.User, ScopeType.Read),
 
   UserWrite(ScopeSection.User, ScopeType.Write),
+
+  AccessTokenRead(ScopeSection.AccessToken, ScopeType.Read),
+
+  AccessTokenWrite(ScopeSection.AccessToken, ScopeType.Write),
 
   ProjectRead(ScopeSection.Project, ScopeType.Read),
 
@@ -29,9 +35,17 @@ public enum Scope {
 
   MessageWrite(ScopeSection.Message, ScopeType.Write),
 
+  MemberRead(ScopeSection.Member, ScopeType.Read),
+
+  MemberWrite(ScopeSection.Member, ScopeType.Write),
+
   NotificationRead(ScopeSection.Notification, ScopeType.Read),
 
-  NotificationWrite(ScopeSection.Notification, ScopeType.Write);
+  NotificationWrite(ScopeSection.Notification, ScopeType.Write),
+
+  FeatureFlagRead(ScopeSection.FeatureFlag, ScopeType.Read),
+
+  FeatureFlagWrite(ScopeSection.FeatureFlag, ScopeType.Write);
 
   private static final Map<String, Scope> MAP = new HashMap<>();
 
@@ -44,9 +58,9 @@ public enum Scope {
   }
 
   /**
-   * 
+   *
    */
-  private Scope(ScopeSection section, ScopeType type) {
+  Scope(ScopeSection section, ScopeType type) {
     this.section = section;
     this.type = type;
   }
@@ -74,5 +88,9 @@ public enum Scope {
   @Override
   public String toString() {
     return String.format("%s:%s", type.name().toLowerCase(), section.name().toLowerCase());
+  }
+
+  public static void main(String[] args) {
+    Stream.of(Scope.values()).forEach(scope -> System.out.printf("Scope.%s,%n", scope.name()));
   }
 }

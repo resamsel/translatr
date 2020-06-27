@@ -1,0 +1,91 @@
+<ng-container *transloco="let t">
+  <app-nav-list
+    *ngIf="project"
+    [pagedList]="keys"
+    [criteria]="criteria"
+    [empty]="empty"
+    [nothingFound]="nothingFound"
+    [canCreate]="canCreate"
+    showFilter="true"
+    [addTooltip]="t('key.create.tooltip')"
+    (create)="openKeyEditDialog({projectId: project.id})"
+    (filter)="onFilter($event)"
+  >
+    <a
+      *ngFor="let key of keys?.list; trackBy: trackByFn"
+      mat-list-item
+      [routerLink]="[
+        '/',
+        project.ownerUsername,
+        project.name,
+        'keys',
+        key.name
+      ]"
+    >
+      <mat-icon class="key circle" matListIcon>vpn_key</mat-icon>
+      <h3 matLine>{{ key.name }}</h3>
+      <mat-progress-bar
+        *ngIf="key.progress !== undefined"
+        [value]="key.progress * 100"
+        [matTooltip]="t('key.progress.tooltip', {progress: key.progress * 100 | number:'1.0-1'})"
+        mode="determinate"
+        color="accent"
+        matLine
+      ></mat-progress-bar>
+      <button
+        *ngIf="canCreate"
+        [matTooltip]="t('button.edit')"
+        mat-icon-button
+        class="edit"
+        (click)="onEdit(key, $event)"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <confirm-button
+        *ngIf="canDelete"
+        [tooltip]="t('button.delete')"
+        icon="delete"
+        class="delete"
+        (confirm)="onDelete(key)"
+      ></confirm-button>
+    </a>
+  </app-nav-list>
+
+  <ng-template #empty>
+    <dev-empty-view icon="vpn_key" justifyContent="center">
+      <dev-empty-view-header transloco="keys.teaser.title">No keys defined</dev-empty-view-header>
+      <dev-empty-view-content transloco="keys.teaser.text">
+        It seems there are no keys defined, yet - would you like to add one now?
+      </dev-empty-view-content>
+      <dev-empty-view-actions>
+        <button
+          *ngIf="canCreate"
+          (click)="openKeyEditDialog({projectId: project.id})"
+          color="accent"
+          transloco="key.create.button"
+          mat-raised-button
+        >Add key
+        </button>
+      </dev-empty-view-actions>
+    </dev-empty-view>
+  </ng-template>
+
+  <ng-template #nothingFound>
+    <dev-empty-view icon="vpn_key" justifyContent="center">
+      <dev-empty-view-header transloco="keys.notfound.title">No keys found</dev-empty-view-header>
+      <dev-empty-view-content transloco="keys.notfound.text">
+        Could not find any keys with the given filter. Try removing some filters or create a new key.
+      </dev-empty-view-content>
+      <dev-empty-view-actions>
+        <button
+          *ngIf="canCreate && criteria.search"
+          (click)="openKeyEditDialog({projectId: project.id, name: criteria.search})"
+          color="accent"
+          transloco="key.create.button"
+          mat-raised-button
+        >Add key
+        </button>
+      </dev-empty-view-actions>
+    </dev-empty-view>
+  </ng-template>
+</ng-container>

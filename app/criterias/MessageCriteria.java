@@ -1,8 +1,12 @@
 package criterias;
 
+import play.mvc.Http.Request;
+import utils.JsonUtils;
+
 import java.util.List;
 import java.util.UUID;
-import play.mvc.Http.Request;
+
+import static controllers.TranslationsApi.*;
 
 /**
  * @author resamsel
@@ -15,6 +19,8 @@ public class MessageCriteria extends AbstractProjectSearchCriteria<MessageCriter
   private String keyName;
 
   private List<UUID> localeIds;
+
+  private List<UUID> keyIds;
 
   public MessageCriteria() {
     super("message");
@@ -42,6 +48,22 @@ public class MessageCriteria extends AbstractProjectSearchCriteria<MessageCriter
    */
   public String getKeyName() {
     return keyName;
+  }
+
+  public static MessageCriteria from(Request request) {
+    return new MessageCriteria().with(request)
+        .withLocaleId(JsonUtils.getUuid(request.getQueryString(PARAM_LOCALE_ID)))
+        .withLocaleIds(JsonUtils.getUuids(request.getQueryString(PARAM_LOCALE_IDS)))
+        .withKeyName(request.getQueryString(PARAM_KEY_NAME))
+        .withKeyIds(JsonUtils.getUuids(request.getQueryString(PARAM_KEY_IDS)));
+  }
+
+  public List<UUID> getKeyIds() {
+    return keyIds;
+  }
+
+  public void setKeyIds(List<UUID> keyIds) {
+    this.keyIds = keyIds;
   }
 
   /**
@@ -84,7 +106,12 @@ public class MessageCriteria extends AbstractProjectSearchCriteria<MessageCriter
     return String.format("%s:%s:%s", localeId, keyName, localeIds);
   }
 
-  public static MessageCriteria from(Request request) {
-    return new MessageCriteria().with(request);
+  /**
+   * @param keyIds the localeIds to set
+   * @return this
+   */
+  public MessageCriteria withKeyIds(List<UUID> keyIds) {
+    setKeyIds(keyIds);
+    return this;
   }
 }

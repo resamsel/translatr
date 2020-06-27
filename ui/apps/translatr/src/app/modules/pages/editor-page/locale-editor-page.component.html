@@ -1,0 +1,115 @@
+<app-editor
+  [me]="me$ | async"
+  [ownerName]="(locale$ | async)?.projectOwnerUsername"
+  [projectName]="(locale$ | async)?.projectName"
+  [backLink]="backLink"
+  [message]="selectedMessage$ | async"
+  [messages]="(messages$ | async)?.list"
+  [name]="'locale.editor' | transloco"
+  class="locale-editor"
+  (nextItem)="onNextItem()"
+  (previousItem)="onPreviousItem()"
+>
+  <dev-filter-field
+    (selected)="onSelected($event)"
+    [filters]="filters"
+    [selection]="selection$ | async"
+    appearance="elevate"
+  >
+    <mat-icon matPrefix>search</mat-icon>
+  </dev-filter-field>
+
+  <app-editor-selector>
+    <button mat-button [matMenuTriggerFor]="localeSelector">
+      <span class="selected-locale">{{ (locale$ | async)?.displayName }}</span>
+      <mat-icon [inline]="true">arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #localeSelector="matMenu" [overlapTrigger]="true">
+      <a
+        mat-menu-item
+        *ngFor="let locale of (locales$ | async)?.list"
+        [routerLink]="['..', locale.name]"
+        queryParamsHandling="preserve"
+      >{{ locale.displayName }}</a>
+    </mat-menu>
+    <div class="flex-spacer"></div>
+    <a
+      mat-icon-button
+      *ngIf="selectedMessage$ | async as selectedMessage; else disabledLink"
+      [queryParams]="{
+        locale: (locale$ | async)?.name
+      }"
+      [routerLink]="['../..', 'keys', selectedMessage.keyName]"
+    >
+      <mat-icon>compare_arrows</mat-icon>
+    </a>
+    <ng-template #disabledLink>
+      <button mat-icon-button [disabled]="true">
+        <mat-icon>compare_arrows</mat-icon>
+      </button>
+    </ng-template>
+  </app-editor-selector>
+
+  <app-nav-list
+    [pagedList]="messageItems$ | async"
+    [showLoadingAvatar]="false"
+    [loadingListLength]="10"
+    [criteria]="search$ | async"
+    [empty]="empty"
+    [nothingFound]="nothingFound"
+  >
+    <a
+      *ngFor="let item of (messageItems$ | async)?.list; trackBy: trackByFn"
+      [class.active]="item.selected"
+      [queryParams]="{ key: item.key.name }"
+      [routerLink]="[]"
+      [ngClass]="{warning: item.message?.dirty}"
+      mat-list-item
+      queryParamsHandling="merge"
+      class="key"
+    >
+      <h3 matLine>{{ item.key.name }}</h3>
+      <p class="sub-title translation" matLine>
+        <span *ngIf="item.message; else translationMissing">{{ item.message.value }}</span>
+        <ng-template #translationMissing>-</ng-template>
+      </p>
+    </a>
+    <ng-template #empty>
+      <dev-empty-view icon="vpn_key" *ngIf="locale$ | async as locale">
+        <dev-empty-view-header transloco="keys.teaser.title">No keys defined</dev-empty-view-header>
+        <dev-empty-view-content transloco="keys.teaser.text" data-test="key-teaser">
+          It seems there are no keys defined, yet - would you like to add one now?
+        </dev-empty-view-content>
+        <dev-empty-view-actions *ngIf="canCreateKey$ | async">
+          <button
+            (click)="openKeyDialog({projectId: locale.projectId})"
+            color="accent"
+            transloco="key.create.button"
+            mat-raised-button
+            data-test="create-key"
+          >Add key
+          </button>
+        </dev-empty-view-actions>
+      </dev-empty-view>
+    </ng-template>
+    <ng-template #nothingFound>
+      <dev-empty-view icon="vpn_key" *ngIf="locale$ | async as locale">
+        <dev-empty-view-header transloco="keys.notfound.title">No keys found</dev-empty-view-header>
+        <dev-empty-view-content transloco="keys.notfound.text" data-test="key-teaser">
+          Could not find any keys with the given filter. Try removing some filters or create a new key.
+        </dev-empty-view-content>
+        <dev-empty-view-actions *ngIf="search$ | async as criteria">
+          <button
+            *ngIf="(canCreateKey$ | async) && criteria.search"
+            (click)="openKeyDialog({projectId: locale.projectId, name: criteria.search})"
+            color="accent"
+            transloco="key.create.button"
+            mat-raised-button
+            data-test="create-key"
+          >Add key
+          </button>
+        </dev-empty-view-actions>
+      </dev-empty-view>
+    </ng-template>
+  </app-nav-list>
+</app-editor>

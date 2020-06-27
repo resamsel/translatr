@@ -1,20 +1,23 @@
 package utils;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import controllers.Keys;
 import controllers.Locales;
 import controllers.Projects;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 import models.ActionType;
 import models.LogEntry;
 import org.junit.Test;
 import play.libs.Json;
-import utils.ActivityUtils;
+import play.mvc.Call;
 
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
+@SuppressWarnings("ConstantConditions")
 public class ActivityUtilsTest {
 
   @Test
@@ -23,65 +26,235 @@ public class ActivityUtilsTest {
   }
 
   @Test
-  public void linkTo() {
-    assertThat(ActivityUtils.linkTo(null)).isNull();
-    assertThat(ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.User.class.getName())))
-        .isNull();
+  public void linkToWithNull() {
+    // given
+    LogEntry activity = null;
 
+    // when
+    Call actual = ActivityUtils.linkTo(activity);
+
+    // then
+    assertThat(actual).isNull();
+  }
+
+  @Test
+  public void linkToWithEmptyPayload() {
+    // given
+    LogEntry activity = createLogEntry(ActionType.Create, dto.User.class.getName());
+
+    // when
+    Call actual = ActivityUtils.linkTo(activity);
+
+    // then
+    assertThat(actual).isNull();
+  }
+
+  @Test
+  public void linkToWithUserActivity() {
+    // given
     UUID uuid = UUID.randomUUID();
-    long id = ThreadLocalRandom.current().nextLong();
+    LogEntry activity = createLogEntry(ActionType.Create, dto.User.class.getName(), uuid);
+    activity.after = Json.stringify(Json.newObject().put("username", "username"));
+
+    // when
+    Call actual = ActivityUtils.linkTo(activity);
+
+    // then
+    assertThat(actual).isEqualTo(controllers.routes.Users.user("username"));
+  }
+
+  @Test
+  public void linkToWithProject() {
+    // given
+    String name = "name";
+    String ownerUsername = "username";
+    UUID ownerId = UUID.randomUUID();
+    ObjectNode project = Json.newObject()
+        .put("name", name)
+        .put("ownerId", ownerId.toString())
+        .put("ownerUsername", ownerUsername);
+    LogEntry activity = createLogEntry(ActionType.Create, dto.Project.class.getName(), project);
+
+    // when
+    Call actual = ActivityUtils.linkTo(activity);
+
+    // then
+    assertThat(actual).isEqualTo(controllers.routes.Projects.projectBy(ownerUsername, name));
+  }
+
+  @Test
+  public void linkToWithLocale() {
+    // given
+    String ownerUsername = "username";
+    String name = "name";
+    String localeName = "en";
+    ObjectNode locale = Json.newObject()
+        .put("name", localeName)
+        .put("pathName", localeName)
+        .put("projectName", name)
+        .put("projectOwnerUsername", ownerUsername);
+    LogEntry activity = createLogEntry(ActionType.Create, dto.Locale.class.getName(), locale);
+
+    // when
+    Call actual = ActivityUtils.linkTo(activity);
+
+    // then
+    assertThat(actual)
+        .isEqualTo(controllers.routes.Locales.localeBy(ownerUsername, name, localeName,
+            Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
+            Locales.DEFAULT_OFFSET));
+  }
+
+  @Test
+  public void linkToWithKey() {
+    // given
+    String ownerUsername = "username";
+    String name = "name";
+    String keyName = "a/b/c";
+    String keyPathName = "a%2Fb%2Fc";
+    ObjectNode key = Json.newObject()
+        .put("name", keyName)
+        .put("pathName", keyPathName)
+        .put("projectName", name)
+        .put("projectOwnerUsername", ownerUsername);
+    LogEntry activity = createLogEntry(ActionType.Create, dto.Key.class.getName(), key);
+
+    // when
+    Call actual = ActivityUtils.linkTo(activity);
+
+    // then
+    assertThat(actual)
+        .isEqualTo(controllers.routes.Keys.keyBy(ownerUsername, name, keyName,
+            Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
+  }
+
+  @Test
+  public void linkToWithMessageWithEmptyPayload() {
+    // given
+    UUID uuid = UUID.randomUUID();
+    LogEntry activity = createLogEntry(ActionType.Update, dto.Message.class.getName(), uuid);
+
+    // when
+    Throwable thrown = catchThrowable(() -> ActivityUtils.linkTo(activity));
+
+    // then
+    assertThat(thrown)
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage("Key project is null")
+        .hasCause(null);
+  }
+
+  @Test
+  public void linkToWithMessage() {
+    // given
+    UUID projectId = UUID.randomUUID();
     String ownerUsername = "username";
     String name = "name";
     String localeName = "en";
     String keyName = "a/b/c";
     String keyPathName = "a%2Fb%2Fc";
-    ObjectNode project = Json.newObject().put("name", "name").put("ownerUsername", ownerUsername);
-    ObjectNode locale = Json.newObject().put("name", localeName).put("pathName", localeName)
-        .put("projectName", name).put("projectOwnerUsername", ownerUsername);
-    ObjectNode key = Json.newObject().put("name", keyName).put("pathName", keyPathName)
-        .put("projectName", name).put("projectOwnerUsername", ownerUsername);
-    ObjectNode message = Json.newObject().put("value", "abc").put("projectName", name)
-        .put("projectOwnerUsername", ownerUsername).put("keyPathName", keyPathName);
-    message.set("locale", locale);
-    message.set("key", key);
-    ObjectNode projectUser =
-        Json.newObject().put("projectName", name).put("projectOwnerUsername", ownerUsername);
-    LogEntry activity = createLogEntry(ActionType.Create, dto.User.class.getName(), uuid);
-    activity.after = Json.stringify(Json.newObject().put("username", "username"));
+    ObjectNode message = Json.newObject()
+        .put("value", "abc")
+        .put("projectId", projectId.toString())
+        .put("projectName", name)
+        .put("projectOwnerUsername", ownerUsername)
+        .put("localeName", localeName)
+        .put("keyName", keyName)
+        .put("keyPathName", keyPathName);
+    LogEntry activity = createLogEntry(ActionType.Create, dto.Message.class.getName(), message);
+    activity.after = message.toString();
 
-    assertThat(ActivityUtils.linkTo(activity)).isEqualTo(controllers.routes.Users.user("username"));
-    assertThat(ActivityUtils
-        .linkTo(createLogEntry(ActionType.Create, dto.Project.class.getName(), project)))
-        .isEqualTo(controllers.routes.Projects.projectBy(ownerUsername, name));
-    assertThat(
-        ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Locale.class.getName(), locale)))
-        .isEqualTo(controllers.routes.Locales.localeBy(ownerUsername, name, localeName,
-            Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
-            Locales.DEFAULT_OFFSET));
-    assertThat(
-        ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Key.class.getName(), key)))
+    // when
+    Call actual = ActivityUtils.linkTo(activity);
+
+    // then
+    assertThat(actual)
         .isEqualTo(controllers.routes.Keys.keyBy(ownerUsername, name, keyPathName,
             Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
-    assertThat(
-        ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Message.class.getName(), uuid)))
-        .isNull();
-    LogEntry logEntry = createLogEntry(ActionType.Create, dto.Message.class.getName(), message);
-    logEntry.after = message.toString();
-    assertThat(ActivityUtils.linkTo(logEntry))
-        .isEqualTo(controllers.routes.Keys.keyBy(ownerUsername, name, keyPathName,
-            Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET));
-    assertThat(ActivityUtils
-        .linkTo(createLogEntry(ActionType.Create, dto.ProjectUser.class.getName(), projectUser)))
+  }
+
+  @Test
+  public void linkToWithProjectUser() {
+    // given
+    String name = "name";
+    String ownerUsername = "username";
+    ObjectNode projectUser = Json.newObject()
+        .put("projectName", name)
+        .put("projectOwnerUsername", ownerUsername);
+    LogEntry activity = createLogEntry(ActionType.Create, dto.ProjectUser.class.getName(), projectUser);
+
+    // when
+    Call actual = ActivityUtils.linkTo(activity);
+
+    // then
+    assertThat(actual)
         .isEqualTo(
             controllers.routes.Projects.membersBy(ownerUsername, name, Projects.DEFAULT_SEARCH,
                 Projects.DEFAULT_ORDER, Projects.DEFAULT_LIMIT, Projects.DEFAULT_OFFSET));
-    assertThat(ActivityUtils
-        .linkTo(createLogEntry(ActionType.Create, dto.AccessToken.class.getName(),
-            Json.newObject().put("id", id).put("username", "username"))))
-        .isEqualTo(controllers.routes.Users.accessTokenEdit(ownerUsername, id));
-    assertThat(
-        ActivityUtils.linkTo(createLogEntry(ActionType.Create, dto.Suggestion.class.getName(), id)))
-        .isNull();
+  }
+
+  @Test
+  public void linkToWithAccessToken() {
+    // given
+    long id = ThreadLocalRandom.current().nextLong();
+    String ownerUsername = "username";
+    LogEntry activity = createLogEntry(ActionType.Create, dto.AccessToken.class.getName(),
+        Json.newObject().put("id", id).put("username", "username"));
+
+    // when
+    Call actual = ActivityUtils.linkTo(activity);
+
+    // then
+    assertThat(actual).isEqualTo(controllers.routes.Users.accessTokenEdit(ownerUsername, id));
+  }
+
+  @Test
+  public void linkToWithSuggestion() {
+    // given
+    long id = ThreadLocalRandom.current().nextLong();
+    LogEntry activity = createLogEntry(ActionType.Create, dto.Suggestion.class.getName(), id);
+
+    // when
+    Call actual = ActivityUtils.linkTo(activity);
+
+    // then
+    assertThat(actual).isNull();
+  }
+
+  @Test
+  public void contentTypeOfEmptyString() {
+    // given
+    LogEntry activity = createLogEntry(ActionType.Create, "", "");
+
+    // when
+    String actual = ActivityUtils.contentTypeOf(activity);
+
+    // then
+    assertThat(actual).isEqualTo("");
+  }
+
+  @Test
+  public void contentTypeOfSimpleName() {
+    // given
+    LogEntry activity = createLogEntry(ActionType.Create, "Project", "");
+
+    // when
+    String actual = ActivityUtils.contentTypeOf(activity);
+
+    // then
+    assertThat(actual).isEqualTo("Project");
+  }
+
+  @Test
+  public void contentTypeOfQualifiedName() {
+    // given
+    LogEntry activity = createLogEntry(ActionType.Create, "dto.Project", "");
+
+    // when
+    String actual = ActivityUtils.contentTypeOf(activity);
+
+    // then
+    assertThat(actual).isEqualTo("Project");
   }
 
   @Test
@@ -91,7 +264,7 @@ public class ActivityUtilsTest {
         .isEqualTo(ActivityUtils.USER_ICON);
     assertThat(ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.Project.class.getName())))
         .isEqualTo(ActivityUtils.PROJECT_ICON);
-    assertThat(ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.Locale.class.getName())))
+    assertThat(ActivityUtils.iconOf(createLogEntry(ActionType.Update, dto.Locale.class.getName())))
         .isEqualTo(ActivityUtils.LOCALE_ICON);
     assertThat(ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.Key.class.getName())))
         .isEqualTo(ActivityUtils.KEY_ICON);
@@ -189,10 +362,12 @@ public class ActivityUtilsTest {
     return createLogEntry(type, contentType, Json.newObject().put("id", uuid.toString()));
   }
 
+  @SuppressWarnings("SameParameterValue")
   private LogEntry createLogEntry(ActionType type, String contentType, long id) {
     return createLogEntry(type, contentType, Json.newObject().put("id", id));
   }
 
+  @SuppressWarnings("SameParameterValue")
   private LogEntry createLogEntry(ActionType type, String contentType, String name) {
     return createLogEntry(type, contentType, Json.newObject().put("name", name));
   }

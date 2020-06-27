@@ -1,50 +1,65 @@
 package repositories.impl;
 
-import actors.ActivityActor;
+import actors.ActivityActorRef;
 import actors.NotificationActor;
 import actors.NotificationProtocol.PublishNotification;
 import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
-import criterias.HasNextPagedList;
 import criterias.LogEntryCriteria;
-import java.util.Collection;
-import java.util.UUID;
+import criterias.PagedListFactory;
+import models.LogEntry;
+import models.Project;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import repositories.LogEntryRepository;
+import repositories.Persistence;
+import services.AuthProvider;
+import services.ContextProvider;
+import utils.ContextKey;
+import utils.QueryUtils;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-import models.LogEntry;
-import models.Project;
-import models.User;
-import org.apache.commons.lang3.StringUtils;
-import repositories.LogEntryRepository;
-import utils.ContextKey;
-import utils.QueryUtils;
+import java.util.Collection;
+import java.util.UUID;
 
 @Singleton
 public class LogEntryRepositoryImpl extends
     AbstractModelRepository<LogEntry, UUID, LogEntryCriteria> implements
     LogEntryRepository {
+  private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryRepositoryImpl.class);
 
   private final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>() {
   };
 
+  private final ContextProvider contextProvider;
   private final ActorRef notificationActor;
 
   @Inject
-  public LogEntryRepositoryImpl(Validator validator,
-      @Named(ActivityActor.NAME) ActorRef activityActor,
-      @Named(NotificationActor.NAME) ActorRef notificationActor) {
-    super(validator, activityActor);
+  public LogEntryRepositoryImpl(Persistence persistence,
+                                Validator validator,
+                                AuthProvider authProvider,
+                                ContextProvider contextProvider,
+                                ActivityActorRef activityActor,
+                                @Named(NotificationActor.NAME) ActorRef notificationActor) {
+    super(persistence, validator, authProvider, activityActor);
 
+    this.contextProvider = contextProvider;
     this.notificationActor = notificationActor;
   }
 
   @Override
   public PagedList<LogEntry> findBy(LogEntryCriteria criteria) {
     ExpressionList<LogEntry> query = findQuery(criteria);
+
+    if (criteria.getTypes() != null && !criteria.getTypes().isEmpty()) {
+      query.in("type", criteria.getTypes());
+    }
 
     if (criteria.getOrder() != null) {
       query.order(criteria.getOrder());
@@ -54,7 +69,7 @@ public class LogEntryRepositoryImpl extends
 
     criteria.paged(query);
 
-    return HasNextPagedList.create(query.query().fetch("user").fetch("project"));
+    return PagedListFactory.create(query.query().fetch("user").fetch("project"), criteria.hasFetch(FETCH_COUNT));
   }
 
   @Override
@@ -88,6 +103,14 @@ public class LogEntryRepositoryImpl extends
       query.eq("project.id", criteria.getProjectId());
     }
 
+    if (criteria.getProjectOwnerId() != null) {
+      query.eq("project.owner.id", criteria.getProjectOwnerId());
+    }
+
+    if (criteria.getProjectMemberId() != null) {
+      query.eq("project.members.user.id", criteria.getProjectMemberId());
+    }
+
     return query;
   }
 
@@ -97,14 +120,15 @@ public class LogEntryRepositoryImpl extends
   @Override
   public void preSave(LogEntry t, boolean update) {
     if (t.user == null) {
-      t.user = User.loggedInUser();
+      t.user = authProvider.loggedInUser();
+      LOGGER.debug("preSave(): user of log entry is {}", t.user);
     }
   }
 
   @Override
   protected void prePersist(LogEntry t, boolean update) {
     if (t.project == null) {
-      UUID projectId = ContextKey.ProjectId.get();
+      UUID projectId = ContextKey.ProjectId.get(contextProvider.getOrNull());
       if (projectId != null) {
         t.project = new Project().withId(projectId);
       }

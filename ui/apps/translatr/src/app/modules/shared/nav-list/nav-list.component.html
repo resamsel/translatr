@@ -1,0 +1,85 @@
+<app-list-header
+  [searchVisible]="showFilter"
+  [searchEnabled]="searchEnabled"
+  [addTooltip]="addTooltip"
+  [addVisible]="canCreate"
+  [criteria]="criteria"
+  [filters]="filters"
+  (filter)="onFilter($event)"
+  (add)="create.emit()"
+></app-list-header>
+
+<mat-nav-list *ngIf="pagedList; else loading">
+  <div [class.flex-stretch]="direction === 'row'">
+    <ng-content></ng-content>
+    <div *ngIf="showMore && pagedList?.hasNext && direction === 'row'" class="more-row">
+      <ng-container *ngTemplateOutlet="more"></ng-container>
+    </div>
+  </div>
+
+  <div
+    *ngIf="showMore && pagedList?.hasNext && direction === 'column'"
+    class="more-column"
+  >
+    <ng-container *ngTemplateOutlet="more"></ng-container>
+  </div>
+
+  <ng-container *ngIf="pagedList?.list?.length <= 0 && pagedList?.total <= 0">
+    <div *ngIf="filterActive(criteria); else empty">
+      <ng-container *ngTemplateOutlet="nothingFound"></ng-container>
+    </div>
+  </ng-container>
+</mat-nav-list>
+
+<ng-template #more>
+  <a
+    *ngIf="showMoreLink !== undefined"
+    mat-raised-button
+    color="accent"
+    class="more"
+    [routerLink]="showMoreLink"
+    transloco="button.more"
+  >Load more</a>
+  <a
+    *ngIf="showMoreLink === undefined"
+    mat-raised-button
+    color="accent"
+    class="more"
+    [queryParams]="queryParams"
+    [routerLink]="[]"
+    transloco="button.more"
+  >Load more</a>
+</ng-template>
+
+<ng-template #loading>
+  <mat-list class="loading">
+    <ng-container *ngIf="direction === 'column'; else rowLoading">
+      <mat-list-item *ngFor="let i of loadingList" class="item">
+        <mat-icon *ngIf="showLoadingAvatar" class="icon" matListIcon
+        >{{loadingIcon}}
+        </mat-icon>
+        <h3 matLine>
+          <span class="title"></span>
+        </h3>
+        <p class="sub-title" matLine></p>
+      </mat-list-item>
+    </ng-container>
+    <ng-template #rowLoading>
+      <div [class.flex-stretch]="direction === 'row'">
+        <mat-card *ngFor="let i of loadingList" class="portrait">
+          <mat-icon
+            *ngIf="showLoadingAvatar"
+            class="icon"
+            matCardImage>{{loadingIcon}}
+          </mat-icon>
+          <mat-card-content>
+            <h2>
+              <span class="title"></span>
+            </h2>
+            <p class="members sub-title"></p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </ng-template>
+  </mat-list>
+</ng-template>

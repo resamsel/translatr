@@ -16,19 +16,20 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
-
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
-
-import models.User;
+import models.ProjectRole;
+import org.apache.commons.lang3.StringUtils;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
+import services.AuthProvider;
 import services.CacheService;
 import services.api.ProjectApiService;
 import utils.FormUtils;
+
+import javax.inject.Inject;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author resamsel
@@ -36,9 +37,9 @@ import utils.FormUtils;
  */
 @io.swagger.annotations.Api(value = "Projects", produces = "application/json")
 @With(ApiAction.class)
-public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
+public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, ProjectApiService> {
 
-  private static final String TYPE = "dto.Project";
+  private static final String TYPE = "Project";
 
   private static final String FIND = "Find projects";
   private static final String FIND_RESPONSE = "Found projects";
@@ -62,8 +63,8 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
 
   @Inject
   public ProjectsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-      ProjectApiService projectApiService) {
-    super(injector, cache, auth, projectApiService);
+                     AuthProvider authProvider, ProjectApiService projectApiService) {
+    super(injector, cache, auth, authProvider, projectApiService);
 
     this.projectApiService = projectApiService;
   }
@@ -89,9 +90,7 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
       @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string", paramType = "query")
   })
   public CompletionStage<Result> find() {
-    return toJsons(
-        () -> api.find(
-            ProjectCriteria.from(request()).withMemberId(User.loggedInUserId()).withFetches()));
+    return toJsons(() -> api.find(ProjectCriteria.from(request()).withFetches()));
   }
 
   /**
@@ -105,8 +104,47 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria> {
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> get(@ApiParam(value = PROJECT_ID) UUID id) {
-    return toJson(() -> api.get(id));
+  public CompletionStage<Result> get(@ApiParam(value = PROJECT_ID) UUID id,
+                                     @ApiParam(value = FETCH) String fetch) {
+    return toJson(() -> api.get(id, StringUtils.split(fetch, ",")));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
+      scopes = {@AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)}))
+  @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.Project.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+      required = true, dataType = "string", paramType = "query")})
+  public CompletionStage<Result> byOwnerAndName(
+      @ApiParam(value = USER_USERNAME) String username,
+      @ApiParam(value = PROJECT_NAME) String projectName,
+      @ApiParam(value = FETCH) String fetch) {
+    return toJson(() -> api.byOwnerAndName(
+        username,
+        projectName,
+        project -> checkProjectRole(project, authProvider.loggedInUser(), ProjectRole.values()),
+        StringUtils.split(fetch, ","))
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
+      scopes = @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)))
+  @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.AggregatesPaged.class),
+      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+      @ApiResponse(code = 404, message = NOT_FOUND_ERROR, response = NotFoundError.class),
+      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+  @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
+      required = true, dataType = "string", paramType = "query")})
+  public CompletionStage<Result> activity(@ApiParam(value = PROJECT_ID) UUID id) {
+    return toJsons(() -> api.activity(id));
   }
 
   /**

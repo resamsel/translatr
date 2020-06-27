@@ -1,9 +1,10 @@
 package exporters;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import models.Locale;
 import models.Message;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 /**
  *
@@ -19,7 +20,7 @@ public abstract class PropertiesExporter extends AbstractExporter implements Exp
 
     StringBuilder sb = new StringBuilder();
     for (Message message : locale.messages)
-      sb.append(message.key.name).append(" = ").append(escapeValue(message.value)).append("\n");
+      sb.append(message.key.name).append("=").append(escapeValue(message.value)).append("\n");
 
     return sb.toString().getBytes(StandardCharsets.UTF_8);
   }

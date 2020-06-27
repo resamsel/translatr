@@ -1,0 +1,19 @@
+{
+  "list": [
+    {
+      "id": "d7470927-893c-4249-93d9-6493265b56eb",
+      "whenCreated": "2019-10-25T12:29:01.770Z",
+      "whenUpdated": "2019-10-25T12:29:01.770Z",
+      "projectId": "bc5f3fa7-3d9f-4aee-9457-0f6c4d5f5486",
+      "projectName": "p1",
+      "projectOwnerUsername": "johndoe",
+      "name": "k2",
+      "pathName": "k2"
+    }
+  ],
+  "offset": 0,
+  "limit": 50,
+  "total": 1,
+  "hasPrev": false,
+  "hasNext": false
+}

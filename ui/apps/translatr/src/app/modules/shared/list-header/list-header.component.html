@@ -1,0 +1,28 @@
+<div class="actions">
+  <dev-filter-field
+    *ngIf="searchVisible"
+    [enabled]="searchEnabled"
+    [filters]="filters"
+    [selection]="selection"
+    appearance="elevate"
+    color="accent"
+    (selected)="onSelected($event)"
+  >
+    <mat-icon matPrefix>search</mat-icon>
+  </dev-filter-field>
+  <button (click)="remove.emit()" *ngIf="removeVisible" [disabled]="!removeEnabled" i18n mat-icon-button>
+    <mat-icon>remove</mat-icon>
+  </button>
+</div>
+
+<button
+  (click)="add.emit()"
+  *ngIf="addVisible"
+  [attr.disabled]="!addEnabled"
+  [matTooltip]="addTooltip"
+  class="floating-action-btn pin-bottom"
+  color="accent"
+  mat-fab
+>
+  <mat-icon>add</mat-icon>
+</button>

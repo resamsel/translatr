@@ -1,0 +1,229 @@
+<ng-container *transloco="let t">
+  <div class="container flex" *ngIf="project$ | async as project">
+    <dev-metric
+      [routerLink]="['/', project.ownerUsername]"
+      [name]="t('project.owner')"
+      [value]="project.ownerName"
+      icon="account_circle"
+      class="owner"></dev-metric>
+
+    <dev-metric
+      routerLink="locales"
+      [name]="t('locales')"
+      [value]="(locales$ | async)?.total | shortNumber"
+      icon="language"
+      class="locale count"></dev-metric>
+
+    <dev-metric
+      routerLink="keys"
+      [name]="t('keys')"
+      [value]="(keys$ | async)?.total | shortNumber"
+      icon="vpn_key"
+      class="key count"></dev-metric>
+
+    <dev-metric
+      routerLink="members"
+      [name]="t('members')"
+      [value]="(members$ | async)?.total | shortNumber"
+      icon="group"
+      class="member count"></dev-metric>
+
+    <mat-card class="metric locales">
+      <mat-card-header>
+        <mat-card-title transloco="locales.recent.title">Recent Languages</mat-card-title>
+        <mat-card-subtitle transloco="locales.recent.text">Latest additions to this projects' languages.
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <app-nav-list
+          [empty]="localesEmpty"
+          [loadingListLength]="numberOfRecentItems"
+          [pagedList]="latestLocales$ | async"
+          [showMore]="false"
+          loadingIcon="language"
+        >
+          <a *ngFor="let locale of (latestLocales$ | async)?.list"
+             mat-list-item
+             [routerLink]="['locales', locale.name]">
+            <mat-icon matListIcon class="locale circle">language</mat-icon>
+            <h3 matLine>{{ locale.displayName }} <span class="sub-title">{{ locale.name }}</span></h3>
+            <mat-progress-bar
+              *ngIf="locale.progress !== undefined"
+              mode="determinate"
+              color="accent"
+              [value]="locale.progress * 100"
+              [matTooltip]="t('locale.progress.tooltip', {progress: locale.progress * 100 | number:'1.0-1'})"
+              matLine
+            ></mat-progress-bar>
+          </a>
+        </app-nav-list>
+        <ng-template #localesEmpty>
+          <dev-empty-view icon="language">
+            <dev-empty-view-header transloco="locales.empty">No languages yet.</dev-empty-view-header>
+            <dev-empty-view-actions>
+              <button
+                *ngIf="canCreateLocale$ | async"
+                mat-raised-button
+                color="accent"
+                transloco="locale.create.button"
+                (click)="openLocaleCreationDialog(project)"
+              >Add language
+              </button>
+            </dev-empty-view-actions>
+          </dev-empty-view>
+        </ng-template>
+      </mat-card-content>
+      <mat-card-actions *ngIf="(latestLocales$ | async)?.list.length > 0">
+        <a
+          mat-button
+          [routerLink]="['locales']"
+          [queryParams]="{order: 'whenUpdated desc'}"
+          transloco="locales.recent.button"
+        >Show languages</a>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="metric keys">
+      <mat-card-header>
+        <mat-card-title transloco="keys.recent.title">Recent Keys</mat-card-title>
+        <mat-card-subtitle transloco="keys.recent.text">Latest additions to this projects' keys.</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <app-nav-list
+          [empty]="keysEmpty"
+          [loadingListLength]="numberOfRecentItems"
+          [pagedList]="latestKeys$ | async"
+          [showMore]="false"
+          loadingIcon="vpn_key"
+        >
+          <a *ngFor="let key of (latestKeys$ | async)?.list"
+             mat-list-item
+             [routerLink]="['keys', key.name]">
+            <mat-icon matListIcon class="key circle">vpn_key</mat-icon>
+            <h3 matLine>{{ key.name }}</h3>
+            <mat-progress-bar
+              *ngIf="key.progress !== undefined"
+              mode="determinate"
+              color="accent"
+              [value]="key.progress * 100"
+              [matTooltip]="t('key.progress.tooltip', {progress: key.progress * 100 | number:'1.0-1'})"
+              matLine
+            ></mat-progress-bar>
+          </a>
+        </app-nav-list>
+        <ng-template #keysEmpty>
+          <dev-empty-view icon="vpn_key">
+            <dev-empty-view-header transloco="keys.empty">No keys yet.</dev-empty-view-header>
+            <dev-empty-view-actions>
+              <button
+                *ngIf="canCreateKey$ | async"
+                mat-raised-button
+                color="accent"
+                transloco="key.create.button"
+                (click)="openKeyCreationDialog(project)"
+              >Add key
+              </button>
+            </dev-empty-view-actions>
+          </dev-empty-view>
+        </ng-template>
+      </mat-card-content>
+      <mat-card-actions *ngIf="(latestKeys$ | async)?.list.length > 0">
+        <a
+          mat-button
+          [routerLink]="['keys']"
+          [queryParams]="{order: 'whenUpdated desc'}"
+          transloco="keys.recent.button"
+        >Show keys</a>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="metric messages">
+      <mat-card-header>
+        <mat-card-title transloco="messages.recent.title">Recent Translations</mat-card-title>
+        <mat-card-subtitle transloco="messages.recent.text">Latest translations of this project.</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <app-nav-list
+          [empty]="messagesEmpty"
+          [loadingListLength]="numberOfRecentItems"
+          [pagedList]="latestMessages$ | async"
+          [showMore]="false"
+          loadingIcon="message"
+        >
+          <a *ngFor="let message of (latestMessages$ | async)?.list"
+             [queryParams]="{locale: message.localeName}"
+             [routerLink]="['keys', message.keyName]"
+             mat-list-item>
+            <mat-icon class="message circle" matListIcon>message</mat-icon>
+            <h3 matLine>{{ message.keyName }} <span class="sub-title">{{ message.localeDisplayName }}</span></h3>
+            <p
+              *ngIf="message.wordCount !== undefined"
+              class="sub-title"
+              matLine
+            >{{t('message.wordCount', { wordCount: message.wordCount })}}
+            </p>
+          </a>
+        </app-nav-list>
+        <ng-template #messagesEmpty>
+          <dev-empty-view icon="message">
+            <dev-empty-view-header transloco="messages.empty">No translations yet.</dev-empty-view-header>
+          </dev-empty-view>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <section>
+      <h2 transloco="activity">Activity</h2>
+      <app-activity-list
+        [activities]="activities$ | async"
+        [showMore]="false"
+        relativeTo="project"
+      ></app-activity-list>
+    </section>
+
+    <section *featureFlag="Feature.ProjectCliCard">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title transloco="cli.integration.title">CLI Integration</mat-card-title>
+          <mat-card-subtitle [innerHTML]="t('cli.integration.text')"
+          >Sample <strong>.translatr.yml</strong> file to be used with the Translatr CLI.
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field appearance="outline">
+            <mat-label transloco="filetype.label">File type</mat-label>
+            <mat-select [(value)]="fileType">
+              <mat-option *ngFor="let fileType of fileTypes" [value]="fileType.type">{{fileType.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label transloco="accessToken">Access token</mat-label>
+            <mat-select [(value)]="accessTokenKey">
+              <mat-option value="${TRANSLATR_ACCESS_TOKEN}" transloco="source.environment">From environment (secure)
+              </mat-option>
+              <mat-option
+                *ngFor="let accessToken of accessTokens$ | async"
+                value="{{accessToken.key}}"
+              >{{accessToken.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- @formatter:off -->
+        <pre class="language-yml"><code>translatr:
+  endpoint: {{endpointUrl}}
+          project_id: {{project.id}}
+          access_token: {{accessTokenKey}}
+          pull:
+    file_type: {{fileType}}
+          target: {{targets[fileType]}}
+          push:
+    file_type: {{fileType}}
+          target: {{targets[fileType]}}</code></pre>
+        <!-- @formatter:on -->
+        </mat-card-content>
+      </mat-card>
+    </section>
+
+    <div></div>
+  </div>
+</ng-container>
