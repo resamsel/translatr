@@ -4,6 +4,8 @@ import { combineLatest, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { convertTemporals, convertTemporalsList } from '../shared';
 import { ErrorHandler } from './error-handler';
+import { HttpHeader } from './http-header';
+import { LanguageProvider } from './language-provider';
 
 export interface RequestOptions {
   params: {
@@ -23,6 +25,7 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
   constructor(
     protected readonly http: HttpClient,
     protected readonly errorHandler: ErrorHandler,
+    protected readonly languageProvider: LanguageProvider,
     private readonly listPath: (criteria: CRITERIA) => string,
     private readonly entityPath: string
   ) {
@@ -35,6 +38,9 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
     const path = this.listPath(criteria);
     return this.http
       .get<PagedList<DTO>>(path, {
+        headers: {
+          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
+        },
         params: { ...(criteria ? ((criteria as unknown) as object) : {}) }
       })
       .pipe(
@@ -57,6 +63,9 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
     const path = `${this.entityPath}/${encodePathParam(id)}`;
     return this.http
       .get<DTO>(path, {
+        headers: {
+          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
+        },
         params: { ...(criteria ? ((criteria as unknown) as object) : {}) }
       })
       .pipe(
@@ -73,46 +82,67 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
   }
 
   create(dto: DTO, options?: RequestOptions): Observable<DTO | undefined> {
-    return this.http.post<DTO>(this.entityPath, dto, options).pipe(
-      map(convertTemporals),
-      catchError((err: HttpErrorResponse) =>
-        this.errorHandler.handleError(err, {
-          name: 'create',
-          params: [dto, options],
-          method: 'post',
-          path: this.entityPath
-        })
-      )
-    );
+    return this.http
+      .post<DTO>(this.entityPath, dto, {
+        headers: {
+          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
+        },
+        ...options
+      })
+      .pipe(
+        map(convertTemporals),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err, {
+            name: 'create',
+            params: [dto, options],
+            method: 'post',
+            path: this.entityPath
+          })
+        )
+      );
   }
 
   update(dto: Partial<DTO>, options?: RequestOptions): Observable<DTO | undefined> {
-    return this.http.put<DTO>(this.entityPath, dto, options).pipe(
-      map(convertTemporals),
-      catchError((err: HttpErrorResponse) =>
-        this.errorHandler.handleError(err, {
-          name: 'update',
-          params: [dto, options],
-          method: 'put',
-          path: this.entityPath
-        })
-      )
-    );
+    return this.http
+      .put<DTO>(this.entityPath, dto, {
+        headers: {
+          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
+        },
+        ...options
+      })
+      .pipe(
+        map(convertTemporals),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err, {
+            name: 'update',
+            params: [dto, options],
+            method: 'put',
+            path: this.entityPath
+          })
+        )
+      );
   }
 
   delete(id: string | number, options?: RequestOptions): Observable<DTO | undefined> {
     const path = `${this.entityPath}/${encodePathParam(id)}`;
-    return this.http.delete<DTO>(path, options).pipe(
-      map(convertTemporals),
-      catchError((err: HttpErrorResponse) =>
-        this.errorHandler.handleError(err, {
-          name: 'delete',
-          params: [id, options],
-          method: 'delete',
-          path
-        })
-      )
-    );
+    return this.http
+      .delete<DTO>(path, {
+        headers: {
+          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
+        },
+        ...options
+      })
+      .pipe(
+        map(convertTemporals),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err, {
+            name: 'delete',
+            params: [id, options],
+            method: 'delete',
+            path
+          })
+        )
+      );
   }
 
   deleteAll(ids: Array<string | number>): Observable<DTO[]> {

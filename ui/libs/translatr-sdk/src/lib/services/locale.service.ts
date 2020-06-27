@@ -6,15 +6,18 @@ import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { AbstractService, encodePathParam } from './abstract.service';
 import { ErrorHandler } from './error-handler';
+import { HttpHeader } from './http-header';
+import { LanguageProvider } from './language-provider';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
-  constructor(http: HttpClient, errorHandler: ErrorHandler) {
+  constructor(http: HttpClient, errorHandler: ErrorHandler, languageProvider: LanguageProvider) {
     super(
       http,
       errorHandler,
+      languageProvider,
       (criteria: LocaleCriteria) => `/api/project/${criteria.projectId}/locales`,
       '/api/locale'
     );
@@ -34,7 +37,12 @@ export class LocaleService extends AbstractService<Locale, LocaleCriteria> {
       options.projectName
     )}/locales/${encodePathParam(options.localeName)}`;
     return this.http
-      .get<Locale>(path, { params: options.params })
+      .get<Locale>(path, {
+        headers: {
+          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
+        },
+        params: options.params
+      })
       .pipe(
         map((locale: Locale) => convertTemporals(locale)),
         catchError((err: HttpErrorResponse) =>

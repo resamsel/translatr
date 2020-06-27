@@ -9,6 +9,7 @@ import {
   DefaultErrorHandler,
   ErrorHandler,
   KeyService,
+  LanguageProvider,
   LocaleService,
   MessageService,
   NotificationService,
@@ -20,6 +21,7 @@ import {
   declarations: [],
   imports: [CommonModule, HttpClientModule],
   providers: [
+    LanguageProvider,
     AccessTokenService,
     ActivityService,
     KeyService,

@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { ErrorHandler, FeatureFlagService } from '@dev/translatr-sdk';
+import { ErrorHandler, FeatureFlagService, LanguageProvider } from '@dev/translatr-sdk';
 
 describe('FeatureFlagService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: HttpClient, useFactory: () => ({}) }, ErrorHandler]
+      providers: [{ provide: HttpClient, useFactory: () => ({}) }, ErrorHandler, LanguageProvider]
     })
   );
 

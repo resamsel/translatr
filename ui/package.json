@@ -17,7 +17,7 @@
     "start:docs": "ng serve docs --host 0.0.0.0 --port 4212",
     "generate": "dist/lets-generate",
     "lint": "./node_modules/.bin/nx workspace-lint && ng lint",
-    "lint:fix": "./node_modules/.bin/nx lint --fix && ng lint --fix",
+    "lint:fix": "./node_modules/.bin/nx workspace-lint --fix && ng lint --fix",
     "test": "ng test translatr --watch=false --code-coverage=true",
     "test:ci": "ng test --watch=false --code-coverage=true",
     "test:coverage": "ng test --watch=true --code-coverage=true",

@@ -6,15 +6,18 @@ import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { AbstractService, encodePathParam } from './abstract.service';
 import { ErrorHandler } from './error-handler';
+import { HttpHeader } from './http-header';
+import { LanguageProvider } from './language-provider';
 
 @Injectable({
   providedIn: 'root'
 })
 export class KeyService extends AbstractService<Key, KeyCriteria> {
-  constructor(http: HttpClient, errorHandler: ErrorHandler) {
+  constructor(http: HttpClient, errorHandler: ErrorHandler, languageProvider: LanguageProvider) {
     super(
       http,
       errorHandler,
+      languageProvider,
       (criteria: KeyCriteria) => `/api/project/${criteria.projectId}/keys`,
       '/api/key'
     );
@@ -33,16 +36,23 @@ export class KeyService extends AbstractService<Key, KeyCriteria> {
     const path = `/api/${options.username}/${options.projectName}/keys/${encodePathParam(
       options.keyName
     )}`;
-    return this.http.get<Key>(path, options).pipe(
-      map(convertTemporals),
-      catchError((err: HttpErrorResponse) =>
-        this.errorHandler.handleError(err, {
-          name: 'byOwnerAndProjectNameAndName',
-          params: [options],
-          method: 'get',
-          path
-        })
-      )
-    );
+    return this.http
+      .get<Key>(path, {
+        headers: {
+          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
+        },
+        ...options
+      })
+      .pipe(
+        map(convertTemporals),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err, {
+            name: 'byOwnerAndProjectNameAndName',
+            params: [options],
+            method: 'get',
+            path
+          })
+        )
+      );
   }
 }

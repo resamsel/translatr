@@ -8,9 +8,18 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, CanActivate, Route } from '@angular/router';
 import { Feature, Project } from '@dev/translatr-model';
+import { TranslocoService } from '@ngneat/transloco';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
-import { merge, Observable } from 'rxjs';
-import { distinctUntilKeyChanged, filter, map, scan, take, tap } from 'rxjs/operators';
+import { combineLatest, merge, Observable } from 'rxjs';
+import {
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  filter,
+  map,
+  scan,
+  take,
+  takeUntil
+} from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
 import { ProjectFacade } from '../../shared/project-state';
 import { PROJECT_ROUTES } from './project-page.token';
@@ -44,23 +53,24 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly facade: ProjectFacade,
     private readonly appFacade: AppFacade,
+    private readonly translocoService: TranslocoService,
     @Inject(PROJECT_ROUTES) private routes: Array<{ children: NameIconRoute[] }>
   ) {}
 
   ngOnInit(): void {
-    this.project$
-      .pipe(
-        distinctUntilKeyChanged('id'),
-        tap((project: Project) => {
-          this.facade.loadLocales(project.id, {});
-          this.facade.loadKeys(project.id, {});
-          this.facade.loadMembers(project.id, {});
-          this.facade.loadMessages(project.id, { order: 'whenCreated desc' });
-          this.facade.loadActivityAggregated(project.id);
-          this.facade.loadActivities(project.id);
-        })
-      )
-      .subscribe();
+    combineLatest([
+      this.project$.pipe(distinctUntilKeyChanged('id')),
+      this.translocoService.langChanges$.pipe(distinctUntilChanged())
+    ])
+      .pipe(takeUntil(this.facade.unload$))
+      .subscribe(([project]: [Project, string]) => {
+        this.facade.loadLocales(project.id, {});
+        this.facade.loadKeys(project.id, {});
+        this.facade.loadMembers(project.id, {});
+        this.facade.loadMessages(project.id, { order: 'whenCreated desc' });
+        this.facade.loadActivityAggregated(project.id);
+        this.facade.loadActivities(project.id);
+      });
   }
 
   ngOnDestroy(): void {

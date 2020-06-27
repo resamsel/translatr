@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { ErrorHandler } from '@dev/translatr-sdk';
+import { ErrorHandler, LanguageProvider } from '@dev/translatr-sdk';
 
 import { LocaleService } from './locale.service';
 
 describe('LocaleService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: HttpClient, useFactory: () => ({}) }, ErrorHandler]
+      providers: [{ provide: HttpClient, useFactory: () => ({}) }, ErrorHandler, LanguageProvider]
     })
   );
 

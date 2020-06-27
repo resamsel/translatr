@@ -27,7 +27,7 @@ public class ApiAction extends Action.Simple {
   private final AccessTokenService accessTokenService;
 
   /**
-   * 
+   *
    */
   @Inject
   public ApiAction(AccessTokenService accessTokenService) {
@@ -40,6 +40,8 @@ public class ApiAction extends Action.Simple {
   @Override
   public CompletionStage<Result> call(Context ctx) {
     Request req = ctx.request();
+
+    changeLangFromHeader(ctx, req.headers());
 
     String accessToken = null;
     switch (req.method()) {
@@ -69,11 +71,23 @@ public class ApiAction extends Action.Simple {
       AccessToken token = accessTokenService.byKey(accessToken);
       if (token == null)
         return CompletableFuture.completedFuture(
-            forbidden(ErrorUtils.toJson(new PermissionException("Invalid access_token"))));
+                forbidden(ErrorUtils.toJson(new PermissionException("Invalid access_token"))));
 
       ContextKey.AccessToken.put(ctx, token);
     }
 
     return delegate.call(ctx);
+  }
+
+  public static void changeLangFromHeader(Context ctx, Map<String, String[]> headers) {
+    if (headers.containsKey("accept-language")) {
+      String[] langDefinitions = headers.get("accept-language")[0].split(",");
+      if (langDefinitions.length > 0 && langDefinitions[0].length() > 0) {
+        String lang = langDefinitions[0].split(";")[0];
+        if (!lang.equals(ctx.lang().code())) {
+          ctx.changeLang(lang);
+        }
+      }
+    }
   }
 }

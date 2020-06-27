@@ -82,7 +82,7 @@ export class ProjectFacade {
     return this._unload$.asObservable();
   }
 
-  project$ = this.appFacade.project$.pipe(takeUntil(this.unload$));
+  project$ = this.appFacade.project$;
 
   locales$ = this.store.pipe(select(projectQuery.getLocales), takeUntil(this.unload$));
   localesCriteria$ = this.appFacade.criteria$();

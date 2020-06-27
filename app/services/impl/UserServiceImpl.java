@@ -196,7 +196,6 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
   @Override
   public User updateSettings(UUID userId, Map<String, String> settings) {
-
     return postUpdate(userRepository.updateSettings(userId, cleanSettings(settings)));
   }
 

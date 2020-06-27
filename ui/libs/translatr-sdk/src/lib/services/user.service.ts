@@ -6,13 +6,15 @@ import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { AbstractService, encodePathParam, RequestOptions } from './abstract.service';
 import { ErrorHandler } from './error-handler';
+import { HttpHeader } from './http-header';
+import { LanguageProvider } from './language-provider';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService extends AbstractService<User, RequestCriteria> {
-  constructor(http: HttpClient, errorHandler: ErrorHandler) {
-    super(http, errorHandler, () => '/api/users', '/api/user');
+  constructor(http: HttpClient, errorHandler: ErrorHandler, languageProvider: LanguageProvider) {
+    super(http, errorHandler, languageProvider, () => '/api/users', '/api/user');
   }
 
   byUsername(
@@ -26,23 +28,35 @@ export class UserService extends AbstractService<User, RequestCriteria> {
     }
   ): Observable<User | undefined> {
     const path = `/api/${encodePathParam(username)}`;
-    return this.http.get<User>(path, options).pipe(
-      map(convertTemporals),
-      catchError((err: HttpErrorResponse) =>
-        this.errorHandler.handleError(err, {
-          name: 'byUsername',
-          params: [username, options],
-          method: 'get',
-          path
-        })
-      )
-    );
+    return this.http
+      .get<User>(path, {
+        headers: {
+          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
+        },
+        ...options
+      })
+      .pipe(
+        map(convertTemporals),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err, {
+            name: 'byUsername',
+            params: [username, options],
+            method: 'get',
+            path
+          })
+        )
+      );
   }
 
   me(params: Record<string, string> = {}): Observable<User | undefined> {
     const path = '/api/me';
     return this.http
-      .get<User>(path, { params })
+      .get<User>(path, {
+        headers: {
+          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
+        },
+        params
+      })
       .pipe(
         map(convertTemporals),
         catchError((err: HttpErrorResponse) =>
@@ -58,16 +72,22 @@ export class UserService extends AbstractService<User, RequestCriteria> {
 
   activity(userId: string): Observable<PagedList<Aggregate> | undefined> {
     const path = `/api/user/${userId}/activity`;
-    return this.http.get<PagedList<Aggregate>>(path).pipe(
-      catchError((err: HttpErrorResponse) =>
-        this.errorHandler.handleError(err, {
-          name: 'activity',
-          params: [userId],
-          method: 'get',
-          path
-        })
-      )
-    );
+    return this.http
+      .get<PagedList<Aggregate>>(path, {
+        headers: {
+          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
+        }
+      })
+      .pipe(
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err, {
+            name: 'activity',
+            params: [userId],
+            method: 'get',
+            path
+          })
+        )
+      );
   }
 
   updateSettings(
@@ -76,16 +96,23 @@ export class UserService extends AbstractService<User, RequestCriteria> {
     options?: RequestOptions
   ): Observable<User | undefined> {
     const path = `/api/user/${userId}/settings`;
-    return this.http.patch<User>(path, settings, options).pipe(
-      map(convertTemporals),
-      catchError((err: HttpErrorResponse) =>
-        this.errorHandler.handleError(err, {
-          name: 'updateSettings',
-          params: [userId, settings, options],
-          method: 'patch',
-          path
-        })
-      )
-    );
+    return this.http
+      .patch<User>(path, settings, {
+        headers: {
+          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
+        },
+        ...options
+      })
+      .pipe(
+        map(convertTemporals),
+        catchError((err: HttpErrorResponse) =>
+          this.errorHandler.handleError(err, {
+            name: 'updateSettings',
+            params: [userId, settings, options],
+            method: 'patch',
+            path
+          })
+        )
+      );
   }
 }

@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Params, Router } from '@angular/router';
 import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
 import { Key, Message } from '@dev/translatr-model';
+import { TranslocoService } from '@ngneat/transloco';
 import { trackByFn } from '@translatr/utils';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, take, takeUntil, tap } from 'rxjs/operators';
@@ -67,7 +68,8 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
       ),
       distinctUntilChanged(localeComparator)
     ),
-    this.appFacade.queryParams$.pipe(distinctUntilChanged(filterComparator))
+    this.appFacade.queryParams$.pipe(distinctUntilChanged(filterComparator)),
+    this.translocoService.langChanges$.pipe(distinctUntilChanged())
   ]);
   readonly canCreateKey$ = this.projectFacade.canModifyKey$;
 
@@ -81,6 +83,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
     private readonly appFacade: AppFacade,
     private readonly facade: EditorFacade,
     private readonly projectFacade: ProjectFacade,
+    private readonly translocoService: TranslocoService,
     private readonly router: Router,
     private readonly dialog: MatDialog
   ) {}
@@ -88,7 +91,7 @@ export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.params$
       .pipe(takeUntil(this.facade.unloadEditor$))
-      .subscribe(([params, _]: [Params, Params]) => {
+      .subscribe(([params, _a, _b]: [Params, Params, string]) => {
         this.facade.loadLocaleEditor(params.username, params.projectName, params.localeName);
       });
     // TODO: let key be selected in effects?
