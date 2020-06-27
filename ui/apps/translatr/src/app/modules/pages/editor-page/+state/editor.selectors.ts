@@ -159,6 +159,13 @@ const getKeySelectedMessage = createSelector(
       (message: Message) => message.localeName === selectedLocale.name
     );
 
+    if (selectedMessages.length > 1) {
+      console.error(
+        'no messages should exist with the same locale name, but they do',
+        selectedMessages
+      );
+    }
+
     return selectedMessages.length === 1
       ? // selected locale has a translation
         selectedMessages[0]

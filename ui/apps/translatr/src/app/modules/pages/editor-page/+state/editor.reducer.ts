@@ -111,7 +111,7 @@ function updateLocalesWithMessage(
   return locales;
 }
 
-function updateMessagesWithMessage(
+export function updateMessagesWithMessage(
   messages: PagedList<Message>,
   message: Message
 ): PagedList<Message> {
@@ -119,7 +119,11 @@ function updateMessagesWithMessage(
     return messages;
   }
 
-  const index = messages.list.findIndex((m: Message) => m.id === message.id);
+  const index = messages.list.findIndex(
+    (m: Message) =>
+      m.id === message.id ||
+      (m.id === undefined && m.localeId === message.localeId && m.keyId === message.keyId)
+  );
   if (index !== -1) {
     // already in list, updating list
     const list = [...messages.list];
