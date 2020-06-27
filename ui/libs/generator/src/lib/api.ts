@@ -12,6 +12,7 @@ import {
   AccessTokenService,
   ErrorHandler,
   KeyService,
+  LanguageProvider,
   LocaleService,
   MessageService,
   ProjectService,
@@ -64,39 +65,57 @@ const providers: StaticProvider[] = [
   { provide: ErrorHandler, useValue: new ErrorHandler() },
   {
     provide: UserService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
-      new UserService(client, errorHandler),
-    deps: [HttpClient, ErrorHandler]
+    useFactory: (
+      client: HttpClient,
+      errorHandler: ErrorHandler,
+      languageProvider: LanguageProvider
+    ) => new UserService(client, errorHandler, languageProvider),
+    deps: [HttpClient, ErrorHandler, LanguageProvider]
   },
   {
     provide: ProjectService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
-      new ProjectService(client, errorHandler),
-    deps: [HttpClient, ErrorHandler]
+    useFactory: (
+      client: HttpClient,
+      errorHandler: ErrorHandler,
+      languageProvider: LanguageProvider
+    ) => new ProjectService(client, errorHandler, languageProvider),
+    deps: [HttpClient, ErrorHandler, LanguageProvider]
   },
   {
     provide: LocaleService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
-      new LocaleService(client, errorHandler),
+    useFactory: (
+      client: HttpClient,
+      errorHandler: ErrorHandler,
+      languageProvider: LanguageProvider
+    ) => new LocaleService(client, errorHandler, languageProvider),
     deps: [HttpClient, ErrorHandler]
   },
   {
     provide: KeyService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
-      new KeyService(client, errorHandler),
+    useFactory: (
+      client: HttpClient,
+      errorHandler: ErrorHandler,
+      languageProvider: LanguageProvider
+    ) => new KeyService(client, errorHandler, languageProvider),
     deps: [HttpClient, ErrorHandler]
   },
   {
     provide: MessageService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
-      new MessageService(client, errorHandler),
+    useFactory: (
+      client: HttpClient,
+      errorHandler: ErrorHandler,
+      languageProvider: LanguageProvider
+    ) => new MessageService(client, errorHandler, languageProvider),
     deps: [HttpClient, ErrorHandler]
   },
   {
     provide: AccessTokenService,
-    useFactory: (client: HttpClient, errorHandler: ErrorHandler) =>
-      new AccessTokenService(client, errorHandler),
-    deps: [HttpClient, ErrorHandler]
+    useFactory: (
+      client: HttpClient,
+      errorHandler: ErrorHandler,
+      languageProvider: LanguageProvider
+    ) => new AccessTokenService(client, errorHandler, languageProvider),
+    deps: [HttpClient, ErrorHandler, LanguageProvider]
   }
 ];
 
