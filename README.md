@@ -74,58 +74,7 @@ translatr pull
 
 This will overwrite any existing files locally. All known locales will be downloaded.
 
-## Developing
-
-### Prerequisites
-
-For development, you need the following dependencies.
-
-1. Java 8 JDK (i.e. OpenJDK 8)
-1. Docker
-1. Docker Compose
-1. Node.js
-
-### Using IntelliJ IDEA
-
-1. Run the compile SBT task
-
-   ```
-   bin/activator compile
-   ```
-
-1. Import project in IntelliJ IDEA as a _Scala_ project
-1. Run the run configuration named _Start Database_
-1. Run the run configuration named _Start Server_
-1. Go to [localhost:4210/ui](http://localhost:4210/ui) to see it running
-
-### Running it Manually
-
-1. Run the compile SBT task
-
-   ```
-   bin/activator compile
-   ```
-
-1. Run database container by using _docker compose_
-
-   ```
-   export POSTGRES_PASSWORD=translatr
-   docker-compose up
-   ```
-
-1. Run development server
-
-   ```
-   export AUTH_PROVIDERS=keycloak
-   export KEYCLOAK_CLIENT_ID=translatr-localhost
-   export KEYCLOAK_CLIENT_SECRET=$YOUR_KEYCLOAK_CLIENT_SECRET
-   export REDIRECT_BASE=http://localhost:4210
-   bin/activator ~run -Dconfig.file=dev.conf
-   ```
-
-1. Go to [localhost:4210/ui](http://localhost:4210/ui) to see it running
-
-## Contributing
+## Development and Contributing
 
 Information about contributing to this project can be found on the
 [CONTRIBUTING](CONTRIBUTING.md) page.

@@ -1,19 +1,10 @@
 package services.api.impl;
 
-import com.google.common.collect.ImmutableMap;
 import criterias.LocaleCriteria;
 import dto.NotFoundException;
 import exporters.Exporter;
-import exporters.GettextExporter;
-import exporters.JavaPropertiesExporter;
-import exporters.JsonExporter;
-import exporters.PlayMessagesExporter;
 import forms.ImportLocaleForm;
-import importers.GettextImporter;
 import importers.Importer;
-import importers.JavaPropertiesImporter;
-import importers.JsonImporter;
-import importers.PlayMessagesImporter;
 import mappers.LocaleMapper;
 import models.FileType;
 import models.Locale;
@@ -32,13 +23,13 @@ import services.LocaleService;
 import services.PermissionService;
 import services.ProjectService;
 import services.api.LocaleApiService;
+import utils.FileFormatRegistry;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 import java.io.File;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -54,20 +45,6 @@ public class LocaleApiServiceImpl extends
     LocaleApiService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleApiServiceImpl.class);
-
-  private static final Map<FileType, Supplier<Exporter>> EXPORTER_MAP = ImmutableMap.<FileType, Supplier<Exporter>>builder()
-      .put(FileType.PlayMessages, PlayMessagesExporter::new)
-      .put(FileType.JavaProperties, JavaPropertiesExporter::new)
-      .put(FileType.Gettext, GettextExporter::new)
-      .put(FileType.Json, JsonExporter::new)
-      .build();
-
-  private static final Map<FileType, Class<? extends Importer>> IMPORTER_MAP = ImmutableMap.<FileType, Class<? extends Importer>>builder()
-      .put(FileType.PlayMessages, PlayMessagesImporter.class)
-      .put(FileType.JavaProperties, JavaPropertiesImporter.class)
-      .put(FileType.Gettext, GettextImporter.class)
-      .put(FileType.Json, JsonImporter.class)
-      .build();
 
   private final ProjectService projectService;
   private final Injector injector;
@@ -127,7 +104,7 @@ public class LocaleApiServiceImpl extends
 
     LOGGER.debug("Type: {}", form.getFileType());
 
-    Importer importer = ofNullable(IMPORTER_MAP.get(FileType.fromKey(form.getFileType())))
+    Importer importer = ofNullable(FileFormatRegistry.IMPORTER_MAP.get(FileType.fromKey(form.getFileType())))
         .map(injector::instanceOf)
         .orElseThrow(() -> new IllegalArgumentException("File type " + form.getFileType() + " not supported yet"));
 
@@ -154,7 +131,7 @@ public class LocaleApiServiceImpl extends
     Locale locale = ofNullable(service.byId(localeId, LocaleRepository.FETCH_MESSAGES))
         .orElseThrow(() -> new NotFoundException(dto.Locale.class.getSimpleName(), localeId));
 
-    Exporter exporter = ofNullable(EXPORTER_MAP.get(FileType.fromKey(fileType)))
+    Exporter exporter = ofNullable(FileFormatRegistry.EXPORTER_MAP.get(FileType.fromKey(fileType)))
         .map(Supplier::get)
         .orElseThrow(() -> new ValidationException("File type " + fileType + " not supported yet"));
     exporter.addHeaders(response, locale);

@@ -26,7 +26,7 @@ public enum FileType
 			KEYMAP.put(type.key, type);
 	}
 
-	private String key;
+	private final String key;
 
 	FileType(String key)
 	{

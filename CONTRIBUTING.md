@@ -6,6 +6,7 @@ sections in order to know what and how to work on something.
 1. [How to file a bug report](#how-to-file-a-bug-report)
 1. [How to suggest a new feature](#how-to-suggest-a-new-feature)
 1. [How to set up your environment and run tests](#how-to-set-up-your-environment-and-run-tests)
+1. [How to add support for a new file format](#how-to-add-support-for-a-new-file-format)
 1. [Pull request guidelines](#pull-request-guidelines)
 
 ## How to file a bug report
@@ -33,11 +34,54 @@ The project can be developed with Eclipse, needs a PostgreSQL database and a
 Redis key/value store. For authorisation, the following options are available:
 Google, GitHub, Facebook, Twitter, and Keycloak.
 
-Creating project files for Eclipse:
+### Prerequisites
 
-```
-bin/activator eclipse
-```
+For development, you need the following dependencies.
+
+1. Java 8 JDK (i.e. OpenJDK 8)
+1. Docker
+1. Docker Compose
+1. Node.js
+
+### Using IntelliJ IDEA
+
+1. Run the compile SBT task
+
+   ```
+   bin/activator compile
+   ```
+
+1. Import project in IntelliJ IDEA as a _Scala_ project
+1. Run the run configuration named _Start Database_
+1. Run the run configuration named _Start Server_
+1. Go to [localhost:4210/ui](http://localhost:4210/ui) to see it running
+
+### Running it Manually
+
+1. Run the compile SBT task
+
+   ```
+   bin/activator compile
+   ```
+
+1. Run database container by using _docker compose_
+
+   ```
+   export POSTGRES_PASSWORD=translatr
+   docker-compose up
+   ```
+
+1. Run development server
+
+   ```
+   export AUTH_PROVIDERS=keycloak
+   export KEYCLOAK_CLIENT_ID=translatr-localhost
+   export KEYCLOAK_CLIENT_SECRET=$YOUR_KEYCLOAK_CLIENT_SECRET
+   export REDIRECT_BASE=http://localhost:4210
+   bin/activator ~run -Dconfig.file=dev.conf
+   ```
+
+1. Go to [localhost:4210/ui](http://localhost:4210/ui) to see it running
 
 ### Authorisation
 
@@ -94,20 +138,6 @@ export KEYCLOAK_CLIENT_ID=...
 export KEYCLOAK_CLIENT_SECRET=...
 ```
 
-### Running Translatr
-
-Start database and Redis (Docker/docker-compose needed):
-
-```
-docker-compose up -d
-```
-
-Then, start the application:
-
-```
-bin/activator ~run -Dconfig.file=dev.conf
-```
-
 ### Testing
 
 Unit and integration tests live in the **test/** directory. In Eclipse, this
@@ -129,6 +159,141 @@ to the bin/activator command. Then connect your IDE to localhost with port 9999.
 ```
 bin/activator ~run -Dconfig.file=dev.conf -jvm-debug 9999
 ```
+
+## How to add support for a new file format
+
+Adding support for new file formats is quite easy. The few steps necessary are defined in the following sections.
+
+### Add Enum Value
+
+The `FileType` enum defines available file formats.
+
+```java
+public enum FileType
+{
+	JavaProperties("java_properties"),
+
+	PlayMessages("play_messages"),
+
+	Gettext("gettext"),
+
+	Json("json");
+}
+```
+
+### Create Importer
+
+The importer takes a file from an InputStream and creates key/value pairs from that file. The importer should be placed
+inside the `importers` package.
+
+```java
+public class JsonImporter extends AbstractImporter implements Importer {
+
+  @Inject
+  public JsonImporter(KeyService keyService, MessageService messageService) {
+    super(keyService, messageService);
+  }
+
+  @Override
+  Properties retrieveProperties(InputStream inputStream, Locale locale) throws Exception {
+    JsonNode json = Json.mapper().readTree(inputStream);
+    Properties properties = new Properties();
+
+    if (json.isObject()) {
+      ObjectNode jsonObject = (ObjectNode) json;
+
+      stream(spliteratorUnknownSize(jsonObject.fields(), 0), false)
+          .forEach(entry -> properties.put(entry.getKey(), entry.getValue().asText()));
+    }
+
+    return properties;
+  }
+}
+```
+
+### Create Exporter
+
+The exporter gets a locale with messages and transforms them into a byte array. The exporter should be placed inside the
+`exporters` package.
+
+```java
+public class JsonExporter extends AbstractExporter implements Exporter {
+  protected static final ObjectMapper SORTED_MAPPER = new ObjectMapper()
+          .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
+          .configure(SerializationFeature.INDENT_OUTPUT, true);
+
+  private final ObjectMapper mapper;
+
+  public JsonExporter() {
+    this(SORTED_MAPPER);
+  }
+
+  public JsonExporter(ObjectMapper mapper) {
+    this.mapper = mapper;
+  }
+
+  @Override
+  public byte[] apply(Locale locale) {
+    if (locale == null || locale.messages == null) {
+      return new byte[]{};
+    }
+
+    Map<String, String> messages = locale.messages
+            .stream()
+            .collect(toMap(m -> m.key.name, m -> m.value));
+
+    try {
+      return mapper.writeValueAsBytes(messages);
+    } catch (JsonProcessingException e) {
+      return new byte[]{};
+    }
+  }
+
+  @Override
+  public String getFilename(Locale locale) {
+    return locale.name + ".json";
+  }
+}
+```
+
+### Registering Importer/Exporter
+
+The importer and exporter need to be registered in the `FileFormatRegistry` class. 
+
+### Register in the UI
+
+```typescript
+export enum FileType {
+  JavaProperties = 'java_properties',
+  PlayMessages = 'play_messages',
+  Gettext = 'gettext',
+  Json = 'json'
+}
+
+export const fileTypes = [
+  FileType.JavaProperties,
+  FileType.PlayMessages,
+  FileType.Gettext,
+  FileType.Json
+];
+
+export const fileTypeNames = {
+  [FileType.JavaProperties]: 'Java Properties',
+  [FileType.PlayMessages]: 'Play Messages',
+  [FileType.Gettext]: 'Gettext',
+  [FileType.Json]: 'JSON'
+};
+```
+
+### Testing
+
+To be able to validate importing and exporting unit tests need to be added. See `JsonImporterTest` and
+`JsonExporterTest` for examples.
+
+### Create Pull Request
+
+With the changes above, create a pull request. That PR should be handled quite easily and is added in the next version.
+See [Pull request guidelines](#pull-request-guidelines) for details.
 
 ## Pull request guidelines
 
