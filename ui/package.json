@@ -94,7 +94,7 @@
     "@oclif/command": "1.6.1",
     "@oclif/config": "1.15.1",
     "@oclif/plugin-help": "^2.2.3",
-    "codemirror": "5.53.2",
+    "codemirror": "5.54.0",
     "core-js": "^2.6.11",
     "d3": "5.16.0",
     "d3-time": "^1.1.0",
