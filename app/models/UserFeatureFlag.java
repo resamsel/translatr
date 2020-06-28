@@ -51,4 +51,19 @@ public class UserFeatureFlag implements Model<UserFeatureFlag, UUID> {
   public static String getCacheKey(UUID uuid, String... fetches) {
     return String.format("userFeatureFlag:%s:%s", uuid, fetches);
   }
+
+  public static UserFeatureFlag of(User user, Feature feature, boolean enabled) {
+    return of(null, user, feature, enabled);
+  }
+
+  public static UserFeatureFlag of(UUID id, User user, Feature feature, boolean enabled) {
+    UserFeatureFlag out = new UserFeatureFlag();
+
+    out.id = id;
+    out.user = user;
+    out.feature = feature;
+    out.enabled = enabled;
+
+    return out;
+  }
 }
