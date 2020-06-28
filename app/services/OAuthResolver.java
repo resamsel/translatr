@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.mvc.Call;
+import utils.ConfigKey;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -49,16 +50,15 @@ public class OAuthResolver extends Resolver {
 
     String redirectUri = request().getQueryString(OAuth2AuthProvider.Constants.REDIRECT_URI);
     if (StringUtils.isEmpty(redirectUri)) {
-      play.api.mvc.Call rewritten = new play.api.mvc.Call(call.method(), redirectBase + call.url(), null);
-      LOGGER.debug("Rewritten to ''{}'' (was ''{}'')", rewritten, call);
-      return rewritten;
+      return new play.api.mvc.Call(call.method(), adaptRedirectUri(redirectBase + call.url(), configuration), null);
     }
 
     if (redirectUri.startsWith("http://") || redirectUri.startsWith("https://")) {
-      return new play.api.mvc.Call(call.method(), redirectUri, null);
+      return new play.api.mvc.Call(call.method(), adaptRedirectUri(redirectUri, configuration), null);
     }
 
-    return new play.api.mvc.Call(call.method(), redirectBase + call.url() + redirectUri, null);
+    return new play.api.mvc.Call(call.method(),
+            adaptRedirectUri(redirectBase + call.url() + redirectUri, configuration), null);
   }
 
   @Override
@@ -70,7 +70,8 @@ public class OAuthResolver extends Resolver {
   public Call auth(final String provider) {
     // You can provide your own authentication implementation,
     // however the default should be sufficient for most cases
-    play.api.mvc.Call redirectCall = com.feth.play.module.pa.controllers.routes.Authenticate.authenticate(provider);
+    play.api.mvc.Call redirectCall = adaptRedirectCall(
+            com.feth.play.module.pa.controllers.routes.Authenticate.authenticate(provider), configuration);
 
     String redirectUri = request().getQueryString(OAuth2AuthProvider.Constants.REDIRECT_URI);
     if (StringUtils.isEmpty(redirectUri)) {
@@ -83,18 +84,19 @@ public class OAuthResolver extends Resolver {
     } catch (URISyntaxException e) {
       return redirectCall;
     }
+
     String queryParams = uri.getQuery();
     if (queryParams == null) {
-      queryParams = "redirect_uri=" + redirectUri;
+      queryParams = "redirect_uri=" + adaptRedirectUri(redirectUri, configuration);
     } else {
-      queryParams += "&redirect_uri=" + redirectUri;
+      queryParams += "&redirect_uri=" + adaptRedirectUri(redirectUri, configuration);
     }
 
     try {
       return new play.api.mvc.Call(
-          redirectCall.method(),
-          new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), queryParams, uri.getFragment()).toString(),
-          null
+              redirectCall.method(),
+              new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), queryParams, uri.getFragment()).toString(),
+              null
       );
     } catch (URISyntaxException e) {
       return redirectCall;
@@ -119,5 +121,18 @@ public class OAuthResolver extends Resolver {
   @Override
   public Call askMerge() {
     return routes.Profiles.askMerge();
+  }
+
+  static String adaptRedirectUri(String redirectUri, Configuration configuration) {
+    LOGGER.debug("Adapting redirectUri ''{}'' (forceSSL={})", redirectUri, ConfigKey.ForceSSL.getBoolean(configuration));
+    if (ConfigKey.ForceSSL.getBoolean(configuration) && redirectUri.startsWith("http://")) {
+      return redirectUri.replaceFirst("http://", "https://");
+    }
+    return redirectUri;
+  }
+
+  static play.api.mvc.Call adaptRedirectCall(play.api.mvc.Call redirectCall, Configuration configuration) {
+    return new play.api.mvc.Call(redirectCall.method(), adaptRedirectUri(redirectCall.url(), configuration),
+            redirectCall.fragment());
   }
 }
