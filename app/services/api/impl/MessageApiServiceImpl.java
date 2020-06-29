@@ -44,7 +44,7 @@ public class MessageApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected Message toModel(dto.Message dto) {
-    return MessageMapper.toModel(dto, localeService.byId(dto.localeId), keyService.byId(dto.keyId));
+  protected Message toModel(dto.Message in) {
+    return MessageMapper.toModel(in, localeService.byId(in.localeId), keyService.byId(in.keyId));
   }
 }

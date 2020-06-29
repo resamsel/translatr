@@ -30,7 +30,7 @@ public class UserFeatureFlagApiServiceImpl
   }
 
   @Override
-  protected UserFeatureFlag toModel(dto.UserFeatureFlag dto) {
-    return UserFeatureFlagMapper.toModel(dto);
+  protected UserFeatureFlag toModel(dto.UserFeatureFlag in) {
+    return UserFeatureFlagMapper.toModel(in);
   }
 }

@@ -35,7 +35,7 @@ public class ProjectUserApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected ProjectUser toModel(dto.ProjectUser dto) {
-    return ProjectUserMapper.toModel(dto);
+  protected ProjectUser toModel(dto.ProjectUser in) {
+    return ProjectUserMapper.toModel(in);
   }
 }

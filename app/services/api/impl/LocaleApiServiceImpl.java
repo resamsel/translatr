@@ -143,7 +143,7 @@ public class LocaleApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected Locale toModel(dto.Locale dto) {
-    return LocaleMapper.toModel(dto, projectService.byId(dto.projectId));
+  protected Locale toModel(dto.Locale in) {
+    return LocaleMapper.toModel(in, projectService.byId(in.projectId));
   }
 }
