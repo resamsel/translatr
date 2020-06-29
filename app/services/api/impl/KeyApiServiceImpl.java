@@ -56,7 +56,7 @@ public class KeyApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected Key toModel(dto.Key dto) {
-    return KeyMapper.toModel(dto, projectService.byId(dto.projectId));
+  protected Key toModel(dto.Key in) {
+    return KeyMapper.toModel(in, projectService.byId(in.projectId));
   }
 }

@@ -98,7 +98,7 @@ public class UserApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected User toModel(dto.User dto) {
-    return UserMapper.toModel(dto, service.byId(dto.id));
+  protected User toModel(dto.User in) {
+    return UserMapper.toModel(in, service.byId(in.id));
   }
 }
