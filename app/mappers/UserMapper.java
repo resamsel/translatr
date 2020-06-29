@@ -1,11 +1,13 @@
 package mappers;
 
 import dto.User;
+import models.Feature;
+import models.UserFeatureFlag;
 import utils.EmailUtils;
 
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -57,15 +59,20 @@ public class UserMapper {
               .collect(Collectors.toList());
     }
 
-    if (in.features != null && !in.features.isEmpty()) {
-      out.features = in.features.stream()
-              .collect(toMap(ff -> ff.feature.getName(), ff -> ff.enabled));
-    }
+    out.features = mapFeaturesToDto(in.features);
 
     if (in.settings != null && !in.settings.isEmpty()) {
       out.settings = new HashMap<>(in.settings);
     }
 
     return out;
+  }
+
+  static Map<String, Boolean> mapFeaturesToDto(List<UserFeatureFlag> features) {
+    final Map<String, Boolean> userFeatures = features != null
+            ? features.stream().collect(toMap(ff -> ff.feature.getName(), ff -> ff.enabled))
+            : Collections.emptyMap();
+    return Stream.of(Feature.values())
+            .collect(toMap(Feature::getName, f -> userFeatures.getOrDefault(f.getName(), f.isEnabled())));
   }
 }

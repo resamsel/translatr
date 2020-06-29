@@ -1,13 +1,16 @@
 {
   "name": "translatr",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A modern and intuitive i18n tool. Translatr simplifies i18n for developers and translators.",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "i18n:pull": "./src/python/translatr.py pull && cd public && ../src/python/translatr.py pull",
-    "i18n:push": "./src/python/translatr.py push && cd public && ../src/python/translatr.py push"
+    "i18n:push": "./src/python/translatr.py push && cd public && ../src/python/translatr.py push",
+    "release:patch": "ts-node ./src/typescript/release.ts patch",
+    "release:minor": "ts-node ./src/typescript/release.ts minor",
+    "release:major": "ts-node ./src/typescript/release.ts major"
   },
   "dependencies": {
     "backbone": "^1.3.3",
@@ -19,8 +22,11 @@
     "materialize-css": "^0.98.2"
   },
   "devDependencies": {
-    "ts-node": "8.10.1",
-    "typescript": "3.8.3"
+    "@types/node": "14.0.14",
+    "@types/semver": "^7.3.1",
+    "semver": "7.3.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
   },
   "repository": {
     "type": "git",

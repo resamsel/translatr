@@ -33,9 +33,7 @@ public class FeatureFlagByUserAndFeatureValidatorTest {
   @Test
   public void isValidWithNewFeatureFlag() {
     // given
-    UserFeatureFlag featureFlag = new UserFeatureFlag();
-    featureFlag.feature = Feature.ProjectCliCard;
-    featureFlag.user = new User().withId(UUID.randomUUID());
+    UserFeatureFlag featureFlag = UserFeatureFlag.of(new User().withId(UUID.randomUUID()), Feature.ProjectCliCard, false);
 
     // when
     boolean actual = target.isValid(featureFlag);
@@ -47,13 +45,9 @@ public class FeatureFlagByUserAndFeatureValidatorTest {
   @Test
   public void isValidWithExistingFeatureFlag() {
     // given
-    UserFeatureFlag featureFlag = new UserFeatureFlag();
-    featureFlag.feature = Feature.ProjectCliCard;
-    featureFlag.user = new User().withId(UUID.randomUUID());
-    UserFeatureFlag existing = new UserFeatureFlag();
+    UserFeatureFlag featureFlag = UserFeatureFlag.of(new User().withId(UUID.randomUUID()), Feature.ProjectCliCard, false);
+    UserFeatureFlag existing = UserFeatureFlag.of(new User().withId(featureFlag.user.id), Feature.ProjectCliCard, false);
     existing.id = UUID.randomUUID();
-    existing.feature = Feature.ProjectCliCard;
-    existing.user = new User().withId(featureFlag.user.id);
 
     when(userFeatureFlagRepository.byUserIdAndFeature(any(), any())).thenReturn(existing);
 
@@ -67,14 +61,8 @@ public class FeatureFlagByUserAndFeatureValidatorTest {
   @Test
   public void isValidWithExistingFeatureFlagUpdate() {
     // given
-    UserFeatureFlag featureFlag = new UserFeatureFlag();
-    featureFlag.id = UUID.randomUUID();
-    featureFlag.feature = Feature.ProjectCliCard;
-    featureFlag.user = new User().withId(UUID.randomUUID());
-    UserFeatureFlag existing = new UserFeatureFlag();
-    existing.id = featureFlag.id;
-    existing.feature = Feature.ProjectCliCard;
-    existing.user = new User().withId(featureFlag.user.id);
+    UserFeatureFlag featureFlag = UserFeatureFlag.of(UUID.randomUUID(), new User().withId(UUID.randomUUID()), Feature.ProjectCliCard, false);
+    UserFeatureFlag existing = UserFeatureFlag.of(featureFlag.id, new User().withId(featureFlag.user.id), Feature.ProjectCliCard, false);
 
     when(userFeatureFlagRepository.byUserIdAndFeature(any(), any())).thenReturn(existing);
 
