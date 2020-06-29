@@ -28,7 +28,7 @@ public class AccessTokenApiServiceImpl
   }
 
   @Override
-  protected AccessToken toModel(dto.AccessToken dto) {
-    return AccessTokenMapper.toModel(dto);
+  protected AccessToken toModel(dto.AccessToken in) {
+    return AccessTokenMapper.toModel(in);
   }
 }

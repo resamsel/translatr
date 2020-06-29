@@ -2,12 +2,25 @@ package services.impl;
 
 import com.avaje.ebean.PagedList;
 import criterias.ProjectCriteria;
-import models.*;
+import models.ActionType;
+import models.Locale;
+import models.Project;
+import models.ProjectRole;
+import models.ProjectUser;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
 import repositories.ProjectRepository;
-import services.*;
+import services.AuthProvider;
+import services.CacheService;
+import services.KeyService;
+import services.LocaleService;
+import services.LogEntryService;
+import services.MessageService;
+import services.MetricService;
+import services.ProjectService;
+import services.ProjectUserService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

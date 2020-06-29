@@ -53,7 +53,7 @@ public class ActivityApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected LogEntry toModel(dto.Activity dto) {
-    return ActivityMapper.toModel(dto, service.byId(dto.id));
+  protected LogEntry toModel(dto.Activity in) {
+    return ActivityMapper.toModel(in, service.byId(in.id));
   }
 }

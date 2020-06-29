@@ -1,9 +1,18 @@
 package services.impl;
 
 import com.google.common.collect.ImmutableMap;
-import io.prometheus.client.*;
+import io.prometheus.client.Collector;
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.Counter;
+import io.prometheus.client.Gauge;
+import io.prometheus.client.Summary;
 import io.prometheus.client.hotspot.DefaultExports;
-import models.*;
+import models.AccessToken;
+import models.ActionType;
+import models.LinkedAccount;
+import models.Message;
+import models.Model;
+import models.ProjectUser;
 import services.MetricService;
 
 import javax.inject.Singleton;
