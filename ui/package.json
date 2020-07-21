@@ -64,7 +64,9 @@
     "i18n:pull:backend": "cd .. && translatr pull",
     "i18n:pull:ui": "cd apps/translatr && translatr pull",
     "i18n:push:ui": "cd apps/translatr && translatr push",
-    "i18n:pull:admin": "cd apps/translatr-admin && translatr pull"
+    "i18n:pull:admin": "cd apps/translatr-admin && translatr pull",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "private": true,
   "dependencies": {
@@ -94,7 +96,7 @@
     "@oclif/command": "1.6.1",
     "@oclif/config": "1.15.1",
     "@oclif/plugin-help": "^2.2.3",
-    "codemirror": "5.53.2",
+    "codemirror": "5.54.0",
     "core-js": "^2.6.11",
     "d3": "5.16.0",
     "d3-time": "^1.1.0",
@@ -108,7 +110,8 @@
     "rxjs": "6.5.5",
     "tslib": "^1.10.0",
     "underscore": "1.10.2",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.10.2",
+    "snyk": "^1.363.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.901.7",
@@ -179,5 +182,6 @@
     "apps/translatr*/src/assets/i18n/*.json": [
       "transloco-validator"
     ]
-  }
+  },
+  "snyk": true
 }
