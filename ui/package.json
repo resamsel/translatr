@@ -93,7 +93,7 @@
     "@ngrx/router-store": "^8.6.0",
     "@ngrx/store": "^8.6.0",
     "@nrwl/angular": "8.12.11",
-    "@oclif/command": "1.6.1",
+    "@oclif/command": "1.7.0",
     "@oclif/config": "1.15.1",
     "@oclif/plugin-help": "^2.2.3",
     "codemirror": "^5.56.0",
