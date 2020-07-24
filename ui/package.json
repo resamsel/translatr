@@ -94,7 +94,7 @@
     "@ngrx/store": "^8.6.0",
     "@nrwl/angular": "8.12.11",
     "@oclif/command": "1.6.1",
-    "@oclif/config": "1.15.1",
+    "@oclif/config": "1.16.0",
     "@oclif/plugin-help": "^2.2.3",
     "codemirror": "^5.56.0",
     "core-js": "^2.6.11",
