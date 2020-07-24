@@ -106,7 +106,7 @@
     "ngx-moment": "^3.5.0",
     "random-name": "^0.1.2",
     "runes": "^0.4.3",
-    "rxjs": "6.5.5",
+    "rxjs": "6.6.0",
     "tslib": "^1.10.0",
     "underscore": "1.10.2",
     "zone.js": "~0.10.2",
