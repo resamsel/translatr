@@ -2,12 +2,7 @@ import { promises } from "fs";
 import { inc, ReleaseType } from "semver";
 import simpleGit from "simple-git";
 
-const repo = "resamsel/translatr";
-
-const log = (version: string, message: string): string => {
-  console.log(message);
-  return version;
-};
+const dockerRepository = "resamsel/translatr";
 
 const toTag = (version: string): string => `v${version}`;
 
@@ -90,6 +85,14 @@ const gitCommit = (version: string): Promise<string> => {
 };
 
 /**
+ * Checkout given branch.
+ */
+const gitCheckout = (version: string, source: string): Promise<string> => {
+  const git = simpleGit();
+  return git.checkout([source]).then(() => version);
+};
+
+/**
  * Creates a Git tag for the current commit.
  */
 const gitTag = (version: string): Promise<string> => {
@@ -115,38 +118,54 @@ const gitMerge = (
   source: string,
   target: string
 ): Promise<string> => {
-  const git = simpleGit();
-  return git
-    .checkout([source])
-    .then(() => git.merge(["--ff-only", target]))
+  return gitCheckout(version, source)
+    .then(() => simpleGit().merge(["--ff-only", target]))
     .then(() => version);
 };
 
+const release = async (type: ReleaseType): Promise<string> => {
+  const version = await readVersion(type);
+
+  await gitCheck(version);
+
+  await updateVersions(version);
+  console.log(`✔️ Version was bumped to ${version}`);
+
+  await gitCommit(version);
+  console.log(`✔️ Changes were committed`);
+
+  await gitRebase(version, "master");
+  console.log(`✔️ Branch develop was rebased onto master`);
+
+  await gitMerge(version, "master", "develop");
+  console.log(`✔️ Master was fast forwarded to develop`);
+
+  await gitTag(version);
+  console.log(`✔️ Commit was tagged with ${toTag(version)}`);
+
+  await gitCheckout(version, "develop");
+  console.log(`✔️ Switched back to branch develop`);
+
+  console.log();
+  console.log(`🎉 Release ${version} was created successfully 🎉`);
+  console.log();
+
+  console.log(`These steps are missing:`);
+  console.log(`[ ] push changes: git push`);
+  console.log(`[ ] wait for CI/CD build to finish successfully`);
+  console.log(`[ ] create image: bin/activator docker:publish`);
+  console.log(
+    `[ ] tag image: docker tag ${dockerRepository}:${version} ${dockerRepository}:latest`
+  );
+  console.log(`[ ] push image: docker push ${dockerRepository}:latest`);
+  console.log(`[ ] create release on Github`);
+  return version;
+};
+
 if (process.argv.length == 3) {
-  readVersion(process.argv[2] as ReleaseType)
-    .then(version => gitCheck(version))
-    .then(version => updateVersions(version))
-    .then(version => log(version, `Version was bumped to ${version}`))
-    .then(version => gitCommit(version))
-    .then(version => log(version, `Changes were committed`))
-    .then(version => gitRebase(version, "master"))
-    .then(version => log(version, `Branch develop was rebased onto master`))
-    .then(version => gitMerge(version, "master", "develop"))
-    .then(version => log(version, `Master was fast forwarded to develop`))
-    .then(version => gitTag(version))
-    .then(version => log(version, `Commit was tagged with ${toTag(version)}`))
-    .then(version =>
-      log(version, `[ ] create image: bin/activator docker:publish`)
-    )
-    .then(version =>
-      log(
-        version,
-        `[ ] tag image: docker tag ${repo}:${version} ${repo}:latest`
-      )
-    )
-    .then(version => log(version, `[ ] push image: docker push ${repo}:latest`))
-    .then(version => log(version, `[ ] create release on Github`))
-    .catch(error => console.error(`${error}`));
+  release(process.argv[2] as ReleaseType).catch(error =>
+    console.error(`${error}`)
+  );
 } else {
   console.error("Error: no release type specified");
 }
