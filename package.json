@@ -25,6 +25,7 @@
     "@types/node": "14.0.14",
     "@types/semver": "^7.3.1",
     "semver": "7.3.2",
+    "simple-git": "2.15.0",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
