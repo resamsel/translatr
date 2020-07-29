@@ -1,4 +1,4 @@
-package integration.controllers;
+package controllers;
 
 import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthInfo;
 import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthUser;

@@ -1,7 +1,5 @@
-package integration.controllers;
+package controllers;
 
-import controllers.Projects;
-import controllers.routes;
 import models.User;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,11 +32,11 @@ public class UsersTest extends ControllerTest {
     Result result = Helpers.route(app, requestAsJohnSmith().uri(routes.Users.index().url()));
 
     assertThat(result)
-        .as("users overview")
-        .statusIsEqualTo(Projects.OK)
-        .contentTypeIsEqualTo("text/html")
-        .charsetIsEqualTo("utf-8")
-        .contentContains(johnSmith.email, mat);
+            .as("users overview")
+            .statusIsEqualTo(Projects.OK)
+            .contentTypeIsEqualTo("text/html")
+            .charsetIsEqualTo("utf-8")
+            .contentContains(johnSmith.email, mat);
   }
 
   @Test
@@ -49,28 +47,28 @@ public class UsersTest extends ControllerTest {
   @Test
   public void testUser() {
     Result result = Helpers
-        .route(app, requestAsJohnSmith().uri(routes.Users.user(johnSmith.username).url()));
+            .route(app, requestAsJohnSmith().uri(routes.Users.user(johnSmith.username).url()));
 
     assertThat(result)
-        .as("user view")
-        .statusIsEqualTo(Projects.OK)
-        .contentTypeIsEqualTo("text/html")
-        .charsetIsEqualTo("utf-8")
-        .contentContains("activity", mat)
-        .contentContains(johnSmith.email, mat);
+            .as("user view")
+            .statusIsEqualTo(Projects.OK)
+            .contentTypeIsEqualTo("text/html")
+            .charsetIsEqualTo("utf-8")
+            .contentContains("activity", mat)
+            .contentContains(johnSmith.email, mat);
   }
 
   @Test
   public void testUserJaneDoe() {
     Result result = Helpers
-        .route(app, requestAsJohnSmith().uri(routes.Users.user(janeDoe.username).url()));
+            .route(app, requestAsJohnSmith().uri(routes.Users.user(janeDoe.username).url()));
 
     assertThat(result)
-        .as("user janedoe view")
-        .statusIsEqualTo(Projects.OK)
-        .contentTypeIsEqualTo("text/html")
-        .charsetIsEqualTo("utf-8")
-        .contentContains(janeDoe.username, mat);
+            .as("user janedoe view")
+            .statusIsEqualTo(Projects.OK)
+            .contentTypeIsEqualTo("text/html")
+            .charsetIsEqualTo("utf-8")
+            .contentContains(janeDoe.username, mat);
   }
 
   @Test
@@ -81,20 +79,20 @@ public class UsersTest extends ControllerTest {
   @Test
   public void testProjectsJaneDoeDenied() {
     assertAccessDenied(requestAsJohnSmith().uri(routes.Users.projects(janeDoe.username).url()),
-        "user projects jane doe denied");
+            "user projects jane doe denied");
   }
 
   @Test
   public void testProjects() {
     Result result = Helpers
-        .route(app, requestAsJohnSmith().uri(routes.Users.projects(johnSmith.username).url()));
+            .route(app, requestAsJohnSmith().uri(routes.Users.projects(johnSmith.username).url()));
 
     assertThat(result)
-        .as("user projects view")
-        .statusIsEqualTo(Projects.OK)
-        .contentTypeIsEqualTo("text/html")
-        .charsetIsEqualTo("utf-8")
-        .contentContains(johnSmith.email, mat);
+            .as("user projects view")
+            .statusIsEqualTo(Projects.OK)
+            .contentTypeIsEqualTo("text/html")
+            .charsetIsEqualTo("utf-8")
+            .contentContains(johnSmith.email, mat);
   }
 
   @Test
@@ -105,34 +103,34 @@ public class UsersTest extends ControllerTest {
   @Test
   public void testActivity() {
     Result result = Helpers
-        .route(app, requestAsJohnSmith().uri(routes.Users.activity(johnSmith.username).url()));
+            .route(app, requestAsJohnSmith().uri(routes.Users.activity(johnSmith.username).url()));
 
     assertThat(result)
-        .as("user activity view")
-        .statusIsEqualTo(Projects.OK)
-        .contentTypeIsEqualTo("text/html")
-        .charsetIsEqualTo("utf-8")
-        .contentContains(johnSmith.email, mat);
+            .as("user activity view")
+            .statusIsEqualTo(Projects.OK)
+            .contentTypeIsEqualTo("text/html")
+            .charsetIsEqualTo("utf-8")
+            .contentContains(johnSmith.email, mat);
   }
 
   @Test
   public void testLinkedAccountsDenied() {
     assertAccessDenied(routes.Users.linkedAccounts(johnSmith.username),
-        "user projects view denied");
+            "user projects view denied");
   }
 
   @Test
   public void testLinkedAccounts() {
     Result result = Helpers
-        .route(app,
-            requestAsJohnSmith().uri(routes.Users.linkedAccounts(johnSmith.username).url()));
+            .route(app,
+                    requestAsJohnSmith().uri(routes.Users.linkedAccounts(johnSmith.username).url()));
 
     assertThat(result)
-        .as("user linked accounts view")
-        .statusIsEqualTo(Projects.OK)
-        .contentTypeIsEqualTo("text/html")
-        .charsetIsEqualTo("utf-8")
-        .contentContains(johnSmith.email, mat);
+            .as("user linked accounts view")
+            .statusIsEqualTo(Projects.OK)
+            .contentTypeIsEqualTo("text/html")
+            .charsetIsEqualTo("utf-8")
+            .contentContains(johnSmith.email, mat);
   }
 
   @Test
@@ -143,14 +141,14 @@ public class UsersTest extends ControllerTest {
   @Test
   public void testAccessTokens() {
     Result result = Helpers
-        .route(app, requestAsJohnSmith().uri(routes.Users.accessTokens(johnSmith.username).url()));
+            .route(app, requestAsJohnSmith().uri(routes.Users.accessTokens(johnSmith.username).url()));
 
     assertThat(result)
-        .as("user access tokens view")
-        .statusIsEqualTo(Projects.OK)
-        .contentTypeIsEqualTo("text/html")
-        .charsetIsEqualTo("utf-8")
-        .contentContains(johnSmith.email, mat);
+            .as("user access tokens view")
+            .statusIsEqualTo(Projects.OK)
+            .contentTypeIsEqualTo("text/html")
+            .charsetIsEqualTo("utf-8")
+            .contentContains(johnSmith.email, mat);
   }
 
   @Override
@@ -161,10 +159,10 @@ public class UsersTest extends ControllerTest {
     janeDoe = byUsername("janedoe");
 
     when(cache.getOrElse(eq("google:123916278356185"), any(), anyInt()))
-        .thenAnswer(a -> johnSmith);
+            .thenAnswer(a -> johnSmith);
     when(cache.getOrElse(eq(User.getCacheKey(johnSmith.username)), any(), anyInt()))
-        .thenAnswer(a -> johnSmith);
+            .thenAnswer(a -> johnSmith);
     when(cache.getOrElse(eq(User.getCacheKey(janeDoe.username)), any(), anyInt()))
-        .thenAnswer(a -> janeDoe);
+            .thenAnswer(a -> janeDoe);
   }
 }

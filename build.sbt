@@ -1,12 +1,12 @@
-
-
 name := """translatr"""
 
 version := "3.0.3"
 
-lazy val root = (project in file(".")).
-	enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin).
-	settings(
+lazy val root = (project in file("."))
+	.configs(IntegrationTest)
+	.enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin)
+	.settings(
+		Defaults.itSettings,
 		buildInfoKeys := Seq[BuildInfoKey](name, version)
 	)
 
@@ -45,11 +45,17 @@ libraryDependencies ++= Seq(
 	"io.swagger" %% "swagger-play2" % "1.5.3",
 	"org.webjars" % "swagger-ui" % "2.2.10",
 
-	"org.assertj" % "assertj-core" % "3.15.0" % "test",
-	"org.mockito" % "mockito-core" % "2.8.47" % "test"
+	"com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "it",
+	"org.assertj" % "assertj-core" % "3.15.0" % "it,test",
+	"org.mockito" % "mockito-core" % "2.8.47" % "it,test"
 )
 
-unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "java"
+// re-create maven directory structure
+unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "main" / "java"
+unmanagedSourceDirectories in Test += baseDirectory.value / "src" / "test" / "java"
+
+// shares contents of src/test/java with src/it/java
+dependencyClasspath in IntegrationTest := (dependencyClasspath in IntegrationTest).value ++ (exportedProducts in Test).value
 
 //
 // Eclipse
@@ -132,6 +138,7 @@ pipelineStages := Seq(concat)
 // Tests
 //
 fork in Test := false
+fork in IntegrationTest := false
 
 //
 // JaCoCo test coverage
