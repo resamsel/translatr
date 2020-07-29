@@ -1,4 +1,4 @@
-package integration.services;
+package services;
 
 import static assertions.CustomAssertions.assertThat;
 import static repositories.ProjectRepository.FETCH_MEMBERS;
