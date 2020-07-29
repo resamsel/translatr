@@ -1,4 +1,4 @@
-package integration.repositories;
+package repositories;
 
 import models.User;
 import org.junit.Test;

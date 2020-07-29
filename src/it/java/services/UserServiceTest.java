@@ -1,4 +1,4 @@
-package integration.services;
+package services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

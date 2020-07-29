@@ -1,4 +1,4 @@
-package integration.controllers;
+package controllers;
 
 import controllers.LocalesApi;
 import controllers.routes;

@@ -1,4 +1,4 @@
-package integration.controllers;
+package controllers;
 
 import com.google.common.collect.ImmutableMap;
 import controllers.Projects;
