@@ -20,7 +20,7 @@
       class="circle"
       matListIcon
     >{{icon(activity.contentType)}}</mat-icon>
-    <h3 class="ellipsis" matLine>
+    <h3 class="activity-content" matLine>
       <a
         *ngIf="relativeTo !== 'user'"
         [routerLink]="['/', activity.userUsername]"
