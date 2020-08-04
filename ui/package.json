@@ -54,7 +54,6 @@
     "dep-graph": "./node_modules/.bin/nx dep-graph",
     "workspace-schematic": "./node_modules/.bin/nx workspace-schematic",
     "help": "./node_modules/.bin/nx help",
-    "kill:server": "fuser -k 9000/tcp 4200/tcp 4211/tcp 4211/tcp; echo 'ports freed'",
     "nx": "nx",
     "prebundle-report": "ng build --prod --stats-json",
     "bundle-report": "webpack-bundle-analyzer dist/apps/translatr/stats-es2015.json",
