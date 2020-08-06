@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Entity, FilterFieldFilter, notifyEvent } from '@dev/translatr-components';
 import { Feature, features, RequestCriteria, UserFeatureFlag } from '@dev/translatr-model';
@@ -9,7 +9,7 @@ import {
 } from '@dev/translatr-sdk';
 import { ofType } from '@ngrx/effects';
 import { merge, Observable, of } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { mapTo, takeUntil } from 'rxjs/operators';
 import {
   AppActionTypes,
   FeatureFlagDeleted,
@@ -26,7 +26,7 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './dashboard-feature-flags.component.html',
   styleUrls: ['./dashboard-feature-flags.component.scss']
 })
-export class DashboardFeatureFlagsComponent {
+export class DashboardFeatureFlagsComponent implements OnDestroy {
   displayedColumns = ['user', 'feature', 'enabled', 'actions'];
 
   me$ = this.facade.me$;
@@ -53,7 +53,7 @@ export class DashboardFeatureFlagsComponent {
   constructor(private readonly facade: AppFacade, readonly snackBar: MatSnackBar) {
     notifyEvent(
       snackBar,
-      facade.featureFlagDeleted$,
+      facade.featureFlagDeleted$.pipe(takeUntil(facade.unloadFeatureFlags$)),
       AppActionTypes.FeatureFlagDeleted,
       (action: FeatureFlagDeleted) => `Feature flag ${action.payload.feature} has been deleted`,
       (action: FeatureFlagDeleteError) =>
@@ -61,7 +61,7 @@ export class DashboardFeatureFlagsComponent {
     );
     notifyEvent(
       snackBar,
-      facade.featureFlagsDeleted$,
+      facade.featureFlagsDeleted$.pipe(takeUntil(facade.unloadFeatureFlags$)),
       AppActionTypes.FeatureFlagsDeleted,
       (action: FeatureFlagsDeleted) => `${action.payload.length} feature flags have been deleted`,
       (action: FeatureFlagsDeleteError) =>
@@ -105,5 +105,9 @@ export class DashboardFeatureFlagsComponent {
       ...featureFlag,
       enabled: false
     });
+  }
+
+  ngOnDestroy(): void {
+    this.facade.unloadFeatureFlags();
   }
 }

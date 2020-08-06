@@ -25,7 +25,7 @@ const filterComparator = (a: Params, b: Params): boolean =>
   styleUrls: ['./locale-editor-page.component.scss']
 })
 export class LocaleEditorPageComponent implements OnInit, OnDestroy {
-  readonly me$ = this.appFacade.me$.pipe(takeUntil(this.facade.unloadEditor$));
+  readonly me$ = this.appFacade.me$;
   readonly locale$ = this.facade.locale$;
   readonly locales$ = this.facade.locales$;
   readonly messageItems$ = this.facade.localeEditorMessageItems$;

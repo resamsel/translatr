@@ -14,7 +14,7 @@ import {
 import { select, Store } from '@ngrx/store';
 import { mergeWithError } from '@translatr/utils';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
 import {
   createAccessToken,
@@ -50,12 +50,11 @@ export class UserFacade {
 
   user$ = this.store.pipe(select(userQuery.getUser));
   error$ = this.store.pipe(select(userQuery.getError));
-  permission$ = combineLatest([this.user$, this.appFacade.me$]).pipe(takeUntil(this.destroy$));
+  permission$ = combineLatest([this.user$, this.appFacade.me$]);
   criteria$ = this.appFacade.criteria$();
 
   projects$: Observable<PagedList<Project> | undefined> = this.store.pipe(
-    select(userQuery.getProjects),
-    takeUntil(this.destroy$)
+    select(userQuery.getProjects)
   );
   canCreateProject$ = this.permission$.pipe(map(([user, me]) => canCreateProject(user, me)));
 
@@ -70,10 +69,9 @@ export class UserFacade {
   );
 
   accessTokens$: Observable<PagedList<AccessToken> | undefined> = this.store.pipe(
-    select(userQuery.getAccessTokens),
-    takeUntil(this.destroy$)
+    select(userQuery.getAccessTokens)
   );
-  accessToken$ = this.store.pipe(select(userQuery.getAccessToken), takeUntil(this.destroy$));
+  accessToken$ = this.store.pipe(select(userQuery.getAccessToken));
   accessTokenError$ = this.store.pipe(select(userQuery.getAccessTokenError));
   accessTokenModified$ = mergeWithError(this.accessToken$, this.accessTokenError$);
   canModifyAccessToken$ = this.permission$.pipe(

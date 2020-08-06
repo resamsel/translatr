@@ -11,7 +11,7 @@ import {
   isAdmin
 } from '@dev/translatr-sdk';
 import { merge, Observable } from 'rxjs';
-import { filter, map, mapTo, startWith, take } from 'rxjs/operators';
+import { filter, map, mapTo, startWith, take, takeUntil } from 'rxjs/operators';
 import {
   UserDeleted,
   UserDeleteError,
@@ -54,28 +54,32 @@ export class DashboardUsersComponent implements OnDestroy {
     private readonly dialog: MatDialog,
     readonly snackBar: MatSnackBar
   ) {
-    this.facade.userDeleted$.subscribe((action: UserDeleted | UserDeleteError) => {
-      if (action instanceof UserDeleted) {
-        snackBar.open(`User ${action.payload.username} has been deleted`, 'Dismiss', {
-          duration: 3000
-        });
-      } else {
-        snackBar.open(`User could not be deleted: ${action.payload.error.error}`, 'Dismiss', {
-          duration: 8000
-        });
-      }
-    });
-    this.facade.usersDeleted$.subscribe((action: UsersDeleted | UsersDeleteError) => {
-      if (action instanceof UsersDeleted) {
-        snackBar.open(`${action.payload.length} users have been deleted`, 'Dismiss', {
-          duration: 3000
-        });
-      } else {
-        snackBar.open(`Users could not be deleted: ${action.payload.error.error}`, 'Dismiss', {
-          duration: 8000
-        });
-      }
-    });
+    this.facade.userDeleted$
+      .pipe(takeUntil(this.facade.unloadUsers$))
+      .subscribe((action: UserDeleted | UserDeleteError) => {
+        if (action instanceof UserDeleted) {
+          snackBar.open(`User ${action.payload.username} has been deleted`, 'Dismiss', {
+            duration: 3000
+          });
+        } else {
+          snackBar.open(`User could not be deleted: ${action.payload.error.error}`, 'Dismiss', {
+            duration: 8000
+          });
+        }
+      });
+    this.facade.usersDeleted$
+      .pipe(takeUntil(this.facade.unloadUsers$))
+      .subscribe((action: UsersDeleted | UsersDeleteError) => {
+        if (action instanceof UsersDeleted) {
+          snackBar.open(`${action.payload.length} users have been deleted`, 'Dismiss', {
+            duration: 3000
+          });
+        } else {
+          snackBar.open(`Users could not be deleted: ${action.payload.error.error}`, 'Dismiss', {
+            duration: 8000
+          });
+        }
+      });
   }
 
   onSelected(entities: Entity[]) {

@@ -10,7 +10,7 @@ import {
 import { select, Store } from '@ngrx/store';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 import { Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
 import { MessageItem } from '../message-item';
 import { SaveBehavior } from '../save-behavior';
@@ -34,44 +34,30 @@ import { editorQuery } from './editor.selectors';
 export class EditorFacade {
   readonly unloadEditor$ = new Subject<void>();
 
-  locale$ = this.store.pipe(select(editorQuery.getLocale), takeUntil(this.unloadEditor$));
+  locale$ = this.store.pipe(select(editorQuery.getLocale));
   selectedLocaleName$ = this.store.pipe(select(editorQuery.getSelectedLocaleName));
 
-  locales$ = this.store.pipe(select(editorQuery.getLocales), takeUntil(this.unloadEditor$));
+  locales$ = this.store.pipe(select(editorQuery.getLocales));
 
   localeEditorMessageItems$: Observable<PagedList<MessageItem>> = this.store.pipe(
-    select(editorQuery.getLocaleMessageItems),
-    takeUntil(this.unloadEditor$)
+    select(editorQuery.getLocaleMessageItems)
   );
 
   keyEditorMessageItems$: Observable<PagedList<MessageItem>> = this.store.pipe(
-    select(editorQuery.getKeyMessageItems),
-    takeUntil(this.unloadEditor$)
+    select(editorQuery.getKeyMessageItems)
   );
 
-  key$ = this.store.pipe(select(editorQuery.getKey), takeUntil(this.unloadEditor$));
-  selectedKeyName$ = this.store.pipe(
-    select(editorQuery.getSelectedKeyName),
-    takeUntil(this.unloadEditor$)
-  );
+  key$ = this.store.pipe(select(editorQuery.getKey));
+  selectedKeyName$ = this.store.pipe(select(editorQuery.getSelectedKeyName));
 
-  localeSelectedMessage$ = this.store.pipe(
-    select(editorQuery.getLocaleSelectedMessage),
-    takeUntil(this.unloadEditor$)
-  );
-  keySelectedMessage$ = this.store.pipe(
-    select(editorQuery.getKeySelectedMessage),
-    takeUntil(this.unloadEditor$)
-  );
+  localeSelectedMessage$ = this.store.pipe(select(editorQuery.getLocaleSelectedMessage));
+  keySelectedMessage$ = this.store.pipe(select(editorQuery.getKeySelectedMessage));
 
-  search$ = this.store.pipe(select(editorQuery.getSearch), takeUntil(this.unloadEditor$));
+  search$ = this.store.pipe(select(editorQuery.getSearch));
 
   message$ = this.store.pipe(select(editorQuery.getMessage));
 
-  messagesOfKey$ = this.store.pipe(
-    select(editorQuery.getMessagesOfKey),
-    takeUntil(this.unloadEditor$)
-  );
+  messagesOfKey$ = this.store.pipe(select(editorQuery.getMessagesOfKey));
 
   readonly saveBehavior$ = this.appFacade.settings$.pipe(
     map(settings => (settings ?? {})[Setting.SaveBehavior] ?? 'save')

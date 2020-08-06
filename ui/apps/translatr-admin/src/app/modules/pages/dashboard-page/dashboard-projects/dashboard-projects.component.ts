@@ -10,6 +10,7 @@ import {
   hasEditProjectPermission
 } from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import {
   AppActionTypes,
   ProjectDeleted,
@@ -61,7 +62,7 @@ export class DashboardProjectsComponent implements OnDestroy {
   ) {
     notifyEvent(
       snackBar,
-      facade.projectDeleted$,
+      facade.projectDeleted$.pipe(takeUntil(facade.unloadProjects$)),
       AppActionTypes.ProjectDeleted,
       (action: ProjectDeleted) => `Project ${action.payload.name} has been deleted`,
       (action: ProjectDeleteError) =>
@@ -69,7 +70,7 @@ export class DashboardProjectsComponent implements OnDestroy {
     );
     notifyEvent(
       snackBar,
-      facade.projectsDeleted$,
+      facade.projectsDeleted$.pipe(takeUntil(facade.unloadProjects$)),
       AppActionTypes.ProjectsDeleted,
       (action: ProjectsDeleted) => `${action.payload.length} projects have been deleted`,
       (action: ProjectsDeleteError) =>

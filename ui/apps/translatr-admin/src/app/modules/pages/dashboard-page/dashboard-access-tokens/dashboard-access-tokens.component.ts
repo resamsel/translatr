@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Entity, notifyEvent } from '@dev/translatr-components';
 import { AccessToken, Feature, RequestCriteria } from '@dev/translatr-model';
@@ -10,7 +10,7 @@ import {
 } from '@dev/translatr-sdk';
 import { ofType } from '@ngrx/effects';
 import { merge, Observable, of } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { mapTo, takeUntil } from 'rxjs/operators';
 import {
   AccessTokenDeleted,
   AccessTokenDeleteError,
@@ -27,7 +27,7 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './dashboard-access-tokens.component.html',
   styleUrls: ['./dashboard-access-tokens.component.scss']
 })
-export class DashboardAccessTokensComponent {
+export class DashboardAccessTokensComponent implements OnDestroy {
   displayedColumns = ['name', 'user', 'scopes', 'when_created', 'actions'];
 
   me$ = this.facade.me$;
@@ -47,7 +47,7 @@ export class DashboardAccessTokensComponent {
   constructor(private readonly facade: AppFacade, readonly snackBar: MatSnackBar) {
     notifyEvent(
       snackBar,
-      facade.accessTokenDeleted$,
+      facade.accessTokenDeleted$.pipe(takeUntil(facade.unloadAccessTokens$)),
       AppActionTypes.AccessTokenDeleted,
       (action: AccessTokenDeleted) => `Access token ${action.payload.name} has been deleted`,
       (action: AccessTokenDeleteError) =>
@@ -55,7 +55,7 @@ export class DashboardAccessTokensComponent {
     );
     notifyEvent(
       snackBar,
-      facade.accessTokensDeleted$,
+      facade.accessTokensDeleted$.pipe(takeUntil(facade.unloadAccessTokens$)),
       AppActionTypes.AccessTokensDeleted,
       (action: AccessTokensDeleted) => `${action.payload.length} access tokens have been deleted`,
       (action: AccessTokensDeleteError) =>
@@ -94,5 +94,9 @@ export class DashboardAccessTokensComponent {
 
   onDeleteAll(accessTokens: AccessToken[]) {
     this.facade.deleteAccessTokens(accessTokens);
+  }
+
+  ngOnDestroy(): void {
+    this.facade.unloadAccessTokens();
   }
 }

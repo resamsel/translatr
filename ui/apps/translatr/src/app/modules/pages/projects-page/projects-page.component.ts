@@ -30,10 +30,7 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
         a.search === b.search && a.limit === b.limit && a.offset === b.offset
     )
   );
-  private loadProjects$ = combineLatest([
-    this.me$.pipe(filter(user => !!user)),
-    this.criteria$
-  ]).pipe(takeUntil(this.facade.unload$));
+  private loadProjects$ = combineLatest([this.me$.pipe(filter(user => !!user)), this.criteria$]);
 
   readonly Feature = Feature;
 
@@ -45,15 +42,17 @@ export class ProjectsPageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.loadProjects$.subscribe(([user, criteria]: [User, ProjectCriteria]) =>
-      this.facade.loadProjects({
-        memberId: user.id,
-        order: 'whenUpdated desc',
-        limit: 20,
-        fetch: 'count,progress',
-        ...criteria
-      })
-    );
+    this.loadProjects$
+      .pipe(takeUntil(this.facade.unload$))
+      .subscribe(([user, criteria]: [User, ProjectCriteria]) =>
+        this.facade.loadProjects({
+          memberId: user.id,
+          order: 'whenUpdated desc',
+          limit: 20,
+          fetch: 'count,progress',
+          ...criteria
+        })
+      );
   }
 
   ngOnDestroy(): void {

@@ -15,7 +15,7 @@ import {
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import {
   AppActionTypes,
   CreateUser,
@@ -44,94 +44,69 @@ import { appQuery } from './app.selectors';
 
 @Injectable()
 export class AppFacade extends FeatureFlagFacade {
-  me$ = this.store.pipe(select(appQuery.getLoggedInUser));
+  readonly me$ = this.store.pipe(select(appQuery.getLoggedInUser));
 
   // Users
 
-  unloadUsers$ = new Subject<void>();
+  readonly unloadUsers$ = new Subject<void>();
 
-  users$ = this.store.pipe(select(appQuery.getUsers), takeUntil(this.unloadUsers$.asObservable()));
+  readonly users$ = this.store.pipe(select(appQuery.getUsers));
 
-  userCreated$ = this.actions$.pipe(
-    ofType(AppActionTypes.UserCreated),
-    takeUntil(this.unloadUsers$.asObservable())
-  );
-  userCreateError$ = this.actions$.pipe(
-    ofType(AppActionTypes.UserCreateError),
-    takeUntil(this.unloadUsers$.asObservable())
-  );
+  readonly userCreated$ = this.actions$.pipe(ofType(AppActionTypes.UserCreated));
+  readonly userCreateError$ = this.actions$.pipe(ofType(AppActionTypes.UserCreateError));
 
-  userUpdated$ = this.actions$.pipe(
-    ofType(AppActionTypes.UserUpdated),
-    takeUntil(this.unloadUsers$.asObservable())
-  );
-  userUpdateError$ = this.actions$.pipe(
-    ofType(AppActionTypes.UserUpdateError),
-    takeUntil(this.unloadUsers$.asObservable())
-  );
+  readonly userUpdated$ = this.actions$.pipe(ofType(AppActionTypes.UserUpdated));
+  readonly userUpdateError$ = this.actions$.pipe(ofType(AppActionTypes.UserUpdateError));
 
-  userDeleted$ = this.actions$.pipe(
-    ofType(AppActionTypes.UserDeleted, AppActionTypes.UserDeleteError),
-    takeUntil(this.unloadUsers$.asObservable())
+  readonly userDeleted$ = this.actions$.pipe(
+    ofType(AppActionTypes.UserDeleted, AppActionTypes.UserDeleteError)
   );
-  usersDeleted$ = this.actions$.pipe(
-    ofType(AppActionTypes.UsersDeleted, AppActionTypes.UsersDeleteError),
-    takeUntil(this.unloadUsers$.asObservable())
+  readonly usersDeleted$ = this.actions$.pipe(
+    ofType(AppActionTypes.UsersDeleted, AppActionTypes.UsersDeleteError)
   );
 
   // Projects
 
-  unloadProjects$ = new Subject<void>();
+  readonly unloadProjects$ = new Subject<void>();
 
-  projects$ = this.store.pipe(
-    select(appQuery.getProjects),
-    takeUntil(this.unloadProjects$.asObservable())
-  );
+  readonly projects$ = this.store.pipe(select(appQuery.getProjects));
 
-  projectUpdated$ = this.actions$.pipe(
-    ofType(AppActionTypes.ProjectUpdated),
-    takeUntil(this.unloadProjects$.asObservable())
-  );
-  projectUpdateError$ = this.actions$.pipe(
-    ofType(AppActionTypes.ProjectUpdateError),
-    takeUntil(this.unloadProjects$.asObservable())
-  );
+  readonly projectUpdated$ = this.actions$.pipe(ofType(AppActionTypes.ProjectUpdated));
+  readonly projectUpdateError$ = this.actions$.pipe(ofType(AppActionTypes.ProjectUpdateError));
 
-  projectDeleted$ = this.actions$.pipe(
-    ofType(AppActionTypes.ProjectDeleted, AppActionTypes.ProjectDeleteError),
-    takeUntil(this.unloadProjects$.asObservable())
+  readonly projectDeleted$ = this.actions$.pipe(
+    ofType(AppActionTypes.ProjectDeleted, AppActionTypes.ProjectDeleteError)
   );
-  projectsDeleted$ = this.actions$.pipe(
-    ofType(AppActionTypes.ProjectsDeleted, AppActionTypes.ProjectsDeleteError),
-    takeUntil(this.unloadUsers$.asObservable())
+  readonly projectsDeleted$ = this.actions$.pipe(
+    ofType(AppActionTypes.ProjectsDeleted, AppActionTypes.ProjectsDeleteError)
   );
 
   // Access Tokens
 
-  accessTokens$ = this.store.pipe(select(appQuery.getAccessTokens));
-  accessTokenDeleted$ = this.actions$.pipe(
-    ofType(AppActionTypes.AccessTokenDeleted, AppActionTypes.AccessTokenDeleteError),
-    takeUntil(this.unloadProjects$.asObservable())
+  readonly unloadAccessTokens$ = new Subject<void>();
+
+  readonly accessTokens$ = this.store.pipe(select(appQuery.getAccessTokens));
+  readonly accessTokenDeleted$ = this.actions$.pipe(
+    ofType(AppActionTypes.AccessTokenDeleted, AppActionTypes.AccessTokenDeleteError)
   );
-  accessTokensDeleted$ = this.actions$.pipe(
-    ofType(AppActionTypes.AccessTokensDeleted, AppActionTypes.AccessTokensDeleteError),
-    takeUntil(this.unloadProjects$.asObservable())
+  readonly accessTokensDeleted$ = this.actions$.pipe(
+    ofType(AppActionTypes.AccessTokensDeleted, AppActionTypes.AccessTokensDeleteError)
   );
 
   // Activity
 
-  activities$ = this.store.pipe(select(appQuery.getActivities));
+  readonly activities$ = this.store.pipe(select(appQuery.getActivities));
 
   // Feature Flags
 
-  featureFlags$ = this.store.pipe(select(appQuery.getFeatureFlags));
-  featureFlagDeleted$ = this.actions$.pipe(
-    ofType(AppActionTypes.FeatureFlagDeleted, AppActionTypes.FeatureFlagDeleteError),
-    takeUntil(this.unloadProjects$.asObservable())
+  readonly unloadFeatureFlags$ = new Subject<void>();
+
+  readonly featureFlags$ = this.store.pipe(select(appQuery.getFeatureFlags));
+  readonly featureFlagDeleted$ = this.actions$.pipe(
+    ofType(AppActionTypes.FeatureFlagDeleted, AppActionTypes.FeatureFlagDeleteError)
   );
-  featureFlagsDeleted$ = this.actions$.pipe(
-    ofType(AppActionTypes.FeatureFlagsDeleted, AppActionTypes.FeatureFlagsDeleteError),
-    takeUntil(this.unloadProjects$.asObservable())
+  readonly featureFlagsDeleted$ = this.actions$.pipe(
+    ofType(AppActionTypes.FeatureFlagsDeleted, AppActionTypes.FeatureFlagsDeleteError)
   );
 
   user$(userId: string): Observable<User | undefined> {
@@ -212,6 +187,10 @@ export class AppFacade extends FeatureFlagFacade {
     this.store.dispatch(new DeleteAccessTokens(accessTokens));
   }
 
+  unloadAccessTokens() {
+    this.unloadAccessTokens$.next();
+  }
+
   // Activity
 
   loadActivities(criteria: ActivityCriteria) {
@@ -241,6 +220,10 @@ export class AppFacade extends FeatureFlagFacade {
       filter(x => !!x),
       map(user => (user.features ? coerceArray(flags).every(flag => user.features[flag]) : false))
     );
+  }
+
+  unloadFeatureFlags() {
+    this.unloadFeatureFlags$.next();
   }
 
   updatePreferredLanguage(language: string): void {

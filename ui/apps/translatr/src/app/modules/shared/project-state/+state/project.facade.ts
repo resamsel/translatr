@@ -18,7 +18,7 @@ import { select, Store } from '@ngrx/store';
 import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 import { mergeWithError } from '@translatr/utils';
 import { Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AppFacade, defaultParams } from '../../../../+state/app.facade';
 import {
   createKey,
@@ -84,31 +84,28 @@ export class ProjectFacade {
 
   project$ = this.appFacade.project$;
 
-  locales$ = this.store.pipe(select(projectQuery.getLocales), takeUntil(this.unload$));
+  locales$ = this.store.pipe(select(projectQuery.getLocales));
   localesCriteria$ = this.appFacade.criteria$();
   locale$ = this.store.pipe(select(projectQuery.getLocale));
   localeError$ = this.store.pipe(select(projectQuery.getLocaleError));
   localeModified$ = mergeWithError(this.locale$, this.localeError$);
 
-  keys$ = this.store.pipe(select(projectQuery.getKeys), takeUntil(this.unload$));
+  keys$ = this.store.pipe(select(projectQuery.getKeys));
   keysCriteria$ = this.appFacade.criteria$();
   key$ = this.store.pipe(select(projectQuery.getKey));
   keyError$ = this.store.pipe(select(projectQuery.getKeyError));
   keyModified$ = mergeWithError(this.key$, this.keyError$);
 
-  messages$ = this.store.pipe(select(projectQuery.getMessages), takeUntil(this.unload$));
+  messages$ = this.store.pipe(select(projectQuery.getMessages));
 
-  members$ = this.store.pipe(select(projectQuery.getMembers), takeUntil(this.unload$));
+  members$ = this.store.pipe(select(projectQuery.getMembers));
   membersCriteria$ = this.appFacade.criteria$([...defaultParams, 'roles']);
   member$ = this.store.pipe(select(projectQuery.getMember));
   memberError$ = this.store.pipe(select(projectQuery.getMemberError));
   memberModified$ = mergeWithError(this.member$, this.memberError$);
 
-  activityAggregated$ = this.store.pipe(
-    select(projectQuery.getActivityAggregated),
-    takeUntil(this.unload$)
-  );
-  activities$ = this.store.pipe(select(projectQuery.getActivities), takeUntil(this.unload$));
+  activityAggregated$ = this.store.pipe(select(projectQuery.getActivityAggregated));
+  activities$ = this.store.pipe(select(projectQuery.getActivities));
   activitiesCriteria$ = this.appFacade.criteria$();
 
   accessTokens$ = this.store.pipe(select(projectQuery.getAccessTokens));
