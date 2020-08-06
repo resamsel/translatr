@@ -1,9 +1,8 @@
 package repositories.impl;
 
 import actors.ActivityActorRef;
-import actors.NotificationActor;
+import actors.NotificationActorRef;
 import actors.NotificationProtocol.PublishNotification;
-import akka.actor.ActorRef;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model.Find;
 import com.avaje.ebean.PagedList;
@@ -22,7 +21,6 @@ import utils.ContextKey;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.util.Collection;
@@ -38,7 +36,7 @@ public class LogEntryRepositoryImpl extends
   };
 
   private final ContextProvider contextProvider;
-  private final ActorRef notificationActor;
+  private final NotificationActorRef notificationActor;
 
   @Inject
   public LogEntryRepositoryImpl(Persistence persistence,
@@ -46,7 +44,7 @@ public class LogEntryRepositoryImpl extends
                                 AuthProvider authProvider,
                                 ContextProvider contextProvider,
                                 ActivityActorRef activityActor,
-                                @Named(NotificationActor.NAME) ActorRef notificationActor) {
+                                NotificationActorRef notificationActor) {
     super(persistence, validator, authProvider, activityActor);
 
     this.contextProvider = contextProvider;
