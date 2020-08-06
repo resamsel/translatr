@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
 
 @Component({
@@ -9,22 +8,12 @@ import { UserFacade } from '../+state/user.facade';
   templateUrl: './user-access-token.component.html',
   styleUrls: ['./user-access-token.component.scss']
 })
-export class UserAccessTokenComponent implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
-
-  accessToken$ = this.facade.accessToken$.pipe(
-    filter(x => !!x),
-    takeUntil(this.destroy$.asObservable())
-  );
+export class UserAccessTokenComponent implements OnInit {
+  accessToken$ = this.facade.accessToken$.pipe(filter(x => !!x));
 
   constructor(private readonly route: ActivatedRoute, private readonly facade: UserFacade) {}
 
   ngOnInit() {
     this.route.params.pipe(take(1)).subscribe(params => this.facade.loadAccessToken(params.id));
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

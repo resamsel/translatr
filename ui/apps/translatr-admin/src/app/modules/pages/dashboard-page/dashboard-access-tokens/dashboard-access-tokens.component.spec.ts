@@ -44,7 +44,8 @@ describe('DashboardAccessTokensComponent', () => {
           useFactory: () => ({
             me$: mockObservable(),
             accessTokenDeleted$: mockObservable(),
-            accessTokensDeleted$: mockObservable()
+            accessTokensDeleted$: mockObservable(),
+            unloadAccessTokens$: mockObservable()
           })
         },
         {

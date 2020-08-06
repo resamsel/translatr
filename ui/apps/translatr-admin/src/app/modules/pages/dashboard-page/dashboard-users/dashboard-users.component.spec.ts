@@ -45,7 +45,8 @@ describe('UsersComponent', () => {
           useFactory: () => ({
             me$: mockObservable(),
             userDeleted$: mockObservable(),
-            usersDeleted$: mockObservable()
+            usersDeleted$: mockObservable(),
+            unloadUsers$: mockObservable()
           })
         },
         {

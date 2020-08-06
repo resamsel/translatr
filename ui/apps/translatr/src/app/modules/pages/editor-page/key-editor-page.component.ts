@@ -26,7 +26,7 @@ const filterComparator = (a: Params, b: Params): boolean =>
   styleUrls: ['./key-editor-page.component.scss']
 })
 export class KeyEditorPageComponent implements OnInit, OnDestroy {
-  readonly me$ = this.appFacade.me$.pipe(takeUntil(this.facade.unloadEditor$));
+  readonly me$ = this.appFacade.me$;
   readonly key$ = this.facade.key$;
   readonly messageItems$ = this.facade.keyEditorMessageItems$;
   readonly selectedLocaleName$ = this.facade.selectedLocaleName$;

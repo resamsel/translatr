@@ -21,7 +21,7 @@ export class ProjectMembersComponent {
 
   canModify$ = this.facade.canModifyMember$;
   canModifyOwner$: Observable<boolean> = combineLatest([
-    this.facade.members$.pipe(
+    this.members$.pipe(
       filter(x => !!x),
       pluck('list')
     ),

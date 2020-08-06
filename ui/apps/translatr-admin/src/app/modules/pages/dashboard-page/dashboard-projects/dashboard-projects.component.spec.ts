@@ -45,7 +45,8 @@ describe('DashboardProjectsComponent', () => {
           useFactory: () => ({
             me$: mockObservable(),
             projectDeleted$: mockObservable(),
-            projectsDeleted$: mockObservable()
+            projectsDeleted$: mockObservable(),
+            unloadProjects$: mockObservable()
           })
         },
         {

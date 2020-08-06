@@ -44,7 +44,8 @@ describe('DashboardFeatureFlagsComponent', () => {
           useFactory: () => ({
             me$: mockObservable(),
             featureFlagDeleted$: mockObservable(),
-            featureFlagsDeleted$: mockObservable()
+            featureFlagsDeleted$: mockObservable(),
+            unloadFeatureFlags$: mockObservable()
           })
         },
         {
