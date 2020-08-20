@@ -1,7 +1,7 @@
 package services.impl;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.PagedList;
+import io.ebean.Ebean;
+import io.ebean.PagedList;
 import criterias.MessageCriteria;
 import models.ActionType;
 import models.Message;
@@ -48,7 +48,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
   @Override
   public int countBy(Project project) {
     return log(
-        () -> cache.getOrElse(
+        () -> cache.getOrElseUpdate(
             String.format("project:id:%s:message:countByProject", project.id),
             () -> messageRepository.countBy(project),
             60),
@@ -74,7 +74,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
 
   @Override
   public List<Message> latest(Project project, int limit) {
-    return cache.getOrElse(
+    return cache.getOrElseUpdate(
             String.format("project:id:%s:latest:messages:%d", project.id, limit),
             () -> messageRepository.latest(project, limit),
             60

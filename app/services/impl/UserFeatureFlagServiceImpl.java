@@ -1,6 +1,6 @@
 package services.impl;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import criterias.UserFeatureFlagCriteria;
 import models.ActionType;
 import models.User;

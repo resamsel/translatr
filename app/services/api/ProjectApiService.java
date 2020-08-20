@@ -1,6 +1,6 @@
 package services.api;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import com.google.inject.ImplementedBy;
 import criterias.ProjectCriteria;
 import dto.Aggregate;

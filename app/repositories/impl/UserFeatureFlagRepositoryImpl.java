@@ -1,12 +1,11 @@
 package repositories.impl;
 
 import actors.ActivityActorRef;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
 import criterias.PagedListFactory;
 import criterias.UserFeatureFlagCriteria;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
+import io.ebean.Query;
 import models.Feature;
 import models.User;
 import models.UserFeatureFlag;
@@ -26,9 +25,6 @@ import java.util.UUID;
 public class UserFeatureFlagRepositoryImpl extends
         AbstractModelRepository<UserFeatureFlag, UUID, UserFeatureFlagCriteria> implements
         UserFeatureFlagRepository {
-
-  public final Find<UUID, UserFeatureFlag> find = new Find<UUID, UserFeatureFlag>() {
-  };
 
   @Inject
   public UserFeatureFlagRepositoryImpl(Persistence persistence,
@@ -61,7 +57,7 @@ public class UserFeatureFlagRepositoryImpl extends
 
   @Override
   public UserFeatureFlag byId(UUID id, String... fetches) {
-    return fetch().setId(id).findUnique();
+    return fetch().setId(id).findOne();
   }
 
   @Override
@@ -70,11 +66,11 @@ public class UserFeatureFlagRepositoryImpl extends
         .where()
         .eq("user.id", userId)
         .eq("feature", feature.getName())
-        .findUnique();
+        .findOne();
   }
 
   private Query<UserFeatureFlag> fetch() {
-    return QueryUtils.fetch(find.query().setDisableLazyLoading(true), PROPERTIES_TO_FETCH);
+    return QueryUtils.fetch(persistence.find(UserFeatureFlag.class).setDisableLazyLoading(true), PROPERTIES_TO_FETCH);
   }
 
   /**

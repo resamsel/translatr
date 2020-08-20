@@ -1,3 +1,0 @@
-@(form: Form[forms.AccessTokenForm], scope: Scope)
-
-@inputs.checkbox(form("scope" + scope.getSection + scope.getType), "accessToken-scope" + scope.getSection + scope.getType, Html(scope.toString))

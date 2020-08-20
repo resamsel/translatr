@@ -1,6 +1,6 @@
 package utils;
 
-import com.avaje.ebean.Query;
+import io.ebean.Query;
 import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.CheckForNull;

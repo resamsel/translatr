@@ -21,10 +21,11 @@ import java.util.concurrent.CompletionStage;
 public class ApiDocs extends Assets {
   /**
    * @param errorHandler
+   * @param meta
    */
   @Inject
-  public ApiDocs(HttpErrorHandler errorHandler) {
-    super(errorHandler);
+  public ApiDocs(HttpErrorHandler errorHandler, AssetsMetadata meta) {
+    super(errorHandler, meta);
   }
 
   public CompletionStage<Result> index() {

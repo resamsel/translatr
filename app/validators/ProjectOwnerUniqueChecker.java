@@ -1,6 +1,6 @@
 package validators;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import criterias.ProjectCriteria;
 import forms.ProjectOwnerForm;
 import models.Project;

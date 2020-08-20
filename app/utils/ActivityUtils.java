@@ -3,7 +3,6 @@ package utils;
 import com.fasterxml.jackson.databind.JsonNode;
 import mappers.*;
 import models.LogEntry;
-import org.jetbrains.annotations.Contract;
 import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Call;
@@ -38,7 +37,6 @@ public class ActivityUtils {
   public static final String PROJECT_USER_COLOR = "purple";
   public static final String ACTIVITY_COLOR = "green";
 
-  @Contract("null -> null")
   public static String nameOf(LogEntry activity) {
     if (activity == null)
       return null;
@@ -63,65 +61,6 @@ public class ActivityUtils {
     }
   }
 
-  @Contract("null -> null")
-  public static Call linkTo(LogEntry activity) {
-    if (activity == null)
-      return null;
-
-    JsonNode node = parse(activity);
-    Long id = JsonUtils.getId(node);
-
-    switch (contentTypeOf(activity)) {
-      case "User": {
-        String name = JsonUtils.getAsText(node, "username");
-        if (name != null)
-          return controllers.routes.Users.user(JsonUtils.getAsText(node, "username"));
-        break;
-      }
-      case "Project": {
-        dto.Project project = Json.fromJson(node, dto.Project.class);
-        if (project != null)
-          return ProjectMapper.toModel(project).route();
-        break;
-      }
-      case "Locale": {
-        dto.Locale locale = Json.fromJson(node, dto.Locale.class);
-        if (locale != null)
-          return LocaleMapper.toModel(locale).route();
-        break;
-      }
-      case "Key": {
-        dto.Key key = Json.fromJson(node, dto.Key.class);
-        if (key != null)
-          return KeyMapper.toModel(key).route();
-        break;
-      }
-      case "Message": {
-        dto.Message message = Json.fromJson(node, dto.Message.class);
-        if (message != null)
-          return MessageMapper.toModel(message).route();
-        break;
-      }
-      case "ProjectUser": {
-        dto.ProjectUser member = Json.fromJson(node, dto.ProjectUser.class);
-        if (member != null)
-          return ProjectUserMapper.toModel(member).route();
-        break;
-      }
-      case "AccessToken": {
-        String name = JsonUtils.getAsText(node, "username");
-        if (name != null && id != null)
-          return controllers.routes.Users.accessTokenEdit(name, id);
-        break;
-      }
-      default:
-        break;
-    }
-
-    return null;
-  }
-
-  @Contract(value = "null -> null", pure = true)
   public static String iconOf(LogEntry activity) {
     if (activity == null)
       return null;
@@ -146,7 +85,6 @@ public class ActivityUtils {
     }
   }
 
-  @Contract(value = "null -> null", pure = true)
   public static String colorOf(LogEntry activity) {
     if (activity == null)
       return null;

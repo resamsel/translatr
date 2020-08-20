@@ -1,13 +1,15 @@
 package utils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.cache.CacheApi;
+import play.cache.SyncCacheApi;
 
-public class CacheApiMock implements CacheApi {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+
+public class CacheApiMock implements SyncCacheApi {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CacheApiMock.class);
 
@@ -25,8 +27,13 @@ public class CacheApiMock implements CacheApi {
   }
 
   @Override
-  public <T> T getOrElse(String key, Callable<T> block, int expiration) {
-    LOGGER.debug("getOrElse(key={}, block=..., expiration={})", key, expiration);
+  public <T> Optional<T> getOptional(String key) {
+    return Optional.ofNullable(get(key));
+  }
+
+  @Override
+  public <T> T getOrElseUpdate(String key, Callable<T> block, int expiration) {
+    LOGGER.debug("getOrElseUpdate(key={}, block=..., expiration={})", key, expiration);
 
     if (!map.containsKey(key)) {
       try {
@@ -40,10 +47,10 @@ public class CacheApiMock implements CacheApi {
   }
 
   @Override
-  public <T> T getOrElse(String key, Callable<T> block) {
-    LOGGER.debug("getOrElse(key={}, block=...)", key);
+  public <T> T getOrElseUpdate(String key, Callable<T> block) {
+    LOGGER.debug("getOrElseUpdate(key={}, block=...)", key);
 
-    return getOrElse(key, block, -1);
+    return getOrElseUpdate(key, block, -1);
   }
 
   @Override

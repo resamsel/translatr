@@ -4,11 +4,10 @@ import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activity;
 import actors.NotificationActorRef;
 import actors.NotificationProtocol.FollowNotification;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
 import criterias.PagedListFactory;
 import criterias.ProjectUserCriteria;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
 import mappers.ProjectUserMapper;
 import models.ActionType;
 import models.ProjectUser;
@@ -33,7 +32,6 @@ public class ProjectUserRepositoryImpl extends
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectUserRepositoryImpl.class);
 
-  private final Find<Long, ProjectUser> repository;
   private final NotificationActorRef notificationActor;
   private final PagedListFactory pagedListFactory;
 
@@ -46,7 +44,6 @@ public class ProjectUserRepositoryImpl extends
                                    PagedListFactoryProvider pagedListFactoryProvider) {
     super(persistence, validator, authProvider, activityActor);
 
-    this.repository = persistence.getRepositoryProvider().getProjectUserRepository();
     this.notificationActor = notificationActor;
     this.pagedListFactory = pagedListFactoryProvider.get();
   }
@@ -59,8 +56,8 @@ public class ProjectUserRepositoryImpl extends
 
   @Override
   public ProjectUser byId(Long id, String... propertiesToFetch) {
-    return QueryUtils.fetch(repository.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where().idEq(id)
-        .findUnique();
+    return QueryUtils.fetch(persistence.find(ProjectUser.class), PROPERTIES_TO_FETCH, FETCH_MAP).where().idEq(id)
+        .findOne();
   }
 
   @Override
@@ -70,7 +67,7 @@ public class ProjectUserRepositoryImpl extends
 
   private ExpressionList<ProjectUser> findQuery(ProjectUserCriteria criteria) {
     ExpressionList<ProjectUser> query = QueryUtils
-        .fetch(repository.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where();
+        .fetch(persistence.find(ProjectUser.class), PROPERTIES_TO_FETCH, FETCH_MAP).where();
 
     query.eq("project.deleted", false);
 

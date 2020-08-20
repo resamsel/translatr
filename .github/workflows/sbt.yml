@@ -18,4 +18,4 @@ jobs:
       with:
         java-version: 1.8
     - name: Run unit tests
-      run: bin/activator jacoco:cover -Dconfig.file=test.conf
+      run: bin/activator test -Dconfig.file=test.conf

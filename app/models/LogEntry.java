@@ -1,6 +1,6 @@
 package models;
 
-import com.avaje.ebean.annotation.CreatedTimestamp;
+import io.ebean.annotation.CreatedTimestamp;
 import org.joda.time.DateTime;
 import play.libs.Json;
 import utils.CacheUtils;

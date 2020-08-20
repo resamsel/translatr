@@ -1,6 +1,6 @@
 package models;
 
-import com.avaje.ebean.annotation.DbEnumValue;
+import io.ebean.annotation.DbEnumValue;
 
 import java.util.Map;
 import java.util.stream.Stream;

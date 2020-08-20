@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import dto.PermissionException;
 import models.AccessToken;
 import play.mvc.Action;
+import play.mvc.Http;
 import play.mvc.Http.Context;
 import play.mvc.Http.Request;
 import play.mvc.Result;
@@ -13,6 +14,7 @@ import utils.ErrorUtils;
 
 import javax.inject.Inject;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -41,7 +43,7 @@ public class ApiAction extends Action.Simple {
   public CompletionStage<Result> call(Context ctx) {
     Request req = ctx.request();
 
-    changeLangFromHeader(ctx, req.headers());
+    changeLangFromHeader(ctx, req.getHeaders());
 
     String accessToken = null;
     switch (req.method()) {
@@ -64,8 +66,9 @@ public class ApiAction extends Action.Simple {
         break;
     }
 
-    if (accessToken == null && req.hasHeader(ACCESS_TOKEN_HEADER))
-      accessToken = req.getHeader(ACCESS_TOKEN_HEADER);
+    Optional<String> accessTokenHeader = req.header(ACCESS_TOKEN_HEADER);
+    if (accessToken == null && accessTokenHeader.isPresent())
+      accessToken = accessTokenHeader.get();
 
     if (accessToken != null) {
       AccessToken token = accessTokenService.byKey(accessToken);
@@ -79,15 +82,15 @@ public class ApiAction extends Action.Simple {
     return delegate.call(ctx);
   }
 
-  public static void changeLangFromHeader(Context ctx, Map<String, String[]> headers) {
-    if (headers.containsKey("accept-language")) {
-      String[] langDefinitions = headers.get("accept-language")[0].split(",");
+  public static void changeLangFromHeader(Context ctx, Http.Headers headers) {
+    headers.get("accept-language").ifPresent(acceptLanguage -> {
+      String[] langDefinitions = acceptLanguage.split(",");
       if (langDefinitions.length > 0 && langDefinitions[0].length() > 0) {
         String lang = langDefinitions[0].split(";")[0];
         if (!lang.equals(ctx.lang().code())) {
           ctx.changeLang(lang);
         }
       }
-    }
+    });
   }
 }

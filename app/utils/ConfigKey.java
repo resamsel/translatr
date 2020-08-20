@@ -1,6 +1,6 @@
 package utils;
 
-import play.Configuration;
+import com.typesafe.config.Config;
 
 /**
  * @author resamsel
@@ -35,11 +35,11 @@ public enum ConfigKey {
     return key;
   }
 
-  public String getString(Configuration config) {
+  public String getString(Config config) {
     return config.getString(key);
   }
 
-  public Boolean getBoolean(Configuration config) {
+  public Boolean getBoolean(Config config) {
     return config.getBoolean(key);
   }
 }

@@ -1,6 +1,5 @@
 package controllers;
 
-import controllers.Projects;
 import play.mvc.Call;
 import play.mvc.Http.RequestBuilder;
 import tests.AbstractTest;

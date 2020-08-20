@@ -1,6 +1,6 @@
 package services.api.impl;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
 import criterias.AbstractSearchCriteria;
 import dto.Dto;

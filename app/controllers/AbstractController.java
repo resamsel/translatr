@@ -1,15 +1,11 @@
 package controllers;
 
-import com.feth.play.module.pa.PlayAuthenticate;
-import commands.Command;
-import dto.NotFoundException;
 import dto.PermissionException;
 import exceptions.KeyNotFoundException;
 import exceptions.LocaleNotFoundException;
 import exceptions.ProjectNotFoundException;
 import exceptions.UserNotFoundException;
 import models.Project;
-import models.Scope;
 import models.User;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -18,6 +14,7 @@ import play.inject.Injector;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Call;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import services.AuthProvider;
 import services.CacheService;
@@ -30,10 +27,8 @@ import utils.CheckedSupplier;
 import utils.ContextKey;
 import utils.Template;
 
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -55,15 +50,10 @@ public abstract class AbstractController extends Controller {
   public static final int DEFAULT_OFFSET = 0;
 
   static final String SECTION_HOME = "home";
-  static final String SECTION_PROJECTS = "projects";
-  static final String SECTION_PROFILE = "profile";
-  static final String SECTION_COMMUNITY = "users";
 
   protected final Injector injector;
 
   protected final CacheService cache;
-
-  protected final PlayAuthenticate auth;
 
   final HttpExecutionContext executionContext;
 
@@ -79,10 +69,9 @@ public abstract class AbstractController extends Controller {
 
   private final AuthProvider authProvider;
 
-  protected AbstractController(Injector injector, CacheService cache, PlayAuthenticate auth) {
+  protected AbstractController(Injector injector, CacheService cache) {
     this.injector = injector;
     this.cache = cache;
-    this.auth = auth;
 
     this.executionContext = injector.instanceOf(HttpExecutionContext.class);
     this.userService = injector.instanceOf(UserService.class);
@@ -93,45 +82,15 @@ public abstract class AbstractController extends Controller {
     this.authProvider = injector.instanceOf(AuthProvider.class);
   }
 
+  public static void noCache(final Http.Response response) {
+    // http://stackoverflow.com/questions/49547/making-sure-a-web-page-is-not-cached-across-all-browsers
+    response.setHeader(Http.Response.CACHE_CONTROL, "no-cache, no-store, must-revalidate");  // HTTP 1.1
+    response.setHeader(Http.Response.PRAGMA, "no-cache");  // HTTP 1.0.
+    response.setHeader(Http.Response.EXPIRES, "0");  // Proxies.
+  }
+
   <T> CompletionStage<T> tryCatch(CheckedSupplier<T> supplier) {
     return CompletableFuture.supplyAsync(supplier::wrap, executionContext.current());
-  }
-
-  private Result userNotFound(String username) {
-    return redirectWithError(Projects.indexRoute(), "user.notFoundBy", username);
-  }
-
-  private Result projectNotFound(String username, String projectName) {
-    try {
-      return redirectWithError(
-          user(username, false).route(),
-          "project.notFoundBy", username, projectName
-      );
-    } catch (UserNotFoundException e) {
-      return userNotFound(e.getUsername());
-    }
-  }
-
-  private Result localeNotFound(String username, String projectName, String localeName) {
-    try {
-      return redirectWithError(
-          project(username, projectName, false).route(),
-          "locale.notFoundBy", username, projectName, localeName
-      );
-    } catch (ProjectNotFoundException e) {
-      return projectNotFound(username, projectName);
-    }
-  }
-
-  private Result keyNotFound(String username, String projectName, String keyName) {
-    try {
-      return redirectWithError(
-          project(username, projectName, false).route(),
-          "key.notFoundBy", username, projectName, keyName
-      );
-    } catch (ProjectNotFoundException e) {
-      return projectNotFound(username, projectName);
-    }
   }
 
   public static String message(String key, Object... args) {
@@ -147,20 +106,6 @@ public abstract class AbstractController extends Controller {
     return redirect(call);
   }
 
-  static Result redirectWithError(String url, String errorKey, Object... args) {
-    String message = message(errorKey, args);
-
-    LOGGER.debug("Redirecting with error message: {}", message);
-
-    addError(message);
-    return redirect(url);
-  }
-
-  static Result redirectWithMessage(Call call, String key, Object... args) {
-    addMessage(message(key, args));
-    return redirect(call);
-  }
-
   static void addError(String error) {
     flash(FLASH_ERROR_KEY, error);
   }
@@ -172,7 +117,7 @@ public abstract class AbstractController extends Controller {
   protected Template createTemplate() {
     User user = authProvider.loggedInUser();
 
-    Template template = Template.create(auth, user);
+    Template template = Template.create(user);
 
     if (user == null) {
       return template;
@@ -186,46 +131,12 @@ public abstract class AbstractController extends Controller {
     return project;
   }
 
-  Command<?> getCommand(String key) {
-    return cache.get(key);
-  }
-
-  void undoCommand(Command<?> command) {
-    String undoKey = String.format(COMMAND_FORMAT, UUID.randomUUID());
-
-    cache.set(undoKey, command, 120);
-
-    flash("undo", undoKey);
-  }
-
   protected CompletionStage<Result> loggedInUser(Function<User, Result> processor) {
     return tryCatch(authProvider::loggedInUser).thenApply(processor);
   }
 
-  protected CompletionStage<Result> user(String username, Function<User, Result> processor,
-                                         String... fetches) {
-    return user(username, processor, false, fetches);
-  }
-
-  protected CompletionStage<Result> user(String username, Function<User, Result> processor,
-                                         boolean restrict, String... fetches) {
-    return tryCatch(() -> processor.apply(user(username, restrict, fetches)))
-        .exceptionally(e -> {
-          e = ExceptionUtils.getRootCause(e);
-          if (e instanceof NotFoundException) {
-            return redirectWithError(Projects.indexRoute(), "user.notFound");
-          }
-          if (e instanceof PermissionException) {
-            return redirectWithError(controllers.routes.Users.user(username), "access.denied");
-          }
-
-          LOGGER.error("Error while processing request", e);
-          throw new RuntimeException(e);
-        });
-  }
-
   protected User user(String username, boolean restrict, String... fetches)
-      throws UserNotFoundException {
+          throws UserNotFoundException {
     User user = userService.byUsername(username, fetches);
     if (user == null) {
       throw new UserNotFoundException(message("user.notFound", username), username);
@@ -238,58 +149,23 @@ public abstract class AbstractController extends Controller {
     return user;
   }
 
-  protected CompletionStage<Result> project(String username, String projectName,
-                                            BiFunction<User, Project, Result> processor, String... fetches) {
-    return project(username, projectName, processor, false, fetches);
-  }
-
-  protected CompletionStage<Result> project(String username, String projectName,
-                                            BiFunction<User, Project, Result> processor, boolean restrict, String... fetches) {
-    return tryCatch(() -> {
-      Project project = project(username, projectName, restrict, fetches);
-
-      return processor.apply(select(project).owner, project);
-    }).exceptionally(t -> {
-      if (t instanceof ProjectNotFoundException) {
-        return redirectWithError(Projects.indexRoute(), t.getMessage());
-      }
-
-      return redirect(Projects.indexRoute());
-    });
-  }
-
-  protected Project project(String username, String projectName, boolean restrict,
-                            String... fetches) throws ProjectNotFoundException {
-    Project project = projectService.byOwnerAndName(username, projectName, fetches);
-    if (project == null) {
-      throw new ProjectNotFoundException(message("project.notFound", username, projectName),
-          username, projectName);
-    }
-
-    if (restrict && !project.owner.id.equals(authProvider.loggedInUserId())) {
-      throw new PermissionException(message("access.denied"), Scope.ProjectRead.name());
-    }
-
-    return project;
-  }
-
   protected Result handleException(Throwable t) {
     try {
       throw ExceptionUtils.getRootCause(t);
     } catch (UserNotFoundException e) {
-      return userNotFound(e.getUsername());
+      return notFound(e.getUsername());
     } catch (ProjectNotFoundException e) {
-      return projectNotFound(e.getUsername(), e.getProjectName());
+      return notFound(e.getUsername(), e.getProjectName());
     } catch (LocaleNotFoundException e) {
-      return localeNotFound(e.getUsername(), e.getProjectName(), e.getLocaleName());
+      return notFound(String.format("%s/%s/%s", e.getUsername(), e.getProjectName(), e.getLocaleName()));
     } catch (KeyNotFoundException e) {
-      return keyNotFound(e.getUsername(), e.getProjectName(), e.getKeyName());
+      return notFound(String.format("%s/%s/%s", e.getUsername(), e.getProjectName(), e.getKeyName()));
     } catch (PermissionException e) {
       addError(message("access.denied"));
-      return forbidden(views.html.errors.restricted.render(createTemplate()));
+      return forbidden(views.html.errors.restricted.render());
     } catch (Throwable e) {
       LoggerFactory.getLogger(AbstractApi.class).error("Error while processing request", e);
-      return internalServerError(views.html.errors.restricted.render(createTemplate()));
+      return internalServerError(views.html.errors.restricted.render());
     }
   }
 }

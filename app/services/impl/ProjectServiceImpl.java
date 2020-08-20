@@ -1,6 +1,6 @@
 package services.impl;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import criterias.ProjectCriteria;
 import models.ActionType;
 import models.Locale;
@@ -73,7 +73,7 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   @Override
   public Project byOwnerAndName(String username, String name, String... fetches) {
     return log(
-            () -> postGet(cache.getOrElse(
+            () -> postGet(cache.getOrElseUpdate(
                     Project.getCacheKey(username, name, fetches),
                     () -> projectRepository.byOwnerAndName(username, name, fetches),
                     10 * 30

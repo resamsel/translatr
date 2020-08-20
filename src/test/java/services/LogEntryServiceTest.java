@@ -1,6 +1,6 @@
 package services;
 
-import com.avaje.ebean.Ebean;
+import io.ebean.Ebean;
 import criterias.LogEntryCriteria;
 import criterias.PagedListFactory;
 import models.LogEntry;

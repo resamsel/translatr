@@ -1,6 +1,6 @@
 package services.api;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.ImplementedBy;
 import criterias.UserCriteria;

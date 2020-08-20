@@ -1,6 +1,6 @@
 package criterias;
 
-import com.avaje.ebean.ExpressionList;
+import io.ebean.ExpressionList;
 import forms.SearchForm;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Http.Request;

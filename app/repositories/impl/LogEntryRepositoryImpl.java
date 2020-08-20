@@ -3,11 +3,10 @@ package repositories.impl;
 import actors.ActivityActorRef;
 import actors.NotificationActorRef;
 import actors.NotificationProtocol.PublishNotification;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
 import criterias.LogEntryCriteria;
 import criterias.PagedListFactory;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
 import models.LogEntry;
 import models.Project;
 import org.apache.commons.lang3.StringUtils;
@@ -31,9 +30,6 @@ public class LogEntryRepositoryImpl extends
     AbstractModelRepository<LogEntry, UUID, LogEntryCriteria> implements
     LogEntryRepository {
   private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryRepositoryImpl.class);
-
-  private final Find<UUID, LogEntry> find = new Find<UUID, LogEntry>() {
-  };
 
   private final ContextProvider contextProvider;
   private final NotificationActorRef notificationActor;
@@ -72,8 +68,8 @@ public class LogEntryRepositoryImpl extends
 
   @Override
   public LogEntry byId(UUID id, String... fetches) {
-    return QueryUtils.fetch(find.setId(id).setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches)).findUnique();
+    return QueryUtils.fetch(persistence.find(LogEntry.class).setId(id).setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches)).findOne();
   }
 
   @Override
@@ -82,7 +78,7 @@ public class LogEntryRepositoryImpl extends
   }
 
   private ExpressionList<LogEntry> findQuery(LogEntryCriteria criteria) {
-    ExpressionList<LogEntry> query = find.where();
+    ExpressionList<LogEntry> query = persistence.find(LogEntry.class).where();
 
     if (criteria.getIds() != null) {
       query.idIn(criteria.getIds());

@@ -1,6 +1,6 @@
 package services.impl;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import criterias.ProjectUserCriteria;
 import models.ActionType;
 import models.ProjectUser;
@@ -34,7 +34,7 @@ public class ProjectUserServiceImpl extends
 
   @Override
   public int countBy(ProjectUserCriteria criteria) {
-    return cache.getOrElse(
+    return cache.getOrElseUpdate(
             criteria.getCacheKey(),
             () -> projectUserRepository.countBy(criteria),
             60);

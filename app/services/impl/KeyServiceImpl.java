@@ -1,6 +1,6 @@
 package services.impl;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import criterias.KeyCriteria;
 import models.ActionType;
 import models.Key;
@@ -98,7 +98,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
   @Override
   public List<Key> latest(Project project, int limit) {
-    return postFind(cache.getOrElse(
+    return postFind(cache.getOrElseUpdate(
             String.format("project:id:%s:latest:keys:%d", project.id, limit),
             () -> keyRepository.latest(project, limit),
             60
@@ -107,7 +107,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
   @Override
   public Key byProjectAndName(Project project, String name) {
-    return postGet(cache.getOrElse(
+    return postGet(cache.getOrElseUpdate(
             getCacheKey(project.id, name),
             () -> keyRepository.byProjectAndName(project, name),
             60
@@ -116,7 +116,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
   @Override
   public Key byOwnerAndProjectAndName(String username, String projectName, String keyName, String... fetches) {
-    return postGet(cache.getOrElse(
+    return postGet(cache.getOrElseUpdate(
             String.format("key:owner:%s:projectName:%s:name:%s", username, projectName, keyName),
             () -> keyRepository.byOwnerAndProjectAndName(username, projectName, keyName, fetches),
             60

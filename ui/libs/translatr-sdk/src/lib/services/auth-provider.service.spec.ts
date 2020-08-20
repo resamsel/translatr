@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
-import { AuthProviderService } from './auth-provider.service';
+import { AuthClientService } from './auth-client.service';
 
 describe('AuthProviderService', () => {
   beforeEach(() =>
@@ -11,7 +11,7 @@ describe('AuthProviderService', () => {
   );
 
   it('should be created', () => {
-    const service: AuthProviderService = TestBed.get(AuthProviderService);
+    const service: AuthClientService = TestBed.get(AuthClientService);
     expect(service).toBeTruthy();
   });
 });

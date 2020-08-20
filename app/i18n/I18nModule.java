@@ -2,6 +2,7 @@ package i18n;
 
 import com.google.inject.AbstractModule;
 import play.api.i18n.DefaultLangs;
+import play.api.i18n.DefaultMessagesApiProvider;
 import play.api.i18n.Langs;
 import play.api.i18n.MessagesApi;
 
@@ -19,6 +20,5 @@ public class I18nModule extends AbstractModule
 	protected void configure()
 	{
 		bind(Langs.class).to(DefaultLangs.class);
-		bind(MessagesApi.class).to(TranslatrMessagesApi.class);
 	}
 }

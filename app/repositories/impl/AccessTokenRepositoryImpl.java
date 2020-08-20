@@ -2,12 +2,11 @@ package repositories.impl;
 
 import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activity;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
 import criterias.AccessTokenCriteria;
 import criterias.PagedListFactory;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
+import io.ebean.Query;
 import mappers.AccessTokenMapper;
 import models.AccessToken;
 import models.ActionType;
@@ -29,11 +28,8 @@ import java.util.UUID;
 
 @Singleton
 public class AccessTokenRepositoryImpl extends
-    AbstractModelRepository<AccessToken, Long, AccessTokenCriteria> implements
-    AccessTokenRepository {
-
-  public final Find<Long, AccessToken> find = new Find<Long, AccessToken>() {
-  };
+        AbstractModelRepository<AccessToken, Long, AccessTokenCriteria> implements
+        AccessTokenRepository {
 
   @Inject
   public AccessTokenRepositoryImpl(Persistence persistence,
@@ -62,17 +58,21 @@ public class AccessTokenRepositoryImpl extends
 
   @Override
   public AccessToken byId(Long id, String... fetches) {
-    return fetch(fetches).setId(id).findUnique();
+    return fetch(fetches).setId(id).findOne();
   }
 
   @Override
   public AccessToken byKey(String key) {
-    return fetch().where().eq("key", key).findUnique();
+    return fetch().where().eq("key", key).findOne();
   }
 
   @Override
   public AccessToken byUserAndName(UUID userId, String name) {
-    return find.where().eq("user.id", userId).eq("name", name).findUnique();
+    return persistence.find(AccessToken.class)
+            .where()
+            .eq("user.id", userId)
+            .eq("name", name)
+            .findOne();
   }
 
   private Query<AccessToken> fetch(List<String> fetches) {
@@ -80,8 +80,8 @@ public class AccessTokenRepositoryImpl extends
   }
 
   private Query<AccessToken> fetch(String... fetches) {
-    return QueryUtils.fetch(find.query().setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
+    return QueryUtils.fetch(persistence.find(AccessToken.class).setDisableLazyLoading(true),
+            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 
   /**
@@ -91,7 +91,7 @@ public class AccessTokenRepositoryImpl extends
   protected void preSave(AccessToken t, boolean update) {
     User loggedInUser = authProvider.loggedInUser();
     if (t.user == null || t.user.id == null
-        || (loggedInUser != null && t.user.id != loggedInUser.id && loggedInUser.role != UserRole.Admin)) {
+            || (loggedInUser != null && t.user.id != loggedInUser.id && loggedInUser.role != UserRole.Admin)) {
       // only allow admins to create access tokens for other users
       t.user = loggedInUser;
     }
@@ -104,15 +104,15 @@ public class AccessTokenRepositoryImpl extends
   protected void prePersist(AccessToken t, boolean update) {
     if (update) {
       activityActor.tell(
-          new Activity<>(
-              ActionType.Update,
-              authProvider.loggedInUser(),
-              null,
-              dto.AccessToken.class,
-              AccessTokenMapper.toDto(byId(t.id)),
-              AccessTokenMapper.toDto(t)
-          ),
-          null
+              new Activity<>(
+                      ActionType.Update,
+                      authProvider.loggedInUser(),
+                      null,
+                      dto.AccessToken.class,
+                      AccessTokenMapper.toDto(byId(t.id)),
+                      AccessTokenMapper.toDto(t)
+              ),
+              null
       );
     }
   }
@@ -124,22 +124,22 @@ public class AccessTokenRepositoryImpl extends
   protected void postSave(AccessToken t, boolean update) {
     if (!update) {
       activityActor.tell(
-          new Activity<>(
-              ActionType.Create,
-              authProvider.loggedInUser(),
-              null,
-              dto.AccessToken.class,
-              null,
-              AccessTokenMapper.toDto(t)
-          ),
-          null
+              new Activity<>(
+                      ActionType.Create,
+                      authProvider.loggedInUser(),
+                      null,
+                      dto.AccessToken.class,
+                      null,
+                      AccessTokenMapper.toDto(t)
+              ),
+              null
       );
     }
   }
 
   public static String generateKey(int length) {
     String raw = Base64.getEncoder().encodeToString(String
-        .format("%s%s", UUID.randomUUID(), UUID.randomUUID()).getBytes(StandardCharsets.UTF_8));
+            .format("%s%s", UUID.randomUUID(), UUID.randomUUID()).getBytes(StandardCharsets.UTF_8));
 
     if (raw.length() > length) {
       raw = raw.substring(0, length);

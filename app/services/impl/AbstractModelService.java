@@ -1,6 +1,6 @@
 package services.impl;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import criterias.AbstractSearchCriteria;
 import models.Model;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   public PagedList<MODEL> findBy(CRITERIA criteria) {
     criteria.setLoggedInUserId(authProvider.loggedInUserId());
 
-    return postFind(cache.getOrElse(
+    return postFind(cache.getOrElseUpdate(
             requireNonNull(criteria, "criteria is null").getCacheKey(),
             () -> modelRepository.findBy(criteria),
             60
@@ -69,7 +69,7 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
       return null;
     }
 
-    return postGet(cache.getOrElse(
+    return postGet(cache.getOrElseUpdate(
             cacheKeyGetter.apply(id, fetches),
             () -> modelRepository.byId(id, fetches),
             60

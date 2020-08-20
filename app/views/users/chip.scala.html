@@ -1,9 +1,0 @@
-@(user: User, key: String = "project.owner", imgKey: String = "project.owner.info", size: Int = 32, me: Boolean = false)
-
-<div class="chip">
-	@tags.gravatar(user, help=Messages(imgKey), size=size)
-	<a href="@user.route">
-		@if(me) { @Messages("user.me") } else { @user.name }
-	</a>
-	(@Html(Messages(key, user.name)))
-</div>

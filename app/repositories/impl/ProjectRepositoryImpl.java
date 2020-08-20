@@ -3,11 +3,6 @@ package repositories.impl;
 import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
-import com.avaje.ebean.RawSqlBuilder;
 import criterias.ContextCriteria;
 import criterias.DefaultContextCriteria;
 import criterias.DefaultGetCriteria;
@@ -15,6 +10,10 @@ import criterias.PagedListFactory;
 import criterias.ProjectCriteria;
 import dto.NotFoundException;
 import dto.PermissionException;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
+import io.ebean.Query;
+import io.ebean.RawSqlBuilder;
 import mappers.ProjectMapper;
 import models.ActionType;
 import models.Project;
@@ -50,8 +49,8 @@ import static utils.Stopwatch.log;
 
 @Singleton
 public class ProjectRepositoryImpl extends
-    AbstractModelRepository<Project, UUID, ProjectCriteria> implements
-    ProjectRepository {
+        AbstractModelRepository<Project, UUID, ProjectCriteria> implements
+        ProjectRepository {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectRepositoryImpl.class);
   private static final String PROGRESS_COLUMN_ID = "p.id";
@@ -60,9 +59,6 @@ public class ProjectRepositoryImpl extends
   private final LocaleRepository localeRepository;
   private final KeyRepository keyRepository;
   private final PermissionService permissionService;
-
-  private final Find<UUID, Project> find = new Find<UUID, Project>() {
-  };
 
   @Inject
   public ProjectRepositoryImpl(Persistence persistence,
@@ -107,11 +103,11 @@ public class ProjectRepositoryImpl extends
 
     if (criteria.getSearch() != null) {
       query.disjunction()
-          .ilike("name", "%" + criteria.getSearch() + "%")
-          .ilike("description", "%" + criteria.getSearch() + "%")
-          .ilike("owner.name", "%" + criteria.getSearch() + "%")
-          .ilike("owner.username", "%" + criteria.getSearch() + "%")
-          .endJunction();
+              .ilike("name", "%" + criteria.getSearch() + "%")
+              .ilike("description", "%" + criteria.getSearch() + "%")
+              .ilike("owner.name", "%" + criteria.getSearch() + "%")
+              .ilike("owner.username", "%" + criteria.getSearch() + "%")
+              .endJunction();
     }
 
     if (criteria.getOrder() != null) {
@@ -121,8 +117,8 @@ public class ProjectRepositoryImpl extends
     criteria.paged(query);
 
     return fetch(
-        log(() -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)), LOGGER, "findBy"),
-        criteria
+            log(() -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)), LOGGER, "findBy"),
+            criteria
     );
   }
 
@@ -131,14 +127,14 @@ public class ProjectRepositoryImpl extends
       Map<UUID, Double> progressMap = progress(paged.getList().stream().map(Project::getId).collect(toList()));
 
       paged.getList()
-          .forEach(p -> p.progress = progressMap.getOrDefault(p.id, 0.0));
+              .forEach(p -> p.progress = progressMap.getOrDefault(p.id, 0.0));
     }
 
     if (criteria.hasFetch(FETCH_MYROLE) && criteria.getLoggedInUserId() != null) {
       Map<UUID, ProjectRole> roleMap = roles(paged.getList().stream().map(Project::getId).collect(toList()), criteria.getLoggedInUserId());
 
       paged.getList()
-          .forEach(p -> p.myRole = roleMap.getOrDefault(p.id, null));
+              .forEach(p -> p.myRole = roleMap.getOrDefault(p.id, null));
     }
 
     return paged;
@@ -164,23 +160,23 @@ public class ProjectRepositoryImpl extends
   @Override
   public Map<UUID, Double> progress(List<UUID> projectIds) {
     List<Stat> stats = log(
-        () -> persistence.createQuery(Stat.class)
-            .setRawSql(RawSqlBuilder
-                .parse("SELECT " +
-                    PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +
-                    " FROM project p" +
-                    " JOIN locale l ON l.project_id = p.id" +
-                    " JOIN key k ON k.project_id = p.id" +
-                    " LEFT OUTER JOIN message m ON m.key_id = k.id" +
-                    " GROUP BY " + PROGRESS_COLUMN_ID)
-                .columnMapping(PROGRESS_COLUMN_ID, "id")
-                .columnMapping(PROGRESS_COLUMN_COUNT, "count")
-                .create())
-            .where()
-            .in("p.id", projectIds)
-            .findList(),
-        LOGGER,
-        "Retrieving project progress"
+            () -> persistence.createQuery(Stat.class)
+                    .setRawSql(RawSqlBuilder
+                            .parse("SELECT " +
+                                    PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +
+                                    " FROM project p" +
+                                    " JOIN locale l ON l.project_id = p.id" +
+                                    " JOIN key k ON k.project_id = p.id" +
+                                    " LEFT OUTER JOIN message m ON m.key_id = k.id" +
+                                    " GROUP BY " + PROGRESS_COLUMN_ID)
+                            .columnMapping(PROGRESS_COLUMN_ID, "id")
+                            .columnMapping(PROGRESS_COLUMN_COUNT, "count")
+                            .create())
+                    .where()
+                    .in("p.id", projectIds)
+                    .findList(),
+            LOGGER,
+            "Retrieving project progress"
     );
 
     return stats.stream().collect(Collectors.toMap(stat -> stat.id, stat -> stat.count));
@@ -198,16 +194,16 @@ public class ProjectRepositoryImpl extends
   @Override
   public Project byOwnerAndName(String username, String name, String... fetches) {
     ContextCriteria criteria = new DefaultContextCriteria()
-        .withLoggedInUserId(authProvider.loggedInUserId())
-        .withFetches(fetches);
+            .withLoggedInUserId(authProvider.loggedInUserId())
+            .withFetches(fetches);
 
     return fetch(
-        createQuery(criteria)
-            .where()
-            .eq("owner.username", username)
-            .eq("name", name)
-            .findUnique(),
-        criteria
+            createQuery(criteria)
+                    .where()
+                    .eq("owner.username", username)
+                    .eq("name", name)
+                    .findOne(),
+            criteria
     );
   }
 
@@ -232,8 +228,8 @@ public class ProjectRepositoryImpl extends
   protected void prePersist(Project t, boolean update) {
     if (update) {
       activityActor.tell(
-          new Activity<>(ActionType.Update, authProvider.loggedInUser(), t, dto.Project.class, toDto(byId(t.id)), toDto(t)),
-          null
+              new Activity<>(ActionType.Update, authProvider.loggedInUser(), t, dto.Project.class, toDto(byId(t.id)), toDto(t)),
+              null
       );
     }
   }
@@ -249,8 +245,8 @@ public class ProjectRepositoryImpl extends
 
     if (!update) {
       activityActor.tell(
-          new Activity<>(ActionType.Create, authProvider.loggedInUser(), t, dto.Project.class, null, toDto(t)),
-          null
+              new Activity<>(ActionType.Create, authProvider.loggedInUser(), t, dto.Project.class, null, toDto(t)),
+              null
       );
     }
   }
@@ -264,7 +260,7 @@ public class ProjectRepositoryImpl extends
       throw new NotFoundException(dto.Project.class.getSimpleName(), t != null ? t.id : null);
     }
     if (!permissionService
-        .hasPermissionAny(t.id, authProvider.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager)) {
+            .hasPermissionAny(t.id, authProvider.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager)) {
       throw new PermissionException("User not allowed in project");
     }
 
@@ -272,8 +268,8 @@ public class ProjectRepositoryImpl extends
     keyRepository.delete(t.keys);
 
     activityActor.tell(
-        new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t, dto.Project.class, toDto(t), null),
-        null
+            new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t, dto.Project.class, toDto(t), null),
+            null
     );
 
     super.save(t.withName(String.format("%s-%s", t.id, t.name)).withDeleted(true));
@@ -290,35 +286,35 @@ public class ProjectRepositoryImpl extends
         throw new NotFoundException(dto.Project.class.getSimpleName(), p != null ? p.id : null);
       }
       if (!permissionService
-          .hasPermissionAny(p.id, loggedInUser, ProjectRole.Owner, ProjectRole.Manager)) {
+              .hasPermissionAny(p.id, loggedInUser, ProjectRole.Owner, ProjectRole.Manager)) {
         throw new PermissionException("User not allowed in project");
       }
     }
 
     keyRepository
-        .delete(
-            t.stream().map(p -> p.keys).flatMap(Collection::stream).collect(toList()));
+            .delete(
+                    t.stream().map(p -> p.keys).flatMap(Collection::stream).collect(toList()));
     localeRepository.delete(
-        t.stream().map(p -> p.locales).flatMap(Collection::stream).collect(toList()));
+            t.stream().map(p -> p.locales).flatMap(Collection::stream).collect(toList()));
 
     activityActor.tell(
-        new Activities<>(t.stream()
-            .map(p -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), p, dto.Project.class, toDto(p), null))
-            .collect(toList())),
-        null
+            new Activities<>(t.stream()
+                    .map(p -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), p, dto.Project.class, toDto(p), null))
+                    .collect(toList())),
+            null
     );
 
     super.save(
-        t.stream().map(p -> p.withName(String.format("%s-%s", p.id, p.name)).withDeleted(true))
-            .collect(toList()));
+            t.stream().map(p -> p.withName(String.format("%s-%s", p.id, p.name)).withDeleted(true))
+                    .collect(toList()));
   }
 
   @Override
   protected Query<Project> createQuery(ContextCriteria criteria) {
     return QueryUtils.fetch(
-        find.query().setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
-        FETCH_MAP
+            persistence.find(Project.class).setDisableLazyLoading(true),
+            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
+            FETCH_MAP
     );
   }
 
@@ -334,13 +330,13 @@ public class ProjectRepositoryImpl extends
 
   private Map<UUID, ProjectRole> roles(List<UUID> projectIds, UUID userId) {
     List<ProjectUser> results = log(
-        () -> persistence.createQuery(ProjectUser.class)
-            .where()
-            .in("project_id", projectIds)
-            .eq("user_id", userId)
-            .findList(),
-        LOGGER,
-        "Retrieving project roles"
+            () -> persistence.createQuery(ProjectUser.class)
+                    .where()
+                    .in("project_id", projectIds)
+                    .eq("user_id", userId)
+                    .findList(),
+            LOGGER,
+            "Retrieving project roles"
     );
 
     return results.stream().collect(toMap(r -> r.project.id, r -> r.role));

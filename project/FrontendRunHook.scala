@@ -1,5 +1,3 @@
-import java.net.InetSocketAddress
-
 import play.sbt.PlayRunHook
 import sbt._
 
@@ -42,7 +40,7 @@ object FrontendRunHook {
         * Executed after play run start.
         * Run npm start
         */
-      override def afterStarted(addr: InetSocketAddress): Unit = {
+      override def afterStarted(): Unit = {
         processUi = Option(
           Process(npmRunUi, base / "ui").run
         )

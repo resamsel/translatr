@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { LOGIN_URL, WINDOW } from '@translatr/utils';
 import { Observable } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 import { AppFacade } from '../+state/app.facade';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ import { AppFacade } from '../+state/app.facade';
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly facade: AppFacade,
+    private readonly router: Router,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(LOGIN_URL) private readonly loginUrl: string
   ) {}
@@ -25,15 +27,16 @@ export class AuthGuard implements CanActivate {
       tap((authenticated: boolean) => {
         if (!authenticated) {
           try {
-            let url;
             if (this.loginUrl.startsWith('http://') || this.loginUrl.startsWith('https://')) {
-              url = new URL(this.loginUrl);
+              const url = new URL(this.loginUrl);
+              url.searchParams.set('redirect_uri', environment.adminUrl + state.url);
+              this.window.location.href = url.toString();
             } else {
-              url = new URL(this.window.location.href);
-              url.pathname = this.loginUrl;
+              this.router.navigate(['/login'], {
+                queryParamsHandling: 'merge',
+                queryParams: { redirect_uri: environment.adminUrl + state.url }
+              });
             }
-            url.searchParams.set('redirect_uri', state.url);
-            this.window.location.href = url.toString();
             return false;
           } catch (e) {
             console.error(

@@ -1,7 +1,0 @@
-@(message: models.Message)
-
-<a
-	href="@message.locale.route(message.key.name, AbstractController.DEFAULT_ORDER, AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET)#key/@message.key.name"
-	title="@message.key.name">
-	@Html(message.key.name.replaceAll("\\.", ".<wbr/>")) (@message.locale.name)
-</a>

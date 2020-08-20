@@ -1,19 +1,13 @@
 package services.impl;
 
-import com.avaje.ebean.PagedList;
-import com.feth.play.module.pa.user.AuthUserIdentity;
-import com.feth.play.module.pa.user.EmailIdentity;
-import com.feth.play.module.pa.user.NameIdentity;
-import com.feth.play.module.pa.user.PreferredUsernameIdentity;
-import com.feth.play.module.pa.user.UserRoleIdentity;
 import criterias.AccessTokenCriteria;
 import criterias.LinkedAccountCriteria;
 import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import criterias.ProjectUserCriteria;
 import criterias.UserCriteria;
+import io.ebean.PagedList;
 import models.ActionType;
-import models.LinkedAccount;
 import models.Setting;
 import models.User;
 import models.UserStats;
@@ -34,10 +28,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
@@ -74,89 +66,6 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     this.projectService = projectService;
     this.projectUserService = projectUserService;
     this.metricService = metricService;
-  }
-
-  @Override
-  public User create(final AuthUserIdentity authUser) {
-    final User user = new User();
-    user.active = true;
-    user.linkedAccounts = Collections.singletonList(LinkedAccount.createFrom(authUser));
-
-    if (authUser instanceof EmailIdentity) {
-      final EmailIdentity identity = (EmailIdentity) authUser;
-      // Remember, even when getting them from FB & Co., emails should be
-      // verified within the application as a security breach there might
-      // break your security as well!
-      if (!"null".equals(identity.getEmail())) {
-        user.email = identity.getEmail();
-        user.emailValidated = false;
-      }
-    }
-
-    if (authUser instanceof NameIdentity) {
-      final NameIdentity identity = (NameIdentity) authUser;
-      Optional.ofNullable(identity.getName())
-              .ifPresent(name -> user.name = name);
-    }
-
-    if (authUser instanceof UserRoleIdentity) {
-      final UserRoleIdentity identity = (UserRoleIdentity) authUser;
-      Optional.ofNullable(identity.getUserRole())
-              .ifPresent(role -> user.role = role);
-    }
-
-    if (authUser instanceof PreferredUsernameIdentity) {
-      final PreferredUsernameIdentity identity = (PreferredUsernameIdentity) authUser;
-      Optional.ofNullable(identity.getPreferredUsername())
-              .ifPresent(preferredUsername -> user.username = userRepository.uniqueUsername(preferredUsername));
-    }
-
-    return create(user);
-  }
-
-  @Override
-  public User addLinkedAccount(final AuthUserIdentity oldUser, final AuthUserIdentity newUser) {
-    final User u = getLocalUser(oldUser);
-    u.linkedAccounts.add(LinkedAccount.createFrom(newUser));
-    return create(u);
-  }
-
-  @Override
-  public User getLocalUser(final AuthUserIdentity authUser) {
-    if (authUser == null) {
-      return null;
-    }
-
-    return log(
-            () -> cache.getOrElse(
-                    String.format("%s:%s", authUser.getProvider(), authUser.getId()),
-                    () -> userRepository.findByAuthUserIdentity(authUser),
-                    10 * 60
-            ),
-            LOGGER,
-            "getLocalUser"
-    );
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isLocalUser(AuthUserIdentity authUser) {
-    return getLocalUser(authUser) != null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void logout(AuthUserIdentity authUser) {
-    cache.remove(String.format("%s:%s", authUser.getProvider(), authUser.getId()));
-  }
-
-  @Override
-  public User merge(final AuthUserIdentity oldUser, final AuthUserIdentity newUser) {
-    return merge(getLocalUser(oldUser), getLocalUser(newUser));
   }
 
   /**
@@ -209,7 +118,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    */
   @Override
   public User byUsername(String username, String... fetches) {
-    return postGet(cache.getOrElse(
+    return postGet(cache.getOrElseUpdate(
             User.getCacheKey(username, fetches),
             () -> userRepository.byUsername(username, fetches),
             60));
@@ -238,7 +147,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   @Override
   public UserStats getUserStats(UUID userId) {
     return log(
-            () -> cache.getOrElse(
+            () -> cache.getOrElseUpdate(
                     String.format("user:stats:%s", userId),
                     () -> UserStats.create(
                             projectUserService.countBy(new ProjectUserCriteria().withUserId(userId)),

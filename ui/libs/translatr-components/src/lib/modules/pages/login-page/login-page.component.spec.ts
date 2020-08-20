@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { NavbarTestingModule } from '@translatr/components/testing';
-import { AuthProviderService } from '@translatr/translatr-sdk/src/lib/services/auth-provider.service';
+import { AuthClientService } from '@translatr/translatr-sdk/src/lib/services/auth-client.service';
 import { ENDPOINT_URL } from '@translatr/utils';
 import { mockObservable } from '@translatr/utils/testing';
 
@@ -10,7 +10,7 @@ import { LoginPageComponent } from './login-page.component';
 describe('LoginPageComponent', () => {
   let component: LoginPageComponent;
   let fixture: ComponentFixture<LoginPageComponent>;
-  let authProviderService: AuthProviderService & { find: jest.Mock };
+  let authProviderService: AuthClientService & { find: jest.Mock };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -18,7 +18,7 @@ describe('LoginPageComponent', () => {
       imports: [NavbarTestingModule, MatIconModule],
       providers: [
         {
-          provide: AuthProviderService,
+          provide: AuthClientService,
           useFactory: () => ({
             find: jest.fn()
           })
@@ -29,7 +29,7 @@ describe('LoginPageComponent', () => {
   }));
 
   beforeEach(() => {
-    authProviderService = TestBed.get(AuthProviderService);
+    authProviderService = TestBed.get(AuthClientService);
     authProviderService.find.mockReturnValue(mockObservable());
 
     fixture = TestBed.createComponent(LoginPageComponent);

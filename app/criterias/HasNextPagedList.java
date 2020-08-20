@@ -1,8 +1,8 @@
 package criterias;
 
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
-import com.avaje.ebeaninternal.api.Monitor;
+import io.ebean.PagedList;
+import io.ebean.Query;
+import io.ebeaninternal.api.Monitor;
 
 import javax.persistence.Transient;
 import java.io.Serializable;
@@ -53,22 +53,7 @@ public class HasNextPagedList<T> implements PagedList<T>, Serializable {
    * {@inheritDoc}
    */
   @Override
-  public void loadRowCount() {
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public Future<Integer> getFutureCount() {
-    return null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Future<Integer> getFutureRowCount() {
     return null;
   }
 
@@ -114,14 +99,6 @@ public class HasNextPagedList<T> implements PagedList<T>, Serializable {
    * {@inheritDoc}
    */
   @Override
-  public int getTotalRowCount() {
-    return getTotalCount();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public int getTotalPageCount() {
     return -1;
   }
@@ -132,6 +109,11 @@ public class HasNextPagedList<T> implements PagedList<T>, Serializable {
   @Override
   public int getPageSize() {
     return maxRows;
+  }
+
+  @Override
+  public int getPageIndex() {
+    return getOffset() / getPageSize();
   }
 
   public int getOffset() {

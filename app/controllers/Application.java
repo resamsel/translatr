@@ -1,46 +1,62 @@
 package controllers;
 
-import actions.ContextAction;
-import com.feth.play.module.pa.PlayAuthenticate;
-import commands.Command;
+import com.typesafe.config.Config;
 import converters.ActivityCsvConverter;
 import criterias.LogEntryCriteria;
-import org.apache.commons.lang3.StringUtils;
+import org.pac4j.core.client.Client;
+import org.pac4j.core.exception.http.RedirectionAction;
+import org.pac4j.play.PlayWebContext;
+import org.pac4j.play.http.PlayHttpActionAdapter;
+import org.pac4j.play.store.PlaySessionStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.Configuration;
 import play.api.mvc.Action;
 import play.api.mvc.AnyContent;
 import play.inject.Injector;
-import play.mvc.*;
-import play.routing.JavaScriptReverseRouter;
+import play.mvc.Http;
+import play.mvc.Result;
+import play.mvc.Results;
 import services.CacheService;
-import utils.ConfigKey;
 import utils.Template;
 
 import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
-/**
- * This controller contains an action to handle HTTP requests to the application's home page.
- */
-@With(ContextAction.class)
 public class Application extends AbstractController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-  private final Configuration configuration;
+  private final Config configuration;
+  private final org.pac4j.core.config.Config authConfig;
   private final Assets assets;
+  private final PlaySessionStore playSessionStore;
 
   @Inject
-  public Application(Injector injector, Configuration configuration, CacheService cache,
-                     PlayAuthenticate auth, Assets assets) {
-    super(injector, cache, auth);
+  public Application(Injector injector, Config configuration, org.pac4j.core.config.Config authConfig,
+                     CacheService cache, Assets assets, PlaySessionStore playSessionStore) {
+    super(injector, cache);
 
     this.configuration = configuration;
+    this.authConfig = authConfig;
     this.assets = assets;
+    this.playSessionStore = playSessionStore;
+  }
+
+  public CompletionStage<Result> login(Http.Request request, String authClientName) {
+    return tryCatch(() -> {
+      Optional<Client> client = authConfig.getClients().findClient(authClientName);
+
+      if (client.isPresent()) {
+        PlayWebContext webContext = new PlayWebContext(request, playSessionStore);
+        Optional<RedirectionAction> action = client.get().getRedirectionAction(webContext);
+        if (action.isPresent()) {
+          return PlayHttpActionAdapter.INSTANCE.adapt(action.get(), webContext);
+        }
+      }
+
+      return notFound("Auth client " + authClientName + " not found");
+    });
   }
 
   public CompletionStage<Result> index() {
@@ -75,84 +91,11 @@ public class Application extends AbstractController {
     return indexAdmin();
   }
 
-  public CompletionStage<Result> login() {
-    return tryCatch(() -> {
-      List<String> providers = Arrays
-              .asList(StringUtils.split(configuration.getString(ConfigKey.AuthProviders.key()), ","));
-
-      if (providers.size() == 1) {
-        return redirect(auth.getResolver().auth(providers.get(0)));
-      }
-
-      return ok(views.html.login.render(createTemplate(), providers));
-    });
-  }
-
-  public CompletionStage<Result> logout() {
-    return tryCatch(() -> {
-      userService.logout(auth.getUser(session()));
-      return injector.instanceOf(com.feth.play.module.pa.controllers.Authenticate.class).logout();
-    });
-  }
-
-  public CompletionStage<Result> oAuthDenied(final String providerKey) {
-    return tryCatch(() -> {
-      com.feth.play.module.pa.controllers.Authenticate.noCache(response());
-
-      return redirectWithError(routes.Application.index(), "error.access.denied");
-    });
-  }
-
   public CompletionStage<Result> activityCsv() {
     return tryCatch(() -> ok(
             new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria()).getList())));
   }
 
-  public CompletionStage<Result> commandExecute(String commandKey) {
-    return tryCatch(() -> {
-      Command<?> command = getCommand(commandKey);
-
-      String referer = request().getHeader(Http.HeaderNames.REFERER);
-
-      if (command == null) {
-        if (referer == null) {
-          return redirectWithError(Projects.indexRoute(), "command.notFound");
-        }
-
-        return redirectWithError(referer, "command.notFound");
-      }
-
-      command.execute(injector);
-
-      Call call = command.redirect();
-
-      if (call != null) {
-        return redirect(call);
-      }
-
-      if (referer == null) {
-        return redirect(Projects.indexRoute());
-      }
-
-      return redirect(referer);
-    });
-  }
-
-  public CompletionStage<Result> javascriptRoutes() {
-    return tryCatch(() -> ok(
-            JavaScriptReverseRouter.create("jsRoutes", routes.javascript.Application.activityCsv(),
-                    routes.javascript.Users.activityCsv(), routes.javascript.Users.activity(),
-                    routes.javascript.Profiles.resetNotifications(), routes.javascript.Projects.search(),
-                    routes.javascript.ProjectsApi.search(), routes.javascript.Locales.localeBy(),
-                    routes.javascript.Keys.keyBy(), routes.javascript.Keys.createImmediatelyBy(),
-                    routes.javascript.LocalesApi.find(), routes.javascript.KeysApi.find(),
-                    routes.javascript.TranslationsApi.create(), routes.javascript.TranslationsApi.update(),
-                    routes.javascript.TranslationsApi.find(), routes.javascript.NotificationsApi.find())));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
   @Override
   protected Template createTemplate() {
     return super.createTemplate().withSection(SECTION_HOME);

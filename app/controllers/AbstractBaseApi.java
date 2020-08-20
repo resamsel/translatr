@@ -1,14 +1,13 @@
 package controllers;
 
-import com.avaje.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.node.NullNode;
-import com.feth.play.module.pa.PlayAuthenticate;
 import dto.AuthorizationException;
 import dto.Dto;
 import dto.NotFoundException;
 import dto.PermissionException;
 import dto.SearchResponse;
+import io.ebean.PagedList;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,8 +85,8 @@ public class AbstractBaseApi extends AbstractController {
   static final String USER_WRITE = "user:write";
   static final String USER_WRITE_DESCRIPTION = "Write user";
 
-  protected AbstractBaseApi(Injector injector, CacheService cache, PlayAuthenticate auth) {
-    super(injector, cache, auth);
+  protected AbstractBaseApi(Injector injector, CacheService cache) {
+    super(injector, cache);
   }
 
   protected <IN extends Dto> CompletionStage<Result> toJson(Supplier<IN> supplier) {

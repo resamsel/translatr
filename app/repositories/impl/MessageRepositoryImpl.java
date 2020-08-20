@@ -5,12 +5,11 @@ import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
 import actors.MessageWordCountActorRef;
 import actors.WordCountProtocol.ChangeMessageWordCount;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
 import criterias.MessageCriteria;
 import criterias.PagedListFactory;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
+import io.ebean.Query;
 import mappers.MessageMapper;
 import models.ActionType;
 import models.Key;
@@ -47,9 +46,6 @@ public class MessageRepositoryImpl extends
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageRepositoryImpl.class);
 
   private final MessageWordCountActorRef messageWordCountActor;
-
-  private final Find<UUID, Message> find = new Find<UUID, Message>() {
-  };
 
   @Inject
   public MessageRepositoryImpl(Persistence persistence,
@@ -98,15 +94,15 @@ public class MessageRepositoryImpl extends
   @Override
   public Message byId(UUID id, String... fetches) {
     return QueryUtils.fetch(
-            find.setId(id).setDisableLazyLoading(true),
+            persistence.find(Message.class).setId(id).setDisableLazyLoading(true),
             QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches),
             FETCH_MAP)
-            .findUnique();
+            .findOne();
   }
 
   @Override
   public Map<UUID, Message> byIds(List<UUID> ids) {
-    return QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH, FETCH_MAP).where().idIn(ids)
+    return QueryUtils.fetch(persistence.find(Message.class), PROPERTIES_TO_FETCH, FETCH_MAP).where().idIn(ids)
             .findMap();
   }
 
@@ -115,13 +111,13 @@ public class MessageRepositoryImpl extends
   }
 
   private Query<Message> fetch(String... fetches) {
-    return QueryUtils.fetch(find.query().alias("k").setDisableLazyLoading(true),
+    return QueryUtils.fetch(persistence.find(Message.class).alias("k").setDisableLazyLoading(true),
             QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 
   @Override
   public int countBy(Project project) {
-    return log(() -> find.where().eq("key.project", project).findCount(), LOGGER,
+    return log(() -> persistence.find(Message.class).where().eq("key.project", project).findCount(), LOGGER,
             "countBy(Project)");
   }
 

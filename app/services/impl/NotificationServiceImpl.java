@@ -16,7 +16,7 @@ import io.getstream.client.service.FlatActivityServiceImpl;
 import models.ActionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.Configuration;
+import com.typesafe.config.Config;
 import play.libs.Json;
 import services.AuthProvider;
 import services.NotificationService;
@@ -42,7 +42,7 @@ public class NotificationServiceImpl implements NotificationService {
   private final AuthProvider authProvider;
 
   @Inject
-  public NotificationServiceImpl(Configuration configuration, AuthProvider authProvider) {
+  public NotificationServiceImpl(Config configuration, AuthProvider authProvider) {
     streamClient = new StreamClientImpl(new ClientConfiguration(),
         ConfigKey.StreamIOKey.getString(configuration),
         ConfigKey.StreamIOSecret.getString(configuration));

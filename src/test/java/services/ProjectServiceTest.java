@@ -78,13 +78,13 @@ public class ProjectServiceTest {
     // This invocation should feed the cache
     ProjectCriteria criteria = new ProjectCriteria().withSearch("name");
     assertThat(target.findBy(criteria).getList().get(0))
-        .as("uncached")
-        .nameIsEqualTo("name");
+            .as("uncached")
+            .nameIsEqualTo("name");
     verify(projectRepository, times(1)).findBy(eq(criteria));
     // This invocation should use the cache, not the repository
     assertThat(target.findBy(criteria).getList().get(0))
-        .as("cached")
-        .nameIsEqualTo("name");
+            .as("cached")
+            .nameIsEqualTo("name");
     verify(projectRepository, times(1)).findBy(eq(criteria));
 
     // This should trigger cache invalidation
@@ -92,8 +92,8 @@ public class ProjectServiceTest {
     target.update(project);
 
     assertThat(target.findBy(criteria).getList().get(0))
-        .as("uncached (invalidated)")
-        .nameIsEqualTo("name3");
+            .as("uncached (invalidated)")
+            .nameIsEqualTo("name3");
     verify(projectRepository, times(2)).findBy(eq(criteria));
   }
 
@@ -105,30 +105,30 @@ public class ProjectServiceTest {
 
     // This invocation should feed the cache
     assertThat(cacheService.keys().keySet())
-        .doesNotContain("project:owner:" + project.owner.username + ":" + project.name);
+            .doesNotContain("project:owner:" + project.owner.username + ":" + project.name);
     assertThat(target.byOwnerAndName(project.owner.username, project.name))
-        .nameIsEqualTo("name");
+            .nameIsEqualTo("name");
     verify(projectRepository, times(1))
-        .byOwnerAndName(eq(project.owner.username), eq(project.name));
+            .byOwnerAndName(eq(project.owner.username), eq(project.name));
 
     // This invocation should use the cache, not the repository
     assertThat(cacheService.keys().keySet())
-        .contains("project:owner:" + project.owner.username + ":" + project.name);
+            .contains("project:owner:" + project.owner.username + ":" + project.name);
     assertThat(target.byOwnerAndName(project.owner.username, project.name))
-        .nameIsEqualTo("name");
+            .nameIsEqualTo("name");
     verify(projectRepository, times(1))
-        .byOwnerAndName(eq(project.owner.username), eq(project.name));
+            .byOwnerAndName(eq(project.owner.username), eq(project.name));
 
     // This should trigger cache invalidation
     project = createProject(project, "name2");
     target.update(project);
 
     assertThat(cacheService.keys().keySet())
-        .doesNotContain("project:owner:" + project.owner.username + ":" + project.name);
+            .doesNotContain("project:owner:" + project.owner.username + ":" + project.name);
     assertThat(target.byOwnerAndName(project.owner.username, project.name))
-        .nameIsEqualTo("name2");
+            .nameIsEqualTo("name2");
     verify(projectRepository, times(1))
-        .byOwnerAndName(eq(project.owner.username), eq(project.name));
+            .byOwnerAndName(eq(project.owner.username), eq(project.name));
   }
 
   @Test
@@ -171,11 +171,11 @@ public class ProjectServiceTest {
     projectRepository.create(projectJane);
 
     assertThat(target.byId(projectJohn.id))
-        .ownerIsEqualTo(johnSmith)
-        .nameIsEqualTo(projectJohn.name);
+            .ownerIsEqualTo(johnSmith)
+            .nameIsEqualTo(projectJohn.name);
     assertThat(target.byId(projectJane.id))
-        .ownerIsEqualTo(janeDoe)
-        .nameIsEqualTo(projectJane.name);
+            .ownerIsEqualTo(janeDoe)
+            .nameIsEqualTo(projectJane.name);
 
     when(validator.validate(any())).thenAnswer(a -> {
       Project p = a.getArgument(0);
@@ -184,10 +184,12 @@ public class ProjectServiceTest {
         return new HashSet<>(Collections.singletonList(
                 ConstraintViolationImpl.forBeanValidation(
                         "",
-                        Collections.emptyMap(),
+                        Collections.<String, Object>emptyMap(),
+                        Collections.<String, Object>emptyMap(),
                         "",
                         Project.class,
                         p,
+                        null,
                         null,
                         null,
                         null,

@@ -1,6 +1,6 @@
 package services;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import com.google.inject.ImplementedBy;
 import criterias.LogEntryCriteria;
 import models.Aggregate;

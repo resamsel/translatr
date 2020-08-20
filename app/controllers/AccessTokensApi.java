@@ -1,7 +1,6 @@
 package controllers;
 
 import actions.ApiAction;
-import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.AccessTokenCriteria;
 import dto.AccessToken;
 import dto.errors.ConstraintViolationError;
@@ -50,9 +49,9 @@ public class AccessTokensApi extends AbstractApi<AccessToken, Long, AccessTokenC
 
   @Inject
   public AccessTokensApi(
-      Injector injector, CacheService cache, PlayAuthenticate auth, AuthProvider authProvider,
+      Injector injector, CacheService cache, AuthProvider authProvider,
       AccessTokenApiService accessTokenApiService) {
-    super(injector, cache, auth, authProvider, accessTokenApiService);
+    super(injector, cache, authProvider, accessTokenApiService);
   }
 
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,
