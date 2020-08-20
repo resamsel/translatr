@@ -1,6 +1,6 @@
 package services.impl;
 
-import play.cache.CacheApi;
+import play.cache.SyncCacheApi;
 import services.CacheService;
 
 import javax.inject.Inject;
@@ -10,12 +10,12 @@ import java.util.concurrent.Callable;
 @Singleton
 public class NoCacheServiceImpl extends CacheServiceImpl implements CacheService {
   @Inject
-  public NoCacheServiceImpl(CacheApi cache) {
+  public NoCacheServiceImpl(SyncCacheApi cache) {
     super(cache);
   }
 
   @Override
-  public <T> T getOrElse(String key, Callable<T> block) {
+  public <T> T getOrElseUpdate(String key, Callable<T> block) {
     try {
       return block.call();
     } catch (Exception e) {
@@ -24,7 +24,7 @@ public class NoCacheServiceImpl extends CacheServiceImpl implements CacheService
   }
 
   @Override
-  public <T> T getOrElse(String key, Callable<T> block, int expiration) {
+  public <T> T getOrElseUpdate(String key, Callable<T> block, int expiration) {
     try {
       return block.call();
     } catch (Exception e) {

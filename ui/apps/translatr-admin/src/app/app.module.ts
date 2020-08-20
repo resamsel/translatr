@@ -54,7 +54,7 @@ import { TranslocoRootModule } from './modules/transloco';
     { provide: FeatureFlagFacade, useClass: AppFacade },
     { provide: WINDOW, useFactory: () => window },
     { provide: ENDPOINT_URL, useValue: environment.endpointUrl },
-    { provide: LOGIN_URL, useValue: `${environment.endpointUrl}/login` }
+    { provide: LOGIN_URL, useValue: `${environment.uiUrl}/login` }
   ],
   bootstrap: [AppComponent]
 })

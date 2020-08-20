@@ -1,7 +1,6 @@
 package controllers;
 
 import actions.ApiAction;
-import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.NotificationCriteria;
 import dto.NotificationsPaged;
 import dto.PermissionException;
@@ -11,7 +10,13 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.StreamResponse;
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import io.swagger.annotations.AuthorizationScope;
 import models.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,30 +44,29 @@ public class NotificationsApi extends AbstractBaseApi {
   private static final String FIND = "Find notifications";
   private static final String FIND_RESPONSE = "Found notifications";
 
-  private NotificationService notificationService;
+  private final NotificationService notificationService;
 
   @Inject
-  public NotificationsApi(Injector injector, CacheService cache, PlayAuthenticate auth,
-      NotificationService notificationService) {
-    super(injector, cache, auth);
+  public NotificationsApi(Injector injector, CacheService cache, NotificationService notificationService) {
+    super(injector, cache);
 
     this.notificationService = notificationService;
   }
 
   @ApiOperation(value = FIND,
-      authorizations = @Authorization(value = AUTHORIZATION,
-          scopes = {
-              @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
-              @AuthorizationScope(scope = MESSAGE_READ, description = MESSAGE_READ_DESCRIPTION)}))
+          authorizations = @Authorization(value = AUTHORIZATION,
+                  scopes = {
+                          @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION),
+                          @AuthorizationScope(scope = MESSAGE_READ, description = MESSAGE_READ_DESCRIPTION)}))
   @ApiResponses({
-      @ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.NotificationsPaged.class),
-      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
-      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+          @ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.NotificationsPaged.class),
+          @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+          @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
-          dataType = "string", paramType = "query"),
-      @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
-      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
+          @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+                  dataType = "string", paramType = "query"),
+          @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
+          @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
   public CompletionStage<Result> find() {
     StreamResponse<AggregatedActivity<SimpleActivity>> notifications;
     try {

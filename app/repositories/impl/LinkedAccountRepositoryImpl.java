@@ -1,11 +1,10 @@
 package repositories.impl;
 
 import actors.ActivityActorRef;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
 import criterias.LinkedAccountCriteria;
 import criterias.PagedListFactory;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
 import models.LinkedAccount;
 import repositories.LinkedAccountRepository;
 import repositories.Persistence;
@@ -21,9 +20,6 @@ public class LinkedAccountRepositoryImpl extends
     AbstractModelRepository<LinkedAccount, Long, LinkedAccountCriteria> implements
     LinkedAccountRepository {
 
-  public final Find<Long, LinkedAccount> find = new Find<Long, LinkedAccount>() {
-  };
-
   @Inject
   public LinkedAccountRepositoryImpl(Persistence persistence,
                                      Validator validator,
@@ -34,7 +30,7 @@ public class LinkedAccountRepositoryImpl extends
 
   @Override
   public PagedList<LinkedAccount> findBy(LinkedAccountCriteria criteria) {
-    ExpressionList<LinkedAccount> query = QueryUtils.fetch(find.query(), PROPERTIES_TO_FETCH)
+    ExpressionList<LinkedAccount> query = QueryUtils.fetch(persistence.find(LinkedAccount.class), PROPERTIES_TO_FETCH)
         .where();
 
     if (criteria.getUserId() != null) {
@@ -54,6 +50,6 @@ public class LinkedAccountRepositoryImpl extends
 
   @Override
   public LinkedAccount byId(Long id, String... fetches) {
-    return find.setId(id).findUnique();
+    return persistence.find(LinkedAccount.class).setId(id).findOne();
   }
 }

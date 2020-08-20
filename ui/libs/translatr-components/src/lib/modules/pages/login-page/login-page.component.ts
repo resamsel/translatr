@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { AuthProvider } from '@dev/translatr-model';
-import { AuthProviderService } from '@translatr/translatr-sdk/src/lib/services/auth-provider.service';
+import { AuthClient } from '@dev/translatr-model';
+import { AuthClientService } from '@translatr/translatr-sdk/src/lib/services/auth-client.service';
 import { ENDPOINT_URL } from '@translatr/utils';
 import { filter, take } from 'rxjs/operators';
 
@@ -21,7 +21,7 @@ export class LoginPageComponent implements OnInit {
   readonly providers$ = this.authProviderService.find();
 
   constructor(
-    private readonly authProviderService: AuthProviderService,
+    private readonly authProviderService: AuthClientService,
     @Inject(ENDPOINT_URL) public readonly endpointUrl: string
   ) {}
 
@@ -32,7 +32,7 @@ export class LoginPageComponent implements OnInit {
         filter(providers => providers.length === 1)
       )
       .subscribe(
-        (providers: AuthProvider[]) =>
+        (providers: AuthClient[]) =>
           (window.location.href = `${this.endpointUrl}${providers[0].url}`)
       );
   }

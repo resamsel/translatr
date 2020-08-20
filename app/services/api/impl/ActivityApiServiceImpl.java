@@ -1,6 +1,6 @@
 package services.api.impl;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import criterias.LogEntryCriteria;
 import dto.AuthorizationException;
 import dto.DtoPagedList;

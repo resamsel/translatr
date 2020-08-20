@@ -2,14 +2,12 @@ package repositories.impl;
 
 import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activity;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
-import com.feth.play.module.pa.user.AuthUserIdentity;
 import criterias.PagedListFactory;
 import criterias.UserCriteria;
 import dto.NotFoundException;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
+import io.ebean.Query;
 import mappers.UserMapper;
 import models.ActionType;
 import models.User;
@@ -36,8 +34,6 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
-  private final Find<UUID, User> find = new Find<UUID, User>() {
-  };
   private final AuthProvider authProvider;
 
   @Inject
@@ -52,7 +48,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
   @Override
   public PagedList<User> findBy(UserCriteria criteria) {
-    Query<User> q = find.query().setDisableLazyLoading(true);
+    Query<User> q = persistence.find(User.class).setDisableLazyLoading(true);
 
     if (!criteria.getFetches().isEmpty()) {
       QueryUtils.fetch(q, QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
@@ -75,33 +71,13 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
   @Override
   public User byId(UUID id, String... fetches) {
-    return QueryUtils.fetch(find.setId(id), fetches, FETCH_MAP).findUnique();
+    return QueryUtils.fetch(persistence.find(User.class).setId(id), fetches, FETCH_MAP).findOne();
   }
 
   @Override
   public User byUsername(String username, String... fetches) {
-    return QueryUtils.fetch(find.query(), fetches, FETCH_MAP).where().eq("username", username)
-            .findUnique();
-  }
-
-  private ExpressionList<User> getAuthUserFind(final AuthUserIdentity identity) {
-    return find.where()
-            .eq("active", true)
-            .eq("linkedAccounts.providerUserId", identity.getId())
-            .eq("linkedAccounts.providerKey", identity.getProvider());
-  }
-
-  @Override
-  public User findByAuthUserIdentity(final AuthUserIdentity identity) {
-    LOGGER.debug("findByAuthUserIdentity({})", identity);
-
-    if (identity == null) {
-      return null;
-    }
-
-    LOGGER.debug("Cache miss for: {}:{}", identity.getProvider(), identity.getId());
-
-    return log(() -> getAuthUserFind(identity).findUnique(), LOGGER, "findByAuthUserIdentity");
+    return QueryUtils.fetch(persistence.find(User.class), fetches, FETCH_MAP).where().eq("username", username)
+            .findOne();
   }
 
   @Override

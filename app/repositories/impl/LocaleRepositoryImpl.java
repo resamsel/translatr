@@ -3,16 +3,15 @@ package repositories.impl;
 import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
-import com.avaje.ebean.RawSqlBuilder;
 import com.google.common.collect.ImmutableMap;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
 import criterias.PagedListFactory;
 import dto.PermissionException;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
+import io.ebean.Query;
+import io.ebean.RawSqlBuilder;
 import mappers.LocaleMapper;
 import models.ActionType;
 import models.Locale;
@@ -60,8 +59,6 @@ public class LocaleRepositoryImpl extends
           .put("whenUpdated", "l.whenUpdated")
           .build();
 
-  private final Find<UUID, Locale> find = new Find<UUID, Locale>() {
-  };
   private final MessageRepository messageRepository;
   private final PermissionService permissionService;
 
@@ -127,12 +124,12 @@ public class LocaleRepositoryImpl extends
 
   @Override
   public Locale byId(UUID id, String... fetches) {
-    return QueryUtils.fetch(find.setId(id).setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP).findUnique();
+    return QueryUtils.fetch(persistence.find(Locale.class).setId(id).setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP).findOne();
   }
 
   private Query<Locale> fetch(String... fetches) {
-    return QueryUtils.fetch(find.query().alias("l").setDisableLazyLoading(true),
+    return QueryUtils.fetch(persistence.find(Locale.class).alias("l").setDisableLazyLoading(true),
         QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 
@@ -203,7 +200,7 @@ public class LocaleRepositoryImpl extends
   }
 
   public Locale byProjectAndName(UUID projectId, String name) {
-    return fetch().where().eq("project.id", projectId).eq("name", name).findUnique();
+    return fetch().where().eq("project.id", projectId).eq("name", name).findOne();
   }
 
   @Override
@@ -214,7 +211,7 @@ public class LocaleRepositoryImpl extends
         .eq("project.owner.username", username)
         .eq("project.name", projectName)
         .eq("name", localeName)
-        .findUnique();
+        .findOne();
   }
 
   /**

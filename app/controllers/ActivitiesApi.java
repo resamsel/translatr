@@ -1,7 +1,6 @@
 package controllers;
 
 import actions.ApiAction;
-import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.LogEntryCriteria;
 import dto.Activity;
 import dto.errors.GenericError;
@@ -38,26 +37,25 @@ public class ActivitiesApi extends AbstractApi<Activity, UUID, LogEntryCriteria,
   private static final String TYPES = "List of types the activities need to match";
 
   @Inject
-  protected ActivitiesApi(
-      Injector injector, CacheService cache, PlayAuthenticate auth, AuthProvider authProvider,
-      ActivityApiService activityApiService) {
-    super(injector, cache, auth, authProvider, activityApiService);
+  protected ActivitiesApi(Injector injector, CacheService cache, AuthProvider authProvider,
+                          ActivityApiService activityApiService) {
+    super(injector, cache, authProvider, activityApiService);
   }
 
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,
-      scopes = @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)))
+          scopes = @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)))
   @ApiResponses({@ApiResponse(code = 200, message = FIND_RESPONSE, response = dto.ActivitiesPaged.class),
-      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
-      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+          @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+          @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({
-      @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
-          dataType = "string", paramType = "query"),
-      @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
-          paramType = "query"),
-      @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
-      @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query"),
-      @ApiImplicitParam(name = PARAM_TYPES, value = TYPES, dataType = "string",
-          paramType = "query")})
+          @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
+                  dataType = "string", paramType = "query"),
+          @ApiImplicitParam(name = PARAM_SEARCH, value = SEARCH, dataType = "string",
+                  paramType = "query"),
+          @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
+          @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query"),
+          @ApiImplicitParam(name = PARAM_TYPES, value = TYPES, dataType = "string",
+                  paramType = "query")})
   public CompletionStage<Result> find() {
     return toJsons(() -> api.find(LogEntryCriteria.from(request())));
   }
@@ -66,12 +64,12 @@ public class ActivitiesApi extends AbstractApi<Activity, UUID, LogEntryCriteria,
    * {@inheritDoc}
    */
   @ApiOperation(value = ACTIVITY, authorizations = @Authorization(value = AUTHORIZATION,
-      scopes = @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)))
+          scopes = @AuthorizationScope(scope = PROJECT_READ, description = PROJECT_READ_DESCRIPTION)))
   @ApiResponses({@ApiResponse(code = 200, message = ACTIVITY_RESPONSE, response = dto.AggregatesPaged.class),
-      @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
-      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+          @ApiResponse(code = 403, message = PERMISSION_ERROR, response = PermissionError.class),
+          @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
-      required = true, dataType = "string", paramType = "query")})
+          required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> activity() {
     return toJsons(() -> api.getAggregates(LogEntryCriteria.from(request())));
   }

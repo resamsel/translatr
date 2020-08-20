@@ -1,3 +1,5 @@
+import play.sbt.PlayImport.javaJdbc
+
 name := """translatr"""
 
 version := "3.0.3"
@@ -10,23 +12,32 @@ lazy val root = (project in file("."))
 		buildInfoKeys := Seq[BuildInfoKey](name, version)
 	)
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.11"
 
 libraryDependencies ++= Seq(
 	javaJdbc,
 
-	cache,
-	"com.typesafe.play.modules" %% "play-modules-redis" % "2.5.0",
+	guice,
+
+	"com.typesafe.play" %% "play-json" % "2.6.14",
+	"com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % "2.11.2",
+
+	ehcache,
+//	"com.typesafe.play.modules" %% "play-modules-redis" % "2.6.0",
 
 	// Database
 	"org.postgresql" % "postgresql" % "42.1.3",
 
 	// OAuth for Play
-	"com.feth" %% "play-authenticate" % "0.8.3",
-	"be.objectify" %% "deadbolt-java" % "2.5.5",
+	"org.pac4j" %% "play-pac4j" % "10.0.1",
+	"org.pac4j" % "pac4j-oauth" % "4.0.3",
+	"org.pac4j" % "pac4j-oidc" % "4.0.3" exclude("commons-io" , "commons-io"),
+	"be.objectify" %% "deadbolt-java" % "2.7.1",
+	// https://mvnrepository.com/artifact/org.apache.shiro/shiro-core
+	"org.apache.shiro" % "shiro-core" % "1.5.3",
 
 	// Apache Commons IO
-	"commons-io" % "commons-io" % "2.5",
+	"commons-io" % "commons-io" % "2.7",
 
 	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
 	"org.apache.httpcomponents" % "httpclient" % "4.5.3",
@@ -42,8 +53,9 @@ libraryDependencies ++= Seq(
 
 	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
 
-	"io.swagger" %% "swagger-play2" % "1.5.3",
-	"org.webjars" % "swagger-ui" % "2.2.10",
+	// https://mvnrepository.com/artifact/io.swagger/swagger-play2
+	"io.swagger" %% "swagger-play2" % "1.7.1",
+//	"org.webjars" % "swagger-ui" % "2.2.10",
 
 	"com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "it",
 	"org.assertj" % "assertj-core" % "3.15.0" % "it,test",
@@ -56,25 +68,6 @@ unmanagedSourceDirectories in Test += baseDirectory.value / "src" / "test" / "ja
 
 // shares contents of src/test/java with src/it/java
 dependencyClasspath in IntegrationTest := (dependencyClasspath in IntegrationTest).value ++ (exportedProducts in Test).value
-
-//
-// Eclipse
-//
-// From: https://github.com/playframework/playframework/issues/3818
-//
-EclipseKeys.classpathTransformerFactories := EclipseKeys.classpathTransformerFactories.value.init
-
-EclipseKeys.eclipseOutput := Some(".target")
-
-// Compile the project before generating Eclipse files, so that generated .scala or .class files for views and routes are present
-EclipseKeys.preTasks := Seq(compile in Compile)
-
-// Java project. Don't expect Scala IDE
-EclipseKeys.projectFlavor := EclipseProjectFlavor.Java
-
-EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClasses, EclipseCreateSrc.ManagedResources)  // Use .class files instead of generated .scala files for views and routes
-
-EclipseKeys.withSource := true
 
 //
 // Docker
@@ -143,47 +136,19 @@ fork in IntegrationTest := false
 //
 // JaCoCo test coverage
 //
-jacoco.settings
-
-// Unfortunately, this is really needed
-parallelExecution in jacoco.Config := false
-
-fork in jacoco.Config := false
-
-jacoco.excludes in jacoco.Config := Seq(
-	"router.*",
-	"views.html.*", // should probably not be excluded
-	"*.Reverse*",
-	"*.routes",
-	"*.scala"
-)
-
+//jacoco.settings
 //
-// FindBugs
+//// Unfortunately, this is really needed
+//parallelExecution in jacoco.Config := false
 //
-findbugsExcludeFilters := Some(
-	<FindBugsFilter>
-		<!-- See docs/examples at http://findbugs.sourceforge.net/manual/filter.html -->
-		<Match><Class name="~views\.html\..*"/></Match>
-		<Match><Class name="~router.Routes.*"/></Match>
-		<Match><Class name="~.*controllers\.routes.*"/></Match>
-		<Match><Method name="~_ebean.*"/></Match>
-		<Match><Field name="~_ebean.*"/></Match>
-		<Bug code="SnVI" />
-		<Bug code="SA" />
-	</FindBugsFilter>
-)
-
-findbugsReportType := Some(FindBugsReportType.Html)
-
-findbugsReportPath := Some(crossTarget.value / "findbugs" / "report.html")
-
+//fork in jacoco.Config := false
 //
-// Conflict classes
-//
-conflictClassExcludes ++= Seq(
-  "LICENSE",
-  "reference.conf"
-)
+//jacoco.excludes in jacoco.Config := Seq(
+//	"router.*",
+//	"views.html.*", // should probably not be excluded
+//	"*.Reverse*",
+//	"*.routes",
+//	"*.scala"
+//)
 
 buildInfoOptions += BuildInfoOption.BuildTime

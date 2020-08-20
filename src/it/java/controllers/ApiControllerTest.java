@@ -1,6 +1,5 @@
 package controllers;
 
-import controllers.Projects;
 import org.apache.http.client.utils.URIBuilder;
 import play.mvc.Call;
 import play.mvc.Http.RequestBuilder;

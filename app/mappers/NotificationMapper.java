@@ -39,7 +39,6 @@ public class NotificationMapper {
       out.name = ActivityUtils.nameOf(activity);
       out.icon = ActivityUtils.iconOf(activity);
       out.color = ActivityUtils.colorOf(activity);
-      out.link = ActivityUtils.linkTo(activity).url();
       if (activity.project != null)
         out.project = ProjectMapper.toDto(activity.project);
     }

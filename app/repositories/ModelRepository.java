@@ -1,6 +1,6 @@
 package repositories;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import criterias.AbstractSearchCriteria;
 import criterias.GetCriteria;
 import models.Model;

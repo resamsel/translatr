@@ -1,7 +1,13 @@
 package utils;
 
-import forms.*;
-import play.Configuration;
+import com.typesafe.config.Config;
+import forms.AccessTokenForm;
+import forms.ActivitySearchForm;
+import forms.KeyForm;
+import forms.KeySearchForm;
+import forms.LocaleForm;
+import forms.LocaleSearchForm;
+import forms.SearchForm;
 import play.data.Form;
 import play.data.FormFactory;
 import play.data.validation.ValidationError;
@@ -28,7 +34,7 @@ public class FormUtils {
 
   public static <T> Form<T> include(Form<T> form, ConstraintViolationException e) {
     e.getConstraintViolations().forEach(violation -> form
-        .reject(new ValidationError(pathFrom(violation), violation.getMessage())));
+            .withError(new ValidationError(pathFrom(violation), violation.getMessage())));
     return form;
   }
 
@@ -42,16 +48,16 @@ public class FormUtils {
   public static class Search {
 
     public static Form<SearchForm> bindFromRequest(FormFactory formFactory,
-        Configuration configuration) {
+                                                   Config configuration) {
       return init(FormUtils.bindFromRequest(formFactory, SearchForm.class), configuration);
     }
 
     protected static <T extends SearchForm> Form<T> init(Form<T> form,
-        Configuration configuration) {
+                                                         Config configuration) {
       T obj = form.get();
 
       if (obj.limit == null) {
-        obj.limit = configuration.getInt("translatr.search.limit", 20);
+        obj.limit = configuration.getInt("translatr.search.limit");
       }
 
       return form;
@@ -61,16 +67,16 @@ public class FormUtils {
   public static class LocaleSearch {
 
     public static Form<LocaleSearchForm> bindFromRequest(FormFactory formFactory,
-        Configuration configuration) {
+                                                         Config configuration) {
       return init(FormUtils.bindFromRequest(formFactory, LocaleSearchForm.class), configuration);
     }
 
     protected static Form<LocaleSearchForm> init(Form<LocaleSearchForm> form,
-        Configuration configuration) {
+                                                 Config configuration) {
       LocaleSearchForm obj = form.get();
 
       if (obj.missing == null) {
-        obj.missing = configuration.getBoolean("translatr.search.missing", false);
+        obj.missing = configuration.getBoolean("translatr.search.missing");
       }
 
       return Search.init(form, configuration);
@@ -80,7 +86,7 @@ public class FormUtils {
   public static class Locale {
 
     public static Form<LocaleForm> bindFromRequest(FormFactory formFactory,
-        Configuration configuration) {
+                                                   Config configuration) {
       return Search.init(FormUtils.bindFromRequest(formFactory, LocaleForm.class), configuration);
     }
   }
@@ -88,16 +94,16 @@ public class FormUtils {
   public static class KeySearch {
 
     public static Form<KeySearchForm> bindFromRequest(FormFactory formFactory,
-        Configuration configuration) {
+                                                      Config configuration) {
       return init(FormUtils.bindFromRequest(formFactory, KeySearchForm.class), configuration);
     }
 
     protected static Form<KeySearchForm> init(Form<KeySearchForm> form,
-        Configuration configuration) {
+                                              Config configuration) {
       KeySearchForm obj = form.get();
 
       if (obj.missing == null) {
-        obj.missing = configuration.getBoolean("translatr.search.missing", false);
+        obj.missing = configuration.getBoolean("translatr.search.missing");
       }
 
       return Search.init(form, configuration);
@@ -107,7 +113,7 @@ public class FormUtils {
   public static class Key {
 
     public static Form<KeyForm> bindFromRequest(FormFactory formFactory,
-        Configuration configuration) {
+                                                Config configuration) {
       return Search.init(FormUtils.bindFromRequest(formFactory, KeyForm.class), configuration);
     }
   }
@@ -115,18 +121,18 @@ public class FormUtils {
   public static class ActivitySearch {
 
     public static Form<ActivitySearchForm> bindFromRequest(FormFactory formFactory,
-        Configuration configuration) {
+                                                           Config configuration) {
       return Search.init(FormUtils.bindFromRequest(formFactory, ActivitySearchForm.class),
-          configuration);
+              configuration);
     }
   }
 
   public static class AccessToken {
 
     public static Form<AccessTokenForm> bindFromRequest(FormFactory formFactory,
-        Configuration configuration) {
+                                                        Config configuration) {
       return Search.init(FormUtils.bindFromRequest(formFactory, AccessTokenForm.class),
-          configuration);
+              configuration);
     }
   }
 }

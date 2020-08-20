@@ -1,14 +1,20 @@
 package controllers;
 
 import actions.ApiAction;
-import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.UserFeatureFlagCriteria;
 import dto.UserFeatureFlag;
 import dto.errors.ConstraintViolationError;
 import dto.errors.GenericError;
 import dto.errors.NotFoundError;
 import dto.errors.PermissionError;
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import io.swagger.annotations.AuthorizationScope;
 import play.inject.Injector;
 import play.mvc.Result;
 import play.mvc.With;
@@ -45,9 +51,9 @@ public class FeatureFlagsApi extends AbstractApi<UserFeatureFlag, UUID, UserFeat
 
   @Inject
   public FeatureFlagsApi(
-          Injector injector, CacheService cache, PlayAuthenticate auth, AuthProvider authProvider,
+          Injector injector, CacheService cache, AuthProvider authProvider,
           UserFeatureFlagApiService userFeatureFlagApiService) {
-    super(injector, cache, auth, authProvider, userFeatureFlagApiService);
+    super(injector, cache, authProvider, userFeatureFlagApiService);
   }
 
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,

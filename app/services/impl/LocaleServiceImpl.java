@@ -1,6 +1,6 @@
 package services.impl;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import criterias.LocaleCriteria;
 import models.ActionType;
 import models.Locale;
@@ -47,7 +47,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
 
   @Override
   public List<Locale> latest(Project project, int limit) {
-    return postFind(cache.getOrElse(
+    return postFind(cache.getOrElseUpdate(
             String.format("project:id:%s:latest:locales:%d", project.id, limit),
             () -> localeRepository.latest(project, limit),
             60));
@@ -55,7 +55,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
 
   @Override
   public Locale byProjectAndName(Project project, String name) {
-    return postGet(cache.getOrElse(
+    return postGet(cache.getOrElseUpdate(
             String.format("project:id:%s:locale:%s", project.id, name),
             () -> localeRepository.byProjectAndName(project, name),
             60));
@@ -64,7 +64,7 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   @Override
   public Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
                                          String... fetches) {
-    return postGet(cache.getOrElse(
+    return postGet(cache.getOrElseUpdate(
             String.format("locale:owner:%s:projectName:%s:name:%s", username, projectName, localeName),
             () -> localeRepository.byOwnerAndProjectAndName(username, projectName, localeName, fetches),
             60

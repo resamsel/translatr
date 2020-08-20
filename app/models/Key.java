@@ -1,13 +1,10 @@
 package models;
 
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import controllers.Keys;
-import controllers.routes;
+import io.ebean.annotation.CreatedTimestamp;
+import io.ebean.annotation.UpdatedTimestamp;
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
-import play.api.mvc.Call;
 import play.libs.Json;
 import play.mvc.Http.Context;
 import utils.CacheUtils;
@@ -26,7 +23,6 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -92,7 +88,7 @@ public class Key implements Model<Key, UUID>, Suggestable {
    */
   @Override
   public Data data() {
-    return Data.from(Key.class, id, name, route().absoluteURL(Context.current().request()));
+    return Data.from(Key.class, id, name, null);
   }
 
   /**
@@ -117,78 +113,5 @@ public class Key implements Model<Key, UUID>, Suggestable {
 
   public String getPathName() {
     return UrlUtils.encode(name);
-  }
-
-  /**
-   * Return the route to the given key, with default params added.
-   */
-  public Call route() {
-    return route(Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT, Keys.DEFAULT_OFFSET);
-  }
-
-  /**
-   * Return the route to the given key, with params added.
-   */
-  public Call route(String search, String order, int limit, int offset) {
-    Objects.requireNonNull(project, "Project is null");
-    Objects.requireNonNull(project.owner, "Project owner is null");
-    return routes.Keys
-        .keyBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
-            Objects.requireNonNull(project.name, "Project name is null"),
-            Objects.requireNonNull(name, "Name is null"), search, order, limit,
-            offset);
-  }
-
-  /**
-   * Return the route to the edit route.
-   */
-  public Call editRoute() {
-    return editRoute(Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT,
-        Keys.DEFAULT_OFFSET);
-  }
-
-  /**
-   * Return the route to the edit route with params.
-   */
-  public Call editRoute(String search, String order, int limit, int offset) {
-    Objects.requireNonNull(project, "Project is null");
-    Objects.requireNonNull(project.owner, "Project owner is null");
-    return routes.Keys
-        .editBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
-            Objects.requireNonNull(project.name, "Project name is null"),
-            Objects.requireNonNull(name, "Name is null"), search, order, limit, offset);
-  }
-
-  /**
-   * Return the route to the do edit route.
-   */
-  public Call doEditRoute() {
-    Objects.requireNonNull(project, "Project is null");
-    Objects.requireNonNull(project.owner, "Project owner is null");
-    return routes.Keys
-        .doEditBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
-            Objects.requireNonNull(project.name, "Project name is null"),
-            Objects.requireNonNull(name, "Name is null"));
-  }
-
-  /**
-   * Return the route to the removeAll route.
-   */
-  public Call removeRoute() {
-    return removeRoute(Keys.DEFAULT_SEARCH, Keys.DEFAULT_ORDER, Keys.DEFAULT_LIMIT,
-        Keys.DEFAULT_OFFSET);
-  }
-
-  /**
-   * Return the route to the removeAll route with params.
-   */
-  public Call removeRoute(String search, String order, int limit, int offset) {
-    Objects.requireNonNull(project, "Project is null");
-    Objects.requireNonNull(project.owner, "Project owner is null");
-    return routes.Keys
-        .removeBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
-            Objects.requireNonNull(project.name, "Project name is null"),
-            Objects.requireNonNull(name, "Name is null"), null, search, order, limit,
-            offset);
   }
 }

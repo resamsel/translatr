@@ -1,6 +1,6 @@
 package services.impl;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import criterias.AccessTokenCriteria;
 import models.AccessToken;
 import models.ActionType;
@@ -75,7 +75,7 @@ public class AccessTokenServiceImpl extends
     metricService.logEvent(AccessToken.class, ActionType.Read);
 
     return log(
-            () -> postGet(cache.getOrElse(AccessToken.getCacheKey(accessTokenKey),
+            () -> postGet(cache.getOrElseUpdate(AccessToken.getCacheKey(accessTokenKey),
                     () -> accessTokenRepository.byKey(accessTokenKey),
                     60
             )),

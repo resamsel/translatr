@@ -1,12 +1,9 @@
 package models;
 
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import controllers.AbstractController;
-import controllers.routes;
+import io.ebean.annotation.CreatedTimestamp;
+import io.ebean.annotation.UpdatedTimestamp;
 import org.joda.time.DateTime;
-import play.mvc.Call;
 import utils.CacheUtils;
 import validators.NameUnique;
 import validators.ProjectUserModifyAllowed;
@@ -129,22 +126,13 @@ public class ProjectUser implements Model<ProjectUser, Long> {
     return CacheUtils.getCacheKey("member:id", id, fetches);
   }
 
-  public Call route() {
-    Objects.requireNonNull(project, "Project is null");
-    Objects.requireNonNull(project.owner, "Project owner is null");
-
-    return routes.Projects.membersBy(project.owner.username, project.name,
-        AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
-        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ProjectUser that = (ProjectUser) o;
     return project.equals(that.project) &&
-        user.equals(that.user);
+            user.equals(that.user);
   }
 
   @Override

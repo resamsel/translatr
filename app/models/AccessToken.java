@@ -1,12 +1,10 @@
 package models;
 
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
-import controllers.routes;
+import io.ebean.annotation.CreatedTimestamp;
+import io.ebean.annotation.UpdatedTimestamp;
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import play.data.validation.Constraints.MaxLength;
-import play.mvc.Call;
 import utils.CacheUtils;
 import validators.AccessTokenNameUniqueChecker;
 import validators.NameUnique;
@@ -18,7 +16,6 @@ import javax.persistence.ManyToOne;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -86,24 +83,6 @@ public class AccessToken implements Model<AccessToken, Long> {
     scope = in.scope;
 
     return this;
-  }
-
-  public Call editRoute() {
-    Objects.requireNonNull(user, "User is null");
-    return routes.Users
-        .accessTokenEdit(Objects.requireNonNull(user.username, "User username is null"), id);
-  }
-
-  public Call doEditRoute() {
-    Objects.requireNonNull(user, "User is null");
-    return routes.Users
-        .doAccessTokenEdit(Objects.requireNonNull(user.username, "User username is null"), id);
-  }
-
-  public Call removeRoute() {
-    Objects.requireNonNull(user, "User is null");
-    return routes.Users
-        .accessTokenRemove(Objects.requireNonNull(user.username, "User username is null"), id);
   }
 
   public static String getCacheKey(Long id, String... fetches) {

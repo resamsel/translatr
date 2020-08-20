@@ -1,10 +1,11 @@
 package dto;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import criterias.HasNextPagedList;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -18,14 +19,14 @@ import static java.util.stream.Collectors.toList;
 public class DtoPagedList<MODEL, DTO extends Dto> extends Dto implements PagedList<DTO> {
   private static final long serialVersionUID = -702426798092435389L;
 
-  private List<DTO> list;
+  private final List<DTO> list;
 
   @JsonIgnore
-  private PagedList<MODEL> delegate;
+  private final PagedList<MODEL> delegate;
 
   private int offset;
-  private int limit;
-  private int total;
+  private final int limit;
+  private final int total;
 
   /**
    *
@@ -65,13 +66,7 @@ public class DtoPagedList<MODEL, DTO extends Dto> extends Dto implements PagedLi
   /**
    * {@inheritDoc}
    */
-  @Override
-  public void loadRowCount() {
-  }
-
-  /**
-   * {@inheritDoc}
-   */
+  @Nonnull
   @JsonIgnore
   @Override
   public Future<Integer> getFutureCount() {
@@ -81,15 +76,7 @@ public class DtoPagedList<MODEL, DTO extends Dto> extends Dto implements PagedLi
   /**
    * {@inheritDoc}
    */
-  @JsonIgnore
-  @Override
-  public Future<Integer> getFutureRowCount() {
-    return delegate.getFutureCount();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
+  @Nonnull
   @Override
   public List<DTO> getList() {
     return list;
@@ -109,15 +96,6 @@ public class DtoPagedList<MODEL, DTO extends Dto> extends Dto implements PagedLi
    */
   @JsonIgnore
   @Override
-  public int getTotalRowCount() {
-    return delegate.getTotalCount();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @JsonIgnore
-  @Override
   public int getTotalPageCount() {
     return delegate.getTotalPageCount();
   }
@@ -129,6 +107,11 @@ public class DtoPagedList<MODEL, DTO extends Dto> extends Dto implements PagedLi
   @Override
   public int getPageSize() {
     return delegate.getPageSize();
+  }
+
+  @Override
+  public int getPageIndex() {
+    return delegate.getPageIndex();
   }
 
   /**

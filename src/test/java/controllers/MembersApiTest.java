@@ -1,7 +1,6 @@
 package controllers;
 
 import assertions.CustomAssertions;
-import com.feth.play.module.pa.PlayAuthenticate;
 import criterias.PagedListFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +33,6 @@ public class MembersApiTest {
   @Mock
   private CacheService cache;
   @Mock
-  private PlayAuthenticate auth;
-  @Mock
   private ProjectUserApiService projectUserApiService;
   @Mock
   private HttpExecutionContext executionContext;
@@ -55,7 +52,7 @@ public class MembersApiTest {
     when(contextProvider.get()).thenReturn(context);
     when(context.request()).thenReturn(request);
 
-    target = new MembersApi(injector, cache, auth, authProvider, projectUserApiService, contextProvider);
+    target = new MembersApi(injector, cache, authProvider, projectUserApiService, contextProvider);
   }
 
   @Test
@@ -70,7 +67,7 @@ public class MembersApiTest {
 
     // then
     CustomAssertions.assertThat(actual)
-        .statusIsEqualTo(200)
-        .isNotNull();
+            .statusIsEqualTo(200)
+            .isNotNull();
   }
 }

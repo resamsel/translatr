@@ -1,13 +1,12 @@
 package controllers;
 
-import com.feth.play.module.pa.PlayAuthenticate;
+import com.typesafe.config.Config;
 import criterias.AbstractSearchCriteria;
 import dto.Dto;
 import dto.PermissionException;
 import models.Project;
 import models.ProjectRole;
 import models.User;
-import play.Configuration;
 import play.inject.Injector;
 import services.AuthProvider;
 import services.CacheService;
@@ -16,17 +15,15 @@ import services.api.ApiService;
 import java.util.UUID;
 
 public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>, API extends ApiService<DTO, ID, CRITERIA>>
-    extends AbstractBaseApi {
+        extends AbstractBaseApi {
   protected final AuthProvider authProvider;
   protected final API api;
-  protected final Configuration configuration;
+  protected final Config configuration;
 
-  protected AbstractApi(
-      Injector injector, CacheService cache, PlayAuthenticate auth,
-      AuthProvider authProvider, API api) {
-    super(injector, cache, auth);
+  protected AbstractApi(Injector injector, CacheService cache, AuthProvider authProvider, API api) {
+    super(injector, cache);
 
-    this.configuration = injector.instanceOf(Configuration.class);
+    this.configuration = injector.instanceOf(Config.class);
     this.authProvider = authProvider;
     this.api = api;
   }

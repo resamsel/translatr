@@ -16,7 +16,7 @@ jobs:
         - psql -c 'create database "translatr-test";' -U postgres
         - psql -c 'grant all privileges on database "translatr-test" TO translatr;' -U postgres
       script:
-        - bin/activator jacoco:cover -Dconfig.file=test.conf
+        - bin/activator test -Dconfig.file=test.conf
 #        - bin/activator it:test -Dconfig.file=it.conf
 #      after_success:
 #        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"

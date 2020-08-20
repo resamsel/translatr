@@ -3,7 +3,7 @@ export * from './access-token-criteria';
 export * from './activity';
 export * from './activity-criteria';
 export * from './aggregate';
-export * from './auth-provider';
+export * from './auth-client';
 export * from './constraint-violation';
 export * from './constraint-violation-error-info';
 export * from './error';

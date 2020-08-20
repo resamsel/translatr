@@ -1,6 +1,6 @@
 package forms;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;

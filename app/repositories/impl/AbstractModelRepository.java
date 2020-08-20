@@ -1,7 +1,7 @@
 package repositories.impl;
 
 import actors.ActivityActorRef;
-import com.avaje.ebean.Query;
+import io.ebean.Query;
 import criterias.AbstractSearchCriteria;
 import criterias.ContextCriteria;
 import criterias.GetCriteria;
@@ -50,7 +50,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
     return fetch(
         createQuery(criteria)
             .setId(criteria.getId())
-            .findUnique(),
+            .findOne(),
         criteria
     );
   }

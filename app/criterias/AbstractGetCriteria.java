@@ -1,10 +1,10 @@
 package criterias;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 public abstract class AbstractGetCriteria<T extends AbstractGetCriteria<T, U>, U>
-    extends AbstractContextCriteria<T>
-    implements GetCriteria<U> {
+        extends AbstractContextCriteria<T>
+        implements GetCriteria<U> {
 
   private final U id;
 
@@ -12,7 +12,7 @@ public abstract class AbstractGetCriteria<T extends AbstractGetCriteria<T, U>, U
     this.id = id;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public U getId() {
     return id;

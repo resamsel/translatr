@@ -1,9 +1,9 @@
 package repositories;
 
-import com.avaje.ebean.Query;
-import com.avaje.ebean.SqlUpdate;
-import com.avaje.ebean.Transaction;
 import com.google.inject.ImplementedBy;
+import io.ebean.Query;
+import io.ebean.SqlUpdate;
+import io.ebean.Transaction;
 import repositories.impl.PersistenceImpl;
 
 import java.util.Collection;
@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 @ImplementedBy(PersistenceImpl.class)
 public interface Persistence {
-  RepositoryProvider getRepositoryProvider();
+  <T> Query<T> find(Class<T> beanType);
 
   boolean isNew(Object t);
 

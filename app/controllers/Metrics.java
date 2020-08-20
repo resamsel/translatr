@@ -1,6 +1,5 @@
 package controllers;
 
-import com.feth.play.module.pa.PlayAuthenticate;
 import io.prometheus.client.Collector;
 import io.prometheus.client.exporter.common.TextFormat;
 import play.inject.Injector;
@@ -18,8 +17,8 @@ public class Metrics extends AbstractController {
   private final MetricService metricService;
 
   @Inject
-  public Metrics(Injector injector, CacheService cache, PlayAuthenticate auth, MetricService metricService) {
-    super(injector, cache, auth);
+  public Metrics(Injector injector, CacheService cache, MetricService metricService) {
+    super(injector, cache);
     this.metricService = metricService;
   }
 

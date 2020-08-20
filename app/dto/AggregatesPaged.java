@@ -1,6 +1,6 @@
 package dto;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 
 import java.util.function.Function;
 

@@ -1,9 +1,8 @@
 package criterias;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
+import io.ebean.Query;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +26,7 @@ public class PagedListFactory {
     }
 
     if (includeCount) {
-      PagedList<T> pagedList = Ebean.getDefaultServer().findPagedList(query, Ebean.currentTransaction());
+      PagedList<T> pagedList = query.findPagedList();
 
       pagedList.getList();
       pagedList.loadCount();

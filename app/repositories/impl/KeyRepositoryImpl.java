@@ -3,11 +3,10 @@ package repositories.impl;
 import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Model.Find;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.Query;
-import com.avaje.ebean.RawSqlBuilder;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
+import io.ebean.Query;
+import io.ebean.RawSqlBuilder;
 import com.google.common.collect.ImmutableMap;
 import criterias.KeyCriteria;
 import criterias.PagedListFactory;
@@ -54,9 +53,6 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
           .put("whenCreated", "k.whenCreated")
           .put("whenUpdated", "k.whenUpdated")
           .build();
-
-  private final Find<UUID, Key> find = new Find<UUID, Key>() {
-  };
 
   private final MessageRepository messageRepository;
   private final PermissionService permissionService;
@@ -132,8 +128,8 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
   @Override
   public Key byId(UUID id, String... fetches) {
-    return QueryUtils.fetch(find.setId(id).setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP).findUnique();
+    return QueryUtils.fetch(persistence.find(Key.class).setId(id).setDisableLazyLoading(true),
+        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP).findOne();
   }
 
   @Override
@@ -152,7 +148,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   }
 
   public Key byProjectAndName(UUID projectId, String name) {
-    return fetch().where().eq("project.id", projectId).eq("name", name).findUnique();
+    return fetch().where().eq("project.id", projectId).eq("name", name).findOne();
   }
 
   @Override
@@ -162,7 +158,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
         .eq("project.owner.username", username)
         .eq("project.name", projectName)
         .eq("name", keyName)
-        .findUnique();
+        .findOne();
   }
 
   private Query<Key> fetch(List<String> fetches) {
@@ -170,7 +166,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   }
 
   private Query<Key> fetch(String... fetches) {
-    return QueryUtils.fetch(find.query().alias("k").setDisableLazyLoading(true),
+    return QueryUtils.fetch(persistence.find(Key.class).alias("k").setDisableLazyLoading(true),
         QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 

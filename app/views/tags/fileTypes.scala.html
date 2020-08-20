@@ -1,7 +1,0 @@
-<select id="field-type" name="fileType">
-	<option value="" disabled selected>@Messages("filetype.choose")</option>
-	@for(t <- models.FileType.values) {
-		<option value="@t.key">@Messages("filetype." + t.key)</option>
-	}
-</select>
-<label for="field-type">@Messages("filetype.label")</label>

@@ -1,22 +1,21 @@
 package tests;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static play.inject.Bindings.bind;
-
-import java.util.concurrent.Callable;
 import models.User;
 import org.mockito.Mockito;
 import play.Application;
-import play.api.cache.EhCacheModule;
+import play.api.cache.ehcache.EhCacheModule;
 import play.api.inject.Binding;
-import play.cache.CacheApi;
+import play.cache.SyncCacheApi;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.test.WithApplication;
 import services.AuthProvider;
 import services.UserService;
+
+import java.util.concurrent.Callable;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static play.inject.Bindings.bind;
 
 /**
  * @author resamsel
@@ -25,7 +24,7 @@ import services.UserService;
 public class AbstractTest extends WithApplication {
 
   protected UserService userService;
-  protected CacheApi cache;
+  protected SyncCacheApi cache;
   protected AuthProvider authProvider;
 
   protected User createUser(String name, String email) {
@@ -39,19 +38,19 @@ public class AbstractTest extends WithApplication {
   }
 
   protected Binding<?>[] createBindings() {
-    cache = Mockito.mock(CacheApi.class);
+    cache = Mockito.mock(SyncCacheApi.class);
     authProvider = Mockito.mock(AuthProvider.class);
 
     prepareCache(cache);
 
     return new Binding[]{
-        bind(CacheApi.class).toInstance(cache),
+        bind(SyncCacheApi.class).toInstance(cache),
         bind(AuthProvider.class).toInstance(authProvider)
     };
   }
 
-  protected void prepareCache(CacheApi cache) {
-    when(cache.getOrElse(anyString(), any(), anyInt()))
+  protected void prepareCache(SyncCacheApi cache) {
+    when(cache.getOrElseUpdate(anyString(), any(), anyInt()))
         .thenAnswer(invocation -> ((Callable<?>) invocation.getArguments()[1]).call());
   }
 

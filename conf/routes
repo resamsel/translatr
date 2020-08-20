@@ -9,11 +9,10 @@
 # Swagger Specification
 # GET		/api/swagger.json			controllers.ApiHelpController.getResources
 
-GET         /projects/search                                              controllers.Projects.search
-GET         /api/projects                                                 controllers.ProjectsApi.find
-GET         /api/project/:id/search                                       controllers.ProjectsApi.search(id: java.util.UUID)
-GET         /api/project/:projectId                                       controllers.ProjectsApi.get(projectId: java.util.UUID, fetch: String ?= "")
-GET         /api/project/:projectId/activity                              controllers.ProjectsApi.activity(projectId: java.util.UUID)
+GET           /api/projects                                                           controllers.ProjectsApi.find
+GET           /api/project/:id/search                                                 controllers.ProjectsApi.search(id: java.util.UUID)
+GET           /api/project/:projectId                                                 controllers.ProjectsApi.get(projectId: java.util.UUID, fetch: String ?= "")
+GET           /api/project/:projectId/activity                                        controllers.ProjectsApi.activity(projectId: java.util.UUID)
 POST          /api/project                                                            controllers.ProjectsApi.create
 PUT           /api/project                                                            controllers.ProjectsApi.update
 DELETE        /api/project/:projectId                                                 controllers.ProjectsApi.delete(projectId: java.util.UUID)
@@ -76,7 +75,7 @@ GET           /api/notifications                                                
 GET           /api/activities                                                         controllers.ActivitiesApi.find
 GET           /api/activities/aggregated                                              controllers.ActivitiesApi.activity
 
-GET           /api/authproviders                                                      controllers.AuthProvidersApi.find
+GET           /api/authclients                                                        controllers.AuthClientsApi.find
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                           controllers.Assets.versioned(path="/public", file: Asset)
@@ -105,96 +104,17 @@ GET           /admin/                                                           
 GET           /activity/csv                                                           controllers.Application.activityCsv
 
 # Authentication
-GET           /login                                                                  controllers.Application.login
-GET           /logout                                                                 controllers.Application.logout
-GET           /authenticate/:provider                                                 com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
-GET           /authenticate/:provider/denied                                          controllers.Application.oAuthDenied(provider: String)
-
-# Commands
-GET           /command/:key/execute                                                   controllers.Application.commandExecute(key: String)
-
-GET           /javascriptRoutes                                                       controllers.Application.javascriptRoutes
+#GET           /logout                                                                 controllers.Application.logout
+GET           /login/:authClient                                                      controllers.Application.login(request: Request, authClient: String)
+GET           /authenticate                                                           @org.pac4j.play.CallbackController.callback(request: Request)
+POST          /authenticate                                                           @org.pac4j.play.CallbackController.callback(request: Request)
+GET           /casProxyCallback                                                       @org.pac4j.play.CallbackController.callback(request: Request)
+POST          /casProxyCallback                                                       @org.pac4j.play.CallbackController.callback(request: Request)
+GET           /logout                                                                 @org.pac4j.play.LogoutController.logout(request: Request)
 
 # Serve static assets under public directory
 GET           /ui/*file                                                               controllers.Application.assetOrDefaultUi(file: String)
 GET           /admin/*file                                                            controllers.Application.assetOrDefaultAdmin(file: String)
 
-# Users
-GET           /users                                                                  controllers.Users.index
-
-# Profiles
-GET           /profile                                                                controllers.Profiles.profile
-GET           /profile/projects                                                       controllers.Profiles.projects
-GET           /profile/linkedAccounts                                                 controllers.Profiles.linkedAccounts
-GET           /profile/accessTokens                                                   controllers.Profiles.accessTokens
-GET           /profile/activity                                                       controllers.Profiles.activity
-GET           /profile/edit                                                           controllers.Profiles.edit
-POST          /profile/edit                                                           controllers.Profiles.doEdit()
-GET           /profile/link                                                           controllers.Profiles.askLink
-POST          /profile/link                                                           controllers.Profiles.doLink()
-GET           /profile/merge                                                          controllers.Profiles.askMerge
-POST          /profile/merge                                                          controllers.Profiles.doMerge()
-GET           /profile/accessTokens/create                                            controllers.Profiles.accessTokenCreate
-POST          /profile/accessTokens/create                                            controllers.Profiles.doAccessTokenCreate()
-GET           /profile/notifications/reset                                            controllers.Profiles.resetNotifications
-
-# Projects
-GET           /projects                                                               controllers.Projects.index(search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET           /projects/create/$projectName<.+>                                       controllers.Projects.createImmediately(projectName: String)
-
+# Prometheus metrics
 GET           /metrics                                                                controllers.Metrics.metrics
-
-# User
-GET           /:username                                                              controllers.Users.user(username: String)
-GET           /:username/projects                                                     controllers.Users.projects(username: String)
-GET           /:username/activity/csv                                                 controllers.Users.activityCsv(username: String)
-GET           /:username/activity                                                     controllers.Users.activity(username: String)
-GET           /:username/linkedAccounts                                               controllers.Users.linkedAccounts(username: String)
-GET         /:username/linkedAccounts/:linkedAccountId/remove             controllers.Users.linkedAccountRemove(username: String, linkedAccountId: Long)
-GET         /:username/accessTokens                                       controllers.Users.accessTokens(username: String)
-GET         /:username/accessTokens/:accessTokenId/edit                   controllers.Users.accessTokenEdit(username: String, accessTokenId: Long)
-POST        /:username/accessTokens/:accessTokenId/edit                   controllers.Users.doAccessTokenEdit(username: String, accessTokenId: Long)
-GET         /:username/accessTokens/:accessTokenId/remove                 controllers.Users.accessTokenRemove(username: String, accessTokenId: Long)
-
-# Project
-GET         /:username/create                                             controllers.Projects.createBy(username: String)
-POST        /:username/create                                             controllers.Projects.doCreateBy(username: String)
-GET         /:username/:projectName                                       controllers.Projects.projectBy(username: String, projectName: String)
-GET         /:username/:projectName/edit                                  controllers.Projects.editBy(username: String, projectName: String)
-POST        /:username/:projectName/edit                                  controllers.Projects.doEditBy(username: String, projectName: String)
-GET         /:username/:projectName/remove                                controllers.Projects.removeBy(username: String, projectName: String)
-GET         /:username/:projectName/wordCount/reset                       controllers.Projects.wordCountResetBy(username: String, projectName: String)
-POST        /:username/:projectName/owner/change                          controllers.Projects.doOwnerChangeBy(username: String, projectName: String)
-
-# Locales
-GET         /:username/:projectName/locales                               controllers.Projects.localesBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-POST        /:username/:projectName/locales/create                        controllers.Locales.doCreateBy(username: String, projectName: String)
-GET         /:username/:projectName/locales/:localeName                   controllers.Locales.localeBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET         /:username/:projectName/locales/:localeName/create            controllers.Locales.createImmediatelyBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET         /:username/:projectName/locales/:localeName/edit              controllers.Locales.editBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-POST        /:username/:projectName/locales/:localeName/edit              controllers.Locales.doEditBy(username: String, projectName: String, localeName: String)
-GET         /:username/:projectName/locales/:localeName/remove            controllers.Locales.removeBy(username: String, projectName: String, localeName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET         /:username/:projectName/locales/:localeName/import            controllers.Locales.uploadBy(username: String, projectName: String, localeName: String)
-POST        /:username/:projectName/locales/:localeName/import            controllers.Locales.doUploadBy(username: String, projectName: String, localeName: String)
-
-# Keys
-GET         /:username/:projectName/keys                                  controllers.Projects.keysBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET         /:username/:projectName/keys/create                           controllers.Keys.createBy(username: String, projectName: String)
-POST        /:username/:projectName/keys/create                           controllers.Keys.doCreateBy(username: String, projectName: String, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-POST        /:username/:projectName/keys/:localeId/create                 controllers.Keys.doCreateBy(username: String, projectName: String, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET         /:username/:projectName/keys/create/$keyName<.+>              controllers.Keys.createImmediatelyBy(username: String, projectName: String, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET         /:username/:projectName/keys/:keyName                         controllers.Keys.keyBy(username: String, projectName: String, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET         /:username/:projectName/keys/:keyName/edit                    controllers.Keys.editBy(username: String, projectName: String, keyName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-POST        /:username/:projectName/keys/:keyName/edit                    controllers.Keys.doEditBy(username: String, projectName: String, keyName: String)
-GET         /:username/:projectName/keys/:keyName/remove                  controllers.Keys.removeBy(username: String, projectName: String, keyName: String, localeId: java.util.UUID = null, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET         /:username/:projectName/keys/:keyName/:localeId/remove        controllers.Keys.removeBy(username: String, projectName: String, keyName: String, localeId: java.util.UUID, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-
-# Members
-GET         /:username/:projectName/members                               controllers.Projects.membersBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET         /:username/:projectName/members/add                           controllers.Projects.memberAddBy(username: String, projectName: String)
-POST        /:username/:projectName/members/add                           controllers.Projects.doMemberAddBy(username: String, projectName: String)
-GET         /:username/:projectName/members/:memberId/remove              controllers.Projects.memberRemoveBy(username: String, projectName: String, memberId: Long)
-
-# Activity
-GET         /:username/:projectName/activity                              controllers.Projects.activityBy(username: String, projectName: String, search: String ?= null, order: String ?= "name", limit: Int ?= 20, offset: Int ?= 0)
-GET         /:username/:projectName/activity/csv                          controllers.Projects.activityCsvBy(username: String, projectName: String)

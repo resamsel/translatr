@@ -3,22 +3,37 @@ package models;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.DbJsonB;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.ebean.annotation.CreatedTimestamp;
+import io.ebean.annotation.DbJsonB;
+import io.ebean.annotation.UpdatedTimestamp;
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
-import play.mvc.Call;
 import utils.CacheUtils;
 import validators.NameUnique;
 import validators.UserUsernameUniqueChecker;
 import validators.Username;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 import static play.libs.Json.toJson;
 
@@ -231,38 +246,11 @@ public class User implements Model<User, UUID>, Subject {
     return Objects.equals(id, that.id);
   }
 
-  /**
-   * Return the route to the user.
-   */
-  public Call route() {
-    return controllers.routes.Users.user(Objects.requireNonNull(username, "Username is null"));
-  }
-
   public static String getCacheKey(UUID userId, String... fetches) {
     return CacheUtils.getCacheKey("user:id", userId, fetches);
   }
 
   public static String getCacheKey(String username, String... fetches) {
     return CacheUtils.getCacheKey("user:username", username, fetches);
-  }
-
-  public Call profileRoute() {
-    return controllers.routes.Users.user(username);
-  }
-
-  public Call projectsRoute() {
-    return controllers.routes.Users.projects(username);
-  }
-
-  public Call activityRoute() {
-    return controllers.routes.Users.activity(username);
-  }
-
-  public Call accessTokensRoute() {
-    return controllers.routes.Users.accessTokens(username);
-  }
-
-  public Call linkedAccountsRoute() {
-    return controllers.routes.Users.linkedAccounts(username);
   }
 }

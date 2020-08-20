@@ -1,6 +1,5 @@
 package repositories;
 
-import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.ImplementedBy;
 import criterias.UserCriteria;
@@ -30,8 +29,6 @@ public interface UserRepository extends ModelRepository<User, UUID, UserCriteria
   );
 
   User byUsername(String username, String... fetches);
-
-  User findByAuthUserIdentity(AuthUserIdentity identity);
 
   String nameToUsername(String name);
 

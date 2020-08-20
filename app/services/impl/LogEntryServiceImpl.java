@@ -1,9 +1,9 @@
 package services.impl;
 
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.PagedList;
-import com.avaje.ebean.RawSql;
-import com.avaje.ebean.RawSqlBuilder;
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
+import io.ebean.RawSql;
+import io.ebean.RawSqlBuilder;
 import criterias.LogEntryCriteria;
 import criterias.PagedListFactory;
 import models.Aggregate;
@@ -51,7 +51,7 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
 
   @Override
   public int countBy(LogEntryCriteria criteria) {
-    return cache.getOrElse(
+    return cache.getOrElseUpdate(
         criteria.getCacheKey(),
         () -> logEntryRepository.countBy(criteria),
         60
@@ -79,7 +79,7 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
         String.format("activity:aggregates:%s:%s", criteria.getUserId(), criteria.getProjectId());
 
     return log(
-        () -> cache.getOrElse(
+        () -> cache.getOrElseUpdate(
                 cacheKey,
                 () -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)),
                 60

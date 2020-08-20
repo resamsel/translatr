@@ -1,6 +1,6 @@
 package dto;
 
-import com.avaje.ebean.PagedList;
+import io.ebean.PagedList;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.StreamResponse;
@@ -44,12 +44,6 @@ public class NotificationsPaged extends Dto implements PagedList<AggregatedNotif
    * {@inheritDoc}
    */
   @Override
-  public void loadRowCount() {}
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public Future<Integer> getFutureCount() {
     return null;
   }
@@ -58,23 +52,7 @@ public class NotificationsPaged extends Dto implements PagedList<AggregatedNotif
    * {@inheritDoc}
    */
   @Override
-  public Future<Integer> getFutureRowCount() {
-    return null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public int getTotalCount() {
-    return 0;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public int getTotalRowCount() {
     return 0;
   }
 
@@ -91,6 +69,11 @@ public class NotificationsPaged extends Dto implements PagedList<AggregatedNotif
    */
   @Override
   public int getPageSize() {
+    return 0;
+  }
+
+  @Override
+  public int getPageIndex() {
     return 0;
   }
 

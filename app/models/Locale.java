@@ -1,10 +1,9 @@
 package models;
 
-import com.avaje.ebean.annotation.CreatedTimestamp;
-import com.avaje.ebean.annotation.UpdatedTimestamp;
+import io.ebean.annotation.CreatedTimestamp;
+import io.ebean.annotation.UpdatedTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import controllers.AbstractController;
-import controllers.Locales;
 import controllers.routes;
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
@@ -91,10 +90,7 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   @Override
   public Data data() {
     return Data.from(Locale.class, id, formatLocale(Context.current().lang().locale(), this),
-        routes.Locales
-            .localeBy(project.owner.username, project.name, name, Locales.DEFAULT_SEARCH,
-                Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT, Locales.DEFAULT_OFFSET)
-            .absoluteURL(Context.current().request()));
+            null);
   }
 
   @Override
@@ -119,83 +115,5 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
    */
   public String getPathName() {
     return UrlUtils.encode(name);
-  }
-
-  /**
-   * Return the route to the given key, with default params added.
-   */
-  public Call route() {
-    return route(AbstractController.DEFAULT_SEARCH, AbstractController.DEFAULT_ORDER,
-        AbstractController.DEFAULT_LIMIT, AbstractController.DEFAULT_OFFSET);
-  }
-
-  /**
-   * Return the route to the given key, with params added.
-   */
-  public Call route(String search, String order, int limit, int offset) {
-    Objects.requireNonNull(project, "Project is null");
-    Objects.requireNonNull(project.owner, "Project owner is null");
-    return routes.Locales
-        .localeBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
-            Objects.requireNonNull(project.name, "Project name is null"),
-            Objects.requireNonNull(name, "Name is null"), search, order, limit,
-            offset);
-  }
-
-  public Call editRoute() {
-    return editRoute(Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
-        Locales.DEFAULT_OFFSET);
-  }
-
-  public Call editRoute(String search, String order, int limit, int offset) {
-    Objects.requireNonNull(project, "Project is null");
-    Objects.requireNonNull(project.owner, "Project owner is null");
-    return routes.Locales
-        .editBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
-            Objects.requireNonNull(project.name, "Project name is null"),
-            Objects.requireNonNull(name, "Name is null"), search, order, limit,
-            offset);
-  }
-
-  public Call doEditRoute() {
-    Objects.requireNonNull(project, "Project is null");
-    Objects.requireNonNull(project.owner, "Project owner is null");
-    return routes.Locales
-        .doEditBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
-            Objects.requireNonNull(project.name, "Project name is null"),
-            Objects.requireNonNull(name, "Name is null"));
-  }
-
-  public Call removeRoute() {
-    return removeRoute(Locales.DEFAULT_SEARCH, Locales.DEFAULT_ORDER, Locales.DEFAULT_LIMIT,
-        Locales.DEFAULT_OFFSET);
-  }
-
-  public Call removeRoute(String search, String order, int limit, int offset) {
-    Objects.requireNonNull(project, "Project is null");
-    Objects.requireNonNull(project.owner, "Project owner is null");
-    return routes.Locales
-        .removeBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
-            Objects.requireNonNull(project.name, "Project name is null"),
-            Objects.requireNonNull(name, "Name is null"), search, order, limit,
-            offset);
-  }
-
-  public Call uploadRoute() {
-    Objects.requireNonNull(project, "Project is null");
-    Objects.requireNonNull(project.owner, "Project owner is null");
-    return routes.Locales
-        .uploadBy(Objects.requireNonNull(project.owner.username, "Project owner username is null"),
-            Objects.requireNonNull(project.name, "Project name is null"),
-            Objects.requireNonNull(name, "Name is null"));
-  }
-
-  public Call doUploadRoute() {
-    Objects.requireNonNull(project, "Project is null");
-    Objects.requireNonNull(project.owner, "Project owner is null");
-    return routes.Locales.doUploadBy(
-        Objects.requireNonNull(project.owner.username, "Project owner username is null"),
-        Objects.requireNonNull(project.name, "Project name is null"),
-        Objects.requireNonNull(name, "Name is null"));
   }
 }

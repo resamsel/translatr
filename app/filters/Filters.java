@@ -1,9 +1,11 @@
 package filters;
 
+import com.google.common.collect.ImmutableList;
 import play.http.HttpFilters;
 import play.mvc.EssentialFilter;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  *
@@ -23,11 +25,8 @@ public class Filters implements HttpFilters {
     this.tlsFilter = tlsFilter;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  public EssentialFilter[] filters() {
-    return new EssentialFilter[] {timingFilter, tlsFilter};
+  public List<EssentialFilter> getFilters() {
+    return ImmutableList.of(timingFilter, tlsFilter);
   }
 }

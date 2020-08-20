@@ -1,11 +1,12 @@
 package repositories.impl;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.Query;
-import com.avaje.ebean.SqlUpdate;
-import com.avaje.ebean.Transaction;
+import io.ebean.Ebean;
+import io.ebean.EbeanServer;
+import io.ebean.Query;
+import io.ebean.SqlUpdate;
+import io.ebean.Transaction;
+import play.db.ebean.EbeanConfig;
 import repositories.Persistence;
-import repositories.RepositoryProvider;
 import utils.TransactionUtils;
 
 import javax.inject.Inject;
@@ -15,16 +16,16 @@ import java.util.function.Consumer;
 
 @Singleton
 public class PersistenceImpl implements Persistence {
-  private final RepositoryProvider repositoryProvider;
+  private final EbeanServer ebeanServer;
 
   @Inject
-  public PersistenceImpl(RepositoryProvider repositoryProvider) {
-    this.repositoryProvider = repositoryProvider;
+  public PersistenceImpl(EbeanConfig ebeanConfig) {
+    this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
   }
 
   @Override
-  public RepositoryProvider getRepositoryProvider() {
-    return repositoryProvider;
+  public <T> Query<T> find(Class<T> beanType) {
+    return ebeanServer.find(beanType);
   }
 
   @Override
