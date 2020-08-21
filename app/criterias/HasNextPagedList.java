@@ -113,7 +113,7 @@ public class HasNextPagedList<T> implements PagedList<T>, Serializable {
 
   @Override
   public int getPageIndex() {
-    return getOffset() / getPageSize();
+    return getPageSize() != 0 ? getOffset() / getPageSize() : 0;
   }
 
   public int getOffset() {

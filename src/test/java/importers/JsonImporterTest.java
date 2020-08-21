@@ -1,6 +1,5 @@
 package importers;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import models.Locale;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +14,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JsonImporterTest {
@@ -33,18 +31,16 @@ public class JsonImporterTest {
   }
 
   @Test
-  public void retrievePropertiesWithNoJsonObject() {
+  public void retrievePropertiesWithNoJsonObject() throws Exception {
     // given
     InputStream inputStream = new ByteArrayInputStream("".getBytes());
     Locale locale = new Locale();
 
     // when
-    Throwable thrown = catchThrowable(() -> target.retrieveProperties(inputStream, locale));
+    Properties actual = target.retrieveProperties(inputStream, locale);
 
     // then
-    assertThat(thrown)
-        .isInstanceOf(JsonMappingException.class)
-        .hasMessageContaining("end-of-input");
+    assertThat(actual).isEmpty();
   }
 
   @Test

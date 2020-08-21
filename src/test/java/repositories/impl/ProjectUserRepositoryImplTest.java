@@ -59,6 +59,7 @@ public class ProjectUserRepositoryImplTest {
 
   @Before
   public void setUp() {
+    when(persistence.find(eq(ProjectUser.class))).thenReturn(query);
     when(query.where()).thenReturn(where);
     when(where.idEq(any())).thenReturn(expressionList);
     when(where.query()).thenReturn(query);
