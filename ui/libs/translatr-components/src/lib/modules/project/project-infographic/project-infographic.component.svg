@@ -1,0 +1,228 @@
+<svg viewBox="0 0 511.99998 217.99999" version="1.1" id="svg1014" width="512" height="218">
+  <defs id="defs835">
+    <filter style="color-interpolation-filters: sRGB" id="filter4777">
+      <feFlood flood-opacity="0.498039" flood-color="rgb(0,0,0)" result="flood" id="feFlood4767" />
+      <feComposite
+        in="flood"
+        in2="SourceGraphic"
+        operator="in"
+        result="composite1"
+        id="feComposite4769"
+      />
+      <feGaussianBlur in="composite1" stdDeviation="1.5" result="blur" id="feGaussianBlur4771" />
+      <feOffset dx="0" dy="1" result="offset" id="feOffset4773" />
+      <feComposite
+        in="SourceGraphic"
+        in2="offset"
+        operator="over"
+        result="composite2"
+        id="feComposite4775"
+      />
+    </filter>
+    <filter style="color-interpolation-filters: sRGB" id="filter4789">
+      <feFlood flood-opacity="0.498039" flood-color="rgb(0,0,0)" result="flood" id="feFlood4779" />
+      <feComposite
+        in="flood"
+        in2="SourceGraphic"
+        operator="in"
+        result="composite1"
+        id="feComposite4781"
+      />
+      <feGaussianBlur in="composite1" stdDeviation="1.5" result="blur" id="feGaussianBlur4783" />
+      <feOffset dx="0" dy="1" result="offset" id="feOffset4785" />
+      <feComposite
+        in="SourceGraphic"
+        in2="offset"
+        operator="over"
+        result="composite2"
+        id="feComposite4787"
+      />
+    </filter>
+    <filter style="color-interpolation-filters: sRGB" id="filter4801">
+      <feFlood flood-opacity="0.498039" flood-color="rgb(0,0,0)" result="flood" id="feFlood4791" />
+      <feComposite
+        in="flood"
+        in2="SourceGraphic"
+        operator="in"
+        result="composite1"
+        id="feComposite4793"
+      />
+      <feGaussianBlur in="composite1" stdDeviation="1.5" result="blur" id="feGaussianBlur4795" />
+      <feOffset dx="0" dy="1" result="offset" id="feOffset4797" />
+      <feComposite
+        in="SourceGraphic"
+        in2="offset"
+        operator="over"
+        result="composite2"
+        id="feComposite4799"
+      />
+    </filter>
+    <filter style="color-interpolation-filters: sRGB" id="filter4813">
+      <feFlood flood-opacity="0.498039" flood-color="rgb(0,0,0)" result="flood" id="feFlood4803" />
+      <feComposite
+        in="flood"
+        in2="SourceGraphic"
+        operator="in"
+        result="composite1"
+        id="feComposite4805"
+      />
+      <feGaussianBlur in="composite1" stdDeviation="1.5" result="blur" id="feGaussianBlur4807" />
+      <feOffset dx="0" dy="1" result="offset" id="feOffset4809" />
+      <feComposite
+        in="SourceGraphic"
+        in2="offset"
+        operator="over"
+        result="composite2"
+        id="feComposite4811"
+      />
+    </filter>
+  </defs>
+  <g id="g6211" transform="translate(-16,6.999999)" class="members">
+    <path
+      class="metric-background"
+      id="path6157"
+      d="M 176.66917,68.000007 197.45378,104.00001 176.66917,140 H 51.961522 L 31.176913,104.00001 51.961522,68.000007 Z"
+      style="
+        fill: #818181;
+        fill-opacity: 1;
+        stroke: #818181;
+        stroke-width: 8;
+        stroke-linecap: butt;
+        stroke-linejoin: round;
+        stroke-miterlimit: 4;
+        stroke-dasharray: none;
+        stroke-opacity: 1;
+      "
+    />
+    <text xml:space="preserve" x="48.456215" y="111.69701" id="text846">
+      <tspan id="tspan844" x="48.456215" y="111.69701" class="metric-value">
+        {{contributorCount}}
+      </tspan>
+      <tspan x="48.456215" y="129.30696" id="tspan848" transloco="members" class="metric-title">
+        Contributors
+      </tspan>
+    </text>
+    <g class="metric-icon" id="g4879" transform="matrix(4,0,0,4,-348.44864,-193.00003)">
+      <path
+        id="path4857"
+        d="m 116.97559,63.250008 h 18 v 18 h -18 z"
+        style="fill: none; stroke-width: 0.75"
+      />
+      <path
+        id="path4859"
+        d="m 128.97559,72.250009 c 1.245,0 2.2425,-1.005 2.2425,-2.25 0,-1.245 -0.9975,-2.25 -2.2425,-2.25 -1.245,0 -2.25,1.005 -2.25,2.25 0,1.245 1.005,2.25 2.25,2.25 z m -6,0 c 1.245,0 2.2425,-1.005 2.2425,-2.25 0,-1.245 -0.9975,-2.25 -2.2425,-2.25 -1.245,0 -2.25,1.005 -2.25,2.25 0,1.245 1.005,2.25 2.25,2.25 z m 0,1.5 c -1.7475,0 -5.25,0.8775 -5.25,2.625 v 1.875 h 10.5 v -1.875 c 0,-1.7475 -3.5025,-2.625 -5.25,-2.625 z m 6,0 c -0.2175,0 -0.465,0.015 -0.7275,0.0375 0.87,0.63 1.4775,1.4775 1.4775,2.5875 v 1.875 h 4.5 v -1.875 c 0,-1.7475 -3.5025,-2.625 -5.25,-2.625 z"
+        style="stroke-width: 0.75"
+      />
+    </g>
+  </g>
+  <g class="locales" id="g6237" transform="translate(141.68465,-37.000001)">
+    <path
+      style="
+        fill: #818181;
+        fill-opacity: 1;
+        stroke: #818181;
+        stroke-width: 8;
+        stroke-linecap: butt;
+        stroke-linejoin: round;
+        stroke-miterlimit: 4;
+        stroke-dasharray: none;
+        stroke-opacity: 1;
+      "
+      d="M 176.66917,68.000007 197.45378,104.00001 176.66917,140 H 51.961522 L 31.176913,104.00001 51.961522,68.000007 Z"
+      id="path6223"
+      class="metric-background"
+    />
+    <text id="text6229" y="111.69701" x="48.456215" xml:space="preserve">
+      <tspan class="metric-value" y="111.69701" x="48.456215" id="tspan6225">{{localeCount}}</tspan>
+      <tspan class="metric-title" transloco="locales" id="tspan6227" y="129.30696" x="48.456215">
+        Languages
+      </tspan>
+    </text>
+    <g transform="matrix(4,0,0,4,-348.44864,-193.00003)" id="g6235" class="metric-icon">
+      <path
+        style="fill: none; stroke-width: 0.75"
+        d="m 116.97559,63.250008 h 18 v 18 h -18 z"
+        id="path6231"
+      />
+      <path
+        style="stroke-width: 0.75"
+        d="m 128.97559,72.250009 c 1.245,0 2.2425,-1.005 2.2425,-2.25 0,-1.245 -0.9975,-2.25 -2.2425,-2.25 -1.245,0 -2.25,1.005 -2.25,2.25 0,1.245 1.005,2.25 2.25,2.25 z m -6,0 c 1.245,0 2.2425,-1.005 2.2425,-2.25 0,-1.245 -0.9975,-2.25 -2.2425,-2.25 -1.245,0 -2.25,1.005 -2.25,2.25 0,1.245 1.005,2.25 2.25,2.25 z m 0,1.5 c -1.7475,0 -5.25,0.8775 -5.25,2.625 v 1.875 h 10.5 v -1.875 c 0,-1.7475 -3.5025,-2.625 -5.25,-2.625 z m 6,0 c -0.2175,0 -0.465,0.015 -0.7275,0.0375 0.87,0.63 1.4775,1.4775 1.4775,2.5875 v 1.875 h 4.5 v -1.875 c 0,-1.7475 -3.5025,-2.625 -5.25,-2.625 z"
+        id="path6233"
+      />
+    </g>
+  </g>
+  <g transform="translate(141.68465,50.999999)" id="g6253" class="keys">
+    <path
+      class="metric-background"
+      id="path6239"
+      d="M 176.66917,68.000007 197.45378,104.00001 176.66917,140 H 51.961522 L 31.176913,104.00001 51.961522,68.000007 Z"
+      style="
+        fill: #818181;
+        fill-opacity: 1;
+        stroke: #818181;
+        stroke-width: 8;
+        stroke-linecap: butt;
+        stroke-linejoin: round;
+        stroke-miterlimit: 4;
+        stroke-dasharray: none;
+        stroke-opacity: 1;
+      "
+    />
+    <text xml:space="preserve" x="48.456215" y="111.69701" id="text6245">
+      <tspan id="tspan6241" x="48.456215" y="111.69701" class="metric-value">{{keyCount}}</tspan>
+      <tspan x="48.456215" y="129.30696" id="tspan6243" transloco="keys" class="metric-title">
+        Keys
+      </tspan>
+    </text>
+    <g class="metric-icon" id="g6251" transform="matrix(4,0,0,4,-348.44864,-193.00003)">
+      <path
+        id="path6247"
+        d="m 116.97559,63.250008 h 18 v 18 h -18 z"
+        style="fill: none; stroke-width: 0.75"
+      />
+      <path
+        id="path6249"
+        d="m 128.97559,72.250009 c 1.245,0 2.2425,-1.005 2.2425,-2.25 0,-1.245 -0.9975,-2.25 -2.2425,-2.25 -1.245,0 -2.25,1.005 -2.25,2.25 0,1.245 1.005,2.25 2.25,2.25 z m -6,0 c 1.245,0 2.2425,-1.005 2.2425,-2.25 0,-1.245 -0.9975,-2.25 -2.2425,-2.25 -1.245,0 -2.25,1.005 -2.25,2.25 0,1.245 1.005,2.25 2.25,2.25 z m 0,1.5 c -1.7475,0 -5.25,0.8775 -5.25,2.625 v 1.875 h 10.5 v -1.875 c 0,-1.7475 -3.5025,-2.625 -5.25,-2.625 z m 6,0 c -0.2175,0 -0.465,0.015 -0.7275,0.0375 0.87,0.63 1.4775,1.4775 1.4775,2.5875 v 1.875 h 4.5 v -1.875 c 0,-1.7475 -3.5025,-2.625 -5.25,-2.625 z"
+        style="stroke-width: 0.75"
+      />
+    </g>
+  </g>
+  <g class="messages" id="g6269" transform="translate(300,6.999999)">
+    <path
+      style="
+        fill: #818181;
+        fill-opacity: 1;
+        stroke: #818181;
+        stroke-width: 8;
+        stroke-linecap: butt;
+        stroke-linejoin: round;
+        stroke-miterlimit: 4;
+        stroke-dasharray: none;
+        stroke-opacity: 1;
+      "
+      d="M 176.66917,68.000007 197.45378,104.00001 176.66917,140 H 51.961522 L 31.176913,104.00001 51.961522,68.000007 Z"
+      id="path6255"
+      class="metric-background"
+    />
+    <text id="text6261" y="111.69701" x="48.456215" xml:space="preserve">
+      <tspan class="metric-value" y="111.69701" x="48.456215" id="tspan6257">
+        {{messageCount}}
+      </tspan>
+      <tspan class="metric-title" transloco="messages" id="tspan6259" y="129.30696" x="48.456215">
+        Translations
+      </tspan>
+    </text>
+    <g transform="matrix(4,0,0,4,-348.44864,-193.00003)" id="g6267" class="metric-icon">
+      <path
+        style="fill: none; stroke-width: 0.75"
+        d="m 116.97559,63.250008 h 18 v 18 h -18 z"
+        id="path6263"
+      />
+      <path
+        style="stroke-width: 0.75"
+        d="m 128.97559,72.250009 c 1.245,0 2.2425,-1.005 2.2425,-2.25 0,-1.245 -0.9975,-2.25 -2.2425,-2.25 -1.245,0 -2.25,1.005 -2.25,2.25 0,1.245 1.005,2.25 2.25,2.25 z m -6,0 c 1.245,0 2.2425,-1.005 2.2425,-2.25 0,-1.245 -0.9975,-2.25 -2.2425,-2.25 -1.245,0 -2.25,1.005 -2.25,2.25 0,1.245 1.005,2.25 2.25,2.25 z m 0,1.5 c -1.7475,0 -5.25,0.8775 -5.25,2.625 v 1.875 h 10.5 v -1.875 c 0,-1.7475 -3.5025,-2.625 -5.25,-2.625 z m 6,0 c -0.2175,0 -0.465,0.015 -0.7275,0.0375 0.87,0.63 1.4775,1.4775 1.4775,2.5875 v 1.875 h 4.5 v -1.875 c 0,-1.7475 -3.5025,-2.625 -5.25,-2.625 z"
+        id="path6265"
+      />
+    </g>
+  </g>
+</svg>

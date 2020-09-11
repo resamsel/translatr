@@ -1,0 +1,48 @@
+@import "mixins";
+
+svg {
+  display: block;
+  width: 100%;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+
+  .metric-title {
+    font-size: 14px;
+    fill: rgba(255, 255, 255, 0.87);
+  }
+
+  .metric-value {
+    font-size: 36px;
+    line-height: 42px;
+    font-weight: 300;
+    fill: #fff;
+  }
+
+  .metric-icon {
+    fill: rgba(255, 255, 255, 0.2);
+  }
+
+  .members .metric-background {
+    fill: #ff7043 !important;
+    stroke: #ff7043 !important;
+  }
+
+  .locales .metric-background {
+    fill: #0097a7 !important;
+    stroke: #0097a7 !important;
+  }
+
+  .keys .metric-background {
+    fill: #689f38 !important;
+    stroke: #689f38 !important;
+  }
+
+  .messages .metric-background {
+    fill: #ef5350 !important;
+    stroke: #ef5350 !important;
+  }
+
+  @include medium {
+    width: 50%;
+    margin: 0 auto;
+  }
+}
