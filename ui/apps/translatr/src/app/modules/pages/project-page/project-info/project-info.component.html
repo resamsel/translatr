@@ -1,5 +1,12 @@
 <ng-container *transloco="let t">
   <div class="container flex" *ngIf="project$ | async as project">
+    <dev-project-infographic *featureFlag="Feature.ProjectInfographic"
+      [contributorCount]="(members$ | async)?.total | shortNumber"
+      [localeCount]="(locales$ | async)?.total | shortNumber"
+      [keyCount]="(keys$ | async)?.total | shortNumber"
+      [messageCount]="(latestMessages$ | async)?.total | shortNumber"
+    ></dev-project-infographic>
+
     <dev-metric
       [routerLink]="['/', project.ownerUsername]"
       [name]="t('project.owner')"

@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.toMap;
 
 public enum Feature {
   ProjectCliCard("project-cli-card", true),
+  ProjectInfographic("project-infographic", false),
   HeaderGraphic("header-graphic", true),
   LanguageSwitcher("language-switcher", true);
 
