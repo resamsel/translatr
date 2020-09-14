@@ -124,9 +124,11 @@ public class LogEntryRepositoryImpl extends
   protected void prePersist(LogEntry t, boolean update) {
     if (t.project == null) {
       Http.Context ctx = contextProvider.getOrNull();
-      UUID projectId = ContextKey.ProjectId.get(ctx.request());
-      if (projectId != null) {
-        t.project = new Project().withId(projectId);
+      if (ctx != null) {
+        UUID projectId = ContextKey.ProjectId.get(ctx.request());
+        if (projectId != null) {
+          t.project = new Project().withId(projectId);
+        }
       }
     }
   }
