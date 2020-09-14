@@ -108,8 +108,6 @@ GET           /activity/csv                                                     
 GET           /login/:authClient                                                      controllers.Application.login(request: Request, authClient: String)
 GET           /authenticate                                                           @org.pac4j.play.CallbackController.callback(request: Request)
 POST          /authenticate                                                           @org.pac4j.play.CallbackController.callback(request: Request)
-GET           /casProxyCallback                                                       @org.pac4j.play.CallbackController.callback(request: Request)
-POST          /casProxyCallback                                                       @org.pac4j.play.CallbackController.callback(request: Request)
 GET           /logout                                                                 @org.pac4j.play.LogoutController.logout(request: Request)
 
 # Serve static assets under public directory

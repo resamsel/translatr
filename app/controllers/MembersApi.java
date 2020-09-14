@@ -1,6 +1,5 @@
 package controllers;
 
-import actions.ApiAction;
 import criterias.ProjectUserCriteria;
 import dto.ProjectUser;
 import dto.errors.ConstraintViolationError;
@@ -22,7 +21,6 @@ import play.inject.Injector;
 import play.mvc.BodyParser;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.With;
 import services.AuthProvider;
 import services.CacheService;
 import services.ContextProvider;
@@ -37,7 +35,6 @@ import java.util.concurrent.CompletionStage;
  * @version 10 Jan 2017
  */
 @Api(value = "Members", produces = "application/json")
-@With(ApiAction.class)
 public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriteria, ProjectUserApiService> {
 
   private static final String TYPE = "Member";

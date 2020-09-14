@@ -1,6 +1,5 @@
 package controllers;
 
-import actions.ApiAction;
 import com.fasterxml.jackson.databind.node.NullNode;
 import criterias.LocaleCriteria;
 import dto.Locale;
@@ -22,7 +21,6 @@ import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
 import services.AuthProvider;
 import services.CacheService;
 import services.api.LocaleApiService;
@@ -40,7 +38,6 @@ import java.util.function.Function;
  * @version 10 Jan 2017
  */
 @io.swagger.annotations.Api(value = "Locales", produces = "application/json")
-@With(ApiAction.class)
 public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, LocaleApiService> {
 
   private static final String TYPE = "Locale";
@@ -110,7 +107,7 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
             LocaleCriteria.from(request()).withProjectId(projectId),
             criteria -> checkProjectRole(
                     projectId,
-                    authProvider.loggedInUser(),
+                    authProvider.loggedInUser(request()),
                     ProjectRole.Owner,
                     ProjectRole.Manager,
                     ProjectRole.Translator,

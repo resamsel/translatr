@@ -96,6 +96,15 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   }
 
   @Override
+  public User byAccessToken(String accessTokenKey) {
+    return persistence.find(User.class)
+            .where()
+            .eq("accessTokens.key", accessTokenKey)
+            .findOneOrEmpty()
+            .orElse(null);
+  }
+
+  @Override
   public String nameToUsername(String name) {
     if (StringUtils.isEmpty(name)) {
       return null;

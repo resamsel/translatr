@@ -1,6 +1,5 @@
 package controllers;
 
-import actions.ApiAction;
 import criterias.NotificationCriteria;
 import dto.NotificationsPaged;
 import dto.PermissionException;
@@ -22,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.inject.Injector;
 import play.mvc.Result;
-import play.mvc.With;
 import services.CacheService;
 import services.NotificationService;
 
@@ -36,7 +34,6 @@ import java.util.concurrent.CompletionStage;
  * @version 10 Jan 2017
  */
 @io.swagger.annotations.Api(value = "Notifications", produces = "application/json")
-@With(ApiAction.class)
 public class NotificationsApi extends AbstractBaseApi {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(NotificationsApi.class);

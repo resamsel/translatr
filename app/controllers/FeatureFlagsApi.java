@@ -1,6 +1,5 @@
 package controllers;
 
-import actions.ApiAction;
 import criterias.UserFeatureFlagCriteria;
 import dto.UserFeatureFlag;
 import dto.errors.ConstraintViolationError;
@@ -17,7 +16,6 @@ import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
 import play.inject.Injector;
 import play.mvc.Result;
-import play.mvc.With;
 import services.AuthProvider;
 import services.CacheService;
 import services.api.UserFeatureFlagApiService;
@@ -27,7 +25,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 
 @io.swagger.annotations.Api(value = "Feature Flags", produces = "application/json")
-@With(ApiAction.class)
 public class FeatureFlagsApi extends AbstractApi<UserFeatureFlag, UUID, UserFeatureFlagCriteria, UserFeatureFlagApiService> {
 
   private static final String TYPE = "User";

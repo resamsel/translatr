@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { AuthClient } from '@dev/translatr-model';
 import { AuthClientService } from '@translatr/translatr-sdk/src/lib/services/auth-client.service';
 import { ENDPOINT_URL } from '@translatr/utils';
-import { filter, take } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 
 @Component({
   selector: 'dev-login-page',
@@ -25,7 +25,9 @@ export class LoginPageComponent implements OnInit {
     twitter: ['fab', 'twitter']
   };
 
-  readonly providers$ = this.authProviderService.find();
+  readonly providers$ = this.authProviderService
+    .find()
+    .pipe(map(clients => clients.filter(client => this.names[client.key] !== undefined)));
 
   constructor(
     private readonly authProviderService: AuthClientService,

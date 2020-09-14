@@ -1,6 +1,5 @@
 package controllers;
 
-import actions.ApiAction;
 import criterias.MessageCriteria;
 import dto.Message;
 import dto.errors.ConstraintViolationError;
@@ -19,7 +18,6 @@ import models.ProjectRole;
 import play.inject.Injector;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
 import services.AuthProvider;
 import services.CacheService;
 import services.api.MessageApiService;
@@ -33,7 +31,6 @@ import java.util.concurrent.CompletionStage;
  * @version 10 Jan 2017
  */
 @io.swagger.annotations.Api(value = "Messages", produces = "application/json")
-@With(ApiAction.class)
 public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria, MessageApiService> {
 
   private static final String TYPE = "Message";
