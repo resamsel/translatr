@@ -1,4 +1,5 @@
 @import '~@angular/material/theming';
+@import 'mixins';
 
 :host {
   height: 100%;
@@ -7,15 +8,18 @@
 }
 
 .wrapper {
-  flex: 1 100%;
-  display: flex;
   justify-content: center;
-  align-items: center;
+  margin: 8px;
+
+  @include medium {
+    display: flex;
+    flex: 1 100%;
+    align-items: center;
+  }
 
   .login {
     display: flex;
-    width: 600px;
-    height: 375px;
+    flex-direction: column;
 
     .options,
     .info {
@@ -24,10 +28,12 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
+      margin: 8px 0;
     }
 
     .info {
       color: rgba(0, 0, 0, 0.6);
+      text-align: center;
 
       .mat-icon {
         font-size: 128px;
@@ -43,7 +49,7 @@
       .mat-button {
         display: block;
         width: 100%;
-        margin: 4px 16px;
+        margin: 4px 8px;
         color: #fff;
 
         @include mat-elevation-transition;
@@ -51,26 +57,16 @@
         &:hover {
           @include mat-elevation(4);
         }
+      }
+    }
 
-        &.google {
-          background: #dd4b39;
-        }
+    @include medium {
+      flex-direction: row;
+      min-width: 500px;
 
-        &.keycloak {
-          background: #393f44;
-        }
-
-        &.github {
-          background: #444;
-        }
-
-        &.facebook {
-          background: #3b5998;
-        }
-
-        &.twitter {
-          background: #55acee;
-        }
+      .options,
+      .info {
+        margin: 16px;
       }
     }
   }

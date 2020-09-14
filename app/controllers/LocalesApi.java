@@ -284,7 +284,7 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
 
   private CompletionStage<Result> locale(String username, String projectName, String localeName,
                                          Function<Locale, Result> processor, String... fetches) {
-    return tryCatch(() -> {
+    return async(() -> {
       Locale locale = api.byOwnerAndProjectAndName(username, projectName, localeName, fetches);
 
       checkProjectRole(locale.projectId, authProvider.loggedInUser(), ProjectRole.Owner,

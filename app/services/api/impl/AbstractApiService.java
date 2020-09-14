@@ -140,7 +140,7 @@ public abstract class AbstractApiService
     return out;
   }
 
-  private DTO toDto(JsonNode json) {
+  protected DTO toDto(JsonNode json) {
     DTO dto = Json.fromJson(json, dtoClass);
 
     Set<ConstraintViolation<DTO>> violations = validator.validate(dto);

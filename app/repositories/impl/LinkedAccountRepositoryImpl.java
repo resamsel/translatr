@@ -50,6 +50,9 @@ public class LinkedAccountRepositoryImpl extends
 
   @Override
   public LinkedAccount byId(Long id, String... fetches) {
-    return persistence.find(LinkedAccount.class).setId(id).findOne();
+    return persistence.find(LinkedAccount.class)
+            .setId(id)
+            .findOneOrEmpty()
+            .orElse(null);
   }
 }

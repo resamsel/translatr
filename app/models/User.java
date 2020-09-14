@@ -112,7 +112,7 @@ public class User implements Model<User, UUID>, Subject {
 
   @JsonIgnore
   @DbJsonB
-  public Map<String, String> settings;
+  public Map<String, String> settings = new HashMap<>();
 
   /**
    * {@inheritDoc}

@@ -49,9 +49,10 @@ PUT           /api/member                                                       
 DELETE        /api/member/:memberId                                                   controllers.MembersApi.delete(memberId: java.lang.Long)
 
 GET           /api/users                                                              controllers.UsersApi.find
-GET           /api/me                                                                 controllers.UsersApi.me(fetch: String ?= "")
+GET           /api/profile                                                            controllers.UsersApi.profile(request: Request)
+GET           /api/me                                                                 controllers.UsersApi.me(request: Request, fetch: String ?= "")
 GET           /api/user/:userId                                                       controllers.UsersApi.get(userId: java.util.UUID)
-POST          /api/user                                                               controllers.UsersApi.create
+POST          /api/user                                                               controllers.UsersApi.create(request: Request)
 PUT           /api/user                                                               controllers.UsersApi.update
 DELETE        /api/user/:userId                                                       controllers.UsersApi.delete(userId: java.util.UUID)
 GET           /api/user/:userId/activity                                              controllers.UsersApi.activity(userId: java.util.UUID)
@@ -94,7 +95,7 @@ GET           /api/:username/:projectName/keys/:keyName                         
 # WEB
 #
 
-GET           /                                                                       controllers.Application.index
+GET           /                                                                       controllers.Application.index(request: Request)
 GET           /ui                                                                     controllers.Application.indexUi
 GET           /ui/                                                                    controllers.Default.redirect(to = "/ui")
 GET           /admin                                                                  controllers.Application.indexAdmin
@@ -104,7 +105,6 @@ GET           /admin/                                                           
 GET           /activity/csv                                                           controllers.Application.activityCsv
 
 # Authentication
-#GET           /logout                                                                 controllers.Application.logout
 GET           /login/:authClient                                                      controllers.Application.login(request: Request, authClient: String)
 GET           /authenticate                                                           @org.pac4j.play.CallbackController.callback(request: Request)
 POST          /authenticate                                                           @org.pac4j.play.CallbackController.callback(request: Request)

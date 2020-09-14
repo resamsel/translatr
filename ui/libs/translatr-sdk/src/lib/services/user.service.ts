@@ -1,6 +1,13 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Aggregate, PagedList, RequestCriteria, Setting, User } from '@dev/translatr-model';
+import {
+  Aggregate,
+  PagedList,
+  RequestCriteria,
+  Setting,
+  User,
+  Profile
+} from '@dev/translatr-model';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
@@ -114,5 +121,15 @@ export class UserService extends AbstractService<User, RequestCriteria> {
           })
         )
       );
+  }
+
+  authProfile(): Observable<Profile | undefined> {
+    const path = '/api/profile';
+    return this.http.get<Profile>(path).pipe(
+      map(convertTemporals),
+      catchError((err: HttpErrorResponse) =>
+        this.errorHandler.handleError(err, { name: 'authProfile', params: [], method: 'get', path })
+      )
+    );
   }
 }

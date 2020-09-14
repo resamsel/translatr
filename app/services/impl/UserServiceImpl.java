@@ -125,6 +125,11 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   }
 
   @Override
+  public User byLinkedAccount(String providerKey, String providerUserId) {
+    return userRepository.byLinkedAccount(providerKey, providerUserId);
+  }
+
+  @Override
   public User saveSettings(UUID userId, Map<String, String> settings) {
     return postUpdate(userRepository.saveSettings(userId, cleanSettings(settings)));
   }

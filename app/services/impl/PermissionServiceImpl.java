@@ -11,6 +11,7 @@ import models.Scope;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import services.AuthProvider;
 import services.ContextProvider;
 import services.PermissionService;
@@ -90,7 +91,8 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public boolean hasPermissionAll(Scope... scopes) {
-    return hasPermissionAll(ContextKey.AccessToken.get(contextProvider.getOrNull()), scopes);
+    Http.Context ctx = contextProvider.getOrNull();
+    return hasPermissionAll(ContextKey.AccessToken.get(ctx.request()), scopes);
   }
 
   @Override
@@ -140,7 +142,7 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public void checkPermissionAll(String errorMessage, Scope... scopes) {
-    AccessToken accessToken = ContextKey.AccessToken.get(contextProvider.getOrNull());
+    AccessToken accessToken = ContextKey.AccessToken.get(contextProvider.getOrNull().request());
     if (accessToken == null && authProvider.loggedInUser() == null) {
       throw new AuthorizationException();
     }

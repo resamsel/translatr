@@ -45,6 +45,11 @@ public class ApiAction extends Action.Simple {
 
     changeLangFromHeader(ctx, req.getHeaders());
 
+    return call(req);
+  }
+
+  @Override
+  public CompletionStage<Result> call(Request req) {
     String accessToken = null;
     switch (req.method()) {
       case "POST":
@@ -76,10 +81,10 @@ public class ApiAction extends Action.Simple {
         return CompletableFuture.completedFuture(
                 forbidden(ErrorUtils.toJson(new PermissionException("Invalid access_token"))));
 
-      ContextKey.AccessToken.put(ctx, token);
+      ContextKey.AccessToken.put(req, token);
     }
 
-    return delegate.call(ctx);
+    return delegate.call(req);
   }
 
   public static void changeLangFromHeader(Context ctx, Http.Headers headers) {

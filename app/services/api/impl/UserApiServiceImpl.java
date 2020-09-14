@@ -1,17 +1,21 @@
 package services.api.impl;
 
-import io.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
 import criterias.LogEntryCriteria;
 import criterias.UserCriteria;
 import dto.DtoPagedList;
 import dto.NotFoundException;
+import dto.Profile;
+import io.ebean.PagedList;
 import mappers.AggregateMapper;
+import mappers.ProfileMapper;
 import mappers.UserMapper;
 import mappers.UserObfuscatorMapper;
+import models.LinkedAccount;
 import models.Scope;
 import models.User;
 import play.libs.Json;
+import play.mvc.Http;
 import services.AuthProvider;
 import services.LogEntryService;
 import services.PermissionService;
@@ -21,6 +25,7 @@ import services.api.UserApiService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,23 +37,23 @@ import java.util.function.Function;
  */
 @Singleton
 public class UserApiServiceImpl extends
-    AbstractApiService<User, UUID, UserCriteria, UserService, dto.User>
-    implements UserApiService {
+        AbstractApiService<User, UUID, UserCriteria, UserService, dto.User>
+        implements UserApiService {
 
   private final AuthProvider authProvider;
   private final LogEntryService logEntryService;
 
   @Inject
   protected UserApiServiceImpl(
-      UserService userService,
-      AuthProvider authProvider,
-      PermissionService permissionService,
-      LogEntryService logEntryService, Validator validator) {
+          UserService userService,
+          AuthProvider authProvider,
+          PermissionService permissionService,
+          LogEntryService logEntryService, Validator validator) {
     super(userService, dto.User.class, UserMapper::toDto,
-        new Scope[]{Scope.UserRead},
-        new Scope[]{Scope.UserWrite},
-        permissionService,
-        validator
+            new Scope[]{Scope.UserRead},
+            new Scope[]{Scope.UserWrite},
+            permissionService,
+            validator
     );
 
     this.authProvider = authProvider;
@@ -58,7 +63,21 @@ public class UserApiServiceImpl extends
   @Override
   protected Function<User, dto.User> getDtoMapper() {
     return super.getDtoMapper()
-        .andThen(UserObfuscatorMapper.of(authProvider.loggedInUser()));
+            .andThen(UserObfuscatorMapper.of(authProvider.loggedInUser()));
+  }
+
+  @Override
+  public dto.User create(Http.Request request) {
+    User user = toModel(toDto(request.body().asJson()));
+
+    authProvider.loggedInProfile(request).ifPresent(profile -> {
+      LinkedAccount linkedAccount = new LinkedAccount().withUser(user);
+      linkedAccount.providerKey = profile.getClientName();
+      linkedAccount.providerUserId = profile.getId();
+      user.linkedAccounts = Collections.singletonList(linkedAccount);
+    });
+
+    return getDtoMapper().apply(service.create(user));
   }
 
   @Override
@@ -66,8 +85,8 @@ public class UserApiServiceImpl extends
     permissionService.checkPermissionAll("Access token not allowed", readScopes);
 
     return Optional.ofNullable(service.byUsername(username, propertiesToFetch))
-        .map(getDtoMapper())
-        .orElseThrow(() -> new NotFoundException(dto.User.class.getSimpleName(), username));
+            .map(getDtoMapper())
+            .orElseThrow(() -> new NotFoundException(dto.User.class.getSimpleName(), username));
   }
 
   @Override
@@ -80,8 +99,17 @@ public class UserApiServiceImpl extends
   }
 
   @Override
-  public dto.User me(String... propertiesToFetch) {
-    return dtoMapper.apply(service.byId(authProvider.loggedInUserId(), propertiesToFetch));
+  public Profile profile(Http.Request request) {
+    return authProvider.loggedInProfile(request)
+            .map(ProfileMapper::toDto)
+            .orElse(null);
+  }
+
+  @Override
+  public dto.User me(Http.Request request, String... propertiesToFetch) {
+    UUID loggedInUserId = authProvider.loggedInUserId(request);
+
+    return dtoMapper.apply(service.byId(loggedInUserId, propertiesToFetch));
   }
 
   @Override

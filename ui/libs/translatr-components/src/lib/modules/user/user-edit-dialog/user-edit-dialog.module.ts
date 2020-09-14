@@ -8,18 +8,22 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslocoModule } from '@ngneat/transloco';
 import { UserEditDialogComponent } from './user-edit-dialog.component';
+import { UserEditFormModule } from '../user-edit-form';
 
 @NgModule({
   declarations: [UserEditDialogComponent],
   imports: [
     CommonModule,
-    MatFormFieldModule,
+    ReactiveFormsModule,
+    TranslocoModule,
+
     MatDialogModule,
     MatButtonModule,
-    ReactiveFormsModule,
     MatInputModule,
     MatSelectModule,
-    TranslocoModule
+    MatFormFieldModule,
+
+    UserEditFormModule
   ],
   exports: [UserEditDialogComponent],
   entryComponents: [UserEditDialogComponent]

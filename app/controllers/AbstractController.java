@@ -89,7 +89,7 @@ public abstract class AbstractController extends Controller {
     response.setHeader(Http.Response.EXPIRES, "0");  // Proxies.
   }
 
-  <T> CompletionStage<T> tryCatch(CheckedSupplier<T> supplier) {
+  <T> CompletionStage<T> async(CheckedSupplier<T> supplier) {
     return CompletableFuture.supplyAsync(supplier::wrap, executionContext.current());
   }
 
@@ -127,12 +127,12 @@ public abstract class AbstractController extends Controller {
   }
 
   protected Project select(Project project) {
-    ContextKey.ProjectId.put(ctx(), project.id);
+    ContextKey.ProjectId.put(request(), project.id);
     return project;
   }
 
   protected CompletionStage<Result> loggedInUser(Function<User, Result> processor) {
-    return tryCatch(authProvider::loggedInUser).thenApply(processor);
+    return async(authProvider::loggedInUser).thenApply(processor);
   }
 
   protected User user(String username, boolean restrict, String... fetches)

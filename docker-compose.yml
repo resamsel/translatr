@@ -11,7 +11,12 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql/data
       - ./docker/entrypoint-initdb.d:/docker-entrypoint-initdb.d
-  redis-translatr:
-    image: redis
+  keycloak-translatr:
+    image: quay.io/keycloak/keycloak:latest
     ports:
-      - "6379:6379"
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      KEYCLOAK_USER: translatr
+      KEYCLOAK_PASSWORD: translatr
+      DB_VENDOR: h2

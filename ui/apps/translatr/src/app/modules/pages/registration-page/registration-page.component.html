@@ -1,0 +1,47 @@
+<app-sidenav
+  *transloco="let t"
+  [elevated]="false"
+  [overlay]="true"
+  [page]="t('registration.title')"
+>
+  <header class="header header-graphic">
+    <div class="container title">
+      <div class="content">
+        <h1 class="page" transloco="registration.title">User Registration</h1>
+        <p class="description" transloco="registration.text">The world that dwells around you</p>
+      </div>
+    </div>
+  </header>
+  <div class="container narrow">
+    <mat-card>
+      <mat-card-title transloco="registration.title">User Registration</mat-card-title>
+      <mat-card-subtitle *ngIf="profile$ | async as profile">
+        <span class="client client-{{profile.clientName}}">
+          <fa-icon [icon]="icons[profile.clientName]"></fa-icon>
+          <span
+            transloco="client.name"
+            [translocoParams]="{clientName: profile.clientName}"
+          >{{profile.clientName}}</span>
+        </span>
+      </mat-card-subtitle>
+      <mat-card-content>
+        <dev-user-edit-form
+          #editForm
+          [user]="profile$ | async"
+          [errors]="errors$ | async"
+          (submit)="onSubmit($event)"
+        ></dev-user-edit-form>
+      </mat-card-content>
+      <mat-card-actions class="dialog-actions">
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="editForm.onSubmit()"
+          [disabled]="editForm.form.invalid"
+          transloco="button.save"
+        >Save
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</app-sidenav>

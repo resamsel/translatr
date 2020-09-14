@@ -17,6 +17,7 @@ import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
 import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
 import services.AuthProvider;
@@ -127,9 +128,10 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
     return toJsons(() -> api.activity(id));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  public CompletionStage<Result> profile(Http.Request request) {
+    return toJson(() -> api.profile(request));
+  }
+
   @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
           scopes = @AuthorizationScope(scope = USER_READ, description = USER_READ_DESCRIPTION)))
   @ApiResponses({@ApiResponse(code = 200, message = GET_RESPONSE, response = dto.User.class),
@@ -138,8 +140,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> me(@ApiParam(value = FETCH) String fetch) {
-    return toJson(() -> api.me(StringUtils.split(fetch, ",")));
+  public CompletionStage<Result> me(Http.Request request, @ApiParam(value = FETCH) String fetch) {
+    return toJson(() -> api.me(request, StringUtils.split(fetch, ",")));
   }
 
   /**
@@ -156,8 +158,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
                   paramType = "body"),
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
-  public CompletionStage<Result> create() {
-    return toJson(() -> api.create(request().body().asJson()));
+  public CompletionStage<Result> create(Http.Request request) {
+    return toJson(() -> api.create(request));
   }
 
   /**

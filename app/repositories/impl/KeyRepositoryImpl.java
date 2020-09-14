@@ -86,12 +86,12 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
     if (criteria.getSearch() != null) {
       query.disjunction().ilike("name", "%" + criteria.getSearch() + "%")
-          .exists(persistence.createQuery(Message.class)
-              .where()
-              .raw("key.id = k.id")
-              .ilike("value", "%" + criteria.getSearch() + "%")
-              .query())
-          .endJunction();
+              .exists(persistence.createQuery(Message.class)
+                      .where()
+                      .raw("key.id = k.id")
+                      .ilike("value", "%" + criteria.getSearch() + "%")
+                      .query())
+              .endJunction();
     }
 
     if (criteria.getProjectOwnerUsername() != null) {
@@ -129,13 +129,15 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   @Override
   public Key byId(UUID id, String... fetches) {
     return QueryUtils.fetch(persistence.find(Key.class).setId(id).setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP).findOne();
+            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
+            .findOneOrEmpty()
+            .orElse(null);
   }
 
   @Override
   public List<Key> latest(Project project, int limit) {
     return fetch().where().eq("project", project).order("whenUpdated desc")
-        .setMaxRows(limit).findList();
+            .setMaxRows(limit).findList();
   }
 
   @Override
@@ -154,11 +156,11 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   @Override
   public Key byOwnerAndProjectAndName(String username, String projectName, String keyName, String... fetches) {
     return fetch(fetches)
-        .where()
-        .eq("project.owner.username", username)
-        .eq("project.name", projectName)
-        .eq("name", keyName)
-        .findOne();
+            .where()
+            .eq("project.owner.username", username)
+            .eq("project.name", projectName)
+            .eq("name", keyName)
+            .findOne();
   }
 
   private Query<Key> fetch(List<String> fetches) {
@@ -167,7 +169,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
   private Query<Key> fetch(String... fetches) {
     return QueryUtils.fetch(persistence.find(Key.class).alias("k").setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
+            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 
   private PagedList<Key> fetch(@Nonnull PagedList<Key> paged, @Nonnull KeyCriteria criteria) {
@@ -175,7 +177,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
       Map<UUID, Double> progressMap = progress(criteria.getProjectId());
 
       paged.getList()
-          .forEach(l -> l.progress = progressMap.getOrDefault(l.id, 0.0));
+              .forEach(l -> l.progress = progressMap.getOrDefault(l.id, 0.0));
     }
 
     return paged;
@@ -184,22 +186,22 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   @Override
   public Map<UUID, Double> progress(UUID projectId) {
     List<Stat> stats = log(
-        () -> persistence.createQuery(Stat.class)
-            .setRawSql(RawSqlBuilder
-                .parse("SELECT " +
-                    PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +
-                    " FROM key k" +
-                    " LEFT OUTER JOIN message m ON m.key_id = k.id" +
-                    " LEFT OUTER JOIN locale l ON l.project_id = k.project_id" +
-                    " GROUP BY " + PROGRESS_COLUMN_ID)
-                .columnMapping(PROGRESS_COLUMN_ID, "id")
-                .columnMapping(PROGRESS_COLUMN_COUNT, "count")
-                .create())
-            .where()
-            .eq("k.project_id", projectId)
-            .findList(),
-        LOGGER,
-        "Retrieving key progress"
+            () -> persistence.createQuery(Stat.class)
+                    .setRawSql(RawSqlBuilder
+                            .parse("SELECT " +
+                                    PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +
+                                    " FROM key k" +
+                                    " LEFT OUTER JOIN message m ON m.key_id = k.id" +
+                                    " LEFT OUTER JOIN locale l ON l.project_id = k.project_id" +
+                                    " GROUP BY " + PROGRESS_COLUMN_ID)
+                            .columnMapping(PROGRESS_COLUMN_ID, "id")
+                            .columnMapping(PROGRESS_COLUMN_COUNT, "count")
+                            .create())
+                    .where()
+                    .eq("k.project_id", projectId)
+                    .findList(),
+            LOGGER,
+            "Retrieving key progress"
     );
 
     return stats.stream().collect(Collectors.toMap(stat -> stat.id, stat -> stat.count));
@@ -212,10 +214,10 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   protected void prePersist(Key t, boolean update) {
     if (update) {
       activityActor.tell(
-          new Activity<>(
-              ActionType.Update, authProvider.loggedInUser(), t.project, dto.Key.class,
-              KeyMapper.toDto(byId(t.id)), KeyMapper.toDto(t)),
-          null
+              new Activity<>(
+                      ActionType.Update, authProvider.loggedInUser(), t.project, dto.Key.class,
+                      KeyMapper.toDto(byId(t.id)), KeyMapper.toDto(t)),
+              null
       );
     }
   }
@@ -227,8 +229,8 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   protected void postSave(Key t, boolean update) {
     if (!update) {
       activityActor.tell(
-          new Activity<>(ActionType.Create, authProvider.loggedInUser(), t.project, dto.Key.class, null, KeyMapper.toDto(t)),
-          null
+              new Activity<>(ActionType.Create, authProvider.loggedInUser(), t.project, dto.Key.class, null, KeyMapper.toDto(t)),
+              null
       );
     }
   }
@@ -239,14 +241,14 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   @Override
   protected void preDelete(Key t) {
     if (!permissionService
-        .hasPermissionAny(t.project.id, authProvider.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
-            ProjectRole.Developer)) {
+            .hasPermissionAny(t.project.id, authProvider.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
+                    ProjectRole.Developer)) {
       throw new PermissionException("User not allowed in project");
     }
 
     activityActor.tell(
-        new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t.project, dto.Key.class, KeyMapper.toDto(t), null),
-        null
+            new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t.project, dto.Key.class, KeyMapper.toDto(t), null),
+            null
     );
 
     messageRepository.delete(messageRepository.byKey(t));
@@ -258,15 +260,15 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   @Override
   protected void preDelete(Collection<Key> t) {
     activityActor.tell(
-        new Activities<>(
-            t.stream()
-                .map(k -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), k.project, dto.Key.class,
-                    KeyMapper.toDto(k), null))
-                .collect(Collectors.toList())),
-        null
+            new Activities<>(
+                    t.stream()
+                            .map(k -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), k.project, dto.Key.class,
+                                    KeyMapper.toDto(k), null))
+                            .collect(Collectors.toList())),
+            null
     );
 
     messageRepository
-        .delete(messageRepository.byKeys(t.stream().map(k -> k.id).collect(Collectors.toList())));
+            .delete(messageRepository.byKeys(t.stream().map(k -> k.id).collect(Collectors.toList())));
   }
 }

@@ -1,0 +1,41 @@
+.header {
+  position: relative;
+
+  > * {
+    position: relative;
+  }
+
+  &.header-graphic::before {
+    background-color: #1976d2;
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-image: url(assets/headers/stripes.svg);
+    filter: blur(2px);
+  }
+}
+
+.client {
+  display: inline-block;
+  padding: 2px 4px;
+  border-radius: 4px;
+
+  .ng-fa-icon {
+    margin-right: 4px;
+  }
+}
+
+.mat-card {
+  .mat-card-content {
+    margin-bottom: 0;
+  }
+
+  .mat-card-actions.dialog-actions {
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+}

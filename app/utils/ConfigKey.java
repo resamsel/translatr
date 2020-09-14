@@ -15,7 +15,27 @@ public enum ConfigKey {
 
   StreamIOKey("translatr.stream.io.key"),
 
-  StreamIOSecret("translatr.stream.io.secret");
+  StreamIOSecret("translatr.stream.io.secret"),
+
+  BaseUrl("translatr.baseUrl"),
+  RedirectBase("translatr.redirectBase"),
+
+  GoogleClientId("pac4j.clients.google.id"),
+  GoogleClientSecret("pac4j.clients.google.secret"),
+
+  KeycloakClientId("pac4j.clients.keycloak.id"),
+  KeycloakClientSecret("pac4j.clients.keycloak.secret"),
+  KeycloakBaseUri("pac4j.clients.keycloak.baseUri"),
+  KeycloakRealm("pac4j.clients.keycloak.realm"),
+
+  GitHubClientId("pac4j.clients.github.id"),
+  GitHubClientSecret("pac4j.clients.github.secret"),
+
+  TwitterClientId("pac4j.clients.twitter.id"),
+  TwitterClientSecret("pac4j.clients.twitter.secret"),
+
+  FacebookClientId("pac4j.clients.facebook.id"),
+  FacebookClientSecret("pac4j.clients.facebook.secret");
 
   private String key;
 
@@ -35,7 +55,19 @@ public enum ConfigKey {
     return key;
   }
 
-  public String getString(Config config) {
+  public boolean existsIn(Config config) {
+    return config.hasPath(key);
+  }
+
+  public String get(Config config) {
+    return config.getString(key);
+  }
+
+  public String getOrDefault(Config config, String defaultValue) {
+    if (!existsIn(config)) {
+      return defaultValue;
+    }
+
     return config.getString(key);
   }
 

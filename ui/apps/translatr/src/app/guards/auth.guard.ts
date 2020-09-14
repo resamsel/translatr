@@ -4,7 +4,6 @@ import { LOGIN_URL, WINDOW } from '@translatr/utils';
 import { Observable } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 import { AppFacade } from '../+state/app.facade';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -29,12 +28,12 @@ export class AuthGuard implements CanActivate {
           try {
             if (this.loginUrl.startsWith('http://') || this.loginUrl.startsWith('https://')) {
               const url = new URL(this.loginUrl);
-              url.searchParams.set('redirect_uri', environment.adminUrl + state.url);
+              url.searchParams.set('redirect_uri', state.url);
               this.window.location.href = url.toString();
             } else {
               this.router.navigate(['/login'], {
                 queryParamsHandling: 'merge',
-                queryParams: { redirect_uri: environment.adminUrl + state.url }
+                queryParams: { redirect_uri: state.url }
               });
             }
             return false;
