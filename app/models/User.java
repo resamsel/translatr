@@ -99,6 +99,10 @@ public class User implements Model<User, UUID>, Subject {
   public List<LinkedAccount> linkedAccounts;
 
   @JsonIgnore
+  @OneToMany(cascade = CascadeType.ALL)
+  public List<AccessToken> accessTokens;
+
+  @JsonIgnore
   @OneToMany
   public List<ProjectUser> memberships;
 

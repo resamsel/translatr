@@ -2,6 +2,8 @@ package utils;
 
 import com.typesafe.config.Config;
 
+import java.util.List;
+
 /**
  * @author resamsel
  * @version 30 Sep 2016
@@ -19,6 +21,8 @@ public enum ConfigKey {
 
   BaseUrl("translatr.baseUrl"),
   RedirectBase("translatr.redirectBase"),
+
+  Pac4jSecurityExcludePaths("pac4j.security.excludePaths"),
 
   GoogleClientId("pac4j.clients.google.id"),
   GoogleClientSecret("pac4j.clients.google.secret"),
@@ -73,5 +77,9 @@ public enum ConfigKey {
 
   public Boolean getBoolean(Config config) {
     return config.getBoolean(key);
+  }
+
+  public List<String> getStringList(Config config) {
+    return config.getStringList(key);
   }
 }

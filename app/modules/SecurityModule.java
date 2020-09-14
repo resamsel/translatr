@@ -1,14 +1,19 @@
 package modules;
 
+import auth.AccessTokenAuthenticator;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
+import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.matching.matcher.PathMatcher;
+import org.pac4j.http.client.direct.HeaderClient;
+import org.pac4j.http.client.direct.ParameterClient;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oauth.client.Google2Client;
@@ -23,11 +28,13 @@ import org.pac4j.play.http.PlayHttpActionAdapter;
 import org.pac4j.play.store.PlayCacheSessionStore;
 import org.pac4j.play.store.PlaySessionStore;
 import play.Environment;
+import play.inject.Injector;
 import utils.ConfigKey;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -37,15 +44,9 @@ import static utils.ConfigKey.*;
 
 public class SecurityModule extends AbstractModule {
 
-  private static final String[] EXCLUDED_PATHS = new String[]{
-          "/api/me",
-          "/api/profile",
-          "/api/register",
-          "/api/user",
-          "/api/authclients"
-  };
   private final com.typesafe.config.Config configuration;
   private final String baseUrl;
+  private final List<String> excludePaths;
 
   private static class MyPac4jRoleHandler implements Pac4jRoleHandler {
   }
@@ -53,6 +54,7 @@ public class SecurityModule extends AbstractModule {
   public SecurityModule(final Environment environment, final com.typesafe.config.Config configuration) {
     this.configuration = configuration;
     this.baseUrl = BaseUrl.get(configuration);
+    this.excludePaths = Pac4jSecurityExcludePaths.getStringList(configuration);
   }
 
   @Override
@@ -75,6 +77,33 @@ public class SecurityModule extends AbstractModule {
     logoutController.setDefaultUrl("/?defaulturlafterlogout");
     //logoutController.setDestroySession(true);
     bind(LogoutController.class).toInstance(logoutController);
+  }
+
+  protected AnonymousClient provideAnonymousClient() {
+    AnonymousClient client = new AnonymousClient();
+
+    client.setName("anonymous");
+
+    return client;
+  }
+
+  protected ParameterClient provideParameterClient(Injector injector) {
+    ParameterClient client = new ParameterClient("access_token",
+            new LocalCachingAuthenticator<>(new AccessTokenAuthenticator(injector), 10000, 15, TimeUnit.MINUTES));
+
+    client.setName("parameter");
+    client.setSupportGetRequest(true);
+
+    return client;
+  }
+
+  protected HeaderClient provideHeaderClient(Injector injector) {
+    HeaderClient client = new HeaderClient("x-access-token",
+            new LocalCachingAuthenticator<>(new AccessTokenAuthenticator(injector), 10000, 15, TimeUnit.MINUTES));
+
+    client.setName("header");
+
+    return client;
   }
 
   protected Google2Client provideGoogleClient() {
@@ -107,8 +136,11 @@ public class SecurityModule extends AbstractModule {
   }
 
   @Provides
-  protected Config provideConfig() {
+  protected Config provideConfig(Injector injector) {
     List<Client<?>> clientList = Arrays.asList(
+            provideAnonymousClient(),
+            provideParameterClient(injector),
+            provideHeaderClient(injector),
             provideGoogleClient(),
             provideKeycloakClient(),
             provideGitHubClient(),
@@ -131,9 +163,7 @@ public class SecurityModule extends AbstractModule {
     );
 
     final Config config = new Config(clients);
-//    config.addAuthorizer("admin", new RequireAnyRoleAuthorizer<>("ROLE_ADMIN"));
-//    config.addAuthorizer("custom", new CustomAuthorizer());
-    config.addMatcher("excludedApiPath", new PathMatcher().excludePaths(EXCLUDED_PATHS));
+    config.addMatcher("excludePaths", new PathMatcher().excludePaths(excludePaths.toArray(new String[0])));
     config.setHttpActionAdapter(PlayHttpActionAdapter.INSTANCE);
     return config;
   }

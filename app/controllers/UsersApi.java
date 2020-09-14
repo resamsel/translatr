@@ -1,6 +1,5 @@
 package controllers;
 
-import actions.ApiAction;
 import criterias.UserCriteria;
 import dto.User;
 import dto.errors.ConstraintViolationError;
@@ -19,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.With;
 import services.AuthProvider;
 import services.CacheService;
 import services.api.UserApiService;
@@ -33,7 +31,6 @@ import java.util.concurrent.CompletionStage;
  * @version 10 Jan 2017
  */
 @io.swagger.annotations.Api(value = "Users", produces = "application/json")
-@With(ApiAction.class)
 public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiService> {
 
   private static final String TYPE = "User";

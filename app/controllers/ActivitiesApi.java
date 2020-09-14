@@ -1,6 +1,5 @@
 package controllers;
 
-import actions.ApiAction;
 import criterias.LogEntryCriteria;
 import dto.Activity;
 import dto.errors.GenericError;
@@ -14,7 +13,6 @@ import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
 import play.inject.Injector;
 import play.mvc.Result;
-import play.mvc.With;
 import services.AuthProvider;
 import services.CacheService;
 import services.api.ActivityApiService;
@@ -24,7 +22,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 
 @io.swagger.annotations.Api(value = "Activities", produces = "application/json")
-@With(ApiAction.class)
 public class ActivitiesApi extends AbstractApi<Activity, UUID, LogEntryCriteria, ActivityApiService> {
   private static final String FIND = "Find activites";
   private static final String FIND_RESPONSE = "Found activities";

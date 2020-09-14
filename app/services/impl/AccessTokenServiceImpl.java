@@ -75,12 +75,9 @@ public class AccessTokenServiceImpl extends
     metricService.logEvent(AccessToken.class, ActionType.Read);
 
     return log(
-            () -> postGet(cache.getOrElseUpdate(AccessToken.getCacheKey(accessTokenKey),
-                    () -> accessTokenRepository.byKey(accessTokenKey),
-                    60
-            )),
+            () -> postGet(accessTokenRepository.byKey(accessTokenKey)),
             LOGGER,
-            "getByKey"
+            "byKey"
     );
   }
 

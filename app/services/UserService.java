@@ -47,4 +47,6 @@ public interface UserService extends ModelService<User, UUID, UserCriteria> {
   User updateSettings(UUID userId, Map<String, String> settings);
 
   User byLinkedAccount(String providerKey, String providerUserId);
+
+  User byAccessToken(String accessTokenKey);
 }

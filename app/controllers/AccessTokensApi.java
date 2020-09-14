@@ -1,6 +1,5 @@
 package controllers;
 
-import actions.ApiAction;
 import criterias.AccessTokenCriteria;
 import dto.AccessToken;
 import dto.errors.ConstraintViolationError;
@@ -17,7 +16,6 @@ import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
 import play.inject.Injector;
 import play.mvc.Result;
-import play.mvc.With;
 import services.AuthProvider;
 import services.CacheService;
 import services.api.AccessTokenApiService;
@@ -26,7 +24,6 @@ import javax.inject.Inject;
 import java.util.concurrent.CompletionStage;
 
 @io.swagger.annotations.Api(value = "Access Tokens", produces = "application/json")
-@With(ApiAction.class)
 public class AccessTokensApi extends AbstractApi<AccessToken, Long, AccessTokenCriteria, AccessTokenApiService> {
 
   private static final String TYPE = "User";

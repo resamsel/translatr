@@ -1,6 +1,5 @@
 package controllers;
 
-import actions.ApiAction;
 import com.fasterxml.jackson.databind.node.NullNode;
 import criterias.KeyCriteria;
 import dto.Key;
@@ -22,7 +21,6 @@ import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
 import services.AuthProvider;
 import services.CacheService;
 import services.api.KeyApiService;
@@ -38,7 +36,6 @@ import java.util.function.Function;
  * @version 10 Jan 2017
  */
 @io.swagger.annotations.Api(value = "Keys", produces = "application/json")
-@With(ApiAction.class)
 public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> {
 
   private static final String TYPE = "Key";

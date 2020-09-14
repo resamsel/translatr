@@ -1,6 +1,5 @@
 package controllers;
 
-import actions.ApiAction;
 import criterias.ProjectCriteria;
 import dto.Project;
 import dto.errors.ConstraintViolationError;
@@ -20,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import play.data.FormFactory;
 import play.inject.Injector;
 import play.mvc.Result;
-import play.mvc.With;
 import services.AuthProvider;
 import services.CacheService;
 import services.api.ProjectApiService;
@@ -35,7 +33,6 @@ import java.util.concurrent.CompletionStage;
  * @version 10 Jan 2017
  */
 @io.swagger.annotations.Api(value = "Projects", produces = "application/json")
-@With(ApiAction.class)
 public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, ProjectApiService> {
 
   private static final String TYPE = "Project";
