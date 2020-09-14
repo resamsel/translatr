@@ -26,6 +26,7 @@ export * from './message-criteria';
 export * from './not-found-error-info';
 export * from './paged-list';
 export * from './permission-error-info';
+export * from './profile';
 export * from './project';
 export * from './project-criteria';
 export * from './project-embedded';

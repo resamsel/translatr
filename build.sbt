@@ -32,6 +32,7 @@ libraryDependencies ++= Seq(
 	"org.pac4j" %% "play-pac4j" % "10.0.1",
 	"org.pac4j" % "pac4j-oauth" % "4.0.3",
 	"org.pac4j" % "pac4j-oidc" % "4.0.3" exclude("commons-io" , "commons-io"),
+	"org.pac4j" % "pac4j-sql" % "4.0.3",
 	"be.objectify" %% "deadbolt-java" % "2.7.1",
 	// https://mvnrepository.com/artifact/org.apache.shiro/shiro-core
 	"org.apache.shiro" % "shiro-core" % "1.5.3",

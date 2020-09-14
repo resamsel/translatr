@@ -23,7 +23,7 @@ public class Metrics extends AbstractController {
   }
 
   public CompletionStage<Result> metrics() {
-    return tryCatch(() -> ok(format(metricService.metricFamilySamples())));
+    return async(() -> ok(format(metricService.metricFamilySamples())));
   }
 
   private String format(Enumeration<Collector.MetricFamilySamples> samples) throws IOException {

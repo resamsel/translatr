@@ -216,7 +216,7 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
 
   private CompletionStage<Result> key(String username, String projectName, String keyName,
                                       Function<Key, Result> processor, String... fetches) {
-    return tryCatch(() -> {
+    return async(() -> {
       Key key = api.byOwnerAndProjectAndName(username, projectName, keyName, fetches);
 
       checkProjectRole(key.projectId, authProvider.loggedInUser(), ProjectRole.Owner,

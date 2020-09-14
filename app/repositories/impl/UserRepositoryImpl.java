@@ -71,13 +71,28 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
   @Override
   public User byId(UUID id, String... fetches) {
-    return QueryUtils.fetch(persistence.find(User.class).setId(id), fetches, FETCH_MAP).findOne();
+    return QueryUtils.fetch(persistence.find(User.class).setId(id), fetches, FETCH_MAP)
+            .findOneOrEmpty()
+            .orElse(null);
   }
 
   @Override
   public User byUsername(String username, String... fetches) {
-    return QueryUtils.fetch(persistence.find(User.class), fetches, FETCH_MAP).where().eq("username", username)
-            .findOne();
+    return QueryUtils.fetch(persistence.find(User.class), fetches, FETCH_MAP)
+            .where()
+            .eq("username", username)
+            .findOneOrEmpty()
+            .orElse(null);
+  }
+
+  @Override
+  public User byLinkedAccount(String providerKey, String providerUserId) {
+    return persistence.find(User.class)
+            .where()
+            .eq("linkedAccounts.providerKey", providerKey)
+            .eq("linkedAccounts.providerUserId", providerUserId)
+            .findOneOrEmpty()
+            .orElse(null);
   }
 
   @Override

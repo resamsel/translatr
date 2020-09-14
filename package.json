@@ -12,7 +12,8 @@
     "release:minor": "ts-node ./src/typescript/release.ts minor",
     "release:major": "ts-node ./src/typescript/release.ts major",
     "kill:server": "fuser -k 9000/tcp 4200/tcp 4210/tcp 4211/tcp; echo 'ports freed'",
-    "precommit": "bin/activator test -Dconfig.file=test.conf"
+    "precommit": "bin/activator test -Dconfig.file=test.conf",
+    "svg-cleanup": "ts-node ./src/typescript/svg-cleanup.ts ui"
   },
   "dependencies": {
     "backbone": "^1.3.3",
@@ -24,10 +25,17 @@
     "materialize-css": "^0.100.2"
   },
   "devDependencies": {
+    "@prettier/plugin-xml": "0.12.0",
+    "@types/glob": "7.1.3",
     "@types/node": "14.0.14",
+    "@types/prettier": "2.1.0",
     "@types/semver": "^7.3.1",
+    "glob": "7.1.6",
+    "glob-promise": "3.4.0",
+    "prettier": "2.1.1",
     "semver": "7.3.2",
     "simple-git": "2.15.0",
+    "svgson": "4.1.0",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },

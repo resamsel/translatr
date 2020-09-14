@@ -1,11 +1,13 @@
 package services.api;
 
-import io.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.ImplementedBy;
 import criterias.UserCriteria;
 import dto.Aggregate;
+import dto.Profile;
 import dto.User;
+import io.ebean.PagedList;
+import play.mvc.Http;
 import services.api.impl.UserApiServiceImpl;
 
 import java.util.UUID;
@@ -16,11 +18,15 @@ import java.util.UUID;
  */
 @ImplementedBy(UserApiServiceImpl.class)
 public interface UserApiService extends ApiService<User, UUID, UserCriteria> {
+  User create(Http.Request request);
+
   User byUsername(String username, String... propertiesToFetch);
 
   PagedList<Aggregate> activity(UUID userId);
 
-  User me(String... propertiesToFetch);
+  Profile profile(Http.Request request);
+
+  User me(Http.Request request, String... propertiesToFetch);
 
   /**
    * Replace given settings of the user.

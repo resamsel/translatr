@@ -1,18 +1,24 @@
-<app-navbar page="Login"></app-navbar>
+<ng-container *transloco="let t">
+  <app-navbar [page]="t('login.title')"></app-navbar>
 
-<div class="wrapper">
-  <div class="login">
-    <div class="info">
-      <mat-icon>account_circle</mat-icon>
-      Sign in with any of the given providers
-    </div>
-    <div class="options">
-      <a
-        *ngFor="let provider of providers$ | async"
-        [ngClass]="provider.key"
-        href="{{endpointUrl}}{{provider.url}}"
-        mat-button
-      >{{names[provider.key]}}</a>
-    </div>
+  <div class="wrapper">
+    <mat-card class="login">
+      <div class="info">
+        <mat-icon>account_circle</mat-icon>
+        <span transloco="login.text">Sign in with any of the given providers</span>
+      </div>
+      <div class="options">
+        <a
+          *ngFor="let provider of providers$ | async"
+          [ngClass]="'client-' + provider.key"
+          href="{{endpointUrl}}{{provider.url}}"
+          mat-button
+          class="client"
+        >
+          <fa-icon [icon]="icons[provider.key]"></fa-icon>
+          {{names[provider.key]}}
+        </a>
+      </div>
+    </mat-card>
   </div>
-</div>
+</ng-container>

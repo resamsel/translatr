@@ -13,12 +13,19 @@ import { UserFacade } from './+state/user.facade';
 
 @Injectable()
 export class UserGuard implements CanActivate {
+  readonly excluded = ['login', 'register', 'dashboard'];
+
   constructor(private readonly facade: UserFacade, private readonly router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    console.log('UserGuard.canActivate', route.params.username);
+    if (this.excluded.includes(route.params.username)) {
+      return true;
+    }
+
     this.facade.loadUser(route.params.username);
     return this.facade.user$.pipe(
       skip(1),

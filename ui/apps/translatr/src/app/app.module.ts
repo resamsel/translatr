@@ -25,6 +25,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TranslocoRootModule } from './modules/shared/transloco';
 import { MatNotificationService } from './services/mat-notification-service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [AppComponent],
@@ -61,7 +62,8 @@ import { MatNotificationService } from './services/mat-notification-service';
     StoreRouterConnectingModule.forRoot({ routerState: RouterState.Minimal }),
     HttpClientModule,
     TranslocoRootModule,
-    HotkeysModule
+    HotkeysModule,
+    FontAwesomeModule
   ],
   providers: [
     AppFacade,

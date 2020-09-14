@@ -280,7 +280,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
   }
 
   public static UUID brandProjectId(User loggedInUser, Http.Context ctx) {
-    UUID brandProjectId = ContextKey.BrandProjectId.get(ctx);
+    UUID brandProjectId = ContextKey.BrandProjectId.get(ctx.request());
     if (brandProjectId != null) {
       return brandProjectId;
     }
@@ -301,7 +301,7 @@ public class Project implements Model<Project, UUID>, Suggestable {
       return null;
     }
 
-    ContextKey.BrandProjectId.put(ctx, brandProject.id);
+    ContextKey.BrandProjectId.put(ctx.request(), brandProject.id);
 
     return brandProject.id;
   }

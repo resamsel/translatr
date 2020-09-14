@@ -44,8 +44,8 @@ public class NotificationServiceImpl implements NotificationService {
   @Inject
   public NotificationServiceImpl(Config configuration, AuthProvider authProvider) {
     streamClient = new StreamClientImpl(new ClientConfiguration(),
-        ConfigKey.StreamIOKey.getString(configuration),
-        ConfigKey.StreamIOSecret.getString(configuration));
+        ConfigKey.StreamIOKey.get(configuration),
+        ConfigKey.StreamIOSecret.get(configuration));
     this.authProvider = authProvider;
   }
 

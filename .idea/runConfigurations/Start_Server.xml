@@ -9,10 +9,19 @@
     <option name="vmparams" value="-Xms512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled -Dconfig.file=dev.conf" />
     <option name="workingDir" value="$PROJECT_DIR$" />
     <envs>
+      <env name="GITHUB_CLIENT_ID" value="abc" />
+      <env name="TWITTER_CLIENT_ID" value="tw1" />
+      <env name="GOOGLE_CLIENT_SECRET" value="secret" />
+      <env name="GOOGLE_CLIENT_ID" value="id" />
       <env name="KEYCLOAK_CLIENT_ID" value="translatr-localhost" />
-      <env name="KEYCLOAK_CLIENT_SECRET" value="98e21465-90b8-4390-9006-c94cd4bad36c" />
-      <env name="AUTH_PROVIDERS" value="keycloak" />
+      <env name="GITHUB_CLIENT_SECRET" value="secret" />
+      <env name="KEYCLOAK_HOST" value="localhost:8080" />
       <env name="REDIRECT_BASE" value="http://localhost:4210" />
+      <env name="KEYCLOAK_PROTOCOL" value="http" />
+      <env name="TWITTER_CLIENT_SECRET" value="secret" />
+      <env name="FACEBOOK_CLIENT_ID" value="fb1" />
+      <env name="KEYCLOAK_CLIENT_SECRET" value="ff23998a-a3c3-4e07-b77a-254eaed2ea80" />
+      <env name="FACEBOOK_CLIENT_SECRET" value="secret" />
     </envs>
     <method v="2" />
   </configuration>

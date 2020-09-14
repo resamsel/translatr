@@ -1,0 +1,52 @@
+<div [formGroup]="form">
+  <mat-error *ngIf="form.errors && form.errors['']">{{
+    form.errors['']
+    }}</mat-error>
+  <mat-form-field appearance="outline">
+    <mat-label transloco="user.name">Name</mat-label>
+    <input
+      matInput
+      required
+      [placeholder]="'user.name' | transloco"
+      formControlName="name"
+      cdkFocusInitial
+    />
+    <mat-error *ngIf="form.get('name').errors">{{
+      form.get('name').errors.violation
+      }}</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label transloco="user.role">Role</mat-label>
+    <mat-select required formControlName="role">
+      <mat-option
+        *ngFor="let role of roles"
+        [value]="role"
+        [disabled]="!hasRole(role)"
+      >{{ role }}</mat-option
+      >
+    </mat-select>
+    <mat-error *ngIf="form.get('role').errors">{{
+      form.get('role').errors.violation
+      }}</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label transloco="user.username">Username</mat-label>
+    <input
+      matInput
+      required
+      [placeholder]="'user.username' | transloco"
+      formControlName="username"
+    />
+    <mat-error *ngIf="form.get('username').errors">{{
+      form.get('username').errors.violation
+      }}</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label transloco="user.email">Email</mat-label>
+    <input matInput [placeholder]="'user.email' | transloco" formControlName="email"/>
+    <mat-error *ngIf="form.get('email').errors">{{
+      form.get('email').errors.violation
+      }}</mat-error>
+  </mat-form-field>
+</div>
+<ng-content></ng-content>

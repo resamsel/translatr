@@ -20,4 +20,28 @@ $light-theme: mat-light-theme($light-primary, $light-accent, $light-warn);
   .mat-line .sub-title {
     color: rgba(0, 0, 0, 0.7);
   }
+
+  .client {
+    color: #fff;
+
+    &.client-google {
+      background: #dd4b39;
+    }
+
+    &.client-keycloak {
+      background: #393f44;
+    }
+
+    &.client-github {
+      background: #444;
+    }
+
+    &.client-facebook {
+      background: #3b5998;
+    }
+
+    &.client-twitter {
+      background: #55acee;
+    }
+  }
 }

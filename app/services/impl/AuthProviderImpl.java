@@ -5,7 +5,7 @@ import models.AccessToken;
 import models.User;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.oidc.profile.OidcProfile;
 import org.pac4j.play.PlayWebContext;
 import org.pac4j.play.store.PlaySessionStore;
 import play.inject.Injector;
@@ -22,7 +22,6 @@ import java.util.UUID;
 
 @Singleton
 public class AuthProviderImpl implements AuthProvider {
-  private final Config configuration;
   private final ContextProvider contextProvider;
   private final Injector injector;
   private final PlaySessionStore sessionStore;
@@ -32,31 +31,35 @@ public class AuthProviderImpl implements AuthProvider {
           Config configuration, ContextProvider contextProvider,
           Injector injector,
           PlaySessionStore sessionStore) {
-    this.configuration = configuration;
     this.contextProvider = contextProvider;
     this.injector = injector;
     this.sessionStore = sessionStore;
   }
 
+  /**
+   * @deprecated use {{@link AuthProviderImpl#loggedInUser(Http.Request)} instead.
+   */
   @Override
+  @Deprecated
   public User loggedInUser() {
-    Http.Context ctx = contextProvider.getOrNull();
-    if (ctx == null) {
-      return null;
-    }
+    return loggedInUser(contextProvider.getOrNull().request());
+  }
 
+  @Override
+  public User loggedInUser(Http.Request request) {
     // Logged-in via access_token?
-    AccessToken accessToken = ContextKey.AccessToken.get(ctx);
+    AccessToken accessToken = ContextKey.AccessToken.get(request);
     if (accessToken != null) {
       return accessToken.user;
     }
 
     // Logged-in via auth plugin?
-    WebContext context = new PlayWebContext(ctx.request(), sessionStore);
-    Optional<UserProfile> profile = new ProfileManager<UserProfile>(context).get(true);
+    Optional<OidcProfile> profile = loggedInProfile(request);
     if (profile.isPresent()) {
-      String username = profile.get().getUsername();
-      User user = ContextKey.get(ctx, username);
+      String clientName = profile.get().getClientName();
+      String userId = profile.get().getId();
+      String contextKey = clientName + ":" + userId;
+      User user = ContextKey.get(request, contextKey);
       if (user != null) {
         return user;
       }
@@ -64,7 +67,7 @@ public class AuthProviderImpl implements AuthProvider {
       // Needed to avoid circular dependency of AuthProvider -> UserService -> AuthProvider
       UserService userService = injector.instanceOf(UserService.class);
 
-      return ContextKey.put(ctx, username, userService.byUsername(username));
+      return ContextKey.put(request, contextKey, userService.byLinkedAccount(clientName, userId));
     }
 
     return null;
@@ -72,6 +75,11 @@ public class AuthProviderImpl implements AuthProvider {
 
   @Override
   public UUID loggedInUserId() {
+    return loggedInUserId(contextProvider.getOrNull().request());
+  }
+
+  @Override
+  public UUID loggedInUserId(Http.Request request) {
     User loggedInUser = loggedInUser();
 
     if (loggedInUser == null) {
@@ -79,5 +87,27 @@ public class AuthProviderImpl implements AuthProvider {
     }
 
     return loggedInUser.id;
+  }
+
+  @Override
+  public Optional<OidcProfile> loggedInProfile(Http.Request request) {
+    WebContext context = new PlayWebContext(request, sessionStore);
+    return new ProfileManager<OidcProfile>(context).get(true);
+  }
+
+  @Override
+  public boolean needsRegistration(Http.Request request) {
+    Optional<OidcProfile> profile = loggedInProfile(request);
+    if (profile.isPresent()) {
+      String clientName = profile.get().getClientName();
+      String userId = profile.get().getId();
+
+      // Needed to avoid circular dependency of AuthProvider -> UserService -> AuthProvider
+      UserService userService = injector.instanceOf(UserService.class);
+
+      return userService.byLinkedAccount(clientName, userId) == null;
+    }
+
+    return false;
   }
 }

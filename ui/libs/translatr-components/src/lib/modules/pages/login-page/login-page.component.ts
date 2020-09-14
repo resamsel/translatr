@@ -17,6 +17,13 @@ export class LoginPageComponent implements OnInit {
     twitter: 'Twitter',
     github: 'GitHub'
   };
+  icons = {
+    google: ['fab', 'google'],
+    keycloak: ['fas', 'key'],
+    github: ['fab', 'github'],
+    facebook: ['fab', 'facebook'],
+    twitter: ['fab', 'twitter']
+  };
 
   readonly providers$ = this.authProviderService.find();
 
