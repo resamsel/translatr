@@ -2,6 +2,7 @@ package modules;
 
 import auth.AccessTokenAuthenticator;
 import auth.CustomAuthorizer;
+import auth.CustomCallbackLogic;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -80,6 +81,43 @@ public class SecurityModule extends AbstractModule {
     bind(LogoutController.class).toInstance(logoutController);
   }
 
+  @Provides
+  protected Config provideConfig(Injector injector) {
+    List<Client<?>> clientList = Arrays.asList(
+            provideAnonymousClient(),
+            provideParameterClient(injector),
+            provideHeaderClient(injector),
+            provideGoogleClient(),
+            provideKeycloakClient(),
+            provideGitHubClient(),
+            provideFacebookClient(),
+            provideTwitterClient()
+    );
+
+    final Clients clients = new Clients(
+            baseUrl + "/authenticate", clientList.stream().filter(Objects::nonNull).collect(Collectors.toList()));
+
+    PlayHttpActionAdapter.INSTANCE.getResults().put(
+            HttpConstants.UNAUTHORIZED,
+            unauthorized(views.html.errors.unauthorized.render().toString())
+                    .as(HttpConstants.APPLICATION_JSON)
+    );
+    PlayHttpActionAdapter.INSTANCE.getResults().put(
+            HttpConstants.FORBIDDEN,
+            forbidden(views.html.errors.unauthorized.render().toString())
+                    .as((HttpConstants.APPLICATION_JSON))
+    );
+
+    final Config config = new Config(clients);
+
+    config.addAuthorizer("custom", new CustomAuthorizer());
+    config.addMatcher("excludePaths", new PathMatcher().excludePaths(excludePaths.toArray(new String[0])));
+    config.setHttpActionAdapter(PlayHttpActionAdapter.INSTANCE);
+    config.setCallbackLogic(new CustomCallbackLogic<>(injector));
+
+    return config;
+  }
+
   protected AnonymousClient provideAnonymousClient() {
     AnonymousClient client = new AnonymousClient();
 
@@ -134,40 +172,6 @@ public class SecurityModule extends AbstractModule {
 
   protected TwitterClient provideTwitterClient() {
     return createClient("twitter", TwitterClientId, TwitterClientSecret, TwitterClient::new);
-  }
-
-  @Provides
-  protected Config provideConfig(Injector injector) {
-    List<Client<?>> clientList = Arrays.asList(
-            provideAnonymousClient(),
-            provideParameterClient(injector),
-            provideHeaderClient(injector),
-            provideGoogleClient(),
-            provideKeycloakClient(),
-            provideGitHubClient(),
-            provideFacebookClient(),
-            provideTwitterClient()
-    );
-
-    final Clients clients = new Clients(
-            baseUrl + "/authenticate", clientList.stream().filter(Objects::nonNull).collect(Collectors.toList()));
-
-    PlayHttpActionAdapter.INSTANCE.getResults().put(
-            HttpConstants.UNAUTHORIZED,
-            unauthorized(views.html.errors.unauthorized.render().toString())
-                    .as(HttpConstants.APPLICATION_JSON)
-    );
-    PlayHttpActionAdapter.INSTANCE.getResults().put(
-            HttpConstants.FORBIDDEN,
-            forbidden(views.html.errors.unauthorized.render().toString())
-                    .as((HttpConstants.APPLICATION_JSON))
-    );
-
-    final Config config = new Config(clients);
-    config.addAuthorizer("custom", new CustomAuthorizer());
-    config.addMatcher("excludePaths", new PathMatcher().excludePaths(excludePaths.toArray(new String[0])));
-    config.setHttpActionAdapter(PlayHttpActionAdapter.INSTANCE);
-    return config;
   }
 
   private <T extends BaseClient<?>> T createClient(String name, ConfigKey id, ConfigKey secret, BiFunction<String, String, T> creator) {

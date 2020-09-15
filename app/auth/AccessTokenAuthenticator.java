@@ -17,7 +17,6 @@ public class AccessTokenAuthenticator implements Authenticator<TokenCredentials>
 
   private final Injector injector;
   private AccessTokenService accessTokenService;
-  private Object lock = new Object();
 
   @Inject
   public AccessTokenAuthenticator(Injector injector) {
@@ -26,13 +25,7 @@ public class AccessTokenAuthenticator implements Authenticator<TokenCredentials>
 
   @Override
   public void validate(TokenCredentials credentials, WebContext context) {
-    if (accessTokenService == null) {
-      synchronized (lock) {
-        if (accessTokenService == null) {
-          accessTokenService = injector.instanceOf(AccessTokenService.class);
-        }
-      }
-    }
+    init();
 
     AccessToken accessToken = accessTokenService.byKey(credentials.getToken());
 
@@ -44,5 +37,15 @@ public class AccessTokenAuthenticator implements Authenticator<TokenCredentials>
     profile.setClientName("parameter");
     profile.setId(credentials.getToken());
     credentials.setUserProfile(profile);
+  }
+
+  private void init() {
+    if (accessTokenService == null) {
+      synchronized (this) {
+        if (accessTokenService == null) {
+          accessTokenService = injector.instanceOf(AccessTokenService.class);
+        }
+      }
+    }
   }
 }
