@@ -2,6 +2,7 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import models.User;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 import play.mvc.Http;
 import services.impl.AuthProviderImpl;
@@ -45,12 +46,12 @@ public interface AuthProvider {
 
   /**
    * Retrieves the logged-in user from the request.
+   *
    * @return
    */
   Optional<CommonProfile> loggedInProfile(Http.Request request);
 
-  /**
-   * Whether or not the logged-in profile (auth) needs registration (no matching user, yet).
-   */
-  boolean needsRegistration(Http.Request request);
+  Optional<CommonProfile> loggedInProfile(WebContext context);
+
+  void updateUser(CommonProfile profile);
 }

@@ -1,9 +1,10 @@
 package services.impl;
 
 import com.google.common.collect.ImmutableMap;
-import com.typesafe.config.Config;
+import dto.UserUnregisteredException;
 import models.AccessToken;
 import models.User;
+import models.UserRole;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
@@ -37,7 +38,7 @@ public class AuthProviderImpl implements AuthProvider {
 
   @Inject
   public AuthProviderImpl(
-          Config configuration, ContextProvider contextProvider,
+          ContextProvider contextProvider,
           Injector injector,
           PlaySessionStore sessionStore) {
     this.contextProvider = contextProvider;
@@ -90,6 +91,7 @@ public class AuthProviderImpl implements AuthProvider {
     return null;
   }
 
+  @Deprecated
   @Override
   public UUID loggedInUserId() {
     return loggedInUserId(contextProvider.getOrNull().request());
@@ -108,23 +110,38 @@ public class AuthProviderImpl implements AuthProvider {
 
   @Override
   public Optional<CommonProfile> loggedInProfile(Http.Request request) {
-    WebContext context = new PlayWebContext(request, sessionStore);
+    return loggedInProfile(new PlayWebContext(request, sessionStore));
+  }
+
+  @Override
+  public Optional<CommonProfile> loggedInProfile(WebContext context) {
     return new ProfileManager<CommonProfile>(context).get(true);
   }
 
   @Override
-  public boolean needsRegistration(Http.Request request) {
-    Optional<CommonProfile> profile = loggedInProfile(request);
-    if (profile.isPresent()) {
-      String clientName = profile.get().getClientName();
-      String userId = profile.get().getId();
-
-      // Needed to avoid circular dependency of AuthProvider -> UserService -> AuthProvider
-      UserService userService = injector.instanceOf(UserService.class);
-
-      return userService.byLinkedAccount(clientName, userId) == null;
+  public void updateUser(CommonProfile profile) {
+    if (profile == null) {
+      return;
     }
 
-    return false;
+    UserService userService = getUserService();
+
+    User user = userService.byLinkedAccount(profile.getClientName(), profile.getId());
+
+    if (user == null) {
+      throw new UserUnregisteredException(profile);
+    }
+
+    UserRole newRole = profile.getRoles().contains("admin") ? UserRole.Admin : UserRole.User;
+
+    if (!newRole.equals(user.role)) {
+      user.role = newRole;
+      userService.update(user);
+    }
+  }
+
+  private UserService getUserService() {
+    // Needed to avoid circular dependency of AuthProvider -> UserService -> AuthProvider
+    return injector.instanceOf(UserService.class);
   }
 }

@@ -7,7 +7,7 @@ import dto.Dto;
 import dto.NotFoundException;
 import dto.PermissionException;
 import dto.SearchResponse;
-import dto.UserCreationMissingException;
+import dto.UserUnregisteredException;
 import io.ebean.PagedList;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -129,7 +129,7 @@ public class AbstractBaseApi extends AbstractController {
       return forbidden(ErrorUtils.toJson(e));
     } catch (NotFoundException e) {
       return notFound(ErrorUtils.toJson(e));
-    } catch (UserCreationMissingException e) {
+    } catch (UserUnregisteredException e) {
       return notFound(ErrorUtils.toJson(e));
     } catch (ConstraintViolationException e) {
       return badRequest(ErrorUtils.toJson(e));

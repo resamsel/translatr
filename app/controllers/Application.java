@@ -39,22 +39,7 @@ public class Application extends AbstractController {
   }
 
   public CompletionStage<Result> index(Http.Request request) {
-    return async(() -> {
-      if (authProvider.needsRegistration(request)) {
-        return redirect(
-                RedirectBase.getOrDefault(configuration, "")
-                        + routes.Application.indexUi().url()
-                        + "/register"
-        );
-      }
-
-      String redirectBase = RedirectBase.getOrDefault(configuration, "");
-      if (RedirectBase.existsIn(configuration) && !request.uri().startsWith(redirectBase)) {
-        return redirect(redirectBase + routes.Application.indexUi().url());
-      }
-
-      return redirect(routes.Application.indexUi());
-    });
+    return async(() -> redirect(routes.Application.indexUi()));
   }
 
   public Action<AnyContent> indexUi() {
