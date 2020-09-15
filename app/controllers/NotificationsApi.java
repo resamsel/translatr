@@ -21,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.inject.Injector;
 import play.mvc.Result;
-import services.CacheService;
 import services.NotificationService;
+import services.PermissionService;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -42,12 +42,14 @@ public class NotificationsApi extends AbstractBaseApi {
   private static final String FIND_RESPONSE = "Found notifications";
 
   private final NotificationService notificationService;
+  private final PermissionService permissionService;
 
   @Inject
-  public NotificationsApi(Injector injector, CacheService cache, NotificationService notificationService) {
-    super(injector, cache);
+  public NotificationsApi(Injector injector, NotificationService notificationService) {
+    super(injector);
 
     this.notificationService = notificationService;
+    this.permissionService = injector.instanceOf(PermissionService.class);
   }
 
   @ApiOperation(value = FIND,

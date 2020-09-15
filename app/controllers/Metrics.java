@@ -4,7 +4,6 @@ import io.prometheus.client.Collector;
 import io.prometheus.client.exporter.common.TextFormat;
 import play.inject.Injector;
 import play.mvc.Result;
-import services.CacheService;
 import services.MetricService;
 
 import javax.inject.Inject;
@@ -17,8 +16,9 @@ public class Metrics extends AbstractController {
   private final MetricService metricService;
 
   @Inject
-  public Metrics(Injector injector, CacheService cache, MetricService metricService) {
-    super(injector, cache);
+  public Metrics(Injector injector, MetricService metricService) {
+    super(injector);
+
     this.metricService = metricService;
   }
 

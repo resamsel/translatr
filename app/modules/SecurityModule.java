@@ -1,6 +1,7 @@
 package modules;
 
 import auth.AccessTokenAuthenticator;
+import auth.CustomAuthorizer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -163,6 +164,7 @@ public class SecurityModule extends AbstractModule {
     );
 
     final Config config = new Config(clients);
+    config.addAuthorizer("custom", new CustomAuthorizer());
     config.addMatcher("excludePaths", new PathMatcher().excludePaths(excludePaths.toArray(new String[0])));
     config.setHttpActionAdapter(PlayHttpActionAdapter.INSTANCE);
     return config;

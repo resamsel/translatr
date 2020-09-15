@@ -17,7 +17,6 @@ import io.swagger.annotations.AuthorizationScope;
 import play.inject.Injector;
 import play.mvc.Result;
 import services.AuthProvider;
-import services.CacheService;
 import services.api.AccessTokenApiService;
 
 import javax.inject.Inject;
@@ -45,10 +44,8 @@ public class AccessTokensApi extends AbstractApi<AccessToken, Long, AccessTokenC
   private static final String NOT_FOUND_ERROR = "Access token not found";
 
   @Inject
-  public AccessTokensApi(
-      Injector injector, CacheService cache, AuthProvider authProvider,
-      AccessTokenApiService accessTokenApiService) {
-    super(injector, cache, authProvider, accessTokenApiService);
+  public AccessTokensApi(Injector injector, AuthProvider authProvider, AccessTokenApiService accessTokenApiService) {
+    super(injector, authProvider, accessTokenApiService);
   }
 
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,

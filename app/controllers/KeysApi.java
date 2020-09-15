@@ -22,7 +22,6 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import services.AuthProvider;
-import services.CacheService;
 import services.api.KeyApiService;
 
 import javax.inject.Inject;
@@ -61,9 +60,8 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
           " combination with localeId to retrieve missing messages for a certain locale";
 
   @Inject
-  public KeysApi(Injector injector, CacheService cache,
-                 AuthProvider authProvider, KeyApiService keyApiService) {
-    super(injector, cache, authProvider, keyApiService);
+  public KeysApi(Injector injector, AuthProvider authProvider, KeyApiService keyApiService) {
+    super(injector, authProvider, keyApiService);
   }
 
   @ApiOperation(value = FIND,

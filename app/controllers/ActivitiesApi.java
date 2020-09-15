@@ -14,7 +14,6 @@ import io.swagger.annotations.AuthorizationScope;
 import play.inject.Injector;
 import play.mvc.Result;
 import services.AuthProvider;
-import services.CacheService;
 import services.api.ActivityApiService;
 
 import javax.inject.Inject;
@@ -34,9 +33,9 @@ public class ActivitiesApi extends AbstractApi<Activity, UUID, LogEntryCriteria,
   private static final String TYPES = "List of types the activities need to match";
 
   @Inject
-  protected ActivitiesApi(Injector injector, CacheService cache, AuthProvider authProvider,
+  protected ActivitiesApi(Injector injector, AuthProvider authProvider,
                           ActivityApiService activityApiService) {
-    super(injector, cache, authProvider, activityApiService);
+    super(injector, authProvider, activityApiService);
   }
 
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,

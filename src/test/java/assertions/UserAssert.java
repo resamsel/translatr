@@ -34,7 +34,7 @@ public class UserAssert extends AbstractGenericAssert<UserAssert, User> {
     return hasSize("linkedAccounts", expected, actual.linkedAccounts);
   }
 
-  public UserAssert settingsIsEqualTo(Map.Entry<String, String> expected) {
+  public UserAssert settingsIsEqualTo(Map<String, String> expected) {
     return isEqualTo("settings", expected, actual.settings);
   }
 

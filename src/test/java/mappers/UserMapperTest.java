@@ -26,7 +26,7 @@ public class UserMapperTest {
     models.User actual = UserMapper.toModel(dto, model);
 
     // then
-    assertThat(actual).settingsIsEqualTo(null);
+    assertThat(actual).settingsIsEqualTo(Collections.emptyMap());
   }
 
   @Test
@@ -113,6 +113,7 @@ public class UserMapperTest {
 
     // then
     assertThat(actual).containsOnly(
+            entry(Feature.ProjectInfographic.getName(), false),
             entry(Feature.ProjectCliCard.getName(), true),
             entry(Feature.HeaderGraphic.getName(), true),
             entry(Feature.LanguageSwitcher.getName(), true)
@@ -129,6 +130,7 @@ public class UserMapperTest {
 
     // then
     assertThat(actual).containsOnly(
+            entry(Feature.ProjectInfographic.getName(), false),
             entry(Feature.ProjectCliCard.getName(), true),
             entry(Feature.HeaderGraphic.getName(), true),
             entry(Feature.LanguageSwitcher.getName(), true)
@@ -145,6 +147,7 @@ public class UserMapperTest {
 
     // then
     assertThat(actual).containsOnly(
+            entry(Feature.ProjectInfographic.getName(), false),
             entry(Feature.ProjectCliCard.getName(), false),
             entry(Feature.HeaderGraphic.getName(), true),
             entry(Feature.LanguageSwitcher.getName(), true)
@@ -165,6 +168,7 @@ public class UserMapperTest {
 
     // then
     assertThat(actual).containsOnly(
+            entry(Feature.ProjectInfographic.getName(), false),
             entry(Feature.ProjectCliCard.getName(), false),
             entry(Feature.HeaderGraphic.getName(), false),
             entry(Feature.LanguageSwitcher.getName(), false)

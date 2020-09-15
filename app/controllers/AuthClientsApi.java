@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiResponses;
 import mappers.AuthClientMapper;
 import play.inject.Injector;
 import play.mvc.Result;
-import services.CacheService;
 import services.api.AuthClientApiService;
 
 import javax.inject.Inject;
@@ -20,8 +19,8 @@ public class AuthClientsApi extends AbstractBaseApi {
   private final AuthClientApiService authClientApiService;
 
   @Inject
-  public AuthClientsApi(Injector injector, CacheService cache, AuthClientApiService authClientApiService) {
-    super(injector, cache);
+  public AuthClientsApi(Injector injector, AuthClientApiService authClientApiService) {
+    super(injector);
 
     this.authClientApiService = authClientApiService;
   }
