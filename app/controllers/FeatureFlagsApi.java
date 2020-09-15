@@ -17,7 +17,6 @@ import io.swagger.annotations.AuthorizationScope;
 import play.inject.Injector;
 import play.mvc.Result;
 import services.AuthProvider;
-import services.CacheService;
 import services.api.UserFeatureFlagApiService;
 
 import javax.inject.Inject;
@@ -48,9 +47,9 @@ public class FeatureFlagsApi extends AbstractApi<UserFeatureFlag, UUID, UserFeat
 
   @Inject
   public FeatureFlagsApi(
-          Injector injector, CacheService cache, AuthProvider authProvider,
+          Injector injector, AuthProvider authProvider,
           UserFeatureFlagApiService userFeatureFlagApiService) {
-    super(injector, cache, authProvider, userFeatureFlagApiService);
+    super(injector, authProvider, userFeatureFlagApiService);
   }
 
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,

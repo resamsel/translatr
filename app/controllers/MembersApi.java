@@ -22,7 +22,6 @@ import play.mvc.BodyParser;
 import play.mvc.Http;
 import play.mvc.Result;
 import services.AuthProvider;
-import services.CacheService;
 import services.ContextProvider;
 import services.api.ProjectUserApiService;
 
@@ -69,9 +68,9 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
 
   @Inject
   public MembersApi(
-          Injector injector, CacheService cache, AuthProvider authProvider,
+          Injector injector, AuthProvider authProvider,
           ProjectUserApiService projectUserApiService, ContextProvider contextProvider) {
-    super(injector, cache, authProvider, projectUserApiService);
+    super(injector, authProvider, projectUserApiService);
     this.contextProvider = contextProvider;
     this.authProvider = authProvider;
   }

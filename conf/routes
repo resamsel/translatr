@@ -13,7 +13,7 @@ GET           /api/projects                                                     
 GET           /api/project/:id/search                                                 controllers.ProjectsApi.search(id: java.util.UUID)
 GET           /api/project/:projectId                                                 controllers.ProjectsApi.get(projectId: java.util.UUID, fetch: String ?= "")
 GET           /api/project/:projectId/activity                                        controllers.ProjectsApi.activity(projectId: java.util.UUID)
-POST          /api/project                                                            controllers.ProjectsApi.create
+POST          /api/project                                                            controllers.ProjectsApi.create(request: Request)
 PUT           /api/project                                                            controllers.ProjectsApi.update
 DELETE        /api/project/:projectId                                                 controllers.ProjectsApi.delete(projectId: java.util.UUID)
 
@@ -105,7 +105,7 @@ GET           /admin/                                                           
 GET           /activity/csv                                                           controllers.Application.activityCsv
 
 # Authentication
-GET           /login/:authClient                                                      controllers.Application.login(request: Request, authClient: String)
+GET           /login/:authClient                                                      controllers.Auth.login(request: Request, authClient: String)
 GET           /authenticate                                                           @org.pac4j.play.CallbackController.callback(request: Request)
 POST          /authenticate                                                           @org.pac4j.play.CallbackController.callback(request: Request)
 GET           /logout                                                                 @org.pac4j.play.LogoutController.logout(request: Request)

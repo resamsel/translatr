@@ -9,7 +9,7 @@ import models.ProjectRole;
 import models.User;
 import play.inject.Injector;
 import services.AuthProvider;
-import services.CacheService;
+import services.PermissionService;
 import services.api.ApiService;
 
 import java.util.UUID;
@@ -19,13 +19,15 @@ public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends Abstract
   protected final AuthProvider authProvider;
   protected final API api;
   protected final Config configuration;
+  private final PermissionService permissionService;
 
-  protected AbstractApi(Injector injector, CacheService cache, AuthProvider authProvider, API api) {
-    super(injector, cache);
+  protected AbstractApi(Injector injector, AuthProvider authProvider, API api) {
+    super(injector);
 
     this.configuration = injector.instanceOf(Config.class);
     this.authProvider = authProvider;
     this.api = api;
+    this.permissionService = injector.instanceOf(PermissionService.class);
   }
 
   protected void checkProjectRole(UUID projectId, User user, ProjectRole... roles) {

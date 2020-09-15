@@ -18,9 +18,9 @@ import models.ProjectRole;
 import org.apache.commons.lang3.StringUtils;
 import play.data.FormFactory;
 import play.inject.Injector;
+import play.mvc.Http;
 import play.mvc.Result;
 import services.AuthProvider;
-import services.CacheService;
 import services.api.ProjectApiService;
 import utils.FormUtils;
 
@@ -55,12 +55,13 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
   private static final String SEARCH_FIELD = "The search term";
   private static final String NOT_FOUND_ERROR = "Project not found";
 
+  private final Injector injector;
   private final ProjectApiService projectApiService;
 
   @Inject
-  public ProjectsApi(Injector injector, CacheService cache,
-                     AuthProvider authProvider, ProjectApiService projectApiService) {
-    super(injector, cache, authProvider, projectApiService);
+  public ProjectsApi(Injector injector, AuthProvider authProvider, ProjectApiService projectApiService) {
+    super(injector, authProvider, projectApiService);
+    this.injector = injector;
 
     this.projectApiService = projectApiService;
   }
@@ -157,8 +158,8 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
                   paramType = "body"),
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
-  public CompletionStage<Result> create() {
-    return toJson(() -> api.create(request().body().asJson()));
+  public CompletionStage<Result> create(Http.Request request) {
+    return toJson(() -> api.create(request.body().asJson()));
   }
 
   /**

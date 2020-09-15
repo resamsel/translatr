@@ -57,9 +57,8 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
   public static final String PARAM_KEY_IDS = "keyIds";
 
   @Inject
-  public TranslationsApi(Injector injector, CacheService cache,
-                         AuthProvider authProvider, MessageApiService messageApiService) {
-    super(injector, cache, authProvider, messageApiService);
+  public TranslationsApi(Injector injector, AuthProvider authProvider, MessageApiService messageApiService) {
+    super(injector, authProvider, messageApiService);
   }
 
   @ApiOperation(value = FIND,

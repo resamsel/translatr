@@ -19,7 +19,6 @@ import play.inject.Injector;
 import play.mvc.Http;
 import play.mvc.Result;
 import services.AuthProvider;
-import services.CacheService;
 import services.api.UserApiService;
 
 import javax.inject.Inject;
@@ -58,9 +57,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
   private static final String NOT_FOUND_ERROR = "User not found";
 
   @Inject
-  public UsersApi(Injector injector, CacheService cache,
-                  AuthProvider authProvider, UserApiService userApiService) {
-    super(injector, cache, authProvider, userApiService);
+  public UsersApi(Injector injector, AuthProvider authProvider, UserApiService userApiService) {
+    super(injector, authProvider, userApiService);
   }
 
   @ApiOperation(value = FIND, authorizations = @Authorization(value = AUTHORIZATION,

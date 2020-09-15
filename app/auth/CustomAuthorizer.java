@@ -1,6 +1,5 @@
 package auth;
 
-import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.authorization.authorizer.ProfileAuthorizer;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.HttpAction;
@@ -17,9 +16,6 @@ public class CustomAuthorizer extends ProfileAuthorizer<CommonProfile> {
 
   @Override
   public boolean isProfileAuthorized(final WebContext context, final CommonProfile profile) {
-    if (profile == null) {
-      return false;
-    }
-    return StringUtils.startsWith(profile.getUsername(), "jle");
+    return true;
   }
 }

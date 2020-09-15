@@ -16,7 +16,6 @@ import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.Results;
-import services.CacheService;
 import utils.ErrorUtils;
 
 import javax.validation.ConstraintViolationException;
@@ -86,8 +85,8 @@ public class AbstractBaseApi extends AbstractController {
   static final String USER_WRITE = "user:write";
   static final String USER_WRITE_DESCRIPTION = "Write user";
 
-  protected AbstractBaseApi(Injector injector, CacheService cache) {
-    super(injector, cache);
+  protected AbstractBaseApi(Injector injector) {
+    super(injector);
   }
 
   protected <IN extends Dto> CompletionStage<Result> toJson(Supplier<IN> supplier) {
