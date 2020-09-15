@@ -6,8 +6,8 @@
     "test": "test"
   },
   "scripts": {
-    "i18n:pull": "./src/python/translatr.py pull && cd public && ../src/python/translatr.py pull",
-    "i18n:push": "./src/python/translatr.py push && cd public && ../src/python/translatr.py push",
+    "i18n:pull": "./src/python/translatr.py pull && cd ui && npm run i18n:pull",
+    "i18n:push": "./src/python/translatr.py push && cd ui && npm run i18n:push",
     "release:patch": "ts-node ./src/typescript/release.ts patch",
     "release:minor": "ts-node ./src/typescript/release.ts minor",
     "release:major": "ts-node ./src/typescript/release.ts major",
