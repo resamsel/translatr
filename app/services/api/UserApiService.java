@@ -20,9 +20,9 @@ import java.util.UUID;
 public interface UserApiService extends ApiService<User, UUID, UserCriteria> {
   User create(Http.Request request);
 
-  User byUsername(String username, String... propertiesToFetch);
+  User byUsername(Http.Request request, String username, String... propertiesToFetch);
 
-  PagedList<Aggregate> activity(UUID userId);
+  PagedList<Aggregate> activity(Http.Request request, UUID userId);
 
   Profile profile(Http.Request request);
 

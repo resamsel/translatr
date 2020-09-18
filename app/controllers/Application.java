@@ -1,6 +1,5 @@
 package controllers;
 
-import com.typesafe.config.Config;
 import converters.ActivityCsvConverter;
 import criterias.LogEntryCriteria;
 import org.slf4j.Logger;
@@ -10,35 +9,27 @@ import play.api.mvc.AnyContent;
 import play.inject.Injector;
 import play.mvc.Http;
 import play.mvc.Result;
-import services.AuthProvider;
 import services.LogEntryService;
 
 import javax.inject.Inject;
 import java.util.concurrent.CompletionStage;
 
-import static utils.ConfigKey.RedirectBase;
-
 public class Application extends AbstractController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-  private final Config configuration;
   private final Assets assets;
-  private final AuthProvider authProvider;
   private final LogEntryService logEntryService;
 
   @Inject
-  public Application(Injector injector, Config configuration, Assets assets,
-                     AuthProvider authProvider, LogEntryService logEntryService) {
+  public Application(Injector injector, Assets assets, LogEntryService logEntryService) {
     super(injector);
 
-    this.configuration = configuration;
     this.assets = assets;
-    this.authProvider = authProvider;
     this.logEntryService = logEntryService;
   }
 
-  public CompletionStage<Result> index(Http.Request request) {
+  public CompletionStage<Result> index() {
     return async(() -> redirect(routes.Application.indexUi()));
   }
 
@@ -70,8 +61,8 @@ public class Application extends AbstractController {
     return indexAdmin();
   }
 
-  public CompletionStage<Result> activityCsv() {
+  public CompletionStage<Result> activityCsv(Http.Request request) {
     return async(() -> ok(
-            new ActivityCsvConverter().apply(logEntryService.getAggregates(new LogEntryCriteria()).getList())));
+            new ActivityCsvConverter().apply(logEntryService.getAggregates(LogEntryCriteria.from(request)).getList())));
   }
 }

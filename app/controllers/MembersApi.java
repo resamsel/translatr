@@ -22,7 +22,6 @@ import play.mvc.BodyParser;
 import play.mvc.Http;
 import play.mvc.Result;
 import services.AuthProvider;
-import services.ContextProvider;
 import services.api.ProjectUserApiService;
 
 import javax.inject.Inject;
@@ -54,7 +53,6 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
   private static final String SEARCH = "Part of the name of the member";
   private static final String NOT_FOUND_ERROR = "Member not found";
 
-  private static final String MEMBER_NAME = "The name of the member";
   private static final String MEMBER_ID = "The ID of the member";
   private static final String MEMBER_READ = "member:read";
   private static final String MEMBER_READ_DESCRIPTION = "Read member";
@@ -63,20 +61,12 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
 
   public static final String PARAM_ROLES = "roles";
 
-  private final ContextProvider contextProvider;
   private final AuthProvider authProvider;
 
   @Inject
-  public MembersApi(
-          Injector injector, AuthProvider authProvider,
-          ProjectUserApiService projectUserApiService, ContextProvider contextProvider) {
+  public MembersApi(Injector injector, AuthProvider authProvider, ProjectUserApiService projectUserApiService) {
     super(injector, authProvider, projectUserApiService);
-    this.contextProvider = contextProvider;
     this.authProvider = authProvider;
-  }
-
-  private Http.Request req() {
-    return contextProvider.get().request();
   }
 
   @ApiOperation(value = FIND,
@@ -98,12 +88,12 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
                   paramType = "query"),
           @ApiImplicitParam(name = PARAM_ROLES, value = FETCH, dataType = "string",
                   paramType = "query")})
-  public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
+  public CompletionStage<Result> find(Http.Request request, @ApiParam(value = PROJECT_ID) UUID projectId) {
     return toJsons(() -> api.find(
-            ProjectUserCriteria.from(req()).withProjectId(projectId),
+            ProjectUserCriteria.from(request).withProjectId(projectId),
             criteria -> checkProjectRole(
                     projectId,
-                    authProvider.loggedInUser(),
+                    authProvider.loggedInUser(request),
                     ProjectRole.Owner,
                     ProjectRole.Manager,
                     ProjectRole.Translator,
@@ -126,9 +116,9 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> get(@ApiParam(value = MEMBER_ID) Long id,
+  public CompletionStage<Result> get(Http.Request request, @ApiParam(value = MEMBER_ID) Long id,
                                      @ApiParam(value = FETCH) String fetch) {
-    return toJson(() -> api.get(id, StringUtils.split(fetch, ",")));
+    return toJson(() -> api.get(request, id, StringUtils.split(fetch, ",")));
   }
 
   /**
@@ -149,8 +139,8 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
   @BodyParser.Of(BodyParser.Json.class)
-  public CompletionStage<Result> create() {
-    return toJson(() -> api.create(req().body().asJson()));
+  public CompletionStage<Result> create(Http.Request request) {
+    return toJson(() -> api.create(request, request.body().asJson()));
   }
 
   /**
@@ -172,8 +162,8 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
   @BodyParser.Of(BodyParser.Json.class)
-  public CompletionStage<Result> update() {
-    return toJson(() -> api.update(req().body().asJson()));
+  public CompletionStage<Result> update(Http.Request request) {
+    return toJson(() -> api.update(request, request.body().asJson()));
   }
 
   /**
@@ -190,7 +180,7 @@ public class MembersApi extends AbstractApi<ProjectUser, Long, ProjectUserCriter
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> delete(@ApiParam(value = MEMBER_ID) Long id) {
-    return toJson(() -> api.delete(id));
+  public CompletionStage<Result> delete(Http.Request request, @ApiParam(value = MEMBER_ID) Long id) {
+    return toJson(() -> api.delete(request, id));
   }
 }

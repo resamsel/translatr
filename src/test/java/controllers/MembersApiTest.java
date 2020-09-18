@@ -12,7 +12,6 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Http;
 import play.mvc.Result;
 import services.AuthProvider;
-import services.ContextProvider;
 import services.api.ProjectUserApiService;
 
 import java.util.Collections;
@@ -34,10 +33,6 @@ public class MembersApiTest {
   @Mock
   private HttpExecutionContext executionContext;
   @Mock
-  private Http.Context context;
-  @Mock
-  private ContextProvider contextProvider;
-  @Mock
   private Http.Request request;
   @Mock
   private AuthProvider authProvider;
@@ -46,10 +41,8 @@ public class MembersApiTest {
   public void setUp() {
     when(injector.instanceOf(HttpExecutionContext.class)).thenReturn(executionContext);
     when(executionContext.current()).thenReturn(new ForkJoinPool());
-    when(contextProvider.get()).thenReturn(context);
-    when(context.request()).thenReturn(request);
 
-    target = new MembersApi(injector, authProvider, projectUserApiService, contextProvider);
+    target = new MembersApi(injector, authProvider, projectUserApiService);
   }
 
   @Test
@@ -60,7 +53,7 @@ public class MembersApiTest {
     when(projectUserApiService.find(any(), any())).thenReturn(PagedListFactory.create(Collections.emptyList()));
 
     // when
-    Result actual = target.find(projectId).toCompletableFuture().get();
+    Result actual = target.find(request, projectId).toCompletableFuture().get();
 
     // then
     CustomAssertions.assertThat(actual)

@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
 import play.inject.Injector;
+import play.mvc.Http;
 import play.mvc.Result;
 import services.AuthProvider;
 import services.api.ActivityApiService;
@@ -52,8 +53,8 @@ public class ActivitiesApi extends AbstractApi<Activity, UUID, LogEntryCriteria,
           @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query"),
           @ApiImplicitParam(name = PARAM_TYPES, value = TYPES, dataType = "string",
                   paramType = "query")})
-  public CompletionStage<Result> find() {
-    return toJsons(() -> api.find(LogEntryCriteria.from(request())));
+  public CompletionStage<Result> find(Http.Request request) {
+    return toJsons(() -> api.find(LogEntryCriteria.from(request)));
   }
 
   /**
@@ -66,7 +67,7 @@ public class ActivitiesApi extends AbstractApi<Activity, UUID, LogEntryCriteria,
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> activity() {
-    return toJsons(() -> api.getAggregates(LogEntryCriteria.from(request())));
+  public CompletionStage<Result> activity(Http.Request request) {
+    return toJsons(() -> api.getAggregates(LogEntryCriteria.from(request)));
   }
 }

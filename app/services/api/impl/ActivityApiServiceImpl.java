@@ -40,7 +40,7 @@ public class ActivityApiServiceImpl extends
   @Override
   public PagedList<dto.Aggregate> getAggregates(LogEntryCriteria criteria) {
     try {
-      permissionService.checkPermissionAll("Access token not allowed", readScopes);
+      permissionService.checkPermissionAll(criteria.getRequest(), "Access token not allowed", readScopes);
     } catch (AuthorizationException | PermissionException e) {
       // Disallow custom criteria when not logged-in
       criteria = new LogEntryCriteria().withLimit(1000);

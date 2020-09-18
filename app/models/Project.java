@@ -1,25 +1,19 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import criterias.MessageCriteria;
 import io.ebean.annotation.CreatedTimestamp;
 import io.ebean.annotation.UpdatedTimestamp;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import controllers.AbstractController;
-import criterias.MessageCriteria;
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.api.Play;
-import play.api.mvc.Call;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
-import play.mvc.Http;
-import play.mvc.Http.Context;
 import services.MessageService;
-import services.ProjectService;
 import utils.CacheUtils;
-import utils.ContextKey;
 import validators.NameUnique;
 import validators.ProjectName;
 import validators.ProjectNameUniqueChecker;
@@ -277,33 +271,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
         .findFirst()
         .map(projectUser -> projectUser.role)
         .orElse(null);
-  }
-
-  public static UUID brandProjectId(User loggedInUser, Http.Context ctx) {
-    UUID brandProjectId = ContextKey.BrandProjectId.get(ctx.request());
-    if (brandProjectId != null) {
-      return brandProjectId;
-    }
-
-    if (loggedInUser == null) {
-      return null;
-    }
-
-    Project brandProject = null;
-    try {
-      brandProject = Play.current().injector().instanceOf(ProjectService.class)
-          .byOwnerAndName(loggedInUser.username, "Translatr");
-    } catch (Exception e) {
-      LOGGER.warn("Error while retrieving brand project", e);
-    }
-
-    if (brandProject == null) {
-      return null;
-    }
-
-    ContextKey.BrandProjectId.put(ctx.request(), brandProject.id);
-
-    return brandProject.id;
   }
 
   public static String getCacheKey(UUID projectId, String... fetches) {

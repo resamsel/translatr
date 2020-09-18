@@ -1,22 +1,20 @@
 package services.impl;
 
+import auth.AccessTokenProfile;
 import criterias.ProjectUserCriteria;
-import dto.AuthorizationException;
 import dto.PermissionException;
-import models.AccessToken;
 import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
 import models.Scope;
 import models.User;
+import org.pac4j.core.profile.CommonProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.mvc.Http;
 import services.AuthProvider;
-import services.ContextProvider;
 import services.PermissionService;
 import services.ProjectUserService;
-import utils.ContextKey;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -24,6 +22,7 @@ import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static repositories.ProjectRepository.FETCH_MEMBERS;
@@ -35,23 +34,15 @@ public class PermissionServiceImpl implements PermissionService {
 
   private final ProjectUserService projectUserService;
   private final AuthProvider authProvider;
-  private final ContextProvider contextProvider;
 
   @Inject
-  public PermissionServiceImpl(ProjectUserService projectUserService, AuthProvider authProvider,
-                               ContextProvider contextProvider) {
+  public PermissionServiceImpl(ProjectUserService projectUserService, AuthProvider authProvider) {
     this.projectUserService = projectUserService;
     this.authProvider = authProvider;
-    this.contextProvider = contextProvider;
   }
 
   @Override
-  public boolean hasPermissionAny(@Nonnull Project project, ProjectRole... roles) {
-    return hasPermissionAny(project, authProvider.loggedInUser(), roles);
-  }
-
-  @Override
-  public boolean hasPermissionAny(@Nonnull Project project, User user, ProjectRole... roles) {
+  public boolean hasPermissionAny(Http.Request request, @Nonnull Project project, User user, ProjectRole... roles) {
     if (project.members != null && !project.members.isEmpty()) {
       return hasPermissionAny(project.members, user, Arrays.asList(roles));
     }
@@ -60,8 +51,8 @@ public class PermissionServiceImpl implements PermissionService {
   }
 
   @Override
-  public boolean hasPermissionAny(UUID projectId, ProjectRole... roles) {
-    return hasPermissionAny(projectId, authProvider.loggedInUser(), roles);
+  public boolean hasPermissionAny(Http.Request request, UUID projectId, ProjectRole... roles) {
+    return hasPermissionAny(projectId, authProvider.loggedInUser(request), roles);
   }
 
   @Override
@@ -80,50 +71,37 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     return hasPermissionAny(
-        projectUserService.findBy(
-            new ProjectUserCriteria()
-                .withProjectId(projectId)
-                .withFetches(FETCH_MEMBERS))
-            .getList(),
-        user,
-        roles);
+            projectUserService.findBy(
+                    new ProjectUserCriteria()
+                            .withProjectId(projectId)
+                            .withFetches(FETCH_MEMBERS))
+                    .getList(),
+            user,
+            roles);
   }
 
   @Override
-  public boolean hasPermissionAll(Scope... scopes) {
-    Http.Context ctx = contextProvider.getOrNull();
-    return hasPermissionAll(ContextKey.AccessToken.get(ctx.request()), scopes);
-  }
+  public boolean hasPermissionAll(Http.Request request, Scope... scopes) {
+    Optional<CommonProfile> optionalProfile = authProvider.loggedInProfile(request);
 
-  @Override
-  public boolean hasPermissionAll(AccessToken accessToken, Scope... scopes) {
-    LOGGER.debug("Scopes of access token: {}, needed: {}",
-        accessToken != null ? accessToken.getScopeList() : "-", scopes);
-
-    if (accessToken == null) {
-      return authProvider.loggedInUser() != null;
-    }
-
-    // TODO: allow admin scopes also
-    // !PermissionUtils.hasPermissionAny(Scope.ProjectRead, Scope.ProjectAdmin)
-    // || !PermissionUtils.hasPermissionAny(Scope.LocaleRead, Scope.LocaleAdmin))
-
-    return accessToken.getScopeList().containsAll(Arrays.asList(scopes));
-  }
-
-  @Override
-  public boolean hasPermissionAny(AccessToken accessToken, Scope... scopes) {
-    LOGGER.debug("Scopes of access token: {}, needed: {}",
-        accessToken != null ? accessToken.getScopeList() : "-", scopes);
-
-    if (accessToken == null) {
+    if (!optionalProfile.isPresent()) {
+      // user is not logged-in
       return false;
     }
 
-    List<Scope> scopeList = accessToken.getScopeList();
-    scopeList.retainAll(Arrays.asList(scopes));
+    CommonProfile profile = optionalProfile.get();
+    if (profile instanceof AccessTokenProfile) {
+      // user is logged-in through access token
+      AccessTokenProfile accessTokenProfile = (AccessTokenProfile) profile;
+      return hasPermissionAll(accessTokenProfile.getScope(), Arrays.asList(scopes));
+    }
 
-    return !scopeList.isEmpty();
+    // user is logged-in through authentication
+    return true;
+  }
+
+  private static boolean hasPermissionAll(List<Scope> actual, List<Scope> expected) {
+    return actual.containsAll(expected);
   }
 
   @Override
@@ -141,19 +119,14 @@ public class PermissionServiceImpl implements PermissionService {
   }
 
   @Override
-  public void checkPermissionAll(String errorMessage, Scope... scopes) {
-    AccessToken accessToken = ContextKey.AccessToken.get(contextProvider.getOrNull().request());
-    if (accessToken == null && authProvider.loggedInUser() == null) {
-      throw new AuthorizationException();
-    }
-
-    if (!hasPermissionAll(accessToken, scopes)) {
+  public void checkPermissionAll(Http.Request request, String errorMessage, Scope... scopes) {
+    if (!hasPermissionAll(request, scopes)) {
       throw new PermissionException(
-          errorMessage,
-          Arrays.stream(scopes)
-              .map(Enum::name)
-              .toArray(String[]::new
-              )
+              errorMessage,
+              Arrays.stream(scopes)
+                      .map(Enum::name)
+                      .toArray(String[]::new
+                      )
       );
     }
   }

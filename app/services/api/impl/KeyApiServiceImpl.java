@@ -5,6 +5,7 @@ import dto.NotFoundException;
 import mappers.KeyMapper;
 import models.Key;
 import models.Scope;
+import play.mvc.Http;
 import services.KeyService;
 import services.PermissionService;
 import services.ProjectService;
@@ -39,9 +40,9 @@ public class KeyApiServiceImpl extends
   }
 
   @Override
-  public dto.Key byOwnerAndProjectAndName(String username, String projectName, String keyName, String... fetches) {
+  public dto.Key byOwnerAndProjectAndName(Http.Request request, String username, String projectName, String keyName, String... fetches) {
     permissionService
-        .checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.KeyRead,
+        .checkPermissionAll(request, "Access token not allowed", Scope.ProjectRead, Scope.KeyRead,
             Scope.MessageRead);
 
     Key key = service.byOwnerAndProjectAndName(username, projectName, keyName, fetches);

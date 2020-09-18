@@ -1,9 +1,9 @@
 package criterias;
 
-import forms.SearchForm;
 import play.mvc.Http.Request;
 import utils.JsonUtils;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 /**
@@ -115,17 +115,11 @@ public class ProjectCriteria extends AbstractProjectSearchCriteria<ProjectCriter
         '}';
   }
 
-  public static ProjectCriteria from(SearchForm form) {
-    return new ProjectCriteria().with(form);
-  }
-
-  public static ProjectCriteria from(Request request) {
-    ProjectCriteria criteria = new ProjectCriteria()
+  public static ProjectCriteria from(@Nonnull Request request) {
+    return new ProjectCriteria()
         .with(request)
         .withOwnerId(JsonUtils.getUuid(request.getQueryString("ownerId")))
         .withOwnerUsername(request.getQueryString("owner"))
         .withMemberId(JsonUtils.getUuid(request.getQueryString("memberId")));
-
-    return criteria;
   }
 }

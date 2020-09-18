@@ -5,22 +5,21 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.profile.CommonProfile;
 import play.inject.Injector;
 import services.AccessTokenService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton
 public class AccessTokenAuthenticator implements Authenticator<TokenCredentials> {
 
   private final Injector injector;
+  private final String clientName;
   private AccessTokenService accessTokenService;
 
-  @Inject
-  public AccessTokenAuthenticator(Injector injector) {
+  public AccessTokenAuthenticator(Injector injector, String clientName) {
     this.injector = injector;
+    this.clientName = clientName;
   }
 
   @Override
@@ -33,9 +32,10 @@ public class AccessTokenAuthenticator implements Authenticator<TokenCredentials>
       throw new CredentialsException("Could not validate access token");
     }
 
-    CommonProfile profile = new CommonProfile();
-    profile.setClientName("parameter");
+    AccessTokenProfile profile = new AccessTokenProfile();
+    profile.setClientName(clientName);
     profile.setId(credentials.getToken());
+    profile.setScope(accessToken.scope);
     credentials.setUserProfile(profile);
   }
 

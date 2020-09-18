@@ -5,6 +5,7 @@ import models.ActionType;
 import play.mvc.Http;
 import utils.JsonUtils;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -67,7 +68,7 @@ public class LogEntryCriteria extends AbstractProjectSearchCriteria<LogEntryCrit
   }
 
   @Override
-  public LogEntryCriteria with(Http.Request request) {
+  public LogEntryCriteria with(@Nonnull Http.Request request) {
     return super
         .with(request)
         .withUserId(JsonUtils.getUuid(request.getQueryString("userId")))

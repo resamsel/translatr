@@ -1,7 +1,5 @@
 package controllers;
 
-import controllers.LocalesApi;
-import controllers.routes;
 import criterias.PagedListFactory;
 import dto.NotFoundException;
 import mappers.LocaleMapper;
@@ -15,6 +13,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.api.inject.Binding;
+import play.mvc.Http;
 import play.mvc.Result;
 import services.AccessTokenService;
 import services.ProjectUserService;
@@ -83,6 +82,7 @@ public class LocalesApiTest extends ApiControllerTest {
         .createAccessToken(ThreadLocalRandom.current().nextLong(), johnSmith, "Access Token Test");
     project1 = ProjectRepositoryMock.byOwnerAndName(johnSmith.username, "project1");
     locale = LocaleRepositoryMock.createLocale(UUID.randomUUID(), project1, "de");
+    Http.Request request = mock(Http.Request.class);
 
     AccessTokenService accessTokenService = mock(
         AccessTokenService.class,
@@ -101,11 +101,11 @@ public class LocalesApiTest extends ApiControllerTest {
     when(projectUserService.findBy(any()))
         .thenReturn(PagedListFactory.create(project1.members));
     when(localeApiService
-        .byOwnerAndProjectAndName(eq(johnSmith.username), eq(project1.name), eq(locale.name)))
+        .byOwnerAndProjectAndName(request, eq(johnSmith.username), eq(project1.name), eq(locale.name)))
         .thenReturn(LocaleMapper.toDto(locale));
-    when(localeApiService.byOwnerAndProjectAndName(eq("a"), eq("b"), eq("c")))
+    when(localeApiService.byOwnerAndProjectAndName(request, eq("a"), eq("b"), eq("c")))
         .thenThrow(new NotFoundException(dto.Locale.class.getName(), "c"));
-    when(localeApiService.download(eq(locale.id), eq("java_properties"), any()))
+    when(localeApiService.download(request, eq(locale.id), eq("java_properties"), any()))
         .thenReturn("".getBytes());
 
     //noinspection unchecked

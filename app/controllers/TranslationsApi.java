@@ -17,9 +17,9 @@ import io.swagger.annotations.AuthorizationScope;
 import models.ProjectRole;
 import play.inject.Injector;
 import play.mvc.BodyParser;
+import play.mvc.Http;
 import play.mvc.Result;
 import services.AuthProvider;
-import services.CacheService;
 import services.api.MessageApiService;
 
 import javax.inject.Inject;
@@ -85,8 +85,8 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
                   paramType = "query"),
           @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
           @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
-  public CompletionStage<Result> find() {
-    return findByProject(null);
+  public CompletionStage<Result> find(Http.Request request) {
+    return findByProject(request, null);
   }
 
   @ApiOperation(value = FIND,
@@ -113,12 +113,12 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
                   paramType = "query"),
           @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
           @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
-  public CompletionStage<Result> findByProject(@ApiParam(value = PROJECT_ID) UUID projectId) {
+  public CompletionStage<Result> findByProject(Http.Request request, @ApiParam(value = PROJECT_ID) UUID projectId) {
     return toJsons(() -> api.find(
-            MessageCriteria.from(request()).withProjectId(projectId),
+            MessageCriteria.from(request).withProjectId(projectId),
             criteria -> checkProjectRole(
                     projectId,
-                    authProvider.loggedInUser(),
+                    authProvider.loggedInUser(request),
                     ProjectRole.Owner,
                     ProjectRole.Manager,
                     ProjectRole.Translator,
@@ -139,8 +139,8 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> get(@ApiParam(value = MESSAGE_ID) UUID id) {
-    return toJson(() -> api.get(id));
+  public CompletionStage<Result> get(Http.Request request, @ApiParam(value = MESSAGE_ID) UUID id) {
+    return toJson(() -> api.get(request, id));
   }
 
   /**
@@ -161,8 +161,8 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
   @BodyParser.Of(BodyParser.Json.class)
-  public CompletionStage<Result> create() {
-    return toJson(() -> api.create(request().body().asJson()));
+  public CompletionStage<Result> create(Http.Request request) {
+    return toJson(() -> api.create(request, request.body().asJson()));
   }
 
   /**
@@ -184,8 +184,8 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
   @BodyParser.Of(BodyParser.Json.class)
-  public CompletionStage<Result> update() {
-    return toJson(() -> api.update(request().body().asJson()));
+  public CompletionStage<Result> update(Http.Request request) {
+    return toJson(() -> api.update(request, request.body().asJson()));
   }
 
   /**
@@ -202,7 +202,7 @@ public class TranslationsApi extends AbstractApi<Message, UUID, MessageCriteria,
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> delete(@ApiParam(value = MESSAGE_ID) UUID id) {
-    return toJson(() -> api.delete(id));
+  public CompletionStage<Result> delete(Http.Request request, @ApiParam(value = MESSAGE_ID) UUID id) {
+    return toJson(() -> api.delete(request, id));
   }
 }

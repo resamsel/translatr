@@ -13,7 +13,7 @@
         <option name="services">
           <list>
             <option value="db-translatr" />
-            <option value="redis-translatr" />
+            <option value="keycloak-translatr" />
           </list>
         </option>
         <option name="sourceFilePath" value="docker-compose.yml" />

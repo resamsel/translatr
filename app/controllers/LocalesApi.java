@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http;
 import play.mvc.Result;
 import services.AuthProvider;
 import services.api.LocaleApiService;
@@ -100,12 +101,12 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
                   dataType = "string", paramType = "query"),
           @ApiImplicitParam(name = PARAM_MISSING, value = MISSING,
                   dataType = "string", paramType = "query")})
-  public CompletionStage<Result> find(@ApiParam(value = "The project ID") UUID projectId) {
+  public CompletionStage<Result> find(Http.Request request, @ApiParam(value = "The project ID") UUID projectId) {
     return toJsons(() -> api.find(
-            LocaleCriteria.from(request()).withProjectId(projectId),
+            LocaleCriteria.from(request).withProjectId(projectId),
             criteria -> checkProjectRole(
                     projectId,
-                    authProvider.loggedInUser(request()),
+                    authProvider.loggedInUser(request),
                     ProjectRole.Owner,
                     ProjectRole.Manager,
                     ProjectRole.Translator,
@@ -128,8 +129,8 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> get(@ApiParam(value = LOCALE_ID) UUID id) {
-    return toJson(() -> api.get(id));
+  public CompletionStage<Result> get(Http.Request request, @ApiParam(value = LOCALE_ID) UUID id) {
+    return toJson(() -> api.get(request, id));
   }
 
   /**
@@ -147,11 +148,13 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> byOwnerAndProjectNameAndName(
+          Http.Request request,
           @ApiParam(value = USER_USERNAME) String username,
           @ApiParam(value = PROJECT_NAME) String projectName,
           @ApiParam(value = LOCALE_NAME) String localeName,
           @ApiParam(value = FETCH) String fetch) {
     return locale(
+            request,
             username,
             projectName,
             localeName,
@@ -178,8 +181,8 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
   @BodyParser.Of(BodyParser.Json.class)
-  public CompletionStage<Result> create() {
-    return toJson(() -> api.create(request().body().asJson()));
+  public CompletionStage<Result> create(Http.Request request) {
+    return toJson(() -> api.create(request, request.body().asJson()));
   }
 
   /**
@@ -201,8 +204,8 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
   @BodyParser.Of(BodyParser.Json.class)
-  public CompletionStage<Result> update() {
-    return toJson(() -> api.update(request().body().asJson()));
+  public CompletionStage<Result> update(Http.Request request) {
+    return toJson(() -> api.update(request, request.body().asJson()));
   }
 
   /**
@@ -219,8 +222,8 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> delete(@ApiParam(value = LOCALE_ID) UUID id) {
-    return toJson(() -> api.delete(id));
+  public CompletionStage<Result> delete(Http.Request request, @ApiParam(value = LOCALE_ID) UUID id) {
+    return toJson(() -> api.delete(request, id));
   }
 
   @ApiOperation(value = UPLOAD, authorizations = @Authorization(value = AUTHORIZATION,
@@ -233,8 +236,8 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> upload(@ApiParam(value = LOCALE_ID) UUID localeId) {
-    return toJson(() -> api.upload(localeId, request()));
+  public CompletionStage<Result> upload(Http.Request request, @ApiParam(value = LOCALE_ID) UUID localeId) {
+    return toJson(() -> api.upload(localeId, request));
   }
 
   @ApiOperation(value = DOWNLOAD, produces = "text/plain", authorizations = @Authorization(
@@ -248,9 +251,9 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> download(UUID localeId, String fileType) {
+  public CompletionStage<Result> download(Http.Request request, UUID localeId, String fileType) {
     return CompletableFuture
-            .supplyAsync(() -> api.download(localeId, fileType, response()),
+            .supplyAsync(() -> api.download(request, localeId, fileType, response()),
                     executionContext.current())
             .thenApply(data -> ok(new ByteArrayInputStream(data))).exceptionally(this::handleException);
   }
@@ -266,23 +269,24 @@ public class LocalesApi extends AbstractApi<Locale, UUID, LocaleCriteria, Locale
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> downloadBy(String username, String projectName, String localeName,
+  public CompletionStage<Result> downloadBy(Http.Request request, String username, String projectName, String localeName,
                                             String fileType) {
     return locale(
+            request,
             username,
             projectName,
             localeName,
             locale -> ok(
-                    new ByteArrayInputStream(api.download(locale.id, fileType, response())))
+                    new ByteArrayInputStream(api.download(request, locale.id, fileType, response())))
     ).exceptionally(this::handleException);
   }
 
-  private CompletionStage<Result> locale(String username, String projectName, String localeName,
+  private CompletionStage<Result> locale(Http.Request request, String username, String projectName, String localeName,
                                          Function<Locale, Result> processor, String... fetches) {
     return async(() -> {
-      Locale locale = api.byOwnerAndProjectAndName(username, projectName, localeName, fetches);
+      Locale locale = api.byOwnerAndProjectAndName(request, username, projectName, localeName, fetches);
 
-      checkProjectRole(locale.projectId, authProvider.loggedInUser(), ProjectRole.Owner,
+      checkProjectRole(locale.projectId, authProvider.loggedInUser(request), ProjectRole.Owner,
               ProjectRole.Manager, ProjectRole.Developer, ProjectRole.Translator);
 
       return processor.apply(locale);

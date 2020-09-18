@@ -20,6 +20,7 @@ import models.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.inject.Injector;
+import play.mvc.Http;
 import play.mvc.Result;
 import services.NotificationService;
 import services.PermissionService;
@@ -66,12 +67,12 @@ public class NotificationsApi extends AbstractBaseApi {
                   dataType = "string", paramType = "query"),
           @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
           @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
-  public CompletionStage<Result> find() {
+  public CompletionStage<Result> find(Http.Request request) {
     StreamResponse<AggregatedActivity<SimpleActivity>> notifications;
     try {
-      permissionService.checkPermissionAll("Access token not allowed", Scope.NotificationRead);
+      permissionService.checkPermissionAll(request, "Access token not allowed", Scope.NotificationRead);
 
-      notifications = notificationService.find(NotificationCriteria.from(request()));
+      notifications = notificationService.find(NotificationCriteria.from(request));
     } catch (IOException | StreamClientException | PermissionException e) {
       LOGGER.error("Error while retrieving notifications", e);
       return CompletableFuture.completedFuture(handleException(e));

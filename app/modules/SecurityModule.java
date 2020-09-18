@@ -1,11 +1,14 @@
 package modules;
 
 import auth.AccessTokenAuthenticator;
+import auth.AlwaysReadSessionProfileStorageDecision;
+import auth.ClientName;
 import auth.CustomAuthorizer;
 import auth.CustomCallbackLogic;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import controllers.routes;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
@@ -13,6 +16,7 @@ import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
+import org.pac4j.core.engine.DefaultSecurityLogic;
 import org.pac4j.core.matching.matcher.PathMatcher;
 import org.pac4j.http.client.direct.HeaderClient;
 import org.pac4j.http.client.direct.ParameterClient;
@@ -28,11 +32,13 @@ import org.pac4j.play.deadbolt2.Pac4jHandlerCache;
 import org.pac4j.play.deadbolt2.Pac4jRoleHandler;
 import org.pac4j.play.http.PlayHttpActionAdapter;
 import org.pac4j.play.store.PlayCacheSessionStore;
+import org.pac4j.play.store.PlayCookieSessionStore;
 import org.pac4j.play.store.PlaySessionStore;
 import play.Environment;
 import play.inject.Injector;
 import utils.ConfigKey;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -49,6 +55,8 @@ public class SecurityModule extends AbstractModule {
   private final com.typesafe.config.Config configuration;
   private final String baseUrl;
   private final List<String> excludePaths;
+  private final Duration cacheTimeout;
+  private final int cacheSize;
 
   private static class MyPac4jRoleHandler implements Pac4jRoleHandler {
   }
@@ -57,6 +65,8 @@ public class SecurityModule extends AbstractModule {
     this.configuration = configuration;
     this.baseUrl = BaseUrl.get(configuration);
     this.excludePaths = Pac4jSecurityExcludePaths.getStringList(configuration);
+    this.cacheTimeout = Pac4jCacheTimeout.getDuration(configuration);
+    this.cacheSize = Pac4jCacheSize.getInt(configuration);
   }
 
   @Override
@@ -70,13 +80,13 @@ public class SecurityModule extends AbstractModule {
 
     // callback
     final CallbackController callbackController = new CallbackController();
-    callbackController.setDefaultUrl("/");
+    callbackController.setDefaultUrl(routes.Application.indexUi().url() + "/dashboard");
     callbackController.setMultiProfile(true);
     bind(CallbackController.class).toInstance(callbackController);
 
     // logout
     final LogoutController logoutController = new LogoutController();
-    logoutController.setDefaultUrl("/?defaulturlafterlogout");
+    logoutController.setDefaultUrl(routes.Application.indexUi().url());
     //logoutController.setDestroySession(true);
     bind(LogoutController.class).toInstance(logoutController);
   }
@@ -108,12 +118,16 @@ public class SecurityModule extends AbstractModule {
                     .as((HttpConstants.APPLICATION_JSON))
     );
 
+    DefaultSecurityLogic<?, ?> securityLogic = new DefaultSecurityLogic<>();
+    securityLogic.setProfileStorageDecision(new AlwaysReadSessionProfileStorageDecision<>());
+
     final Config config = new Config(clients);
 
     config.addAuthorizer("custom", new CustomAuthorizer());
     config.addMatcher("excludePaths", new PathMatcher().excludePaths(excludePaths.toArray(new String[0])));
     config.setHttpActionAdapter(PlayHttpActionAdapter.INSTANCE);
     config.setCallbackLogic(new CustomCallbackLogic<>(injector));
+    config.setSecurityLogic(securityLogic);
 
     return config;
   }
@@ -121,16 +135,16 @@ public class SecurityModule extends AbstractModule {
   protected AnonymousClient provideAnonymousClient() {
     AnonymousClient client = new AnonymousClient();
 
-    client.setName("anonymous");
+    client.setName(ClientName.ANONYMOUS);
 
     return client;
   }
 
   protected ParameterClient provideParameterClient(Injector injector) {
     ParameterClient client = new ParameterClient("access_token",
-            new LocalCachingAuthenticator<>(new AccessTokenAuthenticator(injector), 10000, 15, TimeUnit.MINUTES));
+            new LocalCachingAuthenticator<>(new AccessTokenAuthenticator(injector, ClientName.PARAMETER), cacheSize, (int) cacheTimeout.getSeconds(), TimeUnit.SECONDS));
 
-    client.setName("parameter");
+    client.setName(ClientName.PARAMETER);
     client.setSupportGetRequest(true);
 
     return client;
@@ -138,9 +152,9 @@ public class SecurityModule extends AbstractModule {
 
   protected HeaderClient provideHeaderClient(Injector injector) {
     HeaderClient client = new HeaderClient("x-access-token",
-            new LocalCachingAuthenticator<>(new AccessTokenAuthenticator(injector), 10000, 15, TimeUnit.MINUTES));
+            new LocalCachingAuthenticator<>(new AccessTokenAuthenticator(injector, ClientName.HEADER), cacheSize, (int) cacheTimeout.getSeconds(), TimeUnit.SECONDS));
 
-    client.setName("header");
+    client.setName(ClientName.HEADER);
 
     return client;
   }
