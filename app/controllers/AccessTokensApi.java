@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.AuthorizationScope;
 import play.inject.Injector;
+import play.mvc.Http;
 import play.mvc.Result;
 import services.AuthProvider;
 import services.api.AccessTokenApiService;
@@ -60,8 +61,8 @@ public class AccessTokensApi extends AbstractApi<AccessToken, Long, AccessTokenC
           paramType = "query"),
       @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
       @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
-  public CompletionStage<Result> find() {
-    return toJsons(() -> api.find(AccessTokenCriteria.from(request())));
+  public CompletionStage<Result> find(Http.Request request) {
+    return toJsons(() -> api.find(AccessTokenCriteria.from(request)));
   }
 
   @ApiOperation(value = GET, authorizations = @Authorization(value = AUTHORIZATION,
@@ -72,8 +73,8 @@ public class AccessTokensApi extends AbstractApi<AccessToken, Long, AccessTokenC
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> get(@ApiParam(value = ACCESS_TOKEN_ID) long id) {
-    return toJson(() -> api.get(id));
+  public CompletionStage<Result> get(Http.Request request, @ApiParam(value = ACCESS_TOKEN_ID) long id) {
+    return toJson(() -> api.get(request, id));
   }
 
   /**
@@ -90,8 +91,8 @@ public class AccessTokensApi extends AbstractApi<AccessToken, Long, AccessTokenC
           paramType = "body"),
       @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
           dataType = "string", paramType = "query")})
-  public CompletionStage<Result> create() {
-    return toJson(() -> api.create(request().body().asJson()));
+  public CompletionStage<Result> create(Http.Request request) {
+    return toJson(() -> api.create(request, request.body().asJson()));
   }
 
   /**
@@ -109,8 +110,8 @@ public class AccessTokensApi extends AbstractApi<AccessToken, Long, AccessTokenC
           paramType = "body"),
       @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
           dataType = "string", paramType = "query")})
-  public CompletionStage<Result> update() {
-    return toJson(() -> api.update(request().body().asJson()));
+  public CompletionStage<Result> update(Http.Request request) {
+    return toJson(() -> api.update(request, request.body().asJson()));
   }
 
   /**
@@ -124,7 +125,7 @@ public class AccessTokensApi extends AbstractApi<AccessToken, Long, AccessTokenC
       @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
       required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> delete(@ApiParam(value = PROJECT_ID) long id) {
-    return toJson(() -> api.delete(id));
+  public CompletionStage<Result> delete(Http.Request request, @ApiParam(value = PROJECT_ID) long id) {
+    return toJson(() -> api.delete(request, id));
   }
 }

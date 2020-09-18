@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.data.FormFactory;
 import play.inject.Injector;
+import play.mvc.Http;
 import play.mvc.Http.Context;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
@@ -64,10 +65,10 @@ public class LocaleApiServiceImpl extends
   }
 
   @Override
-  public dto.Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
+  public dto.Locale byOwnerAndProjectAndName(Http.Request request, String username, String projectName, String localeName,
                                              String... fetches) {
     permissionService
-        .checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
+        .checkPermissionAll(request, "Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
             Scope.MessageRead);
 
     Locale locale = service.byOwnerAndProjectAndName(username, projectName, localeName, fetches);
@@ -84,7 +85,7 @@ public class LocaleApiServiceImpl extends
   @Override
   public dto.Locale upload(UUID localeId, Request request) {
     permissionService
-        .checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
+        .checkPermissionAll(request, "Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
             Scope.MessageWrite);
 
     Locale locale = ofNullable(service.byId(localeId))
@@ -109,7 +110,7 @@ public class LocaleApiServiceImpl extends
         .orElseThrow(() -> new IllegalArgumentException("File type " + form.getFileType() + " not supported yet"));
 
     try {
-      importer.apply(messages.getFile(), locale);
+      importer.apply(messages.getRef(), locale);
     } catch (Exception e) {
       LOGGER.error("Error while importing messages", e);
     }
@@ -123,9 +124,9 @@ public class LocaleApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  public byte[] download(UUID localeId, String fileType, Response response) {
+  public byte[] download(Http.Request request, UUID localeId, String fileType, Response response) {
     permissionService
-        .checkPermissionAll("Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
+        .checkPermissionAll(request, "Access token not allowed", Scope.ProjectRead, Scope.LocaleRead,
             Scope.MessageRead);
 
     Locale locale = ofNullable(service.byId(localeId, LocaleRepository.FETCH_MESSAGES))

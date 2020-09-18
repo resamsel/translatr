@@ -6,7 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 import play.mvc.Http.Request;
 import utils.NumberUtils;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author resamsel
@@ -16,6 +19,8 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
     extends AbstractFetchCriteria<T> implements SearchCriteria {
 
   protected final String type;
+
+  private Request request;
 
   private Integer offset;
 
@@ -29,11 +34,21 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
 
   private UUID loggedInUserId;
 
-  /**
-   *
-   */
   public AbstractSearchCriteria(String type) {
     this.type = type;
+  }
+
+  public Request getRequest() {
+    return request;
+  }
+
+  public void setRequest(@Nonnull Request request) {
+    this.request = requireNonNull(request);
+  }
+
+  public T withRequest(@Nonnull Request request) {
+    setRequest(request);
+    return self;
   }
 
   public UUID getUserId() {
@@ -147,8 +162,9 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
         .withOrder(form.order);
   }
 
-  public T with(Request request) {
+  public T with(@Nonnull Request request) {
     return self
+        .withRequest(requireNonNull(request))
         .withSearch(request.getQueryString("search"))
         .withOffset(NumberUtils.parseInt(request.getQueryString("offset")))
         .withLimit(NumberUtils.parseInt(request.getQueryString("limit")))

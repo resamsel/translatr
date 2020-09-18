@@ -23,6 +23,7 @@ import models.Suggestable.Data;
 import models.User;
 import models.UserRole;
 import play.i18n.Messages;
+import play.mvc.Http;
 import play.mvc.Http.Context;
 import services.AuthProvider;
 import services.KeyService;
@@ -79,7 +80,7 @@ public class ProjectApiServiceImpl extends
 
   @Override
   public PagedList<dto.Project> find(ProjectCriteria criteria) {
-    User loggedInUser = authProvider.loggedInUser();
+    User loggedInUser = authProvider.loggedInUser(criteria.getRequest());
     if (loggedInUser != null && loggedInUser.role != UserRole.Admin) {
       criteria.withMemberId(loggedInUser.id);
     }
@@ -88,9 +89,9 @@ public class ProjectApiServiceImpl extends
   }
 
   @Override
-  public dto.Project byOwnerAndName(String username, String name, @Nonnull Consumer<Project> validator, String... fetches) {
+  public dto.Project byOwnerAndName(Http.Request request, String username, String name, @Nonnull Consumer<Project> validator, String... fetches) {
     permissionService
-            .checkPermissionAll("Access token not allowed", readScopes);
+            .checkPermissionAll(request, "Access token not allowed", readScopes);
 
     Project project = service.byOwnerAndName(username, name, fetches);
 
@@ -101,9 +102,9 @@ public class ProjectApiServiceImpl extends
   }
 
   @Override
-  public PagedList<dto.Aggregate> activity(UUID id) {
+  public PagedList<dto.Aggregate> activity(Http.Request request, UUID id) {
     permissionService
-            .checkPermissionAll("Access token not allowed", readScopes);
+            .checkPermissionAll(request, "Access token not allowed", readScopes);
 
     return new DtoPagedList<>(
             logEntryService.getAggregates(new LogEntryCriteria().withProjectId(id)),
@@ -114,18 +115,18 @@ public class ProjectApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  public SearchResponse search(UUID projectId, SearchForm search) {
-    permissionService.checkPermissionAll("Access token not allowed", readScopes);
+  public SearchResponse search(Http.Request request, UUID projectId, SearchForm search) {
+    permissionService.checkPermissionAll(request, "Access token not allowed", readScopes);
 
     Messages messages = Context.current().messages();
 
-    dto.Project project = get(projectId);
+    dto.Project project = get(request, projectId);
 
     search.setLimit(configuration.getInt("translatr.search.autocomplete.limit"));
 
     List<Suggestable> suggestions = new ArrayList<>();
 
-    if (permissionService.hasPermissionAll(Scope.KeyRead)) {
+    if (permissionService.hasPermissionAll(request, Scope.KeyRead)) {
       PagedList<? extends Suggestable> keys = keyService
               .findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
 
@@ -140,15 +141,15 @@ public class ProjectApiServiceImpl extends
                 Data.from(Key.class, null, "???", null)));
       }
 
-      if (permissionService.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Manager,
-              ProjectRole.Developer) && permissionService.hasPermissionAll(Scope.KeyWrite)) {
+      if (permissionService.hasPermissionAny(request, project.id, ProjectRole.Owner, ProjectRole.Manager,
+              ProjectRole.Developer) && permissionService.hasPermissionAll(request, Scope.KeyWrite)) {
         suggestions.add(Suggestable.DefaultSuggestable.from(
                 messages.at("key.create", search.search),
                 Data.from(Key.class, null, "+++", null)));
       }
     }
 
-    if (permissionService.hasPermissionAll(Scope.LocaleRead)) {
+    if (permissionService.hasPermissionAll(request, Scope.LocaleRead)) {
       PagedList<? extends Suggestable> locales = localeService.findBy(new LocaleCriteria()
               .withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
 
@@ -162,8 +163,8 @@ public class ProjectApiServiceImpl extends
                 Data.from(Locale.class, null, "???", null)));
       }
 
-      if (permissionService.hasPermissionAny(project.id, ProjectRole.Owner, ProjectRole.Translator)
-              && permissionService.hasPermissionAll(Scope.LocaleWrite)) {
+      if (permissionService.hasPermissionAny(request, project.id, ProjectRole.Owner, ProjectRole.Translator)
+              && permissionService.hasPermissionAll(request, Scope.LocaleWrite)) {
         suggestions.add(Suggestable.DefaultSuggestable.from(
                 messages.at("locale.create", search.search),
                 Data.from(Locale.class, null, "+++", null)));

@@ -1,8 +1,10 @@
 package services.api;
 
-import io.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
 import criterias.AbstractSearchCriteria;
+import io.ebean.PagedList;
+import play.mvc.Http;
+
 import java.util.function.Consumer;
 
 /**
@@ -24,11 +26,11 @@ public interface ApiService<T, ID, CRITERIA extends AbstractSearchCriteria<CRITE
    */
   PagedList<T> find(CRITERIA criteria);
 
-  T get(ID id, String... propertiesToFetch);
+  T get(Http.Request request, ID id, String... propertiesToFetch);
 
-  T create(JsonNode in);
+  T create(Http.Request request, JsonNode in);
 
-  T update(JsonNode in);
+  T update(Http.Request request, JsonNode in);
 
-  T delete(ID id);
+  T delete(Http.Request request, ID id);
 }

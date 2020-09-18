@@ -2,6 +2,7 @@ package utils;
 
 import com.typesafe.config.Config;
 
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -23,6 +24,8 @@ public enum ConfigKey {
   RedirectBase("translatr.redirectBase"),
 
   Pac4jSecurityExcludePaths("pac4j.security.excludePaths"),
+  Pac4jCacheTimeout("pac4j.cache.timeout"),
+  Pac4jCacheSize("pac4j.cache.size"),
 
   GoogleClientId("pac4j.clients.google.id"),
   GoogleClientSecret("pac4j.clients.google.secret"),
@@ -77,6 +80,14 @@ public enum ConfigKey {
 
   public Boolean getBoolean(Config config) {
     return config.getBoolean(key);
+  }
+
+  public int getInt(Config config) {
+    return config.getInt(key);
+  }
+
+  public Duration getDuration(Config config) {
+    return config.getDuration(key);
   }
 
   public List<String> getStringList(Config config) {

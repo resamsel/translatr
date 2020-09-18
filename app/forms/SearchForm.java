@@ -17,6 +17,7 @@ import java.util.Objects;
  * @author resamsel
  * @version 4 Sep 2016
  */
+@Deprecated
 public class SearchForm {
 
   public String search;

@@ -9,6 +9,7 @@ import dto.NotFoundException;
 import models.Model;
 import models.Scope;
 import play.libs.Json;
+import play.mvc.Http;
 import services.ModelService;
 import services.PermissionService;
 import services.api.ApiService;
@@ -61,7 +62,7 @@ public abstract class AbstractApiService
    *
    * @return the DTO mapper
    */
-  protected Function<MODEL, DTO> getDtoMapper() {
+  protected Function<MODEL, DTO> getDtoMapper(Http.Request request) {
     return dtoMapper;
   }
 
@@ -75,21 +76,21 @@ public abstract class AbstractApiService
 
   @Override
   public PagedList<DTO> find(CRITERIA criteria, Consumer<CRITERIA> validator) {
-    permissionService.checkPermissionAll("Access token not allowed", readScopes);
+    permissionService.checkPermissionAll(criteria.getRequest(), "Access token not allowed", readScopes);
 
     if (validator != null) {
       validator.accept(criteria);
     }
 
-    return new DtoPagedList<>(service.findBy(criteria), getDtoMapper());
+    return new DtoPagedList<>(service.findBy(criteria), getDtoMapper(criteria.getRequest()));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public DTO get(ID id, String... propertiesToFetch) {
-    permissionService.checkPermissionAll("Access token not allowed", readScopes);
+  public DTO get(Http.Request request, ID id, String... propertiesToFetch) {
+    permissionService.checkPermissionAll(request, "Access token not allowed", readScopes);
 
     MODEL obj = service.byId(id, propertiesToFetch);
 
@@ -97,35 +98,35 @@ public abstract class AbstractApiService
       throw new NotFoundException(dtoClass.getSimpleName(), id);
     }
 
-    return getDtoMapper().apply(obj);
+    return getDtoMapper(request).apply(obj);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public DTO create(JsonNode in) {
-    permissionService.checkPermissionAll("Access token not allowed", writeScopes);
+  public DTO create(Http.Request request, JsonNode in) {
+    permissionService.checkPermissionAll(request, "Access token not allowed", writeScopes);
 
-    return getDtoMapper().apply(service.create(toModel(toDto(in))));
+    return getDtoMapper(request).apply(service.create(toModel(toDto(in))));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public DTO update(JsonNode in) {
-    permissionService.checkPermissionAll("Access token not allowed", writeScopes);
+  public DTO update(Http.Request request, JsonNode in) {
+    permissionService.checkPermissionAll(request, "Access token not allowed", writeScopes);
 
-    return getDtoMapper().apply(service.update(toModel(toDto(in))));
+    return getDtoMapper(request).apply(service.update(toModel(toDto(in))));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public DTO delete(ID id) {
-    permissionService.checkPermissionAll("Access token not allowed", writeScopes);
+  public DTO delete(Http.Request request, ID id) {
+    permissionService.checkPermissionAll(request, "Access token not allowed", writeScopes);
 
     MODEL m = service.byId(id);
 
@@ -133,7 +134,7 @@ public abstract class AbstractApiService
       throw new NotFoundException(dtoClass.getSimpleName(), id);
     }
 
-    DTO out = getDtoMapper().apply(m);
+    DTO out = getDtoMapper(request).apply(m);
 
     service.delete(m);
 

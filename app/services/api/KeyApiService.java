@@ -3,6 +3,7 @@ package services.api;
 import com.google.inject.ImplementedBy;
 import criterias.KeyCriteria;
 import dto.Key;
+import play.mvc.Http;
 import services.api.impl.KeyApiServiceImpl;
 
 import java.util.UUID;
@@ -14,5 +15,5 @@ import java.util.UUID;
 @ImplementedBy(KeyApiServiceImpl.class)
 public interface KeyApiService extends ApiService<Key, UUID, KeyCriteria> {
 
-  Key byOwnerAndProjectAndName(String username, String projectName, String keyName, String... fetches);
+  Key byOwnerAndProjectAndName(Http.Request request, String username, String projectName, String keyName, String... fetches);
 }

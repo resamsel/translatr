@@ -86,8 +86,8 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
           @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query"),
           @ApiImplicitParam(name = PARAM_FETCH, value = FETCH, dataType = "string", paramType = "query")
   })
-  public CompletionStage<Result> find() {
-    return toJsons(() -> api.find(ProjectCriteria.from(request()).withFetches()));
+  public CompletionStage<Result> find(Http.Request request) {
+    return toJsons(() -> api.find(ProjectCriteria.from(request).withFetches()));
   }
 
   /**
@@ -101,9 +101,9 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> get(@ApiParam(value = PROJECT_ID) UUID id,
+  public CompletionStage<Result> get(Http.Request request, @ApiParam(value = PROJECT_ID) UUID id,
                                      @ApiParam(value = FETCH) String fetch) {
-    return toJson(() -> api.get(id, StringUtils.split(fetch, ",")));
+    return toJson(() -> api.get(request, id, StringUtils.split(fetch, ",")));
   }
 
   /**
@@ -118,13 +118,14 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> byOwnerAndName(
+          Http.Request request,
           @ApiParam(value = USER_USERNAME) String username,
           @ApiParam(value = PROJECT_NAME) String projectName,
           @ApiParam(value = FETCH) String fetch) {
     return toJson(() -> api.byOwnerAndName(
-            username,
+            request, username,
             projectName,
-            project -> checkProjectRole(project, authProvider.loggedInUser(), ProjectRole.values()),
+            project -> checkProjectRole(request, project, authProvider.loggedInUser(request), ProjectRole.values()),
             StringUtils.split(fetch, ","))
     );
   }
@@ -140,8 +141,8 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> activity(@ApiParam(value = PROJECT_ID) UUID id) {
-    return toJsons(() -> api.activity(id));
+  public CompletionStage<Result> activity(Http.Request request, @ApiParam(value = PROJECT_ID) UUID id) {
+    return toJsons(() -> api.activity(request, id));
   }
 
   /**
@@ -159,7 +160,7 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
   public CompletionStage<Result> create(Http.Request request) {
-    return toJson(() -> api.create(request.body().asJson()));
+    return toJson(() -> api.create(request, request.body().asJson()));
   }
 
   /**
@@ -177,8 +178,8 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
                   paramType = "body"),
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
-  public CompletionStage<Result> update() {
-    return toJson(() -> api.update(request().body().asJson()));
+  public CompletionStage<Result> update(Http.Request request) {
+    return toJson(() -> api.update(request, request.body().asJson()));
   }
 
   /**
@@ -192,8 +193,8 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> delete(@ApiParam(value = PROJECT_ID) UUID id) {
-    return toJson(() -> api.delete(id));
+  public CompletionStage<Result> delete(Http.Request request, @ApiParam(value = PROJECT_ID) UUID id) {
+    return toJson(() -> api.delete(request, id));
   }
 
   @ApiOperation(value = SEARCH, authorizations = @Authorization(value = AUTHORIZATION,
@@ -209,9 +210,9 @@ public class ProjectsApi extends AbstractApi<Project, UUID, ProjectCriteria, Pro
                   paramType = "query"),
           @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
           @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
-  public CompletionStage<Result> search(UUID projectId) {
+  public CompletionStage<Result> search(Http.Request request, UUID projectId) {
     return toJsonSearch(() -> projectApiService.search(
-            projectId,
+            request, projectId,
             FormUtils.Search.bindFromRequest(injector.instanceOf(FormFactory.class), configuration)
                     .get()
     ));

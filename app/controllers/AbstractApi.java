@@ -8,6 +8,7 @@ import models.Project;
 import models.ProjectRole;
 import models.User;
 import play.inject.Injector;
+import play.mvc.Http;
 import services.AuthProvider;
 import services.PermissionService;
 import services.api.ApiService;
@@ -35,8 +36,8 @@ public abstract class AbstractApi<DTO extends Dto, ID, CRITERIA extends Abstract
       throw new PermissionException("User not allowed in project");
   }
 
-  protected void checkProjectRole(Project project, User user, ProjectRole... roles) {
-    if (!permissionService.hasPermissionAny(project, user, roles))
+  protected void checkProjectRole(Http.Request request, Project project, User user, ProjectRole... roles) {
+    if (!permissionService.hasPermissionAny(request, project, user, roles))
       throw new PermissionException("User not allowed in project");
   }
 }

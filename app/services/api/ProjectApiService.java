@@ -7,6 +7,7 @@ import dto.Aggregate;
 import dto.Project;
 import dto.SearchResponse;
 import forms.SearchForm;
+import play.mvc.Http;
 import services.api.impl.ProjectApiServiceImpl;
 
 import java.util.UUID;
@@ -19,14 +20,9 @@ import java.util.function.Consumer;
 @ImplementedBy(ProjectApiServiceImpl.class)
 public interface ProjectApiService extends ApiService<Project, UUID, ProjectCriteria> {
 
-  Project byOwnerAndName(String username, String name, Consumer<models.Project> validator, String... fetches);
+  Project byOwnerAndName(Http.Request request, String username, String name, Consumer<models.Project> validator, String... fetches);
 
-  PagedList<Aggregate> activity(UUID userId);
+  PagedList<Aggregate> activity(Http.Request request, UUID userId);
 
-  /**
-   * @param projectId
-   * @param searchForm
-   * @return
-   */
-  SearchResponse search(UUID projectId, SearchForm searchForm);
+  SearchResponse search(Http.Request request, UUID projectId, SearchForm searchForm);
 }

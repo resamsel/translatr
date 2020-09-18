@@ -73,8 +73,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
                   paramType = "query"),
           @ApiImplicitParam(name = PARAM_OFFSET, value = OFFSET, dataType = "int", paramType = "query"),
           @ApiImplicitParam(name = PARAM_LIMIT, value = LIMIT, dataType = "int", paramType = "query")})
-  public CompletionStage<Result> find() {
-    return toJsons(() -> api.find(UserCriteria.from(request())));
+  public CompletionStage<Result> find(Http.Request request) {
+    return toJsons(() -> api.find(UserCriteria.from(request)));
   }
 
   /**
@@ -88,8 +88,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> get(@ApiParam(value = USER_ID) UUID id) {
-    return toJson(() -> api.get(id));
+  public CompletionStage<Result> get(Http.Request request, @ApiParam(value = USER_ID) UUID id) {
+    return toJson(() -> api.get(request, id));
   }
 
   /**
@@ -103,9 +103,9 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> byName(@ApiParam(value = USER_USERNAME) String username,
+  public CompletionStage<Result> byName(Http.Request request, @ApiParam(value = USER_USERNAME) String username,
                                         @ApiParam(value = FETCH) String fetch) {
-    return toJson(() -> api.byUsername(username, StringUtils.split(fetch, ",")));
+    return toJson(() -> api.byUsername(request, username, StringUtils.split(fetch, ",")));
   }
 
   /**
@@ -119,8 +119,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> activity(@ApiParam(value = USER_ID) UUID id) {
-    return toJsons(() -> api.activity(id));
+  public CompletionStage<Result> activity(Http.Request request, @ApiParam(value = USER_ID) UUID id) {
+    return toJsons(() -> api.activity(request, id));
   }
 
   public CompletionStage<Result> profile(Http.Request request) {
@@ -172,8 +172,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
                   paramType = "body"),
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
-  public CompletionStage<Result> update() {
-    return toJson(() -> api.update(request().body().asJson()));
+  public CompletionStage<Result> update(Http.Request request) {
+    return toJson(() -> api.update(request, request.body().asJson()));
   }
 
   /**
@@ -187,8 +187,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> delete(@ApiParam(value = PROJECT_ID) UUID id) {
-    return toJson(() -> api.delete(id));
+  public CompletionStage<Result> delete(Http.Request request, @ApiParam(value = PROJECT_ID) UUID id) {
+    return toJson(() -> api.delete(request, id));
   }
 
   /**
@@ -206,8 +206,8 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
                   paramType = "body"),
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
-  public CompletionStage<Result> saveSettings(@ApiParam(value = USER_ID) UUID id) {
-    return toJson(() -> api.saveSettings(id, request().body().asJson()));
+  public CompletionStage<Result> saveSettings(Http.Request request, @ApiParam(value = USER_ID) UUID id) {
+    return toJson(() -> api.saveSettings(id, request.body().asJson()));
   }
 
   /**
@@ -225,7 +225,7 @@ public class UsersApi extends AbstractApi<User, UUID, UserCriteria, UserApiServi
                   paramType = "body"),
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
-  public CompletionStage<Result> updateSettings(@ApiParam(value = USER_ID) UUID id) {
-    return toJson(() -> api.updateSettings(id, request().body().asJson()));
+  public CompletionStage<Result> updateSettings(Http.Request request, @ApiParam(value = USER_ID) UUID id) {
+    return toJson(() -> api.updateSettings(id, request.body().asJson()));
   }
 }

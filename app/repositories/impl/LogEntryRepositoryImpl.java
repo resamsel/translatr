@@ -8,16 +8,13 @@ import criterias.PagedListFactory;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import models.LogEntry;
-import models.Project;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.mvc.Http;
 import repositories.LogEntryRepository;
 import repositories.Persistence;
 import services.AuthProvider;
 import services.ContextProvider;
-import utils.ContextKey;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
@@ -117,19 +114,6 @@ public class LogEntryRepositoryImpl extends
     if (t.user == null) {
       t.user = authProvider.loggedInUser();
       LOGGER.debug("preSave(): user of log entry is {}", t.user);
-    }
-  }
-
-  @Override
-  protected void prePersist(LogEntry t, boolean update) {
-    if (t.project == null) {
-      Http.Context ctx = contextProvider.getOrNull();
-      if (ctx != null) {
-        UUID projectId = ContextKey.ProjectId.get(ctx.request());
-        if (projectId != null) {
-          t.project = new Project().withId(projectId);
-        }
-      }
     }
   }
 

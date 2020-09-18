@@ -61,9 +61,9 @@ public class UserApiServiceImpl extends
   }
 
   @Override
-  protected Function<User, dto.User> getDtoMapper() {
-    return super.getDtoMapper()
-            .andThen(UserObfuscatorMapper.of(authProvider.loggedInUser()));
+  protected Function<User, dto.User> getDtoMapper(Http.Request request) {
+    return super.getDtoMapper(request)
+            .andThen(UserObfuscatorMapper.of(authProvider.loggedInUser(request)));
   }
 
   @Override
@@ -77,21 +77,21 @@ public class UserApiServiceImpl extends
       user.linkedAccounts = Collections.singletonList(linkedAccount);
     });
 
-    return getDtoMapper().apply(service.create(user));
+    return getDtoMapper(request).apply(service.create(user));
   }
 
   @Override
-  public dto.User byUsername(String username, String... propertiesToFetch) {
-    permissionService.checkPermissionAll("Access token not allowed", readScopes);
+  public dto.User byUsername(Http.Request request, String username, String... propertiesToFetch) {
+    permissionService.checkPermissionAll(request, "Access token not allowed", readScopes);
 
     return Optional.ofNullable(service.byUsername(username, propertiesToFetch))
-            .map(getDtoMapper())
+            .map(getDtoMapper(request))
             .orElseThrow(() -> new NotFoundException(dto.User.class.getSimpleName(), username));
   }
 
   @Override
-  public PagedList<dto.Aggregate> activity(UUID id) {
-    permissionService.checkPermissionAll("Access token not allowed", readScopes);
+  public PagedList<dto.Aggregate> activity(Http.Request request, UUID id) {
+    permissionService.checkPermissionAll(request, "Access token not allowed", readScopes);
 
     return new DtoPagedList<>(
             logEntryService.getAggregates(new LogEntryCriteria().withUserId(id)),

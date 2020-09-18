@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http;
 import play.mvc.Result;
 import services.AuthProvider;
 import services.api.KeyApiService;
@@ -85,12 +86,12 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
                   dataType = "string", paramType = "query"),
           @ApiImplicitParam(name = PARAM_MISSING, value = MISSING,
                   dataType = "string", paramType = "query")})
-  public CompletionStage<Result> find(@ApiParam(value = PROJECT_ID) UUID projectId) {
+  public CompletionStage<Result> find(Http.Request request, @ApiParam(value = PROJECT_ID) UUID projectId) {
     return toJsons(() -> api.find(
-            KeyCriteria.from(request()).withProjectId(projectId),
+            KeyCriteria.from(request).withProjectId(projectId),
             criteria -> checkProjectRole(
                     projectId,
-                    authProvider.loggedInUser(),
+                    authProvider.loggedInUser(request),
                     ProjectRole.Owner,
                     ProjectRole.Manager,
                     ProjectRole.Translator,
@@ -113,9 +114,9 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> get(@ApiParam(value = KEY_ID) UUID id,
+  public CompletionStage<Result> get(Http.Request request, @ApiParam(value = KEY_ID) UUID id,
                                      @ApiParam(value = FETCH) String fetch) {
-    return toJson(() -> api.get(id, StringUtils.split(fetch, ",")));
+    return toJson(() -> api.get(request, id, StringUtils.split(fetch, ",")));
   }
 
   /**
@@ -133,11 +134,13 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
   public CompletionStage<Result> byOwnerAndProjectNameAndName(
+          Http.Request request,
           @ApiParam(value = USER_USERNAME) String username,
           @ApiParam(value = PROJECT_NAME) String projectName,
           @ApiParam(value = KEY_NAME) String keyName,
           @ApiParam(value = FETCH) String fetch) {
     return key(
+            request,
             username,
             projectName,
             keyName,
@@ -164,8 +167,8 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
   @BodyParser.Of(BodyParser.Json.class)
-  public CompletionStage<Result> create() {
-    return toJson(() -> api.create(request().body().asJson()));
+  public CompletionStage<Result> create(Http.Request request) {
+    return toJson(() -> api.create(request, request.body().asJson()));
   }
 
   /**
@@ -187,8 +190,8 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
           @ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN, required = true,
                   dataType = "string", paramType = "query")})
   @BodyParser.Of(BodyParser.Json.class)
-  public CompletionStage<Result> update() {
-    return toJson(() -> api.update(request().body().asJson()));
+  public CompletionStage<Result> update(Http.Request request) {
+    return toJson(() -> api.update(request, request.body().asJson()));
   }
 
   /**
@@ -205,16 +208,16 @@ public class KeysApi extends AbstractApi<Key, UUID, KeyCriteria, KeyApiService> 
           @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   @ApiImplicitParams({@ApiImplicitParam(name = PARAM_ACCESS_TOKEN, value = ACCESS_TOKEN,
           required = true, dataType = "string", paramType = "query")})
-  public CompletionStage<Result> delete(@ApiParam(value = KEY_ID) UUID id) {
-    return toJson(() -> api.delete(id));
+  public CompletionStage<Result> delete(Http.Request request, @ApiParam(value = KEY_ID) UUID id) {
+    return toJson(() -> api.delete(request, id));
   }
 
-  private CompletionStage<Result> key(String username, String projectName, String keyName,
+  private CompletionStage<Result> key(Http.Request request, String username, String projectName, String keyName,
                                       Function<Key, Result> processor, String... fetches) {
     return async(() -> {
-      Key key = api.byOwnerAndProjectAndName(username, projectName, keyName, fetches);
+      Key key = api.byOwnerAndProjectAndName(request, username, projectName, keyName, fetches);
 
-      checkProjectRole(key.projectId, authProvider.loggedInUser(), ProjectRole.Owner,
+      checkProjectRole(key.projectId, authProvider.loggedInUser(request), ProjectRole.Owner,
               ProjectRole.Manager, ProjectRole.Developer, ProjectRole.Translator);
 
       return processor.apply(key);
