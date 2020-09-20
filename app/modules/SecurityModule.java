@@ -5,6 +5,7 @@ import auth.AlwaysReadSessionProfileStorageDecision;
 import auth.ClientName;
 import auth.CustomAuthorizer;
 import auth.CustomCallbackLogic;
+import auth.CustomCookieSessionStore;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -31,7 +32,6 @@ import org.pac4j.play.LogoutController;
 import org.pac4j.play.deadbolt2.Pac4jHandlerCache;
 import org.pac4j.play.deadbolt2.Pac4jRoleHandler;
 import org.pac4j.play.http.PlayHttpActionAdapter;
-import org.pac4j.play.store.PlayCacheSessionStore;
 import org.pac4j.play.store.PlayCookieSessionStore;
 import org.pac4j.play.store.PlaySessionStore;
 import play.Environment;
@@ -74,9 +74,9 @@ public class SecurityModule extends AbstractModule {
     bind(HandlerCache.class).to(Pac4jHandlerCache.class);
 
     bind(Pac4jRoleHandler.class).to(MyPac4jRoleHandler.class);
-    bind(PlaySessionStore.class).to(PlayCacheSessionStore.class);
+//    bind(PlaySessionStore.class).to(PlayCacheSessionStore.class);
     // com.nimbusds.oauth2.sdk.pkce.CodeVerifier cannot be cast to java.io.Serializable
-//    bind(PlaySessionStore.class).to(PlayCookieSessionStore.class);
+    bind(PlaySessionStore.class).to(CustomCookieSessionStore.class);
 
     // callback
     final CallbackController callbackController = new CallbackController();
@@ -171,6 +171,7 @@ public class SecurityModule extends AbstractModule {
       config.setBaseUri(KeycloakBaseUri.get(configuration));
       config.setRealm(KeycloakRealm.get(configuration));
       config.setWithState(false);
+      config.setDisablePkce(true);
 
       return new KeycloakOidcClient(config);
     });

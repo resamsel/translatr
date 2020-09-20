@@ -33,7 +33,6 @@ public class ActivityMapper {
     out = out != null ? out : new LogEntry();
 
     out.id = in.id;
-    // TODO
 
     return out;
   }
