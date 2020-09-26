@@ -33,6 +33,4 @@ public interface MessageRepository extends ModelRepository<Message, UUID, Messag
   List<Message> byKey(Key key);
 
   List<Message> byKeys(Collection<UUID> ids);
-
-  List<Message> latest(Project project, int limit);
 }

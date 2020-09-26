@@ -42,29 +42,29 @@ public class MessageWordCountActor extends AbstractActor {
             .match(ChangeMessageWordCount.class, wordCount -> {
               if (wordCount.projectId != null)
                 projectWordCountActor.tell(
-                        new ChangeWordCount(wordCount.projectId, wordCount.wordCount, wordCount.wordCountDiff),
+                        ChangeWordCount.from(wordCount, wordCount.projectId),
                         self());
               if (wordCount.localeId != null)
                 localeWordCountActor.tell(
-                        new ChangeWordCount(wordCount.localeId, wordCount.wordCount, wordCount.wordCountDiff),
+                        ChangeWordCount.from(wordCount, wordCount.localeId),
                         self());
               if (wordCount.keyId != null)
                 keyWordCountActor.tell(
-                        new ChangeWordCount(wordCount.keyId, wordCount.wordCount, wordCount.wordCountDiff),
+                        ChangeWordCount.from(wordCount, wordCount.keyId),
                         self());
             })
             .match(Collection.class, t -> {
               Collection<ChangeMessageWordCount> wordCounts = (Collection<ChangeMessageWordCount>) t;
 
               wordCounts.stream()
-                      .map(wc -> new ChangeWordCount(wc.projectId, wc.wordCount, wc.wordCountDiff))
+                      .map(wc -> ChangeWordCount.from(wc, wc.projectId))
                       .collect(groupingBy(wc -> wc.id, reducing(ChangeWordCount::merge)))
                       .forEach((projectId, wc) -> projectWordCountActor.tell(wc.get(), null));
               wordCounts.stream()
-                      .map(wc -> new ChangeWordCount(wc.localeId, wc.wordCount, wc.wordCountDiff))
+                      .map(wc -> ChangeWordCount.from(wc, wc.localeId))
                       .collect(groupingBy(wc -> wc.id, reducing(ChangeWordCount::merge)))
                       .forEach((localeId, wc) -> localeWordCountActor.tell(wc.get(), null));
-              wordCounts.stream().map(wc -> new ChangeWordCount(wc.keyId, wc.wordCount, wc.wordCountDiff))
+              wordCounts.stream().map(wc -> ChangeWordCount.from(wc, wc.keyId))
                       .collect(groupingBy(wc -> wc.id, reducing(ChangeWordCount::merge)))
                       .forEach((keyId, wc) -> keyWordCountActor.tell(wc.get(), null));
             })

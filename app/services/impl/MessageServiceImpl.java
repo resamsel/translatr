@@ -158,7 +158,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
 
     if (t.wordCount != null) {
       messageWordCountActor.tell(new WordCountProtocol.ChangeMessageWordCount(t.id, t.locale.project.id, t.locale.id,
-              t.key.id, 0, -t.wordCount), null);
+              t.key.id, 0, -t.wordCount, request), null);
     }
   }
 
@@ -171,6 +171,17 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
       // Only track changes of message´s value
       activityActor.tell(logEntryUpdate(t, existing, authProvider.loggedInUser(request)), null);
     }
+  }
+
+  @Override
+  protected void preSave(Message t, Http.Request request) {
+    super.preSave(t, request);
+
+    int wordCount = t.wordCount != null ? t.wordCount : 0;
+    t.wordCount = MessageUtils.wordCount(t.value);
+
+    messageWordCountActor.tell(new WordCountProtocol.ChangeMessageWordCount(t.id, t.locale.project.id, t.locale.id,
+            t.key.id, t.wordCount, t.wordCount - wordCount, request), null);
   }
 
   @Override
@@ -187,7 +198,8 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
                       m.locale.id,
                       m.key.id,
                       wc,
-                      wc - (m.wordCount != null ? m.wordCount : 0));
+                      wc - (m.wordCount != null ? m.wordCount : 0),
+                      request);
             })
             .collect(toMap(wc -> wc.messageId, wc -> wc, (a, b) -> a));
 
@@ -197,7 +209,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
     t.stream()
             .filter(m -> m.id != null)
             .forEach(m -> m.wordCount = wordCount.getOrDefault(m.id,
-                    new WordCountProtocol.ChangeMessageWordCount(null, null, null, null, 0, 0)).wordCount);
+                    new WordCountProtocol.ChangeMessageWordCount(null, null, null, null, 0, 0, request)).wordCount);
     t.stream()
             .filter(m -> m.id == null)
             .forEach(m -> m.wordCount = MessageUtils.wordCount(m));
@@ -227,14 +239,14 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
     Map<UUID, WordCountProtocol.ChangeMessageWordCount> wordCount = noWordCountMessages.stream().map(m -> {
       int wc = MessageUtils.wordCount(m);
       return new WordCountProtocol.ChangeMessageWordCount(m.id, m.locale.project.id, m.locale.id, m.key.id, wc,
-              wc - (m.wordCount != null ? m.wordCount : 0));
+              wc - (m.wordCount != null ? m.wordCount : 0), request);
     }).collect(toMap(wc -> wc.messageId, wc -> wc));
 
     messageWordCountActor.tell(wordCount.values(), null);
 
     // Update model
     noWordCountMessages.stream().filter(m -> m.id != null).forEach(m -> m.wordCount = wordCount
-            .getOrDefault(m.id, new WordCountProtocol.ChangeMessageWordCount(null, null, null, null, 0, 0)).wordCount);
+            .getOrDefault(m.id, new WordCountProtocol.ChangeMessageWordCount(null, null, null, null, 0, 0, request)).wordCount);
 
     try {
       save(noWordCountMessages, request);
@@ -280,7 +292,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
                     .filter(m -> m.wordCount != null)
                     .map(
                             m -> new WordCountProtocol.ChangeMessageWordCount(m.id, m.locale.project.id, m.locale.id, m.key.id, 0,
-                                    -m.wordCount))
+                                    -m.wordCount, request))
                     .collect(toMap(wc -> wc.messageId, wc -> wc, (a, b) -> a));
 
     messageWordCountActor.tell(wordCount.values(), null);

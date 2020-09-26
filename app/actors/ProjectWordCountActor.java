@@ -26,7 +26,7 @@ public class ProjectWordCountActor extends AbstractActor {
   public Receive createReceive() {
     return receiveBuilder()
             .match(ChangeWordCount.class,
-                    wordCount -> projectService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff, null /* FIXME */))
+                    wordCount -> projectService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff, wordCount.request))
             .build();
   }
 }

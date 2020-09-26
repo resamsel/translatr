@@ -1,9 +1,6 @@
 package repositories.impl;
 
-import actors.ActivityProtocol.Activities;
-import actors.ActivityProtocol.Activity;
 import actors.MessageWordCountActorRef;
-import actors.WordCountProtocol.ChangeMessageWordCount;
 import criterias.ContextCriteria;
 import criterias.MessageCriteria;
 import criterias.PagedListFactory;
@@ -11,7 +8,6 @@ import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import io.ebean.Query;
 import mappers.MessageMapper;
-import models.ActionType;
 import models.Key;
 import models.Message;
 import models.Project;
@@ -20,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
 import repositories.Persistence;
-import utils.MessageUtils;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
@@ -31,11 +26,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static utils.Stopwatch.log;
 
 @Singleton
@@ -146,23 +138,5 @@ public class MessageRepositoryImpl extends
   @Override
   public List<Message> byKeys(Collection<UUID> ids) {
     return fetch().where().in("key.id", ids).findList();
-  }
-
-  @Override
-  public List<Message> latest(Project project, int limit) {
-    return fetch().where().eq("key.project", project).order("whenUpdated desc").setMaxRows(limit)
-            .findList();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void preSave(Message t, boolean update) {
-    int wordCount = t.wordCount != null ? t.wordCount : 0;
-    t.wordCount = MessageUtils.wordCount(t.value);
-
-    messageWordCountActor.tell(new ChangeMessageWordCount(t.id, t.locale.project.id, t.locale.id,
-            t.key.id, t.wordCount, t.wordCount - wordCount), null);
   }
 }

@@ -26,7 +26,7 @@ public class KeyWordCountActor extends AbstractActor {
   public Receive createReceive() {
     return receiveBuilder()
             .match(ChangeWordCount.class,
-                    wordCount -> keyService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff, null /* FIXME */))
+                    wordCount -> keyService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff, wordCount.request))
             .build();
   }
 }
