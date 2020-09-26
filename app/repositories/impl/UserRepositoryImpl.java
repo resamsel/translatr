@@ -1,7 +1,5 @@
 package repositories.impl;
 
-import actors.ActivityActorRef;
-import actors.ActivityProtocol.Activity;
 import criterias.ContextCriteria;
 import criterias.PagedListFactory;
 import criterias.UserCriteria;
@@ -9,15 +7,12 @@ import dto.NotFoundException;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import io.ebean.Query;
-import mappers.UserMapper;
-import models.ActionType;
 import models.User;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.Persistence;
 import repositories.UserRepository;
-import services.AuthProvider;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
@@ -35,16 +30,9 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
-  private final AuthProvider authProvider;
-
   @Inject
-  public UserRepositoryImpl(Persistence persistence,
-                            Validator validator,
-                            AuthProvider authProvider,
-                            ActivityActorRef activityActor) {
-    super(persistence, validator, authProvider, activityActor);
-
-    this.authProvider = authProvider;
+  public UserRepositoryImpl(Persistence persistence,                            Validator validator) {
+    super(persistence, validator);
   }
 
   @Override
@@ -180,9 +168,6 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
     return persistence.update(user);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   protected void preSave(User t, boolean update) {
     if (t.email != null) {
@@ -197,19 +182,5 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
     if (t.username == null) {
       t.username = String.valueOf(ThreadLocalRandom.current().nextLong());
     }
-  }
-
-  @Override
-  protected void prePersist(User t, boolean update) {
-    if (update) {
-      activityActor.tell(
-              new Activity<>(ActionType.Update, authProvider.loggedInUser(null) /* FIXME: will fail! */, null, dto.User.class, toDto(byId(t.id)), toDto(t)),
-              null
-      );
-    }
-  }
-
-  private dto.User toDto(User t) {
-    return UserMapper.toDto(t);
   }
 }

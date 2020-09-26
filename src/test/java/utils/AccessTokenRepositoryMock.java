@@ -1,11 +1,12 @@
 package utils;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
 import models.AccessToken;
 import models.Scope;
 import models.User;
-import repositories.impl.AccessTokenRepositoryImpl;
+import services.impl.AccessTokenServiceImpl;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class AccessTokenRepositoryMock {
 
@@ -19,7 +20,7 @@ public class AccessTokenRepositoryMock {
     t.id = id;
     t.name = name;
     t.user = user;
-    t.key = AccessTokenRepositoryImpl.generateKey(AccessToken.KEY_LENGTH);
+    t.key = AccessTokenServiceImpl.generateKey(AccessToken.KEY_LENGTH);
     t.scope = Arrays.stream(Scope.values()).map(Scope::scope).collect(Collectors.joining(","));
 
     return t;

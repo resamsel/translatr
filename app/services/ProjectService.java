@@ -24,15 +24,15 @@ public interface ProjectService extends ModelService<Project, UUID, ProjectCrite
    */
   Project byOwnerAndName(String username, String name, Http.Request request, String... fetches);
 
-  void increaseWordCountBy(UUID projectId, int wordCountDiff, Http.Request request);
+  Project increaseWordCountBy(UUID projectId, int wordCountDiff, Http.Request request);
 
-  void resetWordCount(UUID projectId, Http.Request request);
+  Project resetWordCount(UUID projectId, Http.Request request);
 
   /**
    * Changes the owner of the project to the given owner.
-   *
-   * @param project The project to change the owner of
+   *  @param project The project to change the owner of
    * @param owner The new owner
+   * @return
    */
-  void changeOwner(Project project, User owner, Http.Request request);
+  Project changeOwner(Project project, User owner, Http.Request request);
 }

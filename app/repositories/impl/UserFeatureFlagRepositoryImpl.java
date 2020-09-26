@@ -1,6 +1,5 @@
 package repositories.impl;
 
-import actors.ActivityActorRef;
 import criterias.ContextCriteria;
 import criterias.PagedListFactory;
 import criterias.UserFeatureFlagCriteria;
@@ -8,13 +7,10 @@ import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import io.ebean.Query;
 import models.Feature;
-import models.User;
 import models.UserFeatureFlag;
-import models.UserRole;
 import org.apache.commons.lang3.StringUtils;
 import repositories.Persistence;
 import repositories.UserFeatureFlagRepository;
-import services.AuthProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,11 +26,8 @@ public class UserFeatureFlagRepositoryImpl extends
         UserFeatureFlagRepository {
 
   @Inject
-  public UserFeatureFlagRepositoryImpl(Persistence persistence,
-                                       Validator validator,
-                                       AuthProvider authProvider,
-                                       ActivityActorRef activityActor) {
-    super(persistence, validator, authProvider, activityActor);
+  public UserFeatureFlagRepositoryImpl(Persistence persistence, Validator validator) {
+    super(persistence, validator);
   }
 
   @Override
@@ -66,10 +59,10 @@ public class UserFeatureFlagRepositoryImpl extends
   @Override
   public UserFeatureFlag byUserIdAndFeature(UUID userId, Feature feature) {
     return fetch()
-        .where()
-        .eq("user.id", userId)
-        .eq("feature", feature.getName())
-        .findOne();
+            .where()
+            .eq("user.id", userId)
+            .eq("feature", feature.getName())
+            .findOne();
   }
 
   @Override
@@ -83,18 +76,5 @@ public class UserFeatureFlagRepositoryImpl extends
 
   private Query<UserFeatureFlag> fetch(List<String> fetches) {
     return createQuery(UserFeatureFlag.class, PROPERTIES_TO_FETCH, fetches);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void preSave(UserFeatureFlag t, boolean update) {
-    User loggedInUser = authProvider.loggedInUser(null) /* FIXME: will fail! */;
-    if (t.user == null || t.user.id == null
-            || (loggedInUser != null && t.user.id != loggedInUser.id && loggedInUser.role != UserRole.Admin)) {
-      // only allow admins to create access tokens for other users
-      t.user = loggedInUser;
-    }
   }
 }

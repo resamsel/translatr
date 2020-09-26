@@ -1,6 +1,7 @@
 package services.api.impl;
 
 import criterias.LogEntryCriteria;
+import dto.Activity;
 import dto.AuthorizationException;
 import dto.DtoPagedList;
 import dto.PermissionException;
@@ -9,6 +10,7 @@ import mappers.ActivityMapper;
 import mappers.AggregateMapper;
 import models.LogEntry;
 import models.Scope;
+import play.mvc.Http;
 import services.LogEntryService;
 import services.PermissionService;
 import services.api.ActivityApiService;
@@ -53,7 +55,7 @@ public class ActivityApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected LogEntry toModel(dto.Activity in) {
-    return ActivityMapper.toModel(in, service.byId(in.id, null /* FIXME */));
+  protected LogEntry toModel(Activity in, Http.Request request) {
+    return ActivityMapper.toModel(in, service.byId(in.id, request));
   }
 }

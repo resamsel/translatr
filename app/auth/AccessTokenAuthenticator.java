@@ -8,9 +8,6 @@ import org.pac4j.core.exception.CredentialsException;
 import play.inject.Injector;
 import services.AccessTokenService;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 public class AccessTokenAuthenticator implements Authenticator<TokenCredentials> {
 
   private final Injector injector;
@@ -26,7 +23,7 @@ public class AccessTokenAuthenticator implements Authenticator<TokenCredentials>
   public void validate(TokenCredentials credentials, WebContext context) {
     init();
 
-    AccessToken accessToken = accessTokenService.byKey(credentials.getToken(), null) /* FIXME */;
+    AccessToken accessToken = accessTokenService.byKey(credentials.getToken(), null);
 
     if (accessToken == null) {
       throw new CredentialsException("Could not validate access token");

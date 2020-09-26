@@ -4,6 +4,7 @@ import criterias.MessageCriteria;
 import mappers.MessageMapper;
 import models.Message;
 import models.Scope;
+import play.mvc.Http;
 import services.KeyService;
 import services.LocaleService;
 import services.MessageService;
@@ -45,7 +46,7 @@ public class MessageApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected Message toModel(dto.Message in) {
-    return MessageMapper.toModel(in, localeService.byId(in.localeId, null /* FIXME */), keyService.byId(in.keyId, null /* FIXME */));
+  protected Message toModel(dto.Message in, Http.Request request) {
+    return MessageMapper.toModel(in, localeService.byId(in.localeId, request), keyService.byId(in.keyId, request));
   }
 }

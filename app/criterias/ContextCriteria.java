@@ -7,4 +7,6 @@ public interface ContextCriteria extends FetchCriteria {
 
   @CheckForNull
   UUID getLoggedInUserId();
+
+  void setLoggedInUserId(@CheckForNull UUID loggedInUserId);
 }

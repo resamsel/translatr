@@ -1,5 +1,6 @@
 package services.impl;
 
+import actors.ActivityActorRef;
 import io.ebean.PagedList;
 import criterias.UserFeatureFlagCriteria;
 import models.ActionType;
@@ -23,10 +24,15 @@ public class UserFeatureFlagServiceImpl extends
 
   @Inject
   public UserFeatureFlagServiceImpl(
-          Validator validator, CacheService cache, AuthProvider authProvider,
-          UserFeatureFlagRepository userFeatureFlagRepository, LogEntryService logEntryService,
-          MetricService metricService) {
-    super(validator, cache, userFeatureFlagRepository, UserFeatureFlag::getCacheKey, logEntryService, authProvider);
+          Validator validator,
+          CacheService cache,
+          AuthProvider authProvider,
+          UserFeatureFlagRepository userFeatureFlagRepository,
+          LogEntryService logEntryService,
+          MetricService metricService,
+          ActivityActorRef activityActor) {
+    super(validator, cache, userFeatureFlagRepository, UserFeatureFlag::getCacheKey, logEntryService, authProvider, activityActor);
+
     this.metricService = metricService;
   }
 
@@ -59,6 +65,18 @@ public class UserFeatureFlagServiceImpl extends
     super.postCreate(t, request);
 
     metricService.logEvent(UserFeatureFlag.class, ActionType.Create);
+  }
+
+  @Override
+  protected void preSave(UserFeatureFlag t, Http.Request request) {
+    super.preSave(t, request);
+
+    User loggedInUser = authProvider.loggedInUser(request);
+    if (t.user == null || t.user.id == null
+            || (loggedInUser != null && t.user.id != loggedInUser.id && loggedInUser.role != UserRole.Admin)) {
+      // only allow admins to create access tokens for other users
+      t.user = loggedInUser;
+    }
   }
 
   @Override

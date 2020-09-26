@@ -3,47 +3,123 @@ package utils;
 import models.Locale;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import play.i18n.Lang;
+import play.i18n.Messages;
 import play.i18n.MessagesApi;
 import play.mvc.Http;
 import tests.AbstractLocaleTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FormatUtilsTest extends AbstractLocaleTest {
-  private FormatUtils formatUtils;
+  @Mock
   private MessagesApi messagesApi;
+  @Mock
+  private Messages messages;
+  @Mock
+  private Lang lang;
+  @Mock
+  private Http.Request request;
+
+  private FormatUtils target;
 
   @Before
   public void setUp() {
-    messagesApi = Mockito.mock(MessagesApi.class);
-    formatUtils = new FormatUtils(messagesApi);
+    target = new FormatUtils(messagesApi);
+
+    when(messagesApi.preferred(eq(request))).thenReturn(messages);
+    when(messages.lang()).thenReturn(lang);
   }
 
   @Test
-  public void testFormatEnglishDisplayNames() {
-    // given
-    Http.Request request = Mockito.mock(Http.Request.class);
+  public void formatDisplayNamesWithEnglishLocaleAndNameNull() {
+    // given, when
+    String actual = target.formatDisplayName(createLocale(null), request);
 
-    java.util.Locale.setDefault(java.util.Locale.forLanguageTag("en"));
-
-    assertThat(formatUtils.formatDisplayName(createLocale(null), request)).isNull();
-    assertThat(formatUtils.formatDisplayName(createLocale(""), request)).isNull();
-    assertThat(formatUtils.formatDisplayName(createLocale("de"), request)).isEqualTo("German");
-    assertThat(formatUtils.formatDisplayName(createLocale("en"), request)).isEqualTo("English");
+    // then
+    assertThat(actual).isNull();
   }
 
   @Test
-  public void testFormatGermanDisplayNames() {
-    // given
-    Http.Request request = Mockito.mock(Http.Request.class);
-    java.util.Locale.setDefault(java.util.Locale.forLanguageTag("de"));
+  public void formatDisplayNamesWithEnglishLocaleAndNameEmpty() {
+    // given, when
+    String actual = target.formatDisplayName(createLocale(null), request);
 
-    // when, then
-    assertThat(formatUtils.formatDisplayName(createLocale(null), request)).isNull();
-    assertThat(formatUtils.formatDisplayName(createLocale(""), request)).isNull();
-    assertThat(formatUtils.formatDisplayName(createLocale("de"), request)).isEqualTo("Deutsch");
-    assertThat(formatUtils.formatDisplayName(createLocale("en"), request)).isEqualTo("Englisch");
+    // then
+    assertThat(target.formatDisplayName(createLocale(""), request)).isNull();
+  }
+
+  @Test
+  public void formatDisplayNamesWithEnglishLocaleAndNameDe() {
+    // given
+    when(lang.locale()).thenReturn(java.util.Locale.forLanguageTag("en"));
+
+    // when
+    String actual = target.formatDisplayName(createLocale(null), request);
+
+    // then
+    assertThat(target.formatDisplayName(createLocale("en"), request)).isEqualTo("English");
+  }
+
+  @Test
+  public void formatDisplayNamesWithEnglishLocaleAndNameEn() {
+    // given
+    when(lang.locale()).thenReturn(java.util.Locale.forLanguageTag("en"));
+
+    // when
+    String actual = target.formatDisplayName(createLocale(null), request);
+
+    // then
+    assertThat(target.formatDisplayName(createLocale("en"), request)).isEqualTo("English");
+  }
+
+  @Test
+  public void formatDisplayNamesWithGermanLocaleAndNameNull() {
+    // given, when
+    String actual = target.formatDisplayName(createLocale(null), request);
+
+    // then
+    assertThat(actual).isNull();
+  }
+
+  @Test
+  public void formatDisplayNamesWithGermanLocaleAndNameEmpty() {
+    // given, when
+    String actual = target.formatDisplayName(createLocale(null), request);
+
+    // then
+    assertThat(target.formatDisplayName(createLocale(""), request)).isNull();
+  }
+
+  @Test
+  public void formatDisplayNamesWithGermanLocaleAndNameDe() {
+    // given
+    when(lang.locale()).thenReturn(java.util.Locale.forLanguageTag("de"));
+
+    // when
+    String actual = target.formatDisplayName(createLocale(null), request);
+
+    // then
+    assertThat(target.formatDisplayName(createLocale("de"), request)).isEqualTo("Deutsch");
+  }
+
+  @Test
+  public void formatDisplayNamesWithGermanLocaleAndNameEn() {
+    // given
+    when(lang.locale()).thenReturn(java.util.Locale.forLanguageTag("de"));
+
+    // when
+    String actual = target.formatDisplayName(createLocale(null), request);
+
+    // then
+    assertThat(target.formatDisplayName(createLocale("en"), request)).isEqualTo("Englisch");
   }
 
   private Locale createLocale(String name) {

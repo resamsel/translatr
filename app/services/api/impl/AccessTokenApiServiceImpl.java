@@ -4,6 +4,7 @@ import criterias.AccessTokenCriteria;
 import mappers.AccessTokenMapper;
 import models.AccessToken;
 import models.Scope;
+import play.mvc.Http;
 import services.AccessTokenService;
 import services.PermissionService;
 import services.api.AccessTokenApiService;
@@ -28,7 +29,7 @@ public class AccessTokenApiServiceImpl
   }
 
   @Override
-  protected AccessToken toModel(dto.AccessToken in) {
+  protected AccessToken toModel(dto.AccessToken in, Http.Request request) {
     return AccessTokenMapper.toModel(in);
   }
 }

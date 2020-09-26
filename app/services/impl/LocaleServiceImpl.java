@@ -1,23 +1,31 @@
 package services.impl;
 
+import actors.ActivityActorRef;
+import actors.ActivityProtocol;
 import criterias.GetCriteria;
+import dto.PermissionException;
 import io.ebean.PagedList;
 import criterias.LocaleCriteria;
+import mappers.LocaleMapper;
 import models.ActionType;
 import models.Locale;
 import models.Project;
+import models.ProjectRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.mvc.Http;
 import repositories.LocaleRepository;
+import repositories.MessageRepository;
 import repositories.Persistence;
 import services.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static utils.Stopwatch.log;
 
@@ -27,23 +35,31 @@ import static utils.Stopwatch.log;
  */
 @Singleton
 public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, LocaleCriteria>
-    implements LocaleService {
+        implements LocaleService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServiceImpl.class);
 
   private final LocaleRepository localeRepository;
   private final Persistence persistence;
   private final MetricService metricService;
+  private final LocaleMapper localeMapper;
+  private final PermissionService permissionService;
+  private final MessageRepository messageRepository;
 
   @Inject
   public LocaleServiceImpl(Validator validator, CacheService cache,
                            LocaleRepository localeRepository, LogEntryService logEntryService,
-                           Persistence persistence, AuthProvider authProvider, MetricService metricService) {
-    super(validator, cache, localeRepository, Locale::getCacheKey, logEntryService, authProvider);
+                           Persistence persistence, AuthProvider authProvider, MetricService metricService,
+                           ActivityActorRef activityActor, LocaleMapper localeMapper, PermissionService permissionService,
+                           MessageRepository messageRepository) {
+    super(validator, cache, localeRepository, Locale::getCacheKey, logEntryService, authProvider, activityActor);
 
     this.localeRepository = localeRepository;
     this.persistence = persistence;
     this.metricService = metricService;
+    this.localeMapper = localeMapper;
+    this.permissionService = permissionService;
+    this.messageRepository = messageRepository;
   }
 
   @Override
@@ -135,6 +151,22 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
     }
 
     cache.removeByPrefix("locale:criteria:" + t.project.id);
+
+    activityActor.tell(
+            new ActivityProtocol.Activity<>(ActionType.Create, authProvider.loggedInUser(request), t.project, dto.Locale.class, null, localeMapper.toDto(t, request)),
+            null
+    );
+  }
+
+  @Override
+  protected void preUpdate(Locale t, Http.Request request) {
+    super.preUpdate(t, request);
+
+    activityActor.tell(
+            new ActivityProtocol.Activity<>(ActionType.Update, authProvider.loggedInUser(request), t.project, dto.Locale.class,
+                    localeMapper.toDto(byId(GetCriteria.from(t.id, request)), request), localeMapper.toDto(t, request)),
+            null
+    );
   }
 
   @Override
@@ -149,9 +181,24 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
     return t;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override
+  public void preDelete(Locale t, Http.Request request) {
+    super.preDelete(t, request);
+
+    if (!permissionService
+            .hasPermissionAny(t.project.id, authProvider.loggedInUser(request), ProjectRole.Owner, ProjectRole.Manager,
+                    ProjectRole.Translator)) {
+      throw new PermissionException("User not allowed in project");
+    }
+
+    activityActor.tell(
+            new ActivityProtocol.Activity<>(ActionType.Delete, authProvider.loggedInUser(request), t.project, dto.Locale.class, localeMapper.toDto(t, request), null),
+            null
+    );
+
+    messageRepository.delete(messageRepository.byLocale(t.id));
+  }
+
   @Override
   protected void postDelete(Locale t, Http.Request request) {
     super.postDelete(t, request);
@@ -164,5 +211,22 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
 
     // When locale has been deleted, the locale cache needs to be invalidated
     cache.removeByPrefix("locale:criteria:" + t.project.id);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void preDelete(Collection<Locale> t, Http.Request request) {
+    super.preDelete(t, request);
+
+    activityActor.tell(
+            new ActivityProtocol.Activities<>(t.stream().map(l -> new ActivityProtocol.Activity<>(ActionType.Delete, authProvider.loggedInUser(request), l.project,
+                    dto.Locale.class, localeMapper.toDto(l, null), null)).collect(Collectors.toList())),
+            null
+    );
+
+    messageRepository.delete(
+            messageRepository.byLocales(t.stream().map(m -> m.id).collect(Collectors.toList())));
   }
 }

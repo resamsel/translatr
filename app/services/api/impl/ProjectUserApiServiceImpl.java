@@ -4,6 +4,7 @@ import criterias.ProjectUserCriteria;
 import mappers.ProjectUserMapper;
 import models.ProjectUser;
 import models.Scope;
+import play.mvc.Http;
 import services.PermissionService;
 import services.ProjectUserService;
 import services.api.ProjectUserApiService;
@@ -35,7 +36,7 @@ public class ProjectUserApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected ProjectUser toModel(dto.ProjectUser in) {
+  protected ProjectUser toModel(dto.ProjectUser in, Http.Request request) {
     return ProjectUserMapper.toModel(in);
   }
 }

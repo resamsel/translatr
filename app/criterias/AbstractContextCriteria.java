@@ -14,7 +14,8 @@ public abstract class AbstractContextCriteria<T extends AbstractContextCriteria<
     return loggedInUserId;
   }
 
-  public void setLoggedInUserId(UUID loggedInUserId) {
+  @Override
+  public void setLoggedInUserId(@CheckForNull UUID loggedInUserId) {
     this.loggedInUserId = loggedInUserId;
   }
 

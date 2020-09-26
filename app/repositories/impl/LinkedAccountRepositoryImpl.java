@@ -1,6 +1,5 @@
 package repositories.impl;
 
-import actors.ActivityActorRef;
 import criterias.ContextCriteria;
 import criterias.LinkedAccountCriteria;
 import criterias.PagedListFactory;
@@ -10,7 +9,6 @@ import io.ebean.Query;
 import models.LinkedAccount;
 import repositories.LinkedAccountRepository;
 import repositories.Persistence;
-import services.AuthProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,11 +20,8 @@ public class LinkedAccountRepositoryImpl extends
         LinkedAccountRepository {
 
   @Inject
-  public LinkedAccountRepositoryImpl(Persistence persistence,
-                                     Validator validator,
-                                     AuthProvider authProvider,
-                                     ActivityActorRef activityActor) {
-    super(persistence, validator, authProvider, activityActor);
+  public LinkedAccountRepositoryImpl(Persistence persistence, Validator validator) {
+    super(persistence, validator);
   }
 
   @Override

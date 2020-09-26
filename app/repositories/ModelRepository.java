@@ -18,14 +18,36 @@ public interface ModelRepository<T extends Model<T, ID>, ID, CRITERIA extends Ab
 
   T byId(GetCriteria<ID> criteria);
 
+  /**
+   * Create a new model in the database. Eventually, the {@link ModelRepository#save(Model)} method will be invoked.
+   *
+   * @param model the model including the ID
+   * @return the created model
+   * @throws javax.validation.ValidationException when either the ID is not unique, or the validation of the entity
+   *                                              fails
+   */
   T create(T model);
 
+  /**
+   * Update existing model in the database. If the model doesn't exist, a validation exception will be thrown.
+   * Eventually, the {@link ModelRepository#save(Model)} method will be invoked.
+   *
+   * @param model the model including the ID
+   * @return the updated model
+   * @throws javax.validation.ValidationException when either the ID is missing, the entity doesn't exist in the
+   *                                              database, or the validation of the entity fails
+   */
   T update(T model);
 
   /**
-   * Persist model to database.
+   * Save or update existing model in the database. Decides on the existence of the ID whether or not the entity needs
+   * to be saved or updated.
+   *
+   * @param model the model
+   * @return the saved model
+   * @throws javax.validation.ValidationException when the validation of the entity fails
    */
-  T save(T t);
+  T save(T model);
 
   /**
    * Persist model collection to database.

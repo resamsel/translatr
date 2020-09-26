@@ -8,6 +8,7 @@ import models.Message;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import services.KeyService;
 import services.MessageService;
 
@@ -49,24 +50,24 @@ public abstract class AbstractImporter implements Importer {
   }
 
   @Override
-  public void apply(File file, Locale locale) throws Exception {
+  public void apply(File file, Locale locale, Http.Request request) throws Exception {
     LOGGER.debug("Importing from file {}", file.getName());
 
     Properties properties = retrieveProperties(new FileInputStream(file), locale);
 
-    load(locale, properties.stringPropertyNames());
+    load(locale, properties.stringPropertyNames(), request);
 
-    saveKeys(locale, properties);
-    saveMessages(locale, properties);
+    saveKeys(locale, properties, request);
+    saveMessages(locale, properties, request);
 
     LOGGER.debug("Imported from file {}", file.getName());
   }
 
   abstract Properties retrieveProperties(InputStream stream, Locale locale) throws Exception;
 
-  protected void load(Locale locale, Collection<String> keyNames) {
+  protected void load(Locale locale, Collection<String> keyNames, Http.Request request) {
     keys = keyService.findBy(
-        new KeyCriteria()
+        KeyCriteria.from(request)
             .withLimit(Integer.MAX_VALUE)
             .withProjectId(locale.project.id)
             .withNames(keyNames))
@@ -74,7 +75,7 @@ public abstract class AbstractImporter implements Importer {
         .stream()
         .collect(toMap(k -> k.name, a -> a));
     messages = messageService.findBy(
-        new MessageCriteria()
+        MessageCriteria.from(request)
             .withLimit(Integer.MAX_VALUE)
             .withLocaleId(locale.id))
         .getList()
@@ -82,7 +83,7 @@ public abstract class AbstractImporter implements Importer {
         .collect(toMap(m -> m.key.name, a -> a));
   }
 
-  void saveKeys(Locale locale, Properties properties) {
+  void saveKeys(Locale locale, Properties properties, Http.Request request) {
     List<Key> newKeys = new ArrayList<>();
     for (String keyName : properties.stringPropertyNames()) {
       String value = (String) properties.get(keyName);
@@ -97,12 +98,12 @@ public abstract class AbstractImporter implements Importer {
     }
 
     // Update keys cache
-    for (Key key : keyService.save(newKeys)) {
+    for (Key key : keyService.save(newKeys, request)) {
       keys.put(key.name, key);
     }
   }
 
-  void saveMessages(Locale locale, Properties properties) {
+  void saveMessages(Locale locale, Properties properties, Http.Request request) {
     List<Message> newMessages = new ArrayList<>();
     for (String keyName : properties.stringPropertyNames()) {
       String value = (String) properties.get(keyName);
@@ -132,6 +133,6 @@ public abstract class AbstractImporter implements Importer {
       }
     }
 
-    messageService.save(newMessages);
+    messageService.save(newMessages, request);
   }
 }

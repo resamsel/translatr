@@ -1,42 +1,31 @@
 package repositories.impl;
 
-import actors.ActivityActorRef;
-import actors.ActivityProtocol.Activities;
-import actors.ActivityProtocol.Activity;
 import criterias.ContextCriteria;
 import criterias.DefaultContextCriteria;
 import criterias.GetCriteria;
 import criterias.PagedListFactory;
 import criterias.ProjectCriteria;
 import dto.NotFoundException;
-import dto.PermissionException;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import io.ebean.Query;
 import io.ebean.RawSqlBuilder;
-import mappers.ProjectMapper;
-import models.ActionType;
 import models.Project;
 import models.ProjectRole;
 import models.ProjectUser;
 import models.Stat;
-import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.mvc.Http;
 import repositories.KeyRepository;
 import repositories.LocaleRepository;
 import repositories.Persistence;
 import repositories.ProjectRepository;
-import services.AuthProvider;
-import services.PermissionService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -58,24 +47,17 @@ public class ProjectRepositoryImpl extends
 
   private final LocaleRepository localeRepository;
   private final KeyRepository keyRepository;
-  private final PermissionService permissionService;
-  private final ProjectMapper projectMapper;
 
   @Inject
-  public ProjectRepositoryImpl(Persistence persistence,
-                               Validator validator,
-                               AuthProvider authProvider,
-                               ActivityActorRef activityActor,
-                               LocaleRepository localeRepository,
-                               KeyRepository keyRepository,
-                               PermissionService permissionService,
-                               ProjectMapper projectMapper) {
-    super(persistence, validator, authProvider, activityActor);
+  public ProjectRepositoryImpl(
+          Persistence persistence,
+          Validator validator,
+          LocaleRepository localeRepository,
+          KeyRepository keyRepository) {
+    super(persistence, validator);
 
     this.localeRepository = localeRepository;
     this.keyRepository = keyRepository;
-    this.permissionService = permissionService;
-    this.projectMapper = projectMapper;
   }
 
   @Override
@@ -191,13 +173,13 @@ public class ProjectRepositoryImpl extends
       return null;
     }
 
-    return byId(GetCriteria.from(id, null /* FIXME */, fetches).withLoggedInUserId(authProvider.loggedInUserId(null) /* FIXME: will fail! */));
+    return byId(GetCriteria.from(id, null , fetches));
   }
 
   @Override
-  public Project byOwnerAndName(String username, String name, String... fetches) {
+  public Project byOwnerAndName(String username, String name, UUID loggedInUserId, String... fetches) {
     ContextCriteria criteria = new DefaultContextCriteria()
-            .withLoggedInUserId(authProvider.loggedInUserId(null) /* FIXME: will fail! */)
+            .withLoggedInUserId(loggedInUserId)
             .withFetches(fetches);
 
     return fetch(
@@ -210,15 +192,9 @@ public class ProjectRepositoryImpl extends
     );
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   protected void preSave(Project t, boolean update) {
     persistence.markAsDirty(t);
-    if (t.owner == null || t.owner.id == null) {
-      t.owner = authProvider.loggedInUser(null) /* FIXME: will fail! */;
-    }
     if (t.members == null) {
       t.members = new ArrayList<>();
     }
@@ -228,30 +204,10 @@ public class ProjectRepositoryImpl extends
   }
 
   @Override
-  protected void prePersist(Project t, boolean update) {
-    if (update) {
-      activityActor.tell(
-              new Activity<>(ActionType.Update, authProvider.loggedInUser(null) /* FIXME: will fail! */, t, dto.Project.class, toDto(byId(t.id), null), toDto(t, null)),
-              null
-      );
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   protected void postSave(Project t, boolean update) {
     super.postSave(t, update);
     persistence.refresh(t);
     persistence.refresh(t.owner);
-
-    if (!update) {
-      activityActor.tell(
-              new Activity<>(ActionType.Create, authProvider.loggedInUser(null) /* FIXME: will fail! */, t, dto.Project.class, null, toDto(t, null)),
-              null
-      );
-    }
   }
 
   /**
@@ -259,23 +215,19 @@ public class ProjectRepositoryImpl extends
    */
   @Override
   public void delete(Project t) {
-    if (t == null || t.deleted) {
-      throw new NotFoundException(dto.Project.class.getSimpleName(), t != null ? t.id : null);
-    }
-    if (!permissionService
-            .hasPermissionAny(t.id, authProvider.loggedInUser(null) /* FIXME: will fail! */, ProjectRole.Owner, ProjectRole.Manager)) {
-      throw new PermissionException("User not allowed in project");
-    }
-
     localeRepository.delete(t.locales);
     keyRepository.delete(t.keys);
 
-    activityActor.tell(
-            new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, t, dto.Project.class, toDto(t, null), null),
-            null
-    );
-
     super.save(t.withName(String.format("%s-%s", t.id, t.name)).withDeleted(true));
+  }
+
+  @Override
+  protected void preDelete(Project t) {
+    super.preDelete(t);
+
+    if (t == null || t.deleted) {
+      throw new NotFoundException(dto.Project.class.getSimpleName(), t != null ? t.id : null);
+    }
   }
 
   /**
@@ -283,29 +235,11 @@ public class ProjectRepositoryImpl extends
    */
   @Override
   public void delete(Collection<Project> t) {
-    User loggedInUser = authProvider.loggedInUser(null) /* FIXME: will fail! */;
-    for (Project p : t) {
-      if (p == null || p.deleted) {
-        throw new NotFoundException(dto.Project.class.getSimpleName(), p != null ? p.id : null);
-      }
-      if (!permissionService
-              .hasPermissionAny(p.id, loggedInUser, ProjectRole.Owner, ProjectRole.Manager)) {
-        throw new PermissionException("User not allowed in project");
-      }
-    }
-
     keyRepository
             .delete(
                     t.stream().map(p -> p.keys).flatMap(Collection::stream).collect(toList()));
     localeRepository.delete(
             t.stream().map(p -> p.locales).flatMap(Collection::stream).collect(toList()));
-
-    activityActor.tell(
-            new Activities<>(t.stream()
-                    .map(p -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, p, dto.Project.class, toDto(p, null), null))
-                    .collect(toList())),
-            null
-    );
 
     super.save(
             t.stream().map(p -> p.withName(String.format("%s-%s", p.id, p.name)).withDeleted(true))
@@ -315,16 +249,6 @@ public class ProjectRepositoryImpl extends
   @Override
   protected Query<Project> createQuery(ContextCriteria criteria) {
     return createQuery(Project.class, PROPERTIES_TO_FETCH, FETCH_MAP, criteria.getFetches());
-  }
-
-  private dto.Project toDto(Project t, Http.Request request) {
-    dto.Project out = projectMapper.toDto(t, request);
-
-    out.keys = Collections.emptyList();
-    out.locales = Collections.emptyList();
-    out.messages = Collections.emptyList();
-
-    return out;
   }
 
   private Map<UUID, ProjectRole> roles(List<UUID> projectIds, UUID userId) {

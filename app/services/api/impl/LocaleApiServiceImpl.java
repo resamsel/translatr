@@ -111,7 +111,7 @@ public class LocaleApiServiceImpl extends
             .orElseThrow(() -> new IllegalArgumentException("File type " + form.getFileType() + " not supported yet"));
 
     try {
-      importer.apply(messages.getRef(), locale);
+      importer.apply(messages.getRef(), locale, request);
     } catch (Exception e) {
       LOGGER.error("Error while importing messages", e);
     }
@@ -141,7 +141,7 @@ public class LocaleApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected Locale toModel(dto.Locale in) {
-    return LocaleMapper.toModel(in, projectService.byId(GetCriteria.from(in.projectId, null /* FIXME */)));
+  protected Locale toModel(dto.Locale in, Request request) {
+    return LocaleMapper.toModel(in, projectService.byId(GetCriteria.from(in.projectId, request)));
   }
 }

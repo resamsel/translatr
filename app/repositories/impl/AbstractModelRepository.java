@@ -1,6 +1,5 @@
 package repositories.impl;
 
-import actors.ActivityActorRef;
 import criterias.AbstractSearchCriteria;
 import criterias.ContextCriteria;
 import criterias.GetCriteria;
@@ -11,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.ModelRepository;
 import repositories.Persistence;
-import services.AuthProvider;
 import utils.QueryUtils;
 
 import javax.persistence.PersistenceException;
@@ -39,14 +37,10 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
   protected final Persistence persistence;
   protected final Validator validator;
-  protected final AuthProvider authProvider;
-  final ActivityActorRef activityActor;
 
-  AbstractModelRepository(Persistence persistence, Validator validator, AuthProvider authProvider, ActivityActorRef activityActor) {
+  AbstractModelRepository(Persistence persistence, Validator validator) {
     this.persistence = persistence;
     this.validator = validator;
-    this.authProvider = authProvider;
-    this.activityActor = activityActor;
   }
 
   public MODEL byId(GetCriteria<ID> criteria) {

@@ -33,7 +33,7 @@ public interface ProjectRepository extends ModelRepository<Project, UUID, Projec
                     FETCH_LOCALES, singletonList(FETCH_LOCALES)
             );
 
-    Project byOwnerAndName(String username, String name, String... fetches);
+    Project byOwnerAndName(String username, String name, UUID loggedInUserId, String... fetches);
 
     Map<UUID, Double> progress(List<UUID> projectIds);
 }

@@ -6,7 +6,6 @@ import io.ebean.annotation.UpdatedTimestamp;
 import org.joda.time.DateTime;
 import utils.CacheUtils;
 import validators.NameUnique;
-import validators.ProjectUserModifyAllowed;
 import validators.ProjectUserOwnerExists;
 import validators.ProjectUserUniqueChecker;
 
@@ -29,7 +28,6 @@ import java.util.Objects;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "user_id"})})
 @NameUnique(checker = ProjectUserUniqueChecker.class, field = "user", message = "error.projectuserunique")
 @ProjectUserOwnerExists
-@ProjectUserModifyAllowed
 public class ProjectUser implements Model<ProjectUser, Long> {
 
   private static final int ROLE_LENGTH = 16;

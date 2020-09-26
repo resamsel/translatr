@@ -66,7 +66,7 @@ public class ProjectUserRepositoryImplTest {
     when(pagedListFactoryProvider.get()).thenReturn(pagedListFactory);
 
     target = new ProjectUserRepositoryImpl(
-        persistence, validator, authProvider, activityActor, notificationActor, pagedListFactoryProvider);
+        persistence, validator, notificationActor, pagedListFactoryProvider);
   }
 
   @Test
@@ -77,6 +77,7 @@ public class ProjectUserRepositoryImplTest {
 
     when(pagedListFactory.createPagedList(any(Query.class))).thenReturn(pagedList);
     when(pagedList.getList()).thenReturn(Collections.emptyList());
+    when(query.setDisableLazyLoading(eq(true))).thenReturn(query);
 
     // when
     PagedList<ProjectUser> actual = target.findBy(criteria);

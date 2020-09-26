@@ -1,11 +1,12 @@
 package services.impl;
 
+import actors.ActivityActorRef;
+import criterias.LogEntryCriteria;
+import criterias.PagedListFactory;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import io.ebean.RawSql;
 import io.ebean.RawSqlBuilder;
-import criterias.LogEntryCriteria;
-import criterias.PagedListFactory;
 import models.Aggregate;
 import models.LogEntry;
 import org.slf4j.Logger;
@@ -32,19 +33,24 @@ import static utils.Stopwatch.log;
  */
 @Singleton
 public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, LogEntryCriteria>
-    implements LogEntryService {
+        implements LogEntryService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryServiceImpl.class);
 
   private static final String H2_COLUMN_MILLIS =
-      "datediff('millisecond', timestamp '1970-01-01 00:00:00', parsedatetime(formatdatetime(when_created, 'yyyy-MM-dd HH:00:00'), 'yyyy-MM-dd HH:mm:ss'))*1000";
+          "datediff('millisecond', timestamp '1970-01-01 00:00:00', parsedatetime(formatdatetime(when_created, 'yyyy-MM-dd HH:00:00'), 'yyyy-MM-dd HH:mm:ss'))*1000";
   private final LogEntryRepository logEntryRepository;
   private final Persistence persistence;
 
   @Inject
-  public LogEntryServiceImpl(Validator validator, CacheService cache,
-                             LogEntryRepository logEntryRepository, Persistence persistence, AuthProvider authProvider) {
-    super(validator, cache, logEntryRepository, LogEntry::getCacheKey, null, authProvider);
+  public LogEntryServiceImpl(
+          Validator validator,
+          CacheService cache,
+          LogEntryRepository logEntryRepository,
+          Persistence persistence,
+          AuthProvider authProvider,
+          ActivityActorRef activityActor) {
+    super(validator, cache, logEntryRepository, LogEntry::getCacheKey, null, authProvider, activityActor);
 
     this.logEntryRepository = logEntryRepository;
     this.persistence = persistence;
@@ -53,20 +59,20 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
   @Override
   public int countBy(LogEntryCriteria criteria) {
     return cache.getOrElseUpdate(
-        criteria.getCacheKey(),
-        () -> logEntryRepository.countBy(criteria),
-        60
+            criteria.getCacheKey(),
+            () -> logEntryRepository.countBy(criteria),
+            60
     );
   }
 
   @Override
   public PagedList<Aggregate> getAggregates(LogEntryCriteria criteria) {
     ExpressionList<Aggregate> query =
-        persistence.createQuery(Aggregate.class)
-            .setRawSql(getAggregatesRawSql())
-            .setMaxRows(Optional.ofNullable(criteria.getLimit()).orElse(1000))
-            .setFirstRow(Optional.ofNullable(criteria.getOffset()).orElse(0))
-            .where();
+            persistence.createQuery(Aggregate.class)
+                    .setRawSql(getAggregatesRawSql())
+                    .setMaxRows(Optional.ofNullable(criteria.getLimit()).orElse(1000))
+                    .setFirstRow(Optional.ofNullable(criteria.getOffset()).orElse(0))
+                    .where();
 
     if (criteria.getProjectId() != null) {
       query.eq("project_id", criteria.getProjectId());
@@ -77,16 +83,16 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
     }
 
     String cacheKey =
-        String.format("activity:aggregates:%s:%s", criteria.getUserId(), criteria.getProjectId());
+            String.format("activity:aggregates:%s:%s", criteria.getUserId(), criteria.getProjectId());
 
     return log(
-        () -> cache.getOrElseUpdate(
-                cacheKey,
-                () -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)),
-                60
-        ),
-        LOGGER,
-        "Retrieving log entry aggregates"
+            () -> cache.getOrElseUpdate(
+                    cacheKey,
+                    () -> PagedListFactory.create(query, criteria.hasFetch(FETCH_COUNT)),
+                    60
+            ),
+            LOGGER,
+            "Retrieving log entry aggregates"
     );
   }
 
@@ -94,20 +100,30 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
     String dbpName = persistence.getDatabasePlatformName();
     if ("h2".equals(dbpName)) {
       return RawSqlBuilder
-          .parse(String.format(
-              "select %1$s as millis, count(*) as cnt from log_entry group by %1$s order by 1",
-              H2_COLUMN_MILLIS))
-          .columnMapping(H2_COLUMN_MILLIS, "millis")
-          .columnMapping("count(*)", "value")
-          .create();
+              .parse(String.format(
+                      "select %1$s as millis, count(*) as cnt from log_entry group by %1$s order by 1",
+                      H2_COLUMN_MILLIS))
+              .columnMapping(H2_COLUMN_MILLIS, "millis")
+              .columnMapping("count(*)", "value")
+              .create();
     }
 
     return RawSqlBuilder
-        .parse(
-            "select when_created::date as date, count(*) as cnt from log_entry group by 1 order by 1")
-        .columnMapping("date", "date")
-        .columnMapping("cnt", "value")
-        .create();
+            .parse(
+                    "select when_created::date as date, count(*) as cnt from log_entry group by 1 order by 1")
+            .columnMapping("date", "date")
+            .columnMapping("cnt", "value")
+            .create();
+  }
+
+  @Override
+  protected void preSave(LogEntry t, Http.Request request) {
+    super.preSave(t, request);
+
+    if (t.user == null) {
+      t.user = authProvider.loggedInUser(request);
+      LOGGER.debug("preSave(): user of log entry is {}", t.user);
+    }
   }
 
   @Override

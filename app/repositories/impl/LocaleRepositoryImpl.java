@@ -1,6 +1,5 @@
 package repositories.impl;
 
-import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
 import com.google.common.collect.ImmutableMap;
@@ -26,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import repositories.LocaleRepository;
 import repositories.MessageRepository;
 import repositories.Persistence;
-import services.AuthProvider;
 import services.PermissionService;
 import utils.QueryUtils;
 
@@ -69,12 +67,10 @@ public class LocaleRepositoryImpl extends
   public LocaleRepositoryImpl(
           Persistence persistence,
           Validator validator,
-          AuthProvider authProvider,
-          ActivityActorRef activityActor,
           MessageRepository messageRepository,
           PermissionService permissionService,
           LocaleMapper localeMapper) {
-    super(persistence, validator, authProvider, activityActor);
+    super(persistence, validator);
 
     this.messageRepository = messageRepository;
     this.permissionService = permissionService;
@@ -227,68 +223,5 @@ public class LocaleRepositoryImpl extends
             .eq("project.name", projectName)
             .eq("name", localeName)
             .findOne();
-  }
-
-  // FIXME: pull pre/post persist logic to service!?
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void prePersist(Locale t, boolean update) {
-    if (update) {
-      activityActor.tell(
-              new Activity<>(ActionType.Update, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Locale.class,
-                      localeMapper.toDto(byId(t.id), null), localeMapper.toDto(t, null)),
-              null
-      );
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postSave(Locale t, boolean update) {
-    if (!update) {
-      activityActor.tell(
-              new Activity<>(ActionType.Create, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Locale.class, null, localeMapper.toDto(t, null)),
-              null
-      );
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void preDelete(Locale t) {
-    if (!permissionService
-            .hasPermissionAny(t.project.id, authProvider.loggedInUser(null) /* FIXME: will fail! */, ProjectRole.Owner, ProjectRole.Manager,
-                    ProjectRole.Translator)) {
-      throw new PermissionException("User not allowed in project");
-    }
-
-    activityActor.tell(
-            new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Locale.class, localeMapper.toDto(t, null), null),
-            null
-    );
-
-    messageRepository.delete(messageRepository.byLocale(t.id));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void preDelete(Collection<Locale> t) {
-    activityActor.tell(
-            new Activities<>(t.stream().map(l -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, l.project,
-                    dto.Locale.class, localeMapper.toDto(l, null), null)).collect(Collectors.toList())),
-            null
-    );
-
-    messageRepository.delete(
-            messageRepository.byLocales(t.stream().map(m -> m.id).collect(Collectors.toList())));
   }
 }

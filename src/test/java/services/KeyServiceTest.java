@@ -1,26 +1,28 @@
 package services;
 
+import actors.ActivityActorRef;
+import criterias.GetCriteria;
 import criterias.KeyCriteria;
 import criterias.PagedListFactory;
+import io.ebean.PagedList;
+import mappers.KeyMapper;
 import models.Key;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.libs.Json;
+import play.mvc.Http;
 import repositories.KeyRepository;
+import repositories.MessageRepository;
 import repositories.Persistence;
-import services.impl.CacheServiceImpl;
 import services.impl.KeyServiceImpl;
-import utils.CacheApiMock;
+import services.impl.NoCacheServiceImpl;
 import utils.ProjectRepositoryMock;
 
 import javax.validation.Validator;
 import java.util.UUID;
 
 import static assertions.KeyAssert.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -32,123 +34,70 @@ public class KeyServiceTest {
 
   private KeyRepository keyRepository;
   private KeyService target;
-  private CacheService cacheService;
-
-  @Test
-  public void testById() {
-    // mock key
-    Key key = createKey(UUID.randomUUID(), UUID.randomUUID(), "a");
-    keyRepository.create(key);
-
-    // This invocation should feed the cache
-    assertThat(cacheService.keys().keySet()).doesNotContain("key:id:" + key.id);
-    assertThat(target.byId(key.id)).nameIsEqualTo("a");
-    verify(keyRepository, times(1)).byId(eq(key.id));
-
-    // This invocation should use the cache, not the repository
-    assertThat(cacheService.keys().keySet()).contains("key:id:" + key.id);
-    assertThat(target.byId(key.id)).nameIsEqualTo("a");
-    verify(keyRepository, times(1)).byId(eq(key.id));
-
-    // This should trigger cache invalidation
-    target.update(createKey(key, "ab"));
-
-    assertThat(cacheService.keys().keySet()).contains("key:id:" + key.id);
-    assertThat(target.byId(key.id)).nameIsEqualTo("ab");
-    verify(keyRepository, times(1)).byId(eq(key.id));
-  }
-
-  @Test
-  public void testFindBy() {
-    // mock key
-    Key key = createKey(UUID.randomUUID(), UUID.randomUUID(), "a");
-    keyRepository.create(key);
-
-    // This invocation should feed the cache
-    KeyCriteria criteria = new KeyCriteria().withProjectId(key.project.id);
-    assertThat(target.findBy(criteria).getList().get(0))
-        .as("uncached")
-        .nameIsEqualTo("a");
-    verify(keyRepository, times(1)).findBy(eq(criteria));
-    // This invocation should use the cache, not the repository
-    assertThat(target.findBy(criteria).getList().get(0))
-        .as("cached")
-        .nameIsEqualTo("a");
-    verify(keyRepository, times(1)).findBy(eq(criteria));
-
-    // This should trigger cache invalidation
-    target.update(createKey(key, "ab"));
-
-    assertThat(target.findBy(criteria).getList().get(0))
-        .as("uncached (invalidated)")
-        .nameIsEqualTo("ab");
-    verify(keyRepository, times(2)).findBy(eq(criteria));
-
-    LOGGER.debug("Cache keys before key creation: {}", cacheService.keys().keySet());
-    LOGGER.debug("Project ID: {}", key.project.id);
-    // This should trigger cache invalidation
-    target.create(createKey(UUID.randomUUID(), key.project.id, "c"));
-    LOGGER.debug("Cache keys after key creation: {}", cacheService.keys().keySet());
-
-    assertThat(target.findBy(criteria).getList().get(0))
-        .as("uncached (invalidated after creation)")
-        .nameIsEqualTo("c");
-    verify(keyRepository, times(3)).findBy(eq(criteria));
-  }
-
-  @Test
-  public void testByProjectAndName() {
-    // mock key
-    Key key = createKey(UUID.randomUUID(),
-        ProjectRepositoryMock.byOwnerAndName("johnsmith", "project1"), "a");
-    keyRepository.create(key);
-
-    // This invocation should feed the cache
-    assertThat(target.byProjectAndName(key.project, key.name, request)).nameIsEqualTo("a");
-    verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
-
-    // This invocation should use the cache, not the repository
-    assertThat(target.byProjectAndName(key.project, key.name, request)).nameIsEqualTo("a");
-    verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
-
-    // This should trigger cache invalidation
-    key = createKey(key, "ab");
-    target.update(key);
-
-    assertThat(cacheService.keys().keySet())
-            .doesNotContain("key:project:" + key.project.id + ":name:a");
-    assertThat(target.byProjectAndName(key.project, key.name, request)).nameIsEqualTo("ab");
-    verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
-  }
 
   @Before
   public void before() {
     keyRepository = mock(KeyRepository.class,
             withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
-    cacheService = new CacheServiceImpl(new CacheApiMock());
     target = new KeyServiceImpl(
             mock(Validator.class),
-            cacheService,
+            new NoCacheServiceImpl(),
             keyRepository,
             mock(LogEntryService.class),
             mock(Persistence.class),
             mock(AuthProvider.class),
-            mock(MetricService.class)
+            mock(MetricService.class),
+            mock(ActivityActorRef.class),
+            mock(KeyMapper.class),
+            mock(PermissionService.class),
+            mock(MessageRepository.class)
     );
-
-    when(keyRepository.save((Key) any())).then(this::persist);
-    when(keyRepository.create(any())).then(this::persist);
-    when(keyRepository.update(any())).then(this::persist);
   }
 
-  private Key persist(InvocationOnMock a) {
-    Key t = a.getArgument(0);
-    if(t.id == null)
-      t.id = UUID.randomUUID();
-    LOGGER.debug("mock: persisting {} - {}", t.getClass(), Json.toJson(t));
-    when(keyRepository.byId(eq(t.id), any())).thenReturn(t);
-    when(keyRepository.byProjectAndName(eq(t.project), eq(t.name))).thenReturn(t);
-    when(keyRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
-    return t;
+  @Test
+  public void byId() {
+    // given
+    Key key = createKey(UUID.randomUUID(), UUID.randomUUID(), "ab");
+    Http.Request request = mock(Http.Request.class);
+
+    when(keyRepository.byId(any(GetCriteria.class))).thenReturn(key);
+
+    // when
+    Key actual = target.byId(key.id, request);
+
+    // then
+    assertThat(actual).nameIsEqualTo("ab");
+  }
+
+  @Test
+  public void findBy() {
+    // given
+    Key key = createKey(UUID.randomUUID(), UUID.randomUUID(), "a");
+    Http.Request request = mock(Http.Request.class);
+    KeyCriteria criteria = KeyCriteria.from(request).withProjectId(key.project.id);
+
+    when(keyRepository.findBy(eq(criteria))).thenReturn(PagedListFactory.create(key));
+
+    // when
+    PagedList<Key> actual = target.findBy(criteria);
+
+    // then
+    assertThat(actual.getList().get(0)).nameIsEqualTo("a");
+  }
+
+  @Test
+  public void byProjectAndName() {
+    // given
+    Key key = createKey(UUID.randomUUID(),
+            ProjectRepositoryMock.byOwnerAndName("johnsmith", "project1"), "a");
+    Http.Request request = mock(Http.Request.class);
+
+    when(keyRepository.byProjectAndName(eq(key.project), eq(key.name))).thenReturn(key);
+
+    // when
+    Key actual = target.byProjectAndName(key.project, key.name, request);
+
+    // then
+    assertThat(actual).nameIsEqualTo("a");
   }
 }

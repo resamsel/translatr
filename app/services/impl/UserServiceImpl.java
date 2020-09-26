@@ -1,12 +1,16 @@
 package services.impl;
 
+import actors.ActivityActorRef;
+import actors.ActivityProtocol;
 import criterias.AccessTokenCriteria;
+import criterias.GetCriteria;
 import criterias.LinkedAccountCriteria;
 import criterias.LogEntryCriteria;
 import criterias.ProjectCriteria;
 import criterias.ProjectUserCriteria;
 import criterias.UserCriteria;
 import io.ebean.PagedList;
+import mappers.UserMapper;
 import models.ActionType;
 import models.Setting;
 import models.User;
@@ -56,11 +60,19 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   private final MetricService metricService;
 
   @Inject
-  public UserServiceImpl(Validator validator, CacheService cache, UserRepository userRepository,
-                         LinkedAccountService linkedAccountService, AccessTokenService accessTokenService,
-                         ProjectService projectService, ProjectUserService projectUserService,
-                         LogEntryService logEntryService, AuthProvider authProvider, MetricService metricService) {
-    super(validator, cache, userRepository, User::getCacheKey, logEntryService, authProvider);
+  public UserServiceImpl(
+          Validator validator,
+          CacheService cache,
+          UserRepository userRepository,
+          LinkedAccountService linkedAccountService,
+          AccessTokenService accessTokenService,
+          ProjectService projectService,
+          ProjectUserService projectUserService,
+          LogEntryService logEntryService,
+          AuthProvider authProvider,
+          MetricService metricService,
+          ActivityActorRef activityActor) {
+    super(validator, cache, userRepository, User::getCacheKey, logEntryService, authProvider, activityActor);
 
     this.userRepository = userRepository;
     this.linkedAccountService = linkedAccountService;
@@ -187,6 +199,8 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
   @Override
   protected void preCreate(User t, Http.Request request) {
+    super.preCreate(t, request);
+
     Optional<User> cached = cache.get(User.getCacheKey(t.getId()));
     cached.ifPresent(user -> cache.removeByPrefix(User.getCacheKey(user.username)));
   }
@@ -202,6 +216,16 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   }
 
   @Override
+  protected void preUpdate(User t, Http.Request request) {
+    super.preUpdate(t, request);
+
+    activityActor.tell(
+            new ActivityProtocol.Activity<>(ActionType.Update, authProvider.loggedInUser(request), null, dto.User.class, toDto(byId(GetCriteria.from(t.id, request))), toDto(t)),
+            null
+    );
+  }
+
+  @Override
   protected User postUpdate(User t, Http.Request request) {
     super.postUpdate(t, request);
 
@@ -210,7 +234,7 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     // When user has been updated, the user cache needs to be invalidated
     cache.removeByPrefix("user:criteria:");
 
-    return byId(t.id, request).updateFrom(t);
+    return byId(GetCriteria.from(t.id, request)).updateFrom(t);
   }
 
   /**
@@ -224,5 +248,9 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
 
     // When locale has been deleted, the locale cache needs to be invalidated
     cache.removeByPrefix("user:criteria:");
+  }
+
+  private dto.User toDto(User t) {
+    return UserMapper.toDto(t);
   }
 }
