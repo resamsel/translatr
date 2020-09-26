@@ -4,7 +4,8 @@ import javax.annotation.CheckForNull;
 import java.util.UUID;
 
 public abstract class AbstractContextCriteria<T extends AbstractContextCriteria<T>>
-    extends AbstractFetchCriteria<T> implements ContextCriteria {
+        extends AbstractFetchCriteria<T>
+        implements ContextCriteria {
   private UUID loggedInUserId;
 
   @CheckForNull

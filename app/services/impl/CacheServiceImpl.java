@@ -32,13 +32,13 @@ public class CacheServiceImpl implements CacheService {
   }
 
   @Override
-  public <T> T get(String key) {
+  public <T> Optional<T> get(String key) {
     return cache.get(key);
   }
 
   @Override
   public <T> Optional<T> getOptional(String key) {
-    return cache.getOptional(key);
+    return cache.get(key);
   }
 
   @Override

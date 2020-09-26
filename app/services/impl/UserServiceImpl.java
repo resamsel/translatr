@@ -13,6 +13,7 @@ import models.User;
 import models.UserStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import repositories.UserRepository;
 import services.AccessTokenService;
 import services.AuthProvider;
@@ -30,6 +31,7 @@ import javax.validation.Validator;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
@@ -74,25 +76,25 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    * {@inheritDoc}
    */
   @Override
-  public User merge(final User user, final User otherUser) {
+  public User merge(final User user, final User otherUser, Http.Request request) {
     linkedAccountService.save(
             linkedAccountService.findBy(new LinkedAccountCriteria()
                     .withUserId(Objects.requireNonNull(otherUser, "other user").id))
                     .getList()
                     .stream()
                     .map(linkedAccount -> linkedAccount.withUser(user))
-                    .collect(toList())
+                    .collect(toList()), request
     );
     otherUser.linkedAccounts.clear();
 
     accessTokenService
             .save(accessTokenService.findBy(new AccessTokenCriteria().withUserId(otherUser.id))
-                    .getList().stream().map(accessToken -> accessToken.withUser(user)).collect(toList()));
+                    .getList().stream().map(accessToken -> accessToken.withUser(user)).collect(toList()), request);
 
     logEntryService
             .save(logEntryService.findBy(new LogEntryCriteria().withUserId(otherUser.id)).getList()
                     .stream().filter(logEntry -> !logEntry.contentType.equals("User"))
-                    .map(logEntry -> logEntry.withUser(user)).collect(toList()));
+                    .map(logEntry -> logEntry.withUser(user)).collect(toList()), request);
 
     projectService
             .save(
@@ -100,15 +102,15 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
                             .stream()
                             .map(project -> project.withOwner(user)
                                     .withName(String.format("%s (%s)", project.name, user.email)))
-                            .collect(toList()));
+                            .collect(toList()), request);
 
     projectUserService
             .save(projectUserService.findBy(new ProjectUserCriteria().withUserId(otherUser.id))
-                    .getList().stream().map(member -> member.withUser(user)).collect(toList()));
+                    .getList().stream().map(member -> member.withUser(user)).collect(toList()), request);
 
     // deactivate the merged user that got added to this one
     otherUser.active = false;
-    save(Arrays.asList(otherUser, user));
+    save(Arrays.asList(otherUser, user), request);
 
     return user;
   }
@@ -117,11 +119,11 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
    * {@inheritDoc}
    */
   @Override
-  public User byUsername(String username, String... fetches) {
+  public User byUsername(String username, Http.Request request, String... fetches) {
     return postGet(cache.getOrElseUpdate(
             User.getCacheKey(username, fetches),
             () -> userRepository.byUsername(username, fetches),
-            60));
+            60), request);
   }
 
   @Override
@@ -135,13 +137,13 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   }
 
   @Override
-  public User saveSettings(UUID userId, Map<String, String> settings) {
-    return postUpdate(userRepository.saveSettings(userId, cleanSettings(settings)));
+  public User saveSettings(UUID userId, Map<String, String> settings, Http.Request request) {
+    return postUpdate(userRepository.saveSettings(userId, cleanSettings(settings)), request);
   }
 
   @Override
-  public User updateSettings(UUID userId, Map<String, String> settings) {
-    return postUpdate(userRepository.updateSettings(userId, cleanSettings(settings)));
+  public User updateSettings(UUID userId, Map<String, String> settings, Http.Request request) {
+    return postUpdate(userRepository.updateSettings(userId, cleanSettings(settings)), request);
   }
 
   private Map<String, String> cleanSettings(Map<String, String> settings) {
@@ -170,30 +172,28 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   }
 
   @Override
-  protected PagedList<User> postFind(PagedList<User> pagedList) {
+  protected PagedList<User> postFind(PagedList<User> pagedList, Http.Request request) {
     metricService.logEvent(User.class, ActionType.Read);
 
-    return super.postFind(pagedList);
+    return super.postFind(pagedList, request);
   }
 
   @Override
-  protected User postGet(User user) {
+  protected User postGet(User user, Http.Request request) {
     metricService.logEvent(User.class, ActionType.Read);
 
-    return super.postGet(user);
+    return super.postGet(user, request);
   }
 
   @Override
-  protected void preCreate(User t) {
-    User cached = cache.get(User.getCacheKey(t.getId()));
-    if (cached != null) {
-      cache.removeByPrefix(User.getCacheKey(cached.username));
-    }
+  protected void preCreate(User t, Http.Request request) {
+    Optional<User> cached = cache.get(User.getCacheKey(t.getId()));
+    cached.ifPresent(user -> cache.removeByPrefix(User.getCacheKey(user.username)));
   }
 
   @Override
-  protected void postCreate(User t) {
-    super.postCreate(t);
+  protected void postCreate(User t, Http.Request request) {
+    super.postCreate(t, request);
 
     metricService.logEvent(User.class, ActionType.Create);
 
@@ -202,23 +202,23 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
   }
 
   @Override
-  protected User postUpdate(User t) {
-    super.postUpdate(t);
+  protected User postUpdate(User t, Http.Request request) {
+    super.postUpdate(t, request);
 
     metricService.logEvent(User.class, ActionType.Update);
 
     // When user has been updated, the user cache needs to be invalidated
     cache.removeByPrefix("user:criteria:");
 
-    return byId(t.id).updateFrom(t);
+    return byId(t.id, request).updateFrom(t);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected void postDelete(User t) {
-    super.postDelete(t);
+  protected void postDelete(User t, Http.Request request) {
+    super.postDelete(t, request);
 
     metricService.logEvent(User.class, ActionType.Delete);
 

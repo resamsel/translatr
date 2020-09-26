@@ -3,9 +3,21 @@ package mappers;
 import dto.Message;
 import models.Key;
 import models.Locale;
+import play.mvc.Http;
 import utils.FormatUtils;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class MessageMapper {
+  private final FormatUtils formatUtils;
+
+  @Inject
+  public MessageMapper(FormatUtils formatUtils) {
+    this.formatUtils = formatUtils;
+  }
+
   public static models.Message toModel(Message in) {
     return toModel(in, LocaleMapper.toModel(in), KeyMapper.toModel(in));
   }
@@ -23,7 +35,7 @@ public class MessageMapper {
     return out;
   }
 
-  public static Message toDto(models.Message in) {
+  public Message toDto(models.Message in, Http.Request request) {
     Message out = new Message();
 
     out.id = in.id;
@@ -35,7 +47,7 @@ public class MessageMapper {
     if (in.locale != null) {
       out.localeId = in.locale.id;
       out.localeName = in.locale.name;
-      out.localeDisplayName = FormatUtils.formatDisplayName(in.locale);
+      out.localeDisplayName = formatUtils.formatDisplayName(in.locale, request);
       out.localePathName = in.locale.getPathName();
     }
 

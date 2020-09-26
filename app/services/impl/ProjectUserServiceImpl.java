@@ -4,6 +4,7 @@ import io.ebean.PagedList;
 import criterias.ProjectUserCriteria;
 import models.ActionType;
 import models.ProjectUser;
+import play.mvc.Http;
 import repositories.ProjectUserRepository;
 import services.*;
 
@@ -41,22 +42,22 @@ public class ProjectUserServiceImpl extends
   }
 
   @Override
-  protected PagedList<ProjectUser> postFind(PagedList<ProjectUser> pagedList) {
+  protected PagedList<ProjectUser> postFind(PagedList<ProjectUser> pagedList, Http.Request request) {
     metricService.logEvent(ProjectUser.class, ActionType.Read);
 
-    return super.postFind(pagedList);
+    return super.postFind(pagedList, request);
   }
 
   @Override
-  protected ProjectUser postGet(ProjectUser projectUser) {
+  protected ProjectUser postGet(ProjectUser projectUser, Http.Request request) {
     metricService.logEvent(ProjectUser.class, ActionType.Read);
 
-    return super.postGet(projectUser);
+    return super.postGet(projectUser, request);
   }
 
   @Override
-  protected void postCreate(ProjectUser t) {
-    super.postCreate(t);
+  protected void postCreate(ProjectUser t, Http.Request request) {
+    super.postCreate(t, request);
 
     metricService.logEvent(ProjectUser.class, ActionType.Create);
 
@@ -64,8 +65,8 @@ public class ProjectUserServiceImpl extends
   }
 
   @Override
-  protected ProjectUser postUpdate(ProjectUser t) {
-    super.postUpdate(t);
+  protected ProjectUser postUpdate(ProjectUser t, Http.Request request) {
+    super.postUpdate(t, request);
 
     metricService.logEvent(ProjectUser.class, ActionType.Update);
 
@@ -79,8 +80,8 @@ public class ProjectUserServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected void postDelete(ProjectUser t) {
-    super.postDelete(t);
+  protected void postDelete(ProjectUser t, Http.Request request) {
+    super.postDelete(t, request);
 
     metricService.logEvent(ProjectUser.class, ActionType.Delete);
 

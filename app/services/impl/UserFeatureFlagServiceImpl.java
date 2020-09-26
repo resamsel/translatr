@@ -6,6 +6,7 @@ import models.ActionType;
 import models.User;
 import models.UserFeatureFlag;
 import models.UserRole;
+import play.mvc.Http;
 import repositories.UserFeatureFlagRepository;
 import services.*;
 
@@ -31,7 +32,7 @@ public class UserFeatureFlagServiceImpl extends
 
   @Override
   public PagedList<UserFeatureFlag> findBy(UserFeatureFlagCriteria criteria) {
-    User loggedInUser = authProvider.loggedInUser();
+    User loggedInUser = authProvider.loggedInUser(criteria.getRequest());
     if (loggedInUser != null && loggedInUser.role != UserRole.Admin) {
       criteria.setUserId(loggedInUser.id);
     }
@@ -40,29 +41,29 @@ public class UserFeatureFlagServiceImpl extends
   }
 
   @Override
-  protected PagedList<UserFeatureFlag> postFind(PagedList<UserFeatureFlag> pagedList) {
+  protected PagedList<UserFeatureFlag> postFind(PagedList<UserFeatureFlag> pagedList, Http.Request request) {
     metricService.logEvent(UserFeatureFlag.class, ActionType.Read);
 
-    return super.postFind(pagedList);
+    return super.postFind(pagedList, request);
   }
 
   @Override
-  protected UserFeatureFlag postGet(UserFeatureFlag userFeatureFlag) {
+  protected UserFeatureFlag postGet(UserFeatureFlag userFeatureFlag, Http.Request request) {
     metricService.logEvent(UserFeatureFlag.class, ActionType.Read);
 
-    return super.postGet(userFeatureFlag);
+    return super.postGet(userFeatureFlag, request);
   }
 
   @Override
-  protected void postCreate(UserFeatureFlag t) {
-    super.postCreate(t);
+  protected void postCreate(UserFeatureFlag t, Http.Request request) {
+    super.postCreate(t, request);
 
     metricService.logEvent(UserFeatureFlag.class, ActionType.Create);
   }
 
   @Override
-  protected UserFeatureFlag postUpdate(UserFeatureFlag t) {
-    super.postUpdate(t);
+  protected UserFeatureFlag postUpdate(UserFeatureFlag t, Http.Request request) {
+    super.postUpdate(t, request);
 
     metricService.logEvent(UserFeatureFlag.class, ActionType.Update);
 
@@ -70,8 +71,8 @@ public class UserFeatureFlagServiceImpl extends
   }
 
   @Override
-  protected void postDelete(UserFeatureFlag t) {
-    super.postDelete(t);
+  protected void postDelete(UserFeatureFlag t, Http.Request request) {
+    super.postDelete(t, request);
 
     metricService.logEvent(UserFeatureFlag.class, ActionType.Delete);
   }

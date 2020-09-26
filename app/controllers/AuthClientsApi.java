@@ -1,9 +1,5 @@
 package controllers;
 
-import dto.AuthClient;
-import dto.errors.GenericError;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import mappers.AuthClientMapper;
 import play.inject.Injector;
 import play.mvc.Result;
@@ -25,9 +21,9 @@ public class AuthClientsApi extends AbstractBaseApi {
     this.authClientApiService = authClientApiService;
   }
 
-  @ApiResponses({
-      @ApiResponse(code = 200, message = FIND_RESPONSE, response = AuthClient[].class),
-      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
+//  @ApiResponses({
+//      @ApiResponse(code = 200, message = FIND_RESPONSE, response = AuthClient[].class),
+//      @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = GenericError.class)})
   public CompletionStage<Result> find() {
     return toJsonList(() -> authClientApiService
         .getClients()

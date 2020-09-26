@@ -29,8 +29,8 @@ public class KeyApiServiceImpl extends
 
   @Inject
   protected KeyApiServiceImpl(KeyService localeService, ProjectService projectService,
-                              PermissionService permissionService, Validator validator) {
-    super(localeService, dto.Key.class, KeyMapper::toDto,
+                              PermissionService permissionService, Validator validator, KeyMapper keyMapper) {
+    super(localeService, dto.Key.class, keyMapper::toDto,
         new Scope[]{Scope.ProjectRead, Scope.KeyRead},
         new Scope[]{Scope.ProjectRead, Scope.KeyWrite},
         permissionService,
@@ -45,12 +45,12 @@ public class KeyApiServiceImpl extends
         .checkPermissionAll(request, "Access token not allowed", Scope.ProjectRead, Scope.KeyRead,
             Scope.MessageRead);
 
-    Key key = service.byOwnerAndProjectAndName(username, projectName, keyName, fetches);
+    Key key = service.byOwnerAndProjectAndName(username, projectName, keyName, request, fetches);
     if (key == null) {
       throw new NotFoundException(dto.Key.class.getSimpleName(), keyName);
     }
 
-    return dtoMapper.apply(key);
+    return dtoMapper.apply(key, request);
   }
 
   /**
@@ -58,6 +58,6 @@ public class KeyApiServiceImpl extends
    */
   @Override
   protected Key toModel(dto.Key in) {
-    return KeyMapper.toModel(in, projectService.byId(in.projectId));
+    return KeyMapper.toModel(in, projectService.byId(in.projectId, null /* FIXME */));
   }
 }

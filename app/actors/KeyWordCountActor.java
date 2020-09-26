@@ -1,7 +1,7 @@
 package actors;
 
 import actors.WordCountProtocol.ChangeWordCount;
-import akka.actor.UntypedActor;
+import akka.actor.AbstractActor;
 import services.KeyService;
 
 import javax.inject.Inject;
@@ -12,7 +12,7 @@ import javax.inject.Singleton;
  * @version 6 Jun 2017
  */
 @Singleton
-public class KeyWordCountActor extends UntypedActor {
+public class KeyWordCountActor extends AbstractActor {
   public static final String NAME = "key-word-count-actor";
 
   private final KeyService keyService;
@@ -22,14 +22,11 @@ public class KeyWordCountActor extends UntypedActor {
     this.keyService = keyService;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  public void onReceive(Object msg) throws Throwable {
-    if (msg instanceof ChangeWordCount) {
-      ChangeWordCount wordCount = (ChangeWordCount) msg;
-      keyService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff);
-    }
+  public Receive createReceive() {
+    return receiveBuilder()
+            .match(ChangeWordCount.class,
+                    wordCount -> keyService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff, null /* FIXME */))
+            .build();
   }
 }

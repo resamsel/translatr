@@ -5,7 +5,7 @@ import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
 import criterias.ContextCriteria;
 import criterias.DefaultContextCriteria;
-import criterias.DefaultGetCriteria;
+import criterias.GetCriteria;
 import criterias.PagedListFactory;
 import criterias.ProjectCriteria;
 import dto.NotFoundException;
@@ -23,13 +23,13 @@ import models.Stat;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import repositories.KeyRepository;
 import repositories.LocaleRepository;
 import repositories.Persistence;
 import repositories.ProjectRepository;
 import services.AuthProvider;
 import services.PermissionService;
-import utils.QueryUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -59,6 +59,7 @@ public class ProjectRepositoryImpl extends
   private final LocaleRepository localeRepository;
   private final KeyRepository keyRepository;
   private final PermissionService permissionService;
+  private final ProjectMapper projectMapper;
 
   @Inject
   public ProjectRepositoryImpl(Persistence persistence,
@@ -67,12 +68,14 @@ public class ProjectRepositoryImpl extends
                                ActivityActorRef activityActor,
                                LocaleRepository localeRepository,
                                KeyRepository keyRepository,
-                               PermissionService permissionService) {
+                               PermissionService permissionService,
+                               ProjectMapper projectMapper) {
     super(persistence, validator, authProvider, activityActor);
 
     this.localeRepository = localeRepository;
     this.keyRepository = keyRepository;
     this.permissionService = permissionService;
+    this.projectMapper = projectMapper;
   }
 
   @Override
@@ -188,13 +191,13 @@ public class ProjectRepositoryImpl extends
       return null;
     }
 
-    return byId(new DefaultGetCriteria<>(id).withFetches(fetches).withLoggedInUserId(authProvider.loggedInUserId()));
+    return byId(GetCriteria.from(id, null /* FIXME */, fetches).withLoggedInUserId(authProvider.loggedInUserId(null) /* FIXME: will fail! */));
   }
 
   @Override
   public Project byOwnerAndName(String username, String name, String... fetches) {
     ContextCriteria criteria = new DefaultContextCriteria()
-            .withLoggedInUserId(authProvider.loggedInUserId())
+            .withLoggedInUserId(authProvider.loggedInUserId(null) /* FIXME: will fail! */)
             .withFetches(fetches);
 
     return fetch(
@@ -214,7 +217,7 @@ public class ProjectRepositoryImpl extends
   protected void preSave(Project t, boolean update) {
     persistence.markAsDirty(t);
     if (t.owner == null || t.owner.id == null) {
-      t.owner = authProvider.loggedInUser();
+      t.owner = authProvider.loggedInUser(null) /* FIXME: will fail! */;
     }
     if (t.members == null) {
       t.members = new ArrayList<>();
@@ -228,7 +231,7 @@ public class ProjectRepositoryImpl extends
   protected void prePersist(Project t, boolean update) {
     if (update) {
       activityActor.tell(
-              new Activity<>(ActionType.Update, authProvider.loggedInUser(), t, dto.Project.class, toDto(byId(t.id)), toDto(t)),
+              new Activity<>(ActionType.Update, authProvider.loggedInUser(null) /* FIXME: will fail! */, t, dto.Project.class, toDto(byId(t.id), null), toDto(t, null)),
               null
       );
     }
@@ -245,7 +248,7 @@ public class ProjectRepositoryImpl extends
 
     if (!update) {
       activityActor.tell(
-              new Activity<>(ActionType.Create, authProvider.loggedInUser(), t, dto.Project.class, null, toDto(t)),
+              new Activity<>(ActionType.Create, authProvider.loggedInUser(null) /* FIXME: will fail! */, t, dto.Project.class, null, toDto(t, null)),
               null
       );
     }
@@ -260,7 +263,7 @@ public class ProjectRepositoryImpl extends
       throw new NotFoundException(dto.Project.class.getSimpleName(), t != null ? t.id : null);
     }
     if (!permissionService
-            .hasPermissionAny(t.id, authProvider.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager)) {
+            .hasPermissionAny(t.id, authProvider.loggedInUser(null) /* FIXME: will fail! */, ProjectRole.Owner, ProjectRole.Manager)) {
       throw new PermissionException("User not allowed in project");
     }
 
@@ -268,7 +271,7 @@ public class ProjectRepositoryImpl extends
     keyRepository.delete(t.keys);
 
     activityActor.tell(
-            new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t, dto.Project.class, toDto(t), null),
+            new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, t, dto.Project.class, toDto(t, null), null),
             null
     );
 
@@ -280,7 +283,7 @@ public class ProjectRepositoryImpl extends
    */
   @Override
   public void delete(Collection<Project> t) {
-    User loggedInUser = authProvider.loggedInUser();
+    User loggedInUser = authProvider.loggedInUser(null) /* FIXME: will fail! */;
     for (Project p : t) {
       if (p == null || p.deleted) {
         throw new NotFoundException(dto.Project.class.getSimpleName(), p != null ? p.id : null);
@@ -299,7 +302,7 @@ public class ProjectRepositoryImpl extends
 
     activityActor.tell(
             new Activities<>(t.stream()
-                    .map(p -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), p, dto.Project.class, toDto(p), null))
+                    .map(p -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, p, dto.Project.class, toDto(p, null), null))
                     .collect(toList())),
             null
     );
@@ -311,15 +314,11 @@ public class ProjectRepositoryImpl extends
 
   @Override
   protected Query<Project> createQuery(ContextCriteria criteria) {
-    return QueryUtils.fetch(
-            persistence.find(Project.class).setDisableLazyLoading(true),
-            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
-            FETCH_MAP
-    );
+    return createQuery(Project.class, PROPERTIES_TO_FETCH, FETCH_MAP, criteria.getFetches());
   }
 
-  private dto.Project toDto(Project t) {
-    dto.Project out = ProjectMapper.toDto(t);
+  private dto.Project toDto(Project t, Http.Request request) {
+    dto.Project out = projectMapper.toDto(t, request);
 
     out.keys = Collections.emptyList();
     out.locales = Collections.emptyList();

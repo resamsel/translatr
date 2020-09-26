@@ -29,8 +29,9 @@ public class MessageApiServiceImpl extends
 
   @Inject
   protected MessageApiServiceImpl(MessageService messageService, LocaleService localeService,
-                                  KeyService keyService, PermissionService permissionService, Validator validator) {
-    super(messageService, dto.Message.class, MessageMapper::toDto,
+                                  KeyService keyService, PermissionService permissionService, Validator validator,
+                                  MessageMapper messageMapper) {
+    super(messageService, dto.Message.class, messageMapper::toDto,
         new Scope[]{Scope.ProjectRead, Scope.MessageRead},
         new Scope[]{Scope.ProjectRead, Scope.MessageWrite},
         permissionService,
@@ -45,6 +46,6 @@ public class MessageApiServiceImpl extends
    */
   @Override
   protected Message toModel(dto.Message in) {
-    return MessageMapper.toModel(in, localeService.byId(in.localeId), keyService.byId(in.keyId));
+    return MessageMapper.toModel(in, localeService.byId(in.localeId, null /* FIXME */), keyService.byId(in.keyId, null /* FIXME */));
   }
 }

@@ -1,20 +1,16 @@
 package validators;
 
-import io.ebean.PagedList;
 import criterias.ProjectUserCriteria;
+import io.ebean.PagedList;
 import models.ProjectRole;
 import models.ProjectUser;
-import play.i18n.Lang;
-import play.i18n.MessagesApi;
 import play.inject.Injector;
-import play.mvc.Http;
 import repositories.ProjectUserRepository;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -29,8 +25,6 @@ public class ProjectUserOwnerExistsValidator implements ConstraintValidator<Proj
   private final Injector injector;
 
   private ProjectUserOwnerExists constraintAnnotation;
-  private MessagesApi messagesApi;
-  private Lang lang;
 
   @Inject
   public ProjectUserOwnerExistsValidator(ProjectUserRepository projectUserRepository, Injector injector) {
@@ -41,12 +35,6 @@ public class ProjectUserOwnerExistsValidator implements ConstraintValidator<Proj
   @Override
   public void initialize(ProjectUserOwnerExists constraintAnnotation) {
     this.constraintAnnotation = constraintAnnotation;
-    this.messagesApi = injector.instanceOf(MessagesApi.class);
-    if (Http.Context.current.get() != null) {
-      this.lang = Http.Context.current().lang();
-    } else {
-      this.lang = new Lang(Locale.ENGLISH);
-    }
   }
 
   @Override
@@ -69,7 +57,7 @@ public class ProjectUserOwnerExistsValidator implements ConstraintValidator<Proj
         .stream()
         .noneMatch(member -> !Objects.equals(member.id, value.id) && member.role == ProjectRole.Owner)) {
       context.disableDefaultConstraintViolation();
-      context.buildConstraintViolationWithTemplate(messagesApi.get(lang, constraintAnnotation.message()))
+      context.buildConstraintViolationWithTemplate(constraintAnnotation.message())
           .addPropertyNode("role")
           .addConstraintViolation();
       return false;

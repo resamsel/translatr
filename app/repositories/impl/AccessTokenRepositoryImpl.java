@@ -3,6 +3,7 @@ package repositories.impl;
 import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activity;
 import criterias.AccessTokenCriteria;
+import criterias.ContextCriteria;
 import criterias.PagedListFactory;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
@@ -16,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import repositories.AccessTokenRepository;
 import repositories.Persistence;
 import services.AuthProvider;
-import utils.QueryUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -80,8 +80,12 @@ public class AccessTokenRepositoryImpl extends
   }
 
   private Query<AccessToken> fetch(String... fetches) {
-    return QueryUtils.fetch(persistence.find(AccessToken.class).setDisableLazyLoading(true),
-            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
+    return createQuery(AccessToken.class, PROPERTIES_TO_FETCH, FETCH_MAP, fetches);
+  }
+
+  @Override
+  protected Query<AccessToken> createQuery(ContextCriteria criteria) {
+    return createQuery(AccessToken.class, PROPERTIES_TO_FETCH, FETCH_MAP, criteria.getFetches());
   }
 
   /**
@@ -89,7 +93,7 @@ public class AccessTokenRepositoryImpl extends
    */
   @Override
   protected void preSave(AccessToken t, boolean update) {
-    User loggedInUser = authProvider.loggedInUser();
+    User loggedInUser = authProvider.loggedInUser(null) /* FIXME: will fail! */;
     if (t.user == null || t.user.id == null
             || (loggedInUser != null && t.user.id != loggedInUser.id && loggedInUser.role != UserRole.Admin)) {
       // only allow admins to create access tokens for other users
@@ -106,7 +110,7 @@ public class AccessTokenRepositoryImpl extends
       activityActor.tell(
               new Activity<>(
                       ActionType.Update,
-                      authProvider.loggedInUser(),
+                      authProvider.loggedInUser(null) /* FIXME: will fail! */,
                       null,
                       dto.AccessToken.class,
                       AccessTokenMapper.toDto(byId(t.id)),
@@ -126,7 +130,7 @@ public class AccessTokenRepositoryImpl extends
       activityActor.tell(
               new Activity<>(
                       ActionType.Create,
-                      authProvider.loggedInUser(),
+                      authProvider.loggedInUser(null) /* FIXME: will fail! */,
                       null,
                       dto.AccessToken.class,
                       null,

@@ -23,8 +23,8 @@ import models.Suggestable.Data;
 import models.User;
 import models.UserRole;
 import play.i18n.Messages;
+import play.i18n.MessagesApi;
 import play.mvc.Http;
-import play.mvc.Http.Context;
 import services.AuthProvider;
 import services.KeyService;
 import services.LocaleService;
@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static utils.FunctionalUtils.peek;
 
@@ -59,13 +60,15 @@ public class ProjectApiServiceImpl extends
   private final KeyService keyService;
   private final LogEntryService logEntryService;
   private final AuthProvider authProvider;
+  private final MessagesApi messagesApi;
 
   @Inject
   protected ProjectApiServiceImpl(
           Config configuration, ProjectService projectService,
           LocaleService localeService, KeyService keyService, LogEntryService logEntryService,
-          PermissionService permissionService, AuthProvider authProvider, Validator validator) {
-    super(projectService, dto.Project.class, ProjectMapper::toDto,
+          PermissionService permissionService, AuthProvider authProvider, Validator validator,
+          MessagesApi messagesApi, ProjectMapper projectMapper) {
+    super(projectService, dto.Project.class, projectMapper::toDto,
             new Scope[]{Scope.ProjectRead},
             new Scope[]{Scope.ProjectWrite},
             permissionService,
@@ -76,6 +79,7 @@ public class ProjectApiServiceImpl extends
     this.keyService = keyService;
     this.logEntryService = logEntryService;
     this.authProvider = authProvider;
+    this.messagesApi = messagesApi;
   }
 
   @Override
@@ -93,11 +97,11 @@ public class ProjectApiServiceImpl extends
     permissionService
             .checkPermissionAll(request, "Access token not allowed", readScopes);
 
-    Project project = service.byOwnerAndName(username, name, fetches);
+    Project project = service.byOwnerAndName(username, name, request, fetches);
 
     return Optional.ofNullable(project)
             .map(peek(validator))
-            .map(dtoMapper)
+            .map(getDtoMapper(request))
             .orElseThrow(() -> new NotFoundException(dto.Project.class.getSimpleName(), username + "/" + name));
   }
 
@@ -118,7 +122,7 @@ public class ProjectApiServiceImpl extends
   public SearchResponse search(Http.Request request, UUID projectId, SearchForm search) {
     permissionService.checkPermissionAll(request, "Access token not allowed", readScopes);
 
-    Messages messages = Context.current().messages();
+    Messages messages = messagesApi.preferred(request);
 
     dto.Project project = get(request, projectId);
 
@@ -127,13 +131,20 @@ public class ProjectApiServiceImpl extends
     List<Suggestable> suggestions = new ArrayList<>();
 
     if (permissionService.hasPermissionAll(request, Scope.KeyRead)) {
-      PagedList<? extends Suggestable> keys = keyService
+      PagedList<Key> keys = keyService
               .findBy(KeyCriteria.from(search).withProjectId(project.id).withOrder("whenUpdated desc"));
 
       search.pager(keys);
 
       if (!keys.getList().isEmpty()) {
-        suggestions.addAll(keys.getList());
+        suggestions.addAll(keys
+                .getList()
+                .stream()
+                .map(key -> Suggestable.DefaultSuggestable.from(
+                        messages.at("key.autocomplete", key.name),
+                        Data.from(Key.class, key.id, key.name, null)
+                ))
+                .collect(Collectors.toList()));
       }
       if (search.hasMore) {
         suggestions.add(Suggestable.DefaultSuggestable.from(
@@ -150,12 +161,18 @@ public class ProjectApiServiceImpl extends
     }
 
     if (permissionService.hasPermissionAll(request, Scope.LocaleRead)) {
-      PagedList<? extends Suggestable> locales = localeService.findBy(new LocaleCriteria()
+      PagedList<Locale> locales = localeService.findBy(new LocaleCriteria()
               .withProjectId(project.id).withSearch(search.search).withOrder("whenUpdated desc"));
 
       search.pager(locales);
       if (!locales.getList().isEmpty()) {
-        suggestions.addAll(locales.getList());
+        suggestions.addAll(locales.getList()
+                .stream()
+                .map(locale -> Suggestable.DefaultSuggestable.from(
+                        messages.at("locale.autocomplete", locale.name),
+                        Data.from(Locale.class, locale.id, locale.name, null)
+                ))
+                .collect(Collectors.toList()));
       }
       if (search.hasMore) {
         suggestions.add(Suggestable.DefaultSuggestable.from(

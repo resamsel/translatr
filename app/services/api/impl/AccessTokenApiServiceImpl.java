@@ -20,7 +20,7 @@ public class AccessTokenApiServiceImpl
     super(
         service,
         dto.AccessToken.class,
-        AccessTokenMapper::toDto,
+        (in, request) -> AccessTokenMapper.toDto(in),
         new Scope[]{Scope.AccessTokenRead},
         new Scope[]{Scope.AccessTokenWrite},
         permissionService,

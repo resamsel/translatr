@@ -23,7 +23,7 @@ public class ProjectUserApiServiceImpl extends
 
   @Inject
   protected ProjectUserApiServiceImpl(ProjectUserService projectUserService, PermissionService permissionService, Validator validator) {
-    super(projectUserService, dto.ProjectUser.class, ProjectUserMapper::toDto,
+    super(projectUserService, dto.ProjectUser.class, (in, request) -> ProjectUserMapper.toDto(in),
         new Scope[]{Scope.ProjectRead, Scope.MemberRead},
         new Scope[]{Scope.ProjectRead, Scope.MemberWrite},
         permissionService,

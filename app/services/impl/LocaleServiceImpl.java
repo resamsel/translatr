@@ -1,5 +1,6 @@
 package services.impl;
 
+import criterias.GetCriteria;
 import io.ebean.PagedList;
 import criterias.LocaleCriteria;
 import models.ActionType;
@@ -7,6 +8,7 @@ import models.Locale;
 import models.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import repositories.LocaleRepository;
 import repositories.Persistence;
 import services.*;
@@ -15,7 +17,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static utils.Stopwatch.log;
@@ -46,50 +47,34 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   }
 
   @Override
-  public List<Locale> latest(Project project, int limit) {
-    return postFind(cache.getOrElseUpdate(
-            String.format("project:id:%s:latest:locales:%d", project.id, limit),
-            () -> localeRepository.latest(project, limit),
-            60));
-  }
-
-  @Override
-  public Locale byProjectAndName(Project project, String name) {
+  public Locale byProjectAndName(Project project, String name, Http.Request request) {
     return postGet(cache.getOrElseUpdate(
             String.format("project:id:%s:locale:%s", project.id, name),
             () -> localeRepository.byProjectAndName(project, name),
-            60));
+            60), request);
   }
 
   @Override
-  public Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
+  public Locale byOwnerAndProjectAndName(String username, String projectName, String localeName, Http.Request request,
                                          String... fetches) {
     return postGet(cache.getOrElseUpdate(
             String.format("locale:owner:%s:projectName:%s:name:%s", username, projectName, localeName),
             () -> localeRepository.byOwnerAndProjectAndName(username, projectName, localeName, fetches),
             60
-    ));
+    ), request);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Map<UUID, Double> progress(UUID projectId) {
-    return localeRepository.progress(projectId);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void increaseWordCountBy(UUID localeId, int wordCountDiff) {
+  public void increaseWordCountBy(UUID localeId, int wordCountDiff, Http.Request request) {
     if (wordCountDiff == 0) {
       LOGGER.debug("Not changing word count");
       return;
     }
 
-    Locale locale = modelRepository.byId(localeId);
+    Locale locale = modelRepository.byId(GetCriteria.from(localeId, request));
 
     if (locale == null) {
       return;
@@ -117,10 +102,10 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   }
 
   @Override
-  protected PagedList<Locale> postFind(PagedList<Locale> pagedList) {
+  protected PagedList<Locale> postFind(PagedList<Locale> pagedList, Http.Request request) {
     metricService.logEvent(Locale.class, ActionType.Read);
 
-    return super.postFind(pagedList);
+    return super.postFind(pagedList, request);
   }
 
   protected List<Locale> postFind(List<Locale> list) {
@@ -130,15 +115,15 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   }
 
   @Override
-  protected Locale postGet(Locale locale) {
+  protected Locale postGet(Locale locale, Http.Request request) {
     metricService.logEvent(Locale.class, ActionType.Read);
 
-    return super.postGet(locale);
+    return super.postGet(locale, request);
   }
 
   @Override
-  protected void postCreate(Locale t) {
-    super.postCreate(t);
+  protected void postCreate(Locale t, Http.Request request) {
+    super.postCreate(t, request);
 
     metricService.logEvent(Locale.class, ActionType.Create);
 
@@ -153,8 +138,8 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
   }
 
   @Override
-  protected Locale postUpdate(Locale t) {
-    super.postUpdate(t);
+  protected Locale postUpdate(Locale t, Http.Request request) {
+    super.postUpdate(t, request);
 
     metricService.logEvent(Locale.class, ActionType.Update);
 
@@ -168,8 +153,8 @@ public class LocaleServiceImpl extends AbstractModelService<Locale, UUID, Locale
    * {@inheritDoc}
    */
   @Override
-  protected void postDelete(Locale t) {
-    super.postDelete(t);
+  protected void postDelete(Locale t, Http.Request request) {
+    super.postDelete(t, request);
 
     metricService.logEvent(Locale.class, ActionType.Delete);
 

@@ -1,5 +1,6 @@
 package services.impl;
 
+import criterias.GetCriteria;
 import io.ebean.PagedList;
 import criterias.ProjectCriteria;
 import models.ActionType;
@@ -10,6 +11,7 @@ import models.ProjectUser;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import repositories.MessageRepository;
 import repositories.ProjectRepository;
 import services.AuthProvider;
@@ -26,6 +28,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -71,13 +74,13 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    * {@inheritDoc}
    */
   @Override
-  public Project byOwnerAndName(String username, String name, String... fetches) {
+  public Project byOwnerAndName(String username, String name, Http.Request request, String... fetches) {
     return log(
             () -> postGet(cache.getOrElseUpdate(
                     Project.getCacheKey(username, name, fetches),
                     () -> projectRepository.byOwnerAndName(username, name, fetches),
                     10 * 30
-            )),
+            ), request),
             LOGGER,
             "byOwnerAndName"
     );
@@ -87,13 +90,13 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
    * {@inheritDoc}
    */
   @Override
-  public void increaseWordCountBy(UUID projectId, int wordCountDiff) {
+  public void increaseWordCountBy(UUID projectId, int wordCountDiff, Http.Request request) {
     if (wordCountDiff == 0) {
       LOGGER.debug("Not changing word count");
       return;
     }
 
-    Project project = byId(projectId);
+    Project project = byId(GetCriteria.from(projectId, request));
     if (project == null) {
       return;
     }
@@ -110,31 +113,31 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
         wordCountDiff
     );
 
-    postUpdate(project);
+    postUpdate(project, request);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void resetWordCount(UUID projectId) {
-    Project project = byId(projectId, ProjectRepository.FETCH_LOCALES);
+  public void resetWordCount(UUID projectId, Http.Request request) {
+    Project project = byId(projectId, request, ProjectRepository.FETCH_LOCALES);
     List<UUID> localeIds = project.locales.stream().map(Locale::getId).collect(toList());
 
     project.wordCount = null;
 
     modelRepository.save(project);
 
-    postUpdate(project);
+    postUpdate(project, request);
 
     localeService.resetWordCount(projectId);
     keyService.resetWordCount(projectId);
     messageService.resetWordCount(projectId);
-    messageService.save(messageRepository.byLocales(localeIds));
+    messageService.save(messageRepository.byLocales(localeIds), request);
   }
 
   @Override
-  public void changeOwner(Project project, User owner) {
+  public void changeOwner(Project project, User owner, Http.Request request) {
     LOGGER.debug("changeOwner(project={}, owner={})", project, owner);
 
     requireNonNull(project, "project");
@@ -160,30 +163,39 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
       project.members.add(newOwnerRole);
     }
 
-    update(project.withOwner(owner));
-    projectUserService.update(ownerRole);
-    projectUserService.update(newOwnerRole);
+    update(project.withOwner(owner), request);
+    projectUserService.update(ownerRole, request);
+    projectUserService.update(newOwnerRole, request);
   }
 
   @Override
-  protected PagedList<Project> postFind(PagedList<Project> pagedList) {
+  protected PagedList<Project> postFind(PagedList<Project> pagedList, Http.Request request) {
     metricService.logEvent(Project.class, ActionType.Read);
 
-    return super.postFind(pagedList);
+    return super.postFind(pagedList, request);
   }
 
   @Override
-  protected Project postGet(Project project) {
+  protected Project postGet(Project project, Http.Request request) {
     metricService.logEvent(Project.class, ActionType.Read);
 
-    return super.postGet(project);
+    return super.postGet(project, request);
   }
 
   @Override
-  protected void postCreate(Project t) {
-    super.postCreate(t);
+  protected void preCreate(Project t, Http.Request request) {
+    if (t.owner == null || t.owner.id == null) {
+      t.owner = authProvider.loggedInUser(request);
+    }
 
-    projectUserService.create(new ProjectUser().withProject(t).withUser(t.owner).withRole(ProjectRole.Owner));
+    super.preCreate(t, request);
+  }
+
+  @Override
+  protected void postCreate(Project t, Http.Request request) {
+    super.postCreate(t, request);
+
+    projectUserService.create(new ProjectUser().withProject(t).withUser(t.owner).withRole(ProjectRole.Owner), request);
 
     metricService.logEvent(Project.class, ActionType.Create);
 
@@ -192,17 +204,17 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
   }
 
   @Override
-  protected Project postUpdate(Project t) {
+  protected Project postUpdate(Project t, Http.Request request) {
     metricService.logEvent(Project.class, ActionType.Update);
 
     // When project has been updated, the project cache needs to be invalidated
     cache.removeByPrefix("project:criteria:");
 
-    Project cached = cache.get(Project.getCacheKey(t.id));
-    if (cached != null) {
+    Optional<Project> cached = cache.get(Project.getCacheKey(t.id));
+    if (cached.isPresent()) {
       cache.removeByPrefix(Project.getCacheKey(
-              requireNonNull(cached.owner, "owner (cached)").username,
-              cached.name
+              requireNonNull(cached.get().owner, "owner (cached)").username,
+              cached.get().name
       ));
     } else {
       cache.removeByPrefix(Project.getCacheKey(
@@ -211,15 +223,15 @@ public class ProjectServiceImpl extends AbstractModelService<Project, UUID, Proj
       ));
     }
 
-    return super.postUpdate(t);
+    return super.postUpdate(t, request);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected void postDelete(Project t) {
-    super.postDelete(t);
+  protected void postDelete(Project t, Http.Request request) {
+    super.postDelete(t, request);
 
     metricService.logEvent(Project.class, ActionType.Delete);
 

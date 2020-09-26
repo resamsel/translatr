@@ -1,17 +1,15 @@
 package validators;
 
-import io.ebean.PagedList;
 import criterias.ProjectUserCriteria;
+import io.ebean.PagedList;
 import models.ProjectRole;
 import models.ProjectUser;
 import models.User;
 import play.i18n.Lang;
 import play.i18n.MessagesApi;
 import play.inject.Injector;
-import play.mvc.Http;
 import repositories.ProjectUserRepository;
 import services.AuthProvider;
-import services.ContextProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -33,30 +31,27 @@ public class ProjectUserModifyAllowedValidator implements ConstraintValidator<Pr
   private final ProjectUserRepository projectUserRepository;
   private final Injector injector;
   private final AuthProvider authProvider;
-  private final ContextProvider contextProvider;
 
   private MessagesApi messagesApi;
   private Lang lang;
 
   @Inject
   public ProjectUserModifyAllowedValidator(
-      ProjectUserRepository projectUserRepository, Injector injector, AuthProvider authProvider,
-      ContextProvider contextProvider) {
+      ProjectUserRepository projectUserRepository, Injector injector, AuthProvider authProvider) {
     this.projectUserRepository = projectUserRepository;
     this.injector = injector;
     this.authProvider = authProvider;
-    this.contextProvider = contextProvider;
   }
 
   @Override
   public void initialize(ProjectUserModifyAllowed constraintAnnotation) {
     this.messagesApi = injector.instanceOf(MessagesApi.class);
-    Http.Context ctx = contextProvider.getOrNull();
-    if (ctx != null) {
-      this.lang = ctx.lang();
-    } else {
+//    Http.Context ctx = contextProvider.getOrNull();
+//    if (ctx != null) {
+//      this.lang = ctx.lang();
+//    } else {
       this.lang = new Lang(Locale.ENGLISH);
-    }
+//    }
   }
 
   @Override
@@ -67,7 +62,7 @@ public class ProjectUserModifyAllowedValidator implements ConstraintValidator<Pr
       return false;
     }
 
-    User loggedInUser = authProvider.loggedInUser();
+    User loggedInUser = authProvider.loggedInUser(null) /* FIXME: will fail! */;
     if (loggedInUser == null) {
       // Anonymous users are allowed to do nothing
       return false;

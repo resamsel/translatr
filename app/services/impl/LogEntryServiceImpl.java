@@ -10,6 +10,7 @@ import models.Aggregate;
 import models.LogEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import repositories.LogEntryRepository;
 import repositories.Persistence;
 import services.AuthProvider;
@@ -110,16 +111,16 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
   }
 
   @Override
-  protected void postCreate(LogEntry t) {
-    super.postCreate(t);
+  protected void postCreate(LogEntry t, Http.Request request) {
+    super.postCreate(t, request);
 
     // When user has been created
     cache.removeByPrefix("activity:criteria:");
   }
 
   @Override
-  protected LogEntry postUpdate(LogEntry t) {
-    super.postUpdate(t);
+  protected LogEntry postUpdate(LogEntry t, Http.Request request) {
+    super.postUpdate(t, request);
 
     // When user has been updated, the user cache needs to be invalidated
     cache.removeByPrefix("activity:criteria:");
@@ -131,8 +132,8 @@ public class LogEntryServiceImpl extends AbstractModelService<LogEntry, UUID, Lo
    * {@inheritDoc}
    */
   @Override
-  protected void postDelete(LogEntry t) {
-    super.postDelete(t);
+  protected void postDelete(LogEntry t, Http.Request request) {
+    super.postDelete(t, request);
 
     // When locale has been deleted, the locale cache needs to be invalidated
     cache.removeByPrefix("activity:criteria:");

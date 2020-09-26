@@ -5,63 +5,71 @@ name := """translatr"""
 version := "3.0.3"
 
 lazy val root = (project in file("."))
-	.configs(IntegrationTest)
-	.enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin)
-	.settings(
-		Defaults.itSettings,
-		buildInfoKeys := Seq[BuildInfoKey](name, version)
-	)
-
-scalaVersion := "2.12.11"
+  .configs(IntegrationTest)
+  .enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin)
+  .settings(
+    scalaVersion := "2.13.2",
+    Defaults.itSettings,
+    buildInfoKeys := Seq[BuildInfoKey](name, version)
+  )
 
 libraryDependencies ++= Seq(
-	javaJdbc,
+  javaJdbc,
 
-	guice,
+  guice,
 
-	"com.typesafe.play" %% "play-json" % "2.6.14",
-	"com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % "2.11.2",
+  "com.typesafe.play" %% "play-json" % "2.8.1",
+  // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-joda
+  "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % "2.10.5",
 
-	ehcache,
-//	"com.typesafe.play.modules" %% "play-modules-redis" % "2.6.0",
 
-	// Database
-	"org.postgresql" % "postgresql" % "42.1.3",
+  ehcache,
+  //	"com.typesafe.play.modules" %% "play-modules-redis" % "2.6.0",
 
-	// OAuth for Play
-	"org.pac4j" %% "play-pac4j" % "10.0.1",
-	"org.pac4j" % "pac4j-http" % "4.0.3",
-	"org.pac4j" % "pac4j-oauth" % "4.0.3",
-	"org.pac4j" % "pac4j-oidc" % "4.0.3" exclude("commons-io" , "commons-io"),
-	"org.pac4j" % "pac4j-sql" % "4.0.3",
-	"be.objectify" %% "deadbolt-java" % "2.7.1",
-	// https://mvnrepository.com/artifact/org.apache.shiro/shiro-core
-	"org.apache.shiro" % "shiro-core" % "1.5.3",
+  // Database
+  "org.postgresql" % "postgresql" % "42.1.3",
 
-	// Apache Commons IO
-	"commons-io" % "commons-io" % "2.7",
+  // OAuth for Play
+  "org.pac4j" %% "play-pac4j" % "10.0.1",
+  "org.pac4j" % "pac4j-http" % "4.0.3",
+  "org.pac4j" % "pac4j-oauth" % "4.0.3",
+  "org.pac4j" % "pac4j-oidc" % "4.0.3" exclude("commons-io", "commons-io"),
+  "org.pac4j" % "pac4j-sql" % "4.0.3",
+  "be.objectify" %% "deadbolt-java" % "2.8.1",
+  // https://mvnrepository.com/artifact/org.apache.shiro/shiro-core
+  "org.apache.shiro" % "shiro-core" % "1.5.3",
 
-	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-	"org.apache.httpcomponents" % "httpclient" % "4.5.3",
+  // Apache Commons IO
+  "commons-io" % "commons-io" % "2.7",
+  // https://mvnrepository.com/artifact/org.apache.commons/commons-text
+  "org.apache.commons" % "commons-text" % "1.9",
 
-	// https://mvnrepository.com/artifact/io.getstream.client/stream-repo-apache
-	"io.getstream.client" % "stream-repo-apache" % "1.3.0",
+  // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+  "org.apache.httpcomponents" % "httpclient" % "4.5.3",
 
-	// https://mvnrepository.com/artifact/org.jsoup/jsoup
-	"org.jsoup" % "jsoup" % "1.10.3",
+  // https://mvnrepository.com/artifact/io.getstream.client/stream-repo-apache
+  "io.getstream.client" % "stream-repo-apache" % "1.3.0",
 
-	"io.prometheus" % "simpleclient_common" % "0.8.1",
-	"io.prometheus" % "simpleclient_hotspot" % "0.8.1",
+  // https://mvnrepository.com/artifact/org.jsoup/jsoup
+  "org.jsoup" % "jsoup" % "1.10.3",
 
-	"org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
+  "io.prometheus" % "simpleclient_common" % "0.8.1",
+  "io.prometheus" % "simpleclient_hotspot" % "0.8.1",
 
-	// https://mvnrepository.com/artifact/io.swagger/swagger-play2
-	"io.swagger" %% "swagger-play2" % "1.7.1",
-//	"org.webjars" % "swagger-ui" % "2.2.10",
+  "org.ocpsoft.prettytime" % "prettytime" % "4.0.1.Final",
 
-	"com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "it",
-	"org.assertj" % "assertj-core" % "3.15.0" % "it,test",
-	"org.mockito" % "mockito-core" % "2.8.47" % "it,test"
+  // https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-annotations
+  "io.swagger.core.v3" % "swagger-annotations" % "2.1.4",
+
+  "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "it",
+  "org.assertj" % "assertj-core" % "3.15.0" % "it,test",
+  "org.mockito" % "mockito-core" % "2.8.47" % "it,test"
+)
+
+dependencyOverrides ++= Seq(
+  // INFO: Necessary because: Scala module 2.10.3 requires Jackson Databind version >= 2.10.0 and < 2.11.0
+  // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+  "com.fasterxml.jackson.core" % "jackson-databind" % "2.10.5",
 )
 
 // re-create maven directory structure
@@ -88,37 +96,37 @@ dockerExposedVolumes := Seq("/opt/docker/logs", "/opt/docker/data")
 // Concat
 //
 Concat.groups := Seq(
-	"styles.css" -> group(Seq(
-		"stylesheets/materialize.min.css",
-		"stylesheets/nprogress.css",
-		"stylesheets/font-awesome.min.css",
-		"stylesheets/d3.v3.css",
-		"stylesheets/codemirror.css",
-		"stylesheets/codemirror.translatr.css",
-		"stylesheets/main.css",
-		"stylesheets/editor.css",
-		"stylesheets/template.css",
-		"stylesheets/media.css"
-	)),
-	"scripts.js" -> group(Seq(
-		"javascripts/jquery.min.js",
-		"javascripts/jquery.ba-bbq.min.js",
-		"javascripts/materialize.min.js",
-		"javascripts/jquery.autocomplete.min.js",
-		"javascripts/d3.v3.min.js",
-		"javascripts/moment.min.js",
-		"javascripts/nprogress.js",
-		"javascripts/codemirror.js",
-		"javascripts/codemirror.xml.js",
-		"javascripts/underscore-min.js",
-		"javascripts/backbone-min.js",
-		"javascripts/backbone.undo.js",
-		"javascripts/backbone-pageable.min.js",
-		"javascripts/app.js",
-		"javascripts/main.js",
-		"javascripts/notification.js",
-		"javascripts/editor.js"
-	))
+  "styles.css" -> group(Seq(
+    "stylesheets/materialize.min.css",
+    "stylesheets/nprogress.css",
+    "stylesheets/font-awesome.min.css",
+    "stylesheets/d3.v3.css",
+    "stylesheets/codemirror.css",
+    "stylesheets/codemirror.translatr.css",
+    "stylesheets/main.css",
+    "stylesheets/editor.css",
+    "stylesheets/template.css",
+    "stylesheets/media.css"
+  )),
+  "scripts.js" -> group(Seq(
+    "javascripts/jquery.min.js",
+    "javascripts/jquery.ba-bbq.min.js",
+    "javascripts/materialize.min.js",
+    "javascripts/jquery.autocomplete.min.js",
+    "javascripts/d3.v3.min.js",
+    "javascripts/moment.min.js",
+    "javascripts/nprogress.js",
+    "javascripts/codemirror.js",
+    "javascripts/codemirror.xml.js",
+    "javascripts/underscore-min.js",
+    "javascripts/backbone-min.js",
+    "javascripts/backbone.undo.js",
+    "javascripts/backbone-pageable.min.js",
+    "javascripts/app.js",
+    "javascripts/main.js",
+    "javascripts/notification.js",
+    "javascripts/editor.js"
+  ))
 )
 
 // Put everything into the concat dir

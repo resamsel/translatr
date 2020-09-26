@@ -3,6 +3,7 @@ package services;
 import com.google.inject.ImplementedBy;
 import criterias.AccessTokenCriteria;
 import models.AccessToken;
+import play.mvc.Http;
 import services.impl.AccessTokenServiceImpl;
 
 /**
@@ -16,5 +17,5 @@ public interface AccessTokenService extends ModelService<AccessToken, Long, Acce
    * @param accessTokenKey
    * @return
    */
-  AccessToken byKey(String accessTokenKey);
+  AccessToken byKey(String accessTokenKey, Http.Request request);
 }

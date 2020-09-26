@@ -8,6 +8,7 @@ import models.User;
 import models.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import repositories.AccessTokenRepository;
 import services.*;
 
@@ -45,7 +46,7 @@ public class AccessTokenServiceImpl extends
 
   @Override
   public PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
-    User loggedInUser = authProvider.loggedInUser();
+    User loggedInUser = authProvider.loggedInUser(criteria.getRequest());
     if (loggedInUser != null && loggedInUser.role != UserRole.Admin) {
       criteria.setUserId(loggedInUser.id);
     }
@@ -54,36 +55,36 @@ public class AccessTokenServiceImpl extends
   }
 
   @Override
-  protected PagedList<AccessToken> postFind(PagedList<AccessToken> pagedList) {
+  protected PagedList<AccessToken> postFind(PagedList<AccessToken> pagedList, Http.Request request) {
     metricService.logEvent(AccessToken.class, ActionType.Read);
 
-    return super.postFind(pagedList);
+    return super.postFind(pagedList, request);
   }
 
   @Override
-  protected AccessToken postGet(AccessToken accessToken) {
+  protected AccessToken postGet(AccessToken accessToken, Http.Request request) {
     metricService.logEvent(AccessToken.class, ActionType.Read);
 
-    return super.postGet(accessToken);
+    return super.postGet(accessToken, request);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public AccessToken byKey(String accessTokenKey) {
+  public AccessToken byKey(String accessTokenKey, Http.Request request) {
     metricService.logEvent(AccessToken.class, ActionType.Read);
 
     return log(
-            () -> postGet(accessTokenRepository.byKey(accessTokenKey)),
+            () -> postGet(accessTokenRepository.byKey(accessTokenKey), request),
             LOGGER,
             "byKey"
     );
   }
 
   @Override
-  protected void postCreate(AccessToken t) {
-    super.postCreate(t);
+  protected void postCreate(AccessToken t, Http.Request request) {
+    super.postCreate(t, request);
 
     metricService.logEvent(AccessToken.class, ActionType.Create);
 
@@ -92,8 +93,8 @@ public class AccessTokenServiceImpl extends
   }
 
   @Override
-  protected AccessToken postUpdate(AccessToken t) {
-    super.postUpdate(t);
+  protected AccessToken postUpdate(AccessToken t, Http.Request request) {
+    super.postUpdate(t, request);
 
     metricService.logEvent(AccessToken.class, ActionType.Update);
 
@@ -107,8 +108,8 @@ public class AccessTokenServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected void postDelete(AccessToken t) {
-    super.postDelete(t);
+  protected void postDelete(AccessToken t, Http.Request request) {
+    super.postDelete(t, request);
 
     metricService.logEvent(AccessToken.class, ActionType.Delete);
 

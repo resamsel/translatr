@@ -1,5 +1,6 @@
 package services.api.impl;
 
+import criterias.GetCriteria;
 import io.ebean.PagedList;
 import com.fasterxml.jackson.databind.JsonNode;
 import criterias.AbstractSearchCriteria;
@@ -18,6 +19,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,7 +35,7 @@ public abstract class AbstractApiService
 
   protected SERVICE service;
   private final Class<DTO> dtoClass;
-  Function<MODEL, DTO> dtoMapper;
+  BiFunction<MODEL, Http.Request, DTO> dtoMapper;
   Scope[] readScopes;
   private final Scope[] writeScopes;
   protected final PermissionService permissionService;
@@ -42,7 +44,7 @@ public abstract class AbstractApiService
   protected AbstractApiService(
       SERVICE service,
       Class<DTO> dtoClass,
-      Function<MODEL, DTO> dtoMapper,
+      BiFunction<MODEL, Http.Request, DTO> dtoMapper,
       Scope[] readScopes,
       Scope[] writeScopes,
       PermissionService permissionService,
@@ -63,7 +65,7 @@ public abstract class AbstractApiService
    * @return the DTO mapper
    */
   protected Function<MODEL, DTO> getDtoMapper(Http.Request request) {
-    return dtoMapper;
+    return model -> dtoMapper.apply(model, request);
   }
 
   /**
@@ -92,7 +94,7 @@ public abstract class AbstractApiService
   public DTO get(Http.Request request, ID id, String... propertiesToFetch) {
     permissionService.checkPermissionAll(request, "Access token not allowed", readScopes);
 
-    MODEL obj = service.byId(id, propertiesToFetch);
+    MODEL obj = service.byId(GetCriteria.from(id, request).withFetches(propertiesToFetch));
 
     if (obj == null) {
       throw new NotFoundException(dtoClass.getSimpleName(), id);
@@ -108,7 +110,7 @@ public abstract class AbstractApiService
   public DTO create(Http.Request request, JsonNode in) {
     permissionService.checkPermissionAll(request, "Access token not allowed", writeScopes);
 
-    return getDtoMapper(request).apply(service.create(toModel(toDto(in))));
+    return getDtoMapper(request).apply(service.create(toModel(toDto(in)), request));
   }
 
   /**
@@ -118,7 +120,7 @@ public abstract class AbstractApiService
   public DTO update(Http.Request request, JsonNode in) {
     permissionService.checkPermissionAll(request, "Access token not allowed", writeScopes);
 
-    return getDtoMapper(request).apply(service.update(toModel(toDto(in))));
+    return getDtoMapper(request).apply(service.update(toModel(toDto(in)), request));
   }
 
   /**
@@ -128,7 +130,7 @@ public abstract class AbstractApiService
   public DTO delete(Http.Request request, ID id) {
     permissionService.checkPermissionAll(request, "Access token not allowed", writeScopes);
 
-    MODEL m = service.byId(id);
+    MODEL m = service.byId(GetCriteria.from(id, request));
 
     if (m == null) {
       throw new NotFoundException(dtoClass.getSimpleName(), id);
@@ -136,7 +138,7 @@ public abstract class AbstractApiService
 
     DTO out = getDtoMapper(request).apply(m);
 
-    service.delete(m);
+    service.delete(m, request);
 
     return out;
   }

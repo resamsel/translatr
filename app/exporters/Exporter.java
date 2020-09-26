@@ -1,12 +1,12 @@
 package exporters;
 
 import models.Locale;
-import play.mvc.Http.Response;
+import play.mvc.Result;
 
 public interface Exporter {
 	byte[] apply(Locale locale);
 
-	Exporter addHeaders(Response response, Locale locale);
-	
+	Result addHeaders(Result result, Locale locale);
+
 	String getFilename(Locale locale);
 }

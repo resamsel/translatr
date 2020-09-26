@@ -1,7 +1,7 @@
 package actors;
 
 import actors.WordCountProtocol.ChangeWordCount;
-import akka.actor.UntypedActor;
+import akka.actor.AbstractActor;
 import services.ProjectService;
 
 import javax.inject.Inject;
@@ -12,7 +12,7 @@ import javax.inject.Singleton;
  * @version 6 Jun 2017
  */
 @Singleton
-public class ProjectWordCountActor extends UntypedActor {
+public class ProjectWordCountActor extends AbstractActor {
   public static final String NAME = "project-word-count-actor";
 
   private final ProjectService projectService;
@@ -22,14 +22,11 @@ public class ProjectWordCountActor extends UntypedActor {
     this.projectService = projectService;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  public void onReceive(Object msg) throws Throwable {
-    if (msg instanceof ChangeWordCount) {
-      ChangeWordCount wordCount = (ChangeWordCount) msg;
-      projectService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff);
-    }
+  public Receive createReceive() {
+    return receiveBuilder()
+            .match(ChangeWordCount.class,
+                    wordCount -> projectService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff, null /* FIXME */))
+            .build();
   }
 }

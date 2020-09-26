@@ -1,6 +1,7 @@
 package services.api.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import criterias.GetCriteria;
 import criterias.LogEntryCriteria;
 import criterias.UserCriteria;
 import dto.DtoPagedList;
@@ -49,7 +50,7 @@ public class UserApiServiceImpl extends
           AuthProvider authProvider,
           PermissionService permissionService,
           LogEntryService logEntryService, Validator validator) {
-    super(userService, dto.User.class, UserMapper::toDto,
+    super(userService, dto.User.class, (in, request) -> UserMapper.toDto(in),
             new Scope[]{Scope.UserRead},
             new Scope[]{Scope.UserWrite},
             permissionService,
@@ -77,14 +78,14 @@ public class UserApiServiceImpl extends
       user.linkedAccounts = Collections.singletonList(linkedAccount);
     });
 
-    return getDtoMapper(request).apply(service.create(user));
+    return getDtoMapper(request).apply(service.create(user, request));
   }
 
   @Override
   public dto.User byUsername(Http.Request request, String username, String... propertiesToFetch) {
     permissionService.checkPermissionAll(request, "Access token not allowed", readScopes);
 
-    return Optional.ofNullable(service.byUsername(username, propertiesToFetch))
+    return Optional.ofNullable(service.byUsername(username, request, propertiesToFetch))
             .map(getDtoMapper(request))
             .orElseThrow(() -> new NotFoundException(dto.User.class.getSimpleName(), username));
   }
@@ -109,17 +110,17 @@ public class UserApiServiceImpl extends
   public dto.User me(Http.Request request, String... propertiesToFetch) {
     UUID loggedInUserId = authProvider.loggedInUserId(request);
 
-    return dtoMapper.apply(service.byId(loggedInUserId, propertiesToFetch));
+    return dtoMapper.apply(service.byId(GetCriteria.from(loggedInUserId, request, propertiesToFetch)), request);
   }
 
   @Override
-  public dto.User saveSettings(UUID userId, JsonNode json) {
-    return dtoMapper.apply(service.saveSettings(userId, Json.fromJson(json, Map.class)));
+  public dto.User saveSettings(UUID userId, JsonNode json, Http.Request request) {
+    return dtoMapper.apply(service.saveSettings(userId, Json.fromJson(json, Map.class), request), request);
   }
 
   @Override
-  public dto.User updateSettings(UUID userId, JsonNode json) {
-    return dtoMapper.apply(service.updateSettings(userId, Json.fromJson(json, Map.class)));
+  public dto.User updateSettings(UUID userId, JsonNode json, Http.Request request) {
+    return dtoMapper.apply(service.updateSettings(userId, Json.fromJson(json, Map.class), request), request);
   }
 
   /**
@@ -127,6 +128,6 @@ public class UserApiServiceImpl extends
    */
   @Override
   protected User toModel(dto.User in) {
-    return UserMapper.toModel(in, service.byId(in.id));
+    return UserMapper.toModel(in, service.byId(GetCriteria.from(in.id, null /* FIXME */)));
   }
 }

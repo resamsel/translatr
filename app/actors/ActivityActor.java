@@ -2,7 +2,7 @@ package actors;
 
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
-import akka.actor.UntypedActor;
+import akka.actor.AbstractActor;
 import dto.Dto;
 import models.LogEntry;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ import javax.inject.Singleton;
 import java.util.stream.Collectors;
 
 @Singleton
-public class ActivityActor extends UntypedActor {
+public class ActivityActor extends AbstractActor {
 
   public static final String NAME = "activity-actor";
 
@@ -24,26 +24,24 @@ public class ActivityActor extends UntypedActor {
     this.logEntryRepository = logEntryRepository;
   }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public void onReceive(Object msg) throws Throwable {
-    if (msg instanceof Activity) {
-      Activity<Dto> t = (Activity<Dto>) msg;
-
-      LoggerFactory.getLogger(ActivityActor.class).debug("onReceive({})", t);
-
-      logEntryRepository.create(ActivityActor.fromActivity(t));
-    } else if (msg instanceof Activities) {
-      Activities<Dto> t = (Activities<Dto>) msg;
-
-      LoggerFactory.getLogger(ActivityActor.class).debug("onReceive({})", t.activities);
-
-      logEntryRepository.save(t.activities.stream().map(ActivityActor::fromActivity).collect(
-          Collectors.toList()));
-    }
-  }
-
   private static <T extends Dto> LogEntry fromActivity(Activity<T> t) {
     return LogEntry.from(t.type, t.user, t.project, t.dtoClass, t.before, t.after);
+  }
+
+  @Override
+  public Receive createReceive() {
+    return receiveBuilder()
+            .match(Activity.class, t -> {
+              LoggerFactory.getLogger(ActivityActor.class).debug("onReceive({})", t);
+
+              logEntryRepository.create(ActivityActor.fromActivity(t));
+            })
+            .match(Activities.class, (t) -> {
+              LoggerFactory.getLogger(ActivityActor.class).debug("onReceive({})", t.activities);
+
+              logEntryRepository.save(((Activities<?>)t).activities.stream().map(ActivityActor::fromActivity).collect(
+                      Collectors.toList()));
+            })
+            .build();
   }
 }

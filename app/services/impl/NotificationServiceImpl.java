@@ -67,7 +67,7 @@ public class NotificationServiceImpl implements NotificationService {
   public StreamResponse<AggregatedActivity<SimpleActivity>> find(NotificationCriteria criteria)
       throws IOException, StreamClientException {
     Feed feed =
-        streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, authProvider.loggedInUser().id.toString());
+        streamClient.newFeed(FEED_GROUP_TIMELINE_AGGREGATED, authProvider.loggedInUser(criteria.getRequest()).id.toString());
     AggregatedActivityServiceImpl<SimpleActivity> activityService =
         feed.newAggregatedActivityService(SimpleActivity.class);
 

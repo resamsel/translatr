@@ -1,10 +1,10 @@
 package services.api.impl;
 
-import io.ebean.PagedList;
 import criterias.LogEntryCriteria;
 import dto.AuthorizationException;
 import dto.DtoPagedList;
 import dto.PermissionException;
+import io.ebean.PagedList;
 import mappers.ActivityMapper;
 import mappers.AggregateMapper;
 import models.LogEntry;
@@ -30,7 +30,7 @@ public class ActivityApiServiceImpl extends
   @Inject
   protected ActivityApiServiceImpl(
       LogEntryService logEntryService, PermissionService permissionService, Validator validator) {
-    super(logEntryService, dto.Activity.class, ActivityMapper::toDto,
+    super(logEntryService, dto.Activity.class, (in, request) -> ActivityMapper.toDto(in),
         new Scope[]{Scope.ProjectRead},
         new Scope[]{Scope.ProjectWrite},
         permissionService,
@@ -54,6 +54,6 @@ public class ActivityApiServiceImpl extends
    */
   @Override
   protected LogEntry toModel(dto.Activity in) {
-    return ActivityMapper.toModel(in, service.byId(in.id));
+    return ActivityMapper.toModel(in, service.byId(in.id, null /* FIXME */));
   }
 }

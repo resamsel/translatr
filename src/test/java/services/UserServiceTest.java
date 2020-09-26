@@ -95,7 +95,7 @@ public class UserServiceTest {
     userRepository.create(user);
     userRepository.create(otherUser);
 
-    target.merge(user, otherUser);
+    target.merge(user, otherUser, request);
 
     assertThat(userRepository.byId(user.id)).nameIsEqualTo("a").activeIsTrue();
     assertThat(userRepository.byId(otherUser.id)).nameIsEqualTo("b").activeIsFalse();

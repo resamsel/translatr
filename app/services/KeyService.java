@@ -4,10 +4,9 @@ import com.google.inject.ImplementedBy;
 import criterias.KeyCriteria;
 import models.Key;
 import models.Project;
+import play.mvc.Http;
 import services.impl.KeyServiceImpl;
 
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -16,15 +15,11 @@ import java.util.UUID;
  */
 @ImplementedBy(KeyServiceImpl.class)
 public interface KeyService extends ModelService<Key, UUID, KeyCriteria> {
-  Map<UUID, Double> progress(UUID projectId);
-
-  void increaseWordCountBy(UUID keyId, int wordCountDiff);
+  void increaseWordCountBy(UUID keyId, int wordCountDiff, Http.Request request);
 
   void resetWordCount(UUID projectId);
 
-  List<Key> latest(Project project, int limit);
+  Key byProjectAndName(Project project, String keyName, Http.Request request);
 
-  Key byProjectAndName(Project project, String keyName);
-
-  Key byOwnerAndProjectAndName(String username, String projectName, String keyName, String... fetches);
+  Key byOwnerAndProjectAndName(String username, String projectName, String keyName, Http.Request request, String... fetches);
 }

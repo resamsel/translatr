@@ -8,6 +8,7 @@ import models.Message;
 import models.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import repositories.MessageRepository;
 import services.*;
 
@@ -82,22 +83,22 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
   }
 
   @Override
-  protected PagedList<Message> postFind(PagedList<Message> pagedList) {
+  protected PagedList<Message> postFind(PagedList<Message> pagedList, Http.Request request) {
     metricService.logEvent(Message.class, ActionType.Read);
 
-    return super.postFind(pagedList);
+    return super.postFind(pagedList, request);
   }
 
   @Override
-  protected Message postGet(Message message) {
+  protected Message postGet(Message message, Http.Request request) {
     metricService.logEvent(Message.class, ActionType.Read);
 
-    return super.postGet(message);
+    return super.postGet(message, request);
   }
 
   @Override
-  protected void postCreate(Message t) {
-    super.postCreate(t);
+  protected void postCreate(Message t, Http.Request request) {
+    super.postCreate(t, request);
 
     metricService.logEvent(Message.class, ActionType.Create);
 
@@ -110,8 +111,8 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
   }
 
   @Override
-  protected Message postUpdate(Message t) {
-    super.postUpdate(t);
+  protected Message postUpdate(Message t, Http.Request request) {
+    super.postUpdate(t, request);
 
     metricService.logEvent(Message.class, ActionType.Update);
 
@@ -124,8 +125,8 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
   }
 
   @Override
-  protected void postDelete(Message t) {
-    super.postDelete(t);
+  protected void postDelete(Message t, Http.Request request) {
+    super.postDelete(t, request);
 
     metricService.logEvent(Message.class, ActionType.Delete);
   }

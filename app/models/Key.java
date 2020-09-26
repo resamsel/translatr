@@ -6,7 +6,6 @@ import io.ebean.annotation.UpdatedTimestamp;
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import play.libs.Json;
-import play.mvc.Http.Context;
 import utils.CacheUtils;
 import utils.UrlUtils;
 import validators.KeyNameUniqueChecker;
@@ -28,7 +27,7 @@ import java.util.UUID;
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
 @NameUnique(checker = KeyNameUniqueChecker.class)
-public class Key implements Model<Key, UUID>, Suggestable {
+public class Key implements Model<Key, UUID> {
 
   public static final int NAME_LENGTH = 255;
 
@@ -73,22 +72,6 @@ public class Key implements Model<Key, UUID>, Suggestable {
   @Override
   public UUID getId() {
     return id;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String value() {
-    return Context.current().messages().at("key.autocomplete", name);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Data data() {
-    return Data.from(Key.class, id, name, null);
   }
 
   /**

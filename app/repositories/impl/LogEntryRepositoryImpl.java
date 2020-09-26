@@ -3,10 +3,12 @@ package repositories.impl;
 import actors.ActivityActorRef;
 import actors.NotificationActorRef;
 import actors.NotificationProtocol.PublishNotification;
+import criterias.ContextCriteria;
 import criterias.LogEntryCriteria;
 import criterias.PagedListFactory;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
+import io.ebean.Query;
 import models.LogEntry;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import repositories.LogEntryRepository;
 import repositories.Persistence;
 import services.AuthProvider;
-import services.ContextProvider;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
@@ -29,19 +30,16 @@ public class LogEntryRepositoryImpl extends
     LogEntryRepository {
   private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryRepositoryImpl.class);
 
-  private final ContextProvider contextProvider;
   private final NotificationActorRef notificationActor;
 
   @Inject
   public LogEntryRepositoryImpl(Persistence persistence,
                                 Validator validator,
                                 AuthProvider authProvider,
-                                ContextProvider contextProvider,
                                 ActivityActorRef activityActor,
                                 NotificationActorRef notificationActor) {
     super(persistence, validator, authProvider, activityActor);
 
-    this.contextProvider = contextProvider;
     this.notificationActor = notificationActor;
   }
 
@@ -106,13 +104,18 @@ public class LogEntryRepositoryImpl extends
     return query;
   }
 
+  @Override
+  protected Query<LogEntry> createQuery(ContextCriteria criteria) {
+    return createQuery(LogEntry.class, PROPERTIES_TO_FETCH, criteria.getFetches());
+  }
+
   /**
    * {@inheritDoc}
    */
   @Override
   public void preSave(LogEntry t, boolean update) {
     if (t.user == null) {
-      t.user = authProvider.loggedInUser();
+      t.user = authProvider.loggedInUser(null) /* FIXME: will fail! */;
       LOGGER.debug("preSave(): user of log entry is {}", t.user);
     }
   }

@@ -1,18 +1,15 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import criterias.MessageCriteria;
 import io.ebean.annotation.CreatedTimestamp;
 import io.ebean.annotation.UpdatedTimestamp;
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.api.Play;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.libs.Json;
-import services.MessageService;
 import utils.CacheUtils;
 import validators.NameUnique;
 import validators.ProjectName;
@@ -42,7 +39,7 @@ import static java.util.stream.Collectors.*;
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "name"})})
 @NameUnique(checker = ProjectNameUniqueChecker.class, message = "error.projectnameunique")
-public class Project implements Model<Project, UUID>, Suggestable {
+public class Project implements Model<Project, UUID> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Project.class);
 
@@ -124,65 +121,9 @@ public class Project implements Model<Project, UUID>, Suggestable {
     return id;
   }
 
-  @Override
-  public String value() {
-    return name;
-  }
-
-  @Override
-  public Data data() {
-    return Data.from(Project.class, id, name, null);
-  }
-
   public Project withId(UUID id) {
     this.id = id;
     return this;
-  }
-
-  public float progress() {
-    long keysSize = keysSize();
-    long localesSize = localesSize();
-    if (keysSize < 1 || localesSize < 1) {
-      return 0f;
-    }
-    return (float) messagesSize() / (float) (keysSize * localesSize);
-  }
-
-  public long missingKeys(UUID localeId) {
-    return keysSize() - keysSizeMap(localeId);
-  }
-
-  private long keysSizeMap(UUID localeId) {
-    if (keysSizeMap == null)
-    // FIXME: This is an expensive operation, consider doing this in a group by query.
-    {
-      keysSizeMap = messageList().stream().collect(groupingBy(m -> m.locale.id, counting()));
-    }
-
-    return keysSizeMap.getOrDefault(localeId, 0L);
-  }
-
-  public long missingLocales(UUID keyId) {
-    return localesSize() - localesSizeMap(keyId);
-  }
-
-  private long localesSizeMap(UUID keyId) {
-    if (localesSizeMap == null)
-    // FIXME: This is an expensive operation, consider doing this in a group by query.
-    {
-      localesSizeMap = messageList().stream().collect(groupingBy(m -> m.key.id, counting()));
-    }
-
-    return localesSizeMap.getOrDefault(keyId, 0L);
-  }
-
-  private List<Message> messageList() {
-    if (messages == null) {
-      messages = Play.current().injector().instanceOf(MessageService.class)
-          .findBy(new MessageCriteria().withProjectId(this.id)).getList();
-    }
-
-    return messages;
   }
 
   public long membersSize() {
@@ -195,10 +136,6 @@ public class Project implements Model<Project, UUID>, Suggestable {
 
   public long keysSize() {
     return keys.size();
-  }
-
-  public long messagesSize() {
-    return Play.current().injector().instanceOf(MessageService.class).countBy(this);
   }
 
   public Project withName(String name) {

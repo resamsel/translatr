@@ -2,6 +2,7 @@ package mappers;
 
 import dto.AccessToken;
 import models.User;
+import play.mvc.Http;
 
 public class AccessTokenMapper {
   public static models.AccessToken toModel(dto.AccessToken in) {
