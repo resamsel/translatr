@@ -97,7 +97,7 @@ public class LocalesApiTest extends ApiControllerTest {
         withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation()))
     );
 
-    when(accessTokenService.byKey(eq(accessToken.key))).thenReturn(accessToken);
+    when(accessTokenService.byKey(eq(accessToken.key), any())).thenReturn(accessToken);
     when(projectUserService.findBy(any()))
         .thenReturn(PagedListFactory.create(project1.members));
     when(localeApiService
@@ -105,7 +105,7 @@ public class LocalesApiTest extends ApiControllerTest {
         .thenReturn(LocaleMapper.toDto(locale));
     when(localeApiService.byOwnerAndProjectAndName(request, eq("a"), eq("b"), eq("c")))
         .thenThrow(new NotFoundException(dto.Locale.class.getName(), "c"));
-    when(localeApiService.download(request, eq(locale.id), eq("java_properties"), any()))
+    when(localeApiService.download(request, eq(locale.id), eq("java_properties")))
         .thenReturn("".getBytes());
 
     //noinspection unchecked

@@ -40,7 +40,7 @@ public class AccessTokenByUserAndNameValidator extends Constraints.Validator<Obj
   @Override
   public boolean isValid(Object object) {
     return object != null && object instanceof String
-        && accessTokenRepository.byUserAndName(authProvider.loggedInUserId(), (String) object) == null;
+        && accessTokenRepository.byUserAndName(authProvider.loggedInUserId(null) /* FIXME: will fail! */, (String) object) == null;
   }
 
   /**

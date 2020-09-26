@@ -37,8 +37,8 @@ public class NotificationSyncImpl implements NotificationSync {
 
   private void init() {
     CompletableFuture.runAsync(() -> {
-      projectService.findBy(new ProjectCriteria()).getList().stream().forEach(project -> {
-        project.members.stream().forEach(member -> {
+      projectService.findBy(new ProjectCriteria()).getList().forEach(project -> {
+        project.members.forEach(member -> {
           try {
             notificationService.follow(member.user.id, project.id);
           } catch (IOException | StreamClientException e) {

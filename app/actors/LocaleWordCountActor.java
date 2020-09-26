@@ -1,7 +1,7 @@
 package actors;
 
 import actors.WordCountProtocol.ChangeWordCount;
-import akka.actor.UntypedActor;
+import akka.actor.AbstractActor;
 import services.LocaleService;
 
 import javax.inject.Inject;
@@ -12,7 +12,7 @@ import javax.inject.Singleton;
  * @version 6 Jun 2017
  */
 @Singleton
-public class LocaleWordCountActor extends UntypedActor {
+public class LocaleWordCountActor extends AbstractActor {
   public static final String NAME = "locale-word-count-actor";
 
   private final LocaleService localeService;
@@ -22,14 +22,11 @@ public class LocaleWordCountActor extends UntypedActor {
     this.localeService = localeService;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  public void onReceive(Object msg) throws Throwable {
-    if (msg instanceof ChangeWordCount) {
-      ChangeWordCount wordCount = (ChangeWordCount) msg;
-      localeService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff);
-    }
+  public Receive createReceive() {
+    return receiveBuilder()
+            .match(ChangeWordCount.class,
+                    wordCount -> localeService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff, null /* FIXME */))
+            .build();
   }
 }

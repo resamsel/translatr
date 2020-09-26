@@ -1,8 +1,10 @@
 package services;
 
+import criterias.GetCriteria;
 import io.ebean.PagedList;
 import criterias.AbstractSearchCriteria;
 import models.Model;
+import play.mvc.Http;
 
 import java.util.Collection;
 
@@ -14,17 +16,19 @@ import java.util.Collection;
 public interface ModelService<T extends Model<T, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>> {
   PagedList<T> findBy(CRITERIA criteria);
 
-  T byId(ID id, String... propertiesToFetch);
+  T byId(ID id, Http.Request request, String... propertiesToFetch);
 
-  T create(T model);
+  T byId(GetCriteria<ID> criteria);
 
-  T update(T model);
+  T create(T model, Http.Request request);
 
-  T save(T t);
+  T update(T model, Http.Request request);
 
-  Collection<T> save(Collection<T> t);
+  T save(T t, Http.Request request);
 
-  void delete(T t);
+  Collection<T> save(Collection<T> t, Http.Request request);
 
-  void delete(Collection<T> t);
+  void delete(T t, Http.Request request);
+
+  void delete(Collection<T> t, Http.Request request);
 }

@@ -1,25 +1,28 @@
 package repositories.impl;
 
 import actors.ActivityActorRef;
-import io.ebean.Query;
 import criterias.AbstractSearchCriteria;
 import criterias.ContextCriteria;
 import criterias.GetCriteria;
+import io.ebean.Query;
 import models.Model;
-import org.apache.commons.lang3.NotImplementedException;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.ModelRepository;
 import repositories.Persistence;
 import services.AuthProvider;
+import utils.QueryUtils;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,7 +31,7 @@ import java.util.stream.Collectors;
  * @version 9 Sep 2016
  */
 public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID, CRITERIA extends AbstractSearchCriteria<CRITERIA>>
-    implements ModelRepository<MODEL, ID, CRITERIA> {
+        implements ModelRepository<MODEL, ID, CRITERIA> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelRepository.class);
 
@@ -48,18 +51,41 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
   public MODEL byId(GetCriteria<ID> criteria) {
     return fetch(
-        createQuery(criteria)
-            .setId(criteria.getId())
-            .findOne(),
-        criteria
+            createQuery(criteria)
+                    .setId(criteria.getId())
+                    .findOne(),
+            criteria
+    );
+  }
+
+  protected abstract Query<MODEL> createQuery(ContextCriteria criteria);
+
+  /**
+   * Creates the query given on the info of this fetch criteria.
+   */
+  protected Query<MODEL> createQuery(Class<MODEL> clazz, String[] defaultFetches, Map<String, List<String>> fetchMap, String... fetches) {
+    return createQuery(clazz, defaultFetches, fetchMap, Arrays.asList(fetches));
+  }
+
+  /**
+   * Creates the query given on the info of this fetch criteria.
+   */
+  protected Query<MODEL> createQuery(Class<MODEL> clazz, String[] defaultFetches, List<String> fetches) {
+    return QueryUtils.fetch(
+            persistence.find(clazz).setDisableLazyLoading(true),
+            QueryUtils.mergeFetches(defaultFetches, fetches)
     );
   }
 
   /**
    * Creates the query given on the info of this fetch criteria.
    */
-  protected Query<MODEL> createQuery(ContextCriteria criteria) {
-    throw new NotImplementedException("fetchQuery(FetchCriteria)");
+  protected Query<MODEL> createQuery(Class<MODEL> clazz, String[] defaultFetches, Map<String, List<String>> fetchMap, List<String> fetches) {
+    return QueryUtils.fetch(
+            persistence.find(clazz).setDisableLazyLoading(true),
+            QueryUtils.mergeFetches(defaultFetches, fetches),
+            fetchMap
+    );
   }
 
   /**
@@ -80,7 +106,7 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
       return save(model);
     } catch (PersistenceException e) {
       if (e.getCause() != null && e.getCause() instanceof PSQLException
-          && "23505".equals(((PSQLException) e.getCause()).getSQLState())) {
+              && "23505".equals(((PSQLException) e.getCause()).getSQLState())) {
         throw new ValidationException("Entry already exists (duplicate key)");
       }
 
@@ -111,8 +137,8 @@ public abstract class AbstractModelRepository<MODEL extends Model<MODEL, ID>, ID
 
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(
-          "Constraint violations detected: " + violations.stream().map(Object::toString).collect(
-              Collectors.joining(",")), violations);
+              "Constraint violations detected: " + violations.stream().map(Object::toString).collect(
+                      Collectors.joining(",")), violations);
     }
 
     return model;

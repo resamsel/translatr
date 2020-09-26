@@ -4,10 +4,22 @@ import dto.Key;
 import dto.Message;
 import models.Project;
 import models.User;
+import play.mvc.Http;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import static java.util.stream.Collectors.toMap;
 
+@Singleton
 public class KeyMapper {
+  private final MessageMapper messageMapper;
+
+  @Inject
+  public KeyMapper(MessageMapper messageMapper) {
+    this.messageMapper = messageMapper;
+  }
+
   public static models.Key toModel(Key in) {
     return toModel(in, ProjectMapper.toModel(in));
   }
@@ -47,7 +59,7 @@ public class KeyMapper {
     return out;
   }
 
-  public static Key toDto(models.Key in) {
+  public Key toDto(models.Key in, Http.Request request) {
     Key out = new Key();
 
     out.id = in.id;
@@ -63,7 +75,7 @@ public class KeyMapper {
     if (in.messages != null && !in.messages.isEmpty()) {
       out.messages =
           in.messages.stream()
-              .map(MessageMapper::toDto)
+              .map(message -> messageMapper.toDto(message, request))
               .filter(m -> m.localeName != null)
               .collect(toMap(m -> m.localeName, m -> m));
     }

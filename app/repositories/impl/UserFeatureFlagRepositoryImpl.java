@@ -1,6 +1,7 @@
 package repositories.impl;
 
 import actors.ActivityActorRef;
+import criterias.ContextCriteria;
 import criterias.PagedListFactory;
 import criterias.UserFeatureFlagCriteria;
 import io.ebean.ExpressionList;
@@ -14,11 +15,13 @@ import org.apache.commons.lang3.StringUtils;
 import repositories.Persistence;
 import repositories.UserFeatureFlagRepository;
 import services.AuthProvider;
-import utils.QueryUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Singleton
@@ -69,8 +72,17 @@ public class UserFeatureFlagRepositoryImpl extends
         .findOne();
   }
 
-  private Query<UserFeatureFlag> fetch() {
-    return QueryUtils.fetch(persistence.find(UserFeatureFlag.class).setDisableLazyLoading(true), PROPERTIES_TO_FETCH);
+  @Override
+  protected Query<UserFeatureFlag> createQuery(ContextCriteria criteria) {
+    return fetch(criteria.getFetches());
+  }
+
+  private Query<UserFeatureFlag> fetch(String... fetches) {
+    return fetch(fetches != null ? Arrays.asList(fetches) : Collections.emptyList());
+  }
+
+  private Query<UserFeatureFlag> fetch(List<String> fetches) {
+    return createQuery(UserFeatureFlag.class, PROPERTIES_TO_FETCH, fetches);
   }
 
   /**
@@ -78,7 +90,7 @@ public class UserFeatureFlagRepositoryImpl extends
    */
   @Override
   protected void preSave(UserFeatureFlag t, boolean update) {
-    User loggedInUser = authProvider.loggedInUser();
+    User loggedInUser = authProvider.loggedInUser(null) /* FIXME: will fail! */;
     if (t.user == null || t.user.id == null
             || (loggedInUser != null && t.user.id != loggedInUser.id && loggedInUser.role != UserRole.Admin)) {
       // only allow admins to create access tokens for other users

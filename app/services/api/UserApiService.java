@@ -31,10 +31,10 @@ public interface UserApiService extends ApiService<User, UUID, UserCriteria> {
   /**
    * Replace given settings of the user.
    */
-  User saveSettings(UUID userId, JsonNode json);
+  User saveSettings(UUID userId, JsonNode json, Http.Request request);
 
   /**
    * Add or update given settings of the user.
    */
-  User updateSettings(UUID userId, JsonNode json);
+  User updateSettings(UUID userId, JsonNode json, Http.Request request);
 }

@@ -18,7 +18,7 @@ import static models.ProjectUser.FETCH_USER;
 public interface ProjectUserRepository extends
     ModelRepository<ProjectUser, Long, ProjectUserCriteria> {
 
-  List<String> PROPERTIES_TO_FETCH = Arrays.asList(FETCH_PROJECT, FETCH_USER);
+  String[] PROPERTIES_TO_FETCH = new String[] {FETCH_PROJECT, FETCH_USER};
 
   Map<String, List<String>> FETCH_MAP =
       ImmutableMap.of(

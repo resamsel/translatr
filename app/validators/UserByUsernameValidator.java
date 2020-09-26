@@ -36,7 +36,7 @@ public class UserByUsernameValidator extends Constraints.Validator<Object>
   @Override
   public boolean isValid(Object object) {
     return object != null && object instanceof String
-        && userService.byUsername((String) object) != null;
+        && userService.byUsername((String) object, null /* FIXME */) != null;
   }
 
   /**

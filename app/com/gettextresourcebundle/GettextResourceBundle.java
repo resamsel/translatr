@@ -3,7 +3,7 @@
  */
 package com.gettextresourcebundle;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Tom Schaible
- * 
+ *
  *         A resource bundle that is created from a gettext PO file
  */
 public class GettextResourceBundle extends ResourceBundle {
@@ -32,9 +32,9 @@ public class GettextResourceBundle extends ResourceBundle {
 
   /**
    * initialize the ResourceBundle from a PO file
-   * 
+   *
    * if
-   * 
+   *
    * @param reader the reader to read the contents of the PO file from
    */
   private void init(LineNumberReader reader) {
@@ -106,7 +106,7 @@ public class GettextResourceBundle extends ResourceBundle {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see java.util.ResourceBundle#getKeys()
    */
   @Override
@@ -116,7 +116,7 @@ public class GettextResourceBundle extends ResourceBundle {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see java.util.ResourceBundle#handleGetObject(java.lang.String)
    */
   @Override

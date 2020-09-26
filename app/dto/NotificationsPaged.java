@@ -1,10 +1,6 @@
 package dto;
 
 import io.ebean.PagedList;
-import io.getstream.client.model.activities.AggregatedActivity;
-import io.getstream.client.model.activities.SimpleActivity;
-import io.getstream.client.model.beans.StreamResponse;
-import mappers.AggregatedNotificationMapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,9 +15,9 @@ public class NotificationsPaged extends Dto implements PagedList<AggregatedNotif
 
   private List<AggregatedNotification> list;
 
-  public NotificationsPaged(StreamResponse<AggregatedActivity<SimpleActivity>> delegate) {
+  public NotificationsPaged(List<AggregatedNotification> delegate) {
     if (delegate != null)
-      this.list = AggregatedNotificationMapper.toDto(delegate.getResults());
+      this.list = delegate;
     else
       this.list = Collections.emptyList();
   }
@@ -38,7 +34,8 @@ public class NotificationsPaged extends Dto implements PagedList<AggregatedNotif
    * {@inheritDoc}
    */
   @Override
-  public void loadCount() {}
+  public void loadCount() {
+  }
 
   /**
    * {@inheritDoc}

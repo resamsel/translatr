@@ -1,7 +1,12 @@
 package criterias;
 
-public class DefaultGetCriteria<T> extends AbstractGetCriteria<DefaultGetCriteria<T>, T> {
-  public DefaultGetCriteria(T id) {
-    super(id);
+import play.mvc.Http;
+
+public class DefaultGetCriteria<T extends DefaultGetCriteria<T, U>, U>
+        extends AbstractGetCriteria<DefaultGetCriteria<T, U>, U> {
+  public DefaultGetCriteria(U id, Http.Request request, String... fetches) {
+    super(id, request);
+
+    withFetches(fetches);
   }
 }

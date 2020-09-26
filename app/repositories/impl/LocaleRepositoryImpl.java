@@ -4,6 +4,7 @@ import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
 import com.google.common.collect.ImmutableMap;
+import criterias.ContextCriteria;
 import criterias.LocaleCriteria;
 import criterias.MessageCriteria;
 import criterias.PagedListFactory;
@@ -33,6 +34,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -61,18 +63,22 @@ public class LocaleRepositoryImpl extends
 
   private final MessageRepository messageRepository;
   private final PermissionService permissionService;
+  private final LocaleMapper localeMapper;
 
   @Inject
-  public LocaleRepositoryImpl(Persistence persistence,
-                              Validator validator,
-                              AuthProvider authProvider,
-                              ActivityActorRef activityActor,
-                              MessageRepository messageRepository,
-                              PermissionService permissionService) {
+  public LocaleRepositoryImpl(
+          Persistence persistence,
+          Validator validator,
+          AuthProvider authProvider,
+          ActivityActorRef activityActor,
+          MessageRepository messageRepository,
+          PermissionService permissionService,
+          LocaleMapper localeMapper) {
     super(persistence, validator, authProvider, activityActor);
 
     this.messageRepository = messageRepository;
     this.permissionService = permissionService;
+    this.localeMapper = localeMapper;
   }
 
   @Override
@@ -81,7 +87,7 @@ public class LocaleRepositoryImpl extends
 
     if (StringUtils.isEmpty(criteria.getMessagesKeyName()) && !criteria.getFetches().isEmpty()) {
       QueryUtils.fetch(q, QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, criteria.getFetches()),
-          FETCH_MAP);
+              FETCH_MAP);
     }
 
     ExpressionList<Locale> query = q.where();
@@ -125,22 +131,31 @@ public class LocaleRepositoryImpl extends
   @Override
   public Locale byId(UUID id, String... fetches) {
     return QueryUtils.fetch(persistence.find(Locale.class).setId(id).setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP).findOne();
+            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP).findOne();
+  }
+
+  @Override
+  protected Query<Locale> createQuery(ContextCriteria criteria) {
+    return fetch(criteria.getFetches());
   }
 
   private Query<Locale> fetch(String... fetches) {
+    return fetch(fetches != null ? Arrays.asList(fetches) : Collections.emptyList());
+  }
+
+  private Query<Locale> fetch(List<String> fetches) {
     return QueryUtils.fetch(persistence.find(Locale.class).alias("l").setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
+            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 
   private PagedList<Locale> fetch(@Nonnull PagedList<Locale> paged, @Nonnull LocaleCriteria criteria) {
     if (StringUtils.isNotEmpty(criteria.getMessagesKeyName())
-        && criteria.hasFetch("messages")) {
+            && criteria.hasFetch("messages")) {
       // Retrieve messages that match the given keyName and locales retrieved
       Map<UUID, Message> messages = messageRepository
-          .findBy(new MessageCriteria().withKeyName(criteria.getMessagesKeyName())
-              .withLocaleIds(paged.getList().stream().map(l -> l.id).collect(toList())))
-          .getList().stream().collect(toMap(m -> m.locale.id, m -> m));
+              .findBy(new MessageCriteria().withKeyName(criteria.getMessagesKeyName())
+                      .withLocaleIds(paged.getList().stream().map(l -> l.id).collect(toList())))
+              .getList().stream().collect(toMap(m -> m.locale.id, m -> m));
 
       for (Locale locale : paged.getList()) {
         if (messages.containsKey(locale.id)) {
@@ -153,7 +168,7 @@ public class LocaleRepositoryImpl extends
       Map<UUID, Double> progressMap = progress(criteria.getProjectId());
 
       paged.getList()
-          .forEach(l -> l.progress = progressMap.getOrDefault(l.id, 0.0));
+              .forEach(l -> l.progress = progressMap.getOrDefault(l.id, 0.0));
     }
 
     return paged;
@@ -162,22 +177,22 @@ public class LocaleRepositoryImpl extends
   @Override
   public Map<UUID, Double> progress(UUID projectId) {
     List<Stat> stats = log(
-        () -> persistence.createQuery(Stat.class)
-            .setRawSql(RawSqlBuilder
-                .parse("SELECT " +
-                    PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +
-                    " FROM locale l" +
-                    " LEFT OUTER JOIN message m ON m.locale_id = l.id" +
-                    " LEFT OUTER JOIN key k ON k.project_id = l.project_id" +
-                    " GROUP BY " + PROGRESS_COLUMN_ID)
-                .columnMapping(PROGRESS_COLUMN_ID, "id")
-                .columnMapping(PROGRESS_COLUMN_COUNT, "count")
-                .create())
-            .where()
-            .eq("l.project_id", projectId)
-            .findList(),
-        LOGGER,
-        "Retrieving locale progress"
+            () -> persistence.createQuery(Stat.class)
+                    .setRawSql(RawSqlBuilder
+                            .parse("SELECT " +
+                                    PROGRESS_COLUMN_ID + ", " + PROGRESS_COLUMN_COUNT +
+                                    " FROM locale l" +
+                                    " LEFT OUTER JOIN message m ON m.locale_id = l.id" +
+                                    " LEFT OUTER JOIN key k ON k.project_id = l.project_id" +
+                                    " GROUP BY " + PROGRESS_COLUMN_ID)
+                            .columnMapping(PROGRESS_COLUMN_ID, "id")
+                            .columnMapping(PROGRESS_COLUMN_COUNT, "count")
+                            .create())
+                    .where()
+                    .eq("l.project_id", projectId)
+                    .findList(),
+            LOGGER,
+            "Retrieving locale progress"
     );
 
     return stats.stream().collect(Collectors.toMap(stat -> stat.id, stat -> stat.count));
@@ -186,8 +201,8 @@ public class LocaleRepositoryImpl extends
   @Override
   public List<Locale> latest(Project project, int limit) {
     return log(
-        () -> fetch().where().eq("project", project).order("whenUpdated desc").setMaxRows(limit)
-            .findList(), LOGGER, "last(%d)", limit);
+            () -> fetch().where().eq("project", project).order("whenUpdated desc").setMaxRows(limit)
+                    .findList(), LOGGER, "last(%d)", limit);
   }
 
   @Override
@@ -207,12 +222,14 @@ public class LocaleRepositoryImpl extends
   public Locale byOwnerAndProjectAndName(String username, String projectName, String localeName,
                                          String... fetches) {
     return fetch(fetches)
-        .where()
-        .eq("project.owner.username", username)
-        .eq("project.name", projectName)
-        .eq("name", localeName)
-        .findOne();
+            .where()
+            .eq("project.owner.username", username)
+            .eq("project.name", projectName)
+            .eq("name", localeName)
+            .findOne();
   }
+
+  // FIXME: pull pre/post persist logic to service!?
 
   /**
    * {@inheritDoc}
@@ -221,9 +238,9 @@ public class LocaleRepositoryImpl extends
   protected void prePersist(Locale t, boolean update) {
     if (update) {
       activityActor.tell(
-          new Activity<>(ActionType.Update, authProvider.loggedInUser(), t.project, dto.Locale.class,
-              LocaleMapper.toDto(byId(t.id)), LocaleMapper.toDto(t)),
-          null
+              new Activity<>(ActionType.Update, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Locale.class,
+                      localeMapper.toDto(byId(t.id), null), localeMapper.toDto(t, null)),
+              null
       );
     }
   }
@@ -235,8 +252,8 @@ public class LocaleRepositoryImpl extends
   protected void postSave(Locale t, boolean update) {
     if (!update) {
       activityActor.tell(
-          new Activity<>(ActionType.Create, authProvider.loggedInUser(), t.project, dto.Locale.class, null, LocaleMapper.toDto(t)),
-          null
+              new Activity<>(ActionType.Create, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Locale.class, null, localeMapper.toDto(t, null)),
+              null
       );
     }
   }
@@ -247,14 +264,14 @@ public class LocaleRepositoryImpl extends
   @Override
   public void preDelete(Locale t) {
     if (!permissionService
-        .hasPermissionAny(t.project.id, authProvider.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
-            ProjectRole.Translator)) {
+            .hasPermissionAny(t.project.id, authProvider.loggedInUser(null) /* FIXME: will fail! */, ProjectRole.Owner, ProjectRole.Manager,
+                    ProjectRole.Translator)) {
       throw new PermissionException("User not allowed in project");
     }
 
     activityActor.tell(
-        new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t.project, dto.Locale.class, LocaleMapper.toDto(t), null),
-        null
+            new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Locale.class, localeMapper.toDto(t, null), null),
+            null
     );
 
     messageRepository.delete(messageRepository.byLocale(t.id));
@@ -266,12 +283,12 @@ public class LocaleRepositoryImpl extends
   @Override
   public void preDelete(Collection<Locale> t) {
     activityActor.tell(
-        new Activities<>(t.stream().map(l -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), l.project,
-            dto.Locale.class, LocaleMapper.toDto(l), null)).collect(Collectors.toList())),
-        null
+            new Activities<>(t.stream().map(l -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, l.project,
+                    dto.Locale.class, localeMapper.toDto(l, null), null)).collect(Collectors.toList())),
+            null
     );
 
     messageRepository.delete(
-        messageRepository.byLocales(t.stream().map(m -> m.id).collect(Collectors.toList())));
+            messageRepository.byLocales(t.stream().map(m -> m.id).collect(Collectors.toList())));
   }
 }

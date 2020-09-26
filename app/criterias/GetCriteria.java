@@ -1,12 +1,16 @@
 package criterias;
 
+import play.mvc.Http;
+
 import javax.annotation.Nonnull;
 
-public interface GetCriteria<T> extends ContextCriteria {
+public interface GetCriteria<U> extends ContextCriteria {
   @Nonnull
-  T getId();
+  U getId();
 
-  static <T> GetCriteria<T> of(T id) {
-    return new DefaultGetCriteria<>(id);
+  Http.Request getRequest();
+
+  static <T extends DefaultGetCriteria<T, U>, U> DefaultGetCriteria<T, U> from(U id, Http.Request request, String... fetches) {
+    return new DefaultGetCriteria<T, U>(id, request, fetches);
   }
 }

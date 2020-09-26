@@ -5,6 +5,7 @@ import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
 import actors.MessageWordCountActorRef;
 import actors.WordCountProtocol.ChangeMessageWordCount;
+import criterias.ContextCriteria;
 import criterias.MessageCriteria;
 import criterias.PagedListFactory;
 import io.ebean.ExpressionList;
@@ -27,6 +28,7 @@ import utils.QueryUtils;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -46,16 +48,20 @@ public class MessageRepositoryImpl extends
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageRepositoryImpl.class);
 
   private final MessageWordCountActorRef messageWordCountActor;
+  private final MessageMapper messageMapper;
 
   @Inject
-  public MessageRepositoryImpl(Persistence persistence,
+  public MessageRepositoryImpl(
+          Persistence persistence,
                                Validator validator,
                                AuthProvider authProvider,
                                ActivityActorRef activityActor,
-                               MessageWordCountActorRef messageWordCountActor) {
+                               MessageWordCountActorRef messageWordCountActor,
+          MessageMapper messageMapper) {
     super(persistence, validator, authProvider, activityActor);
 
     this.messageWordCountActor = messageWordCountActor;
+    this.messageMapper = messageMapper;
   }
 
   @Override
@@ -106,11 +112,16 @@ public class MessageRepositoryImpl extends
             .findMap();
   }
 
-  private Query<Message> fetch(List<String> fetches) {
-    return fetch(fetches.toArray(new String[0]));
+  @Override
+  protected Query<Message> createQuery(ContextCriteria criteria) {
+    return fetch(criteria.getFetches());
   }
 
   private Query<Message> fetch(String... fetches) {
+    return fetch(fetches != null ? Arrays.asList(fetches) : Collections.emptyList());
+  }
+
+  private Query<Message> fetch(List<String> fetches) {
     return QueryUtils.fetch(persistence.find(Message.class).alias("k").setDisableLazyLoading(true),
             QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
@@ -259,7 +270,7 @@ public class MessageRepositoryImpl extends
   @Override
   public void preDelete(Message t) {
     activityActor.tell(
-            new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t.key.project, dto.Message.class, MessageMapper.toDto(t),
+            new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.key.project, dto.Message.class, messageMapper.toDto(t, null),
                     null),
             null
     );
@@ -271,8 +282,8 @@ public class MessageRepositoryImpl extends
   @Override
   protected void preDelete(Collection<Message> t) {
     activityActor.tell(
-            new Activities<>(t.stream().map(m -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), m.key.project,
-                    dto.Message.class, MessageMapper.toDto(m), null)).collect(toList())),
+            new Activities<>(t.stream().map(m -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, m.key.project,
+                    dto.Message.class, messageMapper.toDto(m, null), null)).collect(toList())),
             null
     );
   }
@@ -307,22 +318,22 @@ public class MessageRepositoryImpl extends
   private Activity<dto.Message> logEntryCreate(Message message) {
     return new Activity<>(
             ActionType.Create,
-            authProvider.loggedInUser(),
+            authProvider.loggedInUser(null) /* FIXME: will fail! */,
             message.key.project,
             dto.Message.class,
             null,
-            MessageMapper.toDto(message)
+            messageMapper.toDto(message, null)
     );
   }
 
   private Activity<dto.Message> logEntryUpdate(Message message, Message previous) {
     return new Activity<>(
             ActionType.Update,
-            authProvider.loggedInUser(),
+            authProvider.loggedInUser(null) /* FIXME: will fail! */,
             message.key.project,
             dto.Message.class,
-            MessageMapper.toDto(previous),
-            MessageMapper.toDto(message)
+            messageMapper.toDto(previous, null),
+            messageMapper.toDto(message, null)
     );
   }
 }

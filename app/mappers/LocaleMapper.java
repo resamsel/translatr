@@ -6,12 +6,26 @@ import dto.Locale;
 import dto.Message;
 import models.Project;
 import models.User;
+import play.mvc.Http;
 import services.MessageService;
 import utils.FormatUtils;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import static java.util.stream.Collectors.toMap;
 
+@Singleton
 public class LocaleMapper {
+  private final FormatUtils formatUtils;
+  private final MessageMapper messageMapper;
+
+  @Inject
+  public LocaleMapper(FormatUtils formatUtils, MessageMapper messageMapper) {
+    this.formatUtils = formatUtils;
+    this.messageMapper = messageMapper;
+  }
+
   public static models.Locale toModel(Locale in) {
     return toModel(in, ProjectMapper.toModel(in));
   }
@@ -51,7 +65,7 @@ public class LocaleMapper {
     return out;
   }
 
-  public static Locale toDto(models.Locale in) {
+  public Locale toDto(models.Locale in, Http.Request request) {
     Locale out = new Locale();
 
     out.id = in.id;
@@ -66,7 +80,7 @@ public class LocaleMapper {
 
     out.name = in.name;
     out.pathName = in.getPathName();
-    out.displayName = FormatUtils.formatDisplayName(in);
+    out.displayName = formatUtils.formatDisplayName(in, request);
     if (Strings.isNullOrEmpty(out.displayName)) {
       out.displayName = in.name;
     }
@@ -74,20 +88,22 @@ public class LocaleMapper {
 
     if (in.messages != null && !in.messages.isEmpty()) {
       out.messages =
-          in.messages.stream().map(MessageMapper::toDto).collect(toMap(m -> m.keyName, m -> m));
+          in.messages.stream()
+                  .map(message -> messageMapper.toDto(message, request))
+                  .collect(toMap(m -> m.keyName, m -> m));
     }
 
     return out;
   }
 
-  public static Locale loadInto(models.Locale in, MessageService messageService) {
-    Locale out = toDto(in);
+  public Locale loadInto(models.Locale in, MessageService messageService, Http.Request request) {
+    Locale out = toDto(in, request);
 
     if (out.messages == null) {
       out.messages = messageService.findBy(new MessageCriteria().withLocaleId(in.id))
           .getList()
           .stream()
-          .map(MessageMapper::toDto)
+          .map(message -> messageMapper.toDto(message, request))
           .collect(toMap(m -> m.keyName, m -> m));
     }
 

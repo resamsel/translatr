@@ -3,14 +3,15 @@ package repositories.impl;
 import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
+import com.google.common.collect.ImmutableMap;
+import criterias.ContextCriteria;
+import criterias.KeyCriteria;
+import criterias.PagedListFactory;
+import dto.PermissionException;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import io.ebean.Query;
 import io.ebean.RawSqlBuilder;
-import com.google.common.collect.ImmutableMap;
-import criterias.KeyCriteria;
-import criterias.PagedListFactory;
-import dto.PermissionException;
 import mappers.KeyMapper;
 import models.ActionType;
 import models.Key;
@@ -31,7 +32,9 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -56,18 +59,22 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
 
   private final MessageRepository messageRepository;
   private final PermissionService permissionService;
+  private final KeyMapper keyMapper;
 
   @Inject
-  public KeyRepositoryImpl(Persistence persistence,
-                           Validator validator,
-                           AuthProvider authProvider,
-                           ActivityActorRef activityActor,
-                           MessageRepository messageRepository,
-                           PermissionService permissionService) {
+  public KeyRepositoryImpl(
+          Persistence persistence,
+          Validator validator,
+          AuthProvider authProvider,
+          ActivityActorRef activityActor,
+          MessageRepository messageRepository,
+          PermissionService permissionService,
+          KeyMapper keyMapper) {
     super(persistence, validator, authProvider, activityActor);
 
     this.messageRepository = messageRepository;
     this.permissionService = permissionService;
+    this.keyMapper = keyMapper;
   }
 
   @Override
@@ -130,8 +137,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   public Key byId(UUID id, String... fetches) {
     return QueryUtils.fetch(persistence.find(Key.class).setId(id).setDisableLazyLoading(true),
             QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP)
-            .findOneOrEmpty()
-            .orElse(null);
+            .findOne();
   }
 
   @Override
@@ -163,13 +169,18 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
             .findOne();
   }
 
+  @Override
+  protected Query<Key> createQuery(ContextCriteria criteria) {
+    return fetch(criteria.getFetches());
+  }
+
   private Query<Key> fetch(List<String> fetches) {
-    return fetch(fetches.toArray(new String[0]));
+    return QueryUtils.fetch(persistence.find(Key.class).alias("k").setDisableLazyLoading(true),
+            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
   }
 
   private Query<Key> fetch(String... fetches) {
-    return QueryUtils.fetch(persistence.find(Key.class).alias("k").setDisableLazyLoading(true),
-            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches), FETCH_MAP);
+    return fetch(fetches != null ? Arrays.asList(fetches) : Collections.emptyList());
   }
 
   private PagedList<Key> fetch(@Nonnull PagedList<Key> paged, @Nonnull KeyCriteria criteria) {
@@ -215,8 +226,8 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
     if (update) {
       activityActor.tell(
               new Activity<>(
-                      ActionType.Update, authProvider.loggedInUser(), t.project, dto.Key.class,
-                      KeyMapper.toDto(byId(t.id)), KeyMapper.toDto(t)),
+                      ActionType.Update, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Key.class,
+                      keyMapper.toDto(byId(t.id), null), keyMapper.toDto(t, null)),
               null
       );
     }
@@ -229,7 +240,7 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   protected void postSave(Key t, boolean update) {
     if (!update) {
       activityActor.tell(
-              new Activity<>(ActionType.Create, authProvider.loggedInUser(), t.project, dto.Key.class, null, KeyMapper.toDto(t)),
+              new Activity<>(ActionType.Create, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Key.class, null, keyMapper.toDto(t, null)),
               null
       );
     }
@@ -241,13 +252,13 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
   @Override
   protected void preDelete(Key t) {
     if (!permissionService
-            .hasPermissionAny(t.project.id, authProvider.loggedInUser(), ProjectRole.Owner, ProjectRole.Manager,
+            .hasPermissionAny(t.project.id, authProvider.loggedInUser(null) /* FIXME: will fail! */, ProjectRole.Owner, ProjectRole.Manager,
                     ProjectRole.Developer)) {
       throw new PermissionException("User not allowed in project");
     }
 
     activityActor.tell(
-            new Activity<>(ActionType.Delete, authProvider.loggedInUser(), t.project, dto.Key.class, KeyMapper.toDto(t), null),
+            new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Key.class, keyMapper.toDto(t, null), null),
             null
     );
 
@@ -262,8 +273,8 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
     activityActor.tell(
             new Activities<>(
                     t.stream()
-                            .map(k -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(), k.project, dto.Key.class,
-                                    KeyMapper.toDto(k), null))
+                            .map(k -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, k.project, dto.Key.class,
+                                    keyMapper.toDto(k, null), null))
                             .collect(Collectors.toList())),
             null
     );

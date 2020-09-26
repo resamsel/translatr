@@ -1,18 +1,21 @@
 package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import mappers.*;
 import models.LogEntry;
 import play.i18n.Messages;
+import play.i18n.MessagesApi;
 import play.libs.Json;
-import play.mvc.Call;
-import play.mvc.Http.Context;
+import play.mvc.Http;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  *
  * @author resamsel
  * @version 2 Oct 2016
  */
+@Singleton
 public class ActivityUtils {
   public static final String PROJECTS_ICON = "dashboard";
   public static final String PROJECT_ICON = "view_quilt";
@@ -36,6 +39,12 @@ public class ActivityUtils {
   public static final String ACCESS_TOKEN_COLOR = "red";
   public static final String PROJECT_USER_COLOR = "purple";
   public static final String ACTIVITY_COLOR = "green";
+  private final MessagesApi messagesApi;
+
+  @Inject
+  public ActivityUtils(MessagesApi messagesApi) {
+    this.messagesApi = messagesApi;
+  }
 
   public static String nameOf(LogEntry activity) {
     if (activity == null)
@@ -115,24 +124,22 @@ public class ActivityUtils {
     return contentType.substring(contentType.lastIndexOf(".") + 1);
   }
 
-  public static String titleOf(LogEntry logEntry) {
-    Context ctx = Context.current();
-    Messages messages = ctx.messages();
+  public String titleOf(LogEntry logEntry, Http.Request request) {
+    Messages messages = messagesApi.preferred(request);
 
     return messages.at("activity." + logEntry.type.normalize() + ".title",
         logEntry.project != null ? logEntry.project.name : "",
         messages.at("contentType." + logEntry.contentType), ActivityUtils.nameOf(logEntry),
-        FormatUtils.pretty(ctx.lang().locale(), logEntry.whenCreated), logEntry.user.name,
+        FormatUtils.pretty(messages.lang().locale(), logEntry.whenCreated), logEntry.user.name,
         logEntry.user.username, logEntry.user.id);
   }
 
-  public static String infoOf(LogEntry logEntry) {
-    Context ctx = Context.current();
-    Messages messages = ctx.messages();
+  public  String infoOf(LogEntry logEntry, Http.Request request) {
+    Messages messages = messagesApi.preferred(request);
 
     return messages.at("activity." + logEntry.type.normalize() + ".info",
         messages.at("contentType." + logEntry.contentType),
-        FormatUtils.pretty(ctx.lang().locale(), logEntry.whenCreated));
+        FormatUtils.pretty(messages.lang().locale(), logEntry.whenCreated));
   }
 
   public static JsonNode parse(LogEntry activity) {

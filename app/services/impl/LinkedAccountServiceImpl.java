@@ -4,6 +4,7 @@ import io.ebean.PagedList;
 import criterias.LinkedAccountCriteria;
 import models.ActionType;
 import models.LinkedAccount;
+import play.mvc.Http;
 import repositories.LinkedAccountRepository;
 import services.*;
 
@@ -31,17 +32,17 @@ public class LinkedAccountServiceImpl
   }
 
   @Override
-  protected PagedList<LinkedAccount> postFind(PagedList<LinkedAccount> pagedList) {
+  protected PagedList<LinkedAccount> postFind(PagedList<LinkedAccount> pagedList, Http.Request request) {
     metricService.logEvent(LinkedAccount.class, ActionType.Read);
 
-    return super.postFind(pagedList);
+    return super.postFind(pagedList, request);
   }
 
   @Override
-  protected LinkedAccount postGet(LinkedAccount model) {
+  protected LinkedAccount postGet(LinkedAccount model, Http.Request request) {
     metricService.logEvent(LinkedAccount.class, ActionType.Read);
 
-    return super.postGet(model);
+    return super.postGet(model, request);
   }
 
   /**
@@ -58,8 +59,8 @@ public class LinkedAccountServiceImpl
   }
 
   @Override
-  protected void postCreate(LinkedAccount t) {
-    super.postCreate(t);
+  protected void postCreate(LinkedAccount t, Http.Request request) {
+    super.postCreate(t, request);
 
     metricService.logEvent(LinkedAccount.class, ActionType.Create);
 
@@ -68,8 +69,8 @@ public class LinkedAccountServiceImpl
   }
 
   @Override
-  protected LinkedAccount postUpdate(LinkedAccount t) {
-    super.postUpdate(t);
+  protected LinkedAccount postUpdate(LinkedAccount t, Http.Request request) {
+    super.postUpdate(t, request);
 
     metricService.logEvent(LinkedAccount.class, ActionType.Update);
 
@@ -83,8 +84,8 @@ public class LinkedAccountServiceImpl
    * {@inheritDoc}
    */
   @Override
-  protected void postDelete(LinkedAccount t) {
-    super.postDelete(t);
+  protected void postDelete(LinkedAccount t, Http.Request request) {
+    super.postDelete(t, request);
 
     metricService.logEvent(LinkedAccount.class, ActionType.Delete);
 

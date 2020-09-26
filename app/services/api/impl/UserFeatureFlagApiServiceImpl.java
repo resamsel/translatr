@@ -21,7 +21,7 @@ public class UserFeatureFlagApiServiceImpl
     super(
         service,
         dto.UserFeatureFlag.class,
-        UserFeatureFlagMapper::toDto,
+            (in, request) -> UserFeatureFlagMapper.toDto(in),
         new Scope[]{Scope.FeatureFlagRead},
         new Scope[]{Scope.FeatureFlagWrite},
         permissionService,

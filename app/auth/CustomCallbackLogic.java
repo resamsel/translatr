@@ -29,8 +29,9 @@ public class CustomCallbackLogic<R, C extends WebContext> implements CallbackLog
     R result = delegate.perform(context, config, httpActionAdapter, defaultUrl, saveInSession, multiProfile, renewSession, client);
 
     try {
+      // INFO: providing null for request in this context is okay
       authProvider.loggedInProfile(context)
-              .ifPresent(profile -> authProvider.updateUser(profile));
+              .ifPresent(profile -> authProvider.updateUser(profile, null));
     } catch (UserUnregisteredException e) {
       return httpActionAdapter.adapt(new SeeOtherAction(routes.Application.indexUi().url() + "/register"), context);
     }

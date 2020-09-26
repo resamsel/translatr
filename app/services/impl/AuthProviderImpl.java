@@ -14,7 +14,6 @@ import play.inject.Injector;
 import play.libs.typedmap.TypedKey;
 import play.mvc.Http;
 import services.AuthProvider;
-import services.ContextProvider;
 import services.UserService;
 
 import javax.inject.Inject;
@@ -26,7 +25,6 @@ import java.util.function.BiFunction;
 
 @Singleton
 public class AuthProviderImpl implements AuthProvider {
-  private final ContextProvider contextProvider;
   private final Injector injector;
   private final PlaySessionStore sessionStore;
 
@@ -38,21 +36,10 @@ public class AuthProviderImpl implements AuthProvider {
 
   @Inject
   public AuthProviderImpl(
-          ContextProvider contextProvider,
           Injector injector,
           PlaySessionStore sessionStore) {
-    this.contextProvider = contextProvider;
     this.injector = injector;
     this.sessionStore = sessionStore;
-  }
-
-  /**
-   * @deprecated use {{@link AuthProviderImpl#loggedInUser(Http.Request)} instead.
-   */
-  @Override
-  @Deprecated
-  public User loggedInUser() {
-    return loggedInUser(contextProvider.getOrNull().request());
   }
 
   @Override
@@ -87,15 +74,9 @@ public class AuthProviderImpl implements AuthProvider {
     return null;
   }
 
-  @Deprecated
-  @Override
-  public UUID loggedInUserId() {
-    return loggedInUserId(contextProvider.getOrNull().request());
-  }
-
   @Override
   public UUID loggedInUserId(Http.Request request) {
-    User loggedInUser = loggedInUser();
+    User loggedInUser = loggedInUser(request);
 
     if (loggedInUser == null) {
       return null;
@@ -115,7 +96,7 @@ public class AuthProviderImpl implements AuthProvider {
   }
 
   @Override
-  public void updateUser(CommonProfile profile) {
+  public void updateUser(CommonProfile profile, Http.Request request) {
     if (profile == null) {
       return;
     }
@@ -132,7 +113,7 @@ public class AuthProviderImpl implements AuthProvider {
 
     if (!newRole.equals(user.role)) {
       user.role = newRole;
-      userService.update(user);
+      userService.update(user, request);
     }
   }
 

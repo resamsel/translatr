@@ -13,7 +13,7 @@ public class ActivityUtilsTest {
 
   @Test
   public void instanceOf() {
-    assertThat(new ActivityUtils()).isNotNull();
+    assertThat(new ActivityUtils(null)).isNotNull();
   }
 
   @Test

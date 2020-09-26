@@ -26,7 +26,7 @@ public class AccessTokenAuthenticator implements Authenticator<TokenCredentials>
   public void validate(TokenCredentials credentials, WebContext context) {
     init();
 
-    AccessToken accessToken = accessTokenService.byKey(credentials.getToken());
+    AccessToken accessToken = accessTokenService.byKey(credentials.getToken(), null) /* FIXME */;
 
     if (accessToken == null) {
       throw new CredentialsException("Could not validate access token");

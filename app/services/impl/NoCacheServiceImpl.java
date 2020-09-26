@@ -31,6 +31,4 @@ public class NoCacheServiceImpl extends CacheServiceImpl implements CacheService
       return null;
     }
   }
-
-
 }

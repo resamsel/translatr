@@ -16,26 +16,8 @@ public interface AuthProvider {
    * Retrieves the logged-in user.
    *
    * @return the logged-in user, or null, if unauthenticated
-   * @deprecated Use {@link AuthProvider#loggedInUser(Http.Request)} instead.
-   */
-  @Deprecated
-  User loggedInUser();
-
-  /**
-   * Retrieves the logged-in user.
-   *
-   * @return the logged-in user, or null, if unauthenticated
    */
   User loggedInUser(Http.Request request);
-
-  /**
-   * Retrieves the logged-in user ID.
-   *
-   * @return the logged-in user ID, or null, if unauthenticated
-   * @deprecated Use {@link AuthProvider#loggedInUserId(Http.Request)} instead.
-   */
-  @Deprecated
-  UUID loggedInUserId();
 
   /**
    * Retrieves the logged-in user ID.
@@ -53,5 +35,5 @@ public interface AuthProvider {
 
   Optional<CommonProfile> loggedInProfile(WebContext context);
 
-  void updateUser(CommonProfile profile);
+  void updateUser(CommonProfile profile, Http.Request request);
 }

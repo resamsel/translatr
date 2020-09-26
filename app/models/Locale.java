@@ -1,15 +1,11 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.ebean.annotation.CreatedTimestamp;
 import io.ebean.annotation.UpdatedTimestamp;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import controllers.AbstractController;
-import controllers.routes;
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
-import play.api.mvc.Call;
 import play.libs.Json;
-import play.mvc.Http.Context;
 import utils.CacheUtils;
 import utils.UrlUtils;
 import validators.LocaleNameUniqueChecker;
@@ -26,15 +22,12 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-
-import static utils.FormatUtils.formatLocale;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"project_id", "name"})})
 @NameUnique(checker = LocaleNameUniqueChecker.class)
-public class Locale implements Model<Locale, UUID>, Suggestable {
+public class Locale implements Model<Locale, UUID> {
 
   public static final int NAME_LENGTH = 15;
 
@@ -79,18 +72,6 @@ public class Locale implements Model<Locale, UUID>, Suggestable {
   @Override
   public UUID getId() {
     return id;
-  }
-
-  @Override
-  public String value() {
-    Context ctx = Context.current();
-    return ctx.messages().at("locale.autocomplete", formatLocale(ctx.lang().locale(), this));
-  }
-
-  @Override
-  public Data data() {
-    return Data.from(Locale.class, id, formatLocale(Context.current().lang().locale(), this),
-            null);
   }
 
   @Override

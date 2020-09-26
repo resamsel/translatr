@@ -4,6 +4,7 @@ import com.google.inject.ImplementedBy;
 import criterias.ProjectCriteria;
 import models.Project;
 import models.User;
+import play.mvc.Http;
 import services.impl.ProjectServiceImpl;
 
 import java.util.UUID;
@@ -21,11 +22,11 @@ public interface ProjectService extends ModelService<Project, UUID, ProjectCrite
    * @param username The username of the project owner
    * @param name The name of the project
    */
-  Project byOwnerAndName(String username, String name, String... fetches);
+  Project byOwnerAndName(String username, String name, Http.Request request, String... fetches);
 
-  void increaseWordCountBy(UUID projectId, int wordCountDiff);
+  void increaseWordCountBy(UUID projectId, int wordCountDiff, Http.Request request);
 
-  void resetWordCount(UUID projectId);
+  void resetWordCount(UUID projectId, Http.Request request);
 
   /**
    * Changes the owner of the project to the given owner.
@@ -33,5 +34,5 @@ public interface ProjectService extends ModelService<Project, UUID, ProjectCrite
    * @param project The project to change the owner of
    * @param owner The new owner
    */
-  void changeOwner(Project project, User owner);
+  void changeOwner(Project project, User owner, Http.Request request);
 }

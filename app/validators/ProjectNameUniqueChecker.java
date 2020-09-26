@@ -31,7 +31,7 @@ public class ProjectNameUniqueChecker implements NameUniqueChecker {
     }
 
     Project t = (Project) o;
-    Project existing = projectService.byOwnerAndName(t.owner.username, t.name);
+    Project existing = projectService.byOwnerAndName(t.owner.username, t.name, null /* FIXME */);
 
     LOGGER.debug("existing project: {}", existing);
 

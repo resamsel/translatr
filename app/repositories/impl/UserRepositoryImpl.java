@@ -2,6 +2,7 @@ package repositories.impl;
 
 import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activity;
+import criterias.ContextCriteria;
 import criterias.PagedListFactory;
 import criterias.UserCriteria;
 import dto.NotFoundException;
@@ -72,8 +73,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   @Override
   public User byId(UUID id, String... fetches) {
     return QueryUtils.fetch(persistence.find(User.class).setId(id), fetches, FETCH_MAP)
-            .findOneOrEmpty()
-            .orElse(null);
+            .findOne();
   }
 
   @Override
@@ -81,8 +81,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
     return QueryUtils.fetch(persistence.find(User.class), fetches, FETCH_MAP)
             .where()
             .eq("username", username)
-            .findOneOrEmpty()
-            .orElse(null);
+            .findOne();
   }
 
   @Override
@@ -91,8 +90,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
             .where()
             .eq("linkedAccounts.providerKey", providerKey)
             .eq("linkedAccounts.providerUserId", providerUserId)
-            .findOneOrEmpty()
-            .orElse(null);
+            .findOne();
   }
 
   @Override
@@ -100,8 +98,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
     return persistence.find(User.class)
             .where()
             .eq("accessTokens.key", accessTokenKey)
-            .findOneOrEmpty()
-            .orElse(null);
+            .findOne();
   }
 
   @Override
@@ -155,6 +152,11 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
     return persistSettings(userId, settings, false);
   }
 
+  @Override
+  protected Query<User> createQuery(ContextCriteria criteria) {
+    return createQuery(User.class, PROPERTIES_TO_FETCH, FETCH_MAP, criteria.getFetches());
+  }
+
   /**
    * Replaces or updates existing settings based on the given replace flag.
    */
@@ -201,7 +203,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
   protected void prePersist(User t, boolean update) {
     if (update) {
       activityActor.tell(
-              new Activity<>(ActionType.Update, authProvider.loggedInUser(), null, dto.User.class, toDto(byId(t.id)), toDto(t)),
+              new Activity<>(ActionType.Update, authProvider.loggedInUser(null) /* FIXME: will fail! */, null, dto.User.class, toDto(byId(t.id)), toDto(t)),
               null
       );
     }

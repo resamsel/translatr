@@ -104,11 +104,11 @@ public class KeyServiceTest {
     keyRepository.create(key);
 
     // This invocation should feed the cache
-    assertThat(target.byProjectAndName(key.project, key.name)).nameIsEqualTo("a");
+    assertThat(target.byProjectAndName(key.project, key.name, request)).nameIsEqualTo("a");
     verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
 
     // This invocation should use the cache, not the repository
-    assertThat(target.byProjectAndName(key.project, key.name)).nameIsEqualTo("a");
+    assertThat(target.byProjectAndName(key.project, key.name, request)).nameIsEqualTo("a");
     verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
 
     // This should trigger cache invalidation
@@ -117,7 +117,7 @@ public class KeyServiceTest {
 
     assertThat(cacheService.keys().keySet())
             .doesNotContain("key:project:" + key.project.id + ":name:a");
-    assertThat(target.byProjectAndName(key.project, key.name)).nameIsEqualTo("ab");
+    assertThat(target.byProjectAndName(key.project, key.name, request)).nameIsEqualTo("ab");
     verify(keyRepository, times(1)).byProjectAndName(eq(key.project), eq(key.name));
   }
 

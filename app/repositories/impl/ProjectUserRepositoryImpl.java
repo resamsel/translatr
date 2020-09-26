@@ -4,10 +4,12 @@ import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activity;
 import actors.NotificationActorRef;
 import actors.NotificationProtocol.FollowNotification;
+import criterias.ContextCriteria;
 import criterias.PagedListFactory;
 import criterias.ProjectUserCriteria;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
+import io.ebean.Query;
 import mappers.ProjectUserMapper;
 import models.ActionType;
 import models.ProjectUser;
@@ -66,8 +68,7 @@ public class ProjectUserRepositoryImpl extends
   }
 
   private ExpressionList<ProjectUser> findQuery(ProjectUserCriteria criteria) {
-    ExpressionList<ProjectUser> query = QueryUtils
-        .fetch(persistence.find(ProjectUser.class), PROPERTIES_TO_FETCH, FETCH_MAP).where();
+    ExpressionList<ProjectUser> query = createQuery(criteria).where();
 
     query.eq("project.deleted", false);
 
@@ -95,6 +96,11 @@ public class ProjectUserRepositoryImpl extends
     return query;
   }
 
+  @Override
+  protected Query<ProjectUser> createQuery(ContextCriteria criteria) {
+    return createQuery(ProjectUser.class, PROPERTIES_TO_FETCH, FETCH_MAP, criteria.getFetches());
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -103,7 +109,7 @@ public class ProjectUserRepositoryImpl extends
     if (update) {
       activityActor.tell(
           new Activity<>(
-              ActionType.Update, authProvider.loggedInUser(), t.project, dto.ProjectUser.class, toDto(byId(t.id)), toDto(t)
+              ActionType.Update, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.ProjectUser.class, toDto(byId(t.id)), toDto(t)
           ),
           null
       );
@@ -119,7 +125,7 @@ public class ProjectUserRepositoryImpl extends
       persistence.refresh(t.user);
       activityActor.tell(
           new Activity<>(
-              ActionType.Create, authProvider.loggedInUser(), t.project, dto.ProjectUser.class, null, toDto(t)
+              ActionType.Create, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.ProjectUser.class, null, toDto(t)
           ),
           null
       );
@@ -135,7 +141,7 @@ public class ProjectUserRepositoryImpl extends
   public void preDelete(ProjectUser t) {
     activityActor.tell(
         new Activity<>(
-            ActionType.Delete, authProvider.loggedInUser(), t.project, dto.ProjectUser.class, toDto(t), null
+            ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.ProjectUser.class, toDto(t), null
         ),
         null
     );
