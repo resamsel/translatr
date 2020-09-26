@@ -26,7 +26,7 @@ public class LocaleWordCountActor extends AbstractActor {
   public Receive createReceive() {
     return receiveBuilder()
             .match(ChangeWordCount.class,
-                    wordCount -> localeService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff, null /* FIXME */))
+                    wordCount -> localeService.increaseWordCountBy(wordCount.id, wordCount.wordCountDiff, wordCount.request))
             .build();
   }
 }
