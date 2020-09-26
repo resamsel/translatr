@@ -3,6 +3,7 @@ package importers;
 import models.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import services.KeyService;
 import services.MessageService;
 
@@ -18,16 +19,13 @@ import java.util.Properties;
 public abstract class PropertiesImporter extends AbstractImporter implements Importer {
   private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesImporter.class);
 
-  /**
-   * 
-   */
   protected PropertiesImporter(KeyService keyService, MessageService messageService) {
     super(keyService, messageService);
   }
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @throws IOException
    * @throws FileNotFoundException
    * @throws UnsupportedEncodingException
@@ -44,15 +42,15 @@ public abstract class PropertiesImporter extends AbstractImporter implements Imp
   }
 
   @Override
-  public void apply(File file, Locale locale) throws Exception {
+  public void apply(File file, Locale locale, Http.Request request) throws Exception {
     LOGGER.debug("Importing from file {}", file.getName());
 
     Properties properties = retrieveProperties(new FileInputStream(file), null);
 
-    load(locale, properties.stringPropertyNames());
+    load(locale, properties.stringPropertyNames(), request);
 
-    saveKeys(locale, properties);
-    saveMessages(locale, properties);
+    saveKeys(locale, properties, request);
+    saveMessages(locale, properties, request);
 
     LOGGER.debug("Imported from file {}", file.getName());
   }

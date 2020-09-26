@@ -110,7 +110,7 @@ public abstract class AbstractApiService
   public DTO create(Http.Request request, JsonNode in) {
     permissionService.checkPermissionAll(request, "Access token not allowed", writeScopes);
 
-    return getDtoMapper(request).apply(service.create(toModel(toDto(in)), request));
+    return getDtoMapper(request).apply(service.create(toModel(toDto(in), request), request));
   }
 
   /**
@@ -120,7 +120,7 @@ public abstract class AbstractApiService
   public DTO update(Http.Request request, JsonNode in) {
     permissionService.checkPermissionAll(request, "Access token not allowed", writeScopes);
 
-    return getDtoMapper(request).apply(service.update(toModel(toDto(in)), request));
+    return getDtoMapper(request).apply(service.update(toModel(toDto(in), request), request));
   }
 
   /**
@@ -159,5 +159,5 @@ public abstract class AbstractApiService
     return dto;
   }
 
-  protected abstract MODEL toModel(DTO dto);
+  protected abstract MODEL toModel(DTO dto, Http.Request request);
 }

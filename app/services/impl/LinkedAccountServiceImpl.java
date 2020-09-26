@@ -1,5 +1,6 @@
 package services.impl;
 
+import actors.ActivityActorRef;
 import io.ebean.PagedList;
 import criterias.LinkedAccountCriteria;
 import models.ActionType;
@@ -26,8 +27,8 @@ public class LinkedAccountServiceImpl
   @Inject
   public LinkedAccountServiceImpl(Validator validator, CacheService cache,
                                   LinkedAccountRepository linkedAccountRepository, LogEntryService logEntryService,
-                                  AuthProvider authProvider, MetricService metricService) {
-    super(validator, cache, linkedAccountRepository, LinkedAccount::getCacheKey, logEntryService, authProvider);
+                                  AuthProvider authProvider, MetricService metricService, ActivityActorRef activityActor) {
+    super(validator, cache, linkedAccountRepository, LinkedAccount::getCacheKey, logEntryService, authProvider, activityActor);
     this.metricService = metricService;
   }
 

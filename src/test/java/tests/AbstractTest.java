@@ -28,7 +28,7 @@ public class AbstractTest extends WithApplication {
   protected AuthProvider authProvider;
 
   protected User createUser(String name, String email) {
-    return userService.create(new User().withName(name).withEmail(email).withActive(true));
+    return userService.create(new User().withName(name).withEmail(email).withActive(true), null);
   }
 
   private GuiceApplicationBuilder builder() {

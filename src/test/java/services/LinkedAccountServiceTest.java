@@ -1,18 +1,20 @@
 package services;
 
+import actors.ActivityActorRef;
+import criterias.GetCriteria;
 import criterias.LinkedAccountCriteria;
 import criterias.PagedListFactory;
+import io.ebean.PagedList;
 import models.LinkedAccount;
 import models.User;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import repositories.LinkedAccountRepository;
-import services.impl.CacheServiceImpl;
 import services.impl.LinkedAccountServiceImpl;
-import utils.CacheApiMock;
+import services.impl.NoCacheServiceImpl;
 import utils.UserRepositoryMock;
 
 import javax.validation.Validator;
@@ -20,7 +22,6 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static assertions.LinkedAccountAssert.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -35,87 +36,54 @@ public class LinkedAccountServiceTest {
   private CacheService cacheService;
   private User johnSmith;
 
-  @Test
-  public void testById() {
-    // mock linkedAccount
-    LinkedAccount linkedAccount = createLinkedAccount(ThreadLocalRandom.current().nextLong(),
-        johnSmith, "google", UUID.randomUUID().toString());
-    linkedAccountRepository.create(linkedAccount);
-
-    // This invocation should feed the cache
-    assertThat(cacheService.keys().keySet()).doesNotContain("linkedAccount:id:" + linkedAccount.id);
-    assertThat(target.byId(linkedAccount.id))
-        .providerKeyIsEqualTo(linkedAccount.providerKey);
-    verify(linkedAccountRepository, times(1)).byId(eq(linkedAccount.id));
-
-    // This invocation should use the cache, not the repository
-    assertThat(cacheService.keys().keySet()).contains("linkedAccount:id:" + linkedAccount.id);
-    assertThat(target.byId(linkedAccount.id))
-        .providerKeyIsEqualTo(linkedAccount.providerKey);
-    verify(linkedAccountRepository, times(1)).byId(eq(linkedAccount.id));
-
-    // This should trigger cache invalidation
-    target
-        .update(createLinkedAccount(linkedAccount, "facebook", UUID.randomUUID().toString()));
-
-    assertThat(cacheService.keys().keySet()).contains("linkedAccount:id:" + linkedAccount.id);
-    assertThat(target.byId(linkedAccount.id)).providerKeyIsEqualTo("facebook");
-    verify(linkedAccountRepository, times(1)).byId(eq(linkedAccount.id));
-  }
-
-  @Test
-  public void testFindBy() {
-    // mock linkedAccount
-    LinkedAccount linkedAccount = createLinkedAccount(ThreadLocalRandom.current().nextLong(),
-        johnSmith, "google", UUID.randomUUID().toString());
-    linkedAccountRepository.create(linkedAccount);
-
-    // This invocation should feed the cache
-    LinkedAccountCriteria criteria = new LinkedAccountCriteria().withUserId(linkedAccount.user.id);
-    assertThat(target.findBy(criteria).getList().get(0))
-        .as("uncached")
-        .providerKeyIsEqualTo(linkedAccount.providerKey);
-    verify(linkedAccountRepository, times(1)).findBy(eq(criteria));
-    // This invocation should use the cache, not the repository
-    assertThat(target.findBy(criteria).getList().get(0))
-        .as("cached")
-        .providerKeyIsEqualTo(linkedAccount.providerKey);
-    verify(linkedAccountRepository, times(1)).findBy(eq(criteria));
-
-    // This should trigger cache invalidation
-    target
-        .update(createLinkedAccount(linkedAccount, "facebook", UUID.randomUUID().toString()));
-
-    assertThat(target.findBy(criteria).getList().get(0))
-        .as("uncached (invalidated)")
-        .providerKeyIsEqualTo("facebook");
-    verify(linkedAccountRepository, times(2)).findBy(eq(criteria));
-  }
-
   @Before
   public void before() {
     linkedAccountRepository = mock(LinkedAccountRepository.class,
             withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
-    cacheService = new CacheServiceImpl(new CacheApiMock());
+    cacheService = new NoCacheServiceImpl();
     target = new LinkedAccountServiceImpl(
             mock(Validator.class),
             cacheService,
             linkedAccountRepository,
             mock(LogEntryService.class),
             mock(AuthProvider.class),
-            mock(MetricService.class)
+            mock(MetricService.class),
+            mock(ActivityActorRef.class)
     );
 
     johnSmith = UserRepositoryMock.byUsername("johnsmith");
-
-    when(linkedAccountRepository.create(any())).then(this::persist);
-    when(linkedAccountRepository.update(any())).then(this::persist);
   }
 
-  private LinkedAccount persist(InvocationOnMock a) {
-    LinkedAccount t = a.getArgument(0);
-    when(linkedAccountRepository.byId(eq(t.id), any())).thenReturn(t);
-    when(linkedAccountRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
-    return t;
+  @Test
+  public void byId() {
+    // mock linkedAccount
+    LinkedAccount linkedAccount = createLinkedAccount(ThreadLocalRandom.current().nextLong(),
+            johnSmith, "google", UUID.randomUUID().toString());
+    Http.Request request = mock(Http.Request.class);
+
+    when(linkedAccountRepository.byId(any(GetCriteria.class))).thenReturn(linkedAccount);
+
+    // when
+    LinkedAccount actual = target.byId(linkedAccount.id, request);
+
+    // then
+    assertThat(actual).providerKeyIsEqualTo(linkedAccount.providerKey);
+  }
+
+  @Test
+  public void findBy() {
+    // given
+    LinkedAccount linkedAccount = createLinkedAccount(ThreadLocalRandom.current().nextLong(),
+            johnSmith, "google", UUID.randomUUID().toString());
+    Http.Request request = mock(Http.Request.class);
+    LinkedAccountCriteria criteria = new LinkedAccountCriteria().withUserId(linkedAccount.user.id);
+
+    when(linkedAccountRepository.findBy(eq(criteria))).thenReturn(PagedListFactory.create(linkedAccount));
+
+    // when
+    PagedList<LinkedAccount> actual = target.findBy(criteria);
+
+    // then
+    assertThat(actual.getList().get(0)).providerKeyIsEqualTo(linkedAccount.providerKey);
   }
 }

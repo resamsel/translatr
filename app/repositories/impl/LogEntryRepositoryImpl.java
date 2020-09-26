@@ -1,6 +1,5 @@
 package repositories.impl;
 
-import actors.ActivityActorRef;
 import actors.NotificationActorRef;
 import actors.NotificationProtocol.PublishNotification;
 import criterias.ContextCriteria;
@@ -11,34 +10,24 @@ import io.ebean.PagedList;
 import io.ebean.Query;
 import models.LogEntry;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import repositories.LogEntryRepository;
 import repositories.Persistence;
-import services.AuthProvider;
 import utils.QueryUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-import java.util.Collection;
 import java.util.UUID;
 
 @Singleton
 public class LogEntryRepositoryImpl extends
-    AbstractModelRepository<LogEntry, UUID, LogEntryCriteria> implements
-    LogEntryRepository {
-  private static final Logger LOGGER = LoggerFactory.getLogger(LogEntryRepositoryImpl.class);
-
+        AbstractModelRepository<LogEntry, UUID, LogEntryCriteria> implements
+        LogEntryRepository {
   private final NotificationActorRef notificationActor;
 
   @Inject
-  public LogEntryRepositoryImpl(Persistence persistence,
-                                Validator validator,
-                                AuthProvider authProvider,
-                                ActivityActorRef activityActor,
-                                NotificationActorRef notificationActor) {
-    super(persistence, validator, authProvider, activityActor);
+  public LogEntryRepositoryImpl(Persistence persistence, Validator validator, NotificationActorRef notificationActor) {
+    super(persistence, validator);
 
     this.notificationActor = notificationActor;
   }
@@ -65,7 +54,7 @@ public class LogEntryRepositoryImpl extends
   @Override
   public LogEntry byId(UUID id, String... fetches) {
     return QueryUtils.fetch(persistence.find(LogEntry.class).setId(id).setDisableLazyLoading(true),
-        QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches)).findOne();
+            QueryUtils.mergeFetches(PROPERTIES_TO_FETCH, fetches)).findOne();
   }
 
   @Override
@@ -82,7 +71,7 @@ public class LogEntryRepositoryImpl extends
 
     if (StringUtils.isNoneEmpty(criteria.getSearch())) {
       query.disjunction().ilike("before", "%" + criteria.getSearch() + "%")
-          .ilike("after", "%" + criteria.getSearch() + "%").endJunction();
+              .ilike("after", "%" + criteria.getSearch() + "%").endJunction();
     }
 
     if (criteria.getUserId() != null) {
@@ -107,25 +96,6 @@ public class LogEntryRepositoryImpl extends
   @Override
   protected Query<LogEntry> createQuery(ContextCriteria criteria) {
     return createQuery(LogEntry.class, PROPERTIES_TO_FETCH, criteria.getFetches());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void preSave(LogEntry t, boolean update) {
-    if (t.user == null) {
-      t.user = authProvider.loggedInUser(null) /* FIXME: will fail! */;
-      LOGGER.debug("preSave(): user of log entry is {}", t.user);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void preSave(Collection<LogEntry> t) {
-    t.forEach(e -> preSave(e, false));
   }
 
   /**

@@ -1,29 +1,34 @@
 package services;
 
+import actors.ActivityActorRef;
+import criterias.GetCriteria;
 import criterias.PagedListFactory;
 import criterias.ProjectCriteria;
+import io.ebean.PagedList;
+import mappers.ProjectMapper;
 import models.Project;
 import models.User;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import repositories.MessageRepository;
 import repositories.ProjectRepository;
 import services.impl.CacheServiceImpl;
+import services.impl.NoCacheServiceImpl;
 import services.impl.ProjectServiceImpl;
-import utils.CacheApiMock;
 import utils.UserRepositoryMock;
 import validators.ProjectNameUniqueChecker;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import static assertions.CustomAssertions.assertThat;
@@ -33,200 +38,32 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static utils.ProjectRepositoryMock.createProject;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ProjectServiceTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectServiceTest.class);
 
+  @Mock
   private ProjectRepository projectRepository;
+  @Mock
+  private Validator validator;
+  @Mock
+  private ProjectMapper projectMapper;
+
   private ProjectService target;
-  private CacheService cacheService;
+
   private User johnSmith;
   private User janeDoe;
-  private Validator validator;
-
-  @Test
-  public void testById() {
-    // mock project
-    Project project = createProject(UUID.randomUUID(), "name", "johnsmith");
-    projectRepository.create(project);
-
-    // This invocation should feed the cache
-    assertThat(cacheService.keys().keySet()).doesNotContain("project:id:" + project.id);
-    assertThat(target.byId(project.id)).nameIsEqualTo("name");
-    verify(projectRepository, times(1)).byId(eq(project.id));
-
-    // This invocation should use the cache, not the repository
-    assertThat(cacheService.keys().keySet()).contains("project:id:" + project.id);
-    assertThat(target.byId(project.id)).nameIsEqualTo("name");
-    verify(projectRepository, times(1)).byId(eq(project.id));
-
-    // This should trigger cache invalidation
-    project = createProject(project, "name2");
-    target.update(project);
-
-    assertThat(cacheService.keys().keySet()).contains("project:id:" + project.id);
-    assertThat(target.byId(project.id)).nameIsEqualTo("name2");
-    verify(projectRepository, times(1)).byId(eq(project.id));
-  }
-
-  @Test
-  public void testFindBy() {
-    // mock project
-    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
-    projectRepository.create(project);
-
-    // This invocation should feed the cache
-    ProjectCriteria criteria = new ProjectCriteria().withSearch("name");
-    assertThat(target.findBy(criteria).getList().get(0))
-            .as("uncached")
-            .nameIsEqualTo("name");
-    verify(projectRepository, times(1)).findBy(eq(criteria));
-    // This invocation should use the cache, not the repository
-    assertThat(target.findBy(criteria).getList().get(0))
-            .as("cached")
-            .nameIsEqualTo("name");
-    verify(projectRepository, times(1)).findBy(eq(criteria));
-
-    // This should trigger cache invalidation
-    project = createProject(project, "name3");
-    target.update(project);
-
-    assertThat(target.findBy(criteria).getList().get(0))
-            .as("uncached (invalidated)")
-            .nameIsEqualTo("name3");
-    verify(projectRepository, times(2)).findBy(eq(criteria));
-  }
-
-  @Test
-  public void testByOwnerAndName() {
-    // mock project
-    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
-    projectRepository.create(project);
-
-    // This invocation should feed the cache
-    assertThat(cacheService.keys().keySet())
-            .doesNotContain("project:owner:" + project.owner.username + ":" + project.name);
-    assertThat(target.byOwnerAndName(project.owner.username, project.name))
-            .nameIsEqualTo("name");
-    verify(projectRepository, times(1))
-            .byOwnerAndName(eq(project.owner.username), eq(project.name));
-
-    // This invocation should use the cache, not the repository
-    assertThat(cacheService.keys().keySet())
-            .contains("project:owner:" + project.owner.username + ":" + project.name);
-    assertThat(target.byOwnerAndName(project.owner.username, project.name))
-            .nameIsEqualTo("name");
-    verify(projectRepository, times(1))
-            .byOwnerAndName(eq(project.owner.username), eq(project.name));
-
-    // This should trigger cache invalidation
-    project = createProject(project, "name2");
-    target.update(project);
-
-    assertThat(cacheService.keys().keySet())
-            .doesNotContain("project:owner:" + project.owner.username + ":" + project.name);
-    assertThat(target.byOwnerAndName(project.owner.username, project.name))
-            .nameIsEqualTo("name2");
-    verify(projectRepository, times(1))
-            .byOwnerAndName(eq(project.owner.username), eq(project.name));
-  }
-
-  @Test
-  public void testIncreaseWordCountBy() {
-    // mock project
-    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
-    projectRepository.create(project);
-
-    assertThat(target.byId(project.id)).wordCountIsNull();
-
-    // This should trigger cache invalidation
-    target.increaseWordCountBy(project.id, 1);
-
-    assertThat(target.byId(project.id)).wordCountIsEqualTo(1);
-    verify(projectRepository, times(1)).byId(eq(project.id));
-  }
-
-  @Test
-  public void testResetWordCount() {
-    // mock project
-    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
-    project.wordCount = 100;
-    projectRepository.create(project);
-
-    assertThat(target.byId(project.id)).wordCountIsEqualTo(100);
-
-    // This should trigger cache invalidation
-    target.resetWordCount(project.id);
-
-    assertThat(target.byId(project.id)).wordCountIsNull();
-    verify(projectRepository, times(1)).byId(eq(project.id));
-  }
-
-  @Test
-  public void testChangeOwner() {
-    // mock projects
-    Project projectJohn = createProject(UUID.randomUUID(), "name", johnSmith.username);
-    projectRepository.create(projectJohn);
-    Project projectJane = createProject(UUID.randomUUID(), "name", janeDoe.username);
-    projectRepository.create(projectJane);
-
-    assertThat(target.byId(projectJohn.id))
-            .ownerIsEqualTo(johnSmith)
-            .nameIsEqualTo(projectJohn.name);
-    assertThat(target.byId(projectJane.id))
-            .ownerIsEqualTo(janeDoe)
-            .nameIsEqualTo(projectJane.name);
-
-    when(validator.validate(any())).thenAnswer(a -> {
-      Project p = a.getArgument(0);
-
-      if (!new ProjectNameUniqueChecker(target).isValid(p)) {
-        return new HashSet<>(Collections.singletonList(
-                ConstraintViolationImpl.forBeanValidation(
-                        "",
-                        Collections.<String, Object>emptyMap(),
-                        Collections.<String, Object>emptyMap(),
-                        "",
-                        Project.class,
-                        p,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null)
-        ));
-      }
-
-      return new HashSet<>();
-    });
-
-    try {
-      target.changeOwner(projectJohn, janeDoe);
-      failBecauseExceptionWasNotThrown(ConstraintViolationException.class);
-    } catch (Exception e) {
-      assertThat(e).isInstanceOf(ConstraintViolationException.class);
-    }
-
-    // This should trigger cache invalidation
-    target.changeOwner(projectJohn.withName("name2"), janeDoe);
-
-    assertThat(target.byId(projectJohn.id)).ownerIsEqualTo(janeDoe).nameIsEqualTo("name2");
-    verify(projectRepository, times(1)).byId(eq(projectJohn.id));
-  }
-
 
   @Before
   public void before() {
-    validator = mock(Validator.class);
     projectRepository = mock(
             ProjectRepository.class,
             withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation()))
     );
-    cacheService = new CacheServiceImpl(new CacheApiMock());
     target = new ProjectServiceImpl(
             validator,
-            cacheService,
+            new NoCacheServiceImpl(),
             projectRepository,
             mock(LocaleService.class),
             mock(KeyService.class),
@@ -235,26 +72,110 @@ public class ProjectServiceTest {
             mock(ProjectUserService.class),
             mock(LogEntryService.class),
             mock(AuthProvider.class),
-            mock(MetricService.class)
+            mock(MetricService.class),
+            mock(ActivityActorRef.class),
+            projectMapper,
+            mock(PermissionService.class)
     );
+
     johnSmith = UserRepositoryMock.byUsername("johnsmith");
     janeDoe = UserRepositoryMock.byUsername("janedoe");
-
-    when(projectRepository.create(any())).then(this::persist);
-    when(projectRepository.update(any())).then(this::persist);
   }
 
-  private Project persist(InvocationOnMock a) {
-    Project p = a.getArgument(0);
+  @Test
+  public void byId() {
+    // given
+    Project project = createProject(UUID.randomUUID(), "name", "johnsmith");
+    Http.Request request = mock(Http.Request.class);
 
-    Set<ConstraintViolation<Project>> violations = validator.validate(p);
-    if (violations != null && !violations.isEmpty()) {
-      throw new ConstraintViolationException("Violations found", violations);
-    }
+    when(projectRepository.byId(any(GetCriteria.class))).thenReturn(project);
 
-    when(projectRepository.byId(eq(p.id), any())).thenReturn(p);
-    when(projectRepository.byOwnerAndName(eq(p.owner.username), eq(p.name))).thenReturn(p);
-    when(projectRepository.findBy(any())).thenReturn(PagedListFactory.create(p));
-    return p;
+    // when
+    Project actual = target.byId(project.id, request);
+
+    // then
+    assertThat(actual).nameIsEqualTo("name");
+  }
+
+  @Test
+  public void findBy() {
+    // given
+    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
+    Http.Request request = mock(Http.Request.class);
+    ProjectCriteria criteria = new ProjectCriteria().withSearch("name");
+
+    when(projectRepository.findBy(eq(criteria))).thenReturn(PagedListFactory.create(project));
+
+    // when
+    PagedList<Project> actual = target.findBy(criteria);
+
+    // then
+    assertThat(actual.getList().get(0)).nameIsEqualTo("name");
+  }
+
+  @Test
+  public void byOwnerAndName() {
+    // given
+    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
+    Http.Request request = mock(Http.Request.class);
+
+    when(projectRepository.byOwnerAndName(johnSmith.username, project.name, null)).thenReturn(project);
+
+    // when
+    Project actual = target.byOwnerAndName(project.owner.username, project.name, request);
+
+    // then
+    assertThat(actual).nameIsEqualTo("name");
+  }
+
+  @Test
+  public void increaseWordCountBy() {
+    // given
+    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
+    Http.Request request = mock(Http.Request.class);
+
+    when(projectRepository.byId(any(GetCriteria.class))).thenReturn(project);
+
+    // when
+    Project actual = target.increaseWordCountBy(project.id, 1, request);
+
+    // then
+    assertThat(actual).nameIsEqualTo("name").wordCountIsEqualTo(1);
+  }
+
+  @Test
+  public void resetWordCount() {
+    // given
+    Project project = createProject(UUID.randomUUID(), "name", johnSmith.username);
+    project.wordCount = 100;
+    Http.Request request = mock(Http.Request.class);
+
+    when(projectRepository.byId(any(GetCriteria.class))).thenReturn(project);
+
+    // when
+    Project actual = target.resetWordCount(project.id, request);
+
+    // then
+    assertThat(actual).wordCountIsNull();
+  }
+
+  @Test
+  public void changeOwner() {
+    // given
+    Project projectJohn = createProject(UUID.randomUUID(), "name", johnSmith.username);
+    Project projectJane = createProject(UUID.randomUUID(), "name", janeDoe.username);
+    dto.Project projectJohnDto = new dto.Project();
+    projectJohnDto.name = projectJohn.name;
+    Http.Request request = mock(Http.Request.class);
+
+    when(projectRepository.byId(any(GetCriteria.class))).thenReturn(projectJohn);
+    when(projectMapper.toDto(eq(projectJohn), eq(request))).thenReturn(projectJohnDto);
+    when(projectRepository.update(eq(projectJohn))).thenReturn(projectJohn);
+
+    // when
+    Project actual = target.changeOwner(projectJohn, janeDoe, request);
+
+    // then
+    assertThat(actual).ownerNameIsEqualTo(janeDoe.name);
   }
 }

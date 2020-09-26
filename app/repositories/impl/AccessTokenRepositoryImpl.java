@@ -1,28 +1,21 @@
 package repositories.impl;
 
-import actors.ActivityActorRef;
-import actors.ActivityProtocol.Activity;
 import criterias.AccessTokenCriteria;
 import criterias.ContextCriteria;
 import criterias.PagedListFactory;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import io.ebean.Query;
-import mappers.AccessTokenMapper;
 import models.AccessToken;
-import models.ActionType;
-import models.User;
-import models.UserRole;
 import org.apache.commons.lang3.StringUtils;
 import repositories.AccessTokenRepository;
 import repositories.Persistence;
-import services.AuthProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,11 +25,8 @@ public class AccessTokenRepositoryImpl extends
         AccessTokenRepository {
 
   @Inject
-  public AccessTokenRepositoryImpl(Persistence persistence,
-                                   Validator validator,
-                                   AuthProvider authProvider,
-                                   ActivityActorRef activityActor) {
-    super(persistence, validator, authProvider, activityActor);
+  public AccessTokenRepositoryImpl(Persistence persistence, Validator validator) {
+    super(persistence, validator);
   }
 
   @Override
@@ -75,80 +65,16 @@ public class AccessTokenRepositoryImpl extends
             .findOne();
   }
 
-  private Query<AccessToken> fetch(List<String> fetches) {
-    return fetch(fetches.toArray(new String[0]));
+  @Override
+  protected Query<AccessToken> createQuery(ContextCriteria criteria) {
+    return fetch(criteria.getFetches());
   }
 
-  private Query<AccessToken> fetch(String... fetches) {
+  private Query<AccessToken> fetch(List<String> fetches) {
     return createQuery(AccessToken.class, PROPERTIES_TO_FETCH, FETCH_MAP, fetches);
   }
 
-  @Override
-  protected Query<AccessToken> createQuery(ContextCriteria criteria) {
-    return createQuery(AccessToken.class, PROPERTIES_TO_FETCH, FETCH_MAP, criteria.getFetches());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void preSave(AccessToken t, boolean update) {
-    User loggedInUser = authProvider.loggedInUser(null) /* FIXME: will fail! */;
-    if (t.user == null || t.user.id == null
-            || (loggedInUser != null && t.user.id != loggedInUser.id && loggedInUser.role != UserRole.Admin)) {
-      // only allow admins to create access tokens for other users
-      t.user = loggedInUser;
-    }
-    if (StringUtils.isBlank(t.key)) {
-      t.key = generateKey(AccessToken.KEY_LENGTH);
-    }
-  }
-
-  @Override
-  protected void prePersist(AccessToken t, boolean update) {
-    if (update) {
-      activityActor.tell(
-              new Activity<>(
-                      ActionType.Update,
-                      authProvider.loggedInUser(null) /* FIXME: will fail! */,
-                      null,
-                      dto.AccessToken.class,
-                      AccessTokenMapper.toDto(byId(t.id)),
-                      AccessTokenMapper.toDto(t)
-              ),
-              null
-      );
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postSave(AccessToken t, boolean update) {
-    if (!update) {
-      activityActor.tell(
-              new Activity<>(
-                      ActionType.Create,
-                      authProvider.loggedInUser(null) /* FIXME: will fail! */,
-                      null,
-                      dto.AccessToken.class,
-                      null,
-                      AccessTokenMapper.toDto(t)
-              ),
-              null
-      );
-    }
-  }
-
-  public static String generateKey(int length) {
-    String raw = Base64.getEncoder().encodeToString(String
-            .format("%s%s", UUID.randomUUID(), UUID.randomUUID()).getBytes(StandardCharsets.UTF_8));
-
-    if (raw.length() > length) {
-      raw = raw.substring(0, length);
-    }
-
-    return raw.replace("+", "/");
+  private Query<AccessToken> fetch(String... fetches) {
+    return fetch(fetches != null ? Arrays.asList(fetches) : Collections.emptyList());
   }
 }

@@ -30,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static play.inject.Bindings.bind;
+import static play.mvc.Results.ok;
 import static play.test.Helpers.route;
 import static utils.TestFactory.requestAs;
 import static utils.UserRepositoryMock.byUsername;
@@ -96,17 +97,18 @@ public class LocalesApiTest extends ApiControllerTest {
         ProjectUserService.class,
         withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation()))
     );
+    LocaleMapper localeMapper = mock(LocaleMapper.class);
 
     when(accessTokenService.byKey(eq(accessToken.key), any())).thenReturn(accessToken);
     when(projectUserService.findBy(any()))
         .thenReturn(PagedListFactory.create(project1.members));
     when(localeApiService
         .byOwnerAndProjectAndName(request, eq(johnSmith.username), eq(project1.name), eq(locale.name)))
-        .thenReturn(LocaleMapper.toDto(locale));
+        .thenReturn(localeMapper.toDto(locale, request));
     when(localeApiService.byOwnerAndProjectAndName(request, eq("a"), eq("b"), eq("c")))
         .thenThrow(new NotFoundException(dto.Locale.class.getName(), "c"));
     when(localeApiService.download(request, eq(locale.id), eq("java_properties")))
-        .thenReturn("".getBytes());
+        .thenReturn(ok("".getBytes()));
 
     //noinspection unchecked
     return ArrayUtils.addAll(

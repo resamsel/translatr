@@ -1,6 +1,5 @@
 package repositories.impl;
 
-import actors.ActivityActorRef;
 import actors.ActivityProtocol.Activities;
 import actors.ActivityProtocol.Activity;
 import actors.MessageWordCountActorRef;
@@ -21,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.MessageRepository;
 import repositories.Persistence;
-import services.AuthProvider;
 import utils.MessageUtils;
 import utils.QueryUtils;
 
@@ -53,12 +51,10 @@ public class MessageRepositoryImpl extends
   @Inject
   public MessageRepositoryImpl(
           Persistence persistence,
-                               Validator validator,
-                               AuthProvider authProvider,
-                               ActivityActorRef activityActor,
-                               MessageWordCountActorRef messageWordCountActor,
+          Validator validator,
+          MessageWordCountActorRef messageWordCountActor,
           MessageMapper messageMapper) {
-    super(persistence, validator, authProvider, activityActor);
+    super(persistence, validator);
 
     this.messageWordCountActor = messageWordCountActor;
     this.messageMapper = messageMapper;
@@ -168,172 +164,5 @@ public class MessageRepositoryImpl extends
 
     messageWordCountActor.tell(new ChangeMessageWordCount(t.id, t.locale.project.id, t.locale.id,
             t.key.id, t.wordCount, t.wordCount - wordCount), null);
-  }
-
-  @Override
-  protected void prePersist(Message t, boolean update) {
-    if (update) {
-      Message existing = byId(t.id);
-      if (!Objects.equals(t.value, existing.value)) {
-        // Only track changes of message´s value
-        activityActor.tell(logEntryUpdate(t, existing), null);
-      }
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void preSave(Collection<Message> t) {
-    super.preSave(t);
-
-    Map<UUID, ChangeMessageWordCount> wordCount = t.stream()
-            .filter(m -> m.id != null)
-            .map(m -> {
-              int wc = MessageUtils.wordCount(m);
-              return new ChangeMessageWordCount(
-                      m.id,
-                      m.locale.project.id,
-                      m.locale.id,
-                      m.key.id,
-                      wc,
-                      wc - (m.wordCount != null ? m.wordCount : 0));
-            })
-            .collect(toMap(wc -> wc.messageId, wc -> wc, (a, b) -> a));
-
-    messageWordCountActor.tell(wordCount.values(), null);
-
-    // Update model
-    t.stream()
-            .filter(m -> m.id != null)
-            .forEach(m -> m.wordCount = wordCount.getOrDefault(m.id,
-                    new ChangeMessageWordCount(null, null, null, null, 0, 0)).wordCount);
-    t.stream()
-            .filter(m -> m.id == null)
-            .forEach(m -> m.wordCount = MessageUtils.wordCount(m));
-
-    List<UUID> ids = t.stream().filter(m -> m.id != null).map(m -> m.id).collect(toList());
-    Map<UUID, Message> messages = ids.size() > 0 ? byIds(ids) : Collections.emptyMap();
-
-    activityActor.tell(
-            new Activities<>(t.stream().filter(
-                    // Only track changes of message´s value
-                    m -> persistence.isNew(m) || !Objects
-                            .equals(m.value, messages.get(m.id).value))
-                    .map(m -> persistence.isNew(m) ? logEntryCreate(m)
-                            : logEntryUpdate(m, messages.get(m.id)))
-                    .collect(toList())),
-            null
-    );
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postSave(Message t, boolean update) {
-    if (!update) {
-      activityActor.tell(logEntryCreate(t), null);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postSave(Collection<Message> t) {
-    List<Message> noWordCountMessages =
-            t.stream().filter(m -> m.wordCount == null).collect(toList());
-    Map<UUID, ChangeMessageWordCount> wordCount = noWordCountMessages.stream().map(m -> {
-      int wc = MessageUtils.wordCount(m);
-      return new ChangeMessageWordCount(m.id, m.locale.project.id, m.locale.id, m.key.id, wc,
-              wc - (m.wordCount != null ? m.wordCount : 0));
-    }).collect(toMap(wc -> wc.messageId, wc -> wc));
-
-    messageWordCountActor.tell(wordCount.values(), null);
-
-    // Update model
-    noWordCountMessages.stream().filter(m -> m.id != null).forEach(m -> m.wordCount = wordCount
-            .getOrDefault(m.id, new ChangeMessageWordCount(null, null, null, null, 0, 0)).wordCount);
-
-    try {
-      persist(noWordCountMessages);
-    } catch (Exception e) {
-      LOGGER.error("Error while persisting word count", e);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void preDelete(Message t) {
-    activityActor.tell(
-            new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.key.project, dto.Message.class, messageMapper.toDto(t, null),
-                    null),
-            null
-    );
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void preDelete(Collection<Message> t) {
-    activityActor.tell(
-            new Activities<>(t.stream().map(m -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, m.key.project,
-                    dto.Message.class, messageMapper.toDto(m, null), null)).collect(toList())),
-            null
-    );
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postDelete(Message t) {
-    if (t.wordCount != null) {
-      messageWordCountActor.tell(new ChangeMessageWordCount(t.id, t.locale.project.id, t.locale.id,
-              t.key.id, 0, -t.wordCount), null);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postDelete(Collection<Message> t) {
-    Map<UUID, ChangeMessageWordCount> wordCount =
-            t.stream()
-                    .filter(m -> m.wordCount != null)
-                    .map(
-                            m -> new ChangeMessageWordCount(m.id, m.locale.project.id, m.locale.id, m.key.id, 0,
-                                    -m.wordCount))
-                    .collect(toMap(wc -> wc.messageId, wc -> wc, (a, b) -> a));
-
-    messageWordCountActor.tell(wordCount.values(), null);
-  }
-
-  private Activity<dto.Message> logEntryCreate(Message message) {
-    return new Activity<>(
-            ActionType.Create,
-            authProvider.loggedInUser(null) /* FIXME: will fail! */,
-            message.key.project,
-            dto.Message.class,
-            null,
-            messageMapper.toDto(message, null)
-    );
-  }
-
-  private Activity<dto.Message> logEntryUpdate(Message message, Message previous) {
-    return new Activity<>(
-            ActionType.Update,
-            authProvider.loggedInUser(null) /* FIXME: will fail! */,
-            message.key.project,
-            dto.Message.class,
-            messageMapper.toDto(previous, null),
-            messageMapper.toDto(message, null)
-    );
   }
 }

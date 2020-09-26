@@ -1,8 +1,9 @@
 package services.impl;
 
+import actors.ActivityActorRef;
+import criterias.AbstractSearchCriteria;
 import criterias.GetCriteria;
 import io.ebean.PagedList;
-import criterias.AbstractSearchCriteria;
 import models.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   protected final Validator validator;
   protected final LogEntryService logEntryService;
   protected final AuthProvider authProvider;
+  protected final ActivityActorRef activityActor;
   protected final CacheService cache;
   final ModelRepository<MODEL, ID, CRITERIA> modelRepository;
   private final BiFunction<ID, String[], String> cacheKeyGetter;
@@ -38,13 +40,14 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   public AbstractModelService(Validator validator, CacheService cache,
                               ModelRepository<MODEL, ID, CRITERIA> modelRepository,
                               BiFunction<ID, String[], String> cacheKeyGetter, LogEntryService logEntryService,
-                              AuthProvider authProvider) {
+                              AuthProvider authProvider, ActivityActorRef activityActor) {
     this.validator = validator;
     this.cache = cache;
     this.modelRepository = modelRepository;
     this.cacheKeyGetter = cacheKeyGetter;
     this.logEntryService = logEntryService;
     this.authProvider = authProvider;
+    this.activityActor = activityActor;
   }
 
   /**
@@ -71,18 +74,17 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
       return null;
     }
 
-    return postGet(cache.getOrElseUpdate(
-            cacheKeyGetter.apply(id, fetches),
-            () -> modelRepository.byId(id, fetches),
-            60
-    ),
-            request);
+    return byId(GetCriteria.from(id, request, fetches));
   }
 
   @Override
   public MODEL byId(GetCriteria<ID> criteria) {
     if (criteria == null) {
       return null;
+    }
+
+    if (criteria.getLoggedInUserId() == null) {
+      criteria.setLoggedInUserId(authProvider.loggedInUserId(criteria.getRequest()));
     }
 
     return postGet(cache.getOrElseUpdate(
@@ -105,9 +107,11 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
     LOGGER.debug("create({})", model);
 
     preCreate(model, request);
+    preSave(model, request);
 
-    MODEL m = modelRepository.save(model);
+    MODEL m = modelRepository.create(model);
 
+    postSave(m, request);
     postCreate(m, request);
 
     return m;
@@ -127,11 +131,24 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   public MODEL update(MODEL t, Http.Request request) {
     LOGGER.debug("update({})", t);
 
+    preUpdate(t, request);
+    preSave(t, request);
+
     MODEL m = modelRepository.update(t);
 
+    postSave(m, request);
     postUpdate(m, request);
 
     return m;
+  }
+
+  protected void preUpdate(MODEL t, Http.Request request) {
+  }
+
+  protected void preSave(MODEL t, Http.Request request) {
+  }
+
+  protected void postSave(MODEL t, Http.Request request) {
   }
 
   protected MODEL postUpdate(MODEL t, Http.Request request) {
@@ -142,28 +159,52 @@ public abstract class AbstractModelService<MODEL extends Model<MODEL, ID>, ID, C
   }
 
   @Override
-  public MODEL save(MODEL t, Http.Request request) {
-    return modelRepository.save(t);
+  public Collection<MODEL> save(Collection<MODEL> t, Http.Request request) {
+    preSave(t, request);
+
+    Collection<MODEL> m = modelRepository.save(t);
+
+    postSave(m, request);
+
+    return m;
   }
 
-  @Override
-  public Collection<MODEL> save(Collection<MODEL> t, Http.Request request) {
-    return modelRepository.save(t);
+  protected void preSave(Collection<MODEL> t, Http.Request request) {
+    t.forEach(e -> preSave(e, request));
+  }
+
+  protected void postSave(Collection<MODEL> t, Http.Request request) {
+    t.forEach(e -> postSave(e, request));
   }
 
   @Override
   public void delete(MODEL t, Http.Request request) {
+    preDelete(t, request);
+
     modelRepository.delete(t);
 
     postDelete(t, request);
   }
 
-  @Override
-  public void delete(Collection<MODEL> t, Http.Request request) {
-    modelRepository.delete(t);
+  protected void preDelete(MODEL t, Http.Request request) {
   }
 
   protected void postDelete(MODEL t, Http.Request request) {
     cache.removeByPrefix(cacheKeyGetter.apply(t.getId(), new String[0]));
+  }
+
+  @Override
+  public void delete(Collection<MODEL> t, Http.Request request) {
+    preDelete(t, request);
+
+    modelRepository.delete(t);
+
+    postDelete(t, request);
+  }
+
+  protected void preDelete(Collection<MODEL> t, Http.Request request) {
+  }
+
+  protected void postDelete(Collection<MODEL> t, Http.Request request) {
   }
 }

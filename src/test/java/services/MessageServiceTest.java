@@ -1,24 +1,27 @@
 package services;
 
+import actors.ActivityActorRef;
+import actors.MessageWordCountActorRef;
+import criterias.GetCriteria;
 import criterias.MessageCriteria;
 import criterias.PagedListFactory;
+import io.ebean.PagedList;
+import mappers.MessageMapper;
 import models.Message;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.mvc.Http;
 import repositories.MessageRepository;
-import services.impl.CacheServiceImpl;
+import repositories.Persistence;
 import services.impl.MessageServiceImpl;
-import utils.CacheApiMock;
+import services.impl.NoCacheServiceImpl;
 
 import javax.validation.Validator;
 import java.util.UUID;
 
 import static assertions.MessageAssert.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static utils.MessageRepositoryMock.createMessage;
@@ -29,81 +32,53 @@ public class MessageServiceTest {
 
   private MessageRepository messageRepository;
   private MessageService target;
-  private CacheService cacheService;
-
-  @Test
-  public void testById() {
-    // mock message
-    Message message = createMessage(UUID.randomUUID(), UUID.randomUUID(), "value");
-    messageRepository.create(message);
-
-    // This invocation should feed the cache
-    assertThat(cacheService.keys().keySet()).doesNotContain("message:id:" + message.id);
-    assertThat(target.byId(message.id)).valueIsEqualTo("value");
-    verify(messageRepository, times(1)).byId(eq(message.id));
-
-    // This invocation should use the cache, not the repository
-    assertThat(cacheService.keys().keySet()).contains("message:id:" + message.id);
-    assertThat(target.byId(message.id)).valueIsEqualTo("value");
-    verify(messageRepository, times(1)).byId(eq(message.id));
-
-    // This should trigger cache invalidation
-    target.update(createMessage(message, "value2"));
-
-    assertThat(cacheService.keys().keySet()).contains("message:id:" + message.id);
-    assertThat(target.byId(message.id)).valueIsEqualTo("value2");
-    verify(messageRepository, times(1)).byId(eq(message.id));
-  }
-
-  @Test
-  public void testFindBy() {
-    // mock message
-    Message message = createMessage(UUID.randomUUID(), UUID.randomUUID(), "value");
-    messageRepository.create(message);
-
-    // This invocation should feed the cache
-    MessageCriteria criteria = new MessageCriteria().withProjectId(message.key.project.id);
-    assertThat(target.findBy(criteria).getList().get(0))
-        .as("uncached")
-        .valueIsEqualTo("value");
-    verify(messageRepository, times(1)).findBy(eq(criteria));
-    // This invocation should use the cache, not the repository
-    assertThat(target.findBy(criteria).getList().get(0))
-        .as("cached")
-        .valueIsEqualTo("value");
-    verify(messageRepository, times(1)).findBy(eq(criteria));
-
-    // This should trigger cache invalidation
-    target.update(createMessage(message, "value3"));
-
-    assertThat(target.findBy(criteria).getList().get(0))
-        .as("uncached (invalidated)")
-        .valueIsEqualTo("value3");
-    verify(messageRepository, times(2)).findBy(eq(criteria));
-  }
 
   @Before
   public void before() {
     messageRepository = mock(MessageRepository.class,
             withSettings().invocationListeners(i -> LOGGER.debug("{}", i.getInvocation())));
-    cacheService = new CacheServiceImpl(new CacheApiMock());
     target = new MessageServiceImpl(
             mock(Validator.class),
-            cacheService,
+            new NoCacheServiceImpl(),
             messageRepository,
             mock(LogEntryService.class),
             mock(AuthProvider.class),
-            mock(MetricService.class)
+            mock(MetricService.class),
+            mock(ActivityActorRef.class),
+            mock(MessageWordCountActorRef.class),
+            mock(Persistence.class),
+            mock(MessageMapper.class)
     );
-
-    when(messageRepository.create(any())).then(this::persist);
-    when(messageRepository.update(any())).then(this::persist);
   }
 
-  private Message persist(InvocationOnMock a) {
-    Message t = a.getArgument(0);
-    when(messageRepository.byId(eq(t.id), any())).thenReturn(t);
-    when(messageRepository.findBy(any())).thenReturn(PagedListFactory.create(t));
-    return t;
+  @Test
+  public void byId() {
+    // given
+    Message message = createMessage(UUID.randomUUID(), UUID.randomUUID(), "value");
+    Http.Request request = mock(Http.Request.class);
+
+    when(messageRepository.byId(any(GetCriteria.class))).thenReturn(message);
+
+    // when
+    Message actual = target.byId(message.id, request);
+
+    // then
+    assertThat(actual).valueIsEqualTo("value");
+  }
+
+  @Test
+  public void findBy() {
+    // given
+    Message message = createMessage(UUID.randomUUID(), UUID.randomUUID(), "value");
+    Http.Request request = mock(Http.Request.class);
+    MessageCriteria criteria = MessageCriteria.from(request).withProjectId(message.key.project.id);
+
+    when(messageRepository.findBy(eq(criteria))).thenReturn(PagedListFactory.create(message));
+
+    // when
+    PagedList<Message> actual = target.findBy(criteria);
+
+    // then
+    assertThat(actual.getList().get(0)).valueIsEqualTo("value");
   }
 }

@@ -195,7 +195,7 @@ public class ProjectApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected Project toModel(dto.Project in) {
+  protected Project toModel(dto.Project in, Http.Request request) {
     return ProjectMapper.toModel(in);
   }
 }

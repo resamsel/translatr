@@ -1,23 +1,31 @@
 package services.impl;
 
+import actors.ActivityActorRef;
+import actors.ActivityProtocol;
 import criterias.GetCriteria;
+import dto.PermissionException;
 import io.ebean.PagedList;
 import criterias.KeyCriteria;
+import mappers.KeyMapper;
 import models.ActionType;
 import models.Key;
 import models.Project;
+import models.ProjectRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.mvc.Http;
 import repositories.KeyRepository;
+import repositories.MessageRepository;
 import repositories.Persistence;
 import services.*;
 
 import javax.inject.Inject;
 import javax.validation.Validator;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static utils.Stopwatch.log;
 
@@ -26,26 +34,30 @@ import static utils.Stopwatch.log;
  * @version 29 Aug 2016
  */
 public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
-    implements KeyService {
+        implements KeyService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyServiceImpl.class);
 
   private final KeyRepository keyRepository;
   private final Persistence persistence;
   private final MetricService metricService;
-
-  private final CacheService cache;
+  private final KeyMapper keyMapper;
+  private final PermissionService permissionService;
+  private final MessageRepository messageRepository;
 
   @Inject
   public KeyServiceImpl(Validator validator, CacheService cache, KeyRepository keyRepository,
                         LogEntryService logEntryService, Persistence persistence, AuthProvider authProvider,
-                        MetricService metricService) {
-    super(validator, cache, keyRepository, Key::getCacheKey, logEntryService, authProvider);
+                        MetricService metricService, ActivityActorRef activityActor, KeyMapper keyMapper,
+                        PermissionService permissionService, MessageRepository messageRepository) {
+    super(validator, cache, keyRepository, Key::getCacheKey, logEntryService, authProvider, activityActor);
 
-    this.cache = cache;
     this.keyRepository = keyRepository;
     this.persistence = persistence;
     this.metricService = metricService;
+    this.keyMapper = keyMapper;
+    this.permissionService = permissionService;
+    this.messageRepository = messageRepository;
   }
 
   /**
@@ -70,10 +82,10 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
     key.wordCount += wordCountDiff;
 
     log(
-        () -> modelRepository.persist(key),
-        LOGGER,
-        "Increased word count by %d",
-        wordCountDiff
+            () -> modelRepository.persist(key),
+            LOGGER,
+            "Increased word count by %d",
+            wordCountDiff
     );
   }
 
@@ -84,7 +96,7 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
   public void resetWordCount(UUID projectId) {
     try {
       persistence.createSqlUpdate("update key set word_count = null where project_id = :projectId")
-          .setParameter("projectId", projectId).execute();
+              .setParameter("projectId", projectId).execute();
     } catch (Exception e) {
       LOGGER.error("Error while resetting word count", e);
     }
@@ -129,6 +141,18 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
   }
 
   @Override
+  protected void preUpdate(Key t, Http.Request request) {
+    super.preUpdate(t, request);
+
+    activityActor.tell(
+            new ActivityProtocol.Activity<>(
+                    ActionType.Update, authProvider.loggedInUser(request), t.project, dto.Key.class,
+                    keyMapper.toDto(byId(GetCriteria.from(t.id, request)), request), keyMapper.toDto(t, request)),
+            null
+    );
+  }
+
+  @Override
   protected void postCreate(Key t, Http.Request request) {
     super.postCreate(t, request);
 
@@ -142,10 +166,17 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
     }
 
     cache.removeByPrefix("key:criteria:" + t.project.id);
+
+    activityActor.tell(
+            new ActivityProtocol.Activity<>(ActionType.Create, authProvider.loggedInUser(request), t.project, dto.Key.class, null, keyMapper.toDto(t, request)),
+            null
+    );
   }
 
   @Override
   protected Key postUpdate(Key t, Http.Request request) {
+    super.postUpdate(t, request);
+
     metricService.logEvent(Key.class, ActionType.Update);
 
     Optional<Key> existing = cache.get(Key.getCacheKey(t.id));
@@ -155,27 +186,40 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
       cache.removeByPrefix(getCacheKey(t.project.id, ""));
     }
 
-    super.postUpdate(t, request);
-
     // When locale has been updated, the locale cache needs to be invalidated
     cache.removeByPrefix("key:criteria:" + t.project.id);
 
     return t;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override
+  protected void preDelete(Key t, Http.Request request) {
+    super.preDelete(t, request);
+
+    if (!permissionService
+            .hasPermissionAny(t.project.id, authProvider.loggedInUser(request), ProjectRole.Owner, ProjectRole.Manager,
+                    ProjectRole.Developer)) {
+      throw new PermissionException("User not allowed in project");
+    }
+
+    activityActor.tell(
+            new ActivityProtocol.Activity<>(ActionType.Delete, authProvider.loggedInUser(request), t.project, dto.Key.class, keyMapper.toDto(t, request), null),
+            null
+    );
+
+    messageRepository.delete(messageRepository.byKey(t));
+  }
+
   @Override
   protected void postDelete(Key t, Http.Request request) {
+    super.postDelete(t, request);
+
     metricService.logEvent(Key.class, ActionType.Delete);
 
-    Key existing = byId(t.id, request);
+    Key existing = byId(GetCriteria.from(t.id, request));
     if (existing != null) {
       cache.removeByPrefix(getCacheKey(existing.project.id, existing.name));
     }
-
-    super.postDelete(t, request);
 
     // When key has been deleted, the project cache needs to be invalidated
     cache.removeByPrefix(Project.getCacheKey(t.project.id));
@@ -183,6 +227,23 @@ public class KeyServiceImpl extends AbstractModelService<Key, UUID, KeyCriteria>
 
     // When key has been deleted, the key cache needs to be invalidated
     cache.removeByPrefix("key:criteria:" + t.project.id);
+  }
+
+  @Override
+  protected void preDelete(Collection<Key> t, Http.Request request) {
+    super.preDelete(t, request);
+
+    activityActor.tell(
+            new ActivityProtocol.Activities<>(
+                    t.stream()
+                            .map(k -> new ActivityProtocol.Activity<>(ActionType.Delete, authProvider.loggedInUser(request), k.project, dto.Key.class,
+                                    keyMapper.toDto(k, request), null))
+                            .collect(Collectors.toList())),
+            null
+    );
+
+    messageRepository
+            .delete(messageRepository.byKeys(t.stream().map(k -> k.id).collect(Collectors.toList())));
   }
 
   private static String getCacheKey(UUID projectId, String keyName) {

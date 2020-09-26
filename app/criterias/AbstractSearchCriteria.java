@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import play.mvc.Http.Request;
 import utils.NumberUtils;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
@@ -68,7 +69,8 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
     return loggedInUserId;
   }
 
-  public void setLoggedInUserId(UUID loggedInUserId) {
+  @Override
+  public void setLoggedInUserId(@CheckForNull UUID loggedInUserId) {
     this.loggedInUserId = loggedInUserId;
   }
 

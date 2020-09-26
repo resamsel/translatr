@@ -1,31 +1,21 @@
 package repositories.impl;
 
-import actors.ActivityActorRef;
-import actors.ActivityProtocol.Activities;
-import actors.ActivityProtocol.Activity;
 import com.google.common.collect.ImmutableMap;
 import criterias.ContextCriteria;
 import criterias.KeyCriteria;
 import criterias.PagedListFactory;
-import dto.PermissionException;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import io.ebean.Query;
 import io.ebean.RawSqlBuilder;
-import mappers.KeyMapper;
-import models.ActionType;
 import models.Key;
 import models.Message;
 import models.Project;
-import models.ProjectRole;
 import models.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repositories.KeyRepository;
-import repositories.MessageRepository;
 import repositories.Persistence;
-import services.AuthProvider;
-import services.PermissionService;
 import utils.QueryUtils;
 
 import javax.annotation.Nonnull;
@@ -33,7 +23,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Validator;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -57,24 +46,9 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
           .put("whenUpdated", "k.whenUpdated")
           .build();
 
-  private final MessageRepository messageRepository;
-  private final PermissionService permissionService;
-  private final KeyMapper keyMapper;
-
   @Inject
-  public KeyRepositoryImpl(
-          Persistence persistence,
-          Validator validator,
-          AuthProvider authProvider,
-          ActivityActorRef activityActor,
-          MessageRepository messageRepository,
-          PermissionService permissionService,
-          KeyMapper keyMapper) {
-    super(persistence, validator, authProvider, activityActor);
-
-    this.messageRepository = messageRepository;
-    this.permissionService = permissionService;
-    this.keyMapper = keyMapper;
+  public KeyRepositoryImpl(Persistence persistence, Validator validator) {
+    super(persistence, validator);
   }
 
   @Override
@@ -216,70 +190,5 @@ public class KeyRepositoryImpl extends AbstractModelRepository<Key, UUID, KeyCri
     );
 
     return stats.stream().collect(Collectors.toMap(stat -> stat.id, stat -> stat.count));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void prePersist(Key t, boolean update) {
-    if (update) {
-      activityActor.tell(
-              new Activity<>(
-                      ActionType.Update, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Key.class,
-                      keyMapper.toDto(byId(t.id), null), keyMapper.toDto(t, null)),
-              null
-      );
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void postSave(Key t, boolean update) {
-    if (!update) {
-      activityActor.tell(
-              new Activity<>(ActionType.Create, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Key.class, null, keyMapper.toDto(t, null)),
-              null
-      );
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void preDelete(Key t) {
-    if (!permissionService
-            .hasPermissionAny(t.project.id, authProvider.loggedInUser(null) /* FIXME: will fail! */, ProjectRole.Owner, ProjectRole.Manager,
-                    ProjectRole.Developer)) {
-      throw new PermissionException("User not allowed in project");
-    }
-
-    activityActor.tell(
-            new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, t.project, dto.Key.class, keyMapper.toDto(t, null), null),
-            null
-    );
-
-    messageRepository.delete(messageRepository.byKey(t));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void preDelete(Collection<Key> t) {
-    activityActor.tell(
-            new Activities<>(
-                    t.stream()
-                            .map(k -> new Activity<>(ActionType.Delete, authProvider.loggedInUser(null) /* FIXME: will fail! */, k.project, dto.Key.class,
-                                    keyMapper.toDto(k, null), null))
-                            .collect(Collectors.toList())),
-            null
-    );
-
-    messageRepository
-            .delete(messageRepository.byKeys(t.stream().map(k -> k.id).collect(Collectors.toList())));
   }
 }

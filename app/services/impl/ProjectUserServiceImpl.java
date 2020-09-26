@@ -1,12 +1,22 @@
 package services.impl;
 
-import io.ebean.PagedList;
+import actors.ActivityActorRef;
+import actors.ActivityProtocol;
+import criterias.GetCriteria;
 import criterias.ProjectUserCriteria;
+import dto.PermissionException;
+import io.ebean.PagedList;
+import mappers.ProjectUserMapper;
 import models.ActionType;
 import models.ProjectUser;
 import play.mvc.Http;
 import repositories.ProjectUserRepository;
-import services.*;
+import services.AuthProvider;
+import services.CacheService;
+import services.LogEntryService;
+import services.MetricService;
+import services.ProjectUserService;
+import validators.ProjectUserModifyAllowedValidator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -18,19 +28,27 @@ import javax.validation.Validator;
  */
 @Singleton
 public class ProjectUserServiceImpl extends
-    AbstractModelService<ProjectUser, Long, ProjectUserCriteria> implements ProjectUserService {
+        AbstractModelService<ProjectUser, Long, ProjectUserCriteria> implements ProjectUserService {
 
   private final ProjectUserRepository projectUserRepository;
   private final MetricService metricService;
+  private final ProjectUserModifyAllowedValidator projectUserModifyAllowedValidator;
 
   @Inject
-  public ProjectUserServiceImpl(Validator validator, CacheService cache,
-                                ProjectUserRepository projectUserRepository, LogEntryService logEntryService,
-                                AuthProvider authProvider, MetricService metricService) {
-    super(validator, cache, projectUserRepository, ProjectUser::getCacheKey, logEntryService, authProvider);
+  public ProjectUserServiceImpl(
+          Validator validator,
+          CacheService cache,
+          ProjectUserRepository projectUserRepository,
+          LogEntryService logEntryService,
+          AuthProvider authProvider,
+          MetricService metricService,
+          ActivityActorRef activityActor,
+          ProjectUserModifyAllowedValidator projectUserModifyAllowedValidator) {
+    super(validator, cache, projectUserRepository, ProjectUser::getCacheKey, logEntryService, authProvider, activityActor);
 
     this.projectUserRepository = projectUserRepository;
     this.metricService = metricService;
+    this.projectUserModifyAllowedValidator = projectUserModifyAllowedValidator;
   }
 
   @Override
@@ -56,12 +74,44 @@ public class ProjectUserServiceImpl extends
   }
 
   @Override
+  protected void preCreate(ProjectUser t, Http.Request request) {
+    super.preCreate(t, request);
+
+    if (!projectUserModifyAllowedValidator.isValid(t, request)) {
+      throw new PermissionException("member.invalid");
+    }
+  }
+
+  @Override
   protected void postCreate(ProjectUser t, Http.Request request) {
     super.postCreate(t, request);
 
     metricService.logEvent(ProjectUser.class, ActionType.Create);
 
     cache.removeByPrefix("member:criteria:" + t.project.id);
+
+    activityActor.tell(
+            new ActivityProtocol.Activity<>(
+                    ActionType.Create, authProvider.loggedInUser(request), t.project, dto.ProjectUser.class, null, toDto(t)
+            ),
+            null
+    );
+  }
+
+  @Override
+  protected void preUpdate(ProjectUser t, Http.Request request) {
+    super.preUpdate(t, request);
+
+    if (!projectUserModifyAllowedValidator.isValid(t, request)) {
+      throw new PermissionException("member.invalid");
+    }
+
+    activityActor.tell(
+            new ActivityProtocol.Activity<>(
+                    ActionType.Update, authProvider.loggedInUser(request), t.project, dto.ProjectUser.class, toDto(byId(GetCriteria.from(t.id, request))), toDto(t)
+            ),
+            null
+    );
   }
 
   @Override
@@ -76,9 +126,18 @@ public class ProjectUserServiceImpl extends
     return t;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override
+  protected void preDelete(ProjectUser t, Http.Request request) {
+    super.preDelete(t, request);
+
+    activityActor.tell(
+            new ActivityProtocol.Activity<>(
+                    ActionType.Delete, authProvider.loggedInUser(request), t.project, dto.ProjectUser.class, toDto(t), null
+            ),
+            null
+    );
+  }
+
   @Override
   protected void postDelete(ProjectUser t, Http.Request request) {
     super.postDelete(t, request);
@@ -87,5 +146,9 @@ public class ProjectUserServiceImpl extends
 
     // When member has been deleted, the key cache needs to be invalidated
     cache.removeByPrefix("member:criteria:" + t.project.id);
+  }
+
+  private dto.ProjectUser toDto(ProjectUser t) {
+    return ProjectUserMapper.toDto(t);
   }
 }

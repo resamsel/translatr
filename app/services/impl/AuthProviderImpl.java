@@ -25,6 +25,10 @@ import java.util.function.BiFunction;
 
 @Singleton
 public class AuthProviderImpl implements AuthProvider {
+  private static final TypedKey<UUID> ATTRIBUTE_USER_ID = TypedKey.create("translatr:userId");
+  private static final TypedKey<User> ATTRIBUTE_USER = TypedKey.create("translatr:user");
+  private static final TypedKey<CommonProfile> ATTRIBUTE_PROFILE = TypedKey.create("translatr:profile");
+
   private final Injector injector;
   private final PlaySessionStore sessionStore;
 
@@ -44,6 +48,11 @@ public class AuthProviderImpl implements AuthProvider {
 
   @Override
   public User loggedInUser(Http.Request request) {
+    Optional<User> loggedInUserOptional = request.attrs().getOptional(ATTRIBUTE_USER);
+    if (loggedInUserOptional.isPresent()) {
+      return loggedInUserOptional.get();
+    }
+
     // Logged-in via auth plugin?
     Optional<CommonProfile> profile = loggedInProfile(request);
     if (profile.isPresent()) {
@@ -52,21 +61,15 @@ public class AuthProviderImpl implements AuthProvider {
         return null;
       }
 
-      String id = profile.get().getId();
-      TypedKey<User> attributeKey = TypedKey.create(clientName + ":" + id);
-      Optional<User> optionalUser = request.attrs().getOptional(attributeKey);
-      if (optionalUser.isPresent()) {
-        return optionalUser.get();
-      }
-
       // Needed to avoid circular dependency of AuthProvider -> UserService -> AuthProvider
-      UserService userService = injector.instanceOf(UserService.class);
+      UserService userService = getUserService();
 
       User user = USER_MAPPER.getOrDefault(clientName,
               (service, p) -> service.byLinkedAccount(p.getClientName(), p.getId()))
               .apply(userService, profile.get());
 
-      request.addAttr(attributeKey, user);
+      request.addAttr(ATTRIBUTE_USER_ID, user.id);
+      request.addAttr(ATTRIBUTE_USER, user);
 
       return user;
     }
@@ -76,6 +79,15 @@ public class AuthProviderImpl implements AuthProvider {
 
   @Override
   public UUID loggedInUserId(Http.Request request) {
+    if (request == null) {
+      return null;
+    }
+
+    Optional<UUID> loggedInUserIdOptional = request.attrs().getOptional(ATTRIBUTE_USER_ID);
+    if (loggedInUserIdOptional.isPresent()) {
+      return loggedInUserIdOptional.get();
+    }
+
     User loggedInUser = loggedInUser(request);
 
     if (loggedInUser == null) {
@@ -87,7 +99,16 @@ public class AuthProviderImpl implements AuthProvider {
 
   @Override
   public Optional<CommonProfile> loggedInProfile(Http.Request request) {
-    return loggedInProfile(new PlayWebContext(request, sessionStore));
+    Optional<CommonProfile> cacheProfile = request.attrs().getOptional(ATTRIBUTE_PROFILE);
+    if (cacheProfile.isPresent()) {
+      return cacheProfile;
+    }
+
+    Optional<CommonProfile> profileOptional = loggedInProfile(new PlayWebContext(request, sessionStore));
+
+    profileOptional.ifPresent(commonProfile -> request.addAttr(ATTRIBUTE_PROFILE, commonProfile));
+
+    return profileOptional;
   }
 
   @Override

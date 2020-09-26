@@ -1,9 +1,12 @@
 package services;
 
+import criterias.GetCriteria;
 import models.Project;
 import models.User;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
+import play.mvc.Http;
 import tests.AbstractTest;
 
 import javax.inject.Inject;
@@ -23,11 +26,12 @@ public class ProjectServiceIntegrationTest extends AbstractTest {
   @Ignore("FIXME: fails with strange exception")
   public void create() {
     User user = createUser("user1", "user1@resamsel.com");
-    Project project = projectService.create(new Project().withOwner(user).withName("blubbb"));
+    Http.Request request = Mockito.mock(Http.Request.class);
+    Project project = projectService.create(new Project().withOwner(user).withName("blubbb"), request);
 
     assertThat(project.id).isNotNull();
 
-    project = projectService.byId(project.id, FETCH_MEMBERS);
+    project = projectService.byId(GetCriteria.from(project.id, null, FETCH_MEMBERS));
 
     assertThat(project).ownerNameIsEqualTo("user1");
     assertThat(project).nameIsEqualTo("blubbb");

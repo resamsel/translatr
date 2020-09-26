@@ -29,6 +29,6 @@ public class ProjectNameValidator implements ConstraintValidator<ProjectName, Ob
    */
   @Override
   public boolean isValid(Object object, ConstraintValidatorContext constraintContext) {
-    return object != null && object instanceof String && !excluded.contains(object);
+    return object instanceof String && !excluded.contains(object);
   }
 }

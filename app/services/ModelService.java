@@ -24,8 +24,6 @@ public interface ModelService<T extends Model<T, ID>, ID, CRITERIA extends Abstr
 
   T update(T model, Http.Request request);
 
-  T save(T t, Http.Request request);
-
   Collection<T> save(Collection<T> t, Http.Request request);
 
   void delete(T t, Http.Request request);

@@ -35,11 +35,11 @@ public class NotificationMapper {
     Notification out = new Notification();
 
     out.id = in.getId();
-    out.user = UserMapper.toDto(userService.byId(Notification.extractUuid(in.getActor())));
+    out.user = UserMapper.toDto(userService.byId(Notification.extractUuid(in.getActor()), request));
     out.verb = in.getVerb();
     out.time = in.getTime() != null ? new Date(in.getTime().getTime()) : null;
     if (activity == null)
-      activity = logEntryService.byId(Notification.extractUuid(in.getForeignId()));
+      activity = logEntryService.byId(Notification.extractUuid(in.getForeignId()), request);
     if (activity != null) {
       out.activityId = activity.id;
       out.contentType = activity.getSimpleContentType();

@@ -4,6 +4,7 @@ import criterias.UserFeatureFlagCriteria;
 import mappers.UserFeatureFlagMapper;
 import models.Scope;
 import models.UserFeatureFlag;
+import play.mvc.Http;
 import services.PermissionService;
 import services.UserFeatureFlagService;
 import services.api.UserFeatureFlagApiService;
@@ -30,7 +31,7 @@ public class UserFeatureFlagApiServiceImpl
   }
 
   @Override
-  protected UserFeatureFlag toModel(dto.UserFeatureFlag in) {
+  protected UserFeatureFlag toModel(dto.UserFeatureFlag in, Http.Request request) {
     return UserFeatureFlagMapper.toModel(in);
   }
 }

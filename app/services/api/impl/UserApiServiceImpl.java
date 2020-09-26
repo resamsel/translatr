@@ -69,7 +69,7 @@ public class UserApiServiceImpl extends
 
   @Override
   public dto.User create(Http.Request request) {
-    User user = toModel(toDto(request.body().asJson()));
+    User user = toModel(toDto(request.body().asJson()), request);
 
     authProvider.loggedInProfile(request).ifPresent(profile -> {
       LinkedAccount linkedAccount = new LinkedAccount().withUser(user);
@@ -127,7 +127,7 @@ public class UserApiServiceImpl extends
    * {@inheritDoc}
    */
   @Override
-  protected User toModel(dto.User in) {
-    return UserMapper.toModel(in, service.byId(GetCriteria.from(in.id, null /* FIXME */)));
+  protected User toModel(dto.User in, Http.Request request) {
+    return UserMapper.toModel(in, service.byId(GetCriteria.from(in.id, request)));
   }
 }

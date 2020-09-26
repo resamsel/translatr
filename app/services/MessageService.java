@@ -26,6 +26,4 @@ public interface MessageService extends ModelService<Message, UUID, MessageCrite
    * @param projectId
    */
   void resetWordCount(UUID projectId);
-
-  List<Message> latest(Project project, int limit);
 }
