@@ -5,4 +5,5 @@ export interface NameIconRoute extends Route {
     icon: string;
     name: string;
   };
+  children: Array<NameIconRoute>;
 }

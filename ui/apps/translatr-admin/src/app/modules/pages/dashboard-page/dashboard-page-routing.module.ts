@@ -14,56 +14,59 @@ export const routes: Routes = [
   {
     component: DashboardPageComponent,
     path: '',
-    canActivate: [AuthGuard]
-  },
-  {
-    component: DashboardInfoComponent,
-    path: '',
-    data: {
-      icon: 'view_quilt',
-      name: 'Dashboard'
-    }
-  },
-  {
-    path: 'users',
-    data: {
-      icon: 'group',
-      name: 'Users'
-    },
+    canActivate: [AuthGuard],
     children: [
       {
-        component: DashboardUsersComponent,
-        path: ''
+        component: DashboardInfoComponent,
+        path: '',
+        data: {
+          icon: 'view_quilt',
+          name: 'Dashboard'
+        }
       },
       {
-        component: DashboardUserComponent,
-        path: ':id'
+        path: 'users',
+        data: {
+          icon: 'group',
+          name: 'Users'
+        },
+        children: [
+          {
+            component: DashboardUsersComponent,
+            path: '',
+            pathMatch: 'full'
+          },
+          {
+            component: DashboardUserComponent,
+            path: ':id'
+          }
+        ]
+      },
+      {
+        component: DashboardProjectsComponent,
+        path: 'projects',
+        data: {
+          icon: 'library_books',
+          name: 'Projects'
+        }
+      },
+      {
+        component: DashboardAccessTokensComponent,
+        path: 'accesstokens',
+        data: {
+          icon: 'vpn_key',
+          name: 'Access Tokens'
+        }
+      },
+      {
+        component: DashboardFeatureFlagsComponent,
+        path: 'featureflags',
+        data: {
+          icon: 'flag',
+          name: 'Feature Flags'
+        }
       }
     ]
-  },
-  {
-    component: DashboardProjectsComponent,
-    path: 'projects',
-    data: {
-      icon: 'library_books',
-      name: 'Projects'
-    }
-  },
-  {
-    component: DashboardAccessTokensComponent,
-    path: 'accesstokens',
-    data: {
-      icon: 'vpn_key',
-      name: 'Access Tokens'
-    }
-  },
-  {
-    component: DashboardFeatureFlagsComponent,
-    path: 'featureflags',
-    data: {
-      icon: 'flag',
-      name: 'Feature Flags'
-    }
   }
 ];
 
