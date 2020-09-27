@@ -8,9 +8,20 @@ export interface RestRequest {
   path: string;
 }
 
+const errorTemplate = (error: HttpErrorResponse, request?: RestRequest): string => `
+Error Report
+============
+
+Source: Translatr SDK
+Date: ${new Date()}
+Request: ${JSON.stringify(request, null, 2)}
+Error: ${JSON.stringify(error, null, 2)}
+------------
+`;
+
 export class ErrorHandler {
   handleError(error: HttpErrorResponse, request?: RestRequest): Observable<never> {
-    console.warn('Handling error for %s:\n%s', JSON.stringify(request), JSON.stringify(error));
+    console.warn(errorTemplate(error, request));
     return throwError(error);
   }
 }

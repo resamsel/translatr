@@ -63,6 +63,7 @@ const providers: StaticProvider[] = [
   },
   { provide: XhrFactory, useValue: new BrowserXhr() },
   { provide: ErrorHandler, useValue: new ErrorHandler() },
+  { provide: LanguageProvider, useValue: new LanguageProvider() },
   {
     provide: UserService,
     useFactory: (
@@ -88,7 +89,7 @@ const providers: StaticProvider[] = [
       errorHandler: ErrorHandler,
       languageProvider: LanguageProvider
     ) => new LocaleService(client, errorHandler, languageProvider),
-    deps: [HttpClient, ErrorHandler]
+    deps: [HttpClient, ErrorHandler, LanguageProvider]
   },
   {
     provide: KeyService,
@@ -97,7 +98,7 @@ const providers: StaticProvider[] = [
       errorHandler: ErrorHandler,
       languageProvider: LanguageProvider
     ) => new KeyService(client, errorHandler, languageProvider),
-    deps: [HttpClient, ErrorHandler]
+    deps: [HttpClient, ErrorHandler, LanguageProvider]
   },
   {
     provide: MessageService,
@@ -106,7 +107,7 @@ const providers: StaticProvider[] = [
       errorHandler: ErrorHandler,
       languageProvider: LanguageProvider
     ) => new MessageService(client, errorHandler, languageProvider),
-    deps: [HttpClient, ErrorHandler]
+    deps: [HttpClient, ErrorHandler, LanguageProvider]
   },
   {
     provide: AccessTokenService,
