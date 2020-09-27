@@ -25,18 +25,17 @@ export const featureNames = [
   'dashboard',
   'admin'
 ];
+export const parts = ['list', 'detail', 'find', 'search', 'main', 'header', 'footer'];
 export const keySuffixes = [
   'title',
-  'header',
   'description',
-  'list',
+  'text',
+  'comment',
   'get',
   'create',
   'update',
   'delete',
   'permission',
-  'find',
-  'search',
   'sell',
   'confirm',
   'allow',
@@ -44,9 +43,11 @@ export const keySuffixes = [
   'filter',
   'clear'
 ];
-export const keyNames = cartesianProduct([featureNames, keySuffixes]).map((values: string[]) =>
-  values.join('.')
-);
+export const keyNames = cartesianProduct([
+  featureNames,
+  parts,
+  keySuffixes
+]).map((values: string[]) => values.join('.'));
 
 export const createKey = (
   injector: Injector,
