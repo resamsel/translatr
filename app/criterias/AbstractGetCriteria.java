@@ -2,13 +2,8 @@ package criterias;
 
 import play.mvc.Http;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractGetCriteria<T extends AbstractGetCriteria<T, U>, U>
         extends AbstractContextCriteria<T> implements GetCriteria<U> {
@@ -18,7 +13,7 @@ public abstract class AbstractGetCriteria<T extends AbstractGetCriteria<T, U>, U
 
   protected AbstractGetCriteria(U id, Http.Request request) {
     this.id = id;
-    this.request = requireNonNull(request);
+    this.request = request;
   }
 
   @Nonnull
@@ -27,6 +22,7 @@ public abstract class AbstractGetCriteria<T extends AbstractGetCriteria<T, U>, U
     return id;
   }
 
+  @CheckForNull
   @Override
   public Http.Request getRequest() {
     return request;

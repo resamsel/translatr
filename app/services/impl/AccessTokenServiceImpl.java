@@ -121,10 +121,6 @@ public class AccessTokenServiceImpl extends
   protected void preUpdate(AccessToken t, Http.Request request) {
     super.preUpdate(t, request);
 
-    if (StringUtils.isBlank(t.key)) {
-      t.key = generateKey(AccessToken.KEY_LENGTH);
-    }
-
     activityActor.tell(
             new ActivityProtocol.Activity<>(
                     ActionType.Update,
@@ -141,6 +137,10 @@ public class AccessTokenServiceImpl extends
   @Override
   protected void preSave(AccessToken t, Http.Request request) {
     super.preSave(t, request);
+
+    if (StringUtils.isBlank(t.key)) {
+      t.key = generateKey(AccessToken.KEY_LENGTH);
+    }
 
     User loggedInUser = authProvider.loggedInUser(request);
     if (t.user == null || t.user.id == null

@@ -1,6 +1,8 @@
 package services.api.impl;
 
+import auth.ClientName;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Sets;
 import criterias.GetCriteria;
 import criterias.LogEntryCriteria;
 import criterias.UserCriteria;
@@ -29,6 +31,7 @@ import javax.validation.Validator;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -40,6 +43,8 @@ import java.util.function.Function;
 public class UserApiServiceImpl extends
         AbstractApiService<User, UUID, UserCriteria, UserService, dto.User>
         implements UserApiService {
+  private static final Set<String> EXCLUDED_CLIENTS = Sets.newHashSet(
+          ClientName.ANONYMOUS, ClientName.PARAMETER, ClientName.HEADER);
 
   private final AuthProvider authProvider;
   private final LogEntryService logEntryService;
@@ -72,6 +77,10 @@ public class UserApiServiceImpl extends
     User user = toModel(toDto(request.body().asJson()), request);
 
     authProvider.loggedInProfile(request).ifPresent(profile -> {
+      if (EXCLUDED_CLIENTS.contains(profile.getClientName())) {
+        return;
+      }
+
       LinkedAccount linkedAccount = new LinkedAccount().withUser(user);
       linkedAccount.providerKey = profile.getClientName();
       linkedAccount.providerUserId = profile.getId();

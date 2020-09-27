@@ -1,0 +1,28 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Start Server Load Test" type="SbtRunConfiguration" factoryName="sbt Task" show_console_on_std_err="false" show_console_on_std_out="false">
+    <option name="allowRunningInParallel" value="false" />
+    <option name="selectedOptions">
+      <set />
+    </option>
+    <option name="tasks" value="~run" />
+    <option name="useSbtShell" value="false" />
+    <option name="vmparams" value="-Xms512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled -Dconfig.file=load.conf -Dlogger.resource=logback-prod.xml" />
+    <option name="workingDir" value="$PROJECT_DIR$" />
+    <envs>
+      <env name="GITHUB_CLIENT_ID" value="abc" />
+      <env name="TWITTER_CLIENT_ID" value="tw1" />
+      <env name="GOOGLE_CLIENT_SECRET" value="secret" />
+      <env name="GOOGLE_CLIENT_ID" value="id" />
+      <env name="KEYCLOAK_CLIENT_ID" value="translatr-localhost" />
+      <env name="GITHUB_CLIENT_SECRET" value="secret" />
+      <env name="KEYCLOAK_HOST" value="localhost:8080" />
+      <env name="REDIRECT_BASE" value="http://localhost:4210" />
+      <env name="KEYCLOAK_PROTOCOL" value="http" />
+      <env name="TWITTER_CLIENT_SECRET" value="secret" />
+      <env name="FACEBOOK_CLIENT_ID" value="fb1" />
+      <env name="KEYCLOAK_CLIENT_SECRET" value="86c4a8b1-f130-449d-9d7e-0cffce6c0cdf" />
+      <env name="FACEBOOK_CLIENT_SECRET" value="secret" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>

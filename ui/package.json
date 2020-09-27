@@ -139,7 +139,7 @@
     "@types/jasminewd2": "^2.0.8",
     "@types/jest": "^23.3.14",
     "@types/jquery": "3.3.6",
-    "@types/node": "^12.11.1",
+    "@types/node": "12.12.62",
     "@types/sanitize-html": "1.23.0",
     "@types/underscore": "1.10.0",
     "codelyzer": "^5.1.2",
