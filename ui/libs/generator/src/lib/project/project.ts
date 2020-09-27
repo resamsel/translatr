@@ -66,30 +66,32 @@ export const createRandomProject = (injector: Injector): Observable<Partial<Stat
     ),
     concatMap((payload: { user: User; project: Project; accessToken: AccessToken }) => {
       return combineLatest(
-        _.sample(localeNames, Math.ceil(Math.random() * 12)).map((localeName: string) =>
-          createLocale(
-            injector,
-            {
-              name: localeName,
-              projectId: payload.project.id
-            },
-            payload.accessToken
-          )
+        _.sample(localeNames, Math.ceil(Math.random() * localeNames.length)).map(
+          (localeName: string) =>
+            createLocale(
+              injector,
+              {
+                name: localeName,
+                projectId: payload.project.id
+              },
+              payload.accessToken
+            )
         )
       ).pipe(map((locales: Locale[]) => ({ ...payload, locales })));
     }),
     concatMap(
       (payload: { user: User; project: Project; locales: Locale[]; accessToken: AccessToken }) => {
         return combineLatest(
-          _.sample(keyNames, Math.ceil(Math.random() * 50)).map((keyName: string) =>
-            createKey(
-              injector,
-              {
-                name: keyName,
-                projectId: payload.project.id
-              },
-              payload.accessToken
-            )
+          _.sample(keyNames, Math.ceil((Math.random() * keyNames.length) / 10)).map(
+            (keyName: string) =>
+              createKey(
+                injector,
+                {
+                  name: keyName,
+                  projectId: payload.project.id
+                },
+                payload.accessToken
+              )
           )
         ).pipe(map((keys: Key[]) => ({ ...payload, keys })));
       }
@@ -122,7 +124,9 @@ export const createRandomProject = (injector: Injector): Observable<Partial<Stat
       message: `${payload.user.name} created project ${payload.project.name} with \
         ${payload.locales.length} languages and ${payload.keys.length} keys`
     })),
-    catchError((err: HttpErrorResponse) => of({ message: errorMessage(err) }))
+    catchError((err: HttpErrorResponse) =>
+      of({ message: `createRandomProject: ${errorMessage(err)}` })
+    )
   );
 };
 
@@ -176,7 +180,9 @@ export const updateRandomProject = (injector: Injector): Observable<Partial<Stat
     map((payload: { user: User; project: Project }) => ({
       message: `${payload.user.name} updated project ${payload.project.name}`
     })),
-    catchError((err: HttpErrorResponse) => of({ message: errorMessage(err) }))
+    catchError((err: HttpErrorResponse) =>
+      of({ message: `updateRandomProject: ${errorMessage(err)}` })
+    )
   );
 };
 

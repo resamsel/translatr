@@ -21,7 +21,12 @@ Error: ${JSON.stringify(error, null, 2)}
 
 export class ErrorHandler {
   handleError(error: HttpErrorResponse, request?: RestRequest): Observable<never> {
-    console.warn(errorTemplate(error, request));
+    if (
+      error.error?.error?.violations[0]?.message !== 'error.nameunique' &&
+      error.error?.error?.violations[0]?.message !== 'Entry already exists (duplicate key)'
+    ) {
+      console.warn(errorTemplate(error, request));
+    }
     return throwError(error);
   }
 }

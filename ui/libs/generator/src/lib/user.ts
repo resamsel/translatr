@@ -86,7 +86,7 @@ export const createRandomUser = (userService: UserService): Observable<Partial<S
   const firstName = randomName.first();
   const lastName = randomName.last();
   const name = `${firstName} ${lastName}`;
-  const username = name.replace(' ', '').toLowerCase();
+  const username = name.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
   const email = `${firstName}.${lastName}@repanzar.com`;
   return userService
     .create({

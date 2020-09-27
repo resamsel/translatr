@@ -130,6 +130,10 @@ export const deleteRandomLocale = (injector: Injector): Observable<Partial<State
           }))
         )
     ),
+    filter(
+      (payload: { user: User; accessToken: AccessToken; project: Project; locales: Locale[] }) =>
+        payload.locales.length > 0
+    ),
     concatMap(
       (payload: { user: User; accessToken: AccessToken; project: Project; locales: Locale[] }) =>
         deleteLocale(
