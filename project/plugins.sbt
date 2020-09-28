@@ -1,12 +1,8 @@
-//resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
-resolvers += "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases/"
+// resolvers += "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases/"
 resolvers += Classpaths.sbtPluginReleases
 
 // The Play plugin
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.2")
-
-// Web plugins
-addSbtPlugin("net.ground5hark.sbt" % "sbt-concat" % "0.2.0")
 
 // Play enhancer - this automatically generates getters/setters for public fields
 // and rewrites accessors of these fields to use the getters/setters. Remove this
