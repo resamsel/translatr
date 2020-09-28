@@ -93,51 +93,6 @@ dockerExposedPorts in Docker := Seq(9000)
 dockerExposedVolumes := Seq("/opt/docker/logs", "/opt/docker/data")
 
 //
-// Concat
-//
-Concat.groups := Seq(
-  "styles.css" -> group(Seq(
-    "stylesheets/materialize.min.css",
-    "stylesheets/nprogress.css",
-    "stylesheets/font-awesome.min.css",
-    "stylesheets/d3.v3.css",
-    "stylesheets/codemirror.css",
-    "stylesheets/codemirror.translatr.css",
-    "stylesheets/main.css",
-    "stylesheets/editor.css",
-    "stylesheets/template.css",
-    "stylesheets/media.css"
-  )),
-  "scripts.js" -> group(Seq(
-    "javascripts/jquery.min.js",
-    "javascripts/jquery.ba-bbq.min.js",
-    "javascripts/materialize.min.js",
-    "javascripts/jquery.autocomplete.min.js",
-    "javascripts/d3.v3.min.js",
-    "javascripts/moment.min.js",
-    "javascripts/nprogress.js",
-    "javascripts/codemirror.js",
-    "javascripts/codemirror.xml.js",
-    "javascripts/underscore-min.js",
-    "javascripts/backbone-min.js",
-    "javascripts/backbone.undo.js",
-    "javascripts/backbone-pageable.min.js",
-    "javascripts/app.js",
-    "javascripts/main.js",
-    "javascripts/notification.js",
-    "javascripts/editor.js"
-  ))
-)
-
-// Put everything into the concat dir
-Concat.parentDir := "concat"
-
-// Allows concatenated resources to be used in dev mode
-pipelineStages in Assets := Seq(concat)
-
-pipelineStages := Seq(concat)
-
-//
 // Tests
 //
 fork in Test := false
