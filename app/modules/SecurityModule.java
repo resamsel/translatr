@@ -6,7 +6,6 @@ import auth.ClientName;
 import auth.CustomAuthorizer;
 import auth.CustomCallbackLogic;
 import auth.CustomCookieSessionStore;
-import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import controllers.routes;
@@ -29,10 +28,7 @@ import org.pac4j.oidc.client.KeycloakOidcClient;
 import org.pac4j.oidc.config.KeycloakOidcConfiguration;
 import org.pac4j.play.CallbackController;
 import org.pac4j.play.LogoutController;
-import org.pac4j.play.deadbolt2.Pac4jHandlerCache;
-import org.pac4j.play.deadbolt2.Pac4jRoleHandler;
 import org.pac4j.play.http.PlayHttpActionAdapter;
-import org.pac4j.play.store.PlayCookieSessionStore;
 import org.pac4j.play.store.PlaySessionStore;
 import play.Environment;
 import play.inject.Injector;
@@ -58,9 +54,6 @@ public class SecurityModule extends AbstractModule {
   private final Duration cacheTimeout;
   private final int cacheSize;
 
-  private static class MyPac4jRoleHandler implements Pac4jRoleHandler {
-  }
-
   public SecurityModule(final Environment environment, final com.typesafe.config.Config configuration) {
     this.configuration = configuration;
     this.baseUrl = BaseUrl.get(configuration);
@@ -71,23 +64,17 @@ public class SecurityModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(HandlerCache.class).to(Pac4jHandlerCache.class);
-
-    bind(Pac4jRoleHandler.class).to(MyPac4jRoleHandler.class);
-//    bind(PlaySessionStore.class).to(PlayCacheSessionStore.class);
-    // com.nimbusds.oauth2.sdk.pkce.CodeVerifier cannot be cast to java.io.Serializable
     bind(PlaySessionStore.class).to(CustomCookieSessionStore.class);
 
     // callback
     final CallbackController callbackController = new CallbackController();
     callbackController.setDefaultUrl(routes.Application.indexUi().url() + "/dashboard");
-    callbackController.setMultiProfile(true);
     bind(CallbackController.class).toInstance(callbackController);
 
     // logout
     final LogoutController logoutController = new LogoutController();
     logoutController.setDefaultUrl(routes.Application.indexUi().url());
-    //logoutController.setDestroySession(true);
+    logoutController.setDestroySession(true);
     bind(LogoutController.class).toInstance(logoutController);
   }
 

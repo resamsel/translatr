@@ -26,10 +26,7 @@ export class RegistrationPageComponent {
 
   onSubmit(user: User) {
     this.userService.create(user).subscribe(
-      () => {
-        console.log('navigating to dashboard');
-        this.router.navigate(['/dashboard']);
-      },
+      () => this.router.navigate(['/dashboard']),
       error => this.errors$.next(error.error.error)
     );
   }

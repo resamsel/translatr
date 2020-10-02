@@ -14,6 +14,7 @@ import {
   KeyService,
   LanguageProvider,
   LocaleService,
+  LoggingErrorHandler,
   MessageService,
   ProjectService,
   UserService
@@ -62,7 +63,7 @@ const providers: StaticProvider[] = [
     deps: [HttpHandler]
   },
   { provide: XhrFactory, useValue: new BrowserXhr() },
-  { provide: ErrorHandler, useValue: new ErrorHandler() },
+  { provide: ErrorHandler, useValue: new LoggingErrorHandler() },
   { provide: LanguageProvider, useValue: new LanguageProvider() },
   {
     provide: UserService,

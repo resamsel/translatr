@@ -33,7 +33,7 @@ export class AuthGuard implements CanActivate {
             url.searchParams.set('redirect_uri', environment.adminUrl + state.url);
             this.window.location.href = url.toString();
           } else {
-            this.router.navigate(['/login'], {
+            this.router.navigate([this.loginUrl], {
               queryParamsHandling: 'merge',
               queryParams: { redirect_uri: environment.adminUrl + state.url }
             });

@@ -1,7 +1,9 @@
 package controllers;
 
 import org.pac4j.core.client.Client;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.RedirectionAction;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.play.PlayWebContext;
 import org.pac4j.play.http.PlayHttpActionAdapter;
 import org.pac4j.play.store.PlaySessionStore;
@@ -36,6 +38,8 @@ public class Auth extends AbstractController {
         @SuppressWarnings("unchecked")
         Optional<RedirectionAction> action = client.get().getRedirectionAction(webContext);
         if (action.isPresent()) {
+          request.queryString("redirect_uri").ifPresent(redirectUri ->
+                  webContext.getSessionStore().set(webContext, Pac4jConstants.REQUESTED_URL, new FoundAction(redirectUri)));
           return PlayHttpActionAdapter.INSTANCE.adapt(action.get(), webContext);
         }
       }

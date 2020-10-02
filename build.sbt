@@ -22,7 +22,6 @@ libraryDependencies ++= Seq(
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-joda
   "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % "2.10.5",
 
-
   ehcache,
   //	"com.typesafe.play.modules" %% "play-modules-redis" % "2.6.0",
 
@@ -35,7 +34,6 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-oauth" % "4.0.3",
   "org.pac4j" % "pac4j-oidc" % "4.0.3" exclude("commons-io", "commons-io"),
   "org.pac4j" % "pac4j-sql" % "4.0.3",
-  "be.objectify" %% "deadbolt-java" % "2.8.1",
   // https://mvnrepository.com/artifact/org.apache.shiro/shiro-core
   "org.apache.shiro" % "shiro-core" % "1.5.3",
 

@@ -22,8 +22,6 @@ export class UserEditFormComponent implements OnInit {
 
   @Input()
   set errors(error: ConstraintViolationErrorInfo) {
-    console.log('errors', error);
-
     if (!Boolean(error)) {
       return;
     }
@@ -32,7 +30,6 @@ export class UserEditFormComponent implements OnInit {
       error.violations
         .filter((violation: ConstraintViolation) => !!this.form.get(violation.field))
         .forEach((violation: ConstraintViolation) => {
-          console.log('add violation', violation);
           const field = this.form.get(violation.field);
           field.setErrors({ violation: violation.message });
           field.markAsTouched();
@@ -43,7 +40,7 @@ export class UserEditFormComponent implements OnInit {
     }
   }
 
-  @Output() submit = new EventEmitter<User>();
+  @Output() edit = new EventEmitter<User>();
 
   form = new FormGroup({
     id: new FormControl(),
@@ -60,7 +57,7 @@ export class UserEditFormComponent implements OnInit {
   ngOnInit(): void {}
 
   onSubmit() {
-    this.submit.emit(this.form.value);
+    this.edit.emit(this.form.value);
   }
 
   hasRole(role: UserRole): boolean {

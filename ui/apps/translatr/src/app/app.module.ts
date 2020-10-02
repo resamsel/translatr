@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FeatureFlagModule } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { NotificationService, TranslatrSdkModule } from '@dev/translatr-sdk';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HotkeysModule } from '@ngneat/hotkeys';
 import { EffectsModule } from '@ngrx/effects';
 import { routerReducer, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
@@ -23,9 +24,9 @@ import { AppFacade } from './+state/app.facade';
 import { appReducer } from './+state/app.reducer';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { httpInterceptorProviders } from './interceptors';
 import { TranslocoRootModule } from './modules/shared/transloco';
 import { MatNotificationService } from './services/mat-notification-service';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [AppComponent],
@@ -70,12 +71,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     { provide: FeatureFlagFacade, useClass: AppFacade },
     { provide: WINDOW, useFactory: () => window },
     { provide: ENDPOINT_URL, useValue: environment.endpointUrl },
-    { provide: LOGIN_URL, useValue: `/ui/login` },
+    { provide: LOGIN_URL, useValue: `/login` },
     {
       provide: NotificationService,
       useFactory: (snackBar: MatSnackBar) => new MatNotificationService(snackBar),
       deps: [MatSnackBar]
-    }
+    },
+    httpInterceptorProviders
   ],
   bootstrap: [AppComponent]
 })

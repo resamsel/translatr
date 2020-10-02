@@ -11,7 +11,7 @@
         <a
           *ngFor="let provider of providers$ | async"
           [ngClass]="'client-' + provider.key"
-          href="{{endpointUrl}}{{provider.url}}"
+          href="{{endpointUrl}}{{provider.url}}{{redirectUri$ | async}}"
           mat-button
           class="client"
         >

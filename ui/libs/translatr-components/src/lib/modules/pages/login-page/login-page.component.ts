@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 import { AuthClient } from '@dev/translatr-model';
 import { AuthClientService } from '@translatr/translatr-sdk/src/lib/services/auth-client.service';
 import { ENDPOINT_URL } from '@translatr/utils';
@@ -29,8 +30,15 @@ export class LoginPageComponent implements OnInit {
     .find()
     .pipe(map(clients => clients.filter(client => this.names[client.key] !== undefined)));
 
+  readonly redirectUri$ = this.route.queryParams.pipe(
+    map((params: Params) =>
+      params.redirect_uri !== undefined ? '?redirect_uri=' + params.redirect_uri : ''
+    )
+  );
+
   constructor(
     private readonly authProviderService: AuthClientService,
+    private readonly route: ActivatedRoute,
     @Inject(ENDPOINT_URL) public readonly endpointUrl: string
   ) {}
 

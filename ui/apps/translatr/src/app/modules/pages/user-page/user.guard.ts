@@ -21,7 +21,6 @@ export class UserGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    console.log('UserGuard.canActivate', route.params.username);
     if (this.excluded.includes(route.params.username)) {
       return true;
     }

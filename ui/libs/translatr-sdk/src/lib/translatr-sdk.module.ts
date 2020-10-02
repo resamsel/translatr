@@ -1,18 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { Router } from '@angular/router';
-import { LOGIN_URL } from '@translatr/utils';
 import {
   AccessTokenService,
   ActivityService,
-  DefaultErrorHandler,
   ErrorHandler,
   KeyService,
   LanguageProvider,
   LocaleService,
   MessageService,
-  NotificationService,
   ProjectService,
   UserService
 } from './services';
@@ -29,12 +25,7 @@ import {
     MessageService,
     ProjectService,
     UserService,
-    {
-      provide: ErrorHandler,
-      useFactory: (notificationService: NotificationService, router: Router, loginUrl: string) =>
-        new DefaultErrorHandler(notificationService, router, loginUrl),
-      deps: [NotificationService, Router, LOGIN_URL]
-    }
+    ErrorHandler
   ]
 })
 export class TranslatrSdkModule {}

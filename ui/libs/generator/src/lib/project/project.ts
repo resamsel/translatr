@@ -64,10 +64,11 @@ export const createRandomProject = (injector: Injector): Observable<Partial<Stat
         injector.get(ProjectService)
       ).pipe(map((project: Project) => ({ ...payload, project })))
     ),
-    concatMap((payload: { user: User; project: Project; accessToken: AccessToken }) => {
-      return combineLatest(
-        _.sample(localeNames, Math.ceil(Math.random() * localeNames.length)).map(
-          (localeName: string) =>
+    concatMap((payload: { user: User; project: Project; accessToken: AccessToken }) =>
+      combineLatest(
+        _.sample(localeNames, Math.ceil(Math.random() * localeNames.length))
+          .filter(name => name !== undefined && name !== '')
+          .map((localeName: string) =>
             createLocale(
               injector,
               {
@@ -76,14 +77,15 @@ export const createRandomProject = (injector: Injector): Observable<Partial<Stat
               },
               payload.accessToken
             )
-        )
-      ).pipe(map((locales: Locale[]) => ({ ...payload, locales })));
-    }),
+          )
+      ).pipe(map((locales: Locale[]) => ({ ...payload, locales })))
+    ),
     concatMap(
       (payload: { user: User; project: Project; locales: Locale[]; accessToken: AccessToken }) => {
         return combineLatest(
-          _.sample(keyNames, Math.ceil((Math.random() * keyNames.length) / 10)).map(
-            (keyName: string) =>
+          _.sample(keyNames, Math.ceil((Math.random() * keyNames.length) / 10))
+            .filter(name => name !== undefined && name !== '')
+            .map((keyName: string) =>
               createKey(
                 injector,
                 {
@@ -92,7 +94,7 @@ export const createRandomProject = (injector: Injector): Observable<Partial<Stat
                 },
                 payload.accessToken
               )
-          )
+            )
         ).pipe(map((keys: Key[]) => ({ ...payload, keys })));
       }
     ),
