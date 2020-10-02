@@ -9,7 +9,6 @@ import { LanguageSwicher } from '../language-swicher';
 })
 export class AuthBarLanguageSwitcherComponent {
   readonly availableLanguages = this.translocoService.getAvailableLangs();
-  readonly active = this.languageSwicher !== null;
   activeLang = this.translocoService.getActiveLang();
 
   constructor(
@@ -21,7 +20,9 @@ export class AuthBarLanguageSwitcherComponent {
     if (this.activeLang !== language) {
       this.translocoService.setActiveLang(language);
       this.activeLang = this.translocoService.getActiveLang();
-      this.languageSwicher.updatePreferredLanguage(language);
+      if (this.languageSwicher !== null) {
+        this.languageSwicher.updatePreferredLanguage(language);
+      }
     }
   }
 }

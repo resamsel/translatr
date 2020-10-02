@@ -19,6 +19,10 @@
 
 .mat-toolbar {
   z-index: 2;
+
+  .mat-toolbar-row {
+    color: white;
+  }
 }
 
 .elevated .mat-toolbar-row {
