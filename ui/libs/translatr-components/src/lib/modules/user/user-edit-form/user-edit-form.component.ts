@@ -65,4 +65,8 @@ export class UserEditFormComponent implements OnInit {
       ? this.form.value.allowedRoles.indexOf(role) !== -1
       : false;
   }
+
+  get invalid(): boolean {
+    return this.form.invalid;
+  }
 }

@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 
 export interface RestRequest {
@@ -8,6 +9,9 @@ export interface RestRequest {
   path: string;
 }
 
+@Injectable({
+  providedIn: 'root'
+})
 export class ErrorHandler {
   handleError(error: HttpErrorResponse, request?: RestRequest): Observable<never> {
     return throwError(error);

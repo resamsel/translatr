@@ -1,4 +1,15 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureFlagModule, UserEditFormModule } from '@dev/translatr-components';
+import { LanguageProvider } from '@dev/translatr-sdk';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TranslocoModule } from '@ngneat/transloco';
+import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { RegistrationPageRoutingModule } from './registration-page-routing.module';
 
 import { RegistrationPageComponent } from './registration-page.component';
 
@@ -8,7 +19,22 @@ describe('RegistrationPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [RegistrationPageComponent]
+      declarations: [RegistrationPageComponent],
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        NoopAnimationsModule,
+
+        RegistrationPageRoutingModule,
+        SidenavModule,
+        TranslocoModule,
+        FeatureFlagModule,
+        UserEditFormModule,
+        MatCardModule,
+        MatButtonModule,
+        FontAwesomeModule
+      ],
+      providers: [LanguageProvider]
     }).compileComponents();
   }));
 

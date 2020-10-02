@@ -8,4 +8,5 @@ export * from './filter-field/testing';
 export * from './metric/testing';
 export * from './nav/testing';
 export * from './pages/testing';
+export * from './project/testing';
 export * from './user/testing';

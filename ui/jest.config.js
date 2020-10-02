@@ -1,7 +1,8 @@
 module.exports = {
   testMatch: ['**/+(*.)+(spec|test).+(ts|js)?(x)'],
   transform: {
-    '^.+\\.(ts|js|html)$': 'ts-jest'
+    '^.+\\.(ts|js|html)$': 'ts-jest',
+    '.+\\.(svg)$': 'jest-transform-stub'
   },
   resolver: '@nrwl/jest/plugins/resolver',
   moduleFileExtensions: ['ts', 'js', 'html'],
