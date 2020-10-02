@@ -25,27 +25,27 @@ export class AuthGuard implements CanActivate {
       map(x => x !== null), // null means unauthenticated
       tap((authenticated: boolean) => {
         if (!authenticated) {
-          try {
-            if (this.loginUrl.startsWith('http://') || this.loginUrl.startsWith('https://')) {
+          if (this.loginUrl.startsWith('http://') || this.loginUrl.startsWith('https://')) {
+            try {
               const url = new URL(this.loginUrl);
               url.searchParams.set('redirect_uri', state.url);
               this.window.location.href = url.toString();
-            } else {
-              this.router.navigate(['/login'], {
-                queryParamsHandling: 'merge',
-                queryParams: { redirect_uri: state.url }
-              });
+            } catch (e) {
+              console.error(
+                'Error while parsing login URL',
+                this.loginUrl,
+                this.window.location.href,
+                e
+              );
+              return false;
             }
-            return false;
-          } catch (e) {
-            console.error(
-              'Error while parsing login URL',
-              this.loginUrl,
-              this.window.location.href,
-              e
-            );
-            return false;
+          } else {
+            this.router.navigate([this.loginUrl], {
+              queryParamsHandling: 'merge',
+              queryParams: { redirect_uri: state.url }
+            });
           }
+          return false;
         }
       })
     );

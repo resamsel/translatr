@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FeatureFlagModule, UserEditFormModule } from '@dev/translatr-components';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faGoogle, faGithub, faFacebook, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faGithub, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { TranslocoModule } from '@ngneat/transloco';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';

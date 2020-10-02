@@ -29,7 +29,7 @@
           #editForm
           [user]="profile$ | async"
           [errors]="errors$ | async"
-          (submit)="onSubmit($event)"
+          (edit)="onSubmit($event)"
         ></dev-user-edit-form>
       </mat-card-content>
       <mat-card-actions class="dialog-actions">

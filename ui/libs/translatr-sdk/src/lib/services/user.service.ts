@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import {
   Aggregate,
   PagedList,
+  Profile,
   RequestCriteria,
   Setting,
-  User,
-  Profile
+  User
 } from '@dev/translatr-model';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';

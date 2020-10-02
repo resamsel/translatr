@@ -1,9 +1,9 @@
-@import "mixins";
+@import 'mixins';
 
 svg {
   display: block;
   width: 100%;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 
   .metric-title {
     font-size: 14px;

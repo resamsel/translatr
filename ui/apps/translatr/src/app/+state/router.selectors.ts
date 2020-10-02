@@ -11,9 +11,4 @@ const selectRouter = createFeatureSelector<RouterPartialState, fromRouter.Router
   ROUTER_FEATURE_KEY
 );
 
-const { selectQueryParams, selectRouteParams } = fromRouter.getSelectors(selectRouter);
-
-export const routerQuery = {
-  selectQueryParams,
-  selectRouteParams
-};
+export const routerQuery = fromRouter.getSelectors(selectRouter);

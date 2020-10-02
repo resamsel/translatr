@@ -17,7 +17,7 @@ export class DashboardPageComponent {
   constructor(
     private readonly facade: AppFacade,
     private readonly router: Router,
-    @Inject(DASHBOARD_ROUTES) private routes: Array<NameIconRoute>
+    @Inject(DASHBOARD_ROUTES) private routes: NameIconRoute[]
   ) {}
 
   routerLink(route: Route) {

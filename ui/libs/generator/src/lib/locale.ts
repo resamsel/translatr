@@ -80,17 +80,38 @@ export const createRandomLocale = (injector: Injector): Observable<Partial<State
           }))
         )
     ),
+    map(
+      (payload: { user: User; accessToken: AccessToken; project: Project; locales: Locale[] }) => ({
+        ...payload,
+        localeName: pickRandomly(
+          _.difference(
+            localeNames,
+            payload.locales.map((locale: Locale) => locale.name)
+          )
+        )
+      })
+    ),
+    filter(
+      (payload: {
+        user: User;
+        accessToken: AccessToken;
+        project: Project;
+        locales: Locale[];
+        localeName: string;
+      }) => payload.localeName !== undefined && payload.localeName !== ''
+    ),
     concatMap(
-      (payload: { user: User; accessToken: AccessToken; project: Project; locales: Locale[] }) =>
+      (payload: {
+        user: User;
+        accessToken: AccessToken;
+        project: Project;
+        locales: Locale[];
+        localeName: string;
+      }) =>
         createLocale(
           injector,
           {
-            name: pickRandomly(
-              _.difference(
-                localeNames,
-                payload.locales.map((locale: Locale) => locale.name)
-              )
-            ),
+            name: payload.localeName,
             projectId: payload.project.id
           },
           payload.accessToken

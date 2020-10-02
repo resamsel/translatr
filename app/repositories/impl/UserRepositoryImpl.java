@@ -95,7 +95,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
       return null;
     }
 
-    return uniqueUsername(name.replaceAll("[^A-Za-z0-9_-]", "").toLowerCase());
+    return uniqueUsername(name.toLowerCase().replaceAll("[^a-z0-9_-]", ""));
   }
 
   @Override
@@ -104,7 +104,7 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
       return null;
     }
 
-    return uniqueUsername(email.toLowerCase().replaceAll("[@.-]", ""));
+    return uniqueUsername(email.toLowerCase().replaceAll("[^a-z0-9_@.-]", ""));
   }
 
   /**
@@ -182,5 +182,13 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
     if (t.username == null) {
       t.username = String.valueOf(ThreadLocalRandom.current().nextLong());
     }
+  }
+
+  @Override
+  public void delete(User t) {
+    super.persist(t
+            .withUsername(StringUtils.left(t.username + "$" + t.id, User.USERNAME_LENGTH))
+            .withEmail(StringUtils.left(t.email + "$" + t.id, User.EMAIL_LENGTH))
+            .withActive(false));
   }
 }
