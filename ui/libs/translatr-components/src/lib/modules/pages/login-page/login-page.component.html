@@ -1,24 +1,37 @@
 <ng-container *transloco="let t">
-  <app-navbar [page]="t('login.title')"></app-navbar>
+  <app-navbar [page]="t('login.title')" [overlay]="true" [elevated]="false">
+    <app-auth-bar-language-switcher></app-auth-bar-language-switcher>
+  </app-navbar>
 
-  <div class="wrapper">
-    <mat-card class="login">
-      <div class="info">
-        <mat-icon>account_circle</mat-icon>
-        <span transloco="login.text">Sign in with any of the given providers</span>
+  <div class="main-container">
+    <header class="header header-graphic">
+      <div class="container title">
+        <div class="content">
+          <mat-icon class="image">account_circle</mat-icon>
+          <div class="text">
+            <h1 class="page" transloco="login.title">Login Page</h1>
+            <p class="description" transloco="login.text">Sign in with any of the given providers</p>
+          </div>
+        </div>
       </div>
-      <div class="options">
-        <a
-          *ngFor="let provider of providers$ | async"
-          [ngClass]="'client-' + provider.key"
-          href="{{endpointUrl}}{{provider.url}}{{redirectUri$ | async}}"
-          mat-button
-          class="client"
-        >
-          <fa-icon [icon]="icons[provider.key]"></fa-icon>
-          {{names[provider.key]}}
-        </a>
-      </div>
-    </mat-card>
+    </header>
+
+    <div class="wrapper">
+      <mat-card class="login">
+        <mat-card-title transloco="authclients.title">Identity Providers</mat-card-title>
+        <mat-card-content class="options">
+          <a
+            *ngFor="let provider of providers$ | async"
+            [ngClass]="'client-' + provider.key"
+            href="{{endpointUrl}}{{provider.url}}{{redirectUri$ | async}}"
+            mat-button
+            class="client"
+          >
+            <fa-icon [icon]="icons[provider.key]"></fa-icon>
+            {{names[provider.key]}}
+          </a>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 </ng-container>

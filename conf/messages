@@ -76,6 +76,7 @@ auth.keycloak=Keycloak
 auth.login=Sign in
 auth.logout=Logout {{name}}
 auth.twitter=Twitter
+authclients.title=Sign-in Services
 button.cancel=Cancel
 button.close=Close
 button.create=Create

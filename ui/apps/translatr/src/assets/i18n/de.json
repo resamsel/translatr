@@ -77,6 +77,7 @@
   "auth.login" : "Anmelden",
   "auth.logout" : "{{name}} abmelden",
   "auth.twitter" : "Twitter",
+  "authclients.title" : "Anmeldedienste",
   "button.cancel" : "Abbrechen",
   "button.close" : "Schließen",
   "button.create" : "Anlegen",
