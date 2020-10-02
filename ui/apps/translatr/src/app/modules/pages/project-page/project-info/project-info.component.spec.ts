@@ -16,7 +16,8 @@ import { WINDOW } from '@translatr/utils';
 import {
   EmptyViewTestingModule,
   FeatureFlagTestingModule,
-  MetricTestingModule
+  MetricTestingModule,
+  ProjectInfographicTestingModule
 } from '@translatr/components/testing';
 import { NavListTestingModule } from '../../../shared/nav-list/testing';
 import { ActivityListTestingModule } from '../../../shared/activity-list/testing';
@@ -38,6 +39,7 @@ describe('ProjectInfoComponent', () => {
         ShortNumberModule,
         FeatureFlagTestingModule,
         EmptyViewTestingModule,
+        ProjectInfographicTestingModule,
 
         RouterTestingModule,
 

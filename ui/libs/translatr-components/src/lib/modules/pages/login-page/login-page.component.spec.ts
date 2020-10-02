@@ -1,5 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
 import { NavbarTestingModule } from '@translatr/components/testing';
 import { AuthClientService } from '@translatr/translatr-sdk/src/lib/services/auth-client.service';
 import { ENDPOINT_URL } from '@translatr/utils';
@@ -15,7 +18,15 @@ describe('LoginPageComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [LoginPageComponent],
-      imports: [NavbarTestingModule, MatIconModule],
+      imports: [
+        RouterTestingModule,
+
+        NavbarTestingModule,
+
+        MatIconModule,
+        MatCardModule,
+        FontAwesomeTestingModule
+      ],
       providers: [
         {
           provide: AuthClientService,

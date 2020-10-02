@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserEditDialogComponent } from '@dev/translatr-components';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { UserEditFormTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 
 describe('UserEditDialogComponent', () => {
@@ -21,6 +22,8 @@ describe('UserEditDialogComponent', () => {
         ReactiveFormsModule,
         NoopAnimationsModule,
         TranslocoTestingModule,
+
+        UserEditFormTestingModule,
 
         MatFormFieldModule,
         MatDialogModule,
