@@ -42,7 +42,7 @@ export class AuthGuard implements CanActivate {
           } else {
             this.router.navigate([this.loginUrl], {
               queryParamsHandling: 'merge',
-              queryParams: { redirect_uri: state.url }
+              queryParams: { redirect_uri: `/ui/${state.url}` }
             });
           }
           return false;
