@@ -16,14 +16,7 @@ const info = {
   copyrightYear: now.getFullYear()
 };
 
-const file = resolve(
-  __dirname,
-  '..',
-  'libs',
-  'translatr-components',
-  'src',
-  'build-info.ts'
-);
+const file = resolve(__dirname, '..', 'libs', 'translatr-model', 'src', 'build-info.ts');
 writeFileSync(
   file,
   `// IMPORTANT: THIS FILE IS AUTO GENERATED! DO NOT MANUALLY EDIT OR CHECKIN!
@@ -44,9 +37,4 @@ export const BUILD_INFO: BuildInfo = ${JSON.stringify(info, null, 2)};
   { encoding: 'utf-8' }
 );
 
-console.log(
-  `Wrote build info ${info.version} to ${relative(
-    resolve(__dirname, '..'),
-    file
-  )}`
-);
+console.log(`Wrote build info ${info.version} to ${relative(resolve(__dirname, '..'), file)}`);

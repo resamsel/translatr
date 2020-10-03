@@ -14,13 +14,13 @@ import {
   KeyService,
   LanguageProvider,
   LocaleService,
-  LoggingErrorHandler,
   MessageService,
   ProjectService,
   UserService
 } from '@dev/translatr-sdk';
 import { Observable } from 'rxjs';
 import { XMLHttpRequest } from 'xmlhttprequest';
+import { LoggingErrorHandler } from './logging-error-handler';
 
 export class BrowserXhr implements XhrFactory {
   constructor() {}

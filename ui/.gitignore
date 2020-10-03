@@ -41,6 +41,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-/libs/translatr-components/src/build-info.ts
+/libs/translatr-model/src/build-info.ts
 
 /oclif.manifest.json

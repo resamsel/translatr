@@ -7,7 +7,6 @@ export * from './http-header';
 export * from './key.service';
 export * from './language-provider';
 export * from './locale.service';
-export * from './logging-error-handler';
 export * from './message.service';
 export * from './notification.service';
 export * from './project.service';
