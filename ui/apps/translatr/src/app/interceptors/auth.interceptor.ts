@@ -8,8 +8,8 @@ import {
 import { Inject, Injectable } from '@angular/core';
 import { NavigationCancel, Router } from '@angular/router';
 import { LOGIN_URL } from '@translatr/utils';
-import { Observable, of } from 'rxjs';
-import { catchError, filter, shareReplay } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, filter, shareReplay, take } from 'rxjs/operators';
 
 const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_UNAUTHORIZED = 401;
@@ -74,7 +74,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
           case HTTP_STATUS_UNAUTHORIZED:
             // Unauthorized, redirecting to login page
-            this.navigationCancelled$.subscribe(event =>
+            this.navigationCancelled$.pipe(take(1)).subscribe(event =>
               this.router.navigate([this.loginUrl], {
                 queryParamsHandling: 'merge',
                 queryParams: { redirect_uri: `/ui${event.url}` }
@@ -107,7 +107,7 @@ export class AuthInterceptor implements HttpInterceptor {
             break;
         }
 
-        return of(err as any);
+        return throwError(err as any);
       })
     );
   }
