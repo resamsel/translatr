@@ -237,12 +237,13 @@ public class UserServiceImpl extends AbstractModelService<User, UUID, UserCriter
     return byId(GetCriteria.from(t.id, request)).updateFrom(t);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   protected void postDelete(User t, Http.Request request) {
     super.postDelete(t, request);
+
+    accessTokenService.delete(accessTokenService.findBy(AccessTokenCriteria.from(request).withUserId(t.id)).getList(), request);
+    linkedAccountService.delete(linkedAccountService.findBy(LinkedAccountCriteria.from(request).withUserId(t.id)).getList(), request);
+    projectService.delete(projectService.findBy(ProjectCriteria.from(request).withUserId(t.id)).getList(), request);
 
     metricService.logEvent(User.class, ActionType.Delete);
 

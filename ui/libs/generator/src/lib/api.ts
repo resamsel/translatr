@@ -10,6 +10,7 @@ import {
 import { Injector, StaticProvider } from '@angular/core';
 import {
   AccessTokenService,
+  ActivityService,
   ErrorHandler,
   KeyService,
   LanguageProvider,
@@ -117,6 +118,15 @@ const providers: StaticProvider[] = [
       errorHandler: ErrorHandler,
       languageProvider: LanguageProvider
     ) => new AccessTokenService(client, errorHandler, languageProvider),
+    deps: [HttpClient, ErrorHandler, LanguageProvider]
+  },
+  {
+    provide: ActivityService,
+    useFactory: (
+      client: HttpClient,
+      errorHandler: ErrorHandler,
+      languageProvider: LanguageProvider
+    ) => new ActivityService(client, errorHandler, languageProvider),
     deps: [HttpClient, ErrorHandler, LanguageProvider]
   }
 ];
