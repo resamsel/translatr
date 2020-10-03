@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BUILD_INFO } from '../../../../build-info';
+import { BUILD_INFO } from '@dev/translatr-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
