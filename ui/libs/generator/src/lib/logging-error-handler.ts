@@ -18,6 +18,7 @@ Error: ${JSON.stringify(error, null, 2)}
 export class LoggingErrorHandler extends ErrorHandler {
   handleError(error: HttpErrorResponse, request?: RestRequest): Observable<never> {
     if (
+      error.error?.error?.violations !== undefined &&
       error.error?.error?.violations[0]?.message !== 'error.nameunique' &&
       error.error?.error?.violations[0]?.message !== 'error.usernameunique' &&
       error.error?.error?.violations[0]?.message !== 'error.projectnameunique' &&

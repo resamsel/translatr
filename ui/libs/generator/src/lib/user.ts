@@ -82,7 +82,7 @@ export const me = (userService: UserService): Observable<Partial<State>> => {
   );
 };
 
-export const createRandomUser = (userService: UserService): Observable<Partial<State>> => {
+export const createRandomUser = (userService: UserService): Observable<{ message: string }> => {
   const firstName = randomName.first();
   const lastName = randomName.last();
   const name = `${firstName} ${lastName}`;
@@ -125,7 +125,7 @@ export const updateRandomUser = (userService: UserService): Observable<Partial<S
   );
 };
 
-export const deleteRandomUser = (userService: UserService): Observable<Partial<State>> => {
+export const deleteRandomUser = (userService: UserService): Observable<{ message: string }> => {
   return getRandomUser(
     userService,
     { limit: 20, order: 'whenUpdated asc' },

@@ -1,6 +1,8 @@
 package criterias;
 
 import forms.SearchForm;
+import play.mvc.Http;
+import utils.JsonUtils;
 
 /**
  * @author resamsel
@@ -14,6 +16,12 @@ public class LinkedAccountCriteria extends AbstractSearchCriteria<LinkedAccountC
 
   public static LinkedAccountCriteria from(SearchForm form) {
     return new LinkedAccountCriteria().with(form);
+  }
+
+  public static LinkedAccountCriteria from(Http.Request request) {
+    return new LinkedAccountCriteria()
+            .with(request)
+            .withUserId(JsonUtils.getUuid(request.getQueryString("userId")));
   }
 
   @Override

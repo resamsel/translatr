@@ -1,3 +1,3 @@
-import { GenerateCommand } from './commands';
+import { LoadGenerateCommand } from './commands';
 
-GenerateCommand.run().then(require('@oclif/command/flush'), require('@oclif/errors/handle'));
+LoadGenerateCommand.run().then(require('@oclif/command/flush'), require('@oclif/errors/handle'));
