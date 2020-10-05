@@ -1,11 +1,12 @@
 import { Injector } from '@angular/core';
-import { AccessToken, User } from '@dev/translatr-model';
+import { AccessToken, Scope, User } from '@dev/translatr-model';
 import {
   AccessTokenService,
   ActivityService,
   ProjectService,
   UserService
 } from '@dev/translatr-sdk';
+import { chooseAccessToken } from '../access-token';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
@@ -37,7 +38,15 @@ export class JaninePersona extends Persona {
     return selectUserByRandomAccessToken(this.accessTokenService, this.userService).pipe(
       switchMap((result: { user: User; accessToken: AccessToken }) =>
         this.projectService
-          .find({ access_token: result.accessToken.key, ownerId: result.user.id, fetch: 'count' })
+          .find({
+            access_token: chooseAccessToken(
+              result.accessToken,
+              this.config.accessToken,
+              Scope.ProjectRead
+            ),
+            ownerId: result.user.id,
+            fetch: 'count'
+          })
           .pipe(
             catchError(() => of({ total: -1 })),
             map(paged => ({ ...result, projectCount: paged.total }))

@@ -5,6 +5,7 @@ export * from './janine.persona';
 export * from './jerome.persona';
 export * from './karla.persona';
 export * from './mario.persona';
+export * from './mila.persona';
 export * from './persona';
 export * from './personas';
 export * from './paul.persona';

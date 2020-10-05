@@ -17,10 +17,11 @@ import {
   ProjectService,
   UserService
 } from '@dev/translatr-sdk';
+import { selectRandomAccessToken } from '../access-token';
 import { pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';
 import { combineLatest, Observable, of } from 'rxjs';
-import { catchError, concatMap, filter, map, mapTo } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, mapTo, switchMap } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { createKey, keyNames } from '../key';
 import { createLocale, localeNames } from '../locale';
@@ -229,3 +230,15 @@ export const deleteRandomProject = (injector: Injector): Observable<Partial<Stat
       }))
     );
 };
+
+export const selectProjectByRandomAccessToken = (
+  accessTokenService: AccessTokenService,
+  projectService: ProjectService
+): Observable<{ project: Project; accessToken: AccessToken }> =>
+  selectRandomAccessToken(accessTokenService).pipe(
+    switchMap(accessToken =>
+      projectService
+        .find({ access_token: accessToken.key, ownerId: accessToken.userId })
+        .pipe(map(paged => ({ project: pickRandomly(paged.list), accessToken })))
+    )
+  );

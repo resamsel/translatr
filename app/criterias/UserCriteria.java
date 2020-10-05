@@ -1,6 +1,7 @@
 package criterias;
 
 import forms.SearchForm;
+import models.UserRole;
 import play.mvc.Http.Request;
 
 /**
@@ -9,12 +10,29 @@ import play.mvc.Http.Request;
  */
 public class UserCriteria extends AbstractSearchCriteria<UserCriteria> {
 
+  private UserRole role;
+
   public UserCriteria() {
     super("user");
   }
 
+  public UserRole getRole() {
+    return role;
+  }
+
+  public void setRole(UserRole role) {
+    this.role = role;
+  }
+
+  public UserCriteria withRole(UserRole role) {
+    setRole(role);
+    return self;
+  }
+
   public static UserCriteria from(Request request) {
-    return new UserCriteria().with(request);
+    return new UserCriteria()
+            .with(request)
+            .withRole(request.queryString("role").map(UserRole::fromString).orElse(null));
   }
 
   public static UserCriteria from(SearchForm form) {

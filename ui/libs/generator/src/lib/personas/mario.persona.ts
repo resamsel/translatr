@@ -1,7 +1,7 @@
 import { Injector } from '@angular/core';
 import { AccessToken, Scope, scopes } from '@dev/translatr-model';
 import { AccessTokenService } from '@dev/translatr-sdk';
-import { selectRandomAccessToken } from '../access-token';
+import { chooseAccessToken, selectRandomAccessToken } from '../access-token';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
@@ -35,9 +35,11 @@ export class MarioPersona extends Persona {
           },
           {
             params: {
-              access_token: accessToken.scope.includes(Scope.AccessTokenWrite)
-                ? accessToken.key
-                : this.config.accessToken
+              access_token: chooseAccessToken(
+                accessToken,
+                this.config.accessToken,
+                Scope.AccessTokenWrite
+              )
             }
           }
         )

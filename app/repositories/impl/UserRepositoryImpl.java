@@ -48,6 +48,10 @@ public class UserRepositoryImpl extends AbstractModelRepository<User, UUID, User
 
     query.eq("active", true);
 
+    if (criteria.getRole() != null) {
+      query.eq("role", criteria.getRole());
+    }
+
     if (criteria.getSearch() != null) {
       query.disjunction().ilike("name", "%" + criteria.getSearch() + "%")
               .ilike("username", "%" + criteria.getSearch() + "%").endJunction();

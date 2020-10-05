@@ -1,9 +1,10 @@
 import { Injector } from '@angular/core';
-import { Scope } from '@dev/translatr-model';
+import { Scope, UserRole } from '@dev/translatr-model';
 import { AccessTokenService, UserService } from '@dev/translatr-sdk';
+import { chooseAccessToken } from '../access-token';
 import { personas } from './personas';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { Persona } from './persona';
 
@@ -25,14 +26,21 @@ export class GeraldPersona extends Persona {
 
   execute(): Observable<string> {
     return this.accessTokenService
-      .find({ order: 'whenUpdated desc', limit: 1, offset: Math.floor(Math.random() * 5000) })
+      .find({
+        order: 'whenUpdated desc',
+        limit: 1,
+        offset: Math.floor(Math.random() * 5000)
+      })
       .pipe(
         map(paged => paged.list[0]),
         switchMap(accessToken =>
           this.userService
-            .me({ access_token: accessToken.key })
+            .me({
+              access_token: chooseAccessToken(accessToken, this.config.accessToken, Scope.UserRead)
+            })
             .pipe(map(me => ({ me, accessToken })))
         ),
+        filter(({ me }) => me.role === UserRole.User),
         switchMap(({ me, accessToken }) =>
           this.userService.update(
             {
@@ -41,9 +49,11 @@ export class GeraldPersona extends Persona {
             },
             {
               params: {
-                access_token: accessToken.scope.includes(Scope.UserWrite)
-                  ? accessToken.key
-                  : this.config.accessToken
+                access_token: chooseAccessToken(
+                  accessToken,
+                  this.config.accessToken,
+                  Scope.UserWrite
+                )
               }
             }
           )
