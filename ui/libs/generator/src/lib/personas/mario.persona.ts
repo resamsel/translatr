@@ -47,5 +47,5 @@ export class MarioPersona extends Persona {
 
 personas.push({
   create: (config: LoadGeneratorConfig, injector: Injector) => new MarioPersona(config, injector),
-  weight: 2
+  weight: 5
 });

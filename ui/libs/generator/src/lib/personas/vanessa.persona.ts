@@ -1,0 +1,42 @@
+import { Injector } from '@angular/core';
+import { AccessToken, Scope } from '@dev/translatr-model';
+import { AccessTokenService } from '@dev/translatr-sdk';
+import { Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { selectRandomAccessToken } from '../access-token';
+import { LoadGeneratorConfig } from '../load-generator-config';
+import { Persona } from './persona';
+import { personas } from './personas';
+
+/**
+ * I'm going to delete a random access token.
+ */
+export class VanessaPersona extends Persona {
+  private readonly accessTokenService: AccessTokenService;
+
+  constructor(config: LoadGeneratorConfig, injector: Injector) {
+    super('Vanessa', config, injector);
+
+    this.accessTokenService = injector.get(AccessTokenService);
+  }
+
+  execute(): Observable<string> {
+    return selectRandomAccessToken(this.accessTokenService).pipe(
+      switchMap((accessToken: AccessToken) =>
+        this.accessTokenService.delete(accessToken.id, {
+          params: {
+            access_token: accessToken.scope.includes(Scope.AccessTokenWrite)
+              ? accessToken.key
+              : this.config.accessToken
+          }
+        })
+      ),
+      map((accessToken: AccessToken) => `Access token ${accessToken.name} deleted`)
+    );
+  }
+}
+
+personas.push({
+  create: (config: LoadGeneratorConfig, injector: Injector) => new VanessaPersona(config, injector),
+  weight: 1
+});
