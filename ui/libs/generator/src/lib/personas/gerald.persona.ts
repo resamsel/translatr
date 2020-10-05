@@ -1,4 +1,5 @@
 import { Injector } from '@angular/core';
+import { Scope } from '@dev/translatr-model';
 import { AccessTokenService, UserService } from '@dev/translatr-sdk';
 import { personas } from './personas';
 import { Observable } from 'rxjs';
@@ -38,7 +39,7 @@ export class GeraldPersona extends Persona {
             },
             {
               params: {
-                access_token: accessToken.scope.includes('write:user')
+                access_token: accessToken.scope.includes(Scope.UserWrite)
                   ? accessToken.key
                   : this.config.accessToken
               }
