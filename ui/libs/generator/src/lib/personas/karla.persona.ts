@@ -43,5 +43,5 @@ export class KarlaPersona extends Persona {
 
 personas.push({
   create: (config: LoadGeneratorConfig, injector: Injector) => new KarlaPersona(config, injector),
-  weight: 2
+  weight: 5
 });
