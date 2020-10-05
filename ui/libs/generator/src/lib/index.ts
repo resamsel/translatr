@@ -1,3 +1,4 @@
+export * from './access-token';
 export * from './api';
 export * from './generator';
 export * from './handler';
