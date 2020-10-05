@@ -13,6 +13,8 @@ import { selectUserByRandomAccessToken } from '../user';
 import { Persona } from './persona';
 import { personas } from './personas';
 
+const name = 'Janine';
+
 /**
  * I'm going to peek at myself (a random user).
  */
@@ -23,7 +25,7 @@ export class JaninePersona extends Persona {
   private readonly projectService: ProjectService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super('Janine', config, injector);
+    super(name, config, injector);
 
     this.userService = injector.get(UserService);
     this.accessTokenService = injector.get(AccessTokenService);
@@ -72,6 +74,7 @@ export class JaninePersona extends Persona {
 }
 
 personas.push({
+  name,
   create: (config: LoadGeneratorConfig, injector: Injector) => new JaninePersona(config, injector),
   weight: 20
 });

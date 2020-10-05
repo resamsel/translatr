@@ -7,6 +7,8 @@ import { map, switchMap } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { Persona } from './persona';
 
+const name = 'Gerald';
+
 /**
  * I'm going to update myself (a random user).
  */
@@ -15,7 +17,7 @@ export class GeraldPersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super('Gerald', config, injector);
+    super(name, config, injector);
 
     this.userService = injector.get(UserService);
     this.accessTokenService = injector.get(AccessTokenService);
@@ -52,6 +54,7 @@ export class GeraldPersona extends Persona {
 }
 
 personas.push({
+  name,
   create: (config: LoadGeneratorConfig, injector: Injector) => new GeraldPersona(config, injector),
   weight: 10
 });

@@ -9,6 +9,8 @@ import { Persona } from './persona';
 import { personas } from './personas';
 import * as randomName from 'random-name';
 
+const name = 'Karla';
+
 /**
  * I'm going to create an access token for a random user.
  */
@@ -17,7 +19,7 @@ export class KarlaPersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super('Karla', config, injector);
+    super(name, config, injector);
 
     this.userService = injector.get(UserService);
     this.accessTokenService = injector.get(AccessTokenService);
@@ -42,6 +44,7 @@ export class KarlaPersona extends Persona {
 }
 
 personas.push({
+  name,
   create: (config: LoadGeneratorConfig, injector: Injector) => new KarlaPersona(config, injector),
   weight: 5
 });

@@ -6,6 +6,8 @@ import { map, switchMap } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { Persona } from './persona';
 
+const name = 'Paul';
+
 /**
  * I'm going to peek at myself (the main user).
  */
@@ -14,7 +16,7 @@ export class PaulPersona extends Persona {
   private readonly activityService: ActivityService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super('Paul', config, injector);
+    super(name, config, injector);
 
     this.userService = injector.get(UserService);
     this.activityService = injector.get(ActivityService);
@@ -36,6 +38,7 @@ export class PaulPersona extends Persona {
 }
 
 personas.push({
+  name,
   create: (config: LoadGeneratorConfig, injector: Injector) => new PaulPersona(config, injector),
   weight: 1
 });

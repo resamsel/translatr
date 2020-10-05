@@ -7,6 +7,8 @@ import { deleteRandomUser } from '../user';
 import { Persona } from './persona';
 import { personas } from './personas';
 
+const name = 'Brad';
+
 /**
  * I'm going to delete a user.
  */
@@ -14,7 +16,7 @@ export class BradPersona extends Persona {
   private readonly userService: UserService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super('Brad', config, injector);
+    super(name, config, injector);
 
     this.userService = injector.get(UserService);
   }
@@ -25,6 +27,7 @@ export class BradPersona extends Persona {
 }
 
 personas.push({
+  name,
   create: (config: LoadGeneratorConfig, injector: Injector) => new BradPersona(config, injector),
   weight: 1
 });

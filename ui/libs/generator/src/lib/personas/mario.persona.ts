@@ -8,6 +8,8 @@ import { LoadGeneratorConfig } from '../load-generator-config';
 import { Persona } from './persona';
 import { personas } from './personas';
 
+const name = 'Mario';
+
 /**
  * I'm going to update an access token for a random user.
  */
@@ -15,7 +17,7 @@ export class MarioPersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super('Mario', config, injector);
+    super(name, config, injector);
 
     this.accessTokenService = injector.get(AccessTokenService);
   }
@@ -46,6 +48,7 @@ export class MarioPersona extends Persona {
 }
 
 personas.push({
+  name,
   create: (config: LoadGeneratorConfig, injector: Injector) => new MarioPersona(config, injector),
   weight: 5
 });
