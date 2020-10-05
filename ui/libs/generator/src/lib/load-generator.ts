@@ -1,7 +1,8 @@
 import { Injector } from '@angular/core';
+import { ErrorHandler } from '@dev/translatr-sdk';
 import * as dateformat from 'dateformat';
 import { interval } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { catchError, concatMap, map } from 'rxjs/operators';
 import { createInjector } from './api';
 import { LoadGeneratorConfig } from './load-generator-config';
 import { personas } from './personas';
@@ -33,12 +34,19 @@ export class LoadGenerator {
       0
     );
 
+    const errorHandler = this.injector.get(ErrorHandler);
+
     interval((60 / this.config.requestsPerMinute) * 1000)
       .pipe(
         map(() =>
           selectPersonaFactory(filteredPersonas, totalWeight).create(this.config, this.injector)
         ),
-        concatMap(persona => persona.execute().pipe(map(message => `[${persona.name}] ${message}`)))
+        concatMap(persona =>
+          persona.execute().pipe(
+            map(message => `[${persona.name}] ${message}`),
+            catchError(error => errorHandler.handleError(error))
+          )
+        )
       )
       .subscribe(message => console.log(`${dateformat('yyyy-mm-dd hh:MM:ss')} - ${message}`));
   }
