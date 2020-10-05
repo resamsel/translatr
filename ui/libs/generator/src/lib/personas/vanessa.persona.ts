@@ -3,7 +3,7 @@ import { AccessToken, Scope } from '@dev/translatr-model';
 import { AccessTokenService } from '@dev/translatr-sdk';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { selectRandomAccessToken } from '../access-token';
+import { chooseAccessToken, selectRandomAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { Persona } from './persona';
 import { personas } from './personas';
@@ -27,9 +27,11 @@ export class VanessaPersona extends Persona {
       switchMap((accessToken: AccessToken) =>
         this.accessTokenService.delete(accessToken.id, {
           params: {
-            access_token: accessToken.scope.includes(Scope.AccessTokenWrite)
-              ? accessToken.key
-              : this.config.accessToken
+            access_token: chooseAccessToken(
+              accessToken,
+              this.config.accessToken,
+              Scope.AccessTokenWrite
+            )
           }
         })
       ),

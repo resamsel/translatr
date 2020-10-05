@@ -10,6 +10,7 @@ import {
   ProjectService,
   UserService
 } from '@dev/translatr-sdk';
+import { chooseAccessToken } from '../access-token';
 import * as randomName from 'random-name';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, concatMap, map, switchMap } from 'rxjs/operators';
@@ -57,9 +58,11 @@ export class JeromePersona extends Persona {
             },
             {
               params: {
-                access_token: result.accessToken.scope.includes(Scope.ProjectWrite)
-                  ? result.accessToken.key
-                  : this.config.accessToken
+                access_token: chooseAccessToken(
+                  result.accessToken,
+                  this.config.accessToken,
+                  Scope.ProjectWrite
+                )
               }
             }
           )
@@ -78,9 +81,12 @@ export class JeromePersona extends Persona {
                   },
                   {
                     params: {
-                      access_token: result.accessToken.scope.includes(Scope.LocaleWrite)
-                        ? result.accessToken.key
-                        : this.config.accessToken
+                      access_token: chooseAccessToken(
+                        result.accessToken,
+                        this.config.accessToken,
+                        Scope.ProjectWrite,
+                        Scope.LocaleWrite
+                      )
                     }
                   }
                 )
@@ -112,9 +118,12 @@ export class JeromePersona extends Persona {
                     },
                     {
                       params: {
-                        access_token: result.accessToken.scope.includes(Scope.KeyWrite)
-                          ? result.accessToken.key
-                          : this.config.accessToken
+                        access_token: chooseAccessToken(
+                          result.accessToken,
+                          this.config.accessToken,
+                          Scope.ProjectWrite,
+                          Scope.KeyWrite
+                        )
                       }
                     }
                   )
