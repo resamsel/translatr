@@ -97,7 +97,7 @@ export const createRandomUser = (userService: UserService): Observable<{ message
       email
     })
     .pipe(
-      map((user: User) => `${user.name} (${user.username}) has been created`),
+      map((user: User) => `User ${user.name} (${user.username}) created`),
       catchError((err: HttpErrorResponse) =>
         of(`${name} (${username}) could not be created (${errorMessage(err)})`)
       ),
@@ -115,7 +115,7 @@ export const updateRandomUser = (userService: UserService): Observable<Partial<S
     concatMap((user: User) => {
       const name = user.name.indexOf('!') > 0 ? user.name.replace('!', '') : `${user.name}!`;
       return userService.update({ ...user, name }).pipe(
-        map((u: User) => `${u.name} (${u.username}) has been updated`),
+        map((u: User) => `User ${u.name} (${u.username}) updated`),
         catchError((err: HttpErrorResponse) =>
           of(`${user.name} (${user.username}) could not be updated (${errorMessage(err)})`)
         )
@@ -135,7 +135,7 @@ export const deleteRandomUser = (userService: UserService): Observable<{ message
     filter((user: User) => user !== undefined),
     concatMap((user: User) =>
       userService.delete(user.id).pipe(
-        map(() => `${user.name} (${user.username}) has been deleted`),
+        map(() => `User ${user.name} (${user.username}) deleted`),
         catchError((err: HttpErrorResponse) =>
           of(`${user.name} (${user.username}) could not be deleted (${errorMessage(err)})`)
         )
@@ -146,13 +146,17 @@ export const deleteRandomUser = (userService: UserService): Observable<{ message
   );
 };
 
-export const selectRandomUser = (
+export const selectRandomUser = (userService: UserService): Observable<User> =>
+  userService
+    .find({ order: 'whenUpdated desc', limit: 1, offset: Math.floor(Math.random() * 5000) })
+    .pipe(map(paged => paged.list[0]));
+
+export const selectUserByRandomAccessToken = (
   accessTokenService: AccessTokenService,
   userService: UserService
-): Observable<{ user: User; accessToken: AccessToken }> => {
-  return selectRandomAccessToken(accessTokenService).pipe(
+): Observable<{ user: User; accessToken: AccessToken }> =>
+  selectRandomAccessToken(accessTokenService).pipe(
     switchMap(accessToken =>
       userService.me({ access_token: accessToken.key }).pipe(map(user => ({ user, accessToken })))
     )
   );
-};

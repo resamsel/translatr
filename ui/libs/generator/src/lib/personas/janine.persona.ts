@@ -6,10 +6,10 @@ import {
   ProjectService,
   UserService
 } from '@dev/translatr-sdk';
-import { selectRandomUser } from '../user';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
+import { selectUserByRandomAccessToken } from '../user';
 import { Persona } from './persona';
 import { personas } from './personas';
 
@@ -32,12 +32,12 @@ export class JaninePersona extends Persona {
   }
 
   execute(): Observable<string> {
-    return selectRandomUser(this.accessTokenService, this.userService).pipe(
+    return selectUserByRandomAccessToken(this.accessTokenService, this.userService).pipe(
       switchMap((result: { user: User; accessToken: AccessToken }) =>
         this.projectService
           .find({ access_token: result.accessToken.key, ownerId: result.user.id, fetch: 'count' })
           .pipe(
-            catchError(error => of({ total: -1 })),
+            catchError(() => of({ total: -1 })),
             map(paged => ({ ...result, projectCount: paged.total }))
           )
       ),
@@ -45,7 +45,7 @@ export class JaninePersona extends Persona {
         this.accessTokenService
           .find({ access_token: result.accessToken.key, userId: result.user.id, fetch: 'count' })
           .pipe(
-            catchError(error => of({ total: -1 })),
+            catchError(() => of({ total: -1 })),
             map(paged => ({ ...result, accessTokenCount: paged.total }))
           )
       ),
@@ -59,13 +59,13 @@ export class JaninePersona extends Persona {
           this.activityService
             .find({ access_token: result.accessToken.key, userId: result.user.id, fetch: 'count' })
             .pipe(
-              catchError(error => of({ total: -1 })),
+              catchError(() => of({ total: -1 })),
               map(paged => ({ ...result, activityCount: paged.total }))
             )
       ),
       map(
         ({ user, projectCount, accessTokenCount, activityCount }) =>
-          `My name is ${user.name} (${user.username}) - ${projectCount} projects, ${accessTokenCount} access tokens, ${activityCount} activities`
+          `User ${user.name} (${user.username}, ${projectCount}/${accessTokenCount}/${activityCount}) viewed`
       )
     );
   }
