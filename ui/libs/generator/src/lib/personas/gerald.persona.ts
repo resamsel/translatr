@@ -45,7 +45,7 @@ export class GeraldPersona extends Persona {
             }
           )
         ),
-        map(user => `Updated user ${user.name} (${user.username})`)
+        map(user => `User ${user.name} (${user.username}) updated`)
       );
   }
 }
