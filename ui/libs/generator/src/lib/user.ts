@@ -2,10 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
 import { AccessToken, PagedList, RequestCriteria, User, UserRole } from '@dev/translatr-model';
 import { AccessTokenService, errorMessage, UserService } from '@dev/translatr-sdk';
+import { selectRandomAccessToken } from './access-token';
 import { cartesianProduct, pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';
 import { Observable, of, throwError } from 'rxjs';
-import { catchError, concatMap, filter, map } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, switchMap } from 'rxjs/operators';
 import { State } from './state';
 
 const scope = cartesianProduct([
@@ -142,5 +143,16 @@ export const deleteRandomUser = (userService: UserService): Observable<{ message
     ),
     catchError(err => of(`Error while retrieving random user (${errorMessage(err)})`)),
     map((message: string) => ({ message }))
+  );
+};
+
+export const selectRandomUser = (
+  accessTokenService: AccessTokenService,
+  userService: UserService
+): Observable<{ user: User; accessToken: AccessToken }> => {
+  return selectRandomAccessToken(accessTokenService).pipe(
+    switchMap(accessToken =>
+      userService.me({ access_token: accessToken.key }).pipe(map(user => ({ user, accessToken })))
+    )
   );
 };
