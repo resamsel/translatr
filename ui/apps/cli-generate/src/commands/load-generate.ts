@@ -20,12 +20,18 @@ export class LoadGenerateCommand extends Command {
       default: '-'
     }),
 
-    // intervals
     users: flags.integer({
       description: 'The number of users per minute.',
       char: 'u',
       env: 'USERS',
       default: 60
+    }),
+
+    personas: flags.string({
+      description: 'The personas to include (default is all personas).',
+      char: 'p',
+      env: 'PERSONAS',
+      default: ''
     })
   };
 
@@ -35,7 +41,8 @@ export class LoadGenerateCommand extends Command {
     await new LoadGenerator({
       baseUrl: command.flags.endpoint,
       accessToken: command.flags['access-token'],
-      requestsPerMinute: command.flags.users
+      requestsPerMinute: command.flags.users,
+      includePersonas: command.flags.personas !== '' ? command.flags.personas.split(',') : []
     }).execute();
   }
 }

@@ -10,7 +10,13 @@ import {
   User,
   UserRole
 } from '@dev/translatr-model';
-import { errorMessage, MessageService, ProjectService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  errorMessage,
+  MessageService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';
 import { combineLatest, Observable, of } from 'rxjs';
@@ -19,7 +25,7 @@ import * as _ from 'underscore';
 import { createKey, keyNames } from '../key';
 import { createLocale, localeNames } from '../locale';
 import { State } from '../state';
-import { getRandomUserAccessToken } from '../user';
+import { getRandomUserAccessToken, selectUserByRandomAccessToken } from '../user';
 import { getRandomProject } from './get';
 
 const createProject = (
@@ -44,10 +50,9 @@ const createMessage = (
 
 export const createRandomProject = (injector: Injector): Observable<Partial<State>> => {
   // Randomly choose user, create project for that user with random name
-  return getRandomUserAccessToken(
-    injector,
-    { limit: 10 },
-    (user: User) => user.role === UserRole.User
+  return selectUserByRandomAccessToken(
+    injector.get(AccessTokenService),
+    injector.get(UserService)
   ).pipe(
     filter(
       (payload: { user: User; accessToken: AccessToken }) =>

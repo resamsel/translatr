@@ -3,6 +3,7 @@ import { LoadGeneratorConfig } from './load-generator-config';
 import { Persona } from './personas';
 
 export interface WeightedPersonaFactory {
-  create: (config: LoadGeneratorConfig, injector: Injector) => Persona;
+  name: string;
   weight: number;
+  create: (config: LoadGeneratorConfig, injector: Injector) => Persona;
 }
