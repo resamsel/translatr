@@ -41,7 +41,7 @@ export class LoadGenerateCommand extends Command {
     await new LoadGenerator({
       baseUrl: command.flags.endpoint,
       accessToken: command.flags['access-token'],
-      requestsPerMinute: command.flags.users,
+      usersPerMinute: command.flags.users,
       includePersonas: command.flags.personas !== '' ? command.flags.personas.split(',') : []
     }).execute();
   }

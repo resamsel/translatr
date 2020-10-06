@@ -20,6 +20,14 @@ export class LoadGenerator {
   }
 
   async execute() {
+    cli.table(
+      [
+        { config: 'baseUrl', value: this.config.baseUrl },
+        { config: 'usersPerMinute', value: this.config.usersPerMinute }
+      ],
+      { config: {}, value: {} }
+    );
+
     const filteredPersonas =
       this.config.includePersonas.length > 0
         ? personas.filter(persona => this.config.includePersonas.includes(persona.name))
@@ -36,7 +44,7 @@ export class LoadGenerator {
 
     console.log('\nGenerating load...\n');
 
-    return interval((60 / this.config.requestsPerMinute) * 1000)
+    return interval((60 / this.config.usersPerMinute) * 1000)
       .pipe(
         map(() =>
           selectPersonaFactory(filteredPersonas, totalWeight).create(this.config, this.injector)
