@@ -1,12 +1,12 @@
 import { Injector } from '@angular/core';
 import { Scope, UserRole } from '@dev/translatr-model';
 import { AccessTokenService, UserService } from '@dev/translatr-sdk';
-import { chooseAccessToken } from '../access-token';
-import { personas } from './personas';
 import { Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
+import { chooseAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { Persona } from './persona';
+import { personas } from './personas';
 
 const name = 'Gerald';
 
@@ -58,7 +58,7 @@ export class GeraldPersona extends Persona {
             }
           )
         ),
-        map(user => `User ${user.name} (${user.username}) updated`)
+        map(user => `user ${user.name} (${user.username}) updated`)
       );
   }
 }

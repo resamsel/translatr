@@ -1,11 +1,11 @@
 import { Injector } from '@angular/core';
 import { ErrorHandler } from '@dev/translatr-sdk';
-import * as dateformat from 'dateformat';
+import { cli } from 'cli-ux';
 import { interval } from 'rxjs';
-import { catchError, concatMap, map } from 'rxjs/operators';
+import { catchError, concatMap, map, tap } from 'rxjs/operators';
 import { createInjector } from './api';
 import { LoadGeneratorConfig } from './load-generator-config';
-import { personas } from './personas';
+import { Persona, personas } from './personas';
 import { selectPersonaFactory } from './utils';
 import { WeightedPersonaFactory } from './weighted-persona-factory';
 
@@ -25,9 +25,7 @@ export class LoadGenerator {
         ? personas.filter(persona => this.config.includePersonas.includes(persona.name))
         : personas;
 
-    filteredPersonas.forEach(personaFactory =>
-      console.log(`${personaFactory.name}: ${personaFactory.weight}`)
-    );
+    cli.table(filteredPersonas, { name: { header: 'Persona' }, weight: {} });
 
     const totalWeight = filteredPersonas.reduce(
       (agg: number, curr: WeightedPersonaFactory) => agg + curr.weight,
@@ -36,18 +34,24 @@ export class LoadGenerator {
 
     const errorHandler = this.injector.get(ErrorHandler);
 
+    console.log('\nGenerating load...\n');
+
     interval((60 / this.config.requestsPerMinute) * 1000)
       .pipe(
         map(() =>
           selectPersonaFactory(filteredPersonas, totalWeight).create(this.config, this.injector)
         ),
-        concatMap(persona =>
-          persona.execute().pipe(
-            map(message => `[${persona.name}] ${message}`),
-            catchError(error => errorHandler.handleError(error))
-          )
-        )
+        concatMap((persona: Persona) => {
+          cli.action.start(`${persona.name}`, 'processing');
+          return persona.execute().pipe(
+            tap(message => cli.action.stop(message)),
+            catchError(error => {
+              cli.action.stop('failed');
+              return errorHandler.handleError(error);
+            })
+          );
+        })
       )
-      .subscribe(message => console.log(`${dateformat('yyyy-mm-dd hh:MM:ss')} - ${message}`));
+      .subscribe();
   }
 }

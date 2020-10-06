@@ -99,6 +99,7 @@
     "@oclif/command": "1.6.1",
     "@oclif/config": "1.15.1",
     "@oclif/plugin-help": "^2.2.3",
+    "cli-ux": "5.5.0",
     "codemirror": "^5.56.0",
     "core-js": "^2.6.11",
     "d3": "5.16.0",

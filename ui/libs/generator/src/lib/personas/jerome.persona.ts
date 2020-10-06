@@ -10,11 +10,11 @@ import {
   ProjectService,
   UserService
 } from '@dev/translatr-sdk';
-import { chooseAccessToken } from '../access-token';
 import * as randomName from 'random-name';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, concatMap, map, switchMap } from 'rxjs/operators';
 import * as _ from 'underscore';
+import { chooseAccessToken } from '../access-token';
 import { keyNames } from '../key';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { localeNames } from '../locale';
@@ -71,7 +71,7 @@ export class JeromePersona extends Persona {
       switchMap((result: { user: User; accessToken: AccessToken; project: Project }) =>
         combineLatest(
           _.sample(localeNames, Math.ceil(Math.random() * localeNames.length))
-            .filter(name => name !== undefined && name !== '')
+            .filter(localeName => localeName !== undefined && localeName !== '')
             .map((localeName: string) =>
               this.localeService
                 .create(
@@ -108,7 +108,7 @@ export class JeromePersona extends Persona {
         (result: { user: User; accessToken: AccessToken; project: Project; locales: Locale[] }) => {
           return combineLatest(
             _.sample(keyNames, Math.ceil((Math.random() * keyNames.length) / 10))
-              .filter(name => name !== undefined && name !== '')
+              .filter(keyName => keyName !== undefined && keyName !== '')
               .map((keyName: string) =>
                 this.keyService
                   .create(
@@ -139,7 +139,7 @@ export class JeromePersona extends Persona {
       ),
       map(
         ({ project, locales, keys }) =>
-          `Project ${project.name} with ${locales.length} locales and ${keys.length} keys created`
+          `project ${project.name} with ${locales.length} locales and ${keys.length} keys created`
       ),
       catchError((err: HttpErrorResponse) => of(errorMessage(err)))
     );

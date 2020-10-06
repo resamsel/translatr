@@ -1,12 +1,12 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Activity, ActivityCriteria, Aggregate, PagedList } from '@dev/translatr-model';
-import { ErrorHandler } from './error-handler';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { convertTemporalsList } from '../shared';
+import { ErrorHandler } from './error-handler';
 import { HttpHeader } from './http-header';
 import { LanguageProvider } from './language-provider';
-import { convertTemporalsList } from '../shared';
 
 @Injectable({
   providedIn: 'root'

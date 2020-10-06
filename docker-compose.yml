@@ -4,6 +4,7 @@ volumes:
 services:
   db-translatr:
     image: postgres
+    command: postgres -c 'max_connections=200'
     ports:
       - "5432:5432"
     environment:

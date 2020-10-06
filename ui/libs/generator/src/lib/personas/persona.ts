@@ -1,6 +1,6 @@
 import { Injector } from '@angular/core';
-import { LoadGeneratorConfig } from '../load-generator-config';
 import { Observable } from 'rxjs';
+import { LoadGeneratorConfig } from '../load-generator-config';
 
 export abstract class Persona {
   protected constructor(

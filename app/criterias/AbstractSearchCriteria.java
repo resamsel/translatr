@@ -2,6 +2,7 @@ package criterias;
 
 import io.ebean.ExpressionList;
 import forms.SearchForm;
+import models.UserRole;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Http.Request;
 import utils.NumberUtils;
@@ -33,6 +34,8 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
 
   private UUID userId;
 
+  private UserRole userRole;
+
   private UUID loggedInUserId;
 
   public AbstractSearchCriteria(String type) {
@@ -62,6 +65,19 @@ public abstract class AbstractSearchCriteria<T extends AbstractSearchCriteria<T>
 
   public T withUserId(UUID userId) {
     setUserId(userId);
+    return self;
+  }
+
+  public UserRole getUserRole() {
+    return userRole;
+  }
+
+  public void setUserRole(UserRole userRole) {
+    this.userRole = userRole;
+  }
+
+  public T withUserRole(UserRole userRole) {
+    setUserRole(userRole);
     return self;
   }
 
