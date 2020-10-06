@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Params, Router } from '@angular/router';
-import { Feature } from '@dev/translatr-model';
+import { Feature, UserCriteria } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
 import { FilterCriteria } from '../../shared/list-header/list-header.component';
-import { UserCriteria } from './+state/users.actions';
 import { UsersFacade } from './+state/users.facade';
 
 @Component({

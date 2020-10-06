@@ -1,6 +1,5 @@
 export * from './access-token';
 export * from './api';
-export * from './handler';
 export * from './key';
 export * from './load-generator';
 export * from './load-generator-config';

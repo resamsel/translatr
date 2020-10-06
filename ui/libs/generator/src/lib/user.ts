@@ -1,39 +1,31 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injector } from '@angular/core';
-import { AccessToken, PagedList, RequestCriteria, User, UserRole } from '@dev/translatr-model';
-import { AccessTokenService, errorMessage, UserService } from '@dev/translatr-sdk';
-import { cartesianProduct, pickRandomly } from '@translatr/utils';
+import { AccessToken, PagedList, scopes, User, UserCriteria, UserRole } from '@dev/translatr-model';
+import { AccessTokenService, UserService } from '@dev/translatr-sdk';
+import { pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, concatMap, filter, map, switchMap } from 'rxjs/operators';
-import { UserCriteria } from '../../../../apps/translatr/src/app/modules/pages/users-page/+state/users.actions';
-import { selectRandomAccessToken } from './access-token';
-import { State } from './state';
+import { Observable, of } from 'rxjs';
+import { concatMap, filter, map } from 'rxjs/operators';
 
-const scope = cartesianProduct([
-  ['read', 'write'],
-  ['project', 'locale', 'key', 'message']
-])
-  .map((value: string[]) => value.join(':'))
-  .join(',');
+const scope = scopes.join(',');
 
-export const getRandomUser = (
+export const selectRandomUser = (
   userService: UserService,
-  criteria: UserCriteria,
-  filterFn: (user: User) => boolean
+  criteria: UserCriteria = {}
 ): Observable<User> =>
   userService
-    .find({ limit: 20, order: 'whenUpdated asc', ...criteria })
-    .pipe(map((pagedList: PagedList<User>) => pickRandomly(pagedList.list.filter(filterFn))));
+    .find({
+      order: 'whenUpdated desc',
+      limit: 1,
+      offset: Math.floor(Math.random() * 5000),
+      ...criteria
+    })
+    .pipe(map(paged => paged.list[0]));
 
-export const getRandomUserAccessToken = (
-  injector: Injector,
-  criteria: RequestCriteria,
-  filterFn: (user: User) => boolean
+export const selectRandomUserAccessToken = (
+  accessTokenService: AccessTokenService,
+  userService: UserService,
+  userCriteria: UserCriteria = {}
 ): Observable<{ user: User; accessToken: AccessToken }> => {
-  const userService = injector.get(UserService);
-  const accessTokenService = injector.get(AccessTokenService);
-  return getRandomUser(userService, criteria, filterFn).pipe(
+  return selectRandomUser(userService, userCriteria).pipe(
     filter((user: User) => user !== undefined),
     concatMap((user: User) =>
       accessTokenService.find({ userId: user.id }).pipe(
@@ -62,102 +54,23 @@ export const getRandomUserAccessToken = (
   );
 };
 
-export const me = (userService: UserService): Observable<Partial<State>> => {
-  return userService.me().pipe(
-    concatMap((user: User) => {
-      if (!user) {
-        return throwError('Could not login, access token most probably invalid');
-      }
-
-      return of({
-        me: user,
-        message: `Logged-in user is ${user.name}/${user.username} with role ${user.role}`
-      });
-    }),
-    catchError((err: HttpErrorResponse | string) => {
-      if (err instanceof HttpErrorResponse) {
-        return throwError({ message: `Could not login: ${errorMessage(err)}` });
-      }
-
-      return throwError({ message: `me: ${err}` });
-    })
-  );
-};
-
-export const createRandomUser = (userService: UserService): Observable<{ message: string }> => {
+export const createRandomUser = (userService: UserService): Observable<User> => {
   const firstName = randomName.first();
   const lastName = randomName.last();
   const name = `${firstName} ${lastName}`;
   const username = name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
   const email = `${firstName}.${lastName}@repanzar.com`.replace(/[^a-zA-Z0-9@.-]/g, '');
-  return userService
-    .create({
-      name,
-      role: UserRole.User,
-      username,
-      email
-    })
-    .pipe(
-      map((user: User) => `user ${user.name} (${user.username}) created`),
-      catchError((err: HttpErrorResponse) =>
-        of(`${name} (${username}) could not be created (${errorMessage(err)})`)
-      ),
-      map((message: string) => ({ message }))
-    );
+  return userService.create({
+    name,
+    role: UserRole.User,
+    username,
+    email
+  });
 };
 
-export const updateRandomUser = (userService: UserService): Observable<Partial<State>> => {
-  return getRandomUser(
-    userService,
-    { limit: 20, order: 'whenUpdated asc' },
-    (user: User) => user.role === UserRole.User
-  ).pipe(
-    filter((user: User) => !!user),
-    concatMap((user: User) => {
-      const name = user.name.indexOf('!') > 0 ? user.name.replace('!', '') : `${user.name}!`;
-      return userService.update({ ...user, name }).pipe(
-        map((u: User) => `User ${u.name} (${u.username}) updated`),
-        catchError((err: HttpErrorResponse) =>
-          of(`${user.name} (${user.username}) could not be updated (${errorMessage(err)})`)
-        )
-      );
-    }),
-    catchError(err => of(`Error while retrieving random user (${errorMessage(err)})`)),
-    map((message: string) => ({ message }))
-  );
-};
-
-export const deleteRandomUser = (userService: UserService): Observable<{ message: string }> => {
-  return getRandomUser(
-    userService,
-    { limit: 20, order: 'whenUpdated asc', role: UserRole.User },
-    (user: User) => user.role === UserRole.User
-  ).pipe(
+export const deleteRandomUser = (userService: UserService): Observable<User> => {
+  return selectRandomUser(userService).pipe(
     filter((user: User) => user !== undefined),
-    concatMap((user: User) =>
-      userService.delete(user.id).pipe(
-        map(() => `user ${user.name} (${user.username}) deleted`),
-        catchError((err: HttpErrorResponse) =>
-          of(`${user.name} (${user.username}) could not be deleted (${errorMessage(err)})`)
-        )
-      )
-    ),
-    catchError(err => of(`Error while retrieving random user (${errorMessage(err)})`)),
-    map((message: string) => ({ message }))
+    concatMap((user: User) => userService.delete(user.id))
   );
 };
-
-export const selectRandomUser = (userService: UserService): Observable<User> =>
-  userService
-    .find({ order: 'whenUpdated desc', limit: 1, offset: Math.floor(Math.random() * 5000) })
-    .pipe(map(paged => paged.list[0]));
-
-export const selectUserByRandomAccessToken = (
-  accessTokenService: AccessTokenService,
-  userService: UserService
-): Observable<{ user: User; accessToken: AccessToken }> =>
-  selectRandomAccessToken(accessTokenService).pipe(
-    switchMap(accessToken =>
-      userService.me({ access_token: accessToken.key }).pipe(map(user => ({ user, accessToken })))
-    )
-  );

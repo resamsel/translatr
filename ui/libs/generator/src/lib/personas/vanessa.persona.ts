@@ -1,8 +1,9 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
 import { AccessToken, Scope } from '@dev/translatr-model';
-import { AccessTokenService } from '@dev/translatr-sdk';
-import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { AccessTokenService, ErrorHandler } from '@dev/translatr-sdk';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { chooseAccessToken, selectRandomAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { Persona } from './persona';
@@ -15,11 +16,13 @@ const name = 'Vanessa';
  */
 export class VanessaPersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
+  private readonly errorHandler: ErrorHandler;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
     super(name, config, injector);
 
     this.accessTokenService = injector.get(AccessTokenService);
+    this.errorHandler = injector.get(ErrorHandler);
   }
 
   execute(): Observable<string> {
@@ -35,7 +38,14 @@ export class VanessaPersona extends Persona {
           }
         })
       ),
-      map((accessToken: AccessToken) => `access token ${accessToken.name} deleted`)
+      map(
+        (accessToken: AccessToken) =>
+          `access token ${accessToken.userUsername}/${accessToken.name} deleted`
+      ),
+      catchError((err: HttpErrorResponse) => {
+        this.errorHandler.handleError(err);
+        return throwError(err);
+      })
     );
   }
 }

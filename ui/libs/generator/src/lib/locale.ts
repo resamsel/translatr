@@ -1,14 +1,11 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injector } from '@angular/core';
-import { AccessToken, Locale, PagedList, Project, User, UserRole } from '@dev/translatr-model';
-import { errorMessage, LocaleService } from '@dev/translatr-sdk';
+import { AccessToken, Locale, PagedList, Project, User } from '@dev/translatr-model';
+import { AccessTokenService, LocaleService, ProjectService, UserService } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
-import { Observable, of } from 'rxjs';
-import { catchError, concatMap, filter, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { concatMap, filter, map } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { getRandomProject } from './project/get';
-import { State } from './state';
-import { getRandomUserAccessToken } from './user';
+import { selectRandomUserAccessToken } from './user';
 
 export const localeNames = [
   'en',
@@ -37,28 +34,15 @@ export const localeNames = [
   'ko'
 ];
 
-export const createLocale = (
-  injector: Injector,
-  locale: Locale,
-  accessToken: AccessToken
+export const createRandomLocale = (
+  accessTokenService: AccessTokenService,
+  userService: UserService,
+  projectService: ProjectService,
+  localeService: LocaleService
 ): Observable<Locale> => {
-  return injector.get(LocaleService).create(locale, { params: { access_token: accessToken.key } });
-};
-
-export const deleteLocale = (
-  injector: Injector,
-  localeId: string,
-  accessToken: AccessToken
-): Observable<Locale> => {
-  return injector
-    .get(LocaleService)
-    .delete(localeId, { params: { access_token: accessToken.key } });
-};
-
-export const createRandomLocale = (injector: Injector): Observable<Partial<State>> => {
-  return getRandomUserAccessToken(injector, {}, (user: User) => user.role !== UserRole.Admin).pipe(
+  return selectRandomUserAccessToken(accessTokenService, userService).pipe(
     concatMap((payload: { user: User; accessToken: AccessToken }) =>
-      getRandomProject(injector, payload.user, payload.accessToken).pipe(
+      getRandomProject(projectService, payload.user, payload.accessToken).pipe(
         map((project: Project) => ({ ...payload, project }))
       )
     ),
@@ -67,8 +51,7 @@ export const createRandomLocale = (injector: Injector): Observable<Partial<State
         payload.project !== undefined
     ),
     concatMap((payload: { user: User; accessToken: AccessToken; project: Project }) =>
-      injector
-        .get(LocaleService)
+      localeService
         .find({
           projectId: payload.project.id,
           access_token: payload.accessToken.key
@@ -108,28 +91,29 @@ export const createRandomLocale = (injector: Injector): Observable<Partial<State
         locales: Locale[];
         localeName: string;
       }) =>
-        createLocale(
-          injector,
-          {
-            name: payload.localeName,
-            projectId: payload.project.id
-          },
-          payload.accessToken
-        ).pipe(map((locale: Locale) => ({ ...payload, locale })))
+        localeService
+          .create(
+            {
+              name: payload.localeName,
+              projectId: payload.project.id
+            },
+            { params: { access_token: payload.accessToken.key } }
+          )
+          .pipe(map((locale: Locale) => ({ ...payload, locale })))
     ),
-    map(
-      (payload: { user: User; project: Project; locale: Locale }) =>
-        `${payload.user.name} created locale ${payload.locale.displayName} in project ${payload.project.name}`
-    ),
-    catchError((err: HttpErrorResponse) => of(`Locale could not be created: ${errorMessage(err)}`)),
-    map((message: string) => ({ message }))
+    map((payload: { user: User; project: Project; locale: Locale }) => payload.locale)
   );
 };
 
-export const deleteRandomLocale = (injector: Injector): Observable<Partial<State>> => {
-  return getRandomUserAccessToken(injector, {}, (user: User) => user.role !== UserRole.Admin).pipe(
+export const deleteRandomLocale = (
+  accessTokenService: AccessTokenService,
+  userService: UserService,
+  projectService: ProjectService,
+  localeService: LocaleService
+): Observable<Locale> => {
+  return selectRandomUserAccessToken(accessTokenService, userService).pipe(
     concatMap((payload: { user: User; accessToken: AccessToken }) =>
-      getRandomProject(injector, payload.user, payload.accessToken).pipe(
+      getRandomProject(projectService, payload.user, payload.accessToken).pipe(
         map((project: Project) => ({ ...payload, project }))
       )
     ),
@@ -138,8 +122,7 @@ export const deleteRandomLocale = (injector: Injector): Observable<Partial<State
         payload.project !== undefined
     ),
     concatMap((payload: { user: User; accessToken: AccessToken; project: Project }) =>
-      injector
-        .get(LocaleService)
+      localeService
         .find({
           projectId: payload.project.id,
           access_token: payload.accessToken.key
@@ -157,17 +140,12 @@ export const deleteRandomLocale = (injector: Injector): Observable<Partial<State
     ),
     concatMap(
       (payload: { user: User; accessToken: AccessToken; project: Project; locales: Locale[] }) =>
-        deleteLocale(
-          injector,
-          pickRandomly(payload.locales.map((locale: Locale) => locale.id)),
-          payload.accessToken
-        ).pipe(map((locale: Locale) => ({ ...payload, locale })))
+        localeService
+          .delete(pickRandomly(payload.locales.map((locale: Locale) => locale.id)), {
+            params: { access_token: payload.accessToken.key }
+          })
+          .pipe(map((locale: Locale) => ({ ...payload, locale })))
     ),
-    map(
-      (payload: { user: User; project: Project; locale: Locale }) =>
-        `${payload.user.name} deleted locale ${payload.locale.displayName} in project ${payload.project.name}`
-    ),
-    catchError((err: HttpErrorResponse) => of(`Locale could not be deleted: ${errorMessage(err)}`)),
-    map((message: string) => ({ message }))
+    map((payload: { user: User; project: Project; locale: Locale }) => payload.locale)
   );
 };

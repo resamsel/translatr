@@ -35,6 +35,7 @@ export * from './scope';
 export * from './setting';
 export * from './temporal';
 export * from './user';
+export * from './user-criteria';
 export * from './user-embedded';
 export * from './user-feature-flag';
 export * from './user-role';

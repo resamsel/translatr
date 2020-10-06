@@ -1,11 +1,6 @@
 /* tslint:disable:max-classes-per-file */
-import { PagedList, RequestCriteria, User, UserRole } from '@dev/translatr-model';
+import { PagedList, User, UserCriteria } from '@dev/translatr-model';
 import { Action } from '@ngrx/store';
-
-export interface UserCriteria extends RequestCriteria {
-  userId?: string;
-  role?: UserRole;
-}
 
 export enum UsersActionTypes {
   LoadUsers = '[Users Page] Load Users',

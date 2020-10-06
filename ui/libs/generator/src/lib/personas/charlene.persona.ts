@@ -1,7 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
-import { UserService } from '@dev/translatr-sdk';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { errorMessage, UserService } from '@dev/translatr-sdk';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { createRandomUser } from '../user';
 import { Persona } from './persona';
@@ -22,7 +23,10 @@ export class CharlenePersona extends Persona {
   }
 
   execute(): Observable<string> {
-    return createRandomUser(this.userService).pipe(map(({ message }) => message));
+    return createRandomUser(this.userService).pipe(
+      map(user => `user ${user.name} (${user.username}) created`),
+      catchError((err: HttpErrorResponse) => of(`user could not be created (${errorMessage(err)})`))
+    );
   }
 }
 
