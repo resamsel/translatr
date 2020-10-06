@@ -10,7 +10,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { chooseAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
-import { selectUserByRandomAccessToken } from '../user';
+import { selectRandomUserAccessToken } from '../user';
 import { Persona } from './persona';
 import { personas } from './personas';
 
@@ -35,7 +35,7 @@ export class JaninePersona extends Persona {
   }
 
   execute(): Observable<string> {
-    return selectUserByRandomAccessToken(this.accessTokenService, this.userService).pipe(
+    return selectRandomUserAccessToken(this.accessTokenService, this.userService).pipe(
       switchMap((result: { user: User; accessToken: AccessToken }) =>
         this.projectService
           .find({

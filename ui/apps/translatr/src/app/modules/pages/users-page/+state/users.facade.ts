@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { UserCriteria } from '@dev/translatr-model';
 
 import { select, Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
-import { LoadUsers, UserCriteria } from './users.actions';
+import { LoadUsers } from './users.actions';
 
 import { UsersPartialState } from './users.reducer';
 import { usersQuery } from './users.selectors';

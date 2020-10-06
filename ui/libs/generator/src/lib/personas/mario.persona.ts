@@ -44,7 +44,10 @@ export class MarioPersona extends Persona {
           }
         )
       ),
-      map((accessToken: AccessToken) => `access token ${accessToken.name} updated`)
+      map(
+        (accessToken: AccessToken) =>
+          `access token ${accessToken.userUsername}/${accessToken.name} updated`
+      )
     );
   }
 }

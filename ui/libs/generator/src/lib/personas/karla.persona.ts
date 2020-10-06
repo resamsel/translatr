@@ -36,9 +36,7 @@ export class KarlaPersona extends Persona {
           })
           .pipe(map(accessToken => ({ user, accessToken })))
       ),
-      map(
-        ({ user, accessToken }) => `access token ${accessToken.name} for ${user.username} created`
-      )
+      map(({ user, accessToken }) => `access token ${user.username}/${accessToken.name} created`)
     );
   }
 }

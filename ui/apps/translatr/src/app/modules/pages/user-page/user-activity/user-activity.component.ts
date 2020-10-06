@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '@dev/translatr-model';
+import { User, UserCriteria } from '@dev/translatr-model';
 import { filter, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
-import { UserCriteria } from '../../users-page/+state/users.actions';
 
 @Component({
   selector: 'app-user-activity',
