@@ -36,7 +36,7 @@ export class LoadGenerator {
 
     console.log('\nGenerating load...\n');
 
-    interval((60 / this.config.requestsPerMinute) * 1000)
+    return interval((60 / this.config.requestsPerMinute) * 1000)
       .pipe(
         map(() =>
           selectPersonaFactory(filteredPersonas, totalWeight).create(this.config, this.injector)
@@ -52,6 +52,6 @@ export class LoadGenerator {
           );
         })
       )
-      .subscribe();
+      .toPromise();
   }
 }

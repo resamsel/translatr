@@ -59,7 +59,7 @@
         "utils"
       ]
     },
-    "cli-generate": {
+    "lets-generate": {
       "tags": [
         "app"
       ]

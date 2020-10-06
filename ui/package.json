@@ -31,10 +31,10 @@
     "build:prod": "npm run build:ui:prod && npm run build:admin:prod",
     "build:ui:prod": "ng build translatr --prod --output-path ../public/ui",
     "build:admin:prod": "ng build translatr-admin --prod --output-path ../public/admin",
-    "build:generate": "ng build cli-generate",
-    "postbuild:generate": "tools/make-command.js dist/apps/cli-generate/main.js dist/lets-generate",
-    "build:generate:prod": "ng build cli-generate --prod",
-    "postbuild:generate:prod": "tools/make-command.js dist/apps/cli-generate/main.js dist/lets-generate",
+    "build:generate": "ng build lets-generate",
+    "postbuild:generate": "tools/make-command.js dist/apps/lets-generate/main.js dist/lets-generate",
+    "build:generate:prod": "ng build lets-generate --prod",
+    "postbuild:generate:prod": "tools/make-command.js dist/apps/lets-generate/main.js dist/lets-generate",
     "buildinfo": "node tools/build-info.js",
     "postpull": "npm install",
     "precommit": "npm run prettier:affected && npm run build:ci",
@@ -172,7 +172,7 @@
     "/dist/lets-generate"
   ],
   "oclif": {
-    "commands": "./apps/cli-generate/src/commands",
+    "commands": "./apps/lets-generate/src/commands",
     "bin": "translatr",
     "plugins": [
       "@oclif/plugin-help"
