@@ -475,19 +475,19 @@
       },
       "schematics": {}
     },
-    "cli-generate": {
-      "root": "apps/cli-generate",
-      "sourceRoot": "apps/cli-generate/src",
+    "lets-generate": {
+      "root": "apps/lets-generate",
+      "sourceRoot": "apps/lets-generate/src",
       "projectType": "application",
-      "prefix": "cli-generate",
+      "prefix": "lets-generate",
       "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
           "options": {
-            "outputPath": "dist/apps/cli-generate",
-            "main": "apps/cli-generate/src/main.ts",
-            "tsConfig": "apps/cli-generate/tsconfig.app.json"
+            "outputPath": "dist/apps/lets-generate",
+            "main": "apps/lets-generate/src/main.ts",
+            "tsConfig": "apps/lets-generate/tsconfig.app.json"
           },
           "configurations": {
             "production": {
@@ -500,26 +500,26 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "cli-generate:build"
+            "buildTarget": "lets-generate:build"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "apps/cli-generate/tsconfig.app.json"
+              "apps/lets-generate/tsconfig.app.json"
             ],
             "exclude": [
               "**/node_modules/**",
-              "!apps/cli-generate/**"
+              "!apps/lets-generate/**"
             ]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "apps/cli-generate/jest.config.js",
-            "tsConfig": "apps/cli-generate/tsconfig.spec.json"
+            "jestConfig": "apps/lets-generate/jest.config.js",
+            "tsConfig": "apps/lets-generate/tsconfig.spec.json"
           }
         }
       }
