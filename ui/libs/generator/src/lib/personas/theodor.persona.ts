@@ -10,12 +10,12 @@ import { selectProjectByRandomAccessToken } from '../project';
 import { Persona } from './persona';
 import { personas } from './personas';
 
-const name = 'Mila';
+const name = 'Theodor';
 
 /**
- * I'm going to update a random project.
+ * I'm going to delete a random project.
  */
-export class MilaPersona extends Persona {
+export class TheodorPersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
   private readonly projectService: ProjectService;
   private readonly errorHandler: ErrorHandler;
@@ -35,23 +35,15 @@ export class MilaPersona extends Persona {
       ),
       switchMap((result: { project: Project; accessToken: AccessToken }) =>
         this.projectService
-          .update(
-            {
-              ...result.project,
-              name: result.project.name.endsWith('!')
-                ? result.project.name.substr(0, result.project.name.length - 1)
-                : `${result.project.name}!`
-            },
-            {
-              params: {
-                access_token: chooseAccessToken(
-                  result.accessToken,
-                  this.config.accessToken,
-                  Scope.ProjectWrite
-                )
-              }
+          .delete(result.project.id, {
+            params: {
+              access_token: chooseAccessToken(
+                result.accessToken,
+                this.config.accessToken,
+                Scope.ProjectWrite
+              )
             }
-          )
+          })
           .pipe(
             catchError((err: HttpErrorResponse) => {
               this.errorHandler.handleError(err);
@@ -60,13 +52,13 @@ export class MilaPersona extends Persona {
           )
       ),
       filter((project: Project) => project !== undefined),
-      map((project: Project) => `project ${project.ownerUsername}/${project.name} updated`)
+      map((project: Project) => `project ${project.ownerUsername}/${project.name} deleted`)
     );
   }
 }
 
 personas.push({
   name,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new MilaPersona(config, injector),
+  create: (config: LoadGeneratorConfig, injector: Injector) => new TheodorPersona(config, injector),
   weight: 5
 });

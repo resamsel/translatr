@@ -6,9 +6,9 @@ import {
   ProjectService,
   UserService
 } from '@dev/translatr-sdk';
-import { chooseAccessToken } from '../access-token';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
+import { chooseAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { selectUserByRandomAccessToken } from '../user';
 import { Persona } from './persona';
@@ -76,7 +76,7 @@ export class JaninePersona extends Persona {
       ),
       map(
         ({ user, projectCount, accessTokenCount, activityCount }) =>
-          `User ${user.name} (${user.username}, ${projectCount}/${accessTokenCount}/${activityCount}) viewed`
+          `user ${user.name} (${user.username}, ${projectCount}/${accessTokenCount}/${activityCount}) viewed`
       )
     );
   }

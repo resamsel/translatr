@@ -2,6 +2,7 @@ package criterias;
 
 import io.ebean.ExpressionList;
 import forms.SearchForm;
+import models.UserRole;
 import play.mvc.Http;
 import utils.JsonUtils;
 
@@ -19,7 +20,8 @@ public class AccessTokenCriteria extends AbstractSearchCriteria<AccessTokenCrite
   public static AccessTokenCriteria from(Http.Request request) {
     return new AccessTokenCriteria()
         .with(request)
-        .withUserId(JsonUtils.getUuid(request.getQueryString("userId")));
+        .withUserId(JsonUtils.getUuid(request.getQueryString("userId")))
+        .withUserRole(request.queryString("userRole").map(UserRole::fromString).orElse(null));
   }
 
   public static AccessTokenCriteria from(SearchForm form) {

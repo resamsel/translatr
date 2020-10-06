@@ -2,11 +2,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
 import {
   AccessToken,
+  AccessTokenCriteria,
   Key,
   Locale,
   Message,
   PagedList,
   Project,
+  ProjectCriteria,
   User,
   UserRole
 } from '@dev/translatr-model';
@@ -17,12 +19,12 @@ import {
   ProjectService,
   UserService
 } from '@dev/translatr-sdk';
-import { selectRandomAccessToken } from '../access-token';
 import { pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, concatMap, filter, map, mapTo, switchMap } from 'rxjs/operators';
 import * as _ from 'underscore';
+import { selectRandomAccessToken } from '../access-token';
 import { createKey, keyNames } from '../key';
 import { createLocale, localeNames } from '../locale';
 import { State } from '../state';
@@ -233,12 +235,14 @@ export const deleteRandomProject = (injector: Injector): Observable<Partial<Stat
 
 export const selectProjectByRandomAccessToken = (
   accessTokenService: AccessTokenService,
-  projectService: ProjectService
+  projectService: ProjectService,
+  accessTokenCriteria: Partial<AccessTokenCriteria> = {},
+  projectCriteria: Partial<ProjectCriteria> = {}
 ): Observable<{ project: Project; accessToken: AccessToken }> =>
-  selectRandomAccessToken(accessTokenService).pipe(
+  selectRandomAccessToken(accessTokenService, accessTokenCriteria).pipe(
     switchMap(accessToken =>
       projectService
-        .find({ access_token: accessToken.key, ownerId: accessToken.userId })
+        .find({ access_token: accessToken.key, ownerId: accessToken.userId, ...projectCriteria })
         .pipe(map(paged => ({ project: pickRandomly(paged.list), accessToken })))
     )
   );

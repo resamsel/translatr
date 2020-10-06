@@ -1,10 +1,10 @@
 import { Injector } from '@angular/core';
 import { ActivityService, UserService } from '@dev/translatr-sdk';
-import { personas } from './personas';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { Persona } from './persona';
+import { personas } from './personas';
 
 const name = 'Paul';
 
@@ -29,10 +29,7 @@ export class PaulPersona extends Persona {
           .find({ userId: me.id, fetch: 'count' })
           .pipe(map(paged => ({ me, activities: paged.total })))
       ),
-      map(
-        ({ me, activities }) =>
-          `My name is ${me.name} (${me.username}) with ${activities} activities`
-      )
+      map(({ me, activities }) => `user ${me.name} (${me.username}) has ${activities} activities`)
     );
   }
 }

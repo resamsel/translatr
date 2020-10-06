@@ -35,7 +35,7 @@ export class VanessaPersona extends Persona {
           }
         })
       ),
-      map((accessToken: AccessToken) => `Access token ${accessToken.name} deleted`)
+      map((accessToken: AccessToken) => `access token ${accessToken.name} deleted`)
     );
   }
 }

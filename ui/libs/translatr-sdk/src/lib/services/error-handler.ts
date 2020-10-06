@@ -13,7 +13,7 @@ export interface RestRequest {
   providedIn: 'root'
 })
 export class ErrorHandler {
-  handleError(error: HttpErrorResponse, request?: RestRequest): Observable<never> {
+  handleError(error: HttpErrorResponse, request?: RestRequest): Observable<any> {
     return throwError(error);
   }
 }

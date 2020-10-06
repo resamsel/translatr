@@ -1,13 +1,20 @@
-import { AccessToken, Scope } from '@dev/translatr-model';
+import { AccessToken, AccessTokenCriteria, Scope, UserRole } from '@dev/translatr-model';
 import { AccessTokenService } from '@dev/translatr-sdk';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export const selectRandomAccessToken = (
-  accessTokenService: AccessTokenService
+  accessTokenService: AccessTokenService,
+  criteria: Partial<AccessTokenCriteria> = {}
 ): Observable<AccessToken> => {
   return accessTokenService
-    .find({ order: 'whenUpdated desc', limit: 1, offset: Math.floor(Math.random() * 5000) })
+    .find({
+      order: 'whenUpdated desc',
+      limit: 1,
+      offset: Math.floor(Math.random() * 5000),
+      userRole: UserRole.User,
+      ...criteria
+    })
     .pipe(map(paged => paged.list[0]));
 };
 

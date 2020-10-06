@@ -1,13 +1,13 @@
 import { Injector } from '@angular/core';
 import { scopes, User } from '@dev/translatr-model';
 import { AccessTokenService, UserService } from '@dev/translatr-sdk';
+import * as randomName from 'random-name';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { selectRandomUser } from '../user';
 import { Persona } from './persona';
 import { personas } from './personas';
-import * as randomName from 'random-name';
 
 const name = 'Karla';
 
@@ -37,7 +37,7 @@ export class KarlaPersona extends Persona {
           .pipe(map(accessToken => ({ user, accessToken })))
       ),
       map(
-        ({ user, accessToken }) => `Access token ${accessToken.name} for ${user.username} created`
+        ({ user, accessToken }) => `access token ${accessToken.name} for ${user.username} created`
       )
     );
   }

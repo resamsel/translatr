@@ -2,11 +2,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
 import { AccessToken, PagedList, RequestCriteria, User, UserRole } from '@dev/translatr-model';
 import { AccessTokenService, errorMessage, UserService } from '@dev/translatr-sdk';
-import { selectRandomAccessToken } from './access-token';
 import { cartesianProduct, pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, concatMap, filter, map, switchMap } from 'rxjs/operators';
+import { UserCriteria } from '../../../../apps/translatr/src/app/modules/pages/users-page/+state/users.actions';
+import { selectRandomAccessToken } from './access-token';
 import { State } from './state';
 
 const scope = cartesianProduct([
@@ -18,11 +19,11 @@ const scope = cartesianProduct([
 
 export const getRandomUser = (
   userService: UserService,
-  criteria: RequestCriteria,
+  criteria: UserCriteria,
   filterFn: (user: User) => boolean
 ): Observable<User> =>
   userService
-    .find({ limit: 20, order: 'whenUpdated asc' })
+    .find({ limit: 20, order: 'whenUpdated asc', ...criteria })
     .pipe(map((pagedList: PagedList<User>) => pickRandomly(pagedList.list.filter(filterFn))));
 
 export const getRandomUserAccessToken = (
@@ -97,7 +98,7 @@ export const createRandomUser = (userService: UserService): Observable<{ message
       email
     })
     .pipe(
-      map((user: User) => `User ${user.name} (${user.username}) created`),
+      map((user: User) => `user ${user.name} (${user.username}) created`),
       catchError((err: HttpErrorResponse) =>
         of(`${name} (${username}) could not be created (${errorMessage(err)})`)
       ),
@@ -129,13 +130,13 @@ export const updateRandomUser = (userService: UserService): Observable<Partial<S
 export const deleteRandomUser = (userService: UserService): Observable<{ message: string }> => {
   return getRandomUser(
     userService,
-    { limit: 20, order: 'whenUpdated asc' },
+    { limit: 20, order: 'whenUpdated asc', role: UserRole.User },
     (user: User) => user.role === UserRole.User
   ).pipe(
     filter((user: User) => user !== undefined),
     concatMap((user: User) =>
       userService.delete(user.id).pipe(
-        map(() => `User ${user.name} (${user.username}) deleted`),
+        map(() => `user ${user.name} (${user.username}) deleted`),
         catchError((err: HttpErrorResponse) =>
           of(`${user.name} (${user.username}) could not be deleted (${errorMessage(err)})`)
         )

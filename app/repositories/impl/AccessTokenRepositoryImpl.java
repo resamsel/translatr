@@ -37,6 +37,10 @@ public class AccessTokenRepositoryImpl extends
       query.eq("user.id", criteria.getUserId());
     }
 
+    if (criteria.getUserRole() != null) {
+      query.eq("user.role", criteria.getUserRole());
+    }
+
     if (StringUtils.isNoneEmpty(criteria.getSearch())) {
       query.ilike("name", "%" + criteria.getSearch() + "%");
     }

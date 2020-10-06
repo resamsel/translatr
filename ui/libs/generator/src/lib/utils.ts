@@ -7,11 +7,11 @@ export const selectPersonaFactory = (
   const threshold = Math.floor(Math.random() * totalWeight);
 
   let total = 0;
-  for (let i = 0; i < personas.length; i++) {
-    total += personas[i].weight;
+  for (const persona of personas) {
+    total += persona.weight;
 
     if (total >= threshold) {
-      return personas[i];
+      return persona;
     }
   }
 
