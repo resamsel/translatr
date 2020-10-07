@@ -1,13 +1,17 @@
 import { Injector } from '@angular/core';
-import { ErrorHandler } from '@dev/translatr-sdk';
+import { ErrorHandler, errorMessage } from '@dev/translatr-sdk';
 import { cli } from 'cli-ux';
 import { interval } from 'rxjs';
-import { catchError, concatMap, map, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { createInjector } from './api';
 import { LoadGeneratorConfig } from './load-generator-config';
 import { Persona, personas } from './personas';
 import { selectPersonaFactory } from './utils';
 import { WeightedPersonaFactory } from './weighted-persona-factory';
+
+const cutOffAfter = (secret: string, length: number): string => {
+  return secret.substr(0, length) + (secret.length > length ? '...' : '');
+};
 
 export class LoadGenerator {
   private readonly config: LoadGeneratorConfig;
@@ -23,7 +27,9 @@ export class LoadGenerator {
     cli.table(
       [
         { config: 'baseUrl', value: this.config.baseUrl },
-        { config: 'usersPerMinute', value: this.config.usersPerMinute }
+        { config: 'accessToken', value: cutOffAfter(this.config.accessToken, 8) },
+        { config: 'usersPerMinute', value: this.config.usersPerMinute },
+        { config: 'personas', value: this.config.includePersonas }
       ],
       { config: {}, value: {} }
     );
@@ -49,12 +55,20 @@ export class LoadGenerator {
         map(() =>
           selectPersonaFactory(filteredPersonas, totalWeight).create(this.config, this.injector)
         ),
-        concatMap((persona: Persona) => {
+        mergeMap((persona: Persona) => {
+          const startedMillis = new Date().getTime();
           cli.action.start(`${persona.name}`, 'processing');
           return persona.execute().pipe(
-            tap(message => cli.action.stop(message)),
+            tap(message => {
+              console.log(
+                `${persona.name}: ${message} in ${new Date().getTime() - startedMillis}ms`
+              );
+            }),
             catchError(error => {
-              cli.action.stop('failed');
+              console.error(
+                `${persona.name}: ${errorMessage(error)} in ${new Date().getTime() -
+                  startedMillis}ms`
+              );
               return errorHandler.handleError(error);
             })
           );
