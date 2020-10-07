@@ -2,7 +2,7 @@ import play.sbt.PlayImport.javaJdbc
 
 name := """translatr"""
 
-version := "3.0.3"
+version := "3.1.0-0"
 
 lazy val root = (project in file("."))
   .configs(IntegrationTest)
