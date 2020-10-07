@@ -123,8 +123,18 @@ const gitMerge = (
     .then(() => version);
 };
 
-const release = async (type: ReleaseType): Promise<string> => {
+const release = async (
+  type: ReleaseType,
+  updateVersionsOnly = false
+): Promise<string> => {
   const version = await readVersion(type);
+
+  if (updateVersionsOnly) {
+    await updateVersions(version);
+    console.log(`✔️ Version was bumped to ${version}`);
+
+    return version;
+  }
 
   await gitCheck(version);
 
@@ -163,7 +173,7 @@ const release = async (type: ReleaseType): Promise<string> => {
 };
 
 if (process.argv.length == 3) {
-  release(process.argv[2] as ReleaseType).catch(error =>
+  release(process.argv[2] as ReleaseType, true).catch(error =>
     console.error(`${error}`)
   );
 } else {

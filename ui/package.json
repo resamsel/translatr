@@ -1,6 +1,6 @@
 {
   "name": "translatr",
-  "version": "3.0.3",
+  "version": "3.1.0-0",
   "author": "René Panzar",
   "license": "GPL-3.0",
   "bugs": {
@@ -15,7 +15,7 @@
     "start": "ng serve --host 0.0.0.0 --port 4210",
     "start:admin": "ng serve translatr-admin --host 0.0.0.0 --port 4211",
     "start:docs": "ng serve docs --host 0.0.0.0 --port 4212",
-    "start:lets-generate": "ACCESS_TOKEN=$TRANSLATR_ACCESS_TOKEN ng serve lets-generate",
+    "start:lets-generate": "ng serve lets-generate",
     "lets-generate": "dist/lets-generate",
     "lint": "./node_modules/.bin/nx workspace-lint && ng lint",
     "lint:fix": "./node_modules/.bin/nx workspace-lint --fix && ng lint --fix",

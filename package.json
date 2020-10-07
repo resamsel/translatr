@@ -1,6 +1,6 @@
 {
   "name": "translatr",
-  "version": "3.0.3",
+  "version": "3.1.0-0",
   "description": "A modern and intuitive i18n tool. Translatr simplifies i18n for developers and translators.",
   "directories": {
     "test": "test"
@@ -10,7 +10,9 @@
     "i18n:push": "./src/python/translatr.py push && cd ui && npm run i18n:push",
     "release:patch": "ts-node ./src/typescript/release.ts patch",
     "release:minor": "ts-node ./src/typescript/release.ts minor",
+    "release:preminor": "ts-node ./src/typescript/release.ts preminor",
     "release:major": "ts-node ./src/typescript/release.ts major",
+    "release:premajor": "ts-node ./src/typescript/release.ts premajor",
     "kill:server": "fuser -k 9000/tcp 4200/tcp 4210/tcp 4211/tcp; echo 'ports freed'",
     "precommit": "bin/activator test -Dconfig.file=test.conf",
     "svg-cleanup": "ts-node ./src/typescript/svg-cleanup.ts ui"
