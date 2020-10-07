@@ -10,13 +10,16 @@ import {
 import { pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';
 import { combineLatest, Observable, of } from 'rxjs';
-import { concatMap, filter, map, mapTo } from 'rxjs/operators';
+import { concatMap, filter, map, mapTo, retry } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { keyNames } from '../key';
 import { localeNames } from '../locale';
 import { selectRandomUserAccessToken } from '../user';
 import { getRandomProject } from './get';
 
+/**
+ * Randomly choose user, create project for that user with random name.
+ */
 export const createRandomProject = (
   accessTokenService: AccessTokenService,
   userService: UserService,
@@ -25,7 +28,6 @@ export const createRandomProject = (
   keyService: KeyService,
   messageService: MessageService
 ): Observable<{ project: Project; locales: Locale[]; keys: Key[] }> => {
-  // Randomly choose user, create project for that user with random name
   return selectRandomUserAccessToken(accessTokenService, userService).pipe(
     filter(
       (payload: { user: User; accessToken: AccessToken }) =>
@@ -45,6 +47,7 @@ export const createRandomProject = (
         )
         .pipe(map((project: Project) => ({ ...payload, project })))
     ),
+    retry(3),
     concatMap((payload: { user: User; project: Project; accessToken: AccessToken }) =>
       combineLatest(
         _.sample(localeNames, Math.ceil(Math.random() * localeNames.length))
@@ -140,15 +143,15 @@ export const updateRandomProject = (
         })
         .pipe(map((p: Project) => ({ ...payload, project: p })));
     }),
-    concatMap((payload: { user: User; project: Project; accessToken: AccessToken }) =>
+    concatMap(({ user, project, accessToken }) =>
       projectService.update(
         {
-          ...payload.project,
-          description: payload.project.description.endsWith('!')
-            ? payload.project.description.replace('!', '')
-            : `${payload.project.description}!`
+          ...project,
+          description: project.description.endsWith('!')
+            ? project.description.replace('!', '')
+            : `${project.description}!`
         },
-        { params: { access_token: payload.accessToken.key } }
+        { params: { access_token: accessToken.key } }
       )
     )
   );

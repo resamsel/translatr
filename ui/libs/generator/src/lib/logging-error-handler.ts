@@ -15,6 +15,14 @@ Error: ${JSON.stringify(error, null, 2)}
 ------------
 `;
 
+const excludedViolations = [
+  'error.nameunique',
+  'error.usernameunique',
+  'error.projectnameunique',
+  'error.accesstokennameunique',
+  'Entry already exists (duplicate key)'
+];
+
 export class LoggingErrorHandler extends ErrorHandler {
   handleError(error: HttpErrorResponse, request?: RestRequest): Observable<any> {
     if (error.status === 0) {
@@ -25,10 +33,7 @@ export class LoggingErrorHandler extends ErrorHandler {
 
     if (
       error.error?.error?.violations !== undefined &&
-      error.error?.error?.violations[0]?.message !== 'error.nameunique' &&
-      error.error?.error?.violations[0]?.message !== 'error.usernameunique' &&
-      error.error?.error?.violations[0]?.message !== 'error.projectnameunique' &&
-      error.error?.error?.violations[0]?.message !== 'Entry already exists (duplicate key)'
+      !excludedViolations.includes(error.error?.error?.violations[0]?.message)
     ) {
       console.error(errorTemplate(error, request));
     }
