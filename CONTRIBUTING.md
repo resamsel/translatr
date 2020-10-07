@@ -295,6 +295,12 @@ To be able to validate importing and exporting unit tests need to be added. See 
 With the changes above, create a pull request. That PR should be handled quite easily and is added in the next version.
 See [Pull request guidelines](#pull-request-guidelines) for details.
 
+## Publishing Docker Image
+
+```
+$ bin/activator stage docker:publish
+```
+
 ## Pull request guidelines
 
 1. Pull requests should link to at least one issue that it is solving. The issue
