@@ -31,7 +31,7 @@ export class MilaPersona extends Persona {
 
   execute(): Observable<string> {
     return updateRandomProject(this.accessTokenService, this.userService, this.projectService).pipe(
-      filter((project: Project) => project !== undefined),
+      filter(project => project !== undefined),
       map((project: Project) => `project ${project.ownerUsername}/${project.name} updated`),
       catchError((err: HttpErrorResponse) => {
         this.errorHandler.handleError(err);

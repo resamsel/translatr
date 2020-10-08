@@ -16,6 +16,7 @@ export const selectRandomUser = (
       order: 'whenUpdated desc',
       limit: 1,
       offset: Math.floor(Math.random() * 5000),
+      role: UserRole.User,
       ...criteria
     })
     .pipe(map(paged => paged.list[0]));

@@ -125,11 +125,11 @@ const gitMerge = (
 
 const release = async (
   type: ReleaseType,
-  updateVersionsOnly = false
+  commitChanges = false
 ): Promise<string> => {
   const version = await readVersion(type);
 
-  if (updateVersionsOnly) {
+  if (!commitChanges) {
     await updateVersions(version);
     console.log(`✔️ Version was bumped to ${version}`);
 
@@ -172,10 +172,11 @@ const release = async (
   return version;
 };
 
-if (process.argv.length == 3) {
-  release(process.argv[2] as ReleaseType, true).catch(error =>
-    console.error(`${error}`)
-  );
+if (process.argv.length >= 3) {
+  release(
+    process.argv[2] as ReleaseType,
+    process.argv.length > 3 ? process.argv[3] === "on" : true
+  ).catch(error => console.error(`${error}`));
 } else {
   console.error("Error: no release type specified");
 }

@@ -1,6 +1,6 @@
 {
   "name": "translatr",
-  "version": "3.1.0-2",
+  "version": "3.1.0-5",
   "description": "A modern and intuitive i18n tool. Translatr simplifies i18n for developers and translators.",
   "directories": {
     "test": "test"
@@ -8,7 +8,7 @@
   "scripts": {
     "i18n:pull": "./src/python/translatr.py pull && cd ui && npm run i18n:pull",
     "i18n:push": "./src/python/translatr.py push && cd ui && npm run i18n:push",
-    "release:prerelease": "ts-node ./src/typescript/release.ts prerelease",
+    "release:prerelease": "ts-node ./src/typescript/release.ts prerelease off",
     "release:patch": "ts-node ./src/typescript/release.ts patch",
     "release:minor": "ts-node ./src/typescript/release.ts minor",
     "release:major": "ts-node ./src/typescript/release.ts major",
