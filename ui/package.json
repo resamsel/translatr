@@ -1,6 +1,6 @@
 {
   "name": "translatr",
-  "version": "3.1.0-2",
+  "version": "3.1.0-5",
   "author": "René Panzar",
   "license": "GPL-3.0",
   "bugs": {
@@ -36,6 +36,9 @@
     "postbuild:lets-generate": "tools/make-command.js dist/apps/lets-generate/main.js dist/lets-generate",
     "build:lets-generate:prod": "ng build lets-generate --prod",
     "postbuild:lets-generate:prod": "tools/make-command.js dist/apps/lets-generate/main.js dist/lets-generate",
+    "prebuild:lets-generate:docker": "npm run build:lets-generate:prod",
+    "build:lets-generate:docker": "docker build -t resamsel/translatr-loadgenerator:$npm_package_version .",
+    "publish:lets-generate:docker": "docker push resamsel/translatr-loadgenerator:$npm_package_version",
     "buildinfo": "node tools/build-info.js",
     "postpull": "npm install",
     "precommit": "npm run prettier:affected && npm run build:ci",
@@ -64,8 +67,7 @@
     "i18n:pull:ui": "cd apps/translatr && translatr pull",
     "i18n:push:ui": "cd apps/translatr && translatr push",
     "i18n:pull:admin": "cd apps/translatr-admin && translatr pull",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "snyk-protect": "snyk protect"
   },
   "private": true,
   "dependencies": {
@@ -105,6 +107,7 @@
     "core-js": "^2.6.11",
     "d3": "5.16.0",
     "d3-time": "^1.1.0",
+    "globby": "11.0.1",
     "jest-transform-stub": "2.0.0",
     "messageformat": "2.3.0",
     "moment": "2.26.0",
@@ -116,6 +119,7 @@
     "snyk": "^1.364.0",
     "tslib": "^1.10.0",
     "underscore": "1.10.2",
+    "xmlhttprequest": "1.8.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
@@ -148,7 +152,7 @@
     "codelyzer": "^5.1.2",
     "coveralls": "3.1.0",
     "cypress": "4.8.0",
-    "dateformat": "^3.0.3",
+    "dateformat": "3.0.3",
     "husky": "4.2.5",
     "jasmine-marbles": "^0.6.0",
     "jest": "^24.9.0",
@@ -166,8 +170,7 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "2.3.0",
     "typescript": "3.8.3",
-    "webpack-bundle-analyzer": "3.7.0",
-    "xmlhttprequest": "^1.8.0"
+    "webpack-bundle-analyzer": "3.7.0"
   },
   "files": [
     "/dist/lets-generate"

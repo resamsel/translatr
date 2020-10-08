@@ -3,7 +3,7 @@ import { scopes, User } from '@dev/translatr-model';
 import { AccessTokenService, UserService } from '@dev/translatr-sdk';
 import * as randomName from 'random-name';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { selectRandomUser } from '../user';
 import { Persona } from './persona';
@@ -27,6 +27,7 @@ export class KarlaPersona extends Persona {
 
   execute(): Observable<string> {
     return selectRandomUser(this.userService).pipe(
+      filter(user => user !== undefined),
       switchMap((user: User) =>
         this.accessTokenService
           .create({

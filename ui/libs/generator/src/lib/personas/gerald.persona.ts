@@ -27,11 +27,13 @@ export class GeraldPersona extends Persona {
   execute(): Observable<string> {
     return this.accessTokenService
       .find({
+        userRole: UserRole.User,
         order: 'whenUpdated desc',
         limit: 1,
         offset: Math.floor(Math.random() * 5000)
       })
       .pipe(
+        filter(paged => paged.list.length > 0),
         map(paged => paged.list[0]),
         switchMap(accessToken =>
           this.userService
@@ -40,7 +42,6 @@ export class GeraldPersona extends Persona {
             })
             .pipe(map(me => ({ me, accessToken })))
         ),
-        filter(({ me }) => me.role === UserRole.User),
         switchMap(({ me, accessToken }) =>
           this.userService.update(
             {

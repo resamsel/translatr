@@ -2,7 +2,7 @@ import { Injector } from '@angular/core';
 import { AccessToken, Scope, scopes } from '@dev/translatr-model';
 import { AccessTokenService } from '@dev/translatr-sdk';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { chooseAccessToken, selectRandomAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { Persona } from './persona';
@@ -24,6 +24,7 @@ export class MarioPersona extends Persona {
 
   execute(): Observable<string> {
     return selectRandomAccessToken(this.accessTokenService).pipe(
+      filter(accessToken => accessToken !== undefined),
       switchMap((accessToken: AccessToken) =>
         this.accessTokenService.update(
           {

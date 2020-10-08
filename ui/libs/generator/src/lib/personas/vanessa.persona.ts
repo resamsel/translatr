@@ -3,7 +3,7 @@ import { Injector } from '@angular/core';
 import { AccessToken, Scope } from '@dev/translatr-model';
 import { AccessTokenService, ErrorHandler } from '@dev/translatr-sdk';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, filter, map, switchMap } from 'rxjs/operators';
 import { chooseAccessToken, selectRandomAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { Persona } from './persona';
@@ -27,6 +27,7 @@ export class VanessaPersona extends Persona {
 
   execute(): Observable<string> {
     return selectRandomAccessToken(this.accessTokenService).pipe(
+      filter(accessToken => accessToken !== undefined),
       switchMap((accessToken: AccessToken) =>
         this.accessTokenService.delete(accessToken.id, {
           params: {
