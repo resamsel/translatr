@@ -2,11 +2,11 @@ import { Injector } from '@angular/core';
 import { ErrorHandler, errorMessage } from '@dev/translatr-sdk';
 import { cli } from 'cli-ux';
 import { interval } from 'rxjs';
-import { catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, retryWhen, tap } from 'rxjs/operators';
 import { createInjector } from './api';
 import { LoadGeneratorConfig } from './load-generator-config';
 import { Persona, personas } from './personas';
-import { selectPersonaFactory } from './utils';
+import { genericRetryStrategy, selectPersonaFactory } from './utils';
 import { WeightedPersonaFactory } from './weighted-persona-factory';
 
 const cutOffAfter = (secret: string, length: number): string => {
@@ -29,7 +29,9 @@ export class LoadGenerator {
         { config: 'baseUrl', value: this.config.baseUrl },
         { config: 'accessToken', value: cutOffAfter(this.config.accessToken, 8) },
         { config: 'usersPerMinute', value: this.config.usersPerMinute },
-        { config: 'personas', value: this.config.includePersonas }
+        { config: 'personas', value: this.config.includePersonas },
+        { config: 'maxRetryAttempts', value: this.config.maxRetryAttempts },
+        { config: 'retryScalingDelay', value: this.config.retryScalingDelay }
       ],
       { config: {}, value: {} }
     );
@@ -64,6 +66,13 @@ export class LoadGenerator {
                 `${persona.name}: ${message} in ${new Date().getTime() - startedMillis}ms`
               );
             }),
+            retryWhen(
+              genericRetryStrategy({
+                maxRetryAttempts: this.config.maxRetryAttempts,
+                scalingDuration: this.config.retryScalingDelay,
+                prefix: `${persona.name}: `
+              })
+            ),
             catchError(error => {
               console.error(
                 `${persona.name}: ${errorMessage(error)} in ${new Date().getTime() -

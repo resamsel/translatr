@@ -12,3 +12,4 @@ export * from './pipes';
 export * from './project';
 export * from './user';
 export * from './metric';
+export * from './tag';

@@ -10,12 +10,12 @@ import {
   MemberCriteria,
   MemberRole,
   memberRoles,
+  MessageCriteria,
   Project,
   User,
   UserRole
 } from '@dev/translatr-model';
 import { select, Store } from '@ngrx/store';
-import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 import { mergeWithError } from '@translatr/utils';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';

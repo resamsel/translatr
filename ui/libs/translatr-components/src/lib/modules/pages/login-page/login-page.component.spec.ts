@@ -4,11 +4,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
 import { NavbarTestingModule } from '@translatr/components/testing';
-import { AuthClientService } from '@translatr/translatr-sdk/src/lib/services/auth-client.service';
 import { ENDPOINT_URL } from '@translatr/utils';
 import { mockObservable } from '@translatr/utils/testing';
 
 import { LoginPageComponent } from './login-page.component';
+import { AuthClientService } from '@dev/translatr-sdk';
 
 describe('LoginPageComponent', () => {
   let component: LoginPageComponent;

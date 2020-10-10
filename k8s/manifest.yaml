@@ -1,0 +1,128 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv-volume
+  labels:
+    type: local
+    app: postgres
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pv-claim
+  labels:
+    app: postgres
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:10.4
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+  selector:
+    app: postgres
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: translatr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: translatr
+  template:
+    metadata:
+      labels:
+        app: translatr
+    spec:
+      containers:
+        - name: server
+          image: resamsel/translatr:3.1.0-2
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 9000
+          envFrom:
+            - configMapRef:
+                name: translatr-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: translatr
+  labels:
+    app: translatr
+spec:
+  type: NodePort
+  ports:
+    - port: 9000
+  selector:
+    app: translatr
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: translatr-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: translatr
+                port:
+                  number: 9000

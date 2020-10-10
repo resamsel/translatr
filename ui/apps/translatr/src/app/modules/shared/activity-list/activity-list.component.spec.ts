@@ -3,7 +3,6 @@ import { EmptyViewTestingModule } from '@translatr/components/testing';
 import { ActivityListComponent } from './activity-list.component';
 import { NavListTestingModule } from '../nav-list/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TagModule } from '@translatr/translatr-components/src/lib/modules/tag/tag.module';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
@@ -17,6 +16,7 @@ import { ActivityMemberLinkComponent } from './activity-member-link/activity-mem
 import { ActivityMessageLinkComponent } from './activity-message-link/activity-message-link.component';
 import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/activity-access-token-link.component';
 import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TagModule } from '@dev/translatr-components';
 
 describe('ActivityListComponent', () => {
   let component: ActivityListComponent;

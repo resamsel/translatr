@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
-import { TitleService } from '@translatr/utils/src/lib/services/title.service';
+import { TitleService } from '@translatr/utils';
 
 export interface Link {
   routerLink: string[];

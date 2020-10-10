@@ -3,12 +3,12 @@ import {
   KeyCriteria,
   LocaleCriteria,
   Message,
+  MessageCriteria,
   PagedList,
   RequestCriteria,
   Setting
 } from '@dev/translatr-model';
 import { select, Store } from '@ngrx/store';
-import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';

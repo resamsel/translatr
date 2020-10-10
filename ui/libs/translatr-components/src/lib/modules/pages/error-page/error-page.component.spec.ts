@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
-import { ErrorPageHeaderComponent } from '@translatr/translatr-components/src/lib/modules/pages/error-page/error-page-header.component';
-import { ErrorPageMessageComponent } from '@translatr/translatr-components/src/lib/modules/pages/error-page/error-page-message.component';
+import { ErrorPageHeaderComponent } from './error-page-header.component';
+import { ErrorPageMessageComponent } from './error-page-message.component';
 
 import { ErrorPageComponent } from './error-page.component';
 

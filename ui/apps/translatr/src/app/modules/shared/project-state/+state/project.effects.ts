@@ -14,11 +14,11 @@ import {
   ActivityService,
   KeyService,
   LocaleService,
+  MemberService,
   MessageService
 } from '@dev/translatr-sdk';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { MemberService } from '@translatr/translatr-sdk/src/lib/services/member.service';
 import { of } from 'rxjs';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import {
