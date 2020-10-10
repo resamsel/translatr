@@ -63,6 +63,21 @@ public class AccessToken implements Model<AccessToken, Long> {
     return this;
   }
 
+  public AccessToken withName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public AccessToken withKey(String key) {
+    this.key = key;
+    return this;
+  }
+
+  public AccessToken withScope(Scope... scopes) {
+    this.scope = Arrays.stream(scopes).map(Scope::scope).collect(Collectors.joining(","));
+    return this;
+  }
+
   public List<Scope> getScopeList() {
     if (scope == null) {
       return new ArrayList<>();

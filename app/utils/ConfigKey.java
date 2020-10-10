@@ -23,6 +23,8 @@ public enum ConfigKey {
   BaseUrl("translatr.baseUrl"),
   RedirectBase("translatr.redirectBase"),
 
+  AdminAccessToken("translatr.adminAccessToken"),
+
   Pac4jSecurityExcludePaths("pac4j.security.excludePaths"),
   Pac4jCacheTimeout("pac4j.cache.timeout"),
   Pac4jCacheSize("pac4j.cache.size"),
@@ -44,7 +46,7 @@ public enum ConfigKey {
   FacebookClientId("pac4j.clients.facebook.id"),
   FacebookClientSecret("pac4j.clients.facebook.secret");
 
-  private String key;
+  private final String key;
 
   ConfigKey(String key) {
     this.key = key;

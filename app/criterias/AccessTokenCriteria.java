@@ -1,7 +1,6 @@
 package criterias;
 
 import io.ebean.ExpressionList;
-import forms.SearchForm;
 import models.UserRole;
 import play.mvc.Http;
 import utils.JsonUtils;
@@ -24,13 +23,6 @@ public class AccessTokenCriteria extends AbstractSearchCriteria<AccessTokenCrite
         .withUserRole(request.queryString("userRole").map(UserRole::fromString).orElse(null));
   }
 
-  public static AccessTokenCriteria from(SearchForm form) {
-    return new AccessTokenCriteria().with(form);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public <U> ExpressionList<U> paged(ExpressionList<U> query) {
     query.order("whenCreated");
