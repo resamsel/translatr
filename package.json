@@ -1,6 +1,6 @@
 {
   "name": "translatr",
-  "version": "3.1.0-6",
+  "version": "3.1.0-8",
   "description": "A modern and intuitive i18n tool. Translatr simplifies i18n for developers and translators.",
   "directories": {
     "test": "test"
@@ -14,7 +14,9 @@
     "release:major": "ts-node ./src/typescript/release.ts major",
     "kill:server": "fuser -k 9000/tcp 4200/tcp 4210/tcp 4211/tcp; echo 'ports freed'",
     "precommit": "bin/activator test -Dconfig.file=test.conf",
-    "svg-cleanup": "ts-node ./src/typescript/svg-cleanup.ts ui"
+    "svg-cleanup": "ts-node ./src/typescript/svg-cleanup.ts ui",
+    "build:docker": "bin/activator stage docker:publishLocal",
+    "publish:docker": "docker push resamsel/$npm_package_name:$npm_package_version"
   },
   "dependencies": {
     "backbone": "^1.3.3",

@@ -59,7 +59,7 @@ export class LoadGenerator {
         ),
         mergeMap((persona: Persona) => {
           const startedMillis = new Date().getTime();
-          cli.action.start(`${persona.name}`, 'processing');
+          cli.action.start(`Processing ${persona.name}`);
           return persona.execute().pipe(
             tap(message => {
               console.log(

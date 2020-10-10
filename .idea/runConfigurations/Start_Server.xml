@@ -21,6 +21,7 @@
       <env name="TWITTER_CLIENT_SECRET" value="secret" />
       <env name="FACEBOOK_CLIENT_ID" value="fb1" />
       <env name="KEYCLOAK_CLIENT_SECRET" value="86c4a8b1-f130-449d-9d7e-0cffce6c0cdf" />
+      <env name="ADMIN_ACCESS_TOKEN" value="ABC123" />
       <env name="FACEBOOK_CLIENT_SECRET" value="secret" />
     </envs>
     <method v="2" />
