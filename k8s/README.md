@@ -1,37 +1,47 @@
-# How to deploy Translatr to Kubernetes
+# How to Deploy Translatr on Kubernetes
 
-Better use this tutorial: https://levelup.gitconnected.com/deploying-dockerized-golang-api-on-kubernetes-with-postgresql-mysql-d190e27ac09f
+## TL;DR
 
-## Create PostgreSQL config map
-
-```
-kubectl create -f postgres-configmap.yml
-```
-
-## Create PostgreSQL Storage
+Setup everything in separate namespace.
 
 ```
-kubectl create -f postgres-storage.yml
+./setup.sh
 ```
 
-## Create PostgreSQL Deployment
+Remove separate namespace.
 
 ```
-kubectl create -f postgres-deployment.yml
+./teardown.sh
 ```
 
-## Create PostgreSQL Service
+## Set Up
+### Create Translatr Namespace
 
 ```
-kubectl create -f postgres-service.yml
+kubectl create namespace translatr
 ```
 
-## Cleaning PostgreSQL from Kubernetes Cluster
+### Create Config Maps
 
 ```
-kubectl delete service postgres 
-kubectl delete deployment postgres
-kubectl delete configmap postgres-config
-kubectl delete persistentvolumeclaim postgres-pv-claim
-kubectl delete persistentvolume postgres-pv-volume
+kubectl -n translatr apply -f config.yaml
+```
+
+### Create Database and Server Deployments and Services
+
+```
+kubectl -n translatr apply -f manifest.yaml
+```
+
+### Optional: Create Load Generator Deployment
+
+```
+kubectl -n translatr apply -f loadgenerator.yaml
+```
+
+## Tear Down
+### Cleaning Kubernetes Cluster
+
+```
+kubectl delete namespace translatr 
 ```

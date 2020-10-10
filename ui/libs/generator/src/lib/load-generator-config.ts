@@ -3,4 +3,6 @@ export interface LoadGeneratorConfig {
   accessToken: string;
   usersPerMinute: number;
   includePersonas: string[];
+  maxRetryAttempts: number;
+  retryScalingDelay: number;
 }

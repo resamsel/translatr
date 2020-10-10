@@ -5,11 +5,11 @@ import {
   ActivityService,
   KeyService,
   LocaleService,
+  MemberService,
   MessageService
 } from '@dev/translatr-sdk';
 import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { MemberService } from '@translatr/translatr-sdk/src/lib/services/member.service';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import {
   accessTokensLoaded,

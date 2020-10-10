@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { AuthClient } from '@dev/translatr-model';
-import { AuthClientService } from '@translatr/translatr-sdk/src/lib/services/auth-client.service';
+import { AuthClientService } from '@dev/translatr-sdk';
 import { ENDPOINT_URL } from '@translatr/utils';
 import { filter, map, take } from 'rxjs/operators';
 

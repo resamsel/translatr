@@ -5,11 +5,11 @@ import {
   Locale,
   LocaleCriteria,
   Message,
+  MessageCriteria,
   PagedList,
   RequestCriteria
 } from '@dev/translatr-model';
 import { Action } from '@ngrx/store';
-import { MessageCriteria } from '@translatr/translatr-model/src/lib/model/message-criteria';
 
 export enum EditorActionTypes {
   LoadLocales = '[Editor Page] Load Locales',

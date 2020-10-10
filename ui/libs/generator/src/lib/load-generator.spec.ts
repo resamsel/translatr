@@ -8,7 +8,9 @@ describe('LoadGenerator', () => {
       baseUrl: '',
       accessToken: '',
       usersPerMinute: 0,
-      includePersonas: []
+      includePersonas: [],
+      maxRetryAttempts: 0,
+      retryScalingDelay: 1000
     };
 
     // when

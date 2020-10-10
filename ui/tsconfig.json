@@ -45,9 +45,6 @@
       ],
       "@translatr/node-utils": [
         "libs/node-utils/src/index.ts"
-      ],
-      "@translatr/*": [
-        "libs/*"
       ]
     },
     "noUnusedLocals": true,

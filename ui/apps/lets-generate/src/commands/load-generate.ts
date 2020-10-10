@@ -32,6 +32,19 @@ export class LoadGenerateCommand extends Command {
       char: 'p',
       env: 'PERSONAS',
       default: ''
+    }),
+
+    maxRetryAttempts: flags.integer({
+      description: 'The maximum number of retries per user.',
+      env: 'MAX_RETRY_ATTEMPTS',
+      default: 3
+    }),
+
+    retryScalingDelay: flags.integer({
+      description:
+        'The duration in millis to wait for after a failure, multiplied by the number of failed retries squared.',
+      env: 'RETRY_SCALING_DELAY',
+      default: 1000
     })
   };
 
@@ -42,7 +55,9 @@ export class LoadGenerateCommand extends Command {
       baseUrl: command.flags.endpoint,
       accessToken: command.flags['access-token'],
       usersPerMinute: command.flags.users,
-      includePersonas: command.flags.personas !== '' ? command.flags.personas.split(',') : []
+      includePersonas: command.flags.personas !== '' ? command.flags.personas.split(',') : [],
+      maxRetryAttempts: command.flags.maxRetryAttempts,
+      retryScalingDelay: command.flags.retryScalingDelay
     }).execute();
   }
 }

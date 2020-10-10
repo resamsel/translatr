@@ -27,7 +27,6 @@ export class LoggingErrorHandler extends ErrorHandler {
   handleError(error: HttpErrorResponse, request?: RestRequest): Observable<any> {
     if (error.status === 0) {
       // Connection issue
-      console.error(error.statusText);
       return throwError(error.statusText);
     }
 

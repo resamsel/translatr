@@ -5,8 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TitleService } from '@translatr/utils/src/lib/services/title.service';
 import { NavbarComponent } from './navbar.component';
+import { TitleService } from '@translatr/utils';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
