@@ -21,7 +21,12 @@
 
 	<logger
 		name="play"
-		level="WARN" />
+		level="${logging.play}" />
+
+	<!-- Database -->
+	<logger
+		name="com.zaxxer.hikari.pool"
+		level="${logging.com.zaxxer.hikari.pool}" />
 
 	<!-- Off these ones as they are annoying, and anyway we manage configuration
 		ourselves -->
@@ -38,7 +43,7 @@
 		name="com.gargoylesoftware.htmlunit.javascript"
 		level="OFF" />
 
-	<root level="WARN">
+	<root level="${logging.root}">
 		<appender-ref ref="ASYNCSTDOUT" />
 	</root>
 
