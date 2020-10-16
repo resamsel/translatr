@@ -45,9 +45,9 @@ export class UserEditFormComponent implements OnInit {
   form = new FormGroup({
     id: new FormControl(),
     name: new FormControl('', Validators.required),
-    role: new FormControl('', Validators.required),
     username: new FormControl('', Validators.required),
     email: new FormControl(),
+    role: new FormControl(UserRole.User, Validators.required),
     preferredLanguage: new FormControl()
   });
   roles: UserRole[] = [UserRole.Admin, UserRole.User];
@@ -60,7 +60,10 @@ export class UserEditFormComponent implements OnInit {
     this.edit.emit(this.form.value);
   }
 
-  hasRole(role: UserRole): boolean {
+  roleAllowed(role: UserRole): boolean {
+    if (role === UserRole.User) {
+      return true;
+    }
     return this.form.value.allowedRoles !== undefined
       ? this.form.value.allowedRoles.indexOf(role) !== -1
       : false;

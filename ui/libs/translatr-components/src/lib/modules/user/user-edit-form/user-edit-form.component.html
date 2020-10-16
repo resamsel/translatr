@@ -16,20 +16,6 @@
       }}</mat-error>
   </mat-form-field>
   <mat-form-field appearance="outline">
-    <mat-label transloco="user.role">Role</mat-label>
-    <mat-select required formControlName="role">
-      <mat-option
-        *ngFor="let role of roles"
-        [value]="role"
-        [disabled]="!hasRole(role)"
-      >{{ role }}</mat-option
-      >
-    </mat-select>
-    <mat-error *ngIf="form.get('role').errors">{{
-      form.get('role').errors.violation
-      }}</mat-error>
-  </mat-form-field>
-  <mat-form-field appearance="outline">
     <mat-label transloco="user.username">Username</mat-label>
     <input
       matInput
@@ -46,6 +32,20 @@
     <input matInput [placeholder]="'user.email' | transloco" formControlName="email"/>
     <mat-error *ngIf="form.get('email').errors">{{
       form.get('email').errors.violation
+      }}</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label transloco="user.role">Role</mat-label>
+    <mat-select required formControlName="role">
+      <mat-option
+        *ngFor="let role of roles"
+        [value]="role"
+        [disabled]="!roleAllowed(role)"
+      >{{ role }}</mat-option
+      >
+    </mat-select>
+    <mat-error *ngIf="form.get('role').errors">{{
+      form.get('role').errors.violation
       }}</mat-error>
   </mat-form-field>
 </div>

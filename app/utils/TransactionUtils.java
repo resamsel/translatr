@@ -11,19 +11,10 @@ import java.util.function.Consumer;
  * @version 2 Sep 2016
  */
 public class TransactionUtils {
-  /**
-   * @param consumer
-   * @throws Exception
-   */
   public static void batchExecute(Consumer<Transaction> consumer) throws Exception {
     batchExecute(consumer, 200);
   }
 
-  /**
-   * @param consumer
-   * @param batchSize
-   * @throws Exception
-   */
   public static void batchExecute(Consumer<Transaction> consumer, int batchSize) throws Exception {
     Transaction tx = Ebean.currentTransaction();
 
@@ -47,15 +38,10 @@ public class TransactionUtils {
     }
   }
 
-  public static interface CheckedConsumer<T> {
+  public interface CheckedConsumer<T> {
     void accept(T t) throws Exception;
   }
 
-  /**
-   * @param consumer
-   * @param batchSize
-   * @throws Exception
-   */
   public static void execute(CheckedConsumer<Transaction> consumer) throws Exception {
     Transaction tx = Ebean.currentTransaction();
 

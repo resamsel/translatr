@@ -5,6 +5,7 @@ import io.ebean.EbeanServer;
 import io.ebean.Query;
 import io.ebean.SqlUpdate;
 import io.ebean.Transaction;
+import play.api.db.evolutions.DynamicEvolutions;
 import play.db.ebean.EbeanConfig;
 import repositories.Persistence;
 import utils.TransactionUtils;
@@ -17,10 +18,12 @@ import java.util.function.Consumer;
 @Singleton
 public class PersistenceImpl implements Persistence {
   private final EbeanServer ebeanServer;
+  private final DynamicEvolutions dynamicEvolutions;
 
   @Inject
-  public PersistenceImpl(EbeanConfig ebeanConfig) {
+  public PersistenceImpl(EbeanConfig ebeanConfig, DynamicEvolutions dynamicEvolutions) {
     this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
+    this.dynamicEvolutions = dynamicEvolutions;
   }
 
   @Override
@@ -30,22 +33,22 @@ public class PersistenceImpl implements Persistence {
 
   @Override
   public boolean isNew(Object t) {
-    return Ebean.getBeanState(t).isNew();
+    return ebeanServer.getBeanState(t).isNew();
   }
 
   @Override
   public void save(Object t) {
-    Ebean.save(t);
+    ebeanServer.save(t);
   }
 
   @Override
   public int saveAll(Collection<?> t) {
-    return Ebean.saveAll(t);
+    return ebeanServer.saveAll(t);
   }
 
   @Override
   public <T> T update(T t) {
-    Ebean.update(t);
+    ebeanServer.update(t);
 
     return t;
   }
@@ -57,36 +60,36 @@ public class PersistenceImpl implements Persistence {
 
   @Override
   public boolean delete(Object t) {
-    return Ebean.delete(t);
+    return ebeanServer.delete(t);
   }
 
   @Override
   public int deleteAll(Collection<?> t) {
-    return Ebean.deleteAll(t);
+    return ebeanServer.deleteAll(t);
   }
 
   @Override
   public void markAsDirty(Object t) {
-    Ebean.markAsDirty(t);
+    ebeanServer.markAsDirty(t);
   }
 
   @Override
   public void refresh(Object t) {
-    Ebean.refresh(t);
+    ebeanServer.refresh(t);
   }
 
   @Override
   public <T> Query<T> createQuery(Class<T> clazz) {
-    return Ebean.createQuery(clazz);
+    return ebeanServer.createQuery(clazz);
   }
 
   @Override
   public String getDatabasePlatformName() {
-    return Ebean.getDefaultServer().getPluginApi().getDatabasePlatform().getName();
+    return ebeanServer.getPluginApi().getDatabasePlatform().getName();
   }
 
   @Override
   public SqlUpdate createSqlUpdate(String sql) {
-    return Ebean.createSqlUpdate(sql);
+    return ebeanServer.createSqlUpdate(sql);
   }
 }

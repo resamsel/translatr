@@ -2,7 +2,7 @@ import play.sbt.PlayImport.javaJdbc
 
 name := """translatr"""
 
-version := "3.1.0-10"
+version := "3.1.0-20"
 
 lazy val root = (project in file("."))
   .configs(IntegrationTest)
@@ -26,10 +26,10 @@ libraryDependencies ++= Seq(
   //	"com.typesafe.play.modules" %% "play-modules-redis" % "2.6.0",
 
   // Database
-  "org.postgresql" % "postgresql" % "42.1.3",
+  "org.postgresql" % "postgresql" % "42.2.17",
 
   // OAuth for Play
-  "org.pac4j" %% "play-pac4j" % "10.0.1",
+  "org.pac4j" %% "play-pac4j" % "10.0.2",
   "org.pac4j" % "pac4j-http" % "4.0.3",
   "org.pac4j" % "pac4j-oauth" % "4.0.3",
   "org.pac4j" % "pac4j-oidc" % "4.0.3" exclude("commons-io", "commons-io"),
@@ -64,11 +64,11 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-core" % "2.8.47" % "it,test"
 )
 
-dependencyOverrides ++= Seq(
   // INFO: Necessary because: Scala module 2.10.3 requires Jackson Databind version >= 2.10.0 and < 2.11.0
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-  "com.fasterxml.jackson.core" % "jackson-databind" % "2.10.5",
-)
+dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.10.5"
+
+dependencyOverrides += "com.typesafe.play" %% "play-jdbc-evolutions" % "2.8.2"
 
 // re-create maven directory structure
 unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "main" / "java"
@@ -84,7 +84,7 @@ maintainer := "René Panzar <rene.panzar@gmail.com>"
 
 dockerRepository := Some("resamsel")
 
-dockerBaseImage := "java:8-jre"
+dockerBaseImage := "adoptopenjdk/openjdk11:jre"
 
 dockerExposedPorts in Docker := Seq(9000)
 

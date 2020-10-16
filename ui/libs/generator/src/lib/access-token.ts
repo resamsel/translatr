@@ -1,7 +1,18 @@
-import { AccessToken, AccessTokenCriteria, Scope, UserRole } from '@dev/translatr-model';
+import {
+  AccessToken,
+  AccessTokenCriteria,
+  PagedList,
+  Scope,
+  scopes,
+  UserRole
+} from '@dev/translatr-model';
 import { AccessTokenService } from '@dev/translatr-sdk';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { pickRandomly } from '@translatr/utils';
+import * as randomName from 'random-name';
+import { Observable, of } from 'rxjs';
+import { concatMap, map } from 'rxjs/operators';
+
+const allScopes = scopes.join(',');
 
 export const selectRandomAccessToken = (
   accessTokenService: AccessTokenService,
@@ -11,11 +22,25 @@ export const selectRandomAccessToken = (
     .find({
       order: 'whenUpdated desc',
       limit: 1,
-      offset: Math.floor(Math.random() * 5000),
+      offset: Math.floor(Math.random() * 100),
       userRole: UserRole.User,
       ...criteria
     })
-    .pipe(map(paged => paged.list[0]));
+    .pipe(map(paged => pickRandomly(paged.list)));
+};
+
+export const getAccessToken = (
+  accessTokenService: AccessTokenService,
+  userId: string
+): Observable<AccessToken> => {
+  return accessTokenService.find({ userId }).pipe(
+    concatMap((pagedList: PagedList<AccessToken>) => {
+      if (pagedList.list.length === 0) {
+        return accessTokenService.create({ userId, name: randomName.first(), scope: allScopes });
+      }
+      return of(pickRandomly(pagedList.list));
+    })
+  );
 };
 
 /**
@@ -24,8 +49,8 @@ export const selectRandomAccessToken = (
 export const chooseAccessToken = (
   accessToken: AccessToken,
   defaultKey: string,
-  ...scopes: Scope[]
+  ...scopeList: Scope[]
 ): string =>
-  scopes.find(scope => !accessToken.scope.includes(scope)) === undefined
+  scopeList.find(scope => !accessToken.scope.includes(scope)) === undefined
     ? accessToken.key
     : defaultKey;

@@ -6,7 +6,6 @@ import actors.MessageWordCountActorRef;
 import actors.WordCountProtocol;
 import criterias.GetCriteria;
 import criterias.MessageCriteria;
-import io.ebean.Ebean;
 import io.ebean.PagedList;
 import mappers.MessageMapper;
 import models.ActionType;
@@ -97,7 +96,7 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
   @Override
   public void resetWordCount(UUID projectId) {
     try {
-      Ebean
+      persistence
               .createSqlUpdate(
                       "update message set word_count = null from locale where message.locale_id = locale.id and locale.project_id = :projectId")
               .setParameter("projectId", projectId).execute();

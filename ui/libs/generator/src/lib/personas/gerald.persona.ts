@@ -30,7 +30,7 @@ export class GeraldPersona extends Persona {
         userRole: UserRole.User,
         order: 'whenUpdated desc',
         limit: 1,
-        offset: Math.floor(Math.random() * 5000)
+        offset: Math.floor(Math.random() * 100)
       })
       .pipe(
         filter(paged => paged.list.length > 0),
@@ -67,5 +67,5 @@ export class GeraldPersona extends Persona {
 personas.push({
   name,
   create: (config: LoadGeneratorConfig, injector: Injector) => new GeraldPersona(config, injector),
-  weight: 10
+  weight: 20
 });
