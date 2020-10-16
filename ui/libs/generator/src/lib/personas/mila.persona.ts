@@ -44,5 +44,5 @@ export class MilaPersona extends Persona {
 personas.push({
   name,
   create: (config: LoadGeneratorConfig, injector: Injector) => new MilaPersona(config, injector),
-  weight: 5
+  weight: 20
 });

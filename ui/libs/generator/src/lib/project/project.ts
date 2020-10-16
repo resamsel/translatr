@@ -106,12 +106,24 @@ export const createRandomProject = (
   );
 };
 
+export const selectRandomProject = (projectService: ProjectService): Observable<Project> => {
+  return projectService
+    .find({
+      order: 'whenUpdated desc',
+      limit: 1,
+      offset: Math.floor(Math.random() * 100)
+    })
+    .pipe(map(paged => pickRandomly(paged.list)));
+};
+
+/**
+ * Randomly choose user, update project of that user randomly
+ */
 export const updateRandomProject = (
   accessTokenService: AccessTokenService,
   userService: UserService,
   projectService: ProjectService
 ): Observable<Project> => {
-  // Randomly choose user, update project of that user randomly
   return selectRandomUserAccessToken(accessTokenService, userService, {
     limit: 10
   }).pipe(

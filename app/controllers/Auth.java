@@ -11,21 +11,26 @@ import play.inject.Injector;
 import play.mvc.Http;
 import play.mvc.Result;
 import services.api.AuthClientApiService;
+import utils.ApplicationStart;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
+@Singleton
 public class Auth extends AbstractController {
   private final AuthClientApiService authClientApiService;
   private final PlaySessionStore playSessionStore;
 
   @Inject
-  public Auth(Injector injector, AuthClientApiService authClientApiService, PlaySessionStore playSessionStore) {
+  public Auth(Injector injector, AuthClientApiService authClientApiService, PlaySessionStore playSessionStore, ApplicationStart applicationStart) {
     super(injector);
 
     this.authClientApiService = authClientApiService;
     this.playSessionStore = playSessionStore;
+
+    applicationStart.onStart();
   }
 
   public CompletionStage<Result> login(Http.Request request, String authClientName) {

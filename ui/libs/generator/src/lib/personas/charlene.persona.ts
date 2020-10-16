@@ -34,5 +34,5 @@ personas.push({
   name,
   create: (config: LoadGeneratorConfig, injector: Injector) =>
     new CharlenePersona(config, injector),
-  weight: 5
+  weight: 2
 });

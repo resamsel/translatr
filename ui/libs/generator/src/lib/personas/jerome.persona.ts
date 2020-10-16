@@ -61,5 +61,5 @@ export class JeromePersona extends Persona {
 personas.push({
   name,
   create: (config: LoadGeneratorConfig, injector: Injector) => new JeromePersona(config, injector),
-  weight: 5
+  weight: 10
 });

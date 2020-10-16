@@ -68,8 +68,10 @@ public class AuthProviderImpl implements AuthProvider {
               (service, p) -> service.byLinkedAccount(p.getClientName(), p.getId()))
               .apply(userService, profile.get());
 
-      request.addAttr(ATTRIBUTE_USER_ID, user.id);
-      request.addAttr(ATTRIBUTE_USER, user);
+      if (user != null) {
+        request.addAttr(ATTRIBUTE_USER_ID, user.id);
+        request.addAttr(ATTRIBUTE_USER, user);
+      }
 
       return user;
     }

@@ -2,7 +2,7 @@ import { Injector } from '@angular/core';
 import { ErrorHandler, errorMessage } from '@dev/translatr-sdk';
 import { cli } from 'cli-ux';
 import { interval } from 'rxjs';
-import { catchError, map, mergeMap, retryWhen, tap } from 'rxjs/operators';
+import { catchError, exhaustMap, map, retryWhen, tap } from 'rxjs/operators';
 import { createInjector } from './api';
 import { LoadGeneratorConfig } from './load-generator-config';
 import { Persona, personas } from './personas';
@@ -57,7 +57,7 @@ export class LoadGenerator {
         map(() =>
           selectPersonaFactory(filteredPersonas, totalWeight).create(this.config, this.injector)
         ),
-        mergeMap((persona: Persona) => {
+        exhaustMap((persona: Persona) => {
           const startedMillis = new Date().getTime();
           cli.action.start(`Processing ${persona.name}`);
           return persona.execute().pipe(

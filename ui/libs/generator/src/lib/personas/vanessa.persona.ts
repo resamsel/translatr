@@ -54,5 +54,5 @@ export class VanessaPersona extends Persona {
 personas.push({
   name,
   create: (config: LoadGeneratorConfig, injector: Injector) => new VanessaPersona(config, injector),
-  weight: 1
+  weight: 2
 });

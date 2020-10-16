@@ -1,11 +1,9 @@
-import { AccessToken, PagedList, scopes, User, UserCriteria, UserRole } from '@dev/translatr-model';
+import { AccessToken, User, UserCriteria, UserRole } from '@dev/translatr-model';
 import { AccessTokenService, UserService } from '@dev/translatr-sdk';
-import { pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { concatMap, filter, map } from 'rxjs/operators';
-
-const scope = scopes.join(',');
+import { getAccessToken } from './access-token';
 
 export const selectRandomUser = (
   userService: UserService,
@@ -15,11 +13,25 @@ export const selectRandomUser = (
     .find({
       order: 'whenUpdated desc',
       limit: 1,
-      offset: Math.floor(Math.random() * 5000),
+      offset: Math.floor(Math.random() * 100),
       role: UserRole.User,
       ...criteria
     })
     .pipe(map(paged => paged.list[0]));
+
+export const selectUserAccessToken = (
+  accessTokenService: AccessTokenService,
+  userService: UserService,
+  userId: string
+): Observable<{ user: User; accessToken: AccessToken }> => {
+  return userService
+    .get(userId)
+    .pipe(
+      concatMap((user: User) =>
+        getAccessToken(accessTokenService, userId).pipe(map(accessToken => ({ user, accessToken })))
+      )
+    );
+};
 
 export const selectRandomUserAccessToken = (
   accessTokenService: AccessTokenService,
@@ -29,29 +41,8 @@ export const selectRandomUserAccessToken = (
   return selectRandomUser(userService, userCriteria).pipe(
     filter((user: User) => user !== undefined),
     concatMap((user: User) =>
-      accessTokenService.find({ userId: user.id }).pipe(
-        map((pagedList: PagedList<AccessToken>) => ({
-          list: pagedList.list,
-          user
-        }))
-      )
-    ),
-    concatMap((payload: { list: AccessToken[]; user: User }) => {
-      if (payload.list.length === 0) {
-        return accessTokenService
-          .create({ userId: payload.user.id, name: randomName.first(), scope })
-          .pipe(
-            map((accessToken: AccessToken) => ({
-              user: payload.user,
-              accessToken
-            }))
-          );
-      }
-      return of({
-        user: payload.user,
-        accessToken: pickRandomly(payload.list)
-      });
-    })
+      getAccessToken(accessTokenService, user.id).pipe(map(accessToken => ({ accessToken, user })))
+    )
   );
 };
 
