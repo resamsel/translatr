@@ -1,0 +1,4 @@
+postgresqlDatabase: translatr
+postgresqlUsername: translatr
+postgresqlPassword: translatr
+postgresqlMaxConnections: 500

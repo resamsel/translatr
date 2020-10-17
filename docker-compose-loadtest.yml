@@ -1,0 +1,50 @@
+version: "2"
+volumes:
+  pg-data:
+services:
+  database:
+    image: postgres
+    command: postgres -c 'max_connections=200'
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - ./docker/entrypoint-initdb.d:/docker-entrypoint-initdb.d
+  sso:
+    image: quay.io/keycloak/keycloak:latest
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: translatr123
+      DB_VENDOR: h2
+      KEYCLOAK_IMPORT: /tmp/keycloak-realm.json
+    volumes:
+      - ./docker/keycloak-realm.json:/tmp/keycloak-realm.json
+  translatr:
+    image: resamsel/translatr:3.1.0-20
+    ports:
+      - "9000:9000"
+    environment:
+      APPLICATION_SECRET: 094c8762-4689-45c7-830d-f752f82e6ac5
+      BASE_URL: "http://localhost:9000"
+      ADMIN_ACCESS_TOKEN: 593bdcfe-0bc7-426b-9b80-65e930491a34
+      DATABASE_DRIVER: org.postgresql.Driver
+      DATABASE_URL: "jdbc:postgresql://database:5432/translatr"
+      DATABASE_USER: translatr
+      DATABASE_PASSWORD: translatr
+      KEYCLOAK_HOST: sso:8080
+      KEYCLOAK_PROTOCOL: http
+      KEYCLOAK_CLIENT_ID: translatr-localhost
+      KEYCLOAK_CLIENT_SECRET: 05d9a16b-5999-49f7-b26d-996bd414c849
+      LOGLEVEL_ROOT: DEBUG
+  loadgenerator:
+    image: resamsel/translatr-loadgenerator:3.1.0-20
+    environment:
+      ENDPOINT: http://translatr:9000
+      ACCESS_TOKEN: 593bdcfe-0bc7-426b-9b80-65e930491a34
+      USERS: "100"
+      MAX_RETRY_ATTEMPTS: "3"

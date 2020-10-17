@@ -21,12 +21,6 @@ Remove separate namespace.
 kubectl create namespace translatr
 ```
 
-### Create Config Maps
-
-```
-kubectl -n translatr apply -f config.yaml
-```
-
 ### Create Database and Server Deployments and Services
 
 ```
