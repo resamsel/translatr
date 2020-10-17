@@ -14,8 +14,19 @@ spec:
     spec:
       containers:
         - name: client
-          image: resamsel/translatr-loadgenerator:3.1.0-5
+          image: resamsel/translatr-loadgenerator:3.1.0-20
           imagePullPolicy: "IfNotPresent"
-          envFrom:
-            - configMapRef:
-                name: loadgenerator-config
+          env:
+            - name: ENDPOINT
+              value: http://translatr.translatr.svc.cluster.local:9000
+            - name: ACCESS_TOKEN
+              value: 593bdcfe-0bc7-426b-9b80-65e930491a34
+            - name: USERS
+              value: "100"
+            - name: MAX_RETRY_ATTEMPTS
+              value: "3"
+          resources:
+            limits:
+              cpu: 1
+            requests:
+              cpu: 50m
