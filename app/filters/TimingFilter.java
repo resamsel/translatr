@@ -46,7 +46,7 @@ public class TimingFilter extends Filter {
           return result;
         })
         .whenComplete((result, thrown) ->
-            metricService.consumeRequest(rh.method(), result.status()))
+            metricService.consumeRequest(rh.method(), result != null ? result.status() : -1))
     );
   }
 }
