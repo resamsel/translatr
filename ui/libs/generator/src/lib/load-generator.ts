@@ -142,7 +142,9 @@ export class LoadGenerator {
           personasOfType.forEach(persona => {
             console.log();
             console.log(
-              `### [${persona.name}](./${persona.name.toLowerCase()}.persona.ts) - ${persona.type}`
+              `### [${
+                persona.name
+              }](./src/lib/personas/${persona.name.toLowerCase()}.persona.ts) - ${persona.type}`
             );
             console.log();
             console.log(persona.description);
