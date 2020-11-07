@@ -13,7 +13,7 @@ const info: WeightedPersona = {
   section: 'access-token',
   type: 'read',
   name: 'Stella',
-  description: 'I\'m going to read all access tokens of a random user.',
+  description: "I'm going to read all access tokens of a random user.",
   weight: 10
 };
 
@@ -30,8 +30,8 @@ export class StellaPersona extends Persona {
     return selectRandomAccessToken(this.accessTokenService).pipe(
       filter(accessToken => accessToken !== undefined),
       switchMap((accessToken: AccessToken) =>
-        this.accessTokenService.find(
-          {
+        this.accessTokenService
+          .find({
             access_token: chooseAccessToken(
               accessToken,
               this.config.accessToken,
@@ -39,8 +39,8 @@ export class StellaPersona extends Persona {
             ),
             userId: accessToken.userId,
             limit: 1000
-          }
-        ).pipe(map(paged => ({paged, accessToken})))
+          })
+          .pipe(map(paged => ({ paged, accessToken })))
       ),
       map(
         ({ paged, accessToken }) =>

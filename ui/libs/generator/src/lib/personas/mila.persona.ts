@@ -14,7 +14,7 @@ const info: WeightedPersona = {
   section: 'project',
   type: 'update',
   name: 'Mila',
-  description: 'I\'m going to update a random project.',
+  description: "I'm going to update a random project.",
   weight: 50
 };
 

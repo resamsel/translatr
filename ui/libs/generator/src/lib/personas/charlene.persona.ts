@@ -13,7 +13,7 @@ const info: WeightedPersona = {
   section: 'user',
   type: 'create',
   name: 'Charlene',
-  description: 'I\'m going to create a user.',
+  description: "I'm going to create a user.",
   weight: 2
 };
 
@@ -36,6 +36,5 @@ export class CharlenePersona extends Persona {
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) =>
-    new CharlenePersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new CharlenePersona(config, injector)
 });

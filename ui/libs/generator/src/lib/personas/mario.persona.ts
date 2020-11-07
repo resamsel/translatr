@@ -13,7 +13,7 @@ const info: WeightedPersona = {
   section: 'access-token',
   type: 'update',
   name: 'Mario',
-  description: 'I\'m going to update an access token for a random user.',
+  description: "I'm going to update an access token for a random user.",
   weight: 5
 };
 

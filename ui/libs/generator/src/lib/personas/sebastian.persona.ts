@@ -1,7 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
 import { MemberRole } from '@dev/translatr-model';
-import { AccessTokenService, errorMessage, MemberService, ProjectService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  errorMessage,
+  MemberService,
+  ProjectService
+} from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
 import { catchError, concatMap, filter, map } from 'rxjs/operators';
@@ -15,7 +20,7 @@ const info: WeightedPersona = {
   section: 'member',
   type: 'delete',
   name: 'Sebastian',
-  description: 'I\'m going to remove a contributor from a random project of mine.',
+  description: "I'm going to remove a contributor from a random project of mine.",
   weight: 1
 };
 
@@ -33,7 +38,9 @@ export class SebastianPersona extends Persona {
   }
 
   execute(): Observable<string> {
-    return selectRandomProjectAccessToken(this.accessTokenService, this.projectService, { fetch: 'members' }).pipe(
+    return selectRandomProjectAccessToken(this.accessTokenService, this.projectService, {
+      fetch: 'members'
+    }).pipe(
       filter(({ project }) => Boolean(project)),
       map(({ project, accessToken }) => ({
         project,
@@ -42,8 +49,10 @@ export class SebastianPersona extends Persona {
       })),
       filter(({ project, members }) => members.length > 0),
       concatMap(({ project, accessToken, members }) =>
-        this.memberService.delete(pickRandomly(members).id, { params: { access_token: accessToken.key } })
-          .pipe(map(member => ({ project, member })))),
+        this.memberService
+          .delete(pickRandomly(members).id, { params: { access_token: accessToken.key } })
+          .pipe(map(member => ({ project, member })))
+      ),
       map(
         ({ project, member }) =>
           `member ${member.userName} with role ${member.role} of project ${project.ownerUsername}/${project.name} removed`
@@ -55,5 +64,6 @@ export class SebastianPersona extends Persona {
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new SebastianPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) =>
+    new SebastianPersona(config, injector)
 });

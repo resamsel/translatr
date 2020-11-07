@@ -1,7 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
 import { MemberRole } from '@dev/translatr-model';
-import { AccessTokenService, errorMessage, MemberService, ProjectService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  errorMessage,
+  MemberService,
+  ProjectService
+} from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
 import { catchError, concatMap, filter, map } from 'rxjs/operators';
@@ -15,7 +20,7 @@ const info: WeightedPersona = {
   section: 'member',
   type: 'update',
   name: 'Oliver',
-  description: 'I\'m going to update the role of a contributor of a random project of mine.',
+  description: "I'm going to update the role of a contributor of a random project of mine.",
   weight: 25
 };
 
@@ -33,7 +38,9 @@ export class OliverPersona extends Persona {
   }
 
   execute(): Observable<string> {
-    return selectRandomProjectAccessToken(this.accessTokenService, this.projectService, { fetch: 'members' }).pipe(
+    return selectRandomProjectAccessToken(this.accessTokenService, this.projectService, {
+      fetch: 'members'
+    }).pipe(
       filter(({ project }) => Boolean(project)),
       map(({ project, accessToken }) => ({
         project,
@@ -41,13 +48,25 @@ export class OliverPersona extends Persona {
         members: project.members.filter(member => member.role !== MemberRole.Owner)
       })),
       filter(({ project, members }) => members.length > 0),
-      map(({ project, accessToken, members }) => ({ project, accessToken, members, member: pickRandomly(members) })),
+      map(({ project, accessToken, members }) => ({
+        project,
+        accessToken,
+        members,
+        member: pickRandomly(members)
+      })),
       concatMap(({ project, accessToken, members, member }) =>
-        this.memberService.update({
-          ...member,
-          role: pickRandomly([MemberRole.Translator, MemberRole.Developer].filter(role => role !== member.role))
-        }, { params: { access_token: accessToken.key } })
-          .pipe(map(member => ({ project, member })))),
+        this.memberService
+          .update(
+            {
+              ...member,
+              role: pickRandomly(
+                [MemberRole.Translator, MemberRole.Developer].filter(role => role !== member.role)
+              )
+            },
+            { params: { access_token: accessToken.key } }
+          )
+          .pipe(map(m => ({ project, member: m })))
+      ),
       map(
         ({ project, member }) =>
           `role ${member.role} of member ${member.userName} of project ${project.ownerUsername}/${project.name} updated`
