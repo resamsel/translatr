@@ -12,8 +12,8 @@
         </option>
         <option name="services">
           <list>
-            <option value="db-translatr" />
-            <option value="keycloak-translatr" />
+            <option value="database" />
+            <option value="sso" />
           </list>
         </option>
         <option name="sourceFilePath" value="docker-compose.yml" />

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: resamsel/translatr:3.1.0-18
+          image: resamsel/translatr:3.1.0-23
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 9000
@@ -28,22 +28,20 @@ spec:
             - name: AUTH_PROVIDERS
               value: "keycloak"
             - name: DATABASE_URL
-              value: "jdbc:postgresql://postgres-postgresql.translatr.svc.cluster.local:5432/translatr"
-            - name: DATABASE_USER
-              value: "translatr"
-            - name: DATABASE_PASSWORD
-              value: "translatr"
+              value: "postgres://translatr:translatr@postgres-postgresql.translatr.svc.cluster.local:5432/translatr"
             - name: KEYCLOAK_HOST
               value: "sso.repanzar.com"
             - name: KEYCLOAK_CLIENT_ID
               value: "translatr-minikube"
             - name: KEYCLOAK_CLIENT_SECRET
               value: "05d9a16b-5999-49f7-b26d-996bd414c849"
+            - name: LOGLEVEL_ROOT
+              value: "DEBUG"
           resources:
             limits:
-              cpu: 200m
+              cpu: 500m
             requests:
-              cpu: 50m
+              cpu: 100m
           readinessProbe:
             tcpSocket:
               port: 9000
