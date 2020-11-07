@@ -34,6 +34,8 @@ public class UserFeatureFlagRepositoryImpl extends
   public PagedList<UserFeatureFlag> findBy(UserFeatureFlagCriteria criteria) {
     ExpressionList<UserFeatureFlag> query = fetch().where();
 
+    query.eq("user.active", true);
+
     if (criteria.getUserId() != null) {
       query.eq("user.id", criteria.getUserId());
     }

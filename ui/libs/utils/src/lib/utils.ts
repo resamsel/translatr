@@ -88,3 +88,26 @@ export const mergeWithError = <T, E>(
     )
   );
 };
+
+export const capitalize = (s: string): string => {
+  if (s === undefined || s.length === 0) {
+    return s;
+  }
+
+  return s[0].toUpperCase() + s.substring(1);
+}
+
+export const capitalizeWords = (s: string): string => {
+  return s.split(' ').map(capitalize).join(' ');
+}
+
+export const cutOffAfter = (secret: string, length: number): string => {
+  return secret.substr(0, length) + (secret.length > length ? '...' : '');
+};
+
+export const groupBy = <T>(xs: Array<T>, key): Record<string, Array<T>> => {
+  return xs.reduce((rv, x) => {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};

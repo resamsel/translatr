@@ -19,6 +19,7 @@ const excludedViolations = [
   'error.nameunique',
   'error.usernameunique',
   'error.projectnameunique',
+  'error.projectuserunique',
   'error.accesstokennameunique',
   'Entry already exists (duplicate key)'
 ];

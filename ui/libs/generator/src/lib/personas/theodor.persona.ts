@@ -6,14 +6,18 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { deleteRandomProject } from '../project';
+import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
 
-const name = 'Theodor';
+const info: WeightedPersona = {
+  section: 'project',
+  type: 'delete',
+  name: 'Theodor',
+  description: 'I\'m going to delete a random project.',
+  weight: 2
+};
 
-/**
- * I'm going to delete a random project.
- */
 export class TheodorPersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
   private readonly projectService: ProjectService;
@@ -21,7 +25,7 @@ export class TheodorPersona extends Persona {
   private readonly errorHandler: ErrorHandler;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super(name, config, injector);
+    super(info.name, config, injector);
 
     this.accessTokenService = injector.get(AccessTokenService);
     this.userService = injector.get(UserService);
@@ -41,7 +45,6 @@ export class TheodorPersona extends Persona {
 }
 
 personas.push({
-  name,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new TheodorPersona(config, injector),
-  weight: 2
+  ...info,
+  create: (config: LoadGeneratorConfig, injector: Injector) => new TheodorPersona(config, injector)
 });

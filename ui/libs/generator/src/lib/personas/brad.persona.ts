@@ -5,19 +5,23 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { deleteRandomUser } from '../user';
+import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
 
-const name = 'Brad';
+const info: WeightedPersona = {
+  section: 'user',
+  type: 'delete',
+  name: 'Brad',
+  description: 'I\'m going to delete a user.',
+  weight: 1
+};
 
-/**
- * I'm going to delete a user.
- */
 export class BradPersona extends Persona {
   private readonly userService: UserService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super(name, config, injector);
+    super(info.name, config, injector);
 
     this.userService = injector.get(UserService);
   }
@@ -31,7 +35,6 @@ export class BradPersona extends Persona {
 }
 
 personas.push({
-  name,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new BradPersona(config, injector),
-  weight: 1
+  ...info,
+  create: (config: LoadGeneratorConfig, injector: Injector) => new BradPersona(config, injector)
 });

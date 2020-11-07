@@ -1,4 +1,4 @@
-import { LoadGenerateCommand } from './load-generate';
+import { LetsGenerateCommand } from './lets-generate';
 
 describe('LoadGenerate', () => {
   it('should create', async () => {
@@ -6,7 +6,7 @@ describe('LoadGenerate', () => {
     const argv = ['-p', 'John'];
 
     // when
-    const actual = await LoadGenerateCommand.run(argv).then(
+    const actual = await LetsGenerateCommand.run(argv).then(
       result => 'result',
       reason => 'error'
     );

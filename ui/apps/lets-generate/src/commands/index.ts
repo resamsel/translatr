@@ -1,1 +1,1 @@
-export * from './load-generate';
+export * from './lets-generate';

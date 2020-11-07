@@ -13,14 +13,18 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { createRandomProject } from '../project';
+import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
 
-const name = 'Jerome';
+const info: WeightedPersona = {
+  section: 'project',
+  type: 'create',
+  name: 'Jerome',
+  description: 'I\'m going to create a new project with a few languages and a few keys.',
+  weight: 10
+};
 
-/**
- * I'm going to create a new project with a few languages and a few keys.
- */
 export class JeromePersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
   private readonly userService: UserService;
@@ -30,7 +34,7 @@ export class JeromePersona extends Persona {
   private readonly messageService: MessageService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super(name, config, injector);
+    super(info.name, config, injector);
 
     this.accessTokenService = injector.get(AccessTokenService);
     this.userService = injector.get(UserService);
@@ -59,7 +63,6 @@ export class JeromePersona extends Persona {
 }
 
 personas.push({
-  name,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new JeromePersona(config, injector),
-  weight: 10
+  ...info,
+  create: (config: LoadGeneratorConfig, injector: Injector) => new JeromePersona(config, injector)
 });

@@ -33,6 +33,8 @@ public class AccessTokenRepositoryImpl extends
   public PagedList<AccessToken> findBy(AccessTokenCriteria criteria) {
     ExpressionList<AccessToken> query = fetch(criteria.getFetches()).where();
 
+    query.eq("user.active", true);
+
     if (criteria.getUserId() != null) {
       query.eq("user.id", criteria.getUserId());
     }

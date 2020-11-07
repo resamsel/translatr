@@ -16,14 +16,18 @@ import { catchError, concatMap, filter, map } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { selectRandomProject } from '../project';
 import { selectUserAccessToken } from '../user';
+import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
 
-const name = 'Dora';
+const info: WeightedPersona = {
+  section: 'project',
+  type: 'read',
+  name: 'Dora',
+  description: 'I\'m going to look at a random project.',
+  weight: 200
+};
 
-/**
- * I'm going to look at a random project.
- */
 export class DoraPersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
   private readonly userService: UserService;
@@ -34,7 +38,7 @@ export class DoraPersona extends Persona {
   private readonly messageService: MessageService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super(name, config, injector);
+    super(info.name, config, injector);
 
     this.accessTokenService = injector.get(AccessTokenService);
     this.userService = injector.get(UserService);
@@ -127,7 +131,6 @@ keys, ${messages} translations, and ${activities} activities viewed`
 }
 
 personas.push({
-  name,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new DoraPersona(config, injector),
-  weight: 200
+  ...info,
+  create: (config: LoadGeneratorConfig, injector: Injector) => new DoraPersona(config, injector)
 });

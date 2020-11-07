@@ -3,20 +3,24 @@ import { ActivityService, UserService } from '@dev/translatr-sdk';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
+import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
 
-const name = 'Paul';
+const info: WeightedPersona = {
+  section: 'user',
+  type: 'read',
+  name: 'Paul',
+  description: 'I\'m going to peek at myself (the main user).',
+  weight: 1
+};
 
-/**
- * I'm going to peek at myself (the main user).
- */
 export class PaulPersona extends Persona {
   private readonly userService: UserService;
   private readonly activityService: ActivityService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super(name, config, injector);
+    super(info.name, config, injector);
 
     this.userService = injector.get(UserService);
     this.activityService = injector.get(ActivityService);
@@ -35,7 +39,6 @@ export class PaulPersona extends Persona {
 }
 
 personas.push({
-  name,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new PaulPersona(config, injector),
-  weight: 1
+  ...info,
+  create: (config: LoadGeneratorConfig, injector: Injector) => new PaulPersona(config, injector)
 });
