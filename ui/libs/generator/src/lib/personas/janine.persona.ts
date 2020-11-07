@@ -11,14 +11,18 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { chooseAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { selectRandomUserAccessToken } from '../user';
+import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
 
-const name = 'Janine';
+const info: WeightedPersona = {
+  section: 'user',
+  type: 'read',
+  name: 'Janine',
+  description: 'I\'m going to peek at myself (a random user).',
+  weight: 100
+};
 
-/**
- * I'm going to peek at myself (a random user).
- */
 export class JaninePersona extends Persona {
   private readonly userService: UserService;
   private readonly accessTokenService: AccessTokenService;
@@ -26,7 +30,7 @@ export class JaninePersona extends Persona {
   private readonly projectService: ProjectService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super(name, config, injector);
+    super(info.name, config, injector);
 
     this.userService = injector.get(UserService);
     this.accessTokenService = injector.get(AccessTokenService);
@@ -83,7 +87,6 @@ export class JaninePersona extends Persona {
 }
 
 personas.push({
-  name,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new JaninePersona(config, injector),
-  weight: 100
+  ...info,
+  create: (config: LoadGeneratorConfig, injector: Injector) => new JaninePersona(config, injector)
 });

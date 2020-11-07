@@ -1,17 +1,11 @@
-import { AccessToken, Key, Locale, PagedList, Project, User } from '@dev/translatr-model';
-import {
-  AccessTokenService,
-  KeyService,
-  LocaleService,
-  MessageService,
-  ProjectService,
-  UserService
-} from '@dev/translatr-sdk';
+import { AccessToken, Key, Locale, PagedList, Project, ProjectCriteria, User } from '@dev/translatr-model';
+import { AccessTokenService, KeyService, LocaleService, MessageService, ProjectService, UserService } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';
 import { combineLatest, Observable, of } from 'rxjs';
 import { concatMap, filter, map, mapTo, retry } from 'rxjs/operators';
 import * as _ from 'underscore';
+import { getAccessToken } from '../access-token';
 import { keyNames } from '../key';
 import { localeNames } from '../locale';
 import { selectRandomUserAccessToken } from '../user';
@@ -106,14 +100,28 @@ export const createRandomProject = (
   );
 };
 
-export const selectRandomProject = (projectService: ProjectService): Observable<Project> => {
+export const selectRandomProject = (projectService: ProjectService, criteria: ProjectCriteria = {}): Observable<Project> => {
   return projectService
     .find({
       order: 'whenUpdated desc',
       limit: 1,
-      offset: Math.floor(Math.random() * 100)
+      offset: Math.floor(Math.random() * 100),
+      ...criteria
     })
     .pipe(map(paged => pickRandomly(paged.list)));
+};
+
+export const selectRandomProjectAccessToken = (
+  accessTokenService: AccessTokenService,
+  projectService: ProjectService,
+  projectCriteria: ProjectCriteria = {}
+): Observable<{ project: Project; accessToken: AccessToken }> => {
+  return selectRandomProject(projectService, projectCriteria).pipe(
+    filter((project: Project) => project !== undefined),
+    concatMap((project: Project) =>
+      getAccessToken(accessTokenService, project.ownerId).pipe(map(accessToken => ({ accessToken, project })))
+    )
+  );
 };
 
 /**

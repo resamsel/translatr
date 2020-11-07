@@ -33,6 +33,8 @@ public class LinkedAccountRepositoryImpl extends
   public PagedList<LinkedAccount> findBy(LinkedAccountCriteria criteria) {
     ExpressionList<LinkedAccount> query = createQuery(criteria).where();
 
+    query.eq("user.active", true);
+
     if (criteria.getUserId() != null) {
       query.eq("user.id", criteria.getUserId());
     }

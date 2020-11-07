@@ -6,14 +6,18 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, filter, map } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { updateRandomProject } from '../project';
+import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
 
-const name = 'Mila';
+const info: WeightedPersona = {
+  section: 'project',
+  type: 'update',
+  name: 'Mila',
+  description: 'I\'m going to update a random project.',
+  weight: 50
+};
 
-/**
- * I'm going to update a random project.
- */
 export class MilaPersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
   private readonly projectService: ProjectService;
@@ -21,7 +25,7 @@ export class MilaPersona extends Persona {
   private readonly userService: UserService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super(name, config, injector);
+    super(info.name, config, injector);
 
     this.accessTokenService = injector.get(AccessTokenService);
     this.userService = injector.get(UserService);
@@ -42,7 +46,6 @@ export class MilaPersona extends Persona {
 }
 
 personas.push({
-  name,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new MilaPersona(config, injector),
-  weight: 20
+  ...info,
+  create: (config: LoadGeneratorConfig, injector: Injector) => new MilaPersona(config, injector)
 });

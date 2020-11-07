@@ -1,5 +1,6 @@
 import { Injector } from '@angular/core';
 import { ErrorHandler, errorMessage } from '@dev/translatr-sdk';
+import { capitalize, capitalizeWords, cutOffAfter, groupBy } from '@translatr/utils';
 import { cli } from 'cli-ux';
 import { interval } from 'rxjs';
 import { catchError, exhaustMap, map, retryWhen, tap } from 'rxjs/operators';
@@ -9,18 +10,23 @@ import { Persona, personas } from './personas';
 import { genericRetryStrategy, selectPersonaFactory } from './utils';
 import { WeightedPersonaFactory } from './weighted-persona-factory';
 
-const cutOffAfter = (secret: string, length: number): string => {
-  return secret.substr(0, length) + (secret.length > length ? '...' : '');
-};
+const operations = ['create', 'read', 'update', 'delete'];
 
 export class LoadGenerator {
   private readonly config: LoadGeneratorConfig;
   private readonly injector: Injector;
+  private readonly filteredPersonas: WeightedPersonaFactory[];
 
   constructor(config: LoadGeneratorConfig) {
     this.config = { ...config };
+    this.config.includePersonas = this.config.includePersonas.map(persona => persona.toLowerCase());
 
     this.injector = createInjector(config.baseUrl, config.accessToken);
+
+    this.filteredPersonas =
+      this.config.includePersonas.length > 0
+        ? personas.filter(persona => this.config.includePersonas.includes(persona.name.toLowerCase()))
+        : personas;
   }
 
   async execute() {
@@ -36,26 +42,21 @@ export class LoadGenerator {
       { config: {}, value: {} }
     );
 
-    const filteredPersonas =
-      this.config.includePersonas.length > 0
-        ? personas.filter(persona => this.config.includePersonas.includes(persona.name))
-        : personas;
+    cli.table(this.filteredPersonas, { name: { header: 'Persona' }, section: {}, type: {}, weight: {} });
 
-    cli.table(filteredPersonas, { name: { header: 'Persona' }, weight: {} });
-
-    const totalWeight = filteredPersonas.reduce(
+    const totalWeight = this.filteredPersonas.reduce(
       (agg: number, curr: WeightedPersonaFactory) => agg + curr.weight,
       0
     );
 
     const errorHandler = this.injector.get(ErrorHandler);
 
-    console.log('\nGenerating load...\n');
+    console.log('\nLet\'s generate load...\n');
 
     return interval((60 / this.config.usersPerMinute) * 1000)
       .pipe(
         map(() =>
-          selectPersonaFactory(filteredPersonas, totalWeight).create(this.config, this.injector)
+          selectPersonaFactory(this.filteredPersonas, totalWeight).create(this.config, this.injector)
         ),
         exhaustMap((persona: Persona) => {
           const startedMillis = new Date().getTime();
@@ -76,7 +77,7 @@ export class LoadGenerator {
             catchError(error => {
               console.error(
                 `${persona.name}: ${errorMessage(error)} in ${new Date().getTime() -
-                  startedMillis}ms`
+                startedMillis}ms`
               );
               return errorHandler.handleError(error);
             })
@@ -84,5 +85,49 @@ export class LoadGenerator {
         })
       )
       .toPromise();
+  }
+
+  async document() {
+    console.log('Let\'s Generate Personas');
+    console.log('=======================');
+    console.log();
+    console.log(`*This document has been generated with \`npm run lets-generate:readme\`*`);
+    console.log();
+
+    const personasGroupedBySection = groupBy(this.filteredPersonas, 'section');
+    const personasGroupedByType = groupBy(this.filteredPersonas, 'type');
+    const matrix = Object.keys(personasGroupedBySection)
+      .map(section =>
+        Object.keys(personasGroupedByType)
+          .reduce((agg, curr) =>
+            ({ ...agg, [curr]: personasGroupedBySection[section].filter(persona => persona.type === curr).length }), { name: section }));
+
+    console.log('## Overview');
+    console.log();
+    console.log(`| ${['section', ...operations].map(capitalize).join(' | ')} |`);
+    console.log(`| ${['section', ...operations].map(op => op.replace(/./g, '-')).join(' | ')} |`);
+    matrix.forEach(line => {
+      console.log(`| ${capitalizeWords(line.name.replace(/-/, ' '))} | ${operations.map(op => line[op]).join(' | ')} |`);
+    });
+    console.log();
+
+    Object.keys(personasGroupedBySection).forEach(section => {
+      console.log(`## ${capitalizeWords(section.replace(/-/, ' '))} Related Personas`);
+      console.log();
+
+      const personasGroupedByType = groupBy(personasGroupedBySection[section], 'type');
+      operations.forEach(type => {
+        const personas = personasGroupedByType[type];
+
+        if (personas !== undefined) {
+          personas.forEach(persona => {
+            console.log(`### [${persona.name}](./${persona.name.toLowerCase()}.persona.ts) - ${persona.type}`);
+            console.log();
+            console.log(persona.description);
+            console.log();
+          });
+        }
+      });
+    });
   }
 }

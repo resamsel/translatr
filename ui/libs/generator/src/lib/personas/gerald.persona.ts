@@ -5,20 +5,24 @@ import { Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { chooseAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
+import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
 
-const name = 'Gerald';
+const info: WeightedPersona = {
+  section: 'user',
+  type: 'update',
+  name: 'Gerald',
+  description: 'I\'m going to update myself (a random user).',
+  weight: 20
+};
 
-/**
- * I'm going to update myself (a random user).
- */
 export class GeraldPersona extends Persona {
   private readonly userService: UserService;
   private readonly accessTokenService: AccessTokenService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
-    super(name, config, injector);
+    super(info.name, config, injector);
 
     this.userService = injector.get(UserService);
     this.accessTokenService = injector.get(AccessTokenService);
@@ -65,7 +69,6 @@ export class GeraldPersona extends Persona {
 }
 
 personas.push({
-  name,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new GeraldPersona(config, injector),
-  weight: 20
+  ...info,
+  create: (config: LoadGeneratorConfig, injector: Injector) => new GeraldPersona(config, injector)
 });

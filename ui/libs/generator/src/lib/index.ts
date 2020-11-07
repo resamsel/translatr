@@ -10,4 +10,5 @@ export * from './project';
 export * from './state';
 export * from './user';
 export * from './utils';
+export * from './weighted-persona';
 export * from './weighted-persona-factory';

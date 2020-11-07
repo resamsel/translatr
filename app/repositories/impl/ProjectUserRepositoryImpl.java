@@ -65,6 +65,7 @@ public class ProjectUserRepositoryImpl extends
     ExpressionList<ProjectUser> query = createQuery(criteria).where();
 
     query.eq("project.deleted", false);
+    query.eq("user.active", true);
 
     if (criteria.getProjectId() != null) {
       query.eq("project.id", criteria.getProjectId());

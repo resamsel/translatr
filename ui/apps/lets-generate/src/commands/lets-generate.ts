@@ -3,7 +3,7 @@ require('@momothepug/tsmodule-alias').play('./');
 import Command, { flags } from '@oclif/command';
 import { LoadGenerator } from '@translatr/generator';
 
-export class LoadGenerateCommand extends Command {
+export class LetsGenerateCommand extends Command {
   static description = 'Generate data (users, projects, locales, keys) by using the API';
 
   static flags = {
@@ -45,19 +45,30 @@ export class LoadGenerateCommand extends Command {
         'The duration in millis to wait for after a failure, multiplied by the number of failed retries squared.',
       env: 'RETRY_SCALING_DELAY',
       default: 1000
+    }),
+
+    document: flags.boolean({
+      description: 'Show the personas as a markdown document'
     })
   };
 
   async run() {
-    const command = this.parse(LoadGenerateCommand);
+    const command = this.parse(LetsGenerateCommand);
 
-    await new LoadGenerator({
+    const generator = new LoadGenerator({
       baseUrl: command.flags.endpoint,
       accessToken: command.flags['access-token'],
       usersPerMinute: command.flags.users,
       includePersonas: command.flags.personas !== '' ? command.flags.personas.split(',') : [],
       maxRetryAttempts: command.flags.maxRetryAttempts,
       retryScalingDelay: command.flags.retryScalingDelay
-    }).execute();
+    });
+
+    if (command.flags.document) {
+      await generator.document();
+      return;
+    }
+
+    await generator.execute();
   }
 }

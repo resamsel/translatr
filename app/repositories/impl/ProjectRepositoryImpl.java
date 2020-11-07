@@ -65,6 +65,7 @@ public class ProjectRepositoryImpl extends
     ExpressionList<Project> query = createQuery(criteria).where();
 
     query.eq("deleted", false);
+    query.eq("owner.active", true);
 
     if (criteria.getOwnerId() != null) {
       query.eq("owner.id", criteria.getOwnerId());

@@ -1,12 +1,5 @@
 /* tslint:disable:max-classes-per-file */
-import {
-  HttpClient,
-  HttpEvent,
-  HttpHandler,
-  HttpRequest,
-  HttpXhrBackend,
-  XhrFactory
-} from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend, XhrFactory } from '@angular/common/http';
 import { Injector, StaticProvider } from '@angular/core';
 import {
   AccessTokenService,
@@ -15,6 +8,7 @@ import {
   KeyService,
   LanguageProvider,
   LocaleService,
+  MemberService,
   MessageService,
   ProjectService,
   UserService
@@ -127,6 +121,15 @@ const providers: StaticProvider[] = [
       errorHandler: ErrorHandler,
       languageProvider: LanguageProvider
     ) => new ActivityService(client, errorHandler, languageProvider),
+    deps: [HttpClient, ErrorHandler, LanguageProvider]
+  },
+  {
+    provide: MemberService,
+    useFactory: (
+      client: HttpClient,
+      errorHandler: ErrorHandler,
+      languageProvider: LanguageProvider
+    ) => new MemberService(client, errorHandler, languageProvider),
     deps: [HttpClient, ErrorHandler, LanguageProvider]
   }
 ];
