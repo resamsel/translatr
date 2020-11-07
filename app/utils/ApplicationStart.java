@@ -31,15 +31,17 @@ public class ApplicationStart {
     this.config = config;
     this.userRepository = userRepository;
     this.accessTokenRepository = accessTokenRepository;
+
+    onStart();
   }
 
   public void onStart() {
     if (AdminAccessToken.existsIn(config)) {
-      LOGGER.debug("Checking whether or not an access token for ''{}'' needs to be created", ADMIN_USERNAME);
+      LOGGER.debug("Checking whether or not an access token for '{}' needs to be created", ADMIN_USERNAME);
 
       User user = userRepository.byUsername(ADMIN_USERNAME, UserRepository.FETCH_ACCESS_TOKENS);
       if (user != null && user.accessTokens.size() == 0) {
-        LOGGER.debug("''{}'' has no access token, creating one", ADMIN_USERNAME);
+        LOGGER.debug("'{}' has no access token, creating one", ADMIN_USERNAME);
 
         AccessToken accessToken = accessTokenRepository.create(
                 new AccessToken()
@@ -48,7 +50,7 @@ public class ApplicationStart {
                         .withKey(AdminAccessToken.get(config))
                         .withScope(Scope.values()));
 
-        LOGGER.warn("Access token ''{}'' has been created for admin user ''{}'' with all scopes",
+        LOGGER.warn("Access token '{}' has been created for admin user '{}' with all scopes",
                 accessToken.name, ADMIN_USERNAME);
       }
     }

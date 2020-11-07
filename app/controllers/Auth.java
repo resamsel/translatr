@@ -29,8 +29,6 @@ public class Auth extends AbstractController {
 
     this.authClientApiService = authClientApiService;
     this.playSessionStore = playSessionStore;
-
-    applicationStart.onStart();
   }
 
   public CompletionStage<Result> login(Http.Request request, String authClientName) {

@@ -24,20 +24,3 @@ services:
       KEYCLOAK_IMPORT: /tmp/keycloak-realm.json
     volumes:
       - ./docker/keycloak-realm.json:/tmp/keycloak-realm.json
-#  translatr:
-#    image: resamsel/translatr:3.1.0-18
-#    ports:
-#      - "9000:9000"
-#    environment:
-#      APPLICATION_SECRET: 094c8762-4689-45c7-830d-f752f82e6ac5
-#      BASE_URL: "http://localhost:9000"
-#      ADMIN_ACCESS_TOKEN: 593bdcfe-0bc7-426b-9b80-65e930491a34
-#      DATABASE_DRIVER: org.postgresql.Driver
-#      DATABASE_URL: "jdbc:postgresql://database:5432/translatr"
-#      DATABASE_USER: translatr
-#      DATABASE_PASSWORD: translatr
-#      KEYCLOAK_HOST: localhost:8080
-#      KEYCLOAK_PROTOCOL: http
-#      KEYCLOAK_CLIENT_ID: translatr-minikube
-#      KEYCLOAK_CLIENT_SECRET: 05d9a16b-5999-49f7-b26d-996bd414c849
-#      LOGLEVEL_ROOT: DEBUG

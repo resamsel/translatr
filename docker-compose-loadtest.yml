@@ -25,7 +25,7 @@ services:
     volumes:
       - ./docker/keycloak-realm.json:/tmp/keycloak-realm.json
   translatr:
-    image: resamsel/translatr:3.1.0-20
+    image: resamsel/translatr:3.1.0-23
     ports:
       - "9000:9000"
     environment:
@@ -33,9 +33,7 @@ services:
       BASE_URL: "http://localhost:9000"
       ADMIN_ACCESS_TOKEN: 593bdcfe-0bc7-426b-9b80-65e930491a34
       DATABASE_DRIVER: org.postgresql.Driver
-      DATABASE_URL: "jdbc:postgresql://database:5432/translatr"
-      DATABASE_USER: translatr
-      DATABASE_PASSWORD: translatr
+      DATABASE_URL: "postgres://translatr:translatr@database:5432/translatr"
       KEYCLOAK_HOST: sso:8080
       KEYCLOAK_PROTOCOL: http
       KEYCLOAK_CLIENT_ID: translatr-localhost
