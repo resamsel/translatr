@@ -10,99 +10,118 @@ Let's Generate Personas
 | Language | 1 | 1 | 1 | 1 |
 | User | 1 | 2 | 1 | 1 |
 | Project | 1 | 1 | 1 | 1 |
+| Key | 1 | 1 | 1 | 1 |
 | Member | 1 | 1 | 1 | 1 |
 | Access Token | 1 | 1 | 1 | 1 |
 
 ## Language Related Personas
 
-### [Abraham](./abraham.persona.ts) - create
+### [Abraham](./src/lib/personas/abraham.persona.ts) - create
 
 I'm going to create a new language for a random project of mine.
 
-### [Sandra](./sandra.persona.ts) - read
+### [Sandra](./src/lib/personas/sandra.persona.ts) - read
 
 I'm going to read all languages of a random project.
 
-### [Marius](./marius.persona.ts) - update
+### [Marius](./src/lib/personas/marius.persona.ts) - update
 
 I'm going to update a language of a random project of mine.
 
-### [Anna](./anna.persona.ts) - delete
+### [Anna](./src/lib/personas/anna.persona.ts) - delete
 
 I'm going to remove a language from a random project of mine.
 
 ## User Related Personas
 
-### [Charlene](./charlene.persona.ts) - create
+### [Charlene](./src/lib/personas/charlene.persona.ts) - create
 
 I'm going to create a user.
 
-### [Janine](./janine.persona.ts) - read
+### [Janine](./src/lib/personas/janine.persona.ts) - read
 
 I'm going to peek at myself (a random user).
 
-### [Paul](./paul.persona.ts) - read
+### [Paul](./src/lib/personas/paul.persona.ts) - read
 
 I'm going to peek at myself (the main user).
 
-### [Gerald](./gerald.persona.ts) - update
+### [Gerald](./src/lib/personas/gerald.persona.ts) - update
 
 I'm going to update myself (a random user).
 
-### [Brad](./brad.persona.ts) - delete
+### [Brad](./src/lib/personas/brad.persona.ts) - delete
 
 I'm going to delete a user.
 
 ## Project Related Personas
 
-### [Jerome](./jerome.persona.ts) - create
+### [Jerome](./src/lib/personas/jerome.persona.ts) - create
 
 I'm going to create a new project with a few languages and a few keys.
 
-### [Dora](./dora.persona.ts) - read
+### [Dora](./src/lib/personas/dora.persona.ts) - read
 
 I'm going to look at a random project.
 
-### [Mila](./mila.persona.ts) - update
+### [Mila](./src/lib/personas/mila.persona.ts) - update
 
 I'm going to update a random project.
 
-### [Theodor](./theodor.persona.ts) - delete
+### [Theodor](./src/lib/personas/theodor.persona.ts) - delete
 
 I'm going to delete a random project.
 
+## Key Related Personas
+
+### [Ella](./src/lib/personas/ella.persona.ts) - create
+
+I'm going to create a new key for a random project of mine.
+
+### [Ferdinand](./src/lib/personas/ferdinand.persona.ts) - read
+
+I'm going to read all keys of a random project.
+
+### [Hanna](./src/lib/personas/hanna.persona.ts) - update
+
+I'm going to update a key of a random project of mine.
+
+### [Laurel](./src/lib/personas/laurel.persona.ts) - delete
+
+I'm going to remove a key from a random project of mine.
+
 ## Member Related Personas
 
-### [Isabella](./isabella.persona.ts) - create
+### [Isabella](./src/lib/personas/isabella.persona.ts) - create
 
 I'm going to add a contributor to a random project of mine.
 
-### [Theresa](./theresa.persona.ts) - read
+### [Theresa](./src/lib/personas/theresa.persona.ts) - read
 
 I'm going to read all contributors to a random project.
 
-### [Oliver](./oliver.persona.ts) - update
+### [Oliver](./src/lib/personas/oliver.persona.ts) - update
 
 I'm going to update the role of a contributor of a random project of mine.
 
-### [Sebastian](./sebastian.persona.ts) - delete
+### [Sebastian](./src/lib/personas/sebastian.persona.ts) - delete
 
 I'm going to remove a contributor from a random project of mine.
 
 ## Access Token Related Personas
 
-### [Karla](./karla.persona.ts) - create
+### [Karla](./src/lib/personas/karla.persona.ts) - create
 
 I'm going to create an access token for a random user.
 
-### [Stella](./stella.persona.ts) - read
+### [Stella](./src/lib/personas/stella.persona.ts) - read
 
 I'm going to read all access tokens of a random user.
 
-### [Mario](./mario.persona.ts) - update
+### [Mario](./src/lib/personas/mario.persona.ts) - update
 
 I'm going to update an access token for a random user.
 
-### [Vanessa](./vanessa.persona.ts) - delete
+### [Vanessa](./src/lib/personas/vanessa.persona.ts) - delete
 
 I'm going to delete a random access token.
