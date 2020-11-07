@@ -13,7 +13,7 @@ const info: WeightedPersona = {
   section: 'user',
   type: 'delete',
   name: 'Brad',
-  description: 'I\'m going to delete a user.',
+  description: "I'm going to delete a user.",
   weight: 1
 };
 

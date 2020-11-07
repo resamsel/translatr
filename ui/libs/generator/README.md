@@ -1,16 +1,35 @@
 Let's Generate Personas
 =======================
 
-*This document has been generated with `npm run lets-generate:readme`*
+*This document has been generated with `npm run readme:lets-generate`*
 
 ## Overview
 
 | Section | Create | Read | Update | Delete |
 | ------- | ------ | ---- | ------ | ------ |
+| Language | 1 | 1 | 1 | 1 |
 | User | 1 | 2 | 1 | 1 |
 | Project | 1 | 1 | 1 | 1 |
 | Member | 1 | 1 | 1 | 1 |
 | Access Token | 1 | 1 | 1 | 1 |
+
+## Language Related Personas
+
+### [Abraham](./abraham.persona.ts) - create
+
+I'm going to create a new language for a random project of mine.
+
+### [Sandra](./sandra.persona.ts) - read
+
+I'm going to read all languages of a random project.
+
+### [Marius](./marius.persona.ts) - update
+
+I'm going to update a language of a random project of mine.
+
+### [Anna](./anna.persona.ts) - delete
+
+I'm going to remove a language from a random project of mine.
 
 ## User Related Personas
 
@@ -87,4 +106,3 @@ I'm going to update an access token for a random user.
 ### [Vanessa](./vanessa.persona.ts) - delete
 
 I'm going to delete a random access token.
-

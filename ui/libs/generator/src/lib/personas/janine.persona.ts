@@ -19,7 +19,7 @@ const info: WeightedPersona = {
   section: 'user',
   type: 'read',
   name: 'Janine',
-  description: 'I\'m going to peek at myself (a random user).',
+  description: "I'm going to peek at myself (a random user).",
   weight: 100
 };
 

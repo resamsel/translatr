@@ -14,7 +14,7 @@ const info: WeightedPersona = {
   section: 'access-token',
   type: 'delete',
   name: 'Vanessa',
-  description: 'I\'m going to delete a random access token.',
+  description: "I'm going to delete a random access token.",
   weight: 2
 };
 

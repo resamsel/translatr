@@ -1,7 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
 import { MemberRole } from '@dev/translatr-model';
-import { AccessTokenService, errorMessage, MemberService, ProjectService, UserService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  errorMessage,
+  MemberService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
 import { catchError, concatMap, filter, map } from 'rxjs/operators';
@@ -16,7 +22,7 @@ const info: WeightedPersona = {
   section: 'member',
   type: 'create',
   name: 'Isabella',
-  description: 'I\'m going to add a contributor to a random project of mine.',
+  description: "I'm going to add a contributor to a random project of mine.",
   weight: 10
 };
 
@@ -38,13 +44,21 @@ export class IsabellaPersona extends Persona {
   execute(): Observable<string> {
     return selectRandomProjectAccessToken(this.accessTokenService, this.projectService).pipe(
       filter(({ project }) => Boolean(project)),
-      concatMap(({ project, accessToken }) => selectRandomUser(this.userService).pipe(map(user => ({ project, accessToken, user })))),
+      concatMap(({ project, accessToken }) =>
+        selectRandomUser(this.userService).pipe(map(user => ({ project, accessToken, user })))
+      ),
       concatMap(({ project, accessToken, user }) =>
-        this.memberService.create({
-          projectId: project.id,
-          userId: user.id,
-          role: pickRandomly([MemberRole.Translator, MemberRole.Developer])
-        }, { params: { access_token: accessToken.key } }).pipe(map(member => ({ project, user, member })))),
+        this.memberService
+          .create(
+            {
+              projectId: project.id,
+              userId: user.id,
+              role: pickRandomly([MemberRole.Translator, MemberRole.Developer])
+            },
+            { params: { access_token: accessToken.key } }
+          )
+          .pipe(map(member => ({ project, user, member })))
+      ),
       map(
         ({ project, member }) =>
           `member ${member.userName} with role ${member.role} of project ${project.ownerUsername}/${project.name} created`

@@ -25,7 +25,9 @@ export class LoadGenerator {
 
     this.filteredPersonas =
       this.config.includePersonas.length > 0
-        ? personas.filter(persona => this.config.includePersonas.includes(persona.name.toLowerCase()))
+        ? personas.filter(persona =>
+            this.config.includePersonas.includes(persona.name.toLowerCase())
+          )
         : personas;
   }
 
@@ -42,7 +44,12 @@ export class LoadGenerator {
       { config: {}, value: {} }
     );
 
-    cli.table(this.filteredPersonas, { name: { header: 'Persona' }, section: {}, type: {}, weight: {} });
+    cli.table(this.filteredPersonas, {
+      name: { header: 'Persona' },
+      section: {},
+      type: {},
+      weight: {}
+    });
 
     const totalWeight = this.filteredPersonas.reduce(
       (agg: number, curr: WeightedPersonaFactory) => agg + curr.weight,
@@ -51,13 +58,18 @@ export class LoadGenerator {
 
     const errorHandler = this.injector.get(ErrorHandler);
 
-    console.log('\nLet\'s generate load...\n');
+    console.log("\nLet's generate load...\n");
 
     return interval((60 / this.config.usersPerMinute) * 1000)
       .pipe(
-        map(() =>
-          selectPersonaFactory(this.filteredPersonas, totalWeight).create(this.config, this.injector)
-        ),
+        map(() => {
+          const persona = selectPersonaFactory(this.filteredPersonas, totalWeight);
+          if (persona === undefined) {
+            throw new Error('No personas found!');
+          }
+
+          return persona.create(this.config, this.injector);
+        }),
         exhaustMap((persona: Persona) => {
           const startedMillis = new Date().getTime();
           cli.action.start(`Processing ${persona.name}`);
@@ -77,7 +89,7 @@ export class LoadGenerator {
             catchError(error => {
               console.error(
                 `${persona.name}: ${errorMessage(error)} in ${new Date().getTime() -
-                startedMillis}ms`
+                  startedMillis}ms`
               );
               return errorHandler.handleError(error);
             })
@@ -88,43 +100,52 @@ export class LoadGenerator {
   }
 
   async document() {
-    console.log('Let\'s Generate Personas');
+    console.log("Let's Generate Personas");
     console.log('=======================');
     console.log();
-    console.log(`*This document has been generated with \`npm run lets-generate:readme\`*`);
+    console.log(`*This document has been generated with \`npm run readme:lets-generate\`*`);
     console.log();
 
     const personasGroupedBySection = groupBy(this.filteredPersonas, 'section');
     const personasGroupedByType = groupBy(this.filteredPersonas, 'type');
-    const matrix = Object.keys(personasGroupedBySection)
-      .map(section =>
-        Object.keys(personasGroupedByType)
-          .reduce((agg, curr) =>
-            ({ ...agg, [curr]: personasGroupedBySection[section].filter(persona => persona.type === curr).length }), { name: section }));
+    const matrix = Object.keys(personasGroupedBySection).map(section =>
+      Object.keys(personasGroupedByType).reduce(
+        (agg, curr) => ({
+          ...agg,
+          [curr]: personasGroupedBySection[section].filter(persona => persona.type === curr).length
+        }),
+        { name: section }
+      )
+    );
 
     console.log('## Overview');
     console.log();
     console.log(`| ${['section', ...operations].map(capitalize).join(' | ')} |`);
     console.log(`| ${['section', ...operations].map(op => op.replace(/./g, '-')).join(' | ')} |`);
     matrix.forEach(line => {
-      console.log(`| ${capitalizeWords(line.name.replace(/-/, ' '))} | ${operations.map(op => line[op]).join(' | ')} |`);
+      console.log(
+        `| ${capitalizeWords(line.name.replace(/-/, ' '))} | ${operations
+          .map(op => line[op])
+          .join(' | ')} |`
+      );
     });
-    console.log();
 
     Object.keys(personasGroupedBySection).forEach(section => {
-      console.log(`## ${capitalizeWords(section.replace(/-/, ' '))} Related Personas`);
       console.log();
+      console.log(`## ${capitalizeWords(section.replace(/-/, ' '))} Related Personas`);
 
-      const personasGroupedByType = groupBy(personasGroupedBySection[section], 'type');
+      const byType = groupBy(personasGroupedBySection[section], 'type');
       operations.forEach(type => {
-        const personas = personasGroupedByType[type];
+        const personasOfType = byType[type];
 
-        if (personas !== undefined) {
-          personas.forEach(persona => {
-            console.log(`### [${persona.name}](./${persona.name.toLowerCase()}.persona.ts) - ${persona.type}`);
+        if (personasOfType !== undefined) {
+          personasOfType.forEach(persona => {
+            console.log();
+            console.log(
+              `### [${persona.name}](./${persona.name.toLowerCase()}.persona.ts) - ${persona.type}`
+            );
             console.log();
             console.log(persona.description);
-            console.log();
           });
         }
       });
