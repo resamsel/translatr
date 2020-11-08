@@ -1,12 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
-import {
-  AccessTokenService,
-  errorMessage,
-  KeyService,
-  ProjectService,
-  UserService
-} from '@dev/translatr-sdk';
+import { AccessTokenService, errorMessage, KeyService, ProjectService } from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
 import { catchError, filter, map } from 'rxjs/operators';
 import { createRandomKey } from '../key';
@@ -24,7 +18,6 @@ const info: WeightedPersona = {
 };
 
 export class EllaPersona extends Persona {
-  private readonly userService: UserService;
   private readonly projectService: ProjectService;
   private readonly keyService: KeyService;
   private readonly accessTokenService: AccessTokenService;
@@ -32,7 +25,6 @@ export class EllaPersona extends Persona {
   constructor(config: LoadGeneratorConfig, injector: Injector) {
     super(info.name, config, injector);
 
-    this.userService = injector.get(UserService);
     this.accessTokenService = injector.get(AccessTokenService);
     this.projectService = injector.get(ProjectService);
     this.keyService = injector.get(KeyService);
@@ -41,9 +33,9 @@ export class EllaPersona extends Persona {
   execute(): Observable<string> {
     return createRandomKey(
       this.accessTokenService,
-      this.userService,
       this.projectService,
-      this.keyService
+      this.keyService,
+      this.config.accessToken
     ).pipe(
       filter(key => Boolean(key)),
       map(
