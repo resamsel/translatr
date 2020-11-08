@@ -4,8 +4,7 @@ import {
   AccessTokenService,
   errorMessage,
   LocaleService,
-  ProjectService,
-  UserService
+  ProjectService
 } from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
 import { catchError, filter, map } from 'rxjs/operators';
@@ -24,7 +23,6 @@ const info: WeightedPersona = {
 };
 
 export class AbrahamPersona extends Persona {
-  private readonly userService: UserService;
   private readonly projectService: ProjectService;
   private readonly localeService: LocaleService;
   private readonly accessTokenService: AccessTokenService;
@@ -32,7 +30,6 @@ export class AbrahamPersona extends Persona {
   constructor(config: LoadGeneratorConfig, injector: Injector) {
     super(info.name, config, injector);
 
-    this.userService = injector.get(UserService);
     this.accessTokenService = injector.get(AccessTokenService);
     this.projectService = injector.get(ProjectService);
     this.localeService = injector.get(LocaleService);
@@ -41,14 +38,14 @@ export class AbrahamPersona extends Persona {
   execute(): Observable<string> {
     return createRandomLocale(
       this.accessTokenService,
-      this.userService,
       this.projectService,
-      this.localeService
+      this.localeService,
+      this.config.accessToken
     ).pipe(
       filter(locale => Boolean(locale)),
       map(
         locale =>
-          `locale ${locale.displayName} for project ${locale.projectOwnerUsername}/${locale.projectName} created`
+          `locale ${locale.name} for project ${locale.projectOwnerUsername}/${locale.projectName} created`
       ),
       catchError((err: HttpErrorResponse) => of(errorMessage(err)))
     );

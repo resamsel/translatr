@@ -21,8 +21,7 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { concatMap, filter, map, mapTo, retry } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { getAccessToken } from '../access-token';
-import { keyNames } from '../key';
-import { localeNames } from '../locale';
+import { keyNames, localeNames } from '../constants';
 import { selectRandomUserAccessToken } from '../user';
 import { getRandomProject } from './get';
 

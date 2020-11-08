@@ -106,8 +106,8 @@ export class LoadGenerator {
     console.log(`*This document has been generated with \`npm run readme:lets-generate\`*`);
     console.log();
 
-    const personasGroupedBySection = groupBy(this.filteredPersonas, 'section');
-    const personasGroupedByType = groupBy(this.filteredPersonas, 'type');
+    const personasGroupedBySection = groupBy(personas, 'section');
+    const personasGroupedByType = groupBy(personas, 'type');
     const matrix = Object.keys(personasGroupedBySection).map(section =>
       Object.keys(personasGroupedByType).reduce(
         (agg, curr) => ({
@@ -142,9 +142,9 @@ export class LoadGenerator {
           personasOfType.forEach(persona => {
             console.log();
             console.log(
-              `### [${
-                persona.name
-              }](./src/lib/personas/${persona.name.toLowerCase()}.persona.ts) - ${persona.type}`
+              `### [${persona.name}](src/lib/personas/${persona.name.toLowerCase()}.persona.ts) - ${
+                persona.type
+              }`
             );
             console.log();
             console.log(persona.description);
