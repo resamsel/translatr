@@ -20,6 +20,7 @@ export * from './oliver.persona';
 export * from './persona';
 export * from './personas';
 export * from './paul.persona';
+export * from './quentin.persona';
 export * from './regina.persona';
 export * from './sandra.persona';
 export * from './sebastian.persona';

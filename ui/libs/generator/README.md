@@ -13,7 +13,7 @@ Let's Generate Personas
 | Key | 1 | 1 | 1 | 1 |
 | Member | 1 | 1 | 1 | 1 |
 | Access Token | 1 | 1 | 1 | 1 |
-| Translation | 1 | 1 | 1 | 1 |
+| Translation | 2 | 1 | 1 | 1 |
 
 ## Language Related Personas
 
@@ -128,6 +128,10 @@ I'm going to update an access token for a random user.
 I'm going to delete a random access token.
 
 ## Translation Related Personas
+
+### [Quentin](src/lib/personas/quentin.persona.ts) - create
+
+I'm going to translate all missing keys for a language in a random project of mine.
 
 ### [Regina](src/lib/personas/regina.persona.ts) - create
 
