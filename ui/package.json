@@ -69,7 +69,8 @@
     "i18n:pull:ui": "cd apps/translatr && translatr pull",
     "i18n:push:ui": "cd apps/translatr && translatr push",
     "i18n:pull:admin": "cd apps/translatr-admin && translatr pull",
-    "snyk-protect": "snyk protect"
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "private": true,
   "dependencies": {
@@ -118,7 +119,7 @@
     "random-name": "^0.1.2",
     "runes": "^0.4.3",
     "rxjs": "6.5.5",
-    "snyk": "^1.364.0",
+    "snyk": "^1.425.0",
     "tslib": "^1.10.0",
     "underscore": "1.10.2",
     "xmlhttprequest": "1.8.0",
