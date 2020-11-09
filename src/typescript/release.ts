@@ -2,8 +2,6 @@ import { promises } from "fs";
 import { inc, ReleaseType } from "semver";
 import simpleGit from "simple-git";
 
-const dockerRepository = "resamsel/translatr";
-
 const toTag = (version: string): string => `v${version}`;
 
 const updateJson = (filename: string, version: string): Promise<string> => {
@@ -13,6 +11,22 @@ const updateJson = (filename: string, version: string): Promise<string> => {
     .then(json => ({ ...json, version }))
     .then(json => JSON.stringify(json, null, 2))
     .then(s => promises.writeFile(filename, s + "\n"))
+    .then(() => version);
+};
+
+const updateYaml = (filename: string, version: string): Promise<string> => {
+  return promises
+    .readFile(filename, { encoding: "utf8" })
+    .then(data =>
+      data.replace(/resamsel\/translatr:.*/, `resamsel/translatr:${version}`)
+    )
+    .then(data =>
+      data.replace(
+        /resamsel\/translatr-loadgenerator:.*/,
+        `resamsel/translatr-loadgenerator:${version}`
+      )
+    )
+    .then(s => promises.writeFile(filename, s))
     .then(() => version);
 };
 
@@ -46,6 +60,8 @@ const updateVersions = (version: string): Promise<string> => {
     .then(version => updateJson("package-lock.json", version))
     .then(version => updateJson("ui/package.json", version))
     .then(version => updateJson("ui/package-lock.json", version))
+    .then(version => updateYaml("k8s/manifest.yaml", version))
+    .then(version => updateYaml("k8s/loadgenerator.yaml", version))
     .then(version => updateShellScript("init.sh", version))
     .then(version => updateSbt("build.sbt", version));
 };
@@ -163,11 +179,6 @@ const release = async (
   console.log(`These steps are missing:`);
   console.log(`[ ] push changes: git push`);
   console.log(`[ ] wait for CI/CD build to finish successfully`);
-  console.log(`[ ] create image: bin/activator docker:publish`);
-  console.log(
-    `[ ] tag image: docker tag ${dockerRepository}:${version} ${dockerRepository}:latest`
-  );
-  console.log(`[ ] push image: docker push ${dockerRepository}:latest`);
   console.log(`[ ] create release on Github`);
   return version;
 };

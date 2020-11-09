@@ -10,9 +10,6 @@ jobs:
   # Build and push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
   push:
-    # Ensure test job passes before pushing image.
-    needs: test
-
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
@@ -24,8 +21,19 @@ jobs:
         with:
           java-version: 1.8
 
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
       - name: Log into registry
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
-      - name: Run build and deploy docker image
+      - name: Run server build and deploy docker image
         run: bin/activator stage docker:publish
+
+      - name: Run load generator build and deploy docker image
+        working-directory: ui
+        run: |
+          npm run build:lets-generate:docker
+          npm run publish:lets-generate:docker
