@@ -38,7 +38,7 @@ export class HannaPersona extends Persona {
   execute(): Observable<string> {
     return selectRandomProjectAccessToken(this.accessTokenService, this.projectService).pipe(
       filter(({ project }) => Boolean(project)),
-      concatMap(({ project, accessToken }) =>
+      concatMap(({ accessToken, project }) =>
         this.keyService
           .find({
             projectId: project.id,
@@ -49,10 +49,10 @@ export class HannaPersona extends Persona {
               Scope.KeyRead
             )
           })
-          .pipe(map(paged => ({ project, accessToken, key: pickRandomly(paged.list) })))
+          .pipe(map(paged => ({ accessToken, project, key: pickRandomly(paged.list) })))
       ),
       filter(({ key }) => Boolean(key)),
-      concatMap(({ project, accessToken, key }) =>
+      concatMap(({ accessToken, project, key }) =>
         this.keyService
           .update(
             {

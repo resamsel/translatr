@@ -43,7 +43,7 @@ export class MariusPersona extends Persona {
       fetch: 'members'
     }).pipe(
       filter(({ project }) => Boolean(project)),
-      concatMap(({ project, accessToken }) =>
+      concatMap(({ accessToken, project }) =>
         this.localeService
           .find({
             projectId: project.id,
@@ -54,10 +54,10 @@ export class MariusPersona extends Persona {
               Scope.LocaleRead
             )
           })
-          .pipe(map(paged => ({ project, accessToken, locale: pickRandomly(paged.list) })))
+          .pipe(map(paged => ({ accessToken, project, locale: pickRandomly(paged.list) })))
       ),
       filter(({ locale }) => Boolean(locale)),
-      concatMap(({ project, accessToken, locale }) =>
+      concatMap(({ accessToken, project, locale }) =>
         this.localeService
           .update(
             {

@@ -42,13 +42,13 @@ export class SebastianPersona extends Persona {
       fetch: 'members'
     }).pipe(
       filter(({ project }) => Boolean(project)),
-      map(({ project, accessToken }) => ({
+      map(({ accessToken, project }) => ({
         project,
         accessToken,
         members: project.members.filter(member => member.role !== MemberRole.Owner)
       })),
       filter(({ project, members }) => members.length > 0),
-      concatMap(({ project, accessToken, members }) =>
+      concatMap(({ accessToken, project, members }) =>
         this.memberService
           .delete(pickRandomly(members).id, { params: { access_token: accessToken.key } })
           .pipe(map(member => ({ project, member })))
