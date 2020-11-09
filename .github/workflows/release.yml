@@ -8,6 +8,7 @@ on:
 
 jobs:
   docker:
+    name: Publish to Docker
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
@@ -38,6 +39,7 @@ jobs:
 
   release:
     name: Create Release
+    needs: docker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
