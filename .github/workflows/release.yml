@@ -1,4 +1,4 @@
-name: Docker
+name: Release Translatr
 
 on:
   push:
@@ -7,9 +7,7 @@ on:
       - v*
 
 jobs:
-  # Build and push image to GitHub Packages.
-  # See also https://docs.docker.com/docker-hub/builds/
-  push:
+  docker:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
@@ -27,7 +25,7 @@ jobs:
           node-version: 12.x
 
       - name: Log into registry
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ github.actor }} --password-stdin
 
       - name: Run server build and deploy docker image
         run: bin/activator stage docker:publish
@@ -37,3 +35,21 @@ jobs:
         run: |
           npm run build:lets-generate:docker
           npm run publish:lets-generate:docker
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Translatr ${{ github.ref }}
+          body: ""
+          draft: false
+          prerelease: false
