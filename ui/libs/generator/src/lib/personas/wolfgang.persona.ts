@@ -4,8 +4,11 @@ import { Scope } from '@dev/translatr-model';
 import {
   AccessTokenService,
   errorMessage,
+  KeyService,
+  LocaleService,
   MessageService,
-  ProjectService
+  ProjectService,
+  UserService
 } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
@@ -28,22 +31,35 @@ const info: WeightedPersona = {
 
 export class WolfgangPersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
+  private readonly userService: UserService;
   private readonly projectService: ProjectService;
+  private readonly localeService: LocaleService;
+  private readonly keyService: KeyService;
   private readonly messageService: MessageService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
     super(info.name, config, injector);
 
     this.accessTokenService = injector.get(AccessTokenService);
+    this.userService = injector.get(UserService);
     this.projectService = injector.get(ProjectService);
+    this.localeService = injector.get(LocaleService);
+    this.keyService = injector.get(KeyService);
     this.messageService = injector.get(MessageService);
   }
 
   execute(): Observable<string> {
-    return selectRandomProjectAccessToken(this.accessTokenService, this.projectService, {
-      fetch: 'members'
-    }).pipe(
-      filter(({ project }) => Boolean(project)),
+    return selectRandomProjectAccessToken(
+      this.accessTokenService,
+      this.userService,
+      this.projectService,
+      this.localeService,
+      this.keyService,
+      this.messageService,
+      {
+        fetch: 'members'
+      }
+    ).pipe(
       concatMap(({ accessToken, project }) =>
         this.messageService
           .find({

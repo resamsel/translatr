@@ -28,7 +28,7 @@ export class MarioPersona extends Persona {
 
   execute(): Observable<string> {
     return selectRandomAccessToken(this.accessTokenService).pipe(
-      filter(accessToken => accessToken !== undefined),
+      filter(Boolean),
       switchMap((accessToken: AccessToken) =>
         this.accessTokenService.update(
           {

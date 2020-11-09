@@ -1,11 +1,19 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
-import { errorMessage, ProjectService } from '@dev/translatr-sdk';
-import { WeightedPersona } from '@translatr/generator';
+import {
+  AccessTokenService,
+  errorMessage,
+  KeyService,
+  LocaleService,
+  MessageService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
-import { catchError, filter, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
-import { selectRandomProject } from '../project';
+import { selectRandomProjectAccessToken } from '../project';
+import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
 
@@ -18,19 +26,36 @@ const info: WeightedPersona = {
 };
 
 export class TheresaPersona extends Persona {
+  private readonly accessTokenService: AccessTokenService;
+  private readonly userService: UserService;
   private readonly projectService: ProjectService;
+  private readonly localeService: LocaleService;
+  private readonly keyService: KeyService;
+  private readonly messageService: MessageService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
     super(info.name, config, injector);
 
+    this.accessTokenService = injector.get(AccessTokenService);
+    this.userService = injector.get(UserService);
     this.projectService = injector.get(ProjectService);
+    this.localeService = injector.get(LocaleService);
+    this.keyService = injector.get(KeyService);
+    this.messageService = injector.get(MessageService);
   }
 
   execute(): Observable<string> {
-    return selectRandomProject(this.projectService, { fetch: 'members' }).pipe(
-      filter(project => Boolean(project)),
+    return selectRandomProjectAccessToken(
+      this.accessTokenService,
+      this.userService,
+      this.projectService,
+      this.localeService,
+      this.keyService,
+      this.messageService,
+      { fetch: 'members' }
+    ).pipe(
       map(
-        project =>
+        ({ project }) =>
           `${project.members.length} members of project ${project.ownerUsername}/${project.name} viewed`
       ),
       catchError((err: HttpErrorResponse) => of(errorMessage(err)))

@@ -10,9 +10,10 @@ import {
   UserService
 } from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, concatMap, map } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { createRandomProject } from '../project';
+import { selectRandomUserAccessToken } from '../user';
 import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
@@ -45,14 +46,17 @@ export class JeromePersona extends Persona {
   }
 
   execute(): Observable<string> {
-    return createRandomProject(
-      this.accessTokenService,
-      this.userService,
-      this.projectService,
-      this.localeService,
-      this.keyService,
-      this.messageService
-    ).pipe(
+    return selectRandomUserAccessToken(this.accessTokenService, this.userService).pipe(
+      concatMap(({ accessToken, user }) =>
+        createRandomProject(
+          accessToken,
+          user,
+          this.projectService,
+          this.localeService,
+          this.keyService,
+          this.messageService
+        )
+      ),
       map(
         ({ project, locales, keys }) =>
           `project ${project.ownerUsername}/${project.name} with ${locales.length} languages and ${keys.length} keys created`

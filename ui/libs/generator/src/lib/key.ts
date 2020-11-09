@@ -1,6 +1,13 @@
 import { Injector } from '@angular/core';
 import { AccessToken, Key, PagedList, Project, Scope } from '@dev/translatr-model';
-import { AccessTokenService, KeyService, ProjectService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  KeyService,
+  LocaleService,
+  MessageService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
 import { concatMap, filter, map } from 'rxjs/operators';
@@ -67,12 +74,21 @@ export const createRandomKeyForProject = (
 
 export const createRandomKey = (
   accessTokenService: AccessTokenService,
+  userService: UserService,
   projectService: ProjectService,
+  localeService: LocaleService,
   keyService: KeyService,
+  messageService: MessageService,
   defaultAccessToken: string
 ): Observable<Key> => {
-  return selectRandomProjectAccessToken(accessTokenService, projectService).pipe(
-    filter(({ project }) => project !== undefined),
+  return selectRandomProjectAccessToken(
+    accessTokenService,
+    userService,
+    projectService,
+    localeService,
+    keyService,
+    messageService
+  ).pipe(
     concatMap(({ project, accessToken }) =>
       createRandomKeyForProject(keyService, project, accessToken, defaultAccessToken)
     )
@@ -110,12 +126,21 @@ export const selectRandomKeyForProject = (
 
 export const deleteRandomKey = (
   accessTokenService: AccessTokenService,
+  userService: UserService,
   projectService: ProjectService,
+  localeService: LocaleService,
   keyService: KeyService,
+  messageService: MessageService,
   defaultAccessToken: string
 ): Observable<Key> => {
-  return selectRandomProjectAccessToken(accessTokenService, projectService).pipe(
-    filter(({ project }) => Boolean(project)),
+  return selectRandomProjectAccessToken(
+    accessTokenService,
+    userService,
+    projectService,
+    localeService,
+    keyService,
+    messageService
+  ).pipe(
     concatMap(({ accessToken, project }) =>
       keyService
         .find({

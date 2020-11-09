@@ -1,9 +1,17 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
 import { Scope } from '@dev/translatr-model';
-import { AccessTokenService, errorMessage, KeyService, ProjectService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  errorMessage,
+  KeyService,
+  LocaleService,
+  MessageService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
-import { catchError, concatMap, filter, map } from 'rxjs/operators';
+import { catchError, concatMap, map } from 'rxjs/operators';
 import { chooseAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { selectRandomProjectAccessToken } from '../project';
@@ -20,21 +28,33 @@ const info: WeightedPersona = {
 };
 
 export class FerdinandPersona extends Persona {
-  private readonly projectService: ProjectService;
   private readonly accessTokenService: AccessTokenService;
+  private readonly userService: UserService;
+  private readonly projectService: ProjectService;
+  private readonly localeService: LocaleService;
   private readonly keyService: KeyService;
+  private readonly messageService: MessageService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
     super(info.name, config, injector);
 
-    this.projectService = injector.get(ProjectService);
     this.accessTokenService = injector.get(AccessTokenService);
+    this.userService = injector.get(UserService);
+    this.projectService = injector.get(ProjectService);
+    this.localeService = injector.get(LocaleService);
     this.keyService = injector.get(KeyService);
+    this.messageService = injector.get(MessageService);
   }
 
   execute(): Observable<string> {
-    return selectRandomProjectAccessToken(this.accessTokenService, this.projectService).pipe(
-      filter(({ accessToken, project }) => Boolean(project)),
+    return selectRandomProjectAccessToken(
+      this.accessTokenService,
+      this.userService,
+      this.projectService,
+      this.localeService,
+      this.keyService,
+      this.messageService
+    ).pipe(
       concatMap(({ accessToken, project }) =>
         this.keyService
           .find({

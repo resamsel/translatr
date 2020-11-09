@@ -1,5 +1,12 @@
 import { AccessToken, Locale, PagedList, Project, Scope } from '@dev/translatr-model';
-import { AccessTokenService, LocaleService, ProjectService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  KeyService,
+  LocaleService,
+  MessageService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
 import { concatMap, filter, map } from 'rxjs/operators';
@@ -56,14 +63,26 @@ export const createRandomLocaleForProject = (
       )
     );
 
+/**
+ * Always returns a locale
+ */
 export const createRandomLocale = (
   accessTokenService: AccessTokenService,
+  userService: UserService,
   projectService: ProjectService,
   localeService: LocaleService,
+  keyService: KeyService,
+  messageService: MessageService,
   defaultAccessToken: string
 ): Observable<Locale> => {
-  return selectRandomProjectAccessToken(accessTokenService, projectService).pipe(
-    filter(({ project }) => project !== undefined),
+  return selectRandomProjectAccessToken(
+    accessTokenService,
+    userService,
+    projectService,
+    localeService,
+    keyService,
+    messageService
+  ).pipe(
     concatMap(({ accessToken, project }) =>
       createRandomLocaleForProject(localeService, project, accessToken, defaultAccessToken)
     )
@@ -141,12 +160,21 @@ export const selectLocaleForProject = (
 
 export const deleteRandomLocale = (
   accessTokenService: AccessTokenService,
+  userService: UserService,
   projectService: ProjectService,
   localeService: LocaleService,
+  keyService: KeyService,
+  messageService: MessageService,
   defaultAccessToken: string
 ): Observable<Locale> => {
-  return selectRandomProjectAccessToken(accessTokenService, projectService).pipe(
-    filter(({ project }) => Boolean(project)),
+  return selectRandomProjectAccessToken(
+    accessTokenService,
+    userService,
+    projectService,
+    localeService,
+    keyService,
+    messageService
+  ).pipe(
     concatMap(({ accessToken, project }) =>
       localeService
         .find({

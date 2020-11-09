@@ -1,9 +1,17 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
 import { Project } from '@dev/translatr-model';
-import { AccessTokenService, ErrorHandler, ProjectService, UserService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  ErrorHandler,
+  KeyService,
+  LocaleService,
+  MessageService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 import { Observable, throwError } from 'rxjs';
-import { catchError, filter, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { updateRandomProject } from '../project';
 import { WeightedPersona } from '../weighted-persona';
@@ -20,9 +28,12 @@ const info: WeightedPersona = {
 
 export class MilaPersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
-  private readonly projectService: ProjectService;
-  private readonly errorHandler: ErrorHandler;
   private readonly userService: UserService;
+  private readonly projectService: ProjectService;
+  private readonly localeService: LocaleService;
+  private readonly keyService: KeyService;
+  private readonly messageService: MessageService;
+  private readonly errorHandler: ErrorHandler;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
     super(info.name, config, injector);
@@ -30,12 +41,22 @@ export class MilaPersona extends Persona {
     this.accessTokenService = injector.get(AccessTokenService);
     this.userService = injector.get(UserService);
     this.projectService = injector.get(ProjectService);
+    this.localeService = injector.get(LocaleService);
+    this.keyService = injector.get(KeyService);
+    this.messageService = injector.get(MessageService);
     this.errorHandler = injector.get(ErrorHandler);
   }
 
   execute(): Observable<string> {
-    return updateRandomProject(this.accessTokenService, this.userService, this.projectService).pipe(
-      filter(project => project !== undefined),
+    return updateRandomProject(
+      this.accessTokenService,
+      this.userService,
+      this.projectService,
+      this.localeService,
+      this.keyService,
+      this.messageService,
+      this.config.accessToken
+    ).pipe(
       map((project: Project) => `project ${project.ownerUsername}/${project.name} updated`),
       catchError((err: HttpErrorResponse) => {
         this.errorHandler.handleError(err);

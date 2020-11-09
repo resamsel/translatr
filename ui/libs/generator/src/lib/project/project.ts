@@ -2,9 +2,9 @@ import {
   AccessToken,
   Key,
   Locale,
-  PagedList,
   Project,
   ProjectCriteria,
+  Scope,
   User
 } from '@dev/translatr-model';
 import {
@@ -18,9 +18,9 @@ import {
 import { pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';
 import { combineLatest, Observable, of } from 'rxjs';
-import { concatMap, filter, map, mapTo, retry } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, mapTo, retry } from 'rxjs/operators';
 import * as _ from 'underscore';
-import { getAccessToken } from '../access-token';
+import { chooseAccessToken } from '../access-token';
 import { keyNames, localeNames } from '../constants';
 import { selectRandomUserAccessToken } from '../user';
 import { getRandomProject } from './get';
@@ -29,93 +29,89 @@ import { getRandomProject } from './get';
  * Randomly choose user, create project for that user with random name.
  */
 export const createRandomProject = (
-  accessTokenService: AccessTokenService,
-  userService: UserService,
+  accessToken: AccessToken,
+  user: User,
   projectService: ProjectService,
   localeService: LocaleService,
   keyService: KeyService,
   messageService: MessageService
-): Observable<{ project: Project; locales: Locale[]; keys: Key[] }> => {
-  return selectRandomUserAccessToken(accessTokenService, userService).pipe(
-    filter(
-      (payload: { user: User; accessToken: AccessToken }) =>
-        !!payload.user && !!payload.user.id && !!payload.accessToken && !!payload.accessToken.key
-    ),
-    concatMap((payload: { user: User; accessToken: AccessToken }) =>
-      projectService
-        .create(
-          {
-            name: randomName.place().replace(' ', ''),
-            description: 'Generated',
-            ownerId: payload.user.id
-          },
-          {
-            params: { access_token: payload.accessToken.key }
-          }
-        )
-        .pipe(map((project: Project) => ({ ...payload, project })))
-    ),
-    retry(3),
-    concatMap((payload: { user: User; project: Project; accessToken: AccessToken }) =>
-      combineLatest(
-        _.sample(localeNames, Math.ceil(Math.random() * localeNames.length))
-          .filter(name => name !== undefined && name !== '')
-          .map((localeName: string) =>
-            localeService.create(
-              {
-                name: localeName,
-                projectId: payload.project.id
-              },
-              { params: { access_token: payload.accessToken.key } }
+): Observable<{ project: Project; locales: Locale[]; keys: Key[] }> =>
+  projectService
+    .create(
+      {
+        name: randomName.place().replace(' ', ''),
+        description: 'Generated',
+        ownerId: user.id
+      },
+      {
+        params: { access_token: accessToken.key }
+      }
+    )
+    .pipe(
+      retry(3),
+      concatMap(project =>
+        combineLatest(
+          _.sample(localeNames, Math.ceil(Math.random() * localeNames.length))
+            .filter(name => name !== undefined && name !== '')
+            .map((localeName: string) =>
+              localeService
+                .create(
+                  {
+                    name: localeName,
+                    projectId: project.id
+                  },
+                  { params: { access_token: accessToken.key } }
+                )
+                .pipe(catchError(() => of(undefined)))
             )
-          )
-      ).pipe(map((locales: Locale[]) => ({ ...payload, locales })))
-    ),
-    concatMap(
-      (payload: { user: User; project: Project; locales: Locale[]; accessToken: AccessToken }) => {
+        ).pipe(map((locales: Locale[]) => ({ project, locales: locales.filter(Boolean) })))
+      ),
+      concatMap(({ project, locales }) => {
         return combineLatest(
           _.sample(keyNames, Math.ceil((Math.random() * keyNames.length) / 10))
             .filter(name => name !== undefined && name !== '')
             .map((keyName: string) =>
-              keyService.create(
-                {
-                  name: keyName,
-                  projectId: payload.project.id
-                },
-                { params: { access_token: payload.accessToken.key } }
-              )
+              keyService
+                .create(
+                  {
+                    name: keyName,
+                    projectId: project.id
+                  },
+                  { params: { access_token: accessToken.key } }
+                )
+                .pipe(catchError(() => of(undefined)))
             )
-        ).pipe(map((keys: Key[]) => ({ ...payload, keys })));
-      }
-    ),
-    concatMap(
-      (payload: {
-        user: User;
-        project: Project;
-        locales: Locale[];
-        keys: Key[];
-        accessToken: AccessToken;
-      }) => {
-        const locale = pickRandomly(payload.locales);
+        ).pipe(map((keys: Key[]) => ({ project, locales, keys: keys.filter(Boolean) })));
+      }),
+      concatMap(({ project, locales, keys }) => {
+        const locale = pickRandomly(locales);
         return combineLatest(
-          payload.keys.map((key: Key) =>
-            messageService.create(
-              {
-                localeId: locale.id,
-                keyId: key.id,
-                value: `${key.name} (${locale.displayName})`
-              },
-              { params: { access_token: payload.accessToken.key } }
-            )
+          keys.map((key: Key) =>
+            messageService
+              .create(
+                {
+                  localeId: locale.id,
+                  keyId: key.id,
+                  value: `${key.name} (${locale.displayName})`
+                },
+                { params: { access_token: accessToken.key } }
+              )
+              .pipe(catchError(() => of(undefined)))
           )
-        ).pipe(mapTo(payload));
-      }
-    )
-  );
-};
+        ).pipe(mapTo({ project, locales, keys }));
+      })
+    );
 
+/**
+ * Always returns a project - creates one if necessary
+ */
 export const selectRandomProject = (
+  accessToken: AccessToken,
+  user: User,
   projectService: ProjectService,
+  localeService: LocaleService,
+  keyService: KeyService,
+  messageService: MessageService,
   criteria: ProjectCriteria = {}
 ): Observable<Project> => {
   return projectService
@@ -123,22 +119,50 @@ export const selectRandomProject = (
       order: 'whenUpdated desc',
       limit: 1,
       offset: Math.floor(Math.random() * 100),
+      access_token: accessToken.key,
       ...criteria
     })
-    .pipe(map(paged => pickRandomly(paged.list)));
+    .pipe(
+      map(paged => pickRandomly(paged.list)),
+      concatMap(project => {
+        if (project === undefined) {
+          return createRandomProject(
+            accessToken,
+            user,
+            projectService,
+            localeService,
+            keyService,
+            messageService
+          ).pipe(map((payload: { project: Project }) => payload.project));
+        }
+        return of(project);
+      })
+    );
 };
 
+/**
+ * Always returns a project - creates one if necessary
+ */
 export const selectRandomProjectAccessToken = (
   accessTokenService: AccessTokenService,
+  userService: UserService,
   projectService: ProjectService,
+  localeService: LocaleService,
+  keyService: KeyService,
+  messageService: MessageService,
   projectCriteria: ProjectCriteria = {}
 ): Observable<{ project: Project; accessToken: AccessToken }> => {
-  return selectRandomProject(projectService, projectCriteria).pipe(
-    filter((project: Project) => project !== undefined),
-    concatMap((project: Project) =>
-      getAccessToken(accessTokenService, project.ownerId).pipe(
-        map(accessToken => ({ accessToken, project }))
-      )
+  return selectRandomUserAccessToken(accessTokenService, userService).pipe(
+    concatMap(({ accessToken, user }) =>
+      selectRandomProject(
+        accessToken,
+        user,
+        projectService,
+        localeService,
+        keyService,
+        messageService,
+        projectCriteria
+      ).pipe(map(project => ({ accessToken, project })))
     )
   );
 };
@@ -149,40 +173,24 @@ export const selectRandomProjectAccessToken = (
 export const updateRandomProject = (
   accessTokenService: AccessTokenService,
   userService: UserService,
-  projectService: ProjectService
+  projectService: ProjectService,
+  localeService: LocaleService,
+  keyService: KeyService,
+  messageService: MessageService,
+  defaultAccessToken: string
 ): Observable<Project> => {
-  return selectRandomUserAccessToken(accessTokenService, userService, {
-    limit: 10
-  }).pipe(
-    filter(
-      (payload: { user: User; accessToken: AccessToken }) =>
-        !!payload.user && !!payload.user.id && !!payload.accessToken && !!payload.accessToken.key
-    ),
-    concatMap((payload: { user: User; accessToken: AccessToken }) =>
-      projectService.find({ owner: payload.user.id, access_token: payload.accessToken.key }).pipe(
-        map((pagedList: PagedList<Project>) => ({
-          user: payload.user,
-          project: pickRandomly(pagedList.list),
-          accessToken: payload.accessToken
-        }))
-      )
-    ),
-    concatMap((payload: { user: User; project: Project; accessToken: AccessToken }) => {
-      if (!!payload.project) {
-        return of(payload);
-      }
-
-      const project: Project = {
-        name: randomName.place().replace(' ', ''),
-        description: 'Generated'
-      };
-      return projectService
-        .create(project, {
-          params: { access_token: payload.accessToken.key }
-        })
-        .pipe(map((p: Project) => ({ ...payload, project: p })));
-    }),
-    concatMap(({ user, project, accessToken }) =>
+  return selectRandomProjectAccessToken(
+    accessTokenService,
+    userService,
+    projectService,
+    localeService,
+    keyService,
+    messageService,
+    {
+      limit: 10
+    }
+  ).pipe(
+    concatMap(({ accessToken, project }) =>
       projectService.update(
         {
           ...project,
@@ -190,7 +198,11 @@ export const updateRandomProject = (
             ? project.description.replace('!', '')
             : `${project.description}!`
         },
-        { params: { access_token: accessToken.key } }
+        {
+          params: {
+            access_token: chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectWrite)
+          }
+        }
       )
     )
   );
