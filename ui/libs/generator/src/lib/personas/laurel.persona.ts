@@ -1,8 +1,16 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
-import { AccessTokenService, errorMessage, KeyService, ProjectService } from '@dev/translatr-sdk';
+import {
+  AccessTokenService,
+  errorMessage,
+  KeyService,
+  LocaleService,
+  MessageService,
+  ProjectService,
+  UserService
+} from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
-import { catchError, filter, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { deleteRandomKey } from '../key';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { WeightedPersona } from '../weighted-persona';
@@ -19,25 +27,33 @@ const info: WeightedPersona = {
 
 export class LaurelPersona extends Persona {
   private readonly accessTokenService: AccessTokenService;
+  private readonly userService: UserService;
   private readonly projectService: ProjectService;
+  private readonly localeService: LocaleService;
   private readonly keyService: KeyService;
+  private readonly messageService: MessageService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
     super(info.name, config, injector);
 
     this.accessTokenService = injector.get(AccessTokenService);
+    this.userService = injector.get(UserService);
     this.projectService = injector.get(ProjectService);
+    this.localeService = injector.get(LocaleService);
     this.keyService = injector.get(KeyService);
+    this.messageService = injector.get(MessageService);
   }
 
   execute(): Observable<string> {
     return deleteRandomKey(
       this.accessTokenService,
+      this.userService,
       this.projectService,
+      this.localeService,
       this.keyService,
+      this.messageService,
       this.config.accessToken
     ).pipe(
-      filter(key => Boolean(key)),
       map(
         key => `key ${key.name} of project ${key.projectOwnerUsername}/${key.projectName} removed`
       ),

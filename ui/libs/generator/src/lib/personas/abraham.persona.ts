@@ -3,11 +3,14 @@ import { Injector } from '@angular/core';
 import {
   AccessTokenService,
   errorMessage,
+  KeyService,
   LocaleService,
-  ProjectService
+  MessageService,
+  ProjectService,
+  UserService
 } from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
-import { catchError, filter, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { createRandomLocale } from '../locale';
 import { WeightedPersona } from '../weighted-persona';
@@ -23,26 +26,34 @@ const info: WeightedPersona = {
 };
 
 export class AbrahamPersona extends Persona {
+  private readonly accessTokenService: AccessTokenService;
+  private readonly userService: UserService;
   private readonly projectService: ProjectService;
   private readonly localeService: LocaleService;
-  private readonly accessTokenService: AccessTokenService;
+  private readonly keyService: KeyService;
+  private readonly messageService: MessageService;
 
   constructor(config: LoadGeneratorConfig, injector: Injector) {
     super(info.name, config, injector);
 
     this.accessTokenService = injector.get(AccessTokenService);
+    this.userService = injector.get(UserService);
     this.projectService = injector.get(ProjectService);
     this.localeService = injector.get(LocaleService);
+    this.keyService = injector.get(KeyService);
+    this.messageService = injector.get(MessageService);
   }
 
   execute(): Observable<string> {
     return createRandomLocale(
       this.accessTokenService,
+      this.userService,
       this.projectService,
       this.localeService,
+      this.keyService,
+      this.messageService,
       this.config.accessToken
     ).pipe(
-      filter(locale => Boolean(locale)),
       map(
         locale =>
           `locale ${locale.name} for project ${locale.projectOwnerUsername}/${locale.projectName} created`

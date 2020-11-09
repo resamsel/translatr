@@ -12,10 +12,9 @@ import {
   UserService
 } from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
-import { catchError, concatMap, filter, map } from 'rxjs/operators';
+import { catchError, concatMap, map } from 'rxjs/operators';
 import { LoadGeneratorConfig } from '../load-generator-config';
-import { selectRandomProject } from '../project';
-import { selectUserAccessToken } from '../user';
+import { selectRandomProjectAccessToken } from '../project';
 import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
@@ -50,75 +49,77 @@ export class DoraPersona extends Persona {
   }
 
   execute(): Observable<string> {
-    return selectRandomProject(this.projectService).pipe(
-      filter(project => Boolean(project)),
-      concatMap(project =>
-        selectUserAccessToken(this.accessTokenService, this.userService, project.ownerId).pipe(
-          concatMap(({ accessToken }) =>
-            this.localeService
-              .find({
-                projectId: project.id,
-                limit: 100,
-                fetch: 'count',
-                access_token: accessToken.key
-              })
-              .pipe(map((paged: PagedList<Locale>) => ({ accessToken, locales: paged.total })))
-          ),
-          concatMap(({ accessToken, locales }) =>
-            this.keyService
-              .find({
-                projectId: project.id,
-                limit: 100,
-                fetch: 'count',
-                access_token: accessToken.key
-              })
-              .pipe(
-                map((paged: PagedList<Key>) => ({
-                  accessToken,
-                  project,
-                  locales,
-                  keys: paged.total
-                }))
-              )
-          ),
-          concatMap(({ accessToken, locales, keys }) =>
-            this.messageService
-              .find({
-                projectId: project.id,
-                limit: 100,
-                fetch: 'count',
-                access_token: accessToken.key
-              })
-              .pipe(
-                map((paged: PagedList<Message>) => ({
-                  accessToken,
-                  project,
-                  locales,
-                  keys,
-                  messages: paged.total
-                }))
-              )
-          ),
-          concatMap(({ accessToken, locales, keys, messages }) =>
-            this.activityService
-              .find({
-                projectId: project.id,
-                limit: 100,
-                fetch: 'count',
-                access_token: accessToken.key
-              })
-              .pipe(
-                map((paged: PagedList<Activity>) => ({
-                  accessToken,
-                  project,
-                  locales,
-                  keys,
-                  messages,
-                  activities: paged.total
-                }))
-              )
+    return selectRandomProjectAccessToken(
+      this.accessTokenService,
+      this.userService,
+      this.projectService,
+      this.localeService,
+      this.keyService,
+      this.messageService
+    ).pipe(
+      concatMap(({ accessToken, project }) =>
+        this.localeService
+          .find({
+            projectId: project.id,
+            limit: 100,
+            fetch: 'count',
+            access_token: accessToken.key
+          })
+          .pipe(map((paged: PagedList<Locale>) => ({ accessToken, project, locales: paged.total })))
+      ),
+      concatMap(({ accessToken, project, locales }) =>
+        this.keyService
+          .find({
+            projectId: project.id,
+            limit: 100,
+            fetch: 'count',
+            access_token: accessToken.key
+          })
+          .pipe(
+            map((paged: PagedList<Key>) => ({
+              accessToken,
+              project,
+              locales,
+              keys: paged.total
+            }))
           )
-        )
+      ),
+      concatMap(({ accessToken, project, locales, keys }) =>
+        this.messageService
+          .find({
+            projectId: project.id,
+            limit: 100,
+            fetch: 'count',
+            access_token: accessToken.key
+          })
+          .pipe(
+            map((paged: PagedList<Message>) => ({
+              accessToken,
+              project,
+              locales,
+              keys,
+              messages: paged.total
+            }))
+          )
+      ),
+      concatMap(({ accessToken, project, locales, keys, messages }) =>
+        this.activityService
+          .find({
+            projectId: project.id,
+            limit: 100,
+            fetch: 'count',
+            access_token: accessToken.key
+          })
+          .pipe(
+            map((paged: PagedList<Activity>) => ({
+              accessToken,
+              project,
+              locales,
+              keys,
+              messages,
+              activities: paged.total
+            }))
+          )
       ),
       map(
         ({ project, locales, keys, messages, activities }) =>
