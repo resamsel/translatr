@@ -46,24 +46,24 @@ export class ReginaPersona extends Persona {
 
   execute(): Observable<string> {
     return selectRandomProjectAccessToken(this.accessTokenService, this.projectService).pipe(
-      filter(({ project, accessToken }) => Boolean(project)),
-      concatMap(({ project, accessToken }) =>
+      filter(({ accessToken, project }) => Boolean(project)),
+      concatMap(({ accessToken, project }) =>
         selectRandomLocaleForProject(
           this.localeService,
           project,
           accessToken,
           this.config.accessToken
-        ).pipe(map(locale => ({ project, accessToken, locale })))
+        ).pipe(map(locale => ({ accessToken, project, locale })))
       ),
-      concatMap(({ project, accessToken, locale }) =>
+      concatMap(({ accessToken, project, locale }) =>
         selectRandomKeyForProject(
           this.keyService,
           project,
           accessToken,
           this.config.accessToken
-        ).pipe(map(key => ({ project, accessToken, locale, key })))
+        ).pipe(map(key => ({ accessToken, project, locale, key })))
       ),
-      concatMap(({ project, accessToken, locale, key }) =>
+      concatMap(({ accessToken, project, locale, key }) =>
         updateMessage(
           this.messageService,
           project,

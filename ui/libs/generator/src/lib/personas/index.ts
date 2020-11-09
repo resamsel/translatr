@@ -27,6 +27,7 @@ export * from './sebastian.persona';
 export * from './stella.persona';
 export * from './theodor.persona';
 export * from './theresa.persona';
+export * from './una.persona';
 export * from './vanessa.persona';
 export * from './wolfgang.persona';
 export * from './zara.persona';

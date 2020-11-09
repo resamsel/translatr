@@ -44,7 +44,7 @@ export class WolfgangPersona extends Persona {
       fetch: 'members'
     }).pipe(
       filter(({ project }) => Boolean(project)),
-      concatMap(({ project, accessToken }) =>
+      concatMap(({ accessToken, project }) =>
         this.messageService
           .find({
             projectId: project.id,
@@ -55,10 +55,10 @@ export class WolfgangPersona extends Persona {
               Scope.MessageRead
             )
           })
-          .pipe(map(paged => ({ project, accessToken, message: pickRandomly(paged.list) })))
+          .pipe(map(paged => ({ accessToken, project, message: pickRandomly(paged.list) })))
       ),
       filter(({ message }) => Boolean(message)),
-      concatMap(({ project, accessToken, message }) =>
+      concatMap(({ accessToken, project, message }) =>
         this.messageService
           .update(
             {

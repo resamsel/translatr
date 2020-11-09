@@ -39,8 +39,8 @@ export class SandraPersona extends Persona {
 
   execute(): Observable<string> {
     return selectRandomProjectAccessToken(this.accessTokenService, this.projectService).pipe(
-      filter(({ project, accessToken }) => Boolean(project)),
-      concatMap(({ project, accessToken }) =>
+      filter(({ accessToken, project }) => Boolean(project)),
+      concatMap(({ accessToken, project }) =>
         this.localeService
           .find({
             projectId: project.id,
@@ -60,7 +60,7 @@ export class SandraPersona extends Persona {
           )
       ),
       map(
-        ({ project, accessToken, locales }) =>
+        ({ accessToken, project, locales }) =>
           `${locales.length} languages of project ${project.ownerUsername}/${project.name} viewed`
       ),
       catchError((err: HttpErrorResponse) => of(errorMessage(err)))

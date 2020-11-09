@@ -34,8 +34,8 @@ export class FerdinandPersona extends Persona {
 
   execute(): Observable<string> {
     return selectRandomProjectAccessToken(this.accessTokenService, this.projectService).pipe(
-      filter(({ project, accessToken }) => Boolean(project)),
-      concatMap(({ project, accessToken }) =>
+      filter(({ accessToken, project }) => Boolean(project)),
+      concatMap(({ accessToken, project }) =>
         this.keyService
           .find({
             projectId: project.id,
@@ -55,7 +55,7 @@ export class FerdinandPersona extends Persona {
           )
       ),
       map(
-        ({ project, accessToken, keys }) =>
+        ({ accessToken, project, keys }) =>
           `${keys.length} keys of project ${project.ownerUsername}/${project.name} viewed`
       ),
       catchError((err: HttpErrorResponse) => of(errorMessage(err)))

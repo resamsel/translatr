@@ -44,10 +44,10 @@ export class IsabellaPersona extends Persona {
   execute(): Observable<string> {
     return selectRandomProjectAccessToken(this.accessTokenService, this.projectService).pipe(
       filter(({ project }) => Boolean(project)),
-      concatMap(({ project, accessToken }) =>
-        selectRandomUser(this.userService).pipe(map(user => ({ project, accessToken, user })))
+      concatMap(({ accessToken, project }) =>
+        selectRandomUser(this.userService).pipe(map(user => ({ accessToken, project, user })))
       ),
-      concatMap(({ project, accessToken, user }) =>
+      concatMap(({ accessToken, project, user }) =>
         this.memberService
           .create(
             {

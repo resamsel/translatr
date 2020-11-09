@@ -104,6 +104,41 @@ export const selectRandomLocaleForProject = (
       })
     );
 
+export const selectLocaleForProject = (
+  localeName: string,
+  localeService: LocaleService,
+  project: Project,
+  accessToken: AccessToken,
+  defaultAccessToken: string
+): Observable<Locale> =>
+  localeService
+    .find({
+      projectId: project.id,
+      access_token: chooseAccessToken(
+        accessToken,
+        defaultAccessToken,
+        Scope.ProjectRead,
+        Scope.LocaleRead
+      ),
+      limit: 200
+    })
+    .pipe(
+      map(paged => paged.list.find(locale => locale.name === localeName)),
+      concatMap(locale => {
+        if (Boolean(locale)) {
+          return of(locale);
+        }
+
+        // Create a locale if none exists
+        return createRandomLocaleForProject(
+          localeService,
+          project,
+          accessToken,
+          defaultAccessToken
+        );
+      })
+    );
+
 export const deleteRandomLocale = (
   accessTokenService: AccessTokenService,
   projectService: ProjectService,

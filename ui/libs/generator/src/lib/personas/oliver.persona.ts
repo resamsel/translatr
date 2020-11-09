@@ -42,19 +42,19 @@ export class OliverPersona extends Persona {
       fetch: 'members'
     }).pipe(
       filter(({ project }) => Boolean(project)),
-      map(({ project, accessToken }) => ({
+      map(({ accessToken, project }) => ({
         project,
         accessToken,
         members: project.members.filter(member => member.role !== MemberRole.Owner)
       })),
       filter(({ project, members }) => members.length > 0),
-      map(({ project, accessToken, members }) => ({
+      map(({ accessToken, project, members }) => ({
         project,
         accessToken,
         members,
         member: pickRandomly(members)
       })),
-      concatMap(({ project, accessToken, members, member }) =>
+      concatMap(({ accessToken, project, members, member }) =>
         this.memberService
           .update(
             {

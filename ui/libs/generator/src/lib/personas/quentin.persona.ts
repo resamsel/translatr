@@ -48,16 +48,16 @@ export class QuentinPersona extends Persona {
 
   execute(): Observable<string> {
     return selectRandomProjectAccessToken(this.accessTokenService, this.projectService).pipe(
-      filter(({ project, accessToken }) => Boolean(project)),
-      concatMap(({ project, accessToken }) =>
+      filter(({ accessToken, project }) => Boolean(project)),
+      concatMap(({ accessToken, project }) =>
         selectRandomLocaleForProject(
           this.localeService,
           project,
           accessToken,
           this.config.accessToken
-        ).pipe(map(locale => ({ project, accessToken, locale })))
+        ).pipe(map(locale => ({ accessToken, project, locale })))
       ),
-      concatMap(({ project, accessToken, locale }) =>
+      concatMap(({ accessToken, project, locale }) =>
         this.keyService
           .find({
             projectId: project.id,
@@ -70,9 +70,9 @@ export class QuentinPersona extends Persona {
               Scope.KeyRead
             )
           })
-          .pipe(map(paged => ({ project, accessToken, locale, keys: paged.list })))
+          .pipe(map(paged => ({ accessToken, project, locale, keys: paged.list })))
       ),
-      concatMap(({ project, accessToken, locale, keys }) =>
+      concatMap(({ accessToken, project, locale, keys }) =>
         this.messageService
           .find({
             projectId: project.id,
@@ -85,9 +85,9 @@ export class QuentinPersona extends Persona {
               Scope.MessageRead
             )
           })
-          .pipe(map(paged => ({ project, accessToken, locale, keys, messages: paged.list })))
+          .pipe(map(paged => ({ accessToken, project, locale, keys, messages: paged.list })))
       ),
-      concatMap(({ project, accessToken, locale, keys, messages }) => {
+      concatMap(({ accessToken, project, locale, keys, messages }) => {
         const existingKeyIds = messages.map(message => message.keyId);
         return combineLatest(
           // Only create message for missing translations
