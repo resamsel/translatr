@@ -163,11 +163,6 @@ const release = async (
   console.log(`These steps are missing:`);
   console.log(`[ ] push changes: git push`);
   console.log(`[ ] wait for CI/CD build to finish successfully`);
-  console.log(`[ ] create image: bin/activator docker:publish`);
-  console.log(
-    `[ ] tag image: docker tag ${dockerRepository}:${version} ${dockerRepository}:latest`
-  );
-  console.log(`[ ] push image: docker push ${dockerRepository}:latest`);
   console.log(`[ ] create release on Github`);
   return version;
 };
