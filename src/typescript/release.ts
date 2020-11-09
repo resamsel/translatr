@@ -2,6 +2,9 @@ import { promises } from "fs";
 import { inc, ReleaseType } from "semver";
 import simpleGit from "simple-git";
 
+const mainBranch = "main";
+const developBranch = "develop";
+
 const toTag = (version: string): string => `v${version}`;
 
 const updateJson = (filename: string, version: string): Promise<string> => {
@@ -160,17 +163,17 @@ const release = async (
   await gitCommit(version);
   console.log(`✔️ Changes were committed`);
 
-  await gitRebase(version, "master");
-  console.log(`✔️ Branch develop was rebased onto master`);
+  await gitRebase(version, mainBranch);
+  console.log(`✔️ Branch ${developBranch} was rebased onto ${mainBranch}`);
 
-  await gitMerge(version, "master", "develop");
-  console.log(`✔️ Master was fast forwarded to develop`);
+  await gitMerge(version, mainBranch, developBranch);
+  console.log(`✔️ ${mainBranch} was fast forwarded to ${developBranch}`);
 
   await gitTag(version);
   console.log(`✔️ Commit was tagged with ${toTag(version)}`);
 
-  await gitCheckout(version, "develop");
-  console.log(`✔️ Switched back to branch develop`);
+  await gitCheckout(version, developBranch);
+  console.log(`✔️ Switched back to branch ${developBranch}`);
 
   console.log();
   console.log(`🎉 Release ${version} was created successfully 🎉`);
@@ -178,8 +181,6 @@ const release = async (
 
   console.log(`These steps are missing:`);
   console.log(`[ ] push changes: git push`);
-  console.log(`[ ] wait for CI/CD build to finish successfully`);
-  console.log(`[ ] create release on Github`);
   return version;
 };
 
