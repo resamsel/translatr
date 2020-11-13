@@ -244,13 +244,16 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
     messageWordCountActor.tell(wordCount.values(), null);
 
     // Update model
-    noWordCountMessages.stream().filter(m -> m.id != null).forEach(m -> m.wordCount = wordCount
-            .getOrDefault(m.id, new WordCountProtocol.ChangeMessageWordCount(null, null, null, null, 0, 0, request)).wordCount);
+    noWordCountMessages.stream()
+            .filter(m -> m.id != null)
+            .forEach(m -> m.wordCount = wordCount.getOrDefault(m.id, createWordCount(request)).wordCount);
 
-    try {
-      save(noWordCountMessages, request);
-    } catch (Exception e) {
-      LOGGER.error("Error while persisting word count", e);
+    if (noWordCountMessages.size() > 0) {
+      try {
+        save(noWordCountMessages, request);
+      } catch (Exception e) {
+        LOGGER.error("Error while persisting word count", e);
+      }
     }
   }
 
@@ -317,5 +320,9 @@ public class MessageServiceImpl extends AbstractModelService<Message, UUID, Mess
             messageMapper.toDto(previous, null),
             messageMapper.toDto(message, null)
     );
+  }
+
+  private WordCountProtocol.ChangeMessageWordCount createWordCount(Http.Request request) {
+    return new WordCountProtocol.ChangeMessageWordCount(null, null, null, null, 0, 0, request);
   }
 }

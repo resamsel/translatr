@@ -67,8 +67,10 @@
     "i18n:find": "transloco-keys-manager find",
     "i18n:pull": "npm run i18n:pull:ui && npm run i18n:pull:admin",
     "i18n:pull:ui": "cd apps/translatr && translatr pull",
-    "i18n:push:ui": "cd apps/translatr && translatr push",
     "i18n:pull:admin": "cd apps/translatr-admin && translatr pull",
+    "i18n:push": "npm run i18n:push:ui && npm run i18n:push:admin",
+    "i18n:push:ui": "cd apps/translatr && translatr push",
+    "i18n:push:admin": "cd apps/translatr-admin && translatr push",
     "snyk-protect": "snyk protect"
   },
   "private": true,

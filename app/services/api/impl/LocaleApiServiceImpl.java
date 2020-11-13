@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.data.FormFactory;
 import play.inject.Injector;
+import play.libs.Files;
 import play.mvc.Http;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
@@ -32,6 +33,7 @@ import javax.validation.ValidationException;
 import javax.validation.Validator;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -93,10 +95,10 @@ public class LocaleApiServiceImpl extends
     Locale locale = ofNullable(service.byId(GetCriteria.from(localeId, request)))
             .orElseThrow(() -> new NotFoundException(dto.Locale.class.getSimpleName(), localeId));
 
-    MultipartFormData<File> body = ofNullable(request.body().<File>asMultipartFormData())
+    MultipartFormData<Files.TemporaryFile> body = ofNullable(request.body().<Files.TemporaryFile>asMultipartFormData())
             .orElseThrow(() -> new IllegalArgumentException("import.error.multipartMissing"));
 
-    FilePart<File> messages = ofNullable(body.getFile("messages"))
+    FilePart<Files.TemporaryFile> messages = ofNullable(body.getFile("messages"))
             .orElseThrow(() -> new IllegalArgumentException("Part 'messages' missing"));
 
     ImportLocaleForm form = injector.instanceOf(FormFactory.class)
@@ -111,9 +113,15 @@ public class LocaleApiServiceImpl extends
             .orElseThrow(() -> new IllegalArgumentException("File type " + form.getFileType() + " not supported yet"));
 
     try {
-      importer.apply(messages.getRef(), locale, request);
+      File tmpFile = File.createTempFile("translatr", "upload");
+      messages.getRef().copyTo(tmpFile, true);
+      importer.apply(tmpFile, locale, request);
+      //noinspection ResultOfMethodCallIgnored
+      tmpFile.delete();
+    } catch (IOException e) {
+      throw new RuntimeException("Error while creating temp file", e);
     } catch (Exception e) {
-      LOGGER.error("Error while importing messages", e);
+      throw new RuntimeException("Error while importing messages", e);
     }
 
     LOGGER.debug("End of import");
