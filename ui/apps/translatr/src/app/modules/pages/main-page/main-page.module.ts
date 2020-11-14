@@ -14,8 +14,10 @@ import {
   FooterModule,
   NavbarModule
 } from '@dev/translatr-components';
+import { SvgIconsModule } from '@ngneat/svg-icon';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AppFacade } from '../../../+state/app.facade';
+import { appEducation, appPulse, appThumbsUp, appUser } from '../../../../assets';
 import { MainPageRoutingModule } from './main-page-routing.module';
 import { MainPageComponent } from './main-page.component';
 
@@ -36,7 +38,8 @@ import { MainPageComponent } from './main-page.component';
     FooterModule,
     ActivityGraphModule,
     TranslocoModule,
-    FeatureFlagModule
+    FeatureFlagModule,
+    SvgIconsModule.forChild([appPulse, appUser, appThumbsUp, appEducation])
   ]
 })
 export class MainPageModule {}

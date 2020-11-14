@@ -7,10 +7,60 @@
 }
 
 header.header {
-  background-image: url(assets/headers/hexagon.svg);
-  background-size: cover;
-  height: 360px;
-  justify-content: flex-end;
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 480px;
+    width: 100%;
+    background-image: url(assets/headers/hexagon-large.svg);
+    background-position: top center;
+  }
+
+  background: linear-gradient(300deg, rgba(67, 160, 71, 1) 0%, rgba(67, 160, 71, .67) 100%);
+
+  height: 480px;
+
+  color: #fff;
+
+  .container {
+    margin: 64px 0 16px 0;
+
+    .col {
+      align-items: center;
+    }
+  }
+
+  h1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @include medium {
+    height: 720px;
+    justify-content: flex-end;
+
+    &::before {
+      height: 720px;
+      background-size: cover;
+      background-position: bottom;
+    }
+
+    .container {
+      padding: 0;
+      margin: 0 0 192px 52%;
+      width: 47%;
+
+      .col {
+        align-items: flex-start;
+      }
+
+      h1, h4 {
+        text-align: left;
+      }
+    }
+  }
 }
 
 .dashboard-card {
@@ -31,21 +81,21 @@ header.header {
   text-align: center;
 }
 
-.section.green {
-  background-color: #43a047;
+.section {
+  margin-bottom: 48px;
 
-  .col {
-    align-items: center;
+  &.green {
+    background-color: #43a047;
+
+    .col {
+      align-items: center;
+    }
+
+    .main-header {
+      color: #fff;
+      font-weight: 300;
+    }
   }
-
-  .main-header {
-    color: #fff;
-    font-weight: 300;
-  }
-}
-
-.light {
-  font-weight: 300;
 }
 
 .white-text {
@@ -56,8 +106,14 @@ header.header {
   color: #c8e6c9 !important;
 }
 
+.white {
+  background-color: #fff;
+}
+
 .light,
-.page-footer .footer-copyright {
+.page-footer .footer-copyright,
+.paragraph,
+h4 {
   font-weight: 300;
 }
 
@@ -87,11 +143,15 @@ header.header {
 }
 
 .promo {
+  svg-icon,
   .material-icons {
     margin: 40px 0;
-    color: #43a047;
     font-size: 7rem;
-    display: block;
+  }
+
+  .promo-caption {
+    font-size: 150%;
+    margin-block-end: 16px;
   }
 
   @include medium {
@@ -128,14 +188,46 @@ header.header {
   }
 
   h4 {
-    font-size: 2.28rem;
+    font-size: 150%;
     line-height: 110%;
-    margin: 0.6rem 0 1.5rem 0;
+    margin-block-end: 16px;
   }
 
   h5 {
     font-size: 1.64rem;
     line-height: 110%;
     margin: 0.82rem 0 0.656rem 0;
+  }
+}
+
+.source {
+  display: flex;
+  flex-flow: row wrap;
+
+  > * {
+    flex: 1 100%;
+  }
+
+  .source-image {
+    display: block;
+    height: 14rem;
+    margin-bottom: 16px;
+    align-self: center;
+  }
+
+  .paragraph {
+    margin-block-end: 32px;
+  }
+
+  @include medium {
+    .source-image {
+      flex: 14rem 0;
+      margin-right: 16px;
+    }
+
+    .content {
+      margin-left: 16px;
+      flex: 1 0;
+    }
   }
 }

@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import { BaseType, Selection } from 'd3';
 import moment from 'moment';
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
 const dayOfWeek = (d: Date) => (d.getDay() + 6) % 7;
 const numberOfColors = 4;
@@ -148,6 +148,12 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
     translocoService.langChanges$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(language => this.updateLanguage(language));
+    translocoService.events$
+      .pipe(
+        filter(event => event.type === 'translationLoadSuccess'),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => this.drawGraph());
   }
 
   private updateLanguage(language: string) {
@@ -181,10 +187,6 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
     const today = d3.timeDay.ceil(new Date());
     const aYearAgo = d3.timeYear.offset(d3.timeDay.floor(today), -1);
     const weeks = d3.timeWeek.count(aYearAgo, today);
-    const data = this.data.filter(
-      (aggregate: Aggregate) => aggregate.date.getTime() > aYearAgo.getTime()
-    );
-
     const cellSize = this.cellInnerSize + this.cellPadding * 2;
     const width = this.offsetLeft + (weeks + 2) * cellSize + this.offsetRight;
     const height = cellSize * 7 + this.offsetTop + this.offsetBottom;
@@ -230,6 +232,9 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
         .text(this.dateFormat(date));
     });
 
+    const data = this.data.filter(
+      (aggregate: Aggregate) => aggregate.date.getTime() > aYearAgo.getTime()
+    );
     const maxValue = data.reduce((max, curr) => Math.max(max, curr.value), 0);
 
     data.forEach(aggregate => {

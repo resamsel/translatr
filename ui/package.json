@@ -71,7 +71,8 @@
     "i18n:push": "npm run i18n:push:ui && npm run i18n:push:admin",
     "i18n:push:ui": "cd apps/translatr && translatr push",
     "i18n:push:admin": "cd apps/translatr-admin && translatr push",
-    "snyk-protect": "snyk protect"
+    "snyk-protect": "snyk protect",
+    "generate-icons": "svg-to-ts"
   },
   "private": true,
   "dependencies": {
@@ -94,6 +95,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@momothepug/tsmodule-alias": "^1.0.0",
     "@ngneat/hotkeys": "1.0.1",
+    "@ngneat/svg-icon": "2.0.0",
     "@ngneat/transloco": "^2.18.2",
     "@ngneat/transloco-locale": "^1.3.1",
     "@ngneat/transloco-messageformat": "1.2.1",
@@ -174,7 +176,8 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "2.3.0",
     "typescript": "3.8.3",
-    "webpack-bundle-analyzer": "3.7.0"
+    "webpack-bundle-analyzer": "3.7.0",
+    "svg-to-ts": "^5.0.0"
   },
   "files": [
     "/dist/lets-generate"
@@ -196,5 +199,22 @@
       "transloco-validator"
     ]
   },
-  "snyk": true
+  "snyk": true,
+  "svg-to-ts": {
+    "generateType": "false",
+    "delimiter": "KEBAB",
+    "conversionType": "files",
+    "iconsFolderName": "svg",
+    "prefix": "app",
+    "srcFiles": ["./assets/svg/*.svg"],
+    "outputDirectory": "./apps/translatr/src/assets",
+    "svgoConfig": {
+      "plugins": [
+        {
+          "removeDimensions": true,
+          "cleanupAttrs": true
+        }
+      ]
+    }
+  }
 }

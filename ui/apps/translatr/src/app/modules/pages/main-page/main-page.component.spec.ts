@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { SvgIconsModule } from '@ngneat/svg-icon';
 
 import { MainPageComponent } from './main-page.component';
 import {
@@ -39,6 +40,7 @@ describe('MainPageComponent', () => {
         RouterTestingModule,
         LayoutModule,
         TranslocoTestingModule,
+        SvgIconsModule.forRoot({ icons: [] }),
 
         MatButtonModule,
         MatCardModule,

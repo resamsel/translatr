@@ -108,6 +108,7 @@
             ],
             "exclude": [
               "**/node_modules/**",
+              "**/svg/*.ts",
               "!apps/translatr/**"
             ]
           }

@@ -12,6 +12,7 @@ import { FeatureFlagFacade } from '@dev/translatr-model';
 import { NotificationService, TranslatrSdkModule } from '@dev/translatr-sdk';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HotkeysModule } from '@ngneat/hotkeys';
+import { SvgIconsModule } from '@ngneat/svg-icon';
 import { EffectsModule } from '@ngrx/effects';
 import { routerReducer, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
@@ -64,7 +65,10 @@ import { MatNotificationService } from './services/mat-notification-service';
     HttpClientModule,
     TranslocoRootModule,
     HotkeysModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    SvgIconsModule.forRoot({
+      icons: []
+    })
   ],
   providers: [
     AppFacade,

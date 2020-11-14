@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Aggregate, Feature, PagedList, User, UserRole } from '@dev/translatr-model';
 import { ActivityService } from '@dev/translatr-sdk';
-import { pluck } from 'rxjs/operators';
+import { pluck, startWith } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
 import { environment } from '../../../../environments/environment';
 
@@ -17,7 +17,7 @@ export class MainPageComponent {
   readonly endpointUrl = environment.endpointUrl;
   readonly aggregatedActivity$ = this.activityService
     .aggregated({})
-    .pipe(pluck<PagedList<Aggregate>, Aggregate[]>('list'));
+    .pipe(startWith({ list: [] }), pluck<PagedList<Aggregate>, Aggregate[]>('list'));
 
   readonly Feature = Feature;
 

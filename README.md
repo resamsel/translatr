@@ -1,4 +1,9 @@
-# Translatr [![Build Status](https://travis-ci.org/resamsel/translatr.svg?branch=master)](https://travis-ci.org/resamsel/translatr) [![Coverage Status](https://coveralls.io/repos/github/resamsel/translatr/badge.svg?branch=master)](https://coveralls.io/github/resamsel/translatr?branch=master) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
+Translatr
+=========
+
+[![Build Status](https://travis-ci.org/resamsel/translatr.svg?branch=main)](https://travis-ci.org/resamsel/translatr)
+[![Coverage Status](https://coveralls.io/repos/github/resamsel/translatr/badge.svg?branch=main)](https://coveralls.io/github/resamsel/translatr?branch=main)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
 
 A modern and intuitive i18n tool. Translatr simplifies i18n for developers and translators. It uses
 the [Play Framework](http://www.playframework.com) to translate other projects. Importing
@@ -40,7 +45,7 @@ can be used in build scripts to automatically retrieve the latest translations.
 Paste this at a terminal prompt:
 
 ```
-curl -fsSL https://raw.githubusercontent.com/resamsel/translatr/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/resamsel/translatr/main/install.sh | bash
 ```
 
 ## Usage
@@ -78,3 +83,7 @@ This will overwrite any existing files locally. All known locales will be downlo
 
 Information about contributing to this project can be found on the
 [CONTRIBUTING](CONTRIBUTING.md) page.
+
+## Resources
+
+SVG Icons from: https://www.svgrepo.com/collection/soft-colored-ui-icons/
