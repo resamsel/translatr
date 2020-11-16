@@ -18,10 +18,11 @@ header.header {
   }
 
   background: linear-gradient(300deg, rgba(67, 160, 71, 1) 0%, rgba(67, 160, 71, 0.67) 100%);
+  color: #fff;
 
   height: 480px;
-
-  color: #fff;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
 
   .container {
     margin: 64px 0 16px 0;
