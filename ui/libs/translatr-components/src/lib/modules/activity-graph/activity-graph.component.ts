@@ -220,7 +220,7 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
       left: this.offsetLeft
     };
 
-    if (dataUpdated) {
+    if (dataUpdated && this.data !== undefined) {
       this.filteredData = this.data.filter(
         (aggregate: Aggregate) => aggregate.date.getTime() > this.start.getTime()
       );
@@ -278,6 +278,10 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
   }
 
   get dataRects(): DataRect[] {
+    if (this.filteredData === undefined) {
+      return [];
+    }
+
     return this.filteredData.map(day => {
       const [x, y] = cellPosition(day.date, this.width, this.cellSize, this.offset);
 

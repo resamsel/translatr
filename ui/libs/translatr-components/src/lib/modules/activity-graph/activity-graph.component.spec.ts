@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ActivityGraphComponent, ShortNumberModule } from '@dev/translatr-components';
 import { TranslocoTestingModule } from '@ngneat/transloco';
@@ -10,7 +11,7 @@ describe('ActivityGraphComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ActivityGraphComponent],
-      imports: [TranslocoTestingModule, ShortNumberModule]
+      imports: [TranslocoTestingModule, ShortNumberModule, MatTooltipModule]
     }).compileComponents();
   }));
 
