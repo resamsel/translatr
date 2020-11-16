@@ -8,35 +8,39 @@ const powers = [
   { key: 'k', value: 1000 }
 ];
 
+export const shortenNumber = (value: number): string => {
+  if (value === 0) {
+    return '0';
+  }
+
+  const fractionSize = 1;
+  const rounder = Math.pow(10, fractionSize);
+  const prefix = value < 0 ? '-' : '';
+
+  let abs = Math.abs(value);
+  let key = '';
+  for (const power of powers) {
+    let reduced = abs / power.value;
+    reduced = Math.round(reduced * rounder) / rounder;
+    if (reduced >= 1) {
+      abs = reduced;
+      key = power.key;
+      break;
+    }
+  }
+
+  return prefix + abs + key;
+};
+
 @Pipe({
   name: 'shortNumber'
 })
 export class ShortNumberPipe implements PipeTransform {
   transform(value: any, ...args: any[]): any {
-    if (value === null) {
+    if (value === null || typeof value !== 'number') {
       return null;
     }
 
-    if (value === 0) {
-      return '0';
-    }
-
-    const fractionSize = 1;
-    const rounder = Math.pow(10, fractionSize);
-    const prefix = value < 0 ? '-' : '';
-
-    let abs = Math.abs(value);
-    let key = '';
-    for (const power of powers) {
-      let reduced = abs / power.value;
-      reduced = Math.round(reduced * rounder) / rounder;
-      if (reduced >= 1) {
-        abs = reduced;
-        key = power.key;
-        break;
-      }
-    }
-
-    return prefix + abs + key;
+    return shortenNumber(value);
   }
 }

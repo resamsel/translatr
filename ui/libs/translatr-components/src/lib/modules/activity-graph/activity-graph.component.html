@@ -1,1 +1,64 @@
-<svg></svg>
+<svg preserveAspectRatio="xMinYMin meet" [attr.viewBox]="viewBox" *transloco="let t">
+  <g transform="translate(0,0)">
+    <!-- months -->
+    <text
+      *ngFor="let month of monthTexts; trackBy: trackById"
+      [attr.x]="month.x"
+      [attr.y]="month.y"
+      class="month"
+    >{{month.text}}</text>
+
+    <!-- weekdays -->
+    <text
+      *ngFor="let weekday of weekdayTexts; trackBy: trackById"
+      [attr.x]="weekday.x"
+      [attr.y]="weekday.y"
+      class="weekday"
+      text-anchor="end"
+    >{{weekday.text}}</text>
+
+    <!-- days -->
+    <rect
+      *ngFor="let day of dayRects; trackBy: trackById"
+      [attr.x]="day.x"
+      [attr.y]="day.y"
+      [attr.width]="day.width"
+      [attr.height]="day.height"
+      [matTooltip]="day.title"
+      class="day"
+    ></rect>
+
+    <!-- data -->
+    <rect
+      *ngFor="let day of dataRects; trackBy: trackById"
+      [attr.x]="day.x"
+      [attr.y]="day.y"
+      [attr.width]="day.width"
+      [attr.height]="day.height"
+      matTooltip="{{day.title}}: {{day.value | shortNumber}}"
+      class="day q{{color(day.value / maxValue)}}"
+    ></rect>
+
+    <!-- legend -->
+    <rect
+      *ngFor="let day of legendRects; trackBy: trackById"
+      [attr.x]="day.x"
+      [attr.y]="day.y"
+      [attr.width]="day.width"
+      [attr.height]="day.height"
+      [matTooltip]="day.title"
+      class="day {{day.clazz || ''}}"
+    ></rect>
+    <text
+      [attr.x]="width - (3 + numberOfColors + 1) * cellSize - 8 - offset.right"
+      [attr.y]="height - 4"
+      class="weekday"
+      text-anchor="end"
+    >{{t('contributions.legend.less')}}</text>
+    <text
+      [attr.x]="width - 3 * cellSize + 4 - offset.right"
+      [attr.y]="height - 4"
+      class="weekday"
+    >{{t('contributions.legend.more')}}</text>
+  </g>
+</svg>
