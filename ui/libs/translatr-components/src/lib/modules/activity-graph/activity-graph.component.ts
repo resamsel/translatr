@@ -121,17 +121,17 @@ const locales = {
 
 const breakpoint = '(min-width: 600px)';
 
-interface ID {
+interface Id {
   id: string;
 }
 
-interface SvgText extends ID {
+interface SvgText extends Id {
   x: number;
   y: number;
   text: string;
 }
 
-interface SvgRect extends ID {
+interface SvgRect extends Id {
   x: number;
   y: number;
   width: number;
@@ -169,7 +169,7 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
   viewBox: string = [0, 0, this.width, this.height].join(' ');
   offset: { top: number; left: number; bottom: number; right: number };
   filteredData: Aggregate[];
-  maxValue: number;
+  maxValue = 1;
 
   private monthFormat: (date: Date) => string;
   private dateFormat: (date: Date) => string;
@@ -194,7 +194,7 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
       .subscribe(({ matches }) => this.updateBounds(matches, false));
   }
 
-  trackById(index: number, item: ID): string {
+  trackById(index: number, item: Id): string {
     return item.id;
   }
 
@@ -308,7 +308,7 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
           y,
           width: this.cellInnerSize,
           height: this.cellInnerSize,
-          title: '',
+          title: `≥ ${shortenNumber(((i - 1) * this.maxValue) / numberOfColors)}`,
           clazz
         };
       });
