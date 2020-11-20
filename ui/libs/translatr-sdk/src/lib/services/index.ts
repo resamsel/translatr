@@ -12,4 +12,5 @@ export * from './member.service';
 export * from './message.service';
 export * from './notification.service';
 export * from './project.service';
+export * from './statistic.service';
 export * from './user.service';

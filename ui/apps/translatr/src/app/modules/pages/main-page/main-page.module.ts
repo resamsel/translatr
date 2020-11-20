@@ -12,12 +12,22 @@ import {
   ActivityGraphModule,
   FeatureFlagModule,
   FooterModule,
-  NavbarModule
+  MetricModule,
+  NavbarModule,
+  ShortNumberModule
 } from '@dev/translatr-components';
 import { SvgIconsModule } from '@ngneat/svg-icon';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AppFacade } from '../../../+state/app.facade';
-import { appEducation, appPulse, appThumbsUp, appUser } from '../../../../assets';
+import {
+  appChat,
+  appDocument,
+  appEducation,
+  appPulse,
+  appThumbsUp,
+  appUser,
+  appWrite
+} from '../../../../assets';
 import { MainPageRoutingModule } from './main-page-routing.module';
 import { MainPageComponent } from './main-page.component';
 
@@ -39,7 +49,17 @@ import { MainPageComponent } from './main-page.component';
     ActivityGraphModule,
     TranslocoModule,
     FeatureFlagModule,
-    SvgIconsModule.forChild([appPulse, appUser, appThumbsUp, appEducation])
+    MetricModule,
+    ShortNumberModule,
+    SvgIconsModule.forChild([
+      appPulse,
+      appUser,
+      appThumbsUp,
+      appEducation,
+      appChat,
+      appWrite,
+      appDocument
+    ])
   ]
 })
 export class MainPageModule {}

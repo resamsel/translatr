@@ -6,21 +6,62 @@
   display: block;
 }
 
-header.header {
-  &::before {
-    content: '';
-    display: block;
-    position: absolute;
-    height: 480px;
-    width: 100%;
-    background-image: url(assets/headers/hexagon-large.svg);
-    background-position: top center;
+:host ::ng-deep {
+  font-size: 120%;
+  line-height: 120%;
+
+  .header {
+    color: #43a047;
+    font-weight: 300;
   }
+
+  h1 {
+    font-size: 4.2rem;
+    line-height: 110%;
+    margin: 2.1rem 0 0.68rem 0;
+
+    .material-icons {
+      float: left;
+      line-height: 110%;
+      font-size: 4.2rem;
+      margin-right: 3px;
+    }
+  }
+
+  h3 {
+    font-size: 2.92rem;
+    line-height: 110%;
+    margin: 1.46rem 0 2rem 0;
+  }
+
+  h4 {
+    font-size: 150%;
+    line-height: 110%;
+    margin-block-end: 16px;
+  }
+
+  h5 {
+    font-size: 1.64rem;
+    line-height: 110%;
+    margin: 0.82rem 0 0.656rem 0;
+  }
+}
+
+header.header {
+  //&::before {
+  //  content: '';
+  //  display: block;
+  //  position: absolute;
+  //  height: 480px;
+  //  width: 100%;
+  //  background-image: url(assets/headers/hexagon-large.svg);
+  //  background-position: top center;
+  //}
 
   background: linear-gradient(300deg, rgba(67, 160, 71, 1) 0%, rgba(67, 160, 71, 0.67) 100%);
   color: #fff;
 
-  height: 480px;
+  height: auto;
   margin-inline-start: 0;
   margin-inline-end: 0;
 
@@ -38,23 +79,38 @@ header.header {
     text-overflow: ellipsis;
   }
 
+  .image img {
+    width: 100%;
+    margin-block-start: 16px;
+  }
+
   @include medium {
-    height: 720px;
     justify-content: flex-end;
+    align-items: center;
 
     &::before {
-      height: 720px;
       background-size: cover;
       background-position: bottom;
     }
 
-    .container {
-      padding: 0;
-      margin: 0 0 192px 52%;
-      width: 47%;
+    .main {
+      order: 2;
+      margin-inline-start: 16px;
+    }
 
+    .image {
+      margin-inline-end: 16px;
+    }
+
+    .container {
       .col {
         align-items: flex-start;
+        justify-content: center;
+        flex: 1 1 auto;
+
+        &.image {
+          flex: 2 1 auto;
+        }
       }
 
       h1,
@@ -88,6 +144,20 @@ header.header {
   margin-inline-end: 8px;
   margin-block-end: 48px;
 
+  > p {
+    max-width: 600px;
+
+    @include medium {
+      text-align: center;
+      margin: 0 auto;
+    }
+  }
+
+  h3 + p {
+    margin-block-start: -16px;
+    margin-block-end: 40px;
+  }
+
   &.green {
     background-color: #43a047;
 
@@ -115,9 +185,12 @@ header.header {
 }
 
 .light,
-.page-footer .footer-copyright,
-.paragraph,
-h4 {
+p {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+h1,
+.page-footer .footer-copyright {
   font-weight: 300;
 }
 
@@ -149,8 +222,8 @@ h4 {
 .promo {
   svg-icon,
   .material-icons {
-    margin: 40px 0;
-    font-size: 7rem;
+    margin-block-end: 2rem;
+    font-size: 4rem;
   }
 
   .promo-caption {
@@ -163,48 +236,60 @@ h4 {
   }
 }
 
-:host ::ng-deep {
-  font-size: 120%;
-  line-height: 120%;
-
-  .header {
-    color: #43a047;
-    font-weight: 300;
+.intro .row {
+  @include medium {
+    flex-direction: column;
   }
 
-  h1 {
-    font-size: 4.2rem;
-    line-height: 110%;
-    margin: 2.1rem 0 0.68rem 0;
-
-    .material-icons {
-      float: left;
-      line-height: 110%;
-      font-size: 4.2rem;
-      margin-right: 3px;
-    }
-  }
-
-  h3 {
-    font-size: 2.92rem;
-    line-height: 110%;
-    margin: 1.46rem 0 1.168rem 0;
-  }
-
-  h4 {
-    font-size: 150%;
-    line-height: 110%;
-    margin-block-end: 16px;
-  }
-
-  h5 {
-    font-size: 1.64rem;
-    line-height: 110%;
-    margin: 0.82rem 0 0.656rem 0;
+  @include large {
+    flex-direction: row;
   }
 }
 
-.source {
+.statistics {
+  .flex {
+    gap: 8px;
+
+    @include medium {
+      gap: 16px;
+    }
+  }
+}
+
+section .image {
+  justify-content: center;
+  align-items: center;
+
+  > img {
+    max-width: 80%;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0px 8px 40px 0 rgba(0, 0, 0, 0.15);
+  }
+}
+
+.feature {
+  display: grid;
+  grid-template-columns: 86px auto;
+  margin-block-end: 16px;
+
+  h4 {
+    margin-block-end: 8px;
+  }
+
+  svg-icon {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    margin: 8px 20px 20px 0;
+    padding: 16px;
+    font-size: 32px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+}
+
+.source > div {
   display: flex;
   flex-flow: row wrap;
 
@@ -219,7 +304,7 @@ h4 {
     align-self: center;
   }
 
-  .paragraph {
+  p {
     margin-block-end: 32px;
   }
 

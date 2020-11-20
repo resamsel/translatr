@@ -10,6 +10,7 @@ import {
   LocaleService,
   MessageService,
   ProjectService,
+  StatisticService,
   UserService
 } from './services';
 
@@ -25,6 +26,7 @@ import {
     MessageService,
     ProjectService,
     UserService,
+    StatisticService,
     ErrorHandler
   ]
 })

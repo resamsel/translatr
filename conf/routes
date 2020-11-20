@@ -76,6 +76,8 @@ GET           /api/notifications                                                
 GET           /api/activities                                                         controllers.ActivitiesApi.find(request: Request)
 GET           /api/activities/aggregated                                              controllers.ActivitiesApi.activity(request: Request)
 
+GET           /api/statistics                                                         controllers.StatisticsApi.find(request: Request)
+
 GET           /api/authclients                                                        controllers.AuthClientsApi.find
 
 # Map static resources from the /public folder to the /assets URL path

@@ -11,23 +11,23 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   width="1920"
-   height="720"
+   width="698.59888"
+   height="528.00043"
    id="svg8"
    inkscape:export-filename="hexagon-large.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    sodipodi:docname="hexagon-large.svg"
    version="1.1"
-   viewBox="0 0 507.99999 190.50001">
+   viewBox="0 0 184.83762 139.70012">
   <sodipodi:namedview
      bordercolor="#666666"
      borderlayer="true"
      borderopacity="1.0"
      id="base"
      inkscape:current-layer="layer1"
-     inkscape:cx="1190.805"
-     inkscape:cy="195.87691"
+     inkscape:cx="13.323915"
+     inkscape:cy="162.87769"
      inkscape:document-units="px"
      inkscape:pagecheckerboard="false"
      inkscape:pageopacity="0.0"
@@ -46,12 +46,12 @@
      showguides="true"
      inkscape:guide-bbox="true">
     <sodipodi:guide
-       position="254,159.54376"
+       position="185.02298,150.81271"
        orientation="1,0"
        id="guide1693"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="320.93958,-0.26458335"
+       position="251.96256,-8.9956272"
        orientation="0,1"
        id="guide1695"
        inkscape:locked="false" />
@@ -163,7 +163,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -171,7 +171,8 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Background"
-     style="display:none">
+     style="display:none"
+     transform="translate(-68.977023,-42.068848)">
     <rect
        style="fill:url(#linearGradient1691);fill-opacity:1;stroke:none;stroke-width:9.09111309;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1444"
@@ -184,7 +185,7 @@
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1"
-     transform="translate(0,-106.49998)"
+     transform="translate(-68.977023,-148.56882)"
      style="display:inline">
     <path
        style="opacity:0.98999999;fill:#2e7d32;fill-opacity:1;stroke:none;stroke-width:0.60601223;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter1587)"

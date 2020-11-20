@@ -17,9 +17,12 @@
     </header>
 
     <div class="wrapper">
-      <mat-card class="login">
-        <mat-card-title transloco="authclients.title">Identity Providers</mat-card-title>
-        <mat-card-content class="options">
+      <div class="auth-clients">
+        <section class="login">
+          <h2 transloco="authclients.title">Identity Providers</h2>
+        </section>
+
+        <div class="options">
           <a
             *ngFor="let provider of providers$ | async"
             [ngClass]="'client-' + provider.key"
@@ -30,8 +33,8 @@
             <fa-icon [icon]="icons[provider.key]"></fa-icon>
             {{names[provider.key]}}
           </a>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
     </div>
   </div>
 </ng-container>

@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { ShortNumberModule } from '@dev/translatr-components';
 import { SvgIconsModule } from '@ngneat/svg-icon';
 
 import { MainPageComponent } from './main-page.component';
@@ -13,6 +14,7 @@ import {
   ActivityGraphTestingModule,
   FeatureFlagTestingModule,
   FooterTestingModule,
+  MetricTestingModule,
   NavbarTestingModule
 } from '@translatr/components/testing';
 import { MatDividerModule } from '@angular/material/divider';
@@ -35,6 +37,8 @@ describe('MainPageComponent', () => {
         FooterTestingModule,
         ActivityGraphTestingModule,
         FeatureFlagTestingModule,
+        MetricTestingModule,
+        ShortNumberModule,
 
         NoopAnimationsModule,
         RouterTestingModule,

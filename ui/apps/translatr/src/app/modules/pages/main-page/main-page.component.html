@@ -1,4 +1,4 @@
-<app-navbar [elevated]="false" [overlay]="true" [showLogo]="false" [page]="'home.title' | transloco">
+<app-navbar [elevated]="false" [overlay]="true" [showLogo]="true" [page]="'home.title' | transloco">
   <app-auth-bar-language-switcher
     [matTooltip]="'language.switcher' | transloco"
   ></app-auth-bar-language-switcher>
@@ -7,11 +7,8 @@
 <header class="section header">
   <div class="container">
     <div class="row">
-      <div class="col s12">
-        <h1 class="light">
-          <i class="material-icons left">translate</i>
-          <span class="page" transloco="main.title">Translatr</span>
-        </h1>
+      <div class="col main">
+        <h1 transloco="main.title">Translatr</h1>
         <h4 class="light green-text text-lighten-4 center description" transloco="main.subtitle">
           A modern and intuitive i18n tool
         </h4>
@@ -21,47 +18,46 @@
           <a mat-flat-button color="accent" routerLink="login" transloco="auth.login">Sign in</a>
         </ng-template>
       </div>
+      <div class="col image">
+        <img src="assets/images/hexagon-large.svg">
+      </div>
     </div>
   </div>
 </header>
 
 <div class="container">
-  <section class="section intro">
-    <div class="row">
-      <div class="col s12">
-        <h3 class="header center" transloco="intro.title">
-          Translatr simplifies i18n for developers and translators
-        </h3>
-      </div>
-    </div>
+  <section class="section">
+    <h3 class="header center" transloco="audience.title">Integrated solution designed for ease of use</h3>
+
     <div class="row">
       <div class="col">
         <div class="center promo">
-          <svg-icon key="pulse"></svg-icon>
-          <h4 class="promo-caption" transloco="promo1.title">Speeds up development</h4>
-          <p class="light center" transloco="promo1.content">
-            Preview, quick switching between locales, and the possibility of build system integration allow faster
-            development.
+          <svg-icon key="chat"></svg-icon>
+          <h4 class="promo-caption" transloco="translators.title">Translators</h4>
+          <p class="light center" transloco="translators.content">
+            Translate a project to a new language, check the outcome in the preview pane, see how other languages
+            translate that same key. This is all possible on the same page.
           </p>
         </div>
       </div>
       <div class="col">
         <div class="center promo">
-          <svg-icon key="user"></svg-icon>
-          <h4 class="promo-caption" transloco="promo2.title">User experience focused</h4>
-          <p class="light center" transloco="promo2.content">
-            Using the application is made as comfortable as possible because of focussing on both main use cases -
-            development and translation.
+          <svg-icon key="write"></svg-icon>
+          <h4 class="promo-caption" transloco="developers.title">Developers</h4>
+          <p class="light center" transloco="developers.content">
+            Adding new keys is as easy as a few clicks. Translate them to your default language, pull them into your
+            locale development environment, then check the result.
           </p>
         </div>
       </div>
       <div class="col">
         <div class="center promo">
-          <svg-icon key="thumbs-up"></svg-icon>
-          <h4 class="promo-caption" transloco="promo3.title">Easy to work with</h4>
-          <p class="light center" transloco="promo3.content">
-            All elements - search, content creation, notifications, ... - follow the concepts of Material Design to
-            allow the easiest and most intuitive use possible.
+          <svg-icon key="document"></svg-icon>
+          <h4 class="promo-caption" transloco="operators.title">Operators</h4>
+          <p class="light center" transloco="operators.content">
+            Use the power of the API to integrate translations into your applications. The Translatr CLI allows you
+            to pull, push, or create new languages and keys. You could also use the API directly to integrate your own
+            workflow.
           </p>
         </div>
       </div>
@@ -74,14 +70,14 @@
     <section class="section cli">
       <h3 class="header center" transloco="activity">Activity</h3>
 
+      <p transloco="activity.content">
+        The activity graph shows the usage of Translatr. The change history contains contributions to users,
+        projects, locales, keys, and translations. That way the activity of a project can be estimated, as well as
+        the activity of individual users.
+      </p>
+
       <div class="svg-container">
         <dev-activity-graph [data]="aggregatedActivity$ | async"></dev-activity-graph>
-      </div>
-
-      <div class="paragraph" [innerHtml]="'activity.content' | transloco">
-        <p>The activity graph shows the usage of Translatr. The change history contains contributions to users,
-          projects, locales, keys, and translations. That way the activity of a project can be estimated, as well as
-          the activity of individual users.</p>
       </div>
     </section>
   </div>
@@ -91,26 +87,99 @@
   <section class="section source">
     <h3 class="header center" transloco="source.title">Single Source of Truth</h3>
 
-    <svg-icon key="education" class="source-image"></svg-icon>
+    <p transloco="source1.content">
+      Use Translatr as source of internationalization - translator and developers can both add their content to the
+      same platform.
+    </p>
 
-    <div class="content">
-      <h4 transloco="source1.title">Single Platform</h4>
-      <div class="paragraph" [innerHtml]="'source1.content' | transloco">
-        Use Translatr as source of internationalization - translator and developers can both add their content to the same
-        platform.
-      </div>
+    <div>
+      <svg-icon key="education" class="source-image"></svg-icon>
 
-      <h4 transloco="source2.title">Translatr CLI</h4>
-      <div class="paragraph" [innerHtml]="'source2.content' | transloco">
-        Your pipeline can then read the current state and put it into your applications. It's never been so easy
-        - use the Translatr CLI to assist you with that task.
-      </div>
+      <div class="content">
+        <h4 transloco="source2.title">Translatr CLI</h4>
+        <p transloco="source2.content">
+          Your pipeline can then read the current state and put it into your applications. It's never been so easy
+          - use the Translatr CLI to assist you with that task.
+        </p>
 
-      <h4 transloco="source3.title">Internationalization as Code</h4>
-      <div class="paragraph" [innerHtml]="'source3.content' | transloco">
-        Keep translations in your repository, as part of your code base. Use it as your single source of truth,
-        including version control, access control and change history.
+        <h4 transloco="source3.title">Internationalization as Code</h4>
+        <p transloco="source3.content">
+          Keep translations in your repository, as part of your code base. Use it as your single source of truth,
+          including version control, access control and change history.
+        </p>
       </div>
+    </div>
+  </section>
+</div>
+
+<div class="white">
+  <div class="container">
+    <section class="section intro">
+      <h3 class="header center" transloco="intro.title">
+        Translatr simplifies i18n for developers and translators
+      </h3>
+      <div class="row">
+        <div class="col">
+          <div class="feature">
+            <svg-icon key="pulse"></svg-icon>
+            <h4 class="promo-caption" transloco="promo1.title">Speeds up development</h4>
+            <p class="light" transloco="promo1.content">
+              Preview, quick switching between locales, and the possibility of build system integration allow faster
+              development.
+            </p>
+          </div>
+          <div class="feature">
+            <svg-icon key="user"></svg-icon>
+            <h4 class="promo-caption" transloco="promo2.title">User experience focused</h4>
+            <p class="light" transloco="promo2.content">
+              Using the application is made as comfortable as possible because of focussing on both main use cases -
+              development and translation.
+            </p>
+          </div>
+          <div class="feature">
+            <svg-icon key="thumbs-up"></svg-icon>
+            <h4 class="promo-caption" transloco="promo3.title">Easy to work with</h4>
+            <p class="light" transloco="promo3.content">
+              All elements - search, content creation, notifications, ... - follow the concepts of Material Design to
+              allow the easiest and most intuitive use possible.
+            </p>
+          </div>
+        </div>
+        <div class="col image">
+          <img src="assets/images/project.png">
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="container">
+  <section class="section statistics">
+    <h3 class="header center" transloco="statistics.title">Statistics</h3>
+
+    <p transloco="statistics.content"></p>
+
+    <div class="flex">
+      <dev-metric
+        [name]="'projects.title' | transloco"
+        [value]="(statistics$ | async)?.projectCount | shortNumber"
+        icon="library_books"
+        class="project count"
+      ></dev-metric>
+
+      <dev-metric
+        [name]="'users.title' | transloco"
+        [value]="(statistics$ | async)?.userCount | shortNumber"
+        icon="group"
+        class="project count"
+      ></dev-metric>
+
+      <dev-metric
+        [name]="'activities.title' | transloco"
+        [value]="(statistics$ | async)?.activityCount | shortNumber"
+        icon="change_history"
+        class="activity count"
+      ></dev-metric>
     </div>
   </section>
 </div>

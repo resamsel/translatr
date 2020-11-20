@@ -15,6 +15,12 @@ $light-theme: mat-light-theme($light-primary, $light-accent, $light-warn);
 .light-theme {
   background-color: #f5f5f5;
 
+  .mat-focused {
+    &.mat-form-field.search {
+      box-shadow: 0 0 4px 2px mat-color($light-accent);
+    }
+  }
+
   .mat-card-title .sub-title,
   .mat-list-item .sub-title,
   .mat-line .sub-title {
