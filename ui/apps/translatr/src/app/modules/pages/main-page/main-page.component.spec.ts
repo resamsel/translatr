@@ -22,7 +22,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { mockObservable } from '@translatr/utils/testing';
-import { ActivityService } from '@dev/translatr-sdk';
+import { ActivityService, StatisticService } from '@dev/translatr-sdk';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 
 describe('MainPageComponent', () => {
@@ -65,6 +65,12 @@ describe('MainPageComponent', () => {
           provide: ActivityService,
           useFactory: () => ({
             aggregated: () => mockObservable()
+          })
+        },
+        {
+          provide: StatisticService,
+          useFactory: () => ({
+            find: () => mockObservable()
           })
         }
       ]
