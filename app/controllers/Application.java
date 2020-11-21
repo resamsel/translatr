@@ -38,7 +38,7 @@ public class Application extends AbstractController {
   }
 
   public Action<AnyContent> assetOrDefaultUi(String resource) {
-    if (resource.matches("([^/]+|assets/i18n/[^\\.]+)(\\.[^/]+)+")) {
+    if (resource.matches("([^/]+|assets/(images|i18n)/[^\\.]+)(\\.[^/]+)+")) {
       return assets.at("/public/ui", resource, true);
     }
 
@@ -52,7 +52,7 @@ public class Application extends AbstractController {
   }
 
   public Action<AnyContent> assetOrDefaultAdmin(String resource) {
-    if (resource.matches("([^/]+|assets/i18n/[^\\.]+)(\\.[^/]+)+")) {
+    if (resource.matches("([^/]+|assets/(images|i18n)/[^\\.]+)(\\.[^/]+)+")) {
       return assets.at("/public/admin", resource, true);
     }
 
