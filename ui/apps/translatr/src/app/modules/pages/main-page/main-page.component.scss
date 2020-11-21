@@ -7,8 +7,8 @@
 }
 
 :host ::ng-deep {
-  font-size: 120%;
-  line-height: 120%;
+  font-size: 20px;
+  line-height: 28px;
 
   .header {
     color: #43a047;
@@ -232,7 +232,7 @@ h1,
   }
 
   @include medium {
-    padding: 0 8px;
+    padding: 0 32px;
   }
 }
 
