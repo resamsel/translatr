@@ -44,6 +44,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Generate Changelog
+        id: generate-changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          onlyLastTag: true
+          stripHeaders: true
+          stripGeneratorNotice: true
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
