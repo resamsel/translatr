@@ -9,17 +9,16 @@ const developBranch = "develop";
 
 const toTag = (version: string): string => `v${version}`;
 
-const updateJson = (filename: string, version: string): Promise<string> => {
+const updateJson = (filename: string, version: string): Promise<void> => {
   return promises
     .readFile(filename, { encoding: "utf8" })
     .then(data => JSON.parse(data))
     .then(json => ({ ...json, version }))
     .then(json => JSON.stringify(json, null, 2))
-    .then(s => promises.writeFile(filename, s + "\n"))
-    .then(() => version);
+    .then(s => promises.writeFile(filename, s + "\n"));
 };
 
-const updateYaml = (filename: string, version: string): Promise<string> => {
+const updateYaml = (filename: string, version: string): Promise<void> => {
   return promises
     .readFile(filename, { encoding: "utf8" })
     .then(data =>
@@ -31,8 +30,7 @@ const updateYaml = (filename: string, version: string): Promise<string> => {
         `resamsel/translatr-loadgenerator:${version}`
       )
     )
-    .then(s => promises.writeFile(filename, s))
-    .then(() => version);
+    .then(s => promises.writeFile(filename, s));
 };
 
 const updateFile = (
@@ -53,19 +51,16 @@ const readVersion = (releaseType: ReleaseType): Promise<string> =>
     .then(json => inc(json.version, releaseType));
 
 const updateVersions = (version: string): Promise<string> => {
-  return updateJson("package.json", version)
-    .then(version => updateJson("package-lock.json", version))
-    .then(version => updateJson("ui/package.json", version))
-    .then(version => updateJson("ui/package-lock.json", version))
-    .then(version => updateYaml("k8s/manifest.yaml", version))
-    .then(version => updateYaml("k8s/loadgenerator.yaml", version))
-    .then(version =>
-      updateFile("init.sh", /VERSION="[^"]+"/, `VERSION="${version}"`)
-    )
-    .then(version =>
-      updateFile("build.sbt", /version := "[^"]+"/, `version := "${version}"`)
-    )
-    .then(() => version);
+  return Promise.all([
+    updateJson("package.json", version),
+    updateJson("package-lock.json", version),
+    updateJson("ui/package.json", version),
+    updateJson("ui/package-lock.json", version),
+    updateYaml("k8s/manifest.yaml", version),
+    updateYaml("k8s/loadgenerator.yaml", version),
+    updateFile("init.sh", /VERSION="[^"]+"/, `VERSION="${version}"`),
+    updateFile("build.sbt", /version := "[^"]+"/, `version := "${version}"`)
+  ]).then(() => version);
 };
 
 const updateChangelog = (version: string): Promise<string> => {
