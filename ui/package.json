@@ -1,6 +1,6 @@
 {
   "name": "translatr",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "author": "René Panzar",
   "license": "GPL-3.0",
   "bugs": {
@@ -206,7 +206,9 @@
     "conversionType": "files",
     "iconsFolderName": "svg",
     "prefix": "app",
-    "srcFiles": ["./assets/svg/*.svg"],
+    "srcFiles": [
+      "./assets/svg/*.svg"
+    ],
     "outputDirectory": "./apps/translatr/src/assets",
     "svgoConfig": {
       "plugins": [

@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.1.6](https://github.com/resamsel/translatr/tree/3.1.6) (2020-11-28)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.1.6-3...3.1.6)
+
+**Fixed bugs:**
+
+- Session timeout is much too short [\#221](https://github.com/resamsel/translatr/issues/221)
+
+## [v3.1.6-3](https://github.com/resamsel/translatr/tree/v3.1.6-3) (2020-11-28)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.1.6-2...v3.1.6-3)
+
+## [v3.1.6-2](https://github.com/resamsel/translatr/tree/v3.1.6-2) (2020-11-28)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.1.6-1...v3.1.6-2)
+
+## [v3.1.6-1](https://github.com/resamsel/translatr/tree/v3.1.6-1) (2020-11-28)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.1.5...v3.1.6-1)
+
+**Closed issues:**
+
+- Re-write activity graph template style [\#220](https://github.com/resamsel/translatr/issues/220)
+
 ## [v3.1.5](https://github.com/resamsel/translatr/tree/v3.1.5) (2020-11-13)
 
 [Full Changelog](https://github.com/resamsel/translatr/compare/v3.1.4...v3.1.5)
