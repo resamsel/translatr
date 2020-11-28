@@ -52,6 +52,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Translatr ${{ github.ref }}
-          body: ${{ changelog }}
+          body: ${{ steps.generate-changelog.output.changelog }}
           draft: false
           prerelease: false
