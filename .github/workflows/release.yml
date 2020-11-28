@@ -52,7 +52,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Translatr ${{ github.ref }}
-          body: |
-            Issues resolved in ${{ github.ref }}: https://github.com/resamsel/translatr/issues?q=is%3Aissue+milestone%3A${{ github.ref }}
+          body: ${{ changelog }}
           draft: false
           prerelease: false
