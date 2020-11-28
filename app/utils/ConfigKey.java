@@ -44,7 +44,9 @@ public enum ConfigKey {
   TwitterClientSecret("pac4j.clients.twitter.secret"),
 
   FacebookClientId("pac4j.clients.facebook.id"),
-  FacebookClientSecret("pac4j.clients.facebook.secret");
+  FacebookClientSecret("pac4j.clients.facebook.secret"),
+
+  PlayHttpSecretKey("play.http.secret.key");
 
   private final String key;
 

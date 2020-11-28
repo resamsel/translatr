@@ -29,13 +29,15 @@ libraryDependencies ++= Seq(
   "org.postgresql" % "postgresql" % "42.2.17",
 
   // OAuth for Play
+  "org.pac4j" % "pac4j-http" % "4.2.0",
+  "org.pac4j" % "pac4j-oauth" % "4.2.0",
+  "org.pac4j" % "pac4j-oidc" % "4.2.0" exclude("commons-io", "commons-io"),
+  "org.pac4j" % "pac4j-sql" % "4.2.0",
+
   "org.pac4j" %% "play-pac4j" % "10.0.2",
-  "org.pac4j" % "pac4j-http" % "4.0.3",
-  "org.pac4j" % "pac4j-oauth" % "4.0.3",
-  "org.pac4j" % "pac4j-oidc" % "4.0.3" exclude("commons-io", "commons-io"),
-  "org.pac4j" % "pac4j-sql" % "4.0.3",
+  // Needed for play-pac4j (provided dependency)
   // https://mvnrepository.com/artifact/org.apache.shiro/shiro-core
-  "org.apache.shiro" % "shiro-core" % "1.5.3",
+  "org.apache.shiro" % "shiro-core" % "1.7.0",
 
   // Apache Commons IO
   "commons-io" % "commons-io" % "2.7",

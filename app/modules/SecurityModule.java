@@ -5,7 +5,6 @@ import auth.AlwaysReadSessionProfileStorageDecision;
 import auth.ClientName;
 import auth.CustomAuthorizer;
 import auth.CustomCallbackLogic;
-import auth.CustomCookieSessionStore;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import controllers.routes;
@@ -29,7 +28,6 @@ import org.pac4j.oidc.config.KeycloakOidcConfiguration;
 import org.pac4j.play.CallbackController;
 import org.pac4j.play.LogoutController;
 import org.pac4j.play.http.PlayHttpActionAdapter;
-import org.pac4j.play.store.PlaySessionStore;
 import play.Environment;
 import play.inject.Injector;
 import utils.ConfigKey;
@@ -64,8 +62,6 @@ public class SecurityModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(PlaySessionStore.class).to(CustomCookieSessionStore.class);
-
     // callback
     final CallbackController callbackController = new CallbackController();
     callbackController.setDefaultUrl(routes.Application.indexUi().url() + "/dashboard");
