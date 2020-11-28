@@ -1,0 +1,4 @@
+user=resamsel
+project=translatr
+since-tag=v1.0.0
+add-sections={"documentation":{"prefix":"**Documentation updates:**","labels":["documentation"]}}

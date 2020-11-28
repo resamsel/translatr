@@ -1,3 +1,5 @@
+import { exec } from "child_process";
+import { cli } from "cli-ux";
 import { promises } from "fs";
 import { inc, ReleaseType } from "semver";
 import simpleGit from "simple-git";
@@ -33,23 +35,15 @@ const updateYaml = (filename: string, version: string): Promise<string> => {
     .then(() => version);
 };
 
-const updateShellScript = (
+const updateFile = (
   filename: string,
-  version: string
-): Promise<string> => {
+  searchValue: RegExp,
+  replaceValue: string
+): Promise<void> => {
   return promises
     .readFile(filename, { encoding: "utf8" })
-    .then(data => data.replace(/VERSION="[^"]+"/, `VERSION="${version}"`))
-    .then(s => promises.writeFile(filename, s))
-    .then(() => version);
-};
-
-const updateSbt = (filename: string, version: string): Promise<string> => {
-  return promises
-    .readFile(filename, { encoding: "utf8" })
-    .then(data => data.replace(/version := "[^"]+"/, `version := "${version}"`))
-    .then(s => promises.writeFile(filename, s))
-    .then(() => version);
+    .then(data => data.replace(searchValue, replaceValue))
+    .then(s => promises.writeFile(filename, s));
 };
 
 const readVersion = (releaseType: ReleaseType): Promise<string> =>
@@ -65,8 +59,31 @@ const updateVersions = (version: string): Promise<string> => {
     .then(version => updateJson("ui/package-lock.json", version))
     .then(version => updateYaml("k8s/manifest.yaml", version))
     .then(version => updateYaml("k8s/loadgenerator.yaml", version))
-    .then(version => updateShellScript("init.sh", version))
-    .then(version => updateSbt("build.sbt", version));
+    .then(version =>
+      updateFile("init.sh", /VERSION="[^"]+"/, `VERSION="${version}"`)
+    )
+    .then(version =>
+      updateFile("build.sbt", /version := "[^"]+"/, `version := "${version}"`)
+    )
+    .then(() => version);
+};
+
+const updateChangelog = (version: string): Promise<string> => {
+  if (process.env["CHANGELOG_GITHUB_TOKEN"] === undefined) {
+    return Promise.reject(
+      "Environment variable CHANGELOG_GITHUB_TOKEN is unset, but required for changelog generation"
+    );
+  }
+
+  return new Promise<string>((resolve, reject) => {
+    exec("npm run generate:changelog", error => {
+      if (error) {
+        console.error(error);
+        return reject(error);
+      }
+      resolve(version);
+    });
+  });
 };
 
 const gitCheck = (version: string): Promise<string> => {
@@ -149,31 +166,44 @@ const release = async (
   const version = await readVersion(type);
 
   if (!commitChanges) {
+    cli.action.start(`Bumping version to ${version}`);
     await updateVersions(version);
-    console.log(`✔️ Version was bumped to ${version}`);
+    cli.action.stop();
 
     return version;
   }
 
+  cli.action.start(`Checking prerequisites`);
   await gitCheck(version);
+  cli.action.stop();
 
+  cli.action.start(`Bumping version to ${version}`);
   await updateVersions(version);
-  console.log(`✔️ Version was bumped to ${version}`);
+  cli.action.stop();
 
+  cli.action.start(`Generating changelog`);
+  await updateChangelog(version);
+  cli.action.stop();
+
+  cli.action.start(`Committing changes`);
   await gitCommit(version);
-  console.log(`✔️ Changes were committed`);
+  cli.action.stop();
 
+  cli.action.start(`Rebasing branch ${developBranch} onto ${mainBranch}`);
   await gitRebase(version, mainBranch);
-  console.log(`✔️ Branch ${developBranch} was rebased onto ${mainBranch}`);
+  cli.action.stop();
 
+  cli.action.start(`Fast forward ${mainBranch} to ${developBranch}`);
   await gitMerge(version, mainBranch, developBranch);
-  console.log(`✔️ ${mainBranch} was fast forwarded to ${developBranch}`);
+  cli.action.stop();
 
+  cli.action.start(`Tagging commit with ${toTag(version)}`);
   await gitTag(version);
-  console.log(`✔️ Commit was tagged with ${toTag(version)}`);
+  cli.action.stop();
 
+  cli.action.start(`Switching back to branch ${developBranch}`);
   await gitCheckout(version, developBranch);
-  console.log(`✔️ Switched back to branch ${developBranch}`);
+  cli.action.stop();
 
   console.log();
   console.log(`🎉 Release ${version} was created successfully 🎉`);
