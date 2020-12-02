@@ -1,18 +1,56 @@
 import { exec } from "child_process";
 import { cli } from "cli-ux";
 import { promises } from "fs";
-import { inc, ReleaseType } from "semver";
+import { inc, parse, ReleaseType, SemVer } from "semver";
 import simpleGit from "simple-git";
 
 const mainBranch = "main";
 const developBranch = "develop";
-
 const toTag = (version: string): string => `v${version}`;
+const toReleaseBranch = (version: SemVer): string =>
+  `release/v${version.major}.${version.minor}.x`;
 
-const updateJson = (filename: string, version: string): Promise<void> => {
+const validate = (version: SemVer): Promise<SemVer> => {
+  if (
+    version.prerelease.length === 0 &&
+    process.env["CHANGELOG_GITHUB_TOKEN"] === undefined
+  ) {
+    throw new Error(
+      "Environment variable CHANGELOG_GITHUB_TOKEN is unset, but required for changelog generation"
+    );
+  }
+
+  const git = simpleGit();
+  return git
+    .status()
+    .then(result => {
+      if (!result.isClean()) {
+        throw new Error("workspace contains uncommitted changes");
+      }
+    })
+    .then(
+      () =>
+        new Promise<void>((resolve, reject) =>
+          git.tags((err, tagList) => {
+            const tag = toTag(version.raw);
+            if (tagList.all.includes(tag)) {
+              return reject(new Error(`tag ${tag} already exists`));
+            }
+            return resolve();
+          })
+        )
+    )
+    .then(() => version);
+};
+
+const readJson = (filename: string): Promise<any> => {
   return promises
     .readFile(filename, { encoding: "utf8" })
-    .then(data => JSON.parse(data))
+    .then(data => JSON.parse(data));
+};
+
+const updateJson = (filename: string, version: string): Promise<void> => {
+  return readJson(filename)
     .then(json => ({ ...json, version }))
     .then(json => JSON.stringify(json, null, 2))
     .then(s => promises.writeFile(filename, s + "\n"));
@@ -44,11 +82,22 @@ const updateFile = (
     .then(s => promises.writeFile(filename, s));
 };
 
-const readVersion = (releaseType: ReleaseType): Promise<string> =>
-  promises
-    .readFile("package.json", { encoding: "utf8" })
-    .then(data => JSON.parse(data))
-    .then(json => inc(json.version, releaseType));
+const readAndIncrementVersion = (releaseType: ReleaseType): Promise<SemVer> =>
+  readJson("package.json")
+    .then(json => ({
+      current: json.version,
+      incremented: inc(json.version, releaseType)
+    }))
+    .then(({ current, incremented }) => {
+      if (incremented === null) {
+        throw new Error(`Cannot increment version ${current} (${releaseType})`);
+      }
+
+      console.log(`Version ${current} -> ${incremented} (${releaseType})`);
+      console.log();
+
+      return parse(incremented);
+    });
 
 const updateVersions = (version: string): Promise<string> => {
   return Promise.all([
@@ -64,12 +113,6 @@ const updateVersions = (version: string): Promise<string> => {
 };
 
 const updateChangelog = (version: string): Promise<string> => {
-  if (process.env["CHANGELOG_GITHUB_TOKEN"] === undefined) {
-    return Promise.reject(
-      "Environment variable CHANGELOG_GITHUB_TOKEN is unset, but required for changelog generation"
-    );
-  }
-
   return new Promise<string>((resolve, reject) => {
     exec("npm run generate:changelog", error => {
       if (error) {
@@ -79,29 +122,6 @@ const updateChangelog = (version: string): Promise<string> => {
       resolve(version);
     });
   });
-};
-
-const gitCheck = (version: string): Promise<string> => {
-  const git = simpleGit();
-  return git
-    .status()
-    .then(result => {
-      if (!result.isClean()) {
-        throw new Error("workspace contains uncommitted changes");
-      }
-    })
-    .then(
-      () =>
-        new Promise<void>((resolve, reject) =>
-          git.tags((err, tagList) => {
-            if (tagList.all.includes(toTag(version))) {
-              return reject(new Error(`tag ${toTag(version)} already exists`));
-            }
-            return resolve();
-          })
-        )
-    )
-    .then(() => version);
 };
 
 /**
@@ -126,10 +146,17 @@ const gitCheckout = (version: string, source: string): Promise<string> => {
 /**
  * Creates a Git tag for the current commit.
  */
-const gitTag = (version: string): Promise<string> => {
+const gitTag = (tag: string): Promise<unknown> => {
+  return simpleGit().addTag(tag);
+};
+
+/**
+ * Creates a Git branch for the current commit.
+ */
+const gitBranch = (branch: string): Promise<unknown> => {
   return simpleGit()
-    .addTag(toTag(version))
-    .then(() => version);
+    .branch({ [branch]: undefined })
+    .catch(() => undefined);
 };
 
 /**
@@ -154,66 +181,107 @@ const gitMerge = (
     .then(() => version);
 };
 
-const release = async (
-  type: ReleaseType,
+const prerelease = async (version: SemVer): Promise<SemVer> => {
+  cli.action.start(`Committing changes`);
+  await gitCommit(version.raw);
+  cli.action.stop();
+
+  const tag = toTag(version.raw);
+  cli.action.start(`Tagging commit with ${tag}`);
+  await gitTag(tag);
+  cli.action.stop();
+
+  console.log();
+  console.log(`Pre-version ${version.raw} was incremented`);
+  console.log();
+
+  console.log(`To release this version, run: npm run release`);
+
+  return version;
+};
+
+const release = async (version: SemVer): Promise<SemVer> => {
+  cli.action.start(`Generating changelog`);
+  await updateChangelog(version.raw);
+  cli.action.stop();
+
+  cli.action.start(`Committing changes`);
+  await gitCommit(version.raw);
+  cli.action.stop();
+
+  cli.action.start(`Rebasing branch ${developBranch} onto ${mainBranch}`);
+  await gitRebase(version.raw, mainBranch);
+  cli.action.stop();
+
+  cli.action.start(`Fast forward ${mainBranch} to ${developBranch}`);
+  await gitMerge(version.raw, mainBranch, developBranch);
+  cli.action.stop();
+
+  const tag = toTag(version.raw);
+  cli.action.start(`Tagging commit with ${tag}`);
+  await gitTag(tag);
+  cli.action.stop();
+
+  const releaseBranch = toReleaseBranch(version);
+  cli.action.start(`Creating release branch ${releaseBranch}`);
+  await gitBranch(releaseBranch);
+  cli.action.stop();
+
+  cli.action.start(`Switching back to branch ${developBranch}`);
+  await gitCheckout(version.raw, developBranch);
+  cli.action.stop();
+
+  console.log();
+  console.log(`🎉 Release ${version.raw} was created successfully 🎉`);
+  console.log();
+
+  console.log(`These steps are missing:`);
+  console.log(
+    `[ ] push changes: git push origin ${mainBranch} ${developBranch} ${tag} ${releaseBranch}`
+  );
+
+  return version;
+};
+
+const handleRelease = async (
+  releaseType: string,
   commitChanges = false
-): Promise<string> => {
-  const version = await readVersion(type);
+): Promise<SemVer> => {
+  const type =
+    releaseType === "release" ? "patch" : (releaseType as ReleaseType);
+  const version = await readAndIncrementVersion(type);
+  const isPreRelease = version.prerelease.length > 0;
 
   if (!commitChanges) {
     cli.action.start(`Bumping version to ${version}`);
-    await updateVersions(version);
+    await updateVersions(version.raw);
     cli.action.stop();
 
     return version;
   }
 
   cli.action.start(`Checking prerequisites`);
-  await gitCheck(version);
+  await validate(version);
   cli.action.stop();
 
   cli.action.start(`Bumping version to ${version}`);
-  await updateVersions(version);
+  await updateVersions(version.raw);
   cli.action.stop();
 
-  cli.action.start(`Generating changelog`);
-  await updateChangelog(version);
-  cli.action.stop();
+  if (isPreRelease) {
+    return prerelease(version);
+  }
 
-  cli.action.start(`Committing changes`);
-  await gitCommit(version);
-  cli.action.stop();
-
-  cli.action.start(`Rebasing branch ${developBranch} onto ${mainBranch}`);
-  await gitRebase(version, mainBranch);
-  cli.action.stop();
-
-  cli.action.start(`Fast forward ${mainBranch} to ${developBranch}`);
-  await gitMerge(version, mainBranch, developBranch);
-  cli.action.stop();
-
-  cli.action.start(`Tagging commit with ${toTag(version)}`);
-  await gitTag(version);
-  cli.action.stop();
-
-  cli.action.start(`Switching back to branch ${developBranch}`);
-  await gitCheckout(version, developBranch);
-  cli.action.stop();
-
-  console.log();
-  console.log(`🎉 Release ${version} was created successfully 🎉`);
-  console.log();
-
-  console.log(`These steps are missing:`);
-  console.log(`[ ] push changes: git push`);
-  return version;
+  return release(version);
 };
 
 if (process.argv.length >= 3) {
-  release(
-    process.argv[2] as ReleaseType,
+  handleRelease(
+    process.argv[2],
     process.argv.length > 3 ? process.argv[3] === "on" : true
   ).catch(error => console.error(`${error}`));
 } else {
-  console.error("Error: no release type specified");
+  console.error(
+    "Error: no release type specified (major, minor, patch, prerelease, ...)"
+  );
 }
