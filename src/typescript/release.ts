@@ -10,6 +10,13 @@ const toTag = (version: string): string => `v${version}`;
 const toReleaseBranch = (version: SemVer): string =>
   `release/v${version.major}.${version.minor}.x`;
 
+const run = async <T>(name: string, action: () => Promise<T>): Promise<T> => {
+  cli.action.start(name);
+  const result = await action();
+  cli.action.stop();
+  return result;
+};
+
 const validate = (version: SemVer): Promise<SemVer> => {
   if (
     version.prerelease.length === 0 &&
@@ -182,14 +189,10 @@ const gitMerge = (
 };
 
 const prerelease = async (version: SemVer): Promise<SemVer> => {
-  cli.action.start(`Committing changes`);
-  await gitCommit(version.raw);
-  cli.action.stop();
+  await run(`Committing changes`, () => gitCommit(version.raw));
 
   const tag = toTag(version.raw);
-  cli.action.start(`Tagging commit with ${tag}`);
-  await gitTag(tag);
-  cli.action.stop();
+  await run(`Tagging commit with ${tag}`, () => gitTag(tag));
 
   console.log();
   console.log(`Pre-version ${version.raw} was incremented`);
