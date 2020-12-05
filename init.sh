@@ -3,7 +3,7 @@
 SELF=$0
 
 PSQL="docker exec -i translatr_db-translatr_1 psql -U postgres"
-VERSION="3.1.6"
+VERSION="3.2.0-0"
 MAIN_DIR="$(cd $PWD; echo $PWD)"
 TARGET_DIR="$MAIN_DIR/target"
 DIST_DIR="$TARGET_DIR/universal"
