@@ -1,4 +1,4 @@
-import simpleGit, {StatusResult, TagResult} from 'simple-git';
+import simpleGit, { ResetMode, StatusResult, TagResult } from "simple-git";
 
 export class GitService {
   private readonly git = simpleGit();
@@ -8,7 +8,7 @@ export class GitService {
    */
   commit(version: string, tag: string): Promise<string> {
     return this.git
-      .add('.')
+      .add(".")
       .then(() => this.git.commit(`Bump version to ${tag}`))
       .then(() => version);
   }
@@ -16,8 +16,8 @@ export class GitService {
   /**
    * Checkout given branch.
    */
-  checkout(version: string, source: string): Promise<string> {
-    return this.git.checkout([source]).then(() => version);
+  checkout(source: string): Promise<unknown> {
+    return this.git.checkout([source]);
   }
 
   /**
@@ -49,8 +49,8 @@ export class GitService {
    * Rebases current branch onto given.
    */
   merge(version: string, source: string, target: string): Promise<string> {
-    return this.checkout(version, source)
-      .then(() => this.git.merge(['--ff-only', target]))
+    return this.checkout(source)
+      .then(() => this.git.merge(["--ff-only", target]))
       .then(() => version);
   }
 
@@ -68,5 +68,9 @@ export class GitService {
         return resolve(tagList);
       })
     );
+  }
+
+  reset(ref: string, mode: ResetMode) {
+    return this.git.reset(mode, { [ref]: null });
   }
 }

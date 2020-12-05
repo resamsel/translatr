@@ -1,6 +1,6 @@
 export interface ReleaseConfig {
   mainBranch: string;
-  developBranch: string;
+  productionBranch: string;
   releaseBranch: string;
   tag: string;
   githubToken?: string;

@@ -1,11 +1,12 @@
-import {SemVer} from 'semver';
-import {AbstractRelease} from './abstract-release';
-import {ReleaseConfig} from '../release.config';
-import {ChangelogService} from '../services/changelog.service';
-import {FileService} from '../services/file.service';
-import {GitService} from '../services/git.service';
-import {run} from '../utils';
-import {ReleaseError} from './release.error';
+import { SemVer } from "semver";
+import { ResetMode } from "simple-git";
+import { ReleaseConfig } from "../release.config";
+import { ChangelogService } from "../services/changelog.service";
+import { FileService } from "../services/file.service";
+import { GitService } from "../services/git.service";
+import { run } from "../utils";
+import { AbstractRelease } from "./abstract-release";
+import { ReleaseError } from "./release.error";
 
 /**
  * A major or minor release involves:
@@ -49,32 +50,23 @@ export class MajorMinorRelease extends AbstractRelease {
     return this.gitService.branch().then(branch => {
       if (branch !== this.config.mainBranch) {
         throw new ReleaseError([
-          `must be on branch ${this.config.mainBranch} to create a major or minor release`,
+          `must be on branch ${this.config.mainBranch} to create a major or minor release`
         ]);
       }
     });
   }
 
   async release(version: SemVer): Promise<unknown> {
-    const {mainBranch, developBranch, releaseBranch, tag} = this.config;
-    const branchesToPush = [mainBranch, developBranch, tag];
+    const { mainBranch, productionBranch, releaseBranch, tag } = this.config;
+    const branchesToPush = [mainBranch, tag];
 
-    await run('Generating changelog', () =>
+    await run("Generating changelog", () =>
       this.changelogService.updateChangelog(version.raw)
     );
 
-    await run('Committing changes', () =>
+    await run("Committing changes", () =>
       this.gitService.commit(version.raw, tag)
     );
-
-    // // Rebase onto main branch only for major and minor releases
-    // await run(`Rebasing branch ${developBranch} onto ${mainBranch}`, () =>
-    //   this.gitService.rebase(version.raw, mainBranch)
-    // );
-    //
-    // await run(`Fast forward ${mainBranch} to ${developBranch}`, () =>
-    //   this.gitService.merge(version.raw, mainBranch, developBranch)
-    // );
 
     // Create release branch only for major and minor releases
     await run(`Creating release branch ${releaseBranch}`, () =>
@@ -82,9 +74,24 @@ export class MajorMinorRelease extends AbstractRelease {
     );
     branchesToPush.push(releaseBranch);
 
-    // await run(`Switching back to branch ${developBranch}`, () =>
-    //   this.gitService.checkout(version.raw, developBranch)
-    // );
+    const productionBranchExists = await run(
+      `Switching to branch ${productionBranch}`,
+      () =>
+        this.gitService
+          .checkout(productionBranch)
+          .then(() => true)
+          .catch(() => false)
+    );
+    if (productionBranchExists) {
+      await run(
+        `Resetting branch ${productionBranch} to ${releaseBranch}`,
+        () => this.gitService.reset(releaseBranch, ResetMode.HARD)
+      );
+      await run(`Switching back to branch ${mainBranch}`, () =>
+        this.gitService.checkout(mainBranch)
+      );
+      branchesToPush.push(productionBranch);
+    }
 
     await run(`Tagging commit with ${tag}`, () => this.gitService.tag(tag));
 
@@ -92,9 +99,9 @@ export class MajorMinorRelease extends AbstractRelease {
     console.log(`🎉 Release ${version.raw} was created successfully 🎉`);
     console.log();
 
-    console.log('These steps are missing:');
+    console.log("These steps are missing:");
     console.log(
-      `[ ] push changes: git push origin ${branchesToPush.join(' ')}`
+      `[ ] push changes: git push origin ${branchesToPush.join(" ")}`
     );
 
     return version;

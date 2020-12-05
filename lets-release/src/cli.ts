@@ -1,47 +1,47 @@
-import Command, {flags} from '@oclif/command';
-import {ReleaseType} from 'semver';
-import {ChangelogService} from './services/changelog.service';
-import {FileService} from './services/file.service';
-import {ReleaseConfig} from './release.config';
-import {ReleaseFactory} from './release.factory';
-import {GitService} from './services/git.service';
+import Command, { flags } from "@oclif/command";
+import { ReleaseType } from "semver";
+import { ChangelogService } from "./services/changelog.service";
+import { FileService } from "./services/file.service";
+import { ReleaseConfig } from "./release.config";
+import { ReleaseFactory } from "./release.factory";
+import { GitService } from "./services/git.service";
 
 class LetsReleaseCommand extends Command {
   static description =
-    'Generate data (users, projects, locales, keys) by using the API';
+    "Generate data (users, projects, locales, keys) by using the API";
 
   static flags = {
-    version: flags.version({char: 'v'}),
-    help: flags.help({char: 'h'}),
+    version: flags.version({ char: "v" }),
+    help: flags.help({ char: "h" }),
 
-    'main-branch': flags.string({
-      char: 'm',
-      description: 'The main branch',
-      default: 'main',
+    "main-branch": flags.string({
+      char: "m",
+      description: "The main branch",
+      default: "main"
     }),
 
-    'prod-branch': flags.string({
-      char: 'p',
-      description: 'The production branch',
-      default: 'production',
+    "prod-branch": flags.string({
+      char: "p",
+      description: "The production branch",
+      default: "production"
     }),
 
-    'github-token': flags.string({
-      char: 't',
-      description: 'The Github token to use when generating the changelog',
+    "github-token": flags.string({
+      char: "t",
+      description: "The Github token to use when generating the changelog"
     }),
 
-    'dry-run': flags.boolean({
-      description: 'only update the version, do not commit anything',
-    }),
+    "dry-run": flags.boolean({
+      description: "only update the version, do not commit anything"
+    })
   };
 
   static args = [
     {
-      name: 'releaseType',
-      description: 'The release type to increment the version by.',
-      required: true,
-    },
+      name: "releaseType",
+      description: "The release type to increment the version by.",
+      required: true
+    }
   ];
 
   async run() {
@@ -57,22 +57,22 @@ class LetsReleaseCommand extends Command {
     );
 
     const type =
-      command.args.releaseType === 'release' ?
-        'patch' :
-        (command.args.releaseType as ReleaseType);
+      command.args.releaseType === "release"
+        ? "patch"
+        : (command.args.releaseType as ReleaseType);
     const version = await fileService.readAndIncrementVersion(type);
     const config: ReleaseConfig = {
-      mainBranch: command.flags['main-branch'],
-      developBranch: command.flags['prod-branch'],
+      mainBranch: command.flags["main-branch"],
+      productionBranch: command.flags["prod-branch"],
       tag: `v${version.raw}`,
       releaseBranch: `release/v${version.major}.${version.minor}.x`,
-      githubToken: command.flags['github-token'],
+      githubToken: command.flags["github-token"]
     };
 
     const release = releaseFactory.create(version, config);
 
-    if (command.flags['dry-run']) {
-      console.log('Dry run activated, will not commit');
+    if (command.flags["dry-run"]) {
+      console.log("Dry run activated, will not commit");
       return release.updateVersion(version);
     }
 
