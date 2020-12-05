@@ -1,17 +1,18 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "outDir": "lib",
     "module": "commonjs",
-    "target": "esnext",
-    "jsx": "react",
-    "sourceMap": false,
-    "experimentalDecorators": true,
-    "noImplicitUseStrict": true,
-    "removeComments": true,
-    "moduleResolution": "node",
-    "lib": ["es2017", "dom"],
-    "typeRoots": ["node_modules/@types"]
+    "types": [
+      "jest",
+      "node"
+    ]
   },
-  "exclude": ["node_modules", "lib", "tmp"],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "tmp"
+  ],
   "include": [
     "**/*.spec.ts",
     "**/testing.ts",

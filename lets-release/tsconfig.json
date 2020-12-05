@@ -1,19 +1,29 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "declaration": true,
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "importHelpers": true,
+    "target": "es2018",
     "module": "commonjs",
-    "outDir": "lib",
-    "rootDir": "src",
-    "strict": true,
-    "target": "es2017"
+    "typeRoots": [
+      "node_modules/@types",
+      "typings.d.ts"
+    ],
+    "lib": [
+      "es2018"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "noUnusedLocals": true,
+    "esModuleInterop": true
   },
-  "include": [
-    "src/**/*.ts"
-  ],
   "exclude": [
-    "src/**/*.spec.ts",
-    "src/**/testing.ts",
-    "src/**/testing/*.ts"
+    "node_modules",
+    "tmp"
   ]
 }

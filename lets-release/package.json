@@ -1,7 +1,7 @@
 {
   "name": "lets-release",
   "description": "Release workflow for main braching workflow",
-  "version": "0.1.0-1",
+  "version": "0.1.0",
   "author": "René Panzar @resamsel",
   "bin": {
     "lets-release": "./bin/run"
@@ -44,8 +44,8 @@
   },
   "repository": "resamsel/translatr",
   "scripts": {
-    "lint": "eslint . --ext .ts --config .eslintrc --fix",
-    "lint:fix": "eslint . --ext .ts --config .eslintrc --fix",
+    "lint": "eslint . --ext .ts --config .eslintrc",
+    "lint:fix": "npm run lint -- --fix",
     "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
     "test": "jest",
     "posttest": "npm run lint",
