@@ -1,37 +1,34 @@
-import { parse, SemVer } from "semver";
-import { ReleaseConfig } from "../release.config";
-import { setupTestBed, TestBed } from "../testing";
-import { MajorMinorRelease } from "./major-minor-release";
-import { ReleaseError } from "./release.error";
+import {parse, SemVer} from 'semver';
+import {ResetMode} from 'simple-git';
+import {ReleaseConfig} from '../release.config';
+import {setupTestBed, TestBed} from '../testing';
+import {MajorMinorRelease} from './major-minor-release';
+import {ReleaseError} from './release.error';
 
-describe("major-minor-release", () => {
-  describe("validate", () => {
-    let testBed: TestBed;
+describe('major-minor-release', () => {
+  describe('validate', () => {
+    let testBed: TestBed<MajorMinorRelease>;
 
     beforeEach(() => {
-      testBed = setupTestBed();
+      testBed = setupTestBed(
+        (config, tb) =>
+          new MajorMinorRelease(config, tb.gitService, tb.fileService, tb.changelogService)
+      );
     });
 
-    it("should not throw an error when everything okay", async () => {
+    it('should not throw an error when everything okay', async () => {
       // given
-      const version = parse("1.0.0") as SemVer;
+      const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: "main",
-        productionBranch: "production",
-        releaseBranch: "release/v1.0.0",
-        tag: "v1.0.0",
-        githubToken: ""
+        mainBranch: 'main',
+        productionBranch: 'production',
+        releaseBranch: 'release/v1.0.0',
+        tag: 'v1.0.0',
+        githubToken: '',
       };
-      testBed.gitService.branch.mockReturnValue(
-        Promise.resolve(config.mainBranch)
-      );
+      testBed.gitService.branch.mockReturnValue(Promise.resolve(config.mainBranch));
 
-      const target = new MajorMinorRelease(
-        config,
-        testBed.gitService,
-        testBed.fileService,
-        testBed.changelogService
-      );
+      const target = testBed.createTarget(config);
 
       // when
       const actual = await target
@@ -44,26 +41,19 @@ describe("major-minor-release", () => {
       expect(actual.messages).toEqual([]);
     });
 
-    it("should throw error when on wrong branch", async () => {
+    it('should throw error when on wrong branch', async () => {
       // given
-      const version = parse("1.0.0") as SemVer;
+      const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: "main",
-        productionBranch: "production",
-        releaseBranch: "release/v1.0.0",
-        tag: "v1.0.0",
-        githubToken: ""
+        mainBranch: 'main',
+        productionBranch: 'production',
+        releaseBranch: 'release/v1.0.0',
+        tag: 'v1.0.0',
+        githubToken: '',
       };
-      testBed.gitService.branch.mockReturnValue(
-        Promise.resolve("wrong-branch")
-      );
+      testBed.gitService.branch.mockReturnValue(Promise.resolve('wrong-branch'));
 
-      const target = new MajorMinorRelease(
-        config,
-        testBed.gitService,
-        testBed.fileService,
-        testBed.changelogService
-      );
+      const target = testBed.createTarget(config);
 
       // when
       const actual = await target
@@ -74,29 +64,22 @@ describe("major-minor-release", () => {
       // then
       expect(actual).toBeInstanceOf(ReleaseError);
       expect(actual.messages).toEqual([
-        "must be on branch main to create a major or minor release"
+        'must be on branch main to create a major or minor release',
       ]);
     });
 
-    it("should throw error when Github token unset", async () => {
+    it('should throw error when Github token unset', async () => {
       // given
-      const version = parse("1.0.0") as SemVer;
+      const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: "main",
-        productionBranch: "production",
-        releaseBranch: "release/v1.0.0",
-        tag: "v1.0.0"
+        mainBranch: 'main',
+        productionBranch: 'production',
+        releaseBranch: 'release/v1.0.0',
+        tag: 'v1.0.0',
       };
-      testBed.gitService.branch.mockReturnValue(
-        Promise.resolve(config.mainBranch)
-      );
+      testBed.gitService.branch.mockReturnValue(Promise.resolve(config.mainBranch));
 
-      const target = new MajorMinorRelease(
-        config,
-        testBed.gitService,
-        testBed.fileService,
-        testBed.changelogService
-      );
+      const target = testBed.createTarget(config);
 
       // when
       const actual = await target
@@ -107,29 +90,22 @@ describe("major-minor-release", () => {
       // then
       expect(actual).toBeInstanceOf(ReleaseError);
       expect(actual.messages).toEqual([
-        "Github token is unset, but required for changelog generation"
+        'Github token is unset, but required for changelog generation',
       ]);
     });
 
-    it("should throw error when both wrong branch and Github token unset", async () => {
+    it('should throw error when both wrong branch and Github token unset', async () => {
       // given
-      const version = parse("1.0.0") as SemVer;
+      const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: "main",
-        productionBranch: "production",
-        releaseBranch: "release/v1.0.0",
-        tag: "v1.0.0"
+        mainBranch: 'main',
+        productionBranch: 'production',
+        releaseBranch: 'release/v1.0.0',
+        tag: 'v1.0.0',
       };
-      testBed.gitService.branch.mockReturnValue(
-        Promise.resolve("wrong-branch")
-      );
+      testBed.gitService.branch.mockReturnValue(Promise.resolve('wrong-branch'));
 
-      const target = new MajorMinorRelease(
-        config,
-        testBed.gitService,
-        testBed.fileService,
-        testBed.changelogService
-      );
+      const target = testBed.createTarget(config);
 
       // when
       const actual = await target
@@ -140,54 +116,50 @@ describe("major-minor-release", () => {
       // then
       expect(actual).toBeInstanceOf(ReleaseError);
       expect(actual.messages).toEqual([
-        "Github token is unset, but required for changelog generation",
-        "must be on branch main to create a major or minor release"
+        'Github token is unset, but required for changelog generation',
+        'must be on branch main to create a major or minor release',
       ]);
     });
   });
 
-  describe("release", () => {
-    let testBed: TestBed;
+  describe('release', () => {
+    let testBed: TestBed<MajorMinorRelease>;
 
     beforeEach(() => {
-      testBed = setupTestBed();
+      testBed = setupTestBed(
+        (config, tb) =>
+          new MajorMinorRelease(config, tb.gitService, tb.fileService, tb.changelogService)
+      );
     });
 
-    it("should not throw an error when everything okay", async () => {
+    it('should not throw an error when everything okay', async () => {
       // given
-      const version = parse("1.0.0") as SemVer;
+      const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: "main",
-        productionBranch: "production",
-        releaseBranch: "release/v1.0.0",
-        tag: "v1.0.0",
-        githubToken: ""
+        mainBranch: 'main',
+        productionBranch: 'production',
+        releaseBranch: 'release/v1.0.0',
+        tag: 'v1.0.0',
+        githubToken: '',
       };
-      testBed.gitService.tags.mockReturnValue({
-        all: [],
-        latest: undefined
-      });
-      testBed.gitService.branch.mockReturnValue(
-        Promise.resolve(config.mainBranch)
-      );
 
-      const target = new MajorMinorRelease(
-        config,
-        testBed.gitService,
-        testBed.fileService,
-        testBed.changelogService
-      );
+      const target = testBed.createTarget(config);
 
       // when
       await target.release(version);
 
       // then
-      expect(testBed.changelogService.updateChangelog.mock.calls).toHaveLength(
-        1
-      );
-      expect(testBed.gitService.commit.mock.calls).toHaveLength(1);
-      expect(testBed.gitService.addBranch.mock.calls).toHaveLength(1);
-      expect(testBed.gitService.tag.mock.calls).toHaveLength(1);
+      expect(testBed.changelogService.updateChangelog.mock.calls).toHaveLength(1);
+      expect(testBed.gitService.commit.mock.calls).toEqual([
+        [`Bump version to ${config.tag}`, '.'],
+      ]);
+      expect(testBed.gitService.addBranch.mock.calls).toEqual([[config.releaseBranch]]);
+      expect(testBed.gitService.checkout.mock.calls).toEqual([
+        [config.productionBranch],
+        [config.mainBranch],
+      ]);
+      expect(testBed.gitService.reset.mock.calls).toEqual([[config.releaseBranch, ResetMode.HARD]]);
+      expect(testBed.gitService.addTag.mock.calls).toEqual([[config.tag]]);
     });
   });
 });

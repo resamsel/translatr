@@ -15,10 +15,15 @@
         "SwitchCase": 1
       }
     ],
-    "quotemark": [
-      true,
+    "quotes": [
+      "error",
       "single",
       "avoid-escape"
+    ],
+    "valid-jsdoc": "off",
+    "max-params": [
+      "warn",
+      5
     ]
   },
   "overrides": [

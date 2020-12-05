@@ -22,11 +22,7 @@ export abstract class AbstractRelease implements Release {
         this.fileService.updateJson('ui/package-lock.json', version.raw),
         this.fileService.updateYaml('k8s/manifest.yaml', version.raw),
         this.fileService.updateYaml('k8s/loadgenerator.yaml', version.raw),
-        this.fileService.updateFile(
-          'init.sh',
-          /VERSION="[^"]+"/,
-          `VERSION="${version.raw}"`
-        ),
+        this.fileService.updateFile('init.sh', /VERSION="[^"]+"/, `VERSION="${version.raw}"`),
         this.fileService.updateFile(
           'build.sbt',
           /version := "[^"]+"/,
@@ -41,13 +37,8 @@ export abstract class AbstractRelease implements Release {
       const tag = this.config.tag;
       const errors: string[] = [];
 
-      if (
-        version.prerelease.length === 0 &&
-        this.config.githubToken === undefined
-      ) {
-        errors.push(
-          'Github token is unset, but required for changelog generation'
-        );
+      if (version.prerelease.length === 0 && this.config.githubToken === undefined) {
+        errors.push('Github token is unset, but required for changelog generation');
       }
 
       return this.gitService

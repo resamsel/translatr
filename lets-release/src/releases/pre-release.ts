@@ -36,11 +36,9 @@ export class PreRelease extends AbstractRelease {
   async release(version: SemVer): Promise<unknown> {
     const tag = this.config.tag;
 
-    await run('Committing changes', () =>
-      this.gitService.commit(version.raw, tag)
-    );
+    await run('Committing changes', () => this.gitService.commit(`Bump version to ${tag}`, '.'));
 
-    await run(`Tagging commit with ${tag}`, () => this.gitService.tag(tag));
+    await run(`Tagging commit with ${tag}`, () => this.gitService.addTag(tag));
 
     console.log();
     console.log(`Pre-version ${version.raw} was incremented`);

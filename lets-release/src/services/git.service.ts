@@ -1,4 +1,4 @@
-import simpleGit, { ResetMode, StatusResult, TagResult } from "simple-git";
+import simpleGit, {ResetMode, StatusResult, TagResult} from 'simple-git';
 
 export class GitService {
   private readonly git = simpleGit();
@@ -6,11 +6,8 @@ export class GitService {
   /**
    * Creates a Git commit with the bumped versions included.
    */
-  commit(version: string, tag: string): Promise<string> {
-    return this.git
-      .add(".")
-      .then(() => this.git.commit(`Bump version to ${tag}`))
-      .then(() => version);
+  commit(message: string, ...files: string[]): Promise<unknown> {
+    return this.git.add(files).then(() => this.git.commit(message));
   }
 
   /**
@@ -23,7 +20,7 @@ export class GitService {
   /**
    * Creates a Git tag for the current commit.
    */
-  tag(ref: string): Promise<unknown> {
+  addTag(ref: string): Promise<unknown> {
     return this.git.addTag(ref);
   }
 
@@ -36,22 +33,6 @@ export class GitService {
    */
   addBranch(ref: string): Promise<unknown> {
     return this.git.branch([ref]);
-  }
-
-  /**
-   * Rebases current branch onto given.
-   */
-  rebase(version: string, target: string): Promise<string> {
-    return this.git.rebase([target]).then(() => version);
-  }
-
-  /**
-   * Rebases current branch onto given.
-   */
-  merge(version: string, source: string, target: string): Promise<string> {
-    return this.checkout(source)
-      .then(() => this.git.merge(["--ff-only", target]))
-      .then(() => version);
   }
 
   status(): Promise<StatusResult> {
@@ -70,7 +51,7 @@ export class GitService {
     );
   }
 
-  reset(ref: string, mode: ResetMode) {
-    return this.git.reset(mode, { [ref]: null });
+  reset(ref: string, mode: ResetMode): Promise<unknown> {
+    return this.git.reset(mode, {[ref]: null});
   }
 }
