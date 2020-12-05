@@ -1,36 +1,15 @@
-import {expect} from '@oclif/test';
-import {StatusResult, TagResult} from 'simple-git';
-import {ReleaseConfig} from '../release.config';
-import {ChangelogService} from '../services/changelog.service';
-import {FileService} from '../services/file.service';
-import {GitService} from '../services/git.service';
-import {MajorMinorRelease} from './major-minor-release';
 import {parse, SemVer} from 'semver';
+import {ReleaseConfig} from '../release.config';
+import {setupTestBed, TestBed} from '../testing';
+import {MajorMinorRelease} from './major-minor-release';
+import {ReleaseError} from './release.error';
 
 describe('major-minor-release', () => {
   describe('validate', () => {
-    let gitService: GitService;
-    let fileService: FileService;
-    let changelogService: ChangelogService;
+    let testBed: TestBed;
 
     beforeEach(() => {
-      gitService = {
-        status: async (): Promise<StatusResult> => {
-          return {
-            isClean: () => true,
-          } as StatusResult;
-        },
-        tags: async (): Promise<TagResult> => ({
-          all: [],
-          latest: undefined,
-        }),
-      } as GitService;
-      fileService = {} as FileService;
-      changelogService = {
-        updateChangelog(): Promise<string> {
-          return Promise.resolve('');
-        },
-      };
+      testBed = setupTestBed();
     });
 
     it('should not throw an error when everything okay', async () => {
@@ -43,29 +22,26 @@ describe('major-minor-release', () => {
         tag: 'v1.0.0',
         githubToken: '',
       };
-      gitService.tags = async (): Promise<TagResult> => ({
-        all: [],
-        latest: undefined,
-      });
-      gitService.branch = (): Promise<string> => {
-        return Promise.resolve(config.mainBranch);
-      };
+      testBed.gitService.branch.mockReturnValue(
+        Promise.resolve(config.mainBranch)
+      );
 
       const target = new MajorMinorRelease(
         config,
-        gitService,
-        fileService,
-        changelogService
+        testBed.gitService,
+        testBed.fileService,
+        testBed.changelogService
       );
 
       // when
       const actual = await target
         .validate(version)
-        .then(() => '')
-        .catch(error => error.message);
+        .then(() => new ReleaseError())
+        .catch(error => error);
 
       // then
-      expect(actual).eq('');
+      expect(actual).toBeInstanceOf(ReleaseError);
+      expect(actual.messages).toEqual([]);
     });
 
     it('should throw error when on wrong branch', async () => {
@@ -78,25 +54,28 @@ describe('major-minor-release', () => {
         tag: 'v1.0.0',
         githubToken: '',
       };
-      gitService.branch = async (): Promise<string> => 'wrong-branch';
+      testBed.gitService.branch.mockReturnValue(
+        Promise.resolve('wrong-branch')
+      );
 
       const target = new MajorMinorRelease(
         config,
-        gitService,
-        fileService,
-        changelogService
+        testBed.gitService,
+        testBed.fileService,
+        testBed.changelogService
       );
 
       // when
       const actual = await target
         .validate(version)
-        .then(() => '')
-        .catch(error => error.message);
+        .then(() => new ReleaseError())
+        .catch(error => error);
 
       // then
-      expect(actual).eq(
-        '\n - must be on branch main to create a major or minor release'
-      );
+      expect(actual).toBeInstanceOf(ReleaseError);
+      expect(actual.messages).toEqual([
+        'must be on branch main to create a major or minor release',
+      ]);
     });
 
     it('should throw error when Github token unset', async () => {
@@ -108,25 +87,28 @@ describe('major-minor-release', () => {
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
       };
-      gitService.branch = async (): Promise<string> => config.mainBranch;
+      testBed.gitService.branch.mockReturnValue(
+        Promise.resolve(config.mainBranch)
+      );
 
       const target = new MajorMinorRelease(
         config,
-        gitService,
-        fileService,
-        changelogService
+        testBed.gitService,
+        testBed.fileService,
+        testBed.changelogService
       );
 
       // when
       const actual = await target
         .validate(version)
-        .then(() => '')
-        .catch(error => error.message);
+        .then(() => new ReleaseError())
+        .catch(error => error);
 
       // then
-      expect(actual).eq(
-        '\n - Github token is unset, but required for changelog generation'
-      );
+      expect(actual).toBeInstanceOf(ReleaseError);
+      expect(actual.messages).toEqual([
+        'Github token is unset, but required for changelog generation',
+      ]);
     });
 
     it('should throw error when both wrong branch and Github token unset', async () => {
@@ -138,26 +120,74 @@ describe('major-minor-release', () => {
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
       };
-      gitService.branch = async (): Promise<string> => 'wrong-branch';
+      testBed.gitService.branch.mockReturnValue(
+        Promise.resolve('wrong-branch')
+      );
 
       const target = new MajorMinorRelease(
         config,
-        gitService,
-        fileService,
-        changelogService
+        testBed.gitService,
+        testBed.fileService,
+        testBed.changelogService
       );
 
       // when
       const actual = await target
         .validate(version)
-        .then(() => '')
-        .catch(error => error.message);
+        .then(() => new ReleaseError())
+        .catch(error => error);
 
       // then
-      expect(actual).eq(
-        '\n - Github token is unset, but required for changelog generation' +
-          '\n - must be on branch main to create a major or minor release'
+      expect(actual).toBeInstanceOf(ReleaseError);
+      expect(actual.messages).toEqual([
+        'Github token is unset, but required for changelog generation',
+        'must be on branch main to create a major or minor release',
+      ]);
+    });
+  });
+
+  describe('release', () => {
+    let testBed: TestBed;
+
+    beforeEach(() => {
+      testBed = setupTestBed();
+    });
+
+    it('should not throw an error when everything okay', async () => {
+      // given
+      const version = parse('1.0.0') as SemVer;
+      const config: ReleaseConfig = {
+        mainBranch: 'main',
+        developBranch: 'develop',
+        releaseBranch: 'release/v1.0.0',
+        tag: 'v1.0.0',
+        githubToken: '',
+      };
+      testBed.gitService.tags.mockReturnValue({
+        all: [],
+        latest: undefined,
+      });
+      testBed.gitService.branch.mockReturnValue(
+        Promise.resolve(config.mainBranch)
       );
+
+      const target = new MajorMinorRelease(
+        config,
+        testBed.gitService,
+        testBed.fileService,
+        testBed.changelogService
+      );
+
+      // when
+      await target.release(version);
+
+      // then
+      expect(testBed.changelogService.updateChangelog.mock.calls).toHaveLength(
+        1
+      );
+      expect(testBed.gitService.commit.mock.calls).toHaveLength(1);
+      expect(testBed.gitService.addBranch.mock.calls).toHaveLength(1);
+      expect(testBed.gitService.tag.mock.calls).toHaveLength(1);
     });
   });
 });

@@ -1,9 +1,6 @@
-import {expect} from '@oclif/test';
 import {parse, SemVer} from 'semver';
-import {StatusResult, TagResult} from 'simple-git';
 import {ReleaseConfig} from '../release.config';
-import {FileService} from '../services/file.service';
-import {GitService} from '../services/git.service';
+import {setupTestBed, TestBed} from '../testing';
 import {AbstractRelease} from './abstract-release';
 import {ReleaseError} from './release.error';
 
@@ -15,22 +12,10 @@ class DummyAbstractRelease extends AbstractRelease {
 
 describe('abstract-release', () => {
   describe('validate', () => {
-    let gitService: GitService;
-    let fileService: FileService;
+    let testBed: TestBed;
 
     beforeEach(() => {
-      gitService = {
-        status: async (): Promise<StatusResult> => {
-          return {
-            isClean: () => true,
-          } as StatusResult;
-        },
-        tags: async (): Promise<TagResult> => ({
-          all: [],
-          latest: undefined,
-        }),
-      } as GitService;
-      fileService = {} as FileService;
+      testBed = setupTestBed();
     });
 
     it('should not throw error', async () => {
@@ -43,7 +28,11 @@ describe('abstract-release', () => {
         tag: 'v1.0.0',
         githubToken: '',
       };
-      const target = new DummyAbstractRelease(config, gitService, fileService);
+      const target = new DummyAbstractRelease(
+        config,
+        testBed.gitService,
+        testBed.fileService
+      );
 
       // when
       const actual = await target
@@ -52,7 +41,7 @@ describe('abstract-release', () => {
         .catch(error => error);
 
       // then
-      expect(actual.messages).length(0);
+      expect(actual.messages).toHaveLength(0);
     });
 
     it('should throw error when Github token unset', async () => {
@@ -64,7 +53,11 @@ describe('abstract-release', () => {
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
       };
-      const target = new DummyAbstractRelease(config, gitService, fileService);
+      const target = new DummyAbstractRelease(
+        config,
+        testBed.gitService,
+        testBed.fileService
+      );
 
       // when
       const actual = await target
@@ -73,9 +66,9 @@ describe('abstract-release', () => {
         .catch(error => error);
 
       // then
-      expect(actual.messages[0]).eq(
-        'Github token is unset, but required for changelog generation'
-      );
+      expect(actual.messages).toEqual([
+        'Github token is unset, but required for changelog generation',
+      ]);
     });
 
     it('should throw error when workspace unclean', async () => {
@@ -88,22 +81,27 @@ describe('abstract-release', () => {
         tag: 'v1.0.0',
         githubToken: '',
       };
-      gitService.status = async (): Promise<StatusResult> => {
-        return {
-          isClean: () => false,
-        } as StatusResult;
-      };
+      testBed.gitService.status.mockReturnValue(
+        Promise.resolve({isClean: () => false})
+      );
 
-      const target = new DummyAbstractRelease(config, gitService, fileService);
+      const target = new DummyAbstractRelease(
+        config,
+        testBed.gitService,
+        testBed.fileService
+      );
 
       // when
       const actual = await target
         .validate(version)
-        .then(() => '')
-        .catch(error => error.message);
+        .then(() => new ReleaseError())
+        .catch(error => error);
 
       // then
-      expect(actual).eq('\n - workspace contains uncommitted changes');
+      expect(actual).toBeInstanceOf(ReleaseError);
+      expect(actual.messages).toEqual([
+        'workspace contains uncommitted changes',
+      ]);
     });
 
     it('should throw error when tag already exists', async () => {
@@ -116,23 +114,27 @@ describe('abstract-release', () => {
         tag: 'v1.0.0',
         githubToken: '',
       };
-      gitService.tags = async (): Promise<TagResult> => {
-        return {
+      testBed.gitService.tags.mockReturnValue(
+        Promise.resolve({
           all: [config.tag],
           latest: undefined,
-        };
-      };
+        })
+      );
 
-      const target = new DummyAbstractRelease(config, gitService, fileService);
+      const target = new DummyAbstractRelease(
+        config,
+        testBed.gitService,
+        testBed.fileService
+      );
 
       // when
       const actual = await target
         .validate(version)
-        .then(() => '')
-        .catch(error => error.message);
+        .then(() => new ReleaseError())
+        .catch(error => error);
 
       // then
-      expect(actual).eq(`\n - tag ${config.tag} already exists`);
+      expect(actual.messages).toEqual([`tag ${config.tag} already exists`]);
     });
   });
 });

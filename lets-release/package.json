@@ -16,16 +16,13 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "1.25.1",
-    "@oclif/test": "1.2.8",
-    "@types/chai": "4.2.14",
-    "@types/mocha": "5.2.7",
+    "@types/jest": "26.0.16",
     "@types/node": "10.17.48",
-    "chai": "4.2.0",
     "eslint": "5.16.0",
     "eslint-config-oclif": "3.1.0",
     "eslint-config-oclif-typescript": "0.1.0",
-    "mocha": "5.2.0",
-    "nyc": "14.1.1",
+    "jest": "26.6.3",
+    "ts-jest": "26.4.4",
     "ts-node": "8.10.2",
     "typescript": "3.9.7"
   },
@@ -50,10 +47,37 @@
     "lint": "eslint . --ext .ts --config .eslintrc --fix",
     "lint:fix": "eslint . --ext .ts --config .eslintrc --fix",
     "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"**/*.spec.ts\"",
+    "test": "jest",
     "posttest": "npm run lint",
     "version": "oclif-dev readme && git add README.md",
     "lets-release": "bin/run --dry-run"
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/index.d.ts",
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/*.spec.ts"
+    ],
+    "globals": {
+      "ts-jest": {
+        "babelConfig": true,
+        "tsconfig": "tsconfig.spec.json"
+      }
+    },
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "text-summary"
+    ]
+  }
 }
