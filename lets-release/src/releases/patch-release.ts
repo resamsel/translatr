@@ -1,5 +1,5 @@
-import { SemVer } from "semver";
-import { AbstractRelease } from "./abstract-release.class";
+import {SemVer} from 'semver';
+import {AbstractRelease} from './abstract-release';
 
 /**
  * A patch release involves:
@@ -14,10 +14,10 @@ import { AbstractRelease } from "./abstract-release.class";
  */
 export class PatchRelease extends AbstractRelease {
   validate(version: SemVer): Promise<unknown> {
-    return Promise.reject(new Error("Not implemented"));
+    return Promise.resolve('Not implemented' + version);
   }
 
   release(version: SemVer): Promise<unknown> {
-    return Promise.reject(new Error("Not implemented"));
+    return Promise.resolve('Not implemented' + version);
   }
 }

@@ -8,10 +8,10 @@
   "scripts": {
     "i18n:pull": "./src/python/translatr.py pull && cd ui && npm run i18n:pull",
     "i18n:push": "./src/python/translatr.py push && cd ui && npm run i18n:push",
-    "release:prerelease": "ts-node ./src/typescript/release.ts prerelease",
-    "release:preminor": "ts-node ./src/typescript/release.ts preminor",
-    "release:premajor": "ts-node ./src/typescript/release.ts premajor",
-    "release": "ts-node ./src/typescript/release.ts release",
+    "release:prerelease": "lets-release prerelease",
+    "release:preminor": "lets-release preminor",
+    "release:premajor": "lets-release premajor",
+    "release": "lets-release release",
     "kill:server": "fuser -k 9000/tcp 4200/tcp 4210/tcp 4211/tcp; echo 'ports freed'",
     "precommit": "bin/activator test -Dconfig.file=test.conf",
     "svg-cleanup": "ts-node ./src/typescript/svg-cleanup.ts ui",
@@ -26,6 +26,7 @@
     "codemirror": "^5.28.0",
     "getstream": "^3.5.0",
     "jquery": "^3.5.1",
+    "lets-release": "file:lets-release",
     "materialize-css": "^0.100.2"
   },
   "devDependencies": {

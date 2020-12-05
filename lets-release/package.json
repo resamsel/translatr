@@ -1,0 +1,59 @@
+{
+  "name": "lets-release",
+  "description": "Release workflow for main braching workflow",
+  "version": "0.1.0-1",
+  "author": "René Panzar @resamsel",
+  "bin": {
+    "lets-release": "./bin/run"
+  },
+  "bugs": "https://github.com/resamsel/translatr/issues",
+  "dependencies": {
+    "@oclif/command": "1.8.0",
+    "@oclif/config": "1.17.0",
+    "@oclif/plugin-help": "3.2.0",
+    "simple-git": "2.24.0",
+    "tslib": "1.14.1"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "1.25.1",
+    "@oclif/test": "1.2.8",
+    "@types/chai": "4.2.14",
+    "@types/mocha": "5.2.7",
+    "@types/node": "10.17.48",
+    "chai": "4.2.0",
+    "eslint": "5.16.0",
+    "eslint-config-oclif": "3.1.0",
+    "eslint-config-oclif-typescript": "0.1.0",
+    "mocha": "5.2.0",
+    "nyc": "14.1.1",
+    "ts-node": "8.10.2",
+    "typescript": "3.9.7"
+  },
+  "engines": {
+    "node": ">=10.1.0"
+  },
+  "files": [
+    "/bin",
+    "/lib"
+  ],
+  "homepage": "https://github.com/resamsel/translatr",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/cli.js",
+  "oclif": {
+    "bin": "lets-release"
+  },
+  "repository": "resamsel/translatr",
+  "scripts": {
+    "lint": "eslint . --ext .ts --config .eslintrc --fix",
+    "lint:fix": "eslint . --ext .ts --config .eslintrc --fix",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
+    "test": "nyc --extension .ts mocha --forbid-only \"**/*.spec.ts\"",
+    "posttest": "npm run lint",
+    "version": "oclif-dev readme && git add README.md",
+    "lets-release": "bin/run --dry-run"
+  },
+  "types": "lib/index.d.ts"
+}
