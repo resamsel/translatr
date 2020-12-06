@@ -38,7 +38,9 @@ export class PreRelease extends AbstractRelease {
 
     await run('Committing changes', () => this.gitService.commit(`Bump version to ${tag}`, '.'));
 
-    await run(`Tagging commit with ${tag}`, () => this.gitService.addTag(tag));
+    if (this.config.tagPreRelease) {
+      await run(`Tagging commit with ${tag}`, () => this.gitService.addTag(tag));
+    }
 
     console.log();
     console.log(`Pre-version ${version.raw} was incremented`);

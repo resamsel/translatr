@@ -23,6 +23,7 @@ xdescribe('major-minor-release', () => {
         releaseBranch: 'release/v1.0.1',
         tag: 'v1.0.1',
         githubToken: '',
+        tagPreRelease: false,
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve(config.mainBranch));
 
@@ -48,6 +49,7 @@ xdescribe('major-minor-release', () => {
         releaseBranch: 'release/v1.0.1',
         tag: 'v1.0.1',
         githubToken: '',
+        tagPreRelease: false,
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve('wrong-branch'));
 
@@ -74,6 +76,7 @@ xdescribe('major-minor-release', () => {
         productionBranch: 'production',
         releaseBranch: 'release/v1.0.1',
         tag: 'v1.0.1',
+        tagPreRelease: false,
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve(config.mainBranch));
 
@@ -100,6 +103,7 @@ xdescribe('major-minor-release', () => {
         productionBranch: 'production',
         releaseBranch: 'release/v1.0.1',
         tag: 'v1.0.1',
+        tagPreRelease: false,
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve('wrong-branch'));
 
@@ -138,6 +142,7 @@ xdescribe('major-minor-release', () => {
         releaseBranch: 'release/v1.0.1',
         tag: 'v1.0.1',
         githubToken: '',
+        tagPreRelease: false,
       };
 
       const target = testBed.createTarget(config);

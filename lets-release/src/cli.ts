@@ -30,6 +30,10 @@ class LetsReleaseCommand extends Command {
       description: 'The Github token to use when generating the changelog',
     }),
 
+    'tag-pre-release': flags.boolean({
+      description: 'whether or not put a tag on a pre-release version (default off)',
+    }),
+
     'dry-run': flags.boolean({
       description: 'only update the version, do not commit anything',
     }),
@@ -60,6 +64,7 @@ class LetsReleaseCommand extends Command {
       tag: `v${version.raw}`,
       releaseBranch: `release/v${version.major}.${version.minor}.x`,
       githubToken: command.flags['github-token'],
+      tagPreRelease: command.flags['tag-pre-release'],
     };
 
     const release = releaseFactory.create(version, config);

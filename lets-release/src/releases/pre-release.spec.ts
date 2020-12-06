@@ -30,6 +30,7 @@ describe('pre-release', () => {
         releaseBranch: 'release/v1.0.x',
         tag: 'v1.0.0-0',
         githubToken: '',
+        tagPreRelease: false,
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve(config.mainBranch));
 
@@ -55,6 +56,7 @@ describe('pre-release', () => {
         releaseBranch: 'release/v1.0.x',
         tag: 'v1.0.1-0',
         githubToken: '',
+        tagPreRelease: false,
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve(config.releaseBranch));
 
@@ -96,6 +98,7 @@ describe('pre-release', () => {
         releaseBranch: 'release/v1.0.x',
         tag: 'v1.0.1-0',
         githubToken: '',
+        tagPreRelease: true,
       };
 
       const target = testBed.createTarget(config);

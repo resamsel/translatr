@@ -4,4 +4,5 @@ export interface ReleaseConfig {
   releaseBranch: string;
   tag: string;
   githubToken?: string;
+  tagPreRelease: boolean;
 }

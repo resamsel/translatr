@@ -29,6 +29,7 @@ describe('abstract-release', () => {
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
         githubToken: '',
+        tagPreRelease: false,
       };
 
       const target = testBed.createTarget(config);
@@ -51,6 +52,7 @@ describe('abstract-release', () => {
         productionBranch: 'production',
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
+        tagPreRelease: false,
       };
 
       const target = testBed.createTarget(config);
@@ -76,6 +78,7 @@ describe('abstract-release', () => {
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
         githubToken: '',
+        tagPreRelease: false,
       };
       testBed.gitService.status.mockReturnValue(Promise.resolve({isClean: () => false}));
 
@@ -101,6 +104,7 @@ describe('abstract-release', () => {
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
         githubToken: '',
+        tagPreRelease: false,
       };
       testBed.gitService.tags.mockReturnValue(
         Promise.resolve({
