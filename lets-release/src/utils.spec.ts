@@ -1,4 +1,4 @@
-import {run} from './utils';
+import { run } from './utils';
 
 describe('utils', () => {
   describe('run', () => {

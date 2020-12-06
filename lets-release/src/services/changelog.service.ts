@@ -1,4 +1,4 @@
-import {exec} from 'child_process';
+import { exec } from 'child_process';
 
 export class ChangelogService {
   updateChangelog(version: string): Promise<string> {

@@ -1,10 +1,10 @@
-import {SemVer} from 'semver';
-import {ReleaseConfig} from '../release.config';
-import {ChangelogService} from '../services/changelog.service';
-import {FileService} from '../services/file.service';
-import {GitService} from '../services/git.service';
-import {AbstractRelease} from './abstract-release';
-import {ReleaseError} from './release.error';
+import { SemVer } from 'semver';
+import { ReleaseConfig } from '../release.config';
+import { ChangelogService } from '../services/changelog.service';
+import { FileService } from '../services/file.service';
+import { GitService } from '../services/git.service';
+import { AbstractRelease } from './abstract-release';
+import { ReleaseError } from './release.error';
 
 /**
  * A patch release involves:
@@ -29,7 +29,7 @@ export class PatchRelease extends AbstractRelease {
 
   validate(version: SemVer): Promise<unknown> {
     throw new ReleaseError([
-      'Not implemented' + version + this.changelogService.updateChangelog(version.raw),
+      'Not implemented' + version + this.changelogService.updateChangelog(version.raw)
     ]);
   }
 

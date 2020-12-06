@@ -1,4 +1,4 @@
-import simpleGit, {ResetMode, StatusResult, TagResult} from 'simple-git';
+import simpleGit, { ResetMode, StatusResult, TagResult } from 'simple-git';
 
 export class GitService {
   private readonly git = simpleGit();
@@ -52,6 +52,6 @@ export class GitService {
   }
 
   reset(ref: string, mode: ResetMode): Promise<unknown> {
-    return this.git.reset(mode, {[ref]: null});
+    return this.git.reset(mode, { [ref]: null });
   }
 }

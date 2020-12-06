@@ -1,12 +1,12 @@
-import {SemVer} from 'semver';
-import {ResetMode} from 'simple-git';
-import {ReleaseConfig} from '../release.config';
-import {ChangelogService} from '../services/changelog.service';
-import {FileService} from '../services/file.service';
-import {GitService} from '../services/git.service';
-import {run} from '../utils';
-import {AbstractRelease} from './abstract-release';
-import {ReleaseError} from './release.error';
+import { SemVer } from 'semver';
+import { ResetMode } from 'simple-git';
+import { ReleaseConfig } from '../release.config';
+import { ChangelogService } from '../services/changelog.service';
+import { FileService } from '../services/file.service';
+import { GitService } from '../services/git.service';
+import { run } from '../utils';
+import { AbstractRelease } from './abstract-release';
+import { ReleaseError } from './release.error';
 
 /**
  * A major or minor release involves:
@@ -50,14 +50,14 @@ export class MajorMinorRelease extends AbstractRelease {
     return this.gitService.branch().then(branch => {
       if (branch !== this.config.mainBranch) {
         throw new ReleaseError([
-          `must be on branch ${this.config.mainBranch} to create a major or minor release`,
+          `must be on branch ${this.config.mainBranch} to create a major or minor release`
         ]);
       }
     });
   }
 
   async release(version: SemVer): Promise<unknown> {
-    const {mainBranch, productionBranch, releaseBranch, tag} = this.config;
+    const { mainBranch, productionBranch, releaseBranch, tag } = this.config;
     const branchesToPush = [mainBranch, tag];
 
     await run('Generating changelog', () => this.changelogService.updateChangelog(version.raw));

@@ -1,10 +1,10 @@
-import {SemVer} from 'semver';
-import {ReleaseConfig} from '../release.config';
-import {FileService} from '../services/file.service';
-import {GitService} from '../services/git.service';
-import {run} from '../utils';
-import {Release} from './release';
-import {ReleaseError} from './release.error';
+import { SemVer } from 'semver';
+import { ReleaseConfig } from '../release.config';
+import { FileService } from '../services/file.service';
+import { GitService } from '../services/git.service';
+import { run } from '../utils';
+import { Release } from './release';
+import { ReleaseError } from './release.error';
 
 export abstract class AbstractRelease implements Release {
   constructor(
@@ -27,7 +27,7 @@ export abstract class AbstractRelease implements Release {
           'build.sbt',
           /version := "[^"]+"/,
           `version := "${version.raw}"`
-        ),
+        )
       ])
     );
   }

@@ -1,9 +1,9 @@
-import {SemVer} from 'semver';
-import {ReleaseConfig} from './release.config';
-import {MajorMinorRelease, PatchRelease, PreRelease, Release} from './releases';
-import {ChangelogService} from './services/changelog.service';
-import {FileService} from './services/file.service';
-import {GitService} from './services/git.service';
+import { SemVer } from 'semver';
+import { ReleaseConfig } from './release.config';
+import { MajorMinorRelease, PatchRelease, PreRelease, Release } from './releases';
+import { ChangelogService } from './services/changelog.service';
+import { FileService } from './services/file.service';
+import { GitService } from './services/git.service';
 
 export class ReleaseFactory {
   constructor(

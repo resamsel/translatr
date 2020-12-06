@@ -1,50 +1,50 @@
-import Command, {flags} from '@oclif/command';
-import {ReleaseType} from 'semver';
-import {ChangelogService} from './services/changelog.service';
-import {FileService} from './services/file.service';
-import {ReleaseConfig} from './release.config';
-import {ReleaseFactory} from './release.factory';
-import {GitService} from './services/git.service';
+import Command, { flags } from '@oclif/command';
+import { ReleaseType } from 'semver';
+import { ChangelogService } from './services/changelog.service';
+import { FileService } from './services/file.service';
+import { ReleaseConfig } from './release.config';
+import { ReleaseFactory } from './release.factory';
+import { GitService } from './services/git.service';
 
 class LetsReleaseCommand extends Command {
   static description = 'Generate data (users, projects, locales, keys) by using the API';
 
   static flags = {
-    version: flags.version({char: 'v'}),
-    help: flags.help({char: 'h'}),
+    version: flags.version({ char: 'v' }),
+    help: flags.help({ char: 'h' }),
 
     'main-branch': flags.string({
       char: 'm',
       description: 'The main branch',
-      default: 'main',
+      default: 'main'
     }),
 
     'prod-branch': flags.string({
       char: 'p',
       description: 'The production branch',
-      default: 'production',
+      default: 'production'
     }),
 
     'github-token': flags.string({
       char: 't',
-      description: 'The Github token to use when generating the changelog',
+      description: 'The Github token to use when generating the changelog'
     }),
 
     'tag-pre-release': flags.boolean({
-      description: 'whether or not put a tag on a pre-release version (default off)',
+      description: 'whether or not put a tag on a pre-release version (default off)'
     }),
 
     'dry-run': flags.boolean({
-      description: 'only update the version, do not commit anything',
-    }),
+      description: 'only update the version, do not commit anything'
+    })
   };
 
   static args = [
     {
       name: 'releaseType',
       description: 'The release type to increment the version by.',
-      required: true,
-    },
+      required: true
+    }
   ];
 
   async run() {
@@ -64,7 +64,7 @@ class LetsReleaseCommand extends Command {
       tag: `v${version.raw}`,
       releaseBranch: `release/v${version.major}.${version.minor}.x`,
       githubToken: command.flags['github-token'],
-      tagPreRelease: command.flags['tag-pre-release'],
+      tagPreRelease: command.flags['tag-pre-release']
     };
 
     const release = releaseFactory.create(version, config);

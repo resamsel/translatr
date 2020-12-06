@@ -1,6 +1,6 @@
-import {ChangelogService} from '../changelog.service';
-import {FileService} from '../file.service';
-import {GitService} from '../git.service';
+import { ChangelogService } from '../changelog.service';
+import { FileService } from '../file.service';
+import { GitService } from '../git.service';
 
 export type GitServiceMock = GitService & {
   status: jest.Mock;

@@ -1,7 +1,9 @@
 {
   "extends": [
     "oclif",
-    "oclif-typescript"
+    "oclif-typescript",
+    "prettier",
+    "prettier/@typescript-eslint"
   ],
   "rules": {
     "semi": [

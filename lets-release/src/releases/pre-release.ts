@@ -1,11 +1,11 @@
-import {SemVer} from 'semver';
-import {ReleaseConfig} from '../release.config';
-import {FileService} from '../services/file.service';
-import {GitService} from '../services/git.service';
-import {run} from '../utils';
-import {AbstractRelease} from './abstract-release';
-import {MajorMinorRelease} from './major-minor-release';
-import {PatchRelease} from './patch-release';
+import { SemVer } from 'semver';
+import { ReleaseConfig } from '../release.config';
+import { FileService } from '../services/file.service';
+import { GitService } from '../services/git.service';
+import { run } from '../utils';
+import { AbstractRelease } from './abstract-release';
+import { MajorMinorRelease } from './major-minor-release';
+import { PatchRelease } from './patch-release';
 
 /**
  * A pre-release involves:

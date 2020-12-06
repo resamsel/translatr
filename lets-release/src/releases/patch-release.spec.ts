@@ -1,8 +1,8 @@
-import {parse, SemVer} from 'semver';
-import {ReleaseConfig} from '../release.config';
-import {setupTestBed, TestBed} from '../testing';
-import {PatchRelease} from './patch-release';
-import {ReleaseError} from './release.error';
+import { parse, SemVer } from 'semver';
+import { ReleaseConfig } from '../release.config';
+import { setupTestBed, TestBed } from '../testing';
+import { PatchRelease } from './patch-release';
+import { ReleaseError } from './release.error';
 
 xdescribe('major-minor-release', () => {
   describe('validate', () => {
@@ -23,7 +23,7 @@ xdescribe('major-minor-release', () => {
         releaseBranch: 'release/v1.0.1',
         tag: 'v1.0.1',
         githubToken: '',
-        tagPreRelease: false,
+        tagPreRelease: false
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve(config.mainBranch));
 
@@ -49,7 +49,7 @@ xdescribe('major-minor-release', () => {
         releaseBranch: 'release/v1.0.1',
         tag: 'v1.0.1',
         githubToken: '',
-        tagPreRelease: false,
+        tagPreRelease: false
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve('wrong-branch'));
 
@@ -64,7 +64,7 @@ xdescribe('major-minor-release', () => {
       // then
       expect(actual).toBeInstanceOf(ReleaseError);
       expect(actual.messages).toEqual([
-        `must be on branch ${config.releaseBranch} to create a patch release`,
+        `must be on branch ${config.releaseBranch} to create a patch release`
       ]);
     });
 
@@ -76,7 +76,7 @@ xdescribe('major-minor-release', () => {
         productionBranch: 'production',
         releaseBranch: 'release/v1.0.1',
         tag: 'v1.0.1',
-        tagPreRelease: false,
+        tagPreRelease: false
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve(config.mainBranch));
 
@@ -91,7 +91,7 @@ xdescribe('major-minor-release', () => {
       // then
       expect(actual).toBeInstanceOf(ReleaseError);
       expect(actual.messages).toEqual([
-        'Github token is unset, but required for changelog generation',
+        'Github token is unset, but required for changelog generation'
       ]);
     });
 
@@ -103,7 +103,7 @@ xdescribe('major-minor-release', () => {
         productionBranch: 'production',
         releaseBranch: 'release/v1.0.1',
         tag: 'v1.0.1',
-        tagPreRelease: false,
+        tagPreRelease: false
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve('wrong-branch'));
 
@@ -119,7 +119,7 @@ xdescribe('major-minor-release', () => {
       expect(actual).toBeInstanceOf(ReleaseError);
       expect(actual.messages).toEqual([
         'Github token is unset, but required for changelog generation',
-        `must be on branch ${config.releaseBranch} to create a patch release`,
+        `must be on branch ${config.releaseBranch} to create a patch release`
       ]);
     });
   });
@@ -142,7 +142,7 @@ xdescribe('major-minor-release', () => {
         releaseBranch: 'release/v1.0.1',
         tag: 'v1.0.1',
         githubToken: '',
-        tagPreRelease: false,
+        tagPreRelease: false
       };
 
       const target = testBed.createTarget(config);
@@ -153,7 +153,7 @@ xdescribe('major-minor-release', () => {
       // then
       expect(testBed.changelogService.updateChangelog.mock.calls).toHaveLength(1);
       expect(testBed.gitService.commit.mock.calls).toEqual([
-        [`Bump version to ${config.tag}`, '.'],
+        [`Bump version to ${config.tag}`, '.']
       ]);
       expect(testBed.gitService.addTag.mock.calls).toEqual([[config.tag]]);
     });

@@ -1,5 +1,5 @@
-import {MajorMinorRelease} from '../major-minor-release';
-import {PatchRelease} from '../patch-release';
+import { MajorMinorRelease } from '../major-minor-release';
+import { PatchRelease } from '../patch-release';
 
 export type MajorMinorReleaseMock = MajorMinorRelease & {
   validate: jest.Mock;

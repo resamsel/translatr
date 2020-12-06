@@ -1,5 +1,5 @@
-import {ReleaseConfig} from './release.config';
-import {ChangelogServiceMock, FileServiceMock, GitServiceMock} from './services/testing';
+import { ReleaseConfig } from './release.config';
+import { ChangelogServiceMock, FileServiceMock, GitServiceMock } from './services/testing';
 
 export interface TestBed<T> {
   gitService: GitServiceMock;
@@ -20,22 +20,22 @@ export const setupTestBed = <T>(
       commit: jest.fn(),
       addBranch: jest.fn(),
       addTag: jest.fn(),
-      reset: jest.fn(),
+      reset: jest.fn()
     } as GitServiceMock,
     fileService: {
       updateJson: jest.fn(),
       updateYaml: jest.fn(),
-      updateFile: jest.fn(),
+      updateFile: jest.fn()
     } as FileServiceMock,
     changelogService: {
-      updateChangelog: jest.fn(),
+      updateChangelog: jest.fn()
     } as ChangelogServiceMock,
-    createTarget: (config: ReleaseConfig) => createTarget(config, testBed),
+    createTarget: (config: ReleaseConfig) => createTarget(config, testBed)
   };
 
-  testBed.gitService.status.mockReturnValue(Promise.resolve({isClean: () => true}));
+  testBed.gitService.status.mockReturnValue(Promise.resolve({ isClean: () => true }));
   testBed.gitService.checkout.mockReturnValue(Promise.resolve());
-  testBed.gitService.tags.mockReturnValue(Promise.resolve({all: []}));
+  testBed.gitService.tags.mockReturnValue(Promise.resolve({ all: [] }));
   testBed.gitService.reset.mockReturnValue(Promise.resolve());
 
   return testBed;

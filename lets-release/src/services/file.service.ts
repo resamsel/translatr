@@ -1,18 +1,18 @@
-import {promises} from 'fs';
-import {inc, parse, ReleaseType, SemVer} from 'semver';
+import { promises } from 'fs';
+import { inc, parse, ReleaseType, SemVer } from 'semver';
 
 export class FileService {
   readJson(filename: string): Promise<any> {
-    return promises.readFile(filename, {encoding: 'utf8'}).then(data => JSON.parse(data));
+    return promises.readFile(filename, { encoding: 'utf8' }).then(data => JSON.parse(data));
   }
 
   readAndIncrementVersion(releaseType: ReleaseType): Promise<SemVer> {
     return this.readJson('package.json')
       .then(json => ({
         current: json.version,
-        incremented: inc(json.version, releaseType),
+        incremented: inc(json.version, releaseType)
       }))
-      .then(({current, incremented}) => {
+      .then(({ current, incremented }) => {
         if (incremented === null) {
           throw new Error(`Cannot increment version ${current} (${releaseType})`);
         }
@@ -32,21 +32,21 @@ export class FileService {
 
   updateJson(filename: string, version: string): Promise<void> {
     return this.readJson(filename)
-      .then(json => ({...json, version}))
+      .then(json => ({ ...json, version }))
       .then(json => JSON.stringify(json, null, 2))
       .then(s => promises.writeFile(filename, s + '\n'));
   }
 
   updateFile(filename: string, searchValue: RegExp, replaceValue: string): Promise<void> {
     return promises
-      .readFile(filename, {encoding: 'utf8'})
+      .readFile(filename, { encoding: 'utf8' })
       .then(data => data.replace(searchValue, replaceValue))
       .then(s => promises.writeFile(filename, s));
   }
 
   updateYaml(filename: string, version: string): Promise<void> {
     return promises
-      .readFile(filename, {encoding: 'utf8'})
+      .readFile(filename, { encoding: 'utf8' })
       .then(data => data.replace(/resamsel\/translatr:.*/, `resamsel/translatr:${version}`))
       .then(data =>
         data.replace(

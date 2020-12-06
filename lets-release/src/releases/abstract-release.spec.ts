@@ -1,8 +1,8 @@
-import {parse, SemVer} from 'semver';
-import {ReleaseConfig} from '../release.config';
-import {setupTestBed, TestBed} from '../testing';
-import {AbstractRelease} from './abstract-release';
-import {ReleaseError} from './release.error';
+import { parse, SemVer } from 'semver';
+import { ReleaseConfig } from '../release.config';
+import { setupTestBed, TestBed } from '../testing';
+import { AbstractRelease } from './abstract-release';
+import { ReleaseError } from './release.error';
 
 class DummyAbstractRelease extends AbstractRelease {
   release(version: SemVer): Promise<unknown> {
@@ -29,7 +29,7 @@ describe('abstract-release', () => {
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
         githubToken: '',
-        tagPreRelease: false,
+        tagPreRelease: false
       };
 
       const target = testBed.createTarget(config);
@@ -52,7 +52,7 @@ describe('abstract-release', () => {
         productionBranch: 'production',
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
-        tagPreRelease: false,
+        tagPreRelease: false
       };
 
       const target = testBed.createTarget(config);
@@ -65,7 +65,7 @@ describe('abstract-release', () => {
 
       // then
       expect(actual.messages).toEqual([
-        'Github token is unset, but required for changelog generation',
+        'Github token is unset, but required for changelog generation'
       ]);
     });
 
@@ -78,9 +78,9 @@ describe('abstract-release', () => {
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
         githubToken: '',
-        tagPreRelease: false,
+        tagPreRelease: false
       };
-      testBed.gitService.status.mockReturnValue(Promise.resolve({isClean: () => false}));
+      testBed.gitService.status.mockReturnValue(Promise.resolve({ isClean: () => false }));
 
       const target = testBed.createTarget(config);
 
@@ -104,12 +104,12 @@ describe('abstract-release', () => {
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
         githubToken: '',
-        tagPreRelease: false,
+        tagPreRelease: false
       };
       testBed.gitService.tags.mockReturnValue(
         Promise.resolve({
           all: [config.tag],
-          latest: undefined,
+          latest: undefined
         })
       );
 
