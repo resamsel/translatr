@@ -1,6 +1,15 @@
 import { ReleaseConfig } from './release.config';
 import { ChangelogServiceMock, FileServiceMock, GitServiceMock } from './services/testing';
 
+export const defaultConfig: ReleaseConfig = {
+  mainBranch: 'main',
+  productionBranch: 'production',
+  releaseBranch: 'release/v',
+  tag: 'v',
+  tagPreRelease: false,
+  update: []
+};
+
 export interface TestBed<T> {
   gitService: GitServiceMock;
   fileService: FileServiceMock;

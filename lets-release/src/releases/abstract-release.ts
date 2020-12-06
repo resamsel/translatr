@@ -2,6 +2,7 @@ import { SemVer } from 'semver';
 import { ReleaseConfig } from '../release.config';
 import { FileService } from '../services/file.service';
 import { GitService } from '../services/git.service';
+import { FileUpdate, VersionUpdateType } from '../version.update';
 import { run } from '../utils';
 import { Release } from './release';
 import { ReleaseError } from './release.error';
@@ -16,18 +17,18 @@ export abstract class AbstractRelease implements Release {
   updateVersion(version: SemVer): Promise<unknown> {
     return run(`Bumping version to ${this.config.tag}`, () =>
       Promise.all([
-        this.fileService.updateJson('package.json', version.raw),
-        this.fileService.updateJson('package-lock.json', version.raw),
-        this.fileService.updateJson('ui/package.json', version.raw),
-        this.fileService.updateJson('ui/package-lock.json', version.raw),
-        this.fileService.updateYaml('k8s/manifest.yaml', version.raw),
-        this.fileService.updateYaml('k8s/loadgenerator.yaml', version.raw),
-        this.fileService.updateFile('init.sh', /VERSION="[^"]+"/, `VERSION="${version.raw}"`),
-        this.fileService.updateFile(
-          'build.sbt',
-          /version := "[^"]+"/,
-          `version := "${version.raw}"`
-        )
+        ...this.config.update
+          .filter(update => update.type === VersionUpdateType.JSON)
+          .map(update => this.fileService.updateJson(update.file, version.raw)),
+        ...this.config.update
+          .filter(update => update.type === VersionUpdateType.FILE)
+          .map((update: FileUpdate) =>
+            this.fileService.updateFile(
+              update.file,
+              new RegExp(update.search),
+              update.replace.replace('{{version}}', version.raw)
+            )
+          )
       ])
     );
   }

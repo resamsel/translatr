@@ -1,7 +1,7 @@
 import { parse, SemVer } from 'semver';
 import { ResetMode } from 'simple-git';
 import { ReleaseConfig } from '../release.config';
-import { setupTestBed, TestBed } from '../testing';
+import { defaultConfig, setupTestBed, TestBed } from '../testing';
 import { MajorMinorRelease } from './major-minor-release';
 import { ReleaseError } from './release.error';
 
@@ -20,12 +20,10 @@ describe('major-minor-release', () => {
       // given
       const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: 'main',
-        productionBranch: 'production',
+        ...defaultConfig,
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
-        githubToken: '',
-        tagPreRelease: false
+        githubToken: ''
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve(config.mainBranch));
 
@@ -46,12 +44,10 @@ describe('major-minor-release', () => {
       // given
       const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: 'main',
-        productionBranch: 'production',
+        ...defaultConfig,
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
-        githubToken: '',
-        tagPreRelease: false
+        githubToken: ''
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve('wrong-branch'));
 
@@ -74,11 +70,9 @@ describe('major-minor-release', () => {
       // given
       const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: 'main',
-        productionBranch: 'production',
+        ...defaultConfig,
         releaseBranch: 'release/v1.0.0',
-        tag: 'v1.0.0',
-        tagPreRelease: false
+        tag: 'v1.0.0'
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve(config.mainBranch));
 
@@ -101,11 +95,9 @@ describe('major-minor-release', () => {
       // given
       const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: 'main',
-        productionBranch: 'production',
+        ...defaultConfig,
         releaseBranch: 'release/v1.0.0',
-        tag: 'v1.0.0',
-        tagPreRelease: false
+        tag: 'v1.0.0'
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve('wrong-branch'));
 
@@ -140,12 +132,10 @@ describe('major-minor-release', () => {
       // given
       const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: 'main',
-        productionBranch: 'production',
+        ...defaultConfig,
         releaseBranch: 'release/v1.0.0',
         tag: 'v1.0.0',
-        githubToken: '',
-        tagPreRelease: false
+        githubToken: ''
       };
 
       const target = testBed.createTarget(config);

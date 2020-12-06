@@ -51,7 +51,7 @@
     "test": "jest",
     "posttest": "npm run lint",
     "version": "oclif-dev readme && git add README.md",
-    "lets-release": "bin/run --dry-run"
+    "lets-release": "bin/run --dry-run prepatch"
   },
   "types": "lib/index.d.ts",
   "jest": {

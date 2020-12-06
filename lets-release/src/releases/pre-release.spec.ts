@@ -1,6 +1,6 @@
 import { parse, SemVer } from 'semver';
 import { ReleaseConfig } from '../release.config';
-import { setupTestBed, TestBed } from '../testing';
+import { defaultConfig, setupTestBed, TestBed } from '../testing';
 import { PreRelease } from './pre-release';
 import { ReleaseError } from './release.error';
 import { MajorMinorReleaseMock, PatchReleaseMock } from './testing';
@@ -25,12 +25,10 @@ describe('pre-release', () => {
       // given
       const version = parse('1.0.0-0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: 'main',
-        productionBranch: 'production',
+        ...defaultConfig,
         releaseBranch: 'release/v1.0.x',
         tag: 'v1.0.0-0',
-        githubToken: '',
-        tagPreRelease: false
+        githubToken: ''
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve(config.mainBranch));
 
@@ -51,12 +49,10 @@ describe('pre-release', () => {
       // given
       const version = parse('1.0.1-0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: 'main',
-        productionBranch: 'production',
+        ...defaultConfig,
         releaseBranch: 'release/v1.0.x',
         tag: 'v1.0.1-0',
-        githubToken: '',
-        tagPreRelease: false
+        githubToken: ''
       };
       testBed.gitService.branch.mockReturnValue(Promise.resolve(config.releaseBranch));
 
@@ -93,8 +89,7 @@ describe('pre-release', () => {
       // given
       const version = parse('1.0.1-0') as SemVer;
       const config: ReleaseConfig = {
-        mainBranch: 'main',
-        productionBranch: 'production',
+        ...defaultConfig,
         releaseBranch: 'release/v1.0.x',
         tag: 'v1.0.1-0',
         githubToken: '',

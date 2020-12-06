@@ -27,10 +27,9 @@ export class PatchRelease extends AbstractRelease {
     super(config, gitService, fileService);
   }
 
-  validate(version: SemVer): Promise<unknown> {
-    throw new ReleaseError([
-      'Not implemented' + version + this.changelogService.updateChangelog(version.raw)
-    ]);
+  async validate(version: SemVer): Promise<unknown> {
+    await this.changelogService.updateChangelog(this.config);
+    throw new ReleaseError(['Not implemented' + version]);
   }
 
   release(version: SemVer): Promise<unknown> {

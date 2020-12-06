@@ -13,6 +13,18 @@ class LetsReleaseCommand extends Command {
     version: flags.version({ char: 'v' }),
     help: flags.help({ char: 'h' }),
 
+    config: flags.string({
+      char: 'c',
+      description: 'The config JSON to read version updates from',
+      default: 'release.json'
+    }),
+
+    'version-file': flags.string({
+      char: 'V',
+      description: 'The JSON file where the current version is read from ($.version)',
+      default: 'package.json'
+    }),
+
     'main-branch': flags.string({
       char: 'm',
       description: 'The main branch',
@@ -57,8 +69,10 @@ class LetsReleaseCommand extends Command {
 
     const type =
       command.args.releaseType === 'release' ? 'patch' : (command.args.releaseType as ReleaseType);
-    const version = await fileService.readAndIncrementVersion(type);
+    const version = await fileService.readAndIncrementVersion(command.flags['version-file'], type);
+    const defaultConfig = await fileService.readJson(command.flags.config);
     const config: ReleaseConfig = {
+      ...defaultConfig,
       mainBranch: command.flags['main-branch'],
       productionBranch: command.flags['prod-branch'],
       tag: `v${version.raw}`,

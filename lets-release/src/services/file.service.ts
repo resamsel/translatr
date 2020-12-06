@@ -6,8 +6,8 @@ export class FileService {
     return promises.readFile(filename, { encoding: 'utf8' }).then(data => JSON.parse(data));
   }
 
-  readAndIncrementVersion(releaseType: ReleaseType): Promise<SemVer> {
-    return this.readJson('package.json')
+  readAndIncrementVersion(filename: string, releaseType: ReleaseType): Promise<SemVer> {
+    return this.readJson(filename)
       .then(json => ({
         current: json.version,
         incremented: inc(json.version, releaseType)

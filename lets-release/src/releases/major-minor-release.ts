@@ -60,7 +60,7 @@ export class MajorMinorRelease extends AbstractRelease {
     const { mainBranch, productionBranch, releaseBranch, tag } = this.config;
     const branchesToPush = [mainBranch, tag];
 
-    await run('Generating changelog', () => this.changelogService.updateChangelog(version.raw));
+    await run('Generating changelog', () => this.changelogService.updateChangelog(this.config));
 
     await run('Committing changes', () => this.gitService.commit(`Bump version to ${tag}`, '.'));
 

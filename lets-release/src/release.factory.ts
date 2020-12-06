@@ -14,16 +14,13 @@ export class ReleaseFactory {
 
   create(version: SemVer, config: ReleaseConfig): Release {
     if (version.prerelease.length > 0) {
-      console.debug('Using pre release');
       return this.createPreRelease(config);
     }
 
     if (version.patch === 0) {
-      console.debug('Using major/minor release');
       return this.createMajorMinorRelease(config);
     }
 
-    console.debug('Using patch release');
     return this.createPatchRelease(config);
   }
 
@@ -42,6 +39,6 @@ export class ReleaseFactory {
   }
 
   private createPatchRelease(config: ReleaseConfig): PatchRelease {
-    return new PatchRelease(config, this.gitService, this.fileService);
+    return new PatchRelease(config, this.gitService, this.fileService, this.changelogService);
   }
 }
