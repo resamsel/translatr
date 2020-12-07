@@ -7,5 +7,10 @@
   "video": true,
   "videosFolder": "../../dist/out-tsc/apps/translatr-admin-e2e/videos",
   "screenshotsFolder": "../../dist/out-tsc/apps/translatr-admin-e2e/screenshots",
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "projectId": "hhbnaa",
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "tmp/junit.xml"
+  }
 }

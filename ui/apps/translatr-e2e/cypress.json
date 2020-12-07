@@ -8,5 +8,9 @@
   "videosFolder": "../../dist/cypress/apps/translatr-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/translatr-e2e/screenshots",
   "chromeWebSecurity": false,
-  "projectId": "hhbnaa"
+  "projectId": "hhbnaa",
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "tmp/junit.xml"
+  }
 }
