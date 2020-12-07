@@ -15,7 +15,6 @@
     "kill:server": "fuser -k 9000/tcp 4200/tcp 4210/tcp 4211/tcp; echo 'ports freed'",
     "precommit": "bin/activator test -Dconfig.file=test.conf",
     "svg-cleanup": "ts-node ./src/typescript/svg-cleanup.ts ui",
-    "build": "subpkg run build",
     "build:docker": "bin/activator stage docker:publishLocal",
     "publish:docker": "docker push resamsel/$npm_package_name:$npm_package_version",
     "generate:changelog": "github_changelog_generator --future-release=$npm_package_version",
