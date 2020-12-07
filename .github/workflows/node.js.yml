@@ -30,11 +30,19 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install, build, and test
+    - name: Install
+      run: npm install
+    - name: Build, test and publish coverage translatr-ui
       working-directory: ui
       env:
         COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
       run: |
-        npm install
-        npm run build:ci
+        npm run build
+        npm run coveralls
+    - name: Build, test and publish coverage lets-release
+      working-directory: lets-release
+      env:
+        COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
+      run: |
+        npm run build
         npm run coveralls

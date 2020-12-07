@@ -36,5 +36,5 @@ jobs:
       before_install:
         - cd ui
       script:
-        - npm run build:ci
+        - npm run build
         - npm run coveralls

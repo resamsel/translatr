@@ -18,6 +18,7 @@
     "@oclif/dev-cli": "1.25.1",
     "@types/jest": "26.0.16",
     "@types/node": "10.17.48",
+    "coveralls": "3.1.0",
     "eslint": "5.16.0",
     "eslint-config-oclif": "3.1.0",
     "eslint-config-oclif-typescript": "0.1.0",
@@ -49,7 +50,8 @@
     "lint:fix": "npm run lint -- --fix",
     "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
     "pretest": "npm run lint",
-    "test": "jest",
+    "test": "jest --coverage",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
     "version": "oclif-dev readme && git add README.md",
     "build": "npm run test",
     "lets-release": "bin/run --dry-run prepatch"
