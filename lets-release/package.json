@@ -48,9 +48,10 @@
     "lint": "eslint . --ext .ts --config .eslintrc",
     "lint:fix": "npm run lint -- --fix",
     "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
+    "pretest": "npm run lint",
     "test": "jest",
-    "posttest": "npm run lint",
     "version": "oclif-dev readme && git add README.md",
+    "build": "npm run test",
     "lets-release": "bin/run --dry-run prepatch"
   },
   "types": "lib/index.d.ts",
