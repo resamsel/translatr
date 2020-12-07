@@ -37,6 +37,7 @@ jobs:
       env:
         COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
       run: |
+        npm install
         npm run build
         npm run coveralls
     - name: Build, test and publish coverage lets-release
