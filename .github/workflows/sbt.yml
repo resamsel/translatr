@@ -29,3 +29,10 @@ jobs:
 
     - name: Test
       run: bin/activator test -Dconfig.file=test.conf
+
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1.6
+      if: always()
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        files: target/test-reports/*.xml

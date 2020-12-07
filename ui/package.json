@@ -159,12 +159,14 @@
     "husky": "4.2.5",
     "jasmine-marbles": "^0.6.0",
     "jest": "^24.9.0",
+    "jest-junit": "12.0.0",
     "jest-preset-angular": "7.1.1",
     "lint-staged": "9.5.0",
     "ngx-build-plus": "^9.0.2",
     "prettier": "1.19.1",
     "pretty-quick": "2.0.1",
     "rxjs-tslint-rules": "4.32.0",
+    "svg-to-ts": "^5.0.0",
     "ts-jest": "^24.3.0",
     "ts-node": "~7.0.0",
     "tsconfig-paths": "^3.9.0",
@@ -173,8 +175,7 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "2.3.0",
     "typescript": "3.8.3",
-    "webpack-bundle-analyzer": "3.7.0",
-    "svg-to-ts": "^5.0.0"
+    "webpack-bundle-analyzer": "3.7.0"
   },
   "files": [
     "/dist/lets-generate"
