@@ -33,7 +33,7 @@ object FrontendRunHook {
         * Run npm install if node modules are not installed.
         */
       override def beforeStarted(): Unit = {
-        if (!(base / "ui" / "node_modules").exists()) Process(npmInstall, base / "ui").!
+        Process(npmInstall, base / "ui").!
       }
 
       /**
