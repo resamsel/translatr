@@ -4,7 +4,10 @@ module.exports = {
   coverageDirectory: '../../coverage/libs/generator',
   reporters: [
     'default',
-    ['jest-junit', { suiteName: 'generator', outputDirectory: 'tmp/generator' }]
+    [
+      'jest-junit',
+      { suiteName: 'generator', outputDirectory: 'tmp/test-reports', outputName: 'generator.xml' }
+    ]
   ],
   snapshotSerializers: [
     'jest-preset-angular/AngularSnapshotSerializer.js',

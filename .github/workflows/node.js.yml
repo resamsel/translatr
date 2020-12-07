@@ -55,3 +55,27 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         files: ./**/junit.xml
+
+    - name: Generate Report UI
+      id: xunit-viewer
+      uses: AutoModality/action-xunit-viewer@v1
+      with:
+        results: ui/tmp/test-reports
+        output: test-report-ui.html
+    - name: Attach Report UI
+      uses: actions/upload-artifact@v1
+      with:
+        name: test-report-ui
+        path: test-report-ui.html
+
+    - name: Generate Report Lets Release
+      id: xunit-viewer
+      uses: AutoModality/action-xunit-viewer@v1
+      with:
+        results: lets-release/tmp/test-reports
+        output: test-report-lets-release.html
+    - name: Attach Report Lets Release
+      uses: actions/upload-artifact@v1
+      with:
+        name: test-report-lets-release
+        path: test-report-lets-release.html

@@ -4,6 +4,9 @@ module.exports = {
   coverageDirectory: '../../coverage/libs/node-utils',
   reporters: [
     'default',
-    ['jest-junit', { suiteName: 'node-utils', outputDirectory: 'tmp/node-utils' }]
+    [
+      'jest-junit',
+      { suiteName: 'node-utils', outputDirectory: 'tmp/test-reports', outputName: 'node-utils.xml' }
+    ]
   ]
 };

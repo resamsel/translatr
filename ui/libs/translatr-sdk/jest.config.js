@@ -4,6 +4,13 @@ module.exports = {
   coverageDirectory: '../../coverage/libs/translatr-sdk',
   reporters: [
     'default',
-    ['jest-junit', { suiteName: 'translatr-sdk', outputDirectory: 'tmp/translatr-sdk' }]
+    [
+      'jest-junit',
+      {
+        suiteName: 'translatr-sdk',
+        outputDirectory: 'tmp/test-reports',
+        outputName: 'translatr-sdk.xml'
+      }
+    ]
   ]
 };

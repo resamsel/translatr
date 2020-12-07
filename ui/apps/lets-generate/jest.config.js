@@ -4,6 +4,13 @@ module.exports = {
   coverageDirectory: '../../coverage/apps/lets-generate',
   reporters: [
     'default',
-    ['jest-junit', { suiteName: 'lets-generate', outputDirectory: 'tmp/lets-generate' }]
+    [
+      'jest-junit',
+      {
+        suiteName: 'lets-generate',
+        outputDirectory: 'tmp/test-reports',
+        outputName: 'lets-generate.xml'
+      }
+    ]
   ]
 };

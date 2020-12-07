@@ -6,7 +6,11 @@ module.exports = {
     'default',
     [
       'jest-junit',
-      { suiteName: 'translatr-components', outputDirectory: 'tmp/translatr-components' }
+      {
+        suiteName: 'translatr-components',
+        outputDirectory: 'tmp/test-reports',
+        outputName: 'translatr-components.xml'
+      }
     ]
   ]
 };

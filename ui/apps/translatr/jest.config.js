@@ -4,7 +4,14 @@ module.exports = {
   coverageDirectory: '../../coverage/apps/translatr',
   reporters: [
     'default',
-    ['jest-junit', { suiteName: 'translatr-ui', outputDirectory: 'tmp/translatr' }]
+    [
+      'jest-junit',
+      {
+        suiteName: 'translatr-ui',
+        outputDirectory: 'tmp/test-reports',
+        outputName: 'translatr.xml'
+      }
+    ]
   ],
   snapshotSerializers: [
     // TODO: replace these commented serializers with the ones below after switching to Angular 9

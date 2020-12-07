@@ -36,3 +36,15 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         files: target/test-reports/*.xml
+
+    - name: Generate Report
+      id: xunit-viewer
+      uses: AutoModality/action-xunit-viewer@v1
+      with:
+        results: target/test-reports
+        output: test-report-sbt.html
+    - name: Attach Report
+      uses: actions/upload-artifact@v1
+      with:
+        name: test-report-sbt
+        path: test-report-sbt.html

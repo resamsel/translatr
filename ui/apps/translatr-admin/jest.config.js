@@ -4,7 +4,14 @@ module.exports = {
   coverageDirectory: '../../coverage/apps/translatr-admin/',
   reporters: [
     'default',
-    ['jest-junit', { suiteName: 'translatr-admin', outputDirectory: 'tmp/translatr-admin' }]
+    [
+      'jest-junit',
+      {
+        suiteName: 'translatr-admin',
+        outputDirectory: 'tmp/test-reports',
+        outputName: 'translatr-admin.xml'
+      }
+    ]
   ],
   snapshotSerializers: [
     'jest-preset-angular/AngularSnapshotSerializer.js',
