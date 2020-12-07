@@ -46,5 +46,5 @@ jobs:
     - name: Attach Report
       uses: actions/upload-artifact@v1
       with:
-        name: test-report-sbt
-        path: test-report-sbt.html
+        name: ${{ steps.xunit-viewer.outputs.report-name }}
+        path: ${{ steps.xunit-viewer.outputs.report-file }}
