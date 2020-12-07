@@ -88,6 +88,6 @@
   },
   "jest-junit": {
     "suiteName": "Let's Release Tests",
-    "outputDirectory": "tmp"
+    "outputDirectory": "tmp/test-reports"
   }
 }

@@ -11,6 +11,6 @@
   "projectId": "hhbnaa",
   "reporter": "junit",
   "reporterOptions": {
-    "mochaFile": "tmp/junit.xml"
+    "mochaFile": "tmp/test-reports/junit.xml"
   }
 }

@@ -33,17 +33,12 @@ jobs:
 
     - name: Build translatr-ui
       working-directory: ui
-      env:
-        COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
       run: |
         npm install
         npm run build
-        npm run coveralls
 
     - name: Build lets-release
       working-directory: lets-release
-      env:
-        COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
       run: |
         npm install
         npm run build
@@ -54,7 +49,7 @@ jobs:
       if: always()
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        files: ./**/junit.xml
+        files: ./**/test-reports/*.xml
 
     - name: Generate Report UI
       id: xunit-viewer-ui
