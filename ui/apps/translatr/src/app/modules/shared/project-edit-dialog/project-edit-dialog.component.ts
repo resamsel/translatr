@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Project } from '@dev/translatr-model';
 import { AppFacade } from '../../../+state/app.facade';
-import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
+import { BaseEditFormComponent } from '../edit-form/base-edit-form.component';
 
 @Component({
   selector: 'app-protect-creation-dialog',

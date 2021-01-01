@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Locale } from '@dev/translatr-model';
 import { Observable } from 'rxjs';
-import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
+import { BaseEditFormComponent } from '../edit-form/base-edit-form.component';
 import { ProjectFacade } from '../project-state/+state';
 
 interface Data {

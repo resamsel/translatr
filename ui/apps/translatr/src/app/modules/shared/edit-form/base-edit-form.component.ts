@@ -46,7 +46,7 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
     this.form.patchValue(data);
     result$
       .pipe(
-        filter(([result, error]) => !!result || !!error),
+        filter(([result, error]) => this.processing && (Boolean(result) || Boolean(error))),
         takeUntil(this.destroy$)
       )
       .subscribe(([r, error]: [R, { error: Error }]) => {

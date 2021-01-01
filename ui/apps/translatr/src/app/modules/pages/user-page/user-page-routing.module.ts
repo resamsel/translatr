@@ -50,6 +50,11 @@ const routes: Routes = [
             canActivate: [MyselfGuard]
           },
           {
+            path: 'create',
+            component: UserAccessTokenComponent,
+            canActivate: [MyselfGuard]
+          },
+          {
             path: ':id',
             component: UserAccessTokenComponent,
             canActivate: [MyselfGuard]

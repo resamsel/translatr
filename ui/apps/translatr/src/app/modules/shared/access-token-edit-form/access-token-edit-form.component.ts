@@ -5,7 +5,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AccessToken, Scope, scopes } from '@dev/translatr-model';
 import { UserFacade } from '../../pages/user-page/+state/user.facade';
-import { BaseEditFormComponent } from '../edit-form/base-edit-form-component';
+import { BaseEditFormComponent } from '../edit-form/base-edit-form.component';
 
 const distinct = <T>(value: T, index: number, self: T[]) => self.indexOf(value) === index;
 

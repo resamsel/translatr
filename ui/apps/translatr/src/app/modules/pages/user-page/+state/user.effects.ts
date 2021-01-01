@@ -134,12 +134,25 @@ export class UserEffects {
   loadAccessToken = createEffect(() =>
     this.actions$.pipe(
       ofType(loadAccessToken),
-      switchMap(action =>
-        this.accessTokenService.get(action.id).pipe(
+      withLatestFrom(this.appFacade.me$),
+      switchMap(([action, me]) => {
+        if (action.id === undefined) {
+          return of(
+            accessTokenLoaded({
+              accessToken: {
+                userId: me.id,
+                name: '',
+                scope: ''
+              }
+            })
+          );
+        }
+
+        return this.accessTokenService.get(action.id).pipe(
           map((accessToken: AccessToken) => accessTokenLoaded({ accessToken })),
           catchError(error => of(accessTokenLoadError(error)))
-        )
-      )
+        );
+      })
     )
   );
 

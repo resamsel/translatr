@@ -1,7 +1,7 @@
 <form [formGroup]="form">
   <section class="name">
-    <mat-form-field>
-      <h2 transloco="accessToken.name">Name</h2>
+    <mat-form-field appearance="outline">
+      <mat-label transloco="accessToken.name">Name</mat-label>
       <input
         matInput
         type="text"
@@ -9,13 +9,13 @@
         formControlName="name">
       <mat-error
         *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']">
-        {{ nameFormControl.errors['violation'] }}</mat-error>
+        {{ nameFormControl.errors["violation"] }}</mat-error>
     </mat-form-field>
   </section>
 
   <section *ngIf="form.value.id" class="key">
-    <mat-form-field>
-      <h2 transloco="accessToken.key">Key</h2>
+    <mat-form-field appearance="outline">
+      <mat-label transloco="accessToken.key">Key</mat-label>
       <input [readonly]="true" formControlName="key" matInput type="text">
     </mat-form-field>
   </section>
