@@ -145,7 +145,7 @@ export class AbstractService<DTO, CRITERIA extends RequestCriteria> {
       );
   }
 
-  deleteAll(ids: Array<string | number>): Observable<DTO[]> {
+  deleteAll(ids: (string | number)[]): Observable<DTO[]> {
     return combineLatest(ids.map((id: string | number) => this.delete(id)));
   }
 }

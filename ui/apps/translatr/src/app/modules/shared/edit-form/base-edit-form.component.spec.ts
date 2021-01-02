@@ -1,4 +1,4 @@
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -9,6 +9,7 @@ import { BaseEditFormComponent } from './base-edit-form.component';
 
 interface DummyEntity extends Identifiable {}
 
+@Component({ template: '' })
 class DummyEditFormComponent extends BaseEditFormComponent<DummyEditFormComponent, DummyEntity> {
   constructor(
     snackBar: MatSnackBar,

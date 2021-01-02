@@ -46,7 +46,7 @@ export class UserInfoComponent implements OnInit {
     private readonly router: Router,
     private readonly injector: Injector,
     private readonly route: ActivatedRoute,
-    @Inject(USER_ROUTES) private routes: Array<{ children: NameIconRoute[] }>
+    @Inject(USER_ROUTES) private routes: { children: NameIconRoute[] }[]
   ) {}
 
   ngOnInit() {

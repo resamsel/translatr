@@ -54,7 +54,7 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     private readonly facade: ProjectFacade,
     private readonly appFacade: AppFacade,
     private readonly translocoService: TranslocoService,
-    @Inject(PROJECT_ROUTES) private routes: Array<{ children: NameIconRoute[] }>
+    @Inject(PROJECT_ROUTES) private routes: { children: NameIconRoute[] }[]
   ) {}
 
   ngOnInit(): void {

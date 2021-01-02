@@ -33,7 +33,7 @@ export class LocaleListComponent {
   trackByFn = trackByFn;
   // @ts-ignore
   @HostBinding('style.display') private readonly display = 'block';
-  readonly fileTypes: Array<{ type: string; name: string }> = fileTypes.map(fileType => ({
+  readonly fileTypes: { type: string; name: string }[] = fileTypes.map(fileType => ({
     type: fileType,
     name: fileTypeNames[fileType]
   }));
