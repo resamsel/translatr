@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostListener, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, HostListener, Injectable, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -26,7 +26,7 @@ const getViolations = (
   return undefined;
 };
 
-@Component({ template: '' })
+@Injectable()
 export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends Identifiable = F>
   implements OnDestroy {
   processing = false;

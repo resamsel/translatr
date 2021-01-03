@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener } from '@angular/core';
+import { EventEmitter, HostListener, Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -11,7 +11,7 @@ const ENTER_KEYCODE = 'Enter';
 /**
  * deprecated: Use BaseEditFormComponent instead!
  */
-@Component({ template: '' })
+@Injectable()
 export abstract class AbstractEditFormComponent<
   T,
   F extends Identifiable,

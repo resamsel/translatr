@@ -15,7 +15,6 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatOptionSelectionChange, ThemePalette } from '@angular/material/core';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
-import { isArray } from 'util';
 import { FilterFieldFilter } from './filter-field-filter';
 
 const lowerCaseIncludes = (s: string, search: string): boolean =>
@@ -65,7 +64,7 @@ export class FilterFieldComponent implements OnInit {
 
   @Input() set selection(selection: ReadonlyArray<FilterFieldFilter>) {
     this._selection = selection;
-    this._options = isArray(selection) ? selection : [];
+    this._options = Array.isArray(selection) ? selection : [];
   }
 
   @Output() selected = new EventEmitter<ReadonlyArray<FilterFieldFilter>>();

@@ -20,6 +20,8 @@ import { filter, skip, take } from 'rxjs/operators';
 import { EditorFacade } from '../+state/editor.facade';
 import { SaveBehavior } from '../save-behavior';
 
+import 'codemirror/mode/xml/xml';
+
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
