@@ -101,6 +101,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
     this.subscriptions.push(
       this.hotkeysService
         .addShortcut({
+          allowIn: ['TEXTAREA'],
           keys: 'control.arrowdown',
           description: 'Go to next item',
           group: 'Navigation'
@@ -110,6 +111,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
     this.subscriptions.push(
       this.hotkeysService
         .addShortcut({
+          allowIn: ['TEXTAREA'],
           keys: 'control.arrowup',
           description: 'Go to previous item',
           group: 'Navigation'
@@ -119,6 +121,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
     this.subscriptions.push(
       this.hotkeysService
         .addShortcut({
+          allowIn: ['TEXTAREA'],
           keys: 'control.enter',
           description: 'Save translation',
           group: 'Saving'
@@ -128,6 +131,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
     this.subscriptions.push(
       this.hotkeysService
         .addShortcut({
+          allowIn: ['TEXTAREA'],
           keys: 'control.shift.enter',
           description: 'Save and go to next item',
           group: 'Saving'
