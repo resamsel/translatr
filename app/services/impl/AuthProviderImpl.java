@@ -48,6 +48,10 @@ public class AuthProviderImpl implements AuthProvider {
 
   @Override
   public User loggedInUser(Http.Request request) {
+    if (request == null) {
+      return null;
+    }
+
     Optional<User> loggedInUserOptional = request.attrs().getOptional(ATTRIBUTE_USER);
     if (loggedInUserOptional.isPresent()) {
       return loggedInUserOptional.get();
