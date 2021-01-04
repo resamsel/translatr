@@ -1,5 +1,5 @@
 import { ChangeDetectorRef } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -17,27 +17,29 @@ describe('ProjectMemberEditFormComponent', () => {
   let component: ProjectOwnerEditFormComponent;
   let fixture: ComponentFixture<ProjectOwnerEditFormComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectOwnerEditFormComponent],
-      imports: [
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        TranslocoTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectOwnerEditFormComponent],
+        imports: [
+          ReactiveFormsModule,
+          NoopAnimationsModule,
+          TranslocoTestingModule,
 
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatAutocompleteModule
-      ],
-      providers: [
-        { provide: MatSnackBar, useValue: {} },
-        { provide: ProjectService, useFactory: () => ({}) },
-        { provide: ChangeDetectorRef, useFactory: () => ({}) },
-        { provide: MAT_DIALOG_DATA, useValue: {} }
-      ]
-    }).compileComponents();
-  }));
+          MatFormFieldModule,
+          MatInputModule,
+          MatSelectModule,
+          MatAutocompleteModule
+        ],
+        providers: [
+          { provide: MatSnackBar, useValue: {} },
+          { provide: ProjectService, useFactory: () => ({}) },
+          { provide: ChangeDetectorRef, useFactory: () => ({}) },
+          { provide: MAT_DIALOG_DATA, useValue: {} }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectOwnerEditFormComponent);

@@ -1,5 +1,5 @@
 import { Injector } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -16,33 +16,35 @@ describe('UserPageComponent', () => {
   let component: UserPageComponent;
   let fixture: ComponentFixture<UserPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserPageComponent],
-      imports: [
-        SidenavTestingModule,
-        FeatureFlagTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UserPageComponent],
+        imports: [
+          SidenavTestingModule,
+          FeatureFlagTestingModule,
 
-        RouterTestingModule,
-        GravatarModule,
+          RouterTestingModule,
+          GravatarModule,
 
-        MatTabsModule,
-        MatIconModule
-      ],
-      providers: [
-        { provide: Injector, useFactory: () => ({}) },
-        {
-          provide: UserFacade,
-          useFactory: () => ({})
-        },
-        { provide: AppFacade, useFactory: () => ({}) },
-        {
-          provide: USER_ROUTES,
-          useValue: [{ children: [] }]
-        }
-      ]
-    }).compileComponents();
-  }));
+          MatTabsModule,
+          MatIconModule
+        ],
+        providers: [
+          { provide: Injector, useFactory: () => ({}) },
+          {
+            provide: UserFacade,
+            useFactory: () => ({})
+          },
+          { provide: AppFacade, useFactory: () => ({}) },
+          {
+            provide: USER_ROUTES,
+            useValue: [{ children: [] }]
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserPageComponent);

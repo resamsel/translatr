@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EmptyViewActionsComponent } from './empty-view-actions.component';
 
@@ -6,11 +6,13 @@ describe('EmptyViewActionsComponent', () => {
   let component: EmptyViewActionsComponent;
   let fixture: ComponentFixture<EmptyViewActionsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [EmptyViewActionsComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [EmptyViewActionsComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EmptyViewActionsComponent);

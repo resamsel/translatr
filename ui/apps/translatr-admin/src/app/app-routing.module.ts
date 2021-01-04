@@ -11,7 +11,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), ForbiddenPageModule],
+  imports: [
+    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
+    ForbiddenPageModule
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

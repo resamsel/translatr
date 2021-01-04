@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AccessTokenEditDialogComponent } from './access-token-edit-dialog.component';
 import { AccessTokenEditFormTestingModule } from '../access-token-edit-form/testing';
@@ -10,22 +10,24 @@ describe('ProjectCreationDialogComponent', () => {
   let component: AccessTokenEditDialogComponent;
   let fixture: ComponentFixture<AccessTokenEditDialogComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [AccessTokenEditDialogComponent],
-      imports: [
-        AccessTokenEditFormTestingModule,
-        TranslocoTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [AccessTokenEditDialogComponent],
+        imports: [
+          AccessTokenEditFormTestingModule,
+          TranslocoTestingModule,
 
-        MatDialogModule,
-        MatButtonModule
-      ],
-      providers: [
-        { provide: MatDialogRef, useFactory: () => ({}) },
-        { provide: MAT_DIALOG_DATA, useValue: {} }
-      ]
-    }).compileComponents();
-  }));
+          MatDialogModule,
+          MatButtonModule
+        ],
+        providers: [
+          { provide: MatDialogRef, useFactory: () => ({}) },
+          { provide: MAT_DIALOG_DATA, useValue: {} }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AccessTokenEditDialogComponent);

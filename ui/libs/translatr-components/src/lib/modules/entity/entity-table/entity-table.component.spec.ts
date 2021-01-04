@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,22 +13,24 @@ describe('EntityTableComponent', () => {
   let component: EntityTableComponent;
   let fixture: ComponentFixture<EntityTableComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [EntityTableComponent],
-      imports: [
-        FilterFieldTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [EntityTableComponent],
+        imports: [
+          FilterFieldTestingModule,
 
-        RouterTestingModule,
-        TranslocoTestingModule,
+          RouterTestingModule,
+          TranslocoTestingModule,
 
-        MatIconModule,
-        MatTableModule,
-        MatCheckboxModule,
-        MatPaginatorModule
-      ]
-    }).compileComponents();
-  }));
+          MatIconModule,
+          MatTableModule,
+          MatCheckboxModule,
+          MatPaginatorModule
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EntityTableComponent);

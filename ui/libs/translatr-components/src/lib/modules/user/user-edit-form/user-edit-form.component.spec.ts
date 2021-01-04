@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -12,20 +12,22 @@ describe('UserEditFormComponent', () => {
   let component: UserEditFormComponent;
   let fixture: ComponentFixture<UserEditFormComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserEditFormComponent],
-      imports: [
-        ReactiveFormsModule,
-        TranslocoModule,
-        NoopAnimationsModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UserEditFormComponent],
+        imports: [
+          ReactiveFormsModule,
+          TranslocoModule,
+          NoopAnimationsModule,
 
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule
-      ]
-    }).compileComponents();
-  }));
+          MatFormFieldModule,
+          MatInputModule,
+          MatSelectModule
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserEditFormComponent);

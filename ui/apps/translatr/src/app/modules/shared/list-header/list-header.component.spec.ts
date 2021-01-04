@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -10,12 +10,14 @@ describe('ListHeaderComponent', () => {
   let component: ListHeaderComponent;
   let fixture: ComponentFixture<ListHeaderComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ListHeaderComponent],
-      imports: [FilterFieldTestingModule, MatIconModule, MatButtonModule, MatTooltipModule]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ListHeaderComponent],
+        imports: [FilterFieldTestingModule, MatIconModule, MatButtonModule, MatTooltipModule]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ListHeaderComponent);

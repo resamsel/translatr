@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,29 +15,31 @@ describe('LoginPageComponent', () => {
   let fixture: ComponentFixture<LoginPageComponent>;
   let authProviderService: AuthClientService & { find: jest.Mock };
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [LoginPageComponent],
-      imports: [
-        RouterTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [LoginPageComponent],
+        imports: [
+          RouterTestingModule,
 
-        NavbarTestingModule,
+          NavbarTestingModule,
 
-        MatIconModule,
-        MatCardModule,
-        FontAwesomeTestingModule
-      ],
-      providers: [
-        {
-          provide: AuthClientService,
-          useFactory: () => ({
-            find: jest.fn()
-          })
-        },
-        { provide: ENDPOINT_URL, useValue: '' }
-      ]
-    }).compileComponents();
-  }));
+          MatIconModule,
+          MatCardModule,
+          FontAwesomeTestingModule
+        ],
+        providers: [
+          {
+            provide: AuthClientService,
+            useFactory: () => ({
+              find: jest.fn()
+            })
+          },
+          { provide: ENDPOINT_URL, useValue: '' }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     authProviderService = TestBed.get(AuthClientService);

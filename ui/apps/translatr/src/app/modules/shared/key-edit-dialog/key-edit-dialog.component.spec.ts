@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,26 +14,28 @@ describe('KeyEditDialogComponent', () => {
   let component: KeyEditDialogComponent;
   let fixture: ComponentFixture<KeyEditDialogComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [KeyEditDialogComponent],
-      imports: [
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        TranslocoTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [KeyEditDialogComponent],
+        imports: [
+          ReactiveFormsModule,
+          NoopAnimationsModule,
+          TranslocoTestingModule,
 
-        MatDialogModule,
-        MatFormFieldModule,
-        MatInputModule
-      ],
-      providers: [
-        { provide: MatSnackBar, useValue: {} },
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: { key: {} } },
-        { provide: ProjectFacade, useFactory: () => ({ keyModified$: mockObservable() }) }
-      ]
-    }).compileComponents();
-  }));
+          MatDialogModule,
+          MatFormFieldModule,
+          MatInputModule
+        ],
+        providers: [
+          { provide: MatSnackBar, useValue: {} },
+          { provide: MatDialogRef, useValue: {} },
+          { provide: MAT_DIALOG_DATA, useValue: { key: {} } },
+          { provide: ProjectFacade, useFactory: () => ({ keyModified$: mockObservable() }) }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(KeyEditDialogComponent);

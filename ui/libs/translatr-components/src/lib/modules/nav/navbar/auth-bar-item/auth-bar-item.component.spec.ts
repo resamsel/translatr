@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -13,21 +13,23 @@ describe('AuthBarItemComponent', () => {
   let component: AuthBarItemComponent;
   let fixture: ComponentFixture<AuthBarItemComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [AuthBarItemComponent],
-      imports: [
-        GravatarModule,
-        TranslocoTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [AuthBarItemComponent],
+        imports: [
+          GravatarModule,
+          TranslocoTestingModule,
 
-        MatIconModule,
-        MatButtonModule,
-        MatTooltipModule,
-        MatMenuModule,
-        MatDividerModule
-      ]
-    }).compileComponents();
-  }));
+          MatIconModule,
+          MatButtonModule,
+          MatTooltipModule,
+          MatMenuModule,
+          MatDividerModule
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AuthBarItemComponent);

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ProjectsPageComponent } from './projects-page.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ProjectsFacade } from './+state/projects.facade';
@@ -16,39 +16,41 @@ describe('UsersPageComponent', () => {
   let component: ProjectsPageComponent;
   let fixture: ComponentFixture<ProjectsPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectsPageComponent],
-      imports: [
-        SidenavTestingModule,
-        FeatureFlagTestingModule,
-        ProjectListTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectsPageComponent],
+        imports: [
+          SidenavTestingModule,
+          FeatureFlagTestingModule,
+          ProjectListTestingModule,
 
-        RouterTestingModule,
-        TranslocoTestingModule,
+          RouterTestingModule,
+          TranslocoTestingModule,
 
-        MatButtonModule,
-        MatTooltipModule,
-        MatIconModule
-      ],
-      providers: [
-        {
-          provide: ProjectsFacade,
-          useFactory: () => ({
-            unload$: mockObservable()
-          })
-        },
-        {
-          provide: AppFacade,
-          useFactory: () => ({
-            me$: mockObservable(),
-            queryParams$: mockObservable()
-          })
-        },
-        { provide: MatDialog, useFactory: () => ({}) }
-      ]
-    }).compileComponents();
-  }));
+          MatButtonModule,
+          MatTooltipModule,
+          MatIconModule
+        ],
+        providers: [
+          {
+            provide: ProjectsFacade,
+            useFactory: () => ({
+              unload$: mockObservable()
+            })
+          },
+          {
+            provide: AppFacade,
+            useFactory: () => ({
+              me$: mockObservable(),
+              queryParams$: mockObservable()
+            })
+          },
+          { provide: MatDialog, useFactory: () => ({}) }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectsPageComponent);

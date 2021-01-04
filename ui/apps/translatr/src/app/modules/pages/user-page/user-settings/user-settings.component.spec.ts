@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,35 +18,37 @@ describe('UserSettingsComponent', () => {
   let component: UserSettingsComponent;
   let fixture: ComponentFixture<UserSettingsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserSettingsComponent],
-      imports: [
-        EmptyViewTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UserSettingsComponent],
+        imports: [
+          EmptyViewTestingModule,
 
-        FormsModule,
-        ReactiveFormsModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
+          FormsModule,
+          ReactiveFormsModule,
+          RouterTestingModule,
+          NoopAnimationsModule,
 
-        MatDialogModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule
-      ],
-      providers: [
-        { provide: MatSnackBar, useFactory: () => ({}) },
-        {
-          provide: UserFacade,
-          useFactory: () => ({
-            user$: mockObservable(),
-            error$: mockObservable()
-          })
-        }
-      ]
-    }).compileComponents();
-  }));
+          MatDialogModule,
+          MatCardModule,
+          MatFormFieldModule,
+          MatInputModule,
+          MatButtonModule
+        ],
+        providers: [
+          { provide: MatSnackBar, useFactory: () => ({}) },
+          {
+            provide: UserFacade,
+            useFactory: () => ({
+              user$: mockObservable(),
+              error$: mockObservable()
+            })
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserSettingsComponent);

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { mockObservable } from '@translatr/utils/testing';
@@ -12,30 +12,32 @@ describe('ProjectMembersComponent', () => {
   let component: ProjectMembersComponent;
   let fixture: ComponentFixture<ProjectMembersComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectMembersComponent],
-      imports: [MemberListTestingModule, RouterTestingModule],
-      providers: [
-        {
-          provide: ProjectFacade,
-          useFactory: () => ({
-            project$: mockObservable(),
-            membersCriteria$: mockObservable(),
-            members$: mockObservable(),
-            unload$: mockObservable()
-          })
-        },
-        {
-          provide: AppFacade,
-          useFactory: () => ({
-            me$: mockObservable()
-          })
-        },
-        { provide: MatSnackBar, useFactory: () => ({}) }
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectMembersComponent],
+        imports: [MemberListTestingModule, RouterTestingModule],
+        providers: [
+          {
+            provide: ProjectFacade,
+            useFactory: () => ({
+              project$: mockObservable(),
+              membersCriteria$: mockObservable(),
+              members$: mockObservable(),
+              unload$: mockObservable()
+            })
+          },
+          {
+            provide: AppFacade,
+            useFactory: () => ({
+              me$: mockObservable()
+            })
+          },
+          { provide: MatSnackBar, useFactory: () => ({}) }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectMembersComponent);

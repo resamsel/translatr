@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NavListComponent } from './nav-list.component';
 import { ListHeaderTestingModule } from '../list-header/testing';
@@ -12,21 +12,23 @@ describe('NavListComponent', () => {
   let component: NavListComponent;
   let fixture: ComponentFixture<NavListComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [NavListComponent],
-      imports: [
-        ListHeaderTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [NavListComponent],
+        imports: [
+          ListHeaderTestingModule,
 
-        RouterTestingModule,
+          RouterTestingModule,
 
-        MatListModule,
-        MatButtonModule,
-        MatIconModule,
-        MatCardModule
-      ]
-    }).compileComponents();
-  }));
+          MatListModule,
+          MatButtonModule,
+          MatIconModule,
+          MatCardModule
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NavListComponent);

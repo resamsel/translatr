@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivityGraphTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { ProjectFacade } from '../../../shared/project-state';
@@ -9,23 +9,25 @@ describe('ProjectActivityComponent', () => {
   let component: ProjectActivityComponent;
   let fixture: ComponentFixture<ProjectActivityComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectActivityComponent],
-      imports: [ActivityListTestingModule, ActivityGraphTestingModule],
-      providers: [
-        {
-          provide: ProjectFacade,
-          useFactory: () => ({
-            activitiesCriteria$: mockObservable(),
-            project$: mockObservable(),
-            activityAggregated$: mockObservable(),
-            unload$: mockObservable()
-          })
-        }
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectActivityComponent],
+        imports: [ActivityListTestingModule, ActivityGraphTestingModule],
+        providers: [
+          {
+            provide: ProjectFacade,
+            useFactory: () => ({
+              activitiesCriteria$: mockObservable(),
+              project$: mockObservable(),
+              activityAggregated$: mockObservable(),
+              unload$: mockObservable()
+            })
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectActivityComponent);

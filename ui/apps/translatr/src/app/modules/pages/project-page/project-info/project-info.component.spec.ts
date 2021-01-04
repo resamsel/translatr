@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ProjectInfoComponent } from './project-info.component';
 import { ProjectFacade } from '../../../shared/project-state';
@@ -29,52 +29,54 @@ describe('ProjectInfoComponent', () => {
   let component: ProjectInfoComponent;
   let fixture: ComponentFixture<ProjectInfoComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectInfoComponent],
-      imports: [
-        MetricTestingModule,
-        NavListTestingModule,
-        ActivityListTestingModule,
-        ShortNumberModule,
-        FeatureFlagTestingModule,
-        EmptyViewTestingModule,
-        ProjectInfographicTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectInfoComponent],
+        imports: [
+          MetricTestingModule,
+          NavListTestingModule,
+          ActivityListTestingModule,
+          ShortNumberModule,
+          FeatureFlagTestingModule,
+          EmptyViewTestingModule,
+          ProjectInfographicTestingModule,
 
-        RouterTestingModule,
+          RouterTestingModule,
 
-        MatDialogModule,
-        MatCardModule,
-        MatListModule,
-        MatIconModule,
-        MatProgressBarModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatTooltipModule
-      ],
-      providers: [
-        {
-          provide: ProjectFacade,
-          useFactory: () => ({
-            project$: mockObservable(),
-            locales$: mockObservable(),
-            keys$: mockObservable(),
-            messages$: mockObservable(),
-            activities$: mockObservable(),
-            accessTokens$: mockObservable()
-          })
-        },
-        {
-          provide: AppFacade,
-          useFactory: () => ({
-            me$: mockObservable()
-          })
-        },
-        { provide: WINDOW, useValue: { location: {} } }
-      ]
-    }).compileComponents();
-  }));
+          MatDialogModule,
+          MatCardModule,
+          MatListModule,
+          MatIconModule,
+          MatProgressBarModule,
+          MatButtonModule,
+          MatFormFieldModule,
+          MatSelectModule,
+          MatTooltipModule
+        ],
+        providers: [
+          {
+            provide: ProjectFacade,
+            useFactory: () => ({
+              project$: mockObservable(),
+              locales$: mockObservable(),
+              keys$: mockObservable(),
+              messages$: mockObservable(),
+              activities$: mockObservable(),
+              accessTokens$: mockObservable()
+            })
+          },
+          {
+            provide: AppFacade,
+            useFactory: () => ({
+              me$: mockObservable()
+            })
+          },
+          { provide: WINDOW, useValue: { location: {} } }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectInfoComponent);

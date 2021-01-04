@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EmptyViewHeaderComponent } from './empty-view-header.component';
 
@@ -6,11 +6,13 @@ describe('EmptyViewHeaderComponent', () => {
   let component: EmptyViewHeaderComponent;
   let fixture: ComponentFixture<EmptyViewHeaderComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [EmptyViewHeaderComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [EmptyViewHeaderComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EmptyViewHeaderComponent);

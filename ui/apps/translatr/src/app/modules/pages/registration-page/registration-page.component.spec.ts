@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,26 +17,28 @@ describe('RegistrationPageComponent', () => {
   let component: RegistrationPageComponent;
   let fixture: ComponentFixture<RegistrationPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [RegistrationPageComponent],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [RegistrationPageComponent],
+        imports: [
+          HttpClientTestingModule,
+          RouterTestingModule,
+          NoopAnimationsModule,
 
-        RegistrationPageRoutingModule,
-        SidenavModule,
-        TranslocoModule,
-        FeatureFlagModule,
-        UserEditFormModule,
-        MatCardModule,
-        MatButtonModule,
-        FontAwesomeModule
-      ],
-      providers: [LanguageProvider]
-    }).compileComponents();
-  }));
+          RegistrationPageRoutingModule,
+          SidenavModule,
+          TranslocoModule,
+          FeatureFlagModule,
+          UserEditFormModule,
+          MatCardModule,
+          MatButtonModule,
+          FontAwesomeModule
+        ],
+        providers: [LanguageProvider]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RegistrationPageComponent);

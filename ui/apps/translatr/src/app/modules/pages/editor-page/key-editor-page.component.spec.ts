@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ProjectFacade } from '../../shared/project-state/+state';
 import { KeyEditorPageComponent } from './key-editor-page.component';
@@ -19,48 +19,50 @@ describe('KeyEditorPageComponent', () => {
   let component: KeyEditorPageComponent;
   let fixture: ComponentFixture<KeyEditorPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [KeyEditorPageComponent],
-      imports: [
-        RouterTestingModule,
-        EditorTestingModule,
-        FilterFieldTestingModule,
-        NavListTestingModule,
-        EmptyViewTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [KeyEditorPageComponent],
+        imports: [
+          RouterTestingModule,
+          EditorTestingModule,
+          FilterFieldTestingModule,
+          NavListTestingModule,
+          EmptyViewTestingModule,
 
-        NoopAnimationsModule,
-        TranslocoTestingModule,
+          NoopAnimationsModule,
+          TranslocoTestingModule,
 
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatDialogModule
-      ],
-      providers: [
-        {
-          provide: AppFacade,
-          useFactory: () => ({
-            me$: mockObservable(),
-            routeParams$: mockObservable(),
-            queryParams$: mockObservable()
-          })
-        },
-        {
-          provide: EditorFacade,
-          useFactory: () => ({
-            selectedLocaleName$: mockObservable(),
-            keySelectedMessage$: mockObservable(),
-            unloadEditor$: mockObservable()
-          })
-        },
-        {
-          provide: ProjectFacade,
-          useFactory: () => ({})
-        }
-      ]
-    }).compileComponents();
-  }));
+          MatFormFieldModule,
+          MatInputModule,
+          MatIconModule,
+          MatDialogModule
+        ],
+        providers: [
+          {
+            provide: AppFacade,
+            useFactory: () => ({
+              me$: mockObservable(),
+              routeParams$: mockObservable(),
+              queryParams$: mockObservable()
+            })
+          },
+          {
+            provide: EditorFacade,
+            useFactory: () => ({
+              selectedLocaleName$: mockObservable(),
+              keySelectedMessage$: mockObservable(),
+              unloadEditor$: mockObservable()
+            })
+          },
+          {
+            provide: ProjectFacade,
+            useFactory: () => ({})
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(KeyEditorPageComponent);

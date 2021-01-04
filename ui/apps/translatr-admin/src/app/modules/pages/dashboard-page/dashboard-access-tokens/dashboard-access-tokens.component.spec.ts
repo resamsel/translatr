@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -21,40 +21,42 @@ describe('DashboardAccessTokensComponent', () => {
   let component: DashboardAccessTokensComponent;
   let fixture: ComponentFixture<DashboardAccessTokensComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [DashboardAccessTokensComponent],
-      imports: [
-        FeatureFlagTestingModule,
-        EntityTableTestingModule,
-        ButtonTestingModule,
-        EllipsisModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [DashboardAccessTokensComponent],
+        imports: [
+          FeatureFlagTestingModule,
+          EntityTableTestingModule,
+          ButtonTestingModule,
+          EllipsisModule,
 
-        RouterTestingModule,
-        MomentModule,
+          RouterTestingModule,
+          MomentModule,
 
-        MatTableModule,
-        MatButtonModule,
-        MatTooltipModule,
-        MatIconModule
-      ],
-      providers: [
-        {
-          provide: AppFacade,
-          useFactory: () => ({
-            me$: mockObservable(),
-            accessTokenDeleted$: mockObservable(),
-            accessTokensDeleted$: mockObservable(),
-            unloadAccessTokens$: mockObservable()
-          })
-        },
-        {
-          provide: MatSnackBar,
-          useFactory: () => ({})
-        }
-      ]
-    }).compileComponents();
-  }));
+          MatTableModule,
+          MatButtonModule,
+          MatTooltipModule,
+          MatIconModule
+        ],
+        providers: [
+          {
+            provide: AppFacade,
+            useFactory: () => ({
+              me$: mockObservable(),
+              accessTokenDeleted$: mockObservable(),
+              accessTokensDeleted$: mockObservable(),
+              unloadAccessTokens$: mockObservable()
+            })
+          },
+          {
+            provide: MatSnackBar,
+            useFactory: () => ({})
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardAccessTokensComponent);

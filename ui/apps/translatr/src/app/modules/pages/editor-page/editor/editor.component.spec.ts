@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,37 +21,39 @@ describe('EditorComponent', () => {
   let component: EditorComponent;
   let fixture: ComponentFixture<EditorComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [EditorComponent],
-      imports: [
-        SidenavTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [EditorComponent],
+        imports: [
+          SidenavTestingModule,
 
-        RouterTestingModule,
-        FormsModule,
-        NoopAnimationsModule,
-        TranslocoTestingModule,
-        HotkeysModule,
-        EmptyViewTestingModule,
+          RouterTestingModule,
+          FormsModule,
+          NoopAnimationsModule,
+          TranslocoTestingModule,
+          HotkeysModule,
+          EmptyViewTestingModule,
 
-        MatButtonModule,
-        MatDividerModule,
-        MatTabsModule,
-        MatCardModule,
-        MatIconModule,
-        MatMenuModule,
-        MatSnackBarModule,
+          MatButtonModule,
+          MatDividerModule,
+          MatTabsModule,
+          MatCardModule,
+          MatIconModule,
+          MatMenuModule,
+          MatSnackBarModule,
 
-        CodemirrorModule
-      ],
-      providers: [
-        {
-          provide: EditorFacade,
-          useFactory: () => ({})
-        }
-      ]
-    }).compileComponents();
-  }));
+          CodemirrorModule
+        ],
+        providers: [
+          {
+            provide: EditorFacade,
+            useFactory: () => ({})
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EditorComponent);

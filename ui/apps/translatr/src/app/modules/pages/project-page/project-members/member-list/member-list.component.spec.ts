@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,30 +19,32 @@ describe('MemberListComponent', () => {
   let component: MemberListComponent;
   let fixture: ComponentFixture<MemberListComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [MemberListComponent],
-      imports: [
-        NavListTestingModule,
-        ButtonTestingModule,
-        EmptyViewTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MemberListComponent],
+        imports: [
+          NavListTestingModule,
+          ButtonTestingModule,
+          EmptyViewTestingModule,
 
-        RouterTestingModule,
-        TranslocoTestingModule,
+          RouterTestingModule,
+          TranslocoTestingModule,
 
-        MatDialogModule,
-        MatListModule,
-        MatIconModule,
-        MatProgressBarModule,
-        MatTooltipModule,
-        MatButtonModule,
+          MatDialogModule,
+          MatListModule,
+          MatIconModule,
+          MatProgressBarModule,
+          MatTooltipModule,
+          MatButtonModule,
 
-        GravatarModule,
-        MomentModule
-      ],
-      providers: [{ provide: AppFacade, useFactory: () => ({}) }]
-    }).compileComponents();
-  }));
+          GravatarModule,
+          MomentModule
+        ],
+        providers: [{ provide: AppFacade, useFactory: () => ({}) }]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MemberListComponent);

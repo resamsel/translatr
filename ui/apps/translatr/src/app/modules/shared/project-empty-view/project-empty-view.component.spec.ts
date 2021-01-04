@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { EmptyViewTestingModule } from '@translatr/components/testing';
 
@@ -8,12 +8,14 @@ describe('ProjectEmptyViewComponent', () => {
   let component: ProjectEmptyViewComponent;
   let fixture: ComponentFixture<ProjectEmptyViewComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectEmptyViewComponent],
-      imports: [EmptyViewTestingModule, MatButtonModule]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectEmptyViewComponent],
+        imports: [EmptyViewTestingModule, MatButtonModule]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectEmptyViewComponent);

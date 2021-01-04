@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TranslocoTestingModule } from '@ngneat/transloco';
@@ -13,29 +13,31 @@ describe('ProjectMemberEditDialogComponent', () => {
   let component: ProjectMemberEditDialogComponent;
   let fixture: ComponentFixture<ProjectMemberEditDialogComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectMemberEditDialogComponent],
-      imports: [
-        ProjectMemberEditFormTestingModule,
-        TranslocoTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectMemberEditDialogComponent],
+        imports: [
+          ProjectMemberEditFormTestingModule,
+          TranslocoTestingModule,
 
-        MatDialogModule,
-        MatButtonModule
-      ],
-      providers: [
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: { locale: {} } },
-        {
-          provide: UsersFacade,
-          useFactory: () => ({
-            users$: mockObservable()
-          })
-        },
-        { provide: AppFacade, useFactory: () => ({}) }
-      ]
-    }).compileComponents();
-  }));
+          MatDialogModule,
+          MatButtonModule
+        ],
+        providers: [
+          { provide: MatDialogRef, useValue: {} },
+          { provide: MAT_DIALOG_DATA, useValue: { locale: {} } },
+          {
+            provide: UsersFacade,
+            useFactory: () => ({
+              users$: mockObservable()
+            })
+          },
+          { provide: AppFacade, useFactory: () => ({}) }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectMemberEditDialogComponent);

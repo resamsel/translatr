@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { ErrorPageHeaderComponent } from './error-page-header.component';
 import { ErrorPageMessageComponent } from './error-page-message.component';
@@ -9,12 +9,14 @@ describe('ErrorPageComponent', () => {
   let component: ErrorPageComponent;
   let fixture: ComponentFixture<ErrorPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ErrorPageComponent, ErrorPageHeaderComponent, ErrorPageMessageComponent],
-      imports: [MatIconModule]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ErrorPageComponent, ErrorPageHeaderComponent, ErrorPageMessageComponent],
+        imports: [MatIconModule]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ErrorPageComponent);

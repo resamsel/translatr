@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { UsersPageComponent } from './users-page.component';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -14,33 +14,35 @@ describe('UsersPageComponent', () => {
   let component: UsersPageComponent;
   let fixture: ComponentFixture<UsersPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UsersPageComponent],
-      imports: [
-        SidenavTestingModule,
-        FeatureFlagTestingModule,
-        UserListTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UsersPageComponent],
+        imports: [
+          SidenavTestingModule,
+          FeatureFlagTestingModule,
+          UserListTestingModule,
 
-        RouterTestingModule,
-        TranslocoTestingModule
-      ],
-      providers: [
-        {
-          provide: AppFacade,
-          useFactory: () => ({
-            queryParams$: mockObservable()
-          })
-        },
-        {
-          provide: UsersFacade,
-          useFactory: () => ({
-            unload$: mockObservable()
-          })
-        }
-      ]
-    }).compileComponents();
-  }));
+          RouterTestingModule,
+          TranslocoTestingModule
+        ],
+        providers: [
+          {
+            provide: AppFacade,
+            useFactory: () => ({
+              queryParams$: mockObservable()
+            })
+          },
+          {
+            provide: UsersFacade,
+            useFactory: () => ({
+              unload$: mockObservable()
+            })
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UsersPageComponent);

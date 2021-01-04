@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,49 +20,51 @@ describe('LocaleEditorPageComponent', () => {
   let component: LocaleEditorPageComponent;
   let fixture: ComponentFixture<LocaleEditorPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [LocaleEditorPageComponent],
-      imports: [
-        RouterTestingModule,
-        EditorTestingModule,
-        FilterFieldTestingModule,
-        NavListTestingModule,
-        EmptyViewTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [LocaleEditorPageComponent],
+        imports: [
+          RouterTestingModule,
+          EditorTestingModule,
+          FilterFieldTestingModule,
+          NavListTestingModule,
+          EmptyViewTestingModule,
 
-        NoopAnimationsModule,
-        TranslocoTestingModule,
+          NoopAnimationsModule,
+          TranslocoTestingModule,
 
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatMenuModule,
-        MatDialogModule
-      ],
-      providers: [
-        {
-          provide: AppFacade,
-          useFactory: () => ({
-            me$: mockObservable(),
-            routeParams$: mockObservable(),
-            queryParams$: mockObservable()
-          })
-        },
-        {
-          provide: EditorFacade,
-          useFactory: () => ({
-            selectedKeyName$: mockObservable(),
-            localeSelectedMessage$: mockObservable(),
-            unloadEditor$: mockObservable()
-          })
-        },
-        {
-          provide: ProjectFacade,
-          useFactory: () => ({})
-        }
-      ]
-    }).compileComponents();
-  }));
+          MatFormFieldModule,
+          MatInputModule,
+          MatIconModule,
+          MatMenuModule,
+          MatDialogModule
+        ],
+        providers: [
+          {
+            provide: AppFacade,
+            useFactory: () => ({
+              me$: mockObservable(),
+              routeParams$: mockObservable(),
+              queryParams$: mockObservable()
+            })
+          },
+          {
+            provide: EditorFacade,
+            useFactory: () => ({
+              selectedKeyName$: mockObservable(),
+              localeSelectedMessage$: mockObservable(),
+              unloadEditor$: mockObservable()
+            })
+          },
+          {
+            provide: ProjectFacade,
+            useFactory: () => ({})
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LocaleEditorPageComponent);

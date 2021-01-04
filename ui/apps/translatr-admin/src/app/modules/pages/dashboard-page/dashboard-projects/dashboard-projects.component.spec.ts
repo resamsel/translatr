@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,44 +22,46 @@ describe('DashboardProjectsComponent', () => {
   let component: DashboardProjectsComponent;
   let fixture: ComponentFixture<DashboardProjectsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [DashboardProjectsComponent],
-      imports: [
-        FeatureFlagTestingModule,
-        EntityTableTestingModule,
-        ButtonTestingModule,
-        EllipsisModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [DashboardProjectsComponent],
+        imports: [
+          FeatureFlagTestingModule,
+          EntityTableTestingModule,
+          ButtonTestingModule,
+          EllipsisModule,
 
-        RouterTestingModule,
-        MomentModule,
+          RouterTestingModule,
+          MomentModule,
 
-        MatTableModule,
-        MatButtonModule,
-        MatTooltipModule,
-        MatIconModule
-      ],
-      providers: [
-        {
-          provide: AppFacade,
-          useFactory: () => ({
-            me$: mockObservable(),
-            projectDeleted$: mockObservable(),
-            projectsDeleted$: mockObservable(),
-            unloadProjects$: mockObservable()
-          })
-        },
-        {
-          provide: MatSnackBar,
-          useFactory: () => ({})
-        },
-        {
-          provide: MatDialog,
-          useFactory: () => ({})
-        }
-      ]
-    }).compileComponents();
-  }));
+          MatTableModule,
+          MatButtonModule,
+          MatTooltipModule,
+          MatIconModule
+        ],
+        providers: [
+          {
+            provide: AppFacade,
+            useFactory: () => ({
+              me$: mockObservable(),
+              projectDeleted$: mockObservable(),
+              projectsDeleted$: mockObservable(),
+              unloadProjects$: mockObservable()
+            })
+          },
+          {
+            provide: MatSnackBar,
+            useFactory: () => ({})
+          },
+          {
+            provide: MatDialog,
+            useFactory: () => ({})
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardProjectsComponent);

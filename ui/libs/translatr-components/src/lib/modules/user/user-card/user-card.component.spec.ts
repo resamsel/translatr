@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { GravatarModule } from 'ngx-gravatar';
 
@@ -8,12 +8,14 @@ describe('UserCardComponent', () => {
   let component: UserCardComponent;
   let fixture: ComponentFixture<UserCardComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserCardComponent],
-      imports: [GravatarModule, MatCardModule]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UserCardComponent],
+        imports: [GravatarModule, MatCardModule]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserCardComponent);

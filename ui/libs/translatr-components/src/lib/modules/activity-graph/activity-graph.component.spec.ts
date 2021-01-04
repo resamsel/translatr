@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ActivityGraphComponent, ShortNumberModule } from '@dev/translatr-components';
@@ -8,12 +8,14 @@ describe('ActivityGraphComponent', () => {
   let component: ActivityGraphComponent;
   let fixture: ComponentFixture<ActivityGraphComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ActivityGraphComponent],
-      imports: [TranslocoTestingModule, ShortNumberModule, MatTooltipModule]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ActivityGraphComponent],
+        imports: [TranslocoTestingModule, ShortNumberModule, MatTooltipModule]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ActivityGraphComponent);

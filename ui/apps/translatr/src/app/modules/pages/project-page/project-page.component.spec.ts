@@ -1,5 +1,5 @@
 import { Injector } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -17,36 +17,38 @@ describe('ProjectPageComponent', () => {
   let component: ProjectPageComponent;
   let fixture: ComponentFixture<ProjectPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectPageComponent],
-      imports: [
-        SidenavTestingModule,
-        FeatureFlagTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectPageComponent],
+        imports: [
+          SidenavTestingModule,
+          FeatureFlagTestingModule,
 
-        RouterTestingModule,
-        TranslocoTestingModule,
+          RouterTestingModule,
+          TranslocoTestingModule,
 
-        MatTabsModule,
-        MatIconModule
-      ],
-      providers: [
-        { provide: Injector, useFactory: () => ({}) },
-        {
-          provide: ProjectFacade,
-          useFactory: () => ({
-            project$: mockObservable(),
-            unload$: mockObservable()
-          })
-        },
-        { provide: AppFacade, useFactory: () => ({}) },
-        {
-          provide: PROJECT_ROUTES,
-          useValue: [{ children: [] }]
-        }
-      ]
-    }).compileComponents();
-  }));
+          MatTabsModule,
+          MatIconModule
+        ],
+        providers: [
+          { provide: Injector, useFactory: () => ({}) },
+          {
+            provide: ProjectFacade,
+            useFactory: () => ({
+              project$: mockObservable(),
+              unload$: mockObservable()
+            })
+          },
+          { provide: AppFacade, useFactory: () => ({}) },
+          {
+            provide: PROJECT_ROUTES,
+            useValue: [{ children: [] }]
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectPageComponent);

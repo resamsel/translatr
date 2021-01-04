@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -15,30 +15,32 @@ describe('DashboardPageComponent', () => {
   let component: DashboardPageComponent;
   let fixture: ComponentFixture<DashboardPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [DashboardPageComponent],
-      imports: [
-        SidenavTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [DashboardPageComponent],
+        imports: [
+          SidenavTestingModule,
 
-        RouterTestingModule,
-        NoopAnimationsModule,
+          RouterTestingModule,
+          NoopAnimationsModule,
 
-        MatSidenavModule,
-        MatToolbarModule,
-        MatButtonModule,
-        MatIconModule,
-        MatListModule
-      ],
-      providers: [
-        { provide: AppFacade, useFactory: () => ({}) },
-        {
-          provide: DASHBOARD_ROUTES,
-          useValue: [{ children: [] }]
-        }
-      ]
-    }).compileComponents();
-  }));
+          MatSidenavModule,
+          MatToolbarModule,
+          MatButtonModule,
+          MatIconModule,
+          MatListModule
+        ],
+        providers: [
+          { provide: AppFacade, useFactory: () => ({}) },
+          {
+            provide: DASHBOARD_ROUTES,
+            useValue: [{ children: [] }]
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardPageComponent);

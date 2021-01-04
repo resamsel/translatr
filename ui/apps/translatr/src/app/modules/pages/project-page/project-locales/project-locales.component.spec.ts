@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { mockObservable } from '@translatr/utils/testing';
@@ -10,23 +10,25 @@ describe('ProjectLocalesComponent', () => {
   let component: ProjectLocalesComponent;
   let fixture: ComponentFixture<ProjectLocalesComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectLocalesComponent],
-      imports: [LocaleListTestingModule, RouterTestingModule],
-      providers: [
-        {
-          provide: ProjectFacade,
-          useFactory: () => ({
-            project$: mockObservable(),
-            localesCriteria$: mockObservable(),
-            unload$: mockObservable()
-          })
-        },
-        { provide: MatSnackBar, useFactory: () => ({}) }
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectLocalesComponent],
+        imports: [LocaleListTestingModule, RouterTestingModule],
+        providers: [
+          {
+            provide: ProjectFacade,
+            useFactory: () => ({
+              project$: mockObservable(),
+              localesCriteria$: mockObservable(),
+              unload$: mockObservable()
+            })
+          },
+          { provide: MatSnackBar, useFactory: () => ({}) }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectLocalesComponent);

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -13,28 +13,30 @@ describe('UserAccessTokenComponent', () => {
   let component: UserAccessTokenComponent;
   let fixture: ComponentFixture<UserAccessTokenComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserAccessTokenComponent],
-      imports: [
-        AccessTokenEditFormTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UserAccessTokenComponent],
+        imports: [
+          AccessTokenEditFormTestingModule,
 
-        RouterTestingModule,
-        TranslocoTestingModule,
+          RouterTestingModule,
+          TranslocoTestingModule,
 
-        MatCardModule,
-        MatButtonModule
-      ],
-      providers: [
-        {
-          provide: UserFacade,
-          useFactory: () => ({
-            accessToken$: mockObservable()
-          })
-        }
-      ]
-    }).compileComponents();
-  }));
+          MatCardModule,
+          MatButtonModule
+        ],
+        providers: [
+          {
+            provide: UserFacade,
+            useFactory: () => ({
+              accessToken$: mockObservable()
+            })
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserAccessTokenComponent);

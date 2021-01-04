@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { EmptyViewTestingModule } from '@translatr/components/testing';
 import { ActivityListComponent } from './activity-list.component';
 import { NavListTestingModule } from '../nav-list/testing';
@@ -22,36 +22,38 @@ describe('ActivityListComponent', () => {
   let component: ActivityListComponent;
   let fixture: ComponentFixture<ActivityListComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        ActivityListComponent,
-        ActivityProjectLinkComponent,
-        ActivityLocaleLinkComponent,
-        ActivityKeyLinkComponent,
-        ActivityMemberLinkComponent,
-        ActivityMessageLinkComponent,
-        ActivityAccessTokenLinkComponent
-      ],
-      imports: [
-        NavListTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          ActivityListComponent,
+          ActivityProjectLinkComponent,
+          ActivityLocaleLinkComponent,
+          ActivityKeyLinkComponent,
+          ActivityMemberLinkComponent,
+          ActivityMessageLinkComponent,
+          ActivityAccessTokenLinkComponent
+        ],
+        imports: [
+          NavListTestingModule,
 
-        RouterTestingModule,
-        TranslocoTestingModule,
-        EmptyViewTestingModule,
+          RouterTestingModule,
+          TranslocoTestingModule,
+          EmptyViewTestingModule,
 
-        TagModule,
+          TagModule,
 
-        MatListModule,
-        MatIconModule,
-        MatChipsModule,
-        MatTooltipModule,
+          MatListModule,
+          MatIconModule,
+          MatChipsModule,
+          MatTooltipModule,
 
-        MomentModule,
-        GravatarModule
-      ]
-    }).compileComponents();
-  }));
+          MomentModule,
+          GravatarModule
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ActivityListComponent);

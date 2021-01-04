@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -16,24 +16,26 @@ describe('SearchBarComponent', () => {
   let component: SearchBarComponent;
   let fixture: ComponentFixture<SearchBarComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [SearchBarComponent],
-      imports: [
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        TranslocoTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SearchBarComponent],
+        imports: [
+          ReactiveFormsModule,
+          NoopAnimationsModule,
+          TranslocoTestingModule,
 
-        MatFormFieldModule,
-        MatChipsModule,
-        MatIconModule,
-        MatAutocompleteModule,
-        MatInputModule,
-        MatOptionModule,
-        MatButtonModule
-      ]
-    }).compileComponents();
-  }));
+          MatFormFieldModule,
+          MatChipsModule,
+          MatIconModule,
+          MatAutocompleteModule,
+          MatInputModule,
+          MatOptionModule,
+          MatButtonModule
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchBarComponent);

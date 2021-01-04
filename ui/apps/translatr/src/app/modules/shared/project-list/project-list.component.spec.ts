@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { EmptyViewTestingModule } from '@translatr/components/testing';
 
 import { ProjectListComponent } from './project-list.component';
@@ -13,22 +13,24 @@ describe('ProjectListComponent', () => {
   let component: ProjectListComponent;
   let fixture: ComponentFixture<ProjectListComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectListComponent],
-      imports: [
-        NavListTestingModule,
-        ProjectEmptyViewTestingModule,
-        EmptyViewTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectListComponent],
+        imports: [
+          NavListTestingModule,
+          ProjectEmptyViewTestingModule,
+          EmptyViewTestingModule,
 
-        RouterTestingModule,
+          RouterTestingModule,
 
-        MatListModule,
-        MatProgressBarModule,
-        MatTooltipModule
-      ]
-    }).compileComponents();
-  }));
+          MatListModule,
+          MatProgressBarModule,
+          MatTooltipModule
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectListComponent);

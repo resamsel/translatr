@@ -1,5 +1,5 @@
 import { Renderer2 } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
@@ -18,27 +18,29 @@ describe('FilterFieldComponent', () => {
   let component: FilterFieldComponent;
   let fixture: ComponentFixture<FilterFieldComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [FilterFieldComponent],
-      imports: [
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        TranslocoTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [FilterFieldComponent],
+        imports: [
+          ReactiveFormsModule,
+          NoopAnimationsModule,
+          TranslocoTestingModule,
 
-        DisableControlTestingModule,
+          DisableControlTestingModule,
 
-        MatFormFieldModule,
-        MatChipsModule,
-        MatTooltipModule,
-        MatIconModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        MatOptionModule
-      ],
-      providers: [{ provide: Renderer2, useFactory: () => ({}) }]
-    }).compileComponents();
-  }));
+          MatFormFieldModule,
+          MatChipsModule,
+          MatTooltipModule,
+          MatIconModule,
+          MatInputModule,
+          MatAutocompleteModule,
+          MatOptionModule
+        ],
+        providers: [{ provide: Renderer2, useFactory: () => ({}) }]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FilterFieldComponent);

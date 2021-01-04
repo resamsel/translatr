@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,26 +14,28 @@ describe('ProjectDeleteDialogComponent', () => {
   let component: ProjectDeleteDialogComponent;
   let fixture: ComponentFixture<ProjectDeleteDialogComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectDeleteDialogComponent],
-      imports: [
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        TranslocoTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectDeleteDialogComponent],
+        imports: [
+          ReactiveFormsModule,
+          NoopAnimationsModule,
+          TranslocoTestingModule,
 
-        MatDialogModule,
-        MatFormFieldModule,
-        MatInputModule
-      ],
-      providers: [
-        { provide: MatSnackBar, useValue: {} },
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
-        { provide: ProjectService, useFactory: () => ({}) }
-      ]
-    }).compileComponents();
-  }));
+          MatDialogModule,
+          MatFormFieldModule,
+          MatInputModule
+        ],
+        providers: [
+          { provide: MatSnackBar, useValue: {} },
+          { provide: MatDialogRef, useValue: {} },
+          { provide: MAT_DIALOG_DATA, useValue: {} },
+          { provide: ProjectService, useFactory: () => ({}) }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectDeleteDialogComponent);

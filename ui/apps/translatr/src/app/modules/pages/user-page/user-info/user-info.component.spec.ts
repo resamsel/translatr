@@ -1,5 +1,5 @@
 import { Injector } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -19,41 +19,43 @@ describe('UserInfoComponent', () => {
   let component: UserInfoComponent;
   let fixture: ComponentFixture<UserInfoComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserInfoComponent],
-      imports: [
-        UserCardTestingModule,
-        MetricTestingModule,
-        ShortNumberModule,
-        ProjectCardListTestingModule,
-        ActivityListTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UserInfoComponent],
+        imports: [
+          UserCardTestingModule,
+          MetricTestingModule,
+          ShortNumberModule,
+          ProjectCardListTestingModule,
+          ActivityListTestingModule,
 
-        RouterTestingModule,
-        MomentModule,
+          RouterTestingModule,
+          MomentModule,
 
-        MatIconModule,
-        MatTooltipModule
-      ],
-      providers: [
-        { provide: Injector, useFactory: () => ({}) },
-        {
-          provide: UserFacade,
-          useFactory: () => ({
-            user$: mockObservable(),
-            projects$: mockObservable(),
-            activities$: mockObservable(),
-            destroy$: mockObservable()
-          })
-        },
-        { provide: MatDialog, useFactory: () => ({}) },
-        {
-          provide: USER_ROUTES,
-          useValue: [{ children: [] }]
-        }
-      ]
-    }).compileComponents();
-  }));
+          MatIconModule,
+          MatTooltipModule
+        ],
+        providers: [
+          { provide: Injector, useFactory: () => ({}) },
+          {
+            provide: UserFacade,
+            useFactory: () => ({
+              user$: mockObservable(),
+              projects$: mockObservable(),
+              activities$: mockObservable(),
+              destroy$: mockObservable()
+            })
+          },
+          { provide: MatDialog, useFactory: () => ({}) },
+          {
+            provide: USER_ROUTES,
+            useValue: [{ children: [] }]
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserInfoComponent);

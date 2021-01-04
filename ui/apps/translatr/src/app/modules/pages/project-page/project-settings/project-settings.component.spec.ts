@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -20,42 +20,44 @@ describe('ProjectSettingsComponent', () => {
   let component: ProjectSettingsComponent;
   let fixture: ComponentFixture<ProjectSettingsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectSettingsComponent],
-      imports: [
-        EmptyViewTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectSettingsComponent],
+        imports: [
+          EmptyViewTestingModule,
 
-        FormsModule,
-        ReactiveFormsModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
-        TranslocoTestingModule,
+          FormsModule,
+          ReactiveFormsModule,
+          RouterTestingModule,
+          NoopAnimationsModule,
+          TranslocoTestingModule,
 
-        MatDialogModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule
-      ],
-      providers: [
-        { provide: MatSnackBar, useFactory: () => ({}) },
-        {
-          provide: ProjectFacade,
-          useFactory: () => ({
-            canDelete$: mockObservable()
-          })
-        },
-        {
-          provide: AppFacade,
-          useFactory: () => ({
-            project$: mockObservable(),
-            projectModified$: mockObservable()
-          })
-        },
-        { provide: ProjectService, useFactory: () => ({}) }
-      ]
-    }).compileComponents();
-  }));
+          MatDialogModule,
+          MatCardModule,
+          MatFormFieldModule,
+          MatInputModule
+        ],
+        providers: [
+          { provide: MatSnackBar, useFactory: () => ({}) },
+          {
+            provide: ProjectFacade,
+            useFactory: () => ({
+              canDelete$: mockObservable()
+            })
+          },
+          {
+            provide: AppFacade,
+            useFactory: () => ({
+              project$: mockObservable(),
+              projectModified$: mockObservable()
+            })
+          },
+          { provide: ProjectService, useFactory: () => ({}) }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectSettingsComponent);

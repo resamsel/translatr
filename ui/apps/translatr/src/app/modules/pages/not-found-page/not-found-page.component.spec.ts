@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { ErrorPageTestingModule } from '@translatr/components/testing';
@@ -10,21 +10,23 @@ describe('NotFoundPageComponent', () => {
   let component: NotFoundPageComponent;
   let fixture: ComponentFixture<NotFoundPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [NotFoundPageComponent],
-      imports: [ErrorPageTestingModule, RouterTestingModule, TranslocoTestingModule],
-      providers: [
-        {
-          provide: AppFacade,
-          useFactory: () => ({
-            loadMe: jest.fn(),
-            me$: mockObservable()
-          })
-        }
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [NotFoundPageComponent],
+        imports: [ErrorPageTestingModule, RouterTestingModule, TranslocoTestingModule],
+        providers: [
+          {
+            provide: AppFacade,
+            useFactory: () => ({
+              loadMe: jest.fn(),
+              me$: mockObservable()
+            })
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NotFoundPageComponent);

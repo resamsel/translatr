@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserAccessTokensComponent } from './user-access-tokens.component';
 import { NavListTestingModule } from '../../../shared/nav-list/testing';
@@ -16,35 +16,37 @@ describe('UserAccessTokensComponent', () => {
   let component: UserAccessTokensComponent;
   let fixture: ComponentFixture<UserAccessTokensComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserAccessTokensComponent],
-      imports: [
-        NavListTestingModule,
-        EmptyViewTestingModule,
-        ButtonTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UserAccessTokensComponent],
+        imports: [
+          NavListTestingModule,
+          EmptyViewTestingModule,
+          ButtonTestingModule,
 
-        RouterTestingModule,
-        MomentModule,
+          RouterTestingModule,
+          MomentModule,
 
-        MatListModule,
-        MatIconModule,
-        MatTooltipModule
-      ],
-      providers: [
-        {
-          provide: UserFacade,
-          useFactory: () => ({
-            criteria$: mockObservable(),
-            user$: mockObservable(),
-            destroy$: mockObservable()
-          })
-        },
-        { provide: MatDialog, useValue: {} },
-        { provide: MatSnackBar, useValue: {} }
-      ]
-    }).compileComponents();
-  }));
+          MatListModule,
+          MatIconModule,
+          MatTooltipModule
+        ],
+        providers: [
+          {
+            provide: UserFacade,
+            useFactory: () => ({
+              criteria$: mockObservable(),
+              user$: mockObservable(),
+              destroy$: mockObservable()
+            })
+          },
+          { provide: MatDialog, useValue: {} },
+          { provide: MatSnackBar, useValue: {} }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserAccessTokensComponent);

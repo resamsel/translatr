@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ShortNumberModule } from '@dev/translatr-components';
 import { FeatureFlagTestingModule, MetricTestingModule } from '@translatr/components/testing';
@@ -9,29 +9,31 @@ describe('DashboardInfoComponent', () => {
   let component: DashboardInfoComponent;
   let fixture: ComponentFixture<DashboardInfoComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [DashboardInfoComponent],
-      imports: [
-        FeatureFlagTestingModule,
-        MetricTestingModule,
-        ShortNumberModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [DashboardInfoComponent],
+        imports: [
+          FeatureFlagTestingModule,
+          MetricTestingModule,
+          ShortNumberModule,
 
-        RouterTestingModule
-      ],
-      providers: [
-        {
-          provide: AppFacade,
-          useFactory: () => ({
-            loadUsers: jest.fn(),
-            loadProjects: jest.fn(),
-            loadAccessTokens: jest.fn(),
-            loadActivities: jest.fn()
-          })
-        }
-      ]
-    }).compileComponents();
-  }));
+          RouterTestingModule
+        ],
+        providers: [
+          {
+            provide: AppFacade,
+            useFactory: () => ({
+              loadUsers: jest.fn(),
+              loadProjects: jest.fn(),
+              loadAccessTokens: jest.fn(),
+              loadActivities: jest.fn()
+            })
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardInfoComponent);

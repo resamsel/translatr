@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TranslocoTestingModule } from '@ngneat/transloco';
@@ -12,36 +12,38 @@ describe('ProjectMemberEditDialogComponent', () => {
   let component: ProjectOwnerEditDialogComponent;
   let fixture: ComponentFixture<ProjectOwnerEditDialogComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectOwnerEditDialogComponent],
-      imports: [
-        ProjectOwnerEditFormTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProjectOwnerEditDialogComponent],
+        imports: [
+          ProjectOwnerEditFormTestingModule,
 
-        TranslocoTestingModule,
+          TranslocoTestingModule,
 
-        MatDialogModule,
-        MatButtonModule
-      ],
-      providers: [
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
-        {
-          provide: UsersFacade,
-          useFactory: () => ({
-            users$: mockObservable()
-          })
-        },
-        {
-          provide: ProjectFacade,
-          useFactory: () => ({
-            members$: mockObservable(),
-            loadMembers: jest.fn()
-          })
-        }
-      ]
-    }).compileComponents();
-  }));
+          MatDialogModule,
+          MatButtonModule
+        ],
+        providers: [
+          { provide: MatDialogRef, useValue: {} },
+          { provide: MAT_DIALOG_DATA, useValue: {} },
+          {
+            provide: UsersFacade,
+            useFactory: () => ({
+              users$: mockObservable()
+            })
+          },
+          {
+            provide: ProjectFacade,
+            useFactory: () => ({
+              members$: mockObservable(),
+              loadMembers: jest.fn()
+            })
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectOwnerEditDialogComponent);

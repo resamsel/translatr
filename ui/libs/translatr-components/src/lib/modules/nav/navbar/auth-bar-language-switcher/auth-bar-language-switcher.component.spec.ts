@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslocoTestingModule } from '@ngneat/transloco';
@@ -9,12 +9,14 @@ describe('AuthBarLanguageSwitcherComponent', () => {
   let component: AuthBarLanguageSwitcherComponent;
   let fixture: ComponentFixture<AuthBarLanguageSwitcherComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [AuthBarLanguageSwitcherComponent],
-      imports: [TranslocoTestingModule, MatMenuModule, MatIconModule]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [AuthBarLanguageSwitcherComponent],
+        imports: [TranslocoTestingModule, MatMenuModule, MatIconModule]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AuthBarLanguageSwitcherComponent);

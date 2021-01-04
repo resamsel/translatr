@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -18,25 +18,27 @@ describe('DashboardUserComponent', () => {
   let component: DashboardUserComponent;
   let fixture: ComponentFixture<DashboardUserComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [DashboardUserComponent],
-      imports: [
-        FeatureFlagTestingModule,
-        UserCardTestingModule,
-        MetricTestingModule,
-        ShortNumberModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [DashboardUserComponent],
+        imports: [
+          FeatureFlagTestingModule,
+          UserCardTestingModule,
+          MetricTestingModule,
+          ShortNumberModule,
 
-        RouterTestingModule,
-        GravatarModule,
-        MomentModule,
+          RouterTestingModule,
+          GravatarModule,
+          MomentModule,
 
-        MatTooltipModule,
-        MatIconModule
-      ],
-      providers: [{ provide: AppFacade, useFactory: () => ({}) }]
-    }).compileComponents();
-  }));
+          MatTooltipModule,
+          MatIconModule
+        ],
+        providers: [{ provide: AppFacade, useFactory: () => ({}) }]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardUserComponent);

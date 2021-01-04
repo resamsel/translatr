@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -15,39 +15,41 @@ describe('UserEditDialogComponent', () => {
   let component: UserEditDialogComponent;
   let fixture: ComponentFixture<UserEditDialogComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserEditDialogComponent],
-      imports: [
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        TranslocoTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UserEditDialogComponent],
+        imports: [
+          ReactiveFormsModule,
+          NoopAnimationsModule,
+          TranslocoTestingModule,
 
-        UserEditFormTestingModule,
+          UserEditFormTestingModule,
 
-        MatFormFieldModule,
-        MatDialogModule,
-        MatInputModule,
-        MatOptionModule,
-        MatSelectModule
-      ],
-      providers: [
-        {
-          provide: MatDialogRef,
-          useFactory: () => ({
-            afterClosed: () => mockObservable()
-          })
-        },
-        {
-          provide: MAT_DIALOG_DATA,
-          useValue: {
-            success$: mockObservable(),
-            error$: mockObservable()
+          MatFormFieldModule,
+          MatDialogModule,
+          MatInputModule,
+          MatOptionModule,
+          MatSelectModule
+        ],
+        providers: [
+          {
+            provide: MatDialogRef,
+            useFactory: () => ({
+              afterClosed: () => mockObservable()
+            })
+          },
+          {
+            provide: MAT_DIALOG_DATA,
+            useValue: {
+              success$: mockObservable(),
+              error$: mockObservable()
+            }
           }
-        }
-      ]
-    }).compileComponents();
-  }));
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserEditDialogComponent);

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LocaleListComponent } from './locale-list.component';
 import { NavListTestingModule } from '../../../../shared/nav-list/testing';
@@ -16,26 +16,28 @@ describe('LocaleListComponent', () => {
   let component: LocaleListComponent;
   let fixture: ComponentFixture<LocaleListComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [LocaleListComponent],
-      imports: [
-        NavListTestingModule,
-        ButtonTestingModule,
-        EmptyViewTestingModule,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [LocaleListComponent],
+        imports: [
+          NavListTestingModule,
+          ButtonTestingModule,
+          EmptyViewTestingModule,
 
-        RouterTestingModule,
+          RouterTestingModule,
 
-        MatDialogModule,
-        MatListModule,
-        MatIconModule,
-        MatProgressBarModule,
-        MatTooltipModule,
-        MatButtonModule,
-        MatMenuModule
-      ]
-    }).compileComponents();
-  }));
+          MatDialogModule,
+          MatListModule,
+          MatIconModule,
+          MatProgressBarModule,
+          MatTooltipModule,
+          MatButtonModule,
+          MatMenuModule
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LocaleListComponent);
