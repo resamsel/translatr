@@ -15,3 +15,5 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-play-enhancer" % "1.2.2")
 addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "6.0.0")
 
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1")
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.7.6")

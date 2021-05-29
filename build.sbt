@@ -6,7 +6,7 @@ version := "3.2.0-0"
 
 lazy val root = (project in file("."))
   .configs(IntegrationTest)
-  .enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin)
+  .enablePlugins(PlayJava, PlayEbean, BuildInfoPlugin, JavaAppPackaging)
   .settings(
     scalaVersion := "2.13.2",
     Defaults.itSettings,
