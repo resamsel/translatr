@@ -1,8 +1,25 @@
 # Changelog
 
-## [3.1.6](https://github.com/resamsel/translatr/tree/3.1.6) (2020-11-28)
+## [3.2.0](https://github.com/resamsel/translatr/tree/3.2.0) (2021-05-31)
 
-[Full Changelog](https://github.com/resamsel/translatr/compare/v3.1.6-3...3.1.6)
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.2.0-0...3.2.0)
+
+**Implemented enhancements:**
+
+- Add route for creating an access token [\#155](https://github.com/resamsel/translatr/issues/155)
+
+**Closed issues:**
+
+- Upgrade to Angular 11 [\#223](https://github.com/resamsel/translatr/issues/223)
+- Upgrade to Angular 10 [\#222](https://github.com/resamsel/translatr/issues/222)
+
+## [v3.2.0-0](https://github.com/resamsel/translatr/tree/v3.2.0-0) (2020-12-05)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.1.6...v3.2.0-0)
+
+## [v3.1.6](https://github.com/resamsel/translatr/tree/v3.1.6) (2020-11-28)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.1.6-3...v3.1.6)
 
 **Fixed bugs:**
 
@@ -80,13 +97,6 @@
 
 [Full Changelog](https://github.com/resamsel/translatr/compare/v3.0.2...v3.0.3)
 
-**Merged pull requests:**
-
-- \[Snyk\] Upgrade @angular/localize from 9.1.9 to 9.1.11 [\#196](https://github.com/resamsel/translatr/pull/196) ([snyk-bot](https://github.com/snyk-bot))
-- \[Snyk\] Security upgrade codemirror from 5.53.2 to 5.54.0 [\#195](https://github.com/resamsel/translatr/pull/195) ([snyk-bot](https://github.com/snyk-bot))
-- \[Snyk\] Upgrade jquery from 3.4.1 to 3.5.1 [\#190](https://github.com/resamsel/translatr/pull/190) ([snyk-bot](https://github.com/snyk-bot))
-- \[Snyk\] Upgrade @ngneat/transloco-locale from 1.2.2 to 1.3.0 [\#188](https://github.com/resamsel/translatr/pull/188) ([snyk-bot](https://github.com/snyk-bot))
-
 ## [v3.0.2](https://github.com/resamsel/translatr/tree/v3.0.2) (2020-06-29)
 
 [Full Changelog](https://github.com/resamsel/translatr/compare/v3.0.1...v3.0.2)
@@ -95,12 +105,6 @@
 
 - Wrong indentation of CLI integration example file [\#192](https://github.com/resamsel/translatr/issues/192)
 - Header image on main page looks odd on large screen [\#191](https://github.com/resamsel/translatr/issues/191)
-
-**Merged pull requests:**
-
-- \[Snyk\] Upgrade @ngneat/transloco from 2.17.1 to 2.17.2 [\#184](https://github.com/resamsel/translatr/pull/184) ([snyk-bot](https://github.com/snyk-bot))
-- \[Snyk\] Upgrade moment from 2.25.3 to 2.26.0 [\#182](https://github.com/resamsel/translatr/pull/182) ([snyk-bot](https://github.com/snyk-bot))
-- \[Snyk\] Upgrade jasmine-marbles from 0.5.0 to 0.6.0 [\#181](https://github.com/resamsel/translatr/pull/181) ([snyk-bot](https://github.com/snyk-bot))
 
 ## [v3.0.1](https://github.com/resamsel/translatr/tree/v3.0.1) (2020-06-28)
 
@@ -139,7 +143,9 @@
 - Project/Keys: Enable actions on list items [\#117](https://github.com/resamsel/translatr/issues/117)
 - Project/Locales: Enable actions on list items [\#116](https://github.com/resamsel/translatr/issues/116)
 - Project: Create settings page [\#115](https://github.com/resamsel/translatr/issues/115)
+- Mark certain users as admins [\#88](https://github.com/resamsel/translatr/issues/88)
 - Toggle jumping to next translation after saving/cmd+Enter [\#80](https://github.com/resamsel/translatr/issues/80)
+- Add wizard for creating a .translatr.yml config file [\#33](https://github.com/resamsel/translatr/issues/33)
 
 **Fixed bugs:**
 
