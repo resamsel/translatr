@@ -17,7 +17,7 @@
     "svg-cleanup": "ts-node ./src/typescript/svg-cleanup.ts ui",
     "build:docker": "bin/activator stage docker:publishLocal",
     "publish:docker": "docker push resamsel/$npm_package_name:$npm_package_version",
-    "generate:changelog": "github_changelog_generator --future-release=$npm_package_version",
+    "generate:changelog": "docker run --rm -v \"$(pwd)\":/usr/local/src/your-app -e CHANGELOG_GITHUB_TOKEN=$CHANGELOG_GITHUB_TOKEN githubchangeloggenerator/github-changelog-generator --future-release=$npm_package_version",
     "postinstall": "subpkg install"
   },
   "dependencies": {},
