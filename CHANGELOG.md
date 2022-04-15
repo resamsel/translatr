@@ -1,8 +1,8 @@
 # Changelog
 
-## [3.2.0](https://github.com/resamsel/translatr/tree/3.2.0) (2021-05-31)
+## [v3.2.0](https://github.com/resamsel/translatr/tree/v3.2.0) (2021-05-31)
 
-[Full Changelog](https://github.com/resamsel/translatr/compare/v3.2.0-0...3.2.0)
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.2.0-0...v3.2.0)
 
 **Implemented enhancements:**
 
@@ -12,6 +12,7 @@
 
 - Upgrade to Angular 11 [\#223](https://github.com/resamsel/translatr/issues/223)
 - Upgrade to Angular 10 [\#222](https://github.com/resamsel/translatr/issues/222)
+- Re-write activity graph template style [\#220](https://github.com/resamsel/translatr/issues/220)
 
 ## [v3.2.0-0](https://github.com/resamsel/translatr/tree/v3.2.0-0) (2020-12-05)
 
