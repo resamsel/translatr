@@ -64,10 +64,7 @@ export class MajorMinorRelease extends AbstractRelease {
 
     await run('Committing changes', () => this.gitService.commit(`Bump version to ${tag}`, '.'));
 
-    // Create release branch only for major and minor releases
-    await run(`Creating release branch ${releaseBranch}`, () =>
-      this.gitService.addBranch(releaseBranch)
-    );
+    await this.createReleaseBranch(releaseBranch);
     branchesToPush.push(releaseBranch);
 
     const productionBranchExists = await run(`Switching to branch ${productionBranch}`, () =>
@@ -96,5 +93,12 @@ export class MajorMinorRelease extends AbstractRelease {
     console.log(`[ ] push changes: git push origin ${branchesToPush.join(' ')}`);
 
     return version;
+  }
+
+  protected async createReleaseBranch(releaseBranch: string): Promise<unknown> {
+    // Create release branch only for major and minor releases
+    return run(`Creating release branch ${releaseBranch}`, () =>
+      this.gitService.addBranch(releaseBranch)
+    );
   }
 }
