@@ -18,7 +18,8 @@
     "build:docker": "bin/activator stage docker:publishLocal",
     "publish:docker": "docker push resamsel/$npm_package_name:$npm_package_version",
     "generate:changelog": "docker run --rm -v \"$(pwd)\":/usr/local/src/your-app -e CHANGELOG_GITHUB_TOKEN=$CHANGELOG_GITHUB_TOKEN githubchangeloggenerator/github-changelog-generator --future-release=$npm_package_version",
-    "postinstall": "subpkg install"
+    "postinstall": "subpkg install",
+	"heroku-postbuild": "curl -sf https://gobinaries.com/tj/node-prune | PREFIX=. sh&&cd ui&&../node-prune&&cd ../lets-release&&../node-prune"
   },
   "dependencies": {},
   "devDependencies": {

@@ -4,7 +4,6 @@ import { ChangelogService } from '../services/changelog.service';
 import { FileService } from '../services/file.service';
 import { GitService } from '../services/git.service';
 import { AbstractRelease } from './abstract-release';
-import { ReleaseError } from './release.error';
 
 /**
  * A patch release involves:
@@ -29,10 +28,10 @@ export class PatchRelease extends AbstractRelease {
 
   async validate(version: SemVer): Promise<unknown> {
     await this.changelogService.updateChangelog(this.config);
-    throw new ReleaseError(['Not implemented' + version]);
+    return Promise.resolve();
   }
 
   release(version: SemVer): Promise<unknown> {
-    throw new ReleaseError(['Not implemented' + version]);
+    return Promise.resolve();
   }
 }
