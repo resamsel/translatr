@@ -2,12 +2,14 @@
   <ng-container [ngTemplateOutlet]="metric"></ng-container>
 </a>
 <ng-template #metric>
-  <mat-card [class.icon]="icon !== undefined">
+  <mat-card
+    [class.icon]="icon !== undefined"
+    matTooltip="{{name}}: {{value}}"
+  >
     <mat-card-header>
       <mat-card-title
         *ngIf="value !== undefined"
         class="ellipsis"
-        [matTooltip]="value"
       >{{ value }}</mat-card-title>
       <mat-card-title *ngIf="value === undefined">-</mat-card-title>
       <mat-card-subtitle>{{ name }}</mat-card-subtitle>

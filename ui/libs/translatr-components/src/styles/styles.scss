@@ -39,10 +39,6 @@ a.link:hover {
 
 a .mat-card {
   @include mat-elevation-transition;
-
-  &:hover {
-    @include mat-elevation(4);
-  }
 }
 
 .main-container {
@@ -114,6 +110,11 @@ a .mat-card {
 .translatr.dark-theme {
   .mat-raised-button:not([class*='mat-elevation-z']) {
     @include mat-elevation(1);
+  }
+
+  .mat-raised-button:hover,
+  a:hover .mat-card {
+    @include mat-elevation(4);
   }
 
   .mat-nav-list .mat-list-item:hover {

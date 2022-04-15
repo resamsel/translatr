@@ -136,6 +136,10 @@ public class AuthProviderImpl implements AuthProvider {
       throw new UserUnregisteredException(profile);
     }
 
+	if (user.role == UserRole.Admin) {
+		return;
+	}
+
     UserRole newRole = profile.getRoles().contains("admin") ? UserRole.Admin : UserRole.User;
 
     if (!newRole.equals(user.role)) {
