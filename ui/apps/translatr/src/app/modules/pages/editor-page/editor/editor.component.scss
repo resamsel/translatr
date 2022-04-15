@@ -2,6 +2,11 @@
 @import 'theme';
 @import 'mixins';
 
+$editor-margin: 8px;
+$editor-flap-margin-y: $editor-margin + 8px;
+$editor-margin-xl: 16px;
+$editor-flap-margin-y-xl: $editor-margin-xl + 12px;
+
 @mixin editor-theme($theme) {
   $accent: map-get($theme, accent);
   $accent-color: mat-color($accent);
@@ -48,12 +53,24 @@
 
   @include medium {
     border-right: 1px solid rgba(0, 0, 0, 0.06);
+    background-color: white;
     max-width: 33.33%;
     flex: 1 1 100%;
   }
 
+  @include medium {
+    @include mat-elevation(2);
+    border-radius: 4px 0 0 4px;
+    border-right: none;
+    margin: $editor-flap-margin-y 0 $editor-flap-margin-y $editor-margin;
+  }
+
   @include large {
     max-width: 16.67%;
+  }
+
+  @include extra-large {
+    margin: $editor-flap-margin-y-xl 0 $editor-flap-margin-y-xl $editor-margin-xl;
   }
 }
 
@@ -121,21 +138,45 @@
   }
 
   @include medium {
+    @include mat-elevation(4);
+    border-radius: 4px;
+    margin: $editor-margin $editor-margin $editor-margin 0;
+
     .mat-divider {
       display: none;
+    }
+
+    .content {
+      border-radius: 4px 4px 0 0;
     }
   }
 
   @include large {
+    margin: $editor-margin 0;
     width: 25%;
+  }
+
+  @include extra-large {
+    margin: $editor-margin-xl 0;
   }
 }
 
 .editor-empty {
-  display: flex;
-  flex: 1 1 100%;
-  flex-direction: column;
-  z-index: 0;
+  > dev-empty-view {
+    display: flex;
+    flex: 1 1 100%;
+    flex-direction: column;
+    z-index: 0;
+  }
+
+  @include medium {
+    background-color: white;
+    margin-right: $editor-margin;
+  }
+
+  @include extra-large {
+    margin-right: $editor-margin-xl;
+  }
 }
 
 .meta {
@@ -173,12 +214,23 @@
     }
   }
 
+  @include medium {
+    @include mat-elevation(2);
+    background-color: white;
+    border-radius: 0 4px 4px 0;
+    margin: $editor-flap-margin-y $editor-margin $editor-flap-margin-y 0;
+  }
+
   @include large {
     width: 25%;
 
     .translation {
       margin: 16px;
     }
+  }
+
+  @include extra-large {
+    margin: $editor-flap-margin-y-xl $editor-margin-xl $editor-flap-margin-y-xl 0;
   }
 }
 
