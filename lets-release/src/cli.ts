@@ -6,6 +6,8 @@ import { ReleaseConfig } from './release.config';
 import { ReleaseFactory } from './release.factory';
 import { GitService } from './services/git.service';
 
+import 'dotenv/config';
+
 class LetsReleaseCommand extends Command {
   static description = 'Generate data (users, projects, locales, keys) by using the API';
 
