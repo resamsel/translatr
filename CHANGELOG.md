@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.3.2](https://github.com/resamsel/translatr/tree/v3.3.2) (2022-04-16)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.3.1...v3.3.2)
+
 ## [v3.3.1](https://github.com/resamsel/translatr/tree/v3.3.1) (2022-04-15)
 
 [Full Changelog](https://github.com/resamsel/translatr/compare/v3.3.0...v3.3.1)

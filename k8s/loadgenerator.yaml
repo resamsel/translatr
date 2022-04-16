@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: resamsel/translatr-loadgenerator:3.3.3-0
+          image: resamsel/translatr-loadgenerator:3.3.3
           imagePullPolicy: "IfNotPresent"
           env:
             - name: ENDPOINT
