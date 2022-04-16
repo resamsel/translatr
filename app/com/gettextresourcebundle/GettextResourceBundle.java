@@ -100,7 +100,7 @@ public class GettextResourceBundle extends ResourceBundle {
     } else {
       LOG.warn("GettextResourceBundle could not be initialized, input was null");
     }
-    LOG.info(
+    LOG.debug(
         "GettextResourceBundle initialization complete, " + resources.size() + " resources loaded");
   }
 

@@ -31,11 +31,6 @@ jobs:
       - name: Run server build and deploy docker image
         run: bin/activator stage docker:publish
 
-      - name: Run load generator build and deploy docker image
-        working-directory: ui
-        run: |
-          npm run build:lets-generate:docker
-
   release:
     name: Create Release
     needs: docker

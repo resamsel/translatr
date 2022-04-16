@@ -37,7 +37,7 @@ public class TimingFilter extends Filter {
     return metricService.time(rh.method(), () -> next.apply(rh)
         .thenApply(result -> {
           if (!rh.uri().startsWith("/assets/")) {
-            LOGGER.info("{} {} took {} and returned {}", rh.method(), rh.uri(), stopwatch,
+            LOGGER.debug("{} {} took {} and returned {}", rh.method(), rh.uri(), stopwatch,
                 result.status());
 
             return result.withHeader("X-Timing", stopwatch.toString());
