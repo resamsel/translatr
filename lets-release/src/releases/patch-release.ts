@@ -27,6 +27,6 @@ export class PatchRelease extends MajorMinorRelease {
 
   protected async createReleaseBranch(releaseBranch: string): Promise<unknown> {
     // the release branch should already exist
-    return Promise.resolve();
+    return Promise.resolve(releaseBranch);
   }
 }

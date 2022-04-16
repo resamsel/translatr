@@ -35,7 +35,6 @@ jobs:
         working-directory: ui
         run: |
           npm run build:lets-generate:docker
-          npm run publish:lets-generate:docker
 
   release:
     name: Create Release
