@@ -157,3 +157,4 @@ jmeter.log
 !.idea/runConfigurations/
 /venv*/
 /.env
+/ui/.angular
