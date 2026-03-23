@@ -230,10 +230,10 @@ app/
   ```
 - [ ] Create `gradle.properties`:
   ```properties
-  quarkusPluginVersion=3.21.3
+  quarkusPluginVersion=3.32.4
   quarkusPlatformGroupId=io.quarkus.platform
   quarkusPlatformArtifactId=quarkus-bom
-  quarkusPlatformVersion=3.21.3
+  quarkusPlatformVersion=3.32.4
   ```
 - [ ] Map every SBT `libraryDependency` to its Gradle equivalent (see [Appendix](#21-appendix--dependency-mapping)).
 - [ ] Install the Gradle wrapper: `gradle wrapper --gradle-version 8.13`.
