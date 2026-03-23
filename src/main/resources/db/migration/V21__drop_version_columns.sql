@@ -1,0 +1,16 @@
+alter table access_token
+    drop column version;
+alter table key
+    drop column version;
+alter table linked_account
+    drop column version;
+alter table locale
+    drop column version;
+alter table message
+    drop column version;
+alter table project
+    drop column version;
+alter table project_user
+    drop column version;
+alter table user_
+    drop column version;
