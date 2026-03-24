@@ -15,6 +15,7 @@ dependencies {
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
 
     // Core Quarkus extensions (versions managed by BOM)
+    implementation("io.quarkus:quarkus-smallrye-jwt")
     implementation("io.quarkus:quarkus-hibernate-validator")
     implementation("io.quarkus:quarkus-rest-jackson")
     implementation("io.quarkus:quarkus-hibernate-orm-panache")
