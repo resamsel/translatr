@@ -8,6 +8,8 @@ import com.translatr.model.Project;
 import com.translatr.model.User;
 import com.translatr.repository.ProjectRepository;
 import com.translatr.repository.UserRepository;
+import io.quarkus.cache.CacheInvalidate;
+import io.quarkus.cache.CacheResult;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -32,6 +34,7 @@ public class ProjectService {
         return new PagedList<>(list, total, c.offset, c.limit);
     }
 
+    @CacheResult(cacheName = "projects")
     public ProjectDto get(UUID id) {
         return mapper.toDto(projectRepo.findByIdOptional(id)
                 .orElseThrow(NotFoundException::new));
@@ -52,6 +55,7 @@ public class ProjectService {
     }
 
     @Transactional
+    @CacheInvalidate(cacheName = "projects")
     public ProjectDto update(ProjectDto dto) {
         Project p = projectRepo.findByIdOptional(dto.id)
                 .orElseThrow(NotFoundException::new);
@@ -61,6 +65,7 @@ public class ProjectService {
     }
 
     @Transactional
+    @CacheInvalidate(cacheName = "projects")
     public ProjectDto delete(UUID id) {
         Project p = projectRepo.findByIdOptional(id)
                 .orElseThrow(NotFoundException::new);

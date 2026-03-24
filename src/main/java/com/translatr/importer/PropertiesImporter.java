@@ -1,0 +1,20 @@
+package com.translatr.importer;
+
+import com.translatr.model.Locale;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Properties;
+
+public abstract class PropertiesImporter extends AbstractImporter {
+
+    @Override
+    protected Properties parse(InputStream stream, Locale locale) throws Exception {
+        Properties p = new Properties();
+        try (var reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+            p.load(reader);
+        }
+        return p;
+    }
+}
