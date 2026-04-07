@@ -1,0 +1,156 @@
+package com.translatr.service;
+
+import com.translatr.dto.AccessTokenDto;
+import com.translatr.mapper.DtoMapper;
+import com.translatr.model.AccessToken;
+import com.translatr.model.User;
+import com.translatr.repository.AccessTokenRepository;
+import jakarta.ws.rs.NotFoundException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class AccessTokenServiceTest {
+
+    @Mock AccessTokenRepository tokenRepo;
+    @Mock DtoMapper             mapper;
+
+    @InjectMocks AccessTokenService service;
+
+    @Test
+    void get_throwsNotFound_whenTokenMissing() {
+        when(tokenRepo.findByIdOptional(42L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.get(42L))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void create_generatesKeyAndPersists() {
+        User owner = new User();
+        owner.id   = UUID.randomUUID();
+
+        AccessTokenDto dto = new AccessTokenDto();
+        dto.name  = "my-token";
+        dto.scope = "read";
+
+        when(mapper.toDto(any(AccessToken.class))).thenAnswer(inv -> {
+            AccessToken t = inv.getArgument(0);
+            AccessTokenDto result = new AccessTokenDto();
+            result.name  = t.name;
+            result.scope = t.scope;
+            result.key   = t.key;
+            return result;
+        });
+
+        AccessTokenDto result = service.create(dto, owner);
+
+        verify(tokenRepo).persist(any(AccessToken.class));
+        assertThat(result.name).isEqualTo("my-token");
+        assertThat(result.scope).isEqualTo("read");
+        assertThat(result.key).isNotBlank().doesNotContain("-"); // UUID stripped of dashes
+    }
+
+    @Test
+    void update_appliesNameAndScope() {
+        AccessToken token = new AccessToken();
+        token.id    = 1L;
+        token.name  = "old";
+        token.scope = "read";
+
+        AccessTokenDto dto = new AccessTokenDto();
+        dto.id    = 1L;
+        dto.name  = "updated-name";
+        dto.scope = "read,write";
+
+        when(tokenRepo.findByIdOptional(1L)).thenReturn(Optional.of(token));
+        when(mapper.toDto(token)).thenReturn(dto);
+
+        service.update(dto);
+
+        assertThat(token.name).isEqualTo("updated-name");
+        assertThat(token.scope).isEqualTo("read,write");
+    }
+
+    @Test
+    void update_doesNotOverwriteFields_whenDtoFieldIsNull() {
+        AccessToken token = new AccessToken();
+        token.id    = 2L;
+        token.name  = "original";
+        token.scope = "read";
+
+        AccessTokenDto dto = new AccessTokenDto();
+        dto.id   = 2L;
+        dto.name = null; // not updating
+
+        when(tokenRepo.findByIdOptional(2L)).thenReturn(Optional.of(token));
+        when(mapper.toDto(token)).thenReturn(new AccessTokenDto());
+
+        service.update(dto);
+
+        assertThat(token.name).isEqualTo("original");
+        assertThat(token.scope).isEqualTo("read");
+    }
+
+    @Test
+    void update_throwsNotFound_whenTokenMissing() {
+        AccessTokenDto dto = new AccessTokenDto();
+        dto.id = 99L;
+
+        when(tokenRepo.findByIdOptional(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.update(dto))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void delete_removesToken() {
+        AccessToken token = new AccessToken();
+        token.id = 5L;
+
+        when(tokenRepo.findByIdOptional(5L)).thenReturn(Optional.of(token));
+        when(mapper.toDto(token)).thenReturn(new AccessTokenDto());
+
+        service.delete(5L);
+
+        verify(tokenRepo).delete(token);
+    }
+
+    @Test
+    void findUserByKey_returnsUser_whenTokenExists() {
+        User user = new User();
+        user.id   = UUID.randomUUID();
+
+        AccessToken token = new AccessToken();
+        token.user = user;
+
+        when(tokenRepo.findByKey("secret-key")).thenReturn(Optional.of(token));
+
+        Optional<User> result = service.findUserByKey("secret-key");
+
+        assertThat(result).isPresent().contains(user);
+    }
+
+    @Test
+    void findUserByKey_returnsEmpty_whenTokenNotFound() {
+        when(tokenRepo.findByKey("unknown")).thenReturn(Optional.empty());
+
+        Optional<User> result = service.findUserByKey("unknown");
+
+        assertThat(result).isEmpty();
+    }
+}
+
+
+

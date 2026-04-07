@@ -1,184 +1,169 @@
 package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import models.ActionType;
-import models.LogEntry;
-import org.junit.Test;
-import play.libs.Json;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.translatr.dto.*;
+import com.translatr.model.ActionType;
+import com.translatr.model.LogEntry;
+import com.translatr.util.ActivityUtils;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SuppressWarnings("ConstantConditions")
-public class ActivityUtilsTest {
+class ActivityUtilsTest {
 
-  @Test
-  public void instanceOf() {
-    assertThat(new ActivityUtils(null)).isNotNull();
-  }
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
-  @Test
-  public void contentTypeOfEmptyString() {
-    // given
-    LogEntry activity = createLogEntry(ActionType.Create, "", "");
+    // -------------------------------------------------------------------------
+    // contentTypeOf
+    // -------------------------------------------------------------------------
 
-    // when
-    String actual = ActivityUtils.contentTypeOf(activity);
-
-    // then
-    assertThat(actual).isEqualTo("");
-  }
-
-  @Test
-  public void contentTypeOfSimpleName() {
-    // given
-    LogEntry activity = createLogEntry(ActionType.Create, "Project", "");
-
-    // when
-    String actual = ActivityUtils.contentTypeOf(activity);
-
-    // then
-    assertThat(actual).isEqualTo("Project");
-  }
-
-  @Test
-  public void contentTypeOfQualifiedName() {
-    // given
-    LogEntry activity = createLogEntry(ActionType.Create, "dto.Project", "");
-
-    // when
-    String actual = ActivityUtils.contentTypeOf(activity);
-
-    // then
-    assertThat(actual).isEqualTo("Project");
-  }
-
-  @Test
-  public void iconOf() {
-    assertThat(ActivityUtils.iconOf(null)).isNull();
-    assertThat(ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.User.class.getName())))
-            .isEqualTo(ActivityUtils.USER_ICON);
-    assertThat(ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.Project.class.getName())))
-            .isEqualTo(ActivityUtils.PROJECT_ICON);
-    assertThat(ActivityUtils.iconOf(createLogEntry(ActionType.Update, dto.Locale.class.getName())))
-            .isEqualTo(ActivityUtils.LOCALE_ICON);
-    assertThat(ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.Key.class.getName())))
-            .isEqualTo(ActivityUtils.KEY_ICON);
-    assertThat(ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.Message.class.getName())))
-            .isEqualTo(ActivityUtils.MESSAGE_ICON);
-    assertThat(
-            ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.ProjectUser.class.getName())))
-            .isEqualTo(ActivityUtils.PROJECT_USER_ICON);
-    assertThat(
-            ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.AccessToken.class.getName())))
-            .isEqualTo(ActivityUtils.ACCESS_TOKEN_ICON);
-    assertThat(
-            ActivityUtils.iconOf(createLogEntry(ActionType.Create, dto.Suggestion.class.getName())))
-            .isEqualTo("");
-  }
-
-  @Test
-  public void colorOf() {
-    assertThat(ActivityUtils.colorOf(null)).isNull();
-    assertThat(ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.User.class.getName())))
-            .isEqualTo(ActivityUtils.USER_COLOR);
-    assertThat(
-            ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.Project.class.getName())))
-            .isEqualTo(ActivityUtils.PROJECT_COLOR);
-    assertThat(ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.Locale.class.getName())))
-            .isEqualTo(ActivityUtils.LOCALE_COLOR);
-    assertThat(ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.Key.class.getName())))
-            .isEqualTo(ActivityUtils.KEY_COLOR);
-    assertThat(
-            ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.Message.class.getName())))
-            .isEqualTo(ActivityUtils.MESSAGE_COLOR);
-    assertThat(
-            ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.ProjectUser.class.getName())))
-            .isEqualTo(ActivityUtils.PROJECT_USER_COLOR);
-    assertThat(
-            ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.AccessToken.class.getName())))
-            .isEqualTo(ActivityUtils.ACCESS_TOKEN_COLOR);
-    assertThat(
-            ActivityUtils.colorOf(createLogEntry(ActionType.Create, dto.Suggestion.class.getName())))
-            .isEqualTo("");
-  }
-
-  @Test
-  public void nameOf() {
-    assertThat(ActivityUtils.nameOf(null)).isNull();
-    assertThat(ActivityUtils
-            .nameOf(createLogEntry(ActionType.Create, dto.User.class.getName(), Json.newObject())))
-            .isNull();
-    assertThat(
-            ActivityUtils.nameOf(createLogEntry(ActionType.Create, dto.User.class.getName(), "U")))
-            .isEqualTo("U");
-    assertThat(
-            ActivityUtils.nameOf(createLogEntry(ActionType.Create, dto.Project.class.getName(), "P")))
-            .isEqualTo("P");
-    assertThat(
-            ActivityUtils.nameOf(createLogEntry(ActionType.Create, dto.Locale.class.getName(), "L")))
-            .isEqualTo("L");
-    assertThat(
-            ActivityUtils.nameOf(createLogEntry(ActionType.Create, dto.Key.class.getName(), "K")))
-            .isEqualTo("K");
-    assertThat(ActivityUtils.nameOf(createLogEntry(ActionType.Create, dto.Message.class.getName(),
-            Json.newObject().put("keyName", "K").put("localeName", "L")))).isEqualTo("K (L)");
-    assertThat(
-            ActivityUtils.nameOf(createLogEntry(ActionType.Create, dto.ProjectUser.class.getName(),
-                    Json.newObject().put("projectName", "P").put("userName", "U")))).isEqualTo("P (U)");
-    assertThat(ActivityUtils
-            .nameOf(createLogEntry(ActionType.Create, dto.AccessToken.class.getName(), "A")))
-            .isEqualTo("A");
-    assertThat(ActivityUtils
-            .nameOf(createLogEntry(ActionType.Create, dto.Suggestion.class.getName(), "A")))
-            .isEqualTo("");
-  }
-
-  @Test
-  public void parse() {
-    assertThat(ActivityUtils
-            .parse(createLogEntry(ActionType.Create, dto.User.class.getName(), Json.newObject())))
-            .isEqualTo(Json.newObject());
-    assertThat(ActivityUtils
-            .parse(createLogEntry(ActionType.Delete, dto.User.class.getName(), Json.newObject())))
-            .isEqualTo(Json.newObject());
-    assertThat(ActivityUtils
-            .parse(createLogEntry(ActionType.Create, dto.User.class.getName(), (JsonNode) null)))
-            .isEqualTo(Json.newObject());
-    assertThat(ActivityUtils
-            .parse(createLogEntry(ActionType.Delete, dto.User.class.getName(), (JsonNode) null)))
-            .isEqualTo(Json.newObject());
-  }
-
-  private LogEntry createLogEntry(ActionType type, String contentType) {
-    return createLogEntry(type, contentType, Json.newObject());
-  }
-
-  @SuppressWarnings("SameParameterValue")
-  private LogEntry createLogEntry(ActionType type, String contentType, String name) {
-    return createLogEntry(type, contentType, Json.newObject().put("name", name));
-  }
-
-  private LogEntry createLogEntry(ActionType type, String contentType, JsonNode json) {
-    LogEntry out = new LogEntry();
-
-    out.type = type;
-    out.contentType = contentType;
-
-    switch (type) {
-      case Create:
-        if (json != null) {
-          out.after = json.toString();
-        }
-        break;
-      case Delete:
-        if (json != null) {
-          out.before = json.toString();
-        }
-        break;
-      default:
-        break;
+    @Test
+    void contentTypeOfEmptyString() {
+        LogEntry activity = logEntry(ActionType.Create, "");
+        assertThat(ActivityUtils.contentTypeOf(activity)).isEqualTo("");
     }
 
-    return out;
-  }
+    @Test
+    void contentTypeOfSimpleName() {
+        LogEntry activity = logEntry(ActionType.Create, "Project");
+        assertThat(ActivityUtils.contentTypeOf(activity)).isEqualTo("Project");
+    }
+
+    @Test
+    void contentTypeOfQualifiedName() {
+        LogEntry activity = logEntry(ActionType.Create, ProjectDto.class.getName());
+        assertThat(ActivityUtils.contentTypeOf(activity)).isEqualTo("Project");
+    }
+
+    // -------------------------------------------------------------------------
+    // iconOf
+    // -------------------------------------------------------------------------
+
+    @Test
+    void iconOf() {
+        assertThat(ActivityUtils.iconOf(null)).isNull();
+        assertThat(ActivityUtils.iconOf(logEntry(ActionType.Create, UserDto.class.getName())))
+                .isEqualTo(ActivityUtils.USER_ICON);
+        assertThat(ActivityUtils.iconOf(logEntry(ActionType.Create, ProjectDto.class.getName())))
+                .isEqualTo(ActivityUtils.PROJECT_ICON);
+        assertThat(ActivityUtils.iconOf(logEntry(ActionType.Update, LocaleDto.class.getName())))
+                .isEqualTo(ActivityUtils.LOCALE_ICON);
+        assertThat(ActivityUtils.iconOf(logEntry(ActionType.Create, KeyDto.class.getName())))
+                .isEqualTo(ActivityUtils.KEY_ICON);
+        assertThat(ActivityUtils.iconOf(logEntry(ActionType.Create, MessageDto.class.getName())))
+                .isEqualTo(ActivityUtils.MESSAGE_ICON);
+        assertThat(ActivityUtils.iconOf(logEntry(ActionType.Create, AccessTokenDto.class.getName())))
+                .isEqualTo(ActivityUtils.ACCESS_TOKEN_ICON);
+        // Unknown type → empty string
+        assertThat(ActivityUtils.iconOf(logEntry(ActionType.Create, "dto.Suggestion")))
+                .isEqualTo("");
+    }
+
+    // -------------------------------------------------------------------------
+    // colorOf
+    // -------------------------------------------------------------------------
+
+    @Test
+    void colorOf() {
+        assertThat(ActivityUtils.colorOf(null)).isNull();
+        assertThat(ActivityUtils.colorOf(logEntry(ActionType.Create, UserDto.class.getName())))
+                .isEqualTo(ActivityUtils.USER_COLOR);
+        assertThat(ActivityUtils.colorOf(logEntry(ActionType.Create, ProjectDto.class.getName())))
+                .isEqualTo(ActivityUtils.PROJECT_COLOR);
+        assertThat(ActivityUtils.colorOf(logEntry(ActionType.Create, LocaleDto.class.getName())))
+                .isEqualTo(ActivityUtils.LOCALE_COLOR);
+        assertThat(ActivityUtils.colorOf(logEntry(ActionType.Create, KeyDto.class.getName())))
+                .isEqualTo(ActivityUtils.KEY_COLOR);
+        assertThat(ActivityUtils.colorOf(logEntry(ActionType.Create, MessageDto.class.getName())))
+                .isEqualTo(ActivityUtils.MESSAGE_COLOR);
+        assertThat(ActivityUtils.colorOf(logEntry(ActionType.Create, AccessTokenDto.class.getName())))
+                .isEqualTo(ActivityUtils.ACCESS_TOKEN_COLOR);
+        assertThat(ActivityUtils.colorOf(logEntry(ActionType.Create, "dto.Suggestion")))
+                .isEqualTo("");
+    }
+
+    // -------------------------------------------------------------------------
+    // nameOf
+    // -------------------------------------------------------------------------
+
+    @Test
+    void nameOf() {
+        assertThat(ActivityUtils.nameOf(null)).isNull();
+
+        // Null JSON → null name
+        assertThat(ActivityUtils.nameOf(logEntry(ActionType.Create, UserDto.class.getName(), MAPPER.createObjectNode())))
+                .isNull();
+
+        // Simple name field
+        assertThat(ActivityUtils.nameOf(logEntry(ActionType.Create, UserDto.class.getName(), "U")))
+                .isEqualTo("U");
+        assertThat(ActivityUtils.nameOf(logEntry(ActionType.Create, ProjectDto.class.getName(), "P")))
+                .isEqualTo("P");
+        assertThat(ActivityUtils.nameOf(logEntry(ActionType.Create, LocaleDto.class.getName(), "L")))
+                .isEqualTo("L");
+        assertThat(ActivityUtils.nameOf(logEntry(ActionType.Create, KeyDto.class.getName(), "K")))
+                .isEqualTo("K");
+
+        // Message: "keyName (localeName)"
+        ObjectNode msgNode = MAPPER.createObjectNode().put("keyName", "K").put("localeName", "L");
+        assertThat(ActivityUtils.nameOf(logEntry(ActionType.Create, MessageDto.class.getName(), msgNode)))
+                .isEqualTo("K (L)");
+
+        // AccessToken: simple name
+        assertThat(ActivityUtils.nameOf(logEntry(ActionType.Create, AccessTokenDto.class.getName(), "A")))
+                .isEqualTo("A");
+
+        // Unknown type → empty string
+        assertThat(ActivityUtils.nameOf(logEntry(ActionType.Create, "dto.Suggestion", "A")))
+                .isEqualTo("");
+    }
+
+    // -------------------------------------------------------------------------
+    // parse
+    // -------------------------------------------------------------------------
+
+    @Test
+    void parse() {
+        ObjectNode empty = MAPPER.createObjectNode();
+
+        // Create: uses "after" field
+        assertThat(ActivityUtils.parse(logEntry(ActionType.Create, UserDto.class.getName(), empty)))
+                .isEqualTo(empty);
+
+        // Delete: uses "before" field
+        assertThat(ActivityUtils.parse(logEntry(ActionType.Delete, UserDto.class.getName(), empty)))
+                .isEqualTo(empty);
+
+        // Null JSON: falls back to empty object
+        assertThat(ActivityUtils.parse(logEntry(ActionType.Create, UserDto.class.getName(), (JsonNode) null)))
+                .isEqualTo(empty);
+        assertThat(ActivityUtils.parse(logEntry(ActionType.Delete, UserDto.class.getName(), (JsonNode) null)))
+                .isEqualTo(empty);
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    private static LogEntry logEntry(ActionType type, String contentType) {
+        return logEntry(type, contentType, MAPPER.createObjectNode());
+    }
+
+    private static LogEntry logEntry(ActionType type, String contentType, String name) {
+        return logEntry(type, contentType, MAPPER.createObjectNode().put("name", name));
+    }
+
+    private static LogEntry logEntry(ActionType type, String contentType, JsonNode json) {
+        LogEntry e = new LogEntry();
+        e.type        = type;
+        e.contentType = contentType;
+        String s = json != null ? json.toString() : null;
+        switch (type) {
+            case Create, Update, Login, Logout -> e.after  = s;
+            case Delete                        -> e.before = s;
+        }
+        return e;
+    }
 }
