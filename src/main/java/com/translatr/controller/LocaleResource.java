@@ -23,10 +23,19 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 public class LocaleResource {
 
-    @Inject LocaleService    localeService;
-    @Inject LocaleRepository localeRepo;
-    @Inject ImporterFactory  importerFactory;
-    @Inject ExporterFactory  exporterFactory;
+    private final LocaleService    localeService;
+    private final LocaleRepository localeRepo;
+    private final ImporterFactory  importerFactory;
+    private final ExporterFactory  exporterFactory;
+
+    @Inject
+    public LocaleResource(LocaleService localeService, LocaleRepository localeRepo,
+                          ImporterFactory importerFactory, ExporterFactory exporterFactory) {
+        this.localeService   = localeService;
+        this.localeRepo      = localeRepo;
+        this.importerFactory = importerFactory;
+        this.exporterFactory = exporterFactory;
+    }
 
     @GET  @Path("/project/{projectId}/locales") @PermitAll
     public PagedList<LocaleDto> findByProject(@PathParam("projectId") UUID projectId,
@@ -75,4 +84,3 @@ public class LocaleResource {
                 .build();
     }
 }
-

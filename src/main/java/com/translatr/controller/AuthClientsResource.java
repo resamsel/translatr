@@ -22,7 +22,12 @@ import java.util.stream.Collectors;
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthClientsResource {
 
-    @Inject TranslatrConfig config;
+    private final TranslatrConfig config;
+
+    @Inject
+    public AuthClientsResource(TranslatrConfig config) {
+        this.config = config;
+    }
 
     @GET
     @Path("/authclients")
@@ -40,4 +45,3 @@ public class AuthClientsResource {
                 .collect(Collectors.toList());
     }
 }
-

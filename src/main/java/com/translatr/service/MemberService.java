@@ -19,10 +19,19 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class MemberService {
 
-    @Inject ProjectUserRepository memberRepo;
-    @Inject ProjectRepository     projectRepo;
-    @Inject UserRepository        userRepo;
-    @Inject DtoMapper             mapper;
+    private final ProjectUserRepository memberRepo;
+    private final ProjectRepository     projectRepo;
+    private final UserRepository        userRepo;
+    private final DtoMapper             mapper;
+
+    @Inject
+    public MemberService(ProjectUserRepository memberRepo, ProjectRepository projectRepo,
+                         UserRepository userRepo, DtoMapper mapper) {
+        this.memberRepo  = memberRepo;
+        this.projectRepo = projectRepo;
+        this.userRepo    = userRepo;
+        this.mapper      = mapper;
+    }
 
     public PagedList<MemberDto> find(MemberCriteria c) {
         var query = memberRepo.find(
@@ -63,5 +72,3 @@ public class MemberService {
         return mapper.toDto(member);
     }
 }
-
-

@@ -16,7 +16,12 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 public class MessageResource {
 
-    @Inject MessageService messageService;
+    private final MessageService messageService;
+
+    @Inject
+    public MessageResource(MessageService messageService) {
+        this.messageService = messageService;
+    }
 
     @GET  @Path("/project/{projectId}/messages") @PermitAll
     public PagedList<MessageDto> findByProject(@PathParam("projectId") UUID projectId,

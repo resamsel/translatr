@@ -16,7 +16,12 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 public class KeyResource {
 
-    @Inject KeyService keyService;
+    private final KeyService keyService;
+
+    @Inject
+    public KeyResource(KeyService keyService) {
+        this.keyService = keyService;
+    }
 
     @GET  @Path("/project/{projectId}/keys") @PermitAll
     public PagedList<KeyDto> findByProject(@PathParam("projectId") UUID projectId,

@@ -17,8 +17,14 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class UserService {
 
-    @Inject UserRepository userRepo;
-    @Inject DtoMapper      mapper;
+    private final UserRepository userRepo;
+    private final DtoMapper      mapper;
+
+    @Inject
+    public UserService(UserRepository userRepo, DtoMapper mapper) {
+        this.userRepo = userRepo;
+        this.mapper   = mapper;
+    }
 
     public PagedList<UserDto> find(UserCriteria c) {
         var query = userRepo.findAll();
@@ -39,8 +45,10 @@ public class UserService {
     @Transactional
     public UserDto update(UserDto dto) {
         User u = userRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
-        if (dto.name  != null) u.name  = dto.name;
-        if (dto.email != null) u.email = dto.email;
+        if (dto.username        != null) u.username        = dto.username;
+        if (dto.name            != null) u.name            = dto.name;
+        if (dto.email           != null) u.email           = dto.email;
+        if (dto.preferredLocale != null) u.preferredLocale = dto.preferredLocale;
         if (dto.settings != null) {
             if (u.settings == null) u.settings = new java.util.HashMap<>();
             u.settings.putAll(dto.settings);

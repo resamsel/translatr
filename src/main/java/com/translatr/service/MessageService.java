@@ -18,10 +18,19 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class MessageService {
 
-    @Inject MessageRepository messageRepo;
-    @Inject LocaleRepository  localeRepo;
-    @Inject KeyRepository     keyRepo;
-    @Inject DtoMapper         mapper;
+    private final MessageRepository messageRepo;
+    private final LocaleRepository  localeRepo;
+    private final KeyRepository     keyRepo;
+    private final DtoMapper         mapper;
+
+    @Inject
+    public MessageService(MessageRepository messageRepo, LocaleRepository localeRepo,
+                          KeyRepository keyRepo, DtoMapper mapper) {
+        this.messageRepo = messageRepo;
+        this.localeRepo  = localeRepo;
+        this.keyRepo     = keyRepo;
+        this.mapper      = mapper;
+    }
 
     public PagedList<MessageDto> find(MessageCriteria c) {
         var query = c.projectId != null

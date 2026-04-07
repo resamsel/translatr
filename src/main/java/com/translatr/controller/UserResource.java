@@ -18,8 +18,14 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
 
-    @Inject UserService  userService;
-    @Inject JsonWebToken jwt;
+    private final UserService  userService;
+    private final JsonWebToken jwt;
+
+    @Inject
+    public UserResource(UserService userService, JsonWebToken jwt) {
+        this.userService = userService;
+        this.jwt         = jwt;
+    }
 
     @GET  @Path("/users")         @PermitAll
     public PagedList<UserDto> find(@BeanParam UserCriteria criteria) {

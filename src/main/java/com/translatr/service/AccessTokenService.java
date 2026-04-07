@@ -19,9 +19,16 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class AccessTokenService {
 
-    @Inject AccessTokenRepository tokenRepo;
-    @Inject UserRepository        userRepo;
-    @Inject DtoMapper             mapper;
+    private final AccessTokenRepository tokenRepo;
+    private final UserRepository        userRepo;
+    private final DtoMapper             mapper;
+
+    @Inject
+    public AccessTokenService(AccessTokenRepository tokenRepo, UserRepository userRepo, DtoMapper mapper) {
+        this.tokenRepo = tokenRepo;
+        this.userRepo  = userRepo;
+        this.mapper    = mapper;
+    }
 
     public PagedList<AccessTokenDto> find(AccessTokenCriteria c, UUID currentUserId) {
         var query = tokenRepo.find("user.id = ?1 ORDER BY whenCreated DESC", currentUserId);

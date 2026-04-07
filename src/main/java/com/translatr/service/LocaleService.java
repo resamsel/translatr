@@ -18,9 +18,16 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class LocaleService {
 
-    @Inject LocaleRepository  localeRepo;
-    @Inject ProjectRepository projectRepo;
-    @Inject DtoMapper         mapper;
+    private final LocaleRepository  localeRepo;
+    private final ProjectRepository projectRepo;
+    private final DtoMapper         mapper;
+
+    @Inject
+    public LocaleService(LocaleRepository localeRepo, ProjectRepository projectRepo, DtoMapper mapper) {
+        this.localeRepo  = localeRepo;
+        this.projectRepo = projectRepo;
+        this.mapper      = mapper;
+    }
 
     public PagedList<LocaleDto> find(LocaleCriteria c) {
         var query = c.projectId != null

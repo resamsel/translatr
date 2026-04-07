@@ -36,8 +36,12 @@ import java.net.URI;
 @Path("/authenticate")
 public class AuthenticateResource {
 
+    private final TranslatrConfig config;
+
     @Inject
-    TranslatrConfig config;
+    public AuthenticateResource(TranslatrConfig config) {
+        this.config = config;
+    }
 
     @GET
     @Authenticated
@@ -47,4 +51,3 @@ public class AuthenticateResource {
         return Response.seeOther(URI.create(config.redirectBase() + "/ui")).build();
     }
 }
-
