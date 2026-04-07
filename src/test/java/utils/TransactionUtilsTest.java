@@ -1,13 +1,22 @@
 package utils;
 
+import com.translatr.util.EmailUtils;
+import com.translatr.util.MessageUtils;
+import com.translatr.util.UuidUtils;
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import utils.TransactionUtils;
+/**
+ * Sanity-check test — verifies that the Quarkus utility singletons can be instantiated.
+ * Replaces the trivial Play-era TransactionUtils instantiation test.
+ */
+class TransactionUtilsTest {
 
-public class TransactionUtilsTest {
-  @Test
-  public void instanceOf() {
-    assertThat(new TransactionUtils()).isNotNull();
-  }
+    @Test
+    void utilitiesAreInstantiable() {
+        assertThat(new EmailUtils()).isNotNull();
+        assertThat(new UuidUtils()).isNotNull();
+        assertThat(new MessageUtils()).isNotNull();
+    }
 }

@@ -1,38 +1,48 @@
 package utils;
 
-import assertions.CustomAssertions;
-import exporters.Exporter;
-import importers.Importer;
-import models.FileType;
-import org.junit.Test;
+import com.translatr.exporter.ExporterFactory;
+import com.translatr.importer.ImporterFactory;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class FileFormatRegistryTest {
-  @Test
-  public void testImporterRegistration() {
-    Stream.of(FileType.values()).forEach(fileFormat -> {
-      // when
-      Class<? extends Importer> actual = FileFormatRegistry.IMPORTER_MAP.get(fileFormat);
+/**
+ * Verifies that {@link ImporterFactory} and {@link ExporterFactory} return a registered
+ * handler for every supported file-type string.
+ * Replaces the Play-era FileFormatRegistryTest.
+ */
+@QuarkusTest
+class FileFormatRegistryTest {
 
-      // then
-      CustomAssertions.assertThat(actual)
-              .as("Importer for file format " + fileFormat)
-              .isNotNull();
-    });
-  }
+    @Inject ImporterFactory importerFactory;
+    @Inject ExporterFactory exporterFactory;
 
-  @Test
-  public void testExporterRegistration() {
-    Stream.of(FileType.values()).forEach(fileFormat -> {
-      // when
-      Supplier<Exporter> actual = FileFormatRegistry.EXPORTER_MAP.get(fileFormat);
+    @ParameterizedTest
+    @ValueSource(strings = {"java_properties", "play_messages", "json", "gettext"})
+    void importerIsRegistered(String fileType) {
+        assertThat(importerFactory.forFileType(fileType)).isNotNull();
+    }
 
-      // then
-      CustomAssertions.assertThat(actual)
-              .as("Exporter for file format " + fileFormat)
-              .isNotNull();
-    });
-  }
+    @ParameterizedTest
+    @ValueSource(strings = {"java_properties", "play_messages", "json", "gettext"})
+    void exporterIsRegistered(String fileType) {
+        assertThat(exporterFactory.forFileType(fileType)).isNotNull();
+    }
+
+    @Test
+    void importerThrowsForUnknownFileType() {
+        assertThatThrownBy(() -> importerFactory.forFileType("unknown_format"))
+                .isInstanceOf(jakarta.ws.rs.BadRequestException.class);
+    }
+
+    @Test
+    void exporterThrowsForUnknownFileType() {
+        assertThatThrownBy(() -> exporterFactory.forFileType("unknown_format"))
+                .isInstanceOf(jakarta.ws.rs.BadRequestException.class);
+    }
 }

@@ -18,7 +18,7 @@ class JsonImporterTest {
 
     @Test
     void testParse_producesExpectedProperties() throws Exception {
-        JsonImporter importer = new JsonImporter();
+        JsonImporter importer = new JsonImporter(null, null);
 
         String json = "{\"greeting\": \"Hello\", \"farewell\": \"Goodbye\"}";
         Method parse = AbstractImporter.class.getDeclaredMethod("parse",

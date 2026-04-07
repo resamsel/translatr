@@ -1,80 +1,39 @@
 package utils;
 
-import org.junit.Test;
+import com.translatr.util.EmailUtils;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EmailUtilsTest {
+class EmailUtilsTest {
 
-  @Test
-  public void maskEmailAddressBlank() {
-    // given
-    String email = "";
+    @Test
+    void maskEmailAddressBlank() {
+        assertThat(EmailUtils.maskEmail("")).isEqualTo("");
+    }
 
-    // when
-    String actual = EmailUtils.maskEmail(email);
+    @Test
+    void maskEmailAddressShortest() {
+        assertThat(EmailUtils.maskEmail("a@b.com")).isEqualTo("*@b.com");
+    }
 
-    // then
-    assertThat(actual).isEqualTo("");
-  }
+    @Test
+    void maskEmailAddressShorter() {
+        assertThat(EmailUtils.maskEmail("ab@b.com")).isEqualTo("**@b.com");
+    }
 
-  @Test
-  public void maskEmailAddressShortest() {
-    // given
-    String email = "a@b.com";
+    @Test
+    void maskEmailAddressShort() {
+        assertThat(EmailUtils.maskEmail("abc@b.com")).isEqualTo("***@b.com");
+    }
 
-    // when
-    String actual = EmailUtils.maskEmail(email);
+    @Test
+    void maskEmailAddressVisibleStartAndEnd() {
+        assertThat(EmailUtils.maskEmail("abcd@b.com")).isEqualTo("a**d@b.com");
+    }
 
-    // then
-    assertThat(actual).isEqualTo("*@b.com");
-  }
-
-  @Test
-  public void maskEmailAddressShorter() {
-    // given
-    String email = "ab@b.com";
-
-    // when
-    String actual = EmailUtils.maskEmail(email);
-
-    // then
-    assertThat(actual).isEqualTo("**@b.com");
-  }
-
-  @Test
-  public void maskEmailAddressShort() {
-    // given
-    String email = "abc@b.com";
-
-    // when
-    String actual = EmailUtils.maskEmail(email);
-
-    // then
-    assertThat(actual).isEqualTo("***@b.com");
-  }
-
-  @Test
-  public void maskEmailAddressVisibleStartAndEnd() {
-    // given
-    String email = "abcd@b.com";
-
-    // when
-    String actual = EmailUtils.maskEmail(email);
-
-    // then
-    assertThat(actual).isEqualTo("a**d@b.com");
-  }
-
-  @Test
-  public void maskEmailAddressVisibleStartAndEndLonger() {
-    // given
-    String email = "abcde@b.com";
-
-    // when
-    String actual = EmailUtils.maskEmail(email);
-
-    // then
-    assertThat(actual).isEqualTo("a***e@b.com");
-  }
+    @Test
+    void maskEmailAddressVisibleStartAndEndLonger() {
+        assertThat(EmailUtils.maskEmail("abcde@b.com")).isEqualTo("a***e@b.com");
+    }
 }
