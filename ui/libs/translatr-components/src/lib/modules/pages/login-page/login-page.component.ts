@@ -50,7 +50,7 @@ export class LoginPageComponent implements OnInit {
       )
       .subscribe(
         (providers: AuthClient[]) =>
-          (window.location.href = `${this.endpointUrl}${providers[0].url}`)
+          (window.location.href = `${this.endpointUrl}${providers[0].url}`),
       );
   }
 }

@@ -704,7 +704,7 @@ quarkus.quinoa.ui-dir=ui
 quarkus.quinoa.build-dir=dist/apps/translatr
 
 # Angular dev server port for live-reload proxying in dev mode
-quarkus.quinoa.dev-server.port=4200
+quarkus.quinoa.dev-server.port=4210
 
 # Enable SPA routing — serves index.html for unmatched paths
 quarkus.quinoa.enable-spa-routing=true

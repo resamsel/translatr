@@ -4,6 +4,7 @@ import com.translatr.criteria.UserCriteria;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.UserDto;
 import com.translatr.mapper.DtoMapper;
+import com.translatr.model.LinkedAccount;
 import com.translatr.model.User;
 import com.translatr.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -56,13 +57,34 @@ public class UserService {
 
     @Transactional
     public User findOrCreate(String providerKey, String providerUserId, String name, String email) {
-        return userRepo.findByLinkedAccount(providerKey, providerUserId).orElseGet(() -> {
-            User u = new User();
-            u.name     = name;
-            u.email    = email;
-            u.username = email != null ? email.replaceAll("[^a-zA-Z0-9_.-]", "") : providerUserId;
-            userRepo.persist(u);
-            return u;
+        // 1. Fast path: look up via linked account (normal case after first login)
+        var byLinkedAccount = userRepo.findByLinkedAccount(providerKey, providerUserId);
+        if (byLinkedAccount.isPresent()) {
+            return byLinkedAccount.get();
+        }
+
+        // 2. Fallback: a user with the same derived username already exists (e.g. from a
+        //    prior run that crashed before the LinkedAccount was committed). Re-use that
+        //    user and add the missing linked account so future lookups take the fast path.
+        String derivedUsername = email != null
+                ? email.replaceAll("[^a-zA-Z0-9_.-]", "")
+                : providerUserId;
+        User u = userRepo.findByUsername(derivedUsername).orElseGet(() -> {
+            User nu = new User();
+            nu.name     = name;
+            nu.email    = email;
+            nu.username = derivedUsername;
+            userRepo.persist(nu);
+            return nu;
         });
+
+        // We know no LinkedAccount exists for this provider/userId — persist one now.
+        LinkedAccount la = new LinkedAccount();
+        la.user           = u;
+        la.providerKey    = providerKey;
+        la.providerUserId = providerUserId;
+        la.persist();
+
+        return u;
     }
 }

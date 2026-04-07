@@ -11,7 +11,8 @@ import java.time.Instant;
 public class LinkedAccount extends PanacheEntityBase {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "linked_account_seq_gen")
+    @SequenceGenerator(name = "linked_account_seq_gen", sequenceName = "linked_account_id_seq", allocationSize = 1)
     @Column(name = "id")
     public Long id;
 

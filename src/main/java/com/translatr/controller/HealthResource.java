@@ -1,5 +1,6 @@
 package com.translatr.controller;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -10,10 +11,10 @@ import java.util.Map;
 public class HealthResource {
 
     @GET
-    @Path("/authclients")
+    @Path("/health")
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, Object> authClients() {
-        // Returns configured auth providers — public endpoint
-        return Map.of("providers", System.getenv().getOrDefault("AUTH_PROVIDERS", "keycloak"));
+    public Map<String, String> ping() {
+        return Map.of("status", "ok");
     }
 }

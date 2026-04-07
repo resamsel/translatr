@@ -4,17 +4,13 @@ import com.translatr.service.AccessTokenService;
 import io.quarkus.security.identity.IdentityProviderManager;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.quarkus.security.identity.request.TokenAuthenticationRequest;
-import io.quarkus.security.identity.request.UsernamePasswordAuthenticationRequest;
 import io.quarkus.vertx.http.runtime.security.ChallengeData;
 import io.quarkus.vertx.http.runtime.security.HttpAuthenticationMechanism;
 import io.smallrye.mutiny.Uni;
 import io.vertx.ext.web.RoutingContext;
-import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Alternative;
 import jakarta.inject.Inject;
 
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -22,12 +18,12 @@ import java.util.Set;
  *   - Header:       Authorization: Bearer <token>  OR  X-Access-Token: <token>
  *   - Query param:  ?access_token=<token>
  *
- * Falls through (returns null) when no access token is present, letting
- * Quarkus OIDC handle browser/OAuth flows.
+ * Runs alongside the Quarkus OIDC mechanism (do NOT use @Alternative here –
+ * that would replace OIDC entirely).  Returns null from both authenticate() and
+ * getChallenge() when no access token is present, so the OIDC mechanism can
+ * handle browser/OAuth flows and issue the Keycloak redirect.
  */
 @ApplicationScoped
-@Alternative
-@Priority(1)
 public class AccessTokenAuthMechanism implements HttpAuthenticationMechanism {
 
     static final String HEADER_NAME = "X-Access-Token";
@@ -49,6 +45,11 @@ public class AccessTokenAuthMechanism implements HttpAuthenticationMechanism {
 
     @Override
     public Uni<ChallengeData> getChallenge(RoutingContext context) {
+        if (extractToken(context) == null) {
+            // No access token in this request – defer the challenge to the OIDC mechanism
+            // so it can issue the browser redirect to Keycloak instead of a bare 401.
+            return Uni.createFrom().nullItem();
+        }
         return Uni.createFrom().item(
                 new ChallengeData(401, "WWW-Authenticate", "Bearer realm=\"Translatr\""));
     }

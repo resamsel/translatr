@@ -1,6 +1,7 @@
 package com.translatr.controller;
 
 import com.translatr.dto.ActivityDto;
+import com.translatr.dto.AggregateDto;
 import com.translatr.dto.PagedList;
 import com.translatr.service.ActivityService;
 import com.translatr.service.UserService;
@@ -33,5 +34,18 @@ public class ActivityResource {
                                          @QueryParam("offset") @DefaultValue("0") int offset,
                                          @QueryParam("limit")  @DefaultValue("20") int limit) {
         return activityService.findByUser(userId, offset, limit);
+    }
+
+    /**
+     * Public aggregated activity (daily counts), used by the dashboard chart.
+     * Optional filters: projectId, userId.
+     */
+    @GET @Path("/activities/aggregated") @PermitAll
+    public PagedList<AggregateDto> aggregated(
+            @QueryParam("projectId") UUID projectId,
+            @QueryParam("userId")    UUID userId,
+            @QueryParam("offset")    @DefaultValue("0")    int offset,
+            @QueryParam("limit")     @DefaultValue("1000") int limit) {
+        return activityService.getAggregates(projectId, userId, offset, limit);
     }
 }

@@ -3,6 +3,7 @@ package com.translatr.controller;
 import com.translatr.criteria.UserCriteria;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.UserDto;
+import com.translatr.model.User;
 import com.translatr.service.UserService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
@@ -28,18 +29,17 @@ public class UserResource {
     @GET  @Path("/user/{id}")     @PermitAll
     public UserDto get(@PathParam("id") UUID id) { return userService.get(id); }
 
-    @GET  @Path("/api/{username}") @PermitAll
+    @GET  @Path("/{username}") @PermitAll
     public UserDto byUsername(@PathParam("username") String username) {
         return userService.getByUsername(username);
     }
 
-    @GET  @Path("/me")            @Authenticated
+    @GET  @Path("/me") @Authenticated
     public UserDto me() {
-        return userService.findOrCreate("oidc", jwt.getSubject(),
-                jwt.getClaim("name"), jwt.getClaim("email"))
-                .id != null ? userService.get(
-                    userService.findOrCreate("oidc", jwt.getSubject(),
-                    jwt.getClaim("name"), jwt.getClaim("email")).id) : null;
+        User user = userService.findOrCreate(
+                "oidc", jwt.getSubject(),
+                jwt.getClaim("name"), jwt.getClaim("email"));
+        return userService.get(user.id);
     }
 
     @GET  @Path("/profile")       @PermitAll

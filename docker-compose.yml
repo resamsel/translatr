@@ -33,7 +33,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: translatr123
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://database:5432/translatr
+      KC_DB_URL: jdbc:postgresql://database:5432/keycloak
       KC_DB_USERNAME: ${POSTGRES_USER:-postgres}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-translatr}
     volumes:

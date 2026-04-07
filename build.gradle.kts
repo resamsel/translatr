@@ -21,7 +21,7 @@ dependencies {
     implementation("io.quarkus:quarkus-hibernate-orm-panache")
     implementation("io.quarkus:quarkus-jdbc-postgresql")
     implementation("io.quarkus:quarkus-oidc")
-    implementation("io.quarkus:quarkus-flyway-postgresql")
+    implementation("io.quarkus:quarkus-flyway")
     implementation("io.quarkus:quarkus-cache")
     implementation("io.quarkus:quarkus-micrometer-registry-prometheus")
     implementation("io.quarkus:quarkus-vertx")
@@ -43,6 +43,7 @@ dependencies {
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.quarkus:quarkus-junit5-mockito")
     testImplementation("io.quarkus:quarkus-test-security")
+    testImplementation("io.quarkus:quarkus-test-security-jwt")
     testImplementation("io.rest-assured:rest-assured")
     testImplementation("org.assertj:assertj-core:3.15.0")
     testImplementation("org.mockito:mockito-core:2.8.47")
@@ -70,5 +71,31 @@ sourceSets {
 
 tasks.withType<Test> {
     systemProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager")
+}
+
+// ---------------------------------------------------------------------------
+// UI staging
+// ---------------------------------------------------------------------------
+// Copies the already-built Angular artefacts from public/ui into the directory
+// that Quinoa uses as its static-file root (build/quinoa/).
+// This lets `./gradlew quarkusDev` serve the UI without needing a running
+// Angular dev server or a Node build step.
+//
+// Usage:
+//   ./gradlew quarkusDev          ← uses pre-built files from public/ui
+//
+// To develop the UI with hot-reload instead:
+//   1. cd ui && npm start          (Angular dev server on port 4210)
+//   2. In application-dev.properties uncomment the dev-server lines
+// ---------------------------------------------------------------------------
+val copyUiToBuild by tasks.registering(Copy::class) {
+    description = "Stages pre-built Angular UI (public/ui) into Quinoa's serving directory"
+    group = "build"
+    from("public/ui")
+    into("build/quinoa")
+}
+
+tasks.named("quarkusDev") {
+    dependsOn(copyUiToBuild)
 }
 
