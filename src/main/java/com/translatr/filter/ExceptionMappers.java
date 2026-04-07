@@ -6,8 +6,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExceptionMappers {
 
@@ -33,31 +31,14 @@ public class ExceptionMappers {
         }
     }
 
-    @Provider
-    public static class UnauthorizedMapper implements ExceptionMapper<io.quarkus.security.UnauthorizedException> {
-        @Override
-        public Response toResponse(io.quarkus.security.UnauthorizedException e) {
-            return Response.status(401)
-                    .type(MediaType.APPLICATION_JSON)
-                    .entity(new ErrorResponse(401, "Unauthorized"))
-                    .build();
-        }
-    }
-
-    @Provider
-    public static class GenericMapper implements ExceptionMapper<Exception> {
-        private static final Logger LOG = LoggerFactory.getLogger(GenericMapper.class);
-
-        @Override
-        public Response toResponse(Exception e) {
-            if (e instanceof NotFoundException)               return new NotFoundMapper().toResponse((NotFoundException) e);
-            if (e instanceof io.quarkus.security.ForbiddenException)    return new ForbiddenMapper().toResponse((io.quarkus.security.ForbiddenException) e);
-            if (e instanceof io.quarkus.security.UnauthorizedException) return new UnauthorizedMapper().toResponse((io.quarkus.security.UnauthorizedException) e);
-            LOG.error("Unhandled exception", e);
-            return Response.status(500)
-                    .type(MediaType.APPLICATION_JSON)
-                    .entity(new ErrorResponse(500, "Internal server error"))
-                    .build();
-        }
-    }
+    // NOTE: UnauthorizedException and the generic Exception mapper are intentionally absent.
+    //
+    // Registering an ExceptionMapper<UnauthorizedException> intercepts the exception
+    // *before* Quarkus OIDC can call HttpAuthenticationMechanism.sendChallenge(), which
+    // is the mechanism that issues the browser redirect to Keycloak (hybrid mode) or
+    // returns a proper 401 for AJAX/API requests.
+    //
+    // Without a mapper, Quarkus OIDC handles it natively:
+    //   - browser request (Accept: text/html)  → 302 redirect to Keycloak
+    //   - AJAX / API request                   → 401 Unauthorized
 }

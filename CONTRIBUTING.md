@@ -30,63 +30,103 @@ the feature you would like to see, why you need it, and how it should work.
 
 ## How to set up your environment and run tests
 
-The project can be developed with Eclipse, needs a PostgreSQL database and a
-Redis key/value store. For authorisation, the following options are available:
-Google, GitHub, Facebook, Twitter, and Keycloak.
+The backend is a **Quarkus** application (Java 21, Gradle). The frontend is an
+**Angular 11** single-page app served by the
+[Quinoa](https://quarkiverse.github.io/quarkiverse-docs/quarkus-quinoa/dev/)
+extension. Authentication is handled by **Keycloak**.
 
 ### Prerequisites
 
-For development, you need the following dependencies.
+| Tool | Version | Notes |
+|------|---------|-------|
+| Java JDK | 21 | Temurin / Corretto both work |
+| Docker + Docker Compose | any recent | runs PostgreSQL + Keycloak |
+| Node.js | 20 LTS | only needed for UI hot-reload; not required for the default dev flow |
 
-1. Java 8 JDK (i.e. OpenJDK 8)
-1. Docker
-1. Docker Compose
-1. Node.js
+### Running it (standard — no Node required)
 
-### Using IntelliJ IDEA
+The default workflow serves the pre-built Angular artefacts from `public/ui`
+directly via Quinoa. No Angular dev server or local Node installation is needed.
 
-1. Run the compile SBT task
+1. **Start the backing services** (PostgreSQL + Keycloak):
 
-   ```
-   bin/activator compile
-   ```
-
-1. Import project in IntelliJ IDEA as a _Scala_ project
-1. Run the run configuration named _Start Database_
-1. Run the run configuration named _Start Server_
-1. Go to [localhost:4210/ui](http://localhost:4210/ui) to see it running
-
-### Running it Manually
-
-1. Run the compile SBT task
-
-   ```
-   bin/activator compile
+   ```bash
+   docker-compose up -d
    ```
 
-1. Run database container by using _docker compose_
+2. **Copy your credentials into `.env`** (create it if it doesn't exist yet):
 
    ```
-   export POSTGRES_PASSWORD=translatr
-   docker-compose up
+   AUTH_PROVIDERS=keycloak
+   KEYCLOAK_CLIENT_ID=translatr-localhost
+   KEYCLOAK_CLIENT_SECRET=<your-secret>
    ```
 
-1. Run development server
+3. **Start Quarkus in dev mode** — the `copyUiToBuild` task runs automatically
+   first, staging the pre-built UI into `build/quinoa/`:
 
-   ```
-   export AUTH_PROVIDERS=keycloak
-   export KEYCLOAK_CLIENT_ID=translatr-localhost
-   export KEYCLOAK_CLIENT_SECRET=$YOUR_KEYCLOAK_CLIENT_SECRET
-   export REDIRECT_BASE=http://localhost:4210
-   bin/activator ~run -Dconfig.file=dev.conf
+   ```bash
+   export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home
+   ./gradlew quarkusDev
    ```
 
-1. Go to [localhost:4210/ui](http://localhost:4210/ui) to see it running
+4. Open [http://localhost:9000](http://localhost:9000).
+
+### Running it (UI hot-reload — requires Node 20 LTS)
+
+Use this when you are actively working on the Angular frontend and want instant
+browser refresh on file save.
+
+1. Complete steps 1–2 from the standard flow above.
+
+2. Install UI dependencies (first time only):
+
+   ```bash
+   cd ui && npm install
+   ```
+
+3. **Terminal A** — start the Angular dev server:
+
+   ```bash
+   cd ui && npm start          # listens on port 4210
+   ```
+
+4. **Terminal B** — uncomment the two `dev-server` lines in
+   `src/main/resources/application-dev.properties`:
+
+   ```properties
+   %dev.quarkus.quinoa.dev-server.port=4210
+   %dev.quarkus.quinoa.dev-server.managed=false
+   ```
+
+   Then start Quarkus:
+
+   ```bash
+   ./gradlew quarkusDev
+   ```
+
+5. Open [http://localhost:9000](http://localhost:9000).
+
+> **Note on Node versions**
+> Angular 11 uses webpack 4. Node 22+ dropped `--openssl-legacy-provider`,
+> so **Node 20 LTS** is required for `npm start` / `npm run build`.
+> The `.node-version` file in `ui/` records the required version.
 
 ### Authorisation
 
-To be able to use Translatr and create a user you need to authorise yourself.
-This can be done in many ways, but you need at least one auth provider.
+At least one auth provider must be configured. The recommended choice for local
+development is Keycloak (started automatically by `docker-compose up`).
+
+#### Keycloak (recommended)
+
+The `docker-compose.yml` starts a Keycloak instance on port **8088** and
+imports the `docker/Translatr-realm.json` realm automatically.
+
+```
+export AUTH_PROVIDERS=keycloak
+export KEYCLOAK_CLIENT_ID=translatr-localhost
+export KEYCLOAK_CLIENT_SECRET=<client-secret-from-realm>
+```
 
 #### Google
 
@@ -108,57 +148,26 @@ export GITHUB_CLIENT_ID=...
 export GITHUB_CLIENT_SECRET=...
 ```
 
-#### Facebook
-
-Credentials can be retrieved from the [Facebook for developers page](https://developers.facebook.com/apps).
-
-```
-export AUTH_PROVIDERS=facebook
-export FACEBOOK_CLIENT_ID=...
-export FACEBOOK_CLIENT_SECRET=...
-```
-
-#### Twitter
-
-Credentials can be retrieved from the [Twitter Developer Documentation on OAuth](https://dev.twitter.com/docs/auth/oauth).
-
-```
-export AUTH_PROVIDERS=twitter
-export TWITTER_CONSUMER_KEY=...
-export TWITTER_CONSUMER_SECRET=...
-```
-
-#### Keycloak
-
-The realm needs to be named Translatr. This is a sample [Keycloak app for Heroku](https://github.com/resamsel/keycloak-swarm-heroku).
-
-```
-export KEYCLOAK_HOST=http://localhost:8080
-export KEYCLOAK_CLIENT_ID=...
-export KEYCLOAK_CLIENT_SECRET=...
-```
-
 ### Testing
 
-Unit and integration tests live in the **test/** directory. In Eclipse, this
-directory should be a source directory.
+Unit and integration tests use **JUnit 5** and **RestAssured** and run against
+the live PostgreSQL instance started by `docker-compose`.
 
-Unit tests can be run by issuing the following command:
-
-```
-bin/activator clean jacoco:cover -Dconfig.file=test.conf -J-Xmx1g
+```bash
+./gradlew test
 ```
 
-Jacoco generates a coverage report in **target/scala-2.11/jacoco/html/index.html**
+The test report is written to `build/reports/tests/test/index.html`.
 
 ### Debugging
 
-For debugging with your favorite IDE, just add the parameters `-jvm-debug 9999`
-to the bin/activator command. Then connect your IDE to localhost with port 9999.
+Add the Quarkus debug flags to attach a remote debugger on port 5005:
 
+```bash
+./gradlew quarkusDev -Dsuspend=false -Ddebug=5005
 ```
-bin/activator ~run -Dconfig.file=dev.conf -jvm-debug 9999
-```
+
+Then connect your IDE to `localhost:5005`.
 
 ## How to add support for a new file format
 
@@ -323,4 +332,3 @@ GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on
 ### Style Guide
 
 Use the [Google style guide for Java](https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml).
-

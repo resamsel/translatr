@@ -15,7 +15,8 @@ public class AccessToken extends PanacheEntityBase {
     public static final int KEY_LENGTH   = 64;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "access_token_seq_gen")
+    @SequenceGenerator(name = "access_token_seq_gen", sequenceName = "access_token_id_seq", allocationSize = 1)
     @Column(name = "id")
     public Long id;
 

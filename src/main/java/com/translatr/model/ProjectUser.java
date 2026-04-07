@@ -14,7 +14,8 @@ import java.util.Objects;
 public class ProjectUser extends PanacheEntityBase {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "project_user_seq_gen")
+    @SequenceGenerator(name = "project_user_seq_gen", sequenceName = "project_user_id_seq", allocationSize = 1)
     @Column(name = "id")
     public Long id;
 

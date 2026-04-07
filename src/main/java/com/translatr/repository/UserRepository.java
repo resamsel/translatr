@@ -14,7 +14,7 @@ public class UserRepository implements PanacheRepositoryBase<User, UUID> {
     }
 
     public Optional<User> findByLinkedAccount(String providerKey, String providerUserId) {
-        return find("FROM User u JOIN u.linkedAccounts la " +
+        return find("SELECT u FROM User u JOIN u.linkedAccounts la " +
                     "WHERE la.providerKey = ?1 AND la.providerUserId = ?2",
                     providerKey, providerUserId).firstResultOptional();
     }

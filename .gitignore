@@ -158,3 +158,5 @@ jmeter.log
 /venv*/
 /.env
 /ui/.angular
+/build/
+/.gradle/
