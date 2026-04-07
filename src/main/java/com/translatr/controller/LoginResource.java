@@ -29,8 +29,12 @@ import java.net.URI;
 @Path("/login")
 public class LoginResource {
 
+    private final TranslatrConfig config;
+
     @Inject
-    TranslatrConfig config;
+    public LoginResource(TranslatrConfig config) {
+        this.config = config;
+    }
 
     /**
      * Entry-point that the Angular login page navigates to.

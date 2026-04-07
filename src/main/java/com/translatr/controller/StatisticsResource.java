@@ -13,7 +13,12 @@ import jakarta.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class StatisticsResource {
 
-    @Inject StatisticsService statisticsService;
+    private final StatisticsService statisticsService;
+
+    @Inject
+    public StatisticsResource(StatisticsService statisticsService) {
+        this.statisticsService = statisticsService;
+    }
 
     @GET
     @Path("/statistics")
@@ -22,4 +27,3 @@ public class StatisticsResource {
         return statisticsService.find();
     }
 }
-

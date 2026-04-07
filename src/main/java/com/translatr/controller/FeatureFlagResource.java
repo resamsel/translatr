@@ -19,9 +19,16 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 public class FeatureFlagResource {
 
-    @Inject FeatureFlagService featureFlagService;
-    @Inject UserService        userService;
-    @Inject JsonWebToken       jwt;
+    private final FeatureFlagService featureFlagService;
+    private final UserService        userService;
+    private final JsonWebToken       jwt;
+
+    @Inject
+    public FeatureFlagResource(FeatureFlagService featureFlagService, UserService userService, JsonWebToken jwt) {
+        this.featureFlagService = featureFlagService;
+        this.userService        = userService;
+        this.jwt                = jwt;
+    }
 
     @GET
     @Path("/featureflags")
@@ -55,4 +62,3 @@ public class FeatureFlagResource {
         return featureFlagService.delete(id);
     }
 }
-

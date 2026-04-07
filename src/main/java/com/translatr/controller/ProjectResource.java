@@ -18,9 +18,16 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 public class ProjectResource {
 
-    @Inject ProjectService projectService;
-    @Inject UserService    userService;
-    @Inject JsonWebToken   jwt;
+    private final ProjectService projectService;
+    private final UserService    userService;
+    private final JsonWebToken   jwt;
+
+    @Inject
+    public ProjectResource(ProjectService projectService, UserService userService, JsonWebToken jwt) {
+        this.projectService = projectService;
+        this.userService    = userService;
+        this.jwt            = jwt;
+    }
 
     @GET
     @Path("/projects")

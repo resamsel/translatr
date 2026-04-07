@@ -17,9 +17,16 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class KeyService {
 
-    @Inject KeyRepository     keyRepo;
-    @Inject ProjectRepository projectRepo;
-    @Inject DtoMapper         mapper;
+    private final KeyRepository     keyRepo;
+    private final ProjectRepository projectRepo;
+    private final DtoMapper         mapper;
+
+    @Inject
+    public KeyService(KeyRepository keyRepo, ProjectRepository projectRepo, DtoMapper mapper) {
+        this.keyRepo     = keyRepo;
+        this.projectRepo = projectRepo;
+        this.mapper      = mapper;
+    }
 
     public PagedList<KeyDto> find(KeyCriteria c) {
         var query = c.projectId != null

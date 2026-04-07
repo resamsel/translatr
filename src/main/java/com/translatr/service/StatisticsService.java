@@ -10,9 +10,16 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class StatisticsService {
 
-    @Inject UserRepository     userRepo;
-    @Inject ProjectRepository  projectRepo;
-    @Inject LogEntryRepository logRepo;
+    private final UserRepository     userRepo;
+    private final ProjectRepository  projectRepo;
+    private final LogEntryRepository logRepo;
+
+    @Inject
+    public StatisticsService(UserRepository userRepo, ProjectRepository projectRepo, LogEntryRepository logRepo) {
+        this.userRepo    = userRepo;
+        this.projectRepo = projectRepo;
+        this.logRepo     = logRepo;
+    }
 
     public StatisticsDto find() {
         StatisticsDto dto = new StatisticsDto();
@@ -22,4 +29,3 @@ public class StatisticsService {
         return dto;
     }
 }
-

@@ -20,10 +20,19 @@ public class WordCountEventConsumer {
 
     private static final Logger LOG = LoggerFactory.getLogger(WordCountEventConsumer.class);
 
-    @Inject MessageRepository messageRepo;
-    @Inject KeyRepository     keyRepo;
-    @Inject LocaleRepository  localeRepo;
-    @Inject ProjectRepository projectRepo;
+    private final MessageRepository messageRepo;
+    private final KeyRepository     keyRepo;
+    private final LocaleRepository  localeRepo;
+    private final ProjectRepository projectRepo;
+
+    @Inject
+    public WordCountEventConsumer(MessageRepository messageRepo, KeyRepository keyRepo,
+                                  LocaleRepository localeRepo, ProjectRepository projectRepo) {
+        this.messageRepo = messageRepo;
+        this.keyRepo     = keyRepo;
+        this.localeRepo  = localeRepo;
+        this.projectRepo = projectRepo;
+    }
 
     @ConsumeEvent("word-count")
     @Transactional

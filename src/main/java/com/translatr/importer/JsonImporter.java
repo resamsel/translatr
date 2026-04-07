@@ -3,7 +3,10 @@ package com.translatr.importer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.translatr.model.Locale;
+import com.translatr.repository.KeyRepository;
+import com.translatr.repository.MessageRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -12,6 +15,11 @@ import java.util.Properties;
 public class JsonImporter extends AbstractImporter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    @Inject
+    public JsonImporter(KeyRepository keyRepo, MessageRepository messageRepo) {
+        super(keyRepo, messageRepo);
+    }
 
     @Override
     protected Properties parse(InputStream stream, Locale locale) throws Exception {

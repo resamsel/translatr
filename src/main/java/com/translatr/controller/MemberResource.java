@@ -17,7 +17,12 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 public class MemberResource {
 
-    @Inject MemberService memberService;
+    private final MemberService memberService;
+
+    @Inject
+    public MemberResource(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     /** GET /api/project/{projectId}/members */
     @GET
@@ -67,4 +72,3 @@ public class MemberResource {
         return memberService.delete(id);
     }
 }
-

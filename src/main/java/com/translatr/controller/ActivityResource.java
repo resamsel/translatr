@@ -17,9 +17,16 @@ import java.util.UUID;
 @Produces(MediaType.APPLICATION_JSON)
 public class ActivityResource {
 
-    @Inject ActivityService activityService;
-    @Inject UserService     userService;
-    @Inject JsonWebToken    jwt;
+    private final ActivityService activityService;
+    private final UserService     userService;
+    private final JsonWebToken    jwt;
+
+    @Inject
+    public ActivityResource(ActivityService activityService, UserService userService, JsonWebToken jwt) {
+        this.activityService = activityService;
+        this.userService     = userService;
+        this.jwt             = jwt;
+    }
 
     @GET @Path("/activities") @PermitAll
     public PagedList<ActivityDto> find(@QueryParam("offset") @DefaultValue("0") int offset,

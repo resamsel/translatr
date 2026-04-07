@@ -18,9 +18,16 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class FeatureFlagService {
 
-    @Inject UserFeatureFlagRepository featureFlagRepo;
-    @Inject UserRepository            userRepo;
-    @Inject DtoMapper                 mapper;
+    private final UserFeatureFlagRepository featureFlagRepo;
+    private final UserRepository            userRepo;
+    private final DtoMapper                 mapper;
+
+    @Inject
+    public FeatureFlagService(UserFeatureFlagRepository featureFlagRepo, UserRepository userRepo, DtoMapper mapper) {
+        this.featureFlagRepo = featureFlagRepo;
+        this.userRepo        = userRepo;
+        this.mapper          = mapper;
+    }
 
     public PagedList<FeatureFlagDto> find(FeatureFlagCriteria c, UUID currentUserId) {
         var query = featureFlagRepo.find(
@@ -58,4 +65,3 @@ public class FeatureFlagService {
         return mapper.toDto(flag);
     }
 }
-

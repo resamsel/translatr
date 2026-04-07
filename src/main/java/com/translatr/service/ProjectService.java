@@ -20,9 +20,16 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class ProjectService {
 
-    @Inject ProjectRepository projectRepo;
-    @Inject UserRepository    userRepo;
-    @Inject DtoMapper         mapper;
+    private final ProjectRepository projectRepo;
+    private final UserRepository    userRepo;
+    private final DtoMapper         mapper;
+
+    @Inject
+    public ProjectService(ProjectRepository projectRepo, UserRepository userRepo, DtoMapper mapper) {
+        this.projectRepo = projectRepo;
+        this.userRepo    = userRepo;
+        this.mapper      = mapper;
+    }
 
     public PagedList<ProjectDto> find(ProjectCriteria c) {
         var query = projectRepo.find(

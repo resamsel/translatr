@@ -17,9 +17,16 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 @Consumes(MediaType.APPLICATION_JSON)
 public class AccessTokenResource {
 
-    @Inject AccessTokenService tokenService;
-    @Inject UserService        userService;
-    @Inject JsonWebToken       jwt;
+    private final AccessTokenService tokenService;
+    private final UserService        userService;
+    private final JsonWebToken       jwt;
+
+    @Inject
+    public AccessTokenResource(AccessTokenService tokenService, UserService userService, JsonWebToken jwt) {
+        this.tokenService = tokenService;
+        this.userService  = userService;
+        this.jwt          = jwt;
+    }
 
     @GET @Path("/accesstokens")
     public PagedList<AccessTokenDto> find(@BeanParam AccessTokenCriteria criteria) {

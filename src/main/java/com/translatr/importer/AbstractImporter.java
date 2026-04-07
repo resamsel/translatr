@@ -5,7 +5,6 @@ import com.translatr.model.Locale;
 import com.translatr.model.Message;
 import com.translatr.repository.KeyRepository;
 import com.translatr.repository.MessageRepository;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -22,8 +21,13 @@ public abstract class AbstractImporter implements Importer {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractImporter.class);
 
-    @Inject protected KeyRepository     keyRepo;
-    @Inject protected MessageRepository messageRepo;
+    protected final KeyRepository     keyRepo;
+    protected final MessageRepository messageRepo;
+
+    protected AbstractImporter(KeyRepository keyRepo, MessageRepository messageRepo) {
+        this.keyRepo     = keyRepo;
+        this.messageRepo = messageRepo;
+    }
 
     @Override
     @Transactional

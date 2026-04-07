@@ -18,9 +18,16 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class ActivityService {
 
-    @Inject LogEntryRepository logRepo;
-    @Inject DtoMapper          mapper;
-    @Inject EntityManager      em;
+    private final LogEntryRepository logRepo;
+    private final DtoMapper          mapper;
+    private final EntityManager      em;
+
+    @Inject
+    public ActivityService(LogEntryRepository logRepo, DtoMapper mapper, EntityManager em) {
+        this.logRepo = logRepo;
+        this.mapper  = mapper;
+        this.em      = em;
+    }
 
     public PagedList<ActivityDto> findByUser(UUID userId, int offset, int limit) {
         var list  = logRepo.findByUser(userId, offset / Math.max(limit,1), limit)
