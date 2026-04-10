@@ -14,7 +14,7 @@ import {
   ProjectService,
   UserService
 } from '@dev/translatr-sdk';
-import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
@@ -85,7 +85,7 @@ import { appQuery } from './app.selectors';
 export class AppEffects {
   // Users
 
-  @Effect() loadMe$ = this.actions$.pipe(
+  loadMe$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.LoadLoggedInUser),
     switchMap(() =>
       this.userService.me({ fetch: 'featureFlags' }).pipe(
@@ -93,9 +93,9 @@ export class AppEffects {
         catchError(error => of(new LoggedInUserLoadError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() loadUsers$ = this.actions$.pipe(
+  loadUsers$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.LoadUsers),
     switchMap((action: LoadUsers) =>
       this.userService.find(action.payload).pipe(
@@ -103,9 +103,9 @@ export class AppEffects {
         catchError(error => of(new UsersLoadError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() loadUser$ = this.actions$.pipe(
+  loadUser$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.LoadUser),
     switchMap((action: LoadUser) =>
       this.userService.get(action.payload.userId).pipe(
@@ -113,9 +113,9 @@ export class AppEffects {
         catchError(error => of(new UserLoadError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() createUser$ = this.actions$.pipe(
+  createUser$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.CreateUser),
     switchMap((action: CreateUser) =>
       this.userService.create(action.payload).pipe(
@@ -123,9 +123,9 @@ export class AppEffects {
         catchError(error => of(new UserCreateError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() updateUser$ = this.actions$.pipe(
+  updateUser$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.UpdateUser),
     switchMap((action: UpdateUser) =>
       this.userService.update(action.payload).pipe(
@@ -133,9 +133,9 @@ export class AppEffects {
         catchError(error => of(new UserUpdateError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() deleteUser$ = this.actions$.pipe(
+  deleteUser$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.DeleteUser),
     switchMap((action: DeleteUser) =>
       this.userService.delete(action.payload.id).pipe(
@@ -143,9 +143,9 @@ export class AppEffects {
         catchError(error => of(new UserDeleteError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() deleteUsers$ = this.actions$.pipe(
+  deleteUsers$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.DeleteUsers),
     switchMap((action: DeleteUsers) =>
       this.userService.deleteAll(action.payload.map((user: User) => user.id)).pipe(
@@ -153,11 +153,11 @@ export class AppEffects {
         catchError(error => of(new UsersDeleteError(error)))
       )
     )
-  );
+  ));
 
   // Projects
 
-  @Effect() loadProjects$ = this.actions$.pipe(
+  loadProjects$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.LoadProjects),
     switchMap((action: LoadProjects) =>
       this.projectService.find(action.payload).pipe(
@@ -165,9 +165,9 @@ export class AppEffects {
         catchError(error => of(new ProjectsLoadError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() updateProject$ = this.actions$.pipe(
+  updateProject$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.UpdateProject),
     switchMap((action: UpdateProject) =>
       this.projectService.update(action.payload).pipe(
@@ -175,9 +175,9 @@ export class AppEffects {
         catchError(error => of(new ProjectUpdateError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() deleteProject$ = this.actions$.pipe(
+  deleteProject$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.DeleteProject),
     switchMap((action: DeleteProject) =>
       this.projectService.delete(action.payload.id).pipe(
@@ -185,9 +185,9 @@ export class AppEffects {
         catchError(error => of(new ProjectDeleteError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() deleteProjects$ = this.actions$.pipe(
+  deleteProjects$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.DeleteProjects),
     switchMap((action: DeleteProjects) =>
       this.projectService.deleteAll(action.payload.map((project: Project) => project.id)).pipe(
@@ -195,11 +195,11 @@ export class AppEffects {
         catchError(error => of(new ProjectsDeleteError(error)))
       )
     )
-  );
+  ));
 
   // Access Tokens
 
-  @Effect() loadAccessTokens$ = this.actions$.pipe(
+  loadAccessTokens$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.LoadAccessTokens),
     switchMap((action: LoadAccessTokens) =>
       this.accessTokenService.find(action.payload).pipe(
@@ -207,9 +207,9 @@ export class AppEffects {
         catchError(error => of(new AccessTokensLoadError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() deleteAccessToken$ = this.actions$.pipe(
+  deleteAccessToken$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.DeleteAccessToken),
     switchMap((action: DeleteAccessToken) =>
       this.accessTokenService.delete(action.payload.id).pipe(
@@ -217,9 +217,9 @@ export class AppEffects {
         catchError(error => of(new AccessTokenDeleteError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() deleteAccessTokens$ = this.actions$.pipe(
+  deleteAccessTokens$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.DeleteAccessTokens),
     switchMap((action: DeleteAccessTokens) =>
       this.accessTokenService
@@ -229,11 +229,11 @@ export class AppEffects {
           catchError(error => of(new AccessTokensDeleteError(error)))
         )
     )
-  );
+  ));
 
   // Activity
 
-  @Effect() loadActivities$ = this.actions$.pipe(
+  loadActivities$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.LoadActivities),
     switchMap((action: LoadActivities) =>
       this.activityService.find(action.payload).pipe(
@@ -241,11 +241,11 @@ export class AppEffects {
         catchError(error => of(new ActivitiesLoadError(error)))
       )
     )
-  );
+  ));
 
   // Feature Flags
 
-  @Effect() loadFeatureFlags$ = this.actions$.pipe(
+  loadFeatureFlags$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.LoadFeatureFlags),
     switchMap((action: LoadFeatureFlags) =>
       this.featureFlagService.find(action.payload).pipe(
@@ -253,9 +253,9 @@ export class AppEffects {
         catchError(error => of(new FeatureFlagsLoadError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() updateFeatureFlag$ = this.actions$.pipe(
+  updateFeatureFlag$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.UpdateFeatureFlag),
     switchMap((action: UpdateFeatureFlag) =>
       this.featureFlagService.update(action.payload).pipe(
@@ -263,9 +263,9 @@ export class AppEffects {
         catchError(error => of(new FeatureFlagUpdateError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() deleteFeatureFlag$ = this.actions$.pipe(
+  deleteFeatureFlag$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.DeleteFeatureFlag),
     switchMap((action: DeleteFeatureFlag) =>
       this.featureFlagService.delete(action.payload.id).pipe(
@@ -273,9 +273,9 @@ export class AppEffects {
         catchError(error => of(new FeatureFlagDeleteError(error)))
       )
     )
-  );
+  ));
 
-  @Effect() deleteFeatureFlags$ = this.actions$.pipe(
+  deleteFeatureFlags$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.DeleteFeatureFlags),
     switchMap((action: DeleteFeatureFlags) =>
       this.featureFlagService
@@ -285,7 +285,7 @@ export class AppEffects {
           catchError(error => of(new FeatureFlagsDeleteError(error)))
         )
     )
-  );
+  ));
 
   updatePreferredLanguage$ = createEffect(() =>
     this.actions$.pipe(

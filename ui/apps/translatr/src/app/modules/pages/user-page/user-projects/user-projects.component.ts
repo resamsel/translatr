@@ -9,6 +9,7 @@ import { FilterCriteria } from '../../../shared/list-header/list-header.componen
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
 
 @Component({
+  standalone: false,
   selector: 'app-user-projects',
   templateUrl: './user-projects.component.html',
   styleUrls: ['./user-projects.component.scss']

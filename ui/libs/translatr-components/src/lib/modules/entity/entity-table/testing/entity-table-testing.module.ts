@@ -3,6 +3,7 @@ import { Entity, FilterFieldFilter } from '@dev/translatr-components';
 import { PagedList, RequestCriteria } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'entity-table',
   template: ''
 })
@@ -24,6 +25,7 @@ class MockEntityTableComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'selection-actions',
   template: ''
 })

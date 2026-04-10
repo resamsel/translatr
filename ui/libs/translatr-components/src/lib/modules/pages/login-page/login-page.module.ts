@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFacebook, faGithub, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { NavbarModule } from '../../nav/navbar/navbar.module';
 import { LoginPageRoutingModule } from './login-page-routing.module';
 import { LoginPageComponent } from './login-page.component';

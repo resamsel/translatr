@@ -2,6 +2,7 @@ import { Component, Input, NgModule } from '@angular/core';
 import { Aggregate } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'dev-activity-graph',
   template: ''
 })

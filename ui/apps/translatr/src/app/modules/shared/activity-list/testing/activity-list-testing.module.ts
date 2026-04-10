@@ -3,6 +3,7 @@ import { Activity, PagedList } from '@dev/translatr-model';
 import { FilterCriteria } from '../../list-header/list-header.component';
 
 @Component({
+  standalone: false,
   selector: 'app-activity-list',
   template: ''
 })

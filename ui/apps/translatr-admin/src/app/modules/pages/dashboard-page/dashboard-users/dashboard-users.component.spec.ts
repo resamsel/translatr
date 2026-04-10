@@ -13,7 +13,7 @@ import {
   FeatureFlagTestingModule
 } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { AppFacade } from '../../../../+state/app.facade';
 
 import { DashboardUsersComponent } from './dashboard-users.component';
@@ -33,7 +33,7 @@ describe('UsersComponent', () => {
           EllipsisModule,
 
           RouterTestingModule,
-          MomentModule,
+          TimeAgoModule,
 
           MatTableModule,
           MatButtonModule,

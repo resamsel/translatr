@@ -33,6 +33,7 @@ export const shortenNumber = (value: number): string => {
 };
 
 @Pipe({
+  standalone: false,
   name: 'shortNumber'
 })
 export class ShortNumberPipe implements PipeTransform {

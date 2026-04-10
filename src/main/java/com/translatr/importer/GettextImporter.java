@@ -22,6 +22,9 @@ public class GettextImporter extends AbstractImporter {
     private static final Pattern MSGID  = Pattern.compile("^msgid\s+\"(.*)\"$");
     private static final Pattern MSGSTR = Pattern.compile("^msgstr\s+\"(.*)\"$");
 
+    /** No-args constructor required by CDI for proxy generation. */
+    protected GettextImporter() {}
+
     @Inject
     public GettextImporter(KeyRepository keyRepo, MessageRepository messageRepo) {
         super(keyRepo, messageRepo);

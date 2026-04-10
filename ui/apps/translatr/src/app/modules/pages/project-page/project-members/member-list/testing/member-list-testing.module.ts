@@ -3,6 +3,7 @@ import { Member, PagedList, Project, RequestCriteria } from '@dev/translatr-mode
 import { FilterCriteria } from '../../../../../shared/list-header/list-header.component';
 
 @Component({
+  standalone: false,
   selector: 'app-member-list',
   template: ''
 })

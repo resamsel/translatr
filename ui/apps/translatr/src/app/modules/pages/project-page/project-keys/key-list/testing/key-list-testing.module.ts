@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core'
 import { Key, KeyCriteria, PagedList, Project } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'app-key-list',
   template: ''
 })

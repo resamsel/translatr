@@ -3,6 +3,7 @@ import { Feature, FeatureFlagFacade } from '@dev/translatr-model';
 import { filter, take } from 'rxjs/operators';
 
 @Directive({
+  standalone: false,
   selector: '[featureFlag]'
 })
 export class FeatureFlagDirective implements OnInit {

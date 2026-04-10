@@ -3,6 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { AccessToken } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'app-access-token-edit-form',
   template: ''
 })

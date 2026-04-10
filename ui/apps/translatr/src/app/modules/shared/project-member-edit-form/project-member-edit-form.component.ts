@@ -40,6 +40,7 @@ const formToMember = (form: MemberForm): Member => {
 };
 
 @Component({
+  standalone: false,
   selector: 'app-project-member-edit-form',
   templateUrl: './project-member-edit-form.component.html',
   styleUrls: ['./project-member-edit-form.component.scss']

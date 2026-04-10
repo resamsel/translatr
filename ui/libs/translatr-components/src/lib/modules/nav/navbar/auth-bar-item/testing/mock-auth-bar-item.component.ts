@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { User } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'app-auth-bar-item',
   template: ''
 })

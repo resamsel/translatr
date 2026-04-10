@@ -4,6 +4,7 @@ import { AppFacade } from '../../../+state/app.facade';
 import { environment } from '../../../../environments/environment';
 
 @Component({
+  standalone: false,
   selector: 'dev-forbidden-page',
   templateUrl: './forbidden-page.component.html',
   styleUrls: ['./forbidden-page.component.scss']

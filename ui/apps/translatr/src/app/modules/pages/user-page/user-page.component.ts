@@ -8,6 +8,7 @@ import { UserFacade } from './+state/user.facade';
 import { USER_ROUTES } from './user-page.token';
 
 @Component({
+  standalone: false,
   selector: 'app-user-page',
   templateUrl: './user-page.component.html',
   styleUrls: ['./user-page.component.scss']
@@ -37,7 +38,7 @@ export class UserPageComponent implements OnDestroy {
       return undefined;
     }
 
-    if (route === '') {
+    if (route.path === '') {
       return `/${user.username}`;
     }
 

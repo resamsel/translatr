@@ -8,7 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ProjectService } from '@dev/translatr-sdk';
-import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { EmptyViewTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { ProjectFacade } from '../../../shared/project-state';

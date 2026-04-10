@@ -55,13 +55,13 @@
   <mat-list class="loading">
     <ng-container *ngIf="direction === 'column'; else rowLoading">
       <mat-list-item *ngFor="let i of loadingList" class="item">
-        <mat-icon *ngIf="showLoadingAvatar" class="icon" matListIcon
+        <mat-icon *ngIf="showLoadingAvatar" class="icon" matListItemIcon
         >{{loadingIcon}}
         </mat-icon>
-        <h3 matLine>
+        <h3 matListItemTitle>
           <span class="title"></span>
         </h3>
-        <p class="sub-title" matLine></p>
+        <p class="sub-title" matListItemLine></p>
       </mat-list-item>
     </ng-container>
     <ng-template #rowLoading>

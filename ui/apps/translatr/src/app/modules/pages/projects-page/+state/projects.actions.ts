@@ -1,4 +1,3 @@
-/* tslint:disable:max-classes-per-file */
 import { PagedList, Project, ProjectCriteria } from '@dev/translatr-model';
 import { Action } from '@ngrx/store';
 

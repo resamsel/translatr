@@ -3,6 +3,7 @@ import { PagedList, User } from '@dev/translatr-model';
 import { FilterCriteria } from '../../list-header/list-header.component';
 
 @Component({
+  standalone: false,
   selector: 'app-user-list',
   template: ''
 })

@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { AccessToken } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'app-protect-creation-dialog',
   templateUrl: './access-token-edit-dialog.component.html',
   styleUrls: ['./access-token-edit-dialog.component.scss']

@@ -18,9 +18,9 @@
     <mat-icon
       [ngClass]="iconType(activity.contentType)"
       class="circle"
-      matListIcon
+      matListItemIcon
     >{{icon(activity.contentType)}}</mat-icon>
-    <h3 class="activity-content" matLine>
+    <h3 class="activity-content" matListItemTitle>
       <a
         *ngIf="relativeTo !== 'user'"
         [routerLink]="['/', activity.userUsername]"
@@ -33,45 +33,37 @@
             <app-activity-project-link
               *ngIf="relativeTo !== 'project'"
               [project]="project(activity)"
-              matLine
             ></app-activity-project-link>
           </ng-container>
           <ng-container *ngSwitchCase="'locale'">
             <app-activity-project-link
               *ngIf="relativeTo !== 'project'"
               [project]="projectOf(locale(activity))"
-              matLine
             ></app-activity-project-link>
             <app-activity-locale-link
               [locale]="locale(activity)"
-              matLine
             ></app-activity-locale-link>
           </ng-container>
           <ng-container *ngSwitchCase="'key'">
             <app-activity-project-link
               *ngIf="relativeTo !== 'project'"
               [project]="projectOf(key(activity))"
-              matLine
             ></app-activity-project-link>
             <app-activity-key-link
               [key]="key(activity)"
-              matLine
             ></app-activity-key-link>
           </ng-container>
           <ng-container *ngSwitchCase="'message'">
             <app-activity-project-link
               *ngIf="relativeTo !== 'project'"
               [project]="projectOf(message(activity))"
-              matLine
             ></app-activity-project-link>
             <app-activity-message-link
               [message]="message(activity)"
-              matLine
               target="key"
             ></app-activity-message-link>
             <app-activity-message-link
               [message]="message(activity)"
-              matLine
               target="locale"
             ></app-activity-message-link>
           </ng-container>
@@ -79,17 +71,14 @@
             <app-activity-project-link
               *ngIf="relativeTo !== 'project'"
               [project]="projectOf(member(activity))"
-              matLine
             ></app-activity-project-link>
             <app-activity-member-link
               [member]="member(activity)"
-              matLine
             ></app-activity-member-link>
           </ng-container>
           <ng-container *ngSwitchCase="'accesstoken'">
             <app-activity-access-token-link
               [accessToken]="accessToken(activity)"
-              matLine
             ></app-activity-access-token-link>
           </ng-container>
         </ng-container>

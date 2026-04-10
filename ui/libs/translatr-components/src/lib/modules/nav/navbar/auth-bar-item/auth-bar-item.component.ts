@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular
 import { User } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-auth-bar-item',
   templateUrl: './auth-bar-item.component.html',

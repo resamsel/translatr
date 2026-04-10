@@ -1,4 +1,4 @@
-@import 'mixins';
+@use 'mixins' as *;
 
 /*
  * Media query for medium screens
@@ -17,8 +17,8 @@
     > * {
       margin: 4px;
 
-      &.mat-card {
-        max-width: calc(100% - 32px - 8px);
+      &.mat-mdc-card {
+        max-width: calc(100% - 32px - 16px);
       }
     }
   }
@@ -69,8 +69,8 @@
     > * {
       margin: 8px;
 
-      &.mat-card {
-        max-width: calc(100% - 32px - 16px);
+      &.mat-mdc-card {
+        max-width: calc(100% - 32px - 8px);
       }
     }
   }

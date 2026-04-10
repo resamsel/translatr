@@ -6,7 +6,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { UsersModule } from '../../pages/users-page/+state/users.module';
 import { ProjectMemberEditFormModule } from '../project-member-edit-form/project-member-edit-form.module';
 import { ProjectMemberEditDialogComponent } from './project-member-edit-dialog.component';
@@ -26,6 +26,5 @@ import { ProjectMemberEditDialogComponent } from './project-member-edit-dialog.c
     UsersModule,
     TranslocoModule
   ],
-  entryComponents: [ProjectMemberEditDialogComponent]
 })
 export class ProjectMemberEditDialogModule {}

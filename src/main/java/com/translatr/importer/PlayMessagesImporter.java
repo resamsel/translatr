@@ -8,6 +8,9 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class PlayMessagesImporter extends PropertiesImporter {
 
+    /** No-args constructor required by CDI for proxy generation. */
+    protected PlayMessagesImporter() {}
+
     @Inject
     public PlayMessagesImporter(KeyRepository keyRepo, MessageRepository messageRepo) {
         super(keyRepo, messageRepo);

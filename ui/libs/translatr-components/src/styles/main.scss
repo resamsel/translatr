@@ -1,21 +1,24 @@
-@import '~@angular/material/theming';
+@use '@angular/material' as mat;
+@use 'sass:meta';
+@use 'theme-light' as light;
+@use 'theme-dark' as dark;
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat-core();
+@include mat.all-component-typographies();
+@include mat.core();
 
-@import '~codemirror/lib/codemirror';
-@import '~codemirror/theme/idea';
+@include meta.load-css('codemirror/lib/codemirror');
+@include meta.load-css('codemirror/theme/idea');
 
-@import 'styles';
-@import 'media';
-@import 'theme';
+@include meta.load-css('styles');
+@include meta.load-css('media');
 
 .light-theme {
-  @include angular-material-theme($light-theme);
+  @include mat.all-component-themes(light.$light-theme);
 }
 
 .dark-theme {
-  @include angular-material-theme($dark-theme);
+  @include mat.all-component-colors(dark.$dark-theme);
 }

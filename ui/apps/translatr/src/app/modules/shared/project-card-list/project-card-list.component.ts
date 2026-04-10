@@ -4,6 +4,7 @@ import { firstChar } from '@dev/translatr-sdk';
 import { trackByFn } from '@translatr/utils';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-project-card-list',
   templateUrl: './project-card-list.component.html',

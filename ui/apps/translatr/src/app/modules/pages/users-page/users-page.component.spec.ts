@@ -8,7 +8,7 @@ import { mockObservable } from '@translatr/utils/testing';
 import { SidenavTestingModule } from '../../nav/sidenav/testing';
 import { FeatureFlagTestingModule } from '@translatr/components/testing';
 import { UserListTestingModule } from '../../shared/user-list/testing';
-import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 describe('UsersPageComponent', () => {
   let component: UsersPageComponent;

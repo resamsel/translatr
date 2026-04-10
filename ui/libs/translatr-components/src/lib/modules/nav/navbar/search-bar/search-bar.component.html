@@ -1,6 +1,6 @@
-<mat-form-field appearance="standard" class="search">
-  <mat-chip-list #chipList>
-    <mat-chip
+<mat-form-field appearance="fill" class="search">
+  <mat-chip-grid #chipGrid>
+    <mat-chip-row
       (removed)="onRemoved(option)"
       *ngFor="let option of options"
       class="option"
@@ -8,13 +8,13 @@
       <span class="type">{{option.type}}</span>
       <span class="value">{{option.value}}</span>
       <mat-icon matChipRemove>cancel</mat-icon>
-    </mat-chip>
+    </mat-chip-row>
     <input
       #autocompleteInput
       (keydown.enter)="onEnter($event)"
       [formControl]="searchControl"
       [matAutocomplete]="auto"
-      [matChipInputFor]="chipList"
+      [matChipInputFor]="chipGrid"
       autocomplete="off"
       matInput
       [placeholder]="'search.filter' | transloco"
@@ -30,7 +30,7 @@
         [value]="option"
       >{{option.type}}: {{option.value}}</mat-option>
     </mat-autocomplete>
-  </mat-chip-list>
+  </mat-chip-grid>
   <button
     mat-icon-button
     matSuffix

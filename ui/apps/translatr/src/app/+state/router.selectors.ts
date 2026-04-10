@@ -1,14 +1,14 @@
-import * as fromRouter from '@ngrx/router-store';
+import { getRouterSelectors, RouterReducerState } from '@ngrx/router-store';
 import { createFeatureSelector } from '@ngrx/store';
 
 export const ROUTER_FEATURE_KEY = 'router';
 
 interface RouterPartialState {
-  readonly [ROUTER_FEATURE_KEY]?: fromRouter.RouterReducerState<any>;
+  readonly [ROUTER_FEATURE_KEY]?: RouterReducerState<any>;
 }
 
-const selectRouter = createFeatureSelector<RouterPartialState, fromRouter.RouterReducerState<any>>(
+const selectRouter = createFeatureSelector<RouterPartialState, RouterReducerState<any>>(
   ROUTER_FEATURE_KEY
 );
 
-export const routerQuery = fromRouter.getSelectors(selectRouter);
+export const routerQuery = getRouterSelectors(selectRouter);

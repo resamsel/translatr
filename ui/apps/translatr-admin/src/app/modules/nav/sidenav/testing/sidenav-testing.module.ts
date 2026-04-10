@@ -4,6 +4,7 @@ import { Link } from '@dev/translatr-components';
 import { User } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'app-sidenav',
   template: ''
 })

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AppFacade } from '../../../+state/app.facade';
 
 @Component({
+  standalone: false,
   selector: 'app-forbidden-page',
   templateUrl: './forbidden-page.component.html',
   styleUrls: ['./forbidden-page.component.scss']

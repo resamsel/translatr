@@ -10,6 +10,7 @@ import { UserFacade } from '../+state/user.facade';
 import { AbstractEditFormComponent } from '../../../shared/edit-form/abstract-edit-form-component';
 
 @Component({
+  standalone: false,
   selector: 'app-user-settings',
   templateUrl: './user-settings.component.html',
   styleUrls: ['./user-settings.component.scss']

@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { AccessTokenEditFormModule } from '../access-token-edit-form/access-token-edit-form.module';
 import { AccessTokenEditDialogComponent } from './access-token-edit-dialog.component';
 
@@ -23,6 +23,5 @@ import { AccessTokenEditDialogComponent } from './access-token-edit-dialog.compo
     TranslocoModule
   ],
   exports: [AccessTokenEditDialogComponent],
-  entryComponents: [AccessTokenEditDialogComponent]
 })
 export class AccessTokenEditDialogModule {}

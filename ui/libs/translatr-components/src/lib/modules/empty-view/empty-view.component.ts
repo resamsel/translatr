@@ -1,6 +1,7 @@
 import { Component, HostBinding, Input } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'dev-empty-view',
   templateUrl: './empty-view.component.html',
   styleUrls: ['./empty-view.component.scss']

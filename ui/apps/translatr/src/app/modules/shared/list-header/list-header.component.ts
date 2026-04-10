@@ -22,6 +22,7 @@ export type FilterCriteria = RequestCriteria &
   Record<string, string | number | boolean | undefined>;
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-list-header',
   templateUrl: './list-header.component.html',

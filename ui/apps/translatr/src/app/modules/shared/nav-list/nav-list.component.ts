@@ -25,6 +25,7 @@ const filterActive = (criteria: FilterCriteria): boolean => {
 };
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-nav-list',
   templateUrl: './nav-list.component.html',

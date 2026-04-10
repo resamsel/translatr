@@ -6,6 +6,7 @@ import { ENDPOINT_URL } from '@translatr/utils';
 import { filter, map, take } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'dev-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss']

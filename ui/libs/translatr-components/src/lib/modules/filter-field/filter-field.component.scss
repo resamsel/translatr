@@ -1,16 +1,13 @@
-@import '~@angular/material/theming';
-@import 'theme';
+@use 'theme' as *;
 
 @mixin filter-field-theme($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $accent-color: mat-color($accent, 700);
-  $accent-darker-color: mat-color($accent, 800);
-  $accent-contrast-color: mat-color($primary, default-contrast);
+  $accent-color: #ffa000;
+  $accent-darker-color: #ff8f00;
+  $accent-contrast-color: #fff;
 
   :host {
-    .mat-chip {
-      &.mat-basic-chip {
+    .mat-mdc-chip {
+      &.mat-mdc-basic-chip {
         background-color: $accent-color;
         color: $accent-contrast-color;
       }
@@ -25,7 +22,7 @@
 
 $border-radius: 2px;
 
-.mat-form-field {
+.mat-mdc-form-field {
   display: block;
 }
 
@@ -36,41 +33,40 @@ $border-radius: 2px;
   width: 100%;
 
   ::ng-deep {
-    .mat-form-field-wrapper {
+    .mat-mdc-text-field-wrapper {
       padding-bottom: 1em;
     }
 
-    .mat-form-field-infix {
+    .mat-mdc-form-field-infix {
       width: auto;
-      border-top-width: 0.2em;
       padding: 0.6em 0;
     }
   }
 
-  &.mat-form-field-appearance-outline ::ng-deep {
-    .mat-form-field-wrapper {
+  &.mat-mdc-form-field-appearance-outline ::ng-deep {
+    .mat-mdc-text-field-wrapper {
       padding-bottom: 0;
     }
 
-    .mat-form-field-flex {
+    .mat-mdc-form-field-flex {
       padding: 0 0.6em 0 0.6em;
     }
 
-    .mat-form-field-infix {
+    .mat-mdc-form-field-infix {
       display: flex;
       padding: 0.4em 0;
     }
   }
 
-  .option.mat-chip.mat-basic-chip {
-    @include mat-elevation(1);
+  .option.mat-mdc-chip.mat-mdc-basic-chip {
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,.2), 0px 1px 1px 0px rgba(0,0,0,.14), 0px 1px 3px 0px rgba(0,0,0,.12);
   }
 }
 
 .search-field-elevate {
   color: rgba(0, 0, 0, 0.87);
 
-  .mat-chip-list {
+  .mat-mdc-chip-set {
     line-height: 20px;
   }
 
@@ -79,36 +75,51 @@ $border-radius: 2px;
       margin-left: 4px;
     }
 
-    .mat-form-field-wrapper {
+    .mat-mdc-text-field-wrapper {
       padding-bottom: 0;
+      height: auto;
     }
 
-    .mat-form-field-flex {
-      background-color: #f1f3f4;
+    // Override MDC fill fixed height and background
+    .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+      height: auto;
+      background-color: transparent;
+      border-radius: $border-radius;
+    }
+
+    .mat-mdc-form-field-flex {
+      background-color: #fff;
       border-radius: $border-radius;
       padding: 4px 8px;
+      align-items: center;
     }
 
-    .mat-form-field-infix {
+    .mat-mdc-form-field-infix {
       display: flex;
       align-items: center;
       padding: 4px 0;
+      min-height: auto;
       border-top-width: 0;
     }
 
-    .mat-chip-list-wrapper {
+    // Hide the bottom ripple line for elevate style
+    .mdc-line-ripple {
+      display: none;
+    }
+
+    .mdc-evolution-chip-set__chips {
       min-height: 40px;
     }
   }
 
   &.autocomplete-open {
-    ::ng-deep .mat-form-field-flex {
+    ::ng-deep .mat-mdc-form-field-flex {
       border-radius: $border-radius $border-radius 0 0;
     }
   }
 
-  ::ng-deep .mat-form-field-flex {
-    @include mat-elevation(1);
+  ::ng-deep .mat-mdc-form-field-flex {
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,.2), 0px 1px 1px 0px rgba(0,0,0,.14), 0px 1px 3px 0px rgba(0,0,0,.12);
     background-color: #fff;
   }
 
@@ -118,11 +129,11 @@ $border-radius: 2px;
 }
 
 .option {
-  &.mat-chip .mat-icon {
+  &.mat-mdc-chip .mat-icon {
     border-radius: 9px;
   }
 
-  &.mat-chip.mat-basic-chip {
+  &.mat-mdc-chip.mat-mdc-basic-chip {
     display: inline-flex;
     align-items: center;
     border-radius: $border-radius;
@@ -159,17 +170,17 @@ $border-radius: 2px;
   margin-right: 8px;
 }
 
-.mat-chip-list {
+.mat-mdc-chip-set {
   flex-grow: 1;
   flex-wrap: nowrap;
   max-width: 100%;
 
-  ::ng-deep .mat-chip-list-wrapper {
+  ::ng-deep .mdc-evolution-chip-set__chips {
     flex-wrap: nowrap;
   }
 }
 
-input.mat-chip-input {
+input.mat-mdc-chip-input {
   width: 80px;
   flex: 1 0 80px;
   margin-left: 8px;

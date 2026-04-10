@@ -4,6 +4,7 @@ import { filter, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
 
 @Component({
+  standalone: false,
   selector: 'app-user-activity',
   templateUrl: './user-activity.component.html',
   styleUrls: ['./user-activity.component.scss']

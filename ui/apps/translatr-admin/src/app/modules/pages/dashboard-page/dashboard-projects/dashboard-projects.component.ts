@@ -22,6 +22,7 @@ import { AppFacade } from '../../../../+state/app.facade';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-dashboard-projects',
   templateUrl: './dashboard-projects.component.html',

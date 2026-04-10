@@ -16,8 +16,8 @@ import {
   NavbarModule,
   ShortNumberModule
 } from '@dev/translatr-components';
-import { SvgIconsModule } from '@ngneat/svg-icon';
-import { TranslocoModule } from '@ngneat/transloco';
+import { SvgIconComponent, provideSvgIcons } from '@ngneat/svg-icon';
+import { TranslocoModule } from '@jsverse/transloco';
 import { AppFacade } from '../../../+state/app.facade';
 import {
   appChat,
@@ -51,7 +51,10 @@ import { MainPageComponent } from './main-page.component';
     FeatureFlagModule,
     MetricModule,
     ShortNumberModule,
-    SvgIconsModule.forChild([
+    SvgIconComponent
+  ],
+  providers: [
+    provideSvgIcons([
       appPulse,
       appUser,
       appThumbsUp,

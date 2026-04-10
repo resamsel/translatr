@@ -19,6 +19,7 @@ export interface ProjectEditDialogConfig {
 }
 
 @Component({
+  standalone: false,
   selector: 'dev-project-edit-dialog',
   templateUrl: './project-edit-dialog.component.html',
   styleUrls: ['./project-edit-dialog.component.css']
@@ -42,7 +43,7 @@ export class ProjectEditDialogComponent {
   }
 
   onSubmit() {
-    this.data.onSubmit(this.form.value);
+    this.data.onSubmit(this.form.getRawValue() as Project);
   }
 
   private setErrors(error: ConstraintViolationErrorInfo) {

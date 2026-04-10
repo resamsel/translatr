@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core'
 import { ConstraintViolationErrorInfo, User } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'dev-user-edit-form',
   template: ''
 })

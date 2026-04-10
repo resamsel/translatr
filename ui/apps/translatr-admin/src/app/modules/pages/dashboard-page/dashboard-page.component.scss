@@ -1,4 +1,4 @@
-@import 'mixins';
+@use 'mixins' as *;
 
 @include large {
   ::ng-deep .main-container {
@@ -9,12 +9,12 @@
     display: flex;
     width: 240px;
 
-    .mat-nav-list {
+    .mat-mdc-nav-list {
       margin-top: 32px;
       margin-right: 0;
       width: 100%;
 
-      .mat-list-item {
+      .mat-mdc-list-item {
         color: rgba(0, 0, 0, 0.6);
 
         &.list-item-active {

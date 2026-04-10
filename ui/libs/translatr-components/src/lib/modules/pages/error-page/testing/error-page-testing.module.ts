@@ -1,6 +1,7 @@
 import { Component, Input, NgModule } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'dev-error-page',
   template: ''
 })
@@ -9,12 +10,14 @@ class MockErrorPageComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'dev-error-page-header',
   template: ''
 })
 class MockErrorPageHeaderComponent {}
 
 @Component({
+  standalone: false,
   selector: 'dev-error-page-message',
   template: ''
 })

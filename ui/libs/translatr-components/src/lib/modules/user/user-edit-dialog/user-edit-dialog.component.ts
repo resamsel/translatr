@@ -18,6 +18,7 @@ const defaultUser: Partial<User> = {
 };
 
 @Component({
+  standalone: false,
   selector: 'dev-user-edit-dialog',
   templateUrl: './user-edit-dialog.component.html',
   styleUrls: ['./user-edit-dialog.component.css']

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ActivityGraphComponent, ShortNumberModule } from '@dev/translatr-components';
-import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 describe('ActivityGraphComponent', () => {
   let component: ActivityGraphComponent;

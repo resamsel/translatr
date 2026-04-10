@@ -5,6 +5,7 @@ import { AppFacade } from '../../../+state/app.facade';
 import { DASHBOARD_ROUTES } from './dashboard-page.token';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-dashboard-page',
   templateUrl: './dashboard-page.component.html',
@@ -21,7 +22,7 @@ export class DashboardPageComponent {
   ) {}
 
   routerLink(route: Route) {
-    if (route === '') {
+    if (route.path === '') {
       return '/';
     }
 

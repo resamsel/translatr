@@ -40,7 +40,7 @@ export abstract class AbstractEditFormComponent<
   public onSave(): void {
     this.processing = true;
 
-    const value: F = this.form.value;
+    const value: F = this.form.getRawValue() as F;
     const consume$ = value.id ? this.update(value) : this.create(value);
     consume$.pipe(take(1)).subscribe(
       (r: R) => this.onSuccess(r),

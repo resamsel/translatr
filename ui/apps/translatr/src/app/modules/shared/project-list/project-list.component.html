@@ -12,10 +12,10 @@
     *ngFor="let project of projects?.list; trackBy: trackByFn"
     [routerLink]="['/', project.ownerUsername, project.name]"
     mat-list-item>
-      <span matListIcon class="mat-icon circle">{{
+      <span matListItemIcon class="mat-icon circle">{{
         firstChar(project.name)
         }}</span>
-    <h3 matLine>
+    <h3 matListItemTitle>
       {{ project.name }} <span class="owner">{{ project.ownerName }}</span>
     </h3>
     <mat-progress-bar
@@ -25,7 +25,7 @@
       [value]="project.progress * 100"
       class="limit-width"
       [matTooltip]="t('project.progress.tooltip', {progress: project.progress * 100 | number:'1.0-1'})"
-      matLine
+      matListItemLine
     ></mat-progress-bar>
   </a>
   <ng-template #empty>

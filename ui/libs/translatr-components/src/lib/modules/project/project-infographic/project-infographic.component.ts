@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'dev-project-infographic',
   templateUrl: './project-infographic.component.svg',
   styleUrls: ['./project-infographic.component.scss']

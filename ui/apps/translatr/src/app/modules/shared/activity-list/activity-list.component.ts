@@ -32,6 +32,7 @@ const contentTypeToIconTypeMap = {
 };
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-activity-list',
   templateUrl: './activity-list.component.html',

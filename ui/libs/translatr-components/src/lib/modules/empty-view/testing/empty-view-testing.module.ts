@@ -1,6 +1,7 @@
 import { Component, Input, NgModule } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'dev-empty-view',
   template: ''
 })
@@ -11,18 +12,21 @@ class MockEmptyViewComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'dev-empty-view-actions',
   template: ''
 })
 class MockEmptyViewActionsComponent {}
 
 @Component({
+  standalone: false,
   selector: 'dev-empty-view-content',
   template: ''
 })
 class MockEmptyViewContentComponent {}
 
 @Component({
+  standalone: false,
   selector: 'dev-empty-view-header',
   template: ''
 })

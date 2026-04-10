@@ -4,13 +4,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { GravatarModule } from 'ngx-gravatar';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { UserCardLinkComponent } from './user-card-link.component';
 import { UserCardComponent } from './user-card.component';
 
 @NgModule({
   declarations: [UserCardComponent, UserCardLinkComponent],
-  imports: [CommonModule, RouterModule, MatCardModule, MatIconModule, GravatarModule, MomentModule],
+  imports: [CommonModule, RouterModule, MatCardModule, MatIconModule, GravatarModule, TimeAgoModule],
   exports: [UserCardComponent, UserCardLinkComponent]
 })
 export class UserCardModule {}

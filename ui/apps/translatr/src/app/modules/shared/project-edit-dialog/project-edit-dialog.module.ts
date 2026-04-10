@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { ProjectFacade } from '../project-state/+state';
 import { ProjectEditDialogComponent } from './project-edit-dialog.component';
 
@@ -23,6 +23,5 @@ import { ProjectEditDialogComponent } from './project-edit-dialog.component';
   ],
   exports: [ProjectEditDialogComponent],
   providers: [ProjectFacade],
-  entryComponents: [ProjectEditDialogComponent]
 })
 export class ProjectEditDialogModule {}

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AppFacade } from '../../../+state/app.facade';
 
 @Component({
+  standalone: false,
   selector: 'app-not-found-page',
   templateUrl: './not-found-page.component.html',
   styleUrls: ['./not-found-page.component.scss']

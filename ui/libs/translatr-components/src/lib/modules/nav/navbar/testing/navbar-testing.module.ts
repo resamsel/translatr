@@ -5,6 +5,7 @@ import { MockAuthBarItemComponent } from '../auth-bar-item/testing';
 import { MockAuthBarLanguageSwitcherComponent } from '../auth-bar-language-switcher/testing';
 
 @Component({
+  standalone: false,
   selector: 'app-navbar',
   template: ''
 })

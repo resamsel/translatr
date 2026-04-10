@@ -10,7 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { FeatureFlagModule, FooterModule, NavbarModule } from '@dev/translatr-components';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { AppFacade } from '../../../+state/app.facade';
 import { SidenavComponent } from './sidenav.component';
 

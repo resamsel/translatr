@@ -6,7 +6,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { UserEditFormModule } from '../user-edit-form';
 import { UserEditDialogComponent } from './user-edit-dialog.component';
 
@@ -26,6 +26,5 @@ import { UserEditDialogComponent } from './user-edit-dialog.component';
     UserEditFormModule
   ],
   exports: [UserEditDialogComponent],
-  entryComponents: [UserEditDialogComponent]
 })
 export class UserEditDialogModule {}

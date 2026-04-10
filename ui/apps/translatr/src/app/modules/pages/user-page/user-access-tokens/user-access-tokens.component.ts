@@ -10,6 +10,7 @@ import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dia
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
 
 @Component({
+  standalone: false,
   selector: 'app-user-access-tokens',
   templateUrl: './user-access-tokens.component.html',
   styleUrls: ['./user-access-tokens.component.scss']

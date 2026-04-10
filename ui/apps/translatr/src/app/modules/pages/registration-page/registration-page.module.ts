@@ -6,7 +6,7 @@ import { FeatureFlagModule, UserEditFormModule } from '@dev/translatr-components
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFacebook, faGithub, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { RegistrationPageRoutingModule } from './registration-page-routing.module';
 import { RegistrationPageComponent } from './registration-page.component';

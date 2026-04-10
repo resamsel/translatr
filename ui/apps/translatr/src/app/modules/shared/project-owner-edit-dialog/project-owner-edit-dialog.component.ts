@@ -5,6 +5,7 @@ import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { ProjectFacade } from '../project-state/+state';
 
 @Component({
+  standalone: false,
   selector: 'app-project-owner-edit-dialog',
   templateUrl: './project-owner-edit-dialog.component.html',
   styleUrls: ['./project-owner-edit-dialog.component.scss']

@@ -14,8 +14,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { EmptyViewModule, FilterFieldModule, NavbarModule } from '@dev/translatr-components';
-import { HotkeysModule } from '@ngneat/hotkeys';
-import { TranslocoModule } from '@ngneat/transloco';
+import { HotkeysDirective } from '@ngneat/hotkeys';
+import { TranslocoModule } from '@jsverse/transloco';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { AppFacade } from '../../../+state/app.facade';
@@ -73,7 +73,7 @@ import { LocaleEditorPageComponent } from './locale-editor-page.component';
     EffectsModule.forFeature([EditorEffects]),
     TranslocoModule,
 
-    HotkeysModule
+    HotkeysDirective
   ],
   providers: [EditorFacade]
 })

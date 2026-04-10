@@ -3,6 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Member, User } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'app-project-member-edit-form',
   template: ''
 })

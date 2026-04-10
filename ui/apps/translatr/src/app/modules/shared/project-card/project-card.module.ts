@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { GravatarModule } from 'ngx-gravatar';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { ProjectCardLinkComponent } from './project-card-link.component';
 import { ProjectCardComponent } from './project-card.component';
 
@@ -17,7 +17,7 @@ import { ProjectCardComponent } from './project-card.component';
     MatCardModule,
     MatIconModule,
     GravatarModule,
-    MomentModule,
+    TimeAgoModule,
     MatTooltipModule
   ],
   exports: [ProjectCardComponent, ProjectCardLinkComponent]

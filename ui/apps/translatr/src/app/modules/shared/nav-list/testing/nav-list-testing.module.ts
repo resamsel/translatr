@@ -3,6 +3,7 @@ import { PagedList } from '@dev/translatr-model';
 import { defaultFilters, FilterCriteria } from '../../list-header/list-header.component';
 
 @Component({
+  standalone: false,
   selector: 'app-nav-list',
   template: ''
 })

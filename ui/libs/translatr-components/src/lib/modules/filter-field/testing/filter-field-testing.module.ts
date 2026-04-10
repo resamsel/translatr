@@ -4,6 +4,7 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { FilterFieldFilter } from '@dev/translatr-components';
 
 @Component({
+  standalone: false,
   selector: 'dev-filter-field',
   template: ''
 })

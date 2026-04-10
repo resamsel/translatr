@@ -5,6 +5,7 @@ import { UserService } from '@dev/translatr-sdk';
 import { Subject } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-registration-page',
   templateUrl: './registration-page.component.html',
   styleUrls: ['./registration-page.component.scss']

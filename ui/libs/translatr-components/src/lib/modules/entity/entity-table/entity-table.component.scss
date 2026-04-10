@@ -1,4 +1,4 @@
-@import 'mixins';
+@use 'mixins' as *;
 
 table {
   width: 100%;

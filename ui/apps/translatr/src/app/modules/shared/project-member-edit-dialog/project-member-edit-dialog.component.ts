@@ -11,6 +11,7 @@ interface Data {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-project-member-edit-dialog',
   templateUrl: './project-member-edit-dialog.component.html',
   styleUrls: ['./project-member-edit-dialog.component.scss']

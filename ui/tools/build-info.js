@@ -1,7 +1,7 @@
 const { version, name, author, bugs, homepage } = require('../package.json');
 const { resolve, relative } = require('path');
 const { writeFileSync } = require('fs-extra');
-const dateFormat = require('dateformat');
+const dateFormat = require('dateformat').default;
 
 const now = new Date();
 

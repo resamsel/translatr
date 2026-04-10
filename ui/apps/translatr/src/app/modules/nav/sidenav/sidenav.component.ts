@@ -4,6 +4,7 @@ import { Feature, User, UserRole } from '@dev/translatr-model';
 import { environment } from '../../../../environments/environment';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',

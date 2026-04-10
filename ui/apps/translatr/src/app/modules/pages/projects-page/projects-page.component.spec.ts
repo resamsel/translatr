@@ -10,7 +10,7 @@ import { mockObservable } from '@translatr/utils/testing';
 import { FeatureFlagTestingModule } from '@translatr/components/testing';
 import { ProjectListTestingModule, SidenavTestingModule } from '../../testing';
 import { MatDialog } from '@angular/material/dialog';
-import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 describe('UsersPageComponent', () => {
   let component: ProjectsPageComponent;

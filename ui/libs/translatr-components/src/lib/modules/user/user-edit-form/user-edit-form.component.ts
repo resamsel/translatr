@@ -8,6 +8,7 @@ import {
 } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'dev-user-edit-form',
   templateUrl: './user-edit-form.component.html',
   styleUrls: ['./user-edit-form.component.css']
@@ -57,15 +58,16 @@ export class UserEditFormComponent implements OnInit {
   ngOnInit(): void {}
 
   onSubmit() {
-    this.edit.emit(this.form.value);
+    this.edit.emit(this.form.getRawValue() as User);
   }
 
   roleAllowed(role: UserRole): boolean {
     if (role === UserRole.User) {
       return true;
     }
-    return this.form.value.allowedRoles !== undefined
-      ? this.form.value.allowedRoles.indexOf(role) !== -1
+    const value = this.form.getRawValue() as any;
+    return value.allowedRoles !== undefined
+      ? value.allowedRoles.indexOf(role) !== -1
       : false;
   }
 

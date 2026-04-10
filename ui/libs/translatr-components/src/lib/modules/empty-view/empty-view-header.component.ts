@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'dev-empty-view-header',
   template: '<ng-content></ng-content>',
   styles: [

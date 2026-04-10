@@ -6,10 +6,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { ButtonTestingModule, EmptyViewTestingModule } from '@translatr/components/testing';
 import { GravatarModule } from 'ngx-gravatar';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { AppFacade } from '../../../../../+state/app.facade';
 import { NavListTestingModule } from '../../../../shared/nav-list/testing';
 
@@ -39,7 +39,7 @@ describe('MemberListComponent', () => {
           MatButtonModule,
 
           GravatarModule,
-          MomentModule
+          TimeAgoModule
         ],
         providers: [{ provide: AppFacade, useFactory: () => ({}) }]
       }).compileComponents();

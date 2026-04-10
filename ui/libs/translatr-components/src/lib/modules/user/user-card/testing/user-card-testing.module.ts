@@ -2,6 +2,7 @@ import { Component, Input, NgModule } from '@angular/core';
 import { User } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'user-card',
   template: ''
 })
@@ -10,6 +11,7 @@ export class MockUserCardComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-user-card-link',
   template: ''
 })

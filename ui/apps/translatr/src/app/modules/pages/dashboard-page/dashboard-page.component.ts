@@ -9,6 +9,7 @@ import { ProjectsFacade } from '../projects-page/+state/projects.facade';
 import { DashboardFacade } from './+state/dashboard.facade';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard-page',
   templateUrl: './dashboard-page.component.html',

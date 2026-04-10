@@ -1,9 +1,9 @@
-@import 'theme';
+@use 'sass:math';
+@use 'theme' as *;
 
 @mixin nav-list-theme($theme) {
-  $warning: map-get($theme, warn);
-  $warning-color: mat-color($warning);
-  $warning-background-color: mat-color($warning, 50);
+  $warning-color: #f44336;
+  $warning-background-color: #ffebee;
 
   :host ::ng-deep .mat-list-item.warning {
     border-left-color: $warning-color;
@@ -55,7 +55,7 @@
 
     @for $i from 1 through 20 {
       &:nth-child(#{$i}) {
-        animation-delay: #{$i/10}s;
+        animation-delay: #{math.div($i, 10)}s;
       }
     }
 

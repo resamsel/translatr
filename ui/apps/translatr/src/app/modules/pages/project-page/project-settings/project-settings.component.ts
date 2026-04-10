@@ -11,6 +11,7 @@ import { openProjectDeleteDialog } from '../../../shared/project-delete-dialog/p
 import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
+  standalone: false,
   selector: 'app-project-settings',
   templateUrl: './project-settings.component.html',
   styleUrls: ['./project-settings.component.scss']

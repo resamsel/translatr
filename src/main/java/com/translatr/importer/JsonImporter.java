@@ -16,6 +16,9 @@ public class JsonImporter extends AbstractImporter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    /** No-args constructor required by CDI for proxy generation. */
+    protected JsonImporter() {}
+
     @Inject
     public JsonImporter(KeyRepository keyRepo, MessageRepository messageRepo) {
         super(keyRepo, messageRepo);

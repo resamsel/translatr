@@ -13,7 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { NavListTestingModule } from '../../testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { mockObservable } from '@translatr/utils/testing';
-import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 describe('KeyEditorPageComponent', () => {
   let component: KeyEditorPageComponent;

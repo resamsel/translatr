@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-tag',
   template: '<ng-content></ng-content>',
   styles: [

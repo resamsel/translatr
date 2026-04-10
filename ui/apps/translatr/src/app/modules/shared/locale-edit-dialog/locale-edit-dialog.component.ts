@@ -15,6 +15,7 @@ interface Data {
 }
 
 @Component({
+  standalone: false,
   templateUrl: './locale-edit-dialog.component.html'
 })
 export class LocaleEditDialogComponent extends BaseEditFormComponent<

@@ -1,9 +1,8 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { Aggregate } from '@dev/translatr-model';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import * as d3 from 'd3';
-import moment from 'moment';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { shortenNumber } from '../pipes/short-number';
@@ -145,6 +144,7 @@ interface DataRect extends SvgRect {
 }
 
 @Component({
+  standalone: false,
   selector: 'dev-activity-graph',
   templateUrl: './activity-graph.component.html',
   styleUrls: ['./activity-graph.component.scss']
@@ -255,9 +255,13 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
       x: this.offsetLeft - 8,
       y: this.offsetTop + weekday * this.cellSize - 4,
       text: this.weekdayFormat(
-        moment()
-          .weekday(weekday)
-          .toDate()
+        (() => {
+          // Get a date corresponding to the given weekday (Monday=1 based)
+          const d = new Date();
+          const currentDay = (d.getDay() + 6) % 7; // convert to Mon=0
+          d.setDate(d.getDate() - currentDay + weekday);
+          return d;
+        })()
       )
     }));
   }

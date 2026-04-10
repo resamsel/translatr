@@ -1,4 +1,3 @@
-/* tslint:disable:max-classes-per-file */
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   AccessToken,

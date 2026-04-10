@@ -1,18 +1,14 @@
 module.exports = {
   testMatch: ['**/+(*.)+(spec|test).+(ts|js)?(x)'],
   transform: {
-    '^.+\\.(ts|js|html)$': 'ts-jest',
+    '^.+\\.(ts|js|html)$': ['jest-preset-angular', {
+      tsconfig: '<rootDir>/tsconfig.spec.json',
+      stringifyContentPathRegex: '\\.html$',
+    }],
     '.+\\.(svg)$': 'jest-transform-stub'
   },
-  resolver: '@nrwl/jest/plugins/resolver',
+  resolver: '@nx/jest/plugins/resolver',
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageReporters: ['html', 'lcov', 'text'],
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {
-    'ts-jest': {
-      diagnostics: true,
-      stringifyContentPathRegex: '\\.html$',
-      astTransformers: [require.resolve('jest-preset-angular/InlineHtmlStripStylesTransformer')]
-    }
-  }
 };
