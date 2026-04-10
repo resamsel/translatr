@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserEditDialogComponent } from '@dev/translatr-components';
-import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { UserEditFormTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 

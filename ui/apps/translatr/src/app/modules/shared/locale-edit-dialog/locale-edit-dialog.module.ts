@@ -6,7 +6,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { ProjectStateModule } from '../project-state';
 import { LocaleEditDialogComponent } from './locale-edit-dialog.component';
 
@@ -25,6 +25,5 @@ import { LocaleEditDialogComponent } from './locale-edit-dialog.component';
     MatInputModule,
     TranslocoModule
   ],
-  entryComponents: [LocaleEditDialogComponent]
 })
 export class LocaleEditDialogModule {}

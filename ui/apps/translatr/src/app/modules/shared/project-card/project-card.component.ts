@@ -3,6 +3,7 @@ import { Project } from '@dev/translatr-model';
 import { firstChar } from '@dev/translatr-sdk';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-project-card',
   templateUrl: './project-card.component.html',

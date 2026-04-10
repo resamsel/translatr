@@ -13,6 +13,7 @@ const scopeType = scope => scope.split(':')[1];
 const scopePermission = scope => scope.split(':')[0];
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-access-token-edit-form',
   templateUrl: './access-token-edit-form.component.html',
@@ -53,7 +54,7 @@ export class AccessTokenEditFormComponent extends BaseEditFormComponent<
       new FormGroup({
         id: new FormControl(''),
         name: new FormControl('', Validators.required),
-        key: new FormControl({ value: '' }),
+        key: new FormControl({ value: '', disabled: false }),
         scope: new FormControl('')
       }),
       { key: '', name: '', scope: '' },

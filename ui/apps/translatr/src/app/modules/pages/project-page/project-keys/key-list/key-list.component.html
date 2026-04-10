@@ -22,15 +22,15 @@
         key.name
       ]"
     >
-      <mat-icon class="key circle" matListIcon>vpn_key</mat-icon>
-      <h3 matLine>{{ key.name }}</h3>
+      <mat-icon class="key circle" matListItemIcon>vpn_key</mat-icon>
+      <h3 matListItemTitle>{{ key.name }}</h3>
       <mat-progress-bar
         *ngIf="key.progress !== undefined"
         [value]="key.progress * 100"
         [matTooltip]="t('key.progress.tooltip', {progress: key.progress * 100 | number:'1.0-1'})"
         mode="determinate"
         color="accent"
-        matLine
+        matListItemLine
       ></mat-progress-bar>
       <button
         *ngIf="canCreate"

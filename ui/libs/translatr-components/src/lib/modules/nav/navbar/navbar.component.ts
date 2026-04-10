@@ -8,6 +8,7 @@ export interface Link {
 }
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',

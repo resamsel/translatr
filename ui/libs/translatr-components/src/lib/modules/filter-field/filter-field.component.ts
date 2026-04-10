@@ -45,6 +45,7 @@ const filterOption = (option: FilterFieldFilter, definition: FilterFieldFilter):
 };
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-filter-field',
   templateUrl: './filter-field.component.html',
@@ -53,8 +54,12 @@ const filterOption = (option: FilterFieldFilter, definition: FilterFieldFilter):
 export class FilterFieldComponent implements OnInit {
   @Input() enabled = true;
   @Input() filters: ReadonlyArray<FilterFieldFilter>;
-  @Input() appearance: MatFormFieldAppearance | 'elevate' = 'standard';
+  @Input() appearance: MatFormFieldAppearance | 'elevate' = 'fill';
   @Input() color: ThemePalette = 'primary';
+
+  get formFieldAppearance(): MatFormFieldAppearance {
+    return this.appearance === 'elevate' ? 'fill' : this.appearance;
+  }
 
   private _selection: ReadonlyArray<FilterFieldFilter>;
 

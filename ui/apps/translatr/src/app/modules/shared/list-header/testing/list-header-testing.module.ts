@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core'
 import { defaultFilters, FilterCriteria } from '../list-header.component';
 
 @Component({
+  standalone: false,
   selector: 'app-list-header',
   template: ''
 })

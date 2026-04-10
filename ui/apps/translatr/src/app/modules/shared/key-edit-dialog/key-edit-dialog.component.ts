@@ -15,6 +15,7 @@ interface Data {
 }
 
 @Component({
+  standalone: false,
   templateUrl: './key-edit-dialog.component.html'
 })
 export class KeyEditDialogComponent extends BaseEditFormComponent<

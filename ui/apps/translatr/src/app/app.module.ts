@@ -1,5 +1,5 @@
 import { LayoutModule } from '@angular/cdk/layout';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -11,13 +11,12 @@ import { FeatureFlagModule } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { NotificationService, TranslatrSdkModule } from '@dev/translatr-sdk';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { HotkeysModule } from '@ngneat/hotkeys';
-import { SvgIconsModule } from '@ngneat/svg-icon';
+import { HotkeysService } from '@ngneat/hotkeys';
+import { SvgIconComponent, provideSvgIcons } from '@ngneat/svg-icon';
 import { EffectsModule } from '@ngrx/effects';
 import { routerReducer, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { NxModule } from '@nrwl/angular';
 import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { environment } from '../environments/environment';
 import { AppEffects } from './+state/app.effects';
@@ -45,7 +44,6 @@ import { MatNotificationService } from './services/mat-notification-service';
     MatSnackBarModule,
     MatDialogModule,
 
-    NxModule.forRoot(),
     StoreModule.forRoot(
       {
         app: appReducer,
@@ -62,15 +60,12 @@ import { MatNotificationService } from './services/mat-notification-service';
     EffectsModule.forRoot([AppEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     StoreRouterConnectingModule.forRoot({ routerState: RouterState.Minimal }),
-    HttpClientModule,
     TranslocoRootModule,
-    HotkeysModule,
     FontAwesomeModule,
-    SvgIconsModule.forRoot({
-      icons: []
-    })
+    SvgIconComponent
   ],
   providers: [
+    provideHttpClient(withInterceptorsFromDi()),
     AppFacade,
     { provide: FeatureFlagFacade, useClass: AppFacade },
     { provide: WINDOW, useFactory: () => window },
@@ -81,7 +76,9 @@ import { MatNotificationService } from './services/mat-notification-service';
       useFactory: (snackBar: MatSnackBar) => new MatNotificationService(snackBar),
       deps: [MatSnackBar]
     },
-    httpInterceptorProviders
+    httpInterceptorProviders,
+    HotkeysService,
+    provideSvgIcons([])
   ],
   bootstrap: [AppComponent]
 })

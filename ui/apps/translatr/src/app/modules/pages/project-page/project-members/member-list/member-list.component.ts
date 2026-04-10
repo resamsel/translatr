@@ -12,6 +12,7 @@ import { openProjectMemberEditDialog } from '../../../../shared/project-member-e
 import { openProjectOwnerEditDialog } from '../../../../shared/project-owner-edit-dialog/project-owner-edit-dialog.component';
 
 @Component({
+  standalone: false,
   selector: 'app-member-list',
   templateUrl: './member-list.component.html',
   styleUrls: ['./member-list.component.scss']

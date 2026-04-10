@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Params, Router } from '@angular/router';
 import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
 import { Key, Message } from '@dev/translatr-model';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { trackByFn } from '@translatr/utils';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, take, takeUntil, tap } from 'rxjs/operators';
@@ -20,6 +20,7 @@ const filterComparator = (a: Params, b: Params): boolean =>
   a.search === b.search && a.missing === b.missing;
 
 @Component({
+  standalone: false,
   selector: 'app-locale-editor-page',
   templateUrl: './locale-editor-page.component.html',
   styleUrls: ['./locale-editor-page.component.scss']

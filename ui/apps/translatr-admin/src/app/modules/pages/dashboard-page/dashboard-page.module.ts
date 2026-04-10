@@ -28,7 +28,7 @@ import {
   UserEditDialogModule
 } from '@dev/translatr-components';
 import { GravatarModule } from 'ngx-gravatar';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
 import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
@@ -66,7 +66,7 @@ import { DashboardUsersComponent } from './dashboard-users/dashboard-users.compo
     MatTabsModule,
     MatTableModule,
     MatDialogModule,
-    MomentModule,
+    TimeAgoModule,
     MatMenuModule,
     MatSelectModule,
     MatInputModule,

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { filter } from 'rxjs/operators';
 import { AppFacade } from './+state/app.facade';
 
 @Component({
+  standalone: false,
   selector: 'dev-root',
   template: '<router-outlet></router-outlet>'
 })

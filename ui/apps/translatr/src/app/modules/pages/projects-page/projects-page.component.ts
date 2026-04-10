@@ -11,6 +11,7 @@ import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-
 import { ProjectsFacade } from './+state/projects.facade';
 
 @Component({
+  standalone: false,
   selector: 'app-projects-page',
   templateUrl: './projects-page.component.html',
   styleUrls: ['./projects-page.component.scss']

@@ -7,6 +7,7 @@ import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
+  standalone: false,
   selector: 'app-project-locales',
   templateUrl: './project-locales.component.html',
   styleUrls: ['./project-locales.component.scss']

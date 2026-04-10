@@ -11,6 +11,9 @@ import java.util.Properties;
 
 public abstract class PropertiesImporter extends AbstractImporter {
 
+    /** No-args constructor required by CDI for proxy generation. */
+    protected PropertiesImporter() {}
+
     protected PropertiesImporter(KeyRepository keyRepo, MessageRepository messageRepo) {
         super(keyRepo, messageRepo);
     }

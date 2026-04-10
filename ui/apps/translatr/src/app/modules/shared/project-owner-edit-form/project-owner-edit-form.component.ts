@@ -42,6 +42,7 @@ const formToModel = (form: ProjectForm): Project => ({
 });
 
 @Component({
+  standalone: false,
   selector: 'app-project-owner-edit-form',
   templateUrl: './project-owner-edit-form.component.html',
   styleUrls: ['./project-owner-edit-form.component.scss']

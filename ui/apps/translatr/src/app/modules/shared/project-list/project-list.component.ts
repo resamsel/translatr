@@ -5,6 +5,7 @@ import { trackByFn } from '@translatr/utils';
 import { FilterCriteria } from '../list-header/list-header.component';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',

@@ -5,6 +5,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-dashboard-user',
   templateUrl: './dashboard-user.component.html',

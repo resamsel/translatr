@@ -15,6 +15,7 @@ import { FilterCriteria } from '../../../../shared/list-header/list-header.compo
 import { openLocaleEditDialog } from '../../../../shared/locale-edit-dialog/locale-edit-dialog.component';
 
 @Component({
+  standalone: false,
   selector: 'app-locale-list',
   templateUrl: './locale-list.component.html',
   styleUrls: ['./locale-list.component.scss']

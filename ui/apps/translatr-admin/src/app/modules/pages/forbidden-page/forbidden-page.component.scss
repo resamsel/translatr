@@ -1,11 +1,9 @@
-@import 'theme';
-@import 'mixins';
+@use 'theme' as *;
+@use 'mixins' as *;
 
 @mixin permission-denied-theme($theme) {
-  $primary: map-get($theme, primary);
-  $primary-color: mat-color($primary, 500);
-  $accent: map-get($theme, accent);
-  $accent-color: mat-color($accent, 500);
+  $primary-color: #4caf50;
+  $accent-color: #ffc107;
 
   :host {
     .main-container {

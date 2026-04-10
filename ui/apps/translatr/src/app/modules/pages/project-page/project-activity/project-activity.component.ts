@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Project } from '@dev/translatr-model';
-import { filter, map, pluck, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, map,  takeUntil, withLatestFrom } from 'rxjs/operators';
 import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
+  standalone: false,
   selector: 'app-project-activity',
   templateUrl: './project-activity.component.html',
   styleUrls: ['./project-activity.component.scss']
@@ -24,7 +24,7 @@ export class ProjectActivityComponent implements OnInit {
         withLatestFrom(
           this.project$.pipe(
             filter(x => !!x),
-            pluck<Project, string>('id')
+            map((v: any) => v['id'])
           )
         ),
         takeUntil(this.facade.unload$)

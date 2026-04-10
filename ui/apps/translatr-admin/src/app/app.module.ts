@@ -1,3 +1,4 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -9,7 +10,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { NxModule } from '@nrwl/angular';
 import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { environment } from '../environments/environment';
 import { AppEffects } from './+state/app.effects';
@@ -32,7 +32,6 @@ import { TranslocoRootModule } from './modules/transloco';
     DashboardPageModule,
     LoginPageModule,
     FeatureFlagModule,
-    NxModule.forRoot(),
     StoreModule.forRoot(
       { app: appReducer },
       {
@@ -50,6 +49,7 @@ import { TranslocoRootModule } from './modules/transloco';
     TranslocoRootModule
   ],
   providers: [
+    provideHttpClient(withInterceptorsFromDi()),
     AppFacade,
     { provide: FeatureFlagFacade, useClass: AppFacade },
     { provide: WINDOW, useFactory: () => window },

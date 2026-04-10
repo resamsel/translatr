@@ -14,7 +14,7 @@ import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Link } from '@dev/translatr-components';
 import { Message, User } from '@dev/translatr-model';
 import { HotkeysService } from '@ngneat/hotkeys';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
 import { filter, skip, take } from 'rxjs/operators';
 import { EditorFacade } from '../+state/editor.facade';
@@ -23,6 +23,7 @@ import { SaveBehavior } from '../save-behavior';
 import 'codemirror/mode/xml/xml';
 
 @Component({
+  standalone: false,
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],

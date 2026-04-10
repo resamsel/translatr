@@ -4,6 +4,7 @@ import { filter, take } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
 
 @Component({
+  standalone: false,
   selector: 'app-user-access-token',
   templateUrl: './user-access-token.component.html',
   styleUrls: ['./user-access-token.component.scss']

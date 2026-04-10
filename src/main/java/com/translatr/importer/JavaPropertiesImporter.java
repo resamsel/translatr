@@ -8,6 +8,9 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class JavaPropertiesImporter extends PropertiesImporter {
 
+    /** No-args constructor required by CDI for proxy generation. */
+    protected JavaPropertiesImporter() {}
+
     @Inject
     public JavaPropertiesImporter(KeyRepository keyRepo, MessageRepository messageRepo) {
         super(keyRepo, messageRepo);

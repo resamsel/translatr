@@ -1,5 +1,3 @@
-@import '~@angular/material/theming';
-
 $padding: 32px;
 $metric-size: 36px;
 $metric-line-height: $metric-size + 6px;
@@ -11,21 +9,23 @@ $icon-size: $metric-line-height + $padding + $subtitle-size;
     display: block;
   }
 
-  .mat-card.icon {
+  mat-card.icon {
     min-height: $icon-size - $padding;
+    position: relative;
+    overflow: hidden;
   }
 
-  .mat-card-header {
+  mat-card-header {
     z-index: 1;
     flex-direction: row-reverse;
 
-    .mat-card-title {
+    mat-card-title {
       font-size: $metric-size;
       line-height: $metric-line-height;
       font-weight: 300;
     }
 
-    .mat-card-subtitle {
+    mat-card-subtitle {
       margin-bottom: 0;
     }
   }
@@ -50,7 +50,7 @@ $icon-size: $metric-line-height + $padding + $subtitle-size;
   }
 
   ::ng-deep {
-    .mat-card-header-text {
+    .mat-mdc-card-header-text {
       flex-grow: 1;
       overflow: hidden;
     }

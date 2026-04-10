@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, CanActivate, Route } from '@angular/router';
 import { Feature, Project } from '@dev/translatr-model';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
 import { combineLatest, merge, Observable } from 'rxjs';
 import {
@@ -25,6 +25,7 @@ import { ProjectFacade } from '../../shared/project-state';
 import { PROJECT_ROUTES } from './project-page.token';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-project-page',
   templateUrl: './project-page.component.html',
@@ -82,7 +83,7 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
       return undefined;
     }
 
-    if (route === '') {
+    if (route.path === '') {
       return `/${project.ownerUsername}/${project.name}`;
     }
 

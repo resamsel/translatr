@@ -7,6 +7,7 @@ import { AppFacade } from '../../../+state/app.facade';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form.component';
 
 @Component({
+  standalone: false,
   selector: 'app-protect-creation-dialog',
   templateUrl: './project-edit-dialog.component.html',
   styleUrls: ['./project-edit-dialog.component.scss']

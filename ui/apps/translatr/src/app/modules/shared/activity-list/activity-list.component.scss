@@ -1,11 +1,11 @@
-@import 'mixins';
+@use 'mixins' as *;
 
 :host {
   display: block;
   padding-bottom: 16px;
 }
 
-.activity-list-item.mat-list-item {
+.activity-list-item.mat-mdc-list-item {
   position: relative;
 
   &.mat-2-line,
@@ -13,13 +13,13 @@
   &.mat-multi-line {
     height: auto;
 
-    .mat-list-icon,
+    .mat-mdc-list-item-icon,
     .timestamp,
-    h3.mat-line {
+    .mdc-list-item__primary-text {
       align-self: flex-start;
     }
 
-    ::ng-deep .mat-list-item-content {
+    ::ng-deep .mdc-list-item__content {
       padding-top: 12px;
       padding-bottom: 12px;
     }

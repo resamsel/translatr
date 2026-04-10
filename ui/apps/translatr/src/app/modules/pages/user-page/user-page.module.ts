@@ -20,11 +20,11 @@ import {
   ShortNumberModule,
   UserCardModule
 } from '@dev/translatr-components';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { GravatarModule } from 'ngx-gravatar';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { AccessTokenEditDialogModule } from '../../shared/access-token-edit-dialog/access-token-edit-dialog.module';
 import { AccessTokenEditFormModule } from '../../shared/access-token-edit-form/access-token-edit-form.module';
@@ -82,7 +82,7 @@ import { UserGuard } from './user.guard';
     MatChipsModule,
     MatCardModule,
     MatButtonModule,
-    MomentModule,
+    TimeAgoModule,
     GravatarModule,
     MatDialogModule,
     MatListModule,

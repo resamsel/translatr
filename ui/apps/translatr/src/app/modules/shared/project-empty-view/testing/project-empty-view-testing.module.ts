@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-project-empty-view',
   template: ''
 })

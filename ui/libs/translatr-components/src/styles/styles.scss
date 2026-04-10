@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-@import 'mixins';
+@use '@angular/material' as mat;
+@use 'sass:math';
+@use 'mixins' as *;
 
 body {
   margin: 0;
@@ -37,8 +39,8 @@ a.link:hover {
   text-decoration: underline;
 }
 
-a .mat-card {
-  @include mat-elevation-transition;
+a .mat-mdc-card {
+  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .main-container {
@@ -52,7 +54,7 @@ a .mat-card {
     margin-bottom: 0;
   }
 
-  > .mat-card {
+  > .mat-mdc-card {
     max-width: calc(100% - 32px);
   }
 }
@@ -81,43 +83,43 @@ a .mat-card {
   }
 }
 
-.mat-list-base {
-  &.mat-nav-list,
-  &.mat-list {
+.mat-mdc-list-base {
+  &.mat-mdc-nav-list,
+  &.mat-mdc-list {
     padding-top: 0;
   }
 
-  .mat-list-icon.mat-icon {
+  .mat-mdc-list-item-icon.mat-icon {
     line-height: 24px;
   }
 
-  &[dense] .mat-list-icon.mat-icon {
+  &[dense] .mat-mdc-list-item-icon.mat-icon {
     line-height: 20px;
   }
 
-  .mat-list-item .sub-title,
-  .mat-line .sub-title {
+  .mat-mdc-list-item .sub-title,
+  .mdc-list-item__primary-text .sub-title {
     font-size: 14px;
     margin-left: 4px;
   }
 
-  .mat-list-item .mat-progress-bar.mat-line {
+  .mat-mdc-list-item .mat-mdc-progress-bar {
     margin: 8px 0;
   }
 }
 
 .translatr.light-theme,
 .translatr.dark-theme {
-  .mat-raised-button:not([class*='mat-elevation-z']) {
-    @include mat-elevation(1);
+  .mat-mdc-raised-button:not([class*='mat-elevation-z']) {
+    @include mat.elevation(1);
   }
 
-  .mat-raised-button:hover,
-  a:hover .mat-card {
-    @include mat-elevation(4);
+  .mat-mdc-raised-button:hover,
+  a:hover .mat-mdc-card {
+    @include mat.elevation(4);
   }
 
-  .mat-nav-list .mat-list-item:hover {
+  .mat-mdc-nav-list .mat-mdc-list-item:hover {
     border-radius: 2px;
   }
 
@@ -126,7 +128,7 @@ a .mat-card {
     justify-content: flex-start;
   }
 
-  .project .mat-card {
+  .project .mat-mdc-card {
     color: #ffa000;
   }
 
@@ -135,12 +137,12 @@ a .mat-card {
     color: white;
   }
 
-  .project.mat-list-item:before {
+  .project.mat-mdc-list-item:before {
     border-left-color: #ffa000;
   }
 
-  .owner .mat-card,
-  .user .mat-card {
+  .owner .mat-mdc-card,
+  .user .mat-mdc-card {
     color: #1976d2;
   }
 
@@ -149,12 +151,12 @@ a .mat-card {
     color: white;
   }
 
-  .owner.mat-list-item:before,
-  .user.mat-list-item:before {
+  .owner.mat-mdc-list-item:before,
+  .user.mat-mdc-list-item:before {
     border-left-color: #1976d2;
   }
 
-  .member .mat-card {
+  .member .mat-mdc-card {
     color: #ff7043;
   }
 
@@ -163,11 +165,11 @@ a .mat-card {
     color: white;
   }
 
-  .member.mat-list-item:before {
+  .member.mat-mdc-list-item:before {
     border-left-color: #ff7043;
   }
 
-  .locale .mat-card {
+  .locale .mat-mdc-card {
     color: #0097a7;
   }
 
@@ -177,11 +179,11 @@ a .mat-card {
     color: white;
   }
 
-  .locale.mat-list-item:before {
+  .locale.mat-mdc-list-item:before {
     border-left-color: #0097a7;
   }
 
-  .key .mat-card {
+  .key .mat-mdc-card {
     color: #689f38;
   }
 
@@ -191,11 +193,11 @@ a .mat-card {
     color: white;
   }
 
-  .key.mat-list-item:before {
+  .key.mat-mdc-list-item:before {
     border-left-color: #689f38;
   }
 
-  .access-token .mat-card {
+  .access-token .mat-mdc-card {
     color: #7b1fa2;
   }
 
@@ -205,12 +207,12 @@ a .mat-card {
     color: white;
   }
 
-  .access-token.mat-list-item:before,
-  .accesstoken.mat-list-item:before {
+  .access-token.mat-mdc-list-item:before,
+  .accesstoken.mat-mdc-list-item:before {
     border-left-color: #7b1fa2;
   }
 
-  .message .mat-card {
+  .message .mat-mdc-card {
     color: #ef5350;
   }
 
@@ -219,11 +221,11 @@ a .mat-card {
     color: white;
   }
 
-  .message.mat-list-item:before {
+  .message.mat-mdc-list-item:before {
     border-left-color: #ef5350;
   }
 
-  .activity .mat-card {
+  .activity .mat-mdc-card {
     color: #388e3c;
   }
 
@@ -232,19 +234,19 @@ a .mat-card {
     color: white;
   }
 
-  .activity.mat-list-item:before {
+  .activity.mat-mdc-list-item:before {
     border-left-color: #388e3c;
   }
 
   .dialog-actions .mat-primary {
-    &.mat-raised-button,
-    &.mat-flat-button {
+    &.mat-mdc-raised-button,
+    &.mat-mdc-unelevated-button {
       color: #fff;
     }
   }
 }
 
-.mat-tab-nav-bar {
+.mat-mdc-tab-nav-bar {
   .container {
     display: flex;
     flex-grow: 1;
@@ -256,7 +258,7 @@ a .mat-card {
     }
   }
 
-  a.mat-tab-link {
+  a.mat-mdc-tab-link {
     padding: 0 8px;
     min-width: auto;
 
@@ -360,7 +362,7 @@ pre[class*='language-']:before {
   }
 }
 
-.mat-tab-nav-bar {
+.mat-mdc-tab-nav-bar {
   .container {
     padding: 0;
 
@@ -373,19 +375,19 @@ pre[class*='language-']:before {
     margin-right: 8px;
   }
 
-  .mat-tab-link {
+  .mat-mdc-tab-link {
     opacity: 1;
   }
 
-  .mat-tab-label-active:not(.mat-tab-disabled) {
+  .mat-mdc-tab-label-active:not(.mat-mdc-tab-disabled) {
     color: white;
   }
 }
 
 header {
-  .mat-tab-nav-bar {
-    .mat-tab-label,
-    .mat-tab-link {
+  .mat-mdc-tab-nav-bar {
+    .mat-mdc-tab-label,
+    .mat-mdc-tab-link {
       color: rgba(255, 255, 255, 0.7);
     }
   }
@@ -445,15 +447,15 @@ header {
 
 .portrait {
   $size: 128px;
-  $size-large: 192px;
+  $size-large: 160px;
 
   @include medium {
-    height: calc(100% - 32px);
-    width: $size-large - 32px;
+    height: calc(100%);
+    width: $size-large;
   }
 
-  &.mat-card,
-  .mat-card {
+  &.mat-mdc-card,
+  .mat-mdc-card {
     display: flex;
     flex-direction: row;
 
@@ -461,34 +463,34 @@ header {
       flex-direction: column;
     }
 
-    .mat-card-image {
+    .mat-mdc-card-image {
       display: block;
       text-align: center;
       width: $size;
       height: $size;
       line-height: $size;
-      font-size: $size/2;
-      margin: -16px 16px -16px -16px;
+      font-size: math.div($size, 2);
+      //margin: -16px 16px -16px -16px;
       border-radius: 4px 0 0 4px !important;
 
       @include medium {
         width: $size-large;
         height: $size-large;
         line-height: $size-large;
-        font-size: $size-large/2;
-        margin: -16px -16px 16px -16px;
+        font-size: math.div($size-large, 2);
+        //margin: -16px -16px 16px -16px;
         border-radius: 4px 4px 0 0 !important;
       }
     }
 
-    .mat-card-content {
+    .mat-mdc-card-content {
       flex-grow: 1;
     }
   }
 }
 
-.mat-card {
-  .mat-card-header .mat-card-header-text {
+.mat-mdc-card {
+  .mat-mdc-card-header .mat-mdc-card-header-text {
     margin-left: 0;
   }
 }
@@ -541,7 +543,7 @@ header.header {
   }
 
   &:not(.section) {
-    @include mat-elevation(4);
+    @include mat.elevation(4);
   }
 
   .title {

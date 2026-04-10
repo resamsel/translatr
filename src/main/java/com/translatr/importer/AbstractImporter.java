@@ -24,6 +24,12 @@ public abstract class AbstractImporter implements Importer {
     protected final KeyRepository     keyRepo;
     protected final MessageRepository messageRepo;
 
+    /** No-args constructor required by CDI for proxy generation. */
+    protected AbstractImporter() {
+        this.keyRepo     = null;
+        this.messageRepo = null;
+    }
+
     protected AbstractImporter(KeyRepository keyRepo, MessageRepository messageRepo) {
         this.keyRepo     = keyRepo;
         this.messageRepo = messageRepo;

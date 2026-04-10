@@ -65,7 +65,7 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
   public onSave(): void {
     this.processing = true;
 
-    const value: F = this.form.value;
+    const value: F = this.form.getRawValue() as F;
 
     if (value.id) {
       this.update(value);

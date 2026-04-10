@@ -2,7 +2,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HotkeysModule } from '@ngneat/hotkeys';
 import { createComponentFactory, mockProvider } from '@ngneat/spectator/jest';
-import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from './+state/app.facade';
 import { AppComponent } from './app.component';

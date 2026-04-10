@@ -26,6 +26,7 @@ const defaultAutocompleteOptions: Option[] = [
 ];
 
 @Component({
+  standalone: false,
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.scss']

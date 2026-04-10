@@ -21,6 +21,7 @@ import { AppFacade } from '../../../../+state/app.facade';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-dashboard-feature-flags',
   templateUrl: './dashboard-feature-flags.component.html',

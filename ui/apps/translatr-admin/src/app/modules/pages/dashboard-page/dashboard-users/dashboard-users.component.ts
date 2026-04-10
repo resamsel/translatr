@@ -24,6 +24,7 @@ export const mapToAllowedRoles = () =>
   map((me?: User): UserRole[] => [UserRole.User, ...(isAdmin(me) ? [UserRole.Admin] : [])]);
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-dashboard-users',
   templateUrl: './dashboard-users.component.html',

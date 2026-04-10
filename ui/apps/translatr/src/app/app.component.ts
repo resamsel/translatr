@@ -1,11 +1,12 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HotkeysHelpComponent, HotkeysService } from '@ngneat/hotkeys';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { filter } from 'rxjs/operators';
 import { AppFacade } from './+state/app.facade';
 
 @Component({
+  standalone: false,
   selector: 'app-root',
   template: '<router-outlet></router-outlet>'
 })

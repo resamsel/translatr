@@ -1,6 +1,7 @@
 import { Component, Input, NgModule } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'dev-metric',
   template: ''
 })

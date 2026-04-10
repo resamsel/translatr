@@ -3,6 +3,7 @@ import { Feature, User } from '@dev/translatr-model';
 import { AppFacade } from '../../../../+state/app.facade';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-dashboard-info',
   templateUrl: './dashboard-info.component.html',

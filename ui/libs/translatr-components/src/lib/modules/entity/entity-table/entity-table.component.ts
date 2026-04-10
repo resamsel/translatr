@@ -37,6 +37,7 @@ const filterParam = (f: FilterFieldFilter, params: Params): boolean => {
 };
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'entity-table',
   templateUrl: './entity-table.component.html',

@@ -69,8 +69,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      enableTracing: environment.routerTracing,
-      relativeLinkResolution: 'legacy'
+      enableTracing: environment.routerTracing
     })
   ],
   exports: [RouterModule]

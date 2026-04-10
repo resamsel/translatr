@@ -1,4 +1,4 @@
-@import 'mixins';
+@use 'mixins' as *;
 
 :host {
   display: flex;
@@ -11,6 +11,8 @@
     width: 72px;
     font-size: 72px;
     opacity: 0.4;
+    flex-shrink: 0;
+    overflow: visible;
   }
 
   &.center {
@@ -41,9 +43,11 @@
 
   &:not(.vertical) {
     .mat-icon {
+      margin-left: 8px;
       margin-right: 8px;
 
       @include medium {
+        margin-left: 16px;
         margin-right: 16px;
       }
     }

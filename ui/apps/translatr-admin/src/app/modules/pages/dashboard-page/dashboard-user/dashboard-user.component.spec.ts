@@ -9,7 +9,7 @@ import {
   UserCardTestingModule
 } from '@translatr/components/testing';
 import { GravatarModule } from 'ngx-gravatar';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { AppFacade } from '../../../../+state/app.facade';
 
 import { DashboardUserComponent } from './dashboard-user.component';
@@ -30,7 +30,7 @@ describe('DashboardUserComponent', () => {
 
           RouterTestingModule,
           GravatarModule,
-          MomentModule,
+          TimeAgoModule,
 
           MatTooltipModule,
           MatIconModule

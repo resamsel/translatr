@@ -8,6 +8,7 @@ import { openKeyEditDialog } from '../../../../shared/key-edit-dialog/key-edit-d
 import { FilterCriteria } from '../../../../shared/list-header/list-header.component';
 
 @Component({
+  standalone: false,
   selector: 'app-key-list',
   templateUrl: './key-list.component.html',
   styleUrls: ['./key-list.component.scss']

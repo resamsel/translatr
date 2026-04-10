@@ -4,9 +4,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { EmptyViewModule, UserCardModule } from '@dev/translatr-components';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { NavListModule } from '../nav-list/nav-list.module';
 import { UserListComponent } from './user-list.component';
 
@@ -21,7 +21,7 @@ import { UserListComponent } from './user-list.component';
     RouterModule,
     GravatarModule,
     TranslocoModule,
-    MomentModule,
+    TimeAgoModule,
 
     MatListModule,
     MatIconModule

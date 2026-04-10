@@ -6,9 +6,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { EmptyViewModule, TagModule } from '@dev/translatr-components';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { NavListModule } from '../nav-list/nav-list.module';
 import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/activity-access-token-link.component';
 import { ActivityKeyLinkComponent } from './activity-key-link/activity-key-link.component';
@@ -41,7 +41,7 @@ import { ActivityProjectLinkComponent } from './activity-project-link/activity-p
     MatChipsModule,
     MatTooltipModule,
 
-    MomentModule,
+    TimeAgoModule,
     GravatarModule,
     TranslocoModule
   ],

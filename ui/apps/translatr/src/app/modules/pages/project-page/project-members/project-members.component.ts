@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import { Member, MemberCriteria, Project, User } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
 import { combineLatest, Observable } from 'rxjs';
-import { filter, map, pluck, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, map,  take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
 import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
+  standalone: false,
   selector: 'app-project-members',
   templateUrl: './project-members.component.html',
   styleUrls: ['./project-members.component.scss']
@@ -23,7 +24,7 @@ export class ProjectMembersComponent {
   canModifyOwner$: Observable<boolean> = combineLatest([
     this.members$.pipe(
       filter(x => !!x),
-      pluck('list')
+      map((v: any) => v['list'])
     ),
     this.appFacade.me$.pipe(filter(x => !!x))
   ]).pipe(
@@ -33,7 +34,7 @@ export class ProjectMembersComponent {
   canTransferOwnership$: Observable<boolean> = combineLatest([
     this.project$.pipe(
       filter(x => !!x),
-      pluck<Project, string>('ownerId')
+      map((v: any) => v['ownerId'])
     ),
     this.appFacade.me$.pipe(filter(x => !!x))
   ]).pipe(map(([ownerId, me]: [string, User]) => ownerId === me.id));

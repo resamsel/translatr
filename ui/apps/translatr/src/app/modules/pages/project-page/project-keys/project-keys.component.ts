@@ -8,6 +8,7 @@ import { filter, take, takeUntil } from 'rxjs/operators';
 import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-project-keys',
   templateUrl: './project-keys.component.html',

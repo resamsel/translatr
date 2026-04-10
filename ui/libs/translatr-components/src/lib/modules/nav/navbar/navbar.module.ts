@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
 import { AuthBarItemComponent } from './auth-bar-item/auth-bar-item.component';
 import { AuthBarLanguageSwitcherComponent } from './auth-bar-language-switcher/auth-bar-language-switcher.component';

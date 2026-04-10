@@ -1,9 +1,8 @@
-@import 'theme';
-@import 'mixins';
+@use 'theme' as *;
+@use 'mixins' as *;
 
 @mixin feature-flags-theme($theme) {
-  $accent: map-get($theme, accent);
-  $accent-color: mat-color($accent, 500);
+  $accent-color: #ffc107;
 
   :host {
     .enabled {

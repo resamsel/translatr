@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { EmptyViewModule } from '@dev/translatr-components';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { NavListModule } from '../nav-list/nav-list.module';
 import { ProjectCardModule } from '../project-card/project-card.module';
 import { ProjectEmptyViewModule } from '../project-empty-view/project-empty-view.module';
@@ -21,7 +21,7 @@ import { ProjectCardListComponent } from './project-card-list.component';
     NavListModule,
     MatButtonModule,
 
-    MomentModule,
+    TimeAgoModule,
 
     ProjectCardModule,
     EmptyViewModule,

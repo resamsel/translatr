@@ -25,9 +25,9 @@ import {
   ShortNumberModule,
   UserCardModule
 } from '@dev/translatr-components';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
@@ -110,7 +110,7 @@ import { ProjectGuard } from './project.guard';
     MatProgressBarModule,
     MatSelectModule,
 
-    MomentModule,
+    TimeAgoModule,
     GravatarModule
   ],
   providers: [AppFacade, ProjectGuard, ProjectAccessGuard, ProjectEditGuard]

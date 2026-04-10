@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MomentModule } from 'ngx-moment';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { ButtonTestingModule, EmptyViewTestingModule } from '@translatr/components/testing';
 import { UserFacade } from '../+state/user.facade';
 import { mockObservable } from '@translatr/utils/testing';
@@ -26,7 +26,7 @@ describe('UserAccessTokensComponent', () => {
           ButtonTestingModule,
 
           RouterTestingModule,
-          MomentModule,
+          TimeAgoModule,
 
           MatListModule,
           MatIconModule,

@@ -23,7 +23,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { mockObservable } from '@translatr/utils/testing';
 import { ActivityService, StatisticService } from '@dev/translatr-sdk';
-import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 describe('MainPageComponent', () => {
   let component: MainPageComponent;

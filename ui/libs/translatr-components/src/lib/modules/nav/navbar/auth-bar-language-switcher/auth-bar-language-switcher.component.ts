@@ -1,8 +1,9 @@
 import { Component, Optional } from '@angular/core';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { LanguageSwicher } from '../language-swicher';
 
 @Component({
+  standalone: false,
   selector: 'app-auth-bar-language-switcher',
   templateUrl: './auth-bar-language-switcher.component.html',
   styleUrls: ['./auth-bar-language-switcher.component.css']

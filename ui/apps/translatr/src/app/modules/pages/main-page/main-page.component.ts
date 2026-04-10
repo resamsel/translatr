@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { Aggregate, Feature, PagedList, User, UserRole } from '@dev/translatr-model';
 import { ActivityService, StatisticService } from '@dev/translatr-sdk';
-import { pluck, shareReplay, startWith } from 'rxjs/operators';
+import { shareReplay, map, startWith } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
 import { environment } from '../../../../environments/environment';
 
 @Component({
+  standalone: false,
   selector: 'app-main-page',
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss']
@@ -22,7 +23,7 @@ export class MainPageComponent {
     .aggregated({})
     .pipe(
       startWith({ list: [] }),
-      pluck<PagedList<Aggregate>, Aggregate[]>('list'),
+      map((x: PagedList<Aggregate>) => x.list),
       shareReplay(1)
     );
 

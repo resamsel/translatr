@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-project-empty-view',
   templateUrl: './project-empty-view.component.html',
   styleUrls: ['./project-empty-view.component.scss']

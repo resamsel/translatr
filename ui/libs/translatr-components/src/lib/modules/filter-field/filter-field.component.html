@@ -1,16 +1,15 @@
 <mat-form-field
   #formField
-  [appearance]="appearance"
+  [appearance]="formFieldAppearance"
   [color]="color"
   class="search search-field-{{appearance}}"
 >
   <ng-content select="[matPrefix]"></ng-content>
-  <mat-chip-list #chipList>
-    <mat-basic-chip
+  <mat-chip-grid #chipGrid>
+    <mat-chip-row
       (removed)="onRemoved(option.key)"
       *ngFor="let option of options"
       [removable]="true"
-      [selectable]="false"
       class="option selected-option"
     >
       <span class="ellipsis"
@@ -45,7 +44,7 @@
         [matTooltip]="'button.delete' | transloco"
       >close
       </mat-icon>
-    </mat-basic-chip>
+    </mat-chip-row>
     <ng-content></ng-content>
     <input
       #autocompleteInput
@@ -53,12 +52,12 @@
       [formControl]="filterControl"
       [disableControl]="!enabled"
       [matAutocomplete]="auto"
-      [matChipInputFor]="chipList"
+      [matChipInputFor]="chipGrid"
       autocomplete="off"
       [placeholder]="'search.filter' | transloco"
       type="search"
     />
-  </mat-chip-list>
+  </mat-chip-grid>
   <mat-autocomplete
     #auto="matAutocomplete"
     [autoActiveFirstOption]="true"

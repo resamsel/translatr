@@ -2,6 +2,7 @@ import { Component, Input, NgModule } from '@angular/core';
 import { Project } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'app-project-card',
   template: ''
 })
@@ -10,6 +11,7 @@ export class MockProjectCardComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-project-card-link',
   template: ''
 })

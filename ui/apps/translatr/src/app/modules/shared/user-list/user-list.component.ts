@@ -4,6 +4,7 @@ import { trackByFn } from '@translatr/utils';
 import { FilterCriteria } from '../list-header/list-header.component';
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',

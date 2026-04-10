@@ -160,3 +160,4 @@ jmeter.log
 /ui/.angular
 /build/
 /.gradle/
+/ui/.nx

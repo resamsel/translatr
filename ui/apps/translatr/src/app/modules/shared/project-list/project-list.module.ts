@@ -8,8 +8,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { EmptyViewModule } from '@dev/translatr-components';
-import { TranslocoModule } from '@ngneat/transloco';
-import { MomentModule } from 'ngx-moment';
+import { TranslocoModule } from '@jsverse/transloco';
+import { TimeAgoModule } from '@dev/translatr-components';
 import { NavListModule } from '../nav-list/nav-list.module';
 import { ProjectEmptyViewModule } from '../project-empty-view/project-empty-view.module';
 import { ProjectListComponent } from './project-list.component';
@@ -24,7 +24,7 @@ import { ProjectListComponent } from './project-list.component';
     MatIconModule,
     MatToolbarModule,
     MatListModule,
-    MomentModule,
+    TimeAgoModule,
     MatTooltipModule,
     EmptyViewModule,
     ProjectEmptyViewModule,

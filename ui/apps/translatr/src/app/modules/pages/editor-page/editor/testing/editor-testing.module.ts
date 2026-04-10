@@ -3,6 +3,7 @@ import { Link } from '@dev/translatr-components';
 import { Message, User } from '@dev/translatr-model';
 
 @Component({
+  standalone: false,
   selector: 'app-editor',
   template: ''
 })
@@ -17,6 +18,7 @@ class MockEditorComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-editor-selector',
   template: ''
 })

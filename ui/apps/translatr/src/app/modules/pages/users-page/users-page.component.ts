@@ -8,6 +8,7 @@ import { FilterCriteria } from '../../shared/list-header/list-header.component';
 import { UsersFacade } from './+state/users.facade';
 
 @Component({
+  standalone: false,
   selector: 'app-projects-page',
   templateUrl: './users-page.component.html',
   styleUrls: ['./users-page.component.scss']

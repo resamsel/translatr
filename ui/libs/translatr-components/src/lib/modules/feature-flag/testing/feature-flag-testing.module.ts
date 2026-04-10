@@ -2,6 +2,7 @@ import { Directive, Input, NgModule } from '@angular/core';
 import { Feature } from '@dev/translatr-model';
 
 @Directive({
+  standalone: false,
   selector: '[featureFlag]'
 })
 export class MockFeatureFlagDirective {
@@ -9,6 +10,7 @@ export class MockFeatureFlagDirective {
 }
 
 @Directive({
+  standalone: false,
   selector: '[featureFlagClass]'
 })
 export class MockFeatureFlagClassDirective {

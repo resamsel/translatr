@@ -16,7 +16,7 @@ import {
 } from '@dev/translatr-model';
 import { slicePagedList, WINDOW } from '@translatr/utils';
 import { Observable } from 'rxjs';
-import { filter, map, pluck, take } from 'rxjs/operators';
+import { filter, map,  take } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
 import { openKeyEditDialog } from '../../../shared/key-edit-dialog/key-edit-dialog.component';
 import { openLocaleEditDialog } from '../../../shared/locale-edit-dialog/locale-edit-dialog.component';
@@ -27,6 +27,7 @@ function endpointFromLocation(location: Location) {
 }
 
 @Component({
+  standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-project-info',
   templateUrl: './project-info.component.html',
@@ -72,7 +73,7 @@ export class ProjectInfoComponent {
 
   readonly accessTokens$ = this.facade.accessTokens$.pipe(
     filter(x => !!x),
-    pluck<PagedList<AccessToken>, AccessToken[]>('list')
+    map((x: PagedList<AccessToken>) => x.list)
   );
 
   readonly endpointUrl = endpointFromLocation(this.window.location);
