@@ -5,19 +5,16 @@
   $warning-color: #f44336;
   $warning-background-color: #ffebee;
 
-  :host ::ng-deep .mat-list-item.warning {
-    border-left-color: $warning-color;
+  :host ::ng-deep .mat-mdc-list-item.warning {
+    box-shadow: inset 4px 0 0 $warning-color;
     background-color: $warning-background-color;
   }
 }
 
 :host ::ng-deep {
-  .mat-list-item {
-    border-left: 4px solid transparent;
-
-    .mat-list-item-content {
-      margin-left: -4px;
-    }
+  .mat-mdc-list-item {
+    // Coloured left-edge indicator (colour set globally via box-shadow on the item class)
+    box-shadow: inset 4px 0 0 transparent;
   }
 }
 
@@ -37,8 +34,8 @@
 }
 
 .loading {
-  .mat-list-item,
-  .mat-card {
+  .mat-mdc-list-item,
+  .mat-mdc-card {
     opacity: 0.4;
     animation: opacityPulse 2s infinite;
 
@@ -110,7 +107,7 @@
     }
   }
 
-  .mat-list-item {
+  .mat-mdc-list-item {
     .icon {
       font-size: 36px;
       width: 36px;
