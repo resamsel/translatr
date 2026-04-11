@@ -4,6 +4,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 import {
   loadProject,
   meLoaded,
+  meLoadError,
   projectCreated,
   projectCreateError,
   projectLoaded,
@@ -42,6 +43,10 @@ const reducer = createReducer(
   on(meLoaded, (state, action) => ({
     ...state,
     me: action.payload
+  })),
+  on(meLoadError, (state) => ({
+    ...state,
+    me: null as User
   })),
   on(usersLoaded, (state, action) => ({
     ...state,

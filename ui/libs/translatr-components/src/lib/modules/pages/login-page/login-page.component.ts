@@ -3,6 +3,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { AuthClient } from '@dev/translatr-model';
 import { AuthClientService } from '@dev/translatr-sdk';
 import { ENDPOINT_URL } from '@translatr/utils';
+import { combineLatest } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 
 @Component({
@@ -44,14 +45,14 @@ export class LoginPageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.providers$
+    combineLatest([this.providers$, this.redirectUri$])
       .pipe(
         take(1),
-        filter(providers => providers.length === 1)
+        filter(([providers]) => providers.length === 1)
       )
       .subscribe(
-        (providers: AuthClient[]) =>
-          (window.location.href = `${this.endpointUrl}${providers[0].url}`),
+        ([providers, redirectUri]: [AuthClient[], string]) =>
+          (window.location.href = `${this.endpointUrl}${providers[0].url}${redirectUri}`)
       );
   }
 }
