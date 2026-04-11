@@ -137,8 +137,8 @@ a .mat-mdc-card {
     color: white;
   }
 
-  .project.mat-mdc-list-item:before {
-    border-left-color: #ffa000;
+  .project.mat-mdc-list-item {
+    box-shadow: inset 4px 0 0 #ffa000;
   }
 
   .owner .mat-mdc-card,
@@ -151,9 +151,9 @@ a .mat-mdc-card {
     color: white;
   }
 
-  .owner.mat-mdc-list-item:before,
-  .user.mat-mdc-list-item:before {
-    border-left-color: #1976d2;
+  .owner.mat-mdc-list-item,
+  .user.mat-mdc-list-item {
+    box-shadow: inset 4px 0 0 #1976d2;
   }
 
   .member .mat-mdc-card {
@@ -165,8 +165,8 @@ a .mat-mdc-card {
     color: white;
   }
 
-  .member.mat-mdc-list-item:before {
-    border-left-color: #ff7043;
+  .member.mat-mdc-list-item {
+    box-shadow: inset 4px 0 0 #ff7043;
   }
 
   .locale .mat-mdc-card {
@@ -179,8 +179,8 @@ a .mat-mdc-card {
     color: white;
   }
 
-  .locale.mat-mdc-list-item:before {
-    border-left-color: #0097a7;
+  .locale.mat-mdc-list-item {
+    box-shadow: inset 4px 0 0 #0097a7;
   }
 
   .key .mat-mdc-card {
@@ -193,8 +193,8 @@ a .mat-mdc-card {
     color: white;
   }
 
-  .key.mat-mdc-list-item:before {
-    border-left-color: #689f38;
+  .key.mat-mdc-list-item {
+    box-shadow: inset 4px 0 0 #689f38;
   }
 
   .access-token .mat-mdc-card {
@@ -207,9 +207,9 @@ a .mat-mdc-card {
     color: white;
   }
 
-  .access-token.mat-mdc-list-item:before,
-  .accesstoken.mat-mdc-list-item:before {
-    border-left-color: #7b1fa2;
+  .access-token.mat-mdc-list-item,
+  .accesstoken.mat-mdc-list-item {
+    box-shadow: inset 4px 0 0 #7b1fa2;
   }
 
   .message .mat-mdc-card {
@@ -221,8 +221,8 @@ a .mat-mdc-card {
     color: white;
   }
 
-  .message.mat-mdc-list-item:before {
-    border-left-color: #ef5350;
+  .message.mat-mdc-list-item {
+    box-shadow: inset 4px 0 0 #ef5350;
   }
 
   .activity .mat-mdc-card {
@@ -234,8 +234,8 @@ a .mat-mdc-card {
     color: white;
   }
 
-  .activity.mat-mdc-list-item:before {
-    border-left-color: #388e3c;
+  .activity.mat-mdc-list-item {
+    box-shadow: inset 4px 0 0 #388e3c;
   }
 
   .dialog-actions .mat-primary {
