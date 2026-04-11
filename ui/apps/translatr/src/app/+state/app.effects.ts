@@ -33,11 +33,11 @@ export class AppEffects {
     this.actions$.pipe(
       ofType(loadMe),
       switchMap(() =>
-        this.userService
-          .me({ fetch: 'features' })
-          .pipe(map((user: User) => meLoaded({ payload: user })))
-      ),
-      catchError(error => of(meLoadError(error)))
+        this.userService.me({ fetch: 'features' }).pipe(
+          map((user: User) => meLoaded({ payload: user })),
+          catchError(error => of(meLoadError({ payload: error })))
+        )
+      )
     )
   );
 
