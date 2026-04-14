@@ -16,6 +16,15 @@
     // Coloured left-edge indicator (colour set globally via box-shadow on the item class)
     box-shadow: inset 4px 0 0 transparent;
   }
+
+  // Keep trailing action buttons in a row and vertically centred,
+  // even when the item is a two-line / three-line MDC item.
+  .mdc-list-item__end {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-self: center;
+  }
 }
 
 .more-row {

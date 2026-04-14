@@ -33,6 +33,14 @@ public class KeyResource {
     @GET  @Path("/key/{id}")     @PermitAll
     public KeyDto get(@PathParam("id") UUID id) { return keyService.get(id); }
 
+    @GET  @Path("/{username}/{projectName}/keys/{keyName}")  @PermitAll
+    public KeyDto getByOwnerAndProjectNameAndName(
+            @PathParam("username")    String username,
+            @PathParam("projectName") String projectName,
+            @PathParam("keyName")     String keyName) {
+        return keyService.getByOwnerAndProjectNameAndName(username, projectName, keyName);
+    }
+
     @POST @Path("/key")          @Authenticated
     public KeyDto create(KeyDto dto) { return keyService.create(dto); }
 

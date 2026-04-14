@@ -42,6 +42,15 @@ public class KeyService {
         return mapper.toDto(keyRepo.findByIdOptional(id).orElseThrow(NotFoundException::new));
     }
 
+    public KeyDto getByOwnerAndProjectNameAndName(String username, String projectName, String keyName) {
+        var project = projectRepo.findByOwnerUsernameAndName(username, projectName)
+                .orElseThrow(NotFoundException::new);
+        return mapper.toDto(
+                keyRepo.findByProjectAndName(project.id, keyName)
+                       .orElseThrow(NotFoundException::new)
+        );
+    }
+
     @Transactional
     public KeyDto create(KeyDto dto) {
         var project = projectRepo.findByIdOptional(dto.projectId)

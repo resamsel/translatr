@@ -37,9 +37,25 @@ $border-radius: 2px;
       padding-bottom: 0;
     }
 
+    // Ensure prefix icon and chip-grid/input stay on the same row
+    .mat-mdc-form-field-flex {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .mat-mdc-form-field-icon-prefix {
+      display: flex;
+      align-items: center;
+      padding: 0 4px 0 0;
+      align-self: center;
+    }
+
     .mat-mdc-form-field-infix {
       width: auto;
-      padding: 0.6em 0;
+      padding: 0.4em 0;
+      min-height: auto;
+      display: flex;
+      align-items: center;
     }
   }
 
