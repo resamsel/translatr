@@ -43,6 +43,15 @@ public class LocaleService {
         return mapper.toDto(localeRepo.findByIdOptional(id).orElseThrow(NotFoundException::new));
     }
 
+    public LocaleDto getByOwnerAndProjectNameAndName(String username, String projectName, String localeName) {
+        var project = projectRepo.findByOwnerUsernameAndName(username, projectName)
+                .orElseThrow(NotFoundException::new);
+        return mapper.toDto(
+                localeRepo.findByProjectAndName(project.id, localeName)
+                          .orElseThrow(NotFoundException::new)
+        );
+    }
+
     @Transactional
     public LocaleDto create(LocaleDto dto) {
         var project = projectRepo.findByIdOptional(dto.projectId)

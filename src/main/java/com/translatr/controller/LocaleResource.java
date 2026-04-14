@@ -47,6 +47,14 @@ public class LocaleResource {
     @GET  @Path("/locale/{id}")     @PermitAll
     public LocaleDto get(@PathParam("id") UUID id) { return localeService.get(id); }
 
+    @GET  @Path("/{username}/{projectName}/locales/{localeName}")  @PermitAll
+    public LocaleDto getByOwnerAndProjectNameAndName(
+            @PathParam("username")    String username,
+            @PathParam("projectName") String projectName,
+            @PathParam("localeName")  String localeName) {
+        return localeService.getByOwnerAndProjectNameAndName(username, projectName, localeName);
+    }
+
     @POST @Path("/locale")          @Authenticated
     public LocaleDto create(LocaleDto dto) { return localeService.create(dto); }
 
