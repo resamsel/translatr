@@ -1,6 +1,6 @@
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HotkeysModule } from '@ngneat/hotkeys';
+import { HotkeysService } from '@ngneat/hotkeys';
 import { createComponentFactory, mockProvider } from '@ngneat/spectator/jest';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { mockObservable } from '@translatr/utils/testing';
@@ -10,11 +10,14 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
   const createComponent = createComponentFactory({
     component: AppComponent,
-    imports: [RouterTestingModule, TranslocoTestingModule, HotkeysModule, MatDialogModule],
+    imports: [RouterTestingModule, TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }), MatDialogModule],
     declarations: [AppComponent],
     providers: [
       mockProvider(AppFacade, {
         me$: mockObservable()
+      }),
+      mockProvider(HotkeysService, {
+        registerHelpModal: jest.fn()
       })
     ]
   });

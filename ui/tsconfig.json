@@ -20,6 +20,12 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "rxjs": [
+        "node_modules/rxjs/dist/types/index.d.ts"
+      ],
+      "rxjs/*": [
+        "node_modules/rxjs/dist/types/*"
+      ],
       "@dev/translatr-sdk": [
         "libs/translatr-sdk/src/index.ts"
       ],

@@ -46,7 +46,8 @@ describe('DashboardFeatureFlagsComponent', () => {
               me$: mockObservable(),
               featureFlagDeleted$: mockObservable(),
               featureFlagsDeleted$: mockObservable(),
-              unloadFeatureFlags$: mockObservable()
+              unloadFeatureFlags$: mockObservable(),
+              unloadFeatureFlags: jest.fn()
             })
           },
           {

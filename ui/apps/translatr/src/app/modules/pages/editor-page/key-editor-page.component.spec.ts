@@ -31,7 +31,7 @@ describe('KeyEditorPageComponent', () => {
           EmptyViewTestingModule,
 
           NoopAnimationsModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatFormFieldModule,
           MatInputModule,
@@ -52,7 +52,8 @@ describe('KeyEditorPageComponent', () => {
             useFactory: () => ({
               selectedLocaleName$: mockObservable(),
               keySelectedMessage$: mockObservable(),
-              unloadEditor$: mockObservable()
+              unloadEditor$: mockObservable(),
+              unloadEditor: jest.fn()
             })
           },
           {

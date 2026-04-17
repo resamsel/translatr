@@ -12,7 +12,7 @@ describe('ActivityKeyLinkComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ActivityKeyLinkComponent],
-        imports: [RouterTestingModule, TranslocoTestingModule]
+        imports: [RouterTestingModule, TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })]
       }).compileComponents();
     })
   );

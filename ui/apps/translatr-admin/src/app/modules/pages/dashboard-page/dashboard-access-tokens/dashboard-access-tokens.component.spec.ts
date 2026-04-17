@@ -46,7 +46,8 @@ describe('DashboardAccessTokensComponent', () => {
               me$: mockObservable(),
               accessTokenDeleted$: mockObservable(),
               accessTokensDeleted$: mockObservable(),
-              unloadAccessTokens$: mockObservable()
+              unloadAccessTokens$: mockObservable(),
+              unloadAccessTokens: jest.fn()
             })
           },
           {

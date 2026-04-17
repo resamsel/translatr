@@ -26,7 +26,7 @@ describe('UsersPageComponent', () => {
           ProjectListTestingModule,
 
           RouterTestingModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatButtonModule,
           MatTooltipModule,
@@ -36,7 +36,8 @@ describe('UsersPageComponent', () => {
           {
             provide: ProjectsFacade,
             useFactory: () => ({
-              unload$: mockObservable()
+              unload$: mockObservable(),
+              unloadProjects: jest.fn()
             })
           },
           {

@@ -13,7 +13,7 @@ describe('FooterComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [FooterComponent],
-        imports: [TranslocoTestingModule, MatTooltipModule, MatIconModule]
+        imports: [TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }), MatTooltipModule, MatIconModule]
       }).compileComponents();
     })
   );

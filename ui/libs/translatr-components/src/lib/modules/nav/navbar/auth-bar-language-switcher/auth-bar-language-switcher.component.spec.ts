@@ -13,7 +13,7 @@ describe('AuthBarLanguageSwitcherComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [AuthBarLanguageSwitcherComponent],
-        imports: [TranslocoTestingModule, MatMenuModule, MatIconModule]
+        imports: [TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }), MatMenuModule, MatIconModule]
       }).compileComponents();
     })
   );

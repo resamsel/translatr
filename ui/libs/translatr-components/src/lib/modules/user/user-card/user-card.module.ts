@@ -4,7 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { GravatarModule } from 'ngx-gravatar';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoModule } from '../../pipes/time-ago/time-ago.pipe';
 import { UserCardLinkComponent } from './user-card-link.component';
 import { UserCardComponent } from './user-card.component';
 

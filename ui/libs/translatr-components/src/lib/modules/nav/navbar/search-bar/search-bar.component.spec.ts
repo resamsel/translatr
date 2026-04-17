@@ -23,7 +23,7 @@ describe('SearchBarComponent', () => {
         imports: [
           ReactiveFormsModule,
           NoopAnimationsModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatFormFieldModule,
           MatChipsModule,

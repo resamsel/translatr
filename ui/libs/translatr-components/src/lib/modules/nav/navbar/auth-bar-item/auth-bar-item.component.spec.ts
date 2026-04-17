@@ -19,7 +19,7 @@ describe('AuthBarItemComponent', () => {
         declarations: [AuthBarItemComponent],
         imports: [
           GravatarModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatIconModule,
           MatButtonModule,

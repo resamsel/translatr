@@ -10,11 +10,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
-import { HotkeysModule } from '@ngneat/hotkeys';
+import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { EmptyViewTestingModule } from '@translatr/components/testing';
 import { EditorFacade } from '../+state/editor.facade';
 import { SidenavTestingModule } from '../../../nav/sidenav/testing';
+import { EMPTY } from 'rxjs';
 import { EditorComponent } from './editor.component';
 
 describe('EditorComponent', () => {
@@ -31,8 +32,7 @@ describe('EditorComponent', () => {
           RouterTestingModule,
           FormsModule,
           NoopAnimationsModule,
-          TranslocoTestingModule,
-          HotkeysModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
           EmptyViewTestingModule,
 
           MatButtonModule,
@@ -49,6 +49,14 @@ describe('EditorComponent', () => {
           {
             provide: EditorFacade,
             useFactory: () => ({})
+          },
+          {
+            provide: HotkeysService,
+            useValue: {
+              addShortcut: jest.fn().mockReturnValue(EMPTY),
+              removeShortcuts: jest.fn(),
+              registerHelpModal: jest.fn()
+            }
           }
         ]
       }).compileComponents();

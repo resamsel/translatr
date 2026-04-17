@@ -25,7 +25,7 @@ describe('FilterFieldComponent', () => {
         imports: [
           ReactiveFormsModule,
           NoopAnimationsModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           DisableControlTestingModule,
 

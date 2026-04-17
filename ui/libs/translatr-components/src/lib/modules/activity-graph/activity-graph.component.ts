@@ -3,8 +3,7 @@ import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/
 import { Aggregate } from '@dev/translatr-model';
 import { TranslocoService } from '@jsverse/transloco';
 import * as d3 from 'd3';
-import { Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { shortenNumber } from '../pipes/short-number';
 
 const dayOfWeek = (d: Date) => (d.getDay() + 6) % 7;

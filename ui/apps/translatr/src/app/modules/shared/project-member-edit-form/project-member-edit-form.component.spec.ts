@@ -25,7 +25,7 @@ describe('ProjectMemberEditFormComponent', () => {
         imports: [
           ReactiveFormsModule,
           NoopAnimationsModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatFormFieldModule,
           MatInputModule,

@@ -16,7 +16,7 @@ describe('ProjectCreationDialogComponent', () => {
         declarations: [AccessTokenEditDialogComponent],
         imports: [
           AccessTokenEditFormTestingModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatDialogModule,
           MatButtonModule
