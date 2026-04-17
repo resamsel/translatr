@@ -19,7 +19,7 @@ describe('ProjectMemberEditDialogComponent', () => {
         declarations: [ProjectMemberEditDialogComponent],
         imports: [
           ProjectMemberEditFormTestingModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatDialogModule,
           MatButtonModule

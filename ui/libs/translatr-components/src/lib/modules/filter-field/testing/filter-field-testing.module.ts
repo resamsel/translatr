@@ -11,7 +11,7 @@ import { FilterFieldFilter } from '@dev/translatr-components';
 class MockFilterFieldComponent {
   @Input() enabled: boolean;
   @Input() filters: ReadonlyArray<FilterFieldFilter>;
-  @Input() appearance: MatFormFieldAppearance | 'elevate' = 'standard';
+  @Input() appearance: MatFormFieldAppearance | 'elevate' = 'fill';
   @Input() color: ThemePalette = 'primary';
   @Input() selection: ReadonlyArray<FilterFieldFilter>;
 

@@ -12,7 +12,7 @@ describe('ActivityMessageLinkComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ActivityMessageLinkComponent],
-        imports: [RouterTestingModule, TranslocoTestingModule]
+        imports: [RouterTestingModule, TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })]
       }).compileComponents();
     })
   );

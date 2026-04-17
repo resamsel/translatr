@@ -21,7 +21,7 @@ describe('UserAccessTokenComponent', () => {
           AccessTokenEditFormTestingModule,
 
           RouterTestingModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatCardModule,
           MatButtonModule

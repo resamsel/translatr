@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["node", "jest"]
+    "target": "ES2022",
   },
   "include": ["**/*.ts"]
 }

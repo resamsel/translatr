@@ -22,7 +22,7 @@ describe('ProjectEditDialogComponent', () => {
         imports: [
           ReactiveFormsModule,
           NoopAnimationsModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatDialogModule,
           MatFormFieldModule,

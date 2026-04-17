@@ -38,7 +38,7 @@ describe('ActivityListComponent', () => {
           NavListTestingModule,
 
           RouterTestingModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
           EmptyViewTestingModule,
 
           TagModule,

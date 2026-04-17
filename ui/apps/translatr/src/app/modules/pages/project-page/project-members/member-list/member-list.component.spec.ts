@@ -29,7 +29,7 @@ describe('MemberListComponent', () => {
           EmptyViewTestingModule,
 
           RouterTestingModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatDialogModule,
           MatListModule,

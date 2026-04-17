@@ -7,7 +7,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { ShortNumberModule } from '@dev/translatr-components';
-import { SvgIconsModule } from '@ngneat/svg-icon';
+import { SvgIconComponent, provideSvgIcons } from '@ngneat/svg-icon';
 
 import { MainPageComponent } from './main-page.component';
 import {
@@ -44,8 +44,8 @@ describe('MainPageComponent', () => {
           NoopAnimationsModule,
           RouterTestingModule,
           LayoutModule,
-          TranslocoTestingModule,
-          SvgIconsModule.forRoot({ icons: [] }),
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
+          SvgIconComponent,
 
           MatButtonModule,
           MatCardModule,
@@ -56,6 +56,7 @@ describe('MainPageComponent', () => {
           MatTooltipModule
         ],
         providers: [
+          provideSvgIcons([]),
           {
             provide: AppFacade,
             useFactory: () => ({

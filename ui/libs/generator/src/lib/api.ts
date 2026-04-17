@@ -3,9 +3,9 @@ import {
   HttpEvent,
   HttpHandler,
   HttpRequest,
-  HttpXhrBackend,
-  XhrFactory
+  HttpXhrBackend
 } from '@angular/common/http';
+import { XhrFactory } from '@angular/common';
 import { Injector, StaticProvider } from '@angular/core';
 import {
   AccessTokenService,

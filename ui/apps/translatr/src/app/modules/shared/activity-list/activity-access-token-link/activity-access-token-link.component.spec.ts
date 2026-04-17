@@ -12,7 +12,7 @@ describe('ActivityAccessTokenLinkComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ActivityAccessTokenLinkComponent],
-        imports: [RouterTestingModule, TranslocoTestingModule]
+        imports: [RouterTestingModule, TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })]
       }).compileComponents();
     })
   );

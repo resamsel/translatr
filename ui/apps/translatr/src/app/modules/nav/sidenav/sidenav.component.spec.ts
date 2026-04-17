@@ -26,7 +26,7 @@ describe('SidenavComponent', () => {
       imports: [
         CommonModule,
         RouterTestingModule,
-        TranslocoTestingModule,
+        TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
         NavbarTestingModule,
         FooterTestingModule,

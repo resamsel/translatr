@@ -26,7 +26,7 @@ describe('UserListComponent', () => {
           RouterTestingModule,
           GravatarModule,
           TimeAgoModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatListModule,
           MatProgressBarModule,

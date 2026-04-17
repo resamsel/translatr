@@ -27,7 +27,7 @@ describe('SidenavComponent', () => {
           FeatureFlagTestingModule,
 
           NoopAnimationsModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatButtonModule,
           MatIconModule,

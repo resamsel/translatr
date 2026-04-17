@@ -24,7 +24,7 @@ describe('UsersPageComponent', () => {
           UserListTestingModule,
 
           RouterTestingModule,
-          TranslocoTestingModule
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })
         ],
         providers: [
           {
@@ -36,7 +36,8 @@ describe('UsersPageComponent', () => {
           {
             provide: UsersFacade,
             useFactory: () => ({
-              unload$: mockObservable()
+              unload$: mockObservable(),
+              unload: jest.fn()
             })
           }
         ]

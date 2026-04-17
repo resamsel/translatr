@@ -21,7 +21,7 @@
     "readme:lets-generate": "dist/lets-generate --document > ./libs/generator/README.md",
     "lint": "nx run-many --target=lint --all",
     "lint:fix": "nx run-many --target=lint --all --fix",
-    "test": "ng test --watch=false --code-coverage=true",
+    "test": "nx run-many --target=test --all --code-coverage=true",
     "e2e": "ng e2e translatr-e2e --headless --configuration production",
     "e2e:ui:watch": "ng e2e translatr-e2e --watch",
     "coveralls": "cat ./coverage/*/*/lcov.info | coveralls",

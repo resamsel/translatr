@@ -32,7 +32,7 @@ describe('LocaleEditorPageComponent', () => {
           EmptyViewTestingModule,
 
           NoopAnimationsModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatFormFieldModule,
           MatInputModule,
@@ -54,7 +54,8 @@ describe('LocaleEditorPageComponent', () => {
             useFactory: () => ({
               selectedKeyName$: mockObservable(),
               localeSelectedMessage$: mockObservable(),
-              unloadEditor$: mockObservable()
+              unloadEditor$: mockObservable(),
+              unloadEditor: jest.fn()
             })
           },
           {

@@ -14,7 +14,7 @@ describe('NotFoundPageComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [NotFoundPageComponent],
-        imports: [ErrorPageTestingModule, RouterTestingModule, TranslocoTestingModule],
+        imports: [ErrorPageTestingModule, RouterTestingModule, TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })],
         providers: [
           {
             provide: AppFacade,

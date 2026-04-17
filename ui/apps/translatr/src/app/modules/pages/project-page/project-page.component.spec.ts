@@ -26,7 +26,7 @@ describe('ProjectPageComponent', () => {
           FeatureFlagTestingModule,
 
           RouterTestingModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatTabsModule,
           MatIconModule
@@ -37,7 +37,8 @@ describe('ProjectPageComponent', () => {
             provide: ProjectFacade,
             useFactory: () => ({
               project$: mockObservable(),
-              unload$: mockObservable()
+              unload$: mockObservable(),
+              unloadProject: jest.fn()
             })
           },
           { provide: AppFacade, useFactory: () => ({}) },

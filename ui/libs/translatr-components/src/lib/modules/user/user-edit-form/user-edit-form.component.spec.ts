@@ -4,7 +4,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { UserEditFormComponent } from './user-edit-form.component';
 
@@ -18,7 +18,7 @@ describe('UserEditFormComponent', () => {
         declarations: [UserEditFormComponent],
         imports: [
           ReactiveFormsModule,
-          TranslocoModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
           NoopAnimationsModule,
 
           MatFormFieldModule,

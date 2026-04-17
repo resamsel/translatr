@@ -34,7 +34,7 @@ describe('UserPageComponent', () => {
           { provide: Injector, useFactory: () => ({}) },
           {
             provide: UserFacade,
-            useFactory: () => ({})
+            useFactory: () => ({ unload: jest.fn() })
           },
           { provide: AppFacade, useFactory: () => ({}) },
           {

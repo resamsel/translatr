@@ -31,7 +31,7 @@ describe('ProjectSettingsComponent', () => {
           ReactiveFormsModule,
           RouterTestingModule,
           NoopAnimationsModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatDialogModule,
           MatCardModule,

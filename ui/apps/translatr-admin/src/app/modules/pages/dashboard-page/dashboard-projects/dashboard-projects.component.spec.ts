@@ -47,7 +47,8 @@ describe('DashboardProjectsComponent', () => {
               me$: mockObservable(),
               projectDeleted$: mockObservable(),
               projectsDeleted$: mockObservable(),
-              unloadProjects$: mockObservable()
+              unloadProjects$: mockObservable(),
+              unloadProjects: jest.fn()
             })
           },
           {

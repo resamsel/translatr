@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureFlagModule, UserEditFormModule } from '@dev/translatr-components';
 import { LanguageProvider } from '@dev/translatr-sdk';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { RegistrationPageRoutingModule } from './registration-page-routing.module';
 
@@ -28,7 +28,7 @@ describe('RegistrationPageComponent', () => {
 
           RegistrationPageRoutingModule,
           SidenavModule,
-          TranslocoModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
           FeatureFlagModule,
           UserEditFormModule,
           MatCardModule,

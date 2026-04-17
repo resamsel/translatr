@@ -47,7 +47,8 @@ describe('UsersComponent', () => {
               me$: mockObservable(),
               userDeleted$: mockObservable(),
               usersDeleted$: mockObservable(),
-              unloadUsers$: mockObservable()
+              unloadUsers$: mockObservable(),
+              unloadUsers: jest.fn()
             })
           },
           {

@@ -21,7 +21,7 @@ describe('EntityTableComponent', () => {
           FilterFieldTestingModule,
 
           RouterTestingModule,
-          TranslocoTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatIconModule,
           MatTableModule,
