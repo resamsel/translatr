@@ -16,14 +16,14 @@ export class HomePage extends Page {
   }
 
   getProjectMetricValue(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.metric.project .mat-card-title');
+    return cy.get('dev-metric.project mat-card-title');
   }
 
   getUserMetricValue(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.metric.user .mat-card-title');
+    return cy.get('dev-metric.user mat-card-title');
   }
 
   getActivityMetricValue(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.metric.activity .mat-card-title');
+    return cy.get('dev-metric.activity mat-card-title');
   }
 }

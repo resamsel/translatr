@@ -1,10 +1,18 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "moduleResolution": "node",
     "types": [
       "cypress",
       "node"
-    ]
+    ],
+    "paths": {}
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "moduleResolution": "node",
+      "paths": {}
+    }
   },
   "include": [
     "**/*.ts"

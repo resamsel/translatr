@@ -7,14 +7,13 @@ describe('Home', () => {
     page = new HomePage();
 
     cy.clearCookies();
-    cy.server();
   });
 
   it('should have page name Home', () => {
     // given
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/statistics', 'fixture:statistics');
-    cy.route('/api/activities/aggregated', 'fixture:activities-aggregated');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/statistics', { fixture: 'statistics' });
+    cy.intercept('/api/activities/aggregated', { fixture: 'activities-aggregated' });
 
     // when
     page.navigateTo();
@@ -25,9 +24,9 @@ describe('Home', () => {
 
   it('should have project metric value', () => {
     // given
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/statistics', 'fixture:statistics');
-    cy.route('/api/activities/aggregated', 'fixture:activities-aggregated');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/statistics', { fixture: 'statistics' });
+    cy.intercept('/api/activities/aggregated', { fixture: 'activities-aggregated' });
 
     // when
     page.navigateTo();
@@ -38,9 +37,9 @@ describe('Home', () => {
 
   it('should have user metric value', () => {
     // given
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/statistics', 'fixture:statistics');
-    cy.route('/api/activities/aggregated', 'fixture:activities-aggregated');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/statistics', { fixture: 'statistics' });
+    cy.intercept('/api/activities/aggregated', { fixture: 'activities-aggregated' });
 
     // when
     page.navigateTo();
@@ -51,9 +50,9 @@ describe('Home', () => {
 
   it('should have activity metric value', () => {
     // given
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/statistics', 'fixture:statistics');
-    cy.route('/api/activities/aggregated', 'fixture:activities-aggregated');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/statistics', { fixture: 'statistics' });
+    cy.intercept('/api/activities/aggregated', { fixture: 'activities-aggregated' });
 
     // when
     page.navigateTo();

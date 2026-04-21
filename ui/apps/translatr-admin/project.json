@@ -1,0 +1,109 @@
+{
+  "name": "translatr-admin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/translatr-admin/src",
+  "projectType": "application",
+  "prefix": "dev",
+  "generators": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  },
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:application",
+      "options": {
+        "outputPath": "dist/apps/translatr-admin",
+        "index": "apps/translatr-admin/src/index.html",
+        "browser": "apps/translatr-admin/src/main.ts",
+        "polyfills": [
+          "zone.js",
+          "@angular/localize/init"
+        ],
+        "tsConfig": "apps/translatr-admin/tsconfig.app.json",
+        "assets": [
+          "apps/translatr-admin/src/favicon.png",
+          "apps/translatr-admin/src/assets"
+        ],
+        "styles": [
+          "libs/translatr-components/src/styles/main.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/translatr-components/src/styles"
+          ]
+        },
+        "scripts": [],
+        "baseHref": "/admin/"
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/translatr-admin/src/environments/environment.ts",
+              "with": "apps/translatr-admin/src/environments/environment.prod.ts"
+            }
+          ],
+          "outputHashing": "all",
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb"
+            }
+          ]
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "proxyConfig": "proxy.conf.js"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "translatr-admin:build:production"
+        },
+        "development": {
+          "buildTarget": "translatr-admin:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "translatr-admin:build"
+      }
+    },
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "apps/translatr-admin/**/*.ts",
+          "apps/translatr-admin/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "apps/translatr-admin/jest.config.js",
+        "tsConfig": "apps/translatr-admin/tsconfig.spec.json"
+      }
+    }
+  },
+  "tags": [
+    "app"
+  ]
+}

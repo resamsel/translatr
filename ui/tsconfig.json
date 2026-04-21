@@ -9,54 +9,24 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["ES2022", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "rxjs": [
-        "node_modules/rxjs/dist/types/index.d.ts"
-      ],
-      "rxjs/*": [
-        "node_modules/rxjs/dist/types/*"
-      ],
-      "@dev/translatr-sdk": [
-        "libs/translatr-sdk/src/index.ts"
-      ],
-      "@dev/translatr-components": [
-        "libs/translatr-components/src/index.ts"
-      ],
-      "@translatr/components/testing": [
-        "libs/translatr-components/src/testing.ts"
-      ],
-      "@dev/translatr-model": [
-        "libs/translatr-model/src/index.ts"
-      ],
-      "@translatr/generator": [
-        "libs/generator/src/index.ts"
-      ],
-      "@translatr/utils": [
-        "libs/utils/src/index.ts"
-      ],
-      "@translatr/utils/testing": [
-        "libs/utils/src/testing.ts"
-      ],
-      "@translatr/node-utils": [
-        "libs/node-utils/src/index.ts"
-      ]
+      "@dev/translatr-components": ["libs/translatr-components/src/index.ts"],
+      "@dev/translatr-model": ["libs/translatr-model/src/index.ts"],
+      "@dev/translatr-sdk": ["libs/translatr-sdk/src/index.ts"],
+      "@translatr/components/testing": ["libs/translatr-components/src/testing.ts"],
+      "@translatr/generator": ["libs/generator/src/index.ts"],
+      "@translatr/node-utils": ["libs/node-utils/src/index.ts"],
+      "@translatr/utils": ["libs/utils/src/index.ts"],
+      "@translatr/utils/testing": ["libs/utils/src/testing.ts"]
     },
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "useDefineForClassFields": false
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }

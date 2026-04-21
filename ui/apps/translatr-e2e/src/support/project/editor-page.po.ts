@@ -6,7 +6,7 @@ export class EditorPage extends Page {
   }
 
   getNavListItems(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.nav-list .mat-nav-list a');
+    return cy.get('.nav-list mat-nav-list a');
   }
 
   getEditor(): Cypress.Chainable<JQuery<HTMLElement>> {
@@ -22,23 +22,23 @@ export class EditorPage extends Page {
   }
 
   getPreviewTab(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('#mat-tab-label-0-0');
+    return cy.get('.meta [role="tab"]:nth-child(1)');
   }
 
   getPreviewBody(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('#mat-tab-content-0-0');
+    return cy.get('.meta [role="tabpanel"]');
   }
 
   getPreviewContents(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return this.getPreviewBody().find('.translation');
+    return cy.get('.meta .translation').first();
   }
 
   getTranslationsTab(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('#mat-tab-label-0-1');
+    return cy.get('.meta [role="tab"]:nth-child(2)');
   }
 
   getTranslationsBody(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('#mat-tab-content-0-1');
+    return cy.get('.meta [role="tabpanel"]');
   }
 
   getFilterField(): Cypress.Chainable<JQuery<HTMLElement>> {

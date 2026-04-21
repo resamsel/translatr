@@ -7,16 +7,15 @@ describe('Project Keys Edit Key', () => {
     page = new ProjectKeysPage('johndoe', 'p1');
 
     cy.clearCookies();
-    cy.server();
 
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/johndoe/p1*', 'fixture:johndoe/p1');
-    cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
-    cy.route('/api/project/*/keys*', 'fixture:johndoe/p1/keys');
-    cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
-    cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
-    cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
-    cy.route('/api/activities/aggregated*', 'fixture:johndoe/p1/activities-aggregated');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
+    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
+    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
+    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
+    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
+    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
+    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
   });
 
   it('should show key edit button', () => {
@@ -47,11 +46,11 @@ describe('Project Keys Edit Key', () => {
     page.getDialog().should('be.visible');
     page
       .getDialog()
-      .find('.mat-dialog-title')
+      .find('[mat-dialog-title]')
       .should('have.text', 'Edit Key');
     page
       .getDialog()
-      .find('.mat-form-field.name input')
+      .find('mat-form-field.name input')
       .should('have.value', 'k1');
   });
 

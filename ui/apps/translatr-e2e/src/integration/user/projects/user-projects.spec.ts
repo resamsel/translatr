@@ -7,12 +7,11 @@ describe('User Projects', () => {
     page = new UserProjectsPage('johndoe');
 
     cy.clearCookies();
-    cy.server();
 
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/johndoe', 'fixture:johndoe');
-    cy.route('/api/projects*', 'fixture:johndoe/projects');
-    cy.route('/api/activities*', 'fixture:johndoe/activities');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/johndoe', { fixture: 'johndoe' });
+    cy.intercept('/api/projects*', { fixture: 'johndoe/projects' });
+    cy.intercept('/api/activities*', { fixture: 'johndoe/activities' });
   });
 
   it('should show user projects', () => {

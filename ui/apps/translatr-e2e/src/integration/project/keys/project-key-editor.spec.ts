@@ -7,16 +7,15 @@ describe('Project Key Editor', () => {
     page = new KeyEditorPage('johndoe', 'p1', 'k1');
 
     cy.clearCookies();
-    cy.server();
 
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/johndoe/p1*', 'fixture:johndoe/p1');
-    cy.route('/api/johndoe/p1/keys/k1', 'fixture:johndoe/p1/keys/k1');
-    cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
-    cy.route('/api/project/*/locales?*missing=true*', 'fixture:johndoe/p1/locales-missing');
-    cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
-    cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
-    cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
+    cy.intercept('/api/johndoe/p1/keys/k1', { fixture: 'johndoe/p1/keys/k1' });
+    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
+    cy.intercept('/api/project/*/locales?*missing=true*', { fixture: 'johndoe/p1/locales-missing' });
+    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
+    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
+    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
   });
 
   it('should have page title Key Editor', () => {
@@ -48,7 +47,7 @@ describe('Project Key Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item')
+      .find('a.locale')
       .should('have.length', 2);
   });
 
@@ -61,7 +60,7 @@ describe('Project Key Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.active')
+      .find('a.active')
       .should('have.length', 0);
   });
 
@@ -74,11 +73,11 @@ describe('Project Key Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.locale:first-of-type')
+      .find('a.locale:first-of-type')
       .should('not.have.class', 'active');
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .first()
       .click()
       .should('have.class', 'active');
@@ -93,7 +92,7 @@ describe('Project Key Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .first()
       .click();
 
@@ -107,7 +106,7 @@ describe('Project Key Editor', () => {
     page.navigateTo();
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .first()
       .click();
 
@@ -124,7 +123,7 @@ describe('Project Key Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .first()
       .click();
 
@@ -140,7 +139,7 @@ describe('Project Key Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .first()
       .click();
 
@@ -156,17 +155,14 @@ describe('Project Key Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .first()
       .click();
 
+    page.getTranslationsTab().click();
     page
-      .getMeta()
-      .find('#mat-tab-label-0-1')
-      .click();
-    page
-      .getMeta()
-      .find('#mat-tab-content-0-1 .mat-card')
+      .getTranslationsBody()
+      .find('mat-card')
       .should('have.length', 2);
   });
 
@@ -179,23 +175,21 @@ describe('Project Key Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .first()
       .click();
 
-    page.getMeta().within(el => {
-      el.find('#mat-tab-label-0-1').trigger('click');
-      el.find('#mat-tab-content-0-1 .mat-card button.use-value')
-        .last()
-        .trigger('click');
-    });
+    page.getTranslationsTab().click();
+    cy.get('.meta [role="tabpanel"] mat-card button.use-value')
+      .last()
+      .click();
 
     page.getEditorContents().should('have.text', 'Key One');
   });
 
   it('should only show locales with missing translations when filtered by those', () => {
     // given
-    cy.route('/api/project/*/messages?*localeIds=*', 'fixture:johndoe/p1/messages-missing');
+    cy.intercept('/api/project/*/messages?*localeIds=*', { fixture: 'johndoe/p1/messages-missing' });
 
     // when
     page.navigateTo();
@@ -209,7 +203,7 @@ describe('Project Key Editor', () => {
     cy.get('.selected-option').should('have.length', 1);
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .should('have.length', 1);
   });
 
@@ -218,7 +212,7 @@ describe('Project Key Editor', () => {
     page.navigateTo();
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .first()
       .click();
 
@@ -228,13 +222,13 @@ describe('Project Key Editor', () => {
 
   it('should display "Save and next" button when user settings say so', () => {
     // given
-    cy.route('/api/me?fetch=features', 'fixture:me-save-behavior-saveandnext');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me-save-behavior-saveandnext' });
 
     // when
     page.navigateTo();
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .first()
       .click();
 
@@ -244,8 +238,8 @@ describe('Project Key Editor', () => {
 
   it('should call updateSettings on "Save and next"', () => {
     // given
-    cy.route('PUT', '/api/message', 'fixture:johndoe/p1/message');
-    cy.route('PATCH', '/api/user/*/settings', 'fixture:me-save-behavior-saveandnext').as(
+    cy.intercept('PUT', '/api/message', { fixture: 'johndoe/p1/message' });
+    cy.intercept('PATCH', '/api/user/*/settings', { fixture: 'me-save-behavior-saveandnext' }).as(
       'updateSettings'
     );
 
@@ -253,7 +247,7 @@ describe('Project Key Editor', () => {
     page.navigateTo();
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .first()
       .click();
     cy.get('.menu-button').click();
@@ -265,7 +259,7 @@ describe('Project Key Editor', () => {
     });
     page
       .getNavList()
-      .find('.mat-list-item.locale')
+      .find('a.locale')
       .eq(1)
       .should('have.class', 'active');
   });

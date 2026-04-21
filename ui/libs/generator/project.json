@@ -1,0 +1,27 @@
+{
+  "name": "generator",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/generator/src",
+  "projectType": "library",
+  "prefix": "translatr",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/generator/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/generator/jest.config.js",
+        "tsConfig": "libs/generator/tsconfig.spec.json"
+      }
+    }
+  },
+  "tags": [
+    "lib"
+  ]
+}

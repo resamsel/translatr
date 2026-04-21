@@ -40,6 +40,6 @@ export class ProjectSettingsPage extends Page {
   }
 
   getCancelProjectDeleteDialogButton(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-project-delete-dialog button.mat-button');
+    return cy.get('app-project-delete-dialog button.cancel');
   }
 }

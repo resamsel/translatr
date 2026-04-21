@@ -7,18 +7,17 @@ describe('User Settings Update', () => {
     page = new UserSettingsPage('johndoe');
 
     cy.clearCookies();
-    cy.server();
 
-    cy.route('/api/me?fetch=features', 'fixture:johndoe');
-    cy.route('/api/johndoe', 'fixture:johndoe');
-    cy.route('/api/projects*', 'fixture:johndoe/projects');
-    cy.route('/api/activities*', 'fixture:johndoe/activities');
+    cy.intercept('/api/me?fetch=features', { fixture: 'johndoe' });
+    cy.intercept('/api/johndoe', { fixture: 'johndoe' });
+    cy.intercept('/api/projects*', { fixture: 'johndoe/projects' });
+    cy.intercept('/api/activities*', { fixture: 'johndoe/activities' });
   });
 
   it('should persist on save', () => {
     // given
-    cy.route('PUT', '/api/user', 'fixture:johndoe2');
-    cy.route('/api/johndoe2', 'fixture:johndoe2');
+    cy.intercept('PUT', '/api/user', { fixture: 'johndoe2' });
+    cy.intercept('/api/johndoe2', { fixture: 'johndoe2' });
 
     // when
     page.navigateTo();
@@ -33,7 +32,7 @@ describe('User Settings Update', () => {
   it('should persist with 32 chars name on save', () => {
     // given
     const name = `${'John Doe'.repeat(4)}`;
-    cy.route('PUT', '/api/user', 'fixture:johndoe-name-32');
+    cy.intercept('PUT', '/api/user', { fixture: 'johndoe-name-32' });
 
     // when
     page.navigateTo();
@@ -46,12 +45,7 @@ describe('User Settings Update', () => {
 
   it('should not persist when name not unique', () => {
     // given
-    cy.route({
-      method: 'PUT',
-      url: '/api/user',
-      status: 400,
-      response: 'fixture:johndoe-not-unique'
-    });
+    cy.intercept({ method: 'PUT', url: '/api/user' }, { statusCode: 400, fixture: 'johndoe-not-unique' });
 
     // when
     page.navigateTo();

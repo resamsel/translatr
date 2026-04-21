@@ -8,22 +8,21 @@ describe('Project Settings Update', () => {
     page = new ProjectSettingsPage('johndoe', 'p1');
 
     cy.clearCookies();
-    cy.server();
 
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/johndoe/p1*', 'fixture:johndoe/p1');
-    cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
-    cy.route('/api/project/*/keys*', 'fixture:johndoe/p1/keys');
-    cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
-    cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
-    cy.route('/api/activities/aggregated*', 'fixture:johndoe/p1/activities-aggregated');
-    cy.route('/api/activities*', 'fixture:johndoe/p1/activities');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
+    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
+    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
+    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
+    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
+    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
+    cy.intercept('/api/activities*', { fixture: 'johndoe/p1/activities' });
   });
 
   it('should persist on save', () => {
     // given
-    cy.route('PUT', '/api/project', 'fixture:johndoe/p2');
-    cy.route('/api/johndoe/p2*', 'fixture:johndoe/p2');
+    cy.intercept('PUT', '/api/project', { fixture: 'johndoe/p2' });
+    cy.intercept('/api/johndoe/p2*', { fixture: 'johndoe/p2' });
 
     // when
     page.navigateTo();
@@ -49,8 +48,8 @@ describe('Project Settings Update', () => {
   it('should persist with 255 chars name on save', () => {
     // given
     const name = `2${'p2'.repeat(127)}`;
-    cy.route('PUT', '/api/project', 'fixture:johndoe/p2-name-255');
-    cy.route(`/api/johndoe/${name}*`, 'fixture:johndoe/p2-name-255');
+    cy.intercept('PUT', '/api/project', { fixture: 'johndoe/p2-name-255' });
+    cy.intercept(`/api/johndoe/${name}*`, { fixture: 'johndoe/p2-name-255' });
 
     // when
     page.navigateTo();
@@ -68,12 +67,7 @@ describe('Project Settings Update', () => {
 
   it('should not persist when name not unique', () => {
     // given
-    cy.route({
-      method: 'PUT',
-      url: '/api/project',
-      status: 400,
-      response: 'fixture:johndoe/p2-not-unique'
-    });
+    cy.intercept({ method: 'PUT', url: '/api/project' }, { statusCode: 400, fixture: 'johndoe/p2-not-unique' });
 
     // when
     page.navigateTo();
@@ -108,12 +102,6 @@ describe('Project Settings Update', () => {
 
   it('should not persist if name is too long', () => {
     // given
-    cy.route({
-      method: 'PUT',
-      url: '/api/project',
-      status: 400,
-      response: 'fixture:project/johndoe-p2-name-too-long'
-    });
 
     // when
     page.navigateTo();

@@ -7,13 +7,12 @@ describe('Dashboard Empty', () => {
     page = new DashboardPage();
 
     cy.clearCookies();
-    cy.server();
 
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/users?limit=1&fetch=count', 'fixture:dashboard/empty/users-limit1');
-    cy.route('/api/projects?owner=*', 'fixture:dashboard/empty/projects-owner-limit4');
-    cy.route('/api/projects?memberId=*', 'fixture:dashboard/empty/projects-memberId-limit4');
-    cy.route('/api/activities*', 'fixture:dashboard/empty/activities-userId-limit4');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/users?limit=1&fetch=count', { fixture: 'dashboard/empty/users-limit1' });
+    cy.intercept('/api/projects?owner=*', { fixture: 'dashboard/empty/projects-owner-limit4' });
+    cy.intercept('/api/projects?memberId=*', { fixture: 'dashboard/empty/projects-memberId-limit4' });
+    cy.intercept('/api/activities*', { fixture: 'dashboard/empty/activities-userId-limit4' });
   });
 
   it('should show teasers for empty contents', () => {

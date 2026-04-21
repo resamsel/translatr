@@ -7,16 +7,15 @@ describe('Project Locales Delete Locale', () => {
     page = new ProjectLocalesPage('johndoe', 'p1');
 
     cy.clearCookies();
-    cy.server();
 
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/johndoe/p1*', 'fixture:johndoe/p1');
-    cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
-    cy.route('/api/project/*/keys*', 'fixture:johndoe/p1/keys');
-    cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages');
-    cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
-    cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
-    cy.route('/api/activities/aggregated*', 'fixture:johndoe/p1/activities-aggregated');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
+    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
+    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
+    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
+    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
+    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
+    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
   });
 
   it('should show locale delete button', () => {
@@ -44,12 +43,12 @@ describe('Project Locales Delete Locale', () => {
       .click();
 
     // then
-    cy.get('.mat-menu-panel button.confirm').should('have.text', 'Remove');
+    cy.get('.mat-mdc-menu-panel button.confirm').should('have.text', 'Remove');
   });
 
   it('should delete locale clicking delete button', () => {
     // given
-    cy.route('DELETE', '/api/locale/*', 'fixture:johndoe/p1/locales/default');
+    cy.intercept('DELETE', '/api/locale/*', { fixture: 'johndoe/p1/locales/default' });
 
     // when
     page.navigateTo();
@@ -58,12 +57,12 @@ describe('Project Locales Delete Locale', () => {
       .find('confirm-button.delete')
       .first()
       .click();
-    cy.get('.mat-menu-panel button.confirm').click();
+    cy.get('.mat-mdc-menu-panel button.confirm').click();
 
     // then
     page
       .getLocaleList()
-      .find('.mat-list-item')
+      .find('a[mat-list-item]')
       .should('have.length', 1);
   });
 });
