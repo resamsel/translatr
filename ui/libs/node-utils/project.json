@@ -1,0 +1,27 @@
+{
+  "name": "node-utils",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/node-utils/src",
+  "projectType": "library",
+  "prefix": "dev",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/node-utils/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/node-utils/jest.config.js",
+        "tsConfig": "libs/node-utils/tsconfig.spec.json"
+      }
+    }
+  },
+  "tags": [
+    "utils"
+  ]
+}

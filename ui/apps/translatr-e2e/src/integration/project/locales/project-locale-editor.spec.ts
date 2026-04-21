@@ -7,19 +7,18 @@ describe('Project Locale Editor', () => {
     page = new LocaleEditorPage('johndoe', 'p1', 'default');
 
     cy.clearCookies();
-    cy.server();
 
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/johndoe/p1*', 'fixture:johndoe/p1');
-    cy.route('/api/johndoe/p1/locales/default', 'fixture:johndoe/p1/locales/default');
-    cy.route('/api/project/*/locales*', 'fixture:johndoe/p1/locales');
-    cy.route('/api/project/*/keys*', 'fixture:johndoe/p1/keys');
-    cy.route('/api/project/*/keys?*missing=true*', 'fixture:johndoe/p1/keys-missing');
-    cy.route('/api/project/*/messages*', 'fixture:johndoe/p1/messages-locale-default');
-    cy.route('/api/project/*/messages?*keyName=k1', 'fixture:johndoe/p1/messages-key-k1');
-    cy.route('/api/project/*/messages?*keyIds=*', 'fixture:johndoe/p1/messages-locale-default');
-    cy.route('/api/project/*/members*', 'fixture:johndoe/p1/members');
-    cy.route('/api/project/*/activities*', 'fixture:johndoe/p1/activities');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
+    cy.intercept('/api/johndoe/p1/locales/default', { fixture: 'johndoe/p1/locales/default' });
+    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
+    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
+    cy.intercept('/api/project/*/keys?*missing=true*', { fixture: 'johndoe/p1/keys-missing' });
+    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages-locale-default' });
+    cy.intercept('/api/project/*/messages?*keyName=k1', { fixture: 'johndoe/p1/messages-key-k1' });
+    cy.intercept('/api/project/*/messages?*keyIds=*', { fixture: 'johndoe/p1/messages-locale-default' });
+    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
+    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
   });
 
   it('should have page title Language Editor', () => {
@@ -51,7 +50,7 @@ describe('Project Locale Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item')
+      .find('a.key')
       .should('have.length', 2);
   });
 
@@ -64,7 +63,7 @@ describe('Project Locale Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.active')
+      .find('a.active')
       .should('have.length', 0);
   });
 
@@ -77,11 +76,11 @@ describe('Project Locale Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.key:first-of-type')
+      .find('a.key:first-of-type')
       .should('not.have.class', 'active');
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .first()
       .click()
       .should('have.class', 'active');
@@ -96,7 +95,7 @@ describe('Project Locale Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .first()
       .click();
 
@@ -110,7 +109,7 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .first()
       .click();
 
@@ -127,7 +126,7 @@ describe('Project Locale Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .first()
       .click();
 
@@ -136,13 +135,13 @@ describe('Project Locale Editor', () => {
 
   it('should show preview when key activated in sidebar', () => {
     // given
-    cy.route('/api/project/*/messages?*keyIds=*', 'fixture:johndoe/p1/messages-locale-default');
+    cy.intercept('/api/project/*/messages?*keyIds=*', { fixture: 'johndoe/p1/messages-locale-default' });
 
     // when
     page.navigateTo();
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .first()
       .click();
 
@@ -159,14 +158,14 @@ describe('Project Locale Editor', () => {
     // then
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .first()
       .click();
 
     page.getTranslationsTab().click();
     page
       .getTranslationsBody()
-      .find('.mat-card')
+      .find('mat-card')
       .should('have.length', 2);
   });
 
@@ -177,16 +176,14 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .first()
       .click();
 
-    page.getMeta().within(el => {
-      el.find('#mat-tab-label-0-1').trigger('click');
-      el.find('#mat-tab-content-0-1 .mat-card button.use-value')
-        .first()
-        .trigger('click');
-    });
+    page.getTranslationsTab().click();
+    cy.get('.meta [role="tabpanel"] mat-card button.use-value')
+      .first()
+      .click();
 
     // then
     page.getEditorContents().should('have.text', 'Schlüssel 1');
@@ -194,7 +191,7 @@ describe('Project Locale Editor', () => {
 
   it('should only show keys with missing translations when filtered by those', () => {
     // given
-    cy.route('/api/project/*/messages?*keyIds=*', 'fixture:johndoe/p1/messages-missing');
+    cy.intercept('/api/project/*/messages?*keyIds=*', { fixture: 'johndoe/p1/messages-missing' });
 
     // when
     page.navigateTo();
@@ -208,7 +205,7 @@ describe('Project Locale Editor', () => {
     cy.get('.selected-option').should('have.length', 1);
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .should('have.length', 1);
   });
 
@@ -217,7 +214,7 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .first()
       .click();
 
@@ -227,13 +224,13 @@ describe('Project Locale Editor', () => {
 
   it('should display "Save and next" button when user settings say so', () => {
     // given
-    cy.route('/api/me?fetch=features', 'fixture:me-save-behavior-saveandnext');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me-save-behavior-saveandnext' });
 
     // when
     page.navigateTo();
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .first()
       .click();
 
@@ -243,8 +240,8 @@ describe('Project Locale Editor', () => {
 
   it('should call updateSettings on "Save and next"', () => {
     // given
-    cy.route('PUT', '/api/message', 'fixture:johndoe/p1/message');
-    cy.route('PATCH', '/api/user/*/settings', 'fixture:me-save-behavior-saveandnext').as(
+    cy.intercept('PUT', '/api/message', { fixture: 'johndoe/p1/message' });
+    cy.intercept('PATCH', '/api/user/*/settings', { fixture: 'me-save-behavior-saveandnext' }).as(
       'updateSettings'
     );
 
@@ -252,7 +249,7 @@ describe('Project Locale Editor', () => {
     page.navigateTo();
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .first()
       .click();
     cy.get('.menu-button').click();
@@ -264,7 +261,7 @@ describe('Project Locale Editor', () => {
     });
     page
       .getNavList()
-      .find('.mat-list-item.key')
+      .find('a.key')
       .eq(1)
       .should('have.class', 'active');
   });

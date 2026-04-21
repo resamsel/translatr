@@ -11,6 +11,6 @@ export class ProjectKeysPage extends Page {
   }
 
   getKeyList(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-key-list .mat-nav-list');
+    return cy.get('app-key-list mat-nav-list');
   }
 }

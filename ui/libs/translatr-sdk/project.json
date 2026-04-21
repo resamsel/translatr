@@ -1,0 +1,28 @@
+{
+  "name": "translatr-sdk",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/translatr-sdk/src",
+  "projectType": "library",
+  "prefix": "dev",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/translatr-sdk/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/translatr-sdk/jest.config.js",
+        "tsConfig": "libs/translatr-sdk/tsconfig.spec.json"
+      }
+    }
+  },
+  "tags": [
+    "lib",
+    "api"
+  ]
+}

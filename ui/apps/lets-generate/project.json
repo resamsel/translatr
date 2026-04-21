@@ -1,0 +1,49 @@
+{
+  "name": "lets-generate",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/lets-generate/src",
+  "projectType": "application",
+  "prefix": "lets-generate",
+  "generators": {},
+  "targets": {
+    "build": {
+      "executor": "@nx/node:build",
+      "options": {
+        "outputPath": "dist/apps/lets-generate",
+        "main": "apps/lets-generate/src/main.ts",
+        "tsConfig": "apps/lets-generate/tsconfig.app.json"
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": false,
+          "inspect": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/node:execute",
+      "options": {
+        "buildTarget": "lets-generate:build"
+      }
+    },
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "apps/lets-generate/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "apps/lets-generate/jest.config.js",
+        "tsConfig": "apps/lets-generate/tsconfig.spec.json"
+      }
+    }
+  },
+  "tags": [
+    "app"
+  ]
+}

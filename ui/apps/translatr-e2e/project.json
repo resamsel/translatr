@@ -1,0 +1,31 @@
+{
+  "name": "translatr-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "",
+  "targets": {
+    "e2e": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/translatr-e2e/cypress.config.js",
+        "devServerTarget": "translatr:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "translatr:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "apps/translatr-e2e/**/*.ts"
+        ]
+      }
+    }
+  },
+  "tags": [
+    "e2e"
+  ]
+}

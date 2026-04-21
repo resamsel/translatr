@@ -7,14 +7,13 @@ describe('Project Locale Editor Empty State', () => {
     page = new LocaleEditorPage('johndoe', 'p3', 'default');
 
     cy.clearCookies();
-    cy.server();
 
-    cy.route('/api/me?fetch=features', 'fixture:me');
-    cy.route('/api/johndoe/p3*', 'fixture:johndoe/p3');
-    cy.route('/api/johndoe/p3/locales/default', 'fixture:johndoe/p3/locales/default');
-    cy.route('/api/project/*/locales*', 'fixture:johndoe/p3/locales');
-    cy.route('/api/project/*/keys*', 'fixture:johndoe/p3/keys');
-    cy.route('/api/project/*/messages*', 'fixture:johndoe/p3/messages');
+    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
+    cy.intercept('/api/johndoe/p3*', { fixture: 'johndoe/p3' });
+    cy.intercept('/api/johndoe/p3/locales/default', { fixture: 'johndoe/p3/locales/default' });
+    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p3/locales' });
+    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p3/keys' });
+    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p3/messages' });
   });
 
   it('should have no keys in sidebar', () => {
@@ -59,16 +58,16 @@ describe('Project Locale Editor Empty State', () => {
     page.navigateTo();
     cy.get('dev-empty-view [data-test="create-key"]').click();
     cy.get('mat-dialog-container input').type('de');
-    cy.route('POST', '/api/key', 'fixture:johndoe/p3/key-created');
-    cy.route('/api/project/*/keys*', 'fixture:johndoe/p3/keys-added');
+    cy.intercept('POST', '/api/key', { fixture: 'johndoe/p3/key-created' });
+    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p3/keys-added' });
     cy.get('mat-dialog-container button.save').click();
 
     // then
     page
       .getNavList()
-      .find('.mat-list-item.active')
+      .find('a.active')
       .should('have.length', 1)
-      .find('h3.mat-line')
+      .find('h3')
       .should('have.text', 'k1');
   });
 });
