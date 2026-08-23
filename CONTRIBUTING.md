@@ -51,7 +51,7 @@ directly via Quinoa. No Angular dev server or local Node installation is needed.
 1. **Start the backing services** (PostgreSQL + Keycloak):
 
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 2. **Copy your credentials into `.env`** (create it if it doesn't exist yet):
