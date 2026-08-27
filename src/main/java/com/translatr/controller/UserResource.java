@@ -1,5 +1,6 @@
 package com.translatr.controller;
 
+import com.translatr.auth.CurrentUserResolver;
 import com.translatr.criteria.UserCriteria;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.UserDto;
@@ -10,7 +11,6 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import java.util.UUID;
 
 @Path("/api")
@@ -18,13 +18,13 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
 
-    private final UserService  userService;
-    private final JsonWebToken jwt;
+    private final UserService         userService;
+    private final CurrentUserResolver currentUserResolver;
 
     @Inject
-    public UserResource(UserService userService, JsonWebToken jwt) {
-        this.userService = userService;
-        this.jwt         = jwt;
+    public UserResource(UserService userService, CurrentUserResolver currentUserResolver) {
+        this.userService         = userService;
+        this.currentUserResolver = currentUserResolver;
     }
 
     @GET  @Path("/users")         @PermitAll
@@ -42,9 +42,7 @@ public class UserResource {
 
     @GET  @Path("/me") @Authenticated
     public UserDto me() {
-        User user = userService.findOrCreate(
-                "oidc", jwt.getSubject(),
-                jwt.getClaim("name"), jwt.getClaim("email"));
+        User user = currentUserResolver.resolve();
         return userService.get(user.id);
     }
 

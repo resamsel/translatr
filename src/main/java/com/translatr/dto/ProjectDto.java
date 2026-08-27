@@ -2,6 +2,7 @@ package com.translatr.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -17,4 +18,6 @@ public class ProjectDto {
     public Integer wordCount;
     public Double  progress;
     public String  myRole;
+    /** Populated only when the request opts in via {@code ?fetch=members}. */
+    public List<MemberDto> members;
 }

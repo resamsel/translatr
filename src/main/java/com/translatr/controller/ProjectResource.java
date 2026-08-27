@@ -1,16 +1,15 @@
 package com.translatr.controller;
 
+import com.translatr.auth.CurrentUserResolver;
 import com.translatr.criteria.ProjectCriteria;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.ProjectDto;
 import com.translatr.service.ProjectService;
-import com.translatr.service.UserService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import java.util.UUID;
 
 @Path("/api")
@@ -18,15 +17,13 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 public class ProjectResource {
 
-    private final ProjectService projectService;
-    private final UserService    userService;
-    private final JsonWebToken   jwt;
+    private final ProjectService      projectService;
+    private final CurrentUserResolver currentUserResolver;
 
     @Inject
-    public ProjectResource(ProjectService projectService, UserService userService, JsonWebToken jwt) {
-        this.projectService = projectService;
-        this.userService    = userService;
-        this.jwt            = jwt;
+    public ProjectResource(ProjectService projectService, CurrentUserResolver currentUserResolver) {
+        this.projectService      = projectService;
+        this.currentUserResolver = currentUserResolver;
     }
 
     @GET
@@ -55,8 +52,7 @@ public class ProjectResource {
     @Path("/project")
     @Authenticated
     public ProjectDto create(ProjectDto dto) {
-        var owner = userService.findOrCreate(
-            "oidc", jwt.getSubject(), jwt.getClaim("name"), jwt.getClaim("email"));
+        var owner = currentUserResolver.resolve();
         return projectService.create(dto, owner);
     }
 

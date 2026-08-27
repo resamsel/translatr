@@ -42,6 +42,7 @@ public class AccessTokenService {
         return mapper.toDto(tokenRepo.findByIdOptional(id).orElseThrow(NotFoundException::new));
     }
 
+    @Transactional
     public Optional<User> findUserByKey(String key) {
         return tokenRepo.findByKey(key).map(t -> t.user);
     }

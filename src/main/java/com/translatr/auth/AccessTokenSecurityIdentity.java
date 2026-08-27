@@ -45,9 +45,15 @@ public class AccessTokenSecurityIdentity implements SecurityIdentity {
         return Set.of(new TokenCredential(token, "access_token"));
     }
 
-    @Override public <T> T getAttribute(String name) { return null; }
+    /** Key under which the resolved {@link User} is exposed via {@link #getAttribute}. */
+    public static final String USER_ATTRIBUTE = "user";
 
-    @Override public Map<String, Object> getAttributes() { return Map.of(); }
+    @SuppressWarnings("unchecked")
+    @Override public <T> T getAttribute(String name) {
+        return USER_ATTRIBUTE.equals(name) ? (T) user : null;
+    }
+
+    @Override public Map<String, Object> getAttributes() { return Map.of(USER_ATTRIBUTE, user); }
 
     @Override
     public java.util.Set<java.security.Permission> getPermissions() {
