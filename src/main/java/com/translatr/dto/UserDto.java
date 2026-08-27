@@ -13,6 +13,7 @@ public class UserDto {
     public String name;
     public String username;
     public String email;
+    public String emailHash;
     public String role;
     public String preferredLocale;
     public Map<String, String> settings;

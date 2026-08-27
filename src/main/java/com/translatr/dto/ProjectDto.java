@@ -15,6 +15,7 @@ public class ProjectDto {
     public UUID    ownerId;
     public String  ownerName;
     public String  ownerUsername;
+    public String  ownerEmailHash;
     public Integer wordCount;
     public Double  progress;
     public String  myRole;

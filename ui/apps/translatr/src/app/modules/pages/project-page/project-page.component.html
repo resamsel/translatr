@@ -13,7 +13,7 @@
         <p class="description">{{project?.description}}</p>
       </div>
     </div>
-    <nav mat-tab-nav-bar color="accent" *ngIf="project$ | async as project">
+    <nav mat-tab-nav-bar color="accent" [tabPanel]="projectTabPanel" *ngIf="project$ | async as project">
       <div class="container dense">
         <ng-container *ngFor="let child of children">
           <a
@@ -33,5 +33,7 @@
     </nav>
   </header>
 
-  <router-outlet></router-outlet>
+  <mat-tab-nav-panel #projectTabPanel>
+    <router-outlet></router-outlet>
+  </mat-tab-nav-panel>
 </app-sidenav>
