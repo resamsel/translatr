@@ -3,6 +3,7 @@ package com.translatr.service;
 import com.translatr.dto.UserDto;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.User;
+import com.translatr.repository.UserFeatureFlagRepository;
 import com.translatr.repository.UserRepository;
 import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,8 +26,9 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-    @Mock UserRepository userRepo;
-    @Mock DtoMapper      mapper;
+    @Mock UserRepository            userRepo;
+    @Mock UserFeatureFlagRepository featureFlagRepo;
+    @Mock DtoMapper                 mapper;
 
     @InjectMocks UserService service;
 
@@ -51,6 +54,7 @@ class UserServiceTest {
 
         when(userRepo.findByIdOptional(id)).thenReturn(Optional.of(user));
         when(mapper.toDto(user)).thenReturn(dto);
+        when(featureFlagRepo.listByUser(id)).thenReturn(Collections.emptyList());
 
         UserDto result = service.get(id);
 
