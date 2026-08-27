@@ -3,6 +3,7 @@ package com.translatr.repository;
 import com.translatr.model.UserFeatureFlag;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,5 +12,9 @@ public class UserFeatureFlagRepository implements PanacheRepositoryBase<UserFeat
 
     public Optional<UserFeatureFlag> findByUserAndFeature(UUID userId, String feature) {
         return find("user.id = ?1 AND feature = ?2", userId, feature).firstResultOptional();
+    }
+
+    public List<UserFeatureFlag> listByUser(UUID userId) {
+        return list("user.id", userId);
     }
 }

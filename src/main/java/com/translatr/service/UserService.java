@@ -6,6 +6,7 @@ import com.translatr.dto.UserDto;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.LinkedAccount;
 import com.translatr.model.User;
+import com.translatr.repository.UserFeatureFlagRepository;
 import com.translatr.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -17,13 +18,15 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class UserService {
 
-    private final UserRepository userRepo;
-    private final DtoMapper      mapper;
+    private final UserRepository            userRepo;
+    private final UserFeatureFlagRepository featureFlagRepo;
+    private final DtoMapper                 mapper;
 
     @Inject
-    public UserService(UserRepository userRepo, DtoMapper mapper) {
-        this.userRepo = userRepo;
-        this.mapper   = mapper;
+    public UserService(UserRepository userRepo, UserFeatureFlagRepository featureFlagRepo, DtoMapper mapper) {
+        this.userRepo        = userRepo;
+        this.featureFlagRepo = featureFlagRepo;
+        this.mapper          = mapper;
     }
 
     public PagedList<UserDto> find(UserCriteria c) {
@@ -35,11 +38,23 @@ public class UserService {
     }
 
     public UserDto get(UUID id) {
-        return mapper.toDto(userRepo.findByIdOptional(id).orElseThrow(NotFoundException::new));
+        UserDto dto = mapper.toDto(userRepo.findByIdOptional(id).orElseThrow(NotFoundException::new));
+        attachFeatures(dto);
+        return dto;
     }
 
     public UserDto getByUsername(String username) {
-        return mapper.toDto(userRepo.findByUsername(username).orElseThrow(NotFoundException::new));
+        UserDto dto = mapper.toDto(userRepo.findByUsername(username).orElseThrow(NotFoundException::new));
+        attachFeatures(dto);
+        return dto;
+    }
+
+    // The frontend reads the current user's enabled features off Record<Feature, boolean> —
+    // UserFeatureFlag rows are per-(user, feature) toggles, so fold them into that shape here
+    // rather than exposing the raw entity list.
+    private void attachFeatures(UserDto dto) {
+        dto.features = featureFlagRepo.listByUser(dto.id).stream()
+                .collect(Collectors.toMap(f -> f.feature, f -> f.enabled));
     }
 
     @Transactional

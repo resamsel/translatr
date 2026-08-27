@@ -16,4 +16,5 @@ public class UserDto {
     public String role;
     public String preferredLocale;
     public Map<String, String> settings;
+    public Map<String, Boolean> features;
 }
