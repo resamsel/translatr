@@ -142,7 +142,10 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
   }
 
   ngAfterViewChecked(): void {
-    if (this.editor) {
+    // CodemirrorComponent creates its `codeMirror` instance asynchronously in its own
+    // ngAfterViewInit, so the ViewChild reference can resolve to the wrapper component
+    // before `codeMirror` itself exists — guard on both.
+    if (this.editor?.codeMirror) {
       this.editor.codeMirror.refresh();
       this.editor.registerOnChange(value => this.onChanged(value));
     }
