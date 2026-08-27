@@ -43,7 +43,7 @@ export const createRandomLocaleForProject = (
         )
       })),
       filter(({ localeName }) => Boolean(localeName)),
-      concatMap(({ locales, localeName }) =>
+      concatMap(({ locales: _locales, localeName }) =>
         localeService.create(
           {
             name: localeName,
@@ -109,7 +109,7 @@ export const selectRandomLocaleForProject = (
     .pipe(
       map(paged => pickRandomly(paged.list)),
       concatMap(locale => {
-        if (Boolean(locale)) {
+        if (locale) {
           return of(locale);
         }
 
@@ -144,7 +144,7 @@ export const selectLocaleForProject = (
     .pipe(
       map(paged => paged.list.find(locale => locale.name === localeName)),
       concatMap(locale => {
-        if (Boolean(locale)) {
+        if (locale) {
           return of(locale);
         }
 
@@ -195,7 +195,7 @@ export const deleteRandomLocale = (
         )
     ),
     filter(({ locales }) => locales.length > 0),
-    concatMap(({ accessToken, project, locales }) =>
+    concatMap(({ accessToken, project: _project, locales }) =>
       localeService.delete(pickRandomly(locales.map(locale => locale.id)), {
         params: {
           access_token: chooseAccessToken(

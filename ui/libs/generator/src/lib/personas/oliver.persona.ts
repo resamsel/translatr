@@ -67,14 +67,14 @@ export class OliverPersona extends Persona {
         members: project.members.filter(member => member.role !== MemberRole.Owner)
       })),
       // TODO: add a random member if none exist yet
-      filter(({ project, members }) => members.length > 0),
+      filter(({ project: _project, members }) => members.length > 0),
       map(({ accessToken, project, members }) => ({
         project,
         accessToken,
         members,
         member: pickRandomly(members)
       })),
-      concatMap(({ accessToken, project, members, member }) =>
+      concatMap(({ accessToken, project, members: _members, member }) =>
         this.memberService
           .update(
             {

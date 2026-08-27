@@ -17,7 +17,7 @@ interface Data {
   styleUrls: ['./project-member-edit-dialog.component.scss']
 })
 export class ProjectMemberEditDialogComponent {
-  users$ = this.facade.users$.pipe(map(users => (!!users ? users.list : [])));
+  users$ = this.facade.users$.pipe(map(users => (users ? users.list : [])));
 
   constructor(
     readonly dialogRef: MatDialogRef<ProjectMemberEditDialogComponent, Member>,
@@ -27,7 +27,7 @@ export class ProjectMemberEditDialogComponent {
   ) {}
 
   onUserFilter(search: string): void {
-    if (!!search) {
+    if (search) {
       this.facade.loadUsers({ search, limit: 8, order: 'username asc' });
     }
   }

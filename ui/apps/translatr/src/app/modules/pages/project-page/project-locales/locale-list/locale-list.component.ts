@@ -32,7 +32,7 @@ export class LocaleListComponent {
   @Output() edit = new EventEmitter<Locale>();
   @Output() delete = new EventEmitter<Locale>();
   trackByFn = trackByFn;
-  // @ts-ignore
+  // @ts-expect-error -- TS6133: private field is only "used" via @HostBinding's reflection, invisible to static analysis
   @HostBinding('style.display') private readonly display = 'block';
   readonly fileTypes: { type: string; name: string }[] = fileTypes.map(fileType => ({
     type: fileType,

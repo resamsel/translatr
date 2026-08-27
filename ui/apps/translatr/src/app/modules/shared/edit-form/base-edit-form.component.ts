@@ -97,7 +97,7 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
     if (violations !== undefined) {
       violations.forEach((violation: ConstraintViolation) => {
         const control = this.form.get(violation.field);
-        if (!!control) {
+        if (control) {
           control.setErrors({ violation: violation.message });
           control.markAsTouched();
         }
@@ -106,7 +106,7 @@ export abstract class BaseEditFormComponent<T, F extends Identifiable, R extends
     this.onInvalid(error);
   }
 
-  protected onInvalid(error: Error | ConstraintViolationErrorInfo | undefined): void {
+  protected onInvalid(_error: Error | ConstraintViolationErrorInfo | undefined): void {
     if (this.changeDetectorRef !== undefined) {
       this.changeDetectorRef.markForCheck();
     }

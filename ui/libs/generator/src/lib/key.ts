@@ -52,7 +52,7 @@ export const createRandomKeyForProject = (
         )
       })),
       filter(({ keyName }) => keyName !== undefined && keyName !== ''),
-      concatMap(({ keys, keyName }) =>
+      concatMap(({ keys: _keys, keyName }) =>
         keyService.create(
           {
             name: keyName,
@@ -115,7 +115,7 @@ export const selectRandomKeyForProject = (
     .pipe(
       map(paged => pickRandomly(paged.list)),
       concatMap(key => {
-        if (Boolean(key)) {
+        if (key) {
           return of(key);
         }
 
@@ -161,7 +161,7 @@ export const deleteRandomKey = (
         )
     ),
     filter(({ keys }) => keys.length > 0),
-    concatMap(({ accessToken, project, keys }) =>
+    concatMap(({ accessToken, project: _project, keys }) =>
       keyService.delete(pickRandomly(keys.map((key: Key) => key.id)), {
         params: {
           access_token: chooseAccessToken(

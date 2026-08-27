@@ -32,15 +32,16 @@
         [matTooltip]="t('locale.progress.tooltip', {progress: locale.progress * 100 | number:'1.0-1'})"
         matListItemLine
       ></mat-progress-bar>
-      <a
+      <button
         (click)="$event.stopPropagation(); $event.preventDefault()"
         [matMenuTriggerFor]="menu"
         [matTooltip]="t('locale.download.button')"
         class="download"
         mat-icon-button
+        type="button"
       >
         <mat-icon>cloud_download</mat-icon>
-      </a>
+      </button>
       <mat-menu #menu="matMenu">
         <a
           *ngFor="let fileType of fileTypes"

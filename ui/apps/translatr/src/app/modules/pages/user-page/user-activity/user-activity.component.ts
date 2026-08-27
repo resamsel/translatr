@@ -13,7 +13,7 @@ export class UserActivityComponent implements OnInit {
   readonly criteria$ = this.facade.criteria$;
   readonly activities$ = this.facade.activities$;
   readonly aggregated$ = this.facade.activityAggregated$.pipe(
-    map(pagedList => (!!pagedList ? pagedList.list : []))
+    map(pagedList => (pagedList ? pagedList.list : []))
   );
 
   constructor(private readonly facade: UserFacade) {}

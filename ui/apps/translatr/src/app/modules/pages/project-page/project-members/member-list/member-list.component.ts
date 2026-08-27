@@ -47,7 +47,7 @@ export class MemberListComponent {
   @Output() delete = new EventEmitter<Member>();
 
   project$ = this.facade.project$;
-  // @ts-ignore
+  // @ts-expect-error -- TS6133: private field is only "used" via @HostBinding's reflection, invisible to static analysis
   @HostBinding('style.display') private readonly display = 'block';
 
   // filters = [

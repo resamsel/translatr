@@ -52,7 +52,7 @@ const reducer = createReducer(
     ...state,
     users: action.payload
   })),
-  on(loadProject, (state, action) => ({ ...state })),
+  on(loadProject, (state, _action) => ({ ...state })),
   on(projectLoaded, (state, { payload }) => ({ ...state, project: payload })),
   on(projectCreated, projectUpdated, (state, action) => ({
     ...state,
@@ -62,7 +62,7 @@ const reducer = createReducer(
     ...state,
     projectError: action.error
   })),
-  on(unloadProject, (state, action) => ({
+  on(unloadProject, (state, _action) => ({
     ...state,
     project: undefined,
     projectError: undefined

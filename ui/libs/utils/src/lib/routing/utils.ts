@@ -20,7 +20,7 @@ export const navigate = <T>(router: Router, criteria: Partial<T>): Promise<boole
     queryParams: Object.keys(criteria).reduce(
       (acc, curr) => ({
         ...acc,
-        [curr]: !!criteria[curr] ? criteria[curr] : null
+        [curr]: criteria[curr] ? criteria[curr] : null
       }),
       {}
     )

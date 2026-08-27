@@ -37,7 +37,7 @@ export const shortenNumber = (value: number): string => {
   name: 'shortNumber'
 })
 export class ShortNumberPipe implements PipeTransform {
-  transform(value: any, ...args: any[]): any {
+  transform(value: any, ..._args: any[]): any {
     if (value === null || typeof value !== 'number') {
       return null;
     }

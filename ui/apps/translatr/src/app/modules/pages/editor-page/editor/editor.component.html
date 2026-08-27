@@ -61,12 +61,13 @@
           </button>
         </div>
         <a mat-button [routerLink]="[]" transloco="button.close">Close</a>
-        <a
+        <button
           mat-button
+          type="button"
           [disabled]="!message?.dirty"
           transloco="button.reset"
           (click)="onReset()"
-        >Reset</a>
+        >Reset</button>
       </div>
       <div class="content">
         <ngx-codemirror

@@ -66,7 +66,7 @@ export class SebastianPersona extends Persona {
         accessToken,
         members: project.members.filter(member => member.role !== MemberRole.Owner)
       })),
-      filter(({ project, members }) => members.length > 0),
+      filter(({ project: _project, members }) => members.length > 0),
       concatMap(({ accessToken, project, members }) =>
         this.memberService
           .delete(pickRandomly(members).id, { params: { access_token: accessToken.key } })

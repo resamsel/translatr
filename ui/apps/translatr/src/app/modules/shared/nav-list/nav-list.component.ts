@@ -34,7 +34,7 @@ const filterActive = (criteria: FilterCriteria): boolean => {
 export class NavListComponent {
   @Input() filters = defaultFilters;
   @Output() readonly filter = new EventEmitter<FilterCriteria>();
-  queryParams: {};
+  queryParams: Record<string, any>;
   searchEnabled = false;
 
   private _criteria: FilterCriteria | undefined;

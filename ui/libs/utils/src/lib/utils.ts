@@ -40,7 +40,7 @@ export function cartesianProduct<T>(arr: T[][]): T[][] {
 
 export const trackByFn = (index: number, item: { id?: string | number }): string => `${item.id}`;
 
-export const pickKeys = <T>(obj: T, keys: (keyof T)[]): {} => {
+export const pickKeys = <T>(obj: T, keys: (keyof T)[]): Partial<T> => {
   if (obj === undefined || obj === null) {
     return {};
   }

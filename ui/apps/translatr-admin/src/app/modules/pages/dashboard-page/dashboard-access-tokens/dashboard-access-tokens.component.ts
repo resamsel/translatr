@@ -76,7 +76,7 @@ export class DashboardAccessTokensComponent implements OnDestroy {
     return this.me$.pipe(hasEditAccessTokenPermission(accessToken));
   }
 
-  onEdit(accessToken: AccessToken) {
+  onEdit(_accessToken: AccessToken) {
     // TODO: implement
     // this.facade.deleteAccessToken(accessToken);
   }

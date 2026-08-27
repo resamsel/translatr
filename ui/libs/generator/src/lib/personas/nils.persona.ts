@@ -75,7 +75,7 @@ export class NilsPersona extends Persona {
           )
       ),
       map(
-        ({ accessToken, project, messages }) =>
+        ({ accessToken: _accessToken, project, messages }) =>
           `${messages.length} translations in project ${project.ownerUsername}/${project.name} viewed`
       ),
       catchError((err: HttpErrorResponse) => of(errorMessage(err)))

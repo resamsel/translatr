@@ -5,7 +5,7 @@
   [matMenuTriggerFor]="userMenu"
   [matTooltip]="me?.name"
 >
-  <img class="icon" ngxGravatar [email]="me.email" size="36"/>
+  <img class="icon" ngxGravatar [email]="me.email" size="36" [alt]="me.name"/>
 </button>
 <mat-menu #userMenu="matMenu" xPosition="before">
   <ng-content></ng-content>

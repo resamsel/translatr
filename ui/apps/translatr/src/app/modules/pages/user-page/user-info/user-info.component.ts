@@ -19,7 +19,7 @@ export class UserInfoComponent implements OnInit {
   readonly user$ = this.facade.user$;
   readonly projects$ = this.facade.projects$.pipe(
     map((pagedList: PagedList<Project>) =>
-      !!pagedList
+      pagedList
         ? {
             ...pagedList,
             list: pagedList.list.slice(0, 3),

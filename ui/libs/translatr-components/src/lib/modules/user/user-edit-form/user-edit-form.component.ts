@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   ConstraintViolation,
@@ -13,17 +13,17 @@ import {
   templateUrl: './user-edit-form.component.html',
   styleUrls: ['./user-edit-form.component.css']
 })
-export class UserEditFormComponent implements OnInit {
+export class UserEditFormComponent {
   @Input()
   set user(user: Partial<User>) {
-    if (Boolean(user)) {
+    if (user) {
       this.form.patchValue(user);
     }
   }
 
   @Input()
   set errors(error: ConstraintViolationErrorInfo) {
-    if (!Boolean(error)) {
+    if (!error) {
       return;
     }
 
@@ -52,10 +52,6 @@ export class UserEditFormComponent implements OnInit {
     preferredLanguage: new FormControl()
   });
   roles: UserRole[] = [UserRole.Admin, UserRole.User];
-
-  constructor() {}
-
-  ngOnInit(): void {}
 
   onSubmit() {
     this.edit.emit(this.form.getRawValue() as User);

@@ -8,7 +8,7 @@ export class TitleService {
   constructor(private readonly titleService: Title) {}
 
   setTitle(title: string): void {
-    if (!!title) {
+    if (title) {
       this.titleService.setTitle(`${title} - Translatr`);
     } else {
       this.titleService.setTitle('Translatr');
