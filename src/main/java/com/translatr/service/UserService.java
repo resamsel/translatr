@@ -4,6 +4,7 @@ import com.translatr.criteria.UserCriteria;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.UserDto;
 import com.translatr.mapper.DtoMapper;
+import com.translatr.model.ActionType;
 import com.translatr.model.LinkedAccount;
 import com.translatr.model.User;
 import com.translatr.repository.UserFeatureFlagRepository;
@@ -21,12 +22,15 @@ public class UserService {
     private final UserRepository            userRepo;
     private final UserFeatureFlagRepository featureFlagRepo;
     private final DtoMapper                 mapper;
+    private final ActivityLogger            activity;
 
     @Inject
-    public UserService(UserRepository userRepo, UserFeatureFlagRepository featureFlagRepo, DtoMapper mapper) {
+    public UserService(UserRepository userRepo, UserFeatureFlagRepository featureFlagRepo, DtoMapper mapper,
+                       ActivityLogger activity) {
         this.userRepo        = userRepo;
         this.featureFlagRepo = featureFlagRepo;
         this.mapper          = mapper;
+        this.activity        = activity;
     }
 
     public PagedList<UserDto> find(UserCriteria c) {
@@ -60,6 +64,7 @@ public class UserService {
     @Transactional
     public UserDto update(UserDto dto) {
         User u = userRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        UserDto before = mapper.toDto(u);
         if (dto.username        != null) u.username        = dto.username;
         if (dto.name            != null) u.name            = dto.name;
         if (dto.email           != null) u.email           = dto.email;
@@ -68,7 +73,9 @@ public class UserService {
             if (u.settings == null) u.settings = new java.util.HashMap<>();
             u.settings.putAll(dto.settings);
         }
-        return mapper.toDto(u);
+        UserDto after = mapper.toDto(u);
+        activity.publish(ActionType.Update, null, UserDto.class, before, after);
+        return after;
     }
 
     @Transactional

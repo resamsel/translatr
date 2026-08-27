@@ -4,6 +4,7 @@ import com.translatr.criteria.KeyCriteria;
 import com.translatr.dto.KeyDto;
 import com.translatr.dto.PagedList;
 import com.translatr.mapper.DtoMapper;
+import com.translatr.model.ActionType;
 import com.translatr.model.Key;
 import com.translatr.repository.KeyRepository;
 import com.translatr.repository.ProjectRepository;
@@ -20,12 +21,15 @@ public class KeyService {
     private final KeyRepository     keyRepo;
     private final ProjectRepository projectRepo;
     private final DtoMapper         mapper;
+    private final ActivityLogger    activity;
 
     @Inject
-    public KeyService(KeyRepository keyRepo, ProjectRepository projectRepo, DtoMapper mapper) {
+    public KeyService(KeyRepository keyRepo, ProjectRepository projectRepo, DtoMapper mapper,
+                      ActivityLogger activity) {
         this.keyRepo     = keyRepo;
         this.projectRepo = projectRepo;
         this.mapper      = mapper;
+        this.activity    = activity;
     }
 
     public PagedList<KeyDto> find(KeyCriteria c) {
@@ -57,20 +61,28 @@ public class KeyService {
                 .orElseThrow(NotFoundException::new);
         Key k = new Key(project, dto.name);
         keyRepo.persist(k);
-        return mapper.toDto(k);
+        KeyDto after = mapper.toDto(k);
+        activity.publish(ActionType.Create, project, KeyDto.class, null, after);
+        return after;
     }
 
     @Transactional
     public KeyDto update(KeyDto dto) {
         Key k = keyRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        KeyDto before = mapper.toDto(k);
         if (dto.name != null) k.name = dto.name;
-        return mapper.toDto(k);
+        KeyDto after = mapper.toDto(k);
+        activity.publish(ActionType.Update, k.project, KeyDto.class, before, after);
+        return after;
     }
 
     @Transactional
     public KeyDto delete(UUID id) {
         Key k = keyRepo.findByIdOptional(id).orElseThrow(NotFoundException::new);
+        KeyDto before = mapper.toDto(k);
+        var project = k.project;
         keyRepo.delete(k);
-        return mapper.toDto(k);
+        activity.publish(ActionType.Delete, project, KeyDto.class, before, null);
+        return before;
     }
 }

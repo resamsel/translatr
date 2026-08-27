@@ -1,6 +1,8 @@
 package com.translatr.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -39,15 +41,24 @@ public class LogEntry extends PanacheEntityBase {
     @Column(length = 1024 * 1024)
     public String after;
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    // Snapshots are DTOs that carry java.time fields (whenCreated/whenUpdated), so the
+    // mapper needs the JSR-310 module; a bare ObjectMapper throws on Instant.
+    private static final ObjectMapper MAPPER = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     public static <T> LogEntry from(ActionType type, User user, Project project,
                                     Class<T> clazz, T before, T after) {
+        return from(type, user, project, clazz.getName(), before, after);
+    }
+
+    public static LogEntry from(ActionType type, User user, Project project,
+                                String contentType, Object before, Object after) {
         LogEntry e = new LogEntry();
         e.type        = type;
         e.user        = user;
         e.project     = project;
-        e.contentType = clazz.getName();
+        e.contentType = contentType;
         try {
             if (before != null) e.before = MAPPER.writeValueAsString(before);
             if (after  != null) e.after  = MAPPER.writeValueAsString(after);

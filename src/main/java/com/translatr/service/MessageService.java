@@ -4,6 +4,7 @@ import com.translatr.criteria.MessageCriteria;
 import com.translatr.dto.MessageDto;
 import com.translatr.dto.PagedList;
 import com.translatr.mapper.DtoMapper;
+import com.translatr.model.ActionType;
 import com.translatr.model.Message;
 import com.translatr.repository.KeyRepository;
 import com.translatr.repository.LocaleRepository;
@@ -22,14 +23,16 @@ public class MessageService {
     private final LocaleRepository  localeRepo;
     private final KeyRepository     keyRepo;
     private final DtoMapper         mapper;
+    private final ActivityLogger    activity;
 
     @Inject
     public MessageService(MessageRepository messageRepo, LocaleRepository localeRepo,
-                          KeyRepository keyRepo, DtoMapper mapper) {
+                          KeyRepository keyRepo, DtoMapper mapper, ActivityLogger activity) {
         this.messageRepo = messageRepo;
         this.localeRepo  = localeRepo;
         this.keyRepo     = keyRepo;
         this.mapper      = mapper;
+        this.activity    = activity;
     }
 
     public PagedList<MessageDto> find(MessageCriteria c) {
@@ -54,20 +57,29 @@ public class MessageService {
         var key    = keyRepo.findByIdOptional(dto.keyId).orElseThrow(NotFoundException::new);
         Message m  = new Message(locale, key, dto.value);
         messageRepo.persist(m);
-        return mapper.toDto(m);
+        MessageDto after = mapper.toDto(m);
+        activity.publish(ActionType.Create, key.project, MessageDto.class, null, after);
+        return after;
     }
 
     @Transactional
     public MessageDto update(MessageDto dto) {
         Message m = messageRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        MessageDto before = mapper.toDto(m);
         if (dto.value != null) m.value = dto.value;
-        return mapper.toDto(m);
+        MessageDto after = mapper.toDto(m);
+        activity.publish(ActionType.Update, m.key != null ? m.key.project : null,
+                MessageDto.class, before, after);
+        return after;
     }
 
     @Transactional
     public MessageDto delete(UUID id) {
         Message m = messageRepo.findByIdOptional(id).orElseThrow(NotFoundException::new);
+        MessageDto before = mapper.toDto(m);
+        var project = m.key != null ? m.key.project : null;
         messageRepo.delete(m);
-        return mapper.toDto(m);
+        activity.publish(ActionType.Delete, project, MessageDto.class, before, null);
+        return before;
     }
 }

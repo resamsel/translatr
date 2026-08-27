@@ -2,6 +2,7 @@ package com.translatr.service;
 
 import com.translatr.dto.ProjectDto;
 import com.translatr.mapper.DtoMapper;
+import com.translatr.model.ActionType;
 import com.translatr.model.Project;
 import com.translatr.model.User;
 import com.translatr.repository.ProjectRepository;
@@ -17,6 +18,9 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +28,7 @@ class ProjectServiceTest {
 
     @Mock ProjectRepository projectRepo;
     @Mock DtoMapper         mapper;
+    @Mock ActivityLogger    activity;
 
     @InjectMocks ProjectService service;
 
@@ -67,6 +72,58 @@ class ProjectServiceTest {
         verify(projectRepo).persist(any(Project.class));
         assertThat(result.name).isEqualTo("my-project");
         assertThat(result.description).isEqualTo("A test project");
+    }
+
+    @Test
+    void create_publishesCreateActivity_forTheNewProject() {
+        User owner = new User();
+        owner.id = UUID.randomUUID();
+
+        ProjectDto dto = new ProjectDto();
+        dto.name = "my-project";
+
+        ProjectDto after = new ProjectDto();
+        when(mapper.toDto(any(Project.class))).thenReturn(after);
+
+        service.create(dto, owner);
+
+        verify(activity).publish(eq(ActionType.Create), any(Project.class), eq(ProjectDto.class),
+                isNull(), eq(after));
+    }
+
+    @Test
+    void update_publishesUpdateActivity_withBeforeAndAfter() {
+        UUID id      = UUID.randomUUID();
+        Project proj = projectWithId(id);
+
+        ProjectDto dto = new ProjectDto();
+        dto.id   = id;
+        dto.name = "updated-name";
+
+        ProjectDto before = new ProjectDto();
+        ProjectDto after  = new ProjectDto();
+        when(projectRepo.findByIdOptional(id)).thenReturn(Optional.of(proj));
+        when(mapper.toDto(proj)).thenReturn(before, after);
+
+        service.update(dto);
+
+        verify(activity).publish(eq(ActionType.Update), eq(proj), eq(ProjectDto.class),
+                eq(before), eq(after));
+    }
+
+    @Test
+    void delete_publishesDeleteActivity_withBeforeSnapshot() {
+        UUID id      = UUID.randomUUID();
+        Project proj = projectWithId(id);
+
+        ProjectDto before = new ProjectDto();
+        when(projectRepo.findByIdOptional(id)).thenReturn(Optional.of(proj));
+        when(mapper.toDto(proj)).thenReturn(before, new ProjectDto());
+
+        service.delete(id);
+
+        verify(activity).publish(eq(ActionType.Delete), eq(proj), eq(ProjectDto.class),
+                eq(before), isNull());
     }
 
     // -------------------------------------------------------------------------

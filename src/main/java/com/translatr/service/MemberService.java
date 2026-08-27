@@ -4,6 +4,7 @@ import com.translatr.criteria.MemberCriteria;
 import com.translatr.dto.MemberDto;
 import com.translatr.dto.PagedList;
 import com.translatr.mapper.DtoMapper;
+import com.translatr.model.ActionType;
 import com.translatr.model.ProjectRole;
 import com.translatr.model.ProjectUser;
 import com.translatr.repository.ProjectRepository;
@@ -23,14 +24,16 @@ public class MemberService {
     private final ProjectRepository     projectRepo;
     private final UserRepository        userRepo;
     private final DtoMapper             mapper;
+    private final ActivityLogger        activity;
 
     @Inject
     public MemberService(ProjectUserRepository memberRepo, ProjectRepository projectRepo,
-                         UserRepository userRepo, DtoMapper mapper) {
+                         UserRepository userRepo, DtoMapper mapper, ActivityLogger activity) {
         this.memberRepo  = memberRepo;
         this.projectRepo = projectRepo;
         this.userRepo    = userRepo;
         this.mapper      = mapper;
+        this.activity    = activity;
     }
 
     public PagedList<MemberDto> find(MemberCriteria c) {
@@ -55,20 +58,28 @@ public class MemberService {
         member.project = project;
         member.user    = user;
         memberRepo.persist(member);
-        return mapper.toDto(member);
+        MemberDto after = mapper.toDto(member);
+        activity.publish(ActionType.Create, project, MemberDto.class, null, after);
+        return after;
     }
 
     @Transactional
     public MemberDto update(MemberDto dto) {
         var member = memberRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        MemberDto before = mapper.toDto(member);
         if (dto.role != null) member.role = ProjectRole.valueOf(dto.role);
-        return mapper.toDto(member);
+        MemberDto after = mapper.toDto(member);
+        activity.publish(ActionType.Update, member.project, MemberDto.class, before, after);
+        return after;
     }
 
     @Transactional
     public MemberDto delete(Long id) {
         var member = memberRepo.findByIdOptional(id).orElseThrow(NotFoundException::new);
+        MemberDto before = mapper.toDto(member);
+        var project = member.project;
         memberRepo.delete(member);
-        return mapper.toDto(member);
+        activity.publish(ActionType.Delete, project, MemberDto.class, before, null);
+        return before;
     }
 }

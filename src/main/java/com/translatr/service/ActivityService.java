@@ -84,7 +84,9 @@ public class ActivityService {
         List<Object[]> rows = dataQuery.getResultList();
         List<AggregateDto> list = rows.stream().map(row -> {
             AggregateDto dto = new AggregateDto();
-            dto.date   = ((java.sql.Date) row[0]).toLocalDate();
+            // Hibernate 6 / the Pg driver hands back java.time.LocalDate for a `::date` column,
+            // but older drivers/paths yield java.sql.Date — accept either.
+            dto.date   = row[0] instanceof LocalDate ld ? ld : ((java.sql.Date) row[0]).toLocalDate();
             dto.millis = dto.date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
             dto.value  = ((Number) row[1]).intValue();
             return dto;

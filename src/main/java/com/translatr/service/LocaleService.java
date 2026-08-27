@@ -4,6 +4,7 @@ import com.translatr.criteria.LocaleCriteria;
 import com.translatr.dto.LocaleDto;
 import com.translatr.dto.PagedList;
 import com.translatr.mapper.DtoMapper;
+import com.translatr.model.ActionType;
 import com.translatr.model.Locale;
 import com.translatr.repository.LocaleRepository;
 import com.translatr.repository.ProjectRepository;
@@ -21,12 +22,15 @@ public class LocaleService {
     private final LocaleRepository  localeRepo;
     private final ProjectRepository projectRepo;
     private final DtoMapper         mapper;
+    private final ActivityLogger    activity;
 
     @Inject
-    public LocaleService(LocaleRepository localeRepo, ProjectRepository projectRepo, DtoMapper mapper) {
+    public LocaleService(LocaleRepository localeRepo, ProjectRepository projectRepo, DtoMapper mapper,
+                         ActivityLogger activity) {
         this.localeRepo  = localeRepo;
         this.projectRepo = projectRepo;
         this.mapper      = mapper;
+        this.activity    = activity;
     }
 
     public PagedList<LocaleDto> find(LocaleCriteria c) {
@@ -58,20 +62,28 @@ public class LocaleService {
                 .orElseThrow(NotFoundException::new);
         Locale l = new Locale(project, dto.name);
         localeRepo.persist(l);
-        return mapper.toDto(l);
+        LocaleDto after = mapper.toDto(l);
+        activity.publish(ActionType.Create, project, LocaleDto.class, null, after);
+        return after;
     }
 
     @Transactional
     public LocaleDto update(LocaleDto dto) {
         Locale l = localeRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        LocaleDto before = mapper.toDto(l);
         if (dto.name != null) l.name = dto.name;
-        return mapper.toDto(l);
+        LocaleDto after = mapper.toDto(l);
+        activity.publish(ActionType.Update, l.project, LocaleDto.class, before, after);
+        return after;
     }
 
     @Transactional
     public LocaleDto delete(UUID id) {
         Locale l = localeRepo.findByIdOptional(id).orElseThrow(NotFoundException::new);
+        LocaleDto before = mapper.toDto(l);
+        var project = l.project;
         localeRepo.delete(l);
-        return mapper.toDto(l);
+        activity.publish(ActionType.Delete, project, LocaleDto.class, before, null);
+        return before;
     }
 }

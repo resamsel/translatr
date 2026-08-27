@@ -3,6 +3,7 @@ package com.translatr.service;
 import com.translatr.dto.AccessTokenDto;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.AccessToken;
+import com.translatr.model.ActionType;
 import com.translatr.model.User;
 import com.translatr.repository.AccessTokenRepository;
 import jakarta.ws.rs.NotFoundException;
@@ -18,6 +19,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +28,7 @@ class AccessTokenServiceTest {
 
     @Mock AccessTokenRepository tokenRepo;
     @Mock DtoMapper             mapper;
+    @Mock ActivityLogger        activity;
 
     @InjectMocks AccessTokenService service;
 
@@ -60,6 +64,56 @@ class AccessTokenServiceTest {
         assertThat(result.name).isEqualTo("my-token");
         assertThat(result.scope).isEqualTo("read");
         assertThat(result.key).isNotBlank().doesNotContain("-"); // UUID stripped of dashes
+    }
+
+    @Test
+    void create_publishesCreateActivity_withNoProject() {
+        User owner = new User();
+        owner.id = UUID.randomUUID();
+
+        AccessTokenDto dto = new AccessTokenDto();
+        dto.name = "my-token";
+
+        AccessTokenDto after = new AccessTokenDto();
+        when(mapper.toDto(any(AccessToken.class))).thenReturn(after);
+
+        service.create(dto, owner);
+
+        verify(activity).publish(eq(ActionType.Create), isNull(), eq(AccessTokenDto.class),
+                isNull(), eq(after));
+    }
+
+    @Test
+    void update_publishesUpdateActivity_withBeforeAndAfter() {
+        AccessToken token = new AccessToken();
+        token.id = 1L;
+
+        AccessTokenDto dto = new AccessTokenDto();
+        dto.id   = 1L;
+        dto.name = "updated-name";
+
+        AccessTokenDto before = new AccessTokenDto();
+        AccessTokenDto after  = new AccessTokenDto();
+        when(tokenRepo.findByIdOptional(1L)).thenReturn(Optional.of(token));
+        when(mapper.toDto(token)).thenReturn(before, after);
+
+        service.update(dto);
+
+        verify(activity).publish(eq(ActionType.Update), isNull(), eq(AccessTokenDto.class),
+                eq(before), eq(after));
+    }
+
+    @Test
+    void delete_doesNotPublishActivity() {
+        AccessToken token = new AccessToken();
+        token.id = 5L;
+
+        when(tokenRepo.findByIdOptional(5L)).thenReturn(Optional.of(token));
+        when(mapper.toDto(token)).thenReturn(new AccessTokenDto());
+
+        service.delete(5L);
+
+        verifyNoInteractions(activity);
     }
 
     @Test

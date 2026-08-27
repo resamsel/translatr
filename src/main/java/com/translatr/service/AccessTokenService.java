@@ -5,6 +5,7 @@ import com.translatr.dto.AccessTokenDto;
 import com.translatr.dto.PagedList;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.AccessToken;
+import com.translatr.model.ActionType;
 import com.translatr.model.User;
 import com.translatr.repository.AccessTokenRepository;
 import com.translatr.repository.UserRepository;
@@ -22,12 +23,15 @@ public class AccessTokenService {
     private final AccessTokenRepository tokenRepo;
     private final UserRepository        userRepo;
     private final DtoMapper             mapper;
+    private final ActivityLogger        activity;
 
     @Inject
-    public AccessTokenService(AccessTokenRepository tokenRepo, UserRepository userRepo, DtoMapper mapper) {
+    public AccessTokenService(AccessTokenRepository tokenRepo, UserRepository userRepo, DtoMapper mapper,
+                              ActivityLogger activity) {
         this.tokenRepo = tokenRepo;
         this.userRepo  = userRepo;
         this.mapper    = mapper;
+        this.activity  = activity;
     }
 
     public PagedList<AccessTokenDto> find(AccessTokenCriteria c, UUID currentUserId) {
@@ -55,15 +59,20 @@ public class AccessTokenService {
         t.key   = java.util.UUID.randomUUID().toString().replace("-", "");
         t.scope = dto.scope;
         tokenRepo.persist(t);
-        return mapper.toDto(t);
+        AccessTokenDto after = mapper.toDto(t);
+        activity.publish(ActionType.Create, null, AccessTokenDto.class, null, after);
+        return after;
     }
 
     @Transactional
     public AccessTokenDto update(AccessTokenDto dto) {
         AccessToken t = tokenRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        AccessTokenDto before = mapper.toDto(t);
         if (dto.name  != null) t.name  = dto.name;
         if (dto.scope != null) t.scope = dto.scope;
-        return mapper.toDto(t);
+        AccessTokenDto after = mapper.toDto(t);
+        activity.publish(ActionType.Update, null, AccessTokenDto.class, before, after);
+        return after;
     }
 
     @Transactional
