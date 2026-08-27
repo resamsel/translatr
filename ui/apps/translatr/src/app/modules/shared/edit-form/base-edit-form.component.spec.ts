@@ -7,7 +7,7 @@ import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { BaseEditFormComponent } from './base-edit-form.component';
 
-interface DummyEntity extends Identifiable {}
+type DummyEntity = Identifiable;
 
 @Component({ template: '' })
 class DummyEditFormComponent extends BaseEditFormComponent<DummyEditFormComponent, DummyEntity> {

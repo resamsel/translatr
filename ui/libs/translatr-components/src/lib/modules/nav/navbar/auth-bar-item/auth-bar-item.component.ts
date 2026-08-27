@@ -12,6 +12,6 @@ export class AuthBarItemComponent {
   @Input() me: User;
   @Input() endpointUrl: string;
 
-  // @ts-ignore
+  // @ts-expect-error -- TS6133: private field is only "used" via @HostBinding's reflection, invisible to static analysis
   @HostBinding('class') private readonly clazz = 'auth-bar-item';
 }

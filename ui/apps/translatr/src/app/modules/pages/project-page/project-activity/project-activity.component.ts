@@ -12,7 +12,7 @@ export class ProjectActivityComponent implements OnInit {
   project$ = this.facade.project$;
   activities$ = this.facade.activities$;
   aggregated$ = this.facade.activityAggregated$.pipe(
-    map(pagedList => (!!pagedList ? pagedList.list : []))
+    map(pagedList => (pagedList ? pagedList.list : []))
   );
   criteria$ = this.facade.activitiesCriteria$;
 

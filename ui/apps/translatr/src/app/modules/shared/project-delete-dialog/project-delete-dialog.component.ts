@@ -68,7 +68,7 @@ export class ProjectDeleteDialogComponent {
     if (error && error.error.violations) {
       error.error.violations.forEach((violation: ConstraintViolation) => {
         const control = this.form.get(violation.field);
-        if (!!control) {
+        if (control) {
           control.setErrors({ violation: violation.message });
           control.markAsTouched();
         }

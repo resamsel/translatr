@@ -75,7 +75,7 @@ export class FerdinandPersona extends Persona {
           )
       ),
       map(
-        ({ accessToken, project, keys }) =>
+        ({ accessToken: _accessToken, project, keys }) =>
           `${keys.length} keys of project ${project.ownerUsername}/${project.name} viewed`
       ),
       catchError((err: HttpErrorResponse) => of(errorMessage(err)))

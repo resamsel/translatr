@@ -108,7 +108,7 @@ export const deleteRandomMessage = (
         )
     ),
     filter(({ messages }) => messages.length > 0),
-    concatMap(({ accessToken, project, messages }) =>
+    concatMap(({ accessToken, project: _project, messages }) =>
       messageService.delete(pickRandomly(messages.map(message => message.id)), {
         params: {
           access_token: chooseAccessToken(

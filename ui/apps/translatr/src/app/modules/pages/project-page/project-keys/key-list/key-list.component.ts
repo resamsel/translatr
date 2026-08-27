@@ -24,7 +24,7 @@ export class KeyListComponent {
   @Output() edit = new EventEmitter<Key>();
   @Output() delete = new EventEmitter<Key>();
   trackByFn = trackByFn;
-  // @ts-ignore
+  // @ts-expect-error -- TS6133: private field is only "used" via @HostBinding's reflection, invisible to static analysis
   @HostBinding('style.display') private readonly display = 'block';
 
   constructor(

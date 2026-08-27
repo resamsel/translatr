@@ -1,3 +1,7 @@
+// This package ships no .d.ts for its main entry, so a static `import` has nothing to
+// type-check against; it also needs to run before any subsequent import resolves, which
+// `require()` guarantees.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('@momothepug/tsmodule-alias').play('./');
 
 import Command, { flags } from '@oclif/command';

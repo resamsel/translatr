@@ -7,8 +7,8 @@ describe('LoadGenerate', () => {
 
     // when
     const actual = await LetsGenerateCommand.run(argv).then(
-      result => 'result',
-      reason => 'error'
+      _result => 'result',
+      _reason => 'error'
     );
 
     // then

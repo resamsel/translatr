@@ -138,9 +138,11 @@ export class EntityTableComponent implements OnInit, AfterContentInit {
    * Selects all rows if they are not all selected; otherwise clear selection.
    */
   masterToggle() {
-    this.isAllSelected()
-      ? this.selection.clear()
-      : this.dataSource.list.forEach(row => this.selection.select(row));
+    if (this.isAllSelected()) {
+      this.selection.clear();
+    } else {
+      this.dataSource.list.forEach(row => this.selection.select(row));
+    }
   }
 
   onSelectionChange(element: Entity) {

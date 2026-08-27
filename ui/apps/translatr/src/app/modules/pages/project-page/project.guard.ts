@@ -11,7 +11,7 @@ export class ProjectGuard implements CanActivate {
 
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    _state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     this.facade.loadProject(route.params.username, route.params.projectName);
     return of(true);

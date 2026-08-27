@@ -21,12 +21,13 @@ export const extractUniqueness = (violation: ConstraintViolation): string | unde
     case 'error.usernameunique':
     case 'error.projectnameunique':
     case 'error.projectuserunique':
-    case 'error.accesstokennameunique':
-      if (!Boolean(violation.invalidValue)) {
+    case 'error.accesstokennameunique': {
+      if (!violation.invalidValue) {
         return undefined;
       }
       const key = Object.keys(violation.invalidValue)[0];
       return `${key}.${violation.field}: ${violation.invalidValue[key][violation.field]}`;
+    }
     default:
       return undefined;
   }

@@ -1,3 +1,3 @@
 export class LanguageSwicher {
-  updatePreferredLanguage(language: string): void {}
+  updatePreferredLanguage(_language: string): void {}
 }

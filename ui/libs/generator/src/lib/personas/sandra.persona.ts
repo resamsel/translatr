@@ -75,7 +75,7 @@ export class SandraPersona extends Persona {
           )
       ),
       map(
-        ({ accessToken, project, locales }) =>
+        ({ accessToken: _accessToken, project, locales }) =>
           `${locales.length} languages of project ${project.ownerUsername}/${project.name} viewed`
       ),
       catchError((err: HttpErrorResponse) => of(errorMessage(err)))

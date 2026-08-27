@@ -86,7 +86,7 @@ export class ListHeaderComponent implements OnInit {
   }
 
   private updateCriteria(): void {
-    if (!!this.criteria) {
+    if (this.criteria) {
       this.selection = this.filters
         .filter(filter => this.criteria[filter.key] !== undefined)
         .map(filter => ({

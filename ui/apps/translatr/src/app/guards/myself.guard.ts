@@ -14,7 +14,7 @@ export class MyselfGuard implements CanActivate {
 
   canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    _state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     return this.appFacade.me$.pipe(
       map((me: User) => {

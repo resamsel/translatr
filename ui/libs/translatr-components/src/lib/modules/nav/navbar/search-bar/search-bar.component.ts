@@ -37,7 +37,7 @@ export class SearchBarComponent implements OnInit {
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
   autocompleteOptions: Option[] = [];
 
-  @Output() search = new EventEmitter<RequestCriteria>();
+  @Output() searchChange = new EventEmitter<RequestCriteria>();
 
   private _options: ReadonlyArray<Option> = [];
 
@@ -57,7 +57,7 @@ export class SearchBarComponent implements OnInit {
       criteria.search = '';
     }
 
-    this.search.emit({
+    this.searchChange.emit({
       ...this._criteria,
       ...criteria
     });

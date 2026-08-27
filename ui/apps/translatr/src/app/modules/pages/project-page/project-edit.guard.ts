@@ -11,8 +11,8 @@ export class ProjectEditGuard implements CanActivate {
   constructor(private readonly facade: ProjectFacade) {}
 
   canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    _route: ActivatedRouteSnapshot,
+    _state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.facade.canEdit$.pipe(take(1));
   }
