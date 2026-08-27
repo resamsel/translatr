@@ -49,6 +49,10 @@ export const createRandomProject = (
     )
     .pipe(
       retry(3),
+      // A freshly created project has no contributors yet (only an owner, who isn't a
+      // ProjectUser row) — set members: [] here so callers can treat the result the same
+      // way as a project fetched with ?fetch=members, regardless of which path returned it.
+      map(project => ({ ...project, members: [] })),
       concatMap(project =>
         combineLatest(
           _.sample(localeNames, Math.ceil(Math.random() * localeNames.length))

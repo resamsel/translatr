@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+import org.hibernate.exception.ConstraintViolationException;
 
 public class ExceptionMappers {
 
@@ -16,6 +17,21 @@ public class ExceptionMappers {
             return Response.status(404)
                     .type(MediaType.APPLICATION_JSON)
                     .entity(new ErrorResponse(404, e.getMessage() != null ? e.getMessage() : "Not found"))
+                    .build();
+        }
+    }
+
+    // Two concurrent requests racing to create the same unique resource (e.g. a locale
+    // name within a project) hit a DB unique constraint. That's a client-correctable
+    // conflict, not a server failure — map it to 409 instead of leaking a raw 500 with
+    // a Postgres stack trace.
+    @Provider
+    public static class ConstraintViolationMapper implements ExceptionMapper<ConstraintViolationException> {
+        @Override
+        public Response toResponse(ConstraintViolationException e) {
+            return Response.status(409)
+                    .type(MediaType.APPLICATION_JSON)
+                    .entity(new ErrorResponse(409, "Conflict: resource already exists"))
                     .build();
         }
     }
