@@ -21,6 +21,7 @@
     "readme:lets-generate": "dist/lets-generate --document > ./libs/generator/README.md",
     "lint": "nx run-many --target=lint --all",
     "lint:fix": "nx run-many --target=lint --all --fix",
+    "pretest": "npm run buildinfo",
     "test": "nx run-many --target=test --all --code-coverage=true",
     "e2e": "nx e2e translatr-e2e --configuration production",
     "e2e:ui:watch": "nx e2e translatr-e2e --watch",
