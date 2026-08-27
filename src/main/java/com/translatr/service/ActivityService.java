@@ -32,13 +32,13 @@ public class ActivityService {
     public PagedList<ActivityDto> findByUser(UUID userId, int offset, int limit) {
         var list  = logRepo.findByUser(userId, offset / Math.max(limit,1), limit)
                            .stream().map(mapper::toDto).collect(Collectors.toList());
-        return new PagedList<>(list, list.size(), offset, limit);
+        return new PagedList<>(list, logRepo.countByUser(userId), offset, limit);
     }
 
     public PagedList<ActivityDto> findByProject(UUID projectId, int offset, int limit) {
         var list  = logRepo.findByProject(projectId, offset / Math.max(limit,1), limit)
                            .stream().map(mapper::toDto).collect(Collectors.toList());
-        return new PagedList<>(list, list.size(), offset, limit);
+        return new PagedList<>(list, logRepo.countByProject(projectId), offset, limit);
     }
 
     /**
