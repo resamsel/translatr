@@ -14,8 +14,16 @@ public class LogEntryRepository implements PanacheRepositoryBase<LogEntry, UUID>
                 .page(page, size).list();
     }
 
+    public long countByUser(UUID userId) {
+        return count("user.id = ?1", userId);
+    }
+
     public List<LogEntry> findByProject(UUID projectId, int page, int size) {
         return find("project.id = ?1 ORDER BY whenCreated DESC", projectId)
                 .page(page, size).list();
+    }
+
+    public long countByProject(UUID projectId) {
+        return count("project.id = ?1", projectId);
     }
 }

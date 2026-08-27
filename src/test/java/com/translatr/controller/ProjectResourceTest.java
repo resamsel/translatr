@@ -19,7 +19,10 @@ class ProjectResourceTest {
             .then()
             .statusCode(200)
             .body("list",     notNullValue())
-            .body("limit",    notNullValue());
+            .body("limit",    notNullValue())
+            // the Angular "Load more" pager keys off these — they must be on the wire
+            .body("hasNext",  notNullValue())
+            .body("hasPrev",  is(false));
     }
 
     @Test
