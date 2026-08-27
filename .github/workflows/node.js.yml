@@ -22,54 +22,35 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [20.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: npm
+        cache-dependency-path: ui/package-lock.json
 
-    - name: Build translatr-ui
+    - name: Lint, test and build translatr-ui
       working-directory: ui
       run: |
         npm install
-        npm run build
+        npm run lint
+        npm run test
+        npm run build:prod
+
+    - name: Upload UI coverage report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ui-coverage-report
+        path: ui/coverage
+        if-no-files-found: ignore
 
     - name: Build lets-release
       working-directory: lets-release
       run: |
         npm install
         npm run build
-
-    - name: Publish Unit Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v1.6
-      if: always()
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        files: ./**/test-reports/*.xml
-
-    - name: Generate Report UI
-      id: xunit-viewer-ui
-      uses: AutoModality/action-xunit-viewer@v1
-      with:
-        results: ui/tmp/test-reports
-        output: test-report-ui.html
-    - name: Attach Report UI
-      uses: actions/upload-artifact@v1
-      with:
-        name: ${{ steps.xunit-viewer-ui.outputs.report-name }}
-        path: ${{ steps.xunit-viewer-ui.outputs.report-file }}
-
-    - name: Generate Report Lets Release
-      id: xunit-viewer-lets-release
-      uses: AutoModality/action-xunit-viewer@v1
-      with:
-        results: lets-release/tmp/test-reports
-        output: test-report-lets-release.html
-    - name: Attach Report Lets Release
-      uses: actions/upload-artifact@v1
-      with:
-        name: ${{ steps.xunit-viewer-lets-release.outputs.report-name }}
-        path: ${{ steps.xunit-viewer-lets-release.outputs.report-file }}
