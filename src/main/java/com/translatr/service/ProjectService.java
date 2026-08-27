@@ -4,6 +4,7 @@ import com.translatr.criteria.ProjectCriteria;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.ProjectDto;
 import com.translatr.mapper.DtoMapper;
+import com.translatr.model.ActionType;
 import com.translatr.model.Project;
 import com.translatr.model.User;
 import com.translatr.repository.ProjectRepository;
@@ -27,14 +28,17 @@ public class ProjectService {
     private final UserRepository        userRepo;
     private final ProjectUserRepository memberRepo;
     private final DtoMapper             mapper;
+    private final ActivityLogger        activity;
 
     @Inject
     public ProjectService(ProjectRepository projectRepo, UserRepository userRepo,
-                           ProjectUserRepository memberRepo, DtoMapper mapper) {
+                           ProjectUserRepository memberRepo, DtoMapper mapper,
+                           ActivityLogger activity) {
         this.projectRepo = projectRepo;
         this.userRepo    = userRepo;
         this.memberRepo  = memberRepo;
         this.mapper      = mapper;
+        this.activity    = activity;
     }
 
     private static boolean wants(String fetch, String association) {
@@ -76,7 +80,9 @@ public class ProjectService {
         p.description = dto.description;
         p.owner       = owner;
         projectRepo.persist(p);
-        return mapper.toDto(p);
+        ProjectDto after = mapper.toDto(p);
+        activity.publish(ActionType.Create, p, ProjectDto.class, null, after);
+        return after;
     }
 
     @Transactional
@@ -84,9 +90,12 @@ public class ProjectService {
     public ProjectDto update(ProjectDto dto) {
         Project p = projectRepo.findByIdOptional(dto.id)
                 .orElseThrow(NotFoundException::new);
+        ProjectDto before = mapper.toDto(p);
         if (dto.name        != null) p.name        = dto.name;
         if (dto.description != null) p.description = dto.description;
-        return mapper.toDto(p);
+        ProjectDto after = mapper.toDto(p);
+        activity.publish(ActionType.Update, p, ProjectDto.class, before, after);
+        return after;
     }
 
     @Transactional
@@ -94,7 +103,9 @@ public class ProjectService {
     public ProjectDto delete(UUID id) {
         Project p = projectRepo.findByIdOptional(id)
                 .orElseThrow(NotFoundException::new);
+        ProjectDto before = mapper.toDto(p);
         p.deleted = true;
+        activity.publish(ActionType.Delete, p, ProjectDto.class, before, null);
         return mapper.toDto(p);
     }
 }

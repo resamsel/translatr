@@ -2,6 +2,7 @@ package com.translatr.service;
 
 import com.translatr.dto.UserDto;
 import com.translatr.mapper.DtoMapper;
+import com.translatr.model.ActionType;
 import com.translatr.model.User;
 import com.translatr.repository.UserFeatureFlagRepository;
 import com.translatr.repository.UserRepository;
@@ -21,6 +22,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +32,7 @@ class UserServiceTest {
     @Mock UserRepository            userRepo;
     @Mock UserFeatureFlagRepository featureFlagRepo;
     @Mock DtoMapper                 mapper;
+    @Mock ActivityLogger            activity;
 
     @InjectMocks UserService service;
 
@@ -142,6 +146,39 @@ class UserServiceTest {
         assertThat(user.settings)
                 .containsEntry("existing", "value")
                 .containsEntry("new", "entry");
+    }
+
+    @Test
+    void update_publishesUpdateActivity_withBeforeAndAfter() {
+        UUID id   = UUID.randomUUID();
+        User user = userWithId(id);
+
+        UserDto dto = new UserDto();
+        dto.id   = id;
+        dto.name = "New Name";
+
+        UserDto before = new UserDto();
+        UserDto after  = new UserDto();
+        when(userRepo.findByIdOptional(id)).thenReturn(Optional.of(user));
+        when(mapper.toDto(user)).thenReturn(before, after);
+
+        service.update(dto);
+
+        verify(activity).publish(eq(ActionType.Update), isNull(), eq(UserDto.class),
+                eq(before), eq(after));
+    }
+
+    @Test
+    void delete_doesNotPublishActivity() {
+        UUID id   = UUID.randomUUID();
+        User user = userWithId(id);
+
+        when(userRepo.findByIdOptional(id)).thenReturn(Optional.of(user));
+        when(mapper.toDto(user)).thenReturn(new UserDto());
+
+        service.delete(id);
+
+        verifyNoInteractions(activity);
     }
 
     @Test
