@@ -2,6 +2,7 @@ package com.translatr.mapper;
 
 import com.translatr.dto.*;
 import com.translatr.model.*;
+import com.translatr.util.EmailUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -16,6 +17,7 @@ public class DtoMapper {
         d.name            = u.name;
         d.username        = u.username;
         d.email           = u.email;
+        d.emailHash       = EmailUtils.hashEmail(u.email);
         d.role            = u.role != null ? u.role.name() : null;
         d.preferredLocale = u.preferredLocale;
         d.settings        = u.settings;
@@ -32,9 +34,10 @@ public class DtoMapper {
         d.description  = p.description;
         d.wordCount    = p.wordCount;
         if (p.owner != null) {
-            d.ownerId       = p.owner.id;
-            d.ownerName     = p.owner.name;
-            d.ownerUsername = p.owner.username;
+            d.ownerId         = p.owner.id;
+            d.ownerName       = p.owner.name;
+            d.ownerUsername   = p.owner.username;
+            d.ownerEmailHash  = EmailUtils.hashEmail(p.owner.email);
         }
         return d;
     }
@@ -125,9 +128,10 @@ public class DtoMapper {
             d.projectName = pu.project.name;
         }
         if (pu.user != null) {
-            d.userId      = pu.user.id;
+            d.userId       = pu.user.id;
             d.userUsername = pu.user.username;
-            d.userName    = pu.user.name;
+            d.userName     = pu.user.name;
+            d.userEmailHash = EmailUtils.hashEmail(pu.user.email);
         }
         return d;
     }

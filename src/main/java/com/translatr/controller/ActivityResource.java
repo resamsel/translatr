@@ -26,10 +26,14 @@ public class ActivityResource {
     }
 
     @GET @Path("/activities") @PermitAll
-    public PagedList<ActivityDto> find(@QueryParam("offset") @DefaultValue("0") int offset,
+    public PagedList<ActivityDto> find(@QueryParam("userId") UUID userId,
+                                       @QueryParam("offset") @DefaultValue("0") int offset,
                                        @QueryParam("limit")  @DefaultValue("20") int limit) {
-        var user = currentUserResolver.resolve();
-        return activityService.findByUser(user.id, offset, limit);
+        // An explicit userId (e.g. viewing another user's activity feed) never needs the
+        // current-user lookup — and this endpoint is @PermitAll, so resolving "me" would
+        // blow up for anonymous callers that don't pass one.
+        UUID targetUserId = userId != null ? userId : currentUserResolver.resolve().id;
+        return activityService.findByUser(targetUserId, offset, limit);
     }
 
     @GET @Path("/user/{userId}/activity") @PermitAll

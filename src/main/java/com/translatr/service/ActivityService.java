@@ -66,7 +66,10 @@ public class ActivityService {
 
         var countQuery = em.createNativeQuery(
                 "SELECT count(*) FROM (" + sql + ") sub");
-        var dataQuery  = em.createNativeQuery(sql + " LIMIT ? OFFSET ?");
+        // Native queries can't mix JDBC-style "?" with ordinal "?N" placeholders in the same
+        // query, so LIMIT/OFFSET use ordinal params too, continuing on from the WHERE params.
+        var dataQuery  = em.createNativeQuery(
+                sql + " LIMIT ?" + paramIdx + " OFFSET ?" + (paramIdx + 1));
 
         // bind WHERE params
         for (int i = 0; i < params.size(); i++) {

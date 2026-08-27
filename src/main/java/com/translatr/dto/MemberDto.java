@@ -13,5 +13,6 @@ public class MemberDto {
     public UUID    userId;
     public String  userUsername;
     public String  userName;
+    public String  userEmailHash;
     public String  role;
 }

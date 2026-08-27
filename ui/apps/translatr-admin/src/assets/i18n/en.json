@@ -418,7 +418,7 @@
   "user.linkWith" : "Link account",
   "user.linked" : "linked",
   "user.me" : "me",
-  "user.memberships" : "{memberships, plural, 0 {Not contributing at the moment} =1 {Contributing to one project} other {Contributing to # projects}}",
+  "user.memberships" : "{memberships, plural, =0 {Not contributing at the moment} =1 {Contributing to one project} other {Contributing to # projects}}",
   "user.name" : "Name",
   "user.notFound" : "User could not be found",
   "user.notLinked" : "not linked",
