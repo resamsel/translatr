@@ -50,6 +50,9 @@ public class DtoMapper {
         if (k.project != null) {
             d.projectId   = k.project.id;
             d.projectName = k.project.name;
+            if (k.project.owner != null) {
+                d.projectOwnerUsername = k.project.owner.username;
+            }
         }
         return d;
     }
@@ -65,6 +68,9 @@ public class DtoMapper {
         if (l.project != null) {
             d.projectId   = l.project.id;
             d.projectName = l.project.name;
+            if (l.project.owner != null) {
+                d.projectOwnerUsername = l.project.owner.username;
+            }
         }
         return d;
     }

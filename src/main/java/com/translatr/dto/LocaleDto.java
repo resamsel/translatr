@@ -11,6 +11,7 @@ public class LocaleDto {
     public Instant whenUpdated;
     public UUID    projectId;
     public String  projectName;
+    public String  projectOwnerUsername;
     public String  name;
     public String  displayName;
     public Double  progress;
