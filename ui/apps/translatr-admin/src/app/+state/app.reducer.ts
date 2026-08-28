@@ -130,6 +130,16 @@ export function appReducer(state: AppState = initialState, action: AppAction): A
         ...state,
         accessTokens: action.payload
       };
+    case AppActionTypes.AccessTokenUpdated:
+      return {
+        ...state,
+        accessTokens: {
+          ...state.accessTokens,
+          list: state.accessTokens.list.map((accessToken: AccessToken) =>
+            accessToken.id === action.payload.id ? action.payload : accessToken
+          )
+        }
+      };
     case AppActionTypes.AccessTokenDeleted:
       return {
         ...state,

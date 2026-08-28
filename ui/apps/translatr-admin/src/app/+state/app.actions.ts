@@ -68,6 +68,10 @@ export enum AppActionTypes {
   AccessTokensLoaded = '[Translatr API] AccessTokens Loaded',
   AccessTokensLoadError = '[Translatr API] AccessTokens Load Error',
 
+  UpdateAccessToken = '[AccessTokens Page] Update AccessToken',
+  AccessTokenUpdated = '[Translatr API] AccessToken Updated',
+  AccessTokenUpdateError = '[Translatr API] AccessToken Update Error',
+
   DeleteAccessToken = '[AccessTokens Page] Delete AccessToken',
   AccessTokenDeleted = '[Translatr API] AccessToken Deleted',
   AccessTokenDeleteError = '[Translatr API] AccessToken Delete Error',
@@ -327,6 +331,24 @@ export class AccessTokensLoaded implements Action {
   constructor(public payload: PagedList<AccessToken>) {}
 }
 
+export class UpdateAccessToken implements Action {
+  readonly type = AppActionTypes.UpdateAccessToken;
+
+  constructor(public payload: AccessToken) {}
+}
+
+export class AccessTokenUpdateError implements Action {
+  readonly type = AppActionTypes.AccessTokenUpdateError;
+
+  constructor(public payload: HttpErrorResponse) {}
+}
+
+export class AccessTokenUpdated implements Action {
+  readonly type = AppActionTypes.AccessTokenUpdated;
+
+  constructor(public payload: AccessToken) {}
+}
+
 export class DeleteAccessToken implements Action {
   readonly type = AppActionTypes.DeleteAccessToken;
 
@@ -521,6 +543,9 @@ export type AppAction =
   | LoadAccessTokens
   | AccessTokensLoaded
   | AccessTokensLoadError
+  | UpdateAccessToken
+  | AccessTokenUpdated
+  | AccessTokenUpdateError
   | DeleteAccessToken
   | AccessTokenDeleted
   | AccessTokenDeleteError

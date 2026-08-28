@@ -1,0 +1,43 @@
+<h1
+  *ngIf="data.accessToken?.id"
+  mat-dialog-title
+  transloco="accessToken.edit"
+>Edit access token
+</h1>
+<h1
+  *ngIf="!data.accessToken?.id"
+  mat-dialog-title
+  transloco="accessToken.create.title"
+>Create Access Token
+</h1>
+<div mat-dialog-content [formGroup]="form">
+  <mat-error *ngIf="form.errors && form.errors['']">{{ form.errors[''] }}</mat-error>
+  <mat-form-field>
+    <input
+      matInput
+      required
+      [placeholder]="'accessToken.name' | transloco"
+      formControlName="name"
+      cdkFocusInitial
+    />
+    <mat-error *ngIf="form.get('name').errors">{{ form.get('name').errors.violation }}</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label transloco="accessToken.scopes">Scopes</mat-label>
+    <mat-select formControlName="scope" multiple>
+      <mat-option *ngFor="let scope of scopes" [value]="scope">{{ scope }}</mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.get('scope').errors">{{ form.get('scope').errors.violation }}</mat-error>
+  </mat-form-field>
+</div>
+<div class="dialog-actions" mat-dialog-actions>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onSubmit()"
+    [disabled]="form.invalid"
+    transloco="button.save"
+  >Save
+  </button>
+  <button mat-button transloco="button.cancel" (click)="dialogRef.close()">Cancel</button>
+</div>

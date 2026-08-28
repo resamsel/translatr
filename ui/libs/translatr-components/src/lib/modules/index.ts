@@ -10,6 +10,7 @@ export * from './nav';
 export * from './pages';
 export * from './pipes';
 export * from './project';
+export * from './access-token';
 export * from './user';
 export * from './metric';
 export * from './tag';

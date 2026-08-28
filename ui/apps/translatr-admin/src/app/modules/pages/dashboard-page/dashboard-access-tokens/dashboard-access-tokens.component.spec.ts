@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
@@ -20,9 +21,23 @@ import { DashboardAccessTokensComponent } from './dashboard-access-tokens.compon
 describe('DashboardAccessTokensComponent', () => {
   let component: DashboardAccessTokensComponent;
   let fixture: ComponentFixture<DashboardAccessTokensComponent>;
+  let facade: any;
+  let dialog: { open: jest.Mock };
 
   beforeEach(
     waitForAsync(() => {
+      facade = {
+        me$: mockObservable(),
+        accessTokenDeleted$: mockObservable(),
+        accessTokensDeleted$: mockObservable(),
+        accessTokenUpdated$: mockObservable(),
+        accessTokenUpdateError$: mockObservable(),
+        unloadAccessTokens$: mockObservable(),
+        unloadAccessTokens: jest.fn(),
+        updateAccessToken: jest.fn()
+      };
+      dialog = { open: jest.fn() };
+
       TestBed.configureTestingModule({
         declarations: [DashboardAccessTokensComponent],
         imports: [
@@ -40,20 +55,9 @@ describe('DashboardAccessTokensComponent', () => {
           MatIconModule
         ],
         providers: [
-          {
-            provide: AppFacade,
-            useFactory: () => ({
-              me$: mockObservable(),
-              accessTokenDeleted$: mockObservable(),
-              accessTokensDeleted$: mockObservable(),
-              unloadAccessTokens$: mockObservable(),
-              unloadAccessTokens: jest.fn()
-            })
-          },
-          {
-            provide: MatSnackBar,
-            useFactory: () => ({})
-          }
+          { provide: AppFacade, useValue: facade },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatSnackBar, useValue: {} }
         ]
       }).compileComponents();
     })
@@ -67,5 +71,19 @@ describe('DashboardAccessTokensComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('opens the edit dialog wired to updateAccessToken', () => {
+    const token = { id: 1, name: 'ci', scope: 'read:key' } as any;
+
+    component.onEdit(token);
+
+    expect(dialog.open).toHaveBeenCalledTimes(1);
+    const config = dialog.open.mock.calls[0][1];
+    expect(config.data.type).toBe('update');
+    expect(config.data.accessToken).toBe(token);
+
+    config.data.onSubmit(token);
+    expect(facade.updateAccessToken).toHaveBeenCalledWith(token);
   });
 });

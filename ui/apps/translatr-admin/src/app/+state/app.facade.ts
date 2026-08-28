@@ -35,6 +35,7 @@ import {
   LoadProjects,
   LoadUser,
   LoadUsers,
+  UpdateAccessToken,
   UpdateFeatureFlag,
   UpdatePreferredLanguage,
   UpdateProject,
@@ -87,6 +88,10 @@ export class AppFacade extends FeatureFlagFacade {
   readonly unloadAccessTokens$ = new Subject<void>();
 
   readonly accessTokens$ = this.store.pipe(select(appQuery.getAccessTokens));
+  readonly accessTokenUpdated$ = this.actions$.pipe(ofType(AppActionTypes.AccessTokenUpdated));
+  readonly accessTokenUpdateError$ = this.actions$.pipe(
+    ofType(AppActionTypes.AccessTokenUpdateError)
+  );
   readonly accessTokenDeleted$ = this.actions$.pipe(
     ofType(AppActionTypes.AccessTokenDeleted, AppActionTypes.AccessTokenDeleteError)
   );
@@ -178,6 +183,10 @@ export class AppFacade extends FeatureFlagFacade {
 
   loadAccessTokens(criteria: RequestCriteria) {
     this.store.dispatch(new LoadAccessTokens(criteria));
+  }
+
+  updateAccessToken(accessToken: AccessToken) {
+    this.store.dispatch(new UpdateAccessToken(accessToken));
   }
 
   deleteAccessToken(accessToken: AccessToken) {
