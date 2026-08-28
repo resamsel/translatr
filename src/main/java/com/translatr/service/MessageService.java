@@ -3,6 +3,7 @@ package com.translatr.service;
 import com.translatr.criteria.MessageCriteria;
 import com.translatr.dto.MessageDto;
 import com.translatr.dto.PagedList;
+import com.translatr.event.WordCountEventProducer;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.ActionType;
 import com.translatr.model.Message;
@@ -24,15 +25,18 @@ public class MessageService {
     private final KeyRepository     keyRepo;
     private final DtoMapper         mapper;
     private final ActivityLogger    activity;
+    private final WordCountEventProducer wordCounts;
 
     @Inject
     public MessageService(MessageRepository messageRepo, LocaleRepository localeRepo,
-                          KeyRepository keyRepo, DtoMapper mapper, ActivityLogger activity) {
+                          KeyRepository keyRepo, DtoMapper mapper, ActivityLogger activity,
+                          WordCountEventProducer wordCounts) {
         this.messageRepo = messageRepo;
         this.localeRepo  = localeRepo;
         this.keyRepo     = keyRepo;
         this.mapper      = mapper;
         this.activity    = activity;
+        this.wordCounts  = wordCounts;
     }
 
     public PagedList<MessageDto> find(MessageCriteria c) {
@@ -59,6 +63,7 @@ public class MessageService {
         messageRepo.persist(m);
         MessageDto after = mapper.toDto(m);
         activity.publish(ActionType.Create, key.project, MessageDto.class, null, after);
+        publishWordCountEvents(m);
         return after;
     }
 
@@ -70,6 +75,7 @@ public class MessageService {
         MessageDto after = mapper.toDto(m);
         activity.publish(ActionType.Update, m.key != null ? m.key.project : null,
                 MessageDto.class, before, after);
+        publishWordCountEvents(m);
         return after;
     }
 
@@ -77,9 +83,29 @@ public class MessageService {
     public MessageDto delete(UUID id) {
         Message m = messageRepo.findByIdOptional(id).orElseThrow(NotFoundException::new);
         MessageDto before = mapper.toDto(m);
-        var project = m.key != null ? m.key.project : null;
+        var project    = m.key != null ? m.key.project : null;
+        UUID keyId     = m.key    != null ? m.key.id    : null;
+        UUID localeId  = m.locale != null ? m.locale.id : null;
+        UUID projectId = project  != null ? project.id  : null;
         messageRepo.delete(m);
         activity.publish(ActionType.Delete, project, MessageDto.class, before, null);
+        // the message row is gone — refresh only the roll-ups it fed into
+        if (keyId     != null) wordCounts.publishKey(keyId);
+        if (localeId  != null) wordCounts.publishLocale(localeId);
+        if (projectId != null) wordCounts.publishProject(projectId);
         return before;
+    }
+
+    /**
+     * Recalculate word counts after a message was created or its value changed.
+     * Ports the old {@code MessageServiceImpl.preSave -> messageWordCountActor.tell(...)}
+     * fan-out: {@code WordCountEventConsumer} refreshes the message itself and then its
+     * key, locale and project roll-ups (processed in that order).
+     */
+    private void publishWordCountEvents(Message m) {
+        wordCounts.publishMessage(m.id);
+        if (m.key    != null) wordCounts.publishKey(m.key.id);
+        if (m.locale != null) wordCounts.publishLocale(m.locale.id);
+        if (m.key != null && m.key.project != null) wordCounts.publishProject(m.key.project.id);
     }
 }
