@@ -1,9 +1,11 @@
 package com.translatr.service;
 
+import com.translatr.config.TranslatrConfig;
 import com.translatr.dto.UserDto;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.ActionType;
 import com.translatr.model.User;
+import com.translatr.model.UserRole;
 import com.translatr.repository.UserFeatureFlagRepository;
 import com.translatr.repository.UserRepository;
 import jakarta.ws.rs.NotFoundException;
@@ -17,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,6 +36,7 @@ class UserServiceTest {
     @Mock UserFeatureFlagRepository featureFlagRepo;
     @Mock DtoMapper                 mapper;
     @Mock ActivityLogger            activity;
+    @Mock TranslatrConfig          config;
 
     @InjectMocks UserService service;
 
@@ -217,6 +221,79 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> service.delete(id))
                 .isInstanceOf(NotFoundException.class);
+    }
+
+    // -------------------------------------------------------------------------
+    // syncOidcRole
+    // -------------------------------------------------------------------------
+
+    @Test
+    void syncOidcRole_promotesToAdmin_whenTheAdminGroupIsPresent() {
+        UUID id   = UUID.randomUUID();
+        User user = userWithId(id);
+        user.role = UserRole.User;
+
+        when(config.adminGroup()).thenReturn("translatr-admin");
+        when(userRepo.findById(id)).thenReturn(user);
+
+        service.syncOidcRole(id, Set.of("translator", "translatr-admin"));
+
+        assertThat(user.role).isEqualTo(UserRole.Admin);
+    }
+
+    @Test
+    void syncOidcRole_demotesToUser_whenTheAdminGroupIsAbsent() {
+        UUID id   = UUID.randomUUID();
+        User user = userWithId(id);
+        user.role = UserRole.Admin;
+
+        when(config.adminGroup()).thenReturn("translatr-admin");
+        when(userRepo.findById(id)).thenReturn(user);
+
+        service.syncOidcRole(id, Set.of("translator"));
+
+        assertThat(user.role).isEqualTo(UserRole.User);
+    }
+
+    @Test
+    void syncOidcRole_demotesToUser_whenGroupsAreNull() {
+        UUID id   = UUID.randomUUID();
+        User user = userWithId(id);
+        user.role = UserRole.Admin;
+
+        when(userRepo.findById(id)).thenReturn(user);
+
+        service.syncOidcRole(id, null);
+
+        assertThat(user.role).isEqualTo(UserRole.User);
+    }
+
+    @Test
+    void syncOidcRole_matchesTheKeycloakFullPathForm() {
+        UUID id   = UUID.randomUUID();
+        User user = userWithId(id);
+        user.role = UserRole.User;
+
+        when(config.adminGroup()).thenReturn("translatr-admin");
+        when(userRepo.findById(id)).thenReturn(user);
+
+        service.syncOidcRole(id, Set.of("/translatr-admin"));
+
+        assertThat(user.role).isEqualTo(UserRole.Admin);
+    }
+
+    @Test
+    void syncOidcRole_leavesRoleUntouched_whenAlreadyCorrect() {
+        UUID id   = UUID.randomUUID();
+        User user = userWithId(id);
+        user.role = UserRole.Admin;
+
+        when(config.adminGroup()).thenReturn("translatr-admin");
+        when(userRepo.findById(id)).thenReturn(user);
+
+        service.syncOidcRole(id, Set.of("translatr-admin"));
+
+        assertThat(user.role).isEqualTo(UserRole.Admin);
     }
 
     // -------------------------------------------------------------------------

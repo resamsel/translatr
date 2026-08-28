@@ -16,6 +16,14 @@ public interface TranslatrConfig {
 
     Optional<String> adminAccessToken();
 
+    /**
+     * Keycloak realm role (surfaced in the OIDC {@code groups} claim) that grants the
+     * Translatr {@code Admin} role. Synced on every OIDC login — losing the role demotes
+     * the user back to {@code User}. Env: {@code TRANSLATR_ADMIN_GROUP}.
+     */
+    @WithDefault("translatr-admin")
+    String adminGroup();
+
     @WithDefault("false")
     boolean forceSSL();
 
