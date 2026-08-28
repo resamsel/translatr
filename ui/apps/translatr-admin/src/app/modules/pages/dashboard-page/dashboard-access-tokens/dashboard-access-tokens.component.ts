@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Entity, notifyEvent } from '@dev/translatr-components';
+import { AccessTokenEditDialogComponent, Entity, notifyEvent } from '@dev/translatr-components';
 import { AccessToken, Feature, RequestCriteria } from '@dev/translatr-model';
 import {
   errorMessage,
@@ -45,7 +46,11 @@ export class DashboardAccessTokensComponent implements OnDestroy {
 
   readonly Feature = Feature;
 
-  constructor(private readonly facade: AppFacade, readonly snackBar: MatSnackBar) {
+  constructor(
+    private readonly facade: AppFacade,
+    private readonly dialog: MatDialog,
+    readonly snackBar: MatSnackBar
+  ) {
     notifyEvent(
       snackBar,
       facade.accessTokenDeleted$.pipe(takeUntil(facade.unloadAccessTokens$)),
@@ -76,9 +81,16 @@ export class DashboardAccessTokensComponent implements OnDestroy {
     return this.me$.pipe(hasEditAccessTokenPermission(accessToken));
   }
 
-  onEdit(_accessToken: AccessToken) {
-    // TODO: implement
-    // this.facade.deleteAccessToken(accessToken);
+  onEdit(accessToken: AccessToken) {
+    this.dialog.open(AccessTokenEditDialogComponent, {
+      data: {
+        type: 'update',
+        accessToken,
+        onSubmit: (token: AccessToken) => this.facade.updateAccessToken(token),
+        success$: this.facade.accessTokenUpdated$,
+        error$: this.facade.accessTokenUpdateError$
+      }
+    });
   }
 
   allowDelete$(accessToken: AccessToken): Observable<boolean> {

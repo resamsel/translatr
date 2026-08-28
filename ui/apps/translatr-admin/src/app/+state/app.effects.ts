@@ -25,6 +25,8 @@ import {
   AccessTokensDeleteError,
   AccessTokensLoaded,
   AccessTokensLoadError,
+  AccessTokenUpdated,
+  AccessTokenUpdateError,
   ActivitiesLoaded,
   ActivitiesLoadError,
   AppActionTypes,
@@ -64,6 +66,7 @@ import {
   ProjectsLoadError,
   ProjectUpdated,
   ProjectUpdateError,
+  UpdateAccessToken,
   UpdateFeatureFlag,
   UpdatePreferredLanguage,
   UpdateProject,
@@ -208,6 +211,16 @@ export class AppEffects {
       this.accessTokenService.find(action.payload).pipe(
         map((payload: PagedList<AccessToken>) => new AccessTokensLoaded(payload)),
         catchError(error => of(new AccessTokensLoadError(error)))
+      )
+    )
+  ));
+
+  updateAccessToken$ = createEffect(() => this.actions$.pipe(
+    ofType(AppActionTypes.UpdateAccessToken),
+    switchMap((action: UpdateAccessToken) =>
+      this.accessTokenService.update(action.payload).pipe(
+        map((payload: AccessToken) => new AccessTokenUpdated(payload)),
+        catchError(error => of(new AccessTokenUpdateError(error)))
       )
     )
   ));

@@ -17,6 +17,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
+  AccessTokenEditDialogModule,
   ButtonModule,
   EllipsisModule,
   EntityTableModule,
@@ -55,6 +56,7 @@ import { DashboardUsersComponent } from './dashboard-users/dashboard-users.compo
     SidenavModule,
     UserEditDialogModule,
     ProjectEditDialogModule,
+    AccessTokenEditDialogModule,
     ButtonModule,
     UserCardModule,
     EllipsisModule,
