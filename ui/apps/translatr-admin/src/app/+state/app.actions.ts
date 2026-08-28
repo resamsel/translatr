@@ -88,6 +88,10 @@ export enum AppActionTypes {
   FeatureFlagsLoaded = '[Translatr API] FeatureFlags Loaded',
   FeatureFlagsLoadError = '[Translatr API] FeatureFlags Load Error',
 
+  CreateFeatureFlag = '[FeatureFlags Page] Create FeatureFlag',
+  FeatureFlagCreated = '[Translatr API] FeatureFlag Created',
+  FeatureFlagCreateError = '[Translatr API] FeatureFlag Create Error',
+
   UpdateFeatureFlag = '[FeatureFlags Page] Update FeatureFlag',
   FeatureFlagUpdated = '[Translatr API] FeatureFlag Updated',
   FeatureFlagUpdateError = '[Translatr API] FeatureFlag Update Error',
@@ -399,6 +403,24 @@ export class FeatureFlagsLoaded implements Action {
   constructor(public payload: PagedList<UserFeatureFlag>) {}
 }
 
+export class CreateFeatureFlag implements Action {
+  readonly type = AppActionTypes.CreateFeatureFlag;
+
+  constructor(public payload: UserFeatureFlag) {}
+}
+
+export class FeatureFlagCreateError implements Action {
+  readonly type = AppActionTypes.FeatureFlagCreateError;
+
+  constructor(public payload: HttpErrorResponse) {}
+}
+
+export class FeatureFlagCreated implements Action {
+  readonly type = AppActionTypes.FeatureFlagCreated;
+
+  constructor(public payload: UserFeatureFlag) {}
+}
+
 export class UpdateFeatureFlag implements Action {
   readonly type = AppActionTypes.UpdateFeatureFlag;
 
@@ -513,6 +535,9 @@ export type AppAction =
   | LoadFeatureFlags
   | FeatureFlagsLoaded
   | FeatureFlagsLoadError
+  | CreateFeatureFlag
+  | FeatureFlagCreated
+  | FeatureFlagCreateError
   | UpdateFeatureFlag
   | FeatureFlagUpdated
   | FeatureFlagUpdateError
