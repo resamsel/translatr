@@ -1,14 +1,19 @@
 package com.translatr.service;
 
+import com.translatr.dto.MemberDto;
 import com.translatr.dto.ProjectDto;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.ActionType;
 import com.translatr.model.Project;
+import com.translatr.model.ProjectRole;
+import com.translatr.model.ProjectUser;
 import com.translatr.model.User;
 import com.translatr.repository.ProjectRepository;
+import com.translatr.repository.ProjectUserRepository;
 import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,9 +31,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ProjectServiceTest {
 
-    @Mock ProjectRepository projectRepo;
-    @Mock DtoMapper         mapper;
-    @Mock ActivityLogger    activity;
+    @Mock ProjectRepository     projectRepo;
+    @Mock ProjectUserRepository memberRepo;
+    @Mock DtoMapper             mapper;
+    @Mock ActivityLogger        activity;
 
     @InjectMocks ProjectService service;
 
@@ -89,6 +95,42 @@ class ProjectServiceTest {
 
         verify(activity).publish(eq(ActionType.Create), any(Project.class), eq(ProjectDto.class),
                 isNull(), eq(after));
+    }
+
+    @Test
+    void create_addsTheOwnerAsAnOwnerMember() {
+        User owner = new User();
+        owner.id = UUID.randomUUID();
+
+        ProjectDto dto = new ProjectDto();
+        dto.name = "my-project";
+
+        service.create(dto, owner);
+
+        ArgumentCaptor<ProjectUser> captor = ArgumentCaptor.forClass(ProjectUser.class);
+        verify(memberRepo).persist(captor.capture());
+        ProjectUser member = captor.getValue();
+        assertThat(member.role).isEqualTo(ProjectRole.Owner);
+        assertThat(member.user).isSameAs(owner);
+        assertThat(member.project.name).isEqualTo("my-project");
+    }
+
+    @Test
+    void create_publishesMemberCreatedActivity_forTheOwner() {
+        User owner = new User();
+        owner.id = UUID.randomUUID();
+
+        ProjectDto dto = new ProjectDto();
+        dto.name = "my-project";
+
+        MemberDto memberAfter = new MemberDto();
+        when(mapper.toDto(any(Project.class))).thenReturn(new ProjectDto());
+        when(mapper.toDto(any(ProjectUser.class))).thenReturn(memberAfter);
+
+        service.create(dto, owner);
+
+        verify(activity).publish(eq(ActionType.Create), any(Project.class), eq(MemberDto.class),
+                isNull(), eq(memberAfter));
     }
 
     @Test

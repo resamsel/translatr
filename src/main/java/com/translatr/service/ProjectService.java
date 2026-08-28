@@ -3,9 +3,12 @@ package com.translatr.service;
 import com.translatr.criteria.ProjectCriteria;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.ProjectDto;
+import com.translatr.dto.MemberDto;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.ActionType;
 import com.translatr.model.Project;
+import com.translatr.model.ProjectRole;
+import com.translatr.model.ProjectUser;
 import com.translatr.model.User;
 import com.translatr.repository.ProjectRepository;
 import com.translatr.repository.ProjectUserRepository;
@@ -80,8 +83,17 @@ public class ProjectService {
         p.description = dto.description;
         p.owner       = owner;
         projectRepo.persist(p);
-        ProjectDto after = mapper.toDto(p);
+
+        // The owner is always a member of their project.
+        ProjectUser ownerMember = new ProjectUser(ProjectRole.Owner);
+        ownerMember.project = p;
+        ownerMember.user    = owner;
+        memberRepo.persist(ownerMember);
+
+        ProjectDto  after       = mapper.toDto(p);
+        MemberDto   memberAfter = mapper.toDto(ownerMember);
         activity.publish(ActionType.Create, p, ProjectDto.class, null, after);
+        activity.publish(ActionType.Create, p, MemberDto.class, null, memberAfter);
         return after;
     }
 
