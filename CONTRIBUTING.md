@@ -307,7 +307,7 @@ See [Pull request guidelines](#pull-request-guidelines) for details.
 ## Publishing Docker Image
 
 ```
-$ bin/activator stage docker:publish
+$ npm run build:docker && npm run publish:docker
 ```
 
 ## Pull request guidelines

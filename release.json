@@ -27,18 +27,6 @@
       "file": "k8s/loadgenerator.yaml",
       "search": "resamsel\\/translatr-loadgenerator:.*",
       "replace": "resamsel/translatr-loadgenerator:{{version}}"
-    },
-    {
-      "type": "file",
-      "file": "init.sh",
-      "search": "VERSION=\"[^\"]+\"",
-      "replace": "VERSION=\"{{version}}\""
-    },
-    {
-      "type": "file",
-      "file": "build.sbt",
-      "search": "version := \"[^\"]+\"",
-      "replace": "version := \"{{version}}\""
     }
   ],
   "changelogCommand": "npm run generate:changelog"
