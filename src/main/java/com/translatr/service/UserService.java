@@ -1,5 +1,6 @@
 package com.translatr.service;
 
+import com.translatr.config.TranslatrConfig;
 import com.translatr.criteria.UserCriteria;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.UserDto;
@@ -7,12 +8,14 @@ import com.translatr.mapper.DtoMapper;
 import com.translatr.model.ActionType;
 import com.translatr.model.LinkedAccount;
 import com.translatr.model.User;
+import com.translatr.model.UserRole;
 import com.translatr.repository.UserFeatureFlagRepository;
 import com.translatr.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,14 +26,16 @@ public class UserService {
     private final UserFeatureFlagRepository featureFlagRepo;
     private final DtoMapper                 mapper;
     private final ActivityLogger            activity;
+    private final TranslatrConfig           config;
 
     @Inject
     public UserService(UserRepository userRepo, UserFeatureFlagRepository featureFlagRepo, DtoMapper mapper,
-                       ActivityLogger activity) {
+                       ActivityLogger activity, TranslatrConfig config) {
         this.userRepo        = userRepo;
         this.featureFlagRepo = featureFlagRepo;
         this.mapper          = mapper;
         this.activity        = activity;
+        this.config          = config;
     }
 
     public PagedList<UserDto> find(UserCriteria c) {
@@ -116,5 +121,35 @@ public class UserService {
         la.persist();
 
         return u;
+    }
+
+    /**
+     * Reconciles a user's {@link UserRole} with their Keycloak group membership on every
+     * OIDC login: holding {@link TranslatrConfig#adminGroup()} grants {@code Admin}, losing
+     * it demotes back to {@code User}. {@code groups} is the OIDC {@code groups} claim;
+     * Keycloak's "full group path" form ({@code /translatr-admin}) is accepted too. Only the
+     * OIDC login path calls this — access-token identities keep their stored role.
+     */
+    @Transactional
+    public User syncOidcRole(UUID userId, Set<String> groups) {
+        User user = userRepo.findById(userId);
+        if (user == null) {
+            return null;
+        }
+        UserRole desired = inAdminGroup(groups) ? UserRole.Admin : UserRole.User;
+        if (user.role != desired) {
+            user.role = desired;
+        }
+        return user;
+    }
+
+    private boolean inAdminGroup(Set<String> groups) {
+        if (groups == null || groups.isEmpty()) {
+            return false;
+        }
+        String adminGroup = config.adminGroup();
+        return groups.stream()
+                .map(g -> g.startsWith("/") ? g.substring(1) : g)
+                .anyMatch(g -> g.equalsIgnoreCase(adminGroup));
     }
 }

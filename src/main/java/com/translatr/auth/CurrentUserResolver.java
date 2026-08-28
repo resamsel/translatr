@@ -38,6 +38,9 @@ public class CurrentUserResolver {
         if (accessTokenUser != null) {
             return accessTokenUser;
         }
-        return userService.findOrCreate("oidc", jwt.getSubject(), jwt.getClaim("name"), jwt.getClaim("email"));
+        User user = userService.findOrCreate(
+                "oidc", jwt.getSubject(), jwt.getClaim("name"), jwt.getClaim("email"));
+        // Reconcile the Admin role with the caller's Keycloak groups on every OIDC login.
+        return userService.syncOidcRole(user.id, jwt.getGroups());
     }
 }

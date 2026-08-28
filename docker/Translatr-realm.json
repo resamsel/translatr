@@ -91,6 +91,15 @@
         "clientRole": false,
         "containerId": "Translatr",
         "attributes": {}
+      },
+      {
+        "id": "51289c4c-01e4-439e-b85e-ff21d67c48e2",
+        "name": "translatr-admin",
+        "description": "Grants the Translatr Admin role (synced via the OIDC groups claim on login).",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "Translatr",
+        "attributes": {}
       }
     ],
     "client": {
