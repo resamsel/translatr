@@ -18,6 +18,7 @@ import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import {
   AppActionTypes,
+  CreateFeatureFlag,
   CreateUser,
   DeleteAccessToken,
   DeleteAccessTokens,
@@ -201,6 +202,10 @@ export class AppFacade extends FeatureFlagFacade {
 
   loadFeatureFlags(criteria: FeatureFlagCriteria) {
     this.store.dispatch(new LoadFeatureFlags(criteria));
+  }
+
+  createFeatureFlag(featureFlag: Partial<UserFeatureFlag>): void {
+    this.store.dispatch(new CreateFeatureFlag(featureFlag as UserFeatureFlag));
   }
 
   updateFeatureFlag(featureFlag: UserFeatureFlag): void {

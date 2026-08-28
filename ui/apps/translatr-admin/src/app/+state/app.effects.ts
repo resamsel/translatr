@@ -28,6 +28,7 @@ import {
   ActivitiesLoaded,
   ActivitiesLoadError,
   AppActionTypes,
+  CreateFeatureFlag,
   CreateUser,
   DeleteAccessToken,
   DeleteAccessTokens,
@@ -37,6 +38,8 @@ import {
   DeleteProjects,
   DeleteUser,
   DeleteUsers,
+  FeatureFlagCreated,
+  FeatureFlagCreateError,
   FeatureFlagDeleted,
   FeatureFlagDeleteError,
   FeatureFlagsDeleted,
@@ -251,6 +254,16 @@ export class AppEffects {
       this.featureFlagService.find(action.payload).pipe(
         map((payload: PagedList<UserFeatureFlag>) => new FeatureFlagsLoaded(payload)),
         catchError(error => of(new FeatureFlagsLoadError(error)))
+      )
+    )
+  ));
+
+  createFeatureFlag$ = createEffect(() => this.actions$.pipe(
+    ofType(AppActionTypes.CreateFeatureFlag),
+    switchMap((action: CreateFeatureFlag) =>
+      this.featureFlagService.create(action.payload).pipe(
+        map((payload: UserFeatureFlag) => new FeatureFlagCreated(payload)),
+        catchError(error => of(new FeatureFlagCreateError(error)))
       )
     )
   ));

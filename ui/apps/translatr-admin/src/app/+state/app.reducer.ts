@@ -166,6 +166,15 @@ export function appReducer(state: AppState = initialState, action: AppAction): A
         ...state,
         featureFlags: action.payload
       };
+    case AppActionTypes.FeatureFlagCreated:
+      return {
+        ...state,
+        featureFlags: {
+          ...state.featureFlags,
+          list: [action.payload, ...state.featureFlags.list],
+          total: state.featureFlags.total + 1
+        }
+      };
     case AppActionTypes.FeatureFlagUpdated:
       return {
         ...state,

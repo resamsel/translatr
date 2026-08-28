@@ -1,60 +1,44 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterTestingModule } from '@angular/router/testing';
-import { EllipsisModule } from '@dev/translatr-components';
-import {
-  ButtonTestingModule,
-  EntityTableTestingModule,
-  FeatureFlagTestingModule
-} from '@translatr/components/testing';
-import { mockObservable } from '@translatr/utils/testing';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { Feature, features } from '@dev/translatr-model';
+import { of } from 'rxjs';
 import { AppFacade } from '../../../../+state/app.facade';
-
 import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags.component';
 
 describe('DashboardFeatureFlagsComponent', () => {
   let component: DashboardFeatureFlagsComponent;
   let fixture: ComponentFixture<DashboardFeatureFlagsComponent>;
+  let facade: {
+    me$: any;
+    featureFlags$: any;
+    loadFeatureFlags: jest.Mock;
+    createFeatureFlag: jest.Mock;
+    updateFeatureFlag: jest.Mock;
+    deleteFeatureFlag: jest.Mock;
+    unloadFeatureFlags: jest.Mock;
+  };
+
+  const me = { id: 'user-1' };
 
   beforeEach(
     waitForAsync(() => {
+      facade = {
+        me$: of(me),
+        featureFlags$: of({ list: [], total: 0, offset: 0, limit: 20 }),
+        loadFeatureFlags: jest.fn(),
+        createFeatureFlag: jest.fn(),
+        updateFeatureFlag: jest.fn(),
+        deleteFeatureFlag: jest.fn(),
+        unloadFeatureFlags: jest.fn()
+      };
+
       TestBed.configureTestingModule({
         declarations: [DashboardFeatureFlagsComponent],
-        imports: [
-          FeatureFlagTestingModule,
-          EntityTableTestingModule,
-          ButtonTestingModule,
-          EllipsisModule,
-
-          RouterTestingModule,
-          TimeAgoModule,
-
-          MatTableModule,
-          MatButtonModule,
-          MatTooltipModule,
-          MatIconModule
-        ],
-        providers: [
-          {
-            provide: AppFacade,
-            useFactory: () => ({
-              me$: mockObservable(),
-              featureFlagDeleted$: mockObservable(),
-              featureFlagsDeleted$: mockObservable(),
-              unloadFeatureFlags$: mockObservable(),
-              unloadFeatureFlags: jest.fn()
-            })
-          },
-          {
-            provide: MatSnackBar,
-            useFactory: () => ({})
-          }
-        ]
+        imports: [NoopAnimationsModule, MatButtonModule, MatIconModule, MatTooltipModule],
+        providers: [{ provide: AppFacade, useValue: facade }]
       }).compileComponents();
     })
   );
@@ -67,5 +51,42 @@ describe('DashboardFeatureFlagsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('loads the current user\'s feature flags on init', () => {
+    expect(facade.loadFeatureFlags).toHaveBeenCalledWith({ userId: 'user-1' });
+  });
+
+  it('renders one row per available feature', done => {
+    component.rows$.subscribe(rows => {
+      expect(rows.map(r => r.feature)).toEqual(features);
+      expect(rows.every(r => r.enabled === false)).toBe(true);
+      done();
+    });
+  });
+
+  it('creates a flag when toggling a feature that has no row yet', () => {
+    component.onToggle({ feature: Feature.ProjectCliCard, enabled: false });
+
+    expect(facade.createFeatureFlag).toHaveBeenCalledWith({
+      userId: 'user-1',
+      feature: Feature.ProjectCliCard,
+      enabled: true
+    });
+    expect(facade.updateFeatureFlag).not.toHaveBeenCalled();
+  });
+
+  it('updates the existing row when toggling a feature that already has one', () => {
+    const flag = {
+      id: 'ff-1',
+      userId: 'user-1',
+      feature: Feature.ProjectInfographic,
+      enabled: true
+    } as any;
+
+    component.onToggle({ feature: Feature.ProjectInfographic, flag, enabled: true });
+
+    expect(facade.updateFeatureFlag).toHaveBeenCalledWith({ ...flag, enabled: false });
+    expect(facade.createFeatureFlag).not.toHaveBeenCalled();
   });
 });
