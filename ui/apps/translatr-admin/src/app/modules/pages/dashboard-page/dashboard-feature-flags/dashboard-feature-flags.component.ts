@@ -67,12 +67,6 @@ export class DashboardFeatureFlagsComponent implements OnInit, OnDestroy {
       );
   }
 
-  onDelete(row: FeatureRow): void {
-    if (row.flag) {
-      this.facade.deleteFeatureFlag(row.flag);
-    }
-  }
-
   ngOnDestroy(): void {
     this.facade.unloadFeatureFlags();
   }

@@ -26,15 +26,6 @@
       >
         <mat-icon>{{ row.enabled ? 'toggle_on' : 'toggle_off' }}</mat-icon>
       </button>
-
-      <button
-        *ngIf="row.flag"
-        mat-icon-button
-        matTooltip="Remove this flag from your account"
-        (click)="onDelete(row)"
-      >
-        <mat-icon>delete</mat-icon>
-      </button>
     </div>
   </div>
 </div>
