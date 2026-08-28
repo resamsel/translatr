@@ -1,6 +1,7 @@
 package com.translatr.service;
 
 import com.translatr.dto.MessageDto;
+import com.translatr.event.WordCountEventProducer;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.ActionType;
 import com.translatr.model.Key;
@@ -35,6 +36,7 @@ class MessageServiceTest {
     @Mock KeyRepository     keyRepo;
     @Mock DtoMapper         mapper;
     @Mock ActivityLogger    activity;
+    @Mock WordCountEventProducer wordCounts;
 
     @InjectMocks MessageService service;
 
