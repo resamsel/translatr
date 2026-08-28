@@ -17,7 +17,6 @@ describe('DashboardFeatureFlagsComponent', () => {
     loadFeatureFlags: jest.Mock;
     createFeatureFlag: jest.Mock;
     updateFeatureFlag: jest.Mock;
-    deleteFeatureFlag: jest.Mock;
     unloadFeatureFlags: jest.Mock;
   };
 
@@ -31,7 +30,6 @@ describe('DashboardFeatureFlagsComponent', () => {
         loadFeatureFlags: jest.fn(),
         createFeatureFlag: jest.fn(),
         updateFeatureFlag: jest.fn(),
-        deleteFeatureFlag: jest.fn(),
         unloadFeatureFlags: jest.fn()
       };
 
