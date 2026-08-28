@@ -1,13 +1,11 @@
-# Created by https://www.gitignore.io/api/angular,intellij,playframework
-# Edit at https://www.gitignore.io/?templates=angular,intellij,playframework
+# Created by https://www.gitignore.io/api/angular,intellij
+# Edit at https://www.gitignore.io/?templates=angular,intellij
 
 ### Angular ###
 ## Angular ##
 # compiled output
 dist/
 tmp/
-app/**/*.js
-app/**/*.js.map
 
 # dependencies
 node_modules/
@@ -120,34 +118,14 @@ fabric.properties
 .idea/**/markdown-navigator.xml
 .idea/**/markdown-navigator/
 
-### PlayFramework ###
-# Ignore Play! working directory #
-/db
-.eclipse
-/lib/
-/logs/
-/modules
-/project/project
-/project/target
-/target
-test-result
-server.pid
-*.eml
-/dist/
-.cache
-
-# End of https://www.gitignore.io/api/angular,intellij,playframework
+# End of https://www.gitignore.io/api/angular,intellij
 
 ##############
 ### Custom ###
 ##############
 
 .recommenders
-.target
-RUNNING_PID
-.sbtserver
 .translatr.yml
-jmeter.log
 /public/ui
 /public/admin
 
