@@ -3,9 +3,21 @@
     <dev-empty-view-header transloco="project.teaser.title"
       >No project defined</dev-empty-view-header
     >
+  } @else {
+    <dev-empty-view-header transloco="projects.empty.title"
+      >No projects visible</dev-empty-view-header
+    >
+  }
+  @if (canCreate) {
     <dev-empty-view-content transloco="project.teaser.text">
       No projects defined, yet - how about creating one?
     </dev-empty-view-content>
+  } @else {
+    <dev-empty-view-content transloco="projects.empty.text">
+      There are no projects visible to you.
+    </dev-empty-view-content>
+  }
+  @if (canCreate) {
     <dev-empty-view-actions>
       <button
         (click)="create.emit()"
@@ -17,12 +29,5 @@
         Start new project
       </button>
     </dev-empty-view-actions>
-  } @else {
-    <dev-empty-view-header transloco="projects.empty.title"
-      >No projects visible</dev-empty-view-header
-    >
-    <dev-empty-view-content transloco="projects.empty.text">
-      There are no projects visible to you.
-    </dev-empty-view-content>
   }
 </dev-empty-view>
