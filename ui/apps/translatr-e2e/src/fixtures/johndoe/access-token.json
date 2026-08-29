@@ -1,0 +1,10 @@
+{
+  "id": "a1000000-0000-0000-0000-000000000001",
+  "whenCreated": "2020-01-01T10:00:00.000Z",
+  "whenUpdated": "2020-01-01T10:00:00.000Z",
+  "name": "CI token",
+  "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+  "userName": "John Doe",
+  "userUsername": "johndoe",
+  "scope": "project:read,project:write"
+}
